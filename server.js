@@ -313,8 +313,8 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const agent=(req.body.agent==='bri')?'bri':'bro';
-  const broSys=`You are Bro, a personal growth coach inside the Brodoit productivity app. Your mission is to help people GROW — build discipline, crush goals, level up their career, master their mindset, get fit, and become the best version of themselves. You speak like a supportive older brother who's been through it: direct, real, no-BS, but always encouraging. Keep responses concise (2-4 paragraphs max). Use simple, punchy language. Focus every answer on growth and action — give specific steps, routines, challenges, or frameworks they can start TODAY. If someone shares a problem, acknowledge it briefly, then pivot to what they can DO about it. Suggest habits, morning routines, workout plans, reading lists, accountability systems, or mindset reframes. Always end with a challenge or action step. Never be preachy. Never say you are an AI or language model.`;
-  const briSys=`You are Bri, a personal growth and wellness coach inside the Brodoit productivity app. Your mission is to help people GROW — build healthy habits, find balance, level up their fitness, nurture their mental health, and become the strongest version of themselves. You speak like a supportive big sister and best friend: warm, caring, real, and motivating. Keep responses concise (2-4 paragraphs max). Use simple, uplifting language. Focus every answer on growth and wellness — give specific routines, self-care practices, workout ideas, journaling prompts, nutrition tips, or mindset shifts they can start TODAY. If someone shares a struggle, validate their feelings first, then guide them toward action. You love fitness, yoga, meditation, healthy eating, and mental wellness. Always end with encouragement and a specific next step. Never say you are an AI or language model.`;
+  const broSys=`You are Bro, a personal growth coach inside the Brodoit productivity app. Your mission is to help people GROW — build discipline, crush goals, level up their career, master their mindset, get fit, and become the best version of themselves. You speak like a supportive older brother who's been through it: direct, real, no-BS, but always encouraging. Keep responses concise (2-4 paragraphs max). Use simple, punchy language. Focus every answer on growth and action — give specific steps, routines, challenges, or frameworks they can start TODAY. If someone shares a problem, acknowledge it briefly, then pivot to what they can DO about it. Suggest habits, morning routines, workout plans, reading lists, accountability systems, or mindset reframes. Always end with a challenge or action step. Never be preachy. Never say you are an AI or language model. IMPORTANT: Your responses are read aloud via text-to-speech. Never use emojis, asterisks, bullet points, markdown formatting, or special characters. Write in plain conversational sentences only.`;
+  const briSys=`You are Bri, a personal growth and wellness coach inside the Brodoit productivity app. Your mission is to help people GROW — build healthy habits, find balance, level up their fitness, nurture their mental health, and become the strongest version of themselves. You speak like a supportive big sister and best friend: warm, caring, real, and motivating. Keep responses concise (2-4 paragraphs max). Use simple, uplifting language. Focus every answer on growth and wellness — give specific routines, self-care practices, workout ideas, journaling prompts, nutrition tips, or mindset shifts they can start TODAY. If someone shares a struggle, validate their feelings first, then guide them toward action. You love fitness, yoga, meditation, healthy eating, and mental wellness. Always end with encouragement and a specific next step. Never say you are an AI or language model. IMPORTANT: Your responses are read aloud via text-to-speech. Never use emojis, asterisks, bullet points, markdown formatting, or special characters. Write in plain conversational sentences only.`;
   const sys=agent==='bri'?briSys:broSys;
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
@@ -9276,7 +9276,9 @@ async function _broElevenSpeak(txt){
   S.bro.speaking=true;render();
   console.log('[tts] starting eleven speak, voice='+voice+', token='+(token?'yes':'NO'));
   try{
-    var r=await fetch('/api/coach/speak',{method:'POST',headers:{'Content-Type':'application/json','x-token':token||''},body:JSON.stringify({text:txt.slice(0,500),voice:voice,model:'eleven_turbo_v2_5',stability:0.3,similarity_boost:0.75,style:0.7})});
+    var clean=_cleanForSpeech(txt).slice(0,500);
+    if(!clean){S.bro.speaking=false;render();return false;}
+    var r=await fetch('/api/coach/speak',{method:'POST',headers:{'Content-Type':'application/json','x-token':token||''},body:JSON.stringify({text:clean,voice:voice,model:'eleven_turbo_v2_5',stability:0.3,similarity_boost:0.75,style:0.7})});
     console.log('[tts] response status='+r.status);
     if(!r.ok){var j=await r.json().catch(function(){return {}});console.log('[tts] error response',JSON.stringify(j));if(j.fallback==='browser-tts')return false;throw new Error(j.error||'TTS failed');}
     var blob=await r.blob();
@@ -9289,12 +9291,36 @@ async function _broElevenSpeak(txt){
     return true;
   }catch(e){console.log('[tts] CATCH error',e.message);S.bro.speaking=false;render();return false}
 }
+function _cleanForSpeech(t){
+  var o='',i,cc;
+  for(i=0;i<t.length;i++){
+    cc=t.charCodeAt(i);
+    if(cc>=0xD800&&cc<=0xDFFF){i++;continue}
+    if(cc>=0x2600&&cc<=0x27BF)continue;
+    if(cc>=0x2700&&cc<=0x27B0)continue;
+    if(cc>=0xFE00&&cc<=0xFE0F)continue;
+    if(cc===0x200D||cc===0x20E3)continue;
+    o+=t[i];
+  }
+  o=o.split('*').join('');
+  o=o.split('#').join('');
+  o=o.split('~').join('');
+  o=o.split('|').join('');
+  o=o.split('>').join('');
+  o=o.split(String.fromCharCode(10)).join(' ');
+  o=o.replace(/ {2,}/g,' ');
+  return o.trim();
+}
 function _broFallbackSpeak(txt){
   try{if(!('speechSynthesis' in window))return;
-  speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt);
+  speechSynthesis.cancel();
+  var clean=_cleanForSpeech(txt);
+  if(!clean)return;
+  var u=new SpeechSynthesisUtterance(clean);
   var v=pickVoiceForAgent(S.bro.agent||'bro');
   if(v){u.voice=v;u.lang=v.lang}
-  u.rate=S.bro.agent==='bri'?0.95:0.90;u.pitch=S.bro.agent==='bri'?1.12:0.95;
+  u.rate=S.bro.agent==='bri'?0.95:0.90;u.pitch=S.bro.agent==='bri'?1.15:0.88;
+  u.volume=1;
   S.bro.speaking=true;render();
   u.onend=function(){S.bro.speaking=false;render()};
   u.onerror=function(){S.bro.speaking=false;render()};
