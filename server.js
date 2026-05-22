@@ -307,17 +307,20 @@ app.post('/api/coach/chat',auth,async(req,res)=>{
   }catch(e){res.status(500).json({error:String(e.message||e)})}
 });
 
-// ═══ BRO — Life Coach Chat ═══
+// ═══ BRO / BRI — Life Coach Chat ═══
 app.post('/api/bro/chat',auth,async(req,res)=>{
-  if(!ANTHROPIC_KEY)return res.status(503).json({error:'Bro not configured (ANTHROPIC_API_KEY missing).'});
+  if(!ANTHROPIC_KEY)return res.status(503).json({error:'Coach not configured (ANTHROPIC_API_KEY missing).'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
+  const agent=(req.body.agent==='bri')?'bri':'bro';
   const broSys=`You are Bro, a warm, wise, and motivating life coach inside the Brodoit productivity app. You help people improve their lives — habits, mindset, discipline, relationships, health, career, and personal growth. You speak like a supportive older brother: direct, encouraging, practical. Keep responses concise (2-4 paragraphs max). Use simple language. Give actionable advice. If someone shares a problem, acknowledge it, then guide them toward a solution. Never be preachy — be real. You can suggest exercises, routines, book recommendations, mindset shifts, or frameworks. Always end with something empowering. Never say you are an AI or language model.`;
+  const briSys=`You are Bri, a warm, empathetic, and energetic life coach inside the Brodoit productivity app. You help people improve their lives — habits, mindset, wellness, relationships, health, career, and personal growth. You speak like a supportive best friend and big sister: caring, uplifting, and real. Keep responses concise (2-4 paragraphs max). Use simple language. Give actionable advice with a positive spin. If someone shares a problem, validate their feelings first, then guide them toward a solution. You love wellness, fitness, and mental health. You can suggest routines, self-care practices, journaling prompts, mindset shifts, or frameworks. Always end with encouragement. Never say you are an AI or language model.`;
+  const sys=agent==='bri'?briSys:broSys;
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:800,system:broSys,messages:messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,4000)}))})
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:800,system:sys,messages:messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,4000)}))})
     });
     const j=await r.json();
     if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Claude error',detail:j});
@@ -1935,13 +1938,13 @@ input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 
 .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding:0 2px}
 /* ─── Brand mark ─── */
 .logo{font-family:var(--serif);font-size:36px;font-weight:500;letter-spacing:-.025em;line-height:1;display:inline-flex;align-items:baseline;gap:1px;color:var(--text);user-select:none;cursor:default}
-.logo .b1{font-style:italic}
-.logo .b2{font-style:italic;font-weight:600;color:var(--accent);display:inline-block;transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
-.logo .b3{font-style:italic}
+.logo .b1{font-style:normal}
+.logo .b2{font-style:normal;font-weight:600;color:var(--accent);display:inline-block;transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.logo .b3{font-style:normal}
 .logo .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--warm);margin-left:3px;align-self:flex-end;margin-bottom:5px;box-shadow:0 0 0 0 rgba(217,178,107,.5);animation:brandDot 2.4s ease-in-out infinite}
 .logo:hover .b2{transform:translateY(-3px) rotate(-4deg)}
 @keyframes brandDot{0%,100%{box-shadow:0 0 0 0 rgba(217,178,107,.5)}50%{box-shadow:0 0 0 6px rgba(217,178,107,0)}}
-.hdr-tagline{display:none;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:13px;color:#94A3B8;margin-top:2px;letter-spacing:.04em}
+.hdr-tagline{display:none;font-family:'Instrument Serif',Georgia,serif;font-style:normal;font-size:13px;color:#94A3B8;margin-top:2px;letter-spacing:.04em}
 /* Phone scenic masthead — desktop hidden by default */
 .phone-banner{display:none}
 @media (max-width:700px){
@@ -2013,7 +2016,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 
 .intro-hd{margin-bottom:10px}
 .intro-logo{font-family:'Instrument Serif',Georgia,serif;font-size:24px;font-weight:400;color:#0F172A;letter-spacing:-.02em;line-height:1}
 .intro-logo .k{color:#3DAE5C}
-.intro-tag{font-size:12px;color:#7C5A00;font-style:italic;font-family:'Instrument Serif',Georgia,serif;margin-top:3px;line-height:1.4}
+.intro-tag{font-size:12px;color:#7C5A00;font-style:normal;font-family:'Instrument Serif',Georgia,serif;margin-top:3px;line-height:1.4}
 .intro-steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
 .intro-steps li{display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,.55);border:1px solid rgba(232,145,44,.12);border-radius:10px;padding:9px 11px}
 .intro-ic{font-size:20px;line-height:1;flex-shrink:0;width:30px;height:30px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
@@ -2176,7 +2179,7 @@ body[data-theme=aurora] .hdr-tagline{color:#9999B5}
 .hdr-time-hm{font-size:20px;font-weight:400;letter-spacing:-.02em;color:#0F172A;line-height:1}
 .hdr-time-sec{font-size:12px;color:#E8453C;animation:secBlink 1s steps(2) infinite;font-weight:400}
 .hdr-time-sep{color:#CBD5E1;font-size:14px;margin:0 3px}
-.hdr-time-date{font-size:13px;color:#64748B;font-style:italic}
+.hdr-time-date{font-size:13px;color:#64748B;font-style:normal}
 body[data-theme=aurora] .hdr-time-hm{color:#F5F5FA}
 body[data-theme=aurora] .hdr-time-date{color:#9999B5}
 @media (max-width:700px){
@@ -2435,7 +2438,7 @@ body[data-theme=aurora] .vc-day:hover{background:rgba(14,116,144,.2);border-colo
 .vc-coach-text{font-size:13.5px;line-height:1.55;color:#0F172A}
 .vc-drill-card{background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;padding:16px}
 .vc-drill-meta{font-size:10.5px;font-weight:800;letter-spacing:1.5px;color:#94A3B8;text-transform:uppercase;margin-bottom:8px}
-.vc-drill-text{font-size:24px;font-weight:800;color:#0F172A;letter-spacing:-.01em;line-height:1.3;margin-bottom:10px;font-family:'Instrument Serif',Georgia,serif;font-style:italic}
+.vc-drill-text{font-size:24px;font-weight:800;color:#0F172A;letter-spacing:-.01em;line-height:1.3;margin-bottom:10px;font-family:'Instrument Serif',Georgia,serif;font-style:normal}
 .vc-drill-tip{font-size:12px;color:#7C5A00;background:#FFFBF1;border:1px solid #F3D9A0;padding:8px 11px;border-radius:9px;margin-bottom:12px;line-height:1.45}
 .vc-drill-row{display:flex;gap:10px}
 .vc-drill-btn{flex:1;padding:13px;font-weight:800;font-size:13.5px;border-radius:10px;border:none;cursor:pointer;font-family:inherit;transition:transform .1s ease,background .12s ease}
@@ -2836,7 +2839,7 @@ body[data-theme=aurora] .bro-mascot .bro-figure line{stroke:#A78BFA}
 .top-strip .side-now-time .sec{color:#E8453C;animation:secBlink 1s steps(2) infinite;font-size:15px;margin-left:1px;font-family:'Instrument Serif',Georgia,serif}
 .top-strip .side-now-row{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;line-height:1}
 .top-strip .side-now-sep{color:#CBD5E1;font-size:11px}
-.top-strip .side-now-date{font-size:13px;color:#64748B;font-weight:600;font-style:italic;font-family:'Instrument Serif',Georgia,serif}
+.top-strip .side-now-date{font-size:13px;color:#64748B;font-weight:600;font-style:normal;font-family:'Instrument Serif',Georgia,serif}
 .top-strip .side-now-days{font-size:12.5px;color:#475569;font-weight:600}
 .top-strip .side-now-days b{font-family:'Instrument Serif',Georgia,serif;color:#E8453C;font-weight:400;font-size:17px;letter-spacing:-.02em}
 .top-strip .side-now-walker{position:absolute;top:50%;width:14px;height:18px;transform:translate(-50%,-58%);z-index:2;pointer-events:none;transition:left .8s ease-out}
@@ -2942,9 +2945,9 @@ body[data-theme=aurora] .world-clocks .wc-temp{color:#FCD34D}
 .life-goal .lg-pencil{width:11px;height:11px;flex-shrink:0}
 .life-goal-empty .lg-edit-btn{background:linear-gradient(135deg,#6366F1,#EC4899);color:#fff;border-color:transparent;animation:lgEditNudge 2.2s ease-in-out infinite;box-shadow:0 4px 12px rgba(99,102,241,.3)}
 @keyframes lgEditNudge{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.life-goal .lg-text{font-family:'Instrument Serif',Georgia,serif;font-size:15.5px;font-weight:400;color:#0F172A;line-height:1.4;letter-spacing:-.005em;font-style:italic;margin-top:6px;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;text-overflow:ellipsis}
-.life-goal .lg-text.lg-empty{color:#64748B;font-style:italic}
-.life-goal .lg-empty-hint{font-size:10px;color:#94A3B8;font-weight:600;text-align:center;margin-top:4px;font-style:italic}
+.life-goal .lg-text{font-family:'Instrument Serif',Georgia,serif;font-size:15.5px;font-weight:400;color:#0F172A;line-height:1.4;letter-spacing:-.005em;font-style:normal;margin-top:6px;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;text-overflow:ellipsis}
+.life-goal .lg-text.lg-empty{color:#64748B;font-style:normal}
+.life-goal .lg-empty-hint{font-size:10px;color:#94A3B8;font-weight:600;text-align:center;margin-top:4px;font-style:normal}
 body[data-theme=aurora] .life-goal{background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(232,145,44,.06));border-top-color:rgba(167,139,250,.22)}
 body[data-theme=aurora] .life-goal:hover{background:linear-gradient(135deg,rgba(167,139,250,.18),rgba(232,145,44,.1))}
 body[data-theme=aurora] .life-goal .lg-text{color:#F5F5FA}
@@ -2955,7 +2958,7 @@ body[data-theme=aurora] .life-goal:hover .lg-edit-btn{background:#A78BFA;color:#
 /* Indian cities mini-grid in the left chip — denser fonts to use the space */
 .top-strip .india-cities{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 10px;margin-top:6px;padding-top:8px;border-top:1px dashed rgba(99,102,241,.18);line-height:1.2}
 .top-strip .ic-item{display:flex;align-items:baseline;justify-content:space-between;gap:6px;padding:2px 0}
-.top-strip .ic-name{color:#475569;font-weight:500;font-style:italic;font-family:'Instrument Serif',Georgia,serif;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em}
+.top-strip .ic-name{color:#475569;font-weight:500;font-style:normal;font-family:'Instrument Serif',Georgia,serif;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em}
 .top-strip .ic-temp{font-family:'Instrument Serif',Georgia,serif;color:#E8912C;font-weight:400;font-size:14.5px;flex-shrink:0;letter-spacing:-.02em}
 body[data-theme=aurora] .top-strip .india-cities{border-top-color:rgba(167,139,250,.22)}
 body[data-theme=aurora] .top-strip .ic-name{color:#9999B5}
@@ -2972,7 +2975,7 @@ body[data-theme=aurora] .world-clocks .wc-time{color:#F5F5FA}
 .top-strip .side-now-row-w{transition:opacity .15s ease;user-select:none}
 .top-strip .side-now-row-w:hover{opacity:.85}
 .top-strip .weather-pin{font-size:11px}
-.top-strip .weather-city{font-size:12px;color:#475569;font-weight:600;font-family:'Instrument Serif',Georgia,serif;font-style:italic;border-bottom:1px dashed rgba(99,102,241,.4)}
+.top-strip .weather-city{font-size:12px;color:#475569;font-weight:600;font-family:'Instrument Serif',Georgia,serif;font-style:normal;border-bottom:1px dashed rgba(99,102,241,.4)}
 .top-strip .weather-temp{font-size:12px;color:#475569;font-weight:600}
 .top-strip .weather-temp b{font-family:'Instrument Serif',Georgia,serif;color:#E8912C;font-weight:400;font-size:15px;letter-spacing:-.02em}
 .top-strip .weather-aqi{font-size:11px;color:#64748B;font-weight:600}
@@ -3060,7 +3063,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
 .moral-body{flex:1;min-width:0;position:relative;z-index:1}
 .moral-lbl{font-size:9px;font-weight:700;color:#B57B00;text-transform:uppercase;letter-spacing:1.1px}
 .moral-txt{font-size:14px;line-height:1.35;color:#0F172A;font-weight:600;margin-top:2px;letter-spacing:-.1px}
-.moral-by{font-size:11px;color:#94A3B8;margin-top:2px;font-style:italic;font-weight:500}
+.moral-by{font-size:11px;color:#94A3B8;margin-top:2px;font-style:normal;font-weight:500}
 .moral-ref{width:22px;height:22px;border-radius:50%;background:#FFFFFF;color:#B57B00;font-size:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:1.5px solid #F3D9A0;transition:all .3s cubic-bezier(.4,1.5,.5,1);position:relative;z-index:1}
 .moral-ref:hover{background:#B57B00;color:#fff;transform:rotate(180deg) scale(1.1)}
 .moral-ref:hover{transform:rotate(180deg);background:#0F172A;color:#F8FAFC}
@@ -3621,9 +3624,9 @@ body[data-theme=aurora] .hdr-help{background:linear-gradient(135deg,rgba(167,139
 .hv-hero{padding:36px 30px 28px;background:radial-gradient(700px 400px at 50% 0%,rgba(255,107,71,.22),transparent 60%),radial-gradient(500px 300px at 100% 100%,rgba(167,139,250,.18),transparent 60%);text-align:center;border-bottom:1px solid rgba(255,255,255,.06)}
 .hv-hero-eyebrow{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:500}
 .hv-brand{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-size:54px;letter-spacing:-.025em;line-height:1;display:inline-flex;align-items:baseline;gap:1px;margin:8px 0 12px;color:#fff}
-.hv-brand .b1{font-style:italic}
-.hv-brand .b2{font-style:italic;font-weight:600;color:#FF6B47}
-.hv-brand .b3{font-style:italic}
+.hv-brand .b1{font-style:normal}
+.hv-brand .b2{font-style:normal;font-weight:600;color:#FF6B47}
+.hv-brand .b3{font-style:normal}
 .hv-brand .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#FF6B47;margin-left:4px;align-self:flex-end;margin-bottom:8px;animation:brandDot 2.4s ease-in-out infinite}
 .hv-hero-sub{font-size:15px;line-height:1.5;color:rgba(255,255,255,.72);max-width:420px;margin:0 auto;letter-spacing:-.005em}
 .hv-body{flex:1;overflow-y:auto;padding:20px 24px 8px;display:flex;flex-direction:column;gap:14px}
@@ -3851,11 +3854,11 @@ body:not([data-theme=aurora]) .cx-pv-title{background:#F4F3EE;color:#1A1A1A;bord
 .hl-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 0 24px;max-width:680px;width:100%;margin:0 auto}
 .hl-hero{margin:6px 18px 14px !important;background:linear-gradient(135deg,#1A0E2E 0%,#2A1245 50%,#3D1F5F 100%) !important}
 .hl-hero .hh-greet{font-size:clamp(28px,5.2vw,40px) !important;margin:6px 0 12px !important}
-.hl-hero .hh-greet em{font-style:italic;background:linear-gradient(135deg,#FF6B47,#FFB547);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.hl-hero .hh-greet em{font-style:normal;background:linear-gradient(135deg,#FF6B47,#FFB547);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 .hl-hero .hh-line{margin-bottom:18px}
 .hl-form{display:flex;gap:10px;align-items:stretch;margin-bottom:12px}
 .hl-input-v3{flex:1;min-width:0;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;font:500 15.5px/1.4 inherit;letter-spacing:-.005em;outline:0}
-.hl-input-v3::placeholder{color:rgba(255,255,255,.5);font-style:italic}
+.hl-input-v3::placeholder{color:rgba(255,255,255,.5);font-style:normal}
 .hl-input-v3:focus{border-color:rgba(255,107,71,.6);background:rgba(255,255,255,.14)}
 .hl-save-v3{flex-shrink:0;padding:0 22px;border-radius:12px;border:0;background:rgba(255,255,255,.16);color:rgba(255,255,255,.55);font:600 14px/1 inherit;cursor:pointer;letter-spacing:-.005em;transition:all .25s ease}
 .hl-save-v3.on{background:linear-gradient(135deg,#FF6B47,#FFB547);color:#fff;box-shadow:0 10px 24px -6px rgba(255,107,71,.55)}
@@ -3913,9 +3916,9 @@ body:not([data-theme=aurora]) .hl-card.hl-done{background:linear-gradient(135deg
 body[data-theme=aurora] .hl-empty-t{color:#fff}
 .hl-empty-d{font-size:12.5px;color:rgba(0,0,0,.55);letter-spacing:-.005em;line-height:1.4}
 body[data-theme=aurora] .hl-empty-d{color:rgba(255,255,255,.6)}
-.hl-input{flex:1;min-width:0;background:transparent;border:0;outline:0;padding:8px 0;color:#fff;font:500 16px/1.4 'Instrument Serif','Inter',serif;font-style:italic;letter-spacing:-.005em}
+.hl-input{flex:1;min-width:0;background:transparent;border:0;outline:0;padding:8px 0;color:#fff;font:500 16px/1.4 'Instrument Serif','Inter',serif;font-style:normal;letter-spacing:-.005em}
 body:not([data-theme=aurora]) .hl-input{color:#1A1A1A}
-.hl-input::placeholder{color:rgba(255,255,255,.4);font-style:italic}
+.hl-input::placeholder{color:rgba(255,255,255,.4);font-style:normal}
 body:not([data-theme=aurora]) .hl-input::placeholder{color:rgba(26,26,26,.4)}
 .hl-cancel{flex-shrink:0;width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);cursor:pointer;font-size:13px}
 body:not([data-theme=aurora]) .hl-cancel{background:#F4F3EE;color:#6B6B6B}
@@ -3933,7 +3936,7 @@ body:not([data-theme=aurora]) .hl-check{border-color:#FF6B47}
 body:not([data-theme=aurora]) .hl-eyebrow{color:#B7472A}
 .hl-card.hl-done .hl-eyebrow{color:rgba(52,211,153,.95)}
 body:not([data-theme=aurora]) .hl-card.hl-done .hl-eyebrow{color:#0F8463}
-.hl-text{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(20px,3.6vw,26px);line-height:1.15;letter-spacing:-.018em;color:#fff;word-wrap:break-word}
+.hl-text{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-style:normal;font-weight:400;font-size:clamp(20px,3.6vw,26px);line-height:1.15;letter-spacing:-.018em;color:#fff;word-wrap:break-word}
 body:not([data-theme=aurora]) .hl-text{color:#1A1A1A}
 .hl-card.hl-done .hl-text{text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:rgba(52,211,153,.6);opacity:.85}
 .hl-edit{flex-shrink:0;width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);cursor:pointer;display:grid;place-items:center;align-self:flex-start;transition:all .2s}
@@ -3988,7 +3991,7 @@ body:not([data-theme=aurora]) .plan-chip:hover{background:#F4F1FF;border-color:#
 .mtg-hd-v2{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top,0px));background:transparent;color:#fff;flex-shrink:0}
 .mtg-hero{margin:0 18px 14px;background:linear-gradient(135deg,#0F2A3E 0%,#15202E 50%,#0EA5E9 110%) !important;box-shadow:0 18px 40px -12px rgba(14,165,233,.45) !important}
 .mtg-hero .hh-bg{background:radial-gradient(700px 400px at 0% 0%,rgba(34,211,238,.32),transparent 55%),radial-gradient(600px 400px at 100% 100%,rgba(167,139,250,.22),transparent 55%) !important}
-.mtg-title-input-v2{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-style:italic;font-size:clamp(28px,5.5vw,40px);line-height:1.05;letter-spacing:-.022em;color:#fff;background:transparent;border:0;outline:0;width:100%;padding:8px 0 16px;margin:0}
+.mtg-title-input-v2{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-style:normal;font-size:clamp(28px,5.5vw,40px);line-height:1.05;letter-spacing:-.022em;color:#fff;background:transparent;border:0;outline:0;width:100%;padding:8px 0 16px;margin:0}
 .mtg-title-input-v2::placeholder{color:rgba(255,255,255,.4)}
 .mtg-hero-stats{display:flex;gap:14px;flex-wrap:wrap;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}
 .mtg-hero-stat{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:rgba(255,255,255,.78);font-weight:600;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px}
@@ -4018,7 +4021,7 @@ body:not([data-theme=aurora]) .mg-games-chip .mtg-card-bdg{background:rgba(91,33
 .mtg-hd{display:flex;align-items:center;gap:14px;padding:18px 20px;padding-top:calc(18px + env(safe-area-inset-top,0px));background:linear-gradient(135deg,rgba(14,165,233,.4),rgba(34,211,238,.25));color:#fff;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .mtg-hd::after{content:'';position:absolute;inset:0;background:radial-gradient(700px 200px at 90% 0%,rgba(255,255,255,.18),transparent 60%);pointer-events:none}
 .mtg-title-strip{flex:1;min-width:0;position:relative;z-index:1}
-.mtg-name{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-style:italic;font-size:24px;letter-spacing:-.02em;line-height:1.05}
+.mtg-name{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-style:normal;font-size:24px;letter-spacing:-.02em;line-height:1.05}
 .mtg-sub{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:rgba(255,255,255,.78);font-weight:600;margin-top:5px;text-transform:uppercase}
 .mtg-new-btn{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:#fff;color:#0EA5E9;border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 16px -4px rgba(14,165,233,.5);transition:transform .2s}
 .mtg-new-btn:hover{transform:scale(1.08)}
@@ -4041,12 +4044,12 @@ body:not([data-theme=aurora]) .mg-games-chip .mtg-card-bdg{background:rgba(91,33
 .mtg-item-tag{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;letter-spacing:.06em;color:#22D3EE;background:rgba(34,211,238,.12);padding:3px 8px;border-radius:6px;font-weight:600;text-transform:uppercase}
 .mtg-empty{padding:60px 20px 40px;text-align:center;color:rgba(255,255,255,.6);display:flex;flex-direction:column;align-items:center;gap:10px}
 .mtg-empty-ic{width:74px;height:74px;border-radius:50%;background:rgba(34,211,238,.12);color:#22D3EE;display:grid;place-items:center;margin-bottom:6px}
-.mtg-empty-t{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:24px;font-weight:400;color:#fff;letter-spacing:-.018em}
+.mtg-empty-t{font-family:'Instrument Serif',Georgia,serif;font-style:normal;font-size:24px;font-weight:400;color:#fff;letter-spacing:-.018em}
 .mtg-empty-d{font-size:14px;color:rgba(255,255,255,.65);max-width:340px;line-height:1.5}
 .mtg-empty-btn{margin-top:14px;padding:13px 22px;border-radius:14px;border:0;background:linear-gradient(135deg,#0EA5E9,#22D3EE);color:#fff;font:600 14.5px/1 inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;letter-spacing:-.005em;box-shadow:0 8px 22px -6px rgba(14,165,233,.5);transition:transform .2s}
 .mtg-empty-btn:hover{transform:translateY(-1px)}
 /* Detail view */
-.mtg-title-input{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-style:italic;font-size:32px;letter-spacing:-.022em;line-height:1.1;background:transparent;border:0;outline:0;color:#fff;width:100%;padding:8px 0;margin-bottom:4px}
+.mtg-title-input{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-style:normal;font-size:32px;letter-spacing:-.022em;line-height:1.1;background:transparent;border:0;outline:0;color:#fff;width:100%;padding:8px 0;margin-bottom:4px}
 .mtg-title-input::placeholder{color:rgba(255,255,255,.35)}
 .mtg-sec{padding:16px 18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;display:flex;flex-direction:column;gap:10px}
 .mtg-sec-lbl{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:700}
@@ -4064,7 +4067,7 @@ body:not([data-theme=aurora]) .mg-games-chip .mtg-card-bdg{background:rgba(91,33
 .mtg-block-hd:active{transform:scale(.99)}
 .mtg-block-ic{flex-shrink:0;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#1A1A1A;font-size:15px;box-shadow:0 4px 10px -2px rgba(0,0,0,.25)}
 .mtg-block-name{font-weight:600;color:#fff;letter-spacing:-.005em;font-size:14px;flex-shrink:0}
-.mtg-block-mini{flex:1;min-width:0;font-size:12.5px;color:rgba(255,255,255,.55);font-weight:400;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic}
+.mtg-block-mini{flex:1;min-width:0;font-size:12.5px;color:rgba(255,255,255,.55);font-weight:400;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:normal}
 .mtg-block-arrow{flex-shrink:0;color:rgba(255,255,255,.45);transition:transform .25s ease;width:14px;height:14px;display:grid;place-items:center}
 .mtg-block.is-open .mtg-block-arrow{transform:rotate(180deg)}
 .mtg-block-body{padding:14px 14px 16px;border-top:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;gap:12px}
@@ -4098,7 +4101,7 @@ body:not([data-theme=aurora]) .mtg-chip:hover{background:#ECFAFE;border-color:#0
 .sch-hd{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 20px;padding-top:calc(18px + env(safe-area-inset-top,0px));background:linear-gradient(135deg,#1E1B4B 0%,#5B21B6 50%,#A78BFA 100%);color:#fff;flex-shrink:0;position:relative;overflow:hidden}
 .sch-hd::after{content:'';position:absolute;inset:0;background:radial-gradient(700px 200px at 90% 0%,rgba(255,255,255,.18),transparent 60%);pointer-events:none}
 .sch-title{flex:1;text-align:left;min-width:0;position:relative;z-index:1}
-.sch-name{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-style:italic;font-size:24px;letter-spacing:-.02em;line-height:1.05}
+.sch-name{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-style:normal;font-size:24px;letter-spacing:-.02em;line-height:1.05}
 .sch-sub{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:rgba(255,255,255,.78);font-weight:600;margin-top:5px;text-transform:uppercase}
 .sch-body{flex:1;overflow-y:auto;padding:24px 20px 24px;-webkit-overflow-scrolling:touch;max-width:760px;width:100%;margin:0 auto}
 .sch-grid{display:grid;grid-template-columns:50px 1fr;gap:0;height:480px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;margin-bottom:22px;position:relative}
@@ -4109,7 +4112,7 @@ body:not([data-theme=aurora]) .sch-rail{border-right-color:#E8E6E0}
 body:not([data-theme=aurora]) .sch-tick{color:#9A9A9A;border-top-color:#F0EDE7}
 .sch-tick:first-child{border-top:0}
 .sch-canvas{position:relative;height:100%}
-.sch-empty{position:absolute;inset:0;display:grid;place-items:center;color:rgba(255,255,255,.4);font-size:13px;font-style:italic}
+.sch-empty{position:absolute;inset:0;display:grid;place-items:center;color:rgba(255,255,255,.4);font-size:13px;font-style:normal}
 body:not([data-theme=aurora]) .sch-empty{color:#9A9A9A}
 .sch-blk{position:absolute;left:6px;right:6px;border-radius:8px;background:linear-gradient(135deg,rgba(91,33,182,.85),rgba(167,139,250,.85));color:#fff;padding:8px 12px 8px 14px;font-size:13px;line-height:1.3;border-left:3px solid #FFB547;display:flex;flex-direction:column;justify-content:center;box-shadow:0 6px 14px -4px rgba(91,33,182,.35);overflow:hidden;min-height:30px}
 .sch-blk-t{font-weight:600;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -4203,7 +4206,7 @@ body:not([data-theme=aurora]) .qa-back-pill:hover{background:#fff;border-color:r
 .sch-hero{position:relative;border-radius:24px;padding:28px 24px;margin:8px 18px 18px;overflow:hidden;color:#fff;isolation:isolate;background:linear-gradient(135deg,#1A0E2E 0%,#2A1845 50%,#3D1F5F 100%);box-shadow:0 18px 40px -12px rgba(91,33,182,.55)}
 .sch-hero .hh-bg{position:absolute;inset:0;background:radial-gradient(700px 400px at 0% 0%,rgba(255,107,71,.32) 0%,transparent 55%),radial-gradient(600px 400px at 100% 100%,rgba(167,139,250,.28) 0%,transparent 55%);z-index:-1}
 .sch-hero .hh-greet{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-size:clamp(30px,5.5vw,46px);line-height:1.02;letter-spacing:-.025em;color:#fff;margin:6px 0 12px}
-.sch-hero .hh-greet em{font-style:italic;background:linear-gradient(135deg,#FF6B47,#FFB547);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.sch-hero .hh-greet em{font-style:normal;background:linear-gradient(135deg,#FF6B47,#FFB547);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 .sch-hero .hh-line{font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.85);margin:0 0 22px;max-width:520px}
 .sch-form-v2{display:flex;flex-direction:column;gap:10px}
 .sch-form-row{display:flex;align-items:flex-end;gap:10px}
@@ -4221,7 +4224,7 @@ body:not([data-theme=aurora]) .qa-back-pill:hover{background:#fff;border-color:r
 .sch-list{padding:0 18px 24px;max-width:760px;width:100%;margin:0 auto}
 .sch-list-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 4px}
 .sch-list-eyebrow{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.65);font-weight:700}
-.sch-list-empty{padding:24px 14px;text-align:center;color:rgba(255,255,255,.55);font-size:14px;font-style:italic;border:1px dashed rgba(255,255,255,.1);border-radius:14px}
+.sch-list-empty{padding:24px 14px;text-align:center;color:rgba(255,255,255,.55);font-size:14px;font-style:normal;border:1px dashed rgba(255,255,255,.1);border-radius:14px}
 .sch-list-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;margin-bottom:8px;color:#F5F5FA}
 .sch-list-time{font-family:'JetBrains Mono','Space Mono',monospace;font-size:12px;letter-spacing:.04em;color:rgba(255,255,255,.7);font-weight:600;white-space:nowrap}
 .sch-list-label{font:500 14.5px/1.3 'Inter',sans-serif;letter-spacing:-.005em;color:#fff;min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -4268,9 +4271,9 @@ body:not([data-theme=aurora]) .schX-grid-hour{background:#E8E6E0}
 .schX-sel{position:absolute;left:6px;right:6px;border-radius:10px;background:linear-gradient(135deg,rgba(255,107,71,.4),rgba(255,181,71,.25));border:2px dashed #FF6B47;color:#fff;padding:8px 12px;display:flex;flex-direction:column;gap:6px;justify-content:center;pointer-events:auto;z-index:5;box-shadow:0 8px 24px -6px rgba(255,107,71,.4);min-height:48px;animation:schSelIn .12s ease}
 @keyframes schSelIn{from{opacity:0}}
 .schX-sel-head{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.04em;color:#fff;font-weight:700}
-.schX-sel-hint{font-size:11.5px;color:rgba(255,255,255,.78);font-style:italic}
+.schX-sel-hint{font-size:11.5px;color:rgba(255,255,255,.78);font-style:normal}
 .schX-sel-input{width:100%;background:rgba(255,255,255,.95);border:0;outline:0;border-radius:8px;padding:8px 10px;color:#1A1A1A;font:600 13.5px/1.2 'Inter',sans-serif;letter-spacing:-.005em}
-.schX-sel-input::placeholder{color:#9A9A9A;font-weight:400;font-style:italic}
+.schX-sel-input::placeholder{color:#9A9A9A;font-weight:400;font-style:normal}
 .schX-sel-acts{display:flex;gap:6px;align-items:center;justify-content:flex-end}
 .schX-cancel,.schX-save{padding:6px 12px;border-radius:8px;border:0;font:600 11.5px/1 inherit;cursor:pointer;letter-spacing:-.005em}
 .schX-cancel{background:rgba(255,255,255,.18);color:#fff}
@@ -4374,7 +4377,7 @@ body:not([data-theme=aurora]) .lvl-link{background:#E8E6E0}
 .home-hero.home-hero-light{background:var(--surface);color:var(--ink);border:1px solid var(--border);box-shadow:var(--shadow-1)}
 .home-hero-light .hh-bg{display:none}
 .home-hero-light .hh-greet{color:var(--ink);font-family:var(--serif)}
-.home-hero-light .hh-greet em{color:var(--accent);font-style:italic;background:none;-webkit-text-fill-color:var(--accent)}
+.home-hero-light .hh-greet em{color:var(--accent);font-style:normal;background:none;-webkit-text-fill-color:var(--accent)}
 .home-hero-light .hh-line{color:var(--text-mute)}
 .home-hero-light .hh-line b{color:var(--ink)}
 .home-hero-light .hh-eyebrow{color:var(--text-dim);font-family:var(--mono);letter-spacing:.16em}
@@ -4396,7 +4399,7 @@ body:not([data-theme=aurora]) .lvl-link{background:#E8E6E0}
 .hh-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .hh-eyebrow{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);font-weight:500}
 .hh-greet{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-size:clamp(34px,6vw,52px);line-height:1.02;letter-spacing:-.025em;color:#fff;margin:6px 0 14px}
-.hh-greet em{font-style:italic;background:linear-gradient(135deg,#FF6B47,#FFB547);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.hh-greet em{font-style:normal;background:linear-gradient(135deg,#FF6B47,#FFB547);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 .hh-line{font-size:15px;line-height:1.5;color:rgba(255,255,255,.85);margin:0 0 22px;max-width:520px}
 .hh-line b{color:#fff;font-weight:600}
 /* Compact "Progress" chip on the hero — collapsed by default */
@@ -4440,7 +4443,7 @@ body:not([data-theme=aurora]) .mg-prog-chip .hh-pc-arrow{color:#999}
 .qa-hero .qa-stat-tile:hover{transform:translateY(-4px);box-shadow:0 20px 40px -12px rgba(15,23,42,.22)}
 .qa-hero .qa-stat-tile:active{transform:scale(.97)}
 .qa-hero .qa-stat-emoji{width:48px !important;height:48px !important;font-size:24px !important;border-radius:14px !important;margin:0 0 auto 0 !important;box-shadow:0 8px 20px -6px rgba(0,0,0,.35) !important;align-self:flex-start !important}
-.qa-hero .qa-stat-tile small{font-size:16px !important;letter-spacing:-.01em !important;text-transform:none !important;font-family:'Instrument Serif',Georgia,serif !important;font-weight:400 !important;font-style:italic !important;line-height:1.1 !important;margin:auto 0 0 0 !important;color:var(--ink) !important;align-self:flex-start !important}
+.qa-hero .qa-stat-tile small{font-size:16px !important;letter-spacing:-.01em !important;text-transform:none !important;font-family:'Instrument Serif',Georgia,serif !important;font-weight:400 !important;font-style:normal !important;line-height:1.1 !important;margin:auto 0 0 0 !important;color:var(--ink) !important;align-self:flex-start !important}
 /* Level badge: top-right, NOT overlapping the title */
 .qa-hero .qa-stat-bdg{position:absolute !important;top:14px !important;right:14px !important;left:auto !important;bottom:auto !important;font-size:10px !important;padding:3px 8px !important;border-radius:6px !important;font-weight:700 !important;letter-spacing:.04em !important;font-family:'JetBrains Mono','Space Mono',monospace !important}
 @media (min-width:760px){.qa-hero .hh-stats{grid-template-columns:repeat(4,1fr) !important}.qa-hero .qa-stat-tile{min-height:190px !important}}
@@ -4465,7 +4468,7 @@ button.hh-stat:active{transform:scale(.96)}
 /* ─── Quote strip in footer ─── */
 .quote-strip{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;margin-bottom:12px;font-size:13px;line-height:1.4;color:rgba(255,255,255,.78)}
 .quote-strip-em{font-size:18px;flex-shrink:0}
-.quote-strip-txt{font-style:italic;flex:1;min-width:0;letter-spacing:-.005em}
+.quote-strip-txt{font-style:normal;flex:1;min-width:0;letter-spacing:-.005em}
 .quote-strip-by{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.04em;flex-shrink:0;white-space:nowrap}
 .quote-strip-ref{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;display:grid;place-items:center;font-size:13px;transition:all .2s;flex-shrink:0}
 .quote-strip-ref:hover{background:rgba(255,255,255,.06);color:#fff;transform:rotate(180deg)}
@@ -4703,11 +4706,11 @@ body.modal-open{padding-bottom:0 !important}
 .hero-photo-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.18) 100%);pointer-events:none}
 @keyframes photoFade{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:scale(1)}}
 .login-logo{font-family:'Instrument Serif',Georgia,serif;font-size:56px;font-weight:400;margin-bottom:8px;letter-spacing:-.025em;color:var(--ink);line-height:1;display:inline-flex;align-items:baseline;gap:1px}
-.login-logo .b1{font-style:italic}
-.login-logo .b2{font-style:italic;font-weight:600;color:#FF6B47}
-.login-logo .b3{font-style:italic}
+.login-logo .b1{font-style:normal}
+.login-logo .b2{font-style:normal;font-weight:600;color:#FF6B47}
+.login-logo .b3{font-style:normal}
 .login-logo .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#FF6B47;margin-left:4px;align-self:flex-end;margin-bottom:8px;animation:brandDot 2.4s ease-in-out infinite}
-.login-tagline{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:20px;color:var(--ink-3);margin-bottom:24px;letter-spacing:.01em}
+.login-tagline{font-family:'Instrument Serif',Georgia,serif;font-style:normal;font-size:20px;color:var(--ink-3);margin-bottom:24px;letter-spacing:.01em}
 .login-sub{font-size:16px;color:var(--ink-3);margin-bottom:32px;line-height:1.6;font-weight:450;max-width:420px;margin-left:auto;margin-right:auto}
 @media (min-width:1024px){.login-logo{font-size:72px;letter-spacing:-2.2px}.login-tagline{font-size:22px;margin-bottom:32px}.login-sub{font-size:17px;margin-bottom:36px}}
 .hero-stage{width:100%;max-width:380px;margin:0 auto 6px;position:relative;animation:heroIn .9s cubic-bezier(.2,.8,.2,1) backwards}
@@ -6370,7 +6373,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .bro-msg-ai .bro-bubble{background:#F3F4F6;color:#1F2937;border-bottom-left-radius:4px}
 body[data-theme=aurora] .bro-msg-ai .bro-bubble{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9)}
 .bro-msg-user .bro-bubble{background:linear-gradient(135deg,#6366F1,#818CF8);color:#fff;border-bottom-right-radius:4px}
-.bro-typing{opacity:.6;font-style:italic}
+.bro-typing{opacity:.6;font-style:normal}
 .bro-speak-btn{background:none;border:none;color:#94A3B8;cursor:pointer;padding:4px;margin-top:4px;border-radius:6px;transition:color .2s}
 .bro-speak-btn:hover{color:#6366F1}
 .bro-input-bar{position:sticky;bottom:70px;display:flex;gap:8px;padding:10px 12px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid #E5E7EB;border-radius:16px;z-index:20;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
@@ -6383,6 +6386,36 @@ body[data-theme=aurora] .bro-input-bar{background:rgba(20,20,40,.9);border-color
 .bro-send-btn{font-size:18px;color:#6366F1}
 @keyframes broFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes broPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+/* ─── COACH SELECTOR ─── */
+.coach-select{display:flex;flex-direction:column;align-items:center;padding:30px 0 20px;gap:24px}
+.coach-select h2{font-family:var(--serif);font-size:26px;font-weight:500;color:var(--ink);text-align:center;margin:0}
+.coach-select p{color:#64748B;font-size:14px;text-align:center;margin:-14px 0 0;max-width:280px}
+.coach-cards{display:flex;gap:16px;justify-content:center;width:100%;max-width:400px}
+.coach-card{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px 16px 20px;background:var(--surface);border:2px solid var(--border);border-radius:20px;cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.coach-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.1)}
+.coach-card:active{transform:scale(.96)}
+.coach-card.card-bri:hover{border-color:#EC4899;box-shadow:0 12px 32px rgba(236,72,153,.15)}
+.coach-card.card-bro:hover{border-color:#6366F1;box-shadow:0 12px 32px rgba(99,102,241,.15)}
+body[data-theme=aurora] .coach-card{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)}
+body[data-theme=aurora] .coach-card:hover{border-color:rgba(167,139,250,.5)}
+.coach-avatar{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.coach-avatar-bri{background:linear-gradient(135deg,#FECDD3,#FBCFE8,#F9A8D4);animation:coachFloat 3s ease-in-out infinite}
+.coach-avatar-bro{background:linear-gradient(135deg,#C7D2FE,#A5B4FC,#818CF8);animation:coachFloat 3s ease-in-out infinite .5s}
+.coach-avatar::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px dashed rgba(0,0,0,.08);animation:coachSpin 12s linear infinite}
+.coach-card-name{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink)}
+.coach-card-role{font-size:12px;color:#64748B;font-weight:500;letter-spacing:.02em}
+.coach-card-tags{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.coach-card-tag{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600}
+.card-bri .coach-card-tag{background:rgba(236,72,153,.1);color:#EC4899}
+.card-bro .coach-card-tag{background:rgba(99,102,241,.1);color:#6366F1}
+body[data-theme=aurora] .card-bri .coach-card-tag{background:rgba(236,72,153,.2);color:#F9A8D4}
+body[data-theme=aurora] .card-bro .coach-card-tag{background:rgba(99,102,241,.2);color:#A5B4FC}
+@keyframes coachFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes coachSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.coach-back{background:none;border:none;color:#64748B;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;transition:color .2s;display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.coach-back:hover{color:var(--ink)}
+.bro-speaking-indicator{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(99,102,241,.1);border-radius:20px;font-size:12px;color:#6366F1;font-weight:600;animation:broPulse 1.2s infinite}
+.bro-speaking-indicator.bri-speaking{background:rgba(236,72,153,.1);color:#EC4899}
 
 /* ─── HYDRATION WIDGET ─── */
 .hydration-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;margin:10px 0;background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(6,182,212,.08));border:1px solid rgba(14,165,233,.15);border-radius:14px;cursor:pointer;transition:transform .2s}
@@ -6432,7 +6465,7 @@ voice:{loaded:false,curriculum:{days:[]},progress:{completed:0,totalPoints:0,pct
 voicePlay:null,
 // AI Coach (Phase 2)
 coach:{status:null,history:[],input:'',sending:false,recording:false,recAudio:null,playing:false,scenario:null},
-bro:{messages:[],input:'',sending:false,listening:false,speaking:false},
+bro:{messages:[],input:'',sending:false,listening:false,speaking:false,agent:null},
 hydration:{enabled:JSON.parse(localStorage.getItem('tf_hydration')||'false'),interval:null,lastReminder:0,glass:parseInt(localStorage.getItem('tf_hydration_glass')||'0',10),goal:8,todayDate:new Date().toISOString().slice(0,10)},
 weather:{city:localStorage.getItem('tf_city')||'Bangalore',temp:null,aqi:null,country:'',loaded:false,loading:false,error:null},
 cityTemps:{},remember:{person:null,loaded:false},lifeGoal:localStorage.getItem('tf_life_goal')||'',meditating:{active:false,title:'',mins:0,startedAt:0},
@@ -6812,7 +6845,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.messages.length)S.bro.messages=[{role:'bro',text:'Hey'+((S.user&&S.user.name)?' '+S.user.name.split(' ')[0]:'')+', I\\'m Bro \\u2014 your personal life coach. Tell me what\\'s on your mind, ask for advice, or let me help you build a better routine. What would you like to work on today?'}];S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent=null;S.bro.messages=[]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -9109,26 +9142,74 @@ async function loadBookStreak(){if(!S.user)return;const r=await api('/book-strea
 // a modal could trigger 2-3 render passes in <500ms (open + data fetch + auto-select),
 // each rebuilding the entire app DOM and producing visible flicker / cursor resets.
 let _renderRAF=0;
-// ═══ BRO — AI Life Coach ═══
-const BRO_SYSTEM='You are Bro, a warm, wise, and motivating life coach inside the Brodoit productivity app. You help people improve their lives — habits, mindset, discipline, relationships, health, career, and personal growth. You speak like a supportive older brother: direct, encouraging, practical. Keep responses concise (2-4 paragraphs max). Use simple language. Give actionable advice. If someone shares a problem, acknowledge it, then guide them toward a solution. Never be preachy — be real. You can suggest exercises, routines, book recommendations, mindset shifts, or frameworks. Always end with something empowering.';
+// ═══ BRO / BRI — AI Life Coach ═══
+function selectCoach(agent){
+  S.bro.agent=agent;S.bro.messages=[];
+  const name=((S.user&&S.user.name)||'').split(' ')[0]||'';
+  if(agent==='bri'){
+    S.bro.messages=[{role:'bro',text:'Hey'+(name?' '+name:'')+', I\\'m Bri \\u2014 your personal wellness coach and biggest cheerleader. Tell me what\\'s going on, ask for advice, or let me help you build a routine that actually sticks. What are we working on today?'}];
+  }else{
+    S.bro.messages=[{role:'bro',text:'Hey'+(name?' '+name:'')+', I\\'m Bro \\u2014 your personal life coach. Tell me what\\'s on your mind, ask for advice, or let me help you build a better routine. What would you like to work on today?'}];
+  }
+  render();
+}
+function pickVoiceForAgent(agent){
+  try{const vs=speechSynthesis.getVoices()||[];if(!vs.length)return null;
+  const en=vs.filter(v=>(v.lang||'').toLowerCase().startsWith('en'));
+  if(agent==='bri'){
+    const femPref=['Samantha','Google UK English Female','Microsoft Aria Online (Natural) - English (United States)','Microsoft Jenny Online (Natural) - English (United States)','Karen','Moira','Tessa','Fiona','Allison','Ava','Susan'];
+    for(const name of femPref){const v=en.find(x=>x.name===name||x.name.indexOf(name)===0);if(v)return v}
+    const fem=en.find(v=>/female|samantha|karen|moira|tessa|fiona|allison|ava|susan|aria|jenny/i.test(v.name));
+    if(fem)return fem;return en[0]||vs[0];
+  }else{
+    const malePref=['Daniel','Google UK English Male','Microsoft Guy Online (Natural) - English (United States)','Alex','Fred','Thomas','Oliver','Rishi'];
+    for(const name of malePref){const v=en.find(x=>x.name===name||x.name.indexOf(name)===0);if(v)return v}
+    const male=en.find(v=>/male|daniel|alex|fred|thomas|oliver|rishi|guy/i.test(v.name)&&!/female/i.test(v.name));
+    if(male)return male;return en[0]||vs[0];
+  }}catch(e){return null}
+}
 async function broSend(){
   const txt=(S.bro.input||'').trim();if(!txt||S.bro.sending)return;
   S.bro.messages.push({role:'user',text:txt});S.bro.input='';S.bro.sending=true;render();
   setTimeout(()=>{const c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},60);
   try{
-    const msgs=S.bro.messages.slice(-12).map(m=>({role:m.role==='bro'?'assistant':'user',content:m.text}));
-    const r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs})});
-    if(r&&r.reply){S.bro.messages.push({role:'bro',text:r.reply})}
+    const msgs=S.bro.messages.filter(m=>m.role==='user'||m.role==='bro').slice(-12).map(m=>({role:m.role==='bro'?'assistant':'user',content:m.text}));
+    const r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro'})});
+    if(r&&r.reply){
+      S.bro.messages.push({role:'bro',text:r.reply});
+      broAutoSpeak(r.reply);
+    }
     else{S.bro.messages.push({role:'bro',text:'Sorry, I couldn\\'t connect right now. Try again in a moment.'})}
   }catch(e){S.bro.messages.push({role:'bro',text:'Something went wrong. Let\\'s try again.'})}
   S.bro.sending=false;render();
   setTimeout(()=>{const c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},60);
 }
+function broAutoSpeak(txt){
+  try{if(!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);
+  const v=pickVoiceForAgent(S.bro.agent||'bro');
+  if(v){u.voice=v;u.lang=v.lang}
+  u.rate=S.bro.agent==='bri'?0.95:0.90;u.pitch=S.bro.agent==='bri'?1.12:0.95;
+  S.bro.speaking=true;render();
+  u.onend=()=>{S.bro.speaking=false;render()};
+  u.onerror=()=>{S.bro.speaking=false;render()};
+  speechSynthesis.speak(u)}catch(e){}
+}
 function broSpeak(btn){
   try{if(!('speechSynthesis' in window)){toast('\\u26A0\\uFE0F Voice not supported','err');return}
   const bubble=btn.previousElementSibling;if(!bubble)return;const txt=bubble.textContent||bubble.innerText;
-  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);const v=pickBestVoice();
-  if(v){u.voice=v;u.lang=v.lang}u.rate=.92;u.pitch=1.05;speechSynthesis.speak(u)}catch(e){toast('\\u26A0\\uFE0F Voice error','err')}
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);
+  const v=pickVoiceForAgent(S.bro.agent||'bro');
+  if(v){u.voice=v;u.lang=v.lang}
+  u.rate=S.bro.agent==='bri'?0.95:0.90;u.pitch=S.bro.agent==='bri'?1.12:0.95;
+  S.bro.speaking=true;render();
+  u.onend=()=>{S.bro.speaking=false;render()};
+  u.onerror=()=>{S.bro.speaking=false;render()};
+  speechSynthesis.speak(u)}catch(e){toast('\\u26A0\\uFE0F Voice error','err')}
+}
+function broStopSpeaking(){
+  try{speechSynthesis.cancel()}catch(e){}
+  S.bro.speaking=false;render();
 }
 let _broRec=null;
 function broVoiceToggle(){
@@ -9351,11 +9432,6 @@ const isMain=(S.tab==='tasks'||!S.tab);
 const HELP_BTN='<button class="hdr-help" onclick="openHelp()" aria-label="Help" title="How to use Brodoit">?</button>';
 const LOGO_MARK='<div class="logo" aria-label="Brodoit"><span class="b1">Bro</span><span class="b2">do</span><span class="b3">it</span><span class="dot"></span></div>';
 let h='<div class="hdr"><div class="hdr-l">'+LOGO_MARK+'</div><div class="hdr-actions">'+HELP_BTN+PROFILE_BTN+'<button class="theme-tg" onclick="toggleTheme()" title="Switch theme">'+(S.theme==='aurora'?ic('sun',18):ic('moon',18))+'</button></div></div>';
-// Beta-tester acknowledgment pill — visible to every signed-in user during
-// closed test. Dismissable; remembers in localStorage so it doesn't nag.
-if(S.user&&!localStorage.getItem('tf_beta_seen')){
-  h+='<div class="beta-pill" id="betaPill"><span class="beta-pill-dot"></span><span class="beta-pill-t"><b>You are a Brodoit beta tester</b><small>Thanks for helping ship this. Reply to my message any time with feedback.</small></span><button class="beta-pill-x" onclick="document.getElementById(\\'betaPill\\').style.display=\\'none\\';localStorage.setItem(\\'tf_beta_seen\\',\\'1\\')" aria-label="Dismiss">\\u2715</button></div>';
-}
 
 const m=MORALS[S.moralIdx];
 let moralBlock='';
@@ -9437,7 +9513,7 @@ if(isMain){
     +  '</g>'
     +  '<g class="bro-bubble">'
     +    '<path d="M 100 18 Q 100 4 116 4 L 316 4 Q 332 4 332 18 L 332 78 Q 332 92 316 92 L 130 92 L 110 110 L 116 92 L 116 92 Q 100 92 100 78 Z" fill="#FFFFFF" stroke="#6366F1" stroke-width="2.2" filter="drop-shadow(0 4px 10px rgba(99,102,241,0.18))"/>'
-    +    '<text x="216" y="42" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="26" font-style="italic" fill="#0F172A">Bro,</text>'
+    +    '<text x="216" y="42" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="26" fill="#0F172A">Bro,</text>'
     +    '<text x="216" y="74" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="32" font-weight="400" fill="#6366F1">do it!</text>'
     +  '</g>'
     +  '<g class="bro-spark"><path d="M 320 38 l 1.5 -4 1.5 4 4 0 -3 2.5 1.2 4 -3.7 -2.4 -3.7 2.4 1.2 -4 -3 -2.5 z" fill="#E8912C"/></g>'
@@ -9524,56 +9600,9 @@ if(S.tab==='tasks'){
   // (WhatsApp integration was removed — banner deleted)
   // Hydrate highlight in the background — chip badge needs the count
   if(!S.dailyHl&&!S._hlFetched){S._hlFetched=true;const _c=_hlLocalCache();if(_c)S.dailyHl=_c;hlLoad()}
-  // ─── Actions card — same big purple hero card style as the "Good morning" greeting ───
-  {
-    const _schN=(S.schBlocks||[]).length;
-    const _mtgN=(S.mtgList||[]).length;
-    const _hl=S.dailyHl;
-    h+='<section class="home-hero home-hero-light qa-hero">'
-      +'<div class="hh-bg"></div>'
-      +'<div class="hh-row"><div class="hh-eyebrow">Actions</div></div>'
-      +'<h1 class="hh-greet" style="font-size:clamp(28px,5vw,42px);margin:6px 0 14px">What\\u2019s next'+(_firstName?', <em>'+esc(_firstName)+'</em>':'')+'?</h1>'
-      +'<div class="hh-stats">'
-        +'<button class="hh-stat qa-stat-tile" onclick="opA()">'
-          +'<span class="qa-stat-emoji" style="background:linear-gradient(135deg,#FF6B47,#FFB547)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>'
-          +'<small>New Task</small>'
-        +'</button>'
-        +'<button class="hh-stat qa-stat-tile" onclick="schOpen()">'
-          +'<span class="qa-stat-emoji" style="background:linear-gradient(135deg,#5B21B6,#A78BFA)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg></span>'
-          +(_schN?'<span class="qa-stat-bdg">'+_schN+'</span>':'')
-          +'<small>Plan Day</small>'
-        +'</button>'
-        +'<button class="hh-stat qa-stat-tile" onclick="mtgOpen()">'
-          +'<span class="qa-stat-emoji" style="background:linear-gradient(135deg,#0EA5E9,#22D3EE)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>'
-          +(_mtgN?'<span class="qa-stat-bdg">'+_mtgN+'</span>':'')
-          +'<small>Meeting</small>'
-        +'</button>'
-        +'<button class="hh-stat qa-stat-tile" onclick="hlPanelOpen()">'
-          +'<span class="qa-stat-emoji" style="background:linear-gradient(135deg,#FFB547,#FF6B47)"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.39 7.36H22l-6.18 4.5L18.18 22 12 17.27 5.82 22l2.36-8.14L2 9.36h7.61z"/></svg></span>'
-          +(_hl?(_hl.done?'<span class="qa-stat-bdg" style="background:rgba(52,211,153,.22);color:#86EFAC">\\u2713</span>':'<span class="qa-stat-bdg">\\u2728</span>'):'')
-          +'<small>Highlight</small>'
-        +'</button>'
-      +'</div>'
-    +'</section>';
-  }
-  // (Stats moved into the hero greeting above)
-  // ─── Hydration reminder widget ───
-  {_hydrationToday();
-  const _hg=S.hydration.glass,_hGoal=S.hydration.goal,_hOn=S.hydration.enabled;
-  let _hGlasses='<div class="hydration-glasses">';
-  for(let i=0;i<_hGoal;i++)_hGlasses+='<div class="hydration-glass'+(i<_hg?' filled':'')+'">'+( i<_hg?'\\u{1F4A7}':'')+'</div>';
-  _hGlasses+='</div>';
-  h+='<div class="hydration-bar" onclick="drinkWater()">'
-    +'<span class="hydration-drop">\\u{1F4A7}</span>'
-    +'<div class="hydration-info"><b>Hydration \\u2022 '+_hg+'/'+_hGoal+' glasses</b><small>Tap to log a glass of water</small>'+_hGlasses+'</div>'
-    +'<button class="hydration-toggle'+(_hOn?' on':'')+'" onclick="event.stopPropagation();toggleHydration()">'+(_hOn?'\\u{1F514} ON':'\\u{1F515} OFF')+'</button>'
-  +'</div>';}
   if(s.od>0)h+='<div class="al" style="background:#FEF1F0;border:1px solid #F5C6C2;color:#E8453C;cursor:pointer" onclick="S.view=\\'overdue\\';render()">\\u26A0\\uFE0F '+s.od+' overdue</div>';
   h+='<div class="srch"><input placeholder="Search tasks..." value="'+esc(S.search)+'" oninput="S.search=this.value;render()"></div>';
   h+='<div class="flt">'+[{k:'all',l:'All'},{k:'pending',l:'To Do'},{k:'in-progress',l:'Doing'},{k:'done',l:'Done'},{k:'today',l:'Today'}].map(x=>'<button class="fb'+(S.view===x.k?' on':'')+'" onclick="S.view=\\''+x.k+'\\';render()">'+x.l+'</button>').join('')+'</div>';
-  if((s.pend+s.act)>0){
-    h+='<button class="bwa" style="border-color:#0F172A;background:#0F172A;color:#fff" onclick="emailTasks()"'+(S.sending&&S.sending._e?' disabled':'')+'><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7L12 13 2 7"/></svg>'+(S.sending&&S.sending._e?'Sending\\u2026':'Email all tasks to me')+'</button>';
-  }
   h+='<div>';
   if(!f.length)h+='<div class="empty"><div style="font-size:36px;margin-bottom:8px">\\u2728</div><div style="font-size:15px;font-weight:600">No tasks yet</div><div style="font-size:13px;margin-top:4px">Tap + to add your first task</div></div>';
   else f.forEach(t=>{const p=P[t.priority]||P.medium,st=ST[t.status]||ST.pending,d=t.status==='done';
@@ -9977,25 +10006,81 @@ else if(S.tab==='meditation'){
   h+='</div>';
 }
 
-// BRO TAB — voice life-coach assistant
+// BRO TAB — voice life-coach assistant with Bri/Bro selection
 else if(S.tab==='bro'){
-  h+='<div class="section-hd"><span class="section-ic" style="background:linear-gradient(135deg,#6366F1,#EC4899)">'+(ID.bro||ic('bro',22))+'</span><div><h3>Bro \\u2022 your life coach</h3><p>Talk to Bro about anything \\u2014 goals, habits, problems, mindset</p></div></div>';
-  h+='<div class="bro-chat" id="broChat">';
-  S.bro.messages.forEach(m=>{
-    const isBro=m.role==='bro';
-    h+='<div class="bro-msg '+(isBro?'bro-msg-ai':'bro-msg-user')+'">';
-    if(isBro)h+='<div class="bro-avatar">\\u{1F9D1}\\u200D\\u{1F3EB}</div>';
-    h+='<div class="bro-bubble">'+esc(m.text)+'</div>';
-    if(isBro)h+='<button class="bro-speak-btn" onclick="broSpeak(this)" title="Listen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>';
+  if(!S.bro.agent){
+    // Agent selection screen
+    h+='<div class="coach-select">';
+    h+='<h2>Choose your coach</h2>';
+    h+='<p>Pick who you want to talk to today</p>';
+    h+='<div class="coach-cards">';
+    // Bri card
+    h+='<div class="coach-card card-bri" onclick="selectCoach(\\'bri\\')">';
+    h+='<div class="coach-avatar coach-avatar-bri">';
+    h+='<svg viewBox="0 0 80 80" width="80" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">'
+      +'<circle cx="40" cy="32" r="16" fill="#F9A8D4"/>'
+      +'<circle cx="34" cy="30" r="2.5" fill="#1F2937"/><circle cx="46" cy="30" r="2.5" fill="#1F2937"/>'
+      +'<path d="M35 37 Q40 42 45 37" stroke="#1F2937" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
+      +'<path d="M24 24 Q28 8 40 12 Q52 8 56 24" stroke="#7C3AED" stroke-width="2.5" fill="none" stroke-linecap="round"/>'
+      +'<path d="M22 26 Q20 18 28 14" stroke="#7C3AED" stroke-width="2" fill="none" stroke-linecap="round"/>'
+      +'<line x1="40" y1="48" x2="40" y2="62" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
+      +'<line x1="40" y1="54" x2="30" y2="48" stroke="#F9A8D4" stroke-width="2.5" stroke-linecap="round"/>'
+      +'<line x1="40" y1="54" x2="50" y2="48" stroke="#F9A8D4" stroke-width="2.5" stroke-linecap="round"/>'
+      +'<line x1="40" y1="62" x2="33" y2="74" stroke="#F9A8D4" stroke-width="2.5" stroke-linecap="round"/>'
+      +'<line x1="40" y1="62" x2="47" y2="74" stroke="#F9A8D4" stroke-width="2.5" stroke-linecap="round"/>'
+      +'<circle cx="34" cy="30" r="0.8" fill="#fff"/><circle cx="46" cy="30" r="0.8" fill="#fff"/>'
+      +'</svg>';
     h+='</div>';
-  });
-  if(S.bro.sending)h+='<div class="bro-msg bro-msg-ai"><div class="bro-avatar">\\u{1F9D1}\\u200D\\u{1F3EB}</div><div class="bro-bubble bro-typing">Thinking\\u2026</div></div>';
-  h+='</div>';
-  h+='<div class="bro-input-bar">';
-  h+='<button class="bro-mic-btn'+(S.bro.listening?' bro-mic-on':'')+'" onclick="broVoiceToggle()" title="Speak to Bro"><svg width="20" height="20" viewBox="0 0 24 24" fill="'+(S.bro.listening?'#EF4444':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>';
-  h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="Ask Bro anything\\u2026" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
-  h+='<button class="bro-send-btn" onclick="broSend()" '+(S.bro.sending?'disabled':'')+'>\\u2794</button>';
-  h+='</div>';
+    h+='<div class="coach-card-name">Bri</div>';
+    h+='<div class="coach-card-role">Wellness Coach</div>';
+    h+='<div class="coach-card-tags"><span class="coach-card-tag">Wellness</span><span class="coach-card-tag">Self-care</span></div>';
+    h+='</div>';
+    // Bro card
+    h+='<div class="coach-card card-bro" onclick="selectCoach(\\'bro\\')">';
+    h+='<div class="coach-avatar coach-avatar-bro">';
+    h+='<svg viewBox="0 0 80 80" width="80" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">'
+      +'<circle cx="40" cy="32" r="16" fill="#A5B4FC"/>'
+      +'<circle cx="34" cy="30" r="2.5" fill="#1F2937"/><circle cx="46" cy="30" r="2.5" fill="#1F2937"/>'
+      +'<path d="M35 37 Q40 41 45 37" stroke="#1F2937" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
+      +'<rect x="26" y="18" width="28" height="8" rx="4" fill="#4F46E5"/>'
+      +'<line x1="40" y1="48" x2="40" y2="62" stroke="#A5B4FC" stroke-width="3.5" stroke-linecap="round"/>'
+      +'<line x1="40" y1="54" x2="28" y2="46" stroke="#A5B4FC" stroke-width="2.8" stroke-linecap="round"/>'
+      +'<line x1="40" y1="54" x2="52" y2="46" stroke="#A5B4FC" stroke-width="2.8" stroke-linecap="round"/>'
+      +'<line x1="40" y1="62" x2="32" y2="74" stroke="#A5B4FC" stroke-width="2.8" stroke-linecap="round"/>'
+      +'<line x1="40" y1="62" x2="48" y2="74" stroke="#A5B4FC" stroke-width="2.8" stroke-linecap="round"/>'
+      +'<circle cx="34" cy="30" r="0.8" fill="#fff"/><circle cx="46" cy="30" r="0.8" fill="#fff"/>'
+      +'</svg>';
+    h+='</div>';
+    h+='<div class="coach-card-name">Bro</div>';
+    h+='<div class="coach-card-role">Life Coach</div>';
+    h+='<div class="coach-card-tags"><span class="coach-card-tag">Mindset</span><span class="coach-card-tag">Discipline</span></div>';
+    h+='</div>';
+    h+='</div></div>';
+  } else {
+    // Chat with selected agent
+    const agName=S.bro.agent==='bri'?'Bri':'Bro';
+    const agEmoji=S.bro.agent==='bri'?'\\u{1F469}\\u200D\\u{1F3EB}':'\\u{1F9D1}\\u200D\\u{1F3EB}';
+    const agGrad=S.bro.agent==='bri'?'linear-gradient(135deg,#EC4899,#F9A8D4)':'linear-gradient(135deg,#6366F1,#818CF8)';
+    h+='<button class="coach-back" onclick="S.bro.agent=null;S.bro.messages=[];render()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Switch coach</button>';
+    h+='<div class="section-hd"><span class="section-ic" style="background:'+agGrad+'">'+agEmoji+'</span><div><h3>'+agName+' \\u2022 your '+(S.bro.agent==='bri'?'wellness':'life')+' coach</h3><p>Talk to '+agName+' about anything \\u2014 goals, habits, routines, mindset</p></div></div>';
+    if(S.bro.speaking)h+='<div class="bro-speaking-indicator'+(S.bro.agent==='bri'?' bri-speaking':'')+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> '+agName+' is speaking\\u2026 <button onclick="broStopSpeaking()" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:700;padding:0 4px">\\u2716</button></div>';
+    h+='<div class="bro-chat" id="broChat">';
+    S.bro.messages.forEach(m=>{
+      const isAgent=m.role==='bro';
+      h+='<div class="bro-msg '+(isAgent?'bro-msg-ai':'bro-msg-user')+'">';
+      if(isAgent)h+='<div class="bro-avatar" style="background:'+agGrad+'">'+agEmoji+'</div>';
+      h+='<div class="bro-bubble">'+esc(m.text)+'</div>';
+      if(isAgent)h+='<button class="bro-speak-btn" onclick="broSpeak(this)" title="Listen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>';
+      h+='</div>';
+    });
+    if(S.bro.sending)h+='<div class="bro-msg bro-msg-ai"><div class="bro-avatar" style="background:'+agGrad+'">'+agEmoji+'</div><div class="bro-bubble bro-typing">Thinking\\u2026</div></div>';
+    h+='</div>';
+    h+='<div class="bro-input-bar">';
+    h+='<button class="bro-mic-btn'+(S.bro.listening?' bro-mic-on':'')+'" onclick="broVoiceToggle()" title="Speak to '+agName+'"><svg width="20" height="20" viewBox="0 0 24 24" fill="'+(S.bro.listening?'#EF4444':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>';
+    h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="Ask '+agName+' anything\\u2026" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
+    h+='<button class="bro-send-btn" onclick="broSend()" '+(S.bro.sending?'disabled':'')+' style="color:'+(S.bro.agent==='bri'?'#EC4899':'#6366F1')+'">\\u2794</button>';
+    h+='</div>';
+  }
 }
 
 // KNOWLEDGE TAB removed at user request (kept stub so saved state doesn't break)
