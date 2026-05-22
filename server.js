@@ -6904,7 +6904,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent=null;S.bro.messages=[]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your personal life coach. Tell me what\\'s on your mind, ask for advice, or let me help you build a better routine. What would you like to work on today?'}]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -10145,78 +10145,25 @@ else if(S.tab==='meditation'){
   h+='</div>';
 }
 
-// BRO TAB — voice life-coach assistant with Bri/Bro selection
+// BRO TAB — personal growth coach (direct chat, no selection)
 else if(S.tab==='bro'){
-  if(!S.bro.agent){
-    // Agent selection screen
-    h+='<div class="coach-select">';
-    h+='<h2>Choose your coach</h2>';
-    h+='<p>Pick who you want to talk to today</p>';
-    h+='<div class="coach-cards">';
-    // Bri card
-    h+='<div class="coach-card card-bri" onclick="selectCoach(\\'bri\\')">';
-    h+='<div class="coach-avatar coach-avatar-bri">';
-    h+='<svg viewBox="0 0 100 100" width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg">'
-      +'<circle cx="50" cy="38" r="20" fill="#F9A8D4"/>'
-      +'<circle cx="43" cy="36" r="3" fill="#1F2937"/><circle cx="57" cy="36" r="3" fill="#1F2937"/>'
-      +'<circle cx="43" cy="35.5" r="1" fill="#fff"/><circle cx="57" cy="35.5" r="1" fill="#fff"/>'
-      +'<path d="M44 45 Q50 51 56 45" stroke="#1F2937" stroke-width="2" fill="none" stroke-linecap="round"/>'
-      +'<path d="M30 28 Q35 8 50 13 Q65 8 70 28" stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"/>'
-      +'<path d="M27 31 Q24 22 34 16" stroke="#7C3AED" stroke-width="2.5" fill="none" stroke-linecap="round"/>'
-      +'<line x1="50" y1="58" x2="50" y2="76" stroke="#F9A8D4" stroke-width="3.5" stroke-linecap="round"/>'
-      +'<line x1="50" y1="66" x2="37" y2="58" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
-      +'<line x1="50" y1="66" x2="63" y2="58" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
-      +'<line x1="50" y1="76" x2="40" y2="92" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
-      +'<line x1="50" y1="76" x2="60" y2="92" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
-      +'</svg>';
-    h+='</div>';
-    h+='<div class="coach-card-name">Bri</div>';
-    h+='<div class="coach-card-role">Growth + Wellness</div>';
-    h+='<div class="coach-card-tags"><span class="coach-card-tag">Wellness</span><span class="coach-card-tag">Fitness</span><span class="coach-card-tag">Growth</span></div>';
-    h+='</div>';
-    // Bro card
-    h+='<div class="coach-card card-bro" onclick="selectCoach(\\'bro\\')">';
-    h+='<div class="coach-avatar coach-avatar-bro">';
-    h+='<svg viewBox="0 0 100 100" width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg">'
-      +'<circle cx="50" cy="38" r="20" fill="#A5B4FC"/>'
-      +'<circle cx="43" cy="36" r="3" fill="#1F2937"/><circle cx="57" cy="36" r="3" fill="#1F2937"/>'
-      +'<circle cx="43" cy="35.5" r="1" fill="#fff"/><circle cx="57" cy="35.5" r="1" fill="#fff"/>'
-      +'<path d="M44 45 Q50 50 56 45" stroke="#1F2937" stroke-width="2" fill="none" stroke-linecap="round"/>'
-      +'<rect x="32" y="22" width="36" height="10" rx="5" fill="#4F46E5"/>'
-      +'<line x1="50" y1="58" x2="50" y2="76" stroke="#A5B4FC" stroke-width="4" stroke-linecap="round"/>'
-      +'<line x1="50" y1="66" x2="34" y2="56" stroke="#A5B4FC" stroke-width="3.2" stroke-linecap="round"/>'
-      +'<line x1="50" y1="66" x2="66" y2="56" stroke="#A5B4FC" stroke-width="3.2" stroke-linecap="round"/>'
-      +'<line x1="50" y1="76" x2="38" y2="92" stroke="#A5B4FC" stroke-width="3.2" stroke-linecap="round"/>'
-      +'<line x1="50" y1="76" x2="62" y2="92" stroke="#A5B4FC" stroke-width="3.2" stroke-linecap="round"/>'
-      +'</svg>';
-    h+='</div>';
-    h+='<div class="coach-card-name">Bro</div>';
-    h+='<div class="coach-card-role">Growth + Mindset</div>';
-    h+='<div class="coach-card-tags"><span class="coach-card-tag">Mindset</span><span class="coach-card-tag">Discipline</span><span class="coach-card-tag">Growth</span></div>';
-    h+='</div>';
-    h+='</div></div>';
-  } else {
-    // Chat with selected agent — modern iMessage-style UI
-    const agName=S.bro.agent==='bri'?'Bri':'Bro';
-    const agEmoji=S.bro.agent==='bri'?'\\u{1F469}\\u200D\\u{1F3EB}':'\\u{1F9D1}\\u200D\\u{1F3EB}';
-    const agGrad=S.bro.agent==='bri'?'linear-gradient(135deg,#EC4899,#F9A8D4)':'linear-gradient(135deg,#6366F1,#818CF8)';
-    const agAccent=S.bro.agent==='bri'?'bri':'bro';
+  {
+    // Chat with Bro — modern iMessage-style UI
     h+='<div class="bro-container">';
     // Header
     h+='<div class="bro-header">';
-    h+='<button class="coach-back" onclick="S.bro.agent=null;S.bro.messages=[];render()" style="margin:0;padding:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>';
-    h+='<div class="bro-header-avatar" style="background:'+agGrad+'">'+agEmoji+'</div>';
-    h+='<div class="bro-header-info"><div class="bro-header-name">'+agName+'<span class="bro-online"></span></div><div class="bro-header-sub">Your personal growth coach</div></div>';
+    h+='<div class="bro-header-avatar" style="background:linear-gradient(135deg,#6366F1,#818CF8)">\\u{1F9D1}\\u200D\\u{1F3EB}</div>';
+    h+='<div class="bro-header-info"><div class="bro-header-name">Bro<span class="bro-online"></span></div><div class="bro-header-sub">Your personal growth coach</div></div>';
     h+='<div class="bro-header-actions">';
     h+='<button class="bro-header-btn" onclick="broVoiceToggle()" title="Voice"><svg width="18" height="18" viewBox="0 0 24 24" fill="'+(S.bro.listening?'#EF4444':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>';
     h+='</div></div>';
     // Speaking indicator
-    if(S.bro.speaking)h+='<div class="bro-speaking-bar '+agAccent+'-accent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> '+agName+' is speaking\\u2026 <button onclick="broStopSpeaking()">\\u2716</button></div>';
+    if(S.bro.speaking)h+='<div class="bro-speaking-bar bro-accent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> Bro is speaking\\u2026 <button onclick="broStopSpeaking()">\\u2716</button></div>';
     // Chat messages
     h+='<div class="bro-chat" id="broChat">';
     if(S.bro.messages.length<=1){
-      h+='<div class="bro-welcome"><div class="bro-welcome-avatar" style="background:'+agGrad+'">'+agEmoji+'</div>';
-      h+='<div class="bro-welcome-text">Ask '+agName+' anything about personal growth, habits, mindset, fitness, or routines.</div>';
+      h+='<div class="bro-welcome"><div class="bro-welcome-avatar" style="background:linear-gradient(135deg,#6366F1,#818CF8)">\\u{1F9D1}\\u200D\\u{1F3EB}</div>';
+      h+='<div class="bro-welcome-text">Ask Bro anything about personal growth, habits, mindset, fitness, or routines.</div>';
       h+='<div class="bro-suggestions">';
       h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'How do I build a morning routine?\\';broSend()">Morning routine</button>';
       h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Help me set a 30-day fitness goal\\';broSend()">Fitness goal</button>';
@@ -10226,19 +10173,19 @@ else if(S.tab==='bro'){
     S.bro.messages.forEach(m=>{
       const isAgent=m.role==='bro';
       h+='<div class="bro-msg '+(isAgent?'bro-msg-ai':'bro-msg-user')+'">';
-      if(isAgent)h+='<div class="bro-avatar" style="background:'+agGrad+'">'+agEmoji+'</div>';
+      if(isAgent)h+='<div class="bro-avatar" style="background:linear-gradient(135deg,#6366F1,#818CF8)">\\u{1F9D1}\\u200D\\u{1F3EB}</div>';
       h+='<div class="bro-msg-content">';
-      h+='<div class="bro-bubble '+(isAgent?'':'bro-bubble-'+agAccent)+'">'+broMd(m.text)+'</div>';
+      h+='<div class="bro-bubble '+(isAgent?'':'bro-bubble-bro')+'">'+broMd(m.text)+'</div>';
       if(isAgent)h+='<div class="bro-msg-actions"><button class="bro-speak-btn" onclick="broSpeak(this)" title="Listen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button></div>';
       h+='</div></div>';
     });
-    if(S.bro.sending)h+='<div class="bro-typing-wrap"><div class="bro-avatar" style="background:'+agGrad+'">'+agEmoji+'</div><div class="bro-typing"><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span></div></div>';
+    if(S.bro.sending)h+='<div class="bro-typing-wrap"><div class="bro-avatar" style="background:linear-gradient(135deg,#6366F1,#818CF8)">\\u{1F9D1}\\u200D\\u{1F3EB}</div><div class="bro-typing"><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span></div></div>';
     h+='</div>';
     // Input bar
     h+='<div class="bro-input-wrap">';
     h+='<div class="bro-input-bar">';
-    h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="Message '+agName+'\\u2026" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
-    h+='<button class="bro-send-btn bro-send-'+agAccent+'" onclick="broSend()" '+(S.bro.sending?'disabled':'')+'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>';
+    h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="Message Bro\\u2026" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
+    h+='<button class="bro-send-btn bro-send-bro" onclick="broSend()" '+(S.bro.sending?'disabled':'')+'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>';
     h+='</div></div>';
     h+='</div>';
   }
