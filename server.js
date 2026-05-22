@@ -370,7 +370,7 @@ app.post('/api/coach/speak',auth,async(req,res)=>{
   const text=String((req.body&&req.body.text)||'').slice(0,2000);
   if(!text)return res.status(400).json({error:'text required'});
   const voice=String((req.body&&req.body.voice)||ELEVENLABS_VOICE).replace(/[^a-zA-Z0-9]/g,'');
-  const model='eleven_turbo_v2_5';
+  const model=req.body.model||'eleven_turbo_v2_5';
   const styleKey=String(req.body.stability||'')+':'+(req.body.style||'');
   const cacheKey=_ttsCacheKey(text,voice,model,styleKey);
   const cachePath=_ttsCachePath(cacheKey);
@@ -9236,7 +9236,7 @@ function selectCoach(agent){
   }
   render();
 }
-var BRO_VOICES={bro:'TX3LPaxmHKxF',bri:'cgSgspJ2msm6'};
+var BRO_VOICES={bro:'nwj0s2LU9bDWRKND5yzA',bri:'kPzsL2i3teMYv0FxEYQ6'};
 function pickVoiceForAgent(agent){
   try{const vs=speechSynthesis.getVoices()||[];if(!vs.length)return null;
   const en=vs.filter(v=>(v.lang||'').toLowerCase().startsWith('en'));
@@ -9274,17 +9274,20 @@ async function _broElevenSpeak(txt){
   var voice=BRO_VOICES[agent]||BRO_VOICES.bro;
   broStopSpeaking();
   S.bro.speaking=true;render();
+  console.log('[tts] starting eleven speak, voice='+voice+', token='+(token?'yes':'NO'));
   try{
-    var r=await fetch('/api/coach/speak',{method:'POST',headers:{'Content-Type':'application/json','x-token':localStorage.getItem('token')||''},body:JSON.stringify({text:txt.slice(0,2000),voice:voice,stability:0.3,similarity_boost:0.65,style:0.45})});
-    if(!r.ok){var j=await r.json().catch(function(){return {}});if(j.fallback==='browser-tts')return false;throw new Error(j.error||'TTS failed');}
+    var r=await fetch('/api/coach/speak',{method:'POST',headers:{'Content-Type':'application/json','x-token':token||''},body:JSON.stringify({text:txt.slice(0,500),voice:voice,model:'eleven_turbo_v2_5',stability:0.3,similarity_boost:0.75,style:0.7})});
+    console.log('[tts] response status='+r.status);
+    if(!r.ok){var j=await r.json().catch(function(){return {}});console.log('[tts] error response',JSON.stringify(j));if(j.fallback==='browser-tts')return false;throw new Error(j.error||'TTS failed');}
     var blob=await r.blob();
+    console.log('[tts] got blob size='+blob.size+' type='+blob.type);
     var url=URL.createObjectURL(blob);
     _broAudio=new Audio(url);
-    _broAudio.onended=function(){S.bro.speaking=false;_broAudio=null;URL.revokeObjectURL(url);render()};
-    _broAudio.onerror=function(){S.bro.speaking=false;_broAudio=null;URL.revokeObjectURL(url);render()};
-    _broAudio.play();
+    _broAudio.onended=function(){console.log('[tts] audio ended');S.bro.speaking=false;_broAudio=null;URL.revokeObjectURL(url);render()};
+    _broAudio.onerror=function(e){console.log('[tts] audio error',e);S.bro.speaking=false;_broAudio=null;URL.revokeObjectURL(url);render()};
+    try{await _broAudio.play();console.log('[tts] playing ElevenLabs audio OK');}catch(pe){console.log('[tts] play() BLOCKED: '+pe.message);S.bro.speaking=false;_broAudio=null;URL.revokeObjectURL(url);render();return false;}
     return true;
-  }catch(e){S.bro.speaking=false;render();return false}
+  }catch(e){console.log('[tts] CATCH error',e.message);S.bro.speaking=false;render();return false}
 }
 function _broFallbackSpeak(txt){
   try{if(!('speechSynthesis' in window))return;
@@ -9297,9 +9300,16 @@ function _broFallbackSpeak(txt){
   u.onerror=function(){S.bro.speaking=false;render()};
   speechSynthesis.speak(u)}catch(e){}
 }
+var _broSpeaking=false;
 async function broAutoSpeak(txt){
-  var ok=await _broElevenSpeak(txt);
-  if(!ok)_broFallbackSpeak(txt);
+  if(_broSpeaking){console.log('[tts] skipping duplicate call');return;}
+  _broSpeaking=true;
+  console.log('[tts] broAutoSpeak called');
+  try{
+    var ok=await _broElevenSpeak(txt);
+    console.log('[tts] eleven returned ok='+ok);
+    if(!ok){console.log('[tts] FALLING BACK to browser TTS');_broFallbackSpeak(txt);}
+  }finally{_broSpeaking=false;}
 }
 async function broSpeak(btn){
   var el=btn.closest('.bro-msg-content')||btn.parentElement;
