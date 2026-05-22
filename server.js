@@ -307,6 +307,25 @@ app.post('/api/coach/chat',auth,async(req,res)=>{
   }catch(e){res.status(500).json({error:String(e.message||e)})}
 });
 
+// ═══ BRO — Life Coach Chat ═══
+app.post('/api/bro/chat',auth,async(req,res)=>{
+  if(!ANTHROPIC_KEY)return res.status(503).json({error:'Bro not configured (ANTHROPIC_API_KEY missing).'});
+  const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
+  if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
+  const broSys=`You are Bro, a warm, wise, and motivating life coach inside the Brodoit productivity app. You help people improve their lives — habits, mindset, discipline, relationships, health, career, and personal growth. You speak like a supportive older brother: direct, encouraging, practical. Keep responses concise (2-4 paragraphs max). Use simple language. Give actionable advice. If someone shares a problem, acknowledge it, then guide them toward a solution. Never be preachy — be real. You can suggest exercises, routines, book recommendations, mindset shifts, or frameworks. Always end with something empowering. Never say you are an AI or language model.`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:800,system:broSys,messages:messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,4000)}))})
+    });
+    const j=await r.json();
+    if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Claude error',detail:j});
+    const reply=(j.content&&j.content[0]&&j.content[0].text)||'';
+    res.json({reply,usage:j.usage});
+  }catch(e){res.status(500).json({error:String(e.message||e)})}
+});
+
 app.post('/api/coach/transcribe',auth,express.raw({type:'audio/*',limit:'10mb'}),async(req,res)=>{
   if(!OPENAI_KEY)return res.status(503).json({error:'Transcription not configured (OPENAI_API_KEY missing).'});
   const buf=req.body;if(!buf||!buf.length)return res.status(400).json({error:'audio required'});
@@ -6341,6 +6360,44 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
   .mg-hero,.cc-hero,.mg-card{animation:none !important}
   .mg-hero::after{display:none}
 }
+
+/* ─── BRO CHAT ─── */
+.bro-chat{display:flex;flex-direction:column;gap:12px;padding:12px 0 80px;max-height:calc(100vh - 280px);overflow-y:auto;scroll-behavior:smooth}
+.bro-msg{display:flex;gap:10px;align-items:flex-start;animation:broFadeIn .3s ease}
+.bro-msg-user{flex-direction:row-reverse}
+.bro-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#EC4899);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.bro-bubble{max-width:78%;padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.bro-msg-ai .bro-bubble{background:#F3F4F6;color:#1F2937;border-bottom-left-radius:4px}
+body[data-theme=aurora] .bro-msg-ai .bro-bubble{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9)}
+.bro-msg-user .bro-bubble{background:linear-gradient(135deg,#6366F1,#818CF8);color:#fff;border-bottom-right-radius:4px}
+.bro-typing{opacity:.6;font-style:italic}
+.bro-speak-btn{background:none;border:none;color:#94A3B8;cursor:pointer;padding:4px;margin-top:4px;border-radius:6px;transition:color .2s}
+.bro-speak-btn:hover{color:#6366F1}
+.bro-input-bar{position:sticky;bottom:70px;display:flex;gap:8px;padding:10px 12px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid #E5E7EB;border-radius:16px;z-index:20;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+body[data-theme=aurora] .bro-input-bar{background:rgba(20,20,40,.9);border-color:rgba(255,255,255,.1)}
+.bro-input{flex:1;border:none;background:transparent;font-size:15px;outline:none;color:inherit;font-family:inherit}
+.bro-mic-btn,.bro-send-btn{background:none;border:none;cursor:pointer;padding:8px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .15s}
+.bro-mic-btn:hover,.bro-send-btn:hover{background:rgba(99,102,241,.1)}
+.bro-mic-btn:active,.bro-send-btn:active{transform:scale(.92)}
+.bro-mic-on{background:rgba(239,68,68,.12)!important;animation:broPulse 1.2s infinite}
+.bro-send-btn{font-size:18px;color:#6366F1}
+@keyframes broFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes broPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+
+/* ─── HYDRATION WIDGET ─── */
+.hydration-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;margin:10px 0;background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(6,182,212,.08));border:1px solid rgba(14,165,233,.15);border-radius:14px;cursor:pointer;transition:transform .2s}
+.hydration-bar:active{transform:scale(.98)}
+.hydration-drop{font-size:24px;animation:hydDrop 2s ease-in-out infinite}
+.hydration-info{flex:1}
+.hydration-info b{font-size:14px;color:#0284C7}
+body[data-theme=aurora] .hydration-info b{color:#7DD3FC}
+.hydration-info small{display:block;font-size:11px;color:#64748B;margin-top:2px}
+.hydration-toggle{padding:6px 14px;border-radius:10px;border:1px solid #0EA5E9;background:transparent;color:#0EA5E9;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.hydration-toggle.on{background:#0EA5E9;color:#fff}
+.hydration-glasses{display:flex;gap:4px;margin-top:6px}
+.hydration-glass{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(14,165,233,.3);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
+.hydration-glass.filled{background:linear-gradient(135deg,#0EA5E9,#06B6D4);border-color:transparent}
+@keyframes hydDrop{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 </style></head><body>
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
@@ -6375,6 +6432,8 @@ voice:{loaded:false,curriculum:{days:[]},progress:{completed:0,totalPoints:0,pct
 voicePlay:null,
 // AI Coach (Phase 2)
 coach:{status:null,history:[],input:'',sending:false,recording:false,recAudio:null,playing:false,scenario:null},
+bro:{messages:[],input:'',sending:false,listening:false,speaking:false},
+hydration:{enabled:JSON.parse(localStorage.getItem('tf_hydration')||'false'),interval:null,lastReminder:0,glass:parseInt(localStorage.getItem('tf_hydration_glass')||'0',10),goal:8,todayDate:new Date().toISOString().slice(0,10)},
 weather:{city:localStorage.getItem('tf_city')||'Bangalore',temp:null,aqi:null,country:'',loaded:false,loading:false,error:null},
 cityTemps:{},remember:{person:null,loaded:false},lifeGoal:localStorage.getItem('tf_life_goal')||'',meditating:{active:false,title:'',mins:0,startedAt:0},
 medCat:localStorage.getItem('tf_medcat')||'vipassana',
@@ -6434,7 +6493,8 @@ meditation:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="h
 games:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="9" width="26" height="16" rx="6" fill="currentColor" opacity="0.18"/><circle cx="9" cy="17" r="2.4" fill="currentColor"/><circle cx="22.5" cy="14" r="1.6" fill="currentColor"/><circle cx="25.5" cy="17" r="1.6" fill="currentColor" opacity="0.65"/><circle cx="22.5" cy="20" r="1.6" fill="currentColor" opacity="0.65"/><circle cx="19.5" cy="17" r="1.6" fill="currentColor" opacity="0.65"/><line x1="6.5" y1="17" x2="11.5" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/><line x1="9" y1="14.5" x2="9" y2="19.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/></svg>',
 mindgym:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 6 C 7 6 4 9 4 13 C 4 14.5 4.5 16 5.5 17.2 C 5 18.5 5 20 6 21.5 C 7 23 9 24 11 24 L 11 28 L 14 28 L 14 6 Z" fill="currentColor" opacity="0.85"/><path d="M21 6 C 25 6 28 9 28 13 C 28 14.5 27.5 16 26.5 17.2 C 27 18.5 27 20 26 21.5 C 25 23 23 24 21 24 L 21 28 L 18 28 L 18 6 Z" fill="currentColor" opacity="0.55"/><circle cx="9.5" cy="13" r="1.4" fill="#fff" opacity="0.9"/><circle cx="22.5" cy="13" r="1.4" fill="#fff" opacity="0.7"/></svg>',
 voice:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="13" y="4" width="6" height="16" rx="3" fill="currentColor" opacity="0.85"/><path d="M8 14 C 8 18.5 11.5 22 16 22 C 20.5 22 24 18.5 24 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none" opacity="0.55"/><line x1="16" y1="22" x2="16" y2="27" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity="0.55"/><line x1="12" y1="27" x2="20" y2="27" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity="0.55"/></svg>',
-knowledge:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7 a2 2 0 0 1 2 -2 h18 a2 2 0 0 1 2 2 v18 a2 2 0 0 1 -2 2 h-18 a2 2 0 0 1 -2 -2 z" fill="currentColor" opacity="0.2"/><path d="M5 25 a2 2 0 0 0 2 2 h18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M9 9 v14 M22 9 v14 M9 12 H 22 M9 18 H 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/><circle cx="13" cy="13" r="1" fill="currentColor"/><circle cx="13" cy="20" r="1" fill="currentColor"/></svg>'
+knowledge:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7 a2 2 0 0 1 2 -2 h18 a2 2 0 0 1 2 2 v18 a2 2 0 0 1 -2 2 h-18 a2 2 0 0 1 -2 -2 z" fill="currentColor" opacity="0.2"/><path d="M5 25 a2 2 0 0 0 2 2 h18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M9 9 v14 M22 9 v14 M9 12 H 22 M9 18 H 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/><circle cx="13" cy="13" r="1" fill="currentColor"/><circle cx="13" cy="20" r="1" fill="currentColor"/></svg>',
+bro:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="10" r="5" fill="currentColor" opacity="0.85"/><path d="M8 26 C8 20 11.6 17 16 17 C20.4 17 24 20 24 26" fill="currentColor" opacity="0.55"/><path d="M4 16 Q2 14 4 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/><path d="M2 17 Q-1 14 2 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.35"/><path d="M28 16 Q30 14 28 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/><path d="M30 17 Q33 14 30 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.35"/></svg>'
 };
 // "Rise Together" doodle — 4 animated figures climbing the same curve, holding hands; full SMIL animation
 const MORAL_DOODLE='<svg class="moral-doodle" viewBox="0 0 520 200" preserveAspectRatio="xMaxYMid meet" xmlns="http://www.w3.org/2000/svg">'
@@ -6752,7 +6812,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.messages.length)S.bro.messages=[{role:'bro',text:'Hey'+((S.user&&S.user.name)?' '+S.user.name.split(' ')[0]:'')+', I\\'m Bro \\u2014 your personal life coach. Tell me what\\'s on your mind, ask for advice, or let me help you build a better routine. What would you like to work on today?'}];S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -9049,6 +9109,74 @@ async function loadBookStreak(){if(!S.user)return;const r=await api('/book-strea
 // a modal could trigger 2-3 render passes in <500ms (open + data fetch + auto-select),
 // each rebuilding the entire app DOM and producing visible flicker / cursor resets.
 let _renderRAF=0;
+// ═══ BRO — AI Life Coach ═══
+const BRO_SYSTEM='You are Bro, a warm, wise, and motivating life coach inside the Brodoit productivity app. You help people improve their lives — habits, mindset, discipline, relationships, health, career, and personal growth. You speak like a supportive older brother: direct, encouraging, practical. Keep responses concise (2-4 paragraphs max). Use simple language. Give actionable advice. If someone shares a problem, acknowledge it, then guide them toward a solution. Never be preachy — be real. You can suggest exercises, routines, book recommendations, mindset shifts, or frameworks. Always end with something empowering.';
+async function broSend(){
+  const txt=(S.bro.input||'').trim();if(!txt||S.bro.sending)return;
+  S.bro.messages.push({role:'user',text:txt});S.bro.input='';S.bro.sending=true;render();
+  setTimeout(()=>{const c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},60);
+  try{
+    const msgs=S.bro.messages.slice(-12).map(m=>({role:m.role==='bro'?'assistant':'user',content:m.text}));
+    const r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs})});
+    if(r&&r.reply){S.bro.messages.push({role:'bro',text:r.reply})}
+    else{S.bro.messages.push({role:'bro',text:'Sorry, I couldn\\'t connect right now. Try again in a moment.'})}
+  }catch(e){S.bro.messages.push({role:'bro',text:'Something went wrong. Let\\'s try again.'})}
+  S.bro.sending=false;render();
+  setTimeout(()=>{const c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},60);
+}
+function broSpeak(btn){
+  try{if(!('speechSynthesis' in window)){toast('\\u26A0\\uFE0F Voice not supported','err');return}
+  const bubble=btn.previousElementSibling;if(!bubble)return;const txt=bubble.textContent||bubble.innerText;
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);const v=pickBestVoice();
+  if(v){u.voice=v;u.lang=v.lang}u.rate=.92;u.pitch=1.05;speechSynthesis.speak(u)}catch(e){toast('\\u26A0\\uFE0F Voice error','err')}
+}
+let _broRec=null;
+function broVoiceToggle(){
+  if(S.bro.listening){S.bro.listening=false;if(_broRec)try{_broRec.stop()}catch(e){}render();return}
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){toast('\\u26A0\\uFE0F Speech recognition not supported','err');return}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;_broRec=new SR();
+  _broRec.continuous=false;_broRec.interimResults=false;_broRec.lang='en-US';
+  _broRec.onresult=e=>{const t=e.results[0][0].transcript;S.bro.input=t;S.bro.listening=false;render();broSend()};
+  _broRec.onerror=()=>{S.bro.listening=false;render();toast('\\u26A0\\uFE0F Could not hear you, try again','err')};
+  _broRec.onend=()=>{S.bro.listening=false;render()};
+  _broRec.start();S.bro.listening=true;render();toast('\\u{1F3A4} Listening\\u2026');
+}
+
+// ═══ HYDRATION REMINDER ═══
+function _hydrationToday(){const d=new Date().toISOString().slice(0,10);if(S.hydration.todayDate!==d){S.hydration.todayDate=d;S.hydration.glass=0;localStorage.setItem('tf_hydration_glass','0')}}
+function toggleHydration(){
+  _hydrationToday();S.hydration.enabled=!S.hydration.enabled;
+  localStorage.setItem('tf_hydration',JSON.stringify(S.hydration.enabled));
+  if(S.hydration.enabled){startHydrationTimer();toast('\\u{1F4A7} Hydration reminders ON — every 1 hour')}
+  else{clearInterval(S.hydration.interval);S.hydration.interval=null;toast('Hydration reminders off')}
+  render();
+}
+function drinkWater(){_hydrationToday();S.hydration.glass++;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Nice! '+S.hydration.glass+'/'+S.hydration.goal+' glasses today');render()}
+function _playWaterSound(){
+  try{const ac=new(window.AudioContext||window.webkitAudioContext)();
+  const dur=1.2;const sr=ac.sampleRate;const buf=ac.createBuffer(1,sr*dur,sr);const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++){const t=i/sr;const env=Math.exp(-t*3);d[i]=env*(Math.sin(2*Math.PI*220*t+6*Math.sin(2*Math.PI*3.5*t))*0.3+Math.sin(2*Math.PI*440*t)*0.15+(Math.random()-0.5)*0.08*Math.exp(-t*5))}
+  const src=ac.createBufferSource();src.buffer=buf;const g=ac.createGain();g.gain.value=0.5;src.connect(g);g.connect(ac.destination);src.start();src.onended=()=>ac.close()}catch(e){}
+}
+function _showHydrationNotif(){
+  _hydrationToday();
+  if(!S.hydration.enabled)return;
+  _playWaterSound();
+  if('Notification' in window&&Notification.permission==='granted'){
+    new Notification('\\u{1F4A7} Time to hydrate!',{body:'You\\'ve had '+S.hydration.glass+'/'+S.hydration.goal+' glasses today. Drink some water!',icon:'/icon-192.png',tag:'hydration',silent:true});
+  }
+  toast('\\u{1F4A7} Time to drink water! ('+S.hydration.glass+'/'+S.hydration.goal+')');
+  S.hydration.lastReminder=Date.now();
+}
+function startHydrationTimer(){
+  if(S.hydration.interval)clearInterval(S.hydration.interval);
+  if(!S.hydration.enabled)return;
+  if('Notification' in window&&Notification.permission==='default'){Notification.requestPermission()}
+  S.hydration.interval=setInterval(_showHydrationNotif,3600000);
+}
+// Auto-start hydration timer on load if enabled
+setTimeout(()=>{if(S.hydration.enabled)startHydrationTimer()},2000);
+
 // Passive renders (background polls — load/loadWeather/loadCityTemps/ticker/etc.)
 // should NOT replay the entrance animations. Only user-driven renders (tab switch,
 // click, form change) should animate. We mark passive renders by setting
@@ -9292,7 +9420,7 @@ if(isMain){
   // mindgym→Train, meditation→Wisdom (daily verse + sit). Cal + Board still available
   // through modals/secondary surfaces. The "Today" tab is rendered into the existing
   // Tasks tab dashboard hero — clicking Today maps to tasks.
-  const tabsHtml=[{k:'tasks',l:'Tasks'},{k:'books',l:'Listen'},{k:'mindgym',l:'Train'},{k:'meditation',l:'Wisdom'},{k:'cal',l:'Calendar'}].map(x=>'<button class="tab tab-'+x.k+(S.tab===x.k?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(ID[x.k]||ic(x.k,26))+'</span><span class="tl">'+x.l+'</span></button>').join('');
+  const tabsHtml=[{k:'tasks',l:'Tasks'},{k:'books',l:'Listen'},{k:'bro',l:'Bro'},{k:'mindgym',l:'Train'},{k:'meditation',l:'Wisdom'},{k:'cal',l:'Calendar'}].map(x=>'<button class="tab tab-'+x.k+(S.tab===x.k?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(ID[x.k]||ic(x.k,26))+'</span><span class="tl">'+x.l+'</span></button>').join('');
   // "Bro, do it!" mascot — a character with a speech bubble that animates
   const climbScene='<div class="bro-mascot" aria-hidden="true">'
     +'<svg class="bro-svg" viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg">'
@@ -9381,6 +9509,7 @@ if(S.tab!=='tasks')h+=_tabHeroHtml;
 
 // TASKS TAB
 if(S.tab==='dash')S.tab='tasks'; // Stats tab removed; redirect any stale state to Tasks
+const _firstName=((S.user&&S.user.name)||'').split(' ')[0]||'';
 if(S.tab==='tasks'){
   // Restore-from-backup banner — surfaces only if the server returned 0 tasks but a local snapshot exists.
   if(S.restoreOffer&&S.restoreOffer.count){
@@ -9403,7 +9532,7 @@ if(S.tab==='tasks'){
     h+='<section class="home-hero home-hero-light qa-hero">'
       +'<div class="hh-bg"></div>'
       +'<div class="hh-row"><div class="hh-eyebrow">Actions</div></div>'
-      +'<h1 class="hh-greet" style="font-size:clamp(28px,5vw,42px);margin:6px 0 14px">What\\u2019s next, <em>Rishabh</em>?</h1>'
+      +'<h1 class="hh-greet" style="font-size:clamp(28px,5vw,42px);margin:6px 0 14px">What\\u2019s next'+(_firstName?', <em>'+esc(_firstName)+'</em>':'')+'?</h1>'
       +'<div class="hh-stats">'
         +'<button class="hh-stat qa-stat-tile" onclick="opA()">'
           +'<span class="qa-stat-emoji" style="background:linear-gradient(135deg,#FF6B47,#FFB547)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>'
@@ -9428,6 +9557,17 @@ if(S.tab==='tasks'){
     +'</section>';
   }
   // (Stats moved into the hero greeting above)
+  // ─── Hydration reminder widget ───
+  {_hydrationToday();
+  const _hg=S.hydration.glass,_hGoal=S.hydration.goal,_hOn=S.hydration.enabled;
+  let _hGlasses='<div class="hydration-glasses">';
+  for(let i=0;i<_hGoal;i++)_hGlasses+='<div class="hydration-glass'+(i<_hg?' filled':'')+'">'+( i<_hg?'\\u{1F4A7}':'')+'</div>';
+  _hGlasses+='</div>';
+  h+='<div class="hydration-bar" onclick="drinkWater()">'
+    +'<span class="hydration-drop">\\u{1F4A7}</span>'
+    +'<div class="hydration-info"><b>Hydration \\u2022 '+_hg+'/'+_hGoal+' glasses</b><small>Tap to log a glass of water</small>'+_hGlasses+'</div>'
+    +'<button class="hydration-toggle'+(_hOn?' on':'')+'" onclick="event.stopPropagation();toggleHydration()">'+(_hOn?'\\u{1F514} ON':'\\u{1F515} OFF')+'</button>'
+  +'</div>';}
   if(s.od>0)h+='<div class="al" style="background:#FEF1F0;border:1px solid #F5C6C2;color:#E8453C;cursor:pointer" onclick="S.view=\\'overdue\\';render()">\\u26A0\\uFE0F '+s.od+' overdue</div>';
   h+='<div class="srch"><input placeholder="Search tasks..." value="'+esc(S.search)+'" oninput="S.search=this.value;render()"></div>';
   h+='<div class="flt">'+[{k:'all',l:'All'},{k:'pending',l:'To Do'},{k:'in-progress',l:'Doing'},{k:'done',l:'Done'},{k:'today',l:'Today'}].map(x=>'<button class="fb'+(S.view===x.k?' on':'')+'" onclick="S.view=\\''+x.k+'\\';render()">'+x.l+'</button>').join('')+'</div>';
@@ -9834,6 +9974,27 @@ else if(S.tab==='meditation'){
     h+='<div class="hs-card-play">'+(ready?'<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>':'<div class="med-load-dot"></div>')+'</div>';
     h+='</button>';
   });
+  h+='</div>';
+}
+
+// BRO TAB — voice life-coach assistant
+else if(S.tab==='bro'){
+  h+='<div class="section-hd"><span class="section-ic" style="background:linear-gradient(135deg,#6366F1,#EC4899)">'+(ID.bro||ic('bro',22))+'</span><div><h3>Bro \\u2022 your life coach</h3><p>Talk to Bro about anything \\u2014 goals, habits, problems, mindset</p></div></div>';
+  h+='<div class="bro-chat" id="broChat">';
+  S.bro.messages.forEach(m=>{
+    const isBro=m.role==='bro';
+    h+='<div class="bro-msg '+(isBro?'bro-msg-ai':'bro-msg-user')+'">';
+    if(isBro)h+='<div class="bro-avatar">\\u{1F9D1}\\u200D\\u{1F3EB}</div>';
+    h+='<div class="bro-bubble">'+esc(m.text)+'</div>';
+    if(isBro)h+='<button class="bro-speak-btn" onclick="broSpeak(this)" title="Listen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>';
+    h+='</div>';
+  });
+  if(S.bro.sending)h+='<div class="bro-msg bro-msg-ai"><div class="bro-avatar">\\u{1F9D1}\\u200D\\u{1F3EB}</div><div class="bro-bubble bro-typing">Thinking\\u2026</div></div>';
+  h+='</div>';
+  h+='<div class="bro-input-bar">';
+  h+='<button class="bro-mic-btn'+(S.bro.listening?' bro-mic-on':'')+'" onclick="broVoiceToggle()" title="Speak to Bro"><svg width="20" height="20" viewBox="0 0 24 24" fill="'+(S.bro.listening?'#EF4444':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>';
+  h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="Ask Bro anything\\u2026" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
+  h+='<button class="bro-send-btn" onclick="broSend()" '+(S.bro.sending?'disabled':'')+'>\\u2794</button>';
   h+='</div>';
 }
 
