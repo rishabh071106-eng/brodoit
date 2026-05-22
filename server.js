@@ -9240,6 +9240,7 @@ function selectCoach(agent){
   }
   render();
 }
+var BRO_VOICES={bro:'JBFqnCBsd6RMkjVDRZzb',bri:'EXAVITQu4vr4xnSDxMaL'};
 function pickVoiceForAgent(agent){
   try{const vs=speechSynthesis.getVoices()||[];if(!vs.length)return null;
   const en=vs.filter(v=>(v.lang||'').toLowerCase().startsWith('en'));
@@ -9271,31 +9272,50 @@ async function broSend(){
   S.bro.sending=false;render();
   setTimeout(()=>{const c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},60);
 }
-function broAutoSpeak(txt){
+var _broAudio=null;
+async function _broElevenSpeak(txt){
+  var agent=S.bro.agent||'bro';
+  var voice=BRO_VOICES[agent]||BRO_VOICES.bro;
+  broStopSpeaking();
+  S.bro.speaking=true;render();
+  try{
+    var r=await fetch('/api/coach/speak',{method:'POST',headers:{'Content-Type':'application/json','x-token':localStorage.getItem('token')||''},body:JSON.stringify({text:txt.slice(0,2000),voice:voice})});
+    if(!r.ok){var j=await r.json().catch(function(){return {}});if(j.fallback==='browser-tts')return false;throw new Error(j.error||'TTS failed');}
+    var blob=await r.blob();
+    var url=URL.createObjectURL(blob);
+    _broAudio=new Audio(url);
+    _broAudio.onended=function(){S.bro.speaking=false;_broAudio=null;URL.revokeObjectURL(url);render()};
+    _broAudio.onerror=function(){S.bro.speaking=false;_broAudio=null;URL.revokeObjectURL(url);render()};
+    _broAudio.play();
+    return true;
+  }catch(e){S.bro.speaking=false;render();return false}
+}
+function _broFallbackSpeak(txt){
   try{if(!('speechSynthesis' in window))return;
-  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);
-  const v=pickVoiceForAgent(S.bro.agent||'bro');
+  speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt);
+  var v=pickVoiceForAgent(S.bro.agent||'bro');
   if(v){u.voice=v;u.lang=v.lang}
   u.rate=S.bro.agent==='bri'?0.95:0.90;u.pitch=S.bro.agent==='bri'?1.12:0.95;
   S.bro.speaking=true;render();
-  u.onend=()=>{S.bro.speaking=false;render()};
-  u.onerror=()=>{S.bro.speaking=false;render()};
+  u.onend=function(){S.bro.speaking=false;render()};
+  u.onerror=function(){S.bro.speaking=false;render()};
   speechSynthesis.speak(u)}catch(e){}
 }
-function broSpeak(btn){
-  try{if(!('speechSynthesis' in window)){toast('\\u26A0\\uFE0F Voice not supported','err');return}
-  const bubble=btn.previousElementSibling;if(!bubble)return;const txt=bubble.textContent||bubble.innerText;
-  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);
-  const v=pickVoiceForAgent(S.bro.agent||'bro');
-  if(v){u.voice=v;u.lang=v.lang}
-  u.rate=S.bro.agent==='bri'?0.95:0.90;u.pitch=S.bro.agent==='bri'?1.12:0.95;
-  S.bro.speaking=true;render();
-  u.onend=()=>{S.bro.speaking=false;render()};
-  u.onerror=()=>{S.bro.speaking=false;render()};
-  speechSynthesis.speak(u)}catch(e){toast('\\u26A0\\uFE0F Voice error','err')}
+async function broAutoSpeak(txt){
+  var ok=await _broElevenSpeak(txt);
+  if(!ok)_broFallbackSpeak(txt);
+}
+async function broSpeak(btn){
+  var el=btn.closest('.bro-msg-content')||btn.parentElement;
+  var bubble=el?el.querySelector('.bro-bubble'):null;
+  if(!bubble)return;
+  var txt=bubble.textContent||bubble.innerText;
+  var ok=await _broElevenSpeak(txt);
+  if(!ok)_broFallbackSpeak(txt);
 }
 function broStopSpeaking(){
-  try{speechSynthesis.cancel()}catch(e){}
+  try{if(_broAudio){_broAudio.pause();_broAudio.src='';_broAudio=null}}catch(e){}
+  try{speechSynthesis&&speechSynthesis.cancel()}catch(e){}
   S.bro.speaking=false;render();
 }
 let _broRec=null;
