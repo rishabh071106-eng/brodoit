@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({path:require('path').join(__dirname,'.env'),override:true});
 const express=require('express'),cors=require('cors'),Database=require('better-sqlite3'),twilio=require('twilio'),path=require('path'),crypto=require('crypto');
 const app=express();app.use(cors());app.use(express.json());app.use(express.urlencoded({extended:true}));
 
@@ -313,8 +313,8 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const agent=(req.body.agent==='bri')?'bri':'bro';
-  const broSys=`You are Bro, a warm, wise, and motivating life coach inside the Brodoit productivity app. You help people improve their lives — habits, mindset, discipline, relationships, health, career, and personal growth. You speak like a supportive older brother: direct, encouraging, practical. Keep responses concise (2-4 paragraphs max). Use simple language. Give actionable advice. If someone shares a problem, acknowledge it, then guide them toward a solution. Never be preachy — be real. You can suggest exercises, routines, book recommendations, mindset shifts, or frameworks. Always end with something empowering. Never say you are an AI or language model.`;
-  const briSys=`You are Bri, a warm, empathetic, and energetic life coach inside the Brodoit productivity app. You help people improve their lives — habits, mindset, wellness, relationships, health, career, and personal growth. You speak like a supportive best friend and big sister: caring, uplifting, and real. Keep responses concise (2-4 paragraphs max). Use simple language. Give actionable advice with a positive spin. If someone shares a problem, validate their feelings first, then guide them toward a solution. You love wellness, fitness, and mental health. You can suggest routines, self-care practices, journaling prompts, mindset shifts, or frameworks. Always end with encouragement. Never say you are an AI or language model.`;
+  const broSys=`You are Bro, a personal growth coach inside the Brodoit productivity app. Your mission is to help people GROW — build discipline, crush goals, level up their career, master their mindset, get fit, and become the best version of themselves. You speak like a supportive older brother who's been through it: direct, real, no-BS, but always encouraging. Keep responses concise (2-4 paragraphs max). Use simple, punchy language. Focus every answer on growth and action — give specific steps, routines, challenges, or frameworks they can start TODAY. If someone shares a problem, acknowledge it briefly, then pivot to what they can DO about it. Suggest habits, morning routines, workout plans, reading lists, accountability systems, or mindset reframes. Always end with a challenge or action step. Never be preachy. Never say you are an AI or language model.`;
+  const briSys=`You are Bri, a personal growth and wellness coach inside the Brodoit productivity app. Your mission is to help people GROW — build healthy habits, find balance, level up their fitness, nurture their mental health, and become the strongest version of themselves. You speak like a supportive big sister and best friend: warm, caring, real, and motivating. Keep responses concise (2-4 paragraphs max). Use simple, uplifting language. Focus every answer on growth and wellness — give specific routines, self-care practices, workout ideas, journaling prompts, nutrition tips, or mindset shifts they can start TODAY. If someone shares a struggle, validate their feelings first, then guide them toward action. You love fitness, yoga, meditation, healthy eating, and mental wellness. Always end with encouragement and a specific next step. Never say you are an AI or language model.`;
   const sys=agent==='bri'?briSys:broSys;
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
@@ -6387,25 +6387,31 @@ body[data-theme=aurora] .bro-input-bar{background:rgba(20,20,40,.9);border-color
 @keyframes broFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes broPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.3)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
 /* ─── COACH SELECTOR ─── */
-.coach-select{display:flex;flex-direction:column;align-items:center;padding:30px 0 20px;gap:24px}
-.coach-select h2{font-family:var(--serif);font-size:26px;font-weight:500;color:var(--ink);text-align:center;margin:0}
-.coach-select p{color:#64748B;font-size:14px;text-align:center;margin:-14px 0 0;max-width:280px}
-.coach-cards{display:flex;gap:16px;justify-content:center;width:100%;max-width:400px}
-.coach-card{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px 16px 20px;background:var(--surface);border:2px solid var(--border);border-radius:20px;cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
-.coach-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.1)}
+.coach-select{display:flex;flex-direction:column;align-items:center;padding:40px 0 30px;gap:28px;background:#FCF6F1;border-radius:24px;margin:-8px -18px 0;padding-left:18px;padding-right:18px}
+body[data-theme=aurora] .coach-select{background:linear-gradient(180deg,rgba(252,246,241,.06),rgba(252,246,241,.02))}
+.coach-select h2{font-family:var(--serif);font-size:32px;font-weight:600;color:#1A1A1A;text-align:center;margin:0;letter-spacing:-.02em}
+body[data-theme=aurora] .coach-select h2{color:#F5F5FA}
+.coach-select p{color:#6B6B6B;font-size:15px;text-align:center;margin:-10px 0 0;max-width:300px}
+body[data-theme=aurora] .coach-select p{color:rgba(255,255,255,.55)}
+.coach-cards{display:flex;gap:20px;justify-content:center;width:100%;max-width:480px}
+.coach-card{flex:1;display:flex;flex-direction:column;align-items:center;gap:14px;padding:32px 20px 28px;background:#FFFFFF;border:2px solid rgba(0,0,0,.06);border-radius:24px;cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.coach-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.1)}
 .coach-card:active{transform:scale(.96)}
-.coach-card.card-bri:hover{border-color:#EC4899;box-shadow:0 12px 32px rgba(236,72,153,.15)}
-.coach-card.card-bro:hover{border-color:#6366F1;box-shadow:0 12px 32px rgba(99,102,241,.15)}
-body[data-theme=aurora] .coach-card{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)}
-body[data-theme=aurora] .coach-card:hover{border-color:rgba(167,139,250,.5)}
-.coach-avatar{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.coach-card.card-bri:hover{border-color:#EC4899;box-shadow:0 16px 40px rgba(236,72,153,.18)}
+.coach-card.card-bro:hover{border-color:#6366F1;box-shadow:0 16px 40px rgba(99,102,241,.18)}
+body[data-theme=aurora] .coach-card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);box-shadow:0 2px 12px rgba(0,0,0,.2)}
+body[data-theme=aurora] .coach-card:hover{border-color:rgba(167,139,250,.5);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.coach-avatar{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative}
 .coach-avatar-bri{background:linear-gradient(135deg,#FECDD3,#FBCFE8,#F9A8D4);animation:coachFloat 3s ease-in-out infinite}
 .coach-avatar-bro{background:linear-gradient(135deg,#C7D2FE,#A5B4FC,#818CF8);animation:coachFloat 3s ease-in-out infinite .5s}
-.coach-avatar::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px dashed rgba(0,0,0,.08);animation:coachSpin 12s linear infinite}
-.coach-card-name{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink)}
-.coach-card-role{font-size:12px;color:#64748B;font-weight:500;letter-spacing:.02em}
-.coach-card-tags{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
-.coach-card-tag{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600}
+.coach-avatar::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:2px dashed rgba(0,0,0,.06);animation:coachSpin 12s linear infinite}
+body[data-theme=aurora] .coach-avatar::after{border-color:rgba(255,255,255,.12)}
+.coach-card-name{font-family:var(--serif);font-size:28px;font-weight:600;color:#1A1A1A}
+body[data-theme=aurora] .coach-card-name{color:#F5F5FA}
+.coach-card-role{font-size:14px;color:#6B6B6B;font-weight:500;letter-spacing:.02em}
+body[data-theme=aurora] .coach-card-role{color:rgba(255,255,255,.55)}
+.coach-card-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:2px}
+.coach-card-tag{font-size:12px;padding:5px 12px;border-radius:20px;font-weight:600}
 .card-bri .coach-card-tag{background:rgba(236,72,153,.1);color:#EC4899}
 .card-bro .coach-card-tag{background:rgba(99,102,241,.1);color:#6366F1}
 body[data-theme=aurora] .card-bri .coach-card-tag{background:rgba(236,72,153,.2);color:#F9A8D4}
@@ -10017,43 +10023,43 @@ else if(S.tab==='bro'){
     // Bri card
     h+='<div class="coach-card card-bri" onclick="selectCoach(\\'bri\\')">';
     h+='<div class="coach-avatar coach-avatar-bri">';
-    h+='<svg viewBox="0 0 80 80" width="80" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">'
-      +'<circle cx="40" cy="32" r="16" fill="#F9A8D4"/>'
-      +'<circle cx="34" cy="30" r="2.5" fill="#1F2937"/><circle cx="46" cy="30" r="2.5" fill="#1F2937"/>'
-      +'<path d="M35 37 Q40 42 45 37" stroke="#1F2937" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
-      +'<path d="M24 24 Q28 8 40 12 Q52 8 56 24" stroke="#7C3AED" stroke-width="2.5" fill="none" stroke-linecap="round"/>'
-      +'<path d="M22 26 Q20 18 28 14" stroke="#7C3AED" stroke-width="2" fill="none" stroke-linecap="round"/>'
-      +'<line x1="40" y1="48" x2="40" y2="62" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
-      +'<line x1="40" y1="54" x2="30" y2="48" stroke="#F9A8D4" stroke-width="2.5" stroke-linecap="round"/>'
-      +'<line x1="40" y1="54" x2="50" y2="48" stroke="#F9A8D4" stroke-width="2.5" stroke-linecap="round"/>'
-      +'<line x1="40" y1="62" x2="33" y2="74" stroke="#F9A8D4" stroke-width="2.5" stroke-linecap="round"/>'
-      +'<line x1="40" y1="62" x2="47" y2="74" stroke="#F9A8D4" stroke-width="2.5" stroke-linecap="round"/>'
-      +'<circle cx="34" cy="30" r="0.8" fill="#fff"/><circle cx="46" cy="30" r="0.8" fill="#fff"/>'
+    h+='<svg viewBox="0 0 100 100" width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg">'
+      +'<circle cx="50" cy="38" r="20" fill="#F9A8D4"/>'
+      +'<circle cx="43" cy="36" r="3" fill="#1F2937"/><circle cx="57" cy="36" r="3" fill="#1F2937"/>'
+      +'<circle cx="43" cy="35.5" r="1" fill="#fff"/><circle cx="57" cy="35.5" r="1" fill="#fff"/>'
+      +'<path d="M44 45 Q50 51 56 45" stroke="#1F2937" stroke-width="2" fill="none" stroke-linecap="round"/>'
+      +'<path d="M30 28 Q35 8 50 13 Q65 8 70 28" stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"/>'
+      +'<path d="M27 31 Q24 22 34 16" stroke="#7C3AED" stroke-width="2.5" fill="none" stroke-linecap="round"/>'
+      +'<line x1="50" y1="58" x2="50" y2="76" stroke="#F9A8D4" stroke-width="3.5" stroke-linecap="round"/>'
+      +'<line x1="50" y1="66" x2="37" y2="58" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
+      +'<line x1="50" y1="66" x2="63" y2="58" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
+      +'<line x1="50" y1="76" x2="40" y2="92" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
+      +'<line x1="50" y1="76" x2="60" y2="92" stroke="#F9A8D4" stroke-width="3" stroke-linecap="round"/>'
       +'</svg>';
     h+='</div>';
     h+='<div class="coach-card-name">Bri</div>';
-    h+='<div class="coach-card-role">Wellness Coach</div>';
-    h+='<div class="coach-card-tags"><span class="coach-card-tag">Wellness</span><span class="coach-card-tag">Self-care</span></div>';
+    h+='<div class="coach-card-role">Growth + Wellness</div>';
+    h+='<div class="coach-card-tags"><span class="coach-card-tag">Wellness</span><span class="coach-card-tag">Fitness</span><span class="coach-card-tag">Growth</span></div>';
     h+='</div>';
     // Bro card
     h+='<div class="coach-card card-bro" onclick="selectCoach(\\'bro\\')">';
     h+='<div class="coach-avatar coach-avatar-bro">';
-    h+='<svg viewBox="0 0 80 80" width="80" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">'
-      +'<circle cx="40" cy="32" r="16" fill="#A5B4FC"/>'
-      +'<circle cx="34" cy="30" r="2.5" fill="#1F2937"/><circle cx="46" cy="30" r="2.5" fill="#1F2937"/>'
-      +'<path d="M35 37 Q40 41 45 37" stroke="#1F2937" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
-      +'<rect x="26" y="18" width="28" height="8" rx="4" fill="#4F46E5"/>'
-      +'<line x1="40" y1="48" x2="40" y2="62" stroke="#A5B4FC" stroke-width="3.5" stroke-linecap="round"/>'
-      +'<line x1="40" y1="54" x2="28" y2="46" stroke="#A5B4FC" stroke-width="2.8" stroke-linecap="round"/>'
-      +'<line x1="40" y1="54" x2="52" y2="46" stroke="#A5B4FC" stroke-width="2.8" stroke-linecap="round"/>'
-      +'<line x1="40" y1="62" x2="32" y2="74" stroke="#A5B4FC" stroke-width="2.8" stroke-linecap="round"/>'
-      +'<line x1="40" y1="62" x2="48" y2="74" stroke="#A5B4FC" stroke-width="2.8" stroke-linecap="round"/>'
-      +'<circle cx="34" cy="30" r="0.8" fill="#fff"/><circle cx="46" cy="30" r="0.8" fill="#fff"/>'
+    h+='<svg viewBox="0 0 100 100" width="100" height="100" fill="none" xmlns="http://www.w3.org/2000/svg">'
+      +'<circle cx="50" cy="38" r="20" fill="#A5B4FC"/>'
+      +'<circle cx="43" cy="36" r="3" fill="#1F2937"/><circle cx="57" cy="36" r="3" fill="#1F2937"/>'
+      +'<circle cx="43" cy="35.5" r="1" fill="#fff"/><circle cx="57" cy="35.5" r="1" fill="#fff"/>'
+      +'<path d="M44 45 Q50 50 56 45" stroke="#1F2937" stroke-width="2" fill="none" stroke-linecap="round"/>'
+      +'<rect x="32" y="22" width="36" height="10" rx="5" fill="#4F46E5"/>'
+      +'<line x1="50" y1="58" x2="50" y2="76" stroke="#A5B4FC" stroke-width="4" stroke-linecap="round"/>'
+      +'<line x1="50" y1="66" x2="34" y2="56" stroke="#A5B4FC" stroke-width="3.2" stroke-linecap="round"/>'
+      +'<line x1="50" y1="66" x2="66" y2="56" stroke="#A5B4FC" stroke-width="3.2" stroke-linecap="round"/>'
+      +'<line x1="50" y1="76" x2="38" y2="92" stroke="#A5B4FC" stroke-width="3.2" stroke-linecap="round"/>'
+      +'<line x1="50" y1="76" x2="62" y2="92" stroke="#A5B4FC" stroke-width="3.2" stroke-linecap="round"/>'
       +'</svg>';
     h+='</div>';
     h+='<div class="coach-card-name">Bro</div>';
-    h+='<div class="coach-card-role">Life Coach</div>';
-    h+='<div class="coach-card-tags"><span class="coach-card-tag">Mindset</span><span class="coach-card-tag">Discipline</span></div>';
+    h+='<div class="coach-card-role">Growth + Mindset</div>';
+    h+='<div class="coach-card-tags"><span class="coach-card-tag">Mindset</span><span class="coach-card-tag">Discipline</span><span class="coach-card-tag">Growth</span></div>';
     h+='</div>';
     h+='</div></div>';
   } else {
@@ -10062,7 +10068,7 @@ else if(S.tab==='bro'){
     const agEmoji=S.bro.agent==='bri'?'\\u{1F469}\\u200D\\u{1F3EB}':'\\u{1F9D1}\\u200D\\u{1F3EB}';
     const agGrad=S.bro.agent==='bri'?'linear-gradient(135deg,#EC4899,#F9A8D4)':'linear-gradient(135deg,#6366F1,#818CF8)';
     h+='<button class="coach-back" onclick="S.bro.agent=null;S.bro.messages=[];render()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Switch coach</button>';
-    h+='<div class="section-hd"><span class="section-ic" style="background:'+agGrad+'">'+agEmoji+'</span><div><h3>'+agName+' \\u2022 your '+(S.bro.agent==='bri'?'wellness':'life')+' coach</h3><p>Talk to '+agName+' about anything \\u2014 goals, habits, routines, mindset</p></div></div>';
+    h+='<div class="section-hd"><span class="section-ic" style="background:'+agGrad+'">'+agEmoji+'</span><div><h3>'+agName+' \\u2022 your growth coach</h3><p>Talk about goals, habits, fitness, routines, mindset \\u2014 level up every day</p></div></div>';
     if(S.bro.speaking)h+='<div class="bro-speaking-indicator'+(S.bro.agent==='bri'?' bri-speaking':'')+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> '+agName+' is speaking\\u2026 <button onclick="broStopSpeaking()" style="background:none;border:none;cursor:pointer;color:inherit;font-weight:700;padding:0 4px">\\u2716</button></div>';
     h+='<div class="bro-chat" id="broChat">';
     S.bro.messages.forEach(m=>{
