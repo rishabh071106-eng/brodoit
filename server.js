@@ -2769,10 +2769,10 @@ body:not([data-theme=aurora]) .spat-cell.spat-wrong{background:linear-gradient(1
 @keyframes spatPulse{from{box-shadow:0 0 12px rgba(168,85,247,.3)}to{box-shadow:0 0 24px rgba(168,85,247,.6)}}
 /* Mini Sudoku */
 .sud-body{display:flex;flex-direction:column;align-items:center;gap:18px}
-.sud-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%;max-width:360px;aspect-ratio:1;background:rgba(255,255,255,.06);padding:6px;border-radius:14px;border:1px solid rgba(255,255,255,.1)}
-.sud-cell{aspect-ratio:1;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#F5F5FA;border-radius:10px;font-family:'Instrument Serif',Georgia,serif;font-size:clamp(28px,7vw,38px);font-weight:400;display:grid;place-items:center;cursor:pointer;transition:all .15s ease;padding:0}
-.sud-cell:hover:not(:disabled):not(.sud-given){background:rgba(255,255,255,.1);border-color:rgba(107,137,249,.4)}
-.sud-cell.sud-given{background:rgba(255,255,255,.02);color:rgba(245,245,250,.55);cursor:default;font-weight:600}
+.sud-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;width:100%;max-width:320px;aspect-ratio:1;background:rgba(255,255,255,.06);padding:8px;border-radius:16px;border:1px solid rgba(255,255,255,.12);margin:0 auto}
+.sud-cell{aspect-ratio:1;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;border-radius:12px;font-family:'Instrument Serif',Georgia,serif;font-size:clamp(28px,7vw,38px);font-weight:700;display:grid;place-items:center;cursor:pointer;transition:all .15s ease;padding:0}
+.sud-cell:hover:not(:disabled):not(.sud-given){background:rgba(255,255,255,.14);border-color:rgba(251,191,36,.5)}
+.sud-cell.sud-given{background:rgba(251,191,36,.12);color:#FBBF24;cursor:default;font-weight:700;border-color:rgba(251,191,36,.25)}
 .sud-cell.sud-sel{background:rgba(107,137,249,.2)!important;border-color:#93AAFB!important;box-shadow:0 0 0 2px rgba(107,137,249,.4)}
 .sud-cell.sud-bx-r{margin-right:3px}
 .sud-cell.sud-bx-b{margin-bottom:3px}
@@ -2781,9 +2781,9 @@ body:not([data-theme=aurora]) .spat-cell.spat-wrong{background:linear-gradient(1
 .sud-num:hover{transform:translateY(-2px);box-shadow:0 8px 18px -4px rgba(245,158,11,.6)}
 .sud-num:active{transform:scale(.94)}
 .sud-num.sud-clear{background:rgba(255,255,255,.08);color:#F5F5FA;font-size:18px;box-shadow:none}
-body:not([data-theme=aurora]) .sud-grid{background:rgba(27,37,65,.04);border-color:rgba(27,37,65,.08)}
-body:not([data-theme=aurora]) .sud-cell{background:#fff;border-color:rgba(27,37,65,.08);color:#1A1A1A}
-body:not([data-theme=aurora]) .sud-cell.sud-given{background:rgba(27,37,65,.04);color:rgba(27,37,65,.55)}
+body:not([data-theme=aurora]) .sud-grid{background:rgba(27,37,65,.04);border-color:rgba(27,37,65,.1)}
+body:not([data-theme=aurora]) .sud-cell{background:#fff;border-color:rgba(27,37,65,.12);color:#1B2541;font-weight:700}
+body:not([data-theme=aurora]) .sud-cell.sud-given{background:rgba(245,158,11,.08);color:#D97706;border-color:rgba(245,158,11,.25);font-weight:700}
 body:not([data-theme=aurora]) .sud-cell.sud-sel{background:rgba(245,158,11,.15)!important;border-color:#F59E0B!important;box-shadow:0 0 0 2px rgba(245,158,11,.3)}
 body:not([data-theme=aurora]) .sud-num.sud-clear{background:#fff;color:#1A1A1A;border:1px solid rgba(27,37,65,.1)}
 .sch-cell{font-family:'JetBrains Mono','Space Mono',ui-monospace,monospace;font-weight:800;font-size:clamp(22px,5.5vw,30px);aspect-ratio:1;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#F5F5FA;border-radius:12px;cursor:pointer;display:grid;place-items:center;transition:transform .12s ease,background .15s ease,border-color .15s ease,color .15s ease;letter-spacing:-.02em}
@@ -3813,6 +3813,8 @@ body[data-theme=aurora]::before{content:'';position:fixed;inset:-60px;background
   pointer-events:none;z-index:0;animation:aurora-drift 20s ease-in-out infinite alternate;filter:blur(40px)}
 @keyframes aurora-drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,20px) scale(1.05)}100%{transform:translate(20px,-30px) scale(.98)}}
 body[data-theme=aurora] .app{position:relative;z-index:1}
+#starfield{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+body[data-theme=aurora] #starfield{opacity:1}
 /* Typography */
 body[data-theme=aurora] .logo{color:#F5F5FA;background:linear-gradient(135deg,#93AAFB,#F472B6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 16px rgba(107,137,249,.3))}
 body[data-theme=aurora] .logo .k{color:#F472B6;-webkit-text-fill-color:#F472B6}
@@ -6873,6 +6875,7 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#fff}
 <path class="wv wv2" fill="url(#oc2)" d="M0,256 C240,192 480,288 720,240 C960,192 1200,288 1440,240 L1440,320 L0,320 Z"/>
 <path class="wv wv1" fill="url(#oc1)" d="M0,272 C240,224 480,304 720,272 C960,240 1200,304 1440,272 L1440,320 L0,320 Z"/>
 </svg></div>
+<canvas id="starfield"></canvas>
 <div class="app" id="app"></div>
 <noscript><div style="text-align:center;padding:40px 20px"><h1>Brodoit</h1><p>Brodoit needs JavaScript to run. Please enable JavaScript in your browser.</p><p><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a></p></div></noscript>
 <footer id="seo-foot" style="position:fixed;bottom:8px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(100,116,139,.7);z-index:1;pointer-events:auto;display:flex;gap:8px;background:rgba(255,255,255,.6);backdrop-filter:blur(8px);padding:4px 10px;border-radius:8px"><a href="/privacy" style="color:inherit;text-decoration:none">Privacy</a><span>&middot;</span><a href="/terms" style="color:inherit;text-decoration:none">Terms</a></footer>
@@ -8814,7 +8817,7 @@ async function loadWeather(){if(S.weather.loading)return;if(_isModalOpen()||_aud
 }catch(e){S.weather.error=String(e)}S.weather.loaded=true;S.weather.loading=false;if(_isModalOpen()||_audioBusy())return;renderPassive()}
 function _tryGeoWeather(){if(!navigator.geolocation)return;if(localStorage.getItem('tf_city'))return;navigator.geolocation.getCurrentPosition(function(pos){S.weather._geoLat=pos.coords.latitude;S.weather._geoLon=pos.coords.longitude;S.weather.loaded=false;loadWeather()},function(){},{ timeout:8000,maximumAge:300000 })}
 setTimeout(_tryGeoWeather,3000);
-const INDIA_CITIES=['Delhi','Mumbai','Chennai','Bengaluru','Pune','Shimla','Indore','Jaipur'];
+const INDIA_CITIES=['Shanghai','Mumbai','Chennai','Bengaluru','Pune','Shimla','Indore','Jaipur'];
 const WORLD_CITY_LIST=[
   {key:'New York',label:'New York',tz:'America/New_York'},
   {key:'London',label:'London',tz:'Europe/London'},
@@ -10166,32 +10169,6 @@ if(isMain){
       +'<button class="is-hyd-toggle'+(_hyd.enabled?' on':'')+'" onclick="event.stopPropagation();toggleHydration()" title="'+(_hyd.enabled?'Reminders ON':'Turn on reminders')+'">\\u{1F514}</button>'
     +'</div>'
   +'</div>';
-  // Theme picker row
-  const _activeThemeColor=S.themeColor||'blue';
-  const _themeColors=[
-    {k:'blue',n:'Ocean',c1:'#4A6CF7',c2:'#6B89F9',c3:'#93AAFB',c4:'#1B2541'},
-    {k:'emerald',n:'Emerald',c1:'#10B981',c2:'#34D399',c3:'#6EE7B7',c4:'#064E3B'},
-    {k:'violet',n:'Violet',c1:'#8B5CF6',c2:'#A78BFA',c3:'#C4B5FD',c4:'#2E1065'},
-    {k:'rose',n:'Rose',c1:'#F43F5E',c2:'#FB7185',c3:'#FDA4AF',c4:'#4C0519'},
-    {k:'amber',n:'Amber',c1:'#F59E0B',c2:'#FBBF24',c3:'#FCD34D',c4:'#451A03'},
-    {k:'teal',n:'Teal',c1:'#14B8A6',c2:'#2DD4BF',c3:'#5EEAD4',c4:'#134E4A'},
-    {k:'indigo',n:'Indigo',c1:'#6366F1',c2:'#818CF8',c3:'#A5B4FC',c4:'#1E1B4B'},
-    {k:'coral',n:'Coral',c1:'#F97316',c2:'#FB923C',c3:'#FDBA74',c4:'#431407'},
-    {k:'sky',n:'Sky',c1:'#0EA5E9',c2:'#38BDF8',c3:'#7DD3FC',c4:'#0C4A6E'},
-    {k:'slate',n:'Slate',c1:'#64748B',c2:'#94A3B8',c3:'#CBD5E1',c4:'#0F172A'}
-  ];
-  infoStrip+='<div class="is-row is-themes" onclick="event.stopPropagation()">'
-    +'<div class="is-row-icon">\\u{1F3A8}</div>'
-    +'<div class="is-row-body" style="flex:1">'
-      +'<div class="is-row-title">Theme</div>'
-      +'<div class="theme-chips">';
-  _themeColors.forEach(tc=>{
-    infoStrip+='<button class="theme-chip'+(tc.k===_activeThemeColor?' on':'')+'" onclick="event.stopPropagation();applyColorTheme(\\''+tc.k+'\\');" title="'+tc.n+'">'
-      +'<span class="tc-swatch" style="background:linear-gradient(135deg,'+tc.c1+','+tc.c2+')"></span>'
-      +'<span class="tc-name">'+tc.n+'</span>'
-    +'</button>';
-  });
-  infoStrip+='</div></div></div>';
   moralBlock=hero+infoStrip;
   // Bottom strip — keep moral + news ticker + clocks but tucked away as a subtle footer.
   const items=S.ticker.items||[];const baseIdx=S.ticker.idx||0;
@@ -10772,7 +10749,7 @@ else if(S.tab==='bro'){
       h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Help me write a professional email\\';broSend()">\\u270D\\uFE0F Help me write</button>';
       h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Explain quantum computing simply\\';broSend()">\\u{1F9E0} Explain something</button>';
       h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Give me 5 startup ideas for 2026\\';broSend()">\\u{1F4A1} Brainstorm ideas</button>';
-      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Plan my day — I have 5 tasks\\';broSend()">\\u{1F4C5} Plan my day</button>';
+      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Plan my day: \\';render();setTimeout(function(){var el=document.getElementById(\\'broInput\\');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}},100)">\\u{1F4C5} Plan my day</button>';
       h+='</div></div>';
     }
     S.bro.messages.forEach(m=>{
@@ -11079,6 +11056,31 @@ if(S.showProfile){
     +(localStorage.getItem('tf_tasks_backup')?'<button class="mb mb-c bkp-btn" style="margin-top:8px" onclick="restoreFromBackup()">\\u21BB Restore from this device\\u2019s backup</button>':'')
   +'</div>';
 
+  // Theme picker in profile
+  {
+    const _atc=S.themeColor||'blue';
+    const _tcs=[
+      {k:'blue',n:'Ocean',c1:'#4A6CF7',c2:'#6B89F9'},
+      {k:'emerald',n:'Emerald',c1:'#10B981',c2:'#34D399'},
+      {k:'violet',n:'Violet',c1:'#8B5CF6',c2:'#A78BFA'},
+      {k:'rose',n:'Rose',c1:'#F43F5E',c2:'#FB7185'},
+      {k:'amber',n:'Amber',c1:'#F59E0B',c2:'#FBBF24'},
+      {k:'teal',n:'Teal',c1:'#14B8A6',c2:'#2DD4BF'},
+      {k:'indigo',n:'Indigo',c1:'#6366F1',c2:'#818CF8'},
+      {k:'coral',n:'Coral',c1:'#F97316',c2:'#FB923C'},
+      {k:'sky',n:'Sky',c1:'#0EA5E9',c2:'#38BDF8'},
+      {k:'slate',n:'Slate',c1:'#64748B',c2:'#94A3B8'}
+    ];
+    h+='<div class="bkp-sec" style="margin-top:14px"><div class="bkp-sec-hd"><span class="bkp-sec-emoji">\\u{1F3A8}</span><div><div class="bkp-sec-t">Theme</div><div class="bkp-sec-s">Pick an accent color for the app</div></div></div>';
+    h+='<div class="theme-chips" style="justify-content:center">';
+    _tcs.forEach(function(tc){
+      h+='<button class="theme-chip'+(tc.k===_atc?' on':'')+'" onclick="event.stopPropagation();applyColorTheme(\\''+tc.k+'\\');" title="'+tc.n+'">'
+        +'<span class="tc-swatch" style="background:linear-gradient(135deg,'+tc.c1+','+tc.c2+')"></span>'
+        +'<span class="tc-name">'+tc.n+'</span>'
+      +'</button>';
+    });
+    h+='</div></div>';
+  }
   h+='<div class="macts" style="margin-top:22px"><button class="mb mb-c" onclick="closeProfile()">Close</button><button class="mb mb-d" style="margin-top:0" onclick="logout()">Log out</button></div>';
   h+='</div></div>';
 }
@@ -11718,6 +11720,67 @@ try{document.body.classList.toggle('bro-tab',S.tab==='bro')}catch(e){}
 }
 fetch('/api/config').then(r=>r.json()).then(c=>{window.__TWILIO_SANDBOX_CODE=c.sandboxCode||'';render()}).catch(()=>{});
 applyTheme();
+(function(){
+  const cv=document.getElementById('starfield');if(!cv)return;
+  const ctx=cv.getContext('2d');
+  const N=320;const SPD=0.8;const MD=1200;
+  let W,H,cx,cy;
+  const st=[];const comets=[];
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;cx=W/2;cy=H/2}
+  resize();window.addEventListener('resize',resize);
+  for(let i=0;i<N;i++)st.push({x:(Math.random()-0.5)*W*2,y:(Math.random()-0.5)*H*2,z:Math.random()*MD,hue:200+Math.random()*80,bright:0.6+Math.random()*0.4});
+  function spawnComet(){comets.push({x:Math.random()*W,y:-10,vx:(Math.random()-0.5)*3,vy:2+Math.random()*4,life:1,len:30+Math.random()*50,hue:200+Math.random()*60})}
+  let prev=0;let cometTimer=0;
+  function frame(t){
+    const dt=Math.min(t-prev,50);prev=t;
+    ctx.fillStyle='rgba(10,10,20,0.4)';ctx.fillRect(0,0,W,H);
+    for(let i=0;i<N;i++){
+      const s=st[i];
+      s.z-=SPD*dt*0.12;
+      if(s.z<=1){s.x=(Math.random()-0.5)*W*2;s.y=(Math.random()-0.5)*H*2;s.z=MD;s.hue=200+Math.random()*80}
+      const k=150/s.z;
+      const px=s.x*k+cx;const py=s.y*k+cy;
+      if(px<-6||px>W+6||py<-6||py>H+6)continue;
+      const r=1-s.z/MD;const sz=Math.max(0.2,r*3.2);
+      const br=Math.min(1,r*1.8)*s.bright;
+      if(r>0.15){
+        const pz=s.z+SPD*dt*0.12;const pk=150/pz;
+        const px2=s.x*pk+cx;const py2=s.y*pk+cy;
+        const g=ctx.createLinearGradient(px2,py2,px,py);
+        g.addColorStop(0,'hsla('+s.hue+',60%,80%,0)');
+        g.addColorStop(1,'hsla('+s.hue+',60%,80%,'+br*0.5+')');
+        ctx.strokeStyle=g;ctx.lineWidth=sz*0.7;
+        ctx.beginPath();ctx.moveTo(px2,py2);ctx.lineTo(px,py);ctx.stroke();
+      }
+      if(sz>1.6){
+        const gl=ctx.createRadialGradient(px,py,0,px,py,sz*2.5);
+        gl.addColorStop(0,'hsla('+s.hue+',80%,85%,'+br*0.2+')');
+        gl.addColorStop(1,'hsla('+s.hue+',80%,85%,0)');
+        ctx.fillStyle=gl;ctx.fillRect(px-sz*2.5,py-sz*2.5,sz*5,sz*5);
+      }
+      ctx.beginPath();ctx.arc(px,py,sz,0,6.283);
+      ctx.fillStyle='hsla('+s.hue+',70%,'+(75+br*25)+'%,'+br+')';
+      ctx.fill();
+    }
+    cometTimer+=dt;
+    if(cometTimer>3000+Math.random()*5000){cometTimer=0;spawnComet()}
+    for(let i=comets.length-1;i>=0;i--){
+      const c=comets[i];
+      c.x+=c.vx*dt*0.06;c.y+=c.vy*dt*0.06;c.life-=dt*0.0008;
+      if(c.life<=0||c.y>H+20){comets.splice(i,1);continue}
+      const a=c.life*0.7;
+      const g=ctx.createLinearGradient(c.x-c.vx*c.len*0.3,c.y-c.vy*c.len*0.3,c.x,c.y);
+      g.addColorStop(0,'hsla('+c.hue+',80%,90%,0)');
+      g.addColorStop(1,'hsla('+c.hue+',80%,90%,'+a+')');
+      ctx.strokeStyle=g;ctx.lineWidth=1.5;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(c.x-c.vx*c.len*0.3,c.y-c.vy*c.len*0.3);ctx.lineTo(c.x,c.y);ctx.stroke();
+      ctx.beginPath();ctx.arc(c.x,c.y,2,0,6.283);
+      ctx.fillStyle='hsla('+c.hue+',90%,95%,'+a+')';ctx.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
 if(S.user){try{localStorage.removeItem('tf_wa_conn');localStorage.removeItem('tf_wa_joined');localStorage.removeItem('tf_wa_banner_x')}catch(e){}refreshSession();load();loadBookStreak();loadGoogleStatus();loadWeather();loadTicker();loadCityTemps();loadRemember();loadMindGym();coachInit();chk();setInterval(load,10000);setInterval(loadWeather,15*60*1000);setInterval(loadTicker,15*60*1000);setInterval(loadCityTemps,15*60*1000);setInterval(loadRemember,6*60*60*1000)}else render();
 // When the user returns from their email app to read the OTP, re-restore the in-progress login.
 // Only ever transitions FORWARD (phone → otp); never restores otp → phone. The previous polling
