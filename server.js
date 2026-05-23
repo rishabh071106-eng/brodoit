@@ -5012,12 +5012,17 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-guide .qc-p-arm.l{animation:qcArmSwing .6s ease-in-out infinite}
 .qc-guide .qc-p-leg.l{animation:qcLeg .5s ease-in-out infinite}
 .qc-guide .qc-p-leg.r{animation:qcLeg .5s ease-in-out infinite .25s}
-/* speech bubble */
-.qc-bubble{position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#2C3E6B;color:#fff;font-size:13px;font-weight:800;padding:6px 14px;border-radius:12px;white-space:nowrap;opacity:0;animation:qcBubble 6s ease-in-out infinite;letter-spacing:.03em;text-shadow:0 1px 2px rgba(0,0,0,.3);z-index:6;box-shadow:0 3px 10px rgba(44,62,107,.3)}
-.qc-bubble::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #2C3E6B}
+/* speech bubbles */
+.qc-bubble{position:absolute;top:-16px;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;padding:5px 12px;border-radius:10px;white-space:nowrap;opacity:0;letter-spacing:.02em;text-shadow:0 1px 2px rgba(0,0,0,.3);z-index:6;box-shadow:0 3px 10px rgba(44,62,107,.3)}
+.qc-bubble::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);border-left:4px solid transparent;border-right:4px solid transparent}
+.qc-b1{background:#2C3E6B;animation:qcB1 6s ease-in-out infinite}
+.qc-b1::after{border-top:5px solid #2C3E6B}
+.qc-b2{background:#4A6CF7;animation:qcB2 6s ease-in-out infinite}
+.qc-b2::after{border-top:5px solid #4A6CF7}
+@keyframes qcB1{0%,25%{opacity:0;transform:translateX(-50%) translateY(4px)}32%{opacity:1;transform:translateX(-50%) translateY(0)}48%{opacity:1}52%,100%{opacity:0}}
+@keyframes qcB2{0%,50%{opacity:0;transform:translateX(-50%) translateY(4px)}56%{opacity:1;transform:translateX(-50%) translateY(0)}72%{opacity:1}76%,100%{opacity:0}}
 @keyframes qcGuideWalk{0%{left:-10%;opacity:0}15%{left:12%;opacity:1}40%{left:28%}50%,100%{left:28%;opacity:1}}
 @keyframes qcGuidePoint{0%,30%{transform:rotate(15deg)}45%{transform:rotate(-60deg)}55%,70%{transform:rotate(-60deg)}80%,100%{transform:rotate(15deg)}}
-@keyframes qcBubble{0%,30%{opacity:0;transform:translateX(-50%) translateY(4px)}38%{opacity:1;transform:translateX(-50%) translateY(0)}55%{opacity:1}60%,100%{opacity:0}}
 /* — Writer (person 2) — follows guide, sits at notebook — */
 .qc-writer{animation:qcWriterWalk 6s ease-in-out infinite}
 .qc-writer .qc-p-head{background:linear-gradient(135deg,#93AAFB,#3858D6);box-shadow:0 2px 6px rgba(107,137,249,.3)}
@@ -6546,10 +6551,10 @@ body[data-theme=aurora] .bro-typing-dot{background:rgba(255,255,255,.35)}
 @keyframes broTypeDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
 .bro-input-wrap{position:absolute;bottom:0;left:0;right:0;padding:12px 16px 16px;background:linear-gradient(0deg,#FFFFFF 70%,rgba(255,255,255,0));z-index:20}
 body[data-theme=aurora] .bro-input-wrap{background:linear-gradient(0deg,rgba(15,12,30,1) 70%,rgba(15,12,30,0))}
-.bro-input-bar{display:flex;gap:6px;padding:8px 8px 8px 18px;background:#fff;border:1.5px solid #E2E6F0;border-radius:28px;align-items:center;transition:border-color .2s,box-shadow .2s;box-shadow:0 2px 12px rgba(107,137,249,.08)}
-.bro-input-bar:focus-within{border-color:#93AAFB;box-shadow:0 4px 20px rgba(107,137,249,.15)}
-body[data-theme=aurora] .bro-input-bar{background:rgba(30,25,55,.85);border-color:rgba(107,137,249,.2);box-shadow:0 2px 16px rgba(107,137,249,.1)}
-body[data-theme=aurora] .bro-input-bar:focus-within{border-color:rgba(107,137,249,.4);box-shadow:0 4px 24px rgba(107,137,249,.2)}
+.bro-input-bar{display:flex;gap:10px;padding:12px 14px;background:var(--bg-elev,#fff);border:1.5px solid var(--line,#E8E9EF);border-radius:16px;align-items:center;transition:border-color .2s,box-shadow .2s;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.bro-input-bar:focus-within{border-color:#93AAFB;box-shadow:0 4px 16px rgba(107,137,249,.12)}
+body[data-theme=aurora] .bro-input-bar{background:rgba(30,25,55,.85);border-color:rgba(255,255,255,.1);box-shadow:0 2px 10px rgba(0,0,0,.2)}
+body[data-theme=aurora] .bro-input-bar:focus-within{border-color:rgba(107,137,249,.35);box-shadow:0 4px 16px rgba(107,137,249,.15)}
 .bro-input{flex:1;border:none;background:transparent;font-size:15px;outline:none;color:inherit;font-family:inherit;padding:8px 0}
 .bro-input::placeholder{color:#9CA3AF}
 body[data-theme=aurora] .bro-input::placeholder{color:rgba(255,255,255,.3)}
@@ -6558,11 +6563,11 @@ body[data-theme=aurora] .bro-input::placeholder{color:rgba(255,255,255,.3)}
 .bro-file-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;margin:0 0 6px;background:rgba(44,62,107,.06);border:1px solid rgba(44,62,107,.15);border-radius:10px;font-size:12px;color:#4A6CF7;font-weight:500;cursor:pointer;transition:all .15s}
 .bro-file-badge:hover{background:rgba(44,62,107,.1)}
 .bro-file-x{font-size:14px;margin-left:auto;opacity:.6}
-.bro-send-btn{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;color:#fff;flex-shrink:0}
+.bro-send-btn{width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(74,108,247,.3)}
 .bro-send-btn:hover{transform:scale(1.05)}
-.bro-send-btn:active{transform:scale(.93)}
+.bro-send-btn:active{transform:scale(.92)}
 .bro-send-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
-.bro-send-bro{background:#4A6CF7}
+.bro-send-bro{background:linear-gradient(135deg,#4A6CF7,#6B89F9)}
 .bro-send-bri{background:linear-gradient(135deg,#EC4899,#F472B6)}
 @keyframes broFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .bro-welcome{display:flex;flex-direction:column;align-items:center;gap:16px;padding:60px 24px 40px;text-align:center}
@@ -6659,6 +6664,10 @@ body[data-theme=aurora] .bro-img-err{background:rgba(239,68,68,.12)}
   body.bro-tab .bro-container{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;height:100% !important;margin:0 !important;z-index:50 !important;border-radius:0 !important}
   body.bro-tab .bro-chat{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px) + 78px) !important}
   body.bro-tab .bro-input-wrap{bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)) !important}
+  body.bro-tab .bro-input-bar{padding:14px 16px;border-radius:18px;border:2px solid #93AAFB;box-shadow:0 4px 16px rgba(44,62,107,.1);background:#FAFBFF !important}
+  body.bro-tab .bro-input{font-size:17px;padding:10px 0;min-height:44px;font-weight:500}
+  body.bro-tab .bro-input::placeholder{font-size:16px;color:#B8A394}
+  body.bro-tab .bro-send-btn{width:48px;height:48px;box-shadow:0 4px 14px rgba(74,108,247,.35)}
   body.bro-tab .tabs.page-t{z-index:61 !important}
 }
 /* ─── COACH SELECTOR ─── */
@@ -7231,7 +7240,7 @@ async function composeSubmit(){
   S.compose.saving=true;render();
   const r=await api('/tasks',{method:'POST',body:JSON.stringify({title:parsed.title,notes:'',priority:priority,status:'pending',due_date:dueDate,reminder_time:'',board:'home'})});
   S.compose.saving=false;
-  if(r&&r.id){S.tasks.unshift(r);S.compose={value:'',priority:null,dueDate:null,saving:false};toast('\\u2705 Task added');render()}
+  if(r&&r.id){S.tasks.unshift(r);S.compose={value:'',priority:null,dueDate:null,saving:false};_mgSound('paper');toast('\\u2705 Task added');render()}
   else{toast('\\u26A0\\uFE0F Could not save','err');render()}
 }
 async function savE(){if(!S.form.title.trim()||!S.editing)return;const r=await api('/tasks/'+S.editing,{method:'PUT',body:JSON.stringify({title:S.form.title,notes:S.form.notes,priority:S.form.priority,status:S.form.status,due_date:S.form.dueDate,reminder_time:S.form.reminderTime,board:S.form.board})});if(r){const i=S.tasks.findIndex(t=>t.id===S.editing);if(i>-1)S.tasks[i]=r;clM();toast('\\u2705 Updated!')}}
@@ -7287,7 +7296,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -7688,6 +7697,15 @@ function _mgSound(kind){
     else if(kind==='tap'){beep(680,0,0.05,0.08)}
     else if(kind==='flash'){beep(440+Math.random()*440,0,0.12,0.1)}
     else if(kind==='go'){beep(900,0,0.08);beep(900,0.1,0.08)}
+    else if(kind==='paper'){
+      const buf=ctx.createBuffer(1,ctx.sampleRate*0.35,ctx.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++){const env=i<d.length*0.1?i/(d.length*0.1):i>d.length*0.7?1-(i-d.length*0.7)/(d.length*0.3):1;d[i]=(Math.random()*2-1)*0.12*env*(0.5+0.5*Math.sin(i*0.08))}
+      const src=ctx.createBufferSource();src.buffer=buf;const f=ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=3200;f.Q.value=1.5;src.connect(f).connect(ctx.destination);src.start(t);
+    }
+    else if(kind==='water'){
+      const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(1400,t);o.frequency.exponentialRampToValueAtTime(300,t+0.25);g.gain.setValueAtTime(0.15,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.3);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+0.3);
+      const o2=ctx.createOscillator(),g2=ctx.createGain();o2.type='sine';o2.frequency.setValueAtTime(800,t+0.05);o2.frequency.exponentialRampToValueAtTime(200,t+0.35);g2.gain.setValueAtTime(0.08,t+0.05);g2.gain.exponentialRampToValueAtTime(0.001,t+0.4);o2.connect(g2).connect(ctx.destination);o2.start(t+0.05);o2.stop(t+0.4);
+    }
+    else if(kind==='tab'){beep(520,0,0.06,0.06);beep(660,0.04,0.06,0.06)}
   }catch(e){}
 }
 // Daily workout ledger — which games the user completed *today*
@@ -9803,7 +9821,7 @@ function toggleHydration(){
   render();
 }
 function _hydrationPatch(){var dots=document.querySelectorAll('.is-hyd-dot');dots.forEach(function(d,i){if(i<S.hydration.glass)d.classList.add('filled');else d.classList.remove('filled')});var tEl=document.querySelector('.is-hydration .is-row-title');if(tEl)tEl.textContent='Water \\u00B7 '+S.hydration.glass+'/'+S.hydration.goal+' glasses'}
-function drinkWater(){_hydrationToday();if(S.hydration.glass>=S.hydration.goal){toast('\\u{1F4A7} You already hit your goal! Great job!');return}S.hydration.glass++;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Nice! '+S.hydration.glass+'/'+S.hydration.goal+' glasses today');_hydrationPatch()}
+function drinkWater(){_hydrationToday();if(S.hydration.glass>=S.hydration.goal){toast('\\u{1F4A7} You already hit your goal! Great job!');return}S.hydration.glass++;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));_mgSound('water');toast('\\u{1F4A7} Nice! '+S.hydration.glass+'/'+S.hydration.goal+' glasses today');_hydrationPatch()}
 function undrinkWater(){_hydrationToday();if(S.hydration.glass<=0)return;S.hydration.glass--;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Adjusted to '+S.hydration.glass+'/'+S.hydration.goal);_hydrationPatch()}
 function _playWaterSound(){
   try{const ac=new(window.AudioContext||window.webkitAudioContext)();
@@ -10308,8 +10326,8 @@ if(S.tab==='tasks'){
   // Quick-compose bar with animated CTA + priority chips
   const _cp=S.compose.priority;
   h+='<div class="qc-scene" onclick="this.classList.toggle(\\'fast\\')">';
-  h+='<div class="qc-p qc-guide"><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
-  h+='<div class="qc-p qc-writer"><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
+  h+='<div class="qc-p qc-guide"><div class="qc-bubble qc-b1">Hey, task done?</div><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
+  h+='<div class="qc-p qc-writer"><div class="qc-bubble qc-b2">Let me write it!</div><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
   h+='<div class="qc-notebook"><div class="qc-nb-cover"><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-ink"></div><div class="qc-nb-ink"></div><div class="qc-nb-ink"></div></div><div class="qc-nb-check"></div></div>';
   h+='<div class="qc-pencil"></div>';
   h+='<div class="qc-sparkles"><div class="qc-sparkle"></div><div class="qc-sparkle"></div><div class="qc-sparkle"></div><div class="qc-sparkle"></div></div>';
@@ -10743,7 +10761,7 @@ else if(S.tab==='bro'){
       h+='<div class="bro-welcome">';
       h+='<div class="bro-welcome-avatar" style="background:linear-gradient(135deg,#4A6CF7,#6B89F9)">\\u26A1</div>';
       h+='<div class="bro-welcome-title">Yo, I\\'m Bro</div>';
-      h+='<div class="bro-welcome-text">Your personal AI that actually gets it. Ask me anything \\u2014 brainstorm, write, explain, advise.</div>';
+      h+='<div class="bro-welcome-text">I\\'m here to solve your problems. Ask me anything \\u2014 brainstorm, write, explain, plan.</div>';
       h+='<div class="bro-scene">';
       h+='<div class="bp bp-ask"><div class="bp-chat bp-ask-b">Don\\'t laugh too loud around others</div><div class="bp-chat bp-ask-b">Speak less, observe more</div><div class="bp-chat bp-ask-b">Never reveal your next move</div><div class="bp-bod"><div class="bp-head"></div><div class="bp-torso"></div><div class="bp-arm al"></div><div class="bp-arm ar"></div><div class="bp-leg ll"></div><div class="bp-leg lr"></div></div></div>';
       h+='<div class="bp bp-bro"><div class="bp-chat bp-bro-b">Work in silence, let results talk</div><div class="bp-chat bp-bro-b">Stay hungry, stay focused</div><div class="bp-chat bp-bro-b">Discipline beats motivation</div><div class="bp-bod"><div class="bp-head"></div><div class="bp-torso"></div><div class="bp-arm al"></div><div class="bp-arm ar"></div><div class="bp-leg ll"></div><div class="bp-leg lr"></div></div></div>';
