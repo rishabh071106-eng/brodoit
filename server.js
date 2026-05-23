@@ -269,12 +269,13 @@ app.post('/api/verify-otp',(req,res)=>{
 const ANTHROPIC_KEY=process.env.ANTHROPIC_API_KEY||'';
 const OPENAI_KEY=process.env.OPENAI_API_KEY||'';
 const ELEVENLABS_KEY=process.env.ELEVENLABS_API_KEY||'';
+const GROQ_KEY=process.env.GROQ_API_KEY||'';
 // George — warm, calm British male narrator. Widely regarded as the closest ElevenLabs voice
 // to Headspace-style soothing narration. Override via ELEVENLABS_VOICE env var.
 // Other strong narration choices: Brian (nPczCjzI2devNBz1zQrb), Daniel (onwK4e9ZLuTAKqWW03F9),
 // Bill (pqHfZKP75CvOlQylNhV4 — older, calming).
 const ELEVENLABS_VOICE=process.env.ELEVENLABS_VOICE||'JBFqnCBsd6RMkjVDRZzb';  // George (warm British male)
-console.log('[ai] anthropic',ANTHROPIC_KEY?'\\u2705':'\\u274C','openai',OPENAI_KEY?'\\u2705':'\\u274C','elevenlabs',ELEVENLABS_KEY?'\\u2705':'\\u274C');
+console.log('[ai] anthropic',ANTHROPIC_KEY?'\\u2705':'\\u274C','openai',OPENAI_KEY?'\\u2705':'\\u274C','elevenlabs',ELEVENLABS_KEY?'\\u2705':'\\u274C','groq',GROQ_KEY?'\\u2705':'\\u274C');
 
 const COACH_SYSTEM=`You are an expert Business English coach speaking with a fluent professional who wants to sound MORE polished and use more sophisticated vocabulary in business contexts.
 
@@ -307,24 +308,41 @@ app.post('/api/coach/chat',auth,async(req,res)=>{
   }catch(e){res.status(500).json({error:String(e.message||e)})}
 });
 
-// ═══ BRO / BRI — Life Coach Chat ═══
+// ═══ BRO / BRI — Life Coach Chat (Groq free tier → Anthropic fallback) ═══
 app.post('/api/bro/chat',auth,async(req,res)=>{
-  if(!ANTHROPIC_KEY)return res.status(503).json({error:'Coach not configured (ANTHROPIC_API_KEY missing).'});
+  if(!GROQ_KEY&&!ANTHROPIC_KEY)return res.status(503).json({error:'Coach not configured (GROQ_API_KEY or ANTHROPIC_API_KEY missing).'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const agent=(req.body.agent==='bri')?'bri':'bro';
-  const sys=`You are Bro, a smart AI assistant inside the Brodoit app. You can answer questions on ANY topic — science, math, history, coding, writing, travel, health, career advice, life decisions, creative ideas, explanations, analysis, and more. You are helpful, knowledgeable, and conversational. Keep responses concise and clear (2-4 paragraphs max unless a detailed answer is needed). When someone asks a question, give a direct, useful answer. When someone needs advice, be thoughtful and actionable. When someone wants to brainstorm, suggest creative ideas. At the end of your response, suggest 1-2 follow-up questions they might want to ask, formatted naturally like "You might also want to know about..." or "A good next question would be...". Never say you are an AI or language model. Be warm and approachable but not overly casual.`;
-  try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:2048,system:sys,messages:messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,16000)}))})
-    });
-    const j=await r.json();
-    if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Claude error',detail:j});
-    const reply=(j.content&&j.content[0]&&j.content[0].text)||'';
-    res.json({reply,usage:j.usage});
-  }catch(e){res.status(500).json({error:String(e.message||e)})}
+  const sys='You are Bro, a smart AI assistant inside the Brodoit app. You can answer questions on ANY topic — science, math, history, coding, writing, travel, health, career advice, life decisions, creative ideas, explanations, analysis, and more. You are helpful, knowledgeable, and conversational. Keep responses concise and clear (2-4 paragraphs max unless a detailed answer is needed). When someone asks a question, give a direct, useful answer. When someone needs advice, be thoughtful and actionable. When someone wants to brainstorm, suggest creative ideas. At the end of your response, suggest 1-2 follow-up questions they might want to ask, formatted naturally like "You might also want to know about..." or "A good next question would be...". Never say you are an AI or language model. Be warm and approachable but not overly casual.';
+  const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,16000)}));
+  if(GROQ_KEY){
+    try{
+      const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+        body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:2048,messages:[{role:'system',content:sys},...mapped]})
+      });
+      const j=await r.json();
+      if(r.ok&&j.choices&&j.choices[0]){
+        return res.json({reply:j.choices[0].message.content||'',usage:j.usage});
+      }
+    }catch(e){}
+  }
+  if(ANTHROPIC_KEY){
+    try{
+      const r=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
+        body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:2048,system:sys,messages:mapped})
+      });
+      const j=await r.json();
+      if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Claude error',detail:j});
+      const reply=(j.content&&j.content[0]&&j.content[0].text)||'';
+      return res.json({reply,usage:j.usage});
+    }catch(e){return res.status(500).json({error:String(e.message||e)})}
+  }
+  res.status(503).json({error:'No AI provider available'});
 });
 
 app.post('/api/coach/transcribe',auth,express.raw({type:'audio/*',limit:'10mb'}),async(req,res)=>{
@@ -812,7 +830,7 @@ app.get('/api/coach/cache-stats',(req,res)=>{
 
 // AI status — client-only check, no key exposure
 app.get('/api/coach/status',(req,res)=>{
-  res.json({chat:!!ANTHROPIC_KEY,transcribe:!!OPENAI_KEY,tts:!!ELEVENLABS_KEY});
+  res.json({chat:!!(GROQ_KEY||ANTHROPIC_KEY),transcribe:!!OPENAI_KEY,tts:!!ELEVENLABS_KEY});
 });
 
 // ═══ VOICE TRAINER — 90-day "zero to hero" English accent + functional-English course ═══
@@ -1690,9 +1708,12 @@ app.get('/api/weather',async(req,res)=>{
     let lat,lon,cityName,country='';
     if(hasCoords){
       lat=Number(req.query.lat);lon=Number(req.query.lon);
-      const revGeo=await _fetchT('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name='+encodeURIComponent(lat.toFixed(1)+','+lon.toFixed(1)),3000);
-      const rgPlace=(revGeo.results||[])[0];
-      cityName=rgPlace?rgPlace.name:'Your location';country=rgPlace?rgPlace.country_code||'':'';
+      const hintName=req.query.name?String(req.query.name).slice(0,80).trim():'';
+      if(hintName){cityName=hintName;country=''}else{
+        const revGeo=await _fetchT('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name='+encodeURIComponent(lat.toFixed(1)+','+lon.toFixed(1)),3000);
+        const rgPlace=(revGeo.results||[])[0];
+        cityName=rgPlace?rgPlace.name:'Your location';country=rgPlace?rgPlace.country_code||'':'';
+      }
     }else{
       const geoJ=await _fetchT('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name='+encodeURIComponent(city),5000);
       const place=(geoJ.results||[])[0];
@@ -1701,10 +1722,9 @@ app.get('/api/weather',async(req,res)=>{
     }
     // Use the modern Open-Meteo "current" param (current_weather is legacy and occasionally drops fields)
     const [wxR,aqR]=await Promise.all([
-      _fetchT('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,weather_code',5000),
+      _fetchT('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max&timezone=auto&forecast_days=7',5000),
       _fetchT('https://air-quality-api.open-meteo.com/v1/air-quality?latitude='+lat+'&longitude='+lon+'&current=us_aqi',5000)
     ]);
-    // Modern shape first, then fall back to legacy
     const cur=(wxR&&wxR.current)||null;
     const legacy=(wxR&&wxR.current_weather)||null;
     const tRaw=cur&&typeof cur.temperature_2m==='number'?cur.temperature_2m:(legacy&&typeof legacy.temperature==='number'?legacy.temperature:null);
@@ -1712,7 +1732,8 @@ app.get('/api/weather',async(req,res)=>{
     const code=cur&&cur.weather_code!=null?cur.weather_code:(legacy?legacy.weathercode:null);
     const aqRaw=aqR&&aqR.current&&aqR.current.us_aqi;
     const aqi=typeof aqRaw==='number'?Math.round(aqRaw):null;
-    const data={city:cityName,country,lat,lon,temp,aqi,weatherCode:code};
+    const daily=wxR&&wxR.daily?{time:wxR.daily.time||[],max:(wxR.daily.temperature_2m_max||[]).map(v=>Math.round(v)),min:(wxR.daily.temperature_2m_min||[]).map(v=>Math.round(v)),code:wxR.daily.weather_code||[],rain:wxR.daily.precipitation_probability_max||[]}:null;
+    const data={city:cityName,country,lat,lon,temp,aqi,weatherCode:code,daily};
     // Only cache if at least temp came back. Partial caches fall through faster (90s).
     weatherCache[key]={ts:Date.now(),data};
     res.json(data);
@@ -1721,6 +1742,15 @@ app.get('/api/weather',async(req,res)=>{
 
 // Force-refresh endpoint to bust the cache (used by retry button + deploy hooks)
 app.post('/api/weather/refresh',(req,res)=>{const key=String(req.body&&req.body.city||'').toLowerCase().trim();if(key)delete weatherCache[key];res.json({ok:true,cleared:!!key})});
+
+app.get('/api/geocode',async(req,res)=>{
+  const q=String(req.query.q||'').trim();if(!q||q.length<2)return res.json({results:[]});
+  try{
+    const r=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=8&language=en&format=json');
+    const j=await r.json();
+    res.json({results:(j.results||[]).map(c=>({name:c.name,country:c.country||'',admin:c.admin1||'',lat:c.latitude,lon:c.longitude}))});
+  }catch(e){res.json({results:[]})}
+});
 
 // ═══ WIKIPEDIA SUMMARIES (24-hour cache) — powers History & Geography magazine cards ═══
 const wikiCache={};
@@ -1890,7 +1920,7 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
    Tighter geometry, modest radii (14px), hairline borders only.
 ─────────────────────────────────────────────────────────────── */
 :root{
---bg:#F4F5F7;--bg-2:#EBEDF2;--bg-elev:#FFFFFF;--bg-sunken:#E4E6EB;
+--bg:#E4E5EA;--bg-2:#DBDCE3;--bg-elev:#FFFFFF;--bg-sunken:#D3D5DC;
 --surface:#FFFFFF;--surface-2:#F8F9FB;
 --ink:#111827;--text:#111827;--text-mute:#4B5563;--text-dim:#6B7280;
 --ink-2:#1F2937;--ink-3:#4B5563;--ink-4:#6B7280;--ink-5:#9CA3AF;
@@ -3078,12 +3108,12 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
 .tab.on .ti{transform:scale(1.08)}
 /* Mobile tab nav — substantially bigger, sticky at top, per-tab scenic photo backgrounds */
 @media (max-width:1023px){
-  .tabs.page-t{padding:8px;gap:8px;border-radius:18px;position:sticky;top:6px;z-index:30;backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);background:rgba(255,255,255,.94);border:1px solid rgba(15,23,42,.08);box-shadow:0 4px 18px rgba(15,23,42,.1)}
-  .tabs.page-t .tab{padding:16px 16px;font-size:15px;border-radius:14px;gap:10px;min-height:56px;letter-spacing:-.01em;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .tabs.page-t{padding:8px;gap:8px;border-radius:18px;position:sticky;top:6px;z-index:30;backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);background:rgba(15,23,42,.92);border:1px solid rgba(255,255,255,.1);box-shadow:0 4px 18px rgba(0,0,0,.25)}
+  .tabs.page-t .tab{padding:16px 16px;font-size:15px;border-radius:14px;gap:10px;min-height:56px;letter-spacing:-.01em;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:rgba(255,255,255,.55)}
   .tabs.page-t .tab .ti{font-size:22px;width:32px;height:32px;display:flex;align-items:center;justify-content:center}
   .tabs.page-t .tab .ti svg{width:24px!important;height:24px!important}
   .tabs.page-t .tab .tl{font-size:13.5px;font-weight:700;letter-spacing:.005em}
-  .tabs.page-t .tab.on{transform:translateY(-2px);box-shadow:0 8px 22px rgba(45,42,38,.36),0 0 0 2px rgba(79,70,229,.5)}
+  .tabs.page-t .tab.on{transform:translateY(-2px);box-shadow:0 8px 22px rgba(45,42,38,.36),0 0 0 2px rgba(79,70,229,.5);color:#818CF8}
 }
 /* ═══════════════ MOBILE BOTTOM TAB BAR — international grade ═══════════════
    Fixed bottom bar like Instagram/Spotify/Headspace — but generously sized,
@@ -3104,16 +3134,16 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     flex-direction:row !important;
     justify-content:space-around !important;
     overflow-x:auto !important;overflow-y:visible !important;
-    background:rgba(255,255,255,.95) !important;
+    background:rgba(15,23,42,.92) !important;
     backdrop-filter:saturate(180%) blur(28px) !important;
     -webkit-backdrop-filter:saturate(180%) blur(28px) !important;
     border:0 !important;
-    border-top:1px solid rgba(0,0,0,.06) !important;
+    border-top:1px solid rgba(255,255,255,.1) !important;
     border-radius:0 !important;
     padding:8px 6px calc(10px + env(safe-area-inset-bottom,0px)) !important;
     gap:0 !important;
     z-index:60 !important;
-    box-shadow:0 -2px 12px rgba(0,0,0,.06) !important;
+    box-shadow:0 -4px 20px rgba(0,0,0,.25) !important;
     margin:0 !important;
   }
   .tabs.page-t::after{display:none !important}
@@ -3132,7 +3162,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     gap:4px !important;
     transition:color .2s ease,transform .2s cubic-bezier(.34,1.56,.64,1) !important;
     background:transparent !important;
-    color:#9CA3AF !important;
+    color:rgba(255,255,255,.55) !important;
     box-shadow:none !important;
     position:relative;
     overflow:visible;
@@ -3165,7 +3195,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab.tab-cal .tl{font-size:11px !important;letter-spacing:0 !important}
   .tabs.page-t .tab:active{transform:scale(.88) !important}
   .tabs.page-t .tab.on{
-    color:#4F46E5 !important;
+    color:#818CF8 !important;
     transform:none !important;
     background:transparent !important;
   }
@@ -3475,6 +3505,8 @@ body:not([data-theme=aurora]) .tabs{background:#fff;border-color:#E5E7EB;box-sha
 body:not([data-theme=aurora]) .tab{color:#6B7280}
 body:not([data-theme=aurora]) .tab:hover:not(.on){background:#F3F4F6;color:#111827}
 body:not([data-theme=aurora]) .tab.on{background:#111827;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+body:not([data-theme=aurora]) .qc-bar{background:var(--bg-elev);border-color:var(--line);color:var(--ink)}
+body:not([data-theme=aurora]) .qc-input{color:var(--ink)}
 body:not([data-theme=aurora]) .add-bar{background:var(--bg-elev);border:1px solid var(--line);color:var(--ink);box-shadow:var(--shadow-1)}
 body:not([data-theme=aurora]) .add-bar:hover{border-color:var(--line-2);box-shadow:var(--shadow-2)}
 body:not([data-theme=aurora]) .add-bar .txt small{color:var(--ink-3)}
@@ -4875,6 +4907,26 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .add-bar .txt{flex:1;text-align:left}
 .add-bar .txt b{display:block;font-size:16px;font-weight:700;letter-spacing:-.2px}
 .add-bar .txt small{display:block;font-size:12px;color:rgba(245,242,237,.7);margin-top:2px;font-weight:500}
+/* Quick-compose bar */
+.qc-bar{background:var(--bg-elev,#fff);border:1.5px solid var(--line,#E8E9EF);border-radius:16px;padding:12px 14px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.qc-row{display:flex;align-items:center;gap:10px}
+.qc-input{flex:1;border:none;background:transparent;font-size:15px;font-family:inherit;outline:none;color:var(--ink,#1A1816);padding:6px 0}
+.qc-input::placeholder{color:var(--ink-3,#94A3B8)}
+.qc-send{width:38px;height:38px;border-radius:50%;border:none;background:linear-gradient(135deg,#3DAE5C,#2D8A4E);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;box-shadow:0 2px 8px rgba(61,174,92,.3)}
+.qc-send:active{transform:scale(.92)}
+.qc-chips{display:flex;gap:6px;margin-top:8px;align-items:center}
+.qc-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;border:1.5px solid transparent;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s;background:var(--bg,#F1F5F9);color:var(--ink-2,#64748B);user-select:none}
+.qc-chip:active{transform:scale(.95)}
+.qc-chip.qc-high{border-color:#FECACA;background:#FEF2F2;color:#DC2626}
+.qc-chip.qc-high.on{background:#DC2626;color:#fff;border-color:#DC2626;box-shadow:0 2px 8px rgba(220,38,38,.3)}
+.qc-chip.qc-med{border-color:#FED7AA;background:#FFF7ED;color:#EA580C}
+.qc-chip.qc-med.on{background:#EA580C;color:#fff;border-color:#EA580C;box-shadow:0 2px 8px rgba(234,88,12,.3)}
+.qc-chip.qc-low{border-color:#BBF7D0;background:#F0FDF4;color:#16A34A}
+.qc-chip.qc-low.on{background:#16A34A;color:#fff;border-color:#16A34A;box-shadow:0 2px 8px rgba(22,163,74,.3)}
+.qc-chip .qc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.qc-expand{font-size:12px;color:var(--ink-3,#94A3B8);cursor:pointer;margin-left:auto;white-space:nowrap}
+/* Priority badge on task cards */
+.tc-pri{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
 /* Dashboard */
 .dash-hero{background:linear-gradient(135deg,#3DAE5C 0%,#2D8A4E 60%,#1A6E3B 100%);color:#F8FAFC;border-radius:18px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(61,174,92,.2)}
 .dash-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:rgba(255,255,255,.1);border-radius:50%}
@@ -6425,24 +6477,45 @@ body[data-theme=aurora] .hydration-info b{color:#7DD3FC}
 .hydration-glass.filled{background:linear-gradient(135deg,#0EA5E9,#06B6D4);border-color:transparent}
 @keyframes hydDrop{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 /* ─── Compact greeting chip ─── */
-.home-greeting-chip{display:flex;align-items:center;gap:12px;padding:16px 18px;margin:0 0 10px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;cursor:pointer;transition:all .2s}
-.home-greeting-chip:hover{box-shadow:0 4px 16px rgba(0,0,0,.05)}
-body[data-theme=aurora] .home-greeting-chip{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+.home-greeting-chip{display:flex;align-items:center;gap:12px;padding:16px 18px;margin:0 0 10px;background:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);border:none;border-radius:16px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(79,70,229,.25)}
+.home-greeting-chip:hover{box-shadow:0 6px 24px rgba(79,70,229,.35)}
+body[data-theme=aurora] .home-greeting-chip{background:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);border:none}
 .hgc-left{flex:1;min-width:0}
-.hgc-greet{font-family:var(--serif);font-size:clamp(20px,4vw,28px);font-weight:400;color:#111827;letter-spacing:-.02em;line-height:1.1}
-.hgc-greet em{font-style:normal;color:#4F46E5}
-body[data-theme=aurora] .hgc-greet{color:#F5F5FA}
-.hgc-sub{font-size:12px;color:#6B7280;margin-top:4px;font-weight:500}
-body[data-theme=aurora] .hgc-sub{color:rgba(255,255,255,.4)}
+.hgc-greet{font-family:var(--serif);font-size:clamp(20px,4vw,28px);font-weight:400;color:#fff;letter-spacing:-.02em;line-height:1.1}
+.hgc-greet em{font-style:normal;color:#FDE68A}
+body[data-theme=aurora] .hgc-greet{color:#fff}
+.hgc-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:4px;font-weight:500}
+body[data-theme=aurora] .hgc-sub{color:rgba(255,255,255,.7)}
 .hgc-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.hgc-stat{font-size:11px;color:#6B7280;white-space:nowrap}
-.hgc-stat b{color:#111827;font-weight:700;font-size:13px}
-body[data-theme=aurora] .hgc-stat b{color:#F5F5FA}
-.hgc-arrow{color:#9CA3AF;transition:transform .25s ease}
+.hgc-stat{font-size:11px;color:rgba(255,255,255,.7);white-space:nowrap}
+.hgc-stat b{color:#fff;font-weight:700;font-size:13px}
+body[data-theme=aurora] .hgc-stat b{color:#fff}
+.hgc-arrow{color:rgba(255,255,255,.6);transition:transform .25s ease}
 .hgc-arrow.open{transform:rotate(180deg)}
 .hgc-expand{display:flex;gap:8px;margin:-2px 0 10px;animation:hhStatsIn .3s ease}
-.hgc-expand .hh-stat{flex:1}
+.hgc-expand .hh-stat{flex:1;background:rgba(79,70,229,.1) !important;border:1px solid rgba(79,70,229,.15) !important;color:#1A1A1A !important;backdrop-filter:none !important}
+.hgc-expand .hh-stat b{color:#1A1A1A !important;font-size:28px !important}
+.hgc-expand .hh-stat small{color:#4B5563 !important;font-size:11px !important;font-weight:600 !important}
 @media(max-width:560px){.hgc-right .hgc-stat{display:none}.hgc-greet{font-size:20px}}
+/* ─── 7-day forecast ─── */
+.wx-forecast{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:12px 14px;margin:0 0 8px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:14px}
+body[data-theme=aurora] .wx-forecast{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+.wx-day{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:10px;transition:background .2s}
+.wx-day.wx-today{background:rgba(79,70,229,.08)}
+.wx-day-name{font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.04em}
+.wx-day.wx-today .wx-day-name{color:#4F46E5}
+.wx-day-icon{font-size:22px;line-height:1}
+.wx-day-temps{font-size:12px;font-weight:600;color:#111827;white-space:nowrap}
+.wx-day-temps span{color:#9CA3AF;font-weight:400}
+.wx-day-rain{font-size:10px;font-weight:600;color:#0EA5E9;display:flex;align-items:center;gap:2px}
+.wx-day-rain.dry{color:#9CA3AF}
+.wx-summary{display:flex;gap:12px;padding:10px 14px;margin:-4px 0 8px;font-size:12px;font-weight:500;color:#4B5563}
+.wx-summary b{color:#111827;font-weight:700}
+body[data-theme=aurora] .wx-day-name{color:rgba(255,255,255,.5)}
+body[data-theme=aurora] .wx-day-temps{color:#F5F5FA}
+body[data-theme=aurora] .wx-day-temps span{color:rgba(255,255,255,.4)}
+body[data-theme=aurora] .wx-summary{color:rgba(255,255,255,.6)}
+body[data-theme=aurora] .wx-summary b{color:#F5F5FA}
 /* ─── Info rows: weather, day counter, hydration ─── */
 .is-row{display:flex;align-items:center;gap:14px;padding:14px 18px;margin:0 0 8px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:14px;transition:all .2s}
 .is-row:hover{box-shadow:0 2px 12px rgba(0,0,0,.04)}
@@ -6453,7 +6526,24 @@ body[data-theme=aurora] .is-row{background:rgba(255,255,255,.05);border-color:rg
 .is-row-title{font-size:15px;font-weight:600;color:#111827}
 body[data-theme=aurora] .is-row-title{color:#F5F5FA}
 .is-row-sub{font-size:12px;color:#9CA3AF;margin-top:2px}
-.is-weather{cursor:pointer}
+.is-weather{cursor:pointer;position:relative}
+.city-dd{position:relative;left:0;right:0;z-index:999;background:#fff;border:1px solid #E5E7EB;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.15);margin-top:4px;overflow:hidden;animation:ddSlide .15s ease}
+@keyframes ddSlide{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:translateY(0)}}
+.city-dd-input{width:100%;border:none;border-bottom:1px solid #E5E7EB;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;background:transparent;color:#111827}
+.city-dd-input::placeholder{color:#94A3B8}
+.city-dd-list{max-height:220px;overflow-y:auto}
+.city-dd-item{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;transition:background .1s;font-size:13.5px;color:#334155}
+.city-dd-item:hover{background:#F1F5F9}
+.city-dd-item .city-dd-name{font-weight:600;color:#111827}
+.city-dd-item .city-dd-sub{font-size:11.5px;color:#94A3B8}
+.city-dd-empty{padding:14px;text-align:center;font-size:13px;color:#94A3B8}
+body[data-theme=aurora] .city-dd{background:#1E1B2E;border-color:rgba(255,255,255,.1)}
+body[data-theme=aurora] .city-dd-input{color:#F5F5FA;border-bottom-color:rgba(255,255,255,.08)}
+body[data-theme=aurora] .city-dd-item{color:#C4C4D4}
+body[data-theme=aurora] .city-dd-item:hover{background:rgba(255,255,255,.06)}
+body[data-theme=aurora] .city-dd-item .city-dd-name{color:#F5F5FA}
+.city-dd-loc{font-size:12px;color:#4F46E5;font-weight:600;cursor:pointer;padding:10px 14px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;gap:6px}
+.city-dd-loc:hover{background:#EEF2FF}
 .is-day-bar{position:relative;height:5px;background:#E5E7EB;border-radius:3px;margin:6px 0 2px}
 .is-day-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#4F46E5,#818CF8);transition:width .5s ease}
 .walk-arm-l,.walk-arm-r,.walk-leg-l,.walk-leg-r{transform-origin:7px 7px}
@@ -6497,7 +6587,7 @@ body[data-theme=aurora] .is-row-title{color:#F5F5FA}
 <script>/*__SERVER_INJECT__*/</script>
 <script>
 const MORALS=[{t:"The secret of getting ahead is getting started.",a:"Mark Twain"},{t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},{t:"Small daily improvements are the key to staggering long-term results.",a:"Robin Sharma"},{t:"Discipline is choosing between what you want now and what you want most.",a:"Abraham Lincoln"},{t:"Don't count the days. Make the days count.",a:"Muhammad Ali"},{t:"The best way to predict the future is to create it.",a:"Peter Drucker"},{t:"Focus on being productive instead of busy.",a:"Tim Ferriss"},{t:"You don't have to be great to start, but you have to start to be great.",a:"Zig Ziglar"},{t:"The journey of a thousand miles begins with a single step.",a:"Lao Tzu"},{t:"Either you run the day or the day runs you.",a:"Jim Rohn"},{t:"A year from now you may wish you had started today.",a:"Karen Lamb"},{t:"Success is the sum of small efforts repeated day in and day out.",a:"Robert Collier"},{t:"Done is better than perfect.",a:"Sheryl Sandberg"},{t:"The way to get started is to quit talking and begin doing.",a:"Walt Disney"},{t:"You cannot escape the responsibility of tomorrow by evading it today.",a:"Abraham Lincoln"},{t:"Motivation gets you going, but discipline keeps you growing.",a:"John C. Maxwell"},{t:"Do something today that your future self will thank you for.",a:"Sean Patrick Flanery"},{t:"The harder I work, the luckier I get.",a:"Samuel Goldwyn"},{t:"Don't watch the clock; do what it does. Keep going.",a:"Sam Levenson"},{t:"Great things never come from comfort zones.",a:"Neil Strauss"},{t:"Sometimes later becomes never. Do it now.",a:"Anonymous"},{t:"Wake up with determination. Go to bed with satisfaction.",a:"Anonymous"},{t:"A goal without a plan is just a wish.",a:"Antoine de Saint-Exupéry"},{t:"Little by little, day by day, what is meant for you will find its way.",a:"Anonymous"},{t:"Success doesn't just find you — you have to go out and get it.",a:"Anonymous"},{t:"Push yourself, because no one else is going to do it for you.",a:"Anonymous"},{t:"Dream big. Start small. Act now.",a:"Robin Sharma"},{t:"Hard work beats talent when talent doesn't work hard.",a:"Tim Notke"},{t:"The only impossible journey is the one you never begin.",a:"Tony Robbins"},{t:"Opportunities don't happen. You create them.",a:"Chris Grosser"}];
-let S={tasks:[],view:'all',search:'',tab:'tasks',showAdd:false,editing:null,listening:false,toast:null,toastType:'ok',waOk:false,sending:{},user:null,compose:{value:'',priority:null,dueDate:null,saving:false},
+let S={tasks:[],view:'pending',search:'',tab:'tasks',showAdd:false,editing:null,listening:false,toast:null,toastType:'ok',waOk:false,sending:{},user:null,compose:{value:'',priority:null,dueDate:null,saving:false},
 books:[],booksLoading:false,booksCat:'all',bookSearch:'',playing:null,moralIdx:Math.floor(Math.random()*MORALS.length),
 knowledge:{loading:false,loaded:{},articles:{},events:[],topic:'history',sec:'today'},
 game:{active:false,board:Array(9).fill(null),turn:'X',status:'idle',winLine:null,wins:Number(localStorage.getItem('tf_ttt_wins')||0),losses:Number(localStorage.getItem('tf_ttt_losses')||0),draws:Number(localStorage.getItem('tf_ttt_draws')||0)},
@@ -8338,8 +8428,8 @@ function rollDice(){
 }
 async function loadWeather(){if(S.weather.loading)return;if(_isModalOpen()||_audioBusy())return;S.weather.loading=true;S.weather.error=null;try{
   let url='/api/weather?city='+encodeURIComponent(S.weather.city||'Bangalore');
-  if(S.weather._geoLat&&S.weather._geoLon){url='/api/weather?lat='+S.weather._geoLat+'&lon='+S.weather._geoLon}
-  const r=await fetch(url);const j=await r.json();if(j.error){S.weather.error=j.error}else{S.weather.city=j.city||S.weather.city;S.weather.country=j.country||'';S.weather.temp=j.temp;S.weather.aqi=j.aqi}
+  if(S.weather._geoLat&&S.weather._geoLon){url='/api/weather?lat='+S.weather._geoLat+'&lon='+S.weather._geoLon+(S.weather.city?'&name='+encodeURIComponent(S.weather.city):'')}
+  const r=await fetch(url);const j=await r.json();if(j.error){S.weather.error=j.error}else{S.weather.city=j.city||S.weather.city;S.weather.country=j.country||'';S.weather.temp=j.temp;S.weather.aqi=j.aqi;S.weather.daily=j.daily||null}
 }catch(e){S.weather.error=String(e)}S.weather.loaded=true;S.weather.loading=false;if(_isModalOpen()||_audioBusy())return;renderPassive()}
 function _tryGeoWeather(){if(!navigator.geolocation)return;if(localStorage.getItem('tf_city'))return;navigator.geolocation.getCurrentPosition(function(pos){S.weather._geoLat=pos.coords.latitude;S.weather._geoLon=pos.coords.longitude;S.weather.loaded=false;loadWeather()},function(){},{ timeout:8000,maximumAge:300000 })}
 setTimeout(_tryGeoWeather,3000);
@@ -8369,6 +8459,18 @@ function _startTicker(){if(_tickerTimer)clearInterval(_tickerTimer);if(!S.ticker
   stack.innerHTML=visible.map((ti,i)=>'<a class="news-ticker-row" style="animation-delay:'+(i*0.07)+'s" href="'+esc(ti.link||'#')+'" target="_blank" rel="noopener" title="'+esc(ti.title||'')+'"><span class="news-ticker-pulse"></span><span class="news-ticker-src">'+esc((ti.source||'').toUpperCase())+'</span><span class="news-ticker-link">'+esc(ti.title||'')+'</span></a>').join('');
 },9000)}
 function setCity(){const c=prompt('Set your city',S.weather.city||'Bangalore');if(!c)return;const t=c.trim();if(!t)return;localStorage.setItem('tf_city',t);S.weather.city=t;S.weather.loaded=false;loadWeather()}
+let _cityJustOpened=false;
+function _buildCityDD(){var h='<div class="city-dd" onclick="event.stopPropagation()">'
++'<input class="city-dd-input" id="citySearchInput" placeholder="Search any city..." value="" oninput="cityTypeahead(this.value)" autofocus>'
++'<div class="city-dd-loc" onclick="useGpsCity()">\\u{1F4CD} Use my current location</div>'
++'<div class="city-dd-list" id="cityResults"><div class="city-dd-empty">Type at least 2 characters</div></div></div>';return h}
+function toggleCitySearch(e){e.stopPropagation();if(S.citySearchOpen){S.citySearchOpen=false;var dd=document.querySelector('.city-dd');if(dd)dd.remove();return}S.citySearchOpen=true;_cityJustOpened=true;S.cityQuery='';S.cityResults=[];S.citySearching=false;var wrap=document.querySelector('.is-weather');if(wrap&&wrap.parentNode){var d=document.createElement('div');d.innerHTML=_buildCityDD();var ddEl=d.firstChild;wrap.parentNode.insertBefore(ddEl,wrap.nextSibling)}setTimeout(function(){_cityJustOpened=false;var el=document.getElementById('citySearchInput');if(el)el.focus()},50)}
+let _cityDebounce=null;
+function _patchCityResults(){var el=document.getElementById('cityResults');if(!el)return;var h='';if(S.cityResults&&S.cityResults.length){S.cityResults.forEach(function(c){var cn=c.name.replace(/'/g,'\\\\\\u0027');h+='<div class="city-dd-item" onclick="pickCity(\\''+cn+'\\','+c.lat+','+c.lon+')"><span class="city-dd-name">'+esc(c.name)+'</span><span class="city-dd-sub">'+esc((c.admin?c.admin+', ':'')+c.country)+'</span></div>'})}else if(S.cityQuery&&S.cityQuery.length>=2){h='<div class="city-dd-empty">'+(S.citySearching?'Searching...':'No cities found')+'</div>'}else{h='<div class="city-dd-empty">Type at least 2 characters</div>'}el.innerHTML=h}
+function cityTypeahead(v){S.cityQuery=v;if(_cityDebounce)clearTimeout(_cityDebounce);if(!v||v.length<2){S.cityResults=[];S.citySearching=false;_patchCityResults();return}S.citySearching=true;_patchCityResults();_cityDebounce=setTimeout(async function(){try{var r=await fetch('/api/geocode?q='+encodeURIComponent(v));var j=await r.json();if(S.cityQuery===v){S.cityResults=j.results||[];S.citySearching=false;_patchCityResults()}}catch(e){S.cityResults=[];S.citySearching=false;_patchCityResults()}},300)}
+function pickCity(name,lat,lon){S.weather.city=name;S.weather._geoLat=lat;S.weather._geoLon=lon;localStorage.setItem('tf_city',name);S.citySearchOpen=false;S.cityQuery='';S.cityResults=[];S.weather.loaded=false;var dd=document.querySelector('.city-dd');if(dd)dd.remove();var ti=document.querySelector('.is-weather .is-row-title');if(ti)ti.textContent='-- · '+name;var su=document.querySelector('.is-weather .is-row-sub');if(su)su.textContent='Loading forecast…';loadWeather()}
+function useGpsCity(){S.citySearchOpen=false;S.cityQuery='';S.cityResults=[];localStorage.removeItem('tf_city');S.weather._geoLat=null;S.weather._geoLon=null;var dd=document.querySelector('.city-dd');if(dd)dd.remove();var ti=document.querySelector('.is-weather .is-row-title');if(ti)ti.textContent='-- · Locating…';var su=document.querySelector('.is-weather .is-row-sub');if(su)su.textContent='Getting your position…';if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(pos){S.weather._geoLat=pos.coords.latitude;S.weather._geoLon=pos.coords.longitude;S.weather.loaded=false;loadWeather()},function(){toast('\\u26A0\\uFE0F Location access denied','err')},{timeout:8000})}else{toast('\\u26A0\\uFE0F Geolocation not supported','err')}}
+document.addEventListener('click',function(e){if(!S.citySearchOpen||_cityJustOpened)return;const dd=document.querySelector('.city-dd');if(dd&&dd.contains(e.target))return;S.citySearchOpen=false;render()})
 // Live-tick the sidebar, header clocks AND world clocks without re-rendering the whole tree
 setInterval(()=>{const n=new Date();const hm=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});const sec=String(n.getSeconds()).padStart(2,'0');const t=document.getElementById('sideNowTime');const s=document.getElementById('sideNowSec');if(t&&s){if(t.firstChild&&t.firstChild.nodeValue!==hm)t.firstChild.nodeValue=hm;s.textContent=':'+sec}const ht=document.getElementById('hdrTimeHm');const hs=document.getElementById('hdrTimeSec');if(ht&&hs){if(ht.textContent!==hm)ht.textContent=hm;hs.textContent=':'+sec}const cities=document.querySelectorAll('[data-tz]');cities.forEach(el=>{try{const tz=el.getAttribute('data-tz');const t2=new Date().toLocaleTimeString('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:false});if(el.textContent!==t2)el.textContent=t2}catch(e){}})},1000);
 
@@ -9267,8 +9369,9 @@ function toggleHydration(){
   else{clearInterval(S.hydration.interval);S.hydration.interval=null;toast('Hydration reminders off')}
   render();
 }
-function drinkWater(){_hydrationToday();if(S.hydration.glass>=S.hydration.goal){toast('\\u{1F4A7} You already hit your goal! Great job!');return}S.hydration.glass++;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Nice! '+S.hydration.glass+'/'+S.hydration.goal+' glasses today');render()}
-function undrinkWater(){_hydrationToday();if(S.hydration.glass<=0)return;S.hydration.glass--;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Adjusted to '+S.hydration.glass+'/'+S.hydration.goal);render()}
+function _hydrationPatch(){var dots=document.querySelectorAll('.is-hyd-dot');dots.forEach(function(d,i){if(i<S.hydration.glass)d.classList.add('filled');else d.classList.remove('filled')});var tEl=document.querySelector('.is-hydration .is-row-title');if(tEl)tEl.textContent='Water \\u00B7 '+S.hydration.glass+'/'+S.hydration.goal+' glasses'}
+function drinkWater(){_hydrationToday();if(S.hydration.glass>=S.hydration.goal){toast('\\u{1F4A7} You already hit your goal! Great job!');return}S.hydration.glass++;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Nice! '+S.hydration.glass+'/'+S.hydration.goal+' glasses today');_hydrationPatch()}
+function undrinkWater(){_hydrationToday();if(S.hydration.glass<=0)return;S.hydration.glass--;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Adjusted to '+S.hydration.glass+'/'+S.hydration.goal);_hydrationPatch()}
 function _playWaterSound(){
   try{const ac=new(window.AudioContext||window.webkitAudioContext)();
   const dur=1.2;const sr=ac.sampleRate;const buf=ac.createBuffer(1,sr*dur,sr);const d=buf.getChannelData(0);
@@ -9515,14 +9618,64 @@ if(isMain){
   const _w=S.weather||{};
   const _hyd=S.hydration;
   let infoStrip='';
-  // Weather row
-  infoStrip+='<div class="is-row is-weather" onclick="setCity()">'
+  // Weather row with city search dropdown
+  infoStrip+='<div style="position:relative">';
+  infoStrip+='<div class="is-row is-weather" onclick="toggleCitySearch(event)">'
     +'<div class="is-row-icon">'+(_w.temp!=null?(_w.temp>30?'\\u2600\\uFE0F':_w.temp>20?'\\u26C5':'\\u2601\\uFE0F'):'\\u{1F321}\\uFE0F')+'</div>'
     +'<div class="is-row-body">'
       +'<div class="is-row-title">'+(_w.temp!=null?_w.temp+'\\u00B0C':'--')+' \\u00B7 '+esc(_w.city||'Loading...')+'</div>'
-      +(_w.aqi!=null?'<div class="is-row-sub">AQI '+_w.aqi+'</div>':'<div class="is-row-sub">Tap to set city</div>')
+      +'<div class="is-row-sub">'+(_w.country?'\\u{1F4CD} '+esc(_w.country):'')+((_w.aqi!=null)?' \\u00B7 AQI '+_w.aqi:'')+(_w.country||_w.aqi!=null?'':' Tap to set city')+'</div>'
     +'</div>'
   +'</div>';
+  if(S.citySearchOpen){
+    infoStrip+='<div class="city-dd" onclick="event.stopPropagation()">'
+      +'<input class="city-dd-input" id="citySearchInput" placeholder="Search any city..." value="'+esc(S.cityQuery||'')+'" oninput="cityTypeahead(this.value)" autofocus>'
+      +'<div class="city-dd-loc" onclick="useGpsCity()">\\u{1F4CD} Use my current location</div>'
+      +'<div class="city-dd-list" id="cityResults">';
+    if(S.cityResults&&S.cityResults.length){
+      S.cityResults.forEach(function(c){
+        const _cn=c.name.replace(/'/g,'\\\\\\u0027');
+        infoStrip+='<div class="city-dd-item" onclick="pickCity(\\''+_cn+'\\','+c.lat+','+c.lon+')">'
+          +'<span class="city-dd-name">'+esc(c.name)+'</span>'
+          +'<span class="city-dd-sub">'+esc((c.admin?c.admin+', ':'')+c.country)+'</span>'
+        +'</div>';
+      });
+    }else if(S.cityQuery&&S.cityQuery.length>=2){
+      infoStrip+='<div class="city-dd-empty">'+(S.citySearching?'Searching...':'No cities found')+'</div>';
+    }else{
+      infoStrip+='<div class="city-dd-empty">Type at least 2 characters</div>';
+    }
+    infoStrip+='</div>';
+  }
+  infoStrip+='</div>';
+  // 7-day forecast
+  if(_w.daily&&_w.daily.time&&_w.daily.time.length){
+    const _wxIc=function(c){if(c<=1)return '\\u2600\\uFE0F';if(c<=3)return '\\u26C5';if(c<=48)return '\\u{1F32B}\\uFE0F';if(c<=57)return '\\u{1F327}\\uFE0F';if(c<=67)return '\\u{1F327}\\uFE0F';if(c<=77)return '\\u{1F328}\\uFE0F';if(c<=82)return '\\u{1F326}\\uFE0F';if(c<=86)return '\\u{1F328}\\uFE0F';if(c>=95)return '\\u26C8\\uFE0F';return '\\u2601\\uFE0F'};
+    const _dayN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const _todayStr=new Date().toISOString().slice(0,10);
+    let _rainDays=0;let _sumMax=0;let _sumMin=0;
+    infoStrip+='<div class="wx-forecast">';
+    _w.daily.time.forEach(function(d,i){
+      const dt=new Date(d+'T00:00:00');const dn=_dayN[dt.getDay()];
+      const isToday=d===_todayStr;
+      const hi=_w.daily.max[i];const lo=_w.daily.min[i];
+      const rain=_w.daily.rain[i]||0;const wc=_w.daily.code[i]||0;
+      if(rain>=30)_rainDays++;_sumMax+=hi;_sumMin+=lo;
+      infoStrip+='<div class="wx-day'+(isToday?' wx-today':'')+'">'
+        +'<div class="wx-day-name">'+(isToday?'Today':dn)+'</div>'
+        +'<div class="wx-day-icon">'+_wxIc(wc)+'</div>'
+        +'<div class="wx-day-temps">'+hi+'\\u00B0 <span>'+lo+'\\u00B0</span></div>'
+        +'<div class="wx-day-rain'+(rain<20?' dry':'')+'">\\u{1F4A7}'+rain+'%</div>'
+      +'</div>';
+    });
+    infoStrip+='</div>';
+    const _avgHi=Math.round(_sumMax/_w.daily.time.length);
+    const _avgLo=Math.round(_sumMin/_w.daily.time.length);
+    infoStrip+='<div class="wx-summary">'
+      +'<span>Avg: <b>'+_avgHi+'\\u00B0</b> / <b>'+_avgLo+'\\u00B0</b></span>'
+      +'<span>'+(_rainDays>0?'\\u{1F327}\\uFE0F Rain likely <b>'+_rainDays+' day'+(_rainDays>1?'s':'')+'</b>':'\\u2600\\uFE0F No rain expected')+'</span>'
+    +'</div>';
+  }
   // Day counter row
   infoStrip+='<div class="is-row is-daycounter">'
     +'<div class="is-row-icon is-walker-icon">'
@@ -9689,13 +9842,24 @@ if(S.tab==='tasks'){
   // Hydrate highlight in the background — chip badge needs the count
   if(!S.dailyHl&&!S._hlFetched){S._hlFetched=true;const _c=_hlLocalCache();if(_c)S.dailyHl=_c;hlLoad()}
   if(s.od>0)h+='<div class="al" style="background:#FEF1F0;border:1px solid #F5C6C2;color:#E8453C;cursor:pointer" onclick="S.view=\\'overdue\\';render()">\\u26A0\\uFE0F '+s.od+' overdue</div>';
+  // Quick-compose bar with priority chips
+  const _cp=S.compose.priority;
+  h+='<div class="qc-bar">';
+  h+='<div class="qc-row"><input class="qc-input" placeholder="Add a task... (try: Buy milk tomorrow !high)" value="'+esc(S.compose.value||'')+'" oninput="composeUpdate(this.value)" onkeydown="if(event.key===\\'Enter\\')composeSubmit()">';
+  h+='<button class="qc-send" onclick="composeSubmit()" title="Add task">+</button></div>';
+  h+='<div class="qc-chips">';
+  h+='<span class="qc-chip qc-high'+(_cp==='high'?' on':'')+'" onclick="composeSetPriority(\\'high\\')"><span class="qc-dot" style="background:#DC2626"></span>High</span>';
+  h+='<span class="qc-chip qc-med'+(_cp==='medium'?' on':'')+'" onclick="composeSetPriority(\\'medium\\')"><span class="qc-dot" style="background:#EA580C"></span>Med</span>';
+  h+='<span class="qc-chip qc-low'+(_cp==='low'?' on':'')+'" onclick="composeSetPriority(\\'low\\')"><span class="qc-dot" style="background:#16A34A"></span>Low</span>';
+  h+='<span class="qc-expand" onclick="opA()">+ More options</span>';
+  h+='</div></div>';
   h+='<div class="srch"><input placeholder="Search tasks..." value="'+esc(S.search)+'" oninput="S.search=this.value;render()"></div>';
   h+='<div class="flt">'+[{k:'all',l:'All'},{k:'pending',l:'To Do'},{k:'in-progress',l:'Doing'},{k:'done',l:'Done'},{k:'today',l:'Today'}].map(x=>'<button class="fb'+(S.view===x.k?' on':'')+'" onclick="S.view=\\''+x.k+'\\';render()">'+x.l+'</button>').join('')+'</div>';
   h+='<div>';
   if(!f.length)h+='<div class="empty"><div style="font-size:36px;margin-bottom:8px">\\u2728</div><div style="font-size:15px;font-weight:600">No tasks yet</div><div style="font-size:13px;margin-top:4px">Tap + to add your first task</div></div>';
   else f.forEach(t=>{const p=P[t.priority]||P.medium,st=ST[t.status]||ST.pending,d=t.status==='done';
     const addedTxt=t.created_at?timeAgo((t.created_at||'').replace(' ','T')+'Z'):'';
-    h+='<div class="tc'+(d?' dn':'')+'" style="border-left-color:'+p.c+'"><div class="tc-top"><button class="chk'+(d?' on':'')+'" onclick="tog(\\''+t.id+'\\')">'+(d?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</button><div style="flex:1;min-width:0"><div class="tc-t'+(d?' dn':'')+'">'+esc(t.title)+'</div>'+(t.notes?'<div class="tc-n">'+esc(t.notes)+'</div>':'')+'<div class="tc-m"><button class="badge" style="background:'+st.bg+';color:'+st.c+'" onclick="cyc(\\''+t.id+'\\')">'+st.l+'</button>'+(t.due_date?'<span style="font-size:12px;font-weight:500;color:'+(isOD(t.due_date,t.status)?'#E8453C':isTd(t.due_date)?'#E8912C':'#94A3B8')+'">\\u{1F4C5} '+fD(t.due_date)+(isOD(t.due_date,t.status)?' overdue':'')+'</span>':'')+(t.reminder_time&&!d?'<span style="font-size:11px;color:#3B82F6;font-weight:600">\\u{1F514} '+fT(t.reminder_time)+'</span>':'')+(addedTxt?'<span class="tc-added" title="Added '+esc(t.created_at||'')+'">\\u2795 '+esc(addedTxt)+'</span>':'')+'</div></div></div>';
+    h+='<div class="tc'+(d?' dn':'')+'" style="border-left-color:'+p.c+'"><div class="tc-top"><button class="chk'+(d?' on':'')+'" onclick="tog(\\''+t.id+'\\')">'+(d?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</button><div style="flex:1;min-width:0"><div class="tc-t'+(d?' dn':'')+'">'+esc(t.title)+'</div>'+(t.notes?'<div class="tc-n">'+esc(t.notes)+'</div>':'')+'<div class="tc-m"><button class="badge" style="background:'+st.bg+';color:'+st.c+'" onclick="cyc(\\''+t.id+'\\')">'+st.l+'</button><span class="tc-pri" style="background:'+p.c+'20;color:'+p.c+'">'+p.d+' '+t.priority+'</span>'+(t.due_date?'<span style="font-size:12px;font-weight:500;color:'+(isOD(t.due_date,t.status)?'#E8453C':isTd(t.due_date)?'#E8912C':'#94A3B8')+'">\\u{1F4C5} '+fD(t.due_date)+(isOD(t.due_date,t.status)?' overdue':'')+'</span>':'')+(t.reminder_time&&!d?'<span style="font-size:11px;color:#3B82F6;font-weight:600">\\u{1F514} '+fT(t.reminder_time)+'</span>':'')+(addedTxt?'<span class="tc-added" title="Added '+esc(t.created_at||'')+'">\\u2795 '+esc(addedTxt)+'</span>':'')+'</div></div></div>';
     h+='<div class="tc-acts"><button class="ib" onclick="opE(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ib" style="color:#E8453C" onclick="del(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></div>'});
   h+='</div>';
   // Mind Gym moved to its own dedicated tab.
@@ -9974,7 +10138,6 @@ else if(S.tab==='cal'){
 else if(S.tab==='books'){
   const bs=S.bookStreak||{streak:0,total:0,today:false};
   if(!S.booksMode)S.booksMode='summaries';
-  h+='<div class="section-hd"><span class="section-ic" style="background:linear-gradient(135deg,#8B5CF6,#EC4899);color:#fff">\\u{1F4DA}</span><div><h3>Listen</h3></div></div>';
   if(bs.streak>0)h+='<div class="streak-card"><div class="streak-ico">'+ic('flame',24)+'</div><div class="streak-body"><div class="streak-n">'+bs.streak+'<span>day'+(bs.streak===1?'':'s')+'</span></div><div class="streak-lbl">Streak'+(bs.today?' \\u2022 done today':'')+'</div></div></div>';
   // Mode toggle: summaries vs audiobooks
   // Mode toggle: chip-style parent that expands to two options
@@ -10045,7 +10208,6 @@ else if(S.tab==='books'){
 // WISDOM TAB — Headspace/Elevate-styled affirmations + meditations
 else if(S.tab==='meditation'){
   const cat=S.medCat||'affirmations';
-  h+='<div class="section-hd"><span class="section-ic">'+ic('meditation',22)+'</span><div><h3>Wisdom</h3></div></div>';
   // Category pills
   h+='<div class="mag-pills hs-cats" style="margin-bottom:18px">';
   MED_CATEGORIES.forEach(c=>{h+='<button class="mag-pill hs-cat'+(cat===c.k?' on':'')+'" onclick="setMedCat(\\''+c.k+'\\')"><span class="mag-pill-e">'+c.e+'</span>'+esc(c.l)+'</button>'});
@@ -10146,7 +10308,6 @@ else if(S.tab==='__obsolete_knowledge__'){
   const secK=kn.sec||'today';
   const tObj=getKnowledgeTopic(topicK);
   const sObj=getKnowledgeSec(topicK,secK);
-  h+='<div class="section-hd"><span class="section-ic" style="background:linear-gradient(135deg,#B45309,#7C2D12)">'+ic('knowledge',22)+'</span><div><h3>Knowledge \\u2022 a magazine for the curious</h3><p>History \\u2022 Geography \\u2022 Space \\u2022 Karma &amp; Dharma</p></div></div>';
   // Top-level topic pills
   h+='<div class="mag-pills know-topics">';
   KNOWLEDGE_TOPICS.forEach(t=>{h+='<button class="mag-pill know-topic'+(topicK===t.k?' on':'')+'" onclick="switchKnowledgeTopic(\\''+t.k+'\\')"><span class="mag-pill-e">'+t.e+'</span>'+esc(t.l)+'</button>'});
@@ -11001,7 +11162,7 @@ h+='<div style="text-align:center;margin-bottom:10px"><button class="voice-lg'+(
 h+='<div style="height:1px;background:#E8E9EF;margin:10px 0 14px"></div>';
 h+='<label class="lbl">Task</label><input id="ft" value="'+esc(S.form.title)+'" placeholder="What needs to be done?" oninput="S.form.title=this.value">';
 h+='<label class="lbl">Notes</label><textarea oninput="S.form.notes=this.value" placeholder="Details...">'+esc(S.form.notes)+'</textarea>';
-h+='<div class="row"><div><label class="lbl">Priority</label><select onchange="S.form.priority=this.value"><option value="high"'+(S.form.priority==='high'?' selected':'')+'>High</option><option value="medium"'+(S.form.priority==='medium'?' selected':'')+'>Medium</option><option value="low"'+(S.form.priority==='low'?' selected':'')+'>Low</option></select></div>';
+h+='<div class="row"><div><label class="lbl">Priority</label><div class="qc-chips" style="margin-top:4px"><span class="qc-chip qc-high'+(S.form.priority==='high'?' on':'')+'" onclick="S.form.priority=\\'high\\';render()"><span class="qc-dot" style="background:#DC2626"></span>High</span><span class="qc-chip qc-med'+(S.form.priority==='medium'?' on':'')+'" onclick="S.form.priority=\\'medium\\';render()"><span class="qc-dot" style="background:#EA580C"></span>Med</span><span class="qc-chip qc-low'+(S.form.priority==='low'?' on':'')+'" onclick="S.form.priority=\\'low\\';render()"><span class="qc-dot" style="background:#16A34A"></span>Low</span></div></div>';
 h+='<div><label class="lbl">Due Date</label><input type="date" value="'+S.form.dueDate+'" onchange="S.form.dueDate=this.value"></div></div>';
 h+='<label class="lbl">Reminder</label><input type="time" value="'+S.form.reminderTime+'" onchange="S.form.reminderTime=this.value">';
 // Board picker in form removed — single unified task list. Server defaults new tasks to 'home'.
