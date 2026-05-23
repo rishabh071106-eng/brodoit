@@ -3168,7 +3168,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
    horizontally scrollable so all 9 tabs are reachable without truncation,
    springy active state, smooth motion. Tab names always visible, never abbreviated. */
 @media (max-width:1023px){
-  body{padding-left:0 !important;padding-bottom:110px !important}
+  body{padding-left:0 !important;padding-bottom:100px !important}
   /* Hide all desktop-only side-col contents on mobile EXCEPT the bottom nav (.tabs.page-t),
      which is repositioned as the fixed bottom bar. The life-goal card, side-now widget,
      etc. would otherwise render in normal flow ABOVE the bottom nav and either overlap
@@ -3186,12 +3186,12 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     backdrop-filter:none !important;
     -webkit-backdrop-filter:none !important;
     border:0 !important;
-    border-top:1.5px solid #E5E7EB !important;
+    border-top:2px solid #E8E0D8 !important;
     border-radius:0 !important;
-    padding:8px 4px calc(10px + env(safe-area-inset-bottom,0px)) !important;
+    padding:6px 2px calc(6px + env(safe-area-inset-bottom,0px)) !important;
     gap:0 !important;
     z-index:60 !important;
-    box-shadow:0 -4px 24px rgba(0,0,0,.1) !important;
+    box-shadow:0 -6px 30px rgba(0,0,0,.12) !important;
     margin:0 !important;
   }
   .tabs.page-t::after{display:none !important}
@@ -3200,69 +3200,71 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab{
     flex:1 1 0 !important;
     min-width:0 !important;
-    padding:8px 2px 6px !important;
+    padding:8px 4px 6px !important;
     flex-direction:column !important;
     align-items:center !important;
     justify-content:center !important;
     text-align:center !important;
-    min-height:64px !important;
+    min-height:62px !important;
     border-radius:14px !important;
-    gap:4px !important;
-    transition:all .2s ease !important;
+    gap:3px !important;
+    transition:all .25s cubic-bezier(.34,1.56,.64,1) !important;
     background:transparent !important;
-    color:#A0A0A0 !important;
+    color:#B0ADA8 !important;
     box-shadow:none !important;
     position:relative;
     overflow:visible;
   }
   .tabs.page-t .tab::before{display:none !important}
   .tabs.page-t .tab .ti{
-    font-size:26px !important;
-    width:36px !important;height:36px !important;
+    font-size:22px !important;
+    width:40px !important;height:40px !important;
     display:flex !important;align-items:center !important;justify-content:center !important;
     transition:all .25s cubic-bezier(.34,1.56,.64,1) !important;
     color:inherit !important;
-    background:none !important;border-radius:12px !important;box-shadow:none !important;
+    background:rgba(0,0,0,.03) !important;border-radius:14px !important;box-shadow:none !important;
     overflow:visible !important;
   }
   .tabs.page-t .tab .ti::after{display:none !important}
   .tabs.page-t .tab .ti::before{display:none !important}
-  .tabs.page-t .tab .ti svg{width:26px !important;height:26px !important;filter:none !important;stroke-width:2 !important}
+  .tabs.page-t .tab .ti svg{width:22px !important;height:22px !important;filter:none !important;stroke-width:2.2 !important}
   .tabs.page-t .tab .tl{
     font-family:var(--sans) !important;
-    font-size:11.5px !important;
-    font-weight:600 !important;
-    letter-spacing:.01em !important;
+    font-size:11px !important;
+    font-weight:700 !important;
+    letter-spacing:.02em !important;
     text-transform:none !important;
     white-space:nowrap !important;
     color:inherit !important;
     opacity:1 !important;
     overflow:hidden;text-overflow:ellipsis;max-width:100%;
-    margin-top:1px !important;
+    margin-top:0 !important;
   }
-  .tabs.page-t .tab.tab-cal .tl{font-size:11px !important;letter-spacing:0 !important}
+  .tabs.page-t .tab.tab-cal .tl{font-size:10px !important;letter-spacing:0 !important}
   .tabs.page-t .tab:active{transform:scale(.88) !important}
   .tabs.page-t .tab.on{
     color:#78552B !important;
     transform:none !important;
-    background:rgba(120,85,43,.08) !important;
+    background:transparent !important;
   }
   .tabs.page-t .tab.on .ti{
-    transform:scale(1.1) !important;background:none !important;box-shadow:none !important;
+    transform:scale(1.05) !important;
+    background:linear-gradient(135deg,rgba(120,85,43,.12),rgba(194,112,62,.1)) !important;
+    box-shadow:0 2px 8px rgba(120,85,43,.12) !important;
     color:#78552B !important;
   }
-  .tabs.page-t .tab.on .tl{color:#78552B !important;font-weight:800 !important;opacity:1 !important;font-size:11.5px !important}
+  .tabs.page-t .tab.on .tl{color:#78552B !important;font-weight:800 !important;opacity:1 !important;font-size:11px !important}
   .tabs.page-t .tab.on::after{
     content:'' !important;display:block !important;
-    width:20px !important;height:3px !important;border-radius:2px !important;
+    width:22px !important;height:3.5px !important;border-radius:2px !important;
     background:linear-gradient(90deg,#78552B,#C2703E) !important;
-    position:absolute !important;top:2px !important;left:50% !important;
+    position:absolute !important;top:0 !important;left:50% !important;
     transform:translateX(-50%) !important;
   }
   /* Float other UI above the new bottom bar */
-  .bk-mini{bottom:120px !important;right:14px !important}
-  .player{bottom:120px !important;left:12px !important;right:96px !important}
-  .fab{bottom:118px !important;right:18px !important}
+  .bk-mini{bottom:110px !important;right:14px !important}
+  .player{bottom:110px !important;left:12px !important;right:96px !important}
+  .fab{bottom:108px !important;right:18px !important}
   /* Other surfaces stay readable — not bloated */
   .flt button.fb,.fb{padding:11px 16px !important;font-size:14.5px !important;min-height:44px !important;border-radius:12px !important}
   .add-bar .plus{font-size:30px !important;width:46px !important;height:46px !important}
@@ -3271,9 +3273,11 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .section-hd h3{font-size:19px !important}
   .stats .st b{font-size:22px !important}
 }
-body[data-theme=aurora] .tabs.page-t{background:rgba(20,20,36,.97) !important;border-color:rgba(255,255,255,.08) !important;box-shadow:0 -4px 24px rgba(0,0,0,.3) !important}
-body[data-theme=aurora] .tabs.page-t .tab{color:rgba(255,255,255,.4) !important}
-body[data-theme=aurora] .tabs.page-t .tab.on{color:#D4A574 !important;background:rgba(212,165,116,.1) !important}
+body[data-theme=aurora] .tabs.page-t{background:rgba(20,20,36,.97) !important;border-color:rgba(255,255,255,.08) !important;box-shadow:0 -6px 30px rgba(0,0,0,.35) !important}
+body[data-theme=aurora] .tabs.page-t .tab{color:rgba(255,255,255,.35) !important}
+body[data-theme=aurora] .tabs.page-t .tab .ti{background:rgba(255,255,255,.04) !important}
+body[data-theme=aurora] .tabs.page-t .tab.on{color:#D4A574 !important;background:transparent !important}
+body[data-theme=aurora] .tabs.page-t .tab.on .ti{background:rgba(212,165,116,.12) !important;box-shadow:0 2px 8px rgba(212,165,116,.15) !important}
 body[data-theme=aurora] .tabs.page-t .tab.on .tl{color:#D4A574 !important}
 body[data-theme=aurora] .tabs.page-t .tab.on::after{background:linear-gradient(90deg,#D4A574,#E8D5C4) !important}
 /* Desktop sidebar layout */
@@ -4972,6 +4976,44 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-chip.qc-low.on{background:#16A34A;color:#fff;border-color:#16A34A;box-shadow:0 2px 8px rgba(22,163,74,.3)}
 .qc-chip .qc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .qc-expand{font-size:12px;color:var(--ink-3,#94A3B8);cursor:pointer;margin-left:auto;white-space:nowrap}
+/* ─── ANIMATED TASK CTA ─── */
+.qc-scene{display:none}
+@media(max-width:1023px){
+.qc-scene{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:6px;padding:12px 0 6px;position:relative;height:80px;overflow:hidden}
+.qc-person{position:absolute;left:8%;animation:qcWalk 4s ease-in-out infinite;z-index:2}
+.qc-person-body{position:relative;width:32px;height:56px}
+.qc-person-head{width:16px;height:16px;border-radius:50%;background:#78552B;position:absolute;top:0;left:50%;transform:translateX(-50%);box-shadow:0 2px 6px rgba(120,85,43,.3)}
+.qc-person-torso{width:10px;height:18px;background:#C2703E;border-radius:4px 4px 2px 2px;position:absolute;top:15px;left:50%;transform:translateX(-50%)}
+.qc-person-arm{width:14px;height:4px;background:#C2703E;border-radius:2px;position:absolute;top:18px}
+.qc-person-arm.left{left:-4px;transform-origin:right center;animation:qcArmL 1s ease-in-out infinite}
+.qc-person-arm.right{right:-4px;transform-origin:left center;animation:qcArmR 1s ease-in-out infinite}
+.qc-person-leg{width:5px;height:16px;background:#5C4033;border-radius:2px;position:absolute;bottom:0}
+.qc-person-leg.left{left:7px;transform-origin:top center;animation:qcLegL .5s ease-in-out infinite}
+.qc-person-leg.right{right:7px;transform-origin:top center;animation:qcLegR .5s ease-in-out infinite}
+@keyframes qcWalk{0%{left:8%;opacity:0}10%{opacity:1}50%{left:42%}60%,100%{left:42%;opacity:1}}
+@keyframes qcArmL{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}}
+@keyframes qcArmR{0%,100%{transform:rotate(15deg)}50%{transform:rotate(-15deg)}}
+@keyframes qcLegL{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+@keyframes qcLegR{0%,100%{transform:rotate(12deg)}50%{transform:rotate(-12deg)}}
+.qc-notebook{position:absolute;right:18%;top:50%;transform:translateY(-50%);width:44px;height:54px;z-index:1}
+.qc-nb-cover{width:44px;height:54px;background:linear-gradient(135deg,#D4A574,#78552B);border-radius:4px 8px 8px 4px;position:relative;box-shadow:0 4px 14px rgba(120,85,43,.25)}
+.qc-nb-spine{position:absolute;left:0;top:4px;bottom:4px;width:4px;background:#5C4033;border-radius:2px 0 0 2px}
+.qc-nb-line{position:absolute;left:12px;right:6px;height:1.5px;background:rgba(255,255,255,.35);border-radius:1px}
+.qc-nb-line:nth-child(2){top:14px}.qc-nb-line:nth-child(3){top:22px}.qc-nb-line:nth-child(4){top:30px}.qc-nb-line:nth-child(5){top:38px}
+.qc-nb-check{position:absolute;top:12px;left:14px;width:16px;height:10px;border-bottom:2.5px solid #FBBF24;border-left:2.5px solid #FBBF24;transform:rotate(-45deg) scale(0);animation:qcCheck 4s ease-in-out infinite;animation-delay:2.2s}
+@keyframes qcCheck{0%,50%{transform:rotate(-45deg) scale(0)}60%{transform:rotate(-45deg) scale(1.2)}65%,100%{transform:rotate(-45deg) scale(1)}}
+.qc-pencil{position:absolute;right:14%;top:20%;width:6px;height:28px;background:linear-gradient(180deg,#FBBF24,#F59E0B);border-radius:1px 1px 0 0;transform:rotate(-30deg) translateY(10px);opacity:0;animation:qcPencil 4s ease-in-out infinite;animation-delay:1.8s;z-index:3}
+.qc-pencil::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border-left:3px solid transparent;border-right:3px solid transparent;border-top:6px solid #5C4033}
+@keyframes qcPencil{0%,40%{opacity:0;transform:rotate(-30deg) translateY(10px)}50%{opacity:1;transform:rotate(-30deg) translateY(0)}70%{opacity:1;transform:rotate(-30deg) translateY(-3px)}80%{opacity:1;transform:rotate(-30deg) translateY(0)}90%,100%{opacity:0;transform:rotate(-30deg) translateY(10px)}}
+.qc-sparkles{position:absolute;right:10%;top:10%}
+.qc-sparkle{position:absolute;width:6px;height:6px;background:#FBBF24;border-radius:50%;opacity:0;animation:qcSparkPop 4s ease-in-out infinite}
+.qc-sparkle:nth-child(1){top:0;left:0;animation-delay:2.5s}
+.qc-sparkle:nth-child(2){top:-8px;left:14px;width:4px;height:4px;animation-delay:2.7s;background:#C2703E}
+.qc-sparkle:nth-child(3){top:4px;left:22px;width:5px;height:5px;animation-delay:2.9s;background:#78552B}
+@keyframes qcSparkPop{0%,55%{opacity:0;transform:scale(0)}62%{opacity:1;transform:scale(1.3)}68%{opacity:1;transform:scale(1)}80%,100%{opacity:0;transform:scale(0) translateY(-8px)}}
+.qc-cta-text{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:#78552B;letter-spacing:.03em;white-space:nowrap;animation:qcTextPulse 3s ease-in-out infinite}
+@keyframes qcTextPulse{0%,100%{opacity:.7}50%{opacity:1}}
+}
 /* Priority badge on task cards */
 .tc-pri{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
 /* Dashboard */
@@ -6528,8 +6570,8 @@ body[data-theme=aurora] .bro-img-err{background:rgba(239,68,68,.12)}
   body.bro-tab .moral-wrap{display:none !important}
   body.bro-tab .tab-hero{display:none !important}
   body.bro-tab .bro-container{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;height:100% !important;margin:0 !important;z-index:50 !important;border-radius:0 !important}
-  body.bro-tab .bro-chat{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px) + 86px) !important}
-  body.bro-tab .bro-input-wrap{bottom:calc(86px + env(safe-area-inset-bottom,0px)) !important;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)) !important}
+  body.bro-tab .bro-chat{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px) + 78px) !important}
+  body.bro-tab .bro-input-wrap{bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)) !important}
   body.bro-tab .tabs.page-t{z-index:61 !important}
 }
 /* ─── COACH SELECTOR ─── */
@@ -9989,9 +10031,16 @@ if(S.tab==='tasks'){
   // Hydrate highlight in the background — chip badge needs the count
   if(!S.dailyHl&&!S._hlFetched){S._hlFetched=true;const _c=_hlLocalCache();if(_c)S.dailyHl=_c;hlLoad()}
   if(s.od>0)h+='<div class="al" style="background:#FEF1F0;border:1px solid #F5C6C2;color:#E8453C;cursor:pointer" onclick="S.view=\\'overdue\\';render()">\\u26A0\\uFE0F '+s.od+' overdue</div>';
-  // Quick-compose bar with priority chips
+  // Quick-compose bar with animated CTA + priority chips
   const _cp=S.compose.priority;
   h+='<div class="qc-bar">';
+  h+='<div class="qc-scene">';
+  h+='<div class="qc-person"><div class="qc-person-body"><div class="qc-person-head"></div><div class="qc-person-torso"></div><div class="qc-person-arm left"></div><div class="qc-person-arm right"></div><div class="qc-person-leg left"></div><div class="qc-person-leg right"></div></div></div>';
+  h+='<div class="qc-notebook"><div class="qc-nb-cover"><div class="qc-nb-spine"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-check"></div></div></div>';
+  h+='<div class="qc-pencil"></div>';
+  h+='<div class="qc-sparkles"><div class="qc-sparkle"></div><div class="qc-sparkle"></div><div class="qc-sparkle"></div></div>';
+  h+='<div class="qc-cta-text">Write it down, get it done!</div>';
+  h+='</div>';
   h+='<div class="qc-row"><input class="qc-input" placeholder="Add a task... (try: Buy milk tomorrow !high)" value="'+esc(S.compose.value||'')+'" oninput="composeUpdate(this.value)" onkeydown="if(event.key===\\'Enter\\')composeSubmit()">';
   h+='<button class="qc-send" onclick="composeSubmit()" title="Add task">+</button></div>';
   h+='<div class="qc-chips">';
