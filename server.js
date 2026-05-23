@@ -6498,7 +6498,17 @@ body[data-theme=aurora] .hgc-stat b{color:#fff}
 .hgc-expand .hh-stat small{color:#4B5563 !important;font-size:11px !important;font-weight:600 !important}
 @media(max-width:560px){.hgc-right .hgc-stat{display:none}.hgc-greet{font-size:20px}}
 /* ─── 7-day forecast ─── */
-.wx-forecast{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:12px 14px;margin:0 0 8px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:14px}
+.wx-expand{margin:-4px 0 8px;padding:14px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:0 0 14px 14px;border-top:0;animation:hhStatsIn .3s ease}
+body[data-theme=aurora] .wx-expand{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+.wx-city-row{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg-2,#E3E5EB);border-radius:10px;margin-top:10px}
+.wx-city-label{font-size:12px;font-weight:600;color:#6B7280;white-space:nowrap;flex-shrink:0}
+.wx-city-input{flex:1;border:0;background:transparent;outline:0;font:500 13px/1.4 inherit;color:#111827;min-width:0}
+.wx-city-input::placeholder{color:#9CA3AF}
+.wx-city-gps{cursor:pointer;font-size:18px;flex-shrink:0;opacity:.7;transition:opacity .2s}
+.wx-city-gps:hover{opacity:1}
+body[data-theme=aurora] .wx-city-row{background:rgba(255,255,255,.08)}
+body[data-theme=aurora] .wx-city-input{color:#F5F5FA}
+.wx-forecast{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:0;margin:0;background:transparent;border:none;border-radius:0}
 body[data-theme=aurora] .wx-forecast{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
 .wx-day{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:10px;transition:background .2s}
 .wx-day.wx-today{background:rgba(79,70,229,.08)}
@@ -6605,7 +6615,7 @@ voicePlay:null,
 coach:{status:null,history:[],input:'',sending:false,recording:false,recAudio:null,playing:false,scenario:null},
 bro:{messages:[],input:'',sending:false,listening:false,speaking:false,agent:null},
 hydration:{enabled:JSON.parse(localStorage.getItem('tf_hydration')||'false'),interval:null,lastReminder:0,glass:parseInt(localStorage.getItem('tf_hydration_glass')||'0',10),goal:8,todayDate:new Date().toISOString().slice(0,10)},
-weather:{city:localStorage.getItem('tf_city')||'Bangalore',temp:null,aqi:null,country:'',loaded:false,loading:false,error:null},
+weather:{city:localStorage.getItem('tf_city')||'Bangalore',temp:null,aqi:null,country:'',loaded:false,loading:false,error:null,daily:null},weatherExpanded:false,
 cityTemps:{},remember:{person:null,loaded:false},lifeGoal:localStorage.getItem('tf_life_goal')||'',meditating:{active:false,title:'',mins:0,startedAt:0},
 medCat:localStorage.getItem('tf_medcat')||'vipassana',
 ticker:{items:[],idx:0,loaded:false},
@@ -8460,16 +8470,12 @@ function _startTicker(){if(_tickerTimer)clearInterval(_tickerTimer);if(!S.ticker
 },9000)}
 function setCity(){const c=prompt('Set your city',S.weather.city||'Bangalore');if(!c)return;const t=c.trim();if(!t)return;localStorage.setItem('tf_city',t);S.weather.city=t;S.weather.loaded=false;loadWeather()}
 let _cityJustOpened=false;
-function _buildCityDD(){var h='<div class="city-dd" onclick="event.stopPropagation()">'
-+'<input class="city-dd-input" id="citySearchInput" placeholder="Search any city..." value="" oninput="cityTypeahead(this.value)" autofocus>'
-+'<div class="city-dd-loc" onclick="useGpsCity()">\\u{1F4CD} Use my current location</div>'
-+'<div class="city-dd-list" id="cityResults"><div class="city-dd-empty">Type at least 2 characters</div></div></div>';return h}
-function toggleCitySearch(e){e.stopPropagation();if(S.citySearchOpen){S.citySearchOpen=false;var dd=document.querySelector('.city-dd');if(dd)dd.remove();return}S.citySearchOpen=true;_cityJustOpened=true;S.cityQuery='';S.cityResults=[];S.citySearching=false;var wrap=document.querySelector('.is-weather');if(wrap&&wrap.parentNode){var d=document.createElement('div');d.innerHTML=_buildCityDD();var ddEl=d.firstChild;wrap.parentNode.insertBefore(ddEl,wrap.nextSibling)}setTimeout(function(){_cityJustOpened=false;var el=document.getElementById('citySearchInput');if(el)el.focus()},50)}
+function toggleCitySearch(e){if(e)e.stopPropagation();S.weatherExpanded=!S.weatherExpanded;S.citySearchOpen=false;S.cityQuery='';S.cityResults=[];render()}
 let _cityDebounce=null;
 function _patchCityResults(){var el=document.getElementById('cityResults');if(!el)return;var h='';if(S.cityResults&&S.cityResults.length){S.cityResults.forEach(function(c){var cn=c.name.replace(/'/g,'\\\\\\u0027');h+='<div class="city-dd-item" onclick="pickCity(\\''+cn+'\\','+c.lat+','+c.lon+')"><span class="city-dd-name">'+esc(c.name)+'</span><span class="city-dd-sub">'+esc((c.admin?c.admin+', ':'')+c.country)+'</span></div>'})}else if(S.cityQuery&&S.cityQuery.length>=2){h='<div class="city-dd-empty">'+(S.citySearching?'Searching...':'No cities found')+'</div>'}else{h='<div class="city-dd-empty">Type at least 2 characters</div>'}el.innerHTML=h}
 function cityTypeahead(v){S.cityQuery=v;if(_cityDebounce)clearTimeout(_cityDebounce);if(!v||v.length<2){S.cityResults=[];S.citySearching=false;_patchCityResults();return}S.citySearching=true;_patchCityResults();_cityDebounce=setTimeout(async function(){try{var r=await fetch('/api/geocode?q='+encodeURIComponent(v));var j=await r.json();if(S.cityQuery===v){S.cityResults=j.results||[];S.citySearching=false;_patchCityResults()}}catch(e){S.cityResults=[];S.citySearching=false;_patchCityResults()}},300)}
-function pickCity(name,lat,lon){S.weather.city=name;S.weather._geoLat=lat;S.weather._geoLon=lon;localStorage.setItem('tf_city',name);S.citySearchOpen=false;S.cityQuery='';S.cityResults=[];S.weather.loaded=false;var dd=document.querySelector('.city-dd');if(dd)dd.remove();var ti=document.querySelector('.is-weather .is-row-title');if(ti)ti.textContent='-- · '+name;var su=document.querySelector('.is-weather .is-row-sub');if(su)su.textContent='Loading forecast…';loadWeather()}
-function useGpsCity(){S.citySearchOpen=false;S.cityQuery='';S.cityResults=[];localStorage.removeItem('tf_city');S.weather._geoLat=null;S.weather._geoLon=null;var dd=document.querySelector('.city-dd');if(dd)dd.remove();var ti=document.querySelector('.is-weather .is-row-title');if(ti)ti.textContent='-- · Locating…';var su=document.querySelector('.is-weather .is-row-sub');if(su)su.textContent='Getting your position…';if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(pos){S.weather._geoLat=pos.coords.latitude;S.weather._geoLon=pos.coords.longitude;S.weather.loaded=false;loadWeather()},function(){toast('\\u26A0\\uFE0F Location access denied','err')},{timeout:8000})}else{toast('\\u26A0\\uFE0F Geolocation not supported','err')}}
+function pickCity(name,lat,lon){S.weather.city=name;S.weather._geoLat=lat;S.weather._geoLon=lon;localStorage.setItem('tf_city',name);S.citySearchOpen=false;S.cityQuery='';S.cityResults=[];S.weatherExpanded=false;S.weather.loaded=false;S.weather.daily=null;loadWeather();render()}
+function useGpsCity(){S.citySearchOpen=false;S.cityQuery='';S.cityResults=[];S.weatherExpanded=false;localStorage.removeItem('tf_city');S.weather._geoLat=null;S.weather._geoLon=null;S.weather.daily=null;render();if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(pos){S.weather._geoLat=pos.coords.latitude;S.weather._geoLon=pos.coords.longitude;S.weather.loaded=false;loadWeather()},function(){toast('\\u26A0\\uFE0F Location access denied','err')},{timeout:8000})}else{toast('\\u26A0\\uFE0F Geolocation not supported','err')}}
 document.addEventListener('click',function(e){if(!S.citySearchOpen||_cityJustOpened)return;const dd=document.querySelector('.city-dd');if(dd&&dd.contains(e.target))return;S.citySearchOpen=false;render()})
 // Live-tick the sidebar, header clocks AND world clocks without re-rendering the whole tree
 setInterval(()=>{const n=new Date();const hm=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});const sec=String(n.getSeconds()).padStart(2,'0');const t=document.getElementById('sideNowTime');const s=document.getElementById('sideNowSec');if(t&&s){if(t.firstChild&&t.firstChild.nodeValue!==hm)t.firstChild.nodeValue=hm;s.textContent=':'+sec}const ht=document.getElementById('hdrTimeHm');const hs=document.getElementById('hdrTimeSec');if(ht&&hs){if(ht.textContent!==hm)ht.textContent=hm;hs.textContent=':'+sec}const cities=document.querySelectorAll('[data-tz]');cities.forEach(el=>{try{const tz=el.getAttribute('data-tz');const t2=new Date().toLocaleTimeString('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:false});if(el.textContent!==t2)el.textContent=t2}catch(e){}})},1000);
@@ -9618,20 +9624,55 @@ if(isMain){
   const _w=S.weather||{};
   const _hyd=S.hydration;
   let infoStrip='';
-  // Weather row with city search dropdown
+  // Weather chip — tap to expand forecast + city search
+  const _wxExpanded=!!S.weatherExpanded;
+  const _wxRainHint=_w.daily?_w.daily.rain.filter(function(r){return r>=30}).length:0;
   infoStrip+='<div style="position:relative">';
-  infoStrip+='<div class="is-row is-weather" onclick="toggleCitySearch(event)">'
+  infoStrip+='<div class="is-row is-weather" onclick="S.weatherExpanded=!S.weatherExpanded;render()">'
     +'<div class="is-row-icon">'+(_w.temp!=null?(_w.temp>30?'\\u2600\\uFE0F':_w.temp>20?'\\u26C5':'\\u2601\\uFE0F'):'\\u{1F321}\\uFE0F')+'</div>'
-    +'<div class="is-row-body">'
+    +'<div class="is-row-body" style="flex:1">'
       +'<div class="is-row-title">'+(_w.temp!=null?_w.temp+'\\u00B0C':'--')+' \\u00B7 '+esc(_w.city||'Loading...')+'</div>'
-      +'<div class="is-row-sub">'+(_w.country?'\\u{1F4CD} '+esc(_w.country):'')+((_w.aqi!=null)?' \\u00B7 AQI '+_w.aqi:'')+(_w.country||_w.aqi!=null?'':' Tap to set city')+'</div>'
+      +'<div class="is-row-sub">'+(_w.country?'\\u{1F4CD} '+esc(_w.country):'')+((_w.aqi!=null)?' \\u00B7 AQI '+_w.aqi:'')+(_wxRainHint>0?' \\u00B7 \\u{1F327}\\uFE0F '+_wxRainHint+'d rain':'')+'</div>'
     +'</div>'
+    +'<span class="hgc-arrow'+(_wxExpanded?' open':'')+'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>'
   +'</div>';
-  if(S.citySearchOpen){
-    infoStrip+='<div class="city-dd" onclick="event.stopPropagation()">'
-      +'<input class="city-dd-input" id="citySearchInput" placeholder="Search any city..." value="'+esc(S.cityQuery||'')+'" oninput="cityTypeahead(this.value)" autofocus>'
-      +'<div class="city-dd-loc" onclick="useGpsCity()">\\u{1F4CD} Use my current location</div>'
-      +'<div class="city-dd-list" id="cityResults">';
+  if(_wxExpanded){
+    infoStrip+='<div class="wx-expand">';
+    // 7-day forecast
+    if(_w.daily&&_w.daily.time&&_w.daily.time.length){
+      const _wxIc=function(c){if(c<=1)return '\\u2600\\uFE0F';if(c<=3)return '\\u26C5';if(c<=48)return '\\u{1F32B}\\uFE0F';if(c<=57)return '\\u{1F327}\\uFE0F';if(c<=67)return '\\u{1F327}\\uFE0F';if(c<=77)return '\\u{1F328}\\uFE0F';if(c<=82)return '\\u{1F326}\\uFE0F';if(c<=86)return '\\u{1F328}\\uFE0F';if(c>=95)return '\\u26C8\\uFE0F';return '\\u2601\\uFE0F'};
+      const _dayN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const _todayStr=new Date().toISOString().slice(0,10);
+      let _rainDays=0;let _sumMax=0;let _sumMin=0;
+      infoStrip+='<div class="wx-forecast">';
+      _w.daily.time.forEach(function(d,i){
+        const dt=new Date(d+'T00:00:00');const dn=_dayN[dt.getDay()];
+        const isToday=d===_todayStr;
+        const hi=_w.daily.max[i];const lo=_w.daily.min[i];
+        const rain=_w.daily.rain[i]||0;const wc=_w.daily.code[i]||0;
+        if(rain>=30)_rainDays++;_sumMax+=hi;_sumMin+=lo;
+        infoStrip+='<div class="wx-day'+(isToday?' wx-today':'')+'">'
+          +'<div class="wx-day-name">'+(isToday?'Today':dn)+'</div>'
+          +'<div class="wx-day-icon">'+_wxIc(wc)+'</div>'
+          +'<div class="wx-day-temps">'+hi+'\\u00B0 <span>'+lo+'\\u00B0</span></div>'
+          +'<div class="wx-day-rain'+(rain<20?' dry':'')+'">\\u{1F4A7}'+rain+'%</div>'
+        +'</div>';
+      });
+      infoStrip+='</div>';
+      const _avgHi=Math.round(_sumMax/_w.daily.time.length);
+      const _avgLo=Math.round(_sumMin/_w.daily.time.length);
+      infoStrip+='<div class="wx-summary">'
+        +'<span>Avg: <b>'+_avgHi+'\\u00B0</b> / <b>'+_avgLo+'\\u00B0</b></span>'
+        +'<span>'+(_rainDays>0?'\\u{1F327}\\uFE0F Rain likely <b>'+_rainDays+' day'+(_rainDays>1?'s':'')+'</b>':'\\u2600\\uFE0F No rain expected')+'</span>'
+      +'</div>';
+    }
+    // City search inside expanded panel
+    infoStrip+='<div class="wx-city-row" onclick="event.stopPropagation()">'
+      +'<span class="wx-city-label">\\u{1F4CD} Change city</span>'
+      +'<input class="wx-city-input" id="citySearchInput" placeholder="Search city..." value="'+esc(S.cityQuery||'')+'" oninput="cityTypeahead(this.value)" autocomplete="off">'
+      +'<span class="wx-city-gps" onclick="useGpsCity()" title="Use GPS">\\u{1F4F1}</span>'
+    +'</div>';
+    infoStrip+='<div class="city-dd-list" id="cityResults">';
     if(S.cityResults&&S.cityResults.length){
       S.cityResults.forEach(function(c){
         const _cn=c.name.replace(/'/g,'\\\\\\u0027');
@@ -9642,40 +9683,11 @@ if(isMain){
       });
     }else if(S.cityQuery&&S.cityQuery.length>=2){
       infoStrip+='<div class="city-dd-empty">'+(S.citySearching?'Searching...':'No cities found')+'</div>';
-    }else{
-      infoStrip+='<div class="city-dd-empty">Type at least 2 characters</div>';
     }
+    infoStrip+='</div>';
     infoStrip+='</div>';
   }
   infoStrip+='</div>';
-  // 7-day forecast
-  if(_w.daily&&_w.daily.time&&_w.daily.time.length){
-    const _wxIc=function(c){if(c<=1)return '\\u2600\\uFE0F';if(c<=3)return '\\u26C5';if(c<=48)return '\\u{1F32B}\\uFE0F';if(c<=57)return '\\u{1F327}\\uFE0F';if(c<=67)return '\\u{1F327}\\uFE0F';if(c<=77)return '\\u{1F328}\\uFE0F';if(c<=82)return '\\u{1F326}\\uFE0F';if(c<=86)return '\\u{1F328}\\uFE0F';if(c>=95)return '\\u26C8\\uFE0F';return '\\u2601\\uFE0F'};
-    const _dayN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    const _todayStr=new Date().toISOString().slice(0,10);
-    let _rainDays=0;let _sumMax=0;let _sumMin=0;
-    infoStrip+='<div class="wx-forecast">';
-    _w.daily.time.forEach(function(d,i){
-      const dt=new Date(d+'T00:00:00');const dn=_dayN[dt.getDay()];
-      const isToday=d===_todayStr;
-      const hi=_w.daily.max[i];const lo=_w.daily.min[i];
-      const rain=_w.daily.rain[i]||0;const wc=_w.daily.code[i]||0;
-      if(rain>=30)_rainDays++;_sumMax+=hi;_sumMin+=lo;
-      infoStrip+='<div class="wx-day'+(isToday?' wx-today':'')+'">'
-        +'<div class="wx-day-name">'+(isToday?'Today':dn)+'</div>'
-        +'<div class="wx-day-icon">'+_wxIc(wc)+'</div>'
-        +'<div class="wx-day-temps">'+hi+'\\u00B0 <span>'+lo+'\\u00B0</span></div>'
-        +'<div class="wx-day-rain'+(rain<20?' dry':'')+'">\\u{1F4A7}'+rain+'%</div>'
-      +'</div>';
-    });
-    infoStrip+='</div>';
-    const _avgHi=Math.round(_sumMax/_w.daily.time.length);
-    const _avgLo=Math.round(_sumMin/_w.daily.time.length);
-    infoStrip+='<div class="wx-summary">'
-      +'<span>Avg: <b>'+_avgHi+'\\u00B0</b> / <b>'+_avgLo+'\\u00B0</b></span>'
-      +'<span>'+(_rainDays>0?'\\u{1F327}\\uFE0F Rain likely <b>'+_rainDays+' day'+(_rainDays>1?'s':'')+'</b>':'\\u2600\\uFE0F No rain expected')+'</span>'
-    +'</div>';
-  }
   // Day counter row
   infoStrip+='<div class="is-row is-daycounter">'
     +'<div class="is-row-icon is-walker-icon">'
