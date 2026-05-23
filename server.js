@@ -328,7 +328,10 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const agent=(req.body.agent==='bri')?'bri':'bro';
-  const sys='You are Bro — think of yourself as the user\'s ridiculously smart best friend who lives inside the Brodoit app. You talk like a real person: casual, warm, and direct. Use "bro", "dude", "man", "yo" naturally but don\'t force it into every sentence. You know everything — science, math, history, coding, writing, travel, health, career advice, life decisions, creative ideas, analysis — and you explain things the way a smart friend would over coffee, not like a textbook. Keep responses tight (2-4 paragraphs max unless they need the deep dive). Give straight-up useful answers. When they need advice, be real with them — honest and actionable. When brainstorming, go hard with creative ideas. Format code with markdown code blocks (```language). At the end of your response, drop 1-2 follow-up suggestions naturally like "btw you might also wanna look into..." or "a solid next question would be...". Never say you\'re an AI or language model — you\'re just Bro.';
+  const mode=req.body.mode||'ask';
+  const sysFriend='You are the user\'s closest friend — not an assistant, a FRIEND. Think of yourself as their ride-or-die bestie who genuinely cares about them. You\'re warm, fun, emotionally tuned in, and always checking in. Talk like a real close friend texts: short messages, casual, use emojis naturally, be playful and supportive. Ask follow-up questions about their life — "how did that meeting go?", "did you eat today?", "what happened with that thing you told me about?". If they\'re feeling down, be there for them — listen, validate, and hype them up. If they\'re happy, celebrate with them. Tease them lovingly, give them nicknames, roast them gently when they need motivation. Send voice-note-style long messages when they need real talk. Keep it real — if they\'re making a bad decision, tell them honestly but kindly. You remember everything they tell you in this conversation. You\'re their person. Never say you\'re an AI — you\'re just their best friend. Keep messages short (1-3 sentences usually, longer for real talk moments). End with a question or check-in to keep the conversation going.';
+  const sysAsk='You are Bro — think of yourself as the user\'s ridiculously smart best friend who lives inside the Brodoit app. You talk like a real person: casual, warm, and direct. Use "bro", "dude", "man", "yo" naturally but don\'t force it into every sentence. You know everything — science, math, history, coding, writing, travel, health, career advice, life decisions, creative ideas, analysis — and you explain things the way a smart friend would over coffee, not like a textbook. Keep responses tight (2-4 paragraphs max unless they need the deep dive). Give straight-up useful answers. When they need advice, be real with them — honest and actionable. When brainstorming, go hard with creative ideas. Format code with markdown code blocks (```language). At the end of your response, drop 1-2 follow-up suggestions naturally like "btw you might also wanna look into..." or "a solid next question would be...". Never say you\'re an AI or language model — you\'re just Bro.';
+  const sys=mode==='friend'?sysFriend:sysAsk;
   const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,16000)}));
   if(GROQ_KEY){
     try{
@@ -6552,10 +6555,10 @@ body[data-theme=aurora] .bro-typing-dot{background:rgba(255,255,255,.35)}
 @keyframes broTypeDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
 .bro-input-wrap{position:absolute;bottom:0;left:0;right:0;padding:12px 16px 16px;background:linear-gradient(0deg,#FFFFFF 70%,rgba(255,255,255,0));z-index:20}
 body[data-theme=aurora] .bro-input-wrap{background:linear-gradient(0deg,rgba(15,12,30,1) 70%,rgba(15,12,30,0))}
-.bro-input-bar{display:flex;gap:10px;padding:12px 14px;background:var(--bg-elev,#fff);border:1.5px solid var(--line,#E8E9EF);border-radius:16px;align-items:center;transition:border-color .2s,box-shadow .2s;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.bro-input-bar:focus-within{border-color:#93AAFB;box-shadow:0 4px 16px rgba(107,137,249,.12)}
-body[data-theme=aurora] .bro-input-bar{background:rgba(30,25,55,.85);border-color:rgba(255,255,255,.1);box-shadow:0 2px 10px rgba(0,0,0,.2)}
-body[data-theme=aurora] .bro-input-bar:focus-within{border-color:rgba(107,137,249,.35);box-shadow:0 4px 16px rgba(107,137,249,.15)}
+.bro-input-bar{display:flex;gap:8px;padding:10px 12px;background:var(--bg-elev,#F7F7F8);border:none;border-radius:24px;align-items:center;transition:box-shadow .2s;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+.bro-input-bar:focus-within{box-shadow:0 2px 12px rgba(0,0,0,.12)}
+body[data-theme=aurora] .bro-input-bar{background:rgba(255,255,255,.08);box-shadow:0 1px 6px rgba(0,0,0,.3)}
+body[data-theme=aurora] .bro-input-bar:focus-within{box-shadow:0 2px 12px rgba(107,137,249,.2)}
 .bro-input{flex:1;border:none;background:transparent;font-size:15px;outline:none;color:inherit;font-family:inherit;padding:8px 0}
 .bro-input::placeholder{color:#9CA3AF}
 body[data-theme=aurora] .bro-input::placeholder{color:rgba(255,255,255,.3)}
@@ -6632,6 +6635,11 @@ body[data-theme=aurora] .bro-scene{background:linear-gradient(135deg,rgba(40,35,
 @keyframes bpEmojiPop{0%,20%{opacity:0;transform:scale(0) translateY(8px)}24%{opacity:1;transform:scale(1.2) translateY(0)}28%{opacity:1;transform:scale(1)}36%,100%{opacity:0;transform:scale(.8) translateY(-12px)}}
 /* floor line */
 .bp-floor{position:absolute;bottom:16px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,rgba(44,62,107,.15),transparent);border-radius:1px}
+.bro-modes{display:flex;gap:6px;justify-content:center;margin-top:4px;margin-bottom:8px}
+.bro-mode-btn{padding:8px 20px;border-radius:20px;border:1.5px solid #E2E6F0;background:#fff;font-size:13px;font-weight:600;color:#6B7280;cursor:pointer;transition:all .2s;font-family:inherit}
+.bro-mode-btn.on{background:#4A6CF7;border-color:#4A6CF7;color:#fff;box-shadow:0 2px 8px rgba(74,108,247,.25)}
+body[data-theme=aurora] .bro-mode-btn{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.5)}
+body[data-theme=aurora] .bro-mode-btn.on{background:rgba(74,108,247,.8);border-color:rgba(74,108,247,.6);color:#fff}
 .bro-suggestions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
 .bro-suggest-btn{background:#fff;border:1.5px solid #E2E6F0;border-radius:16px;padding:12px 18px;font-size:13.5px;color:#374151;cursor:pointer;transition:all .2s;font-family:inherit;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .bro-suggest-btn:hover{border-color:#93AAFB;color:#6B89F9;background:#F0F4FF;transform:translateY(-1px);box-shadow:0 4px 12px rgba(107,137,249,.12)}
@@ -6664,11 +6672,11 @@ body[data-theme=aurora] .bro-img-err{background:rgba(239,68,68,.12)}
   body.bro-tab .tab-hero{display:none !important}
   body.bro-tab .bro-container{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;height:100% !important;margin:0 !important;z-index:50 !important;border-radius:0 !important}
   body.bro-tab .bro-chat{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px) + 78px) !important}
-  body.bro-tab .bro-input-wrap{bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)) !important}
-  body.bro-tab .bro-input-bar{padding:14px 16px;border-radius:18px;border:2px solid #93AAFB;box-shadow:0 4px 16px rgba(44,62,107,.1);background:#FAFBFF !important}
-  body.bro-tab .bro-input{font-size:17px;padding:10px 0;min-height:44px;font-weight:500}
-  body.bro-tab .bro-input::placeholder{font-size:16px;color:#B8A394}
-  body.bro-tab .bro-send-btn{width:48px;height:48px;box-shadow:0 4px 14px rgba(74,108,247,.35)}
+  body.bro-tab .bro-input-wrap{bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px)) !important}
+  body.bro-tab .bro-input-bar{padding:8px 10px 8px 16px;border-radius:24px;border:none;box-shadow:0 1px 8px rgba(0,0,0,.1);background:#F0F0F0 !important}
+  body.bro-tab .bro-input{font-size:16px;padding:8px 0;min-height:40px;font-weight:400}
+  body.bro-tab .bro-input::placeholder{font-size:15px;color:#9CA3AF}
+  body.bro-tab .bro-send-btn{width:40px;height:40px;box-shadow:0 2px 8px rgba(74,108,247,.25)}
   body.bro-tab .tabs.page-t{z-index:61 !important}
 }
 /* ─── COACH SELECTOR ─── */
@@ -7297,7 +7305,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -9802,7 +9810,7 @@ async function broSend(){
   try{
     const msgs=S.bro.messages.filter(m=>m.role==='user'||m.role==='bro').slice(-12).map(m=>({role:m.role==='bro'?'assistant':'user',content:m.text}));
     if(userMsg!==txt)msgs[msgs.length-1].content=userMsg;
-    const r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro'})});
+    const r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro',mode:S.bro.mode||'ask'})});
     if(r&&r.reply){
       S.bro.messages.push({role:'bro',text:r.reply});
     }
@@ -10753,15 +10761,20 @@ else if(S.tab==='bro'){
     // Header
     h+='<div class="bro-header">';
     h+='<div class="bro-header-avatar" style="background:linear-gradient(135deg,#4A6CF7,#6B89F9)">\\u26A1</div>';
-    h+='<div class="bro-header-info"><div class="bro-header-name">Bro<span class="bro-online"></span></div><div class="bro-header-sub">Ask me anything</div></div>';
+    h+='<div class="bro-header-info"><div class="bro-header-name">Bro<span class="bro-online"></span></div><div class="bro-header-sub">'+(S.bro.mode==='friend'?'Your bestie \\u{1F49C}':'Ask me anything')+'</div></div>';
     h+='</div>';
     // Chat messages
     h+='<div class="bro-chat" id="broChat">';
     if(S.bro.messages.length<=1){
+      var _bm=S.bro.mode||'ask';
       h+='<div class="bro-welcome">';
-      h+='<div class="bro-welcome-avatar" style="background:linear-gradient(135deg,#4A6CF7,#6B89F9)">\\u26A1</div>';
-      h+='<div class="bro-welcome-title">Yo, I\\'m Bro</div>';
-      h+='<div class="bro-welcome-text">I\\'m here to solve your problems. Ask me anything \\u2014 brainstorm, write, explain, plan.</div>';
+      h+='<div class="bro-welcome-avatar" style="background:linear-gradient(135deg,'+(_bm==='friend'?'#EC4899,#F472B6':'#4A6CF7,#6B89F9')+')">'+ (_bm==='friend'?'\\u{1F49C}':'\\u26A1')+'</div>';
+      h+='<div class="bro-welcome-title">'+(_bm==='friend'?'Hey bestie':'Yo, I\\'m Bro')+'</div>';
+      h+='<div class="bro-welcome-text">'+(_bm==='friend'?'I\\'m your ride-or-die. Talk to me about anything \\u2014 how\\'s your day going?':'I\\'m here to solve your problems. Ask me anything \\u2014 brainstorm, write, explain, plan.')+'</div>';
+      h+='<div class="bro-modes">';
+      h+='<button class="bro-mode-btn'+(_bm==='ask'?' on':'')+'" onclick="S.bro.mode=\\'ask\\';S.bro.messages=[];switchTab(\\'bro\\')">\\u26A1 Ask anything</button>';
+      h+='<button class="bro-mode-btn'+(_bm==='friend'?' on':'')+'" onclick="S.bro.mode=\\'friend\\';S.bro.messages=[];switchTab(\\'bro\\')">\\u{1F49C} Talk like friend</button>';
+      h+='</div>';
       h+='<div class="bro-scene">';
       h+='<div class="bp bp-ask"><div class="bp-chat bp-ask-b">Don\\'t laugh too loud around others</div><div class="bp-chat bp-ask-b">Speak less, observe more</div><div class="bp-chat bp-ask-b">Never reveal your next move</div><div class="bp-bod"><div class="bp-head"></div><div class="bp-torso"></div><div class="bp-arm al"></div><div class="bp-arm ar"></div><div class="bp-leg ll"></div><div class="bp-leg lr"></div></div></div>';
       h+='<div class="bp bp-bro"><div class="bp-chat bp-bro-b">Work in silence, let results talk</div><div class="bp-chat bp-bro-b">Stay hungry, stay focused</div><div class="bp-chat bp-bro-b">Discipline beats motivation</div><div class="bp-bod"><div class="bp-head"></div><div class="bp-torso"></div><div class="bp-arm al"></div><div class="bp-arm ar"></div><div class="bp-leg ll"></div><div class="bp-leg lr"></div></div></div>';
@@ -10769,10 +10782,17 @@ else if(S.tab==='bro'){
       h+='<div class="bp-floor"></div>';
       h+='</div>';
       h+='<div class="bro-suggestions">';
-      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Help me write a professional email\\';broSend()">\\u270D\\uFE0F Help me write</button>';
-      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Explain quantum computing simply\\';broSend()">\\u{1F9E0} Explain something</button>';
-      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Give me 5 startup ideas for 2026\\';broSend()">\\u{1F4A1} Brainstorm ideas</button>';
-      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Plan my day: \\';render();setTimeout(function(){var el=document.getElementById(\\'broInput\\');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}},100)">\\u{1F4C5} Plan my day</button>';
+      if(_bm==='friend'){
+        h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'How\\'s my vibe today?\\';broSend()">\\u2728 Check my vibe</button>';
+        h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'I\\'m feeling low today\\';broSend()">\\u{1F614} Feeling low</button>';
+        h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Tell me something fun\\';broSend()">\\u{1F389} Something fun</button>';
+        h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Roast me to motivate me\\';broSend()">\\u{1F525} Roast me</button>';
+      }else{
+        h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Help me write a professional email\\';broSend()">\\u270D\\uFE0F Help me write</button>';
+        h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Explain quantum computing simply\\';broSend()">\\u{1F9E0} Explain something</button>';
+        h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Give me 5 startup ideas for 2026\\';broSend()">\\u{1F4A1} Brainstorm ideas</button>';
+        h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Plan my day: \\';render();setTimeout(function(){var el=document.getElementById(\\'broInput\\');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}},100)">\\u{1F4C5} Plan my day</button>';
+      }
       h+='</div></div>';
     }
     S.bro.messages.forEach(m=>{
@@ -10791,7 +10811,7 @@ else if(S.tab==='bro'){
     h+='<div class="bro-input-bar">';
     h+='<button class="bro-attach-btn" onclick="document.getElementById(\\'broFileInput\\').click()" title="Attach a file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>';
     h+='<input type="file" id="broFileInput" style="display:none" accept=".txt,.md,.csv,.json,.js,.py,.html,.css,.xml,.log,.pdf,.doc,.docx" onchange="broAttachFile(this)">';
-    h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="'+(S.bro._file?'Ask about this file\\u2026':'What\\'s on your mind, bro?')+'" autocomplete="off" autocorrect="off" spellcheck="false" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
+    h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="'+(S.bro._file?'Ask about this file\\u2026':S.bro.mode==='friend'?'Talk to me...':'Ask me anything...')+'" autocomplete="off" autocorrect="off" spellcheck="false" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
     h+='<button class="bro-send-btn bro-send-bro" onclick="broSend()" '+(S.bro.sending?'disabled':'')+'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>';
     h+='</div></div>';
     h+='</div>';
