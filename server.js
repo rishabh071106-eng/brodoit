@@ -3182,16 +3182,16 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     flex-direction:row !important;
     justify-content:space-around !important;
     overflow-x:auto !important;overflow-y:visible !important;
-    background:rgba(15,23,42,.92) !important;
+    background:rgba(255,255,255,.88) !important;
     backdrop-filter:saturate(180%) blur(28px) !important;
     -webkit-backdrop-filter:saturate(180%) blur(28px) !important;
     border:0 !important;
-    border-top:1px solid rgba(255,255,255,.1) !important;
+    border-top:1px solid rgba(0,0,0,.08) !important;
     border-radius:0 !important;
-    padding:8px 6px calc(10px + env(safe-area-inset-bottom,0px)) !important;
+    padding:6px 4px calc(8px + env(safe-area-inset-bottom,0px)) !important;
     gap:0 !important;
     z-index:60 !important;
-    box-shadow:0 -4px 20px rgba(0,0,0,.25) !important;
+    box-shadow:0 -2px 16px rgba(0,0,0,.06) !important;
     margin:0 !important;
   }
   .tabs.page-t::after{display:none !important}
@@ -3200,39 +3200,39 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab{
     flex:1 1 0 !important;
     min-width:0 !important;
-    padding:6px 2px 4px !important;
+    padding:4px 2px 2px !important;
     flex-direction:column !important;
     align-items:center !important;
     justify-content:center !important;
     text-align:center !important;
-    min-height:58px !important;
-    border-radius:12px !important;
-    gap:4px !important;
-    transition:color .2s ease,transform .2s cubic-bezier(.34,1.56,.64,1) !important;
+    min-height:50px !important;
+    border-radius:10px !important;
+    gap:3px !important;
+    transition:color .2s ease,transform .15s ease !important;
     background:transparent !important;
-    color:rgba(255,255,255,.55) !important;
+    color:#9CA3AF !important;
     box-shadow:none !important;
     position:relative;
     overflow:visible;
   }
   .tabs.page-t .tab::before{display:none !important}
   .tabs.page-t .tab .ti{
-    font-size:28px !important;
-    width:32px !important;height:32px !important;
+    font-size:24px !important;
+    width:28px !important;height:28px !important;
     display:flex !important;align-items:center !important;justify-content:center !important;
-    transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important;
+    transition:transform .2s ease,color .2s ease !important;
     color:inherit !important;
     background:none !important;border-radius:0 !important;box-shadow:none !important;
     overflow:visible !important;
   }
   .tabs.page-t .tab .ti::after{display:none !important}
   .tabs.page-t .tab .ti::before{display:none !important}
-  .tabs.page-t .tab .ti svg{width:26px !important;height:26px !important;filter:none !important;stroke-width:1.8 !important}
+  .tabs.page-t .tab .ti svg{width:24px !important;height:24px !important;filter:none !important;stroke-width:1.8 !important}
   .tabs.page-t .tab .tl{
     font-family:var(--sans) !important;
-    font-size:11.5px !important;
-    font-weight:600 !important;
-    letter-spacing:.01em !important;
+    font-size:10px !important;
+    font-weight:500 !important;
+    letter-spacing:.02em !important;
     text-transform:none !important;
     white-space:nowrap !important;
     color:inherit !important;
@@ -3240,28 +3240,24 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     overflow:hidden;text-overflow:ellipsis;max-width:100%;
     margin-top:0 !important;
   }
-  .tabs.page-t .tab.tab-cal .tl{font-size:11px !important;letter-spacing:0 !important}
-  .tabs.page-t .tab:active{transform:scale(.88) !important}
+  .tabs.page-t .tab.tab-cal .tl{font-size:10px !important;letter-spacing:0 !important}
+  .tabs.page-t .tab:active{transform:scale(.9) !important}
   .tabs.page-t .tab.on{
-    color:#C2703E !important;
+    color:#78552B !important;
     transform:none !important;
     background:transparent !important;
   }
   .tabs.page-t .tab.on .ti{
-    transform:scale(1.15) translateY(-2px) !important;background:none !important;box-shadow:none !important;
-    animation:tabBounceIn .35s cubic-bezier(.34,1.56,.64,1) !important;
+    transform:scale(1.1) !important;background:none !important;box-shadow:none !important;
   }
-  .tabs.page-t .tab.on .tl{color:#78552B !important;font-weight:700 !important;opacity:1 !important}
+  .tabs.page-t .tab.on .tl{color:#78552B !important;font-weight:700 !important;opacity:1 !important;font-size:10.5px !important}
   .tabs.page-t .tab.on::after{
     content:'' !important;display:block !important;
-    width:5px !important;height:5px !important;border-radius:50% !important;
+    width:4px !important;height:4px !important;border-radius:50% !important;
     background:#78552B !important;
     position:absolute !important;bottom:0 !important;left:50% !important;
     transform:translateX(-50%) !important;
-    animation:tabDotIn .3s ease !important;
   }
-  @keyframes tabBounceIn{0%{transform:scale(.8) translateY(0)}60%{transform:scale(1.2) translateY(-4px)}100%{transform:scale(1.15) translateY(-2px)}}
-  @keyframes tabDotIn{0%{transform:translateX(-50%) scale(0)}100%{transform:translateX(-50%) scale(1)}}
   /* Float other UI above the new bottom bar */
   .bk-mini{bottom:116px !important;right:14px !important}
   .player{bottom:116px !important;left:12px !important;right:96px !important}
@@ -3274,8 +3270,8 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .section-hd h3{font-size:19px !important}
   .stats .st b{font-size:22px !important}
 }
-body[data-theme=aurora] .tabs.page-t{background:rgba(20,20,36,.94) !important;border-color:rgba(255,255,255,.08) !important}
-body[data-theme=aurora] .tabs.page-t .tab{color:rgba(255,255,255,.45) !important}
+body[data-theme=aurora] .tabs.page-t{background:rgba(20,20,36,.92) !important;border-color:rgba(255,255,255,.06) !important}
+body[data-theme=aurora] .tabs.page-t .tab{color:rgba(255,255,255,.4) !important}
 body[data-theme=aurora] .tabs.page-t .tab.on{color:#D4A574 !important}
 body[data-theme=aurora] .tabs.page-t .tab.on .tl{color:#D4A574 !important}
 /* Desktop sidebar layout */
@@ -4962,7 +4958,7 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-input::placeholder{color:var(--ink-3,#94A3B8)}
 .qc-send{width:38px;height:38px;border-radius:50%;border:none;background:linear-gradient(135deg,#3DAE5C,#2D8A4E);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;box-shadow:0 2px 8px rgba(61,174,92,.3)}
 .qc-send:active{transform:scale(.92)}
-@media(max-width:1023px){.qc-bar{padding:16px 16px;border-radius:18px;margin-bottom:16px}.qc-input{font-size:17px;padding:10px 0}.qc-input::placeholder{font-size:16px}.qc-send{width:46px;height:46px;font-size:24px;font-weight:700}}
+@media(max-width:1023px){.qc-bar{padding:16px 16px;border-radius:18px;margin-bottom:16px}.qc-input{font-size:17px;padding:10px 0}.qc-input::placeholder{font-size:16px}.qc-send{width:46px;height:46px;font-size:24px;font-weight:700}.qc-chips{gap:10px;margin-top:12px;flex-wrap:wrap}.qc-chip{padding:12px 22px;font-size:15.5px;border-radius:28px;font-weight:700;letter-spacing:.02em;border-width:2px}.qc-chip .qc-dot{width:11px;height:11px}}
 .qc-chips{display:flex;gap:6px;margin-top:8px;align-items:center}
 .qc-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;border:1.5px solid transparent;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s;background:var(--bg,#F1F5F9);color:var(--ink-2,#64748B);user-select:none}
 .qc-chip:active{transform:scale(.95)}
@@ -6468,11 +6464,37 @@ body[data-theme=aurora] .bro-input::placeholder{color:rgba(255,255,255,.3)}
 .bro-send-bri{background:linear-gradient(135deg,#EC4899,#F472B6)}
 @keyframes broFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .bro-welcome{display:flex;flex-direction:column;align-items:center;gap:16px;padding:60px 24px 40px;text-align:center}
-.bro-welcome-avatar{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px}
+.bro-welcome-avatar{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;animation:broWelcomePulse 2s ease-in-out infinite}
+@keyframes broWelcomePulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(120,85,43,.3)}50%{transform:scale(1.08);box-shadow:0 0 20px 8px rgba(120,85,43,.15)}}
 .bro-welcome-title{font-family:var(--serif);font-size:28px;font-weight:600;color:#111827;letter-spacing:-.02em}
 body[data-theme=aurora] .bro-welcome-title{color:#F5F5FA}
 .bro-welcome-text{font-size:14px;color:#6B7280;max-width:300px;line-height:1.6}
 body[data-theme=aurora] .bro-welcome-text{color:rgba(255,255,255,.4)}
+.bro-showcase{display:flex;flex-direction:column;gap:14px;width:100%;max-width:320px;margin-top:8px}
+.bro-showcase-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#FFFFFF;border:1.5px solid #E5E7EB;border-radius:16px;opacity:0;animation:broShowcaseIn .6s ease-out forwards;position:relative;overflow:hidden}
+.bro-showcase-item:nth-child(1){animation-delay:.3s}
+.bro-showcase-item:nth-child(2){animation-delay:.6s}
+.bro-showcase-item:nth-child(3){animation-delay:.9s}
+body[data-theme=aurora] .bro-showcase-item{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+@keyframes broShowcaseIn{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+.bro-showcase-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;position:relative}
+.bro-showcase-icon.sc-img{background:linear-gradient(135deg,#FBBF24,#F59E0B)}
+.bro-showcase-icon.sc-solve{background:linear-gradient(135deg,#60A5FA,#3B82F6)}
+.bro-showcase-icon.sc-write{background:linear-gradient(135deg,#A78BFA,#8B5CF6)}
+.bro-showcase-icon .sc-sparkle{position:absolute;width:6px;height:6px;background:#fff;border-radius:50%;animation:broSparkle 1.5s ease-in-out infinite}
+.bro-showcase-icon .sc-sparkle:nth-child(2){width:4px;height:4px;animation-delay:.5s;top:-2px;right:2px}
+.bro-showcase-icon .sc-sparkle:nth-child(3){width:5px;height:5px;animation-delay:1s;bottom:0;left:-1px}
+@keyframes broSparkle{0%,100%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1)}}
+.bro-showcase-text{text-align:left}
+.bro-showcase-text strong{display:block;font-size:14px;font-weight:600;color:#1F2937;margin-bottom:2px}
+body[data-theme=aurora] .bro-showcase-text strong{color:#F5F5FA}
+.bro-showcase-text span{font-size:12px;color:#9CA3AF;line-height:1.4}
+body[data-theme=aurora] .bro-showcase-text span{color:rgba(255,255,255,.4)}
+.bro-showcase-item::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:broShimmer 3s ease-in-out infinite}
+.bro-showcase-item:nth-child(2)::after{animation-delay:1s}
+.bro-showcase-item:nth-child(3)::after{animation-delay:2s}
+body[data-theme=aurora] .bro-showcase-item::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent)}
+@keyframes broShimmer{0%{left:-100%}50%,100%{left:150%}}
 .bro-suggestions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
 .bro-suggest-btn{background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;padding:10px 16px;font-size:13px;color:#374151;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:500}
 .bro-suggest-btn:hover{border-color:#78552B;color:#78552B;background:#FDF8F3}
@@ -6482,6 +6504,11 @@ body[data-theme=aurora] .bro-suggest-btn:hover{background:rgba(120,85,43,.15);bo
 .bro-gen-img:hover{transform:scale(1.02)}
 .bro-img-wrap{margin-top:8px}
 .bro-img-cap{font-size:11px;color:#9CA3AF;margin-top:6px;font-style:italic}
+.bro-img-viewer{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:20px;animation:broFadeIn .2s ease-out;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.bro-img-viewer img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.5);object-fit:contain}
+.bro-img-viewer-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.bro-img-viewer-close:hover{background:rgba(255,255,255,.3)}
+.bro-img-viewer-cap{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:13px;font-style:italic;text-align:center;max-width:80%}
 body[data-theme=aurora] .bro-img-cap{color:rgba(255,255,255,.35)}
 .bro-img-loading{display:flex;align-items:center;gap:10px;padding:20px 16px;background:rgba(120,85,43,.06);border-radius:12px;font-size:13px;color:#6B7280}
 body[data-theme=aurora] .bro-img-loading{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
@@ -6499,8 +6526,8 @@ body[data-theme=aurora] .bro-img-err{background:rgba(239,68,68,.12)}
   body.bro-tab .moral-wrap{display:none !important}
   body.bro-tab .tab-hero{display:none !important}
   body.bro-tab .bro-container{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;height:100% !important;margin:0 !important;z-index:50 !important;border-radius:0 !important}
-  body.bro-tab .bro-chat{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px) + 70px) !important}
-  body.bro-tab .bro-input-wrap{bottom:calc(70px + env(safe-area-inset-bottom,0px)) !important;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)) !important}
+  body.bro-tab .bro-chat{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px) + 62px) !important}
+  body.bro-tab .bro-input-wrap{bottom:calc(62px + env(safe-area-inset-bottom,0px)) !important;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)) !important}
   body.bro-tab .tabs.page-t{z-index:61 !important}
 }
 /* ─── COACH SELECTOR ─── */
@@ -9385,6 +9412,12 @@ async function loadBookStreak(){if(!S.user)return;const r=await api('/book-strea
 // each rebuilding the entire app DOM and producing visible flicker / cursor resets.
 let _renderRAF=0;
 // ═══ BRO / BRI — AI Life Coach ═══
+function broViewImg(src,cap){
+  var d=document.createElement('div');d.className='bro-img-viewer';
+  d.innerHTML='<button class="bro-img-viewer-close" onclick="this.parentElement.remove()">&times;</button><img src="'+src+'" alt="">'+(cap?'<div class="bro-img-viewer-cap">'+cap+'</div>':'');
+  d.addEventListener('click',function(e){if(e.target===d)d.remove()});
+  document.body.appendChild(d);
+}
 function broMd(t){
   t=esc(t);
   var boldRe=new RegExp('\\\\*\\\\*(.+?)\\\\*\\\\*','g');
@@ -10384,7 +10417,12 @@ else if(S.tab==='bro'){
       h+='<div class="bro-welcome">';
       h+='<div class="bro-welcome-avatar" style="background:linear-gradient(135deg,#78552B,#C2703E)">\\u26A1</div>';
       h+='<div class="bro-welcome-title">Yo, I\\'m Bro</div>';
-      h+='<div class="bro-welcome-text">Your personal AI that actually gets it. Ask me anything, get images made, brainstorm ideas, debug code \\u2014 whatever you need.</div>';
+      h+='<div class="bro-welcome-text">Your personal AI that actually gets it. Ask me anything, get images made, brainstorm ideas \\u2014 whatever you need.</div>';
+      h+='<div class="bro-showcase">';
+      h+='<div class="bro-showcase-item"><div class="bro-showcase-icon sc-img">\\u{1F3A8}<span class="sc-sparkle" style="top:-3px;right:-1px"></span><span class="sc-sparkle"></span><span class="sc-sparkle"></span></div><div class="bro-showcase-text"><strong>Bro Creates Images</strong><span>Describe anything \\u2014 Bro brings it to life visually</span></div></div>';
+      h+='<div class="bro-showcase-item"><div class="bro-showcase-icon sc-solve">\\u{1F9E0}<span class="sc-sparkle" style="top:-3px;right:-1px"></span><span class="sc-sparkle"></span><span class="sc-sparkle"></span></div><div class="bro-showcase-text"><strong>Bro Solves Problems</strong><span>From math to life advice \\u2014 Bro figures it out</span></div></div>';
+      h+='<div class="bro-showcase-item"><div class="bro-showcase-icon sc-write">\\u270D\\uFE0F<span class="sc-sparkle" style="top:-3px;right:-1px"></span><span class="sc-sparkle"></span><span class="sc-sparkle"></span></div><div class="bro-showcase-text"><strong>Bro Writes For You</strong><span>Emails, essays, messages \\u2014 nailed every time</span></div></div>';
+      h+='</div>';
       h+='<div class="bro-suggestions">';
       h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Generate an image of a sunset over mountains\\';broSend()">\\u{1F3A8} Generate an image</button>';
       h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Help me write a professional email\\';broSend()">\\u270D\\uFE0F Help me write</button>';
@@ -10399,7 +10437,7 @@ else if(S.tab==='bro'){
       h+='<div class="bro-msg-content">';
       let imgHtml='';
       if(m.imageLoading){imgHtml='<div class="bro-img-wrap"><div class="bro-img-loading"><div class="bro-img-spinner"></div><span>Generating image\\u2026</span></div></div>'}
-      else if(m.image){imgHtml='<div class="bro-img-wrap"><img class="bro-gen-img" src="'+esc(m.image)+'" alt="'+esc(m.imagePrompt||'Generated image')+'" onerror="this.parentElement.innerHTML=\\'<div class=bro-img-err>\\u{1F5BC}\\uFE0F Image failed to load</div>\\'" onclick="window.open(this.src,\\'_blank\\')" loading="lazy"><div class="bro-img-cap">'+esc(m.imagePrompt||'')+'</div></div>'}
+      else if(m.image){imgHtml='<div class="bro-img-wrap"><img class="bro-gen-img" src="'+esc(m.image)+'" alt="'+esc(m.imagePrompt||'Generated image')+'" onerror="this.parentElement.innerHTML=\\'<div class=bro-img-err>\\u{1F5BC}\\uFE0F Image failed to load</div>\\'" onclick="broViewImg(this.src,\\''+esc(m.imagePrompt||'').replace(/'/g,'\\\\\\'')+'\\')" loading="lazy"><div class="bro-img-cap">'+esc(m.imagePrompt||'')+'</div></div>'}
       else if(m.imageError){imgHtml='<div class="bro-img-wrap"><div class="bro-img-err">\\u{1F5BC}\\uFE0F Couldn\\'t generate image. Try again!</div></div>'}
       h+='<div class="bro-bubble '+(isAgent?'':'bro-bubble-bro')+'">'+broMd(m.text)+imgHtml+'</div>';
       h+='</div></div>';
