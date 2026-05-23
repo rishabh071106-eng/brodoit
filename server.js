@@ -6427,6 +6427,19 @@ body[data-theme=aurora] .bro-welcome-text{color:rgba(255,255,255,.4)}
 .bro-suggest-btn:hover{border-color:#4F46E5;color:#4F46E5;background:#F5F3FF}
 body[data-theme=aurora] .bro-suggest-btn{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.5)}
 body[data-theme=aurora] .bro-suggest-btn:hover{background:rgba(79,70,229,.15);border-color:rgba(79,70,229,.3);color:#A5B4FC}
+/* ─── BRO FULL-PAGE MOBILE ─── */
+@media (max-width:1023px){
+  body.bro-tab{overflow:hidden !important;position:fixed !important;width:100% !important;height:100% !important;padding-bottom:0 !important}
+  body.bro-tab .app{padding:0 !important;max-width:100% !important;height:100vh !important;overflow:hidden !important}
+  body.bro-tab .main-col{height:100% !important}
+  body.bro-tab .hdr{display:none !important}
+  body.bro-tab .moral-wrap{display:none !important}
+  body.bro-tab .tab-hero{display:none !important}
+  body.bro-tab .bro-container{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;height:100% !important;margin:0 !important;z-index:50 !important;border-radius:0 !important}
+  body.bro-tab .bro-chat{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px) + 70px) !important}
+  body.bro-tab .bro-input-wrap{bottom:calc(70px + env(safe-area-inset-bottom,0px)) !important;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)) !important}
+  body.bro-tab .tabs.page-t{z-index:61 !important}
+}
 /* ─── COACH SELECTOR ─── */
 .coach-select{display:flex;flex-direction:column;align-items:center;padding:40px 0 30px;gap:28px;background:#F8F9FB;border-radius:24px;margin:-8px -18px 0;padding-left:18px;padding-right:18px}
 body[data-theme=aurora] .coach-select{background:linear-gradient(180deg,rgba(248,249,251,.06),rgba(248,249,251,.02))}
@@ -11189,6 +11202,7 @@ document.getElementById('app').innerHTML=h;
 try{document.body.classList.toggle('audio-on',!!(S.playing&&(S.playing.url||S.playing.loading)))}catch(e){}
 // Lock body scroll when any fullscreen modal is open so the background can't scroll behind
 try{document.body.classList.toggle('modal-open',_isModalOpen())}catch(e){}
+try{document.body.classList.toggle('bro-tab',S.tab==='bro')}catch(e){}
 }
 fetch('/api/config').then(r=>r.json()).then(c=>{window.__TWILIO_SANDBOX_CODE=c.sandboxCode||'';render()}).catch(()=>{});
 applyTheme();
