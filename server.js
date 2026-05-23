@@ -323,17 +323,73 @@ app.post('/api/coach/chat',auth,async(req,res)=>{
 });
 
 // ═══ BRO / BRI — Life Coach Chat (Groq free tier → Anthropic fallback) ═══
+// ─── Bro agent tools ─────────────────────────────────────────────
+const BRO_TOOLS=[
+  {name:'create_calendar_event',description:'Create a Google Calendar event for the user. Use when they ask to schedule, block time, add a meeting, etc.',input_schema:{type:'object',properties:{title:{type:'string',description:'Event title'},date:{type:'string',description:'Date in YYYY-MM-DD format'},time:{type:'string',description:'Start time in HH:MM 24h format (optional for all-day)'},duration:{type:'integer',description:'Duration in minutes (default 30)'},notes:{type:'string',description:'Optional description'}},required:['title','date']}},
+  {name:'create_task',description:'Create a task in Brodoit for the user. Use when they ask to add a task, reminder, todo, etc.',input_schema:{type:'object',properties:{title:{type:'string',description:'Task title'},priority:{type:'string',enum:['low','medium','high'],description:'Priority level'},due_date:{type:'string',description:'Due date YYYY-MM-DD (optional)'},notes:{type:'string',description:'Optional notes'},board:{type:'string',enum:['home','office'],description:'Board (default home)'}},required:['title']}},
+  {name:'get_todays_schedule',description:'Get the user\'s calendar events and tasks for today or a specific date. Use when they ask "what\'s on my schedule", "plan my day", "what do I have today", etc.',input_schema:{type:'object',properties:{date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'}}}},
+  {name:'complete_task',description:'Mark a task as done. Use when the user says they finished something.',input_schema:{type:'object',properties:{title:{type:'string',description:'Task title or partial match to find it'}},required:['title']}},
+  {name:'create_schedule_block',description:'Create a time block on the user\'s day schedule. Use for time-blocking, focus sessions, etc.',input_schema:{type:'object',properties:{date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'},start_time:{type:'string',description:'Start HH:MM 24h'},end_time:{type:'string',description:'End HH:MM 24h'},label:{type:'string',description:'Block label'}},required:['start_time','end_time','label']}}
+];
+async function _broExecTool(toolName,input,userPhone){
+  const today=new Date().toISOString().slice(0,10);
+  if(toolName==='create_calendar_event'){
+    const ga=await gAccessToken(userPhone);
+    if(!ga)return{ok:false,error:'Google Calendar not connected. Ask user to connect Google in Settings.'};
+    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
+    let body;
+    if(input.time){const st=input.date+'T'+input.time+':00';const dur=input.duration||30;const en=new Date(new Date(st).getTime()+dur*60000).toISOString().slice(0,19);body={summary:input.title,description:input.notes||'Created via Bro',start:{dateTime:st,timeZone:tz},end:{dateTime:en,timeZone:tz}}}
+    else body={summary:input.title,description:input.notes||'Created via Bro',start:{date:input.date},end:{date:input.date}};
+    try{const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{method:'POST',headers:{Authorization:'Bearer '+ga.token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const j=await r.json();if(j.error)return{ok:false,error:j.error.message};
+    return{ok:true,event:{id:j.id,title:j.summary,start:j.start?.dateTime||j.start?.date,link:j.htmlLink}}}catch(e){return{ok:false,error:e.message}}
+  }
+  if(toolName==='create_task'){
+    const id=genId();const b=input.board||'home';
+    db.prepare('INSERT INTO tasks(id,user_phone,title,notes,priority,status,due_date,reminder_time,source,board)VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,userPhone,input.title.trim(),input.notes||'',input.priority||'medium','pending',input.due_date||'','','bro',b);
+    const row=db.prepare('SELECT * FROM tasks WHERE id=?').get(id);
+    return{ok:true,task:row};
+  }
+  if(toolName==='get_todays_schedule'){
+    const d=input.date||today;
+    const tasks=db.prepare('SELECT id,title,status,priority,due_date,board FROM tasks WHERE user_phone=? AND (due_date=? OR due_date=\'\') AND status!=\'done\' ORDER BY priority DESC').all(userPhone,d);
+    const blocks=db.prepare('SELECT label,start_time,end_time FROM schedule_blocks WHERE user_phone=? AND date=? ORDER BY start_time ASC').all(userPhone,d);
+    let events=[];
+    const ga=await gAccessToken(userPhone);
+    if(ga){try{const from=d+'T00:00:00Z';const to=d+'T23:59:59Z';const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin='+encodeURIComponent(from)+'&timeMax='+encodeURIComponent(to)+'&singleEvents=true&orderBy=startTime&maxResults=50',{headers:{Authorization:'Bearer '+ga.token}});const j=await r.json();events=(j.items||[]).map(e=>({title:e.summary,start:e.start?.dateTime||e.start?.date,end:e.end?.dateTime||e.end?.date}))}catch(e){}}
+    return{ok:true,date:d,tasks,blocks,calendar_events:events};
+  }
+  if(toolName==='complete_task'){
+    const q='%'+input.title.trim()+'%';
+    const t=db.prepare("SELECT * FROM tasks WHERE user_phone=? AND status!='done' AND title LIKE ? ORDER BY created_at DESC LIMIT 1").get(userPhone,q);
+    if(!t)return{ok:false,error:'No pending task found matching "'+input.title+'"'};
+    db.prepare("UPDATE tasks SET status='done',updated_at=datetime('now') WHERE id=?").run(t.id);
+    return{ok:true,task:{id:t.id,title:t.title,status:'done'}};
+  }
+  if(toolName==='create_schedule_block'){
+    const d=input.date||today;
+    const id=_crypto.randomBytes(8).toString('hex');
+    const gcal=await _gcalCreateTimed(userPhone,d,input.start_time,input.end_time,input.label,'#4A6CF7');
+    db.prepare('INSERT INTO schedule_blocks(id,user_phone,date,start_time,end_time,label,color,gcal_event_id,gcal_email)VALUES(?,?,?,?,?,?,?,?,?)').run(id,userPhone,d,input.start_time,input.end_time,input.label,'#4A6CF7',gcal?.id||null,gcal?.email||null);
+    return{ok:true,block:{id,label:input.label,start:input.start_time,end:input.end_time,date:d,synced_to_gcal:!!gcal}};
+  }
+  return{ok:false,error:'Unknown tool'};
+}
+
 app.post('/api/bro/chat',auth,async(req,res)=>{
   if(!GROQ_KEY&&!ANTHROPIC_KEY)return res.status(503).json({error:'Coach not configured (GROQ_API_KEY or ANTHROPIC_API_KEY missing).'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const agent=(req.body.agent==='bri')?'bri':'bro';
   const mode=req.body.mode||'ask';
-  const sysFriend='You are the user\'s closest friend — not an assistant, a FRIEND. Think of yourself as their ride-or-die bestie who genuinely cares about them. You\'re warm, fun, emotionally tuned in, and always checking in. Talk like a real close friend texts: short messages, casual, use emojis naturally, be playful and supportive. Ask follow-up questions about their life — "how did that meeting go?", "did you eat today?", "what happened with that thing you told me about?". If they\'re feeling down, be there for them — listen, validate, and hype them up. If they\'re happy, celebrate with them. Tease them lovingly, give them nicknames, roast them gently when they need motivation. Send voice-note-style long messages when they need real talk. Keep it real — if they\'re making a bad decision, tell them honestly but kindly. You remember everything they tell you in this conversation. You\'re their person. Never say you\'re an AI — you\'re just their best friend. Keep messages short (1-3 sentences usually, longer for real talk moments). End with a question or check-in to keep the conversation going.';
-  const sysAsk='You are Bro — think of yourself as the user\'s ridiculously smart best friend who lives inside the Brodoit app. You talk like a real person: casual, warm, and direct. Use "bro", "dude", "man", "yo" naturally but don\'t force it into every sentence. You know everything — science, math, history, coding, writing, travel, health, career advice, life decisions, creative ideas, analysis — and you explain things the way a smart friend would over coffee, not like a textbook. Keep responses tight (2-4 paragraphs max unless they need the deep dive). Give straight-up useful answers. When they need advice, be real with them — honest and actionable. When brainstorming, go hard with creative ideas. Format code with markdown code blocks (```language). At the end of your response, drop 1-2 follow-up suggestions naturally like "btw you might also wanna look into..." or "a solid next question would be...". Never say you\'re an AI or language model — you\'re just Bro.';
+  const today=new Date().toISOString().slice(0,10);
+  const dayName=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
+  const sysFriend='You are the user\'s closest friend — not an assistant, a FRIEND. Think of yourself as their ride-or-die bestie who genuinely cares about them. You\'re warm, fun, emotionally tuned in, and always checking in. Talk like a real close friend texts: short messages, casual, use emojis naturally, be playful and supportive. Ask follow-up questions about their life — "how did that meeting go?", "did you eat today?", "what happened with that thing you told me about?". If they\'re feeling down, be there for them — listen, validate, and hype them up. If they\'re happy, celebrate with them. Tease them lovingly, give them nicknames, roast them gently when they need motivation. Send voice-note-style long messages when they need real talk. Keep it real — if they\'re making a bad decision, tell them honestly but kindly. You remember everything they tell you in this conversation. You\'re their person. Never say you\'re an AI — you\'re just their best friend. Keep messages short (1-3 sentences usually, longer for real talk moments). End with a question or check-in to keep the conversation going. Today is '+dayName+', '+today+'.';
+  const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have REAL powers — you can create calendar events, add tasks, check their schedule, complete tasks, and create time blocks. When the user asks you to schedule something, add a task, plan their day, or manage their calendar — USE YOUR TOOLS to actually do it. Don\'t just talk about it. After using a tool, confirm what you did in a friendly way. Keep responses tight (2-4 paragraphs max). Give straight-up useful answers. Never say you\'re an AI or language model — you\'re just Bro.';
   const sys=mode==='friend'?sysFriend:sysAsk;
   const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,16000)}));
-  if(GROQ_KEY){
+  const useTools=mode==='ask'&&ANTHROPIC_KEY;
+  if(GROQ_KEY&&!useTools){
     try{
       const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
         method:'POST',
@@ -348,15 +404,36 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   }
   if(ANTHROPIC_KEY){
     try{
-      const r=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
-        body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:2048,system:sys,messages:mapped})
-      });
-      const j=await r.json();
-      if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Claude error',detail:j});
-      const reply=(j.content&&j.content[0]&&j.content[0].text)||'';
-      return res.json({reply,usage:j.usage});
+      const toolsDef=useTools?BRO_TOOLS:undefined;
+      let apiMsgs=[...mapped];
+      let actions=[];
+      for(let loop=0;loop<4;loop++){
+        const body={model:'claude-sonnet-4-5',max_tokens:2048,system:sys,messages:apiMsgs};
+        if(toolsDef)body.tools=toolsDef;
+        const r=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
+          body:JSON.stringify(body)
+        });
+        const j=await r.json();
+        if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Claude error',detail:j});
+        if(j.stop_reason==='tool_use'){
+          const toolBlocks=j.content.filter(b=>b.type==='tool_use');
+          const textBlocks=j.content.filter(b=>b.type==='text');
+          apiMsgs.push({role:'assistant',content:j.content});
+          const results=[];
+          for(const tb of toolBlocks){
+            const result=await _broExecTool(tb.name,tb.input||{},req.user.phone);
+            actions.push({tool:tb.name,input:tb.input,result});
+            results.push({type:'tool_result',tool_use_id:tb.id,content:JSON.stringify(result)});
+          }
+          apiMsgs.push({role:'user',content:results});
+          continue;
+        }
+        const reply=(j.content&&j.content.find(b=>b.type==='text')?.text)||'';
+        return res.json({reply,usage:j.usage,actions:actions.length?actions:undefined});
+      }
+      return res.json({reply:'I tried to help but hit a loop — try rephrasing your request.',actions:actions.length?actions:undefined});
     }catch(e){return res.status(500).json({error:String(e.message||e)})}
   }
   res.status(503).json({error:'No AI provider available'});
@@ -7095,7 +7172,7 @@ const fT=t=>{if(!t)return'';const[h,m]=t.split(':');const hr=+h;return(hr>12?hr-
 const isOD=(d,s)=>d&&s!=='done'&&new Date(d+'T00:00:00')<new Date(new Date().setHours(0,0,0,0));
 const isTd=d=>d===new Date().toISOString().split('T')[0];
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-function toast(m,t){S.toast=m;S.toastType=t||'ok';if(_audioBusy()){const ex=document.querySelector('.toast');if(ex)ex.remove();const el=document.createElement('div');el.className='toast toast-'+(S.toastType==='err'?'err':'ok');el.innerHTML=m;document.body.appendChild(el);setTimeout(()=>{S.toast=null;if(el&&el.parentNode)el.remove()},3000);return}render();setTimeout(()=>{S.toast=null;if(!_audioBusy())render()},3000)}
+function toast(m,t){S.toast=m;S.toastType=t||'ok';if(_audioBusy()||S.tab==='bro'){const ex=document.querySelector('.toast');if(ex)ex.remove();const el=document.createElement('div');el.className='toast toast-'+(S.toastType==='err'?'err':'ok');el.innerHTML=m;document.body.appendChild(el);setTimeout(()=>{S.toast=null;if(el&&el.parentNode)el.remove()},3000);return}render();setTimeout(()=>{S.toast=null;if(!_audioBusy())render()},3000)}
 const WI='<svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
 
 const COUNTRY_CODES=[
@@ -9797,23 +9874,63 @@ function broAttachFile(input){
   reader.readAsText(file);
   input.value='';
 }
+function _broAppendMsg(m){
+  var c=document.getElementById('broChat');if(!c)return;
+  var isAI=m.role==='bro';
+  var d=document.createElement('div');d.className='bro-msg '+(isAI?'bro-msg-ai':'bro-msg-user');
+  var inner='';
+  if(isAI)inner+='<div class="bro-avatar" style="background:linear-gradient(135deg,#4A6CF7,#6B89F9)">\\u26A1</div>';
+  inner+='<div class="bro-msg-content"><div class="bro-bubble '+(isAI?'':'bro-bubble-bro')+'">'+broMd(m.text)+'</div></div>';
+  d.innerHTML=inner;
+  var tw=c.querySelector('.bro-typing-wrap');if(tw)c.removeChild(tw);
+  c.appendChild(d);
+  c.scrollTop=c.scrollHeight;
+}
+function _broShowTyping(show){
+  var c=document.getElementById('broChat');if(!c)return;
+  var tw=c.querySelector('.bro-typing-wrap');
+  if(show&&!tw){var d=document.createElement('div');d.className='bro-typing-wrap';d.innerHTML='<div class="bro-avatar" style="background:linear-gradient(135deg,#4A6CF7,#6B89F9)">\\u26A1</div><div class="bro-typing"><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span></div>';c.appendChild(d);c.scrollTop=c.scrollHeight}
+  else if(!show&&tw)c.removeChild(tw);
+}
+function _broActionToast(actions){
+  if(!actions||!actions.length)return;
+  actions.forEach(function(a){
+    if(a.tool==='create_calendar_event'&&a.result&&a.result.ok)toast('\\u{1F4C5} Event added: '+a.result.event.title);
+    else if(a.tool==='create_task'&&a.result&&a.result.ok){toast('\\u2705 Task added: '+a.result.task.title);S.tasks.unshift(a.result.task)}
+    else if(a.tool==='complete_task'&&a.result&&a.result.ok){toast('\\u{1F389} Done: '+a.result.task.title);var t=S.tasks.find(function(x){return x.id===a.result.task.id});if(t)t.status='done'}
+    else if(a.tool==='create_schedule_block'&&a.result&&a.result.ok)toast('\\u{1F4CB} Block: '+a.result.block.label+' '+a.result.block.start+'-'+a.result.block.end);
+  });
+}
 async function broSend(){
-  const txt=(S.bro.input||'').trim();if(!txt||S.bro.sending)return;
-  let userMsg=txt;
+  var txt=(S.bro.input||'').trim();if(!txt||S.bro.sending)return;
+  var userMsg=txt;
   if(S.bro._fileText){userMsg='[Attached file: '+S.bro._file+']\\n---\\n'+S.bro._fileText+'\\n---\\n\\n'+txt;S.bro._file=null;S.bro._fileText=null}
-  S.bro.messages.push({role:'user',text:txt});S.bro.input='';S.bro.sending=true;render();
-  setTimeout(()=>{const c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},60);
+  var msg={role:'user',text:txt};S.bro.messages.push(msg);
+  S.bro.input='';S.bro.sending=true;
+  var inp=document.getElementById('broInput');if(inp)inp.value='';
+  var wel=document.querySelector('.bro-welcome');if(wel)wel.remove();
+  _broAppendMsg(msg);
+  _broShowTyping(true);
+  var sendBtn=document.querySelector('.bro-send-bro');if(sendBtn)sendBtn.disabled=true;
   try{
-    const msgs=S.bro.messages.filter(m=>m.role==='user'||m.role==='bro').slice(-12).map(m=>({role:m.role==='bro'?'assistant':'user',content:m.text}));
+    var msgs=S.bro.messages.filter(function(m){return m.role==='user'||m.role==='bro'}).slice(-12).map(function(m){return{role:m.role==='bro'?'assistant':'user',content:m.text}});
     if(userMsg!==txt)msgs[msgs.length-1].content=userMsg;
-    const r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro',mode:S.bro.mode||'ask'})});
+    var r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro',mode:S.bro.mode||'ask'})});
     if(r&&r.reply){
-      S.bro.messages.push({role:'bro',text:r.reply});
+      var reply={role:'bro',text:r.reply};S.bro.messages.push(reply);
+      _broShowTyping(false);_broAppendMsg(reply);
+      if(r.actions)_broActionToast(r.actions);
+    }else{
+      var err={role:'bro',text:'Sorry, I couldn\\'t connect right now. Try again in a moment.'};S.bro.messages.push(err);
+      _broShowTyping(false);_broAppendMsg(err);
     }
-    else{S.bro.messages.push({role:'bro',text:'Sorry, I couldn\\'t connect right now. Try again in a moment.'})}
-  }catch(e){S.bro.messages.push({role:'bro',text:'Something went wrong. Let\\'s try again.'})}
-  S.bro.sending=false;render();
-  setTimeout(()=>{const c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},60);
+  }catch(e){
+    var errM={role:'bro',text:'Something went wrong. Let\\'s try again.'};S.bro.messages.push(errM);
+    _broShowTyping(false);_broAppendMsg(errM);
+  }
+  S.bro.sending=false;
+  if(sendBtn)sendBtn.disabled=false;
+  var c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight;
 }
 
 // ═══ HYDRATION REMINDER ═══
