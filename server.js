@@ -318,7 +318,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:800,system:sys,messages:messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,4000)}))})
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:2048,system:sys,messages:messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,16000)}))})
     });
     const j=await r.json();
     if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Claude error',detail:j});
@@ -6354,6 +6354,11 @@ body[data-theme=aurora] .bro-input-bar{background:rgba(30,25,55,.92);border-colo
 .bro-input{flex:1;border:none;background:transparent;font-size:15px;outline:none;color:inherit;font-family:inherit;padding:8px 0}
 .bro-input::placeholder{color:#9CA3AF}
 body[data-theme=aurora] .bro-input::placeholder{color:rgba(255,255,255,.3)}
+.bro-attach-btn{background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;color:#9CA3AF;transition:all .15s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bro-attach-btn:hover{color:#4F46E5;background:rgba(79,70,229,.06)}
+.bro-file-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;margin:0 0 6px;background:rgba(79,70,229,.06);border:1px solid rgba(79,70,229,.15);border-radius:10px;font-size:12px;color:#4F46E5;font-weight:500;cursor:pointer;transition:all .15s}
+.bro-file-badge:hover{background:rgba(79,70,229,.1)}
+.bro-file-x{font-size:14px;margin-left:auto;opacity:.6}
 .bro-send-btn{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;color:#fff;flex-shrink:0}
 .bro-send-btn:hover{transform:scale(1.05)}
 .bro-send-btn:active{transform:scale(.93)}
@@ -6419,55 +6424,61 @@ body[data-theme=aurora] .hydration-info b{color:#7DD3FC}
 .hydration-glass{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(14,165,233,.3);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
 .hydration-glass.filled{background:linear-gradient(135deg,#0EA5E9,#06B6D4);border-color:transparent}
 @keyframes hydDrop{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-/* ─── Info strip: weather + day counter + hydration ─── */
-.info-strip{display:flex;gap:10px;margin:0 0 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 0}
-.info-strip::-webkit-scrollbar{display:none}
-.is-card{flex:1;min-width:0;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;padding:14px 16px;transition:transform .2s,box-shadow .2s}
-.is-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.06)}
-body[data-theme=aurora] .is-card{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+/* ─── Compact greeting chip ─── */
+.home-greeting-chip{display:flex;align-items:center;gap:12px;padding:16px 18px;margin:0 0 10px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;cursor:pointer;transition:all .2s}
+.home-greeting-chip:hover{box-shadow:0 4px 16px rgba(0,0,0,.05)}
+body[data-theme=aurora] .home-greeting-chip{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+.hgc-left{flex:1;min-width:0}
+.hgc-greet{font-family:var(--serif);font-size:clamp(20px,4vw,28px);font-weight:400;color:#111827;letter-spacing:-.02em;line-height:1.1}
+.hgc-greet em{font-style:normal;color:#4F46E5}
+body[data-theme=aurora] .hgc-greet{color:#F5F5FA}
+.hgc-sub{font-size:12px;color:#6B7280;margin-top:4px;font-weight:500}
+body[data-theme=aurora] .hgc-sub{color:rgba(255,255,255,.4)}
+.hgc-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hgc-stat{font-size:11px;color:#6B7280;white-space:nowrap}
+.hgc-stat b{color:#111827;font-weight:700;font-size:13px}
+body[data-theme=aurora] .hgc-stat b{color:#F5F5FA}
+.hgc-arrow{color:#9CA3AF;transition:transform .25s ease}
+.hgc-arrow.open{transform:rotate(180deg)}
+.hgc-expand{display:flex;gap:8px;margin:-2px 0 10px;animation:hhStatsIn .3s ease}
+.hgc-expand .hh-stat{flex:1}
+@media(max-width:560px){.hgc-right .hgc-stat{display:none}.hgc-greet{font-size:20px}}
+/* ─── Info rows: weather, day counter, hydration ─── */
+.is-row{display:flex;align-items:center;gap:14px;padding:14px 18px;margin:0 0 8px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:14px;transition:all .2s}
+.is-row:hover{box-shadow:0 2px 12px rgba(0,0,0,.04)}
+body[data-theme=aurora] .is-row{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
+.is-row-icon{font-size:28px;flex-shrink:0;width:36px;text-align:center;line-height:1}
+.is-walker-icon{animation:walkerBob 1s ease-in-out infinite}
+.is-row-body{min-width:0}
+.is-row-title{font-size:15px;font-weight:600;color:#111827}
+body[data-theme=aurora] .is-row-title{color:#F5F5FA}
+.is-row-sub{font-size:12px;color:#9CA3AF;margin-top:2px}
 .is-weather{cursor:pointer}
-.is-weather-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-.is-weather-icon{font-size:28px;line-height:1}
-.is-weather-temp{font-size:26px;font-weight:700;font-family:var(--serif);color:#111827;letter-spacing:-.02em}
-body[data-theme=aurora] .is-weather-temp{color:#F5F5FA}
-.is-weather-city{font-size:12px;color:#6B7280;font-weight:500}
-.is-weather-aqi{font-size:11px;color:#9CA3AF;margin-top:2px}
-.is-daycounter{position:relative}
-.is-day-num{font-size:15px;font-weight:700;color:#111827;margin-bottom:8px}
-body[data-theme=aurora] .is-day-num{color:#F5F5FA}
-.is-day-bar{position:relative;height:6px;background:#E5E7EB;border-radius:3px;overflow:visible}
+.is-day-bar{position:relative;height:5px;background:#E5E7EB;border-radius:3px;margin:6px 0 2px}
 .is-day-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#4F46E5,#818CF8);transition:width .5s ease}
-.is-walker{position:absolute;top:-18px;transform:translateX(-50%);animation:walkerBob 1s ease-in-out infinite}
 .walk-arm-l,.walk-arm-r,.walk-leg-l,.walk-leg-r{transform-origin:7px 7px}
 .walk-arm-l{animation:walkArmL .6s ease-in-out infinite alternate}
 .walk-arm-r{animation:walkArmR .6s ease-in-out infinite alternate}
 .walk-leg-l{animation:walkLegL .6s ease-in-out infinite alternate}
 .walk-leg-r{animation:walkLegR .6s ease-in-out infinite alternate}
-@keyframes walkerBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-2px)}}
+@keyframes walkerBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes walkArmL{0%{transform:rotate(-15deg)}100%{transform:rotate(15deg)}}
 @keyframes walkArmR{0%{transform:rotate(15deg)}100%{transform:rotate(-15deg)}}
 @keyframes walkLegL{0%{transform:rotate(20deg)}100%{transform:rotate(-20deg)}}
 @keyframes walkLegR{0%{transform:rotate(-20deg)}100%{transform:rotate(20deg)}}
-.is-day-sub{font-size:11px;color:#9CA3AF;margin-top:8px;font-weight:500}
-.is-hydration{display:flex;flex-direction:column;gap:6px}
-.is-hyd-top{display:flex;align-items:center;gap:6px}
-.is-hyd-icon{font-size:22px;animation:hydDrop 2s ease-in-out infinite}
-.is-hyd-count{font-size:18px;font-weight:700;color:#0284C7;font-family:var(--serif)}
-body[data-theme=aurora] .is-hyd-count{color:#7DD3FC}
-.is-hyd-glasses{display:flex;gap:4px;flex-wrap:wrap}
-.is-hyd-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(14,165,233,.3);transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.is-hyd-glasses{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.is-hyd-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(14,165,233,.3);transition:all .3s cubic-bezier(.34,1.56,.64,1)}
 .is-hyd-dot.filled{background:linear-gradient(135deg,#0EA5E9,#06B6D4);border-color:transparent;animation:hydFillIn .4s cubic-bezier(.34,1.56,.64,1)}
 @keyframes hydFillIn{0%{transform:scale(0)}100%{transform:scale(1)}}
-.is-hyd-actions{display:flex;gap:6px;margin-top:2px}
-.is-hyd-drink{padding:5px 12px;border-radius:8px;border:none;background:#0EA5E9;color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.is-hyd-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.is-hyd-minus{width:28px;height:28px;border-radius:8px;border:1px solid #E5E7EB;background:#fff;cursor:pointer;font-size:16px;font-weight:700;color:#6B7280;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1}
+.is-hyd-minus:hover{border-color:#EF4444;color:#EF4444}
+.is-hyd-minus:active{transform:scale(.9)}
+.is-hyd-drink{padding:6px 14px;border-radius:8px;border:none;background:#0EA5E9;color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
 .is-hyd-drink:hover{background:#0284C7}
 .is-hyd-drink:active{transform:scale(.93)}
 .is-hyd-toggle{width:28px;height:28px;border-radius:8px;border:1px solid #E5E7EB;background:transparent;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .is-hyd-toggle.on{background:#FEF3C7;border-color:#F59E0B}
-@media(max-width:560px){
-  .info-strip{flex-direction:row;gap:8px;margin:0 -4px 12px}
-  .is-card{min-width:120px;flex:0 0 auto;padding:12px 14px;border-radius:14px}
-}
 </style></head><body>
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
@@ -9220,12 +9231,23 @@ function selectCoach(agent){
   }
   render();
 }
+function broAttachFile(input){
+  const file=input.files&&input.files[0];if(!file)return;
+  if(file.size>500000){toast('File too large (max 500KB)');input.value='';return}
+  const reader=new FileReader();
+  reader.onload=function(e){S.bro._file=file.name;S.bro._fileText=e.target.result.slice(0,12000);render();toast('\\u{1F4CE} '+file.name+' attached')};
+  reader.readAsText(file);
+  input.value='';
+}
 async function broSend(){
   const txt=(S.bro.input||'').trim();if(!txt||S.bro.sending)return;
+  let userMsg=txt;
+  if(S.bro._fileText){userMsg='[Attached file: '+S.bro._file+']\\n---\\n'+S.bro._fileText+'\\n---\\n\\n'+txt;S.bro._file=null;S.bro._fileText=null}
   S.bro.messages.push({role:'user',text:txt});S.bro.input='';S.bro.sending=true;render();
   setTimeout(()=>{const c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},60);
   try{
     const msgs=S.bro.messages.filter(m=>m.role==='user'||m.role==='bro').slice(-12).map(m=>({role:m.role==='bro'?'assistant':'user',content:m.text}));
+    if(userMsg!==txt)msgs[msgs.length-1].content=userMsg;
     const r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro'})});
     if(r&&r.reply){
       S.bro.messages.push({role:'bro',text:r.reply});
@@ -9245,7 +9267,8 @@ function toggleHydration(){
   else{clearInterval(S.hydration.interval);S.hydration.interval=null;toast('Hydration reminders off')}
   render();
 }
-function drinkWater(){_hydrationToday();S.hydration.glass++;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Nice! '+S.hydration.glass+'/'+S.hydration.goal+' glasses today');render()}
+function drinkWater(){_hydrationToday();if(S.hydration.glass>=S.hydration.goal){toast('\\u{1F4A7} You already hit your goal! Great job!');return}S.hydration.glass++;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Nice! '+S.hydration.glass+'/'+S.hydration.goal+' glasses today');render()}
+function undrinkWater(){_hydrationToday();if(S.hydration.glass<=0)return;S.hydration.glass--;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Adjusted to '+S.hydration.glass+'/'+S.hydration.goal);render()}
 function _playWaterSound(){
   try{const ac=new(window.AudioContext||window.webkitAudioContext)();
   const dur=1.2;const sr=ac.sampleRate;const buf=ac.createBuffer(1,sr*dur,sr);const d=buf.getChannelData(0);
@@ -9465,25 +9488,25 @@ if(isMain){
   const _medCount=parseInt(localStorage.getItem('med_count')||'0',10)||0;
   const _mindLvl=((S.mg&&S.mg.progress&&S.mg.progress.math&&S.mg.progress.math.level)||0)+((S.mg&&S.mg.progress&&S.mg.progress.word&&S.mg.progress.word.level)||0)+((S.mg&&S.mg.progress&&S.mg.progress.schulte&&S.mg.progress.schulte.level)||0);
   const _statsExpanded=!!S.statsExpanded;
-  let hero='<section class="home-hero home-hero-light">'
-    +'<div class="hh-bg"></div>'
-    +'<div class="hh-row"><div class="hh-eyebrow">'+esc(_today)+'</div></div>'
-    +'<h1 class="hh-greet">'+esc(_greet)+(_firstName?', <em>'+esc(_firstName)+'</em>':'')+'.</h1>'
-    +'<p class="hh-line">'+(_dueToday>0?'<b>'+_dueToday+'</b> due today':_overdue>0?'<b>'+_overdue+'</b> overdue':'<span style="color:rgba(255,255,255,.7)">All clear today.</span>')+'</p>'
-    // Compact "Progress" chip — tap to reveal the metrics tiles
-    +'<button class="hh-progress-chip'+(_statsExpanded?' is-open':'')+'" onclick="S.statsExpanded=!S.statsExpanded;render()" aria-expanded="'+_statsExpanded+'">'
-      +'<span class="hh-pc-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>'
-      +'<span class="hh-pc-t">Progress</span>'
-      +'<span class="hh-pc-mini">'+s.act+' active \\u00B7 '+_streak+' day streak</span>'
-      +'<span class="hh-pc-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>'
-    +'</button>'
-    +(_statsExpanded?'<div class="hh-stats">'
-      +'<button class="hh-stat" onclick="switchTab(\\'tasks\\');S.view=\\'in-progress\\';render()"><b>'+s.act+'</b><small>Active</small></button>'
-      +'<div class="hh-stat"><b>'+_doneToday+'</b><small>Done today</small></div>'
-      +'<div class="hh-stat"><b>'+_streak+'</b><small>Streak</small></div>'
-    +'</div>':'')
-  +'</section>';
-  // --- Info strip: weather + day counter + walking man + hydration ---
+  // Compact greeting chip with progress inside
+  const _statusLine=_dueToday>0?_dueToday+' due today':_overdue>0?_overdue+' overdue':'All clear';
+  let hero='<div class="home-greeting-chip" onclick="S.statsExpanded=!S.statsExpanded;render()">'
+    +'<div class="hgc-left">'
+      +'<div class="hgc-greet">'+esc(_greet)+(_firstName?', <em>'+esc(_firstName)+'</em>':'')+'</div>'
+      +'<div class="hgc-sub">'+esc(_today)+' \\u00B7 '+esc(_statusLine)+'</div>'
+    +'</div>'
+    +'<div class="hgc-right">'
+      +'<span class="hgc-stat"><b>'+s.act+'</b> active</span>'
+      +'<span class="hgc-stat"><b>'+_streak+'</b> streak</span>'
+      +'<span class="hgc-arrow'+(_statsExpanded?' open':'')+'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>'
+    +'</div>'
+  +'</div>'
+  +(_statsExpanded?'<div class="hgc-expand">'
+    +'<button class="hh-stat" onclick="event.stopPropagation();switchTab(\\'tasks\\');S.view=\\'in-progress\\';render()"><b>'+s.act+'</b><small>Active</small></button>'
+    +'<div class="hh-stat"><b>'+_doneToday+'</b><small>Done today</small></div>'
+    +'<div class="hh-stat"><b>'+_streak+'</b><small>Streak</small></div>'
+  +'</div>':'');
+  // --- Stacked info rows: weather, day counter, hydration ---
   _hydrationToday();
   const _now=new Date();const _yStart=new Date(_now.getFullYear(),0,0);
   const _dayOfYear=Math.floor((_now-_yStart)/86400000);
@@ -9491,50 +9514,50 @@ if(isMain){
   const _daysLeft=365-_dayOfYear;
   const _w=S.weather||{};
   const _hyd=S.hydration;
-  let infoStrip='<div class="info-strip">';
-  // Weather card
-  infoStrip+='<div class="is-card is-weather" onclick="setCity()">'
-    +'<div class="is-weather-top">'
-      +'<span class="is-weather-icon">'+(_w.temp!=null?(_w.temp>30?'\\u2600\\uFE0F':_w.temp>20?'\\u26C5':'\\u2601\\uFE0F'):'\\u{1F321}\\uFE0F')+'</span>'
-      +'<span class="is-weather-temp">'+(_w.temp!=null?_w.temp+'\\u00B0':'--')+'</span>'
+  let infoStrip='';
+  // Weather row
+  infoStrip+='<div class="is-row is-weather" onclick="setCity()">'
+    +'<div class="is-row-icon">'+(_w.temp!=null?(_w.temp>30?'\\u2600\\uFE0F':_w.temp>20?'\\u26C5':'\\u2601\\uFE0F'):'\\u{1F321}\\uFE0F')+'</div>'
+    +'<div class="is-row-body">'
+      +'<div class="is-row-title">'+(_w.temp!=null?_w.temp+'\\u00B0C':'--')+' \\u00B7 '+esc(_w.city||'Loading...')+'</div>'
+      +(_w.aqi!=null?'<div class="is-row-sub">AQI '+_w.aqi+'</div>':'<div class="is-row-sub">Tap to set city</div>')
     +'</div>'
-    +'<div class="is-weather-city">'+esc(_w.city||'Loading...')+'</div>'
-    +(_w.aqi!=null?'<div class="is-weather-aqi">AQI '+_w.aqi+'</div>':'')
   +'</div>';
-  // Day counter with walking man
-  infoStrip+='<div class="is-card is-daycounter">'
-    +'<div class="is-day-num">Day '+_dayOfYear+'</div>'
-    +'<div class="is-day-bar"><div class="is-day-fill" style="width:'+_yearPct+'%"></div>'
-      +'<div class="is-walker" style="left:'+_yearPct+'%">'
-        +'<svg viewBox="0 0 14 18" width="14" height="18" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">'
-          +'<circle cx="7" cy="3" r="2" fill="#4F46E5"/>'
-          +'<line x1="7" y1="5" x2="7" y2="11" stroke="#4F46E5"/>'
-          +'<g class="walk-arm-l"><line x1="7" y1="7" x2="3" y2="9" stroke="#4F46E5"/></g>'
-          +'<g class="walk-arm-r"><line x1="7" y1="7" x2="11" y2="6" stroke="#4F46E5"/></g>'
-          +'<g class="walk-leg-l"><line x1="7" y1="11" x2="4" y2="16" stroke="#4F46E5"/></g>'
-          +'<g class="walk-leg-r"><line x1="7" y1="11" x2="10" y2="16" stroke="#4F46E5"/></g>'
-        +'</svg>'
-      +'</div>'
+  // Day counter row
+  infoStrip+='<div class="is-row is-daycounter">'
+    +'<div class="is-row-icon is-walker-icon">'
+      +'<svg viewBox="0 0 14 18" width="18" height="22" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">'
+        +'<circle cx="7" cy="3" r="2" fill="#4F46E5"/>'
+        +'<line x1="7" y1="5" x2="7" y2="11" stroke="#4F46E5"/>'
+        +'<g class="walk-arm-l"><line x1="7" y1="7" x2="3" y2="9" stroke="#4F46E5"/></g>'
+        +'<g class="walk-arm-r"><line x1="7" y1="7" x2="11" y2="6" stroke="#4F46E5"/></g>'
+        +'<g class="walk-leg-l"><line x1="7" y1="11" x2="4" y2="16" stroke="#4F46E5"/></g>'
+        +'<g class="walk-leg-r"><line x1="7" y1="11" x2="10" y2="16" stroke="#4F46E5"/></g>'
+      +'</svg>'
     +'</div>'
-    +'<div class="is-day-sub">'+_daysLeft+' days left \\u00B7 '+_yearPct+'%</div>'
+    +'<div class="is-row-body" style="flex:1">'
+      +'<div class="is-row-title">Day '+_dayOfYear+' out of 365</div>'
+      +'<div class="is-day-bar"><div class="is-day-fill" style="width:'+_yearPct+'%"></div></div>'
+      +'<div class="is-row-sub">'+_daysLeft+' days left \\u00B7 '+_yearPct+'% done</div>'
+    +'</div>'
   +'</div>';
-  // Hydration card
-  infoStrip+='<div class="is-card is-hydration">'
-    +'<div class="is-hyd-top">'
-      +'<span class="is-hyd-icon">\\u{1F4A7}</span>'
-      +'<span class="is-hyd-count">'+_hyd.glass+'/'+_hyd.goal+'</span>'
-    +'</div>'
-    +'<div class="is-hyd-glasses">';
+  // Hydration row
+  infoStrip+='<div class="is-row is-hydration">'
+    +'<div class="is-row-icon">\\u{1F4A7}</div>'
+    +'<div class="is-row-body" style="flex:1">'
+      +'<div class="is-row-title">Water \\u00B7 '+_hyd.glass+'/'+_hyd.goal+' glasses</div>'
+      +'<div class="is-hyd-glasses">';
   for(let _gi=0;_gi<_hyd.goal;_gi++){
     infoStrip+='<span class="is-hyd-dot'+(_gi<_hyd.glass?' filled':'')+'"></span>';
   }
   infoStrip+='</div>'
+    +'</div>'
     +'<div class="is-hyd-actions">'
+      +'<button class="is-hyd-minus" onclick="event.stopPropagation();undrinkWater()" title="Undo">&minus;</button>'
       +'<button class="is-hyd-drink" onclick="event.stopPropagation();drinkWater()">+ Drink</button>'
       +'<button class="is-hyd-toggle'+(_hyd.enabled?' on':'')+'" onclick="event.stopPropagation();toggleHydration()" title="'+(_hyd.enabled?'Reminders ON':'Turn on reminders')+'">\\u{1F514}</button>'
     +'</div>'
   +'</div>';
-  infoStrip+='</div>';
   moralBlock=hero+infoStrip;
   // Bottom strip — keep moral + news ticker + clocks but tucked away as a subtle footer.
   const items=S.ticker.items||[];const baseIdx=S.ticker.idx||0;
@@ -10104,8 +10127,11 @@ else if(S.tab==='bro'){
     h+='</div>';
     // Input bar
     h+='<div class="bro-input-wrap">';
+    if(S.bro._file){h+='<div class="bro-file-badge" onclick="S.bro._file=null;S.bro._fileText=null;render()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> '+esc(S.bro._file)+' <span class="bro-file-x">\\u2715</span></div>'}
     h+='<div class="bro-input-bar">';
-    h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="Message Bro\\u2026" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
+    h+='<button class="bro-attach-btn" onclick="document.getElementById(\\'broFileInput\\').click()" title="Attach a file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>';
+    h+='<input type="file" id="broFileInput" style="display:none" accept=".txt,.md,.csv,.json,.js,.py,.html,.css,.xml,.log,.pdf,.doc,.docx" onchange="broAttachFile(this)">';
+    h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="'+(S.bro._file?'Ask about this file\\u2026':'Message Bro\\u2026')+'" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
     h+='<button class="bro-send-btn bro-send-bro" onclick="broSend()" '+(S.bro.sending?'disabled':'')+'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>';
     h+='</div></div>';
     h+='</div>';
