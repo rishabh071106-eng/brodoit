@@ -328,7 +328,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const agent=(req.body.agent==='bri')?'bri':'bro';
-  const sys='You are Bro — think of yourself as the user\'s ridiculously smart best friend who lives inside the Brodoit app. You talk like a real person: casual, warm, and direct. Use "bro", "dude", "man", "yo" naturally but don\'t force it into every sentence. You know everything — science, math, history, coding, writing, travel, health, career advice, life decisions, creative ideas, analysis — and you explain things the way a smart friend would over coffee, not like a textbook. Keep responses tight (2-4 paragraphs max unless they need the deep dive). Give straight-up useful answers. When they need advice, be real with them — honest and actionable. When brainstorming, go hard with creative ideas. Format code with markdown code blocks (```language). At the end of your response, drop 1-2 follow-up suggestions naturally like "btw you might also wanna look into..." or "a solid next question would be...". Never say you\'re an AI or language model — you\'re just Bro. If the user asks you to generate, create, draw, or make an image/picture/photo/illustration, respond with exactly [IMG: short description] where the description is a concise image prompt (MAX 15 words, no commas, simple and clear like "sunset over snowy mountains with orange sky"). Put the tag on its own line and you can add commentary around it.';
+  const sys='You are Bro — think of yourself as the user\'s ridiculously smart best friend who lives inside the Brodoit app. You talk like a real person: casual, warm, and direct. Use "bro", "dude", "man", "yo" naturally but don\'t force it into every sentence. You know everything — science, math, history, coding, writing, travel, health, career advice, life decisions, creative ideas, analysis — and you explain things the way a smart friend would over coffee, not like a textbook. Keep responses tight (2-4 paragraphs max unless they need the deep dive). Give straight-up useful answers. When they need advice, be real with them — honest and actionable. When brainstorming, go hard with creative ideas. Format code with markdown code blocks (```language). At the end of your response, drop 1-2 follow-up suggestions naturally like "btw you might also wanna look into..." or "a solid next question would be...". Never say you\'re an AI or language model — you\'re just Bro.';
   const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,16000)}));
   if(GROQ_KEY){
     try{
@@ -359,39 +359,6 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   res.status(503).json({error:'No AI provider available'});
 });
 
-app.get('/api/image/generate', auth, async (req, res) => {
-  const prompt = String(req.query.prompt || '').slice(0, 150).replace(/[^\w\s.!?-]/g, ' ').trim();
-  if (!prompt) return res.status(400).json({ error: 'prompt required' });
-  try {
-    const seed = Date.now();
-    const polUrl = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=512&height=512&nologo=true&seed=' + seed;
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 30000);
-    const imgRes = await fetch(polUrl, { redirect: 'follow', signal: ctrl.signal });
-    clearTimeout(timer);
-    if (!imgRes.ok) throw new Error('Pollinations returned ' + imgRes.status);
-    const ct = imgRes.headers.get('content-type') || 'image/jpeg';
-    const buf = Buffer.from(await imgRes.arrayBuffer());
-    const fname = 'img_' + seed + (ct.includes('png') ? '.png' : '.jpg');
-    const fs = require('fs'), path = require('path'), os = require('os');
-    const dir = path.join(os.tmpdir(), 'brodoit-imgs');
-    fs.mkdirSync(dir, { recursive: true });
-    const fp = path.join(dir, fname);
-    fs.writeFileSync(fp, buf);
-    res.json({ url: '/api/image/file/' + fname, prompt });
-  } catch (e) {
-    res.status(500).json({ error: String(e.message || e) });
-  }
-});
-app.get('/api/image/file/:name', (req, res) => {
-  const fs = require('fs'), path = require('path'), os = require('os');
-  const fp = path.join(os.tmpdir(), 'brodoit-imgs', path.basename(req.params.name));
-  if (!fs.existsSync(fp)) return res.status(404).end();
-  const ext = path.extname(fp);
-  res.set('Content-Type', ext === '.png' ? 'image/png' : 'image/jpeg');
-  res.set('Cache-Control', 'public, max-age=86400');
-  fs.createReadStream(fp).pipe(res);
-});
 
 app.post('/api/coach/transcribe',auth,express.raw({type:'audio/*',limit:'10mb'}),async(req,res)=>{
   if(!OPENAI_KEY)return res.status(503).json({error:'Transcription not configured (OPENAI_API_KEY missing).'});
@@ -6797,6 +6764,33 @@ body[data-theme=aurora] .city-dd-item .city-dd-name{color:#F5F5FA}
 .is-hyd-drink:active{transform:scale(.93)}
 .is-hyd-toggle{width:28px;height:28px;border-radius:8px;border:1px solid #E5E7EB;background:transparent;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .is-hyd-toggle.on{background:#FEF3C7;border-color:#F59E0B}
+/* Plan My Day */
+.pmd-wrap{margin-top:8px}
+.pmd-btn{display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:1.5px solid #E2E8F0;border-radius:14px;background:#fff;color:#1E293B;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.pmd-btn:hover{border-color:#059669;color:#059669}
+.pmd-btn:active{transform:scale(.97)}
+.pmd-btn svg{color:#059669}
+.pmd-panel{background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;padding:16px;margin-top:8px;animation:fadeSlideDown .2s ease-out}
+@keyframes fadeSlideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.pmd-header{font-size:15px;font-weight:700;color:#0F172A;margin-bottom:4px}
+.pmd-sub{font-size:12px;color:#64748B;margin-bottom:12px}
+.pmd-empty{font-size:13px;color:#94A3B8;text-align:center;padding:16px 0}
+.pmd-task{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F1F5F9}
+.pmd-task:last-of-type{border-bottom:none}
+.pmd-task-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pmd-task-title{flex:1;font-size:13px;font-weight:500;color:#1E293B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pmd-time{width:90px;padding:6px 8px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:13px;font-family:inherit;color:#1E293B;background:#F8FAFC;outline:none;transition:border-color .2s}
+.pmd-time:focus{border-color:#059669}
+.pmd-actions{display:flex;gap:8px;margin-top:12px}
+.pmd-save,.pmd-email{flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.pmd-save{background:#059669;color:#fff}
+.pmd-save:hover{background:#047857}
+.pmd-email{background:#F1F5F9;color:#1E293B;border:1px solid #E2E8F0}
+.pmd-email:hover{border-color:#059669;color:#059669}
+/* Email tasks button */
+.email-tasks-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;margin-top:8px;border:1.5px solid #E2E8F0;border-radius:12px;background:#fff;color:#475569;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.email-tasks-btn:hover{border-color:#059669;color:#059669}
+.email-tasks-btn:active{transform:scale(.97)}
 </style></head><body>
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
@@ -7213,7 +7207,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or whatever\\'s on your mind.'}]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -9561,9 +9555,35 @@ function selectCoach(agent){
   if(agent==='bri'){
     S.bro.messages=[{role:'bro',text:'Hey'+(name?' '+name:'')+', I\\'m Bri \\u2014 your personal wellness coach and biggest cheerleader. Tell me what\\'s going on, ask for advice, or let me help you build a routine that actually sticks. What are we working on today?'}];
   }else{
-    S.bro.messages=[{role:'bro',text:'Yo'+(name?' '+name:'')+' \\u{1F91C}\\u{1F91B} What\\'s good? I\\'m Bro \\u2014 your personal AI. Need to brainstorm, write something, generate images, explain stuff, or just chat? I got you. What are we working on?'}];
+    S.bro.messages=[{role:'bro',text:'Yo'+(name?' '+name:'')+' \\u{1F91C}\\u{1F91B} What\\'s good? I\\'m Bro \\u2014 your personal AI. Need to brainstorm, write something, explain stuff, plan your day, or just chat? I got you. What are we working on?'}];
   }
   render();
+}
+async function planMyDaySave(){
+  if(!S.pmdTimes)return toast('Set times for your tasks first');
+  const ids=Object.keys(S.pmdTimes).filter(id=>S.pmdTimes[id]);
+  if(!ids.length)return toast('Set times for at least one task');
+  const today=new Date().toISOString().slice(0,10);
+  let saved=0;
+  for(const id of ids){
+    const t=S.tasks.find(x=>String(x.id)===String(id));if(!t)continue;
+    const time=S.pmdTimes[id];
+    const startH=parseInt(time.split(':')[0],10);
+    const endH=startH+1;
+    const endTime=(endH<10?'0':'')+endH+':'+time.split(':')[1];
+    try{
+      await api('/schedule',{method:'POST',body:JSON.stringify({date:today,start:time,end:endTime,label:t.title,color:'#059669'})});
+      saved++;
+    }catch(e){}
+  }
+  if(saved){toast('\\u2705 '+saved+' task'+(saved>1?'s':'')+' added to calendar');S.planMyDay=false;S.pmdTimes={};render()}
+  else toast('\\u26A0\\uFE0F Could not save','err');
+}
+async function planMyDayEmail(){
+  try{const r=await api('/email-tasks',{method:'POST'});if(r&&r.ok)toast('\\u2709\\uFE0F Tasks sent to your email!');else toast(r&&r.error||'Failed to send email','err')}catch(e){toast('\\u26A0\\uFE0F '+e.message,'err')}
+}
+async function emailMyTasks(){
+  try{const r=await api('/email-tasks',{method:'POST'});if(r&&r.ok)toast('\\u2709\\uFE0F '+r.count+' tasks sent to your email!');else toast(r&&r.error||'Failed to send email','err')}catch(e){toast('\\u26A0\\uFE0F Network error','err')}
 }
 function broAttachFile(input){
   const file=input.files&&input.files[0];if(!file)return;
@@ -9584,26 +9604,7 @@ async function broSend(){
     if(userMsg!==txt)msgs[msgs.length-1].content=userMsg;
     const r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro'})});
     if(r&&r.reply){
-      let replyText=r.reply;
-      const imgMatch=replyText.match(/\\[IMG:\\s*(.+?)\\]/);
-      if(imgMatch){
-        const imgPrompt=imgMatch[1].trim();
-        replyText=replyText.replace(imgMatch[0],'').trim();
-        S.bro.messages.push({role:'bro',text:replyText,imageLoading:true,imagePrompt:imgPrompt});
-        S.bro.sending=false;render();
-        setTimeout(()=>{const c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},60);
-        try{
-          const imgR=await api('/image/generate?prompt='+encodeURIComponent(imgPrompt));
-          const msg=S.bro.messages[S.bro.messages.length-1];
-          if(imgR&&imgR.url){msg.image=imgR.url}
-          msg.imageLoading=false;
-        }catch(e){
-          const msg=S.bro.messages[S.bro.messages.length-1];
-          msg.imageLoading=false;msg.imageError=true;
-        }
-      }else{
-        S.bro.messages.push({role:'bro',text:r.reply});
-      }
+      S.bro.messages.push({role:'bro',text:r.reply});
     }
     else{S.bro.messages.push({role:'bro',text:'Sorry, I couldn\\'t connect right now. Try again in a moment.'})}
   }catch(e){S.bro.messages.push({role:'bro',text:'Something went wrong. Let\\'s try again.'})}
@@ -9682,11 +9683,13 @@ if(S.meditating&&S.meditating.active&&document.querySelector('.med-scene')&&!S._
 // that intentional behaviour wins; only passive re-renders preserve scroll.
 const _sy=window.scrollY||window.pageYOffset||0;
 const _sx=window.scrollX||window.pageXOffset||0;
+const _broScroll=(function(){const c=document.getElementById('broChat');return c?c.scrollTop:null})();
 // Preserve focus + cursor across re-renders so typing isn't interrupted
 const _fs=(function(){try{const a=document.activeElement;if(!a||(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'))return null;return{id:a.id,name:a.name,type:a.type,placeholder:a.placeholder,start:a.selectionStart,end:a.selectionEnd}}catch(e){return null}})();
 const _restore=function(){
   // Skip restoration if caller explicitly wants top (switchTab, modal close, etc.)
   if(!S._suppressScrollRestore&&(_sy||_sx)){try{window.scrollTo(_sx,_sy)}catch(e){}}
+  if(_broScroll!==null){const bc=document.getElementById('broChat');if(bc)bc.scrollTop=_broScroll}
   if(!_fs)return;
   try{let el=null;if(_fs.id)el=document.getElementById(_fs.id);if(!el){const inputs=document.querySelectorAll('input,textarea');for(const i of inputs){if((_fs.placeholder&&i.placeholder===_fs.placeholder)||(_fs.name&&i.name===_fs.name)){el=i;break}}}if(el){try{el.focus({preventScroll:true})}catch(e){el.focus()}if(typeof _fs.start==='number'&&el.setSelectionRange){try{el.setSelectionRange(_fs.start,_fs.end)}catch(e){}}}}catch(e){}
 };
@@ -9969,6 +9972,34 @@ if(isMain){
       +'<button class="is-hyd-toggle'+(_hyd.enabled?' on':'')+'" onclick="event.stopPropagation();toggleHydration()" title="'+(_hyd.enabled?'Reminders ON':'Turn on reminders')+'">\\u{1F514}</button>'
     +'</div>'
   +'</div>';
+  // Plan My Day panel
+  const _pmdOpen=!!S.planMyDay;
+  infoStrip+='<div class="pmd-wrap">';
+  infoStrip+='<button class="pmd-btn" onclick="event.stopPropagation();S.planMyDay=!S.planMyDay;render()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Plan My Day</button>';
+  if(_pmdOpen){
+    const _pmdTasks=ts.filter(t=>t.status!=='done').slice(0,8);
+    infoStrip+='<div class="pmd-panel">';
+    infoStrip+='<div class="pmd-header">Schedule your tasks</div>';
+    infoStrip+='<div class="pmd-sub">Set a time for each task to add it to your calendar.</div>';
+    if(_pmdTasks.length===0){
+      infoStrip+='<div class="pmd-empty">No pending tasks. Add some first!</div>';
+    }else{
+      _pmdTasks.forEach(function(t,i){
+        const pCol=t.priority==='high'?'#DC2626':t.priority==='medium'?'#D97706':'#059669';
+        infoStrip+='<div class="pmd-task">'
+          +'<div class="pmd-task-dot" style="background:'+pCol+'"></div>'
+          +'<div class="pmd-task-title">'+esc(t.title)+'</div>'
+          +'<input type="time" class="pmd-time" id="pmdTime'+i+'" value="'+(S.pmdTimes&&S.pmdTimes[t.id]||'')+'" onchange="if(!S.pmdTimes)S.pmdTimes={};S.pmdTimes['+t.id+']=this.value">'
+        +'</div>';
+      });
+      infoStrip+='<div class="pmd-actions">'
+        +'<button class="pmd-save" onclick="planMyDaySave()">\\u2705 Save to Calendar</button>'
+        +'<button class="pmd-email" onclick="planMyDayEmail()">\\u2709\\uFE0F Email my plan</button>'
+      +'</div>';
+    }
+    infoStrip+='</div>';
+  }
+  infoStrip+='</div>';
   moralBlock=hero+infoStrip;
   // Bottom strip — keep moral + news ticker + clocks but tucked away as a subtle footer.
   const items=S.ticker.items||[];const baseIdx=S.ticker.idx||0;
@@ -10121,6 +10152,7 @@ if(S.tab==='tasks'){
   h+='</div></div>';
   h+='<div class="srch"><input placeholder="Search tasks..." value="'+esc(S.search)+'" oninput="S.search=this.value;render()"></div>';
   h+='<div class="flt">'+[{k:'all',l:'All'},{k:'pending',l:'To Do'},{k:'in-progress',l:'Doing'},{k:'done',l:'Done'},{k:'today',l:'Today'}].map(x=>'<button class="fb'+(S.view===x.k?' on':'')+'" onclick="S.view=\\''+x.k+'\\';render()">'+x.l+'</button>').join('')+'</div>';
+  h+='<button class="email-tasks-btn" onclick="emailMyTasks()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Email my tasks</button>';
   h+='<div>';
   if(!f.length)h+='<div class="empty"><div style="font-size:36px;margin-bottom:8px">\\u2728</div><div style="font-size:15px;font-weight:600">No tasks yet</div><div style="font-size:13px;margin-top:4px">Tap + to add your first task</div></div>';
   else f.forEach(t=>{const p=P[t.priority]||P.medium,st=ST[t.status]||ST.pending,d=t.status==='done';
@@ -10538,7 +10570,7 @@ else if(S.tab==='bro'){
       h+='<div class="bro-welcome">';
       h+='<div class="bro-welcome-avatar" style="background:linear-gradient(135deg,#059669,#10B981)">\\u26A1</div>';
       h+='<div class="bro-welcome-title">Yo, I\\'m Bro</div>';
-      h+='<div class="bro-welcome-text">Your personal AI that actually gets it. Ask me anything, get images made, brainstorm ideas \\u2014 whatever you need.</div>';
+      h+='<div class="bro-welcome-text">Your personal AI that actually gets it. Ask me anything \\u2014 brainstorm, write, explain, advise.</div>';
       h+='<div class="bro-scene">';
       h+='<div class="bp bp-ask"><div class="bp-chat bp-ask-b">Help me write an email</div><div class="bp-chat bp-ask-b">How do I fix this bug?</div><div class="bp-chat bp-ask-b">Give me startup ideas</div><div class="bp-bod"><div class="bp-head"></div><div class="bp-torso"></div><div class="bp-arm al"></div><div class="bp-arm ar"></div><div class="bp-leg ll"></div><div class="bp-leg lr"></div></div></div>';
       h+='<div class="bp bp-bro"><div class="bp-chat bp-bro-b">On it! Here you go</div><div class="bp-chat bp-bro-b">Easy \\u2014 try this fix</div><div class="bp-chat bp-bro-b">Here\\'s 5 killer ideas</div><div class="bp-bod"><div class="bp-head"></div><div class="bp-torso"></div><div class="bp-arm al"></div><div class="bp-arm ar"></div><div class="bp-leg ll"></div><div class="bp-leg lr"></div></div></div>';
@@ -10546,10 +10578,10 @@ else if(S.tab==='bro'){
       h+='<div class="bp-floor"></div>';
       h+='</div>';
       h+='<div class="bro-suggestions">';
-      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Generate an image of a sunset over mountains\\';broSend()">\\u{1F3A8} Generate an image</button>';
       h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Help me write a professional email\\';broSend()">\\u270D\\uFE0F Help me write</button>';
       h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Explain quantum computing simply\\';broSend()">\\u{1F9E0} Explain something</button>';
-      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Give me 5 startup ideas for 2025\\';broSend()">\\u{1F4A1} Brainstorm ideas</button>';
+      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Give me 5 startup ideas for 2026\\';broSend()">\\u{1F4A1} Brainstorm ideas</button>';
+      h+='<button class="bro-suggest-btn" onclick="S.bro.input=\\'Plan my day — I have 5 tasks\\';broSend()">\\u{1F4C5} Plan my day</button>';
       h+='</div></div>';
     }
     S.bro.messages.forEach(m=>{
@@ -10557,11 +10589,7 @@ else if(S.tab==='bro'){
       h+='<div class="bro-msg '+(isAgent?'bro-msg-ai':'bro-msg-user')+'">';
       if(isAgent)h+='<div class="bro-avatar" style="background:linear-gradient(135deg,#059669,#10B981)">\\u26A1</div>';
       h+='<div class="bro-msg-content">';
-      let imgHtml='';
-      if(m.imageLoading){imgHtml='<div class="bro-img-wrap"><div class="bro-img-loading"><div class="bro-img-spinner"></div><span>Generating image\\u2026</span></div></div>'}
-      else if(m.image){imgHtml='<div class="bro-img-wrap"><img class="bro-gen-img" src="'+esc(m.image)+'" alt="'+esc(m.imagePrompt||'Generated image')+'" onerror="this.parentElement.innerHTML=\\'<div class=bro-img-err>\\u{1F5BC}\\uFE0F Image failed to load</div>\\'" onclick="broViewImg(this.src,\\''+esc(m.imagePrompt||'').replace(/'/g,'\\\\\\'')+'\\')" loading="lazy"><div class="bro-img-cap">'+esc(m.imagePrompt||'')+'</div></div>'}
-      else if(m.imageError){imgHtml='<div class="bro-img-wrap"><div class="bro-img-err">\\u{1F5BC}\\uFE0F Couldn\\'t generate image. Try again!</div></div>'}
-      h+='<div class="bro-bubble '+(isAgent?'':'bro-bubble-bro')+'">'+broMd(m.text)+imgHtml+'</div>';
+      h+='<div class="bro-bubble '+(isAgent?'':'bro-bubble-bro')+'">'+broMd(m.text)+'</div>';
       h+='</div></div>';
     });
     if(S.bro.sending)h+='<div class="bro-typing-wrap"><div class="bro-avatar" style="background:linear-gradient(135deg,#059669,#10B981)">\\u26A1</div><div class="bro-typing"><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span></div></div>';
@@ -10571,7 +10599,6 @@ else if(S.tab==='bro'){
     if(S.bro._file){h+='<div class="bro-file-badge" onclick="S.bro._file=null;S.bro._fileText=null;render()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> '+esc(S.bro._file)+' <span class="bro-file-x">\\u2715</span></div>'}
     h+='<div class="bro-input-bar">';
     h+='<button class="bro-attach-btn" onclick="document.getElementById(\\'broFileInput\\').click()" title="Attach a file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>';
-    h+='<button class="bro-attach-btn" onclick="S.bro.input=\\'Generate an image of \\';render();setTimeout(function(){var el=document.getElementById(\\'broInput\\');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}},50)" title="Generate image"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>';
     h+='<input type="file" id="broFileInput" style="display:none" accept=".txt,.md,.csv,.json,.js,.py,.html,.css,.xml,.log,.pdf,.doc,.docx" onchange="broAttachFile(this)">';
     h+='<input class="bro-input" id="broInput" value="'+esc(S.bro.input)+'" placeholder="'+(S.bro._file?'Ask about this file\\u2026':'What\\'s on your mind, bro?')+'" oninput="S.bro.input=this.value" onkeydown="if(event.key===\\'Enter\\')broSend()">';
     h+='<button class="bro-send-btn bro-send-bro" onclick="broSend()" '+(S.bro.sending?'disabled':'')+'><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>';
