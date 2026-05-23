@@ -6587,9 +6587,9 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 }
 
 /* ─── BRO CHAT ─── */
-.bro-container{display:flex;flex-direction:column;height:calc(100vh - 140px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:#fff;position:relative}
+.bro-container{display:flex;flex-direction:column;height:calc(100vh - 140px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:#f7f7f8;position:relative}
 body[data-theme=aurora] .bro-container{background:#212121}
-.bro-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid rgba(0,0,0,.06);position:relative;z-index:10}
+.bro-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid rgba(0,0,0,.05);position:relative;z-index:10;flex-shrink:0}
 body[data-theme=aurora] .bro-header{background:#212121;border-bottom-color:rgba(255,255,255,.08)}
 .bro-header-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .bro-header-info{flex:1;min-width:0}
@@ -6602,7 +6602,7 @@ body[data-theme=aurora] .bro-header-sub{color:rgba(255,255,255,.35)}
 .bro-header-btn{background:none;border:none;cursor:pointer;padding:8px;border-radius:10px;color:#9CA3AF;transition:all .2s}
 .bro-header-btn:hover{background:rgba(0,0,0,.04);color:#1A1A1A}
 body[data-theme=aurora] .bro-header-btn:hover{background:rgba(255,255,255,.08);color:#F5F5FA}
-.bro-chat{flex:1;display:flex;flex-direction:column;gap:16px;padding:16px 16px 100px;overflow-y:auto;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+.bro-chat{flex:1;display:flex;flex-direction:column;gap:14px;padding:16px 16px 16px;overflow-y:auto;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;min-height:0}
 .bro-msg{display:flex;gap:8px;align-items:flex-start;animation:broFadeIn .25s ease-out}
 .bro-msg-user{flex-direction:row-reverse}
 .bro-avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px}
@@ -6629,9 +6629,9 @@ body[data-theme=aurora] .bro-msg-meta{color:rgba(255,255,255,.25)}
 .bro-typing-dot:nth-child(3){animation-delay:.4s}
 body[data-theme=aurora] .bro-typing-dot{background:rgba(255,255,255,.4)}
 @keyframes broTypeDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
-.bro-input-wrap{position:absolute;bottom:0;left:0;right:0;padding:6px 12px 8px;background:#fff;border-top:1px solid rgba(0,0,0,.06);z-index:20}
+.bro-input-wrap{flex-shrink:0;padding:6px 12px 8px;background:#fff;border-top:1px solid rgba(0,0,0,.05);z-index:20}
 body[data-theme=aurora] .bro-input-wrap{background:#212121;border-top-color:rgba(255,255,255,.08)}
-.bro-input-bar{display:flex;gap:6px;padding:8px 8px 8px 14px;background:#F4F4F4;border:none;border-radius:24px;align-items:center}
+.bro-input-bar{display:flex;gap:6px;padding:8px 8px 8px 14px;background:#EFEFEF;border:none;border-radius:24px;align-items:center}
 body[data-theme=aurora] .bro-input-bar{background:#2F2F2F}
 .bro-input{flex:1;border:none;background:transparent;font-size:16px;outline:none;color:inherit;font-family:inherit;padding:4px 0}
 .bro-input::placeholder{color:#999}
@@ -6655,7 +6655,7 @@ body[data-theme=aurora] .bro-welcome-title{color:#ECECEC}
 .bro-welcome-text{font-size:14px;color:#888;max-width:280px;line-height:1.5}
 body[data-theme=aurora] .bro-welcome-text{color:rgba(255,255,255,.4)}
 /* ─── BRO WELCOME: two-person help animation ─── */
-.bro-scene{position:relative;width:100%;max-width:320px;height:130px;margin:8px auto 4px;overflow:hidden;border-radius:20px;background:linear-gradient(135deg,#F5F7FF,#EEF1FF)}
+.bro-scene{position:relative;width:100%;max-width:320px;height:130px;margin:8px auto 4px;overflow:hidden;border-radius:20px;background:linear-gradient(135deg,#EDF0FF,#E4E8FF)}
 body[data-theme=aurora] .bro-scene{background:linear-gradient(135deg,rgba(40,35,55,.6),rgba(30,25,45,.6))}
 /* shared person base */
 .bp{position:absolute;bottom:18px}
@@ -6682,9 +6682,9 @@ body[data-theme=aurora] .bro-scene{background:linear-gradient(135deg,rgba(40,35,
 .bp-chat::after{content:'';position:absolute;bottom:-4px;border-left:4px solid transparent;border-right:4px solid transparent}
 .bp-ask-b{left:0;background:#F0DFC8;color:#fff;transform:translateX(-10%)}
 .bp-ask-b::after{left:14px;border-top:5px solid #F0DFC8}
-.bp-ask-b:nth-child(1){animation:bpChatCycle 8s ease-in-out infinite}
-.bp-ask-b:nth-child(2){animation:bpChatCycle 8s ease-in-out infinite 2.6s}
-.bp-ask-b:nth-child(3){animation:bpChatCycle 8s ease-in-out infinite 5.2s}
+.bp-ask-b:nth-child(1){animation:bpChatCycle 12s ease-in-out infinite}
+.bp-ask-b:nth-child(2){animation:bpChatCycle 12s ease-in-out infinite 4s}
+.bp-ask-b:nth-child(3){animation:bpChatCycle 12s ease-in-out infinite 8s}
 /* Helper Bro — darker, on the right, responding */
 .bp-bro{right:18%;animation:bpBroBob 3s ease-in-out infinite .5s}
 .bp-bro .bp-head{background:linear-gradient(135deg,#4A6CF7,#3858D6);box-shadow:0 2px 6px rgba(44,62,107,.3)}
@@ -6696,16 +6696,16 @@ body[data-theme=aurora] .bro-scene{background:linear-gradient(135deg,rgba(40,35,
 @keyframes bpPoint{0%,100%{transform:rotate(10deg)}50%{transform:rotate(-35deg)}}
 .bp-bro-b{right:0;background:#4A6CF7;color:#fff;transform:translateX(10%)}
 .bp-bro-b::after{right:14px;border-top:5px solid #4A6CF7}
-.bp-bro-b:nth-child(1){animation:bpChatCycle 8s ease-in-out infinite 1.3s}
-.bp-bro-b:nth-child(2){animation:bpChatCycle 8s ease-in-out infinite 3.9s}
-.bp-bro-b:nth-child(3){animation:bpChatCycle 8s ease-in-out infinite 6.5s}
-@keyframes bpChatCycle{0%,4%{opacity:0;transform:translateY(4px)}8%{opacity:1;transform:translateY(0)}26%{opacity:1}30%,100%{opacity:0;transform:translateY(-4px)}}
+.bp-bro-b:nth-child(1){animation:bpChatCycle 12s ease-in-out infinite 2s}
+.bp-bro-b:nth-child(2){animation:bpChatCycle 12s ease-in-out infinite 6s}
+.bp-bro-b:nth-child(3){animation:bpChatCycle 12s ease-in-out infinite 10s}
+@keyframes bpChatCycle{0%,3%{opacity:0;transform:translateY(4px)}5%{opacity:1;transform:translateY(0)}14%{opacity:1}17%,100%{opacity:0;transform:translateY(-4px)}}
 /* floating emojis that pop */
 .bp-emoji{position:absolute;font-size:16px;opacity:0;z-index:4}
-.bp-emoji:nth-child(1){top:15%;left:50%;animation:bpEmojiPop 8s ease-in-out infinite 2s}
-.bp-emoji:nth-child(2){top:20%;left:42%;animation:bpEmojiPop 8s ease-in-out infinite 4.5s}
-.bp-emoji:nth-child(3){top:10%;left:56%;animation:bpEmojiPop 8s ease-in-out infinite 7s}
-@keyframes bpEmojiPop{0%,20%{opacity:0;transform:scale(0) translateY(8px)}24%{opacity:1;transform:scale(1.2) translateY(0)}28%{opacity:1;transform:scale(1)}36%,100%{opacity:0;transform:scale(.8) translateY(-12px)}}
+.bp-emoji:nth-child(1){top:15%;left:50%;animation:bpEmojiPop 12s ease-in-out infinite 3s}
+.bp-emoji:nth-child(2){top:20%;left:42%;animation:bpEmojiPop 12s ease-in-out infinite 7s}
+.bp-emoji:nth-child(3){top:10%;left:56%;animation:bpEmojiPop 12s ease-in-out infinite 11s}
+@keyframes bpEmojiPop{0%,12%{opacity:0;transform:scale(0) translateY(8px)}15%{opacity:1;transform:scale(1.2) translateY(0)}18%{opacity:1;transform:scale(1)}24%,100%{opacity:0;transform:scale(.8) translateY(-12px)}}
 /* floor line */
 .bp-floor{position:absolute;bottom:16px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,rgba(44,62,107,.15),transparent);border-radius:1px}
 .bro-modes{display:flex;gap:8px;justify-content:center;margin-top:2px;margin-bottom:4px}
@@ -6714,10 +6714,10 @@ body[data-theme=aurora] .bro-scene{background:linear-gradient(135deg,rgba(40,35,
 body[data-theme=aurora] .bro-mode-btn{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.45)}
 body[data-theme=aurora] .bro-mode-btn.on{background:#fff;border-color:#fff;color:#000}
 .bro-suggestions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:6px;padding:0 8px}
-.bro-suggest-btn{background:transparent;border:1px solid #E0E0E0;border-radius:16px;padding:8px 14px;font-size:13px;color:#555;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:400}
+.bro-suggest-btn{background:#fff;border:1px solid #E5E5E5;border-radius:20px;padding:8px 14px;font-size:13px;color:#444;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .bro-suggest-btn:active{background:#F0F0F0;transform:scale(.97)}
-body[data-theme=aurora] .bro-suggest-btn{border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.55)}
-body[data-theme=aurora] .bro-suggest-btn:active{background:rgba(255,255,255,.1)}
+body[data-theme=aurora] .bro-suggest-btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.65);box-shadow:none}
+body[data-theme=aurora] .bro-suggest-btn:active{background:rgba(255,255,255,.15)}
 .bro-gen-img{max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer;transition:transform .2s;box-shadow:0 4px 16px rgba(0,0,0,.12)}
 .bro-gen-img:hover{transform:scale(1.02)}
 .bro-img-wrap{margin-top:8px}
@@ -6737,31 +6737,30 @@ body[data-theme=aurora] .bro-img-spinner{border-color:rgba(255,255,255,.15);bord
 body[data-theme=aurora] .bro-img-err{background:rgba(239,68,68,.12)}
 /* ─── BRO FULL-PAGE MOBILE ─── */
 @media (max-width:1023px){
-  body.bro-tab{overflow:hidden !important;position:fixed !important;width:100% !important;height:100% !important;padding-bottom:0 !important}
-  body.bro-tab .app{padding:0 !important;max-width:100% !important;height:100vh !important;overflow:hidden !important}
+  body.bro-tab{overflow:hidden !important;position:fixed !important;width:100% !important;height:100% !important;height:100dvh !important;padding-bottom:0 !important}
+  body.bro-tab .app{padding:0 !important;max-width:100% !important;height:100% !important;overflow:hidden !important}
   body.bro-tab .main-col{height:100% !important}
   body.bro-tab .hdr{display:none !important}
   body.bro-tab .moral-wrap{display:none !important}
   body.bro-tab .tab-hero{display:none !important}
-  body.bro-tab .bro-container{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;height:100% !important;margin:0 !important;z-index:50 !important;border-radius:0 !important}
-  body.bro-tab .bro-header{padding:8px 14px}
-  body.bro-tab .bro-chat{padding:12px 14px calc(64px + env(safe-area-inset-bottom,0px) + 78px) !important}
-  body.bro-tab .bro-input-wrap{bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;padding:4px 10px calc(4px + env(safe-area-inset-bottom,0px)) !important;border-top:1px solid rgba(0,0,0,.06)}
+  body.bro-tab .bro-container{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;height:100% !important;height:100dvh !important;margin:0 !important;z-index:50 !important;border-radius:0 !important;display:flex !important;flex-direction:column !important}
+  body.bro-tab .bro-header{padding:8px 14px;flex-shrink:0}
+  body.bro-tab .bro-chat{flex:1 !important;min-height:0 !important;padding:12px 14px 12px !important;gap:12px}
+  body.bro-tab .bro-input-wrap{flex-shrink:0 !important;padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px)) !important;padding-bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;border-top:1px solid rgba(0,0,0,.05)}
   body[data-theme=aurora].bro-tab .bro-input-wrap{border-top-color:rgba(255,255,255,.08)}
   body.bro-tab .bro-input-bar{padding:6px 6px 6px 14px}
   body.bro-tab .bro-send-btn{width:32px;height:32px}
   body.bro-tab .tabs.page-t{z-index:61 !important}
-  body.bro-tab .bro-welcome{padding:20px 16px 12px;gap:8px}
-  body.bro-tab .bro-welcome-avatar{width:40px;height:40px;font-size:20px}
-  body.bro-tab .bro-welcome-title{font-size:19px}
-  body.bro-tab .bro-welcome-text{font-size:13px;max-width:260px}
-  body.bro-tab .bro-scene{height:100px;max-width:280px;margin:4px auto 0}
-  body.bro-tab .bro-suggestions{margin-top:4px;gap:5px;padding:0 4px}
-  body.bro-tab .bro-suggest-btn{padding:6px 12px;font-size:12px}
-  body.bro-tab .bro-modes{margin-top:0;margin-bottom:2px}
-  body.bro-tab .bro-mode-btn{padding:6px 14px;font-size:12px}
+  body.bro-tab .bro-welcome{padding:16px 16px 8px;gap:6px}
+  body.bro-tab .bro-welcome-avatar{width:36px;height:36px;font-size:18px}
+  body.bro-tab .bro-welcome-title{font-size:18px}
+  body.bro-tab .bro-welcome-text{font-size:13px;max-width:260px;line-height:1.4}
+  body.bro-tab .bro-scene{height:90px;max-width:260px;margin:2px auto 0;border-radius:16px}
+  body.bro-tab .bro-suggestions{margin-top:2px;gap:5px;padding:0 4px}
+  body.bro-tab .bro-suggest-btn{padding:5px 11px;font-size:12px}
+  body.bro-tab .bro-modes{margin-top:0;margin-bottom:0}
+  body.bro-tab .bro-mode-btn{padding:5px 13px;font-size:12px}
   body.bro-tab .bro-msg{gap:6px}
-  body.bro-tab .bro-chat{gap:12px}
 }
 /* ─── COACH SELECTOR ─── */
 .coach-select{display:flex;flex-direction:column;align-items:center;padding:40px 0 30px;gap:28px;background:#F8F9FB;border-radius:24px;margin:-8px -18px 0;padding-left:18px;padding-right:18px}
@@ -11978,27 +11977,22 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch
   if(!window.visualViewport)return;
   var last=0;
   function adj(){
+    if(S.tab!=='bro')return;
     var vv=window.visualViewport;
     var diff=Math.round(window.innerHeight-vv.height);
     if(diff===last)return;
     last=diff;
     var w=document.querySelector('.bro-input-wrap');
     if(!w)return;
+    var tabs=document.querySelector('.tabs.page-t');
     if(diff>50){
-      w.style.bottom=diff+'px';
-      w.style.transition='bottom .15s ease-out';
-      var tabs=document.querySelector('.tabs.page-t');
+      w.style.paddingBottom='6px';
       if(tabs)tabs.style.display='none';
       var c=document.getElementById('broChat');
-      if(c)c.style.paddingBottom=(diff+60)+'px';
       setTimeout(function(){if(c)c.scrollTop=c.scrollHeight},80);
     }else{
-      w.style.bottom='';
-      w.style.transition='';
-      var tabs=document.querySelector('.tabs.page-t');
+      w.style.paddingBottom='';
       if(tabs)tabs.style.display='';
-      var c=document.getElementById('broChat');
-      if(c)c.style.paddingBottom='';
     }
   }
   visualViewport.addEventListener('resize',adj);
