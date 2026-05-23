@@ -11846,6 +11846,37 @@ function _recoverLoginIfNeeded(){
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+// ─── Mobile keyboard: keep Bro input visible ───
+(function(){
+  if(!window.visualViewport)return;
+  var last=0;
+  function adj(){
+    var vv=window.visualViewport;
+    var diff=Math.round(window.innerHeight-vv.height);
+    if(diff===last)return;
+    last=diff;
+    var w=document.querySelector('.bro-input-wrap');
+    if(!w)return;
+    if(diff>50){
+      w.style.bottom=diff+'px';
+      w.style.transition='bottom .15s ease-out';
+      var tabs=document.querySelector('.tabs.page-t');
+      if(tabs)tabs.style.display='none';
+      var c=document.getElementById('broChat');
+      if(c)c.style.paddingBottom=(diff+60)+'px';
+      setTimeout(function(){if(c)c.scrollTop=c.scrollHeight},80);
+    }else{
+      w.style.bottom='';
+      w.style.transition='';
+      var tabs=document.querySelector('.tabs.page-t');
+      if(tabs)tabs.style.display='';
+      var c=document.getElementById('broChat');
+      if(c)c.style.paddingBottom='';
+    }
+  }
+  visualViewport.addEventListener('resize',adj);
+  visualViewport.addEventListener('scroll',adj);
+})();
 </script></body></html>`;
 
 // PWA manifest (TWA-compliant for Google Play Store)
