@@ -5003,38 +5003,41 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-p-leg.l{left:8px;transform-origin:top center}
 .qc-p-leg.r{right:8px;transform-origin:top center}
 /* — Guide (person 1) — slate, walks in first, points — */
-.qc-guide{animation:qcGuideWalk 6s ease-in-out infinite}
+.qc-guide{animation:qcGuideWalk 8s ease-in-out infinite}
 .qc-guide .qc-p-head{background:linear-gradient(135deg,#4A5568,#2C3E6B);box-shadow:0 2px 6px rgba(44,62,107,.3)}
 .qc-guide .qc-p-torso{background:linear-gradient(180deg,#718096,#4A5568)}
 .qc-guide .qc-p-arm{background:#718096}
 .qc-guide .qc-p-leg{background:#2C3E6B}
-.qc-guide .qc-p-arm.r{animation:qcGuidePoint 6s ease-in-out infinite}
+.qc-guide .qc-p-arm.r{animation:qcGuidePoint 8s ease-in-out infinite}
 .qc-guide .qc-p-arm.l{animation:qcArmSwing .6s ease-in-out infinite}
 .qc-guide .qc-p-leg.l{animation:qcLeg .5s ease-in-out infinite}
 .qc-guide .qc-p-leg.r{animation:qcLeg .5s ease-in-out infinite .25s}
 /* speech bubbles */
 .qc-bubble{position:absolute;top:-16px;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;padding:5px 12px;border-radius:10px;white-space:nowrap;opacity:0;letter-spacing:.02em;text-shadow:0 1px 2px rgba(0,0,0,.3);z-index:6;box-shadow:0 3px 10px rgba(44,62,107,.3)}
 .qc-bubble::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);border-left:4px solid transparent;border-right:4px solid transparent}
-.qc-b1{background:#2C3E6B;animation:qcB1 6s ease-in-out infinite}
+.qc-b1{background:#2C3E6B;animation:qcB1 8s ease-in-out infinite}
 .qc-b1::after{border-top:5px solid #2C3E6B}
-.qc-b2{background:#4A6CF7;animation:qcB2 6s ease-in-out infinite}
+.qc-b2{background:#4A6CF7;animation:qcB2 8s ease-in-out infinite}
 .qc-b2::after{border-top:5px solid #4A6CF7}
-@keyframes qcB1{0%,25%{opacity:0;transform:translateX(-50%) translateY(4px)}32%{opacity:1;transform:translateX(-50%) translateY(0)}48%{opacity:1}52%,100%{opacity:0}}
-@keyframes qcB2{0%,50%{opacity:0;transform:translateX(-50%) translateY(4px)}56%{opacity:1;transform:translateX(-50%) translateY(0)}72%{opacity:1}76%,100%{opacity:0}}
-@keyframes qcGuideWalk{0%{left:-10%;opacity:0}15%{left:12%;opacity:1}40%{left:28%}50%,100%{left:28%;opacity:1}}
-@keyframes qcGuidePoint{0%,30%{transform:rotate(15deg)}45%{transform:rotate(-60deg)}55%,70%{transform:rotate(-60deg)}80%,100%{transform:rotate(15deg)}}
+.qc-b3{background:#2C3E6B;animation:qcB3 8s ease-in-out infinite}
+.qc-b3::after{border-top:5px solid #2C3E6B}
+@keyframes qcB1{0%,18%{opacity:0;transform:translateX(-50%) translateY(4px)}24%{opacity:1;transform:translateX(-50%) translateY(0)}38%{opacity:1}42%,100%{opacity:0}}
+@keyframes qcB2{0%,40%{opacity:0;transform:translateX(-50%) translateY(4px)}46%{opacity:1;transform:translateX(-50%) translateY(0)}58%{opacity:1}62%,100%{opacity:0}}
+@keyframes qcB3{0%,64%{opacity:0;transform:translateX(-50%) translateY(4px)}70%{opacity:1;transform:translateX(-50%) translateY(0)}88%{opacity:1}92%,100%{opacity:0}}
+@keyframes qcGuideWalk{0%{left:-10%;opacity:0}12%{left:12%;opacity:1}30%{left:28%}40%,100%{left:28%;opacity:1}}
+@keyframes qcGuidePoint{0%,25%{transform:rotate(15deg)}35%{transform:rotate(-60deg)}45%,55%{transform:rotate(-60deg)}65%,100%{transform:rotate(15deg)}}
 /* — Writer (person 2) — follows guide, sits at notebook — */
-.qc-writer{animation:qcWriterWalk 6s ease-in-out infinite}
+.qc-writer{animation:qcWriterWalk 8s ease-in-out infinite}
 .qc-writer .qc-p-head{background:linear-gradient(135deg,#93AAFB,#3858D6);box-shadow:0 2px 6px rgba(107,137,249,.3)}
 .qc-writer .qc-p-torso{background:linear-gradient(180deg,#F0DFC8,#93AAFB)}
 .qc-writer .qc-p-arm{background:#F0DFC8}
 .qc-writer .qc-p-leg{background:#7A5D3A}
-.qc-writer .qc-p-arm.r{animation:qcWriteArm 6s ease-in-out infinite}
+.qc-writer .qc-p-arm.r{animation:qcWriteArm 8s ease-in-out infinite}
 .qc-writer .qc-p-arm.l{animation:qcArmSwing .6s ease-in-out infinite .3s}
 .qc-writer .qc-p-leg.l{animation:qcLeg .5s ease-in-out infinite .15s}
 .qc-writer .qc-p-leg.r{animation:qcLeg .5s ease-in-out infinite .4s}
-@keyframes qcWriterWalk{0%{left:-15%;opacity:0}20%{left:5%;opacity:1}50%{left:48%}55%,100%{left:48%;opacity:1}}
-@keyframes qcWriteArm{0%,50%{transform:rotate(-15deg)}58%{transform:rotate(-50deg)}64%{transform:rotate(-40deg)}70%{transform:rotate(-55deg)}76%{transform:rotate(-42deg)}82%,100%{transform:rotate(-15deg)}}
+@keyframes qcWriterWalk{0%{left:-15%;opacity:0}15%{left:5%;opacity:1}38%{left:48%}44%,100%{left:48%;opacity:1}}
+@keyframes qcWriteArm{0%,42%{transform:rotate(-15deg)}50%{transform:rotate(-50deg)}55%{transform:rotate(-40deg)}60%{transform:rotate(-55deg)}65%{transform:rotate(-42deg)}72%,100%{transform:rotate(-15deg)}}
 @keyframes qcArmSwing{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}}
 @keyframes qcLeg{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
 /* — Notebook at the right end — */
@@ -5046,35 +5049,33 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-nb-line{position:absolute;left:14px;right:6px;height:1.5px;background:rgba(44,62,107,.15);border-radius:1px}
 .qc-nb-line:nth-child(6){top:14px}.qc-nb-line:nth-child(7){top:22px}.qc-nb-line:nth-child(8){top:30px}.qc-nb-line:nth-child(9){top:38px}
 /* writing stroke animates across lines */
-.qc-nb-ink{position:absolute;left:14px;height:2px;background:#4A6CF7;border-radius:1px;width:0;animation:qcInk 6s ease-in-out infinite}
-.qc-nb-ink:nth-child(10){top:13px;animation-delay:3.2s}
-.qc-nb-ink:nth-child(11){top:21px;animation-delay:3.5s}
-.qc-nb-ink:nth-child(12){top:29px;animation-delay:3.8s}
-@keyframes qcInk{0%,50%{width:0;opacity:0}58%{width:22px;opacity:1}70%,100%{width:22px;opacity:1}}
+.qc-nb-ink{position:absolute;left:14px;height:2px;background:#4A6CF7;border-radius:1px;width:0;animation:qcInk 8s ease-in-out infinite}
+.qc-nb-ink:nth-child(10){top:13px;animation-delay:4s}
+.qc-nb-ink:nth-child(11){top:21px;animation-delay:4.4s}
+.qc-nb-ink:nth-child(12){top:29px;animation-delay:4.8s}
+@keyframes qcInk{0%,42%{width:0;opacity:0}50%{width:22px;opacity:1}65%,100%{width:22px;opacity:1}}
 /* pencil in writer's hand */
-.qc-pencil{position:absolute;right:22%;bottom:50px;width:5px;height:24px;background:linear-gradient(180deg,#FBBF24,#F59E0B);border-radius:1px 1px 0 0;transform:rotate(-25deg);opacity:0;animation:qcPencilMove 6s ease-in-out infinite;z-index:3}
+.qc-pencil{position:absolute;right:22%;bottom:50px;width:5px;height:24px;background:linear-gradient(180deg,#FBBF24,#F59E0B);border-radius:1px 1px 0 0;transform:rotate(-25deg);opacity:0;animation:qcPencilMove 8s ease-in-out infinite;z-index:3}
 .qc-pencil::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border-left:3px solid transparent;border-right:3px solid transparent;border-top:6px solid #1E3A6E}
-@keyframes qcPencilMove{0%,48%{opacity:0}55%{opacity:1;transform:rotate(-25deg) translateY(0)}62%{transform:rotate(-25deg) translateY(-3px)}68%{transform:rotate(-25deg) translateY(0)}74%{transform:rotate(-25deg) translateY(-2px)}80%{opacity:1;transform:rotate(-25deg) translateY(0)}88%,100%{opacity:0}}
+@keyframes qcPencilMove{0%,40%{opacity:0}46%{opacity:1;transform:rotate(-25deg) translateY(0)}52%{transform:rotate(-25deg) translateY(-3px)}56%{transform:rotate(-25deg) translateY(0)}60%{transform:rotate(-25deg) translateY(-2px)}64%{opacity:1;transform:rotate(-25deg) translateY(0)}72%,100%{opacity:0}}
 /* sparkles + check */
 .qc-sparkles{position:absolute;right:6%;bottom:60px;z-index:4}
-.qc-sparkle{position:absolute;border-radius:50%;opacity:0;animation:qcSpark 6s ease-in-out infinite}
-.qc-sparkle:nth-child(1){width:7px;height:7px;background:#FBBF24;top:0;left:0;animation-delay:4s}
-.qc-sparkle:nth-child(2){width:5px;height:5px;background:#6B89F9;top:-10px;left:16px;animation-delay:4.2s}
-.qc-sparkle:nth-child(3){width:6px;height:6px;background:#4A6CF7;top:6px;left:24px;animation-delay:4.4s}
-.qc-sparkle:nth-child(4){width:4px;height:4px;background:#F59E0B;top:-5px;left:-8px;animation-delay:4.3s}
-@keyframes qcSpark{0%,62%{opacity:0;transform:scale(0)}68%{opacity:1;transform:scale(1.4)}74%{opacity:1;transform:scale(1)}85%,100%{opacity:0;transform:scale(0) translateY(-10px)}}
-.qc-nb-check{position:absolute;top:16px;left:20px;width:14px;height:8px;border-bottom:3px solid #22C55E;border-left:3px solid #22C55E;transform:rotate(-45deg) scale(0);animation:qcCheck 6s ease-in-out infinite;z-index:3}
-@keyframes qcCheck{0%,65%{transform:rotate(-45deg) scale(0)}72%{transform:rotate(-45deg) scale(1.3)}76%,100%{transform:rotate(-45deg) scale(1)}}
-/* caption text */
-.qc-cta-text{position:absolute;top:6px;left:50%;transform:translateX(-50%);font-size:14px;font-weight:800;color:#2C3E6B;letter-spacing:.04em;white-space:nowrap;z-index:5;text-shadow:0 1px 0 rgba(255,255,255,.9),0 0 8px rgba(255,255,255,.7)}
-.qc-scene.fast *{animation-duration:.8s !important}
-.qc-scene.fast .qc-guide{animation-duration:1s !important}
-.qc-scene.fast .qc-writer{animation-duration:1s !important}
-.qc-scene.fast .qc-bubble{animation-duration:1s !important}
-.qc-scene.fast .qc-nb-ink{animation-duration:1s !important}
-.qc-scene.fast .qc-pencil{animation-duration:1s !important}
-.qc-scene.fast .qc-sparkle{animation-duration:1s !important}
-.qc-scene.fast .qc-nb-check{animation-duration:1s !important}
+.qc-sparkle{position:absolute;border-radius:50%;opacity:0;animation:qcSpark 8s ease-in-out infinite}
+.qc-sparkle:nth-child(1){width:7px;height:7px;background:#FBBF24;top:0;left:0;animation-delay:5s}
+.qc-sparkle:nth-child(2){width:5px;height:5px;background:#6B89F9;top:-10px;left:16px;animation-delay:5.2s}
+.qc-sparkle:nth-child(3){width:6px;height:6px;background:#4A6CF7;top:6px;left:24px;animation-delay:5.4s}
+.qc-sparkle:nth-child(4){width:4px;height:4px;background:#F59E0B;top:-5px;left:-8px;animation-delay:5.3s}
+@keyframes qcSpark{0%,55%{opacity:0;transform:scale(0)}60%{opacity:1;transform:scale(1.4)}66%{opacity:1;transform:scale(1)}78%,100%{opacity:0;transform:scale(0) translateY(-10px)}}
+.qc-nb-check{position:absolute;top:16px;left:20px;width:14px;height:8px;border-bottom:3px solid #22C55E;border-left:3px solid #22C55E;transform:rotate(-45deg) scale(0);animation:qcCheck 8s ease-in-out infinite;z-index:3}
+@keyframes qcCheck{0%,56%{transform:rotate(-45deg) scale(0)}62%{transform:rotate(-45deg) scale(1.3)}66%,100%{transform:rotate(-45deg) scale(1)}}
+.qc-scene.fast *{animation-duration:1s !important}
+.qc-scene.fast .qc-guide{animation-duration:1.2s !important}
+.qc-scene.fast .qc-writer{animation-duration:1.2s !important}
+.qc-scene.fast .qc-bubble{animation-duration:1.2s !important}
+.qc-scene.fast .qc-nb-ink{animation-duration:1.2s !important}
+.qc-scene.fast .qc-pencil{animation-duration:1.2s !important}
+.qc-scene.fast .qc-sparkle{animation-duration:1.2s !important}
+.qc-scene.fast .qc-nb-check{animation-duration:1.2s !important}
 }
 /* Priority badge on task cards */
 .tc-pri{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
@@ -7349,7 +7350,7 @@ function applyColorThemeCSS(key){
     +'.tab.on .tl{color:'+t.c1+'}'
     +'.qc-send,.pmd-add-btn{background:'+t.c1+'}'
     +'.qc-scene{background:linear-gradient(135deg,rgba('+t.rgba1+',.08),rgba('+t.rgba2+',.06))}'
-    +'.qc-cta-text{color:'+t.c4+'}'
+    +''
     +'.fab{background:linear-gradient(135deg,'+t.c1+','+t.c2+')}'
     +'.hdr-help{border-color:'+t.c3+'}'
     +'.is-day-fill{background:linear-gradient(90deg,'+t.c1+','+t.c2+')}'
@@ -10326,12 +10327,11 @@ if(S.tab==='tasks'){
   // Quick-compose bar with animated CTA + priority chips
   const _cp=S.compose.priority;
   h+='<div class="qc-scene" onclick="this.classList.toggle(\\'fast\\')">';
-  h+='<div class="qc-p qc-guide"><div class="qc-bubble qc-b1">Hey, task done?</div><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
+  h+='<div class="qc-p qc-guide"><div class="qc-bubble qc-b1">Hey, task done?</div><div class="qc-bubble qc-b3">Bro, tap + to make him fast</div><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
   h+='<div class="qc-p qc-writer"><div class="qc-bubble qc-b2">Let me write it!</div><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
   h+='<div class="qc-notebook"><div class="qc-nb-cover"><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-ink"></div><div class="qc-nb-ink"></div><div class="qc-nb-ink"></div></div><div class="qc-nb-check"></div></div>';
   h+='<div class="qc-pencil"></div>';
   h+='<div class="qc-sparkles"><div class="qc-sparkle"></div><div class="qc-sparkle"></div><div class="qc-sparkle"></div><div class="qc-sparkle"></div></div>';
-  h+='<div class="qc-cta-text">Tap + to make your life faster</div>';
   h+='</div>';
   h+='<div class="qc-bar">';
   h+='<div class="qc-row"><input class="qc-input" placeholder="Add a task... (try: Buy milk tomorrow !high)" value="'+esc(S.compose.value||'')+'" oninput="composeUpdate(this.value)" onkeydown="if(event.key===\\'Enter\\')composeSubmit()">';
