@@ -6713,6 +6713,9 @@ body[data-theme=aurora] .home-greeting-chip{background:linear-gradient(135deg,#4
 body[data-theme=aurora] .hgc-greet{color:#fff}
 .hgc-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:4px;font-weight:500}
 body[data-theme=aurora] .hgc-sub{color:rgba(255,255,255,.7)}
+.hgc-day{font-size:11px;color:rgba(255,255,255,.65);margin-top:5px;font-weight:600;display:flex;align-items:center;gap:6px;letter-spacing:.02em}
+.hgc-day-bar{flex:1;height:4px;background:rgba(255,255,255,.15);border-radius:4px;max-width:80px;overflow:hidden}
+.hgc-day-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#FDE68A,#FBBF24);transition:width .4s ease}
 .hgc-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .hgc-stat{font-size:11px;color:rgba(255,255,255,.7);white-space:nowrap}
 .hgc-stat b{color:#fff;font-weight:700;font-size:13px}
@@ -10015,6 +10018,10 @@ if(isMain){
   const _medCount=parseInt(localStorage.getItem('med_count')||'0',10)||0;
   const _mindLvl=((S.mg&&S.mg.progress&&S.mg.progress.math&&S.mg.progress.math.level)||0)+((S.mg&&S.mg.progress&&S.mg.progress.word&&S.mg.progress.word.level)||0)+((S.mg&&S.mg.progress&&S.mg.progress.schulte&&S.mg.progress.schulte.level)||0);
   const _statsExpanded=!!S.statsExpanded;
+  const _nowDC=new Date();const _yStartDC=new Date(_nowDC.getFullYear(),0,0);
+  const _dayOfYear=Math.floor((_nowDC-_yStartDC)/86400000);
+  const _yearPct=Math.round(_dayOfYear/365*100);
+  const _daysLeft=365-_dayOfYear;
   // Compact greeting chip with progress inside
   const _w=S.weather||{};
   const _wxRainHint=_w.daily?_w.daily.rain.filter(function(r){return r>=30}).length:0;
@@ -10023,6 +10030,7 @@ if(isMain){
     +'<div class="hgc-left">'
       +'<div class="hgc-greet">'+esc(_greet)+(_firstName?', <em>'+esc(_firstName)+'</em>':'')+'</div>'
       +'<div class="hgc-sub">'+esc(_today)+' \\u00B7 '+esc(_statusLine)+'</div>'
+      +'<div class="hgc-day">Day '+_dayOfYear+' \\u00B7 '+_daysLeft+' left \\u00B7 '+_yearPct+'%<span class="hgc-day-bar"><i style="width:'+_yearPct+'%"></i></span></div>'
       +'<div class="hgc-wx" onclick="event.stopPropagation();S.weatherExpanded=!S.weatherExpanded;render()">'+(_w.temp!=null?(_w.temp>30?'\\u2600\\uFE0F':_w.temp>20?'\\u26C5':'\\u2601\\uFE0F')+' '+_w.temp+'\\u00B0C \\u00B7 '+esc(_w.city||'')+(_wxRainHint>0?' \\u00B7 \\u{1F327}\\uFE0F'+_wxRainHint+'d rain':'')+'  \\u25BE':'')+'</div>'
     +'</div>'
     +'<div class="hgc-right">'
@@ -10074,12 +10082,8 @@ if(isMain){
     hero+='</div>';
   }
   hero+='</div>';
-  // --- Stacked info rows: weather, day counter, hydration ---
+  // --- Stacked info rows: weather, hydration ---
   _hydrationToday();
-  const _now=new Date();const _yStart=new Date(_now.getFullYear(),0,0);
-  const _dayOfYear=Math.floor((_now-_yStart)/86400000);
-  const _yearPct=Math.round(_dayOfYear/365*100);
-  const _daysLeft=365-_dayOfYear;
   const _hyd=S.hydration;
   let infoStrip='';
   // Weather chip — tap to expand forecast + city search
@@ -10145,24 +10149,6 @@ if(isMain){
     infoStrip+='</div>';
   }
   infoStrip+='</div>';
-  // Day counter row
-  infoStrip+='<div class="is-row is-daycounter">'
-    +'<div class="is-row-icon is-walker-icon">'
-      +'<svg viewBox="0 0 14 18" width="18" height="22" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">'
-        +'<circle cx="7" cy="3" r="2" fill="#4A6CF7"/>'
-        +'<line x1="7" y1="5" x2="7" y2="11" stroke="#4A6CF7"/>'
-        +'<g class="walk-arm-l"><line x1="7" y1="7" x2="3" y2="9" stroke="#4A6CF7"/></g>'
-        +'<g class="walk-arm-r"><line x1="7" y1="7" x2="11" y2="6" stroke="#4A6CF7"/></g>'
-        +'<g class="walk-leg-l"><line x1="7" y1="11" x2="4" y2="16" stroke="#4A6CF7"/></g>'
-        +'<g class="walk-leg-r"><line x1="7" y1="11" x2="10" y2="16" stroke="#4A6CF7"/></g>'
-      +'</svg>'
-    +'</div>'
-    +'<div class="is-row-body" style="flex:1">'
-      +'<div class="is-row-title">Day '+_dayOfYear+' out of 365</div>'
-      +'<div class="is-day-bar"><div class="is-day-fill" style="width:'+_yearPct+'%"></div></div>'
-      +'<div class="is-row-sub">'+_daysLeft+' days left \\u00B7 '+_yearPct+'% done</div>'
-    +'</div>'
-  +'</div>';
   // Hydration row
   infoStrip+='<div class="is-row is-hydration">'
     +'<div class="is-row-icon">\\u{1F4A7}</div>'
