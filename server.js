@@ -3185,8 +3185,8 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     background:linear-gradient(180deg,#FDFAF7,#FFFFFF) !important;
     backdrop-filter:none !important;
     -webkit-backdrop-filter:none !important;
-    border:0 !important;
-    border-top:none !important;
+    border:2px solid rgba(120,85,43,.18) !important;
+    border-bottom:none !important;
     border-radius:24px 24px 0 0 !important;
     padding:10px 6px calc(8px + env(safe-area-inset-bottom,0px)) !important;
     gap:0 !important;
@@ -3222,7 +3222,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     display:flex !important;align-items:center !important;justify-content:center !important;
     transition:all .3s cubic-bezier(.34,1.56,.64,1) !important;
     color:inherit !important;
-    background:#F5EDE4 !important;border-radius:14px !important;box-shadow:inset 0 1px 2px rgba(0,0,0,.04) !important;
+    background:#F5EDE4 !important;border-radius:14px !important;border:1.5px solid rgba(120,85,43,.15) !important;box-shadow:inset 0 1px 2px rgba(0,0,0,.04) !important;
     overflow:visible !important;
   }
   .tabs.page-t .tab .ti::after{display:none !important}
@@ -4996,7 +4996,7 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-guide .qc-p-leg.l{animation:qcLeg .5s ease-in-out infinite}
 .qc-guide .qc-p-leg.r{animation:qcLeg .5s ease-in-out infinite .25s}
 /* speech bubble */
-.qc-bubble{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#78552B;color:#fff;font-size:9px;font-weight:700;padding:4px 8px;border-radius:8px;white-space:nowrap;opacity:0;animation:qcBubble 6s ease-in-out infinite;letter-spacing:.02em}
+.qc-bubble{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#78552B;color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:10px;white-space:nowrap;opacity:0;animation:qcBubble 6s ease-in-out infinite;letter-spacing:.03em;text-shadow:0 1px 2px rgba(0,0,0,.2)}
 .qc-bubble::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #78552B}
 @keyframes qcGuideWalk{0%{left:-10%;opacity:0}15%{left:12%;opacity:1}40%{left:28%}50%,100%{left:28%;opacity:1}}
 @keyframes qcGuidePoint{0%,30%{transform:rotate(15deg)}45%{transform:rotate(-60deg)}55%,70%{transform:rotate(-60deg)}80%,100%{transform:rotate(15deg)}}
@@ -5044,7 +5044,15 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-nb-check{position:absolute;top:16px;left:20px;width:14px;height:8px;border-bottom:3px solid #22C55E;border-left:3px solid #22C55E;transform:rotate(-45deg) scale(0);animation:qcCheck 6s ease-in-out infinite;z-index:3}
 @keyframes qcCheck{0%,65%{transform:rotate(-45deg) scale(0)}72%{transform:rotate(-45deg) scale(1.3)}76%,100%{transform:rotate(-45deg) scale(1)}}
 /* caption text */
-.qc-cta-text{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:#78552B;letter-spacing:.04em;white-space:nowrap;opacity:.6}
+.qc-cta-text{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:800;color:#78552B;letter-spacing:.03em;white-space:nowrap;opacity:.85;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.qc-scene.fast *{animation-duration:.8s !important}
+.qc-scene.fast .qc-guide{animation-duration:1s !important}
+.qc-scene.fast .qc-writer{animation-duration:1s !important}
+.qc-scene.fast .qc-bubble{animation-duration:1s !important}
+.qc-scene.fast .qc-nb-ink{animation-duration:1s !important}
+.qc-scene.fast .qc-pencil{animation-duration:1s !important}
+.qc-scene.fast .qc-sparkle{animation-duration:1s !important}
+.qc-scene.fast .qc-nb-check{animation-duration:1s !important}
 }
 /* Priority badge on task cards */
 .tc-pri{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
@@ -10095,7 +10103,7 @@ if(S.tab==='tasks'){
   // Quick-compose bar with animated CTA + priority chips
   const _cp=S.compose.priority;
   h+='<div class="qc-bar">';
-  h+='<div class="qc-scene">';
+  h+='<div class="qc-scene" onclick="this.classList.toggle(\\'fast\\')">';
   h+='<div class="qc-p qc-guide"><div class="qc-bubble">Let\\'s add it!</div><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
   h+='<div class="qc-p qc-writer"><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
   h+='<div class="qc-notebook"><div class="qc-nb-cover"><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-ink"></div><div class="qc-nb-ink"></div><div class="qc-nb-ink"></div></div><div class="qc-nb-check"></div></div>';
