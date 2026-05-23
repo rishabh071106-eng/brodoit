@@ -4914,6 +4914,7 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-input::placeholder{color:var(--ink-3,#94A3B8)}
 .qc-send{width:38px;height:38px;border-radius:50%;border:none;background:linear-gradient(135deg,#3DAE5C,#2D8A4E);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;box-shadow:0 2px 8px rgba(61,174,92,.3)}
 .qc-send:active{transform:scale(.92)}
+@media(max-width:1023px){.qc-bar{padding:16px 16px;border-radius:18px;margin-bottom:16px}.qc-input{font-size:17px;padding:10px 0}.qc-input::placeholder{font-size:16px}.qc-send{width:46px;height:46px;font-size:24px;font-weight:700}}
 .qc-chips{display:flex;gap:6px;margin-top:8px;align-items:center}
 .qc-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;border:1.5px solid transparent;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s;background:var(--bg,#F1F5F9);color:var(--ink-2,#64748B);user-select:none}
 .qc-chip:active{transform:scale(.95)}
@@ -6509,7 +6510,9 @@ body[data-theme=aurora] .hgc-stat b{color:#fff}
 .hgc-expand .hh-stat{flex:1;background:rgba(79,70,229,.1) !important;border:1px solid rgba(79,70,229,.15) !important;color:#1A1A1A !important;backdrop-filter:none !important}
 .hgc-expand .hh-stat b{color:#1A1A1A !important;font-size:28px !important}
 .hgc-expand .hh-stat small{color:#4B5563 !important;font-size:11px !important;font-weight:600 !important}
+.hgc-wx{display:none;font-size:12px;color:rgba(255,255,255,.75);margin-top:3px;font-weight:500}
 @media(max-width:560px){.hgc-right .hgc-stat{display:none}.hgc-greet{font-size:20px}}
+@media(max-width:1023px){.hgc-wx{display:block}.is-weather-wrap>.is-weather{display:none !important}}
 /* ─── 7-day forecast ─── */
 .wx-expand{margin:-4px 0 8px;padding:14px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:0 0 14px 14px;border-top:0;animation:hhStatsIn .3s ease}
 body[data-theme=aurora] .wx-expand{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
@@ -9611,11 +9614,14 @@ if(isMain){
   const _mindLvl=((S.mg&&S.mg.progress&&S.mg.progress.math&&S.mg.progress.math.level)||0)+((S.mg&&S.mg.progress&&S.mg.progress.word&&S.mg.progress.word.level)||0)+((S.mg&&S.mg.progress&&S.mg.progress.schulte&&S.mg.progress.schulte.level)||0);
   const _statsExpanded=!!S.statsExpanded;
   // Compact greeting chip with progress inside
+  const _w=S.weather||{};
+  const _wxRainHint=_w.daily?_w.daily.rain.filter(function(r){return r>=30}).length:0;
   const _statusLine=_dueToday>0?_dueToday+' due today':_overdue>0?_overdue+' overdue':'All clear';
   let hero='<div class="home-greeting-chip" onclick="S.statsExpanded=!S.statsExpanded;render()">'
     +'<div class="hgc-left">'
       +'<div class="hgc-greet">'+esc(_greet)+(_firstName?', <em>'+esc(_firstName)+'</em>':'')+'</div>'
       +'<div class="hgc-sub">'+esc(_today)+' \\u00B7 '+esc(_statusLine)+'</div>'
+      +'<div class="hgc-wx" onclick="event.stopPropagation();S.weatherExpanded=!S.weatherExpanded;render()">'+(_w.temp!=null?(_w.temp>30?'\\u2600\\uFE0F':_w.temp>20?'\\u26C5':'\\u2601\\uFE0F')+' '+_w.temp+'\\u00B0C \\u00B7 '+esc(_w.city||'')+(_wxRainHint>0?' \\u00B7 \\u{1F327}\\uFE0F'+_wxRainHint+'d rain':'')+'  \\u25BE':'')+'</div>'
     +'</div>'
     +'<div class="hgc-right">'
       +'<span class="hgc-stat"><b>'+s.act+'</b> active</span>'
@@ -9634,13 +9640,11 @@ if(isMain){
   const _dayOfYear=Math.floor((_now-_yStart)/86400000);
   const _yearPct=Math.round(_dayOfYear/365*100);
   const _daysLeft=365-_dayOfYear;
-  const _w=S.weather||{};
   const _hyd=S.hydration;
   let infoStrip='';
   // Weather chip — tap to expand forecast + city search
   const _wxExpanded=!!S.weatherExpanded;
-  const _wxRainHint=_w.daily?_w.daily.rain.filter(function(r){return r>=30}).length:0;
-  infoStrip+='<div style="position:relative">';
+  infoStrip+='<div class="is-weather-wrap" style="position:relative">';
   infoStrip+='<div class="is-row is-weather" onclick="S.weatherExpanded=!S.weatherExpanded;render()">'
     +'<div class="is-row-icon">'+(_w.temp!=null?(_w.temp>30?'\\u2600\\uFE0F':_w.temp>20?'\\u26C5':'\\u2601\\uFE0F'):'\\u{1F321}\\uFE0F')+'</div>'
     +'<div class="is-row-body" style="flex:1">'
