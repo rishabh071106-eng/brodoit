@@ -3182,16 +3182,16 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     flex-direction:row !important;
     justify-content:space-evenly !important;
     overflow-x:auto !important;overflow-y:visible !important;
-    background:#FFFFFF !important;
+    background:linear-gradient(180deg,#FDFAF7,#FFFFFF) !important;
     backdrop-filter:none !important;
     -webkit-backdrop-filter:none !important;
     border:0 !important;
-    border-top:2px solid #E8E0D8 !important;
-    border-radius:0 !important;
-    padding:6px 2px calc(6px + env(safe-area-inset-bottom,0px)) !important;
+    border-top:none !important;
+    border-radius:24px 24px 0 0 !important;
+    padding:10px 6px calc(8px + env(safe-area-inset-bottom,0px)) !important;
     gap:0 !important;
     z-index:60 !important;
-    box-shadow:0 -6px 30px rgba(0,0,0,.12) !important;
+    box-shadow:0 -8px 40px rgba(120,85,43,.12),0 -2px 8px rgba(0,0,0,.04) !important;
     margin:0 !important;
   }
   .tabs.page-t::after{display:none !important}
@@ -3200,17 +3200,17 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab{
     flex:1 1 0 !important;
     min-width:0 !important;
-    padding:8px 4px 6px !important;
+    padding:6px 2px 4px !important;
     flex-direction:column !important;
     align-items:center !important;
     justify-content:center !important;
     text-align:center !important;
-    min-height:62px !important;
-    border-radius:14px !important;
-    gap:3px !important;
-    transition:all .25s cubic-bezier(.34,1.56,.64,1) !important;
+    min-height:60px !important;
+    border-radius:16px !important;
+    gap:4px !important;
+    transition:all .3s cubic-bezier(.34,1.56,.64,1) !important;
     background:transparent !important;
-    color:#B0ADA8 !important;
+    color:#C4B5A3 !important;
     box-shadow:none !important;
     position:relative;
     overflow:visible;
@@ -3218,11 +3218,11 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab::before{display:none !important}
   .tabs.page-t .tab .ti{
     font-size:22px !important;
-    width:40px !important;height:40px !important;
+    width:42px !important;height:42px !important;
     display:flex !important;align-items:center !important;justify-content:center !important;
-    transition:all .25s cubic-bezier(.34,1.56,.64,1) !important;
+    transition:all .3s cubic-bezier(.34,1.56,.64,1) !important;
     color:inherit !important;
-    background:rgba(0,0,0,.03) !important;border-radius:14px !important;box-shadow:none !important;
+    background:#F5EDE4 !important;border-radius:14px !important;box-shadow:inset 0 1px 2px rgba(0,0,0,.04) !important;
     overflow:visible !important;
   }
   .tabs.page-t .tab .ti::after{display:none !important}
@@ -3244,23 +3244,18 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab:active{transform:scale(.88) !important}
   .tabs.page-t .tab.on{
     color:#78552B !important;
-    transform:none !important;
+    transform:translateY(-2px) !important;
     background:transparent !important;
   }
   .tabs.page-t .tab.on .ti{
-    transform:scale(1.05) !important;
-    background:linear-gradient(135deg,rgba(120,85,43,.12),rgba(194,112,62,.1)) !important;
-    box-shadow:0 2px 8px rgba(120,85,43,.12) !important;
-    color:#78552B !important;
+    background:linear-gradient(135deg,#78552B,#C2703E) !important;
+    color:#fff !important;
+    box-shadow:0 4px 14px rgba(120,85,43,.3) !important;
+    transform:scale(1.08) !important;
   }
-  .tabs.page-t .tab.on .tl{color:#78552B !important;font-weight:800 !important;opacity:1 !important;font-size:11px !important}
-  .tabs.page-t .tab.on::after{
-    content:'' !important;display:block !important;
-    width:22px !important;height:3.5px !important;border-radius:2px !important;
-    background:linear-gradient(90deg,#78552B,#C2703E) !important;
-    position:absolute !important;top:0 !important;left:50% !important;
-    transform:translateX(-50%) !important;
-  }
+  .tabs.page-t .tab.on .ti svg{color:#fff !important;stroke:#fff !important}
+  .tabs.page-t .tab.on .tl{color:#78552B !important;font-weight:800 !important;opacity:1 !important;font-size:11.5px !important}
+  .tabs.page-t .tab.on::after{display:none !important}
   /* Float other UI above the new bottom bar */
   .bk-mini{bottom:110px !important;right:14px !important}
   .player{bottom:110px !important;left:12px !important;right:96px !important}
@@ -3273,13 +3268,12 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .section-hd h3{font-size:19px !important}
   .stats .st b{font-size:22px !important}
 }
-body[data-theme=aurora] .tabs.page-t{background:rgba(20,20,36,.97) !important;border-color:rgba(255,255,255,.08) !important;box-shadow:0 -6px 30px rgba(0,0,0,.35) !important}
-body[data-theme=aurora] .tabs.page-t .tab{color:rgba(255,255,255,.35) !important}
-body[data-theme=aurora] .tabs.page-t .tab .ti{background:rgba(255,255,255,.04) !important}
-body[data-theme=aurora] .tabs.page-t .tab.on{color:#D4A574 !important;background:transparent !important}
-body[data-theme=aurora] .tabs.page-t .tab.on .ti{background:rgba(212,165,116,.12) !important;box-shadow:0 2px 8px rgba(212,165,116,.15) !important}
+body[data-theme=aurora] .tabs.page-t{background:linear-gradient(180deg,rgba(25,22,42,.98),rgba(18,16,32,.99)) !important;box-shadow:0 -8px 40px rgba(0,0,0,.4) !important;border-radius:24px 24px 0 0 !important}
+body[data-theme=aurora] .tabs.page-t .tab{color:rgba(255,255,255,.3) !important}
+body[data-theme=aurora] .tabs.page-t .tab .ti{background:rgba(255,255,255,.06) !important;box-shadow:none !important}
+body[data-theme=aurora] .tabs.page-t .tab.on{color:#D4A574 !important}
+body[data-theme=aurora] .tabs.page-t .tab.on .ti{background:linear-gradient(135deg,#D4A574,#B5651D) !important;color:#fff !important;box-shadow:0 4px 14px rgba(212,165,116,.3) !important}
 body[data-theme=aurora] .tabs.page-t .tab.on .tl{color:#D4A574 !important}
-body[data-theme=aurora] .tabs.page-t .tab.on::after{background:linear-gradient(90deg,#D4A574,#E8D5C4) !important}
 /* Desktop sidebar layout */
 @media (min-width:1024px){
   .app{max-width:1440px;padding:12px 24px 40px;display:grid;grid-template-columns:220px 1fr;grid-template-areas:"hdr hdr" "side main";column-gap:22px;row-gap:6px;align-items:start}
@@ -4976,43 +4970,81 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-chip.qc-low.on{background:#16A34A;color:#fff;border-color:#16A34A;box-shadow:0 2px 8px rgba(22,163,74,.3)}
 .qc-chip .qc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .qc-expand{font-size:12px;color:var(--ink-3,#94A3B8);cursor:pointer;margin-left:auto;white-space:nowrap}
-/* ─── ANIMATED TASK CTA ─── */
+/* ─── ANIMATED TASK CTA — two people + notebook ─── */
 .qc-scene{display:none}
 @media(max-width:1023px){
-.qc-scene{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:6px;padding:12px 0 6px;position:relative;height:80px;overflow:hidden}
-.qc-person{position:absolute;left:8%;animation:qcWalk 4s ease-in-out infinite;z-index:2}
-.qc-person-body{position:relative;width:32px;height:56px}
-.qc-person-head{width:16px;height:16px;border-radius:50%;background:#78552B;position:absolute;top:0;left:50%;transform:translateX(-50%);box-shadow:0 2px 6px rgba(120,85,43,.3)}
-.qc-person-torso{width:10px;height:18px;background:#C2703E;border-radius:4px 4px 2px 2px;position:absolute;top:15px;left:50%;transform:translateX(-50%)}
-.qc-person-arm{width:14px;height:4px;background:#C2703E;border-radius:2px;position:absolute;top:18px}
-.qc-person-arm.left{left:-4px;transform-origin:right center;animation:qcArmL 1s ease-in-out infinite}
-.qc-person-arm.right{right:-4px;transform-origin:left center;animation:qcArmR 1s ease-in-out infinite}
-.qc-person-leg{width:5px;height:16px;background:#5C4033;border-radius:2px;position:absolute;bottom:0}
-.qc-person-leg.left{left:7px;transform-origin:top center;animation:qcLegL .5s ease-in-out infinite}
-.qc-person-leg.right{right:7px;transform-origin:top center;animation:qcLegR .5s ease-in-out infinite}
-@keyframes qcWalk{0%{left:8%;opacity:0}10%{opacity:1}50%{left:42%}60%,100%{left:42%;opacity:1}}
-@keyframes qcArmL{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}}
-@keyframes qcArmR{0%,100%{transform:rotate(15deg)}50%{transform:rotate(-15deg)}}
-@keyframes qcLegL{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
-@keyframes qcLegR{0%,100%{transform:rotate(12deg)}50%{transform:rotate(-12deg)}}
-.qc-notebook{position:absolute;right:18%;top:50%;transform:translateY(-50%);width:44px;height:54px;z-index:1}
-.qc-nb-cover{width:44px;height:54px;background:linear-gradient(135deg,#D4A574,#78552B);border-radius:4px 8px 8px 4px;position:relative;box-shadow:0 4px 14px rgba(120,85,43,.25)}
-.qc-nb-spine{position:absolute;left:0;top:4px;bottom:4px;width:4px;background:#5C4033;border-radius:2px 0 0 2px}
-.qc-nb-line{position:absolute;left:12px;right:6px;height:1.5px;background:rgba(255,255,255,.35);border-radius:1px}
-.qc-nb-line:nth-child(2){top:14px}.qc-nb-line:nth-child(3){top:22px}.qc-nb-line:nth-child(4){top:30px}.qc-nb-line:nth-child(5){top:38px}
-.qc-nb-check{position:absolute;top:12px;left:14px;width:16px;height:10px;border-bottom:2.5px solid #FBBF24;border-left:2.5px solid #FBBF24;transform:rotate(-45deg) scale(0);animation:qcCheck 4s ease-in-out infinite;animation-delay:2.2s}
-@keyframes qcCheck{0%,50%{transform:rotate(-45deg) scale(0)}60%{transform:rotate(-45deg) scale(1.2)}65%,100%{transform:rotate(-45deg) scale(1)}}
-.qc-pencil{position:absolute;right:14%;top:20%;width:6px;height:28px;background:linear-gradient(180deg,#FBBF24,#F59E0B);border-radius:1px 1px 0 0;transform:rotate(-30deg) translateY(10px);opacity:0;animation:qcPencil 4s ease-in-out infinite;animation-delay:1.8s;z-index:3}
+.qc-scene{display:block;position:relative;height:110px;margin-bottom:8px;overflow:hidden;border-radius:16px;background:linear-gradient(135deg,#FFF8F0,#FDF0E4,#FFF8F0);border-bottom:1.5px dashed rgba(120,85,43,.15)}
+/* — shared person styles — */
+.qc-p{position:absolute;bottom:16px;z-index:2}
+.qc-p-head{width:18px;height:18px;border-radius:50%;position:absolute;top:0;left:50%;transform:translateX(-50%)}
+.qc-p-body{position:relative;width:36px;height:60px}
+.qc-p-torso{width:12px;height:20px;border-radius:5px 5px 3px 3px;position:absolute;top:16px;left:50%;transform:translateX(-50%)}
+.qc-p-arm{width:16px;height:4px;border-radius:2px;position:absolute;top:20px}
+.qc-p-arm.l{left:-5px;transform-origin:right center}
+.qc-p-arm.r{right:-5px;transform-origin:left center}
+.qc-p-leg{width:5px;height:18px;border-radius:3px;position:absolute;bottom:0}
+.qc-p-leg.l{left:8px;transform-origin:top center}
+.qc-p-leg.r{right:8px;transform-origin:top center}
+/* — Guide (person 1) — brown/gold, walks in first, points — */
+.qc-guide{animation:qcGuideWalk 6s ease-in-out infinite}
+.qc-guide .qc-p-head{background:linear-gradient(135deg,#78552B,#A0522D);box-shadow:0 2px 6px rgba(120,85,43,.3)}
+.qc-guide .qc-p-torso{background:linear-gradient(180deg,#C2703E,#A0522D)}
+.qc-guide .qc-p-arm{background:#C2703E}
+.qc-guide .qc-p-leg{background:#5C4033}
+.qc-guide .qc-p-arm.r{animation:qcGuidePoint 6s ease-in-out infinite}
+.qc-guide .qc-p-arm.l{animation:qcArmSwing .6s ease-in-out infinite}
+.qc-guide .qc-p-leg.l{animation:qcLeg .5s ease-in-out infinite}
+.qc-guide .qc-p-leg.r{animation:qcLeg .5s ease-in-out infinite .25s}
+/* speech bubble */
+.qc-bubble{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#78552B;color:#fff;font-size:9px;font-weight:700;padding:4px 8px;border-radius:8px;white-space:nowrap;opacity:0;animation:qcBubble 6s ease-in-out infinite;letter-spacing:.02em}
+.qc-bubble::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #78552B}
+@keyframes qcGuideWalk{0%{left:-10%;opacity:0}15%{left:12%;opacity:1}40%{left:28%}50%,100%{left:28%;opacity:1}}
+@keyframes qcGuidePoint{0%,30%{transform:rotate(15deg)}45%{transform:rotate(-60deg)}55%,70%{transform:rotate(-60deg)}80%,100%{transform:rotate(15deg)}}
+@keyframes qcBubble{0%,30%{opacity:0;transform:translateX(-50%) translateY(4px)}38%{opacity:1;transform:translateX(-50%) translateY(0)}55%{opacity:1}60%,100%{opacity:0}}
+/* — Writer (person 2) — follows guide, sits at notebook — */
+.qc-writer{animation:qcWriterWalk 6s ease-in-out infinite}
+.qc-writer .qc-p-head{background:linear-gradient(135deg,#D4A574,#B5651D);box-shadow:0 2px 6px rgba(181,101,29,.3)}
+.qc-writer .qc-p-torso{background:linear-gradient(180deg,#E8A862,#D4A574)}
+.qc-writer .qc-p-arm{background:#E8A862}
+.qc-writer .qc-p-leg{background:#8B6914}
+.qc-writer .qc-p-arm.r{animation:qcWriteArm 6s ease-in-out infinite}
+.qc-writer .qc-p-arm.l{animation:qcArmSwing .6s ease-in-out infinite .3s}
+.qc-writer .qc-p-leg.l{animation:qcLeg .5s ease-in-out infinite .15s}
+.qc-writer .qc-p-leg.r{animation:qcLeg .5s ease-in-out infinite .4s}
+@keyframes qcWriterWalk{0%{left:-15%;opacity:0}20%{left:5%;opacity:1}50%{left:48%}55%,100%{left:48%;opacity:1}}
+@keyframes qcWriteArm{0%,50%{transform:rotate(-15deg)}58%{transform:rotate(-50deg)}64%{transform:rotate(-40deg)}70%{transform:rotate(-55deg)}76%{transform:rotate(-42deg)}82%,100%{transform:rotate(-15deg)}}
+@keyframes qcArmSwing{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}}
+@keyframes qcLeg{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+/* — Notebook at the right end — */
+.qc-notebook{position:absolute;right:8%;bottom:16px;width:48px;height:58px;z-index:1}
+.qc-nb-cover{width:48px;height:58px;background:linear-gradient(145deg,#FFF8EC,#FFF1D6);border:2px solid #D4A574;border-radius:3px 10px 10px 3px;position:relative;box-shadow:0 4px 16px rgba(120,85,43,.2)}
+.qc-nb-spine{position:absolute;left:0;top:4px;bottom:4px;width:5px;background:linear-gradient(180deg,#78552B,#5C4033);border-radius:3px 0 0 3px}
+.qc-nb-ring{position:absolute;left:2px;width:8px;height:4px;border:1.5px solid #78552B;border-radius:2px;background:transparent}
+.qc-nb-ring:nth-child(2){top:10px}.qc-nb-ring:nth-child(3){top:22px}.qc-nb-ring:nth-child(4){top:34px}.qc-nb-ring:nth-child(5){top:46px}
+.qc-nb-line{position:absolute;left:14px;right:6px;height:1.5px;background:rgba(120,85,43,.15);border-radius:1px}
+.qc-nb-line:nth-child(6){top:14px}.qc-nb-line:nth-child(7){top:22px}.qc-nb-line:nth-child(8){top:30px}.qc-nb-line:nth-child(9){top:38px}
+/* writing stroke animates across lines */
+.qc-nb-ink{position:absolute;left:14px;height:2px;background:#78552B;border-radius:1px;width:0;animation:qcInk 6s ease-in-out infinite}
+.qc-nb-ink:nth-child(10){top:13px;animation-delay:3.2s}
+.qc-nb-ink:nth-child(11){top:21px;animation-delay:3.5s}
+.qc-nb-ink:nth-child(12){top:29px;animation-delay:3.8s}
+@keyframes qcInk{0%,50%{width:0;opacity:0}58%{width:22px;opacity:1}70%,100%{width:22px;opacity:1}}
+/* pencil in writer's hand */
+.qc-pencil{position:absolute;right:22%;bottom:50px;width:5px;height:24px;background:linear-gradient(180deg,#FBBF24,#F59E0B);border-radius:1px 1px 0 0;transform:rotate(-25deg);opacity:0;animation:qcPencilMove 6s ease-in-out infinite;z-index:3}
 .qc-pencil::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border-left:3px solid transparent;border-right:3px solid transparent;border-top:6px solid #5C4033}
-@keyframes qcPencil{0%,40%{opacity:0;transform:rotate(-30deg) translateY(10px)}50%{opacity:1;transform:rotate(-30deg) translateY(0)}70%{opacity:1;transform:rotate(-30deg) translateY(-3px)}80%{opacity:1;transform:rotate(-30deg) translateY(0)}90%,100%{opacity:0;transform:rotate(-30deg) translateY(10px)}}
-.qc-sparkles{position:absolute;right:10%;top:10%}
-.qc-sparkle{position:absolute;width:6px;height:6px;background:#FBBF24;border-radius:50%;opacity:0;animation:qcSparkPop 4s ease-in-out infinite}
-.qc-sparkle:nth-child(1){top:0;left:0;animation-delay:2.5s}
-.qc-sparkle:nth-child(2){top:-8px;left:14px;width:4px;height:4px;animation-delay:2.7s;background:#C2703E}
-.qc-sparkle:nth-child(3){top:4px;left:22px;width:5px;height:5px;animation-delay:2.9s;background:#78552B}
-@keyframes qcSparkPop{0%,55%{opacity:0;transform:scale(0)}62%{opacity:1;transform:scale(1.3)}68%{opacity:1;transform:scale(1)}80%,100%{opacity:0;transform:scale(0) translateY(-8px)}}
-.qc-cta-text{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:#78552B;letter-spacing:.03em;white-space:nowrap;animation:qcTextPulse 3s ease-in-out infinite}
-@keyframes qcTextPulse{0%,100%{opacity:.7}50%{opacity:1}}
+@keyframes qcPencilMove{0%,48%{opacity:0}55%{opacity:1;transform:rotate(-25deg) translateY(0)}62%{transform:rotate(-25deg) translateY(-3px)}68%{transform:rotate(-25deg) translateY(0)}74%{transform:rotate(-25deg) translateY(-2px)}80%{opacity:1;transform:rotate(-25deg) translateY(0)}88%,100%{opacity:0}}
+/* sparkles + check */
+.qc-sparkles{position:absolute;right:6%;bottom:60px;z-index:4}
+.qc-sparkle{position:absolute;border-radius:50%;opacity:0;animation:qcSpark 6s ease-in-out infinite}
+.qc-sparkle:nth-child(1){width:7px;height:7px;background:#FBBF24;top:0;left:0;animation-delay:4s}
+.qc-sparkle:nth-child(2){width:5px;height:5px;background:#C2703E;top:-10px;left:16px;animation-delay:4.2s}
+.qc-sparkle:nth-child(3){width:6px;height:6px;background:#78552B;top:6px;left:24px;animation-delay:4.4s}
+.qc-sparkle:nth-child(4){width:4px;height:4px;background:#F59E0B;top:-5px;left:-8px;animation-delay:4.3s}
+@keyframes qcSpark{0%,62%{opacity:0;transform:scale(0)}68%{opacity:1;transform:scale(1.4)}74%{opacity:1;transform:scale(1)}85%,100%{opacity:0;transform:scale(0) translateY(-10px)}}
+.qc-nb-check{position:absolute;top:16px;left:20px;width:14px;height:8px;border-bottom:3px solid #22C55E;border-left:3px solid #22C55E;transform:rotate(-45deg) scale(0);animation:qcCheck 6s ease-in-out infinite;z-index:3}
+@keyframes qcCheck{0%,65%{transform:rotate(-45deg) scale(0)}72%{transform:rotate(-45deg) scale(1.3)}76%,100%{transform:rotate(-45deg) scale(1)}}
+/* caption text */
+.qc-cta-text{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:#78552B;letter-spacing:.04em;white-space:nowrap;opacity:.6}
 }
 /* Priority badge on task cards */
 .tc-pri{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
@@ -10035,10 +10067,11 @@ if(S.tab==='tasks'){
   const _cp=S.compose.priority;
   h+='<div class="qc-bar">';
   h+='<div class="qc-scene">';
-  h+='<div class="qc-person"><div class="qc-person-body"><div class="qc-person-head"></div><div class="qc-person-torso"></div><div class="qc-person-arm left"></div><div class="qc-person-arm right"></div><div class="qc-person-leg left"></div><div class="qc-person-leg right"></div></div></div>';
-  h+='<div class="qc-notebook"><div class="qc-nb-cover"><div class="qc-nb-spine"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-check"></div></div></div>';
+  h+='<div class="qc-p qc-guide"><div class="qc-bubble">Let\\'s add it!</div><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
+  h+='<div class="qc-p qc-writer"><div class="qc-p-body"><div class="qc-p-head"></div><div class="qc-p-torso"></div><div class="qc-p-arm l"></div><div class="qc-p-arm r"></div><div class="qc-p-leg l"></div><div class="qc-p-leg r"></div></div></div>';
+  h+='<div class="qc-notebook"><div class="qc-nb-cover"><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-ring"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-line"></div><div class="qc-nb-ink"></div><div class="qc-nb-ink"></div><div class="qc-nb-ink"></div></div><div class="qc-nb-check"></div></div>';
   h+='<div class="qc-pencil"></div>';
-  h+='<div class="qc-sparkles"><div class="qc-sparkle"></div><div class="qc-sparkle"></div><div class="qc-sparkle"></div></div>';
+  h+='<div class="qc-sparkles"><div class="qc-sparkle"></div><div class="qc-sparkle"></div><div class="qc-sparkle"></div><div class="qc-sparkle"></div></div>';
   h+='<div class="qc-cta-text">Write it down, get it done!</div>';
   h+='</div>';
   h+='<div class="qc-row"><input class="qc-input" placeholder="Add a task... (try: Buy milk tomorrow !high)" value="'+esc(S.compose.value||'')+'" oninput="composeUpdate(this.value)" onkeydown="if(event.key===\\'Enter\\')composeSubmit()">';
