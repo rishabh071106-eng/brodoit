@@ -787,10 +787,26 @@ app.get('/api/audio/:id', async (req, res) => {
   const token = String(req.query.token || req.headers['x-token'] || '').trim();
   const u = token ? db.prepare('SELECT * FROM users WHERE token=?').get(token) : null;
   if (!u) return res.status(401).json({ error: 'unauthorized' });
-  if (!ELEVENLABS_KEY) return res.status(503).json({ error: 'TTS not configured' });
   const id = String(req.params.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
   const entry = AUDIO_LIBRARY[id];
   if (!entry) return res.status(404).json({ error: 'unknown audio id' });
+
+  // 1) Check for pre-baked static MP3 (bundled in repo — zero API cost)
+  const staticPath = _path.join(process.cwd(), 'audio-static', id + '.mp3');
+  try {
+    if (_fs.existsSync(staticPath)) {
+      const stat = _fs.statSync(staticPath);
+      res.set('Content-Type', 'audio/mpeg');
+      res.set('Cache-Control', 'public, max-age=604800');
+      res.set('X-Tts-Source', 'static');
+      res.set('Content-Length', String(stat.size));
+      res.set('Accept-Ranges', 'bytes');
+      return _fs.createReadStream(staticPath).pipe(res);
+    }
+  } catch (e) {}
+
+  // 2) No static file and no ElevenLabs key — tell client to use browser TTS
+  if (!ELEVENLABS_KEY) return res.status(503).json({ error: 'TTS not configured' });
 
   // Upgraded to multilingual_v2 for richer prosody on long-form meditation
   // content. Slightly slower first-render; cached afterwards forever.
@@ -7663,7 +7679,17 @@ function _speakScriptFallback(id,onEnd){
 function playMedEleven(id,title,mins){
   const url='/api/audio/'+encodeURIComponent(id)+'?token='+encodeURIComponent(token||'');
   S.meditating={active:true,title,mins:mins||2,startedAt:Date.now()};
-  S.playing={id:'el-'+id,title,author:'\\u2728 Generated for you \\u2022 ElevenLabs voice',url,external:null,loading:false};
+  // Check if server has TTS configured (cached from /api/coach/status at boot)
+  // If not, skip the audio element entirely and go straight to browser TTS — instant, no failed load
+  if(window._ttsAvailable===false){
+    S.playing={id:'el-'+id,title,author:'\\u{1F50A} Voice narration',url:null,external:null,loading:false};
+    try{const last=parseInt(localStorage.getItem('med_last_count_ts')||'0',10);if(Date.now()-last>60000){const cur=parseInt(localStorage.getItem('med_count')||'0',10)||0;localStorage.setItem('med_count',String(cur+1));localStorage.setItem('med_last_count_ts',String(Date.now()));const today=new Date().toISOString().slice(0,10);const days=(localStorage.getItem('med_days')||'').split(',').filter(Boolean);if(days[days.length-1]!==today){days.push(today);localStorage.setItem('med_days',days.slice(-365).join(','))}}}catch(e){}
+    render();
+    _speakScriptFallback(id);
+    toast('\\u{1F50A} Reading aloud');
+    return;
+  }
+  S.playing={id:'el-'+id,title,author:'\\u2728 Generated for you \\u2022 Premium voice',url,external:null,loading:false};
   // Track session count (same protection as playMeditation against double-counting within 60s)
   try{const last=parseInt(localStorage.getItem('med_last_count_ts')||'0',10);if(Date.now()-last>60000){const cur=parseInt(localStorage.getItem('med_count')||'0',10)||0;localStorage.setItem('med_count',String(cur+1));localStorage.setItem('med_last_count_ts',String(Date.now()));const today=new Date().toISOString().slice(0,10);const days=(localStorage.getItem('med_days')||'').split(',').filter(Boolean);if(days[days.length-1]!==today){days.push(today);localStorage.setItem('med_days',days.slice(-365).join(','))}}}catch(e){}
   render();
@@ -7834,7 +7860,7 @@ function _mgIsDoneToday(g){try{return localStorage.getItem(_mgTodayKey(g))==='1'
 // ─── AI COACH (Phase 2) ──────────────────────────────────────────────
 async function coachInit(){
   const s=await fetch('/api/coach/status').then(r=>r.json()).catch(()=>null);
-  if(s)S.coach.status=s;
+  if(s){S.coach.status=s;window._ttsAvailable=!!s.tts}
   // Greet on first open
   if(!S.coach.history.length){
     S.coach.history=[{role:'assistant',content:"Hi, I'm your Business English coach. We can practise vocabulary, refine how you phrase ideas, or rehearse a real scenario — your call. Type or tap the mic to speak. Where shall we start?"}];
@@ -11164,7 +11190,7 @@ if(S.bookReader&&S.bookReader.open&&S.bookReader.book){
     +'<button class="play" onclick="bookReaderToggleTTS()">'+(r.playing?'\\u23F8':'\\u25B6')+'</button>'
     +'<div class="info" style="overflow:hidden">'
       +'<b>'+esc(b.title)+' \\u00B7 by '+esc(b.author)+(isStudio?' <span style="display:inline-block;margin-left:6px;padding:2px 7px;background:rgba(31,77,63,.12);color:#C47A3A;border-radius:6px;font-size:9px;font-weight:600;letter-spacing:.06em;font-family:\\'JetBrains Mono\\',monospace;text-transform:uppercase;vertical-align:1px">\\u{1F3AC} STUDIO</span>':' <span style="display:inline-block;margin-left:6px;padding:2px 7px;background:rgba(196,122,58,.12);color:#92400E;border-radius:6px;font-size:9px;font-weight:600;letter-spacing:.06em;font-family:\\'JetBrains Mono\\',monospace;text-transform:uppercase;vertical-align:1px">browser voice</span>')+'</b>'
-      +'<small id="bkProgText">'+(r.playing?esc(String(prog.line||'').slice(0,90)):(isStudio?'Adam \\u00B7 ElevenLabs studio voice \\u00B7 ~'+b.mins+' min':'Soft male narrator \\u00B7 '+(r.rate||0.78)+'x \\u00B7 ~'+b.mins+' min'))+'</small>'
+      +'<small id="bkProgText">'+(r.playing?esc(String(prog.line||'').slice(0,90)):(isStudio?'Adam \\u00B7 Studio voice \\u00B7 ~'+b.mins+' min':'Soft male narrator \\u00B7 '+(r.rate||0.78)+'x \\u00B7 ~'+b.mins+' min'))+'</small>'
       +'<div style="height:3px;background:#ECEAE3;border-radius:999px;margin-top:6px;overflow:hidden"><div id="bkProgFill" style="height:100%;background:linear-gradient(90deg,#D4956A,#FF8A4F);transform:scaleX('+(pctNow/100)+');transform-origin:left;transition:transform .4s ease"></div></div>'
       +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-family:\\'JetBrains Mono\\',monospace;font-size:10px;letter-spacing:.04em;color:#9A9A9A"><span id="bkProgTime">'+Math.floor(elapsedNow/60)+':'+String(elapsedNow%60).padStart(2,'0')+'</span><span id="bkProgPct">'+pctNow+'%</span></div>'
     +'</div>'
