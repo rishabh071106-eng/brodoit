@@ -6589,8 +6589,8 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 /* ─── BRO CHAT ─── */
 .bro-container{display:flex;flex-direction:column;height:calc(100vh - 140px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:#f7f7f8;position:relative}
 body[data-theme=aurora] .bro-container{background:#212121}
-.bro-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid rgba(0,0,0,.05);position:relative;z-index:10;flex-shrink:0}
-body[data-theme=aurora] .bro-header{background:#212121;border-bottom-color:rgba(255,255,255,.08)}
+.bro-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:none;position:relative;z-index:10;flex-shrink:0}
+body[data-theme=aurora] .bro-header{background:#212121}
 .bro-header-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .bro-header-info{flex:1;min-width:0}
 .bro-header-name{font-family:var(--sans);font-size:15px;font-weight:600;color:#111;display:flex;align-items:center;gap:5px}
@@ -6629,9 +6629,9 @@ body[data-theme=aurora] .bro-msg-meta{color:rgba(255,255,255,.25)}
 .bro-typing-dot:nth-child(3){animation-delay:.4s}
 body[data-theme=aurora] .bro-typing-dot{background:rgba(255,255,255,.4)}
 @keyframes broTypeDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
-.bro-input-wrap{flex-shrink:0;padding:6px 12px 8px;background:#fff;border-top:1px solid rgba(0,0,0,.05);z-index:20}
-body[data-theme=aurora] .bro-input-wrap{background:#212121;border-top-color:rgba(255,255,255,.08)}
-.bro-input-bar{display:flex;gap:6px;padding:8px 8px 8px 14px;background:#EFEFEF;border:none;border-radius:24px;align-items:center}
+.bro-input-wrap{flex-shrink:0;padding:6px 12px 8px;background:#f7f7f8;border-top:none;z-index:20}
+body[data-theme=aurora] .bro-input-wrap{background:#212121}
+.bro-input-bar{display:flex;gap:6px;padding:8px 8px 8px 14px;background:#fff;border:none;border-radius:24px;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,.08)}
 body[data-theme=aurora] .bro-input-bar{background:#2F2F2F}
 .bro-input{flex:1;border:none;background:transparent;font-size:16px;outline:none;color:inherit;font-family:inherit;padding:4px 0}
 .bro-input::placeholder{color:#999}
@@ -6648,11 +6648,11 @@ body[data-theme=aurora] .bro-send-bro{background:#fff}
 body[data-theme=aurora] .bro-send-bro svg{stroke:#000}
 .bro-send-bri{background:linear-gradient(135deg,#EC4899,#F472B6)}
 @keyframes broFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.bro-welcome{display:flex;flex-direction:column;align-items:center;gap:12px;padding:40px 20px 24px;text-align:center}
-.bro-welcome-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px}
-.bro-welcome-title{font-family:var(--sans);font-size:22px;font-weight:600;color:#111;letter-spacing:-.01em}
+.bro-welcome{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 20px 16px;text-align:center;margin:auto 0}
+.bro-welcome-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(74,108,247,.25)}
+.bro-welcome-title{font-family:var(--sans);font-size:22px;font-weight:700;color:#111;letter-spacing:-.02em}
 body[data-theme=aurora] .bro-welcome-title{color:#ECECEC}
-.bro-welcome-text{font-size:14px;color:#888;max-width:280px;line-height:1.5}
+.bro-welcome-text{font-size:13px;color:#999;max-width:260px;line-height:1.5}
 body[data-theme=aurora] .bro-welcome-text{color:rgba(255,255,255,.4)}
 /* ─── BRO WELCOME: two-person help animation ─── */
 .bro-scene{position:relative;width:100%;max-width:320px;height:130px;margin:8px auto 4px;overflow:hidden;border-radius:20px;background:linear-gradient(135deg,#EDF0FF,#E4E8FF)}
@@ -6709,14 +6709,14 @@ body[data-theme=aurora] .bro-scene{background:linear-gradient(135deg,rgba(40,35,
 /* floor line */
 .bp-floor{position:absolute;bottom:16px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,rgba(44,62,107,.15),transparent);border-radius:1px}
 .bro-modes{display:flex;gap:8px;justify-content:center;margin-top:2px;margin-bottom:4px}
-.bro-mode-btn{padding:7px 16px;border-radius:18px;border:1px solid #E0E0E0;background:transparent;font-size:13px;font-weight:500;color:#888;cursor:pointer;transition:all .15s;font-family:inherit}
-.bro-mode-btn.on{background:#000;border-color:#000;color:#fff}
-body[data-theme=aurora] .bro-mode-btn{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.45)}
-body[data-theme=aurora] .bro-mode-btn.on{background:#fff;border-color:#fff;color:#000}
-.bro-suggestions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:6px;padding:0 8px}
-.bro-suggest-btn{background:#fff;border:1px solid #E5E5E5;border-radius:20px;padding:8px 14px;font-size:13px;color:#444;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.bro-suggest-btn:active{background:#F0F0F0;transform:scale(.97)}
-body[data-theme=aurora] .bro-suggest-btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.65);box-shadow:none}
+.bro-mode-btn{padding:7px 16px;border-radius:18px;border:none;background:rgba(0,0,0,.05);font-size:13px;font-weight:500;color:#888;cursor:pointer;transition:all .15s;font-family:inherit}
+.bro-mode-btn.on{background:#111;color:#fff}
+body[data-theme=aurora] .bro-mode-btn{background:rgba(255,255,255,.08);color:rgba(255,255,255,.45)}
+body[data-theme=aurora] .bro-mode-btn.on{background:#fff;color:#000}
+.bro-suggestions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px;padding:0 12px}
+.bro-suggest-btn{background:rgba(74,108,247,.07);border:none;border-radius:20px;padding:8px 16px;font-size:13px;color:#4A6CF7;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:600}
+.bro-suggest-btn:active{background:rgba(74,108,247,.14);transform:scale(.97)}
+body[data-theme=aurora] .bro-suggest-btn{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.65)}
 body[data-theme=aurora] .bro-suggest-btn:active{background:rgba(255,255,255,.15)}
 .bro-gen-img{max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer;transition:transform .2s;box-shadow:0 4px 16px rgba(0,0,0,.12)}
 .bro-gen-img:hover{transform:scale(1.02)}
@@ -6746,8 +6746,7 @@ body[data-theme=aurora] .bro-img-err{background:rgba(239,68,68,.12)}
   body.bro-tab .bro-container{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;height:100% !important;height:100dvh !important;margin:0 !important;z-index:50 !important;border-radius:0 !important;display:flex !important;flex-direction:column !important}
   body.bro-tab .bro-header{padding:8px 14px;flex-shrink:0}
   body.bro-tab .bro-chat{flex:1 !important;min-height:0 !important;padding:12px 14px 12px !important;gap:12px}
-  body.bro-tab .bro-input-wrap{flex-shrink:0 !important;padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px)) !important;padding-bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;border-top:1px solid rgba(0,0,0,.05)}
-  body[data-theme=aurora].bro-tab .bro-input-wrap{border-top-color:rgba(255,255,255,.08)}
+  body.bro-tab .bro-input-wrap{flex-shrink:0 !important;padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px)) !important;padding-bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;border-top:none !important}
   body.bro-tab .bro-input-bar{padding:6px 6px 6px 14px}
   body.bro-tab .bro-send-btn{width:32px;height:32px}
   body.bro-tab .tabs.page-t{z-index:61 !important}
@@ -10918,7 +10917,9 @@ else if(S.tab==='bro'){
       }
       h+='</div></div>';
     }
+    var _broSkipWelcome=S.bro.messages.length<=1;
     S.bro.messages.forEach(m=>{
+      if(_broSkipWelcome&&m.role==='bro')return;
       const isAgent=m.role==='bro';
       h+='<div class="bro-msg '+(isAgent?'bro-msg-ai':'bro-msg-user')+'">';
       if(isAgent)h+='<div class="bro-avatar" style="background:linear-gradient(135deg,#4A6CF7,#6B89F9)">\\u26A1</div>';
