@@ -4,4 +4,9 @@ node_modules/
 taskflow.db
 taskflow.db-shm
 taskflow.db-wal
+brodoit.db
+brodoit.db-shm
+brodoit.db-wal
+tts-cache/
+.claude/
 *.aab
