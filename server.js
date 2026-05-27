@@ -6642,13 +6642,16 @@ body[data-theme=aurora] .bro-img-err{background:rgba(239,68,68,.12)}
   body.bro-tab .bro-header{padding:8px 14px;flex-shrink:0}
   body.bro-tab .bro-chat{flex:1 !important;min-height:0 !important;padding:12px 14px 12px !important;gap:12px}
   body.bro-tab .bro-input-wrap{flex-shrink:0 !important;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)) !important;padding-bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;border-top:1px solid rgba(58,45,34,.08) !important;background:#FBF7F1 !important}
+  body.bro-tab .bro-input{font-size:16px !important;-webkit-text-size-adjust:none !important;caret-color:#C47A3A;line-height:1.6 !important;min-height:100px !important;max-height:220px !important;padding:10px 4px !important;-webkit-appearance:none !important;word-wrap:break-word !important;word-break:break-word !important;overflow-wrap:break-word !important;white-space:pre-wrap !important;display:block !important;width:100% !important}
+  body.bro-tab .bro-input-bar{padding:14px 14px 14px 16px !important;border-radius:20px !important;background:#fff !important;box-shadow:0 2px 8px rgba(58,45,34,.08) !important;border:1.5px solid rgba(58,45,34,.12) !important;align-items:flex-end !important;flex-wrap:wrap !important}
   body.bro-tab.kb-open .bro-container{height:var(--vv-h,100%) !important;top:var(--vv-top,0px) !important;bottom:auto !important}
-  body.bro-tab.kb-open .bro-input-wrap{padding-bottom:10px !important;padding-top:10px !important}
+  body.bro-tab.kb-open .bro-header{display:none !important}
+  body.bro-tab.kb-open .bro-welcome{display:none !important}
+  body.bro-tab.kb-open .bro-suggestions{display:none !important}
+  body.bro-tab.kb-open .bro-input-wrap{padding:10px 12px 10px !important;flex:1 !important}
   body.bro-tab.kb-open .tabs.page-t{display:none !important}
-  body.bro-tab.kb-open .bro-input{min-height:100px !important;max-height:45vh !important}
-  body.bro-tab.kb-open .bro-chat{flex:0 1 auto !important;max-height:30vh !important;overflow-y:auto !important}
-  body.bro-tab .bro-input{font-size:16px !important;-webkit-text-size-adjust:none !important;caret-color:#C47A3A;line-height:1.6 !important;min-height:100px !important;max-height:200px !important;padding:10px 2px !important;-webkit-appearance:none !important;word-wrap:break-word !important;overflow-wrap:break-word !important;white-space:pre-wrap !important}
-  body.bro-tab .bro-input-bar{padding:14px 14px 14px 16px !important;border-radius:20px !important;background:#fff !important;box-shadow:0 1px 6px rgba(58,45,34,.08) !important;border:1.5px solid rgba(58,45,34,.10) !important;align-items:flex-end !important}
+  body.bro-tab.kb-open .bro-input{min-height:120px !important;max-height:50vh !important;font-size:17px !important}
+  body.bro-tab.kb-open .bro-chat{flex:0 0 auto !important;max-height:80px !important;overflow-y:auto !important;padding:6px 14px !important}
   body.bro-tab .bro-send-btn{width:38px;height:38px}
   body.bro-tab .tabs.page-t{z-index:61 !important}
   body.bro-tab .bro-welcome{padding:24px 16px 16px;gap:12px}
