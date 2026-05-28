@@ -9174,26 +9174,27 @@ function playBookBrief(id){
   // If a different brief is playing, stop it first
   if(S.bkMini)bkMiniClose();
   if(S.bookReader&&S.bookReader.playing)_premiumStop();
+  // Cancel any pending delayed-play from a previous playBookBrief call
+  if(window._bkBriefTimer){clearTimeout(window._bkBriefTimer);window._bkBriefTimer=null}
   // Hidden reader state (open:false) — bookReaderToggleTTS uses S.bookReader
   // for progress callbacks but the reader UI never paints.
   S.bookReader={open:false,book:b,playing:false,rate:1};
   // Show the mini-player immediately so the user sees feedback while audio loads.
   S.bkMini={book:b,paused:false,rate:1,progress:{idx:0,total:0,line:'Loading\\u2026'}};
   render();
-  requestAnimationFrame(function(){requestAnimationFrame(function(){
-    setTimeout(function(){
-      if(!S.bookReader||!S.bookReader.book||S.bookReader.book.id!==id)return;
-      bookReaderToggleTTS();
-      // Sync mini-player metadata once playback fields are populated
-      if(S.bookReader.playing&&S.bkMini){
-        S.bkMini.startedAt=S.bookReader.startedAt;
-        S.bkMini.rate=S.bookReader.rate;
-        S.bkMini.progress=S.bookReader.progress;
-        
-        render();
-      }
-    },300);
-  })});
+  window._bkBriefTimer=setTimeout(function(){
+    window._bkBriefTimer=null;
+    if(!S.bookReader||!S.bookReader.book||S.bookReader.book.id!==id)return;
+    if(!S.bkMini)return;
+    bookReaderToggleTTS();
+    // Sync mini-player metadata once playback fields are populated
+    if(S.bookReader.playing&&S.bkMini){
+      S.bkMini.startedAt=S.bookReader.startedAt;
+      S.bkMini.rate=S.bookReader.rate;
+      S.bkMini.progress=S.bookReader.progress;
+      render();
+    }
+  },350);
 }
 function closeBookReader(){
   // If audio is currently playing, keep it going as a persistent mini-player at the bottom
@@ -9204,8 +9205,7 @@ function closeBookReader(){
     return;
   }
   // Otherwise stop everything as before
-  _premiumStop();
-  if(window.speechSynthesis)try{speechSynthesis.cancel()}catch(e){}
+  _killAllBookAudio();
   S.bookReader={open:false};render();
 }
 function bkMiniToggle(){
@@ -9223,7 +9223,7 @@ function bkMiniToggle(){
   }
   render();
 }
-function bkMiniClose(){_premiumStop();if(window.speechSynthesis)try{speechSynthesis.cancel()}catch(e){}const bna=document.getElementById('bk-narr-audio');if(bna){try{bna.pause();bna.src=''}catch(e){}}if(window._fbKeepalive){clearInterval(window._fbKeepalive);window._fbKeepalive=null}S.bkMini=null;render()}
+function bkMiniClose(){_killAllBookAudio();S.bkMini=null;if(S.bookReader)S.bookReader.playing=false;render()}
 function bkMiniReopen(){if(!S.bkMini||!S.bkMini.book)return;S.bookReader={open:true,book:S.bkMini.book,playing:!S.bkMini.paused,rate:S.bkMini.rate,progress:S.bkMini.progress,startedAt:S.bkMini.startedAt};S.bkMini=null;render()}
 function _pickPremiumVoice(){
   if(!('speechSynthesis' in window))return null;
@@ -9240,13 +9240,28 @@ function _pickPremiumVoice(){
     /Oliver\\s+\\(Enhanced\\)/i, /^Oliver$/i,
     /Google\\s+UK\\s+English\\s+Male/i, // Chrome on desktop
     /Microsoft\\s+(David|Mark|George|James)\\s+/i, // Microsoft legacy male
+    // Android voices — names like "en-us-x-iom-local", "en-us-x-tpc-network"
+    /en-us-x-(iom|tpc|tpd|iol|iob)/i, // Android male voice IDs
   ];
   for(const re of malePri){const v=vs.find(x=>x.name&&re.test(x.name));if(v)return v}
   // Heuristic — anything with "male" in the name and English language
   const heur=vs.find(x=>x.lang&&x.lang.startsWith('en')&&/male/i.test(x.name||'')&&!/female/i.test(x.name||''));
   if(heur)return heur;
+  // On Android, prefer a non-default voice (second or third English voice tends to differ from default)
+  const enVoices=vs.filter(x=>x.lang&&/^en/i.test(x.lang));
+  if(enVoices.length>1)return enVoices[1]; // skip default (index 0, usually female)
   // Last-resort fallback to any English voice
-  return vs.find(x=>x.lang&&x.lang.startsWith('en'))||vs[0];
+  return enVoices[0]||vs[0];
+}
+// Nuclear kill: stops ALL book/summary audio — TTS queue, static audio, pending timers, speechSynthesis
+function _killAllBookAudio(){
+  if(window._bkBriefTimer){clearTimeout(window._bkBriefTimer);window._bkBriefTimer=null}
+  _premiumStop();
+  if(window._fbKeepalive){clearInterval(window._fbKeepalive);window._fbKeepalive=null}
+  const bna=document.getElementById('bk-narr-audio');if(bna){try{bna.pause();bna.src=''}catch(e){}}
+  if(S.bookReader&&S.bookReader._staticAudio){try{S.bookReader._staticAudio.pause();S.bookReader._staticAudio.src=''}catch(e){}}
+  try{if(window.speechSynthesis){speechSynthesis.cancel()}}catch(e){}
+  setTimeout(function(){try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}},80);
 }
 // Chunked TTS — splits long text into sentence groups so Chrome doesn't time out at ~15s
 // Plus a keepalive pause/resume hack that fights the well-known Web Speech cutoff bug
@@ -9278,7 +9293,8 @@ function _browserTtsSpeak(text,opts,onAllDone,onProgress){
   }
   if(cur.trim())chunks.push(cur.trim());
   if(!chunks.length)return false;
-  const queue={chunks,idx:0,opts:opts||{},onAllDone,onProgress,cancelled:false};
+  const pickedVoice=_pickPremiumVoice(); // cache once so voice stays consistent across chunks
+  const queue={chunks,idx:0,opts:opts||{},onAllDone,onProgress,cancelled:false,voice:pickedVoice};
   window._ttsQueue=queue;
   function speakNext(){
     if(queue.cancelled)return;
@@ -9290,7 +9306,7 @@ function _browserTtsSpeak(text,opts,onAllDone,onProgress){
     if(typeof onProgress==='function')try{onProgress(queue.idx,queue.chunks.length,queue.chunks[queue.idx])}catch(e){}
     const u=new SpeechSynthesisUtterance(queue.chunks[queue.idx]);
     u.rate=queue.opts.rate||1;u.pitch=queue.opts.pitch||1.0;u.volume=queue.opts.volume||1.0;
-    const v=_pickPremiumVoice();if(v){u.voice=v;u.lang=v.lang||'en-US'}
+    const v=queue.voice;if(v){u.voice=v;u.lang=v.lang||'en-US'}
     u.onend=function(){if(queue.cancelled)return;queue.idx++;speakNext()};
     u.onerror=function(){if(queue.cancelled)return;queue.idx++;speakNext()};
     try{speechSynthesis.speak(u)}catch(e){if(queue.cancelled)return;queue.idx++;speakNext()}
@@ -9349,7 +9365,7 @@ function _bookFullNarration(book){
 }
 function bookReaderToggleTTS(){
   const r=S.bookReader;if(!r||!r.book)return;
-  if(r.playing){_premiumStop();if(r._staticAudio){try{r._staticAudio.pause();r._staticAudio.src=''}catch(e){}}const bna=document.getElementById('bk-narr-audio');if(bna){try{bna.pause();bna.src=''}catch(e){}}r.playing=false;r.progress=null;render();return}
+  if(r.playing){_killAllBookAudio();r.playing=false;r.progress=null;render();return}
   r.startedAt=Date.now();r.progress={idx:0,total:1,line:'Loading narration...'};r.playing=true;render();
   const onDone=function(){const cur=S.bookReader;if(!cur||!cur.book)return;cur.playing=false;cur.completed=true;cur.progress=null;render();try{api('/book-streak',{method:'POST',body:JSON.stringify({seconds:r.book.mins*60})}).then(()=>loadBookStreak())}catch(e){}toast('\\u2728 Summary complete \\u2014 streak +1')};
   const onProgress=function(idx,total,line){const cur=S.bookReader;if(!cur||!cur.book)return;cur.progress={idx,total,line};const bar=document.getElementById('bkProgFill');const txt=document.getElementById('bkProgText');const pct=document.getElementById('bkProgPct');const t=document.getElementById('bkProgTime');if(bar)bar.style.transform='scaleX('+(idx/total)+')';if(txt)txt.textContent=String(line||'').slice(0,90)+(String(line||'').length>90?'...':'');if(pct)pct.textContent=Math.round((idx/total)*100)+'%';if(t){const elapsed=Math.floor((Date.now()-(cur.startedAt||Date.now()))/1000);t.textContent=Math.floor(elapsed/60)+':'+String(elapsed%60).padStart(2,'0')}};
@@ -9619,7 +9635,7 @@ function voicePronRecord(){
   r.onend=function(){S._pronRec=null;if(S.pron&&S.pron.recording){S.pron.recording=false;render()}};
   try{r.start();S._pronRec=r}catch(e){toast('\\u26A0\\uFE0F '+e.message,'err');S._pronRec=null;S.pron={...(S.pron||{}),recording:false};render()}
 }
-function closePlayer(){stopBookListenTimer();_premiumStop();try{if(window.speechSynthesis)window.speechSynthesis.cancel()}catch(e){}if(S.bookReader&&S.bookReader._staticAudio){try{S.bookReader._staticAudio.pause();S.bookReader._staticAudio.src=''}catch(e){}}const bna=document.getElementById('bk-narr-audio');if(bna){try{bna.pause();bna.src=''}catch(e){}}S.playing=null;S.meditating={active:false,title:'',mins:0,startedAt:0};S._renderForce=true;render();setTimeout(()=>{S._renderForce=false},100)}
+function closePlayer(){stopBookListenTimer();_killAllBookAudio();S.playing=null;S.meditating={active:false,title:'',mins:0,startedAt:0};S._renderForce=true;render();setTimeout(()=>{S._renderForce=false},100)}
 function closeMeditation(){const a=document.getElementById('audioEl');if(a){try{a.pause()}catch(e){}}closePlayer()}
 let _bkTimer=null;
 function startBookListenTimer(){if(_bkTimer)return;S._bkSec=0;_bkTimer=setInterval(async()=>{const a=document.getElementById('audioEl');if(!a||a.paused||a.ended)return;S._bkSec+=5;if(S._bkSec===120&&S.user&&!S.bookStreak.today){const r=await api('/book-streak',{method:'POST',body:JSON.stringify({date:new Date().toISOString().slice(0,10),seconds:120})});if(r?.ok){S.bookStreak={streak:r.streak,total:r.total,today:true,days:S.bookStreak.days};toast('\\u{1F389} '+r.streak+'-day listening streak!');render()}}},5000)}
@@ -10973,7 +10989,7 @@ if(S.voiceLesson&&S.voiceLesson.lesson){
 if(S.bookReader&&S.bookReader.open&&S.bookReader.book){
   const b=S.bookReader.book;const r=S.bookReader;
   h+='<div class="bk-reader" onclick="if(event.target===this)closeBookReader()"><div class="bk-reader-box">';
-  h+='<header class="bk-reader-top"><button class="bk-back" onclick="closeBookReader()" aria-label="Back" title="'+(r.playing?'Back \\u2014 audio keeps playing':'Back')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><span class="label">'+b.mins+'-min brief \\u00B7 '+esc(b.tag)+'</span>'+(r.playing?'<button class="bk-stop" onclick="_premiumStop();bkMiniClose&&bkMiniClose();S.bookReader={open:false};render()" title="Stop audio" aria-label="Stop"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></button>':'<span style="width:38px"></span>')+'</header>';
+  h+='<header class="bk-reader-top"><button class="bk-back" onclick="closeBookReader()" aria-label="Back" title="'+(r.playing?'Back \\u2014 audio keeps playing':'Back')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><span class="label">'+b.mins+'-min brief \\u00B7 '+esc(b.tag)+'</span>'+(r.playing?'<button class="bk-stop" onclick="_killAllBookAudio();S.bkMini=null;S.bookReader={open:false};render()" title="Stop audio" aria-label="Stop"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></button>':'<span style="width:38px"></span>')+'</header>';
   const heroCover=bookCover(b.id);
   h+='<div class="bk-reader-hero"><div class="cover'+(heroCover?' has-img':'')+'" style="background:'+b.grad+'">'+(heroCover?'<img src="'+heroCover+'" alt="" onerror="this.parentElement.classList.remove(\\'has-img\\');this.remove()"/>':'<div class="auth">'+esc(b.author)+'</div><h2>'+esc(b.title)+'</h2>')+'</div>';
   h+='<div class="info"><h1>'+esc(b.title)+'</h1><div class="by">By <b>'+esc(b.author)+'</b></div><p class="why">'+esc(b.why)+'</p>';
@@ -12079,7 +12095,7 @@ app.get('/privacy',(_,res)=>{
 app.get('/terms',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with optional WhatsApp and email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (WhatsApp and email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send('var CACHE_VER="v12";self.addEventListener("install",function(e){self.skipWaiting()});self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});self.addEventListener("fetch",function(e){});')});
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send('var CACHE_VER="v13";self.addEventListener("install",function(e){self.skipWaiting()});self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});self.addEventListener("fetch",function(e){});')});
 
 // ═══ MARKETING / PUBLIC PAGES ═══
 
