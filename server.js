@@ -9223,7 +9223,7 @@ function bkMiniToggle(){
   }
   render();
 }
-function bkMiniClose(){_premiumStop();if(window.speechSynthesis)try{speechSynthesis.cancel()}catch(e){}S.bkMini=null;render()}
+function bkMiniClose(){_premiumStop();if(window.speechSynthesis)try{speechSynthesis.cancel()}catch(e){}const bna=document.getElementById('bk-narr-audio');if(bna){try{bna.pause();bna.src=''}catch(e){}}if(window._fbKeepalive){clearInterval(window._fbKeepalive);window._fbKeepalive=null}S.bkMini=null;render()}
 function bkMiniReopen(){if(!S.bkMini||!S.bkMini.book)return;S.bookReader={open:true,book:S.bkMini.book,playing:!S.bkMini.paused,rate:S.bkMini.rate,progress:S.bkMini.progress,startedAt:S.bkMini.startedAt};S.bkMini=null;render()}
 function _pickPremiumVoice(){
   if(!('speechSynthesis' in window))return null;
@@ -9250,7 +9250,7 @@ function _pickPremiumVoice(){
 }
 // Chunked TTS — splits long text into sentence groups so Chrome doesn't time out at ~15s
 // Plus a keepalive pause/resume hack that fights the well-known Web Speech cutoff bug
-function _ttsStop(){try{speechSynthesis.cancel()}catch(e){}if(window._ttsKeepalive){clearInterval(window._ttsKeepalive);window._ttsKeepalive=null}if(window._ttsQueue)window._ttsQueue.cancelled=true;window._ttsQueue=null}
+function _ttsStop(){if(window._ttsQueue)window._ttsQueue.cancelled=true;window._ttsQueue=null;if(window._ttsKeepalive){clearInterval(window._ttsKeepalive);window._ttsKeepalive=null}try{speechSynthesis.cancel()}catch(e){}setTimeout(()=>{try{speechSynthesis.cancel()}catch(e){}},60)}
 // Narration — all voice is browser TTS (speechSynthesis). Static MP3s are used
 // for books via /api/book-audio/:id and meditations via /api/audio/:id.
 // _premiumNarrate is kept as the name for backward compat — it just calls browser TTS.
@@ -9291,9 +9291,9 @@ function _browserTtsSpeak(text,opts,onAllDone,onProgress){
     const u=new SpeechSynthesisUtterance(queue.chunks[queue.idx]);
     u.rate=queue.opts.rate||1;u.pitch=queue.opts.pitch||1.0;u.volume=queue.opts.volume||1.0;
     const v=_pickPremiumVoice();if(v){u.voice=v;u.lang=v.lang||'en-US'}
-    u.onend=function(){queue.idx++;speakNext()};
-    u.onerror=function(){queue.idx++;speakNext()};
-    try{speechSynthesis.speak(u)}catch(e){queue.idx++;speakNext()}
+    u.onend=function(){if(queue.cancelled)return;queue.idx++;speakNext()};
+    u.onerror=function(){if(queue.cancelled)return;queue.idx++;speakNext()};
+    try{speechSynthesis.speak(u)}catch(e){if(queue.cancelled)return;queue.idx++;speakNext()}
   }
   if(window._ttsKeepalive)clearInterval(window._ttsKeepalive);
   window._ttsKeepalive=setInterval(function(){try{if(speechSynthesis.speaking&&!speechSynthesis.paused){speechSynthesis.pause();speechSynthesis.resume()}}catch(e){}},10000);
@@ -9349,7 +9349,7 @@ function _bookFullNarration(book){
 }
 function bookReaderToggleTTS(){
   const r=S.bookReader;if(!r||!r.book)return;
-  if(r.playing){_premiumStop();if(r._staticAudio){try{r._staticAudio.pause();r._staticAudio.src=''}catch(e){}}r.playing=false;render();return}
+  if(r.playing){_premiumStop();if(r._staticAudio){try{r._staticAudio.pause();r._staticAudio.src=''}catch(e){}}const bna=document.getElementById('bk-narr-audio');if(bna){try{bna.pause();bna.src=''}catch(e){}}r.playing=false;r.progress=null;render();return}
   r.startedAt=Date.now();r.progress={idx:0,total:1,line:'Loading narration...'};r.playing=true;render();
   const onDone=function(){const cur=S.bookReader;if(!cur||!cur.book)return;cur.playing=false;cur.completed=true;cur.progress=null;render();try{api('/book-streak',{method:'POST',body:JSON.stringify({seconds:r.book.mins*60})}).then(()=>loadBookStreak())}catch(e){}toast('\\u2728 Summary complete \\u2014 streak +1')};
   const onProgress=function(idx,total,line){const cur=S.bookReader;if(!cur||!cur.book)return;cur.progress={idx,total,line};const bar=document.getElementById('bkProgFill');const txt=document.getElementById('bkProgText');const pct=document.getElementById('bkProgPct');const t=document.getElementById('bkProgTime');if(bar)bar.style.transform='scaleX('+(idx/total)+')';if(txt)txt.textContent=String(line||'').slice(0,90)+(String(line||'').length>90?'...':'');if(pct)pct.textContent=Math.round((idx/total)*100)+'%';if(t){const elapsed=Math.floor((Date.now()-(cur.startedAt||Date.now()))/1000);t.textContent=Math.floor(elapsed/60)+':'+String(elapsed%60).padStart(2,'0')}};
@@ -9619,7 +9619,7 @@ function voicePronRecord(){
   r.onend=function(){S._pronRec=null;if(S.pron&&S.pron.recording){S.pron.recording=false;render()}};
   try{r.start();S._pronRec=r}catch(e){toast('\\u26A0\\uFE0F '+e.message,'err');S._pronRec=null;S.pron={...(S.pron||{}),recording:false};render()}
 }
-function closePlayer(){stopBookListenTimer();try{if(window.speechSynthesis)window.speechSynthesis.cancel()}catch(e){}S.playing=null;S.meditating={active:false,title:'',mins:0,startedAt:0};S._renderForce=true;render();setTimeout(()=>{S._renderForce=false},100)}
+function closePlayer(){stopBookListenTimer();_premiumStop();try{if(window.speechSynthesis)window.speechSynthesis.cancel()}catch(e){}if(S.bookReader&&S.bookReader._staticAudio){try{S.bookReader._staticAudio.pause();S.bookReader._staticAudio.src=''}catch(e){}}const bna=document.getElementById('bk-narr-audio');if(bna){try{bna.pause();bna.src=''}catch(e){}}S.playing=null;S.meditating={active:false,title:'',mins:0,startedAt:0};S._renderForce=true;render();setTimeout(()=>{S._renderForce=false},100)}
 function closeMeditation(){const a=document.getElementById('audioEl');if(a){try{a.pause()}catch(e){}}closePlayer()}
 let _bkTimer=null;
 function startBookListenTimer(){if(_bkTimer)return;S._bkSec=0;_bkTimer=setInterval(async()=>{const a=document.getElementById('audioEl');if(!a||a.paused||a.ended)return;S._bkSec+=5;if(S._bkSec===120&&S.user&&!S.bookStreak.today){const r=await api('/book-streak',{method:'POST',body:JSON.stringify({date:new Date().toISOString().slice(0,10),seconds:120})});if(r?.ok){S.bookStreak={streak:r.streak,total:r.total,today:true,days:S.bookStreak.days};toast('\\u{1F389} '+r.streak+'-day listening streak!');render()}}},5000)}
@@ -12079,7 +12079,7 @@ app.get('/privacy',(_,res)=>{
 app.get('/terms',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with optional WhatsApp and email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (WhatsApp and email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send('var CACHE_VER="v11";self.addEventListener("install",function(e){self.skipWaiting()});self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});self.addEventListener("fetch",function(e){});')});
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send('var CACHE_VER="v12";self.addEventListener("install",function(e){self.skipWaiting()});self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});self.addEventListener("fetch",function(e){});')});
 
 // ═══ MARKETING / PUBLIC PAGES ═══
 
