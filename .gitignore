@@ -8,5 +8,6 @@ brodoit.db
 brodoit.db-shm
 brodoit.db-wal
 tts-cache/
+audio-static/
 .claude/
 *.aab
