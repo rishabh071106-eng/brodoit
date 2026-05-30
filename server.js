@@ -278,12 +278,10 @@ app.post('/api/verify-otp',(req,res)=>{
   res.json({phone:user.phone,name:user.name||name,token});
 });
 
-// ═══ AI COACH — proxy endpoints for Claude, Whisper ═══
+// ═══ AI CHAT — Groq free tier (Llama 3.3 70B) ═══
 // API keys stay on the server. The browser never sees them.
-const ANTHROPIC_KEY=process.env.ANTHROPIC_API_KEY||'';
-const OPENAI_KEY=process.env.OPENAI_API_KEY||'';
 const GROQ_KEY=process.env.GROQ_API_KEY||'';
-console.log('[ai] anthropic',ANTHROPIC_KEY?'\\u2705':'\\u274C','openai',OPENAI_KEY?'\\u2705':'\\u274C','groq',GROQ_KEY?'\\u2705':'\\u274C');
+console.log('[ai] groq',GROQ_KEY?'\\u2705':'\\u274C');
 
 const COACH_SYSTEM=`You are an expert Business English coach speaking with a fluent professional who wants to sound MORE polished and use more sophisticated vocabulary in business contexts.
 
@@ -299,19 +297,19 @@ Keep total response under 90 words. Use sophisticated vocabulary yourself natura
 Be warm but direct. Never explain that you are an AI.`;
 
 app.post('/api/coach/chat',auth,async(req,res)=>{
-  if(!ANTHROPIC_KEY)return res.status(503).json({error:'AI coach not configured (ANTHROPIC_API_KEY missing).'});
+  if(!GROQ_KEY)return res.status(503).json({error:'AI coach not configured (GROQ_API_KEY missing).'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const sys=req.body.system||COACH_SYSTEM;
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
+    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:600,system:sys,messages:messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,4000)}))})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:600,messages:[{role:'system',content:sys},...messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,4000)}))]})
     });
     const j=await r.json();
-    if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Claude error',detail:j});
-    const reply=(j.content&&j.content[0]&&j.content[0].text)||'';
+    if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Groq error',detail:j});
+    const reply=(j.choices&&j.choices[0]&&j.choices[0].message.content)||'';
     res.json({reply,usage:j.usage});
   }catch(e){res.status(500).json({error:String(e.message||e)})}
 });
@@ -371,7 +369,7 @@ async function _broExecTool(toolName,input,userPhone){
 }
 
 app.post('/api/bro/chat',auth,async(req,res)=>{
-  if(!GROQ_KEY&&!ANTHROPIC_KEY)return res.status(503).json({error:'Coach not configured (GROQ_API_KEY or ANTHROPIC_API_KEY missing).'});
+  if(!GROQ_KEY)return res.status(503).json({error:'Coach not configured (GROQ_API_KEY missing).'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const agent=(req.body.agent==='bri')?'bri':'bro';
@@ -382,79 +380,42 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have REAL powers — you can create calendar events, add tasks, check their schedule, complete tasks, and create time blocks. When the user asks you to schedule something, add a task, plan their day, or manage their calendar — USE YOUR TOOLS to actually do it. Don\'t just talk about it. After using a tool, confirm what you did in a friendly way. Keep responses tight (2-4 paragraphs max). Give straight-up useful answers. Never say you\'re an AI or language model — you\'re just Bro.';
   const sys=mode==='friend'?sysFriend:sysAsk;
   const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,16000)}));
-  const useTools=mode==='ask'&&ANTHROPIC_KEY;
-  if(GROQ_KEY&&!useTools){
-    try{
+  const useTools=mode==='ask'&&GROQ_KEY;
+  const groqTools=useTools?BRO_TOOLS.map(t=>({type:'function',function:{name:t.name,description:t.description,parameters:t.input_schema}})):undefined;
+  if(!GROQ_KEY)return res.status(503).json({error:'Chat not configured (GROQ_API_KEY missing).'});
+  try{
+    let apiMsgs=[{role:'system',content:sys},...mapped];
+    let actions=[];
+    for(let loop=0;loop<4;loop++){
+      const body={model:'llama-3.3-70b-versatile',max_tokens:2048,messages:apiMsgs};
+      if(groqTools)body.tools=groqTools;
       const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-        body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:2048,messages:[{role:'system',content:sys},...mapped]})
+        body:JSON.stringify(body)
       });
       const j=await r.json();
-      if(r.ok&&j.choices&&j.choices[0]){
-        return res.json({reply:j.choices[0].message.content||'',usage:j.usage});
-      }
-    }catch(e){}
-  }
-  if(ANTHROPIC_KEY){
-    try{
-      const toolsDef=useTools?BRO_TOOLS:undefined;
-      let apiMsgs=[...mapped];
-      let actions=[];
-      for(let loop=0;loop<4;loop++){
-        const body={model:'claude-sonnet-4-5',max_tokens:2048,system:sys,messages:apiMsgs};
-        if(toolsDef)body.tools=toolsDef;
-        const r=await fetch('https://api.anthropic.com/v1/messages',{
-          method:'POST',
-          headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
-          body:JSON.stringify(body)
-        });
-        const j=await r.json();
-        if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Claude error',detail:j});
-        if(j.stop_reason==='tool_use'){
-          const toolBlocks=j.content.filter(b=>b.type==='tool_use');
-          const textBlocks=j.content.filter(b=>b.type==='text');
-          apiMsgs.push({role:'assistant',content:j.content});
-          const results=[];
-          for(const tb of toolBlocks){
-            const result=await _broExecTool(tb.name,tb.input||{},req.user.phone);
-            actions.push({tool:tb.name,input:tb.input,result});
-            results.push({type:'tool_result',tool_use_id:tb.id,content:JSON.stringify(result)});
-          }
-          apiMsgs.push({role:'user',content:results});
-          continue;
+      if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Groq error',detail:j});
+      const msg=j.choices&&j.choices[0]&&j.choices[0].message;
+      if(msg&&msg.tool_calls&&msg.tool_calls.length){
+        apiMsgs.push(msg);
+        for(const tc of msg.tool_calls){
+          const args=typeof tc.function.arguments==='string'?JSON.parse(tc.function.arguments):tc.function.arguments;
+          const result=await _broExecTool(tc.function.name,args,req.user.phone);
+          actions.push({tool:tc.function.name,input:args,result});
+          apiMsgs.push({role:'tool',tool_call_id:tc.id,content:JSON.stringify(result)});
         }
-        const reply=(j.content&&j.content.find(b=>b.type==='text')?.text)||'';
-        return res.json({reply,usage:j.usage,actions:actions.length?actions:undefined});
+        continue;
       }
-      return res.json({reply:'I tried to help but hit a loop — try rephrasing your request.',actions:actions.length?actions:undefined});
-    }catch(e){return res.status(500).json({error:String(e.message||e)})}
-  }
-  res.status(503).json({error:'No AI provider available'});
+      const reply=(msg&&msg.content)||'';
+      return res.json({reply,usage:j.usage,actions:actions.length?actions:undefined});
+    }
+    return res.json({reply:'I tried to help but hit a loop — try rephrasing your request.',actions:actions.length?actions:undefined});
+  }catch(e){return res.status(500).json({error:String(e.message||e)})}
 });
 
 
-app.post('/api/coach/transcribe',auth,express.raw({type:'audio/*',limit:'10mb'}),async(req,res)=>{
-  if(!OPENAI_KEY)return res.status(503).json({error:'Transcription not configured (OPENAI_API_KEY missing).'});
-  const buf=req.body;if(!buf||!buf.length)return res.status(400).json({error:'audio required'});
-  const ct=req.get('content-type')||'audio/webm';
-  const ext=ct.includes('mp4')?'mp4':ct.includes('mpeg')?'mp3':ct.includes('wav')?'wav':'webm';
-  try{
-    const fd=new FormData();
-    fd.append('file',new Blob([buf],{type:ct}),'audio.'+ext);
-    fd.append('model','whisper-1');
-    fd.append('response_format','json');
-    fd.append('language','en');
-    const r=await fetch('https://api.openai.com/v1/audio/transcriptions',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+OPENAI_KEY},
-      body:fd
-    });
-    const j=await r.json();
-    if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Whisper error'});
-    res.json({text:j.text||''});
-  }catch(e){res.status(500).json({error:String(e.message||e)})}
-});
+// Whisper transcription removed — voice input not needed
 
 const _crypto=require('crypto');
 const _fs=require('fs');
@@ -814,7 +775,7 @@ app.get('/api/book-audio/:id', auth, (req, res) => {
 
 // AI status — client-only check, no key exposure
 app.get('/api/coach/status',(req,res)=>{
-  res.json({chat:!!(GROQ_KEY||ANTHROPIC_KEY),transcribe:!!OPENAI_KEY,tts:false});
+  res.json({chat:!!GROQ_KEY,transcribe:false,tts:false});
 });
 
 // ═══ VOICE TRAINER — 90-day "zero to hero" English accent + functional-English course ═══
