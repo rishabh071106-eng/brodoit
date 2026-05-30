@@ -908,6 +908,88 @@ When you are ready, open your eyes gently. Carry this peace with you through the
     mins: 10, color: '#06B6D4', kind: 'music', script: '',
   },
 
+  // ─── Sleep Music (ambient for drifting off) ───────────────────────────
+  'sleep-music-3min': {
+    title: '3-min Sleep Drift',
+    desc: 'Deep earth tones for falling asleep',
+    mins: 3, color: '#1E3A5F', kind: 'music', script: '',
+  },
+  'sleep-music-5min': {
+    title: '5-min Sleep Drift',
+    desc: 'Extended deep tones for drifting off',
+    mins: 5, color: '#1E3A5F', kind: 'music', script: '',
+  },
+
+  // ─── Jazz Ambient ────────────────────────────────────────────────────
+  'jazz-3min': {
+    title: '3-min Jazz Calm',
+    desc: 'Warm jazz harmonics for easy listening',
+    mins: 3, color: '#D97706', kind: 'music', script: '',
+  },
+  'jazz-5min': {
+    title: '5-min Jazz Calm',
+    desc: 'Extended warm jazz tones',
+    mins: 5, color: '#D97706', kind: 'music', script: '',
+  },
+
+  // ─── Morning Music ───────────────────────────────────────────────────
+  'morning-3min': {
+    title: '3-min Morning Rise',
+    desc: 'Bright uplifting tones to start your day',
+    mins: 3, color: '#F59E0B', kind: 'music', script: '',
+  },
+  'morning-5min': {
+    title: '5-min Morning Rise',
+    desc: 'Extended morning energy frequencies',
+    mins: 5, color: '#F59E0B', kind: 'music', script: '',
+  },
+
+  // ─── Whiskey Lounge ──────────────────────────────────────────────────
+  'whiskey-3min': {
+    title: '3-min Whiskey Lounge',
+    desc: 'Warm, mellow lounge vibes',
+    mins: 3, color: '#A0612E', kind: 'music', script: '',
+  },
+  'whiskey-5min': {
+    title: '5-min Whiskey Lounge',
+    desc: 'Extended warm lounge atmosphere',
+    mins: 5, color: '#A0612E', kind: 'music', script: '',
+  },
+
+  // ─── Work / Focus Music ──────────────────────────────────────────────
+  'work-3min': {
+    title: '3-min Deep Focus',
+    desc: 'Steady concentration tones',
+    mins: 3, color: '#3B82F6', kind: 'music', script: '',
+  },
+  'work-5min': {
+    title: '5-min Deep Focus',
+    desc: 'Extended focus frequencies for work',
+    mins: 5, color: '#3B82F6', kind: 'music', script: '',
+  },
+
+  // ─── Guided Sleep Whispers ───────────────────────────────────────────
+  'sleep-5min': {
+    title: '5-min Sleep Whisper',
+    desc: 'Letting go into sleep',
+    mins: 5, color: '#312E81', kind: 'sleep', script: '',
+  },
+  'sleep-10min': {
+    title: '10-min Sleep Whisper',
+    desc: 'Moonlit garden visualization',
+    mins: 10, color: '#312E81', kind: 'sleep', script: '',
+  },
+  'sleep-15min': {
+    title: '15-min Sleep Whisper',
+    desc: 'Ocean of calm — waves and breath',
+    mins: 15, color: '#312E81', kind: 'sleep', script: '',
+  },
+  'sleep-20min': {
+    title: '20-min Sleep Whisper',
+    desc: 'Journey to stillness — complete sleep guide',
+    mins: 20, color: '#312E81', kind: 'sleep', script: '',
+  },
+
   // ─── Wisdom Stories (5 min each) ──────────────────────────────────────
   'story-01': { title: 'The Two Wolves', desc: 'Which wolf wins? The one you feed.', mins: 5, color: '#C47A3A', kind: 'story', script: '' },
   'story-02': { title: 'The Bamboo Tree', desc: 'Five years underground, then unstoppable.', mins: 5, color: '#3DAE5C', kind: 'story', script: '' },
@@ -7717,10 +7799,32 @@ const MED_SLOTS=[
 {cat:'music',mins:2,title:'2-min Calm',desc:'Ambient tones for a quick reset',color:'#EC4899',audioId:'music-2min'},
 {cat:'music',mins:5,title:'5-min Ambient',desc:'Layered healing frequencies',color:'#8B5CF6',audioId:'music-5min'},
 {cat:'music',mins:10,title:'10-min Soundscape',desc:'Deep ambient for extended calm',color:'#06B6D4',audioId:'music-10min'},
+// Sleep Music
+{cat:'music',mins:3,title:'Sleep Drift',desc:'Deep earth tones for drifting off \\u2022 3 min',color:'#1E3A5F',audioId:'sleep-music-3min'},
+{cat:'music',mins:5,title:'Sleep Drift',desc:'Extended deep tones for sleep \\u2022 5 min',color:'#1E3A5F',audioId:'sleep-music-5min'},
+// Jazz
+{cat:'music',mins:3,title:'Jazz Calm',desc:'Warm jazz harmonics \\u2022 3 min',color:'#D97706',audioId:'jazz-3min'},
+{cat:'music',mins:5,title:'Jazz Calm',desc:'Extended warm jazz tones \\u2022 5 min',color:'#D97706',audioId:'jazz-5min'},
+// Morning
+{cat:'music',mins:3,title:'Morning Rise',desc:'Bright uplifting start \\u2022 3 min',color:'#F59E0B',audioId:'morning-3min'},
+{cat:'music',mins:5,title:'Morning Rise',desc:'Extended morning energy \\u2022 5 min',color:'#F59E0B',audioId:'morning-5min'},
+// Whiskey Lounge
+{cat:'music',mins:3,title:'Whiskey Lounge',desc:'Warm mellow lounge vibes \\u2022 3 min',color:'#A0612E',audioId:'whiskey-3min'},
+{cat:'music',mins:5,title:'Whiskey Lounge',desc:'Extended lounge atmosphere \\u2022 5 min',color:'#A0612E',audioId:'whiskey-5min'},
+// Work / Focus
+{cat:'music',mins:3,title:'Deep Focus',desc:'Concentration tones \\u2022 3 min',color:'#3B82F6',audioId:'work-3min'},
+{cat:'music',mins:5,title:'Deep Focus',desc:'Extended focus frequencies \\u2022 5 min',color:'#3B82F6',audioId:'work-5min'},
 // Guided · 3 pre-rendered short sessions
 {cat:'guided',mins:3,title:'Three-minute Grounding',desc:'A short reset for any moment \\u2022 3 min',color:'#5BBFB4',audioId:'med-grounding-3min'},
 {cat:'guided',mins:5,title:'Stress Release',desc:'Soften the body, release the day \\u2022 5 min',color:'#FF7A45',audioId:'med-stress-release-5min'},
 {cat:'guided',mins:5,title:'Sleep Wind-Down',desc:'Slow the mind for rest \\u2022 5 min',color:'#5BBFB4',audioId:'med-sleep-winddown-5min'},
+// Sleep · guided sleep whispers + sleep music
+{cat:'sleep',mins:5,title:'Letting Go',desc:'A gentle whisper into sleep \\u2022 5 min',color:'#312E81',audioId:'sleep-5min'},
+{cat:'sleep',mins:10,title:'Moonlit Garden',desc:'A peaceful garden visualization \\u2022 10 min',color:'#312E81',audioId:'sleep-10min'},
+{cat:'sleep',mins:15,title:'Ocean of Calm',desc:'Waves and breath carry you to sleep \\u2022 15 min',color:'#312E81',audioId:'sleep-15min'},
+{cat:'sleep',mins:20,title:'Journey to Stillness',desc:'The complete sleep journey \\u2022 20 min',color:'#312E81',audioId:'sleep-20min'},
+{cat:'sleep',mins:3,title:'Sleep Drift',desc:'Deep earth tones \\u2022 3 min',color:'#1E3A5F',audioId:'sleep-music-3min'},
+{cat:'sleep',mins:5,title:'Sleep Drift',desc:'Extended deep tones \\u2022 5 min',color:'#1E3A5F',audioId:'sleep-music-5min'},
 // Stories · 5-min wisdom tales
 {cat:'stories',mins:5,title:'The Two Wolves',desc:'Which wolf wins? The one you feed.',color:'#C47A3A',audioId:'story-01'},
 {cat:'stories',mins:5,title:'The Bamboo Tree',desc:'Five years underground, then unstoppable.',color:'#3DAE5C',audioId:'story-02'},
@@ -7747,6 +7851,7 @@ const MED_CATEGORIES=[
   {k:'affirmations',l:'Affirmations',e:'\\u{2728}'},
   {k:'vipassana',l:'Vipassana',e:'\\u{1F9D8}\\u200D\\u2642\\uFE0F'},
   {k:'guided',l:'Guided',e:'\\u{1F50A}'},
+  {k:'sleep',l:'Sleep',e:'\\u{1F319}'},
   {k:'music',l:'Music',e:'\\u{1F3B5}'},
   {k:'stories',l:'Stories',e:'\\u{1F4D6}'}
 ];
@@ -11039,7 +11144,9 @@ else if(S.tab==='meditation'){
       '#C47A3A':'linear-gradient(135deg,#D4956A 0%,#8B4513 100%)',
       '#3DAE5C':'linear-gradient(135deg,#86EFAC 0%,#166534 100%)',
       '#D97706':'linear-gradient(135deg,#FCD34D 0%,#92400E 100%)',
-      '#DC2626':'linear-gradient(135deg,#FCA5A5 0%,#991B1B 100%)'
+      '#DC2626':'linear-gradient(135deg,#FCA5A5 0%,#991B1B 100%)',
+      '#312E81':'linear-gradient(135deg,#818CF8 0%,#1E1B4B 100%)',
+      '#1E3A5F':'linear-gradient(135deg,#60A5FA 0%,#0F172A 100%)'
     };
     const grad=grads[x.color]||('linear-gradient(135deg,'+x.color+',rgba(0,0,0,.6))');
     h+='<button class="hs-card'+(ready?'':' is-loading')+'" onclick="'+onclick+'" style="--g:'+grad+';animation-delay:'+(i*0.06)+'s">';

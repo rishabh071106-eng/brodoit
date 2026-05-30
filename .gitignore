@@ -14,5 +14,10 @@ audio-static/*
 !audio-static/music-*.mp3
 !audio-static/med-*.mp3
 !audio-static/story-*.mp3
+!audio-static/sleep-*.mp3
+!audio-static/jazz-*.mp3
+!audio-static/morning-*.mp3
+!audio-static/whiskey-*.mp3
+!audio-static/work-*.mp3
 .claude/
 *.aab
