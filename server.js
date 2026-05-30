@@ -6483,6 +6483,16 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#B5
 .bro-container{display:flex;flex-direction:column;height:calc(100vh - 140px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:#FBF7F1;position:relative}
 body[data-theme=aurora] .bro-container{background:#212121}
 .bro-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#FBF7F1;border-bottom:none;position:relative;z-index:10;flex-shrink:0}
+.bro-ticker{flex-shrink:0;overflow:hidden;position:relative;height:32px;background:linear-gradient(90deg,rgba(196,122,58,.06),rgba(196,122,58,.12),rgba(196,122,58,.06));border-bottom:1px solid rgba(196,122,58,.1)}
+body[data-theme=aurora] .bro-ticker{background:linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.06),rgba(255,255,255,.03));border-bottom-color:rgba(255,255,255,.06)}
+.bro-ticker-inner{display:flex;align-items:center;height:100%;padding:0 14px;gap:8px;animation:bro-ticker-slide 1.2s ease}
+@keyframes bro-ticker-slide{0%{opacity:0;transform:translateY(100%)}100%{opacity:1;transform:translateY(0)}}
+.bro-ticker-icon{font-size:13px;flex-shrink:0;animation:bro-ticker-glow 2s ease-in-out infinite alternate}
+@keyframes bro-ticker-glow{0%{filter:brightness(1)}100%{filter:brightness(1.4)}}
+.bro-ticker-text{font-family:var(--sans);font-size:11.5px;color:#7A6A5A;letter-spacing:.01em;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+body[data-theme=aurora] .bro-ticker-text{color:rgba(255,255,255,.5)}
+.bro-ticker-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#C47A3A;opacity:.7;flex-shrink:0;padding:2px 6px;border-radius:4px;background:rgba(196,122,58,.08)}
+body[data-theme=aurora] .bro-ticker-label{color:rgba(255,180,100,.6);background:rgba(255,180,100,.08)}
 body[data-theme=aurora] .bro-header{background:#212121}
 .bro-header-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .bro-header-info{flex:1;min-width:0}
@@ -6900,6 +6910,39 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#fff}
 <script>/*__SERVER_INJECT__*/</script>
 <script>
 const MORALS=[{t:"The secret of getting ahead is getting started.",a:"Mark Twain"},{t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},{t:"Small daily improvements are the key to staggering long-term results.",a:"Robin Sharma"},{t:"Discipline is choosing between what you want now and what you want most.",a:"Abraham Lincoln"},{t:"Don't count the days. Make the days count.",a:"Muhammad Ali"},{t:"The best way to predict the future is to create it.",a:"Peter Drucker"},{t:"Focus on being productive instead of busy.",a:"Tim Ferriss"},{t:"You don't have to be great to start, but you have to start to be great.",a:"Zig Ziglar"},{t:"The journey of a thousand miles begins with a single step.",a:"Lao Tzu"},{t:"Either you run the day or the day runs you.",a:"Jim Rohn"},{t:"A year from now you may wish you had started today.",a:"Karen Lamb"},{t:"Success is the sum of small efforts repeated day in and day out.",a:"Robert Collier"},{t:"Done is better than perfect.",a:"Sheryl Sandberg"},{t:"The way to get started is to quit talking and begin doing.",a:"Walt Disney"},{t:"You cannot escape the responsibility of tomorrow by evading it today.",a:"Abraham Lincoln"},{t:"Motivation gets you going, but discipline keeps you growing.",a:"John C. Maxwell"},{t:"Do something today that your future self will thank you for.",a:"Sean Patrick Flanery"},{t:"The harder I work, the luckier I get.",a:"Samuel Goldwyn"},{t:"Don't watch the clock; do what it does. Keep going.",a:"Sam Levenson"},{t:"Great things never come from comfort zones.",a:"Neil Strauss"},{t:"Sometimes later becomes never. Do it now.",a:"Anonymous"},{t:"Wake up with determination. Go to bed with satisfaction.",a:"Anonymous"},{t:"A goal without a plan is just a wish.",a:"Antoine de Saint-Exupéry"},{t:"Little by little, day by day, what is meant for you will find its way.",a:"Anonymous"},{t:"Success doesn't just find you — you have to go out and get it.",a:"Anonymous"},{t:"Push yourself, because no one else is going to do it for you.",a:"Anonymous"},{t:"Dream big. Start small. Act now.",a:"Robin Sharma"},{t:"Hard work beats talent when talent doesn't work hard.",a:"Tim Notke"},{t:"The only impossible journey is the one you never begin.",a:"Tony Robbins"},{t:"Opportunities don't happen. You create them.",a:"Chris Grosser"}];
+const BRO_FACTS=[
+{e:'\\u{1F9E0}',t:'Your brain uses 20% of your body\\'s energy but is only 2% of your weight.',c:'Science'},
+{e:'\\u{1F30D}',t:'Earth\\'s core is as hot as the surface of the Sun — about 5,500°C.',c:'Science'},
+{e:'\\u{1F4DA}',t:'The Library of Alexandria held an estimated 400,000 scrolls of knowledge.',c:'History'},
+{e:'\\u{1F680}',t:'Light from the Sun takes 8 minutes and 20 seconds to reach Earth.',c:'Space'},
+{e:'\\u{1F4B0}',t:'Compound interest was called the 8th wonder of the world by Einstein.',c:'Finance'},
+{e:'\\u{1F40D}',t:'Octopuses have three hearts and blue blood — two pump to gills, one to the body.',c:'Nature'},
+{e:'\\u{1F3AF}',t:'The Pareto Principle: 80% of results come from 20% of efforts.',c:'Productivity'},
+{e:'\\u{1F5FC}',t:'The Eiffel Tower grows about 6 inches taller in summer due to heat expansion.',c:'Facts'},
+{e:'\\u{1F52C}',t:'Human DNA is 99.9% identical between any two people on Earth.',c:'Science'},
+{e:'\\u{1F4C8}',t:'Warren Buffett made 99% of his wealth after his 50th birthday.',c:'Finance'},
+{e:'\\u{1F3B5}',t:'Music activates more parts of the brain than any other human activity.',c:'Science'},
+{e:'\\u{1F6F0}\\uFE0F',t:'There are more stars in the universe than grains of sand on all Earth\\'s beaches.',c:'Space'},
+{e:'\\u{1F4D6}',t:'Reading 20 minutes a day exposes you to 1.8 million words per year.',c:'Learning'},
+{e:'\\u{1F9CA}',t:'Antarctica contains 70% of all the fresh water on Earth — as ice.',c:'Geography'},
+{e:'\\u{1F4A1}',t:'Thomas Edison tested over 1,000 materials before finding the right lightbulb filament.',c:'History'},
+{e:'\\u{1F9D8}',t:'Meditation physically grows grey matter in the brain in just 8 weeks.',c:'Health'},
+{e:'\\u{1F41D}',t:'Honey never spoils — 3,000-year-old honey found in tombs was still edible.',c:'Nature'},
+{e:'\\u{1F310}',t:'The internet weighs about 50 grams — the weight of the electrons carrying the data.',c:'Tech'},
+{e:'\\u2615',t:'Finland drinks the most coffee per capita — about 12 kg per person per year.',c:'Culture'},
+{e:'\\u{1F4AA}',t:'Your body replaces itself with new cells so often that you\\'re new every 7-10 years.',c:'Health'},
+{e:'\\u{1F3D7}\\uFE0F',t:'The Great Wall of China took over 2,000 years to build across multiple dynasties.',c:'History'},
+{e:'\\u{1F52D}',t:'A teaspoon of a neutron star would weigh about 6 billion tons.',c:'Space'},
+{e:'\\u{1F4B1}',t:'The first known currency was the Mesopotamian shekel, used around 3000 BC.',c:'History'},
+{e:'\\u{1F333}',t:'Trees communicate through an underground fungal network called the Wood Wide Web.',c:'Nature'},
+{e:'\\u{1F4F1}',t:'Your smartphone has more computing power than all of NASA had during the Moon landing.',c:'Tech'},
+{e:'\\u{2764}\\uFE0F',t:'Your heart beats about 100,000 times per day — 35 million times a year.',c:'Health'},
+{e:'\\u{1F30B}',t:'There are more volcanoes underwater than on land — an estimated 1 million.',c:'Geography'},
+{e:'\\u{1F9EE}',t:'The number zero was invented in India around the 5th century AD.',c:'History'},
+{e:'\\u{1F4B8}',t:'If you saved \\$1 every second, it would take 31.7 years to reach a billion dollars.',c:'Finance'},
+{e:'\\u{1F409}',t:'Dragonflies have been around for 300 million years — before dinosaurs existed.',c:'Nature'}
+];
+let _broFactIdx=Math.floor(Math.random()*BRO_FACTS.length);
 let S={tasks:[],view:'pending',search:'',tab:'tasks',showAdd:false,editing:null,listening:false,toast:null,toastType:'ok',waOk:false,sending:{},user:null,compose:{value:'',priority:null,dueDate:null,saving:false},
 books:[],booksLoading:false,booksCat:'all',bookSearch:'',playing:null,moralIdx:Math.floor(Math.random()*MORALS.length),
 knowledge:{loading:false,loaded:{},articles:{},events:[],topic:'history',sec:'today'},
@@ -7655,6 +7698,17 @@ function rotateMoral(){if(_audioBusy())return;if(_isModalOpen())return;S.moralId
   if(!txt)renderPassive();
 }
 setInterval(()=>{if(S.user)rotateMoral()},45000);
+// Rotate the Bro knowledge ticker every 8 seconds — direct DOM update, no full re-render
+setInterval(function(){
+  if(!S.user||S.tab!=='bro')return;
+  _broFactIdx=(_broFactIdx+1)%BRO_FACTS.length;
+  const f=BRO_FACTS[_broFactIdx];
+  const wrap=document.getElementById('broTicker');if(!wrap)return;
+  wrap.style.animation='none';wrap.offsetHeight;wrap.style.animation='bro-ticker-slide .6s ease';
+  const ic=wrap.querySelector('.bro-ticker-icon');if(ic)ic.textContent=f.e;
+  const tx=wrap.querySelector('.bro-ticker-text');if(tx)tx.textContent=f.t;
+  const lb=wrap.querySelector('.bro-ticker-label');if(lb)lb.textContent=f.c;
+},8000);
 // Tic Tac Toe vs a simple bot (you play X, bot plays O)
 const TTT_LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 function tttCheck(b,p){for(const l of TTT_LINES){if(l.every(i=>b[i]===p))return l}return null}
@@ -10773,6 +10827,9 @@ else if(S.tab==='bro'){
     h+='<div class="bro-header-avatar" style="background:linear-gradient(135deg,#C47A3A,#D4956A)">\\u26A1</div>';
     h+='<div class="bro-header-info"><div class="bro-header-name">Bro<span class="bro-online"></span></div><div class="bro-header-sub">'+(S.bro.mode==='friend'?'Your bestie \\u{1F49C}':'Ask me anything')+'</div></div>';
     h+='</div>';
+    // Knowledge ticker — animated facts strip
+    var _bf=BRO_FACTS[_broFactIdx];
+    h+='<div class="bro-ticker"><div class="bro-ticker-inner" id="broTicker"><span class="bro-ticker-icon">'+_bf.e+'</span><span class="bro-ticker-text">'+esc(_bf.t)+'</span><span class="bro-ticker-label">'+esc(_bf.c)+'</span></div></div>';
     // Chat messages
     h+='<div class="bro-chat" id="broChat">';
     if(S.bro.messages.length<=1){
