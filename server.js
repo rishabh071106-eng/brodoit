@@ -6483,16 +6483,24 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#B5
 .bro-container{display:flex;flex-direction:column;height:calc(100vh - 140px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:#FBF7F1;position:relative}
 body[data-theme=aurora] .bro-container{background:#212121}
 .bro-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#FBF7F1;border-bottom:none;position:relative;z-index:10;flex-shrink:0}
-.bro-ticker{flex-shrink:0;overflow:hidden;position:relative;height:32px;background:linear-gradient(90deg,rgba(196,122,58,.06),rgba(196,122,58,.12),rgba(196,122,58,.06));border-bottom:1px solid rgba(196,122,58,.1)}
-body[data-theme=aurora] .bro-ticker{background:linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.06),rgba(255,255,255,.03));border-bottom-color:rgba(255,255,255,.06)}
-.bro-ticker-inner{display:flex;align-items:center;height:100%;padding:0 14px;gap:8px;animation:bro-ticker-slide 1.2s ease}
-@keyframes bro-ticker-slide{0%{opacity:0;transform:translateY(100%)}100%{opacity:1;transform:translateY(0)}}
-.bro-ticker-icon{font-size:13px;flex-shrink:0;animation:bro-ticker-glow 2s ease-in-out infinite alternate}
-@keyframes bro-ticker-glow{0%{filter:brightness(1)}100%{filter:brightness(1.4)}}
-.bro-ticker-text{font-family:var(--sans);font-size:11.5px;color:#7A6A5A;letter-spacing:.01em;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
-body[data-theme=aurora] .bro-ticker-text{color:rgba(255,255,255,.5)}
-.bro-ticker-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#C47A3A;opacity:.7;flex-shrink:0;padding:2px 6px;border-radius:4px;background:rgba(196,122,58,.08)}
-body[data-theme=aurora] .bro-ticker-label{color:rgba(255,180,100,.6);background:rgba(255,180,100,.08)}
+.bro-ticker{flex-shrink:0;overflow:hidden;position:relative;padding:10px 14px;background:linear-gradient(135deg,rgba(196,122,58,.07),rgba(61,174,92,.05));border-bottom:1px solid rgba(196,122,58,.12)}
+body[data-theme=aurora] .bro-ticker{background:linear-gradient(135deg,rgba(255,180,100,.06),rgba(100,255,180,.04));border-bottom-color:rgba(255,255,255,.08)}
+.bro-ticker-inner{display:flex;align-items:center;gap:12px;animation:bro-ticker-slide .8s ease}
+@keyframes bro-ticker-slide{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:translateY(0)}}
+.bro-ticker-figure{flex-shrink:0;width:44px;height:44px;position:relative}
+.bro-ticker-figure svg{width:44px;height:44px}
+.bro-ticker-figure .btf-pointer{animation:btf-point 2s ease-in-out infinite}
+@keyframes btf-point{0%,100%{transform:rotate(0deg) translateX(0)}50%{transform:rotate(8deg) translateX(2px)}}
+.bro-ticker-bubble{flex:1;min-width:0;background:#fff;border-radius:12px 12px 12px 2px;padding:8px 12px;box-shadow:0 1px 4px rgba(58,45,34,.06);position:relative}
+body[data-theme=aurora] .bro-ticker-bubble{background:rgba(255,255,255,.07);box-shadow:none}
+.bro-ticker-bubble::before{content:'';position:absolute;left:-6px;bottom:8px;width:0;height:0;border-style:solid;border-width:0 6px 8px 0;border-color:transparent #fff transparent transparent}
+body[data-theme=aurora] .bro-ticker-bubble::before{border-color:transparent rgba(255,255,255,.07) transparent transparent}
+.bro-ticker-head{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.bro-ticker-icon{font-size:15px;flex-shrink:0}
+.bro-ticker-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#C47A3A;font-weight:600}
+body[data-theme=aurora] .bro-ticker-label{color:rgba(255,180,100,.7)}
+.bro-ticker-text{font-family:var(--sans);font-size:13px;color:#3A2D22;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+body[data-theme=aurora] .bro-ticker-text{color:rgba(255,255,255,.75)}
 body[data-theme=aurora] .bro-header{background:#212121}
 .bro-header-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .bro-header-info{flex:1;min-width:0}
@@ -7704,7 +7712,9 @@ setInterval(function(){
   _broFactIdx=(_broFactIdx+1)%BRO_FACTS.length;
   const f=BRO_FACTS[_broFactIdx];
   const wrap=document.getElementById('broTicker');if(!wrap)return;
-  wrap.style.animation='none';wrap.offsetHeight;wrap.style.animation='bro-ticker-slide .6s ease';
+  // Animate the speech bubble sliding in
+  const bubble=wrap.querySelector('.bro-ticker-bubble');
+  if(bubble){bubble.style.animation='none';bubble.offsetHeight;bubble.style.animation='bro-ticker-slide .7s ease'}
   const ic=wrap.querySelector('.bro-ticker-icon');if(ic)ic.textContent=f.e;
   const tx=wrap.querySelector('.bro-ticker-text');if(tx)tx.textContent=f.t;
   const lb=wrap.querySelector('.bro-ticker-label');if(lb)lb.textContent=f.c;
@@ -10827,9 +10837,25 @@ else if(S.tab==='bro'){
     h+='<div class="bro-header-avatar" style="background:linear-gradient(135deg,#C47A3A,#D4956A)">\\u26A1</div>';
     h+='<div class="bro-header-info"><div class="bro-header-name">Bro<span class="bro-online"></span></div><div class="bro-header-sub">'+(S.bro.mode==='friend'?'Your bestie \\u{1F49C}':'Ask me anything')+'</div></div>';
     h+='</div>';
-    // Knowledge ticker — animated facts strip
+    // Knowledge ticker — teaching figure with speech bubble
     var _bf=BRO_FACTS[_broFactIdx];
-    h+='<div class="bro-ticker"><div class="bro-ticker-inner" id="broTicker"><span class="bro-ticker-icon">'+_bf.e+'</span><span class="bro-ticker-text">'+esc(_bf.t)+'</span><span class="bro-ticker-label">'+esc(_bf.c)+'</span></div></div>';
+    h+='<div class="bro-ticker"><div class="bro-ticker-inner" id="broTicker">';
+    h+='<div class="bro-ticker-figure"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">'
+      +'<circle cx="24" cy="11" r="7" fill="#C47A3A"/>'
+      +'<ellipse cx="24" cy="11" rx="7" ry="7" fill="#C47A3A"/>'
+      +'<circle cx="22" cy="10" r="1.2" fill="#fff"/>'
+      +'<circle cx="26" cy="10" r="1.2" fill="#fff"/>'
+      +'<path d="M22 13.5q2 1.5 4 0" stroke="#fff" stroke-width="1" stroke-linecap="round" fill="none"/>'
+      +'<path d="M17 20c0-4 3.5-6 7-6s7 2 7 6v7c0 1-1 2-2 2H19c-1 0-2-1-2-2z" fill="#D4956A"/>'
+      +'<rect x="19" y="22" width="10" height="2" rx="1" fill="#C47A3A" opacity=".3"/>'
+      +'<line x1="24" y1="29" x2="22" y2="38" stroke="#3A2D22" stroke-width="2.5" stroke-linecap="round"/>'
+      +'<line x1="24" y1="29" x2="26" y2="38" stroke="#3A2D22" stroke-width="2.5" stroke-linecap="round"/>'
+      +'<g class="btf-pointer"><line x1="17" y1="22" x2="8" y2="17" stroke="#3A2D22" stroke-width="2.5" stroke-linecap="round"/><circle cx="7" cy="16" r="2" fill="#C47A3A"/></g>'
+      +'<line x1="31" y1="22" x2="38" y2="26" stroke="#3A2D22" stroke-width="2.5" stroke-linecap="round"/>'
+      +'<circle cx="39" cy="27" r="2" fill="#C47A3A"/>'
+      +'</svg></div>';
+    h+='<div class="bro-ticker-bubble"><div class="bro-ticker-head"><span class="bro-ticker-icon">'+_bf.e+'</span><span class="bro-ticker-label">'+esc(_bf.c)+'</span></div><div class="bro-ticker-text">'+esc(_bf.t)+'</div></div>';
+    h+='</div></div>';
     // Chat messages
     h+='<div class="bro-chat" id="broChat">';
     if(S.bro.messages.length<=1){
