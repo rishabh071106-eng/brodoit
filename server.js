@@ -389,13 +389,23 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
     for(let loop=0;loop<4;loop++){
       const body={model:'llama-3.3-70b-versatile',max_tokens:2048,messages:apiMsgs};
       if(groqTools)body.tools=groqTools;
-      const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-        body:JSON.stringify(body)
-      });
-      const j=await r.json();
-      if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Groq error',detail:j});
+      // Retry up to 2 times on rate-limit (429) or server error (5xx)
+      let r,j;
+      for(let retry=0;retry<3;retry++){
+        r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+          body:JSON.stringify(body)
+        });
+        if(r.status===429||r.status>=500){
+          const wait=Math.min(2000*(retry+1),5000);
+          await new Promise(ok=>setTimeout(ok,wait));
+          continue;
+        }
+        break;
+      }
+      j=await r.json();
+      if(!r.ok){console.log('[bro] Groq error:',r.status,j);return res.status(502).json({error:(j.error&&j.error.message)||'AI service temporarily busy — try again in a moment',status:r.status})}
       const msg=j.choices&&j.choices[0]&&j.choices[0].message;
       if(msg&&msg.tool_calls&&msg.tool_calls.length){
         apiMsgs.push(msg);
@@ -411,7 +421,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
       return res.json({reply,usage:j.usage,actions:actions.length?actions:undefined});
     }
     return res.json({reply:'I tried to help but hit a loop — try rephrasing your request.',actions:actions.length?actions:undefined});
-  }catch(e){return res.status(500).json({error:String(e.message||e)})}
+  }catch(e){console.log('[bro] Exception:',e.message);return res.status(500).json({error:'Connection issue — please try again.'})}
 });
 
 
@@ -10256,16 +10266,29 @@ async function broSend(){
       _broShowTyping(false);_broAppendMsg(reply);
       if(r.actions)_broActionToast(r.actions);
     }else{
-      var err={role:'bro',text:'Sorry, I couldn\\'t connect right now. Try again in a moment.'};S.bro.messages.push(err);
+      var errText=r&&r.error?r.error:'Network issue — check your connection and try again.';
+      var err={role:'bro',text:errText+' \\u{1F504} <span onclick=\"_broRetryLast()\" style=\"color:#FFD27A;text-decoration:underline;cursor:pointer\">Tap to retry</span>'};S.bro.messages.push(err);
       _broShowTyping(false);_broAppendMsg(err);
     }
   }catch(e){
-    var errM={role:'bro',text:'Something went wrong. Let\\'s try again.'};S.bro.messages.push(errM);
+    var errM={role:'bro',text:'Connection issue — check your internet and <span onclick=\"_broRetryLast()\" style=\"color:#FFD27A;text-decoration:underline;cursor:pointer\">tap to retry</span>.'};S.bro.messages.push(errM);
     _broShowTyping(false);_broAppendMsg(errM);
   }
   S.bro.sending=false;
   if(sendBtn)sendBtn.disabled=false;
   var c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight;
+}
+function _broRetryLast(){
+  // Remove the error message and retry the last user message
+  if(S.bro.sending)return;
+  while(S.bro.messages.length&&S.bro.messages[S.bro.messages.length-1].role==='bro'){S.bro.messages.pop()}
+  var lastUser=S.bro.messages.length?S.bro.messages[S.bro.messages.length-1]:null;
+  if(lastUser&&lastUser.role==='user'){
+    S.bro.messages.pop();
+    S.bro.input=lastUser.text;
+    var chat=document.getElementById('broChat');if(chat){chat.lastElementChild&&chat.lastElementChild.remove();if(chat.lastElementChild)chat.lastElementChild.remove()}
+    broSend();
+  }
 }
 
 // ═══ HYDRATION REMINDER ═══
