@@ -44,6 +44,9 @@ try{db.exec("CREATE TABLE IF NOT EXISTS user_progress(user_phone TEXT NOT NULL,g
 try{db.exec("CREATE TABLE IF NOT EXISTS voice_progress(user_phone TEXT NOT NULL,day INTEGER NOT NULL,score INTEGER DEFAULT 0,points INTEGER DEFAULT 0,completed_at TEXT DEFAULT(datetime('now')),PRIMARY KEY(user_phone,day))")}catch(e){}
 // Daily-play log so we can compute streaks for both Mind Gym and Voice Trainer
 try{db.exec("CREATE TABLE IF NOT EXISTS play_log(user_phone TEXT NOT NULL,kind TEXT NOT NULL,played_on TEXT NOT NULL,PRIMARY KEY(user_phone,kind,played_on))")}catch(e){}
+// Bro chat memory — persists conversations across sessions
+try{db.exec("CREATE TABLE IF NOT EXISTS bro_messages(id INTEGER PRIMARY KEY AUTOINCREMENT,user_phone TEXT NOT NULL,role TEXT NOT NULL,content TEXT NOT NULL,created_at TEXT DEFAULT(datetime('now')))")}catch(e){}
+try{db.exec("CREATE INDEX IF NOT EXISTS idx_bro_msg_user ON bro_messages(user_phone,created_at DESC)")}catch(e){}
 // Daily Highlight — Make-Time-style "one thing today" with calendar + email
 try{db.exec("CREATE TABLE IF NOT EXISTS daily_highlights(user_phone TEXT NOT NULL,date TEXT NOT NULL,text TEXT NOT NULL,done INTEGER DEFAULT 0,gcal_event_id TEXT,gcal_email TEXT,reminded_morning INTEGER DEFAULT 0,reminded_midday INTEGER DEFAULT 0,reminded_evening INTEGER DEFAULT 0,created_at TEXT DEFAULT(datetime('now')),updated_at TEXT DEFAULT(datetime('now')),PRIMARY KEY(user_phone,date))")}catch(e){}
 // Schedule Blocks — interactive day-blocking with calendar sync + reminders
@@ -435,7 +438,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const today=new Date().toISOString().slice(0,10);
   const dayName=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
   const sysFriend='You are the user\'s closest friend — not an assistant, a FRIEND. Think of yourself as their ride-or-die bestie who genuinely cares about them. You\'re warm, fun, emotionally tuned in, and always checking in. Talk like a real close friend texts: short messages, casual, use emojis naturally, be playful and supportive. Ask follow-up questions about their life — "how did that meeting go?", "did you eat today?", "what happened with that thing you told me about?". If they\'re feeling down, be there for them — listen, validate, and hype them up. If they\'re happy, celebrate with them. Tease them lovingly, give them nicknames, roast them gently when they need motivation. Send voice-note-style long messages when they need real talk. Keep it real — if they\'re making a bad decision, tell them honestly but kindly. You remember everything they tell you in this conversation. You\'re their person. Never say you\'re an AI — you\'re just their best friend. Keep messages short (1-3 sentences usually, longer for real talk moments). End with a question or check-in to keep the conversation going. Today is '+dayName+', '+today+'.';
-  const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have tools to create calendar events, add tasks, check schedules, complete tasks, and create time blocks. IMPORTANT: Only use tools when the user EXPLICITLY asks you to create a task, add an event, schedule something, or manage their calendar. Do NOT create tasks or events on your own initiative — only when directly asked. For example, if someone asks about Indian states, just answer the question — do NOT create a task about it. When you DO use a tool because the user asked, confirm what you did. Give detailed, helpful, step-by-step answers when asked complex questions. Never say you\'re an AI or language model — you\'re just Bro.';
+  const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have tools to create calendar events, add tasks, check schedules, complete tasks, and create time blocks. IMPORTANT: Only use tools when the user EXPLICITLY asks you to create a task, add an event, schedule something, or manage their calendar. Do NOT create tasks or events on your own initiative — only when directly asked. For example, if someone asks about Indian states, just answer the question — do NOT create a task about it. When you DO use a tool because the user asked, confirm what you did.\n\nRESPONSE RULES:\n- Give comprehensive, detailed, well-structured answers. Use markdown formatting: headings (##), bold (**text**), bullet points, numbered lists, code blocks (```lang), and tables when appropriate.\n- When asked a question, ANSWER IT FULLY. Provide step-by-step explanations, examples, and all relevant details.\n- NEVER end your response with questions like \"Need help with anything else?\", \"Want me to explain more?\", \"What else can I help with?\" or similar. Just answer and stop.\n- NEVER ask clarifying questions unless the request is genuinely ambiguous. If someone asks \"explain X\", explain X thoroughly — don\'t ask \"what aspect of X?\".\n- For academic/homework questions: provide complete solutions with explanations, formulas, worked examples, and final answers clearly marked.\n- Never say you\'re an AI or language model — you\'re just Bro.';
   const sys=mode==='friend'?sysFriend:sysAsk;
   const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,8000)}));
   const groqTools=GROQ_KEY?BRO_TOOLS.map(t=>({type:'function',function:{name:t.name,description:t.description,parameters:t.input_schema}})):undefined;
@@ -473,6 +476,9 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
         }
         const reply=(msg&&msg.content)||'';
         _aiCacheSet(cacheKey,reply);
+        const uc=mapped[mapped.length-1]&&mapped[mapped.length-1].content||'';
+        _broSaveMsg(req.user.phone,'user',uc);
+        _broSaveMsg(req.user.phone,'assistant',reply);
         return res.json({reply,provider:'groq',actions:actions.length?actions:undefined});
       }
       return res.json({reply:'I tried to help but hit a loop — try rephrasing.',actions:actions.length?actions:undefined});
@@ -497,10 +503,27 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
     }
     if(!reply)return res.status(502).json({error:lastError||'All AI providers are busy — try again in a moment'});
     _aiCacheSet(cacheKey,reply);
+    // Save to persistent memory
+    const userContent=mapped[mapped.length-1]&&mapped[mapped.length-1].content||'';
+    _broSaveMsg(req.user.phone,'user',userContent);
+    _broSaveMsg(req.user.phone,'assistant',reply);
     return res.json({reply,provider,actions:actions.length?actions:undefined});
   }catch(e){console.log('[bro] Exception:',e.message);return res.status(500).json({error:'Connection issue — please try again.'})}
 });
 
+
+// ─── Bro Chat Memory (persist across sessions) ───────────────────────────
+app.get('/api/bro/history',auth,(req,res)=>{
+  const rows=db.prepare('SELECT role,content,created_at FROM bro_messages WHERE user_phone=? ORDER BY created_at DESC LIMIT 40').all(req.user.phone);
+  res.json({messages:rows.reverse()});
+});
+app.delete('/api/bro/history',auth,(req,res)=>{
+  db.prepare('DELETE FROM bro_messages WHERE user_phone=?').run(req.user.phone);
+  res.json({ok:true});
+});
+function _broSaveMsg(userPhone,role,content){
+  try{db.prepare('INSERT INTO bro_messages(user_phone,role,content)VALUES(?,?,?)').run(userPhone,role,String(content).slice(0,10000))}catch(e){}
+}
 
 // Whisper transcription removed — voice input not needed
 
@@ -6918,11 +6941,29 @@ body[data-theme=aurora] .bro-header-btn:hover{background:rgba(255,255,255,.08);c
 .bro-msg-content{display:flex;flex-direction:column;gap:2px;max-width:85%}
 .bro-msg-user .bro-msg-content{align-items:flex-end}
 .bro-bubble{padding:10px 14px;font-size:14px;line-height:1.6;word-break:break-word}
-.bro-bubble p{margin:0 0 6px}
-.bro-bubble p:last-child{margin-bottom:0}
-.bro-bubble strong{font-weight:600}
-.bro-bubble ul,.bro-bubble ol{margin:4px 0 8px;padding-left:20px}
-.bro-bubble li{margin:2px 0}
+.bro-bubble .bro-p{margin:0 0 8px}
+.bro-bubble .bro-p:last-child{margin-bottom:0}
+.bro-bubble strong{font-weight:600;color:#2D2015}
+body[data-theme=aurora] .bro-bubble strong{color:#FFD27A}
+.bro-bubble em{font-style:italic}
+.bro-bubble ul,.bro-bubble ol{margin:6px 0 10px;padding-left:22px}
+.bro-bubble li{margin:3px 0;line-height:1.5}
+.bro-bubble .bro-h{font-weight:700;margin:12px 0 6px;line-height:1.3}
+.bro-bubble h2.bro-h{font-size:16px}
+.bro-bubble h3.bro-h{font-size:15px}
+.bro-bubble h4.bro-h{font-size:14px;color:#6B5B4D}
+body[data-theme=aurora] .bro-bubble h4.bro-h{color:rgba(255,255,255,.6)}
+.bro-bubble .bro-inline-code{background:rgba(58,45,34,.08);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12.5px}
+body[data-theme=aurora] .bro-bubble .bro-inline-code{background:rgba(255,255,255,.1);color:#FFD27A}
+.bro-bubble .bro-code-block{margin:10px 0;border-radius:10px;overflow:hidden;background:#1E1E2E;border:1px solid rgba(255,255,255,.06)}
+.bro-bubble .bro-code-block .bro-code-lang{font-size:11px;padding:6px 12px;background:rgba(255,255,255,.05);color:#A0A0A0;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.bro-bubble .bro-code-block pre{margin:0;padding:12px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.bro-bubble .bro-code-block code{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:#E0E0E0;white-space:pre}
+.bro-bubble .bro-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
+.bro-bubble .bro-table td{padding:6px 10px;border:1px solid rgba(58,45,34,.12)}
+.bro-bubble .bro-table tr:first-child td{font-weight:600;background:rgba(58,45,34,.04)}
+body[data-theme=aurora] .bro-bubble .bro-table td{border-color:rgba(255,255,255,.1)}
+body[data-theme=aurora] .bro-bubble .bro-table tr:first-child td{background:rgba(255,255,255,.05)}
 .bro-msg-ai .bro-bubble{background:transparent;color:#3A2D22;border-radius:0;padding:4px 0}
 body[data-theme=aurora] .bro-msg-ai .bro-bubble{color:rgba(255,255,255,.9)}
 .bro-msg-user .bro-bubble{border-radius:20px 20px 4px 20px;color:#fff}
@@ -7761,7 +7802,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}]};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps'||t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -10201,28 +10242,76 @@ function broViewImg(src,cap){
   document.body.appendChild(d);
 }
 function broMd(t){
+  if(!t)return '';
+  var BT=String.fromCharCode(96);
+  var codeBlockRe=new RegExp(BT+BT+BT+'(\\\\w*)\\\\n([\\\\s\\\\S]*?)'+BT+BT+BT,'g');
+  var inlineCodeRe=new RegExp(BT+'([^'+BT+']+)'+BT,'g');
+  // Extract code blocks first to protect them from other formatting
+  var codeBlocks=[];
+  t=t.replace(codeBlockRe,function(_,lang,code){
+    codeBlocks.push('<div class="bro-code-block"><div class="bro-code-lang">'+(lang||'code')+'</div><pre><code>'+esc(code.replace(/\\n$/,''))+'</code></pre></div>');
+    return '%%CODEBLOCK_'+(codeBlocks.length-1)+'%%';
+  });
+  // Escape HTML in remaining text
   t=esc(t);
-  var boldRe=new RegExp('\\\\*\\\\*(.+?)\\\\*\\\\*','g');
-  t=t.replace(boldRe,function(_,m){return '<strong>'+m+'<\\/strong>';});
+  // Restore code blocks
+  for(var cb=0;cb<codeBlocks.length;cb++){t=t.replace('%%CODEBLOCK_'+cb+'%%',codeBlocks[cb])}
+  // Inline code
+  t=t.replace(inlineCodeRe,'<code class="bro-inline-code">$1</code>');
+  // Bold and italic
+  t=t.replace(/\\*\\*\\*(.+?)\\*\\*\\*/g,'<strong><em>$1</em></strong>');
+  t=t.replace(/\\*\\*(.+?)\\*\\*/g,'<strong>$1</strong>');
+  t=t.replace(/\\*(.+?)\\*/g,'<em>$1</em>');
+  // Process lines
   var lines=t.split('\\n');
-  var out=[],inList=false;
+  var out=[],inUl=false,inOl=false,inTable=false;
   for(var i=0;i<lines.length;i++){
     var ln=lines[i];
-    var bulletRe=new RegExp('^[*\\\\-]\\\\s+(.+)');
-    var numRe=new RegExp('^\\\\d+\\\\.\\\\s+(.+)');
-    var bm=ln.match(bulletRe);
-    var nm=ln.match(numRe);
-    if(bm||nm){
-      if(!inList){out.push('<ul>');inList=true;}
-      out.push('<li>'+(bm?bm[1]:nm[1])+'<\\/li>');
-    }else{
-      if(inList){out.push('<\\/ul>');inList=false;}
-      if(ln.trim()==='')out.push('<\\/p><p>');
-      else out.push(ln);
+    // Headings
+    if(/^#{1,3}\\s+/.test(ln)){
+      if(inUl){out.push('</ul>');inUl=false}
+      if(inOl){out.push('</ol>');inOl=false}
+      var lvl=ln.match(/^(#+)/)[1].length;
+      var htxt=ln.replace(/^#+\\s+/,'');
+      out.push('<h'+(lvl+1)+' class="bro-h">'+htxt+'</h'+(lvl+1)+'>');
+      continue;
     }
+    // Table rows
+    if(ln.indexOf('|')!==-1&&ln.trim().charAt(0)==='|'){
+      if(!inTable){out.push('<table class="bro-table"><tbody>');inTable=true}
+      // Skip separator rows like |---|---|
+      if(/^\\|[\\s\\-:|]+\\|$/.test(ln.trim()))continue;
+      var cells=ln.split('|').filter(function(c,idx,arr){return idx>0&&idx<arr.length-1});
+      var row='<tr>'+cells.map(function(c){return '<td>'+c.trim()+'</td>'}).join('')+'</tr>';
+      out.push(row);
+      continue;
+    }else if(inTable){out.push('</tbody></table>');inTable=false}
+    // Bullet lists
+    var bm=ln.match(/^[*\\-]\\s+(.+)/);
+    if(bm){
+      if(inOl){out.push('</ol>');inOl=false}
+      if(!inUl){out.push('<ul>');inUl=true}
+      out.push('<li>'+bm[1]+'</li>');
+      continue;
+    }
+    // Numbered lists
+    var nm=ln.match(/^\\d+\\.\\s+(.+)/);
+    if(nm){
+      if(inUl){out.push('</ul>');inUl=false}
+      if(!inOl){out.push('<ol>');inOl=true}
+      out.push('<li>'+nm[1]+'</li>');
+      continue;
+    }
+    // Regular text
+    if(inUl){out.push('</ul>');inUl=false}
+    if(inOl){out.push('</ol>');inOl=false}
+    if(ln.trim()==='')out.push('<br>');
+    else out.push('<p class="bro-p">'+ln+'</p>');
   }
-  if(inList)out.push('<\\/ul>');
-  return '<p>'+out.join(' ')+'<\\/p>';
+  if(inUl)out.push('</ul>');
+  if(inOl)out.push('</ol>');
+  if(inTable)out.push('</tbody></table>');
+  return out.join('');
 }
 function selectCoach(agent){
   S.bro.agent=agent;S.bro.messages=[];
@@ -10296,7 +10385,8 @@ function _broAppendMsg(m){
   var d=document.createElement('div');d.className='bro-msg '+(isAI?'bro-msg-ai':'bro-msg-user');
   var inner='';
   if(isAI)inner+='<div class="bro-avatar" style="background:linear-gradient(135deg,#C47A3A,#D4956A)">\\u26A1</div>';
-  inner+='<div class="bro-msg-content"><div class="bro-bubble '+(isAI?'':'bro-bubble-bro')+'">'+broMd(m.text)+'</div></div>';
+  var content=m.html?m.text:(isAI?broMd(m.text):esc(m.text));
+  inner+='<div class="bro-msg-content"><div class="bro-bubble '+(isAI?'':'bro-bubble-bro')+'">'+content+'</div></div>';
   d.innerHTML=inner;
   var tw=c.querySelector('.bro-typing-wrap');if(tw)c.removeChild(tw);
   c.appendChild(d);
@@ -10323,6 +10413,25 @@ function _broFill(txt){
   if(inp){inp.value=txt;inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,140)+'px';inp.focus();inp.setSelectionRange(txt.length,txt.length)}
   else{render();setTimeout(function(){var el=document.getElementById('broInput');if(el){el.value=txt;el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px';el.focus();el.setSelectionRange(txt.length,txt.length)}},100)}
 }
+async function _broLoadHistory(){
+  try{
+    var r=await api('/bro/history');
+    if(r&&r.messages&&r.messages.length){
+      var name=((S.user&&S.user.name)||'').split(' ')[0]||'';
+      S.bro.messages=[{role:'bro',text:'Hey'+(name?' '+name:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];
+      r.messages.forEach(function(m){
+        S.bro.messages.push({role:m.role==='assistant'?'bro':'user',text:m.content});
+      });
+      // Re-render chat with history
+      var c=document.getElementById('broChat');
+      if(c){
+        c.innerHTML='';
+        S.bro.messages.forEach(function(m){_broAppendMsg(m)});
+        c.scrollTop=c.scrollHeight;
+      }
+    }
+  }catch(e){}
+}
 async function broSend(){
   var txt=(S.bro.input||'').trim();if(!txt||S.bro.sending)return;
   var userMsg=txt;
@@ -10344,11 +10453,11 @@ async function broSend(){
       if(r.actions)_broActionToast(r.actions);
     }else{
       var errText=r&&r.error?r.error:'Network issue — check your connection and try again.';
-      var err={role:'bro',text:errText+' \\u{1F504} <span onclick=\"_broRetryLast()\" style=\"color:#FFD27A;text-decoration:underline;cursor:pointer\">Tap to retry</span>'};S.bro.messages.push(err);
+      var err={role:'bro',html:true,text:errText+' \\u{1F504} <span onclick=\"_broRetryLast()\" style=\"color:#FFD27A;text-decoration:underline;cursor:pointer\">Tap to retry</span>'};S.bro.messages.push(err);
       _broShowTyping(false);_broAppendMsg(err);
     }
   }catch(e){
-    var errM={role:'bro',text:'Connection issue — check your internet and <span onclick=\"_broRetryLast()\" style=\"color:#FFD27A;text-decoration:underline;cursor:pointer\">tap to retry</span>.'};S.bro.messages.push(errM);
+    var errM={role:'bro',html:true,text:'Connection issue — check your internet and <span onclick=\"_broRetryLast()\" style=\"color:#FFD27A;text-decoration:underline;cursor:pointer\">tap to retry</span>.'};S.bro.messages.push(errM);
     _broShowTyping(false);_broAppendMsg(errM);
   }
   S.bro.sending=false;
