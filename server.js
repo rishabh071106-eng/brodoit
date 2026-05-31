@@ -7049,6 +7049,18 @@ body[data-theme=aurora] .hydration-info b{color:#7DD3FC}
 .hydration-glass{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(14,165,233,.3);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
 .hydration-glass.filled{background:linear-gradient(135deg,#0EA5E9,#06B6D4);border-color:transparent}
 @keyframes hydDrop{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+#hydration-overlay{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:24px;animation:hydOvIn .3s ease}
+@keyframes hydOvIn{from{opacity:0}to{opacity:1}}
+.hyd-ov-card{background:linear-gradient(135deg,#0c1826,#142638);border:1px solid rgba(14,165,233,.25);border-radius:24px;padding:36px 28px;text-align:center;max-width:340px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.hyd-ov-icon{font-size:64px;margin-bottom:12px;animation:hydOvDrip 1.5s ease-in-out infinite}
+@keyframes hydOvDrip{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.1)}}
+.hyd-ov-title{font-size:22px;font-weight:700;color:#7DD3FC;margin-bottom:8px;font-family:Georgia,serif}
+.hyd-ov-sub{font-size:14px;color:rgba(255,255,255,.65);margin-bottom:24px;line-height:1.5}
+.hyd-ov-sub b{color:#38BDF8}
+.hyd-ov-btns{display:flex;gap:12px;justify-content:center}
+.hyd-ov-drink{padding:12px 24px;border:none;border-radius:12px;background:linear-gradient(135deg,#0EA5E9,#06B6D4);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:transform .2s}
+.hyd-ov-drink:active{transform:scale(.95)}
+.hyd-ov-later{padding:12px 20px;border:1px solid rgba(14,165,233,.3);border-radius:12px;background:transparent;color:#7DD3FC;font-size:14px;cursor:pointer}
 /* ─── Compact greeting chip ─── */
 .home-greeting-chip{display:flex;align-items:center;gap:12px;padding:16px 18px;margin:0 0 10px;background:linear-gradient(135deg,#C47A3A 0%,#A0612E 100%);border:none;border-radius:16px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(58,45,34,.25)}
 .home-greeting-chip:hover{box-shadow:0 6px 24px rgba(58,45,34,.35)}
@@ -8142,8 +8154,18 @@ function _mgSound(kind){
       const src=ctx.createBufferSource();src.buffer=buf;const f=ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=3200;f.Q.value=1.5;src.connect(f).connect(ctx.destination);src.start(t);
     }
     else if(kind==='water'){
-      const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(1400,t);o.frequency.exponentialRampToValueAtTime(300,t+0.25);g.gain.setValueAtTime(0.15,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.3);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+0.3);
-      const o2=ctx.createOscillator(),g2=ctx.createGain();o2.type='sine';o2.frequency.setValueAtTime(800,t+0.05);o2.frequency.exponentialRampToValueAtTime(200,t+0.35);g2.gain.setValueAtTime(0.08,t+0.05);g2.gain.exponentialRampToValueAtTime(0.001,t+0.4);o2.connect(g2).connect(ctx.destination);o2.start(t+0.05);o2.stop(t+0.4);
+      // Short water drop/drip sound — like tapping a glass of water
+      const dur=0.8;const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate);const wd=buf.getChannelData(0);
+      for(let i=0;i<wd.length;i++){const wt=i/ctx.sampleRate;
+        const dropEnv=Math.exp(-wt*6);
+        const drip=Math.sin(2*Math.PI*(600+400*Math.exp(-wt*8))*wt)*0.3;
+        const splash=(Math.random()*2-1)*0.15*Math.exp(-wt*10);
+        const ring=Math.sin(2*Math.PI*1200*wt)*0.08*Math.exp(-wt*4);
+        wd[i]=dropEnv*(drip+splash+ring)}
+      const ws=ctx.createBufferSource();ws.buffer=buf;
+      const wlp=ctx.createBiquadFilter();wlp.type='lowpass';wlp.frequency.value=3000;
+      const wg=ctx.createGain();wg.gain.value=0.5;
+      ws.connect(wlp);wlp.connect(wg);wg.connect(ctx.destination);ws.start(t);
     }
     else if(kind==='tab'){beep(520,0,0.06,0.06);beep(660,0.04,0.06,0.06)}
   }catch(e){}
@@ -10259,26 +10281,93 @@ function _hydrationPatch(){var dots=document.querySelectorAll('.is-hyd-dot');dot
 function drinkWater(){_hydrationToday();if(S.hydration.glass>=S.hydration.goal){toast('\\u{1F4A7} You already hit your goal! Great job!');return}S.hydration.glass++;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));_mgSound('water');toast('\\u{1F4A7} Nice! '+S.hydration.glass+'/'+S.hydration.goal+' glasses today');_hydrationPatch()}
 function undrinkWater(){_hydrationToday();if(S.hydration.glass<=0)return;S.hydration.glass--;localStorage.setItem('tf_hydration_glass',String(S.hydration.glass));toast('\\u{1F4A7} Adjusted to '+S.hydration.glass+'/'+S.hydration.goal);_hydrationPatch()}
 function _playWaterSound(){
-  try{const ac=new(window.AudioContext||window.webkitAudioContext)();
-  const dur=1.2;const sr=ac.sampleRate;const buf=ac.createBuffer(1,sr*dur,sr);const d=buf.getChannelData(0);
-  for(let i=0;i<d.length;i++){const t=i/sr;const env=Math.exp(-t*3);d[i]=env*(Math.sin(2*Math.PI*220*t+6*Math.sin(2*Math.PI*3.5*t))*0.3+Math.sin(2*Math.PI*440*t)*0.15+(Math.random()-0.5)*0.08*Math.exp(-t*5))}
-  const src=ac.createBufferSource();src.buffer=buf;const g=ac.createGain();g.gain.value=0.5;src.connect(g);g.connect(ac.destination);src.start();src.onended=()=>ac.close()}catch(e){}
+  try{
+    const ac=new(window.AudioContext||window.webkitAudioContext)();
+    const sr=ac.sampleRate;const dur=2.5;
+    const buf=ac.createBuffer(2,sr*dur,sr);
+    const L=buf.getChannelData(0);const R=buf.getChannelData(1);
+    for(let i=0;i<L.length;i++){
+      const t=i/sr;
+      // Pour envelope: ramps up, sustains, fades
+      const pourEnv=Math.min(1,t/0.3)*Math.max(0,1-(t-1.8)/0.7);
+      // Filtered noise simulates water turbulence
+      const noise=(Math.random()*2-1);
+      // Bubble oscillations at varying rates
+      const bubbleRate=8+6*Math.sin(t*2.1);
+      const bubble=Math.sin(2*Math.PI*bubbleRate*t)*0.4;
+      // Water resonance: low rumble + mid splash
+      const lowRumble=Math.sin(2*Math.PI*85*t+3*Math.sin(2*Math.PI*1.2*t))*0.2;
+      const midSplash=Math.sin(2*Math.PI*(350+150*Math.sin(2*Math.PI*4.5*t))*t)*0.12;
+      // Random drip pings
+      const dripPhase=t*7.3;const dripPing=Math.sin(dripPhase*60)*Math.exp(-((dripPhase%1)*8))*0.15;
+      // Glass filling: rising pitch
+      const fillTone=Math.sin(2*Math.PI*(200+t*80)*t)*0.06*pourEnv;
+      // Combine
+      const sample=pourEnv*(noise*0.18*(0.5+bubble*0.5)+lowRumble+midSplash+dripPing+fillTone);
+      L[i]=sample;R[i]=sample*(0.85+0.15*Math.sin(t*3));
+    }
+    const src=ac.createBufferSource();src.buffer=buf;
+    // Low-pass filter for warmth
+    const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2800;lp.Q.value=0.7;
+    // Slight reverb via delay
+    const delay=ac.createDelay();delay.delayTime.value=0.08;
+    const dGain=ac.createGain();dGain.gain.value=0.25;
+    const master=ac.createGain();master.gain.value=0.65;
+    src.connect(lp);lp.connect(master);master.connect(ac.destination);
+    lp.connect(delay);delay.connect(dGain);dGain.connect(master);
+    src.start();src.onended=()=>setTimeout(()=>ac.close(),500);
+  }catch(e){}
 }
 function _showHydrationNotif(){
   _hydrationToday();
   if(!S.hydration.enabled)return;
   _playWaterSound();
+  // Vibrate on supported devices (pattern: buzz-pause-buzz)
+  try{if(navigator.vibrate)navigator.vibrate([200,100,200,100,200])}catch(e){}
+  // Browser notification (not silent — let it ring)
   if('Notification' in window&&Notification.permission==='granted'){
-    new Notification('\\u{1F4A7} Time to hydrate!',{body:'You\\'ve had '+S.hydration.glass+'/'+S.hydration.goal+' glasses today. Drink some water!',icon:'/icon-192.png',tag:'hydration',silent:true});
+    try{new Notification('\\u{1F4A7} Time to hydrate!',{body:'You\\'ve had '+S.hydration.glass+'/'+S.hydration.goal+' glasses today. Drink some water!',icon:'/icon-192.png',tag:'hydration-'+Date.now(),requireInteraction:true})}catch(e){}
   }
-  toast('\\u{1F4A7} Time to drink water! ('+S.hydration.glass+'/'+S.hydration.goal+')');
+  // Prominent in-app overlay (works even on iOS where Notification API is absent)
+  _showHydrationOverlay();
   S.hydration.lastReminder=Date.now();
+  localStorage.setItem('tf_hydration_last',String(S.hydration.lastReminder));
+}
+function _showHydrationOverlay(){
+  var existing=document.getElementById('hydration-overlay');if(existing)existing.remove();
+  var ov=document.createElement('div');ov.id='hydration-overlay';
+  ov.innerHTML='<div class="hyd-ov-card">'
+    +'<div class="hyd-ov-icon">\\u{1F4A7}</div>'
+    +'<div class="hyd-ov-title">Time to hydrate!</div>'
+    +'<div class="hyd-ov-sub">You\\'ve had <b>'+S.hydration.glass+'/'+S.hydration.goal+'</b> glasses today</div>'
+    +'<div class="hyd-ov-btns">'
+    +'<button class="hyd-ov-drink" onclick="drinkWater();this.closest(\\\'#hydration-overlay\\\').remove()">\\u{1F4A7} Drink water</button>'
+    +'<button class="hyd-ov-later" onclick="this.closest(\\\'#hydration-overlay\\\').remove()">Later</button>'
+    +'</div></div>';
+  document.body.appendChild(ov);
+  // Auto-dismiss after 30 seconds
+  setTimeout(function(){var el=document.getElementById('hydration-overlay');if(el)el.remove()},30000);
 }
 function startHydrationTimer(){
   if(S.hydration.interval)clearInterval(S.hydration.interval);
   if(!S.hydration.enabled)return;
-  if('Notification' in window&&Notification.permission==='default'){Notification.requestPermission()}
+  // Request notification permission (prompt user)
+  if('Notification' in window&&Notification.permission==='default'){
+    Notification.requestPermission().then(function(p){if(p==='granted')toast('\\u{1F514} Notifications enabled!')})
+  }
   S.hydration.interval=setInterval(_showHydrationNotif,3600000);
+  // Also check on visibility change — catches missed reminders when phone was sleeping
+  if(!S.hydration._visHandler){
+    S.hydration._visHandler=true;
+    document.addEventListener('visibilitychange',function(){
+      if(document.visibilityState!=='visible')return;
+      if(!S.hydration.enabled)return;
+      var last=parseInt(localStorage.getItem('tf_hydration_last')||'0',10);
+      var now=Date.now();
+      // If more than 1 hour passed since last reminder, fire one now
+      if(last&&now-last>=3600000){_showHydrationNotif()}
+    });
+  }
 }
 // Auto-start hydration timer on load if enabled
 setTimeout(()=>{if(S.hydration.enabled)startHydrationTimer()},2000);
