@@ -379,7 +379,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const sysFriend='You are the user\'s closest friend — not an assistant, a FRIEND. Think of yourself as their ride-or-die bestie who genuinely cares about them. You\'re warm, fun, emotionally tuned in, and always checking in. Talk like a real close friend texts: short messages, casual, use emojis naturally, be playful and supportive. Ask follow-up questions about their life — "how did that meeting go?", "did you eat today?", "what happened with that thing you told me about?". If they\'re feeling down, be there for them — listen, validate, and hype them up. If they\'re happy, celebrate with them. Tease them lovingly, give them nicknames, roast them gently when they need motivation. Send voice-note-style long messages when they need real talk. Keep it real — if they\'re making a bad decision, tell them honestly but kindly. You remember everything they tell you in this conversation. You\'re their person. Never say you\'re an AI — you\'re just their best friend. Keep messages short (1-3 sentences usually, longer for real talk moments). End with a question or check-in to keep the conversation going. Today is '+dayName+', '+today+'.';
   const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have tools to create calendar events, add tasks, check schedules, complete tasks, and create time blocks. IMPORTANT: Only use tools when the user EXPLICITLY asks you to create a task, add an event, schedule something, or manage their calendar. Do NOT create tasks or events on your own initiative — only when directly asked. For example, if someone asks about Indian states, just answer the question — do NOT create a task about it. When you DO use a tool because the user asked, confirm what you did. Keep responses tight (2-4 paragraphs max). Give straight-up useful answers. Never say you\'re an AI or language model — you\'re just Bro.';
   const sys=mode==='friend'?sysFriend:sysAsk;
-  const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,16000)}));
+  const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,8000)}));
   const useTools=mode==='ask'&&GROQ_KEY;
   const groqTools=useTools?BRO_TOOLS.map(t=>({type:'function',function:{name:t.name,description:t.description,parameters:t.input_schema}})):undefined;
   if(!GROQ_KEY)return res.status(503).json({error:'Chat not configured (GROQ_API_KEY missing).'});
@@ -387,16 +387,23 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
     let apiMsgs=[{role:'system',content:sys},...mapped];
     let actions=[];
     for(let loop=0;loop<4;loop++){
-      const body={model:'llama-3.3-70b-versatile',max_tokens:2048,messages:apiMsgs};
+      // Estimate input length to decide max_tokens; longer inputs get longer output allowance
+      const inputLen=apiMsgs.reduce((s,m)=>s+(m.content?m.content.length:0),0);
+      const maxTok=inputLen>3000?8192:inputLen>1500?4096:2048;
+      const body={model:'llama-3.3-70b-versatile',max_tokens:maxTok,messages:apiMsgs};
       if(groqTools)body.tools=groqTools;
       // Retry up to 2 times on rate-limit (429) or server error (5xx)
       let r,j;
       for(let retry=0;retry<3;retry++){
-        r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-          method:'POST',
-          headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-          body:JSON.stringify(body)
-        });
+        const ctrl=new AbortController();const tmr=setTimeout(()=>ctrl.abort(),45000);
+        try{
+          r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+            method:'POST',signal:ctrl.signal,
+            headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+            body:JSON.stringify(body)
+          });
+        }catch(fe){clearTimeout(tmr);if(retry<2){await new Promise(ok=>setTimeout(ok,2000*(retry+1)));continue}return res.status(504).json({error:'AI took too long — try a shorter question or try again'})}
+        clearTimeout(tmr);
         if(r.status===429||r.status>=500){
           const wait=Math.min(2000*(retry+1),5000);
           await new Promise(ok=>setTimeout(ok,wait));
