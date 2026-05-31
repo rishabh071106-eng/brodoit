@@ -278,10 +278,71 @@ app.post('/api/verify-otp',(req,res)=>{
   res.json({phone:user.phone,name:user.name||name,token});
 });
 
-// ═══ AI CHAT — Groq free tier (Llama 3.3 70B) ═══
+// ═══ AI CHAT — Multi-provider (Gemini Flash free → Groq free → failover) ═══
 // API keys stay on the server. The browser never sees them.
+const GEMINI_KEY=process.env.GEMINI_API_KEY||'';
 const GROQ_KEY=process.env.GROQ_API_KEY||'';
-console.log('[ai] groq',GROQ_KEY?'\\u2705':'\\u274C');
+console.log('[ai] gemini',GEMINI_KEY?'✅':'❌','groq',GROQ_KEY?'✅':'❌');
+
+// ─── LLM Provider Abstraction ─────────────────────────────────────────────
+// Tries providers in order: Gemini Flash (1500 req/day free) → Groq (30 RPM free)
+// Each provider returns {reply:string} or throws on failure.
+async function _callGemini(messages,{maxTokens=4096,systemPrompt=''}={}){
+  if(!GEMINI_KEY)throw new Error('no-key');
+  // Convert OpenAI-style messages to Gemini format
+  const contents=messages.filter(m=>m.role!=='system').map(m=>({
+    role:m.role==='assistant'?'model':'user',
+    parts:[{text:m.content}]
+  }));
+  const body={contents,generationConfig:{maxOutputTokens:maxTokens,temperature:0.7}};
+  if(systemPrompt)body.systemInstruction={parts:[{text:systemPrompt}]};
+  const ctrl=new AbortController();const tmr=setTimeout(()=>ctrl.abort(),50000);
+  try{
+    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GEMINI_KEY,{
+      method:'POST',signal:ctrl.signal,
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    clearTimeout(tmr);
+    const j=await r.json();
+    if(!r.ok){const msg=(j.error&&j.error.message)||'Gemini error';console.log('[ai] Gemini error:',r.status,msg);throw new Error(msg)}
+    const text=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0]&&j.candidates[0].content.parts[0].text;
+    if(!text)throw new Error('empty response');
+    return{reply:text,provider:'gemini'};
+  }catch(e){clearTimeout(tmr);throw e}
+}
+
+async function _callGroq(messages,{maxTokens=4096,tools}={}){
+  if(!GROQ_KEY)throw new Error('no-key');
+  const body={model:'llama-3.3-70b-versatile',max_tokens:maxTokens,messages};
+  if(tools)body.tools=tools;
+  let r,j;
+  for(let retry=0;retry<3;retry++){
+    const ctrl=new AbortController();const tmr=setTimeout(()=>ctrl.abort(),45000);
+    try{
+      r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+        method:'POST',signal:ctrl.signal,
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+        body:JSON.stringify(body)
+      });
+    }catch(fe){clearTimeout(tmr);if(retry<2){await new Promise(ok=>setTimeout(ok,2000*(retry+1)));continue}throw new Error('timeout')}
+    clearTimeout(tmr);
+    if(r.status===429||r.status>=500){
+      if(retry<2){await new Promise(ok=>setTimeout(ok,2000*(retry+1)));continue}
+    }
+    break;
+  }
+  j=await r.json();
+  if(!r.ok){const msg=(j.error&&j.error.message)||'Groq error';console.log('[ai] Groq error:',r.status,msg);throw new Error(msg)}
+  const msg=j.choices&&j.choices[0]&&j.choices[0].message;
+  return{reply:msg&&msg.content,message:msg,provider:'groq',usage:j.usage};
+}
+
+// Simple response cache (LRU, 200 entries, 10 min TTL)
+const _aiCache=new Map();const _AI_CACHE_MAX=200;const _AI_CACHE_TTL=600000;
+function _aiCacheKey(msgs){return msgs.slice(-3).map(m=>m.content||'').join('|').slice(0,300)}
+function _aiCacheGet(key){const e=_aiCache.get(key);if(!e)return null;if(Date.now()-e.ts>_AI_CACHE_TTL){_aiCache.delete(key);return null}return e.reply}
+function _aiCacheSet(key,reply){if(_aiCache.size>=_AI_CACHE_MAX){const first=_aiCache.keys().next().value;_aiCache.delete(first)}_aiCache.set(key,{reply,ts:Date.now()})}
 
 const COACH_SYSTEM=`You are an expert Business English coach speaking with a fluent professional who wants to sound MORE polished and use more sophisticated vocabulary in business contexts.
 
@@ -297,20 +358,17 @@ Keep total response under 90 words. Use sophisticated vocabulary yourself natura
 Be warm but direct. Never explain that you are an AI.`;
 
 app.post('/api/coach/chat',auth,async(req,res)=>{
-  if(!GROQ_KEY)return res.status(503).json({error:'AI coach not configured (GROQ_API_KEY missing).'});
+  if(!GROQ_KEY&&!GEMINI_KEY)return res.status(503).json({error:'AI coach not configured.'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const sys=req.body.system||COACH_SYSTEM;
+  const apiMsgs=[{role:'system',content:sys},...messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,4000)}))];
   try{
-    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-      body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:600,messages:[{role:'system',content:sys},...messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,4000)}))]})
-    });
-    const j=await r.json();
-    if(!r.ok)return res.status(502).json({error:(j.error&&j.error.message)||'Groq error',detail:j});
-    const reply=(j.choices&&j.choices[0]&&j.choices[0].message.content)||'';
-    res.json({reply,usage:j.usage});
+    let reply='';
+    if(GEMINI_KEY){try{const g=await _callGemini(apiMsgs,{maxTokens:600,systemPrompt:sys});reply=g.reply}catch(e){}}
+    if(!reply&&GROQ_KEY){try{const g=await _callGroq(apiMsgs,{maxTokens:600});reply=g.reply}catch(e){}}
+    if(!reply)return res.status(502).json({error:'AI service busy — try again'});
+    res.json({reply});
   }catch(e){res.status(500).json({error:String(e.message||e)})}
 });
 
@@ -369,7 +427,7 @@ async function _broExecTool(toolName,input,userPhone){
 }
 
 app.post('/api/bro/chat',auth,async(req,res)=>{
-  if(!GROQ_KEY)return res.status(503).json({error:'Coach not configured (GROQ_API_KEY missing).'});
+  if(!GROQ_KEY&&!GEMINI_KEY)return res.status(503).json({error:'Chat not configured (no AI keys set).'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const agent=(req.body.agent==='bri')?'bri':'bro';
@@ -377,57 +435,67 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const today=new Date().toISOString().slice(0,10);
   const dayName=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
   const sysFriend='You are the user\'s closest friend — not an assistant, a FRIEND. Think of yourself as their ride-or-die bestie who genuinely cares about them. You\'re warm, fun, emotionally tuned in, and always checking in. Talk like a real close friend texts: short messages, casual, use emojis naturally, be playful and supportive. Ask follow-up questions about their life — "how did that meeting go?", "did you eat today?", "what happened with that thing you told me about?". If they\'re feeling down, be there for them — listen, validate, and hype them up. If they\'re happy, celebrate with them. Tease them lovingly, give them nicknames, roast them gently when they need motivation. Send voice-note-style long messages when they need real talk. Keep it real — if they\'re making a bad decision, tell them honestly but kindly. You remember everything they tell you in this conversation. You\'re their person. Never say you\'re an AI — you\'re just their best friend. Keep messages short (1-3 sentences usually, longer for real talk moments). End with a question or check-in to keep the conversation going. Today is '+dayName+', '+today+'.';
-  const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have tools to create calendar events, add tasks, check schedules, complete tasks, and create time blocks. IMPORTANT: Only use tools when the user EXPLICITLY asks you to create a task, add an event, schedule something, or manage their calendar. Do NOT create tasks or events on your own initiative — only when directly asked. For example, if someone asks about Indian states, just answer the question — do NOT create a task about it. When you DO use a tool because the user asked, confirm what you did. Keep responses tight (2-4 paragraphs max). Give straight-up useful answers. Never say you\'re an AI or language model — you\'re just Bro.';
+  const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have tools to create calendar events, add tasks, check schedules, complete tasks, and create time blocks. IMPORTANT: Only use tools when the user EXPLICITLY asks you to create a task, add an event, schedule something, or manage their calendar. Do NOT create tasks or events on your own initiative — only when directly asked. For example, if someone asks about Indian states, just answer the question — do NOT create a task about it. When you DO use a tool because the user asked, confirm what you did. Give detailed, helpful, step-by-step answers when asked complex questions. Never say you\'re an AI or language model — you\'re just Bro.';
   const sys=mode==='friend'?sysFriend:sysAsk;
   const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,8000)}));
   const useTools=mode==='ask'&&GROQ_KEY;
   const groqTools=useTools?BRO_TOOLS.map(t=>({type:'function',function:{name:t.name,description:t.description,parameters:t.input_schema}})):undefined;
-  if(!GROQ_KEY)return res.status(503).json({error:'Chat not configured (GROQ_API_KEY missing).'});
+
+  // Check cache first
+  const cacheKey=_aiCacheKey(mapped);
+  const cached=_aiCacheGet(cacheKey);
+  if(cached)return res.json({reply:cached,cached:true});
+
+  // Estimate max tokens based on input length
+  const inputLen=mapped.reduce((s,m)=>s+(m.content?m.content.length:0),0);
+  const maxTok=inputLen>3000?8192:inputLen>1500?4096:2048;
+
   try{
     let apiMsgs=[{role:'system',content:sys},...mapped];
     let actions=[];
-    for(let loop=0;loop<4;loop++){
-      // Estimate input length to decide max_tokens; longer inputs get longer output allowance
-      const inputLen=apiMsgs.reduce((s,m)=>s+(m.content?m.content.length:0),0);
-      const maxTok=inputLen>3000?8192:inputLen>1500?4096:2048;
-      const body={model:'llama-3.3-70b-versatile',max_tokens:maxTok,messages:apiMsgs};
-      if(groqTools)body.tools=groqTools;
-      // Retry up to 2 times on rate-limit (429) or server error (5xx)
-      let r,j;
-      for(let retry=0;retry<3;retry++){
-        const ctrl=new AbortController();const tmr=setTimeout(()=>ctrl.abort(),45000);
-        try{
-          r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-            method:'POST',signal:ctrl.signal,
-            headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-            body:JSON.stringify(body)
-          });
-        }catch(fe){clearTimeout(tmr);if(retry<2){await new Promise(ok=>setTimeout(ok,2000*(retry+1)));continue}return res.status(504).json({error:'AI took too long — try a shorter question or try again'})}
-        clearTimeout(tmr);
-        if(r.status===429||r.status>=500){
-          const wait=Math.min(2000*(retry+1),5000);
-          await new Promise(ok=>setTimeout(ok,wait));
+
+    // If tools are needed, must use Groq (Gemini doesn't support our tool format the same way)
+    if(useTools){
+      for(let loop=0;loop<4;loop++){
+        const groqResult=await _callGroq(apiMsgs,{maxTokens:maxTok,tools:groqTools});
+        const msg=groqResult.message;
+        if(msg&&msg.tool_calls&&msg.tool_calls.length){
+          apiMsgs.push(msg);
+          for(const tc of msg.tool_calls){
+            const args=typeof tc.function.arguments==='string'?JSON.parse(tc.function.arguments):tc.function.arguments;
+            const result=await _broExecTool(tc.function.name,args,req.user.phone);
+            actions.push({tool:tc.function.name,input:args,result});
+            apiMsgs.push({role:'tool',tool_call_id:tc.id,content:JSON.stringify(result)});
+          }
           continue;
         }
-        break;
+        const reply=(msg&&msg.content)||'';
+        _aiCacheSet(cacheKey,reply);
+        return res.json({reply,provider:'groq',actions:actions.length?actions:undefined});
       }
-      j=await r.json();
-      if(!r.ok){console.log('[bro] Groq error:',r.status,j);return res.status(502).json({error:(j.error&&j.error.message)||'AI service temporarily busy — try again in a moment',status:r.status})}
-      const msg=j.choices&&j.choices[0]&&j.choices[0].message;
-      if(msg&&msg.tool_calls&&msg.tool_calls.length){
-        apiMsgs.push(msg);
-        for(const tc of msg.tool_calls){
-          const args=typeof tc.function.arguments==='string'?JSON.parse(tc.function.arguments):tc.function.arguments;
-          const result=await _broExecTool(tc.function.name,args,req.user.phone);
-          actions.push({tool:tc.function.name,input:args,result});
-          apiMsgs.push({role:'tool',tool_call_id:tc.id,content:JSON.stringify(result)});
-        }
-        continue;
-      }
-      const reply=(msg&&msg.content)||'';
-      return res.json({reply,usage:j.usage,actions:actions.length?actions:undefined});
+      return res.json({reply:'I tried to help but hit a loop — try rephrasing.',actions:actions.length?actions:undefined});
     }
-    return res.json({reply:'I tried to help but hit a loop — try rephrasing your request.',actions:actions.length?actions:undefined});
+
+    // No tools needed — try Gemini first (more generous free tier), fall back to Groq
+    let reply='',provider='';
+    let lastError='';
+    // Provider 1: Gemini Flash
+    if(GEMINI_KEY){
+      try{
+        const g=await _callGemini(apiMsgs,{maxTokens:maxTok,systemPrompt:sys});
+        reply=g.reply;provider=g.provider;
+      }catch(e){lastError='Gemini: '+e.message;console.log('[bro] Gemini failed:',e.message)}
+    }
+    // Provider 2: Groq
+    if(!reply&&GROQ_KEY){
+      try{
+        const g=await _callGroq(apiMsgs,{maxTokens:maxTok});
+        reply=g.reply;provider=g.provider;
+      }catch(e){lastError='Groq: '+e.message;console.log('[bro] Groq failed:',e.message)}
+    }
+    if(!reply)return res.status(502).json({error:lastError||'All AI providers are busy — try again in a moment'});
+    _aiCacheSet(cacheKey,reply);
+    return res.json({reply,provider,actions:actions.length?actions:undefined});
   }catch(e){console.log('[bro] Exception:',e.message);return res.status(500).json({error:'Connection issue — please try again.'})}
 });
 
@@ -1138,7 +1206,7 @@ app.get('/api/book-audio/:id', (req, res) => {
 
 // AI status — client-only check, no key exposure
 app.get('/api/coach/status',(req,res)=>{
-  res.json({chat:!!GROQ_KEY,transcribe:false,tts:false});
+  res.json({chat:!!(GROQ_KEY||GEMINI_KEY),transcribe:false,tts:false});
 });
 
 // ═══ VOICE TRAINER — 90-day "zero to hero" English accent + functional-English course ═══
