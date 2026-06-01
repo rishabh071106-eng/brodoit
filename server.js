@@ -32,6 +32,7 @@ try{db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email) W
 // Used by GET /admin/testers to show who's actively using the app for the
 // 14-day Play Store closed-test count.
 try{db.exec("ALTER TABLE users ADD COLUMN last_seen TEXT")}catch(e){}
+try{db.exec("ALTER TABLE users ADD COLUMN tz TEXT DEFAULT ''")}catch(e){}
 try{db.exec("ALTER TABLE users ADD COLUMN is_beta_tester INTEGER DEFAULT 0")}catch(e){}
 try{db.exec("CREATE TABLE IF NOT EXISTS steps(id INTEGER PRIMARY KEY AUTOINCREMENT,user_phone TEXT NOT NULL,date TEXT NOT NULL,count INTEGER NOT NULL DEFAULT 0,source TEXT DEFAULT'manual',updated_at TEXT DEFAULT(datetime('now')))")}catch(e){}
 try{db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_steps_user_date ON steps(user_phone,date)")}catch(e){}
@@ -128,8 +129,14 @@ function auth(req,res,next){
   if(!t)return res.status(401).json({error:'Login required'});
   const u=db.prepare('SELECT * FROM users WHERE token=?').get(t);if(!u)return res.status(401).json({error:'Invalid token'});
   req.user=u;
+  // Auto-save user timezone from browser
+  const ctz=req.headers['x-timezone']||'';
+  if(ctz&&ctz!==u.tz&&/^[A-Za-z_\/]+$/.test(ctz)){try{db.prepare('UPDATE users SET tz=? WHERE phone=?').run(ctz,u.phone);u.tz=ctz}catch(e){}}
   try{const now=Date.now();const cached=_lastSeenCache.get(u.phone)||0;if(now-cached>60000){_lastSeenCache.set(u.phone,now);db.prepare("UPDATE users SET last_seen=datetime('now') WHERE phone=?").run(u.phone)}}catch(e){}
   next();
+}
+function _getUserTz(userPhone){
+  try{const r=db.prepare('SELECT tz FROM users WHERE phone=?').get(userPhone);return(r&&r.tz)||'UTC'}catch(e){return'UTC'}
 }
 
 // Admin auth — gates the tester dashboards. Three ways to authenticate
@@ -384,12 +391,12 @@ const BRO_TOOLS=[
   {name:'complete_task',description:'Mark a task as done. Use when the user says they finished something.',input_schema:{type:'object',properties:{title:{type:'string',description:'Task title or partial match to find it'}},required:['title']}},
   {name:'create_schedule_block',description:'Create a time block on the user\'s day schedule. Use for time-blocking, focus sessions, etc.',input_schema:{type:'object',properties:{date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'},start_time:{type:'string',description:'Start HH:MM 24h'},end_time:{type:'string',description:'End HH:MM 24h'},label:{type:'string',description:'Block label'}},required:['start_time','end_time','label']}}
 ];
-async function _broExecTool(toolName,input,userPhone){
+async function _broExecTool(toolName,input,userPhone,userTz){
   const today=new Date().toISOString().slice(0,10);
   if(toolName==='create_calendar_event'){
     const ga=await gAccessToken(userPhone);
     if(!ga)return{ok:false,error:'Google Calendar not connected. Ask user to connect Google in Settings.'};
-    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
+    const tz=userTz||_getUserTz(userPhone);
     let body;
     if(input.time){const st=input.date+'T'+input.time+':00';const dur=input.duration||30;const en=new Date(new Date(st).getTime()+dur*60000).toISOString().slice(0,19);body={summary:input.title,description:input.notes||'Created via Bro',start:{dateTime:st,timeZone:tz},end:{dateTime:en,timeZone:tz}}}
     else body={summary:input.title,description:input.notes||'Created via Bro',start:{date:input.date},end:{date:input.date}};
@@ -409,7 +416,7 @@ async function _broExecTool(toolName,input,userPhone){
     const blocks=db.prepare('SELECT label,start_time,end_time FROM schedule_blocks WHERE user_phone=? AND date=? ORDER BY start_time ASC').all(userPhone,d);
     let events=[];
     const ga=await gAccessToken(userPhone);
-    if(ga){try{const from=d+'T00:00:00Z';const to=d+'T23:59:59Z';const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin='+encodeURIComponent(from)+'&timeMax='+encodeURIComponent(to)+'&singleEvents=true&orderBy=startTime&maxResults=50',{headers:{Authorization:'Bearer '+ga.token}});const j=await r.json();events=(j.items||[]).map(e=>({title:e.summary,start:e.start?.dateTime||e.start?.date,end:e.end?.dateTime||e.end?.date}))}catch(e){}}
+    if(ga){try{const schTz=userTz||_getUserTz(userPhone);const from=d+'T00:00:00';const to=d+'T23:59:59';const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin='+encodeURIComponent(from)+'&timeMax='+encodeURIComponent(to)+'&timeZone='+encodeURIComponent(schTz)+'&singleEvents=true&orderBy=startTime&maxResults=50',{headers:{Authorization:'Bearer '+ga.token}});const j=await r.json();events=(j.items||[]).map(e=>({title:e.summary,start:e.start?.dateTime||e.start?.date,end:e.end?.dateTime||e.end?.date}))}catch(e){}}
     return{ok:true,date:d,tasks,blocks,calendar_events:events};
   }
   if(toolName==='complete_task'){
@@ -422,7 +429,7 @@ async function _broExecTool(toolName,input,userPhone){
   if(toolName==='create_schedule_block'){
     const d=input.date||today;
     const id=_crypto.randomBytes(8).toString('hex');
-    const gcal=await _gcalCreateTimed(userPhone,d,input.start_time,input.end_time,input.label,'#C47A3A');
+    const gcal=await _gcalCreateTimed(userPhone,d,input.start_time,input.end_time,input.label,'#C47A3A',userTz);
     db.prepare('INSERT INTO schedule_blocks(id,user_phone,date,start_time,end_time,label,color,gcal_event_id,gcal_email)VALUES(?,?,?,?,?,?,?,?,?)').run(id,userPhone,d,input.start_time,input.end_time,input.label,'#C47A3A',gcal?.id||null,gcal?.email||null);
     return{ok:true,block:{id,label:input.label,start:input.start_time,end:input.end_time,date:d,synced_to_gcal:!!gcal}};
   }
@@ -468,7 +475,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
           apiMsgs.push(msg);
           for(const tc of msg.tool_calls){
             const args=typeof tc.function.arguments==='string'?JSON.parse(tc.function.arguments):tc.function.arguments;
-            const result=await _broExecTool(tc.function.name,args,req.user.phone);
+            const result=await _broExecTool(tc.function.name,args,req.user.phone,req.user.tz||_getUserTz(req.user.phone));
             actions.push({tool:tc.function.name,input:args,result});
             apiMsgs.push({role:'tool',tool_call_id:tc.id,content:JSON.stringify(result)});
           }
@@ -1611,7 +1618,8 @@ app.get('/api/calendar/events',auth,async(req,res)=>{
   const email=req.query.email;const ga=await gAccessToken(req.user.phone,email);
   if(!ga)return res.status(400).json({error:'Google Calendar not connected'});
   const now=new Date();const from=req.query.from||new Date(now.getFullYear(),now.getMonth()-1,1).toISOString();const to=req.query.to||new Date(now.getFullYear(),now.getMonth()+2,0).toISOString();
-  const url='https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin='+encodeURIComponent(from)+'&timeMax='+encodeURIComponent(to)+'&singleEvents=true&orderBy=startTime&maxResults=100';
+  const calTz=_getUserTz(req.user.phone);
+  const url='https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin='+encodeURIComponent(from)+'&timeMax='+encodeURIComponent(to)+'&timeZone='+encodeURIComponent(calTz)+'&singleEvents=true&orderBy=startTime&maxResults=100';
   try{
     const r=await fetch(url,{headers:{Authorization:'Bearer '+ga.token}});
     const j=await r.json();
@@ -1621,10 +1629,10 @@ app.get('/api/calendar/events',auth,async(req,res)=>{
   }catch(e){res.status(500).json({error:e.message})}
 });
 app.post('/api/calendar/events',auth,async(req,res)=>{
-  const{title,date,time,duration,notes,email}=req.body;
+  const{title,date,time,duration,notes,email,tz:bodyTz}=req.body;
   if(!title||!date)return res.status(400).json({error:'title and date required'});
   const ga=await gAccessToken(req.user.phone,email);if(!ga)return res.status(400).json({error:'Google Calendar not connected'});
-  const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
+  const tz=bodyTz||_getUserTz(req.user.phone);
   let body;
   if(time){const startISO=date+'T'+time+':00';const endTime=new Date(new Date(startISO).getTime()+(duration||30)*60000).toISOString().slice(0,19);body={summary:title,description:notes||'Created via Brodoit',start:{dateTime:startISO,timeZone:tz},end:{dateTime:endTime,timeZone:tz}}}
   else body={summary:title,description:notes||'Created via Brodoit',start:{date},end:{date}};
@@ -1746,11 +1754,11 @@ setInterval(_hlReminderTick,10*60*1000);
 setTimeout(_hlReminderTick,30*1000); // first check 30s after boot
 
 // ─── Schedule Blocks API ──────────────────────────────────────────────
-async function _gcalCreateTimed(userPhone,date,startTime,endTime,label,color){
+async function _gcalCreateTimed(userPhone,date,startTime,endTime,label,color,userTz){
   const def=db.prepare("SELECT email FROM google_tokens WHERE user_phone=? ORDER BY is_default DESC LIMIT 1").get(userPhone);
   if(!def)return null;
   const ga=await gAccessToken(userPhone,def.email);if(!ga)return null;
-  const tz=process.env.SERVER_TZ||'UTC';
+  const tz=userTz||_getUserTz(userPhone);
   const startISO=date+'T'+startTime+':00';
   const endISO=date+'T'+endTime+':00';
   const body={summary:'\u{1F512} '+label,description:'Time block from Brodoit. Phone away. Door closed.',start:{dateTime:startISO,timeZone:tz},end:{dateTime:endISO,timeZone:tz},colorId:color||'9'};
@@ -1766,7 +1774,7 @@ app.get('/api/schedule',auth,(req,res)=>{
   res.json({date,blocks:rows});
 });
 app.post('/api/schedule',auth,async(req,res)=>{
-  const{date,start_time,end_time,label,color}=req.body||{};
+  const{date,start_time,end_time,label,color,tz:bodyTz}=req.body||{};
   const d=String(date||_todayISO());
   const st=String(start_time||'').match(/^(\d{2}):(\d{2})$/)?start_time:null;
   const et=String(end_time||'').match(/^(\d{2}):(\d{2})$/)?end_time:null;
@@ -1774,7 +1782,8 @@ app.post('/api/schedule',auth,async(req,res)=>{
   if(!st||!et||!lab)return res.status(400).json({error:'date, start_time HH:MM, end_time HH:MM, label required'});
   if(et<=st)return res.status(400).json({error:'end_time must be after start_time'});
   const id=_crypto.randomBytes(8).toString('hex');
-  const gcal=await _gcalCreateTimed(req.user.phone,d,st,et,lab,color||'');
+  const userTz=bodyTz||_getUserTz(req.user.phone);
+  const gcal=await _gcalCreateTimed(req.user.phone,d,st,et,lab,color||'',userTz);
   db.prepare('INSERT INTO schedule_blocks(id,user_phone,date,start_time,end_time,label,color,gcal_event_id,gcal_email)VALUES(?,?,?,?,?,?,?,?,?)').run(id,req.user.phone,d,st,et,lab,color||'',gcal?.id||null,gcal?.email||null);
   const row=db.prepare('SELECT * FROM schedule_blocks WHERE id=?').get(id);
   res.json({ok:true,block:row,gcal:gcal||null});
@@ -7472,7 +7481,7 @@ if(token){S.user={phone:localStorage.getItem('tf_phone'),name:localStorage.getIt
   }
 }
 
-const api=async(p,o={})=>{try{const h={'Content-Type':'application/json'};if(token)h['x-token']=token;const r=await fetch('/api'+p,{headers:h,...o});if(r.status===401){logout();return null}return await r.json()}catch(e){return null}};
+const api=async(p,o={})=>{try{const h={'Content-Type':'application/json','X-Timezone':Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'};if(token)h['x-token']=token;const r=await fetch('/api'+p,{headers:h,...o});if(r.status===401){logout();return null}return await r.json()}catch(e){return null}};
 const P={high:{c:'#E8453C',d:'\\u{1F534}'},medium:{c:'#E8912C',d:'\\u{1F7E0}'},low:{c:'#3DAE5C',d:'\\u{1F7E2}'}};
 // Scenic Unsplash hero banners per tab (free, hot-link friendly)
 // Per-tab illustrated doodles (sidebar) — colorful filled SVGs that read as illustrations
@@ -8169,7 +8178,7 @@ async function setDefaultGoogle(email){const r=await api('/google/set-default',{
 async function loadGcalEvents(){if(!S.google.accounts.length)return;S.gcalLoading=true;render();const def=S.google.accounts.find(a=>a.is_default)||S.google.accounts[0];const r=await api('/calendar/events?email='+encodeURIComponent(def.email));S.gcalLoading=false;if(r&&r.events){S.gcalEvents=r.events;render()}else{S.gcalEvents=[];render();if(r&&r.error)toast('\\u26A0\\uFE0F '+r.error,'err')}}
 function openGcalAdd(){const def=S.google.accounts.find(a=>a.is_default)||S.google.accounts[0];S.gcalForm={title:'',date:S.calSelectedDate||new Date().toISOString().slice(0,10),time:'',duration:30,notes:'',email:def?def.email:''};S.showGcalAdd=true;render()}
 function closeGcalAdd(){S.showGcalAdd=false;render()}
-async function saveGcalEvent(){const f=S.gcalForm;if(!f.title.trim()){toast('\\u26A0\\uFE0F Title required','err');return}const r=await api('/calendar/events',{method:'POST',body:JSON.stringify({title:f.title.trim(),date:f.date,time:f.time||null,duration:f.duration||30,notes:f.notes,email:f.email})});if(r&&r.ok){toast('\\u2705 Event added to '+(f.email||'Google Calendar'));S.showGcalAdd=false;loadGcalEvents()}else if(r&&r.error){toast('\\u26A0\\uFE0F '+r.error,'err')}}
+async function saveGcalEvent(){const f=S.gcalForm;if(!f.title.trim()){toast('\\u26A0\\uFE0F Title required','err');return}var _tz='';try{_tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}const r=await api('/calendar/events',{method:'POST',body:JSON.stringify({title:f.title.trim(),date:f.date,time:f.time||null,duration:f.duration||30,notes:f.notes,email:f.email,tz:_tz})});if(r&&r.ok){toast('\\u2705 Event added to '+(f.email||'Google Calendar'));S.showGcalAdd=false;loadGcalEvents()}else if(r&&r.error){toast('\\u26A0\\uFE0F '+r.error,'err')}}
 function playMedSlot(mins){const doc=(S.meditations||{})[mins];if(!doc){toast('\\u23F3 Loading audio...','err');return}const t=Array.isArray(doc.title)?doc.title[0]:doc.title;playMeditation(doc.identifier,t,mins)}
 async function playMeditation(id,title,mins,preferFile){S.meditating={active:true,title:title||(mins+'-min meditation'),mins:mins||10,startedAt:Date.now()};S.playing={id,title:title||(mins+'-minute meditation'),author:'Guided meditation \\u2022 Internet Archive',loading:true};
 // Track meditation count (incremented once per session; the same session re-played within 60s isn't double-counted).
@@ -10450,7 +10459,8 @@ async function broSend(){
   try{
     var msgs=S.bro.messages.filter(function(m){return m.role==='user'||m.role==='bro'}).slice(-12).map(function(m){return{role:m.role==='bro'?'assistant':'user',content:m.text}});
     if(userMsg!==txt)msgs[msgs.length-1].content=userMsg;
-    var r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro',mode:S.bro.mode||'ask'})});
+    var _tz='';try{_tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+    var r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro',mode:S.bro.mode||'ask',tz:_tz})});
     if(r&&r.reply){
       var reply={role:'bro',text:r.reply};S.bro.messages.push(reply);
       _broShowTyping(false);_broAppendMsg(reply);
