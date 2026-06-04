@@ -1410,13 +1410,13 @@ function _streakFor(userPhone,kind){
 app.get('/api/games/progress',auth,(req,res)=>{
   const rows=db.prepare("SELECT game,level,xp,best,plays,updated_at FROM user_progress WHERE user_phone=?").all(req.user.phone);
   const map={};rows.forEach(r=>{map[r.game]=r});
-  ['math','memory','reaction','word'].forEach(g=>{if(!map[g])map[g]={game:g,level:1,xp:0,best:0,plays:0,updated_at:null}});
+  ['math','memory','reaction','word','stroop','nback','colormatch','schulte','spatial','sudoku'].forEach(g=>{if(!map[g])map[g]={game:g,level:1,xp:0,best:0,plays:0,updated_at:null}});
   const streak=_streakFor(req.user.phone,'mindgym');
   res.json({progress:map,maxLevel:MAX_LEVEL,xpPerLevel:100,streak});
 });
 app.post('/api/games/progress',auth,(req,res)=>{
   const game=String((req.body&&req.body.game)||'').toLowerCase();
-  if(!['math','memory','reaction','word'].includes(game))return res.status(400).json({error:'Unknown game'});
+  if(!['math','memory','reaction','word','stroop','nback','colormatch','schulte','spatial','sudoku'].includes(game))return res.status(400).json({error:'Unknown game'});
   const xpAdd=Math.max(0,Math.min(50,parseInt(req.body.xpAdd,10)||0));
   const newBest=req.body.best!=null?Math.max(0,Math.min(99999,parseInt(req.body.best,10)||0)):null;
   // Reaction: lower-is-better. Other games: higher-is-better.
@@ -2298,7 +2298,7 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <title>Brodoit — Tasks, audiobooks &amp; daily wisdom</title>
 <meta name="description" content="Brodoit is your calm productivity companion. Manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind, and build a daily ritual that sticks.">
 <link rel="canonical" href="https://brodoit.com/">
-<meta name="theme-color" content="#3A2D22">
+<meta name="theme-color" content="#0F1115">
 <meta name="format-detection" content="telephone=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2328,6 +2328,12 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500;1,6..72,600&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+#splash{position:fixed;inset:0;z-index:99999;background:#0F1115;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .4s ease-out}
+#splash.hide{opacity:0;pointer-events:none}
+#splash .sp-fist{font-size:56px;animation:spPulse 1.5s ease-in-out infinite}
+#splash .sp-name{font-family:'Instrument Serif',Georgia,serif;font-size:36px;color:#FFD27A;letter-spacing:-.02em}
+#splash .sp-sub{font-size:13px;color:rgba(255,255,255,.35);font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-top:-4px}
+@keyframes spPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 /* ─────────────────────────────────────────────────────────────
    Formal productivity palette — Linear / Notion territory.
    Neutral light grey-cream surfaces (not peach), graphite ink,
@@ -7375,6 +7381,7 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#fff}
 <path class="wv wv1" fill="url(#oc1)" d="M0,272 C240,224 480,304 720,272 C960,240 1200,304 1440,272 L1440,320 L0,320 Z"/>
 </svg></div>
 <canvas id="starfield"></canvas>
+<div id="splash"><div class="sp-fist">&#x1F91C;&#x1F91B;</div><div class="sp-name">Brodoit</div><div class="sp-sub">Loading your day</div></div>
 <div class="app" id="app"></div>
 <noscript><div style="text-align:center;padding:40px 20px"><h1>Brodoit</h1><p>Brodoit needs JavaScript to run. Please enable JavaScript in your browser.</p><p><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a></p></div></noscript>
 <footer id="seo-foot" style="position:fixed;bottom:8px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(100,116,139,.7);z-index:1;pointer-events:auto;display:flex;gap:8px;background:rgba(255,255,255,.6);backdrop-filter:blur(8px);padding:4px 10px;border-radius:8px"><a href="/privacy" style="color:inherit;text-decoration:none">Privacy</a><span>&middot;</span><a href="/terms" style="color:inherit;text-decoration:none">Terms</a></footer>
@@ -7424,7 +7431,7 @@ rps:{playerWins:Number(localStorage.getItem('tf_rps_w')||0),botWins:Number(local
 guess:{target:null,attempts:0,history:[],message:'',ended:false},
 dice:{values:[],history:[],rolling:false},
 // Mind Gym — server-tracked progress + ephemeral per-play state
-mg:{progress:{math:{level:1,xp:0,best:0},memory:{level:1,xp:0,best:0},reaction:{level:1,xp:0,best:0},word:{level:1,xp:0,best:0},schulte:{level:1,xp:0,best:0}},streak:{current:0,longest:0,total:0},loaded:false},
+mg:{progress:{math:{level:1,xp:0,best:0},memory:{level:1,xp:0,best:0},reaction:{level:1,xp:0,best:0},word:{level:1,xp:0,best:0},schulte:{level:1,xp:0,best:0},stroop:{level:1,xp:0,best:0},nback:{level:1,xp:0,best:0},colormatch:{level:1,xp:0,best:0}},streak:{current:0,longest:0,total:0},loaded:false},
 mgPlay:null,  // {game:'math|memory|reaction', ...gameSpecificState}
 // Voice Trainer
 voice:{loaded:false,curriculum:{days:[]},progress:{completed:0,totalPoints:0,pct:0,level:1,maxLevel:4,rows:[]}},
@@ -8318,14 +8325,14 @@ function _mgMarkDone(g){
   try{localStorage.setItem(_mgTodayKey(g),'1')}catch(e){}
   // Headspace-style celebrations on game completion + ritual completion
   setTimeout(function(){
-    const all=['math','memory','reaction','word'];
+    const all=['math','memory','reaction','word','stroop','nback','colormatch'];
     const done=all.filter(k=>{try{return localStorage.getItem(_mgTodayKey(k))==='1'}catch(e){return false}});
     if(done.length===all.length){
       // Full daily ritual complete — biggest celebration
       _ttsSpeak('You completed the full daily ritual. The streak grows.',{rate:.92,pitch:1.0,volume:1.0});
       S._mgConfetti=Date.now();render();
     } else {
-      const phrases={math:'Beautiful arithmetic. The mind sharpens with reps.',memory:'Memory is a muscle. You just trained it.',reaction:'Lightning reflexes. Lovely work.',word:'Words built up. That is craft, not luck.'};
+      const phrases={math:'Beautiful arithmetic. The mind sharpens with reps.',memory:'Memory is a muscle. You just trained it.',reaction:'Lightning reflexes. Lovely work.',word:'Words built up. That is craft, not luck.',stroop:'Fighting autopilot. Your executive function thanks you.',nback:'Working memory stretched. That is real brain training.',colormatch:'Fast decisions under pressure. Attention sharpened.'};
       _ttsSpeak(phrases[g]||'Game complete. Daily streak alive.',{rate:.95,pitch:1.0,volume:1.0});
     }
   },350);
@@ -8508,7 +8515,73 @@ async function voiceFinish(){
   voiceClose();
 }
 async function _mgSave(game,xpAdd,best){const r=await api('/games/progress',{method:'POST',body:JSON.stringify({game,xpAdd:xpAdd|0,best:best!=null?best|0:null})});if(r&&r.ok){S.mg.progress[game]={level:r.level,xp:r.xp,best:r.best,plays:r.plays};if(r.leveledUp)toast('\\u{1F31F} Level up! '+game+' \\u2192 L'+r.level);render()}}
-function mgClose(){_mtCleanup();if(S._msTimer){clearInterval(S._msTimer);S._msTimer=null}if(S._mwTimer){clearInterval(S._mwTimer);S._mwTimer=null}if(S._schTimer){clearInterval(S._schTimer);S._schTimer=null}if(S._memRespTimer){clearInterval(S._memRespTimer);S._memRespTimer=null}try{document.removeEventListener('keydown',_mwOnKey)}catch(e){}S.mgPlay=null;render()}
+// ── Stroop Challenge ──────────────────────────────────────────────────
+function mgStroopStart(){
+  var colors=['red','blue','green','yellow'];
+  var colorHex={red:'#EF4444',blue:'#3B82F6',green:'#22C55E',yellow:'#EAB308'};
+  function mkQ(){var w=colors[Math.floor(Math.random()*4)];var c;do{c=colors[Math.floor(Math.random()*4)]}while(c===w);return{word:w,color:c}}
+  var q=mkQ();
+  S.mgPlay={game:'stroop',level:(S.mg.progress.stroop||{level:1}).level,score:0,wrongs:0,total:0,timeStart:Date.now(),timeMax:60,done:false,q:q,colors:colors,colorHex:colorHex,mkQ:mkQ,combo:0,bestCombo:0,feedback:null};
+  _mgSound('tap');render();
+  S._stroopTimer=setInterval(function(){var p=S.mgPlay;if(!p||p.game!=='stroop')return clearInterval(S._stroopTimer);var el=document.getElementById('stroop-bar');var left=Math.max(0,p.timeMax-((Date.now()-p.timeStart)/1000));if(el)el.style.width=(left/p.timeMax*100)+'%';if(left<=0){clearInterval(S._stroopTimer);p.done=true;var xp=Math.min(p.score*3,80);_mgSave('stroop',xp,p.score);render()}},100);
+}
+function mgStroopAnswer(c){
+  var p=S.mgPlay;if(!p||p.game!=='stroop'||p.done)return;
+  p.total++;
+  if(c===p.q.color){p.score++;p.combo++;if(p.combo>p.bestCombo)p.bestCombo=p.combo;_mgSound('correct');p.feedback='right'}
+  else{p.wrongs++;p.combo=0;_mgSound('wrong');p.feedback='wrong'}
+  p.q=p.mkQ();
+  render();
+  setTimeout(function(){if(S.mgPlay&&S.mgPlay.game==='stroop'){S.mgPlay.feedback=null;render()}},300);
+}
+// ── N-Back ────────────────────────────────────────────────────────────
+function mgNbackStart(){
+  var lvl=(S.mg.progress.nback||{level:1}).level;
+  var n=Math.min(lvl,4);
+  var letters='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  var seq=[];var targets=[];
+  for(var i=0;i<20;i++){
+    if(i>=n&&Math.random()<0.35){seq.push(seq[i-n]);targets.push(true)}
+    else{var ch;do{ch=letters[Math.floor(Math.random()*letters.length)]}while(i>=n&&ch===seq[i-n]);seq.push(ch);targets.push(false)}
+  }
+  S.mgPlay={game:'nback',level:lvl,n:n,seq:seq,targets:targets,idx:0,hits:0,misses:0,falseAlarms:0,responded:false,done:false,feedback:null,timeStart:Date.now()};
+  _mgSound('tap');render();
+  S._nbackTimer=setInterval(function(){
+    var p=S.mgPlay;if(!p||p.game!=='nback'){clearInterval(S._nbackTimer);return}
+    if(!p.responded&&p.targets[p.idx])p.misses++;
+    p.idx++;p.responded=false;p.feedback=null;
+    if(p.idx>=p.seq.length){clearInterval(S._nbackTimer);p.done=true;var acc=p.seq.length>0?Math.round(((p.hits+(p.seq.length-p.targets.filter(Boolean).length-p.falseAlarms))/p.seq.length)*100):0;p.accuracy=acc;var xp=Math.min(Math.round(acc*0.6),60);_mgSave('nback',xp,acc);render();return}
+    render();
+  },2500);
+}
+function mgNbackMatch(){
+  var p=S.mgPlay;if(!p||p.game!=='nback'||p.done||p.responded)return;
+  p.responded=true;
+  if(p.targets[p.idx]){p.hits++;p.feedback='hit';_mgSound('correct')}
+  else{p.falseAlarms++;p.feedback='false';_mgSound('wrong')}
+  render();
+}
+// ── Color Match ───────────────────────────────────────────────────────
+function mgColorMatchStart(){
+  var colors=['red','blue','green','yellow','purple','orange'];
+  var colorHex={red:'#EF4444',blue:'#3B82F6',green:'#22C55E',yellow:'#EAB308',purple:'#A855F7',orange:'#F97316'};
+  var words=['SKY','TREE','SUN','CAR','BIRD','STAR','MOON','FIRE','WAVE','LEAF'];
+  function mkQ(){var nameC=colors[Math.floor(Math.random()*colors.length)];var match=Math.random()<0.5;var inkC=match?nameC:colors.filter(function(c){return c!==nameC})[Math.floor(Math.random()*(colors.length-1))];var rw=words[Math.floor(Math.random()*words.length)];return{name:nameC,ink:inkC,word:rw,isMatch:match}}
+  var q=mkQ();
+  S.mgPlay={game:'colormatch',level:(S.mg.progress.colormatch||{level:1}).level,score:0,wrongs:0,total:0,timeStart:Date.now(),timeMax:45,done:false,q:q,colorHex:colorHex,mkQ:mkQ,streak:0,feedback:null};
+  _mgSound('tap');render();
+  S._cmTimer=setInterval(function(){var p=S.mgPlay;if(!p||p.game!=='colormatch')return clearInterval(S._cmTimer);var el=document.getElementById('cm-bar');var left=Math.max(0,p.timeMax-((Date.now()-p.timeStart)/1000));if(el)el.style.width=(left/p.timeMax*100)+'%';if(left<=0){clearInterval(S._cmTimer);p.done=true;var xp=Math.min(p.score*3,80);_mgSave('colormatch',xp,p.score);render()}},100);
+}
+function mgColorMatchAnswer(yes){
+  var p=S.mgPlay;if(!p||p.game!=='colormatch'||p.done)return;
+  p.total++;
+  var correct=(yes&&p.q.isMatch)||(!yes&&!p.q.isMatch);
+  if(correct){p.score++;p.streak++;_mgSound('correct');p.feedback='right'}
+  else{p.wrongs++;p.streak=0;_mgSound('wrong');p.feedback='wrong'}
+  p.q=p.mkQ();render();
+  setTimeout(function(){if(S.mgPlay&&S.mgPlay.game==='colormatch'){S.mgPlay.feedback=null;render()}},250);
+}
+function mgClose(){_mtCleanup();if(S._msTimer){clearInterval(S._msTimer);S._msTimer=null}if(S._mwTimer){clearInterval(S._mwTimer);S._mwTimer=null}if(S._schTimer){clearInterval(S._schTimer);S._schTimer=null}if(S._memRespTimer){clearInterval(S._memRespTimer);S._memRespTimer=null}if(S._stroopTimer){clearInterval(S._stroopTimer);S._stroopTimer=null}if(S._nbackTimer){clearInterval(S._nbackTimer);S._nbackTimer=null}if(S._cmTimer){clearInterval(S._cmTimer);S._cmTimer=null}try{document.removeEventListener('keydown',_mwOnKey)}catch(e){}S.mgPlay=null;render()}
 // ─── Daily Highlight (server-backed; syncs to Google Calendar + email) ─
 function _hlLocalCache(){try{const raw=localStorage.getItem('daily_hl');if(!raw)return null;const d=JSON.parse(raw);const today=new Date().toISOString().slice(0,10);if(d&&d.date===today)return d;return null}catch(e){return null}}
 function _hlSaveLocal(d){try{if(d)localStorage.setItem('daily_hl',JSON.stringify(d));else localStorage.removeItem('daily_hl')}catch(e){}}
@@ -8850,6 +8923,9 @@ function mgPlayLevel(key,lvl){
   else if(key==='memory')mgMemoryStart();
   else if(key==='reaction')mgReactionStart();
   else if(key==='word')mgWordStart();
+  else if(key==='stroop')mgStroopStart();
+  else if(key==='nback')mgNbackStart();
+  else if(key==='colormatch')mgColorMatchStart();
 }
 
 // ── 4x4 Mini Sudoku ──────────────────────────────────────────────────
@@ -12040,7 +12116,10 @@ if(S.mgDetail&&!S.mgPlay){
     word:{e:'\\u{1F520}',n:'Word Sprint',d:'Seven scrambled letters, ninety seconds. Higher levels demand longer words.',accent:'#D4956A',accent2:'#A0612E',road:'forest',vehicle:'\\u{1F6B5}',start:'mgWordStart()'},
     schulte:{e:'\\u{1F3AF}',n:'Schulte Grid',d:'Tap 1 to 25 in order. Higher levels grow the grid up to 7\\u00D77 (49 cells).',accent:'#F472B6',accent2:'#D4956A',road:'space',vehicle:'\\u{1F680}',start:'mgSchulteStart()'},
     sudoku:{e:'\\u{1F9E9}',n:'Sudoku',d:'Solve a 4\\u00D74 logic puzzle. Each level has fewer pre-filled cells.',accent:'#FBBF24',accent2:'#F59E0B',road:'desert',vehicle:'\\u{1F42A}',start:'mgSudokuStart()'},
-    spatial:{e:'\\u{1F9E0}',n:'Pattern Recall',d:'Memorize a lit pattern, then tap it back. Higher levels show more cells on larger grids.',accent:'#A855F7',accent2:'#7C3AED',road:'galaxy',vehicle:'\\u{1F6F8}',start:'mgSpatialStart()'}
+    spatial:{e:'\\u{1F9E0}',n:'Pattern Recall',d:'Memorize a lit pattern, then tap it back. Higher levels show more cells on larger grids.',accent:'#A855F7',accent2:'#7C3AED',road:'galaxy',vehicle:'\\u{1F6F8}',start:'mgSpatialStart()'},
+    stroop:{e:'\\u{1F308}',n:'Stroop Challenge',d:'Tap the INK COLOR, not the word. Fights your brain\\'s autopilot.',accent:'#EF4444',accent2:'#3B82F6',road:'city',vehicle:'\\u{1F3CE}',start:'mgStroopStart()'},
+    nback:{e:'\\u{1F9E0}',n:'N-Back',d:'Did this letter appear N steps ago? The gold standard for working memory.',accent:'#8B5CF6',accent2:'#06B6D4',road:'cosmos',vehicle:'\\u{1F52E}',start:'mgNbackStart()'},
+    colormatch:{e:'\\u{1F3A8}',n:'Color Match',d:'Does the word match the ink? Fast decisions under pressure.',accent:'#F59E0B',accent2:'#10B981',road:'neon',vehicle:'\\u{1F3AE}',start:'mgColorMatchStart()'}
   };
   const meta=_gameMeta[S.mgDetail];
   const prog=S.mg.progress[S.mgDetail]||{level:1,xp:0,best:0};
@@ -12087,7 +12166,7 @@ if(S.mgDetail&&!S.mgPlay){
 if(S.mgPlay){
   const p=S.mgPlay;
   h+='<div class="ov ov-locked"><div class="mdl mg-mdl">';
-  h+='<div class="mg-hd"><div><h2 class="mg-t">'+(p.game==='math'?'\\u{1F522} Math Sprint':p.game==='spatial'?'\\u{1F9E0} Pattern Recall':p.game==='word'?'\\u{1F520} Word Sprint':p.game==='schulte'?'\\u{1F3AF} Schulte Grid':p.game==='sudoku'?'\\u{1F9E9} Mini Sudoku':p.game==='memory'?'\\u{1F9E9} Memory Tap':'\\u26A1 Reaction')+' \\u2022 L'+p.level+'</h2><div class="mg-s">'+(p.game==='math'?'Solve 10 to win XP':p.game==='spatial'?'Memorize, then recreate':p.game==='word'?'90s. Find every word.':p.game==='schulte'?'Tap 1 \\u2192 '+(p.total||25):p.game==='sudoku'?'Each row, column, and 2\\u00D72 box: 1\\u20134':p.game==='memory'?'Repeat the pattern':'Tap when green')+'</div></div><button class="was-x" onclick="mgClose()">\\u2715</button></div>';
+  h+='<div class="mg-hd"><div><h2 class="mg-t">'+(p.game==='math'?'\\u{1F522} Math Sprint':p.game==='spatial'?'\\u{1F9E0} Pattern Recall':p.game==='word'?'\\u{1F520} Word Sprint':p.game==='schulte'?'\\u{1F3AF} Schulte Grid':p.game==='sudoku'?'\\u{1F9E9} Mini Sudoku':p.game==='memory'?'\\u{1F9E9} Memory Tap':p.game==='stroop'?'\\u{1F308} Stroop Challenge':p.game==='nback'?'\\u{1F9E0} N-Back':p.game==='colormatch'?'\\u{1F3A8} Color Match':'\\u26A1 Reaction')+' \\u2022 L'+p.level+'</h2><div class="mg-s">'+(p.game==='math'?'Solve 10 to win XP':p.game==='spatial'?'Memorize, then recreate':p.game==='word'?'90s. Find every word.':p.game==='schulte'?'Tap 1 \\u2192 '+(p.total||25):p.game==='sudoku'?'Each row, column, and 2\\u00D72 box: 1\\u20134':p.game==='memory'?'Repeat the pattern':p.game==='stroop'?'Tap the ink color':p.game==='nback'?'Match if same as N ago':p.game==='colormatch'?'Word vs ink color':'Tap when green')+'</div></div><button class="was-x" onclick="mgClose()">\\u2715</button></div>';
 
   if(p.game==='math'){
     if(p.done){
@@ -12296,6 +12375,63 @@ if(S.mgPlay){
         else if(isPicked)cls+=' spat-picked';
         h+='<button class="'+cls+'" onclick="mgSpatialTap('+i+')"'+(isShow||p.done?' disabled':'')+'></button>';
       }
+      h+='</div>';
+    }
+    h+='</div>';
+  } else if(p.game==='stroop'){
+    var left=Math.max(0,p.timeMax-((Date.now()-p.timeStart)/1000));
+    h+='<div class="mg-play-wrap" style="text-align:center;padding:20px">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:14px;font-weight:700;color:#FFD27A">Score: '+p.score+'</span><span style="font-size:13px;color:rgba(255,255,255,.5)">'+Math.ceil(left)+'s</span></div>';
+    h+='<div id="stroop-bar" style="height:4px;background:linear-gradient(90deg,#D4956A,#FFD27A);border-radius:2px;margin-bottom:24px;transition:width .1s linear;width:'+(left/p.timeMax*100)+'%"></div>';
+    if(p.done){
+      h+='<div style="font-size:48px;margin:20px 0">\\u{1F3C6}</div>';
+      h+='<div style="font-size:24px;font-weight:800;color:#FFD27A;margin-bottom:8px">'+p.score+' correct</div>';
+      h+='<div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:6px">'+p.wrongs+' wrong \\u00B7 Best combo: '+p.bestCombo+'</div>';
+      h+='<div style="display:flex;gap:8px;justify-content:center;margin-top:20px"><button class="mg-btn" onclick="mgStroopStart()">Play Again</button><button class="mg-btn mg-btn-sec" onclick="mgClose()">Done</button></div>';
+    }else{
+      h+='<div style="font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">TAP THE INK COLOR</div>';
+      h+='<div style="font-size:72px;font-weight:900;color:'+p.colorHex[p.q.color]+';text-transform:uppercase;margin:32px 0;line-height:1;text-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .15s'+(p.feedback==='right'?';transform:scale(1.1)':p.feedback==='wrong'?';transform:scale(0.9)':'')+'">'+p.q.word+'</div>';
+      h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:300px;margin:0 auto">';
+      p.colors.forEach(function(c){h+='<button onclick="mgStroopAnswer(\\x27'+c+'\\x27)" style="padding:16px;border:none;border-radius:14px;background:'+p.colorHex[c]+';color:#fff;font-size:15px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:transform .1s;box-shadow:0 4px 12px '+p.colorHex[c]+'40" ontouchstart="this.style.transform=\\x27scale(0.93)\\x27" ontouchend="this.style.transform=\\x27\\x27">'+c+'</button>'});
+      h+='</div>';
+    }
+    h+='</div>';
+  } else if(p.game==='nback'){
+    h+='<div class="mg-play-wrap" style="text-align:center;padding:20px">';
+    if(p.done){
+      h+='<div style="font-size:48px;margin:20px 0">\\u{1F9E0}</div>';
+      h+='<div style="font-size:24px;font-weight:800;color:#FFD27A;margin-bottom:8px">'+p.accuracy+'% Accuracy</div>';
+      h+='<div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:4px">Hits: '+p.hits+' \\u00B7 Misses: '+p.misses+' \\u00B7 False: '+p.falseAlarms+'</div>';
+      h+='<div style="font-size:13px;color:rgba(255,255,255,.35)">'+p.n+'-Back \\u00B7 Level '+p.level+'</div>';
+      h+='<div style="display:flex;gap:8px;justify-content:center;margin-top:20px"><button class="mg-btn" onclick="mgNbackStart()">Play Again</button><button class="mg-btn mg-btn-sec" onclick="mgClose()">Done</button></div>';
+    }else{
+      h+='<div style="font-size:13px;color:#8B5CF6;font-weight:700;margin-bottom:8px">'+p.n+'-BACK \\u00B7 Item '+(p.idx+1)+' of '+p.seq.length+'</div>';
+      h+='<div style="width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-bottom:32px"><div style="height:100%;width:'+((p.idx+1)/p.seq.length*100)+'%;background:linear-gradient(90deg,#8B5CF6,#06B6D4);border-radius:2px;transition:width .3s"></div></div>';
+      h+='<div style="width:120px;height:120px;border-radius:24px;background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(6,182,212,.2));border:2px solid rgba(139,92,246,.3);display:grid;place-items:center;margin:0 auto 32px;transition:transform .2s'+(p.feedback==='hit'?';transform:scale(1.1);border-color:#22C55E':p.feedback==='false'?';transform:scale(0.9);border-color:#EF4444':'')+'"><span style="font-size:56px;font-weight:800;color:#fff">'+p.seq[p.idx]+'</span></div>';
+      h+='<div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:16px">Same as '+(p.n===1?'previous':p.n+' items ago')+'?</div>';
+      h+='<button onclick="mgNbackMatch()" style="padding:18px 48px;border:none;border-radius:16px;background:linear-gradient(135deg,#8B5CF6,#06B6D4);color:#fff;font-size:18px;font-weight:700;cursor:pointer;letter-spacing:1px;box-shadow:0 4px 20px rgba(139,92,246,.4);transition:transform .1s" ontouchstart="this.style.transform=\\x27scale(0.93)\\x27" ontouchend="this.style.transform=\\x27\\x27">\\u{1F3AF} MATCH</button>';
+    }
+    h+='</div>';
+  } else if(p.game==='colormatch'){
+    var left=Math.max(0,p.timeMax-((Date.now()-p.timeStart)/1000));
+    h+='<div class="mg-play-wrap" style="text-align:center;padding:20px">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:14px;font-weight:700;color:#FFD27A">Score: '+p.score+'</span><span style="font-size:13px;color:rgba(255,255,255,.5)">'+Math.ceil(left)+'s \\u00B7 Streak: '+p.streak+'</span></div>';
+    h+='<div id="cm-bar" style="height:4px;background:linear-gradient(90deg,#F59E0B,#10B981);border-radius:2px;margin-bottom:24px;transition:width .1s linear;width:'+(left/p.timeMax*100)+'%"></div>';
+    if(p.done){
+      h+='<div style="font-size:48px;margin:20px 0">\\u{1F3A8}</div>';
+      h+='<div style="font-size:24px;font-weight:800;color:#FFD27A;margin-bottom:8px">'+p.score+' correct</div>';
+      h+='<div style="font-size:14px;color:rgba(255,255,255,.5)">'+p.wrongs+' wrong out of '+p.total+'</div>';
+      h+='<div style="display:flex;gap:8px;justify-content:center;margin-top:20px"><button class="mg-btn" onclick="mgColorMatchStart()">Play Again</button><button class="mg-btn mg-btn-sec" onclick="mgClose()">Done</button></div>';
+    }else{
+      h+='<div style="font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px">DOES THE WORD MATCH THE INK COLOR?</div>';
+      h+='<div style="display:flex;align-items:center;justify-content:center;gap:24px;margin:32px 0">';
+      h+='<div style="padding:16px 24px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)"><div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:4px">Word</div><div style="font-size:28px;font-weight:800;color:#fff;text-transform:uppercase">'+p.q.name+'</div></div>';
+      h+='<div style="font-size:20px;color:rgba(255,255,255,.3)">=?</div>';
+      h+='<div style="padding:16px 24px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)"><div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:4px">Ink</div><div style="font-size:28px;font-weight:800;color:'+p.colorHex[p.q.ink]+';text-transform:uppercase">'+p.q.word+'</div></div>';
+      h+='</div>';
+      h+='<div style="display:flex;gap:16px;justify-content:center;margin-top:24px">';
+      h+='<button onclick="mgColorMatchAnswer(true)" style="padding:18px 36px;border:none;border-radius:16px;background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(34,197,94,.3);transition:transform .1s" ontouchstart="this.style.transform=\\x27scale(0.93)\\x27" ontouchend="this.style.transform=\\x27\\x27">\\u2713 Match</button>';
+      h+='<button onclick="mgColorMatchAnswer(false)" style="padding:18px 36px;border:none;border-radius:16px;background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(239,68,68,.3);transition:transform .1s" ontouchstart="this.style.transform=\\x27scale(0.93)\\x27" ontouchend="this.style.transform=\\x27\\x27">\\u2717 Nope</button>';
       h+='</div>';
     }
     h+='</div>';
@@ -12654,6 +12790,7 @@ applyTheme();
   requestAnimationFrame(frame);
 })();
 if(S.user){try{localStorage.removeItem('tf_wa_conn');localStorage.removeItem('tf_wa_joined');localStorage.removeItem('tf_wa_banner_x')}catch(e){}refreshSession();load();loadBookStreak();loadGoogleStatus();loadWeather();loadTicker();loadCityTemps();loadRemember();loadMindGym();coachInit();chk();setInterval(load,10000);setInterval(loadWeather,15*60*1000);setInterval(loadTicker,15*60*1000);setInterval(loadCityTemps,15*60*1000);setInterval(loadRemember,6*60*60*1000)}else render();
+setTimeout(function(){var sp=document.getElementById('splash');if(sp){sp.classList.add('hide');setTimeout(function(){sp.remove()},500)}},300);
 // When the user returns from their email app to read the OTP, re-restore the in-progress login.
 // Only ever transitions FORWARD (phone → otp); never restores otp → phone. The previous polling
 // version could read a stale localStorage write and bounce a typing user back to the email screen,
