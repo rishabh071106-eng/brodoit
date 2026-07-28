@@ -24,9 +24,6 @@ try{db.exec("ALTER TABLE users ADD COLUMN email TEXT")}catch(e){}
 // task board column (Home / Office) — existing rows default to 'home'
 try{db.exec("ALTER TABLE tasks ADD COLUMN board TEXT DEFAULT 'home'")}catch(e){}
 try{db.exec("UPDATE tasks SET board='home' WHERE board IS NULL OR board=''")}catch(e){}
-// WhatsApp number linked to a (typically email-login) user account
-try{db.exec("ALTER TABLE users ADD COLUMN wa_phone TEXT")}catch(e){}
-try{db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_wa_phone ON users(wa_phone) WHERE wa_phone IS NOT NULL AND wa_phone!=''")}catch(e){}
 try{db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email) WHERE email IS NOT NULL AND email!=''")}catch(e){}
 // Beta-tester activity tracking — column updated on every authenticated request.
 // Used by GET /admin/testers to show who's actively using the app for the
@@ -70,14 +67,6 @@ const VAPID_PUBLIC='BPfvXAUnmSa0KZgsQ7jlqMULApFdrO6PRUMJRwXJQicnAUj5Yj2pCDxK8lZB
 const VAPID_PRIVATE=process.env.VAPID_PRIVATE_KEY||'N7yZL_7GRwTXgw-ckT8A5SiRJz2gK1r9PGYMYBmmgpc';
 webpush.setVapidDetails('mailto:rishabh071106@gmail.com',VAPID_PUBLIC,VAPID_PRIVATE);
 
-// WhatsApp Cloud API (Meta) — replaces Twilio for free 1000 conversations/month
-const WA_TOKEN=process.env.WHATSAPP_TOKEN||'';
-const WA_PHONE_ID=process.env.WHATSAPP_PHONE_ID||'';
-const WA_VERIFY=process.env.WHATSAPP_VERIFY_TOKEN||'brodoit_verify_2024';
-const WA_NUM=process.env.WHATSAPP_NUMBER||'+919999999999';
-const WA_OK=!!(WA_TOKEN&&WA_PHONE_ID);
-if(WA_OK)console.log('\\u2705 WhatsApp Cloud API configured');else console.log('\\u26A0\\uFE0F WhatsApp Cloud API not configured (set WHATSAPP_TOKEN + WHATSAPP_PHONE_ID)')
-
 const genId=()=>'t_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
 const genToken=()=>crypto.randomBytes(32).toString('hex');
 const _secureCookie=process.env.NODE_ENV==='production'||process.env.RAILWAY_ENVIRONMENT?'; Secure':'';
@@ -92,25 +81,6 @@ function looksLikeMissingCountryCode(p){
   // If user types exactly 10 digits we suspect missing country code.
   const digits=(p||'').replace(/[^0-9]/g,'');
   return digits.length===10;
-}
-
-async function sendWA(to,body){
-  if(!WA_OK)return{ok:false,reason:'WhatsApp not configured',code:'NO_WA'};
-  const cleanTo=String(to).replace(/[^0-9]/g,'');
-  try{const r=await fetch('https://graph.facebook.com/v21.0/'+WA_PHONE_ID+'/messages',{method:'POST',headers:{'Authorization':'Bearer '+WA_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({messaging_product:'whatsapp',to:cleanTo,type:'text',text:{preview_url:true,body}})});const d=await r.json();if(d.messages&&d.messages[0])return{ok:true,messageId:d.messages[0].id};return{ok:false,reason:JSON.stringify(d.error||d),code:(d.error&&d.error.code)||0}}catch(e){return{ok:false,reason:e.message,code:0}}
-}
-async function sendWAButtons(to,body,buttons){
-  if(!WA_OK)return{ok:false};
-  const cleanTo=String(to).replace(/[^0-9]/g,'');
-  try{const r=await fetch('https://graph.facebook.com/v21.0/'+WA_PHONE_ID+'/messages',{method:'POST',headers:{'Authorization':'Bearer '+WA_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({messaging_product:'whatsapp',to:cleanTo,type:'interactive',interactive:{type:'button',body:{text:body},action:{buttons:buttons.slice(0,3).map(function(b,i){return{type:'reply',reply:{id:'btn_'+i,title:b.slice(0,20)}}})}}})});return{ok:true}}catch(e){return{ok:false}}
-}
-function waErrorMessage(r){
-  const c=r.code;
-  if(c===131030)return 'This phone number is not a valid WhatsApp number.';
-  if(c===131047)return 'Message failed \\u2014 user may need to message Brodoit first (24h window).';
-  if(c===131026)return 'Message not delivered. The user may have blocked this number.';
-  if(c===130429)return 'Rate limit reached. Try again in a few minutes.';
-  return 'WhatsApp delivery failed (code '+(c||'unknown')+'). Check the number and try again.';
 }
 
 // Email via Resend (free tier: 3000/mo, 100/day)
@@ -223,23 +193,6 @@ app.post('/api/logout',(req,res)=>{
 });
 
 // ═══ OTP AUTH ═══
-app.post('/api/send-otp',async(req,res)=>{
-  const rawPhone=String(req.body.phone||'');
-  if(looksLikeMissingCountryCode(rawPhone))return res.status(400).json({error:'Add your country code (e.g. +91 for India, +1 for US/Canada). 10 digits alone are ambiguous.',hint:'missing_country_code'});
-  const phone=cleanPhone(rawPhone);
-  if(phone.length<10||!/^\+\d{8,15}$/.test(phone))return res.status(400).json({error:'Phone number must look like +<country><number>, e.g. +91 9876543210.'});
-  if(rateLimited('wa:'+phone))return res.status(429).json({error:'Too many requests. Try again in 10 minutes.'});
-  const code=genOTP();
-  const expires=new Date(Date.now()+5*60*1000).toISOString();
-  db.prepare('INSERT OR REPLACE INTO otps(phone,code,expires_at)VALUES(?,?,?)').run(phone,code,expires);
-  const r=await sendWA(phone,`🔐 Your Brodoit verification code is: *${code}*\n\nThis code expires in 5 minutes.\nDo not share this code with anyone.`);
-  if(r.ok)res.json({ok:true,message:'OTP sent to your WhatsApp',phone,sid:r.sid});
-  else{
-    console.log('[send-otp] failed for',phone,'code:',r.code,'reason:',r.reason);
-    res.status(500).json({ok:false,error:waErrorMessage(r),detail:r.reason,code:r.code,sentTo:phone});
-  }
-});
-
 // Email OTP
 app.post('/api/send-otp-email',async(req,res)=>{
   const email=(req.body.email||'').trim().toLowerCase();
@@ -299,9 +252,6 @@ app.post('/api/verify-otp',(req,res)=>{
   let token;
   if(!user){token=genToken();db.prepare('INSERT INTO users(phone,name,token)VALUES(?,?,?)').run(phone,name,token);user={phone,name,token}}
   else{token=user.token||genToken();db.prepare('UPDATE users SET token=?,name=COALESCE(NULLIF(?,\'\'),name)WHERE phone=?').run(token,name,phone);user.token=token;if(name)user.name=name}
-  // Merge any wa_ auto-created account that used this phone number on WhatsApp
-  const waAcct=db.prepare("SELECT phone FROM users WHERE wa_phone=? AND phone LIKE 'wa_%'").get(phone);
-  if(waAcct){db.prepare('UPDATE tasks SET user_phone=? WHERE user_phone=?').run(phone,waAcct.phone);db.prepare('DELETE FROM users WHERE phone=?').run(waAcct.phone);db.prepare('UPDATE users SET wa_phone=? WHERE phone=?').run(phone,phone)}
   setTokenCookie(res,token);
   res.json({phone:user.phone,name:user.name||name,token});
 });
@@ -1570,7 +1520,7 @@ app.post('/api/games/progress',auth,(req,res)=>{
 // server DB ever loses them (e.g. a Railway redeploy without a persistent volume mounted). Auth-scoped
 // so users can only ever see/restore their own data.
 app.get('/api/me/export',auth,(req,res)=>{
-  const u=db.prepare('SELECT phone,name,email,wa_phone,created_at FROM users WHERE phone=?').get(req.user.phone)||{};
+  const u=db.prepare('SELECT phone,name,email,created_at FROM users WHERE phone=?').get(req.user.phone)||{};
   const tasks=db.prepare('SELECT * FROM tasks WHERE user_phone=? ORDER BY created_at ASC').all(req.user.phone);
   res.set('Content-Type','application/json').set('Content-Disposition','attachment; filename="brodoit-backup-'+new Date().toISOString().slice(0,10)+'.json"');
   res.send(JSON.stringify({version:1,exportedAt:new Date().toISOString(),account:u,tasks},null,2));
@@ -2101,43 +2051,7 @@ app.delete('/api/meetings/:id/voice/:vid',auth,(req,res)=>{
   res.json({ok:true});
 });
 
-// WhatsApp send endpoints disabled for closed-test phase (Twilio Sandbox requires
-// each recipient to text 'join <code>' first, which would break the tester experience).
-app.post('/api/send-task/:id',auth,async(req,res)=>{
-  const u=db.prepare('SELECT wa_phone FROM users WHERE phone=?').get(req.user.phone);
-  if(!u||!u.wa_phone)return res.status(400).json({ok:false,error:'Connect your WhatsApp from your profile first.'});
-  const t=db.prepare('SELECT * FROM tasks WHERE id=? AND user_phone=?').get(req.params.id,req.user.phone);
-  if(!t)return res.status(404).json({ok:false,error:'Task not found'});
-  const body='📝 *'+t.title+'*'+(t.notes?'\n'+t.notes:'')+(t.due_date?'\n📅 '+fmtD(t.due_date):'')+'\n\n_Reply "done '+t.title.slice(0,20)+'" to mark complete_';
-  const r=await sendWA(u.wa_phone,body);
-  if(r.ok)return res.json({ok:true,sid:r.sid});
-  res.status(502).json({ok:false,error:waErrorMessage(r),code:r.code});
-});
-app.post('/api/send-all',auth,async(req,res)=>{
-  const u=db.prepare('SELECT wa_phone FROM users WHERE phone=?').get(req.user.phone);
-  if(!u||!u.wa_phone)return res.status(400).json({ok:false,error:'Connect your WhatsApp from your profile first.'});
-  const board=(req.body&&req.body.board)==='home'?'home':(req.body&&req.body.board)==='office'?'office':null;
-  const label=board==='home'?'Home Tasks':board==='office'?'Office Tasks':'All Tasks';
-  const ts=board
-    ? db.prepare("SELECT * FROM tasks WHERE user_phone=? AND status!='done' AND COALESCE(board,'home')=? ORDER BY priority DESC,created_at DESC").all(req.user.phone,board)
-    : db.prepare("SELECT * FROM tasks WHERE user_phone=? AND status!='done' ORDER BY priority DESC,created_at DESC").all(req.user.phone);
-  if(!ts.length)return res.json({ok:true,sent:0,empty:true,label});
-  const emoji=board==='home'?'🏠':board==='office'?'💼':'📋';
-  let m=emoji+' *'+label+' ('+ts.length+')*\n';ts.slice(0,20).forEach((t,i)=>{m+='\n'+(i+1)+'. '+(PRI[t.priority]||'')+' '+t.title+(t.due_date?' _('+fmtD(t.due_date)+')_':'')});
-  if(ts.length>20)m+='\n\n_+ '+(ts.length-20)+' more in the app_';
-  const r=await sendWA(u.wa_phone,m);
-  if(r.ok)return res.json({ok:true,sent:ts.length,sid:r.sid,label});
-  res.status(502).json({ok:false,error:waErrorMessage(r),code:r.code});
-});
-app.get('/api/health',(_,res)=>res.json({status:'ok',whatsapp:WA_OK,email:!!process.env.RESEND_API_KEY,users:db.prepare('SELECT COUNT(*)as c FROM users').get().c,tasks:db.prepare('SELECT COUNT(*)as c FROM tasks').get().c}));
-
-app.get('/api/config',(_,res)=>res.json({waNumber:WA_NUM,waOk:WA_OK}));
-app.get('/brodoit.vcf',(_,res)=>{
-  const vcf=['BEGIN:VCARD','VERSION:3.0','FN:BroDoit','N:BroDoit;;;;','ORG:BroDoit','TITLE:Productivity Assistant','TEL;TYPE=CELL,VOICE,WHATSAPP:'+WA_NUM,'EMAIL:hello@brodoit.com','URL:https://brodoit.com','NOTE:Your BroDoit assistant. Send tasks here and get reminders.','END:VCARD'].join('\\r\\n');
-  res.setHeader('Content-Type','text/vcard; charset=utf-8');
-  res.setHeader('Content-Disposition','attachment; filename="BroDoit.vcf"');
-  res.send(vcf);
-});
+app.get('/api/health',(_,res)=>res.json({status:'ok',email:!!process.env.RESEND_API_KEY,users:db.prepare('SELECT COUNT(*)as c FROM users').get().c,tasks:db.prepare('SELECT COUNT(*)as c FROM tasks').get().c}));
 
 // ═══ NEWS (shorts feed, RSS aggregator, 15-min server cache) ═══
 const NEWS_FEEDS={
@@ -2392,53 +2306,9 @@ app.get('/api/wiki/summaries',async(req,res)=>{
 
 // ═══ PROFILE (/api/me) ═══
 app.get('/api/me',auth,(req,res)=>{
-  const u=db.prepare('SELECT phone,name,email,wa_phone,created_at FROM users WHERE phone=?').get(req.user.phone);
+  const u=db.prepare('SELECT phone,name,email,created_at FROM users WHERE phone=?').get(req.user.phone);
   res.json(u||{error:'not found'});
 });
-// ═══ WHATSAPP LINK (connect a real WA number to an email-login account) ═══
-function normWA(p){let n=String(p||'').replace(/[^0-9+]/g,'');if(!n)return '';if(!n.startsWith('+'))n='+'+n;return n}
-app.post('/api/wa/connect',auth,async(req,res)=>{
-  const phone=normWA(req.body.phone);
-  if(phone.length<8)return res.status(400).json({error:'Enter your WhatsApp number with country code (e.g. +91 9876543210).'});
-  if(rateLimited('wac:'+req.user.phone))return res.status(429).json({error:'Too many attempts. Try again in 10 minutes.'});
-  // If a wa_ auto-created account owns this number, that's fine — it'll merge at verify time.
-  // Only block if a real (non-auto-created) account owns it.
-  const owner=db.prepare("SELECT phone FROM users WHERE wa_phone=? AND phone!=?").get(phone,req.user.phone);
-  if(owner&&!owner.phone.startsWith('wa_'))return res.status(409).json({error:'That WhatsApp number is already linked to another Brodoit account.'});
-  if(!WA_OK)return res.status(503).json({error:'WhatsApp is not configured on the server.'});
-  const code=genOTP();const expires=new Date(Date.now()+10*60*1000).toISOString();
-  db.prepare('INSERT OR REPLACE INTO otps(phone,code,expires_at)VALUES(?,?,?)').run('wac:'+phone,code,expires);
-  const r=await sendWA(phone,'\u{1F517} *Brodoit \\u2014 link this WhatsApp*\n\nYour code: *'+code+'*\n\nEnter it on brodoit.com to connect this number to your account.\nExpires in 10 minutes.');
-  if(r.ok)return res.json({ok:true,sentTo:phone,messageId:r.messageId});
-  res.status(502).json({ok:false,error:waErrorMessage(r),code:r.code});
-});
-app.post('/api/wa/verify',auth,(req,res)=>{
-  const phone=normWA(req.body.phone),code=String(req.body.code||'').trim();
-  if(!phone||!code)return res.status(400).json({error:'Phone and code required'});
-  const key='wac:'+phone;
-  const otp=db.prepare('SELECT * FROM otps WHERE phone=?').get(key);
-  if(!otp)return res.status(400).json({error:'No verification code requested for this number.'});
-  if(new Date(otp.expires_at)<new Date()){db.prepare('DELETE FROM otps WHERE phone=?').run(key);return res.status(400).json({error:'Code expired. Request a new one.'})}
-  if(otp.code!==code)return res.status(400).json({error:'Wrong code. Try again.'});
-  db.prepare('DELETE FROM otps WHERE phone=?').run(key);
-  // If a wa_ auto-created account owns this number, merge its tasks into the web account
-  const owner=db.prepare("SELECT phone FROM users WHERE wa_phone=? AND phone!=?").get(phone,req.user.phone);
-  if(owner){
-    if(owner.phone.startsWith('wa_')){
-      db.prepare('UPDATE tasks SET user_phone=? WHERE user_phone=?').run(req.user.phone,owner.phone);
-      db.prepare('DELETE FROM users WHERE phone=?').run(owner.phone);
-    }else{
-      return res.status(409).json({error:'That WhatsApp number is already linked to another Brodoit account.'});
-    }
-  }
-  db.prepare('UPDATE users SET wa_phone=? WHERE phone=?').run(phone,req.user.phone);
-  res.json({ok:true,wa_phone:phone});
-});
-app.post('/api/wa/disconnect',auth,(req,res)=>{
-  db.prepare('UPDATE users SET wa_phone=NULL WHERE phone=?').run(req.user.phone);
-  res.json({ok:true});
-});
-
 app.put('/api/me',auth,(req,res)=>{
   const name=(req.body.name||'').trim();
   if(!name)return res.status(400).json({error:'Name required'});
@@ -2446,103 +2316,10 @@ app.put('/api/me',auth,(req,res)=>{
   res.json({phone:req.user.phone,name});
 });
 
-// ═══ WHATSAPP CLOUD API WEBHOOK ═══
-// Setup: 1) Create Meta App at developers.facebook.com 2) Add WhatsApp product
-// 3) Set webhook URL to https://brodoit.com/api/webhook/whatsapp
-// 4) Set env vars: WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, WHATSAPP_VERIFY_TOKEN, WHATSAPP_NUMBER
-
-function parseIn(text){const r={title:text.trim(),priority:'medium',dueDate:'',command:null};const l=text.toLowerCase().trim();
-if(/^(list|tasks|pending|show|my tasks)$/i.test(l))return{...r,command:'list'};if(/^(help|\?|hi|hello|hey|start)$/i.test(l))return{...r,command:'help'};
-if(/^done\b/i.test(l))return{...r,command:'done',title:l.replace(/^done\s*/i,'')};if(/^(delete|remove)\b/i.test(l))return{...r,command:'delete',title:l.replace(/^(delete|remove)\s*/i,'')};
-if(/^(doing|start)\b/i.test(l))return{...r,command:'doing',title:l.replace(/^(doing|start)\s*/i,'')};
-if(/\b(urgent|important|asap|high priority|!high)\b/i.test(l)){r.priority='high';r.title=r.title.replace(/\b(urgent|important|asap|high priority|!high)\b/gi,'')}
-if(/\btoday\b/i.test(l)){r.dueDate=todayStr();r.title=r.title.replace(/\btoday\b/gi,'')}
-else if(/\btomorrow\b/i.test(l)){const d=new Date();d.setDate(d.getDate()+1);r.dueDate=d.toISOString().split('T')[0];r.title=r.title.replace(/\btomorrow\b/gi,'')}
-r.title=r.title.replace(/\s+/g,' ').trim();return r}
-
-// Webhook verification (required by Meta Cloud API)
-app.get('/api/webhook/whatsapp',(req,res)=>{
-  const mode=req.query['hub.mode'],token=req.query['hub.verify_token'],challenge=req.query['hub.challenge'];
-  if(mode==='subscribe'&&token===WA_VERIFY){console.log('WhatsApp webhook verified');return res.status(200).send(challenge)}
-  res.sendStatus(403);
-});
-
-// Incoming message handler
-app.post('/api/webhook/whatsapp',async(req,res)=>{
-  res.sendStatus(200);
-  try{
-    const entry=req.body.entry;if(!entry||!entry[0])return;
-    const changes=entry[0].changes;if(!changes||!changes[0])return;
-    const value=changes[0].value;if(!value.messages||!value.messages[0])return;
-    const msg=value.messages[0];
-    const waNum='+'+msg.from;
-    const contactName=(value.contacts&&value.contacts[0]&&value.contacts[0].profile&&value.contacts[0].profile.name)||'';
-    // Handle text and interactive button replies
-    let text='';
-    if(msg.type==='text')text=msg.text.body||'';
-    else if(msg.type==='interactive'&&msg.interactive&&msg.interactive.button_reply)text=msg.interactive.button_reply.title||'';
-    else return;
-    if(!text.trim())return;
-
-    // Find linked account — check wa_phone first, then fall back to phone number match
-    let linked=db.prepare('SELECT phone,name FROM users WHERE wa_phone=?').get(waNum);
-    if(!linked){
-      // Check if a web user signed up with this phone number but hasn't linked WhatsApp yet
-      const byPhone=db.prepare('SELECT phone,name FROM users WHERE phone=?').get(waNum);
-      if(byPhone){db.prepare('UPDATE users SET wa_phone=? WHERE phone=?').run(waNum,byPhone.phone);linked=byPhone}
-    }
-    if(!linked){
-      // Auto-create account for new WhatsApp user (Memorae-style seamless onboarding)
-      const userPhone='wa_'+msg.from;
-      const token=genToken();
-      const existing=db.prepare('SELECT phone FROM users WHERE phone=?').get(userPhone);
-      if(!existing){
-        db.prepare("INSERT INTO users(phone,name,token,wa_phone,created_at)VALUES(?,?,?,?,datetime('now'))").run(userPhone,contactName||'WhatsApp User',token,waNum);
-      }
-      linked={phone:userPhone,name:contactName||'WhatsApp User'};
-      await sendWA(waNum,"👋 *Welcome to Brodoit!*\n\nI'm your productivity assistant. Just text me your tasks and I'll track them for you.\n\n*Quick commands:*\n📝 Type any task to add it\n📋 Send _list_ to see your tasks\n✅ Send _done <task>_ to complete\n🗑️ Send _delete <task>_ to remove\n\n🌐 Open the full app: https://brodoit.com\n\n_Your tasks sync automatically between WhatsApp and the app!_");
-      return;
-    }
-
-    const acct=linked.phone;
-    const p=parseIn(text);
-
-    if(p.command==='help'){
-      await sendWA(waNum,"🤖 *Brodoit — Your Task Assistant*\n\n📝 Type any task to add it\n📋 _list_ — see your open tasks\n✅ _done <task>_ — mark complete\n🔄 _doing <task>_ — mark in progress\n🗑️ _delete <task>_ — remove\n\n*Tips:*\n• Add _today_ or _tomorrow_ for due dates\n• Add _urgent_ for high priority\n• Tasks sync to https://brodoit.com\n\nJust send a message and I'll add it as a task!");
-    }else if(p.command==='list'){
-      const ts=db.prepare("SELECT * FROM tasks WHERE user_phone=? AND status!='done' ORDER BY priority DESC,created_at DESC").all(acct);
-      if(!ts.length){await sendWA(waNum,"✨ No pending tasks! You're all caught up.\n\nSend me a task to get started.")}
-      else{let m='📋 *Your Tasks ('+ts.length+')*\n';ts.slice(0,15).forEach(function(t,i){m+='\n'+(i+1)+'. '+PRI[t.priority]+' '+t.title+(t.status==='in-progress'?' 🔄':'')+(t.due_date?' _('+fmtD(t.due_date)+')_':'')});if(ts.length>15)m+='\n\n_+ '+(ts.length-15)+' more in the app_';await sendWA(waNum,m)}
-    }else if(p.command==='done'){
-      const t=db.prepare("SELECT * FROM tasks WHERE user_phone=? AND status!='done' AND LOWER(title) LIKE ?").get(acct,'%'+p.title+'%');
-      if(t){db.prepare("UPDATE tasks SET status='done',updated_at=datetime('now')WHERE id=?").run(t.id);await sendWA(waNum,'✅ Done: *'+t.title+'* 🎉')}
-      else await sendWA(waNum,'❌ No task matching "'+p.title+'"');
-    }else if(p.command==='doing'){
-      const t=db.prepare("SELECT * FROM tasks WHERE user_phone=? AND status='pending' AND LOWER(title) LIKE ?").get(acct,'%'+p.title+'%');
-      if(t){db.prepare("UPDATE tasks SET status='in-progress',updated_at=datetime('now')WHERE id=?").run(t.id);await sendWA(waNum,'🔄 Started: *'+t.title+'*')}
-      else await sendWA(waNum,'❌ Not found');
-    }else if(p.command==='delete'){
-      const t=db.prepare("SELECT * FROM tasks WHERE user_phone=? AND LOWER(title) LIKE ?").get(acct,'%'+p.title+'%');
-      if(t){db.prepare('DELETE FROM tasks WHERE id=?').run(t.id);await sendWA(waNum,'🗑️ Deleted: *'+t.title+'*')}
-      else await sendWA(waNum,'❌ Not found');
-    }else if(p.title){
-      const id=genId();
-      db.prepare("INSERT INTO tasks(id,user_phone,title,priority,due_date,source,board,created_at)VALUES(?,?,?,?,?,'whatsapp','home',datetime('now'))").run(id,acct,p.title,p.priority,p.dueDate||null);
-      let m='✅ *Added!*\n\n'+PRI[p.priority]+' '+p.title;
-      if(p.dueDate)m+='\n📅 '+fmtD(p.dueDate);
-      m+='\n\n_Reply done '+p.title.slice(0,20)+' to complete_';
-      await sendWA(waNum,m);
-    }
-  }catch(e){console.error('WA webhook error:',e.message||e)}
-});
-
 // ═══ REMINDERS ═══
 setInterval(async()=>{const now=new Date(),nd=todayStr(),nt=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 const due=db.prepare("SELECT * FROM tasks WHERE status!='done' AND due_date=? AND reminder_time=? AND reminded=0").all(nd,nt);
 for(const t of due){
-  const u=db.prepare('SELECT wa_phone FROM users WHERE phone=?').get(t.user_phone);
-  if(u&&u.wa_phone){await sendWA(u.wa_phone,'⏰ *Reminder*\n\n'+PRI[t.priority]+' *'+t.title+'*'+(t.notes?'\n'+t.notes:'')+(t.due_date?'\n📅 '+fmtD(t.due_date):'')+'\n\n_Reply "done '+t.title.slice(0,20)+'" to complete_')}
-  // Mark reminded either way so we don't loop on users without WA linked.
   db.prepare('UPDATE tasks SET reminded=1 WHERE id=?').run(t.id);
 }
 },60000);
@@ -2584,7 +2361,7 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <meta name="twitter:description" content="Your calm productivity companion. Tasks, email reminders, free audiobooks, mind-gym drills, and daily wisdom — in one quiet place.">
 <meta name="twitter:image" content="https://brodoit.com/icon-512.png">
 <!-- Structured data for Google rich results -->
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://brodoit.com/#org","name":"Brodoit","url":"https://brodoit.com/","logo":"https://brodoit.com/icon-512.png","email":"hello@brodoit.com","sameAs":["https://github.com/rishabh071106-eng/taskflow"]},{"@type":"WebSite","@id":"https://brodoit.com/#site","url":"https://brodoit.com/","name":"Brodoit","description":"Tasks, audiobooks and daily wisdom — your calm productivity companion.","publisher":{"@id":"https://brodoit.com/#org"},"inLanguage":"en"},{"@type":"WebApplication","@id":"https://brodoit.com/#app","name":"Brodoit","url":"https://brodoit.com/","description":"A calm productivity app: manage tasks with WhatsApp reminders, listen to free public-domain audiobooks, sharpen your mind with daily drills, and build a streak that sticks.","applicationCategory":"ProductivityApplication","operatingSystem":"Web, Android, iOS","browserRequirements":"Requires JavaScript. Requires HTML5.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"},"featureList":["Task management","WhatsApp reminders","Email reminders","Free public-domain audiobooks","Daily wisdom quotes","Mind Gym brain games","Voice training","Step tracking","Google Calendar sync"],"publisher":{"@id":"https://brodoit.com/#org"},"inLanguage":"en"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://brodoit.com/#org","name":"Brodoit","url":"https://brodoit.com/","logo":"https://brodoit.com/icon-512.png","email":"hello@brodoit.com","sameAs":["https://github.com/rishabh071106-eng/taskflow"]},{"@type":"WebSite","@id":"https://brodoit.com/#site","url":"https://brodoit.com/","name":"Brodoit","description":"Tasks, audiobooks and daily wisdom — your calm productivity companion.","publisher":{"@id":"https://brodoit.com/#org"},"inLanguage":"en"},{"@type":"WebApplication","@id":"https://brodoit.com/#app","name":"Brodoit","url":"https://brodoit.com/","description":"A calm productivity app: manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind with daily drills, and build a streak that sticks.","applicationCategory":"ProductivityApplication","operatingSystem":"Web, Android, iOS","browserRequirements":"Requires JavaScript. Requires HTML5.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"},"featureList":["Task management","Email reminders","Free public-domain audiobooks","Daily wisdom quotes","Mind Gym brain games","Voice training","Step tracking","Google Calendar sync"],"publisher":{"@id":"https://brodoit.com/#org"},"inLanguage":"en"}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500;1,6..72,600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -3004,22 +2781,6 @@ body[data-theme=aurora] .restore-s{color:rgba(212,165,69,.7)}
 .bkp-btn{width:100%;padding:11px 14px;font-size:13.5px;margin-top:0}
 body[data-theme=aurora] .bkp-sec{background:#3A3C44;border-color:rgba(255,255,255,.08)}
 body[data-theme=aurora] .bkp-sec-t{color:#E8E8EC}
-/* Connect-WhatsApp promo banner — top of Tasks tab when WA not linked yet */
-.wa-promo{display:flex;align-items:center;gap:10px;padding:11px 12px;margin:0 0 10px;background:linear-gradient(135deg,rgba(37,211,102,.1),rgba(18,140,126,.06));border:1px solid rgba(37,211,102,.28);border-radius:12px;position:relative}
-.wa-promo-emoji{font-size:24px;line-height:1;flex-shrink:0}
-.wa-promo-body{flex:1;min-width:0}
-.wa-promo-t{font-weight:700;font-size:13px;color:#111827;letter-spacing:-.01em}
-.wa-promo-s{font-size:11px;color:#6B7280;line-height:1.35;margin-top:1px}
-.wa-promo-go{flex-shrink:0;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:700;font-size:12.5px;cursor:pointer;box-shadow:0 3px 10px rgba(37,211,102,.28);font-family:inherit;transition:transform .12s ease}
-.wa-promo-go:active{transform:scale(.96)}
-.wa-promo-x{flex-shrink:0;background:transparent;border:none;color:#A0AEC0;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px;font-family:inherit;line-height:1}
-.wa-promo-x:hover{background:rgba(17,24,39,.06);color:#111827}
-@media (max-width:480px){.wa-promo-s{display:none}.wa-promo{padding:10px}}
-body[data-theme=aurora] .wa-promo{background:#3A3C44;border-color:rgba(255,255,255,.08)}
-body[data-theme=aurora] .wa-promo-t{color:#E8E8EC}
-body[data-theme=aurora] .wa-promo-s{color:#888888}
-body[data-theme=aurora] .wa-promo-x{color:#8A8A94}
-body[data-theme=aurora] .wa-promo-x:hover{background:rgba(255,255,255,.06);color:#E8E8EC}
 /* Mobile: vertical layout (emoji on top, label below); subtitle hidden — the helper-line below the pills covers it.
    Inactive pills are visibly DIMMED so the active board jumps out at a glance. */
 @media (max-width:600px){
@@ -3038,56 +2799,6 @@ body[data-theme=aurora] .wa-promo-x:hover{background:rgba(255,255,255,.06);color
 }
 body[data-theme=aurora] .board-pick .bp-c{background:rgba(255,255,255,.9);color:#3A3C44}
 body[data-theme=aurora] .board-pick-hint{color:#8A8A94}
-/* WhatsApp connect section in profile modal */
-.wa-sec{margin:24px 0 4px;padding:14px;background:linear-gradient(135deg,rgba(37,211,102,.06),rgba(18,140,126,.04));border:1px solid rgba(37,211,102,.18);border-radius:14px;text-align:left}
-.wa-sec-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.wa-sec-emoji{font-size:28px;line-height:1}
-.wa-sec-t{font-weight:800;font-size:15px;color:var(--ink,#111827);letter-spacing:-.01em}
-.wa-sec-s{font-size:11.5px;color:#A0AEC0;font-weight:500}
-.wa-connect-btn{width:100%;background:linear-gradient(135deg,#25D366,#128C7E)!important;color:#fff!important;border:none!important;font-weight:700;letter-spacing:.01em;padding:13px;font-size:14px;box-shadow:0 6px 18px rgba(37,211,102,.28)}
-.wa-linked{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #D1D5DB;color:#111827;padding:10px 12px;border-radius:10px;font-size:13.5px;flex-wrap:wrap}
-.wa-link-x{margin-left:auto;background:transparent;border:1px solid #FCA5A5;color:#B91C1C;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:8px;cursor:pointer}
-.wa-link-x:hover{background:#FEF2F2}
-.wa-linked-hint{font-size:11.5px;color:#6B7280;margin-top:8px;line-height:1.5}
-.wa-helper{background:#FFF8E1;border:1px solid #F5D687;border-radius:10px;padding:11px 13px;margin-top:10px}
-.wa-helper-t{font-weight:700;font-size:12.5px;color:#7C5A00;margin-bottom:4px}
-.wa-helper-d{font-size:12px;color:#5D4400;line-height:1.5;margin-bottom:8px}
-.wa-helper-mini{font-size:11.5px;color:#CC6E52;background:#FFF8F0;border:1px solid #D1D5DB;padding:7px 10px;border-radius:8px;margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.wa-helper-reset{background:transparent;border:none;color:#E27D60;font-size:11px;font-weight:600;text-decoration:underline;cursor:pointer;padding:0;margin-left:auto;font-family:inherit}
-.wa-card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:13px;margin-top:10px}
-.wa-card-t{font-weight:700;font-size:13.5px;color:#111827;margin-bottom:3px}
-.wa-card-d{font-size:11.5px;color:#6B7280;line-height:1.5;margin-bottom:10px}
-.wa-resend{display:block;width:100%;margin-top:8px;background:transparent;border:none;color:#6B7280;font-size:11.5px;font-weight:600;cursor:pointer;padding:6px 0;text-decoration:underline;font-family:inherit}
-.wa-step{display:flex;gap:12px;background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-top:10px}
-.wa-step-n{flex:0 0 28px;height:28px;width:28px;border-radius:50%;background:#25D366;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px;font-family:'Space Mono',monospace}
-.wa-step-b{flex:1;min-width:0}
-.wa-step-t{font-weight:700;font-size:13.5px;color:#111827;margin-bottom:4px}
-.wa-step-d{font-size:12px;color:#6B7280;line-height:1.5;margin-bottom:8px}
-.wa-jb{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:8px;padding:10px 14px;font-weight:700;font-size:12.5px;cursor:pointer;box-shadow:0 4px 12px rgba(37,211,102,.28)}
-.wa-jb svg{width:14px;height:14px;fill:#fff}
-.wa-skip{display:block;margin-top:8px;background:transparent;border:none;color:#E27D60;font-size:11.5px;font-weight:600;cursor:pointer;padding:4px 0;text-decoration:underline}
-.wa-row{display:flex;gap:8px;margin-top:6px}
-.wa-cc{flex:0 0 auto;padding:10px 8px;border:1px solid #E5E7EB;border-radius:8px;background:#F5F6F8;font-size:13px;font-weight:600;font-family:inherit}
-.wa-num{flex:1;padding:10px 12px;border:1px solid #E5E7EB;border-radius:8px;font-size:14px;background:#fff;color:#111827;font-family:inherit}
-.wa-num:focus,.wa-cc:focus{outline:none;border-color:#25D366}
-.wa-code{width:100%;padding:14px;text-align:center;letter-spacing:8px;font-size:22px;font-weight:700;font-family:'Space Mono',monospace;border:1.5px solid #E5E7EB;border-radius:10px;background:#F5F6F8;color:#111827;margin-top:6px}
-.wa-code:focus{outline:none;border-color:#25D366;background:#fff}
-.wa-err{margin-top:8px;font-size:12px;color:#B91C1C;font-weight:600;background:#FEF2F2;border:1px solid #FCA5A5;padding:7px 10px;border-radius:8px}
-.wa-acts{display:flex;gap:8px;margin-top:10px}
-.wa-acts .mb{flex:1;margin-top:0;padding:10px;font-size:13px}
-body[data-theme=aurora] .wa-sec{background:#3A3C44;border-color:rgba(255,255,255,.08)}
-body[data-theme=aurora] .wa-sec-t{color:#E8E8EC}
-body[data-theme=aurora] .wa-linked,body[data-theme=aurora] .wa-step{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#E8E8EC}
-body[data-theme=aurora] .wa-step-t{color:#E8E8EC}
-body[data-theme=aurora] .wa-step-d,body[data-theme=aurora] .wa-linked-hint{color:#888888}
-body[data-theme=aurora] .wa-cc,body[data-theme=aurora] .wa-num,body[data-theme=aurora] .wa-code{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#E8E8EC}
-body[data-theme=aurora] .wa-helper{background:rgba(212,165,69,.06);border-color:rgba(212,165,69,.15)}
-body[data-theme=aurora] .wa-helper-t,body[data-theme=aurora] .wa-helper-d{color:#D4A545}
-body[data-theme=aurora] .wa-helper-mini{background:rgba(37,211,102,.08);border-color:rgba(37,211,102,.15);color:#3DAE5C}
-body[data-theme=aurora] .wa-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
-body[data-theme=aurora] .wa-card-t{color:#E8E8EC}
-body[data-theme=aurora] .wa-card-d{color:#888888}
-body[data-theme=aurora] .wa-resend{color:#888888}
 /* In-form Board picker (modal: New / Edit Task) */
 .form-board-pick{display:flex;gap:10px;margin-bottom:10px}
 .fbp{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border:1.5px solid var(--line,#E5E7EB);background:var(--bg-elev,#fff);border-radius:12px;cursor:pointer;color:var(--ink-2,#6B7280);transition:border-color .15s ease,background .15s ease,transform .1s ease;text-align:center}
@@ -5869,16 +5580,6 @@ body.modal-open{padding-bottom:0 !important}
 .login-tab{flex:1;padding:12px 8px 14px;border-radius:0;font-size:13.5px;font-weight:500;color:var(--ink-3);border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:color .15s ease,border-color .15s ease;border-bottom:2px solid transparent;margin-bottom:-1px;letter-spacing:.005em}
 .login-tab:hover{color:var(--ink-2)}
 .login-tab.on{color:var(--ink);border-bottom-color:var(--ink);font-weight:600}
-.wa-login-step{display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--bg-elev);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;text-align:left;box-shadow:var(--shadow-1)}
-.wa-step-num{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--bg-sunken);color:var(--ink);font-weight:600;display:flex;align-items:center;justify-content:center;font-size:12px;border:1px solid var(--line)}
-.wa-step-body{flex:1;min-width:0}
-.wa-step-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px}
-.wa-step-desc{font-size:12.5px;color:var(--ink-3);line-height:1.55}
-.wa-join-btn{margin-top:10px;display:flex;align-items:center;gap:8px;background:#1F8A4F;color:#FAFAF7;border:none;padding:11px 14px;border-radius:8px;font-weight:500;font-size:13.5px;cursor:pointer;width:100%;justify-content:center;transition:background .15s ease}
-.wa-join-btn:hover{background:#176B3D}
-.wa-save-btn{margin-top:10px;display:flex;align-items:center;gap:8px;background:transparent;color:var(--ink-2);border:1px solid var(--line-2);padding:10px 14px;border-radius:8px;font-weight:500;font-size:13px;cursor:pointer;width:100%;justify-content:center;transition:all .15s ease}
-.wa-save-btn:hover{background:var(--bg-sunken);border-color:var(--ink-4);color:var(--ink)}
-.wa-login-step input{margin-bottom:0!important;text-align:left!important}
 .phone-row{display:flex;gap:8px;margin-top:8px;align-items:stretch}
 .cc-select{flex:0 0 auto;width:140px;padding:12px 8px;border:1.5px solid #E5E7EB;border-radius:10px;background:#fff;font-size:14px;font-weight:600;color:#111827;cursor:pointer;-webkit-appearance:menulist;appearance:menulist}
 .cc-select:focus{outline:none;border-color:#25D366}
@@ -5901,75 +5602,9 @@ body.modal-open{padding-bottom:0 !important}
 .login-btn.sec{background:transparent;border:1px solid var(--line-2);color:var(--ink-2);margin-top:8px}
 .login-btn.sec:hover{background:var(--bg-sunken);border-color:var(--ink-4)}
 .login-hint{font-size:12px;color:#A0AEC0;margin-top:16px;line-height:1.5}
-.login-wa-note{margin-top:14px;padding:11px 13px;background:linear-gradient(135deg,rgba(37,211,102,.08),rgba(18,140,126,.05));border:1px solid rgba(37,211,102,.22);border-radius:10px;font-size:12px;color:#1A6035;text-align:left;display:flex;align-items:flex-start;gap:9px;line-height:1.45}
-.login-wa-emoji{font-size:18px;line-height:1.1;flex-shrink:0}
-body[data-theme=aurora] .login-wa-note{background:linear-gradient(135deg,rgba(37,211,102,.1),rgba(18,140,126,.06));border-color:rgba(37,211,102,.25);color:#A8E6BC}
-/* Dedicated WhatsApp Setup modal — clean, focused, no profile clutter */
-.was-mdl{max-width:460px;padding:0;overflow:hidden}
-.ov-locked{cursor:default}/* overlay tap doesn't dismiss — explicit X only */
-.was-progress{height:3px;background:rgba(0,0,0,.06);position:relative;overflow:hidden}
-.was-progress-bar{height:100%;background:linear-gradient(90deg,#25D366,#128C7E);transition:width .35s cubic-bezier(.2,.8,.2,1)}
-.was-body{padding:18px;background:#fff}
-.was-card-t{font-weight:800;font-size:15.5px;color:#111827;margin:0 0 4px;letter-spacing:-.01em}
-.was-card-d{font-size:12.5px;color:#6B7280;line-height:1.55;margin:0 0 14px}
-.was-helper{margin:0 0 16px;padding:12px 14px;background:#FFF8E1;border:1px solid #F5D687;border-radius:10px}
-.was-helper-t{font-weight:800;font-size:13px;color:#7C5A00;margin-bottom:4px}
-.was-helper-d{font-size:12px;color:#5D4400;line-height:1.5;margin-bottom:10px}
-.was-helper-acts{display:flex;gap:8px;flex-wrap:wrap}
-.was-helper-acts .was-jb{flex:1;width:auto}
-.was-helper-acts .was-skip{flex:0 0 auto;margin-top:0;padding:10px 12px;width:auto;background:#fff;border:1px solid #E5E7EB;border-radius:8px;color:#6B7280}
-.was-resend{display:block;width:100%;margin-top:14px;background:transparent;border:none;color:#128C7E;font-size:13px;font-weight:700;cursor:pointer;padding:10px;font-family:inherit;border-top:1px dashed #E5E7EB}
-.was-resend:hover{background:#F5F6F8}
-.was-hd{display:flex;align-items:center;gap:12px;padding:18px 18px 14px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;position:relative}
-.was-emoji{font-size:30px;line-height:1;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
-.was-t{margin:0;font-size:18px;font-weight:800;color:#fff;letter-spacing:-.01em}
-.was-s{font-size:12px;color:rgba(255,255,255,.85);font-weight:500;margin-top:2px}
-.was-x{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.18);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;font-family:inherit}
-.was-x:hover{background:rgba(255,255,255,.28)}
-.was-step{display:flex;gap:14px;padding:16px 18px;background:#fff;border-bottom:1px solid #F5F6F8}
-.was-step:last-child{border-bottom:none}
-.was-step-n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:#25D366;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:'Space Mono',monospace;box-shadow:0 3px 8px rgba(37,211,102,.3)}
-.was-step-n.was-step-done{background:#A0AEC0;box-shadow:none;font-size:16px}
-.was-step-b{flex:1;min-width:0}
-.was-step-t{font-weight:700;font-size:14.5px;color:#111827;margin-bottom:5px;letter-spacing:-.01em}
-.was-step-d{font-size:13px;color:#6B7280;line-height:1.55;margin-bottom:12px}
-.was-jb{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:700;font-size:13.5px;cursor:pointer;box-shadow:0 4px 14px rgba(37,211,102,.32);width:100%;justify-content:center;font-family:inherit;transition:transform .12s ease}
-.was-jb:active{transform:scale(.98)}
-.was-jb svg{width:16px;height:16px;fill:#fff}
-.was-skip{display:block;width:100%;margin-top:10px;background:transparent;border:none;color:#6B7280;font-size:12.5px;font-weight:600;cursor:pointer;padding:8px 0;font-family:inherit}
-.was-skip:hover{color:#111827;text-decoration:underline}
-.was-mini{margin:14px 18px 0;padding:9px 12px;background:#FFF8F0;border:1px solid #D1D5DB;border-radius:9px;font-size:12px;color:#1A6035;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.was-mini-reset{background:transparent;border:none;color:#E27D60;font-size:11.5px;font-weight:600;text-decoration:underline;cursor:pointer;padding:0;margin-left:auto;font-family:inherit}
-.was-row{display:flex;gap:8px;margin-bottom:0;align-items:stretch}
-.was-cc{flex:0 0 96px;width:96px;min-width:0;padding:13px 8px;border:1.5px solid #E5E7EB;border-radius:10px;background:#F5F6F8;font-size:13.5px;font-weight:600;font-family:inherit;color:#111827;cursor:pointer;-webkit-appearance:menulist;appearance:menulist;box-sizing:border-box;text-align:left}
-.was-ph{flex:1 1 0;min-width:0;padding:13px 14px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:16px;background:#fff;color:#111827;font-family:inherit;letter-spacing:.5px;-webkit-appearance:none;appearance:none;width:100%;box-sizing:border-box}
-.was-ph:focus,.was-cc:focus{outline:none;border-color:#25D366;box-shadow:0 0 0 3px rgba(37,211,102,.18)}
-.was-code{width:100%;padding:18px;text-align:center;letter-spacing:14px;font-size:28px;font-weight:700;font-family:'Space Mono',monospace;border:1.5px solid #E5E7EB;border-radius:12px;background:#F5F6F8;color:#111827;-webkit-appearance:none;appearance:none}
-.was-code:focus{outline:none;border-color:#25D366;background:#fff;box-shadow:0 0 0 3px rgba(37,211,102,.18)}
-.was-err{margin-top:10px;font-size:12.5px;color:#B91C1C;font-weight:600;background:#FEF2F2;border:1px solid #FCA5A5;padding:9px 11px;border-radius:8px;line-height:1.4}
-.was-acts{display:flex;gap:9px;margin-top:14px}
-.was-acts .mb{flex:1;margin-top:0;padding:12px;font-size:13.5px}
-@media (max-width:520px){.was-step{padding:14px 14px}.was-hd{padding:16px 14px 12px}.was-step-d{font-size:12.5px}.was-ph{font-size:16px;padding:12px}.was-code{font-size:24px;letter-spacing:10px}}
-body[data-theme=aurora] .was-mdl{background:#3A3C44}
-body[data-theme=aurora] .was-step{background:#3A3C44;border-color:rgba(255,255,255,.08)}
-body[data-theme=aurora] .was-step-t{color:#E8E8EC}
-body[data-theme=aurora] .was-step-d{color:#888888}
-body[data-theme=aurora] .was-cc,body[data-theme=aurora] .was-ph,body[data-theme=aurora] .was-code{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08);color:#E8E8EC}
-body[data-theme=aurora] .was-mini{background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.28);color:#A8E6BC}
-body[data-theme=aurora] .was-skip{color:#888888}
 body[data-theme=aurora] .login-btn{background:var(--accent);color:#fff}
 body[data-theme=aurora] .login-btn:hover{background:#C96A50}
 body[data-theme=aurora] .login-btn.sec{background:transparent;color:var(--ink-2)}
-body[data-theme=aurora] .was-body{background:var(--surface)}
-body[data-theme=aurora] .was-card-t{color:var(--ink)}
-body[data-theme=aurora] .was-card-d{color:var(--ink-3)}
-body[data-theme=aurora] .was-helper{background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.25)}
-body[data-theme=aurora] .was-helper-t{color:#A8E6BC}
-body[data-theme=aurora] .was-helper-d{color:#8CC89E}
-body[data-theme=aurora] .was-helper-acts .was-skip{background:var(--bg-elev);border-color:var(--line);color:var(--ink-3)}
-body[data-theme=aurora] .was-resend{color:#25D366;border-color:var(--line)}
-body[data-theme=aurora] .was-resend:hover{background:var(--bg-sunken)}
-body[data-theme=aurora] .was-err{background:rgba(185,28,28,.12);border-color:rgba(185,28,28,.3);color:#F87171}
 body[data-theme=aurora] .cc-select{background:var(--bg-elev);border-color:var(--line);color:var(--ink)}
 body[data-theme=aurora] .login-err{background:rgba(185,28,28,.12);border-color:rgba(185,28,28,.3)}
 body[data-theme=aurora] .login-err-msg{color:#F87171}
@@ -8601,7 +8236,7 @@ const BRO_FACTS=[
 {e:'\\u{1F409}',t:'Dragonflies have been around for 300 million years — before dinosaurs existed.',c:'Nature'}
 ];
 let _broFactIdx=Math.floor(Math.random()*BRO_FACTS.length);
-let S={tasks:[],view:'pending',search:'',tab:'tasks',showAdd:false,editing:null,listening:false,toast:null,toastType:'ok',waOk:false,sending:{},user:null,compose:{value:'',priority:null,dueDate:null,saving:false},
+let S={tasks:[],view:'pending',search:'',tab:'tasks',showAdd:false,editing:null,listening:false,toast:null,toastType:'ok',sending:{},user:null,compose:{value:'',priority:null,dueDate:null,saving:false},
 books:[],booksLoading:false,booksCat:'all',bookSearch:'',playing:null,moralIdx:Math.floor(Math.random()*(window._DQ?window._DQ.length:MORALS.length)),
 knowledge:{loading:false,loaded:{},articles:{},events:[],topic:'history',sec:'today'},
 game:{active:false,board:Array(9).fill(null),turn:'X',status:'idle',winLine:null,wins:Number(localStorage.getItem('tf_ttt_wins')||0),losses:Number(localStorage.getItem('tf_ttt_losses')||0),draws:Number(localStorage.getItem('tf_ttt_draws')||0)},
@@ -8623,7 +8258,7 @@ weather:{city:localStorage.getItem('tf_city')||'Bangalore',temp:null,aqi:null,co
 cityTemps:{},remember:{person:null,loaded:false},lifeGoal:localStorage.getItem('tf_life_goal')||'',meditating:{active:false,title:'',mins:0,startedAt:0},
 medCat:null,
 ticker:{items:[],idx:0,loaded:false},
-waConnected:false,showWAOnboard:false,activeMeditation:null,
+activeMeditation:null,
 google:{configured:false,accounts:[],loaded:false},gcalEvents:[],gcalLoading:false,showGcalAdd:false,gcalForm:{title:'',date:'',time:'',duration:30,notes:'',email:''},showCalSchedule:false,calSchedule:null,
 calMonth:new Date(),calSelectedDate:new Date().toISOString().slice(0,10),
 steps:[],stepGoal:parseInt(localStorage.getItem('step_goal')||'10000',10),stepLive:{active:false,count:0},healthLoaded:false,fitSyncing:false,fitNeedReauth:false,fitLastSync:parseInt(localStorage.getItem('fit_last_sync')||'0',10),
@@ -8663,7 +8298,7 @@ if(token){S.user={phone:localStorage.getItem('tf_phone'),name:localStorage.getIt
       const id=decodeURIComponent(location.hash.slice(5));
       if(id){
         if(/@/.test(id)){S.loginEmail=id;S.loginMethod='email'}
-        else{S.loginPhone=id;S.loginMethod='whatsapp'}
+        else{S.loginPhone=id;S.loginMethod='email'}
         S.loginStep='otp';
         S.loginSentTo=id;
       }
@@ -8830,14 +8465,14 @@ function restoreLoginState(){
     const lastPhone=localStorage.getItem('tf_phone')||'';
     if(lastName)S.loginName=lastName;
     if(lastEmail){S.loginEmail=lastEmail;S.loginMethod='email'}
-    else if(lastPhone){S.loginPhone=lastPhone;S.loginMethod='whatsapp'}
+    else if(lastPhone){S.loginPhone=lastPhone;S.loginMethod='email'}
   }catch(e){}
   // Then layer the in-progress state (mid-OTP etc.) on top if it's still fresh
   // 60-min TTL — long enough that switching to Gmail to read the OTP and back doesn't lose state.
   try{const raw=localStorage.getItem('tf_login_state');if(!raw)return;const d=JSON.parse(raw);if(!d||!d.ts||Date.now()-d.ts>60*60*1000){localStorage.removeItem('tf_login_state');return}S.loginStep=d.step||'phone';S.loginMethod=d.method||S.loginMethod||'email';S.loginPhone=d.phone||S.loginPhone;S.loginCountryCode=d.cc||S.loginCountryCode||'+91';S.loginEmail=d.email||S.loginEmail;S.loginName=d.name||S.loginName;S.loginSentTo=d.sentTo||'';if(Array.isArray(d.otp)&&d.otp.length===6)S.loginOTP=d.otp.slice()}catch(e){}
 }
 function clearLoginState(){try{localStorage.removeItem('tf_login_state')}catch(e){}}
-async function sendOTP(){S.loginLoading=true;S.loginError='';render();let url,body;if(S.loginMethod==='email'){const em=(S.loginEmail||'').trim().toLowerCase();if(!/^[\\w.+-]+@[\\w-]+\\.[a-z]{2,}$/i.test(em)){S.loginError='Enter a valid email address';S.loginLoading=false;render();return}url='/api/send-otp-email';body={email:em}}else{const cc=(S.loginCountryCode||'+91').replace(/[^0-9+]/g,'');const local=(S.loginPhone||'').replace(/[^0-9]/g,'');if(!local){S.loginError='Enter your WhatsApp number';S.loginLoading=false;render();return}if(local.length<6){S.loginError='Phone number too short';S.loginLoading=false;render();return}const ph=cc+local;url='/api/send-otp';body={phone:ph}}const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>({ok:false,error:'Network error \\u2014 check your connection'}));S.loginLoading=false;if(r.ok){S.loginStep='otp';S.loginOTP=['','','','','',''];S.loginError='';S.loginSentTo=r.phone||S.loginEmail||((S.loginCountryCode||'')+S.loginPhone);persistLoginState();try{sessionStorage.setItem('tf_otp_ts',String(Date.now()))}catch(e){}try{const id=S.loginMethod==='email'?S.loginEmail:S.loginPhone;history.replaceState(null,'','#otp:'+encodeURIComponent(id||''))}catch(e){}render();setTimeout(()=>{const el=document.getElementById('otp0');if(el)el.focus()},100)}else{S.loginError=r.error||'Failed to send OTP';S.loginErrorDetail=r.detail||'';S.loginErrorCode=r.code||0;render()}}
+async function sendOTP(){S.loginLoading=true;S.loginError='';render();let url,body;if(S.loginMethod==='email'){const em=(S.loginEmail||'').trim().toLowerCase();if(!/^[\\w.+-]+@[\\w-]+\\.[a-z]{2,}$/i.test(em)){S.loginError='Enter a valid email address';S.loginLoading=false;render();return}url='/api/send-otp-email';body={email:em}}const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>({ok:false,error:'Network error \\u2014 check your connection'}));S.loginLoading=false;if(r.ok){S.loginStep='otp';S.loginOTP=['','','','','',''];S.loginError='';S.loginSentTo=r.phone||S.loginEmail||((S.loginCountryCode||'')+S.loginPhone);persistLoginState();try{sessionStorage.setItem('tf_otp_ts',String(Date.now()))}catch(e){}try{const id=S.loginMethod==='email'?S.loginEmail:S.loginPhone;history.replaceState(null,'','#otp:'+encodeURIComponent(id||''))}catch(e){}render();setTimeout(()=>{const el=document.getElementById('otp0');if(el)el.focus()},100)}else{S.loginError=r.error||'Failed to send OTP';S.loginErrorDetail=r.detail||'';S.loginErrorCode=r.code||0;render()}}
 async function verifyOTP(){const code=S.loginOTP.join('');if(code.length<6){S.loginError='Enter the 6-digit code';render();return}S.loginLoading=true;S.loginError='';render();let url,body;if(S.loginMethod==='email'){url='/api/verify-otp-email';body={email:(S.loginEmail||'').trim().toLowerCase(),code,name:S.loginName}}else{let ph=S.loginPhone.replace(/[^0-9+]/g,'');if(!ph.startsWith('+'))ph='+'+ph;url='/api/verify-otp';body={phone:ph,code,name:S.loginName}}const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>({error:'Network error'}));S.loginLoading=false;if(r.token){token=r.token;localStorage.setItem('tf_token',r.token);localStorage.setItem('tf_phone',r.phone);localStorage.setItem('tf_name',r.name||'');if(r.email)localStorage.setItem('tf_email',r.email);S.user=r;S.loginStep='phone';clearLoginState();try{sessionStorage.removeItem('tf_otp_ts')}catch(e){}try{history.replaceState(null,'','/')}catch(e){}load();chk();toast('Welcome!')}else{S.loginError=r.error||'Verification failed';render()}}
 function otpInput(i,v){const d=v.slice(-1);S.loginOTP[i]=d;const el=document.getElementById('otp'+i);if(el)el.value=d;persistLoginState();if(d&&i<5){const nx=document.getElementById('otp'+(i+1));if(nx)nx.focus()}else if(d&&i===5){if(S.loginOTP.every(x=>x))verifyOTP()}}
 function otpKey(i,e){if(e.key==='Backspace'&&!S.loginOTP[i]&&i>0){const prev=document.getElementById('otp'+(i-1));if(prev){prev.focus();S.loginOTP[i-1]='';prev.value='';persistLoginState()}}}
@@ -8848,7 +8483,7 @@ function logout(){
   token=null;S.user=null;S.tasks=[];
   S.loginStep='phone';S.loginOTP=['','','','','',''];
   S.loginName=lastName;S.loginEmail=lastEmail;S.loginPhone=lastPhone;
-  S.loginMethod=lastEmail?'email':(lastPhone?'whatsapp':'email');
+  S.loginMethod='email';
   S.loginError='';S.loginErrorDetail='';S.loginErrorCode=0;S.loginSentTo='';
   localStorage.removeItem('tf_token');
   try{fetch('/api/logout',{method:'POST',credentials:'same-origin'})}catch(e){}
@@ -8860,7 +8495,7 @@ function logout(){
 }
 // One source of truth: any open modal / overlay / in-flight typing state where a
 // background re-render would wipe the user's keystrokes or scroll position.
-function _isModalOpen(){return !!(S.showWASetup||S.showAdd||S.showProfile||S.showHelp||S.schPanel||S.mtgPanel||S.hlPanel||S.mgDetail||S.mgPlay||S.mgGamesPanel||(S.bookReader&&S.bookReader.open)||S.hlEditing||(S.articleEditor&&S.articleEditor.open)||S.showCalSchedule||S.showGcalAdd)}
+function _isModalOpen(){return !!(S.showAdd||S.showProfile||S.showHelp||S.schPanel||S.mtgPanel||S.hlPanel||S.mgDetail||S.mgPlay||S.mgGamesPanel||(S.bookReader&&S.bookReader.open)||S.hlEditing||(S.articleEditor&&S.articleEditor.open)||S.showCalSchedule||S.showGcalAdd)}
 // True if audio is playing OR loading (S.playing/S.meditating set means user just tapped a play
 // card and we're waiting for bytes — re-rendering now wipes the <audio> element before it can
 // connect, causing the "affirmation refreshes the screen forever" bug.
@@ -8898,7 +8533,7 @@ async function restoreFromBackup(){
 }
 function dismissRestoreOffer(){S.restoreOffer=null;render()}
 function downloadBackup(){window.open('/api/me/export','_blank')}
-async function chk(){const h=await api('/health');if(h)S.waOk=h.whatsapp;render()}
+async function chk(){await api('/health');render()}
 async function addT(){if(!S.form.title.trim())return;const r=await api('/tasks',{method:'POST',body:JSON.stringify({title:S.form.title,notes:S.form.notes,priority:S.form.priority,status:'pending',due_date:S.form.dueDate,reminder_time:S.form.reminderTime,board:S.form.board})});if(r?.id){S.tasks.unshift(r);clM();toast('\\u2705 Task added!')}}
 // ─── Inline composer ────────────────────────────────────────────
 // Smart-parses natural language: "Buy milk tomorrow !urgent" →
@@ -9515,81 +9150,6 @@ function speakIntro(){try{if(!('speechSynthesis' in window)){toast('\\u26A0\\uFE
 function stopSpeak(){try{speechSynthesis.cancel()}catch(e){}}
 function filterBooks(v){S.bookSearch=v;const grid=document.getElementById('books-grid');if(!grid){render();return}const q=(v||'').toLowerCase().trim();const fb=!q?S.books:S.books.filter(b=>{const t=(Array.isArray(b.title)?b.title[0]:b.title||'').toLowerCase();const a=(Array.isArray(b.creator)?b.creator[0]:b.creator||'').toLowerCase();return t.includes(q)||a.includes(q)});grid.innerHTML=renderBookCards(fb)}
 function renderBookCards(fb){if(!fb.length)return '<div class="empty"><div style="font-size:36px">\\u{1F4DA}</div><div style="font-size:14px;margin-top:8px">No books found</div></div>';let h='<div class="book-list">';fb.forEach(b=>{const id=b.identifier;const cover='https://archive.org/services/img/'+id;const author=Array.isArray(b.creator)?b.creator[0]:(b.creator||'Unknown');const title=Array.isArray(b.title)?b.title[0]:b.title;h+='<div class="book-card"><div class="book-cover"><img src="'+cover+'" loading="lazy" onerror="this.style.display=\\'none\\'"/></div><div class="book-info"><div class="book-title">'+esc(title)+'</div><div class="book-author">'+esc(author)+'</div><div class="book-meta"><span>\\u{1F3A7} '+(b.downloads?(+b.downloads).toLocaleString():'\\u2014')+' plays</span><span>\\u{1F4D6} LibriVox</span></div></div><button class="book-play" onclick="playBook(\\''+id+'\\')">\\u25B6</button></div>'});h+='</div>';return h}
-// WhatsApp UI disabled for closed-test phase (Twilio Sandbox can't deliver to arbitrary recipients).
-function openWAOnboard(){return}
-function closeWAOnboard(){S.showWAOnboard=false;render()}
-function openWAJoin(){return}
-function saveBroDoitContact(){const a=document.createElement('a');a.href='/brodoit.vcf';a.download='BroDoit.vcf';document.body.appendChild(a);a.click();setTimeout(()=>document.body.removeChild(a),1000);toast('\\u{1F4D2} Downloading BroDoit contact \\u2014 open it to save')}
-function confirmWAJoined(){S.waConnected=true;localStorage.setItem('wa_connected','1');S.showWAOnboard=false;toast('\\u2705 WhatsApp connected');render()}
-function disconnectWA(){S.waConnected=false;localStorage.removeItem('wa_connected');toast('\\u23F8 WhatsApp disconnected');render()}
-// ─── Connect-WhatsApp flow (link a real WA number to this account) ───
-// State persists to localStorage so iOS Safari suspending the tab while you fetch the OTP from
-// WhatsApp doesn't drop you back to step 1 when you return.
-function _waPersist(){try{if(S.waConn)localStorage.setItem('tf_wa_conn',JSON.stringify({...S.waConn,ts:Date.now()}));else localStorage.removeItem('tf_wa_conn')}catch(e){}}
-function _waRestore(){try{const raw=localStorage.getItem('tf_wa_conn');if(!raw)return;const d=JSON.parse(raw);if(!d||!d.ts||Date.now()-d.ts>30*60*1000){localStorage.removeItem('tf_wa_conn');return}// strip transient flags
-delete d.sending;delete d.verifying;S.waConn=d;S.showWASetup=true}catch(e){}}
-async function waConnectSend(){
-  const phEl=document.getElementById('waSetupPh');
-  const ccEl=document.getElementById('waSetupCC');
-  const localNum=((phEl&&phEl.value)||S.waConn?.phoneInput||'').replace(/[^0-9]/g,'');
-  const cc=((ccEl&&ccEl.value)||S.waConn?.cc||'+91');
-  const full=cc+localNum;
-  if(full.length<8){S.waConn={...(S.waConn||{step:'phone'}),phoneInput:localNum,cc,err:'Enter your WhatsApp number'};_waPersist();render();return}
-  S.waConn={...(S.waConn||{}),phone:full,cc,phoneInput:localNum,step:'phone',sending:true,err:''};_waPersist();render();
-  const r=await api('/wa/connect',{method:'POST',body:JSON.stringify({phone:full})});
-  if(r&&r.ok){
-    localStorage.setItem('tf_wa_joined','1');
-    S.waConn={phone:full,cc,phoneInput:localNum,step:'verify',codeInput:''};
-    _waPersist();
-    toast('\\u{1F4F2} Code sent to your WhatsApp');
-    render();
-    setTimeout(()=>{const e=document.getElementById('waSetupCode');if(e)e.focus()},120);
-    return;
-  }
-  S.waConn={phone:full,cc,phoneInput:localNum,step:'phone',err:(r&&r.error)||'Failed to send',needsJoin:!!(r&&r.needsJoin)};
-  if(r&&r.needsJoin)localStorage.removeItem('tf_wa_joined');
-  _waPersist();render();
-}
-async function waConnectVerify(){
-  const codeEl=document.getElementById('waSetupCode');
-  const code=((codeEl&&codeEl.value)||S.waConn?.codeInput||'').trim();
-  if(!code||code.length<6){S.waConn={...(S.waConn||{}),codeInput:code,err:'Enter the 6-digit code'};_waPersist();render();return}
-  S.waConn={...(S.waConn||{}),codeInput:code,verifying:true,err:''};_waPersist();render();
-  const r=await api('/wa/verify',{method:'POST',body:JSON.stringify({phone:S.waConn.phone,code})});
-  if(r&&r.ok){
-    S.profile={...(S.profile||{}),wa_phone:r.wa_phone};
-    S.waConn=null;S.showWASetup=false;
-    localStorage.removeItem('tf_wa_conn');
-    localStorage.removeItem('tf_wa_banner_x');
-    toast('\\u2705 WhatsApp connected!');
-  }else{
-    S.waConn={...(S.waConn||{}),codeInput:code,verifying:false,err:(r&&r.error)||'Verification failed'};
-    _waPersist();
-  }
-  render();
-}
-async function waUnlink(){
-  if(!confirm('Disconnect WhatsApp from this account?'))return;
-  const r=await api('/wa/disconnect',{method:'POST'});
-  if(r&&r.ok){S.profile={...(S.profile||{}),wa_phone:null};localStorage.removeItem('tf_wa_banner_x');toast('WhatsApp disconnected');render()}
-}
-function waConnectStart(){
-  S.showProfile=false;S.showWASetup=true;
-  // If we were mid-verify when the modal closed, resume there. Otherwise start fresh.
-  if(!S.waConn||(S.waConn.step!=='verify'&&S.waConn.step!=='phone'))S.waConn={step:'phone',cc:'+91'};
-  _waPersist();render();
-  setTimeout(()=>{const e=document.getElementById(S.waConn.step==='verify'?'waSetupCode':'waSetupPh');if(e)e.focus()},120);
-}
-function waConnectCancel(){
-  // Only allow cancel via explicit X / Cancel button. Keep state in localStorage so re-opening resumes.
-  S.showWASetup=false;render();
-}
-function waConnectAbort(){S.waConn=null;S.showWASetup=false;localStorage.removeItem('tf_wa_conn');render()}
-// Live-persist what the user types so iOS killing the tab while they switch to WhatsApp doesn't lose progress.
-function waConnPhInput(v){if(!S.waConn)return;S.waConn={...S.waConn,phoneInput:v};_waPersist()}
-function waConnCcInput(v){if(!S.waConn)return;S.waConn={...S.waConn,cc:v};_waPersist()}
-function waConnCodeInput(v){if(!S.waConn)return;S.waConn={...S.waConn,codeInput:v};_waPersist();if((v||'').replace(/\D/g,'').length>=6)waConnectVerify()}
-function waOpenJoin(){const num=(window.__WA_NUMBER||'+919999999999').replace(/[^0-9]/g,'');window.open('https://wa.me/'+num+'?text='+encodeURIComponent('Hi'),'_blank')}
 // Meditation slots:
 //   directId = Archive.org item (legacy real-teacher recordings)
 //   audioId = AUDIO_LIBRARY key (pre-rendered static MP3 in audio-static/)
@@ -12650,7 +12210,6 @@ h+='<div class="login-logo"><span class="b1">Bro</span><span class="b2">do</span
 h+='<div class="login-tagline">Tasks. Books. Wisdom.</div>';
 h+='<a class="whatsnew-pill" href="/about" style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;margin:0 0 18px;background:rgba(31,77,63,.08);border:1px solid rgba(31,77,63,.2);border-radius:999px;font-size:12px;font-weight:500;letter-spacing:.04em;color:#E27D60;text-decoration:none;font-family:\\'JetBrains Mono\\',monospace;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:999px;background:#E27D60;box-shadow:0 0 8px #E27D60;animation:wn-pulse 2s ease-in-out infinite"></span>NEW · Our Story <span style="opacity:.7">→</span></a>';
 h+='<div class="login-sub">A calm, focused space for the work that matters.</div>';
-// Login is email-only (WhatsApp integration was removed).
 S.loginMethod='email';
 h+='<input id="loginName" type="text" placeholder="Your name" value="'+esc(S.loginName)+'" oninput="S.loginName=this.value;persistLoginState()" style="font-size:15px;letter-spacing:0">';
 h+='<input id="loginEmail" type="email" placeholder="you@example.com" value="'+esc(S.loginEmail)+'" oninput="S.loginEmail=this.value;persistLoginState()" autocomplete="email" style="font-size:15px;letter-spacing:0">';
@@ -14297,26 +13856,6 @@ if(S.bookReader&&S.bookReader.open&&S.bookReader.book){
   +'</div>';
   h+='</div></div>';
 }
-if(S.showWAOnboard){
-  h+='<div class="ov" onclick="closeWAOnboard()"><div class="mdl" onclick="event.stopPropagation()" style="max-width:440px">';
-  h+='<div style="text-align:center;margin-bottom:18px"><div style="width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,#25D366,#128C7E);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 12px 30px rgba(37,211,102,.35)"><svg width="42" height="42" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div><h2 style="margin:0;font-size:22px">Get reminders on WhatsApp</h2><div style="font-size:14px;color:#6B7280;margin-top:6px;line-height:1.5">Send and receive tasks the easy way \\u2014 without leaving your favorite chat app.</div></div>';
-  if(!S.waConnected){
-    h+='<ul style="list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:10px;font-size:13.5px;color:#4A5568">';
-    h+='<li style="display:flex;align-items:center;gap:10px"><span style="width:28px;height:28px;border-radius:50%;background:#FFF8F0;color:#CC6E52;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800">\\u23F0</span><span><b>Smart reminders</b> the moment your task is due</span></li>';
-    h+='<li style="display:flex;align-items:center;gap:10px"><span style="width:28px;height:28px;border-radius:50%;background:#F0F9FF;color:#0284C7;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800">\\u270D\\uFE0F</span><span><b>Add tasks by texting Brodoit</b> \\u2014 no app needed</span></li>';
-    h+='<li style="display:flex;align-items:center;gap:10px"><span style="width:28px;height:28px;border-radius:50%;background:#FEF3C7;color:#B8802A;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800">\\u{1F510}</span><span><b>One-time setup</b>, takes 10 seconds</span></li>';
-    h+='</ul>';
-    h+='<div style="background:#F5F6F8;border:1px solid #E5E7EB;border-radius:14px;padding:14px;margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:#A0AEC0;letter-spacing:.5px;margin-bottom:8px">HOW IT WORKS</div><div style="font-size:13.5px;color:#4A5568;line-height:1.6">Save BroDoit to your contacts, then say hi on WhatsApp. We\\'ll connect your number instantly. Your phone stays private.</div></div>';
-    h+='<button class="mb" style="width:100%;background:#FFFFFF;border:1.5px solid #25D366;color:#111827;font-size:14px;padding:12px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;font-weight:700;cursor:pointer;border-radius:12px" onclick="saveBroDoitContact()">\\u{1F4C7} Save BroDoit to contacts</button>';
-    h+='<button class="mb mb-s" style="width:100%;background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;font-size:15px;padding:14px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 22px rgba(37,211,102,.32)" onclick="openWAJoin()">'+WI+' Open WhatsApp &amp; tap Send</button>';
-    h+='<div class="macts" style="margin-top:12px"><button class="mb mb-c" onclick="closeWAOnboard()">Maybe later</button><button class="mb mb-s" style="background:#111827" onclick="confirmWAJoined()">I\\'ve sent it \\u2014 connect me</button></div>';
-  }else{
-    h+='<div style="background:#FFF8F0;border:1px solid #D1D5DB;border-radius:12px;padding:14px;font-size:13.5px;color:#CC6E52;margin-bottom:16px;display:flex;align-items:center;gap:10px"><span style="font-size:22px">\\u2705</span><span><b>You\\'re connected.</b> Reminders and quick task creation are now active.</span></div>';
-    h+='<div class="macts"><button class="mb mb-d" onclick="disconnectWA()">Disconnect</button><button class="mb mb-s" onclick="closeWAOnboard()">Done</button></div>';
-  }
-  h+='</div></div>';
-}
-
 if(S.showCalSchedule&&S.calSchedule){
   const cs=S.calSchedule;
   const dlbl=new Date(cs.date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric'});
@@ -14424,9 +13963,6 @@ if(S.showHelp){
   h+='</div></div>';
 }
 
-// ─── Dedicated WhatsApp Setup modal ───
-// State persisted to localStorage so iOS Safari suspending the tab while user fetches the OTP
-// from WhatsApp doesn't drop them back to step 1. Overlay tap does NOT close (explicit X only).
 // ─── MIND GYM gameplay modal ───
 // ─── Game detail (journey roadmap) ───
 if(S.mgGamesPanel&&!S.mgDetail&&!S.mgPlay){
@@ -14814,10 +14350,6 @@ if(S.voicePlay){
   h+='</div></div></div>';
 }
 
-// (WhatsApp setup modal removed — integration retired. The state flag S.showWASetup
-// can no longer be set from the UI, but if persisted from a prior session it has
-// no render block and is ignored.)
-
 if(S.hlPanel){
   const hl=S.dailyHl;
   const editing=!!S.hlEditing||!hl;
@@ -15080,7 +14612,6 @@ try{document.body.classList.toggle('bro-tab',S.tab==='bro')}catch(e){}
 // Force textarea width to parent's pixel width — WebView ignores CSS width on textareas
 try{var _ta=document.querySelectorAll('textarea.bro-input,textarea.qc-input');for(var _i=0;_i<_ta.length;_i++){var _p=_ta[_i].parentNode;if(_p&&_p.clientWidth>0)_ta[_i].style.width=_p.clientWidth+'px'}}catch(e){}
 }
-fetch('/api/config').then(r=>r.json()).then(c=>{window.__WA_NUMBER=c.waNumber||'';S.waOk=c.waOk;render()}).catch(()=>{});
 applyTheme();
 window.S=S;window._render=_render;window.render=render;window.switchTab=switchTab;
 (function(){
@@ -15115,7 +14646,7 @@ window.S=S;window._render=_render;window.render=render;window.switchTab=switchTa
   }
   requestAnimationFrame(frame);
 })();
-if(S.user){try{localStorage.removeItem('tf_wa_conn');localStorage.removeItem('tf_wa_joined');localStorage.removeItem('tf_wa_banner_x')}catch(e){}refreshSession();load();loadBookStreak();loadGoogleStatus();loadWeather();loadTicker();loadCityTemps();loadRemember();loadMindGym();coachInit();chk();setInterval(load,10000);setInterval(loadWeather,15*60*1000);setInterval(loadTicker,15*60*1000);setInterval(loadCityTemps,15*60*1000);setInterval(loadRemember,6*60*60*1000)}else render();
+if(S.user){refreshSession();load();loadBookStreak();loadGoogleStatus();loadWeather();loadTicker();loadCityTemps();loadRemember();loadMindGym();coachInit();setInterval(load,10000);setInterval(loadWeather,15*60*1000);setInterval(loadTicker,15*60*1000);setInterval(loadCityTemps,15*60*1000);setInterval(loadRemember,6*60*60*1000)}else render();
 setTimeout(function(){var sp=document.getElementById('splash');if(sp){sp.classList.add('hide');setTimeout(function(){sp.remove()},500)}},300);
 // When the user returns from their email app to read the OTP, re-restore the in-progress login.
 // Only ever transitions FORWARD (phone → otp); never restores otp → phone. The previous polling
@@ -15140,7 +14671,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=83').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=84').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15184,7 +14715,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=83')
 app.get('/manifest.json',(_,res)=>{res.set('Cache-Control','no-cache');res.json({
   name:"Brodoit — Tasks, Books & Wisdom",
   short_name:"Brodoit",
-  description:"Manage tasks with WhatsApp reminders, listen to free audiobooks, get daily wisdom, and track your productivity with AI insights.",
+  description:"Manage tasks with email reminders, listen to free audiobooks, get daily wisdom, and track your productivity with AI insights.",
   start_url:"/",
   scope:"/",
   id:"/",
@@ -15400,14 +14931,14 @@ function copyShare(){
 });
 
 app.get('/privacy',(_,res)=>{
-  res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Privacy Policy — Brodoit</title><meta name="description" content="What Brodoit collects, why, and your rights. Plain-English privacy policy."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Privacy</div><h1>Privacy, plainly.</h1><p class="lede">We built Brodoit to be a calm, private place. This page explains exactly what we collect, why, and what we will never do. No dark patterns, no fine print.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">What we collect</h2><ul><li><strong>Email address</strong> or <strong>phone number</strong> — used only to authenticate you via a one-time verification code.</li><li><strong>Your name</strong> — displayed in your profile screen.</li><li><strong>Your tasks, notes, due dates, reminders</strong> — stored so we can show them back to you and send reminders on the times you set.</li><li><strong>Session token</strong> — a random string stored in your browser so you stay logged in.</li></ul><div class="note">We do <strong>not</strong> collect: your location, your contacts, advertising IDs, device IDs, photos, payment info, or any data we don't explicitly list above.</div><h2 data-n="02">How we use it</h2><ul><li>Deliver one-time codes by email or WhatsApp.</li><li>Show your tasks, books, and other content you've created.</li><li>Send reminders at the times you set.</li></ul><h2 data-n="03">Who we share with</h2><p>We share data only with the following service providers, strictly to operate the service:</p><ul><li><strong>Resend</strong> — to deliver verification emails (<a href="https://resend.com/privacy">privacy policy</a>).</li><li><strong>Meta (WhatsApp Cloud API)</strong> — to deliver WhatsApp messages (<a href="https://www.whatsapp.com/legal/privacy-policy">privacy policy</a>).</li><li><strong>Railway</strong> — our hosting provider (<a href="https://railway.app/legal/privacy">privacy policy</a>).</li><li><strong>Internet Archive (LibriVox)</strong> — we fetch public-domain audiobook metadata. No personal data is sent.</li></ul><div class="note">We never sell your data. We never show ads. We never track you across other apps or sites.</div><h2 data-n="04">Data retention</h2><p>Your tasks and account persist until you delete them or ask us to delete your account. Verification codes expire after 5 minutes and are wiped after use.</p><h2 data-n="05">Your rights</h2><p>Email <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> any time to export your data, correct it, or permanently delete your account. We respond within seven days.</p><h2 data-n="06">Children</h2><p>Brodoit is not directed at children under 13. We do not knowingly collect data from children under 13. If you believe we have, please contact us and we will delete it immediately.</p><h2 data-n="07">Changes</h2><p>If we make material changes, we'll update the date at the top of this page and notify you by email if we have your address.</p><h2 data-n="08">Contact</h2><p>Questions about anything on this page? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
+  res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Privacy Policy — Brodoit</title><meta name="description" content="What Brodoit collects, why, and your rights. Plain-English privacy policy."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Privacy</div><h1>Privacy, plainly.</h1><p class="lede">We built Brodoit to be a calm, private place. This page explains exactly what we collect, why, and what we will never do. No dark patterns, no fine print.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">What we collect</h2><ul><li><strong>Email address</strong> or <strong>phone number</strong> — used only to authenticate you via a one-time verification code.</li><li><strong>Your name</strong> — displayed in your profile screen.</li><li><strong>Your tasks, notes, due dates, reminders</strong> — stored so we can show them back to you and send reminders on the times you set.</li><li><strong>Session token</strong> — a random string stored in your browser so you stay logged in.</li></ul><div class="note">We do <strong>not</strong> collect: your location, your contacts, advertising IDs, device IDs, photos, payment info, or any data we don't explicitly list above.</div><h2 data-n="02">How we use it</h2><ul><li>Deliver one-time verification codes by email.</li><li>Show your tasks, books, and other content you've created.</li><li>Send reminders at the times you set.</li></ul><h2 data-n="03">Who we share with</h2><p>We share data only with the following service providers, strictly to operate the service:</p><ul><li><strong>Resend</strong> — to deliver verification emails (<a href="https://resend.com/privacy">privacy policy</a>).</li><li><strong>Railway</strong> — our hosting provider (<a href="https://railway.app/legal/privacy">privacy policy</a>).</li><li><strong>Internet Archive (LibriVox)</strong> — we fetch public-domain audiobook metadata. No personal data is sent.</li></ul><div class="note">We never sell your data. We never show ads. We never track you across other apps or sites.</div><h2 data-n="04">Data retention</h2><p>Your tasks and account persist until you delete them or ask us to delete your account. Verification codes expire after 5 minutes and are wiped after use.</p><h2 data-n="05">Your rights</h2><p>Email <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> any time to export your data, correct it, or permanently delete your account. We respond within seven days.</p><h2 data-n="06">Children</h2><p>Brodoit is not directed at children under 13. We do not knowingly collect data from children under 13. If you believe we have, please contact us and we will delete it immediately.</p><h2 data-n="07">Changes</h2><p>If we make material changes, we'll update the date at the top of this page and notify you by email if we have your address.</p><h2 data-n="08">Contact</h2><p>Questions about anything on this page? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
 
 // Terms of Service
 app.get('/terms',(_,res)=>{
-  res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with optional WhatsApp and email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (WhatsApp and email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
+  res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v83";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v84";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
@@ -15448,12 +14979,12 @@ app.get('/sitemap.xml',(_,res)=>{
 
 // About page — the brand story
 app.get('/about',(_,res)=>{
-  res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${MARKETING_CHROME}<title>About — Brodoit</title><meta name="description" content="Why Brodoit exists. The story behind the calmest productivity app on the internet."><meta property="og:title" content="About — Brodoit"><meta property="og:description" content="Why Brodoit exists, who it's for, and what it will never become."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div style="margin-top:32px"><span class="hero-tag"><span class="pulse"></span>Our story</span></div><h1 class="huge">Made for the<br/><em>quietly serious.</em></h1><p class="lede" style="margin-top:24px">Brodoit is a productivity app that doesn't beg for your attention. No streak shaming. No 47 notifications a day. No "you're about to lose your spot" emails. Just a calm place to write down what matters and a gentle nudge when it's time.</p><div class="about-quote">"Most productivity apps are designed to be opened. Brodoit is designed to be closed — so you can go and do the actual work."</div><h2 data-n="01">Why we built it</h2><p>Every productivity app on the planet seemed to optimise for one metric: time-on-app. We wanted the opposite. A tool that puts the task into the world (your WhatsApp, your inbox, your calendar) and then gets out of the way.</p><p>So we built Brodoit. One screen, fast. Reminders that find you wherever you already are. Audiobooks for the commute. A tiny mind-gym for when the phone tries to suck you back in. A daily quote to remember why you started.</p><h2 data-n="02">What it will <em>never</em> be</h2><ul><li><strong>Ad-supported.</strong> Your attention is not for sale. Ever.</li><li><strong>Sold or acqui-hired.</strong> No "we've been acquired by [bigco]" email. The app stays independent.</li><li><strong>A social network.</strong> No followers, no leaderboards, no streak-public-shaming. Productivity is a private practice.</li><li><strong>Bloated.</strong> If a feature doesn't earn its weight in calm, it leaves.</li></ul><h2 data-n="03">Who it's for</h2><p>People with a real life and a long list. Founders running on three hours of sleep. Students with fifteen tabs open. Parents who finally have ten minutes to themselves. Anyone who's tired of being shouted at by their tools.</p><div class="proof" style="margin-top:48px"><div><div class="num">∞</div><div class="lbl">tasks · free</div></div><div><div class="num">3</div><div class="lbl">tabs at most</div></div><div><div class="num">0</div><div class="lbl">notifications you didn't ask for</div></div></div><h2 data-n="04">Made by</h2><p>One person, in their kitchen, between cups of coffee. If you've got feedback, ideas, or just want to say hi: <a href="mailto:hello@brodoit.com">hello@brodoit.com</a>. A real human reads every email.</p><div class="cta-row"><a href="/" class="btn-primary">Open the app →</a><a href="/changelog" class="btn-ghost">What's new</a></div>${LEGAL_FOOT}</div></body></html>`);
+  res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${MARKETING_CHROME}<title>About — Brodoit</title><meta name="description" content="Why Brodoit exists. The story behind the calmest productivity app on the internet."><meta property="og:title" content="About — Brodoit"><meta property="og:description" content="Why Brodoit exists, who it's for, and what it will never become."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div style="margin-top:32px"><span class="hero-tag"><span class="pulse"></span>Our story</span></div><h1 class="huge">Made for the<br/><em>quietly serious.</em></h1><p class="lede" style="margin-top:24px">Brodoit is a productivity app that doesn't beg for your attention. No streak shaming. No 47 notifications a day. No "you're about to lose your spot" emails. Just a calm place to write down what matters and a gentle nudge when it's time.</p><div class="about-quote">"Most productivity apps are designed to be opened. Brodoit is designed to be closed — so you can go and do the actual work."</div><h2 data-n="01">Why we built it</h2><p>Every productivity app on the planet seemed to optimise for one metric: time-on-app. We wanted the opposite. A tool that puts the task into the world (your inbox, your calendar) and then gets out of the way.</p><p>So we built Brodoit. One screen, fast. Reminders that find you wherever you already are. Audiobooks for the commute. A tiny mind-gym for when the phone tries to suck you back in. A daily quote to remember why you started.</p><h2 data-n="02">What it will <em>never</em> be</h2><ul><li><strong>Ad-supported.</strong> Your attention is not for sale. Ever.</li><li><strong>Sold or acqui-hired.</strong> No "we've been acquired by [bigco]" email. The app stays independent.</li><li><strong>A social network.</strong> No followers, no leaderboards, no streak-public-shaming. Productivity is a private practice.</li><li><strong>Bloated.</strong> If a feature doesn't earn its weight in calm, it leaves.</li></ul><h2 data-n="03">Who it's for</h2><p>People with a real life and a long list. Founders running on three hours of sleep. Students with fifteen tabs open. Parents who finally have ten minutes to themselves. Anyone who's tired of being shouted at by their tools.</p><div class="proof" style="margin-top:48px"><div><div class="num">∞</div><div class="lbl">tasks · free</div></div><div><div class="num">3</div><div class="lbl">tabs at most</div></div><div><div class="num">0</div><div class="lbl">notifications you didn't ask for</div></div></div><h2 data-n="04">Made by</h2><p>One person, in their kitchen, between cups of coffee. If you've got feedback, ideas, or just want to say hi: <a href="mailto:hello@brodoit.com">hello@brodoit.com</a>. A real human reads every email.</p><div class="cta-row"><a href="/" class="btn-primary">Open the app →</a><a href="/changelog" class="btn-ghost">What's new</a></div>${LEGAL_FOOT}</div></body></html>`);
 });
 
 // Changelog page — public record of recent improvements (signals active development)
 app.get('/changelog',(_,res)=>{
-  res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${MARKETING_CHROME}<title>Changelog — Brodoit</title><meta name="description" content="What's new in Brodoit. Recent shipping log."><meta property="og:title" content="Changelog — Brodoit"><meta property="og:description" content="What's new in Brodoit. Recent shipping log."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div style="margin-top:32px"><span class="hero-tag"><span class="pulse"></span>Always shipping</span></div><h1 class="huge">What's <em>new.</em></h1><p class="lede" style="margin-top:24px">A live record of every meaningful change. We ship most weeks. If you spot a bug or want a feature, email <a href="mailto:hello@brodoit.com">hello@brodoit.com</a>.</p><div class="changelog"><div class="cl-item"><div class="cl-date">Apr 28, 2026</div><div class="cl-body"><h3>Internationalization push</h3><p>Brought the site up to global publishing standards.</p><ul><li>Added structured data (JSON-LD) so Google can render rich-result cards</li><li>Open Graph + Twitter Card tags — links shared in WhatsApp, iMessage, Slack, X now show proper preview cards</li><li>Re-enabled pinch-zoom (was blocked — accessibility fix)</li><li>Apple touch icon + iOS standalone meta for clean home-screen install</li><li>Aligned manifest theme/background with the editorial palette</li><li>Rebuilt /privacy and /terms with the brand typography</li><li>Added /about, /changelog public pages</li><li>Real /robots.txt and /sitemap.xml (were being eaten by the SPA catch-all)</li></ul></div></div><div class="cl-item"><div class="cl-date">Late April</div><div class="cl-body"><h3>Math Sprint v2</h3><p>The arithmetic game got the works: time pressure, bigger tap targets, combo multipliers, particle effects on correct answers, and an end-of-round star screen.</p></div></div><div class="cl-item"><div class="cl-date">Early April</div><div class="cl-body"><h3>Memory Tap, rebuilt on canvas</h3><p>Switched from DOM-rendered tiles to a real game loop on canvas. Smoother animations, lower latency, and a Voice Coach with a live waveform to give you immediate feedback on your speech rhythm.</p></div></div><div class="cl-item"><div class="cl-date">Late March</div><div class="cl-body"><h3>Editorial UI overhaul</h3><p>The whole app got a quieter, more grown-up look: a neutral warm palette, real photography in the headers, refined typography (Inter + Instrument Serif + JetBrains Mono), and gentler shadows.</p></div></div><div class="cl-item"><div class="cl-date">March</div><div class="cl-body"><h3>Premium UI polish</h3><p>'Bro, Do It!' hero illustration, animated gradient icons, and login screen with footer links. Privacy and Terms pages went live for the Play Store submission.</p></div></div></div><div class="cta-row"><a href="/" class="btn-primary">Try the app →</a><a href="/about" class="btn-ghost">Our story</a></div>${LEGAL_FOOT}</div></body></html>`);
+  res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${MARKETING_CHROME}<title>Changelog — Brodoit</title><meta name="description" content="What's new in Brodoit. Recent shipping log."><meta property="og:title" content="Changelog — Brodoit"><meta property="og:description" content="What's new in Brodoit. Recent shipping log."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div style="margin-top:32px"><span class="hero-tag"><span class="pulse"></span>Always shipping</span></div><h1 class="huge">What's <em>new.</em></h1><p class="lede" style="margin-top:24px">A live record of every meaningful change. We ship most weeks. If you spot a bug or want a feature, email <a href="mailto:hello@brodoit.com">hello@brodoit.com</a>.</p><div class="changelog"><div class="cl-item"><div class="cl-date">Apr 28, 2026</div><div class="cl-body"><h3>Internationalization push</h3><p>Brought the site up to global publishing standards.</p><ul><li>Added structured data (JSON-LD) so Google can render rich-result cards</li><li>Open Graph + Twitter Card tags — links shared in iMessage, Slack, X now show proper preview cards</li><li>Re-enabled pinch-zoom (was blocked — accessibility fix)</li><li>Apple touch icon + iOS standalone meta for clean home-screen install</li><li>Aligned manifest theme/background with the editorial palette</li><li>Rebuilt /privacy and /terms with the brand typography</li><li>Added /about, /changelog public pages</li><li>Real /robots.txt and /sitemap.xml (were being eaten by the SPA catch-all)</li></ul></div></div><div class="cl-item"><div class="cl-date">Late April</div><div class="cl-body"><h3>Math Sprint v2</h3><p>The arithmetic game got the works: time pressure, bigger tap targets, combo multipliers, particle effects on correct answers, and an end-of-round star screen.</p></div></div><div class="cl-item"><div class="cl-date">Early April</div><div class="cl-body"><h3>Memory Tap, rebuilt on canvas</h3><p>Switched from DOM-rendered tiles to a real game loop on canvas. Smoother animations, lower latency, and a Voice Coach with a live waveform to give you immediate feedback on your speech rhythm.</p></div></div><div class="cl-item"><div class="cl-date">Late March</div><div class="cl-body"><h3>Editorial UI overhaul</h3><p>The whole app got a quieter, more grown-up look: a neutral warm palette, real photography in the headers, refined typography (Inter + Instrument Serif + JetBrains Mono), and gentler shadows.</p></div></div><div class="cl-item"><div class="cl-date">March</div><div class="cl-body"><h3>Premium UI polish</h3><p>'Bro, Do It!' hero illustration, animated gradient icons, and login screen with footer links. Privacy and Terms pages went live for the Play Store submission.</p></div></div></div><div class="cta-row"><a href="/" class="btn-primary">Try the app →</a><a href="/about" class="btn-ghost">Our story</a></div>${LEGAL_FOOT}</div></body></html>`);
 });
 function _readCookie(req,name){const c=req.headers.cookie||'';const m=c.match(new RegExp('(?:^|; )'+name+'=([^;]*)'));return m?decodeURIComponent(m[1]):''}
 app.get('/',(req,res)=>{
