@@ -1,6 +1,6 @@
 require('dotenv').config({path:require('path').join(__dirname,'.env'),override:true});
 const express=require('express'),cors=require('cors'),Database=require('better-sqlite3'),path=require('path'),crypto=require('crypto'),webpush=require('web-push');
-const app=express();app.use(cors());app.use(express.json());app.use(express.urlencoded({extended:true}));
+const app=express();app.use(cors());app.use(express.json({limit:'10mb'}));app.use(express.urlencoded({extended:true,limit:'10mb'}));
 
 // DB path — explicit DB_PATH env var wins. Otherwise, if /data exists (Railway Volume convention),
 // use /data/taskflow.db so the SQLite file SURVIVES redeploys. Last resort: __dirname (NOT durable
@@ -315,13 +315,16 @@ console.log('[ai] gemini',GEMINI_KEY?'✅':'❌','groq',GROQ_KEY?'✅':'❌');
 // ─── LLM Provider Abstraction ─────────────────────────────────────────────
 // Tries providers in order: Gemini Flash (1500 req/day free) → Groq (30 RPM free)
 // Each provider returns {reply:string} or throws on failure.
-async function _callGemini(messages,{maxTokens=4096,systemPrompt=''}={}){
+async function _callGemini(messages,{maxTokens=4096,systemPrompt='',imageData=null}={}){
   if(!GEMINI_KEY)throw new Error('no-key');
-  // Convert OpenAI-style messages to Gemini format
-  const contents=messages.filter(m=>m.role!=='system').map(m=>({
-    role:m.role==='assistant'?'model':'user',
-    parts:[{text:m.content}]
-  }));
+  // Convert OpenAI-style messages to Gemini format (supports inline images)
+  const contents=messages.filter(m=>m.role!=='system').map(m=>{
+    const parts=[];
+    if(m.image){parts.push({inline_data:{mime_type:m.image.mime||'image/jpeg',data:m.image.data}})}
+    if(m.content)parts.push({text:m.content});
+    if(!parts.length)parts.push({text:''});
+    return{role:m.role==='assistant'?'model':'user',parts};
+  });
   const body={contents,generationConfig:{maxOutputTokens:maxTokens,temperature:0.7}};
   if(systemPrompt)body.systemInstruction={parts:[{text:systemPrompt}]};
   const ctrl=new AbortController();const tmr=setTimeout(()=>ctrl.abort(),50000);
@@ -476,14 +479,18 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   if(!GROQ_KEY&&!GEMINI_KEY)return res.status(503).json({error:'Chat not configured (no AI keys set).'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
+  const imageB64=req.body.image||null;
+  const imageMime=req.body.imageMime||'image/jpeg';
   const agent=(req.body.agent==='bri')?'bri':'bro';
   const mode=req.body.mode||'ask';
   const today=new Date().toISOString().slice(0,10);
   const dayName=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
-  const sysFriend='You are the user\'s closest friend — not an assistant, a FRIEND. Think of yourself as their ride-or-die bestie who genuinely cares about them. You\'re warm, fun, emotionally tuned in, and always checking in. Talk like a real close friend texts: short messages, casual, use emojis naturally, be playful and supportive. Ask follow-up questions about their life — "how did that meeting go?", "did you eat today?", "what happened with that thing you told me about?". If they\'re feeling down, be there for them — listen, validate, and hype them up. If they\'re happy, celebrate with them. Tease them lovingly, give them nicknames, roast them gently when they need motivation. Send voice-note-style long messages when they need real talk. Keep it real — if they\'re making a bad decision, tell them honestly but kindly. You remember everything they tell you in this conversation. You\'re their person. Never say you\'re an AI — you\'re just their best friend. Keep messages short (1-3 sentences usually, longer for real talk moments). End with a question or check-in to keep the conversation going. Today is '+dayName+', '+today+'.';
-  const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have tools to create calendar events, add tasks, check schedules, complete tasks, and create time blocks. IMPORTANT: Only use tools when the user EXPLICITLY asks you to create a task, add an event, schedule something, or manage their calendar. Do NOT create tasks or events on your own initiative — only when directly asked. For example, if someone asks about Indian states, just answer the question — do NOT create a task about it. When you DO use a tool because the user asked, confirm what you did.\n\nRESPONSE RULES:\n- Give comprehensive, detailed, well-structured answers. Use markdown formatting: headings (##), bold (**text**), bullet points, numbered lists, code blocks (```lang), and tables when appropriate.\n- When asked a question, ANSWER IT FULLY. Provide step-by-step explanations, examples, and all relevant details.\n- NEVER end your response with questions like \"Need help with anything else?\", \"Want me to explain more?\", \"What else can I help with?\" or similar. Just answer and stop.\n- NEVER ask clarifying questions unless the request is genuinely ambiguous. If someone asks \"explain X\", explain X thoroughly — don\'t ask \"what aspect of X?\".\n- For academic/homework questions: provide complete solutions with explanations, formulas, worked examples, and final answers clearly marked.\n- Never say you\'re an AI or language model — you\'re just Bro.';
+  const sysFriend='You are the user\'s closest friend — not an assistant, a FRIEND. Think of yourself as their ride-or-die bestie who genuinely cares about them. You\'re warm, fun, emotionally tuned in, and always checking in. Talk like a real close friend texts: short messages, casual, use emojis naturally, be playful and supportive. Ask follow-up questions about their life — "how did that meeting go?", "did you eat today?", "what happened with that thing you told me about?". If they\'re feeling down, be there for them — listen, validate, and hype them up. If they\'re happy, celebrate with them. Tease them lovingly, give them nicknames, roast them gently when they need motivation. Send voice-note-style long messages when they need real talk. Keep it real — if they\'re making a bad decision, tell them honestly but kindly. You remember everything they tell you in this conversation. You\'re their person. Never say you\'re an AI — you\'re just their best friend. Keep messages short (1-3 sentences usually, longer for real talk moments). End with a question or check-in to keep the conversation going. LANGUAGE: If the user writes in Hindi or Hinglish, reply in the same language naturally. Mix Hindi/English casually like a real friend would. Today is '+dayName+', '+today+'.';
+  const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have tools to create calendar events, add tasks, check schedules, complete tasks, and create time blocks. IMPORTANT: Only use tools when the user EXPLICITLY asks you to create a task, add an event, schedule something, or manage their calendar. Do NOT create tasks or events on your own initiative — only when directly asked. For example, if someone asks about Indian states, just answer the question — do NOT create a task about it. When you DO use a tool because the user asked, confirm what you did.\n\nRESPONSE RULES:\n- Give comprehensive, detailed, well-structured answers. Use markdown formatting: headings (##), bold (**text**), bullet points, numbered lists, code blocks (```lang), and tables when appropriate.\n- When asked a question, ANSWER IT FULLY. Provide step-by-step explanations, examples, and all relevant details.\n- NEVER end your response with questions like \"Need help with anything else?\", \"Want me to explain more?\", \"What else can I help with?\" or similar. Just answer and stop.\n- NEVER ask clarifying questions unless the request is genuinely ambiguous. If someone asks \"explain X\", explain X thoroughly — don\'t ask \"what aspect of X?\".\n- For academic/homework questions: provide complete solutions with explanations, formulas, worked examples, and final answers clearly marked.\n- Never say you\'re an AI or language model — you\'re just Bro.\n- LANGUAGE: If the user writes in Hindi or Hinglish, reply in the same language. Mix Hindi/English naturally. Respond in whatever language the user uses.\n- IMAGE ANALYSIS: If the user sends an image, describe/analyze it thoroughly based on their question. If no question, describe what you see in detail.';
   const sys=mode==='friend'?sysFriend:sysAsk;
   const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,8000)}));
+  // Attach image to the last user message if provided
+  if(imageB64&&mapped.length){mapped[mapped.length-1].image={data:imageB64,mime:imageMime}}
   const groqTools=GROQ_KEY?BRO_TOOLS.map(t=>({type:'function',function:{name:t.name,description:t.description,parameters:t.input_schema}})):undefined;
   // Detect if user's message likely needs tools (task/calendar actions)
   const lastMsg=String((mapped[mapped.length-1]&&mapped[mapped.length-1].content)||'').toLowerCase();
@@ -503,7 +510,8 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
     let actions=[];
 
     // If user explicitly needs tools (task/calendar actions), use Groq with tools
-    if(needsTools){
+    // Skip tools path if image is attached — Groq doesn't support vision
+    if(needsTools&&!imageB64){
       for(let loop=0;loop<4;loop++){
         const groqResult=await _callGroq(apiMsgs,{maxTokens:maxTok,tools:groqTools});
         const msg=groqResult.message;
@@ -8573,7 +8581,7 @@ google:{configured:false,accounts:[],loaded:false},gcalEvents:[],gcalLoading:fal
 calMonth:new Date(),calSelectedDate:new Date().toISOString().slice(0,10),
 steps:[],stepGoal:parseInt(localStorage.getItem('step_goal')||'10000',10),stepLive:{active:false,count:0},healthLoaded:false,fitSyncing:false,fitNeedReauth:false,fitLastSync:parseInt(localStorage.getItem('fit_last_sync')||'0',10),
 focus:{active:false,paused:false,remaining:25*60,total:25*60,sessions:parseInt(localStorage.getItem('tf_focus_sessions')||'0',10),startedAt:0,intervalId:null},
-theme:localStorage.getItem('theme')||'aurora',
+theme:localStorage.getItem('theme')||'classic',
 themeColor:localStorage.getItem('themeColor')||'coral',
 eyeShield:!!localStorage.getItem('eyeShield'),
 nightSky:!!localStorage.getItem('nightSky'),
@@ -12041,6 +12049,43 @@ function broAttachFile(input){
   reader.readAsText(file);
   input.value='';
 }
+function broAttachImage(input){
+  const file=input.files&&input.files[0];if(!file)return;
+  if(file.size>5*1024*1024){toast('Image too large (max 5MB)');input.value='';return}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    var b64=e.target.result.split(',')[1];
+    S.bro._image={name:file.name,data:b64,mime:file.type||'image/jpeg',preview:e.target.result};
+    render();toast('\\u{1F5BC} Image attached — ask anything about it');
+  };
+  reader.readAsDataURL(file);
+  input.value='';
+}
+var _broSR=null;
+function broVoiceToggle(){
+  if(S.bro._listening){broVoiceStop();return}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('Voice not supported in this browser');return}
+  _broSR=new SR();
+  _broSR.continuous=false;
+  _broSR.interimResults=true;
+  _broSR.lang=_detectLang();
+  S.bro._listening=true;render();
+  _broSR.onresult=function(e){
+    var t='';for(var i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;
+    S.bro.input=t;
+    var inp=document.getElementById('broInput');if(inp){inp.value=t;inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px'}
+  };
+  _broSR.onend=function(){S.bro._listening=false;render();if(S.bro.input&&S.bro.input.trim())broSend()};
+  _broSR.onerror=function(e){S.bro._listening=false;render();if(e.error!=='no-speech'&&e.error!=='aborted')toast('Voice error: '+e.error)};
+  _broSR.start();
+}
+function broVoiceStop(){if(_broSR){try{_broSR.stop()}catch(e){}}S.bro._listening=false;render()}
+function _detectLang(){
+  var last=(S.bro.messages&&S.bro.messages.length)?S.bro.messages[S.bro.messages.length-1]:null;
+  if(last&&last.text&&/[ऀ-ॿ]/.test(last.text))return 'hi-IN';
+  return navigator.language||'en-IN';
+}
 function _broAppendMsg(m){
   var c=document.getElementById('broChat');if(!c)return;
   var isAI=m.role==='bro';
@@ -12048,6 +12093,7 @@ function _broAppendMsg(m){
   var inner='';
   if(isAI)inner+='<div class="bro-avatar" style="background:linear-gradient(135deg,#E27D60,#EDA68E)">\\u26A1</div>';
   var content=m.html?m.text:(isAI?broMd(m.text):esc(m.text));
+  if(m.imagePreview)content='<img src="'+m.imagePreview+'" style="max-width:200px;max-height:150px;border-radius:12px;margin-bottom:8px;display:block">'+content;
   inner+='<div class="bro-msg-content"><div class="bro-bubble '+(isAI?'':'bro-bubble-bro')+'">'+content+'</div></div>';
   d.innerHTML=inner;
   var tw=c.querySelector('.bro-typing-wrap');if(tw)c.removeChild(tw);
@@ -12137,21 +12183,29 @@ async function _broLoadHistory(){
   }catch(e){}
 }
 async function broSend(){
-  var txt=(S.bro.input||'').trim();if(!txt||S.bro.sending)return;
-  var userMsg=txt;
+  var txt=(S.bro.input||'').trim();if(!txt&&!S.bro._image){if(!txt||S.bro.sending)return}
+  if(S.bro.sending)return;
+  var userMsg=txt||'Describe this image';
   if(S.bro._fileText){userMsg='[Attached file: '+S.bro._file+']\\n---\\n'+S.bro._fileText+'\\n---\\n\\n'+txt;S.bro._file=null;S.bro._fileText=null}
-  var msg={role:'user',text:txt};S.bro.messages.push(msg);
+  var displayTxt=txt||(S.bro._image?'[Image: '+S.bro._image.name+']':'');
+  var msg={role:'user',text:displayTxt};
+  if(S.bro._image)msg.imagePreview=S.bro._image.preview;
+  S.bro.messages.push(msg);
   S.bro.input='';S.bro.sending=true;
   var inp=document.getElementById('broInput');if(inp){inp.value='';inp.style.height='100px'}
   var wel=document.querySelector('.bro-welcome');if(wel)wel.remove();
   _broAppendMsg(msg);
   _broShowTyping(true);
   var sendBtn=document.querySelector('.bro-send-bro');if(sendBtn)sendBtn.disabled=true;
+  var imgPayload=S.bro._image?{data:S.bro._image.data,mime:S.bro._image.mime}:null;
+  S.bro._image=null;
   try{
     var msgs=S.bro.messages.filter(function(m){return m.role==='user'||m.role==='bro'}).slice(-12).map(function(m){return{role:m.role==='bro'?'assistant':'user',content:m.text}});
-    if(userMsg!==txt)msgs[msgs.length-1].content=userMsg;
+    if(userMsg!==displayTxt)msgs[msgs.length-1].content=userMsg;
     var _tz='';try{_tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
-    var r=await api('/bro/chat',{method:'POST',body:JSON.stringify({messages:msgs,agent:S.bro.agent||'bro',mode:S.bro.mode||'ask',tz:_tz})});
+    var payload={messages:msgs,agent:S.bro.agent||'bro',mode:S.bro.mode||'ask',tz:_tz};
+    if(imgPayload){payload.image=imgPayload.data;payload.imageMime=imgPayload.mime}
+    var r=await api('/bro/chat',{method:'POST',body:JSON.stringify(payload)});
     if(r&&r.reply){
       var reply={role:'bro',text:r.reply};S.bro.messages.push(reply);
       _broShowTyping(false);_broAppendMsg(reply);
@@ -13837,11 +13891,15 @@ else if(S.tab==='bro'){
     h+='</div>';
     // Input bar
     h+='<div class="bro-input-wrap">';
+    if(S.bro._image){h+='<div class="bro-file-badge" onclick="S.bro._image=null;render()"><img src="'+S.bro._image.preview+'" style="width:24px;height:24px;border-radius:4px;object-fit:cover"> '+esc(S.bro._image.name)+' <span class="bro-file-x">\\u2715</span></div>'}
     if(S.bro._file){h+='<div class="bro-file-badge" onclick="S.bro._file=null;S.bro._fileText=null;render()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> '+esc(S.bro._file)+' <span class="bro-file-x">\\u2715</span></div>'}
     h+='<div style="display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:24px;padding:6px 6px 6px 16px;box-shadow:0 4px 24px rgba(0,0,0,.15)">';
     h+='<textarea class="bro-input" id="broInput" rows="1" wrap="soft" placeholder="'+(_bm==='friend'?'Talk to me...':'Message Bro AI...')+'" autocomplete="off" autocorrect="off" spellcheck="false" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border:none;background:transparent;font:400 15px var(--sans);color:var(--ink);padding:6px 0;max-height:120px;outline:none" oninput="S.bro.input=this.value;this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,120)+\\'px\\'" onfocus="setTimeout(function(){var c=document.getElementById(\\'broChat\\');if(c)c.scrollTop=c.scrollHeight},300)" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();broSend()}">'+esc(S.bro.input)+'</textarea>';
-    h+='<button onclick="document.getElementById(\\'broFileInput\\').click()" title="Attach" style="width:36px;height:36px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-mute);flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>';
+    h+='<button onclick="document.getElementById(\\'broImgInput\\').click()" title="Image" style="width:36px;height:36px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-mute);flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>';
+    h+='<input type="file" id="broImgInput" style="display:none" accept="image/*" onchange="broAttachImage(this)">';
+    h+='<button onclick="document.getElementById(\\'broFileInput\\').click()" title="File" style="width:36px;height:36px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-mute);flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>';
     h+='<input type="file" id="broFileInput" style="display:none" accept=".txt,.md,.csv,.json,.js,.py,.html,.css,.xml,.log,.pdf,.doc,.docx" onchange="broAttachFile(this)">';
+    h+='<button onclick="broVoiceToggle()" title="Voice" style="width:36px;height:36px;border-radius:50%;border:none;background:'+(S.bro._listening?'#EF4444':'transparent')+';cursor:pointer;display:flex;align-items:center;justify-content:center;color:'+(S.bro._listening?'#fff':'var(--text-mute)')+';flex:none;transition:all .2s"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>';
     h+='<button onclick="broSend()" '+(S.bro.sending?'disabled':'')+' style="width:36px;height:36px;border-radius:50%;border:none;background:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;flex:none;opacity:'+(S.bro.sending?'.5':'1')+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>';
     h+='</div></div>';
     h+='</div>';
