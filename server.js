@@ -3479,13 +3479,59 @@ body[data-theme=aurora] .vc-mdl-nav{background:rgba(255,255,255,.02);border-colo
 .mg-card-foot{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:rgba(255,255,255,.7);font-weight:600}
 .mg-card-foot b{color:#FCD34D;font-family:'Space Mono',monospace;font-size:11.5px}
 .mg-coin-face{align-self:center;font-family:'Space Mono',monospace;font-size:36px;font-weight:900;color:#FCD34D;line-height:1;padding:6px 0}
-/* Gameplay modal */
-/* Games — full intense backdrop, every element a chip on dark glass */
-.mg-mdl{max-width:none;width:100%;padding:0;overflow:hidden;display:flex;flex-direction:column;height:100vh;max-height:100vh;border-radius:0;align-self:stretch;background:radial-gradient(900px 500px at 50% 0%,#1F2937 0%,#0A0815 70%) !important;color:#F5F5FA;animation:schSlideUp .3s cubic-bezier(.16,1,.3,1)}
-.mg-hd{display:flex;align-items:center;gap:12px;padding:18px 20px;padding-top:calc(18px + env(safe-area-inset-top,0px));background:linear-gradient(135deg,rgba(17,24,39,.6),rgba(226,125,96,.4));color:#fff;position:relative;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.08)}
+/* Gameplay modal — theme-aware */
+.mg-mdl{max-width:none;width:100%;padding:0;overflow:hidden;display:flex;flex-direction:column;height:100vh;max-height:100vh;border-radius:0;align-self:stretch;background:var(--bg) !important;color:var(--ink);animation:schSlideUp .3s cubic-bezier(.16,1,.3,1)}
+body[data-theme=aurora] .mg-mdl{background:radial-gradient(900px 500px at 50% 0%,#1F2937 0%,#0A0815 70%) !important;color:#F5F5FA}
+.mg-hd{display:flex;align-items:center;gap:12px;padding:18px 20px;padding-top:calc(18px + env(safe-area-inset-top,0px));background:linear-gradient(135deg,var(--accent),var(--accent2,#FED7AA));color:#fff;position:relative;flex-shrink:0;border-bottom:1px solid var(--line)}
+body[data-theme=aurora] .mg-hd{background:linear-gradient(135deg,rgba(17,24,39,.6),rgba(226,125,96,.4));border-color:rgba(255,255,255,.08)}
 .mg-hd > div{flex:1;min-width:0}
 .mg-t{margin:0;font-size:18px;font-weight:900;color:#fff;letter-spacing:-.01em}
 .mg-s{font-size:12px;color:rgba(255,255,255,.78);margin-top:2px}
+/* Game play area — dark card for color-sensitive games (stroop, nback, colormatch) */
+.mg-play-wrap{background:radial-gradient(600px 400px at 50% 0%,#1F2937 0%,#0F172A 100%);border-radius:20px;margin:16px;padding:28px 20px;color:#F5F5FA;box-shadow:0 8px 32px -8px rgba(0,0,0,.2)}
+.mg-play-wrap .mg-btn{padding:12px 28px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2,#FED7AA));color:#fff;font:700 15px var(--sans);cursor:pointer;transition:transform .1s,box-shadow .15s;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.mg-play-wrap .mg-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.mg-play-wrap .mg-btn:active{transform:scale(.96)}
+.mg-play-wrap .mg-btn-sec{background:rgba(255,255,255,.1);box-shadow:none;border:1px solid rgba(255,255,255,.15)}
+.mg-play-wrap .mg-btn-sec:hover{background:rgba(255,255,255,.15)}
+.mg-play-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.mg-play-score{font:700 15px var(--sans);color:#FCD34D}
+.mg-play-timer{font:600 13px var(--sans);color:rgba(255,255,255,.5)}
+.mg-play-bar{height:4px;border-radius:2px;margin-bottom:24px;transition:width .1s linear}
+.mg-play-label{font:700 11px var(--sans);color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;text-align:center}
+.mg-play-result{text-align:center;padding:10px 0}
+.mg-play-result-icon{font-size:48px;margin:20px 0}
+.mg-play-result-score{font:800 24px var(--sans);color:#FCD34D;margin-bottom:8px}
+.mg-play-result-meta{font:500 14px var(--sans);color:rgba(255,255,255,.5);margin-bottom:6px}
+.mg-play-acts{display:flex;gap:8px;justify-content:center;margin-top:20px}
+/* Stroop color buttons */
+.mg-stroop-word{font:900 72px var(--sans);text-transform:uppercase;margin:32px 0;line-height:1;text-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .15s}
+.mg-stroop-word.fb-right{transform:scale(1.1)}
+.mg-stroop-word.fb-wrong{transform:scale(0.9)}
+.mg-stroop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:300px;margin:0 auto}
+.mg-stroop-btn{padding:16px;border:none;border-radius:14px;color:#fff;font:700 15px var(--sans);cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:transform .1s}
+.mg-stroop-btn:active{transform:scale(.93)}
+/* N-Back display */
+.mg-nback-letter{width:120px;height:120px;border-radius:24px;background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(6,182,212,.2));border:2px solid rgba(139,92,246,.3);display:grid;place-items:center;margin:0 auto 32px;transition:transform .2s,border-color .2s}
+.mg-nback-letter.fb-hit{transform:scale(1.1);border-color:#22C55E}
+.mg-nback-letter.fb-false{transform:scale(0.9);border-color:#EF4444}
+.mg-nback-letter span{font:800 56px var(--sans);color:#fff}
+.mg-nback-hint{font:500 12px var(--sans);color:rgba(255,255,255,.35);margin-bottom:16px;text-align:center}
+.mg-nback-btn{padding:18px 48px;border:none;border-radius:16px;background:linear-gradient(135deg,#8B5CF6,#06B6D4);color:#fff;font:700 18px var(--sans);cursor:pointer;letter-spacing:1px;box-shadow:0 4px 20px rgba(139,92,246,.4);transition:transform .1s;display:block;margin:0 auto}
+.mg-nback-btn:active{transform:scale(.93)}
+.mg-nback-prog{font:700 13px var(--sans);color:#8B5CF6;margin-bottom:8px;text-align:center}
+.mg-nback-bar{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-bottom:32px;overflow:hidden}
+.mg-nback-bar-fill{height:100%;background:linear-gradient(90deg,#8B5CF6,#06B6D4);border-radius:2px;transition:width .3s}
+/* Color Match display */
+.mg-cm-cards{display:flex;align-items:center;justify-content:center;gap:24px;margin:32px 0}
+.mg-cm-card{padding:16px 24px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
+.mg-cm-card-label{font:500 12px var(--sans);color:rgba(255,255,255,.35);margin-bottom:4px}
+.mg-cm-card-value{font:800 28px var(--sans);text-transform:uppercase}
+.mg-cm-sep{font:600 20px var(--sans);color:rgba(255,255,255,.3)}
+.mg-cm-acts{display:flex;gap:16px;justify-content:center;margin-top:24px}
+.mg-cm-yes{padding:18px 36px;border:none;border-radius:16px;background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;font:700 22px var(--sans);cursor:pointer;box-shadow:0 4px 16px rgba(34,197,94,.3);transition:transform .1s}
+.mg-cm-no{padding:18px 36px;border:none;border-radius:16px;background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;font:700 22px var(--sans);cursor:pointer;box-shadow:0 4px 16px rgba(239,68,68,.3);transition:transform .1s}
+.mg-cm-yes:active,.mg-cm-no:active{transform:scale(.93)}
 .mg-body{padding:24px 22px;background:transparent;flex:1;overflow-y:auto;max-width:760px;width:100%;margin:0 auto}
 .mg-progress{height:6px;background:#F5F6F8;border-radius:99px;overflow:hidden;margin-bottom:18px}
 .mg-progress-bar{height:100%;background:linear-gradient(90deg,#EDA68E,#CC6E52);border-radius:99px;transition:width .35s cubic-bezier(.2,.8,.2,1)}
@@ -3515,7 +3561,8 @@ body[data-theme=aurora] .vc-mdl-nav{background:rgba(255,255,255,.02);border-colo
 .mg-mem-lit{background:linear-gradient(135deg,#EDA68E,#E27D60)!important;border-color:#EDA68E!important;box-shadow:0 0 24px rgba(226,125,96,.55);animation:mgFlash .3s ease}
 @keyframes mgFlash{0%{transform:scale(.95)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 /* ─── Game detail / journey roadway ─── */
-.mg-detail{max-width:none;width:100%;padding:0;overflow:hidden;display:flex;flex-direction:column;background:radial-gradient(1200px 600px at 50% 0%,color-mix(in srgb,var(--accent2,#374151) 30%,#0A0815) 0%,#080612 70%) !important;color:#F5F5FA !important;border:0;height:100vh;max-height:100vh;border-radius:0;align-self:stretch;animation:schSlideUp .3s cubic-bezier(.16,1,.3,1)}
+.mg-detail{max-width:none;width:100%;padding:0;overflow:hidden;display:flex;flex-direction:column;background:var(--bg) !important;color:var(--ink) !important;border:0;height:100vh;max-height:100vh;border-radius:0;align-self:stretch;animation:schSlideUp .3s cubic-bezier(.16,1,.3,1)}
+body[data-theme=aurora] .mg-detail{background:radial-gradient(1200px 600px at 50% 0%,color-mix(in srgb,var(--accent2,#374151) 30%,#0A0815) 0%,#080612 70%) !important;color:#F5F5FA !important}
 .mgd-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(135deg,var(--accent,#EDA68E) 0%,var(--accent2,#FED7AA) 100%);color:#fff;flex-shrink:0;box-shadow:0 4px 20px -4px rgba(0,0,0,.3)}
 .mgd-back{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.18);border:0;color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .2s;flex-shrink:0}
 .mgd-back:hover{background:rgba(0,0,0,.3);transform:translateX(-2px)}
@@ -3715,8 +3762,8 @@ body:not([data-theme=aurora]) .spat-cell.spat-wrong{background:linear-gradient(1
 @keyframes spatPulse{from{box-shadow:0 0 12px rgba(168,85,247,.3)}to{box-shadow:0 0 24px rgba(168,85,247,.6)}}
 /* Mini Sudoku */
 .sud-body{display:flex;flex-direction:column;align-items:center;gap:18px}
-.sud-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;width:100%;max-width:320px;aspect-ratio:1;background:rgba(255,255,255,.06);padding:8px;border-radius:16px;border:1px solid rgba(255,255,255,.12);margin:0 auto}
-.sud-cell{aspect-ratio:1;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;border-radius:12px;font-family:'Instrument Serif',Georgia,serif;font-size:clamp(28px,7vw,38px);font-weight:700;display:grid;place-items:center;cursor:pointer;transition:all .15s ease;padding:0}
+.sud-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;width:100%;max-width:360px;background:rgba(255,255,255,.06);padding:8px;border-radius:16px;border:1px solid rgba(255,255,255,.12);margin:0 auto}
+.sud-cell{aspect-ratio:1;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;border-radius:10px;font-family:'Instrument Serif',Georgia,serif;font-size:clamp(20px,5vw,28px);font-weight:700;display:grid;place-items:center;cursor:pointer;transition:all .15s ease;padding:0}
 .sud-cell:hover:not(:disabled):not(.sud-given){background:rgba(255,255,255,.14);border-color:rgba(251,191,36,.5)}
 .sud-cell.sud-given{background:rgba(251,191,36,.12);color:#FBBF24;cursor:default;font-weight:700;border-color:rgba(251,191,36,.25)}
 .sud-cell.sud-sel{background:rgba(226,125,96,.2)!important;border-color:#EDA68E!important;box-shadow:0 0 0 2px rgba(226,125,96,.4)}
@@ -6959,15 +7006,15 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
 .mt-end-t b{font-weight:700 !important;color:#111827 !important;font-size:32px !important;display:block;letter-spacing:-.02em;margin-bottom:4px}
 .mt-end-s{font-family:'JetBrains Mono',monospace !important;font-size:11.5px !important;color:#9A9A9A !important;letter-spacing:.06em !important;text-transform:uppercase}
 
-/* Modal header polish */
+/* Modal header polish — theme-aware */
 .mg-mdl{border-radius:20px !important;overflow:hidden}
-.mg-hd{padding:18px 22px 14px !important;border-bottom:1px solid #ECEAE3}
-.mg-t{font-family:'Inter',sans-serif !important;font-weight:600 !important;font-size:18px !important;letter-spacing:-.015em !important;color:#111827 !important}
-.mg-s{font-size:13px !important;color:#6B6B6B !important;font-weight:450 !important;margin-top:3px}
+.mg-hd{padding:18px 22px 14px !important;border-bottom:1px solid var(--line)}
+.mg-t{font-family:'Inter',sans-serif !important;font-weight:600 !important;font-size:18px !important;letter-spacing:-.015em !important;color:#fff !important}
+.mg-s{font-size:13px !important;color:rgba(255,255,255,.78) !important;font-weight:450 !important;margin-top:3px}
 .was-x{
   width:32px !important;height:32px !important;border-radius:50% !important;
-  background:#fff !important;border:1px solid #ECEAE3 !important;
-  color:#6B6B6B !important;cursor:pointer;
+  background:rgba(255,255,255,.15) !important;border:1px solid rgba(255,255,255,.2) !important;
+  color:#fff !important;cursor:pointer;
   transition:background .2s, color .2s, border-color .2s;
 }
 .was-x:hover{background:#FEF2F2 !important;color:#DC2626 !important;border-color:#FCA5A5 !important}
@@ -10509,31 +10556,24 @@ function mgPlayLevel(key,lvl){
   else if(key==='colormatch')mgColorMatchStart();
 }
 
-// ── 4x4 Mini Sudoku ──────────────────────────────────────────────────
-// 6 hand-crafted 4x4 puzzles. Each row is the 16-cell grid flattened
-// (row-major). 0 = empty cell the player must fill. Each puzzle's
-// solution is computed at start-time via a tiny backtrack solver.
-const MG_SUDOKU=[
-  [1,0,0,4, 0,4,3,0, 0,1,4,0, 4,0,0,1],
-  [0,3,4,0, 4,0,0,2, 1,0,0,3, 0,4,1,0],
-  [2,0,0,3, 0,1,4,0, 0,2,1,0, 3,0,0,2],
-  [0,1,2,0, 3,0,0,4, 2,0,0,1, 0,4,3,0],
-  [4,0,0,1, 0,3,2,0, 0,4,3,0, 1,0,0,2],
-  [0,2,1,0, 1,0,0,3, 4,0,0,2, 0,3,4,0]
-];
+// ── 6x6 Sudoku (2x3 boxes) ───────────────────────────────────────────
+// Procedurally generated 6x6 puzzles. More challenging than 4x4,
+// perfect for mobile brain training. 2-row x 3-col boxes.
 function _sudokuValid(g,r,c,n){
-  for(let i=0;i<4;i++){if(g[r*4+i]===n||g[i*4+c]===n)return false}
-  const br=Math.floor(r/2)*2,bc=Math.floor(c/2)*2;
-  for(let i=0;i<2;i++)for(let j=0;j<2;j++)if(g[(br+i)*4+(bc+j)]===n)return false;
+  for(let i=0;i<6;i++){if(g[r*6+i]===n||g[i*6+c]===n)return false}
+  const br=Math.floor(r/2)*2,bc=Math.floor(c/3)*3;
+  for(let i=0;i<2;i++)for(let j=0;j<3;j++)if(g[(br+i)*6+(bc+j)]===n)return false;
   return true;
 }
 function _sudokuSolve(g){
   const grid=g.slice();
   const solve=()=>{
-    for(let r=0;r<4;r++)for(let c=0;c<4;c++){
-      if(grid[r*4+c]===0){
-        for(let n=1;n<=4;n++){
-          if(_sudokuValid(grid,r,c,n)){grid[r*4+c]=n;if(solve())return true;grid[r*4+c]=0}
+    for(let r=0;r<6;r++)for(let c=0;c<6;c++){
+      if(grid[r*6+c]===0){
+        const nums=[1,2,3,4,5,6];
+        for(let i=nums.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[nums[i],nums[j]]=[nums[j],nums[i]]}
+        for(const n of nums){
+          if(_sudokuValid(grid,r,c,n)){grid[r*6+c]=n;if(solve())return true;grid[r*6+c]=0}
         }
         return false;
       }
@@ -10542,15 +10582,22 @@ function _sudokuSolve(g){
   };
   solve();return grid;
 }
+function _sudokuGenerate(clueCount){
+  const full=_sudokuSolve(new Array(36).fill(0));
+  const puzzle=full.slice();
+  const cells=Array.from({length:36},(_,i)=>i);
+  for(let i=cells.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cells[i],cells[j]]=[cells[j],cells[i]]}
+  let removed=0;const target=36-clueCount;
+  for(const idx of cells){
+    if(removed>=target)break;
+    puzzle[idx]=0;removed++;
+  }
+  return{initial:puzzle,solution:full};
+}
 function mgSudokuStart(){
   const lvl=(S.mg.progress.sudoku&&S.mg.progress.sudoku.level)||1;
-  const idx=Math.floor(Math.random()*MG_SUDOKU.length);
-  const initial=MG_SUDOKU[idx].slice();
-  // Higher level = remove a few more givens to make it harder
-  const extraRemove=Math.min(4,Math.max(0,lvl-1));
-  const filled=[];for(let i=0;i<16;i++)if(initial[i])filled.push(i);
-  for(let k=0;k<extraRemove&&filled.length;k++){const j=Math.floor(Math.random()*filled.length);initial[filled.splice(j,1)[0]]=0}
-  const solution=_sudokuSolve(initial.slice());
+  const clues=Math.max(14,24-lvl*2);
+  const{initial,solution}=_sudokuGenerate(clues);
   S.mgPlay={game:'sudoku',level:lvl,_baseLevel:lvl,initial,grid:initial.slice(),solution,selected:-1,timeStart:Date.now(),mistakes:0,done:false};
   render();
 }
@@ -10559,10 +10606,9 @@ function mgSudokuPlace(n){
   const p=S.mgPlay;if(!p||p.game!=='sudoku'||p.done||p.selected<0)return;
   if(p.initial[p.selected]!==0)return;
   if(n===0){p.grid[p.selected]=0;render();return}
-  if(p.solution[p.selected]!==n){p.mistakes++;toast('\\u26A0\\uFE0F Not quite','err');render();return}
+  if(p.solution[p.selected]!==n){p.mistakes++;toast('⚠️ Not quite','err');render();return}
   p.grid[p.selected]=n;
-  // Check completion
-  let complete=true;for(let i=0;i<16;i++)if(p.grid[i]===0){complete=false;break}
+  let complete=true;for(let i=0;i<36;i++)if(p.grid[i]===0){complete=false;break}
   if(complete){
     p.done=true;
     const seconds=Math.round((Date.now()-p.timeStart)/1000);
@@ -10573,8 +10619,8 @@ function mgSudokuPlace(n){
     const newLevel=Math.min(10,1+Math.floor(newXp/100));
     const newBest=cur.best===0?seconds:Math.min(cur.best,seconds);
     S.mg.progress.sudoku={level:newLevel,xp:newXp,best:newBest};
-    api('/mindgym/progress',{method:'POST',body:JSON.stringify({game:'sudoku',xp:xpGain,best:newBest,level:newLevel,seconds})}).catch(()=>{});
-    toast('\\u2728 Solved in '+seconds+'s \\u2014 +'+xpGain+' XP');
+    api('/mindgym/progress',{method:'POST',body:JSON.stringify({game:'sudoku',xp:xpGain,best:newBest,level:newLevel,seconds})}).catch(function(){});
+    toast('✨ Solved in '+seconds+'s — +'+xpGain+' XP');
   }
   render();
 }
@@ -13261,7 +13307,7 @@ else if(S.tab==='mindgym'){
       games:[
         {k:'math',n:'Speed Arithmetic',d:'Race against time solving equations',mins:2,emoji:'\u{1F522}',bg:'#2D6A4F'},
         {k:'schulte',n:'Number Hunt',d:'Tap 1 through 25 in order',mins:1,emoji:'\u{1F3AF}',bg:'#1B4332'},
-        {k:'sudoku',n:'Logic Grid',d:'Fill the grid — no repeats per row or column',mins:3,emoji:'\u{1F9E9}',bg:'#40916C'}
+        {k:'sudoku',n:'Sudoku 6x6',d:'Fill 1-6 in every row, column and 2x3 box',mins:3,emoji:'\u{1F9E9}',bg:'#40916C'}
       ]
     },
     {id:'memory',title:'Memory',desc:'Train your recall and working memory',
@@ -14396,7 +14442,7 @@ if(S.mgGamesPanel&&!S.mgDetail&&!S.mgPlay){
     {k:'stroop',n:'Color Conflict',d:'Name the ink color, ignore the word',mins:1,grad:'linear-gradient(135deg,#FCA5A5 0%,#EF4444 100%)'},
     {k:'colormatch',n:'Quick Match',d:'Does the word match the colour shown?',mins:1,grad:'linear-gradient(135deg,#FDE68A 0%,#F59E0B 100%)'},
     {k:'word',n:'Word Builder',d:'Form words from scrambled letters',mins:2,grad:'linear-gradient(135deg,#BBF7D0 0%,#5C6F52 100%)'},
-    {k:'sudoku',n:'Logic Grid',d:'Fill the grid \\u2014 no repeats per row or column',mins:3,grad:'linear-gradient(135deg,#FEF3C7 0%,#D4A545 100%)'},
+    {k:'sudoku',n:'Sudoku 6x6',d:'Fill 1\\u20136 in every row, column and box',mins:3,grad:'linear-gradient(135deg,#FEF3C7 0%,#D4A545 100%)'},
     {k:'schulte',n:'Number Hunt',d:'Tap 1 through 25 as fast as you can',mins:1,grad:'linear-gradient(135deg,#FBCFE8 0%,#DB2777 100%)'},
     {k:'spatial',n:'Pattern Flash',d:'Memorise the pattern, recreate it',mins:2,grad:'linear-gradient(135deg,#DDD6FE 0%,#7C3AED 100%)'},
     {k:'nback',n:'Dual Focus',d:'Was this letter shown N steps back?',mins:2,grad:'linear-gradient(135deg,#C7D2FE 0%,#4F46E5 100%)'}
@@ -14423,7 +14469,7 @@ if(S.mgDetail&&!S.mgPlay){
     reaction:{e:'\\u26A1',n:'Reaction',d:'Tap the moment the screen turns green. Pure reflex, milliseconds matter.',accent:'#FED7AA',accent2:'#EDA68E',road:'racetrack',vehicle:'\\u{1F3CE}',start:'mgReactionStart()'},
     word:{e:'\\u{1F520}',n:'Word Builder',d:'Form words from scrambled letters. Higher levels demand longer words.',accent:'#EDA68E',accent2:'#CC6E52',road:'forest',vehicle:'\\u{1F6B5}',start:'mgWordStart()'},
     schulte:{e:'\\u{1F3AF}',n:'Number Hunt',d:'Tap 1 to 25 in order. Higher levels grow the grid up to 7\\u00D77.',accent:'#F472B6',accent2:'#EDA68E',road:'space',vehicle:'\\u{1F680}',start:'mgSchulteStart()'},
-    sudoku:{e:'\\u{1F9E9}',n:'Logic Grid',d:'Fill the grid \\u2014 no repeats per row or column. Fewer clues each level.',accent:'#FBBF24',accent2:'#F59E0B',road:'desert',vehicle:'\\u{1F42A}',start:'mgSudokuStart()'},
+    sudoku:{e:'\\u{1F9E9}',n:'Sudoku 6x6',d:'Fill 1\\u20136 in every row, column and 2x3 box. Fewer clues each level.',accent:'#FBBF24',accent2:'#F59E0B',road:'desert',vehicle:'\\u{1F42A}',start:'mgSudokuStart()'},
     spatial:{e:'\\u{1F9E0}',n:'Pattern Flash',d:'Memorise a lit pattern, then tap it back. Larger grids each level.',accent:'#A855F7',accent2:'#7C3AED',road:'galaxy',vehicle:'\\u{1F6F8}',start:'mgSpatialStart()'},
     stroop:{e:'\\u{1F308}',n:'Color Conflict',d:'Tap the INK COLOR, not the word. Fights your brain\\'s autopilot.',accent:'#EF4444',accent2:'#3B82F6',road:'city',vehicle:'\\u{1F3CE}',start:'mgStroopStart()'},
     nback:{e:'\\u{1F9E0}',n:'Dual Focus',d:'Did this letter appear N steps ago? The gold standard for working memory.',accent:'#8B5CF6',accent2:'#06B6D4',road:'cosmos',vehicle:'\\u{1F52E}',start:'mgNbackStart()'},
@@ -14474,7 +14520,7 @@ if(S.mgDetail&&!S.mgPlay){
 if(S.mgPlay){
   const p=S.mgPlay;
   h+='<div class="ov ov-locked"><div class="mdl mg-mdl">';
-  h+='<div class="mg-hd"><div><h2 class="mg-t">'+(p.game==='math'?'\\u{1F522} Math Sprint':p.game==='spatial'?'\\u{1F9E0} Pattern Recall':p.game==='word'?'\\u{1F520} Word Sprint':p.game==='schulte'?'\\u{1F3AF} Schulte Grid':p.game==='sudoku'?'\\u{1F9E9} Mini Sudoku':p.game==='memory'?'\\u{1F9E9} Memory Tap':p.game==='stroop'?'\\u{1F308} Stroop Challenge':p.game==='nback'?'\\u{1F9E0} N-Back':p.game==='colormatch'?'\\u{1F3A8} Color Match':'\\u26A1 Reaction')+' \\u2022 L'+p.level+'</h2><div class="mg-s">'+(p.game==='math'?'Solve 10 to win XP':p.game==='spatial'?'Memorize, then recreate':p.game==='word'?'90s. Find every word.':p.game==='schulte'?'Tap 1 \\u2192 '+(p.total||25):p.game==='sudoku'?'Each row, column, and 2\\u00D72 box: 1\\u20134':p.game==='memory'?'Repeat the pattern':p.game==='stroop'?'Tap the ink color':p.game==='nback'?'Match if same as N ago':p.game==='colormatch'?'Word vs ink color':'Tap when green')+'</div></div><button class="was-x" onclick="mgClose()">\\u2715</button></div>';
+  h+='<div class="mg-hd"><div><h2 class="mg-t">'+(p.game==='math'?'\\u{1F522} Math Sprint':p.game==='spatial'?'\\u{1F9E0} Pattern Recall':p.game==='word'?'\\u{1F520} Word Sprint':p.game==='schulte'?'\\u{1F3AF} Schulte Grid':p.game==='sudoku'?'\\u{1F9E9} Sudoku 6x6':p.game==='memory'?'\\u{1F9E9} Memory Tap':p.game==='stroop'?'\\u{1F308} Stroop Challenge':p.game==='nback'?'\\u{1F9E0} N-Back':p.game==='colormatch'?'\\u{1F3A8} Color Match':'\\u26A1 Reaction')+' \\u2022 L'+p.level+'</h2><div class="mg-s">'+(p.game==='math'?'Solve 10 to win XP':p.game==='spatial'?'Memorize, then recreate':p.game==='word'?'90s. Find every word.':p.game==='schulte'?'Tap 1 \\u2192 '+(p.total||25):p.game==='sudoku'?'Fill 1\\u20136 in each row, column, and box':p.game==='memory'?'Repeat the pattern':p.game==='stroop'?'Tap the ink color':p.game==='nback'?'Match if same as N ago':p.game==='colormatch'?'Word vs ink color':'Tap when green')+'</div></div><button class="was-x" onclick="mgClose()">\\u2715</button></div>';
 
   if(p.game==='math'){
     if(p.done){
@@ -14638,17 +14684,17 @@ if(S.mgPlay){
         +'<div class="mg-timer-pill">'+elapsed+'s</div>'
       +'</div>';
       h+='<div class="sud-grid">';
-      for(let i=0;i<16;i++){
-        const r=Math.floor(i/4),c=i%4;
+      for(let i=0;i<36;i++){
+        const r=Math.floor(i/6),c=i%6;
         const isGiven=p.initial[i]!==0;
         const v=p.grid[i];
         const isSelected=p.selected===i;
-        const cls='sud-cell'+(isGiven?' sud-given':'')+(isSelected?' sud-sel':'')+(c===1?' sud-bx-r':'')+(r===1?' sud-bx-b':'');
+        const cls='sud-cell'+(isGiven?' sud-given':'')+(isSelected?' sud-sel':'')+(c===2||c===5?' sud-bx-r':'')+(r===1||r===3?' sud-bx-b':'');
         h+='<button class="'+cls+'" onclick="mgSudokuTap('+i+')"'+(isGiven?' disabled':'')+'>'+(v||'')+'</button>';
       }
       h+='</div>';
       h+='<div class="sud-pad">';
-      for(let n=1;n<=4;n++)h+='<button class="sud-num" onclick="mgSudokuPlace('+n+')">'+n+'</button>';
+      for(let n=1;n<=6;n++)h+='<button class="sud-num" onclick="mgSudokuPlace('+n+')">'+n+'</button>';
       h+='<button class="sud-num sud-clear" onclick="mgSudokuPlace(0)">\\u232B</button>';
       h+='</div>';
     }
@@ -14688,58 +14734,58 @@ if(S.mgPlay){
     h+='</div>';
   } else if(p.game==='stroop'){
     var left=Math.max(0,p.timeMax-((Date.now()-p.timeStart)/1000));
-    h+='<div class="mg-play-wrap" style="text-align:center;padding:20px">';
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:14px;font-weight:700;color:#FFD27A">Score: '+p.score+'</span><span style="font-size:13px;color:rgba(255,255,255,.5)">'+Math.ceil(left)+'s</span></div>';
-    h+='<div id="stroop-bar" style="height:4px;background:linear-gradient(90deg,#EDA68E,#FFD27A);border-radius:2px;margin-bottom:24px;transition:width .1s linear;width:'+(left/p.timeMax*100)+'%"></div>';
+    h+='<div class="mg-play-wrap" style="text-align:center">';
+    h+='<div class="mg-play-hd"><span class="mg-play-score">Score: '+p.score+'</span><span class="mg-play-timer">'+Math.ceil(left)+'s</span></div>';
+    h+='<div class="mg-play-bar" id="stroop-bar" style="background:linear-gradient(90deg,#EDA68E,#FFD27A);width:'+(left/p.timeMax*100)+'%"></div>';
     if(p.done){
-      h+='<div style="font-size:48px;margin:20px 0">\\u{1F3C6}</div>';
-      h+='<div style="font-size:24px;font-weight:800;color:#FFD27A;margin-bottom:8px">'+p.score+' correct</div>';
-      h+='<div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:6px">'+p.wrongs+' wrong \\u00B7 Best combo: '+p.bestCombo+'</div>';
-      h+='<div style="display:flex;gap:8px;justify-content:center;margin-top:20px"><button class="mg-btn" onclick="mgStroopStart()">Play Again</button><button class="mg-btn mg-btn-sec" onclick="mgClose()">Done</button></div>';
+      h+='<div class="mg-play-result"><div class="mg-play-result-icon">\\u{1F3C6}</div>';
+      h+='<div class="mg-play-result-score">'+p.score+' correct</div>';
+      h+='<div class="mg-play-result-meta">'+p.wrongs+' wrong \\u00B7 Best combo: '+p.bestCombo+'</div>';
+      h+='<div class="mg-play-acts"><button class="mg-btn" onclick="mgStroopStart()">Play Again</button><button class="mg-btn mg-btn-sec" onclick="mgClose()">Done</button></div></div>';
     }else{
-      h+='<div style="font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">TAP THE INK COLOR</div>';
-      h+='<div style="font-size:72px;font-weight:900;color:'+p.colorHex[p.q.color]+';text-transform:uppercase;margin:32px 0;line-height:1;text-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .15s'+(p.feedback==='right'?';transform:scale(1.1)':p.feedback==='wrong'?';transform:scale(0.9)':'')+'">'+p.q.word+'</div>';
-      h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:300px;margin:0 auto">';
-      p.colors.forEach(function(c){h+='<button onclick="mgStroopAnswer(\\x27'+c+'\\x27)" style="padding:16px;border:none;border-radius:14px;background:'+p.colorHex[c]+';color:#fff;font-size:15px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:transform .1s;box-shadow:0 4px 12px '+p.colorHex[c]+'40" ontouchstart="this.style.transform=\\x27scale(0.93)\\x27" ontouchend="this.style.transform=\\x27\\x27">'+c+'</button>'});
+      h+='<div class="mg-play-label">TAP THE INK COLOR</div>';
+      h+='<div class="mg-stroop-word'+(p.feedback==='right'?' fb-right':p.feedback==='wrong'?' fb-wrong':'')+'" style="color:'+p.colorHex[p.q.color]+'">'+p.q.word+'</div>';
+      h+='<div class="mg-stroop-grid">';
+      p.colors.forEach(function(c){h+='<button class="mg-stroop-btn" onclick="mgStroopAnswer(\\x27'+c+'\\x27)" style="background:'+p.colorHex[c]+';box-shadow:0 4px 12px '+p.colorHex[c]+'40">'+c+'</button>'});
       h+='</div>';
     }
     h+='</div>';
   } else if(p.game==='nback'){
-    h+='<div class="mg-play-wrap" style="text-align:center;padding:20px">';
+    h+='<div class="mg-play-wrap" style="text-align:center">';
     if(p.done){
-      h+='<div style="font-size:48px;margin:20px 0">\\u{1F9E0}</div>';
-      h+='<div style="font-size:24px;font-weight:800;color:#FFD27A;margin-bottom:8px">'+p.accuracy+'% Accuracy</div>';
-      h+='<div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:4px">Hits: '+p.hits+' \\u00B7 Misses: '+p.misses+' \\u00B7 False: '+p.falseAlarms+'</div>';
-      h+='<div style="font-size:13px;color:rgba(255,255,255,.35)">'+p.n+'-Back \\u00B7 Level '+p.level+'</div>';
-      h+='<div style="display:flex;gap:8px;justify-content:center;margin-top:20px"><button class="mg-btn" onclick="mgNbackStart()">Play Again</button><button class="mg-btn mg-btn-sec" onclick="mgClose()">Done</button></div>';
+      h+='<div class="mg-play-result"><div class="mg-play-result-icon">\\u{1F9E0}</div>';
+      h+='<div class="mg-play-result-score">'+p.accuracy+'% Accuracy</div>';
+      h+='<div class="mg-play-result-meta">Hits: '+p.hits+' \\u00B7 Misses: '+p.misses+' \\u00B7 False: '+p.falseAlarms+'</div>';
+      h+='<div class="mg-play-result-meta">'+p.n+'-Back \\u00B7 Level '+p.level+'</div>';
+      h+='<div class="mg-play-acts"><button class="mg-btn" onclick="mgNbackStart()">Play Again</button><button class="mg-btn mg-btn-sec" onclick="mgClose()">Done</button></div></div>';
     }else{
-      h+='<div style="font-size:13px;color:#8B5CF6;font-weight:700;margin-bottom:8px">'+p.n+'-BACK \\u00B7 Item '+(p.idx+1)+' of '+p.seq.length+'</div>';
-      h+='<div style="width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-bottom:32px"><div style="height:100%;width:'+((p.idx+1)/p.seq.length*100)+'%;background:linear-gradient(90deg,#8B5CF6,#06B6D4);border-radius:2px;transition:width .3s"></div></div>';
-      h+='<div style="width:120px;height:120px;border-radius:24px;background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(6,182,212,.2));border:2px solid rgba(139,92,246,.3);display:grid;place-items:center;margin:0 auto 32px;transition:transform .2s'+(p.feedback==='hit'?';transform:scale(1.1);border-color:#22C55E':p.feedback==='false'?';transform:scale(0.9);border-color:#EF4444':'')+'"><span style="font-size:56px;font-weight:800;color:#fff">'+p.seq[p.idx]+'</span></div>';
-      h+='<div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:16px">Same as '+(p.n===1?'previous':p.n+' items ago')+'?</div>';
-      h+='<button onclick="mgNbackMatch()" style="padding:18px 48px;border:none;border-radius:16px;background:linear-gradient(135deg,#8B5CF6,#06B6D4);color:#fff;font-size:18px;font-weight:700;cursor:pointer;letter-spacing:1px;box-shadow:0 4px 20px rgba(139,92,246,.4);transition:transform .1s" ontouchstart="this.style.transform=\\x27scale(0.93)\\x27" ontouchend="this.style.transform=\\x27\\x27">\\u{1F3AF} MATCH</button>';
+      h+='<div class="mg-nback-prog">'+p.n+'-BACK \\u00B7 Item '+(p.idx+1)+' of '+p.seq.length+'</div>';
+      h+='<div class="mg-nback-bar"><div class="mg-nback-bar-fill" style="width:'+((p.idx+1)/p.seq.length*100)+'%"></div></div>';
+      h+='<div class="mg-nback-letter'+(p.feedback==='hit'?' fb-hit':p.feedback==='false'?' fb-false':'')+'"><span>'+p.seq[p.idx]+'</span></div>';
+      h+='<div class="mg-nback-hint">Same as '+(p.n===1?'previous':p.n+' items ago')+'?</div>';
+      h+='<button class="mg-nback-btn" onclick="mgNbackMatch()">\\u{1F3AF} MATCH</button>';
     }
     h+='</div>';
   } else if(p.game==='colormatch'){
     var left=Math.max(0,p.timeMax-((Date.now()-p.timeStart)/1000));
-    h+='<div class="mg-play-wrap" style="text-align:center;padding:20px">';
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:14px;font-weight:700;color:#FFD27A">Score: '+p.score+'</span><span style="font-size:13px;color:rgba(255,255,255,.5)">'+Math.ceil(left)+'s \\u00B7 Streak: '+p.streak+'</span></div>';
-    h+='<div id="cm-bar" style="height:4px;background:linear-gradient(90deg,#F59E0B,#10B981);border-radius:2px;margin-bottom:24px;transition:width .1s linear;width:'+(left/p.timeMax*100)+'%"></div>';
+    h+='<div class="mg-play-wrap" style="text-align:center">';
+    h+='<div class="mg-play-hd"><span class="mg-play-score">Score: '+p.score+'</span><span class="mg-play-timer">'+Math.ceil(left)+'s \\u00B7 Streak: '+p.streak+'</span></div>';
+    h+='<div class="mg-play-bar" id="cm-bar" style="background:linear-gradient(90deg,#F59E0B,#10B981);width:'+(left/p.timeMax*100)+'%"></div>';
     if(p.done){
-      h+='<div style="font-size:48px;margin:20px 0">\\u{1F3A8}</div>';
-      h+='<div style="font-size:24px;font-weight:800;color:#FFD27A;margin-bottom:8px">'+p.score+' correct</div>';
-      h+='<div style="font-size:14px;color:rgba(255,255,255,.5)">'+p.wrongs+' wrong out of '+p.total+'</div>';
-      h+='<div style="display:flex;gap:8px;justify-content:center;margin-top:20px"><button class="mg-btn" onclick="mgColorMatchStart()">Play Again</button><button class="mg-btn mg-btn-sec" onclick="mgClose()">Done</button></div>';
+      h+='<div class="mg-play-result"><div class="mg-play-result-icon">\\u{1F3A8}</div>';
+      h+='<div class="mg-play-result-score">'+p.score+' correct</div>';
+      h+='<div class="mg-play-result-meta">'+p.wrongs+' wrong out of '+p.total+'</div>';
+      h+='<div class="mg-play-acts"><button class="mg-btn" onclick="mgColorMatchStart()">Play Again</button><button class="mg-btn mg-btn-sec" onclick="mgClose()">Done</button></div></div>';
     }else{
-      h+='<div style="font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px">DOES THE WORD MATCH THE INK COLOR?</div>';
-      h+='<div style="display:flex;align-items:center;justify-content:center;gap:24px;margin:32px 0">';
-      h+='<div style="padding:16px 24px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)"><div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:4px">Word</div><div style="font-size:28px;font-weight:800;color:#fff;text-transform:uppercase">'+p.q.name+'</div></div>';
-      h+='<div style="font-size:20px;color:rgba(255,255,255,.3)">=?</div>';
-      h+='<div style="padding:16px 24px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)"><div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:4px">Ink</div><div style="font-size:28px;font-weight:800;color:'+p.colorHex[p.q.ink]+';text-transform:uppercase">'+p.q.word+'</div></div>';
+      h+='<div class="mg-play-label">DOES THE WORD MATCH THE INK COLOR?</div>';
+      h+='<div class="mg-cm-cards">';
+      h+='<div class="mg-cm-card"><div class="mg-cm-card-label">Word</div><div class="mg-cm-card-value" style="color:#fff">'+p.q.name+'</div></div>';
+      h+='<div class="mg-cm-sep">=?</div>';
+      h+='<div class="mg-cm-card"><div class="mg-cm-card-label">Ink</div><div class="mg-cm-card-value" style="color:'+p.colorHex[p.q.ink]+'">'+p.q.word+'</div></div>';
       h+='</div>';
-      h+='<div style="display:flex;gap:16px;justify-content:center;margin-top:24px">';
-      h+='<button onclick="mgColorMatchAnswer(true)" style="padding:18px 36px;border:none;border-radius:16px;background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(34,197,94,.3);transition:transform .1s" ontouchstart="this.style.transform=\\x27scale(0.93)\\x27" ontouchend="this.style.transform=\\x27\\x27">\\u2713 Match</button>';
-      h+='<button onclick="mgColorMatchAnswer(false)" style="padding:18px 36px;border:none;border-radius:16px;background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(239,68,68,.3);transition:transform .1s" ontouchstart="this.style.transform=\\x27scale(0.93)\\x27" ontouchend="this.style.transform=\\x27\\x27">\\u2717 Nope</button>';
+      h+='<div class="mg-cm-acts">';
+      h+='<button class="mg-cm-yes" onclick="mgColorMatchAnswer(true)">\\u2713 Match</button>';
+      h+='<button class="mg-cm-no" onclick="mgColorMatchAnswer(false)">\\u2717 Nope</button>';
       h+='</div>';
     }
     h+='</div>';
@@ -15094,7 +15140,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=82').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=83').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15361,7 +15407,7 @@ app.get('/privacy',(_,res)=>{
 app.get('/terms',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with optional WhatsApp and email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (WhatsApp and email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v82";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v83";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
