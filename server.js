@@ -13247,8 +13247,8 @@ else if(S.tab==='courses'){
     +'<div class="crs-door-frame">\\u{1F9ED}</div><div class="crs-door"></div>'
     +'<div class="ck">SERIES 01 \\u00B7 INTERACTIVE</div>'
     +'<div class="cname">The Algorithm Atlas</div>'
-    +'<div class="cdesc">Choosing the right ML algorithm \\u2014 supervised, unsupervised, deep &amp; reinforcement learning, told as an animated story with a decision engine you\\'ll reuse on real projects.</div>'
-    +'<div class="cmeta"><span>6 CHAPTERS</span><span>26 ALGORITHMS</span><span>COMIC STORIES</span>'+(_atlasDone>0?'<span class="cprog">'+_atlasDone+'/6 DONE'+(_atlasDone===6?' \\u2713':'')+'</span>':'')+'<span class="go">'+(_atlasDone>0?'CONTINUE \\u2192':'ENTER \\u2192')+'</span></div>'
+    +'<div class="cdesc">Learn ML from zero \\u2014 bite-sized lessons, comics with real-life stories, quizzes, mini-games, a searchable vault of 40+ algorithms and a decision engine you\\'ll reuse on real projects.</div>'
+    +'<div class="cmeta"><span>11 CHAPTERS</span><span>40+ TOOLS</span><span>QUIZZES + GAMES</span>'+(_atlasDone>0?'<span class="cprog">'+_atlasDone+'/11 DONE'+(_atlasDone>=11?' \\u2713':'')+'</span>':'')+'<span class="go">'+(_atlasDone>0?'CONTINUE \\u2192':'ENTER \\u2192')+'</span></div>'
     +'</a></div>';
   h+='<div class="crs-cat" style="--cc:#0e5f76">'
     +'<div class="crs-cat-h"><div class="ci">\\u{1F4E6}</div><div class="ct"><b>Product Management</b><span>Strategy, discovery, metrics &amp; shipping things people want</span></div><div class="cn">SOON</div></div>'
