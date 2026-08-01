@@ -378,7 +378,8 @@ const BRO_TOOLS=[
   {name:'create_task',description:'Create a task in Brodoit for the user. Use when they ask to add a task, reminder, todo, etc.',input_schema:{type:'object',properties:{title:{type:'string',description:'Task title'},priority:{type:'string',enum:['low','medium','high'],description:'Priority level'},due_date:{type:'string',description:'Due date YYYY-MM-DD (optional)'},notes:{type:'string',description:'Optional notes'},board:{type:'string',enum:['home','office'],description:'Board (default home)'}},required:['title']}},
   {name:'get_todays_schedule',description:'Get the user\'s calendar events and tasks for today or a specific date. Use when they ask "what\'s on my schedule", "plan my day", "what do I have today", etc.',input_schema:{type:'object',properties:{date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'}}}},
   {name:'complete_task',description:'Mark a task as done. Use when the user says they finished something.',input_schema:{type:'object',properties:{title:{type:'string',description:'Task title or partial match to find it'}},required:['title']}},
-  {name:'create_schedule_block',description:'Create a time block on the user\'s day schedule. Use for time-blocking, focus sessions, etc.',input_schema:{type:'object',properties:{date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'},start_time:{type:'string',description:'Start HH:MM 24h'},end_time:{type:'string',description:'End HH:MM 24h'},label:{type:'string',description:'Block label'}},required:['start_time','end_time','label']}}
+  {name:'create_schedule_block',description:'Create a time block on the user\'s day schedule. Use for time-blocking, focus sessions, etc.',input_schema:{type:'object',properties:{date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'},start_time:{type:'string',description:'Start HH:MM 24h'},end_time:{type:'string',description:'End HH:MM 24h'},label:{type:'string',description:'Block label'}},required:['start_time','end_time','label']}},
+  {name:'set_reminder',description:'Set a reminder that will send a push notification at a specific time. Use when user says "remind me", "set alarm", "notify me at", etc.',input_schema:{type:'object',properties:{title:{type:'string',description:'What to remind about'},date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'},time:{type:'string',description:'Time in HH:MM 24h format'},notes:{type:'string',description:'Optional extra details'}},required:['title','time']}}
 ];
 async function _broExecTool(toolName,input,userPhone,userTz){
   const today=new Date().toISOString().slice(0,10);
@@ -421,6 +422,12 @@ async function _broExecTool(toolName,input,userPhone,userTz){
     const gcal=await _gcalCreateTimed(userPhone,d,input.start_time,input.end_time,input.label,'#8a2e2a',userTz);
     db.prepare('INSERT INTO schedule_blocks(id,user_phone,date,start_time,end_time,label,color,gcal_event_id,gcal_email)VALUES(?,?,?,?,?,?,?,?,?)').run(id,userPhone,d,input.start_time,input.end_time,input.label,'#8a2e2a',gcal?.id||null,gcal?.email||null);
     return{ok:true,block:{id,label:input.label,start:input.start_time,end:input.end_time,date:d,synced_to_gcal:!!gcal}};
+  }
+  if(toolName==='set_reminder'){
+    const id=genId();const d=input.date||new Date().toISOString().slice(0,10);
+    const title=(input.title||'Reminder').trim();
+    db.prepare('INSERT INTO tasks(id,user_phone,title,notes,priority,status,due_date,reminder_time,source,board)VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,userPhone,title,input.notes||'','medium','pending',d,input.time,'bro-reminder','home');
+    return{ok:true,reminder:{id,title,date:d,time:input.time,message:"Reminder set! You'll get a notification at "+input.time}};
   }
   return{ok:false,error:'Unknown tool'};
 }
@@ -485,25 +492,41 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
       return res.json({reply:'I tried to help but hit a loop — try rephrasing.',actions:actions.length?actions:undefined});
     }catch(toolErr){console.log('[bro] Tool path error:',toolErr.message)}}
 
-    // Regular chat — try Gemini first (most generous free tier), fall back to Groq
+    // Dual-model verification: get response from primary, verify with secondary
     let reply='',provider='';
     let lastError='';
-    // Provider 1: Gemini Flash (1500 req/day free)
+    let draftReply='',draftProvider='';
+    // Step 1: Get initial response from primary model
     if(GEMINI_KEY){
       try{
         const g=await _callGemini(apiMsgs,{maxTokens:maxTok,systemPrompt:sys});
-        reply=g.reply;provider=g.provider;
+        draftReply=g.reply;draftProvider='gemini';
       }catch(e){lastError='Gemini: '+e.message;console.log('[bro] Gemini failed:',e.message)}
     }
-    // Provider 2: Groq (fallback — aggressive truncation to stay under 10K TPM)
-    if(!reply&&GROQ_KEY){
+    if(!draftReply&&GROQ_KEY){
       try{
         const groqMsgs=apiMsgs.slice(0,1).concat(apiMsgs.slice(-4).map(m=>({...m,content:String(m.content||'').slice(0,1500)})));
         const g=await _callGroq(groqMsgs,{maxTokens:Math.min(maxTok,2048)});
-        reply=g.reply;provider=g.provider;
+        draftReply=g.reply;draftProvider='groq';
       }catch(e){lastError='Groq: '+e.message;console.log('[bro] Groq failed:',e.message)}
     }
-    if(!reply){console.log('[bro] All providers failed:',lastError);return res.status(502).json({error:'Bro is taking a quick break — try again in a moment.'})}
+    if(!draftReply){console.log('[bro] All providers failed:',lastError);return res.status(502).json({error:'Bro is taking a quick break — try again in a moment.'})}
+    // Step 2: Verify/improve with the other model (if both available)
+    const verifyModel=(draftProvider==='gemini'&&GROQ_KEY)?'groq':(draftProvider==='groq'&&GEMINI_KEY)?'gemini':null;
+    if(verifyModel&&draftReply.length>40){
+      try{
+        const verifySys='You are a quality checker. You receive a draft response to a user question. Your job: check for factual errors, missing info, or unclear answers. If the draft is good, return it as-is. If it has issues, return an improved version. Keep the same tone and style. Do NOT add meta-commentary like "Here is the improved version" — just output the final answer directly. Do NOT add trailing questions like "Need anything else?" — just answer and stop.';
+        const verifyMsgs=[{role:'system',content:verifySys},{role:'user',content:'User asked: '+String(mapped[mapped.length-1]?.content||'').slice(0,1000)+'\n\nDraft response:\n'+draftReply.slice(0,3000)+'\n\nReturn the verified/improved response:'}];
+        if(verifyModel==='groq'){
+          const vr=await _callGroq(verifyMsgs,{maxTokens:Math.min(maxTok,2048)});
+          if(vr.reply&&vr.reply.length>20){reply=vr.reply;provider='dual (gemini+groq)'}
+        }else{
+          const vr=await _callGemini(verifyMsgs,{maxTokens:maxTok,systemPrompt:verifySys});
+          if(vr.reply&&vr.reply.length>20){reply=vr.reply;provider='dual (groq+gemini)'}
+        }
+      }catch(e){console.log('[bro] Verify step failed:',e.message)}
+    }
+    if(!reply){reply=draftReply;provider=draftProvider}
     _aiCacheSet(cacheKey,reply);
     // Save to persistent memory
     const userContent=mapped[mapped.length-1]&&mapped[mapped.length-1].content||'';
@@ -2322,6 +2345,13 @@ setInterval(async()=>{const now=new Date(),nd=todayStr(),nt=`${String(now.getHou
 const due=db.prepare("SELECT * FROM tasks WHERE status!='done' AND due_date=? AND reminder_time=? AND reminded=0").all(nd,nt);
 for(const t of due){
   db.prepare('UPDATE tasks SET reminded=1 WHERE id=?').run(t.id);
+  const subs=db.prepare("SELECT * FROM push_subs WHERE user_phone=?").all(t.user_phone);
+  for(const sub of subs){
+    const payload=JSON.stringify({type:'reminder',title:'⏰ '+t.title,body:t.notes||'Time for: '+t.title,tag:'reminder-'+t.id,requireInteraction:true});
+    webpush.sendNotification({endpoint:sub.endpoint,keys:{p256dh:sub.keys_p256dh,auth:sub.keys_auth}},payload).catch(err=>{
+      if(err.statusCode===404||err.statusCode===410)db.prepare("DELETE FROM push_subs WHERE endpoint=?").run(sub.endpoint);
+    });
+  }
 }
 },60000);
 
@@ -3441,6 +3471,13 @@ body[data-theme=aurora] .mg-dot{background:rgba(255,255,255,.12)}
 body[data-theme=aurora] .mg-timer-pill{background:rgba(255,255,255,.1);color:#fff}
 .mg-timer-pill.mg-timer-warn{background:linear-gradient(135deg,#DC2626,#FB7185);color:#fff;animation:mgTimerPulse .8s ease-in-out infinite;box-shadow:0 0 0 4px rgba(220,38,38,.15)}
 @keyframes mgTimerPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+/* Countdown start screen */
+.mg-countdown{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;gap:16px;padding:40px 20px}
+.mg-countdown-num{font-family:var(--sans);font-weight:900;font-size:120px;line-height:1;color:var(--accent);opacity:0;animation:mgCdPop .6s cubic-bezier(.34,1.56,.64,1) forwards;text-shadow:0 8px 40px rgba(138,46,42,.25)}
+.mg-countdown-go{font-family:var(--sans);font-weight:900;font-size:56px;line-height:1;color:#10B981;letter-spacing:.06em;opacity:0;animation:mgCdPop .4s cubic-bezier(.34,1.56,.64,1) forwards;text-shadow:0 8px 30px rgba(16,185,129,.3)}
+.mg-countdown-label{font:600 14px var(--sans);color:var(--text-mute);letter-spacing:.1em;text-transform:uppercase;margin-top:8px}
+.mg-countdown-game{font:800 22px var(--sans);color:var(--ink);margin-bottom:12px}
+@keyframes mgCdPop{0%{opacity:0;transform:scale(2.5)}50%{opacity:1;transform:scale(.9)}100%{opacity:1;transform:scale(1)}}
 .mg-timer-track{height:6px;border-radius:999px;background:rgba(0,0,0,.06);overflow:hidden;margin:0 4px 16px}
 body[data-theme=aurora] .mg-timer-track{background:rgba(255,255,255,.08)}
 .mg-timer-fill{height:100%;border-radius:999px;transition:width .12s linear,background .35s ease}
@@ -7545,7 +7582,7 @@ body[data-theme=aurora] .bro-input-wrap{background:var(--bg);border-top:none}
 body[data-theme=aurora] .bro-input-bar{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);box-shadow:0 4px 24px rgba(0,0,0,.2)}
 body[data-theme=aurora] .bro-input-bar:focus-within{background:rgba(255,255,255,.08);border-color:var(--accent);box-shadow:0 0 0 3px rgba(138,46,42,.15),0 4px 24px rgba(0,0,0,.2)}
 body[data-theme=aurora] .bro-input-actions{border-top-color:rgba(255,255,255,.08)}
-.bro-input{display:block;width:100%;border:none;background:transparent;font-size:15px;outline:none;color:var(--ink);font-family:inherit;padding:6px 0;line-height:1.5;min-height:36px;max-height:120px;resize:none;overflow-y:auto;overflow-x:hidden;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;-webkit-appearance:none;appearance:none;box-sizing:border-box}
+.bro-input{display:block;width:100%;border:none;background:transparent;font-size:16px;outline:none;color:var(--ink);font-family:inherit;padding:8px 0;line-height:1.6;min-height:48px;max-height:160px;resize:none;overflow-y:auto;overflow-x:hidden;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;-webkit-appearance:none;appearance:none;box-sizing:border-box}
 .bro-input::placeholder{color:#9CA3AF}
 body[data-theme=aurora] .bro-input{color:#fff}
 body[data-theme=aurora] .bro-input::placeholder{color:rgba(255,255,255,.35)}
@@ -7635,6 +7672,11 @@ body[data-theme=aurora] .bro-mode-btn.on{background:var(--accent);color:#fff;bor
 .bro-suggest-btn:active{background:rgba(138,46,42,.15);transform:scale(.97);border-color:var(--accent)}
 body[data-theme=aurora] .bro-suggest-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--ink-2)}
 body[data-theme=aurora] .bro-suggest-btn:active{background:rgba(138,46,42,.15);border-color:var(--accent)}
+.bro-qa-btn{display:flex;align-items:center;gap:6px;white-space:nowrap;padding:8px 14px;border-radius:99px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);font:500 12px var(--sans);color:var(--ink-2);cursor:pointer;transition:all .2s;flex-shrink:0}
+.bro-qa-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}
+.bro-qa-btn:active{background:rgba(138,46,42,.15);border-color:var(--accent);transform:scale(.96)}
+.bro-qa-btn svg{color:var(--accent);flex-shrink:0}
+.bro-quick-actions::-webkit-scrollbar{display:none}
 .bro-gen-img{max-width:100%;border-radius:0;margin-top:10px;cursor:pointer;transition:transform .2s;box-shadow:0 4px 16px rgba(0,0,0,.12)}
 .bro-gen-img:hover{transform:scale(1.02)}
 .bro-img-wrap{margin-top:8px}
@@ -7664,7 +7706,7 @@ body[data-theme=aurora] .bro-img-err{background:rgba(239,68,68,.12)}
   body.bro-tab .bro-header{padding:8px 14px;flex-shrink:0}
   body.bro-tab .bro-chat{flex:1 !important;min-height:0 !important;padding:12px 16px 12px !important;gap:2px}
   body.bro-tab .bro-input-wrap{flex-shrink:0 !important;padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px)) !important;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px)) !important;border-top:none !important;background:var(--bg) !important}
-  body.bro-tab .bro-input{display:block !important;width:100% !important;font-size:16px !important;-webkit-text-size-adjust:none !important;caret-color:var(--accent);line-height:1.5 !important;min-height:36px !important;max-height:120px !important;padding:6px 0 !important;-webkit-appearance:none !important;word-wrap:break-word !important;word-break:break-word !important;overflow-wrap:break-word !important;white-space:pre-wrap !important;overflow-x:hidden !important;box-sizing:border-box !important}
+  body.bro-tab .bro-input{display:block !important;width:100% !important;font-size:16px !important;-webkit-text-size-adjust:none !important;caret-color:var(--accent);line-height:1.6 !important;min-height:48px !important;max-height:160px !important;padding:8px 0 !important;-webkit-appearance:none !important;word-wrap:break-word !important;word-break:break-word !important;overflow-wrap:break-word !important;white-space:pre-wrap !important;overflow-x:hidden !important;box-sizing:border-box !important}
   body.bro-tab .bro-input-bar{display:block !important;padding:12px 16px !important;border-radius:0 !important;background:rgba(255,255,255,.06) !important;box-shadow:0 4px 24px rgba(0,0,0,.15) !important;border:1.5px solid rgba(255,255,255,.1) !important;overflow:hidden !important}
   body.bro-tab.kb-open .bro-container{height:var(--vv-h,100%) !important;top:var(--vv-top,0px) !important;bottom:auto !important}
   body.bro-tab.kb-open .bro-header{display:none !important}
@@ -9845,7 +9887,7 @@ function mgColorMatchAnswer(yes){
   p.q=p.mkQ();render();
   setTimeout(function(){if(S.mgPlay&&S.mgPlay.game==='colormatch'){S.mgPlay.feedback=null;render()}},250);
 }
-function mgClose(){_mtCleanup();if(S._msTimer){clearInterval(S._msTimer);S._msTimer=null}if(S._mwTimer){clearInterval(S._mwTimer);S._mwTimer=null}if(S._schTimer){clearInterval(S._schTimer);S._schTimer=null}if(S._memRespTimer){clearInterval(S._memRespTimer);S._memRespTimer=null}if(S._stroopTimer){clearInterval(S._stroopTimer);S._stroopTimer=null}if(S._nbackTimer){clearInterval(S._nbackTimer);S._nbackTimer=null}if(S._cmTimer){clearInterval(S._cmTimer);S._cmTimer=null}try{document.removeEventListener('keydown',_mwOnKey)}catch(e){}S.mgPlay=null;render()}
+function mgClose(){_mtCleanup();if(S._mgCdTimer){clearInterval(S._mgCdTimer);S._mgCdTimer=null}if(S._msTimer){clearInterval(S._msTimer);S._msTimer=null}if(S._mwTimer){clearInterval(S._mwTimer);S._mwTimer=null}if(S._schTimer){clearInterval(S._schTimer);S._schTimer=null}if(S._memRespTimer){clearInterval(S._memRespTimer);S._memRespTimer=null}if(S._stroopTimer){clearInterval(S._stroopTimer);S._stroopTimer=null}if(S._nbackTimer){clearInterval(S._nbackTimer);S._nbackTimer=null}if(S._cmTimer){clearInterval(S._cmTimer);S._cmTimer=null}try{document.removeEventListener('keydown',_mwOnKey)}catch(e){}S.mgPlay=null;render()}
 // ─── Daily Highlight (server-backed; syncs to Google Calendar + email) ─
 function _hlLocalCache(){try{const raw=localStorage.getItem('daily_hl');if(!raw)return null;const d=JSON.parse(raw);const today=new Date().toISOString().slice(0,10);if(d&&d.date===today)return d;return null}catch(e){return null}}
 function _hlSaveLocal(d){try{if(d)localStorage.setItem('daily_hl',JSON.stringify(d));else localStorage.removeItem('daily_hl')}catch(e){}}
@@ -10176,19 +10218,26 @@ function mgSectionClose(){S.mgSection=null;render()}
 function mgPlayLevel(key,lvl){
   const cur=(S.mg.progress[key]||{level:1}).level||1;
   if(lvl>cur){toast('\\u{1F512} Reach Level '+lvl+' first','err');return}
-  // Override the current level so the game starts at the chosen difficulty
   S.mg.progress[key]={...(S.mg.progress[key]||{level:1,xp:0,best:0}),level:lvl};
-  // Stay on the detail screen so the user lands back on it after the game ends
-  if(key==='math')mgMathStart();
-  else if(key==='schulte')mgSchulteStart();
-  else if(key==='sudoku')mgSudokuStart();
-  else if(key==='spatial')mgSpatialStart();
-  else if(key==='memory')mgMemoryStart();
-  else if(key==='reaction')mgReactionStart();
-  else if(key==='word')mgWordStart();
-  else if(key==='stroop')mgStroopStart();
-  else if(key==='nback')mgNbackStart();
-  else if(key==='colormatch')mgColorMatchStart();
+  const fnMap={math:'mgMathStart',schulte:'mgSchulteStart',sudoku:'mgSudokuStart',spatial:'mgSpatialStart',memory:'mgMemoryStart',reaction:'mgReactionStart',word:'mgWordStart',stroop:'mgStroopStart',nback:'mgNbackStart',colormatch:'mgColorMatchStart'};
+  const fn=fnMap[key];if(!fn)return;
+  mgCountdown(fn,key);
+}
+var _mgCdNames={math:'Math Sprint',schulte:'Schulte Grid',sudoku:'Sudoku 6\\u00D76',spatial:'Pattern Recall',memory:'Memory Tap',reaction:'Reaction Time',word:'Word Sprint',stroop:'Stroop Challenge',nback:'N-Back',colormatch:'Color Match'};
+function mgCountdown(startFnName,gameKey){
+  if(S._mgCdTimer){clearInterval(S._mgCdTimer);S._mgCdTimer=null}
+  S.mgPlay={game:'countdown',countNum:3,startFn:startFnName,gameKey:gameKey};
+  _mgSound('tap');render();
+  S._mgCdTimer=setInterval(function(){
+    var p=S.mgPlay;if(!p||p.game!=='countdown'){clearInterval(S._mgCdTimer);S._mgCdTimer=null;return}
+    p.countNum--;
+    if(p.countNum<0){
+      clearInterval(S._mgCdTimer);S._mgCdTimer=null;
+      var fn=window[p.startFn];if(typeof fn==='function')fn();
+      return;
+    }
+    _mgSound('tap');render();
+  },800);
 }
 
 // ── 6x6 Sudoku (2x3 boxes) ───────────────────────────────────────────
@@ -11802,6 +11851,18 @@ function _broFill(txt){
   if(inp){inp.value=txt;inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,140)+'px';inp.focus();inp.setSelectionRange(txt.length,txt.length)}
   else{render();setTimeout(function(){var el=document.getElementById('broInput');if(el){el.value=txt;el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px';el.focus();el.setSelectionRange(txt.length,txt.length)}},100)}
 }
+function _broQuickAction(action){
+  var prompts={
+    reminder:'Set a reminder for me: ',
+    task:'Add a task: ',
+    schedule:'What\\'s on my schedule today? Show my tasks, calendar events, and any time blocks.',
+    focus:'Create a 25-minute focus block starting now for ',
+    plan:'Help me plan my day. Look at my tasks and calendar, then suggest a time-blocked schedule.'
+  };
+  var txt=prompts[action]||'';
+  if(action==='schedule'||action==='plan'){S.bro.input=txt;broSend();return}
+  _broFill(txt);
+}
 function _broGetChats(){try{var raw=localStorage.getItem('bro_chats');return raw?JSON.parse(raw):[]}catch(e){return[]}}
 function _broSaveChat(){
   if(S.bro.messages.length<=1)return;
@@ -11873,7 +11934,7 @@ async function broSend(){
   if(S.bro._image)msg.imagePreview=S.bro._image.preview;
   S.bro.messages.push(msg);
   S.bro.input='';S.bro.sending=true;
-  var inp=document.getElementById('broInput');if(inp){inp.value='';inp.style.height='100px'}
+  var inp=document.getElementById('broInput');if(inp){inp.value='';inp.style.height='48px'}
   var wel=document.querySelector('.bro-welcome');if(wel)wel.remove();
   _broAppendMsg(msg);
   _broShowTyping(true);
@@ -13760,6 +13821,16 @@ else if(S.tab==='bro'){
     h+='<button style="padding:5px 14px;border-radius:99px;border:none;background:'+(_bm==='ask'?'var(--accent)':'transparent')+';font:500 12px var(--sans);color:'+(_bm==='ask'?'#fff':'var(--text-mute)')+';cursor:pointer;transition:all .2s" onclick="S.bro.mode=\\'ask\\';S.bro.messages=[];switchTab(\\'bro\\')">Assistant</button>';
     h+='<button style="padding:5px 14px;border-radius:99px;border:none;background:'+(_bm==='friend'?'#8a2e2a':'transparent')+';font:500 12px var(--sans);color:'+(_bm==='friend'?'#fff':'var(--text-mute)')+';cursor:pointer;transition:all .2s" onclick="S.bro.mode=\\'friend\\';S.bro.messages=[];switchTab(\\'bro\\')">Friend</button>';
     h+='</div>';
+    // Quick action buttons — always visible, scrollable row
+    if(_bm==='ask'){
+      h+='<div class="bro-quick-actions" style="display:flex;gap:8px;padding:8px 16px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0">';
+      h+='<button class="bro-qa-btn" onclick="_broQuickAction(\\'reminder\\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6"/><path d="M22 6l-3-3"/></svg> Set Reminder</button>';
+      h+='<button class="bro-qa-btn" onclick="_broQuickAction(\\'task\\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Add Task</button>';
+      h+='<button class="bro-qa-btn" onclick="_broQuickAction(\\'schedule\\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> My Day</button>';
+      h+='<button class="bro-qa-btn" onclick="_broQuickAction(\\'focus\\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Focus Block</button>';
+      h+='<button class="bro-qa-btn" onclick="_broQuickAction(\\'plan\\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Plan Day</button>';
+      h+='</div>';
+    }
     // Chat messages
     h+='<div class="bro-chat" id="broChat">';
     if(S.bro.messages.length<=1){
@@ -13797,7 +13868,7 @@ else if(S.tab==='bro'){
     if(S.bro._image){h+='<div class="bro-file-badge" onclick="S.bro._image=null;render()"><img src="'+S.bro._image.preview+'" style="width:24px;height:24px;border-radius:0;object-fit:cover"> '+esc(S.bro._image.name)+' <span class="bro-file-x">\\u2715</span></div>'}
     if(S.bro._file){h+='<div class="bro-file-badge" onclick="S.bro._file=null;S.bro._fileText=null;render()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> '+esc(S.bro._file)+' <span class="bro-file-x">\\u2715</span></div>'}
     h+='<div style="display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:0;padding:6px 6px 6px 16px;box-shadow:0 4px 24px rgba(0,0,0,.15)">';
-    h+='<textarea class="bro-input" id="broInput" rows="1" wrap="soft" placeholder="'+(_bm==='friend'?'Talk to me...':'Message Bro AI...')+'" autocomplete="off" autocorrect="off" spellcheck="false" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border:none;background:transparent;font:400 15px var(--sans);color:var(--ink);padding:6px 0;max-height:120px;outline:none" oninput="S.bro.input=this.value;this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,120)+\\'px\\'" onfocus="setTimeout(function(){var c=document.getElementById(\\'broChat\\');if(c)c.scrollTop=c.scrollHeight},300)" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();broSend()}">'+esc(S.bro.input)+'</textarea>';
+    h+='<textarea class="bro-input" id="broInput" rows="2" wrap="soft" placeholder="'+(_bm==='friend'?'Talk to me...':'Message Bro AI...')+'" autocomplete="off" autocorrect="off" spellcheck="false" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border:none;background:transparent;font:400 16px var(--sans);color:var(--ink);padding:8px 0;min-height:48px;max-height:160px;outline:none" oninput="S.bro.input=this.value;this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,160)+\\'px\\'" onfocus="setTimeout(function(){var c=document.getElementById(\\'broChat\\');if(c)c.scrollTop=c.scrollHeight},300)" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();broSend()}">'+esc(S.bro.input)+'</textarea>';
     h+='<button onclick="document.getElementById(\\'broImgInput\\').click()" title="Image" style="width:36px;height:36px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-mute);flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>';
     h+='<input type="file" id="broImgInput" style="display:none" accept="image/*" onchange="broAttachImage(this)">';
     h+='<button onclick="document.getElementById(\\'broFileInput\\').click()" title="File" style="width:36px;height:36px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-mute);flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>';
@@ -14354,6 +14425,16 @@ if(S.mgDetail&&!S.mgPlay){
 if(S.mgPlay){
   const p=S.mgPlay;
   h+='<div class="ov ov-locked"><div class="mdl mg-mdl">';
+  if(p.game==='countdown'){
+    var _cdName=_mgCdNames[p.gameKey]||p.gameKey;
+    h+='<div class="mg-hd"><div><h2 class="mg-t">'+esc(_cdName)+'</h2><div class="mg-s">Get ready!</div></div><button class="was-x" onclick="mgClose()">\\u2715</button></div>';
+    h+='<div class="mg-countdown">';
+    h+='<div class="mg-countdown-game">'+esc(_cdName)+'</div>';
+    if(p.countNum>0)h+='<div class="mg-countdown-num" key="cd'+p.countNum+'">'+p.countNum+'</div>';
+    else h+='<div class="mg-countdown-go" key="cdgo">GO!</div>';
+    h+='<div class="mg-countdown-label">'+(p.countNum>0?'Starting in...':'')+'</div>';
+    h+='</div>';
+  } else {
   h+='<div class="mg-hd"><div><h2 class="mg-t">'+(p.game==='math'?'\\u{1F522} Math Sprint':p.game==='spatial'?'\\u{1F9E0} Pattern Recall':p.game==='word'?'\\u{1F520} Word Sprint':p.game==='schulte'?'\\u{1F3AF} Schulte Grid':p.game==='sudoku'?'\\u{1F9E9} Sudoku 6x6':p.game==='memory'?'\\u{1F9E9} Memory Tap':p.game==='stroop'?'\\u{1F308} Stroop Challenge':p.game==='nback'?'\\u{1F9E0} N-Back':p.game==='colormatch'?'\\u{1F3A8} Color Match':'\\u26A1 Reaction')+' \\u2022 L'+p.level+'</h2><div class="mg-s">'+(p.game==='math'?'Solve 10 to win XP':p.game==='spatial'?'Memorize, then recreate':p.game==='word'?'90s. Find every word.':p.game==='schulte'?'Tap 1 \\u2192 '+(p.total||25):p.game==='sudoku'?'Fill 1\\u20136 in each row, column, and box':p.game==='memory'?'Repeat the pattern':p.game==='stroop'?'Tap the ink color':p.game==='nback'?'Match if same as N ago':p.game==='colormatch'?'Word vs ink color':'Tap when green')+'</div></div><button class="was-x" onclick="mgClose()">\\u2715</button></div>';
 
   if(p.game==='math'){
@@ -14624,6 +14705,7 @@ if(S.mgPlay){
     }
     h+='</div>';
   }
+  } // close countdown else
   h+='</div></div>';
 }
 
@@ -14970,7 +15052,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=91').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=92').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15237,7 +15319,7 @@ app.get('/privacy',(_,res)=>{
 app.get('/terms',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v91";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v92";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
