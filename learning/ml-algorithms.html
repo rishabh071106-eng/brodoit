@@ -24,30 +24,88 @@ button{font-family:var(--sans);cursor:pointer;border:none;background:none;color:
 a{color:inherit}
 ::selection{background:var(--red);color:#fff}
 
-/* ═══ DOORS ═══ */
-#doorway{position:fixed;inset:0;z-index:1000;perspective:1300px;background:#191514;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity .8s ease .7s}
+/* ═══ THE GRAND DOORS ═══ */
+#doorway{position:fixed;inset:0;z-index:1000;perspective:1400px;background:#161413;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity 1s ease .9s}
 #doorway.gone{opacity:0;pointer-events:none}
-.door-light{position:absolute;inset:0;background:radial-gradient(ellipse at center,#fff6e8 0%,#ffd694 35%,#a53c36 75%,#191514 100%);opacity:0;transition:opacity 1.5s ease}
+.door-light{position:absolute;inset:0;background:radial-gradient(ellipse at center,#fff6e8 0%,#e8c98f 30%,#8a2e2a 70%,#161413 100%);opacity:0;transition:opacity 1.8s ease}
 #doorway.open .door-light{opacity:1}
-.door-frame{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,480px);height:min(72vh,620px);border:12px solid #2e2724;border-radius:18px 18px 0 0;box-shadow:0 30px 100px rgba(0,0,0,.75)}
-.door{position:absolute;top:0;bottom:0;width:50%;background:repeating-linear-gradient(90deg,#6d2823 0 5px,#7a2f29 5px 11px,#6d2823 11px 16px);transition:transform 1.9s cubic-bezier(.7,0,.25,1);box-shadow:inset 0 0 34px rgba(0,0,0,.4)}
-.door.left{left:0;transform-origin:left center;border-radius:8px 0 0 0}
-.door.right{right:0;transform-origin:right center;border-radius:0 8px 0 0}
-.door::before{content:'';position:absolute;inset:8% 14%;border:3px solid rgba(255,214,148,.28);border-radius:10px}
-.knob{position:absolute;top:50%;width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9b8,#c8912b 60%,#7a5a10);box-shadow:0 2px 6px rgba(0,0,0,.55)}
-.door.left .knob{right:9px}.door.right .knob{left:9px}
-.door-plate{position:absolute;top:36%;left:50%;transform:translateX(-50%);color:#ffd694;letter-spacing:.3em;font-weight:800;font-size:11px;text-transform:uppercase}
-#doorway.open .door.left{transform:rotateY(-110deg)}
-#doorway.open .door.right{transform:rotateY(110deg)}
-.door-title{position:absolute;top:8vh;left:0;right:0;text-align:center;z-index:5;color:#fff6e8;padding:0 20px}
-.door-title .kicker{font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:#ffd694;font-weight:800}
-.door-title h1{font-size:clamp(24px,6vw,40px);font-weight:900;margin-top:8px;text-transform:uppercase;letter-spacing:.03em}
-.door-hint{position:absolute;bottom:7vh;left:0;right:0;text-align:center;color:#ffd694;font-size:12px;letter-spacing:.28em;text-transform:uppercase;font-weight:700;animation:pulseHint 1.8s infinite}
-@keyframes pulseHint{0%,100%{opacity:.5}50%{opacity:1}}
-#doorway.open .door-title,#doorway.open .door-hint{opacity:0;transition:opacity .5s}
-.behind{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;color:#5a1f1b;z-index:0;padding:20px}
-.behind .big{font-size:clamp(26px,6vw,44px);font-weight:900;text-transform:uppercase;line-height:1.1}
+.door-frame{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,560px);height:min(80vh,720px);border:14px solid #2b2523;border-bottom:none;box-shadow:0 0 0 4px #1c1917,0 40px 120px rgba(0,0,0,.8);background:linear-gradient(180deg,#fdf3e3,#e8c98f)}
+.door{position:absolute;top:0;bottom:0;width:50%;background:
+  linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0) 12%,rgba(255,255,255,.05) 50%,rgba(0,0,0,0) 88%,rgba(0,0,0,.35)),
+  repeating-linear-gradient(90deg,#5e211d 0 4px,#6d2823 4px 9px,#611f1c 9px 14px),#611f1c;
+  transition:transform 2s cubic-bezier(.7,0,.25,1);box-shadow:inset 0 0 40px rgba(0,0,0,.45)}
+.door::before{content:'';position:absolute;inset:7% 12%;border:3px solid rgba(246,238,236,.22);box-shadow:inset 0 0 0 2px rgba(0,0,0,.3)}
+.door::after{content:'';position:absolute;inset:52% 12% 7%;border:3px solid rgba(246,238,236,.22);box-shadow:inset 0 0 0 2px rgba(0,0,0,.3)}
+.door.left{left:0;transform-origin:left center;border-right:2px solid #3a1512}
+.door.right{right:0;transform-origin:right center;border-left:2px solid #3a1512}
+.knob{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f7d98a,#b8860b 60%,#6b4a06);box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:2}
+.door.left .knob{right:10px}.door.right .knob{left:10px}
+.door-plate{position:absolute;top:34%;left:50%;transform:translateX(-50%);width:70%;text-align:center;color:#e8c98f;letter-spacing:.35em;font-weight:800;font-size:11px;text-transform:uppercase}
+#doorway.open .door.left{transform:rotateY(-112deg)}
+#doorway.open .door.right{transform:rotateY(112deg)}
+.door-title{position:absolute;top:9vh;left:0;right:0;text-align:center;z-index:5;color:#f6eeec;padding:0 20px}
+.door-title .kicker{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:#e8c98f;font-weight:800}
+.door-title h1{font-size:clamp(26px,6vw,44px);font-weight:900;margin-top:8px;text-transform:uppercase;letter-spacing:.04em}
+.door-hint{position:absolute;bottom:8vh;left:0;right:0;text-align:center;color:#e8c98f;font-size:12px;letter-spacing:.3em;text-transform:uppercase;font-weight:700;animation:pulseHint 2s infinite}
+@keyframes pulseHint{0%,100%{opacity:.45}50%{opacity:1}}
+#doorway.open .door-title,#doorway.open .door-hint{opacity:0;transition:opacity .6s}
+.behind{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;color:#3a1512;z-index:0;padding:20px}
+.behind .big{font-size:clamp(28px,7vw,50px);font-weight:900;text-transform:uppercase;line-height:1.1}
 .behind .em{font-size:54px;margin-bottom:10px;display:inline-block;animation:bob 2.4s infinite ease-in-out}
+
+/* ═══ CHAPTER DOOR TRANSITION ═══ */
+.dt{position:fixed;inset:0;z-index:900;perspective:1200px;display:flex;overflow:hidden}
+.dt-half{flex:1;position:relative;box-shadow:inset 0 0 60px rgba(0,0,0,.35);transition:transform 1.1s cubic-bezier(.7,0,.25,1)}
+.dt-half.left{transform-origin:left center;border-right:2px solid rgba(0,0,0,.35)}
+.dt-half.right{transform-origin:right center;border-left:2px solid rgba(0,0,0,.35)}
+.dt.open .dt-half.left{transform:rotateY(-105deg)}
+.dt.open .dt-half.right{transform:rotateY(105deg)}
+.dt-half::after{content:'';position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f7d98a,#b8860b 60%,#6b4a06)}
+.dt-half.left::after{right:12px}.dt-half.right::after{left:12px}
+.dt-plate{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff;text-align:center;padding:20px}
+.dt-plate .de{font-size:52px}
+.dt-plate .dk{font-size:10px;letter-spacing:.4em;text-transform:uppercase;font-weight:800;opacity:.8}
+.dt-plate .dn{font-size:clamp(22px,5vw,34px);font-weight:900;text-transform:uppercase}
+.dt.open .dt-plate{opacity:0;transition:opacity .4s}
+
+/* ═══ DARK ATLAS WORLD (hub) ═══ */
+body.world{background:radial-gradient(ellipse at 50% -10%,#2c2320 0%,#191514 55%,#120f0e 100%)}
+body.world .top{background:color-mix(in srgb,#191514 82%,transparent);border-bottom-color:rgba(255,214,148,.12)}
+body.world .top .back{color:#e8c98f}
+body.world .top .cnt{color:#e8c98f}
+body.world .top .bar-wrap{background:rgba(255,214,148,.14)}
+body.world .top .bar{background:linear-gradient(90deg,#e8c98f,#ffd694)}
+body.world .share-btn{background:rgba(255,214,148,.12);box-shadow:none}
+body.world .hub-hero h1{color:#fff6e8;text-shadow:0 4px 30px rgba(232,201,143,.25)}
+body.world .hub-hero p{color:#cbb9a4}
+body.world .streakline span{background:rgba(255,214,148,.1);color:#ffd694;box-shadow:none;border:1px solid rgba(255,214,148,.18)}
+body.world .searchbox{background:rgba(255,255,255,.07);box-shadow:none;border:1.5px solid rgba(255,214,148,.2)}
+body.world .searchbox input{color:#fff6e8}
+body.world .searchbox input::placeholder{color:#9c8b77}
+body.world .lvl-head .lvl-pill{background:#e8c98f;color:#2b1d14}
+body.world .lvl-head span{color:#9c8b77}
+body.world .sr-none{color:#9c8b77}
+/* journey trail */
+.trail{position:relative;margin-top:20px;padding-left:52px}
+.trail::before{content:'';position:absolute;left:24px;top:14px;bottom:14px;border-left:3px dotted rgba(255,214,148,.4)}
+.tnode{position:relative;display:block;width:100%;margin-bottom:16px;background:rgba(255,255,255,.055);border:2px solid rgba(255,214,148,.18);border-radius:20px;padding:15px 16px;text-align:left;color:#fff6e8;transition:transform .18s,border-color .18s,background .18s;overflow:hidden}
+.tnode:hover{transform:translateX(4px);border-color:var(--lc);background:rgba(255,255,255,.09)}
+.tnode::before{content:'';position:absolute;left:-36px;top:28px;width:16px;height:16px;border-radius:50%;background:#191514;border:3px solid var(--lc);box-shadow:0 0 12px color-mix(in srgb,var(--lc) 60%,transparent)}
+.tnode.done::before{background:var(--lc)}
+.tnode .tk2{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--lc)}
+.tnode h3{font-size:17px;font-weight:900;margin:2px 0 3px;color:#fff6e8}
+.tnode p{font-size:12.5px;color:#b3a28d;font-weight:600;max-width:calc(100% - 70px)}
+.tnode .lbar{height:7px;background:rgba(255,214,148,.14);border-radius:99px;margin-top:10px;overflow:hidden;max-width:calc(100% - 70px)}
+.tnode .lbar i{display:block;height:100%;background:var(--lc);border-radius:99px}
+.tnode .tstat{position:absolute;right:16px;bottom:14px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--lc);letter-spacing:.1em}
+.rio-marker{position:absolute;left:-49px;top:-16px;font-size:24px;z-index:2;animation:bob 2s infinite ease-in-out}
+/* mini door on trail node */
+.tdoor-wrap{position:absolute;right:16px;top:16px;width:38px;height:56px;perspective:300px}
+.tdoor-frame2{position:absolute;inset:0;border:2.5px solid rgba(255,214,148,.5);background:radial-gradient(ellipse at center,#fff2d9 0%,#e8c98f 90%);display:flex;align-items:center;justify-content:center;font-size:17px;border-radius:3px 3px 0 0}
+.tdoor{position:absolute;inset:0;background:var(--lc);border:2.5px solid rgba(0,0,0,.35);transform-origin:left center;transition:transform .5s cubic-bezier(.6,0,.3,1);border-radius:3px 3px 0 0}
+.tdoor::after{content:'';position:absolute;right:5px;top:50%;width:4px;height:4px;border-radius:50%;background:#ffe9b8}
+.tnode:hover .tdoor{transform:rotateY(-95deg)}
+.tnode.done .tdoor{transform:rotateY(-95deg)}
 
 /* ═══ SHELL ═══ */
 .top{position:sticky;top:0;z-index:80;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid rgba(43,38,36,.07)}
@@ -85,15 +143,15 @@ a{color:inherit}
 .step.out{animation:stepOut .22s ease forwards}
 @keyframes stepOut{to{opacity:0;transform:translateY(-18px) scale(.98)}}
 
-/* comic step */
-.panel{background:var(--card);border-radius:24px;box-shadow:var(--sh-lg);overflow:hidden}
-.panel .art{min-height:210px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+/* comic step — inked panels */
+.panel{background:var(--card);border-radius:18px;border:3px solid #241d1a;box-shadow:7px 7px 0 rgba(36,29,26,.85);overflow:hidden;transform:rotate(-.4deg)}
+.panel .art{min-height:210px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-bottom:3px solid #241d1a;background-image:radial-gradient(rgba(36,29,26,.07) 1.2px,transparent 1.2px);background-size:12px 12px}
 .panel .art svg{width:100%;height:auto;display:block}
-.speech{margin:14px 16px 0;background:var(--soft);border-radius:18px;padding:13px 16px;position:relative;font-size:15.5px;font-weight:700;line-height:1.45}
-.speech::before{content:'';position:absolute;top:-8px;left:34px;width:16px;height:16px;background:var(--soft);transform:rotate(45deg);border-radius:3px}
+.speech{margin:14px 16px 0;background:#fff;border:2.5px solid #241d1a;border-radius:16px;padding:13px 16px;position:relative;font-size:15.5px;font-weight:700;line-height:1.45;box-shadow:3px 3px 0 rgba(36,29,26,.2)}
+.speech::before{content:'';position:absolute;top:-9px;left:34px;width:15px;height:15px;background:#fff;border-left:2.5px solid #241d1a;border-top:2.5px solid #241d1a;transform:rotate(45deg)}
 .speech .who{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--cc);margin-bottom:3px;text-transform:uppercase}
 .panel .cap{padding:12px 16px 16px;font-size:13px;color:var(--mute);font-weight:600}
-.rl-tag{position:absolute;top:12px;left:12px;background:#fff;border-radius:99px;padding:5px 12px;font-size:11px;font-weight:800;box-shadow:var(--sh);z-index:3}
+.rl-tag{position:absolute;top:12px;left:12px;background:#ffd694;border:2px solid #241d1a;border-radius:99px;padding:4px 12px;font-size:11px;font-weight:900;z-index:3;transform:rotate(-3deg)}
 
 /* concept card step */
 .ccard{background:var(--card);border-radius:24px;box-shadow:var(--sh-lg);padding:26px 22px;text-align:center}
@@ -217,7 +275,7 @@ a{color:inherit}
 
 <div id="doorway" onclick="openDoors()">
   <div class="door-light"></div>
-  <div class="behind"><span class="em">🧭</span><div class="big">Let's learn<br>the fun way</div></div>
+  <div class="behind"><span class="em">🧭</span><div class="big">Every model<br>is a door.</div><div style="font-size:14px;font-weight:700;margin-top:8px;max-width:340px">Walk the trail. Open them all. Learn what turns the gears behind each one.</div></div>
   <div class="door-title"><div class="kicker">Brodoit Learning · AI Series 01</div><h1>The Algorithm Atlas</h1></div>
   <div class="door-frame">
     <div class="door left"><div class="door-plate">Machine</div><div class="knob"></div></div>
@@ -296,8 +354,8 @@ function emAt(e,x,y,s,extra){return '<text x="'+x+'" y="'+y+'" font-size="'+s+'"
 function svgWrap(char,x,y,scale){return '<g transform="translate('+x+','+y+') scale('+(scale||1)+')">'+char.replace(/<svg[^>]*>/,'').replace('</svg>','')+'</g>'}
 
 /* ══════════════ LESSON DATA ══════════════ */
-var C={red:'#a53c36',green:'#1d9d74',gold:'#e08914',plum:'#7c4dc4',sky:'#2286a8',ink:'#2b2624'};
-var CS={red:'var(--red-soft)',green:'var(--green-soft)',gold:'var(--gold-soft)',plum:'var(--plum-soft)',sky:'var(--sky-soft)',ink:'var(--ink-soft)'};
+var C={red:'#a53c36',green:'#1d9d74',gold:'#e08914',plum:'#7c4dc4',sky:'#2286a8',ink:'#2b2624',sand:'#c9a26b'};
+var CS={red:'var(--red-soft)',green:'var(--green-soft)',gold:'var(--gold-soft)',plum:'var(--plum-soft)',sky:'var(--sky-soft)',ink:'var(--ink-soft)',sand:'#f5ead9'};
 
 var LESSONS=[
 /* ─────────── 0 · FOUNDATIONS ─────────── */
@@ -347,7 +405,7 @@ var LESSONS=[
  ]},
 
 /* ─────────── 1 · THE MAP ─────────── */
-{id:'framework',emoji:'🗺️',color:'ink',title:'The Map',tag:'START HERE',
+{id:'framework',emoji:'🗺️',color:'sand',title:'The Map',tag:'START HERE',
  desc:'4 families of ML & the 3 magic questions',
  steps:[
   {t:'comic',who:'RIO',cc:'ink',bubble:'XGBoost?! DBSCAN?! PPO?! There are HUNDREDS of algorithms… where do I even start? 😵',
@@ -826,43 +884,65 @@ function openDoors(){
 
 /* ══════════════ HUB ══════════════ */
 var TOTAL_CH=LESSONS.length+1; // + engine
-function lessonCardHtml(L,i){
+function firstUnfinished(){
+  var done=getDone();
+  for(var i=0;i<LESSONS.length;i++){if(!LESSONS[i].level&&done.indexOf(LESSONS[i].id)===-1)return LESSONS[i].id}
+  if(done.indexOf('engine')===-1)return 'engine';
+  for(var j=0;j<LESSONS.length;j++){if(LESSONS[j].level===2&&done.indexOf(LESSONS[j].id)===-1)return LESSONS[j].id}
+  return null;
+}
+function trailNodeHtml(L,i,here){
   var done=getDone();
   var total=L.steps.length,at=Math.min(getStep(L.id),total),isDone=done.indexOf(L.id)>-1;
   var pct=isDone?100:Math.round(at/total*100);
-  return '<button class="lesson-card'+(isDone?' done':'')+'" style="--lc:'+C[L.color]+';--lc-soft:'+CS[L.color]+'" onclick="startLesson('+i+')">'
-    +'<div class="lem">'+L.emoji+'</div><div class="lbody">'
-    +'<div class="lk">'+L.tag+'</div><h3>'+L.title+'</h3><p>'+L.desc+'</p>'
-    +'<div class="lbar"><i style="width:'+pct+'%"></i></div></div>'
-    +'<div class="lgo">'+(isDone?'✓':(at>0?'▶':'→'))+'</div></button>';
+  return '<button class="tnode'+(isDone?' done':'')+'" style="--lc:'+C[L.color]+'" onclick="startLesson('+i+')">'
+    +(here?'<span class="rio-marker">🧑‍🚀</span>':'')
+    +'<div class="tdoor-wrap"><div class="tdoor-frame2">'+L.emoji+'</div><div class="tdoor"></div></div>'
+    +'<span class="tk2">'+L.tag+'</span><h3>'+L.title+'</h3><p>'+L.desc+'</p>'
+    +'<div class="lbar"><i style="width:'+pct+'%"></i></div>'
+    +'<span class="tstat">'+(isDone?'✓ DONE':(at>0?'RESUME ▶':'ENTER →'))+'</span></button>';
 }
 function renderHub(){
   cur=null;engineOn=false;$('foot').style.display='none';
+  document.body.classList.add('world');
   $('backLbl').textContent='Brodoit';$('backBtn').href='/';
   try{history.replaceState(null,'',location.pathname)}catch(e){}
-  var done=getDone(),doneCount=done.length;
+  var done=getDone(),doneCount=done.length,hereId=firstUnfinished();
   $('topBar').style.width=(doneCount/TOTAL_CH*100)+'%';
   $('topCnt').textContent=doneCount+'/'+TOTAL_CH;
   var toolCount=0;LESSONS.forEach(function(L){L.steps.forEach(function(s){if(s.t==='tool')toolCount++})});
-  var h='<div class="hub-hero"><span class="mascot">🧭</span><h1>The Algorithm<br>Atlas</h1><p>Bite-sized lessons · comics · quizzes · mini-games. From "what is ML?" to every tool in the box.</p>'
-   +'<div class="streakline"><span>⚡ '+doneCount+'/'+TOTAL_CH+' done</span><span>🛠️ '+toolCount+' tools</span><span>🎮 2 mini-games</span></div></div>';
+  var h='<div class="hub-hero"><span class="mascot">🚪</span><h1>The Algorithm<br>Atlas</h1><p>A journey through the world of machine learning. Walk the trail, open every door — comics, quizzes and mini-games inside.</p>'
+   +'<div class="streakline"><span>⚡ '+doneCount+'/'+TOTAL_CH+' doors opened</span><span>🛠️ '+toolCount+' tools</span><span>🎮 2 mini-games</span></div></div>';
   h+='<div class="searchbox"><span>🔎</span><input id="searchInp" type="search" placeholder="Search any algorithm… (XGBoost, PPO, t-SNE)" oninput="doSearch(this.value)" autocomplete="off"></div>'
    +'<div id="searchRes"></div>';
   h+='<div id="hubLists">';
-  h+='<div class="lvl-head"><span class="lvl-pill">LEVEL 1</span><span>The journey — story lessons</span></div><div class="lessons">';
-  LESSONS.forEach(function(L,i){if(!L.level)h+=lessonCardHtml(L,i)});
+  h+='<div class="lvl-head"><span class="lvl-pill">LEVEL 1</span><span>The journey — story lessons</span></div><div class="trail">';
+  LESSONS.forEach(function(L,i){if(!L.level)h+=trailNodeHtml(L,i,L.id===hereId)});
   var engDone=done.indexOf('engine')>-1;
-  h+='<button class="lesson-card'+(engDone?' done':'')+'" style="--lc:'+C.sky+';--lc-soft:'+CS.sky+'" onclick="startEngine()">'
-    +'<div class="lem">⚙️</div><div class="lbody"><div class="lk">FINALE</div><h3>The Decision Engine</h3><p>Describe any real problem — get the exact algorithms to try</p>'
-    +'<div class="lbar"><i style="width:'+(engDone?100:0)+'%"></i></div></div><div class="lgo">'+(engDone?'✓':'★')+'</div></button>';
+  h+='<button class="tnode'+(engDone?' done':'')+'" style="--lc:'+C.sky+'" onclick="startEngine()">'
+    +(hereId==='engine'?'<span class="rio-marker">🧑‍🚀</span>':'')
+    +'<div class="tdoor-wrap"><div class="tdoor-frame2">⚙️</div><div class="tdoor"></div></div>'
+    +'<span class="tk2">FINALE</span><h3>The Decision Engine</h3><p>Describe any real problem — get the exact algorithms to try</p>'
+    +'<div class="lbar"><i style="width:'+(engDone?100:0)+'%"></i></div>'
+    +'<span class="tstat">'+(engDone?'✓ DONE':'ENTER →')+'</span></button>';
   h+='</div>';
-  h+='<div class="lvl-head"><span class="lvl-pill">LEVEL 2</span><span>The Tool Vaults — every algorithm in detail</span></div><div class="lessons">';
-  LESSONS.forEach(function(L,i){if(L.level===2)h+=lessonCardHtml(L,i)});
+  h+='<div class="lvl-head"><span class="lvl-pill">LEVEL 2</span><span>The Tool Vaults — every algorithm in detail</span></div><div class="trail">';
+  LESSONS.forEach(function(L,i){if(L.level===2)h+=trailNodeHtml(L,i,L.id===hereId)});
   h+='</div>';
-  h+='<div style="text-align:center;margin:26px 8px 8px;font-size:12.5px;font-weight:700;color:var(--mute)">🌟 Golden rule: start simple → traditional ML first → deep learning when necessary → RL for sequential decisions.</div>';
+  h+='<div style="text-align:center;margin:26px 8px 8px;font-size:12.5px;font-weight:700;color:#9c8b77">🌟 Golden rule: start simple → traditional ML first → deep learning when necessary → RL for sequential decisions.</div>';
   h+='</div>';
   $('main').innerHTML=h;
   window.scrollTo(0,0);
+}
+/* chapter door transition */
+function doorTransition(em,kicker,name,color){
+  var d=document.createElement('div');d.className='dt';
+  d.innerHTML='<div class="dt-half left" style="background:'+color+'"></div><div class="dt-half right" style="background:'+color+'"></div>'
+    +'<div class="dt-plate"><span class="de">'+em+'</span><span class="dk">'+kicker+'</span><span class="dn">'+name+'</span></div>';
+  document.body.appendChild(d);
+  snd('door');
+  setTimeout(function(){d.classList.add('open')},650);
+  setTimeout(function(){d.remove()},1800);
 }
 
 /* ══════════════ SEARCH ══════════════ */
@@ -890,9 +970,11 @@ function doSearch(q){
 }
 function jumpTo(li,si){
   cur=LESSONS[li];curStep=si;setStep(cur.id,si);
-  $('backLbl').textContent='Lessons';$('backBtn').removeAttribute('href');
+  document.body.classList.remove('world');
+  $('backLbl').textContent='Journey';$('backBtn').removeAttribute('href');
   $('foot').style.display='flex';
   try{history.replaceState(null,'','#c='+cur.id)}catch(e){}
+  doorTransition(cur.emoji,cur.tag,cur.title,C[cur.color]);
   renderStep();snd('pop');
 }
 
@@ -900,9 +982,12 @@ function jumpTo(li,si){
 function startLesson(i){
   cur=LESSONS[i];curStep=Math.min(getStep(cur.id),cur.steps.length-1);
   if(getDone().indexOf(cur.id)>-1)curStep=0;
-  $('backLbl').textContent='Lessons';$('backBtn').removeAttribute('href');
+  var wasWorld=document.body.classList.contains('world');
+  document.body.classList.remove('world');
+  $('backLbl').textContent='Journey';$('backBtn').removeAttribute('href');
   $('foot').style.display='flex';
   try{history.replaceState(null,'','#c='+cur.id)}catch(e){}
+  if(wasWorld)doorTransition(cur.emoji,cur.tag,cur.title,C[cur.color]);
   renderStep();
 }
 /* ══════════════ SHARE ══════════════ */
@@ -1147,10 +1232,13 @@ function rlMove(d){
 var engTrail=[];
 function startEngine(){
   engineOn=true;cur=null;engTrail=[];
+  var wasWorld=document.body.classList.contains('world');
+  document.body.classList.remove('world');
   $('foot').style.display='none';
-  $('backLbl').textContent='Lessons';$('backBtn').removeAttribute('href');
+  $('backLbl').textContent='Journey';$('backBtn').removeAttribute('href');
   $('topBar').style.width='100%';$('topCnt').textContent='⚙️';
   try{history.replaceState(null,'','#engine')}catch(e){}
+  if(wasWorld)doorTransition('⚙️','FINALE','The Decision Engine',C.sky);
   engRender('start');
 }
 function engRender(node){
