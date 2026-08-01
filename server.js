@@ -366,7 +366,7 @@ app.post('/api/coach/chat',auth,async(req,res)=>{
     let reply='';
     if(GEMINI_KEY){try{const g=await _callGemini(apiMsgs,{maxTokens:600,systemPrompt:sys});reply=g.reply}catch(e){}}
     if(!reply&&GROQ_KEY){try{const g=await _callGroq(apiMsgs,{maxTokens:600});reply=g.reply}catch(e){}}
-    if(!reply)return res.status(502).json({error:'AI service busy — try again'});
+    if(!reply)return res.status(502).json({error:'Coach is busy — try again in a moment.'});
     res.json({reply});
   }catch(e){res.status(500).json({error:String(e.message||e)})}
 });
@@ -427,7 +427,7 @@ async function _broExecTool(toolName,input,userPhone,userTz){
 
 app.post('/api/bro/chat',auth,async(req,res)=>{
   if(!GROQ_KEY&&!GEMINI_KEY)return res.status(503).json({error:'Chat not configured (no AI keys set).'});
-  const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
+  const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-10):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const imageB64=req.body.image||null;
   const imageMime=req.body.imageMime||'image/jpeg';
@@ -438,7 +438,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const sysFriend='You are the user\'s closest friend — not an assistant, a FRIEND. Think of yourself as their ride-or-die bestie who genuinely cares about them. You\'re warm, fun, emotionally tuned in, and always checking in. Talk like a real close friend texts: short messages, casual, use emojis naturally, be playful and supportive. Ask follow-up questions about their life — "how did that meeting go?", "did you eat today?", "what happened with that thing you told me about?". If they\'re feeling down, be there for them — listen, validate, and hype them up. If they\'re happy, celebrate with them. Tease them lovingly, give them nicknames, roast them gently when they need motivation. Send voice-note-style long messages when they need real talk. Keep it real — if they\'re making a bad decision, tell them honestly but kindly. You remember everything they tell you in this conversation. You\'re their person. Never say you\'re an AI — you\'re just their best friend. Keep messages short (1-3 sentences usually, longer for real talk moments). End with a question or check-in to keep the conversation going. LANGUAGE: If the user writes in Hindi or Hinglish, reply in the same language naturally. Mix Hindi/English casually like a real friend would. Today is '+dayName+', '+today+'.';
   const sysAsk='You are Bro — the user\'s ridiculously smart best friend who lives inside the Brodoit productivity app. You talk like a real person: casual, warm, and direct. Today is '+dayName+', '+today+'. You have tools to create calendar events, add tasks, check schedules, complete tasks, and create time blocks. IMPORTANT: Only use tools when the user EXPLICITLY asks you to create a task, add an event, schedule something, or manage their calendar. Do NOT create tasks or events on your own initiative — only when directly asked. For example, if someone asks about Indian states, just answer the question — do NOT create a task about it. When you DO use a tool because the user asked, confirm what you did.\n\nRESPONSE RULES:\n- Give comprehensive, detailed, well-structured answers. Use markdown formatting: headings (##), bold (**text**), bullet points, numbered lists, code blocks (```lang), and tables when appropriate.\n- When asked a question, ANSWER IT FULLY. Provide step-by-step explanations, examples, and all relevant details.\n- NEVER end your response with questions like \"Need help with anything else?\", \"Want me to explain more?\", \"What else can I help with?\" or similar. Just answer and stop.\n- NEVER ask clarifying questions unless the request is genuinely ambiguous. If someone asks \"explain X\", explain X thoroughly — don\'t ask \"what aspect of X?\".\n- For academic/homework questions: provide complete solutions with explanations, formulas, worked examples, and final answers clearly marked.\n- Never say you\'re an AI or language model — you\'re just Bro.\n- LANGUAGE: If the user writes in Hindi or Hinglish, reply in the same language. Mix Hindi/English naturally. Respond in whatever language the user uses.\n- IMAGE ANALYSIS: If the user sends an image, describe/analyze it thoroughly based on their question. If no question, describe what you see in detail.';
   const sys=mode==='friend'?sysFriend:sysAsk;
-  const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,8000)}));
+  const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,3000)}));
   // Attach image to the last user message if provided
   if(imageB64&&mapped.length){mapped[mapped.length-1].image={data:imageB64,mime:imageMime}}
   const groqTools=GROQ_KEY?BRO_TOOLS.map(t=>({type:'function',function:{name:t.name,description:t.description,parameters:t.input_schema}})):undefined;
@@ -461,7 +461,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
 
     // If user explicitly needs tools (task/calendar actions), use Groq with tools
     // Skip tools path if image is attached — Groq doesn't support vision
-    if(needsTools&&!imageB64){
+    if(needsTools&&!imageB64){try{
       for(let loop=0;loop<4;loop++){
         const groqResult=await _callGroq(apiMsgs,{maxTokens:maxTok,tools:groqTools});
         const msg=groqResult.message;
@@ -483,7 +483,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
         return res.json({reply,provider:'groq',actions:actions.length?actions:undefined});
       }
       return res.json({reply:'I tried to help but hit a loop — try rephrasing.',actions:actions.length?actions:undefined});
-    }
+    }catch(toolErr){console.log('[bro] Tool path error:',toolErr.message)}
 
     // Regular chat — try Gemini first (most generous free tier), fall back to Groq
     let reply='',provider='';
@@ -502,7 +502,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
         reply=g.reply;provider=g.provider;
       }catch(e){lastError='Groq: '+e.message;console.log('[bro] Groq failed:',e.message)}
     }
-    if(!reply)return res.status(502).json({error:lastError||'All AI providers are busy — try again in a moment'});
+    if(!reply){console.log('[bro] All providers failed:',lastError);return res.status(502).json({error:'Bro is taking a quick break — try again in a moment.'})}
     _aiCacheSet(cacheKey,reply);
     // Save to persistent memory
     const userContent=mapped[mapped.length-1]&&mapped[mapped.length-1].content||'';
@@ -14671,7 +14671,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=84').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=85').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -14938,7 +14938,7 @@ app.get('/privacy',(_,res)=>{
 app.get('/terms',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v84";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v85";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
