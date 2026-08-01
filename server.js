@@ -483,7 +483,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
         return res.json({reply,provider:'groq',actions:actions.length?actions:undefined});
       }
       return res.json({reply:'I tried to help but hit a loop — try rephrasing.',actions:actions.length?actions:undefined});
-    }catch(toolErr){console.log('[bro] Tool path error:',toolErr.message)}
+    }catch(toolErr){console.log('[bro] Tool path error:',toolErr.message)}}
 
     // Regular chat — try Gemini first (most generous free tier), fall back to Groq
     let reply='',provider='';
@@ -4098,8 +4098,42 @@ body[data-theme=aurora] .tabs.page-t .tab.on .tl{color:#D9734A !important}
   .cal-day{font-size:15px}
 }
 @media (min-width:1400px){.app{max-width:1320px}}
-/* Tablet: expand column, richer spacing, 3-col stats */
-@media (min-width:700px) and (max-width:1023px){
+/* Tablet: iPad-optimized layout (768-1023px) — 2-column grid like desktop but narrower */
+@media (min-width:768px) and (max-width:1023px){
+  .app{max-width:960px;padding:12px 20px 40px;display:grid;grid-template-columns:180px 1fr;grid-template-areas:"hdr hdr" "side main";column-gap:16px;row-gap:6px;align-items:start}
+  .app>.hdr{grid-area:hdr;margin-bottom:0}
+  .app>.side-col{grid-area:side;display:flex;flex-direction:column;gap:12px;align-self:start}
+  .app>.side-col>.tabs.page-t{margin:0;position:static}
+  .app>.side-col>.top-strip{margin:0}
+  .app>.main-col{grid-area:main;min-width:0}
+  .app .tabs.page-t{flex-direction:column;padding:6px;gap:3px;overflow:visible;margin-bottom:0;justify-content:flex-start}
+  .app .tabs.page-t .tab{width:100%;flex:0 0 auto;min-height:44px;padding:7px 8px;font-size:12.5px;font-weight:600;justify-content:flex-start;border-radius:8px;gap:8px;align-items:center;border:none}
+  .app .tabs.page-t .tab .ti{width:32px;height:32px;border-radius:8px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-mute)}
+  .app .tabs.page-t .tab .ti svg{width:18px!important;height:18px!important;stroke-width:1.8!important}
+  .app .tabs.page-t .tab .tl{font-size:12.5px;letter-spacing:-.01em}
+  .app .tabs.page-t .tab.on .ti{background:var(--accent-soft);color:var(--accent)}
+  .app .tabs.page-t .tab.on .ti svg{color:var(--accent)!important;stroke:var(--accent)!important}
+  .fab{display:none}
+  .dash-grid{grid-template-columns:repeat(4,1fr);gap:12px}
+  .dash-card{padding:18px}
+  .dash-card .v{font-size:30px}
+  .hth-ring-num{font-size:38px}
+  .dash-hero{padding:28px}
+  .dash-hero .big{font-size:60px}
+  .logo{font-size:26px}
+  .st b{font-size:26px}
+  .hth-bars{height:140px}
+  .board{padding:0;margin:0 0 16px;gap:12px}
+  .col{flex:1 1 0;max-width:none;padding:14px}
+  .col-body{max-height:65vh}
+  .stats{grid-template-columns:repeat(3,1fr);gap:10px}
+  .top-strip{flex-direction:column}
+  .top-strip .side-now{flex:0 0 auto;border-left:none;border-top:1px dashed rgba(17,24,39,.25)}
+  .app .tabs.page-t .climb-scene{height:130px;min-height:130px}
+  .top-strip .side-now .side-now-time{font-size:30px}
+}
+/* Small tablet fallback (700-767px) — single column but wider */
+@media (min-width:700px) and (max-width:767px){
   .app{max-width:720px;padding:24px 24px 100px}
   .dash-grid{grid-template-columns:repeat(4,1fr)}
   .dash-card{padding:18px}
@@ -4540,8 +4574,46 @@ body.night-sky .ns-nebula{position:fixed;inset:0;z-index:0;pointer-events:none;o
 }
 @keyframes nebulaDrift{0%{opacity:.5;transform:scale(1) translate(0,0)}50%{opacity:.7;transform:scale(1.05) translate(-1%,1%)}100%{opacity:.5;transform:scale(1) translate(1%,-1%)}}
 body.night-sky{--bg:#050714;--bg-2:#0A0D1E;--surface:rgba(255,255,255,.05);--surface-2:rgba(255,255,255,.08);--line:rgba(255,255,255,.08);--border:rgba(255,255,255,.1)}
-body.night-sky .ns-moon{position:fixed;top:8%;right:10%;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFFDE8,#F5E6B8 60%,#D4C08A);box-shadow:0 0 40px 15px rgba(255,253,232,.15),0 0 80px 30px rgba(255,253,232,.08),0 0 120px 50px rgba(255,253,232,.03);z-index:0;pointer-events:none;animation:moonGlow 8s ease-in-out infinite alternate}
-@keyframes moonGlow{from{box-shadow:0 0 40px 15px rgba(255,253,232,.15),0 0 80px 30px rgba(255,253,232,.08),0 0 120px 50px rgba(255,253,232,.03)}to{box-shadow:0 0 50px 20px rgba(255,253,232,.2),0 0 100px 40px rgba(255,253,232,.1),0 0 150px 60px rgba(255,253,232,.04)}}
+body.night-sky .ns-moon{position:fixed;top:6%;right:8%;width:80px;height:80px;border-radius:50%;z-index:0;pointer-events:none;animation:moonGlow 8s ease-in-out infinite alternate;
+  background:radial-gradient(circle at 38% 32%,#FFFDE8,#F5E6B8 40%,#D4C08A 70%,#B8A070 90%);
+  box-shadow:0 0 50px 20px rgba(255,253,232,.18),0 0 100px 40px rgba(255,253,232,.1),0 0 160px 60px rgba(255,253,232,.04)}
+body.night-sky .ns-moon::before{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:
+    radial-gradient(circle 8px at 30% 28%,rgba(180,160,120,.35),transparent 70%),
+    radial-gradient(circle 12px at 55% 40%,rgba(160,140,100,.3),transparent 70%),
+    radial-gradient(circle 6px at 42% 65%,rgba(170,150,110,.28),transparent 70%),
+    radial-gradient(circle 14px at 25% 55%,rgba(150,130,90,.25),transparent 70%),
+    radial-gradient(circle 5px at 65% 25%,rgba(180,160,120,.22),transparent 70%),
+    radial-gradient(circle 10px at 70% 60%,rgba(155,135,95,.2),transparent 70%),
+    radial-gradient(circle 7px at 38% 45%,rgba(165,145,105,.18),transparent 70%),
+    radial-gradient(circle 4px at 50% 20%,rgba(185,165,125,.2),transparent 70%),
+    radial-gradient(circle 9px at 60% 75%,rgba(145,125,85,.2),transparent 70%),
+    radial-gradient(circle 3px at 20% 72%,rgba(175,155,115,.15),transparent 70%),
+    radial-gradient(circle 6px at 78% 42%,rgba(160,140,100,.15),transparent 70%),
+    radial-gradient(circle 18px at 35% 50%,rgba(140,120,80,.12),transparent 65%)}
+body.night-sky .ns-moon::after{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 72% 68%,rgba(5,7,20,.35),transparent 55%);
+  mix-blend-mode:multiply}
+@keyframes moonGlow{from{box-shadow:0 0 50px 20px rgba(255,253,232,.18),0 0 100px 40px rgba(255,253,232,.1),0 0 160px 60px rgba(255,253,232,.04)}to{box-shadow:0 0 60px 25px rgba(255,253,232,.25),0 0 120px 50px rgba(255,253,232,.12),0 0 180px 70px rgba(255,253,232,.05)}}
+/* Planets */
+body.night-sky .ns-planets{position:fixed;inset:0;z-index:0;pointer-events:none}
+body.night-sky .ns-planet{position:fixed;border-radius:50%;z-index:0;pointer-events:none}
+body.night-sky .ns-planet-saturn{top:18%;left:12%;width:18px;height:18px;
+  background:radial-gradient(circle at 40% 35%,#F5DEB3,#D2B48C 60%,#A08050);
+  box-shadow:0 0 12px 4px rgba(210,180,140,.15);animation:planetTwinkle 12s ease-in-out infinite alternate}
+body.night-sky .ns-planet-saturn::after{content:'';position:absolute;top:50%;left:50%;width:30px;height:6px;margin-left:-15px;margin-top:-3px;border-radius:50%;border:1.5px solid rgba(210,180,140,.35);background:transparent;transform:rotate(-20deg)}
+body.night-sky .ns-planet-jupiter{top:32%;left:6%;width:14px;height:14px;
+  background:radial-gradient(circle at 40% 35%,#F0D8A8,#C8A878 50%,#A08860);
+  box-shadow:0 0 10px 3px rgba(192,168,120,.12);animation:planetTwinkle 15s ease-in-out infinite alternate-reverse}
+body.night-sky .ns-planet-jupiter::after{content:'';position:absolute;top:35%;left:10%;right:10%;height:1.5px;background:rgba(180,140,80,.3);border-radius:1px}
+body.night-sky .ns-planet-jupiter::before{content:'';position:absolute;top:55%;left:15%;right:15%;height:1px;background:rgba(160,120,60,.25);border-radius:1px}
+body.night-sky .ns-planet-mars{bottom:28%;left:15%;width:8px;height:8px;
+  background:radial-gradient(circle at 40% 35%,#F0A080,#C85040 70%,#903020);
+  box-shadow:0 0 8px 3px rgba(200,80,64,.12);animation:planetTwinkle 10s ease-in-out infinite}
+body.night-sky .ns-planet-venus{top:14%;right:28%;width:6px;height:6px;
+  background:radial-gradient(circle at 40% 35%,#FFFDE0,#F0E8C0);
+  box-shadow:0 0 10px 4px rgba(255,253,224,.2);animation:planetTwinkle 7s ease-in-out infinite alternate}
+@keyframes planetTwinkle{0%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}100%{opacity:.75;transform:scale(.97)}}
 body.night-sky .tabs.page-t{background:rgba(5,7,20,.94)!important;border-top-color:rgba(255,255,255,.06)!important;backdrop-filter:blur(24px)!important}
 body[data-theme=aurora]::before{content:'';position:fixed;inset:0;background:
   radial-gradient(800px 500px at 20% 80%,rgba(226,125,96,.04),transparent 70%);
@@ -8743,9 +8815,9 @@ async function stopPed(){if(_ped){window.removeEventListener('devicemotion',_ped
 /* When the tab is backgrounded, flush whatever we counted so we don't lose it, and re-acquire wake lock on return. */
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(S.stepLive&&S.stepLive.active)await flushPedCount()}else if(document.visibilityState==='visible'){if(S.stepLive&&S.stepLive.active&&!_wakeLock)await acquireWake()}});
 function toggleTheme(){S.theme=S.theme==='aurora'?'classic':'aurora';localStorage.setItem('theme',S.theme);document.body.setAttribute('data-theme',S.theme);toast(S.theme==='aurora'?'Aurora theme':'Classic theme');render()}
-function toggleEyeShield(){S.eyeShield=!S.eyeShield;localStorage.setItem('eyeShield',S.eyeShield?'1':'');document.body.classList.toggle('eye-shield',S.eyeShield);if(S.eyeShield){S.nightSky=false;localStorage.setItem('nightSky','');document.body.classList.remove('night-sky');var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb=document.getElementById('nsNebula');if(nb)nb.remove()}toast(S.eyeShield?'Eye Shield on':'Eye Shield off');render()}
-function toggleNightSky(){S.nightSky=!S.nightSky;localStorage.setItem('nightSky',S.nightSky?'1':'');document.body.classList.toggle('night-sky',S.nightSky);if(S.nightSky){S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');if(S.theme!=='aurora'){S.theme='aurora';localStorage.setItem('theme','aurora');document.body.setAttribute('data-theme','aurora')}if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}}else{var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb2=document.getElementById('nsNebula');if(nb2)nb2.remove()}toast(S.nightSky?'Night Sky on':'Night Sky off');render()}
-function applyTheme(){document.body.setAttribute('data-theme',S.theme||'classic');applyColorThemeCSS(S.themeColor||'coral');if(S.eyeShield)document.body.classList.add('eye-shield');if(S.nightSky){document.body.classList.add('night-sky');if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}}}
+function toggleEyeShield(){S.eyeShield=!S.eyeShield;localStorage.setItem('eyeShield',S.eyeShield?'1':'');document.body.classList.toggle('eye-shield',S.eyeShield);if(S.eyeShield){S.nightSky=false;localStorage.setItem('nightSky','');document.body.classList.remove('night-sky');var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb=document.getElementById('nsNebula');if(nb)nb.remove();var pl=document.getElementById('nsPlanets');if(pl)pl.remove()}toast(S.eyeShield?'Eye Shield on':'Eye Shield off');render()}
+function toggleNightSky(){S.nightSky=!S.nightSky;localStorage.setItem('nightSky',S.nightSky?'1':'');document.body.classList.toggle('night-sky',S.nightSky);if(S.nightSky){S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');if(S.theme!=='aurora'){S.theme='aurora';localStorage.setItem('theme','aurora');document.body.setAttribute('data-theme','aurora')}if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div>';document.body.appendChild(pl)}}else{var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb2=document.getElementById('nsNebula');if(nb2)nb2.remove();var pl2=document.getElementById('nsPlanets');if(pl2)pl2.remove()}toast(S.nightSky?'Night Sky on':'Night Sky off');render()}
+function applyTheme(){document.body.setAttribute('data-theme',S.theme||'classic');applyColorThemeCSS(S.themeColor||'coral');if(S.eyeShield)document.body.classList.add('eye-shield');if(S.nightSky){document.body.classList.add('night-sky');if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div>';document.body.appendChild(pl)}}}
 const _COLOR_THEMES={
   blue:{c1:'#4F6DF5',c2:'#7B93F8',c3:'#B4C2FB',c4:'#1E2A5E',c5:'#3B5CE0',bg:'#F4F6FF',bg2:'#F9FAFF',border:'#E0E5F6',rgba1:'79,109,245',rgba2:'123,147,248'},
   emerald:{c1:'#10B981',c2:'#34D399',c3:'#6EE7B7',c4:'#064E3B',c5:'#059669',bg:'#ECFDF5',bg2:'#F0FDF4',border:'#D1FAE5',rgba1:'16,185,129',rgba2:'52,211,153'},
@@ -14671,7 +14743,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=85').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=86').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -14938,7 +15010,7 @@ app.get('/privacy',(_,res)=>{
 app.get('/terms',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v85";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v86";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
