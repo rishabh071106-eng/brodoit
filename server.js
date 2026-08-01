@@ -3912,15 +3912,15 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab{
     flex:1 1 0 !important;
     min-width:0 !important;
-    padding:0 !important;
+    padding:2px 0 0 !important;
     flex-direction:column !important;
     align-items:center !important;
     justify-content:flex-start !important;
     text-align:center !important;
     min-height:auto !important;
     border-radius:0 !important;
-    gap:4px !important;
-    transition:color .2s ease !important;
+    gap:3px !important;
+    transition:color .25s cubic-bezier(.4,0,.2,1),transform .25s cubic-bezier(.34,1.56,.64,1) !important;
     background:transparent !important;
     color:var(--text-mute) !important;
     box-shadow:none !important;
@@ -3930,46 +3930,47 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab::before{display:none !important}
   .tabs.page-t .tab .ti{
     font-size:22px !important;
-    width:auto !important;height:auto !important;
+    width:44px !important;height:32px !important;
     display:flex !important;align-items:center !important;justify-content:center !important;
-    transition:color .2s ease !important;
+    transition:all .3s cubic-bezier(.34,1.56,.64,1) !important;
     color:inherit !important;
-    background:none !important;border-radius:0 !important;border:none !important;box-shadow:none !important;
+    background:none !important;border-radius:16px !important;border:none !important;box-shadow:none !important;
     overflow:visible !important;
     transform:none !important;
   }
   .tabs.page-t .tab .ti::after{display:none !important}
   .tabs.page-t .tab .ti::before{display:none !important}
-  .tabs.page-t .tab .ti svg{width:28px !important;height:28px !important;filter:none !important;stroke-width:2 !important;color:inherit !important}
+  .tabs.page-t .tab .ti svg{width:24px !important;height:24px !important;filter:none !important;stroke-width:1.8 !important;color:inherit !important;transition:all .25s ease !important}
   .tabs.page-t .tab .tl{
     font-family:var(--sans) !important;
     font-size:10px !important;
-    font-weight:600 !important;
-    letter-spacing:0 !important;
+    font-weight:500 !important;
+    letter-spacing:.02em !important;
     text-transform:none !important;
     white-space:nowrap !important;
     color:inherit !important;
-    opacity:1 !important;
+    opacity:.8 !important;
     overflow:hidden;text-overflow:ellipsis;max-width:100%;
     margin-top:0 !important;
+    transition:all .25s ease !important;
   }
-  .tabs.page-t .tab:active{animation:tabBounce .35s cubic-bezier(.34,1.56,.64,1) !important}
-  @keyframes tabBounce{0%{transform:scale(1)}30%{transform:scale(.88)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+  .tabs.page-t .tab:active{transform:scale(.9) !important}
   .tabs.page-t .tab.on{
     color:var(--accent) !important;
     transform:none !important;
     background:transparent !important;
   }
   .tabs.page-t .tab.on .ti{
-    background:color-mix(in srgb,var(--accent) 12%,transparent) !important;
+    background:color-mix(in srgb,var(--accent) 14%,transparent) !important;
     color:var(--accent) !important;
     box-shadow:none !important;
-    transform:none !important;
-    border-radius:12px !important;
-    padding:4px 14px !important;
-    width:auto !important;
+    transform:translateY(-1px) scale(1.05) !important;
+    border-radius:14px !important;
+    padding:0 !important;
+    width:52px !important;
+    height:32px !important;
   }
-  .tabs.page-t .tab.on .ti svg{color:var(--accent) !important;stroke:var(--accent) !important;stroke-width:2.2 !important;fill:color-mix(in srgb,var(--accent) 15%,transparent) !important}
+  .tabs.page-t .tab.on .ti svg{color:var(--accent) !important;stroke:var(--accent) !important;stroke-width:2.2 !important;fill:color-mix(in srgb,var(--accent) 18%,transparent) !important;transform:scale(1.08) !important}
   .tabs.page-t .tab.on .tl{color:var(--accent) !important;font-weight:700 !important;opacity:1 !important;font-size:10px !important}
   .tabs.page-t .tab.on::after{display:none !important}
   .bk-mini{bottom:110px !important;right:14px !important}
@@ -11990,6 +11991,124 @@ function _spinLoop(){if(!_spinRunning)return;_spinAngle=(_spinAngle+_spinSpeed)%
 function _spinStart(){_spinRunning=true;_spinAngle=0;_spinRaf=requestAnimationFrame(_spinLoop)}
 function spinTap(){if(!_spinRunning)return;_spinRunning=false;if(_spinRaf)cancelAnimationFrame(_spinRaf);var pending=S.tasks?S.tasks.filter(function(t){return t.status==='pending'}):[];if(!pending.length){document.getElementById('spinResult').textContent='No pending tasks!';return}var idx=Math.floor((_spinAngle/360)*pending.length);var task=pending[idx%pending.length];var el=document.getElementById('spinTaskName');if(el)el.textContent=task.title||'Task';var res=document.getElementById('spinResult');if(res)res.innerHTML='<b style="color:var(--accent)">\\u2192</b> '+esc(task.title||'Task')+'<br><button onclick="spinMarkDone(\\''+task.id+'\\');event.stopPropagation()" style="margin-top:6px;padding:6px 16px;border-radius:10px;border:none;background:#22C55E;color:#fff;font:600 12px var(--sans);cursor:pointer">Mark Done</button> <button onclick="_spinRunning=true;_spinLoop();document.getElementById(\\'spinResult\\').textContent=\\'Spinning...\\'" style="margin-top:6px;padding:6px 16px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:600 12px var(--sans);cursor:pointer">Spin Again</button>'}
 async function spinMarkDone(id){var t=S.tasks.find(function(t){return t.id===id});if(t){t.status='done';t.updated_at=new Date().toISOString();await api('/tasks/'+id,{method:'PATCH',body:JSON.stringify({status:'done'})});toast('Task done!');render()}}
+// --- Ring Maze Game ---
+var _rmCtx=null;var _rmRaf=null;var _rmRunning=false;var _rmBall={r:0,angle:0,ring:0,vy:0,jumping:false};
+var _rmRings=[];var _rmScore=0;var _rmBest=0;var _rmDead=false;var _rmWon=false;var _rmPressed=false;
+var _rmW=300;var _rmH=300;var _rmCx=150;var _rmCy=150;
+function _rmInit(){
+  try{_rmBest=parseInt(localStorage.getItem('rm_best'))||0}catch(e){}
+  _rmRings=[];_rmScore=0;_rmDead=false;_rmWon=false;_rmPressed=false;
+  _rmBall={r:20,angle:0,ring:-1,vy:0,jumping:false,targetR:20};
+  var ringCount=5;
+  for(var i=0;i<ringCount;i++){
+    var baseR=40+i*22;
+    var gapSize=50+Math.random()*30;
+    var gapAngle=Math.random()*360;
+    var speed=(1.2+Math.random()*1.5)*(i%2===0?1:-1);
+    _rmRings.push({r:baseR,gap:gapAngle,gapSize:gapSize,speed:speed,t:0});
+  }
+}
+function _rmStart(){
+  var c=document.getElementById('ringMazeCanvas');
+  if(!c)return;
+  c.width=_rmW;c.height=_rmH;
+  _rmCtx=c.getContext('2d');
+  _rmInit();_rmRunning=true;
+  if(_rmRaf)cancelAnimationFrame(_rmRaf);
+  _rmRaf=requestAnimationFrame(_rmLoop);
+  _rmUpdateUI();
+}
+function _rmUpdateUI(){
+  var s=document.getElementById('rmScore');if(s)s.textContent='Score: '+_rmScore;
+  var b=document.getElementById('rmBest');if(b)b.textContent='Best: '+_rmBest;
+  var msg=document.getElementById('rmMsg');
+  if(msg){
+    if(_rmDead)msg.textContent='Hit a ring! Tap to retry';
+    else if(_rmWon)msg.textContent='You escaped! Tap to play again';
+    else msg.textContent='Hold to charge, release to jump';
+  }
+}
+function _rmLoop(){
+  if(!_rmRunning)return;
+  var ctx=_rmCtx;if(!ctx)return;
+  ctx.clearRect(0,0,_rmW,_rmH);
+  for(var i=0;i<_rmRings.length;i++){
+    var ring=_rmRings[i];
+    ring.t+=ring.speed;
+    var gapStart=((ring.gap+ring.t)%360+360)%360;
+    var gapEnd=(gapStart+ring.gapSize)%360;
+    ctx.beginPath();
+    ctx.strokeStyle=i<=_rmBall.ring?'rgba(34,197,94,.4)':'rgba(226,125,96,.35)';
+    ctx.lineWidth=4;
+    var startRad=(gapEnd)*Math.PI/180;
+    var endRad=(gapStart)*Math.PI/180;
+    if(gapEnd<gapStart){ctx.arc(_rmCx,_rmCy,ring.r,startRad,endRad)}
+    else{ctx.arc(_rmCx,_rmCy,ring.r,startRad,endRad)}
+    ctx.stroke();
+  }
+  if(_rmPressed&&!_rmDead&&!_rmWon&&!_rmBall.jumping){
+    _rmBall.vy=Math.min(_rmBall.vy+0.3,12);
+    var pw=document.getElementById('rmPower');
+    if(pw)pw.style.width=Math.min(_rmBall.vy/12*100,100)+'%';
+  }
+  if(_rmBall.jumping){
+    _rmBall.r+=_rmBall.vy;
+    _rmBall.vy*=0.97;
+    if(_rmBall.vy<0.3){_rmBall.jumping=false;_rmBall.vy=0}
+    for(var i=0;i<_rmRings.length;i++){
+      if(i<=_rmBall.ring)continue;
+      var ring=_rmRings[i];
+      var dist=Math.abs(_rmBall.r-ring.r);
+      if(dist<6){
+        var gapStart=((ring.gap+ring.t)%360+360)%360;
+        var gapEnd=(gapStart+ring.gapSize)%360;
+        var ballAngleDeg=(((_rmBall.angle*180/Math.PI)%360)+360)%360;
+        var inGap=false;
+        if(gapEnd>gapStart){inGap=ballAngleDeg>=gapStart&&ballAngleDeg<=gapEnd}
+        else{inGap=ballAngleDeg>=gapStart||ballAngleDeg<=gapEnd}
+        if(inGap){
+          _rmBall.ring=i;_rmScore+=10;
+          if(_rmScore>_rmBest){_rmBest=_rmScore;try{localStorage.setItem('rm_best',_rmBest)}catch(e){}}
+        }else{
+          _rmDead=true;_rmBall.jumping=false;_rmRunning=false;_rmUpdateUI();
+        }
+        break;
+      }
+    }
+    if(_rmBall.r>_rmRings[_rmRings.length-1].r+15&&!_rmDead){
+      _rmWon=true;_rmScore+=50;
+      if(_rmScore>_rmBest){_rmBest=_rmScore;try{localStorage.setItem('rm_best',_rmBest)}catch(e){}}
+      _rmRunning=false;_rmUpdateUI();
+    }
+  }
+  _rmBall.angle+=0.02;
+  var bx=_rmCx+_rmBall.r*Math.cos(_rmBall.angle);
+  var by=_rmCy+_rmBall.r*Math.sin(_rmBall.angle);
+  ctx.beginPath();
+  var grad=ctx.createRadialGradient(bx-2,by-2,1,bx,by,8);
+  grad.addColorStop(0,'#FFB088');grad.addColorStop(1,'#E27D60');
+  ctx.fillStyle=grad;ctx.arc(bx,by,8,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(bx,by,8,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=1.5;ctx.stroke();
+  if(_rmPressed&&!_rmBall.jumping){
+    ctx.beginPath();ctx.arc(bx,by,8+_rmBall.vy,0,Math.PI*2);
+    ctx.strokeStyle='rgba(226,125,96,.3)';ctx.lineWidth=2;ctx.stroke();
+  }
+  _rmRaf=requestAnimationFrame(_rmLoop);
+}
+function rmDown(e){
+  e.preventDefault();
+  if(_rmDead||_rmWon){_rmStart();return}
+  if(_rmBall.jumping)return;
+  _rmPressed=true;_rmBall.vy=0;
+}
+function rmUp(e){
+  e.preventDefault();
+  if(!_rmPressed)return;
+  _rmPressed=false;
+  if(_rmBall.vy>0){_rmBall.jumping=true}
+  var pw=document.getElementById('rmPower');if(pw)pw.style.width='0%';
+}
 var _mvCat='all';var _mvPlaying=null;
 var _mvVideos=[
   {id:'mv1',src:'/api/mv-video/clip_01',t:'Be Yourself Strong',q:'Strength comes from being who you truly are',c:'confidence',voice:true},
@@ -12521,6 +12640,14 @@ if(isMain){
     hero+='<div id="spinResult" style="font:500 12px var(--sans);color:var(--text-mute);margin-top:6px;min-height:18px"></div>';
     hero+='</div>';
   }
+
+  // --- Ring Maze Game ---
+  hero+='<div class="rd-card ring-maze-card" style="margin-top:13px;padding:16px 17px;text-align:center">';
+  hero+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span style="font:600 14px var(--sans);color:var(--ink)">Ring Escape</span><span id="rmScore" style="font:500 12px var(--sans);color:var(--text-mute);margin-left:auto">Score: 0</span><span id="rmBest" style="font:500 12px var(--sans);color:var(--accent);margin-left:6px">Best: 0</span></div>';
+  hero+='<canvas id="ringMazeCanvas" width="300" height="300" style="width:100%;max-width:300px;height:auto;aspect-ratio:1;border-radius:16px;background:color-mix(in srgb,var(--surface) 60%,transparent);touch-action:none;cursor:pointer" ontouchstart="rmDown(event)" ontouchend="rmUp(event)" onmousedown="rmDown(event)" onmouseup="rmUp(event)"></canvas>';
+  hero+='<div style="margin-top:8px;height:6px;border-radius:3px;background:var(--line);overflow:hidden;max-width:200px;margin-left:auto;margin-right:auto"><div id="rmPower" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#22C55E);border-radius:3px;transition:width .05s"></div></div>';
+  hero+='<div id="rmMsg" style="font:500 12px var(--sans);color:var(--text-mute);margin-top:6px;min-height:18px">Hold to charge, release to jump</div>';
+  hero+='</div>';
 
   var _wqDoy=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
   var _wq=window._DQ&&window._DQ[(_wqDoy-1)%window._DQ.length]||{q:'The secret of getting ahead is getting started.',a:'Mark Twain'};
@@ -14715,6 +14842,7 @@ try{document.body.classList.toggle('bro-tab',S.tab==='bro')}catch(e){}
 // Force textarea width to parent's pixel width — WebView ignores CSS width on textareas
 try{var _ta=document.querySelectorAll('textarea.bro-input,textarea.qc-input');for(var _i=0;_i<_ta.length;_i++){var _p=_ta[_i].parentNode;if(_p&&_p.clientWidth>0)_ta[_i].style.width=_p.clientWidth+'px'}}catch(e){}
 if(document.getElementById('spinGameArea')&&!_spinRunning){_spinRunning=true;_spinLoop()}else if(document.getElementById('spinGameArea')&&!_spinRaf){_spinLoop()}
+if(document.getElementById('ringMazeCanvas')&&!_rmRunning&&!_rmDead&&!_rmWon){_rmStart()}
 }
 applyTheme();
 window.S=S;window._render=_render;window.render=render;window.switchTab=switchTab;
@@ -14775,7 +14903,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=86').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=88').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15042,7 +15170,7 @@ app.get('/privacy',(_,res)=>{
 app.get('/terms',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v87";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v88";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
