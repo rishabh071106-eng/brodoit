@@ -1,95 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1A1614"/>
-      <stop offset="100%" style="stop-color:#2D2520"/>
-    </linearGradient>
-    <linearGradient id="fistL" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#E8A86D"/>
-      <stop offset="100%" style="stop-color:#C47A3A"/>
-    </linearGradient>
-    <linearGradient id="fistR" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#E8A86D"/>
-      <stop offset="100%" style="stop-color:#C47A3A"/>
-    </linearGradient>
-    <radialGradient id="impact" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#FFD27A;stop-opacity:0.9"/>
-      <stop offset="60%" style="stop-color:#FFD27A;stop-opacity:0.3"/>
-      <stop offset="100%" style="stop-color:#FFD27A;stop-opacity:0"/>
-    </radialGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-
-  <!-- Background -->
-  <rect width="512" height="512" rx="108" ry="108" fill="url(#bg)"/>
-
-  <!-- Subtle ring -->
-  <circle cx="256" cy="220" r="120" fill="none" stroke="rgba(255,210,122,0.08)" stroke-width="2"/>
-
-  <!-- Impact burst -->
-  <circle cx="256" cy="210" r="45" fill="url(#impact)"/>
-
-  <!-- Impact lines -->
-  <g stroke="#FFD27A" stroke-width="3" stroke-linecap="round" opacity="0.8">
-    <line x1="256" y1="165" x2="256" y2="148"/>
-    <line x1="286" y1="175" x2="298" y2="162"/>
-    <line x1="226" y1="175" x2="214" y2="162"/>
-    <line x1="295" y1="200" x2="310" y2="195"/>
-    <line x1="217" y1="200" x2="202" y2="195"/>
-    <line x1="280" y1="235" x2="292" y2="245"/>
-    <line x1="232" y1="235" x2="220" y2="245"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#149084"/><stop offset="1" stop-color="#0B4F48"/>
+</linearGradient>
+<radialGradient id="glow" cx="0.5" cy="0.28" r="0.7">
+<stop offset="0" stop-color="#7FD9CD" stop-opacity="0.35"/><stop offset="1" stop-color="#7FD9CD" stop-opacity="0"/>
+</radialGradient>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/>
+<rect width="512" height="512" fill="url(#glow)"/>
+<g transform="translate(256 256) scale(1.0) translate(-256 -256)">
+  <!-- task card -->
+  <g transform="rotate(-6 210 260)">
+    <rect x="90" y="120" width="240" height="290" rx="28" fill="#FDFBF7"/>
+    <rect x="90" y="120" width="240" height="290" rx="28" fill="none" stroke="#0B4F48" stroke-opacity="0.12" stroke-width="4"/>
+    <!-- done row 1 -->
+    <rect x="122" y="162" width="34" height="34" rx="9" fill="#14B8A6"/>
+    <path d="M130 179 l9 9 l16 -17" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="172" y="172" width="130" height="14" rx="7" fill="#D8D2C7"/>
+    <!-- done row 2 -->
+    <rect x="122" y="222" width="34" height="34" rx="9" fill="#14B8A6"/>
+    <path d="M130 239 l9 9 l16 -17" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="172" y="232" width="110" height="14" rx="7" fill="#D8D2C7"/>
+    <!-- last big row -->
+    <rect x="122" y="284" width="52" height="52" rx="12" fill="none" stroke="#0F766E" stroke-width="8"/>
+    <rect x="188" y="300" width="112" height="16" rx="8" fill="#C9C2B4"/>
   </g>
-
-  <!-- Left fist (coming from left) -->
-  <g transform="translate(120, 180)">
-    <!-- Wrist/arm -->
-    <rect x="-10" y="18" width="50" height="32" rx="14" fill="url(#fistL)"/>
-    <!-- Main fist body -->
-    <rect x="25" y="5" width="55" height="58" rx="16" fill="url(#fistL)"/>
-    <!-- Thumb -->
-    <rect x="20" y="40" width="28" height="18" rx="9" fill="#D4956A"/>
-    <!-- Finger lines -->
-    <line x1="35" y1="18" x2="70" y2="18" stroke="#B5723A" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-    <line x1="35" y1="28" x2="72" y2="28" stroke="#B5723A" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-    <line x1="35" y1="38" x2="70" y2="38" stroke="#B5723A" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-    <!-- Knuckle highlights -->
-    <circle cx="72" cy="14" r="5" fill="#F0C28B" opacity="0.5"/>
-    <circle cx="72" cy="24" r="5" fill="#F0C28B" opacity="0.5"/>
-    <circle cx="72" cy="34" r="5" fill="#F0C28B" opacity="0.5"/>
-    <circle cx="70" cy="44" r="4" fill="#F0C28B" opacity="0.5"/>
+  <!-- giant golden check being completed -->
+  <path d="M118 312 L172 372 L318 196" stroke="#F5B324" stroke-width="46" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M118 312 L172 372 L318 196" stroke="#FFD466" stroke-width="26" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- person celebrating on the check -->
+  <g transform="translate(330 210)">
+    <circle cx="30" cy="-6" r="34" fill="#F0C39A"/>
+    <path d="M-4 -14 a34 34 0 0 1 68 0 l-8 -5 -11 7 -12 -9 -12 9 -11 -7z" fill="#2B2320"/>
+    <circle cx="18" cy="-4" r="4.6" fill="#2B2320"/><circle cx="42" cy="-4" r="4.6" fill="#2B2320"/>
+    <path d="M16 10 q14 12 28 0" stroke="#2B2320" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <rect x="0" y="28" width="60" height="74" rx="20" fill="#0E6157"/>
+    <!-- raised fist arm -->
+    <path d="M56 44 Q92 22 96 -18" stroke="#0E6157" stroke-width="24" fill="none" stroke-linecap="round"/>
+    <circle cx="98" cy="-26" r="17" fill="#F0C39A"/>
+    <!-- other arm on check -->
+    <path d="M6 48 Q-22 62 -34 84" stroke="#0E6157" stroke-width="22" fill="none" stroke-linecap="round"/>
   </g>
-
-  <!-- Right fist (coming from right, mirrored) -->
-  <g transform="translate(392, 180) scale(-1,1)">
-    <!-- Wrist/arm -->
-    <rect x="-10" y="18" width="50" height="32" rx="14" fill="url(#fistR)"/>
-    <!-- Main fist body -->
-    <rect x="25" y="5" width="55" height="58" rx="16" fill="url(#fistR)"/>
-    <!-- Thumb -->
-    <rect x="20" y="40" width="28" height="18" rx="9" fill="#D4956A"/>
-    <!-- Finger lines -->
-    <line x1="35" y1="18" x2="70" y2="18" stroke="#B5723A" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-    <line x1="35" y1="28" x2="72" y2="28" stroke="#B5723A" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-    <line x1="35" y1="38" x2="70" y2="38" stroke="#B5723A" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-    <!-- Knuckle highlights -->
-    <circle cx="72" cy="14" r="5" fill="#F0C28B" opacity="0.5"/>
-    <circle cx="72" cy="24" r="5" fill="#F0C28B" opacity="0.5"/>
-    <circle cx="72" cy="34" r="5" fill="#F0C28B" opacity="0.5"/>
-    <circle cx="70" cy="44" r="4" fill="#F0C28B" opacity="0.5"/>
+  <!-- sparkles -->
+  <g fill="#FFD466">
+    <path d="M404 120 l7 18 18 7 -18 7 -7 18 -7 -18 -18 -7 18 -7z"/>
+    <path d="M112 96 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5z"/>
+    <path d="M420 330 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5z" opacity="0.9"/>
   </g>
-
-  <!-- "BRO" text -->
-  <text x="256" y="340" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="62" font-weight="800" fill="#FFFFFF" letter-spacing="8">BRO</text>
-
-  <!-- "DO IT" text with accent -->
-  <text x="256" y="395" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="48" font-weight="700" fill="#FFD27A" letter-spacing="4" filter="url(#glow)">DO IT</text>
-
-  <!-- Small tagline dot -->
-  <circle cx="256" cy="420" r="4" fill="#3DAE5C"/>
+</g>
 </svg>
