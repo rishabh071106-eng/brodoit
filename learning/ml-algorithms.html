@@ -149,7 +149,15 @@ body.world .sr-none{color:#9c8b77}
 .cinema .panel{flex:1;display:flex;flex-direction:column;min-height:calc(100vh - 210px)}
 .cinema .panel .art{flex:1;min-height:250px}
 .cinema .panel .art svg{height:100%;width:100%;object-fit:cover}
-.panel{background:var(--card);border-radius:18px;border:3px solid #241d1a;box-shadow:7px 7px 0 rgba(36,29,26,.85);overflow:hidden;transform:rotate(-.4deg)}
+.panel{background:var(--card);border-radius:18px;border:3px solid #241d1a;box-shadow:7px 7px 0 rgba(36,29,26,.85);overflow:hidden;transform:rotate(-.4deg);animation:slamIn .5s cubic-bezier(.2,1.1,.3,1.1) both}
+@keyframes slamIn{0%{transform:scale(1.18) rotate(2.5deg);opacity:0;filter:blur(3px)}60%{opacity:1;filter:blur(0)}100%{transform:scale(1) rotate(-.4deg)}}
+.burst-fly{position:fixed;font-weight:900;font-size:22px;transform:translate(-50%,0);animation:flyUp .95s ease-out forwards;z-index:999;pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+@keyframes flyUp{20%{transform:translate(-50%,-14px) scale(1.35)}100%{transform:translate(-50%,-72px) scale(1);opacity:0}}
+body.shake-sm{animation:shakeBody .35s}
+@keyframes shakeBody{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+.cbtn.ready{animation:readyPop .45s cubic-bezier(.3,1.5,.5,1)}
+@keyframes readyPop{0%{transform:scale(.94)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+.streak-chip{position:fixed;top:64px;right:14px;z-index:120;background:linear-gradient(135deg,#ff9d2e,#f25c26);color:#fff;border-radius:99px;padding:7px 14px;font-weight:900;font-size:14px;box-shadow:0 6px 16px rgba(242,92,38,.4);animation:readyPop .4s;pointer-events:none}
 .panel .art{min-height:210px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-bottom:3px solid #241d1a;background-image:radial-gradient(rgba(36,29,26,.07) 1.2px,transparent 1.2px);background-size:12px 12px}
 .panel .art svg{width:100%;height:auto;display:block}
 .speech{margin:14px 16px 0;background:#fff;border:2.5px solid #241d1a;border-radius:16px;padding:13px 16px;position:relative;font-size:15.5px;font-weight:700;line-height:1.45;box-shadow:3px 3px 0 rgba(36,29,26,.2)}
@@ -1164,19 +1172,39 @@ function nextStep(){
 function prevStep(){if(curStep>0){curStep--;renderStep()}}
 
 function flipCard(el){
-  if(!el.classList.contains('on')){el.classList.add('on');snd('pop')}
+  if(!el.classList.contains('on')){el.classList.add('on');snd('pop');burstAt(el,'✨')}
   var all=document.querySelectorAll('.flip'),flipped=document.querySelectorAll('.flip.on');
-  if(all.length===flipped.length){$('nextBtn').disabled=false;stepLocked=false}
+  if(all.length===flipped.length){var nb=$('nextBtn');nb.disabled=false;nb.classList.add('ready');setTimeout(function(){nb.classList.remove('ready')},500);stepLocked=false;confetti(16)}
+}
+var qStreak=0;
+function burstAt(el,txt){
+  try{var r=el.getBoundingClientRect();var b=document.createElement('div');b.className='burst-fly';b.textContent=txt;
+  b.style.left=(r.left+r.width/2)+'px';b.style.top=(r.top-6)+'px';document.body.appendChild(b);
+  setTimeout(function(){b.remove()},1000)}catch(e){}
+}
+function showStreak(){
+  var old=document.getElementById('streakChip');if(old)old.remove();
+  if(qStreak<2)return;
+  var c=document.createElement('div');c.id='streakChip';c.className='streak-chip';c.textContent='🔥 '+qStreak+' streak!';
+  document.body.appendChild(c);
+  setTimeout(function(){c.remove()},1800);
 }
 function answer(btn,i){
   var st=cur.steps[curStep],o=st.opts[i],why=$('qwhy');
   if(o.ok){
     btn.classList.add('right');snd('pop');
+    qStreak++;
     document.querySelectorAll('.qopt').forEach(function(b){b.disabled=true});
     why.className='qwhy show';why.innerHTML='🎉 <b>Correct!</b> '+o.why;
-    $('nextBtn').disabled=false;stepLocked=false;
+    burstAt(btn,['✨','🎯','💪','🌟','🚀'][Math.floor(Math.random()*5)]+' +1');
+    confetti(Math.min(34,10+qStreak*6));
+    showStreak();
+    var nb=$('nextBtn');nb.disabled=false;nb.classList.add('ready');setTimeout(function(){nb.classList.remove('ready')},500);
+    stepLocked=false;
   }else{
     btn.classList.add('wrong');btn.disabled=true;snd('nope');
+    qStreak=0;
+    document.body.classList.add('shake-sm');setTimeout(function(){document.body.classList.remove('shake-sm')},400);
     why.className='qwhy oops show';why.innerHTML='🤔 '+o.why;
     setTimeout(function(){btn.classList.remove('wrong')},500);
   }

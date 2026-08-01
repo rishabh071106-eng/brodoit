@@ -8364,6 +8364,15 @@ select,option{color:var(--ink);font-weight:600}
 .tabs.page-t .tab .ti{display:block}
 .tabs.page-t .tab .tl{white-space:nowrap}
 .tabs.page-t .tab.on{background:var(--accent-soft)}
+
+/* ── book page-turn between tabs ── */
+#app{transform-origin:left center;backface-visibility:hidden}
+.app-flip-out{animation:pgOut .17s ease-in forwards}
+.app-flip-in{animation:pgIn .38s cubic-bezier(.2,.75,.3,1) both}
+@keyframes pgOut{from{transform:perspective(1300px) rotateY(0);opacity:1;filter:brightness(1)}to{transform:perspective(1300px) rotateY(-56deg) translateX(-4%);opacity:.25;filter:brightness(.8)}}
+@keyframes pgIn{from{transform:perspective(1300px) rotateY(48deg) translateX(5%);opacity:.2;filter:brightness(.85)}55%{opacity:1}to{transform:none;opacity:1;filter:brightness(1)}}
+/* ── card depth (paper feel) ── */
+.tc,.book-card,.dash-card,.kc,.insight{background:linear-gradient(180deg,#FFFFFF 0%,#FBF8F4 100%)}
 </style></head><body data-theme="classic">
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
@@ -8889,7 +8898,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='books'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='books'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;var _ap=document.getElementById('app');if(_ap&&!S._noFlip){_ap.classList.remove('app-flip-in');_ap.classList.add('app-flip-out');setTimeout(function(){_ap.classList.remove('app-flip-out');render();_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},380);S._suppressScrollRestore=false;try{window.scrollTo(0,0)}catch(e){}},170)}else{render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -13280,15 +13289,14 @@ else if(S.tab==='courses'){
   h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst" onclick="switchTab(\\'books\\')">Listen</button><button class="lst" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
   var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
   var _atlasDone=_aDone.length;
-  h+='<div style="padding:6px 0 14px"><div style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);font-weight:800">Brodoit Learning</div>'
-    +'<div style="font-family:var(--serif);font-size:28px;font-weight:600;line-height:1.15;margin-top:6px">Come to learn.<br>Stay to grow.</div>'
-    +'<div style="font-size:13.5px;color:var(--ink-2);margin-top:8px;max-width:520px">Story-driven interactive courses. Walk through a door, play with the machinery, walk out understanding it.</div></div>';
-  h+='<a class="book-card" href="/learning/ml-algorithms" style="text-decoration:none;color:inherit;margin-bottom:16px">'
-    +'<div class="book-cover" style="background:linear-gradient(135deg,#611f1c,#a53c36)">\\u{1F9ED}</div>'
-    +'<div style="flex:1;min-width:0"><div style="font-size:10.5px;letter-spacing:.14em;font-weight:800;color:var(--accent)">AI \\u00B7 SERIES 01</div>'
-    +'<div style="font-weight:800;font-size:16.5px;margin:2px 0 3px">The Algorithm Atlas</div>'
-    +'<div style="font-size:12.5px;color:var(--text-mute);line-height:1.45">Comics, quizzes, mini-games &amp; 40+ algorithms \\u2014 from \\u201Cwhat is ML?\\u201D to choosing like a pro.</div>'
-    +'<div style="margin-top:8px;font-size:11.5px;font-weight:800;color:var(--accent)">'+(_atlasDone>0?_atlasDone+'/13 chapters \\u00B7 CONTINUE \\u2192':'START THE JOURNEY \\u2192')+'</div></div></a>';
+  h+='<div style="padding:6px 0 12px;text-align:center"><div style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);font-weight:800">Learning</div>'
+    +'<div style="font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.15;margin-top:4px">Pick a door. \\u{1F6AA}</div></div>';
+  h+='<a class="book-card" href="/learning/ml-algorithms" style="text-decoration:none;color:inherit;margin-bottom:14px;align-items:center">'
+    +'<div class="book-cover" style="background:linear-gradient(135deg,#611f1c,#a53c36);font-size:26px">\\u{1F9ED}</div>'
+    +'<div style="flex:1;min-width:0"><div style="font-size:10px;letter-spacing:.14em;font-weight:800;color:var(--accent)">AI</div>'
+    +'<div style="font-weight:800;font-size:17px;margin:1px 0 2px">The Algorithm Atlas</div>'
+    +'<div style="font-size:12px;color:var(--text-mute)">Comics \\u00B7 games \\u00B7 quizzes</div></div>'
+    +'<div style="font-size:13px;font-weight:900;color:var(--accent);white-space:nowrap">'+(_atlasDone>0?_atlasDone+'/13 \\u25B6':'GO \\u2192')+'</div></a>';
   var _ch=[
     {id:'foundations',e:'\\u{1F331}',n:'Foundations',g:'linear-gradient(150deg,#2286a8,#175e77)'},
     {id:'story',e:'\\u{1F39E}\\uFE0F',n:'The Story of AI',g:'linear-gradient(150deg,#b3701a,#8a4d0f)'},
@@ -13303,21 +13311,18 @@ else if(S.tab==='courses'){
     {id:'vault_deep',e:'\\u26A1',n:'Deep Vault',g:'linear-gradient(150deg,#c77a12,#7e4a05)'},
     {id:'vault_rl',e:'\\u{1F3AE}',n:'RL Vault',g:'linear-gradient(150deg,#6a41ab,#3c2071)'}
   ];
-  h+='<div style="font-size:12px;letter-spacing:.16em;font-weight:800;color:var(--ink-3);margin:4px 2px 10px">CHAPTERS \\u00B7 SWIPE \\u2192</div>';
+  h+='<div style="font-size:11px;letter-spacing:.16em;font-weight:800;color:var(--ink-3);margin:2px 2px 8px;text-align:center">SWIPE \\u2192</div>';
   h+='<div class="shelf">'+_ch.map(function(c){
     var done=_aDone.indexOf(c.id)>-1;
     return '<a class="shelf-card'+(done?' done':'')+'" href="/learning/ml-algorithms#'+(c.hash?c.hash:'c='+c.id)+'">'
       +'<div class="shelf-cover" style="background:'+c.g+'"><span class="se">'+c.e+'</span>'+(done?'<span class="sd">\\u2713</span>':'')+'</div>'
       +'<div class="sn">'+c.n+'</div></a>';
   }).join('')+'</div>';
-  h+='<div class="book-card" style="margin-top:18px;opacity:.85"><div class="book-cover" style="background:linear-gradient(135deg,#0e5f76,#083a49)">\\u{1F4E6}</div>'
-    +'<div style="flex:1"><div style="font-size:10.5px;letter-spacing:.14em;font-weight:800;color:var(--text-mute)">PRODUCT MANAGEMENT \\u00B7 SOON</div>'
-    +'<div style="font-weight:800;font-size:15.5px;margin:2px 0 3px">Ship Things People Want</div>'
-    +'<div style="font-size:12.5px;color:var(--text-mute)">Roadmaps, discovery &amp; metrics \\u2014 the same story-driven way.</div></div></div>';
-  h+='<div class="book-card" style="margin-top:12px;opacity:.85"><div class="book-cover" style="background:linear-gradient(135deg,#059669,#03593e)">\\u{1F6E0}\\uFE0F</div>'
-    +'<div style="flex:1"><div style="font-size:10.5px;letter-spacing:.14em;font-weight:800;color:var(--text-mute)">DEVELOPMENT \\u00B7 SOON</div>'
-    +'<div style="font-weight:800;font-size:15.5px;margin:2px 0 3px">From HTTP to System Design</div>'
-    +'<div style="font-size:12.5px;color:var(--text-mute)">Doors opening shortly.</div></div></div>';
+  h+='<div style="display:flex;gap:12px;margin-top:14px">'
+    +'<div class="book-card" style="flex:1;opacity:.75;align-items:center;padding:10px 12px"><div class="book-cover" style="background:linear-gradient(135deg,#0e5f76,#083a49);width:40px;height:54px;font-size:18px">\\u{1F4E6}</div>'
+    +'<div><div style="font-weight:800;font-size:13px">Product</div><div style="font-size:11px;color:var(--text-mute)">Soon</div></div></div>'
+    +'<div class="book-card" style="flex:1;opacity:.75;align-items:center;padding:10px 12px"><div class="book-cover" style="background:linear-gradient(135deg,#4a6741,#2c4026);width:40px;height:54px;font-size:18px">\\u{1F6E0}\\uFE0F</div>'
+    +'<div><div style="font-weight:800;font-size:13px">Dev</div><div style="font-size:11px;color:var(--text-mute)">Soon</div></div></div></div>';
 }
 
 // MIND GAMES TAB — 3 sections: Maths, Memory, Puzzles
