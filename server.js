@@ -8356,6 +8356,14 @@ body[data-theme=aurora] .tg-game-fill{background:rgba(255,255,255,.4)}
 .learn-sub-tabs .lst{color:var(--ink-2);font-size:12.5px;font-weight:700}
 .learn-sub-tabs .lst:not(.on):hover{color:var(--ink)}
 select,option{color:var(--ink);font-weight:600}
+
+/* ── 3D dock tab bar ── */
+.tabs.page-t{gap:0;overflow-x:auto;overflow-y:visible;scroll-snap-type:x proximity;padding:12px calc(50% - 46px) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;align-items:flex-end;min-height:86px}
+.tabs.page-t::-webkit-scrollbar{display:none}
+.tabs.page-t .tab{flex:0 0 88px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;will-change:transform;transition:transform .12s linear,opacity .12s linear;border-radius:16px}
+.tabs.page-t .tab .ti{display:block}
+.tabs.page-t .tab .tl{white-space:nowrap}
+.tabs.page-t .tab.on{background:var(--accent-soft)}
 </style></head><body data-theme="classic">
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
@@ -15189,6 +15197,44 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=92')
       setTimeout(function(){var c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},400);
     }
   });
+})();
+/* ── 3D dock: bottom tab bar becomes a center-focus carousel ── */
+(function(){
+  var raf=null;
+  function styleTabs(nav){
+    var mid=nav.getBoundingClientRect().left+nav.clientWidth/2;
+    var tabs=nav.querySelectorAll('.tab');
+    for(var i=0;i<tabs.length;i++){
+      var r=tabs[i].getBoundingClientRect();
+      var d=(r.left+r.width/2)-mid;
+      var t=Math.min(1,Math.abs(d)/170);
+      var sc=1.16-t*.26, ty=-(1-t)*7, ry=Math.max(-16,Math.min(16,d/170*-14));
+      tabs[i].style.transform='perspective(650px) translateY('+ty+'px) rotateY('+ry+'deg) scale('+sc+')';
+      tabs[i].style.opacity=String(1-t*.35);
+    }
+  }
+  function onScroll(e){
+    var nav=e.target;
+    if(!nav.classList||!nav.classList.contains('tabs'))return;
+    if(raf)return;
+    raf=requestAnimationFrame(function(){raf=null;styleTabs(nav)});
+  }
+  function centerActive(nav,smooth){
+    var on=nav.querySelector('.tab.on');
+    if(on){try{on.scrollIntoView({inline:'center',block:'nearest',behavior:smooth?'smooth':'auto'})}catch(e){}}
+    styleTabs(nav);
+  }
+  document.addEventListener('scroll',onScroll,true);
+  document.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest?e.target.closest('.tab'):null;
+    if(b){setTimeout(function(){var nav=document.querySelector('.tabs.page-t');if(nav)centerActive(nav,true)},80)}
+  },true);
+  var mo=new MutationObserver(function(){
+    var nav=document.querySelector('.tabs.page-t');
+    if(nav&&!nav._dock){nav._dock=1;centerActive(nav,false)}
+  });
+  mo.observe(document.body,{childList:true,subtree:true});
+  window.addEventListener('resize',function(){var nav=document.querySelector('.tabs.page-t');if(nav)styleTabs(nav)});
 })();
 </script></body></html>`;
 
