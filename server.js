@@ -495,10 +495,11 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
         reply=g.reply;provider=g.provider;
       }catch(e){lastError='Gemini: '+e.message;console.log('[bro] Gemini failed:',e.message)}
     }
-    // Provider 2: Groq (fallback)
+    // Provider 2: Groq (fallback — aggressive truncation to stay under 10K TPM)
     if(!reply&&GROQ_KEY){
       try{
-        const g=await _callGroq(apiMsgs,{maxTokens:maxTok});
+        const groqMsgs=apiMsgs.slice(0,1).concat(apiMsgs.slice(-4).map(m=>({...m,content:String(m.content||'').slice(0,1500)})));
+        const g=await _callGroq(groqMsgs,{maxTokens:Math.min(maxTok,2048)});
         reply=g.reply;provider=g.provider;
       }catch(e){lastError='Groq: '+e.message;console.log('[bro] Groq failed:',e.message)}
     }
@@ -3881,7 +3882,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
    Fixed bottom bar like Instagram/Spotify/Headspace — but generously sized,
    horizontally scrollable so all 9 tabs are reachable without truncation,
    springy active state, smooth motion. Tab names always visible, never abbreviated. */
-@media (max-width:1023px){
+@media (max-width:767px){
   body{padding-left:0 !important;padding-bottom:100px !important}
   .app>.side-col>:not(.tabs.page-t){display:none !important}
   .app>.side-col{display:contents}
@@ -3939,7 +3940,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   }
   .tabs.page-t .tab .ti::after{display:none !important}
   .tabs.page-t .tab .ti::before{display:none !important}
-  .tabs.page-t .tab .ti svg{width:26px !important;height:26px !important;filter:none !important;stroke-width:1.8 !important;color:inherit !important}
+  .tabs.page-t .tab .ti svg{width:28px !important;height:28px !important;filter:none !important;stroke-width:2 !important;color:inherit !important}
   .tabs.page-t .tab .tl{
     font-family:var(--sans) !important;
     font-size:10px !important;
@@ -3952,20 +3953,24 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     overflow:hidden;text-overflow:ellipsis;max-width:100%;
     margin-top:0 !important;
   }
-  .tabs.page-t .tab:active{transform:scale(.95) !important}
+  .tabs.page-t .tab:active{animation:tabBounce .35s cubic-bezier(.34,1.56,.64,1) !important}
+  @keyframes tabBounce{0%{transform:scale(1)}30%{transform:scale(.88)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
   .tabs.page-t .tab.on{
     color:var(--accent) !important;
     transform:none !important;
     background:transparent !important;
   }
   .tabs.page-t .tab.on .ti{
-    background:none !important;
+    background:color-mix(in srgb,var(--accent) 12%,transparent) !important;
     color:var(--accent) !important;
     box-shadow:none !important;
     transform:none !important;
+    border-radius:12px !important;
+    padding:4px 14px !important;
+    width:auto !important;
   }
-  .tabs.page-t .tab.on .ti svg{color:var(--accent) !important;stroke:var(--accent) !important;stroke-width:1.9 !important}
-  .tabs.page-t .tab.on .tl{color:var(--accent) !important;font-weight:600 !important;opacity:1 !important;font-size:10px !important}
+  .tabs.page-t .tab.on .ti svg{color:var(--accent) !important;stroke:var(--accent) !important;stroke-width:2.2 !important;fill:color-mix(in srgb,var(--accent) 15%,transparent) !important}
+  .tabs.page-t .tab.on .tl{color:var(--accent) !important;font-weight:700 !important;opacity:1 !important;font-size:10px !important}
   .tabs.page-t .tab.on::after{display:none !important}
   .bk-mini{bottom:110px !important;right:14px !important}
   .player{bottom:110px !important;left:12px !important;right:96px !important}
@@ -4100,7 +4105,8 @@ body[data-theme=aurora] .tabs.page-t .tab.on .tl{color:#D9734A !important}
 @media (min-width:1400px){.app{max-width:1320px}}
 /* Tablet: iPad-optimized layout (768-1023px) — 2-column grid like desktop but narrower */
 @media (min-width:768px) and (max-width:1023px){
-  .app{max-width:960px;padding:12px 20px 40px;display:grid;grid-template-columns:180px 1fr;grid-template-areas:"hdr hdr" "side main";column-gap:16px;row-gap:6px;align-items:start}
+  .app:has(.side-col){max-width:960px;padding:12px 20px 40px;display:grid;grid-template-columns:180px 1fr;grid-template-areas:"hdr hdr" "side main";column-gap:16px;row-gap:6px;align-items:start}
+  .app:not(:has(.side-col)){max-width:600px;padding:24px 24px 40px}
   .app>.hdr{grid-area:hdr;margin-bottom:0}
   .app>.side-col{grid-area:side;display:flex;flex-direction:column;gap:12px;align-self:start}
   .app>.side-col>.tabs.page-t{margin:0;position:static}
@@ -8892,7 +8898,8 @@ function focusStart(){
 }
 function _focusComplete(){
   clearInterval(S.focus.intervalId);S.focus.intervalId=null;
-  S.focus.active=false;S.focus.sessions++;
+  S.focus.active=false;S.focus.paused=false;S.focus.sessions++;
+  S.focus.remaining=25*60;S.focus.total=25*60;
   localStorage.setItem('tf_focus_sessions',String(S.focus.sessions));
   _focusReleaseWakeLock();
   try{if(document.fullscreenElement)document.exitFullscreen().catch(function(){})}catch(e){}
@@ -8912,6 +8919,7 @@ function focusPause(){
 function focusGiveUp(){
   clearInterval(S.focus.intervalId);S.focus.intervalId=null;
   S.focus.active=false;S.focus.paused=false;
+  S.focus.remaining=25*60;S.focus.total=25*60;
   _focusReleaseWakeLock();
   try{if(document.fullscreenElement)document.exitFullscreen().catch(function(){})}catch(e){}
   var lock=document.getElementById('focusLockScreen');
@@ -11977,6 +11985,11 @@ function drinkWaterAnimated(){
   document.body.appendChild(ov);
   if(!_done)setTimeout(function(){var o=document.getElementById('waterPourOverlay');if(o)o.remove();render()},2500);
 }
+var _spinAngle=0;var _spinRaf=null;var _spinSpeed=3;var _spinRunning=true;
+function _spinLoop(){if(!_spinRunning)return;_spinAngle=(_spinAngle+_spinSpeed)%360;var dot=document.getElementById('spinDot');if(dot){var rad=_spinAngle*Math.PI/180;var x=80+65*Math.sin(rad);var y=80-65*Math.cos(rad);dot.setAttribute('cx',x);dot.setAttribute('cy',y)}_spinRaf=requestAnimationFrame(_spinLoop)}
+function _spinStart(){_spinRunning=true;_spinAngle=0;_spinRaf=requestAnimationFrame(_spinLoop)}
+function spinTap(){if(!_spinRunning)return;_spinRunning=false;if(_spinRaf)cancelAnimationFrame(_spinRaf);var pending=S.tasks?S.tasks.filter(function(t){return t.status==='pending'}):[];if(!pending.length){document.getElementById('spinResult').textContent='No pending tasks!';return}var idx=Math.floor((_spinAngle/360)*pending.length);var task=pending[idx%pending.length];var el=document.getElementById('spinTaskName');if(el)el.textContent=task.title||'Task';var res=document.getElementById('spinResult');if(res)res.innerHTML='<b style="color:var(--accent)">\\u2192</b> '+esc(task.title||'Task')+'<br><button onclick="spinMarkDone(\\''+task.id+'\\');event.stopPropagation()" style="margin-top:6px;padding:6px 16px;border-radius:10px;border:none;background:#22C55E;color:#fff;font:600 12px var(--sans);cursor:pointer">Mark Done</button> <button onclick="_spinRunning=true;_spinLoop();document.getElementById(\\'spinResult\\').textContent=\\'Spinning...\\'" style="margin-top:6px;padding:6px 16px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:600 12px var(--sans);cursor:pointer">Spin Again</button>'}
+async function spinMarkDone(id){var t=S.tasks.find(function(t){return t.id===id});if(t){t.status='done';t.updated_at=new Date().toISOString();await api('/tasks/'+id,{method:'PATCH',body:JSON.stringify({status:'done'})});toast('Task done!');render()}}
 var _mvCat='all';var _mvPlaying=null;
 var _mvVideos=[
   {id:'mv1',src:'/api/mv-video/clip_01',t:'Be Yourself Strong',q:'Strength comes from being who you truly are',c:'confidence',voice:true},
@@ -12490,6 +12503,24 @@ if(isMain){
   hero+='<button onclick="event.stopPropagation();drinkWaterAnimated()" style="padding:8px 16px;border-radius:12px;border:none;background:var(--accent);color:#fff;font:600 13px var(--sans);cursor:pointer">+ Drink</button>';
   hero+='<button class="is-hyd-toggle'+(_hyd.enabled?' on':'')+'" onclick="event.stopPropagation();toggleHydration()" title="'+(_hyd.enabled?'Reminders ON':'Turn on reminders')+'">\\u{1F514}</button>';
   hero+='</div></div></div>';
+
+  // --- Task Spinner Game ---
+  var _pendingTasks=ts.filter(function(t){return t.status==='pending'});
+  if(_pendingTasks.length>0){
+    hero+='<div class="rd-card spin-game" style="margin-top:13px;padding:16px 17px;text-align:center">';
+    hero+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span style="font:600 14px var(--sans);color:var(--ink)">Spin &amp; Do</span><span style="font:400 12px var(--sans);color:var(--text-mute);margin-left:4px">'+_pendingTasks.length+' tasks</span></div>';
+    hero+='<div id="spinGameArea" style="position:relative;width:160px;height:160px;margin:0 auto">';
+    hero+='<svg width="160" height="160" viewBox="0 0 160 160">';
+    hero+='<circle cx="80" cy="80" r="65" fill="none" stroke="var(--line)" stroke-width="3" opacity=".5"/>';
+    hero+='<circle cx="80" cy="80" r="65" fill="none" stroke="var(--accent)" stroke-width="4" stroke-dasharray="40 369" stroke-linecap="round" opacity=".3" transform="rotate(-20 80 80)"/>';
+    hero+='<circle id="spinDot" cx="80" cy="15" r="9" fill="var(--accent)" style="filter:drop-shadow(0 0 8px var(--accent))"/>';
+    hero+='</svg>';
+    hero+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;pointer-events:none"><div id="spinTaskName" style="font:600 13px var(--sans);color:var(--ink);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Spin!</div></div>';
+    hero+='</div>';
+    hero+='<button onclick="spinTap()" style="margin-top:10px;padding:10px 28px;border-radius:14px;border:none;background:var(--accent);color:#fff;font:700 14px var(--sans);cursor:pointer;box-shadow:0 4px 14px -3px rgba(226,125,96,.4);transition:transform .15s cubic-bezier(.34,1.56,.64,1)" onmousedown="this.style.transform=\\'scale(.93)\\'" onmouseup="this.style.transform=\\'scale(1)\\'" ontouchstart="this.style.transform=\\'scale(.93)\\'" ontouchend="this.style.transform=\\'scale(1)\\'">TAP!</button>';
+    hero+='<div id="spinResult" style="font:500 12px var(--sans);color:var(--text-mute);margin-top:6px;min-height:18px"></div>';
+    hero+='</div>';
+  }
 
   var _wqDoy=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
   var _wq=window._DQ&&window._DQ[(_wqDoy-1)%window._DQ.length]||{q:'The secret of getting ahead is getting started.',a:'Mark Twain'};
@@ -14683,6 +14714,7 @@ try{document.body.classList.toggle('modal-open',_isModalOpen())}catch(e){}
 try{document.body.classList.toggle('bro-tab',S.tab==='bro')}catch(e){}
 // Force textarea width to parent's pixel width — WebView ignores CSS width on textareas
 try{var _ta=document.querySelectorAll('textarea.bro-input,textarea.qc-input');for(var _i=0;_i<_ta.length;_i++){var _p=_ta[_i].parentNode;if(_p&&_p.clientWidth>0)_ta[_i].style.width=_p.clientWidth+'px'}}catch(e){}
+if(document.getElementById('spinGameArea')&&!_spinRunning){_spinRunning=true;_spinLoop()}else if(document.getElementById('spinGameArea')&&!_spinRaf){_spinLoop()}
 }
 applyTheme();
 window.S=S;window._render=_render;window.render=render;window.switchTab=switchTab;
@@ -15010,7 +15042,7 @@ app.get('/privacy',(_,res)=>{
 app.get('/terms',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v86";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v87";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
