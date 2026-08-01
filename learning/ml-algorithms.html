@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Algorithm Atlas — Choosing the Right ML Algorithm · Brodoit Learning</title>
+<meta name="description" content="An interactive, story-driven journey through choosing the right machine learning algorithm — Supervised, Unsupervised, Deep Learning and Reinforcement Learning.">
+<meta name="theme-color" content="#8a2e2a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ BRODOIT MODERNIST THEME ═══════════ */
+:root{
+  --bg:#f3f2f2;--bg-2:#eae9e9;--paper:#f6eeec;--sunken:#d7d3d3;
+  --ink:#201e1d;--ink-2:#444141;--mute:#7d7979;--dim:#9b9797;
+  --line:color-mix(in srgb,#201e1d 10%,transparent);
+  --line-2:color-mix(in srgb,#201e1d 18%,transparent);
+  --accent:#8a2e2a;--accent-soft:#f6eeec;--accent-strong:#611f1c;--accent-2:#a5564b;
+  --gold:#D97706;--sage:#059669;--plum:#5B21B6;--sky:#0e5f76;
+  --sans:'Archivo',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+button{font-family:var(--sans);cursor:pointer}
+::selection{background:var(--accent);color:#fff}
+
+/* ═══════════ THE DOORS ═══════════ */
+#doorway{position:fixed;inset:0;z-index:1000;perspective:1400px;background:#161413;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity 1s ease .9s}
+#doorway.gone{opacity:0;pointer-events:none}
+.door-light{position:absolute;inset:0;background:radial-gradient(ellipse at center,#f6eeec 0%,#e8c98f 30%,#8a2e2a 70%,#161413 100%);opacity:0;transition:opacity 1.8s ease}
+#doorway.open .door-light{opacity:1}
+.door-frame{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,560px);height:min(80vh,720px);border:14px solid #2b2523;border-bottom:none;box-shadow:0 0 0 4px #1c1917,0 40px 120px rgba(0,0,0,.8);background:linear-gradient(180deg,#fdf3e3,#e8c98f)}
+.door{position:absolute;top:0;bottom:0;width:50%;background:
+  linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0) 12%,rgba(255,255,255,.05) 50%,rgba(0,0,0,0) 88%,rgba(0,0,0,.35)),
+  repeating-linear-gradient(90deg,#5e211d 0 4px,#6d2823 4px 9px,#611f1c 9px 14px),
+  #611f1c;
+  transition:transform 2.2s cubic-bezier(.7,0,.25,1);box-shadow:inset 0 0 40px rgba(0,0,0,.45)}
+.door::before{content:'';position:absolute;inset:7% 12%;border:3px solid rgba(246,238,236,.22);box-shadow:inset 0 0 0 2px rgba(0,0,0,.3)}
+.door::after{content:'';position:absolute;inset:52% 12% 7%;border:3px solid rgba(246,238,236,.22);box-shadow:inset 0 0 0 2px rgba(0,0,0,.3)}
+.door.left{left:0;transform-origin:left center;border-right:2px solid #3a1512}
+.door.right{right:0;transform-origin:right center;border-left:2px solid #3a1512}
+.knob{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f7d98a,#b8860b 60%,#6b4a06);box-shadow:0 2px 6px rgba(0,0,0,.6);z-index:2}
+.door.left .knob{right:10px}
+.door.right .knob{left:10px}
+.door-plate{position:absolute;top:34%;left:50%;transform:translateX(-50%);width:70%;text-align:center;color:#e8c98f;letter-spacing:.35em;font-weight:800;font-size:11px;text-transform:uppercase;opacity:.9}
+#doorway.open .door.left{transform:rotateY(-112deg)}
+#doorway.open .door.right{transform:rotateY(112deg)}
+.door-hint{position:absolute;bottom:8vh;left:0;right:0;text-align:center;color:#e8c98f;font-size:12px;letter-spacing:.3em;text-transform:uppercase;animation:pulseHint 2s infinite;z-index:5}
+@keyframes pulseHint{0%,100%{opacity:.45}50%{opacity:1}}
+.door-title{position:absolute;top:9vh;left:0;right:0;text-align:center;z-index:5;color:#f6eeec}
+.door-title .kicker{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:#e8c98f}
+.door-title h1{font-size:clamp(26px,6vw,44px);font-weight:900;letter-spacing:.04em;margin-top:8px;text-transform:uppercase}
+#doorway.open .door-title,#doorway.open .door-hint{opacity:0;transition:opacity .6s}
+.behind-doors{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,560px);height:min(80vh,720px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#3a1512;text-align:center;padding:24px;z-index:0}
+.behind-doors .big{font-size:clamp(30px,7vw,52px);font-weight:900;line-height:1.1;text-transform:uppercase;letter-spacing:.02em}
+.behind-doors .sub{font-size:14px;color:#611f1c;max-width:380px;font-weight:600}
+
+/* ═══════════ SHELL ═══════════ */
+.topbar{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:12px;padding:12px 18px}
+.topbar a.back{color:var(--accent);text-decoration:none;font-weight:800;font-size:13px;letter-spacing:.06em;white-space:nowrap}
+.topbar .t{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog-pill{font-family:var(--mono);font-size:11px;font-weight:700;border:1.5px solid var(--ink);padding:4px 9px;white-space:nowrap}
+.wrap{max-width:1000px;margin:0 auto;padding:0 18px 90px}
+.page{display:none;animation:pageIn .55s cubic-bezier(.2,.8,.2,1)}
+.page.on{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* ═══════════ HUB ═══════════ */
+.hero{padding:46px 0 26px;border-bottom:2px solid var(--ink)}
+.kicker{font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);font-weight:800}
+.hero h1{font-size:clamp(30px,6vw,54px);font-weight:900;line-height:1.05;text-transform:uppercase;margin:10px 0 12px}
+.hero p{color:var(--ink-2);max-width:640px;font-size:16px}
+.hero .meta{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.hero .meta span{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--mute);border:1px solid var(--line-2);padding:4px 10px}
+.realms{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:26px}
+.realm{position:relative;border:2px solid var(--ink);background:var(--paper);padding:0;overflow:hidden;text-align:left;transition:transform .25s,box-shadow .25s;display:block;color:var(--ink);text-decoration:none}
+.realm:hover{transform:translateY(-4px);box-shadow:8px 8px 0 var(--rc,var(--accent))}
+.realm .band{height:8px;background:var(--rc,var(--accent))}
+.realm .inner{padding:20px 20px 18px}
+.realm .num{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--rc,var(--accent));letter-spacing:.2em}
+.realm h3{font-size:20px;font-weight:900;text-transform:uppercase;margin:6px 0 6px;line-height:1.15}
+.realm p{font-size:13.5px;color:var(--ink-2)}
+.realm .foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--mute)}
+.realm .done-tick{color:var(--sage);font-weight:900;letter-spacing:.05em}
+.minidoor{position:absolute;right:16px;top:22px;width:34px;height:52px;border:2.5px solid var(--ink);background:var(--rc,var(--accent));transform-origin:left center;transition:transform .45s cubic-bezier(.6,0,.3,1);z-index:2}
+.minidoor::after{content:'';position:absolute;right:5px;top:50%;width:4px;height:4px;border-radius:50%;background:#e8c98f}
+.minidoor-frame{position:absolute;right:16px;top:22px;width:34px;height:52px;border:2.5px solid var(--ink);background:repeating-linear-gradient(45deg,var(--bg-2) 0 4px,var(--paper) 4px 8px);display:flex;align-items:center;justify-content:center;font-size:15px}
+.realm:hover .minidoor{transform:perspective(300px) rotateY(-84deg)}
+
+/* ═══════════ CHAPTER LAYOUT ═══════════ */
+.ch-hero{padding:38px 0 22px;border-bottom:2px solid var(--ink)}
+.ch-hero .kicker{color:var(--cc,var(--accent))}
+.ch-hero h1{font-size:clamp(26px,5.5vw,44px);font-weight:900;text-transform:uppercase;line-height:1.08;margin:8px 0 10px}
+.ch-hero p{color:var(--ink-2);max-width:660px;font-size:15.5px}
+.sec{margin-top:38px}
+.sec-h{display:flex;align-items:baseline;gap:12px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:18px}
+.sec-h .n{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--cc,var(--accent))}
+.sec-h h2{font-size:19px;font-weight:900;text-transform:uppercase;letter-spacing:.03em}
+
+/* ═══════════ COMIC STRIP ═══════════ */
+.comic{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.panel{border:3px solid var(--ink);background:#fff;position:relative;opacity:0;transform:translateY(24px) rotate(-1deg);transition:opacity .5s,transform .5s cubic-bezier(.2,.9,.3,1.2);box-shadow:5px 5px 0 var(--ink)}
+.comic.play .panel{opacity:1;transform:none}
+.comic.play .panel:nth-child(2){transition-delay:.35s}
+.comic.play .panel:nth-child(3){transition-delay:.7s}
+.comic.play .panel:nth-child(4){transition-delay:1.05s}
+.panel .art{height:170px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:3px solid var(--ink)}
+.panel .art svg{width:100%;height:100%}
+.panel .cap{font-size:12.5px;padding:10px 12px;font-weight:600;color:var(--ink-2);background:var(--paper)}
+.panel .cap b{color:var(--ink)}
+.bubble{position:absolute;top:10px;left:10px;right:10px;background:#fff;border:2.5px solid var(--ink);padding:7px 10px;font-weight:800;font-size:12px;line-height:1.35;z-index:3;box-shadow:3px 3px 0 rgba(32,30,29,.25)}
+.bubble::after{content:'';position:absolute;bottom:-9px;left:26px;width:14px;height:14px;background:#fff;border-right:2.5px solid var(--ink);border-bottom:2.5px solid var(--ink);transform:rotate(45deg)}
+.bubble.right{left:auto}.bubble.right::after{left:auto;right:26px}
+.burst{position:absolute;z-index:4;font-weight:900;font-size:15px;color:#fff;background:var(--cc,var(--accent));padding:6px 12px;transform:rotate(-6deg);clip-path:polygon(2% 22%,14% 18%,10% 2%,26% 14%,38% 0,44% 16%,60% 4%,62% 20%,80% 10%,78% 28%,98% 26%,86% 44%,100% 56%,82% 60%,94% 80%,74% 74%,74% 96%,58% 80%,46% 100%,40% 80%,24% 94%,26% 74%,6% 82%,16% 62%,0 54%,14% 42%})}
+@keyframes popBurst{0%{transform:scale(0) rotate(-6deg)}70%{transform:scale(1.25) rotate(-6deg)}100%{transform:scale(1) rotate(-6deg)}}
+.comic.play .burst{animation:popBurst .5s cubic-bezier(.2,.9,.3,1.4) both}
+.comic.play .panel:nth-child(3) .burst{animation-delay:.9s}
+.comic.play .panel:nth-child(4) .burst{animation-delay:1.25s}
+
+/* ═══════════ DECISION TREE (in-chapter) ═══════════ */
+.qa-tree{display:flex;flex-direction:column;gap:0;align-items:stretch}
+.qnode{border:2px solid var(--ink);background:var(--paper);padding:14px 16px;font-weight:800;font-size:14px}
+.qnode .tag{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--cc,var(--accent));letter-spacing:.15em;display:block;margin-bottom:3px}
+.branches{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0}
+.branches.one{grid-template-columns:1fr}
+.branch{border:2px dashed var(--line-2);border-top:none;padding:14px;position:relative}
+.branch::before{content:'';position:absolute;top:-14px;left:50%;width:2px;height:14px;background:var(--ink)}
+.branch .blabel{display:inline-block;background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;margin-bottom:10px;letter-spacing:.1em}
+.tree-link{height:14px;width:2px;background:var(--ink);margin:0 auto}
+.algo-chips{display:flex;flex-wrap:wrap;gap:6px}
+.algo-chips .chip{font-family:var(--mono);font-size:11px;font-weight:700;border:1.5px solid var(--ink);background:#fff;padding:4px 9px}
+.algo-chips .chip.hot{background:var(--cc,var(--accent));border-color:var(--cc,var(--accent));color:#fff}
+
+/* ═══════════ ALGO CARDS ═══════════ */
+.algos{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.algo{border:2px solid var(--ink);background:#fff}
+.algo>button{width:100%;background:none;border:none;text-align:left;padding:16px 16px 14px;display:block}
+.algo .a-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.algo h4{font-size:16px;font-weight:900;text-transform:uppercase}
+.algo .a-kind{font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;background:var(--cc,var(--accent));padding:3px 8px;letter-spacing:.08em;white-space:nowrap}
+.algo .a-one{font-size:13px;color:var(--ink-2);margin-top:6px}
+.algo .a-open{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--cc,var(--accent));margin-top:10px;letter-spacing:.1em}
+.algo .inside{display:none;border-top:2px solid var(--ink);padding:16px;background:var(--paper)}
+.algo.open .inside{display:block;animation:pageIn .35s}
+.inside h5{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--cc,var(--accent));margin-bottom:8px}
+.inside p{font-size:13.5px;color:var(--ink-2);margin-bottom:10px}
+.inside .story{border-left:3px solid var(--cc,var(--accent));padding:8px 12px;background:#fff;font-size:13px;font-style:italic;color:var(--ink-2);margin-bottom:12px}
+.inside .diagram{background:#fff;border:1.5px solid var(--line-2);margin:8px 0 4px;padding:6px}
+.inside .diagram svg{width:100%;height:auto;display:block}
+
+/* ═══════════ WORKS-BEST / TAKEAWAY ═══════════ */
+.best{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.best .b-item{border:2px solid var(--ink);background:#fff;padding:14px;font-size:13.5px;font-weight:600}
+.best .b-item::before{content:'✓';display:inline-block;font-weight:900;color:var(--sage);margin-right:8px}
+.takeaway{border:2px solid var(--ink);background:var(--ink);color:var(--bg);padding:20px;margin-top:34px}
+.takeaway .kicker{color:var(--gold)}
+.takeaway p{font-size:15px;font-weight:600;margin-top:6px}
+.ch-nav{display:flex;justify-content:space-between;gap:12px;margin-top:30px;flex-wrap:wrap}
+.btn{display:inline-block;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;padding:13px 22px;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--cc,var(--accent))}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.done{background:var(--sage);border-color:var(--sage);color:#fff}
+
+/* ═══════════ DECISION ENGINE ═══════════ */
+.engine{border:3px solid var(--ink);background:var(--paper);box-shadow:8px 8px 0 var(--ink);padding:26px 22px;margin-top:26px}
+.engine .q{font-size:clamp(19px,3.5vw,26px);font-weight:900;line-height:1.25;margin:6px 0 18px}
+.engine .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.engine .opt{border:2px solid var(--ink);background:#fff;padding:16px;text-align:left;transition:transform .15s,box-shadow .15s}
+.engine .opt:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--accent)}
+.engine .opt b{display:block;font-size:15px;text-transform:uppercase}
+.engine .opt span{font-size:12.5px;color:var(--mute);font-weight:600}
+.crumbs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.crumbs .crumb{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--ink);color:var(--bg);padding:4px 10px}
+.verdict{border:3px solid var(--ink)}
+.verdict .v-band{padding:14px 18px;color:#fff;font-weight:900;text-transform:uppercase;font-size:15px;letter-spacing:.06em}
+.verdict .v-body{padding:18px;background:#fff}
+.verdict .v-body p{font-size:14px;color:var(--ink-2);margin-bottom:12px}
+.reset-row{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+
+/* ═══════════ CHEAT SHEET ═══════════ */
+.cheat{overflow-x:auto;border:2px solid var(--ink)}
+.cheat table{width:100%;border-collapse:collapse;min-width:680px;background:#fff}
+.cheat th{background:var(--ink);color:var(--bg);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:10px 12px;text-align:left}
+.cheat td{border-top:1.5px solid var(--line-2);padding:10px 12px;font-size:12.5px;vertical-align:top}
+.cheat td:first-child{font-weight:800;white-space:nowrap}
+.cheat .mono{font-family:var(--mono);font-size:11.5px}
+.dotk{display:inline-block;width:9px;height:9px;margin-right:6px}
+
+/* ═══════════ ANIM HELPERS ═══════════ */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@keyframes drawline{to{stroke-dashoffset:0}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes walkbob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(2deg)}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+@media (max-width:640px){.branches{grid-template-columns:1fr}.panel .art{height:150px}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ THE DOORS ═══════════════════ -->
+<div id="doorway" onclick="openDoors()">
+  <div class="door-light"></div>
+  <div class="behind-doors">
+    <div style="font-size:52px">🧭</div>
+    <div class="big">Every model<br>is a door.</div>
+    <div class="sub">Learn which one to open — and what's turning the gears behind it.</div>
+  </div>
+  <div class="door-title">
+    <div class="kicker">Brodoit Learning · AI Series 01</div>
+    <h1>The Algorithm Atlas</h1>
+  </div>
+  <div class="door-frame">
+    <div class="door left"><div class="door-plate">Machine</div><div class="knob"></div></div>
+    <div class="door right"><div class="door-plate">Learning</div><div class="knob"></div></div>
+  </div>
+  <div class="door-hint">Tap to open the doors</div>
+</div>
+
+<!-- ═══════════════════ SHELL ═══════════════════ -->
+<header class="topbar">
+  <a class="back" href="/">← Brodoit</a>
+  <div class="t">The Algorithm Atlas</div>
+  <div class="prog-pill" id="progPill">0/6</div>
+</header>
+
+<main class="wrap">
+
+<!-- ═══════════════════ HUB ═══════════════════ -->
+<section class="page" id="pg-hub">
+  <div class="hero">
+    <div class="kicker">AI Series · Course 01</div>
+    <h1>Choosing the right<br>ML algorithm</h1>
+    <p>You have data and a problem. Somewhere between Logistic Regression and PPO lives the right tool. This atlas walks you through the exact decision path practitioners use — with stories, animated internals, and a decision engine you can use on real projects forever.</p>
+    <div class="meta"><span>6 CHAPTERS</span><span>26 ALGORITHMS</span><span>4 COMIC STORIES</span><span>1 DECISION ENGINE</span></div>
+  </div>
+  <div class="realms">
+    <a class="realm" style="--rc:var(--ink)" href="#framework" onclick="return go('framework')">
+      <div class="band"></div><div class="minidoor-frame">🗺️</div><div class="minidoor"></div>
+      <div class="inner"><span class="num">CHAPTER 1</span><h3>The Map<br>of Machine Learning</h3>
+      <p>The four families of ML — and the three questions that instantly tell you which family your problem belongs to.</p>
+      <div class="foot"><span>~6 MIN</span><span class="tick" data-ch="framework"></span></div></div>
+    </a>
+    <a class="realm" style="--rc:var(--accent)" href="#supervised" onclick="return go('supervised')">
+      <div class="band"></div><div class="minidoor-frame">🎯</div><div class="minidoor"></div>
+      <div class="inner"><span class="num">CHAPTER 2</span><h3>Supervised<br>Learning</h3>
+      <p>Learning from labeled examples. Classification vs regression, and when Logistic Regression beats a Neural Net.</p>
+      <div class="foot"><span>~10 MIN</span><span class="tick" data-ch="supervised"></span></div></div>
+    </a>
+    <a class="realm" style="--rc:var(--sage)" href="#unsupervised" onclick="return go('unsupervised')">
+      <div class="band"></div><div class="minidoor-frame">🔍</div><div class="minidoor"></div>
+      <div class="inner"><span class="num">CHAPTER 3</span><h3>Unsupervised<br>Learning</h3>
+      <p>No labels, no answers — just structure hiding in the data. Clustering, dimensionality reduction, anomaly detection.</p>
+      <div class="foot"><span>~9 MIN</span><span class="tick" data-ch="unsupervised"></span></div></div>
+    </a>
+    <a class="realm" style="--rc:var(--gold)" href="#deep" onclick="return go('deep')">
+      <div class="band"></div><div class="minidoor-frame">🧠</div><div class="minidoor"></div>
+      <div class="inner"><span class="num">CHAPTER 4</span><h3>Deep<br>Learning</h3>
+      <p>When data is huge and unstructured — images, text, audio, video. CNNs, Transformers, and friends.</p>
+      <div class="foot"><span>~11 MIN</span><span class="tick" data-ch="deep"></span></div></div>
+    </a>
+    <a class="realm" style="--rc:var(--plum)" href="#rl" onclick="return go('rl')">
+      <div class="band"></div><div class="minidoor-frame">🤖</div><div class="minidoor"></div>
+      <div class="inner"><span class="num">CHAPTER 5</span><h3>Reinforcement<br>Learning</h3>
+      <p>An agent, an environment, and rewards. How machines learn to play, drive, and control by trial and error.</p>
+      <div class="foot"><span>~9 MIN</span><span class="tick" data-ch="rl"></span></div></div>
+    </a>
+    <a class="realm" style="--rc:var(--sky)" href="#engine" onclick="return go('engine')">
+      <div class="band"></div><div class="minidoor-frame">⚙️</div><div class="minidoor"></div>
+      <div class="inner"><span class="num">CHAPTER 6</span><h3>The Decision<br>Engine</h3>
+      <p>Answer a few questions about your problem and get the exact algorithms to try — plus the full cheat sheet.</p>
+      <div class="foot"><span>INTERACTIVE</span><span class="tick" data-ch="engine"></span></div></div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════════════ CH 1 · THE MAP ═══════════════════ -->
+<section class="page" id="pg-framework" style="--cc:var(--ink)">
+  <div class="ch-hero">
+    <div class="kicker">Chapter 1 · The Map</div>
+    <h1>Four families,<br>three questions</h1>
+    <p>Meet Rio — a builder learning AI (that's you) — and Byte, the guide who lives behind these doors. Their journey starts with the single most useful map in machine learning.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">STORY 00</span><h2>The Atlas Room</h2></div>
+    <div class="comic" data-comic>
+      <div class="panel">
+        <div class="bubble">So many algorithms… where do I even start?!</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g opacity=".85"><text x="18" y="40" font-size="11" font-family="monospace" fill="#8a2e2a" transform="rotate(-8 18 40)">XGBoost</text><text x="150" y="34" font-size="11" font-family="monospace" fill="#5B21B6" transform="rotate(6 150 34)">DBSCAN</text><text x="30" y="70" font-size="11" font-family="monospace" fill="#059669" transform="rotate(4 30 70)">t-SNE</text><text x="160" y="66" font-size="11" font-family="monospace" fill="#D97706" transform="rotate(-5 160 66)">BERT</text><text x="90" y="52" font-size="11" font-family="monospace" fill="#0e5f76" transform="rotate(-3 90 52)">PPO</text><text x="115" y="80" font-size="11" font-family="monospace" fill="#8a2e2a" transform="rotate(7 115 80)">SVM</text></g>
+          <g style="animation:walkbob 2.5s infinite ease-in-out">
+            <circle cx="120" cy="118" r="16" fill="#e8b88a"/><path d="M104 112 a16 16 0 0 1 32 0 l-4 -2 -6 3 -6 -4 -6 4 -6 -3z" fill="#201e1d"/>
+            <rect x="106" y="134" width="28" height="30" fill="#8a2e2a"/>
+            <g style="animation:blink 4s infinite;transform-origin:120px 118px"><circle cx="114" cy="118" r="2.4" fill="#201e1d"/><circle cx="126" cy="118" r="2.4" fill="#201e1d"/></g>
+            <path d="M113 127 q7 5 14 0" stroke="#201e1d" stroke-width="2" fill="none" transform="rotate(180 120 129)"/>
+          </g>
+        </svg></div>
+        <div class="cap"><b>Rio</b> stands in a room where algorithm names swirl like dust. Overwhelming? That's normal.</div>
+      </div>
+      <div class="panel">
+        <div class="bubble right">Relax. There are only <b>FOUR</b> families. Everything hangs on one of four hooks.</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#eae9e9"/>
+          <g style="animation:floaty 3s infinite ease-in-out">
+            <rect x="96" y="66" width="48" height="42" rx="8" fill="#201e1d"/>
+            <rect x="106" y="78" width="10" height="8" rx="2" fill="#e8c98f" style="animation:pulse 2s infinite"/>
+            <rect x="124" y="78" width="10" height="8" rx="2" fill="#e8c98f" style="animation:pulse 2s infinite .3s"/>
+            <rect x="108" y="94" width="24" height="4" rx="2" fill="#e8c98f"/>
+            <rect x="112" y="54" width="4" height="12" fill="#201e1d"/><circle cx="114" cy="52" r="4" fill="#8a2e2a"/>
+            <rect x="90" y="108" width="60" height="10" rx="4" fill="#444141"/>
+          </g>
+          <g font-size="10" font-weight="bold" font-family="sans-serif">
+            <rect x="14" y="22" width="86" height="18" fill="#8a2e2a"/><text x="20" y="35" fill="#fff">SUPERVISED</text>
+            <rect x="140" y="22" width="90" height="18" fill="#059669"/><text x="146" y="35" fill="#fff">UNSUPERVISED</text>
+            <rect x="14" y="132" width="60" height="18" fill="#D97706"/><text x="20" y="145" fill="#fff">DEEP</text>
+            <rect x="140" y="132" width="94" height="18" fill="#5B21B6"/><text x="146" y="145" fill="#fff">REINFORCEMENT</text>
+          </g>
+        </svg></div>
+        <div class="cap"><b>Byte</b>, a small robot with a lantern, snaps the chaos into four glowing signs.</div>
+      </div>
+      <div class="panel">
+        <div class="burst" style="top:12px;right:12px">3 QUESTIONS!</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g font-family="monospace" font-size="11" font-weight="bold" fill="#201e1d">
+            <rect x="22" y="30" width="196" height="26" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="32" y="47">1. Do I have LABELS?</text>
+            <rect x="22" y="66" width="196" height="26" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="32" y="83">2. Sequential + REWARD?</text>
+            <rect x="22" y="102" width="196" height="26" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="32" y="119">3. Huge + UNSTRUCTURED?</text>
+          </g>
+          <path d="M120 128 v18" stroke="#8a2e2a" stroke-width="3" stroke-dasharray="40" stroke-dashoffset="40" style="animation:drawline 1s 1.4s forwards"/>
+          <text x="120" y="160" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a2e2a" font-family="sans-serif">→ your family</text>
+        </svg></div>
+        <div class="cap">Three questions about your <b>data and goal</b> — not about the algorithms — pick the family for you.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">01</span><h2>The four families</h2></div>
+    <div class="qa-tree reveal">
+      <div class="qnode"><span class="tag">START HERE</span>What are you trying to do with your data?</div>
+      <div class="branches">
+        <div class="branch"><span class="blabel" style="background:var(--accent)">SUPERVISED</span>
+          <p style="font-size:13px"><b>Learn a mapping from input X to output Y</b> using examples where the answer is known. Tasks: classification, regression.</p>
+          <div class="algo-chips" style="margin-top:8px"><span class="chip">Spam or not?</span><span class="chip">House price?</span><span class="chip">Will they churn?</span></div>
+        </div>
+        <div class="branch"><span class="blabel" style="background:var(--sage)">UNSUPERVISED</span>
+          <p style="font-size:13px"><b>Discover hidden patterns, structure or relationships</b> with no answer key. Tasks: clustering, dimensionality reduction, association, anomaly detection.</p>
+          <div class="algo-chips" style="margin-top:8px"><span class="chip">Customer segments</span><span class="chip">Fraud outliers</span></div>
+        </div>
+        <div class="branch"><span class="blabel" style="background:var(--gold)">DEEP LEARNING</span>
+          <p style="font-size:13px"><b>Complex pattern learning on large-scale data</b> — images, text, audio, video — where you need state-of-the-art accuracy.</p>
+          <div class="algo-chips" style="margin-top:8px"><span class="chip">Read an X-ray</span><span class="chip">Chat with a bot</span></div>
+        </div>
+        <div class="branch"><span class="blabel" style="background:var(--plum)">REINFORCEMENT</span>
+          <p style="font-size:13px"><b>An agent acts in an environment to maximize cumulative reward.</b> Tasks: sequential decision making, control, robotics, games, optimization.</p>
+          <div class="algo-chips" style="margin-top:8px"><span class="chip">Game bot</span><span class="chip">Robot arm</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">02</span><h2>The three sorting questions</h2></div>
+    <div class="best">
+      <div class="b-item"><b>Do you have labeled data?</b><br><span style="color:var(--mute);font-weight:600">Known answers attached to examples → Supervised. No answers → Unsupervised.</span></div>
+      <div class="b-item"><b>Is it sequential with decisions & rewards?</b><br><span style="color:var(--mute);font-weight:600">Actions change the world and get scored over time → Reinforcement Learning.</span></div>
+      <div class="b-item"><b>Is the data huge and unstructured?</b><br><span style="color:var(--mute);font-weight:600">Images, free text, audio, video at scale → Deep Learning (often inside another family).</span></div>
+    </div>
+    <p style="margin-top:14px;font-size:13.5px;color:var(--ink-2)">A secret Byte shares early: <b>deep learning is not a rival family — it's heavy machinery</b>. A CNN classifying X-rays is still supervised learning; it just uses a neural network instead of a decision tree. The map tells you the <i>family</i>; scale and data type tell you whether the tool should be deep.</p>
+  </div>
+
+  <div class="takeaway"><div class="kicker">Chapter takeaway</div><p>Never start from the algorithm. Start from three facts about your problem — labels, rewards, and data shape — and the family picks itself.</p></div>
+  <div class="ch-nav">
+    <a class="btn ghost" href="#hub" onclick="return go('hub')">← Atlas</a>
+    <button class="btn" data-complete="framework" onclick="completeCh('framework','supervised')">Mark done · Next: Supervised →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════ CH 2 · SUPERVISED ═══════════════════ -->
+<section class="page" id="pg-supervised" style="--cc:var(--accent)">
+  <div class="ch-hero">
+    <div class="kicker">Chapter 2 · Supervised Learning</div>
+    <h1>Learning from<br>an answer key</h1>
+    <p>Supervised learning is school with a strict teacher: every practice question comes with the correct answer, and the model is graded until its guesses match.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">STORY 01</span><h2>The Loan Office</h2></div>
+    <div class="comic" data-comic>
+      <div class="panel">
+        <div class="bubble">10,000 old loan files… each stamped REPAID or DEFAULTED.</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g><rect x="30" y="60" width="52" height="66" fill="#fff" stroke="#201e1d" stroke-width="2"/><rect x="38" y="70" width="36" height="4" fill="#d7d3d3"/><rect x="38" y="80" width="36" height="4" fill="#d7d3d3"/><rect x="38" y="90" width="28" height="4" fill="#d7d3d3"/><text x="40" y="116" font-size="9" font-weight="bold" fill="#059669" transform="rotate(-12 40 116)">REPAID</text></g>
+          <g><rect x="95" y="55" width="52" height="66" fill="#fff" stroke="#201e1d" stroke-width="2"/><rect x="103" y="65" width="36" height="4" fill="#d7d3d3"/><rect x="103" y="75" width="36" height="4" fill="#d7d3d3"/><rect x="103" y="85" width="28" height="4" fill="#d7d3d3"/><text x="100" y="112" font-size="9" font-weight="bold" fill="#8a2e2a" transform="rotate(-12 100 112)">DEFAULT</text></g>
+          <g><rect x="160" y="62" width="52" height="66" fill="#fff" stroke="#201e1d" stroke-width="2"/><rect x="168" y="72" width="36" height="4" fill="#d7d3d3"/><rect x="168" y="82" width="36" height="4" fill="#d7d3d3"/><text x="170" y="118" font-size="9" font-weight="bold" fill="#059669" transform="rotate(-12 170 118)">REPAID</text></g>
+          <text x="120" y="152" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#7d7979">history = X, stamp = Y</text>
+        </svg></div>
+        <div class="cap">Rio's first job: predict which <b>new</b> applicants will repay. The past files are the answer key.</div>
+      </div>
+      <div class="panel">
+        <div class="bubble right">Train on the stamped files. The model learns which patterns lead to which stamp.</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#eae9e9"/>
+          <g font-family="monospace" font-size="10" font-weight="bold">
+            <rect x="16" y="40" width="58" height="20" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="22" y="54">X: files</text>
+            <rect x="16" y="106" width="58" height="20" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="22" y="120">Y: stamps</text>
+          </g>
+          <path d="M78 50 h34" stroke="#201e1d" stroke-width="2.5" stroke-dasharray="34" stroke-dashoffset="34" style="animation:drawline .8s .4s forwards"/>
+          <path d="M78 116 h34 v-46" stroke="#201e1d" stroke-width="2.5" stroke-dasharray="90" stroke-dashoffset="90" style="animation:drawline 1s .8s forwards"/>
+          <g style="animation:floaty 3s infinite"><rect x="116" y="36" width="66" height="52" fill="#8a2e2a"/><circle cx="136" cy="56" r="5" fill="#f6eeec" style="animation:pulse 1.6s infinite"/><circle cx="162" cy="56" r="5" fill="#f6eeec" style="animation:pulse 1.6s infinite .4s"/><rect x="132" y="70" width="34" height="4" fill="#f6eeec"/></g>
+          <path d="M186 62 h30" stroke="#201e1d" stroke-width="2.5" stroke-dasharray="30" stroke-dashoffset="30" style="animation:drawline .8s 1.5s forwards"/>
+          <text x="196" y="52" font-size="16">🔮</text>
+          <text x="120" y="156" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#7d7979">learn f(X) ≈ Y</text>
+        </svg></div>
+        <div class="cap">The machine chews inputs <b>and</b> answers together — adjusting itself whenever its guess is wrong.</div>
+      </div>
+      <div class="panel">
+        <div class="burst" style="top:10px;right:10px">92% RIGHT!</div>
+        <div class="bubble" style="top:auto;bottom:14px">New applicant → “low default risk, 0.08.”</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g style="animation:walkbob 2.5s infinite"><circle cx="60" cy="70" r="14" fill="#e8b88a"/><path d="M46 65 a14 14 0 0 1 28 0 l-4 -2 -5 3 -5 -4 -5 4 -5 -3z" fill="#201e1d"/><rect x="48" y="84" width="24" height="26" fill="#0e5f76"/><circle cx="55" cy="70" r="2" fill="#201e1d"/><circle cx="65" cy="70" r="2" fill="#201e1d"/><path d="M55 77 q5 4 10 0" stroke="#201e1d" stroke-width="2" fill="none"/></g>
+          <path d="M84 84 h36" stroke="#201e1d" stroke-width="2.5" stroke-dasharray="36" stroke-dashoffset="36" style="animation:drawline .7s .6s forwards"/>
+          <rect x="124" y="62" width="50" height="42" fill="#8a2e2a"/><circle cx="140" cy="78" r="4" fill="#f6eeec" style="animation:pulse 1.4s infinite"/><circle cx="158" cy="78" r="4" fill="#f6eeec" style="animation:pulse 1.4s infinite .3s"/><rect x="138" y="92" width="24" height="3.5" fill="#f6eeec"/>
+          <path d="M178 84 h30" stroke="#201e1d" stroke-width="2.5" stroke-dasharray="30" stroke-dashoffset="30" style="animation:drawline .7s 1.2s forwards"/>
+          <rect x="196" y="52" width="34" height="22" fill="#059669"/><text x="202" y="67" font-size="11" fill="#fff" font-weight="bold">LOW</text>
+        </svg></div>
+        <div class="cap">Deployed. Every new file gets a prediction <b>with a probability</b> — that's supervised learning at work.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">2A</span><h2>The decision path</h2></div>
+    <div class="qa-tree reveal">
+      <div class="qnode"><span class="tag">Q 2A</span>What type of prediction do you need?</div>
+      <div class="branches">
+        <div class="branch"><span class="blabel">CLASSIFICATION · categorical Y</span>
+          <p style="font-size:13px;margin-bottom:10px">Predicting a <b>category</b>: spam/ham, cat/dog, repay/default.</p>
+          <div class="qnode" style="font-size:12.5px;padding:10px 12px"><span class="tag">Q 2A.1 → 2A.2</span>Two classes or many? Need probabilities or just a boundary?</div>
+          <div class="tree-link"></div>
+          <div class="algo-chips"><span class="chip hot">Logistic Regression</span><span class="chip hot">SVM (SVC)</span><span class="chip">Random Forest</span><span class="chip">XGBoost</span></div>
+        </div>
+        <div class="branch"><span class="blabel">REGRESSION · continuous Y</span>
+          <p style="font-size:13px;margin-bottom:10px">Predicting a <b>number</b>: price, demand, temperature, salary.</p>
+          <div class="qnode" style="font-size:12.5px;padding:10px 12px"><span class="tag">Q 2A.3</span>Is the pattern linear — or non-linear / complex?</div>
+          <div class="tree-link"></div>
+          <div class="algo-chips"><span class="chip hot">Linear · Ridge · Lasso</span><span class="chip">Elastic Net</span><span class="chip hot">RF / XGBoost Regressor</span><span class="chip">SVR (RBF)</span><span class="chip">Neural Net (MLP)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">03</span><h2>Inside the machines</h2></div>
+    <div class="algos">
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>Logistic Regression</h4><span class="a-kind">CLASSIFY</span></div>
+        <div class="a-one">Weighs the evidence, then squashes it into a probability between 0 and 1.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I add up all the clues — income ×2, missed payments ×−5 — and pass the total through an S-shaped gate. Out comes: 0.83 chance of repaying.”</div>
+          <h5>How it works inside</h5>
+          <p>Each feature gets a learned <b>weight</b>. Multiply, sum, then apply the <b>sigmoid</b> function σ(z)=1/(1+e⁻ᶻ), which bends any number into (0,1). Training nudges weights to make predicted probabilities match the labels (maximizing likelihood via gradient descent).</p>
+          <div class="diagram"><svg viewBox="0 0 300 110">
+            <line x1="20" y1="90" x2="280" y2="90" stroke="#9b9797" stroke-width="1.5"/>
+            <line x1="150" y1="15" x2="150" y2="90" stroke="#9b9797" stroke-width="1" stroke-dasharray="3"/>
+            <path d="M25 88 C 100 88 120 20 275 18" fill="none" stroke="#8a2e2a" stroke-width="3" stroke-dasharray="320" stroke-dashoffset="320" style="animation:drawline 1.6s .3s forwards"/>
+            <text x="152" y="12" font-size="9" font-family="monospace" fill="#7d7979">P = 0.5 boundary</text>
+            <text x="24" y="104" font-size="9" font-family="monospace" fill="#7d7979">strong "no" evidence</text><text x="212" y="104" font-size="9" font-family="monospace" fill="#7d7979">strong "yes"</text>
+          </svg></div>
+          <p><b>Reach for it when:</b> you need a fast, explainable baseline with calibrated probabilities (credit risk, medical screening). It draws a straight boundary — if the truth is curvy, move on.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>SVM (SVC)</h4><span class="a-kind">CLASSIFY</span></div>
+        <div class="a-one">Finds the widest possible street between the two classes.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I don't just separate the classes — I build the widest road between them, so new points landing near the edge still fall on the right side.”</div>
+          <h5>How it works inside</h5>
+          <p>Finds the boundary that <b>maximizes the margin</b> — the distance to the nearest points of each class (the <b>support vectors</b>; only they matter). The <b>kernel trick</b> (e.g. RBF) implicitly lifts data into a higher dimension where a curvy boundary becomes a flat one.</p>
+          <div class="diagram"><svg viewBox="0 0 300 110">
+            <g fill="#8a2e2a"><circle cx="50" cy="30" r="5"/><circle cx="80" cy="22" r="5"/><circle cx="70" cy="52" r="5"/><circle cx="105" cy="38" r="5"/></g>
+            <g fill="#059669"><circle cx="200" cy="80" r="5"/><circle cx="235" cy="70" r="5"/><circle cx="215" cy="95" r="5"/><circle cx="185" cy="62" r="5"/></g>
+            <line x1="60" y1="105" x2="245" y2="5" stroke="#201e1d" stroke-width="2.5" stroke-dasharray="220" stroke-dashoffset="220" style="animation:drawline 1.2s .3s forwards"/>
+            <line x1="35" y1="92" x2="220" y2="-8" stroke="#9b9797" stroke-width="1.5" stroke-dasharray="4"/>
+            <line x1="85" y1="118" x2="270" y2="18" stroke="#9b9797" stroke-width="1.5" stroke-dasharray="4"/>
+          </svg></div>
+          <p><b>Reach for it when:</b> medium-sized data, clear separation matters, you don't need probability outputs (choose 2A.2 = “boundary”). Great for text with clean features; slows down on huge datasets.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>Linear / Ridge / Lasso</h4><span class="a-kind">REGRESS</span></div>
+        <div class="a-one">Draws the best straight line — with optional discipline to stop overfitting.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“Price ≈ 40×area + 8×bedrooms − 3×age. I find the line whose total squared miss is smallest. Ridge fines me for big weights; Lasso fines me until useless weights hit exactly zero.”</div>
+          <h5>How it works inside</h5>
+          <p><b>Least squares</b>: pick weights minimizing Σ(actual−predicted)². <b>Ridge</b> adds λΣw² (shrinks weights smoothly), <b>Lasso</b> adds λΣ|w| (zeroes out weak features — free feature selection). <b>Elastic Net</b> blends both.</p>
+          <div class="diagram"><svg viewBox="0 0 300 110">
+            <g fill="#7d7979"><circle cx="40" cy="80" r="4"/><circle cx="80" cy="70" r="4"/><circle cx="120" cy="58" r="4"/><circle cx="160" cy="52" r="4"/><circle cx="200" cy="36" r="4"/><circle cx="240" cy="30" r="4"/><circle cx="140" cy="70" r="4"/><circle cx="220" cy="46" r="4"/></g>
+            <line x1="25" y1="90" x2="275" y2="18" stroke="#8a2e2a" stroke-width="3" stroke-dasharray="270" stroke-dashoffset="270" style="animation:drawline 1.4s .3s forwards"/>
+          </svg></div>
+          <p><b>Reach for it when:</b> the relationship looks roughly linear (2A.3 = linear), you want interpretability, or you have few data points. It's the baseline every regression should beat.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>Random Forest</h4><span class="a-kind">BOTH</span></div>
+        <div class="a-one">Hundreds of decision trees vote; the crowd beats any single tree.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I ask 500 slightly-different experts. Each saw a random slice of the data and is a bit wrong in their own way — but their average is scarily right.”</div>
+          <h5>How it works inside</h5>
+          <p>Each tree trains on a <b>bootstrap sample</b> (random rows) and considers only a <b>random subset of features</b> at each split — forcing the trees to disagree. Classification: majority vote. Regression: average. Randomness + averaging cancels individual overfitting.</p>
+          <div class="diagram"><svg viewBox="0 0 300 110">
+            <g stroke="#059669" stroke-width="2" fill="none">
+              <path d="M50 20 v15 m0 0 l-18 18 m18 -18 l18 18 m-36 0 v14 m36 -14 v14" stroke-dasharray="100" stroke-dashoffset="100" style="animation:drawline 1s .2s forwards"/>
+              <path d="M150 20 v15 m0 0 l-18 18 m18 -18 l18 18 m-36 0 v14 m36 -14 v14" stroke-dasharray="100" stroke-dashoffset="100" style="animation:drawline 1s .5s forwards"/>
+              <path d="M250 20 v15 m0 0 l-18 18 m18 -18 l18 18 m-36 0 v14 m36 -14 v14" stroke-dasharray="100" stroke-dashoffset="100" style="animation:drawline 1s .8s forwards"/>
+            </g>
+            <text x="150" y="100" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#201e1d">🗳️ vote → prediction</text>
+          </svg></div>
+          <p><b>Reach for it when:</b> tabular data with messy, non-linear patterns (2A.3 = non-linear). Nearly tuning-free, handles mixed features, gives feature importance. The workhorse of practical ML.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>XGBoost</h4><span class="a-kind">BOTH</span></div>
+        <div class="a-one">Trees built one after another — each one fixes the last one's mistakes.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“Tree 1 guesses. I look at what it got wrong, and train Tree 2 <i>only on those errors</i>. Then Tree 3 on what's still wrong. A relay team of error-fixers.”</div>
+          <h5>How it works inside</h5>
+          <p><b>Gradient boosting</b>: each new tree predicts the <b>residual errors</b> of the ensemble so far, taking a gradient-descent step in function space. XGBoost adds clever regularization, missing-value handling, and speed. Kaggle's long-reigning king of tabular data.</p>
+          <div class="diagram"><svg viewBox="0 0 300 110">
+            <g font-family="monospace" font-size="10" font-weight="bold">
+              <rect x="15" y="40" width="60" height="30" fill="#8a2e2a"/><text x="27" y="59" fill="#fff">tree 1</text>
+              <rect x="115" y="40" width="60" height="30" fill="#a5564b"/><text x="127" y="59" fill="#fff">tree 2</text>
+              <rect x="215" y="40" width="60" height="30" fill="#c88a80"/><text x="227" y="59" fill="#fff">tree 3</text>
+            </g>
+            <g stroke="#201e1d" stroke-width="2.5"><path d="M78 55 h34" stroke-dasharray="34" stroke-dashoffset="34" style="animation:drawline .6s .4s forwards"/><path d="M178 55 h34" stroke-dasharray="34" stroke-dashoffset="34" style="animation:drawline .6s .9s forwards"/></g>
+            <text x="95" y="45" font-size="9" font-family="monospace" fill="#7d7979">errors→</text><text x="195" y="45" font-size="9" font-family="monospace" fill="#7d7979">errors→</text>
+            <text x="150" y="100" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#201e1d">sum of fixes = strong model</text>
+          </svg></div>
+          <p><b>Reach for it when:</b> you need maximum accuracy on structured/tabular data and are willing to tune. Try Random Forest first; switch to XGBoost when you're chasing the last few points of accuracy.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>SVR & MLP</h4><span class="a-kind">REGRESS</span></div>
+        <div class="a-one">Curvy-pattern regressors: kernel streets and small neural nets.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“When the price curve bends and twists, I either bend space itself (SVR-RBF) or stack little neurons until the curve fits (MLP).”</div>
+          <h5>How it works inside</h5>
+          <p><b>SVR (RBF)</b> is SVM's regression cousin: fit a tube around the data, ignore errors inside the tube, use the RBF kernel for curves. <b>MLP</b> (multi-layer perceptron) stacks layers of weighted sums + activations; backpropagation adjusts every weight against the error. It can approximate any continuous function — given enough data.</p>
+          <p><b>Reach for it when:</b> strong non-linearity, enough data, and tree ensembles underperform — or as the bridge into deep learning for tabular problems.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">04</span><h2>Supervised works best when…</h2></div>
+    <div class="best">
+      <div class="b-item">You have <b>labeled historical data</b> — the answer key exists.</div>
+      <div class="b-item">There's a <b>clear target</b> to predict (a category or a number).</div>
+      <div class="b-item">The future resembles the past — patterns are stable enough to learn.</div>
+      <div class="b-item">You can measure success: accuracy, error, precision/recall.</div>
+    </div>
+  </div>
+
+  <div class="takeaway"><div class="kicker">Chapter takeaway</div><p>Category → classification. Number → regression. Start simple (Logistic / Linear), earn complexity (Forests, XGBoost, Neural Nets) only when the data proves it's needed.</p></div>
+  <div class="ch-nav">
+    <a class="btn ghost" href="#framework" onclick="return go('framework')">← The Map</a>
+    <button class="btn" data-complete="supervised" onclick="completeCh('supervised','unsupervised')">Mark done · Next: Unsupervised →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════ CH 3 · UNSUPERVISED ═══════════════════ -->
+<section class="page" id="pg-unsupervised" style="--cc:var(--sage)">
+  <div class="ch-hero">
+    <div class="kicker">Chapter 3 · Unsupervised Learning</div>
+    <h1>Finding shape<br>in the unlabeled</h1>
+    <p>No answer key this time. Just a mountain of raw data — and the belief that it has hidden structure worth discovering.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">STORY 02</span><h2>The Night Market</h2></div>
+    <div class="comic" data-comic>
+      <div class="panel">
+        <div class="bubble">50,000 customers… and I know nothing about who they are.</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g>
+            <circle cx="40" cy="50" r="6" fill="#9b9797"/><circle cx="70" cy="90" r="6" fill="#9b9797"/><circle cx="120" cy="40" r="6" fill="#9b9797"/><circle cx="160" cy="100" r="6" fill="#9b9797"/><circle cx="200" cy="60" r="6" fill="#9b9797"/><circle cx="90" cy="130" r="6" fill="#9b9797"/><circle cx="140" cy="70" r="6" fill="#9b9797"/><circle cx="190" cy="130" r="6" fill="#9b9797"/><circle cx="55" cy="115" r="6" fill="#9b9797"/><circle cx="210" cy="95" r="6" fill="#9b9797"/><circle cx="105" cy="95" r="6" fill="#9b9797"/><circle cx="170" cy="35" r="6" fill="#9b9797"/>
+          </g>
+          <text x="120" y="160" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#7d7979">no labels. just dots.</text>
+        </svg></div>
+        <div class="cap">Rio runs a night market's loyalty app. Data everywhere — labels nowhere.</div>
+      </div>
+      <div class="panel">
+        <div class="bubble right">Then don't predict. <b>Organize.</b> Let the data confess its own groups.</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#eae9e9"/>
+          <g style="animation:pulse 3s infinite">
+            <circle cx="60" cy="55" r="34" fill="none" stroke="#059669" stroke-width="2.5" stroke-dasharray="6"/>
+            <circle cx="175" cy="60" r="30" fill="none" stroke="#D97706" stroke-width="2.5" stroke-dasharray="6"/>
+            <circle cx="120" cy="125" r="30" fill="none" stroke="#5B21B6" stroke-width="2.5" stroke-dasharray="6"/>
+          </g>
+          <g fill="#059669"><circle cx="48" cy="45" r="5.5"/><circle cx="70" cy="60" r="5.5"/><circle cx="58" cy="72" r="5.5"/></g>
+          <g fill="#D97706"><circle cx="165" cy="50" r="5.5"/><circle cx="188" cy="62" r="5.5"/><circle cx="172" cy="74" r="5.5"/></g>
+          <g fill="#5B21B6"><circle cx="108" cy="115" r="5.5"/><circle cx="132" cy="122" r="5.5"/><circle cx="118" cy="138" r="5.5"/></g>
+        </svg></div>
+        <div class="cap">Byte redraws the same dots — and three tribes appear: night-owls, families, bulk-buyers.</div>
+      </div>
+      <div class="panel">
+        <div class="burst" style="top:12px;left:12px">OUTLIER!</div>
+        <div class="bubble right" style="top:auto;bottom:14px">And this lone dot? 40 gift cards at 3 AM. That's fraud.</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g fill="#9b9797"><circle cx="60" cy="90" r="5"/><circle cx="80" cy="105" r="5"/><circle cx="70" cy="120" r="5"/><circle cx="95" cy="92" r="5"/><circle cx="88" cy="118" r="5"/><circle cx="105" cy="105" r="5"/></g>
+          <circle cx="200" cy="40" r="7" fill="#8a2e2a" style="animation:pulse 1s infinite"/>
+          <circle cx="200" cy="40" r="16" fill="none" stroke="#8a2e2a" stroke-width="2" stroke-dasharray="5" style="animation:pulse 1s infinite"/>
+          <path d="M115 95 Q160 60 185 45" stroke="#8a2e2a" stroke-width="2" fill="none" stroke-dasharray="90" stroke-dashoffset="90" style="animation:drawline 1s 1s forwards"/>
+        </svg></div>
+        <div class="cap">Same toolbox, different job: points that fit <b>no</b> group are anomalies — and often the most valuable find.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">2B</span><h2>The decision path</h2></div>
+    <div class="qa-tree reveal">
+      <div class="qnode"><span class="tag">Q 2B</span>What do you want to achieve?</div>
+      <div class="branches">
+        <div class="branch"><span class="blabel">GROUP SIMILAR DATA</span>
+          <p style="font-size:13px;margin-bottom:8px">Clustering — find natural tribes.</p>
+          <div class="algo-chips"><span class="chip hot">K-Means</span><span class="chip hot">DBSCAN</span><span class="chip">Gaussian Mixture (GMM)</span><span class="chip">Hierarchical</span></div>
+        </div>
+        <div class="branch"><span class="blabel">REDUCE DIMENSIONS</span>
+          <p style="font-size:13px;margin-bottom:8px">Compress 100 columns into the few that matter (2B.1: numerical? high-dimensional?).</p>
+          <div class="algo-chips"><span class="chip hot">PCA</span><span class="chip">t-SNE</span><span class="chip">UMAP</span><span class="chip">Autoencoders</span></div>
+        </div>
+        <div class="branch"><span class="blabel">FIND HIDDEN STRUCTURE</span>
+          <p style="font-size:13px;margin-bottom:8px">Relationships & associations — “people who buy X also buy Y.”</p>
+          <div class="algo-chips"><span class="chip">Association Rules</span><span class="chip">GMM</span><span class="chip">Hierarchical</span></div>
+        </div>
+        <div class="branch"><span class="blabel">FIND ANOMALIES / OUTLIERS</span>
+          <p style="font-size:13px;margin-bottom:8px">The points that don't belong: fraud, defects, intrusions.</p>
+          <div class="algo-chips"><span class="chip hot">Isolation Forest</span><span class="chip">One-Class SVM</span><span class="chip">LOF (Local Outlier Factor)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">03</span><h2>Inside the machines</h2></div>
+    <div class="algos">
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>K-Means</h4><span class="a-kind">CLUSTER</span></div>
+        <div class="a-one">Drop K pins, assign every point to its nearest pin, move pins to the center. Repeat.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I throw 3 tent poles into the crowd. Everyone walks to their nearest pole. I move each pole to the middle of its crowd. We repeat until nobody switches tents.”</div>
+          <h5>How it works inside</h5>
+          <p>1) Place K centroids randomly. 2) <b>Assign</b> each point to nearest centroid. 3) <b>Update</b> each centroid to the mean of its points. 4) Repeat until stable. Minimizes within-cluster distance. You choose K (use the elbow method).</p>
+          <div class="diagram"><svg viewBox="0 0 300 110">
+            <g fill="#9b9797"><circle cx="60" cy="35" r="5"><animate attributeName="fill" values="#9b9797;#059669" begin="1s" dur="0.5s" fill="freeze"/></circle><circle cx="85" cy="50" r="5"><animate attributeName="fill" values="#9b9797;#059669" begin="1s" dur="0.5s" fill="freeze"/></circle><circle cx="70" cy="65" r="5"><animate attributeName="fill" values="#9b9797;#059669" begin="1s" dur="0.5s" fill="freeze"/></circle>
+            <circle cx="210" cy="45" r="5"><animate attributeName="fill" values="#9b9797;#D97706" begin="1s" dur="0.5s" fill="freeze"/></circle><circle cx="235" cy="60" r="5"><animate attributeName="fill" values="#9b9797;#D97706" begin="1s" dur="0.5s" fill="freeze"/></circle><circle cx="215" cy="78" r="5"><animate attributeName="fill" values="#9b9797;#D97706" begin="1s" dur="0.5s" fill="freeze"/></circle></g>
+            <g><path d="M72 50 L150 55" stroke="none"/><circle cx="72" cy="50" r="8" fill="none" stroke="#059669" stroke-width="3"><animate attributeName="cx" values="150;72" begin="0.3s" dur="0.9s" fill="freeze"/></circle>
+            <circle cx="220" cy="61" r="8" fill="none" stroke="#D97706" stroke-width="3"><animate attributeName="cx" values="150;220" begin="0.3s" dur="0.9s" fill="freeze"/></circle></g>
+            <text x="150" y="102" text-anchor="middle" font-size="10" font-family="monospace" fill="#7d7979">centroids drift to the middle of their tribes</text>
+          </svg></div>
+          <p><b>Reach for it when:</b> numerical data, roughly round clusters, you have a K in mind. Fast and scalable — the default first clustering attempt.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>DBSCAN</h4><span class="a-kind">CLUSTER</span></div>
+        <div class="a-one">Clusters = dense neighborhoods. No K needed, and loners get flagged as noise.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I walk from point to point. If enough neighbors live within ε steps, we're the same village — however weird the village's shape. Hermits in the wilderness? Marked as noise.”</div>
+          <h5>How it works inside</h5>
+          <p>A point with ≥ <b>minPts</b> neighbors within radius <b>ε</b> is a core point; clusters grow by chaining core points. Finds arbitrary-shaped clusters (moons, spirals) and labels sparse points as outliers — clustering and anomaly detection in one move.</p>
+          <p><b>Reach for it when:</b> unknown cluster count, weird shapes, or noisy data with outliers. Struggles when densities vary wildly.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>PCA</h4><span class="a-kind">REDUCE</span></div>
+        <div class="a-one">Rotates your data to face the directions where it varies most, then drops the rest.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“Your 100 columns mostly repeat each other. I find the few master directions — 'overall spend', 'visit rhythm' — that carry 95% of the story, and archive the remaining noise.”</div>
+          <h5>How it works inside</h5>
+          <p>Computes the <b>eigenvectors of the covariance matrix</b> — orthogonal axes ranked by how much variance they capture (principal components). Keep the top few, project data onto them: fewer columns, most of the information. Linear, fast, deterministic.</p>
+          <div class="diagram"><svg viewBox="0 0 300 110">
+            <g fill="#9b9797"><circle cx="60" cy="80" r="4"/><circle cx="90" cy="68" r="4"/><circle cx="120" cy="60" r="4"/><circle cx="150" cy="48" r="4"/><circle cx="180" cy="42" r="4"/><circle cx="210" cy="30" r="4"/><circle cx="110" cy="75" r="4"/><circle cx="170" cy="55" r="4"/></g>
+            <line x1="40" y1="92" x2="240" y2="18" stroke="#059669" stroke-width="3" stroke-dasharray="230" stroke-dashoffset="230" style="animation:drawline 1.2s .3s forwards"/>
+            <line x1="120" y1="30" x2="160" y2="80" stroke="#9b9797" stroke-width="2" stroke-dasharray="4"/>
+            <text x="228" y="14" font-size="9" font-family="monospace" fill="#059669" font-weight="bold">PC1 ✓</text>
+            <text x="166" y="90" font-size="9" font-family="monospace" fill="#9b9797">PC2 (drop)</text>
+          </svg></div>
+          <p><b>Reach for it when:</b> too many numerical features, multicollinearity, speed-up needed before another model, or 2-D visualization (then compare with t-SNE/UMAP, which preserve <i>local</i> structure non-linearly).</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>Isolation Forest</h4><span class="a-kind">ANOMALY</span></div>
+        <div class="a-one">Anomalies are easy to isolate — few random cuts and they're alone.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I slice the data with random cuts, like a game of guess-who. Normal points take many cuts to corner. The 3 AM gift-card buyer? Isolated in two cuts. Suspicious.”</div>
+          <h5>How it works inside</h5>
+          <p>Builds random trees that split on random features at random thresholds. The <b>average path length to isolate a point</b> becomes its score — outliers isolate in very few splits. No distance metric, so it scales to high dimensions beautifully.</p>
+          <p><b>Reach for it when:</b> fraud/defect/intrusion detection on tabular data, especially high-dimensional. Cousins: <b>One-Class SVM</b> (draws a boundary around “normal”) and <b>LOF</b> (compares each point's local density to its neighbors').</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>GMM & Hierarchical</h4><span class="a-kind">CLUSTER</span></div>
+        <div class="a-one">Soft clusters with probabilities, or a family tree of merges.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“GMM says: this customer is 70% night-owl, 30% family-shopper — clusters overlap, and that's fine. Hierarchical says: let me show you the whole family tree, from every-point-alone to one-big-tribe.”</div>
+          <h5>How it works inside</h5>
+          <p><b>GMM</b> models data as overlapping Gaussian blobs; the EM algorithm alternates “which blob likely owns each point?” with re-fitting blob shapes. Gives <b>soft membership</b> probabilities. <b>Hierarchical (agglomerative)</b> repeatedly merges the two closest clusters, producing a <b>dendrogram</b> you can cut at any level — no fixed K required.</p>
+          <p><b>Reach for it when:</b> clusters overlap (GMM) or you want to explore grouping at many granularities (hierarchical). <b>Autoencoders</b> — neural nets that squeeze data through a bottleneck — take over dimensionality reduction when patterns are non-linear and data is big.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">04</span><h2>Unsupervised works best when…</h2></div>
+    <div class="best">
+      <div class="b-item">You have <b>unlabeled data</b> — no answer key exists (or labeling is too expensive).</div>
+      <div class="b-item">The goal is <b>discovery</b>: segments, structure, compression, weirdness.</div>
+      <div class="b-item">You'll validate findings with domain eyes — metrics are fuzzier here.</div>
+      <div class="b-item">It can be step one: clusters and components often become <b>features</b> for a supervised model later.</div>
+    </div>
+  </div>
+
+  <div class="takeaway"><div class="kicker">Chapter takeaway</div><p>No labels? Ask what you want: groups → clustering, fewer columns → dimensionality reduction, relationships → association, weird points → anomaly detection.</p></div>
+  <div class="ch-nav">
+    <a class="btn ghost" href="#supervised" onclick="return go('supervised')">← Supervised</a>
+    <button class="btn" data-complete="unsupervised" onclick="completeCh('unsupervised','deep')">Mark done · Next: Deep Learning →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════ CH 4 · DEEP LEARNING ═══════════════════ -->
+<section class="page" id="pg-deep" style="--cc:var(--gold)">
+  <div class="ch-hero">
+    <div class="kicker">Chapter 4 · Deep Learning</div>
+    <h1>When the data<br>gets wild</h1>
+    <p>Images, sentences, sound waves, video. No spreadsheet columns — just raw, unstructured signal at massive scale. This is where stacked neural networks earn their keep.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">STORY 03</span><h2>The Gallery of a Million Photos</h2></div>
+    <div class="comic" data-comic>
+      <div class="panel">
+        <div class="bubble">A million product photos to tag. My spreadsheet tricks are useless — every pixel is a column!</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g><rect x="25" y="30" width="44" height="44" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="38" y="60" font-size="20">👟</text>
+          <rect x="80" y="42" width="44" height="44" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="93" y="72" font-size="20">👜</text>
+          <rect x="135" y="28" width="44" height="44" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="148" y="58" font-size="20">⌚</text>
+          <rect x="190" y="44" width="44" height="44" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="203" y="74" font-size="20">👟</text>
+          <rect x="52" y="95" width="44" height="44" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="65" y="125" font-size="20">🧢</text>
+          <rect x="110" y="100" width="44" height="44" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="123" y="130" font-size="20">👜</text>
+          <rect x="165" y="98" width="44" height="44" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="178" y="128" font-size="20">🕶️</text></g>
+        </svg></div>
+        <div class="cap">Rio's marketplace needs every photo tagged, searched, and checked for fakes. By hand? Never.</div>
+      </div>
+      <div class="panel">
+        <div class="bubble right">Layers, Rio. Early layers see edges. Middle layers see shapes. Deep layers see “sneaker.”</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#eae9e9"/>
+          <g font-size="9" font-family="monospace" font-weight="bold" fill="#7d7979">
+            <rect x="18" y="55" width="40" height="40" fill="#fff" stroke="#201e1d" stroke-width="2"/><path d="M22 90 l14 -20 8 10 10 -14" stroke="#D97706" stroke-width="2" fill="none"/><text x="18" y="110">edges</text>
+            <rect x="90" y="55" width="40" height="40" fill="#fff" stroke="#201e1d" stroke-width="2"/><circle cx="103" cy="70" r="7" fill="none" stroke="#D97706" stroke-width="2"/><rect x="110" y="76" width="14" height="10" fill="none" stroke="#D97706" stroke-width="2"/><text x="90" y="110">shapes</text>
+            <rect x="162" y="55" width="40" height="40" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="170" y="82" font-size="18">👟</text><text x="162" y="110">objects</text>
+          </g>
+          <path d="M60 75 h26" stroke="#201e1d" stroke-width="2.5" stroke-dasharray="26" stroke-dashoffset="26" style="animation:drawline .6s .4s forwards"/>
+          <path d="M132 75 h26" stroke="#201e1d" stroke-width="2.5" stroke-dasharray="26" stroke-dashoffset="26" style="animation:drawline .6s .9s forwards"/>
+          <text x="120" y="30" text-anchor="middle" font-size="11" font-weight="bold" fill="#201e1d" font-family="sans-serif">each layer builds on the last</text>
+        </svg></div>
+        <div class="cap">Byte sketches the core idea of depth: <b>features composed of features</b>, learned automatically.</div>
+      </div>
+      <div class="panel">
+        <div class="burst" style="top:10px;right:10px">SOTA!</div>
+        <div class="bubble" style="top:auto;bottom:14px">Tagged, searchable, fake-detecting — and it reads reviews too.</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g font-family="monospace" font-size="10" font-weight="bold">
+            <rect x="20" y="30" width="90" height="24" fill="#D97706"/><text x="28" y="46" fill="#fff">CNN → vision</text>
+            <rect x="130" y="30" width="92" height="24" fill="#8a2e2a"/><text x="138" y="46" fill="#fff">BERT → text</text>
+            <rect x="20" y="70" width="90" height="24" fill="#5B21B6"/><text x="28" y="86" fill="#fff">RNN → audio</text>
+            <rect x="130" y="70" width="92" height="24" fill="#0e5f76"/><text x="138" y="86" fill="#fff">3D-CNN → video</text>
+          </g>
+          <path d="M120 100 v20" stroke="#201e1d" stroke-width="2.5" stroke-dasharray="20" stroke-dashoffset="20" style="animation:drawline .6s 1s forwards"/>
+          <text x="120" y="145" text-anchor="middle" font-size="12" font-weight="bold" fill="#201e1d" font-family="sans-serif">one family, four data worlds</text>
+        </svg></div>
+        <div class="cap">The rule of this realm: <b>your data type picks your architecture.</b> That's question 2C.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">2C</span><h2>The decision path — data type picks architecture</h2></div>
+    <div class="qa-tree reveal">
+      <div class="qnode"><span class="tag">Q 2C</span>What type of data are you working with?</div>
+      <div class="branches">
+        <div class="branch"><span class="blabel" style="background:var(--gold)">IMAGE 🖼️</span>
+          <div class="algo-chips"><span class="chip hot">Classify: CNN (ResNet, EfficientNet)</span><span class="chip">Detect: YOLO · SSD · Faster R-CNN</span><span class="chip">Segment: U-Net · DeepLab</span><span class="chip">Generate: GANs · Diffusion</span></div>
+        </div>
+        <div class="branch"><span class="blabel" style="background:var(--accent)">TEXT 📝</span>
+          <div class="algo-chips"><span class="chip hot">Classify: BERT · RoBERTa</span><span class="chip">NER / QA: BERT-family</span><span class="chip">Summarize: T5 · BART</span><span class="chip hot">Chat / LLM: GPT · LLaMA · Claude</span></div>
+        </div>
+        <div class="branch"><span class="blabel" style="background:var(--plum)">AUDIO 🔊</span>
+          <div class="algo-chips"><span class="chip hot">Speech recognition: RNN · LSTM · Transformer</span><span class="chip">Speaker ID: CNN · ECAPA</span><span class="chip">Audio classification: CNN</span></div>
+        </div>
+        <div class="branch"><span class="blabel" style="background:var(--sky)">VIDEO 🎬</span>
+          <div class="algo-chips"><span class="chip hot">Action recognition: 3D CNN · SlowFast</span><span class="chip">Video classification: CNN + Transformer</span><span class="chip">Object detection in video: YOLOv8 · Detectron2</span></div>
+        </div>
+      </div>
+      <div class="tree-link"></div>
+      <div class="branches one">
+        <div class="branch"><span class="blabel" style="background:var(--ink)">TABULAR (LARGE-SCALE) 📊</span>
+          <p style="font-size:13px;margin-bottom:8px">Spreadsheet-shaped but huge? Deep nets compete with XGBoost here — sometimes.</p>
+          <div class="algo-chips"><span class="chip">DNN (MLP)</span><span class="chip">TabNet</span><span class="chip">FT-Transformer</span><span class="chip hot">…but try XGBoost first!</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">03</span><h2>Inside the machines</h2></div>
+    <div class="algos">
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>The Neuron & Backprop</h4><span class="a-kind">FOUNDATION</span></div>
+        <div class="a-one">Every deep net is the same trick repeated: weigh, sum, bend — then learn from blame.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“A neuron is a tiny judge: it weighs its inputs, sums them, and fires through a bent gate (ReLU). Stack thousands. When the final answer is wrong, <b>backpropagation</b> walks the error backwards, telling every judge exactly how much it's to blame — and each shifts its weights a little. A million rounds later: intelligence.”</div>
+          <h5>How it works inside</h5>
+          <p>Forward pass: data flows through layers of weighted sums + activations. Loss measures the miss. Backward pass: the chain rule distributes gradients to every weight; the optimizer (SGD/Adam) nudges them downhill. Depth lets features build on features.</p>
+          <div class="diagram"><svg viewBox="0 0 300 120">
+            <g fill="#D97706"><circle cx="40" cy="30" r="9"/><circle cx="40" cy="60" r="9"/><circle cx="40" cy="90" r="9"/></g>
+            <g fill="#a5564b"><circle cx="150" cy="25" r="9"/><circle cx="150" cy="55" r="9"/><circle cx="150" cy="85" r="9"/></g>
+            <circle cx="255" cy="55" r="11" fill="#201e1d"/>
+            <g stroke="#9b9797" stroke-width="1.5">
+              <line x1="49" y1="30" x2="141" y2="25"/><line x1="49" y1="30" x2="141" y2="55"/><line x1="49" y1="30" x2="141" y2="85"/>
+              <line x1="49" y1="60" x2="141" y2="25"/><line x1="49" y1="60" x2="141" y2="55"/><line x1="49" y1="60" x2="141" y2="85"/>
+              <line x1="49" y1="90" x2="141" y2="25"/><line x1="49" y1="90" x2="141" y2="55"/><line x1="49" y1="90" x2="141" y2="85"/>
+              <line x1="159" y1="25" x2="244" y2="55"/><line x1="159" y1="55" x2="244" y2="55"/><line x1="159" y1="85" x2="244" y2="55"/>
+            </g>
+            <circle r="4" fill="#D97706"><animateMotion path="M40 60 L150 55 L255 55" dur="1.6s" repeatCount="indefinite"/></circle>
+            <circle r="3" fill="#8a2e2a"><animateMotion path="M255 55 L150 85 L40 90" dur="1.6s" begin="0.8s" repeatCount="indefinite"/></circle>
+            <text x="70" y="114" font-size="9" font-family="monospace" fill="#7d7979">→ prediction　　← blame (backprop)</text>
+          </svg></div>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>CNN</h4><span class="a-kind">IMAGES</span></div>
+        <div class="a-one">A magnifying glass that slides across the image, hunting one pattern at a time.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I don't look at a photo pixel-by-pixel. I slide small pattern-detectors — edge-finders, curve-finders — across it. Wherever a detector lights up, I note it on a map. Deeper layers slide detectors over those maps: whisker-maps + ear-maps = cat.”</div>
+          <h5>How it works inside</h5>
+          <p><b>Convolution</b>: a small learned filter (e.g. 3×3) slides over the image producing a feature map — same pattern detected anywhere (translation invariance, few parameters). <b>Pooling</b> shrinks maps, keeping strong signals. Stack: edges → textures → parts → objects. ResNet adds skip-connections so 100+ layers still train; EfficientNet scales width/depth/resolution in balance.</p>
+          <p><b>Variants:</b> detection (YOLO draws boxes in one pass — real-time), segmentation (U-Net labels every pixel), generation (GANs: forger vs detective; Diffusion: sculpt images out of noise, step by step).</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>Transformers & LLMs</h4><span class="a-kind">TEXT</span></div>
+        <div class="a-one">Every word looks at every other word at once — attention is all you need.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“In 'the bank of the river', how do I know 'bank' isn't about money? Because 'bank' <b>attends</b> to 'river'. In a transformer, every word asks every other word: 'how much do you matter to my meaning?' — all in parallel.”</div>
+          <h5>How it works inside</h5>
+          <p><b>Self-attention</b>: each token emits a query, key and value vector; attention scores = how much each token should borrow meaning from every other. Multi-head attention runs many such conversations at once; stacking layers builds deep context. No recurrence → massively parallel → trainable on internet-scale text.</p>
+          <p><b>The family:</b> <b>BERT/RoBERTa</b> read bidirectionally — best for classification, NER, QA. <b>T5/BART</b> are encoder-decoders — best for summarization and translation. <b>GPT/LLaMA/Claude</b> are decoder-only next-token predictors scaled to billions of parameters — chat, reasoning, code. Fine-tune or prompt; rarely train from scratch.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>RNN / LSTM</h4><span class="a-kind">AUDIO · SEQUENCE</span></div>
+        <div class="a-one">Reads a sequence one step at a time, carrying a memory of what came before.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I listen to audio like you read a sentence — one frame at a time, updating a little notebook of what I've heard. LSTM gave my notebook gates: what to write, what to erase, what to say aloud.”</div>
+          <h5>How it works inside</h5>
+          <p>A recurrent cell takes the current input + its own previous hidden state. <b>LSTM</b> adds input/forget/output gates so memory survives long sequences (fixing vanishing gradients). Still strong for streaming audio and time series, though Transformers now dominate offline speech (Whisper-style) and 1-D CNNs handle audio classification.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>Video & Tabular Nets</h4><span class="a-kind">3D CNN · TABNET</span></div>
+        <div class="a-one">Video adds time as a third dimension; tabular nets challenge XGBoost at scale.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“A video is a flip-book. My 3D convolutions slide through height, width <i>and time</i> — so I see 'jumping', not just 'person'. SlowFast watches twice: slow stream for scene, fast stream for motion.”</div>
+          <h5>How it works inside</h5>
+          <p><b>3D CNNs</b> extend filters into the time axis to learn motion features (action recognition). For tabular data at scale, <b>TabNet</b> uses sequential attention to pick which features to reason about per decision step; <b>FT-Transformer</b> treats each column as a token. Honest rule: on most tabular problems, gradient-boosted trees still win — benchmark before going deep.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">04</span><h2>Deep learning works best when…</h2></div>
+    <div class="best">
+      <div class="b-item">Data is <b>large in volume</b> and <b>high-dimensional</b>.</div>
+      <div class="b-item">Data is <b>unstructured</b>: images, text, audio, video, sequences.</div>
+      <div class="b-item">You need <b>state-of-the-art accuracy</b> and can pay in compute/GPUs.</div>
+      <div class="b-item">Features are too subtle to hand-engineer — let the network learn them.</div>
+    </div>
+  </div>
+
+  <div class="takeaway"><div class="kicker">Chapter takeaway</div><p>In deep learning, the data type picks the architecture: images → CNN, text → Transformer, audio → RNN/Transformer, video → 3D CNN, giant tabular → maybe TabNet (but race XGBoost first).</p></div>
+  <div class="ch-nav">
+    <a class="btn ghost" href="#unsupervised" onclick="return go('unsupervised')">← Unsupervised</a>
+    <button class="btn" data-complete="deep" onclick="completeCh('deep','rl')">Mark done · Next: Reinforcement →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════ CH 5 · REINFORCEMENT ═══════════════════ -->
+<section class="page" id="pg-rl" style="--cc:var(--plum)">
+  <div class="ch-hero">
+    <div class="kicker">Chapter 5 · Reinforcement Learning</div>
+    <h1>Learning by<br>doing (and failing)</h1>
+    <p>No dataset at all this time. An agent acts, the world reacts, a reward arrives — and behavior slowly bends toward whatever earns the most reward over time.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">STORY 04</span><h2>The Delivery Robot</h2></div>
+    <div class="comic" data-comic>
+      <div class="panel">
+        <div class="bubble">There's no dataset of “how to cross a warehouse.” It has to learn by trying!</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g stroke="#d7d3d3" stroke-width="1.5">
+            <line x1="20" y1="40" x2="220" y2="40"/><line x1="20" y1="80" x2="220" y2="80"/><line x1="20" y1="120" x2="220" y2="120"/>
+            <line x1="60" y1="20" x2="60" y2="150"/><line x1="120" y1="20" x2="120" y2="150"/><line x1="180" y1="20" x2="180" y2="150"/>
+          </g>
+          <g style="animation:walkbob 1.6s infinite"><rect x="30" y="52" width="24" height="20" rx="4" fill="#5B21B6"/><circle cx="37" cy="60" r="2.5" fill="#e8c98f"/><circle cx="47" cy="60" r="2.5" fill="#e8c98f"/><rect x="33" y="74" width="6" height="6" fill="#201e1d"/><rect x="45" y="74" width="6" height="6" fill="#201e1d"/></g>
+          <text x="196" y="66" font-size="18">📦</text>
+          <text x="130" y="105" font-size="16">🕳️</text><text x="70" y="140" font-size="16">🕳️</text>
+        </svg></div>
+        <div class="cap">A little robot, a maze of shelves, a package to reach — and pits to avoid. No labels anywhere.</div>
+      </div>
+      <div class="panel">
+        <div class="bubble right">Every step: −1. Fall in a pit: −100. Reach the package: +100. Now… explore!</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#eae9e9"/>
+          <g font-family="monospace" font-size="11" font-weight="bold">
+            <rect x="30" y="34" width="180" height="26" fill="#fff" stroke="#201e1d" stroke-width="2"/><text x="40" y="51">step……………… −1</text>
+            <rect x="30" y="70" width="180" height="26" fill="#fff" stroke="#8a2e2a" stroke-width="2"/><text x="40" y="87" fill="#8a2e2a">pit……………… −100</text>
+            <rect x="30" y="106" width="180" height="26" fill="#fff" stroke="#059669" stroke-width="2"/><text x="40" y="123" fill="#059669">package…… +100</text>
+          </g>
+        </svg></div>
+        <div class="cap">Byte writes the <b>reward function</b> — the only teacher this robot will ever have.</div>
+      </div>
+      <div class="panel">
+        <div class="burst" style="top:12px;left:12px">EPISODE 4,000</div>
+        <div class="bubble" style="top:auto;bottom:14px">It found a route I'd never have programmed.</div>
+        <div class="art"><svg viewBox="0 0 240 170">
+          <rect width="240" height="170" fill="#f6eeec"/>
+          <g stroke="#d7d3d3" stroke-width="1.5">
+            <line x1="20" y1="40" x2="220" y2="40"/><line x1="20" y1="80" x2="220" y2="80"/><line x1="20" y1="120" x2="220" y2="120"/>
+            <line x1="60" y1="20" x2="60" y2="150"/><line x1="120" y1="20" x2="120" y2="150"/><line x1="180" y1="20" x2="180" y2="150"/>
+          </g>
+          <path d="M42 62 h58 v-2 h60 v38 h40" fill="none" stroke="#5B21B6" stroke-width="4" stroke-linecap="round" stroke-dasharray="200" stroke-dashoffset="200" style="animation:drawline 2s .5s forwards"/>
+          <g><rect x="30" y="52" width="24" height="20" rx="4" fill="#5B21B6"/><circle cx="37" cy="60" r="2.5" fill="#e8c98f"/><circle cx="47" cy="60" r="2.5" fill="#e8c98f"/></g>
+          <text x="196" y="104" font-size="18">📦</text>
+          <text x="130" y="105" font-size="16">🕳️</text>
+        </svg></div>
+        <div class="cap">Thousands of episodes of trial, error and reward later — a smooth, pit-free path emerges.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">2D</span><h2>The decision path</h2></div>
+    <div class="qa-tree reveal">
+      <div class="qnode"><span class="tag">Q 2D</span>Is the problem sequential, with decisions and rewards?</div>
+      <div class="branches">
+        <div class="branch"><span class="blabel" style="background:var(--plum)">YES → RL. Q 2D.1: WHAT'S THE ACTION SPACE?</span>
+          <div class="branches" style="margin-top:10px">
+            <div class="branch" style="border-style:solid"><span class="blabel">DISCRETE (menu of moves)</span>
+              <div class="algo-chips"><span class="chip hot">Q-Learning</span><span class="chip hot">DQN</span><span class="chip">Double / Dueling DQN</span><span class="chip">REINFORCE</span><span class="chip">A2C / A3C</span></div>
+            </div>
+            <div class="branch" style="border-style:solid"><span class="blabel">CONTINUOUS (dials & torques)</span>
+              <div class="algo-chips"><span class="chip hot">PPO</span><span class="chip hot">SAC</span><span class="chip">DDPG</span><span class="chip">TD3</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="branch"><span class="blabel" style="background:var(--ink)">NO → NOT RL</span>
+          <p style="font-size:13px">If there's no sequence of decisions earning rewards, use the other ML approaches (Chapters 2–4). Forcing RL onto a plain prediction problem is the classic beginner trap.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">03</span><h2>Inside the machines</h2></div>
+    <div class="algos">
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>The RL Loop</h4><span class="a-kind">FOUNDATION</span></div>
+        <div class="a-one">State → action → reward → new state. Forever. That loop is the whole religion.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I see where I am (state). I choose a move (action). The world scores me (reward) and shifts (new state). My only goal: choose actions that maximize the <b>total</b> reward over the whole future — not just the next treat.”</div>
+          <h5>How it works inside</h5>
+          <p>Formalized as a Markov Decision Process. The <b>discount factor γ</b> makes near rewards worth more than far ones. The deepest tension is <b>exploration vs exploitation</b>: keep trying new moves (ε-greedy) or you'll never find the better path; keep using the best-known moves or you'll never cash in.</p>
+          <div class="diagram"><svg viewBox="0 0 300 110">
+            <rect x="20" y="35" width="90" height="40" fill="#5B21B6"/><text x="41" y="59" font-size="11" fill="#fff" font-weight="bold" font-family="monospace">AGENT</text>
+            <rect x="190" y="35" width="96" height="40" fill="#201e1d"/><text x="200" y="59" font-size="11" fill="#fff" font-weight="bold" font-family="monospace">WORLD</text>
+            <path d="M112 45 h74" stroke="#5B21B6" stroke-width="2.5" marker-end="none"/><text x="122" y="38" font-size="9" font-family="monospace" fill="#5B21B6" font-weight="bold">action →</text>
+            <path d="M188 66 h-74" stroke="#059669" stroke-width="2.5"/><text x="110" y="82" font-size="9" font-family="monospace" fill="#059669" font-weight="bold">← reward + new state</text>
+            <circle r="4" fill="#5B21B6"><animateMotion path="M112 45 h74" dur="1.2s" repeatCount="indefinite"/></circle>
+            <circle r="4" fill="#059669"><animateMotion path="M188 66 h-74" dur="1.2s" begin="0.6s" repeatCount="indefinite"/></circle>
+          </svg></div>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>Q-Learning & DQN</h4><span class="a-kind">DISCRETE</span></div>
+        <div class="a-one">A scorecard for every (situation, move) pair — replaced by a neural net when situations explode.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“I keep a giant table: 'in square B3, going LEFT is worth 42.' Every surprise updates the table. But an Atari screen has more states than atoms in the universe — so DQN swapped my table for a neural network that <i>estimates</i> the scores.”</div>
+          <h5>How it works inside</h5>
+          <p>The Bellman update: Q(s,a) ← Q(s,a) + α[r + γ·maxQ(s′,·) − Q(s,a)] — pull each estimate toward reward-plus-best-future. <b>DQN</b> approximates Q with a network and stabilizes it via <b>experience replay</b> (learn from shuffled past moments) and a frozen <b>target network</b>. <b>Double DQN</b> fixes overoptimism; <b>Dueling DQN</b> separates “how good is this state?” from “how much better is each action?”.</p>
+          <p><b>Reach for it when:</b> action space is a discrete menu — game moves, routing choices, up/down decisions.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>Policy Gradients · A2C</h4><span class="a-kind">DISCRETE</span></div>
+        <div class="a-one">Skip the scorecard — directly train the behavior itself.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“Instead of scoring every move, I train my instincts directly: replay an episode, and make every action that led to victory a bit more likely (REINFORCE). My critic friend whispers 'that was better than expected' so I don't overreact to lucky wins (A2C).”</div>
+          <h5>How it works inside</h5>
+          <p>A <b>policy network</b> outputs action probabilities; gradients push up the probability of actions weighted by how good their outcomes were. <b>Actor-critic</b> pairs it with a value network (the critic) to reduce variance; <b>A3C</b> runs many actors in parallel environments.</p>
+        </div>
+      </div>
+      <div class="algo"><button onclick="flipAlgo(this)">
+        <div class="a-top"><h4>PPO · SAC · DDPG · TD3</h4><span class="a-kind">CONTINUOUS</span></div>
+        <div class="a-one">For steering wheels and robot joints — actions are dials, not menus.</div>
+        <div class="a-open">OPEN THE MACHINE ↓</div></button>
+        <div class="inside">
+          <div class="story">“A robot elbow doesn't pick from a menu — it outputs 23.7 degrees of torque. And when I learn, I take <b>small, clipped steps</b> (PPO), because one wild policy update can un-learn a month of walking practice.”</div>
+          <h5>How it works inside</h5>
+          <p><b>PPO</b> clips each policy update so the new behavior can't stray far from the old — simple, stable, the default choice (also used in RLHF for LLMs). <b>SAC</b> adds an entropy bonus: stay as random as possible while still winning → robust exploration. <b>DDPG/TD3</b> learn a deterministic action function with a Q-critic; TD3 tames DDPG's overestimation with twin critics and delayed updates.</p>
+          <p><b>Reach for it when:</b> robotics, control, driving, any continuous dial. Start with PPO or SAC.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">04</span><h2>RL works best when…</h2></div>
+    <div class="best">
+      <div class="b-item">The problem is <b>sequential</b> — decisions now change options later.</div>
+      <div class="b-item">There's a <b>reward signal</b> (or you can design one honestly).</div>
+      <div class="b-item">You have a <b>simulator</b> or cheap trials — RL is data-hungry and failure-prone.</div>
+      <div class="b-item">Examples: games, robotics, recommendations over time, resource scheduling, RLHF.</div>
+    </div>
+  </div>
+
+  <div class="takeaway"><div class="kicker">Chapter takeaway</div><p>Sequential + reward → RL. Then one question routes everything: discrete menu of actions → DQN family; continuous dials → PPO/SAC family.</p></div>
+  <div class="ch-nav">
+    <a class="btn ghost" href="#deep" onclick="return go('deep')">← Deep Learning</a>
+    <button class="btn" data-complete="rl" onclick="completeCh('rl','engine')">Mark done · Next: Decision Engine →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════ CH 6 · DECISION ENGINE ═══════════════════ -->
+<section class="page" id="pg-engine" style="--cc:var(--sky)">
+  <div class="ch-hero">
+    <div class="kicker">Chapter 6 · The Decision Engine</div>
+    <h1>Your problem,<br>diagnosed</h1>
+    <p>Everything from the atlas, compressed into a conversation. Describe your problem — the engine walks the exact decision tree and hands you algorithms to try, in order.</p>
+  </div>
+  <div class="engine">
+    <div class="crumbs" id="crumbs"></div>
+    <div id="engineBody"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">★</span><h2>The one-glance cheat sheet</h2></div>
+    <div class="cheat">
+      <table>
+        <thead><tr><th>Family</th><th>Use when</th><th>Key question</th><th>First algorithms to try</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dotk" style="background:var(--accent)"></span>Supervised</td><td>Labeled data, clear target</td><td>Category or number?</td><td class="mono">Logistic/Linear → RF → XGBoost → SVM/MLP</td></tr>
+          <tr><td><span class="dotk" style="background:var(--sage)"></span>Unsupervised</td><td>No labels, discovery</td><td>Group, compress, associate or detect odd?</td><td class="mono">K-Means/DBSCAN · PCA/UMAP · Isolation Forest</td></tr>
+          <tr><td><span class="dotk" style="background:var(--gold)"></span>Deep Learning</td><td>Large + unstructured, SOTA needed</td><td>Image, text, audio, video or tabular?</td><td class="mono">CNN · BERT/GPT · RNN/Transformer · 3D-CNN · TabNet</td></tr>
+          <tr><td><span class="dotk" style="background:var(--plum)"></span>Reinforcement</td><td>Sequential decisions + reward</td><td>Discrete or continuous actions?</td><td class="mono">DQN family · PPO/SAC/TD3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px;font-size:13.5px;color:var(--ink-2)"><b>The golden rule, one last time:</b> start with the simplest algorithm that could possibly work, get a baseline, and only add complexity the data demands. Simple models you understand beat complex models you don't.</p>
+  </div>
+
+  <div class="takeaway"><div class="kicker">You made it</div><p>You've walked all four realms and can now diagnose any ML problem from three questions. That skill outlives every framework. Come back to the Decision Engine whenever a real project knocks.</p></div>
+  <div class="ch-nav">
+    <a class="btn ghost" href="#hub" onclick="return go('hub')">← Atlas</a>
+    <button class="btn" data-complete="engine" onclick="completeCh('engine','hub')">Finish the course ✓</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ═══════════ DOORS ═══════════ */
+var doorsOpened=false;
+function openDoors(){
+  if(doorsOpened)return;doorsOpened=true;
+  var d=document.getElementById('doorway');
+  d.classList.add('open');
+  try{var AC=window.AudioContext||window.webkitAudioContext;var ctx=new AC();
+    var o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(90,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(45,ctx.currentTime+1.8);
+    g.gain.setValueAtTime(.12,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+2);
+    o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+2);}catch(e){}
+  setTimeout(function(){d.classList.add('gone')},1400);
+  setTimeout(function(){d.style.display='none'},3200);
+}
+
+/* ═══════════ ROUTER ═══════════ */
+var PAGES=['hub','framework','supervised','unsupervised','deep','rl','engine'];
+function go(p){
+  if(PAGES.indexOf(p)===-1)p='hub';
+  document.querySelectorAll('.page').forEach(function(el){el.classList.remove('on')});
+  var el=document.getElementById('pg-'+p);
+  if(el){el.classList.add('on')}
+  location.hash=p;
+  window.scrollTo(0,0);
+  requestAnimationFrame(watchReveals);
+  return false;
+}
+window.addEventListener('hashchange',function(){
+  var p=location.hash.replace('#','')||'hub';
+  if(!document.getElementById('pg-'+p).classList.contains('on'))go(p);
+});
+
+/* ═══════════ PROGRESS ═══════════ */
+var CHS=['framework','supervised','unsupervised','deep','rl','engine'];
+function getDone(){try{return JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){return[]}}
+function paintProgress(){
+  var done=getDone();
+  document.getElementById('progPill').textContent=done.length+'/6';
+  document.querySelectorAll('.tick').forEach(function(t){
+    t.className='tick'+(done.indexOf(t.dataset.ch)>-1?' done-tick':'');
+    t.textContent=done.indexOf(t.dataset.ch)>-1?'✓ DONE':'';
+  });
+  document.querySelectorAll('[data-complete]').forEach(function(b){
+    if(done.indexOf(b.dataset.complete)>-1)b.classList.add('done');
+  });
+}
+function completeCh(ch,next){
+  var done=getDone();
+  if(done.indexOf(ch)===-1){done.push(ch);localStorage.setItem('atlas_done',JSON.stringify(done))}
+  paintProgress();
+  if(done.length===6&&ch==='engine'){confetti()}
+  go(next);
+}
+function confetti(){
+  for(var i=0;i<60;i++){(function(i){
+    var c=document.createElement('div');
+    var colors=['#8a2e2a','#059669','#D97706','#5B21B6','#0e5f76'];
+    c.style.cssText='position:fixed;z-index:2000;width:9px;height:13px;top:-20px;left:'+(Math.random()*100)+'vw;background:'+colors[i%5]+';transition:transform 2.6s cubic-bezier(.2,.6,.4,1),opacity 2.6s;pointer-events:none';
+    document.body.appendChild(c);
+    setTimeout(function(){c.style.transform='translateY('+(window.innerHeight+60)+'px) rotate('+(Math.random()*720-360)+'deg)';c.style.opacity='0'},20+i*12);
+    setTimeout(function(){c.remove()},3200);
+  })(i)}
+}
+
+/* ═══════════ ALGO CARDS ═══════════ */
+function flipAlgo(btn){
+  var card=btn.parentElement;
+  var was=card.classList.contains('open');
+  card.classList.toggle('open',!was);
+  var lbl=btn.querySelector('.a-open');
+  if(lbl)lbl.textContent=was?'OPEN THE MACHINE ↓':'CLOSE ↑';
+}
+
+/* ═══════════ SCROLL REVEALS + COMIC TRIGGER ═══════════ */
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(en){
+    if(en.isIntersecting){
+      if(en.target.hasAttribute('data-comic'))en.target.classList.add('play');
+      else en.target.classList.add('in');
+      io.unobserve(en.target);
+    }
+  })
+},{threshold:.18});
+function watchReveals(){
+  document.querySelectorAll('.page.on .reveal:not(.in)').forEach(function(el){io.observe(el)});
+  document.querySelectorAll('.page.on [data-comic]:not(.play)').forEach(function(el){io.observe(el)});
+}
+
+/* ═══════════ DECISION ENGINE ═══════════ */
+var ENGINE={
+  start:{q:'Do you have labeled data — examples where the correct answer is already known?',opts:[
+    {t:'Yes, labeled',s:'Every row has an answer attached',next:'sup1',crumb:'Labeled ✓'},
+    {t:'No labels',s:'Just raw data, no answer key',next:'unsup1',crumb:'Unlabeled'},
+    {t:'Neither — it acts over time',s:'An agent makes decisions and gets rewards',next:'rl1',crumb:'Sequential + reward'}]},
+  sup1:{q:'What are you predicting?',opts:[
+    {t:'A category',s:'Spam/ham · churn/stay · which class?',next:'sup2',crumb:'Classification'},
+    {t:'A number',s:'Price · demand · temperature',next:'sup3',crumb:'Regression'},
+    {t:'It involves images/text/audio/video',s:'Unstructured data with labels',next:'deep1',crumb:'Unstructured'}]},
+  sup2:{q:'Do you need probability estimates, or is a hard boundary fine?',opts:[
+    {t:'Probabilities please',s:'“80% likely to churn” — calibrated risk',verdict:{f:'Supervised · Classification',c:'#8a2e2a',algos:'Logistic Regression → Random Forest → XGBoost',why:'Logistic Regression gives fast, explainable, calibrated probabilities. If accuracy plateaus, tree ensembles add non-linearity while keeping probability outputs.',ch:'supervised'},crumb:'Needs probability'},
+    {t:'Just the boundary',s:'I only need the final class',verdict:{f:'Supervised · Classification',c:'#8a2e2a',algos:'SVM (SVC) → Random Forest → XGBoost',why:'SVM maximizes the margin between classes — excellent for clean, medium-sized data. Tree ensembles take over when data is messy or large.',ch:'supervised'},crumb:'Boundary is fine'}]},
+  sup3:{q:'Does the relationship look linear — or complex and curvy?',opts:[
+    {t:'Roughly linear',s:'Straight-line-ish trends, interpretability matters',verdict:{f:'Supervised · Regression',c:'#8a2e2a',algos:'Linear Regression → Ridge / Lasso → Elastic Net',why:'Least squares is fast and fully interpretable. Ridge tames multicollinearity, Lasso also deletes useless features for you.',ch:'supervised'},crumb:'Linear pattern'},
+    {t:'Non-linear / complex',s:'Interactions, curves, thresholds',verdict:{f:'Supervised · Regression',c:'#8a2e2a',algos:'Random Forest Regressor → XGBoost → SVR (RBF) → MLP',why:'Tree ensembles capture non-linear tabular patterns with minimal tuning; XGBoost squeezes maximum accuracy; go neural only if they underperform.',ch:'supervised'},crumb:'Non-linear'}]},
+  unsup1:{q:'What do you want to achieve with your unlabeled data?',opts:[
+    {t:'Group similar things',s:'Segments, communities, tribes',next:'unsup2',crumb:'Clustering'},
+    {t:'Reduce dimensions',s:'Compress many columns / visualize',verdict:{f:'Unsupervised · Dim. Reduction',c:'#059669',algos:'PCA → UMAP / t-SNE (viz) → Autoencoders (non-linear, big data)',why:'PCA first: linear, fast, deterministic. UMAP/t-SNE for 2-D maps that preserve local neighborhoods. Autoencoders when patterns are deeply non-linear.',ch:'unsupervised'},crumb:'Fewer dimensions'},
+    {t:'Find weird points',s:'Fraud, defects, intrusions',verdict:{f:'Unsupervised · Anomaly Detection',c:'#059669',algos:'Isolation Forest → LOF → One-Class SVM',why:'Isolation Forest scales and handles high dimensions; LOF catches local-density oddballs; One-Class SVM fences off "normal".',ch:'unsupervised'},crumb:'Anomalies'}]},
+  unsup2:{q:'Do you know how many groups to expect?',opts:[
+    {t:'Yes, roughly K groups',s:'And clusters are blob-like',verdict:{f:'Unsupervised · Clustering',c:'#059669',algos:'K-Means → Gaussian Mixture (soft memberships)',why:'K-Means is fast and scalable for round-ish clusters. GMM when points can partially belong to overlapping groups.',ch:'unsupervised'},crumb:'K known'},
+    {t:'No idea / weird shapes',s:'Unknown count, possible noise',verdict:{f:'Unsupervised · Clustering',c:'#059669',algos:'DBSCAN → Hierarchical (dendrogram exploration)',why:'DBSCAN finds arbitrary-shaped clusters and flags outliers, no K needed. Hierarchical lets you explore groupings at every granularity.',ch:'unsupervised'},crumb:'K unknown'}]},
+  deep1:{q:'What type of data is it?',opts:[
+    {t:'Images 🖼️',s:'Photos, scans, frames',next:'deep_img',crumb:'Images'},
+    {t:'Text 📝',s:'Documents, chats, reviews',next:'deep_txt',crumb:'Text'},
+    {t:'Audio 🔊',s:'Speech, sounds, music',verdict:{f:'Deep Learning · Audio',c:'#D97706',algos:'Transformer ASR (Whisper-style) / RNN-LSTM → CNN or ECAPA for speaker & sound classification',why:'Sequence models transcribe; CNNs on spectrograms classify sounds and speakers.',ch:'deep'},crumb:'Audio'},
+    {t:'Video 🎬',s:'Clips, CCTV, actions',verdict:{f:'Deep Learning · Video',c:'#D97706',algos:'3D CNN / SlowFast → YOLOv8 / Detectron2 per-frame → CNN+Transformer hybrids',why:'3D convolutions learn motion; SlowFast splits scene vs motion streams; per-frame detectors track objects.',ch:'deep'},crumb:'Video'}]},
+  deep_img:{q:'What image task?',opts:[
+    {t:'Classify the whole image',s:'“Which product is this?”',verdict:{f:'Deep Learning · Vision',c:'#D97706',algos:'CNN — ResNet / EfficientNet (transfer learning first!)',why:'Fine-tune a pretrained backbone; training from scratch is almost never step one.',ch:'deep'},crumb:'Classification'},
+    {t:'Find / outline objects',s:'Boxes or pixel-masks',verdict:{f:'Deep Learning · Vision',c:'#D97706',algos:'Detect: YOLO / SSD / Faster R-CNN · Segment: U-Net / DeepLab',why:'YOLO for real-time boxes; two-stage detectors for accuracy; U-Net when every pixel needs a label.',ch:'deep'},crumb:'Detect / segment'},
+    {t:'Generate images',s:'Create or edit visuals',verdict:{f:'Deep Learning · Generative',c:'#D97706',algos:'Diffusion models → GANs',why:'Diffusion (sculpting images out of noise) is today\'s quality king; GANs remain fast and sharp for narrow domains.',ch:'deep'},crumb:'Generation'}]},
+  deep_txt:{q:'What text task?',opts:[
+    {t:'Classify / extract / QA',s:'Sentiment, NER, find answers',verdict:{f:'Deep Learning · NLP',c:'#D97706',algos:'BERT / RoBERTa (fine-tuned)',why:'Bidirectional encoders excel at understanding tasks with modest data — fine-tune, don\'t pretrain.',ch:'deep'},crumb:'Understanding'},
+    {t:'Summarize / translate',s:'Sequence in → sequence out',verdict:{f:'Deep Learning · NLP',c:'#D97706',algos:'T5 / BART',why:'Encoder-decoder transformers are built exactly for text-to-text transformation.',ch:'deep'},crumb:'Seq2seq'},
+    {t:'Chat / open-ended generation',s:'Assistants, agents, reasoning',verdict:{f:'Deep Learning · LLM',c:'#D97706',algos:'GPT / LLaMA / Claude — prompt or fine-tune via API',why:'Decoder-only LLMs at scale. In 2026 you orchestrate them (prompting, RAG, tools) far more often than you train them.',ch:'deep'},crumb:'LLM'}]},
+  rl1:{q:'What does the action space look like?',opts:[
+    {t:'A menu of moves',s:'Discrete: up/down, buy/hold, card to play',verdict:{f:'Reinforcement · Discrete',c:'#5B21B6',algos:'Q-Learning (small) → DQN → Double/Dueling DQN → A2C',why:'Tabular Q-learning for tiny state spaces; DQN once states explode; A2C when you want policy-based stability.',ch:'rl'},crumb:'Discrete actions'},
+    {t:'Dials and torques',s:'Continuous: steering angle, joint force',verdict:{f:'Reinforcement · Continuous',c:'#5B21B6',algos:'PPO → SAC → TD3 / DDPG',why:'PPO is the stable default (it even fine-tunes LLMs); SAC explores robustly; TD3 for deterministic control.',ch:'rl'},crumb:'Continuous actions'},
+    {t:'Wait — no real rewards here',s:'I may have mis-clicked',verdict:{f:'Not RL — back to the map',c:'#201e1d',algos:'Chapters 2–4',why:'Without sequential decisions earning rewards, supervised / unsupervised / deep learning will serve you better.',ch:'framework'},crumb:'Not RL'}]}
+};
+var engineTrail=[];
+function renderEngine(node){
+  var body=document.getElementById('engineBody');
+  var crumbs=document.getElementById('crumbs');
+  crumbs.innerHTML=engineTrail.map(function(c){return '<span class="crumb">'+c+'</span>'}).join('');
+  var n=ENGINE[node];
+  if(n){
+    var h='<div class="kicker" style="color:var(--sky)">Question '+(engineTrail.length+1)+'</div><div class="q">'+n.q+'</div><div class="opts">';
+    n.opts.forEach(function(o,i){h+='<button class="opt" onclick="pickOpt(\''+node+'\','+i+')"><b>'+o.t+'</b><span>'+o.s+'</span></button>'});
+    h+='</div>';
+    if(engineTrail.length)h+='<div class="reset-row"><button class="btn ghost" onclick="resetEngine()" style="font-size:11px;padding:9px 16px">↺ Start over</button></div>';
+    body.innerHTML=h;
+  }
+}
+function pickOpt(node,i){
+  var o=ENGINE[node].opts[i];
+  engineTrail.push(o.crumb);
+  if(o.next){renderEngine(o.next)}
+  else if(o.verdict){
+    var v=o.verdict;
+    var crumbs=document.getElementById('crumbs');
+    crumbs.innerHTML=engineTrail.map(function(c){return '<span class="crumb">'+c+'</span>'}).join('');
+    document.getElementById('engineBody').innerHTML=
+      '<div class="verdict"><div class="v-band" style="background:'+v.c+'">'+v.f+'</div><div class="v-body">'+
+      '<div class="kicker" style="color:'+v.c+'">Try, in order</div>'+
+      '<p style="font-family:var(--mono);font-weight:700;font-size:14px;color:var(--ink);margin:6px 0 12px">'+v.algos+'</p>'+
+      '<p>'+v.why+'</p>'+
+      '<div class="reset-row"><a class="btn" style="--cc:'+v.c+'" href="#'+v.ch+'" onclick="return go(\''+v.ch+'\')">Study this realm →</a>'+
+      '<button class="btn ghost" onclick="resetEngine()">↺ Diagnose another problem</button></div></div></div>';
+  }
+}
+function resetEngine(){engineTrail=[];renderEngine('start')}
+
+/* ═══════════ BOOT ═══════════ */
+paintProgress();
+resetEngine();
+go(location.hash.replace('#','')||'hub');
+</script>
+</body>
+</html>

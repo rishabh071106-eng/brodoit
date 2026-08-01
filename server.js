@@ -3903,6 +3903,28 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
 .learn-sub-tabs .lst{flex:1;padding:12px 8px;font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-mute);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;transition:color .15s,border-color .15s}
 .learn-sub-tabs .lst.on{color:var(--accent);border-bottom-color:var(--accent)}
 .learn-sub-tabs .lst:not(.on):hover{color:var(--ink)}
+.crs-cat{border:2px solid var(--ink);background:var(--bg-elev);margin-bottom:14px}
+.crs-cat-h{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:2px solid var(--ink)}
+.crs-cat-h .ci{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--cc);color:#fff}
+.crs-cat-h .ct{flex:1}
+.crs-cat-h .ct b{display:block;font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.crs-cat-h .ct span{font-size:11.5px;color:var(--text-mute);font-weight:600}
+.crs-cat-h .cn{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text-mute);border:1.5px solid var(--line-2);padding:3px 8px;white-space:nowrap}
+.crs-card{display:block;text-decoration:none;color:var(--ink);padding:16px;position:relative;transition:background .15s}
+.crs-card:hover{background:var(--accent-soft)}
+.crs-card .ck{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--cc);letter-spacing:.18em}
+.crs-card .cname{font-size:17px;font-weight:900;text-transform:uppercase;line-height:1.15;margin:4px 0 5px}
+.crs-card .cdesc{font-size:12.5px;color:var(--ink-2);max-width:520px}
+.crs-card .cmeta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.crs-card .cmeta span{font-family:var(--mono);font-size:10px;font-weight:700;border:1.5px solid var(--line-2);padding:3px 8px;color:var(--text-mute)}
+.crs-card .cmeta span.go{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.crs-card .cmeta span.cprog{border-color:var(--sage);color:var(--sage)}
+.crs-door{position:absolute;right:16px;top:18px;width:30px;height:46px;border:2.5px solid var(--ink);background:var(--cc);transform-origin:left center;transition:transform .45s cubic-bezier(.6,0,.3,1)}
+.crs-door::after{content:'';position:absolute;right:4px;top:50%;width:4px;height:4px;border-radius:50%;background:#e8c98f}
+.crs-door-frame{position:absolute;right:16px;top:18px;width:30px;height:46px;border:2.5px solid var(--ink);background:repeating-linear-gradient(45deg,var(--bg-2) 0 4px,var(--paper) 4px 8px);display:flex;align-items:center;justify-content:center;font-size:13px}
+.crs-card:hover .crs-door{transform:perspective(280px) rotateY(-82deg)}
+.crs-soon{padding:16px;font-size:12.5px;color:var(--text-mute);font-weight:600}
+.crs-soon b{color:var(--ink-2)}
 .tabs{display:flex;gap:4px;background:linear-gradient(145deg,var(--bg-sunken),rgba(0,0,0,.02));border:none;border-radius:0;padding:4px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;box-shadow:inset 0 1px 2px rgba(0,0,0,.04)}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:0 0 auto;padding:12px 14px;border-radius:0;font-size:13px;font-weight:600;color:var(--text-mute);transition:all .18s cubic-bezier(.2,.8,.2,1);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;position:relative}
@@ -8825,7 +8847,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'mindgym'}if(t==='you'){t='profile'}if(t==='mindgym'||t==='books'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='books'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -12930,7 +12952,7 @@ if(isMain){
     learn:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>',
     you:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
   };
-  var _learnTabs=['mindgym','books','meditation'];
+  var _learnTabs=['courses','mindgym','books','meditation'];
   var _youTabs=['profile','cal'];
   const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'bro',l:'Bro'},{k:'learn',l:'Learn'},{k:'you',l:'You'}].map(function(x){
     var isOn=false;
@@ -13212,9 +13234,33 @@ if(S.tab==='tasks'){
   }
 }
 
+// LEARNING TAB — course library: AI, Product Management, Development
+else if(S.tab==='courses'){
+  h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst" onclick="switchTab(\\'books\\')">Listen</button><button class="lst" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
+  var _atlasDone=0;try{_atlasDone=(JSON.parse(localStorage.getItem('atlas_done')||'[]')).length}catch(e){}
+  h+='<div style="padding:6px 0 18px"><div style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);font-weight:800">Brodoit Learning</div>'
+    +'<div style="font-size:26px;font-weight:900;text-transform:uppercase;line-height:1.1;margin-top:6px">Open a door.<br>Learn a world.</div>'
+    +'<div style="font-size:13px;color:var(--ink-2);margin-top:8px;max-width:520px">Interactive, story-driven courses. Each one is a room — walk in, play with the machinery, walk out understanding it.</div></div>';
+  h+='<div class="crs-cat" style="--cc:#8a2e2a">'
+    +'<div class="crs-cat-h"><div class="ci">\\u{1F9E0}</div><div class="ct"><b>AI</b><span>Machine learning, deep learning &amp; the craft of thinking machines</span></div><div class="cn">1 COURSE</div></div>'
+    +'<a class="crs-card" href="/learning/ml-algorithms" style="--cc:#8a2e2a">'
+    +'<div class="crs-door-frame">\\u{1F9ED}</div><div class="crs-door"></div>'
+    +'<div class="ck">SERIES 01 \\u00B7 INTERACTIVE</div>'
+    +'<div class="cname">The Algorithm Atlas</div>'
+    +'<div class="cdesc">Choosing the right ML algorithm \\u2014 supervised, unsupervised, deep &amp; reinforcement learning, told as an animated story with a decision engine you\\'ll reuse on real projects.</div>'
+    +'<div class="cmeta"><span>6 CHAPTERS</span><span>26 ALGORITHMS</span><span>COMIC STORIES</span>'+(_atlasDone>0?'<span class="cprog">'+_atlasDone+'/6 DONE'+(_atlasDone===6?' \\u2713':'')+'</span>':'')+'<span class="go">'+(_atlasDone>0?'CONTINUE \\u2192':'ENTER \\u2192')+'</span></div>'
+    +'</a></div>';
+  h+='<div class="crs-cat" style="--cc:#0e5f76">'
+    +'<div class="crs-cat-h"><div class="ci">\\u{1F4E6}</div><div class="ct"><b>Product Management</b><span>Strategy, discovery, metrics &amp; shipping things people want</span></div><div class="cn">SOON</div></div>'
+    +'<div class="crs-soon"><b>First course brewing.</b> Roadmaps, discovery and metrics \\u2014 told the same story-driven way.</div></div>';
+  h+='<div class="crs-cat" style="--cc:#059669">'
+    +'<div class="crs-cat-h"><div class="ci">\\u{1F6E0}\\uFE0F</div><div class="ct"><b>Development</b><span>Code, systems &amp; the art of building software</span></div><div class="cn">SOON</div></div>'
+    +'<div class="crs-soon"><b>First course brewing.</b> From HTTP to system design \\u2014 doors opening shortly.</div></div>';
+}
+
 // MIND GAMES TAB — 3 sections: Maths, Memory, Puzzles
 else if(S.tab==='mindgym'){
-  h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst" onclick="switchTab(\\'books\\')">Listen</button><button class="lst" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
+  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst on" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst" onclick="switchTab(\\'books\\')">Listen</button><button class="lst" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
   const mg=S.mg;
   const _mgSections=[
     {id:'maths',title:'Maths',desc:'Sharpen your numerical intelligence',
@@ -13604,7 +13650,7 @@ else if(S.tab==='cal'){
 
 // BOOKS TAB
 else if(S.tab==='books'){
-  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst on" onclick="switchTab(\\'books\\')">Listen</button><button class="lst" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
+  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst on" onclick="switchTab(\\'books\\')">Listen</button><button class="lst" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
   const bs=S.bookStreak||{streak:0,total:0,today:false};
   if(!S.booksMode)S.booksMode='summaries';
   if(bs.streak>0)h+='<div class="streak-card"><div class="streak-ico">'+ic('flame',24)+'</div><div class="streak-body"><div class="streak-n">'+bs.streak+'<span>day'+(bs.streak===1?'':'s')+'</span></div><div class="streak-lbl">Streak'+(bs.today?' \\u2022 done today':'')+'</div></div></div>';
@@ -13676,7 +13722,7 @@ else if(S.tab==='books'){
 
 // WISDOM TAB — Landing page with category cards
 else if(S.tab==='meditation'){
-  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst" onclick="switchTab(\\'books\\')">Listen</button><button class="lst on" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
+  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst" onclick="switchTab(\\'books\\')">Listen</button><button class="lst on" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
   if(!S.medCat){
     // Landing page — category cards
     h+='<div style="text-align:center;padding:8px 0 18px">';
@@ -15318,6 +15364,11 @@ app.get('/privacy',(_,res)=>{
 // Terms of Service
 app.get('/terms',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${LEGAL_CHROME}<title>Terms of Service — Brodoit</title><meta name="description" content="The simple terms for using Brodoit. Plain English, no surprises."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div class="kicker">Legal · Terms</div><h1>The simple rules.</h1><p class="lede">We've kept these terms short and human. Use Brodoit kindly, and we'll keep building it for you.</p><span class="updated">Last updated · April 2026</span><hr class="hr"><h2 data-n="01">The service</h2><p>Brodoit is a personal productivity app: it lets you manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind with brain games, and see a daily wisdom quote.</p><h2 data-n="02">Your account</h2><p>You register with your email address or phone number. Keep your one-time verification codes private — anyone with the code can sign in. You are responsible for activity on your account.</p><h2 data-n="03">Acceptable use</h2><p>Please don't abuse the service: no spam, no impersonation, no automated scraping, no attempts to disrupt other users or the service itself. We may suspend or remove accounts that do.</p><h2 data-n="04">Content</h2><p>You own your tasks, notes, and other content you create. We store them so we can show them back to you. Audiobook content belongs to the respective public-domain authors and is served from the Internet Archive's LibriVox collection.</p><h2 data-n="05">No warranty</h2><p>The service is provided "as is". We try hard to keep it running, but can't promise zero downtime or guarantee that every reminder is delivered (email providers can fail). If something matters, please don't rely solely on Brodoit.</p><h2 data-n="06">Limitation of liability</h2><p>Brodoit is a personal tool. We're not liable for missed deadlines, lost data, or any consequential damages from using — or not using — the service.</p><h2 data-n="07">Changes</h2><p>We may update these terms. If we do, we'll update the date at the top. Continued use after a change means you accept the new terms.</p><h2 data-n="08">Contact</h2><p>Need anything? <a href="mailto:hello@brodoit.com">hello@brodoit.com</a> — a real human reads every message.</p>${LEGAL_FOOT}</div></body></html>`);
+});
+
+// Brodoit Learning — interactive courses (standalone immersive pages)
+app.get('/learning/ml-algorithms',(_,res)=>{
+  res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
 app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v92";
 self.addEventListener("install",function(e){self.skipWaiting()});
