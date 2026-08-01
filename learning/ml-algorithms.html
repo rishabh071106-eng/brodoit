@@ -143,7 +143,12 @@ body.world .sr-none{color:#9c8b77}
 .step.out{animation:stepOut .22s ease forwards}
 @keyframes stepOut{to{opacity:0;transform:translateY(-18px) scale(.98)}}
 
-/* comic step — inked panels */
+/* comic step — inked panels, cinema (full-screen) mode */
+.stage.cinema{min-height:calc(100vh - 175px);display:flex;flex-direction:column}
+.cinema .step{flex:1;display:flex}
+.cinema .panel{flex:1;display:flex;flex-direction:column;min-height:calc(100vh - 210px)}
+.cinema .panel .art{flex:1;min-height:250px}
+.cinema .panel .art svg{height:100%;width:100%;object-fit:cover}
 .panel{background:var(--card);border-radius:18px;border:3px solid #241d1a;box-shadow:7px 7px 0 rgba(36,29,26,.85);overflow:hidden;transform:rotate(-.4deg)}
 .panel .art{min-height:210px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-bottom:3px solid #241d1a;background-image:radial-gradient(rgba(36,29,26,.07) 1.2px,transparent 1.2px);background-size:12px 12px}
 .panel .art svg{width:100%;height:auto;display:block}
@@ -402,6 +407,88 @@ var LESSONS=[
    +'<span class="hl">4️⃣ <b>Measure on unseen data</b> — always the split!</span>'
    +'<p>Small data → traditional ML. Large unstructured data → deep learning. Sequential decisions → RL.</p>'},
   {t:'recap',cc:'sky',em:'🌱',title:'Foundations — done!',pts:['Rules are LEARNED from examples, not written','Features (X) in → Label (Y) out','✂️ Always train/test split','📖 Memorising ≠ learning: watch for overfitting','Start simple, measure honestly']}
+ ]},
+
+/* ─────────── 0.5 · THE STORY OF AI (full-screen comic history) ─────────── */
+{id:'story',emoji:'🎞️',color:'gold',title:'The Story of AI',tag:'COMIC SPECIAL',
+ desc:'75 years of history — told as a full-screen comic',
+ steps:[
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'Before you meet the algorithms, meet their ancestors. Our story begins in 1950, with one quiet Englishman and the loudest question ever asked… 🎬',
+   art:scene('linear-gradient(170deg,#1c1a2e,#3b2f4d)',
+     emAt('🌌',170,50,80)+emAt('🎞️',60,180,42)+emAt('✨',280,90,24)+emAt('✨',90,70,18)
+     +'<text x="170" y="130" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffd694" font-family="monospace">1950 → 2026</text>'),
+   cap:'Every tool in this atlas has a birth story. Buckle up — 75 years in 11 panels.'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'1950. Alan Turing asks: “Can machines THINK?” — and invents a game to test it: fool a human into believing you\'re human.',
+   art:scene('linear-gradient(170deg,#e8e2d4,#cfc6b0)',
+     emAt('🎩',80,80,46)+emAt('⌨️',80,150,40)+emAt('💭',180,60,40)+emAt('🤖',255,70,36)
+     +'<text x="170" y="190" text-anchor="middle" font-size="15" font-weight="bold" fill="#5a4d33" font-family="monospace">“Can machines think?”</text>'),
+   cap:'HISTORY: Turing\'s 1950 paper proposes the Imitation Game — today we call it the Turing Test.'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'1956. Ten scientists spend a summer at Dartmouth College and give our field its name: ARTIFICIAL INTELLIGENCE. ☀️',
+   art:scene('linear-gradient(170deg,#f5e9c9,#e3cf9b)',
+     emAt('🏛️',170,85,66)+emAt('☀️',290,40,34)+emAt('📝',80,150,32)+emAt('🧑‍🔬',140,160,28)+emAt('🧑‍🔬',200,160,28)
+     +'<text x="170" y="205" text-anchor="middle" font-size="13" font-weight="bold" fill="#6b5518" font-family="monospace">Dartmouth, 1956 — “AI” is born</text>'),
+   cap:'HISTORY: The Dartmouth workshop — the founding moment and the founding optimism of AI.'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'1958. Frank Rosenblatt wires up the PERCEPTRON — a machine that LEARNS from examples. Newspapers promise walking, talking robots any day now!',
+   art:scene('linear-gradient(170deg,#dce8ec,#b9cdd6)',
+     emAt('🖥️',120,100,60)+emAt('⚡',200,70,36)+emAt('📰',260,140,38)
+     +'<text x="170" y="195" text-anchor="middle" font-size="13" font-weight="bold" fill="#33535f" font-family="monospace">one learning neuron, room-sized</text>'),
+   cap:'HISTORY: The Perceptron is the grandfather of every neural network — including the ones in your phone.'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'Then… silence. ❄️ The promises were too big and the computers too small. Money froze. Twice. They call these the AI WINTERS.',
+   art:scene('linear-gradient(170deg,#2c3440,#0f1319)',
+     emAt('❄️',60,60,34)+emAt('❄️',170,40,26)+emAt('❄️',280,70,30)+emAt('🌨️',230,130,40)
+     +'<g opacity=".85">'+svgWrap(byte(),128,110,.9)+'</g>'
+     +'<text x="170" y="205" text-anchor="middle" font-size="13" font-weight="bold" fill="#9fb4c9" font-family="monospace">1970s–80s: funding frozen</text>'),
+   cap:'HISTORY: Two brutal winters. The believers kept working in the cold — remember that when your model won\'t converge.'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'1986. Three researchers show that DEEP stacks of neurons can learn — by passing blame BACKWARDS through the layers. You\'ve met this: backpropagation!',
+   art:scene('linear-gradient(170deg,#fdf3e3,#f3ddb4)',
+     '<g fill="#e08914"><circle cx="70" cy="60" r="12"/><circle cx="70" cy="110" r="12"/><circle cx="70" cy="160" r="12"/></g>'
+     +'<g fill="#b3701a"><circle cx="170" cy="85" r="12"/><circle cx="170" cy="135" r="12"/></g>'
+     +'<circle cx="265" cy="110" r="14" fill="#241d1a"/>'
+     +'<g stroke="#d9c096" stroke-width="2"><line x1="82" y1="60" x2="158" y2="85"/><line x1="82" y1="110" x2="158" y2="85"/><line x1="82" y1="110" x2="158" y2="135"/><line x1="82" y1="160" x2="158" y2="135"/><line x1="182" y1="85" x2="251" y2="110"/><line x1="182" y1="135" x2="251" y2="110"/></g>'
+     +'<path d="M251 118 Q170 190 82 170" stroke="#a53c36" stroke-width="3.5" fill="none" stroke-dasharray="7" marker-end="none"/>'
+     +'<text x="170" y="210" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a5c0f" font-family="monospace">blame flows backwards = learning</text>'),
+   cap:'HISTORY: Rumelhart, Hinton & Williams popularise backprop — the engine inside every deep net in Lesson 5.'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'1997. A machine defeats the world CHESS champion. Humanity collectively gulps. 😮',
+   art:scene('linear-gradient(170deg,#e8e6f2,#c5c2dd)',
+     emAt('♟️',110,90,56)+emAt('🖥️',230,90,52)+emAt('😮',170,160,36)
+     +'<text x="170" y="205" text-anchor="middle" font-size="13" font-weight="bold" fill="#454066" font-family="monospace">Deep Blue vs Kasparov — machine wins</text>'),
+   cap:'HISTORY: IBM\'s Deep Blue, 1997 — brute-force search, not learning. The real learning revolution was still loading…'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'2012. Two students, gaming GPUs and a million labelled photos. AlexNet SEES — and error rates fall off a cliff. The deep-learning explosion begins! 🧨',
+   art:scene('linear-gradient(170deg,#fdeee3,#f5cfa8)',
+     emAt('🎮',80,70,40)+emAt('📸',170,60,40)+emAt('🧠',255,70,40)
+     +'<path d="M50 130 L130 138 L200 150 L240 185" stroke="#a53c36" stroke-width="4" fill="none" stroke-linecap="round"/>'
+     +'<text x="120" y="122" font-size="12" font-weight="bold" fill="#a53c36" font-family="monospace">error rate ↓↓</text>'
+     +'<text x="170" y="210" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a4d21" font-family="monospace">ImageNet 2012 — machines learn to see</text>'),
+   cap:'HISTORY: AlexNet — the CNN from Lesson 5, plus GPUs and data. Every vision model today descends from this moment.'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'2016. Move 37. AlphaGo plays a move NO human would ever play — and it\'s beautiful. It didn\'t memorise Go. It learned by REWARD. 🤯',
+   art:scene('linear-gradient(170deg,#e3ede6,#bdd6c4)',
+     '<g stroke="#8aa392" stroke-width="1.5">'
+     +'<line x1="60" y1="60" x2="280" y2="60"/><line x1="60" y1="95" x2="280" y2="95"/><line x1="60" y1="130" x2="280" y2="130"/>'
+     +'<line x1="95" y1="40" x2="95" y2="150"/><line x1="170" y1="40" x2="170" y2="150"/><line x1="245" y1="40" x2="245" y2="150"/></g>'
+     +emAt('⚫',110,80,30)+emAt('⚪',160,110,30)+emAt('⚫',210,80,30)+emAt('✨',185,55,26)
+     +'<text x="170" y="180" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c5138" font-family="monospace">MOVE 37</text>'
+     +'<text x="170" y="205" text-anchor="middle" font-size="12" font-weight="bold" fill="#557a63" font-family="monospace">creativity from trial & reward</text>'),
+   cap:'HISTORY: AlphaGo beats Lee Sedol — reinforcement learning (your robot game!) at planetary scale.'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'2017. Eight researchers publish “Attention Is All You Need”. Every word looks at every word — and language falls to the machines. 📄⚡',
+   art:scene('linear-gradient(170deg,#fff6e8,#f3e0bb)',
+     emAt('📄',170,80,60)+emAt('🔗',110,140,32)+emAt('🔗',230,140,32)+emAt('✨',260,60,26)+emAt('✨',85,60,22)
+     +'<text x="170" y="200" text-anchor="middle" font-size="13" font-weight="bold" fill="#8a5c0f" font-family="monospace">the Transformer is born</text>'),
+   cap:'HISTORY: The Transformer — the T in ChatGPT, the architecture behind BERT, Claude, Gemini and the whole LLM era.'},
+  {t:'comic',who:'BYTE',cc:'gold',bubble:'2022. A chatbot reaches 100 MILLION users in two months. Suddenly everyone — your boss, your nani — talks to a neural network daily. 💬🌍',
+   art:scene('linear-gradient(170deg,#e6f2ef,#bfdcd4)',
+     emAt('💬',120,80,52)+emAt('🌍',225,85,48)+emAt('📱',90,155,32)+emAt('💻',250,155,32)
+     +'<text x="170" y="208" text-anchor="middle" font-size="13" font-weight="bold" fill="#2c5c52" font-family="monospace">ChatGPT — AI goes mainstream</text>'),
+   cap:'HISTORY: LLMs trained with supervised learning AND reinforcement learning (PPO — from your Lesson 5!). The families joined forces.'},
+  {t:'comic',who:'RIO',cc:'gold',bubble:'…and 2026? The doors are open for ME. Every algorithm in this atlas is a chapter of this story — and the next chapter is unwritten. ✍️',
+   art:scene('linear-gradient(170deg,#611f1c,#2c1210)',
+     '<rect x="120" y="55" width="100" height="130" fill="#8a2e2a" stroke="#e8c98f" stroke-width="3"/>'
+     +'<line x1="170" y1="55" x2="170" y2="185" stroke="#e8c98f" stroke-width="2"/>'
+     +'<circle cx="162" cy="122" r="4" fill="#ffd694"/><circle cx="178" cy="122" r="4" fill="#ffd694"/>'
+     +emAt('✨',95,60,26)+emAt('✨',250,80,30)+emAt('✨',240,170,22)
+     +svgWrap(rio('wow'),135,120,.85)
+     +'<text x="170" y="212" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffd694" font-family="monospace">your turn.</text>'),
+   cap:'The story continues with you. Now go meet the four families — you know their ancestors.'},
+  {t:'recap',cc:'gold',em:'🎞️',title:'75 years, one thread',pts:['1950 Turing asks · 1956 AI named · 1958 Perceptron learns','❄️ Winters test the believers','1986 backprop · 1997 Deep Blue · 2012 AlexNet sees','2016 AlphaGo imagines · 2017 attention · 2022 everyone chats','2026 — the doors open for you 🚪']}
  ]},
 
 /* ─────────── 1 · THE MAP ─────────── */
@@ -1013,7 +1100,7 @@ function renderStep(){
   $('prevBtn').style.visibility=curStep===0?'hidden':'visible';
   var nb=$('nextBtn');nb.disabled=false;nb.textContent=curStep===L.steps.length-1?'Finish lesson 🎉':'Continue';
   var cc=C[L.color],ccs=CS[L.color];
-  var h='<div class="stage"><div class="step" id="stepBox" style="--cc:'+cc+';--cc-soft:'+ccs+'">';
+  var h='<div class="stage'+(st.t==='comic'?' cinema':'')+'"><div class="step" id="stepBox" style="--cc:'+cc+';--cc-soft:'+ccs+'">';
   if(st.t==='comic'){
     h+='<div class="panel"><div class="rl-tag">'+(st.who==='RIO'?'🧑 Rio':'🤖 Byte')+'</div><div class="art">'+st.art+'</div>'
       +'<div class="speech"><span class="who">'+st.who+' says</span>'+st.bubble+'</div>'
