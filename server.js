@@ -8376,8 +8376,14 @@ select,option{color:var(--ink);font-weight:600}
 /* ── card depth (paper feel) ── */
 .tc,.book-card,.dash-card,.kc,.insight{background:#FFFFFF;border:1px solid rgba(0,0,0,.05);box-shadow:0 1px 3px rgba(0,0,0,.02)}
 
+/* ── Learning — scoped dark professional theme ── */
+.learn-wrap{background:#1E2028;border-radius:20px 20px 0 0;margin:-2px -16px -80px;padding:20px 16px 80px;min-height:60vh}
+.learn-wrap .learn-sub-tabs{margin:-20px -16px 16px;padding:0 16px;background:#1E2028;border-radius:20px 20px 0 0;border-bottom-color:rgba(255,255,255,.06)}
+.learn-wrap .learn-sub-tabs .lst{color:#8B8D97}
+.learn-wrap .learn-sub-tabs .lst.on{color:#818CF8;border-bottom-color:#818CF8}
+.learn-wrap .learn-sub-tabs .lst:not(.on):hover{color:#E8E9ED}
 /* ── Learning Hero ── */
-.learn-hero{position:relative;border-radius:20px;padding:32px 20px;margin-bottom:20px;overflow:hidden;background:linear-gradient(135deg,#F8F7FF 0%,#EEF2FF 50%,#FDF2F8 100%)}
+.learn-hero{position:relative;border-radius:20px;padding:32px 20px;margin-bottom:20px;overflow:hidden;background:linear-gradient(135deg,#252830 0%,#2A2D38 50%,#282535 100%)}
 .learn-hero-bg{position:absolute;inset:0;overflow:hidden}
 .learn-orb{position:absolute;border-radius:50%;filter:blur(40px);opacity:.35;animation:orbFloat 8s ease-in-out infinite}
 .learn-orb-1{width:120px;height:120px;background:#6366F1;top:-20px;right:-10px;animation-delay:0s}
@@ -8389,43 +8395,43 @@ select,option{color:var(--ink);font-weight:600}
 /* ── Learning Cards Grid ── */
 .learn-grid{display:flex;flex-direction:column;gap:14px;perspective:800px}
 .learn-card-3d{opacity:1}
-.learn-card{position:relative;border-radius:16px;background:#fff;border:1px solid rgba(0,0,0,.06);box-shadow:0 2px 8px rgba(0,0,0,.04);overflow:hidden;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s}
-.learn-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.learn-card{position:relative;border-radius:16px;background:#282B33;border:1px solid rgba(255,255,255,.06);box-shadow:0 2px 10px rgba(0,0,0,.25);overflow:hidden;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s}
+.learn-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
 .learn-card:active{transform:scale(.98)}
 .learn-card-scene{width:100%;height:140px;overflow:hidden;border-radius:16px 16px 0 0}
 .learn-card-scene svg{width:100%;height:100%;display:block}
 .learn-card-body{padding:16px}
 .learn-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;gap:8px}
-.learn-card-tag{font-size:9px;letter-spacing:.1em;font-weight:800;text-transform:uppercase;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.04);color:var(--text-mute);white-space:nowrap;flex-shrink:0}
-.learn-card-tag.active{background:rgba(99,102,241,.1);color:#6366F1}
-.learn-card-title{font-size:17px;font-weight:700;color:var(--ink);margin:0;line-height:1.3}
-.learn-card-desc{font-size:13px;color:var(--text-mute);line-height:1.5;margin:0 0 10px}
-.learn-card-meta{display:flex;gap:14px;font-size:12px;color:var(--text-mute);font-weight:600}
-.learn-card-progress{height:4px;background:rgba(99,102,241,.12);border-radius:4px;margin-top:10px;overflow:hidden}
-.learn-card-bar{height:100%;background:#6366F1;border-radius:4px;transition:width .5s}
+.learn-card-tag{font-size:9px;letter-spacing:.1em;font-weight:800;text-transform:uppercase;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.06);color:#8B8D97;white-space:nowrap;flex-shrink:0}
+.learn-card-tag.active{background:rgba(99,102,241,.15);color:#818CF8}
+.learn-card-title{font-size:17px;font-weight:700;color:#E8E9ED;margin:0;line-height:1.3}
+.learn-card-desc{font-size:13px;color:#8B8D97;line-height:1.5;margin:0 0 10px}
+.learn-card-meta{display:flex;gap:14px;font-size:12px;color:#8B8D97;font-weight:600}
+.learn-card-progress{height:4px;background:rgba(99,102,241,.15);border-radius:4px;margin-top:10px;overflow:hidden}
+.learn-card-bar{height:100%;background:#818CF8;border-radius:4px;transition:width .5s}
 
 /* ── AI Course Sections ── */
 .ai-part{margin-bottom:20px}
 .ai-part-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:4px 0}
 .ai-part-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.ai-part-label{font-size:10px;letter-spacing:.12em;font-weight:800;text-transform:uppercase;color:var(--text-mute)}
-.ai-part-title{font-size:16px;font-weight:700;color:var(--ink)}
-.ai-ch{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:#fff;border:1px solid rgba(0,0,0,.05);margin-bottom:6px;transition:all .15s}
-.ai-ch:hover{background:rgba(99,102,241,.03);border-color:rgba(99,102,241,.12);transform:translateX(2px)}
+.ai-part-label{font-size:10px;letter-spacing:.12em;font-weight:800;text-transform:uppercase;color:#8B8D97}
+.ai-part-title{font-size:16px;font-weight:700;color:#E8E9ED}
+.ai-ch{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:#282B33;border:1px solid rgba(255,255,255,.05);margin-bottom:6px;transition:all .15s}
+.ai-ch:hover{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.15);transform:translateX(2px)}
 .ai-ch-check{width:22px;height:22px;border-radius:7px;border:2px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:900;color:#fff;transition:all .2s}
 .ai-ch.done .ai-ch-check{border-color:transparent}
 .ai-ch-body{flex:1;min-width:0}
-.ai-ch-name{font-size:14px;font-weight:600;color:var(--ink);line-height:1.3}
-.ai-ch-desc{font-size:12px;color:var(--text-mute);margin-top:1px}
-.ai-ch-time{font-size:11px;font-weight:700;color:var(--text-mute);white-space:nowrap}
-.ai-ch.done .ai-ch-name{color:var(--text-mute)}
+.ai-ch-name{font-size:14px;font-weight:600;color:#E8E9ED;line-height:1.3}
+.ai-ch-desc{font-size:12px;color:#8B8D97;margin-top:1px}
+.ai-ch-time{font-size:11px;font-weight:700;color:#8B8D97;white-space:nowrap}
+.ai-ch.done .ai-ch-name{color:#5E6068}
 
 /* aurora overrides for learn cards */
+body[data-theme=aurora] .learn-wrap{background:#151520}
+body[data-theme=aurora] .learn-wrap .learn-sub-tabs{background:#151520}
 body[data-theme=aurora] .learn-hero{background:linear-gradient(135deg,#1E1E2E 0%,#252540 50%,#2D1F3D 100%)}
-body[data-theme=aurora] .learn-card{background:#2A2A3A;border-color:rgba(255,255,255,.06)}
-body[data-theme=aurora] .learn-card-tag{background:rgba(255,255,255,.06)}
-body[data-theme=aurora] .ai-ch{background:#2A2A3A;border-color:rgba(255,255,255,.04)}
-body[data-theme=aurora] .ai-ch:hover{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.15)}
+body[data-theme=aurora] .learn-card{background:#1E1E2E;border-color:rgba(255,255,255,.06)}
+body[data-theme=aurora] .ai-ch{background:#1E1E2E;border-color:rgba(255,255,255,.04)}
 </style></head><body data-theme="classic">
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
@@ -13339,15 +13345,16 @@ if(S.tab==='tasks'){
 
 // LEARNING TAB — 5 sections: AI, Product, Dev, Confidence, Personality
 else if(S.tab==='courses'){
+  h+='<div class="learn-wrap">';
   h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst" onclick="switchTab(\\'books\\')">Listen</button><button class="lst" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
   if(!S.learnSection){
     // Landing — 5 section cards with 3D tilt
     h+='<div class="learn-hero">';
     h+='<div class="learn-hero-bg"><div class="learn-orb learn-orb-1"></div><div class="learn-orb learn-orb-2"></div><div class="learn-orb learn-orb-3"></div></div>';
     h+='<div class="learn-hero-txt">';
-    h+='<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px">Brodoit Academy</div>';
-    h+='<h2 style="font-family:var(--serif);font-size:30px;font-weight:400;line-height:1.15;margin:0;color:var(--ink)">Learn anything.<br><span style="color:var(--accent)">Master everything.</span></h2>';
-    h+='<p style="font-size:14px;color:var(--text-mute);margin:8px 0 0;line-height:1.5">Story-driven courses with real examples, zero fluff.</p>';
+    h+='<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#818CF8;font-weight:700;margin-bottom:6px">Brodoit Academy</div>';
+    h+='<h2 style="font-family:var(--serif);font-size:30px;font-weight:400;line-height:1.15;margin:0;color:#E8E9ED">Learn anything.<br><span style="color:#818CF8">Master everything.</span></h2>';
+    h+='<p style="font-size:14px;color:#8B8D97;margin:8px 0 0;line-height:1.5">Story-driven courses with real examples, zero fluff.</p>';
     h+='</div></div>';
     // Animated SVG scenes for each card
     var _scenes={};
@@ -13394,7 +13401,7 @@ else if(S.tab==='courses'){
         var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
         var pct=Math.round(_aDone.length/63*100);
         h+='<div class="learn-card-progress"><div class="learn-card-bar" style="width:'+pct+'%"></div></div>';
-        h+='<div style="font-size:11px;color:var(--text-mute);margin-top:4px">'+_aDone.length+'/63 completed</div>';
+        h+='<div style="font-size:11px;color:#8B8D97;margin-top:4px">'+_aDone.length+'/63 completed</div>';
       }
       h+='</div></div></div>';
     });
@@ -13402,9 +13409,9 @@ else if(S.tab==='courses'){
   } else if(S.learnSection==='ai'){
     // AI Section — full curriculum
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
-    h+='<button onclick="S.learnSection=null;render()" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
-    h+='<div><div style="font-size:11px;letter-spacing:.15em;font-weight:700;color:var(--accent);text-transform:uppercase">AI & Machine Learning</div>';
-    h+='<div style="font-family:var(--serif);font-size:22px;font-weight:400;margin-top:2px">The Complete Journey</div></div></div>';
+    h+='<button onclick="S.learnSection=null;render()" style="background:none;border:none;cursor:pointer;padding:6px;color:#8B8D97;font-size:18px">\\u2190</button>';
+    h+='<div><div style="font-size:11px;letter-spacing:.15em;font-weight:700;color:#818CF8;text-transform:uppercase">AI & Machine Learning</div>';
+    h+='<div style="font-family:var(--serif);font-size:22px;font-weight:400;margin-top:2px;color:#E8E9ED">The Complete Journey</div></div></div>';
     var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
     var _aiParts=[
       {part:'Part 1',title:'Foundations',color:'#6366F1',chs:[
@@ -13501,6 +13508,7 @@ else if(S.tab==='courses'){
       h+='</div>';
     });
   }
+  h+='</div>';
 }
 
 // MIND GAMES TAB — 3 sections: Maths, Memory, Puzzles
@@ -15343,7 +15351,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=95').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=96').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15653,7 +15661,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v95";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v96";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
