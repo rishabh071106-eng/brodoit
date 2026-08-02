@@ -2409,9 +2409,9 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 @keyframes spPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes spSpin{to{transform:rotate(360deg)}}
 :root{
---bg:#FAFAFA;--bg-2:#F3F4F6;--bg-elev:#FFFFFF;--bg-sunken:#F0F1F3;
+--bg:#FCFCFD;--bg-2:#F6F7F9;--bg-elev:#FFFFFF;--bg-sunken:#F2F3F5;
 --surface:#FFFFFF;--surface-2:#FAFBFC;
---ink:#1A1A2E;--text:#1A1A2E;--text-mute:#6B7280;--text-dim:#9CA3AF;
+--ink:#2D2D3A;--text:#2D2D3A;--text-mute:#7C8290;--text-dim:#A8ADB8;
 --ink-2:#374151;--ink-3:#6B7280;--ink-4:#9CA3AF;--ink-5:#E5E7EB;
 --line:rgba(0,0,0,.06);--line-2:rgba(0,0,0,.1);--border:rgba(0,0,0,.06);--border-2:rgba(0,0,0,.1);
 --accent:#D4654A;--accent-soft:rgba(212,101,74,.08);--accent-ink:#FFFFFF;
@@ -3977,7 +3977,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   }
   .tabs.page-t .tab .ti::after{display:none !important}
   .tabs.page-t .tab .ti::before{display:none !important}
-  .tabs.page-t .tab .ti svg{width:24px !important;height:24px !important;filter:none !important;stroke-width:1.8 !important;color:inherit !important;transition:all .25s ease !important}
+  .tabs.page-t .tab .ti svg{width:26px !important;height:26px !important;filter:none !important;transition:all .25s ease !important}
   .tabs.page-t .tab .tl{
     font-family:var(--sans) !important;
     font-size:10px !important;
@@ -3998,17 +3998,17 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     background:transparent !important;
   }
   .tabs.page-t .tab.on .ti{
-    background:color-mix(in srgb,var(--accent) 14%,transparent) !important;
-    color:var(--accent) !important;
+    background:color-mix(in srgb,var(--accent) 10%,transparent) !important;
     box-shadow:none !important;
-    transform:translateY(-1px) scale(1.05) !important;
+    transform:translateY(-2px) scale(1.1) !important;
     border-radius:14px !important;
     padding:0 !important;
     width:52px !important;
-    height:32px !important;
+    height:34px !important;
   }
-  .tabs.page-t .tab.on .ti svg{color:var(--accent) !important;stroke:var(--accent) !important;stroke-width:2.2 !important;fill:color-mix(in srgb,var(--accent) 18%,transparent) !important;transform:scale(1.08) !important}
+  .tabs.page-t .tab.on .ti svg{transform:scale(1.05) !important}
   .tabs.page-t .tab.on .tl{color:var(--accent) !important;font-weight:700 !important;opacity:1 !important;font-size:10px !important}
+  .tabs.page-t .tab:not(.on) .ti svg{opacity:.55 !important;filter:grayscale(.4) !important}
   .tabs.page-t .tab.on::after{display:none !important}
   .bk-mini{bottom:110px !important;right:14px !important}
   .player{bottom:110px !important;left:12px !important;right:96px !important}
@@ -13052,15 +13052,15 @@ if(isMain){
   const yearPct=Math.round(dayOfYear/365*100);
   const dateStr=now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
   const _rdTabIcons={
-    home:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-2 0h2"/></svg>',
-    tasks:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>',
-    books:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.25v13m0-13C10.83 4.67 8.5 3.5 6 3.5c-1.5 0-2.8.4-3.5.7v13c.7-.3 2-.7 3.5-.7 2.5 0 4.83 1.17 6 2.75m0-13C13.17 4.67 15.5 3.5 18 3.5c1.5 0 2.8.4 3.5.7v13c-.7-.3-2-.7-3.5-.7-2.5 0-4.83 1.17-6 2.75"/></svg>',
-    meditation:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 100 6 3 3 0 000-6z"/><path d="M12 8c-2.5 0-5 2-5 5.5 0 1 .5 2 1.5 2.5l1 .5v2.5c0 1 .5 2 1.5 2h2c1 0 1.5-1 1.5-2v-2.5l1-.5c1-.5 1.5-1.5 1.5-2.5 0-3.5-2.5-5.5-5-5.5z"/></svg>',
-    bro:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>',
-    cal:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>',
-    mindgym:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.2 4.8 3 6.2V18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.8c1.8-1.4 3-3.7 3-6.2a7 7 0 0 0-7-7z"/><path d="M9 21h6"/><path d="M12 2v4"/><path d="M8.5 8.5c0-1 .7-2 2-2.3"/><path d="M15.5 8.5c0-1-.7-2-2-2.3"/></svg>',
-    learn:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>',
-    you:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+    home:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 2.5L2.5 11v12a1.5 1.5 0 001.5 1.5h6v-7a3 3 0 016 0v7h6a1.5 1.5 0 001.5-1.5V11L13 2.5z" fill="#E8A87C"/><path d="M13 2.5L2.5 11h21L13 2.5z" fill="#D4654A"/><rect x="6" y="13" width="4" height="4" rx=".8" fill="#FDF2E9"/><rect x="16" y="13" width="4" height="4" rx=".8" fill="#FDF2E9"/><rect x="10.5" y="17.5" width="5" height="7" rx="1" fill="#B04E38"/><circle cx="20" cy="6" r="2.2" fill="#F59E0B"/></svg>',
+    tasks:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="4" y="3" width="18" height="21" rx="3" fill="#F3E8E4"/><rect x="4" y="3" width="18" height="5" rx="3" fill="#D4654A"/><circle cx="9" cy="13" r="1.5" fill="#D4654A"/><rect x="12.5" y="12" width="6" height="2" rx="1" fill="#CCBFB8"/><circle cx="9" cy="17.5" r="1.5" fill="#10B981"/><rect x="12.5" y="16.5" width="6" height="2" rx="1" fill="#CCBFB8"/><path d="M8 17l1 1 2.5-2.5" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="22" r="1.5" fill="#E5E0DD"/><rect x="12.5" y="21" width="6" height="2" rx="1" fill="#E5E0DD"/></svg>',
+    books:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M3 6a2 2 0 012-2h5c1.66 0 3 1.34 3 3v15c-1-1.5-3-2-5-2H5a2 2 0 01-2-2V6z" fill="#A7C7E7"/><path d="M23 6a2 2 0 00-2-2h-5c-1.66 0-3 1.34-3 3v15c1-1.5 3-2 5-2h5z" fill="#7FB3D8"/><path d="M13 7v15" stroke="#fff" stroke-width="1" opacity=".4"/><rect x="6" y="7" width="4.5" height="1.2" rx=".6" fill="#fff" opacity=".5"/><rect x="6" y="10" width="3.5" height="1.2" rx=".6" fill="#fff" opacity=".4"/><rect x="15.5" y="7" width="4.5" height="1.2" rx=".6" fill="#fff" opacity=".5"/><rect x="15.5" y="10" width="3.5" height="1.2" rx=".6" fill="#fff" opacity=".4"/></svg>',
+    meditation:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#FDF2E9"/><circle cx="13" cy="9" r="3" fill="#D4654A"/><path d="M8 18c0-2.8 2.2-5 5-5s5 2.2 5 5" fill="#E8A87C"/><circle cx="9" cy="6" r="1" fill="#F59E0B" opacity=".6"/><circle cx="17" cy="5" r=".8" fill="#F59E0B" opacity=".5"/><circle cx="20" cy="9" r=".6" fill="#F59E0B" opacity=".4"/><path d="M7 22c1.5-1.2 3.5-2 6-2s4.5.8 6 2" stroke="#D4654A" stroke-width="1" stroke-linecap="round" opacity=".3"/></svg>',
+    bro:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="2" y="4" width="15" height="11" rx="3" fill="#D4654A"/><path d="M5 15l-1 4 4-2.5" fill="#D4654A"/><circle cx="7" cy="9.5" r="1.2" fill="#fff"/><circle cx="10.5" cy="9.5" r="1.2" fill="#fff"/><circle cx="14" cy="9.5" r="1.2" fill="#fff"/><rect x="11" y="12" width="13" height="9" rx="3" fill="#E8A87C"/><path d="M21 21l2.5 3-1.5-3" fill="#E8A87C"/><rect x="14" y="15.5" width="2" height="1.5" rx=".75" fill="#fff" opacity=".7"/><rect x="17.5" y="15.5" width="2" height="1.5" rx=".75" fill="#fff" opacity=".7"/></svg>',
+    cal:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="5" width="20" height="19" rx="3" fill="#FDF2E9"/><rect x="3" y="5" width="20" height="6" rx="3" fill="#D4654A"/><rect x="8" y="2.5" width="2" height="5" rx="1" fill="#B04E38"/><rect x="16" y="2.5" width="2" height="5" rx="1" fill="#B04E38"/><circle cx="8.5" cy="16" r="1.5" fill="#E5DDD8"/><circle cx="13" cy="16" r="1.5" fill="#D4654A"/><circle cx="17.5" cy="16" r="1.5" fill="#E5DDD8"/><circle cx="8.5" cy="20.5" r="1.5" fill="#E5DDD8"/><circle cx="13" cy="20.5" r="1.5" fill="#E5DDD8"/><text x="13" y="9.8" text-anchor="middle" font-family="var(--sans)" font-size="5.5" font-weight="700" fill="#fff">AUG</text></svg>',
+    mindgym:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="11" r="9" fill="#FEF3C7"/><path d="M9.5 7C10 5 11.5 4 13 4s3 1 3.5 3c.5 2-.5 4-1 5-.5 1-1 2-1 3h-3c0-1-.5-2-1-3-.5-1-1.5-3-1-5z" fill="#F59E0B"/><rect x="11" y="15" width="4" height="2" rx="1" fill="#D97706"/><rect x="11.5" y="17.5" width="3" height="1.5" rx=".75" fill="#D97706" opacity=".6"/><line x1="13" y1="1" x2="13" y2="3" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/><line x1="6" y1="4" x2="7.5" y2="5.5" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/><line x1="20" y1="4" x2="18.5" y2="5.5" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/><line x1="4" y1="11" x2="5.5" y2="11" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/><line x1="22" y1="11" x2="20.5" y2="11" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/></svg>',
+    learn:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 5L1.5 10.5 13 16l11.5-5.5L13 5z" fill="#6366F1"/><path d="M5.5 13v6.5c0 1 3.4 3 7.5 3s7.5-2 7.5-3V13L13 16 5.5 13z" fill="#818CF8"/><rect x="22" y="10" width="1.5" height="10" rx=".75" fill="#6366F1"/><circle cx="22.75" cy="20.5" r="1.5" fill="#6366F1"/><path d="M5.5 13v6.5" stroke="#4F46E5" stroke-width=".8" opacity=".3"/><path d="M20.5 13v6.5" stroke="#4F46E5" stroke-width=".8" opacity=".3"/></svg>',
+    you:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#FDF2E9"/><circle cx="13" cy="10" r="4" fill="#D4654A"/><path d="M6 22c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="#E8A87C"/><circle cx="13" cy="10" r="4" fill="#D4654A"/></svg>'
   };
   var _learnTabs=['courses','mindgym','books','meditation'];
   var _youTabs=['profile','cal'];
@@ -15351,7 +15351,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=97').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=98').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15661,7 +15661,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v97";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v98";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
