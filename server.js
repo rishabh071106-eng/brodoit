@@ -5982,8 +5982,8 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-scene.fast .qc-quotes-track{animation-duration:10s !important}
 }
 /* ─── MOTIVATIONAL ADD-TASK HERO CARD ─── */
-.task-hero{position:relative;border-radius:24px;padding:28px 22px;margin-bottom:18px;overflow:hidden;cursor:pointer;perspective:800px;transform-style:preserve-3d;background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);box-shadow:0 12px 40px -8px rgba(102,126,234,.4);transition:transform .3s ease,box-shadow .3s ease;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
-.task-hero:active{transform:scale(.97) rotateX(2deg);box-shadow:0 6px 20px -4px rgba(102,126,234,.3)}
+.task-hero{position:relative;border-radius:24px;padding:28px 22px;margin-bottom:18px;overflow:hidden;cursor:pointer;perspective:800px;transform-style:preserve-3d;background:linear-gradient(135deg,#D4654A 0%,#C05A42 50%,#A84E3A 100%);box-shadow:0 12px 40px -8px rgba(212,101,74,.35);transition:transform .3s ease,box-shadow .3s ease;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
+.task-hero:active{transform:scale(.97) rotateX(2deg);box-shadow:0 6px 20px -4px rgba(212,101,74,.3)}
 .task-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.15) 0%,transparent 60%);pointer-events:none}
 .task-hero-blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.1);filter:blur(20px);animation:heroFloat 6s ease-in-out infinite alternate}
 .task-hero-blob:nth-child(1){width:100px;height:100px;top:-20px;right:-10px;animation-delay:0s}
@@ -13187,7 +13187,7 @@ if(S.tab==='tasks'){
   h+='<div class="task-hero" onclick="opA()">';
   h+='<div class="task-hero-blob"></div><div class="task-hero-blob"></div><div class="task-hero-blob"></div>';
   h+='<div class="task-hero-text"><div class="task-hero-title">What needs to get done?</div><div class="task-hero-sub">'+_heroMsgs[_heroIdx]+'</div></div>';
-  h+='<div class="task-hero-cta"><div class="task-hero-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#764ba2" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><span class="task-hero-label">Add Task</span></div>';
+  h+='<div class="task-hero-cta"><div class="task-hero-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A84E3A" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><span class="task-hero-label">Add Task</span></div>';
   h+='<div class="task-hero-orbit"><div class="task-hero-ring"><div class="task-hero-dot"></div></div><div class="task-hero-ring"></div></div>';
   h+='</div>';
   // Quick-compose bar
@@ -15351,7 +15351,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=96').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=97').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15661,7 +15661,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v96";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v97";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
