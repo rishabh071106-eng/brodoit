@@ -2367,6 +2367,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <title>Brodoit — Tasks, audiobooks &amp; daily wisdom</title>
 <meta name="description" content="Brodoit is your calm productivity companion. Manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind, and build a daily ritual that sticks.">
 <link rel="canonical" href="https://brodoit.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#1E1C22">
 <meta name="format-detection" content="telephone=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2394,34 +2396,34 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <!-- Structured data for Google rich results -->
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://brodoit.com/#org","name":"Brodoit","url":"https://brodoit.com/","logo":"https://brodoit.com/icon-512.png?v=4","email":"hello@brodoit.com","sameAs":["https://github.com/rishabh071106-eng/taskflow"]},{"@type":"WebSite","@id":"https://brodoit.com/#site","url":"https://brodoit.com/","name":"Brodoit","description":"Tasks, audiobooks and daily wisdom — your calm productivity companion.","publisher":{"@id":"https://brodoit.com/#org"},"inLanguage":"en"},{"@type":"WebApplication","@id":"https://brodoit.com/#app","name":"Brodoit","url":"https://brodoit.com/","description":"A calm productivity app: manage tasks with email reminders, listen to free public-domain audiobooks, sharpen your mind with daily drills, and build a streak that sticks.","applicationCategory":"ProductivityApplication","operatingSystem":"Web, Android, iOS","browserRequirements":"Requires JavaScript. Requires HTML5.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"},"featureList":["Task management","Email reminders","Free public-domain audiobooks","Daily wisdom quotes","Mind Gym brain games","Voice training","Step tracking","Google Calendar sync"],"publisher":{"@id":"https://brodoit.com/#org"},"inLanguage":"en"}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500;1,6..72,600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500;1,6..72,600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-#splash{position:fixed;inset:0;z-index:99999;background:#1E1C22;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .4s ease-out}
+#splash{position:fixed;inset:0;z-index:99999;background:#FAFAFA;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .4s ease-out}
 #splash.hide{opacity:0;pointer-events:none}
 #splash .sp-fist{font-size:56px;animation:spPulse 1.5s ease-in-out infinite}
-#splash .sp-name{font-family:'Newsreader',Georgia,serif;font-size:36px;color:#E8E8EC;letter-spacing:-.02em;font-weight:500}
-#splash .sp-name b{color:#E27D60;font-weight:500}
-#splash .sp-sub{font-size:13px;color:#666666;font-family:'Hanken Grotesk',system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-top:-4px}
-#splash .sp-loader{width:32px;height:32px;border:2px solid rgba(226,125,96,.15);border-top-color:#E27D60;border-radius:50%;animation:spSpin .8s linear infinite;margin-top:8px}
+#splash .sp-name{font-family:'Instrument Serif',Georgia,serif;font-size:36px;color:#1A1A2E;letter-spacing:-.02em;font-weight:400}
+#splash .sp-name b{color:#D4654A;font-weight:400}
+#splash .sp-sub{font-size:13px;color:#9CA3AF;font-family:'Inter',system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-top:-4px}
+#splash .sp-loader{width:32px;height:32px;border:2px solid rgba(212,101,74,.12);border-top-color:#D4654A;border-radius:50%;animation:spSpin .8s linear infinite;margin-top:8px}
 @keyframes spPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes spSpin{to{transform:rotate(360deg)}}
 :root{
---bg:#F7F5F1;--bg-2:#EFEBE4;--bg-elev:#FFFFFF;--bg-sunken:#EAE5DD;
---surface:color-mix(in srgb,#FFFFFF 85%,#F7F5F1);--surface-2:#FAF8F5;
---ink:#221E1A;--text:#221E1A;--text-mute:#8A8177;--text-dim:#ABA196;
---ink-2:#3A342E;--ink-3:#8A8177;--ink-4:#ABA196;--ink-5:#DCD5CB;
---line:rgba(34,30,26,.08);--line-2:rgba(34,30,26,.13);--border:rgba(34,30,26,.08);--border-2:rgba(34,30,26,.13);
---accent:#3F3A36;--accent-soft:color-mix(in srgb,#3F3A36 10%,#F1EEE9);--accent-ink:#FFFFFF;
---accent-2:#2A2622;--accent-strong:color-mix(in srgb,#3F3A36 85%,#08201d);--warm:#3F3A36;--paper:#F3F0EB;
---gold:#D97706;--sage:#059669;
---serif:Georgia,'Times New Roman',serif;
---sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+--bg:#FAFAFA;--bg-2:#F3F4F6;--bg-elev:#FFFFFF;--bg-sunken:#F0F1F3;
+--surface:#FFFFFF;--surface-2:#FAFBFC;
+--ink:#1A1A2E;--text:#1A1A2E;--text-mute:#6B7280;--text-dim:#9CA3AF;
+--ink-2:#374151;--ink-3:#6B7280;--ink-4:#9CA3AF;--ink-5:#E5E7EB;
+--line:rgba(0,0,0,.06);--line-2:rgba(0,0,0,.1);--border:rgba(0,0,0,.06);--border-2:rgba(0,0,0,.1);
+--accent:#D4654A;--accent-soft:rgba(212,101,74,.08);--accent-ink:#FFFFFF;
+--accent-2:#C05A42;--accent-strong:#B04E38;--warm:#D4654A;--paper:#FEFEFE;
+--gold:#F59E0B;--sage:#10B981;
+--serif:'Instrument Serif',Georgia,'Times New Roman',serif;
+--sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
 --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
---shadow-1:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);
---shadow-2:0 2px 8px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.06);
---shadow-3:0 4px 12px rgba(0,0,0,.1),0 12px 32px rgba(0,0,0,.08);
---radius:18px}
+--shadow-1:0 1px 2px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.03);
+--shadow-2:0 2px 4px rgba(0,0,0,.04),0 8px 20px rgba(0,0,0,.06);
+--shadow-3:0 4px 8px rgba(0,0,0,.06),0 12px 28px rgba(0,0,0,.08);
+--radius:16px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
@@ -2432,7 +2434,7 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes glowPulse{0%,100%{opacity:.6}50%{opacity:1}}
 @keyframes borderRotate{0%{--angle:0deg}100%{--angle:360deg}}
-body{font-family:var(--sans);background:#F0F2F5;color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;letter-spacing:-.011em;font-weight:400}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;letter-spacing:-.011em;font-weight:400}
 button,a{-webkit-tap-highlight-color:transparent}
 button:not(.chk):not(.tab){transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s ease,filter .2s ease}
 button:not(.chk):not(.tab):active{transform:scale(.94) !important;transition:transform .08s cubic-bezier(.4,0,1,1) !important;filter:brightness(.95)}
@@ -2694,15 +2696,15 @@ input:focus,textarea:focus{outline:none;border-color:#D9734A;box-shadow:0 0 0 4p
 .main-col{display:block}
 .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding:0 2px}
 /* ─── Brand mark ─── */
-.logo{font-family:var(--serif);font-size:36px;font-weight:500;letter-spacing:-.025em;line-height:1;display:inline-flex;align-items:center;gap:1px;color:var(--text);user-select:none;cursor:default}
-.logo .logo-fist{font-size:24px;margin-right:6px;display:inline-block;line-height:1}
+.logo{font-family:var(--serif);font-size:34px;font-weight:400;letter-spacing:-.02em;line-height:1;display:inline-flex;align-items:center;gap:1px;color:var(--ink);user-select:none;cursor:default}
+.logo .logo-fist{font-size:22px;margin-right:6px;display:inline-block;line-height:1}
 .logo .b1{font-style:normal}
-.logo .b2{font-style:normal;font-weight:600;color:var(--accent);display:inline-block;transition:transform .4s cubic-bezier(.34,1.56,.64,1);-webkit-text-fill-color:var(--accent)}
+.logo .b2{font-style:normal;font-weight:500;color:var(--accent);display:inline-block;transition:transform .4s cubic-bezier(.34,1.56,.64,1);-webkit-text-fill-color:var(--accent)}
 .logo .b3{font-style:normal}
-.logo .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--warm);margin-left:3px;align-self:flex-end;margin-bottom:5px;box-shadow:0 0 0 0 rgba(63,58,54,.4);animation:brandDot 2.4s ease-in-out infinite}
+.logo .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-left:2px;align-self:flex-end;margin-bottom:5px;box-shadow:0 0 0 0 rgba(212,101,74,.3);animation:brandDot 2.4s ease-in-out infinite}
 .logo:hover .b2{transform:translateY(-3px) rotate(-4deg)}
 .logo:hover .logo-fist{animation:fistBump .5s ease-in-out}
-@keyframes brandDot{0%,100%{box-shadow:0 0 0 0 rgba(63,58,54,.4)}50%{box-shadow:0 0 0 6px rgba(63,58,54,0)}}
+@keyframes brandDot{0%,100%{box-shadow:0 0 0 0 rgba(212,101,74,.3)}50%{box-shadow:0 0 0 6px rgba(212,101,74,0)}}
 @keyframes fistBump{0%{transform:scale(1)}40%{transform:scale(1.25)}60%{transform:scale(0.95)}100%{transform:scale(1)}}
 .hdr-tagline{display:none;font-family:'Instrument Serif',Georgia,serif;font-style:normal;font-size:13px;color:#A0AEC0;margin-top:2px;letter-spacing:.04em}
 /* Phone scenic masthead — desktop hidden by default */
@@ -8372,7 +8374,58 @@ select,option{color:var(--ink);font-weight:600}
 @keyframes pgOut{from{transform:perspective(1300px) rotateY(0);opacity:1;filter:brightness(1)}to{transform:perspective(1300px) rotateY(-56deg) translateX(-4%);opacity:.25;filter:brightness(.8)}}
 @keyframes pgIn{from{transform:perspective(1300px) rotateY(48deg) translateX(5%);opacity:.2;filter:brightness(.85)}55%{opacity:1}to{transform:none;opacity:1;filter:brightness(1)}}
 /* ── card depth (paper feel) ── */
-.tc,.book-card,.dash-card,.kc,.insight{background:linear-gradient(180deg,#FFFFFF 0%,#FBF8F4 100%)}
+.tc,.book-card,.dash-card,.kc,.insight{background:#FFFFFF;border:1px solid rgba(0,0,0,.05);box-shadow:0 1px 3px rgba(0,0,0,.02)}
+
+/* ── Learning Hero ── */
+.learn-hero{position:relative;border-radius:20px;padding:32px 20px;margin-bottom:20px;overflow:hidden;background:linear-gradient(135deg,#F8F7FF 0%,#EEF2FF 50%,#FDF2F8 100%)}
+.learn-hero-bg{position:absolute;inset:0;overflow:hidden}
+.learn-orb{position:absolute;border-radius:50%;filter:blur(40px);opacity:.35;animation:orbFloat 8s ease-in-out infinite}
+.learn-orb-1{width:120px;height:120px;background:#6366F1;top:-20px;right:-10px;animation-delay:0s}
+.learn-orb-2{width:80px;height:80px;background:#EC4899;bottom:0;left:10%;animation-delay:-3s}
+.learn-orb-3{width:60px;height:60px;background:#0EA5E9;top:40%;right:30%;animation-delay:-5s}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-15px) scale(1.1)}}
+.learn-hero-txt{position:relative;z-index:1}
+
+/* ── Learning Cards Grid ── */
+.learn-grid{display:flex;flex-direction:column;gap:14px;perspective:800px}
+.learn-card-3d{opacity:1}
+.learn-card{position:relative;border-radius:16px;background:#fff;border:1px solid rgba(0,0,0,.06);box-shadow:0 2px 8px rgba(0,0,0,.04);overflow:hidden;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s}
+.learn-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.learn-card:active{transform:scale(.98)}
+.learn-card-scene{width:100%;height:140px;overflow:hidden;border-radius:16px 16px 0 0}
+.learn-card-scene svg{width:100%;height:100%;display:block}
+.learn-card-body{padding:16px}
+.learn-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;gap:8px}
+.learn-card-tag{font-size:9px;letter-spacing:.1em;font-weight:800;text-transform:uppercase;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.04);color:var(--text-mute);white-space:nowrap;flex-shrink:0}
+.learn-card-tag.active{background:rgba(99,102,241,.1);color:#6366F1}
+.learn-card-title{font-size:17px;font-weight:700;color:var(--ink);margin:0;line-height:1.3}
+.learn-card-desc{font-size:13px;color:var(--text-mute);line-height:1.5;margin:0 0 10px}
+.learn-card-meta{display:flex;gap:14px;font-size:12px;color:var(--text-mute);font-weight:600}
+.learn-card-progress{height:4px;background:rgba(99,102,241,.12);border-radius:4px;margin-top:10px;overflow:hidden}
+.learn-card-bar{height:100%;background:#6366F1;border-radius:4px;transition:width .5s}
+
+/* ── AI Course Sections ── */
+.ai-part{margin-bottom:20px}
+.ai-part-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:4px 0}
+.ai-part-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ai-part-label{font-size:10px;letter-spacing:.12em;font-weight:800;text-transform:uppercase;color:var(--text-mute)}
+.ai-part-title{font-size:16px;font-weight:700;color:var(--ink)}
+.ai-ch{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:#fff;border:1px solid rgba(0,0,0,.05);margin-bottom:6px;transition:all .15s}
+.ai-ch:hover{background:rgba(99,102,241,.03);border-color:rgba(99,102,241,.12);transform:translateX(2px)}
+.ai-ch-check{width:22px;height:22px;border-radius:7px;border:2px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:900;color:#fff;transition:all .2s}
+.ai-ch.done .ai-ch-check{border-color:transparent}
+.ai-ch-body{flex:1;min-width:0}
+.ai-ch-name{font-size:14px;font-weight:600;color:var(--ink);line-height:1.3}
+.ai-ch-desc{font-size:12px;color:var(--text-mute);margin-top:1px}
+.ai-ch-time{font-size:11px;font-weight:700;color:var(--text-mute);white-space:nowrap}
+.ai-ch.done .ai-ch-name{color:var(--text-mute)}
+
+/* aurora overrides for learn cards */
+body[data-theme=aurora] .learn-hero{background:linear-gradient(135deg,#1E1E2E 0%,#252540 50%,#2D1F3D 100%)}
+body[data-theme=aurora] .learn-card{background:#2A2A3A;border-color:rgba(255,255,255,.06)}
+body[data-theme=aurora] .learn-card-tag{background:rgba(255,255,255,.06)}
+body[data-theme=aurora] .ai-ch{background:#2A2A3A;border-color:rgba(255,255,255,.04)}
+body[data-theme=aurora] .ai-ch:hover{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.15)}
 </style></head><body data-theme="classic">
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
@@ -8898,7 +8951,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='books'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;var _ap=document.getElementById('app');if(_ap&&!S._noFlip){_ap.classList.remove('app-flip-in');_ap.classList.add('app-flip-out');setTimeout(function(){_ap.classList.remove('app-flip-out');render();_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},380);S._suppressScrollRestore=false;try{window.scrollTo(0,0)}catch(e){}},170)}else{render();S._suppressScrollRestore=false;try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}}}
+function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='books'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;var _ap=document.getElementById('app');if(_ap){_ap.classList.remove('app-flip-in');void _ap.offsetWidth;_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},300)}try{window.scrollTo(0,0)}catch(e){window.scrollTo(0,0)}}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -13284,45 +13337,170 @@ if(S.tab==='tasks'){
   }
 }
 
-// LEARNING TAB — course library: AI, Product Management, Development
+// LEARNING TAB — 5 sections: AI, Product, Dev, Confidence, Personality
 else if(S.tab==='courses'){
   h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button><button class="lst" onclick="switchTab(\\'books\\')">Listen</button><button class="lst" onclick="switchTab(\\'meditation\\')">Wisdom</button></div>';
-  var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
-  var _atlasDone=_aDone.length;
-  h+='<div style="padding:6px 0 12px;text-align:center"><div style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);font-weight:800">Learning</div>'
-    +'<div style="font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.15;margin-top:4px">Pick a door. \\u{1F6AA}</div></div>';
-  h+='<a class="book-card" href="/learning/ml-algorithms" style="text-decoration:none;color:inherit;margin-bottom:14px;align-items:center">'
-    +'<div class="book-cover" style="background:linear-gradient(135deg,#611f1c,#a53c36);font-size:26px">\\u{1F9ED}</div>'
-    +'<div style="flex:1;min-width:0"><div style="font-size:10px;letter-spacing:.14em;font-weight:800;color:var(--accent)">AI</div>'
-    +'<div style="font-weight:800;font-size:17px;margin:1px 0 2px">The Algorithm Atlas</div>'
-    +'<div style="font-size:12px;color:var(--text-mute)">Comics \\u00B7 games \\u00B7 quizzes</div></div>'
-    +'<div style="font-size:13px;font-weight:900;color:var(--accent);white-space:nowrap">'+(_atlasDone>0?_atlasDone+'/13 \\u25B6':'GO \\u2192')+'</div></a>';
-  var _ch=[
-    {id:'foundations',e:'\\u{1F331}',n:'Foundations',g:'linear-gradient(150deg,#2286a8,#175e77)'},
-    {id:'story',e:'\\u{1F39E}\\uFE0F',n:'The Story of AI',g:'linear-gradient(150deg,#b3701a,#8a4d0f)'},
-    {id:'framework',e:'\\u{1F5FA}\\uFE0F',n:'The Map',g:'linear-gradient(150deg,#c9a26b,#96733f)'},
-    {id:'supervised',e:'\\u{1F3AF}',n:'Supervised',g:'linear-gradient(150deg,#a53c36,#6e211d)'},
-    {id:'unsupervised',e:'\\u{1F50D}',n:'Unsupervised',g:'linear-gradient(150deg,#1d9d74,#116048)'},
-    {id:'deep',e:'\\u{1F9E0}',n:'Deep Learning',g:'linear-gradient(150deg,#e08914,#9d5c07)'},
-    {id:'rl',e:'\\u{1F916}',n:'Reinforcement',g:'linear-gradient(150deg,#7c4dc4,#4d2b85)'},
-    {id:'engine',e:'\\u2699\\uFE0F',n:'Decision Engine',g:'linear-gradient(150deg,#2286a8,#14556e)',hash:'engine'},
-    {id:'vault_sup',e:'\\u{1F5C4}\\uFE0F',n:'Supervised Vault',g:'linear-gradient(150deg,#8a3530,#571713)'},
-    {id:'vault_unsup',e:'\\u{1F9F0}',n:'Unsupervised Vault',g:'linear-gradient(150deg,#178a66,#0c4a36)'},
-    {id:'vault_deep',e:'\\u26A1',n:'Deep Vault',g:'linear-gradient(150deg,#c77a12,#7e4a05)'},
-    {id:'vault_rl',e:'\\u{1F3AE}',n:'RL Vault',g:'linear-gradient(150deg,#6a41ab,#3c2071)'}
-  ];
-  h+='<div style="font-size:11px;letter-spacing:.16em;font-weight:800;color:var(--ink-3);margin:2px 2px 8px;text-align:center">SWIPE \\u2192</div>';
-  h+='<div class="shelf">'+_ch.map(function(c){
-    var done=_aDone.indexOf(c.id)>-1;
-    return '<a class="shelf-card'+(done?' done':'')+'" href="/learning/ml-algorithms#'+(c.hash?c.hash:'c='+c.id)+'">'
-      +'<div class="shelf-cover" style="background:'+c.g+'"><span class="se">'+c.e+'</span>'+(done?'<span class="sd">\\u2713</span>':'')+'</div>'
-      +'<div class="sn">'+c.n+'</div></a>';
-  }).join('')+'</div>';
-  h+='<div style="display:flex;gap:12px;margin-top:14px">'
-    +'<div class="book-card" style="flex:1;opacity:.75;align-items:center;padding:10px 12px"><div class="book-cover" style="background:linear-gradient(135deg,#0e5f76,#083a49);width:40px;height:54px;font-size:18px">\\u{1F4E6}</div>'
-    +'<div><div style="font-weight:800;font-size:13px">Product</div><div style="font-size:11px;color:var(--text-mute)">Soon</div></div></div>'
-    +'<div class="book-card" style="flex:1;opacity:.75;align-items:center;padding:10px 12px"><div class="book-cover" style="background:linear-gradient(135deg,#4a6741,#2c4026);width:40px;height:54px;font-size:18px">\\u{1F6E0}\\uFE0F</div>'
-    +'<div><div style="font-weight:800;font-size:13px">Dev</div><div style="font-size:11px;color:var(--text-mute)">Soon</div></div></div></div>';
+  if(!S.learnSection){
+    // Landing — 5 section cards with 3D tilt
+    h+='<div class="learn-hero">';
+    h+='<div class="learn-hero-bg"><div class="learn-orb learn-orb-1"></div><div class="learn-orb learn-orb-2"></div><div class="learn-orb learn-orb-3"></div></div>';
+    h+='<div class="learn-hero-txt">';
+    h+='<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px">Brodoit Academy</div>';
+    h+='<h2 style="font-family:var(--serif);font-size:30px;font-weight:400;line-height:1.15;margin:0;color:var(--ink)">Learn anything.<br><span style="color:var(--accent)">Master everything.</span></h2>';
+    h+='<p style="font-size:14px;color:var(--text-mute);margin:8px 0 0;line-height:1.5">Story-driven courses with real examples, zero fluff.</p>';
+    h+='</div></div>';
+    // Animated SVG scenes for each card
+    var _scenes={};
+    _scenes.ai='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes pulse-n{0%,100%{r:5}50%{r:7}}@keyframes dash-flow{to{stroke-dashoffset:-20}}@keyframes float-node{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}.nn{fill:#fff;opacity:.9}.nn-line{stroke:#fff;stroke-width:1;opacity:.3;stroke-dasharray:4 3;animation:dash-flow 1.5s linear infinite}.nn-g{animation:float-node 3s ease-in-out infinite}</style></defs><rect width="320" height="140" fill="url(#ai-bg)" rx="12"/><defs><linearGradient id="ai-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#7C3AED"/></linearGradient></defs><g class="nn-g"><circle class="nn" cx="60" cy="40" r="5" style="animation:pulse-n 2s ease infinite .0s"/><circle class="nn" cx="60" cy="70" r="5" style="animation:pulse-n 2s ease infinite .3s"/><circle class="nn" cx="60" cy="100" r="5" style="animation:pulse-n 2s ease infinite .6s"/><circle class="nn" cx="140" cy="35" r="6" style="animation:pulse-n 2s ease infinite .2s"/><circle class="nn" cx="140" cy="65" r="6" style="animation:pulse-n 2s ease infinite .5s"/><circle class="nn" cx="140" cy="95" r="6" style="animation:pulse-n 2s ease infinite .8s"/><circle class="nn" cx="140" cy="115" r="5" style="animation:pulse-n 2s ease infinite .1s"/><circle class="nn" cx="220" cy="45" r="6" style="animation:pulse-n 2s ease infinite .4s"/><circle class="nn" cx="220" cy="75" r="6" style="animation:pulse-n 2s ease infinite .7s"/><circle class="nn" cx="220" cy="105" r="5" style="animation:pulse-n 2s ease infinite .9s"/><circle class="nn" cx="280" cy="60" r="7" style="animation:pulse-n 2s ease infinite .3s"/><circle class="nn" cx="280" cy="90" r="7" style="animation:pulse-n 2s ease infinite .6s"/></g><line class="nn-line" x1="60" y1="40" x2="140" y2="35"/><line class="nn-line" x1="60" y1="40" x2="140" y2="65"/><line class="nn-line" x1="60" y1="70" x2="140" y2="35"/><line class="nn-line" x1="60" y1="70" x2="140" y2="65"/><line class="nn-line" x1="60" y1="70" x2="140" y2="95"/><line class="nn-line" x1="60" y1="100" x2="140" y2="65"/><line class="nn-line" x1="60" y1="100" x2="140" y2="95"/><line class="nn-line" x1="60" y1="100" x2="140" y2="115"/><line class="nn-line" x1="140" y1="35" x2="220" y2="45"/><line class="nn-line" x1="140" y1="35" x2="220" y2="75"/><line class="nn-line" x1="140" y1="65" x2="220" y2="45"/><line class="nn-line" x1="140" y1="65" x2="220" y2="75"/><line class="nn-line" x1="140" y1="95" x2="220" y2="75"/><line class="nn-line" x1="140" y1="95" x2="220" y2="105"/><line class="nn-line" x1="140" y1="115" x2="220" y2="105"/><line class="nn-line" x1="220" y1="45" x2="280" y2="60"/><line class="nn-line" x1="220" y1="75" x2="280" y2="60"/><line class="nn-line" x1="220" y1="75" x2="280" y2="90"/><line class="nn-line" x1="220" y1="105" x2="280" y2="90"/><text x="58" y="25" fill="#fff" opacity=".5" font-size="8" font-family="var(--sans)">Input</text><text x="262" y="48" fill="#fff" opacity=".5" font-size="8" font-family="var(--sans)">Output</text></svg>';
+    _scenes.product='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes slide-card{0%{transform:translateY(8px);opacity:0}100%{transform:translateY(0);opacity:1}}.kb-col{fill:#fff;opacity:.1;rx:6}.kb-card{fill:#fff;rx:4;opacity:.85}.kb-t{fill:#fff;font-size:7px;font-family:var(--sans);font-weight:600;opacity:.6}</style><linearGradient id="pm-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0284C7"/><stop offset="100%" stop-color="#0891B2"/></linearGradient></defs><rect width="320" height="140" fill="url(#pm-bg)" rx="12"/><text class="kb-t" x="38" y="22">TO DO</text><text class="kb-t" x="128" y="22">IN PROGRESS</text><text class="kb-t" x="232" y="22">DONE</text><rect class="kb-col" x="20" y="28" width="80" height="104"/><rect class="kb-col" x="116" y="28" width="88" height="104"/><rect class="kb-col" x="220" y="28" width="80" height="104"/><rect class="kb-card" x="28" y="36" width="64" height="22" style="animation:slide-card .5s ease .1s both"/><rect x="32" y="40" width="30" height="3" rx="1.5" fill="#0284C7" opacity=".5"/><rect x="32" y="46" width="48" height="2" rx="1" fill="#333" opacity=".2"/><rect class="kb-card" x="28" y="64" width="64" height="22" style="animation:slide-card .5s ease .3s both"/><rect x="32" y="68" width="24" height="3" rx="1.5" fill="#F59E0B" opacity=".5"/><rect x="32" y="74" width="40" height="2" rx="1" fill="#333" opacity=".2"/><rect class="kb-card" x="28" y="92" width="64" height="22" style="animation:slide-card .5s ease .5s both"/><rect x="32" y="96" width="36" height="3" rx="1.5" fill="#EF4444" opacity=".5"/><rect x="32" y="102" width="44" height="2" rx="1" fill="#333" opacity=".2"/><rect class="kb-card" x="124" y="36" width="72" height="28" style="animation:slide-card .5s ease .2s both"/><rect x="128" y="40" width="34" height="3" rx="1.5" fill="#8B5CF6" opacity=".5"/><rect x="128" y="46" width="54" height="2" rx="1" fill="#333" opacity=".2"/><rect x="128" y="52" width="40" height="2" rx="1" fill="#333" opacity=".15"/><rect class="kb-card" x="124" y="70" width="72" height="22" style="animation:slide-card .5s ease .4s both"/><rect x="128" y="74" width="28" height="3" rx="1.5" fill="#10B981" opacity=".5"/><rect x="128" y="80" width="50" height="2" rx="1" fill="#333" opacity=".2"/><rect class="kb-card" x="228" y="36" width="64" height="22" style="animation:slide-card .5s ease .15s both"/><rect x="232" y="40" width="20" height="3" rx="1.5" fill="#10B981" opacity=".5"/><rect x="232" y="46" width="44" height="2" rx="1" fill="#333" opacity=".2"/><line x1="256" y1="42" x2="260" y2="46" stroke="#10B981" stroke-width="1.5" opacity=".6"/><line x1="260" y1="46" x2="268" y2="38" stroke="#10B981" stroke-width="1.5" opacity=".6"/><rect class="kb-card" x="228" y="64" width="64" height="22" style="animation:slide-card .5s ease .35s both"/><rect x="232" y="68" width="26" height="3" rx="1.5" fill="#10B981" opacity=".5"/><rect x="232" y="74" width="38" height="2" rx="1" fill="#333" opacity=".2"/></svg>';
+    _scenes.dev='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes type-line{from{width:0}to{width:100%}}.code-line{opacity:.8}</style><linearGradient id="dev-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#047857"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs><rect width="320" height="140" fill="url(#dev-bg)" rx="12"/><rect x="20" y="14" width="280" height="112" rx="8" fill="#1E293B" opacity=".85"/><circle cx="34" cy="26" r="4" fill="#EF4444" opacity=".7"/><circle cx="46" cy="26" r="4" fill="#F59E0B" opacity=".7"/><circle cx="58" cy="26" r="4" fill="#10B981" opacity=".7"/><text x="200" y="28" fill="#fff" opacity=".3" font-size="7" font-family="var(--mono)">server.js</text><g font-family="var(--mono)" font-size="8"><text x="30" y="48" fill="#C084FC" class="code-line">const</text><text x="58" y="48" fill="#93C5FD" class="code-line"> app</text><text x="76" y="48" fill="#fff" opacity=".5" class="code-line"> = </text><text x="88" y="48" fill="#FCD34D" class="code-line">express</text><text x="130" y="48" fill="#fff" opacity=".5" class="code-line">()</text><text x="30" y="62" fill="#fff" opacity=".3" class="code-line">  </text><text x="30" y="76" fill="#C084FC" class="code-line">app</text><text x="46" y="76" fill="#fff" opacity=".5" class="code-line">.</text><text x="50" y="76" fill="#FCD34D" class="code-line">get</text><text x="66" y="76" fill="#fff" opacity=".5" class="code-line">(</text><text x="70" y="76" fill="#86EFAC" class="code-line">\\'/api\\'</text><text x="108" y="76" fill="#fff" opacity=".5" class="code-line">, (</text><text x="118" y="76" fill="#FDA4AF" class="code-line">req, res</text><text x="156" y="76" fill="#fff" opacity=".5" class="code-line">) =></text><text x="176" y="76" fill="#fff" opacity=".5" class="code-line"> {</text><text x="40" y="90" fill="#FDA4AF" class="code-line">  res</text><text x="60" y="90" fill="#fff" opacity=".5" class="code-line">.</text><text x="64" y="90" fill="#FCD34D" class="code-line">json</text><text x="84" y="90" fill="#fff" opacity=".5" class="code-line">({ </text><text x="96" y="90" fill="#86EFAC" class="code-line">status: \\'ok\\'</text><text x="166" y="90" fill="#fff" opacity=".5" class="code-line"> })</text><text x="30" y="104" fill="#fff" opacity=".5" class="code-line">})</text><text x="30" y="118" fill="#C084FC" class="code-line">app</text><text x="46" y="118" fill="#fff" opacity=".5" class="code-line">.</text><text x="50" y="118" fill="#FCD34D" class="code-line">listen</text><text x="82" y="118" fill="#fff" opacity=".5" class="code-line">(</text><text x="86" y="118" fill="#FDA4AF" class="code-line">3000</text><text x="110" y="118" fill="#fff" opacity=".5" class="code-line">)</text></g><rect x="86" y="41" width="1" height="10" fill="#fff" opacity=".7"><animate attributeName="opacity" values=".7;0;.7" dur="1s" repeatCount="indefinite"/></rect></svg>';
+    _scenes.confidence='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes wave-bar{0%,100%{height:8px}50%{height:var(--h)}}.eq-bar{fill:#fff;opacity:.7;rx:2}</style><linearGradient id="conf-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#D97706"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient></defs><rect width="320" height="140" fill="url(#conf-bg)" rx="12"/><circle cx="160" cy="52" r="22" fill="#fff" opacity=".15"/><circle cx="160" cy="44" r="8" fill="#fff" opacity=".8"/><rect x="150" y="55" width="20" height="16" rx="4" fill="#fff" opacity=".8"/><rect x="120" y="90" width="80" height="6" rx="3" fill="#fff" opacity=".2"/><rect x="100" y="100" width="120" height="4" rx="2" fill="#fff" opacity=".12"/><g transform="translate(40,80)">'
+    +'<rect class="eq-bar" x="0" y="20" width="4" style="--h:28px;animation:wave-bar 1.2s ease infinite 0s"/>'
+    +'<rect class="eq-bar" x="8" y="20" width="4" style="--h:40px;animation:wave-bar 1.2s ease infinite .15s"/>'
+    +'<rect class="eq-bar" x="16" y="20" width="4" style="--h:22px;animation:wave-bar 1.2s ease infinite .3s"/>'
+    +'<rect class="eq-bar" x="24" y="20" width="4" style="--h:35px;animation:wave-bar 1.2s ease infinite .45s"/>'
+    +'<rect class="eq-bar" x="32" y="20" width="4" style="--h:18px;animation:wave-bar 1.2s ease infinite .6s"/></g>'
+    +'<g transform="translate(244,80)">'
+    +'<rect class="eq-bar" x="0" y="20" width="4" style="--h:30px;animation:wave-bar 1.2s ease infinite .1s"/>'
+    +'<rect class="eq-bar" x="8" y="20" width="4" style="--h:20px;animation:wave-bar 1.2s ease infinite .25s"/>'
+    +'<rect class="eq-bar" x="16" y="20" width="4" style="--h:38px;animation:wave-bar 1.2s ease infinite .4s"/>'
+    +'<rect class="eq-bar" x="24" y="20" width="4" style="--h:25px;animation:wave-bar 1.2s ease infinite .55s"/>'
+    +'<rect class="eq-bar" x="32" y="20" width="4" style="--h:32px;animation:wave-bar 1.2s ease infinite .7s"/></g>'
+    +'<text x="160" y="130" fill="#fff" opacity=".4" font-size="9" font-family="var(--sans)" font-weight="600" text-anchor="middle">SPEAK WITH CONFIDENCE</text></svg>';
+    _scenes.personality='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes orbit{to{transform:rotate(360deg)}}.p-node{fill:#fff;opacity:.8}.p-link{stroke:#fff;stroke-width:.8;opacity:.2}</style><linearGradient id="per-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#DB2777"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><rect width="320" height="140" fill="url(#per-bg)" rx="12"/><circle cx="160" cy="70" r="16" fill="#fff" opacity=".2"/><circle cx="160" cy="70" r="8" fill="#fff" opacity=".85"/><g style="transform-origin:160px 70px;animation:orbit 12s linear infinite"><circle class="p-node" cx="160" cy="26" r="5"/><line class="p-link" x1="160" y1="70" x2="160" y2="26"/></g><g style="transform-origin:160px 70px;animation:orbit 12s linear infinite reverse"><circle class="p-node" cx="210" cy="100" r="4"/><line class="p-link" x1="160" y1="70" x2="210" y2="100"/></g><g style="transform-origin:160px 70px;animation:orbit 18s linear infinite"><circle class="p-node" cx="100" cy="40" r="4"/><line class="p-link" x1="160" y1="70" x2="100" y2="40"/></g><g style="transform-origin:160px 70px;animation:orbit 15s linear infinite reverse"><circle class="p-node" cx="110" cy="110" r="5"/><line class="p-link" x1="160" y1="70" x2="110" y2="110"/></g><g style="transform-origin:160px 70px;animation:orbit 20s linear infinite"><circle class="p-node" cx="230" cy="45" r="3"/><line class="p-link" x1="160" y1="70" x2="230" y2="45"/></g><g style="transform-origin:160px 70px;animation:orbit 14s linear infinite reverse"><circle class="p-node" cx="70" cy="80" r="4"/><line class="p-link" x1="160" y1="70" x2="70" y2="80"/></g><g style="transform-origin:160px 70px;animation:orbit 16s linear infinite"><circle class="p-node" cx="250" cy="85" r="3.5"/><line class="p-link" x1="160" y1="70" x2="250" y2="85"/></g><text x="40" y="20" fill="#fff" opacity=".35" font-size="8" font-family="var(--sans)">Empathy</text><text x="240" y="130" fill="#fff" opacity=".35" font-size="8" font-family="var(--sans)">Leadership</text><text x="36" y="128" fill="#fff" opacity=".35" font-size="8" font-family="var(--sans)">EQ</text><text x="252" y="24" fill="#fff" opacity=".35" font-size="8" font-family="var(--sans)">Habits</text></svg>';
+    var _sections=[
+      {id:'ai',name:'AI & Machine Learning',desc:'From linear regression to GPT. Every algorithm, every concept.',color:'#6366F1',bg:'linear-gradient(135deg,#6366F1,#8B5CF6)',chapters:63,mins:'1000+',tag:'COMPREHENSIVE',scene:_scenes.ai},
+      {id:'product',name:'Product Management',desc:'Strategy, roadmaps, user research, go-to-market, metrics.',color:'#0EA5E9',bg:'linear-gradient(135deg,#0EA5E9,#06B6D4)',chapters:30,mins:'400+',tag:'COMING SOON',scene:_scenes.product},
+      {id:'dev',name:'Development',desc:'System design, DSA, clean code, DevOps, cloud.',color:'#10B981',bg:'linear-gradient(135deg,#10B981,#34D399)',chapters:40,mins:'600+',tag:'COMING SOON',scene:_scenes.dev},
+      {id:'confidence',name:'Confidence Building',desc:'Public speaking, negotiation, body language, mindset.',color:'#F59E0B',bg:'linear-gradient(135deg,#F59E0B,#FBBF24)',chapters:20,mins:'250+',tag:'COMING SOON',scene:_scenes.confidence},
+      {id:'personality',name:'Personality Development',desc:'Communication, emotional intelligence, leadership, habits.',color:'#EC4899',bg:'linear-gradient(135deg,#EC4899,#F472B6)',chapters:25,mins:'300+',tag:'COMING SOON',scene:_scenes.personality}
+    ];
+    h+='<div class="learn-grid">';
+    _sections.forEach(function(s,i){
+      var isActive=s.id==='ai';
+      h+='<div class="learn-card-3d" onclick="'+(isActive?'S.learnSection=\\'ai\\';render()':'toast(\\'Coming soon!\\',\\'info\\')')+'">';
+      h+='<div class="learn-card" style="--card-color:'+s.color+'">';
+      h+='<div class="learn-card-scene">'+s.scene+'</div>';
+      h+='<div class="learn-card-body">';
+      h+='<div class="learn-card-top">';
+      h+='<h3 class="learn-card-title">'+s.name+'</h3>';
+      h+='<span class="learn-card-tag'+(isActive?' active':'')+'">'+s.tag+'</span>';
+      h+='</div>';
+      h+='<p class="learn-card-desc">'+s.desc+'</p>';
+      h+='<div class="learn-card-meta">';
+      h+='<span>'+s.chapters+' chapters</span><span>'+s.mins+' min</span>';
+      h+='</div>';
+      if(isActive){
+        var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
+        var pct=Math.round(_aDone.length/63*100);
+        h+='<div class="learn-card-progress"><div class="learn-card-bar" style="width:'+pct+'%"></div></div>';
+        h+='<div style="font-size:11px;color:var(--text-mute);margin-top:4px">'+_aDone.length+'/63 completed</div>';
+      }
+      h+='</div></div></div>';
+    });
+    h+='</div>';
+  } else if(S.learnSection==='ai'){
+    // AI Section — full curriculum
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
+    h+='<button onclick="S.learnSection=null;render()" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
+    h+='<div><div style="font-size:11px;letter-spacing:.15em;font-weight:700;color:var(--accent);text-transform:uppercase">AI & Machine Learning</div>';
+    h+='<div style="font-family:var(--serif);font-size:22px;font-weight:400;margin-top:2px">The Complete Journey</div></div></div>';
+    var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
+    var _aiParts=[
+      {part:'Part 1',title:'Foundations',color:'#6366F1',chs:[
+        {id:'what-is-ai',n:'What is Intelligence?',d:'Human vs machine cognition',m:15},
+        {id:'history',n:'The History of AI',d:'From Turing to Transformers',m:20},
+        {id:'math-linalg',n:'Linear Algebra for AI',d:'Vectors, matrices, transformations',m:25},
+        {id:'math-calc',n:'Calculus & Optimization',d:'Gradients, chain rule, descent',m:25},
+        {id:'math-prob',n:'Probability & Statistics',d:'Bayes, distributions, hypothesis testing',m:20},
+        {id:'python-ai',n:'Python for AI',d:'NumPy, Pandas, Matplotlib essentials',m:15}
+      ]},
+      {part:'Part 2',title:'Classical ML',color:'#0EA5E9',chs:[
+        {id:'ml-intro',n:'What is Machine Learning?',d:'The three paradigms',m:15},
+        {id:'data-eng',n:'Data Engineering',d:'Collection, cleaning, feature engineering',m:20},
+        {id:'lin-reg',n:'Linear Regression',d:'Predicting continuous values',m:18},
+        {id:'log-reg',n:'Logistic Regression',d:'Binary classification decisions',m:18},
+        {id:'decision-trees',n:'Decision Trees',d:'If-then reasoning machines',m:16},
+        {id:'random-forest',n:'Random Forests & Ensembles',d:'Wisdom of the crowd',m:18},
+        {id:'svm',n:'Support Vector Machines',d:'Finding optimal boundaries',m:20},
+        {id:'knn',n:'K-Nearest Neighbors',d:'Learning from proximity',m:14},
+        {id:'naive-bayes',n:'Naive Bayes',d:'Probabilistic classification',m:14},
+        {id:'gradient-boost',n:'Gradient Boosting',d:'XGBoost, LightGBM, CatBoost',m:22}
+      ]},
+      {part:'Part 3',title:'Unsupervised Learning',color:'#10B981',chs:[
+        {id:'kmeans',n:'K-Means Clustering',d:'Finding hidden groups',m:16},
+        {id:'hierarchical',n:'Hierarchical Clustering',d:'Dendrograms and linkage',m:14},
+        {id:'dbscan',n:'DBSCAN',d:'Density-based discovery',m:14},
+        {id:'pca',n:'PCA',d:'Reducing dimensions',m:18},
+        {id:'tsne-umap',n:'t-SNE & UMAP',d:'Visualizing high dimensions',m:16},
+        {id:'anomaly',n:'Anomaly Detection',d:'Finding the unusual',m:15},
+        {id:'association',n:'Association Rules',d:'Market basket analysis',m:12}
+      ]},
+      {part:'Part 4',title:'Deep Learning',color:'#F59E0B',chs:[
+        {id:'neural-nets',n:'Neural Networks',d:'The brain metaphor decoded',m:20},
+        {id:'activation-loss',n:'Activation & Loss Functions',d:'ReLU, Softmax, Cross-Entropy',m:18},
+        {id:'backprop',n:'Backpropagation',d:'How networks actually learn',m:22},
+        {id:'cnn',n:'CNNs',d:'Seeing like a machine',m:22},
+        {id:'cnn-apps',n:'CNN Applications',d:'Detection, segmentation, style transfer',m:18},
+        {id:'rnn',n:'RNNs',d:'Sequences and memory',m:18},
+        {id:'lstm-gru',n:'LSTMs & GRUs',d:'Solving vanishing gradients',m:20},
+        {id:'seq2seq',n:'Sequence-to-Sequence',d:'Translation and summarization',m:16},
+        {id:'autoencoders',n:'Autoencoders',d:'Compression and generation',m:16},
+        {id:'gans',n:'GANs',d:'Creating art from noise',m:20},
+        {id:'vaes',n:'Variational Autoencoders',d:'Structured latent spaces',m:16}
+      ]},
+      {part:'Part 5',title:'Modern AI Revolution',color:'#EC4899',chs:[
+        {id:'attention',n:'Attention Mechanism',d:'The breakthrough idea',m:22},
+        {id:'transformers',n:'Transformers',d:'Attention Is All You Need',m:25},
+        {id:'bert',n:'BERT',d:'Understanding language bidirectionally',m:20},
+        {id:'gpt',n:'GPT',d:'Generating language autoregressively',m:20},
+        {id:'llms',n:'Large Language Models',d:'GPT-4, Claude, Gemini, Llama',m:22},
+        {id:'vit',n:'Vision Transformers',d:'ViT and beyond',m:16},
+        {id:'diffusion',n:'Diffusion Models',d:'Stable Diffusion, DALL-E, Midjourney',m:22},
+        {id:'multimodal',n:'Multimodal AI',d:'Connecting vision and language',m:18},
+        {id:'rlhf',n:'RLHF',d:'Teaching AI human values',m:18},
+        {id:'prompting',n:'Prompt Engineering',d:'In-context learning mastery',m:15}
+      ]},
+      {part:'Part 6',title:'Specialized AI',color:'#8B5CF6',chs:[
+        {id:'rl-intro',n:'Reinforcement Learning',d:'Learning by doing',m:20},
+        {id:'q-learning',n:'Q-Learning & DQN',d:'Value-based methods',m:18},
+        {id:'policy-grad',n:'Policy Gradients',d:'REINFORCE and A2C',m:18},
+        {id:'alphago',n:'AlphaGo & AlphaFold',d:'Game-changing breakthroughs',m:16},
+        {id:'nlp-pipeline',n:'NLP Pipeline',d:'Tokenization to generation',m:18},
+        {id:'speech',n:'Speech AI',d:'Recognition and synthesis',m:15},
+        {id:'recsys',n:'Recommendation Systems',d:'Netflix, Spotify, YouTube',m:16},
+        {id:'timeseries',n:'Time Series',d:'Forecasting the future',m:16},
+        {id:'gnn',n:'Graph Neural Networks',d:'Relationships as data',m:16},
+        {id:'federated',n:'Federated Learning',d:'Privacy-preserving AI',m:14}
+      ]},
+      {part:'Part 7',title:'AI in Practice',color:'#EF4444',chs:[
+        {id:'eval-metrics',n:'Model Evaluation',d:'Precision, recall, F1, AUC',m:16},
+        {id:'bias-ethics',n:'Bias & Ethics',d:'Fairness in AI systems',m:18},
+        {id:'mlops',n:'MLOps',d:'Deploying AI at scale',m:18},
+        {id:'ai-agents',n:'AI Agents & Tools',d:'Autonomous reasoning systems',m:20},
+        {id:'rag',n:'RAG',d:'Retrieval augmented generation',m:16},
+        {id:'finetuning',n:'Fine-Tuning',d:'Transfer learning in practice',m:16},
+        {id:'edge-ai',n:'Edge AI',d:'Mobile and IoT deployment',m:14},
+        {id:'safety',n:'AI Safety & Alignment',d:'Ensuring beneficial AI',m:18},
+        {id:'future-ai',n:'The Future of AI',d:'AGI, consciousness, what\\'s next',m:20}
+      ]}
+    ];
+    _aiParts.forEach(function(part){
+      h+='<div class="ai-part">';
+      h+='<div class="ai-part-hdr" style="--part-color:'+part.color+'">';
+      h+='<div class="ai-part-dot" style="background:'+part.color+'"></div>';
+      h+='<div><div class="ai-part-label">'+part.part+'</div><div class="ai-part-title">'+part.title+'</div></div></div>';
+      part.chs.forEach(function(ch){
+        var done=_aDone.indexOf(ch.id)>-1;
+        h+='<a class="ai-ch'+(done?' done':'')+'" href="/learning/ai/'+ch.id+'" style="text-decoration:none;color:inherit">';
+        h+='<div class="ai-ch-check" style="border-color:'+part.color+(done?';background:'+part.color:'')+'">'+( done?'\\u2713':'')+'</div>';
+        h+='<div class="ai-ch-body"><div class="ai-ch-name">'+ch.n+'</div><div class="ai-ch-desc">'+ch.d+'</div></div>';
+        h+='<div class="ai-ch-time">'+ch.m+' min</div>';
+        h+='</a>';
+      });
+      h+='</div>';
+    });
+  }
 }
 
 // MIND GAMES TAB — 3 sections: Maths, Memory, Puzzles
@@ -15165,7 +15343,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=92').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=95').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15475,7 +15653,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v94";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v95";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
