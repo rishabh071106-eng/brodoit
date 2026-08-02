@@ -8376,62 +8376,65 @@ select,option{color:var(--ink);font-weight:600}
 /* ── card depth (paper feel) ── */
 .tc,.book-card,.dash-card,.kc,.insight{background:#FFFFFF;border:1px solid rgba(0,0,0,.05);box-shadow:0 1px 3px rgba(0,0,0,.02)}
 
-/* ── Learning — scoped dark professional theme ── */
-.learn-wrap{background:#1E2028;border-radius:20px 20px 0 0;margin:-2px -16px -80px;padding:20px 16px 80px;min-height:60vh}
-.learn-wrap .learn-sub-tabs{margin:-20px -16px 16px;padding:0 16px;background:#1E2028;border-radius:20px 20px 0 0;border-bottom-color:rgba(255,255,255,.06)}
-.learn-wrap .learn-sub-tabs .lst{color:#8B8D97}
-.learn-wrap .learn-sub-tabs .lst.on{color:#818CF8;border-bottom-color:#818CF8}
-.learn-wrap .learn-sub-tabs .lst:not(.on):hover{color:#E8E9ED}
+/* ── Learning — Light Comic Theme ── */
+.learn-wrap{background:transparent;margin:0;padding:0;min-height:60vh}
+.learn-wrap .learn-sub-tabs{margin:0 0 16px;padding:0;background:transparent;border-bottom-color:var(--divider)}
+.learn-wrap .learn-sub-tabs .lst{color:var(--text-mute)}
+.learn-wrap .learn-sub-tabs .lst.on{color:var(--accent);border-bottom-color:var(--accent)}
+.learn-wrap .learn-sub-tabs .lst:not(.on):hover{color:var(--ink)}
 /* ── Learning Hero ── */
-.learn-hero{position:relative;border-radius:20px;padding:32px 20px;margin-bottom:20px;overflow:hidden;background:linear-gradient(135deg,#252830 0%,#2A2D38 50%,#282535 100%)}
+.learn-hero{position:relative;border-radius:22px;padding:28px 22px;margin-bottom:22px;overflow:hidden;background:linear-gradient(135deg,#EEEAFF 0%,#E0DBFF 40%,#F0ECFF 100%);border:2px solid rgba(99,102,241,.12)}
 .learn-hero-bg{position:absolute;inset:0;overflow:hidden}
-.learn-orb{position:absolute;border-radius:50%;filter:blur(40px);opacity:.35;animation:orbFloat 8s ease-in-out infinite}
-.learn-orb-1{width:120px;height:120px;background:#6366F1;top:-20px;right:-10px;animation-delay:0s}
+.learn-orb{position:absolute;border-radius:50%;filter:blur(45px);opacity:.18;animation:orbFloat 8s ease-in-out infinite}
+.learn-orb-1{width:120px;height:120px;background:#6366F1;top:-20px;right:-10px}
 .learn-orb-2{width:80px;height:80px;background:#EC4899;bottom:0;left:10%;animation-delay:-3s}
 .learn-orb-3{width:60px;height:60px;background:#0EA5E9;top:40%;right:30%;animation-delay:-5s}
 @keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-15px) scale(1.1)}}
 .learn-hero-txt{position:relative;z-index:1}
 
-/* ── Learning Cards Grid ── */
-.learn-grid{display:flex;flex-direction:column;gap:14px;perspective:800px}
-.learn-card-3d{opacity:1}
-.learn-card{position:relative;border-radius:16px;background:#282B33;border:1px solid rgba(255,255,255,.06);box-shadow:0 2px 10px rgba(0,0,0,.25);overflow:hidden;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s}
-.learn-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.learn-card:active{transform:scale(.98)}
-.learn-card-scene{width:100%;height:140px;overflow:hidden;border-radius:16px 16px 0 0}
+/* ── Learning Cards Grid — Comic Style ── */
+.learn-grid{display:flex;flex-direction:column;gap:16px;perspective:800px}
+.learn-card-3d{opacity:1;animation:cardPop .45s cubic-bezier(.175,.885,.32,1.275) both}
+.learn-card-3d:nth-child(1){animation-delay:.05s}
+.learn-card-3d:nth-child(2){animation-delay:.12s}
+.learn-card-3d:nth-child(3){animation-delay:.19s}
+.learn-card-3d:nth-child(4){animation-delay:.26s}
+.learn-card-3d:nth-child(5){animation-delay:.33s}
+@keyframes cardPop{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.learn-card{position:relative;border-radius:18px;background:var(--surface);border:2px solid var(--divider);box-shadow:0 4px 16px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.03);overflow:hidden;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s,border-color .25s}
+.learn-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.1);border-color:var(--card-color,var(--accent))}
+.learn-card:active{transform:scale(.97)}
+.learn-card-scene{width:100%;height:140px;overflow:hidden;border-radius:16px 16px 0 0;border-bottom:2px solid var(--divider)}
 .learn-card-scene svg{width:100%;height:100%;display:block}
-.learn-card-body{padding:16px}
-.learn-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;gap:8px}
-.learn-card-tag{font-size:9px;letter-spacing:.1em;font-weight:800;text-transform:uppercase;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.06);color:#8B8D97;white-space:nowrap;flex-shrink:0}
-.learn-card-tag.active{background:rgba(99,102,241,.15);color:#818CF8}
-.learn-card-title{font-size:17px;font-weight:700;color:#E8E9ED;margin:0;line-height:1.3}
-.learn-card-desc{font-size:13px;color:#8B8D97;line-height:1.5;margin:0 0 10px}
-.learn-card-meta{display:flex;gap:14px;font-size:12px;color:#8B8D97;font-weight:600}
-.learn-card-progress{height:4px;background:rgba(99,102,241,.15);border-radius:4px;margin-top:10px;overflow:hidden}
-.learn-card-bar{height:100%;background:#818CF8;border-radius:4px;transition:width .5s}
+.learn-card-body{padding:14px 16px 16px}
+.learn-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;gap:8px}
+.learn-card-tag{font-size:9px;letter-spacing:.1em;font-weight:800;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:var(--bg-sunken);color:var(--text-mute);white-space:nowrap;flex-shrink:0;border:1px solid var(--divider)}
+.learn-card-tag.active{background:rgba(99,102,241,.1);color:#6366F1;border-color:rgba(99,102,241,.2)}
+.learn-card-title{font-size:17px;font-weight:700;color:var(--ink);margin:0;line-height:1.3}
+.learn-card-desc{font-size:13px;color:var(--text-mute);line-height:1.5;margin:0 0 8px}
+.learn-card-meta{display:flex;gap:14px;font-size:12px;color:var(--text-mute);font-weight:600}
+.learn-card-meta span::before{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--text-dim);margin-right:6px;vertical-align:middle}
+.learn-card-meta span:first-child::before{display:none}
+.learn-card-progress{height:5px;background:rgba(99,102,241,.1);border-radius:4px;margin-top:10px;overflow:hidden}
+.learn-card-bar{height:100%;background:linear-gradient(90deg,#6366F1,#818CF8);border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
 
-/* ── AI Course Sections ── */
-.ai-part{margin-bottom:20px}
-.ai-part-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:4px 0}
-.ai-part-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.ai-part-label{font-size:10px;letter-spacing:.12em;font-weight:800;text-transform:uppercase;color:#8B8D97}
-.ai-part-title{font-size:16px;font-weight:700;color:#E8E9ED}
-.ai-ch{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:#282B33;border:1px solid rgba(255,255,255,.05);margin-bottom:6px;transition:all .15s}
-.ai-ch:hover{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.15);transform:translateX(2px)}
-.ai-ch-check{width:22px;height:22px;border-radius:7px;border:2px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:900;color:#fff;transition:all .2s}
+/* ── AI Course Sections — Light ── */
+.ai-part{margin-bottom:22px;animation:cardPop .4s cubic-bezier(.175,.885,.32,1.275) both}
+.ai-part:nth-child(1){animation-delay:.05s}.ai-part:nth-child(2){animation-delay:.1s}.ai-part:nth-child(3){animation-delay:.15s}
+.ai-part:nth-child(4){animation-delay:.2s}.ai-part:nth-child(5){animation-delay:.25s}.ai-part:nth-child(6){animation-delay:.3s}.ai-part:nth-child(7){animation-delay:.35s}
+.ai-part-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:6px 0}
+.ai-part-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.ai-part-label{font-size:10px;letter-spacing:.12em;font-weight:800;text-transform:uppercase;color:var(--text-mute)}
+.ai-part-title{font-size:16px;font-weight:700;color:var(--ink)}
+.ai-ch{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1.5px solid var(--divider);margin-bottom:6px;transition:all .2s;cursor:pointer;text-decoration:none;color:inherit}
+.ai-ch:hover{background:var(--accent-soft);border-color:rgba(99,102,241,.2);transform:translateX(3px);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.ai-ch-check{width:24px;height:24px;border-radius:8px;border:2px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:900;color:#fff;transition:all .25s}
 .ai-ch.done .ai-ch-check{border-color:transparent}
 .ai-ch-body{flex:1;min-width:0}
-.ai-ch-name{font-size:14px;font-weight:600;color:#E8E9ED;line-height:1.3}
-.ai-ch-desc{font-size:12px;color:#8B8D97;margin-top:1px}
-.ai-ch-time{font-size:11px;font-weight:700;color:#8B8D97;white-space:nowrap}
-.ai-ch.done .ai-ch-name{color:#5E6068}
-
-/* aurora overrides for learn cards */
-body[data-theme=aurora] .learn-wrap{background:#151520}
-body[data-theme=aurora] .learn-wrap .learn-sub-tabs{background:#151520}
-body[data-theme=aurora] .learn-hero{background:linear-gradient(135deg,#1E1E2E 0%,#252540 50%,#2D1F3D 100%)}
-body[data-theme=aurora] .learn-card{background:#1E1E2E;border-color:rgba(255,255,255,.06)}
-body[data-theme=aurora] .ai-ch{background:#1E1E2E;border-color:rgba(255,255,255,.04)}
+.ai-ch-name{font-size:14px;font-weight:600;color:var(--ink);line-height:1.3}
+.ai-ch-desc{font-size:12px;color:var(--text-mute);margin-top:1px}
+.ai-ch-time{font-size:11px;font-weight:700;color:var(--text-dim);white-space:nowrap;background:var(--bg-sunken);padding:3px 8px;border-radius:8px}
+.ai-ch.done .ai-ch-name{color:var(--text-dim);text-decoration:line-through}
 </style></head><body data-theme="classic">
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
@@ -13352,9 +13355,9 @@ else if(S.tab==='courses'){
     h+='<div class="learn-hero">';
     h+='<div class="learn-hero-bg"><div class="learn-orb learn-orb-1"></div><div class="learn-orb learn-orb-2"></div><div class="learn-orb learn-orb-3"></div></div>';
     h+='<div class="learn-hero-txt">';
-    h+='<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#818CF8;font-weight:700;margin-bottom:6px">Brodoit Academy</div>';
-    h+='<h2 style="font-family:var(--serif);font-size:30px;font-weight:400;line-height:1.15;margin:0;color:#E8E9ED">Learn anything.<br><span style="color:#818CF8">Master everything.</span></h2>';
-    h+='<p style="font-size:14px;color:#8B8D97;margin:8px 0 0;line-height:1.5">Story-driven courses with real examples, zero fluff.</p>';
+    h+='<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#6366F1;font-weight:700;margin-bottom:6px">Brodoit Academy</div>';
+    h+='<h2 style="font-family:var(--serif);font-size:28px;font-weight:400;line-height:1.15;margin:0;color:var(--ink)">Learn anything.<br><span style="color:#6366F1">Master everything.</span></h2>';
+    h+='<p style="font-size:14px;color:var(--text-mute);margin:8px 0 0;line-height:1.5">Story-driven courses with real examples, zero fluff.</p>';
     h+='</div></div>';
     // Animated SVG scenes for each card
     var _scenes={};
@@ -13401,7 +13404,7 @@ else if(S.tab==='courses'){
         var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
         var pct=Math.round(_aDone.length/63*100);
         h+='<div class="learn-card-progress"><div class="learn-card-bar" style="width:'+pct+'%"></div></div>';
-        h+='<div style="font-size:11px;color:#8B8D97;margin-top:4px">'+_aDone.length+'/63 completed</div>';
+        h+='<div style="font-size:11px;color:var(--text-mute);margin-top:4px">'+_aDone.length+'/63 completed</div>';
       }
       h+='</div></div></div>';
     });
@@ -13409,9 +13412,9 @@ else if(S.tab==='courses'){
   } else if(S.learnSection==='ai'){
     // AI Section — full curriculum
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
-    h+='<button onclick="S.learnSection=null;render()" style="background:none;border:none;cursor:pointer;padding:6px;color:#8B8D97;font-size:18px">\\u2190</button>';
-    h+='<div><div style="font-size:11px;letter-spacing:.15em;font-weight:700;color:#818CF8;text-transform:uppercase">AI & Machine Learning</div>';
-    h+='<div style="font-family:var(--serif);font-size:22px;font-weight:400;margin-top:2px;color:#E8E9ED">The Complete Journey</div></div></div>';
+    h+='<button onclick="S.learnSection=null;render()" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
+    h+='<div><div style="font-size:11px;letter-spacing:.15em;font-weight:700;color:#6366F1;text-transform:uppercase">AI & Machine Learning</div>';
+    h+='<div style="font-family:var(--serif);font-size:22px;font-weight:400;margin-top:2px;color:var(--ink)">The Complete Journey</div></div></div>';
     var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
     var _aiParts=[
       {part:'Part 1',title:'Foundations',color:'#6366F1',chs:[
@@ -13499,11 +13502,11 @@ else if(S.tab==='courses'){
       h+='<div><div class="ai-part-label">'+part.part+'</div><div class="ai-part-title">'+part.title+'</div></div></div>';
       part.chs.forEach(function(ch){
         var done=_aDone.indexOf(ch.id)>-1;
-        h+='<a class="ai-ch'+(done?' done':'')+'" href="/learning/ai/'+ch.id+'" style="text-decoration:none;color:inherit">';
+        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="toast(\\'Chapter coming soon!\\',\\'info\\')">';
         h+='<div class="ai-ch-check" style="border-color:'+part.color+(done?';background:'+part.color:'')+'">'+( done?'\\u2713':'')+'</div>';
         h+='<div class="ai-ch-body"><div class="ai-ch-name">'+ch.n+'</div><div class="ai-ch-desc">'+ch.d+'</div></div>';
         h+='<div class="ai-ch-time">'+ch.m+' min</div>';
-        h+='</a>';
+        h+='</div>';
       });
       h+='</div>';
     });
@@ -15351,7 +15354,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=98').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=99').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15661,7 +15664,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v98";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v99";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
