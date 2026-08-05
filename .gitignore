@@ -12,3 +12,5 @@ audio-static/*
 !audio-static/*.mp3
 .claude/settings.local.json
 *.aab
+server.js.bak
+server.js.pre-theme-restore.bak

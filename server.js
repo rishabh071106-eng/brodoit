@@ -4642,21 +4642,44 @@ body.night-sky .ns-moon::after{content:'';position:absolute;inset:0;border-radiu
 /* Planets */
 body.night-sky .ns-planets{position:fixed;inset:0;z-index:0;pointer-events:none}
 body.night-sky .ns-planet{position:fixed;border-radius:50%;z-index:0;pointer-events:none}
-body.night-sky .ns-planet-saturn{top:18%;left:12%;width:18px;height:18px;
+body.night-sky .ns-planet-saturn{top:18%;left:12%;width:22px;height:22px;
   background:radial-gradient(circle at 40% 35%,#F5DEB3,#D2B48C 60%,#A08050);
-  box-shadow:0 0 12px 4px rgba(210,180,140,.15);animation:planetTwinkle 12s ease-in-out infinite alternate}
-body.night-sky .ns-planet-saturn::after{content:'';position:absolute;top:50%;left:50%;width:30px;height:6px;margin-left:-15px;margin-top:-3px;border-radius:50%;border:1.5px solid rgba(210,180,140,.35);background:transparent;transform:rotate(-20deg)}
-body.night-sky .ns-planet-jupiter{top:32%;left:6%;width:14px;height:14px;
+  box-shadow:0 0 14px 5px rgba(210,180,140,.18);animation:planetTwinkle 12s ease-in-out infinite alternate}
+body.night-sky .ns-planet-saturn::after{content:'';position:absolute;top:50%;left:50%;width:36px;height:7px;margin-left:-18px;margin-top:-3.5px;border-radius:50%;border:1.5px solid rgba(210,180,140,.4);background:transparent;transform:rotate(-20deg)}
+body.night-sky .ns-planet-jupiter{top:32%;left:6%;width:20px;height:20px;
   background:radial-gradient(circle at 40% 35%,#F0D8A8,#C8A878 50%,#A08860);
-  box-shadow:0 0 10px 3px rgba(192,168,120,.12);animation:planetTwinkle 15s ease-in-out infinite alternate-reverse}
-body.night-sky .ns-planet-jupiter::after{content:'';position:absolute;top:35%;left:10%;right:10%;height:1.5px;background:rgba(180,140,80,.3);border-radius:1px}
-body.night-sky .ns-planet-jupiter::before{content:'';position:absolute;top:55%;left:15%;right:15%;height:1px;background:rgba(160,120,60,.25);border-radius:1px}
-body.night-sky .ns-planet-mars{bottom:28%;left:15%;width:8px;height:8px;
+  box-shadow:0 0 12px 4px rgba(192,168,120,.15);animation:planetTwinkle 15s ease-in-out infinite alternate-reverse}
+body.night-sky .ns-planet-jupiter::after{content:'';position:absolute;top:32%;left:8%;right:8%;height:2px;background:rgba(180,140,80,.35);border-radius:1px}
+body.night-sky .ns-planet-jupiter::before{content:'';position:absolute;top:55%;left:12%;right:12%;height:1.5px;background:rgba(160,120,60,.3);border-radius:1px}
+body.night-sky .ns-planet-mars{bottom:28%;left:15%;width:10px;height:10px;
   background:radial-gradient(circle at 40% 35%,#F0A080,#C85040 70%,#903020);
-  box-shadow:0 0 8px 3px rgba(200,80,64,.12);animation:planetTwinkle 10s ease-in-out infinite}
-body.night-sky .ns-planet-venus{top:14%;right:28%;width:6px;height:6px;
+  box-shadow:0 0 10px 4px rgba(200,80,64,.15);animation:planetTwinkle 10s ease-in-out infinite}
+body.night-sky .ns-planet-venus{top:14%;right:28%;width:8px;height:8px;
   background:radial-gradient(circle at 40% 35%,#FFFDE0,#F0E8C0);
-  box-shadow:0 0 10px 4px rgba(255,253,224,.2);animation:planetTwinkle 7s ease-in-out infinite alternate}
+  box-shadow:0 0 12px 5px rgba(255,253,224,.25);animation:planetTwinkle 7s ease-in-out infinite alternate}
+body.night-sky .ns-planet-neptune{top:45%;right:5%;width:14px;height:14px;
+  background:radial-gradient(circle at 40% 35%,#64B5F6,#1E88E5 60%,#0D47A1);
+  box-shadow:0 0 14px 5px rgba(30,136,229,.2);animation:planetTwinkle 18s ease-in-out infinite alternate}
+body.night-sky .ns-planet-mercury{top:8%;left:35%;width:6px;height:6px;
+  background:radial-gradient(circle at 40% 35%,#BDBDBD,#9E9E9E 60%,#757575);
+  box-shadow:0 0 8px 3px rgba(189,189,189,.15);animation:planetTwinkle 6s ease-in-out infinite}
+body.night-sky .ns-planet-uranus{bottom:15%;right:20%;width:12px;height:12px;
+  background:radial-gradient(circle at 40% 35%,#B2EBF2,#4DD0E1 50%,#00838F);
+  box-shadow:0 0 12px 4px rgba(77,208,225,.18);animation:planetTwinkle 22s ease-in-out infinite alternate-reverse}
+body.night-sky .ns-planet-uranus::after{content:'';position:absolute;top:50%;left:50%;width:20px;height:3px;margin-left:-10px;margin-top:-1.5px;border-radius:50%;border:1px solid rgba(77,208,225,.3);background:transparent;transform:rotate(75deg)}
+body.night-sky .ns-planet-earth{bottom:40%;right:35%;width:10px;height:10px;
+  background:radial-gradient(circle at 38% 32%,#4FC3F7,#1565C0 50%,#0D47A1 80%);
+  box-shadow:0 0 10px 4px rgba(79,195,247,.18);animation:planetTwinkle 14s ease-in-out infinite}
+body.night-sky .ns-planet-earth::before{content:'';position:absolute;top:20%;left:30%;width:3px;height:2px;background:rgba(76,175,80,.5);border-radius:50%}
+body.night-sky .ns-planet-earth::after{content:'';position:absolute;top:50%;left:55%;width:2px;height:3px;background:rgba(76,175,80,.4);border-radius:50%}
+/* Shooting stars */
+body.night-sky .ns-shooting{position:fixed;z-index:0;pointer-events:none}
+body.night-sky .ns-shoot{position:fixed;width:2px;height:2px;background:#fff;border-radius:50%;opacity:0;z-index:0;pointer-events:none}
+body.night-sky .ns-shoot::after{content:'';position:absolute;top:0;right:0;width:50px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.6),transparent);transform-origin:right center}
+body.night-sky .ns-shoot-1{top:12%;left:65%;animation:shootStar 8s linear infinite 2s}
+body.night-sky .ns-shoot-2{top:25%;left:80%;animation:shootStar 12s linear infinite 6s}
+body.night-sky .ns-shoot-3{top:8%;left:45%;animation:shootStar 15s linear infinite 10s}
+@keyframes shootStar{0%{opacity:0;transform:translate(0,0) rotate(-35deg)}2%{opacity:1}8%{opacity:1;transform:translate(-180px,80px) rotate(-35deg)}10%{opacity:0}100%{opacity:0}}
 @keyframes planetTwinkle{0%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}100%{opacity:.75;transform:scale(.97)}}
 body.night-sky .tabs.page-t{background:rgba(5,7,20,.94)!important;border-top-color:rgba(255,255,255,.06)!important;backdrop-filter:blur(24px)!important}
 body[data-theme=aurora]::before{content:'';position:fixed;inset:0;background:
@@ -7485,7 +7508,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 }
 
 /* ─── BRO CHAT ─── */
-.bro-container{display:flex;flex-direction:column;height:calc(100vh - 140px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:#F5F6F8;position:relative}
+.bro-container{display:flex;flex-direction:column;height:calc(100vh - 90px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:#F5F6F8;position:relative}
 body[data-theme=aurora] .bro-container{background:var(--bg)}
 .bro-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--line);position:relative;z-index:10;flex-shrink:0}
 .bro-ticker{flex-shrink:0;overflow:hidden;position:relative;padding:10px 14px;background:linear-gradient(135deg,rgba(226,125,96,.07),rgba(61,174,92,.05));border-bottom:1px solid rgba(226,125,96,.12)}
@@ -7563,7 +7586,7 @@ body[data-theme=aurora] .bro-msg-meta{color:rgba(255,255,255,.25)}
 .bro-typing-dot:nth-child(3){animation-delay:.4s}
 body[data-theme=aurora] .bro-typing-dot{background:var(--accent)}
 @keyframes broTypeDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
-.bro-layout{display:flex;height:calc(100vh - 120px);overflow:hidden}
+.bro-layout{display:flex;height:calc(100vh - 80px);overflow:hidden}
 .bro-sidebar{width:0;overflow:hidden;background:var(--paper);border-right:1px solid var(--line);transition:width .25s ease;flex:none}
 .bro-sidebar.open{width:260px}
 .bro-sidebar-inner{width:260px;padding:14px;display:flex;flex-direction:column;height:100%}
@@ -8376,26 +8399,44 @@ select,option{color:var(--ink);font-weight:600}
 /* ── card depth (paper feel) ── */
 .tc,.book-card,.dash-card,.kc,.insight{background:#FFFFFF;border:1px solid rgba(0,0,0,.05);box-shadow:0 1px 3px rgba(0,0,0,.02)}
 
-/* ── Learning — Light Comic Theme ── */
+/* ── Learning — Space Theme ── */
 .learn-wrap{background:transparent;margin:0;padding:0;min-height:60vh}
 .learn-wrap .learn-sub-tabs{margin:0 0 16px;padding:0;background:transparent;border-bottom-color:var(--divider)}
 .learn-wrap .learn-sub-tabs .lst{color:var(--text-mute)}
 .learn-wrap .learn-sub-tabs .lst.on{color:var(--accent);border-bottom-color:var(--accent)}
 .learn-wrap .learn-sub-tabs .lst:not(.on):hover{color:var(--ink)}
-/* ── Learning Hero ── */
-.learn-hero{position:relative;border-radius:22px;padding:28px 22px;margin-bottom:22px;overflow:hidden;background:linear-gradient(135deg,#EEEAFF 0%,#E0DBFF 40%,#F0ECFF 100%);border:2px solid rgba(99,102,241,.12)}
+/* ── Learning Hero — Cosmos ── */
+.learn-hero{position:relative;border-radius:22px;padding:32px 22px 28px;margin-bottom:22px;overflow:hidden;background:linear-gradient(135deg,#0B0D2E 0%,#1A1145 40%,#0D1B3E 70%,#0F0728 100%);border:1.5px solid rgba(99,102,241,.2)}
+@keyframes learnHeroIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
 .learn-hero-bg{position:absolute;inset:0;overflow:hidden}
-.learn-orb{position:absolute;border-radius:50%;filter:blur(45px);opacity:.18;animation:orbFloat 8s ease-in-out infinite}
-.learn-orb-1{width:120px;height:120px;background:#6366F1;top:-20px;right:-10px}
-.learn-orb-2{width:80px;height:80px;background:#EC4899;bottom:0;left:10%;animation-delay:-3s}
-.learn-orb-3{width:60px;height:60px;background:#0EA5E9;top:40%;right:30%;animation-delay:-5s}
-@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-15px) scale(1.1)}}
+.learn-orb{position:absolute;border-radius:50%;filter:blur(50px);opacity:.25;animation:orbFloat 8s ease-in-out infinite}
+.learn-orb-1{width:140px;height:140px;background:#6366F1;top:-30px;right:-20px}
+.learn-orb-2{width:90px;height:90px;background:#EC4899;bottom:-10px;left:5%;animation-delay:-3s}
+.learn-orb-3{width:70px;height:70px;background:#0EA5E9;top:30%;right:25%;animation-delay:-5s}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.15)}}
+/* Hero stars */
+.learn-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(1.5px 1.5px at 15% 20%,rgba(255,255,255,.8),transparent),
+  radial-gradient(1px 1px at 35% 45%,rgba(255,255,255,.6),transparent),
+  radial-gradient(2px 2px at 55% 15%,rgba(200,220,255,.7),transparent),
+  radial-gradient(1px 1px at 75% 55%,rgba(255,255,255,.5),transparent),
+  radial-gradient(1.5px 1.5px at 85% 30%,rgba(255,255,255,.7),transparent),
+  radial-gradient(1px 1px at 25% 70%,rgba(200,200,255,.5),transparent),
+  radial-gradient(1px 1px at 65% 80%,rgba(255,255,255,.4),transparent),
+  radial-gradient(2px 2px at 45% 60%,rgba(200,220,255,.45),transparent),
+  radial-gradient(1px 1px at 90% 75%,rgba(255,255,255,.35),transparent),
+  radial-gradient(1.5px 1.5px at 10% 85%,rgba(255,255,255,.5),transparent);z-index:0}
 .learn-hero-txt{position:relative;z-index:1}
+/* Hero constellation lines */
+.learn-hero-bg::after{content:'';position:absolute;top:15%;right:8%;width:80px;height:60px;opacity:.15;background:
+  linear-gradient(45deg,transparent 48%,rgba(255,255,255,.5) 49%,rgba(255,255,255,.5) 51%,transparent 52%),
+  linear-gradient(-30deg,transparent 48%,rgba(255,255,255,.4) 49%,rgba(255,255,255,.4) 51%,transparent 52%);animation:constellationPulse 4s ease-in-out infinite alternate}
+@keyframes constellationPulse{0%{opacity:.1}100%{opacity:.2}}
 
-/* ── Learning Cards Grid — Comic Style ── */
+/* ── Learning Cards Grid — Space Style ── */
 .learn-grid{display:flex;flex-direction:column;gap:16px;perspective:800px}
 .learn-card-3d{opacity:1}
-.learn-card{transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s,border-color .25s}
+@keyframes learnCardIn{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
 .learn-card{position:relative;border-radius:18px;background:var(--surface);border:2px solid var(--divider);box-shadow:0 4px 16px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.03);overflow:hidden;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s,border-color .25s}
 .learn-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.1);border-color:var(--card-color,var(--accent))}
 .learn-card:active{transform:scale(.97)}
@@ -8429,30 +8470,43 @@ select,option{color:var(--ink);font-weight:600}
 .ai-ch-time{font-size:11px;font-weight:700;color:var(--text-dim);white-space:nowrap;background:var(--bg-sunken);padding:3px 8px;border-radius:8px}
 .ai-ch.done .ai-ch-name{color:var(--text-dim);text-decoration:line-through}
 
-/* ── Comic Lesson Viewer ── */
-.lesson-back{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:0}
+/* ── Comic Lesson Viewer — Full Page ── */
+.lesson-fullpage{position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+@keyframes lessonPageIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.lesson-fullpage-inner{max-width:680px;margin:0 auto;padding:20px 18px 100px}
+.lesson-back{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:0;position:sticky;top:0;z-index:10;background:var(--bg);padding:12px 0 8px}
 .lesson-back button{background:none;border:none;cursor:pointer;padding:8px;color:var(--text-mute);font-size:18px;border-radius:10px;transition:background .15s}
 .lesson-back button:hover{background:var(--bg-sunken)}
 .lesson-back-label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mute)}
-.lesson-title{font-family:var(--serif);font-size:26px;font-weight:400;color:var(--ink);line-height:1.2;margin:0 0 20px}
-.lesson-panels{display:flex;flex-direction:column;gap:16px}
+.lesson-back-voice{margin-left:auto;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1.5px solid var(--divider);background:var(--surface);cursor:pointer;font:600 11px var(--sans);color:var(--text-mute);transition:all .2s}
+.lesson-back-voice:hover{border-color:var(--accent);color:var(--accent)}
+.lesson-back-voice.speaking{border-color:var(--accent);background:rgba(138,46,42,.1);color:var(--accent);animation:voicePulse 1.5s ease-in-out infinite}
+@keyframes voicePulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(138,46,42,.15)}}
+.lesson-title{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--ink);line-height:1.2;margin:0 0 24px}
+.lesson-story-intro{padding:16px;background:linear-gradient(135deg,rgba(99,102,241,.06),rgba(139,92,246,.04));border:1.5px solid rgba(99,102,241,.12);border-radius:16px;margin-bottom:20px}
+.lesson-story-intro p{font:400 14px/1.7 var(--sans);color:var(--ink-2);margin:0}
+.lesson-story-intro .story-narrator{font:600 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+@keyframes storyIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+.lesson-panels{display:flex;flex-direction:column;gap:18px}
 .lesson-panel{background:var(--surface);border:2px solid var(--divider);border-radius:18px;overflow:hidden}
-.lesson-panel-hdr{padding:12px 16px;font-size:14px;font-weight:800;letter-spacing:.03em;color:#fff;display:flex;align-items:center;gap:8px}
-.lesson-panel-hdr::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);flex-shrink:0}
-.lesson-panel-body{padding:16px}
-.lesson-panel-body p{font-size:15px;line-height:1.65;color:var(--ink);margin:0}
+@keyframes lessonPanelIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.lesson-panel-hdr{padding:14px 18px;font-size:14px;font-weight:800;letter-spacing:.03em;color:#fff;display:flex;align-items:center;gap:8px}
+.lesson-panel-hdr::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);flex-shrink:0;animation:panelDotPulse 2s ease-in-out infinite}
+@keyframes panelDotPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+.lesson-panel-body{padding:18px}
+.lesson-panel-body p{font-size:15px;line-height:1.7;color:var(--ink);margin:0}
 .lesson-bubble{position:relative;background:var(--bg-sunken);border-radius:16px;padding:14px 16px;margin-top:12px;font-size:13px;line-height:1.6;color:var(--text-mute);border:1.5px solid var(--divider)}
 .lesson-bubble::before{content:"";position:absolute;top:-8px;left:20px;width:14px;height:14px;background:var(--bg-sunken);border-left:1.5px solid var(--divider);border-top:1.5px solid var(--divider);transform:rotate(45deg)}
 .lesson-code{background:#1E293B;border-radius:12px;padding:14px 16px;margin-top:12px;overflow-x:auto}
 .lesson-code pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.6;color:#E2E8F0;white-space:pre-wrap}
 .lesson-code .kw{color:#C084FC}.lesson-code .fn{color:#FCD34D}.lesson-code .str{color:#86EFAC}.lesson-code .cm{color:#64748B}
-.lesson-complete{margin-top:20px;padding:16px;background:var(--surface);border:2px solid var(--divider);border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lesson-complete{margin-top:24px;padding:18px;background:var(--surface);border:2px solid var(--divider);border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .lesson-complete-btn{padding:10px 24px;border-radius:12px;border:none;font:700 14px var(--sans);cursor:pointer;transition:all .2s}
 .lesson-complete-btn.done{background:var(--accent);color:#fff}
 .lesson-complete-btn.done:hover{transform:scale(1.03)}
 .lesson-complete-btn.completed{background:var(--bg-sunken);color:var(--text-mute)}
 .lesson-nav{display:flex;gap:8px;margin-top:16px}
-.lesson-nav button{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--divider);background:var(--surface);font:600 13px var(--sans);color:var(--ink);cursor:pointer;transition:all .2s}
+.lesson-nav button{flex:1;padding:14px;border-radius:12px;border:1.5px solid var(--divider);background:var(--surface);font:600 13px var(--sans);color:var(--ink);cursor:pointer;transition:all .2s}
 .lesson-nav button:hover{border-color:var(--accent);background:var(--accent-soft)}
 
 /* ── Comic Character ── */
@@ -9061,8 +9115,8 @@ async function stopPed(){if(_ped){window.removeEventListener('devicemotion',_ped
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(S.stepLive&&S.stepLive.active)await flushPedCount()}else if(document.visibilityState==='visible'){if(S.stepLive&&S.stepLive.active&&!_wakeLock)await acquireWake()}});
 function toggleTheme(){S.theme=S.theme==='aurora'?'classic':'aurora';localStorage.setItem('theme',S.theme);document.body.setAttribute('data-theme',S.theme);toast(S.theme==='aurora'?'Aurora theme':'Classic theme');render()}
 function toggleEyeShield(){S.eyeShield=!S.eyeShield;localStorage.setItem('eyeShield',S.eyeShield?'1':'');document.body.classList.toggle('eye-shield',S.eyeShield);if(S.eyeShield){S.nightSky=false;localStorage.setItem('nightSky','');document.body.classList.remove('night-sky');var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb=document.getElementById('nsNebula');if(nb)nb.remove();var pl=document.getElementById('nsPlanets');if(pl)pl.remove()}toast(S.eyeShield?'Eye Shield on':'Eye Shield off');render()}
-function toggleNightSky(){S.nightSky=!S.nightSky;localStorage.setItem('nightSky',S.nightSky?'1':'');document.body.classList.toggle('night-sky',S.nightSky);if(S.nightSky){S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');if(S.theme!=='aurora'){S.theme='aurora';localStorage.setItem('theme','aurora');document.body.setAttribute('data-theme','aurora')}if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div>';document.body.appendChild(pl)}}else{var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb2=document.getElementById('nsNebula');if(nb2)nb2.remove();var pl2=document.getElementById('nsPlanets');if(pl2)pl2.remove()}toast(S.nightSky?'Night Sky on':'Night Sky off');render()}
-function applyTheme(){document.body.setAttribute('data-theme',S.theme||'classic');applyColorThemeCSS(S.themeColor||'oxblood');if(S.eyeShield)document.body.classList.add('eye-shield');if(S.nightSky){document.body.classList.add('night-sky');if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div>';document.body.appendChild(pl)}}}
+function toggleNightSky(){S.nightSky=!S.nightSky;localStorage.setItem('nightSky',S.nightSky?'1':'');document.body.classList.toggle('night-sky',S.nightSky);if(S.nightSky){S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');if(S.theme!=='aurora'){S.theme='aurora';localStorage.setItem('theme','aurora');document.body.setAttribute('data-theme','aurora')}if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div><div class="ns-planet ns-planet-neptune"></div><div class="ns-planet ns-planet-mercury"></div><div class="ns-planet ns-planet-uranus"></div><div class="ns-planet ns-planet-earth"></div><div class="ns-shoot ns-shoot-1"></div><div class="ns-shoot ns-shoot-2"></div><div class="ns-shoot ns-shoot-3"></div>';document.body.appendChild(pl)}}else{var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb2=document.getElementById('nsNebula');if(nb2)nb2.remove();var pl2=document.getElementById('nsPlanets');if(pl2)pl2.remove()}toast(S.nightSky?'Night Sky on':'Night Sky off');render()}
+function applyTheme(){document.body.setAttribute('data-theme',S.theme||'classic');applyColorThemeCSS(S.themeColor||'oxblood');if(S.eyeShield)document.body.classList.add('eye-shield');if(S.nightSky){document.body.classList.add('night-sky');if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div><div class="ns-planet ns-planet-neptune"></div><div class="ns-planet ns-planet-mercury"></div><div class="ns-planet ns-planet-uranus"></div><div class="ns-planet ns-planet-earth"></div><div class="ns-shoot ns-shoot-1"></div><div class="ns-shoot ns-shoot-2"></div><div class="ns-shoot ns-shoot-3"></div>';document.body.appendChild(pl)}}}
 const _COLOR_THEMES={
   oxblood:{c1:'#8a2e2a',c2:'#a5564b',c3:'#dcb7b1',c4:'#2f100f',c5:'#611f1c',bg:'#f6eeec',bg2:'#f3f2f2',border:'color-mix(in srgb,#201e1d 40%,transparent)',rgba1:'138,46,42',rgba2:'165,86,75'},
   ink:{c1:'#201e1d',c2:'#444141',c3:'#9b9797',c4:'#201e1d',c5:'#2d2b2b',bg:'#f3f2f2',bg2:'#eae9e9',border:'color-mix(in srgb,#201e1d 40%,transparent)',rgba1:'32,30,29',rgba2:'68,65,65'},
@@ -12011,6 +12065,60 @@ function broVoiceToggle(){
   _broSR.start();
 }
 function broVoiceStop(){if(_broSR){try{_broSR.stop()}catch(e){}}S.bro._listening=false;render()}
+// ── Lesson full-page close ──
+function _closeLessonFull(){_stopLessonVoice();S.lessonId=null;render()}
+// ── Lesson voice read-aloud ──
+var _lessonSpeaking=false;
+function _toggleLessonVoice(){
+  if(_lessonSpeaking){_stopLessonVoice();return}
+  var synth=window.speechSynthesis;if(!synth){toast('Voice not supported');return}
+  // Gather all lesson text
+  var panels=document.querySelectorAll('.lesson-panel-body');
+  var allText='';panels.forEach(function(p){allText+=p.innerText+'\\n\\n'});
+  if(!allText.trim()){toast('No content to read');return}
+  _lessonSpeaking=true;
+  var btn=document.getElementById('lessonVoiceBtn');if(btn)btn.classList.add('speaking');
+  var lbl=document.getElementById('lessonVoiceLabel');if(lbl)lbl.textContent='Stop';
+  var chunks=allText.match(/[^.!?]+[.!?]+/g)||[allText];
+  var idx=0;
+  function speakNext(){
+    if(idx>=chunks.length||!_lessonSpeaking){_stopLessonVoice();return}
+    var u=new SpeechSynthesisUtterance(chunks[idx].trim());
+    u.rate=1;u.pitch=1;u.lang='en-IN';
+    var voices=synth.getVoices();
+    var preferred=voices.find(function(v){return v.lang.indexOf('en')===0&&v.name.indexOf('Google')>-1})||voices.find(function(v){return v.lang.indexOf('en')===0});
+    if(preferred)u.voice=preferred;
+    u.onend=function(){idx++;speakNext()};
+    u.onerror=function(){idx++;speakNext()};
+    synth.speak(u);
+  }
+  speakNext();
+}
+function _stopLessonVoice(){
+  _lessonSpeaking=false;
+  try{window.speechSynthesis.cancel()}catch(e){}
+  var btn=document.getElementById('lessonVoiceBtn');if(btn)btn.classList.remove('speaking');
+  var lbl=document.getElementById('lessonVoiceLabel');if(lbl)lbl.textContent='Listen';
+}
+// ── Bro Chat voice reply (TTS for AI responses) ──
+var _broTTSEnabled=false;
+function _broToggleTTS(){
+  _broTTSEnabled=!_broTTSEnabled;
+  var btn=document.getElementById('broTTSBtn');
+  if(btn){btn.style.background=_broTTSEnabled?'var(--accent)':'transparent';btn.style.color=_broTTSEnabled?'#fff':'var(--text-mute)'}
+  toast(_broTTSEnabled?'Voice replies on':'Voice replies off');
+}
+function _broSpeakReply(text){
+  if(!_broTTSEnabled||!window.speechSynthesis)return;
+  try{window.speechSynthesis.cancel()}catch(e){}
+  var clean=text.replace(/<[^>]+>/g,'').replace(/\\*\\*/g,'').replace(/\\*/g,'').substring(0,1000);
+  var u=new SpeechSynthesisUtterance(clean);
+  u.rate=1.05;u.pitch=1;u.lang='en-IN';
+  var voices=window.speechSynthesis.getVoices();
+  var pref=voices.find(function(v){return v.lang.indexOf('en')===0&&v.name.indexOf('Google')>-1})||voices.find(function(v){return v.lang.indexOf('en')===0});
+  if(pref)u.voice=pref;
+  window.speechSynthesis.speak(u);
+}
 function _detectLang(){
   var last=(S.bro.messages&&S.bro.messages.length)?S.bro.messages[S.bro.messages.length-1]:null;
   if(last&&last.text&&/[ऀ-ॿ]/.test(last.text))return 'hi-IN';
@@ -12152,6 +12260,7 @@ async function broSend(){
       var reply={role:'bro',text:r.reply};S.bro.messages.push(reply);
       _broShowTyping(false);_broAppendMsg(reply);
       _broSaveChat();
+      _broSpeakReply(r.reply);
       if(r.actions)_broActionToast(r.actions);
     }else{
       var errText=r&&r.error?r.error:'Network issue — check your connection and try again.';
@@ -13557,18 +13666,28 @@ else if(S.tab==='courses'){
     var _partBounds=[6,16,23,34,44,54,63,70,77,83,93];
     var _partCols=['#6366F1','#0EA5E9','#10B981','#F59E0B','#EC4899','#8B5CF6','#EF4444','#3B82F6','#14B8A6','#F97316','#A855F7'];
     var _lc='#6366F1';for(var _pi=0;_pi<_partBounds.length;_pi++){if(_chIdx<_partBounds[_pi]){_lc=_partCols[_pi];break}}
+    // Full-page lesson overlay
+    h+='<div class="lesson-fullpage" id="lessonFullpage"><div class="lesson-fullpage-inner">';
     var _lt=_chTitles[_chIdx]||S.lessonId;
     var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
     var _isDone=_aDone.indexOf(S.lessonId)>-1;
-    h+='<div class="lesson-back"><button onclick="S.lessonId=null;render()">\\u2190</button><span class="lesson-back-label">Back to chapters</span></div>';
+    h+='<div class="lesson-back"><button onclick="_closeLessonFull()">\\u2190</button><span class="lesson-back-label">Back to chapters</span>';
+    h+='<button class="lesson-back-voice" id="lessonVoiceBtn" onclick="_toggleLessonVoice()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> <span id="lessonVoiceLabel">Listen</span></button>';
+    h+='</div>';
     h+='<h1 class="lesson-title" style="border-left:4px solid '+_lc+';padding-left:14px">'+_lt+'</h1>';
+    // Story narrator intro
+    var _storyIntros={"what-is-ai":"Imagine you\\'re building a robot friend. What would it need to truly think?","history":"Our story begins in 1950, with a man named Alan Turing and a simple question...","math-linalg":"Picture data as arrows in space. That\\'s where our mathematical journey starts.","neural-nets":"Close your eyes. Imagine billions of tiny switches, all talking to each other.","transformers":"In 2017, a paper changed everything. Its title? \\'Attention Is All You Need.\\'","py-intro":"You\\'re about to write your first spell in a language computers understand.","py-variables":"Think of variables as labeled boxes. You put things in, take things out."};
+    var _storyText=_storyIntros[S.lessonId];
+    if(_storyText){
+      h+='<div class="lesson-story-intro"><div class="story-narrator">\\u{1F3AC} Story Mode</div><p>'+_storyText+'</p></div>';
+    }
     h+='<div class="lesson-panels">';
     var _isPy=S.lessonId.indexOf('py-')===0;
     var _chars=window._comicChars||[];
     _ls.forEach(function(sec,i){
       var _charSvg=_chars[i%_chars.length]||'';
-      // Comic character panel
-      h+='<div class="lesson-panel">';
+      // Comic character panel with staggered animation
+      h+='<div class="lesson-panel" style="animation-delay:'+(0.1+i*0.08)+'s">';
       h+='<div class="lesson-panel-hdr" style="background:'+_lc+'"><span style="font-size:16px">\\u{1F4D6}</span> '+sec[0]+'</div>';
       h+='<div class="lesson-panel-body">';
       // Comic character with speech bubble
@@ -13614,9 +13733,10 @@ else if(S.tab==='courses'){
     }
     h+='<div class="lesson-complete"><span style="font:600 14px var(--sans);color:var(--ink)">'+(_isDone?'\\u2705 Completed!':'Mark as complete')+'</span><button class="lesson-complete-btn '+(_isDone?'completed':'done')+'" onclick="toggleLessonDone(\\''+S.lessonId+'\\')">'+(_isDone?'Undo':'\\u2714 Complete')+'</button></div>';
     h+='<div class="lesson-nav">';
-    if(_chIdx>0)h+='<button onclick="S.lessonId=\\''+_allCh[_chIdx-1]+'\\';render();scrollTo(0,0)">\\u2190 Previous</button>';
-    if(_chIdx<_allCh.length-1)h+='<button onclick="S.lessonId=\\''+_allCh[_chIdx+1]+'\\';render();scrollTo(0,0)">Next \\u2192</button>';
+    if(_chIdx>0)h+='<button onclick="_stopLessonVoice();S.lessonId=\\''+_allCh[_chIdx-1]+'\\';render();var lf=document.getElementById(\\'lessonFullpage\\');if(lf)lf.scrollTop=0">\\u2190 Previous</button>';
+    if(_chIdx<_allCh.length-1)h+='<button onclick="_stopLessonVoice();S.lessonId=\\''+_allCh[_chIdx+1]+'\\';render();var lf=document.getElementById(\\'lessonFullpage\\');if(lf)lf.scrollTop=0">Next \\u2192</button>';
     h+='</div>';
+    h+='</div></div>'; // close lesson-fullpage-inner + lesson-fullpage
   } else {
   h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button></div>';
   if(!S.learnSection){
@@ -13624,9 +13744,9 @@ else if(S.tab==='courses'){
     h+='<div class="learn-hero">';
     h+='<div class="learn-hero-bg"><div class="learn-orb learn-orb-1"></div><div class="learn-orb learn-orb-2"></div><div class="learn-orb learn-orb-3"></div></div>';
     h+='<div class="learn-hero-txt">';
-    h+='<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#6366F1;font-weight:700;margin-bottom:6px">Brodoit Academy</div>';
-    h+='<h2 style="font-family:var(--serif);font-size:28px;font-weight:400;line-height:1.15;margin:0;color:var(--ink)">Learn anything.<br><span style="color:#6366F1">Master everything.</span></h2>';
-    h+='<p style="font-size:14px;color:var(--text-mute);margin:8px 0 0;line-height:1.5">Story-driven courses with real examples, zero fluff.</p>';
+    h+='<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#818CF8;font-weight:700;margin-bottom:6px">\\u{1F680} Brodoit Academy</div>';
+    h+='<h2 style="font-family:var(--serif);font-size:28px;font-weight:400;line-height:1.15;margin:0;color:#E8E8F0">Learn anything.<br><span style="background:linear-gradient(90deg,#818CF8,#C084FC);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Master everything.</span></h2>';
+    h+='<p style="font-size:14px;color:rgba(255,255,255,.55);margin:8px 0 0;line-height:1.5">Story-driven courses with real examples, zero fluff.</p>';
     h+='</div></div>';
     // Animated SVG scenes for each card
     var _scenes={};
@@ -14427,6 +14547,7 @@ else if(S.tab==='bro'){
     h+='<div class="bro-header" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:transparent">';
     h+='<button onclick="_broToggleSidebar()" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);border-radius:0" title="History"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg></button>';
     h+='<div style="flex:1;text-align:center;font:600 16px var(--sans);color:var(--ink)">Bro AI</div>';
+    h+='<button id="broTTSBtn" onclick="_broToggleTTS()" style="background:'+(_broTTSEnabled?'var(--accent)':'transparent')+';border:none;cursor:pointer;padding:6px;color:'+(_broTTSEnabled?'#fff':'var(--text-mute)')+';border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:all .2s" title="Voice replies"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>';
     h+='<button onclick="_broNewChat()" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);border-radius:0" title="New chat"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>';
     h+='</div>';
     // Layout: sidebar + main
@@ -15688,7 +15809,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=101').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=102').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -15998,7 +16119,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v101";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v102";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
