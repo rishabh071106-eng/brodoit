@@ -8248,6 +8248,23 @@ body[data-theme=aurora] .streak-card{background:#3A3C44;border-color:rgba(255,25
 body[data-theme=aurora] .book-card{background:#3A3C44;border-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .bro-header{background:transparent;border-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .bro-input-wrap{background:var(--bg);border:none}
+.bro-speaking-ui{display:flex;align-items:center;gap:10px;padding:10px 16px;background:linear-gradient(90deg,rgba(226,125,96,.08),rgba(226,125,96,.02));border-top:1px solid rgba(226,125,96,.15);animation:broSpeakPulse 2s ease-in-out infinite}
+@keyframes broSpeakPulse{0%,100%{background:linear-gradient(90deg,rgba(226,125,96,.08),rgba(226,125,96,.02))}50%{background:linear-gradient(90deg,rgba(226,125,96,.14),rgba(226,125,96,.06))}}
+.bro-speaking-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#E27D60,#EDA68E);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(226,125,96,.3);animation:broAvatarPulse 1.5s ease-in-out infinite}
+@keyframes broAvatarPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.bro-speaking-info{flex:1;min-width:0}
+.bro-speaking-name{font:600 13px var(--sans);color:var(--ink);display:block}
+.bro-speaking-bars{display:flex;gap:3px;align-items:flex-end;height:16px;margin-top:4px}
+.bro-speaking-bars span{width:3px;background:var(--accent);border-radius:2px;animation:broSpeakBar 0.8s ease-in-out infinite}
+.bro-speaking-bars span:nth-child(1){height:6px;animation-delay:0s}
+.bro-speaking-bars span:nth-child(2){height:12px;animation-delay:0.1s}
+.bro-speaking-bars span:nth-child(3){height:8px;animation-delay:0.2s}
+.bro-speaking-bars span:nth-child(4){height:14px;animation-delay:0.3s}
+.bro-speaking-bars span:nth-child(5){height:5px;animation-delay:0.4s}
+@keyframes broSpeakBar{0%,100%{height:4px}50%{height:16px}}
+.bro-speaking-stop{width:32px;height:32px;border-radius:50%;border:none;background:rgba(239,68,68,.1);color:#EF4444;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s;flex-shrink:0}
+.bro-speaking-stop:hover{background:rgba(239,68,68,.2)}
+body[data-theme=aurora] .bro-speaking-ui{background:linear-gradient(90deg,rgba(226,125,96,.12),rgba(226,125,96,.04));border-top-color:rgba(226,125,96,.2)}
 /* ─── Aurora/Night dark mode — kill all white backgrounds ─── */
 body[data-theme=aurora] .qc-bar,body.night-sky .qc-bar{background:rgba(255,255,255,.03) !important;border-color:rgba(255,255,255,.06) !important;box-shadow:0 2px 10px rgba(0,0,0,.2) !important}
 body[data-theme=aurora] .rd-segmented button.on{background:rgba(255,255,255,.1) !important;color:var(--ink) !important;box-shadow:0 2px 8px rgba(0,0,0,.2) !important}
@@ -8441,6 +8458,7 @@ select,option{color:var(--ink);font-weight:600}
 .learn-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.1);border-color:var(--card-color,var(--accent))}
 .learn-card:active{transform:scale(.97)}
 .learn-card-scene{width:100%;height:140px;overflow:hidden;border-radius:16px 16px 0 0;border-bottom:2px solid var(--divider)}
+.learn-card-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:16px 16px 0}
 .learn-card-scene svg{width:100%;height:100%;display:block}
 .learn-card-body{padding:14px 16px 16px}
 .learn-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;gap:8px}
@@ -8470,9 +8488,12 @@ select,option{color:var(--ink);font-weight:600}
 .ai-ch-time{font-size:11px;font-weight:700;color:var(--text-dim);white-space:nowrap;background:var(--bg-sunken);padding:3px 8px;border-radius:8px}
 .ai-ch.done .ai-ch-name{color:var(--text-dim);text-decoration:line-through}
 
-/* ── Comic Lesson Viewer — Full Page ── */
-.lesson-fullpage{position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+/* ── Comic Lesson Viewer — Full Page with 3D Portal ── */
+.lesson-fullpage{position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;animation:lessonPortalOpen .8s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes lessonPortalOpen{0%{clip-path:circle(0% at 50% 50%);opacity:0;transform:perspective(800px) rotateY(-15deg) scale(.9)}30%{opacity:1}100%{clip-path:circle(100% at 50% 50%);transform:perspective(800px) rotateY(0deg) scale(1)}}
 @keyframes lessonPageIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.lesson-fullpage::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 30%,rgba(99,102,241,.08) 0%,transparent 70%);pointer-events:none;z-index:0;animation:lessonGlow 2s ease-out forwards;opacity:0}
+@keyframes lessonGlow{0%{opacity:0;transform:scale(0.5)}50%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(1.5)}}
 .lesson-fullpage-inner{max-width:680px;margin:0 auto;padding:20px 18px 100px}
 .lesson-back{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:0;position:sticky;top:0;z-index:10;background:var(--bg);padding:12px 0 8px}
 .lesson-back button{background:none;border:none;cursor:pointer;padding:8px;color:var(--text-mute);font-size:18px;border-radius:10px;transition:background .15s}
@@ -9114,6 +9135,7 @@ async function stopPed(){if(_ped){window.removeEventListener('devicemotion',_ped
 /* When the tab is backgrounded, flush whatever we counted so we don't lose it, and re-acquire wake lock on return. */
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(S.stepLive&&S.stepLive.active)await flushPedCount()}else if(document.visibilityState==='visible'){if(S.stepLive&&S.stepLive.active&&!_wakeLock)await acquireWake()}});
 function toggleTheme(){S.theme=S.theme==='aurora'?'classic':'aurora';localStorage.setItem('theme',S.theme);document.body.setAttribute('data-theme',S.theme);toast(S.theme==='aurora'?'Aurora theme':'Classic theme');render()}
+function toggleSolarSystem(){if(S.nightSky){S.nightSky=false;localStorage.setItem('nightSky','');document.body.classList.remove('night-sky');S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb=document.getElementById('nsNebula');if(nb)nb.remove();var pl=document.getElementById('nsPlanets');if(pl)pl.remove();S.theme='classic';localStorage.setItem('theme','classic');document.body.setAttribute('data-theme','classic');toast('\\u2600\\uFE0F Light Mode')}else{S.nightSky=true;localStorage.setItem('nightSky','1');document.body.classList.add('night-sky');S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');S.theme='aurora';localStorage.setItem('theme','aurora');document.body.setAttribute('data-theme','aurora');if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb2=document.createElement('div');nb2.id='nsNebula';nb2.className='ns-nebula';document.body.appendChild(nb2)}if(!document.getElementById('nsPlanets')){var pl2=document.createElement('div');pl2.id='nsPlanets';pl2.className='ns-planets';pl2.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div><div class="ns-planet ns-planet-neptune"></div><div class="ns-planet ns-planet-mercury"></div><div class="ns-planet ns-planet-uranus"></div><div class="ns-planet ns-planet-earth"></div><div class="ns-shoot ns-shoot-1"></div><div class="ns-shoot ns-shoot-2"></div><div class="ns-shoot ns-shoot-3"></div>';document.body.appendChild(pl2)}toast('\\u{1FA90} Solar System')}render()}
 function toggleEyeShield(){S.eyeShield=!S.eyeShield;localStorage.setItem('eyeShield',S.eyeShield?'1':'');document.body.classList.toggle('eye-shield',S.eyeShield);if(S.eyeShield){S.nightSky=false;localStorage.setItem('nightSky','');document.body.classList.remove('night-sky');var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb=document.getElementById('nsNebula');if(nb)nb.remove();var pl=document.getElementById('nsPlanets');if(pl)pl.remove()}toast(S.eyeShield?'Eye Shield on':'Eye Shield off');render()}
 function toggleNightSky(){S.nightSky=!S.nightSky;localStorage.setItem('nightSky',S.nightSky?'1':'');document.body.classList.toggle('night-sky',S.nightSky);if(S.nightSky){S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');if(S.theme!=='aurora'){S.theme='aurora';localStorage.setItem('theme','aurora');document.body.setAttribute('data-theme','aurora')}if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div><div class="ns-planet ns-planet-neptune"></div><div class="ns-planet ns-planet-mercury"></div><div class="ns-planet ns-planet-uranus"></div><div class="ns-planet ns-planet-earth"></div><div class="ns-shoot ns-shoot-1"></div><div class="ns-shoot ns-shoot-2"></div><div class="ns-shoot ns-shoot-3"></div>';document.body.appendChild(pl)}}else{var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb2=document.getElementById('nsNebula');if(nb2)nb2.remove();var pl2=document.getElementById('nsPlanets');if(pl2)pl2.remove()}toast(S.nightSky?'Night Sky on':'Night Sky off');render()}
 function applyTheme(){document.body.setAttribute('data-theme',S.theme||'classic');applyColorThemeCSS(S.themeColor||'oxblood');if(S.eyeShield)document.body.classList.add('eye-shield');if(S.nightSky){document.body.classList.add('night-sky');if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div><div class="ns-planet ns-planet-neptune"></div><div class="ns-planet ns-planet-mercury"></div><div class="ns-planet ns-planet-uranus"></div><div class="ns-planet ns-planet-earth"></div><div class="ns-shoot ns-shoot-1"></div><div class="ns-shoot ns-shoot-2"></div><div class="ns-shoot ns-shoot-3"></div>';document.body.appendChild(pl)}}}
@@ -12065,6 +12087,12 @@ function broVoiceToggle(){
   _broSR.start();
 }
 function broVoiceStop(){if(_broSR){try{_broSR.stop()}catch(e){}}S.bro._listening=false;render()}
+// ── Lesson share link ──
+function _shareLessonLink(id,title){
+  var url=window.location.origin+'/?lesson='+encodeURIComponent(id);
+  if(navigator.share){navigator.share({title:'Learn: '+title+' \\u2014 Brodoit',text:'Check out this AI lesson on Brodoit!',url:url}).catch(function(){})}
+  else{navigator.clipboard.writeText(url).then(function(){toast('\\u{1F517} Link copied!')}).catch(function(){toast('\\u{1F517} '+url)})}
+}
 // ── Lesson full-page close ──
 function _closeLessonFull(){_stopLessonVoice();S.lessonId=null;render()}
 // ── Lesson voice read-aloud ──
@@ -12102,22 +12130,54 @@ function _stopLessonVoice(){
 }
 // ── Bro Chat voice reply (TTS for AI responses) ──
 var _broTTSEnabled=false;
+var _broVoiceChar=localStorage.getItem('broVoiceChar')||'aria';
+var _broVoiceChars={aria:{name:'Aria',gender:'female',pitch:1.1,rate:1.0,emoji:'\\u{1F469}'},rex:{name:'Rex',gender:'male',pitch:0.85,rate:0.95,emoji:'\\u{1F468}'}};
 function _broToggleTTS(){
   _broTTSEnabled=!_broTTSEnabled;
   var btn=document.getElementById('broTTSBtn');
   if(btn){btn.style.background=_broTTSEnabled?'var(--accent)':'transparent';btn.style.color=_broTTSEnabled?'#fff':'var(--text-mute)'}
-  toast(_broTTSEnabled?'Voice replies on':'Voice replies off');
+  if(_broTTSEnabled){var ch=_broVoiceChars[_broVoiceChar];toast(ch.emoji+' '+ch.name+' is speaking for Bro')}else{toast('Voice replies off');_broStopSpeaking()}
+}
+function _broSwitchVoice(){
+  _broVoiceChar=_broVoiceChar==='aria'?'rex':'aria';
+  localStorage.setItem('broVoiceChar',_broVoiceChar);
+  var ch=_broVoiceChars[_broVoiceChar];
+  toast(ch.emoji+' Switched to '+ch.name);
+  render();
+}
+var _broIsSpeaking=false;
+function _broStopSpeaking(){
+  _broIsSpeaking=false;
+  try{window.speechSynthesis.cancel()}catch(e){}
+  var el=document.getElementById('broSpeakingUI');if(el)el.style.display='none';
 }
 function _broSpeakReply(text){
   if(!_broTTSEnabled||!window.speechSynthesis)return;
   try{window.speechSynthesis.cancel()}catch(e){}
-  var clean=text.replace(/<[^>]+>/g,'').replace(/\\*\\*/g,'').replace(/\\*/g,'').substring(0,1000);
-  var u=new SpeechSynthesisUtterance(clean);
-  u.rate=1.05;u.pitch=1;u.lang='en-IN';
-  var voices=window.speechSynthesis.getVoices();
-  var pref=voices.find(function(v){return v.lang.indexOf('en')===0&&v.name.indexOf('Google')>-1})||voices.find(function(v){return v.lang.indexOf('en')===0});
-  if(pref)u.voice=pref;
-  window.speechSynthesis.speak(u);
+  var _bt=String.fromCharCode(96);var _btRe=new RegExp(_bt+_bt+_bt+'[\\\\s\\\\S]*?'+_bt+_bt+_bt,'g');var _btRe2=new RegExp(_bt+'[^'+_bt+']+'+_bt,'g');var clean=text.replace(/<[^>]+>/g,'').replace(/\\*\\*/g,'').replace(/\\*/g,'').replace(_btRe,'code block').replace(_btRe2,'').substring(0,2000);
+  if(!clean.trim())return;
+  var ch=_broVoiceChars[_broVoiceChar];
+  var chunks=clean.match(/[^.!?]+[.!?]+/g)||[clean];
+  var idx=0;
+  _broIsSpeaking=true;
+  var el=document.getElementById('broSpeakingUI');if(el)el.style.display='flex';
+  var nameEl=document.getElementById('broSpeakingName');if(nameEl)nameEl.textContent=ch.name+' is speaking...';
+  function speakNext(){
+    if(idx>=chunks.length||!_broIsSpeaking){_broStopSpeaking();return}
+    var u=new SpeechSynthesisUtterance(chunks[idx].trim());
+    u.rate=ch.rate;u.pitch=ch.pitch;
+    var inputLang=_detectLang();
+    u.lang=inputLang;
+    var voices=window.speechSynthesis.getVoices();
+    var langPrefix=inputLang.split('-')[0];
+    var genderNames=ch.gender==='female'?['female','woman','girl','zira','samantha','karen','moira','fiona','Google UK English Female','Google \\u0939\\u093f\\u0928\\u094d\\u0926\\u0940','rishi']:['male','man','boy','david','daniel','james','Google UK English Male','Google \\u0939\\u093f\\u0928\\u094d\\u0926\\u0940','rishi'];
+    var voiceMatch=voices.find(function(v){return v.lang.indexOf(langPrefix)===0&&genderNames.some(function(g){return v.name.toLowerCase().indexOf(g.toLowerCase())>-1})})||voices.find(function(v){return v.lang.indexOf(langPrefix)===0})||voices.find(function(v){return v.lang.indexOf('en')===0});
+    if(voiceMatch)u.voice=voiceMatch;
+    u.onend=function(){idx++;speakNext()};
+    u.onerror=function(){idx++;speakNext()};
+    window.speechSynthesis.speak(u);
+  }
+  speakNext();
 }
 function _detectLang(){
   var last=(S.bro.messages&&S.bro.messages.length)?S.bro.messages[S.bro.messages.length-1]:null;
@@ -12993,9 +13053,7 @@ const LOGO_MARK='<div class="logo" aria-label="Brodoit"><span class="b1">Bro</sp
 let _hdrStreak=0;for(let _si=0;_si<60;_si++){const _sd=new Date(Date.now()-_si*864e5).toISOString().slice(0,10);const _sok=ts.some(x=>x.status==='done'&&(x.updated_at||'').slice(0,10)===_sd);if(_sok)_hdrStreak++;else if(_si>0)break}
 let h='<div class="hdr"><div class="hdr-l">'+LOGO_MARK+'</div><div class="hdr-actions">'
   +(_hdrStreak>0?'<div class="rd-pill rd-pill-accent">'+_hdrStreak+'-day streak</div>':'')
-  +'<button class="hdr-help" onclick="toggleNightSky()" title="Night Sky" style="font-size:16px;display:flex;align-items:center;justify-content:center;opacity:'+(S.nightSky?'1':'.5')+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="'+(S.nightSky?'#A5B4FC':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2l1.09 3.26L16.36 6l-3.27 1.09L12 10.36l-1.09-3.27L7.64 6l3.27-1.09z"/><path d="M17 14l.62 1.87L19.5 16.5l-1.88.63L17 19l-.62-1.87L14.5 16.5l1.88-.63z"/><path d="M7 14l.62 1.87L9.5 16.5l-1.88.63L7 19l-.62-1.87L4.5 16.5l1.88-.63z"/></svg></button>'
-  +'<button class="hdr-help" onclick="toggleEyeShield()" title="Eye Shield" style="font-size:16px;display:flex;align-items:center;justify-content:center;opacity:'+(S.eyeShield?'1':'.5')+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="'+(S.eyeShield?'#D4A060':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>'
-  +'<button class="hdr-help" onclick="toggleTheme()" title="Dark mode" style="font-size:16px;display:flex;align-items:center;justify-content:center">'+(S.theme==='aurora'?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>')+'</button>'
+  +'<button class="hdr-help" onclick="toggleSolarSystem()" title="'+(S.nightSky?'Light Mode':'Solar System')+'" style="font-size:16px;display:flex;align-items:center;justify-content:center;opacity:'+(S.nightSky?'1':'.6')+'">'+(S.nightSky?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="'+'none'+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2l1.09 3.26L16.36 6l-3.27 1.09L12 10.36l-1.09-3.27L7.64 6l3.27-1.09z"/><path d="M17 14l.62 1.87L19.5 16.5l-1.88.63L17 19l-.62-1.87L14.5 16.5l1.88-.63z"/><path d="M7 14l.62 1.87L9.5 16.5l-1.88.63L7 19l-.62-1.87L4.5 16.5l1.88-.63z"/></svg>')+'</button>'
   +'<button onclick="switchTab(\\'profile\\')" title="Profile" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#C05A42);color:#fff;border:none;font:700 13px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+((S.user&&S.user.name||'U').charAt(0).toUpperCase())+'</button>'
   +'</div></div>';
 
@@ -13601,11 +13659,20 @@ else if(S.tab==='courses'){
       // Replace Python print with our capture
       var jsCode=code
         .replace(/^#.*$/gm,'')
+        .replace(/^\\s*import\\s+.+$/gm,'')
+        .replace(/^\\s*from\\s+\\S+\\s+import\\s+.+$/gm,'')
         .replace(/print\\((.+?)\\)$/gm,'_log($1)')
+        .replace(/^(\\s*)class\\s+(\\w+)[^:]*:/gm,'$1var $2=(function(){')
+        .replace(/^(\\s*)def\\s+__init__\\s*\\(self(?:,\\s*(.*))?\\)\\s*:/gm,'$1function _init($2){')
+        .replace(/^(\\s*)def\\s+(\\w+)\\(self(?:,\\s*(.*))?\\)\\s*:/gm,'$1function $2($3){')
         .replace(/^(\\s*)def\\s+(\\w+)\\((.*)\\)\\s*:/gm,'$1function $2($3){')
+        .replace(/\\bself\\./g,'this.')
         .replace(/^(\\s*)if\\s+(.+?)\\s*:/gm,'$1if($2){')
         .replace(/^(\\s*)elif\\s+(.+?)\\s*:/gm,'}else if($2){')
         .replace(/^(\\s*)else\\s*:/gm,'}else{')
+        .replace(/^(\\s*)try\\s*:/gm,'$1try{')
+        .replace(/^(\\s*)except[^:]*:/gm,'}catch(_e){')
+        .replace(/^(\\s*)finally\\s*:/gm,'}finally{')
         .replace(/^(\\s*)for\\s+(\\w+)\\s+in\\s+range\\((\\d+)(?:,\\s*(\\d+))?\\)\\s*:/gm,function(m,sp,v,a,b){return b?sp+'for(var '+v+'='+a+';'+v+'<'+b+';'+v+'++){':sp+'for(var '+v+'=0;'+v+'<'+a+';'+v+'++){'})
         .replace(/^(\\s*)for\\s+(\\w+)\\s+in\\s+(.+?)\\s*:/gm,'$1for(var _i=0;_i<($3).length;_i++){var $2=($3)[_i];')
         .replace(/^(\\s*)while\\s+(.+?)\\s*:/gm,'$1while($2){')
@@ -13617,9 +13684,26 @@ else if(S.tab==='courses'){
         .replace(/\\bint\\((.+?)\\)/g,'parseInt($1)')
         .replace(/\\bfloat\\((.+?)\\)/g,'parseFloat($1)')
         .replace(/\\babs\\((.+?)\\)/g,'Math.abs($1)')
+        .replace(/\\bround\\((.+?)\\)/g,'Math.round($1)')
+        .replace(/\\bmax\\((.+?)\\)/g,'Math.max($1)')
+        .replace(/\\bmin\\((.+?)\\)/g,'Math.min($1)')
+        .replace(/\\bsorted\\((.+?)\\)/g,'($1).slice().sort()')
+        .replace(/\\breversed\\((.+?)\\)/g,'($1).slice().reverse()')
+        .replace(/\\bsum\\((.+?)\\)/g,'($1).reduce(function(a,b){return a+b},0)')
         .replace(/\\btype\\((.+?)\\)/g,'("<class \\'"+typeof($1)+"\\'>")')
+        .replace(/\\benumerate\\((.+?)\\)/g,'($1).map(function(v,i){return [i,v]})')
+        .replace(/\\bzip\\((.+?),\\s*(.+?)\\)/g,'($1).map(function(v,i){return [v,($2)[i]]})')
+        .replace(/\\b(\\w+)\\.append\\(/g,'$1.push(')
+        .replace(/\\b(\\w+)\\.extend\\(/g,'$1.push(...')
+        .replace(/\\b(\\w+)\\.items\\(\\)/g,'Object.entries($1)')
+        .replace(/\\b(\\w+)\\.keys\\(\\)/g,'Object.keys($1)')
+        .replace(/\\b(\\w+)\\.values\\(\\)/g,'Object.values($1)')
+        .replace(/\\bprint\\b/g,'_log')
         .replace(/f"([^"]*?)"/g,function(m,s){return '"'+s.replace(/\\{(.+?)\\}/g,'"+($1)+"')+'"'})
         .replace(/f\\'([^']*?)\\'/g,function(m,s){return '"'+s.replace(/\\{(.+?)\\}/g,'"+($1)+"')+'"'});
+      // Mock common ML/data science libraries
+      var _mockLibs='var np={array:function(a){return a},zeros:function(n){return new Array(n).fill(0)},ones:function(n){return new Array(n).fill(1)},arange:function(a,b){var r=[];for(var i=a;i<(b||a);i++)r.push(i);return b?r:(function(){var r2=[];for(var j=0;j<a;j++)r2.push(j);return r2})()},linspace:function(a,b,n){var r=[];for(var i=0;i<n;i++)r.push(a+(b-a)*i/(n-1));return r},dot:function(a,b){if(typeof a[0]==="number")return a.reduce(function(s,v,i){return s+v*b[i]},0);return a.map(function(row){return typeof b[0]==="number"?row.reduce(function(s,v,i){return s+v*b[i]},0):row.map(function(_,j){return row.reduce(function(s,v,k){return s+v*b[k][j]},0)})})},mean:function(a){return a.reduce(function(s,v){return s+v},0)/a.length},sqrt:function(x){return Math.sqrt(x)},exp:function(x){return Math.exp(x)},log:function(x){return Math.log(x)},random:{rand:function(){return Math.random()},randn:function(){return (Math.random()-0.5)*2},seed:function(){}}};var numpy=np;var pd={DataFrame:function(d){var df=d;df.head=function(n){return Object.fromEntries(Object.entries(d).map(function(e){return [e[0],e[1].slice(0,n||5)]}))};df.describe=function(){return "DataFrame description"};df.shape=[d[Object.keys(d)[0]]?d[Object.keys(d)[0]].length:0,Object.keys(d).length];return df},Series:function(a){return a},read_csv:function(f){return {shape:[100,5],head:function(){return "sample data"},columns:["col1","col2","col3"]}}};var pandas=pd;var sklearn={tree:{DecisionTreeClassifier:function(){return{fit:function(X,y){this._trained=true;return this},predict:function(X){return X.map(function(){return 0})},score:function(X,y){return 0.85}}},DecisionTreeRegressor:function(){return{fit:function(X,y){return this},predict:function(X){return X.map(function(){return 0})}}}},model_selection:{train_test_split:function(){var args=Array.from(arguments);var X=args[0]||[];var y=args[1]||[];var n=Math.floor(X.length*0.8);return [X.slice(0,n),X.slice(n),y.slice(0,n),y.slice(n)]}},linear_model:{LinearRegression:function(){return{fit:function(X,y){return this},predict:function(X){return X.map(function(){return 0})},score:function(){return 0.82}}},LogisticRegression:function(){return{fit:function(X,y){return this},predict:function(X){return X.map(function(){return 0})}}}},ensemble:{RandomForestClassifier:function(){return{fit:function(X,y){return this},predict:function(X){return X.map(function(){return 0})},score:function(){return 0.88}}},GradientBoostingClassifier:function(){return{fit:function(X,y){return this},predict:function(X){return X.map(function(){return 0})}}}},svm:{SVC:function(){return{fit:function(X,y){return this},predict:function(X){return X.map(function(){return 0})}}}},neighbors:{KNeighborsClassifier:function(){return{fit:function(X,y){return this},predict:function(X){return X.map(function(){return 0})}}}},naive_bayes:{GaussianNB:function(){return{fit:function(X,y){return this},predict:function(X){return X.map(function(){return 0})}}}},cluster:{KMeans:function(){return{fit:function(X){this.labels_=X.map(function(_,i){return i%3});return this},predict:function(X){return X.map(function(){return 0})}}},DBSCAN:function(){return{fit:function(X){this.labels_=X.map(function(_,i){return i%2});return this}}}},metrics:{accuracy_score:function(y,p){var c=0;y.forEach(function(v,i){if(v===p[i])c++});return y.length?c/y.length:0},mean_squared_error:function(y,p){return y.reduce(function(s,v,i){return s+Math.pow(v-p[i],2)},0)/y.length},classification_report:function(){return "precision recall f1-score support\\n  0.85 0.82 0.83"},confusion_matrix:function(y,p){return [[4,1],[1,4]]},r2_score:function(){return 0.85}},preprocessing:{StandardScaler:function(){return{fit_transform:function(X){return X},transform:function(X){return X}}},MinMaxScaler:function(){return{fit_transform:function(X){return X}}},LabelEncoder:function(){return{fit_transform:function(y){return y.map(function(v,i){return i%3})}}}}};var DecisionTreeClassifier=sklearn.tree.DecisionTreeClassifier;var DecisionTreeRegressor=sklearn.tree.DecisionTreeRegressor;var RandomForestClassifier=sklearn.ensemble.RandomForestClassifier;var GradientBoostingClassifier=sklearn.ensemble.GradientBoostingClassifier;var LinearRegression=sklearn.linear_model.LinearRegression;var LogisticRegression=sklearn.linear_model.LogisticRegression;var SVC=sklearn.svm.SVC;var KNeighborsClassifier=sklearn.neighbors.KNeighborsClassifier;var GaussianNB=sklearn.naive_bayes.GaussianNB;var KMeans=sklearn.cluster.KMeans;var DBSCAN=sklearn.cluster.DBSCAN;var StandardScaler=sklearn.preprocessing.StandardScaler;var train_test_split=sklearn.model_selection.train_test_split;var accuracy_score=sklearn.metrics.accuracy_score;var mean_squared_error=sklearn.metrics.mean_squared_error;var classification_report=sklearn.metrics.classification_report;var confusion_matrix=sklearn.metrics.confusion_matrix;var r2_score=sklearn.metrics.r2_score;var matplotlib={pyplot:{show:function(){_log("(Plot displayed)")},plot:function(){_log("(Line plot rendered)")},scatter:function(){_log("(Scatter plot rendered)")},bar:function(){_log("(Bar chart rendered)")},hist:function(){_log("(Histogram rendered)")},xlabel:function(){},ylabel:function(){},title:function(){},legend:function(){},figure:function(){},subplot:function(){},subplots:function(){return [{},{}]},savefig:function(){},tight_layout:function(){},imshow:function(){_log("(Image displayed)")}}};var plt=matplotlib.pyplot;var sns={heatmap:function(){_log("(Heatmap rendered)")},pairplot:function(){_log("(Pairplot rendered)")},barplot:function(){_log("(Barplot rendered)")},set_theme:function(){}};var seaborn=sns;var math={sqrt:Math.sqrt,pi:Math.PI,e:Math.E,ceil:Math.ceil,floor:Math.floor,pow:Math.pow,log:Math.log,sin:Math.sin,cos:Math.cos};var random={randint:function(a,b){return Math.floor(Math.random()*(b-a+1))+a},random:function(){return Math.random()},choice:function(a){return a[Math.floor(Math.random()*a.length)]},shuffle:function(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a},seed:function(){}};';
+      jsCode=_mockLibs+'\\n'+jsCode;
       // Add closing braces for Python indentation (rough)
       var jsLines=jsCode.split('\\n');
       var processed=[];var indents=[];
@@ -13672,6 +13756,7 @@ else if(S.tab==='courses'){
     var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
     var _isDone=_aDone.indexOf(S.lessonId)>-1;
     h+='<div class="lesson-back"><button onclick="_closeLessonFull()">\\u2190</button><span class="lesson-back-label">Back to chapters</span>';
+    h+='<button class="lesson-back-voice" onclick="_shareLessonLink(\\''+S.lessonId+'\\',\\''+(_lt||'').replace(/'/g,'')+'\\')" style="background:transparent;color:var(--text-mute)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share</button>';
     h+='<button class="lesson-back-voice" id="lessonVoiceBtn" onclick="_toggleLessonVoice()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> <span id="lessonVoiceLabel">Listen</span></button>';
     h+='</div>';
     h+='<h1 class="lesson-title" style="border-left:4px solid '+_lc+';padding-left:14px">'+_lt+'</h1>';
@@ -13779,9 +13864,9 @@ else if(S.tab==='courses'){
     h+='<div class="learn-grid">';
     _sections.forEach(function(s,i){
       var isActive=s.id==='ai'||s.id==='python';
-      h+='<div class="learn-card-3d" onclick="'+(isActive?'S.learnSection=\\''+s.id+'\\';render()':'toast(\\'Coming soon!\\',\\'info\\')')+'">';
+      h+='<div class="learn-card-3d" onclick="'+(isActive?'S.learnSection=\\''+s.id+'\\';render();window.scrollTo(0,0)':'toast(\\'Coming soon!\\',\\'info\\')')+'">';
       h+='<div class="learn-card" style="--card-color:'+s.color+'">';
-      h+='<div class="learn-card-scene">'+s.scene+'</div>';
+      h+='<div class="learn-card-icon" style="background:'+s.bg+'"><span style="font-size:28px">'+(s.id==='ai'?'\\u{1F9E0}':s.id==='python'?'\\u{1F40D}':s.id==='product'?'\\u{1F4CB}':s.id==='dev'?'\\u{1F4BB}':s.id==='confidence'?'\\u{1F3A4}':'\\u{1F31F}')+'</span></div>';
       h+='<div class="learn-card-body">';
       h+='<div class="learn-card-top">';
       h+='<h3 class="learn-card-title">'+s.name+'</h3>';
@@ -13793,9 +13878,11 @@ else if(S.tab==='courses'){
       h+='</div>';
       if(isActive){
         var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
-        var pct=Math.round(_aDone.length/63*100);
+        var pct=Math.round(_aDone.length/(s.id==='python'?30:63)*100);
         h+='<div class="learn-card-progress"><div class="learn-card-bar" style="width:'+pct+'%"></div></div>';
-        h+='<div style="font-size:11px;color:var(--text-mute);margin-top:4px">'+_aDone.length+'/63 completed</div>';
+        h+='<div class="learn-card-cta" style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:11px;color:var(--text-mute)">'+_aDone.length+'/'+(s.id==='python'?30:63)+' completed</span><span style="font:700 12px var(--sans);color:'+s.color+';display:flex;align-items:center;gap:4px">'+(pct>0?'Continue':'Start')+' \\u2192</span></div>';
+      }else{
+        h+='<div style="margin-top:8px;text-align:right"><span style="font:600 12px var(--sans);color:var(--text-dim)">Coming Soon</span></div>';
       }
       h+='</div></div></div>';
     });
@@ -13803,7 +13890,7 @@ else if(S.tab==='courses'){
   } else if(S.learnSection==='ai'){
     // AI Section — full curriculum
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
-    h+='<button onclick="S.learnSection=null;render()" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
+    h+='<button onclick="S.learnSection=null;render();window.scrollTo(0,0)" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
     h+='<div><div style="font-size:11px;letter-spacing:.15em;font-weight:700;color:#6366F1;text-transform:uppercase">AI & Machine Learning</div>';
     h+='<div style="font-family:var(--serif);font-size:22px;font-weight:400;margin-top:2px;color:var(--ink)">The Complete Journey</div></div></div>';
     var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
@@ -13893,7 +13980,7 @@ else if(S.tab==='courses'){
       h+='<div><div class="ai-part-label">'+part.part+'</div><div class="ai-part-title">'+part.title+'</div></div></div>';
       part.chs.forEach(function(ch){
         var done=_aDone.indexOf(ch.id)>-1;
-        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="S.lessonId=\\''+ch.id+'\\';render()">';
+        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="S.lessonId=\\''+ch.id+'\\';render();window.scrollTo(0,0)">';
         h+='<div class="ai-ch-check" style="border-color:'+part.color+(done?';background:'+part.color:'')+'">'+( done?'\\u2713':'')+'</div>';
         h+='<div class="ai-ch-body"><div class="ai-ch-name">'+ch.n+'</div><div class="ai-ch-desc">'+ch.d+'</div></div>';
         h+='<div class="ai-ch-time">'+ch.m+' min</div>';
@@ -13904,7 +13991,7 @@ else if(S.tab==='courses'){
   } else if(S.learnSection==='python'){
     // Python Course — full curriculum
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
-    h+='<button onclick="S.learnSection=null;render()" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
+    h+='<button onclick="S.learnSection=null;render();window.scrollTo(0,0)" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
     h+='<div><div style="font-size:11px;letter-spacing:.15em;font-weight:700;color:#3B82F6;text-transform:uppercase">Python Programming</div>';
     h+='<div style="font-family:var(--serif);font-size:22px;font-weight:400;margin-top:2px;color:var(--ink)">From Zero to Hero \\u{1F40D}</div></div></div>';
     var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
@@ -13955,7 +14042,7 @@ else if(S.tab==='courses'){
       h+='<div><div class="ai-part-label">'+part.part+'</div><div class="ai-part-title">'+part.title+'</div></div></div>';
       part.chs.forEach(function(ch){
         var done=_aDone.indexOf(ch.id)>-1;
-        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="S.lessonId=\\''+ch.id+'\\';render()">';
+        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="S.lessonId=\\''+ch.id+'\\';render();window.scrollTo(0,0)">';
         h+='<div class="ai-ch-check" style="border-color:'+part.color+(done?';background:'+part.color:'')+'">'+( done?'\\u2713':'')+'</div>';
         h+='<div class="ai-ch-body"><div class="ai-ch-name">'+ch.n+'</div><div class="ai-ch-desc">'+ch.d+'</div></div>';
         h+='<div class="ai-ch-time">'+ch.m+' min</div>';
@@ -14547,6 +14634,7 @@ else if(S.tab==='bro'){
     h+='<div class="bro-header" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:transparent">';
     h+='<button onclick="_broToggleSidebar()" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);border-radius:0" title="History"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg></button>';
     h+='<div style="flex:1;text-align:center;font:600 16px var(--sans);color:var(--ink)">Bro AI</div>';
+    h+='<button onclick="_broSwitchVoice()" title="Switch voice: '+(_broVoiceChars[_broVoiceChar].name)+'" style="background:none;border:none;cursor:pointer;padding:4px 8px;color:var(--text-mute);border-radius:99px;font:500 11px var(--sans);display:flex;align-items:center;gap:3px;transition:all .2s">'+_broVoiceChars[_broVoiceChar].emoji+'<span style="font-size:10px">'+_broVoiceChars[_broVoiceChar].name+'</span></button>';
     h+='<button id="broTTSBtn" onclick="_broToggleTTS()" style="background:'+(_broTTSEnabled?'var(--accent)':'transparent')+';border:none;cursor:pointer;padding:6px;color:'+(_broTTSEnabled?'#fff':'var(--text-mute)')+';border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:all .2s" title="Voice replies"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>';
     h+='<button onclick="_broNewChat()" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);border-radius:0" title="New chat"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>';
     h+='</div>';
@@ -14620,16 +14708,19 @@ else if(S.tab==='bro'){
     });
     if(S.bro.sending)h+='<div class="bro-typing-wrap"><div class="bro-typing"><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span></div></div>';
     h+='</div>';
+    // Voice speaking indicator
+    h+='<div id="broSpeakingUI" class="bro-speaking-ui" style="display:'+(_broIsSpeaking?'flex':'none')+'">';
+    h+='<div class="bro-speaking-avatar">'+_broVoiceChars[_broVoiceChar].emoji+'</div>';
+    h+='<div class="bro-speaking-info"><span id="broSpeakingName" class="bro-speaking-name">'+_broVoiceChars[_broVoiceChar].name+' is speaking...</span>';
+    h+='<div class="bro-speaking-bars"><span></span><span></span><span></span><span></span><span></span></div></div>';
+    h+='<button onclick="_broStopSpeaking()" class="bro-speaking-stop">\\u25A0</button>';
+    h+='</div>';
     // Input bar
     h+='<div class="bro-input-wrap">';
     if(S.bro._image){h+='<div class="bro-file-badge" onclick="S.bro._image=null;render()"><img src="'+S.bro._image.preview+'" style="width:24px;height:24px;border-radius:0;object-fit:cover"> '+esc(S.bro._image.name)+' <span class="bro-file-x">\\u2715</span></div>'}
     if(S.bro._file){h+='<div class="bro-file-badge" onclick="S.bro._file=null;S.bro._fileText=null;render()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> '+esc(S.bro._file)+' <span class="bro-file-x">\\u2715</span></div>'}
     h+='<div style="display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:0;padding:6px 6px 6px 16px;box-shadow:0 4px 24px rgba(0,0,0,.15)">';
     h+='<textarea class="bro-input" id="broInput" rows="2" wrap="soft" placeholder="'+(_bm==='friend'?'Talk to me...':'Message Bro AI...')+'" autocomplete="off" autocorrect="off" spellcheck="false" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border:none;background:transparent;font:400 16px var(--sans);color:var(--ink);padding:8px 0;min-height:48px;max-height:160px;outline:none" oninput="S.bro.input=this.value;this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,160)+\\'px\\'" onfocus="setTimeout(function(){var c=document.getElementById(\\'broChat\\');if(c)c.scrollTop=c.scrollHeight},300)" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();broSend()}">'+esc(S.bro.input)+'</textarea>';
-    h+='<button onclick="document.getElementById(\\'broImgInput\\').click()" title="Image" style="width:36px;height:36px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-mute);flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>';
-    h+='<input type="file" id="broImgInput" style="display:none" accept="image/*" onchange="broAttachImage(this)">';
-    h+='<button onclick="document.getElementById(\\'broFileInput\\').click()" title="File" style="width:36px;height:36px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-mute);flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>';
-    h+='<input type="file" id="broFileInput" style="display:none" accept=".txt,.md,.csv,.json,.js,.py,.html,.css,.xml,.log,.pdf,.doc,.docx" onchange="broAttachFile(this)">';
     h+='<button onclick="broVoiceToggle()" title="Voice" style="width:36px;height:36px;border-radius:50%;border:none;background:'+(S.bro._listening?'#EF4444':'transparent')+';cursor:pointer;display:flex;align-items:center;justify-content:center;color:'+(S.bro._listening?'#fff':'var(--text-mute)')+';flex:none;transition:all .2s"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>';
     h+='<button onclick="broSend()" '+(S.bro.sending?'disabled':'')+' style="width:36px;height:36px;border-radius:50%;border:none;background:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;flex:none;opacity:'+(S.bro.sending?'.5':'1')+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>';
     h+='</div></div>';
@@ -15751,6 +15842,21 @@ try{var _ta=document.querySelectorAll('textarea.bro-input,textarea.qc-input');fo
 if(document.getElementById('mcCanvas')&&!_mcRunning&&!_mcDead&&!_mcStarted){_mcInit();_mcDrawStartScreen()}
 }
 applyTheme();
+// Deep link routing: ?lesson=what-is-ai or ?section=ai
+(function(){
+  try{
+    var params=new URLSearchParams(window.location.search);
+    var lessonParam=params.get('lesson');
+    var sectionParam=params.get('section');
+    if(lessonParam){
+      S.tab='courses';S.learnSub='courses';S.learnSection='ai';S.lessonId=lessonParam;
+      setTimeout(function(){render();window.scrollTo(0,0)},500);
+    }else if(sectionParam){
+      S.tab='courses';S.learnSub='courses';S.learnSection=sectionParam;
+      setTimeout(function(){render();window.scrollTo(0,0)},500);
+    }
+  }catch(e){}
+})();
 window.S=S;window._render=_render;window.render=render;window.switchTab=switchTab;
 (function(){
   var cv=document.getElementById('starfield');if(!cv)return;
@@ -15809,7 +15915,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=102').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=103').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -16119,7 +16225,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v102";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v103";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
