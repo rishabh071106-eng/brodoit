@@ -492,12 +492,20 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
       return res.json({reply:'I tried to help but hit a loop — try rephrasing.',actions:actions.length?actions:undefined});
     }catch(toolErr){console.log('[bro] Tool path error:',toolErr.message)}}
 
-    // Dual-model verification: get response from primary, verify with secondary
+    // Friend mode: fast path — Groq primary for instant responses, Gemini fallback
+    // Ask mode: dual-model verification for accuracy
     let reply='',provider='';
     let lastError='';
     let draftReply='',draftProvider='';
+    if(mode==='friend'&&GROQ_KEY&&!imageB64){
+      try{
+        const groqMsgs=apiMsgs.slice(0,1).concat(apiMsgs.slice(-6).map(m=>({...m,content:String(m.content||'').slice(0,2000)})));
+        const g=await _callGroq(groqMsgs,{maxTokens:Math.min(maxTok,2048)});
+        draftReply=g.reply;draftProvider='groq';
+      }catch(e){lastError='Groq: '+e.message;console.log('[bro] Friend Groq failed:',e.message)}
+    }
     // Step 1: Get initial response from primary model
-    if(GEMINI_KEY){
+    if(!draftReply&&GEMINI_KEY){
       try{
         const g=await _callGemini(apiMsgs,{maxTokens:maxTok,systemPrompt:sys});
         draftReply=g.reply;draftProvider='gemini';
@@ -511,8 +519,8 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
       }catch(e){lastError='Groq: '+e.message;console.log('[bro] Groq failed:',e.message)}
     }
     if(!draftReply){console.log('[bro] All providers failed:',lastError);return res.status(502).json({error:'Bro is taking a quick break — try again in a moment.'})}
-    // Step 2: Verify/improve with the other model (if both available)
-    const verifyModel=(draftProvider==='gemini'&&GROQ_KEY)?'groq':(draftProvider==='groq'&&GEMINI_KEY)?'gemini':null;
+    // Step 2: Verify/improve with the other model (skip for friend mode — keep it fast)
+    const verifyModel=(mode!=='friend')&&(draftProvider==='gemini'&&GROQ_KEY)?'groq':(mode!=='friend')&&(draftProvider==='groq'&&GEMINI_KEY)?'gemini':null;
     if(verifyModel&&draftReply.length>40){
       try{
         const verifySys='You are a quality checker. You receive a draft response to a user question. Your job: check for factual errors, missing info, or unclear answers. If the draft is good, return it as-is. If it has issues, return an improved version. Keep the same tone and style. Do NOT add meta-commentary like "Here is the improved version" — just output the final answer directly. Do NOT add trailing questions like "Need anything else?" — just answer and stop.';
@@ -2565,6 +2573,8 @@ body[data-theme=aurora] .focus-card.is-active{border-color:rgba(226,125,96,.2);b
 .focus-lock-btn:active{transform:scale(.93)}
 .focus-lock-btn-s{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
 .focus-lock-tip{font:400 12px var(--sans);color:rgba(255,255,255,.2);margin-top:40px;text-align:center}
+@keyframes candleFlicker{0%{transform:scaleY(1) scaleX(1) translateX(0)}25%{transform:scaleY(1.06) scaleX(.94) translateX(-1px)}50%{transform:scaleY(.97) scaleX(1.03) translateX(1px)}75%{transform:scaleY(1.04) scaleX(.97) translateX(-0.5px)}100%{transform:scaleY(1.02) scaleX(1.01) translateX(0.5px)}}
+@keyframes candleGlow{0%{opacity:.7;transform:translateX(-50%) scale(1)}100%{opacity:1;transform:translateX(-50%) scale(1.08)}}
 /* ─── Breathe Section ─── */
 .breathe-screen{position:fixed;inset:0;z-index:9998;background:#252730;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:breatheFadeIn .6s ease both}
 @keyframes breatheFadeIn{from{opacity:0}}
@@ -3959,7 +3969,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     gap:3px !important;
     transition:color .25s cubic-bezier(.4,0,.2,1),transform .25s cubic-bezier(.34,1.56,.64,1) !important;
     background:transparent !important;
-    color:var(--text-mute) !important;
+    color:color-mix(in srgb,var(--ink) 55%,transparent) !important;
     box-shadow:none !important;
     position:relative;
     overflow:visible;
@@ -4008,11 +4018,13 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   }
   .tabs.page-t .tab.on .ti svg{transform:scale(1.05) !important}
   .tabs.page-t .tab.on .tl{color:var(--accent) !important;font-weight:700 !important;opacity:1 !important;font-size:10px !important}
-  .tabs.page-t .tab:not(.on) .ti svg{opacity:.55 !important;filter:grayscale(.4) !important}
+  .tabs.page-t .tab:not(.on) .ti svg{opacity:.85 !important;filter:none !important}
   .tabs.page-t .tab.on::after{display:none !important}
   .bk-mini{bottom:110px !important;right:14px !important}
   .player{bottom:110px !important;left:12px !important;right:96px !important}
   .fab{bottom:108px !important;right:18px !important}
+  .fab-chat{bottom:108px !important;right:18px !important}
+  .fab-cal{bottom:108px !important;right:76px !important}
   .flt button.fb,.fb{padding:10px 16px !important;font-size:13px !important;min-height:auto !important;border-radius:10px !important}
 }
 body[data-theme=aurora] .tabs.page-t{background:rgba(15,18,32,.92) !important;backdrop-filter:blur(20px) !important;border-top:1px solid rgba(255,255,255,.1) !important}
@@ -4333,6 +4345,11 @@ body:not([data-theme=aurora]) .chk.on{background:#CC6E52;border-color:#CC6E52;bo
 @media (max-width:1023px){
   .app{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
   .fab{bottom:calc(84px + env(safe-area-inset-bottom));right:18px;width:56px;height:56px;font-size:28px;z-index:100;display:flex!important;position:fixed!important}
+  .fab-chat{position:fixed;bottom:calc(96px + env(safe-area-inset-bottom));right:18px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#D4654A,#B04E38);color:#fff;border:none;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(212,101,74,.35),0 2px 8px rgba(0,0,0,.12);transition:transform .2s ease}
+  .fab-chat:active{transform:scale(.9)}
+  .fab-cal{position:fixed;bottom:calc(96px + env(safe-area-inset-bottom));right:78px;width:44px;height:44px;border-radius:50%;background:color-mix(in srgb,var(--accent) 15%,var(--surface));color:var(--accent);border:1.5px solid color-mix(in srgb,var(--accent) 25%,transparent);cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.08);transition:transform .2s ease}
+  .fab-cal:active{transform:scale(.9)}
+  .fab-cal svg{stroke:var(--accent)}
   .player{bottom:calc(80px + env(safe-area-inset-bottom))}
 }
 @media (max-width:380px){
@@ -9130,7 +9147,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='books'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;var _ap=document.getElementById('app');if(_ap){_ap.classList.remove('app-flip-in');void _ap.offsetWidth;_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},300)}try{window.scrollTo(0,0)}catch(e){window.scrollTo(0,0)}}
+function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='books'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;var _ap=document.getElementById('app');if(_ap){_ap.classList.remove('app-flip-in');void _ap.offsetWidth;_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},300)}try{window.scrollTo(0,0)}catch(e){window.scrollTo(0,0)};setTimeout(function(){window.scrollTo(0,0)},50)}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
@@ -9293,6 +9310,30 @@ function _focusShowLockScreen(){
   document.body.appendChild(d);
 }
 function focusSetDuration(mins){if(S.focus.active)return;S.focus.total=mins*60;S.focus.remaining=mins*60;render();}
+function focusCandleMode(){
+  var old=document.getElementById('candleFocusScreen');if(old){old.remove();return;}
+  _focusAcquireWakeLock();
+  try{if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(function(){})}catch(e){}
+  var d=document.createElement('div');d.id='candleFocusScreen';
+  d.style.cssText='position:fixed;inset:0;z-index:99999;background:#0a0806;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:breatheFadeIn .5s ease both;cursor:pointer';
+  var h='<div style="position:relative;width:200px;height:320px">';
+  h+='<div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40px;height:160px;background:linear-gradient(to top,#e8c170,#d4a355);border-radius:4px 4px 2px 2px"></div>';
+  h+='<div style="position:absolute;bottom:155px;left:50%;transform:translateX(-50%);width:2px;height:14px;background:#333"></div>';
+  h+='<div class="candle-flame" style="position:absolute;bottom:165px;left:50%;transform:translateX(-50%)">';
+  h+='<div style="width:24px;height:60px;background:radial-gradient(ellipse at bottom,#ff6b1a 0%,#ff9d2f 30%,#ffe680 60%,rgba(255,230,128,0) 100%);border-radius:50% 50% 20% 20%;animation:candleFlicker 2s ease-in-out infinite alternate;filter:blur(1px)"></div>';
+  h+='<div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:12px;height:30px;background:radial-gradient(ellipse at bottom,#4fc3f7 0%,#29b6f6 40%,rgba(79,195,247,0) 100%);border-radius:50% 50% 20% 20%;opacity:.8"></div>';
+  h+='</div>';
+  h+='<div style="position:absolute;bottom:165px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(255,150,50,.12) 0%,rgba(255,100,20,.05) 40%,transparent 70%);pointer-events:none;animation:candleGlow 3s ease-in-out infinite alternate"></div>';
+  h+='</div>';
+  h+='<div style="font:400 14px var(--serif);color:rgba(255,200,130,.5);margin-top:40px;text-align:center">Focus on the flame<br><span style="font-size:12px;opacity:.6">Tap anywhere to exit</span></div>';
+  d.innerHTML=h;
+  d.onclick=function(){
+    _focusReleaseWakeLock();
+    try{if(document.fullscreenElement)document.exitFullscreen().catch(function(){})}catch(e){}
+    d.style.opacity='0';d.style.transition='opacity .5s';setTimeout(function(){d.remove()},500);
+  };
+  document.body.appendChild(d);
+}
 
 var _breatheState={active:false,pattern:'calm',phase:'idle',elapsed:0,totalTime:180,timer:null,phaseTimer:null,voiceEnabled:true};
 var BREATHE_PATTERNS={
@@ -12634,6 +12675,12 @@ function _mcDrawStartScreen(){
   ctx.fillText('Jump between ledges, avoid lakes!',_mcW/2,_mcH/2+25);
   ctx.textAlign='start';
 }
+function mcStartGame(overlay){
+  if(overlay)overlay.style.display='none';
+  var cv=document.getElementById('mcCanvas');
+  if(cv){cv.setAttribute('ontouchstart','mcTap(event)');cv.setAttribute('onmousedown','mcTap(event)');}
+  _mcStart();
+}
 function mcTap(e){
   e.preventDefault();
   if(_mcDead){_mcStart();return}
@@ -13114,30 +13161,36 @@ if(isMain){
   hero+='<button onclick="switchTab(\\'tasks\\')" style="flex:1;padding:14px 12px;border-radius:0;background:var(--surface);border:1px solid var(--line);cursor:pointer;text-align:left"><div style="font:500 20px var(--sans);color:var(--accent)">'+_dueToday+'</div><div style="font:400 12px var(--sans);color:var(--text-mute);margin-top:2px">'+_statusLine+'</div></button>';
   hero+='<button onclick="switchTab(\\'tasks\\');setTimeout(opA,80)" style="flex:1;padding:14px 12px;border-radius:0;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 20%,transparent);cursor:pointer;text-align:left"><div style="font:500 14px var(--sans);color:var(--accent)">+ Add task</div><div style="font:400 12px var(--sans);color:var(--text-mute);margin-top:2px">Plan your day</div></button>';
   hero+='</div>';
-  // --- Focus Timer ---
+  // --- Focus Timer (compact) ---
   var _foc=S.focus;
   var _focMins=Math.floor(_foc.remaining/60);var _focSecs=_foc.remaining%60;
   var _focTimeStr=String(_focMins).padStart(2,'0')+':'+String(_focSecs).padStart(2,'0');
   var _focPct=_foc.active||_foc.paused?Math.round((1-_foc.remaining/_foc.total)*100):0;
-  var _focCircum=2*Math.PI*58;var _focDash=((_foc.remaining/_foc.total)*_focCircum);
+  var _focCircum=2*Math.PI*20;var _focDash=((_foc.remaining/_foc.total)*_focCircum);
   var _focDurMins=Math.round(_foc.total/60);
-  hero+='<div class="focus-card'+(_foc.active?' is-active':'')+'">';
-  hero+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="font:500 15px var(--sans);color:var(--ink)">Focus time</span></div>';
-  if(_foc.sessions>0)hero+='<span style="font:500 12px var(--sans);color:var(--text-mute)">'+_foc.sessions+' session'+(_foc.sessions>1?'s':'')+' today</span>';
+  hero+='<div class="focus-card'+(_foc.active?' is-active':'')+'" style="margin-top:13px;padding:14px 17px">';
+  hero+='<div style="display:flex;align-items:center;gap:12px">';
+  hero+='<div style="position:relative;width:48px;height:48px;flex-shrink:0"><svg width="48" height="48" viewBox="0 0 48 48" style="transform:rotate(-90deg)"><circle cx="24" cy="24" r="20" fill="none" stroke="color-mix(in srgb,var(--accent) 15%,transparent)" stroke-width="4"/><circle id="focusRing" cx="24" cy="24" r="20" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="'+_focDash+' '+_focCircum+'"/></svg>';
+  hero+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span id="focusTime" style="font:700 12px var(--sans);color:var(--ink)">'+_focTimeStr+'</span></div></div>';
+  hero+='<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><span style="font:600 14px var(--sans);color:var(--ink)">Focus</span>';
+  if(_foc.sessions>0)hero+='<span style="font:500 11px var(--sans);color:var(--text-mute)">'+_foc.sessions+' done</span>';
   hero+='</div>';
-  hero+='<div class="focus-ring-wrap"><svg width="140" height="140" viewBox="0 0 140 140"><circle class="focus-ring-bg" cx="70" cy="70" r="58"/><circle class="focus-ring-fg" id="focusRing" cx="70" cy="70" r="58" stroke-dasharray="'+_focDash+' '+_focCircum+'"/></svg>';
-  hero+='<div class="focus-time"><span class="focus-time-num" id="focusTime">'+_focTimeStr+'</span><span class="focus-time-lbl" id="focusPct">'+(_foc.active?_focPct+'%':'focus')+'</span></div></div>';
-  if(!_foc.active){
-    hero+='<div class="focus-presets">';
-    [15,25,45,60].forEach(function(m){hero+='<button class="focus-preset'+(_focDurMins===m?' on':'')+'" onclick="focusSetDuration('+m+')">'+m+' min</button>';});
+  if(!_foc.active&&!_foc.paused){
+    hero+='<div style="display:flex;gap:4px;margin-top:6px">';
+    [15,25,45,60].forEach(function(m){hero+='<button class="focus-preset'+(_focDurMins===m?' on':'')+'" onclick="focusSetDuration('+m+')" style="padding:4px 10px;font-size:11px;border-radius:8px">'+m+'m</button>';});
     hero+='</div>';
+  } else if(_foc.active){
+    hero+='<div style="font:500 11px var(--sans);color:var(--accent);margin-top:2px">'+_focPct+'% complete</div>';
+  } else {
+    hero+='<div style="font:500 11px var(--sans);color:var(--text-mute);margin-top:2px">Paused</div>';
   }
-  hero+='<div class="focus-btns">';
-  if(!_foc.active){hero+='<button class="focus-btn focus-btn-start" onclick="focusStart()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg>Start Focus</button>';}
-  else if(_foc.paused){hero+='<button class="focus-btn focus-btn-start" onclick="focusStart()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg>Resume</button><button class="focus-btn focus-btn-reset" onclick="focusReset()">Reset</button>';}
-  else{hero+='<button class="focus-btn focus-btn-pause" onclick="focusPause()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>Pause</button><button class="focus-btn focus-btn-reset" onclick="focusReset()">Reset</button>';}
   hero+='</div>';
-  if(!_foc.active&&!_foc.paused){hero+='<div style="text-align:center;margin-top:10px;font:400 12px var(--sans);color:var(--text-mute)">Do Not Disturb will be requested when you start</div>';}
+  hero+='<div style="display:flex;gap:6px;flex-shrink:0">';
+  if(!_foc.active){hero+='<button class="focus-btn focus-btn-start" onclick="focusStart()" style="height:36px;padding:0 16px;font-size:13px;border-radius:10px"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg>'+(_foc.paused?'Resume':'Start')+'</button>';}
+  else{hero+='<button class="focus-btn focus-btn-pause" onclick="focusPause()" style="height:36px;padding:0 14px;font-size:13px;border-radius:10px"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>';}
+  if(_foc.active||_foc.paused){hero+='<button class="focus-btn focus-btn-reset" onclick="focusReset()" style="height:36px;padding:0 12px;font-size:12px;border-radius:10px">\\u21BB</button>';}
+  hero+='<button onclick="focusCandleMode()" style="height:36px;width:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0" title="Candle Focus"><span style="font-size:18px">\\u{1F56F}</span></button>';
+  hero+='</div></div>';
   hero+='</div>';
   // --- Hydration tracker ---
   hero+='<div class="rd-card" style="margin-top:13px;padding:14px 17px">';
@@ -13159,8 +13212,13 @@ if(isMain){
   // --- Mountain Climber Game ---
   hero+='<div class="rd-card mc-game-card" style="margin-top:13px;padding:16px 17px;text-align:center">';
   hero+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tc-c1,var(--accent))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4L2 20h22L13 4z"/><path d="M7 20l5-7 3 4"/></svg><span style="font:600 14px var(--sans);color:var(--ink)">Mountain Climb</span><span id="mcScore" style="font:700 13px var(--sans);color:var(--tc-c1,var(--accent));margin-left:auto">0m</span><span id="mcBest" style="font:500 12px var(--sans);color:var(--text-mute);margin-left:6px">Best: 0m</span></div>';
-  hero+='<canvas id="mcCanvas" width="320" height="400" style="width:100%;max-width:320px;height:auto;aspect-ratio:4/5;border-radius:0;touch-action:none;cursor:pointer" ontouchstart="mcTap(event)" onmousedown="mcTap(event)"></canvas>';
-  hero+='<div id="mcMsg" style="font:500 12px var(--sans);color:var(--text-mute);margin-top:8px;min-height:18px">Tap to start climbing</div>';
+  hero+='<div style="position:relative;display:inline-block;width:100%;max-width:320px">';
+  hero+='<canvas id="mcCanvas" width="320" height="400" style="width:100%;max-width:320px;height:auto;aspect-ratio:4/5;border-radius:0;touch-action:none;cursor:pointer"></canvas>';
+  hero+='<div id="mcOverlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.45);border-radius:0;cursor:pointer;z-index:2" onclick="mcStartGame(this)">';
+  hero+='<div style="width:64px;height:64px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(212,101,74,.4)"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><polygon points="8 5 20 12 8 19"/></svg></div>';
+  hero+='<div style="font:600 15px var(--sans);color:#fff;margin-top:12px;text-shadow:0 1px 4px rgba(0,0,0,.3)">Tap to Play</div>';
+  hero+='</div></div>';
+  hero+='<div id="mcMsg" style="font:500 12px var(--sans);color:var(--text-mute);margin-top:8px;min-height:18px">Tap play to start climbing</div>';
   hero+='</div>';
 
   var _wqDoy=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
@@ -13332,10 +13390,10 @@ if(isMain){
     you:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#FDF2E9"/><circle cx="13" cy="10" r="4" fill="#D4654A"/><path d="M6 22c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="#E8A87C"/><circle cx="13" cy="10" r="4" fill="#D4654A"/></svg>',
     inspire:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#FDF2E9"/><path d="M13 4l1.8 5.5h5.8l-4.7 3.4 1.8 5.5L13 15l-4.7 3.4 1.8-5.5-4.7-3.4h5.8L13 4z" fill="#F59E0B"/><circle cx="7" cy="7" r="1.5" fill="#EC4899" opacity=".5"/><circle cx="19" cy="8" r="1" fill="#8B5CF6" opacity=".5"/><circle cx="8" cy="19" r="1" fill="#0EA5E9" opacity=".4"/><circle cx="18" cy="18" r="1.3" fill="#10B981" opacity=".4"/></svg>'
   };
-  var _learnTabs=['courses','mindgym','books','meditation'];
+  var _learnTabs=['courses','mindgym','books'];
   var _youTabs=['profile','cal'];
-  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learning',i:'learn'},{k:'mindgym',l:'Games'},{k:'books',l:'Inspire',i:'inspire'},{k:'bro',l:'Chat'},{k:'cal',l:'Calendar'}].map(function(x){
-    var isOn=(x.k==='home')?(!S.tab||S.tab==='home'||S.tab==='profile'):(S.tab===x.k||(x.k==='books'&&S.tab==='meditation'));
+  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learning',i:'learn'},{k:'books',l:'Inspire',i:'inspire'},{k:'meditation',l:'Wisdom'}].map(function(x){
+    var isOn=(x.k==='home')?(!S.tab||S.tab==='home'||S.tab==='profile'):(S.tab===x.k||(x.k==='courses'&&S.tab==='mindgym'));
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
   // "Bro, do it!" mascot — a character with a speech bubble that animates
@@ -14477,7 +14535,6 @@ else if(S.tab==='cal'){
 
 // BOOKS TAB
 else if(S.tab==='books'){
-  h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'books\\')">\\u{1F3A7} Listen</button><button class="lst" onclick="switchTab(\\'meditation\\')">\\u{2728} Wisdom</button></div>';
   const bs=S.bookStreak||{streak:0,total:0,today:false};
   if(!S.booksMode)S.booksMode='summaries';
   if(bs.streak>0)h+='<div class="streak-card"><div class="streak-ico">'+ic('flame',24)+'</div><div class="streak-body"><div class="streak-n">'+bs.streak+'<span>day'+(bs.streak===1?'':'s')+'</span></div><div class="streak-lbl">Streak'+(bs.today?' \\u2022 done today':'')+'</div></div></div>';
@@ -14549,7 +14606,6 @@ else if(S.tab==='books'){
 
 // WISDOM TAB — Landing page with category cards
 else if(S.tab==='meditation'){
-  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'books\\')">\\u{1F3A7} Listen</button><button class="lst on" onclick="switchTab(\\'meditation\\')">\\u{2728} Wisdom</button></div>';
   if(!S.medCat){
     // Landing page — category cards
     h+='<div style="text-align:center;padding:8px 0 18px">';
@@ -14968,6 +15024,14 @@ h+='</main>';
 // Global FAB+ — only on Calendar tab (Tasks tab uses hero card instead)
 if(S.tab==='cal'){
   h+='<button class="fab fab-global" onclick="openCalSchedule()" aria-label="Add to calendar" title="Add to calendar">+</button>';
+}
+// Floating Chat button — accessible from any tab
+if(S.tab!=='bro'){
+  h+='<button class="fab-chat" onclick="stopSpeak();switchTab(\\'bro\\')" aria-label="Chat with AI"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>';
+}
+// Calendar quick-access from Home
+if(S.tab==='tasks'){
+  h+='<button class="fab-cal" onclick="stopSpeak();switchTab(\\'cal\\')" aria-label="Calendar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>';
 }
 
 // Player bar (any tab)
@@ -15945,7 +16009,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=105').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=106').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -16255,7 +16319,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v105";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v106";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
