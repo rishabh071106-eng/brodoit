@@ -2417,21 +2417,22 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 @keyframes spPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes spSpin{to{transform:rotate(360deg)}}
 :root{
---bg:#FCFCFD;--bg-2:#F6F7F9;--bg-elev:#FFFFFF;--bg-sunken:#F2F3F5;
---surface:#FFFFFF;--surface-2:#FAFBFC;
---ink:#2D2D3A;--text:#2D2D3A;--text-mute:#7C8290;--text-dim:#A8ADB8;
---ink-2:#374151;--ink-3:#6B7280;--ink-4:#9CA3AF;--ink-5:#E5E7EB;
---line:rgba(0,0,0,.06);--line-2:rgba(0,0,0,.1);--border:rgba(0,0,0,.06);--border-2:rgba(0,0,0,.1);
---accent:#D4654A;--accent-soft:rgba(212,101,74,.08);--accent-ink:#FFFFFF;
---accent-2:#C05A42;--accent-strong:#B04E38;--warm:#D4654A;--paper:#FEFEFE;
---gold:#F59E0B;--sage:#10B981;
+--bg:#F5F3F0;--bg-2:#EDEBE8;--bg-elev:#FAFAF9;--bg-sunken:#E8E6E3;
+--surface:#FAFAF9;--surface-2:#F2F0ED;
+--ink:#1A1A2E;--text:#1A1A2E;--text-mute:#5A5E6B;--text-dim:#8B8F9A;
+--ink-2:#2D2D3A;--ink-3:#4A4E5A;--ink-4:#7C8290;--ink-5:#D1CFC9;
+--line:rgba(0,0,0,.08);--line-2:rgba(0,0,0,.12);--border:rgba(0,0,0,.08);--border-2:rgba(0,0,0,.12);
+--accent:#C05A42;--accent-soft:rgba(192,90,66,.08);--accent-ink:#FFFFFF;
+--accent-2:#A84D38;--accent-strong:#8E3F2E;--warm:#C05A42;--paper:#F5F3F0;
+--gold:#D97706;--sage:#059669;
 --serif:'Instrument Serif',Georgia,'Times New Roman',serif;
 --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
 --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
---shadow-1:0 1px 2px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.03);
---shadow-2:0 2px 4px rgba(0,0,0,.04),0 8px 20px rgba(0,0,0,.06);
---shadow-3:0 4px 8px rgba(0,0,0,.06),0 12px 28px rgba(0,0,0,.08);
---radius:16px}
+--shadow-1:0 1px 3px rgba(0,0,0,.06),0 2px 10px rgba(0,0,0,.04);
+--shadow-2:0 2px 6px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.08);
+--shadow-3:0 4px 10px rgba(0,0,0,.08),0 16px 36px rgba(0,0,0,.1);
+--radius:14px;
+--divider:rgba(0,0,0,.06)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
@@ -2525,15 +2526,17 @@ body[data-theme=aurora] .mv-card{background:rgba(255,255,255,.05);border-color:r
 body[data-theme=aurora] .mv-thumb{background:rgba(0,0,0,.3)}
 .rd-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:17px;box-shadow:var(--shadow-1);animation:fadeSlideUp .4s cubic-bezier(.2,.8,.2,1) both;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease}
 .rd-card:active{transform:scale(.98);box-shadow:var(--shadow-1)}
-.focus-card{background:linear-gradient(135deg,var(--accent-soft) 0%,color-mix(in srgb,var(--accent) 18%,var(--paper)) 100%);border:1px solid color-mix(in srgb,var(--accent) 20%,transparent);border-radius:20px;padding:20px;margin-top:13px;animation:fadeSlideUp .4s cubic-bezier(.2,.8,.2,1) both;position:relative;overflow:hidden}
+.focus-card{background:linear-gradient(145deg,#1A1A2E 0%,#2D2B3A 60%,#3A2E28 100%);border:1px solid rgba(192,90,66,.15);border-radius:20px;padding:20px;margin-top:13px;animation:fadeSlideUp .4s cubic-bezier(.2,.8,.2,1) both;position:relative;overflow:hidden;color:#E8E8EC}
+.focus-card .focus-time-num,.focus-card span[id="focusTime"]{color:#E8E8EC !important}
+.focus-card .focus-time-lbl{color:rgba(192,90,66,.8) !important}
 .focus-card::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(226,125,96,.06),transparent,rgba(226,125,96,.03),transparent);opacity:0;transition:opacity .6s;animation:none;pointer-events:none}
 .focus-card.is-active::before{opacity:1;animation:focusCardSpin 8s linear infinite}
 @keyframes focusCardSpin{to{transform:rotate(360deg)}}
 .focus-ring-wrap{position:relative;width:140px;height:140px;margin:0 auto}
 .focus-ring-wrap svg{transform:rotate(-90deg);filter:drop-shadow(0 0 0 transparent);transition:filter .4s}
 .focus-card.is-active .focus-ring-wrap svg{filter:drop-shadow(0 0 12px rgba(226,125,96,.35))}
-.focus-ring-bg{fill:none;stroke:color-mix(in srgb,var(--accent) 15%,transparent);stroke-width:6}
-.focus-ring-fg{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;transition:stroke-dasharray .8s cubic-bezier(.4,0,.2,1)}
+.focus-ring-bg{fill:none;stroke:rgba(192,90,66,.15);stroke-width:5}
+.focus-ring-fg{fill:none;stroke:#C05A42;stroke-width:5;stroke-linecap:round;transition:stroke-dasharray .8s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 0 8px rgba(192,90,66,.3))}
 .focus-card.is-active .focus-ring-fg{animation:focusRingPulse 2.5s ease-in-out infinite}
 @keyframes focusRingPulse{0%,100%{stroke-width:6;filter:drop-shadow(0 0 4px rgba(226,125,96,.3))}50%{stroke-width:7.5;filter:drop-shadow(0 0 10px rgba(226,125,96,.5))}}
 .focus-time{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -2546,12 +2549,12 @@ body[data-theme=aurora] .mv-thumb{background:rgba(0,0,0,.3)}
 .focus-btn:active{transform:scale(.92)}
 .focus-btn-start{background:var(--accent);color:#fff;box-shadow:0 4px 16px -2px rgba(226,125,96,.4)}
 .focus-btn-start:hover{box-shadow:0 6px 24px -2px rgba(226,125,96,.5);transform:translateY(-1px)}
-.focus-btn-pause{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
-.focus-btn-reset{background:rgba(255,255,255,.06);color:var(--text-mute);border:1px solid rgba(255,255,255,.08)}
+.focus-btn-pause{background:rgba(192,90,66,.2);color:#C05A42}
+.focus-btn-reset{background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1)}
 .focus-presets{display:flex;gap:6px;justify-content:center;margin-top:12px}
-.focus-preset{padding:7px 16px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font:500 12px var(--sans);color:var(--ink);cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);position:relative;z-index:2}
-.focus-preset:hover{border-color:rgba(226,125,96,.3);transform:translateY(-1px)}
-.focus-preset.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 4px 12px -2px rgba(226,125,96,.4)}
+.focus-preset{padding:7px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);font:500 12px var(--sans);color:rgba(255,255,255,.7);cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);position:relative;z-index:2}
+.focus-preset:hover{border-color:rgba(192,90,66,.3);transform:translateY(-1px)}
+.focus-preset.on{background:#C05A42;color:#fff;border-color:#C05A42;box-shadow:0 4px 12px -2px rgba(192,90,66,.4)}
 .focus-stats{display:flex;gap:16px;justify-content:center;margin-top:14px}
 .focus-stat{text-align:center}
 .focus-stat-v{font:700 18px var(--sans);color:var(--accent)}
@@ -3940,9 +3943,9 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     flex-direction:row !important;
     justify-content:space-evenly !important;
     overflow-x:hidden !important;overflow-y:visible !important;
-    background:color-mix(in srgb,var(--paper) 78%,#fff) !important;
-    backdrop-filter:blur(14px) !important;
-    -webkit-backdrop-filter:blur(14px) !important;
+    background:color-mix(in srgb,var(--paper) 92%,var(--ink)) !important;
+    backdrop-filter:blur(18px) saturate(1.2) !important;
+    -webkit-backdrop-filter:blur(18px) saturate(1.2) !important;
     border:none !important;
     border-top:1px solid var(--line) !important;
     border-radius:0 !important;
@@ -7525,7 +7528,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 }
 
 /* ─── BRO CHAT ─── */
-.bro-container{display:flex;flex-direction:column;height:calc(100vh - 90px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:#F5F6F8;position:relative}
+.bro-container{display:flex;flex-direction:column;height:calc(100vh - 90px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:var(--bg);position:relative}
 body[data-theme=aurora] .bro-container{background:var(--bg)}
 .bro-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--line);position:relative;z-index:10;flex-shrink:0}
 .bro-ticker{flex-shrink:0;overflow:hidden;position:relative;padding:10px 14px;background:linear-gradient(135deg,rgba(226,125,96,.07),rgba(61,174,92,.05));border-bottom:1px solid rgba(226,125,96,.12)}
@@ -8505,13 +8508,32 @@ select,option{color:var(--ink);font-weight:600}
 .ai-ch-time{font-size:11px;font-weight:700;color:var(--text-dim);white-space:nowrap;background:var(--bg-sunken);padding:3px 8px;border-radius:8px}
 .ai-ch.done .ai-ch-name{color:var(--text-dim);text-decoration:line-through}
 
-/* ── Comic Lesson Viewer — Full Page with 3D Portal ── */
-.lesson-fullpage{position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;animation:lessonPortalOpen .8s cubic-bezier(.16,1,.3,1) forwards}
-@keyframes lessonPortalOpen{0%{clip-path:circle(0% at 50% 50%);opacity:0;transform:perspective(800px) rotateY(-15deg) scale(.9)}30%{opacity:1}100%{clip-path:circle(100% at 50% 50%);transform:perspective(800px) rotateY(0deg) scale(1)}}
+/* ── Comic Lesson Viewer — Full Page with Immersive Door Portal ── */
+.lesson-fullpage{position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.lesson-fullpage.portal-enter{animation:lessonDoorOpen .9s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes lessonDoorOpen{0%{clip-path:inset(50% 50% 50% 50% round 12px);opacity:0;transform:perspective(1200px) rotateX(8deg) scale(.85)}15%{opacity:1}40%{clip-path:inset(5% 5% 5% 5% round 16px);transform:perspective(1200px) rotateX(2deg) scale(.95)}100%{clip-path:inset(0 0 0 0);transform:perspective(1200px) rotateX(0deg) scale(1)}}
 @keyframes lessonPageIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
-.lesson-fullpage::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 30%,rgba(99,102,241,.08) 0%,transparent 70%);pointer-events:none;z-index:0;animation:lessonGlow 2s ease-out forwards;opacity:0}
-@keyframes lessonGlow{0%{opacity:0;transform:scale(0.5)}50%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(1.5)}}
-.lesson-fullpage-inner{max-width:680px;margin:0 auto;padding:20px 18px 100px}
+.lesson-fullpage::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 20%,rgba(99,102,241,.06) 0%,transparent 60%);pointer-events:none;z-index:0;animation:lessonGlow 2.5s ease-out forwards;opacity:0}
+@keyframes lessonGlow{0%{opacity:0;transform:scale(0.3)}40%{opacity:.8;transform:scale(1.1)}100%{opacity:0;transform:scale(1.6)}}
+/* Door overlay — two panels that swing open */
+.lesson-door-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:101;pointer-events:none;perspective:1200px}
+.lesson-door-left,.lesson-door-right{position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(135deg,#1A1A2E,#2D2B3A);backface-visibility:hidden}
+.lesson-door-left{left:0;transform-origin:left center;animation:doorSwingLeft .7s cubic-bezier(.4,0,.2,1) forwards}
+.lesson-door-right{right:0;transform-origin:right center;animation:doorSwingRight .7s cubic-bezier(.4,0,.2,1) forwards}
+.lesson-door-left::after,.lesson-door-right::after{content:"";position:absolute;top:50%;width:6px;height:40px;border-radius:3px;background:rgba(192,90,66,.5);transform:translateY(-50%)}
+.lesson-door-left::after{right:16px}
+.lesson-door-right::after{left:16px}
+@keyframes doorSwingLeft{0%{transform:perspective(1200px) rotateY(0deg)}100%{transform:perspective(1200px) rotateY(-105deg)}}
+@keyframes doorSwingRight{0%{transform:perspective(1200px) rotateY(0deg)}100%{transform:perspective(1200px) rotateY(105deg)}}
+/* Light beam from behind the doors */
+.lesson-door-light{position:absolute;top:0;left:25%;right:25%;bottom:0;background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.3) 0%,rgba(192,90,66,.1) 40%,transparent 70%);animation:doorLightIn .8s ease-out forwards;opacity:0}
+@keyframes doorLightIn{0%{opacity:0;transform:scaleX(0)}40%{opacity:1;transform:scaleX(.6)}100%{opacity:0;transform:scaleX(2)}}
+/* Section entry — slide up with reveal */
+.learn-section-enter{animation:sectionSlideIn .5s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes sectionSlideIn{0%{opacity:0;transform:translateY(40px)}100%{opacity:1;transform:none}}
+.lesson-fullpage-inner{max-width:680px;margin:0 auto;padding:20px 18px 100px;animation:lessonContentFade .6s .3s ease both}
+body.no-anim .lesson-fullpage-inner{animation:none}
+@keyframes lessonContentFade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 .lesson-back{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:0;position:sticky;top:0;z-index:10;background:var(--bg);padding:12px 0 8px}
 .lesson-back button{background:none;border:none;cursor:pointer;padding:8px;color:var(--text-mute);font-size:18px;border-radius:10px;transition:background .15s}
 .lesson-back button:hover{background:var(--bg-sunken)}
@@ -8521,13 +8543,15 @@ select,option{color:var(--ink);font-weight:600}
 .lesson-back-voice.speaking{border-color:var(--accent);background:rgba(138,46,42,.1);color:var(--accent);animation:voicePulse 1.5s ease-in-out infinite}
 @keyframes voicePulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(138,46,42,.15)}}
 .lesson-title{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--ink);line-height:1.2;margin:0 0 24px}
-.lesson-story-intro{padding:16px;background:linear-gradient(135deg,rgba(99,102,241,.06),rgba(139,92,246,.04));border:1.5px solid rgba(99,102,241,.12);border-radius:16px;margin-bottom:20px}
-.lesson-story-intro p{font:400 14px/1.7 var(--sans);color:var(--ink-2);margin:0}
-.lesson-story-intro .story-narrator{font:600 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.lesson-story-intro{padding:18px 20px;background:linear-gradient(135deg,#1A1A2E 0%,#2D2B3A 60%,#3A2E28 100%);border:1.5px solid rgba(192,90,66,.15);border-radius:16px;margin-bottom:22px;position:relative;overflow:hidden}
+.lesson-story-intro::before{content:"";position:absolute;top:-30%;right:-10%;width:120px;height:120px;background:radial-gradient(circle,rgba(192,90,66,.15) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.lesson-story-intro p{font:400 14px/1.7 var(--sans);color:rgba(232,232,236,.85);margin:0}
+.lesson-story-intro .story-narrator{font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#C05A42;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 @keyframes storyIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
 .lesson-panels{display:flex;flex-direction:column;gap:18px}
-.lesson-panel{background:var(--surface);border:2px solid var(--divider);border-radius:18px;overflow:hidden}
-@keyframes lessonPanelIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.lesson-panel{background:var(--surface);border:2px solid var(--divider);border-radius:18px;overflow:hidden;opacity:0;animation:lessonPanelIn .5s ease both}
+body.no-anim .lesson-panel{animation:none;opacity:1}
+@keyframes lessonPanelIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
 .lesson-panel-hdr{padding:14px 18px;font-size:14px;font-weight:800;letter-spacing:.03em;color:#fff;display:flex;align-items:center;gap:8px}
 .lesson-panel-hdr::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);flex-shrink:0;animation:panelDotPulse 2s ease-in-out infinite}
 @keyframes panelDotPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
@@ -12164,6 +12188,34 @@ function _shareLessonLink(id,title){
   if(navigator.share){navigator.share({title:'Learn: '+title+' \\u2014 Brodoit',text:'Check out this AI lesson on Brodoit!',url:url}).catch(function(){})}
   else{navigator.clipboard.writeText(url).then(function(){toast('\\u{1F517} Link copied!')}).catch(function(){toast('\\u{1F517} '+url)})}
 }
+// ── Lesson immersive door-open transition ──
+function _openLesson(id){
+  // Create door overlay
+  var ov=document.createElement('div');
+  ov.className='lesson-door-overlay';
+  ov.innerHTML='<div class="lesson-door-light"></div><div class="lesson-door-left"></div><div class="lesson-door-right"></div>';
+  document.body.appendChild(ov);
+  // After doors start opening, set lesson and render
+  setTimeout(function(){
+    S.lessonId=id;
+    render();
+    window.scrollTo(0,0);
+    // Add portal-enter class to the lesson fullpage
+    var lf=document.getElementById('lessonFullpage');
+    if(lf)lf.classList.add('portal-enter');
+  },200);
+  // Remove overlay after animation completes
+  setTimeout(function(){ov.remove()},900);
+}
+// ── Section entry with smooth transition ──
+function _openSection(id){
+  S.learnSection=id;
+  render();
+  window.scrollTo(0,0);
+  // Add entry animation to the section content
+  var app=document.getElementById('app');
+  if(app){app.classList.remove('learn-section-enter');void app.offsetWidth;app.classList.add('learn-section-enter');setTimeout(function(){app.classList.remove('learn-section-enter')},600)}
+}
 // ── Lesson full-page close ──
 function _closeLessonFull(){_stopLessonVoice();S.lessonId=null;render()}
 // ── Lesson voice read-aloud ──
@@ -13161,36 +13213,34 @@ if(isMain){
   hero+='<button onclick="switchTab(\\'tasks\\')" style="flex:1;padding:14px 12px;border-radius:0;background:var(--surface);border:1px solid var(--line);cursor:pointer;text-align:left"><div style="font:500 20px var(--sans);color:var(--accent)">'+_dueToday+'</div><div style="font:400 12px var(--sans);color:var(--text-mute);margin-top:2px">'+_statusLine+'</div></button>';
   hero+='<button onclick="switchTab(\\'tasks\\');setTimeout(opA,80)" style="flex:1;padding:14px 12px;border-radius:0;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 20%,transparent);cursor:pointer;text-align:left"><div style="font:500 14px var(--sans);color:var(--accent)">+ Add task</div><div style="font:400 12px var(--sans);color:var(--text-mute);margin-top:2px">Plan your day</div></button>';
   hero+='</div>';
-  // --- Focus Timer (compact) ---
+  // --- Focus Timer with Candle ---
   var _foc=S.focus;
   var _focMins=Math.floor(_foc.remaining/60);var _focSecs=_foc.remaining%60;
   var _focTimeStr=String(_focMins).padStart(2,'0')+':'+String(_focSecs).padStart(2,'0');
   var _focPct=_foc.active||_foc.paused?Math.round((1-_foc.remaining/_foc.total)*100):0;
-  var _focCircum=2*Math.PI*20;var _focDash=((_foc.remaining/_foc.total)*_focCircum);
+  var _focCircum=2*Math.PI*62;var _focDash=((_foc.remaining/_foc.total)*_focCircum);
   var _focDurMins=Math.round(_foc.total/60);
-  hero+='<div class="focus-card'+(_foc.active?' is-active':'')+'" style="margin-top:13px;padding:14px 17px">';
-  hero+='<div style="display:flex;align-items:center;gap:12px">';
-  hero+='<div style="position:relative;width:48px;height:48px;flex-shrink:0"><svg width="48" height="48" viewBox="0 0 48 48" style="transform:rotate(-90deg)"><circle cx="24" cy="24" r="20" fill="none" stroke="color-mix(in srgb,var(--accent) 15%,transparent)" stroke-width="4"/><circle id="focusRing" cx="24" cy="24" r="20" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="'+_focDash+' '+_focCircum+'"/></svg>';
-  hero+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span id="focusTime" style="font:700 12px var(--sans);color:var(--ink)">'+_focTimeStr+'</span></div></div>';
-  hero+='<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><span style="font:600 14px var(--sans);color:var(--ink)">Focus</span>';
-  if(_foc.sessions>0)hero+='<span style="font:500 11px var(--sans);color:var(--text-mute)">'+_foc.sessions+' done</span>';
+  hero+='<div class="focus-card'+(_foc.active?' is-active':'')+'">';
+  hero+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C05A42" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="font:600 15px var(--sans);color:#E8E8EC">Focus</span></div>';
+  if(_foc.sessions>0)hero+='<span style="font:500 12px var(--sans);color:rgba(255,255,255,.45)">'+_foc.sessions+' session'+(_foc.sessions>1?'s':'')+' today</span>';
   hero+='</div>';
-  if(!_foc.active&&!_foc.paused){
-    hero+='<div style="display:flex;gap:4px;margin-top:6px">';
-    [15,25,45,60].forEach(function(m){hero+='<button class="focus-preset'+(_focDurMins===m?' on':'')+'" onclick="focusSetDuration('+m+')" style="padding:4px 10px;font-size:11px;border-radius:8px">'+m+'m</button>';});
-    hero+='</div>';
-  } else if(_foc.active){
-    hero+='<div style="font:500 11px var(--sans);color:var(--accent);margin-top:2px">'+_focPct+'% complete</div>';
-  } else {
-    hero+='<div style="font:500 11px var(--sans);color:var(--text-mute);margin-top:2px">Paused</div>';
-  }
-  hero+='</div>';
-  hero+='<div style="display:flex;gap:6px;flex-shrink:0">';
-  if(!_foc.active){hero+='<button class="focus-btn focus-btn-start" onclick="focusStart()" style="height:36px;padding:0 16px;font-size:13px;border-radius:10px"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg>'+(_foc.paused?'Resume':'Start')+'</button>';}
-  else{hero+='<button class="focus-btn focus-btn-pause" onclick="focusPause()" style="height:36px;padding:0 14px;font-size:13px;border-radius:10px"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>';}
-  if(_foc.active||_foc.paused){hero+='<button class="focus-btn focus-btn-reset" onclick="focusReset()" style="height:36px;padding:0 12px;font-size:12px;border-radius:10px">\\u21BB</button>';}
-  hero+='<button onclick="focusCandleMode()" style="height:36px;width:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0" title="Candle Focus"><span style="font-size:18px">\\u{1F56F}</span></button>';
+  hero+='<div class="focus-ring-wrap" onclick="focusCandleMode()" style="cursor:pointer" title="Tap candle to enter focus room">';
+  hero+='<svg width="150" height="150" viewBox="0 0 150 150" style="transform:rotate(-90deg)"><circle class="focus-ring-bg" cx="75" cy="75" r="62"/><circle class="focus-ring-fg" id="focusRing" cx="75" cy="75" r="62" stroke-dasharray="'+_focDash+' '+_focCircum+'"/></svg>';
+  hero+='<div class="focus-time">';
+  hero+='<svg width="28" height="52" viewBox="0 0 28 52" style="margin-bottom:2px"><rect x="9" y="28" width="10" height="24" rx="2" fill="#e8c170"/><rect x="13" y="24" width="2" height="6" fill="#8B7355"/><ellipse cx="14" cy="20" rx="6" ry="10" fill="url(#candleGrad)" opacity=".9" style="animation:candleFlicker 2s ease-in-out infinite alternate"/><defs><radialGradient id="candleGrad" cx="50%" cy="80%"><stop offset="0%" stop-color="#fff4c8"/><stop offset="30%" stop-color="#ffb833"/><stop offset="70%" stop-color="#ff6b1a"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs></svg>';
+  hero+='<span class="focus-time-num" id="focusTime" style="font-size:28px">'+_focTimeStr+'</span>';
+  hero+='<span class="focus-time-lbl" id="focusPct">'+(_foc.active?_focPct+'%':'focus')+'</span>';
   hero+='</div></div>';
+  if(!_foc.active){
+    hero+='<div class="focus-presets">';
+    [15,25,45,60].forEach(function(m){hero+='<button class="focus-preset'+(_focDurMins===m?' on':'')+'" onclick="focusSetDuration('+m+')">'+m+' min</button>';});
+    hero+='</div>';
+  }
+  hero+='<div class="focus-btns">';
+  if(!_foc.active){hero+='<button class="focus-btn focus-btn-start" onclick="focusStart()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg>'+(_foc.paused?'Resume':'Start Focus')+'</button>';}
+  else if(_foc.paused){hero+='<button class="focus-btn focus-btn-start" onclick="focusStart()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg>Resume</button><button class="focus-btn focus-btn-reset" onclick="focusReset()">Reset</button>';}
+  else{hero+='<button class="focus-btn focus-btn-pause" onclick="focusPause()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>Pause</button><button class="focus-btn focus-btn-reset" onclick="focusReset()">Reset</button>';}
+  hero+='</div>';
   hero+='</div>';
   // --- Hydration tracker ---
   hero+='<div class="rd-card" style="margin-top:13px;padding:14px 17px">';
@@ -13392,7 +13442,7 @@ if(isMain){
   };
   var _learnTabs=['courses','mindgym','books'];
   var _youTabs=['profile','cal'];
-  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learning',i:'learn'},{k:'books',l:'Inspire',i:'inspire'},{k:'meditation',l:'Wisdom'}].map(function(x){
+  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learning',i:'learn'},{k:'books',l:'Inspire',i:'inspire'},{k:'meditation',l:'Wisdom'},{k:'cal',l:'Calendar'}].map(function(x){
     var isOn=(x.k==='home')?(!S.tab||S.tab==='home'||S.tab==='profile'):(S.tab===x.k||(x.k==='courses'&&S.tab==='mindgym'));
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
@@ -13949,30 +13999,26 @@ else if(S.tab==='courses'){
       {id:'confidence',name:'Confidence Building',desc:'Public speaking, negotiation, body language, mindset.',color:'#F59E0B',bg:'linear-gradient(135deg,#F59E0B,#FBBF24)',chapters:20,mins:'250+',tag:'COMING SOON',scene:_scenes.confidence},
       {id:'personality',name:'Personality Development',desc:'Communication, emotional intelligence, leadership, habits.',color:'#EC4899',bg:'linear-gradient(135deg,#EC4899,#F472B6)',chapters:25,mins:'300+',tag:'COMING SOON',scene:_scenes.personality}
     ];
-    h+='<div class="learn-grid">';
+    h+='<div style="text-align:center;padding:4px 0 18px">';
+    h+='<div style="font:600 26px var(--serif);color:var(--ink)">Learning</div>';
+    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-top:4px">Choose your path</div>';
+    h+='</div>';
+    h+='<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">';
     _sections.forEach(function(s,i){
       var isActive=s.id==='ai'||s.id==='python';
-      h+='<div class="learn-card-3d" onclick="'+(isActive?'S.learnSection=\\''+s.id+'\\';render();window.scrollTo(0,0)':'toast(\\'Coming soon!\\',\\'info\\')')+'">';
-      h+='<div class="learn-card" style="--card-color:'+s.color+'">';
-      h+='<div class="learn-card-icon" style="background:'+s.bg+'"><span style="font-size:28px">'+(s.id==='ai'?'\\u{1F9E0}':s.id==='python'?'\\u{1F40D}':s.id==='product'?'\\u{1F4CB}':s.id==='dev'?'\\u{1F4BB}':s.id==='confidence'?'\\u{1F3A4}':'\\u{1F31F}')+'</span></div>';
-      h+='<div class="learn-card-body">';
-      h+='<div class="learn-card-top">';
-      h+='<h3 class="learn-card-title">'+s.name+'</h3>';
-      h+='<span class="learn-card-tag'+(isActive?' active':'')+'">'+s.tag+'</span>';
-      h+='</div>';
-      h+='<p class="learn-card-desc">'+s.desc+'</p>';
-      h+='<div class="learn-card-meta">';
-      h+='<span>'+s.chapters+' chapters</span><span>'+s.mins+' min</span>';
-      h+='</div>';
-      if(isActive){
-        var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
-        var pct=Math.round(_aDone.length/(s.id==='python'?30:63)*100);
-        h+='<div class="learn-card-progress"><div class="learn-card-bar" style="width:'+pct+'%"></div></div>';
-        h+='<div class="learn-card-cta" style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:11px;color:var(--text-mute)">'+_aDone.length+'/'+(s.id==='python'?30:63)+' completed</span><span style="font:700 12px var(--sans);color:'+s.color+';display:flex;align-items:center;gap:4px">'+(pct>0?'Continue':'Start')+' \\u2192</span></div>';
-      }else{
-        h+='<div style="margin-top:8px;text-align:right"><span style="font:600 12px var(--sans);color:var(--text-dim)">Coming Soon</span></div>';
+      var _aDone=[];if(isActive){try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}}
+      var pct=isActive?Math.round(_aDone.length/(s.id==='python'?30:63)*100):0;
+      var emoji=s.id==='ai'?'\\u{1F9E0}':s.id==='python'?'\\u{1F40D}':s.id==='product'?'\\u{1F4CB}':s.id==='dev'?'\\u{1F4BB}':s.id==='confidence'?'\\u{1F3A4}':'\\u{1F31F}';
+      h+='<button style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:16px;background:'+s.bg+';border:none;cursor:pointer;text-align:left;min-height:80px;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 16px rgba(0,0,0,.1)'+(isActive?'':';opacity:.65')+'" onclick="'+(isActive?'_openSection(\\''+s.id+'\\')':'toast(\\'Coming soon!\\',\\'info\\')')+'">';
+      h+='<span style="font-size:36px;flex-shrink:0">'+emoji+'</span>';
+      h+='<div style="flex:1;min-width:0"><div style="font:700 16px var(--sans);color:#fff">'+s.name+'</div>';
+      h+='<div style="font:400 12px var(--sans);color:rgba(255,255,255,.8);margin-top:3px">'+s.desc+'</div>';
+      if(isActive&&pct>0){h+='<div style="margin-top:8px;height:3px;background:rgba(255,255,255,.2);border-radius:2px"><div style="height:100%;width:'+pct+'%;background:#fff;border-radius:2px"></div></div>';
+        h+='<div style="font:600 10px var(--sans);color:rgba(255,255,255,.7);margin-top:4px">'+pct+'% complete</div>';
       }
-      h+='</div></div></div>';
+      h+='</div>';
+      h+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
+      h+='</button>';
     });
     h+='</div>';
   } else if(S.learnSection==='ai'){
@@ -14068,7 +14114,7 @@ else if(S.tab==='courses'){
       h+='<div><div class="ai-part-label">'+part.part+'</div><div class="ai-part-title">'+part.title+'</div></div></div>';
       part.chs.forEach(function(ch){
         var done=_aDone.indexOf(ch.id)>-1;
-        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="S.lessonId=\\''+ch.id+'\\';render();window.scrollTo(0,0)">';
+        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="_openLesson(\\''+ch.id+'\\')">';
         h+='<div class="ai-ch-check" style="border-color:'+part.color+(done?';background:'+part.color:'')+'">'+( done?'\\u2713':'')+'</div>';
         h+='<div class="ai-ch-body"><div class="ai-ch-name">'+ch.n+'</div><div class="ai-ch-desc">'+ch.d+'</div></div>';
         h+='<div class="ai-ch-time">'+ch.m+' min</div>';
@@ -14130,7 +14176,7 @@ else if(S.tab==='courses'){
       h+='<div><div class="ai-part-label">'+part.part+'</div><div class="ai-part-title">'+part.title+'</div></div></div>';
       part.chs.forEach(function(ch){
         var done=_aDone.indexOf(ch.id)>-1;
-        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="S.lessonId=\\''+ch.id+'\\';render();window.scrollTo(0,0)">';
+        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="_openLesson(\\''+ch.id+'\\')">';
         h+='<div class="ai-ch-check" style="border-color:'+part.color+(done?';background:'+part.color:'')+'">'+( done?'\\u2713':'')+'</div>';
         h+='<div class="ai-ch-body"><div class="ai-ch-name">'+ch.n+'</div><div class="ai-ch-desc">'+ch.d+'</div></div>';
         h+='<div class="ai-ch-time">'+ch.m+' min</div>';
@@ -15029,10 +15075,7 @@ if(S.tab==='cal'){
 if(S.tab!=='bro'){
   h+='<button class="fab-chat" onclick="stopSpeak();switchTab(\\'bro\\')" aria-label="Chat with AI"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>';
 }
-// Calendar quick-access from Home
-if(S.tab==='tasks'){
-  h+='<button class="fab-cal" onclick="stopSpeak();switchTab(\\'cal\\')" aria-label="Calendar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>';
-}
+// Calendar FAB removed — Calendar is now a tab
 
 // Player bar (any tab)
 if(S.playing){
@@ -16009,7 +16052,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=106').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=108').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -16319,7 +16362,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v106";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v108";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
