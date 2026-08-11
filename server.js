@@ -9453,7 +9453,8 @@ var _arcadeGames=[
   {id:'snake',name:'Snake',emoji:'\\u{1F40D}',desc:'Eat food, grow longer, don\\'t crash!',bg:'linear-gradient(135deg,#059669,#065F46)',badge:'Classic'},
   {id:'chess',name:'Chess',emoji:'\\u265A',desc:'Challenge the AI in classic chess',bg:'linear-gradient(135deg,#4B5563,#1F2937)',badge:'Strategy'},
   {id:'ludo',name:'Ludo',emoji:'\\u{1F3B2}',desc:'Roll dice, race to the finish!',bg:'linear-gradient(135deg,#DC2626,#991B1B)',badge:'Board'},
-  {id:'solitaire',name:'Solitaire',emoji:'\\u{1F0CF}',desc:'Classic card matching game',bg:'linear-gradient(135deg,#7C3AED,#5B21B6)',badge:'Cards'}
+  {id:'solitaire',name:'Solitaire',emoji:'\\u{1F0CF}',desc:'Classic card matching game',bg:'linear-gradient(135deg,#7C3AED,#5B21B6)',badge:'Cards'},
+  {id:'mountain',name:'Mountain Climb',emoji:'\\u{26F0}',desc:'Jump across platforms, climb higher!',bg:'linear-gradient(135deg,#2563EB,#1E3A8A)',badge:'Platformer'}
 ];
 var _arcadeState={};
 function arcadeOpen(id){
@@ -9469,6 +9470,7 @@ function arcadeOpen(id){
     c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;
     var ctx=c.getContext('2d');ctx.scale(2,2);
     _arcadeState={id:id,canvas:c,ctx:ctx,w:c.offsetWidth,h:c.offsetHeight,running:true,score:0,frame:0};
+    if(id==='mountain'){_mcOpenInCanvas();return}
     if(id==='runner')_runnerInit();
     else if(id==='snake')_snakeInit();
     else if(id==='chess')_chessInit();
@@ -9482,6 +9484,21 @@ function arcadeClose(){
   var el=document.getElementById('arcadeFS');if(el){el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(function(){el.remove()},300)}
 }
 function _arcScore(n){_arcadeState.score=n;var el=document.getElementById('arcScore');if(el)el.textContent=n}
+// ── MOUNTAIN CLIMB (fullscreen wrapper) ──
+function _mcOpenInCanvas(){
+  var old=document.getElementById('arcadeFS');if(old)old.remove();
+  var d=document.createElement('div');d.id='arcadeFS';d.className='game-fs';
+  d.innerHTML='<div class="game-fs-hd"><button class="game-fs-close" onclick="arcadeClose()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><span class="game-fs-title">Mountain Climb</span><span class="game-fs-score" id="mcScore">0m</span></div><div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden"><canvas id="mcCanvas" width="320" height="400" style="width:100%;max-width:400px;height:auto;aspect-ratio:4/5;touch-action:none;cursor:pointer"></canvas></div><div id="mcMsg" style="font:500 13px var(--sans);color:rgba(255,255,255,.6);text-align:center;padding:8px">Tap to jump</div>';
+  document.body.appendChild(d);
+  _arcadeState={id:'mountain',running:true};
+  setTimeout(function(){
+    var cv=document.getElementById('mcCanvas');
+    if(!cv)return;
+    cv.setAttribute('ontouchstart','mcTap(event)');
+    cv.setAttribute('onmousedown','mcTap(event)');
+    _mcInit();_mcDrawStartScreen();
+  },100);
+}
 // ── SUPER BRO RUN ──
 function _runnerInit(){
   var S=_arcadeState,c=S.canvas,W=S.w,H=S.h;
@@ -13717,17 +13734,7 @@ if(isMain){
   hero+='<button class="is-hyd-toggle'+(_hyd.enabled?' on':'')+'" onclick="event.stopPropagation();toggleHydration()" title="'+(_hyd.enabled?'Reminders ON':'Turn on reminders')+'">\\u{1F514}</button>';
   hero+='</div></div></div>';
 
-  // --- Mountain Climber Game ---
-  hero+='<div class="rd-card mc-game-card" style="margin-top:13px;padding:16px 17px;text-align:center">';
-  hero+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--tc-c1,var(--accent))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4L2 20h22L13 4z"/><path d="M7 20l5-7 3 4"/></svg><span style="font:600 14px var(--sans);color:var(--ink)">Mountain Climb</span><span id="mcScore" style="font:700 13px var(--sans);color:var(--tc-c1,var(--accent));margin-left:auto">0m</span><span id="mcBest" style="font:500 12px var(--sans);color:var(--text-mute);margin-left:6px">Best: 0m</span></div>';
-  hero+='<div style="position:relative;display:inline-block;width:100%;max-width:320px">';
-  hero+='<canvas id="mcCanvas" width="320" height="400" style="width:100%;max-width:320px;height:auto;aspect-ratio:4/5;border-radius:0;touch-action:none;cursor:pointer"></canvas>';
-  hero+='<div id="mcOverlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.45);border-radius:0;cursor:pointer;z-index:2" onclick="mcStartGame(this)">';
-  hero+='<div style="width:64px;height:64px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(67,97,238,.4)"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><polygon points="8 5 20 12 8 19"/></svg></div>';
-  hero+='<div style="font:600 15px var(--sans);color:#fff;margin-top:12px;text-shadow:0 1px 4px rgba(0,0,0,.3)">Tap to Play</div>';
-  hero+='</div></div>';
-  hero+='<div id="mcMsg" style="font:500 12px var(--sans);color:var(--text-mute);margin-top:8px;min-height:18px">Tap play to start climbing</div>';
-  hero+='</div>';
+  // Mountain Climb moved to Mind Games tab
 
   var _wqDoy=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
   var _wq=window._DQ&&window._DQ[(_wqDoy-1)%window._DQ.length]||{q:'The secret of getting ahead is getting started.',a:'Mark Twain'};
@@ -14684,32 +14691,46 @@ else if(S.tab==='mindgym'){
   };
 
   if(!S.mgSection){
-    // === LANDING PAGE — one unified swipeable strip of ALL games ===
+    // === LANDING PAGE — two sections: Fun Games + Mind Games ===
     var streak=mg.streak||{current:0,longest:0,total:0};
     var _allG=_mgSections.reduce(function(a,s){return a.concat(s.games)},[]);
     var totalXp=_allG.reduce(function(s,g){return s+((mg.progress[g.k]||{}).xp||0)},0);
-    h+='<div style="font:800 28px var(--sans);color:var(--ink);letter-spacing:-.02em;margin-bottom:4px">Mind Games</div>';
-    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-bottom:16px">Train your brain daily \\u00B7 '+totalXp+' XP \\u00B7 '+streak.current+' day streak</div>';
-    // ── Single swipeable strip with ALL games (arcade + brain training) ──
-    var _allCards=[];
-    _arcadeGames.forEach(function(g){_allCards.push({type:'arcade',id:g.id,name:g.name,emoji:g.emoji,desc:g.desc,bg:g.bg,badge:g.badge})});
-    _allG.forEach(function(g){var p=mg.progress[g.k]||{level:1,xp:0};_allCards.push({type:'brain',k:g.k,name:g.n,emoji:g.emoji,desc:g.d,bg:g.bg,badge:'Lv '+p.level})});
-    h+='<div style="font:500 13px var(--sans);color:var(--text-mute);margin-bottom:8px">Swipe \\u2192 for more games</div>';
+    h+='<div style="font:800 28px var(--sans);color:var(--ink);letter-spacing:-.02em;margin-bottom:4px">Games</div>';
+    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-bottom:20px">Play, train & have fun \\u00B7 '+totalXp+' XP \\u00B7 '+streak.current+' day streak</div>';
+    // ── Section 1: Fun Games (arcade + mountain climb) ──
+    h+='<div style="font:700 17px var(--sans);color:var(--ink);margin-bottom:8px">\\u{1F3AE} Fun Games</div>';
+    h+='<div style="font:400 13px var(--sans);color:var(--text-mute);margin-bottom:10px">Swipe \\u2192 to browse</div>';
     h+='<div class="gc-strip" id="arcadeStrip">';
-    _allCards.forEach(function(g){
-      var onclick=g.type==='arcade'?'arcadeOpen(\\''+g.id+'\\')':'mgDetailOpen(\\''+g.k+'\\')';
-      h+='<div class="gc-card" style="background:'+(g.bg||'#4361EE')+'" onclick="'+onclick+'">';
+    _arcadeGames.forEach(function(g){
+      h+='<div class="gc-card" style="background:'+g.bg+'" onclick="arcadeOpen(\\''+g.id+'\\')">';
       h+='<div class="gc-card-body">';
-      h+='<div class="gc-card-badge">'+(g.badge||'')+'</div>';
+      h+='<div class="gc-card-badge">'+g.badge+'</div>';
       h+='<div class="gc-card-emoji">'+g.emoji+'</div>';
       h+='<div class="gc-card-name">'+g.name+'</div>';
       h+='<div class="gc-card-desc">'+g.desc+'</div>';
       h+='</div></div>';
     });
     h+='</div>';
-    // Dot indicators
-    h+='<div class="gc-dots">';
-    _allCards.forEach(function(g,i){h+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
+    h+='<div class="gc-dots" id="funDots">';
+    _arcadeGames.forEach(function(g,i){h+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
+    h+='</div>';
+    // ── Section 2: Mind Games (brain training) ──
+    h+='<div style="font:700 17px var(--sans);color:var(--ink);margin:24px 0 8px">\\u{1F9E0} Mind Games</div>';
+    h+='<div style="font:400 13px var(--sans);color:var(--text-mute);margin-bottom:10px">Swipe \\u2192 to browse</div>';
+    h+='<div class="gc-strip" id="brainStrip">';
+    _allG.forEach(function(g){
+      var p=mg.progress[g.k]||{level:1,xp:0};
+      h+='<div class="gc-card" style="background:'+(g.bg||'#4361EE')+'" onclick="mgDetailOpen(\\''+g.k+'\\')">';
+      h+='<div class="gc-card-body">';
+      h+='<div class="gc-card-badge">Lv '+p.level+'</div>';
+      h+='<div class="gc-card-emoji">'+g.emoji+'</div>';
+      h+='<div class="gc-card-name">'+g.n+'</div>';
+      h+='<div class="gc-card-desc">'+g.d+'</div>';
+      h+='</div></div>';
+    });
+    h+='</div>';
+    h+='<div class="gc-dots" id="brainDots">';
+    _allG.forEach(function(g,i){h+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
     h+='</div>';
   }else{
     // === SECTION DRILL-DOWN ===
@@ -16436,9 +16457,8 @@ try{document.body.classList.toggle('bro-tab',S.tab==='bro')}catch(e){}
 // Force textarea width to parent's pixel width — WebView ignores CSS width on textareas
 try{var _ta=document.querySelectorAll('textarea.bro-input,textarea.qc-input');for(var _i=0;_i<_ta.length;_i++){var _p=_ta[_i].parentNode;if(_p&&_p.clientWidth>0)_ta[_i].style.width=_p.clientWidth+'px'}}catch(e){}
 if(document.getElementById('mcCanvas')&&!_mcRunning&&!_mcDead&&!_mcStarted){_mcInit();_mcDrawStartScreen()}
-// Arcade strip scroll dots
-var _as=document.getElementById('arcadeStrip');
-if(_as){_as.onscroll=function(){var cards=_as.querySelectorAll('.gc-card');var dots=_as.parentNode.querySelectorAll('.gc-dot');if(!cards.length||!dots.length)return;var sl=_as.scrollLeft;var cw=cards[0].offsetWidth+14;var idx=Math.round(sl/cw);dots.forEach(function(d,i){d.classList.toggle('on',i===idx)})}}
+// Game strip scroll dots
+['arcadeStrip','brainStrip'].forEach(function(sid){var _as=document.getElementById(sid);if(_as){_as.onscroll=function(){var cards=_as.querySelectorAll('.gc-card');var dotsEl=_as.nextElementSibling;if(!dotsEl)return;var dots=dotsEl.querySelectorAll('.gc-dot');if(!cards.length||!dots.length)return;var sl=_as.scrollLeft;var cw=cards[0].offsetWidth+14;var idx=Math.round(sl/cw);dots.forEach(function(d,i){d.classList.toggle('on',i===idx)})}}})
 }
 applyTheme();
 // Deep link routing: ?lesson=what-is-ai or ?section=ai
@@ -16824,7 +16844,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v113";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v114";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
