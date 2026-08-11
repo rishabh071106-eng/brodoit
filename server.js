@@ -177,10 +177,10 @@ app.get('/admin/testers',adminAuth,(req,res)=>{
     const seenDays=r.last_seen?days(r.last_seen):null;
     const memberDays=days(r.created_at);
     const status=memberDays>=14&&seenDays!=null&&seenDays<=2?'✅ 14-day':memberDays<14?'⏱ day '+memberDays+'/14':seenDays>2?'⚠️ lapsed':'⏱';
-    const statusColor=memberDays>=14&&seenDays!=null&&seenDays<=2?'#8a2e2a':seenDays>2?'#DC2626':'#C8922A';
+    const statusColor=memberDays>=14&&seenDays!=null&&seenDays<=2?'#3634A3':seenDays>2?'#DC2626':'#C8922A';
     return `<tr style="border-bottom:1px solid #d7d3d3"><td style="padding:10px 8px">${i+1}</td><td style="padding:10px 8px;font-weight:600">${escH(r.name||'—')}</td><td style="padding:10px 8px;color:#7d7979;font-family:monospace;font-size:12px">${escH(r.email||r.phone)}</td><td style="padding:10px 8px;color:#7d7979">${memberDays}d ago</td><td style="padding:10px 8px">${fmtAgo(r.last_seen)}</td><td style="padding:10px 8px;color:${statusColor};font-weight:600">${status}</td></tr>`;
   }).join('');
-  res.send(`<!doctype html><html><head><title>Brodoit · Testers</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:-apple-system,Segoe UI,sans-serif;background:#f3f2f2;color:#201e1d;margin:0;padding:24px;max-width:980px;margin:0 auto}h1{font-size:22px;margin:0 0 6px}.sub{color:#7d7979;font-size:13px;margin-bottom:24px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}.card{background:#fff;border:1px solid #d7d3d3;border-radius:0;padding:16px}.card .v{font-size:32px;font-weight:700;letter-spacing:-.02em}.card .l{font-size:12px;color:#7d7979;margin-top:4px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #d7d3d3;border-radius:0;overflow:hidden}th{text-align:left;padding:12px 8px;background:#f3f2f2;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#7d7979;font-weight:600;border-bottom:1px solid #d7d3d3}.note{margin-top:18px;padding:14px;background:#f3f2f2;border:1px solid #d7d3d3;border-radius:0;font-size:13px;color:#8a2e2a;line-height:1.5}</style></head><body><h1>Brodoit · Closed Test Dashboard</h1><div class="sub">Tester activity for Play Store 14-day requirement. Auto-refreshes when you reload.</div><div class="cards"><div class="card"><div class="v">${total}</div><div class="l">Total signups</div></div><div class="card"><div class="v" style="color:${eligible>=12?'#8a2e2a':'#C8922A'}">${eligible}</div><div class="l">14-day eligible</div></div><div class="card"><div class="v">${Math.max(0,12-eligible)}</div><div class="l">Still needed</div></div></div><table><thead><tr><th>#</th><th>Name</th><th>Login</th><th>Joined</th><th>Last seen</th><th>14-day status</th></tr></thead><tbody>${tableRows||'<tr><td colspan="6" style="padding:32px;text-align:center;color:#9CA3AF">No users yet</td></tr>'}</tbody></table><div class="note"><b>14-day eligibility</b> = user joined ≥14 days ago AND last seen within 2 days. Once <b>12 testers</b> are eligible, you can promote to production.</div></body></html>`);
+  res.send(`<!doctype html><html><head><title>Brodoit · Testers</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:-apple-system,Segoe UI,sans-serif;background:#f3f2f2;color:#201e1d;margin:0;padding:24px;max-width:980px;margin:0 auto}h1{font-size:22px;margin:0 0 6px}.sub{color:#7d7979;font-size:13px;margin-bottom:24px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}.card{background:#fff;border:1px solid #d7d3d3;border-radius:0;padding:16px}.card .v{font-size:32px;font-weight:700;letter-spacing:-.02em}.card .l{font-size:12px;color:#7d7979;margin-top:4px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #d7d3d3;border-radius:0;overflow:hidden}th{text-align:left;padding:12px 8px;background:#f3f2f2;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#7d7979;font-weight:600;border-bottom:1px solid #d7d3d3}.note{margin-top:18px;padding:14px;background:#f3f2f2;border:1px solid #d7d3d3;border-radius:0;font-size:13px;color:#3634A3;line-height:1.5}</style></head><body><h1>Brodoit · Closed Test Dashboard</h1><div class="sub">Tester activity for Play Store 14-day requirement. Auto-refreshes when you reload.</div><div class="cards"><div class="card"><div class="v">${total}</div><div class="l">Total signups</div></div><div class="card"><div class="v" style="color:${eligible>=12?'#3634A3':'#C8922A'}">${eligible}</div><div class="l">14-day eligible</div></div><div class="card"><div class="v">${Math.max(0,12-eligible)}</div><div class="l">Still needed</div></div></div><table><thead><tr><th>#</th><th>Name</th><th>Login</th><th>Joined</th><th>Last seen</th><th>14-day status</th></tr></thead><tbody>${tableRows||'<tr><td colspan="6" style="padding:32px;text-align:center;color:#9CA3AF">No users yet</td></tr>'}</tbody></table><div class="note"><b>14-day eligibility</b> = user joined ≥14 days ago AND last seen within 2 days. Once <b>12 testers</b> are eligible, you can promote to production.</div></body></html>`);
 });
 
 app.get('/api/me',auth,(req,res)=>{
@@ -419,8 +419,8 @@ async function _broExecTool(toolName,input,userPhone,userTz){
   if(toolName==='create_schedule_block'){
     const d=input.date||today;
     const id=_crypto.randomBytes(8).toString('hex');
-    const gcal=await _gcalCreateTimed(userPhone,d,input.start_time,input.end_time,input.label,'#8a2e2a',userTz);
-    db.prepare('INSERT INTO schedule_blocks(id,user_phone,date,start_time,end_time,label,color,gcal_event_id,gcal_email)VALUES(?,?,?,?,?,?,?,?,?)').run(id,userPhone,d,input.start_time,input.end_time,input.label,'#8a2e2a',gcal?.id||null,gcal?.email||null);
+    const gcal=await _gcalCreateTimed(userPhone,d,input.start_time,input.end_time,input.label,'#3634A3',userTz);
+    db.prepare('INSERT INTO schedule_blocks(id,user_phone,date,start_time,end_time,label,color,gcal_event_id,gcal_email)VALUES(?,?,?,?,?,?,?,?,?)').run(id,userPhone,d,input.start_time,input.end_time,input.label,'#3634A3',gcal?.id||null,gcal?.email||null);
     return{ok:true,block:{id,label:input.label,start:input.start_time,end:input.end_time,date:d,synced_to_gcal:!!gcal}};
   }
   if(toolName==='set_reminder'){
@@ -1136,7 +1136,7 @@ When you are ready, open your eyes gently. Carry this peace with you through the
   },
 
   // ─── Wisdom Stories (5 min each) ──────────────────────────────────────
-  'story-01': { title: 'The Two Wolves', desc: 'Which wolf wins? The one you feed.', mins: 5, color: '#8a2e2a', kind: 'story', script: '' },
+  'story-01': { title: 'The Two Wolves', desc: 'Which wolf wins? The one you feed.', mins: 5, color: '#3634A3', kind: 'story', script: '' },
   'story-02': { title: 'The Bamboo Tree', desc: 'Five years underground, then unstoppable.', mins: 5, color: '#FF7A45', kind: 'story', script: '' },
   'story-03': { title: 'The Cracked Pot', desc: 'Beauty grows from imperfection.', mins: 5, color: '#E8985A', kind: 'story', script: '' },
   'story-04': { title: 'The Stonecutter', desc: 'Power is never what you think it is.', mins: 5, color: '#C8922A', kind: 'story', script: '' },
@@ -1150,7 +1150,7 @@ When you are ready, open your eyes gently. Carry this peace with you through the
   'story-12': { title: 'The Jar of Life', desc: 'Put the big rocks in first.', mins: 5, color: '#a5564b', kind: 'story', script: '' },
   'story-13': { title: 'The Eagle Who Forgot', desc: 'You were born to fly.', mins: 5, color: '#C8922A', kind: 'story', script: '' },
   'story-14': { title: 'The Lighthouse', desc: 'Some things do not move for you.', mins: 5, color: '#E8985A', kind: 'story', script: '' },
-  'story-15': { title: "The Carpenter's House", desc: 'Build every day like it matters.', mins: 5, color: '#8a2e2a', kind: 'story', script: '' },
+  'story-15': { title: "The Carpenter's House", desc: 'Build every day like it matters.', mins: 5, color: '#3634A3', kind: 'story', script: '' },
   'story-16': { title: "The Butterfly's Struggle", desc: 'The struggle is the gift.', mins: 5, color: '#B8802A', kind: 'story', script: '' },
   'story-17': { title: "The Wise Woman's Stone", desc: 'True wealth cannot be held.', mins: 5, color: '#FCB851', kind: 'story', script: '' },
   'story-18': { title: 'The Fisherman', desc: 'You already have what you seek.', mins: 5, color: '#611f1c', kind: 'story', script: '' },
@@ -1592,7 +1592,7 @@ app.post('/api/email-tasks',auth,async(req,res)=>{
   const today=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   const escH=s=>(s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'})[c]);
   const rows=tasks.map(t=>{
-    const pColor=t.priority==='high'?'#8a2e2a':t.priority==='medium'?'#C8922A':'#6B665E';
+    const pColor=t.priority==='high'?'#3634A3':t.priority==='medium'?'#C8922A':'#6B665E';
     const due=t.due_date?'<span style="color:#6B665E;font-size:13px"> · due '+escH(t.due_date)+'</span>':'';
     const rem=t.reminder_time?'<span style="color:#6B665E;font-size:13px"> · '+escH(t.reminder_time)+'</span>':'';
     return `<tr><td style="padding:14px 18px;border-bottom:1px solid #E8E4DD"><div style="display:flex;align-items:flex-start;gap:12px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${pColor};margin-top:7px;flex:0 0 auto"></span><div style="flex:1"><div style="font-weight:600;color:#2D2A26;font-size:15px;line-height:1.4">${escH(t.title)}</div>${t.notes?'<div style="color:#6B665E;font-size:13px;margin-top:4px;line-height:1.5">'+escH(t.notes)+'</div>':''}<div style="margin-top:6px;color:'+pColor+';font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px">${escH(t.priority)}${due}${rem}</div></div></div></td></tr>`;
@@ -2411,27 +2411,27 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 #splash.hide{opacity:0;pointer-events:none}
 #splash .sp-fist{font-size:56px;animation:spPulse 1.5s ease-in-out infinite}
 #splash .sp-name{font-family:'Instrument Serif',Georgia,serif;font-size:36px;color:#1A1A2E;letter-spacing:-.02em;font-weight:400}
-#splash .sp-name b{color:#D4654A;font-weight:400}
+#splash .sp-name b{color:#5856D6;font-weight:400}
 #splash .sp-sub{font-size:13px;color:#9CA3AF;font-family:'Inter',system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-top:-4px}
-#splash .sp-loader{width:32px;height:32px;border:2px solid rgba(212,101,74,.12);border-top-color:#D4654A;border-radius:50%;animation:spSpin .8s linear infinite;margin-top:8px}
+#splash .sp-loader{width:32px;height:32px;border:2px solid rgba(88,86,214,.12);border-top-color:#5856D6;border-radius:50%;animation:spSpin .8s linear infinite;margin-top:8px}
 @keyframes spPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes spSpin{to{transform:rotate(360deg)}}
 :root{
---bg:#F5F3F0;--bg-2:#EDEBE8;--bg-elev:#FAFAF9;--bg-sunken:#E8E6E3;
---surface:#FAFAF9;--surface-2:#F2F0ED;
---ink:#1A1A2E;--text:#1A1A2E;--text-mute:#5A5E6B;--text-dim:#8B8F9A;
---ink-2:#2D2D3A;--ink-3:#4A4E5A;--ink-4:#7C8290;--ink-5:#D1CFC9;
---line:rgba(0,0,0,.08);--line-2:rgba(0,0,0,.12);--border:rgba(0,0,0,.08);--border-2:rgba(0,0,0,.12);
---accent:#C05A42;--accent-soft:rgba(192,90,66,.08);--accent-ink:#FFFFFF;
---accent-2:#A84D38;--accent-strong:#8E3F2E;--warm:#C05A42;--paper:#F5F3F0;
---gold:#D97706;--sage:#059669;
+--bg:#FFFFFF;--bg-2:#F5F5F7;--bg-elev:#FFFFFF;--bg-sunken:#F0F0F2;
+--surface:#FFFFFF;--surface-2:#F9F9FB;
+--ink:#1D1D1F;--text:#1D1D1F;--text-mute:#6E6E73;--text-dim:#AEAEB2;
+--ink-2:#3A3A3C;--ink-3:#636366;--ink-4:#8E8E93;--ink-5:#D1D1D6;
+--line:rgba(0,0,0,.06);--line-2:rgba(0,0,0,.1);--border:rgba(0,0,0,.06);--border-2:rgba(0,0,0,.1);
+--accent:#5856D6;--accent-soft:rgba(88,86,214,.07);--accent-ink:#FFFFFF;
+--accent-2:#4A48C4;--accent-strong:#3634A3;--warm:#5856D6;--paper:#FFFFFF;
+--gold:#FF9500;--sage:#34C759;
 --serif:'Instrument Serif',Georgia,'Times New Roman',serif;
---sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
---mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
---shadow-1:0 1px 3px rgba(0,0,0,.06),0 2px 10px rgba(0,0,0,.04);
---shadow-2:0 2px 6px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.08);
---shadow-3:0 4px 10px rgba(0,0,0,.08),0 16px 36px rgba(0,0,0,.1);
---radius:14px;
+--sans:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+--mono:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+--shadow-1:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.06);
+--shadow-2:0 2px 8px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+--shadow-3:0 4px 12px rgba(0,0,0,.08),0 12px 28px rgba(0,0,0,.06);
+--radius:12px;
 --divider:rgba(0,0,0,.06)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
@@ -2526,19 +2526,19 @@ body[data-theme=aurora] .mv-card{background:rgba(255,255,255,.05);border-color:r
 body[data-theme=aurora] .mv-thumb{background:rgba(0,0,0,.3)}
 .rd-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:17px;box-shadow:var(--shadow-1);animation:fadeSlideUp .4s cubic-bezier(.2,.8,.2,1) both;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease}
 .rd-card:active{transform:scale(.98);box-shadow:var(--shadow-1)}
-.focus-card{background:linear-gradient(145deg,#1A1A2E 0%,#2D2B3A 60%,#3A2E28 100%);border:1px solid rgba(192,90,66,.15);border-radius:20px;padding:20px;margin-top:13px;animation:fadeSlideUp .4s cubic-bezier(.2,.8,.2,1) both;position:relative;overflow:hidden;color:#E8E8EC}
-.focus-card .focus-time-num,.focus-card span[id="focusTime"]{color:#E8E8EC !important}
-.focus-card .focus-time-lbl{color:rgba(192,90,66,.8) !important}
-.focus-card::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(226,125,96,.06),transparent,rgba(226,125,96,.03),transparent);opacity:0;transition:opacity .6s;animation:none;pointer-events:none}
+.focus-card{background:linear-gradient(145deg,#1D1D1F 0%,#2C2C2E 60%,#1C1C3A 100%);border:1px solid rgba(88,86,214,.15);border-radius:20px;padding:20px;margin-top:13px;animation:fadeSlideUp .4s cubic-bezier(.2,.8,.2,1) both;position:relative;overflow:hidden;color:#E8E8ED}
+.focus-card .focus-time-num,.focus-card span[id="focusTime"]{color:#E8E8ED !important}
+.focus-card .focus-time-lbl{color:rgba(88,86,214,.8) !important}
+.focus-card::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(88,86,214,.06),transparent,rgba(88,86,214,.03),transparent);opacity:0;transition:opacity .6s;animation:none;pointer-events:none}
 .focus-card.is-active::before{opacity:1;animation:focusCardSpin 8s linear infinite}
 @keyframes focusCardSpin{to{transform:rotate(360deg)}}
 .focus-ring-wrap{position:relative;width:140px;height:140px;margin:0 auto}
 .focus-ring-wrap svg{transform:rotate(-90deg);filter:drop-shadow(0 0 0 transparent);transition:filter .4s}
-.focus-card.is-active .focus-ring-wrap svg{filter:drop-shadow(0 0 12px rgba(226,125,96,.35))}
-.focus-ring-bg{fill:none;stroke:rgba(192,90,66,.15);stroke-width:5}
-.focus-ring-fg{fill:none;stroke:#C05A42;stroke-width:5;stroke-linecap:round;transition:stroke-dasharray .8s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 0 8px rgba(192,90,66,.3))}
+.focus-card.is-active .focus-ring-wrap svg{filter:drop-shadow(0 0 12px rgba(88,86,214,.35))}
+.focus-ring-bg{fill:none;stroke:rgba(88,86,214,.15);stroke-width:5}
+.focus-ring-fg{fill:none;stroke:#5856D6;stroke-width:5;stroke-linecap:round;transition:stroke-dasharray .8s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 0 8px rgba(88,86,214,.3))}
 .focus-card.is-active .focus-ring-fg{animation:focusRingPulse 2.5s ease-in-out infinite}
-@keyframes focusRingPulse{0%,100%{stroke-width:6;filter:drop-shadow(0 0 4px rgba(226,125,96,.3))}50%{stroke-width:7.5;filter:drop-shadow(0 0 10px rgba(226,125,96,.5))}}
+@keyframes focusRingPulse{0%,100%{stroke-width:6;filter:drop-shadow(0 0 4px rgba(88,86,214,.3))}50%{stroke-width:7.5;filter:drop-shadow(0 0 10px rgba(88,86,214,.5))}}
 .focus-time{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .focus-time-num{font:800 34px var(--sans);color:var(--ink);letter-spacing:-.02em;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .focus-card.is-active .focus-time-num{animation:focusTimePulse 1s ease-in-out}
@@ -2547,32 +2547,32 @@ body[data-theme=aurora] .mv-thumb{background:rgba(0,0,0,.3)}
 .focus-btns{display:flex;gap:8px;justify-content:center;margin-top:16px}
 .focus-btn{height:44px;padding:0 22px;border-radius:14px;border:none;font:600 14px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;position:relative;z-index:2}
 .focus-btn:active{transform:scale(.92)}
-.focus-btn-start{background:var(--accent);color:#fff;box-shadow:0 4px 16px -2px rgba(226,125,96,.4)}
-.focus-btn-start:hover{box-shadow:0 6px 24px -2px rgba(226,125,96,.5);transform:translateY(-1px)}
-.focus-btn-pause{background:rgba(192,90,66,.2);color:#C05A42}
+.focus-btn-start{background:var(--accent);color:#fff;box-shadow:0 4px 16px -2px rgba(88,86,214,.4)}
+.focus-btn-start:hover{box-shadow:0 6px 24px -2px rgba(88,86,214,.5);transform:translateY(-1px)}
+.focus-btn-pause{background:rgba(88,86,214,.2);color:#5856D6}
 .focus-btn-reset{background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1)}
 .focus-presets{display:flex;gap:6px;justify-content:center;margin-top:12px}
 .focus-preset{padding:7px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);font:500 12px var(--sans);color:rgba(255,255,255,.7);cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);position:relative;z-index:2}
-.focus-preset:hover{border-color:rgba(192,90,66,.3);transform:translateY(-1px)}
-.focus-preset.on{background:#C05A42;color:#fff;border-color:#C05A42;box-shadow:0 4px 12px -2px rgba(192,90,66,.4)}
+.focus-preset:hover{border-color:rgba(88,86,214,.3);transform:translateY(-1px)}
+.focus-preset.on{background:#5856D6;color:#fff;border-color:#5856D6;box-shadow:0 4px 12px -2px rgba(88,86,214,.4)}
 .focus-stats{display:flex;gap:16px;justify-content:center;margin-top:14px}
 .focus-stat{text-align:center}
 .focus-stat-v{font:700 18px var(--sans);color:var(--accent)}
 .focus-stat-l{font:400 11px var(--sans);color:var(--text-mute)}
-body[data-theme=aurora] .focus-card{background:#32343A;border-color:rgba(226,125,96,.1)}
-body[data-theme=aurora] .focus-card.is-active{border-color:rgba(226,125,96,.2);box-shadow:0 0 40px -10px rgba(226,125,96,.15)}
+body[data-theme=aurora] .focus-card{background:#32343A;border-color:rgba(88,86,214,.1)}
+body[data-theme=aurora] .focus-card.is-active{border-color:rgba(88,86,214,.2);box-shadow:0 0 40px -10px rgba(88,86,214,.15)}
 /* ─── Focus Lock Screen ─── */
 .focus-lock{position:fixed;inset:0;z-index:99999;background:#252730;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:breatheFadeIn .5s ease both}
-.focus-lock-glow{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(226,125,96,.08) 0%,transparent 70%);pointer-events:none;animation:focusLockGlow 4s ease-in-out infinite alternate}
+.focus-lock-glow{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(88,86,214,.08) 0%,transparent 70%);pointer-events:none;animation:focusLockGlow 4s ease-in-out infinite alternate}
 @keyframes focusLockGlow{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.15);opacity:1}}
-.focus-lock-label{font:600 12px var(--sans);letter-spacing:.2em;color:rgba(226,125,96,.7);text-transform:uppercase;margin-bottom:32px}
+.focus-lock-label{font:600 12px var(--sans);letter-spacing:.2em;color:rgba(88,86,214,.7);text-transform:uppercase;margin-bottom:32px}
 .focus-lock-ring-wrap{position:relative;width:180px;height:180px}
 .focus-lock-time{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .focus-lock-num{font:800 44px var(--sans);color:#E8E8EC;letter-spacing:-.02em}
-.focus-lock-pct{font:500 13px var(--sans);color:rgba(226,125,96,.8);margin-top:2px}
+.focus-lock-pct{font:500 13px var(--sans);color:rgba(88,86,214,.8);margin-top:2px}
 .focus-lock-phase{font:400 16px var(--serif);color:rgba(255,255,255,.5);margin-top:28px;text-align:center}
 .focus-lock-btns{display:flex;gap:10px;margin-top:24px}
-.focus-lock-btn{height:44px;padding:0 24px;border-radius:14px;border:none;font:600 14px var(--sans);cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform .2s cubic-bezier(.34,1.56,.64,1);background:rgba(226,125,96,.15);color:#E27D60}
+.focus-lock-btn{height:44px;padding:0 24px;border-radius:14px;border:none;font:600 14px var(--sans);cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform .2s cubic-bezier(.34,1.56,.64,1);background:rgba(88,86,214,.15);color:#5856D6}
 .focus-lock-btn:active{transform:scale(.93)}
 .focus-lock-btn-s{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
 .focus-lock-tip{font:400 12px var(--sans);color:rgba(255,255,255,.2);margin-top:40px;text-align:center}
@@ -2585,18 +2585,18 @@ body[data-theme=aurora] .focus-card.is-active{border-color:rgba(226,125,96,.2);b
 .breathe-close:hover{background:rgba(255,255,255,.12)}
 .breathe-phase{font:300 22px var(--serif);color:rgba(255,255,255,.9);letter-spacing:.02em;margin-bottom:32px;min-height:32px;transition:opacity .4s;text-align:center}
 .breathe-circle-wrap{position:relative;width:220px;height:220px;display:flex;align-items:center;justify-content:center}
-.breathe-circle{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(226,125,96,.5),rgba(226,125,96,.2) 60%,transparent);border:1.5px solid rgba(226,125,96,.4);box-shadow:0 0 60px rgba(226,125,96,.15),0 0 30px rgba(226,125,96,.1) inset;transition:width .1s,height .1s}
-.breathe-ring{position:absolute;border-radius:50%;border:1px solid rgba(226,125,96,.15);pointer-events:none}
+.breathe-circle{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(88,86,214,.5),rgba(88,86,214,.2) 60%,transparent);border:1.5px solid rgba(88,86,214,.4);box-shadow:0 0 60px rgba(88,86,214,.15),0 0 30px rgba(88,86,214,.1) inset;transition:width .1s,height .1s}
+.breathe-ring{position:absolute;border-radius:50%;border:1px solid rgba(88,86,214,.15);pointer-events:none}
 .breathe-ring-1{width:180px;height:180px;inset:50%;transform:translate(-50%,-50%)}
-.breathe-ring-2{width:240px;height:240px;inset:50%;transform:translate(-50%,-50%);border-color:rgba(226,125,96,.08)}
-.breathe-ring-3{width:300px;height:300px;inset:50%;transform:translate(-50%,-50%);border-color:rgba(226,125,96,.04)}
+.breathe-ring-2{width:240px;height:240px;inset:50%;transform:translate(-50%,-50%);border-color:rgba(88,86,214,.08)}
+.breathe-ring-3{width:300px;height:300px;inset:50%;transform:translate(-50%,-50%);border-color:rgba(88,86,214,.04)}
 .breathe-timer{font:400 14px var(--sans);color:rgba(255,255,255,.4);margin-top:40px;letter-spacing:.05em}
 .breathe-patterns{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap;justify-content:center}
 .breathe-pat{padding:8px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.6);font:500 12px var(--sans);cursor:pointer;transition:all .2s}
-.breathe-pat:hover{border-color:rgba(226,125,96,.3);color:#E8E8EC}
-.breathe-pat.on{background:rgba(226,125,96,.15);border-color:rgba(226,125,96,.4);color:#E27D60}
-.breathe-start-btn{margin-top:20px;padding:12px 32px;border-radius:14px;border:none;background:var(--accent);color:#fff;font:600 15px var(--sans);cursor:pointer;box-shadow:0 4px 20px -4px rgba(226,125,96,.5);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
-.breathe-start-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px -4px rgba(226,125,96,.6)}
+.breathe-pat:hover{border-color:rgba(88,86,214,.3);color:#E8E8EC}
+.breathe-pat.on{background:rgba(88,86,214,.15);border-color:rgba(88,86,214,.4);color:#5856D6}
+.breathe-start-btn{margin-top:20px;padding:12px 32px;border-radius:14px;border:none;background:var(--accent);color:#fff;font:600 15px var(--sans);cursor:pointer;box-shadow:0 4px 20px -4px rgba(88,86,214,.5);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.breathe-start-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px -4px rgba(88,86,214,.6)}
 .breathe-start-btn:active{transform:scale(.95)}
 .rd-session-card{animation:scaleIn .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:.1s}
 .rd-mg-cat{animation:fadeSlideUp .4s cubic-bezier(.2,.8,.2,1) both;transition:transform .2s ease}
@@ -2714,10 +2714,10 @@ input:focus,textarea:focus{outline:none;border-color:#D9734A;box-shadow:0 0 0 4p
 .logo .b1{font-style:normal}
 .logo .b2{font-style:normal;font-weight:500;color:var(--accent);display:inline-block;transition:transform .4s cubic-bezier(.34,1.56,.64,1);-webkit-text-fill-color:var(--accent)}
 .logo .b3{font-style:normal}
-.logo .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-left:2px;align-self:flex-end;margin-bottom:5px;box-shadow:0 0 0 0 rgba(212,101,74,.3);animation:brandDot 2.4s ease-in-out infinite}
+.logo .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-left:2px;align-self:flex-end;margin-bottom:5px;box-shadow:0 0 0 0 rgba(88,86,214,.3);animation:brandDot 2.4s ease-in-out infinite}
 .logo:hover .b2{transform:translateY(-3px) rotate(-4deg)}
 .logo:hover .logo-fist{animation:fistBump .5s ease-in-out}
-@keyframes brandDot{0%,100%{box-shadow:0 0 0 0 rgba(212,101,74,.3)}50%{box-shadow:0 0 0 6px rgba(212,101,74,0)}}
+@keyframes brandDot{0%,100%{box-shadow:0 0 0 0 rgba(88,86,214,.3)}50%{box-shadow:0 0 0 6px rgba(88,86,214,0)}}
 @keyframes fistBump{0%{transform:scale(1)}40%{transform:scale(1.25)}60%{transform:scale(0.95)}100%{transform:scale(1)}}
 .hdr-tagline{display:none;font-family:'Instrument Serif',Georgia,serif;font-style:normal;font-size:13px;color:#A0AEC0;margin-top:2px;letter-spacing:.04em}
 /* Phone scenic masthead — desktop hidden by default */
@@ -2752,17 +2752,17 @@ input:focus,textarea:focus{outline:none;border-color:#D9734A;box-shadow:0 0 0 4p
 .board-pick .bp-overlay{position:absolute;inset:0;z-index:-1;transition:opacity .25s ease,background .25s ease}
 /* Per-board scenic photo + warm/cool/purple tint */
 .board-pick .bp-home .bp-bg{background-image:url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=70&auto=format&fit=crop")}
-.board-pick .bp-home .bp-overlay{background:linear-gradient(135deg,rgba(226,125,96,.78) 0%,rgba(226,125,96,.55) 55%,rgba(17,24,39,.45) 100%)}
-.board-pick .bp-home.on .bp-overlay{background:linear-gradient(135deg,rgba(226,125,96,.55) 0%,rgba(226,125,96,.35) 55%,rgba(17,24,39,.28) 100%)}
-.board-pick .bp-home.on{box-shadow:0 10px 28px rgba(226,125,96,.36),0 0 0 2px rgba(255,255,255,.85),0 0 0 4px rgba(226,125,96,.55)}
+.board-pick .bp-home .bp-overlay{background:linear-gradient(135deg,rgba(88,86,214,.78) 0%,rgba(88,86,214,.55) 55%,rgba(17,24,39,.45) 100%)}
+.board-pick .bp-home.on .bp-overlay{background:linear-gradient(135deg,rgba(88,86,214,.55) 0%,rgba(88,86,214,.35) 55%,rgba(17,24,39,.28) 100%)}
+.board-pick .bp-home.on{box-shadow:0 10px 28px rgba(88,86,214,.36),0 0 0 2px rgba(255,255,255,.85),0 0 0 4px rgba(88,86,214,.55)}
 .board-pick .bp-office .bp-bg{background-image:url("https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&q=70&auto=format&fit=crop")}
 .board-pick .bp-office .bp-overlay{background:linear-gradient(135deg,rgba(17,24,39,.78) 0%,rgba(31,41,55,.55) 55%,rgba(17,24,39,.45) 100%)}
 .board-pick .bp-office.on .bp-overlay{background:linear-gradient(135deg,rgba(17,24,39,.55) 0%,rgba(31,41,55,.35) 55%,rgba(17,24,39,.28) 100%)}
 .board-pick .bp-office.on{box-shadow:0 10px 28px rgba(17,24,39,.4),0 0 0 2px rgba(255,255,255,.85),0 0 0 4px rgba(17,24,39,.6)}
 .board-pick .bp-combined .bp-bg{background-image:url("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=70&auto=format&fit=crop")}
-.board-pick .bp-combined .bp-overlay{background:linear-gradient(135deg,rgba(226,125,96,.78) 0%,rgba(226,125,96,.55) 55%,rgba(17,24,39,.45) 100%)}
-.board-pick .bp-combined.on .bp-overlay{background:linear-gradient(135deg,rgba(226,125,96,.55) 0%,rgba(226,125,96,.35) 55%,rgba(17,24,39,.28) 100%)}
-.board-pick .bp-combined.on{box-shadow:0 10px 28px rgba(226,125,96,.4),0 0 0 2px rgba(255,255,255,.85),0 0 0 4px rgba(226,125,96,.6)}
+.board-pick .bp-combined .bp-overlay{background:linear-gradient(135deg,rgba(88,86,214,.78) 0%,rgba(88,86,214,.55) 55%,rgba(17,24,39,.45) 100%)}
+.board-pick .bp-combined.on .bp-overlay{background:linear-gradient(135deg,rgba(88,86,214,.55) 0%,rgba(88,86,214,.35) 55%,rgba(17,24,39,.28) 100%)}
+.board-pick .bp-combined.on{box-shadow:0 10px 28px rgba(88,86,214,.4),0 0 0 2px rgba(255,255,255,.85),0 0 0 4px rgba(88,86,214,.6)}
 .board-pick .bp-emoji{font-size:34px;line-height:1;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(0,0,0,.45));animation:bpFloat 3.5s ease-in-out infinite}
 .board-pick .bp-home .bp-emoji{animation-name:bpFloatHome}
 .board-pick .bp-office .bp-emoji{animation-name:bpFloatOffice}
@@ -2793,7 +2793,7 @@ input:focus,textarea:focus{outline:none;border-color:#D9734A;box-shadow:0 0 0 4p
 .intro-logo .k{color:#3DAE5C}
 .intro-tag{font-size:12px;color:#7C5A00;font-style:normal;font-family:'Instrument Serif',Georgia,serif;margin-top:3px;line-height:1.4}
 .intro-steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
-.intro-steps li{display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,.55);border:1px solid rgba(226,125,96,.12);border-radius:10px;padding:9px 11px}
+.intro-steps li{display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,.55);border:1px solid rgba(88,86,214,.12);border-radius:10px;padding:9px 11px}
 .intro-ic{font-size:20px;line-height:1;flex-shrink:0;width:30px;height:30px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .intro-steps li > div{flex:1;min-width:0;font-size:13px;line-height:1.45;color:#111827}
 .intro-steps li > div b{font-weight:700}
@@ -2811,12 +2811,12 @@ body[data-theme=aurora] .intro-steps li > div{color:#E8E8EC}
 body[data-theme=aurora] .intro-d{color:#888888}
 body[data-theme=aurora] .intro-ic{background:rgba(255,255,255,.06)}
 /* Restore-from-backup banner — shows only when server tasks=0 but localStorage has a backup */
-.restore-banner{display:flex;align-items:center;gap:11px;padding:12px 14px;margin:0 0 12px;background:linear-gradient(135deg,rgba(226,125,96,.1),rgba(226,125,96,.06));border:1.5px solid rgba(226,125,96,.32);border-radius:12px;animation:bkHintIn .3s ease}
+.restore-banner{display:flex;align-items:center;gap:11px;padding:12px 14px;margin:0 0 12px;background:linear-gradient(135deg,rgba(88,86,214,.1),rgba(88,86,214,.06));border:1.5px solid rgba(88,86,214,.32);border-radius:12px;animation:bkHintIn .3s ease}
 .restore-emoji{font-size:24px;line-height:1;flex-shrink:0}
 .restore-body{flex:1;min-width:0}
 .restore-t{font-weight:800;font-size:14px;color:#7C5A00;letter-spacing:-.01em}
 .restore-s{font-size:11.5px;color:#5D4400;line-height:1.4;margin-top:2px}
-.restore-go{flex-shrink:0;background:linear-gradient(135deg,#E27D60,#CC6E52);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(226,125,96,.32)}
+.restore-go{flex-shrink:0;background:linear-gradient(135deg,#5856D6,#CC6E52);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(88,86,214,.32)}
 .restore-x{flex-shrink:0;background:transparent;border:none;color:#A0AEC0;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px;font-family:inherit;line-height:1}
 .restore-x:hover{background:rgba(17,24,39,.06);color:#111827}
 @media (max-width:480px){.restore-s{display:none}}
@@ -2824,7 +2824,7 @@ body[data-theme=aurora] .restore-banner{background:#3A3C44;border-color:rgba(255
 body[data-theme=aurora] .restore-t{color:#D4A545}
 body[data-theme=aurora] .restore-s{color:rgba(212,165,69,.7)}
 /* Backup section in profile modal */
-.bkp-sec{margin:18px 0 4px;padding:14px;background:linear-gradient(135deg,rgba(17,24,39,.05),rgba(226,125,96,.03));border:1px solid rgba(17,24,39,.16);border-radius:14px;text-align:left}
+.bkp-sec{margin:18px 0 4px;padding:14px;background:linear-gradient(135deg,rgba(17,24,39,.05),rgba(88,86,214,.03));border:1px solid rgba(17,24,39,.16);border-radius:14px;text-align:left}
 .bkp-sec-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .bkp-sec-emoji{font-size:24px;line-height:1}
 .bkp-sec-t{font-weight:800;font-size:14.5px;color:var(--ink,#111827);letter-spacing:-.01em}
@@ -2855,13 +2855,13 @@ body[data-theme=aurora] .board-pick-hint{color:#8A8A94}
 .fbp{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border:1.5px solid var(--line,#E5E7EB);background:var(--bg-elev,#fff);border-radius:12px;cursor:pointer;color:var(--ink-2,#6B7280);transition:border-color .15s ease,background .15s ease,transform .1s ease;text-align:center}
 .fbp:hover{border-color:#A0AEC0}
 .fbp:active{transform:scale(.98)}
-.fbp.on{border-color:#E27D60;background:rgba(17,24,39,.06);color:#111827;box-shadow:0 0 0 3px rgba(17,24,39,.12)}
+.fbp.on{border-color:#5856D6;background:rgba(17,24,39,.06);color:#111827;box-shadow:0 0 0 3px rgba(17,24,39,.12)}
 .fbp-emoji{font-size:22px;line-height:1}
 .fbp-l{font-weight:700;font-size:14px}
 .fbp-s{font-size:10.5px;color:#A0AEC0;font-weight:500;letter-spacing:.01em}
 .fbp.on .fbp-s{color:#6B7280}
 body[data-theme=aurora] .fbp{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#888888}
-body[data-theme=aurora] .fbp.on{border-color:#E27D60;background:rgba(226,125,96,.1);color:#E8E8EC;box-shadow:0 0 0 3px rgba(226,125,96,.12)}
+body[data-theme=aurora] .fbp.on{border-color:#5856D6;background:rgba(88,86,214,.1);color:#E8E8EC;box-shadow:0 0 0 3px rgba(88,86,214,.12)}
 body[data-theme=aurora] .fbp-s{color:#8A8A94}
 body[data-theme=aurora] .phone-banner{background:#252730}
 body[data-theme=aurora] .hdr-tagline{color:#888888}
@@ -2869,7 +2869,7 @@ body[data-theme=aurora] .hdr-tagline{color:#888888}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;animation:pulse-dot 2s ease-in-out infinite}
 .hdr-sub{margin-top:1px;font-weight:500;display:flex;align-items:center;gap:10px;font-family:'Instrument Serif',Georgia,serif;font-size:13px;letter-spacing:.02em;color:#6B7280}
 /* Jump-rope figure in the header */
-.hdr-jumper{width:36px;height:36px;flex-shrink:0;color:#E27D60;filter:drop-shadow(0 1px 4px rgba(17,24,39,.3))}
+.hdr-jumper{width:36px;height:36px;flex-shrink:0;color:#5856D6;filter:drop-shadow(0 1px 4px rgba(17,24,39,.3))}
 .hdr-jumper .jumper{transform-origin:30px 32px;animation:hdrJump .85s ease-in-out infinite}
 .hdr-jumper .leg-l{transform-origin:30px 32px;animation:jumpLegL .85s ease-in-out infinite}
 .hdr-jumper .leg-r{transform-origin:30px 32px;animation:jumpLegR .85s ease-in-out infinite}
@@ -2898,11 +2898,11 @@ body[data-theme=aurora] .hdr-time-date{color:#888888}
   .hdr-sub{gap:10px;flex-wrap:wrap;font-size:13px}
 }
 /* Section dividers — thin gradient line with a pulsing centered node */
-.section-div{height:1px;background:linear-gradient(90deg,transparent 0%,rgba(17,24,39,.18) 30%,rgba(226,125,96,.22) 50%,rgba(17,24,39,.18) 70%,transparent 100%);margin:6px 0;position:relative}
+.section-div{height:1px;background:linear-gradient(90deg,transparent 0%,rgba(17,24,39,.18) 30%,rgba(88,86,214,.22) 50%,rgba(17,24,39,.18) 70%,transparent 100%);margin:6px 0;position:relative}
 /* Tap Sprint mini-game */
 /* AI COACH (Voice tab) */
 .cc-hero{position:relative;border-radius:20px;overflow:hidden;margin-bottom:14px;background:linear-gradient(135deg,#111827 0%,#1F2937 50%,#CC6E52 100%);color:#fff;box-shadow:0 18px 44px rgba(17,24,39,.32);padding:22px;min-height:130px}
-.cc-hero-orb{position:absolute;top:-40%;right:-15%;width:380px;height:380px;background:radial-gradient(circle,rgba(226,125,96,.42),transparent 60%);pointer-events:none;animation:ccOrb 8s ease-in-out infinite alternate}
+.cc-hero-orb{position:absolute;top:-40%;right:-15%;width:380px;height:380px;background:radial-gradient(circle,rgba(88,86,214,.42),transparent 60%);pointer-events:none;animation:ccOrb 8s ease-in-out infinite alternate}
 @keyframes ccOrb{from{transform:translate(0,0) scale(1)}to{transform:translate(-30px,18px) scale(1.07)}}
 .cc-hero-l{position:relative;max-width:520px}
 .cc-hero-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.74);margin-bottom:8px}
@@ -2911,7 +2911,7 @@ body[data-theme=aurora] .hdr-time-date{color:#888888}
 .cc-hero-s{font-size:14px;color:rgba(255,255,255,.82);line-height:1.55;margin-top:10px}
 .cc-caps{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .cc-cap{font-size:11px;font-weight:700;padding:5px 10px;border-radius:99px;background:#FEF2F2;color:#B91C1C;border:1px solid #FCA5A5}
-.cc-cap-on{background:#FFF8F0;color:#E27D60;border-color:#D1D5DB}
+.cc-cap-on{background:#FFF8F0;color:#5856D6;border-color:#D1D5DB}
 .cc-scenarios{margin-bottom:14px}
 .cc-scenarios-t{font-size:12px;font-weight:700;color:#6B7280;letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px}
 .cc-scenario-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
@@ -2933,7 +2933,7 @@ body[data-theme=aurora] .hdr-time-date{color:#888888}
 .cc-coach .cc-bubble{background:#F5F6F8;color:#111827;border:1px solid #E5E7EB;border-bottom-left-radius:4px}
 .cc-me .cc-bubble{background:linear-gradient(135deg,#111827,#1F2937);color:#fff;border-bottom-right-radius:4px}
 .cc-bubble b{font-weight:800}
-.cc-replay{display:inline-block;margin-left:6px;background:rgba(226,125,96,.12);border:none;color:#CC6E52;font-size:13px;padding:2px 8px;border-radius:7px;cursor:pointer;font-family:inherit;line-height:1}
+.cc-replay{display:inline-block;margin-left:6px;background:rgba(88,86,214,.12);border:none;color:#CC6E52;font-size:13px;padding:2px 8px;border-radius:7px;cursor:pointer;font-family:inherit;line-height:1}
 .cc-replay:hover{background:#CC6E52;color:#fff}
 .cc-typing{display:flex;gap:4px;padding:14px}
 .cc-typing span{width:7px;height:7px;border-radius:50%;background:#CC6E52;opacity:.4;animation:ccTyping 1.2s ease-in-out infinite}
@@ -2963,9 +2963,9 @@ body[data-theme=aurora] .hdr-time-date{color:#888888}
 body[data-theme=aurora] .cc-cap{background:rgba(220,38,38,.1);color:#FCA5A5;border-color:rgba(220,38,38,.2)}
 body[data-theme=aurora] .cc-cap-on{background:rgba(34,197,94,.1);color:#4ADE80;border-color:rgba(34,197,94,.2)}
 body[data-theme=aurora] .cc-sc{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#E8E8EC}
-body[data-theme=aurora] .cc-sc:hover{background:rgba(226,125,96,.12);border-color:#E27D60}
-body[data-theme=aurora] .cc-sc-on{background:#E27D60;color:#2B2D33;border-color:#E27D60}
-body[data-theme=aurora] .cc-active-scenario{background:rgba(226,125,96,.1);border-color:rgba(226,125,96,.2);color:#E8E8EC}
+body[data-theme=aurora] .cc-sc:hover{background:rgba(88,86,214,.12);border-color:#5856D6}
+body[data-theme=aurora] .cc-sc-on{background:#5856D6;color:#2B2D33;border-color:#5856D6}
+body[data-theme=aurora] .cc-active-scenario{background:rgba(88,86,214,.1);border-color:rgba(88,86,214,.2);color:#E8E8EC}
 body[data-theme=aurora] .cc-coach .cc-bubble{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#E8E8EC}
 body[data-theme=aurora] .cc-composer{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
 body[data-theme=aurora] .cc-composer textarea{color:#E8E8EC}
@@ -2986,7 +2986,7 @@ body[data-theme=aurora] .cc-quick-btn{background:rgba(255,255,255,.04);border-co
 .ms-time-track{height:6px;background:rgba(17,24,39,.06);border-radius:99px;overflow:hidden}
 .ms-time-fill{height:100%;background:linear-gradient(90deg,#EDA68E,#EDA68E);border-radius:99px;transition:width .1s linear,background .3s ease}
 .ms-problem-wrap{padding:18px 0;text-align:center}
-.ms-problem{display:inline-flex;gap:14px;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-weight:900;font-size:54px;color:#fff;letter-spacing:-.03em;animation:msSlideIn .35s cubic-bezier(.2,1.4,.5,1);text-shadow:0 4px 20px rgba(226,125,96,.35)}
+.ms-problem{display:inline-flex;gap:14px;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-weight:900;font-size:54px;color:#fff;letter-spacing:-.03em;animation:msSlideIn .35s cubic-bezier(.2,1.4,.5,1);text-shadow:0 4px 20px rgba(88,86,214,.35)}
 @keyframes msSlideIn{from{transform:translateX(40px) scale(.92);opacity:0}to{transform:translateX(0) scale(1);opacity:1}}
 .ms-num{display:inline-block}
 .ms-op{color:#CC6E52;font-size:38px}
@@ -2995,9 +2995,9 @@ body[data-theme=aurora] .cc-quick-btn{background:rgba(255,255,255,.04);border-co
 @keyframes msBlink{0%,100%{opacity:1}50%{opacity:.5}}
 .ms-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .ms-choice{position:relative;padding:24px 14px;font-family:'Space Mono',monospace;font-size:30px;font-weight:900;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);border-radius:16px;color:#F5F5FA;cursor:pointer;backdrop-filter:blur(10px);transition:transform .12s cubic-bezier(.2,1.5,.5,1),background .15s ease,border-color .15s ease,box-shadow .15s ease;letter-spacing:-.02em}
-.ms-choice:hover:not(:disabled){border-color:#EDA68E;background:rgba(226,125,96,.18);transform:translateY(-2px);box-shadow:0 8px 22px rgba(226,125,96,.3)}
+.ms-choice:hover:not(:disabled){border-color:#EDA68E;background:rgba(88,86,214,.18);transform:translateY(-2px);box-shadow:0 8px 22px rgba(88,86,214,.3)}
 .ms-choice:active:not(:disabled){transform:scale(.96)}
-.ms-choice-ok{background:linear-gradient(135deg,#EDA68E,#CC6E52)!important;border-color:#CC6E52!important;color:#fff!important;box-shadow:0 12px 30px rgba(226,125,96,.5)!important;animation:msChoiceOk .45s cubic-bezier(.2,1.6,.5,1)}
+.ms-choice-ok{background:linear-gradient(135deg,#EDA68E,#CC6E52)!important;border-color:#CC6E52!important;color:#fff!important;box-shadow:0 12px 30px rgba(88,86,214,.5)!important;animation:msChoiceOk .45s cubic-bezier(.2,1.6,.5,1)}
 @keyframes msChoiceOk{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1.05)}}
 .ms-choice-wrong{background:linear-gradient(135deg,#F87171,#DC2626)!important;border-color:#DC2626!important;color:#fff!important;animation:msShake .4s ease-in-out}
 @keyframes msShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
@@ -3005,7 +3005,7 @@ body[data-theme=aurora] .cc-quick-btn{background:rgba(255,255,255,.04);border-co
 .ms-bolt{position:absolute;top:6px;right:9px;font-size:14px;animation:msBoltSpin .5s ease-out}
 @keyframes msBoltSpin{from{transform:scale(.3) rotate(-180deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
 .ms-fb{text-align:center;font-size:14.5px;font-weight:800;padding:11px;border-radius:11px;letter-spacing:-.005em}
-.ms-fb-ok{background:#FFF8F0;color:#E27D60}
+.ms-fb-ok{background:#FFF8F0;color:#5856D6}
 .ms-fb-bad{background:#FEF2F2;color:#DC2626}
 .ms-bonus{text-align:center;font-size:18px;font-weight:900;background:linear-gradient(135deg,#FCD34D,#EDA68E);color:#A07040;padding:12px;border-radius:12px;animation:msPop .4s cubic-bezier(.2,1.5,.5,1)}
 .ms-particle{position:fixed;width:9px;height:9px;border-radius:50%;pointer-events:none;z-index:200;animation:msFly .9s cubic-bezier(.4,0,.6,1) forwards}
@@ -3013,7 +3013,7 @@ body[data-theme=aurora] .cc-quick-btn{background:rgba(255,255,255,.04);border-co
 body[data-theme=aurora] .ms-body{background:transparent}
 body[data-theme=aurora] .ms-problem,body[data-theme=aurora] .ms-stat b{color:#E8E8EC}
 body[data-theme=aurora] .ms-choice{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#E8E8EC}
-body[data-theme=aurora] .ms-choice:hover:not(:disabled){border-color:#E27D60;background:rgba(226,125,96,.1)}
+body[data-theme=aurora] .ms-choice:hover:not(:disabled){border-color:#5856D6;background:rgba(88,86,214,.1)}
 body[data-theme=aurora] .ms-time-track{background:rgba(255,255,255,.06)}
 body[data-theme=aurora] .ms-stat{background:rgba(255,255,255,.04)}
 /* Memory Tap canvas-game */
@@ -3032,7 +3032,7 @@ body[data-theme=aurora] .ms-stat{background:rgba(255,255,255,.04)}
 .mt-end-t{font-size:22px;font-weight:800;color:#111827;margin-bottom:6px}
 .mt-end-t b{color:#CC6E52;font-family:'Space Mono',monospace;font-size:24px}
 .mt-end-s{font-size:13px;color:#6B7280;margin-bottom:20px}
-body[data-theme=aurora] .mt-end-t{color:#E8E8EC}body[data-theme=aurora] .mt-end-t b{color:#E27D60}
+body[data-theme=aurora] .mt-end-t{color:#E8E8EC}body[data-theme=aurora] .mt-end-t b{color:#5856D6}
 body[data-theme=aurora] .mt-end-s{color:#888888}body[data-theme=aurora] .mt-star{color:rgba(255,255,255,.1)}
 /* MIND GYM Daily Workout card + confetti */
 .mg-daily{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:14px;background:linear-gradient(135deg,#FCD34D 0%,#EDA68E 100%);border-radius:14px;color:#111827;box-shadow:0 8px 22px rgba(252,211,77,.32)}
@@ -3065,7 +3065,7 @@ body[data-theme=aurora] .mt-end-s{color:#888888}body[data-theme=aurora] .mt-star
 @keyframes mgFall{0%{opacity:0;transform:translateY(0) rotate(0)}10%{opacity:1}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
 /* MIND GYM dedicated tab — hero + cards + value strip */
 .mg-hero{position:relative;border-radius:20px;overflow:hidden;margin-bottom:18px;background:linear-gradient(135deg,#111827 0%,#1F2937 50%,#374151 100%);color:#fff;box-shadow:0 16px 40px rgba(17,24,39,.22)}
-.mg-hero-grad{position:absolute;inset:0;background:radial-gradient(circle at 80% 0%,rgba(252,211,77,.18),transparent 60%),radial-gradient(circle at 0% 100%,rgba(226,125,96,.32),transparent 55%);pointer-events:none}
+.mg-hero-grad{position:absolute;inset:0;background:radial-gradient(circle at 80% 0%,rgba(252,211,77,.18),transparent 60%),radial-gradient(circle at 0% 100%,rgba(88,86,214,.32),transparent 55%);pointer-events:none}
 .mg-hero-inner{position:relative;padding:24px 22px;display:flex;flex-direction:column;gap:18px}
 .mg-hero-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.7);margin-bottom:6px}
 .mg-hero-t{margin:0;font-size:30px;font-weight:900;line-height:1.05;letter-spacing:-.025em;color:#fff}
@@ -3084,7 +3084,7 @@ body[data-theme=aurora] .mt-end-s{color:#888888}body[data-theme=aurora] .mt-star
 .mg-grid-tab .mg-bar{background:rgba(17,24,39,.06)}
 .mg-grid-tab .mg-card-foot{color:#6B7280}
 .mg-grid-tab .mg-card-foot b{color:#111827}
-.mg-grid-tab .mg-card-lvl{background:rgba(17,24,39,.14);color:#E27D60}
+.mg-grid-tab .mg-card-lvl{background:rgba(17,24,39,.14);color:#5856D6}
 .mg-grid-tab .mg-math{border-color:rgba(17,24,39,.32);background:linear-gradient(135deg,rgba(17,24,39,.08),#fff)}
 .mg-grid-tab .mg-memory{border-color:rgba(236,72,153,.32);background:linear-gradient(135deg,rgba(236,72,153,.08),#fff)}
 .mg-grid-tab .mg-reaction{border-color:rgba(245,158,11,.32);background:linear-gradient(135deg,rgba(245,158,11,.1),#fff)}
@@ -3159,14 +3159,14 @@ body[data-theme=aurora] .mg-why-d{color:#888888}
 .vc-day-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
 @media (min-width:600px){.vc-day-grid{grid-template-columns:repeat(10,minmax(0,1fr));gap:8px}}
 .vc-day{aspect-ratio:1;background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;cursor:pointer;font-family:'Space Mono',monospace;font-weight:800;font-size:13px;color:#6B7280;transition:transform .12s ease,border-color .12s ease,background .12s ease;position:relative;display:flex;align-items:center;justify-content:center}
-.vc-day:hover{border-color:#E27D60;background:#FFF7ED;transform:translateY(-2px)}
+.vc-day:hover{border-color:#5856D6;background:#FFF7ED;transform:translateY(-2px)}
 .vc-day:active{transform:scale(.95)}
-.vc-day-done{background:linear-gradient(135deg,#E27D60,#CC6E52);border-color:#CC6E52;color:#fff}
+.vc-day-done{background:linear-gradient(135deg,#5856D6,#CC6E52);border-color:#CC6E52;color:#fff}
 .vc-day-check{position:absolute;top:2px;right:3px;font-size:10px;color:#FCD34D}
 .vc-day-num{position:relative;z-index:1}
 body[data-theme=aurora] .vc-phase-t{color:#E8E8EC}
 body[data-theme=aurora] .vc-day{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#888888}
-body[data-theme=aurora] .vc-day:hover{background:rgba(226,125,96,.12);border-color:#E27D60}
+body[data-theme=aurora] .vc-day:hover{background:rgba(88,86,214,.12);border-color:#5856D6}
 /* Voice lesson modal */
 .vc-mdl{max-width:540px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:92vh}
 .vc-mdl-hd{display:flex;align-items:center;gap:12px;padding:18px 18px 14px;background:linear-gradient(135deg,#111827,#A07040);color:#fff;position:relative;flex-shrink:0}
@@ -3174,7 +3174,7 @@ body[data-theme=aurora] .vc-day:hover{background:rgba(226,125,96,.12);border-col
 .vc-mdl-eyebrow{font-size:10px;font-weight:800;letter-spacing:1.6px;color:rgba(255,255,255,.7)}
 .vc-mdl-t{margin:6px 0 0;font-size:18px;font-weight:900;color:#fff;letter-spacing:-.01em;line-height:1.2}
 .vc-mdl-progress{height:3px;background:rgba(0,0,0,.05)}
-.vc-mdl-progress-bar{height:100%;background:linear-gradient(90deg,#FCD34D,#E27D60);transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.vc-mdl-progress-bar{height:100%;background:linear-gradient(90deg,#FCD34D,#5856D6);transition:width .35s cubic-bezier(.2,.8,.2,1)}
 .vc-mdl-body{padding:18px;background:#fff;flex:1;overflow-y:auto}
 .vc-coach{background:linear-gradient(135deg,#F5F6F8,#F5F6F8);border:1px solid #FED7AA;border-radius:14px;padding:14px;margin-bottom:14px}
 .vc-coach-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
@@ -3182,7 +3182,7 @@ body[data-theme=aurora] .vc-day:hover{background:rgba(226,125,96,.12);border-col
 .vc-coach-name{flex:1;font-weight:800;color:#111827;font-size:13.5px}
 .vc-coach-name small{display:block;font-size:11px;font-weight:600;color:#C48A5A;margin-top:1px}
 .vc-coach-btn{background:#CC6E52;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;flex-shrink:0}
-.vc-coach-btn:hover{background:#E27D60}
+.vc-coach-btn:hover{background:#5856D6}
 .vc-coach-text{font-size:13.5px;line-height:1.55;color:#111827}
 .vc-drill-card{background:#fff;border:1.5px solid #E5E7EB;border-radius:14px;padding:16px}
 .vc-drill-meta{font-size:10.5px;font-weight:800;letter-spacing:1.5px;color:#A0AEC0;text-transform:uppercase;margin-bottom:8px}
@@ -3198,7 +3198,7 @@ body[data-theme=aurora] .vc-day:hover{background:rgba(226,125,96,.12);border-col
 .vc-heard{margin-top:12px;font-size:13px;color:#6B7280;background:#F5F6F8;border:1px dashed #D1D5DB;padding:9px 12px;border-radius:9px;line-height:1.4}
 .vc-score{margin-top:10px;text-align:center;font-size:14px;font-weight:700;padding:10px;border-radius:10px}
 .vc-score b{font-family:'Space Mono',monospace;font-size:18px}
-.vc-score-good{background:#FFF8F0;color:#E27D60}
+.vc-score-good{background:#FFF8F0;color:#5856D6}
 .vc-score-ok{background:#FEF3C7;color:#B8802A}
 .vc-score-bad{background:#FEF2F2;color:#DC2626}
 .vc-mdl-nav{display:flex;gap:10px;padding:14px 18px;border-top:1px solid #E5E7EB;background:#F5F6F8;flex-shrink:0}
@@ -3210,7 +3210,7 @@ body[data-theme=aurora] .vc-drill-card{background:rgba(255,255,255,.03);border-c
 body[data-theme=aurora] .vc-mdl-nav{background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.06)}
 /* MIND GYM — header + 4-card grid */
 .mg-sec{margin:24px 0 18px;padding:18px 16px;background:linear-gradient(135deg,#111827 0%,#1F2937 60%,#374151 100%);border-radius:18px;color:#fff;box-shadow:0 12px 32px rgba(17,24,39,.18);position:relative;overflow:hidden}
-.mg-sec::before{content:'';position:absolute;top:-30%;right:-15%;width:300px;height:300px;background:radial-gradient(circle,rgba(226,125,96,.35),transparent 60%);pointer-events:none}
+.mg-sec::before{content:'';position:absolute;top:-30%;right:-15%;width:300px;height:300px;background:radial-gradient(circle,rgba(88,86,214,.35),transparent 60%);pointer-events:none}
 .mg-sec-hd{display:flex;align-items:center;gap:14px;margin-bottom:14px;position:relative}
 .mg-sec-l{display:flex;align-items:center;gap:13px;flex:1;min-width:0}
 .mg-sec-emoji{font-size:38px;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
@@ -3228,7 +3228,7 @@ body[data-theme=aurora] .vc-mdl-nav{background:rgba(255,255,255,.02);border-colo
 .mg-math{background:linear-gradient(135deg,rgba(17,24,39,.32),rgba(17,24,39,.4))}
 .mg-memory{background:linear-gradient(135deg,rgba(236,72,153,.28),rgba(17,24,39,.4))}
 .mg-reaction{background:linear-gradient(135deg,rgba(245,158,11,.32),rgba(17,24,39,.4))}
-.mg-coin{background:linear-gradient(135deg,rgba(226,125,96,.3),rgba(17,24,39,.4))}
+.mg-coin{background:linear-gradient(135deg,rgba(88,86,214,.3),rgba(17,24,39,.4))}
 .mg-card>*{position:relative;z-index:1}
 .mg-card-hd{display:flex;align-items:center;gap:8px}
 .mg-card-emoji{font-size:22px;line-height:1;flex-shrink:0}
@@ -3245,7 +3245,7 @@ body[data-theme=aurora] .vc-mdl-nav{background:rgba(255,255,255,.02);border-colo
 .mg-mdl{max-width:none;width:100%;padding:0;overflow:hidden;display:flex;flex-direction:column;height:100vh;max-height:100vh;border-radius:0;align-self:stretch;background:var(--bg) !important;color:var(--ink);animation:schSlideUp .3s cubic-bezier(.16,1,.3,1)}
 body[data-theme=aurora] .mg-mdl{background:radial-gradient(900px 500px at 50% 0%,#1F2937 0%,#0A0815 70%) !important;color:#F5F5FA}
 .mg-hd{display:flex;align-items:center;gap:12px;padding:18px 20px;padding-top:calc(18px + env(safe-area-inset-top,0px));background:linear-gradient(135deg,var(--accent),var(--accent2,#FED7AA));color:#fff;position:relative;flex-shrink:0;border-bottom:1px solid var(--line)}
-body[data-theme=aurora] .mg-hd{background:linear-gradient(135deg,rgba(17,24,39,.6),rgba(226,125,96,.4));border-color:rgba(255,255,255,.08)}
+body[data-theme=aurora] .mg-hd{background:linear-gradient(135deg,rgba(17,24,39,.6),rgba(88,86,214,.4));border-color:rgba(255,255,255,.08)}
 .mg-hd > div{flex:1;min-width:0}
 .mg-t{margin:0;font-size:18px;font-weight:900;color:#fff;letter-spacing:-.01em}
 .mg-s{font-size:12px;color:rgba(255,255,255,.78);margin-top:2px}
@@ -3300,13 +3300,13 @@ body[data-theme=aurora] .mg-hd{background:linear-gradient(135deg,rgba(17,24,39,.
 .mg-math-q{text-align:center;font-size:42px;font-weight:900;color:#111827;letter-spacing:-.02em;margin:18px 0 22px;font-family:'Space Mono',monospace}
 .mg-math-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .mg-choice{padding:18px;font-size:22px;font-weight:800;font-family:'Space Mono',monospace;background:#F5F6F8;border:2px solid #E5E7EB;border-radius:14px;color:#111827;cursor:pointer;font-family:inherit;font-weight:800;transition:transform .12s ease,border-color .12s ease,background .12s ease}
-.mg-choice:hover:not(:disabled){border-color:#E27D60;background:#F5F6F8}
+.mg-choice:hover:not(:disabled){border-color:#5856D6;background:#F5F6F8}
 .mg-choice:active:not(:disabled){transform:scale(.97)}
-.mg-choice-ok{background:#FFF8F0!important;border-color:#E27D60!important;color:#E27D60!important;animation:mgPulse .35s ease}
+.mg-choice-ok{background:#FFF8F0!important;border-color:#5856D6!important;color:#5856D6!important;animation:mgPulse .35s ease}
 .mg-choice-wrong{background:#FEF2F2!important;border-color:#DC2626!important;color:#DC2626!important}
 @keyframes mgPulse{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
 .mg-feedback{margin-top:12px;text-align:center;font-size:14px;font-weight:700;padding:9px;border-radius:10px}
-.mg-fb-ok{background:#FFF8F0;color:#E27D60}
+.mg-fb-ok{background:#FFF8F0;color:#5856D6}
 .mg-fb-bad{background:#FEF2F2;color:#DC2626}
 .mg-meta{margin-top:14px;text-align:center;font-size:13px;color:#6B7280;font-weight:600}
 .mg-meta b{color:#111827;font-family:'Space Mono',monospace}
@@ -3320,7 +3320,7 @@ body[data-theme=aurora] .mg-hd{background:linear-gradient(135deg,rgba(17,24,39,.
 .mg-mem-tile{aspect-ratio:1;background:#F5F6F8;border:2px solid #E5E7EB;border-radius:14px;cursor:pointer;font-family:inherit;transition:background .12s ease,transform .1s ease,border-color .12s ease}
 .mg-mem-tile:hover:not(:disabled){background:#E5E7EB}
 .mg-mem-tile:active{transform:scale(.95)}
-.mg-mem-lit{background:linear-gradient(135deg,#EDA68E,#E27D60)!important;border-color:#EDA68E!important;box-shadow:0 0 24px rgba(226,125,96,.55);animation:mgFlash .3s ease}
+.mg-mem-lit{background:linear-gradient(135deg,#EDA68E,#5856D6)!important;border-color:#EDA68E!important;box-shadow:0 0 24px rgba(88,86,214,.55);animation:mgFlash .3s ease}
 @keyframes mgFlash{0%{transform:scale(.95)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 /* ─── Game detail / journey roadway ─── */
 .mg-detail{max-width:none;width:100%;padding:0;overflow:hidden;display:flex;flex-direction:column;background:var(--bg) !important;color:var(--ink) !important;border:0;height:100vh;max-height:100vh;border-radius:0;align-self:stretch;animation:schSlideUp .3s cubic-bezier(.16,1,.3,1)}
@@ -3399,8 +3399,8 @@ body:not([data-theme=aurora]) .mgr-row{background:#fff;border-color:#E5E7EB}
 .mgr-row:hover:not(.mgr-row-locked){background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);transform:translateX(2px)}
 body:not([data-theme=aurora]) .mgr-row:hover:not(.mgr-row-locked){background:#F5F6F8;border-color:#CFCFCF}
 .mgr-row-locked{cursor:not-allowed;opacity:.55}
-.mgr-row-current{background:rgba(226,125,96,.08);border-color:rgba(226,125,96,.3)}
-body:not([data-theme=aurora]) .mgr-row-current{background:#FFF1ED;border-color:rgba(226,125,96,.35)}
+.mgr-row-current{background:rgba(88,86,214,.08);border-color:rgba(88,86,214,.3)}
+body:not([data-theme=aurora]) .mgr-row-current{background:#FFF1ED;border-color:rgba(88,86,214,.35)}
 .mgr-row-n{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);font:600 13px/1 'Inter',sans-serif;letter-spacing:-.02em}
 body:not([data-theme=aurora]) .mgr-row-n{background:#F4F3EE;color:#6B6B6B}
 .mgr-row-done .mgr-row-n{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 3px 8px -2px var(--accent)}
@@ -3462,7 +3462,7 @@ body:not([data-theme=aurora]) .mgd-road-card{background:#fff;border-color:#E5E7E
 body:not([data-theme=aurora]) .mgd-road-hd{color:#6B6B6B}
 body:not([data-theme=aurora]) .mgd-road-hd b{color:#111827}
 body:not([data-theme=aurora]) .mgd-road-seg{background:#E5E7EB}
-body:not([data-theme=aurora]) .mgd-node-current{background:rgba(226,125,96,.1);color:#E27D60;border-color:#E27D60;box-shadow:0 0 0 5px rgba(226,125,96,.1)}
+body:not([data-theme=aurora]) .mgd-node-current{background:rgba(88,86,214,.1);color:#5856D6;border-color:#5856D6;box-shadow:0 0 0 5px rgba(88,86,214,.1)}
 body:not([data-theme=aurora]) .mgd-node-locked{background:#F4F3EE;color:#9A9A9A;border-color:#E5E7EB}
 body:not([data-theme=aurora]) .mgd-lvl-label{color:#9A9A9A}
 body:not([data-theme=aurora]) .mgd-stop-current .mgd-lvl-label{color:#111827}
@@ -3484,7 +3484,7 @@ body[data-theme=aurora] .mg-elevate-prog b{color:#fff}
 .mg-dot{width:18px;height:5px;border-radius:999px;background:rgba(0,0,0,.1);transition:background .3s ease,transform .25s cubic-bezier(.34,1.56,.64,1)}
 body[data-theme=aurora] .mg-dot{background:rgba(255,255,255,.12)}
 .mg-dot-done{background:#EDA68E}
-.mg-dot-cur{background:linear-gradient(90deg,#EDA68E,#FED7AA);transform:scaleY(1.6);box-shadow:0 0 0 2px rgba(226,125,96,.25)}
+.mg-dot-cur{background:linear-gradient(90deg,#EDA68E,#FED7AA);transform:scaleY(1.6);box-shadow:0 0 0 2px rgba(88,86,214,.25)}
 .mg-timer-pill{flex-shrink:0;font-family:'Inter','SF Pro Text',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.015em;padding:8px 18px;border-radius:999px;background:#111827;color:#fff;font-variant-numeric:tabular-nums;min-width:64px;text-align:center;transition:background .3s ease,transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
 body[data-theme=aurora] .mg-timer-pill{background:rgba(255,255,255,.1);color:#fff}
 .mg-timer-pill.mg-timer-warn{background:linear-gradient(135deg,#DC2626,#FB7185);color:#fff;animation:mgTimerPulse .8s ease-in-out infinite;box-shadow:0 0 0 4px rgba(220,38,38,.15)}
@@ -3494,7 +3494,7 @@ body[data-theme=aurora] .mg-timer-track{background:rgba(255,255,255,.08)}
 .mg-timer-fill{height:100%;border-radius:999px;transition:width .12s linear,background .35s ease}
 .mg-react-stage{height:280px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-weight:900;font-size:22px;text-align:center;padding:18px;transition:background .2s ease}
 .mg-react-wait{background:linear-gradient(135deg,#DC2626,#991B1B)}
-.mg-react-go{background:linear-gradient(135deg,#E27D60,#15803D);animation:mgReactPulse .6s ease infinite alternate}
+.mg-react-go{background:linear-gradient(135deg,#5856D6,#15803D);animation:mgReactPulse .6s ease infinite alternate}
 .mg-react-early{background:linear-gradient(135deg,#A07040,#A87030);font-size:16px}
 .mg-react-done{background:linear-gradient(135deg,#1F2937,#374151);cursor:default}
 /* Schulte Grid */
@@ -3513,12 +3513,12 @@ body[data-theme=aurora] .sch-target{color:rgba(255,255,255,.7)}
 .spat-body{display:flex;flex-direction:column;align-items:center;gap:18px}
 .spat-grid{display:grid;gap:6px;width:100%;max-width:360px;margin:0 auto}
 .spat-cell{aspect-ratio:1;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);border-radius:12px;cursor:pointer;transition:all .2s ease;display:grid;place-items:center}
-.spat-cell:hover:not(:disabled){border-color:rgba(226,125,96,.4)}
-.spat-cell.spat-lit{background:linear-gradient(135deg,#EDA68E,#CC6E52);border-color:#EDA68E;box-shadow:0 0 20px rgba(226,125,96,.5);animation:spatPulse .6s ease-in-out infinite alternate}
+.spat-cell:hover:not(:disabled){border-color:rgba(88,86,214,.4)}
+.spat-cell.spat-lit{background:linear-gradient(135deg,#EDA68E,#CC6E52);border-color:#EDA68E;box-shadow:0 0 20px rgba(88,86,214,.5);animation:spatPulse .6s ease-in-out infinite alternate}
 .spat-cell.spat-correct{background:linear-gradient(135deg,#22C55E,#16A34A);border-color:#22C55E;box-shadow:0 0 12px rgba(34,197,94,.4)}
 .spat-cell.spat-wrong{background:linear-gradient(135deg,#EF4444,#DC2626);border-color:#EF4444;animation:schShake .25s ease}
-body:not([data-theme=aurora]) .spat-cell{background:#FFF7ED;border-color:rgba(226,125,96,.15)}
-body:not([data-theme=aurora]) .spat-cell.spat-lit{background:linear-gradient(135deg,#EDA68E,#CC6E52);border-color:#EDA68E;box-shadow:0 0 16px rgba(226,125,96,.3)}
+body:not([data-theme=aurora]) .spat-cell{background:#FFF7ED;border-color:rgba(88,86,214,.15)}
+body:not([data-theme=aurora]) .spat-cell.spat-lit{background:linear-gradient(135deg,#EDA68E,#CC6E52);border-color:#EDA68E;box-shadow:0 0 16px rgba(88,86,214,.3)}
 body:not([data-theme=aurora]) .spat-cell.spat-correct{background:linear-gradient(135deg,#22C55E,#16A34A);border-color:#22C55E}
 body:not([data-theme=aurora]) .spat-cell.spat-wrong{background:linear-gradient(135deg,#EF4444,#DC2626);border-color:#EF4444}
 @keyframes spatPulse{from{box-shadow:0 0 12px rgba(168,85,247,.3)}to{box-shadow:0 0 24px rgba(168,85,247,.6)}}
@@ -3528,7 +3528,7 @@ body:not([data-theme=aurora]) .spat-cell.spat-wrong{background:linear-gradient(1
 .sud-cell{aspect-ratio:1;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;border-radius:10px;font-family:'Instrument Serif',Georgia,serif;font-size:clamp(20px,5vw,28px);font-weight:700;display:grid;place-items:center;cursor:pointer;transition:all .15s ease;padding:0}
 .sud-cell:hover:not(:disabled):not(.sud-given){background:rgba(255,255,255,.14);border-color:rgba(251,191,36,.5)}
 .sud-cell.sud-given{background:rgba(251,191,36,.12);color:#FBBF24;cursor:default;font-weight:700;border-color:rgba(251,191,36,.25)}
-.sud-cell.sud-sel{background:rgba(226,125,96,.2)!important;border-color:#EDA68E!important;box-shadow:0 0 0 2px rgba(226,125,96,.4)}
+.sud-cell.sud-sel{background:rgba(88,86,214,.2)!important;border-color:#EDA68E!important;box-shadow:0 0 0 2px rgba(88,86,214,.4)}
 .sud-cell.sud-bx-r{margin-right:3px}
 .sud-cell.sud-bx-b{margin-bottom:3px}
 .sud-pad{display:flex;gap:8px;width:100%;max-width:360px}
@@ -3545,8 +3545,8 @@ body:not([data-theme=aurora]) .sud-num.sud-clear{background:#fff;color:#111827;b
 .sch-cell:hover:not(:disabled){background:rgba(255,210,122,.18);border-color:#FFD27A;color:#FFD27A}
 /* Light-theme override — Schulte modal grid has a white background, so cells
    need dark text to be visible. The previous rule was white-on-white. */
-body:not([data-theme=aurora]) .sch-cell{background:#fff;color:#111827;border-color:rgba(226,125,96,.15);box-shadow:0 2px 6px rgba(17,24,39,.08);font-weight:800}
-body:not([data-theme=aurora]) .sch-cell:hover:not(:disabled){background:#E27D60;color:#fff;border-color:#E27D60;transform:scale(1.04)}
+body:not([data-theme=aurora]) .sch-cell{background:#fff;color:#111827;border-color:rgba(88,86,214,.15);box-shadow:0 2px 6px rgba(17,24,39,.08);font-weight:800}
+body:not([data-theme=aurora]) .sch-cell:hover:not(:disabled){background:#5856D6;color:#fff;border-color:#5856D6;transform:scale(1.04)}
 .sch-target{color:rgba(255,255,255,.7) !important}
 .sch-target b{color:#FED7AA !important}
 .sch-cell:not(:disabled):active{transform:scale(.92)}
@@ -3580,19 +3580,19 @@ body[data-theme=aurora] .mg-mem-tile{background:rgba(255,255,255,.06);border-col
 .rps-vs-txt{font-size:13px;color:#A0AEC0;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
 .rps-pick{display:flex;gap:8px;margin-top:10px}
 .rps-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;background:#fff;border:1.5px solid #E5E7EB;border-radius:12px;cursor:pointer;font-size:30px;font-family:inherit;color:#111827;transition:transform .12s ease,border-color .12s ease,background .12s ease}
-.rps-btn:hover{border-color:#E27D60;background:#F5F6F8}
+.rps-btn:hover{border-color:#5856D6;background:#F5F6F8}
 .rps-btn:active{transform:scale(.96)}
 .rps-btn span{font-size:11.5px;font-weight:700;color:#6B7280;letter-spacing:.3px}
 @keyframes diceRoll{0%{transform:rotate(0)}25%{transform:rotate(90deg)}50%{transform:rotate(180deg)}75%{transform:rotate(270deg)}100%{transform:rotate(360deg)}}
 .dice-roll{animation:diceRoll .55s linear infinite}
-body[data-theme=aurora] .rps-show{background:rgba(226,125,96,.1)}
+body[data-theme=aurora] .rps-show{background:rgba(88,86,214,.1)}
 body[data-theme=aurora] .rps-btn{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#E8E8EC}
-body[data-theme=aurora] .rps-btn:hover{border-color:#E27D60;background:rgba(226,125,96,.12)}
+body[data-theme=aurora] .rps-btn:hover{border-color:#5856D6;background:rgba(88,86,214,.12)}
 body[data-theme=aurora] .rps-btn span{color:#888888}
 .game-card{background:linear-gradient(135deg,rgba(17,24,39,.06),rgba(236,72,153,.05));border:1px solid rgba(17,24,39,.18);border-radius:16px;padding:18px 22px 20px;margin-bottom:0;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;min-height:440px}
 .coin-card{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(17,24,39,.05));border-color:rgba(245,158,11,.22)}
 .coin-stage{flex:1;display:flex;align-items:center;justify-content:center;perspective:800px}
-.coin{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FCD34D,#B8802A 80%);box-shadow:0 12px 28px rgba(226,125,96,.35),inset 0 -6px 14px rgba(0,0,0,.2),inset 0 6px 12px rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1);position:relative;transform-style:preserve-3d}
+.coin{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FCD34D,#B8802A 80%);box-shadow:0 12px 28px rgba(88,86,214,.35),inset 0 -6px 14px rgba(0,0,0,.2),inset 0 6px 12px rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1);position:relative;transform-style:preserve-3d}
 .coin:hover{transform:scale(1.05)}
 .coin-face{font-size:62px;font-weight:900;color:#A07040;text-shadow:0 2px 4px rgba(255,255,255,.5);font-family:Georgia,serif}
 .coin-flipping{animation:coinFlip .9s cubic-bezier(.4,0,.2,1) forwards}
@@ -3600,7 +3600,7 @@ body[data-theme=aurora] .rps-btn span{color:#888888}
 .coin-heads{animation:coinSettle .35s ease-out}.coin-tails{animation:coinSettle .35s ease-out}
 @keyframes coinSettle{0%{transform:scale(1.15)}100%{transform:scale(1)}}
 .coin-btn{background:linear-gradient(135deg,#F59E0B,#B8802A);color:#fff;border:none;padding:8px 16px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;letter-spacing:.02em}
-.coin-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 14px rgba(226,125,96,.3)}
+.coin-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 14px rgba(88,86,214,.3)}
 .coin-btn:disabled{opacity:.6;cursor:wait}
 .game-card.game-idle .game-grid{opacity:.55;filter:saturate(.6);pointer-events:none}
 .game-card.game-idle .game-status-line{opacity:.6}
@@ -3617,10 +3617,10 @@ body[data-theme=aurora] .game-overlay .game-prompt{color:#888888}
 .game-emoji{display:inline-block;animation:gemPulse 2s ease-in-out infinite}
 @keyframes gemPulse{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.12) rotate(-6deg)}}
 .game-best{font-size:12px;color:#6B7280;font-weight:600;background:rgba(255,255,255,.7);padding:5px 10px;border-radius:99px;border:1px solid rgba(17,24,39,.06)}
-.game-best b{color:#E27D60;font-family:'Space Mono',monospace;font-weight:700;margin-left:4px;font-size:13px}
+.game-best b{color:#5856D6;font-family:'Space Mono',monospace;font-weight:700;margin-left:4px;font-size:13px}
 .game-cta{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .game-prompt{font-size:13px;color:#6B7280;line-height:1.4;flex:1;min-width:200px}
-.game-btn{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,#E27D60,#CC6E52);border:none;padding:10px 20px;border-radius:11px;cursor:pointer;box-shadow:0 6px 18px rgba(17,24,39,.3);transition:transform .15s ease,box-shadow .15s ease}
+.game-btn{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,#5856D6,#CC6E52);border:none;padding:10px 20px;border-radius:11px;cursor:pointer;box-shadow:0 6px 18px rgba(17,24,39,.3);transition:transform .15s ease,box-shadow .15s ease}
 .game-btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(17,24,39,.4)}
 .game-btn:active{transform:scale(.96)}
 .game-grid{display:grid;grid-template-columns:repeat(3,96px);grid-template-rows:repeat(3,96px);gap:10px;width:max-content;margin:14px auto;justify-content:center}
@@ -3634,7 +3634,7 @@ body[data-theme=aurora] .game-overlay .game-prompt{color:#888888}
 .game-cell.ttt-o{color:#6B7280;border-color:rgba(107,114,128,.4);background:linear-gradient(135deg,#fff,#F5F6F8);cursor:default}
 .game-cell.ttt-filled{cursor:default}
 .game-cell.ttt-win{animation:tttWinPulse 1s ease-in-out infinite;border-width:3px}
-@keyframes tttWinPulse{0%,100%{box-shadow:0 0 0 0 rgba(226,125,96,.45),0 6px 18px rgba(17,24,39,.12);transform:scale(1)}50%{box-shadow:0 0 0 8px rgba(226,125,96,0),0 8px 22px rgba(17,24,39,.18);transform:scale(1.05)}}
+@keyframes tttWinPulse{0%,100%{box-shadow:0 0 0 0 rgba(88,86,214,.45),0 6px 18px rgba(17,24,39,.12);transform:scale(1)}50%{box-shadow:0 0 0 8px rgba(88,86,214,0),0 8px 22px rgba(17,24,39,.18);transform:scale(1.05)}}
 .game-status-line{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:13px}
 .game-status{font-weight:700;letter-spacing:-.01em;transition:color .2s ease}
 .status-you{color:#E8453C}
@@ -3643,22 +3643,22 @@ body[data-theme=aurora] .game-overlay .game-prompt{color:#888888}
 .ttt-grid{}
 .game-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:700;margin-top:2px}
 .game-hint{color:#A0AEC0;font-weight:600;letter-spacing:.4px}
-.game-score{font-family:'Instrument Serif',Georgia,serif;font-size:20px;color:#E27D60;font-weight:400}
-.game-prompt b{color:#E27D60;font-weight:800}
+.game-score{font-family:'Instrument Serif',Georgia,serif;font-size:20px;color:#5856D6;font-weight:400}
+.game-prompt b{color:#5856D6;font-weight:800}
 .game-stop{font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:8px;background:rgba(17,24,39,.06);border:none;color:#6B7280;cursor:pointer}
 .game-stop:hover{background:rgba(232,69,60,.1);color:#E8453C}
-body[data-theme=aurora] .game-card{background:linear-gradient(135deg,rgba(226,125,96,.1),rgba(244,114,182,.08));border-color:rgba(226,125,96,.2)}
+body[data-theme=aurora] .game-card{background:linear-gradient(135deg,rgba(88,86,214,.1),rgba(244,114,182,.08));border-color:rgba(88,86,214,.2)}
 body[data-theme=aurora] .game-ttl{color:#E8E8EC}
 body[data-theme=aurora] .game-best{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#888888}
-body[data-theme=aurora] .game-best b{color:#E27D60}
+body[data-theme=aurora] .game-best b{color:#5856D6}
 body[data-theme=aurora] .game-prompt{color:#888888}
 body[data-theme=aurora] .game-cell{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08)}
 body[data-theme=aurora] .game-time{color:#E8E8EC}
-body[data-theme=aurora] .game-score{color:#E27D60}
+body[data-theme=aurora] .game-score{color:#5856D6}
 body[data-theme=aurora] .game-stop{background:rgba(255,255,255,.05);color:#888888}
 @media (max-width:600px){.game-ttl{font-size:18px}.game-prompt{font-size:12px;min-width:0}.game-btn{padding:9px 16px;font-size:12.5px}}
 /* Top strip + climb + side-now base styles (work on all viewports) */
-.top-strip{display:flex;flex-direction:column;align-items:stretch;background:linear-gradient(135deg,rgba(245,241,235,.6) 0%,rgba(226,125,96,.05) 100%);border:1px solid rgba(200,190,175,.25);border-radius:12px;min-height:auto;position:relative;overflow:hidden;margin-bottom:0;box-shadow:0 2px 10px rgba(0,0,0,.03)}
+.top-strip{display:flex;flex-direction:column;align-items:stretch;background:linear-gradient(135deg,rgba(245,241,235,.6) 0%,rgba(88,86,214,.05) 100%);border:1px solid rgba(200,190,175,.25);border-radius:12px;min-height:auto;position:relative;overflow:hidden;margin-bottom:0;box-shadow:0 2px 10px rgba(0,0,0,.03)}
 .top-strip .climb-scene,.top-strip .bro-mascot{position:relative;flex:0 0 auto;border-radius:0;background:transparent;border:none;min-height:auto;overflow:hidden;padding:3px 10px 0;display:flex;align-items:center;justify-content:center;width:auto}
 .top-strip .bro-svg{width:auto;height:auto;max-height:24px;max-width:80%}
 .bro-mascot .bro-figure{transform-origin:48px 110px;animation:broNod 2.4s ease-in-out infinite}
@@ -3671,13 +3671,13 @@ body[data-theme=aurora] .game-stop{background:rgba(255,255,255,.05);color:#88888
 @keyframes broSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .bro-mascot .bro-spark2{animation:broTwinkle 1.6s ease-in-out infinite}
 @keyframes broTwinkle{0%,100%{opacity:.3;transform:scale(.7)}50%{opacity:1;transform:scale(1.1)}}
-body[data-theme=aurora] .bro-mascot .bro-bubble path{fill:rgba(255,255,255,.06);stroke:rgba(226,125,96,.6)}
+body[data-theme=aurora] .bro-mascot .bro-bubble path{fill:rgba(255,255,255,.06);stroke:rgba(88,86,214,.6)}
 body[data-theme=aurora] .bro-mascot .bro-bubble text:first-of-type{fill:#E8E8EC}
-body[data-theme=aurora] .bro-mascot .bro-bubble text:last-of-type{fill:#E27D60}
-body[data-theme=aurora] .bro-mascot .bro-figure circle:first-child{fill:#E27D60}
-body[data-theme=aurora] .bro-mascot .bro-figure line{stroke:#E27D60}
+body[data-theme=aurora] .bro-mascot .bro-bubble text:last-of-type{fill:#5856D6}
+body[data-theme=aurora] .bro-mascot .bro-figure circle:first-child{fill:#5856D6}
+body[data-theme=aurora] .bro-mascot .bro-figure line{stroke:#5856D6}
 .top-strip .side-now{flex:0 0 auto;background:transparent;border-top:1px dashed rgba(17,24,39,.18);border-left:none;padding:5px 12px 6px;display:flex;flex-direction:column;justify-content:center;gap:2px;position:relative;overflow:hidden;margin-top:0;min-width:0}
-.top-strip .side-now-lbl{font-size:9px;font-weight:800;color:#E27D60;letter-spacing:1.2px;text-transform:uppercase}
+.top-strip .side-now-lbl{font-size:9px;font-weight:800;color:#5856D6;letter-spacing:1.2px;text-transform:uppercase}
 .top-strip .side-now-time{font-family:'Instrument Serif',Georgia,serif;font-size:24px;font-weight:400;color:#111827;line-height:1;letter-spacing:-.03em;margin-top:0}
 .top-strip .side-now-time .sec{color:#E8453C;animation:secBlink 1s steps(2) infinite;font-size:15px;margin-left:1px;font-family:'Instrument Serif',Georgia,serif}
 .top-strip .side-now-row{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;line-height:1}
@@ -3695,27 +3695,27 @@ body[data-theme=aurora] .bro-mascot .bro-figure line{stroke:#E27D60}
 @keyframes snwLegR{0%,100%{transform:rotate(25deg)}50%{transform:rotate(-25deg)}}
 @keyframes snwArmL{0%,100%{transform:rotate(20deg)}50%{transform:rotate(-20deg)}}
 @keyframes snwArmR{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(20deg)}}
-body[data-theme=aurora] .top-strip .side-now-walker svg circle,body[data-theme=aurora] .top-strip .side-now-walker svg line{stroke:#E27D60!important;fill:#E27D60}
+body[data-theme=aurora] .top-strip .side-now-walker svg circle,body[data-theme=aurora] .top-strip .side-now-walker svg line{stroke:#5856D6!important;fill:#5856D6}
 .top-strip .side-now-date{font-size:12px;color:#6B7280;font-weight:600}
 .top-strip .side-now-stat{font-size:10px;color:#6B7280;font-weight:600;margin-top:2px;display:flex;align-items:center;gap:4px}
 .top-strip .side-now-stat b{font-family:'Instrument Serif',Georgia,serif;font-size:12px;font-weight:400;color:#E8453C;letter-spacing:-.02em;line-height:1}
 .top-strip .side-now-date{font-size:10.5px}
 .top-strip .side-now-bar{height:4px;border-radius:99px;background:rgba(17,24,39,.14);overflow:visible;margin:4px 0 2px;position:relative}
-.top-strip .side-now-fill{height:100%;background:linear-gradient(90deg,#FCD34D,#E27D60,#CC6E52,#EDA68E);background-size:200% 100%;border-radius:99px;position:relative;overflow:hidden;animation:gradientShift 4s ease-in-out infinite}
+.top-strip .side-now-fill{height:100%;background:linear-gradient(90deg,#FCD34D,#5856D6,#CC6E52,#EDA68E);background-size:200% 100%;border-radius:99px;position:relative;overflow:hidden;animation:gradientShift 4s ease-in-out infinite}
 @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .top-strip .side-now-fill::after{content:'';position:absolute;top:0;left:-30%;width:30%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:fillShine 2.6s ease-in-out infinite}
 body[data-theme=aurora] .top-strip .side-now-days{color:#888888}
-body[data-theme=aurora] .top-strip .side-now-days b{color:#E27D60}
+body[data-theme=aurora] .top-strip .side-now-days b{color:#5856D6}
 body[data-theme=aurora] .top-strip .side-now-date{color:#888888}
 .top-strip .side-now-foot{font-size:10px;color:#A0AEC0;font-weight:700;letter-spacing:.5px;display:flex;justify-content:space-between;margin-top:0}
 /* World clocks row inside the side-now panel */
 .top-strip .side-now-cities{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:3px;font-size:10.5px;color:#6B7280;font-weight:600;line-height:1}
 .top-strip .city-clock{display:inline-flex;align-items:baseline;gap:3px;font-family:'Space Mono',monospace;font-size:10.5px;color:#6B7280}
-.top-strip .city-clock b{color:#E27D60;font-size:9px;font-weight:800;letter-spacing:.4px;font-family:'Inter',sans-serif}
+.top-strip .city-clock b{color:#5856D6;font-size:9px;font-weight:800;letter-spacing:.4px;font-family:'Inter',sans-serif}
 .top-strip .city-sep{color:#D1D5DB;font-size:9px}
 body[data-theme=aurora] .top-strip .side-now-cities{color:#888888}
 body[data-theme=aurora] .top-strip .city-clock{color:#E5E7EB}
-body[data-theme=aurora] .top-strip .city-clock b{color:#E27D60}
+body[data-theme=aurora] .top-strip .city-clock b{color:#5856D6}
 /* News ticker — 3 stacked headlines below the moral chip, rotates every 9s */
 .news-ticker-stack{flex:1;display:flex;flex-direction:column;gap:5px;background:linear-gradient(135deg,rgba(17,24,39,.04),rgba(236,72,153,.04));border:1px solid rgba(17,24,39,.14);border-radius:10px;padding:8px;overflow:hidden}
 .news-ticker-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;background:rgba(255,255,255,.55);text-decoration:none;font-size:12px;line-height:1.3;transition:background .2s ease,transform .2s ease;opacity:0;animation:tickerRowIn .4s ease forwards}
@@ -3723,20 +3723,20 @@ body[data-theme=aurora] .top-strip .city-clock b{color:#E27D60}
 @keyframes tickerRowIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .news-ticker-pulse{width:6px;height:6px;border-radius:50%;background:#E8453C;flex-shrink:0;box-shadow:0 0 0 0 rgba(232,69,60,.6);animation:tickerLive 1.6s ease-in-out infinite}
 @keyframes tickerLive{0%,100%{box-shadow:0 0 0 0 rgba(232,69,60,.6)}50%{box-shadow:0 0 0 5px rgba(232,69,60,0)}}
-.news-ticker-src{font-size:9px;font-weight:800;color:#E27D60;letter-spacing:1.1px;text-transform:uppercase;flex-shrink:0;background:rgba(17,24,39,.1);padding:3px 6px;border-radius:5px;min-width:60px;text-align:center;display:inline-flex;align-items:center;justify-content:center}
+.news-ticker-src{font-size:9px;font-weight:800;color:#5856D6;letter-spacing:1.1px;text-transform:uppercase;flex-shrink:0;background:rgba(17,24,39,.1);padding:3px 6px;border-radius:5px;min-width:60px;text-align:center;display:inline-flex;align-items:center;justify-content:center}
 .news-ticker-link{font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;transition:color .15s ease}
 @media (max-width:1023px){.news-ticker-link{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}.news-ticker-row{align-items:flex-start;gap:10px}.news-ticker-stack{padding:10px;gap:7px}.news-ticker-src{min-width:64px;font-size:9.5px;align-self:flex-start;margin-top:2px}}
-.news-ticker-row:hover .news-ticker-link{color:#E27D60}
-body[data-theme=aurora] .news-ticker-stack{background:linear-gradient(135deg,rgba(226,125,96,.08),rgba(244,114,182,.06));border-color:rgba(226,125,96,.18)}
+.news-ticker-row:hover .news-ticker-link{color:#5856D6}
+body[data-theme=aurora] .news-ticker-stack{background:linear-gradient(135deg,rgba(88,86,214,.08),rgba(244,114,182,.06));border-color:rgba(88,86,214,.18)}
 body[data-theme=aurora] .news-ticker-row{background:rgba(255,255,255,.04)}
 body[data-theme=aurora] .news-ticker-row:hover{background:rgba(255,255,255,.08)}
 body[data-theme=aurora] .news-ticker-link{color:#E8E8EC}
-body[data-theme=aurora] .news-ticker-row:hover .news-ticker-link{color:#E27D60}
-body[data-theme=aurora] .news-ticker-src{color:#E27D60;background:rgba(226,125,96,.16)}
+body[data-theme=aurora] .news-ticker-row:hover .news-ticker-link{color:#5856D6}
+body[data-theme=aurora] .news-ticker-src{color:#5856D6;background:rgba(88,86,214,.16)}
 /* Remember Someone Today — daily notable birth/death from Wikipedia */
-.remember-card{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(226,125,96,.08),rgba(17,24,39,.06));border:1px solid rgba(226,125,96,.2);border-radius:10px;padding:8px 12px 8px 8px;text-decoration:none;color:inherit;transition:transform .2s ease,box-shadow .2s ease;animation:rememberIn .5s cubic-bezier(.2,.8,.2,1)}
+.remember-card{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(88,86,214,.08),rgba(17,24,39,.06));border:1px solid rgba(88,86,214,.2);border-radius:10px;padding:8px 12px 8px 8px;text-decoration:none;color:inherit;transition:transform .2s ease,box-shadow .2s ease;animation:rememberIn .5s cubic-bezier(.2,.8,.2,1)}
 @keyframes rememberIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.remember-card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(226,125,96,.18)}
+.remember-card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(88,86,214,.18)}
 .remember-thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#FEF3E0;display:flex;align-items:center;justify-content:center;font-size:22px}
 .remember-thumb.remember-thumb-empty{color:#B57B00}
 .remember-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
@@ -3746,7 +3746,7 @@ body[data-theme=aurora] .news-ticker-src{color:#E27D60;background:rgba(226,125,9
 .remember-extract{font-size:11.5px;color:#6B7280;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:1px}
 .remember-arrow{flex-shrink:0;color:#B57B00;opacity:.6;transition:opacity .15s ease}
 .remember-card:hover .remember-arrow{opacity:1}
-body[data-theme=aurora] .remember-card{background:linear-gradient(135deg,rgba(226,125,96,.14),rgba(226,125,96,.08));border-color:rgba(226,125,96,.3)}
+body[data-theme=aurora] .remember-card{background:linear-gradient(135deg,rgba(88,86,214,.14),rgba(88,86,214,.08));border-color:rgba(88,86,214,.3)}
 body[data-theme=aurora] .remember-name{color:#E8E8EC}
 body[data-theme=aurora] .remember-extract{color:#888888}
 body[data-theme=aurora] .remember-thumb{background:rgba(255,255,255,.05)}
@@ -3769,48 +3769,48 @@ body[data-theme=aurora] .remember-thumb{background:rgba(255,255,255,.05)}
 .world-clocks .wc-star{animation:wcStarTwinkle 1.8s ease-in-out infinite}
 .world-clocks .wc-star:nth-child(2){animation-delay:.6s}
 @keyframes wcStarTwinkle{0%,100%{opacity:.3}50%{opacity:1}}
-.world-clocks .wc-item b{font-size:9px;font-weight:800;color:#E27D60;letter-spacing:1.1px}
+.world-clocks .wc-item b{font-size:9px;font-weight:800;color:#5856D6;letter-spacing:1.1px}
 .world-clocks .wc-item.wc-night b{color:#CC6E52}
 .world-clocks .wc-time{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#111827;letter-spacing:-.02em}
 .world-clocks .wc-temp{font-family:'Instrument Serif',Georgia,serif;font-size:13px;font-weight:400;color:#E8912B;letter-spacing:-.02em;margin-top:0}
 body[data-theme=aurora] .world-clocks .wc-temp{color:#D4A545}
 /* Your Life Goal — editable card that fills the bottom of the left chip */
-.life-goal{flex:1;display:flex;flex-direction:column;justify-content:flex-start;background:linear-gradient(135deg,rgba(17,24,39,.06),rgba(226,125,96,.05));border-top:1px dashed rgba(17,24,39,.22);padding:10px 12px 12px;cursor:pointer;transition:background .2s ease;position:relative;min-height:90px}
-.life-goal:hover{background:linear-gradient(135deg,rgba(17,24,39,.1),rgba(226,125,96,.08))}
-.life-goal-empty{background:linear-gradient(135deg,rgba(17,24,39,.1),rgba(226,125,96,.08));animation:lgEmptyPulse 3.6s ease-in-out infinite}
+.life-goal{flex:1;display:flex;flex-direction:column;justify-content:flex-start;background:linear-gradient(135deg,rgba(17,24,39,.06),rgba(88,86,214,.05));border-top:1px dashed rgba(17,24,39,.22);padding:10px 12px 12px;cursor:pointer;transition:background .2s ease;position:relative;min-height:90px}
+.life-goal:hover{background:linear-gradient(135deg,rgba(17,24,39,.1),rgba(88,86,214,.08))}
+.life-goal-empty{background:linear-gradient(135deg,rgba(17,24,39,.1),rgba(88,86,214,.08));animation:lgEmptyPulse 3.6s ease-in-out infinite}
 @keyframes lgEmptyPulse{0%,100%{box-shadow:inset 0 0 0 1px rgba(17,24,39,.2)}50%{box-shadow:inset 0 0 0 2px rgba(17,24,39,.45)}}
 .life-goal .lg-label-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.life-goal .lg-label{font-size:9px;font-weight:800;color:#E27D60;letter-spacing:1.4px;text-transform:uppercase;display:inline-flex;align-items:center;gap:5px}
+.life-goal .lg-label{font-size:9px;font-weight:800;color:#5856D6;letter-spacing:1.4px;text-transform:uppercase;display:inline-flex;align-items:center;gap:5px}
 .life-goal .lg-star{color:#E8912C;font-size:11px;animation:lgStarPulse 3s ease-in-out infinite;display:inline-block}
 @keyframes lgStarPulse{0%,100%{transform:scale(1) rotate(0);opacity:.85}50%{transform:scale(1.18) rotate(15deg);opacity:1}}
-.life-goal .lg-edit-btn{display:inline-flex;align-items:center;gap:4px;background:rgba(17,24,39,.15);color:#E27D60;border:1px solid rgba(17,24,39,.3);border-radius:99px;padding:3px 9px 3px 7px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;transition:background .15s ease,transform .15s ease;line-height:1}
-.life-goal:hover .lg-edit-btn{background:#E27D60;color:#fff;border-color:#E27D60;transform:scale(1.04)}
+.life-goal .lg-edit-btn{display:inline-flex;align-items:center;gap:4px;background:rgba(17,24,39,.15);color:#5856D6;border:1px solid rgba(17,24,39,.3);border-radius:99px;padding:3px 9px 3px 7px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;transition:background .15s ease,transform .15s ease;line-height:1}
+.life-goal:hover .lg-edit-btn{background:#5856D6;color:#fff;border-color:#5856D6;transform:scale(1.04)}
 .life-goal .lg-pencil{width:11px;height:11px;flex-shrink:0}
-.life-goal-empty .lg-edit-btn{background:linear-gradient(135deg,#E27D60,#CC6E52);color:#fff;border-color:transparent;animation:lgEditNudge 2.2s ease-in-out infinite;box-shadow:0 4px 12px rgba(17,24,39,.3)}
+.life-goal-empty .lg-edit-btn{background:linear-gradient(135deg,#5856D6,#CC6E52);color:#fff;border-color:transparent;animation:lgEditNudge 2.2s ease-in-out infinite;box-shadow:0 4px 12px rgba(17,24,39,.3)}
 @keyframes lgEditNudge{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .life-goal .lg-text{font-family:'Instrument Serif',Georgia,serif;font-size:15.5px;font-weight:400;color:#111827;line-height:1.4;letter-spacing:-.005em;font-style:normal;margin-top:6px;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;text-overflow:ellipsis}
 .life-goal .lg-text.lg-empty{color:#6B7280;font-style:normal}
 .life-goal .lg-empty-hint{font-size:10px;color:#A0AEC0;font-weight:600;text-align:center;margin-top:4px;font-style:normal}
-body[data-theme=aurora] .life-goal{background:linear-gradient(135deg,rgba(226,125,96,.12),rgba(226,125,96,.06));border-top-color:rgba(226,125,96,.22)}
-body[data-theme=aurora] .life-goal:hover{background:linear-gradient(135deg,rgba(226,125,96,.18),rgba(226,125,96,.1))}
+body[data-theme=aurora] .life-goal{background:linear-gradient(135deg,rgba(88,86,214,.12),rgba(88,86,214,.06));border-top-color:rgba(88,86,214,.22)}
+body[data-theme=aurora] .life-goal:hover{background:linear-gradient(135deg,rgba(88,86,214,.18),rgba(88,86,214,.1))}
 body[data-theme=aurora] .life-goal .lg-text{color:#E8E8EC}
 body[data-theme=aurora] .life-goal .lg-text.lg-empty{color:#888888}
-body[data-theme=aurora] .life-goal .lg-label{color:#E27D60}
-body[data-theme=aurora] .life-goal .lg-edit-btn{background:rgba(226,125,96,.18);color:#E27D60;border-color:rgba(226,125,96,.35)}
-body[data-theme=aurora] .life-goal:hover .lg-edit-btn{background:#E27D60;color:#0A0A14;border-color:#E27D60}
+body[data-theme=aurora] .life-goal .lg-label{color:#5856D6}
+body[data-theme=aurora] .life-goal .lg-edit-btn{background:rgba(88,86,214,.18);color:#5856D6;border-color:rgba(88,86,214,.35)}
+body[data-theme=aurora] .life-goal:hover .lg-edit-btn{background:#5856D6;color:#0A0A14;border-color:#5856D6}
 /* Indian cities mini-grid in the left chip — denser fonts to use the space */
 .top-strip .india-cities{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 10px;margin-top:6px;padding-top:8px;border-top:1px dashed rgba(17,24,39,.18);line-height:1.2}
 .top-strip .ic-item{display:flex;align-items:baseline;justify-content:space-between;gap:6px;padding:2px 0}
 .top-strip .ic-name{color:#6B7280;font-weight:500;font-style:normal;font-family:'Instrument Serif',Georgia,serif;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em}
 .top-strip .ic-temp{font-family:'Instrument Serif',Georgia,serif;color:#E8912C;font-weight:400;font-size:14.5px;flex-shrink:0;letter-spacing:-.02em}
-body[data-theme=aurora] .top-strip .india-cities{border-top-color:rgba(226,125,96,.22)}
+body[data-theme=aurora] .top-strip .india-cities{border-top-color:rgba(88,86,214,.22)}
 body[data-theme=aurora] .top-strip .ic-name{color:#888888}
 body[data-theme=aurora] .top-strip .ic-temp{color:#D4A545}
 body[data-theme=aurora] .world-clocks::before{background:rgba(20,20,40,.85)}
 body[data-theme=aurora] .world-clocks .wc-item{background:rgba(255,255,255,.06)}
 body[data-theme=aurora] .world-clocks .wc-item.wc-day{background:linear-gradient(180deg,rgba(252,211,77,.18),rgba(252,165,165,.12))}
-body[data-theme=aurora] .world-clocks .wc-item.wc-night{background:linear-gradient(180deg,rgba(226,125,96,.18),rgba(17,24,39,.4))}
-body[data-theme=aurora] .world-clocks .wc-item b{color:#E27D60}
+body[data-theme=aurora] .world-clocks .wc-item.wc-night{background:linear-gradient(180deg,rgba(88,86,214,.18),rgba(17,24,39,.4))}
+body[data-theme=aurora] .world-clocks .wc-item b{color:#5856D6}
 body[data-theme=aurora] .world-clocks .wc-item.wc-night b{color:#E5E7EB}
 body[data-theme=aurora] .world-clocks .wc-time{color:#E8E8EC}
 /* Mobile: hide world clocks entirely; only news is shown */
@@ -3824,7 +3824,7 @@ body[data-theme=aurora] .world-clocks .wc-time{color:#E8E8EC}
 .top-strip .weather-aqi{font-size:11px;color:#6B7280;font-weight:600}
 .top-strip .weather-aqi b{color:var(--aqi-c,#A0AEC0);font-family:'Space Mono',monospace;font-weight:700;margin-left:1px;font-size:12px}
 .top-strip .weather-loading{font-size:14px;color:#A0AEC0;animation:secBlink 1s steps(2) infinite}
-body[data-theme=aurora] .top-strip .weather-city{color:#888888;border-bottom-color:rgba(226,125,96,.3)}
+body[data-theme=aurora] .top-strip .weather-city{color:#888888;border-bottom-color:rgba(88,86,214,.3)}
 body[data-theme=aurora] .top-strip .weather-temp{color:#888888}
 body[data-theme=aurora] .top-strip .weather-temp b{color:#D4A545}
 body[data-theme=aurora] .top-strip .weather-aqi{color:#888888}
@@ -3840,29 +3840,29 @@ body[data-theme=aurora] .top-strip .weather-aqi{color:#888888}
   .top-strip .side-now-bar{margin-top:6px}
   .top-strip .side-now-foot{font-size:9.5px}
 }
-body[data-theme=aurora] .top-strip{background:linear-gradient(135deg,rgba(226,125,96,.08) 0%,rgba(226,125,96,.06) 100%);border-color:rgba(226,125,96,.18)}
-body[data-theme=aurora] .top-strip .side-now{background:linear-gradient(135deg,rgba(226,125,96,.06),rgba(226,125,96,.04));border-left-color:rgba(226,125,96,.2)}
+body[data-theme=aurora] .top-strip{background:linear-gradient(135deg,rgba(88,86,214,.08) 0%,rgba(88,86,214,.06) 100%);border-color:rgba(88,86,214,.18)}
+body[data-theme=aurora] .top-strip .side-now{background:linear-gradient(135deg,rgba(88,86,214,.06),rgba(88,86,214,.04));border-left-color:rgba(88,86,214,.2)}
 body[data-theme=aurora] .top-strip .side-now-time{color:#E8E8EC}
 body[data-theme=aurora] .top-strip .side-now-date{color:#888888}
 /* Climb scene base styles (used inside .top-strip on every screen) */
 .climb-stairs{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
-.climb-caption{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:9.5px;font-weight:800;color:#E27D60;letter-spacing:1.4px;opacity:.7;z-index:2}
+.climb-caption{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:9.5px;font-weight:800;color:#5856D6;letter-spacing:1.4px;opacity:.7;z-index:2}
 .climber{position:absolute;width:18px;height:24px;color:#111827;animation:climbStairs 16s linear infinite;will-change:left,bottom;z-index:1}
-.climber-1{color:#E27D60;animation-delay:0s}
+.climber-1{color:#5856D6;animation-delay:0s}
 .climber-2{color:#3DAE5C;animation-delay:5.3s}
 .climber-3{color:#E8453C;animation-delay:10.6s}
 .climb-peak{position:absolute;top:6px;right:10px;width:18px;height:18px;color:#E8912C;animation:peakBlink 1.8s ease-in-out infinite;z-index:2}
 .walker{position:absolute;width:14px;height:20px;animation:walkAcross 14s linear infinite;will-change:left;z-index:1;opacity:.55}
 .walker-a{color:#A0AEC0;bottom:4%;animation-delay:0s}
-.walker-b{color:#E27D60;bottom:4%;animation-delay:7s;animation-duration:11s}
+.walker-b{color:#5856D6;bottom:4%;animation-delay:7s;animation-duration:11s}
 .walker-c{color:#3DAE5C;bottom:32%;animation-delay:3.5s;animation-duration:13s}
 @keyframes walkAcross{from{left:-6%}to{left:104%}}
 .celebrator{position:absolute;top:6px;right:36px;width:20px;height:24px;color:#E8912C;z-index:2;animation:celebrate 1.1s ease-in-out infinite;transform-origin:50% 100%}
 @keyframes celebrate{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-4px) rotate(4deg)}}
 .section-div::before{content:'';position:absolute;top:50%;left:50%;width:8px;height:8px;border-radius:50%;background:#fff;border:2px solid rgba(17,24,39,.55);transform:translate(-50%,-50%);box-shadow:0 0 0 0 rgba(17,24,39,.45);animation:nodePulse 3s ease-in-out infinite}
 @keyframes nodePulse{0%,100%{box-shadow:0 0 0 0 rgba(17,24,39,.45)}50%{box-shadow:0 0 0 8px rgba(17,24,39,0)}}
-body[data-theme=aurora] .section-div{background:linear-gradient(90deg,transparent 0%,rgba(226,125,96,.22) 50%,transparent 100%)}
-body[data-theme=aurora] .section-div::before{background:#3A3C44;border-color:rgba(226,125,96,.7)}
+body[data-theme=aurora] .section-div{background:linear-gradient(90deg,transparent 0%,rgba(88,86,214,.22) 50%,transparent 100%)}
+body[data-theme=aurora] .section-div::before{background:#3A3C44;border-color:rgba(88,86,214,.7)}
 /* Tab hero floating particles — drift up over 6-9s with staggered delays */
 .tab-hero{isolation:isolate}
 .tab-hero-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;opacity:.85}
@@ -3877,7 +3877,7 @@ body[data-theme=aurora] .section-div::before{background:#3A3C44;border-color:rgb
 .tab-hero-particles span:nth-child(8){left:92%;width:4px;height:4px;animation-duration:8s;animation-delay:2s}
 @keyframes rise{0%{transform:translateY(0);opacity:0}10%{opacity:.95}80%{opacity:.55}100%{transform:translateY(-260px) translateX(var(--drift,8px));opacity:0}}
 @media (prefers-reduced-motion:reduce){.hdr-orbit *,.tab-hero-particles *,.section-div::before,.moral-comet{animation:none!important}}
-.moral{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#FFFBF1 0%,#FEF3E0 50%,#EAF6EE 100%);border:1px solid #F3D9A0;border-radius:12px;padding:6px 12px;margin-bottom:0;position:relative;overflow:hidden;min-height:auto;box-shadow:0 2px 8px rgba(226,125,96,.05)}
+.moral{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#FFFBF1 0%,#FEF3E0 50%,#EAF6EE 100%);border:1px solid #F3D9A0;border-radius:12px;padding:6px 12px;margin-bottom:0;position:relative;overflow:hidden;min-height:auto;box-shadow:0 2px 8px rgba(88,86,214,.05)}
 .moral::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,#EDA68E,#CC6E52);z-index:2}
 .moral-doodle{position:absolute;top:0;right:0;bottom:0;width:42%;max-width:480px;height:100%;pointer-events:none;z-index:0;opacity:.95;filter:drop-shadow(0 1px 2px rgba(17,24,39,.05))}
 .moral::after{content:'';position:absolute;top:0;left:0;bottom:0;width:58%;background:linear-gradient(90deg,rgba(255,251,241,.97) 0%,rgba(254,243,224,.75) 80%,rgba(254,243,224,0) 100%);pointer-events:none;z-index:0}
@@ -3901,7 +3901,7 @@ body[data-theme=aurora] .section-div::before{background:#3A3C44;border-color:rgb
 @keyframes topNewsFade{0%,5%{opacity:0;transform:translateY(-4px)}10%,90%{opacity:1;transform:translateY(0)}95%,100%{opacity:0;transform:translateY(4px)}}
 @keyframes topNewsPulse{0%,100%{box-shadow:0 0 0 0 rgba(61,174,92,.5)}50%{box-shadow:0 0 0 6px rgba(61,174,92,0)}}
 body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,20,40,.9) 0%,rgba(20,20,40,.65) 70%,rgba(20,20,40,0) 100%)}
-.moral-emoji{font-size:16px;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(226,125,96,.3));position:relative;z-index:1}
+.moral-emoji{font-size:16px;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(88,86,214,.3));position:relative;z-index:1}
 .moral-body{flex:1;min-width:0;position:relative;z-index:1}
 .moral-lbl{font-size:9px;font-weight:700;color:#B57B00;text-transform:uppercase;letter-spacing:1.1px}
 .moral-txt{font-size:14px;line-height:1.35;color:#111827;font-weight:600;margin-top:2px;letter-spacing:-.1px}
@@ -3943,11 +3943,11 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     flex-direction:row !important;
     justify-content:space-evenly !important;
     overflow-x:hidden !important;overflow-y:visible !important;
-    background:color-mix(in srgb,var(--paper) 92%,var(--ink)) !important;
-    backdrop-filter:blur(18px) saturate(1.2) !important;
-    -webkit-backdrop-filter:blur(18px) saturate(1.2) !important;
+    background:rgba(255,255,255,.92) !important;
+    backdrop-filter:blur(20px) saturate(1.4) !important;
+    -webkit-backdrop-filter:blur(20px) saturate(1.4) !important;
     border:none !important;
-    border-top:1px solid var(--line) !important;
+    border-top:1px solid rgba(0,0,0,.08) !important;
     border-radius:0 !important;
     padding:12px 14px calc(8px + env(safe-area-inset-bottom,0px)) !important;
     gap:0 !important;
@@ -3972,7 +3972,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     gap:3px !important;
     transition:color .25s cubic-bezier(.4,0,.2,1),transform .25s cubic-bezier(.34,1.56,.64,1) !important;
     background:transparent !important;
-    color:color-mix(in srgb,var(--ink) 55%,transparent) !important;
+    color:#8E8E93 !important;
     box-shadow:none !important;
     position:relative;
     overflow:visible;
@@ -4053,26 +4053,26 @@ body[data-theme=aurora] .tabs.page-t .tab.on .tl{color:#D9734A !important}
   .app .tabs.page-t .tab.on .ti{background:var(--accent-soft);color:var(--accent)}
   .app .tabs.page-t .tab.on .ti svg{color:var(--accent)!important;stroke:var(--accent)!important}
   /* Sidebar footer "now" panel — fills the bottom blank space */
-  .app .tabs.page-t .side-now{margin-top:auto;background:linear-gradient(135deg,rgba(17,24,39,.08),rgba(226,125,96,.08));border:1px solid rgba(17,24,39,.18);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
-  .app .tabs.page-t .side-now-lbl{font-size:10px;font-weight:800;color:#E27D60;letter-spacing:1.4px;text-transform:uppercase}
+  .app .tabs.page-t .side-now{margin-top:auto;background:linear-gradient(135deg,rgba(17,24,39,.08),rgba(88,86,214,.08));border:1px solid rgba(17,24,39,.18);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+  .app .tabs.page-t .side-now-lbl{font-size:10px;font-weight:800;color:#5856D6;letter-spacing:1.4px;text-transform:uppercase}
   .app .tabs.page-t .side-now-time{font-family:'Instrument Serif',Georgia,serif;font-size:30px;font-weight:400;color:#111827;line-height:1;letter-spacing:-.03em;margin-top:2px}
   .app .tabs.page-t .side-now-time .sec{color:#E8453C;animation:secBlink 1s steps(2) infinite;font-size:18px;margin-left:2px;display:inline-block;vertical-align:top;margin-top:6px}
   @keyframes secBlink{50%{opacity:.35}}
   .app .tabs.page-t .side-now-date{font-size:12px;color:#6B7280;font-weight:600}
   .app .tabs.page-t .side-now-bar{height:6px;border-radius:99px;background:rgba(17,24,39,.14);overflow:hidden;margin-top:8px;position:relative}
-  .app .tabs.page-t .side-now-fill{height:100%;background:linear-gradient(90deg,#E27D60,#E8912C);border-radius:99px;transition:width .4s ease;position:relative;overflow:hidden}
+  .app .tabs.page-t .side-now-fill{height:100%;background:linear-gradient(90deg,#5856D6,#E8912C);border-radius:99px;transition:width .4s ease;position:relative;overflow:hidden}
   .app .tabs.page-t .side-now-fill::after{content:'';position:absolute;top:0;left:-30%;width:30%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:fillShine 2.6s ease-in-out infinite}
   @keyframes fillShine{0%{left:-30%}100%{left:130%}}
   .app .tabs.page-t .side-now-foot{font-size:10px;color:#A0AEC0;font-weight:700;letter-spacing:.6px;display:flex;justify-content:space-between;margin-top:2px}
   .app .tabs.page-t .side-now-wave{position:absolute;bottom:0;left:0;right:0;height:30px;opacity:.15;pointer-events:none}
   /* Top strip — wide horizontal banner with the climb scene + live time at the very top */
   /* Climb scene — stick figures climbing stairs, fills the visible blank space */
-  .app .tabs.page-t .climb-scene{position:relative;width:100%;height:170px;border-radius:14px;background:linear-gradient(180deg,rgba(17,24,39,.04) 0%,rgba(226,125,96,.06) 100%);border:1px dashed rgba(17,24,39,.22);overflow:hidden;flex-shrink:0;margin-top:auto}
+  .app .tabs.page-t .climb-scene{position:relative;width:100%;height:170px;border-radius:14px;background:linear-gradient(180deg,rgba(17,24,39,.04) 0%,rgba(88,86,214,.06) 100%);border:1px dashed rgba(17,24,39,.22);overflow:hidden;flex-shrink:0;margin-top:auto}
   .app .tabs.page-t .side-now{margin-top:0!important}
   .climb-stairs{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
-  .climb-caption{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:9.5px;font-weight:800;color:#E27D60;letter-spacing:1.4px;opacity:.7;z-index:2}
+  .climb-caption{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:9.5px;font-weight:800;color:#5856D6;letter-spacing:1.4px;opacity:.7;z-index:2}
   .climber{position:absolute;width:18px;height:24px;color:#111827;animation:climbStairs 16s linear infinite;will-change:left,bottom;z-index:1}
-  .climber-1{color:#E27D60;animation-delay:0s}
+  .climber-1{color:#5856D6;animation-delay:0s}
   .climber-2{color:#3DAE5C;animation-delay:5.3s}
   .climber-3{color:#E8453C;animation-delay:10.6s}
   @keyframes climbStairs{
@@ -4104,23 +4104,23 @@ body[data-theme=aurora] .tabs.page-t .tab.on .tl{color:#D9734A !important}
   /* Ambient horizontal walkers + celebrator at the peak (extra people moving around) */
   .walker{position:absolute;width:14px;height:20px;animation:walkAcross 14s linear infinite;will-change:left;z-index:1;opacity:.55}
   .walker-a{color:#A0AEC0;bottom:4%;animation-delay:0s}
-  .walker-b{color:#E27D60;bottom:4%;animation-delay:7s;animation-duration:11s}
+  .walker-b{color:#5856D6;bottom:4%;animation-delay:7s;animation-duration:11s}
   .walker-c{color:#3DAE5C;bottom:32%;animation-delay:3.5s;animation-duration:13s}
   @keyframes walkAcross{from{left:-6%}to{left:104%}}
   .celebrator{position:absolute;top:6px;right:36px;width:20px;height:24px;color:#E8912C;z-index:2;animation:celebrate 1.1s ease-in-out infinite;transform-origin:50% 100%}
   @keyframes celebrate{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-4px) rotate(4deg)}}
-  body[data-theme=aurora] .app .tabs.page-t .climb-scene{background:linear-gradient(180deg,rgba(226,125,96,.06) 0%,rgba(226,125,96,.05) 100%);border-color:rgba(226,125,96,.2)}
-  body[data-theme=aurora] .climb-caption{color:#E27D60}
-  body[data-theme=aurora] .app .tabs.page-t .side-now{background:linear-gradient(135deg,rgba(226,125,96,.12),rgba(226,125,96,.08));border-color:rgba(226,125,96,.2)}
+  body[data-theme=aurora] .app .tabs.page-t .climb-scene{background:linear-gradient(180deg,rgba(88,86,214,.06) 0%,rgba(88,86,214,.05) 100%);border-color:rgba(88,86,214,.2)}
+  body[data-theme=aurora] .climb-caption{color:#5856D6}
+  body[data-theme=aurora] .app .tabs.page-t .side-now{background:linear-gradient(135deg,rgba(88,86,214,.12),rgba(88,86,214,.08));border-color:rgba(88,86,214,.2)}
   /* Top strip layout (climb scene + live time, side-by-side) */
-  .top-strip{display:flex;align-items:stretch;gap:0;background:linear-gradient(135deg,rgba(17,24,39,.06) 0%,rgba(226,125,96,.06) 100%);border:1px solid rgba(17,24,39,.18);border-radius:18px;min-height:180px;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(17,24,39,.04)}
+  .top-strip{display:flex;align-items:stretch;gap:0;background:linear-gradient(135deg,rgba(17,24,39,.06) 0%,rgba(88,86,214,.06) 100%);border:1px solid rgba(17,24,39,.18);border-radius:18px;min-height:180px;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(17,24,39,.04)}
   .top-strip .climb-scene{position:relative;flex:1;border:none;background:transparent;border-radius:0;height:auto;min-height:180px;margin-top:0;padding:8px 0;overflow:hidden}
   .top-strip .climb-scene .climb-stairs{transform:scaleX(1.05)}
-  .top-strip .side-now{flex:0 0 280px;margin-top:0!important;border-radius:0;border:none;border-left:1px dashed rgba(17,24,39,.25);background:linear-gradient(135deg,rgba(17,24,39,.04),rgba(226,125,96,.04));padding:18px 22px;justify-content:center}
+  .top-strip .side-now{flex:0 0 280px;margin-top:0!important;border-radius:0;border:none;border-left:1px dashed rgba(17,24,39,.25);background:linear-gradient(135deg,rgba(17,24,39,.04),rgba(88,86,214,.04));padding:18px 22px;justify-content:center}
   .top-strip .side-now .side-now-time{font-size:38px}
   .top-strip .side-now .side-now-time .sec{font-size:22px;margin-top:8px}
-  body[data-theme=aurora] .top-strip{background:linear-gradient(135deg,rgba(226,125,96,.08) 0%,rgba(226,125,96,.06) 100%);border-color:rgba(226,125,96,.18)}
-  body[data-theme=aurora] .top-strip .side-now{background:linear-gradient(135deg,rgba(226,125,96,.06),rgba(226,125,96,.04));border-left-color:rgba(226,125,96,.2)}
+  body[data-theme=aurora] .top-strip{background:linear-gradient(135deg,rgba(88,86,214,.08) 0%,rgba(88,86,214,.06) 100%);border-color:rgba(88,86,214,.18)}
+  body[data-theme=aurora] .top-strip .side-now{background:linear-gradient(135deg,rgba(88,86,214,.06),rgba(88,86,214,.04));border-left-color:rgba(88,86,214,.2)}
   @media (max-width:900px){.top-strip{flex-direction:column}.top-strip .side-now{flex:0 0 auto;border-left:none;border-top:1px dashed rgba(17,24,39,.25)}}
   body[data-theme=aurora] .app .tabs.page-t .side-now-time{color:#E8E8EC}
   body[data-theme=aurora] .app .tabs.page-t .side-now-date{color:#888888}
@@ -4213,18 +4213,18 @@ input,textarea,select{transition:all .15s}
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 /* News Shorts feed */
 /* Listening streak card (Books tab) */
-.streak-card{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:18px;background:linear-gradient(135deg,#FFF7ED 0%,#FED7AA 100%);border:1px solid rgba(226,125,96,.25);margin-bottom:16px;box-shadow:0 4px 16px rgba(226,125,96,.1)}
-.streak-ico{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#E27D60,#CC6E52);color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(226,125,96,.35)}
+.streak-card{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:18px;background:linear-gradient(135deg,#FFF7ED 0%,#FED7AA 100%);border:1px solid rgba(88,86,214,.25);margin-bottom:16px;box-shadow:0 4px 16px rgba(88,86,214,.1)}
+.streak-ico{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#5856D6,#CC6E52);color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(88,86,214,.35)}
 .streak-body{flex:1;min-width:0}
 .streak-n{font-family:'Space Mono',monospace;font-size:34px;font-weight:800;letter-spacing:-1px;color:#A07040;line-height:1}
 .streak-n span{font-size:14px;font-weight:600;color:#B07848;margin-left:4px;letter-spacing:0}
 .streak-lbl{font-size:12px;font-weight:600;color:#B07848;margin-top:3px;letter-spacing:.2px}
-.streak-tot{text-align:center;flex-shrink:0;padding-left:16px;border-left:1px solid rgba(226,125,96,.3)}
+.streak-tot{text-align:center;flex-shrink:0;padding-left:16px;border-left:1px solid rgba(88,86,214,.3)}
 .streak-tot b{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;display:block;color:#A07040;line-height:1}
 .streak-tot small{font-size:9px;color:#B07848;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
-body[data-theme=aurora] .streak-card{background:linear-gradient(135deg,rgba(226,125,96,.18),rgba(217,119,6,.12));border-color:rgba(251,146,60,.3);box-shadow:0 4px 20px rgba(226,125,96,.2)}
+body[data-theme=aurora] .streak-card{background:linear-gradient(135deg,rgba(88,86,214,.18),rgba(217,119,6,.12));border-color:rgba(251,146,60,.3);box-shadow:0 4px 20px rgba(88,86,214,.2)}
 body[data-theme=aurora] .streak-n,body[data-theme=aurora] .streak-tot b{color:#FDBA74}
-body[data-theme=aurora] .streak-n span,body[data-theme=aurora] .streak-lbl,body[data-theme=aurora] .streak-tot small{color:#E27D60}
+body[data-theme=aurora] .streak-n span,body[data-theme=aurora] .streak-lbl,body[data-theme=aurora] .streak-tot small{color:#5856D6}
 body[data-theme=aurora] .streak-tot{border-left-color:rgba(251,146,60,.3)}
 /* Section header (uniform across Books/Steps/Board/News tabs) */
 .tab-hero{position:relative;height:96px;border-radius:16px;overflow:hidden;background-size:cover;background-position:center;margin-bottom:16px;display:flex;align-items:flex-end;padding:14px 20px;box-shadow:var(--shadow-3);transition:transform .3s ease}
@@ -4236,13 +4236,13 @@ body[data-theme=aurora] .streak-tot{border-left-color:rgba(251,146,60,.3)}
 @media (max-width:600px){.tab-hero{height:72px;padding:10px 14px;border-radius:12px;margin-bottom:10px}.tab-hero-h{font-size:16px;margin:0;line-height:1.2}.tab-hero-s{font-size:11px;margin-top:2px;opacity:.85}.tab-hero-particles{display:none}}
 body[data-theme=aurora] .tab-hero{box-shadow:0 12px 32px rgba(0,0,0,.4)}
 .section-hd{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.section-ic{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:#E27D60;color:#fff;flex-shrink:0}
+.section-ic{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:#5856D6;color:#fff;flex-shrink:0}
 .section-hd h3{font-size:22px;font-weight:700;letter-spacing:-.5px;color:#111827;margin-bottom:2px}
 .section-hd p{font-size:13px;color:#6B7280}
-body[data-theme=aurora] .section-ic{background:linear-gradient(135deg,#E27D60,#CC6E52)}
+body[data-theme=aurora] .section-ic{background:linear-gradient(135deg,#5856D6,#CC6E52)}
 body[data-theme=aurora] .section-hd h3{color:#E8E8EC}
 body[data-theme=aurora] .section-hd p{color:#888888}
-body[data-theme=aurora] .news-hero-ic{background:linear-gradient(135deg,#E27D60,#CC6E52)}
+body[data-theme=aurora] .news-hero-ic{background:linear-gradient(135deg,#5856D6,#CC6E52)}
 body[data-theme=aurora] .news-hero h2{color:#E8E8EC}
 .news-hero{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
 .news-hero-l{display:flex;align-items:center;gap:14px}
@@ -4259,54 +4259,54 @@ body[data-theme=aurora] .news-hero h2{color:#E8E8EC}
 .news-card:hover{transform:translateY(-3px);box-shadow:0 6px 12px rgba(17,24,39,.06),0 16px 32px rgba(17,24,39,.1);border-color:rgba(17,24,39,.25)}
 .news-img{display:block;position:relative;flex:0 0 50%;width:50%;align-self:stretch;min-height:200px;background-size:cover;background-position:center;background-color:#F5F6F8;text-decoration:none}
 .news-img::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,rgba(0,0,0,.25) 100%);pointer-events:none}
-.news-src-chip{position:absolute;bottom:12px;left:12px;z-index:1;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);color:#E27D60;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.news-src-chip{position:absolute;bottom:12px;left:12px;z-index:1;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);color:#5856D6;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .news-body{padding:16px 18px 18px;flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
 .news-meta{display:flex;gap:10px;align-items:center;font-size:11px;color:#A0AEC0;font-weight:700;margin-bottom:8px}
-.news-src{color:#E27D60;background:#F5F6F8;padding:3px 10px;border-radius:7px;text-transform:uppercase;letter-spacing:.6px}
+.news-src{color:#5856D6;background:#F5F6F8;padding:3px 10px;border-radius:7px;text-transform:uppercase;letter-spacing:.6px}
 .news-time{font-weight:600;letter-spacing:0;text-transform:none;color:#A0AEC0}
 .news-title{font-size:17px;font-weight:700;line-height:1.35;letter-spacing:-.2px;margin-bottom:8px}
 .news-title a{color:#111827;text-decoration:none}
-.news-title a:hover{color:#E27D60}
+.news-title a:hover{color:#5856D6}
 .news-desc{font-size:14px;line-height:1.6;color:#6B7280;margin-bottom:4px}
 .news-acts{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #F5F6F8}
-.news-share{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:11px;background:linear-gradient(135deg,#E27D60,#EC4899);color:#fff;font-size:13px;font-weight:700;box-shadow:0 4px 12px rgba(17,24,39,.3);cursor:pointer;border:none}
+.news-share{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:11px;background:linear-gradient(135deg,#5856D6,#EC4899);color:#fff;font-size:13px;font-weight:700;box-shadow:0 4px 12px rgba(17,24,39,.3);cursor:pointer;border:none}
 .news-share:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(17,24,39,.4)}
 .news-share:active{transform:scale(.95)}
-.news-read{color:#E27D60;font-size:13px;font-weight:700;text-decoration:none;transition:color .15s}
+.news-read{color:#5856D6;font-size:13px;font-weight:700;text-decoration:none;transition:color .15s}
 .news-read:hover{color:#EC4899;text-decoration:underline}
 @media (max-width:600px){.news-card{flex-direction:column}.news-img{flex:0 0 auto;width:100%;min-height:170px;height:170px}.news-img::after{background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.4) 100%)}.news-title{font-size:16px}.news-desc{font-size:13.5px}.news-body{padding:14px 16px 16px}}
 body[data-theme=aurora] .news-card{background:rgba(26,26,44,.7);border-color:rgba(255,255,255,.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
-body[data-theme=aurora] .news-card:hover{border-color:rgba(226,125,96,.35)}
+body[data-theme=aurora] .news-card:hover{border-color:rgba(88,86,214,.35)}
 body[data-theme=aurora] .news-hero h2{color:#E8E8EC}
 body[data-theme=aurora] .news-hero p{color:#888888}
-body[data-theme=aurora] .news-refresh{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#E27D60}
-body[data-theme=aurora] .news-refresh:hover{background:#E27D60;color:#0A0A14}
+body[data-theme=aurora] .news-refresh{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#5856D6}
+body[data-theme=aurora] .news-refresh:hover{background:#5856D6;color:#0A0A14}
 body[data-theme=aurora] .news-img{background-color:#32343A}
-body[data-theme=aurora] .news-src-chip{background:rgba(10,10,20,.85);color:#E27D60}
-body[data-theme=aurora] .news-src{color:#E27D60;background:rgba(226,125,96,.15)}
+body[data-theme=aurora] .news-src-chip{background:rgba(10,10,20,.85);color:#5856D6}
+body[data-theme=aurora] .news-src{color:#5856D6;background:rgba(88,86,214,.15)}
 body[data-theme=aurora] .news-time{color:#7373A0}
 body[data-theme=aurora] .news-title a{color:#E8E8EC}
-body[data-theme=aurora] .news-title a:hover{color:#E27D60}
+body[data-theme=aurora] .news-title a:hover{color:#5856D6}
 body[data-theme=aurora] .news-desc{color:#888888}
 body[data-theme=aurora] .news-acts{border-top-color:rgba(255,255,255,.06)}
-body[data-theme=aurora] .news-read{color:#E27D60}
+body[data-theme=aurora] .news-read{color:#5856D6}
 body[data-theme=aurora] .news-read:hover{color:#F472B6}
-body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#E27D60,#F472B6);box-shadow:0 4px 14px rgba(226,125,96,.35)}
+body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#5856D6,#F472B6);box-shadow:0 4px 14px rgba(88,86,214,.35)}
 
 /* ============================================== */
 /* NEXT-GEN CLASSIC \u2014 modern indigo/violet system */
 /* ============================================== */
 body:not([data-theme=aurora]) .app{position:relative;z-index:1}
-body:not([data-theme=aurora]) .logo{background:linear-gradient(135deg,#E27D60 0%,#CC6E52 50%,#EC4899 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 10px rgba(17,24,39,.15))}
+body:not([data-theme=aurora]) .logo{background:linear-gradient(135deg,#5856D6 0%,#CC6E52 50%,#EC4899 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 10px rgba(17,24,39,.15))}
 body:not([data-theme=aurora]) .logo .k{-webkit-text-fill-color:#EC4899}
 body:not([data-theme=aurora]) .hdr-sub{color:#6B7280;font-weight:500}
 body:not([data-theme=aurora]) .hdr-st{background:#fff;border-color:#E5E7EB;color:#111827;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.05)}
 body:not([data-theme=aurora]) .tc,body:not([data-theme=aurora]) .st,body:not([data-theme=aurora]) .dash-card,body:not([data-theme=aurora]) .col,body:not([data-theme=aurora]) .kc,body:not([data-theme=aurora]) .user-bar,body:not([data-theme=aurora]) .cal-selected-box,body:not([data-theme=aurora]) .book-card,body:not([data-theme=aurora]) .insight,body:not([data-theme=aurora]) .calc-hist,body:not([data-theme=aurora]) .calc-screen{background:#fff;border-color:rgba(0,0,0,.06);box-shadow:0 1px 2px rgba(0,0,0,.03),0 2px 8px rgba(0,0,0,.05)}
 body:not([data-theme=aurora]) .tc:hover,body:not([data-theme=aurora]) .st:hover,body:not([data-theme=aurora]) .dash-card:hover{box-shadow:0 2px 6px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.08);border-color:rgba(17,24,39,.2)}
 body:not([data-theme=aurora]) .moral{background:linear-gradient(135deg,#F5F6F8 0%,#F5F6F8 100%);border-color:rgba(17,24,39,.15);box-shadow:0 2px 8px rgba(17,24,39,.06)}
-body:not([data-theme=aurora]) .moral-lbl{color:#E27D60}
-body:not([data-theme=aurora]) .moral-ref{background:#fff;color:#E27D60;border-color:rgba(17,24,39,.25)}
-body:not([data-theme=aurora]) .moral-ref:hover{background:#E27D60;color:#fff}
+body:not([data-theme=aurora]) .moral-lbl{color:#5856D6}
+body:not([data-theme=aurora]) .moral-ref{background:#fff;color:#5856D6;border-color:rgba(17,24,39,.25)}
+body:not([data-theme=aurora]) .moral-ref:hover{background:#5856D6;color:#fff}
 body:not([data-theme=aurora]) .tabs{background:var(--bg-sunken);box-shadow:none}
 body:not([data-theme=aurora]) .tab{color:var(--text-mute)}
 body:not([data-theme=aurora]) .tab:hover:not(.on){background:rgba(0,0,0,.03);color:var(--ink)}
@@ -4317,8 +4317,8 @@ body:not([data-theme=aurora]) .add-bar{background:var(--bg-elev);border:1px soli
 body:not([data-theme=aurora]) .add-bar:hover{border-color:var(--line-2);box-shadow:var(--shadow-2)}
 body:not([data-theme=aurora]) .add-bar .txt small{color:var(--ink-3)}
 body:not([data-theme=aurora]) .add-bar .plus{background:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(63,58,54,.25)}
-body:not([data-theme=aurora]) .fab{background:linear-gradient(135deg,#3F3A36,#6B635B);color:#fff;box-shadow:0 8px 28px rgba(63,58,54,.2),0 4px 12px rgba(0,0,0,.06);border-radius:18px}
-body:not([data-theme=aurora]) .fab:hover{background:linear-gradient(135deg,#2A2622,#3F3A36);transform:scale(1.08);box-shadow:0 12px 36px rgba(63,58,54,.35),0 4px 12px rgba(0,0,0,.1)}
+body:not([data-theme=aurora]) .fab{background:var(--accent);color:#fff;box-shadow:0 4px 16px rgba(88,86,214,.3);border-radius:16px}
+body:not([data-theme=aurora]) .fab:hover{background:var(--accent-2);transform:scale(1.05);box-shadow:0 6px 24px rgba(88,86,214,.4)}
 body:not([data-theme=aurora]) .btn-tr{background:var(--accent);box-shadow:0 4px 14px rgba(63,58,54,.25)}
 body:not([data-theme=aurora]) .btn-tr.stop{background:linear-gradient(135deg,#EF4444,#DC2626);box-shadow:0 4px 14px rgba(239,68,68,.3)}
 body:not([data-theme=aurora]) .fb{background:#fff;border-color:var(--line);color:var(--text-mute);box-shadow:none}
@@ -4339,8 +4339,8 @@ body:not([data-theme=aurora]) .ck.op{background:#EEF2FF;color:#3F3A36}
 body:not([data-theme=aurora]) .ck.eq{background:#3F3A36;color:#fff;box-shadow:0 3px 10px rgba(17,24,39,.2)}
 body:not([data-theme=aurora]) .ck.sci{background:#F5F6F8;color:#0891B2}
 body:not([data-theme=aurora]) .ck.sp{background:#FEE2E2;color:#DC2626}
-body:not([data-theme=aurora]) .calc-tgl button.on{background:#E27D60;color:#fff}
-body:not([data-theme=aurora]) .chk.on{background:#CC6E52;border-color:#CC6E52;box-shadow:0 2px 6px rgba(226,125,96,.3)}
+body:not([data-theme=aurora]) .calc-tgl button.on{background:#5856D6;color:#fff}
+body:not([data-theme=aurora]) .chk.on{background:#CC6E52;border-color:#CC6E52;box-shadow:0 2px 6px rgba(88,86,214,.3)}
 
 /* ============================================== */
 /* MOBILE BOTTOM TAB BAR with photo tiles + visible labels */
@@ -4348,7 +4348,7 @@ body:not([data-theme=aurora]) .chk.on{background:#CC6E52;border-color:#CC6E52;bo
 @media (max-width:1023px){
   .app{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
   .fab{bottom:calc(84px + env(safe-area-inset-bottom));right:18px;width:56px;height:56px;font-size:28px;z-index:100;display:flex!important;position:fixed!important}
-  .fab-chat{position:fixed;bottom:calc(96px + env(safe-area-inset-bottom));right:18px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#D4654A,#B04E38);color:#fff;border:none;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(212,101,74,.35),0 2px 8px rgba(0,0,0,.12);transition:transform .2s ease}
+  .fab-chat{position:fixed;bottom:calc(96px + env(safe-area-inset-bottom));right:18px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#5856D6,#4A48C4);color:#fff;border:none;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(88,86,214,.35),0 2px 8px rgba(0,0,0,.12);transition:transform .2s ease}
   .fab-chat:active{transform:scale(.9)}
   .fab-cal{position:fixed;bottom:calc(96px + env(safe-area-inset-bottom));right:78px;width:44px;height:44px;border-radius:50%;background:color-mix(in srgb,var(--accent) 15%,var(--surface));color:var(--accent);border:1.5px solid color-mix(in srgb,var(--accent) 25%,transparent);cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.08);transition:transform .2s ease}
   .fab-cal:active{transform:scale(.9)}
@@ -4381,20 +4381,20 @@ body:not([data-theme=aurora]) .chk.on{background:#CC6E52;border-color:#CC6E52;bo
 .hdr-actions{display:flex;align-items:center;gap:8px}
 .hdr-profile{display:inline-flex;align-items:center;gap:7px;padding:7px 12px 7px 9px;border-radius:99px;background:rgba(17,24,39,.07);border:1px solid rgba(17,24,39,.15);color:#111827;font-size:13px;font-weight:600;cursor:pointer;transition:transform .15s ease,background .15s ease;font-family:inherit}
 .hdr-profile:hover{background:rgba(17,24,39,.12);transform:translateY(-1px)}
-.hdr-profile svg{color:#E27D60}
+.hdr-profile svg{color:#5856D6}
 .hdr-profile-name{font-size:13px;letter-spacing:-.01em}
 @media (max-width:600px){.hdr-profile-name{display:none}.hdr-profile{padding:7px 8px}}
 body[data-theme=aurora] .hdr-profile{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#E8E8EC}
-body[data-theme=aurora] .hdr-profile svg{color:#E27D60}
-.hdr-help{width:34px;height:34px;border-radius:50%;background:rgba(17,24,39,.08);border:1px solid rgba(17,24,39,.18);color:#E27D60;font-weight:800;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-family:inherit;transition:transform .15s ease,background .15s ease}
+body[data-theme=aurora] .hdr-profile svg{color:#5856D6}
+.hdr-help{width:34px;height:34px;border-radius:50%;background:rgba(17,24,39,.08);border:1px solid rgba(17,24,39,.18);color:#5856D6;font-weight:800;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-family:inherit;transition:transform .15s ease,background .15s ease}
 .hdr-help:hover{background:rgba(17,24,39,.14);transform:translateY(-1px)}
-body[data-theme=aurora] .hdr-help{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#E27D60}
+body[data-theme=aurora] .hdr-help{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:#5856D6}
 /* HELP modal — full step-by-step guide */
 /* ─── New visual help modal ─── */
 .help-mdl-v2{max-width:680px;width:min(680px,100%);padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:92vh;background:linear-gradient(180deg,#0F0B1F 0%,#171425 100%);border:1px solid rgba(255,255,255,.08);position:relative}
 .hv-x{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:#fff;cursor:pointer;display:grid;place-items:center;z-index:10;transition:background .2s,transform .2s}
 .hv-x:hover{background:rgba(255,255,255,.14);transform:scale(1.06)}
-.hv-hero{padding:36px 30px 28px;background:radial-gradient(700px 400px at 50% 0%,rgba(226,125,96,.22),transparent 60%),radial-gradient(500px 300px at 100% 100%,rgba(226,125,96,.18),transparent 60%);text-align:center;border-bottom:1px solid rgba(255,255,255,.06)}
+.hv-hero{padding:36px 30px 28px;background:radial-gradient(700px 400px at 50% 0%,rgba(88,86,214,.22),transparent 60%),radial-gradient(500px 300px at 100% 100%,rgba(88,86,214,.18),transparent 60%);text-align:center;border-bottom:1px solid rgba(255,255,255,.06)}
 .hv-hero-eyebrow{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:500}
 .hv-brand{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-size:54px;letter-spacing:-.025em;line-height:1;display:inline-flex;align-items:baseline;gap:1px;margin:8px 0 12px;color:#fff}
 .hv-brand .b1{font-style:normal}
@@ -4406,19 +4406,19 @@ body[data-theme=aurora] .hdr-help{background:rgba(255,255,255,.04);border-color:
 .hv-step{position:relative;padding:22px 22px 22px 78px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:18px;transition:border-color .25s,transform .25s,background .25s}
 .hv-step:hover{border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.06);transform:translateX(2px)}
 .hv-step-num{position:absolute;top:22px;right:24px;font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:rgba(255,255,255,.32);font-weight:500}
-.hv-step-ic{position:absolute;top:22px;left:22px;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:20px;color:#fff;box-shadow:0 8px 22px -4px rgba(226,125,96,.3)}
+.hv-step-ic{position:absolute;top:22px;left:22px;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:20px;color:#fff;box-shadow:0 8px 22px -4px rgba(88,86,214,.3)}
 .hv-step-t{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:22px;line-height:1.15;letter-spacing:-.015em;color:#fff;margin:0 0 8px}
 .hv-step-d{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.78);margin:0;letter-spacing:-.005em}
-.hv-step-d code{font-family:'JetBrains Mono','Space Mono',monospace;font-size:12.5px;background:rgba(226,125,96,.12);color:#FFE3D8;padding:2px 7px;border-radius:5px;border:1px solid rgba(226,125,96,.25);letter-spacing:0}
+.hv-step-d code{font-family:'JetBrains Mono','Space Mono',monospace;font-size:12.5px;background:rgba(88,86,214,.12);color:#FFE3D8;padding:2px 7px;border-radius:5px;border:1px solid rgba(88,86,214,.25);letter-spacing:0}
 .hv-step-d kbd{font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:2px 7px;border-radius:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff}
 .hv-step-d b{color:#fff;font-weight:600}
-.hv-step-tip{margin-top:10px;padding:10px 12px;background:rgba(226,125,96,.08);border-left:3px solid #EDA68E;border-radius:4px;font-size:13px;line-height:1.45;color:rgba(255,255,255,.78)}
+.hv-step-tip{margin-top:10px;padding:10px 12px;background:rgba(88,86,214,.08);border-left:3px solid #EDA68E;border-radius:4px;font-size:13px;line-height:1.45;color:rgba(255,255,255,.78)}
 .hv-step-tip b{color:#fff;font-weight:600}
 .hv-foot{padding:18px 24px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .hv-foot-l{font-size:12px;color:rgba(255,255,255,.45)}
 .hv-foot-l a{color:rgba(255,255,255,.7);text-decoration:none}
 .hv-foot-l a:hover{color:#fff}
-.hv-foot-cta{padding:11px 22px;border-radius:12px;border:0;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;font:600 14px/1 inherit;cursor:pointer;letter-spacing:-.005em;box-shadow:0 8px 22px -4px rgba(226,125,96,.45);transition:transform .2s}
+.hv-foot-cta{padding:11px 22px;border-radius:12px;border:0;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;font:600 14px/1 inherit;cursor:pointer;letter-spacing:-.005em;box-shadow:0 8px 22px -4px rgba(88,86,214,.45);transition:transform .2s}
 .hv-foot-cta:hover{transform:translateY(-1px)}
 @media (max-width:560px){.help-mdl-v2{max-height:96vh;border-radius:18px 18px 0 0;align-self:flex-end}.hv-hero{padding:30px 22px 22px}.hv-brand{font-size:46px}.hv-body{padding:16px 18px 6px}.hv-step{padding:20px 20px 20px 70px}.hv-step-ic{width:38px;height:38px;left:18px;font-size:18px;border-radius:12px}.hv-step-t{font-size:19px}.hv-foot{padding:14px 18px}}
 /* keep old class for backward-compat in case anything still references it */
@@ -4433,15 +4433,15 @@ body[data-theme=aurora] .hd-mdl .hv-x{background:rgba(255,255,255,.08);color:#ff
 body[data-theme=aurora] .hd-mdl .hv-x:hover{background:rgba(255,255,255,.16)}
 .hd-dots{display:flex;gap:8px;justify-content:center;padding:18px 20px 8px;flex-shrink:0}
 .hd-dot{width:32px;height:5px;border-radius:999px;border:0;background:rgba(0,0,0,.1);cursor:pointer;padding:0;transition:background .25s ease,transform .2s ease}
-.hd-dot.done{background:rgba(226,125,96,.5)}
+.hd-dot.done{background:rgba(88,86,214,.5)}
 .hd-dot.on{background:linear-gradient(90deg,#EDA68E,#FED7AA);transform:scaleY(1.2)}
 .hd-dot:hover{transform:scaleY(1.4)}
 body[data-theme=aurora] .hd-dot{background:rgba(255,255,255,.1)}
-body[data-theme=aurora] .hd-dot.done{background:rgba(226,125,96,.6)}
+body[data-theme=aurora] .hd-dot.done{background:rgba(88,86,214,.6)}
 .hd-step-wrap{flex:1;overflow-y:auto;padding:8px 28px 24px;-webkit-overflow-scrolling:touch}
 .hd-step{display:flex;flex-direction:column;align-items:center;text-align:center;animation:hdSlide .4s cubic-bezier(.16,1,.3,1)}
 @keyframes hdSlide{from{opacity:0;transform:translateX(20px)}}
-.hd-step-ic{width:88px;height:88px;border-radius:24px;display:grid;place-items:center;font-size:42px;color:#fff;margin:18px 0 18px;box-shadow:0 18px 42px -10px rgba(226,125,96,.4);transition:transform .3s ease}
+.hd-step-ic{width:88px;height:88px;border-radius:24px;display:grid;place-items:center;font-size:42px;color:#fff;margin:18px 0 18px;box-shadow:0 18px 42px -10px rgba(88,86,214,.4);transition:transform .3s ease}
 .hd-step-ic:hover{transform:scale(1.04) rotate(-3deg)}
 .hd-step-num{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,0,0,.45);font-weight:600;margin-bottom:8px}
 body[data-theme=aurora] .hd-step-num{color:rgba(255,255,255,.55)}
@@ -4451,8 +4451,8 @@ body[data-theme=aurora] .hd-step-t{color:#fff}
 body[data-theme=aurora] .hd-step-d{color:#D4D2DC}
 .hd-step-d b{color:#111827;font-weight:600}
 body[data-theme=aurora] .hd-step-d b{color:#fff}
-.hd-step-d code{font-family:'JetBrains Mono','Space Mono',monospace;font-size:13px;background:rgba(226,125,96,.12);color:#B7472A;padding:3px 8px;border-radius:6px;border:1px solid rgba(226,125,96,.25);font-weight:500}
-body[data-theme=aurora] .hd-step-d code{color:#FFE3D8;background:rgba(226,125,96,.18)}
+.hd-step-d code{font-family:'JetBrains Mono','Space Mono',monospace;font-size:13px;background:rgba(88,86,214,.12);color:#B7472A;padding:3px 8px;border-radius:6px;border:1px solid rgba(88,86,214,.25);font-weight:500}
+body[data-theme=aurora] .hd-step-d code{color:#FFE3D8;background:rgba(88,86,214,.18)}
 .hd-demo{margin:8px auto 14px;width:100%;max-width:380px;padding:18px;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.06);border-radius:16px;display:flex;flex-direction:column;gap:8px}
 body[data-theme=aurora] .hd-demo{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
 .hd-tip{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;background:rgba(255,181,71,.1);border-left:3px solid #FED7AA;border-radius:8px;font-size:13.5px;line-height:1.5;color:#3D3D3D;text-align:left;max-width:420px;margin:0 auto;letter-spacing:-.005em}
@@ -4468,7 +4468,7 @@ body[data-theme=aurora] .hd-foot{background:#0F0B1F;border-top-color:rgba(255,25
 .hd-foot-prev.is-disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
 body[data-theme=aurora] .hd-foot-prev{color:#9C99A8}
 body[data-theme=aurora] .hd-foot-prev:hover{background:rgba(255,255,255,.06);color:#fff}
-.hd-foot-cta{background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 8px 22px -4px rgba(226,125,96,.45)}
+.hd-foot-cta{background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 8px 22px -4px rgba(88,86,214,.45)}
 .hd-foot-cta:hover{transform:translateY(-1px)}
 .hd-foot-cta:active{transform:scale(.97)}
 /* ─── Demo blocks shown inside each help step ─── */
@@ -4484,7 +4484,7 @@ body[data-theme=aurora] .hd-task-t{color:#fff}
 .hd-board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .hd-col{background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.06);border-radius:10px;padding:10px;text-align:left;transition:all .2s}
 body[data-theme=aurora] .hd-col{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.06)}
-.hd-col-on{background:rgba(226,125,96,.1);border-color:rgba(226,125,96,.3)}
+.hd-col-on{background:rgba(88,86,214,.1);border-color:rgba(88,86,214,.3)}
 .hd-col-h{font-family:'JetBrains Mono','Space Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#6B6B6B;font-weight:600;margin-bottom:8px}
 body[data-theme=aurora] .hd-col-h{color:rgba(255,255,255,.55)}
 .hd-task-mini{font-size:12px;font-weight:500;color:#111827;padding:6px 8px;background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
@@ -4507,7 +4507,7 @@ body[data-theme=aurora] .hd-cal-day{background:rgba(255,255,255,.04);border-colo
 .hd-cal-day b{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#A0AEC0;font-weight:600}
 .hd-cal-day span{font-size:18px;font-weight:600;color:#111827}
 body[data-theme=aurora] .hd-cal-day span{color:#E8E8EC}
-.hd-cal-day-on{background:linear-gradient(135deg,#FCD34D,#EDA68E);border-color:#EDA68E;box-shadow:0 6px 16px -4px rgba(226,125,96,.4)}
+.hd-cal-day-on{background:linear-gradient(135deg,#FCD34D,#EDA68E);border-color:#EDA68E;box-shadow:0 6px 16px -4px rgba(88,86,214,.4)}
 .hd-cal-day-on b,.hd-cal-day-on span{color:#fff}
 .hd-wa{display:flex;flex-direction:column;gap:6px}
 .hd-wa-bub{padding:8px 12px;border-radius:14px;font-size:13px;line-height:1.4;max-width:80%;text-align:left}
@@ -4526,7 +4526,7 @@ body[data-theme=aurora] .hd-wa-out{background:rgba(255,255,255,.08);color:#fff}
 .help-sec{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid #F5F6F8}
 .help-sec:last-child{border-bottom:none;margin-bottom:0}
 .help-sec-hd{display:flex;align-items:center;gap:11px;margin-bottom:10px}
-.help-sec-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#E27D60,#CC6E52);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:'Space Mono',monospace;box-shadow:0 3px 10px rgba(17,24,39,.3)}
+.help-sec-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#5856D6,#CC6E52);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:'Space Mono',monospace;box-shadow:0 3px 10px rgba(17,24,39,.3)}
 .help-sec-t{margin:0;font-size:17px;font-weight:800;color:#111827;letter-spacing:-.01em}
 .help-list{padding-left:22px;margin:0;display:flex;flex-direction:column;gap:8px}
 .help-list li{font-size:14.5px;line-height:1.55;color:#4A3828}
@@ -4559,8 +4559,8 @@ body[data-theme=aurora]{background:#2B2D33;color:#EAEAEE;
 --ink:#EAEAEE;--text:#EAEAEE;--text-mute:#A8A8B0;--text-dim:#8A8A94;
 --ink-2:#D4D4D8;--ink-3:#A8A8B0;--ink-4:#8A8A94;--ink-5:#6A6A74;
 --line:rgba(255,255,255,.12);--line-2:rgba(255,255,255,.18);--border:rgba(255,255,255,.12);--border-2:rgba(255,255,255,.18);
---accent:#E27D60;--accent-soft:rgba(226,125,96,.16);--accent-ink:#FFFFFF;
---accent-2:#D9734A;--accent-strong:#E27D60;--warm:#E27D60;--paper:#3A3C44;
+--accent:#5856D6;--accent-soft:rgba(88,86,214,.16);--accent-ink:#FFFFFF;
+--accent-2:#D9734A;--accent-strong:#5856D6;--warm:#5856D6;--paper:#3A3C44;
 --gold:#D4A545;--sage:#7A9B6D;
 --shadow-1:0 8px 22px -16px rgba(0,0,0,.3);--shadow-2:0 12px 26px -12px rgba(0,0,0,.3);--shadow-3:0 14px 30px -12px rgba(0,0,0,.3)}
 
@@ -4703,29 +4703,29 @@ body.night-sky .ns-shoot-3{top:8%;left:45%;animation:shootStar 15s linear infini
 @keyframes planetTwinkle{0%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}100%{opacity:.75;transform:scale(.97)}}
 body.night-sky .tabs.page-t{background:rgba(5,7,20,.94)!important;border-top-color:rgba(255,255,255,.06)!important;backdrop-filter:blur(24px)!important}
 body[data-theme=aurora]::before{content:'';position:fixed;inset:0;background:
-  radial-gradient(800px 500px at 20% 80%,rgba(226,125,96,.04),transparent 70%);
+  radial-gradient(800px 500px at 20% 80%,rgba(88,86,214,.04),transparent 70%);
   pointer-events:none;z-index:0}
 body[data-theme=aurora] .app{position:relative;z-index:1}
 #starfield{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity 1.2s ease}
 body[data-theme=aurora] #starfield{opacity:1}
 /* Typography */
 body[data-theme=aurora] .logo{color:#E8E8EC;background:none;-webkit-background-clip:unset;background-clip:unset;-webkit-text-fill-color:#E8E8EC;filter:none}
-body[data-theme=aurora] .logo .k{color:#E27D60;-webkit-text-fill-color:#E27D60}
+body[data-theme=aurora] .logo .k{color:#5856D6;-webkit-text-fill-color:#5856D6}
 body[data-theme=aurora] .hdr-sub{color:#888888}
 /* Cards (glassmorphic) */
 body[data-theme=aurora] .moral,body[data-theme=aurora] .user-bar,body[data-theme=aurora] .tc,body[data-theme=aurora] .st,body[data-theme=aurora] .dash-card,body[data-theme=aurora] .col,body[data-theme=aurora] .kc,body[data-theme=aurora] .tabs,body[data-theme=aurora] .hdr-st,body[data-theme=aurora] .cal-grid,body[data-theme=aurora] .cal-selected-box,body[data-theme=aurora] .calc-screen,body[data-theme=aurora] .book-card,body[data-theme=aurora] .insight,body[data-theme=aurora] .calc-hist{
   background:#3A3C44;border-color:rgba(255,255,255,.08);color:#E8E8EC
 }
-body[data-theme=aurora] .moral{background:#3A3C44;border-color:rgba(226,125,96,.15);box-shadow:none}
-body[data-theme=aurora] .moral-lbl{color:#E27D60}
+body[data-theme=aurora] .moral{background:#3A3C44;border-color:rgba(88,86,214,.15);box-shadow:none}
+body[data-theme=aurora] .moral-lbl{color:#5856D6}
 body[data-theme=aurora] .moral-txt{color:#E8E8EC}
 body[data-theme=aurora] .moral-by{color:#888888}
-body[data-theme=aurora] .moral-ref{background:rgba(226,125,96,.1);color:#E27D60;border-color:rgba(226,125,96,.2)}
-body[data-theme=aurora] .moral-ref:hover{background:#E27D60;color:#000}
+body[data-theme=aurora] .moral-ref{background:rgba(88,86,214,.1);color:#5856D6;border-color:rgba(88,86,214,.2)}
+body[data-theme=aurora] .moral-ref:hover{background:#5856D6;color:#000}
 /* Tabs */
 body[data-theme=aurora] .tab{color:#8A8A94}
 body[data-theme=aurora] .tab:hover:not(.on){background:rgba(255,255,255,.04);color:#E8E8EC}
-body[data-theme=aurora] .tab.on{background:rgba(226,125,96,.12);color:#E27D60;box-shadow:none}
+body[data-theme=aurora] .tab.on{background:rgba(88,86,214,.12);color:#5856D6;box-shadow:none}
 body[data-theme=aurora] .tab{transition:all .25s cubic-bezier(.34,1.56,.64,1)}
 body[data-theme=aurora] .tab:active{transform:scale(.93)}
 /* CRED premium card interactions */
@@ -4736,19 +4736,19 @@ body[data-theme=aurora] .ws-hero-card:hover{border-color:rgba(255,255,255,.12);b
 body[data-theme=aurora] .add-bar{background:linear-gradient(135deg,#CC6E52 0%,#EC4899 100%);box-shadow:0 8px 28px rgba(139,92,246,.4)}
 /* ─── Inline composer (next-level add task) ─── */
 .cx{margin:0 0 18px;background:rgba(44,45,52,.9);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px 14px 12px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:border-color .2s,box-shadow .25s}
-.cx.has-text{border-color:rgba(226,125,96,.45);box-shadow:0 8px 28px -10px rgba(226,125,96,.25)}
+.cx.has-text{border-color:rgba(88,86,214,.45);box-shadow:0 8px 28px -10px rgba(88,86,214,.25)}
 .cx-row{display:flex;align-items:center;gap:10px}
 .cx-ic{color:rgba(255,255,255,.45);flex-shrink:0;margin-left:6px}
 .cx-input{flex:1;min-width:0;background:transparent;border:0;outline:0;font:500 16px/1.4 inherit;color:#F5F5FA;letter-spacing:-.01em;padding:10px 0}
 .cx-input::placeholder{color:rgba(255,255,255,.38);font-weight:400}
 .cx-go{flex-shrink:0;width:42px;height:42px;border-radius:14px;border:0;background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);cursor:pointer;display:grid;place-items:center;transition:background .2s,color .2s,transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s}
-.cx-go.on{background:linear-gradient(135deg,#EDA68E 0%,#FED7AA 100%);color:#fff;box-shadow:0 8px 22px -4px rgba(226,125,96,.5)}
+.cx-go.on{background:linear-gradient(135deg,#EDA68E 0%,#FED7AA 100%);color:#fff;box-shadow:0 8px 22px -4px rgba(88,86,214,.5)}
 .cx-go.on:hover{transform:scale(1.06)}
 .cx-go:active{transform:scale(.92)}
 .cx-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06)}
 .cx-chip{font-family:inherit;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.7);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);padding:7px 12px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .18s ease;letter-spacing:-.005em;line-height:1}
 .cx-chip:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.14)}
-.cx-chip.on{background:rgba(226,125,96,.18);color:#FFE3D8;border-color:rgba(226,125,96,.5);box-shadow:0 4px 14px -4px rgba(226,125,96,.4)}
+.cx-chip.on{background:rgba(88,86,214,.18);color:#FFE3D8;border-color:rgba(88,86,214,.5);box-shadow:0 4px 14px -4px rgba(88,86,214,.4)}
 .cx-chip-pri-h.on{background:rgba(220,38,38,.18);color:#FCA5A5;border-color:rgba(220,38,38,.5)}
 .cx-chip-pri-m.on{background:rgba(245,158,11,.18);color:#FCD34D;border-color:rgba(245,158,11,.5)}
 .cx-chip-pri-l.on{background:rgba(34,197,94,.18);color:#86EFAC;border-color:rgba(34,197,94,.5)}
@@ -4757,12 +4757,12 @@ body[data-theme=aurora] .add-bar{background:linear-gradient(135deg,#CC6E52 0%,#E
 .cx-divider{width:1px;height:18px;background:rgba(255,255,255,.08);margin:0 4px}
 .cx-preview{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.08);display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:rgba(255,255,255,.5);animation:cxFade .25s ease}
 .cx-pv-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4)}
-.cx-pv-pill{padding:5px 10px;border-radius:999px;background:rgba(226,125,96,.12);color:#FFE3D8;border:1px solid rgba(226,125,96,.3);font-size:12px;font-weight:500}
+.cx-pv-pill{padding:5px 10px;border-radius:999px;background:rgba(88,86,214,.12);color:#FFE3D8;border:1px solid rgba(88,86,214,.3);font-size:12px;font-weight:500}
 .cx-pv-title{background:rgba(255,255,255,.06);color:#F5F5FA;border-color:rgba(255,255,255,.12)}
 @keyframes cxFade{from{opacity:0;transform:translateY(-4px)}}
 /* Light theme variant */
 body:not([data-theme=aurora]) .cx{background:#fff;border-color:#E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-body:not([data-theme=aurora]) .cx.has-text{border-color:#EDA68E;box-shadow:0 8px 28px -10px rgba(226,125,96,.25)}
+body:not([data-theme=aurora]) .cx.has-text{border-color:#EDA68E;box-shadow:0 8px 28px -10px rgba(88,86,214,.25)}
 body:not([data-theme=aurora]) .cx-input{color:#111827}
 body:not([data-theme=aurora]) .cx-input::placeholder{color:rgba(26,26,26,.45)}
 body:not([data-theme=aurora]) .cx-ic{color:rgba(26,26,26,.4)}
@@ -4785,9 +4785,9 @@ body:not([data-theme=aurora]) .cx-pv-title{background:#F4F3EE;color:#111827;bord
 .hl-form{display:flex;gap:10px;align-items:stretch;margin-bottom:12px}
 .hl-input-v3{flex:1;min-width:0;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;font:500 15.5px/1.4 inherit;letter-spacing:-.005em;outline:0}
 .hl-input-v3::placeholder{color:rgba(255,255,255,.5);font-style:normal}
-.hl-input-v3:focus{border-color:rgba(226,125,96,.6);background:rgba(255,255,255,.14)}
+.hl-input-v3:focus{border-color:rgba(88,86,214,.6);background:rgba(255,255,255,.14)}
 .hl-save-v3{flex-shrink:0;padding:0 22px;border-radius:12px;border:0;background:rgba(255,255,255,.16);color:rgba(255,255,255,.55);font:600 14px/1 inherit;cursor:pointer;letter-spacing:-.005em;transition:all .25s ease}
-.hl-save-v3.on{background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 10px 24px -6px rgba(226,125,96,.55)}
+.hl-save-v3.on{background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 10px 24px -6px rgba(88,86,214,.55)}
 .hl-save-v3:hover.on{transform:translateY(-1px)}
 .hl-hero-actions{display:flex;gap:10px}
 .hl-check-v3{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;border-radius:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;font:600 13.5px/1 inherit;cursor:pointer;letter-spacing:-.005em;transition:all .2s}
@@ -4825,11 +4825,11 @@ body:not([data-theme=aurora]) .hl-poster-lbl{color:#6B6B6B}
 .hl-card{display:flex;align-items:stretch;width:100%;border-radius:18px;padding:16px 18px;margin:0 0 14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#F5F5FA;font-family:inherit;cursor:pointer;text-align:left;transition:transform .25s ease,background .25s ease,border-color .25s ease,box-shadow .3s ease;position:relative;overflow:hidden;animation:hlIn .45s cubic-bezier(.16,1,.3,1)}
 @keyframes hlIn{from{opacity:0;transform:translateY(-6px)}}
 body:not([data-theme=aurora]) .hl-card{background:#fff;border-color:#E5E7EB;color:#111827}
-.hl-card.hl-empty{background:linear-gradient(135deg,rgba(226,125,96,.15),rgba(255,181,71,.08));border-color:rgba(226,125,96,.35);align-items:center;gap:14px}
-body:not([data-theme=aurora]) .hl-card.hl-empty{background:linear-gradient(135deg,#FFF1ED,#FFFBF4);border-color:rgba(226,125,96,.35);color:#111827}
-.hl-card.hl-empty:hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(226,125,96,.22),rgba(255,181,71,.12));box-shadow:0 12px 28px -10px rgba(226,125,96,.45)}
-.hl-card.hl-set{background:linear-gradient(135deg,rgba(226,125,96,.18) 0%,rgba(226,125,96,.12) 100%);border-color:rgba(226,125,96,.4);box-shadow:0 8px 24px -10px rgba(226,125,96,.3)}
-body:not([data-theme=aurora]) .hl-card.hl-set{background:linear-gradient(135deg,#FFF1ED,#F5EFFF);border-color:rgba(226,125,96,.45);color:#111827}
+.hl-card.hl-empty{background:linear-gradient(135deg,rgba(88,86,214,.15),rgba(255,181,71,.08));border-color:rgba(88,86,214,.35);align-items:center;gap:14px}
+body:not([data-theme=aurora]) .hl-card.hl-empty{background:linear-gradient(135deg,#FFF1ED,#FFFBF4);border-color:rgba(88,86,214,.35);color:#111827}
+.hl-card.hl-empty:hover{transform:translateY(-2px);background:linear-gradient(135deg,rgba(88,86,214,.22),rgba(255,181,71,.12));box-shadow:0 12px 28px -10px rgba(88,86,214,.45)}
+.hl-card.hl-set{background:linear-gradient(135deg,rgba(88,86,214,.18) 0%,rgba(88,86,214,.12) 100%);border-color:rgba(88,86,214,.4);box-shadow:0 8px 24px -10px rgba(88,86,214,.3)}
+body:not([data-theme=aurora]) .hl-card.hl-set{background:linear-gradient(135deg,#FFF1ED,#F5EFFF);border-color:rgba(88,86,214,.45);color:#111827}
 .hl-card.hl-done{background:linear-gradient(135deg,rgba(52,211,153,.18),rgba(34,211,238,.1));border-color:rgba(52,211,153,.4);box-shadow:0 8px 24px -10px rgba(52,211,153,.3)}
 body:not([data-theme=aurora]) .hl-card.hl-done{background:linear-gradient(135deg,#EAFBF1,#ECFDFB);border-color:rgba(52,211,153,.45)}
 .hl-card.hl-set:hover,.hl-card.hl-done:hover{transform:translateY(-2px)}
@@ -4851,14 +4851,14 @@ body:not([data-theme=aurora]) .hl-cancel{background:#F4F3EE;color:#6B6B6B}
 .hl-cancel:hover{background:rgba(220,38,38,.4);color:#fff}
 .hl-save{flex-shrink:0;padding:9px 16px;border-radius:10px;border:0;background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);font:600 13px/1 inherit;cursor:pointer;letter-spacing:-.005em;transition:all .2s}
 body:not([data-theme=aurora]) .hl-save{background:#F4F3EE;color:#9A9A9A}
-.hl-save.on{background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 6px 16px -4px rgba(226,125,96,.45)}
+.hl-save.on{background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 6px 16px -4px rgba(88,86,214,.45)}
 .hl-save:active{transform:scale(.96)}
-.hl-check{flex-shrink:0;width:36px;height:36px;border-radius:50%;border:2px solid rgba(226,125,96,.5);background:transparent;cursor:pointer;display:grid;place-items:center;transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.hl-check{flex-shrink:0;width:36px;height:36px;border-radius:50%;border:2px solid rgba(88,86,214,.5);background:transparent;cursor:pointer;display:grid;place-items:center;transition:all .25s cubic-bezier(.34,1.56,.64,1)}
 body:not([data-theme=aurora]) .hl-check{border-color:#EDA68E}
 .hl-check:hover{transform:scale(1.06);border-color:#EDA68E}
 .hl-check.on{background:linear-gradient(135deg,#EDA68E,#EDA68E);border-color:transparent;box-shadow:0 6px 16px -4px rgba(52,211,153,.5)}
 .hl-body{flex:1;min-width:0}
-.hl-eyebrow{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(226,125,96,.9);font-weight:600;margin-bottom:5px}
+.hl-eyebrow{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(88,86,214,.9);font-weight:600;margin-bottom:5px}
 body:not([data-theme=aurora]) .hl-eyebrow{color:#B7472A}
 .hl-card.hl-done .hl-eyebrow{color:rgba(52,211,153,.95)}
 body:not([data-theme=aurora]) .hl-card.hl-done .hl-eyebrow{color:#0F8463}
@@ -4874,7 +4874,7 @@ body:not([data-theme=aurora]) .hl-edit:hover{background:rgba(0,0,0,.1);color:#11
 .qa-stat-tile{display:flex !important;flex-direction:column !important;align-items:flex-start !important;gap:0 !important;padding:18px 14px 14px !important;cursor:pointer;text-align:left !important;font-family:inherit;position:relative}
 .qa-stat-tile small{color:rgba(255,255,255,.78) !important;margin-top:auto;letter-spacing:.06em;font-size:11px;font-family:'JetBrains Mono','Space Mono',monospace;font-weight:600;text-transform:uppercase}
 .qa-stat-emoji{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;color:#fff;margin-bottom:14px;box-shadow:0 6px 14px -4px rgba(0,0,0,.3)}
-.qa-stat-bdg{position:absolute;top:14px;right:14px;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.04em;background:rgba(226,125,96,.2);color:#FFE3D8;padding:3px 8px;border-radius:6px;line-height:1}
+.qa-stat-bdg{position:absolute;top:14px;right:14px;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.04em;background:rgba(88,86,214,.2);color:#FFE3D8;padding:3px 8px;border-radius:6px;line-height:1}
 body:not([data-theme=aurora]) .qa-stat-bdg{background:#FFF1ED;color:#B7472A}
 .hh-progress-chip.qa-chip-v2 .hh-pc-ic{background:linear-gradient(135deg,#EDA68E,#FED7AA)}
 /* ─── Quick actions parent chip (matches Progress chip pattern) ─── */
@@ -4883,7 +4883,7 @@ body:not([data-theme=aurora]) .qa-chip{background:#fff;border-color:#E5E7EB;colo
 .qa-chip:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}
 body:not([data-theme=aurora]) .qa-chip:hover{background:#F5F6F8;border-color:#CFCFCF}
 .qa-chip:active{transform:scale(.985)}
-.qa-ic{flex-shrink:0;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 4px 10px -2px rgba(226,125,96,.45)}
+.qa-ic{flex-shrink:0;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 4px 10px -2px rgba(88,86,214,.45)}
 .qa-t{font-weight:600;letter-spacing:-.005em;color:inherit;white-space:nowrap}
 .qa-mini{flex:1;min-width:0;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;letter-spacing:.04em;color:rgba(255,255,255,.55);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body:not([data-theme=aurora]) .qa-mini{color:#6B6B6B}
@@ -4902,21 +4902,21 @@ body:not([data-theme=aurora]) .qa-tile:hover{background:#F5F6F8;border-color:#CF
 body:not([data-theme=aurora]) .qa-tile-t{color:#111827}
 .qa-tile-d{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px;letter-spacing:-.005em;line-height:1.35}
 body:not([data-theme=aurora]) .qa-tile-d{color:#6B6B6B}
-.qa-tile-bdg{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.04em;background:rgba(226,125,96,.18);color:#FFE3D8;padding:2px 7px;border-radius:5px;line-height:1.2}
+.qa-tile-bdg{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.04em;background:rgba(88,86,214,.18);color:#FFE3D8;padding:2px 7px;border-radius:5px;line-height:1.2}
 body:not([data-theme=aurora]) .qa-tile-bdg{background:#FFF1ED;color:#B7472A}
 /* ─── Action chips row (Tasks tab, legacy) ─── */
 .action-chips{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}
 .action-chips .add-chip{margin:0;flex:1 1 200px;min-width:0}
-.add-chip-bdg{margin-left:auto;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;letter-spacing:.04em;font-weight:700;background:rgba(226,125,96,.18);color:#FFE3D8;padding:3px 8px;border-radius:6px}
+.add-chip-bdg{margin-left:auto;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;letter-spacing:.04em;font-weight:700;background:rgba(88,86,214,.18);color:#FFE3D8;padding:3px 8px;border-radius:6px}
 body:not([data-theme=aurora]) .add-chip-bdg{background:#FFF1ED;color:#B7472A}
-.plan-chip:hover{background:rgba(226,125,96,.12);border-color:rgba(226,125,96,.45);box-shadow:0 8px 22px -10px rgba(226,125,96,.5)}
+.plan-chip:hover{background:rgba(88,86,214,.12);border-color:rgba(88,86,214,.45);box-shadow:0 8px 22px -10px rgba(88,86,214,.5)}
 body:not([data-theme=aurora]) .plan-chip:hover{background:#F4F1FF;border-color:#EDA68E}
 @media (max-width:560px){.action-chips{gap:8px}.action-chips .add-chip{flex:1 1 100%}}
 /* ─── Schedule panel (Plan your day) ─── */
 /* ─── Meeting Notes detail (v2 chip-card layout) ─── */
 .mtg-hd-v2{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top,0px));background:transparent;color:#fff;flex-shrink:0}
 .mtg-hero{margin:0 18px 14px;background:linear-gradient(135deg,#0F2A3E 0%,#15202E 50%,#0EA5E9 110%) !important;box-shadow:0 18px 40px -12px rgba(14,165,233,.45) !important}
-.mtg-hero .hh-bg{background:radial-gradient(700px 400px at 0% 0%,rgba(34,211,238,.32),transparent 55%),radial-gradient(600px 400px at 100% 100%,rgba(226,125,96,.22),transparent 55%) !important}
+.mtg-hero .hh-bg{background:radial-gradient(700px 400px at 0% 0%,rgba(34,211,238,.32),transparent 55%),radial-gradient(600px 400px at 100% 100%,rgba(88,86,214,.22),transparent 55%) !important}
 .mtg-title-input-v2{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-style:normal;font-size:clamp(28px,5.5vw,40px);line-height:1.05;letter-spacing:-.022em;color:#fff;background:transparent;border:0;outline:0;width:100%;padding:8px 0 16px;margin:0}
 .mtg-title-input-v2::placeholder{color:rgba(255,255,255,.4)}
 .mtg-hero-stats{display:flex;gap:14px;flex-wrap:wrap;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}
@@ -5040,7 +5040,7 @@ body:not([data-theme=aurora]) .sch-tick{color:#9A9A9A;border-top-color:#F0EDE7}
 .sch-canvas{position:relative;height:100%}
 .sch-empty{position:absolute;inset:0;display:grid;place-items:center;color:rgba(255,255,255,.4);font-size:13px;font-style:normal}
 body:not([data-theme=aurora]) .sch-empty{color:#9A9A9A}
-.sch-blk{position:absolute;left:6px;right:6px;border-radius:8px;background:linear-gradient(135deg,rgba(17,24,39,.85),rgba(226,125,96,.85));color:#fff;padding:8px 12px 8px 14px;font-size:13px;line-height:1.3;border-left:3px solid #FED7AA;display:flex;flex-direction:column;justify-content:center;box-shadow:0 6px 14px -4px rgba(17,24,39,.35);overflow:hidden;min-height:30px}
+.sch-blk{position:absolute;left:6px;right:6px;border-radius:8px;background:linear-gradient(135deg,rgba(17,24,39,.85),rgba(88,86,214,.85));color:#fff;padding:8px 12px 8px 14px;font-size:13px;line-height:1.3;border-left:3px solid #FED7AA;display:flex;flex-direction:column;justify-content:center;box-shadow:0 6px 14px -4px rgba(17,24,39,.35);overflow:hidden;min-height:30px}
 .sch-blk-t{font-weight:600;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sch-blk-time{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;letter-spacing:.04em;color:rgba(255,255,255,.85);margin-top:2px;font-weight:500}
 .sch-blk-x{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.35);color:#fff;cursor:pointer;font-size:10px;display:grid;place-items:center;opacity:0;transition:opacity .2s}
@@ -5051,7 +5051,7 @@ body:not([data-theme=aurora]) .sch-presets-lbl{color:#6B6B6B}
 @media (min-width:520px){.sch-presets{grid-template-columns:repeat(3,1fr)}}
 .sch-preset{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:#fff;font:600 13px/1.2 inherit;cursor:pointer;text-align:left;transition:all .2s;letter-spacing:-.005em}
 body:not([data-theme=aurora]) .sch-preset{background:#fff;border-color:#E5E7EB;color:#111827}
-.sch-preset:hover{background:rgba(255,255,255,.08);border-color:rgba(226,125,96,.4);transform:translateY(-1px)}
+.sch-preset:hover{background:rgba(255,255,255,.08);border-color:rgba(88,86,214,.4);transform:translateY(-1px)}
 .sch-preset small{display:block;font-family:'JetBrains Mono','Space Mono',monospace;font-size:9.5px;color:rgba(255,255,255,.5);font-weight:500;margin-top:3px;letter-spacing:.04em;text-transform:none}
 body:not([data-theme=aurora]) .sch-preset small{color:#6B6B6B}
 .sch-form{padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.02);margin-bottom:14px}
@@ -5062,13 +5062,13 @@ body:not([data-theme=aurora]) .sch-form{background:#fff;border-color:#E5E7EB}
 body:not([data-theme=aurora]) .sch-fl small{color:#6B6B6B}
 .sch-fl input{font-family:inherit;font-size:14.5px;font-weight:500;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;outline:0}
 body:not([data-theme=aurora]) .sch-fl input{background:#F5F6F8;border-color:#E5E7EB;color:#111827}
-.sch-fl input:focus{border-color:rgba(226,125,96,.5)}
+.sch-fl input:focus{border-color:rgba(88,86,214,.5)}
 .sch-arrow{margin-top:18px;color:rgba(255,255,255,.4);font-size:14px}
 .sch-label{width:100%;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;font:500 14.5px/1.4 inherit;letter-spacing:-.005em;outline:0;margin-bottom:10px;-webkit-appearance:none}
 body:not([data-theme=aurora]) .sch-label{background:#F5F6F8;border-color:#E5E7EB;color:#111827}
 .sch-label::placeholder{color:rgba(255,255,255,.4)}
 body:not([data-theme=aurora]) .sch-label::placeholder{color:rgba(26,26,26,.4)}
-.sch-label:focus{border-color:rgba(226,125,96,.5)}
+.sch-label:focus{border-color:rgba(88,86,214,.5)}
 .sch-save{width:100%;padding:14px;border-radius:12px;border:0;background:linear-gradient(135deg,#374151,#EDA68E);color:#fff;font:600 14.5px/1 inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.005em;box-shadow:0 8px 20px -6px rgba(17,24,39,.5);transition:transform .2s}
 .sch-save:hover{transform:translateY(-1px)}
 .sch-save:active{transform:scale(.97)}
@@ -5084,7 +5084,7 @@ body:not([data-theme=aurora]) .sch-foot-note{color:#6B6B6B}
 .mg-uniform-grid{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .mg-uniform-tile{display:flex;align-items:center;gap:14px;padding:14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;font-family:inherit;cursor:pointer;text-align:left;width:100%;transition:transform .2s ease,background .2s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent}
 body:not([data-theme=aurora]) .mg-uniform-tile{background:#fff;border-color:#E5E7EB;color:#111827;box-shadow:0 1px 0 rgba(0,0,0,.02)}
-.mg-uniform-tile:hover{transform:translateX(2px);background:rgba(255,255,255,.09);border-color:var(--accent,rgba(226,125,96,.5))}
+.mg-uniform-tile:hover{transform:translateX(2px);background:rgba(255,255,255,.09);border-color:var(--accent,rgba(88,86,214,.5))}
 body:not([data-theme=aurora]) .mg-uniform-tile:hover{background:#F5F6F8;border-color:var(--accent,#EDA68E)}
 .mg-uniform-tile:active{transform:scale(.985)}
 .mg-uniform-emoji{flex-shrink:0;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:24px;color:#fff;box-shadow:0 8px 18px -4px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.3)}
@@ -5097,16 +5097,16 @@ body:not([data-theme=aurora]) .mg-uniform-meta{color:#888}
 body:not([data-theme=aurora]) .mg-uniform-chev{color:#999}
 body:not([data-theme=aurora]) .mg-uniform-tile:hover .mg-uniform-chev{color:#111827}
 /* Mind Gym launcher — single big tappable chip on the Mind Gym tab (kept for legacy, unused) */
-.mg-launcher{display:block;width:100%;text-align:left;padding:22px 22px 18px;margin:6px 0 16px;background:linear-gradient(135deg,rgba(226,125,96,.18),rgba(17,24,39,.15));border:1px solid rgba(226,125,96,.35);border-radius:22px;color:#F5F5FA;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;position:relative;overflow:hidden}
+.mg-launcher{display:block;width:100%;text-align:left;padding:22px 22px 18px;margin:6px 0 16px;background:linear-gradient(135deg,rgba(88,86,214,.18),rgba(17,24,39,.15));border:1px solid rgba(88,86,214,.35);border-radius:22px;color:#F5F5FA;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;position:relative;overflow:hidden}
 body:not([data-theme=aurora]) .mg-launcher{color:#111827;background:linear-gradient(135deg,#fff,#F5F6F8);border-color:rgba(17,24,39,.2)}
-.mg-launcher:hover{transform:translateY(-2px);border-color:rgba(226,125,96,.6);box-shadow:0 18px 40px -16px rgba(17,24,39,.55)}
+.mg-launcher:hover{transform:translateY(-2px);border-color:rgba(88,86,214,.6);box-shadow:0 18px 40px -16px rgba(17,24,39,.55)}
 .mg-launcher:active{transform:scale(.985)}
 .mg-launcher-hd{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .mg-launcher-ic{flex-shrink:0;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:26px;background:linear-gradient(135deg,#EDA68E,#374151);box-shadow:0 10px 24px -6px rgba(17,24,39,.6),inset 0 1px 0 rgba(255,255,255,.3)}
 .mg-launcher-text{flex:1;min-width:0}
 .mg-launcher-name{font:600 19px/1.2 'Inter',sans-serif;letter-spacing:-.015em;display:flex;align-items:center;gap:10px}
 body[data-theme=aurora] .mg-launcher-name{color:#fff}
-.mg-launcher-bdg{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.04em;background:rgba(226,125,96,.22);color:#E5E7EB;padding:3px 9px;border-radius:6px;line-height:1}
+.mg-launcher-bdg{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.04em;background:rgba(88,86,214,.22);color:#E5E7EB;padding:3px 9px;border-radius:6px;line-height:1}
 body:not([data-theme=aurora]) .mg-launcher-bdg{background:rgba(17,24,39,.12);color:#374151}
 .mg-launcher-sub{font-size:13px;color:rgba(255,255,255,.6);margin-top:3px;letter-spacing:-.005em}
 body:not([data-theme=aurora]) .mg-launcher-sub{color:#666}
@@ -5130,7 +5130,7 @@ body:not([data-theme=aurora]) .qa-back-pill:hover{background:#fff;border-color:r
 .sch-mdl-v2{background:radial-gradient(900px 500px at 50% 0%,#4A5568 0%,#111827 70%) !important}
 .sch-hd-v2{display:flex;align-items:center;gap:14px;padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top,0px));background:transparent;color:#fff;flex-shrink:0}
 .sch-hero{position:relative;border-radius:24px;padding:28px 24px;margin:8px 18px 18px;overflow:hidden;color:#fff;isolation:isolate;background:linear-gradient(135deg,#111827 0%,#2C3E6B 50%,#4A5568 100%);box-shadow:0 18px 40px -12px rgba(17,24,39,.55)}
-.sch-hero .hh-bg{position:absolute;inset:0;background:radial-gradient(700px 400px at 0% 0%,rgba(226,125,96,.32) 0%,transparent 55%),radial-gradient(600px 400px at 100% 100%,rgba(226,125,96,.28) 0%,transparent 55%);z-index:-1}
+.sch-hero .hh-bg{position:absolute;inset:0;background:radial-gradient(700px 400px at 0% 0%,rgba(88,86,214,.32) 0%,transparent 55%),radial-gradient(600px 400px at 100% 100%,rgba(88,86,214,.28) 0%,transparent 55%);z-index:-1}
 .sch-hero .hh-greet{font-family:'Instrument Serif','Playfair Display',Georgia,serif;font-weight:400;font-size:clamp(30px,5.5vw,46px);line-height:1.02;letter-spacing:-.025em;color:#fff;margin:6px 0 12px}
 .sch-hero .hh-greet em{font-style:normal;background:linear-gradient(135deg,#EDA68E,#FED7AA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 .sch-hero .hh-line{font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.85);margin:0 0 22px;max-width:520px}
@@ -5139,12 +5139,12 @@ body:not([data-theme=aurora]) .qa-back-pill:hover{background:#fff;border-color:r
 .sch-fl-v2{flex:1;display:flex;flex-direction:column;gap:6px}
 .sch-fl-v2 span{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:rgba(255,255,255,.55);font-weight:700;text-transform:uppercase}
 .sch-fl-v2 input{font-family:inherit;font-size:16px;font-weight:600;padding:11px 14px;border-radius:11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;outline:0;letter-spacing:-.01em}
-.sch-fl-v2 input:focus{background:rgba(255,255,255,.16);border-color:rgba(226,125,96,.6)}
+.sch-fl-v2 input:focus{background:rgba(255,255,255,.16);border-color:rgba(88,86,214,.6)}
 .sch-arrow-v2{padding-bottom:14px;color:rgba(255,255,255,.55);font-size:14px}
 .sch-label-v2{padding:13px 16px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;font:500 15px/1.4 inherit;letter-spacing:-.005em;outline:0;-webkit-appearance:none}
 .sch-label-v2::placeholder{color:rgba(255,255,255,.5)}
-.sch-label-v2:focus{border-color:rgba(226,125,96,.6);background:rgba(255,255,255,.12)}
-.sch-save-v2{width:100%;padding:14px;border-radius:14px;border:0;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;font:600 15px/1 inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.005em;box-shadow:0 10px 24px -6px rgba(226,125,96,.5);transition:transform .2s}
+.sch-label-v2:focus{border-color:rgba(88,86,214,.6);background:rgba(255,255,255,.12)}
+.sch-save-v2{width:100%;padding:14px;border-radius:14px;border:0;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;font:600 15px/1 inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.005em;box-shadow:0 10px 24px -6px rgba(88,86,214,.5);transition:transform .2s}
 .sch-save-v2:hover{transform:translateY(-1px)}
 .sch-save-v2:active{transform:scale(.98)}
 .sch-list{padding:0 18px 24px;max-width:760px;width:100%;margin:0 auto}
@@ -5156,8 +5156,8 @@ body:not([data-theme=aurora]) .qa-back-pill:hover{background:#fff;border-color:r
 .sch-list-label{font:500 14.5px/1.3 'Inter',sans-serif;letter-spacing:-.005em;color:#fff;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .sch-list-x{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:rgba(255,255,255,.55);cursor:pointer;font-size:12px;transition:all .2s}
 .sch-list-x:hover{background:rgba(220,38,38,.4);color:#fff}
-.schX-help{padding:12px 14px;border-radius:12px;background:rgba(226,125,96,.1);border:1px solid rgba(226,125,96,.25);color:rgba(255,255,255,.85);font-size:13px;letter-spacing:-.005em;margin-bottom:14px;line-height:1.4}
-body:not([data-theme=aurora]) .schX-help{background:#F5EFFF;border-color:rgba(226,125,96,.4);color:#3D3D3D}
+.schX-help{padding:12px 14px;border-radius:12px;background:rgba(88,86,214,.1);border:1px solid rgba(88,86,214,.25);color:rgba(255,255,255,.85);font-size:13px;letter-spacing:-.005em;margin-bottom:14px;line-height:1.4}
+body:not([data-theme=aurora]) .schX-help{background:#F5EFFF;border-color:rgba(88,86,214,.4);color:#3D3D3D}
 .schX-wrap{display:grid;grid-template-columns:60px 1fr;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin-bottom:14px;position:relative}
 body:not([data-theme=aurora]) .schX-wrap{background:#fff;border-color:#E5E7EB}
 .schX-rail{display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.15)}
@@ -5169,10 +5169,10 @@ body:not([data-theme=aurora]) .schX-tick{border-top-color:#F0EDE7;color:#9A9A9A}
 .schX-tick-l small{font-size:8px;letter-spacing:.06em;opacity:.6}
 .schX-canvas{position:relative;height:816px;cursor:default;user-select:none;-webkit-user-select:none}
 .schX-slot{position:absolute;left:0;right:0;background:transparent;border:0;cursor:pointer;padding:0;font:inherit;color:inherit;transition:background .15s ease;z-index:1}
-.schX-slot::after{content:'+';position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:rgba(226,125,96,.18);color:#EDA68E;font:700 14px/1 'Inter',sans-serif;display:grid;place-items:center;opacity:0;transition:opacity .15s ease}
-.schX-slot:hover{background:rgba(226,125,96,.08)}
+.schX-slot::after{content:'+';position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:rgba(88,86,214,.18);color:#EDA68E;font:700 14px/1 'Inter',sans-serif;display:grid;place-items:center;opacity:0;transition:opacity .15s ease}
+.schX-slot:hover{background:rgba(88,86,214,.08)}
 .schX-slot:hover::after{opacity:1}
-.schX-slot:active{background:rgba(226,125,96,.18)}
+.schX-slot:active{background:rgba(88,86,214,.18)}
 @media (hover:none){.schX-slot::after{opacity:.45}}
 .schX-now-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:11px;background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.35);color:#EDA68E;font:600 13px/1 inherit;cursor:pointer;letter-spacing:-.005em;transition:background .2s ease,transform .2s ease;margin-bottom:14px}
 .schX-now-btn:hover{background:rgba(34,211,238,.18);transform:translateY(-1px)}
@@ -5186,7 +5186,7 @@ body:not([data-theme=aurora]) .schX-now-btn{background:#ECFAFE;border-color:rgba
 body:not([data-theme=aurora]) .schX-grid-line{background:#F4F3EE}
 .schX-grid-hour{background:rgba(255,255,255,.07)}
 body:not([data-theme=aurora]) .schX-grid-hour{background:#E5E7EB}
-.schX-blk{position:absolute;left:6px;right:6px;border-radius:10px;background:linear-gradient(135deg,rgba(17,24,39,.85),rgba(226,125,96,.7));color:#fff;display:flex;gap:0;overflow:hidden;box-shadow:0 6px 18px -4px rgba(17,24,39,.5);cursor:pointer;border:1px solid rgba(255,255,255,.1);min-height:24px}
+.schX-blk{position:absolute;left:6px;right:6px;border-radius:10px;background:linear-gradient(135deg,rgba(17,24,39,.85),rgba(88,86,214,.7));color:#fff;display:flex;gap:0;overflow:hidden;box-shadow:0 6px 18px -4px rgba(17,24,39,.5);cursor:pointer;border:1px solid rgba(255,255,255,.1);min-height:24px}
 .schX-blk-bar{flex:0 0 4px;background:#FED7AA}
 .schX-blk-body{flex:1;min-width:0;padding:5px 10px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 .schX-blk-t{font:600 13px/1.2 'Inter',sans-serif;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -5194,7 +5194,7 @@ body:not([data-theme=aurora]) .schX-grid-hour{background:#E5E7EB}
 .schX-blk-x{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.35);color:#fff;cursor:pointer;font-size:10px;display:grid;place-items:center;opacity:0;transition:opacity .2s}
 .schX-blk:hover .schX-blk-x{opacity:1}
 /* Drag selection ghost */
-.schX-sel{position:absolute;left:6px;right:6px;border-radius:10px;background:linear-gradient(135deg,rgba(226,125,96,.4),rgba(255,181,71,.25));border:2px dashed #EDA68E;color:#fff;padding:8px 12px;display:flex;flex-direction:column;gap:6px;justify-content:center;pointer-events:auto;z-index:5;box-shadow:0 8px 24px -6px rgba(226,125,96,.4);min-height:48px;animation:schSelIn .12s ease}
+.schX-sel{position:absolute;left:6px;right:6px;border-radius:10px;background:linear-gradient(135deg,rgba(88,86,214,.4),rgba(255,181,71,.25));border:2px dashed #EDA68E;color:#fff;padding:8px 12px;display:flex;flex-direction:column;gap:6px;justify-content:center;pointer-events:auto;z-index:5;box-shadow:0 8px 24px -6px rgba(88,86,214,.4);min-height:48px;animation:schSelIn .12s ease}
 @keyframes schSelIn{from{opacity:0}}
 .schX-sel-head{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.04em;color:#fff;font-weight:700}
 .schX-sel-hint{font-size:11.5px;color:rgba(255,255,255,.78);font-style:normal}
@@ -5211,9 +5211,9 @@ body:not([data-theme=aurora]) .schX-grid-hour{background:#E5E7EB}
 @media (max-width:560px){.schX-canvas{height:680px}.schX-wrap{grid-template-columns:50px 1fr}.schX-tick{padding:5px 6px 0}}
 /* ─── Single add-task chip ─── */
 .add-chip{display:inline-flex;align-items:center;gap:10px;padding:11px 16px 11px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#F5F5FA;font-family:inherit;font-weight:500;font-size:14px;cursor:pointer;letter-spacing:-.005em;transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .25s ease;margin:0 0 18px}
-.add-chip:hover{background:rgba(226,125,96,.12);border-color:rgba(226,125,96,.45);box-shadow:0 8px 22px -10px rgba(226,125,96,.5)}
+.add-chip:hover{background:rgba(88,86,214,.12);border-color:rgba(88,86,214,.45);box-shadow:0 8px 22px -10px rgba(88,86,214,.5)}
 .add-chip:active{transform:scale(.97)}
-.add-chip-ic{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;flex-shrink:0;box-shadow:0 4px 12px -2px rgba(226,125,96,.45)}
+.add-chip-ic{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;flex-shrink:0;box-shadow:0 4px 12px -2px rgba(88,86,214,.45)}
 .add-chip-t{flex:1}
 .add-chip-k{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:rgba(255,255,255,.4);padding:3px 7px;border-radius:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06)}
 @media (max-width:560px){.add-chip-k{display:none}}
@@ -5287,11 +5287,11 @@ body:not([data-theme=aurora]) .lvl-row-lvl{background:#F4F3EE;color:#6B6B6B}
 body:not([data-theme=aurora]) .lvl-step{background:#F4F3EE;border-color:#E5E7EB;color:#9A9A9A}
 .lvl-step:hover{transform:scale(1.12)}
 .lvl-step.lvl-done{background:var(--accent,#EDA68E);border-color:var(--accent,#EDA68E);color:#fff;box-shadow:0 4px 12px -4px var(--accent,#EDA68E)}
-.lvl-step.lvl-current{background:#fff;border-color:var(--accent,#EDA68E);color:var(--accent,#EDA68E);box-shadow:0 0 0 4px rgba(226,125,96,.25);animation:lvlPulse 2s ease-in-out infinite}
+.lvl-step.lvl-current{background:#fff;border-color:var(--accent,#EDA68E);color:var(--accent,#EDA68E);box-shadow:0 0 0 4px rgba(88,86,214,.25);animation:lvlPulse 2s ease-in-out infinite}
 body[data-theme=aurora] .lvl-step.lvl-current{background:#171425}
 .lvl-step.lvl-locked{cursor:not-allowed;opacity:.5}
 .lvl-step.lvl-locked:hover{transform:none}
-@keyframes lvlPulse{0%,100%{box-shadow:0 0 0 4px rgba(226,125,96,.25)}50%{box-shadow:0 0 0 8px rgba(226,125,96,.05)}}
+@keyframes lvlPulse{0%,100%{box-shadow:0 0 0 4px rgba(88,86,214,.25)}50%{box-shadow:0 0 0 8px rgba(88,86,214,.05)}}
 .lvl-link{flex:1;height:2px;background:rgba(255,255,255,.06);min-width:6px;max-width:24px;align-self:center}
 body:not([data-theme=aurora]) .lvl-link{background:#E5E7EB}
 .lvl-step.lvl-done + .lvl-link{background:var(--accent,#EDA68E);opacity:.6}
@@ -5320,7 +5320,7 @@ body:not([data-theme=aurora]) .lvl-link{background:#E5E7EB}
 .home-hero-light .qa-stat-tile:hover{background:#fff !important;border-color:var(--accent) !important;box-shadow:var(--shadow-2);transform:translateY(-2px)}
 .home-hero-light .qa-stat-tile small{color:var(--ink) !important;font-family:var(--sans);font-weight:500}
 .home-hero-light .qa-stat-bdg{background:var(--accent-soft);color:var(--accent);border:1px solid var(--border-2)}
-.home-hero .hh-bg{position:absolute;inset:0;background:radial-gradient(800px 400px at 0% 0%,rgba(226,125,96,.2) 0%,transparent 55%),radial-gradient(600px 400px at 100% 100%,rgba(107,99,91,.15) 0%,transparent 55%);z-index:-1;animation:hhBgDrift 18s ease-in-out infinite alternate}
+.home-hero .hh-bg{position:absolute;inset:0;background:radial-gradient(800px 400px at 0% 0%,rgba(88,86,214,.2) 0%,transparent 55%),radial-gradient(600px 400px at 100% 100%,rgba(107,99,91,.15) 0%,transparent 55%);z-index:-1;animation:hhBgDrift 18s ease-in-out infinite alternate}
 @keyframes hhBgDrift{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.08) translate(-20px,15px)}}
 .hh-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .hh-eyebrow{font-family:'JetBrains Mono','Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);font-weight:500}
@@ -5332,7 +5332,7 @@ body:not([data-theme=aurora]) .lvl-link{background:#E5E7EB}
 .hh-progress-chip{display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;color:#fff;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:-.005em;width:100%;text-align:left;transition:background .25s ease,border-color .25s ease,transform .2s ease;backdrop-filter:blur(10px)}
 .hh-progress-chip:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.2)}
 .hh-progress-chip:active{transform:scale(.985)}
-.hh-pc-ic{flex-shrink:0;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 4px 10px -2px rgba(226,125,96,.45)}
+.hh-pc-ic{flex-shrink:0;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,#EDA68E,#FED7AA);color:#fff;box-shadow:0 4px 10px -2px rgba(88,86,214,.45)}
 .hh-pc-t{font-weight:600;letter-spacing:-.005em;color:#fff;white-space:nowrap}
 .hh-pc-mini{flex:1;min-width:0;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;letter-spacing:.04em;color:rgba(255,255,255,.65);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hh-pc-arrow{flex-shrink:0;color:rgba(255,255,255,.55);transition:transform .25s ease}
@@ -5409,13 +5409,13 @@ body[data-theme=aurora] .fab{background:linear-gradient(135deg,#CC6E52,#EC4899);
 body[data-theme=aurora] .btn-tr{background:linear-gradient(135deg,#CC6E52,#06B6D4);box-shadow:0 6px 20px rgba(6,182,212,.4)}
 body[data-theme=aurora] .btn-tr.stop{background:linear-gradient(135deg,#F43F5E,#EC4899);box-shadow:0 6px 20px rgba(244,63,94,.4)}
 body[data-theme=aurora] .btn-log{background:rgba(255,255,255,.05);color:#E8E8EC;border-color:rgba(255,255,255,.12)}
-body[data-theme=aurora] .btn-log:hover{background:rgba(255,255,255,.1);border-color:rgba(226,125,96,.4)}
+body[data-theme=aurora] .btn-log:hover{background:rgba(255,255,255,.1);border-color:rgba(88,86,214,.4)}
 /* Task cards */
 body[data-theme=aurora] .tc-t{color:#E8E8EC}
 body[data-theme=aurora] .tc-n,body[data-theme=aurora] .tc-m{color:#888888}
 body[data-theme=aurora] .chk{border-color:rgba(255,255,255,.2)}
 body[data-theme=aurora] .chk:hover{border-color:#CC6E52}
-body[data-theme=aurora] .chk.on{background:#CC6E52;border-color:#CC6E52;box-shadow:0 0 16px rgba(226,125,96,.5)}
+body[data-theme=aurora] .chk.on{background:#CC6E52;border-color:#CC6E52;box-shadow:0 0 16px rgba(88,86,214,.5)}
 body[data-theme=aurora] .badge{background:rgba(255,255,255,.08)!important;color:#E8E8EC!important}
 /* Stats strip */
 body[data-theme=aurora] .st b{color:#E8E8EC}
@@ -5423,26 +5423,26 @@ body[data-theme=aurora] .st small{color:#7373A0}
 /* Dash hero */
 body[data-theme=aurora] .dash-hero{background:linear-gradient(135deg,#CC6E52 0%,#EC4899 50%,#06B6D4 100%);box-shadow:0 12px 40px rgba(139,92,246,.3)}
 body[data-theme=aurora] .dash-card .v{color:#E8E8EC}
-body[data-theme=aurora] .dash-card .lbl{color:#E27D60}
+body[data-theme=aurora] .dash-card .lbl{color:#5856D6}
 body[data-theme=aurora] .dash-card .sub{color:#888888}
 /* Inputs */
 body[data-theme=aurora] input,body[data-theme=aurora] textarea,body[data-theme=aurora] select{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:#E8E8EC}
 body[data-theme=aurora] input::placeholder,body[data-theme=aurora] textarea::placeholder{color:#6F6F95}
-body[data-theme=aurora] input:focus,body[data-theme=aurora] textarea:focus,body[data-theme=aurora] select:focus{border-color:#E27D60;box-shadow:0 0 0 3px rgba(226,125,96,.2)}
+body[data-theme=aurora] input:focus,body[data-theme=aurora] textarea:focus,body[data-theme=aurora] select:focus{border-color:#5856D6;box-shadow:0 0 0 3px rgba(88,86,214,.2)}
 /* Filter pills */
 body[data-theme=aurora] .fb{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:#888888}
-body[data-theme=aurora] .fb:hover{border-color:#E27D60;color:#E8E8EC}
+body[data-theme=aurora] .fb:hover{border-color:#5856D6;color:#E8E8EC}
 body[data-theme=aurora] .fb.on{background:linear-gradient(135deg,#CC6E52,#EC4899);border-color:transparent;color:#fff;box-shadow:0 4px 16px rgba(139,92,246,.4)}
 /* (Health aurora overrides moved to inline with hth-* styles) */
 /* Calendar */
 body[data-theme=aurora] .cal-day{color:#E8E8EC}
-body[data-theme=aurora] .cal-day:hover{background:rgba(255,255,255,.05);border-color:rgba(226,125,96,.3)}
+body[data-theme=aurora] .cal-day:hover{background:rgba(255,255,255,.05);border-color:rgba(88,86,214,.3)}
 body[data-theme=aurora] .cal-day.other{color:#4A4A6E}
-body[data-theme=aurora] .cal-day.today{background:rgba(226,125,96,.15);color:#E27D60;border-color:rgba(226,125,96,.4)}
+body[data-theme=aurora] .cal-day.today{background:rgba(88,86,214,.15);color:#5856D6;border-color:rgba(88,86,214,.4)}
 body[data-theme=aurora] .cal-day.sel{background:linear-gradient(135deg,#CC6E52,#EC4899)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 4px 16px rgba(139,92,246,.4)}
 body[data-theme=aurora] .cal-dow{color:#7373A0}
 body[data-theme=aurora] .cal-nav{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:#E8E8EC}
-body[data-theme=aurora] .cal-nav:hover{background:#E27D60;color:#0A0A14}
+body[data-theme=aurora] .cal-nav:hover{background:#5856D6;color:#0A0A14}
 body[data-theme=aurora] .cal-selected-box h4{color:#E8E8EC}
 body[data-theme=aurora] .muted,body[data-theme=aurora] .cal-selected-box .muted{color:#888888}
 /* Books + Calc */
@@ -5453,19 +5453,19 @@ body[data-theme=aurora] .calc-result{color:#E8E8EC}
 body[data-theme=aurora] .calc-expr{color:#7373A0}
 body[data-theme=aurora] .ck{background:rgba(255,255,255,.04);color:#E8E8EC;border-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .ck:hover{background:rgba(255,255,255,.08)}
-body[data-theme=aurora] .ck.op{background:rgba(139,92,246,.15);color:#E27D60}
+body[data-theme=aurora] .ck.op{background:rgba(139,92,246,.15);color:#5856D6}
 body[data-theme=aurora] .ck.eq{background:linear-gradient(135deg,#CC6E52,#EC4899);color:#fff}
 body[data-theme=aurora] .ck.sci{background:rgba(6,182,212,.12);color:#06B6D4}
 body[data-theme=aurora] .ck.sp{background:rgba(244,63,94,.12);color:#F43F5E}
 body[data-theme=aurora] .calc-tgl button{background:rgba(255,255,255,.05);color:#888888;border-color:rgba(255,255,255,.08)}
 body[data-theme=aurora] .calc-tgl button.on{background:linear-gradient(135deg,#CC6E52,#EC4899);color:#fff}
-body[data-theme=aurora] .smart-hint{background:rgba(139,92,246,.1);border-color:rgba(226,125,96,.2);color:#E5E7EB}
+body[data-theme=aurora] .smart-hint{background:rgba(139,92,246,.1);border-color:rgba(88,86,214,.2);color:#E5E7EB}
 body[data-theme=aurora] .calc-input-row input{background:rgba(255,255,255,.04);color:#E8E8EC;border-color:rgba(255,255,255,.1)}
 /* Kanban */
 body[data-theme=aurora] .col-h h3{color:#E8E8EC}
 body[data-theme=aurora] .col-h .cnt{background:rgba(255,255,255,.08);color:#E8E8EC}
 body[data-theme=aurora] .col-empty{color:#4A4A6E;border-color:rgba(255,255,255,.08)}
-body[data-theme=aurora] .col.over{background:rgba(226,125,96,.12);border-color:#E27D60}
+body[data-theme=aurora] .col.over{background:rgba(88,86,214,.12);border-color:#5856D6}
 body[data-theme=aurora] .kc{background:rgba(10,10,20,.7)}
 body[data-theme=aurora] .kc-t{color:#E8E8EC}
 body[data-theme=aurora] .kc-mv{background:rgba(255,255,255,.06);color:#E8E8EC}
@@ -5473,21 +5473,21 @@ body[data-theme=aurora] .kc-mv:active{background:linear-gradient(135deg,#CC6E52,
 /* Modals */
 body[data-theme=aurora] .ov{background:rgba(0,0,0,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 body[data-theme=aurora] .mdl{background:#32343A;border:1px solid rgba(255,255,255,.08);color:#E8E8EC}
-body[data-theme=aurora] .lbl{color:#E27D60}
+body[data-theme=aurora] .lbl{color:#5856D6}
 body[data-theme=aurora] .mb-c{background:rgba(255,255,255,.05);color:#E8E8EC;border-color:rgba(255,255,255,.1)}
-body[data-theme=aurora] .mb-s{background:#E27D60}
+body[data-theme=aurora] .mb-s{background:#5856D6}
 body[data-theme=aurora] .mb-d{background:#F43F5E}
 /* Toast + player */
-body[data-theme=aurora] .toast-ok{background:rgba(226,125,96,.15);color:#E27D60;border-color:rgba(226,125,96,.3)}
+body[data-theme=aurora] .toast-ok{background:rgba(88,86,214,.15);color:#5856D6;border-color:rgba(88,86,214,.3)}
 body[data-theme=aurora] .toast-err{background:rgba(244,63,94,.15);color:#FB7185;border-color:rgba(244,63,94,.3)}
-body[data-theme=aurora] .player{background:linear-gradient(135deg,#32343A,#1F1F3A);border-top:1px solid rgba(226,125,96,.2)}
+body[data-theme=aurora] .player{background:linear-gradient(135deg,#32343A,#1F1F3A);border-top:1px solid rgba(88,86,214,.2)}
 body[data-theme=aurora] .hdr-st{background:rgba(255,255,255,.04);color:#E8E8EC}
 body[data-theme=aurora] .theme-tg{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:#E8E8EC}
-body[data-theme=aurora] .theme-tg:hover{background:rgba(226,125,96,.15);border-color:#E27D60}
+body[data-theme=aurora] .theme-tg:hover{background:rgba(88,86,214,.15);border-color:#5856D6}
 /* Alert banners */
-body[data-theme=aurora] .al{background:rgba(226,125,96,.12)!important;border-color:rgba(226,125,96,.3)!important;color:#E27D60!important}
+body[data-theme=aurora] .al{background:rgba(88,86,214,.12)!important;border-color:rgba(88,86,214,.3)!important;color:#5856D6!important}
 /* AI badge */
-body[data-theme=aurora] .ai-badge{background:linear-gradient(135deg,#E27D60,#F472B6);color:#fff}
+body[data-theme=aurora] .ai-badge{background:linear-gradient(135deg,#5856D6,#F472B6);color:#fff}
 body[data-theme=aurora] .hth-goal-slider{background:rgba(255,255,255,.08)}
 body[data-theme=aurora] .hth-goal-display{color:#E8E8EC}
 body[data-theme=aurora] .srch input{background:rgba(255,255,255,.05);color:#E8E8EC;border:1px solid rgba(255,255,255,.1)}
@@ -5525,9 +5525,9 @@ body[data-theme=aurora] .dash-hero .big{background:linear-gradient(90deg,#fff,#F
 @media (min-width: 700px){.board{padding-left:0;padding-right:0;margin:0 0 14px}.col{flex:1 1 0;max-width:none}}
 /* Health — next-gen */
 .hth-hero{position:relative;border-radius:24px;padding:28px 20px 22px;margin-bottom:16px;text-align:center;overflow:hidden;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff}
-.hth-hero-bg{position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(226,125,96,.18) 0%,transparent 55%),radial-gradient(circle at 70% 80%,rgba(107,99,91,.12) 0%,transparent 50%);pointer-events:none}
+.hth-hero-bg{position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(88,86,214,.18) 0%,transparent 55%),radial-gradient(circle at 70% 80%,rgba(107,99,91,.12) 0%,transparent 50%);pointer-events:none}
 .hth-ring-wrap{position:relative;width:180px;height:180px;margin:0 auto 16px}
-.hth-ring-svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(226,125,96,.25))}
+.hth-ring-svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(88,86,214,.25))}
 .hth-ring-arc{transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
 .hth-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .hth-ring-num{font-family:'Space Mono',monospace;font-size:36px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,#fff,#e2e8f0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
@@ -5542,8 +5542,8 @@ body[data-theme=aurora] .dash-hero .big{background:linear-gradient(90deg,#fff,#F
 .hth-actions{display:flex;gap:8px;justify-content:center}
 .hth-btn{display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s cubic-bezier(.2,.8,.2,1);border:none;letter-spacing:.2px}
 .hth-btn:active{transform:scale(.96)}
-.hth-btn-primary{background:linear-gradient(135deg,#E27D60,#F59E0B);color:#fff;box-shadow:0 4px 16px rgba(226,125,96,.35)}
-.hth-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(226,125,96,.45)}
+.hth-btn-primary{background:linear-gradient(135deg,#5856D6,#F59E0B);color:#fff;box-shadow:0 4px 16px rgba(88,86,214,.35)}
+.hth-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(88,86,214,.45)}
 .hth-btn-stop{background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;box-shadow:0 4px 16px rgba(239,68,68,.35);width:100%;justify-content:center}
 .hth-btn-ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.12)}
 .hth-btn-ghost:hover{background:rgba(255,255,255,.14)}
@@ -5571,8 +5571,8 @@ body[data-theme=aurora] .dash-hero .big{background:linear-gradient(90deg,#fff,#F
 .hth-section-badge{font-size:11px;font-weight:600;color:#6366F1;background:rgba(99,102,241,.08);padding:3px 10px;border-radius:8px}
 .hth-bars{display:flex;gap:6px;align-items:flex-end;height:120px;padding:0 2px}
 .hth-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
-.hth-bar-col.is-today .hth-bar-day{color:#E27D60;font-weight:800}
-.hth-bar-col.is-today .hth-bar-fill{background:linear-gradient(180deg,#E27D60,#CC6E52)!important;box-shadow:0 0 12px rgba(226,125,96,.3)}
+.hth-bar-col.is-today .hth-bar-day{color:#5856D6;font-weight:800}
+.hth-bar-col.is-today .hth-bar-fill{background:linear-gradient(180deg,#5856D6,#CC6E52)!important;box-shadow:0 0 12px rgba(88,86,214,.3)}
 .hth-bar-val{font-size:9px;color:#94A3B8;font-family:'Space Mono',monospace;font-weight:600}
 .hth-bar-track{flex:1;width:100%;background:rgba(0,0,0,.03);border-radius:6px;display:flex;align-items:flex-end;overflow:hidden;min-height:4px}
 .hth-bar-fill{width:100%;background:linear-gradient(180deg,#6366F1,#3F3A36);border-radius:6px;transition:height .5s cubic-bezier(.2,.8,.2,1);min-height:3px}
@@ -5607,7 +5607,7 @@ body[data-theme=aurora] .dash-hero .big{background:linear-gradient(90deg,#fff,#F
 .hth-goal-section{padding:16px 20px}
 .hth-goal-input-wrap{display:flex;flex-direction:column;gap:10px}
 .hth-goal-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:linear-gradient(90deg,#E2E8F0,#CBD5E1);outline:none;cursor:pointer}
-.hth-goal-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#E27D60,#CC6E52);box-shadow:0 2px 8px rgba(226,125,96,.35);cursor:pointer;transition:transform .15s}
+.hth-goal-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#5856D6,#CC6E52);box-shadow:0 2px 8px rgba(88,86,214,.35);cursor:pointer;transition:transform .15s}
 .hth-goal-slider::-webkit-slider-thumb:hover{transform:scale(1.15)}
 .hth-goal-display{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#1a1a2e;text-align:center}
 .hth-sync-status{display:flex;align-items:center;gap:6px;justify-content:center;font-size:11px;color:#64748B;margin-bottom:12px;font-weight:500}
@@ -5649,14 +5649,14 @@ body[data-theme=aurora] .hth-btn-ghost{background:rgba(255,255,255,.06);color:#e
 .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 4px}
 .cal-head h3{font-family:'Space Mono',monospace;font-size:17px;font-weight:700}
 .cal-nav{width:36px;height:36px;border-radius:12px;background:#FFFFFF;border:1px solid rgba(0,0,0,.06);color:#111827;font-size:16px;transition:all .2s cubic-bezier(.2,.8,.2,1);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.cal-nav:hover{background:linear-gradient(135deg,#E27D60,#CC6E52);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(226,125,96,.25);transform:scale(1.05)}
+.cal-nav:hover{background:linear-gradient(135deg,#5856D6,#CC6E52);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(88,86,214,.25);transform:scale(1.05)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:#FFFFFF;border:none;border-radius:18px;padding:14px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.04),0 1px 3px rgba(0,0,0,.02)}
 .cal-dow{font-size:10px;color:#A0AEC0;text-align:center;padding:4px 0;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .cal-day{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:600;cursor:pointer;background:transparent;border:1.5px solid transparent;color:#111827;position:relative;transition:all .2s cubic-bezier(.2,.8,.2,1)}
-.cal-day:hover{background:rgba(226,125,96,.04);border-color:rgba(226,125,96,.15)}
+.cal-day:hover{background:rgba(88,86,214,.04);border-color:rgba(88,86,214,.15)}
 .cal-day.other{color:#D1D5DB}
-.cal-day.today{background:linear-gradient(135deg,rgba(226,125,96,.1),rgba(226,125,96,.04));color:#CC6E52;border-color:rgba(226,125,96,.25);font-weight:800;box-shadow:0 0 0 2px rgba(226,125,96,.08)}
-.cal-day.sel{background:linear-gradient(135deg,#E27D60,#CC6E52)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 4px 12px rgba(226,125,96,.3)!important}
+.cal-day.today{background:linear-gradient(135deg,rgba(88,86,214,.1),rgba(88,86,214,.04));color:#CC6E52;border-color:rgba(88,86,214,.25);font-weight:800;box-shadow:0 0 0 2px rgba(88,86,214,.08)}
+.cal-day.sel{background:linear-gradient(135deg,#5856D6,#CC6E52)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 4px 12px rgba(88,86,214,.3)!important}
 .cal-day .ind{display:flex;gap:2px;margin-top:2px;align-items:center;height:5px}
 .cal-day .ind i{width:4px;height:4px;border-radius:50%;display:inline-block}
 .cal-selected-box{background:#FFFFFF;border:none;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.04),0 1px 3px rgba(0,0,0,.02)}
@@ -5668,7 +5668,7 @@ body[data-theme=aurora] .hth-btn-ghost{background:rgba(255,255,255,.06);color:#e
 .st b{font-family:'Space Mono',monospace;font-size:24px;display:block;color:#111827;line-height:1.1;letter-spacing:-.5px}
 .st small{font-size:10px;color:#A0AEC0;text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-top:4px;display:block}
 .al{border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;margin-bottom:10px;text-align:center}
-.srch{margin-bottom:14px}.srch input{background:#FFFFFF;padding:13px 16px;font-size:15px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:all .2s;border:1.5px solid rgba(0,0,0,.06)}.srch input:focus{box-shadow:0 0 0 3px rgba(226,125,96,.08),0 4px 12px rgba(0,0,0,.06);border-color:var(--accent)}
+.srch{margin-bottom:14px}.srch input{background:#FFFFFF;padding:13px 16px;font-size:15px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:all .2s;border:1.5px solid rgba(0,0,0,.06)}.srch input:focus{box-shadow:0 0 0 3px rgba(88,86,214,.08),0 4px 12px rgba(0,0,0,.06);border-color:var(--accent)}
 .flt{display:flex;gap:7px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}.flt::-webkit-scrollbar{display:none}.fb{padding:9px 17px;border-radius:22px;border:1.5px solid #E5E7EB;background:#FFFFFF;font-size:13px;font-weight:700;color:#6B7280;white-space:nowrap;transition:all .18s cubic-bezier(.2,.8,.2,1);letter-spacing:-.1px}.fb:hover{border-color:#111827;color:#111827;transform:translateY(-1px)}.fb:active{transform:scale(.95)}.fb.on{background:linear-gradient(135deg,#111827,#1F2937);color:#F5F6F8;border-color:#111827;box-shadow:0 3px 10px rgba(45,42,38,.2)}
 .bwa{width:100%;padding:10px;border-radius:10px;border:1px solid #25D366;background:#FFF8F0;color:#CC6E52;font-size:13px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px}
 .tc{background:#FFFFFF;border-radius:16px;padding:18px;border:1px solid rgba(0,0,0,.06);border-left:4px solid;margin-bottom:12px;transition:all .25s cubic-bezier(.2,.8,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.04)}.tc:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}.tc.dn{opacity:.55}
@@ -5680,8 +5680,8 @@ body[data-theme=aurora] .tc-added{color:#6B6B85;background:rgba(255,255,255,.04)
 .badge{padding:2px 9px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase}
 .tc-acts{display:flex;justify-content:flex-end;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid #F5F6F8}
 .ib{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#A0AEC0;transition:all .15s ease}.ib:hover{background:#F5F6F8;color:#6B7280}.ib:active{background:#E5E7EB;transform:scale(.92)}
-.fab{position:fixed;bottom:26px;right:26px;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#E27D60,#CC6E52);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(17,24,39,.4),0 0 0 6px rgba(17,24,39,.12);z-index:50;font-size:32px;font-weight:400;transition:all .2s cubic-bezier(.2,.8,.2,1)}
-.fab:hover{transform:scale(1.1) rotate(90deg);box-shadow:0 12px 32px rgba(61,174,92,.5)}
+.fab{position:fixed;bottom:26px;right:26px;width:56px;height:56px;border-radius:16px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(88,86,214,.3);z-index:50;font-size:28px;font-weight:400;transition:all .2s cubic-bezier(.2,.8,.2,1)}
+.fab:hover{transform:scale(1.05);box-shadow:0 6px 24px rgba(88,86,214,.4)}
 .fab:active{transform:scale(.95)}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;z-index:200}
 /* While any modal is open, hide the bottom tab bar so the modal truly covers the screen
@@ -5692,7 +5692,7 @@ body.modal-open{padding-bottom:0 !important}
 .mdl h2{font-family:'Space Mono',monospace;font-size:18px;margin-bottom:14px}
 .lbl{font-size:11px;font-weight:700;color:#A0AEC0;margin:12px 0 4px;display:block;text-transform:uppercase;letter-spacing:.5px}
 .row{display:flex;gap:10px}.row>div{flex:1}.macts{display:flex;gap:10px;margin-top:18px}
-.mb{flex:1;padding:12px;border-radius:10px;font-size:15px;font-weight:600;text-align:center}.mb-c{border:1.5px solid #D1D5DB;color:#6B7280}.mb-s{background:linear-gradient(135deg,#E27D60,#CC6E52);color:#fff;box-shadow:0 4px 12px rgba(17,24,39,.3)}.mb-d{background:#E8453C;color:#fff;margin-top:10px;width:100%}
+.mb{flex:1;padding:12px;border-radius:10px;font-size:15px;font-weight:600;text-align:center}.mb-c{border:1.5px solid #D1D5DB;color:#6B7280}.mb-s{background:linear-gradient(135deg,#5856D6,#CC6E52);color:#fff;box-shadow:0 4px 12px rgba(17,24,39,.3)}.mb-d{background:#E8453C;color:#fff;margin-top:10px;width:100%}
 .empty{text-align:center;padding:40px 20px;color:#A0AEC0}
 .loading{text-align:center;padding:30px;color:#A0AEC0;font-size:13px}
 .toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:14px;font-size:13px;font-weight:600;z-index:300;box-shadow:0 8px 32px rgba(0,0,0,.12);border:1px solid;backdrop-filter:blur(12px)}
@@ -5896,13 +5896,13 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .add-bar .txt small{display:block;font-size:12px;color:rgba(245,242,237,.7);margin-top:2px;font-weight:500}
 /* Quick-compose bar */
 .qc-bar{background:var(--bg-elev,#fff);border:1.5px solid var(--line,#E5E7EB);border-radius:16px;padding:12px 14px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden}
-.qc-row{display:block;overflow:hidden}
+.qc-row{display:flex;align-items:flex-end;gap:8px;overflow:hidden}
 .qc-input{display:block;width:100%;border:none;background:transparent;font-size:15px;font-family:inherit;outline:none;color:var(--ink,#111827);padding:6px 0;resize:none;overflow-x:hidden;overflow-y:auto;word-wrap:break-word;overflow-wrap:break-word;white-space:pre-wrap;line-height:1.5;max-height:120px;box-sizing:border-box}
 .qc-send-row{display:flex;justify-content:flex-end;margin-top:8px}
 .qc-input::placeholder{color:var(--ink-3,#A0AEC0)}
 .qc-send{width:38px;height:38px;border-radius:50%;border:none;background:linear-gradient(135deg,#3DAE5C,#2D8A4E);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;box-shadow:0 2px 8px rgba(61,174,92,.3)}
 .qc-send:active{transform:scale(.92)}
-@media(max-width:1023px){.qc-bar{padding:16px;border-radius:16px;margin-bottom:16px;border:1px solid var(--line);box-shadow:var(--shadow-1);background:#fff !important}.qc-row{display:block !important;overflow:hidden !important}.qc-input{display:block !important;width:100% !important;font-size:16px;padding:10px 0;min-height:44px;font-weight:400;word-wrap:break-word !important;overflow-wrap:break-word !important;white-space:pre-wrap !important;overflow-x:hidden !important;box-sizing:border-box !important}.qc-input::placeholder{font-size:15px;color:var(--ink-4)}.qc-send{width:48px;height:48px;font-size:24px;font-weight:700;background:var(--accent) !important;box-shadow:0 2px 8px rgba(226,125,96,.3);border-radius:14px}.qc-chips{gap:8px;margin-top:14px;flex-wrap:wrap}.qc-chip{padding:10px 18px;font-size:13px;border-radius:10px;font-weight:600;letter-spacing:0;border-width:1.5px}.qc-chip .qc-dot{width:8px;height:8px}.qc-expand{font-size:13px !important;font-weight:600 !important;color:var(--accent) !important;background:transparent;padding:10px 16px;border-radius:10px;transition:all .15s}}
+@media(max-width:1023px){.qc-bar{padding:16px;border-radius:16px;margin-bottom:16px;border:1px solid var(--line);box-shadow:var(--shadow-1);background:#fff !important}.qc-row{display:flex !important;align-items:flex-end !important;gap:8px !important;overflow:hidden !important}.qc-input{display:block !important;width:100% !important;font-size:16px;padding:10px 0;min-height:44px;font-weight:400;word-wrap:break-word !important;overflow-wrap:break-word !important;white-space:pre-wrap !important;overflow-x:hidden !important;box-sizing:border-box !important}.qc-input::placeholder{font-size:15px;color:var(--ink-4)}.qc-send{width:48px;height:48px;font-size:24px;font-weight:700;background:var(--accent) !important;box-shadow:0 2px 8px rgba(88,86,214,.3);border-radius:14px}.qc-chips{gap:8px;margin-top:14px;flex-wrap:wrap}.qc-chip{padding:10px 18px;font-size:13px;border-radius:10px;font-weight:600;letter-spacing:0;border-width:1.5px}.qc-chip .qc-dot{width:8px;height:8px}.qc-expand{font-size:13px !important;font-weight:600 !important;color:var(--accent) !important;background:transparent;padding:10px 16px;border-radius:10px;transition:all .15s}}
 .qc-chips{display:flex;gap:6px;margin-top:8px;align-items:center}
 .qc-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;border:1.5px solid transparent;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s;background:var(--bg,#F5F6F8);color:var(--ink-2,#6B7280);user-select:none}
 .qc-chip:active{transform:scale(.95)}
@@ -5944,8 +5944,8 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-bubble::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);border-left:4px solid transparent;border-right:4px solid transparent}
 .qc-b1{background:#5C6B7A;animation:qcB1 8s ease-in-out infinite;left:80%;transform:translateX(-30%)}
 .qc-b1::after{border-top:5px solid #5C6B7A;left:20%}
-.qc-b2{background:#E27D60;animation:qcB2 8s ease-in-out infinite}
-.qc-b2::after{border-top:5px solid #E27D60}
+.qc-b2{background:#5856D6;animation:qcB2 8s ease-in-out infinite}
+.qc-b2::after{border-top:5px solid #5856D6}
 .qc-b3{background:#5C6B7A;animation:qcB3 8s ease-in-out infinite;left:80%;transform:translateX(-30%)}
 .qc-b3::after{border-top:5px solid #5C6B7A;left:20%}
 @keyframes qcB1{0%,18%{opacity:0;transform:translateX(-30%) translateY(4px)}24%{opacity:1;transform:translateX(-30%) translateY(0)}38%{opacity:1}42%,100%{opacity:0}}
@@ -5955,7 +5955,7 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 @keyframes qcGuidePoint{0%,25%{transform:rotate(15deg)}35%{transform:rotate(-60deg)}45%,55%{transform:rotate(-60deg)}65%,100%{transform:rotate(15deg)}}
 /* — Writer (person 2) — follows guide, sits at notebook — */
 .qc-writer{animation:qcWriterWalk 8s ease-in-out infinite}
-.qc-writer .qc-p-head{background:linear-gradient(135deg,#EDA68E,#E27D60);box-shadow:0 2px 6px rgba(226,125,96,.25)}
+.qc-writer .qc-p-head{background:linear-gradient(135deg,#EDA68E,#5856D6);box-shadow:0 2px 6px rgba(88,86,214,.25)}
 .qc-writer .qc-p-torso{background:linear-gradient(180deg,#F5CAB8,#EDA68E)}
 .qc-writer .qc-p-arm{background:#F5CAB8}
 .qc-writer .qc-p-leg{background:#374151}
@@ -5970,13 +5970,13 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 /* — Notebook at the right end — */
 .qc-notebook{position:absolute;right:8%;bottom:16px;width:48px;height:58px;z-index:1}
 .qc-nb-cover{width:48px;height:58px;background:linear-gradient(145deg,#FAFAFA,#F5F5F5);border:2px solid #D4D4D8;border-radius:3px 10px 10px 3px;position:relative;box-shadow:0 4px 16px rgba(17,24,39,.12)}
-.qc-nb-spine{position:absolute;left:0;top:4px;bottom:4px;width:5px;background:linear-gradient(180deg,#E27D60,#1F2937);border-radius:3px 0 0 3px}
+.qc-nb-spine{position:absolute;left:0;top:4px;bottom:4px;width:5px;background:linear-gradient(180deg,#5856D6,#1F2937);border-radius:3px 0 0 3px}
 .qc-nb-ring{position:absolute;left:2px;width:8px;height:4px;border:1.5px solid #D4D4D8;border-radius:2px;background:transparent}
 .qc-nb-ring:nth-child(2){top:10px}.qc-nb-ring:nth-child(3){top:22px}.qc-nb-ring:nth-child(4){top:34px}.qc-nb-ring:nth-child(5){top:46px}
 .qc-nb-line{position:absolute;left:14px;right:6px;height:1.5px;background:rgba(17,24,39,.15);border-radius:1px}
 .qc-nb-line:nth-child(6){top:14px}.qc-nb-line:nth-child(7){top:22px}.qc-nb-line:nth-child(8){top:30px}.qc-nb-line:nth-child(9){top:38px}
 /* writing stroke animates across lines */
-.qc-nb-ink{position:absolute;left:14px;height:2px;background:#E27D60;border-radius:1px;width:0;animation:qcInk 8s ease-in-out infinite}
+.qc-nb-ink{position:absolute;left:14px;height:2px;background:#5856D6;border-radius:1px;width:0;animation:qcInk 8s ease-in-out infinite}
 .qc-nb-ink:nth-child(10){top:13px;animation-delay:4s}
 .qc-nb-ink:nth-child(11){top:21px;animation-delay:4.4s}
 .qc-nb-ink:nth-child(12){top:29px;animation-delay:4.8s}
@@ -5990,7 +5990,7 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-sparkle{position:absolute;border-radius:50%;opacity:0;animation:qcSpark 8s ease-in-out infinite}
 .qc-sparkle:nth-child(1){width:7px;height:7px;background:#FBBF24;top:0;left:0;animation-delay:5s}
 .qc-sparkle:nth-child(2){width:5px;height:5px;background:#EDA68E;top:-10px;left:16px;animation-delay:5.2s}
-.qc-sparkle:nth-child(3){width:6px;height:6px;background:#E27D60;top:6px;left:24px;animation-delay:5.4s}
+.qc-sparkle:nth-child(3){width:6px;height:6px;background:#5856D6;top:6px;left:24px;animation-delay:5.4s}
 .qc-sparkle:nth-child(4){width:4px;height:4px;background:#F59E0B;top:-5px;left:-8px;animation-delay:5.3s}
 @keyframes qcSpark{0%,55%{opacity:0;transform:scale(0)}60%{opacity:1;transform:scale(1.4)}66%{opacity:1;transform:scale(1)}78%,100%{opacity:0;transform:scale(0) translateY(-10px)}}
 .qc-nb-check{position:absolute;top:16px;left:20px;width:14px;height:8px;border-bottom:3px solid #22C55E;border-left:3px solid #22C55E;transform:rotate(-45deg) scale(0);animation:qcCheck 8s ease-in-out infinite;z-index:3}
@@ -6016,7 +6016,7 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-quotes{position:absolute;top:0;left:0;right:0;height:32px;overflow:hidden;z-index:5;background:rgba(255,255,255,.7);border-bottom:1px solid rgba(0,0,0,.04);border-radius:16px 16px 0 0}
 .qc-quotes-track{display:flex;white-space:nowrap;animation:qcScroll 40s linear infinite;will-change:transform}
 .qc-quote{display:inline-flex;align-items:center;height:32px;padding:0 24px;font-size:11px;font-weight:600;color:#6B7280;letter-spacing:.02em;flex-shrink:0}
-.qc-quote::before{content:'\\2022';color:#E27D60;margin-right:8px;font-size:14px}
+.qc-quote::before{content:'\\2022';color:#5856D6;margin-right:8px;font-size:14px}
 @keyframes qcScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 /* — Touch-to-slow interaction — */
 .qc-scene.slow *{animation-duration:16s !important;transition:animation-duration .3s}
@@ -6025,34 +6025,24 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .qc-scene.fast .qc-quotes-track{animation-duration:10s !important}
 }
 /* ─── MOTIVATIONAL ADD-TASK HERO CARD ─── */
-.task-hero{position:relative;border-radius:24px;padding:28px 22px;margin-bottom:18px;overflow:hidden;cursor:pointer;perspective:800px;transform-style:preserve-3d;background:linear-gradient(135deg,#D4654A 0%,#C05A42 50%,#A84E3A 100%);box-shadow:0 12px 40px -8px rgba(212,101,74,.35);transition:transform .3s ease,box-shadow .3s ease;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
-.task-hero:active{transform:scale(.97) rotateX(2deg);box-shadow:0 6px 20px -4px rgba(212,101,74,.3)}
-.task-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.15) 0%,transparent 60%);pointer-events:none}
-.task-hero-blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.1);filter:blur(20px);animation:heroFloat 6s ease-in-out infinite alternate}
-.task-hero-blob:nth-child(1){width:100px;height:100px;top:-20px;right:-10px;animation-delay:0s}
-.task-hero-blob:nth-child(2){width:70px;height:70px;bottom:-15px;left:10px;animation-delay:2s}
-.task-hero-blob:nth-child(3){width:50px;height:50px;top:40%;left:60%;animation-delay:4s}
-@keyframes heroFloat{0%{transform:translate(0,0) scale(1)}100%{transform:translate(10px,-10px) scale(1.1)}}
-.task-hero-text{position:relative;z-index:2;color:#fff}
-.task-hero-title{font:700 22px/1.2 var(--sans);margin:0 0 6px;text-shadow:0 2px 8px rgba(0,0,0,.15)}
-.task-hero-sub{font:400 13.5px/1.4 var(--sans);opacity:.85;max-width:220px}
-.task-hero-cta{position:relative;z-index:2;display:flex;align-items:center;gap:10px;margin-top:16px}
-.task-hero-btn{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.95);border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.1);animation:heroPulse 2s ease-in-out infinite}
-@keyframes heroPulse{0%,100%{transform:scale(1);box-shadow:0 4px 12px rgba(0,0,0,.1)}50%{transform:scale(1.08);box-shadow:0 6px 20px rgba(0,0,0,.15)}}
-.task-hero-label{font:600 14px var(--sans);color:rgba(255,255,255,.9);letter-spacing:.02em}
-.task-hero-orbit{position:absolute;top:50%;right:16px;width:80px;height:80px;transform:translateY(-50%);z-index:1}
-.task-hero-ring{position:absolute;inset:0;border:1.5px solid rgba(255,255,255,.2);border-radius:50%;animation:heroSpin 8s linear infinite}
-.task-hero-ring:nth-child(2){inset:10px;animation-duration:12s;animation-direction:reverse}
-.task-hero-dot{position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;top:-4px;left:50%;transform:translateX(-50%);box-shadow:0 0 8px rgba(255,255,255,.6)}
-@keyframes heroSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-/* Motivational phrases cycling */
-.task-hero-motiv{position:absolute;bottom:12px;right:16px;font:500 11px var(--sans);color:rgba(255,255,255,.6);letter-spacing:.03em;animation:motivFade 12s ease-in-out infinite}
-@keyframes motivFade{0%,25%{opacity:.6}30%{opacity:0}35%,60%{opacity:.6}65%{opacity:0}70%,100%{opacity:.6}}
+.task-hero{position:relative;border-radius:16px;padding:20px;margin-bottom:14px;overflow:hidden;cursor:pointer;background:var(--accent);box-shadow:0 4px 16px rgba(88,86,214,.2);transition:transform .2s ease,box-shadow .2s ease;min-height:80px;display:flex;align-items:center;gap:16px}
+.task-hero:active{transform:scale(.98);box-shadow:0 2px 8px rgba(88,86,214,.15)}
+.task-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(255,255,255,.12) 0%,transparent 60%);pointer-events:none}
+.task-hero-blob{display:none}
+.task-hero-text{position:relative;z-index:2;color:#fff;flex:1}
+.task-hero-title{font:600 17px/1.3 var(--sans);margin:0 0 4px}
+.task-hero-sub{font:400 13px/1.4 var(--sans);opacity:.8;max-width:220px}
+.task-hero-cta{position:relative;z-index:2;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.task-hero-btn{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.95);border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.task-hero-label{display:none}
+.task-hero-orbit{display:none}
+.task-hero-ring,.task-hero-dot{display:none}
+.task-hero-motiv{display:none}
 /* ─── NOTES UI ─── */
 .note-cats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
 .note-cat{border-radius:16px;padding:18px 14px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;text-align:center;transition:all .2s ease}
 .note-cat:active{transform:scale(.96)}
-.note-cat.on{border-color:var(--accent);background:rgba(226,125,96,.08);box-shadow:0 4px 16px rgba(226,125,96,.12)}
+.note-cat.on{border-color:var(--accent);background:rgba(88,86,214,.08);box-shadow:0 4px 16px rgba(88,86,214,.12)}
 .note-cat-icon{font-size:24px;margin-bottom:6px}
 .note-cat-label{font:600 13px var(--sans);color:var(--ink)}
 .note-editor{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;margin-top:14px}
@@ -6061,7 +6051,7 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .note-toolbar{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
 .note-tool-btn{height:36px;padding:0 14px;border-radius:10px;border:1.5px solid var(--line);background:transparent;font:600 12px var(--sans);color:var(--ink-2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
 .note-tool-btn:active{transform:scale(.95)}
-.note-tool-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(226,125,96,.06)}
+.note-tool-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(88,86,214,.06)}
 .note-canvas-wrap{position:relative;margin-top:12px;border:1.5px solid var(--line);border-radius:14px;overflow:hidden;touch-action:none}
 .note-canvas-wrap canvas{display:block;width:100%;height:200px;background:#fafafa}
 [data-theme=aurora] .note-canvas-wrap canvas{background:#1e1e22}
@@ -6093,7 +6083,7 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 /* Sub-tab switcher for Tasks/Notes */
 .task-sub-tabs{display:flex;gap:4px;background:var(--surface);border-radius:12px;padding:4px;margin-bottom:16px;border:1px solid var(--line)}
 .task-sub-tab{flex:1;padding:10px 0;border-radius:10px;border:none;background:transparent;font:600 13.5px var(--sans);color:var(--text-mute);cursor:pointer;transition:all .2s;text-align:center}
-.task-sub-tab.on{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(226,125,96,.25)}
+.task-sub-tab.on{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(88,86,214,.25)}
 /* Priority badge on task cards */
 .tc-pri{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
 /* Dashboard */
@@ -6191,15 +6181,15 @@ body[data-theme=aurora] .gcal-card p,body[data-theme=aurora] .gcal-evt-time{colo
 .inshort:hover{transform:translateY(-3px);box-shadow:0 14px 38px rgba(17,24,39,.1)}
 .inshort-img{position:relative;flex:0 0 38%;width:38%;align-self:stretch;min-height:180px;aspect-ratio:auto;background-color:#111827;overflow:hidden}
 .inshort-img img{width:100%;height:100%;object-fit:cover;display:block}
-.inshort-img-placeholder{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#E27D60,#EC4899)}
+.inshort-img-placeholder{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#5856D6,#EC4899)}
 .inshort-src{position:absolute;top:12px;left:12px;background:rgba(17,24,39,.85);color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:30px;letter-spacing:.3px;backdrop-filter:blur(10px)}
 .inshort-body{padding:18px 20px 16px;flex:1;min-width:0;display:flex;flex-direction:column}
 .inshort-title{font-size:18px;font-weight:800;line-height:1.3;color:#111827;margin-bottom:10px;letter-spacing:-.3px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .inshort-desc{font-size:14px;line-height:1.55;color:#6B7280;margin-bottom:14px;flex:1;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .inshort-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;border-top:1px solid rgba(17,24,39,.06);margin-top:auto}
 .inshort-time{font-size:12px;color:#A0AEC0;font-weight:600}
-.inshort-share{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#E27D60;background:rgba(17,24,39,.1);border:none;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .15s}
-.inshort-share:hover{background:#E27D60;color:#fff}
+.inshort-share{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#5856D6;background:rgba(17,24,39,.1);border:none;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .15s}
+.inshort-share:hover{background:#5856D6;color:#fff}
 @media (max-width:600px){
   .inshort{flex-direction:column}
   .inshort-img{flex:0 0 auto;width:100%;min-height:0;aspect-ratio:16/9}
@@ -6211,7 +6201,7 @@ body[data-theme=aurora] .inshort{background:rgba(255,255,255,.05);border-color:r
 body[data-theme=aurora] .inshort-title{color:#E8E8EC}
 body[data-theme=aurora] .inshort-desc{color:#888888}
 body[data-theme=aurora] .inshort-foot{border-top-color:rgba(255,255,255,.08)}
-body[data-theme=aurora] .inshort-share{background:rgba(226,125,96,.18);color:#E27D60}
+body[data-theme=aurora] .inshort-share{background:rgba(88,86,214,.18);color:#5856D6}
 
 /* Meditation tab */
 .med-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:14px}
@@ -6243,27 +6233,27 @@ body[data-theme=aurora] .hs-cat{background:rgba(255,255,255,.06)!important;color
 body[data-theme=aurora] .hs-cat.on{background:#FFD27A!important;color:#1B0E2E!important;border-color:#FFD27A!important}
 
 .med-card{display:flex;align-items:center;gap:14px;padding:18px 18px;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(255,255,255,.78));border:1.5px solid rgba(17,24,39,.06);text-align:left;cursor:pointer;transition:transform .2s ease,box-shadow .25s ease,border-color .2s ease;position:relative;overflow:hidden;width:100%;color:#111827}
-.med-card::before{content:'';position:absolute;top:0;left:0;width:6px;height:100%;background:var(--mc,#E27D60)}
-.med-card:hover{transform:translateY(-3px);box-shadow:0 14px 38px rgba(17,24,39,.08);border-color:var(--mc,#E27D60)}
-.med-card-mins{flex:0 0 auto;width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--mc,#E27D60),rgba(0,0,0,.12));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.12)}
+.med-card::before{content:'';position:absolute;top:0;left:0;width:6px;height:100%;background:var(--mc,#5856D6)}
+.med-card:hover{transform:translateY(-3px);box-shadow:0 14px 38px rgba(17,24,39,.08);border-color:var(--mc,#5856D6)}
+.med-card-mins{flex:0 0 auto;width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--mc,#5856D6),rgba(0,0,0,.12));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.12)}
 .med-card-mins b{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;line-height:1}
 .med-card-mins small{font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:2px;opacity:.95}
 .med-card-body{flex:1;min-width:0}
 .med-card-title{font-family:'Inter','SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:700;color:#111827;margin-bottom:3px;letter-spacing:-.011em}
 .med-card-desc{font-family:'Inter','SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;font-size:12px;color:#6B7280;line-height:1.4}
-.med-card-play{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:rgba(17,24,39,.06);color:var(--mc,#E27D60);display:flex;align-items:center;justify-content:center;transition:transform .2s ease,background .2s ease}
-.med-card:hover .med-card-play{transform:scale(1.1);background:var(--mc,#E27D60);color:#fff}
+.med-card-play{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:rgba(17,24,39,.06);color:var(--mc,#5856D6);display:flex;align-items:center;justify-content:center;transition:transform .2s ease,background .2s ease}
+.med-card:hover .med-card-play{transform:scale(1.1);background:var(--mc,#5856D6);color:#fff}
 .med-foot{font-size:13px;color:#6B7280;text-align:center;margin-top:10px;opacity:.85}
 .med-card.loading{cursor:wait;opacity:.85}
 .med-card.loading .med-card-play{background:transparent}
-.med-load-dot{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(17,24,39,.25);border-top-color:var(--mc,#E27D60);animation:medSpin .9s linear infinite}
+.med-load-dot{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(17,24,39,.25);border-top-color:var(--mc,#5856D6);animation:medSpin .9s linear infinite}
 @keyframes medSpin{to{transform:rotate(360deg)}}
 
 .med-player{background:rgba(255,255,255,.94);border:1.5px solid rgba(17,24,39,.06);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 12px 38px rgba(17,24,39,.06)}
-.med-back{font-size:13px;font-weight:700;color:#E27D60;background:rgba(17,24,39,.1);border:none;padding:8px 14px;border-radius:10px;cursor:pointer;margin-bottom:14px}
+.med-back{font-size:13px;font-weight:700;color:#5856D6;background:rgba(17,24,39,.1);border:none;padding:8px 14px;border-radius:10px;cursor:pointer;margin-bottom:14px}
 .med-back:hover{background:rgba(17,24,39,.18)}
 .med-player-hd{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.med-player-hd .med-mins{flex:0 0 auto;width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,#E27D60,#CC6E52,#EC4899);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;box-shadow:0 8px 22px rgba(17,24,39,.32)}
+.med-player-hd .med-mins{flex:0 0 auto;width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,#5856D6,#CC6E52,#EC4899);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;box-shadow:0 8px 22px rgba(17,24,39,.32)}
 .med-player-hd h2{font-size:18px;font-weight:700;color:#111827;margin-bottom:2px}
 .med-player-hd p{font-size:13px;color:#6B7280}
 .med-frame{position:relative;padding-bottom:56.25%;height:0;border-radius:14px;overflow:hidden;background:#000}
@@ -6277,12 +6267,12 @@ body[data-theme=aurora] .med-card-play{background:rgba(255,255,255,.08)}
 body[data-theme=aurora] .med-player{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
 body[data-theme=aurora] .med-player-hd h2{color:#E8E8EC}
 body[data-theme=aurora] .med-player-hd p{color:#888888}
-body[data-theme=aurora] .med-tip{color:#888888;background:rgba(226,125,96,.1)}
+body[data-theme=aurora] .med-tip{color:#888888;background:rgba(88,86,214,.1)}
 body[data-theme=aurora] .med-foot{color:#888888}
 /* Immersive Meditation Overlay — full-screen calm scene */
 .med-scene{position:fixed;inset:0;background:linear-gradient(180deg,#111827 0%,#1F2937 25%,#374151 55%,#A07040 80%,#F59E0B 100%);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;animation:medFadeIn .6s ease-out}
 @keyframes medFadeIn{from{opacity:0}to{opacity:1}}
-.med-scene::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 25% 35%,rgba(226,125,96,.18),transparent 55%),radial-gradient(ellipse at 75% 70%,rgba(226,125,96,.14),transparent 55%);animation:medAura 16s ease-in-out infinite alternate;pointer-events:none}
+.med-scene::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 25% 35%,rgba(88,86,214,.18),transparent 55%),radial-gradient(ellipse at 75% 70%,rgba(88,86,214,.14),transparent 55%);animation:medAura 16s ease-in-out infinite alternate;pointer-events:none}
 @keyframes medAura{from{opacity:.7;transform:scale(1)}to{opacity:1;transform:scale(1.06)}}
 .med-stars{position:absolute;inset:0;pointer-events:none}
 .med-stars span{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.7);animation:starTwinkle 3s ease-in-out infinite}
@@ -6301,7 +6291,7 @@ body[data-theme=aurora] .med-foot{color:#888888}
 @keyframes starTwinkle{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
 .med-waves{position:absolute;left:0;right:0;bottom:0;width:100%;height:36vh;pointer-events:none;z-index:1}
 .med-wave{transform-origin:center bottom}
-.med-wave-1{fill:rgba(226,125,96,.2);animation:waveSwell 11s ease-in-out infinite}
+.med-wave-1{fill:rgba(88,86,214,.2);animation:waveSwell 11s ease-in-out infinite}
 .med-wave-2{fill:rgba(17,24,39,.18);animation:waveSwell 14s ease-in-out infinite reverse;animation-delay:-2s}
 .med-wave-3{fill:rgba(17,24,39,.45);animation:waveSwell 17s ease-in-out infinite;animation-delay:-4s}
 @keyframes waveSwell{0%,100%{transform:translateX(-30px) scaleY(1)}50%{transform:translateX(30px) scaleY(1.04)}}
@@ -6310,7 +6300,7 @@ body[data-theme=aurora] .med-foot{color:#888888}
 .med-info-title{font-family:'Instrument Serif',Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-.01em;line-height:1.15;text-shadow:0 2px 16px rgba(0,0,0,.4)}
 .med-breath-wrap{position:relative;z-index:5;width:280px;height:280px;display:flex;align-items:center;justify-content:center}
 .med-breath-core,.med-breath-ring{position:absolute;border-radius:50%}
-.med-breath-core{width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.32),rgba(255,255,255,.08) 65%,transparent);border:1.5px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;animation:breathe 10s ease-in-out infinite;box-shadow:0 0 60px rgba(255,255,255,.18) inset,0 0 40px rgba(226,125,96,.3)}
+.med-breath-core{width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.32),rgba(255,255,255,.08) 65%,transparent);border:1.5px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;animation:breathe 10s ease-in-out infinite;box-shadow:0 0 60px rgba(255,255,255,.18) inset,0 0 40px rgba(88,86,214,.3)}
 .med-breath-ring-1{width:240px;height:240px;border:1px solid rgba(255,255,255,.25);animation:breatheRing 10s ease-in-out infinite;animation-delay:-.4s}
 .med-breath-ring-2{width:300px;height:300px;border:1px solid rgba(255,255,255,.16);animation:breatheRing 10s ease-in-out infinite;animation-delay:-.8s}
 .med-breath-ring-3{width:380px;height:380px;border:1px solid rgba(255,255,255,.08);animation:breatheRing 10s ease-in-out infinite;animation-delay:-1.2s}
@@ -6329,14 +6319,14 @@ body[data-theme=aurora] .med-foot{color:#888888}
 .ipl-wiki:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(17,24,39,.1)}
 .ipl-wiki-thumb{width:120px;height:120px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#F5F6F8}
 .ipl-wiki-body{flex:1;min-width:0}
-.ipl-wiki-kicker{font-size:10px;font-weight:800;color:#E27D60;letter-spacing:1.4px;margin-bottom:4px}
+.ipl-wiki-kicker{font-size:10px;font-weight:800;color:#5856D6;letter-spacing:1.4px;margin-bottom:4px}
 .ipl-wiki-h{font-family:'Instrument Serif',Georgia,serif;font-size:22px;font-weight:400;color:#111827;letter-spacing:-.01em;margin-bottom:6px;line-height:1.2}
 .ipl-wiki-x{font-size:13.5px;line-height:1.55;color:#6B7280;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
-.ipl-wiki-cta{font-size:13px;font-weight:700;color:#E27D60;border-bottom:1.5px solid currentColor;padding-bottom:1px}
+.ipl-wiki-cta{font-size:13px;font-weight:700;color:#5856D6;border-bottom:1.5px solid currentColor;padding-bottom:1px}
 body[data-theme=aurora] .ipl-wiki{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
 body[data-theme=aurora] .ipl-wiki-h{color:#E8E8EC}
 body[data-theme=aurora] .ipl-wiki-x{color:#888888}
-body[data-theme=aurora] .ipl-wiki-cta{color:#E27D60}
+body[data-theme=aurora] .ipl-wiki-cta{color:#5856D6}
 @media (max-width:600px){.ipl-wiki{flex-direction:column;gap:10px}.ipl-wiki-thumb{width:100%;height:160px}}
 /* IPL Spotlight card on the Sports news category */
 .ipl-spotlight{background:linear-gradient(135deg,#111827 0%,#1F2937 50%,#7E22CE 100%);color:#fff;border-radius:16px;padding:14px 16px 16px;margin-bottom:16px;box-shadow:0 8px 24px rgba(17,24,39,.18);position:relative;overflow:hidden}
@@ -6386,10 +6376,10 @@ body[data-theme=aurora] .ipl-section-ttl{color:#E8E8EC}
 .ipl-records{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:8px}
 .ipl-rec{position:relative;background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:18px 20px;overflow:hidden;opacity:0;transform:translateY(12px);animation:iplFadeIn .6s cubic-bezier(.2,.8,.2,1) forwards;box-shadow:0 1px 3px rgba(17,24,39,.04),0 4px 14px rgba(17,24,39,.05);transition:transform .25s ease,box-shadow .25s ease}
 .ipl-rec:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(17,24,39,.1)}
-.ipl-rec::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--rc,#E27D60)}
-.ipl-rec::after{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at 70% 30%,var(--rc,#E27D60),transparent 70%);opacity:.15;pointer-events:none}
+.ipl-rec::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--rc,#5856D6)}
+.ipl-rec::after{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at 70% 30%,var(--rc,#5856D6),transparent 70%);opacity:.15;pointer-events:none}
 .ipl-rec-ic{font-size:22px;margin-bottom:8px}
-.ipl-rec-v{font-family:'Instrument Serif',Georgia,serif;font-size:36px;font-weight:400;letter-spacing:-.02em;color:var(--rc,#E27D60);line-height:1;margin-bottom:6px;animation:numPop .9s cubic-bezier(.2,.8,.2,1) forwards;opacity:0;transform:scale(.9)}
+.ipl-rec-v{font-family:'Instrument Serif',Georgia,serif;font-size:36px;font-weight:400;letter-spacing:-.02em;color:var(--rc,#5856D6);line-height:1;margin-bottom:6px;animation:numPop .9s cubic-bezier(.2,.8,.2,1) forwards;opacity:0;transform:scale(.9)}
 @keyframes numPop{from{opacity:0;transform:scale(.85)}60%{opacity:1;transform:scale(1.04)}to{opacity:1;transform:scale(1)}}
 .ipl-rec-l{font-size:12.5px;font-weight:700;color:#111827;margin-bottom:3px}
 .ipl-rec-sub{font-size:11.5px;color:#6B7280;font-weight:500}
@@ -6400,12 +6390,12 @@ body[data-theme=aurora] .ipl-rec-sub{color:#888888}
 .ipl-champs{display:grid;grid-auto-flow:column;grid-auto-columns:140px;gap:12px;overflow-x:auto;padding:6px 2px 14px;scrollbar-width:thin;margin-bottom:8px}
 .ipl-champs::-webkit-scrollbar{height:6px}
 .ipl-champs::-webkit-scrollbar-thumb{background:rgba(17,24,39,.3);border-radius:99px}
-.ipl-champ{position:relative;background:linear-gradient(160deg,#fff 0%,rgba(255,255,255,.85) 100%);border:1.5px solid var(--cc,#E27D60);border-radius:14px;padding:14px 12px 16px;text-align:center;opacity:0;transform:translateY(10px);animation:iplFadeIn .6s cubic-bezier(.2,.8,.2,1) forwards;box-shadow:0 4px 14px rgba(17,24,39,.06);transition:transform .25s ease,box-shadow .25s ease}
+.ipl-champ{position:relative;background:linear-gradient(160deg,#fff 0%,rgba(255,255,255,.85) 100%);border:1.5px solid var(--cc,#5856D6);border-radius:14px;padding:14px 12px 16px;text-align:center;opacity:0;transform:translateY(10px);animation:iplFadeIn .6s cubic-bezier(.2,.8,.2,1) forwards;box-shadow:0 4px 14px rgba(17,24,39,.06);transition:transform .25s ease,box-shadow .25s ease}
 .ipl-champ:hover{transform:translateY(-4px) rotate(-1deg);box-shadow:0 12px 28px rgba(17,24,39,.14)}
-.ipl-champ::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,var(--cc,#E27D60),transparent 70%);opacity:.18;pointer-events:none;border-radius:14px}
+.ipl-champ::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,var(--cc,#5856D6),transparent 70%);opacity:.18;pointer-events:none;border-radius:14px}
 .ipl-champ-trophy{font-size:32px;line-height:1;margin-bottom:4px;animation:trophyBob 2.2s ease-in-out infinite;display:inline-block}
 @keyframes trophyBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-3px) rotate(3deg)}}
-.ipl-champ-y{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--cc,#E27D60);line-height:1;margin-bottom:4px;position:relative;z-index:1}
+.ipl-champ-y{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--cc,#5856D6);line-height:1;margin-bottom:4px;position:relative;z-index:1}
 .ipl-champ-t{font-size:11.5px;font-weight:700;color:#111827;line-height:1.25;position:relative;z-index:1}
 body[data-theme=aurora] .ipl-champ{background:linear-gradient(160deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 100%)}
 body[data-theme=aurora] .ipl-champ-t{color:#E8E8EC}
@@ -6428,11 +6418,11 @@ body[data-theme=aurora] .ipl-ttl-bar{background:rgba(255,255,255,.08)}
 .mag-pills{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:4px;background:var(--bg-sunken);border-radius:14px;margin-bottom:18px}.mag-pills::-webkit-scrollbar{display:none}
 .know-topics{margin-bottom:8px}
 .know-topic{font-size:14px;padding:11px 18px}
-.know-topic.on{background:linear-gradient(135deg,#B8802A,#A07040);box-shadow:0 6px 18px rgba(226,125,96,.3)}
+.know-topic.on{background:linear-gradient(135deg,#B8802A,#A07040);box-shadow:0 6px 18px rgba(88,86,214,.3)}
 .know-subs{padding-bottom:14px;border-bottom:1px dashed rgba(17,24,39,.18);margin-bottom:18px}
 .mag-pill-sub{font-size:12px;padding:7px 12px;font-weight:600}
-.mag-pill-sub.on{background:linear-gradient(135deg,#E27D60,#CC6E52);box-shadow:0 4px 12px rgba(17,24,39,.25)}
-body[data-theme=aurora] .know-subs{border-bottom-color:rgba(226,125,96,.2)}
+.mag-pill-sub.on{background:linear-gradient(135deg,#5856D6,#CC6E52);box-shadow:0 4px 12px rgba(17,24,39,.25)}
+body[data-theme=aurora] .know-subs{border-bottom-color:rgba(88,86,214,.2)}
 .mag-pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:10px 16px;border-radius:10px;background:transparent;border:none;color:var(--ink-3);cursor:pointer;transition:all .15s ease;white-space:nowrap;flex-shrink:0}
 .mag-pill:hover{background:rgba(255,255,255,.5);color:var(--ink)}
 .mag-pill.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
@@ -6450,11 +6440,11 @@ body[data-theme=aurora] .know-subs{border-bottom-color:rgba(226,125,96,.2)}
 .mag-card:hover .mag-card-img img{transform:scale(1.04)}
 .mag-card-img-empty{display:flex;align-items:center;justify-content:center;font-size:60px;color:rgba(17,24,39,.18)}
 .mag-card-body{flex:1;padding:18px 20px 20px;display:flex;flex-direction:column}
-.mag-card-kicker{font-size:11px;font-weight:800;color:#E27D60;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
+.mag-card-kicker{font-size:11px;font-weight:800;color:#5856D6;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
 .mag-card-h{font-family:'Instrument Serif',Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-.015em;color:#111827;line-height:1.2;margin-bottom:6px}
 .mag-card-d{font-size:12px;color:#A0AEC0;font-weight:600;font-style:italic;margin-bottom:10px}
 .mag-card-x{font-size:14px;line-height:1.55;color:#6B7280;margin-bottom:14px;flex:1;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
-.mag-card-cta{display:inline-block;font-size:13px;font-weight:700;color:#E27D60;text-decoration:none;align-self:flex-start;border-bottom:1.5px solid currentColor;padding-bottom:1px;transition:color .15s ease}
+.mag-card-cta{display:inline-block;font-size:13px;font-weight:700;color:#5856D6;text-decoration:none;align-self:flex-start;border-bottom:1.5px solid currentColor;padding-bottom:1px;transition:color .15s ease}
 .mag-card-cta:hover{color:#EC4899}
 body[data-theme=aurora] .mag-pill{background:transparent;border:none;color:rgba(255,255,255,.5)}
 body[data-theme=aurora] .mag-pill:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
@@ -6465,8 +6455,8 @@ body[data-theme=aurora] .mag-card-img{background:linear-gradient(135deg,rgba(17,
 body[data-theme=aurora] .mag-card-h{color:#E8E8EC}
 body[data-theme=aurora] .mag-card-x{color:#888888}
 body[data-theme=aurora] .mag-card-d{color:#6B6B85}
-body[data-theme=aurora] .mag-card-kicker{color:#E27D60}
-body[data-theme=aurora] .mag-card-cta{color:#E27D60}
+body[data-theme=aurora] .mag-card-kicker{color:#5856D6}
+body[data-theme=aurora] .mag-card-cta{color:#5856D6}
 body[data-theme=aurora] .mag-card-cta:hover{color:#F472B6}
 
 /* History "On This Day" feed (legacy items kept for the Today section) */
@@ -6481,13 +6471,13 @@ body[data-theme=aurora] .mag-card-cta:hover{color:#F472B6}
 .hist-text{flex:1;min-width:0}
 .hist-event{font-size:14.5px;line-height:1.55;color:#111827;margin-bottom:6px}
 .hist-link{font-size:12.5px;font-weight:600}
-.hist-link a{color:#E27D60;text-decoration:none}
-.hist-link a:hover{text-decoration:underline;color:#E27D60}
+.hist-link a{color:#5856D6;text-decoration:none}
+.hist-link a:hover{text-decoration:underline;color:#5856D6}
 @media (max-width:600px){.hist-item{flex-direction:column;gap:10px}.hist-year{flex:0 0 auto;flex-direction:row;align-items:baseline;gap:8px;border-right:none;border-bottom:1px dashed rgba(17,24,39,.3);padding:0 0 8px;width:100%}.hist-thumb{width:64px;height:64px}}
 body[data-theme=aurora] .hist-item{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
 body[data-theme=aurora] .hist-event{color:#E8E8EC}
 body[data-theme=aurora] .hist-year b{color:#D4A545}
-body[data-theme=aurora] .hist-link a{color:#E27D60}
+body[data-theme=aurora] .hist-link a{color:#5856D6}
 body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
 
 /* Refined editorial tab nav */
@@ -6518,7 +6508,7 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
 
 
 /* ═══════════════ VOICE · Headspace-style calm tutor UI ═══════════════ */
-.vc-lesson{position:relative;border-radius:24px;overflow:hidden;margin-bottom:18px;padding:32px 28px 30px;color:#fff;background:radial-gradient(900px 500px at 100% 0%, rgba(255,196,127,.42) 0%, transparent 55%),radial-gradient(700px 600px at 0% 100%, rgba(255,143,107,.30) 0%, transparent 55%),linear-gradient(135deg, #EDA68E 0%, #FF8A4F 35%, #FFB05E 100%);box-shadow:0 20px 50px -16px rgba(226,125,96,.45),0 1px 0 rgba(255,255,255,.18) inset;animation:intlFadeUp .65s cubic-bezier(.16,1,.3,1) both}
+.vc-lesson{position:relative;border-radius:24px;overflow:hidden;margin-bottom:18px;padding:32px 28px 30px;color:#fff;background:radial-gradient(900px 500px at 100% 0%, rgba(255,196,127,.42) 0%, transparent 55%),radial-gradient(700px 600px at 0% 100%, rgba(255,143,107,.30) 0%, transparent 55%),linear-gradient(135deg, #EDA68E 0%, #FF8A4F 35%, #FFB05E 100%);box-shadow:0 20px 50px -16px rgba(88,86,214,.45),0 1px 0 rgba(255,255,255,.18) inset;animation:intlFadeUp .65s cubic-bezier(.16,1,.3,1) both}
 .vc-lesson::before{content:'';position:absolute;top:-30%;right:-15%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18) 0%,transparent 65%);animation:vc-breathe 7s ease-in-out infinite alternate;pointer-events:none}
 @keyframes vc-breathe{0%{transform:scale(1) translate(0,0);opacity:.55}100%{transform:scale(1.18) translate(-12px,16px);opacity:.85}}
 .vc-lesson::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.07) 50%,transparent 65%);transform:translateX(-100%);animation:intlShimmer 7s ease-in-out infinite;pointer-events:none}
@@ -6536,7 +6526,7 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
 .cc-scenarios-t{
   font-family:'JetBrains Mono','Space Mono',monospace !important;
   font-size:11px !important;font-weight:500 !important;
-  letter-spacing:.14em !important;color:#E27D60 !important;
+  letter-spacing:.14em !important;color:#5856D6 !important;
   text-transform:uppercase !important;margin-bottom:14px !important;
 }
 .cc-scenario-row{padding-bottom:8px !important;gap:10px !important}
@@ -6565,7 +6555,7 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
 .cc-sc-on{
   background:linear-gradient(135deg,#EDA68E,#FF8A4F) !important;
   border-color:#EDA68E !important;color:#fff !important;
-  box-shadow:0 8px 20px -8px rgba(226,125,96,.5) !important;
+  box-shadow:0 8px 20px -8px rgba(88,86,214,.5) !important;
 }
 .cc-sc-on:hover{
   background:linear-gradient(135deg,#E54D2A,#F26935) !important;
@@ -6612,7 +6602,7 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
   color:#fff !important;
   border:0 !important;
   border-bottom-right-radius:6px !important;
-  box-shadow:0 4px 14px -4px rgba(226,125,96,.4) !important;
+  box-shadow:0 4px 14px -4px rgba(88,86,214,.4) !important;
 }
 .cc-msg{align-items:flex-end !important;gap:10px !important}
 .cc-avatar{
@@ -6620,10 +6610,10 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
   background:linear-gradient(135deg,#EDA68E,#FFB05E) !important;
   display:grid !important;place-items:center !important;
   font-size:14px !important;flex-shrink:0;
-  box-shadow:0 4px 10px -2px rgba(226,125,96,.4) !important;
+  box-shadow:0 4px 10px -2px rgba(88,86,214,.4) !important;
 }
 .cc-replay{
-  background:rgba(226,125,96,.12) !important;
+  background:rgba(88,86,214,.12) !important;
   color:#EDA68E !important;
   border:0 !important;
   margin-left:8px !important;padding:3px 9px !important;border-radius:8px !important;
@@ -6664,16 +6654,16 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
   color:#fff !important;
   animation:cc-rec-pulse 1.4s ease-in-out infinite !important;
 }
-@keyframes cc-rec-pulse{0%,100%{box-shadow:0 0 0 0 rgba(226,125,96,.6)}50%{box-shadow:0 0 0 12px rgba(226,125,96,0)}}
+@keyframes cc-rec-pulse{0%,100%{box-shadow:0 0 0 0 rgba(88,86,214,.6)}50%{box-shadow:0 0 0 12px rgba(88,86,214,0)}}
 .cc-send{
   flex-shrink:0;width:44px !important;height:44px !important;
   border-radius:50% !important;border:0;cursor:pointer;
   background:linear-gradient(135deg,#EDA68E,#FF8A4F) !important;
   color:#fff !important;font-size:18px !important;font-family:inherit !important;
   transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .3s !important;
-  box-shadow:0 4px 12px -2px rgba(226,125,96,.45) !important;
+  box-shadow:0 4px 12px -2px rgba(88,86,214,.45) !important;
 }
-.cc-send:hover{transform:scale(1.06);box-shadow:0 6px 18px -2px rgba(226,125,96,.55) !important}
+.cc-send:hover{transform:scale(1.06);box-shadow:0 6px 18px -2px rgba(88,86,214,.55) !important}
 .cc-send:disabled{background:#E5E7EB !important;color:#9A9A9A !important;box-shadow:none !important;cursor:not-allowed}
 
 /* Quick-action chips */
@@ -6763,8 +6753,8 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
 }
 .ms-choice-ok{
   background:linear-gradient(135deg,#F5F6F8,#E5E7EB) !important;
-  border-color:#CC6E52 !important;color:#E27D60 !important;
-  box-shadow:0 8px 20px -6px rgba(226,125,96,.4) !important;
+  border-color:#CC6E52 !important;color:#5856D6 !important;
+  box-shadow:0 8px 20px -6px rgba(88,86,214,.4) !important;
   transform:translateY(-2px) !important;
 }
 .ms-choice-wrong{
@@ -6777,7 +6767,7 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
   font-weight:500 !important;font-size:14.5px !important;
   text-align:center !important;padding:10px;border-radius:10px;
 }
-.ms-fb-ok{color:#E27D60 !important;background:#F5F6F8}
+.ms-fb-ok{color:#5856D6 !important;background:#F5F6F8}
 .ms-fb-bad{color:#991B1B !important;background:#FEF2F2}
 
 /* Memory Tap polish — premium round indicator + canvas frame */
@@ -6857,12 +6847,12 @@ body[data-theme=aurora] .hist-link a:hover{color:#E5E7EB}
 .bk-mini-x:hover{background:rgba(220,38,38,.4) !important;color:#fff !important;border-color:rgba(220,38,38,.6) !important}
 @keyframes bkMiniPing{0%{box-shadow:0 0 0 0 rgba(255,255,255,.4)}80%,100%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
 .bk-mini-pulse{animation:bkMiniPing 1.6s ease-out infinite}
-.bk-mini-cover{width:42px;height:54px;border-radius:8px;background:var(--bm-grad,#E27D60);flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,.15)}
+.bk-mini-cover{width:42px;height:54px;border-radius:8px;background:var(--bm-grad,#5856D6);flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,.15)}
 .bk-mini-info{flex:1;min-width:0;line-height:1.3}
 .bk-mini-info b{display:block;font-size:13px;font-weight:600;letter-spacing:-.005em;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bk-mini-info small{display:block;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;color:#6B6B6B;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
 .bk-mini-btn{width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;background:#111827;color:#fff;font-size:14px;font-family:inherit;transition:background .2s,transform .2s;flex-shrink:0}
-.bk-mini-btn:hover{background:#E27D60;transform:scale(1.05)}
+.bk-mini-btn:hover{background:#5856D6;transform:scale(1.05)}
 .bk-mini-x{width:26px;height:26px;border-radius:50%;border:1px solid #ECEAE3;background:#fff;color:#6B6B6B;font-family:inherit;font-size:11px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;transition:all .2s}
 .bk-mini-x:hover{background:#FEF2F2;color:#DC2626;border-color:#FCA5A5}
 /* When the audiobook player is also visible, stack the summary mini-player above it */
@@ -6897,7 +6887,7 @@ body:has(.player.on) .bk-mini{bottom:170px !important}
 .art-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.16,1,.3,1)}
 .art-card:hover .art-img img{transform:scale(1.04)}
 .art-body{padding:22px 22px 18px}
-.art-cat{display:inline-block;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#E27D60;background:rgba(31,77,63,.08);padding:4px 10px;border-radius:999px;font-weight:600;margin-bottom:10px}
+.art-cat{display:inline-block;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5856D6;background:rgba(31,77,63,.08);padding:4px 10px;border-radius:999px;font-weight:600;margin-bottom:10px}
 .art-title{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(22px,3.6vw,28px);line-height:1.15;letter-spacing:-.018em;color:#111827;margin:0 0 8px}
 .art-preview{font-size:14.5px;line-height:1.55;color:#3D3D3D;margin:0 0 14px}
 .art-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:#6B6B6B}
@@ -6912,7 +6902,7 @@ body:has(.player.on) .bk-mini{bottom:170px !important}
 .ae-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow-y:auto;padding:18px;animation:bk-fade .3s cubic-bezier(.16,1,.3,1)}
 .ae-box{width:min(700px,100%);background:#F5F6F8;border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);margin:0 auto 80px;animation:bk-up .35s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;max-height:calc(100vh - 36px)}
 .ae-top{display:grid;grid-template-columns:1fr auto;gap:14px;padding:18px 22px;border-bottom:1px solid #ECEAE3;background:#fff;align-items:center}
-.ae-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#E27D60;font-weight:600}
+.ae-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#5856D6;font-weight:600}
 .ae-h{font-family:'Inter',sans-serif;font-weight:600;font-size:18px;letter-spacing:-.015em;color:#111827;margin-top:2px}
 .ae-body{padding:24px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;flex:1}
 .ae-title{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-style:italic;font-size:32px;line-height:1.1;letter-spacing:-.02em;color:#111827;border:0;border-bottom:2px solid #ECEAE3;padding:8px 4px;background:transparent;outline:none;width:100%}
@@ -6941,7 +6931,7 @@ body:has(.player.on) .bk-mini{bottom:170px !important}
 .ar-hero img{width:100%;height:100%;object-fit:cover;display:block}
 .ar-body{padding:34px 34px 28px}
 @media (max-width:600px){.ar-body{padding:24px 22px 22px}}
-.ar-cat{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:#E27D60;font-weight:600;margin-bottom:14px}
+.ar-cat{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:#5856D6;font-weight:600;margin-bottom:14px}
 .ar-title{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(28px,4.4vw,42px);line-height:1.12;letter-spacing:-.022em;color:#111827;margin:0 0 14px}
 .ar-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:#6B6B6B;padding-bottom:18px;border-bottom:1px solid #ECEAE3;margin-bottom:24px}
 .ar-author{display:inline-flex;align-items:center;gap:9px;font-weight:500;color:#111827}
@@ -7004,7 +6994,7 @@ body:not([data-theme=aurora]) .bk-search-meta{color:#6B6B6B}
 .vp-unit{position:relative;background:#fff;border:1px solid #ECEAE3;border-radius:18px;padding:18px;transition:border-color .25s,box-shadow .35s}
 .vp-unit:hover{border-color:var(--vp-c,#EDA68E);box-shadow:0 14px 32px -16px rgba(0,0,0,.12)}
 .vp-unit::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--vp-c,#EDA68E);border-radius:18px 0 0 18px}
-.vp-unit-done{background:linear-gradient(135deg,rgba(226,125,96,.04),#fff)}
+.vp-unit-done{background:linear-gradient(135deg,rgba(88,86,214,.04),#fff)}
 .vp-unit-hd{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;margin-bottom:14px;padding-left:6px}
 .vp-unit-ic{width:48px;height:48px;border-radius:14px;background:var(--vp-c,#EDA68E);display:grid;place-items:center;font-size:24px;box-shadow:0 8px 18px -6px var(--vp-c,#EDA68E);flex-shrink:0}
 .vp-unit-tag{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--vp-c,#EDA68E);font-weight:600;text-transform:uppercase}
@@ -7017,7 +7007,7 @@ body:not([data-theme=aurora]) .bk-search-meta{color:#6B6B6B}
 .vp-lesson:hover{transform:translateX(4px);background:#fff;border-color:var(--vp-c,#EDA68E)}
 .vp-lesson-locked{opacity:.55;cursor:not-allowed;background:#F4F3EE}
 .vp-lesson-locked:hover{transform:none;border-color:#ECEAE3;background:#F4F3EE}
-.vp-lesson-done{background:linear-gradient(135deg,rgba(226,125,96,.06),#fff);border-color:rgba(226,125,96,.3)}
+.vp-lesson-done{background:linear-gradient(135deg,rgba(88,86,214,.06),#fff);border-color:rgba(88,86,214,.3)}
 .vp-l-num{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;color:#fff;background:var(--vp-c,#EDA68E);box-shadow:0 4px 10px -3px var(--vp-c,#EDA68E);justify-self:center}
 .vp-lesson-locked .vp-l-num{background:#CFCFCF;box-shadow:none;font-size:13px}
 .vp-lesson-done .vp-l-num{background:#CC6E52;box-shadow:0 4px 10px -3px #CC6E52;font-size:16px;font-weight:700}
@@ -7048,10 +7038,10 @@ body:not([data-theme=aurora]) .bk-search-meta{color:#6B6B6B}
 .vl-btn-rec:hover{transform:translateY(-1px);box-shadow:0 12px 24px -8px var(--vl-c,#EDA68E)}
 .vl-btn-rec.recording{animation:cc-rec-pulse 1.4s ease-in-out infinite}
 .vl-btn-primary{background:#111827;color:#fff;font-weight:600}
-.vl-btn-primary:hover{background:#E27D60}
+.vl-btn-primary:hover{background:#5856D6}
 .vl-btn-primary:disabled{background:#CFCFCF;cursor:not-allowed}
 .vl-result{padding:18px;border-radius:14px;font-family:'Inter',sans-serif}
-.vl-r-good{background:linear-gradient(135deg,#F5F6F8,#E5E7EB);border:1px solid #EDA68E;color:#E27D60}
+.vl-r-good{background:linear-gradient(135deg,#F5F6F8,#E5E7EB);border:1px solid #EDA68E;color:#5856D6}
 .vl-r-ok{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #FCD34D;color:#A87030}
 .vl-r-miss{background:linear-gradient(135deg,#FEF2F2,#FEE2E2);border:1px solid #FCA5A5;color:#991B1B}
 .vl-r-pct{font-family:'Inter',sans-serif;font-weight:700;font-size:36px;letter-spacing:-.03em;line-height:1}
@@ -7072,15 +7062,15 @@ body:not([data-theme=aurora]) .bk-search-meta{color:#6B6B6B}
 @media (max-width:760px){.vc-skills{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:380px){.vc-skills{grid-template-columns:1fr}}
 .vc-skill{position:relative;padding:18px 14px 14px;background:#fff;border:1px solid #ECEAE3;border-radius:16px;text-align:center;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .35s cubic-bezier(.16,1,.3,1),border-color .25s,box-shadow .3s}
-.vc-skill:hover{transform:translateY(-3px);border-color:var(--vs-c,#EDA68E);box-shadow:0 14px 28px -12px var(--vs-shadow,rgba(226,125,96,.3))}
-.vc-skill .vs-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:var(--vs-bg,linear-gradient(135deg,#FF8A4F,#EDA68E));box-shadow:0 6px 14px -4px var(--vs-shadow,rgba(226,125,96,.4));margin-bottom:6px;transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.vc-skill:hover{transform:translateY(-3px);border-color:var(--vs-c,#EDA68E);box-shadow:0 14px 28px -12px var(--vs-shadow,rgba(88,86,214,.3))}
+.vc-skill .vs-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:var(--vs-bg,linear-gradient(135deg,#FF8A4F,#EDA68E));box-shadow:0 6px 14px -4px var(--vs-shadow,rgba(88,86,214,.4));margin-bottom:6px;transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
 .vc-skill:hover .vs-ic{transform:rotate(-6deg) scale(1.06)}
 .vc-skill .vs-name{font-size:12.5px;font-weight:600;letter-spacing:-.005em;color:#111827}
 .vc-skill .vs-lvl{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;color:#6B6B6B;letter-spacing:.06em;text-transform:uppercase}
 .vc-skill[data-k=pronounce]{--vs-c:#0EA5E9;--vs-bg:linear-gradient(135deg,#7DD3FC,#0284C7);--vs-shadow:rgba(14,165,233,.4)}
 .vc-skill[data-k=vocab]{--vs-c:#A855F7;--vs-bg:linear-gradient(135deg,#D8B4FE,#7E22CE);--vs-shadow:rgba(168,85,247,.4)}
-.vc-skill[data-k=grammar]{--vs-c:#CC6E52;--vs-bg:linear-gradient(135deg,#EDA68E,#CC6E52);--vs-shadow:rgba(226,125,96,.4)}
-.vc-skill[data-k=conv]{--vs-c:#EDA68E;--vs-bg:linear-gradient(135deg,#FF8A4F,#EDA68E);--vs-shadow:rgba(226,125,96,.4)}
+.vc-skill[data-k=grammar]{--vs-c:#CC6E52;--vs-bg:linear-gradient(135deg,#EDA68E,#CC6E52);--vs-shadow:rgba(88,86,214,.4)}
+.vc-skill[data-k=conv]{--vs-c:#EDA68E;--vs-bg:linear-gradient(135deg,#FF8A4F,#EDA68E);--vs-shadow:rgba(88,86,214,.4)}
 .vc-skill[data-k=write]{--vs-c:#EC4899;--vs-bg:linear-gradient(135deg,#F9A8D4,#DB2777);--vs-shadow:rgba(236,72,153,.4)}
 /* Pronunciation drill card */
 .vc-pron{margin-bottom:18px;padding:24px;background:linear-gradient(135deg,#F0FBFF,#FFFFFF);border:1px solid #BAE6FD;border-radius:18px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
@@ -7097,27 +7087,27 @@ body:not([data-theme=aurora]) .bk-search-meta{color:#6B6B6B}
 .vc-pron-rec:hover{transform:translateY(-1px);box-shadow:0 10px 20px -4px rgba(14,165,233,.6)}
 .vc-pron-rec.recording{animation:cc-rec-pulse 1.4s ease-in-out infinite;background:linear-gradient(135deg,#EF4444,#DC2626)}
 .vc-pron-result{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:13.5px;line-height:1.5;font-family:'Inter',sans-serif}
-.vc-pron-result.good{background:#F5F6F8;border:1px solid #E5E7EB;color:#E27D60}
+.vc-pron-result.good{background:#F5F6F8;border:1px solid #E5E7EB;color:#5856D6}
 .vc-pron-result.ok{background:#FFFBEB;border:1px solid #FDE68A;color:#A87030}
 .vc-pron-result.miss{background:#FEF2F2;border:1px solid #FECACA;color:#991B1B}
 .vc-pron-result b{font-weight:600}
 
 .vc-vocab-row{margin-bottom:18px}
 .vc-vocab-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.vc-vocab-h h3{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#E27D60;margin:0}
+.vc-vocab-h h3{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#5856D6;margin:0}
 .vc-vocab-h .meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6B6B6B}
 .vc-vocab-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 @media (max-width:760px){.vc-vocab-grid{grid-template-columns:1fr}}
 .vc-vocab-card{padding:18px 18px 16px;background:#fff;border:1px solid #E5E7EB;border-radius:14px;cursor:pointer;transition:transform .35s cubic-bezier(.16,1,.3,1),border-color .25s,box-shadow .3s;text-align:left;font-family:inherit;display:flex;flex-direction:column;gap:8px}
-.vc-vocab-card:hover{transform:translateY(-3px);border-color:#E27D60;box-shadow:0 12px 28px -14px rgba(31,77,63,.35)}
+.vc-vocab-card:hover{transform:translateY(-3px);border-color:#5856D6;box-shadow:0 12px 28px -14px rgba(31,77,63,.35)}
 .vc-vocab-card .word{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:24px;line-height:1;letter-spacing:-.015em;color:#111827}
 .vc-vocab-card .pos{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#6B6B6B}
 .vc-vocab-card .def{font-size:13px;color:#3D3D3D;line-height:1.45}
-.vc-vocab-card .ex{font-size:12.5px;color:#E27D60;font-style:italic;line-height:1.45;border-top:1px dashed #E5E7EB;padding-top:8px;margin-top:auto}
+.vc-vocab-card .ex{font-size:12.5px;color:#5856D6;font-style:italic;line-height:1.45;border-top:1px dashed #E5E7EB;padding-top:8px;margin-top:auto}
 
 .vc-path{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .vc-path-pill{padding:7px 14px;border-radius:999px;font-size:12px;font-weight:500;letter-spacing:-.005em;border:1px solid #E5E7EB;background:#fff;color:#3D3D3D;cursor:pointer;transition:all .2s;font-family:inherit}
-.vc-path-pill:hover{border-color:#E27D60;color:#E27D60}
+.vc-path-pill:hover{border-color:#5856D6;color:#5856D6}
 .vc-path-pill.on{background:#111827;color:#fff;border-color:#111827}
 
 /* MIND GYM extras: achievements row + week stats */
@@ -7129,7 +7119,7 @@ body:not([data-theme=aurora]) .bk-search-meta{color:#6B6B6B}
 .mg-ach .medal{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;font-size:18px;background:linear-gradient(135deg,#FCD34D,#F59E0B);color:#111827;box-shadow:0 0 16px rgba(252,211,77,.4)}
 .mg-ach.locked .medal{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);box-shadow:none}
 .mg-ach.streak .medal{background:linear-gradient(135deg,#EDA68E,#DC2626);box-shadow:0 0 16px rgba(251,146,60,.4)}
-.mg-ach.cool .medal{background:linear-gradient(135deg,#EDA68E,#CC6E52);box-shadow:0 0 16px rgba(226,125,96,.4)}
+.mg-ach.cool .medal{background:linear-gradient(135deg,#EDA68E,#CC6E52);box-shadow:0 0 16px rgba(88,86,214,.4)}
 .mg-ach.purple .medal{background:linear-gradient(135deg,#E5E7EB,#CC6E52);box-shadow:0 0 16px rgba(196,181,253,.4)}
 .mg-ach .name{font-size:11px;font-weight:600;color:#fff;letter-spacing:-.005em}
 .mg-ach .desc{font-size:10.5px;color:rgba(255,255,255,.7);line-height:1.3;font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
@@ -7162,7 +7152,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
   border-color:#CFCBC0 !important;
 }
 .mg-grid-tab .mg-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--mg-accent, #E27D60);transition:height .35s cubic-bezier(.16,1,.3,1);
+  content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--mg-accent, #5856D6);transition:height .35s cubic-bezier(.16,1,.3,1);
 }
 .mg-grid-tab .mg-card:hover::before{ height:8px }
 
@@ -7172,7 +7162,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
   width:54px !important;height:54px !important;
   border-radius:16px !important;
   display:grid !important;place-items:center !important;
-  background:var(--mg-icon-bg, linear-gradient(135deg,#EDA68E,#E27D60)) !important;
+  background:var(--mg-icon-bg, linear-gradient(135deg,#EDA68E,#5856D6)) !important;
   font-size:26px !important;line-height:1 !important;
   box-shadow:0 8px 16px -6px var(--mg-icon-shadow, rgba(17,24,39,.4)) !important;
   flex-shrink:0 !important;
@@ -7207,7 +7197,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
   height:4px !important;margin-top:auto;
 }
 .mg-grid-tab .mg-bar-fill{
-  background:var(--mg-accent, #E27D60) !important;
+  background:var(--mg-accent, #5856D6) !important;
   height:100% !important;border-radius:999px;
   transition:width .8s cubic-bezier(.16,1,.3,1);
 }
@@ -7225,10 +7215,10 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 }
 
 /* Per-game color tokens */
-.mg-grid-tab .mg-math{    --mg-accent:#E27D60; --mg-icon-bg:linear-gradient(135deg,#EDA68E,#2A2622); --mg-icon-shadow:rgba(17,24,39,.45) }
+.mg-grid-tab .mg-math{    --mg-accent:#5856D6; --mg-icon-bg:linear-gradient(135deg,#EDA68E,#2A2622); --mg-icon-shadow:rgba(17,24,39,.45) }
 .mg-grid-tab .mg-memory{  --mg-accent:#EC4899; --mg-icon-bg:linear-gradient(135deg,#F9A8D4,#DB2777); --mg-icon-shadow:rgba(236,72,153,.45) }
 .mg-grid-tab .mg-reaction{--mg-accent:#F59E0B; --mg-icon-bg:linear-gradient(135deg,#FCD34D,#C8922A); --mg-icon-shadow:rgba(245,158,11,.45) }
-.mg-grid-tab .mg-word{    --mg-accent:#CC6E52; --mg-icon-bg:linear-gradient(135deg,#EDA68E,#CC6E52); --mg-icon-shadow:rgba(226,125,96,.45) }
+.mg-grid-tab .mg-word{    --mg-accent:#CC6E52; --mg-icon-bg:linear-gradient(135deg,#EDA68E,#CC6E52); --mg-icon-shadow:rgba(88,86,214,.45) }
 .mg-grid-tab .mg-math, .mg-grid-tab .mg-memory, .mg-grid-tab .mg-reaction, .mg-grid-tab .mg-word{
   background:#FFFFFF !important;border-color:#ECEAE3 !important;
 }
@@ -7272,8 +7262,8 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .mg-mdl .mw-btn{
   background:rgba(255,255,255,.07) !important;border:1.5px solid rgba(255,255,255,.14) !important;color:#F5F5FA !important;
 }
-.mg-mdl .mw-btn:hover{border-color:#EDA68E !important;background:rgba(226,125,96,.16) !important}
-.mg-mdl .mw-btn-primary{background:linear-gradient(135deg,#EDA68E,#FED7AA) !important;color:#fff !important;border-color:transparent !important;box-shadow:0 8px 22px -6px rgba(226,125,96,.5) !important}
+.mg-mdl .mw-btn:hover{border-color:#EDA68E !important;background:rgba(88,86,214,.16) !important}
+.mg-mdl .mw-btn-primary{background:linear-gradient(135deg,#EDA68E,#FED7AA) !important;color:#fff !important;border-color:transparent !important;box-shadow:0 8px 22px -6px rgba(88,86,214,.5) !important}
 .mg-mdl .mw-btn-primary:hover{background:linear-gradient(135deg,#EDA68E,#FED7AA) !important;transform:translateY(-1px)}
 .mg-mdl .mw-found{background:rgba(255,255,255,.04) !important;border:1px solid rgba(255,255,255,.08) !important}
 .mg-mdl .mw-found .empty{color:rgba(255,255,255,.4) !important}
@@ -7290,7 +7280,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .mw-let.used{opacity:.3;pointer-events:none}
 @media (max-width:480px){.mw-let{width:40px;height:50px;font-size:20px}}
 .mw-cur{min-height:48px;padding:10px 22px;border:2px dashed rgba(255,255,255,.22);border-radius:12px;font:600 22px/1 'Inter',sans-serif;letter-spacing:.06em;color:#fff;min-width:240px;text-align:center;background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;transition:all .25s}
-.mw-cur.flash-good{border-color:#CC6E52;background:rgba(226,125,96,.18);color:#EDA68E;animation:mw-flash .4s cubic-bezier(.34,1.56,.64,1)}
+.mw-cur.flash-good{border-color:#CC6E52;background:rgba(88,86,214,.18);color:#EDA68E;animation:mw-flash .4s cubic-bezier(.34,1.56,.64,1)}
 .mw-cur.flash-bad{border-color:#F87171;background:rgba(248,113,113,.16);color:#FCA5A5}
 @keyframes mw-flash{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .mw-acts{display:flex;gap:8px;flex-wrap:wrap}
@@ -7300,7 +7290,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .mw-btn-primary:hover{background:#FCD34D;border-color:#FCD34D}
 .mw-found{width:100%;max-width:520px;min-height:54px;padding:10px 14px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-content:flex-start}
 .mw-found .empty{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;margin:auto;padding:10px}
-.mw-found span{padding:5px 11px;background:rgba(226,125,96,.18);border:1px solid rgba(226,125,96,.4);border-radius:999px;font:500 12px/1 'JetBrains Mono','Space Mono',monospace;color:#EDA68E;letter-spacing:.04em;animation:mw-wordin .4s cubic-bezier(.34,1.56,.64,1)}
+.mw-found span{padding:5px 11px;background:rgba(88,86,214,.18);border:1px solid rgba(88,86,214,.4);border-radius:999px;font:500 12px/1 'JetBrains Mono','Space Mono',monospace;color:#EDA68E;letter-spacing:.04em;animation:mw-wordin .4s cubic-bezier(.34,1.56,.64,1)}
 @keyframes mw-wordin{from{opacity:0;transform:scale(.7)}}
 
 /* "Coming soon" preview card for next-gen game */
@@ -7330,9 +7320,9 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .bk-sum-card:hover .bk-sum-play{opacity:1;transform:translateY(0) scale(1)}
 .bk-sum-play:hover{background:#EDA68E;color:#fff}
 @media (hover:none){.bk-sum-play{opacity:1;transform:none}}
-.bk-sum-card.is-live .bk-sum-play{opacity:1;transform:none;background:#EDA68E;color:#fff;box-shadow:0 0 0 0 rgba(226,125,96,.55);animation:livePulse 1.6s ease-out infinite}
-.bk-sum-card.is-live .bk-sum-cover{box-shadow:0 0 0 2px #EDA68E, 0 22px 50px -10px rgba(226,125,96,.35)}
-@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(226,125,96,.55)}80%,100%{box-shadow:0 0 0 14px rgba(226,125,96,0)}}
+.bk-sum-card.is-live .bk-sum-play{opacity:1;transform:none;background:#EDA68E;color:#fff;box-shadow:0 0 0 0 rgba(88,86,214,.55);animation:livePulse 1.6s ease-out infinite}
+.bk-sum-card.is-live .bk-sum-cover{box-shadow:0 0 0 2px #EDA68E, 0 22px 50px -10px rgba(88,86,214,.35)}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(88,86,214,.55)}80%,100%{box-shadow:0 0 0 14px rgba(88,86,214,0)}}
 .bk-sum-cover h5{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:20px;line-height:1.05;letter-spacing:-.015em;color:#fff;margin:0}
 .bk-sum-cover .auth{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.1em;color:rgba(255,255,255,.78);text-transform:uppercase;margin-top:6px}
 .bk-sum-mins{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.08em;color:#fff;text-transform:uppercase;border:1px solid rgba(255,255,255,.15)}
@@ -7372,23 +7362,23 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .bk-reader-hero .info .actions{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
 .bk-btn{padding:11px 18px;border-radius:10px;font-weight:500;font-size:14px;cursor:pointer;border:0;font-family:inherit;transition:background .2s,transform .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px}
 .bk-btn-primary{background:#111827;color:#fff}
-.bk-btn-primary:hover{background:#E27D60;transform:translateY(-1px)}
+.bk-btn-primary:hover{background:#5856D6;transform:translateY(-1px)}
 .bk-btn-ghost{background:#fff;color:#111827;border:1px solid #E5E7EB}
 .bk-btn-ghost:hover{border-color:#111827}
 .bk-section{padding:0 28px 28px}
 @media (max-width:600px){.bk-section{padding:0 22px 24px}}
-.bk-section h3{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#E27D60;margin:24px 0 14px}
+.bk-section h3{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#5856D6;margin:24px 0 14px}
 .bk-section-sub{font-size:14px;color:#6B6B6B;line-height:1.55;margin:-4px 0 18px;max-width:600px}
 .bk-chapter{padding:22px 24px;background:#fff;border:1px solid #E5E7EB;border-radius:14px;margin-bottom:12px;transition:border-color .2s,transform .2s,box-shadow .25s ease}
 .bk-chapter:hover{border-color:#CFCFCF;transform:translateY(-1px);box-shadow:0 6px 18px -8px rgba(0,0,0,.08)}
-.bk-chapter-tag{display:inline-block;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#E27D60;background:rgba(31,77,63,.08);padding:5px 10px;border-radius:999px;margin-bottom:12px}
+.bk-chapter-tag{display:inline-block;font-family:'JetBrains Mono','Space Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#5856D6;background:rgba(31,77,63,.08);padding:5px 10px;border-radius:999px;margin-bottom:12px}
 .bk-chapter h4{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:22px;line-height:1.2;letter-spacing:-.015em;color:#111827;margin:0 0 8px}
 .bk-chapter p{font-size:15px;color:#3D3D3D;line-height:1.6;margin:0;letter-spacing:-.005em}
 .bk-summary{font-size:15.5px;color:#111827;line-height:1.75;letter-spacing:-.005em;font-family:'Inter',sans-serif}
 .bk-summary p{margin-top:14px}.bk-summary p:first-child{margin-top:0;font-style:italic;color:#3D3D3D}
 .bk-tts{position:sticky;bottom:0;display:flex;align-items:center;gap:14px;padding:14px 20px;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid #E5E7EB}
 .bk-tts .play{width:42px;height:42px;border-radius:999px;background:#111827;color:#fff;border:0;cursor:pointer;display:grid;place-items:center;font-family:inherit;font-size:14px;transition:background .2s,transform .2s}
-.bk-tts .play:hover{background:#E27D60;transform:scale(1.05)}
+.bk-tts .play:hover{background:#5856D6;transform:scale(1.05)}
 .bk-tts .info{flex:1;min-width:0}
 .bk-tts .info b{display:block;font-size:13px;font-weight:500;color:#111827;letter-spacing:-.005em}
 .bk-tts .info small{display:block;font-size:11px;color:#6B6B6B;margin-top:2px}
@@ -7399,12 +7389,12 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 /* Smoother spring + refined motion tokens */
 @keyframes intlFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes intlShimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-@keyframes intlGlow{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 24px rgba(226,125,96,.45))}}
+@keyframes intlGlow{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 24px rgba(88,86,214,.45))}}
 
 /* MIND GYM hero — richer aurora mesh, depth, subtle float */
 .mg-hero{
   background:
-    radial-gradient(1100px 600px at 0% 0%, rgba(226,125,96,.32) 0%, transparent 55%),
+    radial-gradient(1100px 600px at 0% 0%, rgba(88,86,214,.32) 0%, transparent 55%),
     radial-gradient(900px 500px at 100% 0%, rgba(252,211,77,.18) 0%, transparent 55%),
     radial-gradient(1200px 700px at 50% 130%, rgba(17,24,39,.5) 0%, transparent 55%),
     linear-gradient(135deg, #0B0F1A 0%, #1A1244 38%, #3B1675 100%) !important;
@@ -7495,11 +7485,11 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 /* VOICE tab cc-hero — same premium treatment */
 .cc-hero{
   background:
-    radial-gradient(1100px 600px at 0% 0%, rgba(226,125,96,.34) 0%, transparent 55%),
-    radial-gradient(800px 500px at 100% 100%, rgba(226,125,96,.55) 0%, transparent 55%),
+    radial-gradient(1100px 600px at 0% 0%, rgba(88,86,214,.34) 0%, transparent 55%),
+    radial-gradient(800px 500px at 100% 100%, rgba(88,86,214,.55) 0%, transparent 55%),
     linear-gradient(135deg, #0B0F1A 0%, #1F2937 50%, #374151 100%) !important;
   border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 24px 60px -20px rgba(226,125,96,.55), 0 1px 0 rgba(255,255,255,.06) inset !important;
+  box-shadow:0 24px 60px -20px rgba(88,86,214,.55), 0 1px 0 rgba(255,255,255,.06) inset !important;
   animation:intlFadeUp .7s cubic-bezier(.16,1,.3,1) both;
 }
 .cc-hero-t{
@@ -7531,7 +7521,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .bro-container{display:flex;flex-direction:column;height:calc(100vh - 90px);margin:-8px -18px 0;border-radius:0;overflow:hidden;background:var(--bg);position:relative}
 body[data-theme=aurora] .bro-container{background:var(--bg)}
 .bro-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--line);position:relative;z-index:10;flex-shrink:0}
-.bro-ticker{flex-shrink:0;overflow:hidden;position:relative;padding:10px 14px;background:linear-gradient(135deg,rgba(226,125,96,.07),rgba(61,174,92,.05));border-bottom:1px solid rgba(226,125,96,.12)}
+.bro-ticker{flex-shrink:0;overflow:hidden;position:relative;padding:10px 14px;background:linear-gradient(135deg,rgba(88,86,214,.07),rgba(61,174,92,.05));border-bottom:1px solid rgba(88,86,214,.12)}
 body[data-theme=aurora] .bro-ticker{background:linear-gradient(135deg,rgba(255,180,100,.06),rgba(100,255,180,.04));border-bottom-color:rgba(255,255,255,.08)}
 .bro-ticker-inner{display:flex;align-items:center;gap:12px;animation:bro-ticker-slide .8s ease}
 @keyframes bro-ticker-slide{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:translateY(0)}}
@@ -7545,7 +7535,7 @@ body[data-theme=aurora] .bro-ticker-bubble{background:rgba(255,255,255,.07);box-
 body[data-theme=aurora] .bro-ticker-bubble::before{border-color:transparent rgba(255,255,255,.07) transparent transparent}
 .bro-ticker-head{display:flex;align-items:center;gap:6px;margin-bottom:3px}
 .bro-ticker-icon{font-size:15px;flex-shrink:0}
-.bro-ticker-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#E27D60;font-weight:600}
+.bro-ticker-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#5856D6;font-weight:600}
 body[data-theme=aurora] .bro-ticker-label{color:rgba(255,180,100,.7)}
 .bro-ticker-text{font-family:var(--sans);font-size:13px;color:#111827;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 body[data-theme=aurora] .bro-ticker-text{color:rgba(255,255,255,.75)}
@@ -7625,31 +7615,31 @@ body[data-theme=aurora] .bro-typing-dot{background:var(--accent)}
 body[data-theme=aurora] .bro-input-wrap{background:var(--bg);border-top:none}
 .bro-input-bar{display:block;padding:12px 16px;background:#fff;border:1.5px solid rgba(0,0,0,.12);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,.06);transition:all .2s;overflow:hidden;width:100%;box-sizing:border-box}
 .bro-input-actions{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
-.bro-input-bar:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(226,125,96,.1),0 4px 24px rgba(226,125,96,.06)}
+.bro-input-bar:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,86,214,.1),0 4px 24px rgba(88,86,214,.06)}
 body[data-theme=aurora] .bro-input-bar{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);box-shadow:0 4px 24px rgba(0,0,0,.2)}
-body[data-theme=aurora] .bro-input-bar:focus-within{background:rgba(255,255,255,.08);border-color:var(--accent);box-shadow:0 0 0 3px rgba(226,125,96,.15),0 4px 24px rgba(0,0,0,.2)}
+body[data-theme=aurora] .bro-input-bar:focus-within{background:rgba(255,255,255,.08);border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,86,214,.15),0 4px 24px rgba(0,0,0,.2)}
 body[data-theme=aurora] .bro-input-actions{border-top-color:rgba(255,255,255,.08)}
 .bro-input{display:block;width:100%;border:none;background:transparent;font-size:15px;outline:none;color:var(--ink);font-family:inherit;padding:6px 0;line-height:1.5;min-height:36px;max-height:120px;resize:none;overflow-y:auto;overflow-x:hidden;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;-webkit-appearance:none;appearance:none;box-sizing:border-box}
 .bro-input::placeholder{color:#9CA3AF}
 body[data-theme=aurora] .bro-input{color:#fff}
 body[data-theme=aurora] .bro-input::placeholder{color:rgba(255,255,255,.35)}
 .bro-attach-btn{background:none;border:none;cursor:pointer;padding:4px;border-radius:50%;color:#9CA3AF;transition:all .15s;display:flex;align-items:center;justify-content:center;flex-shrink:0;width:24px;height:24px}
-.bro-attach-btn:hover{color:#E27D60}
-.bro-file-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;margin:0 0 4px;background:rgba(226,125,96,.06);border:none;border-radius:10px;font-size:12px;color:#E27D60;font-weight:500;cursor:pointer}
+.bro-attach-btn:hover{color:#5856D6}
+.bro-file-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;margin:0 0 4px;background:rgba(88,86,214,.06);border:none;border-radius:10px;font-size:12px;color:#5856D6;font-weight:500;cursor:pointer}
 .bro-file-x{font-size:14px;margin-left:auto;opacity:.6}
 .bro-send-btn{width:38px;height:38px;border-radius:14px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s cubic-bezier(.34,1.56,.64,1);color:#fff;flex-shrink:0}
 .bro-send-btn:active{transform:scale(.85)}
 .bro-send-btn:disabled{opacity:.25;cursor:not-allowed;transform:none}
-.bro-send-bro{background:linear-gradient(135deg,#E27D60,#CC6E52);box-shadow:0 2px 8px rgba(226,125,96,.3)}
-body[data-theme=aurora] .bro-send-bro{background:var(--accent);box-shadow:0 2px 12px rgba(226,125,96,.35)}
+.bro-send-bro{background:linear-gradient(135deg,#5856D6,#CC6E52);box-shadow:0 2px 8px rgba(88,86,214,.3)}
+body[data-theme=aurora] .bro-send-bro{background:var(--accent);box-shadow:0 2px 12px rgba(88,86,214,.35)}
 body[data-theme=aurora] .bro-send-bro svg{stroke:#fff}
 .bro-send-bri{background:linear-gradient(135deg,#EC4899,#F472B6)}
 @keyframes broFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes broWelcomeIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes broGlow{0%,100%{box-shadow:0 4px 20px rgba(226,125,96,.25)}50%{box-shadow:0 6px 28px rgba(226,125,96,.45)}}
+@keyframes broGlow{0%,100%{box-shadow:0 4px 20px rgba(88,86,214,.25)}50%{box-shadow:0 6px 28px rgba(88,86,214,.45)}}
 @keyframes broFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .bro-welcome{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 20px 16px;text-align:center;animation:broWelcomeIn .6s cubic-bezier(.16,1,.3,1) both}
-.bro-welcome-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 20px rgba(226,125,96,.25);animation:broGlow 3s ease-in-out infinite,broFloat 4s ease-in-out infinite}
+.bro-welcome-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 20px rgba(88,86,214,.25);animation:broGlow 3s ease-in-out infinite,broFloat 4s ease-in-out infinite}
 .bro-welcome-title{font-family:var(--sans);font-size:22px;font-weight:700;color:#111827;letter-spacing:-.02em;animation:broWelcomeIn .6s cubic-bezier(.16,1,.3,1) .1s both}
 body[data-theme=aurora] .bro-welcome-title{color:#ECECEC}
 .bro-welcome-text{font-size:13px;color:#6B7280;max-width:260px;line-height:1.5;animation:broWelcomeIn .6s cubic-bezier(.16,1,.3,1) .15s both}
@@ -7687,15 +7677,15 @@ body[data-theme=aurora] .bro-scene{background:linear-gradient(135deg,rgba(40,35,
 .bp-ask-b:nth-child(3){animation:bpChatCycle 12s ease-in-out infinite 8s}
 /* Helper Bro — darker, on the right, responding */
 .bp-bro{right:18%;animation:bpBroBob 3s ease-in-out infinite .5s}
-.bp-bro .bp-head{background:linear-gradient(135deg,#E27D60,#CC6E52);box-shadow:0 2px 6px rgba(226,125,96,.35)}
+.bp-bro .bp-head{background:linear-gradient(135deg,#5856D6,#CC6E52);box-shadow:0 2px 6px rgba(88,86,214,.35)}
 .bp-bro .bp-torso{background:#EDA68E}
 .bp-bro .bp-arm{background:#EDA68E}
 .bp-bro .bp-leg{background:#7A4A25}
 .bp-bro .bp-arm.al{animation:bpPoint 2s ease-in-out infinite}
 @keyframes bpBroBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes bpPoint{0%,100%{transform:rotate(10deg)}50%{transform:rotate(-35deg)}}
-.bp-bro-b{right:0;background:#E27D60;color:#fff;transform:translateX(10%)}
-.bp-bro-b::after{right:14px;border-top:5px solid #E27D60}
+.bp-bro-b{right:0;background:#5856D6;color:#fff;transform:translateX(10%)}
+.bp-bro-b::after{right:14px;border-top:5px solid #5856D6}
 .bp-bro-b:nth-child(1){animation:bpChatCycle 12s ease-in-out infinite 2s}
 .bp-bro-b:nth-child(2){animation:bpChatCycle 12s ease-in-out infinite 6s}
 .bp-bro-b:nth-child(3){animation:bpChatCycle 12s ease-in-out infinite 10s}
@@ -7716,9 +7706,9 @@ body[data-theme=aurora] .bro-mode-btn.on{background:var(--accent);color:#fff;bor
 .bro-suggestions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px;padding:0 12px;animation:broWelcomeIn .6s cubic-bezier(.16,1,.3,1) .35s both}
 .bro-suggest-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 14px;font-size:13px;color:var(--ink-2);cursor:pointer;transition:all .2s;font-family:inherit;font-weight:500;text-align:center;min-width:0}
 .bro-suggest-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
-.bro-suggest-btn:active{background:rgba(226,125,96,.15);transform:scale(.97);border-color:var(--accent)}
+.bro-suggest-btn:active{background:rgba(88,86,214,.15);transform:scale(.97);border-color:var(--accent)}
 body[data-theme=aurora] .bro-suggest-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--ink-2)}
-body[data-theme=aurora] .bro-suggest-btn:active{background:rgba(226,125,96,.15);border-color:var(--accent)}
+body[data-theme=aurora] .bro-suggest-btn:active{background:rgba(88,86,214,.15);border-color:var(--accent)}
 .bro-gen-img{max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer;transition:transform .2s;box-shadow:0 4px 16px rgba(0,0,0,.12)}
 .bro-gen-img:hover{transform:scale(1.02)}
 .bro-img-wrap{margin-top:8px}
@@ -7729,9 +7719,9 @@ body[data-theme=aurora] .bro-suggest-btn:active{background:rgba(226,125,96,.15);
 .bro-img-viewer-close:hover{background:rgba(255,255,255,.3)}
 .bro-img-viewer-cap{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:13px;font-style:italic;text-align:center;max-width:80%}
 body[data-theme=aurora] .bro-img-cap{color:rgba(255,255,255,.35)}
-.bro-img-loading{display:flex;align-items:center;gap:10px;padding:20px 16px;background:rgba(226,125,96,.06);border-radius:12px;font-size:13px;color:#6B7280}
+.bro-img-loading{display:flex;align-items:center;gap:10px;padding:20px 16px;background:rgba(88,86,214,.06);border-radius:12px;font-size:13px;color:#6B7280}
 body[data-theme=aurora] .bro-img-loading{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
-.bro-img-spinner{width:20px;height:20px;border:2px solid rgba(226,125,96,.15);border-top-color:#E27D60;border-radius:50%;animation:broSpin .8s linear infinite}
+.bro-img-spinner{width:20px;height:20px;border:2px solid rgba(88,86,214,.15);border-top-color:#5856D6;border-radius:50%;animation:broSpin .8s linear infinite}
 body[data-theme=aurora] .bro-img-spinner{border-color:rgba(255,255,255,.15);border-top-color:rgba(255,255,255,.6)}
 @keyframes broSpin{to{transform:rotate(360deg)}}
 .bro-img-err{padding:16px;background:rgba(239,68,68,.06);border-radius:12px;font-size:13px;color:#EF4444;text-align:center}
@@ -7783,9 +7773,9 @@ body[data-theme=aurora] .coach-select p{color:rgba(255,255,255,.55)}
 .coach-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.1)}
 .coach-card:active{transform:scale(.96)}
 .coach-card.card-bri:hover{border-color:#EC4899;box-shadow:0 16px 40px rgba(236,72,153,.18)}
-.coach-card.card-bro:hover{border-color:#E27D60;box-shadow:0 16px 40px rgba(17,24,39,.18)}
+.coach-card.card-bro:hover{border-color:#5856D6;box-shadow:0 16px 40px rgba(17,24,39,.18)}
 body[data-theme=aurora] .coach-card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);box-shadow:0 2px 12px rgba(0,0,0,.2)}
-body[data-theme=aurora] .coach-card:hover{border-color:rgba(226,125,96,.5);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+body[data-theme=aurora] .coach-card:hover{border-color:rgba(88,86,214,.5);box-shadow:0 16px 40px rgba(0,0,0,.3)}
 .coach-avatar{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative}
 .coach-avatar-bri{background:linear-gradient(135deg,#FECDD3,#FBCFE8,#F9A8D4);animation:coachFloat 3s ease-in-out infinite}
 .coach-avatar-bro{background:linear-gradient(135deg,#E5E7EB,#EDA68E,#EDA68E);animation:coachFloat 3s ease-in-out infinite .5s}
@@ -7798,27 +7788,27 @@ body[data-theme=aurora] .coach-card-role{color:rgba(255,255,255,.55)}
 .coach-card-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:2px}
 .coach-card-tag{font-size:12px;padding:5px 12px;border-radius:20px;font-weight:600}
 .card-bri .coach-card-tag{background:rgba(236,72,153,.1);color:#EC4899}
-.card-bro .coach-card-tag{background:rgba(17,24,39,.1);color:#E27D60}
+.card-bro .coach-card-tag{background:rgba(17,24,39,.1);color:#5856D6}
 body[data-theme=aurora] .card-bri .coach-card-tag{background:rgba(236,72,153,.12);color:#F9A8D4}
-body[data-theme=aurora] .card-bro .coach-card-tag{background:rgba(255,255,255,.06);color:#E27D60}
+body[data-theme=aurora] .card-bro .coach-card-tag{background:rgba(255,255,255,.06);color:#5856D6}
 @keyframes coachFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes coachSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .coach-back{background:none;border:none;color:#6B7280;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;transition:color .2s;display:flex;align-items:center;gap:4px}
 .coach-back:hover{color:var(--ink)}
 
 /* ─── HYDRATION WIDGET ─── */
-.hydration-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;margin:10px 0;background:linear-gradient(135deg,rgba(226,125,96,.06),rgba(212,130,47,.06));border:1px solid rgba(226,125,96,.12);border-radius:14px;cursor:pointer;transition:transform .2s}
+.hydration-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;margin:10px 0;background:linear-gradient(135deg,rgba(88,86,214,.06),rgba(212,130,47,.06));border:1px solid rgba(88,86,214,.12);border-radius:14px;cursor:pointer;transition:transform .2s}
 .hydration-bar:active{transform:scale(.98)}
 .hydration-drop{font-size:24px;animation:hydDrop 2s ease-in-out infinite}
 .hydration-info{flex:1}
 .hydration-info b{font-size:14px;color:#C48A5A}
-body[data-theme=aurora] .hydration-info b{color:#E27D60}
+body[data-theme=aurora] .hydration-info b{color:#5856D6}
 .hydration-info small{display:block;font-size:11px;color:#6B7280;margin-top:2px}
-.hydration-toggle{padding:6px 14px;border-radius:10px;border:1px solid #E27D60;background:transparent;color:#E27D60;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
-.hydration-toggle.on{background:#E27D60;color:#fff}
+.hydration-toggle{padding:6px 14px;border-radius:10px;border:1px solid #5856D6;background:transparent;color:#5856D6;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.hydration-toggle.on{background:#5856D6;color:#fff}
 .hydration-glasses{display:flex;gap:4px;margin-top:6px}
-.hydration-glass{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(226,125,96,.25);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
-.hydration-glass.filled{background:linear-gradient(135deg,#E27D60,#CC6E52);border-color:transparent}
+.hydration-glass{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(88,86,214,.25);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
+.hydration-glass.filled{background:linear-gradient(135deg,#5856D6,#CC6E52);border-color:transparent}
 @keyframes hydDrop{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 #hydration-overlay{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:24px;animation:hydOvIn .3s ease}
 @keyframes hydOvIn{from{opacity:0}to{opacity:1}}
@@ -7835,8 +7825,8 @@ body[data-theme=aurora] .hydration-info b{color:#E27D60}
 @keyframes waterRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes dropFall{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(30px)}}
 /* ─── Compact greeting chip ─── */
-.home-greeting-chip{display:flex;align-items:center;gap:12px;padding:16px 18px;margin:0 0 10px;background:linear-gradient(135deg,#EDA68E 0%,#E27D60 100%);border:none;border-radius:16px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(226,125,96,.15)}
-.home-greeting-chip:hover{box-shadow:0 6px 24px rgba(226,125,96,.25)}
+.home-greeting-chip{display:flex;align-items:center;gap:12px;padding:16px 18px;margin:0 0 10px;background:linear-gradient(135deg,#EDA68E 0%,#5856D6 100%);border:none;border-radius:16px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(88,86,214,.15)}
+.home-greeting-chip:hover{box-shadow:0 6px 24px rgba(88,86,214,.25)}
 body[data-theme=aurora] .home-greeting-chip{background:#3A3C44;border:1px solid rgba(255,255,255,.08)}
 .hgc-left{flex:1;min-width:0}
 .hgc-greet{font-family:var(--serif);font-size:clamp(20px,4vw,28px);font-weight:400;color:#fff;letter-spacing:-.02em;line-height:1.1}
@@ -7876,7 +7866,7 @@ body[data-theme=aurora] .wx-forecast{background:transparent;border-color:rgba(25
 .wx-day{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:10px;transition:background .2s}
 .wx-day.wx-today{background:rgba(17,24,39,.08)}
 .wx-day-name{font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.04em}
-.wx-day.wx-today .wx-day-name{color:#E27D60}
+.wx-day.wx-today .wx-day-name{color:#5856D6}
 .wx-day-icon{font-size:22px;line-height:1}
 .wx-day-temps{font-size:12px;font-weight:600;color:#111827;white-space:nowrap}
 .wx-day-temps span{color:#9CA3AF;font-weight:400}
@@ -7915,10 +7905,10 @@ body[data-theme=aurora] .city-dd-input{color:#E8E8EC;border-bottom-color:rgba(25
 body[data-theme=aurora] .city-dd-item{color:#AAAAAA}
 body[data-theme=aurora] .city-dd-item:hover{background:rgba(255,255,255,.04)}
 body[data-theme=aurora] .city-dd-item .city-dd-name{color:#E8E8EC}
-.city-dd-loc{font-size:12px;color:#E27D60;font-weight:600;cursor:pointer;padding:10px 14px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;gap:6px}
+.city-dd-loc{font-size:12px;color:#5856D6;font-weight:600;cursor:pointer;padding:10px 14px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;gap:6px}
 .city-dd-loc:hover{background:#F5F6F8}
 .is-day-bar{position:relative;height:5px;background:#E5E7EB;border-radius:3px;margin:6px 0 2px}
-.is-day-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#E27D60,#EDA68E);transition:width .5s ease}
+.is-day-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#5856D6,#EDA68E);transition:width .5s ease}
 .walk-arm-l,.walk-arm-r,.walk-leg-l,.walk-leg-r{transform-origin:7px 7px}
 .walk-arm-l{animation:walkArmL .6s ease-in-out infinite alternate}
 .walk-arm-r{animation:walkArmR .6s ease-in-out infinite alternate}
@@ -7945,13 +7935,13 @@ body[data-theme=aurora] .city-dd-item .city-dd-name{color:#E8E8EC}
 .theme-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .theme-chip{display:flex;align-items:center;gap:5px;padding:5px 10px 5px 5px;border-radius:20px;border:1.5px solid #E5E7EB;background:#fff;cursor:pointer;transition:all .2s;font-family:inherit}
 .theme-chip:hover{border-color:#EDA68E;transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08)}
-.theme-chip.on{border-color:var(--tc-c1,#E27D60);background:var(--tc-bg,#F5F6F8);box-shadow:0 2px 8px rgba(226,125,96,.18)}
+.theme-chip.on{border-color:var(--tc-c1,#5856D6);background:var(--tc-bg,#F5F6F8);box-shadow:0 2px 8px rgba(88,86,214,.18)}
 .tc-swatch{width:20px;height:20px;border-radius:50%;flex-shrink:0;box-shadow:inset 0 -2px 4px rgba(0,0,0,.15)}
 .tc-name{font-size:11px;font-weight:600;color:#4A5568;white-space:nowrap}
-.theme-chip.on .tc-name{color:var(--tc-c1,#E27D60)}
+.theme-chip.on .tc-name{color:var(--tc-c1,#5856D6)}
 body[data-theme=aurora] .theme-chip{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
 body[data-theme=aurora] .theme-chip:hover{border-color:rgba(255,255,255,.15)}
-body[data-theme=aurora] .theme-chip.on{background:rgba(255,255,255,.06);border-color:var(--tc-c1,#E27D60)}
+body[data-theme=aurora] .theme-chip.on{background:rgba(255,255,255,.06);border-color:var(--tc-c1,#5856D6)}
 body[data-theme=aurora] .tc-name{color:#888888}
 body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 /* Plan My Day */
@@ -7965,14 +7955,14 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 .quick-add-section{margin-bottom:10px}
 .qa-input-row{display:flex;gap:8px;margin-bottom:10px}
 .qa-input{flex:1;padding:14px 16px;border:1.5px solid #E5E7EB;border-radius:14px;font-size:15px;font-family:inherit;color:#111827;background:#fff;outline:none;transition:border-color .2s}
-.qa-input:focus{border-color:#E27D60;box-shadow:0 0 0 3px rgba(226,125,96,.08)}
+.qa-input:focus{border-color:#5856D6;box-shadow:0 0 0 3px rgba(88,86,214,.08)}
 .qa-input::placeholder{color:#9CA3AF}
-.qa-btn{width:48px;height:48px;border:none;border-radius:14px;background:#E27D60;color:#fff;font-size:24px;font-weight:600;cursor:pointer;display:grid;place-items:center;flex-shrink:0;box-shadow:0 4px 12px rgba(226,125,96,.25);transition:all .15s}
+.qa-btn{width:48px;height:48px;border:none;border-radius:14px;background:#5856D6;color:#fff;font-size:24px;font-weight:600;cursor:pointer;display:grid;place-items:center;flex-shrink:0;box-shadow:0 4px 12px rgba(88,86,214,.25);transition:all .15s}
 .qa-btn:hover{background:#CC6E52;transform:scale(1.05)}
 .qa-templates{display:flex;gap:8px;overflow-x:auto;padding:2px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .qa-templates::-webkit-scrollbar{display:none}
 .qa-tpl{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid #E5E7EB;border-radius:12px;background:#fff;font-size:12px;font-weight:600;color:#374151;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:inherit;flex-shrink:0}
-.qa-tpl:hover{border-color:#E27D60;background:rgba(226,125,96,.04);color:#CC6E52}
+.qa-tpl:hover{border-color:#5856D6;background:rgba(88,86,214,.04);color:#CC6E52}
 .qa-tpl:active{transform:scale(.95)}
 @keyframes fadeSlideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
@@ -7983,11 +7973,11 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 .qa-popup-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:4px}
 .qa-popup-label{font-size:13px;color:#6B7280;margin-bottom:16px}
 .qa-popup-input{width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:12px;font-size:15px;font-family:inherit;color:#111827;background:#F9FAFB;outline:none;margin-bottom:10px;box-sizing:border-box;transition:border-color .2s}
-.qa-popup-input:focus{border-color:#E27D60;background:#fff;box-shadow:0 0 0 3px rgba(226,125,96,.08)}
+.qa-popup-input:focus{border-color:#5856D6;background:#fff;box-shadow:0 0 0 3px rgba(88,86,214,.08)}
 .qa-popup-btns{display:flex;gap:10px;margin-top:8px}
 .qa-popup-skip{flex:1;padding:12px;border:1.5px solid #E5E7EB;border-radius:12px;background:#fff;color:#6B7280;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
 .qa-popup-skip:hover{border-color:#9CA3AF;color:#374151}
-.qa-popup-save{flex:1;padding:12px;border:none;border-radius:12px;background:#E27D60;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 12px rgba(226,125,96,.3);transition:all .15s}
+.qa-popup-save{flex:1;padding:12px;border:none;border-radius:12px;background:#5856D6;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 12px rgba(88,86,214,.3);transition:all .15s}
 .qa-popup-save:hover{background:#CC6E52;transform:translateY(-1px)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 /* — Theme selector — */
@@ -8015,7 +8005,7 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 .app .main-col>*{position:relative;z-index:1}
 /* Email tasks button */
 .email-tasks-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;margin-top:8px;border:1.5px solid #E5E7EB;border-radius:12px;background:#fff;color:#6B7280;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
-.email-tasks-btn:hover{border-color:#E27D60;color:#E27D60}
+.email-tasks-btn:hover{border-color:#5856D6;color:#5856D6}
 .email-tasks-btn:active{transform:scale(.97)}
 
 /* ═══════════════════════════════════════════════════════════════
@@ -8026,7 +8016,7 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 
 /* ── Global refinements ── */
 .srch input{width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:14px 18px;font-size:14px;font-weight:500;color:var(--ink);transition:all .2s ease;box-shadow:none}
-.srch input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(226,125,96,.1);outline:none}
+.srch input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,86,214,.1);outline:none}
 .srch input::placeholder{color:var(--ink-4);font-weight:400}
 
 /* Filter pills — refined segmented control */
@@ -8047,7 +8037,7 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 .tc-pri{font-size:10.5px;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
 .badge{padding:4px 12px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
 .chk{width:26px;height:26px;min-width:26px;border:2.5px solid var(--line-2);border-radius:50%;transition:all .2s cubic-bezier(.2,.8,.2,1)}
-.chk:hover{border-color:var(--accent);background:rgba(226,125,96,.08);transform:scale(1.1)}
+.chk:hover{border-color:var(--accent);background:rgba(88,86,214,.08);transform:scale(1.1)}
 .chk.on{background:var(--accent);border-color:var(--accent)}
 .tc-acts{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);gap:6px}
 .ib{width:34px;height:34px;border-radius:8px;color:var(--ink-4)}
@@ -8057,15 +8047,15 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 .qc-bar{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:16px;box-shadow:var(--shadow-1)}
 .qc-input{border:none !important;outline:none !important;background:transparent !important;font-size:15px !important;font-weight:400 !important;color:var(--ink) !important;font-family:var(--sans) !important;line-height:1.5 !important}
 .qc-input::placeholder{color:var(--ink-4) !important;font-weight:400 !important}
-.qc-send{width:44px !important;height:44px !important;border-radius:12px !important;background:var(--accent) !important;color:#fff !important;font-size:22px !important;font-weight:700 !important;border:none !important;box-shadow:0 2px 8px rgba(226,125,96,.3) !important;transition:all .15s ease !important;display:flex !important;align-items:center !important;justify-content:center !important}
+.qc-send{width:44px !important;height:44px !important;border-radius:12px !important;background:var(--accent) !important;color:#fff !important;font-size:22px !important;font-weight:700 !important;border:none !important;box-shadow:0 2px 8px rgba(88,86,214,.3) !important;transition:all .15s ease !important;display:flex !important;align-items:center !important;justify-content:center !important}
 .qc-send:hover{background:var(--accent-2) !important;transform:scale(1.05) !important}
 .qc-chips{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
 .qc-chip{padding:8px 16px;border-radius:8px;border:1.5px solid var(--line);background:transparent;font-size:12.5px;font-weight:600;color:var(--ink-3);cursor:pointer;transition:all .15s ease;display:inline-flex;align-items:center;gap:6px}
 .qc-chip:hover{border-color:var(--ink-3);color:var(--ink)}
-.qc-chip.on{border-color:var(--accent);color:var(--accent);background:rgba(226,125,96,.06)}
+.qc-chip.on{border-color:var(--accent);color:var(--accent);background:rgba(88,86,214,.06)}
 .qc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .qc-expand{font-size:12.5px !important;font-weight:600 !important;color:var(--accent) !important;cursor:pointer;padding:8px 16px;border-radius:8px;transition:all .15s}
-.qc-expand:hover{background:rgba(226,125,96,.06)}
+.qc-expand:hover{background:rgba(88,86,214,.06)}
 
 /* Email tasks button */
 .email-tasks-btn{border-radius:10px;padding:11px;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink-3);transition:all .15s}
@@ -8084,7 +8074,7 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 .cal-day{border-radius:10px;font-family:var(--sans);font-size:13.5px;font-weight:500;border:1.5px solid transparent;color:var(--ink)}
 .cal-day:hover{background:var(--bg-sunken);border-color:transparent}
 .cal-day.other{color:var(--ink-5)}
-.cal-day.today{background:rgba(226,125,96,.08);color:var(--accent);border-color:rgba(226,125,96,.2);font-weight:700}
+.cal-day.today{background:rgba(88,86,214,.08);color:var(--accent);border-color:rgba(88,86,214,.2);font-weight:700}
 .cal-day.sel{background:var(--ink) !important;color:#fff !important;border-color:var(--ink) !important;box-shadow:0 2px 8px rgba(17,24,39,.2)}
 .cal-day .ind{gap:3px;margin-top:3px;height:4px}
 .cal-day .ind i{width:5px;height:5px;border-radius:50%}
@@ -8132,7 +8122,7 @@ body:not([data-theme=aurora]) .mg-overall-bar{background:var(--bg-sunken)}
 .mg-ach-strip{padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;margin-top:12px;box-shadow:var(--shadow-1)}
 .mg-ach-strip-l{font-family:var(--sans);font-size:20px;font-weight:700;letter-spacing:-.02em}
 .mg-ach-mini{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;background:var(--bg-sunken);font-size:18px;transition:all .2s}
-.mg-ach-mini.on{background:linear-gradient(135deg,#FFF8F0,#FFE8D0);box-shadow:0 2px 8px rgba(226,125,96,.15)}
+.mg-ach-mini.on{background:linear-gradient(135deg,#FFF8F0,#FFE8D0);box-shadow:0 2px 8px rgba(88,86,214,.15)}
 .hh-progress-chip.mg-prog-chip{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 18px;margin-bottom:14px;box-shadow:var(--shadow-1);display:flex;align-items:center;gap:10px;width:100%;transition:all .15s}
 .hh-progress-chip.mg-prog-chip:hover{box-shadow:var(--shadow-2)}
 .hh-pc-mini{font-size:12px;color:var(--ink-3);font-weight:500}
@@ -8142,7 +8132,7 @@ body:not([data-theme=aurora]) .mg-overall-bar{background:var(--bg-sunken)}
 body[data-theme=aurora] .bro-container{background:#2B2D33 !important}
 .bro-header{padding:14px 20px;background:linear-gradient(180deg,#FFFFFF,#F8F9FB);border-bottom:1px solid rgba(0,0,0,.05);display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.03)}
 body[data-theme=aurora] .bro-header{background:#32343A;border-color:rgba(255,255,255,.06)}
-.bro-header-avatar{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:linear-gradient(135deg,#E27D60,#EDA68E);color:#fff;box-shadow:0 4px 14px rgba(226,125,96,.3)}
+.bro-header-avatar{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:linear-gradient(135deg,#5856D6,#EDA68E);color:#fff;box-shadow:0 4px 14px rgba(88,86,214,.3)}
 .bro-header-name{font-size:16px;font-weight:700;letter-spacing:-.01em}
 .bro-header-sub{font-size:12px;color:var(--ink-4);font-weight:500}
 .bro-online{width:8px;height:8px;border-radius:50%;background:#22C55E;display:inline-block;margin-left:6px;box-shadow:0 0 0 2px #fff,0 0 8px rgba(34,197,94,.4)}
@@ -8211,8 +8201,8 @@ body[data-theme=aurora] .ws-mini-card{background:#3A3C44;border-color:rgba(255,2
 .mdl h2{font-family:var(--sans);font-size:18px;font-weight:700;letter-spacing:-.02em}
 
 /* ── FAB ── */
-.fab{width:56px;height:56px;border-radius:16px;box-shadow:0 4px 16px rgba(226,125,96,.35);font-size:28px}
-.fab:hover{transform:scale(1.08);box-shadow:0 6px 20px rgba(226,125,96,.45)}
+.fab{width:56px;height:56px;border-radius:16px;box-shadow:0 4px 16px rgba(88,86,214,.35);font-size:28px}
+.fab:hover{transform:scale(1.08);box-shadow:0 6px 20px rgba(88,86,214,.45)}
 
 /* ── Overdue alert ── */
 .al{border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600}
@@ -8251,7 +8241,7 @@ body[data-theme=aurora] .cal-grid{background:rgba(255,255,255,.03);border-color:
 body[data-theme=aurora] .cal-day{color:#E8E8EC}
 body[data-theme=aurora] .cal-day.other{color:#444444}
 body[data-theme=aurora] .cal-day:hover{background:rgba(255,255,255,.04)}
-body[data-theme=aurora] .cal-day.today{background:rgba(226,125,96,.1);color:#E27D60;border-color:rgba(226,125,96,.2)}
+body[data-theme=aurora] .cal-day.today{background:rgba(88,86,214,.1);color:#5856D6;border-color:rgba(88,86,214,.2)}
 body[data-theme=aurora] .cal-nav{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.06);color:#E8E8EC}
 body[data-theme=aurora] .cal-selected-box{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .gcal-card{background:#3A3C44;border-color:rgba(255,255,255,.06)}
@@ -8260,7 +8250,7 @@ body[data-theme=aurora] .bro-mode-btn{background:rgba(255,255,255,.04);border-co
 body[data-theme=aurora] .bro-typing{background:transparent;border:none}
 body[data-theme=aurora] .mg-ach-strip{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .mg-ach-mini{background:rgba(255,255,255,.04)}
-body[data-theme=aurora] .mg-ach-mini.on{background:rgba(226,125,96,.12)}
+body[data-theme=aurora] .mg-ach-mini.on{background:rgba(88,86,214,.12)}
 body[data-theme=aurora] .home-hero-light.qa-hero{background:rgba(255,255,255,.02) !important;border-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .qa-stat-tile{background:#3A3C44 !important;border-color:rgba(255,255,255,.06) !important}
 body[data-theme=aurora] .qa-stat-tile:hover{background:rgba(255,255,255,.06) !important}
@@ -8268,9 +8258,9 @@ body[data-theme=aurora] .streak-card{background:#3A3C44;border-color:rgba(255,25
 body[data-theme=aurora] .book-card{background:#3A3C44;border-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .bro-header{background:transparent;border-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .bro-input-wrap{background:var(--bg);border:none}
-.bro-speaking-ui{display:flex;align-items:center;gap:10px;padding:10px 16px;background:linear-gradient(90deg,rgba(226,125,96,.08),rgba(226,125,96,.02));border-top:1px solid rgba(226,125,96,.15);animation:broSpeakPulse 2s ease-in-out infinite}
-@keyframes broSpeakPulse{0%,100%{background:linear-gradient(90deg,rgba(226,125,96,.08),rgba(226,125,96,.02))}50%{background:linear-gradient(90deg,rgba(226,125,96,.14),rgba(226,125,96,.06))}}
-.bro-speaking-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#E27D60,#EDA68E);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(226,125,96,.3);animation:broAvatarPulse 1.5s ease-in-out infinite}
+.bro-speaking-ui{display:flex;align-items:center;gap:10px;padding:10px 16px;background:linear-gradient(90deg,rgba(88,86,214,.08),rgba(88,86,214,.02));border-top:1px solid rgba(88,86,214,.15);animation:broSpeakPulse 2s ease-in-out infinite}
+@keyframes broSpeakPulse{0%,100%{background:linear-gradient(90deg,rgba(88,86,214,.08),rgba(88,86,214,.02))}50%{background:linear-gradient(90deg,rgba(88,86,214,.14),rgba(88,86,214,.06))}}
+.bro-speaking-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#5856D6,#EDA68E);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(88,86,214,.3);animation:broAvatarPulse 1.5s ease-in-out infinite}
 @keyframes broAvatarPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .bro-speaking-info{flex:1;min-width:0}
 .bro-speaking-name{font:600 13px var(--sans);color:var(--ink);display:block}
@@ -8284,7 +8274,7 @@ body[data-theme=aurora] .bro-input-wrap{background:var(--bg);border:none}
 @keyframes broSpeakBar{0%,100%{height:4px}50%{height:16px}}
 .bro-speaking-stop{width:32px;height:32px;border-radius:50%;border:none;background:rgba(239,68,68,.1);color:#EF4444;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s;flex-shrink:0}
 .bro-speaking-stop:hover{background:rgba(239,68,68,.2)}
-body[data-theme=aurora] .bro-speaking-ui{background:linear-gradient(90deg,rgba(226,125,96,.12),rgba(226,125,96,.04));border-top-color:rgba(226,125,96,.2)}
+body[data-theme=aurora] .bro-speaking-ui{background:linear-gradient(90deg,rgba(88,86,214,.12),rgba(88,86,214,.04));border-top-color:rgba(88,86,214,.2)}
 /* ─── Aurora/Night dark mode — kill all white backgrounds ─── */
 body[data-theme=aurora] .qc-bar,body.night-sky .qc-bar{background:rgba(255,255,255,.03) !important;border-color:rgba(255,255,255,.06) !important;box-shadow:0 2px 10px rgba(0,0,0,.2) !important}
 body[data-theme=aurora] .rd-segmented button.on{background:rgba(255,255,255,.1) !important;color:var(--ink) !important;box-shadow:0 2px 8px rgba(0,0,0,.2) !important}
@@ -8299,7 +8289,7 @@ body[data-theme=aurora] .note-tool-btn{border-color:rgba(255,255,255,.08) !impor
 body[data-theme=aurora] .note-tool-btn.active{border-color:var(--accent) !important;color:var(--accent) !important}
 body[data-theme=aurora] .note-card{background:rgba(255,255,255,.03) !important;border-color:rgba(255,255,255,.06) !important}
 body[data-theme=aurora] .note-cat{background:rgba(255,255,255,.03) !important;border-color:rgba(255,255,255,.08) !important}
-body[data-theme=aurora] .note-cat.on{border-color:var(--accent) !important;background:rgba(226,125,96,.08) !important}
+body[data-theme=aurora] .note-cat.on{border-color:var(--accent) !important;background:rgba(88,86,214,.08) !important}
 body[data-theme=aurora] .note-voice-rec{background:rgba(255,255,255,.03) !important;border-color:rgba(255,255,255,.06) !important}
 body[data-theme=aurora] .note-canvas-wrap{border-color:rgba(255,255,255,.06) !important}
 body[data-theme=aurora] .note-canvas-wrap canvas{background:#1e1e22 !important}
@@ -8309,7 +8299,7 @@ body[data-theme=aurora] .email-tasks-btn{background:rgba(255,255,255,.03) !impor
 body[data-theme=aurora] .restore-banner{background:rgba(255,255,255,.04) !important;border-color:rgba(255,255,255,.08) !important}
 body[data-theme=aurora] .ov{background:rgba(0,0,0,.7) !important}
 body[data-theme=aurora] .qc-chip{background:rgba(255,255,255,.04) !important;border-color:rgba(255,255,255,.08) !important;color:var(--text-mute) !important}
-body[data-theme=aurora] .qc-chip.on{border-color:var(--accent) !important;color:var(--accent) !important;background:rgba(226,125,96,.1) !important}
+body[data-theme=aurora] .qc-chip.on{border-color:var(--accent) !important;color:var(--accent) !important;background:rgba(88,86,214,.1) !important}
 body[data-theme=aurora] .qc-chip.qc-high{background:rgba(220,38,38,.08) !important;border-color:rgba(220,38,38,.2) !important;color:#f87171 !important}
 body[data-theme=aurora] .qc-chip.qc-high.on{background:#DC2626 !important;color:#fff !important;border-color:#DC2626 !important}
 body[data-theme=aurora] .qc-chip.qc-med{background:rgba(245,158,11,.08) !important;border-color:rgba(245,158,11,.2) !important;color:#fbbf24 !important}
@@ -8354,7 +8344,7 @@ body[data-theme=aurora] .qc-chip.qc-low.on{background:#16A34A !important;color:#
 .tg-game:hover .tg-game-arrow{background:var(--accent);color:#fff;transform:translateX(2px)}
 body[data-theme=aurora] .tg-title{color:#E8E8EC}
 body[data-theme=aurora] .tg-game{background:#3A3C44;border-color:rgba(255,255,255,.06)}
-body[data-theme=aurora] .tg-game:hover{background:rgba(255,255,255,.06);border-color:rgba(226,125,96,.2)}
+body[data-theme=aurora] .tg-game:hover{background:rgba(255,255,255,.06);border-color:rgba(88,86,214,.2)}
 body[data-theme=aurora] .tg-game-name{color:#E8E8EC}
 body[data-theme=aurora] .tg-game-bar{background:rgba(255,255,255,.06)}
 body[data-theme=aurora] .tg-game-fill{background:rgba(255,255,255,.4)}
@@ -8362,7 +8352,7 @@ body[data-theme=aurora] .tg-game-fill{background:rgba(255,255,255,.4)}
 
 /* ── post-restore: newer components (Learning cards, quick actions, countdown, sub-tabs) ── */
 .mg-countdown{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;gap:16px;padding:40px 20px}
-.mg-countdown-num{font-family:var(--sans);font-weight:900;font-size:120px;line-height:1;color:var(--accent);opacity:0;animation:mgCdPop .6s cubic-bezier(.34,1.56,.64,1) forwards;text-shadow:0 8px 40px rgba(138,46,42,.25)}
+.mg-countdown-num{font-family:var(--sans);font-weight:900;font-size:120px;line-height:1;color:var(--accent);opacity:0;animation:mgCdPop .6s cubic-bezier(.34,1.56,.64,1) forwards;text-shadow:0 8px 40px rgba(88,86,214,.25)}
 .mg-countdown-go{font-family:var(--sans);font-weight:900;font-size:56px;line-height:1;color:#10B981;letter-spacing:.06em;opacity:0;animation:mgCdPop .4s cubic-bezier(.34,1.56,.64,1) forwards;text-shadow:0 8px 30px rgba(16,185,129,.3)}
 .mg-countdown-label{font:600 14px var(--sans);color:var(--text-mute);letter-spacing:.1em;text-transform:uppercase;margin-top:8px}
 .mg-countdown-game{font:800 22px var(--sans);color:var(--ink);margin-bottom:12px}
@@ -8394,7 +8384,7 @@ body[data-theme=aurora] .tg-game-fill{background:rgba(255,255,255,.4)}
 .crs-soon b{color:var(--ink-2)}
 .bro-qa-btn{display:flex;align-items:center;gap:6px;white-space:nowrap;padding:8px 14px;border-radius:99px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);font:500 12px var(--sans);color:var(--ink-2);cursor:pointer;transition:all .2s;flex-shrink:0}
 .bro-qa-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}
-.bro-qa-btn:active{background:rgba(138,46,42,.15);border-color:var(--accent);transform:scale(.96)}
+.bro-qa-btn:active{background:rgba(88,86,214,.15);border-color:var(--accent);transform:scale(.96)}
 .bro-qa-btn svg{color:var(--accent);flex-shrink:0}
 .bro-quick-actions::-webkit-scrollbar{display:none}
 
@@ -8520,13 +8510,13 @@ select,option{color:var(--ink);font-weight:600}
 .lesson-door-left,.lesson-door-right{position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(135deg,#1A1A2E,#2D2B3A);backface-visibility:hidden}
 .lesson-door-left{left:0;transform-origin:left center;animation:doorSwingLeft .7s cubic-bezier(.4,0,.2,1) forwards}
 .lesson-door-right{right:0;transform-origin:right center;animation:doorSwingRight .7s cubic-bezier(.4,0,.2,1) forwards}
-.lesson-door-left::after,.lesson-door-right::after{content:"";position:absolute;top:50%;width:6px;height:40px;border-radius:3px;background:rgba(192,90,66,.5);transform:translateY(-50%)}
+.lesson-door-left::after,.lesson-door-right::after{content:"";position:absolute;top:50%;width:6px;height:40px;border-radius:3px;background:rgba(88,86,214,.5);transform:translateY(-50%)}
 .lesson-door-left::after{right:16px}
 .lesson-door-right::after{left:16px}
 @keyframes doorSwingLeft{0%{transform:perspective(1200px) rotateY(0deg)}100%{transform:perspective(1200px) rotateY(-105deg)}}
 @keyframes doorSwingRight{0%{transform:perspective(1200px) rotateY(0deg)}100%{transform:perspective(1200px) rotateY(105deg)}}
 /* Light beam from behind the doors */
-.lesson-door-light{position:absolute;top:0;left:25%;right:25%;bottom:0;background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.3) 0%,rgba(192,90,66,.1) 40%,transparent 70%);animation:doorLightIn .8s ease-out forwards;opacity:0}
+.lesson-door-light{position:absolute;top:0;left:25%;right:25%;bottom:0;background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.3) 0%,rgba(88,86,214,.1) 40%,transparent 70%);animation:doorLightIn .8s ease-out forwards;opacity:0}
 @keyframes doorLightIn{0%{opacity:0;transform:scaleX(0)}40%{opacity:1;transform:scaleX(.6)}100%{opacity:0;transform:scaleX(2)}}
 /* Section entry — slide up with reveal */
 .learn-section-enter{animation:sectionSlideIn .5s cubic-bezier(.22,1,.36,1) forwards}
@@ -8540,13 +8530,13 @@ body.no-anim .lesson-fullpage-inner{animation:none}
 .lesson-back-label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mute)}
 .lesson-back-voice{margin-left:auto;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1.5px solid var(--divider);background:var(--surface);cursor:pointer;font:600 11px var(--sans);color:var(--text-mute);transition:all .2s}
 .lesson-back-voice:hover{border-color:var(--accent);color:var(--accent)}
-.lesson-back-voice.speaking{border-color:var(--accent);background:rgba(138,46,42,.1);color:var(--accent);animation:voicePulse 1.5s ease-in-out infinite}
-@keyframes voicePulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(138,46,42,.15)}}
+.lesson-back-voice.speaking{border-color:var(--accent);background:rgba(88,86,214,.1);color:var(--accent);animation:voicePulse 1.5s ease-in-out infinite}
+@keyframes voicePulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(88,86,214,.15)}}
 .lesson-title{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--ink);line-height:1.2;margin:0 0 24px}
-.lesson-story-intro{padding:18px 20px;background:linear-gradient(135deg,#1A1A2E 0%,#2D2B3A 60%,#3A2E28 100%);border:1.5px solid rgba(192,90,66,.15);border-radius:16px;margin-bottom:22px;position:relative;overflow:hidden}
-.lesson-story-intro::before{content:"";position:absolute;top:-30%;right:-10%;width:120px;height:120px;background:radial-gradient(circle,rgba(192,90,66,.15) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.lesson-story-intro{padding:18px 20px;background:linear-gradient(135deg,#1A1A2E 0%,#2D2B3A 60%,#3A2E28 100%);border:1.5px solid rgba(88,86,214,.15);border-radius:16px;margin-bottom:22px;position:relative;overflow:hidden}
+.lesson-story-intro::before{content:"";position:absolute;top:-30%;right:-10%;width:120px;height:120px;background:radial-gradient(circle,rgba(88,86,214,.15) 0%,transparent 70%);border-radius:50%;pointer-events:none}
 .lesson-story-intro p{font:400 14px/1.7 var(--sans);color:rgba(232,232,236,.85);margin:0}
-.lesson-story-intro .story-narrator{font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#C05A42;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.lesson-story-intro .story-narrator{font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#5856D6;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 @keyframes storyIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
 .lesson-panels{display:flex;flex-direction:column;gap:18px}
 .lesson-panel{background:var(--surface);border:2px solid var(--divider);border-radius:18px;overflow:hidden;opacity:0;animation:lessonPanelIn .5s ease both}
@@ -8770,7 +8760,7 @@ if(token){S.user={phone:localStorage.getItem('tf_phone'),name:localStorage.getIt
 }
 
 const api=async(p,o={})=>{try{const h={'Content-Type':'application/json','X-Timezone':Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'};if(token)h['x-token']=token;const r=await fetch('/api'+p,{headers:h,...o});if(r.status===401){logout();return null}return await r.json()}catch(e){return null}};
-const P={high:{c:'#8a2e2a',d:'\\u{1F534}'},medium:{c:'#E8912C',d:'\\u{1F7E0}'},low:{c:'#3DAE5C',d:'\\u{1F7E2}'}};
+const P={high:{c:'#3634A3',d:'\\u{1F534}'},medium:{c:'#E8912C',d:'\\u{1F7E0}'},low:{c:'#3DAE5C',d:'\\u{1F7E2}'}};
 // Scenic Unsplash hero banners per tab (free, hot-link friendly)
 // Per-tab illustrated doodles (sidebar) — colorful filled SVGs that read as illustrations
 const ID={
@@ -8794,12 +8784,12 @@ const MORAL_DOODLE='<svg class="moral-doodle" viewBox="0 0 520 200" preserveAspe
 +'<path d="M 30 175 C 150 172 240 162 330 130 S 460 40 510 18 L 510 180 L 30 180 Z" fill="url(#grow)" opacity="0.22"/>'
 +'<defs><linearGradient id="grow" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#3DAE5C"/><stop offset="100%" stop-color="#E8912C"/></linearGradient></defs>'
 // main rising curve — animate stroke draw on a slow loop
-+'<path d="M 30 175 C 150 172 240 162 330 130 S 460 40 510 18" stroke="#8a2e2a" stroke-width="3.2" fill="none" stroke-linecap="round" opacity="0.85" stroke-dasharray="700" stroke-dashoffset="0"><animate attributeName="stroke-dashoffset" values="700;0;0;-700" keyTimes="0;0.45;0.55;1" dur="6s" repeatCount="indefinite"/></path>'
++'<path d="M 30 175 C 150 172 240 162 330 130 S 460 40 510 18" stroke="#3634A3" stroke-width="3.2" fill="none" stroke-linecap="round" opacity="0.85" stroke-dasharray="700" stroke-dashoffset="0"><animate attributeName="stroke-dashoffset" values="700;0;0;-700" keyTimes="0;0.45;0.55;1" dur="6s" repeatCount="indefinite"/></path>'
 // chain of hands connecting figures — animate dashoffset to look like it\\'s being drawn between climbs
 +'<path d="M 95 152 Q 175 148 215 132 T 320 102 T 415 60 T 490 22" stroke="#201e1d" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.55" stroke-dasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-40" dur="2.2s" repeatCount="indefinite"/></path>'
 // FIGURE 1 (purple) — bobs as it climbs, with swinging legs
-+'<g stroke="#8a2e2a" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">'
-  +'<circle cx="105" cy="148" r="6" fill="#8a2e2a"/><line x1="105" y1="154" x2="105" y2="170"/><line x1="105" y1="160" x2="93" y2="166"/><line x1="105" y1="160" x2="118" y2="152"/>'
++'<g stroke="#3634A3" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round">'
+  +'<circle cx="105" cy="148" r="6" fill="#3634A3"/><line x1="105" y1="154" x2="105" y2="170"/><line x1="105" y1="160" x2="93" y2="166"/><line x1="105" y1="160" x2="118" y2="152"/>'
   +'<line x1="105" y1="170" x2="98" y2="180"><animate attributeName="x2" values="98;112;98" dur=".6s" repeatCount="indefinite"/><animate attributeName="y2" values="180;176;180" dur=".6s" repeatCount="indefinite"/></line>'
   +'<line x1="105" y1="170" x2="112" y2="180"><animate attributeName="x2" values="112;98;112" dur=".6s" repeatCount="indefinite"/><animate attributeName="y2" values="180;176;180" dur=".6s" repeatCount="indefinite"/></line>'
   +'<animateTransform attributeName="transform" type="translate" values="0 0;0 -2;0 0" dur=".6s" repeatCount="indefinite"/>'
@@ -8819,13 +8809,13 @@ const MORAL_DOODLE='<svg class="moral-doodle" viewBox="0 0 520 200" preserveAspe
   +'<animateTransform attributeName="transform" type="translate" values="0 0;0 -3;0 0" dur=".58s" begin="0.3s" repeatCount="indefinite"/>'
 +'</g>'
 // FIGURE 4 (red) — celebration at the peak with raised arms; small jubilant bounce
-+'<g stroke="#8a2e2a" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round">'
-  +'<circle cx="490" cy="22" r="7" fill="#8a2e2a"/><line x1="490" y1="29" x2="490" y2="48"/><line x1="490" y1="34" x2="478" y2="22"/><line x1="490" y1="34" x2="502" y2="22"/><line x1="490" y1="48" x2="482" y2="60"/><line x1="490" y1="48" x2="498" y2="60"/>'
++'<g stroke="#3634A3" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round">'
+  +'<circle cx="490" cy="22" r="7" fill="#3634A3"/><line x1="490" y1="29" x2="490" y2="48"/><line x1="490" y1="34" x2="478" y2="22"/><line x1="490" y1="34" x2="502" y2="22"/><line x1="490" y1="48" x2="482" y2="60"/><line x1="490" y1="48" x2="498" y2="60"/>'
   +'<animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur=".5s" repeatCount="indefinite"/>'
 +'</g>'
 // flag — waves
 +'<g><line x1="502" y1="22" x2="502" y2="4" stroke="#201e1d" stroke-width="1.8" stroke-linecap="round"/>'
-  +'<path d="M 502 4 L 520 8 L 502 14 Z" fill="#8a2e2a" opacity="0.95"><animate attributeName="d" values="M 502 4 L 520 8 L 502 14 Z;M 502 4 L 516 6 L 502 14 Z;M 502 4 L 520 8 L 502 14 Z" dur="1.4s" repeatCount="indefinite"/></path>'
+  +'<path d="M 502 4 L 520 8 L 502 14 Z" fill="#3634A3" opacity="0.95"><animate attributeName="d" values="M 502 4 L 520 8 L 502 14 Z;M 502 4 L 516 6 L 502 14 Z;M 502 4 L 520 8 L 502 14 Z" dur="1.4s" repeatCount="indefinite"/></path>'
 +'</g>'
 // sparkle stars — rotate + pulse
 +'<g fill="#E8912C">'
@@ -8853,9 +8843,9 @@ const MORAL_DOODLE='<svg class="moral-doodle" viewBox="0 0 520 200" preserveAspe
   +'<text x="330" y="92" text-anchor="middle" opacity="0">+1<animate attributeName="y" values="92;60" dur="2s" begin="1.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0.85;0" dur="2s" begin="1.2s" repeatCount="indefinite"/></text>'
 +'</g>'
 // caption at top
-+'<text x="270" y="14" font-family="Inter, sans-serif" font-size="9.5" font-weight="800" fill="#8a2e2a" text-anchor="middle" letter-spacing="1.4">GROW \\u2022 TOGETHER \\u2022 TRACK \\u2022 REPEAT</text>'
++'<text x="270" y="14" font-family="Inter, sans-serif" font-size="9.5" font-weight="800" fill="#3634A3" text-anchor="middle" letter-spacing="1.4">GROW \\u2022 TOGETHER \\u2022 TRACK \\u2022 REPEAT</text>'
 // Comet — a glowing dot that travels along the growth curve every 8s
-+'<g class="moral-comet"><circle r="3.5" fill="#FFFFFF" stroke="#8a2e2a" stroke-width="1.4" filter="url(#cometGlow)"><animateMotion dur="8s" repeatCount="indefinite" rotate="auto" path="M 30 175 C 150 172 240 162 330 130 S 460 40 510 18"/></circle></g>'
++'<g class="moral-comet"><circle r="3.5" fill="#FFFFFF" stroke="#3634A3" stroke-width="1.4" filter="url(#cometGlow)"><animateMotion dur="8s" repeatCount="indefinite" rotate="auto" path="M 30 175 C 150 172 240 162 330 130 S 460 40 510 18"/></circle></g>'
 +'<defs><filter id="cometGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.4"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'
 +'</svg>';
 const TAB_HERO={
@@ -8892,7 +8882,7 @@ sun:'<svg '+s+'><circle cx="12" cy="12" r="4" fill="currentColor"/><line x1="12"
 refresh:'<svg '+s+'><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>',
 plus:'<svg '+s+'><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
 knowledge:'<svg '+s+'><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20v2H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'};return m[n]||''}
-const ST={pending:{l:'To Do',c:'#9b9797',bg:'#f3f2f2'},'in-progress':{l:'Doing',c:'#a5564b',bg:'#f3f2f2'},done:{l:'Done',c:'#3DAE5C',bg:'#F2FBF4'}};
+const ST={pending:{l:'To Do',c:'#8E8E93',bg:'#f3f2f2'},'in-progress':{l:'Doing',c:'#a5564b',bg:'#f3f2f2'},done:{l:'Done',c:'#3DAE5C',bg:'#F2FBF4'}};
 const fD=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
 const fT=t=>{if(!t)return'';const[h,m]=t.split(':');const hr=+h;return(hr>12?hr-12:hr||12)+':'+m+' '+(hr>=12?'PM':'AM')};
 const isOD=(d,s)=>d&&s!=='done'&&new Date(d+'T00:00:00')<new Date(new Date().setHours(0,0,0,0));
@@ -8918,7 +8908,7 @@ const COUNTRY_CODES=[
 {c:'+66',n:'Thailand',f:'\\u{1F1F9}\\u{1F1ED}'},{c:'+84',n:'Vietnam',f:'\\u{1F1FB}\\u{1F1F3}'},{c:'+63',n:'Philippines',f:'\\u{1F1F5}\\u{1F1ED}'}
 ];
 function formatPhonePreview(p){const d=(p||'').replace(/[^0-9+]/g,'');if(!d)return '';if(d.length===10&&!d.startsWith('+'))return null;let out=d;if(!out.startsWith('+'))out='+'+out;return out}
-function updatePhonePreview(){const el=document.getElementById('phPreview');if(!el)return;const cc=S.loginCountryCode||'+91';const local=(S.loginPhone||'').replace(/[^0-9]/g,'');if(!local){el.innerHTML='<span style="color:#9b9797">Type your number above</span>';return}if(local.length<6){el.innerHTML='<span style="color:#9b9797">Keep typing\\u2026</span>';return}el.innerHTML='<span style="color:#8a2e2a">\\u2713 Will send to '+cc+' '+local+'</span>'}
+function updatePhonePreview(){const el=document.getElementById('phPreview');if(!el)return;const cc=S.loginCountryCode||'+91';const local=(S.loginPhone||'').replace(/[^0-9]/g,'');if(!local){el.innerHTML='<span style="color:#8E8E93">Type your number above</span>';return}if(local.length<6){el.innerHTML='<span style="color:#8E8E93">Keep typing\\u2026</span>';return}el.innerHTML='<span style="color:#3634A3">\\u2713 Will send to '+cc+' '+local+'</span>'}
 function persistLoginState(){try{localStorage.setItem('tf_login_state',JSON.stringify({step:S.loginStep,method:S.loginMethod,phone:S.loginPhone,cc:S.loginCountryCode,email:S.loginEmail,name:S.loginName,sentTo:S.loginSentTo,otp:S.loginOTP,ts:Date.now()}));if(S.loginCountryCode)localStorage.setItem('tf_cc',S.loginCountryCode)}catch(e){}}
 function restoreLoginState(){
   // Pre-fill from previous session's saved name/email/phone (kept across logout)
@@ -9037,6 +9027,25 @@ function parseCompose(raw){
   return {title:t.replace(/\s+/g,' ').trim(),priority,dueDate,dueLabel}
 }
 function composeUpdate(v){S.compose.value=v}
+var _taskVoiceRec=null;
+function voiceAddTask(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('Voice not supported in this browser');return}
+  if(_taskVoiceRec){_taskVoiceRec.stop();_taskVoiceRec=null;S._taskListening=false;render();return}
+  _taskVoiceRec=new SR();
+  _taskVoiceRec.continuous=false;
+  _taskVoiceRec.interimResults=true;
+  _taskVoiceRec.lang=navigator.language||'en-US';
+  S._taskListening=true;render();
+  _taskVoiceRec.onresult=function(e){
+    var t='';for(var i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;
+    S.compose.value=t;
+    var inp=document.querySelector('.qc-input');if(inp){inp.value=t;inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px'}
+  };
+  _taskVoiceRec.onend=function(){S._taskListening=false;_taskVoiceRec=null;render()};
+  _taskVoiceRec.onerror=function(e){S._taskListening=false;_taskVoiceRec=null;render();if(e.error!=='no-speech'&&e.error!=='aborted')toast('Voice error: '+e.error)};
+  _taskVoiceRec.start();
+}
 function composeSetDate(d){S.compose.dueDate=S.compose.dueDate===d?null:d;render()}
 function composeSetPriority(p){S.compose.priority=S.compose.priority===p?null:p;render()}
 async function composeSubmit(){
@@ -9211,8 +9220,8 @@ function toggleEyeShield(){S.eyeShield=!S.eyeShield;localStorage.setItem('eyeShi
 function toggleNightSky(){S.nightSky=!S.nightSky;localStorage.setItem('nightSky',S.nightSky?'1':'');document.body.classList.toggle('night-sky',S.nightSky);if(S.nightSky){S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');if(S.theme!=='aurora'){S.theme='aurora';localStorage.setItem('theme','aurora');document.body.setAttribute('data-theme','aurora')}if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div><div class="ns-planet ns-planet-neptune"></div><div class="ns-planet ns-planet-mercury"></div><div class="ns-planet ns-planet-uranus"></div><div class="ns-planet ns-planet-earth"></div><div class="ns-shoot ns-shoot-1"></div><div class="ns-shoot ns-shoot-2"></div><div class="ns-shoot ns-shoot-3"></div>';document.body.appendChild(pl)}}else{var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb2=document.getElementById('nsNebula');if(nb2)nb2.remove();var pl2=document.getElementById('nsPlanets');if(pl2)pl2.remove()}toast(S.nightSky?'Night Sky on':'Night Sky off');render()}
 function applyTheme(){document.body.setAttribute('data-theme',S.theme||'classic');applyColorThemeCSS(S.themeColor||'oxblood');if(S.eyeShield)document.body.classList.add('eye-shield');if(S.nightSky){document.body.classList.add('night-sky');if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div><div class="ns-planet ns-planet-neptune"></div><div class="ns-planet ns-planet-mercury"></div><div class="ns-planet ns-planet-uranus"></div><div class="ns-planet ns-planet-earth"></div><div class="ns-shoot ns-shoot-1"></div><div class="ns-shoot ns-shoot-2"></div><div class="ns-shoot ns-shoot-3"></div>';document.body.appendChild(pl)}}}
 const _COLOR_THEMES={
-  oxblood:{c1:'#8a2e2a',c2:'#a5564b',c3:'#dcb7b1',c4:'#2f100f',c5:'#611f1c',bg:'#f6eeec',bg2:'#f3f2f2',border:'color-mix(in srgb,#201e1d 40%,transparent)',rgba1:'138,46,42',rgba2:'165,86,75'},
-  ink:{c1:'#201e1d',c2:'#444141',c3:'#9b9797',c4:'#201e1d',c5:'#2d2b2b',bg:'#f3f2f2',bg2:'#eae9e9',border:'color-mix(in srgb,#201e1d 40%,transparent)',rgba1:'32,30,29',rgba2:'68,65,65'},
+  oxblood:{c1:'#3634A3',c2:'#a5564b',c3:'#dcb7b1',c4:'#2f100f',c5:'#611f1c',bg:'#f6eeec',bg2:'#f3f2f2',border:'color-mix(in srgb,#201e1d 40%,transparent)',rgba1:'138,46,42',rgba2:'165,86,75'},
+  ink:{c1:'#201e1d',c2:'#444141',c3:'#8E8E93',c4:'#201e1d',c5:'#2d2b2b',bg:'#f3f2f2',bg2:'#eae9e9',border:'color-mix(in srgb,#201e1d 40%,transparent)',rgba1:'32,30,29',rgba2:'68,65,65'},
   ember:{c1:'#b44a2d',c2:'#d4734a',c3:'#f5cab8',c4:'#3d2418',c5:'#9a3d22',bg:'#f6eeec',bg2:'#f3f2f2',border:'color-mix(in srgb,#201e1d 40%,transparent)',rgba1:'180,74,45',rgba2:'212,115,74'},
   olive:{c1:'#556b2f',c2:'#7a8a50',c3:'#b8c89a',c4:'#2a3518',c5:'#465a24',bg:'#f2f3ee',bg2:'#edeee8',border:'color-mix(in srgb,#201e1d 40%,transparent)',rgba1:'85,107,47',rgba2:'122,138,80'},
   slate:{c1:'#4a5568',c2:'#718096',c3:'#a0aec0',c4:'#1a202c',c5:'#2d3748',bg:'#f3f2f2',bg2:'#eae9e9',border:'color-mix(in srgb,#201e1d 40%,transparent)',rgba1:'74,85,104',rgba2:'113,128,150'},
@@ -9228,14 +9237,14 @@ function applyColorTheme(key){
 function showThemePicker(){
   if(document.getElementById('themePicker'))return;
   var _swatches=[
-    {k:'oxblood',l:'Oxblood',bg:'#8a2e2a',e:'\\u{1F3B5}'},
+    {k:'oxblood',l:'Oxblood',bg:'#3634A3',e:'\\u{1F3B5}'},
     {k:'ink',l:'Ink',bg:'#201e1d',e:'\\u2712'},
     {k:'ember',l:'Ember',bg:'#b44a2d',e:'\\u{1F525}'},
     {k:'olive',l:'Olive',bg:'#556b2f',e:'\\u{1F33F}'},
     {k:'slate',l:'Slate',bg:'#4a5568',e:'\\u{1FA78}'},
     {k:'rust',l:'Rust',bg:'#a0522d',e:'\\u{1F341}'},
     {k:'navy',l:'Navy',bg:'#2c3e6b',e:'\\u2693'},
-    {k:'mixed',l:'Surprise',bg:'linear-gradient(135deg,#8a2e2a,#556b2f,#2c3e6b)',e:'\\u{1F3B2}'}
+    {k:'mixed',l:'Surprise',bg:'linear-gradient(135deg,#3634A3,#556b2f,#2c3e6b)',e:'\\u{1F3B2}'}
   ];
   var ov=document.createElement('div');ov.id='themePicker';ov.className='qa-popup-overlay';
   ov.onclick=function(){ov.remove()};
@@ -9322,7 +9331,7 @@ function _focusShowLockScreen(){
   var h='<div class="focus-lock-glow"></div>';
   h+='<div class="focus-lock-label">FOCUS MODE</div>';
   h+='<div class="focus-lock-ring-wrap">';
-  h+='<svg width="180" height="180" viewBox="0 0 180 180"><circle cx="90" cy="90" r="72" fill="none" stroke="rgba(138,46,42,.1)" stroke-width="5"/><circle id="focusLockRing" cx="90" cy="90" r="72" fill="none" stroke="#8a2e2a" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+dash+' '+circ+'" style="transform:rotate(-90deg);transform-origin:center;filter:drop-shadow(0 0 12px rgba(138,46,42,.4));transition:stroke-dasharray .8s cubic-bezier(.4,0,.2,1)"/></svg>';
+  h+='<svg width="180" height="180" viewBox="0 0 180 180"><circle cx="90" cy="90" r="72" fill="none" stroke="rgba(88,86,214,.1)" stroke-width="5"/><circle id="focusLockRing" cx="90" cy="90" r="72" fill="none" stroke="#3634A3" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+dash+' '+circ+'" style="transform:rotate(-90deg);transform-origin:center;filter:drop-shadow(0 0 12px rgba(88,86,214,.4));transition:stroke-dasharray .8s cubic-bezier(.4,0,.2,1)"/></svg>';
   h+='<div class="focus-lock-time"><span id="focusLockTime" class="focus-lock-num">'+timeStr+'</span><span id="focusLockPct" class="focus-lock-pct">'+pct+'%</span></div>';
   h+='</div>';
   h+='<div id="focusLockPhase" class="focus-lock-phase">Stay focused for '+durMins+' minutes</div>';
@@ -9475,7 +9484,7 @@ function _breatheAnimate(circle,rings,fromSize,toSize,dur){
     var sz=fromSize+(toSize-fromSize)*ease;
     circle.style.width=sz+'px';circle.style.height=sz+'px';
     var glow=shadowMax*ease;
-    circle.style.boxShadow='0 0 '+(40+sz*0.3)+'px rgba(138,46,42,'+glow+'),0 0 '+(20+sz*0.15)+'px rgba(138,46,42,'+(glow*0.5)+') inset';
+    circle.style.boxShadow='0 0 '+(40+sz*0.3)+'px rgba(88,86,214,'+glow+'),0 0 '+(20+sz*0.15)+'px rgba(88,86,214,'+(glow*0.5)+') inset';
     if(rings&&rings.length){
       for(var i=0;i<rings.length;i++){
         var scale=0.85+(toSize>fromSize?0.35:0)*ease*(1-i*0.15);
@@ -9654,7 +9663,7 @@ const MED_SLOTS=[
 {cat:'vipassana',mins:60,title:'1-Hour Guided Sitting',desc:'Original voice \\u2022 full vipassana practice',color:'#A87030',ytId:'ODTu5SE1EnM',goenka:true},
 {cat:'vipassana',mins:30,title:'Mett\\u0101 at Mahamuni',desc:'Original voice \\u2022 Mandalay, 2004',color:'#FF7A45',ytId:'DKA83EQaPEs',goenka:true},
 {cat:'vipassana',mins:45,title:'Morning Chanting Day 1',desc:'Original voice \\u2022 Atanatiya Sutta',color:'#C8922A',ytId:'M2Vnc1Sg2DA',goenka:true},
-{cat:'vipassana',mins:40,title:'Morning Chanting Day 3',desc:'Original voice \\u2022 Karaniya Metta Sutta',color:'#8a2e2a',ytId:'23fUnDMKVt8',goenka:true},
+{cat:'vipassana',mins:40,title:'Morning Chanting Day 3',desc:'Original voice \\u2022 Karaniya Metta Sutta',color:'#3634A3',ytId:'23fUnDMKVt8',goenka:true},
 {cat:'vipassana',mins:90,title:'Full Sitting + Mett\\u0101',desc:'Original voice \\u2022 anapana, vipassana & mett\\u0101',color:'#A87030',ytId:'z2WaGQAN2qo',goenka:true},
 {cat:'vipassana',mins:5,title:'5-min Anapana',desc:'Guided breath awareness \\u2022 TTS',color:'#a5564b',audioId:'vip-5min'},
 {cat:'vipassana',mins:15,title:'15-min Full Practice',desc:'Guided body scan + mett\\u0101 \\u2022 TTS',color:'#C8922A',audioId:'vip-15min'},
@@ -9689,7 +9698,7 @@ const MED_SLOTS=[
 {cat:'sleep',mins:3,title:'Sleep Drift',desc:'Deep earth tones \\u2022 3 min',color:'#A87030',audioId:'sleep-music-3min'},
 {cat:'sleep',mins:5,title:'Sleep Drift',desc:'Extended deep tones \\u2022 5 min',color:'#A87030',audioId:'sleep-music-5min'},
 // Stories · 5-min wisdom tales
-{cat:'stories',mins:5,title:'The Two Wolves',desc:'Which wolf wins? The one you feed.',color:'#8a2e2a',audioId:'story-01'},
+{cat:'stories',mins:5,title:'The Two Wolves',desc:'Which wolf wins? The one you feed.',color:'#3634A3',audioId:'story-01'},
 {cat:'stories',mins:5,title:'The Bamboo Tree',desc:'Five years underground, then unstoppable.',color:'#FF7A45',audioId:'story-02'},
 {cat:'stories',mins:5,title:'The Cracked Pot',desc:'Beauty grows from imperfection.',color:'#E8985A',audioId:'story-03'},
 {cat:'stories',mins:5,title:'The Stonecutter',desc:'Power is never what you think.',color:'#C8922A',audioId:'story-04'},
@@ -9703,7 +9712,7 @@ const MED_SLOTS=[
 {cat:'stories',mins:5,title:'The Jar of Life',desc:'Put the big rocks in first.',color:'#FF7A45',audioId:'story-12'},
 {cat:'stories',mins:5,title:'The Eagle Who Forgot',desc:'You were born to fly.',color:'#C48A5A',audioId:'story-13'},
 {cat:'stories',mins:5,title:'The Lighthouse',desc:'Some things do not move for you.',color:'#E8985A',audioId:'story-14'},
-{cat:'stories',mins:5,title:'The Carpenter\\'s House',desc:'Build every day like it matters.',color:'#8a2e2a',audioId:'story-15'},
+{cat:'stories',mins:5,title:'The Carpenter\\'s House',desc:'Build every day like it matters.',color:'#3634A3',audioId:'story-15'},
 {cat:'stories',mins:5,title:'The Butterfly\\'s Struggle',desc:'The struggle is the gift.',color:'#FF7A45',audioId:'story-16'},
 {cat:'stories',mins:5,title:'The Wise Woman\\'s Stone',desc:'True wealth cannot be held.',color:'#C8922A',audioId:'story-17'},
 {cat:'stories',mins:5,title:'The Fisherman',desc:'You already have what you seek.',color:'#B8802A',audioId:'story-18'},
@@ -9898,7 +9907,7 @@ function closeCalSchedule(){S.showCalSchedule=false;render()}
 function calSchedToggle(idx){if(S.calSchedule&&S.calSchedule.items[idx])S.calSchedule.items[idx].selected=!S.calSchedule.items[idx].selected;render()}
 function calSchedTime(idx,field,val){if(S.calSchedule&&S.calSchedule.items[idx])S.calSchedule.items[idx][field]=val}
 function calSchedCustomTime(field,val){if(S.calSchedule)S.calSchedule[field]=val}
-async function calSchedSave(){if(!S.calSchedule)return;var d=S.calSchedule.date;var saved=0;for(var i=0;i<S.calSchedule.items.length;i++){var item=S.calSchedule.items[i];if(!item.selected||!item.sh)continue;var shr=parseInt(item.sh,10);if(item.sp==='PM'&&shr<12)shr+=12;if(item.sp==='AM'&&shr===12)shr=0;var ehr=item.eh?parseInt(item.eh,10):shr+1;if(item.eh){if(item.ep==='PM'&&ehr<12)ehr+=12;if(item.ep==='AM'&&ehr===12)ehr=0}var st=(shr<10?'0':'')+shr+':'+(item.sm||'00');var en=(ehr<10?'0':'')+ehr+':'+(item.em||'00');try{var r=await api('/schedule',{method:'POST',body:JSON.stringify({date:d,start_time:st,end_time:en,label:item.title,color:'#8a2e2a'})});if(r&&r.ok)saved++}catch(e){}}var cLabel=(S.calSchedule.custom||'').trim();if(cLabel&&S.calSchedule.csh){var cshr=parseInt(S.calSchedule.csh,10);if(S.calSchedule.csp==='PM'&&cshr<12)cshr+=12;if(S.calSchedule.csp==='AM'&&cshr===12)cshr=0;var cehr=S.calSchedule.ceh?parseInt(S.calSchedule.ceh,10):cshr+1;if(S.calSchedule.ceh){if(S.calSchedule.cep==='PM'&&cehr<12)cehr+=12;if(S.calSchedule.cep==='AM'&&cehr===12)cehr=0}var cst=(cshr<10?'0':'')+cshr+':'+(S.calSchedule.csm||'00');var cen=(cehr<10?'0':'')+cehr+':'+(S.calSchedule.cem||'00');try{var cr=await api('/schedule',{method:'POST',body:JSON.stringify({date:d,start_time:cst,end_time:cen,label:cLabel,color:'#4285F4'})});if(cr&&cr.ok)saved++}catch(e){}}if(saved){toast('\\u2705 '+saved+' item'+(saved>1?'s':'')+' added to calendar');S.showCalSchedule=false;loadGcalEvents();render()}else toast('\\u26A0\\uFE0F Select a task and set a start time','err')}
+async function calSchedSave(){if(!S.calSchedule)return;var d=S.calSchedule.date;var saved=0;for(var i=0;i<S.calSchedule.items.length;i++){var item=S.calSchedule.items[i];if(!item.selected||!item.sh)continue;var shr=parseInt(item.sh,10);if(item.sp==='PM'&&shr<12)shr+=12;if(item.sp==='AM'&&shr===12)shr=0;var ehr=item.eh?parseInt(item.eh,10):shr+1;if(item.eh){if(item.ep==='PM'&&ehr<12)ehr+=12;if(item.ep==='AM'&&ehr===12)ehr=0}var st=(shr<10?'0':'')+shr+':'+(item.sm||'00');var en=(ehr<10?'0':'')+ehr+':'+(item.em||'00');try{var r=await api('/schedule',{method:'POST',body:JSON.stringify({date:d,start_time:st,end_time:en,label:item.title,color:'#3634A3'})});if(r&&r.ok)saved++}catch(e){}}var cLabel=(S.calSchedule.custom||'').trim();if(cLabel&&S.calSchedule.csh){var cshr=parseInt(S.calSchedule.csh,10);if(S.calSchedule.csp==='PM'&&cshr<12)cshr+=12;if(S.calSchedule.csp==='AM'&&cshr===12)cshr=0;var cehr=S.calSchedule.ceh?parseInt(S.calSchedule.ceh,10):cshr+1;if(S.calSchedule.ceh){if(S.calSchedule.cep==='PM'&&cehr<12)cehr+=12;if(S.calSchedule.cep==='AM'&&cehr===12)cehr=0}var cst=(cshr<10?'0':'')+cshr+':'+(S.calSchedule.csm||'00');var cen=(cehr<10?'0':'')+cehr+':'+(S.calSchedule.cem||'00');try{var cr=await api('/schedule',{method:'POST',body:JSON.stringify({date:d,start_time:cst,end_time:cen,label:cLabel,color:'#4285F4'})});if(cr&&cr.ok)saved++}catch(e){}}if(saved){toast('\\u2705 '+saved+' item'+(saved>1?'s':'')+' added to calendar');S.showCalSchedule=false;loadGcalEvents();render()}else toast('\\u26A0\\uFE0F Select a task and set a start time','err')}
 function rotateMoral(){if(_audioBusy())return;if(_isModalOpen())return;var pool=window._DQ||MORALS;S.moralIdx=(S.moralIdx+1)%pool.length;
   var m=pool[S.moralIdx];
   var qt=m.q||m.t;
@@ -10106,7 +10115,7 @@ function _coachWaveformLoop(){
   for(let i=0;i<bars;i++){
     const v=buf[Math.floor(i*buf.length/bars)]/255;
     const bh=Math.max(2,v*h*0.85);
-    ctx.fillStyle='rgba(138,46,42,'+(0.3+v*0.7)+')';
+    ctx.fillStyle='rgba(88,86,214,'+(0.3+v*0.7)+')';
     ctx.fillRect(i*bw+2,h/2-bh/2,bw-4,bh);
   }
   S._coachWaveRAF=requestAnimationFrame(_coachWaveformLoop);
@@ -10241,7 +10250,7 @@ function mgNbackMatch(){
 // ── Color Match ───────────────────────────────────────────────────────
 function mgColorMatchStart(){
   var colors=['red','blue','green','yellow','purple','orange'];
-  var colorHex={red:'#EF4444',blue:'#a5564b',green:'#22C55E',yellow:'#EAB308',purple:'#A855F7',orange:'#8a2e2a'};
+  var colorHex={red:'#EF4444',blue:'#a5564b',green:'#22C55E',yellow:'#EAB308',purple:'#A855F7',orange:'#3634A3'};
   var words=['SKY','TREE','SUN','CAR','BIRD','STAR','MOON','FIRE','WAVE','LEAF'];
   function mkQ(){var nameC=colors[Math.floor(Math.random()*colors.length)];var match=Math.random()<0.5;var inkC=match?nameC:colors.filter(function(c){return c!==nameC})[Math.floor(Math.random()*(colors.length-1))];var rw=words[Math.floor(Math.random()*words.length)];return{name:nameC,ink:inkC,word:rw,isMatch:match}}
   var q=mkQ();
@@ -11016,7 +11025,7 @@ function _mtTick(now){
     ctx.fillStyle='rgba(255,255,255,'+(op*0.95)+')';
     ctx.font='800 '+Math.floor(cw*0.075)+'px -apple-system, system-ui, sans-serif';
     ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.shadowColor='rgba(138,46,42,'+(op*0.6)+')';ctx.shadowBlur=18;
+    ctx.shadowColor='rgba(88,86,214,'+(op*0.6)+')';ctx.shadowBlur=18;
     ctx.fillText(S._mt.bannerText,cw/2,ch*0.12);
     ctx.restore();
   }
@@ -11326,10 +11335,10 @@ const BOOK_SUMMARIES=[
   // ─── STOIC / PHILOSOPHY ───
   {id:'dailystoic',title:'The Daily Stoic',author:'Ryan Holiday',tag:'stoic',mins:10,grad:'linear-gradient(135deg,#1a0f08 0%,#3d2410 50%,#FED7AA 100%)',why:'366 daily meditations on Stoic wisdom — one page, one idea, one minute.',insights:[['Control what you can','Your judgments, your effort, your responses.'],['Premeditate adversity','Imagine what could go wrong. Then it doesn\\'t shock you.'],['Memento mori','You will die. Use that to live well, today.'],['Amor fati','Love what is. Welcome whatever happens.'],['Be a good person','Daily \\u2014 not someday.']],summary:'Welcome to the brief of The Daily Stoic by Ryan Holiday. This is a book that takes two thousand years of Stoic wisdom and breaks it into three hundred and sixty-six daily meditations, one for each day of the year.\\n\\nChapter one. The discipline of perception. The first section of the book covers January through April and focuses on how you see the world. The Stoics believed that events themselves are neutral. It is your judgment about an event that makes it good or bad. Marcus Aurelius wrote that you have power over your mind, not outside events, and that when you realize this, you will find strength. Holiday takes this ancient idea and applies it to modern frustrations. Traffic, difficult coworkers, bad news, a canceled flight. None of these things are inherently terrible. They become terrible when you add your own story of outrage, victimhood, or catastrophe. The daily entries in this section train you to pause before reacting, to ask whether your interpretation is accurate, and to choose a response that serves you rather than one that merely feels satisfying. One key meditation reminds you that you always have the option to have no opinion about something. Not everything requires your emotional investment. Holiday draws on Marcus Aurelius, who reminded himself each morning that he would encounter ungrateful, arrogant, and dishonest people, and that none of their behavior was within his control. What was within his control was whether he met them with anger or with understanding. This daily reframing turns annoyances into exercises and crises into curriculum.\\n\\nChapter two. The discipline of action. Covering May through August, this section moves from seeing clearly to acting wisely. The Stoics were not passive philosophers sitting in towers. They were emperors, senators, generals, and merchants. They believed in vigorous action, but action guided by virtue rather than ego. Holiday draws on Epictetus, who taught that we must focus our energy only on what is within our control, our effort, our character, our choices, and release attachment to everything else, outcomes, reputation, other people\\'s behavior. The daily entries here push you to stop procrastinating and start doing. They remind you that perfectionism is a form of cowardice, that a good plan executed today beats a perfect plan executed never. One recurring theme is the idea of the inner citadel. No matter what chaos surrounds you, you can always retreat to the fortress of your own disciplined mind and act from there. Several entries in this section address the gap between knowing and doing. It is not enough to read about virtue. You must practice it. The Stoics compared philosophy to medicine: a prescription that sits on the shelf heals no one. You have to take it, daily, even when the taste is bitter. Holiday encourages readers to pick one entry each day and find a concrete way to live it before sunset.\\n\\nChapter three. The discipline of will. The final section spans September through December and addresses what happens when things go wrong, because they will. The Stoics practiced what they called the premeditation of evils, imagining in advance everything that could go sideways. This was not pessimism. It was preparation. When you have already mentally rehearsed losing your job, getting sick, or being betrayed, the actual event carries less shock. You have already processed the worst case, and you have a plan. Holiday weaves in Seneca\\'s idea of amor fati, the love of fate. This goes beyond merely accepting what happens. It means embracing it, treating every setback as raw material for growth. The entries in this section also deal with mortality. Memento mori, remember that you will die, appears repeatedly. The Stoics did not find this morbid. They found it clarifying. When you remember that your time is limited, trivial annoyances lose their power and important things come into sharp focus.\\n\\nChapter four. Control and choice. Woven through all three sections is the Stoic idea that most of what upsets you is not actually under your control. Other people\\'s opinions, the weather, the economy, the past, none of these respond to your wishes. The only things truly in your power are your own judgments, desires, and actions. Holiday returns to this theme again and again because it is the operating system of Stoicism. Once you internalize it, anxiety drops dramatically. You stop trying to control the uncontrollable and pour that energy into the one domain where it actually works, your own behavior. Holiday illustrates this with everyday examples. You cannot control whether you get the promotion, but you can control whether you did your best work. You cannot control whether someone returns your affection, but you can control whether you treated them with kindness. The shift is subtle but transformative. It moves the locus of your peace from outside events to inside choices.\\n\\nChapter five. Character and virtue. The Stoics defined four cardinal virtues: wisdom, courage, temperance, and justice. Holiday dedicates multiple entries to each. Wisdom is seeing things as they are, not as you fear or wish them to be. Courage is doing the right thing even when it is costly. Temperance is moderation, the discipline to say enough. Justice is treating others fairly and contributing to the common good. These are not abstract ideals. They are daily practices. Every interaction is a chance to exercise one of them. The book frames virtue not as a destination but as a direction, something you orient toward with every small decision.\\n\\nChapter six. Relationships and community. The Stoics were not hermits. Marcus Aurelius wrote extensively about the duty to serve others, to tolerate difficult people, and to remember that everyone is fighting a battle you cannot see. Holiday includes meditations on patience, empathy, forgiveness, and the discipline of not taking things personally. Seneca\\'s advice on friendship appears here, choose friends who make you better and whom you can make better. The entries remind you that how you treat people is the truest test of your philosophy. It is easy to be Stoic alone on a mountain. The real practice happens in meetings, marriages, and traffic. Holiday shares Epictetus\\'s teaching that every person you meet is an opportunity to practice some virtue, whether patience, generosity, truthfulness, or compassion. The difficult coworker is not an annoyance. They are your training partner.\\n\\nChapter seven. Resilience and perseverance. The final thematic thread is endurance. Life will test you. You will fail, be embarrassed, lose people, and face moments that feel unbearable. The Stoic response is not to pretend it does not hurt. It is to endure with dignity, to find meaning in the struggle, and to keep moving forward. Holiday profiles historical figures who embodied this, people who were imprisoned, exiled, or impoverished and who responded not with bitterness but with renewed purpose. The message is consistent. You cannot control what happens to you. You can always control how you respond.\\n\\nThe bottom line. The Daily Stoic is a gentle, one-page-a-day entry point into a philosophy that has helped people navigate difficulty for over two thousand years. It does not ask you to become a monk or renounce the world. It asks you to spend one minute each morning remembering what is in your control, what is not, and who you want to be today. Over the course of a year, these one-minute reflections accumulate into something far greater than the sum of their parts. They build a habit of self-awareness, a daily check-in with your values and your character, that gradually transforms not just how you think but how you live.'},
   {id:'obstacle',title:'The Obstacle Is the Way',author:'Ryan Holiday',tag:'stoic',mins:11,grad:'linear-gradient(135deg,#1a0f08 0%,#3d2410 50%,#E8912C 100%)',why:'What stands in your way is the way. The obstacle becomes your training.',insights:[['Perception','See clearly. Don\\'t add panic to the situation.'],['Action','Move. Even an imperfect action beats paralysis.'],['Will','Endure what you can\\'t change. Find meaning in it.'],['Obstacles reveal','You learn who you are when something stops you.'],['Turn obstacles upside down','The thing in the way \\u2014 use it.']],summary:'Welcome to the brief of The Obstacle Is the Way by Ryan Holiday. This is a book about a radical idea from the Roman emperor Marcus Aurelius: the impediment to action advances action, and what stands in the way becomes the way.\\n\\nChapter one. The discipline of perception. Holiday begins with a story about John D. Rockefeller. In 1857, a financial panic swept the country. Banks collapsed, businesses failed, and experienced investors panicked. Rockefeller was twenty years old and just starting out. While everyone around him was terrified, he watched and studied. He saw the panic as a classroom. He learned how markets behaved under stress, how fear drove irrational decisions, and how calm observation revealed opportunities invisible to everyone else. This, Holiday argues, is the first Stoic discipline: perception. When an obstacle appears, most people immediately add a layer of panic, outrage, or despair on top of the facts. The Stoic strips all of that away and sees only the situation as it is. Not good, not bad, just a set of circumstances to be understood. Holiday walks through several principles of perception. Keep your nerve. Control your emotions, or they will control you. Practice objectivity. Recognize that your first impression of a crisis is almost always exaggerated. Alter your perspective. A problem viewed from a different angle often reveals a hidden advantage. Focus on what you can control and ignore the rest. Live in the present moment rather than catastrophizing about a future that may never arrive. Holiday also profiles Ulysses S. Grant, who as a young officer noticed that the enemy soldiers were just as afraid as he was. That single observation, born from careful perception rather than panic, gave him a decisive edge for the rest of his military career. The lesson is universal: when you see clearly, you act wisely.\\n\\nChapter two. The discipline of action. Seeing clearly is necessary but not sufficient. You also have to move. Holiday tells the story of Demosthenes, the ancient Greek who was born with a severe speech impediment. Rather than accept his limitation, Demosthenes practiced speaking with pebbles in his mouth, recited verses while running uphill, and rehearsed in front of the ocean waves. He became the greatest orator in Athenian history. The obstacle, his stammer, became his training ground. This section is about directed, deliberate, persistent action. Holiday lays out the principles. Get moving. An imperfect start beats an indefinite delay. Practice persistence. Not every problem yields on the first attempt, or the tenth. Iterate. Try one approach, fail, adjust, and try again. Follow the process. Break overwhelming challenges into small, manageable steps and focus on the one in front of you right now. Do your job. Not someone else\\'s, not a bigger one, the one that is actually yours to do. Channel your energy. Do not flail in every direction. Pick the point of greatest leverage and push there. Prepare for the possibility that none of this works, because sometimes it will not, and what matters then is that you acted with excellence regardless of the outcome. Holiday draws on the example of Steve Jobs, who was fired from Apple, the company he founded, and instead of retreating into bitterness built two new companies and returned to Apple stronger than before. The obstacle of being fired became the catalyst for some of the most creative work of his life. Action does not guarantee success. But it guarantees growth.\\n\\nChapter three. The discipline of will. The final discipline is the deepest. Will is what you fall back on when perception and action are not enough, when the obstacle truly cannot be removed and you must endure it. Holiday tells the story of Abraham Lincoln, who suffered from severe depression his entire life, lost multiple elections, buried children, and led a nation through civil war. Lincoln did not overcome his suffering by eliminating it. He endured it. He found meaning in it. He let it deepen his empathy and sharpen his resolve. The will, in Stoic philosophy, is the inner citadel that nothing external can breach. Holiday outlines its principles. Build your inner citadel. Develop an interior strength that does not depend on circumstances. Anticipate adversity. The Stoics practiced negative visualization, imagining the worst so it could not surprise them. Accept what you cannot change, and find something useful in it. Love your fate. This is Nietzsche\\'s amor fati, the attitude that says not merely I can bear this, but I was made for this. Persevere. When everything has gone wrong and there is no clever solution, the last virtue standing is endurance. Meditate on your mortality. Remembering death is not morbid. It is clarifying. It burns away the trivial and reveals what actually matters. Holiday also profiles the astronaut James Stockdale, who endured seven years as a prisoner of war in Vietnam. Stockdale survived by building an unshakeable inner citadel, a place of moral certainty and psychological resilience that no amount of physical suffering could penetrate. His will was his final weapon, and it was enough.\\n\\nChapter four. The obstacle flipped upside down. Holiday returns to the central metaphor. Every obstacle has a second side. The thing that blocks your path also defines your path. The resistance you encounter is the very force that makes you stronger, smarter, and more resourceful. Without resistance, there is no growth. He profiles Amelia Earhart, who turned gender discrimination into fuel for relentless preparation, and Thomas Edison, who watched his factory burn to the ground and told his son to go get his mother because she would never see a fire like this again. Edison rebuilt within weeks. The common thread is not talent or luck. It is the refusal to see obstacles as permanent. Holiday also tells the story of the German immigrant and general Baron von Steuben, who arrived at Valley Forge to find a demoralized, undisciplined Continental Army. Rather than despair, he saw raw material. He drilled the soldiers relentlessly through the brutal winter, and by spring the army that had been an obstacle to itself became a fighting force that changed the course of American history.\\n\\nChapter five. The obstacle is the advantage. In the closing section, Holiday argues that this framework is not just a crisis tool. It is a way of life. The person who has been through difficulty and emerged stronger has an advantage over the person who has never been tested. Struggle builds capacity. Comfort builds fragility. The Stoic does not wish for an easy life. The Stoic wishes for the strength to endure a difficult one, and then goes out and builds that strength by meeting every obstacle head-on. Holiday reminds you that this is a practice, not a personality trait. You are not born with it. You build it, one obstacle at a time. Holiday closes with a reminder that this framework has been tested across two thousand years of human adversity. From Marcus Aurelius on the battlefield to Laura Ingalls Wilder on the frontier, the pattern holds: the people who thrive are not the people who avoid obstacles but the people who transform them into fuel.\\n\\nThe bottom line. The Obstacle Is the Way is a field manual for turning adversity into advantage. See clearly, act deliberately, endure what you must, and treat every obstacle not as a wall but as the way forward. The impediment to action advances action. What stands in the way becomes the way. This is not wishful thinking. It is a battle-tested framework that has been proven by two thousand years of human adversity, and it is available to you right now, in whatever obstacle you are facing today.'},
-  {id:'ego',title:'Ego Is the Enemy',author:'Ryan Holiday',tag:'stoic',mins:11,grad:'linear-gradient(135deg,#0a0a0a 0%,#2a2a2a 50%,#9b9797 100%)',why:'Ego is the enemy at every stage: aspire, succeed, fail. Quiet it.',insights:[['Aspiration without ego','Be a student, not a know-it-all.'],['Success without ego','Don\\'t get high on your own supply.'],['Failure without ego','Take responsibility, then move forward.'],['Talk less, do more','The work speaks. You don\\'t need to.'],['Live with purpose, not pride','Pride is brittle. Purpose is durable.']],summary:'Welcome to the brief of Ego Is the Enemy by Ryan Holiday. This is a book about the one opponent you will face at every stage of your life, and it lives inside your own head.\\n\\nChapter one. The painful prologue. Holiday opens with a confession. Early in his career he was given extraordinary opportunities, working for bestselling authors and powerful executives while still a teenager. And he nearly destroyed every one of those opportunities with ego. He talked too much, assumed he was smarter than he was, and cared more about appearing successful than actually doing the work. This book, he writes, is the book he wished he had read before all of that happened. Ego, he defines, is not confidence or ambition. It is the unhealthy belief in your own importance, the voice that whispers you are special, you already know enough, and you deserve recognition. It is the enemy because it blinds you to reality, poisons relationships, and prevents growth.\\n\\nChapter two. Aspire, part one. Talk, talk, talk. Holiday begins the aspiration section with a warning about the modern obsession with self-promotion. Social media rewards announcing your intentions rather than executing them. But research shows that talking about your goals gives you a premature sense of accomplishment, making you less likely to follow through. The Stoics had a word for this: euthemia, the sense of purpose that comes from knowing what you want and walking toward it quietly. Holiday profiles the Civil War general William Tecumseh Sherman, who repeatedly turned down promotions and accolades because he knew he was not ready. When his moment finally came, he was so thoroughly prepared that he executed one of the most brilliant campaigns in military history. The lesson: let the work speak. You do not need to.\\n\\nChapter three. Aspire, part two. Be a student. Holiday argues that the moment you stop being a student, you stop growing. He tells the story of the musician Kirk Hammett, who joined Metallica as lead guitarist and immediately enrolled in guitar lessons with a jazz instructor. He was already one of the best metal guitarists in the world, but he knew there were things he could not do. Ego would have told him he had nothing left to learn. Humility told him otherwise. Holiday extends this to the concept of the canvas strategy: when you are starting out, your job is to make other people look good. Find canvases for others to paint on. Clear the path for your mentors and collaborators. This feels like subordination, but it is actually apprenticeship. You learn more by helping than by competing, and you build relationships that pay dividends for decades. Holiday also introduces the idea of purpose over passion. Passion is about what you feel. Purpose is about what you do and who you serve. Ego loves passion because passion is self-centered. Purpose is other-centered, and that outward focus keeps ego in check.\\n\\nChapter four. Success, part one. Always stay a student. The middle section of the book deals with what happens when things go right, and this is where ego becomes most dangerous. Success creates a narrative. You start to believe your own press. You assume that past results guarantee future performance. Holiday profiles the legendary basketball coach Pat Riley, who led the Los Angeles Lakers to a championship and then watched the team collapse the following season because the players became obsessed with endorsement deals, media coverage, and individual glory. Riley called it the disease of me. The team\\'s success had inflated each player\\'s ego to the point where collective effort became impossible.\\n\\nChapter five. Success, part two. Manage yourself. Holiday argues that success requires a paradox: you must be ambitious enough to achieve great things and humble enough to keep achieving them. He introduces the concept of the dangerous, growing ego, the voice that tells you the rules no longer apply because you are exceptional. The counter-move is to keep standards internal rather than external. Do not measure yourself against competitors or public opinion. Measure yourself against your own potential. Keep a tight inner scorecard. Be strict with yourself and generous with others. Holiday profiles the philosopher Seneca, who amassed enormous wealth and power in Rome but practiced voluntary poverty regularly, sleeping on hard floors and eating simple food to remind himself that none of it was essential. Holiday also profiles the German-born industrialist George Steinbrenner, whose ego turned the New York Yankees into a revolving door of managers and conflicts. Despite enormous resources, ego prevented Steinbrenner from building the stable organization that would have served his goals far better than his constant meddling.\\n\\nChapter six. Failure, part one. Alive time or dead time. The final section addresses what happens when things go wrong, and ego\\'s role in making it worse. Holiday tells the story of Malcolm X, who was sentenced to prison as a young man. He could have spent those years in bitterness and self-pity, which is dead time. Instead he read voraciously, studied languages, and transformed himself intellectually, which is alive time. The obstacle became the opportunity. Ego in failure tells you that you are a victim, that the world is unfair, that you deserved better. The truth is usually more uncomfortable. You made mistakes, you were unprepared, or you overestimated yourself. Holiday argues that taking honest responsibility, without drama or self-flagellation, is the fastest path back to relevance.\\n\\nChapter seven. Failure, part two. Draw the line. Holiday warns against the ego\\'s tendency to escalate commitment to a failing course of action. When something is not working, ego refuses to admit it because admitting failure feels like admitting weakness. So you double down. You throw more money, more time, more reputation into the hole. The Stoic response is to draw the line. Accept the loss, learn from it, and redirect your energy toward something that can actually succeed. This requires the courage to say I was wrong, three words that ego finds almost physically painful. Holiday tells the story of the legendary engineer Belisarius, the greatest general of the late Roman Empire, who was stripped of his honors and accused of treason by the emperor he had served faithfully. Belisarius endured the injustice without bitterness, without complaint, and without letting it define him. His character, not his circumstances, was his legacy.\\n\\nChapter eight. The ever-present threat. Holiday closes by reminding you that ego is not a one-time enemy. It is a daily practice. You will never permanently defeat it. Every morning it wakes up with you, whispering that you are either better than you are or worse than you are, both of which are lies. The discipline is to hear the whisper, recognize it for what it is, and return to the work. The work is all that matters. Not the credit, not the title, not the applause. Just the work. Holiday asks you to imagine yourself at the end of your life looking back. The ego\\'s achievements, the titles, the applause, the victories over rivals, will feel hollow. What will feel solid is the work itself, the relationships you nurtured without keeping score, the skills you built without seeking credit, and the character you maintained when no one was watching.\\n\\nThe bottom line. Ego Is the Enemy maps the three phases of any meaningful life, aspiration, success, and failure, and shows how ego sabotages each one. The antidote is humility, relentless learning, and the quiet discipline of doing the work for its own sake rather than for the story you get to tell about it.'},
+  {id:'ego',title:'Ego Is the Enemy',author:'Ryan Holiday',tag:'stoic',mins:11,grad:'linear-gradient(135deg,#0a0a0a 0%,#2a2a2a 50%,#8E8E93 100%)',why:'Ego is the enemy at every stage: aspire, succeed, fail. Quiet it.',insights:[['Aspiration without ego','Be a student, not a know-it-all.'],['Success without ego','Don\\'t get high on your own supply.'],['Failure without ego','Take responsibility, then move forward.'],['Talk less, do more','The work speaks. You don\\'t need to.'],['Live with purpose, not pride','Pride is brittle. Purpose is durable.']],summary:'Welcome to the brief of Ego Is the Enemy by Ryan Holiday. This is a book about the one opponent you will face at every stage of your life, and it lives inside your own head.\\n\\nChapter one. The painful prologue. Holiday opens with a confession. Early in his career he was given extraordinary opportunities, working for bestselling authors and powerful executives while still a teenager. And he nearly destroyed every one of those opportunities with ego. He talked too much, assumed he was smarter than he was, and cared more about appearing successful than actually doing the work. This book, he writes, is the book he wished he had read before all of that happened. Ego, he defines, is not confidence or ambition. It is the unhealthy belief in your own importance, the voice that whispers you are special, you already know enough, and you deserve recognition. It is the enemy because it blinds you to reality, poisons relationships, and prevents growth.\\n\\nChapter two. Aspire, part one. Talk, talk, talk. Holiday begins the aspiration section with a warning about the modern obsession with self-promotion. Social media rewards announcing your intentions rather than executing them. But research shows that talking about your goals gives you a premature sense of accomplishment, making you less likely to follow through. The Stoics had a word for this: euthemia, the sense of purpose that comes from knowing what you want and walking toward it quietly. Holiday profiles the Civil War general William Tecumseh Sherman, who repeatedly turned down promotions and accolades because he knew he was not ready. When his moment finally came, he was so thoroughly prepared that he executed one of the most brilliant campaigns in military history. The lesson: let the work speak. You do not need to.\\n\\nChapter three. Aspire, part two. Be a student. Holiday argues that the moment you stop being a student, you stop growing. He tells the story of the musician Kirk Hammett, who joined Metallica as lead guitarist and immediately enrolled in guitar lessons with a jazz instructor. He was already one of the best metal guitarists in the world, but he knew there were things he could not do. Ego would have told him he had nothing left to learn. Humility told him otherwise. Holiday extends this to the concept of the canvas strategy: when you are starting out, your job is to make other people look good. Find canvases for others to paint on. Clear the path for your mentors and collaborators. This feels like subordination, but it is actually apprenticeship. You learn more by helping than by competing, and you build relationships that pay dividends for decades. Holiday also introduces the idea of purpose over passion. Passion is about what you feel. Purpose is about what you do and who you serve. Ego loves passion because passion is self-centered. Purpose is other-centered, and that outward focus keeps ego in check.\\n\\nChapter four. Success, part one. Always stay a student. The middle section of the book deals with what happens when things go right, and this is where ego becomes most dangerous. Success creates a narrative. You start to believe your own press. You assume that past results guarantee future performance. Holiday profiles the legendary basketball coach Pat Riley, who led the Los Angeles Lakers to a championship and then watched the team collapse the following season because the players became obsessed with endorsement deals, media coverage, and individual glory. Riley called it the disease of me. The team\\'s success had inflated each player\\'s ego to the point where collective effort became impossible.\\n\\nChapter five. Success, part two. Manage yourself. Holiday argues that success requires a paradox: you must be ambitious enough to achieve great things and humble enough to keep achieving them. He introduces the concept of the dangerous, growing ego, the voice that tells you the rules no longer apply because you are exceptional. The counter-move is to keep standards internal rather than external. Do not measure yourself against competitors or public opinion. Measure yourself against your own potential. Keep a tight inner scorecard. Be strict with yourself and generous with others. Holiday profiles the philosopher Seneca, who amassed enormous wealth and power in Rome but practiced voluntary poverty regularly, sleeping on hard floors and eating simple food to remind himself that none of it was essential. Holiday also profiles the German-born industrialist George Steinbrenner, whose ego turned the New York Yankees into a revolving door of managers and conflicts. Despite enormous resources, ego prevented Steinbrenner from building the stable organization that would have served his goals far better than his constant meddling.\\n\\nChapter six. Failure, part one. Alive time or dead time. The final section addresses what happens when things go wrong, and ego\\'s role in making it worse. Holiday tells the story of Malcolm X, who was sentenced to prison as a young man. He could have spent those years in bitterness and self-pity, which is dead time. Instead he read voraciously, studied languages, and transformed himself intellectually, which is alive time. The obstacle became the opportunity. Ego in failure tells you that you are a victim, that the world is unfair, that you deserved better. The truth is usually more uncomfortable. You made mistakes, you were unprepared, or you overestimated yourself. Holiday argues that taking honest responsibility, without drama or self-flagellation, is the fastest path back to relevance.\\n\\nChapter seven. Failure, part two. Draw the line. Holiday warns against the ego\\'s tendency to escalate commitment to a failing course of action. When something is not working, ego refuses to admit it because admitting failure feels like admitting weakness. So you double down. You throw more money, more time, more reputation into the hole. The Stoic response is to draw the line. Accept the loss, learn from it, and redirect your energy toward something that can actually succeed. This requires the courage to say I was wrong, three words that ego finds almost physically painful. Holiday tells the story of the legendary engineer Belisarius, the greatest general of the late Roman Empire, who was stripped of his honors and accused of treason by the emperor he had served faithfully. Belisarius endured the injustice without bitterness, without complaint, and without letting it define him. His character, not his circumstances, was his legacy.\\n\\nChapter eight. The ever-present threat. Holiday closes by reminding you that ego is not a one-time enemy. It is a daily practice. You will never permanently defeat it. Every morning it wakes up with you, whispering that you are either better than you are or worse than you are, both of which are lies. The discipline is to hear the whisper, recognize it for what it is, and return to the work. The work is all that matters. Not the credit, not the title, not the applause. Just the work. Holiday asks you to imagine yourself at the end of your life looking back. The ego\\'s achievements, the titles, the applause, the victories over rivals, will feel hollow. What will feel solid is the work itself, the relationships you nurtured without keeping score, the skills you built without seeking credit, and the character you maintained when no one was watching.\\n\\nThe bottom line. Ego Is the Enemy maps the three phases of any meaningful life, aspiration, success, and failure, and shows how ego sabotages each one. The antidote is humility, relentless learning, and the quiet discipline of doing the work for its own sake rather than for the story you get to tell about it.'},
   {id:'stillness',title:'Stillness Is the Key',author:'Ryan Holiday',tag:'stoic',mins:11,grad:'linear-gradient(135deg,#06121a 0%,#0e2a3d 50%,#a5564b 100%)',why:'In a world built on noise, stillness is a competitive advantage.',insights:[['Mind, soul, body','Stillness lives in all three. Train each.'],['Silence is louder','The best leaders speak less and listen more.'],['Limit your inputs','Information overload defeats clarity.'],['Build a sanctuary','A place, a time, a ritual that\\'s only yours.'],['Stillness is the prerequisite','Great work, deep love, real peace \\u2014 all need it.']],summary:'Welcome to the brief of Stillness Is the Key by Ryan Holiday. This is a book about the quiet center that every great leader, artist, and thinker has drawn from, and how you can find it in the middle of a noisy world.\\n\\nChapter one. The domain of the mind. Holiday opens with the story of John F. Kennedy during the Cuban Missile Crisis. The world was thirteen days away from nuclear war. Generals were pushing for immediate air strikes. Advisors were panicking. Kennedy, alone among them, stayed calm. He asked questions, slowed the process down, and created space for diplomacy to work. This, Holiday argues, is stillness of the mind, the ability to think clearly when everyone around you is reacting. The Stoics called it apatheia, not the absence of feeling but the absence of irrational passion. Holiday lays out the practices that build mental stillness. Limit your inputs. You do not need to read every headline or follow every controversy. Be present. Most anxiety comes from living in an imagined future rather than the actual now. Limit your opinions. Not everything requires your judgment. Slow down to think clearly. Speed creates the illusion of productivity while actually degrading the quality of every decision. Journal. Writing forces clarity. The act of putting thoughts on paper separates signal from noise in ways that thinking alone cannot. Holiday profiles the baseball legend Sadaharu Oh, who attributed his record-breaking home runs not to aggression but to inner stillness. Oh practiced a form of meditation before every at-bat, clearing his mind of expectation and anxiety. The result was not passivity but explosive, perfectly timed action born from a quiet center.\\n\\nChapter two. The domain of the soul. Holiday moves from the mind to the emotional and spiritual core. He tells the story of the tennis champion Marina Hingis, who had every talent in the world but was consumed by anger, jealousy, and bitterness toward her rivals. Her career collapsed not because she lost her skills but because she lost her inner peace. Holiday contrasts her with Fred Rogers, who built an empire of kindness by caring deeply about children and staying connected to a sense of purpose larger than himself. Soul-level stillness, Holiday argues, comes from several practices. Choose virtue. In every situation, ask what the right thing to do is, and do that. Care about something beyond yourself. Purpose is the antidote to restlessness. Beware desire. The hedonic treadmill ensures that no achievement will satisfy you for long unless you cultivate gratitude for what you already have. Build relationships. Deep connection with other people is not a distraction from the important work. It is the important work. Conquer your anger. Anger feels powerful but it makes you stupid. Every great mistake in history was made in anger. Find a hobby. Something you do purely for the love of doing it, with no ambition attached. It refreshes the parts of you that ambition exhausts. Holiday emphasizes that the soul finds stillness not through withdrawal from the world but through deeper engagement with what truly matters. The restless mind is a mind without a compass. Give it a direction, a purpose, a cause that transcends your own comfort, and the restlessness resolves itself.\\n\\nChapter three. The domain of the body. The final domain is physical, and Holiday argues it is the most neglected. Your body is the instrument through which everything else happens. If the instrument is broken, nothing works. He tells the story of Winston Churchill, who survived decades of brutal political life in part because he painted, laid bricks, and took afternoon naps. Churchill understood that the body needs rest, movement, and play. Holiday outlines the physical practices of stillness. Sleep. It is not laziness. It is maintenance. Every cognitive function degrades without enough of it. Take walks. Walking is the oldest thinking technology. It changes your brain state in ways that sitting cannot. Build a routine. The great creatives did not wait for inspiration. They showed up at the same time every day and let the routine carry them. Get rid of stuff. Clutter in your environment creates clutter in your mind. Own less, and what you own will serve you better. Seek solitude. Not permanent isolation, but regular intervals of quiet where no one needs anything from you and you can simply be. Holiday also stresses the importance of saying no. Every commitment you accept is time and energy you cannot spend on stillness. The disciplined refusal of unnecessary obligations is itself a form of physical stillness, a clearing of the calendar that creates space for the mind and soul to breathe.\\n\\nChapter four. The interconnection. Holiday steps back to show how mind, soul, and body are not separate domains but a single system. Mental noise disturbs emotional peace. Emotional turmoil exhausts the body. Physical neglect clouds the mind. The disciplines reinforce each other. A person who sleeps well, journals daily, cares about something beyond themselves, and takes regular walks is building stillness from every direction simultaneously. Holiday profiles several historical figures who embodied this integration. Marcus Aurelius, who ruled the Roman Empire while maintaining a rigorous practice of self-reflection. Anne Frank, who found inner peace in the most terrifying circumstances imaginable by writing honestly about her experience. The painter Agnes Martin, who left New York at the height of her fame to live alone in the New Mexico desert because she knew that her art required silence.\\n\\nChapter five. The enemy of stillness. Holiday identifies the forces that destroy stillness. Ego, which demands constant validation and turns every moment into a performance. Ambition without purpose, which keeps you running without knowing where you are going. The news cycle, which manufactures urgency about things you cannot control. Busyness, which masquerades as productivity but is often just avoidance of the quiet where real thinking happens. He argues that modern life is specifically designed to prevent stillness. Notifications, feeds, open-plan offices, and the culture of constant availability all conspire against the quiet center. Protecting stillness is therefore an act of resistance. It requires deliberate, daily effort.\\n\\nChapter six. The reward of stillness. Holiday closes with a meditation on what stillness makes possible. Great art, deep love, clear thinking, moral courage, and genuine happiness all emerge from the quiet center. Stillness is not passivity. It is the wellspring of the most powerful action. The archer must be still before releasing the arrow. The surgeon must be calm before making the cut. The leader must be centered before making the call. Everything excellent begins in stillness. Holiday leaves you with a simple test. If your mind is racing when you lie down at night, if you cannot sit in a room alone for ten minutes without reaching for a device, if you feel restless even when you have everything you need, then you have not yet found the key. Stillness is not a luxury reserved for monks and mystics. It is a basic human need that modern life has systematically stolen from you. The work of getting it back is the most important work you will ever do.\\n\\nThe bottom line. Stillness Is the Key argues that the competitive advantage of the twenty-first century is not speed or information but the ability to be quiet, to think clearly, and to act from a place of inner calm. Train the mind, nourish the soul, care for the body, and you will find that stillness is not the absence of action but the foundation of everything worth doing.'},
   {id:'discipline',title:'Discipline Is Destiny',author:'Ryan Holiday',tag:'stoic',mins:11,grad:'linear-gradient(135deg,#0a0a0a 0%,#3a1c0a 50%,#FED7AA 100%)',why:'Discipline is the key virtue. It compounds across body, mind, and soul.',insights:[['Master the body','Sleep, eat, move, rest. The instrument matters.'],['Master the temper','Don\\'t let emotion captain the ship.'],['Master the mind','Train it on what matters; ignore what doesn\\'t.'],['Discipline is freedom','It widens the gap between trigger and response.'],['Daily, not heroic','Showing up is the discipline. Brilliance is the byproduct.']],summary:'Welcome to the brief of Discipline Is Destiny by Ryan Holiday. This is a book about the one virtue that makes all other virtues possible, and why the Stoics considered it the foundation of a good life.\\n\\nChapter one. The virtue of temperance. Holiday opens by placing discipline in the Stoic framework of four cardinal virtues: courage, justice, wisdom, and temperance. Temperance, or self-discipline, is the queen virtue because without it, none of the others can function. You may know what is right, but without discipline you will not do it. You may have courage, but without discipline it becomes recklessness. You may seek justice, but without discipline your anger will distort it. Holiday traces this idea through history, from the ancient Greeks who called it sophrosyne to the Romans who called it temperantia. The word literally means the right measure, not too much, not too little, but exactly what the situation requires.\\n\\nChapter two. The exterior. Discipline of the body. Holiday argues that the body is the first domain of discipline because it is the instrument through which everything else happens. He profiles Queen Elizabeth II, who maintained an almost superhuman routine for over seventy years, rising early, walking daily, eating simply, and showing up for every duty regardless of how she felt. Her discipline was not glamorous. It was showing up, day after day, decade after decade. Holiday explores several dimensions of physical discipline. Go to bed on time. Sleep is not optional. It is the foundation on which every other discipline rests. Exercise. Not to look good, but to build the resilience that a demanding life requires. Eat with restraint. The Stoics practiced voluntary discomfort, occasionally skipping meals or eating plainly, to remind themselves that they could endure without luxury. Show up. The most important ability is availability. Being present, consistently, is the discipline that underlies all achievement.\\n\\nChapter three. The exterior continued. Manage your appetites. Holiday warns against the particular danger of success. When you have the resources to indulge every desire, discipline becomes simultaneously more important and more difficult. He profiles the baseball player Lou Gehrig, who played 2,130 consecutive games not because he was never injured or tired but because he believed that the team depended on him and that dependability was a form of honor. Holiday also addresses the discipline of appearance and environment. Keep your space clean. Dress intentionally. These are not vanities. They are signals to your own brain that you are someone who takes care of things, and that self-image drives behavior. Holiday also discusses the importance of routine. The disciplined person does not rely on willpower, which is finite and unreliable. They build routines that carry them through the day on autopilot. The same breakfast, the same workout time, the same writing hour. When the decision is already made, there is no friction to overcome.\\n\\nChapter four. The interior. Discipline of the temper. Holiday shifts to the emotional domain. The most dangerous enemy of discipline is not laziness but anger. Anger is an earthquake that destroys in seconds what took years to build. He profiles the general Dwight Eisenhower, who had a ferocious temper as a young man and spent decades learning to control it. Eisenhower would write furious letters and then tear them up. He called it his hot-letter method. The discipline was not in suppressing the anger but in creating a gap between the feeling and the response. Holiday explores additional dimensions of emotional discipline. Tolerate others. People will disappoint you. Discipline means responding to their weakness with patience rather than contempt. Forgive. Grudges consume enormous energy that could be directed toward something productive. Be patient. The most important outcomes in life take years or decades. Discipline means enduring the long middle, the period after the excitement of starting and before the reward of finishing, when the only thing keeping you going is the commitment you made. Holiday tells the story of the boxer Floyd Patterson, who lost the heavyweight title in a devastating knockout, endured humiliation from the press and public, yet returned to the ring and won the title back. Patterson\\'s discipline was not just physical. It was the emotional discipline to face shame without being destroyed by it.\\n\\nChapter five. The interior continued. Master your ego. Holiday connects discipline directly to his earlier book on ego. The voice that says you are too important for this task, too talented for this criticism, too busy for this obligation is the voice of ego, and it is the primary saboteur of discipline. Humility is the discipline of accurate self-assessment. Stay focused. Discipline of the mind means choosing what to pay attention to and refusing to be pulled by every shiny distraction. The disciplined mind does not drift. It locks onto what matters and stays there.\\n\\nChapter six. The magisterial. Discipline of the soul. The deepest layer of discipline is spiritual. Holiday profiles Marcus Aurelius, who wrote his Meditations not for publication but as a private exercise in self-command. Every morning the emperor reminded himself of his principles, and every evening he reviewed whether he had lived up to them. This daily audit, Holiday argues, is the discipline that holds everything else together. He explores the practices of spiritual discipline. Serve others. Discipline without purpose becomes mere rigidity. When your discipline is in service of something larger than yourself, it becomes meaningful rather than merely difficult. Accept mortality. The Stoics meditated on death not to be morbid but to create urgency. When you remember that your time is limited, you stop wasting it. Love the work. The disciplined person does not view effort as punishment. Over time, the practice itself becomes the reward. The early morning run that once felt like torture becomes the best part of the day. Holiday profiles the writer Toni Morrison, who woke at five every morning to write before her day job. She did this for years before publishing her first novel. The discipline was invisible to the world, but it was the foundation upon which her entire literary legacy was built.\\n\\nChapter seven. The freedom in discipline. Holiday closes with a paradox. Most people think discipline restricts freedom. The opposite is true. The undisciplined person is a slave to impulse, mood, and circumstance. They eat what they crave, sleep when they crash, and work only when motivated. The disciplined person has choices. They can stay up late because they chose to, not because they could not stop scrolling. They can indulge because they decided to, not because they could not resist. Discipline widens the gap between stimulus and response. In that gap lives freedom. Holiday reminds us that every great figure in history who achieved lasting significance, from George Washington to Angela Merkel, did so not through talent alone but through the daily, unglamorous practice of showing up, staying the course, and doing what needed to be done whether they felt like it or not. Discipline is not the opposite of creativity. It is the soil in which creativity grows. Without the discipline to sit down and do the work, the most brilliant ideas die as daydreams.\\n\\nThe bottom line. Discipline Is Destiny argues that self-discipline is the foundational virtue of a well-lived life. Discipline of the body makes you reliable. Discipline of the temper makes you safe. Discipline of the mind makes you effective. Discipline of the soul makes you good. Together, they do not constrain your life. They make it possible.'},
-  {id:'discourses',title:'Discourses',author:'Epictetus',tag:'stoic',mins:14,grad:'linear-gradient(135deg,#0a0a14 0%,#1a1245 50%,#9b9797 100%)',why:'A Roman slave\\'s philosophy class on freedom of the mind.',insights:[['Some things are up to us','Judgment, intention, action. Everything else, not.'],['Externals are indifferent','Wealth, health, reputation \\u2014 prefer them, don\\'t depend on them.'],['Train daily','Philosophy is gym. Without practice, no strength.'],['Endure and renounce','The two-word Stoic creed.'],['Be free','The free person is one who masters their judgments.']],summary:'Welcome to the brief of the Discourses by Epictetus. This is the record of a man who was born into slavery and became one of the most influential philosophers in history, teaching that true freedom has nothing to do with chains or circumstance.\\n\\nChapter one. What is up to us. Epictetus begins with the distinction that defines all of Stoic philosophy. Some things are in our power and some things are not. In our power are our opinions, our desires, our aversions, and in a word, everything that is our own doing. Not in our power are our bodies, our possessions, our reputations, our positions, and in a word, everything that is not our own doing. This is not a suggestion. It is the foundation of the entire system. When you confuse the two categories, when you try to control what is not yours to control or neglect what is, you create suffering. The slave who masters his judgments is freer than the emperor who is ruled by his appetites. Epictetus returns to this distinction in almost every lecture. He asks his students to examine their distress and locate its source. Every time, without exception, the suffering comes from wanting something outside their control or fearing the loss of something outside their control. Epictetus illustrates this with vivid examples. If you are upset because your servant broke a cup, it is not the cup that upsets you. It is your judgment that cups should not break. Change the judgment, and the disturbance vanishes. This applies equally to larger losses. If you grieve because a loved one has died, the grief comes not from the death, which is natural, but from your belief that the person should have lived forever.\\n\\nChapter two. The role we are given. Epictetus uses the metaphor of an actor in a play. You did not choose your role. You might be cast as a beggar, a king, a person with a disability, or a person of great beauty. The role is not up to you. What is up to you is how well you play it. This is a radical reframe of the question most people ask, which is why did this happen to me? Epictetus says that question is irrelevant. The only relevant question is what will I do with what I have been given? He extends this to every circumstance. You did not choose your parents, your country, your era, or your body. But within those constraints, you have complete freedom to exercise judgment, effort, and character. That freedom, he insists, is the only freedom that matters.\\n\\nChapter three. Desire and aversion. Epictetus teaches that most human misery comes from disordered desire. We desire things we cannot guarantee, such as wealth, health, and the approval of others, and we are averse to things we cannot prevent, such as aging, loss, and death. The Stoic remedy is to align your desires with reality. Desire only what is in your power. Be averse only to things that are genuinely within your control to avoid, such as cowardice, dishonesty, and cruelty. When your desires match what is actually available to you, frustration disappears. This does not mean you stop pursuing external goals. You can work toward health, wealth, and success. But you hold those goals lightly, treating them as preferred indifferents rather than necessities.\\n\\nChapter four. The practice of philosophy. Epictetus is emphatic that philosophy is not an academic exercise. It is a daily practice, as demanding as athletic training. He compares his school to a gymnasium. Students do not come to hear lectures. They come to train. Every interaction is an exercise. When someone insults you, that is a repetition for your patience. When you lose something valuable, that is a repetition for your detachment. When you are tempted to lie, that is a repetition for your integrity. The philosopher who can recite every doctrine but loses his temper at a rude waiter has learned nothing. Epictetus mocks this kind of scholar relentlessly. Philosophy that stays in the head and never reaches the hands is worthless. Epictetus tells his students that they should leave his lectures changed, not merely informed. If you came in angry, you should leave calmer. If you came in anxious, you should leave steadier. If nothing changes in your character, you have wasted your time, no matter how many notes you took.\\n\\nChapter five. Freedom and slavery. Epictetus speaks about slavery with the authority of personal experience. He was enslaved as a child and his leg was permanently crippled, either by his master or by a childhood illness. Yet he teaches that external slavery is the lesser bondage. The person who is free in body but enslaved to appetite, fear, anger, or the opinions of others is in chains far heavier than iron. The truly free person is the one whose happiness depends on nothing outside their own will. Epictetus challenges his students to test this. Can you be happy if you lose your money? Your reputation? Your health? If the answer is no, then you are not free. You are owned by those things. The practice of Stoicism is the practice of reducing those dependencies until your well-being rests entirely on your own character.\\n\\nChapter six. Endure and renounce. Epictetus summarizes the Stoic path in two words: endure and renounce. Endure what must be endured, pain, loss, injustice, the actions of others, without complaint. Renounce what must be renounced, luxury, ease, the approval of the crowd, without regret. This sounds austere, but Epictetus insists it is the path to joy. The person who has stopped chasing what they cannot have and stopped fearing what they cannot prevent is, for the first time, at peace. They can enjoy what they have without clinging to it. They can face what comes without dreading it. This is not resignation. It is the deepest form of engagement with life as it actually is. Epictetus uses the metaphor of a banquet. Life is a feast at which dishes are passed around. Take what is offered when it comes to you. Do not grab for dishes that have not reached you yet, and do not cling to dishes that have already passed. Enjoy each course in its moment, and when the meal is over, leave the table with gratitude rather than complaint.\\n\\nChapter seven. Our duty to others. Epictetus does not teach withdrawal from the world. He teaches engagement with it from a position of inner strength. You have duties to your family, your community, your fellow human beings. Fulfill them. Be a good parent, a good neighbor, a good citizen. But do not tie your happiness to whether other people appreciate your effort. Do the right thing because it is right, not because you expect gratitude. When someone behaves badly toward you, remember that they are acting from ignorance or weakness. Your job is not to punish them. Your job is to respond with virtue and to protect your own character from contamination.\\n\\nThe bottom line. The Discourses of Epictetus is a masterclass in inner freedom. Distinguish what you control from what you do not. Align your desires with reality. Practice philosophy as a daily discipline. Endure hardship, renounce dependence on externals, and you will discover a freedom that no circumstance can take from you. Epictetus\\'s voice, preserved across two millennia, remains startlingly direct and alive. He does not flatter you or soften his message. He tells you the truth, which is that freedom is available to you right now, in this moment, if you are willing to do the work of mastering your own mind.'},
+  {id:'discourses',title:'Discourses',author:'Epictetus',tag:'stoic',mins:14,grad:'linear-gradient(135deg,#0a0a14 0%,#1a1245 50%,#8E8E93 100%)',why:'A Roman slave\\'s philosophy class on freedom of the mind.',insights:[['Some things are up to us','Judgment, intention, action. Everything else, not.'],['Externals are indifferent','Wealth, health, reputation \\u2014 prefer them, don\\'t depend on them.'],['Train daily','Philosophy is gym. Without practice, no strength.'],['Endure and renounce','The two-word Stoic creed.'],['Be free','The free person is one who masters their judgments.']],summary:'Welcome to the brief of the Discourses by Epictetus. This is the record of a man who was born into slavery and became one of the most influential philosophers in history, teaching that true freedom has nothing to do with chains or circumstance.\\n\\nChapter one. What is up to us. Epictetus begins with the distinction that defines all of Stoic philosophy. Some things are in our power and some things are not. In our power are our opinions, our desires, our aversions, and in a word, everything that is our own doing. Not in our power are our bodies, our possessions, our reputations, our positions, and in a word, everything that is not our own doing. This is not a suggestion. It is the foundation of the entire system. When you confuse the two categories, when you try to control what is not yours to control or neglect what is, you create suffering. The slave who masters his judgments is freer than the emperor who is ruled by his appetites. Epictetus returns to this distinction in almost every lecture. He asks his students to examine their distress and locate its source. Every time, without exception, the suffering comes from wanting something outside their control or fearing the loss of something outside their control. Epictetus illustrates this with vivid examples. If you are upset because your servant broke a cup, it is not the cup that upsets you. It is your judgment that cups should not break. Change the judgment, and the disturbance vanishes. This applies equally to larger losses. If you grieve because a loved one has died, the grief comes not from the death, which is natural, but from your belief that the person should have lived forever.\\n\\nChapter two. The role we are given. Epictetus uses the metaphor of an actor in a play. You did not choose your role. You might be cast as a beggar, a king, a person with a disability, or a person of great beauty. The role is not up to you. What is up to you is how well you play it. This is a radical reframe of the question most people ask, which is why did this happen to me? Epictetus says that question is irrelevant. The only relevant question is what will I do with what I have been given? He extends this to every circumstance. You did not choose your parents, your country, your era, or your body. But within those constraints, you have complete freedom to exercise judgment, effort, and character. That freedom, he insists, is the only freedom that matters.\\n\\nChapter three. Desire and aversion. Epictetus teaches that most human misery comes from disordered desire. We desire things we cannot guarantee, such as wealth, health, and the approval of others, and we are averse to things we cannot prevent, such as aging, loss, and death. The Stoic remedy is to align your desires with reality. Desire only what is in your power. Be averse only to things that are genuinely within your control to avoid, such as cowardice, dishonesty, and cruelty. When your desires match what is actually available to you, frustration disappears. This does not mean you stop pursuing external goals. You can work toward health, wealth, and success. But you hold those goals lightly, treating them as preferred indifferents rather than necessities.\\n\\nChapter four. The practice of philosophy. Epictetus is emphatic that philosophy is not an academic exercise. It is a daily practice, as demanding as athletic training. He compares his school to a gymnasium. Students do not come to hear lectures. They come to train. Every interaction is an exercise. When someone insults you, that is a repetition for your patience. When you lose something valuable, that is a repetition for your detachment. When you are tempted to lie, that is a repetition for your integrity. The philosopher who can recite every doctrine but loses his temper at a rude waiter has learned nothing. Epictetus mocks this kind of scholar relentlessly. Philosophy that stays in the head and never reaches the hands is worthless. Epictetus tells his students that they should leave his lectures changed, not merely informed. If you came in angry, you should leave calmer. If you came in anxious, you should leave steadier. If nothing changes in your character, you have wasted your time, no matter how many notes you took.\\n\\nChapter five. Freedom and slavery. Epictetus speaks about slavery with the authority of personal experience. He was enslaved as a child and his leg was permanently crippled, either by his master or by a childhood illness. Yet he teaches that external slavery is the lesser bondage. The person who is free in body but enslaved to appetite, fear, anger, or the opinions of others is in chains far heavier than iron. The truly free person is the one whose happiness depends on nothing outside their own will. Epictetus challenges his students to test this. Can you be happy if you lose your money? Your reputation? Your health? If the answer is no, then you are not free. You are owned by those things. The practice of Stoicism is the practice of reducing those dependencies until your well-being rests entirely on your own character.\\n\\nChapter six. Endure and renounce. Epictetus summarizes the Stoic path in two words: endure and renounce. Endure what must be endured, pain, loss, injustice, the actions of others, without complaint. Renounce what must be renounced, luxury, ease, the approval of the crowd, without regret. This sounds austere, but Epictetus insists it is the path to joy. The person who has stopped chasing what they cannot have and stopped fearing what they cannot prevent is, for the first time, at peace. They can enjoy what they have without clinging to it. They can face what comes without dreading it. This is not resignation. It is the deepest form of engagement with life as it actually is. Epictetus uses the metaphor of a banquet. Life is a feast at which dishes are passed around. Take what is offered when it comes to you. Do not grab for dishes that have not reached you yet, and do not cling to dishes that have already passed. Enjoy each course in its moment, and when the meal is over, leave the table with gratitude rather than complaint.\\n\\nChapter seven. Our duty to others. Epictetus does not teach withdrawal from the world. He teaches engagement with it from a position of inner strength. You have duties to your family, your community, your fellow human beings. Fulfill them. Be a good parent, a good neighbor, a good citizen. But do not tie your happiness to whether other people appreciate your effort. Do the right thing because it is right, not because you expect gratitude. When someone behaves badly toward you, remember that they are acting from ignorance or weakness. Your job is not to punish them. Your job is to respond with virtue and to protect your own character from contamination.\\n\\nThe bottom line. The Discourses of Epictetus is a masterclass in inner freedom. Distinguish what you control from what you do not. Align your desires with reality. Practice philosophy as a daily discipline. Endure hardship, renounce dependence on externals, and you will discover a freedom that no circumstance can take from you. Epictetus\\'s voice, preserved across two millennia, remains startlingly direct and alive. He does not flatter you or soften his message. He tells you the truth, which is that freedom is available to you right now, in this moment, if you are willing to do the work of mastering your own mind.'},
   {id:'lettersstoic',title:'Letters from a Stoic',author:'Seneca',tag:'stoic',mins:13,grad:'linear-gradient(135deg,#1a0f08 0%,#3d2410 50%,#FCD34D 100%)',why:'124 letters from a Roman elder to a young friend on how to live.',insights:[['Time is the one resource','You can\\'t earn it back. Spend it deliberately.'],['Friendship is for shared growth','Pick friends who make you better.'],['Death is not the enemy','Wasting life is.'],['Wealth without inner peace is poverty','Outer success doesn\\'t fix inner chaos.'],['Read deeply, not widely','Master a few authors. Quality over quantity.']],summary:'Welcome to the brief of Letters from a Stoic by Seneca. These are the private letters of a Roman philosopher, statesman, and playwright to his younger friend Lucilius, and they read as though they were written yesterday.\\n\\nChapter one. On the shortness of life. Seneca\\'s most persistent theme is time. We do not have a short life, he writes. We waste a great deal of it. Life is long enough if you know how to use it. But most people squander their days on things that do not matter, busy work, social obligations they resent, pleasures that leave them emptier than before, and then complain that life is too short. Seneca is blunt about the math. You will die. The date is unknown but the fact is certain. Given that certainty, how can you justify spending even one hour on something you do not care about? He asks Lucilius to imagine that today is his last day and then notice how quickly his priorities rearrange themselves. The urgent emails, the social drama, the petty grudges all vanish. What remains is the work that matters, the people you love, and the person you want to be. Seneca does not suggest living in panic. He suggests living with clarity.\\n\\nChapter two. On the value of philosophy. Seneca makes the case that philosophy is not an academic luxury. It is the most practical discipline in existence. Philosophy teaches you how to handle fear, grief, anger, desire, and the inevitability of death. Without it, you are at the mercy of your emotions, tossed around by every setback and seduced by every pleasure. With it, you have an anchor. Seneca recommends reading deeply rather than widely. Master a few great thinkers rather than skimming many. Digest what you read. Apply it to your own life. A single sentence fully understood and practiced is worth more than a library of books merely browsed. Seneca warns against the collector\\'s fallacy, the idea that owning books is the same as understanding them. The person who reads a hundred books superficially is less wise than the person who reads ten books deeply and integrates their lessons into daily conduct.\\n\\nChapter three. On friendship. Seneca writes warmly about friendship but with characteristic rigor. A true friend is not someone who tells you what you want to hear. A true friend is someone who tells you the truth and helps you become better. Choose your friends carefully, he advises. You will become like the people you spend time with. If your companions are lazy, bitter, or consumed by gossip, their habits will infect you. If your companions are disciplined, generous, and thoughtful, their virtues will elevate you. Seneca also warns against confusing popularity with friendship. A person with many acquaintances and no real friends is the loneliest kind of person. Depth matters more than breadth.\\n\\nChapter four. On wealth and poverty. Seneca was one of the wealthiest men in Rome, which makes his letters on wealth particularly interesting. He does not condemn money. He condemns slavery to money. Wealth is fine as long as you own it rather than it owning you. The test is simple. Can you lose it all tomorrow and still be at peace? If not, you are not wealthy. You are dependent. Seneca practiced what he preached. He regularly ate simple meals, slept on hard beds, and wore rough clothing, not because he had to but because he wanted to prove to himself that he could. Voluntary discomfort, he argues, is the vaccine against the fear of poverty. Once you have experienced going without and survived, the threat of loss loses its power over you.\\n\\nChapter five. On anger and emotional control. Seneca wrote an entire treatise on anger, and the letters revisit the theme often. Anger, he says, is temporary madness. It distorts judgment, destroys relationships, and leads to actions you will regret the moment the heat fades. The problem with anger is not that it feels bad. The problem is that it feels righteous. You believe you are justified, and that belief gives you permission to do terrible things. Seneca\\'s remedy is the pause. When anger arises, delay your response. Wait a day. Wait an hour. Wait even a few breaths. The fury will pass, and you will be grateful that you did not act on it. He also recommends premeditation. Each morning, imagine the frustrations you might encounter. The rude colleague, the slow traffic, the unfair criticism. When you have already anticipated them, they arrive as expected guests rather than shocking intruders. Seneca also addresses the anger that comes from frustrated expectations. When you expect the world to be fair and it is not, you feel rage. When you expect the world to be indifferent and it occasionally shows kindness, you feel gratitude. The second mindset is both more accurate and more peaceful.\\n\\nChapter six. On grief and loss. Seneca lost a child, and his letters on grief are among the most moving passages in ancient literature. He does not tell Lucilius to suppress sorrow. He tells him to feel it fully but not to let it become permanent. Grief that goes on indefinitely, Seneca argues, is no longer about the person you lost. It is about you, your attachment, your fear, your refusal to accept what cannot be changed. He recommends a practice that sounds harsh but is deeply compassionate. Each time you embrace someone you love, whisper to yourself, tomorrow I may lose you. This is not morbidity. It is the discipline of appreciation. When you remember that nothing is permanent, you hold everything more gently and love everything more fiercely.\\n\\nChapter seven. On death. Seneca returns to death more than any other topic because he considers it the master key to living well. The person who has made peace with death is free from the most fundamental human fear, and that freedom radiates outward into every decision. You stop chasing approval because you know your reputation will not survive you. You stop hoarding wealth because you know you cannot take it with you. You stop postponing what matters because you know your time is finite. Seneca does not frame death as an enemy. He frames it as a teacher. The awareness of death is what makes life urgent, precious, and beautiful.\\n\\nChapter eight. On self-improvement. Seneca writes to Lucilius as a fellow student, not as a guru. He confesses his own faults, his impatience, his occasional laziness, his struggles with temptation. This honesty is part of his method. Philosophy is not about reaching perfection. It is about making daily progress. Each day, examine yourself. Where did you fall short? Where did you do well? What will you do differently tomorrow? Seneca calls this the evening review, and he practiced it every night of his adult life. The goal is not to punish yourself for failures but to notice patterns and gradually bend the arc of your behavior toward virtue.\\n\\nThe bottom line. Letters from a Stoic is two thousand years old and utterly timeless. Seneca writes about time, friendship, wealth, anger, grief, and death with the warmth of a trusted older friend. The recurring message is simple. You have less time than you think. Spend it on what matters. Let go of what does not. And remember that the quality of your life is determined not by what happens to you but by how you respond. These letters have survived twenty centuries because they speak to something permanent in the human condition. The anxieties Seneca addressed, fear of death, the misuse of time, the pain of loss, are your anxieties too. His remedies are still the best ones available.'},
   {id:'goodlife',title:'A Guide to the Good Life',author:'William Irvine',tag:'stoic',mins:12,grad:'linear-gradient(135deg,#0a0c0c 0%,#1f3030 50%,#a5564b 100%)',why:'A modern, accessible introduction to Stoic philosophy as a practice.',insights:[['Negative visualization','Imagine losing what you have. Gratitude follows.'],['Trichotomy of control','Full / partial / no control. Spend energy only on the first two.'],['Voluntary discomfort','Skip a meal. Take a cold shower. Discomfort, on purpose, builds resilience.'],['Reframe insults','Anger is a punishment you inflict on yourself.'],['Joy is appropriate','Stoicism isn\\'t grim. It\\'s how the best Romans were happiest.']],summary:'Welcome to the brief of A Guide to the Good Life by William Irvine. This is a book by a philosophy professor who decided to stop just teaching Stoicism and start living it, and who discovered it was the best decision he ever made.\\n\\nChapter one. The search for a philosophy of life. Irvine opens with an observation that most people find uncomfortable. Almost everyone has financial goals, career goals, and health goals, but almost no one has a philosophy of life, a coherent answer to the question of what makes a good life and how to pursue it. Without such a philosophy, you drift. You default to whatever your culture tells you to want: more money, more status, more comfort. And when you get those things, you discover they do not satisfy. The ancient Stoics, Irvine argues, had a philosophy of life that actually works. It was practical, testable, and designed for ordinary people living in the real world, not monks in monasteries.\\n\\nChapter two. The first Stoics. Irvine traces the history of Stoicism from its founding by Zeno of Citium around 300 BC through its development by Cleanthes and Chrysippus in Greece to its flowering in Rome under Seneca, Epictetus, and Marcus Aurelius. He emphasizes that the Roman Stoics were not academics. They were a tutor to emperors, a former slave, and an emperor himself. They developed their philosophy under real-world pressure, war, political intrigue, exile, and death, and it was tested daily against the harshest conditions life could offer. This is what makes Stoicism different from armchair philosophy. It was built by people who needed it to survive. Irvine notes that this practical lineage is what separates Stoicism from other ancient philosophies. It was not designed for the lecture hall. It was designed for the forum, the battlefield, and the sickbed, places where ideas are tested by reality and only the ones that work survive.\\n\\nChapter three. Negative visualization. This is the first and perhaps most powerful Stoic technique Irvine presents. The idea is simple but counterintuitive. Periodically imagine losing the things you value most, your health, your family, your home, your career. Not to make yourself miserable, but to inoculate yourself against taking them for granted. Psychologists call this hedonic adaptation, the tendency to get used to good things and stop appreciating them. Negative visualization reverses the process. After spending a few minutes imagining life without your partner, you put down the exercise and look at them with fresh eyes. The gratitude is not forced. It is genuine. Irvine practiced this daily and found that it transformed his experience of ordinary life. The morning coffee, the quiet house, the healthy body, all became sources of active joy rather than background noise. Irvine emphasizes that negative visualization is not pessimism. It is the opposite of pessimism. The pessimist focuses on what is wrong. The negative visualizer focuses on what could be lost, and that focus produces a vivid, almost overwhelming appreciation for what is still here. It is, paradoxically, the most reliable path to gratitude.\\n\\nChapter four. The trichotomy of control. Irvine refines the classic Stoic dichotomy of control, things you can control versus things you cannot, into a trichotomy. Some things are entirely within your control, such as your goals and your values. Some things are entirely outside your control, such as the weather and the past. And some things are partially within your control, such as whether you win a tennis match. You control your effort and preparation, but not your opponent\\'s skill or the wind. The Stoic strategy for this middle category is to internalize your goals. Instead of setting the goal of winning the match, set the goal of playing your best. That way, regardless of the outcome, you can walk off the court satisfied. This reframe eliminates an enormous amount of anxiety. When your goals depend only on your own effort, failure becomes feedback rather than catastrophe. Irvine illustrates this with the example of a student taking an exam. If the goal is to get an A, and the student gets a B, they feel failure. If the goal is to learn the material as thoroughly as possible, a B is simply information about where more study is needed. The emotional difference between these two framings is enormous.\\n\\nChapter five. Voluntary discomfort. Irvine introduces the Stoic practice of deliberately subjecting yourself to mild hardship. Skip a meal. Take a cold shower. Sleep on the floor. Wear less than the weather demands. The purpose is not masochism. It is training. When you voluntarily experience discomfort, two things happen. First, you discover that you can handle far more than you thought. The feared experience turns out to be manageable. Second, you build resilience so that when involuntary hardship arrives, and it will, you are not shattered by it. Irvine also notes a subtler benefit. After a day of deliberate simplicity, ordinary comforts feel luxurious. A warm bed after a night on the floor is not just a bed. It is a gift.\\n\\nChapter six. Dealing with insults. Irvine devotes an entire chapter to one of life\\'s most common irritations. The Stoic approach to insults is to consider the source and the content. If the insult is true, it is useful information, not an attack. If it is false, it says nothing about you and everything about the person delivering it. Either way, anger is the wrong response. Anger is a punishment you inflict on yourself for someone else\\'s behavior. Seneca recommended responding to insults with humor or silence, both of which disarm the insulter far more effectively than retaliation. Irvine tested this in his own life and found that once he stopped reacting to slights, they stopped bothering him almost entirely.\\n\\nChapter seven. Grief, aging, and death. Irvine addresses the heaviest subjects with characteristic practicality. The Stoics did not deny grief. They recommended feeling it fully but placing a limit on its duration. Seneca suggested that the deceased would not want you to suffer indefinitely on their behalf. On aging, the Stoics found advantages. Age brings wisdom, perspective, and freedom from the passions that tormented youth. On death, the Stoics were remarkably serene. Death is natural, universal, and inevitable. Fearing it is like fearing the sunset. The best response is to live so fully that when death arrives, you have nothing left undone and no reason to ask for more time.\\n\\nChapter eight. Stoic joy. Irvine closes by pushing back against the misconception that Stoicism is grim, joyless, or emotionally repressed. The opposite is true. The Stoics were among the happiest people in the ancient world precisely because they had freed themselves from the two greatest sources of unhappiness: wanting what they did not have and fearing the loss of what they did. Joy, for the Stoics, was not the fleeting pleasure of getting what you want. It was the deep, stable satisfaction of living in accordance with your values, appreciating what you have, and facing whatever comes with equanimity. Irvine reports that after years of practicing Stoicism, he experienced more joy, not less. He worried less, appreciated more, and felt a calm confidence that no external event could shake.\\n\\nThe bottom line. A Guide to the Good Life is the most accessible modern introduction to Stoic philosophy as a daily practice. Visualize loss to cultivate gratitude. Internalize your goals to eliminate anxiety. Practice voluntary discomfort to build resilience. Respond to insults with humor, to grief with wisdom, and to death with acceptance. The result is not a diminished life but a richer one, lived with more joy, more calm, and more freedom than most people believe is possible.'},
   // ─── MIND / PSYCHOLOGY ───
@@ -11344,7 +11353,7 @@ const BOOK_SUMMARIES=[
   {id:'blink',title:'Blink',author:'Malcolm Gladwell',tag:'mind',mins:11,grad:'linear-gradient(135deg,#06070d 0%,#1a1f3d 50%,#a5564b 100%)',why:'The first two seconds of judgment are often more accurate than days of analysis.',insights:[['Thin-slicing works','Tiny samples can reveal more than long study.'],['Snap judgments are trainable','Experts read situations fast because of pattern recognition.'],['Bias corrupts blink','Race, gender, and stereotype shortcut intuition.'],['Information overload hurts','More data can lower decision quality.'],['Trust the gut, but check it','Use intuition, then audit it.']],summary:'Welcome to the brief of Blink by Malcolm Gladwell.\\n\\nHave you ever met someone and instantly known, in your gut, that something was off? Or walked into a room and immediately sensed the mood without anyone saying a word? We all have these moments of rapid cognition, snap judgments that arrive fully formed in the space of a heartbeat. Most of us have been taught to distrust these instincts, to slow down, gather more information, and think things through rationally. But Malcolm Gladwell, in this fascinating and provocative book, argues that these instant assessments are often astonishingly accurate, and sometimes they\\\'re better than careful, deliberate analysis. The catch is knowing when to trust them and when they\\\'ll lead you dangerously astray.\\n\\nGladwell opens with the story of the Getty kouros, a marble statue that the J. Paul Getty Museum was considering purchasing for nearly ten million dollars. The museum\\\'s scientists spent fourteen months analyzing the statue, testing the stone, reviewing the provenance, and ultimately concluded it was authentic. But when several art experts saw the statue for the first time, they felt something was wrong immediately. One felt a wave of intuitive repulsion. Another\\\'s first word was fresh, exactly the wrong quality for a two-thousand-year-old sculpture. They couldn\\\'t immediately articulate why they felt the way they did, but their snap judgments turned out to be correct. The statue was almost certainly a forgery. In the first two seconds of looking, the experts saw something that fourteen months of scientific analysis had missed.\\n\\nThis is what Gladwell calls thin-slicing, the ability of our unconscious mind to find patterns in situations based on very narrow slices of experience. Our brains are extraordinary pattern-recognition machines, and much of this processing happens below the level of conscious awareness. Gladwell introduces us to the research of John Gottman, a psychologist who can watch a married couple talk for fifteen minutes and predict with over ninety percent accuracy whether they\\\'ll still be married fifteen years later. He does this by coding specific emotional expressions and interaction patterns. But experienced marriage therapists can often make the same prediction in just a few minutes of observation, without coding anything at all. Their unconscious minds have internalized the patterns through years of experience.\\n\\nGladwell explores the concept through the work of psychologist Nalini Ambady, who found that students who watched a thirty-second silent video clip of a professor teaching gave ratings that closely matched those of students who had spent an entire semester in the professor\\\'s class. Even more striking, ratings based on just two seconds of footage were remarkably similar. We form impressions with astonishing speed, and those impressions often capture something real and meaningful about the person or situation we\\\'re observing.\\n\\nBut Gladwell is careful to show that snap judgments are not always trustworthy. One of the book\\\'s most important chapters deals with the dark side of rapid cognition: unconscious bias. He discusses the Implicit Association Test, a research tool that reveals the unconscious associations people hold about race, gender, age, and other categories. The results are uncomfortable. Even people who consciously hold egalitarian beliefs often harbor unconscious biases that influence their snap judgments in ways they would never endorse. Gladwell himself took the test and discovered implicit biases he found deeply troubling.\\n\\nThis unconscious bias has real-world consequences. Gladwell tells the story of the shooting of Amadou Diallo, an unarmed Black man killed by four New York City police officers who fired forty-one shots at him in a darkened vestibule. The officers weren\\\'t overtly racist. They were operating under extreme stress, in low light, with adrenaline flooding their systems, and their rapid cognition failed catastrophically. They misread Diallo\\\'s wallet as a gun. Gladwell uses this tragedy to explore how stress, time pressure, and arousal can corrupt our snap judgments, turning normally reliable instincts into deadly errors.\\n\\nHe also examines the world of music auditions, where orchestras historically hired very few women. The explanation offered was that women simply didn\\\'t play as well. But when orchestras began conducting blind auditions, with musicians playing behind a screen, the proportion of women hired increased dramatically. The evaluators had been making snap judgments based on gender rather than musical quality, and they didn\\\'t even realize it. The screen eliminated the visual information that was corrupting their assessment, and suddenly their ears worked properly.\\n\\nGladwell introduces the concept of temporary autism to describe what happens when our ability to read situations is impaired. Under extreme stress, sensory overload, or time pressure, the sophisticated social-processing machinery that normally powers our snap judgments breaks down. We lose the ability to read faces, interpret body language, and make nuanced assessments. This is why high-speed police chases and confrontations so often end badly. The officers aren\\\'t thinking clearly because their rapid cognition has been overwhelmed.\\n\\nThe book also explores the dangers of too much information. More data doesn\\\'t always lead to better decisions. Gladwell profiles an emergency room physician who developed a remarkably accurate method for diagnosing heart attacks using just three pieces of information, rather than the dozens of data points other doctors relied on. The simpler model outperformed the complex one because additional information often adds noise rather than signal, confusing the decision-maker without improving accuracy. Sometimes knowing less helps us know more.\\n\\nGladwell tells the story of the Millennium Challenge war game, where a retired Marine general playing the role of an enemy commander defeated a vastly superior force by making rapid, intuitive decisions that the other side\\\'s sophisticated analytical models couldn\\\'t anticipate. His snap judgments, honed by decades of military experience, proved more adaptive and effective than elaborate deliberative processes. The lesson is that expertise matters enormously. The quality of our snap judgments depends directly on the quality of the experience and training that inform them.\\n\\nThis leads to one of the book\\\'s most practical insights: snap judgments can be educated and improved. By changing the conditions under which we make rapid assessments, we can improve their accuracy. Blind auditions improve musical selection. Training programs that expose police officers to more diverse scenarios improve their rapid cognition under stress. Slowing down just slightly, creating what Gladwell calls a buffer of time, can prevent the worst errors of snap judgment while preserving the benefits of rapid cognition.\\n\\nOne of the book\\\'s most thought-provoking examples involves the world of taste testing. Gladwell describes how expert food tasters can identify incredibly subtle differences between products but often struggle to explain their judgments verbally. When forced to articulate their reasoning, their accuracy actually decreases. The act of conscious explanation disrupts the unconscious processing that produced the judgment in the first place. This has broad implications: sometimes our best thinking happens when we don\\\'t try to think at all.\\n\\nGladwell\\\'s writing throughout is vivid, story-driven, and deeply engaging. He moves between art forgery and military strategy, between marriage counseling and racial profiling, weaving together a rich tapestry of research and narrative that illuminates the hidden workings of our mental lives. The book doesn\\\'t offer simple rules. Instead, it offers something more valuable: a deeper understanding of the power and peril of the judgments we make in the blink of an eye.\\n\\nThe bottom line: Blink reveals that our snap judgments and first impressions are powered by a sophisticated unconscious mind that can process patterns with remarkable speed and accuracy, but that this same machinery is vulnerable to bias, stress, and sensory overload. The book teaches us to respect the power of rapid cognition while understanding its limits, and shows that by shaping the conditions in which we make snap decisions, we can harness their power while guarding against their dangers.'},
   {id:'tipping',title:'The Tipping Point',author:'Malcolm Gladwell',tag:'mind',mins:11,grad:'linear-gradient(135deg,#0c0a14 0%,#1f1245 50%,#FF6A8B 100%)',why:'Small changes can produce massive effects when the right conditions tip.',insights:[['Law of the few','A small number of connectors, mavens, and salesmen drive most spread.'],['Stickiness factor','The message itself must be memorable enough to repeat.'],['Power of context','Environment shapes behavior more than personality does.'],['Tipping is non-linear','Suddenly, an idea is everywhere.'],['Small moves, big effects','Sometimes the right tiny push is enough.']],summary:'Welcome to the brief of The Tipping Point by Malcolm Gladwell.\\n\\nMalcolm Gladwell wants you to think about social change the way epidemiologists think about disease. That is the central metaphor of The Tipping Point, and it is a powerful one. Gladwell argues that ideas, products, messages, and behaviors spread through populations in the same way viruses do. They start small, build gradually, and then at some critical moment they tip, crossing a threshold and spreading like wildfire. Understanding how and why that tipping happens is the key to understanding everything from fashion trends to crime waves to the success of a television show.\\n\\nThe book is organized around three core concepts that Gladwell calls the three rules of epidemics. The first is the Law of the Few. Gladwell argues that not all people are equal when it comes to spreading ideas. A small number of exceptional people do the vast majority of the social work that drives epidemics. He identifies three types of these people: Connectors, Mavens, and Salesmen.\\n\\nConnectors are people who know an extraordinary number of other people across different social worlds. They are the human equivalent of a network hub. When a Connector encounters a new idea, product, or piece of information, they spread it far and wide simply because they are linked to so many different communities. Gladwell illustrates this with a fascinating exercise. He presents a list of random surnames and asks readers how many people they know with each name. The variation is enormous. Some people know a handful, while Connectors know dozens. This is not just about being social or extroverted. Connectors have a genuine gift for bringing people together across boundaries that most of us never cross, and they take real pleasure in making introductions and building bridges between different worlds.\\n\\nMavens are the information specialists. They are the people who accumulate knowledge about products, prices, and trends and, crucially, love to share what they know with others. Mavens are not persuaders. They are teachers and helpers. When a Maven tells you about a great deal on airfare or a new restaurant worth trying, you trust them because you know their motivation is pure. They want to help, not to sell. Gladwell argues that Mavens are essential to starting word-of-mouth epidemics because they are the original sources of credible information.\\n\\nSalesmen are the persuaders. They have an almost magical ability to draw others into their emotional orbit. Gladwell describes research showing that certain people are so charismatic and emotionally expressive that they can literally change the mood of everyone around them within minutes. When a Salesman gets behind an idea, people do not just hear about it; they feel compelled to act on it. Their enthusiasm is contagious in an almost literal sense. Gladwell presents studies on emotional contagion showing that in any interaction, the person with the strongest emotional expression tends to set the tone for everyone else. Salesmen are the people who consistently win this invisible emotional negotiation.\\n\\nThe second rule is the Stickiness Factor. It is not enough for a message to reach a lot of people. It also has to stick. It has to be memorable and compelling enough to move people to action. Gladwell illustrates this with the stories of Sesame Street and Blue\\\'s Clues, two children\\\'s television shows that succeeded because their creators obsessively tested and refined every element until the content was irresistibly sticky. Small changes in presentation, sometimes seemingly trivial ones, can make the difference between a message that fades instantly and one that lodges in your memory forever. The lesson for anyone trying to spread an idea is that execution matters as much as content. How you frame your message can be just as important as what the message says.\\n\\nThe third rule is the Power of Context. Human behavior is far more sensitive to the environment than most of us realize. Gladwell uses the dramatic drop in New York City\\\'s crime rate during the 1990s to illustrate this point. He argues that the cleanup of graffiti on subway cars and the crackdown on fare-beating, two seemingly minor environmental changes, sent a powerful signal that disorder would not be tolerated. That signal tipped the environment from one that encouraged criminal behavior to one that discouraged it. The lesson is that you do not necessarily need to change people\\\'s character to change their behavior. Sometimes you just need to change their surroundings.\\n\\nGladwell expands on the Power of Context with a discussion of group dynamics. He introduces the idea that the maximum number of people who can maintain genuine social relationships is roughly one hundred and fifty, a figure known as Dunbar\\\'s number. Organizations that stay below this threshold tend to function more cohesively because everyone knows everyone else and social pressure keeps behavior in check. Once a group grows beyond one hundred and fifty, it begins to fragment, and the intimate social bonds that hold it together start to break down. Gladwell uses examples from the military and from successful companies to show how keeping groups small can be a powerful tool for spreading ideas and maintaining culture.\\n\\nThroughout the book, Gladwell weaves in vivid case studies. He examines the sudden popularity of Hush Puppies shoes in the mid-1990s, the ride of Paul Revere versus William Dawes on the night before the American Revolution, and the devastating spread of a syphilis epidemic in Baltimore. Each story reinforces the same fundamental insight: social epidemics are driven by a combination of the right people, the right message, and the right context, and small changes in any of these three factors can produce enormous effects.\\n\\nOne of the most provocative implications of the book is that big problems do not necessarily require big solutions. If you can identify the tipping point, the precise moment and mechanism by which change spreads, you can intervene with a surprisingly small effort and trigger a cascade. This is both hopeful and humbling. It means that individuals and small groups can have an outsized impact on the world, but it also means that the forces driving social change are more complex and unpredictable than we usually assume.\\n\\nGladwell also challenges the common belief that people\\\'s behavior is driven primarily by their internal character. The Power of Context suggests that we are far more influenced by our immediate surroundings than by our deep-seated personality traits. This has important implications for how we think about social policy, education, and even parenting. If context matters as much as Gladwell suggests, then creating the right environment may be more effective than trying to change people from the inside out.\\n\\nThe bottom line: The Tipping Point reveals that social change follows the same logic as viral epidemics. It takes the right messengers, a sticky message, and a receptive context. The most important takeaway is that small, targeted changes at the right moment can create massive, disproportionate effects. Whether you are trying to launch a product, shift a culture, or solve a social problem, the key is not to do more of everything but to find the precise lever that tips the balance.'},
   {id:'strangers',title:'Talking to Strangers',author:'Malcolm Gladwell',tag:'mind',mins:12,grad:'linear-gradient(135deg,#0a0a14 0%,#1a1245 50%,#a5564b 100%)',why:'We\\'re terrible at reading people we don\\'t know — and the cost is enormous.',insights:[['Default to truth','We\\'re built to believe. That\\'s usually right but sometimes catastrophic.'],['Transparency is a myth','Faces and tone don\\'t always match feelings.'],['Coupling','Behavior is tied to context. Move a person, the behavior shifts.'],['Strangers stay strange','Real understanding requires time and shared context.'],['Caution and care','Recognize the limits, then proceed with humility.']],summary:'Welcome to the brief of Talking to Strangers by Malcolm Gladwell.\\n\\nThis is a book about one of the most fundamental things we do as human beings, something we think we\\\'re good at but, as it turns out, we\\\'re remarkably bad at: making sense of people we don\\\'t know. Gladwell opens with a devastating story, the 2015 encounter between Sandra Bland, a young Black woman, and a Texas state trooper named Brian Encinia during a routine traffic stop. What should have been a forgettable moment spiraled into confrontation, arrest, and ultimately tragedy. Gladwell uses this incident not as a simple morality tale but as the doorway into a sprawling investigation of why interactions between strangers go wrong so often and so catastrophically.\\n\\nThe first big idea Gladwell introduces is what he calls defaulting to truth. We human beings have a deeply wired tendency to assume that the people we\\\'re dealing with are honest. This isn\\\'t naivety or stupidity. It\\\'s actually a necessary social adaptation. If we walked around suspecting everyone of lying all the time, society would grind to a halt. We\\\'d never sign a contract, never trust a colleague, never believe a friend. So we default to truth. We give people the benefit of the doubt until the evidence against them becomes overwhelming, and sometimes even beyond that point. Gladwell illustrates this with the story of Fidel Castro\\\'s intelligence operations, where Cuban double agents fooled the CIA for decades. The analysts weren\\\'t incompetent. They were doing what all humans do: believing what they were told until the weight of contradictory evidence became impossible to ignore. The problem is that this threshold for disbelief is set very high, which means liars and fraudsters can operate for a shockingly long time before anyone catches on.\\n\\nFrom there, Gladwell moves into the concept of transparency, the idea that people\\\'s outward expressions match their inner feelings. We believe that a guilty person looks guilty, that a truthful person looks calm and forthcoming, that emotions are written on the face for all to read. Television has reinforced this notion endlessly. But Gladwell marshals evidence showing that this assumption is deeply flawed. He tells the story of Amanda Knox, the American student accused of murder in Italy. Knox behaved in ways that Italian investigators found suspicious. She did cartwheels, she kissed her boyfriend, she seemed inappropriately cheerful. But her behavior didn\\\'t mean she was guilty. It meant she was a person whose emotional expressions didn\\\'t match the template that investigators expected. Gladwell argues that we are terrible at reading strangers precisely because we assume transparency, that what you see is what you get, when in reality people are far more opaque than we imagine.\\n\\nThe book then takes a fascinating detour into the world of alcohol and its role in misunderstandings between strangers. Gladwell explores the case of Brock Turner and the Stanford sexual assault case, examining how alcohol doesn\\\'t simply lower inhibitions but actually transforms cognition. When people are drunk, they become myopic in the most literal psychological sense. They can only process what is immediately in front of them, losing the ability to consider consequences, context, or the feelings of others. This isn\\\'t an excuse for bad behavior, Gladwell is careful to note, but it is an explanation for why so many encounters between strangers go horribly wrong when alcohol is involved. We send young people into environments saturated with alcohol and then act surprised when catastrophic misunderstandings occur.\\n\\nGladwell also introduces the concept of coupling, the idea that behaviors are linked to specific contexts and environments. He uses the example of suicide to make this point. When Britain switched from coal gas to natural gas in its ovens during the 1960s, the suicide rate dropped dramatically. People didn\\\'t simply find another way to kill themselves. The method was coupled to the means, and when the means disappeared, so did many of the acts. This has profound implications for how we think about crime, policing, and human behavior in general. Crime is not evenly distributed. It is concentrated in specific places, at specific times, under specific conditions. Effective policing means understanding this coupling rather than applying blanket strategies everywhere.\\n\\nThis brings Gladwell to the Kansas City experiments and the rise of proactive policing. In the 1990s, criminologists discovered that targeting police resources at specific high-crime locations and times could dramatically reduce violence. But this strategy required officers to stop and question strangers in those hot spots, and that is where everything went wrong. When you take a strategy designed for a tiny geographic area and apply it broadly, when you train officers to be suspicious of everyone rather than to focus on context, you get encounters like the one between Sandra Bland and Brian Encinia. The officer was trained to look for signs of criminality during routine stops, to treat every stranger as a potential threat. But the tools he was given for reading strangers were fundamentally broken. He couldn\\\'t tell the difference between nervousness born of guilt and irritation born of being pulled over for a trivial lane change.\\n\\nGladwell weaves together the stories of spies, con artists, college students, police officers, and poets to build his central argument: we are not equipped to understand strangers, and yet modern life forces us to interact with them constantly. The strategies we use, assuming honesty, reading faces, projecting our own experiences onto others, are precisely the wrong tools for the job. And the consequences of getting it wrong range from embarrassment to imprisonment to death.\\n\\nWhat makes this book so compelling is that Gladwell doesn\\\'t offer a simple fix. He doesn\\\'t say we should all become more suspicious or that we should stop trusting people. The default to truth is valuable and necessary. Instead, he asks us to be humble, to recognize the limits of our ability to judge others, and to build systems and institutions that account for those limits rather than pretending they don\\\'t exist. He asks us to accept that talking to strangers is hard, that misunderstanding is the norm rather than the exception, and that the costs of getting it wrong are borne disproportionately by the most vulnerable.\\n\\nGladwell also dedicates an important section to the story of Jerry Sandusky, the Penn State football coach who abused children for years while colleagues and administrators failed to act. This isn\\\'t because those people were evil or indifferent. It\\\'s because defaulting to truth made it almost impossible for them to believe that someone they knew, someone who ran a charity for at-risk youth, could be a predator. The evidence was there, but it kept getting reinterpreted through the lens of trust. Each individual warning sign was explained away, rationalized, given the most charitable possible reading. It took years and dozens of victims before the accumulated weight of evidence finally overwhelmed the default to truth. This pattern, Gladwell shows, repeats itself in case after case. Bernie Madoff ran his Ponzi scheme for decades. Larry Nassar abused gymnasts for years. The people around them weren\\\'t stupid or complicit. They were human, doing what humans do, believing what they were told because the alternative was unthinkable.\\n\\nThe book also examines how the Central Intelligence Agency was infiltrated by double agents, exploring the case of Ana Montes, a senior Pentagon analyst who spied for Cuba for sixteen years. Her colleagues noticed oddities in her behavior, but each one was too small, too ambiguous, to trigger the kind of deep suspicion that would have been necessary to catch her. Gladwell uses this to hammer home his point that the default to truth is not a bug in human cognition but a feature, one that makes civilization possible but also makes us vulnerable to exploitation by those willing to abuse our trust.\\n\\nThe bottom line: Talking to Strangers reveals that we are far worse at reading people than we think. Our built-in assumptions about honesty, transparency, and behavior lead us astray in predictable and sometimes tragic ways. The book is a call for humility, caution, and systemic thinking in a world where encounters with people we don\\\'t know are inevitable and consequential.'},
-  {id:'blackswan',title:'The Black Swan',author:'Nassim Taleb',tag:'mind',mins:13,grad:'linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 50%,#9b9797 100%)',why:'Rare, unpredictable events drive almost everything that matters. Plan for them, not against them.',insights:[['Black swans rule','Most history is shaped by the unpredictable.'],['Narrative fallacy','We invent reasons after the fact. They\\'re fiction.'],['Mediocristan vs Extremistan','Some domains are bell-curves; many aren\\'t.'],['Robustness > prediction','You can\\'t predict the rare. You can be sturdy when it hits.'],['Optionality','Position yourself for upside surprises; cap the downside.']],summary:'Welcome to the brief of The Black Swan by Nassim Nicholas Taleb.\\n\\nThis is a book that fundamentally challenges how we think about the world, about prediction, about risk, and about the stories we tell ourselves to make sense of events that are, in truth, beyond our comprehension. Taleb\\\'s central argument is deceptively simple: the events that matter most in history, in markets, in science, and in our personal lives are precisely the ones that nobody sees coming. He calls these events Black Swans, borrowing the metaphor from the old European belief that all swans were white, a belief that was shattered the moment explorers encountered black swans in Australia. One single observation destroyed centuries of confirmed sightings.\\n\\nTaleb begins by distinguishing between two worlds he calls Mediocristan and Extremistan. Mediocristan is the realm of the ordinary, where things follow bell curves and averages are meaningful. Height, weight, calorie consumption: these live in Mediocristan. No single human being is so tall that they meaningfully change the average height of a thousand people. But wealth, book sales, city sizes, earthquake magnitudes, and market returns live in Extremistan, where a single observation can dominate everything. One person\\\'s wealth can exceed that of millions combined. One book can outsell the next ten thousand. One day in the stock market can account for a decade\\\'s worth of gains or losses. The problem is that we insist on applying the tools of Mediocristan, bell curves, standard deviations, normal distributions, to a world that actually operates in Extremistan.\\n\\nThe book then attacks what Taleb calls the narrative fallacy, our compulsive need to weave explanations around events after they happen. Once something occurs, we immediately construct a story that makes it seem inevitable, logical, even predictable. We look at the 2008 financial crisis and say, of course the housing market was going to collapse, the signs were everywhere. But before the collapse, the people pointing to those signs were dismissed as cranks and pessimists. The narrative fallacy makes us feel smarter than we are. It gives us the illusion of understanding. And it blinds us to the next Black Swan, because the next one, by definition, will come from a direction nobody is watching.\\n\\nTaleb introduces the idea of silent evidence, the data we never see because it never gets recorded. We celebrate the bold entrepreneurs who took enormous risks and succeeded, building our theories of success around their stories. But we never hear from the thousands who took identical risks and failed, because failure is silent. Survivorship bias warps our understanding of everything from business strategy to medical treatment to military history. The graveyard of failed ventures is enormous and invisible, and as long as it remains invisible, we will keep drawing the wrong conclusions from the survivors.\\n\\nOne of the book\\\'s most provocative sections deals with the problem of expert prediction. Taleb marshals research showing that experts in complex domains, economics, political science, long-range forecasting, are barely better than random chance at predicting the future. And worse, the more famous and confident the expert, the less accurate they tend to be. Experts suffer from what Taleb calls epistemic arrogance, an overestimation of what they know and an underestimation of what they don\\\'t. They build elaborate models based on past data and then act surprised when the future refuses to cooperate. The models work beautifully right up until the moment they don\\\'t, and that moment is precisely when you need them most.\\n\\nTaleb also explores the ludic fallacy, the mistake of applying the clean, well-defined rules of games to the messy, unbounded reality of life. In a casino, the odds are known. The dice have six sides. The cards are fifty-two. But in real life, we don\\\'t even know how many sides the die has. We don\\\'t know what we don\\\'t know. Risk management that treats the real world like a casino is not just inadequate, it\\\'s dangerous, because it gives false confidence to people making enormous bets with other people\\\'s money.\\n\\nThe book doesn\\\'t just diagnose the problem. Taleb offers a framework for living in a world dominated by Black Swans. First, he says, accept your ignorance. Stop pretending you can predict the future. Stop trusting forecasts. Stop building plans that assume everything will go according to plan. Second, position yourself to benefit from positive Black Swans while limiting your exposure to negative ones. This means keeping your downside small and your upside unlimited whenever possible. Invest in opportunities where the worst case is a small loss but the best case is transformative. Third, pay attention to what you don\\\'t know rather than what you do know. The things you haven\\\'t considered are far more likely to determine your fate than the things you\\\'ve planned for.\\n\\nTaleb is ferocious in his criticism of the financial industry, which he sees as the ultimate practitioner of Black Swan blindness. Banks and hedge funds built risk models that said catastrophic losses were essentially impossible, once-in-ten-thousand-year events. Then those events happened every decade. The models failed not because of bad math but because of bad philosophy, a fundamental misunderstanding of the kind of world we live in. The bankers weren\\\'t unlucky. They were wrong about the nature of luck itself.\\n\\nThroughout the book, Taleb draws on philosophy, mathematics, psychology, and his own experience as an options trader to make his case. His style is combative, personal, and often digressive, but the digressions are where some of the deepest insights live. He is not interested in being polite to the institutions and experts he believes are leading us astray. He is interested in the truth, or at least in getting closer to it by admitting how little we actually know.\\n\\nTaleb also explores what he calls the problem of confirmation. Once we have a theory about how the world works, we instinctively seek out information that supports it and ignore information that contradicts it. A thousand white swans feel like ironclad proof that all swans are white, but they are logically worthless compared to a single black one. Disconfirming evidence is infinitely more valuable than confirming evidence, but our brains are wired to do the opposite, to seek comfort in what we already believe rather than actively looking for what might prove us wrong. This cognitive tendency is amplified by the modern media environment, where information is curated to reinforce existing beliefs and algorithms feed us exactly what we want to hear.\\n\\nTaleb devotes significant attention to what he calls the scandal of prediction in the social sciences. He argues that economists, in particular, have built an entire profession around the pretense of being able to forecast the future, despite decades of evidence showing that their forecasts are essentially useless for the events that actually matter. The small, incremental changes that economists can predict reasonably well are precisely the ones that don\\\'t matter. The large, disruptive changes that reshape economies and societies are precisely the ones they miss. And yet the profession continues, unperturbed, because the consumers of forecasts, politicians, investors, journalists, want certainty more than they want accuracy. They would rather have a confident wrong answer than an honest admission of ignorance.\\n\\nPerhaps the most unsettling aspect of the book is Taleb\\\'s argument that Black Swans are becoming more frequent and more impactful, not less, as the world becomes more interconnected and more complex. Globalization, technology, and financial integration have created a world where a disruption in one corner can cascade across the entire system in ways that nobody anticipated. The very efficiency and optimization that we celebrate as progress are also the things that eliminate the buffers, redundancies, and slack that once contained the damage from unexpected events.\\n\\nThe bottom line: The Black Swan teaches us that the most important events in life are the ones we cannot predict. Our models, narratives, and expert opinions create an illusion of understanding that leaves us dangerously exposed to surprise. The wise response is not to predict better but to build robustness against the unknowable, keeping losses small while staying open to transformative gains.'},
+  {id:'blackswan',title:'The Black Swan',author:'Nassim Taleb',tag:'mind',mins:13,grad:'linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 50%,#8E8E93 100%)',why:'Rare, unpredictable events drive almost everything that matters. Plan for them, not against them.',insights:[['Black swans rule','Most history is shaped by the unpredictable.'],['Narrative fallacy','We invent reasons after the fact. They\\'re fiction.'],['Mediocristan vs Extremistan','Some domains are bell-curves; many aren\\'t.'],['Robustness > prediction','You can\\'t predict the rare. You can be sturdy when it hits.'],['Optionality','Position yourself for upside surprises; cap the downside.']],summary:'Welcome to the brief of The Black Swan by Nassim Nicholas Taleb.\\n\\nThis is a book that fundamentally challenges how we think about the world, about prediction, about risk, and about the stories we tell ourselves to make sense of events that are, in truth, beyond our comprehension. Taleb\\\'s central argument is deceptively simple: the events that matter most in history, in markets, in science, and in our personal lives are precisely the ones that nobody sees coming. He calls these events Black Swans, borrowing the metaphor from the old European belief that all swans were white, a belief that was shattered the moment explorers encountered black swans in Australia. One single observation destroyed centuries of confirmed sightings.\\n\\nTaleb begins by distinguishing between two worlds he calls Mediocristan and Extremistan. Mediocristan is the realm of the ordinary, where things follow bell curves and averages are meaningful. Height, weight, calorie consumption: these live in Mediocristan. No single human being is so tall that they meaningfully change the average height of a thousand people. But wealth, book sales, city sizes, earthquake magnitudes, and market returns live in Extremistan, where a single observation can dominate everything. One person\\\'s wealth can exceed that of millions combined. One book can outsell the next ten thousand. One day in the stock market can account for a decade\\\'s worth of gains or losses. The problem is that we insist on applying the tools of Mediocristan, bell curves, standard deviations, normal distributions, to a world that actually operates in Extremistan.\\n\\nThe book then attacks what Taleb calls the narrative fallacy, our compulsive need to weave explanations around events after they happen. Once something occurs, we immediately construct a story that makes it seem inevitable, logical, even predictable. We look at the 2008 financial crisis and say, of course the housing market was going to collapse, the signs were everywhere. But before the collapse, the people pointing to those signs were dismissed as cranks and pessimists. The narrative fallacy makes us feel smarter than we are. It gives us the illusion of understanding. And it blinds us to the next Black Swan, because the next one, by definition, will come from a direction nobody is watching.\\n\\nTaleb introduces the idea of silent evidence, the data we never see because it never gets recorded. We celebrate the bold entrepreneurs who took enormous risks and succeeded, building our theories of success around their stories. But we never hear from the thousands who took identical risks and failed, because failure is silent. Survivorship bias warps our understanding of everything from business strategy to medical treatment to military history. The graveyard of failed ventures is enormous and invisible, and as long as it remains invisible, we will keep drawing the wrong conclusions from the survivors.\\n\\nOne of the book\\\'s most provocative sections deals with the problem of expert prediction. Taleb marshals research showing that experts in complex domains, economics, political science, long-range forecasting, are barely better than random chance at predicting the future. And worse, the more famous and confident the expert, the less accurate they tend to be. Experts suffer from what Taleb calls epistemic arrogance, an overestimation of what they know and an underestimation of what they don\\\'t. They build elaborate models based on past data and then act surprised when the future refuses to cooperate. The models work beautifully right up until the moment they don\\\'t, and that moment is precisely when you need them most.\\n\\nTaleb also explores the ludic fallacy, the mistake of applying the clean, well-defined rules of games to the messy, unbounded reality of life. In a casino, the odds are known. The dice have six sides. The cards are fifty-two. But in real life, we don\\\'t even know how many sides the die has. We don\\\'t know what we don\\\'t know. Risk management that treats the real world like a casino is not just inadequate, it\\\'s dangerous, because it gives false confidence to people making enormous bets with other people\\\'s money.\\n\\nThe book doesn\\\'t just diagnose the problem. Taleb offers a framework for living in a world dominated by Black Swans. First, he says, accept your ignorance. Stop pretending you can predict the future. Stop trusting forecasts. Stop building plans that assume everything will go according to plan. Second, position yourself to benefit from positive Black Swans while limiting your exposure to negative ones. This means keeping your downside small and your upside unlimited whenever possible. Invest in opportunities where the worst case is a small loss but the best case is transformative. Third, pay attention to what you don\\\'t know rather than what you do know. The things you haven\\\'t considered are far more likely to determine your fate than the things you\\\'ve planned for.\\n\\nTaleb is ferocious in his criticism of the financial industry, which he sees as the ultimate practitioner of Black Swan blindness. Banks and hedge funds built risk models that said catastrophic losses were essentially impossible, once-in-ten-thousand-year events. Then those events happened every decade. The models failed not because of bad math but because of bad philosophy, a fundamental misunderstanding of the kind of world we live in. The bankers weren\\\'t unlucky. They were wrong about the nature of luck itself.\\n\\nThroughout the book, Taleb draws on philosophy, mathematics, psychology, and his own experience as an options trader to make his case. His style is combative, personal, and often digressive, but the digressions are where some of the deepest insights live. He is not interested in being polite to the institutions and experts he believes are leading us astray. He is interested in the truth, or at least in getting closer to it by admitting how little we actually know.\\n\\nTaleb also explores what he calls the problem of confirmation. Once we have a theory about how the world works, we instinctively seek out information that supports it and ignore information that contradicts it. A thousand white swans feel like ironclad proof that all swans are white, but they are logically worthless compared to a single black one. Disconfirming evidence is infinitely more valuable than confirming evidence, but our brains are wired to do the opposite, to seek comfort in what we already believe rather than actively looking for what might prove us wrong. This cognitive tendency is amplified by the modern media environment, where information is curated to reinforce existing beliefs and algorithms feed us exactly what we want to hear.\\n\\nTaleb devotes significant attention to what he calls the scandal of prediction in the social sciences. He argues that economists, in particular, have built an entire profession around the pretense of being able to forecast the future, despite decades of evidence showing that their forecasts are essentially useless for the events that actually matter. The small, incremental changes that economists can predict reasonably well are precisely the ones that don\\\'t matter. The large, disruptive changes that reshape economies and societies are precisely the ones they miss. And yet the profession continues, unperturbed, because the consumers of forecasts, politicians, investors, journalists, want certainty more than they want accuracy. They would rather have a confident wrong answer than an honest admission of ignorance.\\n\\nPerhaps the most unsettling aspect of the book is Taleb\\\'s argument that Black Swans are becoming more frequent and more impactful, not less, as the world becomes more interconnected and more complex. Globalization, technology, and financial integration have created a world where a disruption in one corner can cascade across the entire system in ways that nobody anticipated. The very efficiency and optimization that we celebrate as progress are also the things that eliminate the buffers, redundancies, and slack that once contained the damage from unexpected events.\\n\\nThe bottom line: The Black Swan teaches us that the most important events in life are the ones we cannot predict. Our models, narratives, and expert opinions create an illusion of understanding that leaves us dangerously exposed to surprise. The wise response is not to predict better but to build robustness against the unknowable, keeping losses small while staying open to transformative gains.'},
   {id:'antifragile',title:'Antifragile',author:'Nassim Taleb',tag:'mind',mins:13,grad:'linear-gradient(135deg,#0a0a0a 0%,#2a2a2a 50%,#FED7AA 100%)',why:'Some things gain from disorder. Build systems — and yourself — that get stronger under stress.',insights:[['Three categories','Fragile breaks, robust resists, antifragile grows.'],['Stressors are information','A little stress, recovered from, builds capacity.'],['Small downside, large upside','Bet on convex payoffs. Cap your loss.'],['Skin in the game','Without it, advisers fool themselves and others.'],['Via negativa','Strength comes from removing the wrong, not adding the right.']],summary:'Welcome to the brief of Antifragile by Nassim Nicholas Taleb.\\n\\nThis book introduces a concept so fundamental that it\\\'s astonishing we didn\\\'t have a word for it before Taleb coined one. We all know what fragile means: something that breaks under stress. And we know what robust or resilient means: something that withstands stress without breaking. But what do you call something that actually gets stronger when it\\\'s stressed, shocked, or disturbed? Taleb calls it antifragile, and he argues that this property is everywhere in nature, in biology, in culture, in successful systems of all kinds, and yet we systematically fail to recognize it, often destroying antifragility through our misguided attempts to make things stable and predictable.\\n\\nTaleb opens by laying out what he calls the triad: fragile, robust, and antifragile. A glass is fragile. A rock is robust. A human muscle is antifragile, it gets stronger when you stress it through exercise. Your immune system is antifragile. Evolution is antifragile. The restaurant industry is antifragile, because individual restaurants fail constantly, but the system as a whole gets better as weak ones are weeded out and strong ones survive. The key insight is that antifragility requires stressors, volatility, disorder, and randomness to function. Take those away, and you don\\\'t get stability. You get fragility masquerading as stability, building up hidden risks that eventually explode.\\n\\nOne of the most powerful ideas in the book is what Taleb calls the problem of the turkey. Imagine a turkey being fed every day by a farmer. Every day confirms the turkey\\\'s belief that the farmer is a friend. The turkey\\\'s confidence in this belief grows stronger with each feeding. Then comes the day before Thanksgiving. The turkey\\\'s model of the world, built entirely on past data, fails catastrophically at precisely the moment when accuracy matters most. This is what happens when you mistake the absence of volatility for the absence of risk. The turkey was fragile the entire time, but its fragility was invisible because nothing bad had happened yet.\\n\\nTaleb introduces the concept of the barbell strategy as a way to become antifragile in practice. Instead of putting all your resources into moderate-risk activities, which leaves you vulnerable to unexpected disasters, you split them between extremely safe options and extremely speculative ones. Keep ninety percent of your assets in the safest possible instruments and put ten percent into wildly risky bets with unlimited upside. The worst case is a small known loss. The best case is transformative. This approach works in finance, but Taleb argues it\\\'s a general principle for life. Have a stable day job and a wild side project. Play it safe in most areas and take bold risks in a few carefully chosen ones.\\n\\nThe book is savage in its criticism of what Taleb calls the Soviet-Harvard delusion, the belief that complex systems can be centrally planned and optimized by experts with theories and models. Whether it\\\'s the economy, the human body, or an ecosystem, top-down intervention by people who think they understand the system almost always makes things worse. Taleb calls these interveners fragilistas, people who impose order on systems that benefit from disorder, who smooth out the very volatility that keeps the system healthy. Governments that suppress small forest fires get catastrophic megafires. Central banks that prevent small recessions get devastating financial crises. Doctors who prescribe medications for every minor symptom create patients with weakened natural defenses.\\n\\nTaleb draws heavily on the idea of via negativa, the principle that you often improve things by removing rather than adding. Instead of asking what you should do, ask what you should stop doing. Instead of adding supplements and medications, eliminate harmful foods and habits. Instead of adding rules and regulations, remove the ones that create perverse incentives. The most robust knowledge is negative knowledge: knowing what doesn\\\'t work is more reliable than knowing what does, because the world changes but the things that fail tend to fail for timeless reasons.\\n\\nThe book also explores the concept of skin in the game as a prerequisite for antifragility, an idea Taleb would later expand into its own book. When decision-makers bear the consequences of their decisions, systems become antifragile because bad decisions get punished and corrected. When decision-makers are insulated from consequences, as bankers are when they collect bonuses for gains but don\\\'t pay for losses, systems become fragile because bad decisions accumulate without correction. This asymmetry of risk and reward is, in Taleb\\\'s view, one of the most dangerous features of modern society.\\n\\nTaleb takes on the medical establishment, the education system, the financial industry, and the entire culture of credentialism and expertise. He argues that real-world knowledge, the kind gained through trial and error, through practice, through having skin in the game, is vastly superior to theoretical knowledge gained in classrooms. He points out that most great innovations came from tinkerers and practitioners, not from theorists. The jet engine, aspirin, the wheel: none of these were produced by people working from first principles in academic departments. They came from people messing around, making mistakes, and occasionally stumbling onto something extraordinary.\\n\\nOne of the most memorable arguments in the book is about time as a filter. Things that have been around for a long time are likely to continue being around. Things that are new are likely to disappear. This is the Lindy effect: for non-perishable things, every additional day of existence implies a longer remaining life expectancy. A book that has been in print for a hundred years is likely to be in print for another hundred. A technology that has survived for a thousand years is likely to survive for another thousand. Novelty is fragile. Longevity is antifragile. This has profound implications for how we make decisions, suggesting we should be deeply skeptical of the new and deeply respectful of the old.\\n\\nTaleb writes with passion, humor, and a combativeness that some readers find off-putting but others find exhilarating. He is not interested in being diplomatic. He is interested in getting at a truth that he believes the modern world is designed to obscure: that disorder, stress, and uncertainty are not enemies to be eliminated but essential nutrients for growth and strength.\\n\\nTaleb also makes a compelling case about the dangers of overprotection, whether in parenting, in economic policy, or in personal health. Children who are never exposed to germs develop weaker immune systems. Economies that are never allowed to experience mild recessions develop structural weaknesses that lead to catastrophic depressions. Athletes who never push through discomfort never develop the resilience that separates champions from also-rans. The desire to eliminate all pain, all risk, all disorder from life is not just futile. It is actively destructive, because it robs systems of the very stressors they need to strengthen themselves. Taleb calls this the problem of the modern world: we have become so good at eliminating small harms that we have made ourselves vulnerable to large ones.\\n\\nAnother thread running through the book is the importance of optionality, having options rather than being locked into a single path. Taleb argues that the antifragile strategy is not to predict the future, which is impossible, but to position yourself so that you benefit no matter what happens. This means maintaining flexibility, keeping costs low, and always preserving the ability to change course. A person with options is antifragile because unexpected events open new possibilities. A person locked into rigid plans is fragile because any deviation from the plan is a disaster. The tinkerer, the entrepreneur, the person who tries many small things and doubles down on what works, is far more antifragile than the corporate planner with a five-year strategy and no Plan B.\\n\\nThe bottom line: Antifragile reveals that the most successful systems in nature and society are those that gain from disorder rather than merely surviving it. By embracing volatility, eliminating fragility, and positioning ourselves to benefit from the unexpected, we can thrive in a world that refuses to be predictable.'},
   {id:'skin',title:'Skin in the Game',author:'Nassim Taleb',tag:'mind',mins:12,grad:'linear-gradient(135deg,#0a0a06 0%,#3a2010 50%,#FCD34D 100%)',why:'Don\\'t trust anyone who has no skin in the game. Look at exposure, not opinions.',insights:[['No exposure, no opinion','Asymmetric risk corrupts advice.'],['Lindy effect','What survives long, lasts long. Trust old over new.'],['Minority rules','A small intolerant minority can dictate outcomes.'],['Tail risks dominate','Don\\'t cross a river that\\'s on average four feet deep.'],['Doing > saying','Watch what people risk, not what they preach.']],summary:'Welcome to the brief of Skin in the Game by Nassim Nicholas Taleb.\\n\\nThis is a book about one of the oldest and most important ideas in human ethics and decision-making: that you should bear the consequences of your own actions. Taleb argues that when people make decisions without facing the downside of those decisions, systems break down, injustice multiplies, and catastrophe becomes inevitable. Skin in the game isn\\\'t just a financial concept. It\\\'s the foundation of fairness, the engine of learning, and the bedrock of functioning societies. When it\\\'s present, things work. When it\\\'s absent, things rot.\\n\\nTaleb opens with a simple but powerful observation about symmetry. Throughout history, human societies have recognized that fairness requires reciprocity. Hammurabi\\\'s Code, one of the oldest legal documents in existence, didn\\\'t just punish wrongdoers. It made architects personally liable if a building they designed collapsed and killed the owner. If the owner\\\'s son died, the architect\\\'s son would be put to death. This seems barbaric to modern sensibilities, but Taleb argues it contains a deep wisdom: when the person making decisions faces the same risks as the person affected by those decisions, you get very different and much better decisions. The architect who might lose his own child builds a much stronger building than the architect who faces only a lawsuit from a faceless insurance company.\\n\\nFrom this foundation, Taleb launches into a blistering critique of what he calls the interventionista class: the policy makers, academics, consultants, and pundits who make recommendations and decisions that affect millions of people while bearing none of the consequences themselves. Politicians who advocate for wars they will never fight in. Economists who design policies that ruin entire populations while keeping their tenured positions. Bankers who pocket bonuses from risky bets but get bailed out by taxpayers when those bets fail. Corporate executives who collect enormous compensation packages while transferring risks to employees and shareholders. In every case, the decision-maker has upside without downside, gains without losses, authority without accountability. Taleb calls this the Bob Rubin trade, named after the former Treasury Secretary who collected over a hundred million dollars from Citigroup during the good years and walked away scot-free when the bank nearly collapsed during the financial crisis.\\n\\nThe book introduces a fascinating framework Taleb calls the minority rule. He demonstrates that in many situations, a small intolerant minority can dictate the behavior of a large flexible majority. If even a tiny percentage of a population insists on a particular standard, say kosher food or gluten-free options, and the rest of the population is indifferent, the entire market will shift to accommodate the minority. This isn\\\'t because the minority is powerful in the conventional sense. It\\\'s because it\\\'s cheaper and easier for producers to make everything compliant than to maintain separate product lines. Taleb uses this to explain everything from religious dietary laws to political extremism, showing how small committed groups with skin in the game can reshape entire societies.\\n\\nTaleb makes a crucial distinction between two types of knowledge. There is the knowledge of the intellectual, the academic, the person who theorizes from a distance. And there is the knowledge of the practitioner, the person who has direct experience and bears the consequences of being wrong. Taleb argues that we systematically overvalue the first kind and undervalue the second. He points out that grandmothers and traditional communities accumulated enormous practical wisdom about diet, medicine, and social behavior through centuries of trial and error, and that much of this wisdom is being rediscovered by modern science after being dismissed as superstition by experts who had never had to live by their own advice.\\n\\nOne of the book\\\'s most provocative chapters deals with the ethics of risk transfer. Taleb argues that many modern professions and institutions are structured to transfer risk from those who create it to those who can least afford it. Corporations externalize environmental damage onto communities. Financial institutions transfer risk to taxpayers. Consultants give advice they will never have to follow. Politicians start conflicts funded by citizens who have no say. This hidden transfer of risk is, in Taleb\\\'s view, the great moral scandal of modern civilization, and it is possible only because we have created systems that insulate decision-makers from consequences.\\n\\nTaleb extends his analysis to the realm of belief and religion. He argues that what people say they believe and what they actually believe, as revealed by their actions, are often very different things. The true test of belief is not what you profess on a survey but what you are willing to stake something on. A person who says they believe the market will crash but doesn\\\'t sell their stocks doesn\\\'t really believe the market will crash. A person who advocates for a policy but sends their own children to schools that follow a different philosophy doesn\\\'t really believe in that policy. Skin in the game is the ultimate lie detector, separating genuine conviction from cheap talk.\\n\\nThe book also offers practical advice for navigating a world where skin in the game is unevenly distributed. Taleb advises us to distrust anyone who doesn\\\'t bear the consequences of their recommendations. Don\\\'t take medical advice from a doctor who wouldn\\\'t follow the same treatment. Don\\\'t take financial advice from an advisor who doesn\\\'t invest their own money the same way. Don\\\'t listen to pundits who face no penalty for being wrong. The track record of a person\\\'s actual bets, not their verbal predictions, is the only reliable guide to their competence.\\n\\nTaleb connects skin in the game to virtue, arguing that true courage, generosity, and integrity are meaningless without risk. A person who stands up for an unpopular cause when it costs them nothing is not courageous. A person who donates money they will never miss is not generous. Virtue requires sacrifice, and sacrifice requires skin in the game. This is why Taleb has more respect for entrepreneurs who risk their own capital than for corporate managers who play with shareholders\\\' money, and more respect for soldiers who fight than for commentators who cheer from the sidelines.\\n\\nTaleb also introduces an important concept he calls the intellectual yet idiot, or IYI, his term for the class of educated professionals who use their credentials to influence policy and public opinion while having no practical experience and no personal exposure to the consequences of their ideas. The IYI class reads the right newspapers, attends the right conferences, uses the right vocabulary, and is utterly convinced of its own superiority. But because IYIs never face the consequences of being wrong, their ideas are never tested against reality. They live in a world of abstractions, and when their abstractions collide with the messy complexity of real life, they blame reality rather than revising their theories. Taleb sees this class as one of the greatest threats to healthy societies, because their influence grows in proportion to the complexity of the systems they seek to manage, which is precisely when their lack of skin in the game becomes most dangerous.\\n\\nThe book rounds out its argument by exploring how skin in the game functions as a filter for quality and truth across all domains of life. In markets, businesses that bear the consequences of their products build better products. In science, researchers who stake their reputations on reproducible results produce more reliable findings. In personal relationships, people who invest emotionally and practically in the wellbeing of others build deeper and more durable bonds. The principle is universal: accountability produces quality, and the absence of accountability produces decay.\\n\\nThroughout the book, Taleb writes with his characteristic blend of erudition, aggression, and dark humor. He draws on ancient philosophy, probability theory, personal anecdotes, and withering contempt for the people and institutions he believes are making the world more fragile by avoiding accountability.\\n\\nThe bottom line: Skin in the Game argues that fairness, competence, and social stability all depend on one principle: the people who make decisions must bear the consequences. When this link is broken, whether in finance, politics, or everyday life, systems become fragile, knowledge becomes unreliable, and injustice becomes structural.'},
   {id:'range',title:'Range',author:'David Epstein',tag:'mind',mins:12,grad:'linear-gradient(135deg,#0a0c0c 0%,#1f3030 50%,#611f1c 100%)',why:'Generalists win in complex worlds. Specialize too early and you brittle.',insights:[['Wicked vs kind worlds','Pattern recognition fails in wicked, evolving domains.'],['Sampling beats early picking','Try many things; commit later.'],['Analogical thinking','Cross-field insights solve problems specialists miss.'],['Slow learning sticks','The painful path is the durable one.'],['Match quality matters','The right field beats the most-prepared field.']],summary:'Welcome to the brief of Range by David Epstein.\\n\\nThis is a book that pushes back against one of the most popular ideas of our time: that the key to success is early specialization, that you should pick your lane as young as possible, commit to ten thousand hours of deliberate practice, and never look back. Epstein argues that this advice, while occasionally correct, is dangerously misleading for most people in most situations. In a world that is increasingly complex and unpredictable, the people who thrive are not the narrow specialists but the broad generalists, the people who have sampled widely, explored multiple fields, and developed the ability to make connections across domains.\\n\\nEpstein opens with a now-famous comparison between Tiger Woods and Roger Federer. Tiger Woods is the poster child for early specialization. His father put a golf club in his hands before he could walk, and Tiger was competing against adults by the time he was a toddler. His story is endlessly cited as proof that starting early and focusing relentlessly is the path to greatness. But Roger Federer\\\'s story is completely different. As a child, Federer played soccer, basketball, handball, badminton, and tennis. He dabbled in everything. His parents explicitly refused to push him toward one sport. He didn\\\'t commit to tennis until his mid-teens, far later than most professional players. And yet he became arguably the greatest tennis player in history. Epstein uses this contrast to introduce his central question: when does specialization help, and when does it hurt?\\n\\nThe answer, Epstein shows, depends on the kind of environment you\\\'re operating in. He borrows a framework from psychology that distinguishes between kind learning environments and wicked learning environments. In kind environments, the rules are clear, the feedback is immediate, and patterns repeat reliably. Chess is a kind environment. Golf is a kind environment. In these domains, early specialization and massive repetition genuinely work, because the patterns you practice today will still be relevant tomorrow. But most of the real world is a wicked environment, where the rules are unclear or constantly changing, feedback is delayed or misleading, and the patterns of the past may be useless for the future. In wicked environments, the narrow specialist is often at a disadvantage because their deep but narrow knowledge doesn\\\'t transfer to new situations.\\n\\nEpstein explores the research on learning and finds something counterintuitive. The teaching methods that produce the best short-term performance often produce the worst long-term learning, and vice versa. When students are taught using varied, interleaved, and challenging methods, making connections between different topics rather than drilling one topic at a time, they perform worse on immediate tests but much better on delayed tests and in novel situations. This is because the struggle itself, the difficulty of connecting disparate ideas, is what builds deep, flexible understanding. The easy methods feel productive but produce knowledge that is brittle and context-dependent.\\n\\nThe book draws on fascinating examples from across domains. Epstein tells the story of Nintendo\\\'s Gunpei Yokoi, who invented the Game Boy not by pushing the boundaries of technology but by finding creative new uses for cheap, outdated technology that more specialized engineers would have dismissed. He explores how the most successful problem-solvers in organizations like InnoCentive, a platform for crowdsourcing scientific solutions, tend to be outsiders whose expertise lies in a completely different field from the problem at hand. A chemist solves a biology problem. A physicist finds the answer that stumped the engineers. Breadth of experience allows these people to see analogies and solutions that specialists miss precisely because specialists are trapped within the assumptions of their own field.\\n\\nEpstein also challenges the cultural pressure to find your passion early and commit to it forever. He presents research showing that people\\\'s interests, values, and abilities change significantly over time, often in ways they can\\\'t predict. The person you are at eighteen is meaningfully different from the person you\\\'ll be at thirty or forty. Committing irrevocably to a career path based on what excited you as a teenager is like placing a massive bet based on incomplete information. Instead, Epstein advocates for what he calls a sampling period, a time of deliberate exploration where you try different things, develop diverse skills, and learn what genuinely fits. He points to research showing that people who take longer to find their path often end up more fulfilled and more successful than those who committed early, precisely because they made better-informed choices.\\n\\nThe book examines the story of Vincent van Gogh, who didn\\\'t begin painting seriously until his late twenties after failing as an art dealer, a teacher, a bookseller, and a preacher. Each of these experiences, seemingly wasted years from the outside, contributed something essential to his artistic vision. Epstein argues that what looks like wandering is often the most efficient form of exploration, because you don\\\'t know what you\\\'re looking for until you\\\'ve found it, and you can\\\'t find it if you never look beyond your current path.\\n\\nEpstein doesn\\\'t dismiss specialization entirely. He acknowledges that in certain narrow domains, focused practice is essential and effective. But he argues that the modern world increasingly rewards what he calls integrative thinking, the ability to synthesize knowledge from multiple areas and apply it to novel problems. The challenges we face today, climate change, pandemic response, technological disruption, are not the kind that can be solved by going deeper into a single discipline. They require the ability to think across boundaries, to see the big picture, and to connect dots that specialists don\\\'t even know exist.\\n\\nOne of the most practical insights in the book is the importance of what psychologists call analogical thinking. When you encounter a new problem, the natural tendency is to look for solutions within the domain where the problem lives. But the best solutions often come from completely unrelated fields. The key to analogical thinking is having a broad enough base of knowledge that you can recognize structural similarities between problems that look nothing alike on the surface. This is a skill that generalists develop naturally through their varied experiences, and one that specialists often lack.\\n\\nEpstein also tackles the question of grit, a concept popularized by Angela Duckworth. While he doesn\\\'t dismiss the value of perseverance, he argues that grit without flexibility can become a trap. The sunk cost fallacy, the tendency to keep investing in a losing proposition because you\\\'ve already invested so much, is essentially misapplied grit. Sometimes the wisest and most courageous thing you can do is quit, change direction, and start over in a field that fits better. Epstein presents research showing that people who switch careers or areas of study, sometimes multiple times, are not flakes or failures. They are running a rational search process in a world where the best match between their abilities and the available opportunities is impossible to know in advance. Strategic quitting, knowing when to walk away from something that isn\\\'t working and try something different, is a form of intelligence that our culture systematically undervalues.\\n\\nThe book also explores how teams and organizations benefit from cognitive diversity, the variety of perspectives and mental models that comes from having members with different backgrounds and experiences. Epstein cites research from the fields of forecasting and problem-solving showing that groups of people with diverse experiences consistently outperform groups of specialized experts. This isn\\\'t because the generalists are individually smarter. It\\\'s because they bring different frameworks for understanding problems, and the combination of those frameworks produces insights that no single perspective could generate alone. Organizations that hire only from a narrow set of elite programs and train everyone in the same methods are sacrificing this cognitive diversity in exchange for a false sense of rigor.\\n\\nThe bottom line: Range makes a compelling case that in a complex and unpredictable world, breadth of experience, late specialization, and the ability to think across domains are more valuable than early focus and narrow expertise. The generalist who samples widely and integrates diverse knowledge is better equipped for the challenges that actually matter.'},
@@ -11370,7 +11379,7 @@ const BOOK_SUMMARIES=[
   {id:'hom',title:'High Output Management',author:'Andy Grove',tag:'leadership',mins:12,grad:'linear-gradient(135deg,#0a0a14 0%,#1a1f3d 50%,#a5564b 100%)',why:'Intel\\'s legendary CEO on the leverage points of management. Still the best book on it.',insights:[['Output is the metric','A manager\\'s output = team\\'s output + influenced output.'],['Meetings are tools','One-on-ones are the highest leverage.'],['Forecasting + indicators','Manage with leading metrics, not just trailing.'],['Task-relevant maturity','Adapt your style to the task and the person.'],['Decision-making','Free debate \\u2192 clear decision \\u2192 full support.']],summary:'Welcome to the brief of High Output Management by Andy Grove.\\n\\nAndy Grove was one of the most influential business leaders of the twentieth century. As the co-founder and longtime CEO of Intel, he helped transform a small semiconductor company into one of the most powerful technology corporations in history. High Output Management is his distillation of decades of management experience into a practical handbook that reads more like an engineering manual than a typical leadership book. Grove approaches management the way he approached chip manufacturing, with precision, rigor, and a relentless focus on output.\\n\\nThe book opens with an analogy that sets the tone for everything that follows. Grove describes the process of making breakfast in a restaurant, specifically how to prepare a soft-boiled egg, toast, and coffee so that they all arrive at the table hot and at the same time. This seemingly simple exercise illustrates fundamental concepts of production management: identifying the limiting step, managing your workflow around bottlenecks, and building quality controls into every stage of the process rather than inspecting for quality at the end. Grove argues that every manager, regardless of industry, is essentially running a production operation, and the same principles that optimize a factory floor can optimize a sales team, a software development group, or an executive office.\\n\\nFrom this foundation, Grove introduces his central concept: managerial output. He defines a manager\\\'s output not as the work the manager does individually but as the output of the organization under their supervision plus the output of the neighboring organizations under their influence. This is a profound reframing. It means that a manager who writes brilliant reports but fails to develop their team is a low-output manager. Conversely, a manager who spends their time coaching, removing obstacles, and making decisions that unblock others is a high-output manager, even if they produce very little individual work.\\n\\nGrove then explores the concept of leverage. Not all managerial activities are created equal. Some activities have high leverage, meaning a small amount of the manager\\\'s time produces a large impact on output. Other activities have low leverage. Grove argues that a manager\\\'s most important job is to identify and focus on high-leverage activities. Examples of high-leverage activities include training, making decisions that affect many people, and providing feedback at critical moments. Low-leverage activities include attending meetings where you have nothing to contribute, reviewing work that others could review, and doing tasks that could be delegated.\\n\\nThe section on meetings is one of the most practical in the book. Grove categorizes meetings into two types: process-driven meetings and mission-oriented meetings. Process-driven meetings are regular, recurring meetings that provide information flow and coordination. These include one-on-one meetings between a manager and their direct reports, staff meetings, and operational reviews. Mission-oriented meetings are ad hoc gatherings called to solve a specific problem or make a specific decision. Grove argues that most organizations have too many mission-oriented meetings because they do not have enough effective process-driven meetings. If you are running good one-on-ones and staff meetings, you will need fewer fire drills.\\n\\nGrove\\\'s treatment of one-on-one meetings is particularly detailed. He argues that the one-on-one is the most important tool a manager has for maintaining the health of the organization. The meeting should be driven by the subordinate\\\'s agenda, not the manager\\\'s. It should focus on problems, concerns, and anything that is on the subordinate\\\'s mind. The manager\\\'s role is to listen, ask questions, and provide guidance. Grove recommends holding these meetings regularly and keeping them at least an hour long to allow for substantive conversation.\\n\\nDecision-making receives careful attention in the book. Grove describes a framework for how decisions should be made in an organization. He argues that the ideal decision-making process involves free discussion, a clear decision, and then full support from everyone involved, even those who disagreed. He calls this the peer-plus-one model, where decisions are made by the people closest to the information with one level of review from above. He warns against two failure modes: decisions made by people too far from the facts, and decisions that never get made because everyone is waiting for consensus.\\n\\nPlanning is another area where Grove brings his engineering mindset to bear. He describes a process he calls management by objectives, which later evolved into the OKR system that John Doerr would popularize. The idea is straightforward: set clear objectives for what you want to achieve and define measurable key results that indicate whether you are on track. Grove emphasizes that planning should be done in terms of output, not activity. The question is not what are we going to do but what are we going to achieve.\\n\\nGrove devotes an entire section to the motivation of knowledge workers. He draws on Abraham Maslow\\\'s hierarchy of needs and applies it to the workplace. He argues that once basic physiological and safety needs are met, workers are motivated by belonging, recognition, and self-actualization. The manager\\\'s job is to create an environment where these higher-level needs can be fulfilled. This means setting challenging goals, providing regular feedback, and creating opportunities for growth and mastery.\\n\\nPerformance reviews receive detailed treatment. Grove argues that performance reviews are one of the most important and most poorly executed managerial activities. He provides a step-by-step guide for conducting effective reviews, including how to prepare, how to deliver the message, and how to handle emotional reactions. He emphasizes that the review should contain no surprises. If you have been giving regular feedback throughout the year, the performance review should simply formalize what the person already knows.\\n\\nGrove also introduces the concept of task-relevant maturity, which is the idea that the appropriate management style depends on the experience and competence of the person being managed. A new employee tackling an unfamiliar task needs more structured guidance, clear instructions, and frequent check-ins. An experienced professional who has mastered their domain needs more autonomy and less oversight. Grove argues that managers often make the mistake of applying a single management style to everyone. The best managers adjust their approach based on the specific situation and the specific individual, even varying their style with the same person depending on the task at hand.\\n\\nThe book also addresses organizational structure. Grove discusses the tradeoffs between functional organizations, where people are grouped by specialty, and mission-oriented organizations, where people are grouped by product or project. He argues that most companies need a hybrid approach, and he introduces the concept of dual reporting, where an individual might report to both a functional manager and a project manager. This creates complexity but ensures that both technical excellence and business objectives receive attention.\\n\\nToward the end, Grove reflects on the nature of the manager\\\'s work itself. He likens a manager to a coach. The best coaches do not play the game themselves. They prepare their players, design the game plan, make adjustments during the game, and provide feedback afterward. The satisfaction comes not from personal achievement but from the team\\\'s success. Grove closes with a characteristic blend of humility and urgency, reminding readers that their time is their most valuable resource and that every hour should be invested in the highest-leverage activity available.\\n\\nThe bottom line: High Output Management is a timeless and practical guide to the craft of management. Andy Grove\\\'s engineering-driven approach strips away the fuzziness that surrounds most management advice and replaces it with clear principles and actionable frameworks. Whether you are managing a team of five or leading a company of thousands, this book gives you the tools to maximize your impact and the impact of everyone around you.'},
   {id:'effexec',title:'The Effective Executive',author:'Peter Drucker',tag:'leadership',mins:11,grad:'linear-gradient(135deg,#0a0a06 0%,#3a2406 50%,#FCD34D 100%)',why:'Effectiveness can be learned. Drucker shows the five practices that matter.',insights:[['Know your time','Track it. You waste more than you think.'],['Focus on contribution','Not effort, not inputs. Outputs that matter.'],['Build on strengths','Yours and others\\'.'],['First things first','One thing well beats many things badly.'],['Effective decisions','Few decisions, deeply considered, well-implemented.']],summary:'Welcome to the brief of The Effective Executive by Peter Drucker.\\n\\nPeter Drucker is widely regarded as the father of modern management. Over a career spanning more than six decades, he wrote dozens of books and advised some of the most important organizations in the world. The Effective Executive, first published in 1967, remains one of his most enduring and influential works. In it, Drucker argues that effectiveness is not a natural talent. It is a discipline that can be learned and must be practiced. He identifies five essential practices that separate effective executives from everyone else, and he makes the case that in the modern knowledge economy, effectiveness is the one competency that every professional must master.\\n\\nDrucker begins with a provocative claim: intelligence, imagination, and knowledge are important, but they are useless without effectiveness. He has seen brilliant people accomplish nothing and people of modest ability achieve remarkable results. The difference is not talent. It is the systematic practice of doing the right things. Drucker is not interested in efficiency, which is doing things right. He is interested in effectiveness, which is doing the right things. This distinction runs through the entire book and shapes every recommendation he makes.\\n\\nThe first practice of the effective executive is knowing where your time goes. Drucker argues that time is the scarcest resource any executive has, and most executives have no idea how they actually spend it. He recommends a simple exercise: track your time in detail for several weeks. Record every activity and how long it takes. Most executives who do this are shocked by the results. They discover that they spend enormous amounts of time on activities that contribute nothing to their effectiveness, such as unnecessary meetings, redundant reports, and social obligations that could be delegated or eliminated. Drucker\\\'s advice is ruthless. Anything that does not contribute to results should be cut. He argues that effective executives do not start with their tasks. They start with their time and then work backward to determine what they can realistically accomplish.\\n\\nThe second practice is focusing on contribution. Drucker asks a simple question: what can I contribute that will significantly affect the performance and results of the organization I serve? Most people focus on their own efforts and their own area of expertise. Effective executives focus on their contribution to the organization as a whole. This outward orientation changes everything. It shifts the conversation from what do I need to what does the organization need from me. Drucker identifies three areas of contribution: direct results, building and reaffirming values, and developing people for the future. He argues that effective executives are always thinking about all three dimensions.\\n\\nThe third practice is making strengths productive. Drucker argues that most organizations are designed to minimize weaknesses rather than maximize strengths. This is a mistake. You cannot build performance on weaknesses. You can only build on strengths. Effective executives staff positions based on what people can do, not on what they cannot do. They do not try to fix people\\\'s weaknesses. Instead, they find roles where people\\\'s strengths are relevant and their weaknesses are irrelevant. Drucker applies this principle to self-management as well. He argues that you should understand your own strengths, focus your efforts in areas where you can make the greatest contribution, and not waste time trying to improve areas where you have little aptitude.\\n\\nThe fourth practice is first things first. Drucker observes that effective executives concentrate on a very small number of priorities at any given time. They do not try to do everything. They do not multitask. They focus their time and energy on the one or two things that will make the biggest difference, and they defer or delegate everything else. Drucker introduces the concept of planned abandonment. Before taking on something new, effective executives ask what should I stop doing. They understand that the greatest obstacle to doing important work is not a lack of time. It is the accumulation of activities that were once important but no longer are. Pruning the past is just as important as planning the future.\\n\\nThe fifth practice is making effective decisions. Drucker argues that effective executives do not make many decisions. They make a few important ones. They focus on the decisions that matter most and give them the attention they deserve. Drucker outlines a systematic approach to decision-making that begins with classifying the situation. Is this a generic problem that can be solved with a rule or principle, or is it a truly unique event that requires a custom solution? He argues that most problems are generic, and effective executives develop principles and policies to handle them rather than treating each occurrence as a new crisis.\\n\\nDrucker also emphasizes the importance of dissent in decision-making. He argues that effective executives deliberately seek out disagreement before making a decision. They do not want everyone to agree because unanimous agreement usually means that no one has thought the problem through carefully. They want to understand the different perspectives and the assumptions behind them. Only after vigorous debate do they commit to a course of action.\\n\\nAnother key element of Drucker\\\'s decision-making framework is the question of whether a decision is necessary at all. He argues that many decisions are made unnecessarily. Sometimes the best decision is to do nothing. If the situation will resolve itself or if the potential benefits of action do not outweigh the costs and risks, the effective executive has the courage to wait.\\n\\nDrucker also discusses the importance of action. A decision that is not implemented is not a decision at all. It is a good intention. Effective executives build implementation into the decision-making process. They ask who needs to know about this decision, what action needs to be taken, who will take it, and by when. They also build feedback mechanisms to ensure that the decision is producing the intended results and to make adjustments when it is not.\\n\\nThroughout the book, Drucker illustrates his principles with examples from business, government, and the military. He draws on leaders like Alfred Sloan at General Motors, Harry Truman in the White House, and various executives he advised over the years. These examples give the book a sense of practical wisdom that goes beyond abstract theory.\\n\\nDrucker closes with a reflection on the broader significance of effectiveness. He argues that in a knowledge economy, every professional is an executive. Anyone who makes decisions that affect the performance of the organization is doing executive work, regardless of their title. This means that effectiveness is not just a concern for CEOs and senior leaders. It is a discipline that everyone needs to master. Drucker believes that the effectiveness of organizations and of society itself depends on the ability of individuals to manage their time, focus on contribution, build on strengths, prioritize ruthlessly, and make sound decisions.\\n\\nThe bottom line: The Effective Executive is a concise and timeless guide to the discipline of getting the right things done. Peter Drucker\\\'s five practices, managing time, focusing on contribution, building on strengths, prioritizing first things, and making effective decisions, provide a framework that is as relevant today as it was when first published. The book challenges you to stop measuring yourself by how busy you are and start measuring yourself by the results you produce.'},
   {id:'shoedog',title:'Shoe Dog',author:'Phil Knight',tag:'leadership',mins:13,grad:'linear-gradient(135deg,#0a0a0a 0%,#2a2a2a 50%,#FED7AA 100%)',why:'Nike\\'s founder on the messy, terrifying, beautiful early years of building a company.',insights:[['Crazy idea, then commit','He drove around Oregon selling shoes from a Plymouth.'],['Money is the constant problem','Cash flow nearly killed Nike repeatedly.'],['People over process','The first team built the culture; the culture built the company.'],['Don\\'t look back','Keep moving even when you don\\'t know how.'],['Be a fool','Have the audacity to try the unreasonable thing.']],summary:'Welcome to the brief of Shoe Dog by Phil Knight.\\n\\nThis is the memoir of the man who built Nike from a crazy idea into one of the most recognizable brands on the planet. Phil Knight wrote this book not as a victory lap but as an honest and deeply personal account of the decades-long struggle it took to turn a dream about shoes into a global empire. It is a story about risk, stubbornness, luck, and the irrational conviction that kept Knight going when every rational person would have quit.\\n\\nThe story begins in 1962. Knight is a twenty-four-year-old recent graduate of Stanford\\\'s business school. For his final project, he had written a paper arguing that Japanese running shoes could compete with the dominant German brands like Adidas and Puma, the same way Japanese cameras had overtaken German cameras. After graduation, he decides to test his theory in the real world. He flies to Japan and talks his way into a meeting with the executives at Onitsuka Tiger, a shoe company in Kobe. With nothing but nerve and a made-up company name, Blue Ribbon Sports, he convinces them to let him distribute their shoes in the western United States.\\n\\nWhat follows is a decade of barely controlled chaos. Knight starts selling shoes out of the trunk of his car at track meets. He partners with Bill Bowerman, his former track coach at the University of Oregon, who becomes his co-founder and the creative genius behind some of Nike\\\'s most important shoe innovations. Bowerman was obsessed with making shoes lighter and faster. He famously used his wife\\\'s waffle iron to create a new sole design, pouring rubber into the waffle grid to produce a traction pattern that would revolutionize running shoes.\\n\\nKnight describes the early years of Blue Ribbon Sports as a constant battle for survival. The company was always cash-strapped. Every dollar of revenue was immediately reinvested in inventory, which meant there was never a financial cushion. Banks were reluctant to lend to a small shoe distributor run by a twenty-something with no real business experience. Knight\\\'s relationship with his Japanese supplier was fraught with tension, as Onitsuka repeatedly threatened to find other distributors or cut him off entirely. Knight spent much of the 1960s and early 1970s on the edge of bankruptcy, making frantic phone calls to bankers and suppliers, trying to keep the whole operation from collapsing.\\n\\nThe cast of early employees is one of the most memorable aspects of the book. Knight did not hire polished corporate executives. He hired misfits and eccentrics who shared his passion for running and his willingness to work insane hours for little pay. Jeff Johnson was his first full-time employee, a runner and salesman who was so enthusiastic that he sent Knight detailed letters every day whether Knight responded or not. Johnson would later come up with the name Nike, inspired by the Greek goddess of victory, which he said came to him in a dream. There was also Bob Woodell, a former runner paralyzed in a framing accident who became one of the company\\\'s most valued executives, and Geoff Hollister, who helped build Nike\\\'s grassroots marketing presence in the running community.\\n\\nThe turning point comes when Knight decides to break away from Onitsuka and create his own brand. This was an enormous risk. Blue Ribbon Sports depended entirely on Onitsuka\\\'s shoes. By creating their own line, Knight and his team were starting over from scratch while also potentially triggering a lawsuit from their Japanese partner, which is exactly what happened. Knight describes the legal battle with Onitsuka as one of the most stressful experiences of his life, but also one that forged the company\\\'s identity. They were no longer distributors. They were Nike.\\n\\nThe book vividly captures the culture of the early Nike. It was a company built on passion, not process. Knight and his team worked out of cramped offices, argued constantly, drank beer together, and shared a deep love of running and athletics. Knight calls his early employees the Buttfaces, a name that captures the irreverence and informality of the group. They held regular meetings where disagreement was encouraged and hierarchy was minimal. Knight admits that he was not a natural manager. He was introverted, uncomfortable with confrontation, and often left his people to figure things out on their own. But this hands-off style also gave his team the freedom to innovate and take ownership of their work.\\n\\nKnight is remarkably honest about the personal costs of building Nike. His first marriage fell apart under the pressure. His relationship with his sons was strained. He missed countless family events because he was traveling or working. He reflects on these sacrifices with a mix of regret and acceptance. He does not pretend that building a great company and having a balanced life are easily compatible. He acknowledges that he often chose the company over his family, and he is not entirely at peace with those choices.\\n\\nAs Nike grew, Knight faced the challenges of taking the company public and navigating the transition from a scrappy startup to a major corporation. The IPO in 1980 was a milestone, but it also brought new pressures. Wall Street demanded consistent growth and predictable results, which clashed with the entrepreneurial culture Knight had built. He had to learn to manage analysts, board members, and shareholders while still staying true to the brand\\\'s roots in athletics and innovation. The signing of Michael Jordan in 1984 was another turning point, creating the Air Jordan line that would become one of the most successful product partnerships in business history and cementing Nike\\\'s position as a cultural force far beyond the world of running.\\n\\nThe book also covers the darker moments in Nike\\\'s history, including the controversies around labor practices in overseas factories. Knight does not dwell on these issues at length, but he does not ignore them either. He describes how the criticisms forced the company to confront its supply chain practices and implement reforms. He frames these experiences as part of the ongoing challenge of running a global business, where the decisions you make have consequences you cannot always foresee or control.\\n\\nToward the end of the memoir, Knight reflects on what Nike has become and what it means to him. He writes about the death of his son Matthew, which is the emotional center of the book. He describes the grief in spare, devastating prose that stands in stark contrast to the entrepreneurial energy of the earlier chapters. It is a reminder that no amount of business success can protect you from the most fundamental human experiences.\\n\\nKnight closes with a scene of himself walking through the Nike campus, past buildings named after athletes he helped make famous, past thousands of employees who are part of something he started with nothing more than a crazy idea and a pair of shoes. He expresses gratitude, wonder, and a lingering restlessness that suggests he never fully stopped being the young man who flew to Japan on a prayer.\\n\\nThe bottom line: Shoe Dog is one of the great entrepreneurial memoirs, a raw and compelling account of what it actually takes to build something from nothing. Phil Knight\\\'s story is not a blueprint for success. It is a messy, uncertain, deeply human journey filled with near-disasters, unlikely allies, and the stubborn refusal to give up. It will resonate with anyone who has ever bet everything on an idea the world told them was crazy.'},
-  {id:'jobs',title:'Steve Jobs',author:'Walter Isaacson',tag:'leadership',mins:15,grad:'linear-gradient(135deg,#0a0a0a 0%,#2a2a2a 50%,#9b9797 100%)',why:'The definitive biography. Genius, cruelty, taste, and the relentless pursuit of perfection.',insights:[['Reality distortion','Will, applied hard enough, bends the world.'],['Taste matters','Caring about details others don\\'t see is the moat.'],['Focus is saying no','He killed 70% of Apple\\'s products on return.'],['Integration wins','Hardware + software + service together.'],['Be a yardstick','Apple measured itself against the best in the world.']],summary:'Welcome to the brief of Steve Jobs by Walter Isaacson.\\n\\nWalter Isaacson, the biographer behind definitive portraits of Benjamin Franklin and Albert Einstein, was personally asked by Steve Jobs to write his biography. Jobs gave Isaacson unprecedented access to his life, his family, his colleagues, and his rivals, with one condition: he would not read the book before publication and would not ask for any changes. The result is one of the most thorough and unflinching portraits of a business leader ever written, a book that does not shy away from Jobs\\\'s cruelty, arrogance, and obsessiveness, while also capturing the genius and vision that made him one of the most transformative figures in modern history.\\n\\nThe story begins with Jobs\\\'s adoption. Born in 1955 to a Syrian graduate student and an American woman who gave him up at birth, Jobs was raised by Paul and Clara Jobs in Mountain View, California, the heart of what would become Silicon Valley. His adoptive father, a machinist and car enthusiast, taught young Steve the importance of craftsmanship, a value that would define his entire career. Even the parts of a product you cannot see should be beautiful, Paul Jobs would say, a philosophy that Steve would later apply with fanatical intensity to every product Apple made.\\n\\nJobs\\\'s youth was marked by a restless intelligence and a refusal to follow rules. He dropped out of Reed College after one semester but continued to audit classes that interested him, including a famous calligraphy course that would later influence the typography of the Macintosh. He traveled to India seeking spiritual enlightenment, experimented with psychedelic drugs, and embraced a countercultural worldview that set him apart from the conventional business leaders of his time. Isaacson argues that this blend of technology and liberal arts, of engineering and aesthetics, became the defining characteristic of Jobs\\\'s approach to product design.\\n\\nThe founding of Apple in 1976 with Steve Wozniak and the early success of the Apple II make up some of the most exciting chapters in the book. Wozniak was the engineering genius who built the machines, while Jobs was the visionary who understood how to package and market them. Their partnership was productive but unequal. Jobs took credit for Wozniak\\\'s work, shortchanged him on payments, and pushed him aside as Apple grew. Isaacson does not excuse this behavior but uses it to illustrate a pattern that would repeat throughout Jobs\\\'s career: his willingness to use and discard people in pursuit of his vision.\\n\\nThe launch of the Macintosh in 1984 is another pivotal moment. Jobs drove his team to the point of exhaustion, demanding perfection in every detail. He divided the world into heroes and bozos, lavishing praise on those who met his standards and publicly humiliating those who did not. This management style created a culture of fear and brilliance. People did their best work for Jobs because they were terrified of his judgment and because they knew he would accept nothing less than extraordinary. The Macintosh was a commercial disappointment initially, but it introduced the graphical user interface and mouse to mainstream computing and laid the groundwork for the digital revolution.\\n\\nJobs\\\'s ouster from Apple in 1985 is one of the most dramatic chapters. After a power struggle with CEO John Sculley, the man Jobs himself had recruited, the Apple board sided with Sculley and stripped Jobs of his responsibilities. Jobs was devastated. He had been fired from the company he founded. But the exile proved to be one of the most important periods of his life. He founded NeXT, a computer company that produced elegant but commercially unsuccessful machines, and he bought Pixar, a struggling animation studio, which he nurtured into the powerhouse that created Toy Story and transformed the film industry.\\n\\nIsaacson spends considerable time on Jobs\\\'s personal life during this period. His relationship with his daughter Lisa, whom he initially denied paternity of, is one of the most painful threads in the book. Jobs could be extraordinarily cruel to the people closest to him. He was a demanding and sometimes absent father. His marriage to Laurene Powell, which brought some stability to his personal life, did not entirely smooth his rough edges. Isaacson presents Jobs as a deeply complicated human being, capable of both great tenderness and shocking callousness.\\n\\nThe return to Apple in 1997 marks the beginning of the most productive period in Jobs\\\'s career and arguably the most remarkable turnaround in business history. Apple was weeks away from bankruptcy when Jobs returned. Over the next fourteen years, he would launch the iMac, the iPod, iTunes, the iPhone, the iPad, and the Apple Store, each one transforming its respective industry. Isaacson takes readers inside the development of each of these products, revealing the obsessive attention to detail, the fierce internal debates, and the last-minute changes that characterized Jobs\\\'s creative process.\\n\\nThe development of the iPhone receives particularly detailed treatment. Isaacson describes how Jobs challenged his engineers to create a phone with no physical keyboard, a concept that seemed impossible at the time. He insisted that the device feel natural and intuitive, that every interaction be a pleasure rather than a chore. The result was a product that not only revolutionized the phone industry but fundamentally changed how humans interact with technology. Isaacson argues that the iPhone represents Jobs\\\'s greatest achievement because it combined hardware, software, and services into a seamless experience that no competitor has fully matched.\\n\\nJobs\\\'s battle with pancreatic cancer runs through the final third of the book. Diagnosed in 2003 with a rare and potentially treatable form of the disease, Jobs initially refused surgery in favor of alternative treatments, a decision that Isaacson and many others believe may have cost him his life. By the time Jobs agreed to conventional medicine, the cancer had spread. Isaacson handles this period with sensitivity but does not avoid the difficult truth that Jobs\\\'s stubbornness and belief in his own exceptionalism extended to his medical decisions.\\n\\nThe final chapters are deeply moving. Jobs continued to work through his illness, launching the iPad and beginning work on what would become Apple\\\'s new campus. He spent his last months reflecting on his legacy, his family, and the meaning of his work. He told Isaacson that he wanted to build a company that would endure, a company that valued great products over profits and that would continue to innovate long after he was gone. He died on October 5, 2011, at the age of fifty-six.\\n\\nIsaacson\\\'s biography does not attempt to resolve the contradictions of Steve Jobs. It presents them honestly and lets the reader wrestle with them. Jobs was a genius and a tyrant, a visionary and a bully, a man who changed the world and hurt the people closest to him. The book is not a hagiography. It is a portrait of a deeply flawed human being who accomplished extraordinary things.\\n\\nThe bottom line: Steve Jobs by Walter Isaacson is the definitive account of one of the most important figures in modern technology and business. It is a biography that captures both the brilliance and the darkness of its subject, offering profound lessons about innovation, leadership, design, and the cost of relentless ambition. Whether you admire Jobs or are troubled by him, this book will deepen your understanding of the man and the revolution he set in motion.'},
+  {id:'jobs',title:'Steve Jobs',author:'Walter Isaacson',tag:'leadership',mins:15,grad:'linear-gradient(135deg,#0a0a0a 0%,#2a2a2a 50%,#8E8E93 100%)',why:'The definitive biography. Genius, cruelty, taste, and the relentless pursuit of perfection.',insights:[['Reality distortion','Will, applied hard enough, bends the world.'],['Taste matters','Caring about details others don\\'t see is the moat.'],['Focus is saying no','He killed 70% of Apple\\'s products on return.'],['Integration wins','Hardware + software + service together.'],['Be a yardstick','Apple measured itself against the best in the world.']],summary:'Welcome to the brief of Steve Jobs by Walter Isaacson.\\n\\nWalter Isaacson, the biographer behind definitive portraits of Benjamin Franklin and Albert Einstein, was personally asked by Steve Jobs to write his biography. Jobs gave Isaacson unprecedented access to his life, his family, his colleagues, and his rivals, with one condition: he would not read the book before publication and would not ask for any changes. The result is one of the most thorough and unflinching portraits of a business leader ever written, a book that does not shy away from Jobs\\\'s cruelty, arrogance, and obsessiveness, while also capturing the genius and vision that made him one of the most transformative figures in modern history.\\n\\nThe story begins with Jobs\\\'s adoption. Born in 1955 to a Syrian graduate student and an American woman who gave him up at birth, Jobs was raised by Paul and Clara Jobs in Mountain View, California, the heart of what would become Silicon Valley. His adoptive father, a machinist and car enthusiast, taught young Steve the importance of craftsmanship, a value that would define his entire career. Even the parts of a product you cannot see should be beautiful, Paul Jobs would say, a philosophy that Steve would later apply with fanatical intensity to every product Apple made.\\n\\nJobs\\\'s youth was marked by a restless intelligence and a refusal to follow rules. He dropped out of Reed College after one semester but continued to audit classes that interested him, including a famous calligraphy course that would later influence the typography of the Macintosh. He traveled to India seeking spiritual enlightenment, experimented with psychedelic drugs, and embraced a countercultural worldview that set him apart from the conventional business leaders of his time. Isaacson argues that this blend of technology and liberal arts, of engineering and aesthetics, became the defining characteristic of Jobs\\\'s approach to product design.\\n\\nThe founding of Apple in 1976 with Steve Wozniak and the early success of the Apple II make up some of the most exciting chapters in the book. Wozniak was the engineering genius who built the machines, while Jobs was the visionary who understood how to package and market them. Their partnership was productive but unequal. Jobs took credit for Wozniak\\\'s work, shortchanged him on payments, and pushed him aside as Apple grew. Isaacson does not excuse this behavior but uses it to illustrate a pattern that would repeat throughout Jobs\\\'s career: his willingness to use and discard people in pursuit of his vision.\\n\\nThe launch of the Macintosh in 1984 is another pivotal moment. Jobs drove his team to the point of exhaustion, demanding perfection in every detail. He divided the world into heroes and bozos, lavishing praise on those who met his standards and publicly humiliating those who did not. This management style created a culture of fear and brilliance. People did their best work for Jobs because they were terrified of his judgment and because they knew he would accept nothing less than extraordinary. The Macintosh was a commercial disappointment initially, but it introduced the graphical user interface and mouse to mainstream computing and laid the groundwork for the digital revolution.\\n\\nJobs\\\'s ouster from Apple in 1985 is one of the most dramatic chapters. After a power struggle with CEO John Sculley, the man Jobs himself had recruited, the Apple board sided with Sculley and stripped Jobs of his responsibilities. Jobs was devastated. He had been fired from the company he founded. But the exile proved to be one of the most important periods of his life. He founded NeXT, a computer company that produced elegant but commercially unsuccessful machines, and he bought Pixar, a struggling animation studio, which he nurtured into the powerhouse that created Toy Story and transformed the film industry.\\n\\nIsaacson spends considerable time on Jobs\\\'s personal life during this period. His relationship with his daughter Lisa, whom he initially denied paternity of, is one of the most painful threads in the book. Jobs could be extraordinarily cruel to the people closest to him. He was a demanding and sometimes absent father. His marriage to Laurene Powell, which brought some stability to his personal life, did not entirely smooth his rough edges. Isaacson presents Jobs as a deeply complicated human being, capable of both great tenderness and shocking callousness.\\n\\nThe return to Apple in 1997 marks the beginning of the most productive period in Jobs\\\'s career and arguably the most remarkable turnaround in business history. Apple was weeks away from bankruptcy when Jobs returned. Over the next fourteen years, he would launch the iMac, the iPod, iTunes, the iPhone, the iPad, and the Apple Store, each one transforming its respective industry. Isaacson takes readers inside the development of each of these products, revealing the obsessive attention to detail, the fierce internal debates, and the last-minute changes that characterized Jobs\\\'s creative process.\\n\\nThe development of the iPhone receives particularly detailed treatment. Isaacson describes how Jobs challenged his engineers to create a phone with no physical keyboard, a concept that seemed impossible at the time. He insisted that the device feel natural and intuitive, that every interaction be a pleasure rather than a chore. The result was a product that not only revolutionized the phone industry but fundamentally changed how humans interact with technology. Isaacson argues that the iPhone represents Jobs\\\'s greatest achievement because it combined hardware, software, and services into a seamless experience that no competitor has fully matched.\\n\\nJobs\\\'s battle with pancreatic cancer runs through the final third of the book. Diagnosed in 2003 with a rare and potentially treatable form of the disease, Jobs initially refused surgery in favor of alternative treatments, a decision that Isaacson and many others believe may have cost him his life. By the time Jobs agreed to conventional medicine, the cancer had spread. Isaacson handles this period with sensitivity but does not avoid the difficult truth that Jobs\\\'s stubbornness and belief in his own exceptionalism extended to his medical decisions.\\n\\nThe final chapters are deeply moving. Jobs continued to work through his illness, launching the iPad and beginning work on what would become Apple\\\'s new campus. He spent his last months reflecting on his legacy, his family, and the meaning of his work. He told Isaacson that he wanted to build a company that would endure, a company that valued great products over profits and that would continue to innovate long after he was gone. He died on October 5, 2011, at the age of fifty-six.\\n\\nIsaacson\\\'s biography does not attempt to resolve the contradictions of Steve Jobs. It presents them honestly and lets the reader wrestle with them. Jobs was a genius and a tyrant, a visionary and a bully, a man who changed the world and hurt the people closest to him. The book is not a hagiography. It is a portrait of a deeply flawed human being who accomplished extraordinary things.\\n\\nThe bottom line: Steve Jobs by Walter Isaacson is the definitive account of one of the most important figures in modern technology and business. It is a biography that captures both the brilliance and the darkness of its subject, offering profound lessons about innovation, leadership, design, and the cost of relentless ambition. Whether you admire Jobs or are troubled by him, this book will deepen your understanding of the man and the revolution he set in motion.'},
   // ─── COMMUNICATION ───
   {id:'crucial',title:'Crucial Conversations',author:'Patterson, Grenny, McMillan, Switzler',tag:'communication',mins:11,grad:'linear-gradient(135deg,#1a0606 0%,#3a0c0c 50%,#FF5050 100%)',why:'High-stakes conversations decide outcomes. Master them and life shifts.',insights:[['Start with heart','Know what you really want before you speak.'],['Make it safe','When safety is at risk, work on safety, not content.'],['Master your stories','Strong emotion = stories you\\'re telling. Notice them.'],['STATE','Share facts, tell stories, ask, talk tentatively, encourage testing.'],['Move to action','Decisions, owners, deadlines. Otherwise, nothing happens.']],summary:'Welcome to the brief of Crucial Conversations by Kerry Patterson, Joseph Grenny, Ron McMillan, and Al Switzler.\\n\\nThere are moments in life when a conversation stops being casual and suddenly becomes crucial. The stakes climb, opinions diverge, and emotions flare. Maybe you\\\'re confronting a coworker about missed deadlines, or sitting across from your partner trying to address a pattern that\\\'s been eroding trust for months. These are the exchanges that shape careers, relationships, and even your own sense of self-respect. Patterson, Grenny, McMillan, and Switzler wrote this book because they noticed something striking in their research: the people who consistently got the best results in organizations and families were the ones who handled these high-stakes moments with unusual skill. Not by avoiding conflict, and not by bulldozing through it, but by keeping dialogue open when every instinct screamed to shut it down.\\n\\nThe book begins by defining what makes a conversation crucial. Three ingredients must be present: high stakes, opposing opinions, and strong emotions. Most of us have a default response when all three collide. Some of us go silent, withdrawing into icy politeness or passive-aggressive hints. Others become aggressive, raising voices, making accusations, or wielding sarcasm like a weapon. Both responses share the same root problem: we\\\'ve stopped contributing to the shared pool of meaning. That concept, the pool of shared meaning, is the central metaphor of the entire book. When people feel safe enough to express their honest views, the pool grows richer, decisions improve, and commitment strengthens. When people withhold information or force their perspective on others, the pool stays shallow and everyone suffers.\\n\\nSo how do you keep dialogue flowing when everything inside you wants to fight or flee? The authors introduce a framework they call Start with Heart. Before you open your mouth, get clear on what you really want. Not what you want in the heat of the moment, which is usually to win or to punish, but what you genuinely want for yourself, for the other person, and for the relationship. This step sounds simple, but it requires a kind of emotional honesty that most people rarely practice. You have to catch yourself in the act of shifting your goal from solving a problem to saving face.\\n\\nOnce your motives are aligned, the next challenge is making the conversation safe. The authors call this skill Learn to Look. You need to develop a dual awareness: paying attention not only to the content of what\\\'s being said, but also to the conditions under which people are talking. Are they starting to go silent? Are they becoming combative? These are signs that safety has been compromised. When you notice safety breaking down, the conversation about content needs to pause while you rebuild the conditions for honest exchange.\\n\\nRebuilding safety typically involves two elements: mutual purpose and mutual respect. Mutual purpose means the other person needs to believe you genuinely care about their goals and interests, not just your own. Mutual respect means they need to feel valued as a human being, not dismissed or belittled. The authors offer several techniques for restoring safety when it breaks. Contrasting is one of the most powerful. It\\\'s a don\\\'t-and-do statement: you explain what you do not intend, then clarify what you do intend. For example, you might say that you are not trying to suggest their work isn\\\'t valued, but that you do want to find a way to hit deadlines more consistently.\\n\\nThe book then turns to what might be its most psychologically demanding chapter: mastering your stories. Between something that happens to us and the emotion we feel, there is an interpretation, a story we tell ourselves. Someone cuts us off in traffic and we tell ourselves they are reckless and selfish, which makes us furious. A colleague doesn\\\'t return our email and we tell ourselves they are ignoring us on purpose, which makes us resentful. The authors identify three particularly toxic story types: victim stories, where we cast ourselves as innocent sufferers; villain stories, where we attribute the worst motives to others; and helpless stories, where we convince ourselves there is nothing we can do. Recognizing these patterns in our own thinking is the first step toward choosing more useful interpretations.\\n\\nWhen it comes time to actually state your views, the authors recommend a method captured by the acronym STATE. Share your facts first, because facts are the least controversial starting point. Then tell your story, meaning your interpretation of those facts. Ask for the other person\\\'s perspective. Talk tentatively, using language that signals openness rather than certainty. And encourage testing, making it clear you genuinely want to hear pushback. This approach lets you be both honest and respectful, direct without being domineering.\\n\\nEqually important is the skill of listening, especially when others blow up or clam up. The authors offer four listening tools captured by the acronym AMPP: Ask to get things rolling, Mirror to acknowledge emotions, Paraphrase to show understanding, and Prime when someone is still holding back. Priming means offering your best guess about what they might be thinking, giving them something to respond to. These techniques are not about being passive. They are about being genuinely curious, which turns out to be one of the most powerful stances you can take in a heated discussion.\\n\\nThe final chapters address what happens after the conversation: moving to action. Too many crucial conversations end with vague goodwill but no clear commitments. The authors insist on specifying who does what by when and how you will follow up. Without those details, misunderstandings multiply and resentment builds because everyone walks away with a different idea of what was agreed upon. They distinguish between four decision-making methods: command, consult, vote, and consensus. Choosing the right method before you begin prevents confusion later.\\n\\nThroughout the book, the authors emphasize that these skills are not natural for most people. They go against millions of years of evolutionary programming that prepared us to fight or flee from perceived threats. Practicing them feels awkward and vulnerable, especially at first. But the payoff is extraordinary. Research cited in the book shows that organizations whose people handle crucial conversations effectively enjoy higher productivity, more innovation, and better safety records. Relationships where both people can speak honestly about hard topics are stronger and more satisfying. Individuals who master these skills advance faster in their careers and report greater well-being.\\n\\nOne particularly memorable insight is that the biggest communication failures usually happen not because people disagree, but because they disagree about whether it is safe to disagree. The moment you make it genuinely safe for someone to say something unpopular, the dynamic shifts. Defensiveness melts. Creativity emerges. Solutions appear that neither side could have imagined alone.\\n\\nThe bottom line: Crucial Conversations teaches that the quality of your life is determined by the quality of your most difficult conversations. When stakes are high and emotions run hot, the natural human impulse is to either retreat into silence or lash out. Both destroy dialogue. By starting with heart, making it safe, mastering your stories, and stating your path, you can transform your most dreaded exchanges into your most productive ones. The pool of shared meaning grows, decisions improve, and relationships deepen. It is not about being nice. It is about being real in a way that also keeps the door open.'},
   {id:'neversplit',title:'Never Split the Difference',author:'Chris Voss',tag:'communication',mins:11,grad:'linear-gradient(135deg,#0a0c0c 0%,#1f3030 50%,#611f1c 100%)',why:'A former FBI hostage negotiator on getting what you want without splitting the difference.',insights:[['Mirror','Repeat the last 1\\u20133 words. They keep talking.'],['Tactical empathy','Understand their feelings. Acknowledge them.'],['"That\\'s right" beats "yes"','It signals true alignment.'],['Calibrated questions','"How am I supposed to do that?" reframes pressure.'],['No isn\\'t the end','It\\'s often the beginning.']],summary:'Welcome to the brief of Never Split the Difference by Chris Voss.\\n\\nChris Voss spent twenty-four years as an FBI hostage negotiator, talking people out of buildings, off bridges, and away from terrible decisions. When he retired and began teaching negotiation at business schools, he realized something shocking: the polished, rational frameworks that dominated academic negotiation theory were almost useless in the situations that mattered most. Life-or-death negotiations didn\\\'t follow neat scripts. They ran on emotion, on instinct, on the raw human need to be heard. This book is Voss\\\'s attempt to distill what actually works when the stakes are real and the person across from you is not playing by the rules of a classroom exercise.\\n\\nThe story opens with Voss as a young FBI agent, thrown into his first major kidnapping case and feeling unprepared. The Bureau\\\'s approach to negotiation at the time was heavily influenced by Getting to Yes, the classic Harvard framework built on rational problem-solving. But Voss found that kidnappers and bank robbers were not interested in win-win outcomes. They were emotional, unpredictable, and frequently irrational. What worked was not logic but empathy, specifically a kind of tactical empathy that acknowledged the other person\\\'s feelings without necessarily agreeing with them.\\n\\nThe first major tool Voss introduces is mirroring. It is deceptively simple: you repeat the last few words the other person said, using an upward inflection. That\\\'s it. No paraphrasing, no clever reframing. Just echo their words back. The effect is powerful because it signals that you are listening and it encourages the other person to elaborate. In tense situations, mirroring buys time, builds rapport, and draws out information you would never get by asking direct questions.\\n\\nNext comes labeling, the practice of putting a name on the other person\\\'s emotions. You say something like it seems like you are frustrated, or it sounds like this deal means a lot to you. Labeling does not require you to agree with the emotion or even fully understand it. What it does is make the other person feel seen, which is one of the deepest human needs. When people feel understood, their defensive walls come down and they become more willing to engage constructively. Voss stresses that labeling negative emotions tends to diminish them, while ignoring them causes them to intensify.\\n\\nOne of the book\\\'s most counterintuitive lessons involves the word no. Traditional sales and negotiation training teaches people to push for yes. Voss argues this is backwards. People are protective of their autonomy, and pushing for yes makes them feel trapped. Saying no, on the other hand, gives people a sense of control and safety. So Voss designs his questions to invite no. Instead of asking if someone has a few minutes to talk, he asks if now is a bad time. Instead of asking if they agree, he asks if it would be ridiculous to consider an option. The no comes easy, and paradoxically it opens the door to genuine engagement.\\n\\nThe concept Voss calls calibrated questions is another cornerstone of his method. These are open-ended questions, usually beginning with how or what, that put the problem in the other person\\\'s lap without making them defensive. How am I supposed to do that? What about this is important to you? How would you like me to proceed? These questions force the other side to think deeply, reveal constraints, and often talk themselves into solutions that benefit both parties. Calibrated questions transform confrontation into collaboration because the other person feels like a partner in solving the problem rather than an adversary being cornered.\\n\\nVoss dedicates an entire chapter to what he calls the accusation audit. Before entering any difficult negotiation, he recommends listing every negative thing the other person might think or feel about you and your position. Then you address those accusations head-on at the very beginning of the conversation. It sounds like you might think I am being unreasonable. You probably feel like this isn\\\'t fair. By naming the worst accusations before the other side can hurl them, you defuse them. People cannot hold a grudge against someone who has already acknowledged their grievance. The emotional sting evaporates.\\n\\nAnother powerful technique is the late-night FM DJ voice, a slow, calm, soothing tone that signals authority without aggression. Voss distinguishes three vocal tones for negotiation: the analyst\\\'s flat, methodical tone, the accommodator\\\'s warm and friendly pitch, and the assertive tone that can trigger defensiveness. The DJ voice, deep and reassuring, is his default because it conveys confidence and creates a feeling of safety in the listener.\\n\\nThe middle sections of the book explore how to bend reality during a negotiation. Voss discusses anchoring, the psychological phenomenon where the first number thrown out heavily influences the final outcome. He recommends letting the other side anchor first in most situations, then using calibrated questions to push back. He also introduces the concept of loss aversion, the well-documented finding that people are more motivated by the fear of losing something than by the prospect of gaining something of equal value. Skilled negotiators frame their proposals not as gains for the other side, but as ways to avoid loss.\\n\\nVoss tells gripping stories throughout. There is the case of a kidnapping in Haiti where the family had almost no money and the kidnappers demanded a fortune. Using extreme empathy and calibrated questions, the FBI team negotiated the ransom down by more than ninety percent. There is the story of a bank robbery gone wrong where mirroring and labeling kept a suicidal gunman talking long enough for him to surrender peacefully. Each story reinforces the same principles: slow down, listen more than you talk, and treat the other person\\\'s emotions as data, not obstacles.\\n\\nToward the end, Voss addresses the Ackerman model for bargaining, a systematic approach to making offers. You set your target price, then make your first offer at sixty-five percent of that target. You plan three raises, to eighty-five, ninety-five, and one hundred percent. Each raise is smaller than the last, signaling that you are being squeezed to your limit. Your final offer should be a precise, non-round number, because precise numbers feel more researched and immovable than round ones.\\n\\nVoss also warns about Black Swans, the unknown unknowns that can completely change the dynamics of a negotiation. These are pieces of information that, if discovered, would transform everything. Maybe the other side is under a deadline you do not know about. Maybe they have a personal connection to the issue that changes their calculation entirely. The best negotiators are obsessed with finding Black Swans because they understand that the deal is often won or lost on information nobody expected to matter.\\n\\nThe bottom line: Never Split the Difference dismantles the myth that good negotiation is about finding the rational middle ground. Voss shows that real influence comes from tactical empathy, from making the other person feel truly heard, from asking questions that let them solve your problem for you, and from understanding that emotions drive decisions far more than logic does. The title itself is a declaration: splitting the difference is lazy and leaves value on the table. By mastering mirroring, labeling, calibrated questions, and the careful use of no, you can achieve outcomes that feel like a win for everyone without ever compromising on what matters most.'},
@@ -11390,7 +11399,7 @@ const BOOK_SUMMARIES=[
   // ─── CREATIVITY ───
   {id:'bigmagic',title:'Big Magic',author:'Elizabeth Gilbert',tag:'creativity',mins:10,grad:'linear-gradient(135deg,#1a0810 0%,#3d0820 50%,#FF6A8B 100%)',why:'Creativity is a partnership with mystery. Show up; ideas will too.',insights:[['Ideas are alive','They look for hosts. If you don\\'t take it, someone else will.'],['Curiosity > passion','Don\\'t wait for the burning fire. Follow small tugs.'],['Make the deal','You\\'ll provide the work; the work provides the meaning.'],['Done is better than perfect','Finish things. Then finish more things.'],['Don\\'t make the work pay your bills','It crushes the joy.']],summary:'Welcome to the brief of Big Magic by Elizabeth Gilbert.\\n\\nElizabeth Gilbert wrote Eat, Pray, Love, one of the best-selling memoirs of the twenty-first century, and then she had to figure out how to keep creating after that kind of massive, life-altering success. Big Magic is, in many ways, the book that emerged from that challenge. It is not a how-to guide for writers or artists. It is a philosophy of creative living, and it applies to anyone who has ever felt the urge to make something, whether that something is a novel, a garden, a business, or a life.\\n\\nGilbert organizes the book around six themes: courage, enchantment, permission, persistence, trust, and divinity. Each section builds on the last, constructing an argument that is part spiritual memoir, part creative manifesto, and part warm conversation with a wise friend who has been through the fire and come out the other side smiling.\\n\\nShe begins with courage, and her central claim is startlingly simple. Creative living requires bravery because it demands vulnerability. Every time you make something and share it with the world, you risk criticism, rejection, and failure. Most people avoid this risk by never starting. Gilbert argues that fear and creativity are conjoined twins. They will always coexist. The goal is not to eliminate fear but to refuse to let it drive. She uses the metaphor of a road trip. Fear is allowed in the car. Fear can even sit in the back seat. But fear is never, under any circumstances, allowed to touch the steering wheel or choose the route. You acknowledge the fear, you let it ride along, and you keep driving toward the work.\\n\\nThe section on enchantment contains the book\\\'s most distinctive and controversial idea: that ideas are living entities. Gilbert believes that creative ideas exist independently of the people who bring them to life. An idea, she proposes, will seek out a human collaborator, knock on the door of that person\\\'s consciousness, and offer itself as a partnership. If the person says yes and does the work, the idea comes to life. If the person hesitates too long or says no, the idea leaves and finds someone else. She supports this with a remarkable story about a novel she had been developing for years, a plot set in the Amazon involving a road through the jungle. She eventually abandoned the project. Shortly afterward, she met the novelist Ann Patchett, and during a conversation, they discovered that Patchett had independently begun writing a novel with an almost identical premise. Gilbert does not present this as coincidence. She presents it as the idea moving on.\\n\\nYou can take this literally or metaphorically, and Gilbert is fine with either interpretation. The practical effect is the same. If you have an idea that excites you, act on it now. Do not wait for the perfect moment. Do not wait until you are ready. The idea is visiting, and it will not wait forever. This urgency is one of the most useful emotions a creative person can cultivate.\\n\\nPermission is the third theme, and Gilbert dismantles the gatekeeping mentality that stops so many people from creating. You do not need a degree, a credential, a publishing deal, or anyone\\\'s approval to make things. You do not need to suffer for your art. You do not need to be tortured or broken or addicted. Gilbert is openly hostile to the myth of the tormented artist. She views it as destructive and self-indulgent. The idea that great art requires great suffering has killed too many talented people and scared away countless others. Gilbert gives herself permission to create without suffering, and she extends that same permission to the reader. You are allowed to enjoy the process. You are allowed to create things that are imperfect. You are allowed to be a beginner. You are allowed to make things for no reason other than the pleasure of making them.\\n\\nThe section on persistence is where Gilbert gets practical. She is blunt about the realities of the creative life. Most creative work does not pay well. Most creative work is not recognized. Most creative work disappears into the void without applause or acknowledgment. Gilbert\\\'s advice is not to quit your day job. She kept hers for years after publishing her first books. She waited tables, tended bar, and worked as a cook. She did not resent these jobs. She valued them because they removed the financial pressure from her writing. When your art does not need to pay the rent, you are free to take risks, experiment, and follow your curiosity without worrying about commercial viability.\\n\\nThis is a critical distinction that separates Gilbert from many voices in the creative advice space. She does not promise that following your passion will lead to riches. She does not promise that the universe will reward your bravery with a book deal. She promises something quieter and more durable. If you create for the love of creating, you will always have access to a source of meaning and joy that does not depend on external validation. You are creating a relationship with your own curiosity, and that relationship is its own reward.\\n\\nGilbert addresses the trap of perfectionism with characteristic directness. Perfectionism, she argues, is just fear wearing a fancy outfit. It masquerades as high standards, but its true function is to prevent you from finishing anything. A perfectionist never ships because nothing is ever good enough. Gilbert\\\'s antidote is to embrace what she calls the shit sandwich. Every pursuit worth doing comes with a set of unpleasant realities. The question is not whether you can avoid the unpleasant parts. The question is whether you love the work enough to eat the shit sandwich that comes with it. If yes, keep going. If no, find something else.\\n\\nThe trust section expands this idea into a broader philosophy. Gilbert asks readers to trust the process even when it feels pointless. Trust that showing up matters even when the results are invisible. Trust that the work is changing you even when the product is mediocre. She shares her own experiences with creative failure, including books that did not sell and projects that went nowhere. She does not frame these as detours. She frames them as essential parts of the journey. Every failed project teaches you something that fuels the next one.\\n\\nIn the final section on divinity, Gilbert circles back to the mystical. She describes creativity as a collaboration between the human and something larger. Whether you call it God, the muse, the universe, or the subconscious, there is an element of creative work that feels like it comes from beyond the self. Gilbert argues that honoring this dimension, treating the creative process with a sense of reverence and play simultaneously, is what sustains a lifetime of making things. She does not demand that the reader share her spiritual framework. She simply invites them to remain open to wonder.\\n\\nThroughout the book, Gilbert\\\'s voice is warm, funny, and disarmingly honest. She does not position herself above the reader. She positions herself alongside them, sharing her fears, her failures, and her small daily acts of creative courage. The book is not long. It does not need to be. Its power lies not in exhaustive instruction but in a shift of perspective. Creating is not a luxury reserved for the talented few. It is a birthright available to everyone.\\n\\nThe bottom line: Big Magic argues that creative living is not about producing masterpieces or achieving fame. It is about maintaining a lifelong relationship with your own curiosity, showing up for the work even when it is hard, and refusing to let fear make your decisions. Do it for the love of doing it, and the magic takes care of itself.'},
   {id:'steal',title:'Steal Like an Artist',author:'Austin Kleon',tag:'creativity',mins:8,grad:'linear-gradient(135deg,#0a0a0a 0%,#3a2c1a 50%,#FCD34D 100%)',why:'Nothing is original. Steal smartly, transform deeply, share generously.',insights:[['Steal like an artist','Imitate at first. Originality emerges from accumulation.'],['Don\\'t wait','Start before you know enough. The doing teaches.'],['Use your hands','Physical practice activates different thinking.'],['Side projects','The thing you do on the side becomes the main thing.'],['Be boring (in life)','So you can be wild in the work.']],summary:'Welcome to the brief of Steal Like an Artist by Austin Kleon.\\n\\nIf you have ever stared at a blank page, a blank canvas, or a blank screen and felt paralyzed by the belief that you have nothing original to say, this book was written for you. Austin Kleon\\\'s Steal Like an Artist is a short, punchy, deeply liberating manifesto about creativity. It is built around ten principles that challenge the myth of the lone genius and replace it with something far more practical and far more honest: every creative person builds on the work of those who came before, and the sooner you embrace that truth, the sooner you can start making things that matter.\\n\\nThe first principle, and the one that gives the book its title, is that nothing is original. Kleon opens by quoting the writer Jonathan Lethem, who argued that all creative work builds on what came before. Every new idea is a remix, a mashup, a transformation of existing ideas. Kleon traces this thread through art history, music, literature, and technology. The Beatles borrowed from Chuck Berry, who borrowed from Muddy Waters, who borrowed from Robert Johnson, who borrowed from the Delta blues tradition stretching back generations. Salvador Dali is often quoted as saying that those who do not want to imitate anything produce nothing. Kleon does not see this as a depressing revelation. He sees it as a liberation. If originality is a myth, then you do not need to wait for a bolt of divine inspiration. You can start right now by collecting influences, combining them in new ways, and adding your own perspective.\\n\\nThe distinction Kleon draws between good theft and bad theft is essential. Good theft is about honoring your influences, transforming what you take, and remixing it into something that reflects your own voice and vision. Bad theft is about plagiarizing, imitating without understanding, and passing off someone else\\\'s work as your own. A good artist studies many sources, transforms deeply, and credits generously. A bad artist copies one source, skims the surface, and hides the debt. Kleon frames creativity not as a mystical gift but as a practice of curation. Your job as a creative person is to collect good ideas from everywhere, carry a swipe file of things that inspire you, and then find unexpected connections between them.\\n\\nThe second principle, do not wait until you know who you are to get started, attacks the procrastination that kills most creative ambitions. Kleon argues that you do not discover your creative identity through introspection. You discover it through action. Start making things. Copy your heroes at first, not to plagiarize but to learn. Kleon calls this practice reverse engineering. When you try to copy something you admire, you inevitably fail in interesting ways. Those failures are where your own style begins to emerge. The gap between what you intended and what you produced is where originality lives.\\n\\nWrite the book you want to read is the third principle, and it applies far beyond writing. Make the music you want to hear. Design the product you want to use. Cook the meal you want to eat. Kleon argues that the best creative work comes from a place of personal need. When you create something you genuinely want to exist in the world, you bring an authenticity and an energy that no amount of market research can replicate. You also solve the audience problem automatically, because you are the audience.\\n\\nKleon is a strong advocate for using your hands. In a world increasingly dominated by screens and digital tools, he urges creators to step away from the computer regularly and work with physical materials. Sketch with pencils. Cut and paste with scissors and glue. Write longhand. He sets up two workstations in his own studio, an analog desk for generating ideas and a digital desk for editing and publishing. The analog desk has no screens. It is a place for free association, messy thinking, and serendipitous discovery. He finds that the physical act of working with your hands engages different parts of the brain and produces ideas that never surface when staring at a laptop.\\n\\nSide projects and hobbies get their own principle, and Kleon argues they are not distractions but essential fuel for your main work. Some of the most important creative breakthroughs come from the margins. Side projects succeed precisely because they carry no pressure. There is no deadline, no client, no expectation. You are free to experiment, play, and follow your curiosity wherever it leads. Kleon\\\'s own career illustrates this point. His Newspaper Blackout poems, created by blacking out words in newspaper articles to reveal hidden poems, started as a side project and became the work he is best known for.\\n\\nThe principle about doing good work and sharing it with people is Kleon\\\'s answer to the question of how to get noticed. In the age of the internet, you do not need a gatekeeper to give you permission. You can share your process, your influences, your works in progress, and your finished pieces directly with an audience. Kleon emphasizes sharing the process, not just the product. Let people see your drafts, your influences, your workspace, your failures. This transparency builds connection and community. It also takes the pressure off producing polished masterpieces. When you share the journey, every step has value.\\n\\nGeography is no longer destiny, Kleon writes, but your surroundings still matter. He encourages creative people to surround themselves with interesting work, whether that means moving to a vibrant city, building a stimulating home studio, or simply curating the media you consume more carefully. You are shaped by what you let into your life. If you fill your environment with inspiring work, your own work will improve almost by osmosis.\\n\\nKleon also champions the importance of being nice. The creative world is smaller than you think, and your reputation matters. He advises creators to be generous with praise, honest in their dealings, and open to collaboration. He suggests keeping a praise file, a collection of kind words and encouragement from others, to revisit during moments of doubt. He also warns against picking fights for attention. Negativity might generate clicks, but it poisons the well of creative goodwill.\\n\\nThe principle about being boring is surprisingly powerful. Kleon argues that the most productive creative people are often the ones who maintain steady routines, manage their money carefully, and protect their time. The romantic image of the chaotic, self-destructive artist is not just inaccurate; it is dangerous. Creativity thrives on consistency. Show up at the same time every day. Do the work whether you feel inspired or not. Take care of your health. The boring stuff is what makes the exciting stuff possible.\\n\\nFinally, Kleon talks about creativity as something that is not used up. Unlike a bank account that depletes when you spend, creativity replenishes itself through use. The more you make, the more ideas you have. The more you share, the more connections you form. The more you steal from your influences, the more you develop your own voice. It is a virtuous cycle, but only if you participate in it. Kleon reminds us that the act of creation is itself the reward. Do not wait for the right moment, the right tools, or the right credentials. Start where you are, use what you have, and make something today.\\n\\nThe bottom line: Steal Like an Artist demolishes the myth that creativity requires originality, genius, or permission. It replaces that myth with a practical, joyful framework: collect widely, remix boldly, share generously, and keep showing up. Your creative voice is not something you find; it is something you build by doing the work.'},
-  {id:'onwriting',title:'On Writing',author:'Stephen King',tag:'creativity',mins:13,grad:'linear-gradient(135deg,#0a0a0a 0%,#2a1a14 50%,#9b9797 100%)',why:'Half memoir, half craft manual. The closest thing to a writing-school education in 250 pages.',insights:[['Write every day','1,000 words a day. Make the schedule sacred.'],['Read voraciously','You can\\'t write better than you read.'],['First drafts are bad','Get the story down. Fix it later.'],['Kill the adverbs','And most adjectives. Verbs do the work.'],['The story is the boss','Plot serves story. Pretty serves story. Everything does.']],summary:'Welcome to the brief of On Writing by Stephen King.\\n\\nThis is half memoir and half masterclass, and both halves are extraordinary. Stephen King, one of the most prolific and commercially successful authors in history, pulls back the curtain on his life and his craft with a level of honesty and generosity that is rare in any genre. Whether you are an aspiring novelist or someone who simply loves a great story, this book offers wisdom that extends far beyond the writing desk.\\n\\nThe first section of the book is pure memoir, and King tells his life story with the same narrative grip that has made his novels impossible to put down. He grew up in modest circumstances in Maine, raised by a single mother who worked multiple jobs to keep the family afloat. He was a sickly child who spent long stretches in bed, and it was during those periods of illness that he fell in love with reading and, eventually, writing. He wrote his first stories as a young boy and began submitting them to magazines as a teenager. The rejection slips piled up, but his mother\\\'s encouragement kept him going. He nailed each rejection to his bedroom wall with a spike, and by the time the spike could no longer hold the weight, he had begun to receive handwritten notes from editors encouraging him to keep trying.\\n\\nKing describes his years of struggle with vivid, often darkly comic detail. He and his wife Tabitha lived in a trailer, barely making ends meet. He taught high school English during the day and wrote at night, squeezed into a tiny laundry room with a child\\\'s desk balanced on his knees. The breakthrough came with Carrie, his first published novel. He actually threw the early pages in the trash, convinced it was not working. Tabitha fished them out and told him to finish it. The paperback rights sold for four hundred thousand dollars, and King\\\'s career was launched.\\n\\nBut the memoir does not shy away from darkness. King describes his descent into alcoholism and drug addiction with unflinching honesty. At the height of his addiction, he was consuming massive quantities of alcohol and cocaine daily while continuing to produce novels at a staggering pace. He barely remembers writing some of his most famous books. His family staged an intervention, dumping the contents of his trash can, filled with beer cans, cigarette butts, and drug paraphernalia, onto the floor in front of him. He got sober and has remained sober since, and he credits his family with saving his life.\\n\\nThe second half of the book is the craft section, and it functions as one of the most practical writing guides ever produced. King begins with the toolbox metaphor: every writer carries a toolbox, and the most fundamental tools sit on the top shelf where they are easiest to reach. Vocabulary is the first tool. King advises writers to use the first word that comes to mind, as long as it is appropriate. Do not reach for fancy language to impress. Simple, direct prose is almost always more powerful than ornate writing. Grammar is the second tool. King reviews the basics with humor and clarity, emphasizing that understanding the mechanics of sentences gives you the freedom to break the rules intentionally rather than accidentally.\\n\\nHis advice on the craft itself is opinionated and specific. He believes the paragraph, not the sentence, is the basic unit of writing. He despises adverbs and considers them a sign of weak prose. He famously declares that the road to hell is paved with adverbs. He counsels writers to use active voice rather than passive, to keep descriptions lean, and to trust the reader\\\'s imagination to fill in the gaps. He advocates for writing dialogue that sounds like real people talking, which means paying attention to how people actually speak, with all their interruptions, evasions, and verbal tics.\\n\\nOn the process of writing, King is clear and prescriptive. He writes every single day, including holidays and birthdays. His daily output goal is two thousand words, and he works until he hits it. He writes with the door closed, literally and metaphorically, meaning that the first draft is private. You write it for yourself, without worrying about what anyone else will think. Then you put it away for at least six weeks. When you return to it, you read it with fresh eyes and begin revising. The second draft is written with the door open, meaning you now consider the reader\\\'s experience. His formula for revision is straightforward: second draft equals first draft minus ten percent. Cut the fat. Tighten the prose. Kill your darlings.\\n\\nKing\\\'s approach to plot is unconventional. He does not outline. He believes that stories are found, not constructed. He starts with a situation, puts characters into it, and then follows them to see what they do. The writer\\\'s job, he says, is to unearth the story like a fossil, carefully brushing away the dirt to reveal the shape that was already there. This organic approach to storytelling is not for everyone, but King argues that it produces fiction that feels alive and surprising because even the author does not know what will happen next.\\n\\nThe book also covers the practical realities of a writing life: finding a workspace, setting a schedule, reading voraciously, and building the habit of daily practice. King is emphatic that reading is as important as writing. If you do not have time to read, he says, you do not have time to write. He carries a book with him everywhere and reads during every spare moment. He estimates that he reads seventy to eighty books a year, and he considers this essential to his craft.\\n\\nThe book\\\'s final section describes King\\\'s near-fatal accident in 1999, when he was struck by a van while walking along the shoulder of a road in Maine. He suffered catastrophic injuries and faced a long, agonizing recovery. He writes about using the return to writing as a form of rehabilitation, forcing himself back to the desk even when sitting was excruciating. Writing, he realized, was not just his profession but his identity, the thing that gave his life structure and meaning.\\n\\nThe bottom line: On Writing is both a deeply personal memoir and a fiercely practical guide to the craft of writing. King\\\'s advice is clear, direct, and earned through decades of prolific output. His core message is that writing is work, not magic, and that talent is common but discipline is rare. If you want to write, the path is simple: read a lot, write a lot, and do both every single day. This book is essential reading for anyone who puts words on a page.'},
+  {id:'onwriting',title:'On Writing',author:'Stephen King',tag:'creativity',mins:13,grad:'linear-gradient(135deg,#0a0a0a 0%,#2a1a14 50%,#8E8E93 100%)',why:'Half memoir, half craft manual. The closest thing to a writing-school education in 250 pages.',insights:[['Write every day','1,000 words a day. Make the schedule sacred.'],['Read voraciously','You can\\'t write better than you read.'],['First drafts are bad','Get the story down. Fix it later.'],['Kill the adverbs','And most adjectives. Verbs do the work.'],['The story is the boss','Plot serves story. Pretty serves story. Everything does.']],summary:'Welcome to the brief of On Writing by Stephen King.\\n\\nThis is half memoir and half masterclass, and both halves are extraordinary. Stephen King, one of the most prolific and commercially successful authors in history, pulls back the curtain on his life and his craft with a level of honesty and generosity that is rare in any genre. Whether you are an aspiring novelist or someone who simply loves a great story, this book offers wisdom that extends far beyond the writing desk.\\n\\nThe first section of the book is pure memoir, and King tells his life story with the same narrative grip that has made his novels impossible to put down. He grew up in modest circumstances in Maine, raised by a single mother who worked multiple jobs to keep the family afloat. He was a sickly child who spent long stretches in bed, and it was during those periods of illness that he fell in love with reading and, eventually, writing. He wrote his first stories as a young boy and began submitting them to magazines as a teenager. The rejection slips piled up, but his mother\\\'s encouragement kept him going. He nailed each rejection to his bedroom wall with a spike, and by the time the spike could no longer hold the weight, he had begun to receive handwritten notes from editors encouraging him to keep trying.\\n\\nKing describes his years of struggle with vivid, often darkly comic detail. He and his wife Tabitha lived in a trailer, barely making ends meet. He taught high school English during the day and wrote at night, squeezed into a tiny laundry room with a child\\\'s desk balanced on his knees. The breakthrough came with Carrie, his first published novel. He actually threw the early pages in the trash, convinced it was not working. Tabitha fished them out and told him to finish it. The paperback rights sold for four hundred thousand dollars, and King\\\'s career was launched.\\n\\nBut the memoir does not shy away from darkness. King describes his descent into alcoholism and drug addiction with unflinching honesty. At the height of his addiction, he was consuming massive quantities of alcohol and cocaine daily while continuing to produce novels at a staggering pace. He barely remembers writing some of his most famous books. His family staged an intervention, dumping the contents of his trash can, filled with beer cans, cigarette butts, and drug paraphernalia, onto the floor in front of him. He got sober and has remained sober since, and he credits his family with saving his life.\\n\\nThe second half of the book is the craft section, and it functions as one of the most practical writing guides ever produced. King begins with the toolbox metaphor: every writer carries a toolbox, and the most fundamental tools sit on the top shelf where they are easiest to reach. Vocabulary is the first tool. King advises writers to use the first word that comes to mind, as long as it is appropriate. Do not reach for fancy language to impress. Simple, direct prose is almost always more powerful than ornate writing. Grammar is the second tool. King reviews the basics with humor and clarity, emphasizing that understanding the mechanics of sentences gives you the freedom to break the rules intentionally rather than accidentally.\\n\\nHis advice on the craft itself is opinionated and specific. He believes the paragraph, not the sentence, is the basic unit of writing. He despises adverbs and considers them a sign of weak prose. He famously declares that the road to hell is paved with adverbs. He counsels writers to use active voice rather than passive, to keep descriptions lean, and to trust the reader\\\'s imagination to fill in the gaps. He advocates for writing dialogue that sounds like real people talking, which means paying attention to how people actually speak, with all their interruptions, evasions, and verbal tics.\\n\\nOn the process of writing, King is clear and prescriptive. He writes every single day, including holidays and birthdays. His daily output goal is two thousand words, and he works until he hits it. He writes with the door closed, literally and metaphorically, meaning that the first draft is private. You write it for yourself, without worrying about what anyone else will think. Then you put it away for at least six weeks. When you return to it, you read it with fresh eyes and begin revising. The second draft is written with the door open, meaning you now consider the reader\\\'s experience. His formula for revision is straightforward: second draft equals first draft minus ten percent. Cut the fat. Tighten the prose. Kill your darlings.\\n\\nKing\\\'s approach to plot is unconventional. He does not outline. He believes that stories are found, not constructed. He starts with a situation, puts characters into it, and then follows them to see what they do. The writer\\\'s job, he says, is to unearth the story like a fossil, carefully brushing away the dirt to reveal the shape that was already there. This organic approach to storytelling is not for everyone, but King argues that it produces fiction that feels alive and surprising because even the author does not know what will happen next.\\n\\nThe book also covers the practical realities of a writing life: finding a workspace, setting a schedule, reading voraciously, and building the habit of daily practice. King is emphatic that reading is as important as writing. If you do not have time to read, he says, you do not have time to write. He carries a book with him everywhere and reads during every spare moment. He estimates that he reads seventy to eighty books a year, and he considers this essential to his craft.\\n\\nThe book\\\'s final section describes King\\\'s near-fatal accident in 1999, when he was struck by a van while walking along the shoulder of a road in Maine. He suffered catastrophic injuries and faced a long, agonizing recovery. He writes about using the return to writing as a form of rehabilitation, forcing himself back to the desk even when sitting was excruciating. Writing, he realized, was not just his profession but his identity, the thing that gave his life structure and meaning.\\n\\nThe bottom line: On Writing is both a deeply personal memoir and a fiercely practical guide to the craft of writing. King\\\'s advice is clear, direct, and earned through decades of prolific output. His core message is that writing is work, not magic, and that talent is common but discipline is rare. If you want to write, the path is simple: read a lot, write a lot, and do both every single day. This book is essential reading for anyone who puts words on a page.'},
   {id:'artistway',title:'The Artist\\'s Way',author:'Julia Cameron',tag:'creativity',mins:11,grad:'linear-gradient(135deg,#0c0a14 0%,#1f1245 50%,#a5564b 100%)',why:'A 12-week creative recovery program. Morning pages and artist dates, every week.',insights:[['Morning pages','Three handwritten pages, every morning, no exceptions.'],['Artist dates','One solo creative outing a week.'],['Synchronicity','Show up; the universe arranges support.'],['Block names the fear','Most creative blocks are fear with a costume.'],['Self-care is creative','Without it, creativity dries up.']],summary:'Welcome to the brief of The Artist\\\'s Way by Julia Cameron.\\n\\nThis is not just a book about creativity. It is a twelve-week program designed to dismantle the internal barriers that prevent you from living a fully creative life. Julia Cameron wrote it from a place of deep personal experience, having gone through her own creative recovery after years of blocked writing and self-destructive behavior. Since its publication, it has become one of the most influential creativity books ever written, used by millions of people around the world, from struggling painters to corporate executives seeking more innovation in their thinking.\\n\\nCameron\\\'s core belief is simple but powerful: creativity is a natural human birthright, not a rare gift bestowed on a chosen few. Every single person is inherently creative. The problem is not a lack of talent but a buildup of creative scar tissue, layers of self-doubt, criticism, fear, and negative beliefs that accumulate over a lifetime and block the free flow of creative energy. The Artist\\\'s Way is designed to peel back those layers, week by week, and reconnect you with the creative self that has been buried underneath.\\n\\nThe program rests on two foundational practices. The first is morning pages: three pages of longhand, stream-of-consciousness writing done first thing every morning. There are no rules about content. You write whatever comes into your mind, no matter how mundane, repetitive, or seemingly pointless. The pages are not meant to be good writing. They are meant to be a drain for the mental clutter that crowds out creative thinking. Think of them as a windshield wiper for the mind. All the anxieties, resentments, to-do lists, and mental chatter that normally occupy your attention get dumped onto the page, clearing space for something deeper and more authentic to emerge. Cameron is insistent that morning pages must be done by hand, not typed, because the physical act of handwriting slows you down enough to access thoughts and feelings that would otherwise stay buried beneath the surface of consciousness.\\n\\nThe second foundational practice is the artist date: a weekly solo excursion to do something that fills your creative well. This can be anything that delights, intrigues, or inspires you. A trip to a museum, a walk through a neighborhood you have never explored, browsing a quirky bookstore, watching a documentary, sitting in a park and sketching. The only rules are that you go alone and that you do something that genuinely interests you, not something you think you should do. The artist date is designed to replenish the input side of the creative equation. You cannot continuously produce output without taking in new experiences, images, and sensations. Many people resist the artist date because it feels self-indulgent, but Cameron argues that this resistance is itself a symptom of the creative blockage the program is designed to heal.\\n\\nThe twelve weeks of the program are structured around specific themes, each one addressing a different aspect of creative recovery. The early weeks focus on safety and identity. Cameron asks you to examine the beliefs you hold about creativity and where those beliefs came from. Many people carry deeply internalized messages from parents, teachers, and peers that tell them creativity is impractical, selfish, or dangerous. A teacher who mocked your childhood drawing. A parent who told you to pursue something sensible instead of art. A friend who laughed at your poetry. These experiences create what Cameron calls the Censor, an internal voice that criticizes and shuts down creative impulses before they can take form. The early weeks of the program are about identifying and challenging those voices.\\n\\nCameron introduces the concept of creative affirmations and what she calls blurts, the negative automatic thoughts that arise in response to positive creative statements. When you write an affirmation like I am a talented and creative person, the blurt might be no you are not, you have never finished anything in your life. These blurts are not truths; they are old wounds masquerading as facts. By writing them down and examining them, you begin to loosen their grip on your behavior.\\n\\nThe middle weeks address issues of power, possibility, and abundance. Cameron challenges the scarcity mindset that many creatives operate from, the belief that there is not enough success, money, or opportunity to go around. She encourages readers to examine their relationship with money and to recognize how financial fears often disguise themselves as creative blocks. She also introduces the concept of creative U-turns, the pattern of self-sabotage where a person makes significant creative progress and then inexplicably stops, retreats, or destroys their own work. Understanding this pattern is crucial because it operates below the level of conscious awareness. Many people have experienced the phenomenon of starting a project with great enthusiasm only to abandon it just as it begins to gain momentum. Cameron explains this as a protective mechanism, a way of avoiding the vulnerability that comes with genuinely investing in creative work.\\n\\nThe later weeks deal with recovering a sense of connection, strength, and autonomy. Cameron addresses the phenomenon of creative jealousy and reframes it as a useful signal rather than a character flaw. When you feel jealous of another person\\\'s creative success, it is often because they are doing something that you yourself long to do. Jealousy points you toward your own unexplored desires. She also discusses the importance of setting boundaries and learning to say no to obligations and people that drain your creative energy.\\n\\nCameron also explores what she calls synchronicity, the mysterious tendency for opportunities, resources, and connections to appear once you commit to your creative path. She frames this in spiritual terms, suggesting that the universe responds to creative commitment by providing support in unexpected ways. Whether you interpret this metaphysically or simply as the result of heightened awareness and increased activity, the practical effect is real: people who do the work of creative recovery consistently report that doors begin to open in surprising ways.\\n\\nThe final weeks bring the program to a culmination, encouraging participants to take concrete creative action, to begin the project they have been putting off, to submit the work they have been hoarding, to make the leap they have been contemplating. By this point, the morning pages and artist dates have built a foundation of self-trust and creative momentum that makes action feel natural rather than terrifying.\\n\\nThe bottom line: The Artist\\\'s Way is a structured, compassionate program for anyone who feels creatively blocked, stuck, or disconnected from their creative self. Through daily morning pages, weekly artist dates, and twelve weeks of guided self-examination, Cameron helps readers dismantle the internal barriers that prevent creative expression. It is not a book about making art; it is a book about recovering the artist within you, and it has changed millions of lives because its methods genuinely work.'},
   // ─── LEARNING ───
   {id:'makestick',title:'Make It Stick',author:'Brown, Roediger, McDaniel',tag:'mind',mins:11,grad:'linear-gradient(135deg,#0a0a14 0%,#1a1f3d 50%,#a5564b 100%)',why:'Most ways we study are wrong. Active retrieval, spacing, and interleaving are the real ways.',insights:[['Re-reading is poor','Feels productive. Isn\\'t.'],['Retrieval works','Quizzing yourself beats re-reading by miles.'],['Spaced practice','Distribute, don\\'t cram.'],['Interleaving','Mix topics. Forces deeper coding.'],['Difficulty is the point','Easy practice produces easy forgetting.']],summary:'Welcome to the brief of Make It Stick by Peter Brown, Henry Roediger, and Mark McDaniel.\\n\\nThis is one of those rare books that takes everything you thought you knew about learning and turns it completely on its head. If you\\\'ve ever highlighted a textbook until it looked like a neon sign, or reread your notes over and over the night before an exam, you\\\'re going to find this book both humbling and liberating. The authors, a storyteller and two cognitive scientists, spent years studying how people actually learn, and their findings challenge nearly every popular study habit out there.\\n\\nLet\\\'s start with the big revelation that opens the book. Most of us believe that learning should feel easy and smooth. We think that if we\\\'re struggling, we\\\'re doing something wrong. But Brown, Roediger, and McDaniel present a mountain of research showing the exact opposite is true. Learning that feels effortful and even a bit uncomfortable is the learning that actually lasts. The strategies that feel the most productive, like rereading and massed practice, are often the least effective. Meanwhile, the techniques that feel awkward and slow tend to produce the deepest and most durable understanding.\\n\\nThe first major strategy the authors champion is retrieval practice. Instead of passively reviewing material, you should actively try to pull information out of your memory. This means closing the book and trying to recall what you just read. It means taking practice tests. It means quizzing yourself relentlessly. Every time you retrieve a piece of knowledge from memory, you strengthen the neural pathways associated with it. The act of struggling to remember something is not a sign of failure. It is the very mechanism by which learning is consolidated. The authors share compelling studies from classrooms and laboratories where students who practiced retrieval dramatically outperformed those who simply reread their materials, even when the rereaders felt more confident about their knowledge.\\n\\nNext comes the concept of spaced practice. We\\\'ve all crammed for an exam and felt like we knew the material inside and out, only to forget most of it within a week. That\\\'s because massed practice, doing the same thing over and over in a single session, creates a powerful illusion of mastery without building lasting memory. Spaced practice is the antidote. By spreading your study sessions out over time and allowing some forgetting to occur between sessions, you force your brain to work harder during each retrieval attempt. That extra effort is what cements the knowledge. The authors recommend letting enough time pass that recall feels slightly difficult but not impossible. This sweet spot is where the real learning happens.\\n\\nInterleaving is another counterintuitive strategy the book explores in depth. Instead of practicing one type of problem or one subject until you\\\'ve mastered it before moving on, you should mix different topics and problem types together within a single study session. This feels chaotic and less productive in the moment. Students who interleave often feel like they\\\'re learning less. But when tested later, interleaved learners consistently outperform those who practiced in blocks. The reason is that interleaving forces you to continually identify which strategy or concept applies to each problem, building the discrimination skills that are essential for real-world application.\\n\\nThe authors also devote significant attention to the concept of desirable difficulties. This is the idea that certain obstacles during learning, when calibrated correctly, actually enhance long-term retention and transfer. Spacing, interleaving, and retrieval practice are all examples of desirable difficulties. They slow down the apparent rate of learning but dramatically improve how well you retain and apply what you\\\'ve learned. The key word here is desirable. The difficulty has to be something the learner can overcome with effort. If the challenge is too great, it becomes counterproductive. But when the struggle is manageable, it produces powerful results.\\n\\nAnother fascinating section of the book deals with the illusion of knowing. We are remarkably bad at judging our own competence. Fluency, the feeling that material is easy to process, tricks us into thinking we\\\'ve learned something when we haven\\\'t. Rereading creates fluency. Highlighting creates fluency. But fluency is not the same as understanding. The authors argue that we need to use objective measures like self-testing to accurately assess what we know and what we don\\\'t. Without this calibration, we walk into exams and real-world challenges overconfident and underprepared.\\n\\nThe book is rich with real-world stories that bring the science to life. We meet pilots who use mental rehearsal and simulation to prepare for emergencies they hope never to face. We meet medical students who dramatically improve their diagnostic skills through retrieval practice. We meet athletes and musicians who use interleaving and spacing to refine their craft. These stories are not mere decoration. They illustrate how the principles of effective learning apply far beyond the classroom, touching every domain where human performance matters.\\n\\nThere is also a thoughtful discussion about mental models and how experts differ from novices. Experts don\\\'t just know more facts. They have built rich, interconnected mental models that allow them to see patterns, make predictions, and solve problems efficiently. The learning strategies championed in this book are precisely the ones that help build these mental models. Retrieval practice, spacing, and interleaving all promote the kind of deep, structural understanding that separates true expertise from superficial familiarity.\\n\\nThe authors also address the role of prior knowledge in learning. New information is easier to learn when you can connect it to something you already know. This is why elaboration, the practice of explaining new material in your own words and connecting it to existing knowledge, is such a powerful technique. When you elaborate, you create multiple retrieval cues, giving your brain more pathways to access the information later. The book encourages learners to ask themselves questions like how does this relate to what I already know and what does this remind me of.\\n\\nGeneration is another strategy the authors highlight. When you attempt to solve a problem or answer a question before being shown the answer, you learn more effectively than if you simply read the solution. Even if your initial attempt is wrong, the act of generating an answer primes your brain to absorb the correct information more deeply. This is closely related to the testing effect and retrieval practice, and it underscores the book\\\'s central theme that productive struggle is the engine of learning.\\n\\nToward the end, the book offers practical advice for students, teachers, and trainers. For students, the message is clear. Ditch the highlighter. Stop rereading. Start quizzing yourself. Space out your study sessions. Mix up your practice. Embrace the discomfort. For teachers, the authors recommend incorporating frequent low-stakes testing into their courses, spacing out key concepts across the semester, and helping students understand that difficulty during learning is a feature, not a bug. For trainers in corporate and professional settings, the same principles apply. Simulations, varied practice scenarios, and regular knowledge checks produce more competent and adaptable professionals.\\n\\nThe bottom line: Make It Stick dismantles the myth that effective learning should feel easy and replaces it with evidence-based strategies that actually work. Retrieval practice, spaced repetition, interleaving, and embracing desirable difficulties are the keys to building knowledge that lasts. It\\\'s a book that doesn\\\'t just change how you study. It changes how you think about thinking itself.'},
@@ -11844,7 +11853,7 @@ const VOICE_CURRICULUM=[
     {id:2,name:'Negotiation',drills:['I appreciate the offer, and I have a counter to discuss.','Could we meet somewhere in the middle?','What is the most flexible part of this for you?','I want this to work for both of us.','Let us focus on what each side really needs.']},
     {id:3,name:'Presentations',drills:['Today, I want to share three big ideas with you.','Let me start with a story that landed for me.','The number to remember from this slide is two.','I want to leave you with one question to sit with.','Thank you for your time, I am happy to take questions.']},
   ]},
-  {id:6,name:'Pronunciation Mastery',color:'#8a2e2a',e:'\\u{1F399}\\uFE0F',desc:'Sharper sounds, clearer speech. Tongue twisters and stress patterns.',lessons:[
+  {id:6,name:'Pronunciation Mastery',color:'#3634A3',e:'\\u{1F399}\\uFE0F',desc:'Sharper sounds, clearer speech. Tongue twisters and stress patterns.',lessons:[
     {id:1,name:'Vowel sounds',drills:['The cat sat on the mat under the hat.','She sees the sea by the seashore today.','Tom walked along the long lawn at dawn.','I think the pink ink is in the sink.','The blue moon shone over the smooth lagoon.']},
     {id:2,name:'Tricky consonants',drills:['She sells seashells by the seashore.','Three thin thieves thought a thousand thoughts.','Red lorry, yellow lorry, red lorry, yellow lorry.','Peter Piper picked a peck of pickled peppers.','How can a clam cram in a clean cream can?']},
     {id:3,name:'Word stress',drills:['I will record the meeting for the record.','We need to present a present to the team.','The desert is no place to desert your friends.','I object to that object on principle.','The minute hand is moving in a minute way.']},
@@ -12129,7 +12138,7 @@ async function planMyDaySave(){
     }
     const en=(ehr<10?'0':'')+ehr+':'+emn;
     try{
-      await api('/schedule',{method:'POST',body:JSON.stringify({date:today,start_time:st,end_time:en,label:t.title,color:'#8a2e2a'})});
+      await api('/schedule',{method:'POST',body:JSON.stringify({date:today,start_time:st,end_time:en,label:t.title,color:'#3634A3'})});
       saved++;
     }catch(e){}
   }
@@ -12312,7 +12321,7 @@ function _broAppendMsg(m){
   var isAI=m.role==='bro';
   var d=document.createElement('div');d.className='bro-msg '+(isAI?'bro-msg-ai':'bro-msg-user');
   var inner='';
-  if(isAI)inner+='<div class="bro-avatar" style="background:linear-gradient(135deg,#8a2e2a,#a5564b)">\\u26A1</div>';
+  if(isAI)inner+='<div class="bro-avatar" style="background:linear-gradient(135deg,#3634A3,#a5564b)">\\u26A1</div>';
   var content=m.html?m.text:(isAI?broMd(m.text):esc(m.text));
   if(m.imagePreview)content='<img src="'+m.imagePreview+'" style="max-width:200px;max-height:150px;border-radius:0;margin-bottom:8px;display:block">'+content;
   inner+='<div class="bro-msg-content"><div class="bro-bubble '+(isAI?'':'bro-bubble-bro')+'">'+content+'</div></div>';
@@ -12324,7 +12333,7 @@ function _broAppendMsg(m){
 function _broShowTyping(show){
   var c=document.getElementById('broChat');if(!c)return;
   var tw=c.querySelector('.bro-typing-wrap');
-  if(show&&!tw){var d=document.createElement('div');d.className='bro-typing-wrap';d.innerHTML='<div class="bro-avatar" style="background:linear-gradient(135deg,#8a2e2a,#a5564b)">\\u26A1</div><div class="bro-typing"><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span></div>';c.appendChild(d);c.scrollTop=c.scrollHeight}
+  if(show&&!tw){var d=document.createElement('div');d.className='bro-typing-wrap';d.innerHTML='<div class="bro-avatar" style="background:linear-gradient(135deg,#3634A3,#a5564b)">\\u26A1</div><div class="bro-typing"><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span><span class="bro-typing-dot"></span></div>';c.appendChild(d);c.scrollTop=c.scrollHeight}
   else if(!show&&tw)c.removeChild(tw);
 }
 function _broActionToast(actions){
@@ -13045,12 +13054,12 @@ if(S.loginStep==='phone'){
 h+='<div class="hero-photo"><img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=1200&q=80" alt="Calm productive workspace" loading="eager"/><div class="hero-photo-overlay"></div></div>';
 h+='<div class="login-logo"><span class="b1">Bro</span><span class="b2">do</span><span class="b3">it</span><span class="dot"></span></div>';
 h+='<div class="login-tagline">Tasks. Books. Wisdom.</div>';
-h+='<a class="whatsnew-pill" href="/about" style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;margin:0 0 18px;background:rgba(31,77,63,.08);border:1px solid rgba(31,77,63,.2);border-radius:999px;font-size:12px;font-weight:500;letter-spacing:.04em;color:#8a2e2a;text-decoration:none;font-family:\\'JetBrains Mono\\',monospace;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:999px;background:#8a2e2a;box-shadow:0 0 8px #8a2e2a;animation:wn-pulse 2s ease-in-out infinite"></span>NEW · Our Story <span style="opacity:.7">→</span></a>';
+h+='<a class="whatsnew-pill" href="/about" style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;margin:0 0 18px;background:rgba(31,77,63,.08);border:1px solid rgba(31,77,63,.2);border-radius:999px;font-size:12px;font-weight:500;letter-spacing:.04em;color:#3634A3;text-decoration:none;font-family:\\'JetBrains Mono\\',monospace;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:999px;background:#3634A3;box-shadow:0 0 8px #3634A3;animation:wn-pulse 2s ease-in-out infinite"></span>NEW · Our Story <span style="opacity:.7">→</span></a>';
 h+='<div class="login-sub">A calm, focused space for the work that matters.</div>';
 S.loginMethod='email';
 h+='<input id="loginName" type="text" placeholder="Your name" value="'+esc(S.loginName)+'" oninput="S.loginName=this.value;persistLoginState()" style="font-size:15px;letter-spacing:0">';
 h+='<input id="loginEmail" type="email" placeholder="you@example.com" value="'+esc(S.loginEmail)+'" oninput="S.loginEmail=this.value;persistLoginState()" autocomplete="email" style="font-size:15px;letter-spacing:0">';
-if(S.loginError)h+='<div style="color:#8a2e2a;font-size:13px;font-weight:600;margin:8px 0">'+S.loginError+'</div>';
+if(S.loginError)h+='<div style="color:#3634A3;font-size:13px;font-weight:600;margin:8px 0">'+S.loginError+'</div>';
 h+='<button class="login-btn" onclick="sendOTP()"'+(S.loginLoading?' disabled':'')+'>'+(S.loginLoading?'Sending code...':'\\u2709\\uFE0F Send code to email')+'</button>';
 h+='<div class="login-hint">We\\'ll email a 6-digit code. Check your inbox (and spam folder).</div>';
 }else if(S.loginStep==='otp'){
@@ -13060,7 +13069,7 @@ h+='<div class="step-dots"><div class="step-dot on"></div><div class="step-dot o
 h+='<div class="otp-inputs">';
 for(let i=0;i<6;i++)h+='<input id="otp'+i+'" type="tel" maxlength="1" value="'+S.loginOTP[i]+'" oninput="otpInput('+i+',this.value)" onkeydown="otpKey('+i+',event)">';
 h+='</div>';
-if(S.loginError)h+='<div style="color:#8a2e2a;font-size:13px;font-weight:600;margin:8px 0">'+S.loginError+'</div>';
+if(S.loginError)h+='<div style="color:#3634A3;font-size:13px;font-weight:600;margin:8px 0">'+S.loginError+'</div>';
 h+='<button class="login-btn" onclick="verifyOTP()"'+(S.loginLoading?' disabled':'')+'>'+(S.loginLoading?'Verifying...':'Verify & Login')+'</button>';
 h+='<button class="login-btn sec" onclick="S.loginStep=\\'phone\\';S.loginError=\\'\\';try{sessionStorage.removeItem(\\'tf_otp_ts\\')}catch(e){}try{history.replaceState(null,\\'\\',\\'/\\')}catch(e){}render()">\\u2190 Change email</button>';
 h+='<div class="login-hint">Didn\\'t get the code? Check your spam folder or tap "Change email" to retry.</div>';
@@ -13124,8 +13133,8 @@ const s={total:ts.length,pend:ts.filter(t=>t.status==='pending').length,act:ts.f
 
 const JUMPER='<svg class="hdr-jumper" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">'
   +'<line class="ground" x1="6" y1="48" x2="54" y2="48" stroke-width="1.2" stroke-linecap="round"/>'
-  +'<path class="rope-top" d="M 8 32 Q 30 6 52 32" stroke="#8a2e2a" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
-  +'<path class="rope-bottom" d="M 8 32 Q 30 56 52 32" stroke="#8a2e2a" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
+  +'<path class="rope-top" d="M 8 32 Q 30 6 52 32" stroke="#3634A3" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
+  +'<path class="rope-bottom" d="M 8 32 Q 30 56 52 32" stroke="#3634A3" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
   +'<g class="jumper">'
     +'<circle cx="30" cy="14" r="3.4" fill="currentColor"/>'
     +'<line x1="30" y1="17" x2="30" y2="32" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'
@@ -13134,7 +13143,7 @@ const JUMPER='<svg class="hdr-jumper" viewBox="0 0 60 60" fill="none" xmlns="htt
     +'<g class="leg-l"><line x1="30" y1="32" x2="26" y2="44" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></g>'
     +'<g class="leg-r"><line x1="30" y1="32" x2="34" y2="44" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></g>'
   +'</g>'
-  +'<g class="puff" opacity="0" fill="#9b9797"><circle cx="20" cy="48" r="1.8"/><circle cx="40" cy="48" r="1.8"/></g>'
+  +'<g class="puff" opacity="0" fill="#8E8E93"><circle cx="20" cy="48" r="1.8"/><circle cx="40" cy="48" r="1.8"/></g>'
   +'</svg>';
 const _now=new Date();
 const _hm=_now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
@@ -13183,7 +13192,7 @@ let _hdrStreak=0;for(let _si=0;_si<60;_si++){const _sd=new Date(Date.now()-_si*8
 let h='<div class="hdr"><div class="hdr-l">'+LOGO_MARK+'</div><div class="hdr-actions">'
   +(_hdrStreak>0?'<div class="rd-pill rd-pill-accent">'+_hdrStreak+'-day streak</div>':'')
   +'<button class="hdr-help" onclick="toggleSolarSystem()" title="'+(S.nightSky?'Light Mode':'Solar System')+'" style="font-size:16px;display:flex;align-items:center;justify-content:center;opacity:'+(S.nightSky?'1':'.6')+'">'+(S.nightSky?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="'+'none'+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2l1.09 3.26L16.36 6l-3.27 1.09L12 10.36l-1.09-3.27L7.64 6l3.27-1.09z"/><path d="M17 14l.62 1.87L19.5 16.5l-1.88.63L17 19l-.62-1.87L14.5 16.5l1.88-.63z"/><path d="M7 14l.62 1.87L9.5 16.5l-1.88.63L7 19l-.62-1.87L4.5 16.5l1.88-.63z"/></svg>')+'</button>'
-  +'<button onclick="switchTab(\\'profile\\')" title="Profile" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#C05A42);color:#fff;border:none;font:700 13px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+((S.user&&S.user.name||'U').charAt(0).toUpperCase())+'</button>'
+  +'<button onclick="switchTab(\\'profile\\')" title="Profile" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#5856D6);color:#fff;border:none;font:700 13px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+((S.user&&S.user.name||'U').charAt(0).toUpperCase())+'</button>'
   +'</div></div>';
 
 var _mPool=window._DQ||MORALS;
@@ -13221,7 +13230,7 @@ if(isMain){
   var _focCircum=2*Math.PI*62;var _focDash=((_foc.remaining/_foc.total)*_focCircum);
   var _focDurMins=Math.round(_foc.total/60);
   hero+='<div class="focus-card'+(_foc.active?' is-active':'')+'">';
-  hero+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C05A42" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="font:600 15px var(--sans);color:#E8E8EC">Focus</span></div>';
+  hero+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="font:600 15px var(--sans);color:#E8E8EC">Focus</span></div>';
   if(_foc.sessions>0)hero+='<span style="font:500 12px var(--sans);color:rgba(255,255,255,.45)">'+_foc.sessions+' session'+(_foc.sessions>1?'s':'')+' today</span>';
   hero+='</div>';
   hero+='<div class="focus-ring-wrap" onclick="focusCandleMode()" style="cursor:pointer" title="Tap candle to enter focus room">';
@@ -13265,7 +13274,7 @@ if(isMain){
   hero+='<div style="position:relative;display:inline-block;width:100%;max-width:320px">';
   hero+='<canvas id="mcCanvas" width="320" height="400" style="width:100%;max-width:320px;height:auto;aspect-ratio:4/5;border-radius:0;touch-action:none;cursor:pointer"></canvas>';
   hero+='<div id="mcOverlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.45);border-radius:0;cursor:pointer;z-index:2" onclick="mcStartGame(this)">';
-  hero+='<div style="width:64px;height:64px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(212,101,74,.4)"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><polygon points="8 5 20 12 8 19"/></svg></div>';
+  hero+='<div style="width:64px;height:64px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(88,86,214,.4)"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><polygon points="8 5 20 12 8 19"/></svg></div>';
   hero+='<div style="font:600 15px var(--sans);color:#fff;margin-top:12px;text-shadow:0 1px 4px rgba(0,0,0,.3)">Tap to Play</div>';
   hero+='</div></div>';
   hero+='<div id="mcMsg" style="font:500 12px var(--sans);color:var(--text-mute);margin-top:8px;min-height:18px">Tap play to start climbing</div>';
@@ -13429,21 +13438,21 @@ if(isMain){
   const yearPct=Math.round(dayOfYear/365*100);
   const dateStr=now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
   const _rdTabIcons={
-    home:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 2.5L2.5 11v12a1.5 1.5 0 001.5 1.5h6v-7a3 3 0 016 0v7h6a1.5 1.5 0 001.5-1.5V11L13 2.5z" fill="#E8A87C"/><path d="M13 2.5L2.5 11h21L13 2.5z" fill="#D4654A"/><rect x="6" y="13" width="4" height="4" rx=".8" fill="#FDF2E9"/><rect x="16" y="13" width="4" height="4" rx=".8" fill="#FDF2E9"/><rect x="10.5" y="17.5" width="5" height="7" rx="1" fill="#B04E38"/><circle cx="20" cy="6" r="2.2" fill="#F59E0B"/></svg>',
-    tasks:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="4" y="3" width="18" height="21" rx="3" fill="#F3E8E4"/><rect x="4" y="3" width="18" height="5" rx="3" fill="#D4654A"/><circle cx="9" cy="13" r="1.5" fill="#D4654A"/><rect x="12.5" y="12" width="6" height="2" rx="1" fill="#CCBFB8"/><circle cx="9" cy="17.5" r="1.5" fill="#10B981"/><rect x="12.5" y="16.5" width="6" height="2" rx="1" fill="#CCBFB8"/><path d="M8 17l1 1 2.5-2.5" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="22" r="1.5" fill="#E5E0DD"/><rect x="12.5" y="21" width="6" height="2" rx="1" fill="#E5E0DD"/></svg>',
-    books:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M3 6a2 2 0 012-2h5c1.66 0 3 1.34 3 3v15c-1-1.5-3-2-5-2H5a2 2 0 01-2-2V6z" fill="#A7C7E7"/><path d="M23 6a2 2 0 00-2-2h-5c-1.66 0-3 1.34-3 3v15c1-1.5 3-2 5-2h5z" fill="#7FB3D8"/><path d="M13 7v15" stroke="#fff" stroke-width="1" opacity=".4"/><rect x="6" y="7" width="4.5" height="1.2" rx=".6" fill="#fff" opacity=".5"/><rect x="6" y="10" width="3.5" height="1.2" rx=".6" fill="#fff" opacity=".4"/><rect x="15.5" y="7" width="4.5" height="1.2" rx=".6" fill="#fff" opacity=".5"/><rect x="15.5" y="10" width="3.5" height="1.2" rx=".6" fill="#fff" opacity=".4"/></svg>',
-    meditation:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#FDF2E9"/><circle cx="13" cy="9" r="3" fill="#D4654A"/><path d="M8 18c0-2.8 2.2-5 5-5s5 2.2 5 5" fill="#E8A87C"/><circle cx="9" cy="6" r="1" fill="#F59E0B" opacity=".6"/><circle cx="17" cy="5" r=".8" fill="#F59E0B" opacity=".5"/><circle cx="20" cy="9" r=".6" fill="#F59E0B" opacity=".4"/><path d="M7 22c1.5-1.2 3.5-2 6-2s4.5.8 6 2" stroke="#D4654A" stroke-width="1" stroke-linecap="round" opacity=".3"/></svg>',
-    bro:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="2" y="4" width="15" height="11" rx="3" fill="#D4654A"/><path d="M5 15l-1 4 4-2.5" fill="#D4654A"/><circle cx="7" cy="9.5" r="1.2" fill="#fff"/><circle cx="10.5" cy="9.5" r="1.2" fill="#fff"/><circle cx="14" cy="9.5" r="1.2" fill="#fff"/><rect x="11" y="12" width="13" height="9" rx="3" fill="#E8A87C"/><path d="M21 21l2.5 3-1.5-3" fill="#E8A87C"/><rect x="14" y="15.5" width="2" height="1.5" rx=".75" fill="#fff" opacity=".7"/><rect x="17.5" y="15.5" width="2" height="1.5" rx=".75" fill="#fff" opacity=".7"/></svg>',
-    cal:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="5" width="20" height="19" rx="3" fill="#FDF2E9"/><rect x="3" y="5" width="20" height="6" rx="3" fill="#D4654A"/><rect x="8" y="2.5" width="2" height="5" rx="1" fill="#B04E38"/><rect x="16" y="2.5" width="2" height="5" rx="1" fill="#B04E38"/><circle cx="8.5" cy="16" r="1.5" fill="#E5DDD8"/><circle cx="13" cy="16" r="1.5" fill="#D4654A"/><circle cx="17.5" cy="16" r="1.5" fill="#E5DDD8"/><circle cx="8.5" cy="20.5" r="1.5" fill="#E5DDD8"/><circle cx="13" cy="20.5" r="1.5" fill="#E5DDD8"/><text x="13" y="9.8" text-anchor="middle" font-family="var(--sans)" font-size="5.5" font-weight="700" fill="#fff">AUG</text></svg>',
+    home:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 2.5L2.5 11v12a1.5 1.5 0 001.5 1.5h6v-7a3 3 0 016 0v7h6a1.5 1.5 0 001.5-1.5V11L13 2.5z" fill="#E8E8ED"/><path d="M13 2.5L2.5 11h21L13 2.5z" fill="#5856D6"/><rect x="6" y="13" width="4" height="4" rx=".8" fill="#fff"/><rect x="16" y="13" width="4" height="4" rx=".8" fill="#fff"/><rect x="10.5" y="17.5" width="5" height="7" rx="1" fill="#3634A3"/><circle cx="20" cy="6" r="2.2" fill="#FF9500"/></svg>',
+    tasks:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="4" y="3" width="18" height="21" rx="3" fill="#F0F0F2"/><rect x="4" y="3" width="18" height="5" rx="3" fill="#5856D6"/><circle cx="9" cy="13" r="1.5" fill="#5856D6"/><rect x="12.5" y="12" width="6" height="2" rx="1" fill="#D1D1D6"/><circle cx="9" cy="17.5" r="1.5" fill="#34C759"/><rect x="12.5" y="16.5" width="6" height="2" rx="1" fill="#D1D1D6"/><path d="M8 17l1 1 2.5-2.5" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="22" r="1.5" fill="#E5E5EA"/><rect x="12.5" y="21" width="6" height="2" rx="1" fill="#E5E5EA"/></svg>',
+    books:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M3 6a2 2 0 012-2h5c1.66 0 3 1.34 3 3v15c-1-1.5-3-2-5-2H5a2 2 0 01-2-2V6z" fill="#B8C5E8"/><path d="M23 6a2 2 0 00-2-2h-5c-1.66 0-3 1.34-3 3v15c1-1.5 3-2 5-2h5z" fill="#8E9CC6"/><path d="M13 7v15" stroke="#fff" stroke-width="1" opacity=".4"/><rect x="6" y="7" width="4.5" height="1.2" rx=".6" fill="#fff" opacity=".5"/><rect x="6" y="10" width="3.5" height="1.2" rx=".6" fill="#fff" opacity=".4"/><rect x="15.5" y="7" width="4.5" height="1.2" rx=".6" fill="#fff" opacity=".5"/><rect x="15.5" y="10" width="3.5" height="1.2" rx=".6" fill="#fff" opacity=".4"/></svg>',
+    meditation:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#F0F0F2"/><circle cx="13" cy="9" r="3" fill="#5856D6"/><path d="M8 18c0-2.8 2.2-5 5-5s5 2.2 5 5" fill="#AF52DE" opacity=".4"/><circle cx="9" cy="6" r="1" fill="#FF9500" opacity=".5"/><circle cx="17" cy="5" r=".8" fill="#FF9500" opacity=".4"/><circle cx="20" cy="9" r=".6" fill="#FF9500" opacity=".3"/><path d="M7 22c1.5-1.2 3.5-2 6-2s4.5.8 6 2" stroke="#5856D6" stroke-width="1" stroke-linecap="round" opacity=".3"/></svg>',
+    bro:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="2" y="5" width="16" height="12" rx="3.5" fill="#5856D6"/><path d="M5 17l-1.5 4 4.5-2.5" fill="#5856D6"/><circle cx="7.5" cy="10.5" r="1.3" fill="#fff"/><circle cx="11" cy="10.5" r="1.3" fill="#fff"/><circle cx="14.5" cy="10.5" r="1.3" fill="#fff"/><circle cx="21" cy="9" r="4" fill="#AF52DE" opacity=".3"/><path d="M19.5 8l1.5 1 1.5-1" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity=".6"/></svg>',
+    cal:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="5" width="20" height="19" rx="3" fill="#F0F0F2"/><rect x="3" y="5" width="20" height="6" rx="3" fill="#5856D6"/><rect x="8" y="2.5" width="2" height="5" rx="1" fill="#3634A3"/><rect x="16" y="2.5" width="2" height="5" rx="1" fill="#3634A3"/><circle cx="8.5" cy="16" r="1.5" fill="#E5E5EA"/><circle cx="13" cy="16" r="1.5" fill="#5856D6"/><circle cx="17.5" cy="16" r="1.5" fill="#E5E5EA"/><circle cx="8.5" cy="20.5" r="1.5" fill="#E5E5EA"/><circle cx="13" cy="20.5" r="1.5" fill="#E5E5EA"/><text x="13" y="9.8" text-anchor="middle" font-family="var(--sans)" font-size="5.5" font-weight="700" fill="#fff">AUG</text></svg>',
     mindgym:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="11" r="9" fill="#FEF3C7"/><path d="M9.5 7C10 5 11.5 4 13 4s3 1 3.5 3c.5 2-.5 4-1 5-.5 1-1 2-1 3h-3c0-1-.5-2-1-3-.5-1-1.5-3-1-5z" fill="#F59E0B"/><rect x="11" y="15" width="4" height="2" rx="1" fill="#D97706"/><rect x="11.5" y="17.5" width="3" height="1.5" rx=".75" fill="#D97706" opacity=".6"/><line x1="13" y1="1" x2="13" y2="3" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/><line x1="6" y1="4" x2="7.5" y2="5.5" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/><line x1="20" y1="4" x2="18.5" y2="5.5" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/><line x1="4" y1="11" x2="5.5" y2="11" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/><line x1="22" y1="11" x2="20.5" y2="11" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/></svg>',
-    learn:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 5L1.5 10.5 13 16l11.5-5.5L13 5z" fill="#6366F1"/><path d="M5.5 13v6.5c0 1 3.4 3 7.5 3s7.5-2 7.5-3V13L13 16 5.5 13z" fill="#818CF8"/><rect x="22" y="10" width="1.5" height="10" rx=".75" fill="#6366F1"/><circle cx="22.75" cy="20.5" r="1.5" fill="#6366F1"/><path d="M5.5 13v6.5" stroke="#4F46E5" stroke-width=".8" opacity=".3"/><path d="M20.5 13v6.5" stroke="#4F46E5" stroke-width=".8" opacity=".3"/></svg>',
-    you:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#FDF2E9"/><circle cx="13" cy="10" r="4" fill="#D4654A"/><path d="M6 22c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="#E8A87C"/><circle cx="13" cy="10" r="4" fill="#D4654A"/></svg>',
-    inspire:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#FDF2E9"/><path d="M13 4l1.8 5.5h5.8l-4.7 3.4 1.8 5.5L13 15l-4.7 3.4 1.8-5.5-4.7-3.4h5.8L13 4z" fill="#F59E0B"/><circle cx="7" cy="7" r="1.5" fill="#EC4899" opacity=".5"/><circle cx="19" cy="8" r="1" fill="#8B5CF6" opacity=".5"/><circle cx="8" cy="19" r="1" fill="#0EA5E9" opacity=".4"/><circle cx="18" cy="18" r="1.3" fill="#10B981" opacity=".4"/></svg>'
+    learn:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 5L1.5 10.5 13 16l11.5-5.5L13 5z" fill="#5856D6"/><path d="M5.5 13v6.5c0 1 3.4 3 7.5 3s7.5-2 7.5-3V13L13 16 5.5 13z" fill="#AF52DE" opacity=".6"/><rect x="22" y="10" width="1.5" height="10" rx=".75" fill="#5856D6"/><circle cx="22.75" cy="20.5" r="1.5" fill="#5856D6"/></svg>',
+    you:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#F0F0F2"/><circle cx="13" cy="10" r="4" fill="#5856D6"/><path d="M6 22c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="#AF52DE" opacity=".4"/></svg>',
+    inspire:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11" fill="#F0F0F2"/><path d="M13 4l1.8 5.5h5.8l-4.7 3.4 1.8 5.5L13 15l-4.7 3.4 1.8-5.5-4.7-3.4h5.8L13 4z" fill="#FF9500"/><circle cx="7" cy="7" r="1.5" fill="#AF52DE" opacity=".4"/><circle cx="19" cy="8" r="1" fill="#5856D6" opacity=".4"/><circle cx="8" cy="19" r="1" fill="#007AFF" opacity=".3"/><circle cx="18" cy="18" r="1.3" fill="#34C759" opacity=".3"/></svg>'
   };
   var _learnTabs=['courses','mindgym','books'];
   var _youTabs=['profile','cal'];
-  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learning',i:'learn'},{k:'books',l:'Inspire',i:'inspire'},{k:'meditation',l:'Wisdom'},{k:'cal',l:'Calendar'}].map(function(x){
-    var isOn=(x.k==='home')?(!S.tab||S.tab==='home'||S.tab==='profile'):(S.tab===x.k||(x.k==='courses'&&S.tab==='mindgym'));
+  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'bro',l:'Bro'},{k:'courses',l:'Learn',i:'learn'},{k:'meditation',l:'Wisdom'}].map(function(x){
+    var isOn=(x.k==='home')?(!S.tab||S.tab==='home'||S.tab==='profile'):(S.tab===x.k||(x.k==='courses'&&(S.tab==='mindgym'||S.tab==='books')));
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
   // "Bro, do it!" mascot — a character with a speech bubble that animates
@@ -13451,28 +13460,28 @@ if(isMain){
     +'<svg class="bro-svg" viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg">'
     +  '<defs><filter id="broShadow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation="2"/></filter></defs>'
     +  '<g class="bro-figure">'
-    +    '<circle cx="48" cy="44" r="16" fill="#8a2e2a"/>'
+    +    '<circle cx="48" cy="44" r="16" fill="#3634A3"/>'
     +    '<circle cx="42" cy="42" r="2.2" fill="#fff"/><circle cx="54" cy="42" r="2.2" fill="#fff"/>'
     +    '<path d="M 42 50 Q 48 54 54 50" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
-    +    '<line x1="48" y1="60" x2="48" y2="92" stroke="#8a2e2a" stroke-width="3.4" stroke-linecap="round"/>'
-    +    '<g class="bro-arm-r"><line x1="48" y1="72" x2="76" y2="58" stroke="#8a2e2a" stroke-width="3.2" stroke-linecap="round"/></g>'
-    +    '<line x1="48" y1="72" x2="28" y2="84" stroke="#8a2e2a" stroke-width="3.2" stroke-linecap="round"/>'
-    +    '<line x1="48" y1="92" x2="36" y2="118" stroke="#8a2e2a" stroke-width="3.2" stroke-linecap="round"/>'
-    +    '<line x1="48" y1="92" x2="60" y2="118" stroke="#8a2e2a" stroke-width="3.2" stroke-linecap="round"/>'
+    +    '<line x1="48" y1="60" x2="48" y2="92" stroke="#3634A3" stroke-width="3.4" stroke-linecap="round"/>'
+    +    '<g class="bro-arm-r"><line x1="48" y1="72" x2="76" y2="58" stroke="#3634A3" stroke-width="3.2" stroke-linecap="round"/></g>'
+    +    '<line x1="48" y1="72" x2="28" y2="84" stroke="#3634A3" stroke-width="3.2" stroke-linecap="round"/>'
+    +    '<line x1="48" y1="92" x2="36" y2="118" stroke="#3634A3" stroke-width="3.2" stroke-linecap="round"/>'
+    +    '<line x1="48" y1="92" x2="60" y2="118" stroke="#3634A3" stroke-width="3.2" stroke-linecap="round"/>'
     +  '</g>'
     +  '<g class="bro-bubble">'
-    +    '<path d="M 100 18 Q 100 4 116 4 L 316 4 Q 332 4 332 18 L 332 78 Q 332 92 316 92 L 130 92 L 110 110 L 116 92 L 116 92 Q 100 92 100 78 Z" fill="#FFFFFF" stroke="#8a2e2a" stroke-width="2.2" filter="drop-shadow(0 4px 10px rgba(17,24,39,0.12))"/>'
+    +    '<path d="M 100 18 Q 100 4 116 4 L 316 4 Q 332 4 332 18 L 332 78 Q 332 92 316 92 L 130 92 L 110 110 L 116 92 L 116 92 Q 100 92 100 78 Z" fill="#FFFFFF" stroke="#3634A3" stroke-width="2.2" filter="drop-shadow(0 4px 10px rgba(17,24,39,0.12))"/>'
     +    '<text x="216" y="42" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="26" fill="#201e1d">Bro,</text>'
-    +    '<text x="216" y="74" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="32" font-weight="400" fill="#8a2e2a">do it!</text>'
+    +    '<text x="216" y="74" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="32" font-weight="400" fill="#3634A3">do it!</text>'
     +  '</g>'
-    +  '<g class="bro-spark"><path d="M 320 38 l 1.5 -4 1.5 4 4 0 -3 2.5 1.2 4 -3.7 -2.4 -3.7 2.4 1.2 -4 -3 -2.5 z" fill="#8a2e2a"/></g>'
+    +  '<g class="bro-spark"><path d="M 320 38 l 1.5 -4 1.5 4 4 0 -3 2.5 1.2 4 -3.7 -2.4 -3.7 2.4 1.2 -4 -3 -2.5 z" fill="#3634A3"/></g>'
     +  '<g class="bro-spark2"><circle cx="86" cy="14" r="2.4" fill="#3DAE5C"/></g>'
     +'</svg>'
     +'</div>';
   const daysLeft=365-dayOfYear;
   const w=S.weather||{};
   const aqiLevel=w.aqi==null?'':w.aqi<=50?'good':w.aqi<=100?'mod':w.aqi<=150?'usg':w.aqi<=200?'bad':w.aqi<=300?'vbad':'haz';
-  const aqiColor={good:'#611f1c',mod:'#F59E0B',usg:'#8a2e2a',bad:'#8a2e2a',vbad:'#9333EA',haz:'#7F1D1D'}[aqiLevel]||'#9b9797';
+  const aqiColor={good:'#611f1c',mod:'#F59E0B',usg:'#3634A3',bad:'#3634A3',vbad:'#9333EA',haz:'#7F1D1D'}[aqiLevel]||'#8E8E93';
   const fmtTZ=(tz)=>{try{return new Date().toLocaleTimeString('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:false})}catch(e){return '--:--'}};
   const CITIES=[{l:'NYC',tz:'America/New_York'},{l:'LAX',tz:'America/Los_Angeles'},{l:'LDN',tz:'Europe/London'},{l:'SGP',tz:'Asia/Singapore'}];
   const sideNow='<div class="side-now" aria-hidden="true">'
@@ -13493,16 +13502,16 @@ if(isMain){
     +'<div class="india-cities">'+INDIA_CITIES.map(c=>{const t=(S.cityTemps||{})[c.toLowerCase()];const tStr=t&&t.temp!=null?t.temp+'\\u00B0':'\\u2026';return '<span class="ic-item"><span class="ic-name">'+esc(c)+'</span><span class="ic-temp">'+tStr+'</span></span>'}).join('')+'</div>'
     +'<div class="side-now-bar"><div class="side-now-fill" style="width:'+yearPct+'%"></div><div class="side-now-walker" style="left:'+yearPct+'%">'
       +'<svg viewBox="0 0 14 18" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">'
-        +'<circle cx="7" cy="3" r="2" fill="#8a2e2a"/>'
-        +'<line x1="7" y1="5" x2="7" y2="11" stroke="#8a2e2a"/>'
-        +'<g class="snw-arm-l"><line x1="7" y1="7" x2="3" y2="9" stroke="#8a2e2a"/></g>'
-        +'<g class="snw-arm-r"><line x1="7" y1="7" x2="11" y2="6" stroke="#8a2e2a"/></g>'
-        +'<g class="snw-leg-l"><line x1="7" y1="11" x2="4" y2="16" stroke="#8a2e2a"/></g>'
-        +'<g class="snw-leg-r"><line x1="7" y1="11" x2="10" y2="16" stroke="#8a2e2a"/></g>'
+        +'<circle cx="7" cy="3" r="2" fill="#3634A3"/>'
+        +'<line x1="7" y1="5" x2="7" y2="11" stroke="#3634A3"/>'
+        +'<g class="snw-arm-l"><line x1="7" y1="7" x2="3" y2="9" stroke="#3634A3"/></g>'
+        +'<g class="snw-arm-r"><line x1="7" y1="7" x2="11" y2="6" stroke="#3634A3"/></g>'
+        +'<g class="snw-leg-l"><line x1="7" y1="11" x2="4" y2="16" stroke="#3634A3"/></g>'
+        +'<g class="snw-leg-r"><line x1="7" y1="11" x2="10" y2="16" stroke="#3634A3"/></g>'
       +'</svg>'
     +'</div></div>'
     +'<div class="side-now-foot"><span>'+yearPct+'%</span><span>Day '+dayOfYear+' / 365</span></div>'
-    +'<svg class="side-now-wave" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M 0 15 Q 12.5 5 25 15 T 50 15 T 75 15 T 100 15" stroke="#8a2e2a" stroke-width="1.6" fill="none"><animate attributeName="d" dur="4s" repeatCount="indefinite" values="M 0 15 Q 12.5 5 25 15 T 50 15 T 75 15 T 100 15;M 0 15 Q 12.5 25 25 15 T 50 15 T 75 15 T 100 15;M 0 15 Q 12.5 5 25 15 T 50 15 T 75 15 T 100 15"/></path></svg>'
+    +'<svg class="side-now-wave" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M 0 15 Q 12.5 5 25 15 T 50 15 T 75 15 T 100 15" stroke="#3634A3" stroke-width="1.6" fill="none"><animate attributeName="d" dur="4s" repeatCount="indefinite" values="M 0 15 Q 12.5 5 25 15 T 50 15 T 75 15 T 100 15;M 0 15 Q 12.5 25 25 15 T 50 15 T 75 15 T 100 15;M 0 15 Q 12.5 5 25 15 T 50 15 T 75 15 T 100 15"/></path></svg>'
     +'</div>';
   h+='<aside class="side-col">';
   h+='<nav class="tabs page-t">'+tabsHtml+'</nav>';
@@ -13562,15 +13571,16 @@ if(S.tab==='tasks'){
   h+='<div class="task-hero" onclick="opA()">';
   h+='<div class="task-hero-blob"></div><div class="task-hero-blob"></div><div class="task-hero-blob"></div>';
   h+='<div class="task-hero-text"><div class="task-hero-title">What needs to get done?</div><div class="task-hero-sub">'+_heroMsgs[_heroIdx]+'</div></div>';
-  h+='<div class="task-hero-cta"><div class="task-hero-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A84E3A" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><span class="task-hero-label">Add Task</span></div>';
+  h+='<div class="task-hero-cta"><div class="task-hero-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A48C4" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><span class="task-hero-label">Add Task</span></div>';
   h+='<div class="task-hero-orbit"><div class="task-hero-ring"><div class="task-hero-dot"></div></div><div class="task-hero-ring"></div></div>';
   h+='</div>';
   // Quick-compose bar
   const _cp=S.compose.priority;
   h+='<div class="qc-bar" style="margin-top:0">';
-  h+='<div class="qc-row"><textarea class="qc-input" rows="1" wrap="soft" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border-radius:0;font-family:var(--sans)" placeholder="Quick add... (try: Buy milk tomorrow !high)" oninput="composeUpdate(this.value);this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,120)+\\'px\\'" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();composeSubmit()}">'+esc(S.compose.value||'')+'</textarea>';
+  h+='<div class="qc-row"><textarea class="qc-input" rows="1" wrap="soft" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border-radius:12px;font-family:var(--sans)" placeholder="'+(S._taskListening?'Listening...':'Type or speak a task...')+'" oninput="composeUpdate(this.value);this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,120)+\\'px\\'" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();composeSubmit()}">'+esc(S.compose.value||'')+'</textarea>';
+  h+='<button onclick="voiceAddTask()" title="Voice input" style="width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;background:'+(S._taskListening?'#FF3B30':'var(--accent-soft)')+';color:'+(S._taskListening?'#fff':'var(--accent)')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="'+(S._taskListening?'#fff':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>';
   var _hasText=(S.compose.value||'').trim().length>0;
-  if(_hasText){h+='<div class="qc-send-row"><button class="qc-send" onclick="composeSubmit()" title="Add task" style="border-radius:0;background:var(--accent)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>';}
+  if(_hasText){h+='<button class="qc-send" onclick="composeSubmit()" title="Add task" style="border-radius:50%;width:38px;height:38px;flex-shrink:0;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>';}
   h+='</div>';
   if(_hasText){
   h+='<div class="qc-chips">';
@@ -13617,13 +13627,13 @@ if(S.tab==='tasks'){
     h+='<div class="rd-task-meta">';
     h+='<button class="badge" style="background:'+st.bg+';color:'+st.c+';border-radius:0;font-family:var(--sans);font-size:11px" onclick="cyc(\\''+t.id+'\\')">'+st.l+'</button>';
     h+='<span style="font:600 11px var(--sans);background:'+p.c+'20;color:'+p.c+';padding:2px 7px;border-radius:0">'+p.d+' '+t.priority+'</span>';
-    if(t.due_date)h+='<span style="font:500 12px var(--sans);color:'+(isOD(t.due_date,t.status)?'#8a2e2a':isTd(t.due_date)?'var(--accent)':'var(--text-mute)')+'">\\u{1F4C5} '+fD(t.due_date)+(isOD(t.due_date,t.status)?' overdue':'')+'</span>';
+    if(t.due_date)h+='<span style="font:500 12px var(--sans);color:'+(isOD(t.due_date,t.status)?'#3634A3':isTd(t.due_date)?'var(--accent)':'var(--text-mute)')+'">\\u{1F4C5} '+fD(t.due_date)+(isOD(t.due_date,t.status)?' overdue':'')+'</span>';
     if(t.reminder_time&&!d)h+='<span class="rd-email-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>Email reminder</span>';
     if(d&&_doneAt)h+='<span style="font:500 12px var(--sans);color:var(--text-mute)">'+_doneAt+'</span>';
     else if(_tTime&&!t.reminder_time)h+='<span style="font:500 12px var(--sans);color:var(--text-mute)">'+_tTime+'</span>';
     if(addedTxt)h+='<span style="font:400 11px var(--sans);color:var(--text-dim)">\\u2795 '+esc(addedTxt)+'</span>';
     h+='</div></div>';
-    h+='<div class="tc-acts" style="display:flex;gap:4px;align-items:flex-start;margin-left:6px"><button class="ib" onclick="opE(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ib" style="color:#8a2e2a" onclick="del(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';
+    h+='<div class="tc-acts" style="display:flex;gap:4px;align-items:flex-start;margin-left:6px"><button class="ib" onclick="opE(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ib" style="color:#3634A3" onclick="del(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';
     h+='</div>';
   }
   if(!_segTasks.length&&!f.length)h+='<div style="text-align:center;padding:40px 0"><div style="font-size:36px;margin-bottom:8px">\\u2728</div><div style="font:600 15px var(--sans);color:var(--ink)">No tasks yet</div><div style="font:400 13px var(--sans);color:var(--text-mute);margin-top:4px">Tap the card above to add your first task</div></div>';
@@ -13638,7 +13648,7 @@ if(S.tab==='tasks'){
       h+='<span style="font:600 16px var(--sans);color:var(--ink)">'+esc((NOTE_CATS.find(c=>c.k===S.noteEdit.category)||{}).l||'Note')+'</span>';
       h+='<div style="flex:1"></div>';
       h+='<button style="background:var(--accent);color:#fff;border:none;border-radius:0;padding:8px 18px;font:600 13px var(--sans);cursor:pointer" onclick="noteSave()">Save</button>';
-      if(S.notes.find(x=>x.id===S.noteEdit.id)){h+='<button style="background:none;border:none;color:#8a2e2a;font:600 13px var(--sans);cursor:pointer;padding:8px" onclick="noteDelete(\\''+S.noteEdit.id+'\\')">Delete</button>';}
+      if(S.notes.find(x=>x.id===S.noteEdit.id)){h+='<button style="background:none;border:none;color:#3634A3;font:600 13px var(--sans);cursor:pointer;padding:8px" onclick="noteDelete(\\''+S.noteEdit.id+'\\')">Delete</button>';}
       h+='</div>';
       h+='<input style="width:100%;border:none;background:transparent;font:600 20px var(--sans);color:var(--ink);outline:none;padding:8px 0;margin-bottom:4px" placeholder="Note title..." value="'+esc(S.noteEdit.title||'')+'" oninput="S.noteEdit.title=this.value">';
       h+='<div class="note-editor">';
@@ -14346,7 +14356,7 @@ else if(S.tab==='profile'){
       h+='<div style="display:flex;align-items:center;gap:12px;padding:14px;margin-top:8px;border-radius:0;background:var(--surface);border:1px solid var(--line);animation:fadeSlideIn .3s ease both;animation-delay:'+((i+_gcEvts.length)*0.06)+'s">';
       h+='<button class="chk" onclick="toggleDone(\\''+t.id+'\\')"><div class="rd-check-empty"></div></button>';
       h+='<div style="flex:1"><div style="font:600 15px var(--sans);color:var(--ink)">'+esc(t.title)+'</div>';
-      if(t.priority&&t.priority!=='medium')h+='<div style="font:500 12px var(--sans);color:'+(t.priority==='high'?'#8a2e2a':'var(--text-mute)')+';margin-top:3px">'+t.priority.toUpperCase()+'</div>';
+      if(t.priority&&t.priority!=='medium')h+='<div style="font:500 12px var(--sans);color:'+(t.priority==='high'?'#3634A3':'var(--text-mute)')+';margin-top:3px">'+t.priority.toUpperCase()+'</div>';
       h+='</div></div>';
     });
   }
@@ -14401,7 +14411,7 @@ else if(S.tab==='board'){
   // Boards UI removed — unified task list across Tasks and Board tabs.
   h+='<button class="add-bar" onclick="opA()"><span class="plus">+</span><span class="txt"><b>Add a new task</b><small>It will land in To Do</small></span></button>';
   h+='<div class="section-hd"><span class="section-ic">'+ic('board',22)+'</span><div><h3>Task Board</h3><p>Drag cards between columns or tap a move button</p></div></div>';
-  const cols=[{k:'pending',l:'To Do',i:'\\u{1F4E5}',c:'#9b9797'},{k:'in-progress',l:'Doing',i:'\\u26A1',c:'#a5564b'},{k:'done',l:'Done',i:'\\u2705',c:'#3DAE5C'}];
+  const cols=[{k:'pending',l:'To Do',i:'\\u{1F4E5}',c:'#8E8E93'},{k:'in-progress',l:'Doing',i:'\\u26A1',c:'#a5564b'},{k:'done',l:'Done',i:'\\u2705',c:'#3DAE5C'}];
   h+='<div class="board">';
   cols.forEach(col=>{
     const items=ts.filter(t=>t.status===col.k);
@@ -14412,9 +14422,9 @@ else if(S.tab==='board'){
     else items.forEach(t=>{
       const p=P[t.priority]||P.medium;
       h+='<div class="kc" draggable="true" data-tid="'+t.id+'" ondragstart="dragS(event,\\''+t.id+'\\')" ondragend="dragE()" style="border-left-color:'+p.c+'">';
-      h+='<div onclick="opE(\\''+t.id+'\\')" style="cursor:pointer"><div class="kc-t'+(t.status==='done'?'" style="text-decoration:line-through;color:#9b9797':'')+'">'+esc(t.title)+'</div>';
+      h+='<div onclick="opE(\\''+t.id+'\\')" style="cursor:pointer"><div class="kc-t'+(t.status==='done'?'" style="text-decoration:line-through;color:#8E8E93':'')+'">'+esc(t.title)+'</div>';
       h+='<div class="kc-m"><span class="pri" style="background:'+p.c+'">'+t.priority+'</span>';
-      if(t.due_date)h+='<span class="due" style="color:'+(isOD(t.due_date,t.status)?'#8a2e2a':isTd(t.due_date)?'#E8912C':'#9b9797')+'">\\u{1F4C5} '+fD(t.due_date)+'</span>';
+      if(t.due_date)h+='<span class="due" style="color:'+(isOD(t.due_date,t.status)?'#3634A3':isTd(t.due_date)?'#E8912C':'#8E8E93')+'">\\u{1F4C5} '+fD(t.due_date)+'</span>';
       if(t.reminder_time&&t.status!=='done')h+='<span style="color:#a5564b;font-weight:600">\\u{1F514} '+fT(t.reminder_time)+'</span>';
       h+='</div></div>';
       h+='<div class="kc-acts">';
@@ -14459,14 +14469,14 @@ else if(S.tab==='dash'){
   h+='<div class="dash-grid">';
   h+='<div class="dash-card"><div class="lbl">\\u{1F4C5} Today</div><div class="v">'+doneToday+'</div><div class="sub">completed</div></div>';
   h+='<div class="dash-card"><div class="lbl">\\u{1F3AF} Completion</div><div class="v">'+rate+'%</div><div class="sub">'+s.dn+' of '+ts.length+'</div></div>';
-  h+='<div class="dash-card"><div class="lbl">\\u{1F525} Streak</div><div class="v">'+streak+'<small style="font-size:13px;color:#9b9797;margin-left:4px">days</small></div><div class="sub">keep it alive</div></div>';
+  h+='<div class="dash-card"><div class="lbl">\\u{1F525} Streak</div><div class="v">'+streak+'<small style="font-size:13px;color:#8E8E93;margin-left:4px">days</small></div><div class="sub">keep it alive</div></div>';
   h+='<div class="dash-card"><div class="lbl">\\u{1F31F} Best Day</div><div class="v" style="font-size:18px">'+bestDay+'</div><div class="sub">'+(Math.max(...dow)||0)+' tasks</div></div>';
   h+='</div>';
   // priority bars
   const tot=hT+mT+lT;
   if(tot){
     h+='<div class="dash-card" style="margin-bottom:14px"><div class="lbl">\\u{1F4CA} Priority breakdown</div><div class="prio-bars">';
-    if(hT)h+='<div class="b" style="background:#8a2e2a;flex:'+hT+'" title="High">High '+hD+'/'+hT+'</div>';
+    if(hT)h+='<div class="b" style="background:#3634A3;flex:'+hT+'" title="High">High '+hD+'/'+hT+'</div>';
     if(mT)h+='<div class="b" style="background:#E8912C;flex:'+mT+'" title="Med">Med '+mD+'/'+mT+'</div>';
     if(lT)h+='<div class="b" style="background:#3DAE5C;flex:'+lT+'" title="Low">Low '+lD+'/'+lT+'</div>';
     h+='</div></div>';
@@ -14483,7 +14493,7 @@ else if(S.tab==='cal'){
   // Google Calendar integration banner / accounts
   if(!S.google.loaded)h+='<div class="gcal-card gcal-loading">Connecting to Google\\u2026</div>';
   else if(!S.google.accounts.length){
-    h+='<div class="gcal-card gcal-cta"><div class="gcal-icon"><svg width="38" height="38" viewBox="0 0 48 48"><path fill="#fbbc04" d="M37 6h-3V4a2 2 0 1 0-4 0v2H18V4a2 2 0 1 0-4 0v2h-3a5 5 0 0 0-5 5v26a5 5 0 0 0 5 5h26a5 5 0 0 0 5-5V11a5 5 0 0 0-5-5z"/><path fill="#fff" d="M11 18h26v18H11z"/><path fill="#1a73e8" d="M16 22h6v6h-6zm10 0h6v6h-6zm-10 8h6v6h-6zm10 0h6v6h-6z"/></svg></div><div class="gcal-body"><h3>Sync with Google Calendar</h3><p>See your Gmail events here, and let Brodoit add new ones to your calendar with one tap.</p><button class="mb mb-s" style="background:linear-gradient(135deg,#4285F4,#34A853);border:none;color:#fff" onclick="connectGoogle()">'+(S.google.configured?'\\u{1F517} Connect Google Calendar':'Set up Google integration')+'</button>'+(!S.google.configured?'<div style="font-size:11px;color:#9b9797;margin-top:8px">Admin needs to set GOOGLE_CLIENT_ID/SECRET first.</div>':'')+'</div></div>';
+    h+='<div class="gcal-card gcal-cta"><div class="gcal-icon"><svg width="38" height="38" viewBox="0 0 48 48"><path fill="#fbbc04" d="M37 6h-3V4a2 2 0 1 0-4 0v2H18V4a2 2 0 1 0-4 0v2h-3a5 5 0 0 0-5 5v26a5 5 0 0 0 5 5h26a5 5 0 0 0 5-5V11a5 5 0 0 0-5-5z"/><path fill="#fff" d="M11 18h26v18H11z"/><path fill="#1a73e8" d="M16 22h6v6h-6zm10 0h6v6h-6zm-10 8h6v6h-6zm10 0h6v6h-6z"/></svg></div><div class="gcal-body"><h3>Sync with Google Calendar</h3><p>See your Gmail events here, and let Brodoit add new ones to your calendar with one tap.</p><button class="mb mb-s" style="background:linear-gradient(135deg,#4285F4,#34A853);border:none;color:#fff" onclick="connectGoogle()">'+(S.google.configured?'\\u{1F517} Connect Google Calendar':'Set up Google integration')+'</button>'+(!S.google.configured?'<div style="font-size:11px;color:#8E8E93;margin-top:8px">Admin needs to set GOOGLE_CLIENT_ID/SECRET first.</div>':'')+'</div></div>';
   } else {
     const def=S.google.accounts.find(a=>a.is_default)||S.google.accounts[0];
     h+='<div class="gcal-card gcal-connected"><div class="gcal-acc-row">';
@@ -14535,7 +14545,7 @@ else if(S.tab==='cal'){
       const hi=tasksHere.some(t=>t.priority==='high');
       const me=tasksHere.some(t=>t.priority==='medium');
       const lo=tasksHere.some(t=>t.priority==='low');
-      if(hi)dots+='<i style="background:#8a2e2a"></i>';
+      if(hi)dots+='<i style="background:#3634A3"></i>';
       if(me)dots+='<i style="background:#E8912C"></i>';
       if(lo)dots+='<i style="background:#3DAE5C"></i>';
     }
@@ -14590,7 +14600,7 @@ else if(S.tab==='books'){
     const _bmOpen=!!S.bkModeOpen;
     const isSum=S.booksMode==='summaries';
     h+='<button class="qa-chip" style="margin-bottom:'+(_bmOpen?'10px':'18px')+'" onclick="S.bkModeOpen=!S.bkModeOpen;render()" aria-expanded="'+_bmOpen+'">'
-      +'<span class="qa-ic" style="background:'+(isSum?'linear-gradient(135deg,#a5564b,#FED7AA)':'linear-gradient(135deg,#a5564b,#8a2e2a)')+'">'+(isSum?'\\u2728':'\\u{1F3A7}')+'</span>'
+      +'<span class="qa-ic" style="background:'+(isSum?'linear-gradient(135deg,#a5564b,#FED7AA)':'linear-gradient(135deg,#a5564b,#3634A3)')+'">'+(isSum?'\\u2728':'\\u{1F3A7}')+'</span>'
       +'<span class="qa-t">'+(isSum?'15-min summaries':'Audiobooks')+'</span>'
       +'<span class="qa-mini">Switch</span>'
       +'<span class="qa-arrow'+(_bmOpen?' is-open':'')+'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>'
@@ -14602,7 +14612,7 @@ else if(S.tab==='books'){
           +'<div class="qa-tile-body"><div class="qa-tile-t">Summaries'+(isSum?'<span class="qa-tile-bdg">On</span>':'')+'</div></div>'
         +'</button>'
         +'<button class="qa-tile'+(isSum?'':' is-active')+'" onclick="S.booksMode=\\'audiobooks\\';S.bkModeOpen=false;render()">'
-          +'<span class="qa-tile-ic" style="background:linear-gradient(135deg,#a5564b,#8a2e2a)">\\u{1F3A7}</span>'
+          +'<span class="qa-tile-ic" style="background:linear-gradient(135deg,#a5564b,#3634A3)">\\u{1F3A7}</span>'
           +'<div class="qa-tile-body"><div class="qa-tile-t">Audiobooks'+(isSum?'':'<span class="qa-tile-bdg">On</span>')+'</div></div>'
         +'</button>'
       +'</div>';
@@ -14728,11 +14738,11 @@ else if(S.tab==='meditation'){
       }
       var grads={
         '#FCB851':'linear-gradient(135deg,#FFE0A3 0%,#a5564b 100%)',
-        '#FF7A45':'linear-gradient(135deg,#FFD0B0 0%,#8a2e2a 100%)',
+        '#FF7A45':'linear-gradient(135deg,#FFD0B0 0%,#3634A3 100%)',
         '#E8985A':'linear-gradient(135deg,#FDE8D0 0%,#D4976A 100%)',
         '#611f1c':'linear-gradient(135deg,#FFCFA0 0%,#611f1c 100%)',
         '#F59E0B':'linear-gradient(135deg,#FFE5A0 0%,#D4A030 100%)',
-        '#8a2e2a':'linear-gradient(135deg,#FFD4A8 0%,#611f1c 100%)',
+        '#3634A3':'linear-gradient(135deg,#FFD4A8 0%,#611f1c 100%)',
         '#a5564b':'linear-gradient(135deg,#FFE0B8 0%,#E09040 100%)',
         '#C8922A':'linear-gradient(135deg,#FFE5A0 0%,#C8922A 100%)',
         '#B8802A':'linear-gradient(135deg,#FFD68A 0%,#B8802A 100%)',
@@ -14796,7 +14806,7 @@ else if(S.tab==='bro'){
     // Mode toggle — minimal pill switcher
     h+='<div style="display:flex;gap:4px;padding:6px 16px 4px;justify-content:center">';
     h+='<button style="padding:5px 14px;border-radius:99px;border:none;background:'+(_bm==='ask'?'var(--accent)':'transparent')+';font:500 12px var(--sans);color:'+(_bm==='ask'?'#fff':'var(--text-mute)')+';cursor:pointer;transition:all .2s" onclick="S.bro.mode=\\'ask\\';S.bro.messages=[];switchTab(\\'bro\\')">Assistant</button>';
-    h+='<button style="padding:5px 14px;border-radius:99px;border:none;background:'+(_bm==='friend'?'#8a2e2a':'transparent')+';font:500 12px var(--sans);color:'+(_bm==='friend'?'#fff':'var(--text-mute)')+';cursor:pointer;transition:all .2s" onclick="S.bro.mode=\\'friend\\';S.bro.messages=[];switchTab(\\'bro\\')">Friend</button>';
+    h+='<button style="padding:5px 14px;border-radius:99px;border:none;background:'+(_bm==='friend'?'#3634A3':'transparent')+';font:500 12px var(--sans);color:'+(_bm==='friend'?'#fff':'var(--text-mute)')+';cursor:pointer;transition:all .2s" onclick="S.bro.mode=\\'friend\\';S.bro.messages=[];switchTab(\\'bro\\')">Friend</button>';
     h+='</div>';
     // Quick action buttons — always visible, scrollable row
     if(_bm==='ask'){
@@ -14812,7 +14822,7 @@ else if(S.tab==='bro'){
     h+='<div class="bro-chat" id="broChat">';
     if(S.bro.messages.length<=1){
       h+='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:30px 20px 16px;text-align:center;min-height:200px">';
-      h+='<div style="width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 4px 20px rgba(138,46,42,.3)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>';
+      h+='<div style="width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 4px 20px rgba(88,86,214,.3)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>';
       h+='<div style="font:700 24px var(--sans);color:var(--ink);letter-spacing:-.02em;margin-bottom:6px">'+(_bm==='friend'?'Hey there':'What can I help with?')+'</div>';
       h+='<div style="font:400 14px var(--sans);color:var(--text-mute);max-width:300px;line-height:1.5;margin-bottom:24px">'+(_bm==='friend'?'I\\'m here to talk, vent, or just hang out.':'Tasks, calendar, planning, brainstorming — ask anything.')+'</div>';
       h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:340px">';
@@ -14874,14 +14884,14 @@ else if(S.tab==='health'){
   const cals=Math.round(todayCount*0.04);
   const km=(todayCount*0.000762).toFixed(1);
   const mins=Math.round(todayCount/100);
-  const _hGrad=pct>=100?'linear-gradient(135deg,#34D399,#10B981)':'linear-gradient(135deg,#8a2e2a,#F59E0B)';
+  const _hGrad=pct>=100?'linear-gradient(135deg,#34D399,#10B981)':'linear-gradient(135deg,#3634A3,#F59E0B)';
 
   // ── Hero ring card ──
   h+='<div class="hth-hero">';
   h+='<div class="hth-hero-bg"></div>';
   h+='<div class="hth-ring-wrap">';
   h+='<svg viewBox="0 0 180 180" class="hth-ring-svg">';
-  h+='<defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="'+(pct>=100?'#34D399':'#8a2e2a')+'"/><stop offset="100%" stop-color="'+(pct>=100?'#059669':'#EAB308')+'"/></linearGradient></defs>';
+  h+='<defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="'+(pct>=100?'#34D399':'#3634A3')+'"/><stop offset="100%" stop-color="'+(pct>=100?'#059669':'#EAB308')+'"/></linearGradient></defs>';
   h+='<circle cx="90" cy="90" r="'+R+'" stroke="rgba(255,255,255,.08)" stroke-width="12" fill="none"/>';
   h+='<circle cx="90" cy="90" r="'+R+'" stroke="url(#rg)" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset+'" transform="rotate(-90 90 90)" class="hth-ring-arc"/>';
   h+='</svg>';
@@ -14890,7 +14900,7 @@ else if(S.tab==='health'){
 
   // Metric pills row
   h+='<div class="hth-metrics">';
-  h+='<div class="hth-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a2e2a" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>'+cals+'</span><small>cal</small></div>';
+  h+='<div class="hth-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3634A3" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>'+cals+'</span><small>cal</small></div>';
   h+='<div class="hth-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a5564b" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>'+mins+'</span><small>min</small></div>';
   h+='<div class="hth-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>'+km+'</span><small>km</small></div>';
   h+='</div>';
@@ -15071,18 +15081,15 @@ h+='</main>';
 if(S.tab==='cal'){
   h+='<button class="fab fab-global" onclick="openCalSchedule()" aria-label="Add to calendar" title="Add to calendar">+</button>';
 }
-// Floating Chat button — accessible from any tab
-if(S.tab!=='bro'){
-  h+='<button class="fab-chat" onclick="stopSpeak();switchTab(\\'bro\\')" aria-label="Chat with AI"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>';
-}
-// Calendar FAB removed — Calendar is now a tab
+// Chat FAB removed — Bro is now a tab
+// Calendar FAB removed — Calendar accessible from Home
 
 // Player bar (any tab)
 if(S.playing){
   h+='<div class="player on"><div class="player-info"><div class="player-title">'+esc(S.playing.title)+'</div><div class="player-author">'+esc(S.playing.author)+(S.playing.external?' \\u2022 <a href="'+esc(S.playing.external)+'" target="_blank" style="color:#3DAE5C;text-decoration:none">Open \\u2197</a>':'')+'</div></div>';
   if(S.playing.url)h+='<audio id="audioEl" controls preload="auto" src="'+esc(S.playing.url)+'"></audio>';
-  else if(S.playing.error)h+='<span style="font-size:11px;color:#8a2e2a">\\u26A0\\uFE0F '+esc(S.playing.error)+'</span>';
-  else h+='<span style="font-size:11px;color:#9b9797">Loading\\u2026</span>';
+  else if(S.playing.error)h+='<span style="font-size:11px;color:#3634A3">\\u26A0\\uFE0F '+esc(S.playing.error)+'</span>';
+  else h+='<span style="font-size:11px;color:#8E8E93">Loading\\u2026</span>';
   h+='<button class="player-close" onclick="closePlayer()">\\u2715</button></div>';
 }
 
@@ -15201,7 +15208,7 @@ if(S.bookReader&&S.bookReader.open&&S.bookReader.book){
   h+='<div class="bk-tts">'
     +'<button class="play" onclick="bookReaderToggleTTS()">'+(r.playing?'\\u23F8':'\\u25B6')+'</button>'
     +'<div class="info" style="overflow:hidden">'
-      +'<b>'+esc(b.title)+' \\u00B7 by '+esc(b.author)+(isStudio?' <span style="display:inline-block;margin-left:6px;padding:2px 7px;background:rgba(31,77,63,.12);color:#8a2e2a;border-radius:0;font-size:9px;font-weight:600;letter-spacing:.06em;font-family:\\'JetBrains Mono\\',monospace;text-transform:uppercase;vertical-align:1px">\\u{1F3AC} STUDIO</span>':' <span style="display:inline-block;margin-left:6px;padding:2px 7px;background:rgba(138,46,42,.12);color:#A87030;border-radius:0;font-size:9px;font-weight:600;letter-spacing:.06em;font-family:\\'JetBrains Mono\\',monospace;text-transform:uppercase;vertical-align:1px">browser voice</span>')+'</b>'
+      +'<b>'+esc(b.title)+' \\u00B7 by '+esc(b.author)+(isStudio?' <span style="display:inline-block;margin-left:6px;padding:2px 7px;background:rgba(31,77,63,.12);color:#3634A3;border-radius:0;font-size:9px;font-weight:600;letter-spacing:.06em;font-family:\\'JetBrains Mono\\',monospace;text-transform:uppercase;vertical-align:1px">\\u{1F3AC} STUDIO</span>':' <span style="display:inline-block;margin-left:6px;padding:2px 7px;background:rgba(88,86,214,.12);color:#A87030;border-radius:0;font-size:9px;font-weight:600;letter-spacing:.06em;font-family:\\'JetBrains Mono\\',monospace;text-transform:uppercase;vertical-align:1px">browser voice</span>')+'</b>'
       +'<small id="bkProgText">'+(r.playing?esc(String(prog.line||'').slice(0,90)):(isStudio?'Adam \\u00B7 Studio voice \\u00B7 ~'+b.mins+' min':'Soft male narrator \\u00B7 '+(r.rate||0.78)+'x \\u00B7 ~'+b.mins+' min'))+'</small>'
       +'<div style="height:3px;background:#ECEAE3;border-radius:999px;margin-top:6px;overflow:hidden"><div id="bkProgFill" style="height:100%;background:linear-gradient(90deg,#a5564b,#FF8A4F);transform:scaleX('+(pctNow/100)+');transform-origin:left;transition:transform .4s ease"></div></div>'
       +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-family:\\'JetBrains Mono\\',monospace;font-size:10px;letter-spacing:.04em;color:#9A9A9A"><span id="bkProgTime">'+Math.floor(elapsedNow/60)+':'+String(elapsedNow%60).padStart(2,'0')+'</span><span id="bkProgPct">'+pctNow+'%</span></div>'
@@ -15220,10 +15227,10 @@ if(S.showCalSchedule&&S.calSchedule){
     h+='<div style="font-size:12px;font-weight:600;color:#7d7979;margin-bottom:8px">YOUR TASKS</div>';
     h+='<div style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:14px">';
     cs.items.forEach(function(item,i){
-      const pCol=item.priority==='high'?'#DC2626':item.priority==='medium'?'#C8922A':'#8a2e2a';
-      h+='<div style="background:'+(item.selected?'#FFF8F0':'#FAFAFA')+';border:1.5px solid '+(item.selected?'#8a2e2a':'#d7d3d3')+';border-radius:0;padding:10px;transition:all .2s">';
+      const pCol=item.priority==='high'?'#DC2626':item.priority==='medium'?'#C8922A':'#3634A3';
+      h+='<div style="background:'+(item.selected?'#FFF8F0':'#FAFAFA')+';border:1.5px solid '+(item.selected?'#3634A3':'#d7d3d3')+';border-radius:0;padding:10px;transition:all .2s">';
       h+='<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="calSchedToggle('+i+')">';
-      h+='<div style="width:20px;height:20px;border-radius:0;border:2px solid '+(item.selected?'#8a2e2a':'#D0D0D0')+';background:'+(item.selected?'#8a2e2a':'#fff')+';display:grid;place-items:center;flex-shrink:0">'+(item.selected?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>';
+      h+='<div style="width:20px;height:20px;border-radius:0;border:2px solid '+(item.selected?'#3634A3':'#D0D0D0')+';background:'+(item.selected?'#3634A3':'#fff')+';display:grid;place-items:center;flex-shrink:0">'+(item.selected?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>';
       h+='<div style="width:8px;height:8px;border-radius:50%;background:'+pCol+';flex-shrink:0"></div>';
       h+='<div style="flex:1;font-size:13px;font-weight:500;color:#2C3E6B">'+esc(item.title)+'</div></div>';
       if(item.selected){
@@ -15259,7 +15266,7 @@ if(S.showGcalAdd){
   h+='<div class="ov" onclick="closeGcalAdd()"><div class="mdl" onclick="event.stopPropagation()" style="max-width:440px">';
   h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><svg width="32" height="32" viewBox="0 0 48 48"><path fill="#fbbc04" d="M37 6h-3V4a2 2 0 1 0-4 0v2H18V4a2 2 0 1 0-4 0v2h-3a5 5 0 0 0-5 5v26a5 5 0 0 0 5 5h26a5 5 0 0 0 5-5V11a5 5 0 0 0-5-5z"/><path fill="#fff" d="M11 18h26v18H11z"/><path fill="#1a73e8" d="M16 22h6v6h-6zm10 0h6v6h-6zm-10 8h6v6h-6zm10 0h6v6h-6z"/></svg><h2 style="margin:0">New Google Calendar event</h2></div>';
   if(S.google.accounts.length>1){h+='<label class="lbl">Add to</label><select onchange="S.gcalForm.email=this.value">';S.google.accounts.forEach(a=>{h+='<option value="'+esc(a.email)+'"'+(a.email===f.email?' selected':'')+'>'+esc(a.email)+'</option>'});h+='</select>'}
-  else h+='<div style="font-size:12px;color:#9b9797;margin-bottom:10px">Adding to <b>'+esc(f.email)+'</b></div>';
+  else h+='<div style="font-size:12px;color:#8E8E93;margin-bottom:10px">Adding to <b>'+esc(f.email)+'</b></div>';
   h+='<label class="lbl">Title</label><input value="'+esc(f.title)+'" placeholder="What\\'s happening?" oninput="S.gcalForm.title=this.value">';
   h+='<div class="row"><div><label class="lbl">Date</label><input type="date" value="'+esc(f.date)+'" onchange="S.gcalForm.date=this.value"></div>';
   h+='<div><label class="lbl">Time (optional)</label><input type="time" value="'+esc(f.time)+'" onchange="S.gcalForm.time=this.value"></div></div>';
@@ -15285,9 +15292,9 @@ if(S.showProfile){
 // ─── HELP modal — full step-by-step guide ───
 if(S.showHelp){
   const HSTEPS=[
-    {ic:'\\u270F\\uFE0F',grad:'linear-gradient(135deg,#a5564b,#FED7AA)',t:'Add a task in seconds',d:'Tap the <b>+ New task</b> chip at the top of the Tasks tab. Give it a title, optionally a due date and priority, then save.',tip:'Set a due date to get an email reminder before it slips.',demoHTML:'<div class="hd-task"><div class="hd-task-circle"></div><div class="hd-task-body"><div class="hd-task-t">Reply to Sam</div><div class="hd-task-m"><span class="hd-task-pill" style="background:rgba(138,46,42,.18);color:#FFB89E">\\u{1F4C5} Tomorrow</span><span class="hd-task-pill" style="background:rgba(220,38,38,.18);color:#FCA5A5">\\u{1F525} High</span></div></div></div>'},
+    {ic:'\\u270F\\uFE0F',grad:'linear-gradient(135deg,#a5564b,#FED7AA)',t:'Add a task in seconds',d:'Tap the <b>+ New task</b> chip at the top of the Tasks tab. Give it a title, optionally a due date and priority, then save.',tip:'Set a due date to get an email reminder before it slips.',demoHTML:'<div class="hd-task"><div class="hd-task-circle"></div><div class="hd-task-body"><div class="hd-task-t">Reply to Sam</div><div class="hd-task-m"><span class="hd-task-pill" style="background:rgba(88,86,214,.18);color:#FFB89E">\\u{1F4C5} Tomorrow</span><span class="hd-task-pill" style="background:rgba(220,38,38,.18);color:#FCA5A5">\\u{1F525} High</span></div></div></div>'},
     {ic:'\\u2713',grad:'linear-gradient(135deg,#a5564b,#a5564b)',t:'Plan, do, complete',d:'Tap the round circle on the left of any task to mark it done. Need columns? Switch to the <b>Board</b> tab for a To-Do / Doing / Done view.',tip:'Drag cards between columns on desktop. On mobile, tap the status badge to cycle.',demoHTML:'<div class="hd-board"><div class="hd-col"><div class="hd-col-h">To Do</div><div class="hd-task-mini">Pay rent</div></div><div class="hd-col hd-col-on"><div class="hd-col-h">Doing</div><div class="hd-task-mini">Reply to Sam</div></div><div class="hd-col"><div class="hd-col-h">Done</div><div class="hd-task-mini hd-done">Buy milk</div></div></div>'},
-    {ic:'\\u{1F3A7}',grad:'linear-gradient(135deg,#a5564b,#8a2e2a)',t:'Briefs in your earbuds',d:'Open the <b>Briefs</b> tab and tap any book cover. The audio summary plays in the bottom mini-player while you keep working. Tap the mini-player to expand and read along.',tip:'Listen for 2 minutes a day to keep your brief streak alive.',demoHTML:'<div class="hd-mini"><div class="hd-mini-cov"></div><div class="hd-mini-info"><b>Atomic Habits</b><small>NOW PLAYING \\u00B7 STUDIO</small></div><div class="hd-mini-btn">\\u23F8</div></div>'},
+    {ic:'\\u{1F3A7}',grad:'linear-gradient(135deg,#a5564b,#3634A3)',t:'Briefs in your earbuds',d:'Open the <b>Briefs</b> tab and tap any book cover. The audio summary plays in the bottom mini-player while you keep working. Tap the mini-player to expand and read along.',tip:'Listen for 2 minutes a day to keep your brief streak alive.',demoHTML:'<div class="hd-mini"><div class="hd-mini-cov"></div><div class="hd-mini-info"><b>Atomic Habits</b><small>NOW PLAYING \\u00B7 STUDIO</small></div><div class="hd-mini-btn">\\u23F8</div></div>'},
     {ic:'\\u{1F9E0}',grad:'linear-gradient(135deg,#86EFAC,#a5564b)',t:'Three brain workouts',d:'The <b>Games</b> tab has three micro-games: <b>Math Sprint</b> (arithmetic against the clock), <b>Word Sprint</b> (anagrams in 90 seconds), and <b>Schulte Grid</b> (tap 1\\u219225 in order). Each scales over 10 levels.',tip:'Each round is sub-90 seconds. Beat your best to climb a level.',demoHTML:'<div class="hd-games"><div class="hd-game" style="--c:#a5564b">\\u{1F522}<small>Math</small></div><div class="hd-game" style="--c:#a5564b">\\u{1F520}<small>Word</small></div><div class="hd-game" style="--c:#a5564b">\\u{1F3AF}<small>Schulte</small></div></div>'},
     {ic:'\\u{1F9D8}',grad:'linear-gradient(135deg,#FCD34D,#a5564b)',t:'Calm &amp; calendar',d:'<b>Meditate</b>: pick a 10 or 20-minute guided session and breathe. <b>Calendar</b>: connect Google to view and add events without leaving Brodoit.',tip:'Each meditation session counts toward your sessions stat in the Profile.',demoHTML:'<div class="hd-cal"><div class="hd-cal-day"><b>MON</b><span>9</span></div><div class="hd-cal-day hd-cal-day-on"><b>TUE</b><span>10</span></div><div class="hd-cal-day"><b>WED</b><span>11</span></div><div class="hd-cal-day"><b>THU</b><span>12</span></div></div>'},
     {ic:'\\u{1F4E7}',grad:'linear-gradient(135deg,#FCD34D,#a5564b)',t:'Email reminders that nudge',d:'Set a due date on any task and Brodoit emails you a reminder before the deadline. Daily highlights and scheduled blocks send their own gentle nudges too.',tip:'Connect Google Calendar to surface all those reminders alongside your real schedule.',demoHTML:'<div class="hd-cal"><div class="hd-cal-day"><b>MON</b><span>9</span></div><div class="hd-cal-day hd-cal-day-on"><b>TUE</b><span>10</span></div><div class="hd-cal-day"><b>WED</b><span>11</span></div><div class="hd-cal-day"><b>THU</b><span>12</span></div></div>'}
@@ -15355,7 +15362,7 @@ if(S.mgGamesPanel&&!S.mgDetail&&!S.mgPlay){
 if(S.mgDetail&&!S.mgPlay){
   const _gameMeta={
     math:{e:'\\u{1F522}',n:'Speed Arithmetic',d:'Solve equations before time runs out. Each level adds harder operations and tighter windows.',accent:'#a5564b',accent2:'#a5564b',road:'highway',vehicle:'\\u{1F697}',start:'mgMathStart()'},
-    memory:{e:'\\u{1F9E9}',n:'Memory Tap',d:'Watch a pattern, repeat it. Each level adds one more tile to the sequence.',accent:'#a5564b',accent2:'#8a2e2a',road:'mountain',vehicle:'\\u{1F9D7}',start:'mgMemoryStart()'},
+    memory:{e:'\\u{1F9E9}',n:'Memory Tap',d:'Watch a pattern, repeat it. Each level adds one more tile to the sequence.',accent:'#a5564b',accent2:'#3634A3',road:'mountain',vehicle:'\\u{1F9D7}',start:'mgMemoryStart()'},
     reaction:{e:'\\u26A1',n:'Reaction',d:'Tap the moment the screen turns green. Pure reflex, milliseconds matter.',accent:'#FED7AA',accent2:'#a5564b',road:'racetrack',vehicle:'\\u{1F3CE}',start:'mgReactionStart()'},
     word:{e:'\\u{1F520}',n:'Word Builder',d:'Form words from scrambled letters. Higher levels demand longer words.',accent:'#a5564b',accent2:'#611f1c',road:'forest',vehicle:'\\u{1F6B5}',start:'mgWordStart()'},
     schulte:{e:'\\u{1F3AF}',n:'Number Hunt',d:'Tap 1 to 25 in order. Higher levels grow the grid up to 7\\u00D77.',accent:'#a5564b',accent2:'#a5564b',road:'space',vehicle:'\\u{1F680}',start:'mgSchulteStart()'},
@@ -15790,7 +15797,7 @@ if(S.mtgPanel){
       +'</section>';
       // Notes
       h+='<section class="mtg-card">'
-        +'<div class="mtg-card-hd"><span class="mtg-card-ic" style="background:linear-gradient(135deg,#a5564b,#8a2e2a)">\\u270D\\uFE0F</span><div class="mtg-card-title"><div class="mtg-card-name">Notes</div><div class="mtg-card-sub">What was decided, action items, quotes</div></div></div>'
+        +'<div class="mtg-card-hd"><span class="mtg-card-ic" style="background:linear-gradient(135deg,#a5564b,#3634A3)">\\u270D\\uFE0F</span><div class="mtg-card-title"><div class="mtg-card-name">Notes</div><div class="mtg-card-sub">What was decided, action items, quotes</div></div></div>'
         +'<textarea class="mtg-textarea-v2 mtg-textarea-tall" id="mtgNotesInput" placeholder="Type as the meeting unfolds. Decisions, action items, who said what.\\u2026" oninput="mtgFieldChange(\\'notes\\',this.value)">'+esc(m.notes||'')+'</textarea>'
       +'</section>';
       // Voice
@@ -15954,7 +15961,7 @@ if(false){ // Old timeline render — disabled
 }
 if(S.showAdd){const isE=!!S.editing;
 h+='<div class="ov" onclick="clM()"><div class="mdl" onclick="event.stopPropagation()"><h2>'+(isE?'Edit Task':'\\u2728 New Task')+'</h2>';
-h+='<div style="text-align:center;margin-bottom:10px"><button class="voice-lg'+(S.listening?' rec':'')+'" onclick="'+(S.listening?'rec&&rec.stop();S.listening=false;render()':'stV()')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'+(S.listening?'<span class="vw"><span></span><span></span><span></span><span></span></span>Listening...':'\\u{1F3A4} Speak to add')+'</button><div style="font-size:11px;color:#9b9797;margin-top:6px">Try: "Buy groceries tomorrow urgent"</div></div>';
+h+='<div style="text-align:center;margin-bottom:10px"><button class="voice-lg'+(S.listening?' rec':'')+'" onclick="'+(S.listening?'rec&&rec.stop();S.listening=false;render()':'stV()')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'+(S.listening?'<span class="vw"><span></span><span></span><span></span><span></span></span>Listening...':'\\u{1F3A4} Speak to add')+'</button><div style="font-size:11px;color:#8E8E93;margin-top:6px">Try: "Buy groceries tomorrow urgent"</div></div>';
 h+='<div style="height:1px;background:#d7d3d3;margin:10px 0 14px"></div>';
 h+='<label class="lbl">Task</label><input id="ft" value="'+esc(S.form.title)+'" placeholder="What needs to be done?" oninput="S.form.title=this.value">';
 h+='<label class="lbl">Notes</label><textarea oninput="S.form.notes=this.value" placeholder="Details...">'+esc(S.form.notes)+'</textarea>';
@@ -16052,7 +16059,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=108').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=109').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -16186,10 +16193,10 @@ app.get('/.well-known/assetlinks.json',(_,res)=>{
 });
 
 // Brand-aligned shared chrome for legal pages — matches the editorial palette of the main app
-const LEGAL_CHROME=`<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#201e1d"><meta name="robots" content="index,follow"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=4"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:#f3f2f2;color:#201e1d;line-height:1.7;font-feature-settings:'cv11','ss01','ss03';letter-spacing:-.011em;font-weight:450;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh}body::before{content:'';position:fixed;inset:-100px;pointer-events:none;z-index:0;background:radial-gradient(680px 480px at 8% 12%,rgba(31,77,63,.08),transparent 65%),radial-gradient(560px 440px at 92% 18%,rgba(138,46,42,.06),transparent 65%),radial-gradient(620px 460px at 50% 108%,rgba(31,77,63,.05),transparent 65%);filter:blur(20px)}.wrap{max-width:760px;margin:0 auto;padding:64px 24px 80px;position:relative;z-index:1}.crumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#6B6B6B;text-decoration:none;padding:6px 12px;border:1px solid #d7d3d3;border-radius:999px;background:#fff;transition:all .2s}.crumb:hover{color:#8a2e2a;border-color:#8a2e2a;transform:translateX(-2px)}.kicker{margin-top:32px;font-family:'JetBrains Mono',var(--mono);font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#8a2e2a}h1{font-family:var(--sans);font-weight:400;font-size:clamp(40px,6vw,64px);line-height:1.05;letter-spacing:-.025em;color:#201e1d;margin-top:8px}.lede{margin-top:18px;font-size:18px;line-height:1.55;color:#3D3D3D;max-width:580px}.updated{display:inline-block;margin-top:24px;padding:6px 12px;background:#d7d3d3;color:#2d2b2b;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase}.hr{height:1px;background:#d7d3d3;margin:48px 0;border:0}h2{font-family:var(--sans);font-weight:400;font-size:28px;line-height:1.15;letter-spacing:-.02em;margin-top:40px;color:#201e1d;display:flex;align-items:baseline;gap:14px}h2::before{content:attr(data-n);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:#8a2e2a;letter-spacing:.05em;flex-shrink:0;width:32px;padding-top:8px;font-style:normal}p,li{font-size:16px;color:#3D3D3D;margin-top:14px}ul{margin-top:14px;padding-left:24px}li{padding-left:6px}strong,b{color:#201e1d;font-weight:600}a{color:#8a2e2a;text-decoration:underline;text-decoration-color:rgba(31,77,63,.3);text-underline-offset:3px;transition:text-decoration-color .2s}a:hover{text-decoration-color:#8a2e2a}.note{margin-top:20px;padding:18px 22px;background:#FFFFFF;border:1px solid #d7d3d3;border-radius:0;color:#3D3D3D;font-size:15px;line-height:1.6}.foot{margin-top:64px;padding-top:32px;border-top:1px solid #d7d3d3;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;font-size:13px;color:#6B6B6B}.foot .links{display:flex;gap:18px}.foot a{color:#3D3D3D;text-decoration:none}.foot a:hover{color:#8a2e2a}@media (max-width:600px){h1{font-size:38px}h2{font-size:22px}h2::before{width:28px;font-size:11px}p,li{font-size:15px}}</style>`;
+const LEGAL_CHROME=`<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#201e1d"><meta name="robots" content="index,follow"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=4"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:#f3f2f2;color:#201e1d;line-height:1.7;font-feature-settings:'cv11','ss01','ss03';letter-spacing:-.011em;font-weight:450;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh}body::before{content:'';position:fixed;inset:-100px;pointer-events:none;z-index:0;background:radial-gradient(680px 480px at 8% 12%,rgba(31,77,63,.08),transparent 65%),radial-gradient(560px 440px at 92% 18%,rgba(88,86,214,.06),transparent 65%),radial-gradient(620px 460px at 50% 108%,rgba(31,77,63,.05),transparent 65%);filter:blur(20px)}.wrap{max-width:760px;margin:0 auto;padding:64px 24px 80px;position:relative;z-index:1}.crumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#6B6B6B;text-decoration:none;padding:6px 12px;border:1px solid #d7d3d3;border-radius:999px;background:#fff;transition:all .2s}.crumb:hover{color:#3634A3;border-color:#3634A3;transform:translateX(-2px)}.kicker{margin-top:32px;font-family:'JetBrains Mono',var(--mono);font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#3634A3}h1{font-family:var(--sans);font-weight:400;font-size:clamp(40px,6vw,64px);line-height:1.05;letter-spacing:-.025em;color:#201e1d;margin-top:8px}.lede{margin-top:18px;font-size:18px;line-height:1.55;color:#3D3D3D;max-width:580px}.updated{display:inline-block;margin-top:24px;padding:6px 12px;background:#d7d3d3;color:#2d2b2b;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase}.hr{height:1px;background:#d7d3d3;margin:48px 0;border:0}h2{font-family:var(--sans);font-weight:400;font-size:28px;line-height:1.15;letter-spacing:-.02em;margin-top:40px;color:#201e1d;display:flex;align-items:baseline;gap:14px}h2::before{content:attr(data-n);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:#3634A3;letter-spacing:.05em;flex-shrink:0;width:32px;padding-top:8px;font-style:normal}p,li{font-size:16px;color:#3D3D3D;margin-top:14px}ul{margin-top:14px;padding-left:24px}li{padding-left:6px}strong,b{color:#201e1d;font-weight:600}a{color:#3634A3;text-decoration:underline;text-decoration-color:rgba(31,77,63,.3);text-underline-offset:3px;transition:text-decoration-color .2s}a:hover{text-decoration-color:#3634A3}.note{margin-top:20px;padding:18px 22px;background:#FFFFFF;border:1px solid #d7d3d3;border-radius:0;color:#3D3D3D;font-size:15px;line-height:1.6}.foot{margin-top:64px;padding-top:32px;border-top:1px solid #d7d3d3;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;font-size:13px;color:#6B6B6B}.foot .links{display:flex;gap:18px}.foot a{color:#3D3D3D;text-decoration:none}.foot a:hover{color:#3634A3}@media (max-width:600px){h1{font-size:38px}h2{font-size:22px}h2::before{width:28px;font-size:11px}p,li{font-size:15px}}</style>`;
 const LEGAL_FOOT=`<footer class="foot"><span>© 2026 Brodoit · Made with discipline.</span><div class="links"><a href="/">App</a><a href="/about">About</a><a href="/changelog">Changelog</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:hello@brodoit.com">Contact</a></div></footer>`;
 // Marketing chrome — extends LEGAL_CHROME with feature-grid styles
-const MARKETING_CHROME=LEGAL_CHROME+`<style>.hero-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(31,77,63,.08);color:#8a2e2a;border:1px solid rgba(31,77,63,.18);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px}.hero-tag .pulse{width:6px;height:6px;border-radius:999px;background:#8a2e2a;box-shadow:0 0 8px #8a2e2a;animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}h1.huge{font-family:var(--sans);font-weight:400;font-size:clamp(56px,9vw,104px);line-height:.95;letter-spacing:-.035em;margin-bottom:0}h1.huge em{font-style:italic;color:#8a2e2a}.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:60px}@media (max-width:840px){.tiers{grid-template-columns:1fr;gap:14px}}.tier{position:relative;padding:36px 30px;background:#fff;border:1px solid #d7d3d3;border-radius:0;display:flex;flex-direction:column;gap:18px;transition:transform .35s cubic-bezier(.16,1,.3,1),border-color .25s,box-shadow .35s}.tier:hover{transform:translateY(-4px);border-color:#CFCFCF;box-shadow:0 14px 40px -16px rgba(26,26,26,.16)}.tier.featured{border-color:#8a2e2a;background:linear-gradient(180deg,#fff,#F4FBF6);box-shadow:0 16px 48px -18px rgba(31,77,63,.32)}.tier .ribbon{position:absolute;top:-12px;right:24px;background:#8a2e2a;color:#fff;padding:5px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}.tier .name{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B6B;font-weight:500}.tier h3{font-family:var(--sans);font-weight:400;font-style:italic;font-size:32px;line-height:1;color:#201e1d;margin-top:-4px}.price{display:flex;align-items:flex-start;gap:4px;margin-top:-2px}.price .dollar{font-size:22px;color:#6B6B6B;margin-top:8px;font-weight:400}.price .num{font-family:'Inter',sans-serif;font-size:60px;font-weight:600;letter-spacing:-.04em;color:#201e1d;line-height:.95}.price .suffix{font-size:13px;color:#6B6B6B;margin-top:auto;margin-bottom:9px;font-family:'JetBrains Mono',monospace;letter-spacing:.05em}.tier .blurb{font-size:14px;line-height:1.55;color:#3D3D3D;min-height:42px}.tier ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}.tier li{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.45;color:#201e1d}.tier li svg{flex-shrink:0;margin-top:3px;color:#8a2e2a}.tier li.muted{color:#9A9A9A}.tier li.muted svg{color:#CFCFCF}.tier .cta{margin-top:auto;padding:14px 22px;text-align:center;border-radius:0;font-weight:600;font-size:14.5px;border:1.5px solid #d7d3d3;color:#201e1d;text-decoration:none;transition:all .25s;cursor:pointer;background:#fff}.tier .cta:hover{border-color:#201e1d;background:#f3f2f2;transform:translateY(-1px)}.tier.featured .cta{background:#8a2e2a;color:#fff;border-color:#8a2e2a}.tier.featured .cta:hover{background:#2d2b2b}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px}@media (max-width:760px){.feature-grid{grid-template-columns:1fr}}.feat{padding:24px;background:#fff;border:1px solid #d7d3d3;border-radius:0;transition:border-color .25s,transform .35s cubic-bezier(.16,1,.3,1)}.feat:hover{border-color:#CFCFCF;transform:translateY(-2px)}.feat .ic{width:42px;height:42px;border-radius:0;background:rgba(31,77,63,.08);color:#8a2e2a;display:grid;place-items:center;margin-bottom:14px}.feat h4{font-family:var(--sans);font-weight:400;font-style:italic;font-size:22px;color:#201e1d;margin-bottom:6px}.feat p{font-size:14px;line-height:1.5;color:#3D3D3D;margin:0}.faq{display:flex;flex-direction:column;gap:10px;margin-top:36px}.faq details{background:#fff;border:1px solid #d7d3d3;border-radius:0;padding:18px 22px;cursor:pointer;transition:border-color .25s}.faq details:hover{border-color:#CFCFCF}.faq details[open]{border-color:#8a2e2a;background:#F4FBF6}.faq summary{font-weight:500;font-size:15.5px;letter-spacing:-.005em;list-style:none;display:flex;justify-content:space-between;align-items:center;color:#201e1d}.faq summary::after{content:'+';font-size:22px;color:#8a2e2a;font-weight:300;transition:transform .25s;font-family:'JetBrains Mono',monospace}.faq details[open] summary::after{transform:rotate(45deg)}.faq p{margin-top:14px;font-size:14.5px;color:#3D3D3D;line-height:1.6}.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px;align-items:center}.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;background:#201e1d;color:#fff;text-decoration:none;border-radius:0;font-weight:500;font-size:15px;transition:background .25s,transform .2s;border:0;cursor:pointer;font-family:inherit}.btn-primary:hover{background:#8a2e2a;transform:translateY(-1px)}.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;background:#fff;color:#201e1d;text-decoration:none;border-radius:0;font-weight:500;font-size:15px;border:1px solid #d7d3d3;transition:border-color .25s}.btn-ghost:hover{border-color:#201e1d}.proof{margin-top:48px;padding:28px;background:#fff;border:1px solid #d7d3d3;border-radius:0;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:center}@media (max-width:560px){.proof{grid-template-columns:1fr;gap:14px}}.proof .num{font-family:var(--sans);font-weight:400;font-size:36px;color:#8a2e2a;line-height:1}.proof .lbl{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6B6B6B;margin-top:6px}.changelog{display:flex;flex-direction:column;gap:24px;margin-top:32px}.cl-item{padding:24px;background:#fff;border:1px solid #d7d3d3;border-radius:0;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:flex-start}@media (max-width:600px){.cl-item{grid-template-columns:1fr}}.cl-date{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#8a2e2a;background:rgba(31,77,63,.08);padding:6px 12px;border-radius:999px;width:fit-content;height:fit-content;white-space:nowrap}.cl-body h3{font-family:var(--sans);font-weight:400;font-style:italic;font-size:22px;color:#201e1d;margin-bottom:8px}.cl-body p{font-size:14.5px;color:#3D3D3D;line-height:1.55;margin-top:6px}.cl-body ul{margin-top:12px;padding-left:22px;font-size:14.5px;color:#3D3D3D}.cl-body li{margin-top:5px;line-height:1.5}.about-quote{font-family:var(--sans);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;color:#201e1d;padding:32px 0;border-top:1px solid #d7d3d3;border-bottom:1px solid #d7d3d3;margin:48px 0}</style>`;
+const MARKETING_CHROME=LEGAL_CHROME+`<style>.hero-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(31,77,63,.08);color:#3634A3;border:1px solid rgba(31,77,63,.18);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px}.hero-tag .pulse{width:6px;height:6px;border-radius:999px;background:#3634A3;box-shadow:0 0 8px #3634A3;animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}h1.huge{font-family:var(--sans);font-weight:400;font-size:clamp(56px,9vw,104px);line-height:.95;letter-spacing:-.035em;margin-bottom:0}h1.huge em{font-style:italic;color:#3634A3}.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:60px}@media (max-width:840px){.tiers{grid-template-columns:1fr;gap:14px}}.tier{position:relative;padding:36px 30px;background:#fff;border:1px solid #d7d3d3;border-radius:0;display:flex;flex-direction:column;gap:18px;transition:transform .35s cubic-bezier(.16,1,.3,1),border-color .25s,box-shadow .35s}.tier:hover{transform:translateY(-4px);border-color:#CFCFCF;box-shadow:0 14px 40px -16px rgba(26,26,26,.16)}.tier.featured{border-color:#3634A3;background:linear-gradient(180deg,#fff,#F4FBF6);box-shadow:0 16px 48px -18px rgba(31,77,63,.32)}.tier .ribbon{position:absolute;top:-12px;right:24px;background:#3634A3;color:#fff;padding:5px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}.tier .name{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B6B6B;font-weight:500}.tier h3{font-family:var(--sans);font-weight:400;font-style:italic;font-size:32px;line-height:1;color:#201e1d;margin-top:-4px}.price{display:flex;align-items:flex-start;gap:4px;margin-top:-2px}.price .dollar{font-size:22px;color:#6B6B6B;margin-top:8px;font-weight:400}.price .num{font-family:'Inter',sans-serif;font-size:60px;font-weight:600;letter-spacing:-.04em;color:#201e1d;line-height:.95}.price .suffix{font-size:13px;color:#6B6B6B;margin-top:auto;margin-bottom:9px;font-family:'JetBrains Mono',monospace;letter-spacing:.05em}.tier .blurb{font-size:14px;line-height:1.55;color:#3D3D3D;min-height:42px}.tier ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}.tier li{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.45;color:#201e1d}.tier li svg{flex-shrink:0;margin-top:3px;color:#3634A3}.tier li.muted{color:#9A9A9A}.tier li.muted svg{color:#CFCFCF}.tier .cta{margin-top:auto;padding:14px 22px;text-align:center;border-radius:0;font-weight:600;font-size:14.5px;border:1.5px solid #d7d3d3;color:#201e1d;text-decoration:none;transition:all .25s;cursor:pointer;background:#fff}.tier .cta:hover{border-color:#201e1d;background:#f3f2f2;transform:translateY(-1px)}.tier.featured .cta{background:#3634A3;color:#fff;border-color:#3634A3}.tier.featured .cta:hover{background:#2d2b2b}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px}@media (max-width:760px){.feature-grid{grid-template-columns:1fr}}.feat{padding:24px;background:#fff;border:1px solid #d7d3d3;border-radius:0;transition:border-color .25s,transform .35s cubic-bezier(.16,1,.3,1)}.feat:hover{border-color:#CFCFCF;transform:translateY(-2px)}.feat .ic{width:42px;height:42px;border-radius:0;background:rgba(31,77,63,.08);color:#3634A3;display:grid;place-items:center;margin-bottom:14px}.feat h4{font-family:var(--sans);font-weight:400;font-style:italic;font-size:22px;color:#201e1d;margin-bottom:6px}.feat p{font-size:14px;line-height:1.5;color:#3D3D3D;margin:0}.faq{display:flex;flex-direction:column;gap:10px;margin-top:36px}.faq details{background:#fff;border:1px solid #d7d3d3;border-radius:0;padding:18px 22px;cursor:pointer;transition:border-color .25s}.faq details:hover{border-color:#CFCFCF}.faq details[open]{border-color:#3634A3;background:#F4FBF6}.faq summary{font-weight:500;font-size:15.5px;letter-spacing:-.005em;list-style:none;display:flex;justify-content:space-between;align-items:center;color:#201e1d}.faq summary::after{content:'+';font-size:22px;color:#3634A3;font-weight:300;transition:transform .25s;font-family:'JetBrains Mono',monospace}.faq details[open] summary::after{transform:rotate(45deg)}.faq p{margin-top:14px;font-size:14.5px;color:#3D3D3D;line-height:1.6}.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px;align-items:center}.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;background:#201e1d;color:#fff;text-decoration:none;border-radius:0;font-weight:500;font-size:15px;transition:background .25s,transform .2s;border:0;cursor:pointer;font-family:inherit}.btn-primary:hover{background:#3634A3;transform:translateY(-1px)}.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;background:#fff;color:#201e1d;text-decoration:none;border-radius:0;font-weight:500;font-size:15px;border:1px solid #d7d3d3;transition:border-color .25s}.btn-ghost:hover{border-color:#201e1d}.proof{margin-top:48px;padding:28px;background:#fff;border:1px solid #d7d3d3;border-radius:0;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:center}@media (max-width:560px){.proof{grid-template-columns:1fr;gap:14px}}.proof .num{font-family:var(--sans);font-weight:400;font-size:36px;color:#3634A3;line-height:1}.proof .lbl{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6B6B6B;margin-top:6px}.changelog{display:flex;flex-direction:column;gap:24px;margin-top:32px}.cl-item{padding:24px;background:#fff;border:1px solid #d7d3d3;border-radius:0;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:flex-start}@media (max-width:600px){.cl-item{grid-template-columns:1fr}}.cl-date{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#3634A3;background:rgba(31,77,63,.08);padding:6px 12px;border-radius:999px;width:fit-content;height:fit-content;white-space:nowrap}.cl-body h3{font-family:var(--sans);font-weight:400;font-style:italic;font-size:22px;color:#201e1d;margin-bottom:8px}.cl-body p{font-size:14.5px;color:#3D3D3D;line-height:1.55;margin-top:6px}.cl-body ul{margin-top:12px;padding-left:22px;font-size:14.5px;color:#3D3D3D}.cl-body li{margin-top:5px;line-height:1.5}.about-quote{font-family:var(--sans);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;color:#201e1d;padding:32px 0;border-top:1px solid #d7d3d3;border-bottom:1px solid #d7d3d3;margin:48px 0}</style>`;
 
 // Privacy Policy (required by Play Store)
 // ─── Beta tester signup ───────────────────────────────────────────────
@@ -16243,8 +16250,8 @@ app.post('/api/beta-signup',async(req,res)=>{
 app.get('/admin/beta-signups',adminAuth,(req,res)=>{
   const rows=db.prepare('SELECT id,name,email,source,added_to_console,created_at,added_at FROM beta_signups ORDER BY created_at DESC').all();
   const escH=s=>(s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'})[c]);
-  const tableRows=rows.map((r,i)=>`<tr style="border-bottom:1px solid #d7d3d3"><td style="padding:10px 8px">${i+1}</td><td style="padding:10px 8px;font-weight:600">${escH(r.name||'—')}</td><td style="padding:10px 8px;font-family:monospace;font-size:13px">${escH(r.email)}</td><td style="padding:10px 8px;color:#7d7979;font-size:12px">${escH(r.source||'direct')}</td><td style="padding:10px 8px">${r.added_to_console?'<span style="color:#8a2e2a;font-weight:600">✅ added</span>':'<span style="color:#C8922A;font-weight:600">⏳ pending</span>'}</td><td style="padding:10px 8px;color:#7d7979;font-size:12px">${escH((r.created_at||'').split(' ')[0])}</td></tr>`).join('');
-  res.send(`<!doctype html><html><head><title>Brodoit · Beta Signups</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:-apple-system,Segoe UI,sans-serif;background:#f3f2f2;color:#201e1d;margin:0;padding:24px;max-width:980px;margin:0 auto}h1{font-size:22px;margin:0 0 6px}.sub{color:#7d7979;font-size:13px;margin-bottom:18px}.bar{display:flex;gap:8px;margin-bottom:16px}.btn{padding:8px 14px;background:#0F1115;color:#FFD27A;text-decoration:none;border-radius:0;font-size:13px;font-weight:600}.btn.sec{background:#fff;color:#0F1115;border:1px solid #d7d3d3}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #d7d3d3;border-radius:0;overflow:hidden}th{text-align:left;padding:12px 8px;background:#f3f2f2;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#7d7979;font-weight:600;border-bottom:1px solid #d7d3d3}.note{margin-top:18px;padding:14px;background:#f3f2f2;border:1px solid #d7d3d3;border-radius:0;font-size:13px;color:#8a2e2a;line-height:1.5}</style></head><body><h1>Brodoit · Beta Signups</h1><div class="sub">${rows.length} total — ${rows.filter(r=>!r.added_to_console).length} pending Play Console add</div><div class="bar"><a class="btn" href="/admin/testers?token=${escH(req.query.token||'')}">Activity dashboard →</a><a class="btn sec" href="/beta">View signup page →</a></div><table><thead><tr><th>#</th><th>Name</th><th>Play email</th><th>Source</th><th>Added to console</th><th>Joined</th></tr></thead><tbody>${tableRows||'<tr><td colspan="6" style="padding:32px;text-align:center;color:#9CA3AF">No signups yet. Share <b>brodoit.com/beta</b>.</td></tr>'}</tbody></table><div class="note"><b>Workflow:</b> emails arriving here = paste into Play Console → Closed testing → Testers list, then mark as added: <code>POST /api/beta-mark-added</code> with {email}.</div></body></html>`);
+  const tableRows=rows.map((r,i)=>`<tr style="border-bottom:1px solid #d7d3d3"><td style="padding:10px 8px">${i+1}</td><td style="padding:10px 8px;font-weight:600">${escH(r.name||'—')}</td><td style="padding:10px 8px;font-family:monospace;font-size:13px">${escH(r.email)}</td><td style="padding:10px 8px;color:#7d7979;font-size:12px">${escH(r.source||'direct')}</td><td style="padding:10px 8px">${r.added_to_console?'<span style="color:#3634A3;font-weight:600">✅ added</span>':'<span style="color:#C8922A;font-weight:600">⏳ pending</span>'}</td><td style="padding:10px 8px;color:#7d7979;font-size:12px">${escH((r.created_at||'').split(' ')[0])}</td></tr>`).join('');
+  res.send(`<!doctype html><html><head><title>Brodoit · Beta Signups</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:-apple-system,Segoe UI,sans-serif;background:#f3f2f2;color:#201e1d;margin:0;padding:24px;max-width:980px;margin:0 auto}h1{font-size:22px;margin:0 0 6px}.sub{color:#7d7979;font-size:13px;margin-bottom:18px}.bar{display:flex;gap:8px;margin-bottom:16px}.btn{padding:8px 14px;background:#0F1115;color:#FFD27A;text-decoration:none;border-radius:0;font-size:13px;font-weight:600}.btn.sec{background:#fff;color:#0F1115;border:1px solid #d7d3d3}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #d7d3d3;border-radius:0;overflow:hidden}th{text-align:left;padding:12px 8px;background:#f3f2f2;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#7d7979;font-weight:600;border-bottom:1px solid #d7d3d3}.note{margin-top:18px;padding:14px;background:#f3f2f2;border:1px solid #d7d3d3;border-radius:0;font-size:13px;color:#3634A3;line-height:1.5}</style></head><body><h1>Brodoit · Beta Signups</h1><div class="sub">${rows.length} total — ${rows.filter(r=>!r.added_to_console).length} pending Play Console add</div><div class="bar"><a class="btn" href="/admin/testers?token=${escH(req.query.token||'')}">Activity dashboard →</a><a class="btn sec" href="/beta">View signup page →</a></div><table><thead><tr><th>#</th><th>Name</th><th>Play email</th><th>Source</th><th>Added to console</th><th>Joined</th></tr></thead><tbody>${tableRows||'<tr><td colspan="6" style="padding:32px;text-align:center;color:#9CA3AF">No signups yet. Share <b>brodoit.com/beta</b>.</td></tr>'}</tbody></table><div class="note"><b>Workflow:</b> emails arriving here = paste into Play Console → Closed testing → Testers list, then mark as added: <code>POST /api/beta-mark-added</code> with {email}.</div></body></html>`);
 });
 
 app.post('/api/beta-mark-added',adminAuth,(req,res)=>{
@@ -16278,11 +16285,11 @@ input:focus{outline:none;border-color:#0F1115;box-shadow:0 0 0 4px rgba(15,17,21
 button{margin-top:18px;width:100%;padding:16px;border:none;background:#0F1115;color:#FFD27A;font-family:inherit;font-size:15px;font-weight:600;letter-spacing:-.005em;border-radius:0;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease}
 button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 18px -4px rgba(15,17,21,.3)}
 button:disabled{opacity:.6;cursor:not-allowed}
-.success{margin-top:18px;padding:18px;background:#f3f2f2;border:1px solid #86EFAC;border-radius:0;color:#8a2e2a;font-size:14px;line-height:1.55;display:none}
+.success{margin-top:18px;padding:18px;background:#f3f2f2;border:1px solid #86EFAC;border-radius:0;color:#3634A3;font-size:14px;line-height:1.55;display:none}
 .success.on{display:block;animation:fadeIn .35s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .success b{color:#2d2b2b}
-.success a{color:#8a2e2a;font-weight:600}
+.success a{color:#3634A3;font-weight:600}
 .error{margin-top:14px;padding:12px 14px;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:0;color:#991B1B;font-size:13px;display:none}
 .error.on{display:block}
 .share{margin-top:32px;padding:18px 20px;background:#fff;border:1px dashed #C2BFB8;border-radius:0;font-size:13px;line-height:1.6;color:#52555C}
@@ -16362,7 +16369,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v108";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v109";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
