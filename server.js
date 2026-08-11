@@ -3160,7 +3160,8 @@ body[data-theme=aurora] .mg-why-d{color:#888888}
 .game-fs-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,0,0,.4);color:#fff;flex-shrink:0;z-index:1}
 .game-fs-title{font:700 16px var(--sans);color:#fff}
 .game-fs-score{font:700 14px var(--mono);color:#FFB547}
-.game-fs-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:18px;cursor:pointer;display:grid;place-items:center}
+.game-fs-close{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:18px;cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent}
+.game-fs-close:active{background:rgba(255,255,255,.25)}
 .game-fs-canvas{flex:1;width:100%;display:block}
 .game-fs-msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.7);color:#fff;z-index:2;gap:12px}
 .game-fs-msg h2{font:800 32px var(--sans);margin:0}
@@ -9460,7 +9461,7 @@ function arcadeOpen(id){
   var d=document.createElement('div');d.id='arcadeFS';d.className='game-fs';
   var g=_arcadeGames.find(function(x){return x.id===id});
   var name=g?g.name:id;
-  d.innerHTML='<div class="game-fs-hd"><span class="game-fs-title">'+name+'</span><span class="game-fs-score" id="arcScore">0</span><button class="game-fs-close" onclick="arcadeClose()">\\u2715</button></div><canvas class="game-fs-canvas" id="arcCanvas"></canvas>';
+  d.innerHTML='<div class="game-fs-hd"><button class="game-fs-close" onclick="arcadeClose()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><span class="game-fs-title">'+name+'</span><span class="game-fs-score" id="arcScore">0</span></div><canvas class="game-fs-canvas" id="arcCanvas"></canvas>';
   document.body.appendChild(d);
   try{if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(function(){})}catch(e){}
   setTimeout(function(){
@@ -14683,19 +14684,23 @@ else if(S.tab==='mindgym'){
   };
 
   if(!S.mgSection){
-    // === LANDING PAGE — arcade carousel + 3 section cards ===
+    // === LANDING PAGE — one unified swipeable strip of ALL games ===
     var streak=mg.streak||{current:0,longest:0,total:0};
     var _allG=_mgSections.reduce(function(a,s){return a.concat(s.games)},[]);
     var totalXp=_allG.reduce(function(s,g){return s+((mg.progress[g.k]||{}).xp||0)},0);
     h+='<div style="font:800 28px var(--sans);color:var(--ink);letter-spacing:-.02em;margin-bottom:4px">Mind Games</div>';
-    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-bottom:16px">Train your brain daily · '+totalXp+' XP · '+streak.current+' day streak</div>';
-    // ── Swipeable Arcade Games Carousel ──
-    h+='<div style="font:700 18px var(--sans);color:var(--ink);margin-bottom:10px">\\u{1F3AE} Arcade Games</div>';
+    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-bottom:16px">Train your brain daily \\u00B7 '+totalXp+' XP \\u00B7 '+streak.current+' day streak</div>';
+    // ── Single swipeable strip with ALL games (arcade + brain training) ──
+    var _allCards=[];
+    _arcadeGames.forEach(function(g){_allCards.push({type:'arcade',id:g.id,name:g.name,emoji:g.emoji,desc:g.desc,bg:g.bg,badge:g.badge})});
+    _allG.forEach(function(g){var p=mg.progress[g.k]||{level:1,xp:0};_allCards.push({type:'brain',k:g.k,name:g.n,emoji:g.emoji,desc:g.d,bg:g.bg,badge:'Lv '+p.level})});
+    h+='<div style="font:500 13px var(--sans);color:var(--text-mute);margin-bottom:8px">Swipe \\u2192 for more games</div>';
     h+='<div class="gc-strip" id="arcadeStrip">';
-    _arcadeGames.forEach(function(g,i){
-      h+='<div class="gc-card" style="background:'+g.bg+'" onclick="arcadeOpen(\\''+g.id+'\\')">';
+    _allCards.forEach(function(g){
+      var onclick=g.type==='arcade'?'arcadeOpen(\\''+g.id+'\\')':'mgDetailOpen(\\''+g.k+'\\')';
+      h+='<div class="gc-card" style="background:'+(g.bg||'#4361EE')+'" onclick="'+onclick+'">';
       h+='<div class="gc-card-body">';
-      h+='<div class="gc-card-badge">'+g.badge+'</div>';
+      h+='<div class="gc-card-badge">'+(g.badge||'')+'</div>';
       h+='<div class="gc-card-emoji">'+g.emoji+'</div>';
       h+='<div class="gc-card-name">'+g.name+'</div>';
       h+='<div class="gc-card-desc">'+g.desc+'</div>';
@@ -14704,27 +14709,7 @@ else if(S.tab==='mindgym'){
     h+='</div>';
     // Dot indicators
     h+='<div class="gc-dots">';
-    _arcadeGames.forEach(function(g,i){h+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
-    h+='</div>';
-    h+='<div style="font:700 18px var(--sans);color:var(--ink);margin:20px 0 12px">\\u{1F9E0} Brain Training</div>';
-    h+='<div class="mg-landing">';
-    _mgSections.forEach(function(sec){
-      var secGames=sec.games;
-      var played=secGames.filter(function(g){return ((mg.progress[g.k]||{}).xp||0)>0}).length;
-      h+='<button class="mg-sec-card" onclick="mgSectionOpen(\\''+sec.id+'\\')">';
-      h+='<div class="mg-sec-card-bg">'+_mgSecArt[sec.id]+'</div>';
-      h+='<div class="mg-sec-card-ov"></div>';
-      h+='<div class="mg-sec-card-body">';
-      h+='<div class="mg-sec-card-title">'+sec.title+'</div>';
-      h+='<div class="mg-sec-card-desc">'+sec.desc+'</div>';
-      h+='<div class="mg-sec-card-prog">';
-      h+='<div class="mg-sec-card-bar"><div class="mg-sec-card-fill" style="width:'+Math.round((played/secGames.length)*100)+'%"></div></div>';
-      h+='<span class="mg-sec-card-count">'+played+'/'+secGames.length+'</span>';
-      h+='</div>';
-      h+='</div>';
-      h+='<div class="mg-sec-card-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>';
-      h+='</button>';
-    });
+    _allCards.forEach(function(g,i){h+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
     h+='</div>';
   }else{
     // === SECTION DRILL-DOWN ===
@@ -16839,7 +16824,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v112";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v113";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
