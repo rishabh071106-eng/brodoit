@@ -3139,6 +3139,41 @@ body[data-theme=aurora] .mg-why-d{color:#888888}
 .mg-drill-game-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .mg-drill-game-lvl{font:700 12px 'Space Mono',monospace;color:var(--accent);letter-spacing:.02em}
 .mg-drill-game-lock{color:var(--text-mute);opacity:.5}
+/* ── GAME SWIPE CAROUSEL ── */
+.gc-strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;gap:14px;padding:4px 2px 16px;scrollbar-width:none}
+.gc-strip::-webkit-scrollbar{display:none}
+.gc-card{flex:0 0 72%;scroll-snap-align:center;border-radius:22px;overflow:hidden;position:relative;height:200px;cursor:pointer;border:none;text-align:left;font-family:inherit;color:#fff;transition:transform .2s;box-shadow:0 8px 28px -6px rgba(0,0,0,.3)}
+@media(min-width:420px){.gc-card{flex:0 0 58%}}
+.gc-card:active{transform:scale(.97)}
+.gc-card-bg{position:absolute;inset:0;z-index:0}
+.gc-card-ov{position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,.1) 50%)}
+.gc-card-body{position:relative;z-index:2;padding:18px 20px;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.gc-card-emoji{font-size:42px;margin-bottom:auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+.gc-card-name{font:800 22px var(--sans);letter-spacing:-.02em;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.gc-card-desc{font:400 13px var(--sans);color:rgba(255,255,255,.8);margin-top:3px}
+.gc-card-badge{position:absolute;top:14px;right:14px;z-index:2;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);font:700 11px var(--sans);color:#fff;text-transform:uppercase;letter-spacing:.04em}
+.gc-dots{display:flex;justify-content:center;gap:6px;margin-top:2px}
+.gc-dot{width:6px;height:6px;border-radius:50%;background:var(--ink-5);transition:all .2s}
+.gc-dot.on{width:18px;border-radius:3px;background:var(--accent)}
+/* ── FULLSCREEN GAME OVERLAY ── */
+.game-fs{position:fixed;inset:0;z-index:200;background:#0a0a1a;display:flex;flex-direction:column;animation:pgFadeIn .3s ease both}
+.game-fs-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,0,0,.4);color:#fff;flex-shrink:0;z-index:1}
+.game-fs-title{font:700 16px var(--sans);color:#fff}
+.game-fs-score{font:700 14px var(--mono);color:#FFB547}
+.game-fs-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:18px;cursor:pointer;display:grid;place-items:center}
+.game-fs-canvas{flex:1;width:100%;display:block}
+.game-fs-msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.7);color:#fff;z-index:2;gap:12px}
+.game-fs-msg h2{font:800 32px var(--sans);margin:0}
+.game-fs-msg p{font:400 16px var(--sans);color:rgba(255,255,255,.7);margin:0}
+.game-fs-msg button{padding:14px 32px;border-radius:14px;background:#4361EE;color:#fff;border:none;font:700 16px var(--sans);cursor:pointer;margin-top:8px}
+/* ── FOCUS WALK ANIMATION ── */
+.focus-walk{position:relative;width:100%;height:80px;margin:12px 0;overflow:hidden;border-radius:12px;background:linear-gradient(0deg,#1a1a2e 0%,#2d2b5a 100%)}
+.focus-walk-ground{position:absolute;bottom:0;left:0;right:0;height:20px;background:linear-gradient(0deg,#2d4a2d,#3a5c3a)}
+.focus-walk-path{position:absolute;bottom:20px;left:0;right:0;height:2px;background:rgba(255,255,255,.15)}
+.focus-walk-person{position:absolute;bottom:20px;transition:left 1s linear;font-size:24px;line-height:1}
+.focus-walk-goal{position:absolute;bottom:16px;right:12px;font-size:28px}
+.focus-walk-msg{position:absolute;top:8px;left:0;right:0;text-align:center;font:600 12px var(--sans);color:rgba(255,255,255,.7);animation:focusMsgPulse 3s ease-in-out infinite}
+@keyframes focusMsgPulse{0%,100%{opacity:.5}50%{opacity:1}}
 /* VOICE TRAINER */
 .vc-hero{position:relative;border-radius:20px;overflow:hidden;margin-bottom:18px;background:linear-gradient(135deg,#111827 0%,#292524 50%,#A07040 100%);color:#fff;box-shadow:0 16px 40px rgba(17,24,39,.22)}
 .vc-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 78% 100%,rgba(251,146,60,.28),transparent 55%),radial-gradient(circle at 10% 0%,rgba(252,211,77,.15),transparent 50%);pointer-events:none}
@@ -9291,10 +9326,15 @@ function focusStart(){
     S.focus.remaining=Math.max(0,S.focus.remaining-1);
     var el=document.getElementById('focusLockTime');
     if(el){var m=Math.floor(S.focus.remaining/60);var s=S.focus.remaining%60;el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
-    var ring=document.getElementById('focusLockRing');
-    if(ring){var pct=S.focus.remaining/S.focus.total;var circ=2*Math.PI*72;ring.style.strokeDasharray=(pct*circ)+' '+circ;}
+    var _pctNow=Math.round((1-S.focus.remaining/S.focus.total)*100);
     var pctEl=document.getElementById('focusLockPct');
-    if(pctEl)pctEl.textContent=Math.round((1-S.focus.remaining/S.focus.total)*100)+'%';
+    if(pctEl)pctEl.textContent=_pctNow+'%';
+    var walker=document.getElementById('focusLockWalker');
+    if(walker)walker.style.left=_pctNow+'%';
+    var bar=document.getElementById('focusLockBar');
+    if(bar)bar.style.width=_pctNow+'%';
+    var phase=document.getElementById('focusLockPhase');
+    if(phase){var _mi=Math.floor((_pctNow/100)*(_focusWalkMsgs.length-1));phase.textContent=_focusWalkMsgs[_mi];}
     if(S.focus.remaining<=0){_focusComplete();}
   },1000);
   if(typeof Notification!=='undefined'&&Notification.permission==='default'){Notification.requestPermission();}
@@ -9337,19 +9377,28 @@ function _focusShowLockScreen(){
   var foc=S.focus;var m=Math.floor(foc.remaining/60);var s=foc.remaining%60;
   var timeStr=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   var pct=Math.round((1-foc.remaining/foc.total)*100);
-  var circ=2*Math.PI*72;var dash=(foc.remaining/foc.total)*circ;
   var durMins=Math.round(foc.total/60);
+  var msgIdx=Math.floor((pct/100)*(_focusWalkMsgs.length-1));
+  var msg=_focusWalkMsgs[msgIdx];
   var h='<div class="focus-lock-glow"></div>';
   h+='<div class="focus-lock-label">FOCUS MODE</div>';
-  h+='<div class="focus-lock-ring-wrap">';
-  h+='<svg width="180" height="180" viewBox="0 0 180 180"><circle cx="90" cy="90" r="72" fill="none" stroke="rgba(67,97,238,.1)" stroke-width="5"/><circle id="focusLockRing" cx="90" cy="90" r="72" fill="none" stroke="#2B44BA" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+dash+' '+circ+'" style="transform:rotate(-90deg);transform-origin:center;filter:drop-shadow(0 0 12px rgba(67,97,238,.4));transition:stroke-dasharray .8s cubic-bezier(.4,0,.2,1)"/></svg>';
-  h+='<div class="focus-lock-time"><span id="focusLockTime" class="focus-lock-num">'+timeStr+'</span><span id="focusLockPct" class="focus-lock-pct">'+pct+'%</span></div>';
+  // Walking scene
+  h+='<div style="width:90%;max-width:340px;height:120px;border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(180deg,#0d1b2a 0%,#1b3a5c 40%,#3d6b4e 75%,#2d5a3f 100%);margin:20px auto">';
+  h+='<div style="position:absolute;bottom:20px;left:0;right:0;height:2px;background:rgba(255,255,255,.12)"></div>';
+  // Stars
+  h+='<div style="position:absolute;top:8px;left:20%;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.6"></div>';
+  h+='<div style="position:absolute;top:15px;left:50%;width:3px;height:3px;background:#fff;border-radius:50%;opacity:.4"></div>';
+  h+='<div style="position:absolute;top:6px;left:75%;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.5"></div>';
+  h+='<div id="focusLockWalker" style="position:absolute;bottom:22px;left:'+pct+'%;transition:left 1s ease;font-size:28px;transform:translateX(-50%) scaleX(-1)">\\u{1F6B6}</div>';
+  h+='<div style="position:absolute;bottom:22px;right:12px;font-size:24px">\\u{1F3C1}</div>';
+  h+='<div style="position:absolute;bottom:6px;left:16px;right:16px;height:5px;background:rgba(255,255,255,.08);border-radius:3px"><div id="focusLockBar" style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#4361EE,#34C759);border-radius:3px;transition:width 1s ease"></div></div>';
   h+='</div>';
-  h+='<div id="focusLockPhase" class="focus-lock-phase">Stay focused for '+durMins+' minutes</div>';
+  h+='<div class="focus-lock-time" style="position:relative"><span id="focusLockTime" class="focus-lock-num">'+timeStr+'</span><span id="focusLockPct" class="focus-lock-pct">'+pct+'%</span></div>';
+  h+='<div id="focusLockPhase" class="focus-lock-phase" style="font-size:15px;margin-top:12px;min-height:40px">'+msg+'</div>';
   h+='<div id="focusLockBtns" class="focus-lock-btns">';
   h+='<button class="focus-lock-btn focus-lock-btn-s" onclick="focusPause()"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>Pause</button>';
   h+='</div>';
-  h+='<div class="focus-lock-tip">Screen will stay awake &bull; Do Not Disturb active</div>';
+  h+='<div class="focus-lock-tip">Keep walking! Don\\'t stop now \\u{1F4AA}</div>';
   d.innerHTML=h;
   document.body.appendChild(d);
 }
@@ -9359,25 +9408,358 @@ function focusCandleMode(){
   _focusAcquireWakeLock();
   try{if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(function(){})}catch(e){}
   var d=document.createElement('div');d.id='candleFocusScreen';
-  d.style.cssText='position:fixed;inset:0;z-index:99999;background:#0a0806;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:breatheFadeIn .5s ease both;cursor:pointer';
-  var h='<div style="position:relative;width:200px;height:320px">';
-  h+='<div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40px;height:160px;background:linear-gradient(to top,#e8c170,#d4a355);border-radius:4px 4px 2px 2px"></div>';
-  h+='<div style="position:absolute;bottom:155px;left:50%;transform:translateX(-50%);width:2px;height:14px;background:#333"></div>';
-  h+='<div class="candle-flame" style="position:absolute;bottom:165px;left:50%;transform:translateX(-50%)">';
-  h+='<div style="width:24px;height:60px;background:radial-gradient(ellipse at bottom,#ff6b1a 0%,#ff9d2f 30%,#ffe680 60%,rgba(255,230,128,0) 100%);border-radius:50% 50% 20% 20%;animation:candleFlicker 2s ease-in-out infinite alternate;filter:blur(1px)"></div>';
-  h+='<div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:12px;height:30px;background:radial-gradient(ellipse at bottom,#4fc3f7 0%,#29b6f6 40%,rgba(79,195,247,0) 100%);border-radius:50% 50% 20% 20%;opacity:.8"></div>';
+  d.style.cssText='position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#0d1b2a 0%,#1b3a5c 35%,#3d6b4e 70%,#2d5a3f 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:breatheFadeIn .5s ease both;cursor:pointer';
+  var pct=S.focus.active?Math.round((1-S.focus.remaining/S.focus.total)*100):0;
+  var _m=Math.floor(S.focus.remaining/60);var _s=S.focus.remaining%60;
+  var h='<div style="position:absolute;top:12%;width:80%;max-width:320px;text-align:center"><div style="font:700 44px var(--sans);color:#fff;letter-spacing:3px" id="focusRoomTime">'+String(_m).padStart(2,'0')+':'+String(_s).padStart(2,'0')+'</div><div style="font:500 14px var(--sans);color:rgba(255,255,255,.5);margin-top:6px" id="focusRoomPct">'+pct+'% complete</div></div>';
+  h+='<div style="position:relative;width:80%;max-width:320px;height:160px;margin-top:60px">';
+  h+='<div style="position:absolute;bottom:20px;left:0;right:0;height:2px;background:rgba(255,255,255,.15)"></div>';
+  h+='<div id="focusRoomWalker" style="position:absolute;bottom:22px;left:'+pct+'%;font-size:40px;transform:translateX(-50%) scaleX(-1);transition:left 1s ease">\\u{1F6B6}</div>';
+  h+='<div style="position:absolute;bottom:22px;right:0;font-size:32px">\\u{1F3C1}</div>';
+  h+='<div style="position:absolute;bottom:6px;left:0;right:0;height:6px;background:rgba(255,255,255,.08);border-radius:3px"><div id="focusRoomBar" style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#4361EE,#34C759);border-radius:3px;transition:width 1s ease"></div></div>';
   h+='</div>';
-  h+='<div style="position:absolute;bottom:165px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(255,150,50,.12) 0%,rgba(255,100,20,.05) 40%,transparent 70%);pointer-events:none;animation:candleGlow 3s ease-in-out infinite alternate"></div>';
-  h+='</div>';
-  h+='<div style="font:400 14px var(--serif);color:rgba(255,200,130,.5);margin-top:40px;text-align:center">Focus on the flame<br><span style="font-size:12px;opacity:.6">Tap anywhere to exit</span></div>';
+  var msgIdx=Math.floor((pct/100)*(_focusWalkMsgs.length-1));
+  h+='<div id="focusRoomMsg" style="font:500 16px var(--sans);color:rgba(255,255,255,.7);margin-top:30px;text-align:center;padding:0 20px">'+_focusWalkMsgs[msgIdx]+'</div>';
+  h+='<div style="position:absolute;top:15px;left:15%;width:3px;height:3px;background:#fff;border-radius:50%;opacity:.5"></div>';
+  h+='<div style="position:absolute;top:25px;left:45%;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.3"></div>';
+  h+='<div style="position:absolute;top:10px;left:70%;width:3px;height:3px;background:#fff;border-radius:50%;opacity:.4"></div>';
+  h+='<div style="position:absolute;top:35px;left:85%;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.25"></div>';
+  h+='<div style="font:400 13px var(--sans);color:rgba(255,255,255,.3);position:absolute;bottom:40px;text-align:center;width:100%">Tap anywhere to exit</div>';
   d.innerHTML=h;
+  // Update timer in room mode
+  var _roomInt=setInterval(function(){
+    if(!S.focus.active){clearInterval(_roomInt);return}
+    var mm=Math.floor(S.focus.remaining/60);var ss=S.focus.remaining%60;
+    var rt=document.getElementById('focusRoomTime');if(rt)rt.textContent=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+    var pp=Math.round((1-S.focus.remaining/S.focus.total)*100);
+    var rp=document.getElementById('focusRoomPct');if(rp)rp.textContent=pp+'% complete';
+    var rw=document.getElementById('focusRoomWalker');if(rw)rw.style.left=pp+'%';
+    var rb=document.getElementById('focusRoomBar');if(rb)rb.style.width=pp+'%';
+    var rm=document.getElementById('focusRoomMsg');if(rm){var mi=Math.floor((pp/100)*(_focusWalkMsgs.length-1));rm.textContent=_focusWalkMsgs[mi]}
+  },1000);
   d.onclick=function(){
+    clearInterval(_roomInt);
     _focusReleaseWakeLock();
     try{if(document.fullscreenElement)document.exitFullscreen().catch(function(){})}catch(e){}
     d.style.opacity='0';d.style.transition='opacity .5s';setTimeout(function(){d.remove()},500);
   };
   document.body.appendChild(d);
 }
+
+// ═══════ ARCADE GAMES — fullscreen canvas games ═══════
+var _arcadeGames=[
+  {id:'runner',name:'Super Bro Run',emoji:'\\u{1F3C3}',desc:'Tap to jump over obstacles!',bg:'linear-gradient(135deg,#2563EB,#1E40AF)',badge:'Endless'},
+  {id:'snake',name:'Snake',emoji:'\\u{1F40D}',desc:'Eat food, grow longer, don\\'t crash!',bg:'linear-gradient(135deg,#059669,#065F46)',badge:'Classic'},
+  {id:'chess',name:'Chess',emoji:'\\u265A',desc:'Challenge the AI in classic chess',bg:'linear-gradient(135deg,#4B5563,#1F2937)',badge:'Strategy'},
+  {id:'ludo',name:'Ludo',emoji:'\\u{1F3B2}',desc:'Roll dice, race to the finish!',bg:'linear-gradient(135deg,#DC2626,#991B1B)',badge:'Board'},
+  {id:'solitaire',name:'Solitaire',emoji:'\\u{1F0CF}',desc:'Classic card matching game',bg:'linear-gradient(135deg,#7C3AED,#5B21B6)',badge:'Cards'}
+];
+var _arcadeState={};
+function arcadeOpen(id){
+  var old=document.getElementById('arcadeFS');if(old)old.remove();
+  var d=document.createElement('div');d.id='arcadeFS';d.className='game-fs';
+  var g=_arcadeGames.find(function(x){return x.id===id});
+  var name=g?g.name:id;
+  d.innerHTML='<div class="game-fs-hd"><span class="game-fs-title">'+name+'</span><span class="game-fs-score" id="arcScore">0</span><button class="game-fs-close" onclick="arcadeClose()">\\u2715</button></div><canvas class="game-fs-canvas" id="arcCanvas"></canvas>';
+  document.body.appendChild(d);
+  try{if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(function(){})}catch(e){}
+  setTimeout(function(){
+    var c=document.getElementById('arcCanvas');if(!c)return;
+    c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;
+    var ctx=c.getContext('2d');ctx.scale(2,2);
+    _arcadeState={id:id,canvas:c,ctx:ctx,w:c.offsetWidth,h:c.offsetHeight,running:true,score:0,frame:0};
+    if(id==='runner')_runnerInit();
+    else if(id==='snake')_snakeInit();
+    else if(id==='chess')_chessInit();
+    else if(id==='ludo')_ludoInit();
+    else if(id==='solitaire')_solInit();
+  },100);
+}
+function arcadeClose(){
+  _arcadeState.running=false;
+  try{if(document.fullscreenElement)document.exitFullscreen().catch(function(){})}catch(e){}
+  var el=document.getElementById('arcadeFS');if(el){el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(function(){el.remove()},300)}
+}
+function _arcScore(n){_arcadeState.score=n;var el=document.getElementById('arcScore');if(el)el.textContent=n}
+// ── SUPER BRO RUN ──
+function _runnerInit(){
+  var S=_arcadeState,c=S.canvas,W=S.w,H=S.h;
+  var groundY=H-60;
+  var player={x:60,y:groundY-40,w:30,h:40,vy:0,jumping:false};
+  var obstacles=[];var speed=4;var spawnTimer=0;var gameOver=false;
+  S.runner={player:player,obstacles:obstacles,speed:speed,groundY:groundY,gameOver:gameOver};
+  function jump(){if(!player.jumping&&!gameOver){player.vy=-12;player.jumping=true}else if(gameOver){gameOver=false;S.runner.gameOver=false;player.y=groundY-40;player.vy=0;player.jumping=false;obstacles.length=0;S.score=0;speed=4;spawnTimer=0;_arcScore(0)}}
+  c.onclick=jump;c.ontouchstart=function(e){e.preventDefault();jump()};
+  function tick(){
+    if(!S.running)return;
+    var ctx=S.ctx;ctx.clearRect(0,0,W,H);
+    // Sky
+    ctx.fillStyle='#87CEEB';ctx.fillRect(0,0,W,H);
+    // Ground
+    ctx.fillStyle='#4CAF50';ctx.fillRect(0,groundY,W,60);
+    ctx.fillStyle='#388E3C';ctx.fillRect(0,groundY,W,3);
+    if(!gameOver){
+      // Physics
+      player.vy+=0.7;player.y+=player.vy;
+      if(player.y>=groundY-player.h){player.y=groundY-player.h;player.vy=0;player.jumping=false}
+      // Obstacles
+      spawnTimer++;
+      if(spawnTimer>80+Math.random()*60){obstacles.push({x:W+10,w:24,h:30+Math.random()*30});spawnTimer=0}
+      for(var i=obstacles.length-1;i>=0;i--){
+        obstacles[i].x-=speed;
+        if(obstacles[i].x<-30){obstacles.splice(i,1);S.score++;_arcScore(S.score);speed=4+S.score*0.15;continue}
+        if(player.x+player.w-8>obstacles[i].x&&player.x+8<obstacles[i].x+obstacles[i].w&&player.y+player.h>groundY-obstacles[i].h){gameOver=true;S.runner.gameOver=true}
+      }
+    }
+    // Draw player
+    ctx.fillStyle='#4361EE';ctx.fillRect(player.x,player.y,player.w,player.h);
+    ctx.fillStyle='#FDDCB5';ctx.beginPath();ctx.arc(player.x+15,player.y-6,10,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#1a1a2e';ctx.fillRect(player.x+8,player.y-14,14,10);
+    // Draw obstacles
+    ctx.fillStyle='#228B22';
+    for(var j=0;j<obstacles.length;j++){var o=obstacles[j];ctx.fillRect(o.x,groundY-o.h,o.w,o.h);ctx.fillStyle='#1B5E20';ctx.fillRect(o.x-4,groundY-o.h-6,o.w+8,8);ctx.fillStyle='#228B22'}
+    // Clouds
+    ctx.fillStyle='rgba(255,255,255,.7)';
+    for(var k=0;k<3;k++){var cx=(S.frame*0.5+k*120)%W;ctx.beginPath();ctx.arc(cx,40+k*20,18,0,Math.PI*2);ctx.arc(cx+14,35+k*20,14,0,Math.PI*2);ctx.arc(cx-12,38+k*20,12,0,Math.PI*2);ctx.fill()}
+    if(gameOver){ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='bold 28px sans-serif';ctx.textAlign='center';ctx.fillText('Game Over!',W/2,H/2-20);ctx.font='16px sans-serif';ctx.fillText('Score: '+S.score+' — Tap to retry',W/2,H/2+15)}
+    S.frame++;requestAnimationFrame(tick);
+  }
+  tick();
+}
+// ── SNAKE ──
+function _snakeInit(){
+  var S=_arcadeState,W=S.w,H=S.h,ctx=S.ctx;
+  var gs=20;var cols=Math.floor(W/gs);var rows=Math.floor(H/gs);
+  var snake=[{x:Math.floor(cols/2),y:Math.floor(rows/2)}];
+  var dir={x:1,y:0};var food=_snakeFood(cols,rows,snake);var gameOver=false;var speed=120;
+  S.snake={snake:snake,dir:dir,food:food,gameOver:gameOver,gs:gs,cols:cols,rows:rows};
+  var lastDir=dir;
+  var startX=0,startY=0;
+  S.canvas.ontouchstart=function(e){e.preventDefault();var t=e.touches[0];startX=t.clientX;startY=t.clientY};
+  S.canvas.ontouchend=function(e){e.preventDefault();if(gameOver){gameOver=false;S.snake.gameOver=false;snake.length=1;snake[0]={x:Math.floor(cols/2),y:Math.floor(rows/2)};dir={x:1,y:0};lastDir=dir;food=_snakeFood(cols,rows,snake);S.snake.food=food;S.score=0;_arcScore(0);return}var t=e.changedTouches[0];var dx=t.clientX-startX;var dy=t.clientY-startY;if(Math.abs(dx)>Math.abs(dy)){dir=dx>0?{x:1,y:0}:{x:-1,y:0}}else{dir=dy>0?{x:0,y:1}:{x:0,y:-1}}if(dir.x===-lastDir.x&&dir.y===-lastDir.y)dir=lastDir;S.snake.dir=dir};
+  function tick(){
+    if(!S.running)return;
+    if(!gameOver){
+      lastDir=dir;
+      var head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+      if(head.x<0||head.x>=cols||head.y<0||head.y>=rows){gameOver=true;S.snake.gameOver=true}
+      for(var i=0;i<snake.length;i++){if(snake[i].x===head.x&&snake[i].y===head.y){gameOver=true;S.snake.gameOver=true;break}}
+      if(!gameOver){
+        snake.unshift(head);
+        if(head.x===food.x&&head.y===food.y){S.score++;_arcScore(S.score);food=_snakeFood(cols,rows,snake);S.snake.food=food;if(speed>60)speed-=3}
+        else snake.pop();
+      }
+    }
+    ctx.fillStyle='#0a1a0a';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#34C759';for(var j=0;j<snake.length;j++){ctx.fillRect(snake[j].x*gs+1,snake[j].y*gs+1,gs-2,gs-2)}
+    ctx.fillStyle='#FF3B30';ctx.beginPath();ctx.arc(food.x*gs+gs/2,food.y*gs+gs/2,gs/2-2,0,Math.PI*2);ctx.fill();
+    if(gameOver){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='bold 28px sans-serif';ctx.textAlign='center';ctx.fillText('Game Over!',W/2,H/2-20);ctx.font='16px sans-serif';ctx.fillText('Score: '+S.score+' — Swipe to retry',W/2,H/2+15)}
+    setTimeout(function(){if(S.running)tick()},speed);
+  }
+  tick();
+}
+function _snakeFood(cols,rows,snake){var x,y,ok;do{x=Math.floor(Math.random()*cols);y=Math.floor(Math.random()*rows);ok=true;for(var i=0;i<snake.length;i++){if(snake[i].x===x&&snake[i].y===y){ok=false;break}}}while(!ok);return{x:x,y:y}}
+// ── CHESS ──
+function _chessInit(){
+  var S=_arcadeState,W=S.w,H=S.h,ctx=S.ctx;
+  var sz=Math.min(W,H-40);var cellSz=sz/8;var offX=(W-sz)/2;var offY=(H-sz)/2;
+  var pieces='RNBQKBNR'.split('');
+  var board=[];
+  for(var r=0;r<8;r++){board[r]=[];for(var c=0;c<8;c++){
+    if(r===0)board[r][c]={t:pieces[c],c:'b'};
+    else if(r===1)board[r][c]={t:'P',c:'b'};
+    else if(r===6)board[r][c]={t:'P',c:'w'};
+    else if(r===7)board[r][c]={t:pieces[c],c:'w'};
+    else board[r][c]=null;
+  }}
+  var sel=null;var turn='w';var msg='';var captures={w:0,b:0};
+  S.chess={board:board,sel:sel,turn:turn,msg:msg,captures:captures,cellSz:cellSz,offX:offX,offY:offY};
+  var unicodes={wK:'\\u2654',wQ:'\\u2655',wR:'\\u2656',wB:'\\u2657',wN:'\\u2658',wP:'\\u2659',bK:'\\u265A',bQ:'\\u265B',bR:'\\u265C',bB:'\\u265D',bN:'\\u265E',bP:'\\u265F'};
+  function draw(){
+    ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,W,H);
+    for(var r=0;r<8;r++)for(var c=0;c<8;c++){
+      ctx.fillStyle=(r+c)%2===0?'#F0D9B5':'#B58863';
+      if(sel&&sel.r===r&&sel.c===c)ctx.fillStyle='#7B93F5';
+      ctx.fillRect(offX+c*cellSz,offY+r*cellSz,cellSz,cellSz);
+      var p=board[r][c];if(p){ctx.font=(cellSz*0.7)+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=p.c==='w'?'#fff':'#111';ctx.fillText(unicodes[p.c+(p.t==='N'?'N':p.t)]||p.t,offX+c*cellSz+cellSz/2,offY+r*cellSz+cellSz/2)}
+    }
+    if(msg){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,H/2-30,W,60);ctx.fillStyle='#fff';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.fillText(msg,W/2,H/2+6)}
+    ctx.fillStyle='#aaa';ctx.font='13px sans-serif';ctx.textAlign='center';
+    ctx.fillText((turn==='w'?'Your':'AI\\'s')+' turn  |  Captured: '+captures.w,W/2,offY-8);
+  }
+  S.canvas.onclick=function(e){
+    var rect=S.canvas.getBoundingClientRect();var mx=(e.clientX-rect.left);var my=(e.clientY-rect.top);
+    var c=Math.floor((mx-offX)/cellSz);var r=Math.floor((my-offY)/cellSz);
+    if(c<0||c>7||r<0||r>7||turn!=='w')return;
+    if(sel){
+      var from=board[sel.r][sel.c];
+      if(from&&from.c==='w'){
+        var to=board[r][c];
+        if(!to||to.c==='b'){
+          if(to)captures.w++;
+          board[r][c]=from;board[sel.r][sel.c]=null;
+          sel=null;S.chess.sel=null;turn='b';S.chess.turn='b';_arcScore(captures.w);draw();
+          setTimeout(function(){_chessAI();draw()},400);return;
+        }
+      }
+      sel=null;S.chess.sel=null;draw();return;
+    }
+    if(board[r][c]&&board[r][c].c==='w'){sel={r:r,c:c};S.chess.sel=sel;draw()}
+  };
+  function _chessAI(){
+    var moves=[];
+    for(var r=0;r<8;r++)for(var c=0;c<8;c++){var p=board[r][c];if(p&&p.c==='b'){
+      for(var dr=-2;dr<=2;dr++)for(var dc=-2;dc<=2;dc++){var nr=r+dr,nc=c+dc;if(nr>=0&&nr<8&&nc>=0&&nc<8&&(dr||dc)){var t=board[nr][nc];if(!t||t.c==='w')moves.push({fr:r,fc:c,tr:nr,tc:nc,cap:!!t})}}
+    }}
+    var caps=moves.filter(function(m){return m.cap});
+    var m=caps.length?(caps[Math.floor(Math.random()*caps.length)]):(moves.length?moves[Math.floor(Math.random()*moves.length)]:null);
+    if(m){if(board[m.tr][m.tc])captures.b++;board[m.tr][m.tc]=board[m.fr][m.fc];board[m.fr][m.fc]=null}
+    turn='w';S.chess.turn='w';
+  }
+  draw();
+}
+// ── LUDO ──
+function _ludoInit(){
+  var S=_arcadeState,W=S.w,H=S.h,ctx=S.ctx;
+  var boardSz=Math.min(W,H-80);var cellSz=boardSz/15;var offX=(W-boardSz)/2;var offY=(H-boardSz)/2+20;
+  var dice=1;var rolling=false;var turn=0;// 0=red(you),1=blue(AI)
+  var tokens={0:[{pos:-1},{pos:-1}],1:[{pos:-1},{pos:-1}]};// 2 tokens each, pos=-1=home
+  var colors=['#DC2626','#2563EB'];var names=['You','AI'];
+  var pathLen=28;var winPos=pathLen;var msg='Roll the dice!';var gameOver=false;
+  S.ludo={dice:dice,turn:turn,tokens:tokens,msg:msg,gameOver:gameOver};
+  function tokenXY(player,pos){
+    if(pos<0)return{x:offX+(player===0?2:10)*cellSz,y:offY+(player===0?10:2)*cellSz};
+    var angle=(pos/(pathLen))*Math.PI*2-(Math.PI/2)+(player*Math.PI);
+    var r=boardSz*0.35;
+    return{x:offX+boardSz/2+Math.cos(angle)*r,y:offY+boardSz/2+Math.sin(angle)*r}
+  }
+  function draw(){
+    ctx.fillStyle='#FBF8F4';ctx.fillRect(0,0,W,H);
+    // Board circle path
+    ctx.strokeStyle='#ccc';ctx.lineWidth=2;ctx.beginPath();ctx.arc(offX+boardSz/2,offY+boardSz/2,boardSz*0.35,0,Math.PI*2);ctx.stroke();
+    // Center
+    ctx.fillStyle='#FFB547';ctx.beginPath();ctx.arc(offX+boardSz/2,offY+boardSz/2,boardSz*0.08,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#1a1a2e';ctx.font='bold '+(boardSz*0.04)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('HOME',offX+boardSz/2,offY+boardSz/2);
+    // Home bases
+    for(var p=0;p<2;p++){
+      ctx.fillStyle=colors[p];ctx.globalAlpha=0.15;
+      ctx.fillRect(offX+(p===0?0:boardSz*0.65),offY+(p===0?boardSz*0.65:0),boardSz*0.35,boardSz*0.35);
+      ctx.globalAlpha=1;
+    }
+    // Tokens
+    for(var pl=0;pl<2;pl++){for(var ti=0;ti<2;ti++){
+      var tk=tokens[pl][ti];var xy=tokenXY(pl,tk.pos);
+      ctx.fillStyle=colors[pl];ctx.beginPath();ctx.arc(xy.x+ti*cellSz*0.8,xy.y,cellSz*0.55,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+      if(tk.pos>=winPos){ctx.fillStyle='#FFB547';ctx.font='bold 14px sans-serif';ctx.fillText('\\u2605',xy.x+ti*cellSz*0.8,xy.y)}
+    }}
+    // Dice
+    var dx=W/2-25,dy=offY-40;
+    ctx.fillStyle='#fff';ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+    ctx.beginPath();ctx.roundRect(dx,dy,50,50,8);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#1a1a2e';ctx.font='bold 28px sans-serif';ctx.textAlign='center';ctx.fillText(rolling?'?':dice,dx+25,dy+34);
+    // Turn indicator
+    ctx.fillStyle=colors[turn];ctx.font='bold 14px sans-serif';ctx.textAlign='center';
+    ctx.fillText(names[turn]+'\\'s turn',W/2,offY+boardSz+30);
+    ctx.fillStyle='#5A5A6E';ctx.font='13px sans-serif';ctx.fillText(msg,W/2,offY+boardSz+50);
+    if(gameOver){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='bold 28px sans-serif';ctx.fillText(gameOver,W/2,H/2)}
+  }
+  S.canvas.onclick=function(e){
+    if(gameOver||turn!==0)return;
+    if(!rolling){
+      rolling=true;msg='Rolling...';draw();
+      var rolls=0;var ri=setInterval(function(){dice=Math.floor(Math.random()*6)+1;draw();rolls++;if(rolls>8){clearInterval(ri);rolling=false;msg='Tap a token to move '+dice+' steps';draw()}},80);
+      return;
+    }
+    // Move first available token
+    for(var i=0;i<2;i++){
+      var tk=tokens[0][i];
+      if(tk.pos<winPos){
+        if(tk.pos===-1&&dice===6){tk.pos=0;msg='Token out! Roll again';draw();return}
+        else if(tk.pos>=0){tk.pos=Math.min(tk.pos+dice,winPos);if(tk.pos>=winPos)msg='Token home!';else msg='Moved!';
+          if(tokens[0].every(function(t){return t.pos>=winPos})){gameOver='You Win!';draw();return}
+          turn=1;draw();setTimeout(_ludoAI,800);return}
+      }
+    }
+    msg='No moves — AI\\'s turn';turn=1;draw();setTimeout(_ludoAI,600);
+  };
+  function _ludoAI(){
+    dice=Math.floor(Math.random()*6)+1;msg='AI rolled '+dice;draw();
+    setTimeout(function(){
+      for(var i=0;i<2;i++){var tk=tokens[1][i];if(tk.pos<winPos){
+        if(tk.pos===-1&&dice===6){tk.pos=0;msg='AI token out';draw();if(tokens[1].every(function(t){return t.pos>=winPos})){gameOver='AI Wins!'}turn=0;draw();return}
+        else if(tk.pos>=0){tk.pos=Math.min(tk.pos+dice,winPos);msg='AI moved';if(tokens[1].every(function(t){return t.pos>=winPos})){gameOver='AI Wins!'};turn=0;draw();return}
+      }}
+      msg='AI has no moves';turn=0;draw();
+    },500);
+  }
+  draw();
+}
+// ── SOLITAIRE (Card Match) ──
+function _solInit(){
+  var S=_arcadeState,W=S.w,H=S.h,ctx=S.ctx;
+  var suits=['\\u2660','\\u2665','\\u2666','\\u2663'];var vals=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  var cards=[];for(var s=0;s<4;s++)for(var v=0;v<13;v++)cards.push({suit:suits[s],val:vals[v],red:s===1||s===2});
+  // Shuffle
+  for(var i=cards.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=cards[i];cards[i]=cards[j];cards[j]=tmp}
+  // Create pairs (take first 8 unique values, duplicate)
+  var pairs=[];for(var p=0;p<8;p++)pairs.push(cards[p],{suit:cards[p].suit,val:cards[p].val,red:cards[p].red});
+  // Shuffle pairs
+  for(var m=pairs.length-1;m>0;m--){var n=Math.floor(Math.random()*(m+1));var t=pairs[m];pairs[m]=pairs[n];pairs[n]=t}
+  var grid=pairs.map(function(c){return{card:c,flipped:false,matched:false}});
+  var cols=4;var rows=4;var cardW=Math.min((W-40)/cols-8,70);var cardH=cardW*1.4;
+  var gapX=(W-cols*(cardW+8))/2;var gapY=(H-rows*(cardH+8))/2;
+  var first=null;var checking=false;var matches=0;
+  S.sol={grid:grid,cols:cols,rows:rows};
+  function draw(){
+    ctx.fillStyle='#1a3a1a';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#fff';ctx.font='bold 16px sans-serif';ctx.textAlign='center';ctx.fillText('Card Match — Find all pairs!',W/2,gapY-12);
+    for(var i=0;i<grid.length;i++){
+      var r=Math.floor(i/cols);var c=i%cols;
+      var x=gapX+c*(cardW+8);var y=gapY+r*(cardH+8);
+      var cell=grid[i];
+      if(cell.matched){ctx.fillStyle='rgba(52,199,89,.15)';ctx.beginPath();ctx.roundRect(x,y,cardW,cardH,8);ctx.fill();continue}
+      ctx.fillStyle=cell.flipped?'#fff':'#4361EE';
+      ctx.beginPath();ctx.roundRect(x,y,cardW,cardH,8);ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=1;ctx.stroke();
+      if(cell.flipped){
+        ctx.fillStyle=cell.card.red?'#DC2626':'#1a1a2e';
+        ctx.font='bold '+(cardW*0.35)+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(cell.card.val+cell.card.suit,x+cardW/2,y+cardH/2);
+      }else{
+        ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='bold '+(cardW*0.4)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('?',x+cardW/2,y+cardH/2);
+      }
+    }
+    if(matches>=8){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#FFB547';ctx.font='bold 28px sans-serif';ctx.textAlign='center';ctx.fillText('\\u{1F389} You Win!',W/2,H/2)}
+  }
+  S.canvas.onclick=function(e){
+    if(checking||matches>=8)return;
+    var rect=S.canvas.getBoundingClientRect();var mx=e.clientX-rect.left;var my=e.clientY-rect.top;
+    for(var i=0;i<grid.length;i++){
+      var r=Math.floor(i/cols);var c=i%cols;
+      var x=gapX+c*(cardW+8);var y=gapY+r*(cardH+8);
+      if(mx>=x&&mx<=x+cardW&&my>=y&&my<=y+cardH&&!grid[i].flipped&&!grid[i].matched){
+        grid[i].flipped=true;draw();
+        if(!first){first=i}
+        else{
+          checking=true;S.score++;_arcScore(S.score);
+          var fi=first;first=null;
+          if(grid[fi].card.val===grid[i].card.val&&grid[fi].card.suit===grid[i].card.suit){
+            grid[fi].matched=true;grid[i].matched=true;matches++;checking=false;draw();
+          }else{
+            setTimeout(function(){grid[fi].flipped=false;grid[i].flipped=false;checking=false;draw()},800);
+          }
+        }
+        return;
+      }
+    }
+  };
+  draw();
+}
+
+// ═══════ FOCUS WALK MESSAGES ═══════
+var _focusWalkMsgs=['Keep going, you\\'re doing great!','Stay focused, almost there!','Don\\'t stop now!','You\\'ve got this!','One step at a time...','Push through!','Stay strong!','The goal is getting closer!','Keep pushing forward!','Almost at the finish line!','Breathe and focus...','You\\'re crushing it!'];
+var _focusWalkMsgIdx=0;
 
 var _breatheState={active:false,pattern:'calm',phase:'idle',elapsed:0,totalTime:180,timer:null,phaseTimer:null,voiceEnabled:true};
 var BREATHE_PATTERNS={
@@ -13282,24 +13664,30 @@ if(isMain){
   hero+='<button onclick="switchTab(\\'tasks\\')" style="flex:1;padding:14px 12px;border-radius:0;background:var(--surface);border:1px solid var(--line);cursor:pointer;text-align:left"><div style="font:500 20px var(--sans);color:var(--accent)">'+_dueToday+'</div><div style="font:400 12px var(--sans);color:var(--text-mute);margin-top:2px">'+_statusLine+'</div></button>';
   hero+='<button onclick="switchTab(\\'tasks\\');setTimeout(opA,80)" style="flex:1;padding:14px 12px;border-radius:0;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 20%,transparent);cursor:pointer;text-align:left"><div style="font:500 14px var(--sans);color:var(--accent)">+ Add task</div><div style="font:400 12px var(--sans);color:var(--text-mute);margin-top:2px">Plan your day</div></button>';
   hero+='</div>';
-  // --- Focus Timer with Candle ---
+  // --- Focus Timer with Walking Person ---
   var _foc=S.focus;
   var _focMins=Math.floor(_foc.remaining/60);var _focSecs=_foc.remaining%60;
   var _focTimeStr=String(_focMins).padStart(2,'0')+':'+String(_focSecs).padStart(2,'0');
   var _focPct=_foc.active||_foc.paused?Math.round((1-_foc.remaining/_foc.total)*100):0;
-  var _focCircum=2*Math.PI*62;var _focDash=((_foc.remaining/_foc.total)*_focCircum);
   var _focDurMins=Math.round(_foc.total/60);
+  var _focMsg=_focusWalkMsgs[Math.floor((_focPct/100)*(_focusWalkMsgs.length-1))];
   hero+='<div class="focus-card'+(_foc.active?' is-active':'')+'">';
   hero+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4361EE" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="font:600 15px var(--sans);color:#E8E8EC">Focus</span></div>';
   if(_foc.sessions>0)hero+='<span style="font:500 12px var(--sans);color:rgba(255,255,255,.45)">'+_foc.sessions+' session'+(_foc.sessions>1?'s':'')+' today</span>';
   hero+='</div>';
-  hero+='<div class="focus-ring-wrap" onclick="focusCandleMode()" style="cursor:pointer" title="Tap candle to enter focus room">';
-  hero+='<svg width="150" height="150" viewBox="0 0 150 150" style="transform:rotate(-90deg)"><circle class="focus-ring-bg" cx="75" cy="75" r="62"/><circle class="focus-ring-fg" id="focusRing" cx="75" cy="75" r="62" stroke-dasharray="'+_focDash+' '+_focCircum+'"/></svg>';
-  hero+='<div class="focus-time">';
-  hero+='<svg width="28" height="52" viewBox="0 0 28 52" style="margin-bottom:2px"><rect x="9" y="28" width="10" height="24" rx="2" fill="#e8c170"/><rect x="13" y="24" width="2" height="6" fill="#8B7355"/><ellipse cx="14" cy="20" rx="6" ry="10" fill="url(#candleGrad)" opacity=".9" style="animation:candleFlicker 2s ease-in-out infinite alternate"/><defs><radialGradient id="candleGrad" cx="50%" cy="80%"><stop offset="0%" stop-color="#fff4c8"/><stop offset="30%" stop-color="#ffb833"/><stop offset="70%" stop-color="#ff6b1a"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs></svg>';
-  hero+='<span class="focus-time-num" id="focusTime" style="font-size:28px">'+_focTimeStr+'</span>';
-  hero+='<span class="focus-time-lbl" id="focusPct">'+(_foc.active?_focPct+'%':'focus')+'</span>';
-  hero+='</div></div>';
+  // Walking animation scene
+  hero+='<div class="focus-walk" style="height:90px;border-radius:14px;overflow:hidden;position:relative;background:linear-gradient(180deg,#1a2744 0%,#2d4a7a 50%,#4a7c59 70%,#3d6b4e 100%);margin-bottom:12px">';
+  hero+='<div class="focus-walk-path" style="position:absolute;bottom:16px;left:0;right:0;height:3px;background:rgba(255,255,255,.15);border-radius:2px"></div>';
+  hero+='<div class="focus-walk-person" style="position:absolute;bottom:18px;left:'+_focPct+'%;transition:left 1s ease;font-size:22px;transform:translateX(-50%)'+(_foc.active?' scaleX(-1)':'')+'">\\u{1F6B6}</div>';
+  hero+='<div class="focus-walk-goal" style="position:absolute;bottom:18px;right:8px;font-size:20px">\\u{1F3C1}</div>';
+  // Progress bar
+  hero+='<div style="position:absolute;bottom:4px;left:12px;right:12px;height:4px;background:rgba(255,255,255,.1);border-radius:2px"><div style="height:100%;width:'+_focPct+'%;background:#4361EE;border-radius:2px;transition:width 1s ease"></div></div>';
+  hero+='</div>';
+  // Timer display
+  hero+='<div style="text-align:center;margin-bottom:8px">';
+  hero+='<div id="focusTime" style="font:700 36px var(--sans);color:#fff;letter-spacing:2px">'+_focTimeStr+'</div>';
+  hero+='<div id="focusPct" style="font:500 13px var(--sans);color:rgba(255,255,255,.5);margin-top:2px">'+(_foc.active?_focPct+'% — '+_focMsg:'Set your focus goal')+'</div>';
+  hero+='</div>';
   if(!_foc.active){
     hero+='<div class="focus-presets">';
     [15,25,45,60].forEach(function(m){hero+='<button class="focus-preset'+(_focDurMins===m?' on':'')+'" onclick="focusSetDuration('+m+')">'+m+' min</button>';});
@@ -14080,15 +14468,15 @@ else if(S.tab==='courses'){
       var _aDone=[];if(isActive){try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}}
       var pct=isActive?Math.round(_aDone.length/(s.id==='python'?30:63)*100):0;
       var emoji=s.id==='ai'?'\\u{1F9E0}':s.id==='python'?'\\u{1F40D}':s.id==='product'?'\\u{1F4CB}':s.id==='dev'?'\\u{1F4BB}':s.id==='confidence'?'\\u{1F3A4}':'\\u{1F31F}';
-      h+='<button style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:16px;background:'+s.bg+';border:none;cursor:pointer;text-align:left;min-height:80px;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 16px rgba(0,0,0,.1)'+(isActive?'':';opacity:.65')+'" onclick="'+(isActive?'_openSection(\\''+s.id+'\\')':'toast(\\'Coming soon!\\',\\'info\\')')+'">';
-      h+='<span style="font-size:36px;flex-shrink:0">'+emoji+'</span>';
-      h+='<div style="flex:1;min-width:0"><div style="font:700 16px var(--sans);color:#fff">'+s.name+'</div>';
-      h+='<div style="font:400 12px var(--sans);color:rgba(255,255,255,.8);margin-top:3px">'+s.desc+'</div>';
-      if(isActive&&pct>0){h+='<div style="margin-top:8px;height:3px;background:rgba(255,255,255,.2);border-radius:2px"><div style="height:100%;width:'+pct+'%;background:#fff;border-radius:2px"></div></div>';
-        h+='<div style="font:600 10px var(--sans);color:rgba(255,255,255,.7);margin-top:4px">'+pct+'% complete</div>';
+      h+='<button class="ws-hero-card" style="--wg:var(--surface)'+(isActive?'':';opacity:.65')+'" onclick="'+(isActive?'_openSection(\\''+s.id+'\\')':'toast(\\'Coming soon!\\',\\'info\\')')+'">';
+      h+='<div class="ws-hero-emoji" style="font-size:36px;background:'+s.color+'18">'+emoji+'</div>';
+      h+='<div style="flex:1;min-width:0"><div class="ws-hero-title">'+s.name+'</div>';
+      h+='<div class="ws-hero-desc">'+s.desc+'</div>';
+      if(isActive&&pct>0){h+='<div style="margin-top:8px;height:3px;background:'+s.color+'20;border-radius:2px"><div style="height:100%;width:'+pct+'%;background:'+s.color+';border-radius:2px"></div></div>';
+        h+='<div style="font:600 10px var(--sans);color:'+s.color+';margin-top:4px">'+pct+'% complete</div>';
       }
       h+='</div>';
-      h+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
+      h+='<div class="ws-hero-arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>';
       h+='</button>';
     });
     h+='</div>';
@@ -14295,12 +14683,30 @@ else if(S.tab==='mindgym'){
   };
 
   if(!S.mgSection){
-    // === LANDING PAGE — 3 section cards ===
+    // === LANDING PAGE — arcade carousel + 3 section cards ===
     var streak=mg.streak||{current:0,longest:0,total:0};
     var _allG=_mgSections.reduce(function(a,s){return a.concat(s.games)},[]);
     var totalXp=_allG.reduce(function(s,g){return s+((mg.progress[g.k]||{}).xp||0)},0);
     h+='<div style="font:800 28px var(--sans);color:var(--ink);letter-spacing:-.02em;margin-bottom:4px">Mind Games</div>';
-    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-bottom:22px">Train your brain daily · '+totalXp+' XP · '+streak.current+' day streak</div>';
+    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-bottom:16px">Train your brain daily · '+totalXp+' XP · '+streak.current+' day streak</div>';
+    // ── Swipeable Arcade Games Carousel ──
+    h+='<div style="font:700 18px var(--sans);color:var(--ink);margin-bottom:10px">\\u{1F3AE} Arcade Games</div>';
+    h+='<div class="gc-strip" id="arcadeStrip">';
+    _arcadeGames.forEach(function(g,i){
+      h+='<div class="gc-card" style="background:'+g.bg+'" onclick="arcadeOpen(\\''+g.id+'\\')">';
+      h+='<div class="gc-card-body">';
+      h+='<div class="gc-card-badge">'+g.badge+'</div>';
+      h+='<div class="gc-card-emoji">'+g.emoji+'</div>';
+      h+='<div class="gc-card-name">'+g.name+'</div>';
+      h+='<div class="gc-card-desc">'+g.desc+'</div>';
+      h+='</div></div>';
+    });
+    h+='</div>';
+    // Dot indicators
+    h+='<div class="gc-dots">';
+    _arcadeGames.forEach(function(g,i){h+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
+    h+='</div>';
+    h+='<div style="font:700 18px var(--sans);color:var(--ink);margin:20px 0 12px">\\u{1F9E0} Brain Training</div>';
     h+='<div class="mg-landing">';
     _mgSections.forEach(function(sec){
       var secGames=sec.games;
@@ -16045,6 +16451,9 @@ try{document.body.classList.toggle('bro-tab',S.tab==='bro')}catch(e){}
 // Force textarea width to parent's pixel width — WebView ignores CSS width on textareas
 try{var _ta=document.querySelectorAll('textarea.bro-input,textarea.qc-input');for(var _i=0;_i<_ta.length;_i++){var _p=_ta[_i].parentNode;if(_p&&_p.clientWidth>0)_ta[_i].style.width=_p.clientWidth+'px'}}catch(e){}
 if(document.getElementById('mcCanvas')&&!_mcRunning&&!_mcDead&&!_mcStarted){_mcInit();_mcDrawStartScreen()}
+// Arcade strip scroll dots
+var _as=document.getElementById('arcadeStrip');
+if(_as){_as.onscroll=function(){var cards=_as.querySelectorAll('.gc-card');var dots=_as.parentNode.querySelectorAll('.gc-dot');if(!cards.length||!dots.length)return;var sl=_as.scrollLeft;var cw=cards[0].offsetWidth+14;var idx=Math.round(sl/cw);dots.forEach(function(d,i){d.classList.toggle('on',i===idx)})}}
 }
 applyTheme();
 // Deep link routing: ?lesson=what-is-ai or ?section=ai
@@ -16430,7 +16839,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v111";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v112";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
