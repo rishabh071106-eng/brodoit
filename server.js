@@ -3969,28 +3969,29 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
    horizontally scrollable so all 9 tabs are reachable without truncation,
    springy active state, smooth motion. Tab names always visible, never abbreviated. */
 @media (max-width:767px){
-  body{padding-left:0 !important;padding-bottom:100px !important}
+  body{padding-left:0 !important;padding-bottom:96px !important}
   .app>.side-col>:not(.tabs.page-t){display:none !important}
   .app>.side-col{display:contents}
+  /* ── Floating glass capsule nav with rising-sun active tab ── */
   .tabs.page-t{
     position:fixed !important;
-    bottom:0 !important;left:0 !important;right:0 !important;top:auto !important;
-    width:100% !important;
+    bottom:calc(10px + env(safe-area-inset-bottom,0px)) !important;
+    left:14px !important;right:14px !important;top:auto !important;
+    width:auto !important;
     flex-direction:row !important;
-    justify-content:space-evenly !important;
-    overflow-x:hidden !important;overflow-y:visible !important;
-    background:rgba(251,248,244,.94) !important;
-    backdrop-filter:blur(20px) saturate(1.4) !important;
-    -webkit-backdrop-filter:blur(20px) saturate(1.4) !important;
-    border:none !important;
-    border-top:1px solid rgba(0,0,0,.06) !important;
-    border-radius:0 !important;
-    padding:12px 14px calc(8px + env(safe-area-inset-bottom,0px)) !important;
+    justify-content:space-around !important;
+    overflow:visible !important;
+    background:rgba(255,252,248,.88) !important;
+    backdrop-filter:blur(28px) saturate(1.8) !important;
+    -webkit-backdrop-filter:blur(28px) saturate(1.8) !important;
+    border:1px solid rgba(217,119,6,.07) !important;
+    border-radius:28px !important;
+    padding:6px 2px 8px !important;
     gap:0 !important;
     z-index:60 !important;
-    box-shadow:none !important;
+    box-shadow:0 8px 40px rgba(120,80,20,.10),0 2px 8px rgba(0,0,0,.05),inset 0 1px 0 rgba(255,255,255,.7) !important;
     margin:0 !important;
-    height:82px !important;
+    height:auto !important;
   }
   .tabs.page-t::after{display:none !important}
   .tabs.page-t > div.tabs-inner,.tabs.page-t > .tabs-inner{display:none}
@@ -3998,73 +3999,93 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab{
     flex:1 1 0 !important;
     min-width:0 !important;
-    padding:2px 0 0 !important;
+    padding:4px 0 2px !important;
     flex-direction:column !important;
     align-items:center !important;
-    justify-content:flex-start !important;
+    justify-content:center !important;
     text-align:center !important;
     min-height:auto !important;
     border-radius:0 !important;
-    gap:3px !important;
-    transition:color .25s cubic-bezier(.4,0,.2,1),transform .25s cubic-bezier(.34,1.56,.64,1) !important;
+    gap:2px !important;
+    transition:all .35s cubic-bezier(.34,1.56,.64,1) !important;
     background:transparent !important;
-    color:#7A6B5D !important;
+    color:#8B7355 !important;
     box-shadow:none !important;
-    position:relative;
-    overflow:visible;
+    position:relative !important;
+    overflow:visible !important;
   }
   .tabs.page-t .tab::before{display:none !important}
   .tabs.page-t .tab .ti{
     font-size:22px !important;
-    width:44px !important;height:32px !important;
+    width:40px !important;height:40px !important;
     display:flex !important;align-items:center !important;justify-content:center !important;
-    transition:all .3s cubic-bezier(.34,1.56,.64,1) !important;
+    transition:all .35s cubic-bezier(.34,1.56,.64,1) !important;
     color:inherit !important;
-    background:none !important;border-radius:16px !important;border:none !important;box-shadow:none !important;
+    background:transparent !important;border-radius:50% !important;border:none !important;box-shadow:none !important;
     overflow:visible !important;
     transform:none !important;
   }
   .tabs.page-t .tab .ti::after{display:none !important}
   .tabs.page-t .tab .ti::before{display:none !important}
-  .tabs.page-t .tab .ti svg{width:26px !important;height:26px !important;filter:none !important;transition:all .25s ease !important}
+  .tabs.page-t .tab .ti svg{width:23px !important;height:23px !important;filter:none !important;transition:all .35s cubic-bezier(.34,1.56,.64,1) !important}
   .tabs.page-t .tab .tl{
     font-family:var(--sans) !important;
     font-size:10px !important;
     font-weight:600 !important;
-    letter-spacing:.02em !important;
+    letter-spacing:.015em !important;
     text-transform:none !important;
     white-space:nowrap !important;
-    color:inherit !important;
+    color:#8B7355 !important;
     opacity:1 !important;
     overflow:hidden;text-overflow:ellipsis;max-width:100%;
     margin-top:0 !important;
-    transition:all .25s ease !important;
+    transition:all .35s cubic-bezier(.34,1.56,.64,1) !important;
   }
-  .tabs.page-t .tab:active{transform:scale(.92) !important}
+  .tabs.page-t .tab:active{transform:scale(.86) !important}
+  /* ── Active tab: icon rises in a glowing gradient orb ── */
   .tabs.page-t .tab.on{
-    color:#92400E !important;
+    color:#D97706 !important;
     transform:none !important;
     background:transparent !important;
   }
-  .tabs.page-t .tab.on .ti{
-    background:rgba(217,119,6,.12) !important;
-    box-shadow:0 2px 8px rgba(217,119,6,.15) !important;
-    transform:translateY(-3px) scale(1.12) !important;
-    border-radius:14px !important;
-    padding:0 !important;
-    width:52px !important;
-    height:34px !important;
+  .tabs.page-t .tab.on::after{
+    content:'' !important;display:block !important;
+    position:absolute !important;top:0 !important;left:50% !important;
+    transform:translateX(-50%) !important;
+    width:40px !important;height:8px !important;
+    background:radial-gradient(ellipse,rgba(217,119,6,.22) 0%,transparent 72%) !important;
+    border-radius:50% !important;
+    pointer-events:none !important;
+    z-index:0 !important;
   }
-  .tabs.page-t .tab.on .ti svg{transform:scale(1.06) !important}
-  .tabs.page-t .tab.on .tl{color:#92400E !important;font-weight:700 !important;opacity:1 !important;font-size:10.5px !important}
-  .tabs.page-t .tab:not(.on) .ti svg{opacity:.82 !important;filter:grayscale(.25) !important}
-  .tabs.page-t .tab:not(.on) .tl{opacity:.78 !important;color:#6B5A4E !important}
-  .tabs.page-t .tab.on::after{display:none !important}
-  .bk-mini{bottom:110px !important;right:14px !important}
-  .player{bottom:110px !important;left:12px !important;right:96px !important}
-  .fab{bottom:108px !important;right:18px !important}
-  .fab-chat{bottom:108px !important;right:18px !important}
-  .fab-cal{bottom:108px !important;right:76px !important}
+  .tabs.page-t .tab.on .ti{
+    background:linear-gradient(145deg,#D97706 0%,#F59E0B 100%) !important;
+    width:50px !important;
+    height:50px !important;
+    border-radius:50% !important;
+    transform:translateY(-24px) !important;
+    box-shadow:0 6px 24px rgba(217,119,6,.40),0 2px 8px rgba(245,158,11,.20) !important;
+    border:3.5px solid rgba(255,252,248,.95) !important;
+    z-index:2 !important;
+  }
+  .tabs.page-t .tab.on .ti svg{
+    filter:brightness(0) invert(1) !important;
+    width:24px !important;height:24px !important;
+    transform:none !important;opacity:1 !important;
+  }
+  .tabs.page-t .tab.on .tl{
+    color:#92400E !important;font-weight:700 !important;font-size:10.5px !important;
+    transform:translateY(-16px) !important;
+    opacity:1 !important;
+  }
+  /* ── Inactive tabs — warm, clearly visible ── */
+  .tabs.page-t .tab:not(.on) .ti svg{opacity:.8 !important;filter:none !important}
+  .tabs.page-t .tab:not(.on) .tl{opacity:.85 !important}
+  .bk-mini{bottom:96px !important;right:14px !important}
+  .player{bottom:96px !important;left:12px !important;right:96px !important}
+  .fab{bottom:94px !important;right:18px !important}
+  .fab-chat{bottom:94px !important;right:18px !important}
+  .fab-cal{bottom:94px !important;right:76px !important}
   .flt button.fb,.fb{padding:10px 16px !important;font-size:13px !important;min-height:auto !important;border-radius:10px !important}
 }
 body[data-theme=aurora] .tabs.page-t{background:rgba(15,18,32,.92) !important;backdrop-filter:blur(20px) !important;border-top:1px solid rgba(255,255,255,.1) !important}
@@ -16870,7 +16891,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v117";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v118";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
