@@ -4008,7 +4008,7 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
     gap:3px !important;
     transition:color .25s cubic-bezier(.4,0,.2,1),transform .25s cubic-bezier(.34,1.56,.64,1) !important;
     background:transparent !important;
-    color:#8E8E93 !important;
+    color:#7A6B5D !important;
     box-shadow:none !important;
     position:relative;
     overflow:visible;
@@ -4030,12 +4030,12 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   .tabs.page-t .tab .tl{
     font-family:var(--sans) !important;
     font-size:10px !important;
-    font-weight:500 !important;
+    font-weight:600 !important;
     letter-spacing:.02em !important;
     text-transform:none !important;
     white-space:nowrap !important;
     color:inherit !important;
-    opacity:.8 !important;
+    opacity:1 !important;
     overflow:hidden;text-overflow:ellipsis;max-width:100%;
     margin-top:0 !important;
     transition:all .25s ease !important;
@@ -4057,8 +4057,8 @@ body[data-theme=aurora] .moral::after{background:linear-gradient(90deg,rgba(20,2
   }
   .tabs.page-t .tab.on .ti svg{transform:scale(1.06) !important}
   .tabs.page-t .tab.on .tl{color:#92400E !important;font-weight:700 !important;opacity:1 !important;font-size:10.5px !important}
-  .tabs.page-t .tab:not(.on) .ti svg{opacity:.55 !important;filter:grayscale(.6) !important}
-  .tabs.page-t .tab:not(.on) .tl{opacity:.55 !important}
+  .tabs.page-t .tab:not(.on) .ti svg{opacity:.82 !important;filter:grayscale(.25) !important}
+  .tabs.page-t .tab:not(.on) .tl{opacity:.78 !important;color:#6B5A4E !important}
   .tabs.page-t .tab.on::after{display:none !important}
   .bk-mini{bottom:110px !important;right:14px !important}
   .player{bottom:110px !important;left:12px !important;right:96px !important}
@@ -13259,7 +13259,6 @@ function _playRainSound(mins){
   var sr=ac.sampleRate;
   var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
   var rainProc=ac.createScriptProcessor(bufSize,1,2);
-  var dripPhase=0;var dripNext=sr*0.5;var dripFreq=0;var dripAmp=0;
   var sampleCount=0;
   rainProc.onaudioprocess=function(e){
     var outL=e.outputBuffer.getChannelData(0);
@@ -13274,31 +13273,20 @@ function _playRainSound(mins){
       b5=-0.7616*b5-w*0.0168980;
       var pink=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.04;
       b6=w*0.115926;
-      var heavyRain=pink*0.55;
-      var hiss=(Math.random()*2-1)*0.04;
-      sampleCount++;
-      if(sampleCount>=dripNext){
-        dripPhase=0;dripFreq=800+Math.random()*1400;
-        dripAmp=0.03+Math.random()*0.06;
-        dripNext=sampleCount+sr*(0.15+Math.random()*0.8);
-      }
-      var drip=0;
-      if(dripPhase<sr*0.06){
-        var dt=dripPhase/sr;
-        drip=Math.sin(2*Math.PI*dripFreq*dt)*dripAmp*Math.exp(-dt*40);
-        dripPhase++;
-      }
-      var panL=0.4+Math.random()*0.2;
+      // Pure rain: warm pink noise only — no hiss, no drips
+      var rain=pink*0.6;
+      // Gentle stereo variation for natural width
+      var panL=0.45+Math.sin(sampleCount*0.00003)*0.05;
       var panR=1-panL;
-      var sample=heavyRain+hiss+drip;
-      outL[i]=sample*panL;
-      outR[i]=sample*panR;
+      sampleCount++;
+      outL[i]=rain*panL;
+      outR[i]=rain*panR;
     }
   };
-  var lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2800;lp.Q.value=0.4;
-  var lp2=ac.createBiquadFilter();lp2.type='lowpass';lp2.frequency.value=1400;lp2.Q.value=0.8;
-  var hp=ac.createBiquadFilter();hp.type='highpass';hp.frequency.value=60;hp.Q.value=0.5;
-  var rainGain=ac.createGain();rainGain.gain.value=0.8;
+  var lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1800;lp.Q.value=0.3;
+  var lp2=ac.createBiquadFilter();lp2.type='lowpass';lp2.frequency.value=900;lp2.Q.value=0.6;
+  var hp=ac.createBiquadFilter();hp.type='highpass';hp.frequency.value=80;hp.Q.value=0.4;
+  var rainGain=ac.createGain();rainGain.gain.value=0.9;
   rainProc.connect(lp);lp.connect(lp2);lp2.connect(hp);hp.connect(rainGain);rainGain.connect(ac.destination);
   function rumbleThunder(){
     if(!window._rainCtx||window._rainCtx!==ac)return;
@@ -13311,11 +13299,10 @@ function _playRainSound(mins){
         var tt=j/sr;
         var env=Math.sin(Math.PI*tt/tLen);
         env=env*env*env;
-        var crack=tt<0.15?Math.exp(-tt*20)*(Math.random()*2-1)*0.4:0;
-        var rumble=Math.sin(2*Math.PI*rumbleFreq*tt+Math.sin(2*Math.PI*0.5*tt)*3)*env*0.12;
-        var sub=Math.sin(2*Math.PI*(rumbleFreq*0.5)*tt)*env*0.08;
-        var noise=(Math.random()*2-1)*env*0.05;
-        var s=crack+rumble+sub+noise;
+        var rumble=Math.sin(2*Math.PI*rumbleFreq*tt+Math.sin(2*Math.PI*0.5*tt)*3)*env*0.15;
+        var sub=Math.sin(2*Math.PI*(rumbleFreq*0.5)*tt)*env*0.10;
+        var noise=(Math.random()*2-1)*env*0.03;
+        var s=rumble+sub+noise;
         var pan=0.3+Math.random()*0.4;
         tL[j]=s*pan;tR[j]=s*(1-pan);
       }
@@ -16883,7 +16870,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v116";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v117";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
