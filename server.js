@@ -2092,7 +2092,13 @@ const NEWS_FEEDS={
   // Sports — IPL/cricket + football scores up top, then general
   sports:['https://www.thehindu.com/sport/cricket/feeder/default.rss','https://indianexpress.com/section/sports/cricket/feed/','https://feeds.bbci.co.uk/sport/cricket/rss.xml','https://feeds.bbci.co.uk/sport/football/rss.xml','https://www.espn.com/espn/rss/news','https://www.espn.com/espn/rss/soccer/news','https://feeds.bbci.co.uk/sport/rss.xml','https://www.skysports.com/rss/12040'],
   // World — critical/breaking world news first
-  world:['https://feeds.reuters.com/reuters/topNews','https://feeds.bbci.co.uk/news/world/rss.xml','https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://feeds.npr.org/1004/rss.xml','https://feeds.bbci.co.uk/news/rss.xml']
+  world:['https://feeds.reuters.com/reuters/topNews','https://feeds.bbci.co.uk/news/world/rss.xml','https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://feeds.npr.org/1004/rss.xml','https://feeds.bbci.co.uk/news/rss.xml'],
+  // India — national news
+  india:['https://www.thehindu.com/news/national/feeder/default.rss','https://indianexpress.com/section/india/feed/','https://feeds.bbci.co.uk/news/world/asia/india/rss.xml','https://timesofindia.indiatimes.com/rssfeedstopstories.cms','https://www.ndtv.com/rss/top-stories','https://www.livemint.com/rss/news'],
+  // Business & Finance
+  business:['https://feeds.reuters.com/reuters/businessNews','https://feeds.bbci.co.uk/news/business/rss.xml','https://www.livemint.com/rss/companies','https://timesofindia.indiatimes.com/rssfeeds/1898055.cms','https://rss.nytimes.com/services/xml/rss/nyt/Business.xml'],
+  // Entertainment
+  entertainment:['https://timesofindia.indiatimes.com/rssfeeds/1081479906.cms','https://www.ndtv.com/rss/entertainment','https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml','https://variety.com/feed/']
 };
 // Legacy aliases — old client state pointing at ai/technology/global/movies should still resolve
 NEWS_FEEDS.ai=NEWS_FEEDS.tech;NEWS_FEEDS.technology=NEWS_FEEDS.tech;NEWS_FEEDS.global=NEWS_FEEDS.world;NEWS_FEEDS.movies=NEWS_FEEDS.world;
@@ -2104,6 +2110,7 @@ const FALLBACK_IMAGES={
   world:[UNSPLASH('1506905925346-21bda4d32df4'),UNSPLASH('1469854523086-cc02fe5d8800'),UNSPLASH('1501785888041-af3ef285b470'),UNSPLASH('1502602898657-3e91760cbb34'),UNSPLASH('1480714378408-67cf0d13bc1b'),UNSPLASH('1564507592333-c60657eea523')]
 };
 FALLBACK_IMAGES.ai=FALLBACK_IMAGES.tech;FALLBACK_IMAGES.technology=FALLBACK_IMAGES.tech;FALLBACK_IMAGES.global=FALLBACK_IMAGES.world;FALLBACK_IMAGES.movies=FALLBACK_IMAGES.world;
+FALLBACK_IMAGES.india=FALLBACK_IMAGES.world;FALLBACK_IMAGES.business=[UNSPLASH('1611974789855-d63e38d0e2c7'),UNSPLASH('1507003211169-0a1dd7228f2d'),UNSPLASH('1460925895917-afdab827c52f'),UNSPLASH('1444653614773-995cb1ef9efa')];FALLBACK_IMAGES.entertainment=[UNSPLASH('1489599849927-2ee91cede3ba'),UNSPLASH('1485846234645-a62644f84728'),UNSPLASH('1478720568477-152d9b164e26'),UNSPLASH('1514306191717-452ec28c7814')];
 const newsCache={};
 function stripXmlTags(s){return (s||'').replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/<[^>]+>/g,'').replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(+n)).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim()}
 function parseRSS(xml,sourceUrl){
@@ -4171,6 +4178,16 @@ body[data-theme=aurora] .tabs.page-t .tab.on .tl{color:#D9734A !important}
   body[data-theme=aurora] .app .tabs.page-t .side-now-date{color:#888888}
   .app>.main-col{grid-area:main;min-width:0}
   .fab{display:none}
+  /* ── Desktop Home Dashboard Grid ── */
+  .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .hg-greet{grid-column:1/-1}
+  .focus-card{grid-column:1/-1;margin-top:0 !important}
+  .hg-water{grid-column:1;margin-top:0 !important}
+  .rd-wisdom-card{grid-column:2;margin-top:0 !important}
+  .hg-progress{grid-column:1;margin-top:0 !important}
+  .mv-wrap{grid-column:2;margin-top:0 !important}
+  .hg-games{grid-column:1/-1;margin-top:0 !important}
+  .hg-games .gc-strip{flex-wrap:nowrap}
   /* Health hero scales */
   .hth-ring-num{font-size:42px}
   .dash-grid{grid-template-columns:repeat(4,1fr);gap:14px}
@@ -4337,6 +4354,72 @@ body[data-theme=aurora] .news-acts{border-top-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .news-read{color:#C2690A}
 body[data-theme=aurora] .news-read:hover{color:#F472B6}
 body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#C2690A,#F472B6);box-shadow:0 4px 14px rgba(194,105,10,.35)}
+
+/* ── News Feed (Inshorts-style) ── */
+.nf-wrap{padding:0 0 20px}
+.nf-header{display:flex;align-items:center;gap:12px;padding:0 0 16px}
+.nf-refresh{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--accent);transition:all .2s}
+.nf-refresh:hover{background:var(--accent);color:#fff;transform:rotate(90deg)}
+.nf-cats{display:flex;gap:8px;overflow-x:auto;padding:0 0 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nf-cats::-webkit-scrollbar{display:none}
+.nf-cat{white-space:nowrap;padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);font:600 13px var(--sans);color:var(--text-mute);cursor:pointer;transition:all .2s;flex-shrink:0}
+.nf-cat.on{background:linear-gradient(135deg,#C2690A,#EC4899);border-color:transparent;color:#fff;box-shadow:0 3px 12px rgba(194,105,10,.3)}
+.nf-cat:not(.on):hover{border-color:var(--accent);color:var(--accent)}
+.nf-cards{display:flex;flex-direction:column;gap:18px}
+.nf-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:all .25s}
+.nf-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08);border-color:var(--accent-dim,rgba(194,105,10,.3))}
+.nf-card-img{display:block;width:100%;height:220px;background-size:cover;background-position:center;background-color:#F0F1F3;position:relative;text-decoration:none}
+.nf-card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.5) 100%);pointer-events:none}
+.nf-card-img-empty{background:linear-gradient(135deg,#667eea,#764ba2)}
+.nf-src-badge{position:absolute;top:12px;left:12px;z-index:1;background:rgba(0,0,0,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;padding:5px 12px;border-radius:8px;font:800 10px var(--sans);letter-spacing:.8px;text-transform:uppercase}
+.nf-card-body{padding:16px 18px 18px}
+.nf-card-title{font:700 18px/1.3 var(--serif);margin:0 0 8px;color:var(--ink)}
+.nf-card-title a{color:inherit;text-decoration:none}
+.nf-card-title a:hover{color:var(--accent)}
+.nf-card-desc{font:400 14px/1.6 var(--sans);color:var(--text-mute);margin:0 0 4px}
+.nf-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.nf-card-time{font:600 12px var(--sans);color:var(--text-mute);opacity:.7}
+.nf-card-actions{display:flex;align-items:center;gap:10px}
+.nf-share-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:10px;background:linear-gradient(135deg,#C2690A,#EC4899);color:#fff;font:700 12px var(--sans);border:none;cursor:pointer;box-shadow:0 2px 8px rgba(194,105,10,.25);transition:all .2s}
+.nf-share-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(194,105,10,.4)}
+.nf-share-btn:active{transform:scale(.95)}
+.nf-read-btn{color:var(--accent);font:700 13px var(--sans);text-decoration:none;transition:color .15s}
+.nf-read-btn:hover{color:#EC4899}
+/* Skeleton loading */
+.nf-skeleton{display:flex;border-radius:16px;overflow:hidden;background:var(--surface);border:1px solid var(--border)}
+.nf-sk-img{width:40%;min-height:160px;background:linear-gradient(90deg,var(--border) 25%,rgba(194,105,10,.06) 50%,var(--border) 75%);background-size:200% 100%;animation:sk-shimmer 1.5s ease infinite}
+.nf-sk-body{flex:1;padding:20px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.nf-sk-line{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--border) 25%,rgba(194,105,10,.06) 50%,var(--border) 75%);background-size:200% 100%;animation:sk-shimmer 1.5s ease infinite}
+.nf-sk-line.short{height:10px}
+@keyframes sk-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* Desktop: 2-column news grid */
+@media(min-width:1024px){
+  .nf-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .nf-card:first-child{grid-column:1/-1}
+  .nf-card:first-child .nf-card-img{height:340px}
+  .nf-card:first-child .nf-card-title{font-size:24px}
+  .nf-skeleton{flex-direction:column}
+  .nf-sk-img{width:100%;min-height:120px}
+}
+@media(max-width:600px){
+  .nf-card-img{height:180px}
+  .nf-card-title{font-size:16px !important}
+  .nf-card-desc{font-size:13px}
+  .nf-card-body{padding:12px 14px 14px}
+}
+/* Aurora theme */
+body[data-theme=aurora] .nf-card{background:rgba(26,26,44,.7);border-color:rgba(255,255,255,.08);backdrop-filter:blur(16px)}
+body[data-theme=aurora] .nf-card:hover{border-color:rgba(194,105,10,.35)}
+body[data-theme=aurora] .nf-card-img-empty{background:linear-gradient(135deg,#3b3b6b,#5b4b8b)}
+body[data-theme=aurora] .nf-card-title a{color:#E8E8EC}
+body[data-theme=aurora] .nf-card-desc{color:#888}
+body[data-theme=aurora] .nf-card-footer{border-top-color:rgba(255,255,255,.06)}
+body[data-theme=aurora] .nf-cat{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#aaa}
+body[data-theme=aurora] .nf-cat:not(.on):hover{color:#C2690A;border-color:#C2690A}
+body[data-theme=aurora] .nf-refresh{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)}
+body[data-theme=aurora] .nf-skeleton{background:rgba(26,26,44,.5);border-color:rgba(255,255,255,.06)}
+body[data-theme=aurora] .nf-sk-img{background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(194,105,10,.08) 50%,rgba(255,255,255,.03) 75%);background-size:200% 100%}
+body[data-theme=aurora] .nf-sk-line{background:linear-gradient(90deg,rgba(255,255,255,.05) 25%,rgba(194,105,10,.08) 50%,rgba(255,255,255,.05) 75%);background-size:200% 100%}
 
 /* ============================================== */
 /* NEXT-GEN CLASSIC \u2014 modern indigo/violet system */
@@ -8577,6 +8660,34 @@ select,option{color:var(--ink);font-weight:600}
 /* Section entry — slide up with reveal */
 .learn-section-enter{animation:sectionSlideIn .5s cubic-bezier(.22,1,.36,1) forwards}
 @keyframes sectionSlideIn{0%{opacity:0;transform:translateY(40px)}100%{opacity:1;transform:none}}
+/* ── Immersive Learning World Cards ── */
+.learn-worlds{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:20px}
+@media(min-width:768px){.learn-worlds{grid-template-columns:1fr 1fr}}
+@media(min-width:1200px){.learn-worlds{grid-template-columns:1fr 1fr 1fr}}
+.lw-card{position:relative;display:flex;flex-direction:column;border-radius:20px;overflow:hidden;border:1.5px solid rgba(255,255,255,.1);cursor:pointer;text-align:left;background:#111;min-height:260px;transition:all .35s cubic-bezier(.22,1,.36,1);box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.lw-card:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 12px 40px rgba(0,0,0,.3);border-color:rgba(255,255,255,.2)}
+.lw-card:active{transform:scale(.98)}
+.lw-locked{opacity:.55;filter:grayscale(.4)}
+.lw-locked:hover{opacity:.7;transform:none}
+.lw-scene{position:absolute;inset:0;z-index:0;opacity:.85}
+.lw-scene svg{width:100%;height:100%;display:block;object-fit:cover}
+.lw-gate{position:absolute;top:0;left:0;right:0;height:50%;z-index:1;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.lw-gate-arch{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:70px;height:80px;border-radius:35px 35px 0 0;background:rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.15);border-bottom:none}
+.lw-emoji{position:relative;z-index:2;font-size:40px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));animation:lwFloat 3s ease-in-out infinite}
+@keyframes lwFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.lw-info{position:relative;z-index:2;padding:16px 18px;margin-top:auto;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.7) 30%,rgba(0,0,0,.85) 100%)}
+.lw-world-name{font:800 9px var(--sans);letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px}
+.lw-title{font:700 17px/1.2 var(--serif);color:#fff;margin-bottom:4px}
+.lw-desc{font:400 12px/1.5 var(--sans);color:rgba(255,255,255,.6);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lw-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.lw-tag{padding:3px 8px;border-radius:6px;font:800 9px var(--sans);letter-spacing:.5px;background:rgba(255,255,255,.15);color:#fff}
+.lw-tag-soon{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4)}
+.lw-chapters{font:600 11px var(--sans);color:rgba(255,255,255,.45)}
+.lw-progress{height:3px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:4px}
+.lw-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--lw-color),#fff);transition:width .6s}
+.lw-pct{font:700 10px var(--sans);color:rgba(255,255,255,.6);margin-top:3px}
+.lw-enter{position:relative;z-index:2;padding:10px;text-align:center;font:700 13px var(--sans);color:#fff;background:linear-gradient(90deg,rgba(0,0,0,.6),rgba(0,0,0,.4));backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.08);transition:all .2s}
+.lw-card:hover .lw-enter{background:linear-gradient(90deg,var(--lw-color),rgba(0,0,0,.3));letter-spacing:.5px}
 .lesson-fullpage-inner{max-width:680px;margin:0 auto;padding:20px 18px 100px;animation:lessonContentFade .6s .3s ease both}
 body.no-anim .lesson-fullpage-inner{animation:none}
 @keyframes lessonContentFade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
@@ -9236,11 +9347,12 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='news'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;var _ap=document.getElementById('app');if(_ap){_ap.classList.remove('app-flip-in');void _ap.offsetWidth;_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},300)}try{window.scrollTo({top:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)};var _sc=document.getElementById('app');if(_sc)_sc.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;setTimeout(function(){window.scrollTo({top:0,behavior:'instant'});var _sc2=document.getElementById('app');if(_sc2)_sc2.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0},60)}
+function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='news'&&!S.news[S.newsCat])loadNews(S.newsCat);if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;var _ap=document.getElementById('app');if(_ap){_ap.classList.remove('app-flip-in');void _ap.offsetWidth;_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},300)}try{window.scrollTo({top:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)};var _sc=document.getElementById('app');if(_sc)_sc.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;setTimeout(function(){window.scrollTo({top:0,behavior:'instant'});var _sc2=document.getElementById('app');if(_sc2)_sc2.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0},60)}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
 function shareNews(idx){const item=(S.news[S.newsCat]||[])[idx];if(!item)return;const url=item.link,title=item.title,text=(item.desc||'').slice(0,140);if(navigator.share){navigator.share({title,text,url}).catch(()=>{})}else{navigator.clipboard?.writeText(title+'\\n\\n'+url).then(()=>toast('\\u{1F517} Link copied')).catch(()=>toast('\\u26A0\\uFE0F Share unavailable','err'))}}
+function _shareNewsCard(idx){const item=(S.news[S.newsCat]||[])[idx];if(!item)return;var title=item.title||'';var desc=(item.desc||'').slice(0,120);var url=item.link||'';var shareText=title+'\\n\\n'+desc+'\\n\\n\\u{1F4F0} Read more: '+url+'\\n\\nShared via Brodoit \\u2014 bfrodo.it';if(navigator.share){navigator.share({title:'Brodoit News: '+title,text:shareText,url:url}).catch(function(){})}else{navigator.clipboard?navigator.clipboard.writeText(shareText).then(function(){toast('\\u{1F517} News link copied with Brodoit branding!')}).catch(function(){toast('\\u26A0\\uFE0F Could not copy','err')}):toast('\\u26A0\\uFE0F Share unavailable','err')}}
 function timeAgo(ds){if(!ds)return '';const d=new Date(ds);if(isNaN(d))return '';const s=(Date.now()-d.getTime())/1000;if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';return d.toLocaleDateString()}
 async function loadSteps(){const r=await api('/steps?days=30');if(Array.isArray(r)){S.steps=r;render()}}
 function setStepGoal(v){const n=parseInt(v,10);if(isFinite(n)&&n>=500&&n<=100000){S.stepGoal=n;localStorage.setItem('step_goal',String(n));render()}}
@@ -14012,12 +14124,15 @@ if(isMain){
   const _ritualTotal=4;
   const _ritualPct=Math.round(_ritualCount/_ritualTotal*100);
   const _statusLine=_dueToday>0?_dueToday+' task'+(_dueToday>1?'s':'')+' due today':'No tasks due today';
-  let hero='<h2 style="font:800 32px/1.1 var(--sans);color:var(--ink);letter-spacing:-.015em;margin:18px 0 0">'+esc(_greet)+(_firstName?', <b>'+esc(_firstName)+'</b>':'')+'</h2>';
+  let hero='<div class="home-grid">';
+  hero+='<div class="hg-greet">';
+  hero+='<h2 style="font:800 32px/1.1 var(--sans);color:var(--ink);letter-spacing:-.015em;margin:0">'+esc(_greet)+(_firstName?', <b>'+esc(_firstName)+'</b>':'')+'</h2>';
   hero+='<p style="font:400 15.5px var(--sans);color:var(--text-mute);margin:6px 0 0">'+esc(_today)+'</p>';
   hero+='<div style="display:flex;gap:8px;margin-top:16px">';
   hero+='<button onclick="switchTab(\\'tasks\\')" style="flex:1;padding:14px 12px;border-radius:0;background:var(--surface);border:1px solid var(--line);cursor:pointer;text-align:left"><div style="font:500 20px var(--sans);color:var(--accent)">'+_dueToday+'</div><div style="font:400 12px var(--sans);color:var(--text-mute);margin-top:2px">'+_statusLine+'</div></button>';
   hero+='<button onclick="switchTab(\\'tasks\\');setTimeout(opA,80)" style="flex:1;padding:14px 12px;border-radius:0;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 20%,transparent);cursor:pointer;text-align:left"><div style="font:500 14px var(--sans);color:var(--accent)">+ Add task</div><div style="font:400 12px var(--sans);color:var(--text-mute);margin-top:2px">Plan your day</div></button>';
   hero+='</div>';
+  hero+='</div>'; // close hg-greet
   // --- Focus Timer with Walking Person ---
   var _foc=S.focus;
   var _focMins=Math.floor(_foc.remaining/60);var _focSecs=_foc.remaining%60;
@@ -14054,7 +14169,7 @@ if(isMain){
   hero+='</div>';
   hero+='</div>';
   // --- Hydration tracker ---
-  hero+='<div class="rd-card" style="margin-top:13px;padding:14px 17px">';
+  hero+='<div class="rd-card hg-water" style="margin-top:13px;padding:14px 17px">';
   hero+='<div style="display:flex;align-items:center;justify-content:space-between">';
   hero+='<div style="display:flex;align-items:center;gap:10px">';
   hero+='<div style="font-size:22px">\\u{1F4A7}</div>';
@@ -14090,7 +14205,7 @@ if(isMain){
   var _ypPct=Math.round(_ypElapsed/_ypTotal*100);
   var _ypWeeksLeft=Math.ceil(_ypLeft/7);
   var _ypExpanded=!!S.ypExpanded;
-  hero+='<div class="rd-card" style="margin-top:13px;padding:14px 17px;cursor:pointer" onclick="S.ypExpanded=!S.ypExpanded;render()">';
+  hero+='<div class="rd-card hg-progress" style="margin-top:13px;padding:14px 17px;cursor:pointer" onclick="S.ypExpanded=!S.ypExpanded;render()">';
   hero+='<div style="display:flex;align-items:center;justify-content:space-between">';
   hero+='<div style="display:flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-mute)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12"/><polyline points="16 16 12 12"/></svg><span style="font:500 14px var(--sans);color:var(--ink)">'+_ypYear+' Progress</span></div>';
   hero+='<div style="display:flex;align-items:center;gap:10px"><span style="font:700 14px var(--sans);color:var(--accent)">'+_ypPct+'%</span><span style="font:400 12px var(--sans);color:var(--text-mute)">'+_ypLeft+'d left</span>';
@@ -14209,7 +14324,7 @@ if(isMain){
   infoStrip+='</div>';
   // Hydration moved below task input
   // --- Fun Games carousel on Home page ---
-  hero+='<div style="margin-top:18px">';
+  hero+='<div class="hg-games" style="margin-top:18px">';
   hero+='<div style="font:700 17px var(--sans);color:var(--ink);margin-bottom:8px">\\u{1F3AE} Fun Games</div>';
   hero+='<div class="gc-strip" id="homeArcadeStrip">';
   _arcadeGames.forEach(function(g){
@@ -14226,6 +14341,7 @@ if(isMain){
   _arcadeGames.forEach(function(g,i){hero+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
   hero+='</div>';
   hero+='</div>';
+  hero+='</div>'; // close home-grid
   moralBlock=hero+infoStrip;
   // Bottom strip — keep moral + news ticker + clocks but tucked away as a subtle footer.
   const items=S.ticker.items||[];const baseIdx=S.ticker.idx||0;
@@ -14257,11 +14373,12 @@ if(isMain){
     mindgym:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0112 4.5V5a2.5 2.5 0 012.5-2.5"/><path d="M7 8c-1.7 0-3 1.3-3 3 0 2.2 1.5 4 3.5 5l1.5 1v3h6v-3l1.5-1c2-1 3.5-2.8 3.5-5 0-1.7-1.3-3-3-3H7z"/><line x1="10" y1="20" x2="14" y2="20"/></svg>',
     learn:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/><line x1="22" y1="10" x2="22" y2="16"/></svg>',
     you:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+    news:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg>',
     inspire:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
   };
   var _learnTabs=['courses','mindgym'];
   var _youTabs=['profile','cal'];
-  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'books',l:'Books',i:'books'},{k:'bro',l:'Bro'},{k:'courses',l:'Learn',i:'learn'},{k:'meditation',l:'Wisdom'}].map(function(x){
+  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'news',l:'News'},{k:'books',l:'Books',i:'books'},{k:'bro',l:'Bro'},{k:'courses',l:'Learn',i:'learn'},{k:'meditation',l:'Wisdom'}].map(function(x){
     var isOn=(x.k==='home')?(!S.tab||S.tab==='home'||S.tab==='profile'):(S.tab===x.k||(x.k==='courses'&&S.tab==='mindgym'));
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
@@ -14804,30 +14921,48 @@ else if(S.tab==='courses'){
     var _sections=[
       {id:'ai',name:'AI & Machine Learning',desc:'From linear regression to GPT. Every algorithm, every concept.',color:'#6366F1',bg:'linear-gradient(135deg,#6366F1,#8B5CF6)',chapters:63,mins:'1000+',tag:'COMPREHENSIVE',scene:_scenes.ai},
       {id:'python',name:'Python Programming',desc:'Complete Python from scratch. Write code, see output, master it.',color:'#3B82F6',bg:'linear-gradient(135deg,#3B82F6,#1D4ED8)',chapters:30,mins:'500+',tag:'INTERACTIVE',scene:_scenes.python},
-      {id:'product',name:'Product Management',desc:'Strategy, roadmaps, user research, go-to-market, metrics.',color:'#0EA5E9',bg:'linear-gradient(135deg,#0EA5E9,#06B6D4)',chapters:30,mins:'400+',tag:'COMING SOON',scene:_scenes.product},
+      {id:'product',name:'Product Management',desc:'AI-era PM: Claude workflows, Jira stories, design diagrams, real case studies.',color:'#0EA5E9',bg:'linear-gradient(135deg,#0EA5E9,#06B6D4)',chapters:30,mins:'400+',tag:'AI-POWERED',scene:_scenes.product},
       {id:'dev',name:'Development',desc:'System design, DSA, clean code, DevOps, cloud.',color:'#10B981',bg:'linear-gradient(135deg,#10B981,#34D399)',chapters:40,mins:'600+',tag:'COMING SOON',scene:_scenes.dev},
       {id:'confidence',name:'Confidence Building',desc:'Public speaking, negotiation, body language, mindset.',color:'#F59E0B',bg:'linear-gradient(135deg,#F59E0B,#FBBF24)',chapters:20,mins:'250+',tag:'COMING SOON',scene:_scenes.confidence},
       {id:'personality',name:'Personality Development',desc:'Communication, emotional intelligence, leadership, habits.',color:'#EC4899',bg:'linear-gradient(135deg,#EC4899,#F472B6)',chapters:25,mins:'300+',tag:'COMING SOON',scene:_scenes.personality}
     ];
     h+='<div style="text-align:center;padding:4px 0 18px">';
     h+='<div style="font:600 26px var(--serif);color:var(--ink)">Learning</div>';
-    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-top:4px">Choose your path</div>';
+    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-top:4px">Choose your world to explore</div>';
     h+='</div>';
-    h+='<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">';
+    h+='<div class="learn-worlds">';
     _sections.forEach(function(s,i){
-      var isActive=s.id==='ai'||s.id==='python';
+      var isActive=s.id==='ai'||s.id==='python'||s.id==='product';
       var _aDone=[];if(isActive){try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}}
-      var pct=isActive?Math.round(_aDone.length/(s.id==='python'?30:63)*100):0;
+      var totalChs=s.id==='python'?30:s.id==='product'?30:63;
+      var pct=isActive?Math.round(_aDone.length/totalChs*100):0;
       var emoji=s.id==='ai'?'\\u{1F9E0}':s.id==='python'?'\\u{1F40D}':s.id==='product'?'\\u{1F4CB}':s.id==='dev'?'\\u{1F4BB}':s.id==='confidence'?'\\u{1F3A4}':'\\u{1F31F}';
-      h+='<button class="ws-hero-card" style="--wg:var(--surface)'+(isActive?'':';opacity:.65')+'" onclick="'+(isActive?'_openSection(\\''+s.id+'\\')':'toast(\\'Coming soon!\\',\\'info\\')')+'">';
-      h+='<div class="ws-hero-emoji" style="font-size:36px;background:'+s.color+'18">'+emoji+'</div>';
-      h+='<div style="flex:1;min-width:0"><div class="ws-hero-title">'+s.name+'</div>';
-      h+='<div class="ws-hero-desc">'+s.desc+'</div>';
-      if(isActive&&pct>0){h+='<div style="margin-top:8px;height:3px;background:'+s.color+'20;border-radius:2px"><div style="height:100%;width:'+pct+'%;background:'+s.color+';border-radius:2px"></div></div>';
-        h+='<div style="font:600 10px var(--sans);color:'+s.color+';margin-top:4px">'+pct+'% complete</div>';
+      var worldName=s.id==='ai'?'Neural Nexus':s.id==='python'?'Code Canyon':s.id==='product'?'Strategy Summit':s.id==='dev'?'Dev Dungeon':s.id==='confidence'?'Speaker\\'s Arena':'Growth Galaxy';
+      // Immersive world card
+      h+='<button class="lw-card'+(isActive?'':' lw-locked')+'" onclick="'+(isActive?'_openSection(\\''+s.id+'\\')':'toast(\\'Coming soon!\\',\\'info\\')')+'" style="--lw-bg:'+s.bg+';--lw-color:'+s.color+'">';
+      // Animated scene background
+      h+='<div class="lw-scene">'+s.scene+'</div>';
+      // Gate overlay
+      h+='<div class="lw-gate">';
+      h+='<div class="lw-gate-arch"></div>';
+      h+='<div class="lw-emoji">'+emoji+'</div>';
+      h+='</div>';
+      // Content overlay
+      h+='<div class="lw-info">';
+      h+='<div class="lw-world-name">'+worldName+'</div>';
+      h+='<div class="lw-title">'+s.name+'</div>';
+      h+='<div class="lw-desc">'+s.desc+'</div>';
+      h+='<div class="lw-meta">';
+      h+='<span class="lw-tag'+(s.tag==='COMING SOON'?' lw-tag-soon':'')+'">'+s.tag+'</span>';
+      h+='<span class="lw-chapters">'+s.chapters+' chapters</span>';
+      h+='</div>';
+      if(isActive&&pct>0){
+        h+='<div class="lw-progress"><div class="lw-bar" style="width:'+pct+'%"></div></div>';
+        h+='<div class="lw-pct">'+pct+'% explored</div>';
       }
       h+='</div>';
-      h+='<div class="ws-hero-arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>';
+      // Enter button
+      h+='<div class="lw-enter">'+(isActive?'\\u{1F6AA} Enter World':'\\u{1F512} Locked')+'</div>';
       h+='</button>';
     });
     h+='</div>';
@@ -14994,6 +15129,72 @@ else if(S.tab==='courses'){
       });
       h+='</div>';
     });
+  } else if(S.learnSection==='product'){
+    // Product Management — AI-era PM course
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
+    h+='<button onclick="S.learnSection=null;render();window.scrollTo(0,0)" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
+    h+='<div><div style="font-size:11px;letter-spacing:.15em;font-weight:700;color:#0EA5E9;text-transform:uppercase">Product Management</div>';
+    h+='<div style="font-family:var(--serif);font-size:22px;font-weight:400;margin-top:2px;color:var(--ink)">The AI-Era PM \\u{1F680}</div></div></div>';
+    var _aDone=[];try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}
+    var _pmParts=[
+      {part:'Part 1',title:'PM Foundations',color:'#0EA5E9',chs:[
+        {id:'pm-what',n:'What is Product Management?',d:'Role, skills, and mindset of a PM',m:15},
+        {id:'pm-lifecycle',n:'Product Lifecycle',d:'Ideation to sunset, every stage',m:18},
+        {id:'pm-discovery',n:'Product Discovery',d:'User research, interviews, personas',m:20},
+        {id:'pm-strategy',n:'Product Strategy',d:'Vision, mission, OKRs, North Star',m:18},
+        {id:'pm-roadmap',n:'Roadmapping',d:'Prioritization: RICE, MoSCoW, Kano',m:18},
+        {id:'pm-metrics',n:'Metrics & Analytics',d:'DAU, retention, ARPU, funnel analysis',m:16}
+      ]},
+      {part:'Part 2',title:'Execution & Delivery',color:'#06B6D4',chs:[
+        {id:'pm-user-stories',n:'Writing User Stories',d:'As a [user], I want... acceptance criteria',m:15},
+        {id:'pm-jira',n:'Jira Mastery',d:'Epics, stories, sprints, boards, workflows',m:20},
+        {id:'pm-jira-stories',n:'Creating Stories in Jira',d:'Real examples with Claude-generated acceptance criteria',m:18},
+        {id:'pm-confluence',n:'Confluence & Documentation',d:'PRDs, RFC docs, decision logs, wikis',m:16},
+        {id:'pm-agile',n:'Agile & Scrum',d:'Ceremonies, estimation, velocity tracking',m:18},
+        {id:'pm-stakeholders',n:'Stakeholder Management',d:'Managing up, down, and across',m:14}
+      ]},
+      {part:'Part 3',title:'AI-Powered Product Management',color:'#8B5CF6',chs:[
+        {id:'pm-ai-tools',n:'AI Tools for PMs',d:'Claude, ChatGPT, Copilot \\u2014 when to use what',m:22},
+        {id:'pm-claude-prd',n:'Writing PRDs with Claude',d:'Generate PRDs, user stories, and specs in minutes',m:20},
+        {id:'pm-claude-research',n:'User Research with AI',d:'Analyzing interviews, surveys, feedback at scale',m:18},
+        {id:'pm-claude-sql',n:'Data Analysis with AI',d:'Write SQL queries, analyze dashboards, generate insights',m:18},
+        {id:'pm-ai-design',n:'AI in Design',d:'Figma AI, Midjourney for mockups, design critique with Claude',m:16},
+        {id:'pm-ai-roadmap',n:'AI-Assisted Roadmapping',d:'Use Claude to prioritize features and model scenarios',m:16},
+        {id:'pm-ai-comm',n:'AI for Communication',d:'Slack updates, email drafts, presentation outlines',m:14},
+        {id:'pm-ai-competitive',n:'Competitive Analysis with AI',d:'Market research, SWOT, feature comparison at speed',m:16}
+      ]},
+      {part:'Part 4',title:'Design & Technical Skills',color:'#F59E0B',chs:[
+        {id:'pm-design-thinking',n:'Design Thinking',d:'Empathize, define, ideate, prototype, test',m:20},
+        {id:'pm-wireframing',n:'Wireframing & Prototyping',d:'Low-fi to hi-fi: Figma, Balsamiq, Excalidraw',m:16},
+        {id:'pm-design-diagrams',n:'Design Diagrams from Scratch',d:'User flows, system architecture, sequence diagrams',m:20},
+        {id:'pm-technical',n:'Technical Skills for PMs',d:'APIs, databases, architecture basics',m:18},
+        {id:'pm-data-driven',n:'Data-Driven Decisions',d:'A/B testing, cohort analysis, statistical significance',m:18},
+        {id:'pm-gtm',n:'Go-to-Market Strategy',d:'Launch planning, positioning, messaging',m:16}
+      ]},
+      {part:'Part 5',title:'Real-World Case Studies',color:'#EC4899',chs:[
+        {id:'pm-case-claude',n:'How Teams Use Claude',d:'Real efficiency gains: 10x PRDs, instant research, code review',m:22},
+        {id:'pm-case-chatgpt',n:'ChatGPT in Product Workflows',d:'Use cases: brainstorming, analysis, customer support',m:18},
+        {id:'pm-case-copilot',n:'GitHub Copilot for PMs',d:'Understanding dev velocity, code context, technical specs',m:16},
+        {id:'pm-case-notion',n:'Notion AI for Documentation',d:'Auto-summaries, templates, knowledge base creation',m:14},
+        {id:'pm-case-analytics',n:'AI-Powered Analytics',d:'Mixpanel, Amplitude + AI insights, anomaly detection',m:16},
+        {id:'pm-career',n:'PM Career Growth',d:'IC to Director, building your PM brand',m:18}
+      ]}
+    ];
+    _pmParts.forEach(function(part){
+      h+='<div class="ai-part">';
+      h+='<div class="ai-part-hdr" style="--part-color:'+part.color+'">';
+      h+='<div class="ai-part-dot" style="background:'+part.color+'"></div>';
+      h+='<div><div class="ai-part-label">'+part.part+'</div><div class="ai-part-title">'+part.title+'</div></div></div>';
+      part.chs.forEach(function(ch){
+        var done=_aDone.indexOf(ch.id)>-1;
+        h+='<div class="ai-ch'+(done?' done':'')+'" onclick="_openLesson(\\''+ch.id+'\\')">';
+        h+='<div class="ai-ch-check" style="border-color:'+part.color+(done?';background:'+part.color:'')+'">'+( done?'\\u2713':'')+'</div>';
+        h+='<div class="ai-ch-body"><div class="ai-ch-name">'+ch.n+'</div><div class="ai-ch-desc">'+ch.d+'</div></div>';
+        h+='<div class="ai-ch-time">'+ch.m+' min</div>';
+        h+='</div>';
+      });
+      h+='</div>';
+    });
   }
   }
   h+='</div>';
@@ -15115,6 +15316,73 @@ else if(S.tab==='mindgym'){
       h+='</div>';
     }
   }
+}
+// NEWS TAB — Inshorts-style immersive news cards
+else if(S.tab==='news'){
+  var _nc=S.newsCat||'world';
+  var _cats=[{k:'world',l:'\\u{1F30D} Top Stories'},{k:'india',l:'\\u{1F1EE}\\u{1F1F3} India'},{k:'tech',l:'\\u{1F4BB} Tech & AI'},{k:'business',l:'\\u{1F4C8} Business'},{k:'sports',l:'\\u26BD Sports'},{k:'entertainment',l:'\\u{1F3AC} Entertainment'}];
+  h+='<div class="nf-wrap">';
+  // Header
+  h+='<div class="nf-header">';
+  h+='<div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">';
+  h+='<div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#C2690A,#EC4899);display:flex;align-items:center;justify-content:center;font-size:18px">\\u{1F4F0}</div>';
+  h+='<div><div style="font:700 20px var(--serif);color:var(--ink);line-height:1.1">News Feed</div>';
+  h+='<div style="font:500 12px var(--sans);color:var(--text-mute);margin-top:2px">Stay updated \\u2022 Powered by Brodoit</div></div></div>';
+  h+='<button class="nf-refresh" onclick="loadNews(\\''+_nc+'\\')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button>';
+  h+='</div>';
+  // Category pills
+  h+='<div class="nf-cats">';
+  _cats.forEach(function(c){
+    h+='<button class="nf-cat'+(_nc===c.k?' on':'')+'" onclick="loadNews(\\''+c.k+'\\')">'+c.l+'</button>';
+  });
+  h+='</div>';
+  // News cards
+  var _items=S.news[_nc]||[];
+  if(S.newsLoading){
+    h+='<div style="display:flex;flex-direction:column;gap:16px;padding:20px 0">';
+    for(var _si=0;_si<4;_si++){
+      h+='<div class="nf-skeleton"><div class="nf-sk-img"></div><div class="nf-sk-body"><div class="nf-sk-line" style="width:90%"></div><div class="nf-sk-line" style="width:70%"></div><div class="nf-sk-line short" style="width:40%"></div></div></div>';
+    }
+    h+='</div>';
+  } else if(_items.length===0){
+    h+='<div style="text-align:center;padding:60px 20px;color:var(--text-mute)">';
+    h+='<div style="font-size:48px;margin-bottom:12px">\\u{1F4F0}</div>';
+    h+='<div style="font:600 16px var(--sans)">No news loaded yet</div>';
+    h+='<div style="font:400 13px var(--sans);margin-top:6px;opacity:.6">Tap a category above to get started</div>';
+    h+='</div>';
+  } else {
+    h+='<div class="nf-cards">';
+    _items.forEach(function(it,idx){
+      var ago=timeAgo(it.date);
+      var imgUrl=it.img||'';
+      var desc=(it.desc||'').replace(/</g,'&lt;').replace(/"/g,'&quot;').slice(0,200);
+      var title=(it.title||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+      var src=(it.source||'').toUpperCase();
+      // Card — Inshorts style: big image + headline + summary
+      h+='<div class="nf-card">';
+      // Image section
+      if(imgUrl){
+        h+='<a href="'+it.link+'" target="_blank" rel="noopener" class="nf-card-img" style="background-image:url(\\''+imgUrl.replace(/'/g,"\\\\'")+'\\')"><span class="nf-src-badge">'+src+'</span></a>';
+      } else {
+        h+='<div class="nf-card-img nf-card-img-empty"><span class="nf-src-badge">'+src+'</span></div>';
+      }
+      // Content
+      h+='<div class="nf-card-body">';
+      h+='<h3 class="nf-card-title"><a href="'+it.link+'" target="_blank" rel="noopener">'+title+'</a></h3>';
+      if(desc) h+='<p class="nf-card-desc">'+desc+'</p>';
+      h+='<div class="nf-card-footer">';
+      h+='<span class="nf-card-time">'+ago+'</span>';
+      h+='<div class="nf-card-actions">';
+      h+='<button class="nf-share-btn" onclick="event.stopPropagation();_shareNewsCard('+idx+')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share</button>';
+      h+='<a href="'+it.link+'" target="_blank" rel="noopener" class="nf-read-btn">Read \\u2192</a>';
+      h+='</div>';
+      h+='</div>';
+      h+='</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+  h+='</div>';
 }
 // PLAN TAB — calendar + day planner + quick actions
 else if(S.tab==='profile'){
@@ -17192,7 +17460,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v122";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v123";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
