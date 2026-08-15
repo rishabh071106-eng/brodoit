@@ -2085,24 +2085,16 @@ app.delete('/api/meetings/:id/voice/:vid',auth,(req,res)=>{
 
 app.get('/api/health',(_,res)=>res.json({status:'ok',email:!!process.env.RESEND_API_KEY,users:db.prepare('SELECT COUNT(*)as c FROM users').get().c,tasks:db.prepare('SELECT COUNT(*)as c FROM tasks').get().c}));
 
-// ═══ NEWS (shorts feed, RSS aggregator, 15-min server cache) ═══
+// ═══ NEWS (Inshorts-style feed — auto-curated every 12h, free RSS aggregator) ═══
 const NEWS_FEEDS={
-  // Tech & AI — AI-first ordering: AI-only feeds come first so dedupe favors them.
   tech:['https://techcrunch.com/category/artificial-intelligence/feed/','https://www.theverge.com/rss/ai-artificial-intelligence/index.xml','https://venturebeat.com/category/ai/feed/','https://www.technologyreview.com/feed/','https://www.theinformation.com/feed','https://feeds.arstechnica.com/arstechnica/index','https://techcrunch.com/feed/','https://www.theverge.com/rss/index.xml','https://www.wired.com/feed/rss'],
-  // Sports — IPL/cricket + football scores up top, then general
   sports:['https://www.thehindu.com/sport/cricket/feeder/default.rss','https://indianexpress.com/section/sports/cricket/feed/','https://feeds.bbci.co.uk/sport/cricket/rss.xml','https://feeds.bbci.co.uk/sport/football/rss.xml','https://www.espn.com/espn/rss/news','https://www.espn.com/espn/rss/soccer/news','https://feeds.bbci.co.uk/sport/rss.xml','https://www.skysports.com/rss/12040'],
-  // World — critical/breaking world news first
   world:['https://feeds.reuters.com/reuters/topNews','https://feeds.bbci.co.uk/news/world/rss.xml','https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://feeds.npr.org/1004/rss.xml','https://feeds.bbci.co.uk/news/rss.xml'],
-  // India — national news
   india:['https://www.thehindu.com/news/national/feeder/default.rss','https://indianexpress.com/section/india/feed/','https://feeds.bbci.co.uk/news/world/asia/india/rss.xml','https://timesofindia.indiatimes.com/rssfeedstopstories.cms','https://www.ndtv.com/rss/top-stories','https://www.livemint.com/rss/news'],
-  // Business & Finance
   business:['https://feeds.reuters.com/reuters/businessNews','https://feeds.bbci.co.uk/news/business/rss.xml','https://www.livemint.com/rss/companies','https://timesofindia.indiatimes.com/rssfeeds/1898055.cms','https://rss.nytimes.com/services/xml/rss/nyt/Business.xml'],
-  // Entertainment
   entertainment:['https://timesofindia.indiatimes.com/rssfeeds/1081479906.cms','https://www.ndtv.com/rss/entertainment','https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml','https://variety.com/feed/']
 };
-// Legacy aliases — old client state pointing at ai/technology/global/movies should still resolve
 NEWS_FEEDS.ai=NEWS_FEEDS.tech;NEWS_FEEDS.technology=NEWS_FEEDS.tech;NEWS_FEEDS.global=NEWS_FEEDS.world;NEWS_FEEDS.movies=NEWS_FEEDS.world;
-// Scenic Unsplash fallbacks (hot-link friendly CDN) — used when an article has no image
 const UNSPLASH=(id)=>'https://images.unsplash.com/photo-'+id+'?w=900&q=80&auto=format&fit=crop';
 const FALLBACK_IMAGES={
   tech:[UNSPLASH('1677442136019-21780ecad995'),UNSPLASH('1518770660439-4636190af475'),UNSPLASH('1620712943543-bcc4688e7485'),UNSPLASH('1451187580459-43490279c0fa'),UNSPLASH('1531297484001-80022131f5a1'),UNSPLASH('1551434678-e076c223a692'),UNSPLASH('1550751827-4bd374c3f58b'),UNSPLASH('1485827404703-89b55fcc595e')],
@@ -2112,7 +2104,22 @@ const FALLBACK_IMAGES={
 FALLBACK_IMAGES.ai=FALLBACK_IMAGES.tech;FALLBACK_IMAGES.technology=FALLBACK_IMAGES.tech;FALLBACK_IMAGES.global=FALLBACK_IMAGES.world;FALLBACK_IMAGES.movies=FALLBACK_IMAGES.world;
 FALLBACK_IMAGES.india=FALLBACK_IMAGES.world;FALLBACK_IMAGES.business=[UNSPLASH('1611974789855-d63e38d0e2c7'),UNSPLASH('1507003211169-0a1dd7228f2d'),UNSPLASH('1460925895917-afdab827c52f'),UNSPLASH('1444653614773-995cb1ef9efa')];FALLBACK_IMAGES.entertainment=[UNSPLASH('1489599849927-2ee91cede3ba'),UNSPLASH('1485846234645-a62644f84728'),UNSPLASH('1478720568477-152d9b164e26'),UNSPLASH('1514306191717-452ec28c7814')];
 const newsCache={};
+let newsLastFullRefresh=0;
 function stripXmlTags(s){return (s||'').replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/<[^>]+>/g,'').replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(+n)).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim()}
+// Inshorts-style: trim desc to ~60 words, end on complete sentence
+function inshortsDesc(raw){
+  if(!raw)return '';
+  let d=raw.replace(/Read more.*$/i,'').replace(/Click here.*$/i,'').replace(/Subscribe.*$/i,'').replace(/\s*\.\.\.\s*$/,'').replace(/\s*…\s*$/,'').trim();
+  // Cut to ~60 words on a sentence boundary
+  const words=d.split(/\s+/);
+  if(words.length<=60)return d;
+  let cut=words.slice(0,60).join(' ');
+  // Find last sentence end
+  const lastDot=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
+  if(lastDot>cut.length*0.4)cut=cut.slice(0,lastDot+1);
+  else cut=cut.replace(/[,;:\s]+$/,'')+'.';
+  return cut;
+}
 function parseRSS(xml,sourceUrl){
   const items=[];let host='';try{host=new URL(sourceUrl).hostname.replace(/^www\./,'').split('.')[0]}catch(e){}
   const isAtom=xml.includes('<entry');
@@ -2124,11 +2131,12 @@ function parseRSS(xml,sourceUrl){
     const getAttr=(tag,attr)=>{const r=block.match(new RegExp('<'+tag+'[^>]*\\s'+attr+'=["\']([^"\']+)["\']','i'));return r?r[1]:''};
     const title=getTag('title');
     let link=getTag('link');if(!link)link=getAttr('link','href');
-    const desc=getTag('description')||getTag('summary')||getTag('content:encoded')||getTag('content');
+    const rawDesc=getTag('description')||getTag('summary')||getTag('content:encoded')||getTag('content');
+    const desc=inshortsDesc(rawDesc);
     const date=getTag('pubDate')||getTag('published')||getTag('updated')||getTag('dc:date');
     let img=getAttr('media:content','url')||getAttr('media:thumbnail','url')||getAttr('enclosure','url');
     if(!img){const im=(block.match(/<img[^>]+src=["']([^"']+)["']/i));if(im)img=im[1]}
-    if(title&&link)items.push({title:title.slice(0,200),link,desc:desc.slice(0,280),date,img:img||null,source:host});
+    if(title&&link)items.push({title:title.slice(0,200),link,desc,date,img:img||null,source:host});
   }
   return items;
 }
@@ -2136,36 +2144,73 @@ async function fetchFeed(url){
   try{const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),9000);const r=await fetch(url,{signal:ctrl.signal,headers:{'User-Agent':'Brodoit/1.0 (+https://brodoit.com)','Accept':'application/rss+xml,application/atom+xml,application/xml,text/xml,*/*'}});clearTimeout(t);if(!r.ok)return [];const x=await r.text();return parseRSS(x,url)}catch(e){return []}
 }
 async function fetchOgImage(url){
-  try{const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),3500);const r=await fetch(url,{signal:ctrl.signal,headers:{'User-Agent':'Mozilla/5.0 (compatible; Brodoit/1.0; +https://brodoit.com)','Accept':'text/html,application/xhtml+xml'}});clearTimeout(t);if(!r.ok)return null;const html=await r.text();const head=html.slice(0,80000);const patterns=[/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/i,/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i];for(const p of patterns){const m=head.match(p);if(m&&m[1])return m[1].replace(/&amp;/g,'&')}return null;}catch(e){return null}
+  try{const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),5000);const r=await fetch(url,{signal:ctrl.signal,headers:{'User-Agent':'Mozilla/5.0 (compatible; Brodoit/1.0; +https://brodoit.com)','Accept':'text/html,application/xhtml+xml'}});clearTimeout(t);if(!r.ok)return null;const html=await r.text();const head=html.slice(0,80000);const patterns=[/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/i,/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i];for(const p of patterns){const m=head.match(p);if(m&&m[1])return m[1].replace(/&amp;/g,'&')}return null;}catch(e){return null}
 }
+// Core news fetch+curate for one category — used by API and by scheduled job
+async function curateNewsCategory(cat){
+  const feeds=NEWS_FEEDS[cat];
+  if(!feeds)return [];
+  const results=await Promise.all(feeds.map(fetchFeed));
+  let all=results.flat();
+  all.sort((a,b)=>{const da=new Date(a.date||0).getTime()||0,db=new Date(b.date||0).getTime()||0;return db-da});
+  const seen=new Set();const dedup=[];
+  for(const it of all){const k=(it.title||'').toLowerCase().slice(0,60);if(seen.has(k))continue;seen.add(k);dedup.push(it);if(dedup.length>=30)break}
+  // Aggressively enrich ALL items missing img (background job has no hurry)
+  const toEnrich=dedup.filter(it=>!it.img&&it.link);
+  if(toEnrich.length){
+    // Process in batches of 6 to avoid overwhelming
+    for(let b=0;b<toEnrich.length;b+=6){
+      const batch=toEnrich.slice(b,b+6);
+      await Promise.race([
+        Promise.all(batch.map(async it=>{const og=await fetchOgImage(it.link);if(og)it.img=og})),
+        new Promise(r=>setTimeout(r,10000))
+      ]);
+    }
+  }
+  // Fallback images for any still missing
+  const fb=FALLBACK_IMAGES[cat]||FALLBACK_IMAGES.world;
+  let fbIdx=0;
+  for(const it of dedup){if(!it.img){it.img=fb[fbIdx%fb.length];it.imgFallback=true;fbIdx++}}
+  newsCache[cat]={ts:Date.now(),items:dedup};
+  return dedup;
+}
+// ── Scheduled news refresh — every 12 hours, pre-curate ALL categories ──
+const NEWS_CATS=['world','india','tech','business','sports','entertainment'];
+async function refreshAllNews(){
+  console.log('[NEWS] Starting scheduled news refresh for all categories...');
+  const start=Date.now();
+  for(const cat of NEWS_CATS){
+    try{await curateNewsCategory(cat);console.log('[NEWS] Refreshed '+cat+' ('+((newsCache[cat]||{}).items||[]).length+' items)')}
+    catch(e){console.error('[NEWS] Failed to refresh '+cat+':',e.message)}
+    // Small delay between categories to be polite to RSS servers
+    await new Promise(r=>setTimeout(r,2000));
+  }
+  newsLastFullRefresh=Date.now();
+  console.log('[NEWS] Full refresh done in '+((Date.now()-start)/1000).toFixed(1)+'s');
+}
+// Refresh on startup (after 10s to let server boot) then every 12 hours
+setTimeout(()=>refreshAllNews(),10000);
+setInterval(()=>refreshAllNews(),12*60*60*1000);
+// API endpoint — serves from cache, falls back to live fetch
 app.get('/api/news',async(req,res)=>{
-  let cat=(req.query.cat||'tech').toLowerCase();
-  // Normalise old aliases
+  let cat=(req.query.cat||'world').toLowerCase();
   if(cat==='ai'||cat==='technology')cat='tech';
   else if(cat==='global'||cat==='movies')cat='world';
   const feeds=NEWS_FEEDS[cat];
   if(!feeds)return res.json({items:[],cat});
   const c=newsCache[cat];
-  if(c&&Date.now()-c.ts<15*60*1000)return res.json({items:c.items,cat,cached:true});
-  const results=await Promise.all(feeds.map(fetchFeed));
-  let all=results.flat();
-  all.sort((a,b)=>{const da=new Date(a.date||0).getTime()||0,db=new Date(b.date||0).getTime()||0;return db-da});
-  const seen=new Set();const dedup=[];
-  for(const it of all){const k=(it.title||'').toLowerCase().slice(0,60);if(seen.has(k))continue;seen.add(k);dedup.push(it);if(dedup.length>=25)break}
-  // Enrich items missing img by scraping og:image (top 12 in parallel, ~3.5s each, capped overall)
-  const toEnrich=dedup.filter(it=>!it.img&&it.link).slice(0,12);
-  if(toEnrich.length){
-    await Promise.race([
-      Promise.all(toEnrich.map(async it=>{const og=await fetchOgImage(it.link);if(og)it.img=og})),
-      new Promise(r=>setTimeout(r,7000))
-    ]);
+  // Serve cached if less than 12h old
+  if(c&&Date.now()-c.ts<12*60*60*1000){
+    return res.json({items:c.items,cat,cached:true,refreshedAt:c.ts,nextRefresh:c.ts+12*60*60*1000});
   }
-  // Anything still without an image gets a curated scenic Unsplash fallback
-  const fb=FALLBACK_IMAGES[cat]||FALLBACK_IMAGES.global;
-  let fbIdx=0;
-  for(const it of dedup){if(!it.img){it.img=fb[fbIdx%fb.length];it.imgFallback=true;fbIdx++}}
-  newsCache[cat]={ts:Date.now(),items:dedup};
-  res.json({items:dedup,cat,cached:false});
+  // Otherwise fetch live
+  const items=await curateNewsCategory(cat);
+  res.json({items,cat,cached:false,refreshedAt:newsCache[cat]?.ts||Date.now(),nextRefresh:Date.now()+12*60*60*1000});
+});
+// Manual refresh endpoint (for admin use)
+app.post('/api/news/refresh',async(req,res)=>{
+  refreshAllNews();
+  res.json({ok:true,message:'News refresh started'});
 });
 
 // ═══ IPL LIVE (CricAPI when CRICAPI_KEY env var set, plus Wikipedia summary, 60-sec cache) ═══
@@ -8892,7 +8937,7 @@ theme:(function(){if(!localStorage.getItem('v104_theme_reset')){localStorage.set
 themeColor:localStorage.getItem('themeColor')||'coral',
 eyeShield:false,
 nightSky:false,
-news:{},newsCat:'world',newsLoading:false,
+news:{},newsCat:'world',newsLoading:false,newsRefreshedAt:0,newsNextRefresh:0,
 notes:JSON.parse(localStorage.getItem('tf_notes')||'[]'),noteView:'list',noteEdit:null,noteCategory:null,noteRecording:false,noteDrawing:false,noteVoiceBlob:null,noteTranscript:'',taskSubTab:'tasks',
 bookStreak:{streak:0,total:0,today:false,days:[]},_bkSec:0,
 
@@ -9355,7 +9400,7 @@ function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t
 function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='news'&&!S.news[S.newsCat])loadNews(S.newsCat);if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;var _ap=document.getElementById('app');if(_ap){_ap.classList.remove('app-flip-in');void _ap.offsetWidth;_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},300)}try{window.scrollTo({top:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)};var _sc=document.getElementById('app');if(_sc)_sc.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;setTimeout(function(){window.scrollTo({top:0,behavior:'instant'});var _sc2=document.getElementById('app');if(_sc2)_sc2.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0},60)}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
-async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[]}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
+async function loadNews(cat){S.newsCat=cat;S.newsLoading=true;render();try{const r=await fetch('/api/news?cat='+encodeURIComponent(cat),{cache:'no-store'});const j=await r.json();S.news[cat]=j.items||[];S.newsRefreshedAt=j.refreshedAt||Date.now();S.newsNextRefresh=j.nextRefresh||0}catch(e){S.news[cat]=[]}S.newsLoading=false;render()}
 function shareNews(idx){const item=(S.news[S.newsCat]||[])[idx];if(!item)return;const url=item.link,title=item.title,text=(item.desc||'').slice(0,140);if(navigator.share){navigator.share({title,text,url}).catch(()=>{})}else{navigator.clipboard?.writeText(title+'\\n\\n'+url).then(()=>toast('\\u{1F517} Link copied')).catch(()=>toast('\\u26A0\\uFE0F Share unavailable','err'))}}
 function _shareNewsCard(idx){const item=(S.news[S.newsCat]||[])[idx];if(!item)return;var title=item.title||'';var desc=(item.desc||'').slice(0,120);var url=item.link||'';var shareText=title+'\\n\\n'+desc+'\\n\\n\\u{1F4F0} Read more: '+url+'\\n\\nShared via Brodoit \\u2014 bfrodo.it';if(navigator.share){navigator.share({title:'Brodoit News: '+title,text:shareText,url:url}).catch(function(){})}else{navigator.clipboard?navigator.clipboard.writeText(shareText).then(function(){toast('\\u{1F517} News link copied with Brodoit branding!')}).catch(function(){toast('\\u26A0\\uFE0F Could not copy','err')}):toast('\\u26A0\\uFE0F Share unavailable','err')}}
 function timeAgo(ds){if(!ds)return '';const d=new Date(ds);if(isNaN(d))return '';const s=(Date.now()-d.getTime())/1000;if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';return d.toLocaleDateString()}
@@ -15333,7 +15378,8 @@ else if(S.tab==='news'){
   h+='<div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">';
   h+='<div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#C2690A,#EC4899);display:flex;align-items:center;justify-content:center;font-size:18px">\\u{1F4F0}</div>';
   h+='<div><div style="font:700 20px var(--serif);color:var(--ink);line-height:1.1">News Feed</div>';
-  h+='<div style="font:500 12px var(--sans);color:var(--text-mute);margin-top:2px">Stay updated \\u2022 Powered by Brodoit</div></div></div>';
+  var _nrAt=S.newsRefreshedAt?new Date(S.newsRefreshedAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'';
+  h+='<div style="font:500 12px var(--sans);color:var(--text-mute);margin-top:2px">Auto-curated every 12h'+(_nrAt?' \\u2022 Last: '+_nrAt:'')+' \\u2022 Brodoit</div></div></div>';
   h+='<button class="nf-refresh" onclick="loadNews(\\''+_nc+'\\')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button>';
   h+='</div>';
   // Category pills
@@ -17466,7 +17512,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v124";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v125";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
