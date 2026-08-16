@@ -3291,6 +3291,15 @@ body[data-theme=aurora] .mg-why-d{color:#888888}
 .gc-dots{display:flex;justify-content:center;gap:6px;margin-top:2px}
 .gc-dot{width:6px;height:6px;border-radius:50%;background:var(--ink-5);transition:all .2s}
 .gc-dot.on{width:18px;border-radius:3px;background:var(--accent)}
+/* ── GAMES VERTICAL GRID ── */
+.games-vgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
+@media(min-width:600px){.games-vgrid{grid-template-columns:repeat(3,1fr);gap:14px}}
+.gv-card{position:relative;border-radius:18px;overflow:hidden;padding:16px 14px;display:flex;flex-direction:column;justify-content:flex-end;min-height:170px;cursor:pointer;color:#fff;transition:transform .15s;box-shadow:0 6px 20px -4px rgba(0,0,0,.25)}
+.gv-card:active{transform:scale(.96)}
+.gv-card-badge{position:absolute;top:10px;right:10px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);font:700 10px var(--sans);color:#fff;text-transform:uppercase;letter-spacing:.04em}
+.gv-card-emoji{font-size:36px;margin-bottom:auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+.gv-card-name{font:800 16px var(--sans);letter-spacing:-.02em;text-shadow:0 2px 6px rgba(0,0,0,.4)}
+.gv-card-desc{font:400 11px var(--sans);color:rgba(255,255,255,.75);margin-top:2px;line-height:1.3}
 /* ── FULLSCREEN GAME OVERLAY ── */
 .game-fs{position:fixed;inset:0;z-index:200;background:#0a0a1a;display:flex;flex-direction:column;animation:pgFadeIn .3s ease both}
 .game-fs-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,0,0,.4);color:#fff;flex-shrink:0;z-index:1}
@@ -9464,7 +9473,7 @@ const KNOWLEDGE_TOPICS=[
 ];
 function getKnowledgeTopic(k){return KNOWLEDGE_TOPICS.find(t=>t.k===k)||KNOWLEDGE_TOPICS[0]}
 function getKnowledgeSec(topicK,secK){const t=getKnowledgeTopic(topicK);return t.sections.find(s=>s.k===secK)||t.sections[0]}
-function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t=S.learnSub||'courses'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='games'||t==='voice')t=t==='games'?'mindgym':'tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if(t==='mindgym'&&!S.mg.loaded)loadMindGym();if(t==='news'&&!S.news['all'])loadNews('all');if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;var _ap=document.getElementById('app');if(_ap){_ap.classList.remove('app-flip-in');void _ap.offsetWidth;_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},300)}try{window.scrollTo({top:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)};var _sc=document.getElementById('app');if(_sc)_sc.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;setTimeout(function(){window.scrollTo({top:0,behavior:'instant'});var _sc2=document.getElementById('app');if(_sc2)_sc2.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0},60)}
+function switchTab(t){if(t==='steps')t='health';if(t==='learn'){t='games'}if(t==='you'){t='profile'}if(t==='courses'||t==='mindgym'||t==='meditation')S.learnSub=t;if(t==='dash'||t==='history'||t==='geography'||t==='knowledge'||t==='ipl'||t==='voice')t='tasks';_mgSound('tab');S.tab=t;if(t==='profile'){if(!S.google.loaded)loadGoogleStatus();if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents();api('/me').then(function(me){if(me&&!me.error)S.profile=me;render()}).catch(function(){})}if(t==='books'&&!S.books.length)loadBooks('all');if(t==='meditation'&&!S.meditations)loadMeditations();if(t==='cal'){if(!S.google.loaded)loadGoogleStatus();else if(S.google.accounts.length&&!S.gcalEvents.length&&!S.gcalLoading)loadGcalEvents()}if((t==='games'||t==='mindgym')&&!S.mg.loaded)loadMindGym();if(t==='news'&&!S.news['all'])loadNews('all');if(t==='health'){if(!S.google.loaded)loadGoogleStatus();if(!S.healthLoaded){S.healthLoaded=true;loadSteps()}if(S.google&&S.google.accounts&&S.google.accounts.length&&!S.fitSyncing&&!S.fitNeedReauth){syncGoogleFit(true)}}if(t==='bro'&&!S.bro.agent){S.bro.agent='bro';S.bro.mode=S.bro.mode||'ask';var _bn=((S.user&&S.user.name)||'').split(' ')[0]||'';S.bro.messages=[{role:'bro',text:'Hey'+(_bn?' '+_bn:'')+', I\\'m Bro \\u2014 your AI assistant. Ask me anything \\u2014 science, coding, writing, advice, ideas, or plan your day.'}];_broLoadHistory()};S._suppressScrollRestore=true;render();S._suppressScrollRestore=false;var _ap=document.getElementById('app');if(_ap){_ap.classList.remove('app-flip-in');void _ap.offsetWidth;_ap.classList.add('app-flip-in');setTimeout(function(){_ap.classList.remove('app-flip-in')},300)}try{window.scrollTo({top:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)};var _sc=document.getElementById('app');if(_sc)_sc.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;setTimeout(function(){window.scrollTo({top:0,behavior:'instant'});var _sc2=document.getElementById('app');if(_sc2)_sc2.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0},60)}
 async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.sec=secK;S.knowledge.loading=true;render();const cacheKey=topicK+':'+secK;try{if(topicK==='history'&&secK==='today'){const r=await fetch('/api/history/today');const j=await r.json();S.knowledge.events=j.events||[]}else{const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===topicK);const sObj=tObj&&tObj.sections.find(s=>s.k===secK);if(!sObj||!sObj.titles){S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render();return}const r=await fetch('/api/wiki/summaries?titles='+encodeURIComponent(sObj.titles.join(',')));const j=await r.json();S.knowledge.articles[cacheKey]=j.summaries||[]}}catch(e){}S.knowledge.loaded[cacheKey]=true;S.knowledge.loading=false;render()}
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){cat=cat||'all';S.newsCat='all';S.newsLoading=true;render();try{const r=await fetch('/api/news?cat=all',{cache:'no-store'});const j=await r.json();S.news['all']=j.items||[];S.newsRefreshedAt=j.refreshedAt||Date.now()}catch(e){S.news['all']=[]}S.newsLoading=false;render()}
@@ -10027,7 +10036,7 @@ function _chessInit(){
     ctx.fillText((turn==='w'?'Your':'AI\\'s')+' turn  |  You: '+captures.w+'  AI: '+captures.b,W/2,offY-10);
   }
   S.canvas.onclick=function(e){
-    var rect=S.canvas.getBoundingClientRect();var scX=S.canvas.width/rect.width;var mx=(e.clientX-rect.left)*scX;var my=(e.clientY-rect.top)*(S.canvas.height/rect.height);
+    var rect=S.canvas.getBoundingClientRect();var mx=e.clientX-rect.left;var my=e.clientY-rect.top;
     var c=Math.floor((mx-offX)/cellSz);var r=Math.floor((my-offY)/cellSz);
     if(c<0||c>7||r<0||r>7||turn!=='w')return;
     if(sel){
@@ -10176,7 +10185,7 @@ function _ludoInit(){
   CSS+='.lw-players{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%;max-width:380px}';
   CSS+='.lw-pl{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:8px;font:600 11px sans-serif;color:#fff;opacity:.5;transition:opacity .2s}';
   CSS+='.lw-pl.on{opacity:1;box-shadow:0 0 12px rgba(255,215,0,.3)}';
-  CSS+='.lb{display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr);width:min(96vw,68vh,520px);aspect-ratio:1;gap:0;border:3px solid #2a3a5e;border-radius:10px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.05)}';
+  CSS+='.lb{display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr);width:min(98vw,80vh,600px);aspect-ratio:1;gap:0;border:3px solid #2a3a5e;border-radius:10px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.05)}';
   CSS+='.lc{display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:0.5px solid rgba(0,0,0,.08)}';
   CSS+='.lc-sf::after{content:"\\u2605";position:absolute;font-size:clamp(6px,1.4vw,10px);color:rgba(180,140,0,.4);pointer-events:none}';
   // Start cells get colored fill
@@ -14598,14 +14607,15 @@ if(isMain){
     cal:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><rect x="7" y="14" width="3" height="3" rx="1" fill="currentColor"/></svg>',
     mindgym:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0112 4.5V5a2.5 2.5 0 012.5-2.5"/><path d="M7 8c-1.7 0-3 1.3-3 3 0 2.2 1.5 4 3.5 5l1.5 1v3h6v-3l1.5-1c2-1 3.5-2.8 3.5-5 0-1.7-1.3-3-3-3H7z"/><line x1="10" y1="20" x2="14" y2="20"/></svg>',
     learn:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/><line x1="22" y1="10" x2="22" y2="16"/></svg>',
+    games:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 00-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 003 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 019.828 16h4.344a2 2 0 011.414.586L17 18c.5.5 1 1 2 1a3 3 0 003-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0017.32 5z"/></svg>',
     you:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
     news:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg>',
     inspire:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
   };
-  var _learnTabs=['courses','mindgym'];
+  var _learnTabs=['games','courses'];
   var _youTabs=['profile','cal'];
-  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'news',l:'News'},{k:'books',l:'Books',i:'books'},{k:'bro',l:'Bro'},{k:'courses',l:'Learn',i:'learn'},{k:'meditation',l:'Wisdom'}].map(function(x){
-    var isOn=(x.k==='home')?(!S.tab||S.tab==='home'||S.tab==='profile'):(S.tab===x.k||(x.k==='courses'&&S.tab==='mindgym'));
+  const tabsHtml=[{k:'home',l:'Home'},{k:'tasks',l:'Tasks'},{k:'news',l:'News'},{k:'books',l:'Books',i:'books'},{k:'bro',l:'Bro'},{k:'games',l:'Games',i:'games'},{k:'meditation',l:'Wisdom'}].map(function(x){
+    var isOn=(x.k==='home')?(!S.tab||S.tab==='home'||S.tab==='profile'):(S.tab===x.k||(x.k==='games'&&(S.tab==='courses'||S.tab==='mindgym')));
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
   // "Bro, do it!" mascot — a character with a speech bubble that animates
@@ -15116,7 +15126,7 @@ else if(S.tab==='courses'){
     h+='</div>';
     h+='</div></div>'; // close lesson-fullpage-inner + lesson-fullpage
   } else {
-  h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst" onclick="switchTab(\\'mindgym\\')">Mind Games</button></div>';
+  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'games\\')">Games</button><button class="lst on" onclick="switchTab(\\'courses\\')">Learning</button></div>';
   if(!S.learnSection){
     // Landing — 5 section cards with 3D tilt
     h+='<div class="learn-hero">';
@@ -15428,9 +15438,9 @@ else if(S.tab==='courses'){
   h+='</div>';
 }
 
-// MIND GAMES TAB — 3 sections: Maths, Memory, Puzzles
-else if(S.tab==='mindgym'){
-  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'courses\\')">Learning</button><button class="lst on" onclick="switchTab(\\'mindgym\\')">Mind Games</button></div>';
+// GAMES TAB — Fun Games + Mind Games
+else if(S.tab==='games'){
+  h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'games\\')">Games</button><button class="lst" onclick="switchTab(\\'courses\\')">Learning</button></div>';
   const mg=S.mg;
   const _mgSections=[
     {id:'maths',title:'Maths',desc:'Sharpen your numerical intelligence',
@@ -15463,46 +15473,36 @@ else if(S.tab==='mindgym'){
   };
 
   if(!S.mgSection){
-    // === LANDING PAGE — two sections: Fun Games + Mind Games ===
+    // === LANDING PAGE — two sections in vertical grid ===
     var streak=mg.streak||{current:0,longest:0,total:0};
     var _allG=_mgSections.reduce(function(a,s){return a.concat(s.games)},[]);
     var totalXp=_allG.reduce(function(s,g){return s+((mg.progress[g.k]||{}).xp||0)},0);
     h+='<div style="font:800 28px var(--sans);color:var(--ink);letter-spacing:-.02em;margin-bottom:4px">Games</div>';
     h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-bottom:20px">Play, train & have fun \\u00B7 '+totalXp+' XP \\u00B7 '+streak.current+' day streak</div>';
-    // ── Section 1: Fun Games (arcade + mountain climb) ──
-    h+='<div style="font:700 17px var(--sans);color:var(--ink);margin-bottom:8px">\\u{1F3AE} Fun Games</div>';
-    h+='<div style="font:400 13px var(--sans);color:var(--text-mute);margin-bottom:10px">Swipe \\u2192 to browse</div>';
-    h+='<div class="gc-strip" id="arcadeStrip">';
+    // ── Section 1: Fun Games — 2-col grid ──
+    h+='<div style="font:700 17px var(--sans);color:var(--ink);margin-bottom:10px">\\u{1F3AE} Fun Games</div>';
+    h+='<div class="games-vgrid">';
     _arcadeGames.forEach(function(g){
-      h+='<div class="gc-card" style="background:'+g.bg+'" onclick="arcadeOpen(\\''+g.id+'\\')">';
-      h+='<div class="gc-card-body">';
-      h+='<div class="gc-card-badge">'+g.badge+'</div>';
-      h+='<div class="gc-card-emoji">'+g.emoji+'</div>';
-      h+='<div class="gc-card-name">'+g.name+'</div>';
-      h+='<div class="gc-card-desc">'+g.desc+'</div>';
-      h+='</div></div>';
+      h+='<div class="gv-card" style="background:'+g.bg+'" onclick="arcadeOpen(\\''+g.id+'\\')">';
+      h+='<div class="gv-card-badge">'+g.badge+'</div>';
+      h+='<div class="gv-card-emoji">'+g.emoji+'</div>';
+      h+='<div class="gv-card-name">'+g.name+'</div>';
+      h+='<div class="gv-card-desc">'+g.desc+'</div>';
+      h+='</div>';
     });
     h+='</div>';
-    h+='<div class="gc-dots" id="funDots">';
-    _arcadeGames.forEach(function(g,i){h+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
-    h+='</div>';
-    // ── Section 2: Mind Games (brain training) ──
-    h+='<div style="font:700 17px var(--sans);color:var(--ink);margin:24px 0 8px">\\u{1F9E0} Mind Games</div>';
-    h+='<div style="font:400 13px var(--sans);color:var(--text-mute);margin-bottom:10px">Swipe \\u2192 to browse</div>';
-    h+='<div class="gc-strip" id="brainStrip">';
+    // ── Section 2: Mind Games — 2-col grid ──
+    h+='<div style="font:700 17px var(--sans);color:var(--ink);margin:24px 0 10px">\\u{1F9E0} Mind Games</div>';
+    h+='<div class="games-vgrid">';
     _allG.forEach(function(g){
       var p=mg.progress[g.k]||{level:1,xp:0};
-      h+='<div class="gc-card" style="background:'+(g.bg||'#37352F')+'" onclick="mgDetailOpen(\\''+g.k+'\\')">';
-      h+='<div class="gc-card-body">';
-      h+='<div class="gc-card-badge">Lv '+p.level+'</div>';
-      h+='<div class="gc-card-emoji">'+g.emoji+'</div>';
-      h+='<div class="gc-card-name">'+g.n+'</div>';
-      h+='<div class="gc-card-desc">'+g.d+'</div>';
-      h+='</div></div>';
+      h+='<div class="gv-card" style="background:'+(g.bg||'#37352F')+'" onclick="mgDetailOpen(\\''+g.k+'\\')">';
+      h+='<div class="gv-card-badge">Lv '+p.level+'</div>';
+      h+='<div class="gv-card-emoji">'+g.emoji+'</div>';
+      h+='<div class="gv-card-name">'+g.n+'</div>';
+      h+='<div class="gv-card-desc">'+g.d+'</div>';
+      h+='</div>';
     });
-    h+='</div>';
-    h+='<div class="gc-dots" id="brainDots">';
-    _allG.forEach(function(g,i){h+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
     h+='</div>';
   }else{
     // === SECTION DRILL-DOWN ===
@@ -17673,7 +17673,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v138";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v139";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
