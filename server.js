@@ -2087,14 +2087,13 @@ app.get('/api/health',(_,res)=>res.json({status:'ok',email:!!process.env.RESEND_
 
 // ═══ NEWS (Inshorts-style feed — auto-curated every 12h, free RSS aggregator) ═══
 const NEWS_FEEDS={
-  tech:['https://techcrunch.com/category/artificial-intelligence/feed/','https://www.theverge.com/rss/ai-artificial-intelligence/index.xml','https://venturebeat.com/category/ai/feed/','https://www.technologyreview.com/feed/','https://www.theinformation.com/feed','https://feeds.arstechnica.com/arstechnica/index','https://techcrunch.com/feed/','https://www.theverge.com/rss/index.xml','https://www.wired.com/feed/rss'],
-  sports:['https://www.thehindu.com/sport/cricket/feeder/default.rss','https://indianexpress.com/section/sports/cricket/feed/','https://feeds.bbci.co.uk/sport/cricket/rss.xml','https://feeds.bbci.co.uk/sport/football/rss.xml','https://www.espn.com/espn/rss/news','https://www.espn.com/espn/rss/soccer/news','https://feeds.bbci.co.uk/sport/rss.xml','https://www.skysports.com/rss/12040'],
+  tech:['https://techcrunch.com/category/artificial-intelligence/feed/','https://www.theverge.com/rss/ai-artificial-intelligence/index.xml','https://venturebeat.com/category/ai/feed/','https://www.technologyreview.com/feed/','https://www.wired.com/feed/tag/ai/latest/rss'],
+  science:['https://feeds.bbci.co.uk/news/science_and_environment/rss.xml','https://rss.nytimes.com/services/xml/rss/nyt/Science.xml','https://www.newscientist.com/section/news/feed/','https://phys.org/rss-feed/breaking/','https://www.nature.com/nature.rss'],
   world:['https://feeds.reuters.com/reuters/topNews','https://feeds.bbci.co.uk/news/world/rss.xml','https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://feeds.npr.org/1004/rss.xml','https://feeds.bbci.co.uk/news/rss.xml'],
   india:['https://www.thehindu.com/news/national/feeder/default.rss','https://indianexpress.com/section/india/feed/','https://feeds.bbci.co.uk/news/world/asia/india/rss.xml','https://timesofindia.indiatimes.com/rssfeedstopstories.cms','https://www.ndtv.com/rss/top-stories','https://www.livemint.com/rss/news'],
-  business:['https://feeds.reuters.com/reuters/businessNews','https://feeds.bbci.co.uk/news/business/rss.xml','https://www.livemint.com/rss/companies','https://timesofindia.indiatimes.com/rssfeeds/1898055.cms','https://rss.nytimes.com/services/xml/rss/nyt/Business.xml'],
-  entertainment:['https://timesofindia.indiatimes.com/rssfeeds/1081479906.cms','https://www.ndtv.com/rss/entertainment','https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml','https://variety.com/feed/']
+  business:['https://feeds.reuters.com/reuters/businessNews','https://feeds.bbci.co.uk/news/business/rss.xml','https://www.livemint.com/rss/companies','https://rss.nytimes.com/services/xml/rss/nyt/Business.xml']
 };
-NEWS_FEEDS.ai=NEWS_FEEDS.tech;NEWS_FEEDS.technology=NEWS_FEEDS.tech;NEWS_FEEDS.global=NEWS_FEEDS.world;NEWS_FEEDS.movies=NEWS_FEEDS.world;
+NEWS_FEEDS.ai=NEWS_FEEDS.tech;NEWS_FEEDS.technology=NEWS_FEEDS.tech;NEWS_FEEDS.global=NEWS_FEEDS.world;
 const UNSPLASH=(id)=>'https://images.unsplash.com/photo-'+id+'?w=900&q=80&auto=format&fit=crop';
 const FALLBACK_IMAGES={
   tech:[UNSPLASH('1677442136019-21780ecad995'),UNSPLASH('1518770660439-4636190af475'),UNSPLASH('1620712943543-bcc4688e7485'),UNSPLASH('1451187580459-43490279c0fa'),UNSPLASH('1531297484001-80022131f5a1'),UNSPLASH('1551434678-e076c223a692'),UNSPLASH('1550751827-4bd374c3f58b'),UNSPLASH('1485827404703-89b55fcc595e')],
@@ -2111,8 +2110,8 @@ function inshortsDesc(raw){
   if(!raw)return '';
   let d=raw.replace(/Read more.*$/i,'').replace(/Click here.*$/i,'').replace(/Subscribe.*$/i,'').replace(/\s*\.\.\.\s*$/,'').replace(/\s*…\s*$/,'').trim();
   const words=d.split(/\s+/);
-  if(words.length<=60)return d;
-  let cut=words.slice(0,60).join(' ');
+  if(words.length<=150)return d;
+  let cut=words.slice(0,150).join(' ');
   const lastDot=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
   if(lastDot>cut.length*0.3)cut=cut.slice(0,lastDot+1);
   else cut=cut.replace(/[,;:\s]+$/,'')+'.';
@@ -2125,18 +2124,19 @@ async function aiRewriteNews(items,cat){
   if(!GEMINI_KEY||items.length===0)return items;
   // Process in smaller batches of 5 for reliability
   const batch=items.slice(0,15);
-  const sysPrompt=`You are Brodoit News — a modern Inshorts-style news app. Rewrite each news article as a crisp 60-word summary.
+  const sysPrompt=`You are Brodoit News — a modern news app. Rewrite each news article as a detailed, informative summary.
 
 RULES:
-1. Each summary must be EXACTLY 55-65 words. This is critical.
+1. Each summary must be 120-180 words (about 10 lines). This is critical.
 2. Write in clear, factual, neutral journalistic tone.
 3. Start with the most important fact (inverted pyramid).
-4. Include key details: who, what, where, when, why.
-5. Do NOT copy original text — rewrite completely.
-6. No opinions, commentary, or speculation.
-7. Write as if Brodoit is reporting.
+4. Include key details: who, what, where, when, why, and context.
+5. Add background and significance — help readers understand why it matters.
+6. Do NOT copy original text — rewrite completely in your own words.
+7. No opinions, commentary, or speculation.
+8. Write as if Brodoit is reporting.
 
-Respond with a JSON array: [{"id": 0, "title": "rewritten title", "summary": "55-65 word summary"}, ...]
+Respond with a JSON array: [{"id": 0, "title": "rewritten title", "summary": "120-180 word summary"}, ...]
 Only output the JSON array, nothing else.`;
 
   // Process in smaller batches of 5 to stay within token limits
@@ -2144,7 +2144,7 @@ Only output the JSON array, nothing else.`;
     const chunk=batch.slice(b,b+5);
     const chunkJson=chunk.map((it,i)=>({id:b+i,title:it.title||'',rawDesc:(it.desc||'').slice(0,400),source:it.source||''}));
     try{
-      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as 60-word Inshorts-style summaries.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:4096,systemPrompt:sysPrompt});
+      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as detailed 150-word news summaries.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:8192,systemPrompt:sysPrompt});
       let parsed;
       const jsonMatch=r.reply.match(/\[[\s\S]*\]/);
       if(jsonMatch)parsed=JSON.parse(jsonMatch[0]);
@@ -3305,7 +3305,7 @@ body[data-theme=aurora] .mg-why-d{color:#888888}
 .gs-list{display:flex;flex-direction:column;gap:3px;margin-top:10px}
 .gs-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--bg-2);border-radius:12px;cursor:pointer;transition:transform .1s;border:1px solid var(--line)}
 .gs-item:active{transform:scale(.98)}
-.gs-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.gs-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:none}
 .gs-info{flex:1;min-width:0}
 .gs-name{font:600 15px var(--sans);color:var(--ink)}
 .gs-desc{font:400 12px var(--sans);color:var(--text-mute);margin-top:2px}
@@ -4511,8 +4511,8 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 
 /* ── News Feed — Inshorts clone ── */
 .nf-wrap{padding:0}
-.nf-cards{height:calc(100vh - 80px);overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
-.nf-card{position:relative;background:var(--surface);border:none;border-radius:0;overflow:hidden;box-shadow:none;margin:0;min-height:calc(100vh - 80px);scroll-snap-align:start;display:flex;flex-direction:column}
+.nf-cards{height:calc(100vh - 80px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:row}
+.nf-card{position:relative;background:var(--surface);border:none;border-radius:0;overflow:hidden;box-shadow:none;margin:0;min-width:100%;max-width:100%;min-height:calc(100vh - 80px);scroll-snap-align:start;display:flex;flex-direction:column;flex-shrink:0}
 .nf-card-img{display:block;width:100%;height:45%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
 .nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.2) 100%);pointer-events:none}
 .nf-card-img-empty{background:linear-gradient(135deg,#667eea,#764ba2)}
@@ -4530,7 +4530,7 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 .nf-share-btn:hover{background:var(--bg-sunken);color:var(--ink)}
 .nf-share-btn:active{transform:scale(.92)}
 .nf-swipe-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font:500 12px var(--sans);color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:6px 16px;border-radius:20px;display:flex;align-items:center;gap:6px;animation:nf-swipe-bounce 2s ease-in-out infinite;pointer-events:none;z-index:2}
-@keyframes nf-swipe-bounce{0%,50%,100%{transform:translateX(-50%) translateY(0)}25%{transform:translateX(-50%) translateY(-5px)}}
+@keyframes nf-swipe-bounce{0%,50%,100%{transform:translateX(-50%)}25%{transform:translateX(-60%)}}
 .nf-skeleton{display:flex;flex-direction:column;overflow:hidden;background:var(--surface);min-height:calc(100vh - 80px)}
 .nf-sk-img{width:100%;height:45%;min-height:200px;background:linear-gradient(90deg,var(--border) 25%,rgba(0,0,0,.03) 50%,var(--border) 75%);background-size:200% 100%;animation:sk-shimmer 1.5s ease infinite}
 .nf-sk-body{flex:1;padding:20px;display:flex;flex-direction:column;gap:10px;justify-content:center}
@@ -8993,7 +8993,7 @@ const BRO_FACTS=[
 {e:'\\u{1F409}',t:'Dragonflies have been around for 300 million years — before dinosaurs existed.',c:'Nature'}
 ];
 let _broFactIdx=Math.floor(Math.random()*BRO_FACTS.length);
-let S={tasks:[],view:'pending',search:'',tab:'tasks',showAdd:false,editing:null,listening:false,toast:null,toastType:'ok',sending:{},user:null,compose:{value:'',priority:null,dueDate:null,saving:false},
+let S={tasks:[],view:'pending',search:'',tab:'home',showAdd:false,editing:null,listening:false,toast:null,toastType:'ok',sending:{},user:null,compose:{value:'',priority:null,dueDate:null,saving:false},
 books:[],booksLoading:false,booksCat:'all',bookSearch:'',playing:null,moralIdx:Math.floor(Math.random()*(window._DQ?window._DQ.length:MORALS.length)),
 knowledge:{loading:false,loaded:{},articles:{},events:[],topic:'history',sec:'today'},
 game:{active:false,board:Array(9).fill(null),turn:'X',status:'idle',winLine:null,wins:Number(localStorage.getItem('tf_ttt_wins')||0),losses:Number(localStorage.getItem('tf_ttt_losses')||0),draws:Number(localStorage.getItem('tf_ttt_draws')||0)},
@@ -9414,7 +9414,7 @@ function noteSelectCat(k){S.noteCategory=k;S.noteView='edit';S.noteEdit={id:Date
 function noteOpen(id){const n=S.notes.find(x=>x.id===id);if(!n)return;S.noteEdit={...n};S.noteView='edit';S.noteCategory=n.category;render()}
 function noteSave(){if(!S.noteEdit)return;const idx=S.notes.findIndex(x=>x.id===S.noteEdit.id);if(idx>-1)S.notes[idx]={...S.noteEdit,updated:new Date().toISOString()};else S.notes.unshift({...S.noteEdit,updated:new Date().toISOString()});_saveNotes();S.noteView='list';S.noteEdit=null;S.noteCategory=null;toast('\\u{1F4DD} Note saved');render()}
 function noteDelete(id){S.notes=S.notes.filter(x=>x.id!==id);_saveNotes();S.noteView='list';S.noteEdit=null;toast('\\u{1F5D1}\\uFE0F Deleted');render()}
-function noteBack(){if(S.noteView==='edit'){S.noteView=S.noteCategory&&!S.noteEdit?.content?'categories':'list';S.noteEdit=null}else if(S.noteView==='categories'){S.noteView='list'}else{S.noteView='list'}render()}
+function noteBack(){S.noteView='list';S.noteEdit=null;render()}
 let _noteRec=null,_noteRecStart=0,_noteRecInterval=null;
 function noteStartRec(){
   if(!navigator.mediaDevices){toast('\\u26A0\\uFE0F Microphone not available','err');return}
@@ -14727,13 +14727,14 @@ if(S.tab==='tasks'){
   const _todayStr=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric'});
   // Compact header with integrated sub-tab
   if(!S.taskSubTab)S.taskSubTab='tasks';
-  h+='<div class="ws-header-card" style="margin-top:10px">';
+  h+='<div class="ws-header-card" style="margin-top:14px">';
   h+='<div style="display:flex;align-items:baseline;justify-content:space-between">';
   h+='<h2 class="rd-serif-title" style="margin:0">Workspace</h2>';
   h+='<div class="task-sub-tabs" style="margin:0">';
   h+='<button class="task-sub-tab'+(S.taskSubTab==='tasks'?' on':'')+'" onclick="S.taskSubTab=\\'tasks\\';render()">Tasks</button>';
   h+='<button class="task-sub-tab'+(S.taskSubTab==='notes'?' on':'')+'" onclick="S.taskSubTab=\\'notes\\';render()">Notes</button>';
   h+='</div></div></div>';
+  h+='<div style="height:10px"></div>';
 
   if(S.taskSubTab==='tasks'){
   // Quick-compose bar (compact — no hero card)
@@ -14805,7 +14806,7 @@ if(S.tab==='tasks'){
       // Note editor
       h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
       h+='<button style="background:none;border:none;cursor:pointer;padding:4px" onclick="noteBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>';
-      h+='<span style="font:600 16px var(--sans);color:var(--ink)">'+esc((NOTE_CATS.find(c=>c.k===S.noteEdit.category)||{}).l||'Note')+'</span>';
+      h+='<span style="font:600 16px var(--sans);color:var(--ink)">Note</span>';
       h+='<div style="flex:1"></div>';
       h+='<button style="background:var(--accent);color:#fff;border:none;border-radius:0;padding:8px 18px;font:600 13px var(--sans);cursor:pointer" onclick="noteSave()">Save</button>';
       if(S.notes.find(x=>x.id===S.noteEdit.id)){h+='<button style="background:none;border:none;color:#1F1E1C;font:600 13px var(--sans);cursor:pointer;padding:8px" onclick="noteDelete(\\''+S.noteEdit.id+'\\')">Delete</button>';}
@@ -14857,22 +14858,12 @@ if(S.tab==='tasks'){
       // Notes list
       h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
       h+='<span style="font:600 15px var(--sans);color:var(--ink)">Your Notes</span>';
-      h+='<button style="background:var(--accent);color:#fff;border:none;border-radius:0;padding:8px 18px;font:600 13px var(--sans);cursor:pointer" onclick="S.noteView=\\'categories\\';render()">+ New Note</button>';
-      h+='</div>';
-      // Category filter chips
-      h+='<div style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">';
-      h+='<span class="qc-chip'+(S.noteCategory===null?' on':'')+'" onclick="S.noteCategory=null;render()" style="border-radius:0">All</span>';
-      NOTE_CATS.forEach(function(c){
-        h+='<span class="qc-chip'+(S.noteCategory===c.k?' on':'')+'" onclick="S.noteCategory=\\''+c.k+'\\';render()" style="border-radius:0">'+c.icon+' '+c.l+'</span>';
-      });
+      h+='<button style="background:var(--accent);color:#fff;border:none;border-radius:10px;padding:8px 18px;font:600 13px var(--sans);cursor:pointer" onclick="noteSelectCat(\\'personal\\')">+ New Note</button>';
       h+='</div>';
       var _filtNotes=S.notes;
-      if(S.noteCategory)_filtNotes=S.notes.filter(function(n){return n.category===S.noteCategory});
       if(_filtNotes.length){
         _filtNotes.forEach(function(n){
-          var catObj=NOTE_CATS.find(function(c){return c.k===n.category})||{l:'Note',icon:''};
           h+='<div class="note-card" onclick="noteOpen(\\''+n.id+'\\')">';
-          h+='<div class="note-card-cat">'+catObj.icon+' '+catObj.l+'</div>';
           h+='<div class="note-card-title">'+esc(n.title||'Untitled')+'</div>';
           if(n.content)h+='<div class="note-card-preview">'+esc(n.content.slice(0,120))+'</div>';
           h+='<div class="note-card-meta">';
@@ -15131,83 +15122,48 @@ else if(S.tab==='courses'){
     h+='</div>';
     h+='</div></div>'; // close lesson-fullpage-inner + lesson-fullpage
   } else {
-  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'games\\')">Games</button><button class="lst on" onclick="switchTab(\\'courses\\')">Learning</button></div>';
   if(!S.learnSection){
-    // Landing — 5 section cards with 3D tilt
-    h+='<div class="learn-hero">';
-    h+='<div class="learn-hero-bg"><div class="learn-orb learn-orb-1"></div><div class="learn-orb learn-orb-2"></div><div class="learn-orb learn-orb-3"></div></div>';
-    h+='<div class="learn-hero-txt">';
-    h+='<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#93A8F8;font-weight:700;margin-bottom:6px">\\u{1F680} Brodoit Academy</div>';
-    h+='<h2 style="font-family:var(--serif);font-size:28px;font-weight:400;line-height:1.15;margin:0;color:#E8E8F0">Learn anything.<br><span style="background:linear-gradient(90deg,#93A8F8,#9B9A97);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Master everything.</span></h2>';
-    h+='<p style="font-size:14px;color:rgba(255,255,255,.55);margin:8px 0 0;line-height:1.5">Story-driven courses with real examples, zero fluff.</p>';
-    h+='</div></div>';
-    // Animated SVG scenes for each card
-    var _scenes={};
-    _scenes.ai='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes pulse-n{0%,100%{r:5}50%{r:7}}@keyframes dash-flow{to{stroke-dashoffset:-20}}@keyframes float-node{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}.nn{fill:#fff;opacity:.9}.nn-line{stroke:#fff;stroke-width:1;opacity:.3;stroke-dasharray:4 3;animation:dash-flow 1.5s linear infinite}.nn-g{animation:float-node 3s ease-in-out infinite}</style></defs><rect width="320" height="140" fill="url(#ai-bg)" rx="12"/><defs><linearGradient id="ai-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#7C3AED"/></linearGradient></defs><g class="nn-g"><circle class="nn" cx="60" cy="40" r="5" style="animation:pulse-n 2s ease infinite .0s"/><circle class="nn" cx="60" cy="70" r="5" style="animation:pulse-n 2s ease infinite .3s"/><circle class="nn" cx="60" cy="100" r="5" style="animation:pulse-n 2s ease infinite .6s"/><circle class="nn" cx="140" cy="35" r="6" style="animation:pulse-n 2s ease infinite .2s"/><circle class="nn" cx="140" cy="65" r="6" style="animation:pulse-n 2s ease infinite .5s"/><circle class="nn" cx="140" cy="95" r="6" style="animation:pulse-n 2s ease infinite .8s"/><circle class="nn" cx="140" cy="115" r="5" style="animation:pulse-n 2s ease infinite .1s"/><circle class="nn" cx="220" cy="45" r="6" style="animation:pulse-n 2s ease infinite .4s"/><circle class="nn" cx="220" cy="75" r="6" style="animation:pulse-n 2s ease infinite .7s"/><circle class="nn" cx="220" cy="105" r="5" style="animation:pulse-n 2s ease infinite .9s"/><circle class="nn" cx="280" cy="60" r="7" style="animation:pulse-n 2s ease infinite .3s"/><circle class="nn" cx="280" cy="90" r="7" style="animation:pulse-n 2s ease infinite .6s"/></g><line class="nn-line" x1="60" y1="40" x2="140" y2="35"/><line class="nn-line" x1="60" y1="40" x2="140" y2="65"/><line class="nn-line" x1="60" y1="70" x2="140" y2="35"/><line class="nn-line" x1="60" y1="70" x2="140" y2="65"/><line class="nn-line" x1="60" y1="70" x2="140" y2="95"/><line class="nn-line" x1="60" y1="100" x2="140" y2="65"/><line class="nn-line" x1="60" y1="100" x2="140" y2="95"/><line class="nn-line" x1="60" y1="100" x2="140" y2="115"/><line class="nn-line" x1="140" y1="35" x2="220" y2="45"/><line class="nn-line" x1="140" y1="35" x2="220" y2="75"/><line class="nn-line" x1="140" y1="65" x2="220" y2="45"/><line class="nn-line" x1="140" y1="65" x2="220" y2="75"/><line class="nn-line" x1="140" y1="95" x2="220" y2="75"/><line class="nn-line" x1="140" y1="95" x2="220" y2="105"/><line class="nn-line" x1="140" y1="115" x2="220" y2="105"/><line class="nn-line" x1="220" y1="45" x2="280" y2="60"/><line class="nn-line" x1="220" y1="75" x2="280" y2="60"/><line class="nn-line" x1="220" y1="75" x2="280" y2="90"/><line class="nn-line" x1="220" y1="105" x2="280" y2="90"/><text x="58" y="25" fill="#fff" opacity=".5" font-size="8" font-family="var(--sans)">Input</text><text x="262" y="48" fill="#fff" opacity=".5" font-size="8" font-family="var(--sans)">Output</text></svg>';
-    _scenes.product='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes slide-card{0%{transform:translateY(8px);opacity:0}100%{transform:translateY(0);opacity:1}}.kb-col{fill:#fff;opacity:.1;rx:6}.kb-card{fill:#fff;rx:4;opacity:.85}.kb-t{fill:#fff;font-size:7px;font-family:var(--sans);font-weight:600;opacity:.6}</style><linearGradient id="pm-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0284C7"/><stop offset="100%" stop-color="#0891B2"/></linearGradient></defs><rect width="320" height="140" fill="url(#pm-bg)" rx="12"/><text class="kb-t" x="38" y="22">TO DO</text><text class="kb-t" x="128" y="22">IN PROGRESS</text><text class="kb-t" x="232" y="22">DONE</text><rect class="kb-col" x="20" y="28" width="80" height="104"/><rect class="kb-col" x="116" y="28" width="88" height="104"/><rect class="kb-col" x="220" y="28" width="80" height="104"/><rect class="kb-card" x="28" y="36" width="64" height="22" style="animation:slide-card .5s ease .1s both"/><rect x="32" y="40" width="30" height="3" rx="1.5" fill="#0284C7" opacity=".5"/><rect x="32" y="46" width="48" height="2" rx="1" fill="#333" opacity=".2"/><rect class="kb-card" x="28" y="64" width="64" height="22" style="animation:slide-card .5s ease .3s both"/><rect x="32" y="68" width="24" height="3" rx="1.5" fill="#F59E0B" opacity=".5"/><rect x="32" y="74" width="40" height="2" rx="1" fill="#333" opacity=".2"/><rect class="kb-card" x="28" y="92" width="64" height="22" style="animation:slide-card .5s ease .5s both"/><rect x="32" y="96" width="36" height="3" rx="1.5" fill="#EF4444" opacity=".5"/><rect x="32" y="102" width="44" height="2" rx="1" fill="#333" opacity=".2"/><rect class="kb-card" x="124" y="36" width="72" height="28" style="animation:slide-card .5s ease .2s both"/><rect x="128" y="40" width="34" height="3" rx="1.5" fill="#8B5CF6" opacity=".5"/><rect x="128" y="46" width="54" height="2" rx="1" fill="#333" opacity=".2"/><rect x="128" y="52" width="40" height="2" rx="1" fill="#333" opacity=".15"/><rect class="kb-card" x="124" y="70" width="72" height="22" style="animation:slide-card .5s ease .4s both"/><rect x="128" y="74" width="28" height="3" rx="1.5" fill="#10B981" opacity=".5"/><rect x="128" y="80" width="50" height="2" rx="1" fill="#333" opacity=".2"/><rect class="kb-card" x="228" y="36" width="64" height="22" style="animation:slide-card .5s ease .15s both"/><rect x="232" y="40" width="20" height="3" rx="1.5" fill="#10B981" opacity=".5"/><rect x="232" y="46" width="44" height="2" rx="1" fill="#333" opacity=".2"/><line x1="256" y1="42" x2="260" y2="46" stroke="#10B981" stroke-width="1.5" opacity=".6"/><line x1="260" y1="46" x2="268" y2="38" stroke="#10B981" stroke-width="1.5" opacity=".6"/><rect class="kb-card" x="228" y="64" width="64" height="22" style="animation:slide-card .5s ease .35s both"/><rect x="232" y="68" width="26" height="3" rx="1.5" fill="#10B981" opacity=".5"/><rect x="232" y="74" width="38" height="2" rx="1" fill="#333" opacity=".2"/></svg>';
-    _scenes.dev='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes type-line{from{width:0}to{width:100%}}.code-line{opacity:.8}</style><linearGradient id="dev-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#047857"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs><rect width="320" height="140" fill="url(#dev-bg)" rx="12"/><rect x="20" y="14" width="280" height="112" rx="8" fill="#1E293B" opacity=".85"/><circle cx="34" cy="26" r="4" fill="#EF4444" opacity=".7"/><circle cx="46" cy="26" r="4" fill="#F59E0B" opacity=".7"/><circle cx="58" cy="26" r="4" fill="#10B981" opacity=".7"/><text x="200" y="28" fill="#fff" opacity=".3" font-size="7" font-family="var(--mono)">server.js</text><g font-family="var(--mono)" font-size="8"><text x="30" y="48" fill="#9B9A97" class="code-line">const</text><text x="58" y="48" fill="#9B9A97" class="code-line"> app</text><text x="76" y="48" fill="#fff" opacity=".5" class="code-line"> = </text><text x="88" y="48" fill="#FCD34D" class="code-line">express</text><text x="130" y="48" fill="#fff" opacity=".5" class="code-line">()</text><text x="30" y="62" fill="#fff" opacity=".3" class="code-line">  </text><text x="30" y="76" fill="#9B9A97" class="code-line">app</text><text x="46" y="76" fill="#fff" opacity=".5" class="code-line">.</text><text x="50" y="76" fill="#FCD34D" class="code-line">get</text><text x="66" y="76" fill="#fff" opacity=".5" class="code-line">(</text><text x="70" y="76" fill="#86EFAC" class="code-line">\\'/api\\'</text><text x="108" y="76" fill="#fff" opacity=".5" class="code-line">, (</text><text x="118" y="76" fill="#FDA4AF" class="code-line">req, res</text><text x="156" y="76" fill="#fff" opacity=".5" class="code-line">) =></text><text x="176" y="76" fill="#fff" opacity=".5" class="code-line"> {</text><text x="40" y="90" fill="#FDA4AF" class="code-line">  res</text><text x="60" y="90" fill="#fff" opacity=".5" class="code-line">.</text><text x="64" y="90" fill="#FCD34D" class="code-line">json</text><text x="84" y="90" fill="#fff" opacity=".5" class="code-line">({ </text><text x="96" y="90" fill="#86EFAC" class="code-line">status: \\'ok\\'</text><text x="166" y="90" fill="#fff" opacity=".5" class="code-line"> })</text><text x="30" y="104" fill="#fff" opacity=".5" class="code-line">})</text><text x="30" y="118" fill="#9B9A97" class="code-line">app</text><text x="46" y="118" fill="#fff" opacity=".5" class="code-line">.</text><text x="50" y="118" fill="#FCD34D" class="code-line">listen</text><text x="82" y="118" fill="#fff" opacity=".5" class="code-line">(</text><text x="86" y="118" fill="#FDA4AF" class="code-line">3000</text><text x="110" y="118" fill="#fff" opacity=".5" class="code-line">)</text></g><rect x="86" y="41" width="1" height="10" fill="#fff" opacity=".7"><animate attributeName="opacity" values=".7;0;.7" dur="1s" repeatCount="indefinite"/></rect></svg>';
-    _scenes.confidence='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes wave-bar{0%,100%{height:8px}50%{height:var(--h)}}.eq-bar{fill:#fff;opacity:.7;rx:2}</style><linearGradient id="conf-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#37352F"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient></defs><rect width="320" height="140" fill="url(#conf-bg)" rx="12"/><circle cx="160" cy="52" r="22" fill="#fff" opacity=".15"/><circle cx="160" cy="44" r="8" fill="#fff" opacity=".8"/><rect x="150" y="55" width="20" height="16" rx="4" fill="#fff" opacity=".8"/><rect x="120" y="90" width="80" height="6" rx="3" fill="#fff" opacity=".2"/><rect x="100" y="100" width="120" height="4" rx="2" fill="#fff" opacity=".12"/><g transform="translate(40,80)">'
-    +'<rect class="eq-bar" x="0" y="20" width="4" style="--h:28px;animation:wave-bar 1.2s ease infinite 0s"/>'
-    +'<rect class="eq-bar" x="8" y="20" width="4" style="--h:40px;animation:wave-bar 1.2s ease infinite .15s"/>'
-    +'<rect class="eq-bar" x="16" y="20" width="4" style="--h:22px;animation:wave-bar 1.2s ease infinite .3s"/>'
-    +'<rect class="eq-bar" x="24" y="20" width="4" style="--h:35px;animation:wave-bar 1.2s ease infinite .45s"/>'
-    +'<rect class="eq-bar" x="32" y="20" width="4" style="--h:18px;animation:wave-bar 1.2s ease infinite .6s"/></g>'
-    +'<g transform="translate(244,80)">'
-    +'<rect class="eq-bar" x="0" y="20" width="4" style="--h:30px;animation:wave-bar 1.2s ease infinite .1s"/>'
-    +'<rect class="eq-bar" x="8" y="20" width="4" style="--h:20px;animation:wave-bar 1.2s ease infinite .25s"/>'
-    +'<rect class="eq-bar" x="16" y="20" width="4" style="--h:38px;animation:wave-bar 1.2s ease infinite .4s"/>'
-    +'<rect class="eq-bar" x="24" y="20" width="4" style="--h:25px;animation:wave-bar 1.2s ease infinite .55s"/>'
-    +'<rect class="eq-bar" x="32" y="20" width="4" style="--h:32px;animation:wave-bar 1.2s ease infinite .7s"/></g>'
-    +'<text x="160" y="130" fill="#fff" opacity=".4" font-size="9" font-family="var(--sans)" font-weight="600" text-anchor="middle">SPEAK WITH CONFIDENCE</text></svg>';
-    _scenes.personality='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><style>@keyframes orbit{to{transform:rotate(360deg)}}.p-node{fill:#fff;opacity:.8}.p-link{stroke:#fff;stroke-width:.8;opacity:.2}</style><linearGradient id="per-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#DB2777"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><rect width="320" height="140" fill="url(#per-bg)" rx="12"/><circle cx="160" cy="70" r="16" fill="#fff" opacity=".2"/><circle cx="160" cy="70" r="8" fill="#fff" opacity=".85"/><g style="transform-origin:160px 70px;animation:orbit 12s linear infinite"><circle class="p-node" cx="160" cy="26" r="5"/><line class="p-link" x1="160" y1="70" x2="160" y2="26"/></g><g style="transform-origin:160px 70px;animation:orbit 12s linear infinite reverse"><circle class="p-node" cx="210" cy="100" r="4"/><line class="p-link" x1="160" y1="70" x2="210" y2="100"/></g><g style="transform-origin:160px 70px;animation:orbit 18s linear infinite"><circle class="p-node" cx="100" cy="40" r="4"/><line class="p-link" x1="160" y1="70" x2="100" y2="40"/></g><g style="transform-origin:160px 70px;animation:orbit 15s linear infinite reverse"><circle class="p-node" cx="110" cy="110" r="5"/><line class="p-link" x1="160" y1="70" x2="110" y2="110"/></g><g style="transform-origin:160px 70px;animation:orbit 20s linear infinite"><circle class="p-node" cx="230" cy="45" r="3"/><line class="p-link" x1="160" y1="70" x2="230" y2="45"/></g><g style="transform-origin:160px 70px;animation:orbit 14s linear infinite reverse"><circle class="p-node" cx="70" cy="80" r="4"/><line class="p-link" x1="160" y1="70" x2="70" y2="80"/></g><g style="transform-origin:160px 70px;animation:orbit 16s linear infinite"><circle class="p-node" cx="250" cy="85" r="3.5"/><line class="p-link" x1="160" y1="70" x2="250" y2="85"/></g><text x="40" y="20" fill="#fff" opacity=".35" font-size="8" font-family="var(--sans)">Empathy</text><text x="240" y="130" fill="#fff" opacity=".35" font-size="8" font-family="var(--sans)">Leadership</text><text x="36" y="128" fill="#fff" opacity=".35" font-size="8" font-family="var(--sans)">EQ</text><text x="252" y="24" fill="#fff" opacity=".35" font-size="8" font-family="var(--sans)">Habits</text></svg>';
-    _scenes.python='<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="py-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#1D4ED8"/></linearGradient><style>@keyframes py-type{from{width:0}to{width:100%}}.py-kw{fill:#9B9A97}.py-fn{fill:#FCD34D}.py-str{fill:#86EFAC}.py-cm{fill:#64748B}</style></defs><rect width="320" height="140" fill="url(#py-bg)" rx="12"/><rect x="25" y="15" width="270" height="110" rx="8" fill="#1E293B" opacity=".9"/><circle cx="39" cy="27" r="4" fill="#EF4444" opacity=".7"/><circle cx="51" cy="27" r="4" fill="#F59E0B" opacity=".7"/><circle cx="63" cy="27" r="4" fill="#10B981" opacity=".7"/><text x="220" y="28" fill="#fff" opacity=".3" font-size="7" font-family="var(--mono)">main.py</text><g font-family="var(--mono)" font-size="8"><text x="35" y="48" class="py-kw">def</text><text x="53" y="48" class="py-fn"> greet</text><text x="85" y="48" fill="#fff" opacity=".5">(name):</text><text x="45" y="62" class="py-kw">  return</text><text x="85" y="62" fill="#fff" opacity=".5"> f</text><text x="93" y="62" class="py-str">"Hello, {name}!"</text><text x="35" y="82" class="py-cm"># Try it out</text><text x="35" y="96" fill="#fff" opacity=".7">result = </text><text x="87" y="96" class="py-fn">greet</text><text x="112" y="96" fill="#fff" opacity=".5">(</text><text x="116" y="96" class="py-str">"World"</text><text x="152" y="96" fill="#fff" opacity=".5">)</text><text x="35" y="110" class="py-fn">print</text><text x="56" y="110" fill="#fff" opacity=".5">(result)</text></g><rect x="56" y="41" width="1" height="10" fill="#fff" opacity=".7"><animate attributeName="opacity" values=".7;0;.7" dur="1s" repeatCount="indefinite"/></rect><text x="200" y="116" fill="#3B82F6" opacity=".3" font-size="28" font-family="var(--sans)" font-weight="900">\\u{1F40D}</text></svg>';
-    var _sections=[
-      {id:'ai',name:'AI & Machine Learning',desc:'From linear regression to GPT. Every algorithm, every concept.',color:'#6366F1',bg:'linear-gradient(135deg,#6366F1,#8B5CF6)',chapters:63,mins:'1000+',tag:'COMPREHENSIVE',scene:_scenes.ai},
-      {id:'python',name:'Python Programming',desc:'Complete Python from scratch. Write code, see output, master it.',color:'#3B82F6',bg:'linear-gradient(135deg,#3B82F6,#1D4ED8)',chapters:30,mins:'500+',tag:'INTERACTIVE',scene:_scenes.python},
-      {id:'product',name:'Product Management',desc:'AI-era PM: Claude workflows, Jira stories, design diagrams, real case studies.',color:'#0EA5E9',bg:'linear-gradient(135deg,#0EA5E9,#06B6D4)',chapters:30,mins:'400+',tag:'AI-POWERED',scene:_scenes.product},
-      {id:'dev',name:'Development',desc:'System design, DSA, clean code, DevOps, cloud.',color:'#10B981',bg:'linear-gradient(135deg,#10B981,#34D399)',chapters:40,mins:'600+',tag:'COMING SOON',scene:_scenes.dev},
-      {id:'confidence',name:'Confidence Building',desc:'Public speaking, negotiation, body language, mindset.',color:'#F59E0B',bg:'linear-gradient(135deg,#F59E0B,#FBBF24)',chapters:20,mins:'250+',tag:'COMING SOON',scene:_scenes.confidence},
-      {id:'personality',name:'Personality Development',desc:'Communication, emotional intelligence, leadership, habits.',color:'#EC4899',bg:'linear-gradient(135deg,#EC4899,#F472B6)',chapters:25,mins:'300+',tag:'COMING SOON',scene:_scenes.personality}
-    ];
-    h+='<div style="text-align:center;padding:4px 0 18px">';
-    h+='<div style="font:600 26px var(--serif);color:var(--ink)">Learning</div>';
-    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-top:4px">Choose your world to explore</div>';
-    h+='</div>';
-    h+='<div class="learn-worlds">';
-    _sections.forEach(function(s,i){
-      var isActive=s.id==='ai'||s.id==='python'||s.id==='product';
-      var _aDone=[];if(isActive){try{_aDone=JSON.parse(localStorage.getItem('atlas_done')||'[]')}catch(e){}}
-      var totalChs=s.id==='python'?30:s.id==='product'?30:63;
-      var pct=isActive?Math.round(_aDone.length/totalChs*100):0;
-      var emoji=s.id==='ai'?'\\u{1F9E0}':s.id==='python'?'\\u{1F40D}':s.id==='product'?'\\u{1F4CB}':s.id==='dev'?'\\u{1F4BB}':s.id==='confidence'?'\\u{1F3A4}':'\\u{1F31F}';
-      var worldName=s.id==='ai'?'Neural Nexus':s.id==='python'?'Code Canyon':s.id==='product'?'Strategy Summit':s.id==='dev'?'Dev Dungeon':s.id==='confidence'?'Speaker\\'s Arena':'Growth Galaxy';
-      // Immersive world card
-      h+='<button class="lw-card'+(isActive?'':' lw-locked')+'" onclick="'+(isActive?'_openSection(\\''+s.id+'\\')':'toast(\\'Coming soon!\\',\\'info\\')')+'" style="--lw-bg:'+s.bg+';--lw-color:'+s.color+'">';
-      // Animated scene background
-      h+='<div class="lw-scene">'+s.scene+'</div>';
-      // Gate overlay
-      h+='<div class="lw-gate">';
-      h+='<div class="lw-gate-arch"></div>';
-      h+='<div class="lw-emoji">'+emoji+'</div>';
-      h+='</div>';
-      // Content overlay
-      h+='<div class="lw-info">';
-      h+='<div class="lw-world-name">'+worldName+'</div>';
-      h+='<div class="lw-title">'+s.name+'</div>';
-      h+='<div class="lw-desc">'+s.desc+'</div>';
-      h+='<div class="lw-meta">';
-      h+='<span class="lw-tag'+(s.tag==='COMING SOON'?' lw-tag-soon':'')+'">'+s.tag+'</span>';
-      h+='<span class="lw-chapters">'+s.chapters+' chapters</span>';
-      h+='</div>';
-      if(isActive&&pct>0){
-        h+='<div class="lw-progress"><div class="lw-bar" style="width:'+pct+'%"></div></div>';
-        h+='<div class="lw-pct">'+pct+'% explored</div>';
-      }
-      h+='</div>';
-      // Enter button
-      h+='<div class="lw-enter">'+(isActive?'\\u{1F6AA} Enter World':'\\u{1F512} Locked')+'</div>';
-      h+='</button>';
-    });
+    // Landing — Light wisdom-style cards
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
+    h+='<button onclick="switchTab(\\'meditation\\')" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
+    h+='<div style="font:600 20px var(--sans);color:var(--ink)">\\u{1F4DA} Learning</div></div>';
+    h+='<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">';
+    // AI & Machine Learning
+    h+='<button class="ws-hero-card" onclick="_openSection(\\'ai\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#6366F1 10%,var(--paper)) 0%,color-mix(in srgb,#6366F1 18%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F9E0}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">AI & Machine Learning</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">63 chapters \\u00B7 From linear regression to GPT</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#6366F1">\\u2192</div></button>';
+    // Python Programming
+    h+='<button class="ws-hero-card" onclick="_openSection(\\'python\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#3B82F6 10%,var(--paper)) 0%,color-mix(in srgb,#3B82F6 18%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F40D}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Python Programming</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">30 chapters \\u00B7 Write code, see output, master it</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#3B82F6">\\u2192</div></button>';
+    // Product Management
+    h+='<button class="ws-hero-card" onclick="_openSection(\\'product\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#0EA5E9 10%,var(--paper)) 0%,color-mix(in srgb,#0EA5E9 18%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F4CB}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Product Management</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">30 chapters \\u00B7 AI-era PM with real case studies</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#0EA5E9">\\u2192</div></button>';
+    // Development (Coming soon)
+    h+='<button class="ws-hero-card" onclick="toast(\\'Coming soon!\\',\\'info\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#10B981 8%,var(--paper)) 0%,color-mix(in srgb,#10B981 14%,var(--surface)) 100%);opacity:.6">';
+    h+='<div class="ws-hero-emoji">\\u{1F4BB}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Development</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Coming soon \\u00B7 System design, DSA, clean code</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#10B981">\\u2192</div></button>';
+    // Confidence Building (Coming soon)
+    h+='<button class="ws-hero-card" onclick="toast(\\'Coming soon!\\',\\'info\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#F59E0B 8%,var(--paper)) 0%,color-mix(in srgb,#F59E0B 14%,var(--surface)) 100%);opacity:.6">';
+    h+='<div class="ws-hero-emoji">\\u{1F3A4}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Confidence Building</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Coming soon \\u00B7 Public speaking & mindset</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#F59E0B">\\u2192</div></button>';
+    // Personality Development (Coming soon)
+    h+='<button class="ws-hero-card" onclick="toast(\\'Coming soon!\\',\\'info\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#EC4899 8%,var(--paper)) 0%,color-mix(in srgb,#EC4899 14%,var(--surface)) 100%);opacity:.6">';
+    h+='<div class="ws-hero-emoji">\\u{1F31F}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Personality Development</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Coming soon \\u00B7 Communication & leadership</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#EC4899">\\u2192</div></button>';
     h+='</div>';
   } else if(S.learnSection==='ai'){
     // AI Section — full curriculum
@@ -15445,7 +15401,6 @@ else if(S.tab==='courses'){
 
 // GAMES TAB — Mind Games + Fun Games (Wisdom-style sections)
 else if(S.tab==='games'){
-  h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'games\\')">Games</button><button class="lst" onclick="switchTab(\\'courses\\')">Learning</button></div>';
   const mg=S.mg;
   const _mgSections=[
     {id:'maths',title:'Maths',desc:'Sharpen your numerical intelligence',
@@ -15476,48 +15431,58 @@ else if(S.tab==='games'){
     fun:'<svg viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="gs_f1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#16213e"/></linearGradient></defs><rect width="400" height="160" fill="url(#gs_f1)"/><rect x="30" y="20" width="50" height="50" rx="12" fill="none" stroke="rgba(255,107,53,.2)" stroke-width="1.5" transform="rotate(12 55 45)"/><rect x="280" y="15" width="60" height="60" rx="14" fill="none" stroke="rgba(255,107,53,.15)" stroke-width="1.5" transform="rotate(-8 310 45)"/><circle cx="180" cy="85" r="35" fill="none" stroke="rgba(255,215,0,.12)" stroke-width="1.2"/><circle cx="180" cy="85" r="20" fill="none" stroke="rgba(255,215,0,.08)" stroke-width="1"/><text x="170" y="92" font-family="sans-serif" font-size="24" fill="rgba(255,215,0,.25)">\\u265A</text><rect x="100" y="95" width="40" height="40" rx="8" fill="none" stroke="rgba(255,107,53,.18)" stroke-width="1.2" transform="rotate(20 120 115)"/><polygon points="330,100 345,130 315,130" fill="none" stroke="rgba(255,215,0,.15)" stroke-width="1.2"/><circle cx="60" cy="120" r="3" fill="rgba(255,107,53,.15)"/><circle cx="350" cy="40" r="2" fill="rgba(255,215,0,.12)"/><circle cx="240" cy="130" r="2.5" fill="rgba(255,107,53,.1)"/></svg>'
   };
 
+  var _allG=_mgSections.reduce(function(a,s){return a.concat(s.games)},[]);
   if(!S.mgSection){
-    // === LANDING PAGE — Wisdom-style sections ===
+    // === LANDING PAGE — Wisdom-style category cards ===
     var streak=mg.streak||{current:0,longest:0,total:0};
-    var _allG=_mgSections.reduce(function(a,s){return a.concat(s.games)},[]);
     var totalXp=_allG.reduce(function(s,g){return s+((mg.progress[g.k]||{}).xp||0)},0);
-    h+='<div style="font:800 28px var(--sans);color:var(--ink);letter-spacing:-.02em;margin-bottom:4px">Games</div>';
-    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-bottom:22px">Play, train & have fun \\u00B7 '+totalXp+' XP \\u00B7 '+streak.current+' day streak</div>';
-    // ── Section 1: Mind Games — hero + list ──
-    h+='<div class="gs-sec">';
-    h+='<div class="gs-hero">';
-    h+=_gsArt.mind;
-    h+='<div class="gs-hero-ov"></div>';
-    h+='<div class="gs-hero-body"><div class="gs-hero-emoji">\\u{1F9E0}</div><div class="gs-hero-title">Mind Games</div><div class="gs-hero-desc">Train your brain with cognitive challenges</div></div>';
-    h+='<div class="gs-hero-count">'+_allG.length+' games</div>';
+    h+='<div style="text-align:center;padding:8px 0 18px">';
+    h+='<div style="font:600 26px var(--serif);color:var(--ink)">Games</div>';
+    h+='<div style="font:400 14px var(--sans);color:var(--text-mute);margin-top:4px">Play, train & have fun</div>';
     h+='</div>';
+    h+='<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">';
+    // Mind Games card
+    h+='<button class="ws-hero-card" onclick="S.mgSection=\\'mind\\';render()" style="--wg:linear-gradient(135deg,color-mix(in srgb,#8B5CF6 12%,var(--paper)) 0%,color-mix(in srgb,#8B5CF6 22%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F9E0}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Mind Games</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Train your brain with cognitive challenges</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#8B5CF6">\\u2192</div></button>';
+    // Fun Games card
+    h+='<button class="ws-hero-card" onclick="S.mgSection=\\'fun\\';render()" style="--wg:linear-gradient(135deg,color-mix(in srgb,var(--accent) 12%,var(--paper)) 0%,color-mix(in srgb,var(--accent) 22%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F3AE}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Fun Games</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Classic arcade games to unwind</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:var(--accent)">\\u2192</div></button>';
+    h+='</div>';
+  } else if(S.mgSection==='mind'){
+    // Mind Games drill-down — list view
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
+    h+='<button onclick="S.mgSection=null;render();window.scrollTo(0,0)" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
+    h+='<div style="font:600 20px var(--sans);color:var(--ink)">\\u{1F9E0} Mind Games</div></div>';
     h+='<div class="gs-list">';
     _allG.forEach(function(g){
       var p=mg.progress[g.k]||{level:1,xp:0};
       h+='<div class="gs-item" onclick="mgDetailOpen(\\''+g.k+'\\')">';
-      h+='<div class="gs-icon" style="background:'+(g.bg||'#37352F')+'">'+g.emoji+'</div>';
+      h+='<div class="gs-icon" style="background:color-mix(in srgb,'+(g.bg||'#8B5CF6')+' 15%,var(--paper))"><span style="filter:none">'+g.emoji+'</span></div>';
       h+='<div class="gs-info"><div class="gs-name">'+g.n+'</div><div class="gs-desc">'+g.d+'</div></div>';
       h+='<div class="gs-right"><div class="gs-badge">Lv '+p.level+'</div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-mute)" stroke-width="2.2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>';
       h+='</div>';
     });
-    h+='</div></div>';
-    // ── Section 2: Fun Games — hero + list ──
-    h+='<div class="gs-sec">';
-    h+='<div class="gs-hero">';
-    h+=_gsArt.fun;
-    h+='<div class="gs-hero-ov"></div>';
-    h+='<div class="gs-hero-body"><div class="gs-hero-emoji">\\u{1F3AE}</div><div class="gs-hero-title">Fun Games</div><div class="gs-hero-desc">Classic arcade games to unwind</div></div>';
-    h+='<div class="gs-hero-count">'+_arcadeGames.length+' games</div>';
     h+='</div>';
+  } else if(S.mgSection==='fun'){
+    // Fun Games drill-down — list view
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
+    h+='<button onclick="S.mgSection=null;render();window.scrollTo(0,0)" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
+    h+='<div style="font:600 20px var(--sans);color:var(--ink)">\\u{1F3AE} Fun Games</div></div>';
     h+='<div class="gs-list">';
     _arcadeGames.forEach(function(g){
       h+='<div class="gs-item" onclick="arcadeOpen(\\''+g.id+'\\')">';
-      h+='<div class="gs-icon" style="background:'+g.bg+'">'+g.emoji+'</div>';
+      h+='<div class="gs-icon" style="background:color-mix(in srgb,'+g.bg+' 15%,var(--paper))"><span style="filter:none">'+g.emoji+'</span></div>';
       h+='<div class="gs-info"><div class="gs-name">'+g.name+'</div><div class="gs-desc">'+g.desc+'</div></div>';
       h+='<div class="gs-right"><div class="gs-badge">'+g.badge+'</div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-mute)" stroke-width="2.2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>';
       h+='</div>';
     });
-    h+='</div></div>';
+    h+='</div>';
   }else{
     // === SECTION DRILL-DOWN ===
     var sec=_mgSections.find(function(s){return s.id===S.mgSection});
@@ -15604,8 +15569,7 @@ else if(S.tab==='news'){
       h+='</div>';
       h+='</div>';
       h+='</div>';
-      h+='<span class="nf-card-counter">'+(idx+1)+'/'+_items.length+'</span>';
-      if(idx===0 && _items.length>1) h+='<div class="nf-swipe-hint">\\u2191 Swipe up for more</div>';
+      if(idx===0 && _items.length>1) h+='<div class="nf-swipe-hint">\\u2190 Swipe left for more</div>';
       h+='</div>';
     });
     h+='</div>';
@@ -16001,6 +15965,12 @@ else if(S.tab==='meditation'){
     h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Breathe</div>';
     h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Guided breathing with voice & visual</div></div>';
     h+='<div class="ws-hero-arrow" style="color:#7B8CDE">\\u2192</div></button>';
+    // Learning card
+    h+='<button class="ws-hero-card" onclick="switchTab(\\'courses\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#6366F1 12%,var(--paper)) 0%,color-mix(in srgb,#6366F1 22%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F4DA}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Learning</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">AI, Python, Product Management & more</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#6366F1">\\u2192</div></button>';
     if(S.showRainPicker){
       h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:-4px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:0">';
       [5,10,20,30,60].forEach(function(m){
@@ -17688,7 +17658,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v140";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v141";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
