@@ -9665,11 +9665,11 @@ titleLines.forEach(function(line,i){cx.fillText(line,40,titleY+i*52)});
 // Description
 var descY=titleY+titleLines.length*52+20;
 cx.fillStyle='#787774';cx.font='400 26px -apple-system,sans-serif';
-var descText=(item.desc||'').slice(0,200);
+var descText=(item.desc||'');
 var descLines=_wrapText(cx,descText,W-80,26*1.65);
-descLines.slice(0,5).forEach(function(line,i){cx.fillText(line,40,descY+i*42)});
+descLines.slice(0,9).forEach(function(line,i){cx.fillText(line,40,descY+i*42)});
 // Source + time
-var srcY=descY+Math.min(descLines.length,5)*42+30;
+var srcY=descY+Math.min(descLines.length,9)*42+30;
 cx.fillStyle='#9B9A97';cx.font='600 22px -apple-system,sans-serif';
 var ago=timeAgo(item.date);
 cx.fillText('BRODOIT NEWS \\u2022 '+ago,40,srcY);
@@ -17809,7 +17809,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v150";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v151";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
