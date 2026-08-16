@@ -2106,15 +2106,15 @@ FALLBACK_IMAGES.india=FALLBACK_IMAGES.world;FALLBACK_IMAGES.business=[UNSPLASH('
 const newsCache={};
 let newsLastFullRefresh=0;
 function stripXmlTags(s){return (s||'').replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/<[^>]+>/g,'').replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(+n)).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim()}
-// Inshorts-style: trim desc to ~60 words, end on complete sentence (fallback if AI rewrite fails)
+// Trim desc to ~120 words on sentence boundary (fallback if AI rewrite fails)
 function inshortsDesc(raw){
   if(!raw)return '';
   let d=raw.replace(/Read more.*$/i,'').replace(/Click here.*$/i,'').replace(/Subscribe.*$/i,'').replace(/\s*\.\.\.\s*$/,'').replace(/\s*…\s*$/,'').trim();
   const words=d.split(/\s+/);
-  if(words.length<=60)return d;
-  let cut=words.slice(0,60).join(' ');
+  if(words.length<=120)return d;
+  let cut=words.slice(0,120).join(' ');
   const lastDot=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
-  if(lastDot>cut.length*0.4)cut=cut.slice(0,lastDot+1);
+  if(lastDot>cut.length*0.3)cut=cut.slice(0,lastDot+1);
   else cut=cut.replace(/[,;:\s]+$/,'')+'.';
   return cut;
 }
@@ -2131,19 +2131,21 @@ async function aiRewriteNews(items,cat){
     rawDesc:(it.desc||'').slice(0,300),
     source:it.source||''
   }));
-  const sysPrompt=`You are Brodoit News — a modern news app like Inshorts. Your job is to rewrite news articles as original, concise summaries.
+  const sysPrompt=`You are Brodoit News — a modern news app. Your job is to rewrite news articles as original, detailed summaries that give the reader the FULL story without needing to go elsewhere.
 
 RULES:
-1. Each summary must be EXACTLY 55-65 words — no more, no less. Count carefully.
+1. Each summary must be 120-160 words (about 8-12 lines on mobile). This is critical — NOT short snippets.
 2. Write in clear, factual, neutral journalistic tone.
 3. Start with the most important fact (inverted pyramid style).
-4. Do NOT copy original text — rewrite completely in your own words.
-5. Include key numbers, names, and facts from the original.
-6. End with a complete sentence (period, not ellipsis).
-7. Do NOT add opinions, commentary, or speculation.
-8. Write as if Brodoit is reporting — say "reports suggest" or "according to sources" instead of naming original outlets.
+4. EXPAND on the story: include background context, key numbers, who said what, why it matters, and what happens next.
+5. Do NOT copy original text — rewrite completely in your own words.
+6. Include specific details: names, numbers, dates, locations, quotes (paraphrased).
+7. End with a forward-looking sentence about impact or next steps.
+8. Do NOT add opinions, commentary, or speculation.
+9. Write as if Brodoit is reporting — say "reports suggest" or "according to sources" instead of naming original outlets.
+10. Each summary should feel like a complete mini-article — the reader should feel fully informed after reading.
 
-Respond with a JSON array of objects: [{"id": 0, "title": "rewritten title", "summary": "rewritten 60-word summary"}, ...]
+Respond with a JSON array of objects: [{"id": 0, "title": "rewritten title", "summary": "rewritten 120-160 word summary"}, ...]
 Only output the JSON array, nothing else.`;
 
   try{
@@ -4481,13 +4483,13 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#C2690A,#F
 .nf-cat:not(.on):hover{color:var(--text-mute)}
 .nf-cards{height:calc(100vh - 170px);overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
 .nf-card{position:relative;background:var(--surface);border:none;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04);margin:0 0 2px;min-height:calc(100vh - 170px);scroll-snap-align:start;display:flex;flex-direction:column}
-.nf-card-img{display:block;width:100%;height:46vh;min-height:200px;flex-shrink:0;background-size:cover;background-position:center;background-color:#E8E4DE;position:relative;text-decoration:none}
+.nf-card-img{display:block;width:100%;height:28vh;min-height:160px;max-height:240px;flex-shrink:0;background-size:cover;background-position:center;background-color:#E8E4DE;position:relative;text-decoration:none}
 .nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.35) 100%);pointer-events:none}
 .nf-card-img-empty{background:linear-gradient(135deg,#667eea,#764ba2)}
 .nf-src-badge{position:absolute;top:12px;left:12px;z-index:1;background:rgba(0,0,0,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;padding:4px 10px;border-radius:4px;font:600 9.5px 'Inter',var(--sans);letter-spacing:.08em;text-transform:uppercase}
 .nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:18px 18px 16px}
 .nf-card-title{font:600 21px/1.35 'Newsreader',var(--serif);margin:0 0 10px;color:var(--ink);letter-spacing:-.015em}
-.nf-card-desc{font:400 14.5px/1.65 'Inter',var(--sans);color:var(--text-mute);margin:0 0 4px;letter-spacing:-.005em}
+.nf-card-desc{font:400 14.5px/1.75 'Inter',var(--sans);color:var(--text-mute);margin:0 0 8px;letter-spacing:-.005em}
 .nf-card-counter{position:absolute;top:12px;right:12px;font:500 10px 'Inter',var(--sans);letter-spacing:.05em;color:rgba(255,255,255,.85);background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:3px 8px;border-radius:4px;z-index:1}
 .nf-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
 .nf-card-time{font:400 12px 'Inter',var(--sans);color:var(--text-dim);letter-spacing:.01em}
@@ -4513,9 +4515,10 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#C2690A,#F
   .nf-sk-img{width:100%;min-height:120px}
 }
 @media(max-width:600px){
-  .nf-card-title{font-size:18px !important}
-  .nf-card-desc{font-size:14px}
-  .nf-card-body{padding:16px 14px 18px}
+  .nf-card-title{font-size:17px !important}
+  .nf-card-desc{font-size:13.5px;line-height:1.75}
+  .nf-card-body{padding:14px 14px 14px}
+  .nf-card-img{height:24vh;min-height:140px;max-height:200px}
 }
 /* Aurora theme */
 body[data-theme=aurora] .nf-card{background:rgba(26,26,44,.7);border-color:rgba(255,255,255,.08);backdrop-filter:blur(16px)}
@@ -17684,7 +17687,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v133";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v134";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
