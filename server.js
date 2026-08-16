@@ -9665,7 +9665,7 @@ titleLines.forEach(function(line,i){cx.fillText(line,40,titleY+i*52)});
 // Description
 var descY=titleY+titleLines.length*52+20;
 cx.fillStyle='#787774';cx.font='400 26px -apple-system,sans-serif';
-var descText=(item.desc||'');
+var descText=(item.desc||'').slice(0,300);
 var descLines=_wrapText(cx,descText,W-80,26*1.65);
 descLines.slice(0,9).forEach(function(line,i){cx.fillText(line,40,descY+i*42)});
 // Source + time
@@ -17809,7 +17809,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v151";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v152";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
