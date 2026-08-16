@@ -2100,6 +2100,7 @@ const FALLBACK_IMAGES={
   sports:[UNSPLASH('1461896836934-ffe607ba8211'),UNSPLASH('1517649763962-0c623066013b'),UNSPLASH('1556056504-5c7696c4c28d'),UNSPLASH('1431324155629-1a6deb1dec8d'),UNSPLASH('1574629810360-7efbbe195018'),UNSPLASH('1552674605-db6ffd4facb5')],
   world:[UNSPLASH('1506905925346-21bda4d32df4'),UNSPLASH('1469854523086-cc02fe5d8800'),UNSPLASH('1501785888041-af3ef285b470'),UNSPLASH('1502602898657-3e91760cbb34'),UNSPLASH('1480714378408-67cf0d13bc1b'),UNSPLASH('1564507592333-c60657eea523')]
 };
+FALLBACK_IMAGES.science=[UNSPLASH('1507413245164-6160d8298b31'),UNSPLASH('1532094349884-543bc11b234d'),UNSPLASH('1451187580459-43490279c0fa'),UNSPLASH('1628595351029-c2bf17511435'),UNSPLASH('1576086213369-97a306d36557'),UNSPLASH('1614935151651-0bea6508db6b')];
 FALLBACK_IMAGES.ai=FALLBACK_IMAGES.tech;FALLBACK_IMAGES.technology=FALLBACK_IMAGES.tech;FALLBACK_IMAGES.global=FALLBACK_IMAGES.world;FALLBACK_IMAGES.movies=FALLBACK_IMAGES.world;
 FALLBACK_IMAGES.india=FALLBACK_IMAGES.world;FALLBACK_IMAGES.business=[UNSPLASH('1611974789855-d63e38d0e2c7'),UNSPLASH('1507003211169-0a1dd7228f2d'),UNSPLASH('1460925895917-afdab827c52f'),UNSPLASH('1444653614773-995cb1ef9efa')];FALLBACK_IMAGES.entertainment=[UNSPLASH('1489599849927-2ee91cede3ba'),UNSPLASH('1485846234645-a62644f84728'),UNSPLASH('1478720568477-152d9b164e26'),UNSPLASH('1514306191717-452ec28c7814')];
 const newsCache={};
@@ -2110,8 +2111,8 @@ function inshortsDesc(raw){
   if(!raw)return '';
   let d=raw.replace(/Read more.*$/i,'').replace(/Click here.*$/i,'').replace(/Subscribe.*$/i,'').replace(/\s*\.\.\.\s*$/,'').replace(/\s*…\s*$/,'').trim();
   const words=d.split(/\s+/);
-  if(words.length<=150)return d;
-  let cut=words.slice(0,150).join(' ');
+  if(words.length<=200)return d;
+  let cut=words.slice(0,200).join(' ');
   const lastDot=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
   if(lastDot>cut.length*0.3)cut=cut.slice(0,lastDot+1);
   else cut=cut.replace(/[,;:\s]+$/,'')+'.';
@@ -2124,19 +2125,21 @@ async function aiRewriteNews(items,cat){
   if(!GEMINI_KEY||items.length===0)return items;
   // Process in smaller batches of 5 for reliability
   const batch=items.slice(0,15);
-  const sysPrompt=`You are Brodoit News — a modern news app. Rewrite each news article as a detailed, informative summary.
+  const sysPrompt=`You are Brodoit News — a respected modern news platform known for making complex stories accessible and interesting. Rewrite each news article as a compelling, detailed summary that a reader can understand without clicking through.
 
 RULES:
-1. Each summary must be 120-180 words (about 10 lines). This is critical.
-2. Write in clear, factual, neutral journalistic tone.
-3. Start with the most important fact (inverted pyramid).
-4. Include key details: who, what, where, when, why, and context.
-5. Add background and significance — help readers understand why it matters.
-6. Do NOT copy original text — rewrite completely in your own words.
-7. No opinions, commentary, or speculation.
-8. Write as if Brodoit is reporting.
+1. Each summary must be 150-220 words (about 12-15 lines). This is CRITICAL — short 2-line blurbs are NOT acceptable.
+2. Write in a clear, engaging journalistic style — like a skilled reporter telling you what happened over coffee.
+3. Open with the single most important fact — the headline brought to life.
+4. Include all key details: who, what, where, when, why, and how.
+5. Add 2-3 sentences of CONTEXT — background, history, or significance that helps readers understand WHY this matters.
+6. For political/conflict stories: include the stakes, key players, and what might happen next.
+7. For science/tech stories: explain the breakthrough in plain language and its real-world impact.
+8. Do NOT copy original text — rewrite completely in your own words.
+9. No opinions or speculation — but do explain implications factually.
+10. Make the title punchy and specific — avoid generic titles.
 
-Respond with a JSON array: [{"id": 0, "title": "rewritten title", "summary": "120-180 word summary"}, ...]
+Respond with a JSON array: [{"id": 0, "title": "punchy rewritten title", "summary": "150-220 word detailed summary"}, ...]
 Only output the JSON array, nothing else.`;
 
   // Process in smaller batches of 5 to stay within token limits
@@ -2218,16 +2221,18 @@ async function curateNewsCategory(cat){
     it.imgFree=true;
     fbIdx++;
   }
-  // Step 3: Clean source attribution — show "Brodoit" as the publisher
+  // Step 3: Clean source attribution — show "Brodoit" as the publisher + tag category
+  const catLabels={world:'World',india:'India',tech:'AI & Tech',science:'Science',business:'Business'};
   for(const it of dedup){
     it.originalSource=it.source; // keep for attribution
     it.source='Brodoit';
+    it.category=catLabels[cat]||cat;
   }
   newsCache[cat]={ts:Date.now(),items:dedup};
   return dedup;
 }
 // ── Scheduled news refresh — every 12 hours, pre-curate ALL categories ──
-const NEWS_CATS=['world','india','tech','business','sports','entertainment'];
+const NEWS_CATS=['world','india','tech','science','business'];
 async function refreshAllNews(){
   console.log('[NEWS] Starting scheduled news refresh for all categories...');
   const start=Date.now();
@@ -2242,7 +2247,7 @@ async function refreshAllNews(){
 }
 // Refresh on startup (after 10s to let server boot) then every 12 hours
 setTimeout(()=>refreshAllNews(),10000);
-setInterval(()=>refreshAllNews(),12*60*60*1000);
+setInterval(()=>refreshAllNews(),4*60*60*1000);
 // API endpoint — serves from cache, falls back to live fetch
 // Image proxy for share card canvas (avoids CORS)
 app.get('/api/img-proxy',async(req,res)=>{
@@ -2265,7 +2270,7 @@ app.get('/api/news',async(req,res)=>{
     let allItems=[];
     for(const c of NEWS_CATS){
       const cached=newsCache[c];
-      if(cached&&Date.now()-cached.ts<12*60*60*1000){
+      if(cached&&Date.now()-cached.ts<4*60*60*1000){
         allItems.push(...cached.items);
       }else{
         try{const items=await curateNewsCategory(c);allItems.push(...items)}catch(e){}
@@ -2283,11 +2288,11 @@ app.get('/api/news',async(req,res)=>{
   const feeds=NEWS_FEEDS[cat];
   if(!feeds)return res.json({items:[],cat});
   const c=newsCache[cat];
-  if(c&&Date.now()-c.ts<12*60*60*1000){
-    return res.json({items:c.items,cat,cached:true,refreshedAt:c.ts,nextRefresh:c.ts+12*60*60*1000});
+  if(c&&Date.now()-c.ts<4*60*60*1000){
+    return res.json({items:c.items,cat,cached:true,refreshedAt:c.ts,nextRefresh:c.ts+4*60*60*1000});
   }
   const items=await curateNewsCategory(cat);
-  res.json({items,cat,cached:false,refreshedAt:newsCache[cat]?.ts||Date.now(),nextRefresh:Date.now()+12*60*60*1000});
+  res.json({items,cat,cached:false,refreshedAt:newsCache[cat]?.ts||Date.now(),nextRefresh:Date.now()+4*60*60*1000});
 });
 // Manual refresh endpoint (for admin use) — clears cache so next fetch gets fresh AI-rewritten content
 app.post('/api/news/refresh',async(req,res)=>{
@@ -4511,25 +4516,30 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 
 /* ── News Feed — Inshorts clone ── */
 .nf-wrap{padding:0}
-.nf-cards{height:calc(100vh - 80px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:row}
+.nf-cards{height:calc(100vh - 80px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:row;scroll-behavior:smooth}
 .nf-card{position:relative;background:var(--surface);border:none;border-radius:0;overflow:hidden;box-shadow:none;margin:0;min-width:100%;max-width:100%;min-height:calc(100vh - 80px);scroll-snap-align:start;display:flex;flex-direction:column;flex-shrink:0}
-.nf-card-img{display:block;width:100%;height:45%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
-.nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.2) 100%);pointer-events:none}
+.nf-card-img{display:block;width:100%;height:38%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
+.nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.55) 100%);pointer-events:none}
 .nf-card-img-empty{background:linear-gradient(135deg,#667eea,#764ba2)}
-.nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:16px 18px 14px}
-.nf-card-title{font:700 18px/1.35 var(--sans);margin:0 0 6px;color:var(--ink);letter-spacing:-.02em}
-.nf-card-byline{font:400 12px/1 var(--sans);color:var(--text-dim);margin-bottom:10px;letter-spacing:.01em}
+.nf-card-cat{position:absolute;top:14px;left:14px;font:700 10px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent);padding:4px 10px;border-radius:4px;z-index:1}
+.nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:18px 20px 14px;overflow-y:auto}
+.nf-card-title{font:700 20px/1.3 var(--sans);margin:0 0 8px;color:var(--ink);letter-spacing:-.02em}
+.nf-card-byline{font:400 12px/1 var(--sans);color:var(--text-dim);margin-bottom:12px;letter-spacing:.01em}
 .nf-card-byline b{font-weight:700;color:var(--text-mute)}
-.nf-card-desc{font:400 14px/1.7 var(--sans);color:var(--text);margin:0 0 auto;letter-spacing:-.005em}
-.nf-card-counter{position:absolute;top:12px;right:12px;font:600 10px var(--sans);letter-spacing:.04em;color:rgba(255,255,255,.9);background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:3px 8px;border-radius:4px;z-index:1}
-.nf-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--line);margin-top:12px}
+.nf-card-desc{font:400 15px/1.75 var(--sans);color:var(--text);margin:0 0 auto;letter-spacing:-.005em}
+.nf-card-counter{position:absolute;top:14px;right:14px;font:600 11px var(--sans);letter-spacing:.04em;color:rgba(255,255,255,.95);background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:4px 10px;border-radius:4px;z-index:1}
+.nf-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--line);margin-top:auto;flex-shrink:0}
 .nf-card-source{font:400 12px var(--sans);color:var(--text-dim);letter-spacing:.01em}
 .nf-card-source b{font-weight:600;color:var(--text-mute)}
 .nf-card-actions{display:flex;align-items:center;gap:8px}
-.nf-share-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:transparent;border:1px solid var(--line);color:var(--text-mute);cursor:pointer;transition:all .2s}
-.nf-share-btn:hover{background:var(--bg-sunken);color:var(--ink)}
-.nf-share-btn:active{transform:scale(.92)}
-.nf-swipe-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font:500 12px var(--sans);color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:6px 16px;border-radius:20px;display:flex;align-items:center;gap:6px;animation:nf-swipe-bounce 2s ease-in-out infinite;pointer-events:none;z-index:2}
+.nf-share-btn{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--accent-soft);border:none;color:var(--accent);cursor:pointer;transition:all .2s}
+.nf-share-btn:active{transform:scale(.9)}
+.nf-dots{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:5px;z-index:10;background:rgba(0,0,0,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:6px 14px;border-radius:20px}
+.nf-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);transition:all .2s;flex-shrink:0}
+.nf-dot.on{background:#fff;width:18px;border-radius:3px}
+.nf-nav-arrow{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;cursor:pointer;font-size:14px;flex-shrink:0}
+.nf-nav-arrow:active{background:rgba(255,255,255,.3)}
+.nf-swipe-hint{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);font:500 13px var(--sans);color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:8px 18px;border-radius:20px;display:flex;align-items:center;gap:6px;animation:nf-swipe-bounce 2s ease-in-out infinite;pointer-events:none;z-index:2}
 @keyframes nf-swipe-bounce{0%,50%,100%{transform:translateX(-50%)}25%{transform:translateX(-60%)}}
 .nf-skeleton{display:flex;flex-direction:column;overflow:hidden;background:var(--surface);min-height:calc(100vh - 80px)}
 .nf-sk-img{width:100%;height:45%;min-height:200px;background:linear-gradient(90deg,var(--border) 25%,rgba(0,0,0,.03) 50%,var(--border) 75%);background-size:200% 100%;animation:sk-shimmer 1.5s ease infinite}
@@ -4538,17 +4548,17 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 .nf-sk-line.short{height:10px}
 @keyframes sk-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @media(max-width:600px){
-  .nf-card-title{font-size:17px !important}
-  .nf-card-desc{font-size:13.5px;line-height:1.7}
-  .nf-card-body{padding:14px 16px 12px}
-  .nf-card-img{height:24vh;min-height:140px;max-height:200px}
+  .nf-card-title{font-size:19px !important}
+  .nf-card-desc{font-size:14.5px;line-height:1.75}
+  .nf-card-body{padding:16px 18px 12px}
+  .nf-card-img{height:34%;min-height:180px;max-height:280px}
 }
 /* Aurora theme */
 body[data-theme=aurora] .nf-card{background:rgba(26,26,44,.7);border-color:rgba(255,255,255,.08);backdrop-filter:blur(16px)}
 body[data-theme=aurora] .nf-card:hover{border-color:rgba(55,53,47,.35)}
 body[data-theme=aurora] .nf-card-img-empty{background:linear-gradient(135deg,#3b3b6b,#5b4b8b)}
-body[data-theme=aurora] .nf-card-title a{color:#E8E8EC}
-body[data-theme=aurora] .nf-card-desc{color:#888}
+body[data-theme=aurora] .nf-card-title{color:#E8E8EC}
+body[data-theme=aurora] .nf-card-desc{color:#bbb}
 body[data-theme=aurora] .nf-card-footer{border-top-color:rgba(255,255,255,.06)}
 body[data-theme=aurora] .nf-cat{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#aaa}
 body[data-theme=aurora] .nf-cat:not(.on):hover{color:#37352F;border-color:#37352F}
@@ -9489,6 +9499,29 @@ async function loadKnowledge(topicK,secK){S.knowledge.topic=topicK;S.knowledge.s
 function switchKnowledgeTopic(k){S.knowledge.topic=k;const tObj=KNOWLEDGE_TOPICS.find(t=>t.k===k);const sk=(tObj&&tObj.sections[0]&&tObj.sections[0].k)||'today';loadKnowledge(k,sk)}
 async function loadNews(cat){cat=cat||'all';S.newsCat='all';S.newsLoading=true;render();try{const r=await fetch('/api/news?cat=all',{cache:'no-store'});const j=await r.json();S.news['all']=j.items||[];S.newsRefreshedAt=j.refreshedAt||Date.now()}catch(e){S.news['all']=[]}S.newsLoading=false;render()}
 function shareNews(idx){const item=(S.news['all']||[])[idx];if(!item)return;const url=item.link,title=item.title,text=(item.desc||'').slice(0,140);if(navigator.share){navigator.share({title,text,url}).catch(()=>{})}else{navigator.clipboard?.writeText(title+'\\n\\n'+url).then(()=>toast('\\u{1F517} Link copied')).catch(()=>toast('\\u26A0\\uFE0F Share unavailable','err'))}}
+// News scroll navigation
+function _nfNav(dir){
+  var c=document.getElementById('nfCards');if(!c)return;
+  var w=c.offsetWidth;
+  c.scrollBy({left:dir*w,behavior:'smooth'});
+}
+function _nfScrollUpdate(){
+  var c=document.getElementById('nfCards');var dots=document.getElementById('nfDots');
+  if(!c||!dots)return;
+  var idx=Math.round(c.scrollLeft/c.offsetWidth);
+  var dd=dots.querySelectorAll('.nf-dot');
+  dd.forEach(function(d,i){d.classList.toggle('on',i===idx)});
+  // Hide swipe hint after first scroll
+  var hint=c.querySelector('.nf-swipe-hint');if(hint&&idx>0)hint.style.display='none';
+}
+// Attach scroll listener after render
+(function(){
+  var _nfObs=new MutationObserver(function(){
+    var c=document.getElementById('nfCards');
+    if(c&&!c._nfBound){c._nfBound=true;c.addEventListener('scroll',_nfScrollUpdate,{passive:true})}
+  });
+  _nfObs.observe(document.body,{childList:true,subtree:true});
+})();
 function _shareNewsCard(idx){
 var item=(S.news['all']||[])[idx];if(!item)return;
 toast('\\u{1F4F8} Creating share card...');
@@ -9542,7 +9575,7 @@ cv.toBlob(function(blob){
   if(!blob){toast('\\u26A0\\uFE0F Could not create image','err');return}
   var file=new File([blob],'brodoit-news.png',{type:'image/png'});
   if(navigator.canShare&&navigator.canShare({files:[file]})){
-    navigator.share({files:[file],title:'Brodoit News',text:(item.title||'')+' \\u2014 Brodoit News'}).catch(function(){});
+    navigator.share({files:[file],title:'Brodoit News',text:(item.title||'')+' \\u2014 Read more on Brodoit News\\nhttps://brodoit.com'}).catch(function(){});
   }else{
     var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='brodoit-news.png';a.click();
     toast('\\u{2705} News card image saved!');
@@ -15524,37 +15557,48 @@ else if(S.tab==='news'){
     h+='<div style="font:400 13px var(--sans);margin-top:6px;opacity:.6">Fetching the latest stories</div>';
     h+='</div>';
   } else {
-    h+='<div class="nf-cards">';
+    h+='<div class="nf-cards" id="nfCards">';
     _items.forEach(function(it,idx){
       var ago=timeAgo(it.date);
       var imgUrl=it.img||'';
       var desc=(it.desc||'').replace(/<[^>]+>/g,'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
       var title=(it.title||'').replace(/<[^>]+>/g,'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
       var origSrc=(it.originalSource||'').charAt(0).toUpperCase()+(it.originalSource||'').slice(1);
+      var catLabel=(it.category||'news').toUpperCase();
       h+='<div class="nf-card">';
-      // Top half — image
+      // Category badge + counter on image
+      h+='<div class="nf-card-cat">'+catLabel+'</div>';
+      h+='<div class="nf-card-counter">'+(idx+1)+' / '+_items.length+'</div>';
+      // Top — image
       if(imgUrl){
         h+='<div class="nf-card-img" style="background-image:url(\\''+imgUrl.replace(/'/g,"\\\\'")+'\\')"></div>';
       } else {
         h+='<div class="nf-card-img nf-card-img-empty"></div>';
       }
-      // Bottom half — Inshorts style content
+      // Bottom — Inshorts style content
       h+='<div class="nf-card-body">';
       h+='<h3 class="nf-card-title">'+title+'</h3>';
-      // Byline: "short by Brodoit / time"
       h+='<div class="nf-card-byline"><b>short</b> by Brodoit / '+ago+'</div>';
       if(desc) h+='<p class="nf-card-desc">'+desc+'</p>';
       h+='<div class="nf-card-footer">';
       if(origSrc) h+='<span class="nf-card-source">read more at <b>'+origSrc+'</b></span>';
       h+='<div class="nf-card-actions">';
-      h+='<button class="nf-share-btn" onclick="event.stopPropagation();_shareNewsCard('+idx+')" title="Share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>';
+      h+='<button class="nf-share-btn" onclick="event.stopPropagation();_shareNewsCard('+idx+')" title="Share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>';
       h+='</div>';
       h+='</div>';
       h+='</div>';
-      if(idx===0 && _items.length>1) h+='<div class="nf-swipe-hint">\\u2190 Swipe left for more</div>';
+      if(idx===0 && _items.length>1) h+='<div class="nf-swipe-hint">\\u2190 Swipe for more news</div>';
       h+='</div>';
     });
     h+='</div>';
+    // Scroll dots navigation
+    if(_items.length>1){
+      h+='<div class="nf-dots" id="nfDots">';
+      h+='<button class="nf-nav-arrow" onclick="_nfNav(-1)">\\u2190</button>';
+      _items.forEach(function(_,i){h+='<span class="nf-dot'+(i===0?' on':'')+'"></span>';});
+      h+='<button class="nf-nav-arrow" onclick="_nfNav(1)">\\u2192</button>';
+      h+='</div>';
+    }
   }
   h+='</div>';
 }
@@ -17640,7 +17684,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v142";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v143";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
