@@ -2119,24 +2119,43 @@ function inshortsDesc(raw){
   else cut=cut.replace(/[,;:\s]+$/,'')+'.';
   return cut;
 }
-// Generate a meaningful fallback description when AI rewrite is unavailable
-function _fallbackNewsDesc(title,cat,source){
-  const t=(title||'').trim();if(!t)return 'Breaking news — details coming soon. Stay tuned to Brodoit News for comprehensive coverage.';
-  const src=source||'multiple sources';
-  const catCtx={
-    india:'across India, drawing attention from policymakers, analysts, and citizens alike',
-    world:'on the international stage, with observers from multiple countries weighing in on its significance',
-    tech:'in the technology sector, as industry leaders and experts assess the implications for innovation and digital transformation',
-    science:'in the scientific community, prompting researchers and institutions to examine its broader implications for the field',
-    business:'in business and financial circles, with market analysts and industry stakeholders closely monitoring developments'
-  };
-  const ctx=catCtx[cat]||catCtx.world;
-  return t+'. This significant development is making waves '+ctx+'. '+
-    'According to reports from '+src+', the story continues to unfold as new details emerge from official channels and on-the-ground correspondents. '+
-    'Experts familiar with the matter suggest this could have far-reaching consequences that extend well beyond the immediate situation. '+
-    'Multiple stakeholders have expressed their positions, adding depth to what is already a multi-layered story. '+
-    'The timeline of events leading up to this development provides important context for understanding the full picture. '+
-    'Brodoit News is actively tracking this story and will provide updated analysis as more information becomes available from verified sources.';
+// Fetch real article content + image from the source URL
+async function _fetchArticleMeta(url){
+  try{
+    const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),6000);
+    const r=await fetch(url,{signal:ctrl.signal,headers:{'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36','Accept':'text/html,application/xhtml+xml'}});
+    clearTimeout(t);if(!r.ok)return{desc:null,img:null};
+    const html=await r.text();
+    // Extract og:image
+    let img=null;
+    const imgPats=[/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/i,/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i];
+    for(const p of imgPats){const m=html.match(p);if(m&&m[1]){img=m[1].replace(/&amp;/g,'&');break;}}
+    // Extract og:description first
+    let desc=null;
+    const descPats=[/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']*?)["']/i,/<meta[^>]+content=["']([^"']*?)["'][^>]+property=["']og:description["']/i,/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*?)["']/i,/<meta[^>]+content=["']([^"']*?)["'][^>]+name=["']description["']/i];
+    for(const p of descPats){const m=html.match(p);if(m&&m[1]&&m[1].trim().length>30){desc=m[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();break;}}
+    // If og:description too short, extract <p> text from <article> body
+    if(!desc||desc.length<100){
+      const artMatch=html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+      const body=artMatch?artMatch[1]:html.slice(0,200000);
+      const paras=[];const pRe=/<p[^>]*>([\s\S]*?)<\/p>/gi;let pm;
+      while((pm=pRe.exec(body))!==null&&paras.length<12){
+        const txt=stripXmlTags(pm[1]).trim();
+        if(txt.length>30&&!/^(Share|Follow|Subscribe|Copyright|©|Tags|Also Read|ALSO READ|RELATED|Advert|Sign up|Download|Published|Updated|Written by|By\s)/i.test(txt)&&!/subscription|subscribe now|sign.?in to continue|create.?an? account|premium content|membership required|paywall|active subscription/i.test(txt)){
+          paras.push(txt);
+        }
+      }
+      if(paras.length>0){
+        let fullText=paras.join(' ');
+        const words=fullText.split(/\s+/);
+        if(words.length>220)fullText=words.slice(0,220).join(' ')+'.';
+        if(fullText.length>(desc||'').length)desc=fullText;
+      }
+    }
+    // Final paywall/junk detection — reject if desc looks like paywall text
+    if(desc&&/you don.?t have any|active subscription|subscribe to (read|continue)|sign.?in to (read|continue)|premium (story|content|article)|create.?a free account/i.test(desc))desc=null;
+    return{desc:desc||null,img:img||null};
+  }catch(e){return{desc:null,img:null}}
 }
 // ── AI News Rewriter — Brodoit's own journalism engine ──
 // Takes raw RSS items and rewrites them as original Inshorts-style summaries
@@ -2229,34 +2248,48 @@ async function curateNewsCategory(cat){
   all.sort((a,b)=>{const da=new Date(a.date||0).getTime()||0,db=new Date(b.date||0).getTime()||0;return db-da});
   const seen=new Set();const dedup=[];
   for(const it of all){const k=(it.title||'').toLowerCase().slice(0,60);if(seen.has(k))continue;seen.add(k);dedup.push(it);if(dedup.length>=20)break}
-  // Step 1: AI-rewrite all descriptions as original Brodoit journalism
+  // Step 1: AI-rewrite all descriptions as original journalism (needs GEMINI_API_KEY)
   await aiRewriteNews(dedup,cat);
-  // Step 2: Use ONLY copyright-free Unsplash images — never use og:image from news sites
+  // Step 2: For items with short/empty desc OR no image, fetch the real article page
+  const needsFetch=dedup.filter(it=>(!it.desc||it.desc.trim().split(/\s+/).length<40)||!it.img);
+  if(needsFetch.length>0){
+    console.log('[NEWS] Fetching '+needsFetch.length+' article pages for richer content in '+cat);
+    const fetchResults=await Promise.all(needsFetch.map(it=>_fetchArticleMeta(it.link)));
+    needsFetch.forEach((it,i)=>{
+      const meta=fetchResults[i];
+      if(meta.img&&!it.img)it.img=meta.img;
+      if(meta.desc&&(!it.desc||it.desc.trim().split(/\s+/).length<40)){
+        it.desc=inshortsDesc(meta.desc);
+      }
+    });
+  }
+  // Step 3: For items STILL without image, try og:image fetch (if not already done)
+  const noImg=dedup.filter(it=>!it.img);
+  if(noImg.length>0){
+    const ogResults=await Promise.all(noImg.map(it=>fetchOgImage(it.link)));
+    noImg.forEach((it,i)=>{if(ogResults[i])it.img=ogResults[i]});
+  }
+  // Last resort: gradient placeholder for items with truly no image (no random stock photos)
   const fb=FALLBACK_IMAGES[cat]||FALLBACK_IMAGES.world;
   let fbIdx=0;
-  for(const it of dedup){
-    // Always replace with Unsplash — original news images are copyrighted
-    it.img=fb[fbIdx%fb.length];
-    it.imgFree=true;
-    fbIdx++;
-  }
-  // Step 3: Clean source attribution — show "Brodoit" as the publisher + tag category
+  for(const it of dedup){if(!it.img){it.img=fb[fbIdx%fb.length];fbIdx++}}
+  // Step 4: Clean source attribution
   const catLabels={world:'World',india:'India',tech:'AI & Tech',science:'Science',business:'Business'};
   for(const it of dedup){
-    it.originalSource=it.source; // keep for attribution
+    it.originalSource=it.source;
     it.source='Brodoit';
     it.category=catLabels[cat]||cat;
   }
-  // Step 4: CRITICAL — ensure NO item has empty description (catch-all safeguard)
+  // Step 5: Final safeguard — no empty descriptions ever
   let emptyCount=0;
   for(const it of dedup){
-    if(!it.desc||it.desc.trim().length<50){
-      it.desc=_fallbackNewsDesc(it.title,cat,it.originalSource);
+    if(!it.desc||it.desc.trim().length<20){
+      it.desc=it.title+'. Full story developing — reported by '+(it.originalSource||'news agencies')+'.';
       emptyCount++;
     }
   }
-  if(emptyCount>0)console.log('[NEWS] Generated fallback descriptions for '+emptyCount+' items in '+cat);
-  console.log('[NEWS] Curated '+dedup.length+' items for '+cat+' ('+dedup.filter(x=>x.aiRewritten).length+' AI-rewritten, '+emptyCount+' fallback)');
+  if(emptyCount>0)console.log('[NEWS] '+emptyCount+' items still had no content after article fetch in '+cat);
+  console.log('[NEWS] Curated '+dedup.length+' items for '+cat+' ('+dedup.filter(x=>x.aiRewritten).length+' AI, '+needsFetch.length+' fetched, '+emptyCount+' minimal)');
   newsCache[cat]={ts:Date.now(),items:dedup};
   return dedup;
 }
@@ -4558,8 +4591,9 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 .nf-card-desc{font:400 15px/1.75 var(--sans);color:var(--text);margin:0 0 auto;letter-spacing:-.005em}
 .nf-card-counter{position:absolute;top:14px;right:14px;font:600 11px var(--sans);letter-spacing:.04em;color:rgba(255,255,255,.95);background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:4px 10px;border-radius:4px;z-index:1}
 .nf-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--line);margin-top:auto;flex-shrink:0}
-.nf-card-source{font:400 12px var(--sans);color:var(--text-dim);letter-spacing:.01em}
-.nf-card-source b{font-weight:600;color:var(--text-mute)}
+.nf-card-source{font:400 12px var(--sans);color:var(--text-dim);letter-spacing:.01em;text-decoration:none}
+.nf-card-source b{font-weight:600;color:var(--accent)}
+a.nf-card-source:active{opacity:.7}
 .nf-card-actions{display:flex;align-items:center;gap:8px}
 .nf-share-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:0 16px;height:36px;border-radius:20px;background:var(--accent);border:none;color:#fff;cursor:pointer;transition:all .2s;font:600 13px var(--sans);letter-spacing:.01em}
 .nf-share-btn:active{transform:scale(.95);opacity:.85}
@@ -15610,7 +15644,9 @@ else if(S.tab==='news'){
       h+='<div class="nf-card-byline"><b>short</b> by Brodoit / '+ago+'</div>';
       if(desc) h+='<p class="nf-card-desc">'+desc+'</p>';
       h+='<div class="nf-card-footer">';
-      if(origSrc) h+='<span class="nf-card-source">read more at <b>'+origSrc+'</b></span>';
+      var articleLink=(it.link||'').replace(/'/g,"\\'");
+      if(origSrc&&articleLink) h+='<a class="nf-card-source" href="'+articleLink+'" target="_blank" rel="noopener">read more at <b>'+origSrc+'</b> \\u2192</a>';
+      else if(origSrc) h+='<span class="nf-card-source">'+origSrc+'</span>';
       h+='<div class="nf-card-actions">';
       h+='<button class="nf-share-btn" onclick="event.stopPropagation();_shareNewsCard('+idx+')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>';
       h+='</div>';
@@ -17713,7 +17749,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v144";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v145";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
