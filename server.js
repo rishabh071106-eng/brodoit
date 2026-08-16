@@ -2131,7 +2131,7 @@ async function _fetchArticleMeta(url){
     const imgPats=[/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/i,/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i];
     for(const p of imgPats){const m=html.match(p);if(m&&m[1]){img=m[1].replace(/&amp;/g,'&');break;}}
     // Extract full article text from <p> tags — aggressive extraction for 10+ lines
-    const junkRe=/^(Share|Follow|Subscribe|Copyright|©|Tags|Also Read|ALSO READ|RELATED|Advert|Sign up|Download|Published|Updated|Written by|By\s|Photo:|Image:|Video:|READ MORE|WATCH|Click here|Tap to|Get app|Install)/i;
+    const junkRe=/^(Share|Follow|Subscribe|Copyright|©|Tags|Also Read|ALSO READ|RELATED|Advert|Sign up|Download|Published|Updated|Written by|By\s|Photo:|Image:|Video:|READ MORE|WATCH|Click here|Tap to|Get app|Install|AI Quick Read|Screengrab|Listen to this)/i;
     const paywallRe=/subscription|subscribe now|sign.?in to continue|create.?an? account|premium content|membership required|paywall|active subscription|you don.?t have any/i;
     // Try multiple content selectors — article first, then main, then full body
     let bestText='';
@@ -2165,6 +2165,16 @@ async function _fetchArticleMeta(url){
     for(const p of descPats){const m=html.match(p);if(m&&m[1]&&m[1].trim().length>20){ogDesc=m[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();break;}}
     // Use the longer of article text vs og:description
     let desc=bestText.length>ogDesc.length?bestText:ogDesc;
+    // Clean scraped junk prefixes (BBC "Image source, Image caption," etc.)
+    if(desc){
+      desc=desc.replace(/^(Image source,?\s*)/i,'').replace(/^(Image caption,?\s*)/i,'')
+        .replace(/^(Getty Images,?\s*)/i,'').replace(/^(Reuters,?\s*)/i,'')
+        .replace(/^(AFP,?\s*)/i,'').replace(/^(AP Photo[^,]*,?\s*)/i,'')
+        .replace(/Image source,?\s*/gi,'').replace(/Image caption,?\s*/gi,'')
+        .replace(/\(Screengrab\/[^)]*\)\s*/gi,'').replace(/AI Quick Read\s*/gi,'')
+        .replace(/Listen to this article\s*/gi,'').replace(/\(File\s*(Photo|Pic)[^)]*\)\s*/gi,'')
+        .replace(/\s{2,}/g,' ').trim();
+    }
     // Trim to 250 words max
     if(desc){
       const words=desc.split(/\s+/);
@@ -2228,7 +2238,8 @@ Only output the JSON array, nothing else.`;
   return items;
 }
 function parseRSS(xml,sourceUrl){
-  const items=[];let host='';try{host=new URL(sourceUrl).hostname.replace(/^www\./,'').split('.')[0]}catch(e){}
+  const _srcNames={bbci:'BBC',bbc:'BBC',reuters:'Reuters',nytimes:'NYT',techcrunch:'TechCrunch',theverge:'The Verge',venturebeat:'VentureBeat',ndtv:'NDTV',thehindu:'The Hindu',livemint:'Mint',indianexpress:'Indian Express',phys:'Phys.org',nature:'Nature',newscientist:'New Scientist',wired:'Wired',npr:'NPR',technologyreview:'MIT Tech Review'};
+  const items=[];let host='';try{const hn=new URL(sourceUrl).hostname.replace(/^www\./,'');const parts=hn.split('.');const raw=parts[0]==='feeds'||parts[0]==='rss'?parts.slice(1,-1).join('.'):parts.slice(0,-1).join('.');const k=raw||parts[0];host=_srcNames[k]||_srcNames[k.split('.')[0]]||k}catch(e){}
   const isAtom=xml.includes('<entry');
   const re=isAtom?/<entry[^>]*>([\s\S]*?)<\/entry>/gi:/<item[^>]*>([\s\S]*?)<\/item>/gi;
   let m;
@@ -2268,8 +2279,8 @@ async function curateNewsCategory(cat){
   for(const it of all){const k=(it.title||'').toLowerCase().slice(0,60);if(seen.has(k))continue;seen.add(k);dedup.push(it);if(dedup.length>=20)break}
   // Step 1: AI-rewrite all descriptions as original journalism (needs GEMINI_API_KEY)
   await aiRewriteNews(dedup,cat);
-  // Step 2: Fetch EVERY article page for real content + images (min 120 words = 10 lines)
-  const MIN_WORDS=120;
+  // Step 2: Fetch EVERY article page for real content + images (exactly 9 lines ≈ 80-100 words)
+  const MIN_WORDS=80;const MAX_WORDS=100;
   const needsFetch=dedup.filter(it=>(!it.desc||it.desc.trim().split(/\s+/).length<MIN_WORDS)||!it.img);
   if(needsFetch.length>0){
     console.log('[NEWS] Fetching '+needsFetch.length+' articles for 10+ line content in '+cat);
@@ -2296,33 +2307,37 @@ async function curateNewsCategory(cat){
     it.source='Brodoit';
     it.category=catLabels[cat]||cat;
   }
-  // Step 5: ENFORCE minimum 120 words (10 lines) — pad short descriptions with context
+  // Step 5: ENFORCE exactly 9 lines ≈ 80-100 words — pad short, trim long
   let shortCount=0;
   for(const it of dedup){
-    const words=(it.desc||'').trim().split(/\s+/);
-    if(words.length<MIN_WORDS&&words[0]){
-      // Pad with real contextual expansion based on the existing content
+    let words=(it.desc||'').trim().split(/\s+/).filter(Boolean);
+    // Pad if too short
+    if(words.length<MIN_WORDS){
       const src=it.originalSource||'news agencies';
-      const existing=it.desc||it.title;
+      const existing=(it.desc||it.title||'').trim();
       const padding=[
-        'This development has been reported by '+src+' and is drawing significant attention from multiple quarters.',
-        'The situation continues to evolve as new information emerges from official sources and correspondents on the ground.',
-        'Analysts following the story note that the implications could extend well beyond the immediate context, affecting policy decisions and public discourse in the days ahead.',
-        'Several key stakeholders have weighed in on the matter, offering perspectives that add important nuance to the unfolding narrative.',
-        'Historical precedents suggest that developments of this nature often lead to broader shifts in the landscape, making this a story worth following closely.',
-        'Observers point out that the timing of this development is particularly significant, coming as it does amid a period of heightened activity in the sector.',
-        'Further updates are expected as the story develops and more details become available from primary sources.'
+        'This development has been reported by '+src+' and is drawing significant attention.',
+        'The situation continues to evolve as new details emerge from official sources.',
+        'Analysts note the implications could extend well beyond the immediate context.',
+        'Several key stakeholders have weighed in, adding important nuance to the story.',
+        'Observers say the timing of this development is particularly significant.',
+        'Further updates are expected as more details become available from primary sources.',
+        'The broader impact of this story is still being assessed by experts in the field.'
       ];
-      let padded=existing;
-      let pi=0;
-      while(padded.split(/\s+/).length<MIN_WORDS&&pi<padding.length){
-        padded+=' '+padding[pi];pi++;
-      }
-      it.desc=padded;
+      let padded=existing;let pi=0;
+      while(padded.split(/\s+/).length<MIN_WORDS&&pi<padding.length){padded+=' '+padding[pi];pi++}
+      words=padded.split(/\s+/);
       shortCount++;
-    }else if(!it.desc||!it.desc.trim()){
-      it.desc=it.title+'. This is a developing story reported by '+(it.originalSource||'news agencies')+'. Further details are being compiled from multiple verified sources. Analysts and experts are assessing the implications of this development. The story has drawn attention from observers across multiple sectors. Additional context and background information will be provided as more details emerge from official channels and on-the-ground reporting. This is a story that merits close attention given its potential impact on the broader landscape.';
-      shortCount++;
+    }
+    // Trim to MAX_WORDS on sentence boundary
+    if(words.length>MAX_WORDS){
+      let cut=words.slice(0,MAX_WORDS).join(' ');
+      const lastDot=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
+      if(lastDot>cut.length*0.5)cut=cut.slice(0,lastDot+1);
+      else cut=cut.replace(/[,;:\s]+$/,'')+'.';
+      it.desc=cut;
+    }else{
+      it.desc=words.join(' ');
     }
   }
   const avgW=Math.round(dedup.reduce((s,it)=>s+(it.desc||'').split(/\s+/).length,0)/Math.max(dedup.length,1));
@@ -4615,19 +4630,19 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 
 /* ── News Feed — Inshorts clone ── */
 .nf-wrap{padding:0}
-.nf-cards{height:calc(100vh - 80px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:row;scroll-behavior:smooth}
-.nf-card{position:relative;background:var(--surface);border:none;border-radius:0;overflow:hidden;box-shadow:none;margin:0;min-width:100%;max-width:100%;min-height:calc(100vh - 80px);scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;flex-shrink:0}
-.nf-card-img{display:block;width:100%;height:38%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
-.nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.55) 100%);pointer-events:none}
+.nf-cards{height:calc(100dvh - 200px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:row;scroll-behavior:smooth}
+.nf-card{position:relative;background:var(--surface);border:none;border-radius:0;overflow:hidden;box-shadow:none;margin:0;min-width:100%;max-width:100%;height:calc(100dvh - 200px);scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;flex-shrink:0}
+.nf-card-img{display:block;width:100%;height:32%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
+.nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.45) 100%);pointer-events:none}
 .nf-card-img-empty{background:linear-gradient(135deg,#667eea,#764ba2)}
 .nf-card-cat{position:absolute;top:14px;left:14px;font:700 10px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent);padding:4px 10px;border-radius:4px;z-index:1}
-.nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:18px 20px 14px;overflow-y:auto}
-.nf-card-title{font:700 20px/1.3 var(--sans);margin:0 0 8px;color:var(--ink);letter-spacing:-.02em}
-.nf-card-byline{font:400 12px/1 var(--sans);color:var(--text-dim);margin-bottom:12px;letter-spacing:.01em}
+.nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:14px 18px 10px;overflow:hidden;gap:0}
+.nf-card-title{font:700 18px/1.25 var(--sans);margin:0 0 4px;color:var(--ink);letter-spacing:-.02em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nf-card-byline{font:400 11px/1 var(--sans);color:var(--text-dim);margin-bottom:8px;letter-spacing:.01em}
 .nf-card-byline b{font-weight:700;color:var(--text-mute)}
-.nf-card-desc{font:400 15px/1.75 var(--sans);color:var(--text);margin:0 0 auto;letter-spacing:-.005em}
+.nf-card-desc{font:400 13.5px/1.7 var(--sans);color:var(--text);margin:0;letter-spacing:-.005em;display:-webkit-box;-webkit-line-clamp:9;-webkit-box-orient:vertical;overflow:hidden}
 .nf-card-counter{position:absolute;top:14px;right:14px;font:600 11px var(--sans);letter-spacing:.04em;color:rgba(255,255,255,.95);background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:4px 10px;border-radius:4px;z-index:1}
-.nf-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--line);margin-top:auto;flex-shrink:0}
+.nf-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--line);margin-top:10px;flex-shrink:0}
 .nf-card-source{font:400 12px var(--sans);color:var(--text-dim);letter-spacing:.01em;text-decoration:none}
 .nf-card-source b{font-weight:600;color:var(--accent)}
 a.nf-card-source:active{opacity:.7}
@@ -4641,17 +4656,19 @@ a.nf-card-source:active{opacity:.7}
 .nf-nav-arrow:active{background:rgba(255,255,255,.3)}
 .nf-swipe-hint{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);font:500 13px var(--sans);color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:8px 18px;border-radius:20px;display:flex;align-items:center;gap:6px;animation:nf-swipe-bounce 2s ease-in-out infinite;pointer-events:none;z-index:2}
 @keyframes nf-swipe-bounce{0%,50%,100%{transform:translateX(-50%)}25%{transform:translateX(-60%)}}
-.nf-skeleton{display:flex;flex-direction:column;overflow:hidden;background:var(--surface);min-height:calc(100vh - 80px)}
+.nf-skeleton{display:flex;flex-direction:column;overflow:hidden;background:var(--surface);min-height:calc(100dvh - 200px)}
 .nf-sk-img{width:100%;height:45%;min-height:200px;background:linear-gradient(90deg,var(--border) 25%,rgba(0,0,0,.03) 50%,var(--border) 75%);background-size:200% 100%;animation:sk-shimmer 1.5s ease infinite}
 .nf-sk-body{flex:1;padding:20px;display:flex;flex-direction:column;gap:10px;justify-content:center}
 .nf-sk-line{height:12px;border-radius:4px;background:linear-gradient(90deg,var(--border) 25%,rgba(0,0,0,.03) 50%,var(--border) 75%);background-size:200% 100%;animation:sk-shimmer 1.5s ease infinite}
 .nf-sk-line.short{height:10px}
 @keyframes sk-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @media(max-width:600px){
-  .nf-card-title{font-size:19px !important}
-  .nf-card-desc{font-size:14.5px;line-height:1.75}
-  .nf-card-body{padding:16px 18px 12px}
-  .nf-card-img{height:34%;min-height:180px;max-height:280px}
+  .nf-card-title{font-size:17px !important;-webkit-line-clamp:2}
+  .nf-card-desc{font-size:13px;line-height:1.65;-webkit-line-clamp:9}
+  .nf-card-body{padding:12px 16px 8px}
+  .nf-card-img{height:30%;min-height:160px;max-height:240px}
+  .nf-card-footer{padding-top:6px}
+  .nf-card-byline{margin-bottom:6px}
 }
 /* Aurora theme */
 body[data-theme=aurora] .nf-card{background:rgba(26,26,44,.7);border-color:rgba(255,255,255,.08);backdrop-filter:blur(16px)}
@@ -14215,6 +14232,9 @@ function renderPassive(){
   // Skip passive re-renders entirely while user is on the Bro tab — rebuilding
   // innerHTML destroys the textarea, causing flicker and losing cursor position.
   if(S.tab==='bro')return;
+  // Skip passive re-renders on the News tab — rebuilding innerHTML resets
+  // the horizontal scroll position, causing cards to jump back to the first one.
+  if(S.tab==='news')return;
   // Skip passive re-renders while in a lesson — rebuilding innerHTML destroys
   // code playground output and textarea edits.
   if(S.lessonId)return;
@@ -14245,12 +14265,14 @@ if(S.meditating&&S.meditating.active&&document.querySelector('.med-scene')&&!S._
 const _sy=window.scrollY||window.pageYOffset||0;
 const _sx=window.scrollX||window.pageXOffset||0;
 const _broScroll=(function(){const c=document.getElementById('broChat');return c?c.scrollTop:null})();
+const _nfScroll=(function(){const c=document.getElementById('nfCards');return c?c.scrollLeft:null})();
 // Preserve focus + cursor across re-renders so typing isn't interrupted
 const _fs=(function(){try{const a=document.activeElement;if(!a||(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'))return null;return{id:a.id,name:a.name,type:a.type,placeholder:a.placeholder,start:a.selectionStart,end:a.selectionEnd}}catch(e){return null}})();
 const _restore=function(){
   // Skip restoration if caller explicitly wants top (switchTab, modal close, etc.)
   if(!S._suppressScrollRestore&&(_sy||_sx)){try{window.scrollTo(_sx,_sy)}catch(e){}}
   if(_broScroll!==null){const bc=document.getElementById('broChat');if(bc)bc.scrollTop=_broScroll}
+  if(_nfScroll!==null&&_nfScroll>0){const nc=document.getElementById('nfCards');if(nc){nc.style.scrollBehavior='auto';nc.scrollLeft=_nfScroll;nc.style.scrollBehavior='smooth';_nfScrollUpdate()}}
   if(!_fs)return;
   try{let el=null;if(_fs.id)el=document.getElementById(_fs.id);if(!el){const inputs=document.querySelectorAll('input,textarea');for(const i of inputs){if((_fs.placeholder&&i.placeholder===_fs.placeholder)||(_fs.name&&i.name===_fs.name)){el=i;break}}}if(el){try{el.focus({preventScroll:true})}catch(e){el.focus()}if(typeof _fs.start==='number'&&el.setSelectionRange){try{el.setSelectionRange(_fs.start,_fs.end)}catch(e){}}}}catch(e){}
 };
@@ -15666,9 +15688,8 @@ else if(S.tab==='news'){
       var origSrc=(it.originalSource||'').charAt(0).toUpperCase()+(it.originalSource||'').slice(1);
       var catLabel=(it.category||'news').toUpperCase();
       h+='<div class="nf-card">';
-      // Category badge + counter on image
+      // Category badge on image
       h+='<div class="nf-card-cat">'+catLabel+'</div>';
-      h+='<div class="nf-card-counter">'+(idx+1)+' / '+_items.length+'</div>';
       // Top — image
       if(imgUrl){
         h+='<div class="nf-card-img" style="background-image:url(\\''+imgUrl.replace(/'/g,"\\\\'")+'\\')"></div>';
@@ -17786,7 +17807,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v147";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v148";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
