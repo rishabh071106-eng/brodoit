@@ -2183,7 +2183,10 @@ function parseRSS(xml,sourceUrl){
     const getAttr=(tag,attr)=>{const r=block.match(new RegExp('<'+tag+'[^>]*\\s'+attr+'=["\']([^"\']+)["\']','i'));return r?r[1]:''};
     const title=getTag('title');
     let link=getTag('link');if(!link)link=getAttr('link','href');
-    const rawDesc=getTag('description')||getTag('summary')||getTag('content:encoded')||getTag('content');
+    // Prefer the LONGEST content source — content:encoded has full article text, description is usually a blurb
+    const _desc=getTag('description'),_summary=getTag('summary'),_encoded=getTag('content:encoded'),_content=getTag('content');
+    const _candidates=[_encoded,_content,_desc,_summary].filter(Boolean);
+    const rawDesc=_candidates.sort((a,b)=>b.length-a.length)[0]||'';
     const desc=inshortsDesc(rawDesc);
     const date=getTag('pubDate')||getTag('published')||getTag('updated')||getTag('dc:date');
     let img=getAttr('media:content','url')||getAttr('media:thumbnail','url')||getAttr('enclosure','url');
@@ -2274,10 +2277,12 @@ app.get('/api/news',async(req,res)=>{
   const items=await curateNewsCategory(cat);
   res.json({items,cat,cached:false,refreshedAt:newsCache[cat]?.ts||Date.now(),nextRefresh:Date.now()+12*60*60*1000});
 });
-// Manual refresh endpoint (for admin use)
+// Manual refresh endpoint (for admin use) — clears cache so next fetch gets fresh AI-rewritten content
 app.post('/api/news/refresh',async(req,res)=>{
+  // Clear old cache so fresh content is served immediately
+  for(const cat of NEWS_CATS) delete newsCache[cat];
   refreshAllNews();
-  res.json({ok:true,message:'News refresh started'});
+  res.json({ok:true,message:'News refresh started — cache cleared'});
 });
 
 // ═══ IPL LIVE (CricAPI when CRICAPI_KEY env var set, plus Wikipedia summary, 60-sec cache) ═══
@@ -17687,7 +17692,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v134";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v135";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
