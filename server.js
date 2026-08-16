@@ -14563,24 +14563,6 @@ if(isMain){
   }
   infoStrip+='</div>';
   // Hydration moved below task input
-  // --- Fun Games carousel on Home page ---
-  hero+='<div class="hg-games" style="margin-top:18px">';
-  hero+='<div style="font:700 17px var(--sans);color:var(--ink);margin-bottom:8px">\\u{1F3AE} Fun Games</div>';
-  hero+='<div class="gc-strip" id="homeArcadeStrip">';
-  _arcadeGames.forEach(function(g){
-    hero+='<div class="gc-card" style="background:'+g.bg+'" onclick="arcadeOpen(\\''+g.id+'\\')">';
-    hero+='<div class="gc-card-body">';
-    hero+='<div class="gc-card-badge">'+g.badge+'</div>';
-    hero+='<div class="gc-card-emoji">'+g.emoji+'</div>';
-    hero+='<div class="gc-card-name">'+g.name+'</div>';
-    hero+='<div class="gc-card-desc">'+g.desc+'</div>';
-    hero+='</div></div>';
-  });
-  hero+='</div>';
-  hero+='<div class="gc-dots" id="homeFunDots">';
-  _arcadeGames.forEach(function(g,i){hero+='<span class="gc-dot'+(i===0?' on':'')+'"></span>';});
-  hero+='</div>';
-  hero+='</div>';
   hero+='</div>'; // close home-grid
   moralBlock=hero+infoStrip;
   // Bottom strip — keep moral + news ticker + clocks but tucked away as a subtle footer.
@@ -17658,7 +17640,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v141";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v142";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
