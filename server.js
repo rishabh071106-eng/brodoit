@@ -2173,6 +2173,8 @@ async function _fetchArticleMeta(url){
         .replace(/Image source,?\s*/gi,'').replace(/Image caption,?\s*/gi,'')
         .replace(/\(Screengrab\/[^)]*\)\s*/gi,'').replace(/AI Quick Read\s*/gi,'')
         .replace(/Listen to this article\s*/gi,'').replace(/\(File\s*(Photo|Pic)[^)]*\)\s*/gi,'')
+        .replace(/To play this video you need to enable JavaScript in your browser\.?\s*/gi,'')
+        .replace(/This video can\s*n?o?t be played\s*/gi,'')
         .replace(/\s{2,}/g,' ').trim();
     }
     // Trim to 250 words max
@@ -2280,7 +2282,7 @@ async function curateNewsCategory(cat){
   // Step 1: AI-rewrite all descriptions as original journalism (needs GEMINI_API_KEY)
   await aiRewriteNews(dedup,cat);
   // Step 2: Fetch EVERY article page for real content + images (exactly 9 lines ≈ 80-100 words)
-  const MIN_WORDS=80;const MAX_WORDS=100;
+  const MIN_WORDS=60;const MAX_WORDS=72;
   const needsFetch=dedup.filter(it=>(!it.desc||it.desc.trim().split(/\s+/).length<MIN_WORDS)||!it.img);
   if(needsFetch.length>0){
     console.log('[NEWS] Fetching '+needsFetch.length+' articles for 10+ line content in '+cat);
@@ -17807,7 +17809,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v149";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v150";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
