@@ -2747,7 +2747,7 @@ body[data-theme=aurora] .focus-card.is-active{border-color:rgba(35,131,226,.2);b
 .rd-check-done{width:26px;height:26px;border-radius:7px;background:var(--accent);flex:none;display:flex;align-items:center;justify-content:center}
 .rd-pill{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:20px;font:600 14.5px var(--sans)}
 .rd-pill-accent{background:var(--accent-soft);color:var(--accent-strong)}
-.rd-pill-sage{background:color-mix(in srgb,var(--sage) 14%,#FBF6EE);color:color-mix(in srgb,var(--sage) 80%,#1c2417)}
+.rd-pill-sage{background:color-mix(in srgb,var(--sage) 14%,#F7F6F3);color:color-mix(in srgb,var(--sage) 80%,#37352F)}
 .rd-email-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:7px;background:var(--accent-soft);color:var(--accent-strong);font:600 11px var(--sans)}
 .rd-segmented{display:flex;gap:4px;padding:4px;background:var(--bg-sunken);border-radius:10px;border:1px solid var(--line)}
 .rd-segmented button{flex:1;text-align:center;padding:9px 0;border-radius:8px;font:500 13px 'Inter',var(--sans);letter-spacing:.02em;color:var(--text-dim);border:none;background:none;cursor:pointer;transition:all .18s}
@@ -2779,7 +2779,7 @@ body[data-theme=aurora] .focus-card.is-active{border-color:rgba(35,131,226,.2);b
 .ws-stat{flex:1;text-align:center;padding:10px 6px;border-radius:14px;background:color-mix(in srgb,var(--accent) 8%,var(--paper))}
 .ws-stat-n{font:700 20px var(--sans);color:var(--ink)}
 .ws-stat-l{font:500 10px var(--sans);color:var(--text-mute);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
-.rd-wisdom-card{border-radius:20px;padding:17px;background:color-mix(in srgb,var(--gold) 13%,#FBF6EE);border:1px solid color-mix(in srgb,var(--gold) 24%,transparent)}
+.rd-wisdom-card{border-radius:8px;padding:17px;background:#F7F6F3;border:1px solid rgba(55,53,47,.09)}
 body[data-theme=aurora] .rd-wisdom-card{background:#3A3C44;border-color:rgba(82,156,219,.15)}
 .rd-listen-card{display:flex;align-items:center;gap:14px;border-radius:20px;padding:14px;background:var(--surface);border:1px solid var(--line)}
 .rd-listen-cover{width:58px;height:58px;border-radius:13px;flex:none;background:repeating-linear-gradient(135deg,#d8ccb7,#d8ccb7 6px,#ccbda6 6px,#ccbda6 12px);box-shadow:0 4px 10px -4px rgba(43,39,34,.5)}
@@ -2799,7 +2799,7 @@ body[data-theme=aurora] .rd-wisdom-card{background:#3A3C44;border-color:rgba(82,
 .rd-drill-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .rd-drill-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--surface);cursor:pointer}
 .rd-drill-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center}
-.rd-wisdom-full{position:fixed;inset:0;z-index:9998;background:radial-gradient(125% 75% at 50% 0%,color-mix(in srgb,var(--gold) 20%,var(--paper)) 0%,var(--paper) 58%);display:flex;flex-direction:column;animation:fadeUp .3s ease}
+.rd-wisdom-full{position:fixed;inset:0;z-index:9998;background:#FFFFFF;display:flex;flex-direction:column;animation:fadeUp .3s ease}
 .rd-wisdom-full .rd-wf-close{width:38px;height:38px;border-radius:50%;background:rgba(43,39,34,.06);display:flex;align-items:center;justify-content:center;color:var(--ink);border:none;cursor:pointer}
 .rd-wisdom-full .rd-wf-quote{font:500 33px/1.28 var(--serif);color:var(--ink);letter-spacing:-.01em;text-align:center;text-wrap:pretty}
 .rd-wisdom-full .rd-wf-divider{width:34px;height:2px;background:rgba(43,39,34,.22);margin:26px auto}
