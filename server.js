@@ -2110,10 +2110,10 @@ function stripXmlTags(s){return (s||'').replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$
 function inshortsDesc(raw){
   if(!raw)return '';
   let d=raw.replace(/Read more.*$/i,'').replace(/Click here.*$/i,'').replace(/Subscribe.*$/i,'').replace(/\s*\.\.\.\s*$/,'').replace(/\s*…\s*$/,'').trim();
-  // Cut to ~60 words on a sentence boundary
+  // Cut to ~80 words on a sentence boundary (self-contained, no external link)
   const words=d.split(/\s+/);
-  if(words.length<=60)return d;
-  let cut=words.slice(0,60).join(' ');
+  if(words.length<=80)return d;
+  let cut=words.slice(0,80).join(' ');
   // Find last sentence end
   const lastDot=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
   if(lastDot>cut.length*0.4)cut=cut.slice(0,lastDot+1);
@@ -15527,26 +15527,25 @@ else if(S.tab==='news'){
     _items.forEach(function(it,idx){
       var ago=timeAgo(it.date);
       var imgUrl=it.img||'';
-      var desc=(it.desc||'').replace(/</g,'&lt;').replace(/"/g,'&quot;').slice(0,200);
+      var desc=(it.desc||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
       var title=(it.title||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
       var src=(it.source||'').toUpperCase();
-      // Card — Inshorts style: big image + headline + summary (no link on image/title — only Read button)
+      // Card — Inshorts style: full content in-app, no external links
       h+='<div class="nf-card">';
-      // Image section (non-clickable — Inshorts style)
+      // Image section
       if(imgUrl){
         h+='<div class="nf-card-img" style="background-image:url(\\''+imgUrl.replace(/'/g,"\\\\'")+'\\')"><span class="nf-src-badge">'+src+'</span></div>';
       } else {
         h+='<div class="nf-card-img nf-card-img-empty"><span class="nf-src-badge">'+src+'</span></div>';
       }
-      // Content
+      // Content — self-contained, Brodoit owns the reading experience
       h+='<div class="nf-card-body">';
       h+='<h3 class="nf-card-title">'+title+'</h3>';
       if(desc) h+='<p class="nf-card-desc">'+desc+'</p>';
       h+='<div class="nf-card-footer">';
-      h+='<span class="nf-card-time">'+ago+'</span>';
+      h+='<span class="nf-card-time">'+ago+' \\u00B7 '+src+'</span>';
       h+='<div class="nf-card-actions">';
       h+='<button class="nf-share-btn" onclick="event.stopPropagation();_shareNewsCard('+idx+')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share</button>';
-      h+='<a href="'+it.link+'" target="_blank" rel="noopener" class="nf-read-btn">Read \\u2192</a>';
       h+='</div>';
       h+='</div>';
       h+='<span class="nf-card-counter">'+(idx+1)+'/'+_items.length+'</span>';
@@ -17634,7 +17633,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v131";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v132";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
