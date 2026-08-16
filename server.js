@@ -4632,11 +4632,11 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 .nf-wrap{padding:0}
 .nf-cards{height:calc(100dvh - 200px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:row;scroll-behavior:smooth}
 .nf-card{position:relative;background:var(--surface);border:none;border-radius:0;overflow:hidden;box-shadow:none;margin:0;min-width:100%;max-width:100%;height:calc(100dvh - 200px);scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;flex-shrink:0}
-.nf-card-img{display:block;width:100%;height:32%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
+.nf-card-img{display:block;width:100%;height:40%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
 .nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.45) 100%);pointer-events:none}
 .nf-card-img-empty{background:linear-gradient(135deg,#667eea,#764ba2)}
 .nf-card-cat{position:absolute;top:14px;left:14px;font:700 10px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent);padding:4px 10px;border-radius:4px;z-index:1}
-.nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:14px 18px 10px;overflow:hidden;gap:0}
+.nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:18px 18px 10px;overflow:hidden;gap:0}
 .nf-card-title{font:700 18px/1.25 var(--sans);margin:0 0 4px;color:var(--ink);letter-spacing:-.02em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .nf-card-byline{font:400 11px/1 var(--sans);color:var(--text-dim);margin-bottom:8px;letter-spacing:.01em}
 .nf-card-byline b{font-weight:700;color:var(--text-mute)}
@@ -4666,7 +4666,7 @@ a.nf-card-source:active{opacity:.7}
   .nf-card-title{font-size:17px !important;-webkit-line-clamp:2}
   .nf-card-desc{font-size:13px;line-height:1.65;-webkit-line-clamp:9}
   .nf-card-body{padding:12px 16px 8px}
-  .nf-card-img{height:30%;min-height:160px;max-height:240px}
+  .nf-card-img{height:38%;min-height:180px;max-height:280px}
   .nf-card-footer{padding-top:6px}
   .nf-card-byline{margin-bottom:6px}
 }
@@ -17807,7 +17807,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v148";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v149";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
