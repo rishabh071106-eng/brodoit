@@ -2123,14 +2123,8 @@ function inshortsDesc(raw){
 // using Gemini AI. This avoids copyright issues and creates original content.
 async function aiRewriteNews(items,cat){
   if(!GEMINI_KEY||items.length===0)return items;
-  // Build a batch prompt — send up to 15 items at once for efficiency
+  // Process in smaller batches of 5 for reliability
   const batch=items.slice(0,15);
-  const articlesJson=batch.map((it,i)=>({
-    id:i,
-    title:it.title||'',
-    rawDesc:(it.desc||'').slice(0,300),
-    source:it.source||''
-  }));
   const sysPrompt=`You are Brodoit News — a modern news app. Your job is to rewrite news articles as original, detailed summaries that give the reader the FULL story without needing to go elsewhere.
 
 RULES:
@@ -2148,28 +2142,33 @@ RULES:
 Respond with a JSON array of objects: [{"id": 0, "title": "rewritten title", "summary": "rewritten 120-160 word summary"}, ...]
 Only output the JSON array, nothing else.`;
 
-  try{
-    const r=await _callGemini([{role:'user',content:'Rewrite these '+batch.length+' news articles as original Inshorts-style summaries (55-65 words each) for category: '+cat+'.\n\n'+JSON.stringify(articlesJson)}],{maxTokens:4096,systemPrompt:sysPrompt});
-    // Parse the JSON response
-    let parsed;
-    const jsonMatch=r.reply.match(/\[[\s\S]*\]/);
-    if(jsonMatch)parsed=JSON.parse(jsonMatch[0]);
-    else parsed=JSON.parse(r.reply);
-    // Merge AI rewrites back into items
-    for(const rewrite of parsed){
-      const idx=rewrite.id;
-      if(idx>=0&&idx<batch.length){
-        if(rewrite.title)batch[idx].title=rewrite.title;
-        if(rewrite.summary)batch[idx].desc=rewrite.summary;
-        batch[idx].aiRewritten=true;
+  // Process in smaller batches of 5 to stay within token limits
+  for(let b=0;b<batch.length;b+=5){
+    const chunk=batch.slice(b,b+5);
+    const chunkJson=chunk.map((it,i)=>({id:b+i,title:it.title||'',rawDesc:(it.desc||'').slice(0,400),source:it.source||''}));
+    try{
+      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as original detailed summaries (120-160 words each) for category: '+cat+'.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:8192,systemPrompt:sysPrompt});
+      let parsed;
+      const jsonMatch=r.reply.match(/\[[\s\S]*\]/);
+      if(jsonMatch)parsed=JSON.parse(jsonMatch[0]);
+      else parsed=JSON.parse(r.reply);
+      for(const rewrite of parsed){
+        const idx=rewrite.id;
+        if(idx>=0&&idx<batch.length){
+          if(rewrite.title)batch[idx].title=rewrite.title;
+          if(rewrite.summary)batch[idx].desc=rewrite.summary;
+          batch[idx].aiRewritten=true;
+        }
       }
+      console.log('[NEWS-AI] Rewrote '+parsed.length+' articles (batch '+(b/5+1)+') for '+cat);
+    }catch(e){
+      console.error('[NEWS-AI] Batch '+(b/5+1)+' failed for '+cat+':',e.message);
     }
-    console.log('[NEWS-AI] Rewrote '+parsed.length+'/'+batch.length+' articles for '+cat);
-  }catch(e){
-    console.error('[NEWS-AI] Rewrite failed for '+cat+':',e.message);
-    // Fallback: use inshortsDesc on original descriptions
-    for(const it of batch){it.desc=inshortsDesc(it.desc)}
+    // Small delay between batches to avoid rate limits
+    if(b+5<batch.length)await new Promise(r=>setTimeout(r,1500));
   }
+  // Fallback for any not rewritten
+  for(const it of batch){if(!it.aiRewritten)it.desc=inshortsDesc(it.desc)}
   return items;
 }
 function parseRSS(xml,sourceUrl){
@@ -17692,7 +17691,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v135";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v136";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
