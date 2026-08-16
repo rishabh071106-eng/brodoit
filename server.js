@@ -4616,7 +4616,7 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 /* ── News Feed — Inshorts clone ── */
 .nf-wrap{padding:0}
 .nf-cards{height:calc(100vh - 80px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:row;scroll-behavior:smooth}
-.nf-card{position:relative;background:var(--surface);border:none;border-radius:0;overflow:hidden;box-shadow:none;margin:0;min-width:100%;max-width:100%;min-height:calc(100vh - 80px);scroll-snap-align:start;display:flex;flex-direction:column;flex-shrink:0}
+.nf-card{position:relative;background:var(--surface);border:none;border-radius:0;overflow:hidden;box-shadow:none;margin:0;min-width:100%;max-width:100%;min-height:calc(100vh - 80px);scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;flex-shrink:0}
 .nf-card-img{display:block;width:100%;height:38%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
 .nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.55) 100%);pointer-events:none}
 .nf-card-img-empty{background:linear-gradient(135deg,#667eea,#764ba2)}
@@ -4632,8 +4632,8 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 .nf-card-source b{font-weight:600;color:var(--accent)}
 a.nf-card-source:active{opacity:.7}
 .nf-card-actions{display:flex;align-items:center;gap:8px}
-.nf-share-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:0 16px;height:36px;border-radius:20px;background:var(--accent);border:none;color:#fff;cursor:pointer;transition:all .2s;font:600 13px var(--sans);letter-spacing:.01em}
-.nf-share-btn:active{transform:scale(.95);opacity:.85}
+.nf-share-btn{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:var(--accent);border:none;color:#fff;cursor:pointer;transition:all .2s}
+.nf-share-btn:active{transform:scale(.9)}
 .nf-dots{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:5px;z-index:10;background:rgba(0,0,0,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:6px 14px;border-radius:20px}
 .nf-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);transition:all .2s;flex-shrink:0}
 .nf-dot.on{background:#fff;width:18px;border-radius:3px}
@@ -15685,7 +15685,7 @@ else if(S.tab==='news'){
       if(origSrc&&articleLink) h+='<a class="nf-card-source" href="'+articleLink+'" target="_blank" rel="noopener">read more at <b>'+origSrc+'</b> \\u2192</a>';
       else if(origSrc) h+='<span class="nf-card-source">'+origSrc+'</span>';
       h+='<div class="nf-card-actions">';
-      h+='<button class="nf-share-btn" onclick="event.stopPropagation();_shareNewsCard('+idx+')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>';
+      h+='<button class="nf-share-btn" onclick="event.stopPropagation();_shareNewsCard('+idx+')" title="Share"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>';
       h+='</div>';
       h+='</div>';
       h+='</div>';
@@ -17786,7 +17786,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v146";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v147";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
