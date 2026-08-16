@@ -2106,19 +2106,69 @@ FALLBACK_IMAGES.india=FALLBACK_IMAGES.world;FALLBACK_IMAGES.business=[UNSPLASH('
 const newsCache={};
 let newsLastFullRefresh=0;
 function stripXmlTags(s){return (s||'').replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/<[^>]+>/g,'').replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(+n)).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim()}
-// Inshorts-style: trim desc to ~60 words, end on complete sentence
+// Inshorts-style: trim desc to ~60 words, end on complete sentence (fallback if AI rewrite fails)
 function inshortsDesc(raw){
   if(!raw)return '';
   let d=raw.replace(/Read more.*$/i,'').replace(/Click here.*$/i,'').replace(/Subscribe.*$/i,'').replace(/\s*\.\.\.\s*$/,'').replace(/\s*…\s*$/,'').trim();
-  // Cut to ~80 words on a sentence boundary (self-contained, no external link)
   const words=d.split(/\s+/);
-  if(words.length<=80)return d;
-  let cut=words.slice(0,80).join(' ');
-  // Find last sentence end
+  if(words.length<=60)return d;
+  let cut=words.slice(0,60).join(' ');
   const lastDot=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
   if(lastDot>cut.length*0.4)cut=cut.slice(0,lastDot+1);
   else cut=cut.replace(/[,;:\s]+$/,'')+'.';
   return cut;
+}
+// ── AI News Rewriter — Brodoit's own journalism engine ──
+// Takes raw RSS items and rewrites them as original Inshorts-style summaries
+// using Gemini AI. This avoids copyright issues and creates original content.
+async function aiRewriteNews(items,cat){
+  if(!GEMINI_KEY||items.length===0)return items;
+  // Build a batch prompt — send up to 15 items at once for efficiency
+  const batch=items.slice(0,15);
+  const articlesJson=batch.map((it,i)=>({
+    id:i,
+    title:it.title||'',
+    rawDesc:(it.desc||'').slice(0,300),
+    source:it.source||''
+  }));
+  const sysPrompt=`You are Brodoit News — a modern news app like Inshorts. Your job is to rewrite news articles as original, concise summaries.
+
+RULES:
+1. Each summary must be EXACTLY 55-65 words — no more, no less. Count carefully.
+2. Write in clear, factual, neutral journalistic tone.
+3. Start with the most important fact (inverted pyramid style).
+4. Do NOT copy original text — rewrite completely in your own words.
+5. Include key numbers, names, and facts from the original.
+6. End with a complete sentence (period, not ellipsis).
+7. Do NOT add opinions, commentary, or speculation.
+8. Write as if Brodoit is reporting — say "reports suggest" or "according to sources" instead of naming original outlets.
+
+Respond with a JSON array of objects: [{"id": 0, "title": "rewritten title", "summary": "rewritten 60-word summary"}, ...]
+Only output the JSON array, nothing else.`;
+
+  try{
+    const r=await _callGemini([{role:'user',content:'Rewrite these '+batch.length+' news articles as original Inshorts-style summaries (55-65 words each) for category: '+cat+'.\n\n'+JSON.stringify(articlesJson)}],{maxTokens:4096,systemPrompt:sysPrompt});
+    // Parse the JSON response
+    let parsed;
+    const jsonMatch=r.reply.match(/\[[\s\S]*\]/);
+    if(jsonMatch)parsed=JSON.parse(jsonMatch[0]);
+    else parsed=JSON.parse(r.reply);
+    // Merge AI rewrites back into items
+    for(const rewrite of parsed){
+      const idx=rewrite.id;
+      if(idx>=0&&idx<batch.length){
+        if(rewrite.title)batch[idx].title=rewrite.title;
+        if(rewrite.summary)batch[idx].desc=rewrite.summary;
+        batch[idx].aiRewritten=true;
+      }
+    }
+    console.log('[NEWS-AI] Rewrote '+parsed.length+'/'+batch.length+' articles for '+cat);
+  }catch(e){
+    console.error('[NEWS-AI] Rewrite failed for '+cat+':',e.message);
+    // Fallback: use inshortsDesc on original descriptions
+    for(const it of batch){it.desc=inshortsDesc(it.desc)}
+  }
+  return items;
 }
 function parseRSS(xml,sourceUrl){
   const items=[];let host='';try{host=new URL(sourceUrl).hostname.replace(/^www\./,'').split('.')[0]}catch(e){}
@@ -2147,6 +2197,7 @@ async function fetchOgImage(url){
   try{const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),5000);const r=await fetch(url,{signal:ctrl.signal,headers:{'User-Agent':'Mozilla/5.0 (compatible; Brodoit/1.0; +https://brodoit.com)','Accept':'text/html,application/xhtml+xml'}});clearTimeout(t);if(!r.ok)return null;const html=await r.text();const head=html.slice(0,80000);const patterns=[/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/i,/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i];for(const p of patterns){const m=head.match(p);if(m&&m[1])return m[1].replace(/&amp;/g,'&')}return null;}catch(e){return null}
 }
 // Core news fetch+curate for one category — used by API and by scheduled job
+// Brodoit's AI journalism engine: fetch RSS → AI-rewrite → copyright-free images
 async function curateNewsCategory(cat){
   const feeds=NEWS_FEEDS[cat];
   if(!feeds)return [];
@@ -2154,23 +2205,23 @@ async function curateNewsCategory(cat){
   let all=results.flat();
   all.sort((a,b)=>{const da=new Date(a.date||0).getTime()||0,db=new Date(b.date||0).getTime()||0;return db-da});
   const seen=new Set();const dedup=[];
-  for(const it of all){const k=(it.title||'').toLowerCase().slice(0,60);if(seen.has(k))continue;seen.add(k);dedup.push(it);if(dedup.length>=30)break}
-  // Aggressively enrich ALL items missing img (background job has no hurry)
-  const toEnrich=dedup.filter(it=>!it.img&&it.link);
-  if(toEnrich.length){
-    // Process in batches of 6 to avoid overwhelming
-    for(let b=0;b<toEnrich.length;b+=6){
-      const batch=toEnrich.slice(b,b+6);
-      await Promise.race([
-        Promise.all(batch.map(async it=>{const og=await fetchOgImage(it.link);if(og)it.img=og})),
-        new Promise(r=>setTimeout(r,10000))
-      ]);
-    }
-  }
-  // Fallback images for any still missing
+  for(const it of all){const k=(it.title||'').toLowerCase().slice(0,60);if(seen.has(k))continue;seen.add(k);dedup.push(it);if(dedup.length>=20)break}
+  // Step 1: AI-rewrite all descriptions as original Brodoit journalism
+  await aiRewriteNews(dedup,cat);
+  // Step 2: Use ONLY copyright-free Unsplash images — never use og:image from news sites
   const fb=FALLBACK_IMAGES[cat]||FALLBACK_IMAGES.world;
   let fbIdx=0;
-  for(const it of dedup){if(!it.img){it.img=fb[fbIdx%fb.length];it.imgFallback=true;fbIdx++}}
+  for(const it of dedup){
+    // Always replace with Unsplash — original news images are copyrighted
+    it.img=fb[fbIdx%fb.length];
+    it.imgFree=true;
+    fbIdx++;
+  }
+  // Step 3: Clean source attribution — show "Brodoit" as the publisher
+  for(const it of dedup){
+    it.originalSource=it.source; // keep for attribution
+    it.source='Brodoit';
+  }
   newsCache[cat]={ts:Date.now(),items:dedup};
   return dedup;
 }
@@ -9442,9 +9493,8 @@ descLines.slice(0,5).forEach(function(line,i){cx.fillText(line,40,descY+i*42)});
 // Source + time
 var srcY=descY+Math.min(descLines.length,5)*42+30;
 cx.fillStyle='#8E8E9C';cx.font='600 22px -apple-system,sans-serif';
-var src=(item.source||'').toUpperCase();
 var ago=timeAgo(item.date);
-cx.fillText(src+' \\u2022 '+ago,40,srcY);
+cx.fillText('BRODOIT NEWS \\u2022 '+ago,40,srcY);
 // Divider
 cx.fillStyle='rgba(0,0,0,0.06)';cx.fillRect(40,H-130,W-80,1.5);
 // Brodoit branding footer
@@ -15529,21 +15579,22 @@ else if(S.tab==='news'){
       var imgUrl=it.img||'';
       var desc=(it.desc||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
       var title=(it.title||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-      var src=(it.source||'').toUpperCase();
-      // Card — Inshorts style: full content in-app, no external links
+      var src=(it.source||'BRODOIT').toUpperCase();
+      var origSrc=(it.originalSource||'').toUpperCase();
+      // Card — Inshorts style: full content in-app, Brodoit owns the experience
       h+='<div class="nf-card">';
       // Image section
       if(imgUrl){
-        h+='<div class="nf-card-img" style="background-image:url(\\''+imgUrl.replace(/'/g,"\\\\'")+'\\')"><span class="nf-src-badge">'+src+'</span></div>';
+        h+='<div class="nf-card-img" style="background-image:url(\\''+imgUrl.replace(/'/g,"\\\\'")+'\\')"><span class="nf-src-badge">BRODOIT</span></div>';
       } else {
-        h+='<div class="nf-card-img nf-card-img-empty"><span class="nf-src-badge">'+src+'</span></div>';
+        h+='<div class="nf-card-img nf-card-img-empty"><span class="nf-src-badge">BRODOIT</span></div>';
       }
-      // Content — self-contained, Brodoit owns the reading experience
+      // Content — self-contained, Brodoit\\'s original journalism
       h+='<div class="nf-card-body">';
       h+='<h3 class="nf-card-title">'+title+'</h3>';
       if(desc) h+='<p class="nf-card-desc">'+desc+'</p>';
       h+='<div class="nf-card-footer">';
-      h+='<span class="nf-card-time">'+ago+' \\u00B7 '+src+'</span>';
+      h+='<span class="nf-card-time">'+ago+(origSrc?' \\u00B7 via '+origSrc:'')+'</span>';
       h+='<div class="nf-card-actions">';
       h+='<button class="nf-share-btn" onclick="event.stopPropagation();_shareNewsCard('+idx+')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share</button>';
       h+='</div>';
@@ -17633,7 +17684,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v132";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v133";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
