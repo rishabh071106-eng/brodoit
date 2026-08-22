@@ -293,30 +293,38 @@ async function _callGemini(messages,{maxTokens=4096,systemPrompt='',imageData=nu
   }catch(e){clearTimeout(tmr);throw e}
 }
 
+const GROQ_MODELS=['openai/gpt-oss-120b','qwen/qwen3.6-27b','openai/gpt-oss-20b'];
 async function _callGroq(messages,{maxTokens=4096,tools}={}){
   if(!GROQ_KEY)throw new Error('no-key');
-  const body={model:'openai/gpt-oss-120b',max_tokens:maxTokens,messages};
-  if(tools)body.tools=tools;
-  let r,j;
-  for(let retry=0;retry<3;retry++){
-    const ctrl=new AbortController();const tmr=setTimeout(()=>ctrl.abort(),45000);
-    try{
-      r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-        method:'POST',signal:ctrl.signal,
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-        body:JSON.stringify(body)
-      });
-    }catch(fe){clearTimeout(tmr);if(retry<2){await new Promise(ok=>setTimeout(ok,2000*(retry+1)));continue}throw new Error('timeout')}
-    clearTimeout(tmr);
-    if(r.status===429||r.status>=500){
-      if(retry<2){await new Promise(ok=>setTimeout(ok,2000*(retry+1)));continue}
+  let lastErr='';
+  for(const model of GROQ_MODELS){
+    const body={model,max_tokens:maxTokens,messages};
+    if(tools)body.tools=tools;
+    let r,j;
+    for(let retry=0;retry<2;retry++){
+      const ctrl=new AbortController();const tmr=setTimeout(()=>ctrl.abort(),45000);
+      try{
+        r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+          method:'POST',signal:ctrl.signal,
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+          body:JSON.stringify(body)
+        });
+      }catch(fe){clearTimeout(tmr);if(retry<1){await new Promise(ok=>setTimeout(ok,2000));continue}lastErr='timeout';r=null;break}
+      clearTimeout(tmr);
+      if(r.status===429){lastErr='rate-limited on '+model;console.log('[ai] Groq 429 on',model,'— trying next');r=null;break}
+      if(r.status>=500){if(retry<1){await new Promise(ok=>setTimeout(ok,2000));continue}lastErr='server error';r=null;break}
+      break;
     }
-    break;
+    if(!r)continue;
+    j=await r.json();
+    if(!r.ok){const msg=(j.error&&j.error.message)||'Groq error';console.log('[ai] Groq error on',model,':',r.status,msg);lastErr=msg;continue}
+    const msg=j.choices&&j.choices[0]&&j.choices[0].message;
+    // Strip <think> tags from reasoning models (qwen)
+    let content=msg&&msg.content;
+    if(content&&content.includes('<think>'))content=content.replace(/<think>[\s\S]*?<\/think>\s*/g,'').trim();
+    return{reply:content,message:msg,provider:'groq/'+model.split('/').pop(),usage:j.usage};
   }
-  j=await r.json();
-  if(!r.ok){const msg=(j.error&&j.error.message)||'Groq error';console.log('[ai] Groq error:',r.status,msg);throw new Error(msg)}
-  const msg=j.choices&&j.choices[0]&&j.choices[0].message;
-  return{reply:msg&&msg.content,message:msg,provider:'groq',usage:j.usage};
+  throw new Error(lastErr||'All Groq models failed');
 }
 
 // Simple response cache (LRU, 200 entries, 10 min TTL)
@@ -492,30 +500,24 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
       return res.json({reply:'I tried to help but hit a loop — try rephrasing.',actions:actions.length?actions:undefined});
     }catch(toolErr){console.log('[bro] Tool path error:',toolErr.message)}}
 
-    // Friend mode: fast path — Groq primary for instant responses, Gemini fallback
-    // Ask mode: dual-model verification for accuracy
+    // Provider strategy: Gemini first (1500 req/day free) → Groq fallback (tight token limits)
+    // This maximizes daily throughput — Groq reserved mainly for tool-calling
     let reply='',provider='';
     let lastError='';
     let draftReply='',draftProvider='';
-    if(mode==='friend'&&GROQ_KEY&&!imageB64){
-      try{
-        const groqMsgs=apiMsgs.slice(0,1).concat(apiMsgs.slice(-6).map(m=>({...m,content:String(m.content||'').slice(0,2000)})));
-        const g=await _callGroq(groqMsgs,{maxTokens:Math.min(maxTok,2048)});
-        draftReply=g.reply;draftProvider='groq';
-      }catch(e){lastError='Groq: '+e.message;console.log('[bro] Friend Groq failed:',e.message)}
-    }
-    // Step 1: Get initial response from primary model
+    // Step 1: Try Gemini first (generous free tier: 1500 req/day, 1M tokens/min)
     if(!draftReply&&GEMINI_KEY){
       try{
         const g=await _callGemini(apiMsgs,{maxTokens:maxTok,systemPrompt:sys});
         draftReply=g.reply;draftProvider='gemini';
       }catch(e){lastError='Gemini: '+e.message;console.log('[bro] Gemini failed:',e.message)}
     }
-    if(!draftReply&&GROQ_KEY){
+    // Step 2: Groq fallback (auto-rotates models on rate limit)
+    if(!draftReply&&GROQ_KEY&&!imageB64){
       try{
-        const groqMsgs=apiMsgs.slice(0,1).concat(apiMsgs.slice(-4).map(m=>({...m,content:String(m.content||'').slice(0,1500)})));
+        const groqMsgs=apiMsgs.slice(0,1).concat(apiMsgs.slice(-6).map(m=>({...m,content:String(m.content||'').slice(0,2000)})));
         const g=await _callGroq(groqMsgs,{maxTokens:Math.min(maxTok,2048)});
-        draftReply=g.reply;draftProvider='groq';
+        draftReply=g.reply;draftProvider=g.provider||'groq';
       }catch(e){lastError='Groq: '+e.message;console.log('[bro] Groq failed:',e.message)}
     }
     if(!draftReply){console.log('[bro] All providers failed:',lastError);return res.status(502).json({error:'Bro is taking a quick break — try again in a moment.'})}
