@@ -2197,26 +2197,26 @@ async function aiRewriteNews(items,cat){
   const sysPrompt=`You are Brodoit News — a respected modern news platform known for making complex stories accessible and interesting. Rewrite each news article as a compelling, detailed summary that a reader can understand without clicking through.
 
 RULES:
-1. Each summary must be 58-68 words and 385-415 characters (exactly 9 lines on mobile). This is CRITICAL — aim for exactly 400 characters.
+1. Each summary must be 58-66 words and 385-405 characters (exactly 9 lines on mobile). This is CRITICAL — aim for exactly 395 characters.
 2. Write in a clear, engaging journalistic style — like a skilled reporter telling you what happened over coffee.
 3. Open with the single most important fact — the headline brought to life.
 4. Include key details: who, what, where, when, why.
 5. Add 1 sentence of CONTEXT — background or significance.
 6. Do NOT copy original text — rewrite completely in your own words.
 7. No opinions or speculation — but do explain implications factually.
-8. Make the title punchy and specific — avoid generic titles.
+8. Make the title punchy, specific, and COMPLETE — under 80 characters. Never truncate with "..." or leave incomplete. Avoid generic titles.
 9. CRITICAL: The title and summary MUST be about the EXACT SAME news story. Do NOT mix up or swap articles. Each item's rewritten title must directly relate to its summary.
 10. Even if the raw description is empty, use the TITLE to generate a full 60-word summary — expand on the topic knowledgeably.
 11. CRITICAL: End each summary with a COMPLETE sentence ending in a period. NEVER end mid-sentence, with "..." or with incomplete thoughts. The last word must be followed by a period.
 
-Respond with a JSON array: [{"id": 0, "title": "punchy rewritten title", "summary": "385-415 character summary ending in a complete sentence"}, ...]
+Respond with a JSON array: [{"id": 0, "title": "punchy rewritten title under 80 chars", "summary": "385-405 character summary ending in a complete sentence"}, ...]
 Only output the JSON array, nothing else.`;
 
   for(let b=0;b<batch.length;b+=5){
     const chunk=batch.slice(b,b+5);
     const chunkJson=chunk.map((it,i)=>({id:b+i,title:it.title||'',rawDesc:(it.desc||'').slice(0,500),source:it.source||'',link:it.link||''}));
     try{
-      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as 385-415 character summaries (exactly 9 lines on mobile). Each title MUST match its summary — do NOT mix up stories. Each summary MUST end with a complete sentence and a period. Even if rawDesc is empty, use the title to write a full summary.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:4096,systemPrompt:sysPrompt});
+      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as 385-405 character summaries (exactly 9 lines on mobile). Each title MUST match its summary — do NOT mix up stories. Each summary MUST end with a complete sentence and a period. Even if rawDesc is empty, use the title to write a full summary.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:4096,systemPrompt:sysPrompt});
       let parsed;
       const jsonMatch=r.reply.match(/\[[\s\S]*\]/);
       if(jsonMatch)parsed=JSON.parse(jsonMatch[0]);
@@ -2325,7 +2325,7 @@ async function curateNewsCategory(cat){
   // Step 5: Clean junk text then ENFORCE exactly 9 lines via CHARACTER count
   // Mobile: 299px container, 13px font ≈ 47 chars/line, 9 lines = ~423 chars max
   // 421 chars = 9 lines (confirmed), 432 chars = 10 lines (overflow)
-  const MAX_CHARS=415;const MIN_CHARS=385;// safe margins for exactly 9 lines
+  const MAX_CHARS=400;const MIN_CHARS=385;// safe margins for exactly 9 lines
   let shortCount=0;
   for(const it of dedup){
     // Clean cookie/tracking junk that got scraped
@@ -2381,6 +2381,20 @@ async function curateNewsCategory(cat){
     if(it.desc){
       it.desc=it.desc.replace(/\s*\.{2,}\s*$/,'').replace(/\s*…\s*$/,'').trim();
       if(!/[.!?]$/.test(it.desc))it.desc=it.desc.replace(/[,;:\s]+$/,'')+'.';
+    }
+    // TITLE: ensure complete, no CSS truncation — max ~90 chars (fits 2 lines on mobile at 16px)
+    // Mobile title container: ~299px at 16px font ≈ ~30 chars/line, 3 lines ≈ 90 chars
+    if(it.title&&it.title.length>90){
+      // Try to cut at a natural break (colon, dash, comma) before 90 chars
+      let t=it.title.slice(0,90);
+      const breakPt=Math.max(t.lastIndexOf(' - '),t.lastIndexOf(': '),t.lastIndexOf(' | '),t.lastIndexOf(', '));
+      if(breakPt>40)t=t.slice(0,breakPt);
+      else t=t.replace(/\s+\S*$/,'');// cut at last word boundary
+      it.title=t.trim();
+    }
+    // Clean title — remove trailing ellipsis, "..." or incomplete endings
+    if(it.title){
+      it.title=it.title.replace(/\s*\.{2,}\s*$/,'').replace(/\s*…\s*$/,'').replace(/[,;:\-–—|\s]+$/,'').trim();
     }
   }
   const avgC=Math.round(dedup.reduce((s,it)=>s+(it.desc||'').length,0)/Math.max(dedup.length,1));
@@ -4680,12 +4694,12 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 .nf-wrap{padding:0}
 .nf-cards{height:calc(100dvh - 200px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;flex-direction:row;scroll-behavior:smooth}
 .nf-card{position:relative;background:var(--surface);border:none;border-radius:0;overflow:hidden;box-shadow:none;margin:0;min-width:100%;max-width:100%;height:calc(100dvh - 200px);scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;flex-shrink:0}
-.nf-card-img{display:block;width:100%;height:40%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
+.nf-card-img{display:block;width:100%;height:44%;flex-shrink:0;background-size:cover;background-position:center;background-color:#F1F1EF;position:relative;text-decoration:none}
 .nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.45) 100%);pointer-events:none}
 .nf-card-img-empty{background:linear-gradient(135deg,#667eea,#764ba2)}
 .nf-card-cat{position:absolute;top:14px;left:14px;font:700 10px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent);padding:4px 10px;border-radius:4px;z-index:1}
 .nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:14px 18px 8px;overflow:hidden;gap:0}
-.nf-card-title{font:700 17px/1.22 var(--sans);margin:0 0 3px;color:var(--ink);letter-spacing:-.02em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nf-card-title{font:700 17px/1.22 var(--sans);margin:0 0 3px;color:var(--ink);letter-spacing:-.02em}
 .nf-card-byline{font:400 11px/1 var(--sans);color:var(--text-dim);margin-bottom:5px;letter-spacing:.01em}
 .nf-card-byline b{font-weight:700;color:var(--text-mute)}
 .nf-card-desc{font:400 13.5px/1.6 var(--sans);color:var(--text);margin:0;letter-spacing:-.005em;display:-webkit-box;-webkit-line-clamp:9;-webkit-box-orient:vertical;overflow:hidden}
@@ -4711,10 +4725,10 @@ a.nf-card-source:active{opacity:.7}
 .nf-sk-line.short{height:10px}
 @keyframes sk-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @media(max-width:600px){
-  .nf-card-title{font-size:16px !important;line-height:1.22;-webkit-line-clamp:2}
+  .nf-card-title{font-size:16px !important;line-height:1.22}
   .nf-card-desc{font-size:13px;line-height:1.55;-webkit-line-clamp:9}
   .nf-card-body{padding:10px 16px 6px}
-  .nf-card-img{height:36%;min-height:170px;max-height:260px}
+  .nf-card-img{height:42%;min-height:200px;max-height:300px}
   .nf-card-footer{padding-top:4px;margin-top:4px}
   .nf-card-byline{margin-bottom:4px}
 }
@@ -17811,7 +17825,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v155";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v156";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
