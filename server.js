@@ -2131,7 +2131,7 @@ async function _fetchArticleMeta(url){
     const imgPats=[/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/i,/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i];
     for(const p of imgPats){const m=html.match(p);if(m&&m[1]){img=m[1].replace(/&amp;/g,'&');break;}}
     // Extract full article text from <p> tags — aggressive extraction for 10+ lines
-    const junkRe=/^(Share|Follow|Subscribe|Copyright|©|Tags|Also Read|ALSO READ|RELATED|Advert|Sign up|Download|Published|Updated|Written by|By\s|Photo:|Image:|Video:|READ MORE|WATCH|Click here|Tap to|Get app|Install|AI Quick Read|Screengrab|Listen to this)/i;
+    const junkRe=/^(Share|Follow|Subscribe|Copyright|©|Tags|Also Read|ALSO READ|RELATED|Advert|Sign up|Download|Published|Updated|Written by|By\s|Photo:|Image:|Video:|READ MORE|WATCH|Click here|Tap to|Get app|Install|AI Quick Read|Screengrab|Listen to this|We use cookies|Be respectful|TOI community|Accept cookies|Cookie policy|Privacy policy|Terms of|Manage consent)/i;
     const paywallRe=/subscription|subscribe now|sign.?in to continue|create.?an? account|premium content|membership required|paywall|active subscription|you don.?t have any/i;
     // Try multiple content selectors — article first, then main, then full body
     let bestText='';
@@ -2197,26 +2197,26 @@ async function aiRewriteNews(items,cat){
   const sysPrompt=`You are Brodoit News — a respected modern news platform known for making complex stories accessible and interesting. Rewrite each news article as a compelling, detailed summary that a reader can understand without clicking through.
 
 RULES:
-1. Each summary must be 150-220 words (about 12-15 lines). This is CRITICAL — short 2-line blurbs are NOT acceptable.
+1. Each summary must be 60-72 words (exactly 9 lines on mobile). This is CRITICAL — aim for exactly 66 words.
 2. Write in a clear, engaging journalistic style — like a skilled reporter telling you what happened over coffee.
 3. Open with the single most important fact — the headline brought to life.
-4. Include all key details: who, what, where, when, why, and how.
-5. Add 2-3 sentences of CONTEXT — background, history, or significance that helps readers understand WHY this matters.
-6. For political/conflict stories: include the stakes, key players, and what might happen next.
-7. For science/tech stories: explain the breakthrough in plain language and its real-world impact.
-8. Do NOT copy original text — rewrite completely in your own words.
-9. No opinions or speculation — but do explain implications factually.
-10. Make the title punchy and specific — avoid generic titles.
-11. Even if the raw description is empty, use the TITLE to generate a full 150-word summary — expand on the topic knowledgeably.
+4. Include key details: who, what, where, when, why.
+5. Add 1 sentence of CONTEXT — background or significance.
+6. Do NOT copy original text — rewrite completely in your own words.
+7. No opinions or speculation — but do explain implications factually.
+8. Make the title punchy and specific — avoid generic titles.
+9. CRITICAL: The title and summary MUST be about the EXACT SAME news story. Do NOT mix up or swap articles. Each item's rewritten title must directly relate to its summary.
+10. Even if the raw description is empty, use the TITLE to generate a full 60-word summary — expand on the topic knowledgeably.
+11. End each summary with a complete sentence — no trailing "..." or incomplete thoughts.
 
-Respond with a JSON array: [{"id": 0, "title": "punchy rewritten title", "summary": "150-220 word detailed summary"}, ...]
+Respond with a JSON array: [{"id": 0, "title": "punchy rewritten title", "summary": "60-72 word summary"}, ...]
 Only output the JSON array, nothing else.`;
 
   for(let b=0;b<batch.length;b+=5){
     const chunk=batch.slice(b,b+5);
     const chunkJson=chunk.map((it,i)=>({id:b+i,title:it.title||'',rawDesc:(it.desc||'').slice(0,500),source:it.source||'',link:it.link||''}));
     try{
-      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as detailed 150-220 word summaries. Even if rawDesc is empty, use the title to write a full summary.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:8192,systemPrompt:sysPrompt});
+      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as concise 60-72 word summaries (exactly 9 lines on mobile). Each title MUST match its summary — do NOT mix up stories. Even if rawDesc is empty, use the title to write a full summary.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:4096,systemPrompt:sysPrompt});
       let parsed;
       const jsonMatch=r.reply.match(/\[[\s\S]*\]/);
       if(jsonMatch)parsed=JSON.parse(jsonMatch[0]);
@@ -2224,8 +2224,21 @@ Only output the JSON array, nothing else.`;
       for(const rewrite of parsed){
         const idx=rewrite.id;
         if(idx>=0&&idx<batch.length){
-          if(rewrite.title)batch[idx].title=rewrite.title;
-          if(rewrite.summary&&rewrite.summary.trim().length>30)batch[idx].desc=rewrite.summary;
+          // Coherence check — make sure title and summary share at least 1 significant word
+          const origTitle=(batch[idx].title||'').toLowerCase();
+          const newTitle=(rewrite.title||'').toLowerCase();
+          const newSummary=(rewrite.summary||'').toLowerCase();
+          const titleWords=origTitle.split(/\s+/).filter(w=>w.length>4);
+          const hasOverlap=titleWords.some(w=>newSummary.includes(w))||titleWords.some(w=>newTitle.includes(w));
+          if(rewrite.title&&(hasOverlap||titleWords.length<2))batch[idx].title=rewrite.title;
+          // else keep original title if AI title seems unrelated
+          if(rewrite.summary&&rewrite.summary.trim().length>30){
+            // Verify summary relates to the original title
+            const summaryWords=rewrite.summary.toLowerCase().split(/\s+/).filter(w=>w.length>4);
+            const titleOverlap=titleWords.some(w=>summaryWords.includes(w))||summaryWords.some(w=>origTitle.includes(w));
+            if(titleOverlap||titleWords.length<2)batch[idx].desc=rewrite.summary;
+            else console.log('[NEWS-AI] Skipped mismatched summary for "'+batch[idx].title+'"');
+          }
           batch[idx].aiRewritten=true;
         }
       }
@@ -2282,7 +2295,7 @@ async function curateNewsCategory(cat){
   // Step 1: AI-rewrite all descriptions as original journalism (needs GEMINI_API_KEY)
   await aiRewriteNews(dedup,cat);
   // Step 2: Fetch EVERY article page for real content + images (exactly 9 lines ≈ 80-100 words)
-  const MIN_WORDS=60;const MAX_WORDS=72;
+  const MIN_WORDS=64;const MAX_WORDS=72;
   const needsFetch=dedup.filter(it=>(!it.desc||it.desc.trim().split(/\s+/).length<MIN_WORDS)||!it.img);
   if(needsFetch.length>0){
     console.log('[NEWS] Fetching '+needsFetch.length+' articles for 10+ line content in '+cat);
@@ -2309,34 +2322,54 @@ async function curateNewsCategory(cat){
     it.source='Brodoit';
     it.category=catLabels[cat]||cat;
   }
-  // Step 5: ENFORCE exactly 9 lines ≈ 80-100 words — pad short, trim long
+  // Step 5: Clean junk text (cookie notices, tracking text) then ENFORCE exactly 9 lines
   let shortCount=0;
   for(const it of dedup){
+    // Clean cookie/tracking junk that got scraped
+    if(it.desc){
+      it.desc=it.desc
+        .replace(/We use cookies[^.]*\./gi,'')
+        .replace(/Be respectful[^.]*\./gi,'')
+        .replace(/TOI community guidelines[^.]*\./gi,'')
+        .replace(/\(HT_PRINT\)/gi,'')
+        .replace(/\(Express file photo\)/gi,'')
+        .replace(/\(File photo[^)]*\)/gi,'')
+        .replace(/\(Representative image[^)]*\)/gi,'')
+        .replace(/Updated:\s*\w+ \d+,\s*\d{4}\s*/gi,'')
+        .replace(/Published:\s*\w+ \d+,\s*\d{4}\s*/gi,'')
+        .replace(/\s{2,}/g,' ').trim();
+    }
     let words=(it.desc||'').trim().split(/\s+/).filter(Boolean);
     // Pad if too short
     if(words.length<MIN_WORDS){
       const src=it.originalSource||'news agencies';
       const existing=(it.desc||it.title||'').trim();
       const padding=[
-        'This development has been reported by '+src+' and is drawing significant attention.',
-        'The situation continues to evolve as new details emerge from official sources.',
-        'Analysts note the implications could extend well beyond the immediate context.',
-        'Several key stakeholders have weighed in, adding important nuance to the story.',
-        'Observers say the timing of this development is particularly significant.',
-        'Further updates are expected as more details become available from primary sources.',
-        'The broader impact of this story is still being assessed by experts in the field.'
+        'This development has been reported by '+src+' and is drawing significant attention from observers across the field.',
+        'The situation continues to evolve rapidly as new details emerge from multiple official sources close to the matter.',
+        'Analysts and industry experts note that the implications of this could extend well beyond the immediate context.',
+        'Several key stakeholders and observers have weighed in on the matter, adding important nuance to the developing story.',
+        'Observers and commentators say the timing of this development is particularly significant given the broader landscape.',
+        'Further updates and additional details are expected as more information becomes available from primary sources.',
+        'The broader impact of this story is still being assessed by experts and analysts working in the field.'
       ];
       let padded=existing;let pi=0;
-      while(padded.split(/\s+/).length<MIN_WORDS&&pi<padding.length){padded+=' '+padding[pi];pi++}
-      words=padded.split(/\s+/);
+      while(padded.trim().split(/\s+/).filter(Boolean).length<MIN_WORDS&&pi<padding.length){padded+=' '+padding[pi];pi++}
+      words=padded.trim().split(/\s+/).filter(Boolean);
       shortCount++;
     }
-    // Trim to MAX_WORDS on sentence boundary
+    // Trim to MAX_WORDS on sentence boundary — but never trim below MIN_WORDS
     if(words.length>MAX_WORDS){
       let cut=words.slice(0,MAX_WORDS).join(' ');
       const lastDot=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
-      if(lastDot>cut.length*0.5)cut=cut.slice(0,lastDot+1);
-      else cut=cut.replace(/[,;:\s]+$/,'')+'.';
+      if(lastDot>cut.length*0.5){
+        const candidate=cut.slice(0,lastDot+1);
+        // Only use sentence boundary if it doesn't trim below MIN_WORDS
+        if(candidate.trim().split(/\s+/).filter(Boolean).length>=MIN_WORDS)cut=candidate;
+        else cut=words.slice(0,MAX_WORDS).join(' ').replace(/[,;:\s]+$/,'')+'.';
+      }else{
+        cut=cut.replace(/[,;:\s]+$/,'')+'.';
+      }
       it.desc=cut;
     }else{
       it.desc=words.join(' ');
@@ -2349,7 +2382,10 @@ async function curateNewsCategory(cat){
 }
 // ── Scheduled news refresh — every 12 hours, pre-curate ALL categories ──
 const NEWS_CATS=['world','india','tech','science','business'];
+let _newsRefreshing=false;
 async function refreshAllNews(){
+  if(_newsRefreshing){console.log('[NEWS] Refresh already in progress, skipping');return}
+  _newsRefreshing=true;
   console.log('[NEWS] Starting scheduled news refresh for all categories...');
   const start=Date.now();
   for(const cat of NEWS_CATS){
@@ -2359,6 +2395,7 @@ async function refreshAllNews(){
     await new Promise(r=>setTimeout(r,2000));
   }
   newsLastFullRefresh=Date.now();
+  _newsRefreshing=false;
   console.log('[NEWS] Full refresh done in '+((Date.now()-start)/1000).toFixed(1)+'s');
 }
 // Refresh on startup (after 10s to let server boot) then every 12 hours
@@ -4638,13 +4675,13 @@ body[data-theme=aurora] .news-share{background:linear-gradient(135deg,#37352F,#F
 .nf-card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.45) 100%);pointer-events:none}
 .nf-card-img-empty{background:linear-gradient(135deg,#667eea,#764ba2)}
 .nf-card-cat{position:absolute;top:14px;left:14px;font:700 10px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent);padding:4px 10px;border-radius:4px;z-index:1}
-.nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:18px 18px 10px;overflow:hidden;gap:0}
-.nf-card-title{font:700 18px/1.25 var(--sans);margin:0 0 4px;color:var(--ink);letter-spacing:-.02em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.nf-card-byline{font:400 11px/1 var(--sans);color:var(--text-dim);margin-bottom:8px;letter-spacing:.01em}
+.nf-card-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:14px 18px 8px;overflow:hidden;gap:0}
+.nf-card-title{font:700 17px/1.22 var(--sans);margin:0 0 3px;color:var(--ink);letter-spacing:-.02em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nf-card-byline{font:400 11px/1 var(--sans);color:var(--text-dim);margin-bottom:5px;letter-spacing:.01em}
 .nf-card-byline b{font-weight:700;color:var(--text-mute)}
-.nf-card-desc{font:400 13.5px/1.7 var(--sans);color:var(--text);margin:0;letter-spacing:-.005em;display:-webkit-box;-webkit-line-clamp:9;-webkit-box-orient:vertical;overflow:hidden}
+.nf-card-desc{font:400 13.5px/1.6 var(--sans);color:var(--text);margin:0;letter-spacing:-.005em;display:-webkit-box;-webkit-line-clamp:9;-webkit-box-orient:vertical;overflow:hidden}
 .nf-card-counter{position:absolute;top:14px;right:14px;font:600 11px var(--sans);letter-spacing:.04em;color:rgba(255,255,255,.95);background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:4px 10px;border-radius:4px;z-index:1}
-.nf-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--line);margin-top:10px;flex-shrink:0}
+.nf-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:6px;border-top:1px solid var(--line);margin-top:6px;flex-shrink:0}
 .nf-card-source{font:400 12px var(--sans);color:var(--text-dim);letter-spacing:.01em;text-decoration:none}
 .nf-card-source b{font-weight:600;color:var(--accent)}
 a.nf-card-source:active{opacity:.7}
@@ -4665,12 +4702,12 @@ a.nf-card-source:active{opacity:.7}
 .nf-sk-line.short{height:10px}
 @keyframes sk-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @media(max-width:600px){
-  .nf-card-title{font-size:17px !important;-webkit-line-clamp:2}
-  .nf-card-desc{font-size:13px;line-height:1.65;-webkit-line-clamp:9}
-  .nf-card-body{padding:12px 16px 8px}
-  .nf-card-img{height:38%;min-height:180px;max-height:280px}
-  .nf-card-footer{padding-top:6px}
-  .nf-card-byline{margin-bottom:6px}
+  .nf-card-title{font-size:16px !important;line-height:1.22;-webkit-line-clamp:2}
+  .nf-card-desc{font-size:13px;line-height:1.55;-webkit-line-clamp:9}
+  .nf-card-body{padding:10px 16px 6px}
+  .nf-card-img{height:36%;min-height:170px;max-height:260px}
+  .nf-card-footer{padding-top:4px;margin-top:4px}
+  .nf-card-byline{margin-bottom:4px}
 }
 /* Aurora theme */
 body[data-theme=aurora] .nf-card{background:rgba(26,26,44,.7);border-color:rgba(255,255,255,.08);backdrop-filter:blur(16px)}
@@ -14763,28 +14800,7 @@ if(isMain){
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
   // "Bro, do it!" mascot — a character with a speech bubble that animates
-  const climbScene='<div class="bro-mascot" aria-hidden="true">'
-    +'<svg class="bro-svg" viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg">'
-    +  '<defs><filter id="broShadow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation="2"/></filter></defs>'
-    +  '<g class="bro-figure">'
-    +    '<circle cx="48" cy="44" r="16" fill="#1F1E1C"/>'
-    +    '<circle cx="42" cy="42" r="2.2" fill="#fff"/><circle cx="54" cy="42" r="2.2" fill="#fff"/>'
-    +    '<path d="M 42 50 Q 48 54 54 50" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
-    +    '<line x1="48" y1="60" x2="48" y2="92" stroke="#1F1E1C" stroke-width="3.4" stroke-linecap="round"/>'
-    +    '<g class="bro-arm-r"><line x1="48" y1="72" x2="76" y2="58" stroke="#1F1E1C" stroke-width="3.2" stroke-linecap="round"/></g>'
-    +    '<line x1="48" y1="72" x2="28" y2="84" stroke="#1F1E1C" stroke-width="3.2" stroke-linecap="round"/>'
-    +    '<line x1="48" y1="92" x2="36" y2="118" stroke="#1F1E1C" stroke-width="3.2" stroke-linecap="round"/>'
-    +    '<line x1="48" y1="92" x2="60" y2="118" stroke="#1F1E1C" stroke-width="3.2" stroke-linecap="round"/>'
-    +  '</g>'
-    +  '<g class="bro-bubble">'
-    +    '<path d="M 100 18 Q 100 4 116 4 L 316 4 Q 332 4 332 18 L 332 78 Q 332 92 316 92 L 130 92 L 110 110 L 116 92 L 116 92 Q 100 92 100 78 Z" fill="#FFFFFF" stroke="#1F1E1C" stroke-width="2.2" filter="drop-shadow(0 4px 10px rgba(17,24,39,0.12))"/>'
-    +    '<text x="216" y="42" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="26" fill="#201e1d">Bro,</text>'
-    +    '<text x="216" y="74" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="32" font-weight="400" fill="#1F1E1C">do it!</text>'
-    +  '</g>'
-    +  '<g class="bro-spark"><path d="M 320 38 l 1.5 -4 1.5 4 4 0 -3 2.5 1.2 4 -3.7 -2.4 -3.7 2.4 1.2 -4 -3 -2.5 z" fill="#1F1E1C"/></g>'
-    +  '<g class="bro-spark2"><circle cx="86" cy="14" r="2.4" fill="#3DAE5C"/></g>'
-    +'</svg>'
-    +'</div>';
+  // bro-mascot / climbScene removed per user request
   const daysLeft=365-dayOfYear;
   const w=S.weather||{};
   const aqiLevel=w.aqi==null?'':w.aqi<=50?'good':w.aqi<=100?'mod':w.aqi<=150?'usg':w.aqi<=200?'bad':w.aqi<=300?'vbad':'haz';
@@ -14807,16 +14823,7 @@ if(isMain){
       +(w.loading?'<span class="weather-loading">\\u2026</span>':'')
     +'</div>'
     +'<div class="india-cities">'+INDIA_CITIES.map(c=>{const t=(S.cityTemps||{})[c.toLowerCase()];const tStr=t&&t.temp!=null?t.temp+'\\u00B0':'\\u2026';return '<span class="ic-item"><span class="ic-name">'+esc(c)+'</span><span class="ic-temp">'+tStr+'</span></span>'}).join('')+'</div>'
-    +'<div class="side-now-bar"><div class="side-now-fill" style="width:'+yearPct+'%"></div><div class="side-now-walker" style="left:'+yearPct+'%">'
-      +'<svg viewBox="0 0 14 18" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">'
-        +'<circle cx="7" cy="3" r="2" fill="#1F1E1C"/>'
-        +'<line x1="7" y1="5" x2="7" y2="11" stroke="#1F1E1C"/>'
-        +'<g class="snw-arm-l"><line x1="7" y1="7" x2="3" y2="9" stroke="#1F1E1C"/></g>'
-        +'<g class="snw-arm-r"><line x1="7" y1="7" x2="11" y2="6" stroke="#1F1E1C"/></g>'
-        +'<g class="snw-leg-l"><line x1="7" y1="11" x2="4" y2="16" stroke="#1F1E1C"/></g>'
-        +'<g class="snw-leg-r"><line x1="7" y1="11" x2="10" y2="16" stroke="#1F1E1C"/></g>'
-      +'</svg>'
-    +'</div></div>'
+    +'<div class="side-now-bar"><div class="side-now-fill" style="width:'+yearPct+'%"></div></div>'
     +'<div class="side-now-foot"><span>'+yearPct+'%</span><span>Day '+dayOfYear+' / 365</span></div>'
     +'<svg class="side-now-wave" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M 0 15 Q 12.5 5 25 15 T 50 15 T 75 15 T 100 15" stroke="#1F1E1C" stroke-width="1.6" fill="none"><animate attributeName="d" dur="4s" repeatCount="indefinite" values="M 0 15 Q 12.5 5 25 15 T 50 15 T 75 15 T 100 15;M 0 15 Q 12.5 25 25 15 T 50 15 T 75 15 T 100 15;M 0 15 Q 12.5 5 25 15 T 50 15 T 75 15 T 100 15"/></path></svg>'
     +'</div>';
@@ -17809,7 +17816,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v152";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v153";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
