@@ -295,7 +295,7 @@ async function _callGemini(messages,{maxTokens=4096,systemPrompt='',imageData=nu
 
 async function _callGroq(messages,{maxTokens=4096,tools}={}){
   if(!GROQ_KEY)throw new Error('no-key');
-  const body={model:'llama-3.3-70b-versatile',max_tokens:maxTokens,messages};
+  const body={model:'openai/gpt-oss-120b',max_tokens:maxTokens,messages};
   if(tools)body.tools=tools;
   let r,j;
   for(let retry=0;retry<3;retry++){
