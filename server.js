@@ -2197,7 +2197,7 @@ async function aiRewriteNews(items,cat){
   const sysPrompt=`You are Brodoit News — a respected modern news platform known for making complex stories accessible and interesting. Rewrite each news article as a compelling, detailed summary that a reader can understand without clicking through.
 
 RULES:
-1. Each summary must be 60-72 words (exactly 9 lines on mobile). This is CRITICAL — aim for exactly 66 words.
+1. Each summary must be 58-66 words (exactly 9 lines on mobile). This is CRITICAL — aim for exactly 62 words.
 2. Write in a clear, engaging journalistic style — like a skilled reporter telling you what happened over coffee.
 3. Open with the single most important fact — the headline brought to life.
 4. Include key details: who, what, where, when, why.
@@ -2207,16 +2207,16 @@ RULES:
 8. Make the title punchy and specific — avoid generic titles.
 9. CRITICAL: The title and summary MUST be about the EXACT SAME news story. Do NOT mix up or swap articles. Each item's rewritten title must directly relate to its summary.
 10. Even if the raw description is empty, use the TITLE to generate a full 60-word summary — expand on the topic knowledgeably.
-11. End each summary with a complete sentence — no trailing "..." or incomplete thoughts.
+11. CRITICAL: End each summary with a COMPLETE sentence ending in a period. NEVER end mid-sentence, with "..." or with incomplete thoughts. The last word must be followed by a period.
 
-Respond with a JSON array: [{"id": 0, "title": "punchy rewritten title", "summary": "60-72 word summary"}, ...]
+Respond with a JSON array: [{"id": 0, "title": "punchy rewritten title", "summary": "58-66 word summary ending in a complete sentence"}, ...]
 Only output the JSON array, nothing else.`;
 
   for(let b=0;b<batch.length;b+=5){
     const chunk=batch.slice(b,b+5);
     const chunkJson=chunk.map((it,i)=>({id:b+i,title:it.title||'',rawDesc:(it.desc||'').slice(0,500),source:it.source||'',link:it.link||''}));
     try{
-      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as concise 60-72 word summaries (exactly 9 lines on mobile). Each title MUST match its summary — do NOT mix up stories. Even if rawDesc is empty, use the title to write a full summary.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:4096,systemPrompt:sysPrompt});
+      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as concise 58-66 word summaries (exactly 9 lines on mobile). Each title MUST match its summary — do NOT mix up stories. Each summary MUST end with a complete sentence and a period. Even if rawDesc is empty, use the title to write a full summary.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:4096,systemPrompt:sysPrompt});
       let parsed;
       const jsonMatch=r.reply.match(/\[[\s\S]*\]/);
       if(jsonMatch)parsed=JSON.parse(jsonMatch[0]);
@@ -2295,7 +2295,7 @@ async function curateNewsCategory(cat){
   // Step 1: AI-rewrite all descriptions as original journalism (needs GEMINI_API_KEY)
   await aiRewriteNews(dedup,cat);
   // Step 2: Fetch EVERY article page for real content + images (exactly 9 lines ≈ 80-100 words)
-  const MIN_WORDS=64;const MAX_WORDS=72;
+  const MIN_WORDS=58;const MAX_WORDS=66;
   const needsFetch=dedup.filter(it=>(!it.desc||it.desc.trim().split(/\s+/).length<MIN_WORDS)||!it.img);
   if(needsFetch.length>0){
     console.log('[NEWS] Fetching '+needsFetch.length+' articles for 10+ line content in '+cat);
@@ -2373,6 +2373,11 @@ async function curateNewsCategory(cat){
       it.desc=cut;
     }else{
       it.desc=words.join(' ');
+    }
+    // Ensure clean ending — trim trailing incomplete fragments, end with period
+    if(it.desc){
+      it.desc=it.desc.replace(/\s*\.{2,}\s*$/,'').replace(/\s*…\s*$/,'').trim();
+      if(!/[.!?]$/.test(it.desc))it.desc=it.desc.replace(/[,;:\s]+$/,'')+'.';
     }
   }
   const avgW=Math.round(dedup.reduce((s,it)=>s+(it.desc||'').split(/\s+/).length,0)/Math.max(dedup.length,1));
@@ -9939,23 +9944,16 @@ function _focusShowLockScreen(){
   var msg=_focusWalkMsgs[msgIdx];
   var h='<div class="focus-lock-glow"></div>';
   h+='<div class="focus-lock-label">FOCUS MODE</div>';
-  // Walking scene
-  h+='<div style="width:90%;max-width:340px;height:120px;border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(180deg,#0d1b2a 0%,#1b3a5c 40%,#3d6b4e 75%,#2d5a3f 100%);margin:20px auto">';
-  h+='<div style="position:absolute;bottom:20px;left:0;right:0;height:2px;background:rgba(255,255,255,.12)"></div>';
-  // Stars
-  h+='<div style="position:absolute;top:8px;left:20%;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.6"></div>';
-  h+='<div style="position:absolute;top:15px;left:50%;width:3px;height:3px;background:#fff;border-radius:50%;opacity:.4"></div>';
-  h+='<div style="position:absolute;top:6px;left:75%;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.5"></div>';
-  h+='<div id="focusLockWalker" style="position:absolute;bottom:22px;left:'+pct+'%;transition:left 1s ease;font-size:28px;transform:translateX(-50%) scaleX(-1)">\\u{1F6B6}</div>';
-  h+='<div style="position:absolute;bottom:22px;right:12px;font-size:24px">\\u{1F3C1}</div>';
-  h+='<div style="position:absolute;bottom:6px;left:16px;right:16px;height:5px;background:rgba(255,255,255,.08);border-radius:3px"><div id="focusLockBar" style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#37352F,#34C759);border-radius:3px;transition:width 1s ease"></div></div>';
+  // Progress bar (clean, no walking person)
+  h+='<div style="width:90%;max-width:340px;margin:20px auto">';
+  h+='<div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div id="focusLockBar" style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#37352F,#34C759);border-radius:3px;transition:width 1s ease"></div></div>';
   h+='</div>';
   h+='<div class="focus-lock-time" style="position:relative"><span id="focusLockTime" class="focus-lock-num">'+timeStr+'</span><span id="focusLockPct" class="focus-lock-pct">'+pct+'%</span></div>';
   h+='<div id="focusLockPhase" class="focus-lock-phase" style="font-size:15px;margin-top:12px;min-height:40px">'+msg+'</div>';
   h+='<div id="focusLockBtns" class="focus-lock-btns">';
   h+='<button class="focus-lock-btn focus-lock-btn-s" onclick="focusPause()"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>Pause</button>';
   h+='</div>';
-  h+='<div class="focus-lock-tip">Keep walking! Don\\'t stop now \\u{1F4AA}</div>';
+  h+='<div class="focus-lock-tip">Stay focused! You\\'re doing great \\u{1F4AA}</div>';
   d.innerHTML=h;
   document.body.appendChild(d);
 }
@@ -9969,11 +9967,8 @@ function focusCandleMode(){
   var pct=S.focus.active?Math.round((1-S.focus.remaining/S.focus.total)*100):0;
   var _m=Math.floor(S.focus.remaining/60);var _s=S.focus.remaining%60;
   var h='<div style="position:absolute;top:12%;width:80%;max-width:320px;text-align:center"><div style="font:700 44px var(--sans);color:#fff;letter-spacing:3px" id="focusRoomTime">'+String(_m).padStart(2,'0')+':'+String(_s).padStart(2,'0')+'</div><div style="font:500 14px var(--sans);color:rgba(255,255,255,.5);margin-top:6px" id="focusRoomPct">'+pct+'% complete</div></div>';
-  h+='<div style="position:relative;width:80%;max-width:320px;height:160px;margin-top:60px">';
-  h+='<div style="position:absolute;bottom:20px;left:0;right:0;height:2px;background:rgba(255,255,255,.15)"></div>';
-  h+='<div id="focusRoomWalker" style="position:absolute;bottom:22px;left:'+pct+'%;font-size:40px;transform:translateX(-50%) scaleX(-1);transition:left 1s ease">\\u{1F6B6}</div>';
-  h+='<div style="position:absolute;bottom:22px;right:0;font-size:32px">\\u{1F3C1}</div>';
-  h+='<div style="position:absolute;bottom:6px;left:0;right:0;height:6px;background:rgba(255,255,255,.08);border-radius:3px"><div id="focusRoomBar" style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#37352F,#34C759);border-radius:3px;transition:width 1s ease"></div></div>';
+  h+='<div style="position:relative;width:80%;max-width:320px;margin-top:60px">';
+  h+='<div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden"><div id="focusRoomBar" style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#37352F,#34C759);border-radius:3px;transition:width 1s ease"></div></div>';
   h+='</div>';
   var msgIdx=Math.floor((pct/100)*(_focusWalkMsgs.length-1));
   h+='<div id="focusRoomMsg" style="font:500 16px var(--sans);color:rgba(255,255,255,.7);margin-top:30px;text-align:center;padding:0 20px">'+_focusWalkMsgs[msgIdx]+'</div>';
@@ -9990,7 +9985,7 @@ function focusCandleMode(){
     var rt=document.getElementById('focusRoomTime');if(rt)rt.textContent=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
     var pp=Math.round((1-S.focus.remaining/S.focus.total)*100);
     var rp=document.getElementById('focusRoomPct');if(rp)rp.textContent=pp+'% complete';
-    var rw=document.getElementById('focusRoomWalker');if(rw)rw.style.left=pp+'%';
+    // walker removed
     var rb=document.getElementById('focusRoomBar');if(rb)rb.style.width=pp+'%';
     var rm=document.getElementById('focusRoomMsg');if(rm){var mi=Math.floor((pp/100)*(_focusWalkMsgs.length-1));rm.textContent=_focusWalkMsgs[mi]}
   },1000);
@@ -14578,13 +14573,9 @@ if(isMain){
   hero+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#37352F" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span style="font:600 15px var(--sans);color:#E8E8EC">Focus</span></div>';
   if(_foc.sessions>0)hero+='<span style="font:500 12px var(--sans);color:rgba(255,255,255,.45)">'+_foc.sessions+' session'+(_foc.sessions>1?'s':'')+' today</span>';
   hero+='</div>';
-  // Walking animation scene
-  hero+='<div class="focus-walk" style="height:90px;border-radius:14px;overflow:hidden;position:relative;background:linear-gradient(180deg,#1a2744 0%,#2d4a7a 50%,#4a7c59 70%,#3d6b4e 100%);margin-bottom:12px">';
-  hero+='<div class="focus-walk-path" style="position:absolute;bottom:16px;left:0;right:0;height:3px;background:rgba(255,255,255,.15);border-radius:2px"></div>';
-  hero+='<div class="focus-walk-person" style="position:absolute;bottom:18px;left:'+_focPct+'%;transition:left 1s ease;font-size:22px;transform:translateX(-50%)'+(_foc.active?' scaleX(-1)':'')+'">\\u{1F6B6}</div>';
-  hero+='<div class="focus-walk-goal" style="position:absolute;bottom:18px;right:8px;font-size:20px">\\u{1F3C1}</div>';
-  // Progress bar
-  hero+='<div style="position:absolute;bottom:4px;left:12px;right:12px;height:4px;background:rgba(255,255,255,.1);border-radius:2px"><div style="height:100%;width:'+_focPct+'%;background:#37352F;border-radius:2px;transition:width 1s ease"></div></div>';
+  // Focus progress bar (clean, no walking person)
+  hero+='<div style="margin-bottom:12px;padding:0 4px">';
+  hero+='<div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+_focPct+'%;background:linear-gradient(90deg,#37352F,#6B6966);border-radius:3px;transition:width 1s ease"></div></div>';
   hero+='</div>';
   // Timer display
   hero+='<div style="text-align:center;margin-bottom:8px">';
@@ -17816,7 +17807,7 @@ app.get('/terms',(_,res)=>{
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v153";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v154";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
