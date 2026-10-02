@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SSB Journey — Brodoit Prep</title>
+<meta name="description" content="Your illustrated journey from the NDA/CDS/AFCAT written exam through the 5-day SSB to the academy. What happens each day, practice drills, packing list and the 15 OLQs.">
+<meta name="theme-color" content="#F6F5F2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  .seg-sticky{position:sticky;top:56px;z-index:30;padding:8px 0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .meter{height:8px;border-radius:8px;background:rgba(255,255,255,.25);overflow:hidden;margin-top:14px}
+  .meter i{display:block;height:100%;background:#fff;border-radius:8px;transition:width .6s}
+  .hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .hero-chips span{background:rgba(255,255,255,.18);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px;font-size:12px;font-weight:800}
+
+  .tl{position:relative;padding-left:30px;margin-top:8px}
+  .tl::before{content:"";position:absolute;left:11px;top:10px;bottom:10px;width:3px;border-radius:3px;background:linear-gradient(var(--accent),#7C3AED,#16A34A)}
+  .stage{position:relative;margin-bottom:18px;overflow:visible}
+  .stage .dot{position:absolute;left:-30px;top:18px;width:25px;height:25px;border-radius:50%;background:var(--card);border:4px solid var(--c);box-shadow:var(--shadow);display:grid;place-items:center;font-size:11px;font-weight:800}
+  .stage.seen .dot{background:var(--c);color:#fff}
+  .stage .banner{height:170px;position:relative;overflow:hidden;border-radius:var(--r-lg) var(--r-lg) 0 0}
+  .stage .banner svg{width:100%;height:100%}
+  .stage .badge{position:absolute;left:12px;top:12px;background:#fff;color:#0E0E10;font-size:11px;font-weight:800;padding:5px 10px;border-radius:999px;letter-spacing:.04em}
+  .stage .when{position:absolute;right:12px;bottom:12px;background:rgba(14,14,16,.75);color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px}
+  .stage .inner{padding:16px}
+  .stage ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:10px}
+  .stage li{display:flex;gap:10px;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+  .stage li::before{content:"";flex:0 0 7px;height:7px;border-radius:50%;background:var(--c);margin-top:8px}
+  .stage li strong{color:var(--ink)}
+  .stage details{margin-top:12px;border-radius:var(--r-md);background:var(--card-2);padding:12px 14px}
+  .stage summary{font-weight:800;font-size:14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+  .stage summary::-webkit-details-marker{display:none}
+  .stage summary::after{content:"+";font-size:18px;line-height:1}
+  .stage details[open] summary::after{content:"–"}
+  .stage .tip{font-size:13.5px;padding:6px 0;display:flex;gap:8px}
+  .stage .actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .stage .actions a,.stage .actions button{flex:1;min-width:140px;padding:12px 14px;font-size:14px}
+
+  .drill{display:flex;gap:14px;align-items:center;padding:14px;border-radius:var(--r-lg);color:#fff;position:relative;overflow:hidden;min-height:120px;text-align:left;width:100%}
+  .drill .art{position:absolute;top:0;bottom:0;right:0;width:58%;opacity:.55;-webkit-mask-image:linear-gradient(90deg,transparent,#000 45%);mask-image:linear-gradient(90deg,transparent,#000 45%)}
+  .drill .art svg{width:100%;height:100%}
+  .drill > div:not(.art){position:relative}
+  .drill + .drill{margin-top:12px}
+
+  .olq-group{margin-top:18px}
+  .olq{display:flex;gap:12px;padding:12px 14px;background:var(--card);border-radius:var(--r-md);box-shadow:var(--shadow);margin-top:8px}
+  .olq .n{width:30px;height:30px;border-radius:10px;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex-shrink:0}
+  .check{display:flex;gap:12px;align-items:flex-start;padding:12px 2px;border-bottom:1px solid var(--line);font-size:14.5px;cursor:pointer}
+  .check input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0;margin-top:1px}
+  .check.on span{text-decoration:line-through;color:var(--mute)}
+
+  /* fullscreen drill runner */
+  .runner{position:fixed;inset:0;z-index:100;background:#0B0B0D;color:#fff;display:flex;flex-direction:column;padding:16px 16px calc(16px + env(safe-area-inset-bottom));animation:rise .3s both}
+  .runner .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .runner .x{width:40px;height:40px;border-radius:50%;background:#1F1F24;display:grid;place-items:center;font-size:18px}
+  .runner .stage-area{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;max-width:560px;width:100%;margin:0 auto}
+  .runner .pic{border-radius:20px;overflow:hidden;aspect-ratio:4/3;background:#222}
+  .runner .pic svg{width:100%;height:100%}
+  .runner .big{font-size:clamp(34px,10vw,56px);font-weight:800;letter-spacing:-.03em;text-align:center}
+  .runner textarea,.runner input{width:100%;background:#16161A;border:1px solid #2A2A30;color:#fff;border-radius:14px;padding:14px;font:500 16px var(--font)}
+  .runner textarea{min-height:180px;resize:vertical}
+  .timer{--p:100;width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1%),#26262C 0);display:grid;place-items:center}
+  .timer span{width:52px;height:52px;border-radius:50%;background:#0B0B0D;display:grid;place-items:center;font-weight:800;font-size:16px}
+  .runner .phase{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#FFC24B}
+  .runner .review{overflow:auto;max-height:60vh;display:flex;flex-direction:column;gap:8px}
+  .runner .review div{background:#16161A;border-radius:12px;padding:10px 12px;font-size:14px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero rise" style="background:var(--g-ssb);min-height:300px">
+    <div class="art" id="heroArt"></div><div class="shade"></div>
+    <span class="tag">Your SSB journey</span>
+    <h1 class="h-xl" style="font-size:34px">From exam hall<br>to academy gate.</h1>
+    <div class="hero-chips"><span>5 days</span><span>15 OLQs</span><span>3 practice drills</span></div>
+    <div class="meter"><i id="meter" style="width:0"></i></div>
+    <div style="font-size:12px;font-weight:700;margin-top:6px;opacity:.9" id="meterTxt"></div>
+  </section>
+
+  <div class="seg-sticky"><div class="seg" id="seg">
+    <button class="on" data-v="journey">Journey</button><button data-v="drills">Drills</button><button data-v="pack">Pack list</button><button data-v="olqs">OLQs</button>
+  </div></div>
+
+  <section data-view="journey"><div class="tl" id="timeline"></div></section>
+  <section data-view="drills" hidden>
+    <p class="muted" style="margin:6px 0 14px;font-weight:600">Timed exactly like the real tests. Do one a day.</p>
+    <div id="drills"></div>
+    <div class="section"><div class="h-md">Your drill history</div></div>
+    <div id="drillLog"></div>
+  </section>
+  <section data-view="pack" hidden>
+    <div class="card" style="padding:16px;margin-top:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><div class="h-md">Packing checklist</div><b id="packCount"></b></div>
+      <div class="bar" style="height:8px;border-radius:8px;background:var(--card-2);overflow:hidden;margin-top:10px"><i id="packBar" style="display:block;height:100%;background:var(--accent);width:0;transition:width .3s"></i></div>
+      <div id="pack"></div>
+    </div>
+    <p class="note" style="margin-top:12px">Your call-up letter is the final word on documents — tick this list against it.</p>
+  </section>
+  <section data-view="olqs" hidden>
+    <p class="muted" style="margin:6px 0;font-weight:600">Every test at SSB looks for these 15 Officer Like Qualities, grouped into 4 factors.</p>
+    <div id="olqs"></div>
+    <a class="btn btn-dark btn-block press" style="margin-top:18px" href="lecture.html?exam=ssb&s=basics&c=ssb-olqs&from=ssb">Swipe the OLQ lesson →</a>
+  </section>
+</main>
+
+<script type="module">
+import { renderChrome, store, esc, richText, logActivity, addTime, toast } from './assets/js/app.js';
+import { art } from './assets/js/art.js';
+import { STAGES, OLQS, PACK, WAT_WORDS, SRT_ITEMS, PPDT_PICS } from './assets/js/ssb-data.js';
+
+renderChrome({ active: 'ssb.html', title: 'SSB Journey' });
+document.getElementById('heroArt').innerHTML = art.ssb(false);
+
+// ---------- tabs ----------
+const seg = document.getElementById('seg');
+function show(v) {
+  seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  document.querySelectorAll('[data-view]').forEach(s => { s.hidden = s.dataset.view !== v; });
+  history.replaceState(null, '', '#' + v);
+}
+seg.onclick = e => e.target.dataset.v && show(e.target.dataset.v);
+if (location.hash) show(location.hash.slice(1));
+
+// ---------- journey ----------
+const seen = () => store.read().ssbSeen || {};
+document.getElementById('timeline').innerHTML = STAGES.map((st, i) => `
+  <article class="stage card${seen()[st.id] ? ' seen' : ''}" data-id="${st.id}" style="--c:${st.color}">
+    <div class="dot">${i + 1}</div>
+    <div class="banner">${art[st.art]()}<span class="badge">${esc(st.step)}</span><span class="when">${esc(st.when)}</span></div>
+    <div class="inner">
+      <div class="h-md" style="font-size:20px">${esc(st.title)}</div>
+      <ul>${st.what.map(w => `<li><span>${richText(w)}</span></li>`).join('')}</ul>
+      ${st.tips.length || st.avoid.length ? `<details><summary>Insider tips & mistakes</summary>
+        ${st.tips.map(t => `<div class="tip">✅ <span>${esc(t)}</span></div>`).join('')}
+        ${st.avoid.map(t => `<div class="tip">⛔ <span>${esc(t)}</span></div>`).join('')}</details>` : ''}
+      <div class="actions">
+        ${st.lesson ? `<a class="btn btn-dark press" href="${st.lesson}">Swipe lesson →</a>` : ''}
+        ${st.drill ? `<button class="btn btn-accent press" data-drill="${st.drill}">Practice now</button>` : ''}
+      </div>
+    </div>
+  </article>`).join('');
+
+function meter() {
+  const n = Object.keys(seen()).length;
+  document.getElementById('meter').style.width = `${(n / STAGES.length) * 100}%`;
+  document.getElementById('meterTxt').textContent = `${n} of ${STAGES.length} stages explored`;
+}
+meter();
+const io = new IntersectionObserver(entries => {
+  for (const en of entries) {
+    if (!en.isIntersecting) continue;
+    const id = en.target.dataset.id;
+    if (seen()[id]) continue;
+    store.update(s => { s.ssbSeen = { ...(s.ssbSeen || {}), [id]: Date.now() }; });
+    en.target.classList.add('seen');
+    meter();
+  }
+}, { threshold: 0.6 });
+document.querySelectorAll('.stage').forEach(el => io.observe(el));
+document.addEventListener('click', e => { const d = e.target.closest('[data-drill]'); if (d) startDrill(d.dataset.drill); });
+
+// ---------- pack list ----------
+function drawPack() {
+  const got = store.read().pack || {};
+  const all = PACK.flatMap(([, items]) => items);
+  const n = all.filter(x => got[x]).length;
+  document.getElementById('packCount').textContent = `${n}/${all.length}`;
+  document.getElementById('packBar').style.width = `${(n / all.length) * 100}%`;
+  document.getElementById('pack').innerHTML = PACK.map(([g, items]) => `
+    <div class="eyebrow muted" style="margin:18px 0 2px">${esc(g)}</div>
+    ${items.map(x => `<label class="check${got[x] ? ' on' : ''}"><input type="checkbox" data-k="${esc(x)}" ${got[x] ? 'checked' : ''}><span>${esc(x)}</span></label>`).join('')}`).join('');
+}
+document.getElementById('pack').addEventListener('change', e => {
+  const k = e.target.dataset.k;
+  store.update(s => { s.pack = s.pack || {}; if (e.target.checked) s.pack[k] = 1; else delete s.pack[k]; });
+  drawPack();
+});
+drawPack();
+
+// ---------- OLQs ----------
+let olqN = 0;
+document.getElementById('olqs').innerHTML = OLQS.map(g => `
+  <div class="olq-group"><div class="eyebrow" style="color:${g.c}">${esc(g.f)}</div>
+  ${g.q.map(([name, d]) => `<div class="olq"><div class="n" style="background:${g.c}">${++olqN}</div><div><b>${esc(name)}</b><div class="muted" style="font-size:13.5px">${esc(d)}</div></div></div>`).join('')}</div>`).join('');
+
+// ---------- drills ----------
+const DRILLS = [
+  { id: 'ppdt', name: 'PPDT simulator', sub: '30 s picture · 1 min notes · 3 min story', bg: 'var(--g-it)', a: art.screening },
+  { id: 'wat', name: 'Word Association', sub: '15 words · 15 seconds each', bg: 'var(--g-ssb)', a: art.psych },
+  { id: 'srt', name: 'Situation Reaction', sub: '10 situations · 30 seconds each', bg: 'var(--g-defence)', a: art.gto },
+];
+document.getElementById('drills').innerHTML = DRILLS.map(d => `
+  <button class="drill press" data-drill="${d.id}" style="background:${d.bg}">
+    <div class="art">${d.a()}</div>
+    <div style="flex:1"><div class="eyebrow" style="opacity:.85">Drill</div><div class="h-md" style="font-size:21px">${d.name}</div><div style="font-size:13px;opacity:.9;margin-top:2px">${d.sub}</div></div>
+    <div style="font-size:28px">▶</div></button>`).join('');
+
+function drawLog() {
+  const log = (store.read().drills || []).slice(0, 10);
+  document.getElementById('drillLog').innerHTML = log.length ? log.map(l => `
+    <div class="row"><div class="thumb" style="background:var(--g-ssb)">${l.kind === 'ppdt' ? '🖼️' : l.kind === 'wat' ? '💬' : '⚡'}</div>
+    <div class="body"><div class="t">${esc(l.title)}</div><div class="s">${new Date(l.at).toLocaleString()} · ${esc(l.summary)}</div></div></div>`).join('')
+    : '<p class="muted">No drills yet. Your answers stay on this device.</p>';
+}
+drawLog();
+
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1]);
+let runner = null, tick = null, started = 0;
+
+function openRunner() {
+  runner = document.createElement('div');
+  runner.className = 'runner';
+  document.body.append(runner);
+  document.body.style.overflow = 'hidden';
+  started = Date.now();
+}
+function closeRunner() {
+  clearInterval(tick);
+  addTime('study', 'ssb/drills', Math.round((Date.now() - started) / 1000));
+  runner?.remove(); runner = null;
+  document.body.style.overflow = '';
+}
+// Renders a timed phase; calls onDone when time is up or "Next" is tapped.
+function phase({ label, seconds, html, onDone, nextText = 'Next →' }) {
+  clearInterval(tick);
+  let left = seconds;
+  runner.innerHTML = `<div class="top"><button class="x" id="rx" aria-label="Close">✕</button>
+      <div class="phase">${label}</div>
+      ${seconds ? `<div class="timer" id="tm"><span id="tmv">${left}</span></div>` : '<div style="width:64px"></div>'}</div>
+    <div class="stage-area">${html}</div>
+    <button class="btn btn-accent btn-block press" id="rn">${nextText}</button>`;
+  runner.querySelector('#rx').onclick = closeRunner;
+  let finished = false;
+  const done = () => { if (finished) return; finished = true; clearInterval(tick); onDone(); };
+  runner.querySelector('#rn').onclick = done;
+  runner.querySelector('textarea,input')?.focus();
+  if (seconds) tick = setInterval(() => {
+    left--;
+    const tm = runner?.querySelector('#tm');
+    if (!tm) return clearInterval(tick);
+    tm.style.setProperty('--p', (left / seconds) * 100);
+    runner.querySelector('#tmv').textContent = left;
+    if (left <= 0) done();
+  }, 1000);
+}
+function saveDrill(kind, title, summary, data) {
+  store.update(s => { s.drills = [{ at: Date.now(), kind, title, summary, data }, ...(s.drills || [])].slice(0, 50); });
+  logActivity({ type: 'drill', exam: 'SSB', title: `${title} — ${summary}` });
+  drawLog();
+}
+
+function startDrill(kind) {
+  openRunner();
+  if (kind === 'ppdt') return ppdt();
+  if (kind === 'wat') return listDrill('wat', 'Word Association Test', shuffle(WAT_WORDS).slice(0, 15), 15, 'Write one sentence using this word');
+  if (kind === 'srt') return listDrill('srt', 'Situation Reaction Test', shuffle(SRT_ITEMS).slice(0, 10), 30, 'What does he do?');
+}
+
+function ppdt() {
+  const pic = PPDT_PICS[Math.floor(Math.random() * PPDT_PICS.length)];
+  const notes = {};
+  phase({ label: 'Observe the picture', seconds: 30, nextText: 'I\'m ready',
+    html: `<div class="pic" style="filter:blur(2.5px) grayscale(.4)">${art[pic]()}</div><p style="text-align:center;color:#aaa">Look for people, mood and what might be happening. The picture disappears after 30 seconds.</p>`,
+    onDone: () => phase({ label: 'Note the characters · 1 min', seconds: 60,
+      html: `<div class="big" style="font-size:22px">Who did you see?</div>
+        <input id="n1" placeholder="Number of characters (e.g. 3)" inputmode="numeric">
+        <input id="n2" placeholder="Main character: age, sex, mood (e.g. 20, M, +ve)">
+        <input id="n3" placeholder="What is happening? (one line)">`,
+      onDone: () => {
+        ['n1', 'n2', 'n3'].forEach(k => { notes[k] = runner.querySelector('#' + k)?.value || ''; });
+        phase({ label: 'Write your story · 3 min', seconds: 180, nextText: 'Finish',
+          html: `<textarea id="story" placeholder="What led to the situation, what is happening now, and how does it end? Give your hero a positive, practical action."></textarea>`,
+          onDone: () => {
+            const story = runner.querySelector('#story')?.value.trim() || '';
+            const words = story ? story.split(/\s+/).length : 0;
+            saveDrill('ppdt', 'PPDT story', `${words} words`, { pic, notes, story });
+            phase({ label: 'Self-check', seconds: 0, nextText: 'Done',
+              html: `<div class="pic" style="max-height:34vh">${art[pic]()}</div>
+                <div class="review">
+                  <div>📝 ${words} words ${words < 60 ? '— aim for 80–120 in 3 minutes' : '— good length'}</div>
+                  <div>🦸 Does your story have one clear hero?</div>
+                  <div>🎯 Is there a problem and a practical action by the hero?</div>
+                  <div>🌅 Does it end positively and realistically?</div>
+                  <div>🗣️ Now narrate it aloud in under 1 minute.</div>
+                </div>`,
+              onDone: () => { closeRunner(); toast('Saved to your drill history'); } });
+          } });
+      } }) });
+}
+
+function listDrill(kind, title, items, secs, prompt) {
+  const answers = [];
+  const step = i => {
+    if (i >= items.length) {
+      const filled = answers.filter(a => a.a.trim()).length;
+      saveDrill(kind, title, `${filled}/${items.length} answered`, answers);
+      return phase({ label: 'Review', seconds: 0, nextText: 'Done',
+        html: `<div class="big" style="font-size:26px">${filled}/${items.length} answered</div>
+          <div class="review">${answers.map(a => `<div><b>${esc(a.q)}</b><br>${esc(a.a) || '<i style="color:#888">— skipped</i>'}</div>`).join('')}</div>
+          <p style="color:#aaa;font-size:13px">Read them back: are they positive, practical and in your own voice?</p>`,
+        onDone: () => { closeRunner(); toast('Saved to your drill history'); } });
+    }
+    phase({ label: `${title} · ${i + 1}/${items.length}`, seconds: secs,
+      html: `<div class="big"${kind === 'srt' ? ' style="font-size:22px;line-height:1.35"' : ''}>${esc(items[i])}</div>
+        <input id="ans" placeholder="${prompt}" autocomplete="off">`,
+      onDone: () => { answers.push({ q: items[i], a: runner.querySelector('#ans')?.value || '' }); step(i + 1); } });
+    runner.querySelector('#ans').addEventListener('keydown', e => { if (e.key === 'Enter') runner.querySelector('#rn').click(); });
+  };
+  step(0);
+}
+</script>
+</body>
+</html>

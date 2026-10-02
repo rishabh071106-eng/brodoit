@@ -2,221 +2,287 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Lecture &mdash; Brodoit</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lesson — Brodoit Prep</title>
+<meta name="theme-color" content="#0B0B0D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="assets/style.css">
-<link rel="stylesheet" href="assets/learn.css">
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  body{background:#0B0B0D;color:#fff;padding:0;overflow:hidden;height:100dvh}
+  .player{height:100dvh;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+  .bars{display:flex;gap:4px;margin:4px 0 10px}
+  .bars i{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden}
+  .bars i b{display:block;height:100%;width:0;background:#fff;transition:width .3s}
+  .bars i.done b{width:100%}
+  .head{display:flex;align-items:center;gap:10px}
+  .head .x{width:38px;height:38px;border-radius:50%;background:#1F1F24;display:grid;place-items:center;flex-shrink:0}
+  .head .x svg{width:18px;height:18px}
+  .head .meta{flex:1;min-width:0}
+  .head .meta div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .deck{position:relative;flex:1;margin:12px 0 10px}
+  .c{position:absolute;inset:0;border-radius:28px;padding:24px 22px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;
+     touch-action:pan-y;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s;will-change:transform;box-shadow:0 30px 60px rgba(0,0,0,.45);
+     background:#FFFFFF;color:#0E0E10;user-select:none;-webkit-user-select:none}
+  .c.hide{opacity:0;pointer-events:none;transform:translateY(40px) scale(.86)}
+  .c.n1{transform:translateY(16px) scale(.94);opacity:.9;pointer-events:none;filter:brightness(.85)}
+  .c.n2{transform:translateY(30px) scale(.88);opacity:.6;pointer-events:none;filter:brightness(.7)}
+  .c.gone{transform:translateX(-130%) rotate(-14deg);opacity:0;pointer-events:none}
+  .c.drag{transition:none}
+  .c.n1 > *,.c.n2 > *,.c.hide > *{visibility:hidden}
+  .c .type{display:inline-flex;align-self:flex-start;gap:6px;align-items:center;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 11px;border-radius:999px;background:rgba(14,14,16,.07)}
+  .c h2{font-size:clamp(24px,6.5vw,30px);font-weight:800;letter-spacing:-.03em;line-height:1.12}
+  .c .body{font-size:17px;line-height:1.6;font-weight:500}
+  .c ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .c li{display:flex;gap:10px;font-size:16px;line-height:1.5;font-weight:500}
+  .c li::before{content:"";flex:0 0 8px;height:8px;border-radius:50%;background:currentColor;opacity:.5;margin-top:8px}
+  .c code{font-family:'JetBrains Mono',monospace;font-size:.9em;background:rgba(14,14,16,.08);padding:1px 6px;border-radius:6px}
+  .c .body code{white-space:pre-wrap}
+  .c.concept{background:linear-gradient(170deg,#FFFFFF 60%,#FFF1EA)}
+  .c.concept .type{background:#FFE6DA;color:#C2410C}
+  .c.formula{background:linear-gradient(160deg,#17171C,#26203F);color:#fff}
+  .c.formula .type{background:rgba(255,255,255,.12);color:#C4B5FD}
+  .c.formula li{font-family:'JetBrains Mono',monospace;font-size:15px;background:rgba(255,255,255,.07);padding:10px 12px;border-radius:12px}
+  .c.formula li::before{display:none}
+  .c.formula code{background:rgba(255,255,255,.12)}
+  .c.example{background:linear-gradient(165deg,#EAF4FF,#D6E8FF)}
+  .c.example .type{background:#C7DDFF;color:#1D4ED8}
+  .c.tip{background:linear-gradient(165deg,#FFF7D6,#FFE79A)}
+  .c.tip .type{background:#FFE17A;color:#854D0E}
+  .c.quiz{background:linear-gradient(165deg,#ECFDF3,#FFFFFF 50%)}
+  .c.quiz .type{background:#BBF7D0;color:#166534}
+  .opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:14px;border-radius:16px;background:#fff;border:2px solid rgba(14,14,16,.08);font-weight:600;font-size:15.5px;color:#0E0E10}
+  .opt + .opt{margin-top:8px}
+  .opt .l{width:30px;height:30px;border-radius:10px;background:#F0EEEA;display:grid;place-items:center;font-weight:800;flex-shrink:0}
+  .opt.right{border-color:#16A34A;background:#ECFDF3}.opt.right .l{background:#16A34A;color:#fff}
+  .opt.wrong{border-color:#E5484D;background:#FEF2F2}.opt.wrong .l{background:#E5484D;color:#fff}
+  .explain{border-radius:16px;padding:12px 14px;background:rgba(14,14,16,.05);font-size:14.5px;font-weight:500}
+  .c.end{background:linear-gradient(160deg,#FF5A1F,#FFC24B);color:#fff;align-items:center;justify-content:center;text-align:center}
+  .c.end .big{font-size:72px;line-height:1}
+  .c .hint{margin-top:auto;font-size:12px;font-weight:700;opacity:.45;text-align:center}
+  .ctrl{display:flex;gap:10px;align-items:center}
+  .ctrl button{height:54px;border-radius:999px;font-weight:800;font-size:15px}
+  .ctrl .nav{width:54px;background:#1F1F24;color:#fff;display:grid;place-items:center;font-size:20px}
+  .ctrl .listen{flex:1;background:#fff;color:#0E0E10;display:flex;align-items:center;justify-content:center;gap:8px}
+  .ctrl .listen.on{background:#16A34A;color:#fff}
+  .opts{display:flex;justify-content:center;gap:10px;margin-top:10px;font-size:12px;color:#9A9AA3;font-weight:600;align-items:center}
+  .opts select{background:#1F1F24;color:#fff;border:none;border-radius:8px;padding:5px 8px;font:600 12px var(--font);max-width:150px}
+  .confetti{position:fixed;top:-10px;width:9px;height:14px;border-radius:2px;z-index:200;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+</style>
 </head>
-<body class="lecture-page">
+<body>
 <div class="player">
-  <div class="player-top">
-    <a class="x" id="close" href="exams.html" aria-label="Close lecture">✕</a>
-    <div class="bar"><span id="prog" style="width:0"></span></div>
-    <span class="meta" id="count"></span>
+  <div class="bars" id="bars"></div>
+  <div class="head">
+    <a class="x press" id="close" href="exams.html" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
+    <div class="meta"><div style="font-size:12px;color:#9A9AA3;font-weight:700" id="crumb"></div><div style="font-weight:800;font-size:15px" id="ttl"></div></div>
+    <span class="pill" style="background:#1F1F24;color:#fff;box-shadow:none" id="count"></span>
   </div>
-  <div class="player-title" id="ptitle"></div>
-  <div class="deck" id="deck" tabindex="0" aria-roledescription="carousel"></div>
-  <div class="dots" id="dots"></div>
-  <div class="controls">
-    <button class="btn btn-ghost" id="prev">← Back</button>
-    <button class="btn btn-ghost" id="listen" title="Read this chapter aloud">🎧 Listen</button>
-    <button class="btn btn-primary" id="next">Next →</button>
+  <div class="deck" id="deck"></div>
+  <div class="ctrl">
+    <button class="nav press" id="prev" aria-label="Previous">←</button>
+    <button class="listen press" id="listen">🎧 Listen</button>
+    <button class="nav press" id="next" aria-label="Next">→</button>
   </div>
-  <div class="audio" id="audioOpts">
-    Speed <select id="rate"><option value="0.8">0.8×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select>
-    <span>Voice</span> <select id="voice"></select>
-  </div>
+  <div class="opts" id="audioOpts">Speed <select id="rate"><option value="0.8">0.8×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select>
+    <span>Voice</span><select id="voice"></select></div>
 </div>
 
 <script type="module">
-import { renderNav, loadExam, loadExamWithCore, examChapters, store, addTime, logActivity, richText, esc, param, fmtMinutes } from './assets/js/app.js';
-renderNav('exams.html');
+import { loadExam, loadExamWithCore, examChapters, store, addTime, logActivity, richText, esc, param, fmtMinutes } from './assets/js/app.js';
 
 const examId = param('exam'), subjId = param('s'), chapId = param('c'), fromId = param('from') || examId;
 const exam = await loadExam(examId);
 const subject = exam.subjects.find(s => s.id === subjId);
 const chapter = subject?.chapters.find(c => c.id === chapId);
 const deck = document.getElementById('deck');
-if (!chapter) { deck.innerHTML = '<div class="card end"><h2>Chapter not found</h2><a href="exams.html">Back to exams</a></div>'; throw new Error('missing'); }
+if (!chapter) { deck.innerHTML = '<div class="c end"><h2>Lesson not found</h2></div>'; throw new Error('missing'); }
 
 const key = `${examId}/${subjId}/${chapId}`;
-const { exam: parent, core } = await loadExamWithCore(fromId);
+const isSSB = fromId === 'ssb';
+const { exam: parent, core } = isSSB ? { exam, core: null } : await loadExamWithCore(fromId);
 const order = [...examChapters(parent), ...(core ? examChapters(core) : [])];
 const nextCh = order[order.findIndex(x => x.key === key) + 1];
-const backHref = `exam.html?id=${fromId}`;
-const crumb = `${parent.name} › ${subject.name}`;
+const backHref = isSSB ? 'ssb.html' : `exam.html?id=${fromId}`;
+const lessonHref = x => `lecture.html?exam=${x.key.split('/')[0]}&s=${x.subject.id}&c=${x.chapter.id}&from=${fromId}`;
+const crumb = `${parent.name} · ${subject.name}`;
 document.getElementById('close').href = backHref;
-document.getElementById('ptitle').innerHTML = `${esc(crumb)} · <b>${esc(chapter.title)}</b>`;
-document.title = `${chapter.title} — ${parent.name} — Brodoit`;
+document.getElementById('crumb').textContent = crumb;
+document.getElementById('ttl').textContent = chapter.title;
+document.title = `${chapter.title} — Brodoit Prep`;
 store.update(s => { s.last = { href: location.pathname.split('/').pop() + location.search, title: chapter.title, exam: crumb, at: Date.now() }; });
 
-// ---------- Cards
-const LABEL = { concept: 'Concept', formula: 'Formulas', example: 'Worked example', tip: 'Exam tip', quiz: 'Quick check' };
+// ---------- cards ----------
+const LABEL = { concept: '💡 Concept', formula: '🧮 Formulas', example: '✍️ Example', tip: '🎯 Exam tip', quiz: '✅ Quick check' };
 const cards = chapter.cards;
-const quizState = {}; // card index -> correct?
+const quiz = {};
+deck.innerHTML = cards.map((c, i) => c.type === 'quiz'
+  ? `<article class="c quiz" data-i="${i}"><span class="type">${LABEL.quiz}</span><h2>${richText(c.q)}</h2>
+      <div>${c.options.map((o, j) => `<button class="opt" data-j="${j}"><span class="l">${'ABCD'[j]}</span><span>${richText(o)}</span></button>`).join('')}</div>
+      <div class="explain" hidden>${richText(c.explain || '')}</div></article>`
+  : `<article class="c ${c.type}" data-i="${i}"><span class="type">${LABEL[c.type] || c.type}</span>
+      ${c.title ? `<h2>${richText(c.title)}</h2>` : ''}${c.body ? `<div class="body">${richText(c.body)}</div>` : ''}
+      ${c.points ? `<ul>${c.points.map(p => `<li><span>${richText(p)}</span></li>`).join('')}</ul>` : ''}
+      ${i === 0 ? '<div class="hint">Swipe left for next →</div>' : ''}</article>`).join('')
+  + `<article class="c end" data-i="${cards.length}" id="endCard"></article>`;
+const els = [...deck.children];
+const total = els.length;
+document.getElementById('bars').innerHTML = cards.map(() => '<i><b></b></i>').join('');
+const bars = [...document.getElementById('bars').children];
 
-function cardHTML(c, i) {
-  const head = `<div class="type">${LABEL[c.type] || c.type}</div>`;
-  if (c.type === 'quiz') {
-    return `<article class="card quiz" data-i="${i}">${head}<h2>${richText(c.q)}</h2>
-      <div>${c.options.map((o, j) => `<button class="opt" data-j="${j}">${String.fromCharCode(65 + j)}. ${richText(o)}</button>`).join('')}</div>
-      <div class="explain" hidden>${richText(c.explain || '')}</div></article>`;
-  }
-  return `<article class="card ${c.type}" data-i="${i}">${head}
-    ${c.title ? `<h2>${richText(c.title)}</h2>` : ''}
-    ${c.body ? `<div class="body">${richText(c.body)}</div>` : ''}
-    ${c.points ? `<ul>${c.points.map(p => `<li>${richText(p)}</li>`).join('')}</ul>` : ''}</article>`;
+let idx = 0;
+function layout() {
+  els.forEach((el, j) => {
+    el.classList.remove('gone', 'n1', 'n2', 'hide');
+    el.style.transform = '';
+    el.style.zIndex = total - j;
+    if (j < idx) el.classList.add('gone');
+    else if (j === idx + 1) el.classList.add('n1');
+    else if (j === idx + 2) el.classList.add('n2');
+    else if (j > idx + 2) el.classList.add('hide');
+  });
+  bars.forEach((b, j) => b.classList.toggle('done', j <= idx));
+  document.getElementById('count').textContent = `${Math.min(idx + 1, cards.length)}/${cards.length}`;
+  if (idx === total - 1) complete();
 }
-deck.innerHTML = cards.map(cardHTML).join('') + `<article class="card end" data-i="${cards.length}" id="endCard"></article>`;
-const all = [...deck.children];
-document.getElementById('dots').innerHTML = all.map(() => '<i></i>').join('');
-const dots = [...document.getElementById('dots').children];
+function go(i) {
+  i = Math.max(0, Math.min(total - 1, i));
+  if (i === idx) return;
+  idx = i; layout();
+  if (listening && idx !== spoken && idx < cards.length) speakCard(idx);
+  if (idx >= cards.length && listening) stopListening();
+}
+layout();
+document.getElementById('prev').onclick = () => go(idx - 1);
+document.getElementById('next').onclick = () => idx === total - 1 ? (location.href = nextCh ? lessonHref(nextCh) : backHref) : go(idx + 1);
+document.addEventListener('keydown', e => { if (e.key === 'ArrowRight') go(idx + 1); if (e.key === 'ArrowLeft') go(idx - 1); });
+
+// drag to swipe (horizontal only; vertical stays native scroll)
+let sx = 0, sy = 0, dx = 0, dragging = false, axis = null, el = null;
+deck.addEventListener('pointerdown', e => {
+  el = e.target.closest('.c'); if (!el || +el.dataset.i !== idx || e.target.closest('button')) { el = null; return; }
+  sx = e.clientX; sy = e.clientY; dx = 0; axis = null; dragging = true;
+});
+deck.addEventListener('pointermove', e => {
+  if (!dragging || !el) return;
+  const mx = e.clientX - sx, my = e.clientY - sy;
+  if (!axis && Math.hypot(mx, my) > 8) axis = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+  if (axis !== 'x') return;
+  dx = mx; el.classList.add('drag');
+  el.style.transform = `translateX(${dx}px) rotate(${dx / 22}deg)`;
+});
+const end = () => {
+  if (!dragging || !el) return;
+  dragging = false; el.classList.remove('drag');
+  if (axis === 'x' && dx < -70) go(idx + 1);
+  else if (axis === 'x' && dx > 70) go(idx - 1);
+  else el.style.transform = '';
+  el = null;
+};
+deck.addEventListener('pointerup', end); deck.addEventListener('pointercancel', end);
 
 deck.addEventListener('click', e => {
-  const btn = e.target.closest('.opt');
-  if (!btn) return;
-  const card = btn.closest('.card'), i = +card.dataset.i, c = cards[i];
-  if (i in quizState) return;
-  const right = +btn.dataset.j === c.answer;
-  quizState[i] = right;
-  card.querySelectorAll('.opt').forEach((b, j) => { b.disabled = true; if (j === c.answer) b.classList.add('right'); });
-  if (!right) btn.classList.add('wrong');
+  const b = e.target.closest('.opt'); if (!b) return;
+  const card = b.closest('.c'), i = +card.dataset.i, c = cards[i];
+  if (i in quiz) return;
+  quiz[i] = +b.dataset.j === c.answer;
+  card.querySelectorAll('.opt').forEach((o, j) => { o.disabled = true; if (j === c.answer) o.classList.add('right'); });
+  if (!quiz[i]) b.classList.add('wrong');
   card.querySelector('.explain').hidden = false;
+  navigator.vibrate?.(quiz[i] ? 15 : [30, 40, 30]);
 });
 
-// ---------- Navigation
-let idx = 0, listening = false, voices = [], spokenIdx = -1;
-const go = i => { i = Math.max(0, Math.min(all.length - 1, i)); deck.scrollTo({ left: all[i].offsetLeft - deck.offsetLeft, behavior: 'smooth' }); };
-document.getElementById('prev').onclick = () => go(idx - 1);
-document.getElementById('next').onclick = () => idx === all.length - 1 ? (location.href = nextCh ? lectureHref(nextCh) : backHref) : go(idx + 1);
-document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'SELECT') return;
-  if (e.key === 'ArrowRight') go(idx + 1);
-  if (e.key === 'ArrowLeft') go(idx - 1);
-});
-function lectureHref(x) { return `lecture.html?exam=${x.key.split('/')[0]}&s=${x.subject.id}&c=${x.chapter.id}&from=${fromId}`; }
-
-const io = new IntersectionObserver(entries => {
-  for (const en of entries) if (en.isIntersecting) setIndex(+en.target.dataset.i);
-}, { root: deck, threshold: 0.6 });
-all.forEach(el => io.observe(el));
-
-function setIndex(i) {
-  if (i === idx && i !== 0) return;
-  idx = i;
-  dots.forEach((d, j) => d.classList.toggle('on', j === i));
-  document.getElementById('prog').style.width = `${(i / (all.length - 1)) * 100}%`;
-  document.getElementById('count').textContent = `${Math.min(i + 1, cards.length)}/${cards.length}`;
-  document.getElementById('next').textContent = i === all.length - 1 && !nextCh ? 'Done ✓' : 'Next →';
-  if (i === all.length - 1) complete();
-  // Swiping by hand while listening jumps the narration to the new card.
-  if (listening && i !== spokenIdx && i < cards.length) speakCard(i);
-}
-setIndex(0);
-
-// ---------- Time tracking (reading vs listening), flushed every 15 s and on leave
+// ---------- time tracking ----------
 let readSec = 0, listenSec = 0, sessionListen = 0;
 setInterval(() => {
   if (document.hidden) return;
   if (listening && speechSynthesis.speaking) { listenSec++; sessionListen++; } else readSec++;
   if (readSec + listenSec >= 15) flush();
 }, 1000);
-function flush() {
-  addTime('study', key, readSec); addTime('listen', key, listenSec);
-  readSec = 0; listenSec = 0;
-}
+function flush() { addTime('study', key, readSec); addTime('listen', key, listenSec); readSec = 0; listenSec = 0; }
 addEventListener('pagehide', flush);
 document.addEventListener('visibilitychange', () => document.hidden && flush());
 
-// ---------- Completion
+// ---------- completion ----------
 let completed = false;
 function complete() {
-  const quizIdx = cards.map((c, i) => c.type === 'quiz' ? i : -1).filter(i => i >= 0);
-  const score = quizIdx.filter(i => quizState[i]).length, total = quizIdx.length;
-  const answered = quizIdx.filter(i => i in quizState).length;
+  const qi = cards.map((c, i) => c.type === 'quiz' ? i : -1).filter(i => i >= 0);
+  const score = qi.filter(i => quiz[i]).length, tot = qi.length, answered = qi.filter(i => i in quiz).length;
   if (!completed) {
-    completed = true;
-    flush();
-    store.update(s => {
-      const prev = s.completed[key];
-      // Keep the best quiz score across attempts.
-      s.completed[key] = { at: Date.now(), score: prev && prev.score > score ? prev.score : score, total };
-    });
-    logActivity({ type: 'complete', key, exam: parent.name, title: `${subject.name} › ${chapter.title}`,
-      listened: sessionListen, score: answered ? score : null, total, href: lectureHref({ key, subject, chapter }) });
+    completed = true; flush();
+    store.update(s => { const p = s.completed[key]; s.completed[key] = { at: Date.now(), score: p && p.score > score ? p.score : score, total: tot }; });
+    logActivity({ type: 'complete', key, exam: parent.name, title: `${subject.name} › ${chapter.title}`, listened: sessionListen, score: answered ? score : null, total: tot, href: lessonHref({ key, subject, chapter }) });
+    confetti();
   }
   document.getElementById('endCard').innerHTML = `
-    <div class="big">🏅</div><h2>Chapter complete!</h2>
-    <p class="body">${esc(chapter.title)}</p>
-    ${total ? `<p class="pill ${score === total ? 'ok' : 'warn'}">Quiz ${score}/${total}${answered < total ? ` · ${total - answered} skipped` : ''}</p>` : ''}
-    ${sessionListen ? `<p class="meta">🎧 Listened ${fmtMinutes(sessionListen)}</p>` : ''}
-    <div class="cta-row" style="margin-top:1rem">
-      ${nextCh ? `<a class="btn btn-primary" href="${lectureHref(nextCh)}">Next: ${esc(nextCh.chapter.title)} →</a>` : ''}
-      <a class="btn btn-ghost" href="${backHref}">All chapters</a>
-      <a class="btn btn-ghost" href="progress.html">My progress</a>
-    </div>`;
+    <div class="big">🏆</div><h2 style="font-size:32px">Lesson done!</h2>
+    <div style="font-weight:700;opacity:.92">${esc(chapter.title)}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      ${tot ? `<span class="pill" style="background:rgba(255,255,255,.22);color:#fff;box-shadow:none">Quiz ${score}/${tot}</span>` : ''}
+      ${sessionListen ? `<span class="pill" style="background:rgba(255,255,255,.22);color:#fff;box-shadow:none">🎧 ${fmtMinutes(sessionListen)}</span>` : ''}
+    </div>
+    ${nextCh ? `<a class="btn press" style="background:#fff;color:#0E0E10;margin-top:8px" href="${lessonHref(nextCh)}">Next: ${esc(nextCh.chapter.title)} →</a>` : ''}
+    <a class="btn press" style="background:rgba(14,14,16,.25);color:#fff" href="${backHref}">Back to lessons</a>`;
+}
+function confetti() {
+  const colors = ['#FF5A1F', '#FFC24B', '#5B2BD9', '#16A34A', '#0EA5E9', '#fff'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('i');
+    p.className = 'confetti';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.background = colors[i % colors.length];
+    p.style.animationDuration = 1.6 + Math.random() * 1.6 + 's';
+    p.style.animationDelay = Math.random() * .4 + 's';
+    document.body.append(p);
+    setTimeout(() => p.remove(), 4000);
+  }
 }
 
-// ---------- Audiobook mode (Web Speech API, works offline on most phones)
-const listenBtn = document.getElementById('listen');
-const rateSel = document.getElementById('rate'), voiceSel = document.getElementById('voice');
+// ---------- audiobook mode ----------
+const listenBtn = document.getElementById('listen'), rateSel = document.getElementById('rate'), voiceSel = document.getElementById('voice');
+let listening = false, voices = [], spoken = -1;
 if (!('speechSynthesis' in window)) { listenBtn.hidden = true; document.getElementById('audioOpts').hidden = true; }
 else {
-  const loadVoices = () => {
+  const load = () => {
     voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en') || v.lang.startsWith('hi'));
-    const pref = voices.findIndex(v => v.lang === 'en-IN');
     voiceSel.hidden = voiceSel.previousElementSibling.hidden = !voices.length;
-    voiceSel.innerHTML = voices.map((v, i) => `<option value="${i}"${i === pref ? ' selected' : ''}>${esc(v.name)} (${v.lang})</option>`).join('');
+    const pref = voices.findIndex(v => v.lang === 'en-IN');
+    voiceSel.innerHTML = voices.map((v, i) => `<option value="${i}"${i === pref ? ' selected' : ''}>${esc(v.name)}</option>`).join('');
   };
-  loadVoices();
-  speechSynthesis.onvoiceschanged = loadVoices;
+  load(); speechSynthesis.onvoiceschanged = load;
   try { rateSel.value = localStorage.getItem('academy.rate') || '1'; } catch {}
   rateSel.onchange = () => { try { localStorage.setItem('academy.rate', rateSel.value); } catch {} };
 }
-
 const plain = s => String(s || '').replace(/\*\*|`/g, '');
 function speechFor(i) {
   const c = cards[i];
-  if (!c) return '';
-  if (c.type === 'quiz') {
-    return `Quick check. ${plain(c.q)} ${c.options.map((o, j) => `Option ${String.fromCharCode(65 + j)}: ${plain(o)}.`).join(' ')}
-      The answer is option ${String.fromCharCode(65 + c.answer)}. ${plain(c.explain)}`;
-  }
+  if (c.type === 'quiz') return `Quick check. ${plain(c.q)} ${c.options.map((o, j) => `Option ${'ABCD'[j]}: ${plain(o)}.`).join(' ')} The answer is option ${'ABCD'[c.answer]}. ${plain(c.explain)}`;
   return [c.title, c.body, ...(c.points || [])].map(plain).filter(Boolean).join('. ');
 }
-
-// Chrome cuts off long utterances, so speak sentence by sentence.
 function speakCard(i) {
-  spokenIdx = i;
-  speechSynthesis.cancel();
+  spoken = i; speechSynthesis.cancel();
   const parts = speechFor(i).match(/[^.!?]+[.!?]*/g) || [];
-  if (!parts.length) { stopListening(); return; }
   parts.forEach((p, n) => {
     const u = new SpeechSynthesisUtterance(p.trim());
     u.rate = +rateSel.value;
     if (voices[voiceSel.value]) u.voice = voices[voiceSel.value];
     if (n === parts.length - 1) u.onend = () => {
-      if (!listening) return;
-      if (i + 1 < cards.length) { spokenIdx = i + 1; go(i + 1); setTimeout(() => listening && spokenIdx === i + 1 && speakCard(i + 1), 600); }
+      if (!listening || spoken !== i) return;
+      if (i + 1 < cards.length) { spoken = i + 1; go(i + 1); setTimeout(() => listening && spoken === i + 1 && speakCard(i + 1), 500); }
       else { go(cards.length); stopListening(); }
     };
     speechSynthesis.speak(u);
   });
 }
-function stopListening() {
-  listening = false; speechSynthesis.cancel();
-  listenBtn.classList.remove('listening'); listenBtn.textContent = '🎧 Listen';
-}
+function stopListening() { listening = false; speechSynthesis.cancel(); listenBtn.classList.remove('on'); listenBtn.textContent = '🎧 Listen'; }
 listenBtn.onclick = () => {
   if (listening) return stopListening();
-  listening = true;
-  listenBtn.classList.add('listening'); listenBtn.textContent = '⏸ Pause';
+  listening = true; listenBtn.classList.add('on'); listenBtn.textContent = '⏸ Pause';
   speakCard(Math.min(idx, cards.length - 1));
 };
-addEventListener('pagehide', () => speechSynthesis?.cancel());
+addEventListener('pagehide', () => window.speechSynthesis?.cancel());
 </script>
 </body>
 </html>

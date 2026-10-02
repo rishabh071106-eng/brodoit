@@ -2,93 +2,81 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Competitive Exam Prep &mdash; Brodoit</title>
-<meta name="description" content="Swipe lectures, audio lessons and previous papers for NDA, CDS, AFCAT, SSB, UPSC CSE, SBI, IBPS, RBI, NABARD, GATE and IT placement tests.">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Exams — Brodoit Prep</title>
+<meta name="theme-color" content="#F6F5F2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="assets/style.css">
-<link rel="stylesheet" href="assets/learn.css">
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  .cat-hero{min-height:190px;margin-top:8px}
+  .form{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .form input{padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card-2);color:var(--ink);font:500 15px var(--font)}
+  .co{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .co input{width:22px;height:22px;accent-color:var(--accent)}
+  .co.done .n{text-decoration:line-through;color:var(--mute)}
+</style>
 </head>
 <body>
-<main class="page">
-  <div class="page-head">
-    <h1>Competitive Exam Prep</h1>
-    <p>Choose your exam. Each one has swipe lectures you can read or listen to, quick quizzes, the exam pattern, 10 years of previous papers and free official resources.</p>
-  </div>
+<main class="wrap">
+  <h1 class="h-xl rise" style="margin:6px 0 14px">Pick your<br>battle.</h1>
   <div class="chips" id="jump"></div>
   <div id="cats"></div>
 </main>
-
 <script type="module">
-import { renderNav, renderFooter, loadCatalog, store, esc } from './assets/js/app.js';
-renderNav('exams.html');
-renderFooter();
+import { renderChrome, loadCatalog, store, esc, ICON } from './assets/js/app.js';
+import { art, categoryArt } from './assets/js/art.js';
+renderChrome({ active: 'exams.html', title: 'Exams' });
 
 const cat = await loadCatalog();
 const s = store.read();
 const doneIn = id => Object.keys(s.completed).filter(k => k.startsWith(id + '/')).length;
+const href = e => e.id === 'ssb' ? 'ssb.html' : `exam.html?id=${e.id}`;
 
-document.getElementById('jump').innerHTML = cat.categories.map(c =>
-  `<a class="chip" href="#${c.id}">${c.icon} ${esc(c.name)}</a>`).join('');
-
+document.getElementById('jump').innerHTML = cat.categories.map(c => `<a class="chip press" href="#${c.id}">${esc(c.short)}</a>`).join('');
 document.getElementById('cats').innerHTML = cat.categories.map(c => `
-  <section id="${c.id}">
-    <h2 class="section-title">${c.icon} ${esc(c.name)}</h2>
-    <p class="section-sub">${esc(c.blurb)}</p>
-    <div class="grid">${c.exams.map(e => {
+  <section id="${c.id}" style="scroll-margin-top:70px">
+    <div class="hero cat-hero" style="background:var(--g-${c.id})">
+      <div class="art">${categoryArt[c.id]()}</div><div class="shade"></div>
+      <div class="h-lg">${esc(c.name)}</div><div style="opacity:.9;font-weight:600;font-size:14px;margin-top:2px">${esc(c.blurb)}</div>
+    </div>
+    <div style="margin-top:12px">${c.exams.map(e => {
       const n = doneIn(e.id);
-      return `<a class="tile" href="exam.html?id=${e.id}">
-        <div class="kicker">${esc(e.by)}</div>
-        <h3>${esc(e.name)}</h3>
-        <p>${esc(e.short)}</p>
-        <div class="meta">${n ? `<span class="pill ok">${n} chapter${n > 1 ? 's' : ''} done</span>` : 'Not started'}</div>
-      </a>`;
+      return `<a class="row press" href="${href(e)}">
+        <div class="thumb" style="background:var(--g-${c.id})">${(e.id === 'ssb' ? art.ssb : categoryArt[c.id])()}</div>
+        <div class="body"><div class="t">${esc(e.name)}</div><div class="s">${esc(e.short)}</div></div>
+        ${n ? `<span class="pill" style="box-shadow:none;background:color-mix(in srgb,var(--ok) 14%,var(--card));color:var(--ok)">${n} done</span>` : ''}
+        <span class="chev">${ICON.chev}</span></a>`;
     }).join('')}</div>
-    ${c.id === 'it' ? companyList() : ''}
-  </section>`).join('');
-
-function companyList() {
-  return `<div class="tile" style="margin-top:1rem" id="mylist">
-    <div class="kicker">Your list</div>
-    <h3>My target companies</h3>
-    <p>Add the companies you're applying to — with the role and test date — and tick them off as you clear each one.</p>
-    <form class="form-row" id="addCo">
-      <input name="name" placeholder="Company (e.g. Zoho)" required maxlength="60">
-      <input name="role" placeholder="Role / drive" maxlength="60">
-      <input name="date" type="date">
-      <button class="btn btn-primary" type="submit">Add</button>
-    </form>
-    <div id="coList"></div>
-  </div>`;
-}
+    ${c.id === 'it' ? `<div class="card" style="padding:16px;margin-top:14px">
+      <div class="h-md">🎯 My target companies</div>
+      <div class="muted" style="font-size:13.5px;margin-top:2px">Add every company you're applying to and tick it off when you clear it.</div>
+      <form class="form" id="addCo"><input name="name" placeholder="Company (e.g. Zoho)" required maxlength="60">
+        <input name="role" placeholder="Role / drive (optional)" maxlength="60"><input name="date" type="date">
+        <button class="btn btn-dark press" type="submit">Add company</button></form>
+      <div id="coList" style="margin-top:6px"></div></div>` : ''}
+  </section>
+  <div style="height:22px"></div>`).join('');
 
 function drawCompanies() {
   const list = store.read().companies;
-  const el = document.getElementById('coList');
-  if (!list.length) { el.innerHTML = '<p class="meta">Nothing added yet.</p>'; return; }
-  el.innerHTML = list.map((c, i) => `
-    <div class="check-row${c.done ? ' done' : ''}">
-      <input type="checkbox" data-i="${i}" ${c.done ? 'checked' : ''} aria-label="Mark ${esc(c.name)} done">
-      <div class="t"><b>${esc(c.name)}</b>${c.role ? ` · ${esc(c.role)}` : ''}${c.date ? ` <span class="meta">· test on ${esc(c.date)}</span>` : ''}</div>
-      <button class="linkbtn" data-del="${i}" aria-label="Remove">✕</button>
-    </div>`).join('');
+  document.getElementById('coList').innerHTML = list.map((c, i) => `
+    <div class="co${c.done ? ' done' : ''}"><input type="checkbox" data-i="${i}" ${c.done ? 'checked' : ''} aria-label="Done">
+      <div style="flex:1;min-width:0"><div class="n" style="font-weight:800">${esc(c.name)}</div><div class="muted" style="font-size:12.5px">${[c.role, c.date && 'Test ' + c.date].filter(Boolean).map(esc).join(' · ')}</div></div>
+      <button data-del="${i}" class="muted" aria-label="Remove" style="font-size:18px;padding:6px">✕</button></div>`).join('');
 }
-
 document.getElementById('addCo').addEventListener('submit', e => {
   e.preventDefault();
   const f = new FormData(e.target);
   store.update(st => st.companies.push({ name: f.get('name').trim(), role: f.get('role').trim(), date: f.get('date'), done: false }));
-  e.target.reset();
-  drawCompanies();
+  e.target.reset(); drawCompanies();
 });
 document.getElementById('coList').addEventListener('click', e => {
-  const del = e.target.dataset.del, tog = e.target.dataset.i;
-  if (del !== undefined) store.update(st => st.companies.splice(+del, 1));
-  else if (tog !== undefined) store.update(st => { st.companies[+tog].done = e.target.checked; });
-  else return;
-  drawCompanies();
+  if (e.target.dataset.del !== undefined) { store.update(st => st.companies.splice(+e.target.dataset.del, 1)); drawCompanies(); }
+});
+document.getElementById('coList').addEventListener('change', e => {
+  if (e.target.dataset.i !== undefined) { store.update(st => { st.companies[+e.target.dataset.i].done = e.target.checked; }); drawCompanies(); }
 });
 drawCompanies();
 if (location.hash) document.querySelector(location.hash)?.scrollIntoView();

@@ -15286,39 +15286,19 @@ else if(S.tab==='courses'){
     h+='<button onclick="switchTab(\\'meditation\\')" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
     h+='<div style="font:600 20px var(--sans);color:var(--ink)">\\u{1F4DA} Learning</div></div>';
     h+='<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">';
-    h+='<div style="font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--text-mute);margin:6px 2px 0">School</div>';
-    h+='<button class="ws-hero-card" onclick="_openPrep(\\'ncert.html\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#6366F1 10%,var(--paper)) 0%,color-mix(in srgb,#6366F1 18%,var(--surface)) 100%)">';
-    h+='<div class="ws-hero-emoji">\\u{1F4DA}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">NCERT Books</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Class 1\\u201312 \\u00B7 every textbook, chapter-wise PDFs</div></div>';
-    h+='<div class="ws-hero-arrow" style="color:#6366F1">\\u2192</div></button>';
-    h+='<div style="font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--text-mute);margin:6px 2px 0">Competitive Exam Prep</div>';
-    h+='<button class="ws-hero-card" onclick="_openPrep(\\'exams.html#defence\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#10B981 10%,var(--paper)) 0%,color-mix(in srgb,#10B981 18%,var(--surface)) 100%)">';
-    h+='<div class="ws-hero-emoji">\\u{1F396}\\uFE0F</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Defence &amp; SSB</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">NDA \\u00B7 CDS \\u00B7 AFCAT \\u00B7 SSB Interview</div></div>';
-    h+='<div class="ws-hero-arrow" style="color:#10B981">\\u2192</div></button>';
-    h+='<button class="ws-hero-card" onclick="_openPrep(\\'exam.html?id=upsc-cse\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#F59E0B 10%,var(--paper)) 0%,color-mix(in srgb,#F59E0B 18%,var(--surface)) 100%)">';
-    h+='<div class="ws-hero-emoji">\\u{1F3DB}\\uFE0F</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">UPSC Civil Services (IAS)</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Prelims \\u00B7 Mains \\u00B7 CSAT \\u00B7 Ethics</div></div>';
-    h+='<div class="ws-hero-arrow" style="color:#F59E0B">\\u2192</div></button>';
-    h+='<button class="ws-hero-card" onclick="_openPrep(\\'exams.html#banking\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#0EA5E9 10%,var(--paper)) 0%,color-mix(in srgb,#0EA5E9 18%,var(--surface)) 100%)">';
-    h+='<div class="ws-hero-emoji">\\u{1F3E6}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Bank Exams</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">SBI \\u00B7 IBPS PO/Clerk/RRB/SO \\u00B7 RBI \\u00B7 NABARD</div></div>';
-    h+='<div class="ws-hero-arrow" style="color:#0EA5E9">\\u2192</div></button>';
-    h+='<button class="ws-hero-card" onclick="_openPrep(\\'exams.html#it\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#3B82F6 10%,var(--paper)) 0%,color-mix(in srgb,#3B82F6 18%,var(--surface)) 100%)">';
-    h+='<div class="ws-hero-emoji">\\u{1F4BB}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">IT Sector Placements</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">TCS \\u00B7 Infosys \\u00B7 Wipro \\u00B7 Accenture \\u00B7 GATE CSE + your list</div></div>';
-    h+='<div class="ws-hero-arrow" style="color:#3B82F6">\\u2192</div></button>';
-    h+='<div style="font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--text-mute);margin:6px 2px 0">Your board</div>';
-    h+='<button class="ws-hero-card" onclick="_openPrep(\\'progress.html\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#EC4899 10%,var(--paper)) 0%,color-mix(in srgb,#EC4899 18%,var(--surface)) 100%)">';
-    h+='<div class="ws-hero-emoji">\\u{1F4C8}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">My Progress</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Chapters done \\u00B7 audio minutes \\u00B7 streak \\u00B7 quiz scores</div></div>';
-    h+='<div class="ws-hero-arrow" style="color:#EC4899">\\u2192</div></button>';
+    h+='<button onclick="_openPrep(\\'index.html\\')" style="position:relative;overflow:hidden;text-align:left;border:none;cursor:pointer;border-radius:24px;padding:22px;min-height:180px;color:#fff;background:linear-gradient(140deg,#14213D 0%,#2B4C8C 50%,#F2A541 100%);box-shadow:0 18px 40px rgba(20,33,61,.3);display:flex;flex-direction:column;justify-content:flex-end;gap:6px">';
+    h+='<span style="position:absolute;right:-6px;top:-12px;font-size:110px;opacity:.22">\\u{1F396}\\uFE0F</span>';
+    h+='<span style="align-self:flex-start;background:rgba(255,255,255,.2);padding:5px 11px;border-radius:999px;font:800 10.5px var(--sans);letter-spacing:.12em;text-transform:uppercase">New \\u00B7 Brodoit Prep</span>';
+    h+='<span style="font:800 26px var(--sans);letter-spacing:-.03em;line-height:1.05">Crack NDA, CDS, SSB,<br>UPSC, Banks &amp; IT</span>';
+    h+='<span style="font:600 13px var(--sans);opacity:.9">Swipe lessons \\u00B7 listen like an audiobook \\u00B7 streaks</span></button>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+    h+='<button onclick="_openPrep(\\'ssb.html\\')" style="border:none;cursor:pointer;text-align:left;border-radius:20px;padding:16px;min-height:132px;color:#fff;background:linear-gradient(140deg,#14213D,#2B4C8C 60%,#F2A541);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 20px rgba(0,0,0,.12)"><span style="font-size:30px">\\u{1F9ED}</span><span><span style="display:block;font:800 16px var(--sans);letter-spacing:-.02em">SSB Journey</span><span style="display:block;font:600 11.5px var(--sans);opacity:.88;margin-top:2px">Day-by-day + drills</span></span></button>';
+    h+='<button onclick="_openPrep(\\'exams.html#defence\\')" style="border:none;cursor:pointer;text-align:left;border-radius:20px;padding:16px;min-height:132px;color:#fff;background:linear-gradient(140deg,#0F3D2E,#1F7A4D 60%,#9BD36A);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 20px rgba(0,0,0,.12)"><span style="font-size:30px">\\u{1F396}\\uFE0F</span><span><span style="display:block;font:800 16px var(--sans);letter-spacing:-.02em">Defence</span><span style="display:block;font:600 11.5px var(--sans);opacity:.88;margin-top:2px">NDA \\u00B7 CDS \\u00B7 AFCAT</span></span></button>';
+    h+='<button onclick="_openPrep(\\'exam.html?id=upsc-cse\\')" style="border:none;cursor:pointer;text-align:left;border-radius:20px;padding:16px;min-height:132px;color:#fff;background:linear-gradient(140deg,#3B1F0E,#B5541B 60%,#FFC46B);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 20px rgba(0,0,0,.12)"><span style="font-size:30px">\\u{1F3DB}\\uFE0F</span><span><span style="display:block;font:800 16px var(--sans);letter-spacing:-.02em">UPSC IAS</span><span style="display:block;font:600 11.5px var(--sans);opacity:.88;margin-top:2px">Prelims \\u00B7 Mains</span></span></button>';
+    h+='<button onclick="_openPrep(\\'exams.html#banking\\')" style="border:none;cursor:pointer;text-align:left;border-radius:20px;padding:16px;min-height:132px;color:#fff;background:linear-gradient(140deg,#0B2545,#13568C 60%,#5FD3E8);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 20px rgba(0,0,0,.12)"><span style="font-size:30px">\\u{1F3E6}</span><span><span style="display:block;font:800 16px var(--sans);letter-spacing:-.02em">Bank exams</span><span style="display:block;font:600 11.5px var(--sans);opacity:.88;margin-top:2px">SBI \\u00B7 IBPS \\u00B7 RBI</span></span></button>';
+    h+='<button onclick="_openPrep(\\'exams.html#it\\')" style="border:none;cursor:pointer;text-align:left;border-radius:20px;padding:16px;min-height:132px;color:#fff;background:linear-gradient(140deg,#1B0B3A,#5B2BD9 60%,#FF7AC6);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 20px rgba(0,0,0,.12)"><span style="font-size:30px">\\u{1F4BB}</span><span><span style="display:block;font:800 16px var(--sans);letter-spacing:-.02em">IT jobs</span><span style="display:block;font:600 11.5px var(--sans);opacity:.88;margin-top:2px">TCS \\u00B7 Infosys \\u00B7 GATE</span></span></button>';
+    h+='<button onclick="_openPrep(\\'progress.html\\')" style="border:none;cursor:pointer;text-align:left;border-radius:20px;padding:16px;min-height:132px;color:#fff;background:linear-gradient(140deg,#2A0A0A,#FF5A1F 60%,#FFC24B);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 20px rgba(0,0,0,.12)"><span style="font-size:30px">\\u{1F525}</span><span><span style="display:block;font:800 16px var(--sans);letter-spacing:-.02em">My Board</span><span style="display:block;font:600 11.5px var(--sans);opacity:.88;margin-top:2px">Streak \\u00B7 scores</span></span></button>';
+    h+='</div>';
     h+='</div>';
     h+='<div style="font:500 12px var(--sans);color:var(--text-mute);text-align:center;margin:8px 0 18px">Older courses: <a href="#" onclick="_openSection(\\'ai\\');return false" style="color:var(--text-mute)">AI</a> \\u00B7 <a href="#" onclick="_openSection(\\'python\\');return false" style="color:var(--text-mute)">Python</a> \\u00B7 <a href="#" onclick="_openSection(\\'product\\');return false" style="color:var(--text-mute)">Product</a></div>';
   } else if(S.learnSection==='ai'){
@@ -17519,7 +17499,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=110').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=111').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17831,7 +17811,7 @@ app.use('/prep',express.static(path.join(__dirname,'prep'),{maxAge:'1h'}));
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v158";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v159";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});

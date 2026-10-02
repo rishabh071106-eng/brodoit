@@ -2,112 +2,122 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Exam &mdash; Brodoit</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Exam — Brodoit Prep</title>
+<meta name="theme-color" content="#F6F5F2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="assets/style.css">
-<link rel="stylesheet" href="assets/learn.css">
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  .seg-sticky{position:sticky;top:56px;z-index:30;padding:8px 0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .hero-chips span{background:rgba(255,255,255,.18);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px;font-size:12px;font-weight:800}
+  .ch-num{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-weight:800;color:#fff;flex-shrink:0}
+  .year{background:var(--card);border-radius:var(--r-md);box-shadow:var(--shadow);padding:14px}
+  .year + .year{margin-top:10px}
+  .year a{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:14px;font-weight:600}
+</style>
 </head>
 <body>
-<main class="page">
-  <div class="crumbs"><a href="exams.html">Exam Prep</a> › <span id="crumb"></span></div>
-  <div class="page-head" id="head"><h1>Loading…</h1></div>
-  <div class="tabs" role="tablist">
-    <button class="tab on" data-tab="lectures">Lectures</button>
-    <button class="tab" data-tab="pattern">Exam pattern</button>
-    <button class="tab" data-tab="pyq">Previous papers</button>
-    <button class="tab" data-tab="resources">Free resources</button>
-  </div>
-  <section data-panel="lectures" id="lectures"></section>
-  <section data-panel="pattern" id="pattern" hidden></section>
-  <section data-panel="pyq" id="pyq" hidden></section>
-  <section data-panel="resources" id="resources" hidden></section>
+<main class="wrap">
+  <section class="hero rise" id="hero" style="min-height:250px"></section>
+  <div class="seg-sticky"><div class="seg" id="seg">
+    <button class="on" data-v="lessons">Lessons</button><button data-v="pattern">Pattern</button><button data-v="papers">Past papers</button><button data-v="free">Free stuff</button>
+  </div></div>
+  <section data-view="lessons"><div class="chips" id="subj" style="margin-top:4px"></div><div id="chapters" style="margin-top:8px"></div></section>
+  <section data-view="pattern" hidden id="pattern"></section>
+  <section data-view="papers" hidden id="papers"></section>
+  <section data-view="free" hidden id="free"></section>
 </main>
-
 <script type="module">
-import { renderNav, renderFooter, loadExamWithCore, examChapters, store, esc, param } from './assets/js/app.js';
-renderNav('exams.html');
-renderFooter();
+import { renderChrome, loadCatalog, loadExamWithCore, examChapters, store, esc, param, ICON } from './assets/js/app.js';
+import { art, categoryArt } from './assets/js/art.js';
 
 const id = param('id');
-let exam, core;
-try {
-  ({ exam, core } = await loadExamWithCore(id));
-} catch {
-  document.getElementById('head').innerHTML = `<h1>Coming soon</h1><p>Lectures for this exam are being prepared. <a href="exams.html">Back to all exams</a></p>`;
-  throw new Error('exam not found');
-}
+if (id === 'ssb') location.replace('ssb.html');
+const [{ exam, core }, cat] = await Promise.all([loadExamWithCore(id), loadCatalog()]);
+const c = cat.categories.find(c => c.exams.some(e => e.id === id)) || cat.categories[0];
+renderChrome({ active: 'exams.html', title: exam.name, back: `exams.html#${c.id}` });
+document.title = `${exam.name} — Brodoit Prep`;
 
-document.title = `${exam.name} preparation — Brodoit`;
-document.getElementById('crumb').textContent = exam.name;
-const total = examChapters(exam).length + (core ? examChapters(core).length : 0);
-document.getElementById('head').innerHTML = `
-  <h1>${esc(exam.name)}</h1>
-  <p>${esc(exam.tagline || '')}</p>
-  <p class="meta" style="margin-top:.5rem">Conducted by ${esc(exam.conductedBy || '')} · ${total} chapters</p>`;
-
-const tabs = document.querySelectorAll('.tab');
-tabs.forEach(t => t.addEventListener('click', () => {
-  tabs.forEach(x => x.classList.toggle('on', x === t));
-  document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== t.dataset.tab; });
-  history.replaceState(null, '', `#${t.dataset.tab}`);
-}));
-if (location.hash) document.querySelector(`.tab[data-tab="${location.hash.slice(1)}"]`)?.click();
-
-// ---- Lectures
 const done = store.read().completed;
-function subjectsHTML(ex, label) {
-  return (label ? `<h2 class="section-title">${esc(label)}</h2>` : '') + (ex.subjects || []).map((s, i) => {
-    const rows = s.chapters.map(c => {
-      const key = `${ex.id}/${s.id}/${c.id}`, d = done[key];
-      return `<a class="chapter-row${d ? ' done' : ''}" href="lecture.html?exam=${ex.id}&s=${s.id}&c=${c.id}&from=${exam.id}">
-        <span class="tick">${d ? '✓' : ''}</span>
-        <span class="t">${esc(c.title)}<div class="meta">${c.cards.length} cards · ${c.minutes || 3} min${d && d.total ? ` · quiz ${d.score}/${d.total}` : ''}</div></span>
-        <span class="meta">${d ? 'Review' : 'Start'} →</span></a>`;
-    }).join('');
-    const n = s.chapters.filter(c => done[`${ex.id}/${s.id}/${c.id}`]).length;
-    return `<details class="subject"${i === 0 && !label ? ' open' : ''}>
-      <summary><span class="name">${esc(s.name)}</span><span class="meta">${n}/${s.chapters.length}</span>
-      <span class="bar"><span style="width:${(n / s.chapters.length) * 100}%"></span></span></summary>${rows}</details>`;
+const all = [...examChapters(exam), ...(core ? examChapters(core) : [])];
+const nDone = all.filter(x => done[x.key]).length;
+const mins = all.reduce((a, x) => a + (x.chapter.minutes || 3), 0);
+const hero = document.getElementById('hero');
+hero.style.background = `var(--g-${c.id})`;
+hero.innerHTML = `<div class="art">${categoryArt[c.id]()}</div><div class="shade"></div>
+  <span class="tag">${esc(exam.conductedBy || '')}</span>
+  <h1 class="h-xl" style="font-size:34px">${esc(exam.name)}</h1>
+  <div style="opacity:.92;font-weight:600;font-size:14px;margin-top:4px">${esc(exam.tagline || '')}</div>
+  <div class="hero-chips"><span>${all.length} lessons</span><span>~${Math.round(mins / 60) || 1} h total</span><span>${nDone} done</span></div>`;
+
+const seg = document.getElementById('seg');
+function show(v) {
+  seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  document.querySelectorAll('[data-view]').forEach(s => { s.hidden = s.dataset.view !== v; });
+  history.replaceState(null, '', location.search + '#' + v);
+}
+seg.onclick = e => e.target.dataset.v && show(e.target.dataset.v);
+if (location.hash) show(location.hash.slice(1));
+
+// ---- lessons
+const subjects = [...(exam.subjects || []).map(s => ({ s, ex: exam })), ...((core && core.subjects) || []).map(s => ({ s, ex: core }))];
+const COLORS = ['#FF5A1F', '#5B2BD9', '#13568C', '#1F7A4D', '#B5541B', '#C04BD9', '#0EA5E9', '#E5484D'];
+let pick = 'all';
+function drawLessons() {
+  document.getElementById('subj').innerHTML = [`<button class="chip${pick === 'all' ? ' on' : ''}" data-s="all">All</button>`,
+    ...subjects.map((x, i) => `<button class="chip${pick === String(i) ? ' on' : ''}" data-s="${i}">${esc(x.s.name)}</button>`)].join('');
+  let n = 0;
+  document.getElementById('chapters').innerHTML = subjects.map((x, i) => {
+    if (pick !== 'all' && pick !== String(i)) return '';
+    const col = COLORS[i % COLORS.length];
+    const k = x.s.chapters.filter(ch => done[`${x.ex.id}/${x.s.id}/${ch.id}`]).length;
+    return `<div class="section" style="margin-top:20px"><div class="h-md">${esc(x.s.name)}</div><span class="muted" style="font-size:13px;font-weight:700">${k}/${x.s.chapters.length}</span></div>
+      ${x.s.chapters.map(ch => {
+        const key = `${x.ex.id}/${x.s.id}/${ch.id}`, d = done[key]; n++;
+        return `<a class="row press" href="lecture.html?exam=${x.ex.id}&s=${x.s.id}&c=${ch.id}&from=${exam.id}">
+          <div class="ch-num" style="background:${d ? 'var(--ok)' : col}">${d ? '✓' : String(n).padStart(2, '0')}</div>
+          <div class="body"><div class="t">${esc(ch.title)}</div><div class="s">${ch.cards.length} cards · ${ch.minutes || 3} min${d && d.total ? ` · quiz ${d.score}/${d.total}` : ''} · 🎧</div></div>
+          <span class="chev">${ICON.chev}</span></a>`;
+      }).join('')}`;
   }).join('');
 }
-document.getElementById('lectures').innerHTML =
-  subjectsHTML(exam) + (core ? subjectsHTML(core, `${core.name} (shared syllabus)`) : '');
+document.getElementById('subj').onclick = e => { if (e.target.dataset.s) { pick = e.target.dataset.s; drawLessons(); } };
+drawLessons();
 
-// ---- Pattern
+// ---- pattern
 const o = exam.overview || {};
-const list = arr => arr && arr.length ? `<ul class="clean">${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
 document.getElementById('pattern').innerHTML = `
-  ${o.about ? `<p style="margin-bottom:1.5rem">${esc(o.about)}</p>` : ''}
-  <div class="kv">
-    ${o.frequency ? `<div class="stat"><span>How often</span><b style="font-size:1.05rem">${esc(o.frequency)}</b></div>` : ''}
-    ${o.officialSite ? `<div class="stat"><span>Official website</span><b style="font-size:1.05rem"><a href="${esc(o.officialSite)}" target="_blank" rel="noopener">${esc(o.officialSite.replace(/^https?:\/\//, ''))}</a></b></div>` : ''}
+  ${o.about ? `<p style="margin:10px 0 14px;font-size:15px;color:var(--ink-2)">${esc(o.about)}</p>` : ''}
+  <div class="stat-grid">
+    ${o.frequency ? `<div class="stat"><span>How often</span><b style="font-size:16px;margin-top:4px">${esc(o.frequency)}</b></div>` : ''}
+    ${o.officialSite ? `<a class="stat press" href="${esc(o.officialSite)}" target="_blank" rel="noopener"><span>Official site</span><b style="font-size:15px;margin-top:4px;color:var(--accent);word-break:break-all">${esc(o.officialSite.replace(/^https?:\/\//, ''))} ↗</b></a>` : ''}
   </div>
-  ${o.pattern && o.pattern.length ? `<h2 class="section-title">Pattern</h2><div class="table-wrap"><table class="pattern">
-    <tr><th>Paper / Section</th><th>Questions</th><th>Marks</th><th>Duration</th><th>Notes</th></tr>
-    ${o.pattern.map(p => `<tr><td><b>${esc(p.paper)}</b></td><td>${esc(p.questions ?? '—')}</td><td>${esc(p.marks ?? '—')}</td><td>${esc(p.duration ?? '—')}</td><td>${esc(p.note ?? '')}</td></tr>`).join('')}
-  </table></div>` : ''}
-  ${o.eligibility ? `<h2 class="section-title">Eligibility</h2>${list(o.eligibility)}` : ''}
-  <p class="meta" style="margin-top:1.5rem">Patterns and limits change — always confirm with the latest official notification.</p>`;
+  ${o.pattern && o.pattern.length ? `<div class="section"><div class="h-md">Exam pattern</div></div>
+    ${o.pattern.map(p => `<div class="card" style="padding:14px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;gap:10px"><b>${esc(p.paper)}</b><span class="muted" style="font-weight:700;font-size:13px;white-space:nowrap">${esc(p.duration ?? '')}</span></div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">${p.questions ? `<span class="pill" style="box-shadow:none;background:var(--card-2)">${esc(p.questions)} Qs</span>` : ''}${p.marks ? `<span class="pill" style="box-shadow:none;background:var(--card-2)">${esc(p.marks)} marks</span>` : ''}</div>
+      ${p.note ? `<div class="muted" style="font-size:13px;margin-top:8px">${esc(p.note)}</div>` : ''}</div>`).join('')}` : ''}
+  ${o.eligibility ? `<div class="section"><div class="h-md">Eligibility</div></div><div class="card" style="padding:4px 16px"><ul class="list-clean">${o.eligibility.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
+  <p class="note" style="margin-top:14px">Rules change each cycle — always confirm with the latest official notification.</p>`;
 
-// ---- Previous papers
+// ---- papers
 const pyq = (exam.pyq || []).slice().sort((a, b) => b.year - a.year);
-document.getElementById('pyq').innerHTML = pyq.length ? `
-  <div class="notice">Links open the official source. Where the exam body does not publish papers, we link to its official page and say so — we never host unofficial copies.</div>
-  <div class="grid">${pyq.map(y => `<div class="year"><h4>${y.year}</h4>${y.items.map(it =>
-    `<a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.label)}<div class="meta">${esc(it.source || '')}</div></a>`).join('')}</div>`).join('')}</div>`
-  : `<p class="section-sub">This track has no written exam papers. See the lectures and free resources instead.</p>`;
+document.getElementById('papers').innerHTML = pyq.length ? `
+  <p class="note" style="margin:8px 0 12px">Links open the official source. If an exam body doesn't publish papers, we say so instead of linking unofficial copies.</p>
+  ${pyq.map(y => `<div class="year"><div class="h-md">${y.year}</div>${y.items.map(it =>
+    `<a href="${esc(it.url)}" target="_blank" rel="noopener"><span>${esc(it.label)}<div class="muted" style="font-size:12px;font-weight:600">${esc(it.source || '')}</div></span><span style="color:var(--accent)">↗</span></a>`).join('')}</div>`).join('')}`
+  : '<p class="muted" style="margin-top:12px">No written papers for this track.</p>';
 
-// ---- Resources
+// ---- free resources
 const res = [...(exam.resources || []), ...((core && core.resources) || [])];
 const seen = new Set();
-document.getElementById('resources').innerHTML = `<div class="grid">${res.filter(r => !seen.has(r.url) && seen.add(r.url)).map(r => `
-  <a class="tile" href="${esc(r.url)}" target="_blank" rel="noopener">
-    <h3>${esc(r.label)}</h3><p>${esc(r.note || '')}</p>
-    <div class="meta">${r.free === false ? '<span class="pill warn">Paid</span>' : '<span class="pill ok">Free</span>'} ${esc(new URL(r.url).hostname)}</div>
-  </a>`).join('')}</div>`;
+document.getElementById('free').innerHTML = res.filter(r => !seen.has(r.url) && seen.add(r.url)).map(r => `
+  <a class="row press" href="${esc(r.url)}" target="_blank" rel="noopener" style="margin-top:10px">
+    <div class="thumb" style="background:var(--g-${c.id})">↗</div>
+    <div class="body"><div class="t">${esc(r.label)}</div><div class="s">${esc(r.note || '')}</div></div></a>`).join('');
 </script>
 </body>
 </html>

@@ -2,82 +2,91 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Brodoit &mdash; NCERT books &amp; competitive exam prep</title>
-<meta name="description" content="Free NCERT textbooks for Classes 1–12 plus swipe-based lectures, audio lessons and 10 years of previous papers for NDA, CDS, AFCAT, SSB, UPSC IAS, bank exams and IT placements.">
-<meta property="og:title" content="Brodoit &mdash; NCERT books &amp; competitive exam prep">
-<meta property="og:description" content="NCERT 1–12, NDA, CDS, AFCAT, SSB, UPSC, Bank and IT prep. Swipe, listen, track progress.">
-<meta property="og:type" content="website">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Brodoit Prep</title>
+<meta name="description" content="NDA, CDS, AFCAT, SSB, UPSC, bank and IT placement prep. Swipe lessons, listen like an audiobook, track your streak.">
+<meta name="theme-color" content="#F6F5F2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="assets/style.css">
-<link rel="stylesheet" href="assets/learn.css">
+<link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
+<main class="wrap">
+  <section class="rise" style="margin:6px 0 18px">
+    <div class="muted" style="font-weight:700;font-size:14px" id="hello">Hey there 👋</div>
+    <h1 class="h-xl" style="margin-top:4px">What are we<br>cracking today?</h1>
+  </section>
 
-<header class="hero">
-  <div class="hero-badge"><span class="pulse"></span> Free for every student</div>
-  <h1>Learn, swipe, listen.<br>Crack your exam.</h1>
-  <p class="lead">Every NCERT book from Class 1 to 12, plus bite-sized swipe lectures, audio lessons and 10 years of previous papers for NDA, CDS, AFCAT, SSB, UPSC, bank exams and IT placements.</p>
-  <div class="cta-row">
-    <a href="exams.html" class="btn btn-primary">Start exam prep &rarr;</a>
-    <a href="ncert.html" class="btn btn-ghost">NCERT books 1&ndash;12</a>
-  </div>
-</header>
+  <div class="stories rise" id="stories"></div>
 
-<main class="page" style="padding-top:0">
+  <a class="hero press rise" href="ssb.html" style="margin-top:18px;background:var(--g-ssb)">
+    <div class="art" id="heroArt"></div><div class="shade"></div>
+    <span class="tag">New · Illustrated</span>
+    <div class="h-lg" style="font-size:28px">The SSB Journey</div>
+    <div style="opacity:.9;font-weight:600;margin-top:4px">From written exam to the academy gate — every day, what to expect, and practice drills.</div>
+    <span class="cta">Start the journey →</span>
+  </a>
+
   <div id="resume"></div>
+  <div id="rails"></div>
 
-  <div class="grid">
-    <a class="tile big" href="ncert.html">
-      <div class="icon">📚</div>
-      <div class="kicker">School</div>
-      <h3>NCERT Books, Class 1&ndash;12</h3>
-      <p>Every current NCERT textbook, chapter by chapter, straight from NCERT's official servers. Tick off chapters as you read them.</p>
-    </a>
-    <a class="tile big" href="exams.html">
-      <div class="icon">🎯</div>
-      <div class="kicker">Competitive exams</div>
-      <h3>Exam Prep</h3>
-      <p>Defence &amp; SSB, UPSC Civil Services, bank exams and IT placements. Swipe lectures, quizzes and previous papers.</p>
-    </a>
-    <a class="tile big" href="progress.html">
-      <div class="icon">📈</div>
-      <div class="kicker">Your board</div>
-      <h3>My Progress</h3>
-      <p>Chapters completed, minutes listened, quiz scores, daily streak and a full activity log.</p>
-    </a>
-  </div>
-
-  <h2 class="section-title">Exam categories</h2>
-  <p class="section-sub">Pick a track. Every chapter is a short deck you can swipe through or listen to like an audiobook.</p>
-  <div class="grid" id="cats"></div>
+  <div class="section"><div class="h-md">Your week</div><a href="progress.html">Full board</a></div>
+  <a class="card press" href="progress.html" style="display:flex;gap:16px;align-items:center;padding:16px" id="week"></a>
 </main>
 
 <script type="module">
-import { renderNav, renderFooter, loadCatalog, store, esc, timeAgo } from './assets/js/app.js';
-renderNav('index.html');
-renderFooter();
+import { renderChrome, loadCatalog, store, esc, timeAgo, streak, ICON } from './assets/js/app.js';
+import { art, categoryArt } from './assets/js/art.js';
+
+const s = store.read();
+renderChrome({ active: 'index.html', right: `<a class="pill press" href="progress.html">🔥 ${streak(s.days)}</a>` });
+
+const h = new Date().getHours();
+document.getElementById('hello').textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ' 👋';
+document.getElementById('heroArt').innerHTML = art.ssb(false);
 
 const cat = await loadCatalog();
-document.getElementById('cats').innerHTML = cat.categories.map(c => `
-  <a class="tile" href="exams.html#${c.id}">
-    <div class="icon">${c.icon}</div>
-    <h3>${esc(c.name)}</h3>
-    <p>${esc(c.blurb)}</p>
-    <div class="meta">${c.exams.map(e => esc(e.name)).join(' · ')}</div>
-  </a>`).join('');
+const doneIn = id => Object.keys(s.completed).filter(k => k.startsWith(id + '/')).length;
 
-const last = store.read().last;
-if (last) {
+const stories = [
+  { href: 'ssb.html', label: 'SSB Journey', a: art.ssb },
+  ...cat.categories.map(c => ({ href: `exams.html#${c.id}`, label: c.short || c.name, a: categoryArt[c.id] })),
+  { href: 'ssb.html#drills', label: 'PPDT drill', a: art.screening },
+  { href: 'progress.html', label: 'My board', a: art.me },
+];
+document.getElementById('stories').innerHTML = stories.map(x =>
+  `<a class="story press" href="${x.href}"><div class="ring"><div>${x.a()}</div></div>${esc(x.label)}</a>`).join('');
+
+if (s.last) {
   document.getElementById('resume').innerHTML = `
-    <a class="tile" href="${esc(last.href)}" style="margin-bottom:1.5rem;flex-direction:row;align-items:center;gap:1rem">
-      <div class="icon">▶️</div>
-      <div style="flex:1;min-width:0"><div class="kicker">Continue where you left off</div>
-      <h3>${esc(last.title || '')}</h3><div class="meta">${esc(last.exam || '')} · ${timeAgo(last.at)}</div></div>
-    </a>`;
+    <div class="section"><div class="h-md">Continue</div></div>
+    <a class="row press" href="${esc(s.last.href)}">
+      <div class="thumb" style="background:var(--g-me)">▶</div>
+      <div class="body"><div class="t">${esc(s.last.title)}</div><div class="s">${esc(s.last.exam || '')} · ${timeAgo(s.last.at)}</div></div>
+      <span class="chev">${ICON.chev}</span></a>`;
 }
+
+document.getElementById('rails').innerHTML = cat.categories.map(c => `
+  <div class="section"><div class="h-md">${esc(c.name)}</div><a href="exams.html#${c.id}">See all</a></div>
+  <div class="rail">${c.exams.map(e => {
+    const n = doneIn(e.id);
+    return `<a class="tile press" href="${e.id === 'ssb' ? 'ssb.html' : `exam.html?id=${e.id}`}" style="background:var(--g-${c.id})">
+      <div class="art">${(e.id === 'ssb' ? art.ssb : categoryArt[c.id])()}</div><div class="shade"></div>
+      <div class="by">${esc(e.by)}</div><div class="name">${esc(e.name)}</div>
+      <div style="font-size:12px;opacity:.85;margin-top:4px">${esc(e.short)}</div>
+      ${n ? `<div class="prog"><i style="width:${Math.min(100, n * 8)}%"></i></div>` : ''}
+    </a>`;
+  }).join('')}</div>`).join('');
+
+// Mini weekly chart
+const days = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); return d; });
+const mins = days.map(d => Math.round((s.days[d.toISOString().slice(0, 10)] || 0) / 60));
+const max = Math.max(10, ...mins);
+document.getElementById('week').innerHTML = `
+  <div style="flex:1;display:flex;align-items:flex-end;gap:6px;height:72px">${mins.map((m, i) =>
+    `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><i style="display:block;width:100%;border-radius:6px;background:${m ? 'var(--accent)' : 'var(--card-2)'};height:${Math.max(6, (m / max) * 52)}px"></i><small class="muted" style="font-size:10px;font-weight:700">${'SMTWTFS'[days[i].getDay()]}</small></div>`).join('')}</div>
+  <div style="text-align:right"><div class="h-lg">${mins.reduce((a, b) => a + b, 0)}<span class="muted" style="font-size:14px"> min</span></div><div class="muted" style="font-size:12px;font-weight:700">this week</div></div>`;
 </script>
 </body>
 </html>
