@@ -1,0 +1,1998 @@
+{
+  "id": "nda",
+  "name": "NDA & NA",
+  "category": "defence",
+  "conductedBy": "UPSC",
+  "tagline": "Join the Army, Navy or Air Force straight after Class 12 through the National Defence Academy.",
+  "overview": {
+    "about": "The National Defence Academy & Naval Academy Examination is held by UPSC twice a year for admission to the Army, Navy and Air Force wings of NDA (Khadakwasla, Pune) and the 10+2 Cadet Entry Scheme of the Indian Naval Academy (Ezhimala). Written-exam qualifiers face a 5-day SSB interview and medicals; the final merit list is out of 1800 marks.",
+    "eligibility": [
+      "Unmarried male and female candidates who are Indian citizens (or as per the notification's nationality rules)",
+      "Age: about 16½ to 19½ years — e.g. for NDA (II) 2026, born between 2 January 2008 and 1 January 2011 (check the exact dates in each notification)",
+      "Army wing: Class 12 pass (or appearing) from any stream",
+      "Air Force, Navy and Naval Academy (10+2 Cadet Entry): Class 12 with Physics, Chemistry and Mathematics",
+      "Physical and medical standards as laid down by UPSC and the services"
+    ],
+    "pattern": [
+      {
+        "paper": "Mathematics",
+        "questions": 120,
+        "marks": 300,
+        "duration": "2.5 hours",
+        "note": "2.5 marks per correct answer; one-third (0.83) deducted per wrong answer"
+      },
+      {
+        "paper": "General Ability Test (GAT)",
+        "questions": 150,
+        "marks": 600,
+        "duration": "2.5 hours",
+        "note": "Part A English: 50 Q / 200 marks; Part B General Knowledge: 100 Q / 400 marks; one-third negative marking"
+      },
+      {
+        "paper": "SSB Interview",
+        "marks": 900,
+        "duration": "5 days",
+        "note": "Intelligence and personality test for those who clear the written cut-off"
+      }
+    ],
+    "frequency": "Twice a year — NDA & NA (I) and (II)",
+    "officialSite": "https://upsc.gov.in"
+  },
+  "subjects": [
+    {
+      "id": "maths",
+      "name": "Mathematics",
+      "chapters": [
+        {
+          "id": "sets-algebra",
+          "title": "Algebra: sets, relations, complex numbers & sequences",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Sets and relations in one look",
+              "body": "A **set** is a well-defined collection. A set with n elements has **2ⁿ subsets**. A **relation** from A to B is any subset of A × B, so if n(A)=m and n(B)=n there are **2^(mn)** relations. A relation is an equivalence relation if it is reflexive, symmetric and transitive.",
+              "points": [
+                "Function: every element of A has exactly one image",
+                "One-one (injective), onto (surjective), both = bijective"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Set formulas you must know",
+              "points": [
+                "n(A ∪ B) = n(A) + n(B) − n(A ∩ B)",
+                "(A ∪ B)′ = A′ ∩ B′ and (A ∩ B)′ = A′ ∪ B′ (De Morgan)",
+                "Number of subsets = 2ⁿ; proper subsets = 2ⁿ − 1",
+                "n(A × B) = n(A) · n(B)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Complex numbers",
+              "body": "i² = −1, so powers of i repeat in a cycle of 4: i, −1, −i, 1. For z = a + ib, the modulus is |z| = √(a² + b²) and the conjugate is a − ib. The cube roots of unity are 1, ω, ω² with **ω³ = 1** and **1 + ω + ω² = 0**."
+            },
+            {
+              "type": "formula",
+              "title": "Quadratic equations ax² + bx + c = 0",
+              "points": [
+                "Sum of roots = −b/a; product = c/a",
+                "Discriminant D = b² − 4ac",
+                "D > 0: real & distinct; D = 0: real & equal; D < 0: complex conjugate pair",
+                "Equation from roots: x² − (sum)x + (product) = 0"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "AP, GP, logs, permutations",
+              "points": [
+                "AP: aₙ = a + (n−1)d; Sₙ = n/2 [2a + (n−1)d]",
+                "GP: aₙ = arⁿ⁻¹; S∞ = a/(1 − r) when |r| < 1",
+                "log(mn) = log m + log n; logₐb = log b / log a",
+                "ⁿPᵣ = n!/(n−r)!; ⁿCᵣ = n!/[r!(n−r)!]",
+                "Binomial general term: Tᵣ₊₁ = ⁿCᵣ aⁿ⁻ʳ bʳ"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Binary conversion",
+              "body": "Convert (1011)₂ to decimal: 1×2³ + 0×2² + 1×2¹ + 1×2⁰ = 8 + 0 + 2 + 1 = **11**. To go the other way, divide by 2 repeatedly and read the remainders from bottom to top. NDA asks 1–2 such questions almost every paper."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "For powers of i, divide the exponent by 4 and use only the remainder. For root-based questions, never solve the quadratic fully — use sum and product of roots. This saves 30–40 seconds per question."
+            },
+            {
+              "type": "quiz",
+              "q": "A set A has 3 elements. How many subsets does it have?",
+              "options": [
+                "3",
+                "6",
+                "8",
+                "9"
+              ],
+              "answer": 2,
+              "explain": "Number of subsets = 2ⁿ = 2³ = 8 (including the empty set and A itself)."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the sum of the roots of 2x² − 6x + 5 = 0?",
+              "options": [
+                "−3",
+                "3",
+                "5/2",
+                "6"
+              ],
+              "answer": 1,
+              "explain": "Sum of roots = −b/a = −(−6)/2 = 3."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the value of i²⁰²⁶?",
+              "options": [
+                "1",
+                "−1",
+                "i",
+                "−i"
+              ],
+              "answer": 1,
+              "explain": "2026 ÷ 4 leaves remainder 2, so i²⁰²⁶ = i² = −1."
+            }
+          ]
+        },
+        {
+          "id": "matrices-determinants",
+          "title": "Matrices & determinants",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What a matrix is",
+              "body": "A matrix is a rectangular array of numbers with m rows and n columns (order m × n). Key types: square, diagonal, scalar, identity (I), zero, symmetric (Aᵀ = A) and skew-symmetric (Aᵀ = −A). Two matrices can be multiplied only if columns of the first = rows of the second.",
+              "points": [
+                "Matrix multiplication is generally NOT commutative: AB ≠ BA",
+                "(AB)ᵀ = BᵀAᵀ"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Determinant basics",
+              "points": [
+                "2×2: |a b; c d| = ad − bc",
+                "3×3: expand along any row or column using cofactors",
+                "|Aᵀ| = |A|; |AB| = |A||B|",
+                "For an n×n matrix: |kA| = kⁿ|A|"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Properties that save time",
+              "body": "If two rows (or columns) are identical or proportional, the determinant is **0**. Swapping two rows changes the sign. Adding a multiple of one row to another does not change the value. A matrix with |A| = 0 is **singular** and has no inverse."
+            },
+            {
+              "type": "formula",
+              "title": "Adjoint and inverse",
+              "points": [
+                "A⁻¹ = adj(A) / |A|, exists only if |A| ≠ 0",
+                "A · adj(A) = |A| I",
+                "|adj A| = |A|ⁿ⁻¹ for an n×n matrix",
+                "(AB)⁻¹ = B⁻¹A⁻¹"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Inverse of a 2×2 matrix",
+              "body": "A = [2 1; 5 3]. |A| = 2×3 − 1×5 = 1. For a 2×2 matrix, swap the diagonal entries and change the signs of the off-diagonal ones: adj A = [3 −1; −5 2]. So A⁻¹ = [3 −1; −5 2] / 1 = **[3 −1; −5 2]**."
+            },
+            {
+              "type": "concept",
+              "title": "Solving equations (Cramer's rule)",
+              "body": "For a system AX = B: if |A| ≠ 0 there is a **unique solution**. If |A| = 0 and (adj A)B ≠ 0 the system is inconsistent (no solution); if |A| = 0 and (adj A)B = 0 it may have infinitely many solutions."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Before expanding any 3×3 determinant, scan for a zero row, two equal rows or proportional rows. UPSC loves determinants that are 0 by a property — spotting it takes 5 seconds instead of 60."
+            },
+            {
+              "type": "quiz",
+              "q": "If A is a 3×3 matrix with |A| = 4, what is |2A|?",
+              "options": [
+                "8",
+                "16",
+                "32",
+                "64"
+              ],
+              "answer": 2,
+              "explain": "|kA| = kⁿ|A| = 2³ × 4 = 32."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the determinant of [2 3; 1 4]?",
+              "options": [
+                "5",
+                "11",
+                "−5",
+                "8"
+              ],
+              "answer": 0,
+              "explain": "ad − bc = 2×4 − 3×1 = 8 − 3 = 5."
+            },
+            {
+              "type": "quiz",
+              "q": "A is 3×3 with |A| = 5. What is |adj A|?",
+              "options": [
+                "5",
+                "15",
+                "25",
+                "125"
+              ],
+              "answer": 2,
+              "explain": "|adj A| = |A|ⁿ⁻¹ = 5² = 25."
+            }
+          ]
+        },
+        {
+          "id": "trigonometry",
+          "title": "Trigonometry essentials",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Why trigonometry matters in NDA",
+              "body": "Trigonometry, including heights & distances and inverse functions, is one of the highest-weightage areas in the NDA Maths paper. Most questions reduce to a few identities and standard angle values, so memorise them cold."
+            },
+            {
+              "type": "formula",
+              "title": "Core identities",
+              "points": [
+                "sin²θ + cos²θ = 1",
+                "1 + tan²θ = sec²θ",
+                "1 + cot²θ = cosec²θ",
+                "sin(90° − θ) = cos θ; tan(90° − θ) = cot θ"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Standard values (0°, 30°, 45°, 60°, 90°)",
+              "points": [
+                "sin: 0, 1/2, 1/√2, √3/2, 1",
+                "cos: 1, √3/2, 1/√2, 1/2, 0",
+                "tan: 0, 1/√3, 1, √3, not defined"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Compound & multiple angles",
+              "points": [
+                "sin(A ± B) = sinA cosB ± cosA sinB",
+                "cos(A ± B) = cosA cosB ∓ sinA sinB",
+                "sin 2A = 2 sinA cosA",
+                "cos 2A = cos²A − sin²A = 1 − 2sin²A = 2cos²A − 1",
+                "tan 2A = 2tanA / (1 − tan²A)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Heights and distances",
+              "body": "From a point 10 m from the foot of a tower, the angle of elevation of the top is 60°. tan 60° = h/10, so h = 10√3 ≈ **17.32 m**. Always draw a right triangle, mark the known side and angle, then pick tan (opposite/adjacent) in most cases."
+            },
+            {
+              "type": "formula",
+              "title": "Inverse trigonometric functions",
+              "points": [
+                "sin⁻¹x + cos⁻¹x = π/2",
+                "tan⁻¹x + cot⁻¹x = π/2",
+                "tan⁻¹x + tan⁻¹y = tan⁻¹[(x + y)/(1 − xy)], when xy < 1",
+                "Principal range of sin⁻¹x is [−π/2, π/2]"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Use ASTC (All-Sin-Tan-Cos) to fix the sign in each quadrant. When options are numeric, put θ = 30° or 45° into the expression and test the options — often faster than proving the identity."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the exact value of sin 75°?",
+              "options": [
+                "(√6 − √2)/4",
+                "(√6 + √2)/4",
+                "(√3 + 1)/2",
+                "√3/2"
+              ],
+              "answer": 1,
+              "explain": "sin(45° + 30°) = sin45 cos30 + cos45 sin30 = (√3/2√2) + (1/2√2) = (√6 + √2)/4."
+            },
+            {
+              "type": "quiz",
+              "q": "sin²30° + cos²60° equals:",
+              "options": [
+                "1",
+                "1/2",
+                "1/4",
+                "3/4"
+              ],
+              "answer": 1,
+              "explain": "sin30 = 1/2 and cos60 = 1/2, so 1/4 + 1/4 = 1/2."
+            },
+            {
+              "type": "quiz",
+              "q": "sin⁻¹(0.3) + cos⁻¹(0.3) equals:",
+              "options": [
+                "0",
+                "π/4",
+                "π/2",
+                "π"
+              ],
+              "answer": 2,
+              "explain": "For any x in [−1, 1], sin⁻¹x + cos⁻¹x = π/2."
+            }
+          ]
+        },
+        {
+          "id": "analytical-geometry",
+          "title": "Analytical geometry (2D & 3D)",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Points and lines",
+              "points": [
+                "Distance = √[(x₂−x₁)² + (y₂−y₁)²]",
+                "Section formula (m:n internal): ((mx₂+nx₁)/(m+n), (my₂+ny₁)/(m+n))",
+                "Slope m = (y₂−y₁)/(x₂−x₁); parallel: m₁ = m₂; perpendicular: m₁m₂ = −1",
+                "Distance of (x₁, y₁) from ax + by + c = 0 is |ax₁ + by₁ + c| / √(a² + b²)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Forms of a straight line",
+              "body": "Slope-intercept y = mx + c; point-slope y − y₁ = m(x − x₁); intercept form x/a + y/b = 1; general form ax + by + c = 0 with slope −a/b. Choose the form that matches the data given in the question."
+            },
+            {
+              "type": "formula",
+              "title": "Circle",
+              "points": [
+                "x² + y² + 2gx + 2fy + c = 0",
+                "Centre = (−g, −f)",
+                "Radius = √(g² + f² − c)",
+                "Centre-radius form: (x − h)² + (y − k)² = r²"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Conics (standard forms)",
+              "points": [
+                "Parabola y² = 4ax: focus (a, 0), directrix x = −a, latus rectum 4a",
+                "Ellipse x²/a² + y²/b² = 1 (a > b): e = √(1 − b²/a²), e < 1",
+                "Hyperbola x²/a² − y²/b² = 1: e = √(1 + b²/a²), e > 1",
+                "Parabola e = 1; circle e = 0"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "3D geometry basics",
+              "points": [
+                "Distance = √[(x₂−x₁)² + (y₂−y₁)² + (z₂−z₁)²]",
+                "Direction cosines: l² + m² + n² = 1",
+                "Angle between lines: cos θ = l₁l₂ + m₁m₂ + n₁n₂",
+                "Plane: ax + by + cz + d = 0, normal along (a, b, c)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Circle from an equation",
+              "body": "x² + y² − 4x + 6y − 12 = 0. Compare: 2g = −4 → g = −2; 2f = 6 → f = 3; c = −12. Centre = (2, −3). Radius = √(4 + 9 + 12) = √25 = **5**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Make sure the coefficients of x² and y² are 1 before reading off g, f and c — divide the whole equation if needed. Many students lose marks on this one step."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the distance of the origin from the line 3x + 4y − 10 = 0?",
+              "options": [
+                "1",
+                "2",
+                "10/7",
+                "5"
+              ],
+              "answer": 1,
+              "explain": "|3·0 + 4·0 − 10| / √(9 + 16) = 10/5 = 2."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the length of the latus rectum of y² = 12x?",
+              "options": [
+                "3",
+                "6",
+                "12",
+                "4"
+              ],
+              "answer": 2,
+              "explain": "y² = 4ax with 4a = 12, and latus rectum = 4a = 12."
+            },
+            {
+              "type": "quiz",
+              "q": "The eccentricity of any ellipse is:",
+              "options": [
+                "Exactly 1",
+                "Greater than 1",
+                "Between 0 and 1",
+                "Always 0"
+              ],
+              "answer": 2,
+              "explain": "An ellipse has 0 < e < 1; a parabola has e = 1, a hyperbola e > 1, and a circle e = 0."
+            }
+          ]
+        },
+        {
+          "id": "differential-calculus",
+          "title": "Differential calculus",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Standard limits",
+              "points": [
+                "lim(x→0) sin x / x = 1",
+                "lim(x→0) (1 + x)^(1/x) = e",
+                "lim(x→0) (eˣ − 1)/x = 1",
+                "lim(x→a) (xⁿ − aⁿ)/(x − a) = naⁿ⁻¹"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Continuity and differentiability",
+              "body": "f is continuous at a if the left limit = right limit = f(a). Every differentiable function is continuous, but not the reverse: |x| is continuous at 0 but **not differentiable** there because its left and right slopes (−1 and 1) differ."
+            },
+            {
+              "type": "formula",
+              "title": "Derivatives table",
+              "points": [
+                "d/dx xⁿ = nxⁿ⁻¹",
+                "d/dx sin x = cos x; d/dx cos x = −sin x",
+                "d/dx tan x = sec²x",
+                "d/dx eˣ = eˣ; d/dx ln x = 1/x",
+                "d/dx sin⁻¹x = 1/√(1 − x²); d/dx tan⁻¹x = 1/(1 + x²)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Rules of differentiation",
+              "points": [
+                "Product: (uv)′ = u′v + uv′",
+                "Quotient: (u/v)′ = (u′v − uv′)/v²",
+                "Chain: dy/dx = dy/du · du/dx",
+                "Parametric: dy/dx = (dy/dt)/(dx/dt)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Applications: maxima & minima",
+              "body": "Find critical points where f′(x) = 0. If f″(x) < 0 there, it is a **local maximum**; if f″(x) > 0, a **local minimum**. f′(x) > 0 on an interval means f is increasing; f′(x) < 0 means decreasing. Slope of tangent at a point = f′(x) there."
+            },
+            {
+              "type": "example",
+              "title": "Maximum value of a quadratic",
+              "body": "f(x) = −x² + 4x + 1. f′(x) = −2x + 4 = 0 → x = 2. f″(x) = −2 < 0, so x = 2 gives a maximum. f(2) = −4 + 8 + 1 = **5**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "For 0/0 limits, try factorising or a standard limit before L'Hôpital's rule. For 'which function is increasing' questions, just check the sign of f′(x) on the given interval."
+            },
+            {
+              "type": "quiz",
+              "q": "lim(x→0) sin 3x / x equals:",
+              "options": [
+                "0",
+                "1",
+                "3",
+                "1/3"
+              ],
+              "answer": 2,
+              "explain": "sin 3x / x = 3 · (sin 3x / 3x) → 3 × 1 = 3."
+            },
+            {
+              "type": "quiz",
+              "q": "d/dx (x² sin x) equals:",
+              "options": [
+                "2x cos x",
+                "2x sin x + x² cos x",
+                "x² cos x",
+                "2x sin x − x² cos x"
+              ],
+              "answer": 1,
+              "explain": "Product rule: (x²)′ sin x + x² (sin x)′ = 2x sin x + x² cos x."
+            },
+            {
+              "type": "quiz",
+              "q": "At which point is f(x) = |x| continuous but not differentiable?",
+              "options": [
+                "x = 1",
+                "x = −1",
+                "x = 0",
+                "Nowhere"
+              ],
+              "answer": 2,
+              "explain": "At x = 0 the left-hand derivative is −1 and right-hand derivative is +1, so f is not differentiable there, though it is continuous."
+            }
+          ]
+        },
+        {
+          "id": "integral-calculus-de",
+          "title": "Integral calculus & differential equations",
+          "minutes": 7,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Standard integrals",
+              "points": [
+                "∫xⁿ dx = xⁿ⁺¹/(n+1) + C, n ≠ −1",
+                "∫1/x dx = ln|x| + C",
+                "∫eˣ dx = eˣ + C",
+                "∫sin x dx = −cos x + C; ∫cos x dx = sin x + C",
+                "∫sec²x dx = tan x + C; ∫1/(1 + x²) dx = tan⁻¹x + C"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Methods of integration",
+              "body": "**Substitution**: replace an inner function by t. **By parts**: ∫u v dx = u∫v dx − ∫(u′ ∫v dx) dx; choose u using the ILATE order (Inverse trig, Log, Algebraic, Trig, Exponential). **Partial fractions** for rational functions."
+            },
+            {
+              "type": "formula",
+              "title": "Definite integral properties",
+              "points": [
+                "∫₀ᵃ f(x) dx = ∫₀ᵃ f(a − x) dx",
+                "∫₋ₐᵃ f(x) dx = 0 if f is odd",
+                "∫₋ₐᵃ f(x) dx = 2∫₀ᵃ f(x) dx if f is even",
+                "Area under y = f(x) from a to b = ∫ₐᵇ |f(x)| dx"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Order and degree of a DE",
+              "body": "**Order** = highest derivative present. **Degree** = power of that highest derivative after the equation is made free of radicals and fractions in derivatives. Degree is not defined if derivatives sit inside sin, log, e^ etc."
+            },
+            {
+              "type": "formula",
+              "title": "Solving first-order DEs",
+              "points": [
+                "Variable separable: f(y) dy = g(x) dx, then integrate both sides",
+                "Linear: dy/dx + Py = Q",
+                "Integrating factor IF = e^(∫P dx)",
+                "Solution: y · IF = ∫Q · IF dx + C"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Linear DE example",
+              "body": "dy/dx + y/x = x². Here P = 1/x, so IF = e^(ln x) = x. Then y·x = ∫x² · x dx = x⁴/4 + C. So **y = x³/4 + C/x**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Before integrating a definite integral from −a to a, check whether the function is odd — the answer may simply be 0. The f(a − x) property cracks most 'tricky' trig integrals in NDA."
+            },
+            {
+              "type": "quiz",
+              "q": "∫₀¹ x² dx equals:",
+              "options": [
+                "1/2",
+                "1/3",
+                "1",
+                "2/3"
+              ],
+              "answer": 1,
+              "explain": "[x³/3] from 0 to 1 = 1/3."
+            },
+            {
+              "type": "quiz",
+              "q": "Order and degree of (d²y/dx²)³ + (dy/dx)⁴ + y = 0 are:",
+              "options": [
+                "2 and 3",
+                "2 and 4",
+                "3 and 2",
+                "1 and 4"
+              ],
+              "answer": 0,
+              "explain": "The highest derivative is d²y/dx² (order 2) and its power is 3 (degree 3)."
+            },
+            {
+              "type": "quiz",
+              "q": "∫₋₁¹ x³ dx equals:",
+              "options": [
+                "1/2",
+                "1/4",
+                "0",
+                "2"
+              ],
+              "answer": 2,
+              "explain": "x³ is an odd function, so its integral over a symmetric interval [−a, a] is 0."
+            }
+          ]
+        },
+        {
+          "id": "vectors",
+          "title": "Vector algebra",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Vectors in one minute",
+              "body": "A vector has magnitude and direction. For a = a₁i + a₂j + a₃k, |a| = √(a₁² + a₂² + a₃²) and the unit vector is a/|a|. i, j, k are mutually perpendicular unit vectors along x, y and z."
+            },
+            {
+              "type": "formula",
+              "title": "Dot (scalar) product",
+              "points": [
+                "a · b = |a||b| cos θ = a₁b₁ + a₂b₂ + a₃b₃",
+                "a ⊥ b ⇔ a · b = 0",
+                "i·i = j·j = k·k = 1; i·j = j·k = k·i = 0",
+                "Projection of a on b = (a · b)/|b|"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Cross (vector) product",
+              "points": [
+                "|a × b| = |a||b| sin θ",
+                "a ∥ b ⇔ a × b = 0",
+                "i × j = k, j × k = i, k × i = j (and reversed order gives a minus sign)",
+                "Area of parallelogram = |a × b|; area of triangle = ½|a × b|"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Scalar triple product",
+              "points": [
+                "[a b c] = a · (b × c) = determinant of the components",
+                "Volume of parallelepiped = |[a b c]|",
+                "a, b, c are coplanar ⇔ [a b c] = 0"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Finding λ for perpendicular vectors",
+              "body": "For which λ are (i + λj) and (2i − j) perpendicular? Dot product = 1×2 + λ×(−1) = 2 − λ. Set it to 0: **λ = 2**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Remember the cyclic order i → j → k → i for cross products. Going against the cycle gives a negative sign. Most NDA vector questions are 2-line dot or cross product computations — don't skip them."
+            },
+            {
+              "type": "quiz",
+              "q": "If a = 2i + 3j − k and b = i − j + k, then a · b equals:",
+              "options": [
+                "−2",
+                "2",
+                "0",
+                "4"
+              ],
+              "answer": 0,
+              "explain": "2×1 + 3×(−1) + (−1)×1 = 2 − 3 − 1 = −2."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the area of the parallelogram whose adjacent sides are i and j?",
+              "options": [
+                "0",
+                "1",
+                "2",
+                "√2"
+              ],
+              "answer": 1,
+              "explain": "i × j = k, and |k| = 1, so the area is 1."
+            },
+            {
+              "type": "quiz",
+              "q": "Three vectors a, b, c are coplanar when:",
+              "options": [
+                "a · b = 0",
+                "a × b = 0",
+                "[a b c] = 0",
+                "|a| = |b| = |c|"
+              ],
+              "answer": 2,
+              "explain": "Coplanar vectors enclose zero volume, so their scalar triple product is 0."
+            }
+          ]
+        },
+        {
+          "id": "statistics-probability",
+          "title": "Statistics & probability",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Measures of central tendency",
+              "points": [
+                "Mean = Σx / n (grouped: Σfx / Σf)",
+                "Median: middle value of ordered data",
+                "Mode: most frequent value",
+                "Empirical relation: Mode ≈ 3 Median − 2 Mean"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Measures of dispersion",
+              "points": [
+                "Variance σ² = Σ(x − x̄)² / n = Σx²/n − x̄²",
+                "Standard deviation σ = √variance",
+                "Coefficient of variation = (σ / x̄) × 100",
+                "Adding a constant to every value doesn't change σ; multiplying by k multiplies σ by |k|"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Probability rules",
+              "points": [
+                "P(E) = favourable outcomes / total outcomes, 0 ≤ P ≤ 1",
+                "P(A ∪ B) = P(A) + P(B) − P(A ∩ B)",
+                "Independent events: P(A ∩ B) = P(A)·P(B)",
+                "Conditional: P(A|B) = P(A ∩ B) / P(B)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Bayes' theorem",
+              "body": "Used when an event can happen through several causes and you know the result. P(Eᵢ|A) = P(Eᵢ)P(A|Eᵢ) / Σ P(Eⱼ)P(A|Eⱼ). Classic NDA question: balls drawn from one of several bags — find the probability it came from a given bag."
+            },
+            {
+              "type": "formula",
+              "title": "Binomial distribution",
+              "points": [
+                "P(X = r) = ⁿCᵣ pʳ qⁿ⁻ʳ, where q = 1 − p",
+                "Mean = np",
+                "Variance = npq",
+                "Variance ≤ mean always (since q ≤ 1)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Two dice",
+              "body": "Two fair dice are thrown: 36 outcomes. Sum = 7 occurs for (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) — 6 cases. P = 6/36 = **1/6**. Sum 7 is the most likely sum with two dice."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Statistics questions are mostly formula-plug-ins and give quick marks. In probability, first write the sample space size; for 'at least one' questions use 1 − P(none)."
+            },
+            {
+              "type": "quiz",
+              "q": "For a binomial distribution with n = 10 and p = 0.5, the variance is:",
+              "options": [
+                "5",
+                "2.5",
+                "0.25",
+                "10"
+              ],
+              "answer": 1,
+              "explain": "Variance = npq = 10 × 0.5 × 0.5 = 2.5."
+            },
+            {
+              "type": "quiz",
+              "q": "If mean = 10 and median = 12, the mode (empirical relation) is approximately:",
+              "options": [
+                "14",
+                "16",
+                "8",
+                "11"
+              ],
+              "answer": 1,
+              "explain": "Mode = 3×12 − 2×10 = 36 − 20 = 16."
+            },
+            {
+              "type": "quiz",
+              "q": "A coin is tossed 3 times. What is the probability of at least one head?",
+              "options": [
+                "1/8",
+                "3/8",
+                "1/2",
+                "7/8"
+              ],
+              "answer": 3,
+              "explain": "P(no head) = (1/2)³ = 1/8, so P(at least one head) = 1 − 1/8 = 7/8."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "english",
+      "name": "GAT — English",
+      "chapters": [
+        {
+          "id": "english-grammar",
+          "title": "English: error spotting & sentence improvement",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What NDA English tests",
+              "body": "Part A of the GAT paper has 50 English questions worth 200 marks — a third of the GAT total. Typical areas: spotting errors, sentence improvement, synonyms, antonyms, ordering of words/sentences, cloze test and comprehension."
+            },
+            {
+              "type": "concept",
+              "title": "Subject-verb agreement",
+              "body": "The verb agrees with the real subject, not with the noun closest to it.",
+              "points": [
+                "'Each', 'every', 'either', 'neither' take a singular verb",
+                "'One of the + plural noun' takes a singular verb",
+                "Two subjects joined by 'and' take a plural verb",
+                "With 'neither…nor' / 'either…or', the verb agrees with the nearer subject"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Tenses and time markers",
+              "body": "Words like 'since', 'for', 'yesterday', 'already' fix the tense. Use the past simple with a definite past time ('I met him **yesterday**'), not the present perfect. 'Since' marks a point in time (since 2020); 'for' marks a duration (for two years)."
+            },
+            {
+              "type": "concept",
+              "title": "Articles and prepositions",
+              "body": "Use 'an' before a vowel **sound** (an hour, an MBA) and 'a' before a consonant sound (a university, a one-rupee coin). Common preposition traps: 'married **to**', 'senior **to**', 'prefer X **to** Y', 'discuss the matter' (no 'about')."
+            },
+            {
+              "type": "example",
+              "title": "Spotting the error",
+              "body": "'Each of the cadets (A) / have completed (B) / the drill (C) / No error (D).' The subject is 'Each', which is singular, so 'have' should be 'has'. Answer: **(B)**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Read the full sentence once for meaning, then check: subject-verb, tense, article, preposition, pronoun — in that order. If nothing is wrong after this 5-point check, mark 'No error' with confidence."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the correct option: 'One of my friends ___ a pilot.'",
+              "options": [
+                "are",
+                "is",
+                "were",
+                "have been"
+              ],
+              "answer": 1,
+              "explain": "'One of + plural noun' takes a singular verb: 'One of my friends is a pilot.'"
+            },
+            {
+              "type": "quiz",
+              "q": "Identify the correct sentence:",
+              "options": [
+                "He is senior than me.",
+                "He is senior to me.",
+                "He is senior from me.",
+                "He is more senior than me."
+              ],
+              "answer": 1,
+              "explain": "Latin comparatives like senior, junior, superior, prefer take 'to', not 'than'."
+            },
+            {
+              "type": "quiz",
+              "q": "Fill in the blank: 'She has been living here ___ 2019.'",
+              "options": [
+                "for",
+                "from",
+                "since",
+                "by"
+              ],
+              "answer": 2,
+              "explain": "'Since' is used with a point in time; 'for' is used with a duration."
+            }
+          ]
+        },
+        {
+          "id": "english-vocab-comprehension",
+          "title": "English: vocabulary, cloze & comprehension",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Building vocabulary smartly",
+              "body": "Synonym/antonym questions are direct marks. Learn words in clusters (e.g. generous: benevolent, magnanimous, liberal) and their opposites together. Roots help: 'bene' = good, 'mal' = bad, 'chron' = time, 'phil' = love."
+            },
+            {
+              "type": "concept",
+              "title": "Cloze test strategy",
+              "body": "Read the whole passage first to catch its tone and tense. Then fill each blank by checking grammar (part of speech, tense, preposition) and meaning together. The answer must fit both the sentence and the passage."
+            },
+            {
+              "type": "concept",
+              "title": "Reading comprehension",
+              "body": "Read the questions first, then the passage. Answers must come **from the passage**, not your general knowledge. Watch for extreme words like 'always', 'never', 'only' in options — they are usually wrong.",
+              "points": [
+                "Main idea questions: look at the first and last lines",
+                "Inference questions: choose what the author implies, not what you assume"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Ordering of sentences (PQRS)",
+              "body": "Find the opening sentence (introduces the subject, has no pronoun pointing back). Then link pairs using pronouns, connectors (however, therefore) and time order. Eliminating options with a fixed pair is faster than building the whole order."
+            },
+            {
+              "type": "example",
+              "title": "Using roots",
+              "body": "'Benevolent': bene (good) + volent (wishing) = kind and generous. Its antonym is **malevolent** (mal = bad), meaning wishing harm. One root can unlock several words: benefactor, benefit, malice, malfunction."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Read one English editorial a day and note 5 new words with a sentence each. Revise the list weekly. Over 6 months this gives you a few hundred active words — enough for most NDA vocabulary questions."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the synonym of 'Candid':",
+              "options": [
+                "Secretive",
+                "Frank",
+                "Clever",
+                "Timid"
+              ],
+              "answer": 1,
+              "explain": "Candid means open and honest — 'frank'."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the antonym of 'Benevolent':",
+              "options": [
+                "Kind",
+                "Generous",
+                "Malevolent",
+                "Charitable"
+              ],
+              "answer": 2,
+              "explain": "Benevolent (well-wishing) is the opposite of malevolent (wishing harm)."
+            },
+            {
+              "type": "quiz",
+              "q": "In a comprehension question, the best answer is the one that:",
+              "options": [
+                "Matches your own opinion",
+                "Is supported by the passage",
+                "Uses the longest option",
+                "Contains 'always'"
+              ],
+              "answer": 1,
+              "explain": "Comprehension answers must be backed by the text, not by outside knowledge or opinion."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "physics",
+      "name": "GAT — Physics",
+      "chapters": [
+        {
+          "id": "physics-mechanics",
+          "title": "Physics: units, motion, force & energy",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Physics in GAT",
+              "body": "As per the UPSC syllabus, Physics carries the largest share of the GK section of GAT (about 100 of the 400 marks). Questions are conceptual and Class 9–10 NCERT level, with some 11–12 basics."
+            },
+            {
+              "type": "formula",
+              "title": "Equations of motion (uniform acceleration)",
+              "points": [
+                "v = u + at",
+                "s = ut + ½at²",
+                "v² = u² + 2as",
+                "Free fall: a = g ≈ 9.8 m/s²"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Newton's laws",
+              "body": "**First law**: a body stays at rest or uniform motion unless a net force acts (inertia). **Second**: F = ma (rate of change of momentum). **Third**: every action has an equal and opposite reaction — this is why rockets and guns recoil.",
+              "points": [
+                "Momentum p = mv; conserved when no external force acts",
+                "Impulse = F × t = change in momentum"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Work, energy, power",
+              "points": [
+                "Work W = F s cos θ (joule)",
+                "Kinetic energy = ½mv²; potential energy = mgh",
+                "Power = work/time (watt); 1 hp ≈ 746 W",
+                "Energy is conserved — it only changes form"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Gravitation and fluids",
+              "body": "g decreases with height and depth, and is greater at the poles than the equator. Escape velocity from Earth ≈ **11.2 km/s**. Archimedes' principle: a body in a fluid loses weight equal to the weight of fluid displaced; it floats if its density is less than the fluid's."
+            },
+            {
+              "type": "example",
+              "title": "Motion problem",
+              "body": "A car starts from rest with acceleration 2 m/s² for 5 s. v = u + at = 0 + 2×5 = **10 m/s**. Distance s = ut + ½at² = 0 + ½×2×25 = **25 m**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Learn SI units and the scientist each is named after (newton, pascal, joule, watt, hertz). Units and 'which is a vector/scalar' questions appear almost every year."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the SI unit of power?",
+              "options": [
+                "Joule",
+                "Newton",
+                "Watt",
+                "Pascal"
+              ],
+              "answer": 2,
+              "explain": "Power is work per unit time; 1 watt = 1 joule per second."
+            },
+            {
+              "type": "quiz",
+              "q": "The escape velocity from Earth's surface is about:",
+              "options": [
+                "7.9 km/s",
+                "11.2 km/s",
+                "3 km/s",
+                "30 km/s"
+              ],
+              "answer": 1,
+              "explain": "Escape velocity from Earth ≈ 11.2 km/s; about 7.9 km/s is the orbital speed near the surface."
+            },
+            {
+              "type": "quiz",
+              "q": "A gun recoils when fired. This is explained by:",
+              "options": [
+                "Newton's first law",
+                "Newton's third law",
+                "Law of gravitation",
+                "Archimedes' principle"
+              ],
+              "answer": 1,
+              "explain": "The bullet is pushed forward and the gun is pushed back equally — action and reaction (third law); equivalently, momentum is conserved."
+            }
+          ]
+        },
+        {
+          "id": "physics-heat-light-electricity",
+          "title": "Physics: heat, sound, light & electricity",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Heat",
+              "body": "Heat flows by **conduction** (solids), **convection** (fluids) and **radiation** (no medium needed — that is how sunlight reaches us). Specific heat is heat needed to raise 1 kg by 1 K; water's high specific heat makes it a good coolant. Latent heat is absorbed or released during a change of state at constant temperature."
+            },
+            {
+              "type": "concept",
+              "title": "Sound",
+              "body": "Sound is a mechanical, longitudinal wave and **cannot travel in vacuum**. It travels fastest in solids, then liquids, then gases (about 343 m/s in air at 20 °C). Humans hear about 20 Hz–20 kHz; above is ultrasound, below is infrasound. SONAR uses ultrasound."
+            },
+            {
+              "type": "concept",
+              "title": "Light",
+              "body": "Light travels at about 3 × 10⁸ m/s in vacuum. Key phenomena: reflection, refraction, **total internal reflection** (optical fibres, sparkle of diamond), dispersion (rainbow), scattering (blue sky, red sunset) and atmospheric refraction (twinkling of stars)."
+            },
+            {
+              "type": "formula",
+              "title": "Lenses and mirrors",
+              "points": [
+                "Mirror: 1/v + 1/u = 1/f",
+                "Lens: 1/v − 1/u = 1/f",
+                "Power P = 1/f (f in metres), unit dioptre (D)",
+                "Convex lens: positive power; concave lens: negative power",
+                "Myopia corrected by concave lens; hypermetropia by convex lens"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Current electricity",
+              "points": [
+                "Ohm's law: V = IR",
+                "Series: R = R₁ + R₂ + …",
+                "Parallel: 1/R = 1/R₁ + 1/R₂ + …",
+                "Power P = VI = I²R = V²/R",
+                "1 kWh (one 'unit') = 3.6 × 10⁶ J"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Lens power",
+              "body": "A convex lens has focal length 50 cm = 0.5 m. Power P = 1/f = 1/0.5 = **+2 D**. If it were a concave lens of the same focal length, P = −2 D."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Make a one-page table of 'phenomenon → reason' (e.g. blue sky → scattering, mirage → total internal reflection, twinkling → atmospheric refraction). These are among the most repeated NDA physics questions."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the power of a convex lens of focal length 50 cm?",
+              "options": [
+                "+0.5 D",
+                "+2 D",
+                "−2 D",
+                "+50 D"
+              ],
+              "answer": 1,
+              "explain": "P = 1/f (in metres) = 1/0.5 = +2 D; convex lenses have positive power."
+            },
+            {
+              "type": "quiz",
+              "q": "Two 4 Ω resistors are connected in parallel. The equivalent resistance is:",
+              "options": [
+                "8 Ω",
+                "4 Ω",
+                "2 Ω",
+                "1 Ω"
+              ],
+              "answer": 2,
+              "explain": "1/R = 1/4 + 1/4 = 1/2, so R = 2 Ω."
+            },
+            {
+              "type": "quiz",
+              "q": "The twinkling of stars is due to:",
+              "options": [
+                "Reflection",
+                "Atmospheric refraction",
+                "Dispersion",
+                "Diffraction"
+              ],
+              "answer": 1,
+              "explain": "Starlight bends unevenly through moving air layers of changing density, so the apparent position and brightness fluctuate."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chemistry",
+      "name": "GAT — Chemistry",
+      "chapters": [
+        {
+          "id": "chemistry-basics",
+          "title": "Chemistry: matter, reactions & everyday compounds",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Matter and its changes",
+              "body": "Physical changes alter form, not composition (melting ice). Chemical changes create new substances (rusting, burning). Elements contain one kind of atom; compounds have elements in a fixed ratio; mixtures can be separated by physical methods such as filtration, distillation and chromatography."
+            },
+            {
+              "type": "concept",
+              "title": "Atomic structure",
+              "body": "An atom has protons and neutrons in the nucleus and electrons around it. **Atomic number** = number of protons; **mass number** = protons + neutrons. Isotopes have the same atomic number but different mass numbers (e.g. ¹²C and ¹⁴C)."
+            },
+            {
+              "type": "concept",
+              "title": "Acids, bases and pH",
+              "body": "Acids turn blue litmus red; bases turn red litmus blue. pH < 7 is acidic, 7 is neutral (pure water at 25 °C), > 7 is basic. Acid + base → salt + water (neutralisation). Antacids like milk of magnesia (Mg(OH)₂) neutralise excess stomach acid."
+            },
+            {
+              "type": "formula",
+              "title": "Everyday compounds (frequently asked)",
+              "points": [
+                "Baking soda: NaHCO₃ (sodium hydrogen carbonate)",
+                "Washing soda: Na₂CO₃·10H₂O",
+                "Bleaching powder: CaOCl₂",
+                "Plaster of Paris: CaSO₄·½H₂O",
+                "Common salt: NaCl; quicklime: CaO; slaked lime: Ca(OH)₂"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Oxidation, reduction and metals",
+              "body": "Oxidation = gain of oxygen or loss of electrons; reduction = the reverse. Rusting of iron is oxidation — prevented by painting, oiling or galvanisation (zinc coating). Carbon allotropes: diamond (hardest natural substance), graphite (good conductor, used in electrodes), fullerenes."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "As per the UPSC syllabus, Chemistry is about 60 marks of GAT. Class 9–10 NCERT Science covers most of it. Revise chemical names and formulas of household substances — they are near-certain marks."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the chemical formula of baking soda?",
+              "options": [
+                "Na₂CO₃",
+                "NaHCO₃",
+                "NaCl",
+                "CaCO₃"
+              ],
+              "answer": 1,
+              "explain": "Baking soda is sodium hydrogen carbonate, NaHCO₃. Na₂CO₃ is the anhydrous form of washing soda."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the pH of pure water at 25 °C?",
+              "options": [
+                "0",
+                "5",
+                "7",
+                "14"
+              ],
+              "answer": 2,
+              "explain": "Pure water is neutral, with pH 7 at 25 °C."
+            },
+            {
+              "type": "quiz",
+              "q": "Galvanisation protects iron by coating it with:",
+              "options": [
+                "Tin",
+                "Zinc",
+                "Copper",
+                "Chromium"
+              ],
+              "answer": 1,
+              "explain": "Galvanised iron has a zinc coating that prevents rusting."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "general-science",
+      "name": "GAT — General Science",
+      "chapters": [
+        {
+          "id": "general-science-biology",
+          "title": "General Science: biology & health",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Cell — the unit of life",
+              "body": "All living organisms are made of cells. Key organelles: **nucleus** (controls the cell, holds DNA), **mitochondria** (powerhouse, makes ATP), ribosomes (protein synthesis), chloroplasts (photosynthesis, only in plants). Plant cells have a cell wall made of cellulose; animal cells do not."
+            },
+            {
+              "type": "concept",
+              "title": "Human body systems",
+              "body": "Digestion starts in the mouth (salivary amylase) and absorption mainly happens in the small intestine. The heart has four chambers. Insulin, made by the pancreas, controls blood sugar — its deficiency causes diabetes. Kidneys filter blood through nephrons.",
+              "points": [
+                "Largest gland: liver",
+                "Smallest bone: stapes (in the ear)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Vitamins and deficiency diseases",
+              "points": [
+                "Vitamin A — night blindness",
+                "Vitamin B1 — beriberi",
+                "Vitamin C — scurvy",
+                "Vitamin D — rickets",
+                "Vitamin K — poor blood clotting"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Blood groups",
+              "body": "The ABO system has groups A, B, AB and O. Group **O** has no A/B antigens, so O-negative is the universal donor; **AB** has no anti-A/anti-B antibodies, so AB-positive is the universal recipient. Rh factor decides positive or negative."
+            },
+            {
+              "type": "concept",
+              "title": "Diseases and their causes",
+              "body": "Bacterial: tuberculosis, typhoid, cholera. Viral: COVID-19, measles, polio, dengue, AIDS. Protozoan: malaria (Plasmodium, spread by female Anopheles mosquito). Vaccines train the immune system before infection."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "As per the UPSC syllabus, General Science is about 40 marks in GAT. Focus on human body, nutrition, diseases and basic plant biology from NCERT Class 6–10 Science. Make one table of disease → pathogen → vector."
+            },
+            {
+              "type": "quiz",
+              "q": "Deficiency of vitamin C causes:",
+              "options": [
+                "Rickets",
+                "Scurvy",
+                "Beriberi",
+                "Night blindness"
+              ],
+              "answer": 1,
+              "explain": "Vitamin C deficiency leads to scurvy (bleeding gums, weak tissue)."
+            },
+            {
+              "type": "quiz",
+              "q": "Insulin is secreted by the:",
+              "options": [
+                "Liver",
+                "Pancreas",
+                "Thyroid",
+                "Kidney"
+              ],
+              "answer": 1,
+              "explain": "Insulin is produced by beta cells in the islets of Langerhans of the pancreas."
+            },
+            {
+              "type": "quiz",
+              "q": "Malaria is caused by:",
+              "options": [
+                "A virus",
+                "A bacterium",
+                "A protozoan (Plasmodium)",
+                "A fungus"
+              ],
+              "answer": 2,
+              "explain": "Malaria is caused by the protozoan Plasmodium and spread by the female Anopheles mosquito."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "history",
+      "name": "GAT — History & Freedom Movement",
+      "chapters": [
+        {
+          "id": "history-ancient-medieval",
+          "title": "History: ancient & medieval India",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Indus Valley Civilisation",
+              "body": "A Bronze Age urban civilisation (c. 2600–1900 BCE at its mature phase). Known for planned cities, grid streets, covered drains and standard weights. Key sites: Harappa, Mohenjo-daro (Great Bath), **Lothal** (dockyard), Dholavira, Kalibangan, Rakhigarhi."
+            },
+            {
+              "type": "concept",
+              "title": "Vedic age, Buddhism and Jainism",
+              "body": "The Rigveda is the oldest Veda. In the 6th century BCE, Gautama Buddha (Buddhism) and Vardhamana Mahavira, the 24th Tirthankara (Jainism), challenged ritualism. Buddha gave his first sermon at Sarnath."
+            },
+            {
+              "type": "concept",
+              "title": "Mauryas and Guptas",
+              "body": "Chandragupta Maurya founded the Mauryan Empire with Chanakya's guidance. **Ashoka** turned to Buddhism after the Kalinga War and spread dhamma through edicts. The Gupta period is called a golden age for art, science and literature — Aryabhata and Kalidasa belong to this era."
+            },
+            {
+              "type": "concept",
+              "title": "Delhi Sultanate and Mughals",
+              "body": "The Delhi Sultanate began in 1206 with Qutb-ud-din Aibak. **Babur** founded Mughal rule after the First Battle of Panipat (1526) against Ibrahim Lodi. Akbar's policies included Sulh-i-kul (tolerance) and the mansabdari system. Shivaji founded the Maratha state in the 17th century."
+            },
+            {
+              "type": "formula",
+              "title": "Battles to remember",
+              "points": [
+                "First Battle of Panipat (1526): Babur defeated Ibrahim Lodi",
+                "Second Battle of Panipat (1556): Akbar's forces defeated Hemu",
+                "Third Battle of Panipat (1761): Ahmad Shah Abdali defeated the Marathas",
+                "Battle of Plassey (1757) and Buxar (1764): British gain power in Bengal"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "As per the UPSC syllabus, History & Freedom Movement is about 80 marks in GAT, with emphasis on culture and civilisation. Use NCERT Class 6–8 (Our Pasts) and Class 12 Themes in Indian History. Make timelines — UPSC often asks chronological order."
+            },
+            {
+              "type": "quiz",
+              "q": "Which Harappan site is known for its dockyard?",
+              "options": [
+                "Harappa",
+                "Mohenjo-daro",
+                "Lothal",
+                "Kalibangan"
+              ],
+              "answer": 2,
+              "explain": "Lothal in Gujarat had a dockyard, showing maritime trade."
+            },
+            {
+              "type": "quiz",
+              "q": "The First Battle of Panipat (1526) was fought between:",
+              "options": [
+                "Akbar and Hemu",
+                "Babur and Ibrahim Lodi",
+                "Marathas and Abdali",
+                "Babur and Rana Sanga"
+              ],
+              "answer": 1,
+              "explain": "Babur defeated Ibrahim Lodi in 1526, founding Mughal rule in India."
+            },
+            {
+              "type": "quiz",
+              "q": "Ashoka embraced Buddhism after which war?",
+              "options": [
+                "Kalinga War",
+                "Battle of Hydaspes",
+                "Battle of Tarain",
+                "Battle of Plassey"
+              ],
+              "answer": 0,
+              "explain": "The bloodshed of the Kalinga War moved Ashoka to adopt Buddhism and the policy of dhamma."
+            }
+          ]
+        },
+        {
+          "id": "freedom-movement",
+          "title": "History: freedom movement & the modern world",
+          "minutes": 7,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Early phase (1857–1905)",
+              "body": "The **Revolt of 1857** ended Company rule; the Crown took over in 1858. The Indian National Congress was founded in **1885** (A.O. Hume helped found it; W.C. Bonnerjee presided over the first session in Bombay). Moderates used petitions and dialogue."
+            },
+            {
+              "type": "concept",
+              "title": "Swadeshi to Gandhi (1905–1919)",
+              "body": "Partition of Bengal (1905) sparked the Swadeshi movement. The Muslim League formed in 1906; Congress split at Surat in 1907. Gandhi returned from South Africa in 1915 and led Champaran (1917). The Jallianwala Bagh massacre took place on 13 April 1919 in Amritsar."
+            },
+            {
+              "type": "formula",
+              "title": "Mass movements timeline",
+              "points": [
+                "Non-Cooperation: 1920–22, withdrawn after Chauri Chaura (1922)",
+                "Simon Commission boycott: 1928",
+                "Purna Swaraj resolution: Lahore session, 1929",
+                "Dandi March / Civil Disobedience: 1930",
+                "Quit India: 8 August 1942 ('Do or Die')",
+                "Independence: 15 August 1947"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Revolutionaries and the INA",
+              "body": "Bhagat Singh, Sukhdev and Rajguru were executed in 1931. Subhas Chandra Bose led the **Indian National Army (Azad Hind Fauj)** with the slogan 'Delhi Chalo'. The INA trials at the Red Fort (1945–46) stirred nationwide anger against British rule."
+            },
+            {
+              "type": "concept",
+              "title": "Forces that shaped the modern world",
+              "body": "The NDA syllabus also covers world history: the Renaissance, Industrial Revolution, American (1776) and French (1789) revolutions, the two World Wars (1914–18 and 1939–45), and the founding of the United Nations (1945). Know causes and outcomes, not just dates."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Learn the freedom movement as a story of cause → event → result. Also revise post-independence topics in the syllabus: Five Year Plans, Panchayati Raj, Bhoodan, Sarvodaya and the Constitution."
+            },
+            {
+              "type": "quiz",
+              "q": "Who presided over the first session of the Indian National Congress (1885)?",
+              "options": [
+                "Dadabhai Naoroji",
+                "W.C. Bonnerjee",
+                "A.O. Hume",
+                "Surendranath Banerjee"
+              ],
+              "answer": 1,
+              "explain": "W.C. Bonnerjee presided over the first session in Bombay; A.O. Hume helped found the Congress."
+            },
+            {
+              "type": "quiz",
+              "q": "The Non-Cooperation Movement was withdrawn after:",
+              "options": [
+                "Jallianwala Bagh",
+                "Chauri Chaura incident",
+                "Dandi March",
+                "Simon Commission"
+              ],
+              "answer": 1,
+              "explain": "Gandhi called off the movement in 1922 after violence at Chauri Chaura."
+            },
+            {
+              "type": "quiz",
+              "q": "The Quit India Movement was launched in:",
+              "options": [
+                "1930",
+                "1935",
+                "1942",
+                "1946"
+              ],
+              "answer": 2,
+              "explain": "It was launched on 8 August 1942 at the Bombay session of the AICC."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "geography",
+      "name": "GAT — Geography",
+      "chapters": [
+        {
+          "id": "physical-geography",
+          "title": "Geography: Earth, atmosphere & landforms",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Earth's motions and time",
+              "body": "Earth rotates west to east once in about 24 hours (day and night) and revolves around the Sun in about 365¼ days (seasons). 360° of longitude = 24 hours, so **1° = 4 minutes** and 15° = 1 hour. Indian Standard Time is based on **82.5° E** longitude."
+            },
+            {
+              "type": "concept",
+              "title": "Latitudes",
+              "body": "The Equator (0°) divides Earth into hemispheres. Tropic of Cancer (23.5° N) and Tropic of Capricorn (23.5° S) mark the limits of the overhead sun. Arctic and Antarctic Circles are at 66.5°. The Tropic of Cancer passes through 8 Indian states."
+            },
+            {
+              "type": "concept",
+              "title": "Interior and rocks",
+              "body": "Earth has a crust, mantle and core (outer core liquid, inner core solid). Rocks are **igneous** (from magma, e.g. granite, basalt), **sedimentary** (layers, e.g. sandstone, limestone; contain fossils) and **metamorphic** (changed by heat/pressure, e.g. marble from limestone, slate from shale)."
+            },
+            {
+              "type": "concept",
+              "title": "Atmosphere",
+              "body": "Layers from bottom: troposphere (weather happens here), **stratosphere** (ozone layer, absorbs UV), mesosphere, thermosphere (ionosphere reflects radio waves), exosphere. Nitrogen (~78%) and oxygen (~21%) make up most of the air."
+            },
+            {
+              "type": "concept",
+              "title": "Winds, currents and hazards",
+              "body": "Planetary winds: trade winds, westerlies, polar easterlies, deflected by the Coriolis effect. Warm currents (e.g. Gulf Stream) raise coastal temperatures; cold currents (e.g. Labrador) lower them. Earthquakes and volcanoes cluster along plate boundaries such as the Pacific 'Ring of Fire'."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "As per the UPSC syllabus, Geography is about 80 marks in GAT. Use NCERT Class 11 'Fundamentals of Physical Geography' and an atlas. Time-zone calculations (4 minutes per degree) are easy marks."
+            },
+            {
+              "type": "quiz",
+              "q": "Indian Standard Time is based on which longitude?",
+              "options": [
+                "75° E",
+                "82.5° E",
+                "90° E",
+                "68.5° E"
+              ],
+              "answer": 1,
+              "explain": "IST is based on 82.5° E, which is 5 hours 30 minutes ahead of GMT."
+            },
+            {
+              "type": "quiz",
+              "q": "The ozone layer lies mainly in the:",
+              "options": [
+                "Troposphere",
+                "Stratosphere",
+                "Mesosphere",
+                "Exosphere"
+              ],
+              "answer": 1,
+              "explain": "Ozone is concentrated in the stratosphere, where it absorbs harmful UV radiation."
+            },
+            {
+              "type": "quiz",
+              "q": "Marble is formed from limestone. Marble is therefore a/an:",
+              "options": [
+                "Igneous rock",
+                "Sedimentary rock",
+                "Metamorphic rock",
+                "Volcanic rock"
+              ],
+              "answer": 2,
+              "explain": "Heat and pressure change limestone (sedimentary) into marble, a metamorphic rock."
+            }
+          ]
+        },
+        {
+          "id": "indian-geography",
+          "title": "Geography: India",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Physiographic divisions",
+              "body": "India has six physiographic divisions: the Himalayas, the Northern Plains, the Peninsular Plateau, the Indian Desert, the Coastal Plains and the Islands (Andaman & Nicobar in the Bay of Bengal, Lakshadweep in the Arabian Sea)."
+            },
+            {
+              "type": "concept",
+              "title": "Rivers",
+              "body": "Himalayan rivers (Indus, Ganga, Brahmaputra) are perennial. Most peninsular rivers (Godavari, Krishna, Kaveri, Mahanadi) flow east into the Bay of Bengal and form deltas. **Narmada and Tapi** flow west through rift valleys into the Arabian Sea and form estuaries.",
+              "points": [
+                "Godavari is the longest peninsular river"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Monsoon and climate",
+              "body": "India has a tropical monsoon climate. The south-west monsoon (roughly June–September) brings most of the rainfall; it reaches Kerala first, around early June. The north-east (retreating) monsoon gives winter rain to Tamil Nadu. Mawsynram and Cherrapunji in Meghalaya receive very heavy rainfall."
+            },
+            {
+              "type": "concept",
+              "title": "Soils and crops",
+              "body": "**Alluvial** soil is the most widespread (Northern Plains). **Black (regur)** soil of the Deccan holds moisture — ideal for cotton. Red and laterite soils occur in high-rainfall, high-temperature areas.",
+              "points": [
+                "Kharif (sown with monsoon): rice, maize, cotton, jowar",
+                "Rabi (sown in winter): wheat, barley, gram, mustard"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Quick facts",
+              "points": [
+                "Tropic of Cancer states: Gujarat, Rajasthan, Madhya Pradesh, Chhattisgarh, Jharkhand, West Bengal, Tripura, Mizoram",
+                "Palk Strait separates India and Sri Lanka",
+                "Southernmost point: Indira Point (Great Nicobar)",
+                "Standard meridian: 82.5° E"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Practise with a blank map of India: mark rivers, mountain passes, national parks and states on the Tropic of Cancer. UPSC repeatedly asks map-based matching questions."
+            },
+            {
+              "type": "quiz",
+              "q": "Which river flows westward through a rift valley into the Arabian Sea?",
+              "options": [
+                "Godavari",
+                "Krishna",
+                "Narmada",
+                "Mahanadi"
+              ],
+              "answer": 2,
+              "explain": "The Narmada (and the Tapi) flow west through rift valleys and form estuaries, not deltas."
+            },
+            {
+              "type": "quiz",
+              "q": "Black (regur) soil is best suited for:",
+              "options": [
+                "Tea",
+                "Cotton",
+                "Rice",
+                "Coffee"
+              ],
+              "answer": 1,
+              "explain": "Black soil retains moisture and is rich in lime and magnesium, making it ideal for cotton."
+            },
+            {
+              "type": "quiz",
+              "q": "Which of these is a rabi crop?",
+              "options": [
+                "Rice",
+                "Cotton",
+                "Wheat",
+                "Maize"
+              ],
+              "answer": 2,
+              "explain": "Wheat is sown in winter and harvested in spring — a rabi crop."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "polity",
+      "name": "GAT — Polity",
+      "chapters": [
+        {
+          "id": "indian-polity",
+          "title": "Indian Constitution & polity",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Making of the Constitution",
+              "body": "The Constituent Assembly adopted the Constitution on **26 November 1949** (now Constitution Day); it came into force on **26 January 1950** (Republic Day). Dr B.R. Ambedkar chaired the Drafting Committee; Dr Rajendra Prasad was the Assembly's President."
+            },
+            {
+              "type": "concept",
+              "title": "Preamble",
+              "body": "India is declared a Sovereign, Socialist, Secular, Democratic Republic. The words 'Socialist', 'Secular' and 'Integrity' were added by the **42nd Amendment (1976)**. The Preamble promises Justice, Liberty, Equality and Fraternity."
+            },
+            {
+              "type": "formula",
+              "title": "Key parts and articles",
+              "points": [
+                "Part III (Art. 12–35): Fundamental Rights",
+                "Art. 32: Right to Constitutional Remedies — Ambedkar called it the 'heart and soul'",
+                "Part IV (Art. 36–51): Directive Principles of State Policy",
+                "Part IV-A (Art. 51A): Fundamental Duties (added by the 42nd Amendment)",
+                "Art. 352, 356, 360: National, State (President's rule) and Financial emergencies"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Union government",
+              "body": "The **President** is the constitutional head and the Supreme Commander of the Armed Forces; real executive power lies with the Council of Ministers headed by the Prime Minister. Parliament = President + Lok Sabha + Rajya Sabha. The Supreme Court is the apex court and guardian of the Constitution."
+            },
+            {
+              "type": "concept",
+              "title": "Local self-government",
+              "body": "The **73rd Amendment (1992)** gave constitutional status to Panchayati Raj (three tiers: village, block, district) and the **74th** to urban local bodies. One-third of seats are reserved for women."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "As per the UPSC syllabus, NDA asks an 'elementary study of the Indian Constitution'. NCERT Class 9 Civics and Class 11 'Indian Constitution at Work' are enough. Memorise article numbers only for the top 15–20 articles."
+            },
+            {
+              "type": "quiz",
+              "q": "Fundamental Duties were added to the Constitution by the:",
+              "options": [
+                "44th Amendment",
+                "42nd Amendment",
+                "73rd Amendment",
+                "1st Amendment"
+              ],
+              "answer": 1,
+              "explain": "The 42nd Amendment (1976) added Part IV-A, Article 51A, on Fundamental Duties."
+            },
+            {
+              "type": "quiz",
+              "q": "Who is the Supreme Commander of India's Armed Forces?",
+              "options": [
+                "Prime Minister",
+                "Defence Minister",
+                "President",
+                "Chief of Defence Staff"
+              ],
+              "answer": 2,
+              "explain": "Article 53 vests the supreme command of the Defence Forces in the President."
+            },
+            {
+              "type": "quiz",
+              "q": "Which Article provides the Right to Constitutional Remedies?",
+              "options": [
+                "Art. 14",
+                "Art. 21",
+                "Art. 32",
+                "Art. 368"
+              ],
+              "answer": 2,
+              "explain": "Article 32 lets citizens move the Supreme Court directly to enforce Fundamental Rights."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "current-affairs",
+      "name": "GAT — Current Events",
+      "chapters": [
+        {
+          "id": "current-affairs-approach",
+          "title": "Current affairs: how to prepare",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What NDA asks",
+              "body": "As per the UPSC syllabus, current events are about 40 marks in GAT: important recent events in India and the world, prominent personalities, awards, sports, defence exercises, appointments, summits and schemes. Most questions cover the 6–12 months before the exam."
+            },
+            {
+              "type": "concept",
+              "title": "Use trusted, free sources",
+              "body": "Read one national newspaper daily. For official facts use the **Press Information Bureau (pib.gov.in)** — every government scheme, appointment and defence press release appears there. Ministry of Defence releases cover military exercises and inductions."
+            },
+            {
+              "type": "concept",
+              "title": "Make topic-wise notes, not date-wise",
+              "body": "Keep separate pages for: defence (exercises, inductions, missions), awards, sports, international summits, schemes, science & space, and appointments. Topic-wise notes are much easier to revise than a daily diary."
+            },
+            {
+              "type": "example",
+              "title": "Linking static with current",
+              "body": "If a news item mentions a joint military exercise with a country, also note that country's capital and where the exercise was held. One news item then gives you 2–3 possible questions."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Revise your notes every weekend and do one monthly compilation quiz. In the last month, focus on the previous 8–10 months only — older events are rarely asked."
+            },
+            {
+              "type": "quiz",
+              "q": "Which official source publishes Government of India press releases?",
+              "options": [
+                "PIB",
+                "NCERT",
+                "UPSC",
+                "RBI"
+              ],
+              "answer": 0,
+              "explain": "The Press Information Bureau (pib.gov.in) is the government's official source for press releases."
+            },
+            {
+              "type": "quiz",
+              "q": "The most effective way to organise current affairs notes is:",
+              "options": [
+                "One long daily diary",
+                "Topic-wise pages (defence, awards, sports…)",
+                "Only reading headlines",
+                "Memorising one magazine cover to cover"
+              ],
+              "answer": 1,
+              "explain": "Topic-wise notes group related facts together and make revision faster."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "NDA & NA (I) 2025 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "NDA & NA (II) 2025 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "NDA & NA (I) 2024 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "NDA & NA (II) 2024 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "NDA & NA (I) 2023 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "NDA & NA (II) 2023 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "NDA & NA (I) 2022 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "NDA & NA (II) 2022 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "NDA & NA (I) 2021 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "NDA & NA (II) 2021 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "NDA & NA (I & II) 2020 — combined exam (Maths, GAT)",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "NDA & NA (I) 2019 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "NDA & NA (II) 2019 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "NDA & NA (I) 2018 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "NDA & NA (II) 2018 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "NDA & NA (I) 2017 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "NDA & NA (II) 2017 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "NDA & NA (I) 2016 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "NDA & NA (II) 2016 — Maths, GAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "UPSC — Active examinations & notifications",
+      "url": "https://upsc.gov.in/examinations/active-exams",
+      "note": "Official NDA & NA notifications, syllabus, admit cards and results",
+      "free": true
+    },
+    {
+      "label": "UPSC — Previous question papers",
+      "url": "https://upsc.gov.in/examinations/previous-question-papers",
+      "note": "Official archive of past NDA & NA papers; filter by exam name and year",
+      "free": true
+    },
+    {
+      "label": "UPSC Online application portal",
+      "url": "https://upsconline.gov.in",
+      "note": "Apply online for NDA & NA",
+      "free": true
+    },
+    {
+      "label": "NCERT textbooks (Classes 6–12)",
+      "url": "https://ncert.nic.in/textbook.php",
+      "note": "Free PDFs — the best base for Maths, Science, History, Geography and Polity",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Official government press releases for current affairs and defence news",
+      "free": true
+    },
+    {
+      "label": "National Defence Academy",
+      "url": "https://nda.nic.in",
+      "note": "About the academy, training and cadet life",
+      "free": true
+    },
+    {
+      "label": "Join Indian Army",
+      "url": "https://joinindianarmy.nic.in",
+      "note": "Official Army recruitment site with SSB and entry information",
+      "free": true
+    }
+  ]
+}

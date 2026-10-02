@@ -1,0 +1,60 @@
+{
+  "categories": [
+    {
+      "id": "defence",
+      "name": "Defence & SSB",
+      "icon": "🎖️",
+      "blurb": "NDA, CDS, AFCAT written exams plus the 5-day SSB interview.",
+      "exams": [
+        { "id": "nda", "name": "NDA & NA", "by": "UPSC", "short": "After Class 12 — Army, Navy, Air Force" },
+        { "id": "cds", "name": "CDS", "by": "UPSC", "short": "Graduates — IMA, INA, AFA, OTA" },
+        { "id": "afcat", "name": "AFCAT", "by": "Indian Air Force", "short": "Flying, Ground Duty (Tech & Non-Tech)" },
+        { "id": "ssb", "name": "SSB Interview", "by": "Services Selection Board", "short": "OIR, PPDT, Psychology, GTO, Interview" }
+      ]
+    },
+    {
+      "id": "civil",
+      "name": "Civil Services",
+      "icon": "🏛️",
+      "blurb": "UPSC CSE — IAS, IPS, IFS. Prelims, Mains and Interview.",
+      "exams": [
+        { "id": "upsc-cse", "name": "UPSC CSE (IAS)", "by": "UPSC", "short": "Prelims · Mains · Personality Test" }
+      ]
+    },
+    {
+      "id": "banking",
+      "name": "Bank Exams",
+      "icon": "🏦",
+      "blurb": "SBI, IBPS, RBI and NABARD — one shared core syllabus plus exam-specific strategy.",
+      "exams": [
+        { "id": "bank-common", "name": "Banking Core Syllabus", "by": "All bank exams", "short": "Quant · Reasoning · English · Awareness" },
+        { "id": "sbi-po", "name": "SBI PO", "by": "SBI", "short": "Probationary Officer" },
+        { "id": "sbi-clerk", "name": "SBI Clerk", "by": "SBI", "short": "Junior Associate" },
+        { "id": "ibps-po", "name": "IBPS PO", "by": "IBPS", "short": "PO / Management Trainee" },
+        { "id": "ibps-clerk", "name": "IBPS Clerk", "by": "IBPS", "short": "Clerical cadre" },
+        { "id": "ibps-rrb", "name": "IBPS RRB", "by": "IBPS", "short": "Officer Scale I & Office Assistant" },
+        { "id": "ibps-so", "name": "IBPS SO", "by": "IBPS", "short": "Specialist Officer" },
+        { "id": "rbi-grade-b", "name": "RBI Grade B", "by": "RBI", "short": "Officer in Grade B" },
+        { "id": "nabard-grade-a", "name": "NABARD Grade A", "by": "NABARD", "short": "Assistant Manager" }
+      ]
+    },
+    {
+      "id": "it",
+      "name": "IT Sector Placements",
+      "icon": "💻",
+      "blurb": "Aptitude, coding, CS fundamentals and company-wise patterns. Add your own target companies.",
+      "exams": [
+        { "id": "it-core", "name": "IT Placement Core", "by": "All companies", "short": "Aptitude · DSA · CS fundamentals · HR" },
+        { "id": "tcs-nqt", "name": "TCS NQT", "by": "TCS", "short": "Ninja · Digital · Prime" },
+        { "id": "infosys", "name": "Infosys", "by": "Infosys", "short": "SE · DSE · Power Programmer" },
+        { "id": "wipro", "name": "Wipro", "by": "Wipro", "short": "Elite NTH · Turbo" },
+        { "id": "accenture", "name": "Accenture", "by": "Accenture", "short": "Cognitive · Technical · Coding" },
+        { "id": "cognizant", "name": "Cognizant", "by": "Cognizant", "short": "GenC · GenC Next · GenC Pro" },
+        { "id": "capgemini", "name": "Capgemini", "by": "Capgemini", "short": "Analyst · Senior Analyst" },
+        { "id": "hcltech", "name": "HCLTech", "by": "HCLTech", "short": "Graduate Engineer Trainee" },
+        { "id": "tech-mahindra", "name": "Tech Mahindra", "by": "Tech Mahindra", "short": "Associate Software Engineer" },
+        { "id": "gate-cse", "name": "GATE CSE", "by": "IISc / IITs", "short": "PSUs · M.Tech · Research" }
+      ]
+    }
+  ]
+}

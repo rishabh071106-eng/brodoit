@@ -1,0 +1,409 @@
+{
+  "id": "ibps-so",
+  "name": "IBPS SO (Specialist Officer)",
+  "category": "banking",
+  "core": "bank-common",
+  "conductedBy": "Institute of Banking Personnel Selection (IBPS)",
+  "tagline": "Specialist officer posts (IT, Agriculture, Law, HR, Marketing, Rajbhasha) in public sector banks",
+  "overview": {
+    "about": "IBPS conducts the CRP for Specialist Officers (Scale I) in public sector banks: IT Officer, Agricultural Field Officer, Law Officer, HR/Personnel Officer, Marketing Officer and Rajbhasha Adhikari. Prelims tests general aptitude; Mains is a Professional Knowledge test in your specialisation; then an interview.",
+    "eligibility": [
+      "Post-specific degree: e.g. IT Officer — 4-year engineering degree in CS/IT/ECE etc. or PG in these fields; AFO — 4-year degree in agriculture/allied fields; Law — LLB with Bar Council enrolment; HR/Marketing — PG/MBA in the field; Rajbhasha — PG in Hindi/Sanskrit with English at graduation",
+      "Age 20–30 years (e.g. as on 01.07.2025 for the 2025 cycle); relaxation: SC/ST 5 yrs, OBC-NCL 3 yrs, PwBD 10 yrs",
+      "Indian citizen (or other categories as defined)",
+      "Check the exact degree list for your post in the notification"
+    ],
+    "pattern": [
+      {
+        "paper": "Prelims — English Language",
+        "questions": 50,
+        "marks": 25,
+        "duration": "40 min",
+        "note": "All posts; −0.25 of the question's marks per wrong answer"
+      },
+      {
+        "paper": "Prelims — Reasoning",
+        "questions": 50,
+        "marks": 50,
+        "duration": "40 min",
+        "note": "All posts"
+      },
+      {
+        "paper": "Prelims — Quantitative Aptitude",
+        "questions": 50,
+        "marks": 50,
+        "duration": "40 min",
+        "note": "IT, AFO, HR, Marketing"
+      },
+      {
+        "paper": "Prelims — General Awareness (banking)",
+        "questions": 50,
+        "marks": 50,
+        "duration": "40 min",
+        "note": "Law Officer and Rajbhasha Adhikari instead of Quant; total 150 Q / 125 marks / 120 min"
+      },
+      {
+        "paper": "Mains — Professional Knowledge",
+        "questions": 60,
+        "marks": 60,
+        "duration": "45 min",
+        "note": "Rajbhasha: 45 objective + 2 descriptive questions"
+      },
+      {
+        "paper": "Interview",
+        "marks": 100,
+        "duration": "—",
+        "note": "Final = Mains 80 : Interview 20"
+      }
+    ],
+    "frequency": "Once a year (notification around July–August)",
+    "officialSite": "https://www.ibps.in"
+  },
+  "subjects": [
+    {
+      "id": "ibps-so-specific",
+      "name": "IBPS SO — Exam-specific",
+      "chapters": [
+        {
+          "id": "strategy-pk",
+          "title": "Strategy: Prelims as a filter, PK as the decider",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Where rank is made",
+              "body": "Prelims is qualifying, but its sections are long (50 Q each). Mains has only **60 PK questions in 45 minutes**, so a few marks separate hundreds of candidates. Your **specialisation** depth decides the rank, with the interview adding 20%."
+            },
+            {
+              "type": "tip",
+              "title": "English carries half marks",
+              "body": "In Prelims, English has 50 questions for **25 marks** (0.5 each). Clear its cut-off, but put extra effort into Reasoning and Quant/GA, each worth 50 marks."
+            },
+            {
+              "type": "tip",
+              "title": "PK preparation",
+              "body": "Use standard textbooks of your degree, focusing on topics IBPS repeats: for IT — DBMS, networking, OS, security; for AFO — agronomy, soil science, horticulture, animal husbandry and agri-schemes; for HR — labour laws and HRM; for Marketing — 4Ps, segmentation, digital marketing."
+            },
+            {
+              "type": "concept",
+              "title": "Rajbhasha Adhikari",
+              "body": "Mains for Rajbhasha has **45 objective + 2 descriptive** questions (translation/essay). The Prelims includes GA instead of Quant, like the Law Officer post."
+            },
+            {
+              "type": "quiz",
+              "q": "In IBPS SO Prelims, how many marks does the English section carry?",
+              "options": [
+                "50",
+                "25",
+                "40",
+                "60"
+              ],
+              "answer": 1,
+              "explain": "English has 50 questions for 25 marks."
+            },
+            {
+              "type": "quiz",
+              "q": "For which IBPS SO posts is Quant replaced by General Awareness in Prelims?",
+              "options": [
+                "IT and AFO",
+                "Law Officer and Rajbhasha Adhikari",
+                "HR and Marketing",
+                "All posts"
+              ],
+              "answer": 1,
+              "explain": "Law Officer and Rajbhasha Adhikari take GA (banking) instead of Quant."
+            }
+          ]
+        },
+        {
+          "id": "it-officer-pk",
+          "title": "IT Officer PK essentials",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "DBMS",
+              "points": [
+                "Keys: primary (unique, not null), candidate, foreign (refers to another table's PK)",
+                "Normal forms: 1NF atomic values → 2NF no partial dependency → 3NF no transitive dependency → BCNF",
+                "ACID: Atomicity, Consistency, Isolation, Durability",
+                "SQL: DDL (CREATE, ALTER, DROP), DML (INSERT, UPDATE, DELETE), DCL (GRANT, REVOKE)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Networking",
+              "points": [
+                "OSI 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, Application",
+                "TCP: connection-oriented, reliable; UDP: connectionless, fast",
+                "IPv4 = 32 bits; IPv6 = 128 bits",
+                "Router = layer 3; switch = layer 2; hub = layer 1"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Operating systems",
+              "points": [
+                "Deadlock conditions: mutual exclusion, hold & wait, no pre-emption, circular wait",
+                "Scheduling: FCFS, SJF, Round Robin, Priority",
+                "Paging avoids external fragmentation",
+                "Thrashing: too much paging, too little work"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Security",
+              "body": "**Symmetric** encryption uses one key (AES, DES); **asymmetric** uses a public–private key pair (RSA). **Hashing** (SHA-256) is one-way. **SQL injection** and **XSS** are web attacks; **DDoS** floods a service."
+            },
+            {
+              "type": "tip",
+              "title": "High-yield topics",
+              "body": "SQL query output questions, normal-form identification, subnetting basics, OSI layer of a device/protocol, and data-structure complexity (binary search O(log n), quicksort average O(n log n))."
+            },
+            {
+              "type": "quiz",
+              "q": "Which normal form removes transitive dependency?",
+              "options": [
+                "1NF",
+                "2NF",
+                "3NF",
+                "4NF"
+              ],
+              "answer": 2,
+              "explain": "3NF requires no non-key attribute to depend on another non-key attribute (no transitive dependency)."
+            },
+            {
+              "type": "quiz",
+              "q": "At which OSI layer does a router mainly operate?",
+              "options": [
+                "Physical",
+                "Data Link",
+                "Network",
+                "Transport"
+              ],
+              "answer": 2,
+              "explain": "Routers forward packets using IP addresses: layer 3, the Network layer."
+            },
+            {
+              "type": "quiz",
+              "q": "How many bits are in an IPv6 address?",
+              "options": [
+                "32",
+                "64",
+                "128",
+                "256"
+              ],
+              "answer": 2,
+              "explain": "IPv6 addresses are 128 bits; IPv4 addresses are 32 bits."
+            }
+          ]
+        },
+        {
+          "id": "afo-pk",
+          "title": "Agricultural Field Officer PK essentials",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Crop seasons",
+              "points": [
+                "Kharif (sown June–July with monsoon): rice, maize, cotton, soybean, groundnut",
+                "Rabi (sown Oct–Dec): wheat, mustard, gram, barley",
+                "Zaid (short summer season): watermelon, cucumber, moong"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Soils of India",
+              "points": [
+                "Alluvial: most widespread; Indo-Gangetic plains",
+                "Black (regur): cotton; high moisture retention",
+                "Red: low nitrogen; Deccan plateau",
+                "Laterite: leached, acidic; tea, coffee, cashew"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Revolutions",
+              "body": "**Green** (food grains, HYV seeds; M.S. Swaminathan), **White** (milk; Operation Flood 1970, Verghese Kurien), **Blue** (fisheries), **Yellow** (oilseeds), **Golden** (horticulture/honey), **Silver** (eggs/poultry)."
+            },
+            {
+              "type": "concept",
+              "title": "Key schemes",
+              "body": "**PM-KISAN**: ₹6,000/year in three instalments to landholding farmers. **PMFBY** (2016): crop insurance; farmer premium 2% kharif, 1.5% rabi, 5% commercial/horticulture. **Soil Health Card** (2015). **e-NAM** (2016): online agri market."
+            },
+            {
+              "type": "tip",
+              "title": "AFO and the bank",
+              "body": "As AFO you appraise **agri loans**: KCC, farm mechanisation, dairy, poultry, warehouse loans. Know the scale of finance concept, the unit cost approach, and that NABARD refinances these loans."
+            },
+            {
+              "type": "quiz",
+              "q": "Which of these is a rabi crop?",
+              "options": [
+                "Rice",
+                "Cotton",
+                "Wheat",
+                "Soybean"
+              ],
+              "answer": 2,
+              "explain": "Wheat is sown in winter (Oct–Dec) and harvested in spring: a rabi crop."
+            },
+            {
+              "type": "quiz",
+              "q": "Under PMFBY, the farmer's premium for kharif food and oilseed crops is:",
+              "options": [
+                "1.5%",
+                "2%",
+                "5%",
+                "10%"
+              ],
+              "answer": 1,
+              "explain": "2% for kharif, 1.5% for rabi, 5% for commercial/horticultural crops."
+            },
+            {
+              "type": "quiz",
+              "q": "Which soil is best known for cotton cultivation?",
+              "options": [
+                "Laterite",
+                "Black (regur)",
+                "Alluvial",
+                "Desert"
+              ],
+              "answer": 1,
+              "explain": "Black soil retains moisture and is ideal for cotton."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "IBPS SO 2025 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "IBPS SO 2024 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "IBPS SO 2023 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "IBPS SO 2022 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "IBPS SO 2021 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "IBPS SO 2020 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "IBPS SO 2019 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "IBPS SO 2018 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "IBPS SO 2017 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "IBPS SO 2016 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "IBPS — official website",
+      "url": "https://www.ibps.in",
+      "note": "CRP SPL notification, post-wise eligibility and results",
+      "free": true
+    },
+    {
+      "label": "Department of Financial Services",
+      "url": "https://financialservices.gov.in",
+      "note": "Banking sector policy for interviews",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Agri schemes and current affairs (AFO)",
+      "free": true
+    },
+    {
+      "label": "NABARD — official website",
+      "url": "https://www.nabard.org",
+      "note": "Rural credit facts for AFO aspirants",
+      "free": true
+    }
+  ]
+}

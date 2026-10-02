@@ -1,0 +1,419 @@
+{
+  "id": "nabard-grade-a",
+  "name": "NABARD Grade A (Assistant Manager)",
+  "category": "banking",
+  "core": "bank-common",
+  "conductedBy": "National Bank for Agriculture and Rural Development (NABARD)",
+  "tagline": "Assistant Manager (RDBS) at NABARD: development banking for agriculture and rural India",
+  "overview": {
+    "about": "NABARD recruits Assistant Managers in Grade 'A' for the Rural Development Banking Service (General and specialist disciplines), Legal and Protocol & Security services. The RDBS selection runs through Phase I (objective), Phase II (descriptive + objective) and an interview; Agriculture & Rural Development (ARD) and Economic & Social Issues (ESI) are central.",
+    "eligibility": [
+      "RDBS (General): graduation with 60% (55% for SC/ST/PwBD) or post-graduation with 55% (50% for SC/ST/PwBD), or CA/CS/ICWA, or a full-time MBA/PGDM with 55%; specialist posts need discipline-specific degrees",
+      "Age 21–30 years on the date in the notification; relaxation SC/ST 5 yrs, OBC-NCL 3 yrs, PwBD 10–15 yrs",
+      "Indian citizen (or other categories as defined)",
+      "Check the current advertisement for the exact streams and disciplines on offer"
+    ],
+    "pattern": [
+      {
+        "paper": "Phase I — Reasoning",
+        "questions": 20,
+        "marks": 20,
+        "duration": "120 min composite",
+        "note": "Qualifying section"
+      },
+      {
+        "paper": "Phase I — English Language",
+        "questions": 30,
+        "marks": 30,
+        "duration": "(within 120 min)",
+        "note": "Qualifying section"
+      },
+      {
+        "paper": "Phase I — Computer Knowledge",
+        "questions": 20,
+        "marks": 20,
+        "duration": "(within 120 min)",
+        "note": "Qualifying section"
+      },
+      {
+        "paper": "Phase I — Quantitative Aptitude",
+        "questions": 20,
+        "marks": 20,
+        "duration": "(within 120 min)",
+        "note": "Qualifying section"
+      },
+      {
+        "paper": "Phase I — Decision Making",
+        "questions": 10,
+        "marks": 10,
+        "duration": "(within 120 min)",
+        "note": "Qualifying section"
+      },
+      {
+        "paper": "Phase I — General Awareness",
+        "questions": 20,
+        "marks": 20,
+        "duration": "(within 120 min)",
+        "note": "Merit section"
+      },
+      {
+        "paper": "Phase I — Economic & Social Issues (rural focus)",
+        "questions": 40,
+        "marks": 40,
+        "duration": "(within 120 min)",
+        "note": "Merit section"
+      },
+      {
+        "paper": "Phase I — Agriculture & Rural Development",
+        "questions": 40,
+        "marks": 40,
+        "duration": "(within 120 min)",
+        "note": "Merit section; total 200 marks; −0.25 per wrong answer"
+      },
+      {
+        "paper": "Phase II Paper I — General English",
+        "marks": 100,
+        "duration": "90 min",
+        "note": "Descriptive: essay, précis, report/letter, comprehension"
+      },
+      {
+        "paper": "Phase II Paper II — ESI & ARD",
+        "marks": 100,
+        "duration": "120 min",
+        "note": "50 objective (30 min) + 50 descriptive (90 min) for RDBS General"
+      },
+      {
+        "paper": "Interview",
+        "marks": 50,
+        "duration": "—",
+        "note": "Final merit = Phase II + interview"
+      }
+    ],
+    "frequency": "Usually once a year (dates vary)",
+    "officialSite": "https://www.nabard.org"
+  },
+  "subjects": [
+    {
+      "id": "nabard-specific",
+      "name": "NABARD Grade A — Exam-specific",
+      "chapters": [
+        {
+          "id": "pattern-strategy",
+          "title": "Pattern & strategy: ARD + ESI decide your rank",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Qualifying vs merit sections",
+              "body": "In Phase I, Reasoning, English, Computer, Quant and Decision Making are **qualifying**. **GA (20) + ESI (40) + ARD (40) = 100 marks** decide who goes to Phase II. So ARD and ESI are worth 80% of the merit portion."
+            },
+            {
+              "type": "tip",
+              "title": "One preparation for both phases",
+              "body": "Phase II Paper II tests the **same ESI and ARD** with descriptive answers. Make notes in an answer-ready format (definition, data, issues, way forward) from the start so Phase I and II prep overlap fully."
+            },
+            {
+              "type": "concept",
+              "title": "Decision Making",
+              "body": "10 marks of situational questions on ethics and organisational judgment. Choose answers that are **lawful, fair, consultative and farmer-centric**, avoiding both inaction and rule-breaking."
+            },
+            {
+              "type": "tip",
+              "title": "Data sources",
+              "body": "Use the Economic Survey (agriculture and social chapters), Union Budget, NABARD's annual report, PIB releases on the Ministries of Agriculture and Rural Development, and the latest Agriculture Census data."
+            },
+            {
+              "type": "quiz",
+              "q": "In NABARD Grade A Phase I, which sections form the merit portion?",
+              "options": [
+                "Reasoning, English, Quant",
+                "GA, ESI and ARD",
+                "Computer and Decision Making",
+                "All eight sections equally"
+              ],
+              "answer": 1,
+              "explain": "GA + ESI + ARD (100 marks) decide shortlisting; the rest are qualifying."
+            },
+            {
+              "type": "quiz",
+              "q": "How many marks does the NABARD Grade A interview carry?",
+              "options": [
+                "25",
+                "50",
+                "75",
+                "100"
+              ],
+              "answer": 1,
+              "explain": "The interview carries 50 marks; it is added to Phase II for final merit."
+            }
+          ]
+        },
+        {
+          "id": "ard-essentials",
+          "title": "Agriculture & Rural Development (ARD) essentials",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Land holding classes",
+              "points": [
+                "Marginal: below 1 hectare",
+                "Small: 1–2 ha",
+                "Semi-medium: 2–4 ha",
+                "Medium: 4–10 ha",
+                "Large: 10 ha and above",
+                "Marginal + small holdings: over 85% of all holdings"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Crops & seasons",
+              "points": [
+                "Kharif (monsoon): rice, maize, cotton, soybean, groundnut",
+                "Rabi (winter): wheat, mustard, gram, barley",
+                "Zaid (summer): watermelon, cucumber, moong",
+                "India: world's largest producer of milk and pulses"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Rural development schemes",
+              "body": "**MGNREGA** (Act 2005): up to **100 days** of guaranteed wage work per rural household a year. **DAY-NRLM** (2011): livelihoods through **self-help groups**. **PMAY-G**: rural housing. **PMKSY** (2015): 'Har Khet Ko Pani', 'More crop per drop'."
+            },
+            {
+              "type": "concept",
+              "title": "Agricultural credit",
+              "body": "**KCC** for short-term crop loans; interest subvention gives eligible farmers loans at 7% (effective 4% with prompt repayment). **NABARD** refinances banks, manages the **RIDF** (since 1995-96) and promotes SHG–bank linkage (since 1992)."
+            },
+            {
+              "type": "concept",
+              "title": "Allied sectors",
+              "body": "Animal husbandry, dairy, fisheries and poultry now contribute a large and growing share of agricultural GVA. Know **Operation Flood** (1970, NDDB), the **Blue Revolution**, and schemes like **PM Matsya Sampada Yojana** (fisheries) and the **Rashtriya Gokul Mission** (indigenous cattle)."
+            },
+            {
+              "type": "quiz",
+              "q": "A farmer owning 1.5 hectares is classified as:",
+              "options": [
+                "Marginal",
+                "Small",
+                "Semi-medium",
+                "Medium"
+              ],
+              "answer": 1,
+              "explain": "Small holdings are 1–2 hectares."
+            },
+            {
+              "type": "quiz",
+              "q": "MGNREGA guarantees up to how many days of wage employment per rural household per year?",
+              "options": [
+                "50",
+                "100",
+                "150",
+                "200"
+              ],
+              "answer": 1,
+              "explain": "The Act guarantees up to 100 days of wage employment per household per financial year."
+            },
+            {
+              "type": "quiz",
+              "q": "The SHG–Bank Linkage Programme was launched by NABARD in:",
+              "options": [
+                "1982",
+                "1992",
+                "2005",
+                "2011"
+              ],
+              "answer": 1,
+              "explain": "NABARD started the SHG–Bank Linkage pilot in 1992."
+            }
+          ]
+        },
+        {
+          "id": "esi-nabard",
+          "title": "ESI (rural focus) & NABARD as an institution",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "NABARD in brief",
+              "body": "Established **12 July 1982** under the NABARD Act, 1981, on the recommendation of the **CRAFICARD (B. Sivaraman) committee**. Wholly owned by the **Government of India**. Roles: refinance, development (watershed, tribal development, FPOs), and **supervision** of RRBs and cooperative banks."
+            },
+            {
+              "type": "concept",
+              "title": "Poverty & inequality",
+              "body": "Earlier poverty lines: **Tendulkar** (2009) and **Rangarajan** (2014) committees. NITI Aayog's **Multidimensional Poverty Index** uses health, education and living standards (12 indicators in India's version). Inequality is measured with the **Gini coefficient**."
+            },
+            {
+              "type": "concept",
+              "title": "Demography & social issues",
+              "body": "**Demographic dividend**: growth potential when the working-age share is high. Key ESI themes: rural–urban migration, women's labour-force participation, social security for informal workers, nutrition, and education quality."
+            },
+            {
+              "type": "tip",
+              "title": "Writing ESI answers",
+              "body": "Open with a definition and one data point, then cover causes/issues, government measures (named schemes), and a way forward with 3–4 points. Keep each descriptive answer tied to rural India, since that is NABARD's mandate."
+            },
+            {
+              "type": "quiz",
+              "q": "NABARD was set up on the recommendation of:",
+              "options": [
+                "Narasimham Committee",
+                "CRAFICARD (B. Sivaraman) Committee",
+                "Rangarajan Committee",
+                "Kelkar Committee"
+              ],
+              "answer": 1,
+              "explain": "The CRAFICARD committee, chaired by B. Sivaraman, recommended NABARD."
+            },
+            {
+              "type": "quiz",
+              "q": "Which institution supervises RRBs and cooperative banks on behalf of RBI?",
+              "options": [
+                "SIDBI",
+                "NABARD",
+                "SEBI",
+                "NHB"
+              ],
+              "answer": 1,
+              "explain": "NABARD carries out supervision of RRBs and state/district cooperative banks."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "NABARD Grade A 2025 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "NABARD Grade A 2024 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices-archives1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "NABARD Grade A 2023 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices-archives1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "NABARD Grade A 2022 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices-archives1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "NABARD Grade A 2021 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices-archives1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "NABARD Grade A 2020 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices-archives1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "NABARD Grade A 2019 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices-archives1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "NABARD Grade A 2018 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices-archives1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "NABARD Grade A 2017 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices-archives1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "NABARD Grade A 2016 — official career notices: advertisement, results & cut-offs (papers not published officially)",
+          "url": "https://www.nabard.org/careers-notices-archives1.aspx?cid=693&id=26",
+          "source": "NABARD (official)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "NABARD — career notices",
+      "url": "https://www.nabard.org/careers-notices1.aspx?cid=693&id=26",
+      "note": "Official Grade A advertisements, call letters, results and cut-offs",
+      "free": true
+    },
+    {
+      "label": "NABARD — official website",
+      "url": "https://www.nabard.org",
+      "note": "Annual reports and rural-finance data for ARD/ESI",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Agriculture and rural development scheme updates",
+      "free": true
+    },
+    {
+      "label": "Department of Financial Services",
+      "url": "https://financialservices.gov.in",
+      "note": "Rural credit and financial inclusion policy",
+      "free": true
+    },
+    {
+      "label": "RBI — Monetary Policy statements",
+      "url": "https://www.rbi.org.in/scripts/annualpolicy.aspx",
+      "note": "Policy rates and economic outlook for ESI",
+      "free": true
+    }
+  ]
+}

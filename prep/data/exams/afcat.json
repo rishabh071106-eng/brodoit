@@ -1,0 +1,1106 @@
+{
+  "id": "afcat",
+  "name": "AFCAT",
+  "category": "defence",
+  "conductedBy": "Indian Air Force",
+  "tagline": "Fly fighters or lead ground teams as a commissioned officer in the Indian Air Force.",
+  "overview": {
+    "about": "The Air Force Common Admission Test is conducted online by the Indian Air Force twice a year for commissioned officer entry into the Flying Branch and the Ground Duty (Technical and Non-Technical) branches. Qualified candidates attend an Air Force Selection Board (AFSB) — Dehradun, Mysuru, Gandhinagar, Varanasi or Guwahati — for a 5-day test; Flying Branch candidates also take the Computerised Pilot Selection System (CPSS).",
+    "eligibility": [
+      "Indian citizens; men and women can apply",
+      "Age: Flying Branch 20–24 years; Ground Duty (Technical & Non-Technical) 20–26 years, counted on the course start date in the notification. DGCA Commercial Pilot Licence holders get relaxation up to 26 for Flying",
+      "Flying Branch: at least 50% in Mathematics and Physics at 10+2, plus a 3-year degree with at least 60% (or B.E./B.Tech. with at least 60%)",
+      "Ground Duty (Technical): 10+2 with Physics and Mathematics and a 4-year engineering degree in the listed disciplines",
+      "Ground Duty (Non-Technical): graduation with the percentage set in the notification (varies by branch)",
+      "Candidates below 25 must be unmarried at the time of commencement of the course; always check the current notification"
+    ],
+    "pattern": [
+      {
+        "paper": "AFCAT (General Awareness, Verbal Ability, Numerical Ability, Reasoning & Military Aptitude)",
+        "questions": 100,
+        "marks": 300,
+        "duration": "2 hours",
+        "note": "+3 for correct, −1 for wrong, 0 for unattempted. Section split varies; recent papers have roughly GA 25, Verbal 25, Numerical 18, Reasoning 32 (unofficial)"
+      },
+      {
+        "paper": "EKT (Ground Duty Technical only)",
+        "questions": 50,
+        "marks": 150,
+        "duration": "45 minutes",
+        "note": "Mechanical / Computer Science / Electrical & Electronics streams"
+      }
+    ],
+    "frequency": "Twice a year (AFCAT 01 and AFCAT 02 cycles)",
+    "officialSite": "https://afcat.cdac.in"
+  },
+  "subjects": [
+    {
+      "id": "general-awareness",
+      "name": "General Awareness",
+      "chapters": [
+        {
+          "id": "afcat-ga-static",
+          "title": "General Awareness: history, polity, culture & sports",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What AFCAT GA covers",
+              "body": "General Awareness spans history, geography, civics and polity, art and culture, sports, basic science, environment, defence and current affairs. Questions are one-liners — you either know the fact or you don't — so wide, regular revision beats deep study here."
+            },
+            {
+              "type": "concept",
+              "title": "History and polity in one card",
+              "body": "Focus on the freedom struggle (1857 to 1947), major dynasties and battles, and basic polity: Fundamental Rights (Part III), Directive Principles (Part IV), Fundamental Duties (Art. 51A), President, Parliament and Supreme Court. The President is the Supreme Commander of the Armed Forces."
+            },
+            {
+              "type": "formula",
+              "title": "Classical dances and their states",
+              "points": [
+                "Bharatanatyam — Tamil Nadu",
+                "Kathakali and Mohiniyattam — Kerala",
+                "Kuchipudi — Andhra Pradesh",
+                "Odissi — Odisha",
+                "Manipuri — Manipur; Sattriya — Assam; Kathak — North India"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Sports basics",
+              "points": [
+                "Players per side: football/hockey/cricket 11, kabaddi 7, volleyball 6, basketball 5, polo 4",
+                "Durand Cup and Santosh Trophy — football",
+                "Ranji Trophy — cricket",
+                "Major Dhyan Chand Khel Ratna — India's highest sporting honour",
+                "Dronacharya Award — for coaches"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Awards",
+              "body": "Bharat Ratna is India's highest civilian award, followed by Padma Vibhushan, Padma Bhushan and Padma Shri. Gallantry awards are separate: Param Vir Chakra (wartime) and Ashoka Chakra (peacetime) are the highest in their categories."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Spend 20 minutes a day on GA from one current-affairs source plus NCERT basics. Keep a running list of 'firsts' (first woman fighter pilots, first indigenous carrier, etc.) — AFCAT asks them often."
+            },
+            {
+              "type": "quiz",
+              "q": "Kuchipudi is the classical dance of:",
+              "options": [
+                "Kerala",
+                "Andhra Pradesh",
+                "Odisha",
+                "Assam"
+              ],
+              "answer": 1,
+              "explain": "Kuchipudi originated in the village of Kuchipudi in Andhra Pradesh."
+            },
+            {
+              "type": "quiz",
+              "q": "How many players does a kabaddi team have on court?",
+              "options": [
+                "5",
+                "6",
+                "7",
+                "11"
+              ],
+              "answer": 2,
+              "explain": "A kabaddi side has 7 players on court."
+            },
+            {
+              "type": "quiz",
+              "q": "The Durand Cup is associated with:",
+              "options": [
+                "Cricket",
+                "Hockey",
+                "Football",
+                "Polo"
+              ],
+              "answer": 2,
+              "explain": "The Durand Cup, started in 1888, is one of the oldest football tournaments in the world."
+            }
+          ]
+        },
+        {
+          "id": "afcat-ga-science-environment",
+          "title": "General Awareness: science & environment",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Science basics",
+              "body": "Expect Class 8–10 level questions: SI units, simple machines, light and sound phenomena, acids and bases, human body, vitamins and diseases. For an Air Force exam, basic aviation physics helps: lift, drag, thrust and weight are the four forces on an aircraft in flight."
+            },
+            {
+              "type": "concept",
+              "title": "Flight physics",
+              "body": "An aircraft wing (aerofoil) makes air flow faster over its curved top surface, lowering pressure there (Bernoulli's principle) and generating **lift**. Engines provide **thrust** to overcome **drag**. Mach 1 is the speed of sound; supersonic means faster than Mach 1."
+            },
+            {
+              "type": "formula",
+              "title": "National parks and their famous species",
+              "points": [
+                "Jim Corbett (Uttarakhand) — India's first national park (1936), tigers",
+                "Kaziranga (Assam) — one-horned rhinoceros",
+                "Gir (Gujarat) — Asiatic lion",
+                "Sundarbans (West Bengal) — mangroves, Bengal tiger"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Environment conventions",
+              "points": [
+                "Ramsar Convention (1971) — wetlands",
+                "Montreal Protocol (1987) — ozone-depleting substances",
+                "Kyoto Protocol (1997) — greenhouse gas reduction",
+                "Paris Agreement (2015) — limit global warming well below 2 °C"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Greenhouse effect",
+              "body": "Gases such as carbon dioxide, methane, nitrous oxide and water vapour trap heat in the atmosphere. Some trapping keeps Earth habitable, but extra emissions from fossil fuels and deforestation cause global warming."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Pair every environment fact with a place: a convention with its city, a species with its park. Linked facts are easier to recall under exam pressure."
+            },
+            {
+              "type": "quiz",
+              "q": "The Asiatic lion is found in the wild in:",
+              "options": [
+                "Kaziranga",
+                "Gir",
+                "Jim Corbett",
+                "Sundarbans"
+              ],
+              "answer": 1,
+              "explain": "Gir National Park in Gujarat is the only natural home of the Asiatic lion."
+            },
+            {
+              "type": "quiz",
+              "q": "The Montreal Protocol deals with:",
+              "options": [
+                "Wetlands",
+                "Ozone-depleting substances",
+                "Biodiversity",
+                "Desertification"
+              ],
+              "answer": 1,
+              "explain": "The 1987 Montreal Protocol phases out substances that damage the ozone layer."
+            },
+            {
+              "type": "quiz",
+              "q": "Lift on an aircraft wing is best explained by:",
+              "options": [
+                "Archimedes' principle",
+                "Bernoulli's principle",
+                "Pascal's law",
+                "Hooke's law"
+              ],
+              "answer": 1,
+              "explain": "Faster airflow over the wing's top lowers pressure, creating upward lift (Bernoulli's principle)."
+            }
+          ]
+        },
+        {
+          "id": "afcat-ga-defence-iaf",
+          "title": "General Awareness: defence, IAF & current affairs",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Indian Air Force basics",
+              "body": "The IAF was established on **8 October 1932** (Air Force Day). Motto: 'Nabhah Sprisham Deeptam' — Touch the sky with glory. Arjan Singh is the only officer to hold the five-star rank of Marshal of the Indian Air Force. Air Headquarters is in New Delhi."
+            },
+            {
+              "type": "formula",
+              "title": "IAF commands (7)",
+              "points": [
+                "Western — New Delhi",
+                "Eastern — Shillong",
+                "Central — Prayagraj",
+                "Southern — Thiruvananthapuram",
+                "South Western — Gandhinagar",
+                "Training Command — Bengaluru",
+                "Maintenance Command — Nagpur"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Aircraft in IAF service (examples)",
+              "points": [
+                "Rafale — multirole fighter from France (Dassault)",
+                "Su-30MKI — Russian-designed, built under licence by HAL",
+                "Tejas — indigenous Light Combat Aircraft by HAL",
+                "C-17 Globemaster III and C-130J — transport (USA)",
+                "Apache (attack) and Chinook (heavy-lift) — helicopters (USA)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Air exercises with partners (examples)",
+              "points": [
+                "Garuda — with France",
+                "Cope India — with the USA",
+                "Indradhanush — with the UK",
+                "Tarang Shakti — multinational exercise hosted by India (first held 2024)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Current affairs approach",
+              "body": "For the latest events — appointments, exercises, inductions, sports winners, summits — rely on PIB (pib.gov.in) and one newspaper. Organise notes topic-wise and revise the last 6–8 months before each AFCAT cycle."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Learn the ranks of the IAF in order: Flying Officer, Flight Lieutenant, Squadron Leader, Wing Commander, Group Captain, Air Commodore, Air Vice Marshal, Air Marshal, Air Chief Marshal. Every AFCAT officer is commissioned as a Flying Officer."
+            },
+            {
+              "type": "quiz",
+              "q": "Air Force Day is celebrated on:",
+              "options": [
+                "15 January",
+                "8 October",
+                "4 December",
+                "26 July"
+              ],
+              "answer": 1,
+              "explain": "The IAF was established on 8 October 1932."
+            },
+            {
+              "type": "quiz",
+              "q": "Where is the IAF's Training Command headquartered?",
+              "options": [
+                "Nagpur",
+                "Bengaluru",
+                "Shillong",
+                "Prayagraj"
+              ],
+              "answer": 1,
+              "explain": "Training Command HQ is in Bengaluru; Maintenance Command is in Nagpur."
+            },
+            {
+              "type": "quiz",
+              "q": "Who is the only Marshal of the Indian Air Force?",
+              "options": [
+                "Arjan Singh",
+                "Subroto Mukerjee",
+                "P.C. Lal",
+                "Nirmal Jit Singh Sekhon"
+              ],
+              "answer": 0,
+              "explain": "Arjan Singh was conferred the five-star rank of Marshal of the IAF in 2002."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verbal",
+      "name": "Verbal Ability in English",
+      "chapters": [
+        {
+          "id": "afcat-verbal-grammar",
+          "title": "Verbal ability: grammar, errors & sentence completion",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What the section tests",
+              "body": "Verbal Ability in English covers comprehension, error detection, sentence completion, synonyms, antonyms, vocabulary, and idioms & phrases. The language is simpler than CDS — speed and accuracy matter most."
+            },
+            {
+              "type": "concept",
+              "title": "Error detection checklist",
+              "body": "Check in this order: (1) subject-verb agreement, (2) tense consistency, (3) articles, (4) prepositions, (5) pronoun agreement, (6) adjective/adverb confusion ('He runs quick' → 'quickly'). Most errors fall in the first three."
+            },
+            {
+              "type": "formula",
+              "title": "Preposition pairs that are often tested",
+              "points": [
+                "Accused **of**, charged **with**",
+                "Comply **with**, consist **of**",
+                "Different **from**, similar **to**",
+                "Superior **to**, prefer X **to** Y",
+                "Abide **by**, insist **on**"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Sentence completion",
+              "body": "Read the full sentence and find the clue word. Contrast clues ('but', 'although') signal an opposite meaning; support clues ('and', 'because') signal a similar one. Predict the word before looking at the options."
+            },
+            {
+              "type": "example",
+              "title": "Using a contrast clue",
+              "body": "'Although the mission was risky, the pilot remained ___.' 'Although' signals contrast with 'risky', so we need a word meaning calm: **composed**. Options like 'anxious' or 'reckless' fail the contrast."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Do the 25 English questions first if English is your strength — they take less time than numerical ones and set up a calm start for the rest of the paper."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the correct word: 'The team consists ___ twelve cadets.'",
+              "options": [
+                "in",
+                "of",
+                "with",
+                "from"
+              ],
+              "answer": 1,
+              "explain": "The correct collocation is 'consists of'."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the correct sentence:",
+              "options": [
+                "He drives very careful.",
+                "He drives very carefully.",
+                "He drive very carefully.",
+                "He drives very more careful."
+              ],
+              "answer": 1,
+              "explain": "'Drives' is a verb, so it takes the adverb 'carefully'; the subject 'he' needs 'drives'."
+            },
+            {
+              "type": "quiz",
+              "q": "'Although he was tired, he ___ the march.' Choose the best word.",
+              "options": [
+                "abandoned",
+                "completed",
+                "avoided",
+                "skipped"
+              ],
+              "answer": 1,
+              "explain": "'Although' sets up a contrast with 'tired', so he still completed the march."
+            }
+          ]
+        },
+        {
+          "id": "afcat-verbal-vocab",
+          "title": "Verbal ability: vocabulary, idioms & comprehension",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Synonyms and antonyms",
+              "body": "These are the fastest marks in the paper. Learn words in groups with their opposites, e.g. brave — valiant, gallant, intrepid; opposite: cowardly, timid. Use the word in a sentence in your head to confirm the fit."
+            },
+            {
+              "type": "formula",
+              "title": "Common idioms",
+              "points": [
+                "A piece of cake — very easy",
+                "Burn the midnight oil — study or work late into the night",
+                "Once in a blue moon — very rarely",
+                "Hit the nail on the head — describe exactly what is right",
+                "Cry wolf — raise a false alarm"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Comprehension strategy",
+              "body": "AFCAT passages are short. Read the questions first, then the passage. Each answer should be traceable to a line in the passage. Title questions: choose the option that covers the whole passage, not one paragraph."
+            },
+            {
+              "type": "example",
+              "title": "Eliminating options",
+              "body": "Synonym of 'Intrepid': (a) fearful (b) fearless (c) careless (d) tired. 'Intrepid' describes someone who faces danger boldly. (a) is the opposite; (c) and (d) are unrelated. Answer: **fearless**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Make 10 flashcards a day with a word, its meaning and one sentence. In 3 months you will have learnt about 900 words — more than enough for AFCAT."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the synonym of 'Intrepid':",
+              "options": [
+                "Fearful",
+                "Fearless",
+                "Careless",
+                "Tired"
+              ],
+              "answer": 1,
+              "explain": "Intrepid means fearless and adventurous."
+            },
+            {
+              "type": "quiz",
+              "q": "'Once in a blue moon' means:",
+              "options": [
+                "Every night",
+                "Very rarely",
+                "On full moon days",
+                "Suddenly"
+              ],
+              "answer": 1,
+              "explain": "The idiom means something happens very rarely."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the antonym of 'Valiant':",
+              "options": [
+                "Brave",
+                "Cowardly",
+                "Heroic",
+                "Bold"
+              ],
+              "answer": 1,
+              "explain": "Valiant means brave; its opposite is cowardly."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "numerical",
+      "name": "Numerical Ability",
+      "chapters": [
+        {
+          "id": "afcat-decimals-ratio-average",
+          "title": "Numerical ability: decimals, ratio & average",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Fraction–decimal–percent equivalents",
+              "points": [
+                "1/2 = 0.5 = 50%",
+                "1/4 = 0.25 = 25%",
+                "1/8 = 0.125 = 12.5%",
+                "1/3 = 0.333… = 33⅓%",
+                "1/5 = 0.2 = 20%; 1/6 = 0.1666… = 16⅔%"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Ratio and proportion",
+              "points": [
+                "Divide N in ratio a:b → aN/(a + b) and bN/(a + b)",
+                "If a:b = c:d, then ad = bc",
+                "Combine a:b and b:c by making b equal in both"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Average",
+              "points": [
+                "Average = sum / number of items",
+                "Sum = average × number",
+                "Average of first n natural numbers = (n + 1)/2",
+                "If every value rises by k, the average rises by k"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Dividing in a ratio",
+              "body": "Divide ₹1,200 between A and B in the ratio 3:5. Total parts = 8; one part = 1,200/8 = 150. A gets 3 × 150 = **₹450**, B gets 5 × 150 = **₹750**."
+            },
+            {
+              "type": "example",
+              "title": "Removing a number from an average",
+              "body": "The average of 5 numbers is 20, so their sum is 100. After removing one number, the average of the other 4 is 18, so their sum is 72. The removed number = 100 − 72 = **28**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "AFCAT's numerical section has fewer questions than the other sections but they take longer. Memorise the fraction-percent table — it turns many calculations into mental maths."
+            },
+            {
+              "type": "quiz",
+              "q": "The average of the first 10 natural numbers is:",
+              "options": [
+                "5",
+                "5.5",
+                "6",
+                "10"
+              ],
+              "answer": 1,
+              "explain": "(n + 1)/2 = 11/2 = 5.5."
+            },
+            {
+              "type": "quiz",
+              "q": "If a:b = 2:3 and b:c = 4:5, then a:c is:",
+              "options": [
+                "8:15",
+                "2:5",
+                "3:4",
+                "10:12"
+              ],
+              "answer": 0,
+              "explain": "a:b:c = 8:12:15 (multiply to make b = 12), so a:c = 8:15."
+            },
+            {
+              "type": "quiz",
+              "q": "0.125 expressed as a fraction is:",
+              "options": [
+                "1/4",
+                "1/6",
+                "1/8",
+                "1/5"
+              ],
+              "answer": 2,
+              "explain": "0.125 = 125/1000 = 1/8."
+            }
+          ]
+        },
+        {
+          "id": "afcat-percent-profit-interest",
+          "title": "Numerical ability: percentage, profit & interest",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Percentage shortcuts",
+              "points": [
+                "x% of y = y% of x",
+                "If A is r% more than B, B is r/(100 + r) × 100 % less than A",
+                "Successive change a% then b%: net = a + b + ab/100",
+                "Price up by r% → cut consumption by r/(100 + r) × 100 % to keep spending the same"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Profit, loss and discount",
+              "points": [
+                "Profit % = (SP − CP)/CP × 100",
+                "Discount is always on the marked price (MP)",
+                "SP = MP − discount",
+                "Loss % = (CP − SP)/CP × 100"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Simple interest",
+              "points": [
+                "SI = P × R × T / 100",
+                "Amount = P + SI",
+                "Money doubles under SI in 100/R years"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Discount and profit together",
+              "body": "An article's marked price is ₹1,000 and a 10% discount is given, so SP = ₹900. If the cost price is ₹750, profit = 150 and profit % = 150/750 × 100 = **20%**."
+            },
+            {
+              "type": "example",
+              "title": "More than / less than",
+              "body": "A's salary is 20% more than B's. By what percent is B's salary less than A's? 20/120 × 100 = **16⅔%**. Using B = 100, A = 120 makes this clear."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Assume 100 as the starting value in every percentage question. It removes algebra and avoids sign mistakes."
+            },
+            {
+              "type": "quiz",
+              "q": "Simple interest on ₹5,000 at 8% per annum for 3 years is:",
+              "options": [
+                "₹1,000",
+                "₹1,200",
+                "₹1,500",
+                "₹800"
+              ],
+              "answer": 1,
+              "explain": "SI = 5000 × 8 × 3 / 100 = ₹1,200."
+            },
+            {
+              "type": "quiz",
+              "q": "A price rises by 10% and then falls by 10%. The net change is:",
+              "options": [
+                "No change",
+                "1% increase",
+                "1% decrease",
+                "2% decrease"
+              ],
+              "answer": 2,
+              "explain": "Net = 10 − 10 + (10 × −10)/100 = −1%, a 1% decrease."
+            },
+            {
+              "type": "quiz",
+              "q": "A shopkeeper buys an item for ₹200 and sells it for ₹180. The loss percentage is:",
+              "options": [
+                "10%",
+                "11.1%",
+                "20%",
+                "9%"
+              ],
+              "answer": 0,
+              "explain": "Loss = 20; 20/200 × 100 = 10%."
+            }
+          ]
+        },
+        {
+          "id": "afcat-time-speed-work",
+          "title": "Numerical ability: time, speed, distance & work",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Speed basics",
+              "points": [
+                "Speed = distance / time",
+                "km/h × 5/18 = m/s; m/s × 18/5 = km/h",
+                "Average speed for equal distances at x and y = 2xy/(x + y)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Trains",
+              "points": [
+                "Crossing a pole or person: time = train length / speed",
+                "Crossing a platform: time = (train + platform length) / speed",
+                "Opposite directions: relative speed = sum; same direction = difference"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Boats and streams",
+              "points": [
+                "Downstream speed D = boat + stream",
+                "Upstream speed U = boat − stream",
+                "Boat speed in still water = (D + U)/2",
+                "Stream speed = (D − U)/2"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Time and work",
+              "points": [
+                "If A can do a job in a days, A's 1-day work = 1/a",
+                "A and B together: ab/(a + b) days",
+                "Pipes: filling pipe adds, leak/emptying pipe subtracts"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Train past a pole",
+              "body": "A 150 m train runs at 54 km/h. Speed = 54 × 5/18 = 15 m/s. Time to pass a pole = 150/15 = **10 seconds**."
+            },
+            {
+              "type": "example",
+              "title": "Work together",
+              "body": "A can finish a task in 12 days and B in 24 days. Together: (12 × 24)/(12 + 24) = 288/36 = **8 days**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Convert all units first (km/h to m/s, hours to minutes). Most wrong answers in this topic come from mixed units, not from wrong methods."
+            },
+            {
+              "type": "quiz",
+              "q": "A boat goes 12 km/h downstream and 8 km/h upstream. The speed of the stream is:",
+              "options": [
+                "2 km/h",
+                "4 km/h",
+                "10 km/h",
+                "20 km/h"
+              ],
+              "answer": 0,
+              "explain": "Stream = (D − U)/2 = (12 − 8)/2 = 2 km/h."
+            },
+            {
+              "type": "quiz",
+              "q": "A man covers equal distances at 40 km/h and 60 km/h. His average speed is:",
+              "options": [
+                "50 km/h",
+                "48 km/h",
+                "45 km/h",
+                "52 km/h"
+              ],
+              "answer": 1,
+              "explain": "2xy/(x + y) = 2 × 40 × 60 / 100 = 48 km/h."
+            },
+            {
+              "type": "quiz",
+              "q": "A 200 m train at 72 km/h crosses a 100 m platform in:",
+              "options": [
+                "10 s",
+                "12 s",
+                "15 s",
+                "20 s"
+              ],
+              "answer": 2,
+              "explain": "Speed = 20 m/s; distance = 200 + 100 = 300 m; time = 300/20 = 15 s."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reasoning",
+      "name": "Reasoning & Military Aptitude",
+      "chapters": [
+        {
+          "id": "afcat-verbal-reasoning",
+          "title": "Reasoning: verbal reasoning",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What to expect",
+              "body": "The Reasoning & Military Aptitude section has the most questions in AFCAT. Verbal reasoning covers analogies, odd one out, number and letter series, coding-decoding, blood relations and directions. These reward practice more than any other section."
+            },
+            {
+              "type": "formula",
+              "title": "Series patterns to try first",
+              "points": [
+                "Constant difference: 3, 7, 11, 15…",
+                "Increasing difference: 2, 6, 12, 20, 30… (n(n + 1))",
+                "Squares / cubes: 1, 4, 9, 16… / 1, 8, 27…",
+                "Alternate series: two patterns interleaved",
+                "Letters: convert to positions (A = 1 … Z = 26)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Coding-decoding",
+              "body": "If CAT is coded as DBU, each letter moves +1 (C→D, A→B, T→U). So DOG becomes **EPH**. Always test the rule on every letter before applying it."
+            },
+            {
+              "type": "example",
+              "title": "Directions",
+              "body": "A cadet walks 3 km north, then turns right and walks 4 km. Turning right from north means facing east. Distance from start = √(3² + 4²) = **5 km**, in the north-east direction."
+            },
+            {
+              "type": "concept",
+              "title": "Blood relations",
+              "body": "Draw a family tree with symbols: + for male, − for female, horizontal lines for couples, vertical lines for generations. Example: 'He is the only son of my father' (said by a woman) means he is her brother."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Write the alphabet with position numbers (A1…Z26) on your rough sheet at the start. It speeds up every letter-series and coding question."
+            },
+            {
+              "type": "quiz",
+              "q": "Find the next number: 2, 6, 12, 20, 30, ?",
+              "options": [
+                "40",
+                "42",
+                "44",
+                "36"
+              ],
+              "answer": 1,
+              "explain": "Differences are 4, 6, 8, 10, so the next difference is 12: 30 + 12 = 42 (also n(n + 1) for n = 6)."
+            },
+            {
+              "type": "quiz",
+              "q": "If CAT is coded as DBU, how is DOG coded?",
+              "options": [
+                "EPH",
+                "CNF",
+                "EOH",
+                "FQI"
+              ],
+              "answer": 0,
+              "explain": "Each letter shifts one place forward: D→E, O→P, G→H."
+            },
+            {
+              "type": "quiz",
+              "q": "Doctor : Hospital :: Teacher : ?",
+              "options": [
+                "Student",
+                "School",
+                "Book",
+                "Class test"
+              ],
+              "answer": 1,
+              "explain": "A doctor works in a hospital; a teacher works in a school."
+            }
+          ]
+        },
+        {
+          "id": "afcat-spatial-figures",
+          "title": "Reasoning: mirror, water images & figure series",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Mirror images",
+              "body": "A vertical mirror (placed to the right or left) swaps left and right but keeps top and bottom. Letters symmetric about a vertical axis — A, H, I, M, O, T, U, V, W, X, Y — look the same in such a mirror."
+            },
+            {
+              "type": "concept",
+              "title": "Water images",
+              "body": "A water image is a reflection about a horizontal line: top and bottom swap, left and right stay. Letters symmetric about a horizontal axis — B, C, D, E, H, I, K, O, X — look the same."
+            },
+            {
+              "type": "formula",
+              "title": "Clock in a mirror",
+              "points": [
+                "Mirror time = 11:60 − actual time (for times between 1:00 and 11:00)",
+                "For times after 11:00, use 23:60 − actual time",
+                "Example: 3:15 → 11:60 − 3:15 = 8:45"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Figure series and embedded figures",
+              "body": "In figure series, track one element at a time: rotation (45°/90° clockwise or anticlockwise), number of lines, shading and position. In embedded figures, the given shape must appear exactly — same size and orientation — inside one of the options."
+            },
+            {
+              "type": "example",
+              "title": "Rotation rule",
+              "body": "An arrow points up, then right, then down. Each step rotates it 90° clockwise. The next figure will point **left**. Always check whether the rotation is clockwise or anticlockwise before choosing."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Spatial questions look hard but become routine with practice. Solve 20 mixed figure questions every day for a month — speed improves dramatically."
+            },
+            {
+              "type": "quiz",
+              "q": "A clock shows 3:15. What time appears in a mirror?",
+              "options": [
+                "9:45",
+                "8:45",
+                "8:15",
+                "9:15"
+              ],
+              "answer": 1,
+              "explain": "11:60 − 3:15 = 8:45."
+            },
+            {
+              "type": "quiz",
+              "q": "Which letter looks the same in a vertical mirror?",
+              "options": [
+                "B",
+                "A",
+                "F",
+                "G"
+              ],
+              "answer": 1,
+              "explain": "A is symmetric about a vertical axis, so its mirror image is unchanged."
+            },
+            {
+              "type": "quiz",
+              "q": "Which letter looks the same in its water image?",
+              "options": [
+                "B",
+                "A",
+                "F",
+                "G"
+              ],
+              "answer": 0,
+              "explain": "B is symmetric about a horizontal axis, so its water image is unchanged."
+            }
+          ]
+        },
+        {
+          "id": "afcat-cubes-dots",
+          "title": "Reasoning: cubes, dice & dot situation",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Painted cube cut into n × n × n small cubes",
+              "points": [
+                "Three faces painted: 8 (corners)",
+                "Two faces painted: 12(n − 2) (edges)",
+                "One face painted: 6(n − 2)² (face centres)",
+                "No face painted: (n − 2)³ (inside)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Dice",
+              "body": "On a standard die, opposite faces add up to **7** (1–6, 2–5, 3–4). For other dice, compare two positions that share a face: the faces that never appear together with a given face are often opposite to it."
+            },
+            {
+              "type": "concept",
+              "title": "Dot situation",
+              "body": "A figure shows a dot inside some overlapping shapes (e.g. inside the circle and square but outside the triangle). Pick the option where you can place a dot in a region that is inside exactly the same shapes and outside the same others."
+            },
+            {
+              "type": "concept",
+              "title": "Paper folding and cutting",
+              "body": "Unfold step by step in reverse order. Every cut or punch is reflected across each fold line, so one hole in paper folded twice usually becomes four holes, placed symmetrically."
+            },
+            {
+              "type": "example",
+              "title": "Painted cube",
+              "body": "A 4 × 4 × 4 painted cube is cut into 64 unit cubes. Two faces painted = 12 × (4 − 2) = **24**. No face painted = (4 − 2)³ = **8**. Check: 8 + 24 + 24 + 8 = 64."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Write the four cube formulas on your rough sheet before starting the section. In dot-situation questions, list the shapes for the dot first ('in circle + square, not triangle') before opening the options."
+            },
+            {
+              "type": "quiz",
+              "q": "A 4 × 4 × 4 painted cube is cut into unit cubes. How many have exactly two faces painted?",
+              "options": [
+                "8",
+                "16",
+                "24",
+                "32"
+              ],
+              "answer": 2,
+              "explain": "12(n − 2) = 12 × 2 = 24."
+            },
+            {
+              "type": "quiz",
+              "q": "On a standard die, which number is opposite 2?",
+              "options": [
+                "4",
+                "5",
+                "6",
+                "3"
+              ],
+              "answer": 1,
+              "explain": "Opposite faces of a standard die sum to 7, so 2 is opposite 5."
+            },
+            {
+              "type": "quiz",
+              "q": "In the same 4 × 4 × 4 cube, how many small cubes have no painted face?",
+              "options": [
+                "0",
+                "4",
+                "8",
+                "27"
+              ],
+              "answer": 2,
+              "explain": "(n − 2)³ = 2³ = 8."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ekt",
+      "name": "Engineering Knowledge Test",
+      "chapters": [
+        {
+          "id": "afcat-ekt-overview",
+          "title": "EKT: Engineering Knowledge Test overview",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Who writes the EKT",
+              "body": "The Engineering Knowledge Test is only for candidates applying to the **Ground Duty (Technical)** branch — Aeronautical Engineering (Electronics) and (Mechanical). It is held right after the AFCAT paper on the same day. Flying and non-technical candidates do not take it."
+            },
+            {
+              "type": "formula",
+              "title": "EKT pattern",
+              "points": [
+                "50 questions, 150 marks",
+                "Duration: 45 minutes",
+                "Marking: +3 for correct, −1 for wrong in recent cycles (confirm in the current notification)",
+                "Separate papers for Mechanical, Computer Science, and Electrical & Electronics streams"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "What to study",
+              "body": "Questions are at core B.E./B.Tech. level.",
+              "points": [
+                "Mechanical: thermodynamics, fluid mechanics, strength of materials, theory of machines, manufacturing",
+                "Electrical & Electronics: circuit theory, electronic devices, digital electronics, control systems, communication",
+                "Computer Science: programming, data structures, operating systems, DBMS, computer networks"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Selection after the written stage",
+              "body": "Your combined AFCAT + EKT performance is used for AFSB call-up in the technical branch. You must clear the AFCAT written cut-off as well as the EKT. Then come the AFSB tests and medicals, and finally an all-India merit list."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Revise your core engineering subjects from standard textbooks and your own semester notes. 45 minutes for 50 questions is under a minute each — practise timed sets of 10 questions."
+            },
+            {
+              "type": "quiz",
+              "q": "Who must take the EKT?",
+              "options": [
+                "All AFCAT candidates",
+                "Only Flying Branch candidates",
+                "Only Ground Duty (Technical) candidates",
+                "Only Meteorology candidates"
+              ],
+              "answer": 2,
+              "explain": "The EKT is required only for Ground Duty (Technical) branch applicants."
+            },
+            {
+              "type": "quiz",
+              "q": "How long is the EKT?",
+              "options": [
+                "30 minutes",
+                "45 minutes",
+                "1 hour",
+                "2 hours"
+              ],
+              "answer": 1,
+              "explain": "The EKT has 50 questions to be answered in 45 minutes."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "AFCAT — official portal with sample/practice material (the IAF does not publish full past papers)",
+          "url": "https://afcat.cdac.in",
+          "source": "Indian Air Force (official portal)"
+        },
+        {
+          "label": "IAF careers portal — current AFCAT notification and syllabus",
+          "url": "https://careerairforce.gov.in",
+          "source": "Indian Air Force (official)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "AFCAT official portal",
+      "url": "https://afcat.cdac.in",
+      "note": "Registration, notifications, admit cards, sample tests and results",
+      "free": true
+    },
+    {
+      "label": "IAF careers portal",
+      "url": "https://careerairforce.gov.in",
+      "note": "Official Air Force recruitment site hosting the latest AFCAT notification",
+      "free": true
+    },
+    {
+      "label": "Career in Indian Air Force (earlier portal)",
+      "url": "https://careerindianairforce.cdac.in",
+      "note": "IAF entry schemes, eligibility and AFSB information",
+      "free": true
+    },
+    {
+      "label": "Indian Air Force",
+      "url": "https://indianairforce.nic.in",
+      "note": "History, aircraft, commands and news for the defence GK section",
+      "free": true
+    },
+    {
+      "label": "NCERT textbooks (Classes 6–12)",
+      "url": "https://ncert.nic.in/textbook.php",
+      "note": "Free PDFs for general awareness and basic maths",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Official source for current affairs and defence news",
+      "free": true
+    }
+  ]
+}

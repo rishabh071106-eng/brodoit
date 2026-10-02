@@ -13522,6 +13522,7 @@ function _openLesson(id){
   if(lf){lf.style.animation='pgFadeIn .3s ease both'}
 }
 // ── Section entry with smooth transition ──
+function _openPrep(p){location.href='/prep/'+p}
 function _openSection(id){
   S.learnSection=id;
   render();
@@ -15285,43 +15286,41 @@ else if(S.tab==='courses'){
     h+='<button onclick="switchTab(\\'meditation\\')" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-mute);font-size:18px">\\u2190</button>';
     h+='<div style="font:600 20px var(--sans);color:var(--ink)">\\u{1F4DA} Learning</div></div>';
     h+='<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">';
-    // AI & Machine Learning
-    h+='<button class="ws-hero-card" onclick="_openSection(\\'ai\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#6366F1 10%,var(--paper)) 0%,color-mix(in srgb,#6366F1 18%,var(--surface)) 100%)">';
-    h+='<div class="ws-hero-emoji">\\u{1F9E0}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">AI & Machine Learning</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">63 chapters \\u00B7 From linear regression to GPT</div></div>';
+    h+='<div style="font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--text-mute);margin:6px 2px 0">School</div>';
+    h+='<button class="ws-hero-card" onclick="_openPrep(\\'ncert.html\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#6366F1 10%,var(--paper)) 0%,color-mix(in srgb,#6366F1 18%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F4DA}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">NCERT Books</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Class 1\\u201312 \\u00B7 every textbook, chapter-wise PDFs</div></div>';
     h+='<div class="ws-hero-arrow" style="color:#6366F1">\\u2192</div></button>';
-    // Python Programming
-    h+='<button class="ws-hero-card" onclick="_openSection(\\'python\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#3B82F6 10%,var(--paper)) 0%,color-mix(in srgb,#3B82F6 18%,var(--surface)) 100%)">';
-    h+='<div class="ws-hero-emoji">\\u{1F40D}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Python Programming</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">30 chapters \\u00B7 Write code, see output, master it</div></div>';
-    h+='<div class="ws-hero-arrow" style="color:#3B82F6">\\u2192</div></button>';
-    // Product Management
-    h+='<button class="ws-hero-card" onclick="_openSection(\\'product\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#0EA5E9 10%,var(--paper)) 0%,color-mix(in srgb,#0EA5E9 18%,var(--surface)) 100%)">';
-    h+='<div class="ws-hero-emoji">\\u{1F4CB}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Product Management</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">30 chapters \\u00B7 AI-era PM with real case studies</div></div>';
-    h+='<div class="ws-hero-arrow" style="color:#0EA5E9">\\u2192</div></button>';
-    // Development (Coming soon)
-    h+='<button class="ws-hero-card" onclick="toast(\\'Coming soon!\\',\\'info\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#10B981 8%,var(--paper)) 0%,color-mix(in srgb,#10B981 14%,var(--surface)) 100%);opacity:.6">';
-    h+='<div class="ws-hero-emoji">\\u{1F4BB}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Development</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Coming soon \\u00B7 System design, DSA, clean code</div></div>';
+    h+='<div style="font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--text-mute);margin:6px 2px 0">Competitive Exam Prep</div>';
+    h+='<button class="ws-hero-card" onclick="_openPrep(\\'exams.html#defence\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#10B981 10%,var(--paper)) 0%,color-mix(in srgb,#10B981 18%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F396}\\uFE0F</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Defence &amp; SSB</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">NDA \\u00B7 CDS \\u00B7 AFCAT \\u00B7 SSB Interview</div></div>';
     h+='<div class="ws-hero-arrow" style="color:#10B981">\\u2192</div></button>';
-    // Confidence Building (Coming soon)
-    h+='<button class="ws-hero-card" onclick="toast(\\'Coming soon!\\',\\'info\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#F59E0B 8%,var(--paper)) 0%,color-mix(in srgb,#F59E0B 14%,var(--surface)) 100%);opacity:.6">';
-    h+='<div class="ws-hero-emoji">\\u{1F3A4}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Confidence Building</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Coming soon \\u00B7 Public speaking & mindset</div></div>';
+    h+='<button class="ws-hero-card" onclick="_openPrep(\\'exam.html?id=upsc-cse\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#F59E0B 10%,var(--paper)) 0%,color-mix(in srgb,#F59E0B 18%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F3DB}\\uFE0F</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">UPSC Civil Services (IAS)</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Prelims \\u00B7 Mains \\u00B7 CSAT \\u00B7 Ethics</div></div>';
     h+='<div class="ws-hero-arrow" style="color:#F59E0B">\\u2192</div></button>';
-    // Personality Development (Coming soon)
-    h+='<button class="ws-hero-card" onclick="toast(\\'Coming soon!\\',\\'info\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#EC4899 8%,var(--paper)) 0%,color-mix(in srgb,#EC4899 14%,var(--surface)) 100%);opacity:.6">';
-    h+='<div class="ws-hero-emoji">\\u{1F31F}</div>';
-    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Personality Development</div>';
-    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Coming soon \\u00B7 Communication & leadership</div></div>';
+    h+='<button class="ws-hero-card" onclick="_openPrep(\\'exams.html#banking\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#0EA5E9 10%,var(--paper)) 0%,color-mix(in srgb,#0EA5E9 18%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F3E6}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">Bank Exams</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">SBI \\u00B7 IBPS PO/Clerk/RRB/SO \\u00B7 RBI \\u00B7 NABARD</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#0EA5E9">\\u2192</div></button>';
+    h+='<button class="ws-hero-card" onclick="_openPrep(\\'exams.html#it\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#3B82F6 10%,var(--paper)) 0%,color-mix(in srgb,#3B82F6 18%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F4BB}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">IT Sector Placements</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">TCS \\u00B7 Infosys \\u00B7 Wipro \\u00B7 Accenture \\u00B7 GATE CSE + your list</div></div>';
+    h+='<div class="ws-hero-arrow" style="color:#3B82F6">\\u2192</div></button>';
+    h+='<div style="font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--text-mute);margin:6px 2px 0">Your board</div>';
+    h+='<button class="ws-hero-card" onclick="_openPrep(\\'progress.html\\')" style="--wg:linear-gradient(135deg,color-mix(in srgb,#EC4899 10%,var(--paper)) 0%,color-mix(in srgb,#EC4899 18%,var(--surface)) 100%)">';
+    h+='<div class="ws-hero-emoji">\\u{1F4C8}</div>';
+    h+='<div class="ws-hero-info"><div class="ws-hero-title" style="color:var(--ink)">My Progress</div>';
+    h+='<div class="ws-hero-desc" style="color:var(--text-mute)">Chapters done \\u00B7 audio minutes \\u00B7 streak \\u00B7 quiz scores</div></div>';
     h+='<div class="ws-hero-arrow" style="color:#EC4899">\\u2192</div></button>';
     h+='</div>';
+    h+='<div style="font:500 12px var(--sans);color:var(--text-mute);text-align:center;margin:8px 0 18px">Older courses: <a href="#" onclick="_openSection(\\'ai\\');return false" style="color:var(--text-mute)">AI</a> \\u00B7 <a href="#" onclick="_openSection(\\'python\\');return false" style="color:var(--text-mute)">Python</a> \\u00B7 <a href="#" onclick="_openSection(\\'product\\');return false" style="color:var(--text-mute)">Product</a></div>';
   } else if(S.learnSection==='ai'){
     // AI Section — full curriculum
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
@@ -17456,6 +17455,9 @@ applyTheme();
     }else if(sectionParam){
       S.tab='courses';S.learnSub='courses';S.learnSection=sectionParam;
       setTimeout(function(){render();window.scrollTo(0,0)},500);
+    }else if(params.get('learn')){
+      S.tab='courses';S.learnSub='courses';S.learnSection=null;
+      setTimeout(function(){render();window.scrollTo(0,0)},500);
     }
   }catch(e){}
 })();
@@ -17517,7 +17519,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=109').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=110').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17824,10 +17826,12 @@ app.get('/terms',(_,res)=>{
 });
 
 // Brodoit Learning — interactive courses (standalone immersive pages)
+// Exam prep + NCERT (static pages and JSON content in ./prep)
+app.use('/prep',express.static(path.join(__dirname,'prep'),{maxAge:'1h'}));
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v157";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v158";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});

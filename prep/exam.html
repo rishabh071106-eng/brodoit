@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Exam &mdash; Brodoit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body>
+<main class="page">
+  <div class="crumbs"><a href="exams.html">Exam Prep</a> › <span id="crumb"></span></div>
+  <div class="page-head" id="head"><h1>Loading…</h1></div>
+  <div class="tabs" role="tablist">
+    <button class="tab on" data-tab="lectures">Lectures</button>
+    <button class="tab" data-tab="pattern">Exam pattern</button>
+    <button class="tab" data-tab="pyq">Previous papers</button>
+    <button class="tab" data-tab="resources">Free resources</button>
+  </div>
+  <section data-panel="lectures" id="lectures"></section>
+  <section data-panel="pattern" id="pattern" hidden></section>
+  <section data-panel="pyq" id="pyq" hidden></section>
+  <section data-panel="resources" id="resources" hidden></section>
+</main>
+
+<script type="module">
+import { renderNav, renderFooter, loadExamWithCore, examChapters, store, esc, param } from './assets/js/app.js';
+renderNav('exams.html');
+renderFooter();
+
+const id = param('id');
+let exam, core;
+try {
+  ({ exam, core } = await loadExamWithCore(id));
+} catch {
+  document.getElementById('head').innerHTML = `<h1>Coming soon</h1><p>Lectures for this exam are being prepared. <a href="exams.html">Back to all exams</a></p>`;
+  throw new Error('exam not found');
+}
+
+document.title = `${exam.name} preparation — Brodoit`;
+document.getElementById('crumb').textContent = exam.name;
+const total = examChapters(exam).length + (core ? examChapters(core).length : 0);
+document.getElementById('head').innerHTML = `
+  <h1>${esc(exam.name)}</h1>
+  <p>${esc(exam.tagline || '')}</p>
+  <p class="meta" style="margin-top:.5rem">Conducted by ${esc(exam.conductedBy || '')} · ${total} chapters</p>`;
+
+const tabs = document.querySelectorAll('.tab');
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => x.classList.toggle('on', x === t));
+  document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== t.dataset.tab; });
+  history.replaceState(null, '', `#${t.dataset.tab}`);
+}));
+if (location.hash) document.querySelector(`.tab[data-tab="${location.hash.slice(1)}"]`)?.click();
+
+// ---- Lectures
+const done = store.read().completed;
+function subjectsHTML(ex, label) {
+  return (label ? `<h2 class="section-title">${esc(label)}</h2>` : '') + (ex.subjects || []).map((s, i) => {
+    const rows = s.chapters.map(c => {
+      const key = `${ex.id}/${s.id}/${c.id}`, d = done[key];
+      return `<a class="chapter-row${d ? ' done' : ''}" href="lecture.html?exam=${ex.id}&s=${s.id}&c=${c.id}&from=${exam.id}">
+        <span class="tick">${d ? '✓' : ''}</span>
+        <span class="t">${esc(c.title)}<div class="meta">${c.cards.length} cards · ${c.minutes || 3} min${d && d.total ? ` · quiz ${d.score}/${d.total}` : ''}</div></span>
+        <span class="meta">${d ? 'Review' : 'Start'} →</span></a>`;
+    }).join('');
+    const n = s.chapters.filter(c => done[`${ex.id}/${s.id}/${c.id}`]).length;
+    return `<details class="subject"${i === 0 && !label ? ' open' : ''}>
+      <summary><span class="name">${esc(s.name)}</span><span class="meta">${n}/${s.chapters.length}</span>
+      <span class="bar"><span style="width:${(n / s.chapters.length) * 100}%"></span></span></summary>${rows}</details>`;
+  }).join('');
+}
+document.getElementById('lectures').innerHTML =
+  subjectsHTML(exam) + (core ? subjectsHTML(core, `${core.name} (shared syllabus)`) : '');
+
+// ---- Pattern
+const o = exam.overview || {};
+const list = arr => arr && arr.length ? `<ul class="clean">${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+document.getElementById('pattern').innerHTML = `
+  ${o.about ? `<p style="margin-bottom:1.5rem">${esc(o.about)}</p>` : ''}
+  <div class="kv">
+    ${o.frequency ? `<div class="stat"><span>How often</span><b style="font-size:1.05rem">${esc(o.frequency)}</b></div>` : ''}
+    ${o.officialSite ? `<div class="stat"><span>Official website</span><b style="font-size:1.05rem"><a href="${esc(o.officialSite)}" target="_blank" rel="noopener">${esc(o.officialSite.replace(/^https?:\/\//, ''))}</a></b></div>` : ''}
+  </div>
+  ${o.pattern && o.pattern.length ? `<h2 class="section-title">Pattern</h2><div class="table-wrap"><table class="pattern">
+    <tr><th>Paper / Section</th><th>Questions</th><th>Marks</th><th>Duration</th><th>Notes</th></tr>
+    ${o.pattern.map(p => `<tr><td><b>${esc(p.paper)}</b></td><td>${esc(p.questions ?? '—')}</td><td>${esc(p.marks ?? '—')}</td><td>${esc(p.duration ?? '—')}</td><td>${esc(p.note ?? '')}</td></tr>`).join('')}
+  </table></div>` : ''}
+  ${o.eligibility ? `<h2 class="section-title">Eligibility</h2>${list(o.eligibility)}` : ''}
+  <p class="meta" style="margin-top:1.5rem">Patterns and limits change — always confirm with the latest official notification.</p>`;
+
+// ---- Previous papers
+const pyq = (exam.pyq || []).slice().sort((a, b) => b.year - a.year);
+document.getElementById('pyq').innerHTML = pyq.length ? `
+  <div class="notice">Links open the official source. Where the exam body does not publish papers, we link to its official page and say so — we never host unofficial copies.</div>
+  <div class="grid">${pyq.map(y => `<div class="year"><h4>${y.year}</h4>${y.items.map(it =>
+    `<a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.label)}<div class="meta">${esc(it.source || '')}</div></a>`).join('')}</div>`).join('')}</div>`
+  : `<p class="section-sub">This track has no written exam papers. See the lectures and free resources instead.</p>`;
+
+// ---- Resources
+const res = [...(exam.resources || []), ...((core && core.resources) || [])];
+const seen = new Set();
+document.getElementById('resources').innerHTML = `<div class="grid">${res.filter(r => !seen.has(r.url) && seen.add(r.url)).map(r => `
+  <a class="tile" href="${esc(r.url)}" target="_blank" rel="noopener">
+    <h3>${esc(r.label)}</h3><p>${esc(r.note || '')}</p>
+    <div class="meta">${r.free === false ? '<span class="pill warn">Paid</span>' : '<span class="pill ok">Free</span>'} ${esc(new URL(r.url).hostname)}</div>
+  </a>`).join('')}</div>`;
+</script>
+</body>
+</html>

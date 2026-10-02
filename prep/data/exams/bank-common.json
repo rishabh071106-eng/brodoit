@@ -1,0 +1,2039 @@
+{
+  "id": "bank-common",
+  "name": "Banking Core Syllabus",
+  "category": "banking",
+  "conductedBy": "Shared syllabus for IBPS, SBI, RBI, NABARD & RRB exams",
+  "tagline": "One syllabus that covers roughly 80% of every bank exam: Quant, Reasoning, English, Banking Awareness and Computers",
+  "overview": {
+    "about": "Almost every Indian bank recruitment exam (SBI PO/Clerk, IBPS PO/Clerk/RRB/SO, RBI Assistant/Grade B, NABARD) tests the same core: Quantitative Aptitude, Reasoning, English and Banking/Financial Awareness, plus Computer Knowledge in mains. Master this shared syllabus once, then add the exam-specific layer from each exam page.",
+    "eligibility": [
+      "Graduation in any discipline is the usual minimum (Clerk, PO, RBI Grade B); some posts (IBPS SO, NABARD specialist) need specific degrees",
+      "Typical age bands: Clerk/Office Assistant 18/20–28, PO/Officer 20/21–30 (relaxation: SC/ST 5 yrs, OBC-NCL 3 yrs, PwBD 10 yrs)",
+      "Indian citizenship (and certain other categories as defined in each notification)",
+      "Always confirm cut-off dates for age and degree in the specific notification"
+    ],
+    "pattern": [
+      {
+        "paper": "Prelims (typical PO/Clerk)",
+        "questions": 100,
+        "marks": 100,
+        "duration": "60 min (20 min per section)",
+        "note": "English 30 + Quant 35 + Reasoning 35; −0.25 per wrong answer"
+      },
+      {
+        "paper": "Mains (typical)",
+        "questions": 145,
+        "marks": 200,
+        "duration": "2–3 hours",
+        "note": "Reasoning/Computer, Quant/DI, English, General/Financial Awareness; −0.25 per wrong answer"
+      },
+      {
+        "paper": "Descriptive / Interview (officer posts)",
+        "questions": 2,
+        "marks": 25,
+        "duration": "30 min",
+        "note": "Essay/letter; interview usually weighted 20% of final merit"
+      }
+    ],
+    "frequency": "Each exam is held once a year; together there is a bank exam almost every month",
+    "officialSite": "https://www.ibps.in"
+  },
+  "subjects": [
+    {
+      "id": "quant",
+      "name": "Quantitative Aptitude",
+      "chapters": [
+        {
+          "id": "simplification",
+          "title": "Simplification & approximation",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Why it matters",
+              "body": "Prelims usually has **5–10 simplification/approximation** questions. They are the fastest marks in Quant: aim for under **20 seconds** each. The skill is not heavy arithmetic but spotting friendly numbers."
+            },
+            {
+              "type": "formula",
+              "title": "BODMAS order",
+              "points": [
+                "Brackets → Of → Division → Multiplication → Addition → Subtraction",
+                "'of' means multiply, but is done before ÷ and ×",
+                "Division and multiplication: left to right",
+                "Bar/vinculum is solved before any other bracket"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Percent–fraction table (memorise)",
+              "points": [
+                "12.5% = 1/8, 37.5% = 3/8, 62.5% = 5/8",
+                "16.66% = 1/6, 83.33% = 5/6",
+                "11.11% = 1/9, 9.09% = 1/11",
+                "14.28% = 1/7, 6.25% = 1/16",
+                "Squares to 30 and cubes to 15 save huge time"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Approximation rule",
+              "body": "Round each value to the **nearest friendly number** (24.98 → 25, 399.98 → 400, 15.01 → 15). In approximation questions the options are spread far apart, so rounding errors do not matter. Never round both terms of a subtraction in opposite directions on a close call."
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "49.98% of 640.12 + 19.97 × 8.01 ≈ ?\n50% of 640 = 320; 20 × 8 = 160; answer ≈ **480**."
+            },
+            {
+              "type": "tip",
+              "title": "Unit-digit check",
+              "body": "When options differ in the last digit, compute only the **unit digit**. E.g. 37 × 43 ends in 7 × 3 = 21 → **1**. Pick the option ending in 1 and move on."
+            },
+            {
+              "type": "quiz",
+              "q": "24.98% of 399.98 + 15.01 × 6.99 ≈ ?",
+              "options": [
+                "195",
+                "205",
+                "215",
+                "225"
+              ],
+              "answer": 1,
+              "explain": "25% of 400 = 100 and 15 × 7 = 105, so 100 + 105 ≈ 205."
+            },
+            {
+              "type": "quiz",
+              "q": "(√1225 + 13²) ÷ 6 = ?",
+              "options": [
+                "32",
+                "36",
+                "34",
+                "38"
+              ],
+              "answer": 2,
+              "explain": "√1225 = 35 and 13² = 169; 35 + 169 = 204; 204 ÷ 6 = 34."
+            }
+          ]
+        },
+        {
+          "id": "number-series",
+          "title": "Number series (missing & wrong number)",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The 30-second scan",
+              "body": "First look at how fast the series grows. **Slow growth** → differences (+, −). **Fast growth** → multiplication/division or squares/cubes. **Up and down** → alternating series or two interleaved series."
+            },
+            {
+              "type": "formula",
+              "title": "Common patterns",
+              "points": [
+                "Constant / increasing difference: 3, 5, 9, 15, 23 (+2, +4, +6, +8)",
+                "×n ± k: 3, 7, 15, 31 (×2 + 1)",
+                "n² or n³ ± k: 2, 5, 10, 17 (n² + 1)",
+                "n(n+1): 2, 6, 12, 20, 30",
+                "Mixed ×1+1, ×2+2, ×3+3 …"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "3, 7, 15, 31, 63, ?\nEach term = previous × 2 + 1 → 63 × 2 + 1 = **127**."
+            },
+            {
+              "type": "concept",
+              "title": "Wrong number series",
+              "body": "Find the rule from the **majority of terms**, then locate the one term that breaks it. Usually the first two or three terms are correct, so build the rule from the start. The wrong term is often only slightly off (e.g. 82 instead of 80)."
+            },
+            {
+              "type": "tip",
+              "title": "Difference of differences",
+              "body": "If first differences look random, take differences again. If the second differences are constant, it is a quadratic pattern; if the differences form a ×2 or ×3 chain, it is a geometric-difference series."
+            },
+            {
+              "type": "quiz",
+              "q": "2, 6, 12, 20, 30, ?",
+              "options": [
+                "40",
+                "42",
+                "44",
+                "48"
+              ],
+              "answer": 1,
+              "explain": "Terms are n(n+1): 1×2, 2×3, 3×4, 4×5, 5×6, so next is 6×7 = 42."
+            },
+            {
+              "type": "quiz",
+              "q": "Find the wrong number: 5, 10, 20, 40, 82, 160",
+              "options": [
+                "10",
+                "20",
+                "82",
+                "160"
+              ],
+              "answer": 2,
+              "explain": "Each term doubles: 40 × 2 = 80, not 82; 80 × 2 = 160 confirms it."
+            },
+            {
+              "type": "quiz",
+              "q": "1, 9, 25, 49, 81, ?",
+              "options": [
+                "121",
+                "100",
+                "144",
+                "169"
+              ],
+              "answer": 0,
+              "explain": "Squares of odd numbers: 1², 3², 5², 7², 9², so next is 11² = 121."
+            }
+          ]
+        },
+        {
+          "id": "percentage",
+          "title": "Percentage",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Percentage is a fraction of 100",
+              "body": "x% of y = **xy/100**, and x% of y = y% of x (8% of 50 = 50% of 8 = 4). Converting % to fractions turns most questions into one-line mental maths."
+            },
+            {
+              "type": "formula",
+              "title": "Core formulas",
+              "points": [
+                "% change = (change ÷ original) × 100",
+                "Successive change a% and b%: a + b + ab/100",
+                "If A is x% more than B, B is x/(100+x) × 100 % less than A",
+                "Price up r%, keep spend same: cut consumption by r/(100+r) × 100 %"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Successive change",
+              "body": "Price rises 10%, then 20%.\nNet = 10 + 20 + (10 × 20)/100 = **32% increase**. Use negative signs for decreases: +20 then −20 gives 20 − 20 − 4 = **−4%**."
+            },
+            {
+              "type": "example",
+              "title": "Consumption adjustment",
+              "body": "Sugar price rises 25%. To keep expenditure the same, reduce consumption by 25/125 × 100 = **20%**."
+            },
+            {
+              "type": "tip",
+              "title": "Population/depreciation",
+              "body": "Population after n years = P(1 + r/100)ⁿ; value after depreciation = P(1 − r/100)ⁿ. This is the same as compound interest, so practise both together."
+            },
+            {
+              "type": "quiz",
+              "q": "A salary is increased by 20% and then decreased by 20%. Net effect?",
+              "options": [
+                "No change",
+                "4% decrease",
+                "4% increase",
+                "2% decrease"
+              ],
+              "answer": 1,
+              "explain": "20 − 20 + (20 × −20)/100 = −4, so a 4% decrease."
+            },
+            {
+              "type": "quiz",
+              "q": "If A is 25% more than B, by what percent is B less than A?",
+              "options": [
+                "20%",
+                "25%",
+                "15%",
+                "22.5%"
+              ],
+              "answer": 0,
+              "explain": "25/(100 + 25) × 100 = 20%."
+            },
+            {
+              "type": "quiz",
+              "q": "40% of a number is 180. What is 65% of the number?",
+              "options": [
+                "270",
+                "292.5",
+                "300",
+                "315"
+              ],
+              "answer": 1,
+              "explain": "Number = 180 ÷ 0.4 = 450; 65% of 450 = 292.5."
+            }
+          ]
+        },
+        {
+          "id": "profit-loss",
+          "title": "Profit, loss & discount",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The three prices",
+              "body": "**CP** (cost price), **MP** (marked price) and **SP** (selling price). Profit/loss % is always on **CP**; discount % is always on **MP**. Mixing up the base is the number-one mistake."
+            },
+            {
+              "type": "formula",
+              "title": "Key formulas",
+              "points": [
+                "Profit% = (SP − CP)/CP × 100",
+                "SP = CP × (100 + P%)/100",
+                "SP = MP × (100 − D%)/100",
+                "Successive discounts a%, b%: a + b − ab/100",
+                "False weight gain% = error/(true weight − error) × 100"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Marked price example",
+              "body": "CP = ₹600, MP = ₹800, discount 15%.\nSP = 800 × 0.85 = ₹680. Profit = 80, so profit% = 80/600 × 100 = **13.33%**."
+            },
+            {
+              "type": "concept",
+              "title": "Same SP, x% gain and x% loss",
+              "body": "When two articles are sold at the **same SP**, one at x% profit and the other at x% loss, there is always a **net loss of x²/100 %**. Example: 10% gain and 10% loss → 1% loss."
+            },
+            {
+              "type": "tip",
+              "title": "Use multiplying factors",
+              "body": "Write 20% profit as ×1.2 and 15% discount as ×0.85. Chain them: CP × 1.2 = MP × 0.85. This avoids long working and works for every MP–discount–profit question."
+            },
+            {
+              "type": "quiz",
+              "q": "Two articles are each sold for ₹990, one at 10% gain and the other at 10% loss. Overall result?",
+              "options": [
+                "No profit no loss",
+                "1% loss",
+                "1% gain",
+                "2% loss"
+              ],
+              "answer": 1,
+              "explain": "Same SP with equal % gain and loss gives a loss of 10²/100 = 1%."
+            },
+            {
+              "type": "quiz",
+              "q": "Successive discounts of 20% and 10% equal a single discount of:",
+              "options": [
+                "28%",
+                "30%",
+                "27%",
+                "25%"
+              ],
+              "answer": 0,
+              "explain": "20 + 10 − (20 × 10)/100 = 28%."
+            },
+            {
+              "type": "quiz",
+              "q": "A shopkeeper sells at cost price but uses a 900 g weight for 1 kg. His gain% is:",
+              "options": [
+                "10%",
+                "9.09%",
+                "11.11%",
+                "12.5%"
+              ],
+              "answer": 2,
+              "explain": "Gain = 100/900 × 100 = 11.11%."
+            }
+          ]
+        },
+        {
+          "id": "si-ci",
+          "title": "Simple & compound interest",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Simple interest",
+              "points": [
+                "SI = P × R × T / 100",
+                "Amount = P + SI",
+                "Sum becomes n times in T years: R = (n − 1) × 100 / T"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Compound interest",
+              "points": [
+                "A = P(1 + R/100)ⁿ; CI = A − P",
+                "Half-yearly: rate R/2, periods 2n",
+                "2-year effective rate = 2R + R²/100",
+                "CI − SI (2 yrs) = P(R/100)²",
+                "CI − SI (3 yrs) = P(R/100)²(3 + R/100)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "SI vs CI",
+              "body": "P = ₹10,000, R = 10%, 2 years.\nSI = 2,000. CI = 10,000 × 1.21 − 10,000 = 2,100.\nDifference = 100 = 10,000 × (0.1)² ✔"
+            },
+            {
+              "type": "concept",
+              "title": "Fraction trick for CI",
+              "body": "Write the rate as a fraction: 10% = 1/10, so each year the amount is ×11/10. For 3 years, ×1331/1000. With 8000 × 1331/1000 = 10,648 you get the answer without long multiplication."
+            },
+            {
+              "type": "tip",
+              "title": "Instalment questions",
+              "body": "For equal annual instalments under CI, discount each instalment back to today: P = x/(1+r) + x/(1+r)² + …. Using fraction rates (e.g. 10/11) keeps the numbers clean."
+            },
+            {
+              "type": "quiz",
+              "q": "Difference between CI and SI on ₹5,000 at 8% p.a. for 2 years is:",
+              "options": [
+                "₹30",
+                "₹32",
+                "₹36",
+                "₹40"
+              ],
+              "answer": 1,
+              "explain": "P(R/100)² = 5000 × 0.0064 = ₹32."
+            },
+            {
+              "type": "quiz",
+              "q": "A sum doubles in 8 years at simple interest. The rate is:",
+              "options": [
+                "10%",
+                "8%",
+                "15%",
+                "12.5%"
+              ],
+              "answer": 3,
+              "explain": "SI = P in 8 years, so R = 100/8 = 12.5%."
+            },
+            {
+              "type": "quiz",
+              "q": "Amount on ₹8,000 at 10% p.a. compounded annually for 3 years:",
+              "options": [
+                "₹10,400",
+                "₹10,800",
+                "₹10,648",
+                "₹10,560"
+              ],
+              "answer": 2,
+              "explain": "8000 × (1.1)³ = 8000 × 1.331 = ₹10,648."
+            }
+          ]
+        },
+        {
+          "id": "ratio-average",
+          "title": "Ratio, proportion, averages & alligation",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Ratio basics",
+              "body": "A ratio compares two quantities of the same kind. To combine A:B and B:C, make B equal in both: multiply each ratio so that the B values match (the LCM of the two B values)."
+            },
+            {
+              "type": "formula",
+              "title": "Average formulas",
+              "points": [
+                "Average = sum ÷ count",
+                "New member changes average by d: new value = old avg + d × (new count)",
+                "Average of first n natural numbers = (n + 1)/2",
+                "Average speed for equal distances = 2xy/(x + y)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Removing a value",
+              "body": "Average of 5 numbers is 40, so sum = 200. One number is removed and the average of the rest is 38, so their sum = 152. Removed number = 200 − 152 = **48**."
+            },
+            {
+              "type": "formula",
+              "title": "Alligation",
+              "points": [
+                "(Dearer − Mean) : (Mean − Cheaper) = Qty of cheaper : Qty of dearer",
+                "Works for prices, speeds, percentages, concentrations",
+                "Replacement: remaining = initial × (1 − x/total)ⁿ"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Partnership",
+              "body": "Profit is shared in the ratio of **capital × time**. If A invests ₹5,000 for 12 months and B ₹6,000 for 10 months, the ratio is 60,000 : 60,000 = 1:1."
+            },
+            {
+              "type": "quiz",
+              "q": "A:B = 2:3 and B:C = 4:5. Find A:B:C.",
+              "options": [
+                "8:12:15",
+                "2:3:5",
+                "6:9:10",
+                "4:6:5"
+              ],
+              "answer": 0,
+              "explain": "Make B equal: A:B = 8:12 and B:C = 12:15, so A:B:C = 8:12:15."
+            },
+            {
+              "type": "quiz",
+              "q": "The average age of 30 students is 14 years. Including the teacher, the average becomes 15. Teacher's age?",
+              "options": [
+                "44",
+                "45",
+                "46",
+                "31"
+              ],
+              "answer": 1,
+              "explain": "31 × 15 − 30 × 14 = 465 − 420 = 45 years."
+            },
+            {
+              "type": "quiz",
+              "q": "In what ratio should rice at ₹40/kg be mixed with rice at ₹60/kg to get a mixture worth ₹52/kg?",
+              "options": [
+                "3:2",
+                "2:3",
+                "1:2",
+                "4:3"
+              ],
+              "answer": 1,
+              "explain": "(60 − 52) : (52 − 40) = 8 : 12 = 2 : 3 (cheaper : dearer)."
+            }
+          ]
+        },
+        {
+          "id": "time-work-speed",
+          "title": "Time & work, time–speed–distance",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "LCM method for work",
+              "body": "Take total work = **LCM of the days**. Then each person's efficiency = total ÷ their days. Example: A takes 12 days and B 18 days. Work = 36 units, A does 3/day and B 2/day; together 5/day, so 36/5 = **7.2 days**."
+            },
+            {
+              "type": "formula",
+              "title": "Work & pipes",
+              "points": [
+                "Together: 1/T = 1/A + 1/B",
+                "Together time = AB/(A + B)",
+                "Inlet pipe = +work, outlet/leak = −work",
+                "M₁D₁H₁/W₁ = M₂D₂H₂/W₂"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Speed–distance",
+              "points": [
+                "km/h × 5/18 = m/s; m/s × 18/5 = km/h",
+                "Train crossing pole: length/speed; platform: (train + platform)/speed",
+                "Opposite directions: add speeds; same direction: subtract",
+                "Boat: downstream = b + s, upstream = b − s"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Average speed trap",
+              "body": "Going at 40 km/h and returning at 60 km/h over the same distance is **not** 50 km/h. Average = 2 × 40 × 60/(40 + 60) = 4800/100 = **48 km/h**."
+            },
+            {
+              "type": "tip",
+              "title": "Efficiency ratio",
+              "body": "If A is twice as efficient as B, A takes half the time. Time is inversely proportional to efficiency, so a 3:2 efficiency ratio means a 2:3 time ratio."
+            },
+            {
+              "type": "quiz",
+              "q": "A 200 m train at 72 km/h crosses a 100 m platform in:",
+              "options": [
+                "10 s",
+                "12 s",
+                "15 s",
+                "18 s"
+              ],
+              "answer": 2,
+              "explain": "72 km/h = 20 m/s; distance = 200 + 100 = 300 m; 300/20 = 15 s."
+            },
+            {
+              "type": "quiz",
+              "q": "A can do a job in 10 days and B in 15 days. They work together for 4 days. What fraction of the work is left?",
+              "options": [
+                "1/3",
+                "2/3",
+                "1/4",
+                "1/5"
+              ],
+              "answer": 0,
+              "explain": "Together per day = 1/10 + 1/15 = 1/6; in 4 days they do 4/6 = 2/3, so 1/3 is left."
+            }
+          ]
+        },
+        {
+          "id": "data-interpretation",
+          "title": "Data interpretation",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "DI is the biggest Quant block",
+              "body": "Mains DI sections are **mostly DI**: tables, bar graphs, line graphs, pie charts, caselets (paragraph data) and missing-data tables. Read the headings, units and footnotes **before** the questions; most errors come from reading units wrongly (lakh vs crore, % vs absolute)."
+            },
+            {
+              "type": "formula",
+              "title": "Tools you use every time",
+              "points": [
+                "% change = (new − old)/old × 100",
+                "Ratio and 'how many times' = A ÷ B",
+                "Pie chart: sector° / 360 × total",
+                "Average = total ÷ number of items"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Pie chart degrees",
+              "body": "Total expenditure ₹4,00,000. 'Rent' = 54°.\n54/360 = 15%, so rent = 0.15 × 4,00,000 = **₹60,000**."
+            },
+            {
+              "type": "tip",
+              "title": "Approximate first",
+              "body": "Options in DI are usually far apart. Round 347 to 350 and 1,198 to 1,200 and you will almost always land on the correct option in half the time. Calculate exactly only when two options are close."
+            },
+            {
+              "type": "concept",
+              "title": "Caselet & missing DI",
+              "body": "For caselets, convert the paragraph into a **small table** first. For missing-data tables, fill every blank you can before reading the questions; the questions then become direct lookups."
+            },
+            {
+              "type": "quiz",
+              "q": "Sales were 250 units in 2023 and 300 units in 2024. Percentage increase?",
+              "options": [
+                "16.67%",
+                "20%",
+                "25%",
+                "50%"
+              ],
+              "answer": 1,
+              "explain": "(300 − 250)/250 × 100 = 50/250 × 100 = 20%."
+            },
+            {
+              "type": "quiz",
+              "q": "In a pie chart of total spend ₹4,00,000, a sector of 54° represents:",
+              "options": [
+                "₹60,000",
+                "₹54,000",
+                "₹64,000",
+                "₹72,000"
+              ],
+              "answer": 0,
+              "explain": "54/360 = 0.15; 0.15 × 4,00,000 = ₹60,000."
+            }
+          ]
+        },
+        {
+          "id": "quadratic",
+          "title": "Quadratic equations (x vs y)",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Question format",
+              "body": "Two equations, one in x and one in y. Solve both and compare **every** x with **every** y. Answer options: x > y, x < y, x ≥ y, x ≤ y, or relationship cannot be established (CNBE)."
+            },
+            {
+              "type": "formula",
+              "title": "Factor fast",
+              "points": [
+                "x² − 7x + 12 = 0 → find two numbers with sum 7, product 12 → 3, 4",
+                "Roots of ax² + bx + c = 0: sum = −b/a, product = c/a",
+                "x² = k gives x = ±√k, but y = √k gives only +√k"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Sign shortcut (roots' signs)",
+              "points": [
+                "(+b, +c): both roots negative",
+                "(−b, +c): both roots positive",
+                "(+b, −c): one +, one −, bigger value negative",
+                "(−b, −c): one +, one −, bigger value positive"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "I. x² + 5x + 6 = 0 → x = −2, −3\nII. y² + 9y + 20 = 0 → y = −4, −5\nEvery x is greater than every y → **x > y**."
+            },
+            {
+              "type": "tip",
+              "title": "Equal value check",
+              "body": "If one x equals one y and all other pairs give x < y, the answer is **x ≤ y** (not x < y). If the pairs point in both directions, the answer is CNBE."
+            },
+            {
+              "type": "quiz",
+              "q": "I. x² − 7x + 12 = 0  II. y² − 9y + 20 = 0",
+              "options": [
+                "x > y",
+                "x < y",
+                "x ≥ y",
+                "x ≤ y",
+                "Relationship cannot be established"
+              ],
+              "answer": 3,
+              "explain": "x = 3, 4 and y = 4, 5. x = 4 equals y = 4 and all other pairs give x < y, so x ≤ y."
+            },
+            {
+              "type": "quiz",
+              "q": "I. x² + 5x + 6 = 0  II. y² + 9y + 20 = 0",
+              "options": [
+                "x > y",
+                "x < y",
+                "x ≥ y",
+                "x ≤ y",
+                "Relationship cannot be established"
+              ],
+              "answer": 0,
+              "explain": "x = −2, −3 and y = −4, −5. Every x is greater than every y."
+            },
+            {
+              "type": "quiz",
+              "q": "I. x² − x − 6 = 0  II. y² − 4 = 0",
+              "options": [
+                "x > y",
+                "x < y",
+                "x ≥ y",
+                "x ≤ y",
+                "Relationship cannot be established"
+              ],
+              "answer": 4,
+              "explain": "x = 3, −2 and y = 2, −2. x = 3 > 2, but x = −2 < 2, so no single relation holds."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reasoning",
+      "name": "Reasoning Ability",
+      "chapters": [
+        {
+          "id": "puzzles-seating",
+          "title": "Puzzles & seating arrangement",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The heaviest-weight topic",
+              "body": "Puzzles and seating carry **15–25 marks** in prelims and more in mains. Types: linear row (one or two rows), circular/square/rectangular table, floor/flat, box/stack, scheduling (days/months) and comparison puzzles."
+            },
+            {
+              "type": "concept",
+              "title": "Direction in a circle",
+              "body": "Facing the **centre**: left = clockwise, right = anticlockwise. Facing **outside**: it reverses. In a row facing north, the person's right is your right; facing south, it is your left."
+            },
+            {
+              "type": "tip",
+              "title": "Start with fixed clues",
+              "body": "Begin with the clue that fixes a position (\"A sits at an extreme end\", \"B lives on floor 3\"). Then use clues linked to already-placed people. Leave negative clues (\"C does not sit next to D\") for the end to eliminate cases."
+            },
+            {
+              "type": "tip",
+              "title": "Make cases, not guesses",
+              "body": "When a clue allows two positions, draw **Case 1 and Case 2** side by side and continue both. Usually one case breaks within two or three clues. This is faster than restarting."
+            },
+            {
+              "type": "formula",
+              "title": "Row counting",
+              "points": [
+                "Total = left rank + right rank − 1",
+                "Persons between A and B = |rank difference| − 1",
+                "In a circle of n, opposite = n/2 places away"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "In a row facing north, P is 3rd from the left and 8th from the right. How many people are in the row?",
+              "options": [
+                "10",
+                "11",
+                "9",
+                "12"
+              ],
+              "answer": 0,
+              "explain": "Total = 3 + 8 − 1 = 10."
+            },
+            {
+              "type": "quiz",
+              "q": "Eight people sit around a circle facing the centre. Moving to someone's immediate left means moving:",
+              "options": [
+                "Clockwise",
+                "Anticlockwise",
+                "Depends on the person",
+                "To the opposite seat"
+              ],
+              "answer": 0,
+              "explain": "When facing the centre, a person's left is in the clockwise direction."
+            },
+            {
+              "type": "quiz",
+              "q": "A 5-floor building (floor 1 at bottom): A lives on floor 3; B two floors above A; C immediately below B; D on an odd floor other than A's; E on the remaining floor. Who lives on floor 2?",
+              "options": [
+                "C",
+                "D",
+                "E",
+                "B"
+              ],
+              "answer": 2,
+              "explain": "A = 3, B = 5, C = 4, D must be on floor 1 (the only free odd floor), so E is on floor 2."
+            }
+          ]
+        },
+        {
+          "id": "syllogism",
+          "title": "Syllogism",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Draw Venn diagrams",
+              "body": "Draw the **minimum** overlap the statements force. A conclusion follows only if it is true in **every** possible diagram. A 'possibility' conclusion follows if it is true in **at least one** valid diagram."
+            },
+            {
+              "type": "formula",
+              "title": "Definite combinations",
+              "points": [
+                "All + All = All",
+                "All + No = No",
+                "Some + All = Some",
+                "Some + No = Some … not (order reversed)",
+                "All A are B → Some A are B and Some B are A"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Either–or pair",
+              "body": "If neither conclusion follows on its own, but the two together cover all cases (e.g. 'Some A are B' and 'No A is B'), then **either I or II** follows. Both must be about the same two terms and be complementary."
+            },
+            {
+              "type": "tip",
+              "title": "Common traps",
+              "body": "'All A are B' does **not** mean 'All B are A'. Two 'Some' statements never give a definite conclusion. A 'No' statement makes the reverse 'possibility' false."
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "All pens are books. Some books are bags.\nPens may or may not touch bags, so 'Some pens are bags' does **not** follow. 'Some bags are books' is just the reverse of statement 2, so it **follows**."
+            },
+            {
+              "type": "quiz",
+              "q": "All pens are books. Some books are bags.\nI. Some pens are bags.  II. Some bags are books.",
+              "options": [
+                "Only I follows",
+                "Only II follows",
+                "Both follow",
+                "Neither follows"
+              ],
+              "answer": 1,
+              "explain": "II is the conversion of 'Some books are bags'. I is only a possibility, not certain."
+            },
+            {
+              "type": "quiz",
+              "q": "All cats are dogs. No dog is a rat.\nI. No cat is a rat.  II. Some rats being cats is a possibility.",
+              "options": [
+                "Only I follows",
+                "Only II follows",
+                "Both follow",
+                "Neither follows"
+              ],
+              "answer": 0,
+              "explain": "All + No = No, so 'No cat is a rat' is definite, which makes II impossible."
+            },
+            {
+              "type": "quiz",
+              "q": "Some A are B. No B is C.\nI. Some A are not C.  II. All C being A is a possibility.",
+              "options": [
+                "Only I follows",
+                "Only II follows",
+                "Both follow",
+                "Neither follows"
+              ],
+              "answer": 2,
+              "explain": "Some + No = Some not, so I follows. C is only separated from B, so C can lie fully inside A; II is possible."
+            }
+          ]
+        },
+        {
+          "id": "inequality",
+          "title": "Inequality",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Chain rule",
+              "body": "You can join two terms only through a chain where all signs point the **same way** (>, ≥, = together, or <, ≤, = together). If signs point in opposite directions (A > B < C), there is **no relation** between A and C."
+            },
+            {
+              "type": "formula",
+              "title": "Resulting sign",
+              "points": [
+                "> with ≥ or = gives >",
+                "≥ with = gives ≥",
+                "= with = gives =",
+                "Opposite directions: no relation"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Either–or",
+              "body": "If conclusions are 'A > B' and 'A = B' and the chain gives A ≥ B, then **either I or II** is true. The same holds for '<' and '=' with ≤."
+            },
+            {
+              "type": "tip",
+              "title": "Coded inequality",
+              "body": "Some questions use symbols like @, #, $ for >, <, =. Decode the symbols once, rewrite the statement in normal signs, and then solve. Do not try to solve in code."
+            },
+            {
+              "type": "quiz",
+              "q": "A > B ≥ C = D < E.\nI. A > D  II. E > B",
+              "options": [
+                "Only I is true",
+                "Only II is true",
+                "Either I or II",
+                "Neither is true",
+                "Both are true"
+              ],
+              "answer": 0,
+              "explain": "A > B ≥ C = D gives A > D. B ≥ C and C < E point in opposite directions, so B and E cannot be compared."
+            },
+            {
+              "type": "quiz",
+              "q": "L ≤ M < N; O > N.\nI. O > L  II. M < O",
+              "options": [
+                "Only I is true",
+                "Only II is true",
+                "Either I or II",
+                "Neither is true",
+                "Both are true"
+              ],
+              "answer": 4,
+              "explain": "L ≤ M < N < O gives O > L and M < O. Both are true."
+            },
+            {
+              "type": "quiz",
+              "q": "X ≥ Y.\nI. X > Y  II. X = Y",
+              "options": [
+                "Only I is true",
+                "Only II is true",
+                "Either I or II",
+                "Neither is true",
+                "Both are true"
+              ],
+              "answer": 2,
+              "explain": "X ≥ Y means X is either greater than or equal to Y: a complementary pair."
+            }
+          ]
+        },
+        {
+          "id": "blood-relations",
+          "title": "Blood relations",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Draw a family tree",
+              "body": "Use a standard notation: **square or + for male, circle or − for female**, horizontal line for siblings, vertical line for generations, double line for married couples. Never solve blood relations in your head."
+            },
+            {
+              "type": "formula",
+              "title": "Must-know relations",
+              "points": [
+                "Father's/mother's brother: uncle (paternal/maternal)",
+                "Brother's/sister's son: nephew; daughter: niece",
+                "Son's wife: daughter-in-law",
+                "Wife's/husband's brother: brother-in-law",
+                "Only daughter of my mother (said by a woman): herself"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Gender may be unknown",
+              "body": "If a person's gender is never stated, you **cannot** call them son or daughter; the answer is 'child', 'grandchild' or 'cannot be determined'. Examiners use this trap often."
+            },
+            {
+              "type": "example",
+              "title": "Coded relations",
+              "body": "If P + Q means 'P is father of Q' and P − Q means 'P is sister of Q', then A + B − C says A is B's father and B is C's sister, so A is **C's father** too."
+            },
+            {
+              "type": "quiz",
+              "q": "Pointing to a man, Riya says, 'His mother is the only daughter of my mother.' How is the man related to Riya?",
+              "options": [
+                "Brother",
+                "Son",
+                "Nephew",
+                "Father"
+              ],
+              "answer": 1,
+              "explain": "The only daughter of Riya's mother is Riya herself, so the man's mother is Riya: he is her son."
+            },
+            {
+              "type": "quiz",
+              "q": "A is B's brother. C is A's mother. D is C's father. How is B related to D?",
+              "options": [
+                "Grandson",
+                "Granddaughter",
+                "Grandchild (gender unknown)",
+                "Son"
+              ],
+              "answer": 2,
+              "explain": "B is a child of C and therefore a grandchild of D, but B's gender is never given."
+            },
+            {
+              "type": "quiz",
+              "q": "P + Q: P is father of Q; P − Q: P is sister of Q. What does A + B − C mean for A and C?",
+              "options": [
+                "A is C's father",
+                "A is C's uncle",
+                "A is C's brother",
+                "A is C's grandfather"
+              ],
+              "answer": 0,
+              "explain": "A is B's father and B is C's sister, so A is C's father."
+            }
+          ]
+        },
+        {
+          "id": "direction-sense",
+          "title": "Direction sense",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Fix the compass",
+              "body": "Draw north at the top of your rough sheet. A **right turn** = 90° clockwise, a **left turn** = 90° anticlockwise. Track the facing direction after every turn before plotting the next distance."
+            },
+            {
+              "type": "formula",
+              "title": "Distance tools",
+              "points": [
+                "Shortest distance = √(x² + y²)",
+                "Triplets: 3-4-5, 6-8-10, 5-12-13, 8-15-17",
+                "Net east–west and net north–south first, then Pythagoras"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Shadow questions",
+              "body": "Morning: sun in the **east**, shadow falls **west**. Evening: sun in the west, shadow falls **east**. At noon there is practically no shadow, so these questions use morning or evening."
+            },
+            {
+              "type": "tip",
+              "title": "Final direction wording",
+              "body": "If the end point is 6 km north and 8 km east of the start, the direction is **north-east**. Read whether the question asks direction 'of the start from the end' (reverse it) or 'of the end from the start'."
+            },
+            {
+              "type": "quiz",
+              "q": "Ravi walks 6 km north, turns right and walks 8 km. Distance and direction from the start?",
+              "options": [
+                "10 km, North-East",
+                "14 km, East",
+                "10 km, North-West",
+                "8 km, North"
+              ],
+              "answer": 0,
+              "explain": "√(6² + 8²) = 10 km; he is north and east of the start, i.e. North-East."
+            },
+            {
+              "type": "quiz",
+              "q": "In the morning, a man's shadow falls to his right. Which direction is he facing?",
+              "options": [
+                "North",
+                "South",
+                "East",
+                "West"
+              ],
+              "answer": 1,
+              "explain": "Morning shadow points west. If west is on his right, he faces south."
+            },
+            {
+              "type": "quiz",
+              "q": "Facing east, a girl turns 90° clockwise and then 180°. Which direction does she face now?",
+              "options": [
+                "North",
+                "South",
+                "East",
+                "West"
+              ],
+              "answer": 0,
+              "explain": "East → 90° clockwise = South → 180° = North."
+            }
+          ]
+        },
+        {
+          "id": "coding-decoding",
+          "title": "Coding–decoding",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Letter positions",
+              "points": [
+                "EJOTY = 5, 10, 15, 20, 25",
+                "Opposite letter: positions add to 27 (A↔Z, M↔N, R↔I)",
+                "Reverse position = 27 − forward position"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Common coding types",
+              "body": "**Shift** (+1, −2 each letter), **reverse** (opposite letters), **position sum** (word = sum of letter values), **mixed** (letters reversed then shifted), and **sentence coding** where whole words get codes."
+            },
+            {
+              "type": "tip",
+              "title": "Sentence coding trick",
+              "body": "Compare two sentences that share one word: the code common to both is that word. Repeat with other pairs. Write the decoded words in a small table so you do not repeat work."
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "BANK → CBOL. Each letter moves +1 (B→C, A→B, N→O, K→L). So LOAN → **MPBO**."
+            },
+            {
+              "type": "quiz",
+              "q": "If CAT = 24 (sum of letter positions), DOG = ?",
+              "options": [
+                "24",
+                "26",
+                "25",
+                "27"
+              ],
+              "answer": 1,
+              "explain": "D = 4, O = 15, G = 7; 4 + 15 + 7 = 26."
+            },
+            {
+              "type": "quiz",
+              "q": "BANK is coded as CBOL. How is LOAN coded?",
+              "options": [
+                "MPBO",
+                "KNZM",
+                "MPBM",
+                "NPBO"
+              ],
+              "answer": 0,
+              "explain": "Each letter shifts +1: L→M, O→P, A→B, N→O."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the opposite letter of R (A↔Z pairing)?",
+              "options": [
+                "H",
+                "I",
+                "J",
+                "K"
+              ],
+              "answer": 1,
+              "explain": "R = 18; 27 − 18 = 9 = I."
+            }
+          ]
+        },
+        {
+          "id": "input-output",
+          "title": "Input–output (machine input)",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What it tests",
+              "body": "A 'machine' rearranges words and/or numbers step by step. You are shown the input and some steps, then asked for a later step, the last step, or the position of an element. Mostly a mains topic for SBI/IBPS PO."
+            },
+            {
+              "type": "tip",
+              "title": "Find the rule from Step I and the last step",
+              "body": "Compare the input with Step I to see what moved, then check the final step: is it sorted ascending, descending or alphabetically? Usually one word and/or one number is placed per step from the left or right end."
+            },
+            {
+              "type": "concept",
+              "title": "Common rules",
+              "body": "Sorting (alphabetical, by number of letters, ascending/descending), shifting (elements moved to an end), and arithmetic changes (add digits, square, multiply). Newer patterns combine a sort with an operation in the same step."
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "Rule: each step, the smallest remaining number moves to the left end of the unsorted part.\nInput: 45 12 78 33\nStep I: 12 45 78 33\nStep II: 12 33 45 78 → sorted, so **2 steps**."
+            },
+            {
+              "type": "quiz",
+              "q": "Using the rule above (smallest remaining number moves left each step), how many steps does 45 12 78 33 need?",
+              "options": [
+                "2",
+                "3",
+                "4",
+                "1"
+              ],
+              "answer": 0,
+              "explain": "Step I places 12 and Step II places 33; 45 and 78 are then already in order."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the best first move in an input–output question?",
+              "options": [
+                "Guess the rule from the input alone",
+                "Compare the input with Step I and the last step",
+                "Solve the question for the last step first",
+                "Count the letters in each word"
+              ],
+              "answer": 1,
+              "explain": "Comparing input → Step I → last step reveals both the movement and the final arrangement."
+            }
+          ]
+        },
+        {
+          "id": "data-sufficiency",
+          "title": "Data sufficiency",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What you decide",
+              "body": "You do **not** find the answer; you decide whether the given statements are **enough** to find it. Standard options: I alone, II alone, either alone, both together, or neither."
+            },
+            {
+              "type": "tip",
+              "title": "Fixed order of checking",
+              "body": "1) Check statement I alone. 2) Check II alone. 3) Only if both fail, combine them. Never combine first: if I alone is enough, 'both together' is wrong even though it also works."
+            },
+            {
+              "type": "concept",
+              "title": "Unique answer needed",
+              "body": "Data is sufficient only if it gives **one definite answer**. If a puzzle can still be arranged in two ways, or a value can be ±, the data is insufficient (except in yes/no questions where both cases give the same answer)."
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "Who is the tallest of P, Q, R?\nI. P is taller than Q. II. R is taller than P.\nI alone: R unknown. II alone: Q unknown. Together: R > P > Q, so **R is tallest** → both statements together are needed."
+            },
+            {
+              "type": "quiz",
+              "q": "What is A's age? I. A is 5 years older than B. II. B is 20 years old.",
+              "options": [
+                "I alone is sufficient",
+                "II alone is sufficient",
+                "Either I or II alone",
+                "Both I and II together",
+                "Neither is sufficient"
+              ],
+              "answer": 3,
+              "explain": "Neither statement alone gives A's age; together A = 20 + 5 = 25."
+            },
+            {
+              "type": "quiz",
+              "q": "x is an integer. Is x even? I. x² is even. II. 3x is even.",
+              "options": [
+                "I alone is sufficient",
+                "II alone is sufficient",
+                "Either I or II alone",
+                "Both I and II together",
+                "Neither is sufficient"
+              ],
+              "answer": 2,
+              "explain": "For an integer, x² even ⇒ x even, and 3x even ⇒ x even. Each statement alone answers it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "english",
+      "name": "English Language",
+      "chapters": [
+        {
+          "id": "reading-comprehension",
+          "title": "Reading comprehension",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Biggest English block",
+              "body": "RC gives **8–10 questions** in prelims and more in mains. Passages are often on the economy, banking, technology and environment, so reading business news daily doubles as GA prep."
+            },
+            {
+              "type": "tip",
+              "title": "Questions first, then passage",
+              "body": "Skim the questions first to know what to look for. Then read the passage once, actively, noting the **main idea of each paragraph** in two or three words. Go back only to the relevant paragraph for each question."
+            },
+            {
+              "type": "concept",
+              "title": "Question types",
+              "points": [
+                "Fact-based: answer is stated directly",
+                "Inference: what is implied but not stated",
+                "Main idea / title / tone of the author",
+                "Vocabulary: synonym/antonym in context"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Inference traps",
+              "body": "Reject options that are **too extreme** ('always', 'never'), out of scope, or true in general but not supported by the passage. The right inference is the one that must be true from the text."
+            },
+            {
+              "type": "quiz",
+              "q": "Passage: 'Digital payments have cut the cost of transactions, but they have also exposed first-time users to fraud. Financial literacy must therefore keep pace with technology.' The author's main point is:",
+              "options": [
+                "Digital payments should be banned",
+                "Financial literacy must grow along with digital adoption",
+                "Fraud is the only result of digital payments",
+                "Transaction costs have risen"
+              ],
+              "answer": 1,
+              "explain": "The last sentence ('therefore') states the conclusion: literacy must keep pace with technology."
+            },
+            {
+              "type": "quiz",
+              "q": "In RC, which option should usually be rejected first?",
+              "options": [
+                "One that paraphrases the passage",
+                "One with extreme words like 'always' or 'never'",
+                "One that is shortest",
+                "One that uses passage keywords"
+              ],
+              "answer": 1,
+              "explain": "Extreme words usually go beyond what the passage supports."
+            }
+          ]
+        },
+        {
+          "id": "error-spotting",
+          "title": "Error spotting & sentence improvement",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Approach",
+              "body": "Find the **subject and main verb** first; most errors are agreement or tense errors. Then check prepositions, articles, pronouns and parallel structure. If nothing is wrong, choose 'No error' confidently."
+            },
+            {
+              "type": "formula",
+              "title": "High-frequency rules",
+              "points": [
+                "Neither/either … nor/or: verb agrees with the nearer subject",
+                "One of + plural noun + singular verb",
+                "Senior/junior/superior/prefer take 'to', not 'than'",
+                "Each/every + singular verb",
+                "Scarcely/hardly … when; no sooner … than"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "'Neither the manager nor his assistants **was** present.' The nearer subject 'assistants' is plural, so it should be '**were** present'."
+            },
+            {
+              "type": "tip",
+              "title": "Read the whole sentence",
+              "body": "An error is often in a part that looks correct in isolation, e.g. a pronoun that does not match a noun two parts earlier. Read the full sentence once before judging any part."
+            },
+            {
+              "type": "quiz",
+              "q": "Find the error: 'Neither the manager nor his assistants (A) / was present (B) / at the meeting (C) / held yesterday (D).'",
+              "options": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "answer": 1,
+              "explain": "With 'neither … nor', the verb agrees with the nearer subject 'assistants', so 'was' should be 'were'."
+            },
+            {
+              "type": "quiz",
+              "q": "Find the error: 'One of my friend (A) / has joined (B) / SBI as (C) / a probationary officer (D).'",
+              "options": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "answer": 0,
+              "explain": "'One of' takes a plural noun: 'One of my friends'."
+            },
+            {
+              "type": "quiz",
+              "q": "Find the error: 'He is senior (A) / than me (B) / in the bank (C) / No error (D).'",
+              "options": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "answer": 1,
+              "explain": "'Senior' takes 'to': 'senior to me'."
+            }
+          ]
+        },
+        {
+          "id": "cloze-test",
+          "title": "Cloze test & fillers",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What it tests",
+              "body": "A passage with blanks; you choose the word that fits **grammar, meaning and collocation**. Usually 5–10 questions in prelims. New formats include 'which word is correctly placed' and double fillers."
+            },
+            {
+              "type": "tip",
+              "title": "Read the whole passage once",
+              "body": "Skim the passage before filling any blank to get its tone (positive/negative) and topic. Many blanks depend on the sentence **after** the blank, not before it."
+            },
+            {
+              "type": "formula",
+              "title": "Elimination checklist",
+              "points": [
+                "Grammar: part of speech, tense, singular/plural",
+                "Collocation: 'take a decision', 'bridge the gap', 'heavy rain'",
+                "Tone: positive word for a positive sentence",
+                "Connectors: however (contrast), therefore (result), moreover (addition)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "'The RBI ___ the repo rate unchanged.' Options: kept, made, held up, put. 'Keep the rate unchanged' is the natural collocation → **kept**."
+            },
+            {
+              "type": "quiz",
+              "q": "'The new scheme aims to ___ the gap between rural and urban banking.'",
+              "options": [
+                "bridge",
+                "build",
+                "fill up",
+                "cross"
+              ],
+              "answer": 0,
+              "explain": "'Bridge the gap' is the standard collocation."
+            },
+            {
+              "type": "quiz",
+              "q": "'Credit growth was strong; ___, deposit growth lagged behind.'",
+              "options": [
+                "therefore",
+                "moreover",
+                "however",
+                "similarly"
+              ],
+              "answer": 2,
+              "explain": "The two clauses contrast, so 'however' fits."
+            }
+          ]
+        },
+        {
+          "id": "para-jumbles",
+          "title": "Para jumbles & sentence rearrangement",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Find the opener",
+              "body": "The opening sentence introduces the topic and can stand alone. It rarely starts with a **pronoun** (he, it, this, they) or a connector (however, therefore, also)."
+            },
+            {
+              "type": "tip",
+              "title": "Mandatory pairs",
+              "body": "Look for pairs that must sit together: a noun and the pronoun referring to it, a problem and its solution, 'first' and 'second', a general statement and its example. Two or three such pairs usually fix the whole order."
+            },
+            {
+              "type": "tip",
+              "title": "Use the options",
+              "body": "Once you know the opener, eliminate options that start differently. Often only two options remain; check a single pair to choose between them."
+            },
+            {
+              "type": "concept",
+              "title": "Closing sentence",
+              "body": "The last sentence usually **concludes**, sums up, or states the way forward ('Bridging this gap is the next challenge'). Connectors like 'thus' and 'therefore' are common at the end."
+            },
+            {
+              "type": "quiz",
+              "q": "Arrange: P – However, many of them still lack access to formal credit. Q – India has made rapid progress in opening bank accounts for the poor. R – Bridging this gap is the next big challenge for financial inclusion. S – Over 50 crore Jan Dhan accounts have been opened since 2014.",
+              "options": [
+                "QSPR",
+                "SQPR",
+                "QPSR",
+                "PQSR"
+              ],
+              "answer": 0,
+              "explain": "Q introduces the topic, S gives data, P contrasts ('However'), R concludes ('this gap')."
+            },
+            {
+              "type": "quiz",
+              "q": "Which sentence is least likely to be the opener of a paragraph?",
+              "options": [
+                "Digital lending has grown rapidly in India.",
+                "This has raised concerns about data privacy.",
+                "Banks are investing heavily in technology.",
+                "The RBI regulates all scheduled banks."
+              ],
+              "answer": 1,
+              "explain": "'This' refers to something said earlier, so the sentence cannot open the paragraph."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "banking-awareness",
+      "name": "Banking & Financial Awareness",
+      "chapters": [
+        {
+          "id": "rbi-monetary-policy",
+          "title": "RBI & monetary policy tools",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "RBI at a glance",
+              "body": "Set up on **1 April 1935** under the RBI Act, 1934 (Hilton Young Commission), nationalised on **1 January 1949**. HQ moved from Kolkata to **Mumbai** in 1937. It issues currency, regulates banks, manages forex and acts as banker to the government and to banks."
+            },
+            {
+              "type": "concept",
+              "title": "Monetary Policy Committee",
+              "body": "The **6-member MPC** (3 from RBI incl. the Governor, 3 appointed by the government) sets the repo rate; the Governor has a casting vote. Target: **CPI inflation 4% ± 2%**, retained by the government for **April 2026 – March 2031** (notified March 2026)."
+            },
+            {
+              "type": "formula",
+              "title": "Policy rates (corridor)",
+              "points": [
+                "Repo: rate at which RBI lends to banks against G-secs",
+                "SDF (Standing Deposit Facility) = repo − 0.25%: floor of the corridor, no collateral needed",
+                "MSF (Marginal Standing Facility) = repo + 0.25%: ceiling; banks can dip into SLR",
+                "Bank Rate = MSF rate",
+                "Fixed-rate reverse repo (3.35%) exists but SDF has replaced it as the floor since April 2022"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Reserve ratios",
+              "points": [
+                "CRR: % of NDTL kept as cash with RBI; earns no interest",
+                "SLR: % of NDTL kept by the bank itself in cash, gold or approved securities",
+                "NDTL = net demand & time liabilities",
+                "OMO: RBI buys/sells G-secs to add/absorb liquidity"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Rates as of August 2026",
+              "body": "As of the **August 2026 MPC review**: repo **5.25%**, SDF **5.00%**, MSF and Bank Rate **5.50%**, stance **neutral**; CRR **3%** (cut from 4% in tranches to Nov 2025), SLR **18%**. Rates change every two months, so check rbi.org.in before your exam."
+            },
+            {
+              "type": "tip",
+              "title": "Direction logic",
+              "body": "To fight inflation RBI **raises** repo/CRR (tightening). To support growth it **cuts** them (easing). Cutting CRR releases lendable funds directly; cutting repo lowers the cost of borrowing."
+            },
+            {
+              "type": "quiz",
+              "q": "Which facility forms the floor of the RBI's liquidity adjustment facility corridor today?",
+              "options": [
+                "Standing Deposit Facility",
+                "Marginal Standing Facility",
+                "Bank Rate",
+                "Fixed-rate reverse repo"
+              ],
+              "answer": 0,
+              "explain": "Since April 2022 the SDF (repo − 25 bps) is the floor; MSF is the ceiling."
+            },
+            {
+              "type": "quiz",
+              "q": "If the repo rate is 5.25%, the MSF rate is:",
+              "options": [
+                "5.00%",
+                "5.25%",
+                "5.50%",
+                "6.00%"
+              ],
+              "answer": 2,
+              "explain": "MSF = repo + 25 basis points = 5.50%."
+            },
+            {
+              "type": "quiz",
+              "q": "CRR is maintained as a percentage of:",
+              "options": [
+                "Total assets",
+                "Net demand and time liabilities (NDTL)",
+                "Paid-up capital",
+                "Gross advances"
+              ],
+              "answer": 1,
+              "explain": "Both CRR and SLR are calculated on NDTL."
+            }
+          ]
+        },
+        {
+          "id": "types-of-banks",
+          "title": "Types of banks, history & nationalisation",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Scheduled vs non-scheduled",
+              "body": "A **scheduled bank** is listed in the **Second Schedule of the RBI Act, 1934** and can borrow from RBI. Scheduled commercial banks include public sector, private, foreign, regional rural, small finance and payments banks. Cooperative banks form a separate tier."
+            },
+            {
+              "type": "formula",
+              "title": "Nationalisation timeline",
+              "points": [
+                "1955: Imperial Bank of India → State Bank of India",
+                "19 July 1969: 14 banks (deposits > ₹50 crore)",
+                "15 April 1980: 6 banks (deposits > ₹200 crore)",
+                "2019–20: mega-mergers leave 12 public sector banks"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Regional Rural Banks",
+              "body": "Set up from **2 October 1975** (Narasimham Working Group), governed by the **RRB Act, 1976**. Shareholding: **Centre 50%, sponsor bank 35%, state 15%**. Under 'One State, One RRB' consolidation (effective 1 May 2025) the number fell to **28 RRBs**."
+            },
+            {
+              "type": "concept",
+              "title": "Differentiated banks",
+              "body": "**Payments banks** accept deposits up to **₹2 lakh** per customer and offer remittances, but **cannot lend** or issue credit cards. **Small finance banks** must give 75% of credit to priority sectors and serve small borrowers."
+            },
+            {
+              "type": "tip",
+              "title": "Easy recall",
+              "body": "Remember 14 (1969) + 6 (1980) = 20 nationalised banks. The 1969 threshold was ₹50 crore and 1980 was ₹200 crore: 50 → 200."
+            },
+            {
+              "type": "quiz",
+              "q": "How many banks were nationalised on 19 July 1969?",
+              "options": [
+                "6",
+                "14",
+                "20",
+                "12"
+              ],
+              "answer": 1,
+              "explain": "14 major banks with deposits above ₹50 crore were nationalised in 1969; 6 more followed in 1980."
+            },
+            {
+              "type": "quiz",
+              "q": "Shareholding of an RRB (Centre : sponsor bank : state) is:",
+              "options": [
+                "50 : 35 : 15",
+                "51 : 34 : 15",
+                "35 : 50 : 15",
+                "40 : 40 : 20"
+              ],
+              "answer": 0,
+              "explain": "Under the RRB Act, the Centre holds 50%, the sponsor bank 35% and the state government 15%."
+            },
+            {
+              "type": "quiz",
+              "q": "Which of these can a payments bank NOT do?",
+              "options": [
+                "Accept savings deposits",
+                "Issue debit cards",
+                "Give loans",
+                "Offer remittance services"
+              ],
+              "answer": 2,
+              "explain": "Payments banks are barred from lending and from issuing credit cards."
+            }
+          ]
+        },
+        {
+          "id": "payment-systems",
+          "title": "Payment systems: UPI, NEFT, RTGS, IMPS",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Who runs what",
+              "body": "**RBI** owns and runs **NEFT and RTGS**. **NPCI** (set up in 2008 by RBI and the Indian Banks' Association) runs **UPI, IMPS, RuPay, NACH, AePS, NETC FASTag and Bharat BillPay**. The legal base is the **Payment and Settlement Systems Act, 2007**."
+            },
+            {
+              "type": "formula",
+              "title": "Quick comparison",
+              "points": [
+                "NEFT: batches every half hour, 24×7 since 16 Dec 2019, no minimum",
+                "RTGS: real-time gross settlement, minimum ₹2 lakh, 24×7 since 14 Dec 2020",
+                "IMPS: instant 24×7, up to ₹5 lakh per transaction",
+                "UPI: instant, on IMPS rails, launched 2016; mostly ₹1 lakh per P2P transaction"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "UPI family",
+              "body": "**BHIM** (NPCI app), **UPI Lite** (small payments without PIN), **UPI 123PAY** (feature phones), **UPI AutoPay** (recurring mandates), **RuPay credit card on UPI**, and UPI links with other countries (e.g. Singapore PayNow). Limits change often; check npci.org.in."
+            },
+            {
+              "type": "tip",
+              "title": "Gross vs net",
+              "body": "RTGS = **gross** (each transaction settled individually, in real time). NEFT = **deferred net** settlement in batches. This difference is a favourite one-mark question."
+            },
+            {
+              "type": "quiz",
+              "q": "The minimum amount for an RTGS transfer is:",
+              "options": [
+                "₹1 lakh",
+                "₹2 lakh",
+                "₹5 lakh",
+                "No minimum"
+              ],
+              "answer": 1,
+              "explain": "RTGS is meant for large-value transfers with a minimum of ₹2 lakh; there is no upper limit."
+            },
+            {
+              "type": "quiz",
+              "q": "UPI is operated by:",
+              "options": [
+                "RBI",
+                "SEBI",
+                "NPCI",
+                "SBI"
+              ],
+              "answer": 2,
+              "explain": "The National Payments Corporation of India runs UPI."
+            },
+            {
+              "type": "quiz",
+              "q": "NEFT settles transactions on a:",
+              "options": [
+                "Real-time gross basis",
+                "Deferred net basis in half-hourly batches",
+                "Weekly basis",
+                "Monthly basis"
+              ],
+              "answer": 1,
+              "explain": "NEFT uses deferred net settlement in batches every half hour, 24×7."
+            }
+          ]
+        },
+        {
+          "id": "financial-inclusion",
+          "title": "Financial inclusion schemes",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "PM Jan Dhan Yojana (2014)",
+              "body": "Announced on 15 August 2014, launched 28 August 2014. **Zero-balance** BSBD account, **RuPay** debit card with **₹2 lakh** accident cover (accounts after 28.8.2018), and an overdraft of up to **₹10,000**. Over 50 crore accounts; a majority held by women."
+            },
+            {
+              "type": "formula",
+              "title": "Jan Suraksha schemes (2015)",
+              "points": [
+                "PMSBY: accident cover ₹2 lakh, premium ₹20/year, age 18–70",
+                "PMJJBY: life cover ₹2 lakh, premium ₹436/year, age 18–50",
+                "APY: pension ₹1,000–5,000/month at 60, join at 18–40"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "PM Mudra Yojana (2015)",
+              "points": [
+                "Shishu: up to ₹50,000",
+                "Kishor: ₹50,000 – ₹5 lakh",
+                "Tarun: ₹5 – 10 lakh",
+                "Tarun Plus: ₹10 – 20 lakh (for those who repaid Tarun loans)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Other schemes",
+              "body": "**Stand-Up India** (2016): loans of ₹10 lakh – ₹1 crore to SC/ST and women entrepreneurs. **PM SVANidhi** (2020): working-capital loans for street vendors. RBI's **Financial Inclusion Index** (FI-Index) measures progress on a 0–100 scale each year."
+            },
+            {
+              "type": "tip",
+              "title": "Remember the numbers",
+              "body": "20 and 436 are the premiums; 2 lakh is the cover for both PMSBY and PMJJBY. APY age 18–40 and PMJJBY age 18–50 are the most common confusions."
+            },
+            {
+              "type": "quiz",
+              "q": "The annual premium of PMSBY is:",
+              "options": [
+                "₹12",
+                "₹20",
+                "₹330",
+                "₹436"
+              ],
+              "answer": 1,
+              "explain": "PMSBY premium was revised from ₹12 to ₹20 per year in 2022; PMJJBY is ₹436."
+            },
+            {
+              "type": "quiz",
+              "q": "Under PM Mudra Yojana, 'Shishu' loans go up to:",
+              "options": [
+                "₹50,000",
+                "₹1 lakh",
+                "₹5 lakh",
+                "₹10 lakh"
+              ],
+              "answer": 0,
+              "explain": "Shishu covers loans up to ₹50,000."
+            },
+            {
+              "type": "quiz",
+              "q": "The entry age for Atal Pension Yojana is:",
+              "options": [
+                "18–50 years",
+                "18–60 years",
+                "18–40 years",
+                "21–40 years"
+              ],
+              "answer": 2,
+              "explain": "APY is open to people aged 18–40, with pension starting at 60."
+            }
+          ]
+        },
+        {
+          "id": "basel-npa",
+          "title": "BASEL norms, NPAs & SARFAESI",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Basel norms",
+              "body": "Issued by the **Basel Committee on Banking Supervision** (hosted by the BIS in Basel, Switzerland). **Basel III** (after the 2008 crisis) rests on three pillars: **minimum capital**, **supervisory review** and **market discipline**. It also added leverage and liquidity ratios (LCR, NSFR)."
+            },
+            {
+              "type": "formula",
+              "title": "Capital numbers in India",
+              "points": [
+                "CRAR (capital to risk-weighted assets) minimum: 9% (Basel III global: 8%)",
+                "Capital conservation buffer: 2.5%",
+                "So effective minimum = 11.5%",
+                "LCR: high-quality liquid assets ≥ 100% of 30-day net outflows"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Non-performing assets",
+              "body": "A loan becomes an **NPA** when interest or principal is overdue for **more than 90 days**. Classes: **substandard** (NPA ≤ 12 months), **doubtful** (substandard for 12 months), and **loss** (identified as uncollectable)."
+            },
+            {
+              "type": "concept",
+              "title": "Recovery laws",
+              "body": "**SARFAESI Act, 2002**: banks can seize and sell secured assets **without court** after a **60-day** notice (not for loans under ₹1 lakh). **DRTs** (RDDBFI Act, 1993) for claims of ₹20 lakh and more. **IBC, 2016**: time-bound insolvency resolution (180 days, extendable)."
+            },
+            {
+              "type": "tip",
+              "title": "Related terms",
+              "body": "**PCA** (Prompt Corrective Action): RBI restrictions on weak banks. **ARC**: asset reconstruction company that buys bad loans. **Provision Coverage Ratio**: provisions ÷ gross NPA. **Gross NPA** includes provisions; **net NPA** = gross NPA − provisions."
+            },
+            {
+              "type": "quiz",
+              "q": "A loan is classified as NPA when dues remain overdue for more than:",
+              "options": [
+                "30 days",
+                "60 days",
+                "90 days",
+                "180 days"
+              ],
+              "answer": 2,
+              "explain": "The 90-day overdue norm has applied since 2004."
+            },
+            {
+              "type": "quiz",
+              "q": "Under SARFAESI, how many days' notice must a bank give before taking possession of security?",
+              "options": [
+                "30 days",
+                "60 days",
+                "90 days",
+                "15 days"
+              ],
+              "answer": 1,
+              "explain": "Section 13(2) of the SARFAESI Act requires a 60-day demand notice."
+            },
+            {
+              "type": "quiz",
+              "q": "Effective minimum capital requirement (CRAR + conservation buffer) for Indian banks under Basel III is:",
+              "options": [
+                "8%",
+                "9%",
+                "10.5%",
+                "11.5%"
+              ],
+              "answer": 3,
+              "explain": "RBI's 9% CRAR plus the 2.5% capital conservation buffer = 11.5%."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "computer",
+      "name": "Computer Awareness",
+      "chapters": [
+        {
+          "id": "computer-fundamentals",
+          "title": "Computer fundamentals, memory & number systems",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Building blocks",
+              "body": "**CPU** = ALU (calculations) + CU (control) + registers. **Input** devices (keyboard, scanner, mouse), **output** devices (monitor, printer). **System software** (OS, drivers) runs the machine; **application software** (Word, browsers) serves the user."
+            },
+            {
+              "type": "formula",
+              "title": "Memory hierarchy",
+              "points": [
+                "Fastest → slowest: registers → cache → RAM → SSD/HDD",
+                "RAM: volatile; ROM: non-volatile (BIOS/firmware)",
+                "1 byte = 8 bits; 1 KB = 1024 bytes",
+                "KB → MB → GB → TB → PB (each ×1024)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Number systems",
+              "points": [
+                "Binary base 2, octal base 8, decimal base 10, hexadecimal base 16",
+                "Binary 1011 = 8 + 0 + 2 + 1 = 11",
+                "Hex A–F = 10–15",
+                "1 hex digit = 4 bits; 1 octal digit = 3 bits"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Shortcut keys asked often",
+              "body": "Ctrl+Z undo, Ctrl+Y redo, Ctrl+P print, Ctrl+F find, Ctrl+H replace (Word), F5 refresh/slideshow, F7 spell-check (Word), Alt+F4 close window, Ctrl+Shift+Esc Task Manager."
+            },
+            {
+              "type": "quiz",
+              "q": "Binary 1011 equals which decimal number?",
+              "options": [
+                "9",
+                "10",
+                "11",
+                "13"
+              ],
+              "answer": 2,
+              "explain": "1×8 + 0×4 + 1×2 + 1×1 = 11."
+            },
+            {
+              "type": "quiz",
+              "q": "Which memory is volatile?",
+              "options": [
+                "ROM",
+                "RAM",
+                "Hard disk",
+                "Flash drive"
+              ],
+              "answer": 1,
+              "explain": "RAM loses its data when power is switched off."
+            },
+            {
+              "type": "quiz",
+              "q": "1 KB is equal to:",
+              "options": [
+                "1000 bits",
+                "1024 bits",
+                "1024 bytes",
+                "1000 bytes"
+              ],
+              "answer": 2,
+              "explain": "In the binary convention used in bank exams, 1 KB = 1024 bytes."
+            }
+          ]
+        },
+        {
+          "id": "networking-security",
+          "title": "Internet, networking & cyber security",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Networks",
+              "body": "**LAN** (building), **MAN** (city), **WAN** (country/world; the Internet is the largest WAN). Devices: **router** (joins networks), **switch** (joins devices in a LAN), **modem** (digital ↔ analog). An **IP address** identifies a device; **DNS** turns names into IPs."
+            },
+            {
+              "type": "formula",
+              "title": "Protocols & ports",
+              "points": [
+                "HTTP 80, HTTPS 443 (encrypted with TLS)",
+                "FTP 21 (file transfer), SMTP 25 (send mail)",
+                "POP3 110 / IMAP 143 (receive mail)",
+                "OSI model: 7 layers (Physical → Application); TCP/IP: 4 layers"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Threats",
+              "body": "**Phishing**: fake emails/sites to steal credentials. **Vishing**: by phone; **smishing**: by SMS. **Ransomware** encrypts files for ransom. **Trojan** hides inside useful-looking software. **Worm** spreads by itself; a **virus** needs a host file."
+            },
+            {
+              "type": "tip",
+              "title": "Banking security terms",
+              "body": "**OTP/2FA** adds a second factor. **Firewall** filters network traffic. **Encryption** scrambles data. CERT-In is India's national cyber incident agency; report cyber fraud on helpline **1930** or cybercrime.gov.in."
+            },
+            {
+              "type": "quiz",
+              "q": "Which port does HTTPS use by default?",
+              "options": [
+                "80",
+                "21",
+                "443",
+                "25"
+              ],
+              "answer": 2,
+              "explain": "HTTPS (HTTP over TLS) uses port 443; plain HTTP uses 80."
+            },
+            {
+              "type": "quiz",
+              "q": "A fake SMS asking you to click a link and enter your card PIN is an example of:",
+              "options": [
+                "Vishing",
+                "Smishing",
+                "Spamming",
+                "Hacking a firewall"
+              ],
+              "answer": 1,
+              "explain": "Smishing is phishing carried out through SMS."
+            },
+            {
+              "type": "quiz",
+              "q": "How many layers does the OSI model have?",
+              "options": [
+                "4",
+                "5",
+                "7",
+                "8"
+              ],
+              "answer": 2,
+              "explain": "The OSI reference model has 7 layers: Physical to Application."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [],
+  "resources": [
+    {
+      "label": "RBI — Monetary Policy statements",
+      "url": "https://www.rbi.org.in/scripts/annualpolicy.aspx",
+      "note": "Official MPC resolutions with current repo, SDF, MSF and CRR values",
+      "free": true
+    },
+    {
+      "label": "NPCI — UPI product overview",
+      "url": "https://www.npci.org.in/what-we-do/upi/product-overview",
+      "note": "Official UPI features, limits and product family",
+      "free": true
+    },
+    {
+      "label": "Department of Financial Services (Ministry of Finance)",
+      "url": "https://financialservices.gov.in",
+      "note": "Official source for PMJDY, Mudra, Jan Suraksha schemes and PSB policy",
+      "free": true
+    },
+    {
+      "label": "PM Jan Dhan Yojana — official site",
+      "url": "https://pmjdy.gov.in/scheme",
+      "note": "Scheme features and up-to-date account statistics",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Government press releases: the most reliable source for current affairs",
+      "free": true
+    },
+    {
+      "label": "IBPS — official website",
+      "url": "https://www.ibps.in",
+      "note": "Notifications, calendar and patterns for IBPS PO, Clerk, RRB and SO",
+      "free": true
+    }
+  ]
+}

@@ -1,0 +1,488 @@
+{
+  "id": "rbi-grade-b",
+  "name": "RBI Grade B (DR) General",
+  "category": "banking",
+  "core": "bank-common",
+  "conductedBy": "Reserve Bank of India Services Board (RBISB)",
+  "tagline": "Officer in Grade 'B' at the Reserve Bank of India: India's most prestigious banking-regulator job",
+  "overview": {
+    "about": "The RBI Services Board recruits Grade 'B' (Direct Recruit) officers in the General, DEPR and DSIM streams. The General stream has three phases: Phase I (objective, qualifying), Phase II (Economic & Social Issues, English writing, Finance & Management) and an interview. Final merit = Phase II + interview.",
+    "eligibility": [
+      "Graduation with minimum 60% (50% for SC/ST/PwBD) or post-graduation with 55% (pass marks for SC/ST/PwBD) in aggregate of all semesters/years",
+      "Age 21–30 years on the date in the notification; higher upper age for M.Phil/PhD holders; relaxation SC/ST 5 yrs, OBC-NCL 3 yrs, PwBD 10 yrs",
+      "Limited number of attempts for General-category candidates (see notification)",
+      "Indian citizen (or other categories as defined)"
+    ],
+    "pattern": [
+      {
+        "paper": "Phase I — General Awareness",
+        "questions": 80,
+        "marks": 80,
+        "duration": "25 min",
+        "note": "Sectional timing; −0.25 per wrong answer"
+      },
+      {
+        "paper": "Phase I — Reasoning",
+        "questions": 60,
+        "marks": 60,
+        "duration": "45 min"
+      },
+      {
+        "paper": "Phase I — English Language",
+        "questions": 30,
+        "marks": 30,
+        "duration": "25 min"
+      },
+      {
+        "paper": "Phase I — Quantitative Aptitude",
+        "questions": 30,
+        "marks": 30,
+        "duration": "25 min",
+        "note": "Total 200 Q / 200 marks / 120 min; qualifying with sectional + overall cut-offs"
+      },
+      {
+        "paper": "Phase II Paper I — Economic & Social Issues",
+        "marks": 100,
+        "duration": "120 min",
+        "note": "50 marks objective (30 min) + 50 marks descriptive (90 min); typed answers"
+      },
+      {
+        "paper": "Phase II Paper II — English (Writing Skills)",
+        "marks": 100,
+        "duration": "90 min",
+        "note": "Descriptive, typed: essay, précis, comprehension"
+      },
+      {
+        "paper": "Phase II Paper III — Finance & Management",
+        "marks": 100,
+        "duration": "120 min",
+        "note": "50 objective + 50 descriptive (attempt 4 of 6: two of 15 marks, two of 10 marks)"
+      },
+      {
+        "paper": "Phase III — Interview",
+        "marks": 75,
+        "duration": "—",
+        "note": "Final merit = Phase II (300) + Interview (75)"
+      }
+    ],
+    "frequency": "Once a year",
+    "officialSite": "https://opportunities.rbi.org.in"
+  },
+  "subjects": [
+    {
+      "id": "rbi-grade-b-specific",
+      "name": "RBI Grade B — Exam-specific",
+      "chapters": [
+        {
+          "id": "phase-one-strategy",
+          "title": "Phase I strategy & overall plan",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Phase I is a filter",
+              "body": "Phase I marks don't count in the final merit, but its **sectional and overall cut-offs** are steep. GA is **80 marks in 25 minutes** — the single biggest scoring opportunity in any banking prelims."
+            },
+            {
+              "type": "tip",
+              "title": "GA preparation",
+              "body": "Cover 6–8 months of current affairs, RBI circulars/press releases, the Union Budget, Economic Survey highlights, government schemes and international organisations. Revise in short daily cycles; GA questions are factual and quick."
+            },
+            {
+              "type": "tip",
+              "title": "Reasoning gets 45 minutes",
+              "body": "Reasoning (60 Q in 45 min) is puzzle-heavy and the hardest section to clear. Practise high-level puzzles and mixed seating daily from day one."
+            },
+            {
+              "type": "concept",
+              "title": "Prepare Phase II alongside",
+              "body": "The gap between Phase I and II is short. Most successful candidates study **ESI and FM from the start**, because Phase II (300 marks) plus the interview (75) is the real merit list."
+            },
+            {
+              "type": "formula",
+              "title": "Final merit",
+              "points": [
+                "Phase II: ESI 100 + English 100 + FM 100 = 300",
+                "Interview: 75",
+                "Final = 375 marks"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "Which Phase I section of RBI Grade B carries the most marks?",
+              "options": [
+                "Reasoning",
+                "General Awareness",
+                "English",
+                "Quantitative Aptitude"
+              ],
+              "answer": 1,
+              "explain": "General Awareness has 80 questions worth 80 marks."
+            },
+            {
+              "type": "quiz",
+              "q": "The RBI Grade B final merit list is based on:",
+              "options": [
+                "Phase I + Phase II",
+                "Phase II + interview",
+                "Phase I + interview",
+                "Interview only"
+              ],
+              "answer": 1,
+              "explain": "Phase I is qualifying; merit = Phase II (300) + interview (75)."
+            }
+          ]
+        },
+        {
+          "id": "esi-essentials",
+          "title": "Economic & Social Issues (ESI) essentials",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Syllabus map",
+              "body": "**Growth & development** (measurement, poverty, inequality), **Indian economy** (fiscal & monetary policy, inflation, external sector), **globalisation** (WTO, IMF, World Bank), **social structure** (demographics, education, health, gender, social justice)."
+            },
+            {
+              "type": "formula",
+              "title": "Deficits",
+              "points": [
+                "Fiscal deficit = total expenditure − (revenue receipts + non-debt capital receipts)",
+                "Primary deficit = fiscal deficit − interest payments",
+                "Revenue deficit = revenue expenditure − revenue receipts",
+                "Effective revenue deficit = RD − grants for creation of capital assets"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Measuring development",
+              "body": "**HDI** (UNDP) combines **life expectancy, education** (mean and expected years of schooling) and **GNI per capita**. The **Gini coefficient** measures inequality: 0 = perfect equality, 1 = perfect inequality. NITI Aayog publishes a **Multidimensional Poverty Index**."
+            },
+            {
+              "type": "concept",
+              "title": "Inflation types",
+              "body": "**Demand-pull** (too much money chasing goods), **cost-push** (input costs rise), **stagflation** (high inflation with low growth). The **Phillips curve** shows a short-run trade-off between inflation and unemployment."
+            },
+            {
+              "type": "tip",
+              "title": "Descriptive answers",
+              "body": "ESI descriptive questions reward **structure**: define the concept, give data from the Economic Survey/RBI reports, list issues, then a way forward. Diagrams and flowcharts are not possible when typing, so use clear headings and short points."
+            },
+            {
+              "type": "quiz",
+              "q": "If the fiscal deficit is ₹16 lakh crore and interest payments are ₹11 lakh crore, the primary deficit is:",
+              "options": [
+                "₹27 lakh crore",
+                "₹5 lakh crore",
+                "₹11 lakh crore",
+                "₹16 lakh crore"
+              ],
+              "answer": 1,
+              "explain": "Primary deficit = fiscal deficit − interest = 16 − 11 = ₹5 lakh crore."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is NOT a dimension of the Human Development Index?",
+              "options": [
+                "Life expectancy",
+                "Education",
+                "GNI per capita",
+                "Unemployment rate"
+              ],
+              "answer": 3,
+              "explain": "HDI uses health, education and standard of living (GNI per capita)."
+            },
+            {
+              "type": "quiz",
+              "q": "A Gini coefficient of 0 indicates:",
+              "options": [
+                "Perfect inequality",
+                "Perfect equality",
+                "High poverty",
+                "Zero GDP growth"
+              ],
+              "answer": 1,
+              "explain": "0 means everyone has the same income; 1 means one person has all of it."
+            }
+          ]
+        },
+        {
+          "id": "finance-management",
+          "title": "Finance & Management (FM) essentials",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Money market instruments",
+              "points": [
+                "Treasury bills: 91, 182, 364 days (issued at discount)",
+                "Commercial paper: 7 days – 1 year, by companies",
+                "Certificate of deposit: by banks, 7 days – 1 year",
+                "Call money: overnight; notice money: 2–14 days"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Risk types in banking",
+              "body": "**Credit risk** (borrower defaults), **market risk** (interest-rate, forex, equity price moves), **operational risk** (people, process, systems, fraud), **liquidity risk** (cannot meet outflows). Basel III capital covers credit, market and operational risk."
+            },
+            {
+              "type": "formula",
+              "title": "Derivatives",
+              "points": [
+                "Forward: customised OTC contract to buy/sell later",
+                "Future: standardised, exchange-traded forward",
+                "Call option: right (not obligation) to buy; put option: right to sell",
+                "Swap: exchange of cash flows (e.g. fixed vs floating interest)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "NPV in one line",
+              "body": "Invest ₹100 today, receive ₹121 after 2 years, discount rate 10%. PV = 121 ÷ 1.1² = 121 ÷ 1.21 = **₹100**, so NPV = 0. Accept projects with NPV > 0."
+            },
+            {
+              "type": "formula",
+              "title": "Management theories",
+              "points": [
+                "Maslow: physiological → safety → social → esteem → self-actualisation",
+                "Herzberg: hygiene factors (salary, policy, conditions) vs motivators (achievement, recognition, growth)",
+                "McGregor: Theory X (people avoid work) vs Theory Y (people seek responsibility)"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "A call option gives its holder:",
+              "options": [
+                "An obligation to buy",
+                "A right, but not an obligation, to buy",
+                "A right to sell",
+                "An obligation to sell"
+              ],
+              "answer": 1,
+              "explain": "The buyer of a call has the right, not the obligation, to buy at the strike price."
+            },
+            {
+              "type": "quiz",
+              "q": "In Herzberg's two-factor theory, salary is a:",
+              "options": [
+                "Motivator",
+                "Hygiene factor",
+                "Self-actualisation need",
+                "Theory Y factor"
+              ],
+              "answer": 1,
+              "explain": "Salary prevents dissatisfaction but does not by itself motivate: a hygiene factor."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is NOT a standard tenor of Indian Treasury bills?",
+              "options": [
+                "91 days",
+                "182 days",
+                "273 days",
+                "364 days"
+              ],
+              "answer": 2,
+              "explain": "T-bills are issued for 91, 182 and 364 days."
+            }
+          ]
+        },
+        {
+          "id": "descriptive-english",
+          "title": "Paper II: English writing skills",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What the paper tests",
+              "body": "100 marks in 90 minutes, typed. Usually an **essay** (choice of topics), a **précis** and a **reading comprehension** with written answers. Marks reward clear argument, structure, grammar and staying within word limits."
+            },
+            {
+              "type": "formula",
+              "title": "Time split (90 min)",
+              "points": [
+                "Essay: about 40 min (plan 5, write 30, check 5)",
+                "Précis: about 25 min",
+                "Comprehension: about 25 min"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Essay topics",
+              "body": "Expect economy-and-society topics: inflation targeting, digital public infrastructure, CBDC, climate finance, demographic dividend, women in the workforce. Have an intro fact, three body arguments and a way forward ready for each."
+            },
+            {
+              "type": "tip",
+              "title": "Précis",
+              "body": "Read twice, list the main ideas, then write about **one-third** of the length in your own words with a title. Do not add opinions or examples."
+            },
+            {
+              "type": "quiz",
+              "q": "How long is the RBI Grade B Phase II English paper?",
+              "options": [
+                "60 min",
+                "90 min",
+                "120 min",
+                "30 min"
+              ],
+              "answer": 1,
+              "explain": "The English (Writing Skills) paper is 90 minutes for 100 marks."
+            },
+            {
+              "type": "quiz",
+              "q": "In a précis, you should:",
+              "options": [
+                "Add your own examples",
+                "Copy key sentences word for word",
+                "Condense the main ideas in your own words",
+                "Double the length"
+              ],
+              "answer": 2,
+              "explain": "A précis condenses the original's main ideas, in your own words, to about one-third of its length."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "RBI Grade B 2025 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        },
+        {
+          "label": "RBI Grade B — official sample / previous papers published by RBI",
+          "url": "https://opportunities.rbi.org.in/Scripts/Sample_papers.aspx",
+          "source": "RBI (official)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "RBI Grade B 2024 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "RBI Grade B 2023 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "RBI Grade B 2022 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "RBI Grade B 2021 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "RBI Grade B 2020 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "RBI Grade B 2019 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "RBI Grade B 2018 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "RBI Grade B 2017 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "RBI Grade B 2016 — official recruitment page: notification, results & cut-offs",
+          "url": "https://opportunities.rbi.org.in",
+          "source": "RBI Services Board (official)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "Opportunities@RBI — recruitment portal",
+      "url": "https://opportunities.rbi.org.in",
+      "note": "Official Grade B notifications, results and cut-offs",
+      "free": true
+    },
+    {
+      "label": "Opportunities@RBI — sample papers",
+      "url": "https://opportunities.rbi.org.in/Scripts/Sample_papers.aspx",
+      "note": "Official sample/past papers published by RBI",
+      "free": true
+    },
+    {
+      "label": "RBI — Monetary Policy statements",
+      "url": "https://www.rbi.org.in/scripts/annualpolicy.aspx",
+      "note": "MPC resolutions and policy rates",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Budget, Economic Survey and scheme updates for GA and ESI",
+      "free": true
+    },
+    {
+      "label": "Department of Financial Services",
+      "url": "https://financialservices.gov.in",
+      "note": "Financial sector policy for ESI/FM",
+      "free": true
+    }
+  ]
+}

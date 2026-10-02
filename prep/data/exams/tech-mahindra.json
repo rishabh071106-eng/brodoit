@@ -1,0 +1,286 @@
+{
+  "id": "tech-mahindra",
+  "name": "Tech Mahindra (Associate Software Engineer)",
+  "category": "it",
+  "core": "it-core",
+  "conductedBy": "Tech Mahindra Ltd.",
+  "tagline": "Aptitude, essay, technical, psychometric and communication tests",
+  "overview": {
+    "about": "Tech Mahindra hires freshers for software engineering roles through campus and off-campus drives. Recent drives report an aptitude + essay test, a technical + psychometric test and an AI-evaluated communication test, followed by technical and HR interviews. Pattern as reported for 2025–26 drives; confirm on the official careers page.",
+    "eligibility": [
+      "B.E./B.Tech/M.E./M.Tech/MCA (some drives include B.Sc/BCA) from eligible batches",
+      "Typically 60% or more in 10th, 12th and graduation (as reported)",
+      "No active backlogs at joining"
+    ],
+    "pattern": [
+      {
+        "paper": "Aptitude (quant, logical, verbal) + essay",
+        "duration": "≈ 60 min",
+        "note": "Essay of ~200 words on one of 2–3 topics"
+      },
+      {
+        "paper": "Technical MCQs + psychometric",
+        "duration": "≈ 90 min",
+        "note": "Psychometric reported as non-eliminatory"
+      },
+      {
+        "paper": "Communication test",
+        "duration": "≈ 20 min",
+        "note": "AI-evaluated speaking/listening"
+      },
+      {
+        "paper": "Interviews",
+        "duration": "≈ 30 min each",
+        "note": "Technical + HR"
+      }
+    ],
+    "frequency": "Campus drives in season; off-campus roles on the careers portal",
+    "officialSite": "https://careers.techmahindra.com/"
+  },
+  "subjects": [
+    {
+      "id": "tech-mahindra-specific",
+      "name": "Tech Mahindra specifics",
+      "chapters": [
+        {
+          "id": "techm-aptitude-essay",
+          "title": "Aptitude & essay",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Aptitude coverage",
+              "body": "Standard quant (percentages, ratios, time-work, speed, P&C), logical (series, coding-decoding, blood relations, puzzles) and verbal (grammar, RC, vocabulary). Pattern as reported for 2025–26 drives; confirm on the official careers page."
+            },
+            {
+              "type": "concept",
+              "title": "Essay",
+              "body": "One topic picked from two or three, roughly 200 words. Graded on grammar, structure and clarity."
+            },
+            {
+              "type": "example",
+              "title": "Essay plan in 2 minutes",
+              "body": "Topic: 'Remote work — boon or bane?'\nIntro: define + stance. Para 1: benefit with example. Para 2: challenge with example. Conclusion: balanced view, one line on the future."
+            },
+            {
+              "type": "tip",
+              "title": "Word budget",
+              "body": "200 words ≈ 4 short paragraphs of 50 words. Count lines, not words: about 10–12 words per line in most editors."
+            },
+            {
+              "type": "example",
+              "title": "Logical sample",
+              "body": "Q: Find the missing term: 4, 9, 25, 49, ?, 169 → squares of primes 2, 3, 5, 7, 11, 13 → 121."
+            },
+            {
+              "type": "concept",
+              "title": "Common essay mistakes",
+              "points": [
+                "No paragraph breaks",
+                "Repeating the topic sentence",
+                "Informal language ('gonna', 'u')",
+                "Going far over the word limit"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "4, 9, 25, 49, ?, 169 — missing term:",
+              "options": [
+                "81",
+                "121",
+                "100",
+                "144"
+              ],
+              "answer": 1,
+              "explain": "Squares of consecutive primes: 11² = 121."
+            },
+            {
+              "type": "quiz",
+              "q": "A good ~200-word essay is usually best organised as:",
+              "options": [
+                "One paragraph",
+                "Ten bullet points",
+                "Two sentences",
+                "About 4 short paragraphs"
+              ],
+              "answer": 3,
+              "explain": "Intro, two body paragraphs, conclusion."
+            }
+          ]
+        },
+        {
+          "id": "techm-technical-psychometric",
+          "title": "Technical MCQs & psychometric test",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Technical MCQ topics",
+              "points": [
+                "C/Java output questions",
+                "OOP, data structures basics",
+                "DBMS & SQL",
+                "OS & networking fundamentals",
+                "Software engineering basics (SDLC, testing)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "SDLC basics",
+              "body": "Waterfall: sequential phases. Agile: short iterations (sprints) with continuous feedback. Testing levels: unit → integration → system → acceptance."
+            },
+            {
+              "type": "example",
+              "title": "Sample MCQ",
+              "body": "Q: Which data structure gives O(1) average lookup by key?\nA hash table (HashMap / dict)."
+            },
+            {
+              "type": "concept",
+              "title": "Psychometric test",
+              "body": "A personality questionnaire on how you work, collaborate and handle pressure. Reported as non-eliminatory but can inform later rounds. Pattern as reported for 2025–26 drives; confirm on the official careers page."
+            },
+            {
+              "type": "tip",
+              "title": "Psychometric approach",
+              "body": "Answer honestly and consistently; don't overthink each statement."
+            },
+            {
+              "type": "example",
+              "title": "Testing sample",
+              "body": "Q: Testing individual functions in isolation is called? Unit testing. Testing the combined modules together? Integration testing."
+            },
+            {
+              "type": "quiz",
+              "q": "Testing individual functions in isolation is called:",
+              "options": [
+                "Unit testing",
+                "Integration testing",
+                "Acceptance testing",
+                "Regression testing"
+              ],
+              "answer": 0,
+              "explain": "Unit tests check the smallest testable parts."
+            },
+            {
+              "type": "quiz",
+              "q": "Agile development is characterised by:",
+              "options": [
+                "One long sequential phase",
+                "No testing",
+                "Short iterations with frequent feedback",
+                "Fixed requirements never revisited"
+              ],
+              "answer": 2,
+              "explain": "Sprints deliver increments and adapt."
+            }
+          ]
+        },
+        {
+          "id": "techm-interviews",
+          "title": "Communication test & interviews",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Communication test",
+              "body": "Short AI-evaluated tasks: read aloud, repeat sentences, answer simple questions. Speak clearly at a steady pace in a quiet room."
+            },
+            {
+              "type": "concept",
+              "title": "Technical interview",
+              "body": "Project, OOP, SQL, a program (e.g. reverse a string, factorial, prime check), and maybe questions on technologies listed in your resume."
+            },
+            {
+              "type": "concept",
+              "title": "HR interview",
+              "body": "Tell me about yourself, why Tech Mahindra, willingness to relocate and work in shifts, career goals."
+            },
+            {
+              "type": "example",
+              "title": "Typical program",
+              "body": "Check prime efficiently:\ndef is_prime(n):\n    if n < 2: return False\n    i = 2\n    while i * i <= n:\n        if n % i == 0: return False\n        i += 1\n    return True"
+            },
+            {
+              "type": "tip",
+              "title": "Explain complexity",
+              "body": "After writing the prime check, say: 'O(√n) because any factor above √n pairs with one below it.' Small touches like this lift a fresher interview."
+            },
+            {
+              "type": "concept",
+              "title": "Be careful with offers",
+              "body": "Tech Mahindra warns about fake job offers. Genuine processes never ask for payment; verify on the official careers portal."
+            },
+            {
+              "type": "quiz",
+              "q": "Time complexity of trial division up to √n for primality:",
+              "options": [
+                "O(n)",
+                "O(log n)",
+                "O(√n)",
+                "O(n²)"
+              ],
+              "answer": 2,
+              "explain": "The loop runs while i² ≤ n."
+            },
+            {
+              "type": "quiz",
+              "q": "A message asks you to pay a 'registration fee' for a Tech Mahindra offer. You should:",
+              "options": [
+                "Pay quickly to secure the seat",
+                "Treat it as fraud and verify on the official careers portal",
+                "Share your bank OTP",
+                "Forward it to friends"
+              ],
+              "answer": 1,
+              "explain": "Genuine recruiters do not charge fees."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "Tech Mahindra careers portal (official)",
+          "url": "https://careers.techmahindra.com/",
+          "source": "Tech Mahindra (official sample/practice — company does not publish past papers)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "Tech Mahindra careers (official)",
+      "url": "https://careers.techmahindra.com/",
+      "note": "Openings and recruitment-fraud warnings",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    },
+    {
+      "label": "HackerRank",
+      "url": "https://www.hackerrank.com",
+      "note": "Many company tests run on HackerRank-style editors; SQL track is excellent",
+      "free": true
+    },
+    {
+      "label": "NPTEL — free IIT/IISc video courses",
+      "url": "https://nptel.ac.in",
+      "note": "Full CS courses (DSA, DBMS, OS, CN) by IIT faculty, free to watch",
+      "free": true
+    },
+    {
+      "label": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org",
+      "note": "Free curriculum incl. JavaScript algorithms & data structures and Python",
+      "free": true
+    }
+  ]
+}

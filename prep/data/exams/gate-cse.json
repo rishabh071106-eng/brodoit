@@ -1,0 +1,1453 @@
+{
+  "id": "gate-cse",
+  "name": "GATE CSE (Computer Science & IT)",
+  "category": "it",
+  "conductedBy": "IISc Bengaluru & seven IITs on behalf of the Ministry of Education (GATE 2027: IIT Madras)",
+  "tagline": "Gateway to M.Tech/MS/PhD at IITs, IISc & NITs and to PSU jobs",
+  "overview": {
+    "about": "The Graduate Aptitude Test in Engineering (GATE) is a national computer-based exam for engineering and science graduates. The CS paper tests engineering mathematics and core computer science; scores are used for postgraduate admissions, scholarships and recruitment by several PSUs. The organising institute rotates each year — GATE 2026 was run by IIT Guwahati and GATE 2027 by IIT Madras.",
+    "eligibility": [
+      "Students in the third or higher year of an undergraduate degree, or graduates (B.E./B.Tech/B.Sc (4-yr)/M.Sc/MCA and others as listed in the brochure)",
+      "No age limit",
+      "A candidate may take one paper or two papers from the permitted combinations",
+      "Check the current year's information brochure on the official GATE site"
+    ],
+    "pattern": [
+      {
+        "paper": "General Aptitude",
+        "questions": 10,
+        "marks": 15,
+        "duration": "Part of 3 hours",
+        "note": "5 × 1-mark + 5 × 2-mark"
+      },
+      {
+        "paper": "Engineering Mathematics + Computer Science",
+        "questions": 55,
+        "marks": 85,
+        "duration": "Part of 3 hours",
+        "note": "Maths ≈ 13 marks, CS subjects ≈ 72 marks (typical)"
+      },
+      {
+        "paper": "Total (CBT)",
+        "questions": 65,
+        "marks": 100,
+        "duration": "3 hours",
+        "note": "MCQ: −1/3 (1-mark), −2/3 (2-mark); no negative marking for MSQ and NAT"
+      }
+    ],
+    "frequency": "Once a year (computer-based test in February); score valid for 3 years",
+    "officialSite": "https://gate2027.iitm.ac.in"
+  },
+  "subjects": [
+    {
+      "id": "engineering-maths",
+      "name": "Engineering Mathematics",
+      "chapters": [
+        {
+          "id": "linear-algebra",
+          "title": "Linear algebra",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Rank",
+              "body": "Rank = maximum number of linearly independent rows (= columns). Row-reduce to echelon form and count non-zero rows. rank(A) ≤ min(m, n)."
+            },
+            {
+              "type": "concept",
+              "title": "Solving Ax = b",
+              "points": [
+                "Consistent iff rank(A) = rank([A | b])",
+                "Unique solution iff that rank = number of unknowns n",
+                "Infinitely many if rank < n",
+                "Ax = 0 always has the trivial solution; non-trivial iff rank < n"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Eigenvalue shortcuts",
+              "points": [
+                "Sum of eigenvalues = trace(A)",
+                "Product of eigenvalues = det(A)",
+                "Triangular matrix: eigenvalues are the diagonal entries",
+                "Aᵏ has eigenvalues λᵏ; A⁻¹ has 1/λ; A + kI has λ + k"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "2 × 2 in seconds",
+              "body": "A = [[2, 1], [1, 2]]: trace 4, det 3 → λ² − 4λ + 3 = 0 → λ = 1, 3."
+            },
+            {
+              "type": "concept",
+              "title": "Symmetric matrices",
+              "body": "Real symmetric matrices have real eigenvalues, and eigenvectors for distinct eigenvalues are orthogonal. Skew-symmetric matrices have purely imaginary (or zero) eigenvalues."
+            },
+            {
+              "type": "formula",
+              "title": "Determinant rules",
+              "points": [
+                "det(AB) = det(A) det(B)",
+                "det(kA) = kⁿ det(A) for n × n",
+                "det(Aᵀ) = det(A)",
+                "Swapping two rows flips the sign"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "A 3 × 3 matrix has eigenvalues 1, 2 and 3. det(A²) = ?",
+              "options": [
+                "12",
+                "6",
+                "36",
+                "14"
+              ],
+              "answer": 2,
+              "explain": "det(A) = 1·2·3 = 6, so det(A²) = 6² = 36."
+            },
+            {
+              "type": "quiz",
+              "q": "Rank of [[1, 2, 3], [2, 4, 6], [1, 1, 1]]:",
+              "options": [
+                "2",
+                "1",
+                "3",
+                "0"
+              ],
+              "answer": 0,
+              "explain": "Row 2 = 2 × Row 1; rows 1 and 3 are independent."
+            },
+            {
+              "type": "quiz",
+              "q": "For a 3 × 3 system with rank(A) = 2 and rank([A | b]) = 3, the system has:",
+              "options": [
+                "A unique solution",
+                "Infinitely many solutions",
+                "Exactly two solutions",
+                "No solution"
+              ],
+              "answer": 3,
+              "explain": "Unequal ranks mean the system is inconsistent."
+            }
+          ]
+        },
+        {
+          "id": "probability-calculus",
+          "title": "Probability, statistics & calculus",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Conditional probability & Bayes",
+              "points": [
+                "P(A | B) = P(A ∩ B) / P(B)",
+                "Bayes: P(A | B) = P(B | A) P(A) / P(B)",
+                "Total probability: P(B) = Σ P(B | Aᵢ) P(Aᵢ)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Bayes in action",
+              "body": "Disease prevalence 1%, test sensitivity 99%, false-positive rate 5%. P(+) = 0.0099 + 0.0495 = 0.0594. P(D | +) = 0.0099 / 0.0594 = 1/6 ≈ 0.167."
+            },
+            {
+              "type": "concept",
+              "title": "Expectation & variance",
+              "body": "E[X + Y] = E[X] + E[Y] always (linearity, even if dependent). Var(X) = E[X²] − (E[X])². Var(aX + b) = a² Var(X)."
+            },
+            {
+              "type": "formula",
+              "title": "Standard distributions",
+              "points": [
+                "Binomial(n, p): mean np, variance np(1 − p)",
+                "Poisson(λ): mean = variance = λ",
+                "Uniform(a, b): mean (a + b)/2, variance (b − a)²/12",
+                "Exponential(λ): mean 1/λ; Geometric(p): mean 1/p trials"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Geometric waiting",
+              "body": "Expected number of rolls of a fair die to get the first 6: p = 1/6, so 1/p = 6 rolls."
+            },
+            {
+              "type": "concept",
+              "title": "Calculus essentials",
+              "body": "Use L'Hôpital for 0/0 or ∞/∞ limits. Critical points where f′(x) = 0: f″ < 0 → local max, f″ > 0 → local min. Check endpoints on closed intervals."
+            },
+            {
+              "type": "quiz",
+              "q": "Expected value of the sum of two fair dice:",
+              "options": [
+                "6",
+                "7",
+                "6.5",
+                "12"
+              ],
+              "answer": 1,
+              "explain": "By linearity: 3.5 + 3.5 = 7."
+            },
+            {
+              "type": "quiz",
+              "q": "Variance of a Uniform(0, 1) random variable:",
+              "options": [
+                "1/2",
+                "1/12",
+                "1/4",
+                "1/3"
+              ],
+              "answer": 1,
+              "explain": "(b − a)²/12 = 1/12."
+            },
+            {
+              "type": "quiz",
+              "q": "Maximum value of f(x) = x(4 − x) over real x:",
+              "options": [
+                "2",
+                "8",
+                "16",
+                "4"
+              ],
+              "answer": 3,
+              "explain": "f′(x) = 4 − 2x = 0 → x = 2, f(2) = 4; f″ = −2 < 0, so it is a maximum."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "discrete-maths",
+      "name": "Discrete Mathematics",
+      "chapters": [
+        {
+          "id": "logic-sets-relations",
+          "title": "Logic, sets, relations & functions",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Propositional logic",
+              "points": [
+                "p → q ≡ ¬p ∨ q",
+                "Contrapositive ¬q → ¬p is equivalent; converse q → p is not",
+                "Tautology: true for all assignments; check with a truth table or by contradiction"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Quantifiers",
+              "body": "¬∀x P(x) ≡ ∃x ¬P(x) and ¬∃x P(x) ≡ ∀x ¬P(x). ∀x∃y is not the same as ∃y∀x — order matters."
+            },
+            {
+              "type": "concept",
+              "title": "Relation properties",
+              "body": "Reflexive, symmetric, antisymmetric, transitive. Equivalence = reflexive + symmetric + transitive. Partial order = reflexive + antisymmetric + transitive."
+            },
+            {
+              "type": "formula",
+              "title": "Counting relations on an n-element set",
+              "points": [
+                "All relations: 2^(n²)",
+                "Reflexive: 2^(n² − n)",
+                "Symmetric: 2^(n(n+1)/2)",
+                "Antisymmetric: 2ⁿ · 3^(n(n−1)/2)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Counting functions from A (|A| = n) to B (|B| = m)",
+              "points": [
+                "All functions: mⁿ",
+                "One-one (n ≤ m): m!/(m − n)!",
+                "Onto: by inclusion–exclusion Σ (−1)ᵏ C(m, k)(m − k)ⁿ"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Groups",
+              "body": "A group needs closure, associativity, identity and inverses. Lagrange: the order of a subgroup divides the order of the group. Every group of prime order is cyclic."
+            },
+            {
+              "type": "quiz",
+              "q": "Number of reflexive relations on a 3-element set:",
+              "options": [
+                "64",
+                "512",
+                "8",
+                "27"
+              ],
+              "answer": 0,
+              "explain": "2^(n² − n) = 2^(9 − 3) = 2⁶ = 64."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is logically equivalent to p → q?",
+              "options": [
+                "q → p",
+                "¬p → ¬q",
+                "¬q → ¬p",
+                "p ∧ ¬q"
+              ],
+              "answer": 2,
+              "explain": "The contrapositive is always equivalent."
+            },
+            {
+              "type": "quiz",
+              "q": "Number of functions from a 3-element set to a 2-element set:",
+              "options": [
+                "6",
+                "9",
+                "8",
+                "5"
+              ],
+              "answer": 2,
+              "explain": "Each of 3 elements has 2 choices: 2³ = 8."
+            }
+          ]
+        },
+        {
+          "id": "graph-theory-combinatorics",
+          "title": "Graph theory & combinatorics",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Degrees & trees",
+              "body": "Handshaking: Σ deg(v) = 2|E|, so the number of odd-degree vertices is even. A tree on n vertices has n − 1 edges; Cayley: nⁿ⁻² labelled trees on n vertices."
+            },
+            {
+              "type": "concept",
+              "title": "Euler & Hamilton",
+              "body": "Euler circuit: connected and every vertex has even degree. Euler path: exactly 0 or 2 odd-degree vertices. Hamiltonian cycle has no simple characterisation (NP-complete)."
+            },
+            {
+              "type": "formula",
+              "title": "Planar graphs",
+              "points": [
+                "Euler's formula (connected): V − E + F = 2",
+                "Simple planar, V ≥ 3: E ≤ 3V − 6",
+                "No triangles: E ≤ 2V − 4",
+                "K₅ and K₃,₃ are non-planar"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Colouring",
+              "body": "Chromatic number: bipartite graphs 2 (if at least one edge), Kₙ needs n, odd cycle needs 3, any planar graph ≤ 4."
+            },
+            {
+              "type": "concept",
+              "title": "Counting tools",
+              "points": [
+                "Pigeonhole: n + 1 objects in n boxes → some box has 2",
+                "Inclusion–exclusion: |A ∪ B| = |A| + |B| − |A ∩ B|",
+                "Catalan Cₙ = (2n)! / ((n + 1)! n!): BST shapes, valid bracket sequences"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Catalan check",
+              "body": "C₁ = 1, C₂ = 2, C₃ = 5, C₄ = 14. So 3 distinct keys form 5 different BSTs."
+            },
+            {
+              "type": "quiz",
+              "q": "Number of labelled trees on 4 vertices:",
+              "options": [
+                "16",
+                "12",
+                "4",
+                "24"
+              ],
+              "answer": 0,
+              "explain": "Cayley: 4^(4 − 2) = 16."
+            },
+            {
+              "type": "quiz",
+              "q": "Maximum edges in a simple planar graph with 10 vertices:",
+              "options": [
+                "30",
+                "27",
+                "45",
+                "24"
+              ],
+              "answer": 3,
+              "explain": "3V − 6 = 30 − 6 = 24."
+            },
+            {
+              "type": "quiz",
+              "q": "Number of structurally distinct BSTs with 3 distinct keys:",
+              "options": [
+                "6",
+                "5",
+                "3",
+                "4"
+              ],
+              "answer": 1,
+              "explain": "Catalan number C₃ = 5."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "digital-logic",
+      "name": "Digital Logic",
+      "chapters": [
+        {
+          "id": "digital-logic",
+          "title": "Boolean algebra, circuits & number systems",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Boolean laws",
+              "points": [
+                "De Morgan: (AB)′ = A′ + B′, (A + B)′ = A′B′",
+                "Absorption: A + AB = A",
+                "A + A′B = A + B",
+                "Consensus: AB + A′C + BC = AB + A′C"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "K-maps",
+              "body": "Group adjacent 1s in powers of two (1, 2, 4, 8), as large as possible, wrapping around edges. Use don't-cares (X) only when they enlarge a group."
+            },
+            {
+              "type": "example",
+              "title": "Minimise",
+              "body": "F(A, B, C) = Σm(0, 1, 2, 3, 5, 7). Minterms 0–3 are A′ (a group of 4); 1, 3, 5, 7 are C (a group of 4). F = A′ + C."
+            },
+            {
+              "type": "concept",
+              "title": "Universal gates",
+              "body": "NAND and NOR can each build any circuit. XOR needs 4 NAND gates (minimum); NOT from NAND: tie both inputs together."
+            },
+            {
+              "type": "concept",
+              "title": "2's complement",
+              "body": "n bits represent −2ⁿ⁻¹ to 2ⁿ⁻¹ − 1. Overflow happens when adding two numbers of the same sign gives a result of the opposite sign."
+            },
+            {
+              "type": "concept",
+              "title": "Combinational blocks",
+              "body": "A 2ⁿ:1 MUX implements any n-variable function (n select lines). Full adder: Sum = A ⊕ B ⊕ Cin, Carry = AB + Cin(A ⊕ B)."
+            },
+            {
+              "type": "concept",
+              "title": "Sequential circuits",
+              "body": "Flip-flops are edge-triggered; latches are level-sensitive. D: Q⁺ = D. T: Q⁺ = T ⊕ Q. JK: Q⁺ = JQ′ + K′Q. n flip-flops give a mod-2ⁿ ripple counter."
+            },
+            {
+              "type": "quiz",
+              "q": "Range of an 8-bit 2's complement integer:",
+              "options": [
+                "−127 to 127",
+                "−128 to 127",
+                "−128 to 128",
+                "0 to 255"
+              ],
+              "answer": 1,
+              "explain": "−2⁷ to 2⁷ − 1."
+            },
+            {
+              "type": "quiz",
+              "q": "Minimum number of 2-input NAND gates to implement XOR:",
+              "options": [
+                "3",
+                "5",
+                "2",
+                "4"
+              ],
+              "answer": 3,
+              "explain": "The standard 4-NAND XOR circuit is minimal."
+            },
+            {
+              "type": "quiz",
+              "q": "F(A, B, C) = Σm(0, 2, 4, 6) simplifies to:",
+              "options": [
+                "C′",
+                "A′",
+                "B′C′",
+                "A + C"
+              ],
+              "answer": 0,
+              "explain": "All four minterms have C = 0 and every combination of A, B."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coa",
+      "name": "Computer Organisation & Architecture",
+      "chapters": [
+        {
+          "id": "coa-pipeline-cache",
+          "title": "Pipelining, cache & addressing",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Addressing modes",
+              "points": [
+                "Immediate: operand in instruction",
+                "Direct: address in instruction",
+                "Indirect: address of the address",
+                "Register / register indirect",
+                "Indexed / base: address = register + offset (arrays)",
+                "PC-relative: branches"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Pipelining",
+              "points": [
+                "k stages, n instructions, no stalls: (k + n − 1) cycles",
+                "Ideal speedup → k as n → ∞",
+                "Cycle time = slowest stage + latch delay"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Hazards",
+              "body": "Structural (resource conflict), data (RAW — fixed by forwarding or stalls), control (branches — prediction, delayed branch). Load-use hazards still need one stall with forwarding."
+            },
+            {
+              "type": "formula",
+              "title": "Cache performance",
+              "points": [
+                "AMAT = hit time + miss rate × miss penalty",
+                "Hierarchical: Tavg = H·Tc + (1 − H)(Tc + Tm) if checked sequentially"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Cache mapping",
+              "body": "Address = tag | index | block offset. Direct-mapped: index selects a line. k-way set-associative: index selects a set. Fully associative: no index bits."
+            },
+            {
+              "type": "example",
+              "title": "Address split",
+              "body": "32-bit address, 16 KB direct-mapped cache, 64 B blocks. Offset = 6 bits; lines = 16 KB / 64 B = 256 → index 8 bits; tag = 32 − 8 − 6 = 18 bits."
+            },
+            {
+              "type": "concept",
+              "title": "I/O",
+              "body": "Programmed I/O polls, interrupt-driven I/O frees the CPU between transfers, DMA transfers whole blocks with CPU involvement only at start and end."
+            },
+            {
+              "type": "quiz",
+              "q": "A 5-stage pipeline executes 100 instructions with no stalls. Cycles needed:",
+              "options": [
+                "100",
+                "500",
+                "104",
+                "105"
+              ],
+              "answer": 2,
+              "explain": "k + n − 1 = 5 + 100 − 1 = 104."
+            },
+            {
+              "type": "quiz",
+              "q": "Hit time 1 ns, miss rate 5%, miss penalty 100 ns. AMAT = ?",
+              "options": [
+                "5 ns",
+                "101 ns",
+                "6 ns",
+                "1.05 ns"
+              ],
+              "answer": 2,
+              "explain": "1 + 0.05 × 100 = 6 ns."
+            },
+            {
+              "type": "quiz",
+              "q": "32-bit address, 16 KB direct-mapped cache, 64-byte blocks. Tag bits:",
+              "options": [
+                "18",
+                "16",
+                "20",
+                "22"
+              ],
+              "answer": 0,
+              "explain": "Offset 6, index 8, tag 32 − 14 = 18."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "programming-ds",
+      "name": "Programming & Data Structures",
+      "chapters": [
+        {
+          "id": "gate-programming-ds",
+          "title": "C programming & data structures",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "C parameter passing",
+              "body": "C is strictly call-by-value; passing a pointer lets the callee modify the caller's object. A swap(int a, int b) that swaps its parameters changes nothing in the caller."
+            },
+            {
+              "type": "concept",
+              "title": "Scope and storage",
+              "body": "C uses static (lexical) scoping. static locals persist across calls; automatic locals are re-created each call. Watch for dangling pointers to returned locals."
+            },
+            {
+              "type": "formula",
+              "title": "Array address (row-major)",
+              "points": [
+                "A[i][j] in an R × C array: base + (i·C + j) × size",
+                "Column-major: base + (j·R + i) × size",
+                "Adjust i, j if the lower bound isn't 0"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Binary tree facts",
+              "body": "In any binary tree, leaves = (nodes with two children) + 1. A binary tree with n nodes has n + 1 NULL child pointers."
+            },
+            {
+              "type": "concept",
+              "title": "Heaps",
+              "body": "Array storage: children of i at 2i + 1 and 2i + 2 (0-indexed). Insert and delete-min O(log n). Building a heap bottom-up from n elements is O(n), not O(n log n)."
+            },
+            {
+              "type": "concept",
+              "title": "Hashing",
+              "body": "Chaining keeps lists per slot; open addressing probes (linear → primary clustering; quadratic; double hashing). Expected chain length = load factor α = n/m."
+            },
+            {
+              "type": "example",
+              "title": "Pointer trace",
+              "body": "int a[] = {1, 2, 3, 4};\nint *p = a + 1;\n*p++ = 10;    // a[1] = 10, p → a[2]\nprintf(\"%d\", *p + a[1]);  // 3 + 10 = 13"
+            },
+            {
+              "type": "quiz",
+              "q": "int A[10][20] (4-byte ints, row-major) starts at address 1000. Address of A[2][3]:",
+              "options": [
+                "1092",
+                "1046",
+                "1240",
+                "1172"
+              ],
+              "answer": 3,
+              "explain": "1000 + (2 × 20 + 3) × 4 = 1000 + 172 = 1172."
+            },
+            {
+              "type": "quiz",
+              "q": "A binary tree has 10 leaves. How many nodes have exactly two children?",
+              "options": [
+                "10",
+                "9",
+                "11",
+                "5"
+              ],
+              "answer": 1,
+              "explain": "Leaves = degree-2 nodes + 1."
+            },
+            {
+              "type": "quiz",
+              "q": "Time to build a binary heap from n unsorted elements (bottom-up heapify):",
+              "options": [
+                "O(n log n)",
+                "O(n)",
+                "O(log n)",
+                "O(n²)"
+              ],
+              "answer": 1,
+              "explain": "Most nodes are near the leaves and sift down only a little; the sum is linear."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "algorithms",
+      "name": "Algorithms",
+      "chapters": [
+        {
+          "id": "gate-algorithms",
+          "title": "Algorithm design & analysis",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Master theorem: T(n) = aT(n/b) + f(n)",
+              "points": [
+                "f(n) = O(n^(log_b a − ε)) → Θ(n^(log_b a))",
+                "f(n) = Θ(n^(log_b a)) → Θ(n^(log_b a) log n)",
+                "f(n) = Ω(n^(log_b a + ε)) + regularity → Θ(f(n))"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Apply it",
+              "body": "T(n) = 4T(n/2) + n: n^(log₂4) = n² dominates → Θ(n²).\nT(n) = 2T(n/2) + n: equal → Θ(n log n)."
+            },
+            {
+              "type": "concept",
+              "title": "Greedy algorithms",
+              "body": "Activity selection (earliest finish), fractional knapsack (value/weight), Huffman coding, Kruskal and Prim MSTs, Dijkstra. Greedy fails for 0/1 knapsack."
+            },
+            {
+              "type": "formula",
+              "title": "DP complexities",
+              "points": [
+                "LCS of lengths m, n: O(mn)",
+                "0/1 knapsack: O(nW) — pseudo-polynomial",
+                "Matrix chain multiplication: O(n³)",
+                "Floyd–Warshall: O(V³); Bellman–Ford: O(VE)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Matrix chain",
+              "body": "A: 10×20, B: 20×30, C: 30×40.\n(AB)C = 10·20·30 + 10·30·40 = 6,000 + 12,000 = 18,000\nA(BC) = 20·30·40 + 10·20·40 = 24,000 + 8,000 = 32,000 → best 18,000."
+            },
+            {
+              "type": "concept",
+              "title": "Lower bounds",
+              "body": "Any comparison sort needs Ω(n log n) comparisons in the worst case. Finding both max and min of n elements needs ⌈3n/2⌉ − 2 comparisons."
+            },
+            {
+              "type": "concept",
+              "title": "Graph algorithm costs",
+              "body": "BFS/DFS O(V + E); Dijkstra with binary heap O((V + E) log V); Prim with heap O(E log V); Kruskal O(E log E). DFS classifies tree, back, forward and cross edges; a back edge means a cycle."
+            },
+            {
+              "type": "quiz",
+              "q": "T(n) = 8T(n/2) + n² solves to:",
+              "options": [
+                "Θ(n² log n)",
+                "Θ(n²)",
+                "Θ(n³ log n)",
+                "Θ(n³)"
+              ],
+              "answer": 3,
+              "explain": "n^(log₂8) = n³ dominates n²."
+            },
+            {
+              "type": "quiz",
+              "q": "Minimum scalar multiplications for A(10×20), B(20×30), C(30×40):",
+              "options": [
+                "18000",
+                "32000",
+                "24000",
+                "12000"
+              ],
+              "answer": 0,
+              "explain": "(AB)C costs 6,000 + 12,000 = 18,000."
+            },
+            {
+              "type": "quiz",
+              "q": "Minimum comparisons to find both max and min of 100 elements:",
+              "options": [
+                "198",
+                "150",
+                "148",
+                "99"
+              ],
+              "answer": 2,
+              "explain": "⌈3n/2⌉ − 2 = 150 − 2 = 148."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "toc",
+      "name": "Theory of Computation",
+      "chapters": [
+        {
+          "id": "gate-toc",
+          "title": "Automata, languages & decidability",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Chomsky hierarchy",
+              "body": "Regular ⊂ context-free ⊂ context-sensitive ⊂ recursive ⊂ recursively enumerable. Machines: DFA/NFA, PDA, LBA, Turing machine (halting deciders for recursive)."
+            },
+            {
+              "type": "concept",
+              "title": "Finite automata",
+              "body": "DFA and NFA accept the same languages; subset construction can need up to 2ⁿ states. Minimise a DFA by merging equivalent states. 'Number mod k' languages need k states."
+            },
+            {
+              "type": "concept",
+              "title": "Pumping lemma",
+              "body": "Used to prove non-regularity: aⁿbⁿ, palindromes, {a^p : p prime} are not regular. For CFLs: aⁿbⁿcⁿ and {ww} are not context-free."
+            },
+            {
+              "type": "concept",
+              "title": "Closure properties",
+              "points": [
+                "Regular: union, intersection, complement, concatenation, star, reversal, homomorphism",
+                "CFL: union, concatenation, star — NOT intersection or complement",
+                "CFL ∩ regular is CFL",
+                "DCFL: closed under complement, not union",
+                "Recursive: closed under complement; RE: not"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Decidability",
+              "points": [
+                "Decidable: membership, emptiness, finiteness for CFGs; equivalence of DFAs",
+                "Undecidable: halting problem, equivalence of CFGs, ambiguity of a CFG, whether a CFG generates Σ*",
+                "Rice's theorem: any non-trivial property of the language of a TM is undecidable"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "DFA for divisibility",
+              "body": "Binary numbers (MSB first) divisible by 3: states are remainders 0, 1, 2. On bit b, r → (2r + b) mod 3. Start and accept at 0 → 3 states."
+            },
+            {
+              "type": "quiz",
+              "q": "Which language is NOT context-free?",
+              "options": [
+                "{aⁿbⁿ | n ≥ 0}",
+                "{wwᴿ | w ∈ {a,b}*}",
+                "{aⁿbⁿcⁿ | n ≥ 0}",
+                "{aᵐbⁿ | m, n ≥ 0}"
+              ],
+              "answer": 2,
+              "explain": "A single stack cannot match three counts."
+            },
+            {
+              "type": "quiz",
+              "q": "States in the minimal DFA accepting binary numbers divisible by 5:",
+              "options": [
+                "5",
+                "3",
+                "4",
+                "6"
+              ],
+              "answer": 0,
+              "explain": "One state per remainder 0–4, all distinguishable."
+            },
+            {
+              "type": "quiz",
+              "q": "Which problem is undecidable?",
+              "options": [
+                "Membership of a string in a CFL",
+                "Emptiness of a regular language",
+                "Emptiness of a CFL",
+                "Equivalence of two context-free grammars"
+              ],
+              "answer": 3,
+              "explain": "CFG equivalence is undecidable; the others have algorithms."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compiler-design",
+      "name": "Compiler Design",
+      "chapters": [
+        {
+          "id": "gate-compiler",
+          "title": "Phases, parsing & optimisation",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Phases",
+              "body": "Lexical analysis → syntax analysis → semantic analysis → intermediate code → optimisation → code generation. The symbol table is shared by all phases."
+            },
+            {
+              "type": "example",
+              "title": "Counting tokens",
+              "body": "printf(\"%d\", x);\nTokens: printf ( \"%d\" , x ) ; → 7. A string literal is one token; whitespace and comments are not tokens."
+            },
+            {
+              "type": "concept",
+              "title": "Top-down parsing",
+              "body": "LL(1) needs a grammar free of left recursion and left-factored, with disjoint FIRST sets per alternative (and FIRST/FOLLOW disjoint when ε is derivable)."
+            },
+            {
+              "type": "concept",
+              "title": "Bottom-up parsing",
+              "body": "Power: LR(0) < SLR(1) < LALR(1) < CLR(1). LALR merges CLR states with the same core, so it has as many states as LR(0)/SLR; merging can create reduce–reduce conflicts. YACC builds LALR(1)."
+            },
+            {
+              "type": "concept",
+              "title": "Syntax-directed translation",
+              "body": "S-attributed: only synthesised attributes, evaluated bottom-up. L-attributed: inherited attributes depend only on the parent and left siblings — evaluable in one left-to-right pass."
+            },
+            {
+              "type": "concept",
+              "title": "Intermediate code & blocks",
+              "body": "Three-address code (quadruples, triples), SSA form. Leaders: first instruction, any jump target, and the instruction after a jump. Each leader starts a basic block."
+            },
+            {
+              "type": "concept",
+              "title": "Optimisations",
+              "points": [
+                "Constant folding & propagation",
+                "Common sub-expression elimination",
+                "Dead-code elimination",
+                "Loop-invariant code motion, strength reduction",
+                "Liveness analysis drives register allocation"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "Number of tokens in: int a = b + 10;",
+              "options": [
+                "6",
+                "7",
+                "5",
+                "8"
+              ],
+              "answer": 1,
+              "explain": "int, a, =, b, +, 10, ;"
+            },
+            {
+              "type": "quiz",
+              "q": "YACC generates which kind of parser?",
+              "options": [
+                "LL(1)",
+                "LALR(1)",
+                "SLR(1)",
+                "CLR(1)"
+              ],
+              "answer": 1,
+              "explain": "YACC/Bison build LALR(1) tables by default."
+            },
+            {
+              "type": "quiz",
+              "q": "Which must be eliminated before building an LL(1) parser?",
+              "options": [
+                "Right recursion",
+                "ε-productions always",
+                "Terminals in the RHS",
+                "Left recursion"
+              ],
+              "answer": 3,
+              "explain": "Left recursion makes a top-down parser loop forever."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operating-systems",
+      "name": "Operating Systems",
+      "chapters": [
+        {
+          "id": "gate-os",
+          "title": "Processes, synchronisation, memory",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "fork() counting",
+              "body": "Each fork() doubles the number of processes. A loop calling fork() n times creates 2ⁿ processes in total (2ⁿ − 1 children). A printf after the loop runs 2ⁿ times."
+            },
+            {
+              "type": "formula",
+              "title": "Scheduling metrics",
+              "points": [
+                "Turnaround = completion − arrival",
+                "Waiting = turnaround − burst",
+                "Response = first run − arrival",
+                "SRTF minimises average waiting time (given known bursts)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Critical-section requirements",
+              "body": "Mutual exclusion, progress, bounded waiting. Peterson's solution meets all three for 2 processes. Semaphores: wait/P decrements (blocks if < 0), signal/V increments."
+            },
+            {
+              "type": "formula",
+              "title": "Deadlock resource bound",
+              "points": [
+                "n processes, each needs at most k units:",
+                "Minimum units guaranteeing no deadlock = n(k − 1) + 1",
+                "Banker's algorithm checks for a safe sequence before granting"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Paging numbers",
+              "points": [
+                "Pages = virtual space / page size; page table size = pages × PTE size",
+                "EAT with TLB (hit ratio h, single-level): h(t + m) + (1 − h)(t + 2m)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Page replacement & disks",
+              "body": "FIFO (Belady's anomaly possible), LRU, Optimal. Disk scheduling: FCFS, SSTF (starvation), SCAN/elevator, C-SCAN, LOOK/C-LOOK — count head movement carefully."
+            },
+            {
+              "type": "example",
+              "title": "Page-table size",
+              "body": "32-bit virtual address, 4 KB pages → 2³² / 2¹² = 2²⁰ pages. With 4-byte entries: 2²⁰ × 4 B = 4 MB per process — the reason multilevel page tables exist."
+            },
+            {
+              "type": "quiz",
+              "q": "3 processes each need up to 4 units of a resource. Minimum units that guarantee no deadlock:",
+              "options": [
+                "10",
+                "9",
+                "12",
+                "7"
+              ],
+              "answer": 0,
+              "explain": "n(k − 1) + 1 = 3 × 3 + 1 = 10."
+            },
+            {
+              "type": "quiz",
+              "q": "TLB hit ratio 80%, TLB access 10 ns, memory access 100 ns, single-level paging. EAT = ?",
+              "options": [
+                "110 ns",
+                "120 ns",
+                "130 ns",
+                "210 ns"
+              ],
+              "answer": 2,
+              "explain": "0.8 × 110 + 0.2 × 210 = 88 + 42 = 130 ns."
+            },
+            {
+              "type": "quiz",
+              "q": "for (i = 0; i < 3; i++) fork(); — total processes including the original:",
+              "options": [
+                "3",
+                "4",
+                "8",
+                "6"
+              ],
+              "answer": 2,
+              "explain": "2³ = 8."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dbms",
+      "name": "Databases",
+      "chapters": [
+        {
+          "id": "gate-dbms",
+          "title": "Relational model, normalisation & transactions",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Relational algebra",
+              "body": "σ (select rows), π (project columns, removes duplicates), ⋈ (join), ∪, −, ×, ρ (rename), ÷ (division for 'for all' queries)."
+            },
+            {
+              "type": "concept",
+              "title": "SQL subtleties",
+              "body": "Comparisons with NULL give UNKNOWN, so WHERE x = NULL matches nothing; use IS NULL. COUNT(*) counts rows; COUNT(col) skips NULLs. NOT IN with a NULL in the subquery returns no rows."
+            },
+            {
+              "type": "concept",
+              "title": "Functional dependencies",
+              "body": "Compute attribute closure X⁺ by repeatedly applying FDs. X is a super key if X⁺ = all attributes; a candidate key if also minimal. Armstrong's axioms: reflexivity, augmentation, transitivity."
+            },
+            {
+              "type": "example",
+              "title": "Find all candidate keys",
+              "body": "R(A, B, C, D), F = {AB → C, C → D, D → A}. B is on no right side, so every key contains B. AB⁺ = ABCD, BC⁺ = BCDA, BD⁺ = BDAC; B⁺ = B. Keys: AB, BC, BD."
+            },
+            {
+              "type": "concept",
+              "title": "Decomposition",
+              "body": "Lossless if the common attributes form a key of at least one part. 3NF decomposition can always be lossless and dependency-preserving; BCNF is always lossless but may lose dependencies."
+            },
+            {
+              "type": "concept",
+              "title": "Serialisability",
+              "body": "Draw the precedence graph from conflicting operations (RW, WR, WW on the same item by different transactions). Acyclic ⇒ conflict serialisable. Basic 2PL guarantees conflict serialisability but not freedom from deadlock."
+            },
+            {
+              "type": "concept",
+              "title": "Recoverability",
+              "body": "Recoverable: a transaction commits only after those it read from commit. Cascadeless: read only committed data. Strict: no read or write of uncommitted data. Strict ⊂ cascadeless ⊂ recoverable."
+            },
+            {
+              "type": "quiz",
+              "q": "R(A, B, C, D) with F = {AB → C, C → D, D → A}. How many candidate keys?",
+              "options": [
+                "3",
+                "1",
+                "2",
+                "4"
+              ],
+              "answer": 0,
+              "explain": "AB, BC and BD."
+            },
+            {
+              "type": "quiz",
+              "q": "Basic two-phase locking (2PL) guarantees:",
+              "options": [
+                "Freedom from deadlock",
+                "Cascadeless schedules",
+                "No locking overhead",
+                "Conflict serialisability"
+              ],
+              "answer": 3,
+              "explain": "2PL ensures serialisability; deadlocks are still possible."
+            },
+            {
+              "type": "quiz",
+              "q": "A schedule's precedence graph contains a cycle. The schedule is:",
+              "options": [
+                "Conflict serialisable",
+                "Not conflict serialisable",
+                "Always recoverable",
+                "Strict"
+              ],
+              "answer": 1,
+              "explain": "Conflict serialisability ⇔ acyclic precedence graph."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "computer-networks",
+      "name": "Computer Networks",
+      "chapters": [
+        {
+          "id": "gate-cn",
+          "title": "Addressing, flow control, TCP & MAC",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Subnetting & CIDR",
+              "body": "A /p prefix leaves 32 − p host bits: 2^(32−p) addresses, 2^(32−p) − 2 usable hosts. Routers forward using longest-prefix match."
+            },
+            {
+              "type": "formula",
+              "title": "Sliding window",
+              "points": [
+                "a = propagation delay / transmission time",
+                "Stop-and-wait efficiency = 1 / (1 + 2a)",
+                "Go-Back-N window ≤ 2ᵏ − 1 (k-bit sequence numbers)",
+                "Selective Repeat window ≤ 2ᵏ⁻¹"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "TCP congestion control",
+              "body": "Slow start: cwnd doubles each RTT until ssthresh. Congestion avoidance: +1 MSS per RTT. On timeout: ssthresh = cwnd/2, cwnd = 1 MSS. On 3 duplicate ACKs (Reno): fast retransmit, cwnd halves."
+            },
+            {
+              "type": "formula",
+              "title": "Error control",
+              "points": [
+                "Minimum Hamming distance d: detect up to d − 1 errors",
+                "Correct up to ⌊(d − 1)/2⌋ errors",
+                "CRC: append r bits where the generator has degree r"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "CSMA/CD",
+              "points": [
+                "Minimum frame size = 2 × propagation delay × bandwidth",
+                "Efficiency ≈ 1 / (1 + 6.44a) for Ethernet"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Routing",
+              "body": "Distance vector (Bellman–Ford, neighbours exchange vectors, count-to-infinity problem; RIP). Link state (flooded LSAs, each router runs Dijkstra; OSPF)."
+            },
+            {
+              "type": "concept",
+              "title": "Headers & ports",
+              "body": "IPv4 header 20–60 bytes; TCP header 20–60 bytes; UDP header 8 bytes. DNS over UDP 53, HTTP 80, HTTPS 443, SMTP 25."
+            },
+            {
+              "type": "quiz",
+              "q": "A code has minimum Hamming distance 5. It can correct up to:",
+              "options": [
+                "4 errors",
+                "2 errors",
+                "5 errors",
+                "1 error"
+              ],
+              "answer": 1,
+              "explain": "⌊(5 − 1)/2⌋ = 2."
+            },
+            {
+              "type": "quiz",
+              "q": "Maximum Go-Back-N sender window with 3-bit sequence numbers:",
+              "options": [
+                "8",
+                "4",
+                "3",
+                "7"
+              ],
+              "answer": 3,
+              "explain": "2³ − 1 = 7."
+            },
+            {
+              "type": "quiz",
+              "q": "CSMA/CD at 10 Mbps with 25.6 µs one-way propagation delay. Minimum frame size:",
+              "options": [
+                "512 bits",
+                "256 bits",
+                "1024 bits",
+                "64 bits"
+              ],
+              "answer": 0,
+              "explain": "2 × 25.6 µs × 10⁷ bps = 512 bits."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "general-aptitude",
+      "name": "General Aptitude",
+      "chapters": [
+        {
+          "id": "gate-ga",
+          "title": "General Aptitude (15 marks)",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What GA is",
+              "body": "10 questions worth 15 marks (5 × 1 mark + 5 × 2 marks), common to all GATE papers. These are the easiest marks in the exam — never skip GA practice."
+            },
+            {
+              "type": "concept",
+              "title": "Four areas",
+              "points": [
+                "Verbal: grammar, vocabulary, sentence completion, analogies",
+                "Quantitative: percentages, ratios, data interpretation, mensuration",
+                "Analytical: logical deduction, critical reasoning",
+                "Spatial: rotation, folding, paper cutting, mirror images"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Quant sample",
+              "body": "Boys : girls = 3 : 2 (take 60 and 40). 20% of boys and 30% of girls hold scholarships: 12 + 12 = 24. So 76% do not."
+            },
+            {
+              "type": "formula",
+              "title": "Clock angle",
+              "points": [
+                "Angle = |30H − 5.5M| degrees",
+                "Take 360 − angle if the result exceeds 180 for the smaller angle"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Painted cube",
+              "body": "A painted n × n × n cube is cut into unit cubes: 3 faces painted = 8 (corners), 2 faces = 12(n − 2), 1 face = 6(n − 2)², none = (n − 2)³."
+            },
+            {
+              "type": "tip",
+              "title": "Time plan",
+              "body": "Do GA first in about 15–20 minutes; the NAT and MSQ items there have no negative marking, so answer every one."
+            },
+            {
+              "type": "quiz",
+              "q": "Angle between the hands of a clock at 3:15:",
+              "options": [
+                "0°",
+                "15°",
+                "7.5°",
+                "22.5°"
+              ],
+              "answer": 2,
+              "explain": "|30 × 3 − 5.5 × 15| = |90 − 82.5| = 7.5°."
+            },
+            {
+              "type": "quiz",
+              "q": "A painted 3 × 3 × 3 cube is cut into 27 unit cubes. How many have exactly two painted faces?",
+              "options": [
+                "8",
+                "6",
+                "12",
+                "24"
+              ],
+              "answer": 2,
+              "explain": "12 edges × (3 − 2) = 12."
+            },
+            {
+              "type": "quiz",
+              "q": "Boys:girls = 3:2; 20% of boys and 30% of girls have scholarships. Percentage without scholarship:",
+              "options": [
+                "76%",
+                "75%",
+                "24%",
+                "50%"
+              ],
+              "answer": 0,
+              "explain": "Of 100 students, 12 + 12 = 24 have one, so 76% don't."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "GATE 2026 — CS master question papers & answer keys",
+          "url": "https://gate2026.iitg.ac.in/QPs-answer-keys.html",
+          "source": "GATE 2026, IIT Guwahati (official)"
+        }
+      ]
+    },
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "GATE 2025 — CS Set 1 & Set 2 question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "GATE 2024 — CS Set 1 & Set 2 question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "GATE 2023 — CS question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "GATE 2022 — CS question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "GATE 2021 — CS Set 1 & Set 2 question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "GATE 2020 — CS question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "GATE 2019 — CS question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "GATE 2018 — CS question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "GATE 2017 — CS Set 1 & Set 2 question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "GATE 2016 — CS Set 1 & Set 2 question paper & answer key",
+          "url": "https://gate2026.iitg.ac.in/download.html",
+          "source": "GATE 2026 official site, IIT Guwahati (past papers archive)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "GATE 2027 official website (IIT Madras)",
+      "url": "https://gate2027.iitm.ac.in",
+      "note": "Brochure, syllabus, dates and registration",
+      "free": true
+    },
+    {
+      "label": "GATE 2026 past papers & answer keys (IIT Guwahati)",
+      "url": "https://gate2026.iitg.ac.in/download.html",
+      "note": "Official archive of previous question papers",
+      "free": true
+    },
+    {
+      "label": "GATE Overflow — previous-year CSE questions",
+      "url": "https://gateoverflow.in/previous-years",
+      "note": "Community-solved PYQs, topic-wise",
+      "free": true
+    },
+    {
+      "label": "NPTEL — free IIT/IISc video courses",
+      "url": "https://nptel.ac.in",
+      "note": "Full CS courses (DSA, DBMS, OS, CN) by IIT faculty, free to watch",
+      "free": true
+    },
+    {
+      "label": "SWAYAM (Govt. of India)",
+      "url": "https://swayam.gov.in",
+      "note": "Free MOOCs incl. NPTEL CS courses with optional certification exam",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    }
+  ]
+}

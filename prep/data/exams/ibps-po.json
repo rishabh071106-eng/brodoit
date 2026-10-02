@@ -1,0 +1,401 @@
+{
+  "id": "ibps-po",
+  "name": "IBPS PO",
+  "category": "banking",
+  "core": "bank-common",
+  "conductedBy": "Institute of Banking Personnel Selection (IBPS)",
+  "tagline": "Common recruitment for Probationary Officers / Management Trainees in public sector banks",
+  "overview": {
+    "about": "IBPS conducts the Common Recruitment Process (CRP PO/MT) for participating public sector banks. Selection is through Prelims, Mains (objective + descriptive) and an interview; final allotment uses Mains and interview marks in an 80 : 20 ratio.",
+    "eligibility": [
+      "Graduation in any discipline; mark sheet/degree must be held by the date given in the notification",
+      "Age 20–30 years (e.g. born between 02.07.1995 and 01.07.2005 for the 2025 cycle); relaxation: SC/ST 5 yrs, OBC-NCL 3 yrs, PwBD 10 yrs, ex-servicemen 5 yrs",
+      "Indian citizen (or other categories as defined)",
+      "Computer literacy and knowledge of the official language of the state are desirable"
+    ],
+    "pattern": [
+      {
+        "paper": "Prelims — English Language",
+        "questions": 30,
+        "marks": 30,
+        "duration": "20 min",
+        "note": "Sectional + overall cut-off; −0.25 per wrong answer"
+      },
+      {
+        "paper": "Prelims — Quantitative Aptitude",
+        "questions": 35,
+        "marks": 35,
+        "duration": "20 min",
+        "note": "Total 100 Q / 100 marks / 60 min"
+      },
+      {
+        "paper": "Prelims — Reasoning Ability",
+        "questions": 35,
+        "marks": 35,
+        "duration": "20 min",
+        "note": "Qualifying only"
+      },
+      {
+        "paper": "Mains — Reasoning",
+        "questions": 40,
+        "marks": 60,
+        "duration": "50 min",
+        "note": "Revised 2025 pattern"
+      },
+      {
+        "paper": "Mains — General/Economy/Banking Awareness",
+        "questions": 35,
+        "marks": 50,
+        "duration": "25 min",
+        "note": "Mix of 1- and 2-mark questions"
+      },
+      {
+        "paper": "Mains — English Language",
+        "questions": 35,
+        "marks": 40,
+        "duration": "40 min"
+      },
+      {
+        "paper": "Mains — Data Analysis & Interpretation",
+        "questions": 35,
+        "marks": 50,
+        "duration": "45 min",
+        "note": "Objective total 145 Q / 200 marks / 160 min"
+      },
+      {
+        "paper": "Mains — Descriptive (Essay & Letter)",
+        "questions": 2,
+        "marks": 25,
+        "duration": "30 min",
+        "note": "Typed; English"
+      },
+      {
+        "paper": "Interview",
+        "marks": 100,
+        "duration": "—",
+        "note": "Minimum 40% (35% for SC/ST/OBC/PwBD); final = Mains 80 : Interview 20"
+      }
+    ],
+    "frequency": "Once a year (notification around July–August)",
+    "officialSite": "https://www.ibps.in"
+  },
+  "subjects": [
+    {
+      "id": "ibps-po-specific",
+      "name": "IBPS PO — Exam-specific",
+      "chapters": [
+        {
+          "id": "strategy-cutoff",
+          "title": "Strategy, sectional cut-offs & 80:20 merit",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Sectional cut-offs everywhere",
+              "body": "Unlike SBI PO Prelims, IBPS PO applies **sectional and overall cut-offs** in both Prelims and Mains. A brilliant Quant score cannot rescue a weak English score. Your plan must keep every section safely above its cut-off."
+            },
+            {
+              "type": "formula",
+              "title": "Final merit",
+              "points": [
+                "Mains (out of 225) and Interview (out of 100) are combined 80 : 20",
+                "Final = (Mains/225) × 80 + (Interview/100) × 20",
+                "Prelims marks are not added"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "Mains 90/225 → 90/225 × 80 = **32**.\nInterview 60/100 → 60/100 × 20 = **12**.\nFinal = **44/100**."
+            },
+            {
+              "type": "tip",
+              "title": "GA: biggest marks per minute",
+              "body": "In the 2025 pattern GA gives **50 marks in 25 minutes**, and some questions carry 2 marks. Six months of current affairs plus static banking (this core syllabus) is the highest-return preparation for Mains."
+            },
+            {
+              "type": "tip",
+              "title": "Prelims order",
+              "body": "English first is common because it is the section most people find hardest to time well; but the best order is the one you have tested in at least 10 full mocks. Never change it on exam day."
+            },
+            {
+              "type": "concept",
+              "title": "Bank allotment",
+              "body": "After the final merit list, IBPS allots candidates to participating banks based on **merit and the preference order** you give. A provisional allotment list is published; reserve lists may follow."
+            },
+            {
+              "type": "quiz",
+              "q": "A candidate scores 135/225 in Mains and 50/100 in the interview. Final score?",
+              "options": [
+                "48",
+                "58",
+                "60",
+                "62"
+              ],
+              "answer": 1,
+              "explain": "135/225 × 80 = 48; 50/100 × 20 = 10; total 58."
+            },
+            {
+              "type": "quiz",
+              "q": "In the revised (2025) IBPS PO Mains, the General/Economy/Banking Awareness section has:",
+              "options": [
+                "50 Q, 50 marks, 35 min",
+                "35 Q, 50 marks, 25 min",
+                "40 Q, 40 marks, 35 min",
+                "60 Q, 60 marks, 45 min"
+              ],
+              "answer": 1,
+              "explain": "The 2025 notification lists 35 questions for 50 marks in 25 minutes."
+            }
+          ]
+        },
+        {
+          "id": "descriptive-essay-letter",
+          "title": "Descriptive paper: essay & letter",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Format",
+              "body": "**2 questions, 25 marks, 30 minutes**, typed in English, right after the objective test. One essay and one letter is the usual combination. It is evaluated only for candidates who clear the objective cut-offs."
+            },
+            {
+              "type": "formula",
+              "title": "Formal letter layout",
+              "points": [
+                "Sender's address, date",
+                "Receiver's designation and address",
+                "Subject line",
+                "Salutation → body (3 short paras) → complimentary close",
+                "Name/signature"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Essay in 250 words",
+              "points": [
+                "Intro with one fact or definition",
+                "Two body paragraphs: opportunities and challenges",
+                "Way forward with 2–3 concrete steps",
+                "One-line conclusion"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Time split",
+              "body": "Spend about **2 minutes planning** each answer (jot 4–5 points), 11 minutes typing, and the last 2 minutes checking spelling and word count. Unfinished answers lose more marks than slightly shorter ones."
+            },
+            {
+              "type": "tip",
+              "title": "Topics to prepare",
+              "body": "Public sector bank consolidation, UPI and digital rupee, cyber fraud, MSME credit, financial literacy, climate finance, AI in banking, women-led development. Keep 3 facts ready for each."
+            },
+            {
+              "type": "quiz",
+              "q": "The IBPS PO descriptive paper consists of:",
+              "options": [
+                "1 essay, 30 marks, 30 min",
+                "2 questions, 25 marks, 30 min",
+                "3 questions, 50 marks, 60 min",
+                "Précis only, 20 marks"
+              ],
+              "answer": 1,
+              "explain": "Essay and letter writing: 2 questions for 25 marks in 30 minutes."
+            },
+            {
+              "type": "quiz",
+              "q": "Which element is NOT part of a standard formal letter?",
+              "options": [
+                "Subject line",
+                "Salutation",
+                "Hashtags",
+                "Complimentary close"
+              ],
+              "answer": 2,
+              "explain": "Hashtags belong to social media, not formal letters."
+            }
+          ]
+        },
+        {
+          "id": "interview",
+          "title": "Interview preparation",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What the panel checks",
+              "body": "Communication, clarity of thought, knowledge of banking and the economy, awareness of your own background, and attitude to rural postings and transfers. The interview is **100 marks**, weighted **20%** of the final score."
+            },
+            {
+              "type": "tip",
+              "title": "Must-prepare questions",
+              "body": "Introduce yourself; why banking; why leave your current job (if any); your graduation subject; your hometown's economy; current repo rate and MPC stance; one recent scheme; how you would handle an angry customer."
+            },
+            {
+              "type": "tip",
+              "title": "Documents & DAF",
+              "body": "Panels often build questions from your application form. Revise every hobby and achievement you listed. Carry all original documents in the order given in the call letter."
+            },
+            {
+              "type": "concept",
+              "title": "Qualifying marks",
+              "body": "You must score at least **40%** (35% for SC/ST/OBC/PwBD) in the interview to be considered for the final merit, regardless of your Mains score."
+            },
+            {
+              "type": "quiz",
+              "q": "What weight does the IBPS PO interview carry in the final merit?",
+              "options": [
+                "10%",
+                "20%",
+                "25%",
+                "50%"
+              ],
+              "answer": 1,
+              "explain": "Mains and interview are combined in the ratio 80 : 20."
+            },
+            {
+              "type": "quiz",
+              "q": "Minimum interview score for a General-category candidate in IBPS PO is:",
+              "options": [
+                "35%",
+                "40%",
+                "50%",
+                "33%"
+              ],
+              "answer": 1,
+              "explain": "40% for General; 35% for SC/ST/OBC/PwBD."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "IBPS PO 2025 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "IBPS PO 2024 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "IBPS PO 2023 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "IBPS PO 2022 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "IBPS PO 2021 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "IBPS PO 2020 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "IBPS PO 2019 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "IBPS PO 2018 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "IBPS PO 2017 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "IBPS PO 2016 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "IBPS — official website",
+      "url": "https://www.ibps.in",
+      "note": "CRP PO/MT notification, pattern, call letters and results",
+      "free": true
+    },
+    {
+      "label": "RBI — Monetary Policy statements",
+      "url": "https://www.rbi.org.in/scripts/annualpolicy.aspx",
+      "note": "Current policy rates for GA and interview",
+      "free": true
+    },
+    {
+      "label": "Department of Financial Services",
+      "url": "https://financialservices.gov.in",
+      "note": "PSB reforms and schemes; useful for essays",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Reliable current affairs",
+      "free": true
+    }
+  ]
+}

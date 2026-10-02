@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Lecture &mdash; Brodoit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body class="lecture-page">
+<div class="player">
+  <div class="player-top">
+    <a class="x" id="close" href="exams.html" aria-label="Close lecture">✕</a>
+    <div class="bar"><span id="prog" style="width:0"></span></div>
+    <span class="meta" id="count"></span>
+  </div>
+  <div class="player-title" id="ptitle"></div>
+  <div class="deck" id="deck" tabindex="0" aria-roledescription="carousel"></div>
+  <div class="dots" id="dots"></div>
+  <div class="controls">
+    <button class="btn btn-ghost" id="prev">← Back</button>
+    <button class="btn btn-ghost" id="listen" title="Read this chapter aloud">🎧 Listen</button>
+    <button class="btn btn-primary" id="next">Next →</button>
+  </div>
+  <div class="audio" id="audioOpts">
+    Speed <select id="rate"><option value="0.8">0.8×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select>
+    <span>Voice</span> <select id="voice"></select>
+  </div>
+</div>
+
+<script type="module">
+import { renderNav, loadExam, loadExamWithCore, examChapters, store, addTime, logActivity, richText, esc, param, fmtMinutes } from './assets/js/app.js';
+renderNav('exams.html');
+
+const examId = param('exam'), subjId = param('s'), chapId = param('c'), fromId = param('from') || examId;
+const exam = await loadExam(examId);
+const subject = exam.subjects.find(s => s.id === subjId);
+const chapter = subject?.chapters.find(c => c.id === chapId);
+const deck = document.getElementById('deck');
+if (!chapter) { deck.innerHTML = '<div class="card end"><h2>Chapter not found</h2><a href="exams.html">Back to exams</a></div>'; throw new Error('missing'); }
+
+const key = `${examId}/${subjId}/${chapId}`;
+const { exam: parent, core } = await loadExamWithCore(fromId);
+const order = [...examChapters(parent), ...(core ? examChapters(core) : [])];
+const nextCh = order[order.findIndex(x => x.key === key) + 1];
+const backHref = `exam.html?id=${fromId}`;
+const crumb = `${parent.name} › ${subject.name}`;
+document.getElementById('close').href = backHref;
+document.getElementById('ptitle').innerHTML = `${esc(crumb)} · <b>${esc(chapter.title)}</b>`;
+document.title = `${chapter.title} — ${parent.name} — Brodoit`;
+store.update(s => { s.last = { href: location.pathname.split('/').pop() + location.search, title: chapter.title, exam: crumb, at: Date.now() }; });
+
+// ---------- Cards
+const LABEL = { concept: 'Concept', formula: 'Formulas', example: 'Worked example', tip: 'Exam tip', quiz: 'Quick check' };
+const cards = chapter.cards;
+const quizState = {}; // card index -> correct?
+
+function cardHTML(c, i) {
+  const head = `<div class="type">${LABEL[c.type] || c.type}</div>`;
+  if (c.type === 'quiz') {
+    return `<article class="card quiz" data-i="${i}">${head}<h2>${richText(c.q)}</h2>
+      <div>${c.options.map((o, j) => `<button class="opt" data-j="${j}">${String.fromCharCode(65 + j)}. ${richText(o)}</button>`).join('')}</div>
+      <div class="explain" hidden>${richText(c.explain || '')}</div></article>`;
+  }
+  return `<article class="card ${c.type}" data-i="${i}">${head}
+    ${c.title ? `<h2>${richText(c.title)}</h2>` : ''}
+    ${c.body ? `<div class="body">${richText(c.body)}</div>` : ''}
+    ${c.points ? `<ul>${c.points.map(p => `<li>${richText(p)}</li>`).join('')}</ul>` : ''}</article>`;
+}
+deck.innerHTML = cards.map(cardHTML).join('') + `<article class="card end" data-i="${cards.length}" id="endCard"></article>`;
+const all = [...deck.children];
+document.getElementById('dots').innerHTML = all.map(() => '<i></i>').join('');
+const dots = [...document.getElementById('dots').children];
+
+deck.addEventListener('click', e => {
+  const btn = e.target.closest('.opt');
+  if (!btn) return;
+  const card = btn.closest('.card'), i = +card.dataset.i, c = cards[i];
+  if (i in quizState) return;
+  const right = +btn.dataset.j === c.answer;
+  quizState[i] = right;
+  card.querySelectorAll('.opt').forEach((b, j) => { b.disabled = true; if (j === c.answer) b.classList.add('right'); });
+  if (!right) btn.classList.add('wrong');
+  card.querySelector('.explain').hidden = false;
+});
+
+// ---------- Navigation
+let idx = 0, listening = false, voices = [], spokenIdx = -1;
+const go = i => { i = Math.max(0, Math.min(all.length - 1, i)); deck.scrollTo({ left: all[i].offsetLeft - deck.offsetLeft, behavior: 'smooth' }); };
+document.getElementById('prev').onclick = () => go(idx - 1);
+document.getElementById('next').onclick = () => idx === all.length - 1 ? (location.href = nextCh ? lectureHref(nextCh) : backHref) : go(idx + 1);
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT') return;
+  if (e.key === 'ArrowRight') go(idx + 1);
+  if (e.key === 'ArrowLeft') go(idx - 1);
+});
+function lectureHref(x) { return `lecture.html?exam=${x.key.split('/')[0]}&s=${x.subject.id}&c=${x.chapter.id}&from=${fromId}`; }
+
+const io = new IntersectionObserver(entries => {
+  for (const en of entries) if (en.isIntersecting) setIndex(+en.target.dataset.i);
+}, { root: deck, threshold: 0.6 });
+all.forEach(el => io.observe(el));
+
+function setIndex(i) {
+  if (i === idx && i !== 0) return;
+  idx = i;
+  dots.forEach((d, j) => d.classList.toggle('on', j === i));
+  document.getElementById('prog').style.width = `${(i / (all.length - 1)) * 100}%`;
+  document.getElementById('count').textContent = `${Math.min(i + 1, cards.length)}/${cards.length}`;
+  document.getElementById('next').textContent = i === all.length - 1 && !nextCh ? 'Done ✓' : 'Next →';
+  if (i === all.length - 1) complete();
+  // Swiping by hand while listening jumps the narration to the new card.
+  if (listening && i !== spokenIdx && i < cards.length) speakCard(i);
+}
+setIndex(0);
+
+// ---------- Time tracking (reading vs listening), flushed every 15 s and on leave
+let readSec = 0, listenSec = 0, sessionListen = 0;
+setInterval(() => {
+  if (document.hidden) return;
+  if (listening && speechSynthesis.speaking) { listenSec++; sessionListen++; } else readSec++;
+  if (readSec + listenSec >= 15) flush();
+}, 1000);
+function flush() {
+  addTime('study', key, readSec); addTime('listen', key, listenSec);
+  readSec = 0; listenSec = 0;
+}
+addEventListener('pagehide', flush);
+document.addEventListener('visibilitychange', () => document.hidden && flush());
+
+// ---------- Completion
+let completed = false;
+function complete() {
+  const quizIdx = cards.map((c, i) => c.type === 'quiz' ? i : -1).filter(i => i >= 0);
+  const score = quizIdx.filter(i => quizState[i]).length, total = quizIdx.length;
+  const answered = quizIdx.filter(i => i in quizState).length;
+  if (!completed) {
+    completed = true;
+    flush();
+    store.update(s => {
+      const prev = s.completed[key];
+      // Keep the best quiz score across attempts.
+      s.completed[key] = { at: Date.now(), score: prev && prev.score > score ? prev.score : score, total };
+    });
+    logActivity({ type: 'complete', key, exam: parent.name, title: `${subject.name} › ${chapter.title}`,
+      listened: sessionListen, score: answered ? score : null, total, href: lectureHref({ key, subject, chapter }) });
+  }
+  document.getElementById('endCard').innerHTML = `
+    <div class="big">🏅</div><h2>Chapter complete!</h2>
+    <p class="body">${esc(chapter.title)}</p>
+    ${total ? `<p class="pill ${score === total ? 'ok' : 'warn'}">Quiz ${score}/${total}${answered < total ? ` · ${total - answered} skipped` : ''}</p>` : ''}
+    ${sessionListen ? `<p class="meta">🎧 Listened ${fmtMinutes(sessionListen)}</p>` : ''}
+    <div class="cta-row" style="margin-top:1rem">
+      ${nextCh ? `<a class="btn btn-primary" href="${lectureHref(nextCh)}">Next: ${esc(nextCh.chapter.title)} →</a>` : ''}
+      <a class="btn btn-ghost" href="${backHref}">All chapters</a>
+      <a class="btn btn-ghost" href="progress.html">My progress</a>
+    </div>`;
+}
+
+// ---------- Audiobook mode (Web Speech API, works offline on most phones)
+const listenBtn = document.getElementById('listen');
+const rateSel = document.getElementById('rate'), voiceSel = document.getElementById('voice');
+if (!('speechSynthesis' in window)) { listenBtn.hidden = true; document.getElementById('audioOpts').hidden = true; }
+else {
+  const loadVoices = () => {
+    voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en') || v.lang.startsWith('hi'));
+    const pref = voices.findIndex(v => v.lang === 'en-IN');
+    voiceSel.hidden = voiceSel.previousElementSibling.hidden = !voices.length;
+    voiceSel.innerHTML = voices.map((v, i) => `<option value="${i}"${i === pref ? ' selected' : ''}>${esc(v.name)} (${v.lang})</option>`).join('');
+  };
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+  try { rateSel.value = localStorage.getItem('academy.rate') || '1'; } catch {}
+  rateSel.onchange = () => { try { localStorage.setItem('academy.rate', rateSel.value); } catch {} };
+}
+
+const plain = s => String(s || '').replace(/\*\*|`/g, '');
+function speechFor(i) {
+  const c = cards[i];
+  if (!c) return '';
+  if (c.type === 'quiz') {
+    return `Quick check. ${plain(c.q)} ${c.options.map((o, j) => `Option ${String.fromCharCode(65 + j)}: ${plain(o)}.`).join(' ')}
+      The answer is option ${String.fromCharCode(65 + c.answer)}. ${plain(c.explain)}`;
+  }
+  return [c.title, c.body, ...(c.points || [])].map(plain).filter(Boolean).join('. ');
+}
+
+// Chrome cuts off long utterances, so speak sentence by sentence.
+function speakCard(i) {
+  spokenIdx = i;
+  speechSynthesis.cancel();
+  const parts = speechFor(i).match(/[^.!?]+[.!?]*/g) || [];
+  if (!parts.length) { stopListening(); return; }
+  parts.forEach((p, n) => {
+    const u = new SpeechSynthesisUtterance(p.trim());
+    u.rate = +rateSel.value;
+    if (voices[voiceSel.value]) u.voice = voices[voiceSel.value];
+    if (n === parts.length - 1) u.onend = () => {
+      if (!listening) return;
+      if (i + 1 < cards.length) { spokenIdx = i + 1; go(i + 1); setTimeout(() => listening && spokenIdx === i + 1 && speakCard(i + 1), 600); }
+      else { go(cards.length); stopListening(); }
+    };
+    speechSynthesis.speak(u);
+  });
+}
+function stopListening() {
+  listening = false; speechSynthesis.cancel();
+  listenBtn.classList.remove('listening'); listenBtn.textContent = '🎧 Listen';
+}
+listenBtn.onclick = () => {
+  if (listening) return stopListening();
+  listening = true;
+  listenBtn.classList.add('listening'); listenBtn.textContent = '⏸ Pause';
+  speakCard(Math.min(idx, cards.length - 1));
+};
+addEventListener('pagehide', () => speechSynthesis?.cancel());
+</script>
+</body>
+</html>

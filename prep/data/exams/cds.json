@@ -1,0 +1,1423 @@
+{
+  "id": "cds",
+  "name": "CDS",
+  "category": "defence",
+  "conductedBy": "UPSC",
+  "tagline": "Become a commissioned officer after graduation through IMA, INA, AFA or OTA.",
+  "overview": {
+    "about": "The Combined Defence Services Examination is held by UPSC twice a year for graduates. It leads to the Indian Military Academy (Dehradun), Indian Naval Academy (Ezhimala), Air Force Academy (Dundigal, Hyderabad) and Officers' Training Academy (Chennai, Short Service Commission). Written qualifiers face the SSB interview (300 marks for IMA/INA/AFA, 200 for OTA) and medicals.",
+    "eligibility": [
+      "IMA and OTA: graduate degree from a recognised university",
+      "INA: engineering degree (B.E./B.Tech.)",
+      "AFA: degree with Physics and Mathematics at 10+2, or B.E./B.Tech.",
+      "Age (approx.): IMA and INA 19–24 years; AFA 20–24 years (up to 26 with a valid DGCA Commercial Pilot Licence); OTA 19–25 years",
+      "IMA, INA and AFA: unmarried men; OTA: men and women (as per the notification). Final-year students may apply provisionally",
+      "Always confirm exact dates of birth and rules in the current UPSC notification"
+    ],
+    "pattern": [
+      {
+        "paper": "English",
+        "questions": 120,
+        "marks": 100,
+        "duration": "2 hours",
+        "note": "All academies including OTA; one-third negative marking"
+      },
+      {
+        "paper": "General Knowledge",
+        "questions": 120,
+        "marks": 100,
+        "duration": "2 hours",
+        "note": "All academies including OTA; one-third negative marking"
+      },
+      {
+        "paper": "Elementary Mathematics",
+        "questions": 100,
+        "marks": 100,
+        "duration": "2 hours",
+        "note": "Only for IMA, INA and AFA; one-third negative marking"
+      },
+      {
+        "paper": "SSB Interview",
+        "marks": 300,
+        "duration": "5 days",
+        "note": "300 marks for IMA/INA/AFA; 200 marks for OTA"
+      }
+    ],
+    "frequency": "Twice a year — CDS (I) and CDS (II)",
+    "officialSite": "https://upsc.gov.in"
+  },
+  "subjects": [
+    {
+      "id": "english",
+      "name": "English",
+      "chapters": [
+        {
+          "id": "cds-grammar",
+          "title": "English: grammar & spotting errors",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "CDS English at a glance",
+              "body": "English is 100 marks in 2 hours and is compulsory for every academy, including OTA. It is also used as a qualifying screen — a weak English score can cost you even if your GK is good. Areas: spotting errors, sentence improvement, fill-in-the-blanks, synonyms, antonyms, idioms, ordering and comprehension."
+            },
+            {
+              "type": "concept",
+              "title": "Pronouns and comparisons",
+              "body": "A pronoun must agree with its noun in number and gender. In comparisons, compare like with like: 'The climate of Shimla is better than **that of** Delhi' (not 'than Delhi'). Use 'between' for two, 'among' for more than two."
+            },
+            {
+              "type": "concept",
+              "title": "Common confusions",
+              "body": "Less (uncountable) vs fewer (countable): 'fewer cadets', 'less water'. 'Lay' needs an object; 'lie' does not. 'Hardly/scarcely… when' and 'no sooner… than' are fixed pairs. Avoid double negatives like 'hardly never'."
+            },
+            {
+              "type": "concept",
+              "title": "Conditionals and tense sequence",
+              "body": "First conditional: If + present, will + verb ('If it rains, we will stay'). Second: If + past, would + verb. Third: If + had + V3, would have + V3. A past-tense main verb usually takes a past-tense reported clause ('He said that he **was** tired')."
+            },
+            {
+              "type": "example",
+              "title": "Sentence improvement",
+              "body": "'No sooner had the bell rang when the cadets ran out.' Two errors: 'rang' should be 'rung' (past participle after 'had'), and 'no sooner' pairs with 'than'. Correct: **'No sooner had the bell rung than the cadets ran out.'**"
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Keep a personal 'error log'. Every wrong answer in a mock goes into the log with the rule behind it. Re-read the log before each mock — the same 30–40 rules cover most CDS error questions."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the correct sentence:",
+              "options": [
+                "There were less cadets on parade today.",
+                "There were fewer cadets on parade today.",
+                "There were lesser cadets on parade today.",
+                "There was fewer cadets on parade today."
+              ],
+              "answer": 1,
+              "explain": "'Cadets' are countable, so use 'fewer', with the plural verb 'were'."
+            },
+            {
+              "type": "quiz",
+              "q": "Fill in the blank: 'No sooner did he arrive ___ it started raining.'",
+              "options": [
+                "when",
+                "then",
+                "than",
+                "that"
+              ],
+              "answer": 2,
+              "explain": "'No sooner' is always followed by 'than'."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the correct option: 'If I ___ you, I would accept the offer.'",
+              "options": [
+                "am",
+                "was",
+                "were",
+                "had been"
+              ],
+              "answer": 2,
+              "explain": "In the second (hypothetical) conditional, formal English uses 'were' for all persons."
+            }
+          ]
+        },
+        {
+          "id": "cds-vocab-idioms",
+          "title": "English: vocabulary, idioms & one-word substitution",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Three question types, one method",
+              "body": "Synonyms, antonyms and one-word substitutions all test meaning. Read every option before marking — UPSC often places a close-but-wrong option first. If unsure, think of the word in a sentence you know."
+            },
+            {
+              "type": "formula",
+              "title": "Idioms worth knowing",
+              "points": [
+                "Blessing in disguise — something good that first seemed bad",
+                "Beat around the bush — avoid the main point",
+                "Bite the bullet — face something difficult bravely",
+                "At the eleventh hour — at the last moment",
+                "Hold your horses — be patient, wait"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "One-word substitutions",
+              "points": [
+                "Bilingual — one who speaks two languages",
+                "Atheist — one who does not believe in God",
+                "Acrophobia — fear of heights",
+                "Omnipresent — present everywhere",
+                "Mercenary — a soldier hired to fight for a foreign country"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Learn words by roots",
+              "body": "Prefixes change meaning predictably: 'in-/im-/un-' (not), 'pre-' (before), 'post-' (after), 'omni-' (all). Roots: 'bell' = war (belligerent), 'loqu' = speak (eloquent), 'fid' = faith (confident, infidel). One root unlocks a family of words."
+            },
+            {
+              "type": "example",
+              "title": "Eliminating options",
+              "body": "Antonym of 'Belligerent': (a) hostile (b) aggressive (c) peaceable (d) quarrelsome. 'Bell' means war, so belligerent = warlike. (a), (b), (d) are synonyms. The antonym is **peaceable**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Spend 15 minutes daily on vocabulary with spaced revision (day 1, 3, 7, 30). Quality beats quantity — 10 words revised properly each day is better than 50 read once."
+            },
+            {
+              "type": "quiz",
+              "q": "'At the eleventh hour' means:",
+              "options": [
+                "Very early",
+                "At the last moment",
+                "Late at night",
+                "On time"
+              ],
+              "answer": 1,
+              "explain": "The idiom means at the latest possible moment."
+            },
+            {
+              "type": "quiz",
+              "q": "One word for 'a soldier hired to serve in a foreign army':",
+              "options": [
+                "Veteran",
+                "Mercenary",
+                "Cadet",
+                "Guerrilla"
+              ],
+              "answer": 1,
+              "explain": "A mercenary fights for pay in a foreign army."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the antonym of 'Belligerent':",
+              "options": [
+                "Hostile",
+                "Aggressive",
+                "Peaceable",
+                "Quarrelsome"
+              ],
+              "answer": 2,
+              "explain": "Belligerent means warlike; its opposite is peaceable."
+            }
+          ]
+        },
+        {
+          "id": "cds-comprehension",
+          "title": "English: comprehension, cloze & ordering",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Reading comprehension",
+              "body": "CDS passages are usually short and opinion-based. Read the questions first, then read the passage actively — note the author's main point and tone. Mark answers only from what is written or clearly implied."
+            },
+            {
+              "type": "concept",
+              "title": "Tone and inference",
+              "body": "Tone words: critical, optimistic, sarcastic, neutral, analytical. Inference means a conclusion the passage supports without stating it outright. Reject options that are too extreme ('always', 'never') or bring in outside information."
+            },
+            {
+              "type": "concept",
+              "title": "Cloze test",
+              "body": "Read the whole passage once before filling any blank. Fill the easy blanks first; they reveal the context for the hard ones. Check collocations: 'pay attention', 'take responsibility', 'make a decision'."
+            },
+            {
+              "type": "concept",
+              "title": "Sentence ordering (S1, P, Q, R, S6)",
+              "body": "When the first and last sentences are given, the middle ones must connect them logically. Look for pronoun links ('he', 'this'), connectors ('but', 'therefore') and general-to-specific flow. Fix one pair, then check which options contain it."
+            },
+            {
+              "type": "example",
+              "title": "Using a mandatory pair",
+              "body": "If sentence Q says 'This decision…' and only sentence P mentions a decision, then P must come right before Q. Any option without 'PQ' together can be eliminated immediately — often leaving only one answer."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Comprehension and ordering take time. Attempt vocabulary and error questions first, then return to passages with the remaining time. Never leave the paper without reading at least one passage — they are high-accuracy marks."
+            },
+            {
+              "type": "quiz",
+              "q": "In comprehension, an 'inference' is:",
+              "options": [
+                "A fact stated word for word",
+                "A conclusion supported by the passage but not stated directly",
+                "Your personal opinion",
+                "The title of the passage"
+              ],
+              "answer": 1,
+              "explain": "Inference questions test what the passage logically implies."
+            },
+            {
+              "type": "quiz",
+              "q": "Which word best completes: 'Cadets must pay ___ to every instruction.'",
+              "options": [
+                "notice",
+                "attention",
+                "regard",
+                "care"
+              ],
+              "answer": 1,
+              "explain": "'Pay attention' is the standard collocation."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gk",
+      "name": "General Knowledge",
+      "chapters": [
+        {
+          "id": "cds-history",
+          "title": "GK: Indian history & national movement",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Socio-religious reformers",
+              "body": "Raja Ram Mohan Roy founded the **Brahmo Samaj** (1828) and campaigned against sati. Swami Dayanand Saraswati founded the **Arya Samaj** (1875). Swami Vivekananda founded the Ramakrishna Mission (1897). Jyotiba Phule founded the Satyashodhak Samaj (1873)."
+            },
+            {
+              "type": "formula",
+              "title": "Governors-General and Viceroys",
+              "points": [
+                "Warren Hastings: first Governor-General of Bengal (Regulating Act, 1773)",
+                "Lord William Bentinck: first Governor-General of India (Charter Act, 1833); abolished sati (1829)",
+                "Lord Canning: first Viceroy (1858)",
+                "Lord Mountbatten: last Viceroy",
+                "C. Rajagopalachari: only Indian Governor-General"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Bhakti and Sufi movements",
+              "body": "Medieval saints preached devotion over ritual. Bhakti: Ramanuja, Kabir, Guru Nanak (founder of Sikhism), Mirabai, Tulsidas, Chaitanya. Sufi: Khwaja Moinuddin Chishti (Ajmer), Nizamuddin Auliya (Delhi). Both stressed love, equality and simple faith."
+            },
+            {
+              "type": "formula",
+              "title": "Congress sessions to remember",
+              "points": [
+                "1885 Bombay: first session (W.C. Bonnerjee)",
+                "1907 Surat: split into Moderates and Extremists",
+                "1929 Lahore: Purna Swaraj resolution (Jawaharlal Nehru)",
+                "1931 Karachi: resolution on Fundamental Rights"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Towards independence",
+              "body": "The Cripps Mission (1942) failed; Quit India followed in August 1942. The Cabinet Mission (1946) proposed a Constituent Assembly. The Mountbatten Plan (June 1947) led to Partition and the Indian Independence Act, 1947."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "CDS history questions often ask 'who founded what' and 'arrange in chronological order'. A single timeline sheet from 1757 to 1947 is your most valuable revision tool."
+            },
+            {
+              "type": "quiz",
+              "q": "Who was the first Viceroy of India?",
+              "options": [
+                "Warren Hastings",
+                "Lord Canning",
+                "Lord Dalhousie",
+                "Lord Mountbatten"
+              ],
+              "answer": 1,
+              "explain": "After the 1858 Act, Lord Canning became the first Viceroy."
+            },
+            {
+              "type": "quiz",
+              "q": "The Arya Samaj was founded by:",
+              "options": [
+                "Raja Ram Mohan Roy",
+                "Swami Vivekananda",
+                "Swami Dayanand Saraswati",
+                "Jyotiba Phule"
+              ],
+              "answer": 2,
+              "explain": "Swami Dayanand Saraswati founded the Arya Samaj in 1875 in Bombay."
+            },
+            {
+              "type": "quiz",
+              "q": "The Purna Swaraj resolution was passed at which Congress session?",
+              "options": [
+                "Surat 1907",
+                "Lucknow 1916",
+                "Lahore 1929",
+                "Karachi 1931"
+              ],
+              "answer": 2,
+              "explain": "The Lahore session of December 1929, presided over by Jawaharlal Nehru, declared complete independence as the goal."
+            }
+          ]
+        },
+        {
+          "id": "cds-polity",
+          "title": "GK: Indian polity",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The President",
+              "body": "Elected by an electoral college of elected MPs of both Houses and elected MLAs of the states and of the UTs of Delhi and Puducherry. Term of 5 years. Removed by impeachment under **Article 61** for violation of the Constitution. Can grant pardons under Article 72."
+            },
+            {
+              "type": "concept",
+              "title": "Parliament",
+              "body": "Lok Sabha is the House of the People; Rajya Sabha is the Council of States, a permanent body where **one-third of members retire every two years**. The Vice-President is ex-officio Chairman of the Rajya Sabha. A joint sitting (Art. 108) is presided over by the Lok Sabha Speaker."
+            },
+            {
+              "type": "concept",
+              "title": "Money bills",
+              "body": "Defined in **Article 110**. A money bill can be introduced only in the Lok Sabha, and the Speaker certifies whether a bill is a money bill. The Rajya Sabha can only recommend changes and must return it within 14 days."
+            },
+            {
+              "type": "formula",
+              "title": "Constitutional bodies",
+              "points": [
+                "Art. 76: Attorney General of India",
+                "Art. 148: Comptroller and Auditor General (CAG)",
+                "Art. 280: Finance Commission",
+                "Art. 315: Union and State Public Service Commissions",
+                "Art. 324: Election Commission",
+                "Art. 368: Amendment of the Constitution"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Judiciary",
+              "body": "The Supreme Court has original, appellate and advisory (Art. 143) jurisdiction. Writs: habeas corpus (produce the body), mandamus (we command), prohibition, certiorari and quo warranto (by what authority). High Courts can issue writs under Art. 226."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Use M. Laxmikanth-style chapter lists but start from NCERT Class 11 'Indian Constitution at Work'. Most CDS polity questions are on Parliament, the President, Fundamental Rights and constitutional bodies."
+            },
+            {
+              "type": "quiz",
+              "q": "Who decides whether a bill is a money bill?",
+              "options": [
+                "President",
+                "Speaker of the Lok Sabha",
+                "Chairman of the Rajya Sabha",
+                "Finance Minister"
+              ],
+              "answer": 1,
+              "explain": "Under Article 110(3), the Speaker's decision on a money bill is final."
+            },
+            {
+              "type": "quiz",
+              "q": "The Election Commission of India is provided for in:",
+              "options": [
+                "Art. 148",
+                "Art. 280",
+                "Art. 324",
+                "Art. 368"
+              ],
+              "answer": 2,
+              "explain": "Article 324 vests superintendence of elections in the Election Commission."
+            },
+            {
+              "type": "quiz",
+              "q": "Which writ literally means 'to have the body'?",
+              "options": [
+                "Mandamus",
+                "Habeas corpus",
+                "Certiorari",
+                "Quo warranto"
+              ],
+              "answer": 1,
+              "explain": "Habeas corpus orders a detained person to be produced before the court."
+            }
+          ]
+        },
+        {
+          "id": "cds-geography",
+          "title": "GK: world & Indian geography",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "World at a glance",
+              "body": "The Pacific is the largest and deepest ocean. The Nile is traditionally listed as the longest river; the Amazon carries the most water. The Sahara is the largest hot desert. Mount Everest (Nepal–China border) is the highest peak above sea level."
+            },
+            {
+              "type": "formula",
+              "title": "Important straits",
+              "points": [
+                "Gibraltar: Atlantic ↔ Mediterranean (Spain–Morocco)",
+                "Hormuz: Persian Gulf ↔ Gulf of Oman (Iran–Oman)",
+                "Malacca: Andaman Sea ↔ South China Sea (Malaysia–Sumatra)",
+                "Palk Strait: India ↔ Sri Lanka",
+                "Bering: Asia ↔ North America"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Temperate grasslands",
+              "points": [
+                "Prairies — North America",
+                "Pampas — Argentina",
+                "Steppes — Eurasia",
+                "Veld — South Africa",
+                "Downs — Australia"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Indian mountain passes and peaks",
+              "body": "Important passes: Zoji La (Srinagar–Leh), Nathu La (Sikkim–Tibet), Shipki La (Himachal–Tibet), Bomdi La (Arunachal). Kangchenjunga in Sikkim is the highest peak located within India's undisputed territory. These border regions are frequently asked in defence exams."
+            },
+            {
+              "type": "concept",
+              "title": "Indian resources",
+              "body": "Jharkhand and Odisha lead in many minerals such as iron ore and coal. Major ports include Mumbai, JNPA (Navi Mumbai), Kandla/Deendayal (Gujarat), Chennai, Visakhapatnam and Kolkata/Haldia. Tea grows in Assam and West Bengal; coffee mainly in Karnataka."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Learn geography with a map, not only notes. Straits, passes and grasslands are classic match-the-following questions in CDS — a single page of tables can fetch 3–4 marks."
+            },
+            {
+              "type": "quiz",
+              "q": "The Pampas grasslands are found in:",
+              "options": [
+                "Australia",
+                "Argentina",
+                "South Africa",
+                "Russia"
+              ],
+              "answer": 1,
+              "explain": "The Pampas are the temperate grasslands of Argentina (and Uruguay)."
+            },
+            {
+              "type": "quiz",
+              "q": "The Strait of Gibraltar connects:",
+              "options": [
+                "Red Sea and Mediterranean",
+                "Atlantic Ocean and Mediterranean Sea",
+                "Persian Gulf and Arabian Sea",
+                "Pacific and Indian Oceans"
+              ],
+              "answer": 1,
+              "explain": "Gibraltar links the Atlantic to the Mediterranean, between Spain and Morocco."
+            },
+            {
+              "type": "quiz",
+              "q": "Zoji La pass connects:",
+              "options": [
+                "Srinagar and Leh",
+                "Sikkim and Tibet",
+                "Shimla and Tibet",
+                "Manali and Leh"
+              ],
+              "answer": 0,
+              "explain": "Zoji La lies on the Srinagar–Leh road in the Himalayas."
+            }
+          ]
+        },
+        {
+          "id": "cds-economy",
+          "title": "GK: Indian economy",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Key institutions",
+              "body": "The **Reserve Bank of India** was established on 1 April 1935 and nationalised in 1949; it is India's central bank and issues currency (except one-rupee notes and coins, which the Government issues). **NITI Aayog** replaced the Planning Commission on 1 January 2015."
+            },
+            {
+              "type": "formula",
+              "title": "Monetary policy terms",
+              "points": [
+                "Repo rate: rate at which RBI lends to banks short-term",
+                "Reverse repo: rate at which RBI absorbs money from banks",
+                "CRR: share of deposits banks keep with RBI as cash",
+                "SLR: share of deposits banks keep in liquid assets like gold and government securities",
+                "Higher repo/CRR → less money in the economy → helps control inflation"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Inflation and the MPC",
+              "body": "India follows inflation targeting. The Monetary Policy Committee sets the repo rate with a target for **CPI inflation of 4%**, within a tolerance band of 2%–6%. CPI measures retail prices; WPI measures wholesale prices."
+            },
+            {
+              "type": "formula",
+              "title": "Budget and fiscal terms",
+              "points": [
+                "Annual Financial Statement (Budget): Article 112",
+                "Fiscal deficit = total expenditure − total receipts excluding borrowings",
+                "Direct taxes: income tax, corporate tax",
+                "Indirect tax: GST — launched 1 July 2017 (101st Amendment)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Planning and sectors",
+              "body": "The First Five Year Plan ran from 1951 to 1956 and focused on agriculture. The economy has primary (agriculture, mining), secondary (manufacturing) and tertiary (services) sectors; services contribute the largest share of India's GDP."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "CDS economy questions are conceptual. NCERT Class 9–12 Economics plus the Economic Survey highlights (free on the Finance Ministry website) are enough. Understand what each term does — don't just memorise definitions."
+            },
+            {
+              "type": "quiz",
+              "q": "The repo rate is the rate at which:",
+              "options": [
+                "Banks lend to the public",
+                "RBI lends to commercial banks",
+                "Banks lend to the government",
+                "RBI borrows from the IMF"
+              ],
+              "answer": 1,
+              "explain": "Repo is RBI's short-term lending rate to banks against government securities."
+            },
+            {
+              "type": "quiz",
+              "q": "GST was introduced in India on:",
+              "options": [
+                "1 April 2016",
+                "1 July 2017",
+                "1 January 2018",
+                "8 November 2016"
+              ],
+              "answer": 1,
+              "explain": "GST came into effect on 1 July 2017 after the 101st Constitutional Amendment."
+            },
+            {
+              "type": "quiz",
+              "q": "NITI Aayog replaced which body?",
+              "options": [
+                "Finance Commission",
+                "Planning Commission",
+                "National Development Council",
+                "RBI board"
+              ],
+              "answer": 1,
+              "explain": "NITI Aayog replaced the Planning Commission on 1 January 2015."
+            }
+          ]
+        },
+        {
+          "id": "cds-science",
+          "title": "GK: everyday science & technology",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Physics in daily life",
+              "body": "The Sun produces energy by **nuclear fusion** (hydrogen into helium); nuclear power plants use **fission** of uranium. The electromagnetic spectrum, from long to short wavelength: radio, microwave, infrared, visible, ultraviolet, X-rays, gamma rays."
+            },
+            {
+              "type": "formula",
+              "title": "Alloys",
+              "points": [
+                "Brass = copper + zinc",
+                "Bronze = copper + tin",
+                "Steel = iron + carbon",
+                "Stainless steel = iron + chromium (+ nickel)",
+                "Solder = tin + lead (traditional)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Chemistry facts",
+              "body": "Noble gases (helium, neon, argon…) are chemically inert. Helium is used in balloons because it is light and non-flammable. LPG is mainly butane and propane; CNG is mainly methane. Ozone (O₃) protects us from UV radiation."
+            },
+            {
+              "type": "concept",
+              "title": "Biology facts",
+              "body": "Photosynthesis: carbon dioxide + water → glucose + oxygen, using sunlight and chlorophyll. DNA carries genetic information. **Rhizobium** bacteria in the root nodules of legumes fix atmospheric nitrogen, which improves soil fertility."
+            },
+            {
+              "type": "concept",
+              "title": "Space and India",
+              "body": "ISRO's Chandrayaan-3 made India the first country to soft-land near the Moon's south polar region, on 23 August 2023 (now National Space Day). Aditya-L1, launched in September 2023, is India's first space-based solar observatory, placed around the Sun–Earth L1 point."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Science questions in CDS are mostly 'why' and 'what is used for' questions. NCERT Class 6–10 Science covers most of them. Add ISRO and DRDO news from PIB for the technology part."
+            },
+            {
+              "type": "quiz",
+              "q": "Brass is an alloy of:",
+              "options": [
+                "Copper and tin",
+                "Copper and zinc",
+                "Iron and carbon",
+                "Tin and lead"
+              ],
+              "answer": 1,
+              "explain": "Brass is copper with zinc; bronze is copper with tin."
+            },
+            {
+              "type": "quiz",
+              "q": "The Sun's energy is produced by:",
+              "options": [
+                "Nuclear fission",
+                "Nuclear fusion",
+                "Chemical combustion",
+                "Radioactive decay"
+              ],
+              "answer": 1,
+              "explain": "In the Sun's core, hydrogen nuclei fuse into helium, releasing energy."
+            },
+            {
+              "type": "quiz",
+              "q": "Which bacteria fix nitrogen in the root nodules of legumes?",
+              "options": [
+                "Lactobacillus",
+                "Rhizobium",
+                "E. coli",
+                "Salmonella"
+              ],
+              "answer": 1,
+              "explain": "Rhizobium lives in legume root nodules and converts atmospheric nitrogen into usable forms."
+            }
+          ]
+        },
+        {
+          "id": "cds-defence-gk",
+          "title": "GK: defence-specific knowledge",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The three services",
+              "body": "Army motto: 'Service Before Self'. Navy motto: 'Sham No Varunah' (May the Lord of the Waters be auspicious unto us). Air Force motto: 'Nabhah Sprisham Deeptam' (Touch the sky with glory), from the Bhagavad Gita. The post of **Chief of Defence Staff** was created in 2019; Gen Bipin Rawat was the first CDS."
+            },
+            {
+              "type": "formula",
+              "title": "Important days",
+              "points": [
+                "Army Day: 15 January",
+                "Air Force Day: 8 October (IAF formed in 1932)",
+                "Navy Day: 4 December (Operation Trident, 1971)",
+                "Armed Forces Flag Day: 7 December",
+                "Kargil Vijay Diwas: 26 July"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Equivalent ranks (Army = Navy = Air Force)",
+              "points": [
+                "Lieutenant = Sub Lieutenant = Flying Officer",
+                "Captain = Lieutenant = Flight Lieutenant",
+                "Major = Lieutenant Commander = Squadron Leader",
+                "Lieutenant Colonel = Commander = Wing Commander",
+                "Colonel = Captain = Group Captain",
+                "Brigadier = Commodore = Air Commodore"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Gallantry awards",
+              "body": "Wartime (in order): **Param Vir Chakra**, Maha Vir Chakra, Vir Chakra. Peacetime: **Ashoka Chakra**, Kirti Chakra, Shaurya Chakra. The first Param Vir Chakra was awarded to Major Somnath Sharma (1947, posthumous)."
+            },
+            {
+              "type": "concept",
+              "title": "Training academies and missiles",
+              "body": "IMA – Dehradun; NDA – Khadakwasla, Pune; INA – Ezhimala, Kerala; Air Force Academy – Dundigal, Hyderabad; OTA – Chennai. Missiles: Agni and Prithvi (surface-to-surface), BrahMos (supersonic cruise, India–Russia), Akash (surface-to-air), Nag (anti-tank)."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Defence GK is your edge over general aspirants and also helps in the SSB interview. Follow the Ministry of Defence and PIB Defence wing for exercises, inductions and appointments."
+            },
+            {
+              "type": "quiz",
+              "q": "Navy Day is celebrated on:",
+              "options": [
+                "15 January",
+                "8 October",
+                "4 December",
+                "7 December"
+              ],
+              "answer": 2,
+              "explain": "4 December marks Operation Trident (1971), the Navy's attack on Karachi harbour."
+            },
+            {
+              "type": "quiz",
+              "q": "An Army Major is equivalent to which Air Force rank?",
+              "options": [
+                "Flight Lieutenant",
+                "Squadron Leader",
+                "Wing Commander",
+                "Group Captain"
+              ],
+              "answer": 1,
+              "explain": "Major = Lieutenant Commander (Navy) = Squadron Leader (IAF)."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is the highest wartime gallantry award?",
+              "options": [
+                "Ashoka Chakra",
+                "Maha Vir Chakra",
+                "Param Vir Chakra",
+                "Kirti Chakra"
+              ],
+              "answer": 2,
+              "explain": "The Param Vir Chakra is India's highest award for gallantry in the face of the enemy."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "maths",
+      "name": "Elementary Mathematics",
+      "chapters": [
+        {
+          "id": "cds-arithmetic",
+          "title": "Maths: number system & arithmetic",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Number system essentials",
+              "points": [
+                "HCF × LCM = product of the two numbers",
+                "Divisible by 3 or 9: sum of digits divisible by 3 or 9",
+                "Divisible by 11: (sum of odd-place digits − sum of even-place digits) is 0 or a multiple of 11",
+                "Prime numbers below 50: 15 of them (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Percentage, profit & loss",
+              "points": [
+                "Profit % = (Profit / CP) × 100",
+                "SP = CP × (100 + P%) / 100",
+                "Successive changes a% and b%: net = a + b + ab/100",
+                "Two successive discounts of 20% and 10% = 28% overall"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Interest",
+              "points": [
+                "Simple interest = P × R × T / 100",
+                "Amount (compound) = P(1 + R/100)ᵀ",
+                "CI − SI for 2 years = P(R/100)²"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Time, speed, work",
+              "points": [
+                "km/h → m/s: multiply by 5/18",
+                "Average speed for equal distances = 2xy/(x + y)",
+                "If A takes a days and B takes b days, together: ab/(a + b) days",
+                "Relative speed (opposite directions) = sum of speeds"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Work together",
+              "body": "A finishes a job in 10 days and B in 15 days. Together they do 1/10 + 1/15 = 3/30 + 2/30 = 5/30 = 1/6 of the job per day, so they finish in **6 days** (check: 10×15/25 = 6)."
+            },
+            {
+              "type": "example",
+              "title": "Compound interest",
+              "body": "₹10,000 at 10% per annum, compounded yearly, for 2 years: Amount = 10,000 × 1.1 × 1.1 = ₹12,100. CI = **₹2,100**. SI would be ₹2,000, and the ₹100 difference = 10,000 × (0.1)²."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "CDS Maths is 100 questions in 2 hours — just over a minute each. Arithmetic is the most scoring part. Learn tables to 25, squares to 30 and cubes to 15 to speed up calculations."
+            },
+            {
+              "type": "quiz",
+              "q": "Convert 72 km/h to m/s.",
+              "options": [
+                "15",
+                "18",
+                "20",
+                "25"
+              ],
+              "answer": 2,
+              "explain": "72 × 5/18 = 20 m/s."
+            },
+            {
+              "type": "quiz",
+              "q": "The HCF of two numbers is 12 and the LCM is 72. If one number is 24, the other is:",
+              "options": [
+                "36",
+                "48",
+                "18",
+                "60"
+              ],
+              "answer": 0,
+              "explain": "Other number = (12 × 72) / 24 = 36."
+            },
+            {
+              "type": "quiz",
+              "q": "An article bought for ₹400 is sold for ₹500. The profit percentage is:",
+              "options": [
+                "20%",
+                "25%",
+                "30%",
+                "100%"
+              ],
+              "answer": 1,
+              "explain": "Profit = 100; 100/400 × 100 = 25%."
+            }
+          ]
+        },
+        {
+          "id": "cds-algebra",
+          "title": "Maths: algebra",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Algebraic identities",
+              "points": [
+                "(a + b)² = a² + 2ab + b²",
+                "a² − b² = (a + b)(a − b)",
+                "a³ + b³ = (a + b)(a² − ab + b²)",
+                "a³ − b³ = (a − b)(a² + ab + b²)",
+                "If a + b + c = 0, then a³ + b³ + c³ = 3abc"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Remainder and factor theorems",
+              "body": "When p(x) is divided by (x − a), the remainder is **p(a)**. If p(a) = 0, then (x − a) is a factor. This turns long division into a 10-second substitution."
+            },
+            {
+              "type": "formula",
+              "title": "Quadratic and linear equations",
+              "points": [
+                "ax² + bx + c = 0: x = [−b ± √(b² − 4ac)] / 2a",
+                "Sum of roots = −b/a; product = c/a",
+                "a₁x + b₁y = c₁ and a₂x + b₂y = c₂ have a unique solution if a₁/a₂ ≠ b₁/b₂",
+                "No solution if a₁/a₂ = b₁/b₂ ≠ c₁/c₂"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "x + 1/x tricks",
+              "body": "If x + 1/x = 3, then squaring: x² + 2 + 1/x² = 9, so x² + 1/x² = **7**. Cubing: x³ + 1/x³ = (x + 1/x)³ − 3(x + 1/x) = 27 − 9 = **18**."
+            },
+            {
+              "type": "example",
+              "title": "Remainder theorem",
+              "body": "Find the remainder when x³ − 2x + 5 is divided by (x − 1). Put x = 1: 1 − 2 + 5 = **4**. No long division needed."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "In algebra, substituting simple values (x = 0, 1, 2) into both the question and options often finds the answer faster than solving. Use it whenever options contain variables."
+            },
+            {
+              "type": "quiz",
+              "q": "If x + 1/x = 3, then x² + 1/x² equals:",
+              "options": [
+                "9",
+                "7",
+                "11",
+                "5"
+              ],
+              "answer": 1,
+              "explain": "(x + 1/x)² − 2 = 9 − 2 = 7."
+            },
+            {
+              "type": "quiz",
+              "q": "If a + b + c = 0, then a³ + b³ + c³ equals:",
+              "options": [
+                "0",
+                "abc",
+                "3abc",
+                "a + b + c"
+              ],
+              "answer": 2,
+              "explain": "a³ + b³ + c³ − 3abc = (a + b + c)(…), which is 0, so the sum of cubes = 3abc."
+            },
+            {
+              "type": "quiz",
+              "q": "The remainder when x³ − 2x + 5 is divided by (x − 1) is:",
+              "options": [
+                "2",
+                "4",
+                "5",
+                "6"
+              ],
+              "answer": 1,
+              "explain": "p(1) = 1 − 2 + 5 = 4."
+            }
+          ]
+        },
+        {
+          "id": "cds-geometry",
+          "title": "Maths: geometry",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Lines and triangles",
+              "points": [
+                "Sum of angles of a triangle = 180°",
+                "Exterior angle = sum of the two opposite interior angles",
+                "Pythagoras: hypotenuse² = sum of squares of the other two sides",
+                "Centroid divides each median in the ratio 2:1",
+                "Sum of any two sides > the third side"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Polygons",
+              "points": [
+                "Sum of interior angles = (n − 2) × 180°",
+                "Each exterior angle of a regular n-gon = 360°/n",
+                "Number of diagonals = n(n − 3)/2",
+                "Regular hexagon: each interior angle = 120°"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Similar and congruent triangles",
+              "body": "Similar triangles have equal angles and proportional sides (AA, SAS, SSS similarity). The **ratio of their areas = square of the ratio of corresponding sides**. Congruent triangles are identical in shape and size (SSS, SAS, ASA, RHS)."
+            },
+            {
+              "type": "formula",
+              "title": "Circle theorems",
+              "points": [
+                "Angle at the centre = 2 × angle at the circumference on the same arc",
+                "Angle in a semicircle = 90°",
+                "Opposite angles of a cyclic quadrilateral add to 180°",
+                "Tangent is perpendicular to the radius at the point of contact",
+                "Tangents from an external point are equal in length"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Cyclic quadrilateral",
+              "body": "In cyclic quadrilateral ABCD, ∠A = 70°. Then ∠C = 180° − 70° = **110°**. If ∠B = 95°, then ∠D = 85°."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Always draw the figure, even roughly. Mark given angles and equal sides on it. Most CDS geometry questions need just one or two theorems once the figure is clear."
+            },
+            {
+              "type": "quiz",
+              "q": "Each interior angle of a regular hexagon is:",
+              "options": [
+                "108°",
+                "120°",
+                "135°",
+                "144°"
+              ],
+              "answer": 1,
+              "explain": "(6 − 2) × 180° / 6 = 720° / 6 = 120°."
+            },
+            {
+              "type": "quiz",
+              "q": "Two similar triangles have corresponding sides in the ratio 2:3. Their areas are in the ratio:",
+              "options": [
+                "2:3",
+                "4:9",
+                "8:27",
+                "3:2"
+              ],
+              "answer": 1,
+              "explain": "Area ratio = (side ratio)² = 4:9."
+            },
+            {
+              "type": "quiz",
+              "q": "The angle in a semicircle is:",
+              "options": [
+                "45°",
+                "60°",
+                "90°",
+                "180°"
+              ],
+              "answer": 2,
+              "explain": "An angle subtended by a diameter at any point of the circle is a right angle."
+            }
+          ]
+        },
+        {
+          "id": "cds-mensuration",
+          "title": "Maths: mensuration",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "2D shapes",
+              "points": [
+                "Circle: area πr², circumference 2πr",
+                "Triangle (Heron): √[s(s − a)(s − b)(s − c)], s = (a + b + c)/2",
+                "Equilateral triangle: area (√3/4)a²",
+                "Trapezium: ½ × (sum of parallel sides) × height",
+                "Rhombus: ½ × d₁ × d₂"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Cube, cuboid, cylinder",
+              "points": [
+                "Cube: volume a³; total surface area 6a²",
+                "Cuboid: volume lbh; TSA 2(lb + bh + hl); diagonal √(l² + b² + h²)",
+                "Cylinder: volume πr²h; curved surface 2πrh; TSA 2πr(r + h)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Cone, sphere, hemisphere",
+              "points": [
+                "Cone: volume ⅓πr²h; slant height l = √(r² + h²); curved surface πrl",
+                "Sphere: volume (4/3)πr³; surface area 4πr²",
+                "Hemisphere: volume (2/3)πr³; TSA 3πr²"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Volume of a cylinder",
+              "body": "Radius 7 cm, height 10 cm. V = πr²h = (22/7) × 49 × 10 = 22 × 7 × 10 = **1540 cm³**. Pick π = 22/7 whenever the radius is a multiple of 7."
+            },
+            {
+              "type": "concept",
+              "title": "Scaling rule",
+              "body": "If every length of a solid is multiplied by k, its surface area is multiplied by **k²** and its volume by **k³**. Doubling a sphere's radius makes its surface area 4 times and its volume 8 times."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Write all formulas on one sheet and revise it daily in the last month. Watch units — convert cm to m (or litres: 1000 cm³ = 1 litre) before calculating."
+            },
+            {
+              "type": "quiz",
+              "q": "If the radius of a sphere is doubled, its volume becomes:",
+              "options": [
+                "2 times",
+                "4 times",
+                "6 times",
+                "8 times"
+              ],
+              "answer": 3,
+              "explain": "Volume ∝ r³, so 2³ = 8 times."
+            },
+            {
+              "type": "quiz",
+              "q": "The total surface area of a cube of side 5 cm is:",
+              "options": [
+                "125 cm²",
+                "150 cm²",
+                "100 cm²",
+                "25 cm²"
+              ],
+              "answer": 1,
+              "explain": "TSA = 6a² = 6 × 25 = 150 cm²."
+            },
+            {
+              "type": "quiz",
+              "q": "A cone has radius 3 cm and height 4 cm. Its slant height is:",
+              "options": [
+                "5 cm",
+                "7 cm",
+                "6 cm",
+                "√7 cm"
+              ],
+              "answer": 0,
+              "explain": "l = √(3² + 4²) = √25 = 5 cm."
+            }
+          ]
+        },
+        {
+          "id": "cds-trig-stats",
+          "title": "Maths: trigonometry & statistics",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Trigonometry basics",
+              "points": [
+                "sin θ = P/H, cos θ = B/H, tan θ = P/B",
+                "sin²θ + cos²θ = 1; sec²θ − tan²θ = 1; cosec²θ − cot²θ = 1",
+                "sin(90° − θ) = cos θ",
+                "tan 45° = 1; sin 30° = 1/2; cos 60° = 1/2"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Using a triangle",
+              "body": "If sin θ = 3/5 (θ acute), take P = 3 and H = 5, so B = √(25 − 9) = 4. Then cos θ = 4/5 and **tan θ = 3/4**. Draw the triangle instead of using identities."
+            },
+            {
+              "type": "concept",
+              "title": "Heights and distances",
+              "body": "Angle of elevation is measured up from the horizontal; angle of depression is measured down. Because the horizontal lines are parallel, the angle of depression from A to B equals the angle of elevation from B to A. Use tan in most problems."
+            },
+            {
+              "type": "formula",
+              "title": "Statistics",
+              "points": [
+                "Mean = Σx/n",
+                "Median: middle value after arranging in order (average of two middle values if n is even)",
+                "Mode: value that occurs most often",
+                "Pie chart: sector angle = (value/total) × 360°"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Reading graphs",
+              "body": "CDS includes questions on bar charts, histograms, frequency polygons and pie charts. In a histogram, bars touch because class intervals are continuous. Always read the axis labels and units before calculating."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Trigonometry questions in CDS are usually solvable by putting θ = 45° or 30°. Statistics questions are mostly direct — treat them as guaranteed marks."
+            },
+            {
+              "type": "quiz",
+              "q": "If sin θ = 3/5 and θ is acute, tan θ equals:",
+              "options": [
+                "3/4",
+                "4/3",
+                "4/5",
+                "5/3"
+              ],
+              "answer": 0,
+              "explain": "Opposite = 3, hypotenuse = 5, adjacent = 4, so tan θ = 3/4."
+            },
+            {
+              "type": "quiz",
+              "q": "The median of 3, 7, 1, 9, 5 is:",
+              "options": [
+                "3",
+                "5",
+                "7",
+                "9"
+              ],
+              "answer": 1,
+              "explain": "Arranged: 1, 3, 5, 7, 9 — the middle value is 5."
+            },
+            {
+              "type": "quiz",
+              "q": "In a pie chart, a sector of 90° represents what share of the total?",
+              "options": [
+                "10%",
+                "20%",
+                "25%",
+                "50%"
+              ],
+              "answer": 2,
+              "explain": "90/360 = 1/4 = 25%."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "CDS (I) 2025 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2025 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "CDS (I) 2024 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2024 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "CDS (I) 2023 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2023 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "CDS (I) 2022 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2022 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "CDS (I) 2021 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2021 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "CDS (I) 2020 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2020 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "CDS (I) 2019 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2019 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "CDS (I) 2018 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2018 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "CDS (I) 2017 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2017 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "CDS (I) 2016 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CDS (II) 2016 — English, GK, Elementary Maths",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "UPSC — Active examinations & notifications",
+      "url": "https://upsc.gov.in/examinations/active-exams",
+      "note": "Official CDS notifications, syllabus, admit cards and results",
+      "free": true
+    },
+    {
+      "label": "UPSC — Previous question papers",
+      "url": "https://upsc.gov.in/examinations/previous-question-papers",
+      "note": "Official archive of past CDS papers; filter by exam name and year",
+      "free": true
+    },
+    {
+      "label": "UPSC Online application portal",
+      "url": "https://upsconline.gov.in",
+      "note": "Apply online for CDS",
+      "free": true
+    },
+    {
+      "label": "NCERT textbooks (Classes 6–12)",
+      "url": "https://ncert.nic.in/textbook.php",
+      "note": "Free PDFs for GK basics and elementary maths (up to Class 10 level)",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Official source for current affairs and defence news",
+      "free": true
+    },
+    {
+      "label": "Join Indian Army",
+      "url": "https://joinindianarmy.nic.in",
+      "note": "Official Army entry information including IMA and OTA",
+      "free": true
+    },
+    {
+      "label": "Join Indian Navy",
+      "url": "https://www.joinindiannavy.gov.in",
+      "note": "Official Navy entry information including INA",
+      "free": true
+    }
+  ]
+}

@@ -1,0 +1,2848 @@
+{
+  "id": "it-core",
+  "name": "IT Placement Core",
+  "category": "it",
+  "conductedBy": "Shared syllabus for IT service & product company drives",
+  "tagline": "One syllabus that covers aptitude, coding, CS fundamentals and HR for every IT placement test",
+  "overview": {
+    "about": "Most Indian IT recruiters (TCS, Infosys, Wipro, Accenture, Cognizant, Capgemini, HCLTech, Tech Mahindra) test the same core: quantitative aptitude, logical reasoning, verbal ability, programming and pseudo-code, DSA-based coding, CS fundamentals and an HR round. Master this shared syllabus once, then add each company's pattern on top.",
+    "eligibility": [
+      "Typically B.E./B.Tech/M.E./M.Tech/MCA/M.Sc (CS/IT); some programmes also take BCA/B.Sc graduates",
+      "Most companies ask for 60% (or 6.0 CGPA) or more in 10th, 12th/diploma and graduation, and no active backlogs at joining",
+      "Exact cut-offs and allowed education gaps differ by company and year — always check the official notification"
+    ],
+    "pattern": [
+      {
+        "paper": "Aptitude (quant, logical, verbal)",
+        "duration": "≈ 60–90 min",
+        "note": "Present in almost every drive; sectional cut-offs common"
+      },
+      {
+        "paper": "Technical MCQs / pseudo-code",
+        "duration": "≈ 20–40 min",
+        "note": "OOP, DBMS, OS, CN, output tracing"
+      },
+      {
+        "paper": "Coding",
+        "duration": "≈ 45–180 min",
+        "note": "1–3 DSA problems; harder for higher-pay tracks"
+      },
+      {
+        "paper": "Interviews",
+        "duration": "≈ 20–45 min each",
+        "note": "Technical + HR (sometimes managerial)"
+      }
+    ],
+    "frequency": "Campus and off-campus drives run year-round, peaking from July to December",
+    "officialSite": "https://nptel.ac.in"
+  },
+  "subjects": [
+    {
+      "id": "aptitude",
+      "name": "Quantitative Aptitude",
+      "chapters": [
+        {
+          "id": "percentages-profit",
+          "title": "Percentages, profit & loss",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Percent means 'per hundred'",
+              "body": "x% of y = x × y / 100. Memorise fraction equivalents so you can skip long division in the exam.",
+              "points": [
+                "1/2 = 50%, 1/4 = 25%, 1/5 = 20%",
+                "1/6 = 16.67%, 1/7 ≈ 14.28%, 1/8 = 12.5%",
+                "1/9 ≈ 11.11%, 1/11 ≈ 9.09%, 1/12 ≈ 8.33%"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Percentage change",
+              "points": [
+                "% change = (new − old) / old × 100",
+                "Successive changes a% then b%: net = a + b + ab/100 (use minus sign for decrease)",
+                "Price up r% → cut consumption by r/(100 + r) × 100 % to keep spending same"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Profit & loss",
+              "points": [
+                "Profit = SP − CP;  Profit% = Profit / CP × 100",
+                "SP = CP × (100 + P%) / 100",
+                "SP = MP × (100 − Discount%) / 100",
+                "Profit/loss % is on CP; discount % is on Marked Price (MP)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Mark-up then discount",
+              "body": "An item is marked 40% above cost and sold at a 20% discount. Take CP = 100 → MP = 140 → SP = 140 × 0.8 = 112. Profit = 12%. Shortcut: 40 − 20 + (40 × −20)/100 = 12%."
+            },
+            {
+              "type": "example",
+              "title": "Dishonest dealer",
+              "body": "A dealer sells at cost price but uses a 900 g weight for 1 kg. He gives 900 g, charges for 1000 g. Gain% = 100/900 × 100 = 11.11%."
+            },
+            {
+              "type": "tip",
+              "title": "Assume 100",
+              "body": "Whenever no actual value is given, set CP (or the original quantity) to 100. Every percentage then becomes a plain number, and successive changes are quick to chain."
+            },
+            {
+              "type": "quiz",
+              "q": "A price rises 20% and then falls 20%. The net change is:",
+              "options": [
+                "4% decrease",
+                "No change",
+                "4% increase",
+                "2% decrease"
+              ],
+              "answer": 0,
+              "explain": "20 − 20 + (20 × −20)/100 = −4, i.e. a 4% decrease."
+            },
+            {
+              "type": "quiz",
+              "q": "Selling an article for ₹960 gives a 20% profit. What is its cost price?",
+              "options": [
+                "₹768",
+                "₹800",
+                "₹820",
+                "₹780"
+              ],
+              "answer": 1,
+              "explain": "SP = 1.2 × CP → CP = 960 / 1.2 = ₹800."
+            },
+            {
+              "type": "quiz",
+              "q": "A's salary is 25% more than B's. By what percent is B's salary less than A's?",
+              "options": [
+                "25%",
+                "20%",
+                "15%",
+                "22.5%"
+              ],
+              "answer": 1,
+              "explain": "Let B = 100, A = 125. Difference 25 on base 125 = 20%."
+            }
+          ]
+        },
+        {
+          "id": "time-work",
+          "title": "Time & work, pipes & cisterns",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Work as a rate",
+              "body": "If A finishes a job in n days, A does 1/n of it per day. Rates of people working together simply add; time = total work / combined rate."
+            },
+            {
+              "type": "formula",
+              "title": "Core formulas",
+              "points": [
+                "A and B together: time = ab / (a + b)",
+                "M1·D1·H1 / W1 = M2·D2·H2 / W2 (men, days, hours, work)",
+                "If A is k times as efficient as B, A takes 1/k of B's time"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "LCM method",
+              "body": "A takes 12 days, B takes 18 days. Let total work = LCM(12, 18) = 36 units. A does 3 units/day, B does 2 units/day. Together 5 units/day → 36/5 = 7.2 days. No fractions needed."
+            },
+            {
+              "type": "concept",
+              "title": "Pipes & cisterns",
+              "body": "Same idea as work: an inlet pipe adds a positive rate, an outlet or leak adds a negative rate. Net rate = sum of inlets − sum of outlets."
+            },
+            {
+              "type": "example",
+              "title": "Fill with an outlet open",
+              "body": "Pipe A fills a tank in 6 h, pipe B empties it in 8 h. Net per hour = 1/6 − 1/8 = 1/24, so the tank fills in 24 h. LCM way: tank = 24 units, A +4, B −3, net +1 → 24 h."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Always convert to units with LCM. For 'A works for some days, then leaves' questions, subtract the work done so far, then divide the remainder by the remaining rate."
+            },
+            {
+              "type": "quiz",
+              "q": "A can finish a job in 10 days and B in 15 days. Working together they finish in:",
+              "options": [
+                "5 days",
+                "6 days",
+                "7.5 days",
+                "8 days"
+              ],
+              "answer": 1,
+              "explain": "Work = 30 units; A = 3/day, B = 2/day; together 5/day → 30/5 = 6 days."
+            },
+            {
+              "type": "quiz",
+              "q": "12 men complete a job in 18 days. How many days will 27 men take?",
+              "options": [
+                "8 days",
+                "6 days",
+                "9 days",
+                "12 days"
+              ],
+              "answer": 0,
+              "explain": "Man-days are constant: 12 × 18 = 216 = 27 × D → D = 8."
+            },
+            {
+              "type": "quiz",
+              "q": "A tap fills a tank in 4 h; a leak empties it in 12 h. With both acting, the tank fills in:",
+              "options": [
+                "5 h",
+                "6 h",
+                "8 h",
+                "3 h"
+              ],
+              "answer": 1,
+              "explain": "1/4 − 1/12 = 2/12 = 1/6 → 6 hours."
+            }
+          ]
+        },
+        {
+          "id": "time-speed-distance",
+          "title": "Time, speed & distance",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Basics and units",
+              "body": "Distance = Speed × Time. Convert units first.",
+              "points": [
+                "km/h → m/s: multiply by 5/18",
+                "m/s → km/h: multiply by 18/5",
+                "72 km/h = 20 m/s; 54 km/h = 15 m/s; 36 km/h = 10 m/s"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Average speed",
+              "points": [
+                "Average speed = total distance / total time",
+                "Equal distances at x and y: 2xy / (x + y)",
+                "Equal times at x and y: (x + y) / 2"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Relative speed",
+              "body": "Two bodies moving in the same direction: relative speed = difference of speeds. Opposite directions: sum of speeds. Use relative speed for meeting and overtaking questions."
+            },
+            {
+              "type": "formula",
+              "title": "Trains",
+              "points": [
+                "Cross a pole/person: time = train length / speed",
+                "Cross a platform/bridge: (train + platform length) / speed",
+                "Two trains crossing: (L1 + L2) / relative speed"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Boats & streams",
+              "points": [
+                "Downstream speed D = u + v; upstream U = u − v",
+                "Boat speed in still water u = (D + U)/2",
+                "Stream speed v = (D − U)/2"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Train example",
+              "body": "A 150 m train runs at 54 km/h = 15 m/s. It crosses a pole in 150/15 = 10 s and a 300 m platform in (150 + 300)/15 = 30 s."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Never average the two speeds for a round trip; use 2xy/(x + y). Write all units in m and s (or km and h) before substituting."
+            },
+            {
+              "type": "quiz",
+              "q": "A car goes from A to B at 40 km/h and returns at 60 km/h. Average speed for the round trip?",
+              "options": [
+                "50 km/h",
+                "48 km/h",
+                "45 km/h",
+                "52 km/h"
+              ],
+              "answer": 1,
+              "explain": "2 × 40 × 60 / (40 + 60) = 4800/100 = 48 km/h."
+            },
+            {
+              "type": "quiz",
+              "q": "72 km/h equals:",
+              "options": [
+                "20 m/s",
+                "18 m/s",
+                "25 m/s",
+                "22 m/s"
+              ],
+              "answer": 0,
+              "explain": "72 × 5/18 = 20 m/s."
+            },
+            {
+              "type": "quiz",
+              "q": "A boat goes 16 km/h downstream and 10 km/h upstream. Speed of the stream?",
+              "options": [
+                "6 km/h",
+                "13 km/h",
+                "3 km/h",
+                "4 km/h"
+              ],
+              "answer": 2,
+              "explain": "Stream = (16 − 10)/2 = 3 km/h. (Boat = 13 km/h.)"
+            }
+          ]
+        },
+        {
+          "id": "permutations-probability",
+          "title": "Permutations, combinations & probability",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Counting principle",
+              "body": "If one task can be done in m ways AND a second in n ways, together: m × n. If it is one task OR the other: m + n."
+            },
+            {
+              "type": "formula",
+              "title": "Core formulas",
+              "points": [
+                "nPr = n! / (n − r)!  (order matters)",
+                "nCr = n! / (r! (n − r)!)  (selection, order doesn't matter)",
+                "nCr = nC(n−r); 0! = 1",
+                "Arrangements with repeats: n! / (p! q! …)",
+                "Circular arrangement: (n − 1)!; necklace/garland: (n − 1)!/2"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Repeated letters",
+              "body": "LEVEL has 5 letters with L×2 and E×2. Arrangements = 5! / (2! × 2!) = 120 / 4 = 30."
+            },
+            {
+              "type": "concept",
+              "title": "Probability",
+              "body": "P(E) = favourable outcomes / total equally likely outcomes. P(not E) = 1 − P(E). For independent events P(A and B) = P(A) × P(B); P(A or B) = P(A) + P(B) − P(A and B)."
+            },
+            {
+              "type": "example",
+              "title": "Dice",
+              "body": "Two dice: 36 outcomes. Sum 7: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) → 6/36 = 1/6. Sum 8: (2,6),(3,5),(4,4),(5,3),(6,2) → 5/36."
+            },
+            {
+              "type": "example",
+              "title": "Cards",
+              "body": "P(king or heart) from 52 cards = 4/52 + 13/52 − 1/52 (king of hearts counted twice) = 16/52 = 4/13."
+            },
+            {
+              "type": "tip",
+              "title": "'At least one' trick",
+              "body": "P(at least one) = 1 − P(none). Example: at least one head in 3 tosses = 1 − (1/2)³ = 7/8."
+            },
+            {
+              "type": "quiz",
+              "q": "In how many ways can the letters of APPLE be arranged?",
+              "options": [
+                "120",
+                "60",
+                "24",
+                "30"
+              ],
+              "answer": 1,
+              "explain": "5 letters, P repeats twice: 5!/2! = 120/2 = 60."
+            },
+            {
+              "type": "quiz",
+              "q": "A committee of 3 is chosen from 5 people. Number of ways?",
+              "options": [
+                "10",
+                "60",
+                "15",
+                "20"
+              ],
+              "answer": 0,
+              "explain": "5C3 = 5!/(3!·2!) = 10. Order does not matter, so it is a combination."
+            },
+            {
+              "type": "quiz",
+              "q": "Three fair coins are tossed. Probability of at least one head?",
+              "options": [
+                "1/8",
+                "3/8",
+                "7/8",
+                "1/2"
+              ],
+              "answer": 2,
+              "explain": "1 − P(no heads) = 1 − 1/8 = 7/8."
+            }
+          ]
+        },
+        {
+          "id": "number-system",
+          "title": "Number system",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Divisibility rules",
+              "points": [
+                "3 / 9: sum of digits divisible by 3 / 9",
+                "4: last two digits; 8: last three digits",
+                "11: (sum of odd-place digits − sum of even-place digits) is 0 or a multiple of 11",
+                "6: divisible by both 2 and 3"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "HCF & LCM",
+              "points": [
+                "HCF × LCM = product of the two numbers",
+                "HCF of fractions = HCF of numerators / LCM of denominators",
+                "LCM of fractions = LCM of numerators / HCF of denominators"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Unit digit cyclicity",
+              "body": "Powers repeat their last digit in cycles of 4 (or less). Find exponent mod 4; remainder 0 means take the 4th term.",
+              "points": [
+                "2: 2, 4, 8, 6",
+                "3: 3, 9, 7, 1",
+                "7: 7, 9, 3, 1",
+                "8: 8, 4, 2, 6",
+                "4: 4, 6; 9: 9, 1; 0, 1, 5, 6 never change"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Unit digit of 7^95",
+              "body": "95 mod 4 = 3 → third term of the cycle 7, 9, 3, 1 → unit digit is 3."
+            },
+            {
+              "type": "concept",
+              "title": "Trailing zeros of n!",
+              "body": "Count factors of 5: ⌊n/5⌋ + ⌊n/25⌋ + ⌊n/125⌋ + … Example: 100! → 20 + 4 = 24 zeros."
+            },
+            {
+              "type": "concept",
+              "title": "Remainders",
+              "body": "(a × b) mod n = ((a mod n) × (b mod n)) mod n, and the same for +. Example: 17 × 23 mod 5 = (2 × 3) mod 5 = 1."
+            },
+            {
+              "type": "tip",
+              "title": "Number of factors",
+              "body": "Write N = p^a · q^b · r^c. Factors = (a+1)(b+1)(c+1). Example: 72 = 2³ · 3² → 4 × 3 = 12 factors."
+            },
+            {
+              "type": "quiz",
+              "q": "Unit digit of 3^65?",
+              "options": [
+                "3",
+                "1",
+                "7",
+                "9"
+              ],
+              "answer": 0,
+              "explain": "65 mod 4 = 1 → first term of 3, 9, 7, 1 → 3."
+            },
+            {
+              "type": "quiz",
+              "q": "Number of trailing zeros in 50!:",
+              "options": [
+                "10",
+                "11",
+                "12",
+                "13"
+              ],
+              "answer": 2,
+              "explain": "⌊50/5⌋ + ⌊50/25⌋ = 10 + 2 = 12."
+            },
+            {
+              "type": "quiz",
+              "q": "HCF of two numbers is 12, LCM is 180 and one number is 36. The other is:",
+              "options": [
+                "48",
+                "60",
+                "72",
+                "54"
+              ],
+              "answer": 1,
+              "explain": "Other = 12 × 180 / 36 = 60."
+            }
+          ]
+        },
+        {
+          "id": "ratio-average-interest",
+          "title": "Ratio, averages, mixtures & interest",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Ratios",
+              "body": "To combine A:B and B:C, make B equal. A:B = 2:3 and B:C = 4:5 → scale to 8:12 and 12:15 → A:B:C = 8:12:15."
+            },
+            {
+              "type": "concept",
+              "title": "Averages",
+              "body": "Average = sum / count. When an item is removed or replaced, work with sums, not averages. New sum − old sum tells you the value added or removed."
+            },
+            {
+              "type": "formula",
+              "title": "Interest",
+              "points": [
+                "Simple interest SI = P × R × T / 100",
+                "Compound amount A = P (1 + R/100)^T; CI = A − P",
+                "CI − SI for 2 years = P (R/100)²"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "CI − SI",
+              "body": "₹10,000 at 10% for 2 years: CI − SI = 10000 × (0.1)² = ₹100. (SI = 2000, CI = 2100.)"
+            },
+            {
+              "type": "concept",
+              "title": "Alligation",
+              "body": "Mixing a cheaper and a dearer item to get a mean price: cheaper qty : dearer qty = (dearer − mean) : (mean − cheaper)."
+            },
+            {
+              "type": "example",
+              "title": "Alligation example",
+              "body": "Rice at ₹20/kg and ₹30/kg mixed to sell at ₹24/kg cost. Ratio = (30 − 24) : (24 − 20) = 6 : 4 = 3 : 2."
+            },
+            {
+              "type": "quiz",
+              "q": "The average of 5 numbers is 20. One number is removed and the average becomes 18. The removed number is:",
+              "options": [
+                "28",
+                "22",
+                "30",
+                "25"
+              ],
+              "answer": 0,
+              "explain": "Old sum 100; new sum 4 × 18 = 72; removed = 28."
+            },
+            {
+              "type": "quiz",
+              "q": "Simple interest on ₹5,000 at 8% p.a. for 3 years:",
+              "options": [
+                "₹1,000",
+                "₹1,300",
+                "₹1,200",
+                "₹1,400"
+              ],
+              "answer": 2,
+              "explain": "5000 × 8 × 3 / 100 = ₹1,200."
+            },
+            {
+              "type": "quiz",
+              "q": "A:B = 2:3 and B:C = 4:5. Find A:B:C.",
+              "options": [
+                "2:3:5",
+                "8:12:15",
+                "6:9:10",
+                "8:12:10"
+              ],
+              "answer": 1,
+              "explain": "Make B = 12: A:B = 8:12, B:C = 12:15."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reasoning",
+      "name": "Logical Reasoning",
+      "chapters": [
+        {
+          "id": "series-coding",
+          "title": "Series & coding-decoding",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Number series checklist",
+              "points": [
+                "Differences (and differences of differences)",
+                "Squares / cubes ± constant",
+                "×k ± c patterns",
+                "Two interleaved (alternate) series",
+                "Primes"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Find the next term",
+              "body": "2, 6, 12, 20, 30, ? → terms are 1×2, 2×3, 3×4, 4×5, 5×6 → next 6×7 = 42.\n3, 5, 9, 17, 33, ? → each term ×2 − 1 → 65."
+            },
+            {
+              "type": "concept",
+              "title": "Letter positions",
+              "body": "Know A=1 … Z=26 instantly. Memory hook EJOTY = 5, 10, 15, 20, 25. Opposite letters add to 27: A↔Z, M↔N, D↔W."
+            },
+            {
+              "type": "concept",
+              "title": "Coding-decoding",
+              "body": "Find the rule on the given word: fixed shift (+1, +2), reverse order, opposite letter, or position numbers. Then apply the same rule to the new word."
+            },
+            {
+              "type": "example",
+              "title": "Shift code",
+              "body": "MANGO → OCPIQ: each letter +2. So APPLE → CRRNG."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "If a series doesn't fit in 30 seconds, check alternate terms separately — TCS and Accenture love interleaved series."
+            },
+            {
+              "type": "quiz",
+              "q": "1, 4, 9, 16, 25, ?",
+              "options": [
+                "30",
+                "35",
+                "36",
+                "49"
+              ],
+              "answer": 2,
+              "explain": "Perfect squares: 6² = 36."
+            },
+            {
+              "type": "quiz",
+              "q": "If ROSE is coded TQUG, how is LILY coded?",
+              "options": [
+                "NKNA",
+                "MJMZ",
+                "NKNZ",
+                "OLOB"
+              ],
+              "answer": 0,
+              "explain": "Each letter +2: L→N, I→K, L→N, Y→A (wraps around)."
+            },
+            {
+              "type": "quiz",
+              "q": "Find the odd one out: 3, 5, 9, 11",
+              "options": [
+                "3",
+                "5",
+                "9",
+                "11"
+              ],
+              "answer": 2,
+              "explain": "All others are prime; 9 = 3 × 3."
+            }
+          ]
+        },
+        {
+          "id": "blood-relations-directions",
+          "title": "Blood relations & directions",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Draw, don't imagine",
+              "body": "Draw a family tree: horizontal lines for siblings/spouses, vertical lines for generations, mark + for male and − for female. Never assume gender from a name."
+            },
+            {
+              "type": "example",
+              "title": "Classic statement",
+              "body": "Riya, pointing to a man: 'He is the son of my grandfather's only son.' Grandfather's only son = Riya's father. His son = Riya's brother."
+            },
+            {
+              "type": "concept",
+              "title": "Coded relations",
+              "body": "Questions like 'A + B means A is the father of B, A × B means A is the sister of B' — decode one symbol at a time, left to right, and draw as you go."
+            },
+            {
+              "type": "concept",
+              "title": "Directions",
+              "body": "North up, East right. Turning right from North → East; left from North → West. Use Pythagoras for the shortest distance from the start."
+            },
+            {
+              "type": "example",
+              "title": "Direction example",
+              "body": "Walk 3 km north, turn right, walk 4 km. You are 5 km (3-4-5 triangle) from the start, towards the north-east."
+            },
+            {
+              "type": "concept",
+              "title": "Shadows",
+              "body": "Sun rises in the east, so in the morning shadows fall to the west; in the evening they fall to the east. At noon (in India) shadows are minimal."
+            },
+            {
+              "type": "quiz",
+              "q": "A man walks 6 km east, turns left and walks 8 km. How far is he from the start?",
+              "options": [
+                "14 km",
+                "10 km",
+                "12 km",
+                "2 km"
+              ],
+              "answer": 1,
+              "explain": "Left from east is north. √(6² + 8²) = 10 km."
+            },
+            {
+              "type": "quiz",
+              "q": "A is B's sister, C is B's mother and D is C's father. How is A related to D?",
+              "options": [
+                "Granddaughter",
+                "Daughter",
+                "Grandmother",
+                "Niece"
+              ],
+              "answer": 0,
+              "explain": "A is C's daughter; C is D's daughter → A is D's granddaughter."
+            },
+            {
+              "type": "quiz",
+              "q": "In the morning you stand facing the sun. Your shadow falls towards:",
+              "options": [
+                "West",
+                "East",
+                "North",
+                "South"
+              ],
+              "answer": 0,
+              "explain": "Facing the rising sun means facing east; the shadow is behind you, to the west."
+            }
+          ]
+        },
+        {
+          "id": "syllogism-seating",
+          "title": "Syllogisms & seating arrangement",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Syllogisms with Venn diagrams",
+              "body": "Draw the least-overlap diagram that satisfies every statement. A conclusion follows only if it is true in every possible diagram."
+            },
+            {
+              "type": "formula",
+              "title": "Quick rules",
+              "points": [
+                "All + All → All",
+                "All + No → No",
+                "Some + All → Some",
+                "Some + No → Some … not",
+                "Some + Some → no definite conclusion"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Either-or case",
+              "body": "When neither 'Some A are B' nor 'No A is B' follows individually but they cover all possibilities for the same pair, answer 'either I or II follows'."
+            },
+            {
+              "type": "example",
+              "title": "Example",
+              "body": "All cats are dogs; all dogs are birds. 'All cats are birds' follows. 'Some birds are cats' follows. 'All birds are cats' does not."
+            },
+            {
+              "type": "concept",
+              "title": "Seating: linear & circular",
+              "body": "Place the definite clues first, then branch on the rest. Facing the centre of a circle, your left is clockwise; facing outward, it's reversed."
+            },
+            {
+              "type": "example",
+              "title": "Linear example",
+              "body": "Five people in a row face north. A is at the left end, C is in the middle, B is immediately right of C, E sits left of D. Row: A E C B D."
+            },
+            {
+              "type": "quiz",
+              "q": "Some pens are books. All books are tables. Which follows? I. Some pens are tables. II. All tables are pens.",
+              "options": [
+                "Only I",
+                "Only II",
+                "Both",
+                "Neither"
+              ],
+              "answer": 0,
+              "explain": "Some + All gives 'Some pens are tables'. Nothing says all tables are pens."
+            },
+            {
+              "type": "quiz",
+              "q": "In the row A E C B D (left to right), who is second from the right?",
+              "options": [
+                "B",
+                "C",
+                "D",
+                "E"
+              ],
+              "answer": 0,
+              "explain": "From the right: D (1st), B (2nd)."
+            },
+            {
+              "type": "quiz",
+              "q": "No cat is a rat. All rats are mice. Conclusion: 'Some mice are not cats.'",
+              "options": [
+                "Follows",
+                "Does not follow",
+                "Only if all mice are rats",
+                "Cannot be determined"
+              ],
+              "answer": 0,
+              "explain": "The mice that are rats are definitely not cats, so 'some mice are not cats' is always true."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verbal",
+      "name": "Verbal Ability",
+      "chapters": [
+        {
+          "id": "grammar-correction",
+          "title": "Grammar & sentence correction",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Subject–verb agreement",
+              "points": [
+                "Each / every / either / neither + singular verb: 'Each of the students has…'",
+                "Neither…nor / either…or: verb agrees with the nearer subject",
+                "Collective noun as one unit takes singular: 'The team is…'",
+                "'One of the + plural noun': one of the best players"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Articles",
+              "body": "Use 'an' before a vowel sound (an hour, an MBA), 'a' before a consonant sound (a university, a one-rupee coin). 'The' for something specific or unique."
+            },
+            {
+              "type": "concept",
+              "title": "Tenses: since vs for",
+              "body": "'Since' + point of time (since 2019); 'for' + period (for five years). Use present perfect continuous: 'I have been working here since 2022.'"
+            },
+            {
+              "type": "concept",
+              "title": "Common errors",
+              "points": [
+                "discuss about → discuss",
+                "return back → return",
+                "cope up with → cope with",
+                "revert back → reply",
+                "more better → better"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Fix it",
+              "body": "'The list of items are on the desk.' The subject is 'list' (singular) → 'The list of items is on the desk.'"
+            },
+            {
+              "type": "tip",
+              "title": "Error-spotting routine",
+              "body": "Check in order: subject–verb agreement, tense consistency, pronoun reference, preposition, parallelism ('to read, to write and to speak')."
+            },
+            {
+              "type": "quiz",
+              "q": "Choose the correct sentence.",
+              "options": [
+                "Neither the manager nor the employees was present.",
+                "Neither the manager nor the employees were present.",
+                "Neither the manager nor the employees is present.",
+                "Neither the manager or the employees were present."
+              ],
+              "answer": 1,
+              "explain": "With neither…nor, the verb agrees with the nearer subject 'employees' (plural); 'neither' pairs with 'nor'."
+            },
+            {
+              "type": "quiz",
+              "q": "Spot the error: 'He is / one of the best player / in the team. / No error'",
+              "options": [
+                "He is",
+                "one of the best player",
+                "in the team.",
+                "No error"
+              ],
+              "answer": 1,
+              "explain": "'One of the' takes a plural noun: players."
+            },
+            {
+              "type": "quiz",
+              "q": "She has been living here ___ 2019.",
+              "options": [
+                "for",
+                "since",
+                "from",
+                "by"
+              ],
+              "answer": 1,
+              "explain": "2019 is a point of time, so 'since'."
+            }
+          ]
+        },
+        {
+          "id": "rc-parajumbles-vocab",
+          "title": "Reading comprehension, para-jumbles & vocabulary",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "RC approach",
+              "body": "Skim the passage for its main idea and tone (1 minute), then read each question and go back to the exact lines. For fact questions, scanning beats rereading."
+            },
+            {
+              "type": "concept",
+              "title": "RC question types",
+              "points": [
+                "Main idea / best title",
+                "Inference: must be supported by the text",
+                "Tone: critical, neutral, optimistic…",
+                "Word meaning in context"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Elimination",
+              "body": "Reject options with extreme words (always, never, only) unless the passage says so, and options that are true in real life but not stated in the passage."
+            },
+            {
+              "type": "concept",
+              "title": "Para-jumbles",
+              "body": "Find the opener: a sentence that introduces the topic without pronouns or connectors. Then link pairs: 'this', 'however', 'therefore' point back to a previous sentence."
+            },
+            {
+              "type": "concept",
+              "title": "Vocabulary via roots",
+              "points": [
+                "bene = good (benevolent), mal = bad (malevolent)",
+                "chron = time (chronic), ephem = short-lived",
+                "loqu = speak (eloquent), ambi = both (ambiguous)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Opener test",
+              "body": "'Cloud computing lets firms rent servers on demand.' can open a paragraph. 'However, costs rose.' cannot — 'however' needs something before it."
+            },
+            {
+              "type": "quiz",
+              "q": "Synonym of 'Ephemeral':",
+              "options": [
+                "Eternal",
+                "Short-lived",
+                "Ethereal",
+                "Huge"
+              ],
+              "answer": 1,
+              "explain": "Ephemeral means lasting a very short time."
+            },
+            {
+              "type": "quiz",
+              "q": "Antonym of 'Benevolent':",
+              "options": [
+                "Kind",
+                "Generous",
+                "Malevolent",
+                "Brave"
+              ],
+              "answer": 2,
+              "explain": "Benevolent = well-meaning; malevolent = wishing harm."
+            },
+            {
+              "type": "quiz",
+              "q": "Which sentence most likely opens a paragraph?",
+              "options": [
+                "However, this changed in 2010.",
+                "It was also cheaper.",
+                "Cloud computing lets companies rent servers on demand.",
+                "Therefore, many firms switched."
+              ],
+              "answer": 2,
+              "explain": "The others begin with connectors or pronouns that refer back to an earlier sentence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "programming",
+      "name": "Programming Fundamentals",
+      "chapters": [
+        {
+          "id": "c-basics",
+          "title": "C basics & output questions",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Data types (typical 64-bit compiler)",
+              "points": [
+                "char 1 byte, int 4, float 4, double 8",
+                "sizeof is an operator, not a function",
+                "Integer overflow of signed int is undefined behaviour"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Integer division and %",
+              "body": "7 / 2 = 3 and 7 % 2 = 1. Since C99, division truncates towards zero: −7 / 2 = −3 and −7 % 2 = −1. Watch for int/int when you expect a decimal."
+            },
+            {
+              "type": "example",
+              "title": "Pre vs post increment",
+              "body": "int a = 5;\nint b = a++;  // b = 5, a = 6\nint c = ++a;  // a = 7, c = 7\nNever use a++ twice in one expression (e.g. a++ + ++a) — it is undefined behaviour."
+            },
+            {
+              "type": "concept",
+              "title": "Pointers",
+              "body": "int x = 10; int *p = &x; *p = 20; → x is now 20. Arrays decay to pointers: arr[i] is the same as *(arr + i)."
+            },
+            {
+              "type": "example",
+              "title": "static local variable",
+              "body": "void f() {\n  static int c = 0;\n  c++;\n  printf(\"%d \", c);\n}\nCalling f() three times prints 1 2 3 — a static local keeps its value between calls."
+            },
+            {
+              "type": "concept",
+              "title": "switch fall-through",
+              "body": "Without break, execution continues into the next case. case 1: printf(\"A\"); case 2: printf(\"B\"); with input 1 prints AB."
+            },
+            {
+              "type": "quiz",
+              "q": "int a = 5; int b = a++ * 2; printf(\"%d %d\", a, b); prints:",
+              "options": [
+                "5 10",
+                "6 12",
+                "6 10",
+                "5 12"
+              ],
+              "answer": 2,
+              "explain": "b uses the old value 5 → 10; then a becomes 6."
+            },
+            {
+              "type": "quiz",
+              "q": "printf(\"%d\", 17 % 5); prints:",
+              "options": [
+                "3",
+                "2",
+                "1",
+                "0"
+              ],
+              "answer": 1,
+              "explain": "17 = 3 × 5 + 2."
+            },
+            {
+              "type": "quiz",
+              "q": "A function with static int c = 0; c++; printf(\"%d \", c); is called three times. Output:",
+              "options": [
+                "1 2 3",
+                "1 1 1",
+                "0 1 2",
+                "3 3 3"
+              ],
+              "answer": 0,
+              "explain": "The static variable is initialised once and retains its value."
+            }
+          ]
+        },
+        {
+          "id": "java-python-basics",
+          "title": "Java & Python basics",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Java in one card",
+              "body": "Source compiles to bytecode that runs on the JVM, so the same .class runs anywhere ('write once, run anywhere'). Entry point: public static void main(String[] args)."
+            },
+            {
+              "type": "concept",
+              "title": "Java strings",
+              "body": "Strings are immutable. == compares references; .equals() compares content. Literals are interned in the string pool."
+            },
+            {
+              "type": "example",
+              "title": "== vs equals",
+              "body": "String a = \"hi\";\nString b = new String(\"hi\");\nString c = \"hi\";\na == b       // false (different objects)\na.equals(b)  // true\na == c       // true (same pooled literal)"
+            },
+            {
+              "type": "concept",
+              "title": "Python numbers",
+              "body": "/ is true division (7/2 = 3.5); // is floor division (7//2 = 3, −7//2 = −4). % takes the sign of the divisor: −7 % 3 = 2."
+            },
+            {
+              "type": "concept",
+              "title": "Python slicing",
+              "body": "s[start:stop:step], stop excluded. s[1:4] → indices 1–3; s[::-1] reverses; s[-1] is the last element."
+            },
+            {
+              "type": "example",
+              "title": "Mutable default argument",
+              "body": "def f(x, l=[]):\n    l.append(x)\n    return l\nf(1) → [1]; f(2) → [1, 2]! The default list is created once. Use l=None and create a new list inside."
+            },
+            {
+              "type": "quiz",
+              "q": "print(-7 // 2) in Python outputs:",
+              "options": [
+                "-4",
+                "-3",
+                "-3.5",
+                "3"
+              ],
+              "answer": 0,
+              "explain": "// floors towards negative infinity: −3.5 → −4."
+            },
+            {
+              "type": "quiz",
+              "q": "Java: String s1 = \"abc\"; String s2 = \"abc\"; s1 == s2 is:",
+              "options": [
+                "true",
+                "false",
+                "Compile error",
+                "Runtime exception"
+              ],
+              "answer": 0,
+              "explain": "Both literals refer to the same object in the string pool."
+            },
+            {
+              "type": "quiz",
+              "q": "Python: print(\"placement\"[2:5])",
+              "options": [
+                "lac",
+                "ace",
+                "acem",
+                "pla"
+              ],
+              "answer": 1,
+              "explain": "Indices 2, 3, 4 → a, c, e."
+            }
+          ]
+        },
+        {
+          "id": "oop-basics",
+          "title": "Object-oriented programming",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Class and object",
+              "body": "A class is a blueprint (fields + methods); an object is an instance created from it. Each object has its own state."
+            },
+            {
+              "type": "concept",
+              "title": "Encapsulation",
+              "body": "Bundle data with the methods that use it and hide the data: private fields, public getters/setters that can validate input."
+            },
+            {
+              "type": "concept",
+              "title": "Inheritance",
+              "body": "'Is-a' reuse: class Dog extends Animal. Java allows single class inheritance (multiple via interfaces); C++ and Python allow multiple inheritance."
+            },
+            {
+              "type": "concept",
+              "title": "Polymorphism",
+              "points": [
+                "Compile-time: method overloading — same name, different parameters",
+                "Run-time: method overriding — subclass redefines a parent method; chosen by the actual object type"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Dynamic dispatch",
+              "body": "class Animal { void sound() { System.out.println(\"...\"); } }\nclass Dog extends Animal {\n  void sound() { System.out.println(\"Woof\"); }\n}\nAnimal a = new Dog();\na.sound();  // Woof"
+            },
+            {
+              "type": "concept",
+              "title": "Abstraction",
+              "body": "Expose what an object does, hide how. Achieved with abstract classes and interfaces. Example: List interface vs ArrayList/LinkedList implementations."
+            },
+            {
+              "type": "quiz",
+              "q": "Method overloading is an example of:",
+              "options": [
+                "Run-time polymorphism",
+                "Compile-time polymorphism",
+                "Encapsulation",
+                "Inheritance"
+              ],
+              "answer": 1,
+              "explain": "The compiler picks the overload from the argument types."
+            },
+            {
+              "type": "quiz",
+              "q": "Making fields private and exposing getters/setters is called:",
+              "options": [
+                "Abstraction",
+                "Polymorphism",
+                "Encapsulation",
+                "Inheritance"
+              ],
+              "answer": 2,
+              "explain": "Data hiding is encapsulation."
+            },
+            {
+              "type": "quiz",
+              "q": "Animal a = new Dog(); a.sound(); — if Dog overrides sound(), which runs?",
+              "options": [
+                "Dog's sound()",
+                "Animal's sound()",
+                "Compile error",
+                "Both, in order"
+              ],
+              "answer": 0,
+              "explain": "Overridden methods are dispatched on the runtime object type."
+            }
+          ]
+        },
+        {
+          "id": "pseudocode-output",
+          "title": "Pseudo-code & output tracing",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Trace with a table",
+              "body": "Make one column per variable and one row per loop iteration. Update in the exact order written. Most pseudo-code MCQs (Capgemini, Accenture, Infosys) are won here."
+            },
+            {
+              "type": "concept",
+              "title": "Operators you must know",
+              "points": [
+                "a mod b = remainder; a / b on integers = floor in most pseudo-code",
+                "Bitwise: 5 & 3 = 1, 5 | 3 = 7, 5 ^ 3 = 6",
+                "Shifts: 5 << 1 = 10, 5 >> 1 = 2",
+                "&& and || short-circuit"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Loop trace",
+              "body": "sum = 0\nfor i = 1 to 5\n  if i mod 2 == 0\n    sum = sum + i\nprint sum\n→ i = 2 and 4 are added → 6"
+            },
+            {
+              "type": "example",
+              "title": "Recursion trace",
+              "body": "fun(n): if n <= 1 return 1\n        return n * fun(n - 2)\nfun(5) = 5 × fun(3) = 5 × 3 × fun(1) = 15"
+            },
+            {
+              "type": "example",
+              "title": "Digit loop",
+              "body": "rev = 0\nwhile n > 0\n  rev = rev * 10 + n mod 10\n  n = n / 10\nFor n = 1234 → rev = 4321. Recognise this pattern instantly."
+            },
+            {
+              "type": "tip",
+              "title": "Traps",
+              "body": "Off-by-one loop bounds ('to' inclusive?), integer division, variables updated inside the loop condition, and a recursive call before vs after the print."
+            },
+            {
+              "type": "quiz",
+              "q": "a = 10, b = 3\na = a ^ b\nb = a ^ b\na = a ^ b\nprint a, b",
+              "options": [
+                "3 10",
+                "10 3",
+                "9 10",
+                "3 9"
+              ],
+              "answer": 0,
+              "explain": "XOR swap: a = 9, b = 9^3 = 10, a = 9^10 = 3."
+            },
+            {
+              "type": "quiz",
+              "q": "x = 1\nfor i = 1 to 4\n  x = x * 2 + 1\nprint x",
+              "options": [
+                "15",
+                "31",
+                "63",
+                "16"
+              ],
+              "answer": 1,
+              "explain": "1 → 3 → 7 → 15 → 31."
+            },
+            {
+              "type": "quiz",
+              "q": "fun(n): if n == 0 return 0\n        return n mod 10 + fun(n / 10)\nfun(472) returns:",
+              "options": [
+                "13",
+                "472",
+                "7",
+                "11"
+              ],
+              "answer": 0,
+              "explain": "Digit sum: 4 + 7 + 2 = 13."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dsa",
+      "name": "Data Structures & Algorithms",
+      "chapters": [
+        {
+          "id": "complexity",
+          "title": "Time & space complexity (Big-O)",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What Big-O means",
+              "body": "Big-O is an upper bound on how running time grows with input size n. Drop constants and lower-order terms: 3n² + 5n + 2 → O(n²)."
+            },
+            {
+              "type": "concept",
+              "title": "Growth order",
+              "points": [
+                "O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ) < O(n!)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Counting loops",
+              "body": "for i in 0..n: for j in 0..n → O(n²)\nfor (i = 1; i < n; i *= 2) → O(log n)\nfor i in 0..n: for j in 0..i → n(n−1)/2 → O(n²)"
+            },
+            {
+              "type": "concept",
+              "title": "Space complexity",
+              "body": "Extra memory used as n grows. Recursion uses stack space: recursive factorial is O(n) space even though it stores no array."
+            },
+            {
+              "type": "concept",
+              "title": "Best, average, worst, amortised",
+              "body": "Quick sort: O(n log n) average, O(n²) worst. Appending to a dynamic array (ArrayList, Python list) is O(1) amortised — an occasional O(n) resize is spread over many appends."
+            },
+            {
+              "type": "formula",
+              "title": "Common recurrences",
+              "points": [
+                "T(n) = T(n/2) + O(1) → O(log n)  (binary search)",
+                "T(n) = 2T(n/2) + O(n) → O(n log n)  (merge sort)",
+                "T(n) = 2T(n/2) + O(1) → O(n)",
+                "T(n) = T(n−1) + O(1) → O(n)"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Fit the constraints",
+              "body": "~10⁸ simple operations ≈ 1 second. n ≤ 10⁵ needs O(n log n) or better; n ≤ 10³ allows O(n²); n ≤ 20 allows O(2ⁿ)."
+            },
+            {
+              "type": "quiz",
+              "q": "for (i = 1; i < n; i = i * 2)\n  for (j = 0; j < n; j++)  — complexity?",
+              "options": [
+                "O(n)",
+                "O(log n)",
+                "O(n log n)",
+                "O(n²)"
+              ],
+              "answer": 2,
+              "explain": "Outer loop runs log n times, inner loop n times each."
+            },
+            {
+              "type": "quiz",
+              "q": "T(n) = T(n/2) + O(1) solves to:",
+              "options": [
+                "O(log n)",
+                "O(n)",
+                "O(n log n)",
+                "O(1)"
+              ],
+              "answer": 0,
+              "explain": "The problem halves each step with constant work: log n levels."
+            },
+            {
+              "type": "quiz",
+              "q": "With n = 10⁵, which algorithm is likely too slow for a 1-second limit?",
+              "options": [
+                "O(n log n)",
+                "O(n)",
+                "O(n²)",
+                "O(log n)"
+              ],
+              "answer": 2,
+              "explain": "10¹⁰ operations is far beyond ~10⁸ per second."
+            }
+          ]
+        },
+        {
+          "id": "arrays-two-pointers",
+          "title": "Arrays, prefix sums & two pointers",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Arrays",
+              "body": "Contiguous memory: O(1) access by index, O(n) insert/delete in the middle (elements shift). Most placement coding questions start here."
+            },
+            {
+              "type": "concept",
+              "title": "Prefix sums",
+              "body": "pre[i] = pre[i−1] + a[i]. Any range sum a[l..r] = pre[r] − pre[l−1] in O(1) after O(n) preprocessing."
+            },
+            {
+              "type": "example",
+              "title": "Two pointers on a sorted array",
+              "body": "def pair_sum(a, t):\n    i, j = 0, len(a) - 1\n    while i < j:\n        s = a[i] + a[j]\n        if s == t: return (i, j)\n        if s < t: i += 1\n        else: j -= 1\n    return None\nO(n) time, O(1) space."
+            },
+            {
+              "type": "concept",
+              "title": "Sliding window",
+              "body": "For 'best subarray of size k' or 'longest window satisfying a condition', slide a window: add the new element, remove the old one. O(n) instead of O(n·k)."
+            },
+            {
+              "type": "example",
+              "title": "Kadane's algorithm",
+              "body": "Maximum subarray sum:\ncur = best = a[0]\nfor x in a[1:]:\n    cur = max(x, cur + x)\n    best = max(best, cur)\nFor [−2,1,−3,4,−1,2,1,−5,4] → 6 (subarray 4,−1,2,1)."
+            },
+            {
+              "type": "tip",
+              "title": "Frequently asked",
+              "body": "Reverse an array, move zeros to the end, second largest, rotate by k, missing number (n(n+1)/2 − sum), duplicates, merge two sorted arrays, leaders in an array."
+            },
+            {
+              "type": "quiz",
+              "q": "Find the missing number in an array holding 1..n with one value missing. Best approach?",
+              "options": [
+                "Sum (or XOR) trick: O(n) time, O(1) space",
+                "Sort then scan: O(n log n)",
+                "Nested loops: O(n²)",
+                "Binary search on unsorted array: O(log n)"
+              ],
+              "answer": 0,
+              "explain": "Expected sum n(n+1)/2 minus actual sum gives the missing value in one pass."
+            },
+            {
+              "type": "quiz",
+              "q": "Kadane's algorithm on [2, −1, 3, −4, 5] gives:",
+              "options": [
+                "4",
+                "5",
+                "6",
+                "7"
+              ],
+              "answer": 1,
+              "explain": "cur: 2, 1, 4, 0, 5 → best = 5."
+            },
+            {
+              "type": "quiz",
+              "q": "Time complexity of the two-pointer pair-sum on a sorted array:",
+              "options": [
+                "O(n²)",
+                "O(n log n)",
+                "O(n)",
+                "O(1)"
+              ],
+              "answer": 2,
+              "explain": "Each step moves one pointer inward; at most n steps."
+            }
+          ]
+        },
+        {
+          "id": "strings-hashing",
+          "title": "Strings & hashing",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Strings are immutable",
+              "body": "In Java and Python, s += c inside a loop copies the string every time (O(n²)). Use StringBuilder in Java or ''.join(list) in Python."
+            },
+            {
+              "type": "concept",
+              "title": "Hash maps & sets",
+              "body": "Average O(1) insert, delete and lookup; worst case O(n) when many keys collide. The go-to tool for counting, duplicates and 'have I seen this?'."
+            },
+            {
+              "type": "example",
+              "title": "Two Sum with a hash map",
+              "body": "def two_sum(a, t):\n    seen = {}\n    for i, x in enumerate(a):\n        if t - x in seen:\n            return [seen[t - x], i]\n        seen[x] = i\nO(n) instead of O(n²)."
+            },
+            {
+              "type": "example",
+              "title": "Anagram check",
+              "body": "from collections import Counter\ndef is_anagram(a, b):\n    return Counter(a) == Counter(b)\nFor lowercase-only input, an int[26] count array is faster."
+            },
+            {
+              "type": "concept",
+              "title": "Palindrome",
+              "body": "Two pointers from both ends moving inward; skip non-alphanumerics if the question says so. O(n) time, O(1) space."
+            },
+            {
+              "type": "concept",
+              "title": "Longest substring without repeats",
+              "body": "Sliding window + map of last-seen index. When a repeat appears inside the window, move the left edge past its previous position. O(n)."
+            },
+            {
+              "type": "tip",
+              "title": "First non-repeating character",
+              "body": "Pass 1: count frequencies. Pass 2: return the first character with count 1. Two linear passes beat any nested loop."
+            },
+            {
+              "type": "quiz",
+              "q": "Length of the longest substring without repeating characters in \"abcabcbb\":",
+              "options": [
+                "2",
+                "3",
+                "4",
+                "8"
+              ],
+              "answer": 1,
+              "explain": "\"abc\" is the longest window with distinct characters."
+            },
+            {
+              "type": "quiz",
+              "q": "Average-case lookup time in a hash table:",
+              "options": [
+                "O(1)",
+                "O(log n)",
+                "O(n)",
+                "O(n log n)"
+              ],
+              "answer": 0,
+              "explain": "Hashing jumps straight to the bucket; collisions make the worst case O(n)."
+            },
+            {
+              "type": "quiz",
+              "q": "First non-repeating character in \"swiss\":",
+              "options": [
+                "w",
+                "s",
+                "i",
+                "None"
+              ],
+              "answer": 0,
+              "explain": "Counts: s=3, w=1, i=1. Scanning left to right, w comes first."
+            }
+          ]
+        },
+        {
+          "id": "linked-lists",
+          "title": "Linked lists",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Structure",
+              "body": "Each node stores data and a pointer to the next node. O(1) insert/delete at a known node, O(n) access by index. Variants: singly, doubly, circular."
+            },
+            {
+              "type": "example",
+              "title": "Reverse a list (iterative)",
+              "body": "def reverse(head):\n    prev = None\n    while head:\n        nxt = head.next\n        head.next = prev\n        prev, head = head, nxt\n    return prev\nO(n) time, O(1) space — the most-asked linked-list question."
+            },
+            {
+              "type": "concept",
+              "title": "Fast & slow pointers",
+              "body": "Slow moves 1 step, fast moves 2. When fast hits the end, slow is at the middle. If they ever meet, the list has a cycle (Floyd's algorithm)."
+            },
+            {
+              "type": "concept",
+              "title": "Merge two sorted lists",
+              "body": "Use a dummy head and a tail pointer; repeatedly attach the smaller front node. O(n + m)."
+            },
+            {
+              "type": "concept",
+              "title": "Remove n-th node from end",
+              "body": "Move fast n steps ahead, then move both until fast reaches the end; slow is just before the node to delete. One pass."
+            },
+            {
+              "type": "tip",
+              "title": "Dummy node",
+              "body": "A dummy node before the head removes special cases for deleting or inserting at the head. Return dummy.next at the end."
+            },
+            {
+              "type": "quiz",
+              "q": "Floyd's cycle detection relies on:",
+              "options": [
+                "Two pointers moving at different speeds",
+                "A hash of every node's value",
+                "Sorting the list",
+                "Reversing the list twice"
+              ],
+              "answer": 0,
+              "explain": "If a cycle exists, the fast pointer eventually meets the slow one inside it."
+            },
+            {
+              "type": "quiz",
+              "q": "Time to access the k-th element of a singly linked list:",
+              "options": [
+                "O(1)",
+                "O(k)",
+                "O(log k)",
+                "O(k²)"
+              ],
+              "answer": 1,
+              "explain": "You must walk k nodes from the head."
+            },
+            {
+              "type": "quiz",
+              "q": "Slow moves 1 step, fast moves 2. When fast reaches the end, slow points to:",
+              "options": [
+                "The head",
+                "The last node",
+                "The middle node",
+                "One-third of the way"
+              ],
+              "answer": 2,
+              "explain": "Fast covers twice the distance of slow."
+            }
+          ]
+        },
+        {
+          "id": "stacks-queues",
+          "title": "Stacks & queues",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Stack (LIFO)",
+              "body": "push, pop, peek in O(1). Used for function calls, undo, bracket matching, expression evaluation, DFS and backtracking."
+            },
+            {
+              "type": "concept",
+              "title": "Queue (FIFO)",
+              "body": "enqueue at rear, dequeue at front, O(1). Variants: circular queue, deque (both ends), priority queue (heap, O(log n) insert/remove). BFS uses a queue."
+            },
+            {
+              "type": "example",
+              "title": "Balanced brackets",
+              "body": "def balanced(s):\n    st, pair = [], {')': '(', ']': '[', '}': '{'}\n    for c in s:\n        if c in '([{': st.append(c)\n        elif not st or st.pop() != pair[c]:\n            return False\n    return not st"
+            },
+            {
+              "type": "example",
+              "title": "Postfix evaluation",
+              "body": "Scan left to right; push numbers; on an operator pop two, apply, push the result. \"2 3 4 * +\" → push 2, 3, 4; * → 12; + → 14."
+            },
+            {
+              "type": "concept",
+              "title": "Monotonic stack",
+              "body": "Next greater element for every index in O(n): keep a stack of indices with decreasing values; when a bigger value arrives, it is the answer for everything it pops."
+            },
+            {
+              "type": "concept",
+              "title": "Classic conversions",
+              "body": "Queue using two stacks (amortised O(1)), stack using queues, min-stack with an auxiliary stack."
+            },
+            {
+              "type": "quiz",
+              "q": "Evaluate the postfix expression: 5 1 2 + 4 * + 3 −",
+              "options": [
+                "14",
+                "12",
+                "16",
+                "10"
+              ],
+              "answer": 0,
+              "explain": "1 + 2 = 3; 3 × 4 = 12; 5 + 12 = 17; 17 − 3 = 14."
+            },
+            {
+              "type": "quiz",
+              "q": "Breadth-first search uses which data structure?",
+              "options": [
+                "Stack",
+                "Queue",
+                "Hash map",
+                "Binary search tree"
+              ],
+              "answer": 1,
+              "explain": "BFS visits nodes level by level, first-in first-out."
+            },
+            {
+              "type": "quiz",
+              "q": "Push 1, 2, 3; pop; push 4; pop. The popped values in order are:",
+              "options": [
+                "3, 4",
+                "1, 2",
+                "3, 2",
+                "1, 4"
+              ],
+              "answer": 0,
+              "explain": "LIFO: first pop removes 3; after pushing 4, the next pop removes 4."
+            }
+          ]
+        },
+        {
+          "id": "recursion-backtracking",
+          "title": "Recursion & backtracking",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Anatomy of recursion",
+              "body": "Every recursive function needs a base case (stops) and a recursive case that moves towards it. Missing base case → stack overflow."
+            },
+            {
+              "type": "example",
+              "title": "Naive Fibonacci",
+              "body": "def fib(n):\n    if n < 2: return n\n    return fib(n-1) + fib(n-2)\nCorrect but O(2ⁿ): fib(3) is recomputed many times. Memoisation brings it to O(n)."
+            },
+            {
+              "type": "concept",
+              "title": "Recursion tree",
+              "body": "Draw calls as a tree to count work: number of nodes × work per node. Depth of the tree = stack space used."
+            },
+            {
+              "type": "concept",
+              "title": "Backtracking pattern",
+              "body": "Choose → explore → un-choose. Build a partial solution, recurse, then undo the last choice to try the next one. Used for subsets, permutations, N-Queens, Sudoku, word search."
+            },
+            {
+              "type": "example",
+              "title": "All subsets",
+              "body": "def subsets(a):\n    res = []\n    def go(i, cur):\n        if i == len(a):\n            res.append(cur[:]); return\n        cur.append(a[i]); go(i + 1, cur)\n        cur.pop();        go(i + 1, cur)\n    go(0, [])\n    return res"
+            },
+            {
+              "type": "concept",
+              "title": "Output sizes",
+              "points": [
+                "Subsets of n items: 2ⁿ",
+                "Permutations of n distinct items: n!",
+                "So these problems are only feasible for small n (≈ 20 for subsets, ≈ 10 for permutations)"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "How many subsets does {a, b, c, d} have?",
+              "options": [
+                "16",
+                "8",
+                "24",
+                "4"
+              ],
+              "answer": 0,
+              "explain": "2⁴ = 16, including the empty set."
+            },
+            {
+              "type": "quiz",
+              "q": "f(0) = 0, f(1) = 1, f(n) = f(n−1) + f(n−2). f(6) = ?",
+              "options": [
+                "8",
+                "5",
+                "13",
+                "6"
+              ],
+              "answer": 0,
+              "explain": "0, 1, 1, 2, 3, 5, 8."
+            },
+            {
+              "type": "quiz",
+              "q": "Space complexity of recursive factorial(n):",
+              "options": [
+                "O(1)",
+                "O(n)",
+                "O(log n)",
+                "O(n²)"
+              ],
+              "answer": 1,
+              "explain": "n stack frames are alive at the deepest point."
+            }
+          ]
+        },
+        {
+          "id": "sorting-binary-search",
+          "title": "Sorting & binary search",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Sorting cheat-sheet",
+              "points": [
+                "Bubble / selection / insertion: O(n²); insertion is O(n) on nearly sorted input",
+                "Merge sort: O(n log n) always, stable, O(n) extra space",
+                "Quick sort: O(n log n) average, O(n²) worst, in place",
+                "Heap sort: O(n log n), in place, not stable",
+                "Counting sort: O(n + k) for small integer range k"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Stability",
+              "body": "A stable sort keeps equal keys in their original order — needed when sorting by a second key (e.g. by marks, then keeping name order). Merge and insertion sort are stable."
+            },
+            {
+              "type": "example",
+              "title": "Binary search",
+              "body": "def bsearch(a, x):\n    lo, hi = 0, len(a) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if a[mid] == x: return mid\n        if a[mid] < x: lo = mid + 1\n        else: hi = mid - 1\n    return -1\nO(log n), array must be sorted."
+            },
+            {
+              "type": "concept",
+              "title": "Binary search on the answer",
+              "body": "If 'can we do it with value X?' is monotonic (false…false, true…true), binary search X. Used for integer square root, minimum capacity, allocate books, aggressive cows."
+            },
+            {
+              "type": "tip",
+              "title": "Overflow-safe mid",
+              "body": "In C/Java write mid = lo + (hi − lo) / 2; (lo + hi) can overflow int for large indices."
+            },
+            {
+              "type": "concept",
+              "title": "First/last occurrence",
+              "body": "On a match, don't stop: record the index and continue left (hi = mid − 1) for the first occurrence or right (lo = mid + 1) for the last."
+            },
+            {
+              "type": "quiz",
+              "q": "Worst-case time complexity of quick sort:",
+              "options": [
+                "O(n²)",
+                "O(n log n)",
+                "O(n)",
+                "O(log n)"
+              ],
+              "answer": 0,
+              "explain": "Happens with consistently bad pivots, e.g. already-sorted input with first-element pivot."
+            },
+            {
+              "type": "quiz",
+              "q": "Which of these sorting algorithms is stable?",
+              "options": [
+                "Quick sort",
+                "Heap sort",
+                "Selection sort",
+                "Merge sort"
+              ],
+              "answer": 3,
+              "explain": "Merge sort preserves the order of equal keys; the others (standard versions) do not."
+            },
+            {
+              "type": "quiz",
+              "q": "Binary search requires the input to be:",
+              "options": [
+                "Of even length",
+                "Sorted",
+                "Free of duplicates",
+                "Stored in a linked list"
+              ],
+              "answer": 1,
+              "explain": "The halving logic depends on sorted order."
+            }
+          ]
+        },
+        {
+          "id": "trees-bst",
+          "title": "Trees & binary search trees",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Vocabulary",
+              "body": "Root, parent, child, leaf, height (longest root-to-leaf path), depth. A binary tree of height h (root at height 0) has at most 2^(h+1) − 1 nodes."
+            },
+            {
+              "type": "concept",
+              "title": "Traversals",
+              "points": [
+                "Inorder: Left, Node, Right",
+                "Preorder: Node, Left, Right",
+                "Postorder: Left, Right, Node",
+                "Level order: BFS with a queue"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Recursive inorder & height",
+              "body": "def inorder(r):\n    if r:\n        inorder(r.left); print(r.val); inorder(r.right)\n\ndef height(r):\n    return 0 if r is None else 1 + max(height(r.left), height(r.right))"
+            },
+            {
+              "type": "concept",
+              "title": "Binary search tree",
+              "body": "Left subtree < node < right subtree. Inorder traversal gives sorted order. Search/insert cost O(h): O(log n) if balanced, O(n) if skewed (e.g. inserting sorted data)."
+            },
+            {
+              "type": "example",
+              "title": "Build and traverse",
+              "body": "Insert 50, 30, 70, 20, 40 into an empty BST.\nPreorder: 50 30 20 40 70\nInorder: 20 30 40 50 70\nPostorder: 20 40 30 70 50"
+            },
+            {
+              "type": "concept",
+              "title": "Balanced trees & heaps",
+              "body": "AVL and red-black trees self-balance to keep O(log n). A heap is a complete binary tree (stored in an array) where each parent ≤ children (min-heap)."
+            },
+            {
+              "type": "quiz",
+              "q": "Inorder traversal of a BST visits keys in:",
+              "options": [
+                "Ascending sorted order",
+                "Insertion order",
+                "Descending order",
+                "Level order"
+              ],
+              "answer": 0,
+              "explain": "Left < node < right, visited in that order."
+            },
+            {
+              "type": "quiz",
+              "q": "Postorder of the BST built by inserting 50, 30, 70, 20, 40:",
+              "options": [
+                "20 40 30 70 50",
+                "20 30 40 50 70",
+                "50 30 20 40 70",
+                "20 40 30 50 70"
+              ],
+              "answer": 0,
+              "explain": "Left subtree (20 40 30), right subtree (70), then root 50."
+            },
+            {
+              "type": "quiz",
+              "q": "Worst-case search time in an unbalanced BST with n nodes:",
+              "options": [
+                "O(log n)",
+                "O(1)",
+                "O(n)",
+                "O(n log n)"
+              ],
+              "answer": 2,
+              "explain": "A skewed BST degenerates into a linked list."
+            }
+          ]
+        },
+        {
+          "id": "graphs-bfs-dfs",
+          "title": "Graphs: BFS & DFS",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Representation",
+              "body": "Adjacency matrix: O(V²) space, O(1) edge check. Adjacency list: O(V + E) space, best for sparse graphs — the default in interviews."
+            },
+            {
+              "type": "example",
+              "title": "BFS (shortest path, unweighted)",
+              "body": "from collections import deque\ndef bfs(g, s):\n    dist = {s: 0}\n    q = deque([s])\n    while q:\n        u = q.popleft()\n        for v in g[u]:\n            if v not in dist:\n                dist[v] = dist[u] + 1\n                q.append(v)\n    return dist"
+            },
+            {
+              "type": "concept",
+              "title": "DFS",
+              "body": "Go deep using recursion or a stack. Uses: connected components, cycle detection, topological sort, path finding, flood fill. Both BFS and DFS are O(V + E)."
+            },
+            {
+              "type": "concept",
+              "title": "Topological sort",
+              "body": "Linear order of a DAG where every edge u→v puts u before v (task scheduling, course prerequisites). Kahn's algorithm: repeatedly remove nodes with indegree 0."
+            },
+            {
+              "type": "concept",
+              "title": "Weighted graphs",
+              "points": [
+                "Dijkstra: single-source shortest path, non-negative weights, O((V + E) log V) with a heap",
+                "Bellman-Ford: handles negative edges, detects negative cycles, O(VE)",
+                "Minimum spanning tree: Prim's or Kruskal's (with union-find)"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Grids are graphs",
+              "body": "'Number of islands', 'rotten oranges', maze shortest path: each cell is a node with up to 4 neighbours. Run BFS/DFS and mark visited cells."
+            },
+            {
+              "type": "quiz",
+              "q": "Shortest path (fewest edges) in an unweighted graph is found with:",
+              "options": [
+                "BFS",
+                "DFS",
+                "Dijkstra with negative weights",
+                "Kruskal's algorithm"
+              ],
+              "answer": 0,
+              "explain": "BFS explores in increasing distance order."
+            },
+            {
+              "type": "quiz",
+              "q": "Topological sorting is defined for:",
+              "options": [
+                "Undirected graphs",
+                "Directed acyclic graphs",
+                "Graphs with cycles",
+                "Complete graphs only"
+              ],
+              "answer": 1,
+              "explain": "A cycle makes it impossible to order every edge forward."
+            },
+            {
+              "type": "quiz",
+              "q": "Dijkstra's algorithm may give wrong answers when the graph has:",
+              "options": [
+                "Cycles",
+                "More than 1000 nodes",
+                "Disconnected parts",
+                "Negative edge weights"
+              ],
+              "answer": 3,
+              "explain": "It assumes a finalised node can never be improved later; negative edges break that."
+            }
+          ]
+        },
+        {
+          "id": "dynamic-programming",
+          "title": "Dynamic programming",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "When DP applies",
+              "body": "Overlapping subproblems (the same subproblem is solved repeatedly) plus optimal substructure (the best answer is built from best sub-answers)."
+            },
+            {
+              "type": "concept",
+              "title": "Two styles",
+              "points": [
+                "Top-down memoisation: recursion + cache",
+                "Bottom-up tabulation: fill a table in dependency order, often less stack and easy to space-optimise"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Memoised Fibonacci",
+              "body": "from functools import lru_cache\n@lru_cache(None)\ndef fib(n):\n    return n if n < 2 else fib(n-1) + fib(n-2)\nO(n) time instead of O(2ⁿ)."
+            },
+            {
+              "type": "example",
+              "title": "Climbing stairs",
+              "body": "Steps of 1 or 2: ways(n) = ways(n−1) + ways(n−2), ways(1) = 1, ways(2) = 2. So ways(3) = 3, ways(4) = 5."
+            },
+            {
+              "type": "example",
+              "title": "Coin change (min coins)",
+              "body": "def min_coins(coins, amt):\n    INF = float('inf')\n    dp = [0] + [INF] * amt\n    for a in range(1, amt + 1):\n        for c in coins:\n            if c <= a:\n                dp[a] = min(dp[a], dp[a - c] + 1)\n    return dp[amt] if dp[amt] < INF else -1"
+            },
+            {
+              "type": "concept",
+              "title": "Classic problems",
+              "points": [
+                "0/1 knapsack",
+                "Longest common subsequence: dp[i][j] = 1 + dp[i−1][j−1] if equal, else max(dp[i−1][j], dp[i][j−1])",
+                "Longest increasing subsequence",
+                "Edit distance",
+                "Coin change (ways / minimum)"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Four-step recipe",
+              "body": "1) Define the state in words. 2) Write the recurrence. 3) Fix base cases. 4) Decide the fill order and read off the answer. Say these steps aloud in interviews."
+            },
+            {
+              "type": "quiz",
+              "q": "Ways to climb 5 stairs taking 1 or 2 steps at a time:",
+              "options": [
+                "8",
+                "5",
+                "13",
+                "10"
+              ],
+              "answer": 0,
+              "explain": "1, 2, 3, 5, 8 for n = 1…5."
+            },
+            {
+              "type": "quiz",
+              "q": "Length of the LCS of \"ABCBDAB\" and \"BDCABA\":",
+              "options": [
+                "3",
+                "4",
+                "5",
+                "6"
+              ],
+              "answer": 1,
+              "explain": "One LCS is \"BCBA\" (others: \"BDAB\"), length 4."
+            },
+            {
+              "type": "quiz",
+              "q": "Minimum coins to make 11 with denominations {1, 2, 5}:",
+              "options": [
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "answer": 1,
+              "explain": "5 + 5 + 1."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-fundamentals",
+      "name": "CS Fundamentals",
+      "chapters": [
+        {
+          "id": "dbms-concepts",
+          "title": "DBMS concepts",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Why a DBMS",
+              "body": "Compared to plain files, a DBMS gives controlled redundancy, concurrent access, integrity constraints, security and crash recovery. An RDBMS stores data in related tables."
+            },
+            {
+              "type": "concept",
+              "title": "Keys",
+              "points": [
+                "Super key: any attribute set that uniquely identifies a row",
+                "Candidate key: a minimal super key",
+                "Primary key: the chosen candidate key (no NULLs)",
+                "Foreign key: refers to a primary key in another table",
+                "Composite key: key made of 2+ columns"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "ACID",
+              "points": [
+                "Atomicity: all or nothing",
+                "Consistency: constraints hold before and after",
+                "Isolation: concurrent transactions don't see each other's partial work",
+                "Durability: committed data survives crashes"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Normalisation",
+              "points": [
+                "1NF: atomic values, no repeating groups",
+                "2NF: 1NF + no partial dependency on part of a composite key",
+                "3NF: 2NF + no transitive dependency (non-key → non-key)",
+                "BCNF: every determinant is a super key"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Indexes",
+              "body": "An index (usually a B+ tree) speeds up searches and joins on a column, at the cost of extra storage and slower inserts/updates. Clustered index = table rows stored in index order."
+            },
+            {
+              "type": "concept",
+              "title": "Concurrency problems",
+              "body": "Dirty read, non-repeatable read, phantom read. Isolation levels (Read Uncommitted → Serializable) trade correctness for speed. Locks and MVCC implement them."
+            },
+            {
+              "type": "quiz",
+              "q": "Which ACID property guarantees 'all or nothing'?",
+              "options": [
+                "Atomicity",
+                "Consistency",
+                "Isolation",
+                "Durability"
+              ],
+              "answer": 0,
+              "explain": "A transaction either fully commits or fully rolls back."
+            },
+            {
+              "type": "quiz",
+              "q": "Removing transitive dependencies takes a 2NF table to:",
+              "options": [
+                "3NF",
+                "1NF",
+                "BCNF only",
+                "4NF"
+              ],
+              "answer": 0,
+              "explain": "3NF forbids non-key attributes depending on other non-key attributes."
+            },
+            {
+              "type": "quiz",
+              "q": "A foreign key:",
+              "options": [
+                "Must be unique in its own table",
+                "Cannot be NULL ever",
+                "References the primary key of another table",
+                "Is the same as a candidate key"
+              ],
+              "answer": 2,
+              "explain": "It enforces referential integrity between tables; it may repeat and may be NULL unless constrained."
+            }
+          ]
+        },
+        {
+          "id": "sql",
+          "title": "SQL for interviews",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Command families",
+              "points": [
+                "DDL: CREATE, ALTER, DROP, TRUNCATE",
+                "DML: SELECT, INSERT, UPDATE, DELETE",
+                "DCL: GRANT, REVOKE",
+                "TCL: COMMIT, ROLLBACK, SAVEPOINT"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Joins",
+              "points": [
+                "INNER: matching rows only",
+                "LEFT: all left rows + matches (NULL if none)",
+                "RIGHT: mirror of LEFT",
+                "FULL OUTER: all rows from both",
+                "SELF JOIN: table joined to itself (employee–manager)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "GROUP BY with HAVING",
+              "body": "SELECT dept, COUNT(*) AS n\nFROM emp\nGROUP BY dept\nHAVING COUNT(*) > 5;\nWHERE filters rows before grouping; HAVING filters groups after aggregation."
+            },
+            {
+              "type": "example",
+              "title": "Second highest salary",
+              "body": "SELECT MAX(salary) FROM emp\nWHERE salary < (SELECT MAX(salary) FROM emp);\nAlternative: DENSE_RANK() OVER (ORDER BY salary DESC) and pick rank 2."
+            },
+            {
+              "type": "concept",
+              "title": "DELETE vs TRUNCATE vs DROP",
+              "points": [
+                "DELETE: removes chosen rows (WHERE), logged, can roll back",
+                "TRUNCATE: removes all rows fast, keeps the table",
+                "DROP: removes the table structure and data"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Logical execution order",
+              "body": "FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT. That's why a SELECT alias can't be used in WHERE."
+            },
+            {
+              "type": "quiz",
+              "q": "To filter groups by an aggregate such as COUNT(*) > 5, use:",
+              "options": [
+                "HAVING",
+                "WHERE",
+                "ORDER BY",
+                "DISTINCT"
+              ],
+              "answer": 0,
+              "explain": "Aggregates are computed after WHERE; HAVING filters the grouped result."
+            },
+            {
+              "type": "quiz",
+              "q": "A LEFT JOIN returns:",
+              "options": [
+                "All rows from the left table, with NULLs where the right has no match",
+                "Only matching rows",
+                "All rows from the right table",
+                "The Cartesian product"
+              ],
+              "answer": 0,
+              "explain": "Unmatched left rows are kept, padded with NULL."
+            },
+            {
+              "type": "quiz",
+              "q": "Which command removes the table definition itself?",
+              "options": [
+                "DELETE",
+                "TRUNCATE",
+                "DROP",
+                "ROLLBACK"
+              ],
+              "answer": 2,
+              "explain": "DROP deletes structure and data; TRUNCATE keeps the empty table."
+            }
+          ]
+        },
+        {
+          "id": "operating-systems",
+          "title": "Operating systems",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Process vs thread",
+              "body": "A process has its own address space; threads of one process share memory, code and files but have their own stack and registers. Thread switches are cheaper; shared memory needs synchronisation."
+            },
+            {
+              "type": "concept",
+              "title": "CPU scheduling",
+              "points": [
+                "FCFS: simple, convoy effect",
+                "SJF/SRTF: minimum average waiting time, needs burst estimates",
+                "Round Robin: time quantum, preemptive, good response time",
+                "Priority: risk of starvation, fixed by ageing"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "FCFS waiting time",
+              "body": "Bursts P1 = 5, P2 = 3, P3 = 8, all arrive at 0. Waiting: P1 0, P2 5, P3 8. Average = 13/3 ≈ 4.33 ms. SJF order (P2, P1, P3) gives 0, 3, 8 → 11/3 ≈ 3.67."
+            },
+            {
+              "type": "concept",
+              "title": "Deadlock",
+              "body": "Four necessary (Coffman) conditions: mutual exclusion, hold and wait, no preemption, circular wait. Break any one to prevent it; Banker's algorithm avoids it."
+            },
+            {
+              "type": "concept",
+              "title": "Memory management",
+              "body": "Paging splits memory into fixed frames (no external fragmentation). Virtual memory loads pages on demand; a page fault fetches a missing page. Too many faults = thrashing."
+            },
+            {
+              "type": "concept",
+              "title": "Page replacement",
+              "body": "FIFO, LRU and Optimal (replace the page used farthest in future). FIFO can suffer Belady's anomaly — more frames, more faults."
+            },
+            {
+              "type": "concept",
+              "title": "Synchronisation",
+              "body": "A race condition occurs when the result depends on thread timing. Protect critical sections with a mutex (one owner) or a semaphore (counter, signalling)."
+            },
+            {
+              "type": "quiz",
+              "q": "Belady's anomaly can occur with which page-replacement algorithm?",
+              "options": [
+                "FIFO",
+                "LRU",
+                "Optimal",
+                "LFU with ageing"
+              ],
+              "answer": 0,
+              "explain": "LRU and Optimal are stack algorithms and never show it."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is NOT one of the four necessary conditions for deadlock?",
+              "options": [
+                "Mutual exclusion",
+                "Hold and wait",
+                "Preemption",
+                "Circular wait"
+              ],
+              "answer": 2,
+              "explain": "The condition is NO preemption; allowing preemption breaks deadlock."
+            },
+            {
+              "type": "quiz",
+              "q": "Round Robin scheduling is:",
+              "options": [
+                "Preemptive, using a fixed time quantum",
+                "Non-preemptive",
+                "Shortest job first",
+                "Priority-based without preemption"
+              ],
+              "answer": 0,
+              "explain": "Each process runs for one quantum, then goes to the back of the queue."
+            }
+          ]
+        },
+        {
+          "id": "computer-networks",
+          "title": "Computer networks",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "OSI vs TCP/IP",
+              "body": "OSI: Physical, Data Link, Network, Transport, Session, Presentation, Application ('Please Do Not Throw Sausage Pizza Away'). TCP/IP: Link, Internet, Transport, Application."
+            },
+            {
+              "type": "concept",
+              "title": "TCP vs UDP",
+              "points": [
+                "TCP: connection-oriented, reliable, ordered, flow & congestion control (web, email, file transfer)",
+                "UDP: connectionless, no guarantees, low overhead (DNS queries, video calls, gaming)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "TCP three-way handshake",
+              "body": "Client sends SYN → server replies SYN-ACK → client sends ACK. Connection closes with FIN/ACK exchanges."
+            },
+            {
+              "type": "concept",
+              "title": "IP addressing",
+              "body": "IPv4 is 32-bit, IPv6 is 128-bit. A /24 network has 2⁸ = 256 addresses, 254 usable hosts (network and broadcast reserved). Private ranges: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16."
+            },
+            {
+              "type": "formula",
+              "title": "Ports to remember",
+              "points": [
+                "HTTP 80, HTTPS 443",
+                "SSH 22, FTP 21, Telnet 23",
+                "SMTP 25, DNS 53, DHCP 67/68"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Devices by layer",
+              "body": "Hub — physical (repeats bits); switch — data link (MAC addresses); router — network (IP addresses, connects networks)."
+            },
+            {
+              "type": "concept",
+              "title": "What happens when you type a URL",
+              "body": "DNS resolves the name to an IP → TCP handshake → TLS handshake for HTTPS → HTTP request → server response → browser renders HTML and fetches CSS/JS/images."
+            },
+            {
+              "type": "quiz",
+              "q": "Default port for DNS:",
+              "options": [
+                "53",
+                "25",
+                "80",
+                "443"
+              ],
+              "answer": 0,
+              "explain": "DNS uses port 53 (UDP for most queries, TCP for large responses)."
+            },
+            {
+              "type": "quiz",
+              "q": "A router operates mainly at which OSI layer?",
+              "options": [
+                "Physical",
+                "Network",
+                "Data link",
+                "Transport"
+              ],
+              "answer": 1,
+              "explain": "Routers forward packets using IP addresses."
+            },
+            {
+              "type": "quiz",
+              "q": "Number of usable host addresses in a /26 subnet:",
+              "options": [
+                "64",
+                "30",
+                "62",
+                "126"
+              ],
+              "answer": 2,
+              "explain": "2⁶ = 64 addresses − network − broadcast = 62."
+            }
+          ]
+        },
+        {
+          "id": "oops-interview",
+          "title": "OOPS interview questions",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Abstract class vs interface (Java)",
+              "points": [
+                "Abstract class: can have state, constructors, concrete + abstract methods; single inheritance",
+                "Interface: a contract; a class can implement many; Java 8+ allows default and static methods",
+                "Use an interface for capability ('Comparable'), abstract class for shared base code"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Overloading vs overriding",
+              "points": [
+                "Overloading: same class, same name, different parameters, compile time",
+                "Overriding: subclass, same signature, runtime; can't reduce visibility",
+                "Static, private and final methods can't be overridden"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Diamond problem",
+              "body": "If B and C both inherit from A and D inherits from both, which A method does D get? Java avoids it by disallowing multiple class inheritance; C++ uses virtual inheritance; Python uses MRO."
+            },
+            {
+              "type": "concept",
+              "title": "Association, aggregation, composition",
+              "body": "Association: objects know each other. Aggregation: 'has-a', parts can live alone (Team–Player). Composition: strong 'has-a', parts die with the whole (House–Room)."
+            },
+            {
+              "type": "concept",
+              "title": "SOLID",
+              "points": [
+                "Single responsibility",
+                "Open/closed: open to extension, closed to modification",
+                "Liskov substitution",
+                "Interface segregation",
+                "Dependency inversion"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Shallow vs deep copy",
+              "body": "Shallow copy duplicates the outer object but shares inner references; deep copy duplicates everything recursively. Python: copy.copy vs copy.deepcopy."
+            },
+            {
+              "type": "tip",
+              "title": "How to answer",
+              "body": "Define in one line, give a real example (bank account, vehicle), then mention a trade-off. Interviewers at TCS/Infosys often ask you to write a small class on paper."
+            },
+            {
+              "type": "quiz",
+              "q": "Which can a Java class have many of?",
+              "options": [
+                "Implemented interfaces",
+                "Direct superclasses",
+                "Constructors returning values",
+                "Abstract final methods"
+              ],
+              "answer": 0,
+              "explain": "Java allows implementing multiple interfaces but extending only one class."
+            },
+            {
+              "type": "quiz",
+              "q": "A House is destroyed together with its Rooms. This relationship is:",
+              "options": [
+                "Composition",
+                "Aggregation",
+                "Association",
+                "Inheritance"
+              ],
+              "answer": 0,
+              "explain": "Composition: the part's lifetime is bound to the whole."
+            },
+            {
+              "type": "quiz",
+              "q": "Which method can be overridden in Java?",
+              "options": [
+                "A static method",
+                "A private method",
+                "A final method",
+                "A public instance method"
+              ],
+              "answer": 3,
+              "explain": "Static methods are hidden, not overridden; private and final methods can't be overridden."
+            }
+          ]
+        },
+        {
+          "id": "git-basics",
+          "title": "Git basics",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What Git is",
+              "body": "A distributed version control system: every clone has full history. Key ideas: repository, commit (snapshot), branch (movable pointer to a commit), remote (e.g. GitHub)."
+            },
+            {
+              "type": "example",
+              "title": "Daily workflow",
+              "body": "git clone <url>\ngit checkout -b feature-login\n# edit files\ngit status\ngit add login.py\ngit commit -m \"Add login form\"\ngit push -u origin feature-login"
+            },
+            {
+              "type": "concept",
+              "title": "Three areas",
+              "body": "Working directory → (git add) → staging area/index → (git commit) → local repository → (git push) → remote."
+            },
+            {
+              "type": "concept",
+              "title": "Merge vs rebase",
+              "body": "Merge joins two branches with a merge commit, keeping history as it happened. Rebase replays your commits on top of another branch for a linear history — never rebase commits others already pulled."
+            },
+            {
+              "type": "concept",
+              "title": "fetch vs pull",
+              "body": "git fetch downloads remote changes without touching your files. git pull = fetch + merge (or rebase with --rebase)."
+            },
+            {
+              "type": "concept",
+              "title": "Undoing things",
+              "points": [
+                "git restore <file>: discard working-directory changes",
+                "git reset --soft HEAD~1: undo last commit, keep changes staged",
+                "git revert <commit>: new commit that undoes an old one — safe on shared branches"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Merge conflicts",
+              "body": "Git marks conflicts with <<<<<<<, ======= and >>>>>>>. Edit the file to the final version, remove the markers, git add, then commit. Mention this confidently in interviews."
+            },
+            {
+              "type": "quiz",
+              "q": "git pull is equivalent to:",
+              "options": [
+                "git fetch followed by git merge",
+                "git push followed by git fetch",
+                "git clone",
+                "git commit --amend"
+              ],
+              "answer": 0,
+              "explain": "By default pull fetches and then merges the remote branch."
+            },
+            {
+              "type": "quiz",
+              "q": "Safest way to undo a commit already pushed to a shared branch:",
+              "options": [
+                "git revert",
+                "git reset --hard",
+                "Delete the .git folder",
+                "git rebase -i and force-push"
+              ],
+              "answer": 0,
+              "explain": "Revert adds a new commit and doesn't rewrite history others depend on."
+            },
+            {
+              "type": "quiz",
+              "q": "Which command moves changes into the staging area?",
+              "options": [
+                "git add",
+                "git commit",
+                "git push",
+                "git stash pop"
+              ],
+              "answer": 0,
+              "explain": "add stages; commit records the staged snapshot."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hr-interviews",
+      "name": "HR & Interviews",
+      "chapters": [
+        {
+          "id": "star-method",
+          "title": "The STAR method",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "STAR in one line",
+              "body": "Answer behavioural questions ('Tell me about a time…') as Situation → Task → Action → Result. Spend most time on Action and Result."
+            },
+            {
+              "type": "concept",
+              "title": "Each letter",
+              "points": [
+                "Situation: context in 1–2 sentences",
+                "Task: your responsibility or goal",
+                "Action: what YOU did, specific steps",
+                "Result: outcome, ideally measurable, plus what you learned"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Sample answer",
+              "body": "S: In our final-year project, the backend teammate dropped out 3 weeks before review. T: I had to deliver the API. A: I learned Flask basics, split tasks with the team and set daily check-ins. R: We demoed on time and scored an A; I learned to plan with buffers."
+            },
+            {
+              "type": "concept",
+              "title": "Build a story bank",
+              "body": "Prepare 5–6 stories that can be reused: teamwork, conflict, failure, leadership, tight deadline, learning something fast. Projects, internships, hackathons and clubs all count."
+            },
+            {
+              "type": "tip",
+              "title": "Make it yours",
+              "body": "Say 'I', not just 'we'. Quantify results (reduced load time by 40%, 120 users). Keep each answer to about 1.5–2 minutes."
+            },
+            {
+              "type": "concept",
+              "title": "Failure questions",
+              "body": "Pick a real but recoverable failure, own it without blaming others, and spend most of the answer on what you changed afterwards."
+            },
+            {
+              "type": "quiz",
+              "q": "In STAR, which part should usually take the most time?",
+              "options": [
+                "Action",
+                "Situation",
+                "Task",
+                "None — all equal"
+              ],
+              "answer": 0,
+              "explain": "Interviewers assess what you did; keep the setup short."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is the strongest Result statement?",
+              "options": [
+                "\"Our app's load time fell from 5 s to 2 s and 300 students used it.\"",
+                "\"It went well.\"",
+                "\"The team was happy.\"",
+                "\"We finished the project.\""
+              ],
+              "answer": 0,
+              "explain": "Specific, measurable outcomes are most convincing."
+            }
+          ]
+        },
+        {
+          "id": "common-hr-questions",
+          "title": "Common HR questions",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Tell me about yourself",
+              "body": "60–90 seconds: present (degree, key skills) → past (1–2 projects or internships) → future (why this role). Don't recite your resume line by line or share family details unless asked."
+            },
+            {
+              "type": "concept",
+              "title": "Why this company?",
+              "body": "Mention something specific: its training programme (e.g. ILP, Mysuru campus, GenC), a client domain, technology focus or values — then link it to your goals."
+            },
+            {
+              "type": "concept",
+              "title": "Strengths & weaknesses",
+              "body": "Strength: one quality with a proof story. Weakness: a real, non-critical one plus what you're doing about it ('I over-polish slides; I now time-box tasks')."
+            },
+            {
+              "type": "concept",
+              "title": "Logistics questions",
+              "body": "Relocation, shifts, service agreements or bonds: answer honestly and positively. Read the offer terms beforehand so you aren't surprised."
+            },
+            {
+              "type": "concept",
+              "title": "Where in five years?",
+              "body": "Show growth within the company: strong in a technology, leading modules, maybe a certification. Avoid 'doing an MBA abroad' or 'starting my own company'."
+            },
+            {
+              "type": "tip",
+              "title": "Ask them something",
+              "body": "End with a genuine question: 'What does the first year look like for freshers in this role?' or 'Which technologies does training cover?' Never ask only about salary in round one."
+            },
+            {
+              "type": "quiz",
+              "q": "Best structure for 'Tell me about yourself'?",
+              "options": [
+                "Present → past → future, in about a minute",
+                "Childhood to today, in detail",
+                "Read out the resume",
+                "Family background first"
+              ],
+              "answer": 0,
+              "explain": "A short, relevant summary that ends with why you fit the role."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is the best answer to 'What is your weakness?'",
+              "options": [
+                "A real minor weakness plus how you are fixing it",
+                "\"I have no weaknesses.\"",
+                "\"I work too hard.\"",
+                "A critical skill the job needs"
+              ],
+              "answer": 0,
+              "explain": "Honesty with an improvement plan shows self-awareness."
+            }
+          ]
+        },
+        {
+          "id": "resume",
+          "title": "Resume for IT placements",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Format",
+              "body": "One page for freshers, clean single-column layout, readable font, PDF export. Applicant Tracking Systems (ATS) parse simple layouts better than tables and graphics."
+            },
+            {
+              "type": "concept",
+              "title": "Section order",
+              "points": [
+                "Name, phone, email, LinkedIn, GitHub",
+                "Education (CGPA / %)",
+                "Skills (languages, tools, CS subjects)",
+                "Projects",
+                "Internships / experience",
+                "Achievements, certifications, positions of responsibility"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Project bullet formula",
+              "body": "Action verb + what you built + tech + impact.\n✗ 'Worked on a website.'\n✓ 'Built a library-booking web app in React and Flask with JWT login; used by 200+ students in my college.'"
+            },
+            {
+              "type": "concept",
+              "title": "Skills section",
+              "body": "List only what you can be questioned on. If you write 'Java, SQL, DSA', expect OOP, joins and a coding question on them."
+            },
+            {
+              "type": "tip",
+              "title": "Never fake it",
+              "body": "Interviewers pick any line and go deep. Every project, tech and number on the page must be something you can explain and defend."
+            },
+            {
+              "type": "concept",
+              "title": "Common mistakes",
+              "points": [
+                "Objective statements full of clichés",
+                "Photos, date of birth, father's name (not needed in IT resumes)",
+                "Spelling errors and inconsistent formatting",
+                "Broken GitHub links"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "Ideal resume length for a fresher applying to IT services firms:",
+              "options": [
+                "One page",
+                "Three pages",
+                "As long as possible",
+                "Half a page"
+              ],
+              "answer": 0,
+              "explain": "Recruiters skim quickly; one focused page is standard."
+            },
+            {
+              "type": "quiz",
+              "q": "Which project line is strongest?",
+              "options": [
+                "\"Built a Flask expense tracker with SQLite; 50 active users\"",
+                "\"Did a project in Python\"",
+                "\"Worked on web development\"",
+                "\"Project: Expense tracker\""
+              ],
+              "answer": 0,
+              "explain": "It states what, how and impact."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [],
+  "resources": [
+    {
+      "label": "NPTEL — Programming, Data Structures and Algorithms using Python",
+      "url": "https://nptel.ac.in/courses/106106145",
+      "note": "Prof. Madhavan Mukund's course: Python basics to DP and backtracking",
+      "free": true
+    },
+    {
+      "label": "NPTEL — free IIT/IISc video courses",
+      "url": "https://nptel.ac.in",
+      "note": "Full CS courses (DSA, DBMS, OS, CN) by IIT faculty, free to watch",
+      "free": true
+    },
+    {
+      "label": "SWAYAM (Govt. of India)",
+      "url": "https://swayam.gov.in",
+      "note": "Free MOOCs incl. NPTEL CS courses with optional certification exam",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    },
+    {
+      "label": "LeetCode",
+      "url": "https://leetcode.com",
+      "note": "Coding practice; free problem set is enough for service-company coding rounds",
+      "free": true
+    },
+    {
+      "label": "HackerRank",
+      "url": "https://www.hackerrank.com",
+      "note": "Many company tests run on HackerRank-style editors; SQL track is excellent",
+      "free": true
+    },
+    {
+      "label": "Harvard CS50x",
+      "url": "https://cs50.harvard.edu/x/",
+      "note": "Free intro to CS: C, Python, SQL, memory and algorithms",
+      "free": true
+    },
+    {
+      "label": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org",
+      "note": "Free curriculum incl. JavaScript algorithms & data structures and Python",
+      "free": true
+    }
+  ]
+}

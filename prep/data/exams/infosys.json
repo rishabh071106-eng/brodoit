@@ -1,0 +1,296 @@
+{
+  "id": "infosys",
+  "name": "Infosys (SE, DSE, Specialist Programmer)",
+  "category": "it",
+  "core": "it-core",
+  "conductedBy": "Infosys Ltd.",
+  "tagline": "From System Engineer to Specialist Programmer and Power Programmer",
+  "overview": {
+    "about": "Infosys hires freshers mainly as System Engineer (SE), Digital Specialist Engineer (DSE) and Specialist Programmer (SP). The highest-pay Power Programmer route usually comes through the HackWithInfy coding contest. SE uses an aptitude + pseudo-code test; DSE/SP use a harder coding-heavy assessment. Pattern as reported for 2025–26 drives; confirm on the official careers page.",
+    "eligibility": [
+      "B.E./B.Tech/M.E./M.Tech/MCA/M.Sc from eligible batches",
+      "Typically 60% or more (or equivalent CGPA) throughout, no active backlogs at joining (as reported)",
+      "HackWithInfy is open to engineering students of the batches announced for that edition"
+    ],
+    "pattern": [
+      {
+        "paper": "SE — Logical reasoning",
+        "questions": "≈ 15",
+        "duration": "≈ 25 min"
+      },
+      {
+        "paper": "SE — Mathematical ability",
+        "questions": "≈ 10",
+        "duration": "≈ 35 min",
+        "note": "Harder than typical quant"
+      },
+      {
+        "paper": "SE — Verbal ability",
+        "questions": "≈ 20",
+        "duration": "≈ 20 min"
+      },
+      {
+        "paper": "SE — Pseudo-code & puzzle solving",
+        "questions": "≈ 9",
+        "duration": "≈ 20 min"
+      },
+      {
+        "paper": "DSE / SP — Coding assessment",
+        "questions": "3 problems",
+        "duration": "≈ 3 hours",
+        "note": "Easy, medium, hard; sectional cut-offs reported"
+      },
+      {
+        "paper": "Interview",
+        "duration": "≈ 30–60 min",
+        "note": "Technical + HR; deeper DSA for SP/DSE"
+      }
+    ],
+    "frequency": "Campus drives each season; HackWithInfy usually once a year",
+    "officialSite": "https://www.infosys.com/careers/graduates.html"
+  },
+  "subjects": [
+    {
+      "id": "infosys-specific",
+      "name": "Infosys specifics",
+      "chapters": [
+        {
+          "id": "infosys-roles-test",
+          "title": "Roles and the SE online test",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Three main fresher roles",
+              "points": [
+                "System Engineer (SE): entry role, aptitude + pseudo-code test",
+                "Digital Specialist Engineer (DSE): higher band, coding-heavy test",
+                "Specialist Programmer (SP) / Power Programmer: highest band, strong DSA needed"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "SE test sections",
+              "body": "Logical reasoning, mathematical ability, verbal ability, pseudo-code and puzzle solving, each with sectional timing. Pattern as reported for 2025–26 drives; confirm on the official careers page."
+            },
+            {
+              "type": "concept",
+              "title": "Mathematical ability is the filter",
+              "body": "Infosys maths is a notch above typical service-company quant: number theory, P&C, probability, geometry and functions. Practise accuracy over speed."
+            },
+            {
+              "type": "example",
+              "title": "Sample: mathematical ability",
+              "body": "Q: How many positive divisors does 360 have?\n360 = 2³ × 3² × 5 → (3+1)(2+1)(1+1) = 24."
+            },
+            {
+              "type": "example",
+              "title": "Sample: pseudo-code",
+              "body": "x = 0\nfor i = 1 to 10\n  if i mod 3 == 0: x = x + i\nprint x\n→ 3 + 6 + 9 = 18"
+            },
+            {
+              "type": "concept",
+              "title": "Puzzle solving",
+              "body": "Logic grids, arrangement puzzles and 'who is lying' questions. Draw a table; eliminate impossible cells first."
+            },
+            {
+              "type": "quiz",
+              "q": "Number of positive divisors of 180:",
+              "options": [
+                "12",
+                "18",
+                "16",
+                "20"
+              ],
+              "answer": 1,
+              "explain": "180 = 2² × 3² × 5 → 3 × 3 × 2 = 18."
+            },
+            {
+              "type": "quiz",
+              "q": "s = 1\nfor i = 1 to 4\n  s = s * i\nprint s — output?",
+              "options": [
+                "10",
+                "4",
+                "16",
+                "24"
+              ],
+              "answer": 3,
+              "explain": "s = 1 × 1 × 2 × 3 × 4 = 24 (factorial of 4)."
+            }
+          ]
+        },
+        {
+          "id": "infosys-coding-hackwithinfy",
+          "title": "DSE/SP coding round & HackWithInfy",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Format",
+              "body": "As reported: 3 problems in about 3 hours — usually one easy, one medium and one hard. Partial scores per test case. Cut-offs apply, so the easy problem must be fully solved."
+            },
+            {
+              "type": "concept",
+              "title": "Common topics",
+              "points": [
+                "Greedy and sorting",
+                "Dynamic programming (subsequence, knapsack, grid DP)",
+                "Graphs: BFS/DFS, shortest paths",
+                "Strings, bit manipulation, binary search on the answer"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "HackWithInfy",
+              "body": "Infosys's national coding contest for engineering students. Top performers get interview opportunities for SP/Power Programmer roles plus prizes. Registration is announced on the Infosys careers site."
+            },
+            {
+              "type": "example",
+              "title": "Sample-style problem",
+              "body": "Given n tasks with deadlines and profits, schedule one task per unit time to maximise profit.\nIdea: sort by profit (desc), place each task in the latest free slot ≤ its deadline (greedy, O(n log n) with DSU)."
+            },
+            {
+              "type": "tip",
+              "title": "Partial marks matter",
+              "body": "If the hard problem is out of reach, write a brute force that passes small test cases. Every passed test case counts."
+            },
+            {
+              "type": "concept",
+              "title": "Preparation plan",
+              "body": "Solve ~100 medium and ~30 hard problems across DP, graphs and greedy on a free judge, timing yourself to 45 minutes per medium problem."
+            },
+            {
+              "type": "quiz",
+              "q": "In a 3-problem, 3-hour coding test, the best opening move is usually:",
+              "options": [
+                "Fully solve the easiest problem first",
+                "Start with the hardest problem",
+                "Write all three solutions without testing",
+                "Spend an hour reading only"
+              ],
+              "answer": 0,
+              "explain": "Securing the easy problem clears cut-offs and builds time for the rest."
+            },
+            {
+              "type": "quiz",
+              "q": "Job sequencing with deadlines is typically solved by:",
+              "options": [
+                "Binary search on deadlines only",
+                "BFS",
+                "Greedy: sort by profit, fill latest free slot",
+                "Matrix exponentiation"
+              ],
+              "answer": 2,
+              "explain": "Taking the most profitable jobs first and scheduling them as late as possible is optimal."
+            }
+          ]
+        },
+        {
+          "id": "infosys-interviews",
+          "title": "Infosys interviews & training",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Technical interview (SE)",
+              "body": "Basics of one language, OOP, DBMS queries, simple programs (prime, palindrome, Fibonacci), and your project. Clarity matters more than breadth."
+            },
+            {
+              "type": "concept",
+              "title": "Technical interview (DSE/SP)",
+              "body": "Live DSA problem-solving with complexity analysis, follow-ups on your coding-round solution, CS fundamentals in depth and sometimes basic system design."
+            },
+            {
+              "type": "concept",
+              "title": "HR round",
+              "body": "Self-introduction, relocation readiness, interest in Infosys, strengths and weaknesses. Keep answers honest and concise."
+            },
+            {
+              "type": "concept",
+              "title": "Training at Mysuru",
+              "body": "Selected freshers usually go through foundation training at the Infosys Global Education Centre, Mysuru, followed by assessments. Taking training seriously matters for project allocation."
+            },
+            {
+              "type": "tip",
+              "title": "Explain your coding-round solution",
+              "body": "Interviewers often open your test submission. Be ready to explain your approach, its complexity and how you'd improve it."
+            },
+            {
+              "type": "example",
+              "title": "Common SE question",
+              "body": "\"Write a program to check whether a string is a palindrome without using reverse().\" → two pointers from both ends; mention O(n) time, O(1) space."
+            },
+            {
+              "type": "quiz",
+              "q": "For a DSE/SP interview, which preparation is most important?",
+              "options": [
+                "Memorising company history only",
+                "Only HR answers",
+                "DSA problem solving with complexity analysis",
+                "Typing speed"
+              ],
+              "answer": 2,
+              "explain": "Higher-band roles test problem-solving depth."
+            },
+            {
+              "type": "quiz",
+              "q": "Time complexity of the two-pointer palindrome check:",
+              "options": [
+                "O(n²)",
+                "O(n)",
+                "O(log n)",
+                "O(n log n)"
+              ],
+              "answer": 1,
+              "explain": "Each character is compared at most once."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "Infosys careers — graduates (roles, HackWithInfy, process)",
+          "url": "https://www.infosys.com/careers/graduates.html",
+          "source": "Infosys (official sample/practice — company does not publish past papers)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "Infosys careers for graduates (official)",
+      "url": "https://www.infosys.com/careers/graduates.html",
+      "note": "Fresher roles and HackWithInfy announcements",
+      "free": true
+    },
+    {
+      "label": "LeetCode",
+      "url": "https://leetcode.com",
+      "note": "Coding practice; free problem set is enough for service-company coding rounds",
+      "free": true
+    },
+    {
+      "label": "HackerRank",
+      "url": "https://www.hackerrank.com",
+      "note": "Many company tests run on HackerRank-style editors; SQL track is excellent",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    },
+    {
+      "label": "NPTEL — Programming, Data Structures and Algorithms using Python",
+      "url": "https://nptel.ac.in/courses/106106145",
+      "note": "Prof. Madhavan Mukund's course: Python basics to DP and backtracking",
+      "free": true
+    }
+  ]
+}

@@ -1,0 +1,403 @@
+{
+  "id": "ibps-rrb",
+  "name": "IBPS RRB (Officer Scale I & Office Assistant)",
+  "category": "banking",
+  "core": "bank-common",
+  "conductedBy": "Institute of Banking Personnel Selection (IBPS)",
+  "tagline": "Officer Scale I (PO) and Office Assistant (Multipurpose) jobs in Regional Rural Banks",
+  "overview": {
+    "about": "IBPS conducts the CRP-RRBs for Regional Rural Banks. Office Assistants are selected through Prelims and Mains (no interview); Officer Scale I candidates go through Prelims, Mains and an interview. Prelims has only Reasoning and Quant in 45 minutes, and Mains can be taken in English or Hindi.",
+    "eligibility": [
+      "Graduation in any discipline (agriculture, horticulture, forestry, animal husbandry, veterinary, agri-engineering, pisciculture, agri-marketing, cooperation, IT, management, law, economics or accountancy are preferred for Officer Scale I)",
+      "Office Assistant: age 18–28 years; Officer Scale I: age 18–30 years; relaxation SC/ST 5 yrs, OBC-NCL 3 yrs, PwBD 10 yrs",
+      "Proficiency in the local language of the participating RRB",
+      "Computer knowledge desirable"
+    ],
+    "pattern": [
+      {
+        "paper": "Prelims (both posts) — Reasoning",
+        "questions": 40,
+        "marks": 40,
+        "duration": "45 min composite",
+        "note": "No separate sectional timing; −0.25 per wrong answer"
+      },
+      {
+        "paper": "Prelims (both posts) — Quantitative Aptitude / Numerical Ability",
+        "questions": 40,
+        "marks": 40,
+        "duration": "(within 45 min)",
+        "note": "Total 80 Q / 80 marks / 45 min; qualifying"
+      },
+      {
+        "paper": "Mains — Reasoning",
+        "questions": 40,
+        "marks": 50,
+        "duration": "120 min composite",
+        "note": "Same structure for Officer Scale I and Office Assistant"
+      },
+      {
+        "paper": "Mains — Quantitative Aptitude / Numerical Ability",
+        "questions": 40,
+        "marks": 50,
+        "duration": "(within 120 min)"
+      },
+      {
+        "paper": "Mains — General Awareness",
+        "questions": 40,
+        "marks": 40,
+        "duration": "(within 120 min)",
+        "note": "Rural banking, NABARD, current affairs"
+      },
+      {
+        "paper": "Mains — English or Hindi Language",
+        "questions": 40,
+        "marks": 40,
+        "duration": "(within 120 min)",
+        "note": "Choose one language"
+      },
+      {
+        "paper": "Mains — Computer Knowledge",
+        "questions": 40,
+        "marks": 20,
+        "duration": "(within 120 min)",
+        "note": "Total 200 Q / 200 marks / 2 hours"
+      },
+      {
+        "paper": "Interview (Officer Scale I only)",
+        "marks": 100,
+        "duration": "—",
+        "note": "Final = Mains 80 : Interview 20; Office Assistant merit is Mains only"
+      }
+    ],
+    "frequency": "Once a year (notification usually June)",
+    "officialSite": "https://www.ibps.in"
+  },
+  "subjects": [
+    {
+      "id": "ibps-rrb-specific",
+      "name": "IBPS RRB — Exam-specific",
+      "chapters": [
+        {
+          "id": "po-vs-oa-strategy",
+          "title": "Officer Scale I vs Office Assistant: pattern & strategy",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Two posts, one syllabus",
+              "body": "Both posts share the same subject list. **Office Assistant** (clerk): Prelims → Mains → language test, no interview. **Officer Scale I** (PO): Prelims → Mains → interview (80 : 20). You may apply for both; exams are held on different days."
+            },
+            {
+              "type": "concept",
+              "title": "45-minute composite Prelims",
+              "body": "Prelims has **only Reasoning and Quant**, 80 questions in **45 minutes** with no sectional timer. That is about **34 seconds per question**. You choose how to split time, so a tested plan is essential."
+            },
+            {
+              "type": "tip",
+              "title": "Prelims plan",
+              "body": "Typical split: Reasoning 22–24 min, Quant 20–22 min. Start with your stronger section. In Reasoning, do inequality, syllogism, coding and direction before the big puzzles; in Quant, do simplification/approximation and series first."
+            },
+            {
+              "type": "tip",
+              "title": "Mains: 200 questions in 120 minutes",
+              "body": "Mains is a composite **2-hour** paper with 200 questions, about 36 seconds each. Computer (40 Q for 20 marks) and GA can be done fast; save the rest of the time for Reasoning and Quant (50 marks each)."
+            },
+            {
+              "type": "concept",
+              "title": "Hindi option",
+              "body": "In Mains you can take the language section in **English or Hindi**. Pick the one in which you read faster and make fewer grammar mistakes. The question paper itself is bilingual for other sections."
+            },
+            {
+              "type": "quiz",
+              "q": "IBPS RRB Prelims has 80 questions in 45 minutes. Average time per question is closest to:",
+              "options": [
+                "24 seconds",
+                "34 seconds",
+                "45 seconds",
+                "56 seconds"
+              ],
+              "answer": 1,
+              "explain": "45 × 60 = 2700 s; 2700 ÷ 80 = 33.75 ≈ 34 s."
+            },
+            {
+              "type": "quiz",
+              "q": "Which RRB post has an interview?",
+              "options": [
+                "Office Assistant only",
+                "Officer Scale I only",
+                "Both",
+                "Neither"
+              ],
+              "answer": 1,
+              "explain": "Officer Scale I has an interview (weighted 20%); Office Assistant selection is on Mains marks."
+            },
+            {
+              "type": "quiz",
+              "q": "The Computer Knowledge section in RRB Mains carries:",
+              "options": [
+                "40 Q for 40 marks",
+                "40 Q for 20 marks",
+                "20 Q for 20 marks",
+                "40 Q for 50 marks"
+              ],
+              "answer": 1,
+              "explain": "Computer Knowledge has 40 questions worth 20 marks (0.5 each)."
+            }
+          ]
+        },
+        {
+          "id": "rural-banking-awareness",
+          "title": "Rural banking awareness (RRBs, NABARD, KCC, PSL)",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "RRB basics",
+              "body": "RRBs were set up from **2 October 1975** to serve small farmers, labourers and rural artisans; governed by the **RRB Act, 1976**. Ownership **Centre 50 : sponsor bank 35 : state 15**. **NABARD** supervises RRBs; RBI regulates them."
+            },
+            {
+              "type": "concept",
+              "title": "Consolidation",
+              "body": "RRBs were merged in phases from 196 to 43, and under **'One State, One RRB'** (effective **1 May 2025**) to **28 RRBs**. The aim: stronger capital, technology and scale."
+            },
+            {
+              "type": "concept",
+              "title": "NABARD",
+              "body": "Set up on **12 July 1982** on the recommendation of the **CRAFICARD (B. Sivaraman) committee**. It refinances banks for agriculture and rural lending, manages the **RIDF**, and supervises RRBs and cooperative banks. HQ: Mumbai."
+            },
+            {
+              "type": "formula",
+              "title": "Priority sector lending targets",
+              "points": [
+                "Domestic SCBs: 40% of ANBC",
+                "Agriculture sub-target: 18% of ANBC",
+                "RRBs and small finance banks: 75% of ANBC",
+                "Shortfall goes to RIDF and similar funds"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Kisan Credit Card",
+              "body": "Introduced in **1998** (R.V. Gupta committee) for timely short-term crop credit. Under the interest subvention scheme, eligible farmers get loans at **7%**, falling to an effective **4%** with prompt repayment. Budget 2025-26 raised the subvention limit from ₹3 lakh to **₹5 lakh**."
+            },
+            {
+              "type": "quiz",
+              "q": "Which body supervises Regional Rural Banks?",
+              "options": [
+                "SEBI",
+                "NABARD",
+                "SIDBI",
+                "NHB"
+              ],
+              "answer": 1,
+              "explain": "RBI regulates RRBs, but supervision is delegated to NABARD."
+            },
+            {
+              "type": "quiz",
+              "q": "The priority sector lending target for RRBs is:",
+              "options": [
+                "40% of ANBC",
+                "18% of ANBC",
+                "60% of ANBC",
+                "75% of ANBC"
+              ],
+              "answer": 3,
+              "explain": "RRBs (like small finance banks) must lend 75% of ANBC to priority sectors."
+            },
+            {
+              "type": "quiz",
+              "q": "NABARD was established in:",
+              "options": [
+                "1969",
+                "1975",
+                "1982",
+                "1990"
+              ],
+              "answer": 2,
+              "explain": "NABARD was set up on 12 July 1982."
+            }
+          ]
+        },
+        {
+          "id": "local-language",
+          "title": "Local language & Office Assistant provisional allotment",
+          "minutes": 3,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Language proficiency",
+              "body": "Each RRB serves a specific state, so candidates must be proficient in that state's local language. For Office Assistants, a **language proficiency test** is held before final allotment; it is **qualifying**."
+            },
+            {
+              "type": "tip",
+              "title": "Practise early",
+              "body": "Read local-language newspapers for 15 minutes daily and practise simple banking conversations. Many candidates lose their allotment here even after clearing Mains."
+            },
+            {
+              "type": "concept",
+              "title": "Merit and allotment",
+              "body": "Office Assistant: **Mains marks only**, state-wise. Officer Scale I: Mains + interview at **80 : 20**. Allotment to an RRB depends on merit, vacancies and your preferences."
+            },
+            {
+              "type": "tip",
+              "title": "Interview for Officer Scale I",
+              "body": "Expect rural-economy questions: KCC, crop seasons, PM-KISAN, self-help groups, priority sector lending and why you want to work in a rural branch. Know the RRB(s) of your state by name."
+            },
+            {
+              "type": "quiz",
+              "q": "For IBPS RRB Office Assistant, the local language test is:",
+              "options": [
+                "Added to Mains marks",
+                "Qualifying",
+                "An interview",
+                "Held before Prelims"
+              ],
+              "answer": 1,
+              "explain": "It is a qualifying test held before final allotment."
+            },
+            {
+              "type": "quiz",
+              "q": "Final merit for RRB Officer Scale I uses Mains and interview in the ratio:",
+              "options": [
+                "50 : 50",
+                "75 : 25",
+                "80 : 20",
+                "90 : 10"
+              ],
+              "answer": 2,
+              "explain": "Mains 80 : Interview 20."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2025 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2024 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2023 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2022 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2021 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2020 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2019 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2018 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2017 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "IBPS RRB (Officer Scale I & Office Assistant) 2016 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "IBPS — official website",
+      "url": "https://www.ibps.in",
+      "note": "CRP-RRB notification, call letters and results",
+      "free": true
+    },
+    {
+      "label": "NABARD — official website",
+      "url": "https://www.nabard.org",
+      "note": "Rural finance, RRB and agriculture-credit facts",
+      "free": true
+    },
+    {
+      "label": "Department of Financial Services",
+      "url": "https://financialservices.gov.in",
+      "note": "RRB policy and financial inclusion schemes",
+      "free": true
+    },
+    {
+      "label": "PM Jan Dhan Yojana — official site",
+      "url": "https://pmjdy.gov.in/scheme",
+      "note": "Financial inclusion data",
+      "free": true
+    }
+  ]
+}

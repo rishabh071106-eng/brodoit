@@ -1,0 +1,2184 @@
+{
+  "updated": "2026-10",
+  "note": "Links point to NCERT's official servers. NCERT books are free to read and download from ncert.nic.in.",
+  "classes": [
+    {
+      "class": 1,
+      "books": [
+        {
+          "subject": "English",
+          "title": "Mridang",
+          "code": "aemr1",
+          "chapters": 9,
+          "medium": "English",
+          "chapterTitles": [
+            "Two Little Hands",
+            "Greetings",
+            "Picture Time",
+            "The Cap Seller and the Monkeys",
+            "A Farm",
+            "Fun with Pictures",
+            "The Food We Eat",
+            "The Four Seasons",
+            "Anandi's Rainbow"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Mathematics",
+          "title": "Joyful Mathematics",
+          "code": "aejm1",
+          "chapters": 13,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi",
+          "title": "Sarangi",
+          "code": "ahsr1",
+          "chapters": 19,
+          "medium": "Hindi",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 2,
+      "books": [
+        {
+          "subject": "English",
+          "title": "Mridang",
+          "code": "bemr1",
+          "chapters": 13,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Mathematics",
+          "title": "Joyful Mathematics",
+          "code": "bejm1",
+          "chapters": 11,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi",
+          "title": "Sarangi",
+          "code": "bhsr1",
+          "chapters": 26,
+          "medium": "Hindi",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 3,
+      "books": [
+        {
+          "subject": "English",
+          "title": "Santoor",
+          "code": "cesa1",
+          "chapters": 12,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Mathematics",
+          "title": "Maths Mela",
+          "code": "cemm1",
+          "chapters": 14,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "The World Around Us",
+          "title": "Our Wondrous World",
+          "code": "ceev1",
+          "chapters": 12,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi",
+          "title": "Veena",
+          "code": "chve1",
+          "chapters": 18,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Arts",
+          "title": "Bansuri",
+          "code": "cebu1",
+          "chapters": 20,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Physical Education and Well-being",
+          "title": "Khel Yoga",
+          "code": "ceky1",
+          "chapters": 7,
+          "medium": "English",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 4,
+      "books": [
+        {
+          "subject": "English",
+          "title": "Santoor",
+          "code": "desa1",
+          "chapters": 12,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Mathematics",
+          "title": "Maths Mela",
+          "code": "demm1",
+          "chapters": 14,
+          "medium": "English",
+          "chapterTitles": [
+            "Shapes Around Us",
+            "Hide and Seek",
+            "Pattern Around Us",
+            "Thousands Around Us",
+            "Sharing and Measuring",
+            "Measuring Length",
+            "The Cleanest Village",
+            "Weigh it, Pour it",
+            "Equal Groups",
+            "Elephants, Tigers, and Leopards",
+            "Fun with Symmetry",
+            "Ticking Clocks and Turning Calendar",
+            "The Transport Museum",
+            "Data Handling"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "The World Around Us",
+          "title": "Our Wondrous World",
+          "code": "deev1",
+          "chapters": 10,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi",
+          "title": "Veena",
+          "code": "dhve1",
+          "chapters": 13,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Arts",
+          "title": "Bansuri",
+          "code": "debu1",
+          "chapters": 18,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Physical Education and Well-being",
+          "title": "Khel Yoga",
+          "code": "deky1",
+          "chapters": 7,
+          "medium": "English",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "class": 5,
+      "books": [
+        {
+          "subject": "English",
+          "title": "Santoor",
+          "code": "eesa1",
+          "chapters": 10,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Mathematics",
+          "title": "Maths Mela",
+          "code": "eemm1",
+          "chapters": 15,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "The World Around Us",
+          "title": "Our Wondrous World",
+          "code": "eeev1",
+          "chapters": 10,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi",
+          "title": "Veena",
+          "code": "ehve1",
+          "chapters": 12,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Arts",
+          "title": "Bansuri",
+          "code": "eebu1",
+          "chapters": 19,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Physical Education and Well-being",
+          "title": "Khel Yoga",
+          "code": "eeky1",
+          "chapters": 3,
+          "medium": "English",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 6,
+      "books": [
+        {
+          "subject": "Mathematics",
+          "title": "Ganita Prakash",
+          "code": "fegp1",
+          "chapters": 10,
+          "medium": "English",
+          "chapterTitles": [
+            "Patterns in Mathematics",
+            "Lines and Angles",
+            "Number Play",
+            "Data Handling and Presentation",
+            "Prime Time",
+            "Perimeter and Area",
+            "Fractions",
+            "Playing with Constructions",
+            "Symmetry",
+            "The Other Side of Zero"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Science",
+          "title": "Curiosity",
+          "code": "fecu1",
+          "chapters": 12,
+          "medium": "English",
+          "chapterTitles": [
+            "The Wonderful World of Science",
+            "Diversity in the Living World",
+            "Mindful Eating: A Path to a Healthy Body",
+            "Exploring Magnets",
+            "Measurement of Length and Motion",
+            "Materials Around Us",
+            "Temperature and its Measurement",
+            "A Journey through States of Water",
+            "Methods of Separation in Everyday Life",
+            "Living Creatures: Exploring their Characteristics",
+            "Nature's Treasures",
+            "Beyond Earth"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science",
+          "title": "Exploring Society: India and Beyond",
+          "code": "fees1",
+          "chapters": 14,
+          "medium": "English",
+          "chapterTitles": [
+            "Locating Places on the Earth",
+            "Oceans and Continents",
+            "Landforms and Life",
+            "Timeline and Sources of History",
+            "India, That Is Bharat",
+            "The Beginnings of Indian Civilisation",
+            "India's Cultural Roots",
+            "Unity in Diversity, or 'Many in the One'",
+            "Family and Community",
+            "Grassroots Democracy — Part 1: Governance",
+            "Grassroots Democracy — Part 2: Local Government in Rural Areas",
+            "Grassroots Democracy — Part 3: Local Government in Urban Areas",
+            "The Value of Work",
+            "Economic Activities Around Us"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Poorvi",
+          "code": "fepr1",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "Fables and Folk Tales",
+            "Friendship",
+            "Nurturing Nature",
+            "Sports and Wellness",
+            "Culture and Tradition"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Hindi",
+          "title": "Malhar",
+          "code": "fhml1",
+          "chapters": 13,
+          "medium": "Hindi",
+          "chapterTitles": [
+            "मातृभूमि",
+            "गोल",
+            "पहली बूँद",
+            "हार की जीत",
+            "रहीम के दोहे",
+            "मेरी माँ",
+            "जलाते चलो",
+            "सत्रिया और बिहू नृत्य",
+            "मैया मैं नहिं माखन खायो",
+            "परीक्षा",
+            "चेतक की वीरता",
+            "हिंद महासागर में छोटा-सा हिंदुस्तान",
+            "पेड़ की बात"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit",
+          "title": "Deepakam",
+          "code": "fsde1",
+          "chapters": 15,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Arts",
+          "title": "Kriti",
+          "code": "fekr1",
+          "chapters": 22,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Physical Education and Well-being",
+          "title": "Khel Yatra",
+          "code": "feky1",
+          "chapters": 5,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Vocational Education",
+          "title": "Kaushal Bodh",
+          "code": "fekb1",
+          "chapters": 6,
+          "medium": "English",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 7,
+      "books": [
+        {
+          "subject": "Mathematics",
+          "title": "Ganita Prakash Part 1",
+          "code": "gegp1",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Large Numbers Around Us",
+            "Arithmetic Expressions",
+            "A Peek Beyond the Point",
+            "Expressions using Letter-Numbers",
+            "Parallel and Intersecting Lines",
+            "Number Play",
+            "A Tale of Three Intersecting Lines",
+            "Working with Fractions"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Mathematics",
+          "title": "Ganita Prakash Part 2",
+          "code": "gegp2",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Geometric Twins",
+            "Operations with Integers",
+            "Finding Common Ground",
+            "Another Peek Beyond the Point",
+            "Connecting the Dots",
+            "Constructions and Tilings",
+            "Finding the Unknown"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Science",
+          "title": "Curiosity",
+          "code": "gecu1",
+          "chapters": 12,
+          "medium": "English",
+          "chapterTitles": [
+            "The Ever-Evolving World of Science",
+            "Exploring Substances: Acidic, Basic, and Neutral",
+            "Electricity: Circuits and their Components",
+            "The World of Metals and Non-metals",
+            "Changes Around Us: Physical and Chemical",
+            "Adolescence: A Stage of Growth and Change",
+            "Heat Transfer in Nature",
+            "Measurement of Time and Motion",
+            "Life Processes in Animals",
+            "Life Processes in Plants",
+            "Light: Shadows and Reflections",
+            "Earth, Moon, and the Sun"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science",
+          "title": "Exploring Society: India and Beyond Part 1",
+          "code": "gees1",
+          "chapters": 12,
+          "medium": "English",
+          "chapterTitles": [
+            "Geographical Diversity of India",
+            "Understanding the Weather",
+            "Climates of India",
+            "New Beginnings: Cities and States",
+            "The Rise of Empires",
+            "The Age of Reorganisation",
+            "The Gupta Era: An Age of Tireless Creativity",
+            "How the Land Becomes Sacred",
+            "From the Rulers to the Ruled: Types of Governments",
+            "The Constitution of India — An Introduction",
+            "From Barter to Money",
+            "Understanding Markets"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science",
+          "title": "Exploring Society: India and Beyond Part 2",
+          "code": "gees2",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "The Story of Indian Farming",
+            "India and Her Neighbours",
+            "Empires and Kingdoms: 6th to 10th Centuries",
+            "Turning Tides: 11th and 12th Centuries",
+            "India, a Home to Many"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Poorvi",
+          "code": "gepr1",
+          "chapters": 5,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi",
+          "title": "Malhar",
+          "code": "ghml1",
+          "chapters": 10,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit",
+          "title": "Deepakam",
+          "code": "gsde1",
+          "chapters": 12,
+          "medium": "Hindi",
+          "chapterTitles": [
+            "वन्दे भारतमातरम्",
+            "नित्यं पिबामः सुभाषितरसम्",
+            "मित्राय नमः",
+            "न लभ्यते चेत् आम्लं द्राक्षाफलम्",
+            "सेवा हि परमो धर्मः",
+            "क्रीडाम वयं श्लोकान्याक्षरीम्",
+            "ईशावास्यम् इदं सर्वम्",
+            "हितं मनोहारि च दुर्लभं वचः",
+            "अन्नाद् भवन्ति भूतानि",
+            "दशमः कः ?",
+            "द्वीपेषु रम्यः द्वीपोऽण्डमानः",
+            "वीराङ्गना पन्नाधाया"
+          ],
+          "verified": false
+        },
+        {
+          "subject": "Arts",
+          "title": "Kriti",
+          "code": "gekr1",
+          "chapters": 20,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Physical Education and Well-being",
+          "title": "Khel Yatra",
+          "code": "geky1",
+          "chapters": 6,
+          "medium": "English",
+          "verified": false
+        },
+        {
+          "subject": "Vocational Education",
+          "title": "Kaushal Bodh",
+          "code": "gekb1",
+          "chapters": 7,
+          "medium": "English",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 8,
+      "books": [
+        {
+          "subject": "Mathematics",
+          "title": "Ganita Prakash Part 1",
+          "code": "hegp1",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "A Square and a Cube",
+            "Power Play",
+            "A Story of Numbers",
+            "Quadrilaterals",
+            "Number Play",
+            "We Distribute, Yet Things Multiply",
+            "Proportional Reasoning-1"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Mathematics",
+          "title": "Ganita Prakash Part 2",
+          "code": "hegp2",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Fractions in Disguise",
+            "The Baudhayana-Pythagoras Theorem",
+            "Proportional Reasoning-2",
+            "Exploring Some Geometric Themes",
+            "Tales by Dots and Lines",
+            "Algebra Play",
+            "Area"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Science",
+          "title": "Curiosity",
+          "code": "hecu1",
+          "chapters": 13,
+          "medium": "English",
+          "chapterTitles": [
+            "Exploring the Investigative World of Science",
+            "The Invisible Living World: Beyond Our Naked Eye",
+            "Health: The Ultimate Treasure",
+            "Electricity: Magnetic and Heating Effects",
+            "Exploring Forces",
+            "Pressure, Winds, Storms, and Cyclones",
+            "Particulate Nature of Matter",
+            "Nature of Matter: Elements, Compounds, and Mixtures",
+            "The Amazing World of Solutes, Solvents, and Solutions",
+            "Light: Mirrors and Lenses",
+            "Keeping Time with the Skies",
+            "How Nature Works in Harmony",
+            "Our Home: Earth, a Unique Life Sustaining Planet"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science",
+          "title": "Exploring Society: India and Beyond Part 1",
+          "code": "hees1",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Natural Resources and Their Use",
+            "Reshaping India's Political Map",
+            "The Rise of the Marathas",
+            "The Colonial Era in India",
+            "Universal Franchise and India's Electoral System",
+            "The Parliamentary System: Legislature and Executive",
+            "Factors of Production"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science",
+          "title": "Exploring Society: India and Beyond Part 2",
+          "code": "hees2",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "World Geography: Some Glimpses",
+            "India's Long Road to Independence",
+            "A Journey Through Indian Architecture",
+            "The Role of the Judiciary in Our Society",
+            "Citizenship: Rights and Duties"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Poorvi",
+          "code": "hepr1",
+          "chapters": 5,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi",
+          "title": "Malhar",
+          "code": "hhml1",
+          "chapters": 10,
+          "medium": "Hindi",
+          "chapterTitles": [
+            "स्वदेश",
+            "दो गौरैया",
+            "एक आशीर्वाद",
+            "हरिद्वार",
+            "कबीर के दोहे",
+            "एक टोकरी भरी मिट्टी",
+            "मत बाँधो",
+            "नए मेहमान",
+            "आदमी का अनुपात",
+            "तरुण के स्वप्न"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit",
+          "title": "Deepakam",
+          "code": "hsde1",
+          "chapters": 14,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Arts",
+          "title": "Kriti",
+          "code": "hekr1",
+          "chapters": 19,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Physical Education and Well-being",
+          "title": "Khel Yatra",
+          "code": "heky1",
+          "chapters": 6,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Vocational Education",
+          "title": "Kaushal Bodh",
+          "code": "hekb1",
+          "chapters": 8,
+          "medium": "English",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 9,
+      "books": [
+        {
+          "subject": "Mathematics",
+          "title": "Ganita Manjari Part 1",
+          "code": "iemh1",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Orienting Yourself: The Use of Coordinates",
+            "Introduction to Linear Polynomials",
+            "The World of Numbers",
+            "Exploring Algebraic Identities",
+            "I'm Up and Down, and Round and Round",
+            "Measuring Space: Perimeter and Area",
+            "The Mathematics of Maybe: Introduction to Probability",
+            "Predicting What Comes Next: Exploring Sequences and Progressions"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Mathematics",
+          "title": "Ganita Manjari Part 2",
+          "code": "iemh2",
+          "chapters": 6,
+          "medium": "English",
+          "chapterTitles": [
+            "Propositions and their Converses",
+            "How Quantities Combine: Understanding Data",
+            "The World of Algorithms",
+            "Quadrilaterals",
+            "Two Variables, One Line",
+            "Math of Space: Surface Area and Volume"
+          ],
+          "verified": false
+        },
+        {
+          "subject": "Science",
+          "title": "Exploration",
+          "code": "iesc1",
+          "chapters": 13,
+          "medium": "English",
+          "chapterTitles": [
+            "Exploration: Entering the World of Secondary Science",
+            "Cell: The Building Block of Life",
+            "Tissues in Action",
+            "Describing Motion Around Us",
+            "Exploring Mixtures and their Separation",
+            "How Forces Affect Us",
+            "Work, Energy, and Power",
+            "Journey Inside the Atom",
+            "Atomic Foundations of Matter",
+            "Sound Waves: Characteristics and Applications",
+            "Reproduction: How Life Continues",
+            "Patterns in Life",
+            "Earth as a System"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science",
+          "title": "Understanding Society: India and Beyond Part 1",
+          "code": "iest1",
+          "chapters": 9,
+          "medium": "English",
+          "chapterTitles": [
+            "Understanding Social Science",
+            "Shaping of the Modern World",
+            "Atmosphere and Climate",
+            "Early Humans and Beginning of Agriculture",
+            "State and Society",
+            "Democracy",
+            "Elections",
+            "Building Blocks in Economics",
+            "The Price Puzzle"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science",
+          "title": "Understanding Society: India and Beyond Part 2",
+          "code": "iest2",
+          "chapters": 6,
+          "medium": "English",
+          "chapterTitles": [
+            "Oceans and Life",
+            "Life on Earth",
+            "Resistance and Resilience (1000–1700 CE)",
+            "Governance and Public Policy",
+            "Managing Your Personal Finances",
+            "From Ideas to Startups"
+          ],
+          "verified": false
+        },
+        {
+          "subject": "English",
+          "title": "Kaveri",
+          "code": "iebe1",
+          "chapters": 8,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi",
+          "title": "Ganga",
+          "code": null,
+          "chapters": 12,
+          "medium": "Hindi",
+          "chapterTitles": [
+            "दो बैलों की कथा",
+            "क्या लिखूँ?",
+            "संवादहीन",
+            "ऐसी भी बातें होती हैं",
+            "आखिरी चट्टान तक",
+            "रीढ़ की हड्डी",
+            "मैं और मेरा देश",
+            "रैदास के पद",
+            "राम-परशुराम-लक्ष्मण संवाद",
+            "भारति, जय, विजयकरे!",
+            "झाँसी की रानी",
+            "घर की याद"
+          ],
+          "verified": false
+        },
+        {
+          "subject": "Sanskrit",
+          "title": "Sharada",
+          "code": "ihsh1",
+          "chapters": 16,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Arts",
+          "title": "Madhurima",
+          "code": "iemr1",
+          "chapters": 17,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Physical Education and Well-being",
+          "title": "Khel Praveen",
+          "code": "iehp1",
+          "chapters": 6,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Skill Education",
+          "title": "Kaushal Vikas",
+          "code": "iekv1",
+          "chapters": 12,
+          "medium": "English",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 10,
+      "books": [
+        {
+          "subject": "Mathematics",
+          "title": "Mathematics",
+          "code": "jemh1",
+          "chapters": 14,
+          "medium": "English",
+          "chapterTitles": [
+            "Real Numbers",
+            "Polynomials",
+            "Pair of Linear Equations in Two Variables",
+            "Quadratic Equations",
+            "Arithmetic Progressions",
+            "Triangles",
+            "Coordinate Geometry",
+            "Introduction to Trigonometry",
+            "Some Applications of Trigonometry",
+            "Circles",
+            "Areas Related to Circles",
+            "Surface Areas and Volumes",
+            "Statistics",
+            "Probability"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Science",
+          "title": "Science",
+          "code": "jesc1",
+          "chapters": 13,
+          "medium": "English",
+          "chapterTitles": [
+            "Chemical Reactions and Equations",
+            "Acids, Bases and Salts",
+            "Metals and Non-metals",
+            "Carbon and its Compounds",
+            "Life Processes",
+            "Control and Coordination",
+            "How do Organisms Reproduce?",
+            "Heredity",
+            "Light – Reflection and Refraction",
+            "The Human Eye and the Colourful World",
+            "Electricity",
+            "Magnetic Effects of Electric Current",
+            "Our Environment"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science (History)",
+          "title": "India and the Contemporary World – II",
+          "code": "jess3",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "The Rise of Nationalism in Europe",
+            "Nationalism in India",
+            "The Making of a Global World",
+            "The Age of Industrialisation",
+            "Print Culture and the Modern World"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science (Geography)",
+          "title": "Contemporary India – II",
+          "code": "jess1",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Resources and Development",
+            "Forest and Wildlife Resources",
+            "Water Resources",
+            "Agriculture",
+            "Minerals and Energy Resources",
+            "Manufacturing Industries",
+            "Lifelines of National Economy"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science (Political Science)",
+          "title": "Democratic Politics – II",
+          "code": "jess4",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "Power-sharing",
+            "Federalism",
+            "Gender, Religion and Caste",
+            "Political Parties",
+            "Outcomes of Democracy"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Social Science (Economics)",
+          "title": "Understanding Economic Development",
+          "code": "jess2",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "Development",
+            "Sectors of the Indian Economy",
+            "Money and Credit",
+            "Globalisation and the Indian Economy",
+            "Consumer Rights"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "First Flight",
+          "code": "jeff1",
+          "chapters": 9,
+          "medium": "English",
+          "chapterTitles": [
+            "A Letter to God",
+            "Nelson Mandela: Long Walk to Freedom",
+            "Two Stories about Flying",
+            "From the Diary of Anne Frank",
+            "Glimpses of India",
+            "Mijbil the Otter",
+            "Madam Rides the Bus",
+            "The Sermon at Benares",
+            "The Proposal"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Footprints without Feet (Supplementary Reader)",
+          "code": "jefp1",
+          "chapters": 9,
+          "medium": "English",
+          "chapterTitles": [
+            "A Triumph of Surgery",
+            "The Thief's Story",
+            "The Midnight Visitor",
+            "A Question of Trust",
+            "Footprints without Feet",
+            "The Making of a Scientist",
+            "The Necklace",
+            "Bholi",
+            "The Book That Saved the Earth"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Words and Expressions – 2 (Workbook)",
+          "code": "jewe2",
+          "chapters": 9,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Course A)",
+          "title": "Kshitij Bhag 2",
+          "code": "jhks1",
+          "chapters": 12,
+          "medium": "Hindi",
+          "chapterTitles": [
+            "सूरदास के पद",
+            "राम-लक्ष्मण-परशुराम संवाद",
+            "आत्मकथ्य",
+            "उत्साह, अट नहीं रही है",
+            "यह दंतुरित मुसकान, फसल",
+            "संगतकार",
+            "नेताजी का चश्मा",
+            "बालगोबिन भगत",
+            "लखनवी अंदाज़",
+            "एक कहानी यह भी",
+            "नौबतखाने में इबादत",
+            "संस्कृति"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Course A)",
+          "title": "Kritika Bhag 2",
+          "code": "jhkr1",
+          "chapters": 3,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Course B)",
+          "title": "Sparsh Bhag 2",
+          "code": "jhsp1",
+          "chapters": 14,
+          "medium": "Hindi",
+          "chapterTitles": [
+            "साखी",
+            "पद",
+            "मनुष्यता",
+            "पर्वत प्रदेश में पावस",
+            "तोप",
+            "कर चले हम फ़िदा",
+            "आत्मत्राण",
+            "बड़े भाई साहब",
+            "डायरी का एक पन्ना",
+            "तताँरा-वामीरो कथा",
+            "तीसरी कसम के शिल्पकार शैलेंद्र",
+            "अब कहाँ दूसरे के दुख से दुखी होने वाले",
+            "पतझर में टूटी पत्तियाँ",
+            "कारतूस"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Course B)",
+          "title": "Sanchayan Bhag 2",
+          "code": "jhsy1",
+          "chapters": 3,
+          "medium": "Hindi",
+          "chapterTitles": [
+            "हरिहर काका",
+            "सपनों के-से दिन",
+            "टोपी शुक्ला"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit",
+          "title": "Shemushi Bhag 2",
+          "code": "jhsk1",
+          "chapters": 12,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit",
+          "title": "Vyakaranavithi",
+          "code": "jhva1",
+          "chapters": 14,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit",
+          "title": "Abhyaswaan Bhav – II",
+          "code": "jsab1",
+          "chapters": 14,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Health and Physical Education",
+          "title": "Health and Physical Education",
+          "code": "jehp1",
+          "chapters": 13,
+          "medium": "English",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 11,
+      "books": [
+        {
+          "subject": "Mathematics",
+          "title": "Mathematics",
+          "code": "kemh1",
+          "chapters": 14,
+          "medium": "English",
+          "chapterTitles": [
+            "Sets",
+            "Relations and Functions",
+            "Trigonometric Functions",
+            "Complex Numbers and Quadratic Equations",
+            "Linear Inequalities",
+            "Permutations and Combinations",
+            "Binomial Theorem",
+            "Sequences and Series",
+            "Straight Lines",
+            "Conic Sections",
+            "Introduction to Three Dimensional Geometry",
+            "Limits and Derivatives",
+            "Statistics",
+            "Probability"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Physics",
+          "title": "Physics Part I",
+          "code": "keph1",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Units and Measurements",
+            "Motion in a Straight Line",
+            "Motion in a Plane",
+            "Laws of Motion",
+            "Work, Energy and Power",
+            "System of Particles and Rotational Motion",
+            "Gravitation"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Physics",
+          "title": "Physics Part II",
+          "code": "keph2",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Mechanical Properties of Solids",
+            "Mechanical Properties of Fluids",
+            "Thermal Properties of Matter",
+            "Thermodynamics",
+            "Kinetic Theory",
+            "Oscillations",
+            "Waves"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Chemistry",
+          "title": "Chemistry Part I",
+          "code": "kech1",
+          "chapters": 6,
+          "medium": "English",
+          "chapterTitles": [
+            "Some Basic Concepts of Chemistry",
+            "Structure of Atom",
+            "Classification of Elements and Periodicity in Properties",
+            "Chemical Bonding and Molecular Structure",
+            "Thermodynamics",
+            "Equilibrium"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Chemistry",
+          "title": "Chemistry Part II",
+          "code": "kech2",
+          "chapters": 3,
+          "medium": "English",
+          "chapterTitles": [
+            "Redox Reactions",
+            "Organic Chemistry – Some Basic Principles and Techniques",
+            "Hydrocarbons"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Biology",
+          "title": "Biology",
+          "code": "kebo1",
+          "chapters": 19,
+          "medium": "English",
+          "chapterTitles": [
+            "The Living World",
+            "Biological Classification",
+            "Plant Kingdom",
+            "Animal Kingdom",
+            "Morphology of Flowering Plants",
+            "Anatomy of Flowering Plants",
+            "Structural Organisation in Animals",
+            "Cell: The Unit of Life",
+            "Biomolecules",
+            "Cell Cycle and Cell Division",
+            "Photosynthesis in Higher Plants",
+            "Respiration in Plants",
+            "Plant Growth and Development",
+            "Breathing and Exchange of Gases",
+            "Body Fluids and Circulation",
+            "Excretory Products and their Elimination",
+            "Locomotion and Movement",
+            "Neural Control and Coordination",
+            "Chemical Coordination and Integration"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Accountancy",
+          "title": "Financial Accounting Part I",
+          "code": "keac1",
+          "chapters": 7,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Accountancy",
+          "title": "Financial Accounting Part II",
+          "code": "keac2",
+          "chapters": 2,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Business Studies",
+          "title": "Business Studies",
+          "code": "kebs1",
+          "chapters": 11,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Economics",
+          "title": "Indian Economic Development",
+          "code": "keec1",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Indian Economy on the Eve of Independence",
+            "Indian Economy 1950–1990",
+            "Liberalisation, Privatisation and Globalisation: An Appraisal",
+            "Human Capital Formation in India",
+            "Rural Development",
+            "Employment: Growth, Informalisation and Other Issues",
+            "Environment and Sustainable Development",
+            "Comparative Development Experiences of India and its Neighbours"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Economics",
+          "title": "Statistics for Economics",
+          "code": "kest1",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Introduction",
+            "Collection of Data",
+            "Organisation of Data",
+            "Presentation of Data",
+            "Measures of Central Tendency",
+            "Correlation",
+            "Index Numbers",
+            "Use of Statistical Tools"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "History",
+          "title": "Themes in World History",
+          "code": "kehs1",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Writing and City Life",
+            "An Empire Across Three Continents",
+            "Nomadic Empires",
+            "The Three Orders",
+            "Changing Cultural Traditions",
+            "Displacing Indigenous Peoples",
+            "Paths to Modernisation"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Political Science",
+          "title": "Political Theory",
+          "code": "keps1",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Political Theory: An Introduction",
+            "Freedom",
+            "Equality",
+            "Social Justice",
+            "Rights",
+            "Citizenship",
+            "Nationalism",
+            "Secularism"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Political Science",
+          "title": "Indian Constitution at Work",
+          "code": "keps2",
+          "chapters": 10,
+          "medium": "English",
+          "chapterTitles": [
+            "Constitution: Why and How?",
+            "Rights in the Indian Constitution",
+            "Election and Representation",
+            "Executive",
+            "Legislature",
+            "Judiciary",
+            "Federalism",
+            "Local Governments",
+            "Constitution as a Living Document",
+            "The Philosophy of the Constitution"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Geography",
+          "title": "Fundamentals of Physical Geography",
+          "code": "kegy2",
+          "chapters": 14,
+          "medium": "English",
+          "chapterTitles": [
+            "Geography as a Discipline",
+            "The Origin and Evolution of the Earth",
+            "Interior of the Earth",
+            "Distribution of Oceans and Continents",
+            "Geomorphic Processes",
+            "Landforms and their Evolution",
+            "Composition and Structure of Atmosphere",
+            "Solar Radiation, Heat Balance and Temperature",
+            "Atmospheric Circulation and Weather Systems",
+            "Water in the Atmosphere",
+            "World Climate and Climate Change",
+            "Water (Oceans)",
+            "Movements of Ocean Water",
+            "Biodiversity and Conservation"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Geography",
+          "title": "India Physical Environment",
+          "code": "kegy1",
+          "chapters": 6,
+          "medium": "English",
+          "chapterTitles": [
+            "India — Location",
+            "Structure and Physiography",
+            "Drainage System",
+            "Climate",
+            "Natural Vegetation",
+            "Natural Hazards and Disasters"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Geography",
+          "title": "Practical Work in Geography Part I",
+          "code": "kegy3",
+          "chapters": 6,
+          "medium": "English",
+          "chapterTitles": [
+            "Introduction to Maps",
+            "Map Scale",
+            "Latitude, Longitude and Time",
+            "Map Projections",
+            "Topographical Maps",
+            "Introduction to Remote Sensing"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Sociology",
+          "title": "Introducing Sociology",
+          "code": "kesy1",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "Sociology and Society",
+            "Terms, Concepts and their Use in Sociology",
+            "Understanding Social Institutions",
+            "Culture and Socialisation",
+            "Doing Sociology: Research Methods"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Sociology",
+          "title": "Understanding Society",
+          "code": "kesy2",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "Social Structure, Stratification and Social Processes in Society",
+            "Social Change and Social Order in Rural and Urban Society",
+            "Environment and Society",
+            "Introducing Western Sociologists",
+            "Indian Sociologists"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Psychology",
+          "title": "Introduction to Psychology",
+          "code": "kepy1",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "What is Psychology?",
+            "Methods of Enquiry in Psychology",
+            "The Bases of Human Behaviour",
+            "Human Development",
+            "Sensory, Attentional and Perceptual Processes",
+            "Learning",
+            "Human Memory",
+            "Thinking"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Hornbill",
+          "code": "kehb1",
+          "chapters": 14,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Snapshots (Supplementary Reader)",
+          "code": "kesp1",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "The Summer of the Beautiful White Horse",
+            "The Address",
+            "Mother's Day",
+            "Birth",
+            "The Tale of Melon City"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Woven Words (Elective)",
+          "code": "keww1",
+          "chapters": 27,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Computer Science",
+          "title": "Computer Science",
+          "code": "kecs1",
+          "chapters": 11,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Informatics Practices",
+          "title": "Informatics Practices",
+          "code": "keip1",
+          "chapters": 8,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Computers and Communication Technology",
+          "title": "Computers and Communication Technology Part I",
+          "code": "kect1",
+          "chapters": 8,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Computers and Communication Technology",
+          "title": "Computers and Communication Technology Part II",
+          "code": "kect2",
+          "chapters": 6,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Biotechnology",
+          "title": "Biotechnology",
+          "code": "kebt1",
+          "chapters": 12,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Home Science",
+          "title": "Human Ecology and Family Sciences Part I",
+          "code": "kehe1",
+          "chapters": 7,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Home Science",
+          "title": "Human Ecology and Family Sciences Part II",
+          "code": "kehe2",
+          "chapters": 4,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Fine Art",
+          "title": "An Introduction to Indian Art Part I",
+          "code": "kefa1",
+          "chapters": 8,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Graphics design",
+          "title": "The Story of Graphic Design",
+          "code": "kegd1",
+          "chapters": 8,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Heritage Crafts",
+          "title": "Living Craft Traditions of India",
+          "code": "kehc1",
+          "chapters": 10,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Knowledge Traditions Practices of India",
+          "title": "Knowledge Traditions Practices of India",
+          "code": "keks1",
+          "chapters": 9,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Health and Physical Education",
+          "title": "Health and Physical Education",
+          "code": "kehp1",
+          "chapters": 11,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Core)",
+          "title": "Aroh Bhag 1",
+          "code": "khar1",
+          "chapters": 20,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Core)",
+          "title": "Vitan Bhag 1",
+          "code": "khvt1",
+          "chapters": 4,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Elective)",
+          "title": "Antra Bhag 1",
+          "code": "khat1",
+          "chapters": 19,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Elective)",
+          "title": "Antral Bhag 1",
+          "code": "khan1",
+          "chapters": 2,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit (Core)",
+          "title": "Bhaswati Bhag 1",
+          "code": "khsk1",
+          "chapters": 12,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit (Elective)",
+          "title": "Shashwati Bhag 1",
+          "code": "khsk2",
+          "chapters": 14,
+          "medium": "Hindi",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "class": 12,
+      "books": [
+        {
+          "subject": "Mathematics",
+          "title": "Mathematics Part I",
+          "code": "lemh1",
+          "chapters": 6,
+          "medium": "English",
+          "chapterTitles": [
+            "Relations and Functions",
+            "Inverse Trigonometric Functions",
+            "Matrices",
+            "Determinants",
+            "Continuity and Differentiability",
+            "Application of Derivatives"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Mathematics",
+          "title": "Mathematics Part II",
+          "code": "lemh2",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Integrals",
+            "Application of Integrals",
+            "Differential Equations",
+            "Vector Algebra",
+            "Three Dimensional Geometry",
+            "Linear Programming",
+            "Probability"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Physics",
+          "title": "Physics Part I",
+          "code": "leph1",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Electric Charges and Fields",
+            "Electrostatic Potential and Capacitance",
+            "Current Electricity",
+            "Moving Charges and Magnetism",
+            "Magnetism and Matter",
+            "Electromagnetic Induction",
+            "Alternating Current",
+            "Electromagnetic Waves"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Physics",
+          "title": "Physics Part II",
+          "code": "leph2",
+          "chapters": 6,
+          "medium": "English",
+          "chapterTitles": [
+            "Ray Optics and Optical Instruments",
+            "Wave Optics",
+            "Dual Nature of Radiation and Matter",
+            "Atoms",
+            "Nuclei",
+            "Semiconductor Electronics: Materials, Devices and Simple Circuits"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Chemistry",
+          "title": "Chemistry Part I",
+          "code": "lech1",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "Solutions",
+            "Electrochemistry",
+            "Chemical Kinetics",
+            "The d- and f-Block Elements",
+            "Coordination Compounds"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Chemistry",
+          "title": "Chemistry Part II",
+          "code": "lech2",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "Haloalkanes and Haloarenes",
+            "Alcohols, Phenols and Ethers",
+            "Aldehydes, Ketones and Carboxylic Acids",
+            "Amines",
+            "Biomolecules"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Biology",
+          "title": "Biology",
+          "code": "lebo1",
+          "chapters": 13,
+          "medium": "English",
+          "chapterTitles": [
+            "Sexual Reproduction in Flowering Plants",
+            "Human Reproduction",
+            "Reproductive Health",
+            "Principles of Inheritance and Variation",
+            "Molecular Basis of Inheritance",
+            "Evolution",
+            "Human Health and Disease",
+            "Microbes in Human Welfare",
+            "Biotechnology: Principles and Processes",
+            "Biotechnology and its Applications",
+            "Organisms and Populations",
+            "Ecosystem",
+            "Biodiversity and Conservation"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Accountancy",
+          "title": "Accountancy Part I",
+          "code": "leac1",
+          "chapters": 4,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Accountancy",
+          "title": "Accountancy Part II",
+          "code": "leac2",
+          "chapters": 6,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Accountancy",
+          "title": "Computerised Accounting System",
+          "code": "leca1",
+          "chapters": 4,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Business Studies",
+          "title": "Business Studies Part I",
+          "code": "lebs1",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Nature and Significance of Management",
+            "Principles of Management",
+            "Business Environment",
+            "Planning",
+            "Organising",
+            "Staffing",
+            "Directing",
+            "Controlling"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Business Studies",
+          "title": "Business Studies Part II",
+          "code": "lebs2",
+          "chapters": 3,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Economics",
+          "title": "Introductory Microeconomics",
+          "code": "leec2",
+          "chapters": 5,
+          "medium": "English",
+          "chapterTitles": [
+            "Introduction",
+            "Theory of Consumer Behaviour",
+            "Production and Costs",
+            "The Theory of the Firm under Perfect Competition",
+            "Market Equilibrium"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Economics",
+          "title": "Introductory Macroeconomics",
+          "code": "leec1",
+          "chapters": 6,
+          "medium": "English",
+          "chapterTitles": [
+            "Introduction",
+            "National Income Accounting",
+            "Money and Banking",
+            "Determination of Income and Employment",
+            "Government Budget and the Economy",
+            "Open Economy Macroeconomics"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "History",
+          "title": "Themes in Indian History Part I",
+          "code": "lehs1",
+          "chapters": 4,
+          "medium": "English",
+          "chapterTitles": [
+            "Bricks, Beads and Bones: The Harappan Civilisation",
+            "Kings, Farmers and Towns: Early States and Economies",
+            "Kinship, Caste and Class: Early Societies",
+            "Thinkers, Beliefs and Buildings: Cultural Developments"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "History",
+          "title": "Themes in Indian History Part II",
+          "code": "lehs2",
+          "chapters": 4,
+          "medium": "English",
+          "chapterTitles": [
+            "Through the Eyes of Travellers: Perceptions of Society",
+            "Bhakti-Sufi Traditions: Changes in Religious Beliefs and Devotional Texts",
+            "An Imperial Capital: Vijayanagara",
+            "Peasants, Zamindars and the State: Agrarian Society and the Mughal Empire"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "History",
+          "title": "Themes in Indian History Part III",
+          "code": "lehs3",
+          "chapters": 4,
+          "medium": "English",
+          "chapterTitles": [
+            "Colonialism and the Countryside: Exploring Official Archives",
+            "Rebels and the Raj: The Revolt of 1857 and its Representations",
+            "Mahatma Gandhi and the Nationalist Movement: Civil Disobedience and Beyond",
+            "Framing the Constitution: The Beginning of a New Era"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Political Science",
+          "title": "Contemporary World Politics",
+          "code": "leps1",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "The End of Bipolarity",
+            "Contemporary Centres of Power",
+            "Contemporary South Asia",
+            "International Organisations",
+            "Security in the Contemporary World",
+            "Environment and Natural Resources",
+            "Globalisation"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Political Science",
+          "title": "Politics in India Since Independence",
+          "code": "leps2",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Challenges of Nation Building",
+            "Era of One-party Dominance",
+            "Politics of Planned Development",
+            "India's External Relations",
+            "Challenges to and Restoration of the Congress System",
+            "The Crisis of Democratic Order",
+            "Regional Aspirations",
+            "Recent Developments in Indian Politics"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Geography",
+          "title": "Fundamentals of Human Geography",
+          "code": "legy1",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Human Geography: Nature and Scope",
+            "The World Population: Distribution, Density and Growth",
+            "Human Development",
+            "Primary Activities",
+            "Secondary Activities",
+            "Tertiary and Quaternary Activities",
+            "Transport and Communication",
+            "International Trade"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Geography",
+          "title": "India: People and Economy",
+          "code": "legy2",
+          "chapters": 9,
+          "medium": "English",
+          "chapterTitles": [
+            "Population: Distribution, Density, Growth and Composition",
+            "Human Settlements",
+            "Land Resources and Agriculture",
+            "Water Resources",
+            "Mineral and Energy Resources",
+            "Planning and Sustainable Development in Indian Context",
+            "Transport and Communication",
+            "International Trade",
+            "Geographical Perspective on Selected Issues and Problems"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Geography",
+          "title": "Practical Work in Geography Part II",
+          "code": "legy3",
+          "chapters": 4,
+          "medium": "English",
+          "chapterTitles": [
+            "Data – Its Source and Compilation",
+            "Data Processing",
+            "Graphical Representation of Data",
+            "Use of Computer in Data Processing and Mapping"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Sociology",
+          "title": "Indian Society",
+          "code": "lesy1",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Introducing Indian Society",
+            "The Demographic Structure of the Indian Society",
+            "Social Institutions: Continuity and Change",
+            "The Market as a Social Institution",
+            "Patterns of Social Inequality and Exclusion",
+            "The Challenges of Cultural Diversity",
+            "Suggestions for Project Work"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Sociology",
+          "title": "Social Change and Development in India",
+          "code": "lesy2",
+          "chapters": 8,
+          "medium": "English",
+          "chapterTitles": [
+            "Structural Change",
+            "Cultural Change",
+            "The Story of Indian Democracy",
+            "Change and Development in Rural Society",
+            "Change and Development in Industrial Society",
+            "Globalisation and Social Change",
+            "Mass Media and Communications",
+            "Social Movements"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "Psychology",
+          "title": "Psychology",
+          "code": "lepy1",
+          "chapters": 7,
+          "medium": "English",
+          "chapterTitles": [
+            "Variations in Psychological Attributes",
+            "Self and Personality",
+            "Meeting Life Challenges",
+            "Psychological Disorders",
+            "Therapeutic Approaches",
+            "Attitude and Social Cognition",
+            "Social Influence and Group Processes"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Flamingo",
+          "code": "lefl1",
+          "chapters": 13,
+          "medium": "English",
+          "chapterTitles": [
+            "The Last Lesson",
+            "Lost Spring",
+            "Deep Water",
+            "The Rattrap",
+            "Indigo",
+            "Poets and Pancakes",
+            "The Interview",
+            "Going Places",
+            "My Mother at Sixty-six",
+            "Keeping Quiet",
+            "A Thing of Beauty",
+            "A Roadside Stand",
+            "Aunt Jennifer's Tigers"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Vistas",
+          "code": "levt1",
+          "chapters": 6,
+          "medium": "English",
+          "chapterTitles": [
+            "The Third Level",
+            "The Tiger King",
+            "Journey to the End of the Earth",
+            "The Enemy",
+            "On the Face of It",
+            "Memories of Childhood"
+          ],
+          "verified": true
+        },
+        {
+          "subject": "English",
+          "title": "Kaleidoscope (Elective)",
+          "code": "lekl1",
+          "chapters": 21,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Computer Science",
+          "title": "Computer Science",
+          "code": "lecs1",
+          "chapters": 13,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Informatics Practices",
+          "title": "Informatics Practices",
+          "code": "leip1",
+          "chapters": 7,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Biotechnology",
+          "title": "Biotechnology",
+          "code": "lebt1",
+          "chapters": 13,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Home Science",
+          "title": "Human Ecology and Family Sciences Part I",
+          "code": "lehe1",
+          "chapters": 7,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Home Science",
+          "title": "Human Ecology and Family Sciences Part II",
+          "code": "lehe2",
+          "chapters": 7,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Fine Art",
+          "title": "An Introduction to Indian Art Part-II",
+          "code": "lefa1",
+          "chapters": 8,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "New Age Graphics Design",
+          "title": "New Age Graphics Design",
+          "code": "legd1",
+          "chapters": 12,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Heritage Crafts",
+          "title": "Craft Traditions of India",
+          "code": "lehc1",
+          "chapters": 9,
+          "medium": "English",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Core)",
+          "title": "Aroh Bhag 2",
+          "code": "lhar1",
+          "chapters": 15,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Core)",
+          "title": "Vitan Bhag 2",
+          "code": "lhvt1",
+          "chapters": 3,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Elective)",
+          "title": "Antra Bhag 2",
+          "code": "lhat1",
+          "chapters": 17,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Hindi (Elective)",
+          "title": "Antral Bhag 2",
+          "code": "lhan1",
+          "chapters": 3,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit (Core)",
+          "title": "Bhaswati Bhag 2",
+          "code": "lhsk1",
+          "chapters": 12,
+          "medium": "Hindi",
+          "verified": true
+        },
+        {
+          "subject": "Sanskrit (Elective)",
+          "title": "Shashwati Bhag 2",
+          "code": "lhsk2",
+          "chapters": 14,
+          "medium": "Hindi",
+          "verified": true
+        }
+      ]
+    }
+  ]
+}

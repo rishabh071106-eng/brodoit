@@ -1,0 +1,240 @@
+{
+  "id": "wipro",
+  "name": "Wipro (Elite NTH & Turbo)",
+  "category": "it",
+  "core": "it-core",
+  "conductedBy": "Wipro Ltd.",
+  "tagline": "Elite National Talent Hunt: aptitude, essay and coding in one sitting",
+  "overview": {
+    "about": "Wipro's main fresher route is the Elite National Talent Hunt (NTH) for engineering graduates, leading to the Project Engineer role. Strong performers may be considered for the higher-paying Turbo role, which involves a tougher assessment and interview. Pattern as reported for 2025–26 drives; confirm on the official careers page.",
+    "eligibility": [
+      "B.E./B.Tech (and M.E./M.Tech in some cycles) from the batches named in the notice",
+      "Typically 60% or more in 10th, 12th and graduation (as reported)",
+      "Full-time courses only; at most one active backlog at test time, cleared before joining (check notice)"
+    ],
+    "pattern": [
+      {
+        "paper": "Aptitude — Quantitative",
+        "questions": "≈ 16",
+        "duration": "≈ 16 min"
+      },
+      {
+        "paper": "Aptitude — Logical",
+        "questions": "≈ 14",
+        "duration": "≈ 18 min"
+      },
+      {
+        "paper": "Aptitude — Verbal",
+        "questions": "≈ 22",
+        "duration": "≈ 14 min"
+      },
+      {
+        "paper": "Written communication (essay)",
+        "questions": "1",
+        "duration": "≈ 20 min",
+        "note": "Essay on a general topic"
+      },
+      {
+        "paper": "Online programming test",
+        "questions": "2 problems",
+        "duration": "≈ 60 min",
+        "note": "Choose Java, C, C++ or Python"
+      },
+      {
+        "paper": "Interviews",
+        "duration": "≈ 30 min",
+        "note": "Technical + HR (may be combined)"
+      }
+    ],
+    "frequency": "Elite NTH runs once or twice a year; campus drives in season",
+    "officialSite": "https://careers.wipro.com/careers-home"
+  },
+  "subjects": [
+    {
+      "id": "wipro-specific",
+      "name": "Wipro specifics",
+      "chapters": [
+        {
+          "id": "wipro-nth-aptitude-essay",
+          "title": "NTH aptitude & essay",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Tight timing",
+              "body": "About 52 questions in under 50 minutes across three sub-sections — roughly a minute per question. Percentile-style sectional cut-offs are reported. Pattern as reported for 2025–26 drives; confirm on the official careers page."
+            },
+            {
+              "type": "concept",
+              "title": "Quant topics",
+              "points": [
+                "Number system, LCM/HCF",
+                "Percentages, profit, interest",
+                "Time-work, speed, ratios",
+                "Probability, P&C, mensuration"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Logical & verbal topics",
+              "points": [
+                "Series, coding-decoding, directions, blood relations",
+                "Syllogisms, seating, data sufficiency",
+                "Synonyms/antonyms, sentence correction, RC"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Essay round",
+              "body": "You get one topic and ~20 minutes for ~200–300 words. Graded on grammar, structure and clarity, not opinion."
+            },
+            {
+              "type": "example",
+              "title": "Essay skeleton",
+              "body": "Intro (2 lines: define topic + your stance) → 2 body paragraphs (one point + example each) → conclusion (restate + forward-looking line). Example topic: 'Is AI a threat to jobs?'"
+            },
+            {
+              "type": "tip",
+              "title": "Essay hygiene",
+              "body": "Short sentences, no slang or SMS language, consistent tense, paragraph breaks. Leave 2 minutes to proofread spellings and articles."
+            },
+            {
+              "type": "quiz",
+              "q": "Which essay structure is safest in a 20-minute test?",
+              "options": [
+                "One long paragraph",
+                "Introduction, two body paragraphs, conclusion",
+                "Bullet points only",
+                "Story with no conclusion"
+              ],
+              "answer": 1,
+              "explain": "A clear structure is easy to grade and to finish in time."
+            },
+            {
+              "type": "quiz",
+              "q": "With ~52 questions in ~48 minutes, a sensible target per question is:",
+              "options": [
+                "About 3 minutes",
+                "About 10 seconds",
+                "No time limit applies",
+                "About 1 minute"
+              ],
+              "answer": 3,
+              "explain": "48/52 ≈ 55 seconds each."
+            }
+          ]
+        },
+        {
+          "id": "wipro-coding-interviews",
+          "title": "Coding round, Turbo & interviews",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Coding format",
+              "body": "Two problems in about 60 minutes, usually one easier and one harder. Choose C, C++, Java or Python. Hidden test cases decide the score."
+            },
+            {
+              "type": "concept",
+              "title": "Common problem types",
+              "points": [
+                "Array manipulation and searching",
+                "String processing (vowels, words, palindromes)",
+                "Number logic (primes, Armstrong, digit sums)",
+                "Pattern printing occasionally"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Example: Armstrong number",
+              "body": "def is_armstrong(n):\n    s = str(n)\n    k = len(s)\n    return n == sum(int(d) ** k for d in s)\n153 → 1 + 125 + 27 = 153 → True"
+            },
+            {
+              "type": "concept",
+              "title": "Turbo",
+              "body": "Wipro Turbo is a higher-pay fresher role. Selection uses a tougher coding/technical assessment and interview; strong NTH performers may be considered. Check the current notice for how to qualify."
+            },
+            {
+              "type": "concept",
+              "title": "Interviews",
+              "body": "Technical: project, OOP, DBMS, a simple program, maybe a puzzle. HR: relocation, shift flexibility, service agreement, why Wipro."
+            },
+            {
+              "type": "tip",
+              "title": "Edge cases",
+              "body": "Test negative numbers, zero, a single element and the largest constraint before submitting — hidden cases target exactly these."
+            },
+            {
+              "type": "quiz",
+              "q": "Is 370 an Armstrong number (3 digits)?",
+              "options": [
+                "Yes",
+                "No",
+                "Only in base 2",
+                "Cannot be determined"
+              ],
+              "answer": 0,
+              "explain": "3³ + 7³ + 0³ = 27 + 343 + 0 = 370."
+            },
+            {
+              "type": "quiz",
+              "q": "Before submitting a coding solution, which check helps most with hidden test cases?",
+              "options": [
+                "Add more comments",
+                "Rename variables",
+                "Run edge inputs like 0, negatives and max size",
+                "Print debug text"
+              ],
+              "answer": 2,
+              "explain": "Edge cases are where most hidden test failures happen."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "Wipro careers — fresher programmes (Elite NTH announcements)",
+          "url": "https://careers.wipro.com/careers-home",
+          "source": "Wipro (official sample/practice — company does not publish past papers)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "Wipro careers (official)",
+      "url": "https://careers.wipro.com/careers-home",
+      "note": "Apply only through official links; Wipro never charges fees",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    },
+    {
+      "label": "HackerRank",
+      "url": "https://www.hackerrank.com",
+      "note": "Many company tests run on HackerRank-style editors; SQL track is excellent",
+      "free": true
+    },
+    {
+      "label": "LeetCode",
+      "url": "https://leetcode.com",
+      "note": "Coding practice; free problem set is enough for service-company coding rounds",
+      "free": true
+    },
+    {
+      "label": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org",
+      "note": "Free curriculum incl. JavaScript algorithms & data structures and Python",
+      "free": true
+    }
+  ]
+}

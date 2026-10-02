@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NCERT Books Class 1&ndash;12 &mdash; Brodoit</title>
+<meta name="description" content="Every current NCERT textbook for Classes 1 to 12, chapter-wise PDFs from NCERT's official site. Track which chapters you have read.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <h1>NCERT Books &middot; Class 1&ndash;12</h1>
+    <p>Every current NCERT textbook, chapter by chapter. PDFs open directly from <a href="https://ncert.nic.in/textbook.php" target="_blank" rel="noopener">ncert.nic.in</a>, NCERT's official site, so you always get the latest reprint. Tick chapters as you finish them.</p>
+  </div>
+  <div class="chips" id="classes"></div>
+  <div class="chips" id="subjects"></div>
+  <div class="grid" id="books"></div>
+  <p class="meta" style="margin-top:2rem" id="note"></p>
+  <h2 class="section-title">More free NCERT &amp; government resources</h2>
+  <div class="grid">
+    <a class="tile" href="https://epathshala.nic.in" target="_blank" rel="noopener"><h3>ePathshala</h3><p>NCERT's official app and site for e-books, audio and video.</p></a>
+    <a class="tile" href="https://diksha.gov.in" target="_blank" rel="noopener"><h3>DIKSHA</h3><p>QR-code-linked lessons, practice and teacher content for every NCERT chapter.</p></a>
+    <a class="tile" href="https://ciet.ncert.gov.in" target="_blank" rel="noopener"><h3>CIET-NCERT</h3><p>NCERT's educational audio, video and PM eVidya TV channels.</p></a>
+    <a class="tile" href="https://ncert.nic.in/exemplar-problems.php" target="_blank" rel="noopener"><h3>NCERT Exemplar</h3><p>Harder practice problems for Classes 6&ndash;12 maths and science.</p></a>
+  </div>
+</main>
+
+<script type="module">
+import { renderNav, renderFooter, loadJSON, store, logActivity, esc } from './assets/js/app.js';
+renderNav('ncert.html');
+renderFooter();
+
+const BASE = 'https://ncert.nic.in/textbook';
+const data = await loadJSON('data/ncert.json');
+document.getElementById('note').textContent = data.note || '';
+const saved = (() => { try { return +localStorage.getItem('academy.class'); } catch { return 0; } })();
+let cls = +(new URLSearchParams(location.search).get('class')) || saved || 10;
+let subj = 'All';
+
+const pad = n => String(n).padStart(2, '0');
+function drawClasses() {
+  document.getElementById('classes').innerHTML = data.classes.map(c =>
+    `<button class="chip${c.class === cls ? ' on' : ''}" data-c="${c.class}">Class ${c.class}</button>`).join('');
+}
+function drawBooks() {
+  const c = data.classes.find(x => x.class === cls) || data.classes[0];
+  const subjects = ['All', ...new Set(c.books.map(b => b.subject))];
+  if (!subjects.includes(subj)) subj = 'All';
+  document.getElementById('subjects').innerHTML = subjects.map(sb =>
+    `<button class="chip${sb === subj ? ' on' : ''}" data-s="${esc(sb)}">${esc(sb)}</button>`).join('');
+  const read = store.read().ncert;
+  document.getElementById('books').innerHTML = c.books.filter(b => subj === 'All' || b.subject === subj).map(b => {
+    const n = b.chapters || 0;
+    const titles = b.chapterTitles || [];
+    const doneCount = b.code ? [...Array(n)].filter((_, i) => read[`${b.code}/${i + 1}`]).length : 0;
+    const links = b.code ? `<div class="actions">
+        <a href="${BASE}.php?${b.code}=0-${n}" target="_blank" rel="noopener">Open book</a>
+        <a href="${BASE}/pdf/${b.code}dd.zip" target="_blank" rel="noopener">Download all (ZIP)</a>
+      </div>
+      <details><summary>${n} chapters${doneCount ? ` · ${doneCount} read` : ''}</summary><ol>${[...Array(n)].map((_, i) => `
+        <li><label><input type="checkbox" data-k="${b.code}/${i + 1}" data-t="Class ${cls} ${esc(b.title)} — Ch ${i + 1}" ${read[`${b.code}/${i + 1}`] ? 'checked' : ''}>
+        <a href="${BASE}/pdf/${b.code}${pad(i + 1)}.pdf" target="_blank" rel="noopener">${esc(titles[i] || `Chapter ${i + 1}`)}</a></label></li>`).join('')}
+      </ol></details>`
+      : `<div class="actions"><a href="https://ncert.nic.in/textbook.php" target="_blank" rel="noopener">Find on ncert.nic.in</a></div>`;
+    return `<div class="tile book">
+      <div class="kicker">${esc(b.subject)}${b.medium && b.medium !== 'English' ? ` · ${esc(b.medium)}` : ''}</div>
+      <h3>${esc(b.title)}</h3>
+      ${n && b.code ? `<div class="bar"><span style="width:${(doneCount / n) * 100}%"></span></div>` : ''}
+      ${links}</div>`;
+  }).join('');
+}
+
+document.getElementById('classes').addEventListener('click', e => {
+  if (!e.target.dataset.c) return;
+  cls = +e.target.dataset.c;
+  try { localStorage.setItem('academy.class', cls); } catch {}
+  history.replaceState(null, '', `?class=${cls}`);
+  drawClasses(); drawBooks();
+});
+document.getElementById('subjects').addEventListener('click', e => {
+  if (!e.target.dataset.s) return;
+  subj = e.target.dataset.s; drawBooks();
+});
+document.getElementById('books').addEventListener('change', e => {
+  const k = e.target.dataset.k;
+  if (!k) return;
+  store.update(s => { if (e.target.checked) s.ncert[k] = Date.now(); else delete s.ncert[k]; });
+  if (e.target.checked) logActivity({ type: 'ncert', title: e.target.dataset.t });
+  const open = e.target.closest('details'); drawBooks();
+  // keep the chapter list the student was ticking open after redraw
+  if (open) document.querySelector(`[data-k="${k}"]`)?.closest('details')?.setAttribute('open', '');
+});
+
+drawClasses(); drawBooks();
+</script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+{
+  "id": "cognizant",
+  "name": "Cognizant (GenC, GenC Pro, GenC Next)",
+  "category": "it",
+  "core": "it-core",
+  "conductedBy": "Cognizant Technology Solutions",
+  "tagline": "GenC programme tracks from GenC to GenC Next",
+  "overview": {
+    "about": "Cognizant hires freshers through its Generation Cognizant (GenC) programme. Tracks reported include GenC (programmer analyst trainee), GenC Pro and GenC Next (higher packages, harder coding/skill tests), plus GenC Elevate for some campuses. Assessments combine communication, aptitude and skill-based technical tests, followed by interviews. Pattern as reported for 2025–26 drives; confirm on the official careers page.",
+    "eligibility": [
+      "B.E./B.Tech/M.E./M.Tech/MCA/M.Sc for engineering tracks; some windows open to 3-year degrees (BCA/B.Sc etc.) — check each notice",
+      "Typically 60% or more (or 6.0 CGPA) in 10th, 12th/diploma and graduation (as reported)",
+      "No standing arrears at joining"
+    ],
+    "pattern": [
+      {
+        "paper": "Communication assessment",
+        "duration": "≈ 30–60 min",
+        "note": "AI-based: reading, grammar, listening, speaking"
+      },
+      {
+        "paper": "Aptitude — quant, logical; game-based modules reported",
+        "questions": "≈ 30 + games",
+        "duration": "≈ 60–80 min"
+      },
+      {
+        "paper": "Skill-based technical (GenC Pro/Next)",
+        "questions": "Coding, SQL, debugging, MCQs",
+        "duration": "≈ 2 hours",
+        "note": "Harder for GenC Next"
+      },
+      {
+        "paper": "Interviews",
+        "duration": "≈ 30–45 min",
+        "note": "Technical + HR"
+      }
+    ],
+    "frequency": "Campus drives in season plus off-campus windows announced on the careers site",
+    "officialSite": "https://careers.cognizant.com/india-en/pathways-to-cognizant/genc-program/"
+  },
+  "subjects": [
+    {
+      "id": "cognizant-specific",
+      "name": "Cognizant specifics",
+      "chapters": [
+        {
+          "id": "cognizant-genc-tracks",
+          "title": "GenC tracks & assessment flow",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Tracks",
+              "points": [
+                "GenC: entry track; aptitude + communication focus",
+                "GenC Pro: higher band; adds a skill-based technical test",
+                "GenC Next: highest band; coding-heavy, harder problems",
+                "Track names and packages can change by season — Pattern as reported for 2025–26 drives; confirm on the official careers page."
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Flow",
+              "body": "Typical sequence: communication assessment → aptitude (incl. game-based modules) → skill-based technical test for Pro/Next → technical + HR interview."
+            },
+            {
+              "type": "concept",
+              "title": "Communication assessment",
+              "body": "Read-aloud, listen-and-repeat, sentence building and short comprehension, scored by software. Clear, unhurried speech wins."
+            },
+            {
+              "type": "concept",
+              "title": "Aptitude",
+              "body": "Quant (percentages, ratios, time-work, P&C), logical (series, puzzles, arrangements) and game-based tasks testing memory, attention and pattern recognition."
+            },
+            {
+              "type": "tip",
+              "title": "No service bond",
+              "body": "Cognizant states GenC has no service bonds. Read the offer letter for training and location terms anyway."
+            },
+            {
+              "type": "example",
+              "title": "Quant sample",
+              "body": "Q: Two numbers are in the ratio 3:5 and their sum is 64. Find the larger.\nTotal parts 8 → one part 8 → larger = 5 × 8 = 40."
+            },
+            {
+              "type": "quiz",
+              "q": "Which GenC track typically has the hardest coding assessment?",
+              "options": [
+                "GenC",
+                "GenC Next",
+                "All are identical",
+                "None includes coding"
+              ],
+              "answer": 1,
+              "explain": "GenC Next is the highest band and the most coding-heavy."
+            },
+            {
+              "type": "quiz",
+              "q": "Two numbers in the ratio 2:7 sum to 81. The smaller is:",
+              "options": [
+                "63",
+                "27",
+                "9",
+                "18"
+              ],
+              "answer": 3,
+              "explain": "9 parts = 81 → 1 part = 9 → smaller = 18."
+            }
+          ]
+        },
+        {
+          "id": "cognizant-skill-assessment",
+          "title": "Coding, SQL & debugging (GenC Pro/Next)",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What is tested",
+              "points": [
+                "Coding: 2 problems, easy to hard",
+                "SQL: write queries on a given schema",
+                "Code debugging: fix small buggy snippets",
+                "MCQs on web/cloud/CS basics (reported)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "SQL style",
+              "body": "Employees(id, name, dept, salary). Highest salary per department:\nSELECT dept, MAX(salary)\nFROM Employees\nGROUP BY dept;"
+            },
+            {
+              "type": "example",
+              "title": "Debugging style",
+              "body": "Buggy:\nfor (int i = 0; i <= n; i++) sum += a[i];\nFix: i < n — the original reads past the end of the array."
+            },
+            {
+              "type": "concept",
+              "title": "Coding topics",
+              "body": "Arrays, strings, hashing, sorting, two pointers; for GenC Next also DP, graphs and greedy problems at medium difficulty."
+            },
+            {
+              "type": "tip",
+              "title": "Debugging speed",
+              "body": "Look first at loop bounds, wrong operators (= vs ==), integer division, missing return statements and off-by-one indices — they cover most debugging items."
+            },
+            {
+              "type": "concept",
+              "title": "Partial credit",
+              "body": "Each coding problem is usually scored by test cases. Submit a working brute force early, then optimise."
+            },
+            {
+              "type": "quiz",
+              "q": "Which SQL clause groups rows so that MAX(salary) is computed per department?",
+              "options": [
+                "GROUP BY dept",
+                "ORDER BY dept",
+                "WHERE dept",
+                "DISTINCT dept"
+              ],
+              "answer": 0,
+              "explain": "GROUP BY creates one group per department."
+            },
+            {
+              "type": "quiz",
+              "q": "Bug: for (i = 0; i <= n; i++) sum += a[i]; for an array of size n. The fix is:",
+              "options": [
+                "Use i <= n + 1",
+                "Start i at 1",
+                "Use i < n",
+                "Use sum -= a[i]"
+              ],
+              "answer": 2,
+              "explain": "Valid indices are 0 to n − 1."
+            },
+            {
+              "type": "quiz",
+              "q": "Debugging: if (x = 5) in C/Java-like code usually should be:",
+              "options": [
+                "if (x := 5)",
+                "if (5 = x)",
+                "if (x == 5)",
+                "if x == 5 then"
+              ],
+              "answer": 2,
+              "explain": "= assigns; == compares."
+            }
+          ]
+        },
+        {
+          "id": "cognizant-interviews",
+          "title": "Cognizant interviews",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Technical round",
+              "body": "Project walkthrough, OOP pillars with examples, SQL joins and a query, basic OS/CN, a small program. For GenC Next, expect DSA follow-ups on your coding solution."
+            },
+            {
+              "type": "concept",
+              "title": "HR round",
+              "body": "Introduction, why Cognizant, relocation and shift flexibility, strengths/weaknesses, and document verification questions."
+            },
+            {
+              "type": "example",
+              "title": "Common question",
+              "body": "\"Explain the difference between an abstract class and an interface with an example.\" → Shape (abstract class with shared colour field) vs Drawable (interface any class can implement)."
+            },
+            {
+              "type": "tip",
+              "title": "Know your resume",
+              "body": "Every technology listed is fair game. Prune skills you can't answer two questions on."
+            },
+            {
+              "type": "concept",
+              "title": "Ask about training",
+              "body": "A good closing question: 'Which technology stream do GenC trainees typically get trained in?' It shows interest without sounding salary-focused."
+            },
+            {
+              "type": "example",
+              "title": "SQL in interviews",
+              "body": "\"Find employees who earn more than their manager.\"\nSELECT e.name FROM Emp e JOIN Emp m ON e.manager_id = m.id WHERE e.salary > m.salary;  (a self join)"
+            },
+            {
+              "type": "quiz",
+              "q": "'Employees earning more than their manager' from one Emp table needs a:",
+              "options": [
+                "Cross join with no condition",
+                "Self join",
+                "UNION",
+                "TRUNCATE"
+              ],
+              "answer": 1,
+              "explain": "The table is joined to itself on manager_id = id."
+            },
+            {
+              "type": "quiz",
+              "q": "Which closing question best suits an HR round?",
+              "options": [
+                "\"How soon can I get a hike?\"",
+                "\"Can I skip training?\"",
+                "No question at all",
+                "\"What does the training plan look like for new GenC hires?\""
+              ],
+              "answer": 3,
+              "explain": "It shows genuine interest in the role."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "Cognizant GenC programme (official) — tracks and hiring",
+          "url": "https://careers.cognizant.com/india-en/pathways-to-cognizant/genc-program/",
+          "source": "Cognizant (official sample/practice — company does not publish past papers)"
+        },
+        {
+          "label": "Cognizant — how we hire (official process page)",
+          "url": "https://careers.cognizant.com/india-en/pathways-to-cognizant/how-we-hire/",
+          "source": "Cognizant (official sample/practice — company does not publish past papers)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "Cognizant careers India (official)",
+      "url": "https://careers.cognizant.com/india-en/",
+      "note": "GenC windows and openings",
+      "free": true
+    },
+    {
+      "label": "HackerRank",
+      "url": "https://www.hackerrank.com",
+      "note": "Many company tests run on HackerRank-style editors; SQL track is excellent",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    },
+    {
+      "label": "LeetCode",
+      "url": "https://leetcode.com",
+      "note": "Coding practice; free problem set is enough for service-company coding rounds",
+      "free": true
+    },
+    {
+      "label": "NPTEL — free IIT/IISc video courses",
+      "url": "https://nptel.ac.in",
+      "note": "Full CS courses (DSA, DBMS, OS, CN) by IIT faculty, free to watch",
+      "free": true
+    }
+  ]
+}

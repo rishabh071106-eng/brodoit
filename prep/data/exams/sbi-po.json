@@ -1,0 +1,418 @@
+{
+  "id": "sbi-po",
+  "name": "SBI PO",
+  "category": "banking",
+  "core": "bank-common",
+  "conductedBy": "State Bank of India",
+  "tagline": "India's most sought-after bank officer exam: Probationary Officer at the country's largest bank",
+  "overview": {
+    "about": "SBI recruits Probationary Officers (Junior Management Grade Scale-I) through a three-phase process: Prelims, Mains (objective + descriptive) and Phase III (psychometric test, group exercise and interview). Final merit combines Mains and Phase III, normalised to 75 : 25.",
+    "eligibility": [
+      "Graduation in any discipline from a recognised university (final-year/semester students may apply provisionally, subject to proof by the date in the notification)",
+      "Age 21–30 years (e.g. as on 01.04.2026 for the 2025-26 cycle); relaxation: SC/ST 5 yrs, OBC-NCL 3 yrs, PwBD 10 yrs",
+      "Limited number of attempts for General/EWS candidates as specified in the notification",
+      "Indian citizen (or other categories defined in the notification)"
+    ],
+    "pattern": [
+      {
+        "paper": "Phase I Prelims — English Language",
+        "questions": 30,
+        "marks": 30,
+        "duration": "20 min",
+        "note": "Separate timing per section; overall cut-off only (no sectional cut-off)"
+      },
+      {
+        "paper": "Phase I Prelims — Quantitative Aptitude",
+        "questions": 35,
+        "marks": 35,
+        "duration": "20 min",
+        "note": "−0.25 per wrong answer"
+      },
+      {
+        "paper": "Phase I Prelims — Reasoning Ability",
+        "questions": 35,
+        "marks": 35,
+        "duration": "20 min",
+        "note": "Total 100 Q / 100 marks / 60 min"
+      },
+      {
+        "paper": "Phase II Mains — Reasoning & Computer Aptitude",
+        "questions": 40,
+        "marks": 60,
+        "duration": "50 min",
+        "note": "−0.25 of the question's marks per wrong answer"
+      },
+      {
+        "paper": "Phase II Mains — Data Analysis & Interpretation",
+        "questions": 30,
+        "marks": 60,
+        "duration": "45 min",
+        "note": "Mostly DI and arithmetic"
+      },
+      {
+        "paper": "Phase II Mains — General/Economy/Banking Awareness",
+        "questions": 60,
+        "marks": 60,
+        "duration": "45 min",
+        "note": "Current affairs of the last ~6 months"
+      },
+      {
+        "paper": "Phase II Mains — English Language",
+        "questions": 40,
+        "marks": 20,
+        "duration": "40 min",
+        "note": "Objective total 170 Q / 200 marks / 3 hours"
+      },
+      {
+        "paper": "Phase II Mains — Descriptive Test",
+        "questions": 2,
+        "marks": 30,
+        "duration": "30 min",
+        "note": "Email/letter, essay, situation analysis or précis; typed on computer; evaluated only if objective cut-offs are cleared"
+      },
+      {
+        "paper": "Phase III — Psychometric test, Group Exercise & Interview",
+        "marks": 50,
+        "duration": "—",
+        "note": "Group Exercise 20 + Interview 30; psychometric test is qualifying"
+      }
+    ],
+    "frequency": "Once a year (notification usually mid-year)",
+    "officialSite": "https://sbi.co.in/web/careers"
+  },
+  "subjects": [
+    {
+      "id": "sbi-po-specific",
+      "name": "SBI PO — Exam-specific",
+      "chapters": [
+        {
+          "id": "strategy-cutoff",
+          "title": "Strategy, cut-offs & final merit",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "How selection works",
+              "body": "Prelims is **qualifying only**: roughly 10× the vacancies are called for Mains. Mains (objective 200 + descriptive 30 = **230**) and Phase III (**50**) form the final merit, normalised to **75 : 25**. So Mains decides most of your rank."
+            },
+            {
+              "type": "formula",
+              "title": "Final score formula",
+              "points": [
+                "Mains part = (Mains marks ÷ 230) × 75",
+                "Phase III part = (GE + Interview ÷ 50) × 25",
+                "Final (out of 100) = Mains part + Phase III part"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Worked example",
+              "body": "Mains 115/230 → 115/230 × 75 = **37.5**.\nPhase III 30/50 → 30/50 × 25 = **15**.\nFinal = 37.5 + 15 = **52.5/100**."
+            },
+            {
+              "type": "tip",
+              "title": "Prelims: overall cut-off only",
+              "body": "SBI PO Prelims has **no sectional cut-off**. Maximise your strongest section, but don't ignore any: 20 minutes is fixed for each, and unused time is lost. Target about 70% accuracy-weighted attempts in each section."
+            },
+            {
+              "type": "tip",
+              "title": "Mains: sectional cut-offs apply",
+              "body": "Mains has sectional cut-offs. GA (60 marks for 60 Q) has the **best marks per minute**, so consistent current-affairs revision from 6 months before the exam pays off most. English carries just 20 marks for 40 Q: attempt fast, don't over-invest."
+            },
+            {
+              "type": "concept",
+              "title": "Negative marking maths",
+              "body": "Each wrong answer costs ¼ of that question's marks. If you can eliminate **two of five** options, a guess has a positive expected score (1/3 × 1 − 2/3 × 0.25 = +0.17). Blind guesses on five options give 0."
+            },
+            {
+              "type": "quiz",
+              "q": "A candidate scores 138/230 in Mains and 35/50 in Phase III. Final score out of 100?",
+              "options": [
+                "62.5",
+                "60.5",
+                "58.5",
+                "63.0"
+              ],
+              "answer": 0,
+              "explain": "138/230 × 75 = 45; 35/50 × 25 = 17.5; total = 62.5."
+            },
+            {
+              "type": "quiz",
+              "q": "Which statement about SBI PO Prelims is correct?",
+              "options": [
+                "Each section has a sectional cut-off",
+                "Only an overall cut-off applies",
+                "There is no negative marking",
+                "Prelims marks count in the final merit"
+              ],
+              "answer": 1,
+              "explain": "SBI PO Prelims has only an overall cut-off; it is qualifying and its marks are not added to the final merit."
+            },
+            {
+              "type": "quiz",
+              "q": "If you can eliminate two of five options, guessing among the rest gives an expected score per question of about:",
+              "options": [
+                "−0.25",
+                "0",
+                "+0.17",
+                "+0.33"
+              ],
+              "answer": 2,
+              "explain": "Probability correct = 1/3: (1/3)(1) − (2/3)(0.25) = 0.333 − 0.167 ≈ +0.17."
+            }
+          ]
+        },
+        {
+          "id": "descriptive-writing",
+          "title": "Descriptive writing (email, essay, précis, situation)",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What is asked",
+              "body": "30 marks in 30 minutes, typed on screen. Recent papers ask **two** tasks from: formal **email/letter**, **essay**, **précis/report writing** and **situation analysis**. Content, structure, grammar and staying within the word limit all count."
+            },
+            {
+              "type": "formula",
+              "title": "Formal email skeleton",
+              "points": [
+                "To / Subject: one clear line",
+                "Salutation: Dear Sir/Madam,",
+                "Para 1: purpose; Para 2: details/facts; Para 3: request or action",
+                "Closing: Yours sincerely / Regards, name, designation"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Essay structure (≈250 words)",
+              "points": [
+                "Intro (2–3 lines): define the topic, add one fact",
+                "Body (2 paras): benefits/causes and challenges",
+                "Way forward: 2–3 concrete steps (government, RBI, banks, citizens)",
+                "Conclusion: one balanced line"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Situation analysis",
+              "body": "You are put in a workplace dilemma (e.g. a customer complains loudly, a colleague bends a rule). Show **empathy, rule-compliance and escalation**: understand the issue, follow bank policy, communicate clearly, involve the manager when needed, and record the action."
+            },
+            {
+              "type": "tip",
+              "title": "Précis rules",
+              "body": "Write about **one-third** of the original length, in your own words, in the **third person and past tense** where relevant. No examples, no new opinions. Give it a short title."
+            },
+            {
+              "type": "tip",
+              "title": "Practise typing",
+              "body": "The test is typed, so practise writing 250 words in **15 minutes** on a keyboard. Keep a bank of topics: digital payments, financial inclusion, cyber fraud, green finance, AI in banking, MSME credit."
+            },
+            {
+              "type": "quiz",
+              "q": "An original passage has 300 words. A précis should be roughly:",
+              "options": [
+                "50 words",
+                "100 words",
+                "200 words",
+                "300 words"
+              ],
+              "answer": 1,
+              "explain": "A précis is about one-third of the original length: 300/3 = 100 words."
+            },
+            {
+              "type": "quiz",
+              "q": "In a situation-analysis answer, which response is best?",
+              "options": [
+                "Ignore the issue to avoid conflict",
+                "Bend the rules to satisfy the customer",
+                "Listen, follow bank policy and escalate when needed",
+                "Ask the customer to visit another branch"
+              ],
+              "answer": 2,
+              "explain": "Examiners reward empathy, compliance with policy and proper escalation."
+            }
+          ]
+        },
+        {
+          "id": "phase-three",
+          "title": "Phase III: psychometric test, GE & interview",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Three parts",
+              "body": "**Psychometric test**: personality/behaviour assessment, qualifying. **Group Exercise** (20 marks): discussion or task with other candidates. **Interview** (30 marks): panel of senior officers. Phase III makes up **25%** of the final score."
+            },
+            {
+              "type": "tip",
+              "title": "Group Exercise",
+              "body": "Speak early but not first if unsure; add **facts and structure** ('Let's look at three angles…'); invite quieter members; summarise at the end if the group lets you. Interrupting and aggression lose marks."
+            },
+            {
+              "type": "tip",
+              "title": "Interview topics",
+              "body": "Expect: why banking/why SBI, your degree and hometown, SBI's products and recent initiatives, current repo rate and MPC stance, a recent budget/economy topic, and situational questions. Answers of 30–60 seconds work best."
+            },
+            {
+              "type": "concept",
+              "title": "Psychometric test",
+              "body": "There are no right answers, but **inconsistency** across similar statements is flagged. Answer honestly and consistently; don't try to guess what the 'ideal banker' would say on every item."
+            },
+            {
+              "type": "quiz",
+              "q": "How many marks do the Group Exercise and Interview together carry in SBI PO Phase III?",
+              "options": [
+                "30",
+                "50",
+                "75",
+                "100"
+              ],
+              "answer": 1,
+              "explain": "Group Exercise 20 + Interview 30 = 50 marks."
+            },
+            {
+              "type": "quiz",
+              "q": "The psychometric test in SBI PO Phase III is:",
+              "options": [
+                "Worth 20 marks",
+                "Qualifying in nature",
+                "Optional",
+                "Part of Prelims"
+              ],
+              "answer": 1,
+              "explain": "It is a qualifying assessment; merit comes from GE and interview."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "SBI PO 2025 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "SBI PO 2024 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "SBI PO 2023 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "SBI PO 2022 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "SBI PO 2021 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "SBI PO 2020 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "SBI PO 2019 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "SBI PO 2018 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "SBI PO 2017 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "SBI PO 2016 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "SBI Careers — official recruitment page",
+      "url": "https://sbi.co.in/web/careers",
+      "note": "Notifications, call letters, results and cut-offs for SBI PO",
+      "free": true
+    },
+    {
+      "label": "RBI — Monetary Policy statements",
+      "url": "https://www.rbi.org.in/scripts/annualpolicy.aspx",
+      "note": "Current policy rates for the interview and GA",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Reliable source for government schemes and current affairs",
+      "free": true
+    },
+    {
+      "label": "Department of Financial Services",
+      "url": "https://financialservices.gov.in",
+      "note": "PSB reforms and financial inclusion schemes",
+      "free": true
+    }
+  ]
+}

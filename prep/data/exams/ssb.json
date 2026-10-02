@@ -1,0 +1,968 @@
+{
+  "id": "ssb",
+  "name": "SSB Interview",
+  "category": "defence",
+  "conductedBy": "Services Selection Boards (Army, Navy, Air Force)",
+  "tagline": "The 5-day officer selection process after NDA, CDS and AFCAT — understand every stage.",
+  "overview": {
+    "about": "The Services Selection Board (SSB) interview is a 5-day assessment of Officer Like Qualities for candidates who clear NDA, CDS, AFCAT and other officer entries. It includes screening (OIR + PPDT), psychology tests, group testing (GTO) tasks, a personal interview and a conference. Recommended candidates then undergo a medical examination.",
+    "eligibility": [
+      "Candidates who clear the written exam (NDA, CDS, AFCAT) or are shortlisted under a direct entry (e.g. TES, NCC Special Entry, technical graduate entries)",
+      "Call letters are issued by the respective service — check joinindianarmy.nic.in, joinindiannavy.gov.in or the IAF portal",
+      "Bring all original documents listed in the call letter"
+    ],
+    "pattern": [
+      {
+        "paper": "Day 1 — Screening",
+        "duration": "1 day",
+        "note": "OIR tests + PPDT (picture story, narration, group discussion). Not screened in → return home"
+      },
+      {
+        "paper": "Day 2 — Psychology tests",
+        "duration": "1 day",
+        "note": "TAT (12 pictures), WAT (60 words), SRT (60 situations), Self Description"
+      },
+      {
+        "paper": "Days 3–4 — GTO tasks",
+        "duration": "2 days",
+        "note": "GD, GPE, PGT, HGT, Snake Race, Lecturette, IO, Command Task, FGT"
+      },
+      {
+        "paper": "Personal Interview",
+        "duration": "30–60+ minutes",
+        "note": "Held on one of the evenings of Days 2–4; based mainly on your PIQ"
+      },
+      {
+        "paper": "Day 5 — Conference",
+        "duration": "1 day",
+        "note": "All assessors meet; results declared; recommended candidates go for medicals"
+      },
+      {
+        "paper": "Weightage in final merit",
+        "note": "NDA: 900 of 1800 marks; CDS: 300 (IMA/INA/AFA) or 200 (OTA)"
+      }
+    ],
+    "frequency": "Batches run throughout the year after each written exam result",
+    "officialSite": "https://joinindianarmy.nic.in"
+  },
+  "subjects": [
+    {
+      "id": "basics",
+      "name": "SSB Basics",
+      "chapters": [
+        {
+          "id": "ssb-overview",
+          "title": "What the SSB is and how the 5 days run",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Why the SSB matters",
+              "body": "Clearing NDA, CDS or AFCAT only gets you an interview call. The **Services Selection Board (SSB)** decides whether you have the potential to become an officer. In NDA it carries 900 of 1800 marks; in CDS it carries 300 (IMA/INA/AFA) or 200 (OTA). It is the same process for Army, Navy and Air Force."
+            },
+            {
+              "type": "formula",
+              "title": "The 5-day schedule",
+              "points": [
+                "Reporting day: documents check, chest numbers, PIQ form",
+                "Day 1 — Screening: OIR test + PPDT. Those not screened in return home the same day",
+                "Day 2 — Psychology tests: TAT, WAT, SRT, Self Description",
+                "Days 3–4 — GTO tasks; personal interviews run on these evenings",
+                "Day 5 — Conference and results"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Three assessors, one picture",
+              "body": "You are assessed independently by three officers: the **Psychologist** (written psych tests), the **Group Testing Officer** (group and outdoor tasks) and the **Interviewing Officer** (personal interview). Each forms a view of the same qualities; consistency across all three is what gets you recommended."
+            },
+            {
+              "type": "concept",
+              "title": "Where SSBs are held",
+              "body": "The Army runs Selection Centres at Prayagraj, Bhopal, Bengaluru and Kapurthala. The Air Force runs Air Force Selection Boards at Dehradun, Mysuru, Gandhinagar, Varanasi and Guwahati. The Navy has its own boards, including at Bengaluru, Bhopal, Coimbatore, Visakhapatnam and Kolkata. Your call letter names the centre."
+            },
+            {
+              "type": "concept",
+              "title": "No 'right answers' — only you",
+              "body": "The SSB does not test knowledge; it looks for **Officer Like Qualities (OLQs)** that can be developed through training. Rehearsed, coaching-style answers usually show up as inconsistent. Being natural, honest and active is the best strategy."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Carry every document listed in your call letter (originals and copies), formal and sports clothes, and a watch. Missing documents can stop you before Day 1 even begins."
+            },
+            {
+              "type": "quiz",
+              "q": "On which day is the screening test (OIR + PPDT) held?",
+              "options": [
+                "Day 1",
+                "Day 2",
+                "Day 3",
+                "Day 5"
+              ],
+              "answer": 0,
+              "explain": "Screening happens on Day 1; only screened-in candidates stay for Days 2–5."
+            },
+            {
+              "type": "quiz",
+              "q": "Which three officers assess candidates at the SSB?",
+              "options": [
+                "Doctor, GTO, Commandant",
+                "Psychologist, GTO, Interviewing Officer",
+                "Psychologist, Instructor, Doctor",
+                "GTO, Medical officer, Interviewer"
+              ],
+              "answer": 1,
+              "explain": "The three independent assessors are the Psychologist, the Group Testing Officer and the Interviewing Officer."
+            }
+          ]
+        },
+        {
+          "id": "ssb-olqs",
+          "title": "The 15 Officer Like Qualities (OLQs)",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What OLQs are",
+              "body": "OLQs are the 15 qualities the SSB looks for. They are grouped into four factors. You don't need to 'act' them — they show up in how you think, mix with people, take action and keep going."
+            },
+            {
+              "type": "formula",
+              "title": "Factor I — Planning & Organising",
+              "points": [
+                "Effective Intelligence: practical problem-solving",
+                "Reasoning Ability: logical, quick grasp",
+                "Organising Ability: using resources systematically",
+                "Power of Expression: putting ideas across clearly"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Factor II — Social Adjustment",
+              "points": [
+                "Social Adaptability: getting along with people and situations",
+                "Cooperation: working with the group towards a goal",
+                "Sense of Responsibility: dependable, owns duties"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Factor III — Social Effectiveness",
+              "points": [
+                "Initiative: taking the first step",
+                "Self Confidence: belief in your ability, even under stress",
+                "Speed of Decision: deciding quickly and soundly",
+                "Ability to Influence the Group: others willingly follow you",
+                "Liveliness: cheerful, energetic, keeps morale up"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Factor IV — Dynamic",
+              "points": [
+                "Determination: sticking to a goal despite obstacles",
+                "Courage: taking purposeful risks, physical and moral",
+                "Stamina: physical and mental endurance"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "OLQs in daily life",
+              "body": "Organising your college fest shows Organising Ability and Initiative. Finishing a long run after a cramp shows Determination and Stamina. Admitting a mistake to your coach shows moral Courage and Sense of Responsibility. Build such real examples — they appear naturally in your interview and psych tests."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Pick 3–4 OLQs you are weakest in and work on them for months before the SSB (e.g. join a team sport for Cooperation, speak in class for Power of Expression). Real change shows; acting does not."
+            },
+            {
+              "type": "quiz",
+              "q": "How many Officer Like Qualities does the SSB assess?",
+              "options": [
+                "10",
+                "12",
+                "15",
+                "20"
+              ],
+              "answer": 2,
+              "explain": "There are 15 OLQs grouped into four factors."
+            },
+            {
+              "type": "quiz",
+              "q": "'Speed of Decision' belongs to which factor?",
+              "options": [
+                "Planning & Organising",
+                "Social Adjustment",
+                "Social Effectiveness",
+                "Dynamic"
+              ],
+              "answer": 2,
+              "explain": "Factor III (Social Effectiveness) has Initiative, Self Confidence, Speed of Decision, Ability to Influence the Group and Liveliness."
+            },
+            {
+              "type": "quiz",
+              "q": "Which of these is a 'Dynamic' factor quality?",
+              "options": [
+                "Cooperation",
+                "Determination",
+                "Power of Expression",
+                "Liveliness"
+              ],
+              "answer": 1,
+              "explain": "Factor IV (Dynamic) is Determination, Courage and Stamina."
+            }
+          ]
+        },
+        {
+          "id": "ssb-piq",
+          "title": "The PIQ form",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What the PIQ is",
+              "body": "The **Personal Information Questionnaire** is filled in on reporting day or Day 1. It covers family, education with marks, sports, hobbies, NCC, positions of responsibility, previous SSB attempts and more. All three assessors see it, and the interviewer builds many questions from it."
+            },
+            {
+              "type": "concept",
+              "title": "Be accurate and honest",
+              "body": "Every line in the PIQ can become an interview question. Write only what is true and what you can talk about in detail. If you write 'reading' as a hobby, expect to be asked about the last book you read and why you liked it."
+            },
+            {
+              "type": "concept",
+              "title": "Fill it neatly",
+              "body": "Use capital letters where asked, avoid overwriting, and keep dates and marks consistent with your documents. A clean PIQ shows organising ability and attention to detail before you have said a word."
+            },
+            {
+              "type": "example",
+              "title": "Preparing PIQ answers",
+              "body": "Before the SSB, make a rough PIQ at home: list your marks year by year, sports achievements with dates, responsibilities held, and your family's details (education and occupation). Then practise talking about each item for one minute."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Keep a copy of your rough PIQ and revise it the night before the interview. Contradicting your own PIQ is one of the most common avoidable mistakes."
+            },
+            {
+              "type": "quiz",
+              "q": "Why is the PIQ form important?",
+              "options": [
+                "It decides the medical result",
+                "Assessors, especially the interviewer, use it to frame questions",
+                "It is the OIR answer sheet",
+                "It is only for travel claims"
+              ],
+              "answer": 1,
+              "explain": "The PIQ gives all assessors your background; the interviewing officer uses it heavily."
+            },
+            {
+              "type": "quiz",
+              "q": "If you list a hobby you don't really follow, the most likely result is:",
+              "options": [
+                "Extra marks",
+                "No effect",
+                "Awkward, inconsistent answers in the interview",
+                "Automatic rejection"
+              ],
+              "answer": 2,
+              "explain": "Detailed questions on that hobby will expose the gap and hurt your credibility."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "screening",
+      "name": "Stage 1 — Screening",
+      "chapters": [
+        {
+          "id": "ssb-oir",
+          "title": "Screening: OIR test",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What OIR is",
+              "body": "The **Officer Intelligence Rating** test is usually two objective tests of verbal and non-verbal reasoning, taken against a tight clock on Day 1. Your OIR rating plus PPDT performance decides whether you are screened in."
+            },
+            {
+              "type": "formula",
+              "title": "Common question types",
+              "points": [
+                "Verbal: series, coding-decoding, analogies, odd one out, blood relations, directions",
+                "Non-verbal: figure series, mirror images, embedded figures, figure analogy, pattern completion"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Speed with accuracy",
+              "body": "Questions are easy individually; the challenge is time. Don't get stuck on one question — skip and return. Practising timed sets builds the rhythm you need."
+            },
+            {
+              "type": "example",
+              "title": "A quick series",
+              "body": "Find the next term: 3, 6, 11, 18, 27, ? The differences are 3, 5, 7, 9 — consecutive odd numbers. The next difference is 11, so the answer is **38**."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Practise 50 mixed reasoning questions a day for a month before your SSB. The same practice also helps the AFCAT reasoning section."
+            },
+            {
+              "type": "quiz",
+              "q": "Find the next term: 3, 6, 11, 18, 27, ?",
+              "options": [
+                "36",
+                "38",
+                "40",
+                "37"
+              ],
+              "answer": 1,
+              "explain": "Differences are 3, 5, 7, 9, so next is +11: 27 + 11 = 38."
+            },
+            {
+              "type": "quiz",
+              "q": "What does OIR stand for?",
+              "options": [
+                "Officer Intelligence Rating",
+                "Overall Interview Result",
+                "Officer Initiative Rating",
+                "Organised Intelligence Review"
+              ],
+              "answer": 0,
+              "explain": "OIR = Officer Intelligence Rating, measured through verbal and non-verbal reasoning tests."
+            }
+          ]
+        },
+        {
+          "id": "ssb-ppdt",
+          "title": "Screening: PPDT",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "How PPDT works",
+              "body": "**Picture Perception & Description Test**: a hazy picture is shown for 30 seconds. You get 1 minute to note the characters you perceive (number, age, gender, mood) and 3 minutes to write a story. Then the group sits together for individual narrations and a group discussion."
+            },
+            {
+              "type": "concept",
+              "title": "Writing a good story",
+              "body": "Base the story on what is seen in the picture. Answer: what led to the situation, what is happening now, and how it ends. Give the main character a positive, practical role — someone who solves a problem using available resources."
+            },
+            {
+              "type": "concept",
+              "title": "Narration",
+              "body": "Each candidate narrates their story in about a minute. Speak clearly, keep eye contact with the group, and finish within time. Confidence and clarity matter more than a dramatic plot."
+            },
+            {
+              "type": "concept",
+              "title": "Group discussion",
+              "body": "The group tries to agree on a common story. Contribute early, listen, build on good ideas and help the group reach a conclusion. Shouting over others or staying silent both hurt you."
+            },
+            {
+              "type": "example",
+              "title": "Sample PPDT outline",
+              "body": "Picture: a few people near a damaged bridge. Story: Rahul, 22, a civil engineering student, notices villagers stranded after floods. He organises volunteers, arranges a temporary crossing with ropes and boats, and informs the district authorities. By evening everyone is safe and repair work begins."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Practise with random pictures from newspapers: 30 seconds look, 1 minute characters, 3 minutes story. Then narrate it aloud in under a minute. Ten days of this transforms your screening performance."
+            },
+            {
+              "type": "quiz",
+              "q": "For how long is the PPDT picture shown?",
+              "options": [
+                "10 seconds",
+                "30 seconds",
+                "1 minute",
+                "3 minutes"
+              ],
+              "answer": 1,
+              "explain": "The picture is shown for 30 seconds."
+            },
+            {
+              "type": "quiz",
+              "q": "In PPDT group discussion, the best approach is to:",
+              "options": [
+                "Dominate and never let others speak",
+                "Stay silent to avoid mistakes",
+                "Contribute, listen and help the group reach a common story",
+                "Only repeat others' points"
+              ],
+              "answer": 2,
+              "explain": "Assessors look for balanced participation that moves the group forward."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "psychology",
+      "name": "Stage 2 — Psychology",
+      "chapters": [
+        {
+          "id": "ssb-tat",
+          "title": "Psychology: Thematic Apperception Test (TAT)",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "TAT format",
+              "body": "You are shown **12 pictures** — usually 11 pictures and 1 blank slide. Each is shown for 30 seconds and you get **4 minutes** to write a story. For the blank slide you write a story of your own choice."
+            },
+            {
+              "type": "concept",
+              "title": "What the psychologist reads",
+              "body": "Your stories reveal how you think, feel and act. The psychologist looks for themes repeated across stories — is your hero practical, socially aware, active and resilient? Consistency over 12 stories reveals your natural OLQs."
+            },
+            {
+              "type": "concept",
+              "title": "Structure of a story",
+              "body": "Past (what led to it), present (what the hero is doing), future (outcome). Keep the hero close to your age and background. Show realistic actions with available resources, not superhero feats or lucky coincidences."
+            },
+            {
+              "type": "example",
+              "title": "Weak vs better",
+              "body": "Weak: 'He saw the accident and felt sad.' Better: 'Arjun saw the accident, called 112, gave first aid to the injured rider, guided traffic until the ambulance arrived, and later helped police note witness details.' Action, responsibility and a clear outcome."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Practise writing 2–3 stories a day with a timer. Read your stories after a week — if every hero is the same superhuman, make them more realistic."
+            },
+            {
+              "type": "quiz",
+              "q": "How many pictures are typically shown in TAT, including the blank slide?",
+              "options": [
+                "8",
+                "10",
+                "12",
+                "15"
+              ],
+              "answer": 2,
+              "explain": "Usually 11 pictures plus 1 blank slide, for a total of 12."
+            },
+            {
+              "type": "quiz",
+              "q": "How long do you get to write each TAT story?",
+              "options": [
+                "1 minute",
+                "2 minutes",
+                "4 minutes",
+                "6 minutes"
+              ],
+              "answer": 2,
+              "explain": "Each picture is shown for 30 seconds, followed by 4 minutes of writing."
+            }
+          ]
+        },
+        {
+          "id": "ssb-wat-srt",
+          "title": "Psychology: WAT & SRT",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Word Association Test (WAT)",
+              "body": "60 words are shown one after another, **15 seconds each**. You write the first meaningful sentence that comes to mind. Speed forces your genuine thinking to show, so practise to make positive, practical thinking your natural habit."
+            },
+            {
+              "type": "concept",
+              "title": "Good WAT responses",
+              "body": "Keep sentences short, positive and realistic. Avoid preaching ('One should always…'), avoid copying the same sentence pattern, and don't leave too many blanks. A sentence can be an observation, an action or a value."
+            },
+            {
+              "type": "concept",
+              "title": "Situation Reaction Test (SRT)",
+              "body": "**60 everyday situations in 30 minutes**. For each, write what you would do in a few words. The psychologist looks for practical, quick, responsible and socially sensible reactions."
+            },
+            {
+              "type": "example",
+              "title": "SRT sample",
+              "body": "Situation: 'On his way to an exam, he sees an injured person on the road. He…' Response: 'called an ambulance, gave first aid, informed a nearby police officer, then reached the exam centre and explained the delay.' It handles both duties practically."
+            },
+            {
+              "type": "example",
+              "title": "WAT samples",
+              "body": "'Fear' → 'Preparation reduces fear before a task.' 'Army' → 'The Army helps citizens during floods.' 'Fail' → 'He analysed his failure and improved.' Simple, positive, realistic."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Practise WAT with a 15-second timer and SRT in sets of 60 in 30 minutes. Attempting most situations matters — leaving many blank suggests slow decision-making."
+            },
+            {
+              "type": "quiz",
+              "q": "How many words are shown in WAT and for how long each?",
+              "options": [
+                "50 words, 10 seconds",
+                "60 words, 15 seconds",
+                "60 words, 30 seconds",
+                "100 words, 15 seconds"
+              ],
+              "answer": 1,
+              "explain": "WAT has 60 words, each shown for 15 seconds."
+            },
+            {
+              "type": "quiz",
+              "q": "How many situations are given in SRT and in how much time?",
+              "options": [
+                "30 in 15 minutes",
+                "60 in 30 minutes",
+                "60 in 60 minutes",
+                "100 in 30 minutes"
+              ],
+              "answer": 1,
+              "explain": "SRT has 60 situations to be answered in 30 minutes."
+            }
+          ]
+        },
+        {
+          "id": "ssb-self-description",
+          "title": "Psychology: Self Description Test (SD)",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "SD format",
+              "body": "In about **15 minutes** you write five short paragraphs: what your **parents** think of you, what your **teachers or employer** think, what your **friends** think, what **you** think of yourself, and what **qualities you want to develop**."
+            },
+            {
+              "type": "concept",
+              "title": "Be honest and balanced",
+              "body": "Mention real strengths and a few genuine weaknesses with what you are doing about them. An SD with only praise looks unrealistic. The psychologist compares your SD with your TAT, WAT and SRT for consistency."
+            },
+            {
+              "type": "example",
+              "title": "Sample line",
+              "body": "Friends: 'My friends see me as dependable and someone who plans group trips well. They also say I can be impatient when things get delayed, which I am working on by planning extra buffer time.'"
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Ask your parents, a teacher and two friends what they actually think of you before the SSB. Their real views make your SD honest and give you material for the interview too."
+            },
+            {
+              "type": "quiz",
+              "q": "How many parts does the Self Description test have?",
+              "options": [
+                "3",
+                "4",
+                "5",
+                "6"
+              ],
+              "answer": 2,
+              "explain": "Parents, teachers/employer, friends, self, and qualities you wish to develop — five parts."
+            },
+            {
+              "type": "quiz",
+              "q": "A good Self Description should be:",
+              "options": [
+                "Only about strengths",
+                "Honest, with strengths and genuine areas to improve",
+                "Copied from a guide",
+                "As long as possible"
+              ],
+              "answer": 1,
+              "explain": "Balanced, honest descriptions are consistent with your other tests and look credible."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gto",
+      "name": "Stage 2 — Group Testing (GTO)",
+      "chapters": [
+        {
+          "id": "ssb-gto-indoor",
+          "title": "GTO: group discussion, GPE & lecturette",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Group Discussion",
+              "body": "Usually two rounds on social or current topics. Speak early with a clear point, back it with facts or examples, invite quieter members and help the group reach a conclusion. Quality and relevance beat volume."
+            },
+            {
+              "type": "concept",
+              "title": "Group Planning Exercise (GPE)",
+              "body": "Also called the Military Planning Exercise. The GTO explains a model showing an area with several problems (e.g. an accident, a bomb threat, a fire) and limited resources. You first write your own plan, then the group discusses and one candidate presents the group plan."
+            },
+            {
+              "type": "formula",
+              "title": "How to plan in GPE",
+              "points": [
+                "Prioritise problems: life first, then property, then other tasks",
+                "Use resources and timings realistically (speed, distance)",
+                "Give a clear sequence and who does what",
+                "Keep the overall aim in mind while handling emergencies"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Lecturette",
+              "body": "Pick one topic from a card with **four topics**, prepare for **3 minutes**, then speak for **3 minutes** to the group. Structure: introduction, 2–3 main points, conclusion. Choose a topic you can genuinely talk about, not the hardest one."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Read the newspaper daily and form opinions on major issues. Practise lecturettes in front of a mirror or friends with a timer — 3 minutes passes quickly."
+            },
+            {
+              "type": "quiz",
+              "q": "In GPE, what should usually get top priority?",
+              "options": [
+                "Saving property",
+                "Saving human life",
+                "Finishing the main task",
+                "Reporting to police only"
+              ],
+              "answer": 1,
+              "explain": "Human life comes first, then property and other tasks."
+            },
+            {
+              "type": "quiz",
+              "q": "In the lecturette, how long do you speak?",
+              "options": [
+                "1 minute",
+                "3 minutes",
+                "5 minutes",
+                "10 minutes"
+              ],
+              "answer": 1,
+              "explain": "You get 3 minutes to prepare and 3 minutes to speak."
+            }
+          ]
+        },
+        {
+          "id": "ssb-gto-outdoor",
+          "title": "GTO: outdoor tasks",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Progressive Group Task (PGT)",
+              "body": "The group crosses a series of obstacles of increasing difficulty using helping materials (plank, rope, ballie, load). Rules apply: coloured parts are out of bounds, and the load must be carried across. The GTO watches ideas, teamwork and acceptance by the group."
+            },
+            {
+              "type": "concept",
+              "title": "Half Group Task (HGT)",
+              "body": "Like PGT but with the group split into two halves, so each candidate has more chance to contribute. Give your idea clearly, show it physically if needed, and work actively on others' good ideas too."
+            },
+            {
+              "type": "concept",
+              "title": "Group Obstacle Race (Snake Race)",
+              "body": "Groups race over obstacles while carrying a heavy snake-like rope, with rules on how it is held. It tests group spirit, liveliness, stamina and cooperation. Cheer your team, take your share of the load and help others cross."
+            },
+            {
+              "type": "concept",
+              "title": "Individual Obstacles (IO)",
+              "body": "**10 numbered obstacles in 3 minutes**, each worth points equal to its number. Plan your order beforehand, tackle obstacles you are confident in and keep moving. Attempting many with energy shows courage and stamina."
+            },
+            {
+              "type": "concept",
+              "title": "Command Task and Final Group Task",
+              "body": "In the Command Task you are the commander: you choose a couple of subordinates from your group and lead them over an obstacle. The Final Group Task (FGT) is a last group obstacle where the GTO gives everyone one more chance to show their qualities."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Physical fitness matters: run 3–5 km regularly, do pull-ups, push-ups and jumps for at least 2 months before the SSB. Learn to tie a few simple knots and how to use the helping materials."
+            },
+            {
+              "type": "quiz",
+              "q": "How many obstacles are attempted in Individual Obstacles, and in how much time?",
+              "options": [
+                "5 in 2 minutes",
+                "10 in 3 minutes",
+                "10 in 5 minutes",
+                "15 in 3 minutes"
+              ],
+              "answer": 1,
+              "explain": "IO has 10 numbered obstacles to be attempted in 3 minutes."
+            },
+            {
+              "type": "quiz",
+              "q": "In the Command Task, the candidate:",
+              "options": [
+                "Works alone",
+                "Leads chosen subordinates over an obstacle",
+                "Only watches the group",
+                "Writes a plan on paper"
+              ],
+              "answer": 1,
+              "explain": "You act as commander and lead the subordinates you select."
+            },
+            {
+              "type": "quiz",
+              "q": "The Snake Race mainly tests:",
+              "options": [
+                "Writing skill",
+                "Group spirit, cooperation and stamina",
+                "General knowledge",
+                "Mathematical ability"
+              ],
+              "answer": 1,
+              "explain": "Carrying the 'snake' over obstacles as a team reveals cooperation, liveliness and stamina."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interview-conference",
+      "name": "Interview, Conference & Prep Plan",
+      "chapters": [
+        {
+          "id": "ssb-interview",
+          "title": "Personal Interview",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Format",
+              "body": "The interview is conducted by the Interviewing Officer — often the President or Deputy President of the board — usually on Day 2, 3 or 4 evenings. It can last from about 30 minutes to over an hour and is based mainly on your PIQ."
+            },
+            {
+              "type": "concept",
+              "title": "Rapid-fire questions",
+              "body": "The interviewer may ask 8–10 questions in one breath about school, friends, family, achievements and failures. Note them mentally in order, answer each briefly and honestly. Missing one or two is fine; making things up is not."
+            },
+            {
+              "type": "formula",
+              "title": "Areas to prepare",
+              "points": [
+                "Yourself: strengths, weaknesses, daily routine",
+                "Education: marks, favourite/least favourite subjects and why",
+                "Family: members' education and occupations",
+                "Hobbies, sports, NCC, responsibilities",
+                "Why the Armed Forces / your chosen service",
+                "Current affairs and your home town/state"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Body language",
+              "body": "Sit straight, maintain natural eye contact, speak at a steady pace and smile when appropriate. Say 'I don't know, sir' rather than guessing. Being calm and honest under pressure is itself an OLQ."
+            },
+            {
+              "type": "example",
+              "title": "Answering 'Why the Army?'",
+              "body": "Avoid clichés like 'to serve the nation' alone. Better: 'My uncle is a JCO and I have seen how disciplined and purposeful his life is. NCC camps showed me I enjoy leading teams outdoors, and I want a career where that is my everyday job.' Personal, specific, true."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Do mock interviews with friends or family using your rough PIQ. Ask them to fire 8 questions at once and practise answering in order."
+            },
+            {
+              "type": "quiz",
+              "q": "The SSB personal interview is mainly based on:",
+              "options": [
+                "Your OIR score",
+                "Your PIQ form",
+                "Your TAT stories",
+                "Your medical report"
+              ],
+              "answer": 1,
+              "explain": "The interviewing officer uses your PIQ to frame most questions."
+            },
+            {
+              "type": "quiz",
+              "q": "If you don't know an answer in the interview, you should:",
+              "options": [
+                "Guess confidently",
+                "Change the topic",
+                "Honestly say you don't know",
+                "Stay silent"
+              ],
+              "answer": 2,
+              "explain": "Honesty is valued; bluffing damages credibility."
+            }
+          ]
+        },
+        {
+          "id": "ssb-conference",
+          "title": "Conference, results & medicals",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The conference (Day 5)",
+              "body": "All assessors sit together. Each candidate is called in, usually in formal dress, and asked a few simple questions such as 'How was your stay?' or 'Anything you'd like to say?'. The board then discusses each case and decides who is recommended."
+            },
+            {
+              "type": "concept",
+              "title": "How to handle it",
+              "body": "Be calm, cheerful and brief. Don't argue or plead. If asked about a weak task, admit it honestly and say what you learned. The decision is mostly made from your performance across the five days."
+            },
+            {
+              "type": "concept",
+              "title": "Results and medicals",
+              "body": "Results are announced on the same day. Recommended candidates stay for a medical examination by a Special Medical Board, which takes a few more days. If declared unfit, you can usually apply for an Appeal or Review Medical Board as per the rules."
+            },
+            {
+              "type": "concept",
+              "title": "After recommendation",
+              "body": "Being recommended and medically fit puts you on the **merit list** — for NDA and CDS, combined with your written score. Joining depends on your merit rank and the number of vacancies. Keep checking the official website for joining instructions."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Not recommended? Many successful officers cleared the SSB on their second or later attempt. Note what you felt went wrong, work on it for months, and reapply."
+            },
+            {
+              "type": "quiz",
+              "q": "When are SSB results usually announced?",
+              "options": [
+                "After one month",
+                "On Day 5, after the conference",
+                "Only online after medicals",
+                "On Day 1"
+              ],
+              "answer": 1,
+              "explain": "Results are declared on conference day (Day 5)."
+            },
+            {
+              "type": "quiz",
+              "q": "A candidate declared medically unfit by the Special Medical Board can usually:",
+              "options": [
+                "Never appeal",
+                "Apply for an Appeal/Review Medical Board as per rules",
+                "Retake the SSB the next day",
+                "Get selected anyway"
+              ],
+              "answer": 1,
+              "explain": "Rules provide for an appeal or review medical board within a set time."
+            }
+          ]
+        },
+        {
+          "id": "ssb-preparation-plan",
+          "title": "How to prepare: a day-by-day plan",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Start early — OLQs take time",
+              "body": "Begin SSB preparation alongside your written exam, not after the result. Physical fitness, communication and current affairs take months to build, and these are exactly what the SSB rewards."
+            },
+            {
+              "type": "formula",
+              "title": "Weeks 1–4: foundation",
+              "points": [
+                "Daily: 3–5 km run, push-ups, pull-ups",
+                "Read a newspaper and note 3 issues with your opinion",
+                "Practise 50 OIR questions",
+                "Write your rough PIQ and talk about each line"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Weeks 5–8: test practice",
+              "points": [
+                "Daily: 2 TAT stories, 1 PPDT, 60 WAT words or 60 SRTs (alternate days)",
+                "Two GD or lecturette practices a week with friends",
+                "Self Description draft after asking parents, teachers, friends",
+                "Mock interviews once a week"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "At the SSB, day by day",
+              "points": [
+                "Reporting: documents ready, fill PIQ carefully",
+                "Day 1: stay calm in OIR; write a clear, positive PPDT story",
+                "Day 2: attempt as many WAT/SRT items as you can; be yourself",
+                "Days 3–4: be active and cooperative in GTO; rest well before the interview",
+                "Day 5: stay relaxed in the conference"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Life at the centre",
+              "body": "Mix with your group, help others, eat and sleep well. The board observes you informally too. Avoid discussing 'tricks' with other candidates the night before tests — it only adds confusion."
+            },
+            {
+              "type": "tip",
+              "title": "Tip",
+              "body": "Record yourself speaking for 2 minutes on a topic once a week. Watching it back is the quickest way to improve clarity, pace and body language."
+            },
+            {
+              "type": "quiz",
+              "q": "When should you ideally start SSB preparation?",
+              "options": [
+                "Only after the written result",
+                "Alongside written exam preparation",
+                "One day before reporting",
+                "After the conference"
+              ],
+              "answer": 1,
+              "explain": "Fitness and communication take months to build, so start alongside the written exam."
+            },
+            {
+              "type": "quiz",
+              "q": "Which daily habit most helps GD, lecturette and the interview together?",
+              "options": [
+                "Memorising model answers",
+                "Reading the newspaper and forming opinions",
+                "Watching movies",
+                "Practising only maths"
+              ],
+              "answer": 1,
+              "explain": "Current affairs with your own opinions feeds GD, lecturette and interview answers."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [],
+  "resources": [
+    {
+      "label": "Join Indian Army",
+      "url": "https://joinindianarmy.nic.in",
+      "note": "Official Army recruitment site — SSB call-ups, centres and entry schemes",
+      "free": true
+    },
+    {
+      "label": "Join Indian Navy",
+      "url": "https://www.joinindiannavy.gov.in",
+      "note": "Official Navy recruitment site — entries and SSB information",
+      "free": true
+    },
+    {
+      "label": "IAF careers portal",
+      "url": "https://careerairforce.gov.in",
+      "note": "Official Air Force recruitment site — AFSB and entry details",
+      "free": true
+    },
+    {
+      "label": "Career in Indian Air Force",
+      "url": "https://careerindianairforce.cdac.in",
+      "note": "IAF entry schemes and AFSB information",
+      "free": true
+    },
+    {
+      "label": "AFCAT official portal",
+      "url": "https://afcat.cdac.in",
+      "note": "AFCAT results and AFSB call information",
+      "free": true
+    },
+    {
+      "label": "UPSC",
+      "url": "https://upsc.gov.in",
+      "note": "NDA and CDS written results and final merit lists",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Current affairs for GD, lecturette and interview",
+      "free": true
+    }
+  ]
+}

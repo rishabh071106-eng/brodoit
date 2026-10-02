@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Progress &mdash; Brodoit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body>
+<main class="page">
+  <div class="page-head">
+    <h1>My Performance Board</h1>
+    <p>Everything you've studied, listened to and completed. Progress is saved in this browser — use Export to move it to another device.</p>
+  </div>
+
+  <div class="stat-row" id="stats"></div>
+
+  <h2 class="section-title">Last 14 days</h2>
+  <p class="section-sub">Minutes studied per day (reading + listening).</p>
+  <div class="chart" id="chart"></div>
+
+  <h2 class="section-title">Badges</h2>
+  <div class="badges" id="badges"></div>
+
+  <h2 class="section-title">Exam progress</h2>
+  <div id="exams"><p class="meta">Loading…</p></div>
+
+  <h2 class="section-title">Activity log</h2>
+  <ul class="clean feed" id="feed"></ul>
+
+  <h2 class="section-title">Backup</h2>
+  <div class="cta-row" style="justify-content:flex-start">
+    <button class="btn btn-ghost" id="export">⬇ Export progress</button>
+    <label class="btn btn-ghost">⬆ Import<input type="file" id="import" accept="application/json" hidden></label>
+    <button class="btn btn-ghost" id="reset">Reset all</button>
+  </div>
+</main>
+
+<script type="module">
+import { renderNav, renderFooter, loadCatalog, loadExam, examChapters, store, streak, esc, fmtMinutes, timeAgo } from './assets/js/app.js';
+renderNav('progress.html');
+renderFooter();
+
+const s = store.read();
+const sum = o => Object.values(o).reduce((a, b) => a + b, 0);
+const done = Object.values(s.completed);
+const quizzed = done.filter(d => d.total);
+const quizPct = quizzed.length ? Math.round(100 * quizzed.reduce((a, d) => a + d.score, 0) / quizzed.reduce((a, d) => a + d.total, 0)) : null;
+const ncertRead = Object.keys(s.ncert).length;
+const st = streak(s.days);
+const listened = sum(s.listen), studied = sum(s.study) + listened;
+
+document.getElementById('stats').innerHTML = [
+  [done.length, 'chapters completed'],
+  [fmtMinutes(studied), 'total study time'],
+  [fmtMinutes(listened), 'audio listened'],
+  [`${st} 🔥`, `day streak`],
+  [quizPct === null ? '—' : `${quizPct}%`, 'quiz accuracy'],
+  [ncertRead, 'NCERT chapters read'],
+].map(([b, l]) => `<div class="stat"><b>${b}</b><span>${l}</span></div>`).join('');
+
+// 14-day chart
+const days = [...Array(14)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 13 + i); return d; });
+const mins = days.map(d => Math.round((s.days[d.toISOString().slice(0, 10)] || 0) / 60));
+const max = Math.max(10, ...mins);
+document.getElementById('chart').innerHTML = days.map((d, i) =>
+  `<div title="${mins[i]} min"><small>${mins[i] || ''}</small><i style="height:${(mins[i] / max) * 100}%"></i><small>${d.getDate()}</small></div>`).join('');
+
+// Badges
+const perfect = quizzed.some(d => d.score === d.total);
+const longest = (() => { let best = 0, run = 0, prev = null;
+  for (const k of Object.keys(s.days).sort()) {
+    const d = new Date(k); run = prev && (d - prev) / 864e5 === 1 ? run + 1 : 1; best = Math.max(best, run); prev = d;
+  } return best; })();
+const BADGES = [
+  ['🌱', 'First chapter', done.length >= 1],
+  ['📗', '5 chapters', done.length >= 5],
+  ['📘', '25 chapters', done.length >= 25],
+  ['🏆', '100 chapters', done.length >= 100],
+  ['🎧', '1 hour listened', listened >= 3600],
+  ['🎯', 'Perfect quiz', perfect],
+  ['🔥', '3-day streak', longest >= 3],
+  ['⚡', '7-day streak', longest >= 7],
+  ['📚', '10 NCERT chapters', ncertRead >= 10],
+];
+document.getElementById('badges').innerHTML = BADGES.map(([i, n, got]) => `<span class="badge${got ? ' got' : ''}">${i} ${n}</span>`).join('');
+
+// Activity feed
+const feed = s.activity.slice(0, 60);
+document.getElementById('feed').innerHTML = feed.length ? feed.map(a => {
+  if (a.type === 'ncert') return `<li><span class="ico">📖</span><span class="what">Read NCERT ${esc(a.title)}<div class="meta">${timeAgo(a.at)}</div></span></li>`;
+  const bits = [];
+  if (a.listened) bits.push(`🎧 audio ${fmtMinutes(a.listened)}`);
+  if (a.score !== null && a.score !== undefined && a.total) bits.push(`quiz ${a.score}/${a.total}`);
+  return `<li><span class="ico">✅</span><span class="what"><b>${esc(a.exam)}</b> › ${esc(a.title)} completed
+    <div class="meta">${bits.map(esc).join(' · ')}${bits.length ? ' · ' : ''}${timeAgo(a.at)}</div></span>
+    ${a.href ? `<a class="meta" href="${esc(a.href)}">Review</a>` : ''}</li>`;
+}).join('') : `<li class="meta">No activity yet. <a href="exams.html">Start your first lecture →</a></li>`;
+
+// Per-exam progress
+const cat = await loadCatalog();
+const ids = cat.categories.flatMap(c => c.exams.map(e => ({ ...e, cat: c })));
+const loaded = await Promise.all(ids.map(e => loadExam(e.id).then(x => ({ e, x }), () => null)));
+const rows = loaded.filter(Boolean).map(({ e, x }) => {
+  const ch = examChapters(x), n = ch.filter(c => s.completed[c.key]).length;
+  const listenedHere = ch.reduce((a, c) => a + (s.listen[c.key] || 0), 0);
+  return { e, n, total: ch.length, listenedHere };
+}).sort((a, b) => b.n / (b.total || 1) - a.n / (a.total || 1));
+const started = rows.filter(r => r.n || r.listenedHere), rest = rows.filter(r => !r.n && !r.listenedHere);
+document.getElementById('exams').innerHTML = (started.length ? `<div class="grid">${started.map(r => `
+  <a class="tile" href="exam.html?id=${r.e.id}">
+    <div class="kicker">${r.e.cat.icon} ${esc(r.e.cat.name)}</div>
+    <h3>${esc(r.e.name)}</h3>
+    <div class="bar"><span style="width:${r.total ? (r.n / r.total) * 100 : 0}%"></span></div>
+    <div class="meta">${r.n}/${r.total} chapters${r.listenedHere ? ` · 🎧 ${fmtMinutes(r.listenedHere)}` : ''}</div>
+  </a>`).join('')}</div>` : '<p class="meta">You haven\'t started an exam yet.</p>')
+  + (rest.length ? `<p class="meta" style="margin-top:1rem">Not started: ${rest.map(r => `<a href="exam.html?id=${r.e.id}">${esc(r.e.name)}</a>`).join(' · ')}</p>` : '');
+
+// Backup
+document.getElementById('export').onclick = () => {
+  const blob = new Blob([JSON.stringify(store.read(), null, 2)], { type: 'application/json' });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `academy-progress-${new Date().toISOString().slice(0, 10)}.json` });
+  a.click(); URL.revokeObjectURL(a.href);
+};
+document.getElementById('import').onchange = async e => {
+  try {
+    const data = JSON.parse(await e.target.files[0].text());
+    if (typeof data !== 'object' || !data.completed) throw new Error('not a progress file');
+    store.write({ ...store.read(), ...data });
+    location.reload();
+  } catch (err) { alert(`Could not import: ${err.message}`); }
+};
+document.getElementById('reset').onclick = () => {
+  if (confirm('Delete all your progress on this device? This cannot be undone.')) { store.reset(); location.reload(); }
+};
+</script>
+</body>
+</html>

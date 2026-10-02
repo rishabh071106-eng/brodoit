@@ -1,0 +1,225 @@
+{
+  "id": "hcltech",
+  "name": "HCLTech (Graduate Engineer Trainee)",
+  "category": "it",
+  "core": "it-core",
+  "conductedBy": "HCL Technologies",
+  "tagline": "Aptitude, technical MCQs and interviews for GET roles",
+  "overview": {
+    "about": "HCLTech hires engineering freshers as Graduate Engineer Trainees through campus and off-campus drives, and runs early-career programmes such as TechBee for Class XII students. The fresher process reported for recent drives is an online test (quant, logical, verbal, technical) followed by technical and HR interviews. Pattern as reported for 2025–26 drives; confirm on the official careers page.",
+    "eligibility": [
+      "B.E./B.Tech/M.E./M.Tech/MCA from eligible batches (as notified)",
+      "Typically 60% or more in 10th, 12th and graduation (as reported)",
+      "No active backlogs at joining"
+    ],
+    "pattern": [
+      {
+        "paper": "Quantitative aptitude",
+        "questions": "≈ 15",
+        "duration": "≈ 15 min"
+      },
+      {
+        "paper": "Logical reasoning",
+        "questions": "≈ 15",
+        "duration": "≈ 15 min"
+      },
+      {
+        "paper": "Verbal ability",
+        "questions": "≈ 15",
+        "duration": "≈ 15 min"
+      },
+      {
+        "paper": "Technical MCQs (C, OOP, DBMS, OS, CN)",
+        "questions": "≈ 15",
+        "duration": "≈ 15 min",
+        "note": "Some drives add a coding question"
+      },
+      {
+        "paper": "Interviews",
+        "duration": "≈ 30 min each",
+        "note": "Technical + HR"
+      }
+    ],
+    "frequency": "Campus drives in season; off-campus openings on the careers site",
+    "officialSite": "https://www.hcltech.com/careers/campus-hiring"
+  },
+  "subjects": [
+    {
+      "id": "hcltech-specific",
+      "name": "HCLTech specifics",
+      "chapters": [
+        {
+          "id": "hcltech-online-test",
+          "title": "HCLTech online test",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Four short sections",
+              "body": "Quant, logical, verbal and technical, roughly 15 questions in 15 minutes each, with sectional cut-offs reported. Some reports say you can't go back to earlier questions. Pattern as reported for 2025–26 drives; confirm on the official careers page."
+            },
+            {
+              "type": "concept",
+              "title": "Technical MCQ topics",
+              "points": [
+                "C output and pointers",
+                "OOP concepts",
+                "DBMS & SQL basics",
+                "OS (scheduling, deadlock) and networking basics"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "C output sample",
+              "body": "int a[] = {10, 20, 30};\nint *p = a;\nprintf(\"%d\", *(p + 2));\n→ 30"
+            },
+            {
+              "type": "example",
+              "title": "Quant sample",
+              "body": "Q: A shopkeeper gives 10% discount and still gains 8%. If CP = ₹500, find the marked price.\nSP = 540 = 0.9 × MP → MP = ₹600."
+            },
+            {
+              "type": "tip",
+              "title": "One-way navigation",
+              "body": "If questions can't be revisited, decide fast: answer, or make your best guess and move on. Don't burn 3 minutes on one item in a 15-minute section."
+            },
+            {
+              "type": "concept",
+              "title": "Coding question",
+              "body": "Some drives include one or two simple coding problems (strings, arrays, number logic). Practise writing correct code in 15–20 minutes."
+            },
+            {
+              "type": "quiz",
+              "q": "int a[] = {5, 10, 15}; int *p = a + 1; printf(\"%d\", *p + 1); prints:",
+              "options": [
+                "15",
+                "11",
+                "6",
+                "10"
+              ],
+              "answer": 1,
+              "explain": "*p is a[1] = 10; 10 + 1 = 11."
+            },
+            {
+              "type": "quiz",
+              "q": "Discount 20% on MP gives SP ₹480. MP is:",
+              "options": [
+                "₹576",
+                "₹500",
+                "₹580",
+                "₹600"
+              ],
+              "answer": 3,
+              "explain": "0.8 × MP = 480 → MP = 600."
+            }
+          ]
+        },
+        {
+          "id": "hcltech-interviews",
+          "title": "HCLTech interviews",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Technical round",
+              "body": "Introduction, project deep-dive, one language (C/Java/Python), OOP, SQL queries, basic DSA (reverse a string, find duplicates), and OS/CN definitions."
+            },
+            {
+              "type": "example",
+              "title": "Typical ask",
+              "body": "\"Write SQL to get the top 3 salaries.\"\nSELECT DISTINCT salary FROM emp ORDER BY salary DESC LIMIT 3;  (MySQL/PostgreSQL; use TOP/FETCH FIRST elsewhere)"
+            },
+            {
+              "type": "concept",
+              "title": "HR round",
+              "body": "Why HCLTech, relocation and shifts, career goals, a STAR story. Verify documents and joining timelines."
+            },
+            {
+              "type": "tip",
+              "title": "Research the company",
+              "body": "Know HCLTech's main service lines (engineering & R&D services, digital, cloud, software products) — a 20-second answer to 'what do you know about us?' stands out."
+            },
+            {
+              "type": "example",
+              "title": "Typical program",
+              "body": "Find duplicates in a list:\ndef dups(a):\n    seen, out = set(), set()\n    for x in a:\n        (out if x in seen else seen).add(x)\n    return out"
+            },
+            {
+              "type": "concept",
+              "title": "After selection",
+              "body": "Freshers typically go through structured training before project allocation. Training performance affects the stream you are mapped to."
+            },
+            {
+              "type": "quiz",
+              "q": "dups([1, 2, 2, 3, 3, 3]) returns:",
+              "options": [
+                "{2, 3}",
+                "{1}",
+                "{1, 2, 3}",
+                "{3}"
+              ],
+              "answer": 0,
+              "explain": "2 and 3 occur more than once."
+            },
+            {
+              "type": "quiz",
+              "q": "Which SQL gets distinct top 3 salaries in MySQL?",
+              "options": [
+                "SELECT TOP salary FROM emp;",
+                "SELECT salary FROM emp WHERE LIMIT 3;",
+                "SELECT DISTINCT salary FROM emp ORDER BY salary DESC LIMIT 3;",
+                "SELECT MAX(3) FROM emp;"
+              ],
+              "answer": 2,
+              "explain": "Sort descending, de-duplicate, take 3."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "HCLTech campus hiring (official)",
+          "url": "https://www.hcltech.com/careers/campus-hiring",
+          "source": "HCLTech (official sample/practice — company does not publish past papers)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "HCLTech careers in India (official)",
+      "url": "https://www.hcltech.com/careers/careers-in-india",
+      "note": "Openings and fresher programmes; HCLTech never asks for fees",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    },
+    {
+      "label": "HackerRank",
+      "url": "https://www.hackerrank.com",
+      "note": "Many company tests run on HackerRank-style editors; SQL track is excellent",
+      "free": true
+    },
+    {
+      "label": "NPTEL — free IIT/IISc video courses",
+      "url": "https://nptel.ac.in",
+      "note": "Full CS courses (DSA, DBMS, OS, CN) by IIT faculty, free to watch",
+      "free": true
+    },
+    {
+      "label": "Harvard CS50x",
+      "url": "https://cs50.harvard.edu/x/",
+      "note": "Free intro to CS: C, Python, SQL, memory and algorithms",
+      "free": true
+    }
+  ]
+}

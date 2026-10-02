@@ -1,0 +1,321 @@
+{
+  "id": "sbi-clerk",
+  "name": "SBI Clerk (Junior Associate)",
+  "category": "banking",
+  "core": "bank-common",
+  "conductedBy": "State Bank of India",
+  "tagline": "Junior Associate (Customer Support & Sales) at SBI: a state-wise exam with merit decided by Mains alone",
+  "overview": {
+    "about": "SBI recruits Junior Associates (Customer Support & Sales) state-wise through an online Prelims and Mains, followed by a test of the local language. There is no interview; the final merit list is based on Mains marks only.",
+    "eligibility": [
+      "Graduation in any discipline (final-year students may apply provisionally as per the notification)",
+      "Age 20–28 years on the date fixed in the notification; relaxation: SC/ST 5 yrs, OBC-NCL 3 yrs, PwBD 10 yrs",
+      "Proficiency (read, write, speak, understand) in the official local language of the state applied for",
+      "A candidate can apply for vacancies in one state only"
+    ],
+    "pattern": [
+      {
+        "paper": "Prelims — English Language",
+        "questions": 30,
+        "marks": 30,
+        "duration": "20 min",
+        "note": "Separate timing per section; −0.25 per wrong answer"
+      },
+      {
+        "paper": "Prelims — Numerical Ability",
+        "questions": 35,
+        "marks": 35,
+        "duration": "20 min",
+        "note": "Total 100 Q / 100 marks / 60 min; qualifying"
+      },
+      {
+        "paper": "Prelims — Reasoning Ability",
+        "questions": 35,
+        "marks": 35,
+        "duration": "20 min",
+        "note": "Category-wise cut-off; marks not added to final merit"
+      },
+      {
+        "paper": "Mains — General/Financial Awareness",
+        "questions": 50,
+        "marks": 50,
+        "duration": "35 min",
+        "note": "−0.25 per wrong answer"
+      },
+      {
+        "paper": "Mains — General English",
+        "questions": 40,
+        "marks": 40,
+        "duration": "35 min"
+      },
+      {
+        "paper": "Mains — Quantitative Aptitude",
+        "questions": 50,
+        "marks": 50,
+        "duration": "45 min"
+      },
+      {
+        "paper": "Mains — Reasoning Ability & Computer Aptitude",
+        "questions": 50,
+        "marks": 60,
+        "duration": "45 min",
+        "note": "Total 190 Q / 200 marks / 2 h 40 min"
+      },
+      {
+        "paper": "Local Language Proficiency Test",
+        "duration": "—",
+        "note": "Qualifying; exempt if the language was studied in Class 10 or 12 (with proof)"
+      }
+    ],
+    "frequency": "Once a year (state-wise vacancies)",
+    "officialSite": "https://sbi.co.in/web/careers"
+  },
+  "subjects": [
+    {
+      "id": "sbi-clerk-specific",
+      "name": "SBI Clerk — Exam-specific",
+      "chapters": [
+        {
+          "id": "strategy-cutoff",
+          "title": "Strategy, state-wise cut-offs & Mains focus",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Mains decides everything",
+              "body": "Prelims only shortlists. Your **final rank = Mains marks** (out of 200), subject to clearing the local language test. Two candidates with equal Prelims scores can end up far apart in the final list."
+            },
+            {
+              "type": "concept",
+              "title": "State-wise competition",
+              "body": "Vacancies and cut-offs are **state-wise and category-wise**. States with many applicants and few posts have higher cut-offs. Choose a state whose local language you know well; you cannot switch later."
+            },
+            {
+              "type": "tip",
+              "title": "Prelims time plan",
+              "body": "Each section has a fixed 20 minutes. In Numerical Ability, finish simplification/approximation and number series first (about 10 Q in 6 minutes), then arithmetic, then DI. In Reasoning, do inequality, syllogism and coding before puzzles."
+            },
+            {
+              "type": "tip",
+              "title": "Mains marks per minute",
+              "body": "GA gives **50 marks in 35 minutes**, the best return in the paper. Reasoning & Computer has **60 marks**; computer questions are quick, so attempt them first in that section."
+            },
+            {
+              "type": "concept",
+              "title": "Junior Associate role",
+              "body": "Customer Support & Sales: cash, account opening, KYC, cross-selling of products, and digital banking support. Knowing SBI's products (YONO, savings schemes) helps in both GA and the job."
+            },
+            {
+              "type": "quiz",
+              "q": "SBI Clerk final merit is based on:",
+              "options": [
+                "Prelims + Mains",
+                "Mains only",
+                "Mains + interview",
+                "Prelims only"
+              ],
+              "answer": 1,
+              "explain": "There is no interview; final selection is on Mains marks (after qualifying the local language test)."
+            },
+            {
+              "type": "quiz",
+              "q": "In SBI Clerk Mains, which section carries 60 marks?",
+              "options": [
+                "General/Financial Awareness",
+                "General English",
+                "Quantitative Aptitude",
+                "Reasoning Ability & Computer Aptitude"
+              ],
+              "answer": 3,
+              "explain": "Reasoning & Computer Aptitude has 50 questions for 60 marks."
+            }
+          ]
+        },
+        {
+          "id": "local-language-test",
+          "title": "Local Language Proficiency Test (LLPT)",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What it is",
+              "body": "After Mains, candidates must show they can **read, write, speak and understand** the official local language of the state they applied for. It is **qualifying**: failing it means no selection, whatever your Mains score."
+            },
+            {
+              "type": "concept",
+              "title": "Who is exempt",
+              "body": "Candidates who studied the specified local language in **Class 10 or Class 12** and submit the mark sheet/certificate are exempt. Others take the test after provisional selection."
+            },
+            {
+              "type": "tip",
+              "title": "How to prepare",
+              "body": "Practise reading aloud short passages (newspaper, bank forms), writing a few sentences, and a simple conversation on banking topics such as opening an account or depositing cash. Customer-facing vocabulary matters most."
+            },
+            {
+              "type": "concept",
+              "title": "Why it exists",
+              "body": "Junior Associates deal directly with local customers, often in rural and semi-urban branches. The test ensures they can serve customers in their own language."
+            },
+            {
+              "type": "tip",
+              "title": "Choose the state wisely",
+              "body": "If you are not fluent in a state's language, a lower cut-off there is a false bargain: you may clear Mains and still be disqualified at the language test."
+            },
+            {
+              "type": "quiz",
+              "q": "Who is exempt from SBI Clerk's local language test?",
+              "options": [
+                "Candidates with a degree in English",
+                "Candidates who studied the language in Class 10 or 12 (with proof)",
+                "All reserved-category candidates",
+                "Candidates scoring above 150 in Mains"
+              ],
+              "answer": 1,
+              "explain": "Proof of studying the local language in Class 10 or 12 exempts the candidate."
+            },
+            {
+              "type": "quiz",
+              "q": "The local language test is:",
+              "options": [
+                "Worth 50 marks",
+                "Added to Mains marks",
+                "Qualifying in nature",
+                "Optional"
+              ],
+              "answer": 2,
+              "explain": "It is a qualifying test; it carries no merit marks."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2025 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2024 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2023 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2022 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2021 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2020 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2019 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2018 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2017 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "SBI Clerk (Junior Associate) 2016 — official notification, results & cut-off page (papers not published officially)",
+          "url": "https://sbi.co.in/web/careers",
+          "source": "SBI Careers (official)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "SBI Careers — official recruitment page",
+      "url": "https://sbi.co.in/web/careers",
+      "note": "Junior Associate notifications, call letters and results",
+      "free": true
+    },
+    {
+      "label": "RBI — Monetary Policy statements",
+      "url": "https://www.rbi.org.in/scripts/annualpolicy.aspx",
+      "note": "Policy rates for the Financial Awareness section",
+      "free": true
+    },
+    {
+      "label": "NPCI — UPI product overview",
+      "url": "https://www.npci.org.in/what-we-do/upi/product-overview",
+      "note": "Digital payment products asked in GA",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Government schemes and current affairs",
+      "free": true
+    }
+  ]
+}

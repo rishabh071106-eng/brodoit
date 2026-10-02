@@ -1,0 +1,321 @@
+{
+  "id": "ibps-clerk",
+  "name": "IBPS Clerk (CSA)",
+  "category": "banking",
+  "core": "bank-common",
+  "conductedBy": "Institute of Banking Personnel Selection (IBPS)",
+  "tagline": "Customer Service Associate (clerical cadre) in public sector banks, recruited state-wise",
+  "overview": {
+    "about": "IBPS conducts the Common Recruitment Process for Customer Service Associates (clerical cadre) in participating public sector banks. Selection is through an online Prelims and Mains followed by a language proficiency test; there is no interview, so Mains marks decide the final merit.",
+    "eligibility": [
+      "Graduation in any discipline by the closing date of registration",
+      "Age 20–28 years on the date fixed in the notification; relaxation: SC/ST 5 yrs, OBC-NCL 3 yrs, PwBD 10 yrs",
+      "Proficiency in the official language of the state/UT applied for (read, write, speak)",
+      "Computer literacy (certificate/diploma or computer subject in school/college)"
+    ],
+    "pattern": [
+      {
+        "paper": "Prelims — English Language",
+        "questions": 30,
+        "marks": 30,
+        "duration": "20 min",
+        "note": "−0.25 per wrong answer"
+      },
+      {
+        "paper": "Prelims — Numerical Ability",
+        "questions": 35,
+        "marks": 35,
+        "duration": "20 min",
+        "note": "Total 100 Q / 100 marks / 60 min"
+      },
+      {
+        "paper": "Prelims — Reasoning Ability",
+        "questions": 35,
+        "marks": 35,
+        "duration": "20 min",
+        "note": "Qualifying; sectional cut-offs may apply"
+      },
+      {
+        "paper": "Mains — Reasoning Ability",
+        "questions": 40,
+        "marks": 60,
+        "duration": "—",
+        "note": "Revised 2025 pattern; confirm sectional timings in the current notification"
+      },
+      {
+        "paper": "Mains — Quantitative Aptitude",
+        "questions": 35,
+        "marks": 50,
+        "duration": "—"
+      },
+      {
+        "paper": "Mains — General/Financial Awareness",
+        "questions": 40,
+        "marks": 50,
+        "duration": "—"
+      },
+      {
+        "paper": "Mains — General English",
+        "questions": 40,
+        "marks": 40,
+        "duration": "—",
+        "note": "Total 155 Q / 200 marks / 120 min"
+      },
+      {
+        "paper": "Language Proficiency Test",
+        "duration": "—",
+        "note": "Qualifying; mandatory before final allotment"
+      }
+    ],
+    "frequency": "Once a year (notification around July–August)",
+    "officialSite": "https://www.ibps.in"
+  },
+  "subjects": [
+    {
+      "id": "ibps-clerk-specific",
+      "name": "IBPS Clerk — Exam-specific",
+      "chapters": [
+        {
+          "id": "strategy-cutoff",
+          "title": "Strategy, state-wise cut-offs & the revised Mains",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Mains-only merit",
+              "body": "Prelims only qualifies you. Final provisional allotment is based on **Mains marks out of 200**, state-wise and category-wise, after you clear the language test. There is no interview."
+            },
+            {
+              "type": "concept",
+              "title": "Revised Mains (2025)",
+              "body": "Questions fell from **190 to 155** and time from **160 to 120 minutes**, but total marks stay **200**. Reasoning now carries **60 marks for 40 Q** (1.5 marks each), so every reasoning question counts more."
+            },
+            {
+              "type": "tip",
+              "title": "Marks per question",
+              "body": "Reasoning 1.5, Quant ≈1.43, GA 1.25 and English 1.0 marks per question. When stuck, move to the section with the higher value per question first — but only if sectional timing allows it in your notification."
+            },
+            {
+              "type": "tip",
+              "title": "Prelims accuracy",
+              "body": "Clerk Prelims cut-offs are high and close. Accuracy of **90%+** on attempted questions matters more than attempting everything. Avoid 50-50 guesses in the last minute of a section."
+            },
+            {
+              "type": "concept",
+              "title": "State choice",
+              "body": "Vacancies are state-wise. You must know the official language of the state you apply for. Check past state-wise cut-offs on the IBPS site before choosing."
+            },
+            {
+              "type": "quiz",
+              "q": "In the revised IBPS Clerk Mains, Reasoning has 40 questions for 60 marks. Marks per question?",
+              "options": [
+                "1",
+                "1.25",
+                "1.5",
+                "2"
+              ],
+              "answer": 2,
+              "explain": "60 ÷ 40 = 1.5 marks per question."
+            },
+            {
+              "type": "quiz",
+              "q": "IBPS Clerk final allotment is based on:",
+              "options": [
+                "Prelims + Mains",
+                "Mains only (after qualifying the language test)",
+                "Mains + interview",
+                "Interview only"
+              ],
+              "answer": 1,
+              "explain": "There is no interview; Mains marks decide the merit."
+            }
+          ]
+        },
+        {
+          "id": "language-proficiency",
+          "title": "Language proficiency test & state allotment",
+          "minutes": 4,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What it tests",
+              "body": "Candidates must **read, write, speak and understand** the official language of the state/UT applied for. The test is **qualifying**, conducted by the participating bank after provisional allotment."
+            },
+            {
+              "type": "concept",
+              "title": "Why banks insist",
+              "body": "CSAs work at the counter and with walk-in customers, many of whom prefer the local language. Communicating clearly is part of the job, not an extra."
+            },
+            {
+              "type": "tip",
+              "title": "Preparation",
+              "body": "Practise reading notices, simple forms and a short paragraph aloud; write 5–6 sentences about yourself; hold a short conversation about opening an account or a loan enquiry."
+            },
+            {
+              "type": "concept",
+              "title": "Allotment flow",
+              "body": "Mains result → provisional allotment to a bank based on merit, state and preference → document verification and language test by the bank → appointment. Failing the language test means losing the allotment."
+            },
+            {
+              "type": "tip",
+              "title": "Keep proof ready",
+              "body": "If you studied the language in school, keep certificates/mark sheets ready; banks may consider them during verification as per the notification's rules."
+            },
+            {
+              "type": "quiz",
+              "q": "The language proficiency test for IBPS Clerk is:",
+              "options": [
+                "Worth 20% of merit",
+                "Qualifying in nature",
+                "Conducted before Prelims",
+                "Optional"
+              ],
+              "answer": 1,
+              "explain": "It is qualifying; it does not add marks to the merit."
+            },
+            {
+              "type": "quiz",
+              "q": "Who usually conducts the language test?",
+              "options": [
+                "UPSC",
+                "The allotted participating bank",
+                "RBI",
+                "State Public Service Commission"
+              ],
+              "answer": 1,
+              "explain": "The participating bank conducts it after provisional allotment."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "IBPS Clerk 2025 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "IBPS Clerk 2024 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "IBPS Clerk 2023 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "IBPS Clerk 2022 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "IBPS Clerk 2021 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "IBPS Clerk 2020 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "IBPS Clerk 2019 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "IBPS Clerk 2018 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "IBPS Clerk 2017 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "IBPS Clerk 2016 — official notification & answer-key page (papers not published officially)",
+          "url": "https://www.ibps.in",
+          "source": "IBPS (official)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "IBPS — official website",
+      "url": "https://www.ibps.in",
+      "note": "CRP CSA notification, call letters and results",
+      "free": true
+    },
+    {
+      "label": "RBI — Monetary Policy statements",
+      "url": "https://www.rbi.org.in/scripts/annualpolicy.aspx",
+      "note": "Policy rates for Financial Awareness",
+      "free": true
+    },
+    {
+      "label": "NPCI — UPI product overview",
+      "url": "https://www.npci.org.in/what-we-do/upi/product-overview",
+      "note": "Digital payments facts",
+      "free": true
+    },
+    {
+      "label": "PM Jan Dhan Yojana — official site",
+      "url": "https://pmjdy.gov.in/scheme",
+      "note": "Financial inclusion facts",
+      "free": true
+    }
+  ]
+}

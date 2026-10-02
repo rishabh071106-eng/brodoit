@@ -1,0 +1,2933 @@
+{
+  "id": "upsc-cse",
+  "name": "UPSC Civil Services (IAS/IPS/IFS)",
+  "category": "civil",
+  "conductedBy": "UPSC",
+  "tagline": "India's premier exam for the IAS, IPS, IFS and other Central Civil Services",
+  "overview": {
+    "about": "The Civil Services Examination is conducted every year by the Union Public Service Commission to recruit officers for the IAS, IPS, IFS and other Group A and Group B central services. It has three stages — Preliminary (objective, screening), Main (descriptive) and Personality Test (interview). The final merit list is based on 2025 marks: 1750 from Mains and 275 from the interview.",
+    "eligibility": [
+      "Nationality: must be a citizen of India for IAS, IPS and IFS (other services allow certain specified categories — check the notification)",
+      "Education: a bachelor's degree from a recognised university; final-year students may appear in Prelims",
+      "Age: 21–32 years as on 1 August of the exam year for General/EWS",
+      "Age relaxation: OBC +3 years, SC/ST +5 years, PwBD up to +10 years, plus others as notified",
+      "Attempts: General/EWS 6, OBC 9, SC/ST unlimited (within age limit); PwBD (General/EWS/OBC) 9",
+      "Appearing in either Prelims paper counts as an attempt; always verify the latest UPSC notification"
+    ],
+    "pattern": [
+      {
+        "paper": "Prelims Paper I – General Studies",
+        "questions": 100,
+        "marks": 200,
+        "duration": "2 hours",
+        "note": "Objective; decides Prelims cut-off; 1/3 negative marking"
+      },
+      {
+        "paper": "Prelims Paper II – CSAT",
+        "questions": 80,
+        "marks": 200,
+        "duration": "2 hours",
+        "note": "Qualifying – 33% (66 marks) needed; 1/3 negative marking"
+      },
+      {
+        "paper": "Mains Paper A – Indian Language",
+        "marks": 300,
+        "duration": "3 hours",
+        "note": "Qualifying – 25%; language from the Eighth Schedule (exemptions as notified)"
+      },
+      {
+        "paper": "Mains Paper B – English",
+        "marks": 300,
+        "duration": "3 hours",
+        "note": "Qualifying – 25%"
+      },
+      {
+        "paper": "Mains Paper I – Essay",
+        "marks": 250,
+        "duration": "3 hours",
+        "note": "Counted for merit"
+      },
+      {
+        "paper": "Mains Papers II–V – General Studies I–IV",
+        "marks": 1000,
+        "duration": "3 hours each",
+        "note": "250 marks each; counted for merit"
+      },
+      {
+        "paper": "Mains Papers VI–VII – Optional Subject I & II",
+        "marks": 500,
+        "duration": "3 hours each",
+        "note": "250 marks each; counted for merit"
+      },
+      {
+        "paper": "Personality Test (Interview)",
+        "marks": 275,
+        "note": "Final merit = 1750 (Mains) + 275 = 2025"
+      }
+    ],
+    "frequency": "Once a year — Prelims around May/June, Mains around August/September, interviews in the following months",
+    "officialSite": "https://upsc.gov.in"
+  },
+  "subjects": [
+    {
+      "id": "strategy",
+      "name": "Strategy & Approach",
+      "chapters": [
+        {
+          "id": "understanding-cse",
+          "title": "Understanding the Civil Services Exam",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Three stages, one rank",
+              "body": "UPSC CSE is held once a year in three stages: **Prelims** (screening, objective), **Mains** (descriptive, 9 papers) and the **Personality Test** (interview). Prelims marks only decide who reaches Mains. Your final rank comes from Mains written marks plus the interview.",
+              "points": [
+                "Prelims → Mains → Interview",
+                "Final merit = 1750 (Mains) + 275 (Interview) = 2025 marks"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Prelims at a glance",
+              "body": "Two objective papers on the same day, each 200 marks and 2 hours. **GS Paper I** has 100 questions and decides the cut-off. **Paper II (CSAT)** has 80 questions and is only qualifying, but you must score at least **33%** (66/200). Wrong answers cost one-third of the question's marks."
+            },
+            {
+              "type": "concept",
+              "title": "Mains at a glance",
+              "body": "Nine descriptive papers of 3 hours each. Two are qualifying language papers — **Paper A** (an Eighth Schedule Indian language) and **Paper B** (English), 300 marks each, 25% needed. Seven papers count for merit: **Essay**, **GS I–IV** and **Optional I & II**, 250 marks each = 1750.",
+              "points": [
+                "Essay 250",
+                "GS I: Heritage, History, Geography, Society",
+                "GS II: Polity, Governance, IR",
+                "GS III: Economy, Environment, S&T, Security",
+                "GS IV: Ethics",
+                "Optional I + II: 500"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Who can apply",
+              "body": "You need a bachelor's degree (final-year students may write Prelims). General/EWS candidates must be **21–32 years** on 1 August of the exam year, with **6 attempts**. Relaxations: OBC +3 years and 9 attempts; SC/ST +5 years and unlimited attempts; PwBD up to +10 years.",
+              "points": [
+                "Appearing in even one Prelims paper counts as an attempt"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Golden rule",
+              "body": "Always read the latest UPSC notification (usually released in January/February). Rules on age, attempts, service allocation and documents can change, and the notification is the only binding source."
+            },
+            {
+              "type": "quiz",
+              "q": "What is the total marks on which the UPSC CSE final merit list is prepared?",
+              "options": [
+                "1750",
+                "2025",
+                "2275",
+                "2600"
+              ],
+              "answer": 1,
+              "explain": "Mains merit papers (Essay, GS I–IV, two Optionals) = 1750, plus Interview 275 = 2025. Language papers and CSAT are qualifying only."
+            },
+            {
+              "type": "quiz",
+              "q": "The minimum qualifying score in Prelims Paper II (CSAT) is:",
+              "options": [
+                "25%",
+                "33%",
+                "40%",
+                "No minimum"
+              ],
+              "answer": 1,
+              "explain": "CSAT is qualifying with a 33% minimum (66 out of 200). Only GS Paper I marks decide the Prelims cut-off."
+            },
+            {
+              "type": "quiz",
+              "q": "How many attempts does a General category candidate get?",
+              "options": [
+                "4",
+                "6",
+                "9",
+                "Unlimited"
+              ],
+              "answer": 1,
+              "explain": "General and EWS candidates get 6 attempts; OBC and General/EWS/OBC PwBD get 9; SC/ST are unlimited within the age limit."
+            }
+          ]
+        },
+        {
+          "id": "ncert-to-standard-books",
+          "title": "Reading NCERTs, Then Standard Books",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Why NCERTs first",
+              "body": "NCERT textbooks (Classes 6–12) explain basics in simple language and are written by subject experts. Many Prelims questions test concepts these books cover. Finishing them first builds the vocabulary you need to understand advanced books and newspapers.",
+              "points": [
+                "Free PDFs at ncert.nic.in/textbook.php"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Smart NCERT order",
+              "body": "Read subject by subject, not class by class across all subjects at once. For each subject go from Class 6 upwards so ideas build gradually. Give priority to History, Geography, Polity (Indian Constitution at Work), Economy and Class 11–12 Biology/Chemistry chapters on environment."
+            },
+            {
+              "type": "concept",
+              "title": "Then one standard book per subject",
+              "body": "After NCERTs, pick **one** trusted book per subject and revise it many times instead of reading five. Popular choices among aspirants include Laxmikanth for Polity, Spectrum (Rajiv Ahir) for Modern History, G.C. Leong for Physical Geography and a standard Indian Economy text.",
+              "points": [
+                "One book × many revisions > many books × one reading"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "A 3-read method",
+              "body": "**Read 1:** understand, no notes. **Read 2:** underline and make short notes or mind-maps. **Read 3:** revise only notes and solve PYQs on that topic. Example: after finishing the Parliament chapter, attempt every Prelims PYQ on Parliament from the last ten years."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Use the official UPSC syllabus as a checklist. Print it, keep it on your desk, and tick topics as you finish them. If a topic is not in the syllabus, do not go deep into it."
+            },
+            {
+              "type": "quiz",
+              "q": "Which approach is most recommended for static subjects?",
+              "options": [
+                "Read many books once each",
+                "Read one standard book and revise it several times",
+                "Skip NCERTs and start with coaching notes",
+                "Only read newspapers"
+              ],
+              "answer": 1,
+              "explain": "Repeated revision of one reliable source builds recall far better than a single pass over many books."
+            },
+            {
+              "type": "quiz",
+              "q": "Where can you download NCERT textbooks free of cost?",
+              "options": [
+                "ncert.nic.in",
+                "upsc.gov.in",
+                "pib.gov.in",
+                "prsindia.org"
+              ],
+              "answer": 0,
+              "explain": "NCERT hosts official free PDFs of its textbooks at ncert.nic.in/textbook.php."
+            }
+          ]
+        },
+        {
+          "id": "answer-writing-basics",
+          "title": "Answer Writing Basics",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What Mains tests",
+              "body": "Mains is not about knowing more facts — it is about presenting them clearly within time. In each GS paper you usually write 20 answers in 3 hours: 10-mark answers (~150 words) and 15-mark answers (~250 words). That is roughly 7–9 minutes per answer."
+            },
+            {
+              "type": "concept",
+              "title": "Decode the directive word",
+              "body": "Every question has a command word. Answer what it asks.",
+              "points": [
+                "**Discuss** – cover various aspects, both sides",
+                "**Critically examine** – analyse merits and limits, then judge",
+                "**Analyse** – break into parts, show causes and effects",
+                "**Comment** – give your opinion backed by evidence",
+                "**Elucidate** – explain clearly with examples"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Intro – Body – Conclusion",
+              "body": "**Intro (2–3 lines):** define the term, give context, a fact or a recent event. **Body:** sub-headings or points covering every part of the question. **Conclusion (2–3 lines):** balanced, forward-looking, ideally linking to a constitutional value, SDG or government scheme."
+            },
+            {
+              "type": "example",
+              "title": "Mini model",
+              "body": "Q: 'Discuss the significance of the 73rd Amendment.' Intro: it gave constitutional status to Panchayati Raj in 1992. Body: three-tier structure, regular elections, one-third seats for women, finance commission; then challenges like funds, functions, functionaries. Conclusion: true devolution needs the '3Fs' to reach panchayats."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Add value with simple diagrams, flowcharts or a map of India sketch. Quote Articles, committee names, Supreme Court judgments and official data from the Economic Survey. Practise daily and get answers reviewed."
+            },
+            {
+              "type": "quiz",
+              "q": "For a 15-mark GS Mains answer, the usual word limit is about:",
+              "options": [
+                "100 words",
+                "150 words",
+                "250 words",
+                "500 words"
+              ],
+              "answer": 2,
+              "explain": "UPSC typically sets ~150 words for 10-mark and ~250 words for 15-mark questions."
+            },
+            {
+              "type": "quiz",
+              "q": "'Critically examine' asks you to:",
+              "options": [
+                "Only list advantages",
+                "Narrate history",
+                "Weigh merits and limitations and reach a judgement",
+                "Write a definition"
+              ],
+              "answer": 2,
+              "explain": "Critical examination means a balanced analysis of both sides ending with a reasoned verdict."
+            }
+          ]
+        },
+        {
+          "id": "current-affairs-method",
+          "title": "Current Affairs: A Simple Method",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Static + dynamic",
+              "body": "UPSC rarely asks pure news. It asks the concept behind the news. If a new tiger reserve is in the news, the question may test the Wildlife (Protection) Act or the Project Tiger history. Always link a news item back to your syllabus topic."
+            },
+            {
+              "type": "concept",
+              "title": "Daily routine (60–90 min)",
+              "body": "Read one national newspaper such as The Hindu or The Indian Express, focusing on editorials, government policy, economy, environment, S&T and international relations. Skip politics gossip, crime and sports results unless they connect to the syllabus.",
+              "points": [
+                "Check PIB for official scheme details",
+                "Use PRS for bills and Acts"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Make notes topic-wise",
+              "body": "Do not keep notes by date. File each news item under a syllabus heading — 'Polity: Election Commission', 'Economy: Inflation'. Keep short points: what happened, why it matters, related Article/Act, and one data point from an official source."
+            },
+            {
+              "type": "example",
+              "title": "Monthly cycle",
+              "body": "Week 1–4: daily paper + short notes. End of month: revise one monthly compilation and the Yojana issue. Every 3 months: revise all notes. Before Prelims: revise government schemes, reports and indices from the last 12–18 months."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Prefer official sources for facts — PIB, ministry websites, Economic Survey, Union Budget documents and RBI reports. Many coaching summaries contain errors; verify numbers before memorising them."
+            },
+            {
+              "type": "quiz",
+              "q": "The best way to organise current affairs notes is:",
+              "options": [
+                "By date of the newspaper",
+                "By syllabus topic",
+                "By newspaper name",
+                "Not at all"
+              ],
+              "answer": 1,
+              "explain": "Topic-wise notes connect news to the syllabus and make revision faster."
+            },
+            {
+              "type": "quiz",
+              "q": "Which website gives official press releases of the Government of India?",
+              "options": [
+                "PIB (pib.gov.in)",
+                "NCERT",
+                "NIOS",
+                "UNESCO"
+              ],
+              "answer": 0,
+              "explain": "The Press Information Bureau publishes official releases from all ministries."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "polity",
+      "name": "Indian Polity",
+      "chapters": [
+        {
+          "id": "constitution-making-preamble",
+          "title": "Constitution Making & the Preamble",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The Constituent Assembly",
+              "body": "Formed under the Cabinet Mission Plan (1946), the Assembly first met on **9 December 1946**. Dr Rajendra Prasad was its President. On 13 December 1946 Nehru moved the **Objectives Resolution**, which later shaped the Preamble. The Drafting Committee, set up on 29 August 1947, was chaired by **Dr B.R. Ambedkar**."
+            },
+            {
+              "type": "concept",
+              "title": "Key dates",
+              "points": [
+                "Adopted: **26 November 1949** (Constitution Day)",
+                "Fully in force: **26 January 1950** (Republic Day)",
+                "Took about 2 years, 11 months, 18 days",
+                "Original: 395 Articles, 22 Parts, 8 Schedules"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Borrowed features",
+              "body": "The framers studied many constitutions.",
+              "points": [
+                "UK: parliamentary system, rule of law, single citizenship",
+                "USA: Fundamental Rights, judicial review, impeachment of President",
+                "Ireland: Directive Principles",
+                "Canada: federation with strong Centre, residuary powers with Centre",
+                "Former USSR: Fundamental Duties",
+                "Government of India Act 1935: much of the administrative framework"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "The Preamble",
+              "body": "It declares India a **Sovereign, Socialist, Secular, Democratic Republic** and promises Justice, Liberty, Equality and Fraternity. The words 'Socialist', 'Secular' and 'Integrity' were added by the **42nd Amendment (1976)** — the only amendment to the Preamble so far."
+            },
+            {
+              "type": "concept",
+              "title": "Is the Preamble part of the Constitution?",
+              "body": "In **Berubari (1960)** the Supreme Court said no. In **Kesavananda Bharati (1973)** it reversed this and held the Preamble **is** part of the Constitution and can be amended, but not in a way that destroys the basic structure. It is not enforceable in courts by itself."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Prelims loves the order of words: 'Sovereign Socialist Secular Democratic Republic' and 'Justice – Liberty – Equality – Fraternity'. Remember that 'Republic' means the head of state is elected, not hereditary."
+            },
+            {
+              "type": "quiz",
+              "q": "Which amendment added 'Socialist' and 'Secular' to the Preamble?",
+              "options": [
+                "24th",
+                "42nd",
+                "44th",
+                "86th"
+              ],
+              "answer": 1,
+              "explain": "The 42nd Amendment Act, 1976, added Socialist, Secular and Integrity."
+            },
+            {
+              "type": "quiz",
+              "q": "In which case did the Supreme Court hold that the Preamble is part of the Constitution?",
+              "options": [
+                "Berubari Union (1960)",
+                "Golaknath (1967)",
+                "Kesavananda Bharati (1973)",
+                "Maneka Gandhi (1978)"
+              ],
+              "answer": 2,
+              "explain": "Kesavananda Bharati overruled the Berubari view and also gave the basic structure doctrine."
+            },
+            {
+              "type": "quiz",
+              "q": "Who chaired the Drafting Committee of the Constitution?",
+              "options": [
+                "Rajendra Prasad",
+                "Jawaharlal Nehru",
+                "B.R. Ambedkar",
+                "Sardar Patel"
+              ],
+              "answer": 2,
+              "explain": "Dr B.R. Ambedkar chaired the Drafting Committee; Rajendra Prasad was President of the Constituent Assembly."
+            }
+          ]
+        },
+        {
+          "id": "rights-dpsp-duties",
+          "title": "Fundamental Rights, DPSP & Duties",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Fundamental Rights (Part III)",
+              "body": "Articles **12–35** guarantee six rights, enforceable in court.",
+              "points": [
+                "Equality (14–18)",
+                "Freedom (19–22)",
+                "Against exploitation (23–24)",
+                "Freedom of religion (25–28)",
+                "Cultural & educational (29–30)",
+                "Constitutional remedies (32)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Article 32 and writs",
+              "body": "Ambedkar called Article 32 the 'heart and soul' of the Constitution. The Supreme Court (Art 32) and High Courts (Art 226) can issue five writs.",
+              "points": [
+                "Habeas corpus – produce the detained person",
+                "Mandamus – 'we command' a public duty",
+                "Prohibition – stop a lower court",
+                "Certiorari – quash a lower court's order",
+                "Quo warranto – 'by what authority' a public office is held"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Key changes",
+              "body": "The **44th Amendment (1978)** removed the Right to Property from Part III; it is now a legal right under **Article 300A**. It also ensured Articles **20 and 21** cannot be suspended even during a National Emergency. The **86th Amendment (2002)** added **Article 21A** — free and compulsory education for ages 6–14."
+            },
+            {
+              "type": "concept",
+              "title": "Directive Principles (Part IV)",
+              "body": "Articles **36–51**, inspired by the Irish Constitution, guide the State towards a welfare state — equal pay, living wage, uniform civil code (Art 44), separation of judiciary (Art 50), village panchayats (Art 40). Under **Article 37** they are **not enforceable** in court but are 'fundamental in the governance of the country'."
+            },
+            {
+              "type": "concept",
+              "title": "Fundamental Duties (Part IVA)",
+              "body": "Added by the **42nd Amendment (1976)** on the Swaran Singh Committee's recommendation, in **Article 51A**. Originally ten; the **86th Amendment (2002)** added the eleventh — parents/guardians must provide education opportunities to children aged 6–14. Duties are non-justiciable."
+            },
+            {
+              "type": "example",
+              "title": "Balance between Parts III and IV",
+              "body": "In **Minerva Mills (1980)** the Supreme Court held that harmony and balance between Fundamental Rights and Directive Principles is part of the basic structure. Neither can be given absolute primacy over the other."
+            },
+            {
+              "type": "quiz",
+              "q": "Which writ is issued to examine the legality of a person's claim to a public office?",
+              "options": [
+                "Mandamus",
+                "Certiorari",
+                "Quo warranto",
+                "Habeas corpus"
+              ],
+              "answer": 2,
+              "explain": "Quo warranto ('by what authority') questions the right of a person to hold a public office."
+            },
+            {
+              "type": "quiz",
+              "q": "Right to Property is now a:",
+              "options": [
+                "Fundamental Right under Art 31",
+                "Legal right under Art 300A",
+                "Directive Principle",
+                "Fundamental Duty"
+              ],
+              "answer": 1,
+              "explain": "The 44th Amendment (1978) deleted it from Part III and placed it in Article 300A."
+            },
+            {
+              "type": "quiz",
+              "q": "Fundamental Duties were added on the recommendation of:",
+              "options": [
+                "Sarkaria Commission",
+                "Swaran Singh Committee",
+                "Balwant Rai Mehta Committee",
+                "Punchhi Commission"
+              ],
+              "answer": 1,
+              "explain": "The Swaran Singh Committee (1976) led to Part IVA via the 42nd Amendment."
+            }
+          ]
+        },
+        {
+          "id": "parliament",
+          "title": "Parliament",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Structure",
+              "body": "Under **Article 79**, Parliament = the **President + Lok Sabha + Rajya Sabha**. The President is part of Parliament though not a member of either House, because a bill becomes law only with the President's assent."
+            },
+            {
+              "type": "concept",
+              "title": "The two Houses",
+              "points": [
+                "**Lok Sabha:** directly elected, normal term 5 years, maximum strength 550 (after the 104th Amendment ended Anglo-Indian nomination)",
+                "**Rajya Sabha:** maximum 250 (238 elected by state/UT legislators + 12 nominated by the President)",
+                "Rajya Sabha is permanent — one-third members retire every second year",
+                "Vice-President is ex-officio Chairman of Rajya Sabha"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Money Bill (Art 110)",
+              "body": "A Money Bill can be introduced only in Lok Sabha with the President's recommendation. The **Speaker** certifies whether a bill is a Money Bill. Rajya Sabha can only make recommendations and must return it within **14 days**; Lok Sabha may accept or reject them."
+            },
+            {
+              "type": "concept",
+              "title": "Joint sitting (Art 108)",
+              "body": "If the two Houses disagree on an ordinary bill, the President can summon a joint sitting, presided over by the **Speaker**. There is **no joint sitting** for Money Bills or Constitutional Amendment Bills. Because Lok Sabha has more members, it usually prevails."
+            },
+            {
+              "type": "concept",
+              "title": "Parliamentary tools",
+              "points": [
+                "**Question Hour** – first hour of a sitting",
+                "**Zero Hour** – Indian innovation, not in the rules",
+                "**No-confidence motion** – only in Lok Sabha, needs 50 members' support to be admitted",
+                "**Quorum** – one-tenth of total members",
+                "Committees: Public Accounts Committee (chaired by an Opposition member by convention), Estimates, Public Undertakings"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Compare the Houses in a table: who can be dissolved, who passes Money Bills, who can create All-India Services (Rajya Sabha, Art 312), and who can authorise Parliament to legislate on a State List subject (Rajya Sabha, Art 249)."
+            },
+            {
+              "type": "quiz",
+              "q": "Who decides whether a bill is a Money Bill?",
+              "options": [
+                "President",
+                "Speaker of Lok Sabha",
+                "Chairman of Rajya Sabha",
+                "Finance Minister"
+              ],
+              "answer": 1,
+              "explain": "Article 110(3): the Speaker's decision is final."
+            },
+            {
+              "type": "quiz",
+              "q": "A joint sitting of Parliament is NOT possible for:",
+              "options": [
+                "Ordinary bills",
+                "Financial bills other than Money Bills",
+                "Constitutional Amendment Bills",
+                "Bills rejected by Rajya Sabha"
+              ],
+              "answer": 2,
+              "explain": "Article 368 requires each House to pass an amendment separately, so joint sittings are excluded. Money Bills are also excluded."
+            }
+          ]
+        },
+        {
+          "id": "executive-judiciary",
+          "title": "Executive & Judiciary",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The President",
+              "body": "Elected indirectly by an electoral college of **elected members of both Houses of Parliament and elected members of State Legislative Assemblies** (including Delhi and Puducherry). Nominated members do not vote. Under **Article 74**, the President acts on the aid and advice of the Council of Ministers; after the 44th Amendment the President may return advice once for reconsideration."
+            },
+            {
+              "type": "concept",
+              "title": "Key presidential powers",
+              "points": [
+                "Art 72 – pardon, reprieve, remission, commutation",
+                "Art 123 – ordinances when Parliament is not in session",
+                "Art 352 – National Emergency",
+                "Art 356 – President's Rule in a state",
+                "Art 360 – Financial Emergency (never imposed so far)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "PM and Council of Ministers",
+              "body": "The President appoints the Prime Minister (Art 75) and other ministers on the PM's advice. The Council is **collectively responsible to Lok Sabha**. The **91st Amendment (2003)** capped the total number of ministers at **15%** of Lok Sabha strength."
+            },
+            {
+              "type": "concept",
+              "title": "Supreme Court",
+              "body": "Established under **Article 124**. Judges retire at **65** (High Court judges at 62). Key Articles:",
+              "points": [
+                "Art 32 – writ jurisdiction for Fundamental Rights",
+                "Art 137 – review its own judgments",
+                "Art 141 – its law binds all courts",
+                "Art 142 – 'complete justice'",
+                "Art 143 – advisory opinion to President"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Appointment of judges",
+              "body": "Judges are appointed through the **collegium** system that evolved from the Second (1993) and Third (1998) Judges cases. In **2015** the Supreme Court struck down the **National Judicial Appointments Commission (NJAC)** as violating judicial independence, a basic feature."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Remember: High Courts' writ power (Art 226) is wider than the Supreme Court's (Art 32) — HCs can issue writs for legal rights too, not only Fundamental Rights."
+            },
+            {
+              "type": "quiz",
+              "q": "The 91st Amendment limited the size of the Council of Ministers to:",
+              "options": [
+                "10% of Lok Sabha",
+                "15% of Lok Sabha",
+                "20% of Lok Sabha",
+                "15% of both Houses"
+              ],
+              "answer": 1,
+              "explain": "Total ministers, including the PM, cannot exceed 15% of the total strength of Lok Sabha."
+            },
+            {
+              "type": "quiz",
+              "q": "Which Article lets the Supreme Court pass orders for 'complete justice'?",
+              "options": [
+                "Article 32",
+                "Article 136",
+                "Article 142",
+                "Article 143"
+              ],
+              "answer": 2,
+              "explain": "Article 142 empowers the SC to pass any decree or order necessary for complete justice."
+            },
+            {
+              "type": "quiz",
+              "q": "Who does NOT vote in the Presidential election?",
+              "options": [
+                "Elected MPs of Rajya Sabha",
+                "Elected MLAs of Delhi",
+                "Nominated members of Parliament",
+                "Elected MLAs of Bihar"
+              ],
+              "answer": 2,
+              "explain": "Only elected members take part; nominated members of Parliament and of assemblies are excluded."
+            }
+          ]
+        },
+        {
+          "id": "federalism-local-govt",
+          "title": "Federalism & Local Government",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "A 'Union of States'",
+              "body": "**Article 1** calls India a 'Union of States', meaning states cannot secede. India is federal in structure with a strong Centre — scholars call it 'quasi-federal'. Features: division of powers, written constitution, independent judiciary; but also single citizenship, emergency powers and an appointed Governor."
+            },
+            {
+              "type": "concept",
+              "title": "Seventh Schedule",
+              "body": "Legislative powers are split into three lists.",
+              "points": [
+                "**Union List** – defence, foreign affairs, banking, railways",
+                "**State List** – police, public order, public health, agriculture",
+                "**Concurrent List** – education, forests, marriage, criminal law",
+                "**Residuary powers** rest with Parliament (Art 248)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Cooperative federalism bodies",
+              "points": [
+                "Inter-State Council – Article 263",
+                "GST Council – Article 279A (101st Amendment, 2016)",
+                "Finance Commission – Article 280",
+                "NITI Aayog (2015) – created by executive resolution, not constitutional"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "73rd Amendment – Panchayats",
+              "body": "Passed in 1992 (in force 1993), it added **Part IX** and the **Eleventh Schedule (29 subjects)**. Three tiers — village, intermediate, district (states under 20 lakh population may skip the middle tier). Five-year terms, **at least one-third seats for women**, SC/ST reservation, State Election Commission and State Finance Commission."
+            },
+            {
+              "type": "concept",
+              "title": "74th Amendment – Municipalities",
+              "body": "Also 1992, it added **Part IXA** and the **Twelfth Schedule (18 subjects)** for urban local bodies: Nagar Panchayat (transitional area), Municipal Council (smaller urban area) and Municipal Corporation (larger urban area). The idea of three-tier PRIs goes back to the **Balwant Rai Mehta Committee (1957)**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Answer-writing hook: local bodies still lack the '3Fs' — Funds, Functions and Functionaries. Use this phrase in GS II answers on decentralisation."
+            },
+            {
+              "type": "quiz",
+              "q": "The Eleventh Schedule contains how many subjects for Panchayats?",
+              "options": [
+                "18",
+                "22",
+                "29",
+                "32"
+              ],
+              "answer": 2,
+              "explain": "The Eleventh Schedule lists 29 subjects; the Twelfth Schedule (municipalities) lists 18."
+            },
+            {
+              "type": "quiz",
+              "q": "Residuary powers of legislation in India are with:",
+              "options": [
+                "States",
+                "Parliament",
+                "Both concurrently",
+                "President alone"
+              ],
+              "answer": 1,
+              "explain": "Article 248 and Entry 97 of the Union List vest residuary powers in Parliament."
+            }
+          ]
+        },
+        {
+          "id": "constitutional-bodies",
+          "title": "Constitutional & Statutory Bodies",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Constitutional bodies",
+              "body": "Created directly by the Constitution, so changing them needs a constitutional amendment.",
+              "points": [
+                "Election Commission – Art 324",
+                "UPSC – Art 315",
+                "Finance Commission – Art 280",
+                "CAG – Art 148",
+                "Attorney General – Art 76",
+                "National Commission for SCs – Art 338; for STs – Art 338A; for Backward Classes – Art 338B"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Statutory and executive bodies",
+              "points": [
+                "NHRC – Protection of Human Rights Act, 1993",
+                "Central Vigilance Commission – statutory since CVC Act, 2003",
+                "Lokpal – Lokpal and Lokayuktas Act, 2013",
+                "National Green Tribunal – NGT Act, 2010",
+                "NITI Aayog – executive resolution, 2015"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "CAG: guardian of the public purse",
+              "body": "The Comptroller and Auditor General audits accounts of the Union, states and bodies financed by them. Reports on Union accounts go to the President, who places them before Parliament, where the **Public Accounts Committee** examines them. The CAG holds office for 6 years or until age 65."
+            },
+            {
+              "type": "concept",
+              "title": "Finance Commission",
+              "body": "Set up by the President every five years to recommend how central taxes are shared between the Centre and states (vertical devolution) and among states (horizontal devolution). The **16th Finance Commission**, chaired by **Arvind Panagariya**, covers the period 2026–31."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "A favourite Prelims trap: 'NITI Aayog is a constitutional body' — false. It replaced the Planning Commission through a Cabinet resolution in January 2015."
+            },
+            {
+              "type": "quiz",
+              "q": "Which of these is a constitutional body?",
+              "options": [
+                "NITI Aayog",
+                "NHRC",
+                "Finance Commission",
+                "Lokpal"
+              ],
+              "answer": 2,
+              "explain": "The Finance Commission is created under Article 280. The others are statutory or executive bodies."
+            },
+            {
+              "type": "quiz",
+              "q": "The National Commission for Backward Classes got constitutional status through:",
+              "options": [
+                "Article 338A",
+                "Article 338B",
+                "Article 340",
+                "Article 350A"
+              ],
+              "answer": 1,
+              "explain": "The 102nd Amendment (2018) inserted Article 338B."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "modern-history",
+      "name": "Modern Indian History",
+      "chapters": [
+        {
+          "id": "british-expansion",
+          "title": "Rise of British Power",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "From traders to rulers",
+              "body": "The English East India Company came as traders in 1600. Two battles made it a political power in Bengal.",
+              "points": [
+                "**Plassey (1757):** Robert Clive defeated Nawab Siraj-ud-Daulah, helped by Mir Jafar's betrayal",
+                "**Buxar (1764):** the Company defeated Mir Qasim, Shuja-ud-Daulah of Awadh and Mughal emperor Shah Alam II",
+                "**Treaty of Allahabad (1765):** the Company got the Diwani (revenue rights) of Bengal, Bihar and Orissa"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Tools of expansion",
+              "points": [
+                "**Subsidiary Alliance** – Lord Wellesley (from 1798): Indian rulers kept British troops at their own cost; Hyderabad was among the first to accept",
+                "**Doctrine of Lapse** – Lord Dalhousie: a state without a natural heir was annexed; Satara (1848) was the first, Jhansi and Nagpur followed",
+                "Awadh was annexed in 1856 on grounds of 'misgovernance'"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Land revenue systems",
+              "points": [
+                "**Permanent Settlement (1793)** – Cornwallis; Bengal, Bihar, Orissa; zamindars fixed revenue permanently",
+                "**Ryotwari** – Thomas Munro and Alexander Read; Madras and Bombay; direct settlement with peasants",
+                "**Mahalwari** – village (mahal) as unit; North-West Provinces, Punjab, parts of central India"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Economic drain",
+              "body": "**Dadabhai Naoroji** explained in 'Poverty and Un-British Rule in India' that India's wealth was being drained to Britain through salaries, pensions, home charges and profits without equal return. This 'Drain Theory' became the core economic critique of colonial rule."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Make a timeline of Governors-General with one signature policy each — Cornwallis (Permanent Settlement), Wellesley (Subsidiary Alliance), Bentinck (abolition of Sati, 1829), Dalhousie (Doctrine of Lapse, railways, telegraph)."
+            },
+            {
+              "type": "quiz",
+              "q": "The Diwani of Bengal, Bihar and Orissa was granted to the Company by:",
+              "options": [
+                "Treaty of Salbai",
+                "Treaty of Allahabad (1765)",
+                "Treaty of Seringapatam",
+                "Regulating Act 1773"
+              ],
+              "answer": 1,
+              "explain": "After Buxar, Shah Alam II granted the Diwani through the Treaty of Allahabad in 1765."
+            },
+            {
+              "type": "quiz",
+              "q": "Which was the first state annexed under the Doctrine of Lapse?",
+              "options": [
+                "Jhansi",
+                "Nagpur",
+                "Satara",
+                "Awadh"
+              ],
+              "answer": 2,
+              "explain": "Satara was annexed in 1848. Awadh was annexed in 1856 for alleged misgovernance, not lapse."
+            }
+          ]
+        },
+        {
+          "id": "revolt-1857-reform",
+          "title": "1857 Revolt & Social Reform",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The Revolt of 1857",
+              "body": "It began at **Meerut on 10 May 1857**; sepoys marched to Delhi and proclaimed **Bahadur Shah Zafar** emperor. Causes included annexations, heavy revenue demands, social interference and the greased cartridge issue of the Enfield rifle.",
+              "points": [
+                "Delhi – Bahadur Shah Zafar (with General Bakht Khan)",
+                "Kanpur – Nana Saheb, Tantia Tope",
+                "Lucknow – Begum Hazrat Mahal",
+                "Jhansi – Rani Lakshmibai",
+                "Bihar (Jagdishpur) – Kunwar Singh"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Aftermath",
+              "body": "The **Government of India Act 1858** ended Company rule; power passed to the British Crown. A Secretary of State for India was created, and the Governor-General became the **Viceroy**. Queen Victoria's Proclamation (1858) promised to respect Indian princes and religions."
+            },
+            {
+              "type": "concept",
+              "title": "Reformers you must know",
+              "points": [
+                "Raja Ram Mohan Roy – Brahmo Sabha (1828); campaign led to abolition of Sati (1829)",
+                "Ishwar Chandra Vidyasagar – Hindu Widows' Remarriage Act (1856)",
+                "Jyotiba Phule – Satyashodhak Samaj (1873)",
+                "Swami Dayanand Saraswati – Arya Samaj (1875)",
+                "Swami Vivekananda – Ramakrishna Mission (1897)",
+                "Sir Syed Ahmad Khan – Muhammadan Anglo-Oriental College, Aligarh (1875)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Linking to Mains",
+              "body": "GS I asks about social reform's role in nationalism. Example line: 'Reform movements spread rational thought, women's education and pride in Indian heritage, preparing the middle class that later led the national movement.' Then give two reformers as evidence."
+            },
+            {
+              "type": "quiz",
+              "q": "The Revolt of 1857 began at:",
+              "options": [
+                "Barrackpore",
+                "Meerut",
+                "Delhi",
+                "Kanpur"
+              ],
+              "answer": 1,
+              "explain": "The organised outbreak began at Meerut on 10 May 1857 (Mangal Pandey's earlier incident at Barrackpore was in March 1857)."
+            },
+            {
+              "type": "quiz",
+              "q": "Who founded the Satyashodhak Samaj?",
+              "options": [
+                "Dayanand Saraswati",
+                "Jyotiba Phule",
+                "Narayana Guru",
+                "Vivekananda"
+              ],
+              "answer": 1,
+              "explain": "Jyotiba Phule founded the Satyashodhak Samaj in 1873 to fight caste discrimination."
+            }
+          ]
+        },
+        {
+          "id": "early-nationalism",
+          "title": "Early Nationalism (1885–1918)",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Birth of the Congress",
+              "body": "The **Indian National Congress** was founded in **1885** with help from retired civil servant A.O. Hume. Its first session at **Bombay** was presided over by **W.C. Bonnerjee**. The early **Moderates** (Naoroji, Gokhale, Pherozeshah Mehta) used petitions, prayers and protests within constitutional limits."
+            },
+            {
+              "type": "concept",
+              "title": "Partition of Bengal and Swadeshi",
+              "body": "Lord **Curzon** partitioned Bengal in **1905**, officially for administration but in effect to divide Bengali nationalists along religious lines. The response was the **Swadeshi and Boycott movement**. The partition was annulled in **1911**, and the capital shifted from Calcutta to Delhi."
+            },
+            {
+              "type": "concept",
+              "title": "Key milestones",
+              "points": [
+                "1906 – All-India Muslim League founded at Dacca",
+                "1907 – Surat Split: Moderates vs Extremists (Lal-Bal-Pal)",
+                "1909 – Morley-Minto Reforms introduced separate electorates for Muslims",
+                "1916 – Lucknow Pact between Congress and Muslim League; Moderates and Extremists reunited",
+                "1916 – Home Rule Leagues of Tilak and Annie Besant"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Moderates vs Extremists",
+              "body": "Moderates believed British rule could be reformed and relied on the educated elite. Extremists like Tilak ('Swaraj is my birthright') demanded self-rule and used mass mobilisation, festivals and boycott. Both contributed: Moderates built economic critique; Extremists widened the movement's base."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Prelims frequently asks chronology. Write 1885 → 1905 → 1906 → 1907 → 1909 → 1911 → 1916 on one card and revise it weekly."
+            },
+            {
+              "type": "quiz",
+              "q": "Separate electorates for Muslims were introduced by:",
+              "options": [
+                "Indian Councils Act 1892",
+                "Morley-Minto Reforms 1909",
+                "Montagu-Chelmsford Reforms 1919",
+                "Government of India Act 1935"
+              ],
+              "answer": 1,
+              "explain": "The Indian Councils Act 1909 (Morley-Minto Reforms) introduced separate electorates."
+            },
+            {
+              "type": "quiz",
+              "q": "Who presided over the first session of the INC?",
+              "options": [
+                "A.O. Hume",
+                "Dadabhai Naoroji",
+                "W.C. Bonnerjee",
+                "Surendranath Banerjee"
+              ],
+              "answer": 2,
+              "explain": "W.C. Bonnerjee presided over the 1885 Bombay session."
+            }
+          ]
+        },
+        {
+          "id": "gandhian-era",
+          "title": "Gandhian Era to Independence",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Early experiments",
+              "points": [
+                "**Champaran (1917)** – indigo farmers in Bihar; first civil disobedience in India",
+                "**Ahmedabad (1918)** – mill workers' strike; Gandhi's hunger strike",
+                "**Kheda (1918)** – peasants seeking revenue remission, with Sardar Patel"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "1919–1922: mass politics",
+              "body": "The **Rowlatt Act (1919)** allowed detention without trial. On **13 April 1919** General Dyer's troops fired on a peaceful crowd at **Jallianwala Bagh**, Amritsar. The **Non-Cooperation Movement** (1920–22), merged with the Khilafat cause, was withdrawn after violence at **Chauri Chaura** (February 1922)."
+            },
+            {
+              "type": "concept",
+              "title": "Towards Purna Swaraj",
+              "points": [
+                "1927 – Simon Commission appointed (no Indian member); 'Simon Go Back'",
+                "Dec 1929 – Lahore Session under Nehru demands **Purna Swaraj**",
+                "26 Jan 1930 – first 'Independence Day' celebrated",
+                "12 Mar–6 Apr 1930 – **Dandi March** starts Civil Disobedience",
+                "1931 – Gandhi-Irwin Pact; Gandhi attends Second Round Table Conference",
+                "1932 – Poona Pact (Gandhi–Ambedkar) on depressed classes' representation"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Final phase",
+              "points": [
+                "1935 – Government of India Act: provincial autonomy",
+                "1942 – Cripps Mission fails; **Quit India** resolution on **8 August 1942** in Bombay; 'Do or Die'",
+                "1946 – Cabinet Mission; Constituent Assembly elected",
+                "3 June 1947 – Mountbatten Plan for partition",
+                "15 August 1947 – Independence under the Indian Independence Act 1947"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Link Gandhi's methods to ethics papers too — satyagraha, non-violence and means-ends purity are frequently quoted in GS IV answers."
+            },
+            {
+              "type": "quiz",
+              "q": "The Non-Cooperation Movement was withdrawn after:",
+              "options": [
+                "Jallianwala Bagh massacre",
+                "Chauri Chaura incident",
+                "Arrest of Gandhi",
+                "Simon Commission"
+              ],
+              "answer": 1,
+              "explain": "Violence at Chauri Chaura in February 1922, where policemen were killed, led Gandhi to call off the movement."
+            },
+            {
+              "type": "quiz",
+              "q": "The Purna Swaraj resolution was passed at the Congress session of:",
+              "options": [
+                "Lucknow 1916",
+                "Calcutta 1920",
+                "Lahore 1929",
+                "Karachi 1931"
+              ],
+              "answer": 2,
+              "explain": "The Lahore Session (December 1929), presided by Jawaharlal Nehru, adopted Purna Swaraj."
+            },
+            {
+              "type": "quiz",
+              "q": "The Poona Pact (1932) was signed between:",
+              "options": [
+                "Gandhi and Irwin",
+                "Gandhi and Ambedkar",
+                "Nehru and Jinnah",
+                "Tilak and Jinnah"
+              ],
+              "answer": 1,
+              "explain": "It replaced separate electorates for depressed classes with reserved seats in joint electorates."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ancient-medieval-culture",
+      "name": "Ancient, Medieval & Art and Culture",
+      "chapters": [
+        {
+          "id": "ancient-india",
+          "title": "Ancient India Essentials",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Harappan Civilisation",
+              "body": "A Bronze Age urban culture (mature phase roughly 2600–1900 BCE) known for planned cities, grid streets, covered drains and standard weights. Its script is still undeciphered.",
+              "points": [
+                "Harappa (Ravi) – excavated by Daya Ram Sahni, 1921",
+                "Mohenjo-daro (Indus) – R.D. Banerji, 1922; Great Bath",
+                "Lothal (Gujarat) – dockyard",
+                "Dholavira (Gujarat) – water management; UNESCO World Heritage Site (2021)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Vedic Age",
+              "body": "The **Rigveda** is the oldest Veda. The Early Vedic people were mainly pastoral, with assemblies called **sabha** and **samiti**. In the Later Vedic period, agriculture expanded, the varna system became more rigid and kingdoms grew larger."
+            },
+            {
+              "type": "concept",
+              "title": "Buddhism and Jainism",
+              "points": [
+                "Gautama Buddha – enlightenment at Bodh Gaya; first sermon at **Sarnath** (Dharmachakra Pravartana); died at Kushinagar",
+                "Mahavira – the **24th Tirthankara** of Jainism",
+                "Both rejected Vedic ritualism and spoke in people's languages (Pali, Prakrit)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Mauryas and Guptas",
+              "body": "Chandragupta Maurya founded the Mauryan empire; Kautilya's **Arthashastra** discusses statecraft. **Ashoka** turned to Dhamma after the Kalinga war; his edicts are mostly in Prakrit, in **Brahmi** script (Kharosthi in the north-west). The **Gupta age** saw Aryabhata in astronomy and Kalidasa in literature."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Ancient history in Prelims is now mostly culture-linked: Buddhist sites, terms (Tirthankara, Bodhisattva), inscriptions and scripts. Focus on these rather than dynasty lists."
+            },
+            {
+              "type": "quiz",
+              "q": "Which Harappan site has a dockyard?",
+              "options": [
+                "Kalibangan",
+                "Lothal",
+                "Banawali",
+                "Rakhigarhi"
+              ],
+              "answer": 1,
+              "explain": "Lothal in Gujarat has a structure widely identified as a dockyard."
+            },
+            {
+              "type": "quiz",
+              "q": "Buddha delivered his first sermon at:",
+              "options": [
+                "Bodh Gaya",
+                "Kushinagar",
+                "Sarnath",
+                "Lumbini"
+              ],
+              "answer": 2,
+              "explain": "The first sermon was at Sarnath near Varanasi; enlightenment at Bodh Gaya, birth at Lumbini, death at Kushinagar."
+            }
+          ]
+        },
+        {
+          "id": "medieval-india",
+          "title": "Medieval India Essentials",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Delhi Sultanate (1206–1526)",
+              "body": "Began with **Qutb-ud-din Aibak** and ended when Babur defeated Ibrahim Lodi. Five dynasties ruled: Mamluk (Slave), Khalji, Tughlaq, Sayyid and Lodi. **Alauddin Khalji** is known for market price control; **Muhammad bin Tughlaq** for token currency and shifting the capital to Daulatabad."
+            },
+            {
+              "type": "concept",
+              "title": "The Mughals",
+              "points": [
+                "Babur won the **First Battle of Panipat (1526)**",
+                "**Akbar** – mansabdari system, policy of Sulh-i-kul, Ibadat Khana at Fatehpur Sikri",
+                "Shah Jahan – Taj Mahal, Red Fort",
+                "Aurangzeb – largest territorial extent; reimposed jizya"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Vijayanagara Empire",
+              "body": "Founded in **1336** by **Harihara and Bukka**. Under **Krishnadevaraya** it reached its peak; he wrote the Telugu work Amuktamalyada. Its capital Hampi is a UNESCO World Heritage Site. The empire declined after the **Battle of Talikota (1565)**."
+            },
+            {
+              "type": "concept",
+              "title": "Bhakti and Sufi movements",
+              "body": "Both stressed personal devotion over ritual and caste.",
+              "points": [
+                "Bhakti: Kabir, Guru Nanak, Mirabai, Tulsidas, Chaitanya; earlier the Alvars and Nayanars in Tamil Nadu",
+                "Sufi: Chishti order – Moinuddin Chishti (Ajmer), Nizamuddin Auliya (Delhi)"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "The First Battle of Panipat (1526) was fought between:",
+              "options": [
+                "Akbar and Hemu",
+                "Babur and Ibrahim Lodi",
+                "Babur and Rana Sanga",
+                "Marathas and Abdali"
+              ],
+              "answer": 1,
+              "explain": "Babur defeated Ibrahim Lodi, ending the Delhi Sultanate and founding Mughal rule."
+            },
+            {
+              "type": "quiz",
+              "q": "The Vijayanagara Empire was founded by:",
+              "options": [
+                "Krishnadevaraya",
+                "Harihara and Bukka",
+                "Pulakeshin II",
+                "Rajaraja Chola"
+              ],
+              "answer": 1,
+              "explain": "Harihara and Bukka of the Sangama dynasty founded it in 1336."
+            }
+          ]
+        },
+        {
+          "id": "art-culture",
+          "title": "Art & Culture",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Temple architecture styles",
+              "points": [
+                "**Nagara** – North India; curvilinear shikhara (e.g. Khajuraho, Konark)",
+                "**Dravida** – South India; pyramidal vimana and large gopurams (e.g. Brihadeeswara, Thanjavur)",
+                "**Vesara** – mix of both; Chalukya and Hoysala temples in the Deccan"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Classical dances",
+              "body": "The Sangeet Natak Akademi recognises eight classical dance forms.",
+              "points": [
+                "Bharatanatyam – Tamil Nadu",
+                "Kathak – North India",
+                "Kathakali – Kerala",
+                "Mohiniyattam – Kerala",
+                "Kuchipudi – Andhra Pradesh",
+                "Odissi – Odisha",
+                "Manipuri – Manipur",
+                "Sattriya – Assam"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Caves and monuments",
+              "points": [
+                "**Ajanta** – Buddhist caves famous for murals",
+                "**Ellora** – Buddhist, Hindu and Jain caves; Kailasa temple carved from a single rock under the Rashtrakutas",
+                "**Konark Sun Temple** – Odisha, built by Narasimhadeva I of the Eastern Ganga dynasty, shaped like a chariot"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "UNESCO Intangible Heritage",
+              "body": "India has several elements on UNESCO's Intangible Cultural Heritage list, including **Kumbh Mela** (2017), **Durga Puja in Kolkata** (2021) and **Garba of Gujarat** (2023). Tangible sites like Dholavira and Ramappa Temple were inscribed as World Heritage in 2021."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Make a state-wise table: dance, folk art, painting style, major temple. One page per region helps answer both Prelims factual questions and GS I culture questions."
+            },
+            {
+              "type": "quiz",
+              "q": "Sattriya is a classical dance form of:",
+              "options": [
+                "Manipur",
+                "Assam",
+                "Odisha",
+                "Kerala"
+              ],
+              "answer": 1,
+              "explain": "Sattriya originated in the Vaishnava monasteries (sattras) of Assam."
+            },
+            {
+              "type": "quiz",
+              "q": "The Kailasa temple at Ellora was built under which dynasty?",
+              "options": [
+                "Chalukyas",
+                "Pallavas",
+                "Rashtrakutas",
+                "Cholas"
+              ],
+              "answer": 2,
+              "explain": "It is attributed to the Rashtrakuta king Krishna I (8th century)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "geography",
+      "name": "Geography",
+      "chapters": [
+        {
+          "id": "physical-geography",
+          "title": "Physical Geography Basics",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Earth's interior",
+              "body": "The Earth has three main layers: **crust** (thin, rocky), **mantle** (the upper part includes the partly molten asthenosphere) and **core** (iron-nickel; outer core liquid, inner core solid). Much of our knowledge comes from studying earthquake (seismic) waves — S-waves cannot pass through the liquid outer core."
+            },
+            {
+              "type": "concept",
+              "title": "Plate tectonics",
+              "body": "The lithosphere is broken into plates that move over the asthenosphere.",
+              "points": [
+                "Convergent – plates collide; fold mountains like the Himalayas",
+                "Divergent – plates separate; mid-ocean ridges",
+                "Transform – plates slide past; earthquakes (e.g. San Andreas Fault)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Rocks",
+              "points": [
+                "**Igneous** – from cooled magma (granite, basalt)",
+                "**Sedimentary** – layered deposits; may contain fossils (sandstone, limestone)",
+                "**Metamorphic** – changed by heat/pressure (limestone → marble, shale → slate)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Atmosphere layers",
+              "points": [
+                "**Troposphere** – all weather; about 8 km at poles, 18 km at equator",
+                "**Stratosphere** – ozone layer; ideal for jet planes",
+                "**Mesosphere** – meteors burn up",
+                "**Thermosphere** – contains the ionosphere, reflects radio waves",
+                "**Exosphere** – outermost"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Coriolis force",
+              "body": "Due to Earth's rotation, moving air and water are deflected to the **right in the Northern Hemisphere** and to the **left in the Southern**. The force is **zero at the equator** and maximum at the poles — which is why cyclones do not form right at the equator."
+            },
+            {
+              "type": "quiz",
+              "q": "The ozone layer is mainly found in the:",
+              "options": [
+                "Troposphere",
+                "Stratosphere",
+                "Mesosphere",
+                "Thermosphere"
+              ],
+              "answer": 1,
+              "explain": "Most atmospheric ozone lies in the stratosphere, where it absorbs harmful UV radiation."
+            },
+            {
+              "type": "quiz",
+              "q": "Marble is a metamorphic form of:",
+              "options": [
+                "Granite",
+                "Shale",
+                "Limestone",
+                "Sandstone"
+              ],
+              "answer": 2,
+              "explain": "Heat and pressure change limestone into marble."
+            }
+          ]
+        },
+        {
+          "id": "indian-geography",
+          "title": "Physiography & Rivers of India",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Location",
+              "body": "India lies entirely in the Northern Hemisphere. The **Tropic of Cancer** passes through eight states: Gujarat, Rajasthan, Madhya Pradesh, Chhattisgarh, Jharkhand, West Bengal, Tripura and Mizoram. The **Standard Meridian (82°30′E)** passes near Mirzapur in Uttar Pradesh."
+            },
+            {
+              "type": "concept",
+              "title": "Six physiographic divisions",
+              "points": [
+                "The Himalayas (young fold mountains)",
+                "The Northern Plains (alluvial, made by Indus, Ganga, Brahmaputra)",
+                "The Peninsular Plateau (oldest landmass, part of Gondwana)",
+                "The Indian Desert (Thar)",
+                "The Coastal Plains (Western and Eastern)",
+                "The Islands (Andaman & Nicobar, Lakshadweep)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Himalayan vs Peninsular rivers",
+              "points": [
+                "Himalayan rivers are **perennial** (glaciers + rain), form meanders and large deltas",
+                "Peninsular rivers are mostly **seasonal** (rain-fed), with shorter, fixed courses",
+                "**Godavari** is the largest peninsular river, called 'Dakshin Ganga'",
+                "**Narmada** and **Tapi** flow west through rift valleys and form estuaries, not deltas"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Map practice",
+              "body": "Take a blank map and mark from north to south: Indus, Ganga, Brahmaputra; then Narmada and Tapi (west-flowing) and Mahanadi, Godavari, Krishna, Kaveri (east-flowing into the Bay of Bengal). Add one major dam on each. Five minutes daily for a month fixes the map in memory."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "UPSC often asks 'which river is a tributary of which' and 'arrange from north to south'. Learn rivers with their states and tributaries, not in isolation."
+            },
+            {
+              "type": "quiz",
+              "q": "Which river flows west through a rift valley?",
+              "options": [
+                "Godavari",
+                "Krishna",
+                "Narmada",
+                "Mahanadi"
+              ],
+              "answer": 2,
+              "explain": "The Narmada (and Tapi) flow west through rift valleys into the Arabian Sea."
+            },
+            {
+              "type": "quiz",
+              "q": "The Tropic of Cancer does NOT pass through:",
+              "options": [
+                "Jharkhand",
+                "Tripura",
+                "Odisha",
+                "Mizoram"
+              ],
+              "answer": 2,
+              "explain": "It passes through 8 states: Gujarat, Rajasthan, MP, Chhattisgarh, Jharkhand, West Bengal, Tripura and Mizoram — not Odisha."
+            }
+          ]
+        },
+        {
+          "id": "climate-monsoon",
+          "title": "Climate & the Indian Monsoon",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What drives the monsoon",
+              "body": "The south-west monsoon is a seasonal reversal of winds. Key drivers:",
+              "points": [
+                "Differential heating of land and sea in summer",
+                "Northward shift of the **ITCZ** over the Gangetic plain",
+                "Heating of the **Tibetan Plateau** and the tropical easterly jet",
+                "High pressure east of Madagascar pushing winds towards India"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Onset and retreat",
+              "body": "The monsoon normally reaches **Kerala around 1 June** and covers the whole country by early-to-mid July. It withdraws from the north-west from September. During October–December, the **north-east monsoon** brings much of Tamil Nadu's annual rainfall."
+            },
+            {
+              "type": "concept",
+              "title": "El Niño, La Niña and IOD",
+              "points": [
+                "**El Niño** – warming of the central/eastern Pacific; often weakens the Indian monsoon",
+                "**La Niña** – cooler Pacific; usually supports good monsoon",
+                "**Positive Indian Ocean Dipole** – warmer western Indian Ocean; can offset El Niño's effect"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Local weather terms",
+              "points": [
+                "**Western disturbances** – winter rain in north-west India, good for rabi wheat",
+                "**Mango showers** – pre-monsoon rain in Kerala and Karnataka",
+                "**Kal Baisakhi** – violent evening thunderstorms in West Bengal",
+                "**Loo** – hot, dry summer winds of the northern plains"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "Winter rainfall in Punjab and Haryana is mainly due to:",
+              "options": [
+                "South-west monsoon",
+                "Western disturbances",
+                "Retreating monsoon",
+                "Kal Baisakhi"
+              ],
+              "answer": 1,
+              "explain": "Western disturbances originate over the Mediterranean region and bring winter rain to north-west India."
+            },
+            {
+              "type": "quiz",
+              "q": "Tamil Nadu receives a large share of its rainfall during:",
+              "options": [
+                "June–July",
+                "October–December",
+                "March–April",
+                "January–February"
+              ],
+              "answer": 1,
+              "explain": "The north-east (retreating) monsoon in Oct–Dec gives Tamil Nadu much of its rain."
+            }
+          ]
+        },
+        {
+          "id": "resources-agriculture",
+          "title": "Soils, Resources & Agriculture",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Major soils",
+              "points": [
+                "**Alluvial** – most widespread; Northern Plains; fertile",
+                "**Black (regur)** – Deccan basalt; holds moisture; ideal for cotton",
+                "**Red and yellow** – iron oxide gives colour; Peninsula",
+                "**Laterite** – formed by intense leaching in hot, wet areas; good for cashew, tea, coffee with manure",
+                "**Arid** – Rajasthan; sandy, saline"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Cropping seasons",
+              "points": [
+                "**Kharif** (sown with monsoon, June–July): rice, maize, cotton, soybean, groundnut",
+                "**Rabi** (sown Oct–Nov, harvested spring): wheat, mustard, gram, barley",
+                "**Zaid** (short summer season): watermelon, cucumber, fodder"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Minerals and energy",
+              "body": "Most of India's coal comes from Gondwana coalfields in the **Damodar valley (Jharkhand, West Bengal), Odisha and Chhattisgarh**. Odisha is the leading iron ore producer. Diversifying into solar and wind energy is central to India's climate targets."
+            },
+            {
+              "type": "concept",
+              "title": "Green Revolution",
+              "body": "From the mid-1960s, high-yielding varieties, irrigation, fertilisers and assured prices raised wheat output sharply, especially in Punjab, Haryana and western UP. It made India food-secure but also caused groundwater depletion, soil degradation and regional inequality — a common Mains theme."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Minimum Support Prices are announced by the government on the recommendation of the **Commission for Agricultural Costs and Prices (CACP)**. Link MSP, procurement and the Public Distribution System when writing on food security."
+            },
+            {
+              "type": "quiz",
+              "q": "Black soil is best suited for:",
+              "options": [
+                "Rice",
+                "Cotton",
+                "Tea",
+                "Wheat"
+              ],
+              "answer": 1,
+              "explain": "Black (regur) soil retains moisture and suits cotton, hence called 'black cotton soil'."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is a Rabi crop?",
+              "options": [
+                "Rice",
+                "Cotton",
+                "Mustard",
+                "Soybean"
+              ],
+              "answer": 2,
+              "explain": "Mustard is sown in winter and harvested in spring — a Rabi crop."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "economy",
+      "name": "Indian Economy",
+      "chapters": [
+        {
+          "id": "economy-basics",
+          "title": "GDP, Growth & Inflation",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Measuring output",
+              "body": "**GDP** is the market value of all final goods and services produced within a country's borders in a year. **GNP** = GDP + net factor income from abroad. **Real GDP** removes the effect of price changes; **nominal GDP** uses current prices.",
+              "points": [
+                "GDP (expenditure) = C + I + G + (X − M)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Key identities",
+              "points": [
+                "GVA at basic prices + product taxes − product subsidies = GDP",
+                "NDP = GDP − depreciation",
+                "GDP deflator = (Nominal GDP ÷ Real GDP) × 100",
+                "Per capita income = National income ÷ population"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Inflation basics",
+              "points": [
+                "**Demand-pull** – too much money chasing too few goods",
+                "**Cost-push** – rising input costs (fuel, wages)",
+                "**Stagflation** – high inflation + low growth + unemployment",
+                "**Deflation** – sustained fall in general prices",
+                "**Disinflation** – inflation still positive but slowing"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Price indices in India",
+              "body": "**CPI** (Consumer Price Index), compiled by the National Statistics Office, measures retail prices and is used by RBI for its inflation target. **WPI** (Wholesale Price Index) is compiled by the Office of the Economic Adviser, DPIIT, and does not cover services."
+            },
+            {
+              "type": "concept",
+              "title": "Inflation targeting",
+              "body": "Under the amended RBI Act, India follows **flexible inflation targeting** (adopted 2016). The CPI inflation target is **4%** with a tolerance band of **2% to 6%**. If inflation stays outside the band for three consecutive quarters, RBI must explain the reasons to the government."
+            },
+            {
+              "type": "quiz",
+              "q": "Which index does RBI use for its inflation target?",
+              "options": [
+                "WPI",
+                "CPI (Combined)",
+                "GDP deflator",
+                "Producer Price Index"
+              ],
+              "answer": 1,
+              "explain": "The target is set in terms of headline CPI (Combined) inflation."
+            },
+            {
+              "type": "quiz",
+              "q": "GNP is equal to:",
+              "options": [
+                "GDP − depreciation",
+                "GDP + net factor income from abroad",
+                "GDP + indirect taxes",
+                "NDP + subsidies"
+              ],
+              "answer": 1,
+              "explain": "GNP adds income earned by residents abroad minus income earned by foreigners in India."
+            }
+          ]
+        },
+        {
+          "id": "money-banking",
+          "title": "Money, Banking & Monetary Policy",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Reserve Bank of India",
+              "body": "Established on **1 April 1935** under the RBI Act 1934 and nationalised in **1949**. It issues currency (except one-rupee notes and coins, issued by the Government), regulates banks, manages foreign exchange and acts as banker to the government."
+            },
+            {
+              "type": "concept",
+              "title": "Monetary Policy Committee",
+              "body": "The **MPC** has **six members** — three from RBI (including the Governor, who has a casting vote) and three appointed by the Central Government. It decides the **policy repo rate** to meet the inflation target while keeping growth in mind."
+            },
+            {
+              "type": "concept",
+              "title": "Policy tools",
+              "points": [
+                "**Repo rate** – rate at which RBI lends to banks against securities",
+                "**Standing Deposit Facility (SDF)** – floor of the corridor; banks park funds without collateral",
+                "**MSF** – emergency borrowing for banks, above repo",
+                "**CRR** – share of deposits kept with RBI; earns no interest",
+                "**SLR** – share of deposits held in liquid assets like government securities",
+                "**Open Market Operations** – buying/selling government securities"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "How a rate cut works",
+              "body": "RBI cuts repo → banks borrow cheaper → loan rates fall → more spending and investment → growth rises (but inflation may also rise). To fight inflation, RBI does the opposite: raises repo, tightens liquidity."
+            },
+            {
+              "type": "concept",
+              "title": "Money supply measures",
+              "points": [
+                "**M0** – reserve money",
+                "**M1** – currency with public + demand deposits + other deposits with RBI (narrow money)",
+                "**M3** – M1 + time deposits with banks (broad money)"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "Which instrument requires banks to keep cash with RBI without earning interest?",
+              "options": [
+                "SLR",
+                "CRR",
+                "Repo",
+                "MSF"
+              ],
+              "answer": 1,
+              "explain": "Cash Reserve Ratio balances are held with RBI and earn no interest."
+            },
+            {
+              "type": "quiz",
+              "q": "How many members does the Monetary Policy Committee have?",
+              "options": [
+                "Four",
+                "Five",
+                "Six",
+                "Seven"
+              ],
+              "answer": 2,
+              "explain": "Six: three from RBI and three external members appointed by the government."
+            }
+          ]
+        },
+        {
+          "id": "fiscal-policy-budget",
+          "title": "Fiscal Policy & the Budget",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Constitutional basis",
+              "points": [
+                "Art 112 – **Annual Financial Statement** (the 'Budget')",
+                "Art 265 – no tax without authority of law",
+                "Art 266 – Consolidated Fund and Public Account",
+                "Art 267 – Contingency Fund",
+                "Art 114 – Appropriation Bill",
+                "Art 110 – Money Bill"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Budget structure",
+              "body": "The budget has a **revenue account** (taxes, interest, subsidies, salaries — no asset created) and a **capital account** (borrowings, loan recoveries, disinvestment; spending that creates assets or reduces liabilities). Capital expenditure is seen as more growth-friendly."
+            },
+            {
+              "type": "formula",
+              "title": "Deficits",
+              "points": [
+                "Revenue deficit = Revenue expenditure − Revenue receipts",
+                "Fiscal deficit = Total expenditure − (Revenue receipts + Non-debt capital receipts)",
+                "Primary deficit = Fiscal deficit − Interest payments",
+                "Fiscal deficit ≈ the government's total borrowing requirement"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "FRBM and GST",
+              "body": "The **FRBM Act, 2003** sets fiscal discipline goals for the Centre. **GST** was launched on **1 July 2017** after the 101st Amendment, with the GST Council (Art 279A) recommending rates. In September 2025 GST was simplified mainly into two slabs — **5% and 18%** — with a special 40% rate for select luxury and sin goods."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "In Mains, use the Economic Survey and Budget documents on indiabudget.gov.in for official numbers. Quote the source, e.g. 'as per the Economic Survey', instead of approximate figures from memory."
+            },
+            {
+              "type": "quiz",
+              "q": "Primary deficit is:",
+              "options": [
+                "Fiscal deficit − interest payments",
+                "Revenue deficit − grants",
+                "Total expenditure − tax revenue",
+                "Fiscal deficit + interest payments"
+              ],
+              "answer": 0,
+              "explain": "Primary deficit removes interest payments, showing borrowing needed for current policies alone."
+            },
+            {
+              "type": "quiz",
+              "q": "The 'Annual Financial Statement' is mentioned in Article:",
+              "options": [
+                "110",
+                "112",
+                "265",
+                "280"
+              ],
+              "answer": 1,
+              "explain": "Article 112 requires the President to lay the Annual Financial Statement before Parliament."
+            }
+          ]
+        },
+        {
+          "id": "external-sector",
+          "title": "External Sector",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Balance of Payments",
+              "body": "The BoP records all transactions with the rest of the world.",
+              "points": [
+                "**Current account** – trade in goods, services, remittances, investment income",
+                "**Capital account** – FDI, portfolio investment, external loans, NRI deposits",
+                "A **current account deficit** must be financed by capital inflows or by drawing down reserves"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Strengths and weaknesses",
+              "body": "India usually runs a **merchandise trade deficit** (large imports of crude oil, electronics and gold) but a big **services surplus** (IT and business services). India has been the world's largest recipient of remittances according to World Bank data, which also cushions the current account."
+            },
+            {
+              "type": "concept",
+              "title": "Exchange rate and convertibility",
+              "body": "India follows a **managed float** — market forces set the rupee's value, but RBI intervenes to smooth excess volatility. The rupee has been fully convertible on the **current account since 1994**, but capital account convertibility is only partial."
+            },
+            {
+              "type": "concept",
+              "title": "Forex reserves and institutions",
+              "points": [
+                "Reserves include foreign currency assets, gold, SDRs and reserve tranche position in the IMF",
+                "**FEMA 1999** replaced the stricter FERA 1973",
+                "**WTO** (1995) replaced GATT; India is a founding member",
+                "IMF and World Bank were born at Bretton Woods (1944)"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Depreciation in practice",
+              "body": "If the rupee moves from ₹80 to ₹85 per dollar, it has depreciated. Exporters earn more rupees per dollar (good for exports), but oil and electronics imports become costlier, which can raise inflation."
+            },
+            {
+              "type": "quiz",
+              "q": "Which item is part of the capital account of BoP?",
+              "options": [
+                "Software exports",
+                "Remittances from workers",
+                "Foreign Direct Investment",
+                "Merchandise imports"
+              ],
+              "answer": 2,
+              "explain": "FDI is a capital account flow; the others are current account items."
+            },
+            {
+              "type": "quiz",
+              "q": "FEMA 1999 replaced:",
+              "options": [
+                "FERA 1973",
+                "MRTP Act",
+                "Companies Act 1956",
+                "RBI Act 1934"
+              ],
+              "answer": 0,
+              "explain": "The Foreign Exchange Management Act replaced the Foreign Exchange Regulation Act, shifting from control to management."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "environment",
+      "name": "Environment & Ecology",
+      "chapters": [
+        {
+          "id": "ecology-basics",
+          "title": "Ecology Basics & Biodiversity",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Ecosystem structure",
+              "body": "An ecosystem has biotic parts (producers, consumers, decomposers) and abiotic parts (light, water, soil). Energy flows **one way** through trophic levels; nutrients cycle. Only about **10%** of energy passes to the next level (Lindeman's ten per cent law)."
+            },
+            {
+              "type": "concept",
+              "title": "Ecological pyramids",
+              "points": [
+                "Pyramid of **energy** – always upright",
+                "Pyramid of **biomass** – can be inverted in oceans (small phytoplankton biomass supports larger zooplankton)",
+                "Pyramid of **numbers** – can be inverted, e.g. one tree supporting many insects"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Key terms",
+              "points": [
+                "**Ecotone** – transition zone between two ecosystems (e.g. mangroves between land and sea)",
+                "**Edge effect** – greater diversity in an ecotone",
+                "**Keystone species** – has a disproportionate effect on its ecosystem",
+                "**Endemic species** – found only in one region"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Biodiversity hotspots",
+              "body": "Conservation International identifies **36** hotspots worldwide. India has parts of **four**: the **Himalaya**, **Indo-Burma**, **Western Ghats & Sri Lanka**, and **Sundaland** (which includes the Nicobar Islands)."
+            },
+            {
+              "type": "quiz",
+              "q": "Which ecological pyramid is always upright?",
+              "options": [
+                "Numbers",
+                "Biomass",
+                "Energy",
+                "None"
+              ],
+              "answer": 2,
+              "explain": "Energy is lost at each trophic level, so the energy pyramid is always upright."
+            },
+            {
+              "type": "quiz",
+              "q": "Which of these is NOT a biodiversity hotspot covering part of India?",
+              "options": [
+                "Western Ghats & Sri Lanka",
+                "Indo-Burma",
+                "Sundaland",
+                "Madagascar"
+              ],
+              "answer": 3,
+              "explain": "India has parts of Himalaya, Indo-Burma, Western Ghats & Sri Lanka, and Sundaland."
+            }
+          ]
+        },
+        {
+          "id": "conservation-laws",
+          "title": "Conservation, Protected Areas & Laws",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Protected area types",
+              "points": [
+                "**National Park** – highest protection; no grazing or private rights",
+                "**Wildlife Sanctuary** – some activities permitted",
+                "**Conservation and Community Reserves** – added by the 2002 amendment to the Wildlife Act",
+                "**Biosphere Reserve** – core, buffer and transition zones; part of UNESCO's MAB programme when recognised internationally"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Key laws",
+              "points": [
+                "Wildlife (Protection) Act, 1972",
+                "Water (Prevention and Control of Pollution) Act, 1974",
+                "Forest (Conservation) Act, 1980 — amended in 2023 and renamed Van (Sanrakshan Evam Samvardhan) Adhiniyam",
+                "Environment (Protection) Act, 1986 — enacted after the Bhopal gas tragedy",
+                "Biological Diversity Act, 2002",
+                "National Green Tribunal Act, 2010"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Flagship programmes",
+              "body": "**Project Tiger** began in **1973**; the National Tiger Conservation Authority is statutory under the Wildlife Act. **Project Elephant** began in 1992. Cheetahs were reintroduced at **Kuno National Park**, Madhya Pradesh, in 2022 — the first intercontinental translocation of a large carnivore to India."
+            },
+            {
+              "type": "concept",
+              "title": "Global conventions",
+              "points": [
+                "**Ramsar** (1971) – wetlands",
+                "**CITES** (1973) – trade in endangered species",
+                "**CBD** (1992) – biodiversity; Nagoya Protocol on access and benefit sharing",
+                "**IUCN Red List** – categories like Critically Endangered, Endangered, Vulnerable"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Protected area counts and Ramsar site numbers change frequently. For Prelims, check the latest figures on the MoEFCC / PIB website a month before the exam rather than relying on older notes."
+            },
+            {
+              "type": "quiz",
+              "q": "The Environment (Protection) Act was enacted in:",
+              "options": [
+                "1972",
+                "1980",
+                "1986",
+                "2002"
+              ],
+              "answer": 2,
+              "explain": "It was passed in 1986 as an umbrella law after the 1984 Bhopal gas tragedy."
+            },
+            {
+              "type": "quiz",
+              "q": "The Ramsar Convention deals with:",
+              "options": [
+                "Desertification",
+                "Wetlands",
+                "Ozone layer",
+                "Migratory species"
+              ],
+              "answer": 1,
+              "explain": "Ramsar (Iran, 1971) is the convention on wetlands of international importance."
+            }
+          ]
+        },
+        {
+          "id": "climate-change",
+          "title": "Climate Change & Global Action",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "The science in brief",
+              "body": "Greenhouse gases — carbon dioxide, methane, nitrous oxide and fluorinated gases — trap outgoing heat. Rising concentrations from burning fossil fuels and deforestation are warming the planet, raising sea levels and intensifying heatwaves, floods and droughts."
+            },
+            {
+              "type": "concept",
+              "title": "Climate treaty timeline",
+              "points": [
+                "1992 – **UNFCCC** adopted at the Rio Earth Summit",
+                "1997 – **Kyoto Protocol**: binding targets for developed countries",
+                "2015 – **Paris Agreement**: keep warming well below 2°C, pursue 1.5°C; every country submits **NDCs**, updated every five years",
+                "Principle: **Common But Differentiated Responsibilities (CBDR)**"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "India's commitments",
+              "body": "At COP26 (Glasgow, 2021) India announced **net zero by 2070**. Its updated NDC (2022) aims to cut emissions intensity of GDP by **45%** from 2005 levels by 2030 and to reach about **50%** of installed power capacity from non-fossil sources by 2030 — a share India reported reaching in 2025."
+            },
+            {
+              "type": "concept",
+              "title": "Ozone protection",
+              "body": "The **Montreal Protocol (1987)** phased out ozone-depleting substances like CFCs and is considered the most successful environmental treaty. Its **Kigali Amendment (2016)** targets HFCs — they do not harm ozone but are powerful greenhouse gases."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Indian initiatives worth quoting: International Solar Alliance (launched with France, 2015), Mission LiFE (Lifestyle for Environment), National Action Plan on Climate Change with its national missions, and the Green Hydrogen Mission."
+            },
+            {
+              "type": "quiz",
+              "q": "The Kigali Amendment to the Montreal Protocol targets:",
+              "options": [
+                "CFCs",
+                "HFCs",
+                "Carbon dioxide",
+                "Methane"
+              ],
+              "answer": 1,
+              "explain": "It phases down hydrofluorocarbons, potent greenhouse gases used in cooling."
+            },
+            {
+              "type": "quiz",
+              "q": "India's net-zero target year is:",
+              "options": [
+                "2050",
+                "2060",
+                "2070",
+                "2080"
+              ],
+              "answer": 2,
+              "explain": "Announced at COP26 in Glasgow, 2021."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "science-tech",
+      "name": "Science & Technology",
+      "chapters": [
+        {
+          "id": "space-defence",
+          "title": "Space & Defence Technology",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "ISRO milestones",
+              "points": [
+                "ISRO founded in **1969**; Aryabhata (1975) was India's first satellite",
+                "**Chandrayaan-3** landed near the lunar south pole on **23 August 2023** — now celebrated as National Space Day",
+                "**Aditya-L1** (launched September 2023) studies the Sun from the L1 Lagrange point",
+                "**NavIC** – India's regional navigation satellite system"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Launch vehicles",
+              "points": [
+                "**PSLV** – workhorse for polar/sun-synchronous orbits",
+                "**GSLV** – geosynchronous launches with cryogenic upper stage",
+                "**LVM3** – heaviest; launched Chandrayaan-3 and is human-rated for Gaganyaan",
+                "**SSLV** – small satellites on demand"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Human spaceflight",
+              "body": "**Gaganyaan** is India's programme to send astronauts to low Earth orbit on an Indian rocket. In **2025**, IAF Group Captain **Shubhanshu Shukla** flew to the International Space Station on the Axiom-4 mission, becoming the first Indian to visit the ISS."
+            },
+            {
+              "type": "concept",
+              "title": "Lagrange points",
+              "body": "Points where the gravity of two large bodies (Sun and Earth) balances the orbital motion of a small object, so it can stay in position relative to both. **L1**, about 1.5 million km from Earth towards the Sun, gives an uninterrupted view of the Sun — ideal for Aditya-L1."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "For S&T, learn the 'why it matters' of each mission: its objective, the technology it demonstrates and its benefit to India. That gives you material for both Prelims and GS III."
+            },
+            {
+              "type": "quiz",
+              "q": "Chandrayaan-3's lander touched down near the Moon's:",
+              "options": [
+                "North pole",
+                "Equator",
+                "South pole",
+                "Far side centre"
+              ],
+              "answer": 2,
+              "explain": "Vikram landed near the lunar south polar region on 23 August 2023."
+            },
+            {
+              "type": "quiz",
+              "q": "Aditya-L1 is positioned around L1 because:",
+              "options": [
+                "It is closest to the Moon",
+                "It gives a continuous view of the Sun",
+                "It is inside Earth's shadow",
+                "It has zero gravity everywhere"
+              ],
+              "answer": 1,
+              "explain": "From L1 the Sun is never blocked by Earth or Moon, allowing continuous observation."
+            }
+          ]
+        },
+        {
+          "id": "biotech-emerging",
+          "title": "Biotechnology & Emerging Tech",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Genetic engineering",
+              "body": "**Recombinant DNA** technology inserts a desired gene into an organism. **CRISPR-Cas9** works like molecular scissors to edit genes precisely; Emmanuelle Charpentier and Jennifer Doudna won the 2020 Nobel Prize in Chemistry for it."
+            },
+            {
+              "type": "concept",
+              "title": "GM crops in India",
+              "body": "**Bt cotton** (approved 2002) carries a gene from the bacterium *Bacillus thuringiensis* that makes it resistant to bollworms. It remains the only GM crop approved for commercial cultivation in India. GM crops are cleared by the **Genetic Engineering Appraisal Committee (GEAC)** under MoEFCC."
+            },
+            {
+              "type": "concept",
+              "title": "Vaccines",
+              "points": [
+                "Live attenuated – weakened pathogen (e.g. oral polio vaccine)",
+                "Inactivated – killed pathogen",
+                "Subunit/recombinant – only a protein piece",
+                "mRNA – instructs cells to make a viral protein",
+                "Viral vector – a harmless virus carries the gene (e.g. Covishield)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Emerging tech missions",
+              "points": [
+                "**National Quantum Mission** (approved 2023) – quantum computing, communication, sensing",
+                "**IndiaAI Mission** (approved 2024) – compute capacity, datasets, AI startups",
+                "**India Semiconductor Mission** – chip fabs and packaging units",
+                "**Digital Public Infrastructure** – Aadhaar, UPI, DigiLocker"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "The only GM crop approved for commercial cultivation in India is:",
+              "options": [
+                "Bt brinjal",
+                "Bt cotton",
+                "GM mustard",
+                "Golden rice"
+              ],
+              "answer": 1,
+              "explain": "Bt cotton has been commercially grown since 2002; Bt brinjal was put under moratorium in 2010."
+            },
+            {
+              "type": "quiz",
+              "q": "CRISPR-Cas9 is primarily a tool for:",
+              "options": [
+                "Gene editing",
+                "Satellite navigation",
+                "Quantum encryption",
+                "Water purification"
+              ],
+              "answer": 0,
+              "explain": "It edits DNA at precise locations, earning the 2020 Nobel Prize in Chemistry."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "international-relations",
+      "name": "International Relations",
+      "chapters": [
+        {
+          "id": "india-neighbourhood",
+          "title": "India and Its Neighbourhood",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Policy frameworks",
+              "points": [
+                "**Neighbourhood First** – priority to South Asian neighbours",
+                "**Act East Policy** (2014) – upgraded from the 1991 Look East Policy; focus on ASEAN and Indo-Pacific",
+                "**SAGAR** – Security and Growth for All in the Region (Indian Ocean); widened to **MAHASAGAR** in 2025",
+                "**Gujral Doctrine** (1996) – non-reciprocal goodwill towards smaller neighbours"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Regional groupings",
+              "points": [
+                "**SAARC** – founded 1985 at Dhaka; 8 members; largely stalled",
+                "**BIMSTEC** – founded 1997; 7 members around the Bay of Bengal; bridges South and South-East Asia",
+                "**Indian Ocean Rim Association (IORA)**"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Water and borders",
+              "body": "The **Indus Waters Treaty (1960)**, brokered by the World Bank, gave India the eastern rivers (Ravi, Beas, Sutlej) and Pakistan mainly the western rivers (Indus, Jhelum, Chenab). India placed the treaty **in abeyance in April 2025** after the Pahalgam terror attack. The **Ganga Water Treaty (1996)** with Bangladesh shares Farakka flows."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "For each neighbour, keep four headings: cooperation (trade, connectivity, energy), irritants (border, water, China factor), recent events, and the way forward. This structure answers almost any GS II neighbourhood question."
+            },
+            {
+              "type": "quiz",
+              "q": "Which rivers were allocated to India under the Indus Waters Treaty?",
+              "options": [
+                "Indus, Jhelum, Chenab",
+                "Ravi, Beas, Sutlej",
+                "Jhelum, Ravi, Beas",
+                "Chenab, Sutlej, Indus"
+              ],
+              "answer": 1,
+              "explain": "The eastern rivers — Ravi, Beas and Sutlej — went to India."
+            },
+            {
+              "type": "quiz",
+              "q": "India's Act East Policy evolved from:",
+              "options": [
+                "Panchsheel",
+                "Look East Policy",
+                "Gujral Doctrine",
+                "Non-Alignment"
+              ],
+              "answer": 1,
+              "explain": "Look East (1991) was upgraded to Act East in 2014."
+            }
+          ]
+        },
+        {
+          "id": "global-groupings",
+          "title": "Global Institutions & Groupings",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "United Nations",
+              "body": "Founded in **1945**. The Security Council has **5 permanent members** with veto (USA, UK, France, Russia, China) and 10 elected members for two-year terms. India has served several terms as a non-permanent member and seeks a permanent seat along with reform of the Council."
+            },
+            {
+              "type": "concept",
+              "title": "G20 and BRICS",
+              "points": [
+                "India held the **G20 presidency in 2023**; at the New Delhi summit the **African Union** became a permanent member",
+                "**BRICS** expanded from 2024 (Egypt, Ethiopia, Iran, UAE joined; Indonesia in 2025)",
+                "India holds the **BRICS chair in 2026**"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Other groupings",
+              "points": [
+                "**Quad** – India, USA, Japan, Australia; Indo-Pacific cooperation",
+                "**SCO** – India became a full member in 2017",
+                "**I2U2** – India, Israel, UAE, USA",
+                "**WTO** – trade rules; India pushes for food security and public stockholding"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Strategic autonomy",
+              "body": "India buys defence equipment from Russia, partners with the US in the Quad, and works with China in BRICS and SCO. This multi-alignment reflects 'strategic autonomy' — choosing partners issue by issue for national interest, a useful framing in GS II answers."
+            },
+            {
+              "type": "quiz",
+              "q": "Which body became a permanent member of the G20 during India's 2023 presidency?",
+              "options": [
+                "ASEAN",
+                "African Union",
+                "European Union",
+                "SAARC"
+              ],
+              "answer": 1,
+              "explain": "The African Union was admitted at the New Delhi Summit in September 2023."
+            },
+            {
+              "type": "quiz",
+              "q": "Which of these is NOT a Quad member?",
+              "options": [
+                "Japan",
+                "Australia",
+                "France",
+                "United States"
+              ],
+              "answer": 2,
+              "explain": "The Quad comprises India, USA, Japan and Australia."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ethics",
+      "name": "Ethics, Integrity & Aptitude (GS IV)",
+      "chapters": [
+        {
+          "id": "ethics-foundations",
+          "title": "Foundations of Ethics",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What GS IV tests",
+              "body": "GS Paper IV (250 marks) has two parts: **Section A** on theory — ethics, attitude, aptitude, emotional intelligence, thinkers, probity — and **Section B** with **case studies**. It tests your values and decision-making as a future civil servant, not memorised definitions."
+            },
+            {
+              "type": "concept",
+              "title": "Ethics, morality, law",
+              "points": [
+                "**Ethics** – systematic principles of right and wrong (often for a group or profession)",
+                "**Morality** – personal beliefs about right and wrong",
+                "**Law** – rules enforced by the State; something legal may still be unethical"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Attitude",
+              "body": "An attitude is a learned tendency to evaluate people, objects or ideas. Its three components (ABC model):",
+              "points": [
+                "**Affective** – feelings",
+                "**Behavioural** – actions",
+                "**Cognitive** – beliefs and thoughts"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Emotional intelligence",
+              "body": "Popularised by **Daniel Goleman**, EI is the ability to understand and manage your own and others' emotions. Five elements: **self-awareness, self-regulation, motivation, empathy and social skills**. Example: a DM staying calm and empathetic while handling an angry crowd after a flood."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Build a bank of real examples — civil servants, freedom fighters, reformers — for each value: integrity, empathy, courage. One crisp example makes a theory answer stand out."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is NOT one of Goleman's elements of emotional intelligence?",
+              "options": [
+                "Self-awareness",
+                "Empathy",
+                "IQ",
+                "Self-regulation"
+              ],
+              "answer": 2,
+              "explain": "IQ is cognitive intelligence; Goleman's EI elements are self-awareness, self-regulation, motivation, empathy, social skills."
+            },
+            {
+              "type": "quiz",
+              "q": "The three components of attitude are:",
+              "options": [
+                "Affective, Behavioural, Cognitive",
+                "Legal, Moral, Social",
+                "Personal, Public, Political",
+                "Emotional, Spiritual, Physical"
+              ],
+              "answer": 0,
+              "explain": "The ABC model: Affective, Behavioural, Cognitive."
+            }
+          ]
+        },
+        {
+          "id": "civil-service-values",
+          "title": "Civil Service Values & Probity",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Foundational values",
+              "body": "The GS IV syllabus lists the values every civil servant needs:",
+              "points": [
+                "Integrity, impartiality and non-partisanship",
+                "Objectivity",
+                "Dedication to public service",
+                "Empathy, tolerance and compassion towards the weaker sections"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Nolan Principles",
+              "body": "The UK Committee on Standards in Public Life (1995) set out seven principles of public life: **Selflessness, Integrity, Objectivity, Accountability, Openness, Honesty and Leadership**. India's **Second ARC** (4th Report, 'Ethics in Governance') drew on similar ideas."
+            },
+            {
+              "type": "concept",
+              "title": "Probity in governance",
+              "body": "Probity means uprightness beyond mere legal compliance. Tools that promote it:",
+              "points": [
+                "Right to Information Act, 2005",
+                "Citizen's Charters and grievance redress",
+                "Codes of conduct and codes of ethics",
+                "Lokpal and Lokayuktas Act, 2013",
+                "E-governance that reduces discretion"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Gandhi's Seven Social Sins",
+              "body": "Published in Young India (1925): politics without principle, wealth without work, pleasure without conscience, knowledge without character, commerce without morality, science without humanity, worship without sacrifice. Very useful for quotes in Essay and GS IV."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is NOT a Nolan Principle?",
+              "options": [
+                "Selflessness",
+                "Openness",
+                "Loyalty",
+                "Accountability"
+              ],
+              "answer": 2,
+              "explain": "The seven are Selflessness, Integrity, Objectivity, Accountability, Openness, Honesty and Leadership."
+            },
+            {
+              "type": "quiz",
+              "q": "'Ethics in Governance' is the title of which report of the Second ARC?",
+              "options": [
+                "First",
+                "Fourth",
+                "Tenth",
+                "Fifteenth"
+              ],
+              "answer": 1,
+              "explain": "The Fourth Report (2007) of the Second Administrative Reforms Commission is 'Ethics in Governance'."
+            }
+          ]
+        },
+        {
+          "id": "case-studies",
+          "title": "Solving Ethics Case Studies",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "A simple framework",
+              "points": [
+                "1. Identify the **stakeholders**",
+                "2. Spot the **ethical dilemma** (e.g. duty vs compassion)",
+                "3. List **options** with pros and cons",
+                "4. Choose a course and justify it with values and law",
+                "5. Suggest long-term systemic fixes"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Sample case",
+              "body": "You are a district officer. A contractor close to a local MLA offers a 'gift' and asks you to overlook poor road quality. Stakeholders: public, contractor, MLA, you. Best course: politely refuse, record the offer, order a quality inspection, act per rules and inform superiors. Long term: third-party audits and geo-tagged project monitoring."
+            },
+            {
+              "type": "concept",
+              "title": "Ethical lenses",
+              "points": [
+                "**Utilitarianism** (Bentham, Mill) – greatest good of the greatest number",
+                "**Kant's deontology** – act on duty; treat people as ends, never merely as means",
+                "**Virtue ethics** (Aristotle) – develop good character; the 'golden mean'",
+                "**Gandhian** – purity of means and ends; Talisman: think of the poorest person"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Never choose an extreme, illegal or passive option. Examiners reward answers that are lawful, compassionate, practical and that strengthen institutions — not ones that make you a lone hero."
+            },
+            {
+              "type": "quiz",
+              "q": "'Act only on that maxim which you can will to become a universal law' is associated with:",
+              "options": [
+                "Bentham",
+                "Kant",
+                "Aristotle",
+                "Mill"
+              ],
+              "answer": 1,
+              "explain": "This is Kant's categorical imperative."
+            },
+            {
+              "type": "quiz",
+              "q": "In a case study, the first step should usually be to:",
+              "options": [
+                "Choose the most popular option",
+                "Identify stakeholders and the dilemma",
+                "Escalate to the media",
+                "Resign"
+              ],
+              "answer": 1,
+              "explain": "Identifying stakeholders and the core dilemma frames the analysis of options."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "csat",
+      "name": "CSAT (Prelims Paper II)",
+      "chapters": [
+        {
+          "id": "reading-comprehension",
+          "title": "Reading Comprehension",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Why it matters",
+              "body": "CSAT is qualifying, but you must score 66/200 — and every year some strong GS candidates miss it. Comprehension forms a large share of the paper and is the most reliable way to clear it if you practise regularly."
+            },
+            {
+              "type": "concept",
+              "title": "Question types",
+              "points": [
+                "**Main idea / central theme** – what the whole passage argues",
+                "**Inference** – what logically follows, though not stated",
+                "**Assumption** – unstated premise the author relies on",
+                "**Corollary / implication** – a consequence of the argument"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Method",
+              "body": "Read the passage once with focus on the author's tone and conclusion. Then read the question and eliminate options that are **too extreme** ('always', 'only'), **outside the passage**, or **true but irrelevant**. Answer from the passage, not from your general knowledge."
+            },
+            {
+              "type": "example",
+              "title": "Mini drill",
+              "body": "Passage: 'Rising groundwater use for paddy in Punjab is lowering water tables.' Question: the author's assumption? Option 'Paddy needs more water than many alternative crops' is a valid assumption. Option 'Punjab should ban paddy' is too extreme — not assumed."
+            },
+            {
+              "type": "quiz",
+              "q": "In an inference question, the correct option must be:",
+              "options": [
+                "Directly copied from the passage",
+                "Supported by the passage even if not stated",
+                "Based on your general knowledge",
+                "The most extreme statement"
+              ],
+              "answer": 1,
+              "explain": "Inferences follow logically from the passage without being stated outright."
+            },
+            {
+              "type": "quiz",
+              "q": "Options containing words like 'always' or 'only' are often:",
+              "options": [
+                "Usually correct",
+                "Too extreme and wrong",
+                "Always the main idea",
+                "Irrelevant to tone"
+              ],
+              "answer": 1,
+              "explain": "Absolute words make claims passages rarely support, so treat them with suspicion."
+            }
+          ]
+        },
+        {
+          "id": "quant-basics",
+          "title": "Quantitative Aptitude Basics",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Must-know formulas",
+              "points": [
+                "Percentage change = (Change ÷ Original) × 100",
+                "Average = Sum ÷ Number of items",
+                "Speed = Distance ÷ Time; km/h × 5/18 = m/s",
+                "Simple interest = P × R × T ÷ 100",
+                "Profit % = (Profit ÷ Cost price) × 100"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Successive percentages",
+              "body": "A price rises by 20% and then falls by 20%. Net effect = 20 − 20 + (20 × −20)/100 = **−4%**. So a ₹100 item becomes ₹96, not ₹100."
+            },
+            {
+              "type": "example",
+              "title": "Average speed trap",
+              "body": "A car goes A→B at 40 km/h and returns at 60 km/h. Average speed is **not** 50. For equal distances use 2xy/(x + y) = (2 × 40 × 60)/100 = **48 km/h**."
+            },
+            {
+              "type": "example",
+              "title": "Ratio sharing",
+              "body": "₹1,200 is shared between A and B in the ratio 3:5. Total parts = 8, one part = 150. A gets 3 × 150 = **₹450**, B gets **₹750**."
+            },
+            {
+              "type": "tip",
+              "title": "Exam tip",
+              "body": "Do not try every question. In CSAT, aim for accuracy on comprehension and easy quant first, then return to harder items. Remember wrong answers carry a one-third negative mark."
+            },
+            {
+              "type": "quiz",
+              "q": "A number increases by 10% and then by another 10%. The total increase is:",
+              "options": [
+                "20%",
+                "21%",
+                "19%",
+                "22%"
+              ],
+              "answer": 1,
+              "explain": "10 + 10 + (10 × 10)/100 = 21%."
+            },
+            {
+              "type": "quiz",
+              "q": "Convert 72 km/h into m/s.",
+              "options": [
+                "15",
+                "20",
+                "25",
+                "18"
+              ],
+              "answer": 1,
+              "explain": "72 × 5/18 = 20 m/s."
+            },
+            {
+              "type": "quiz",
+              "q": "The average of 4, 8, 12 and 16 is:",
+              "options": [
+                "8",
+                "10",
+                "12",
+                "11"
+              ],
+              "answer": 1,
+              "explain": "Sum = 40; 40 ÷ 4 = 10."
+            }
+          ]
+        },
+        {
+          "id": "logical-reasoning",
+          "title": "Logical Reasoning",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Common topics",
+              "points": [
+                "Number and letter series",
+                "Blood relations",
+                "Direction sense",
+                "Seating arrangement and puzzles",
+                "Syllogisms and statement–conclusion",
+                "Clocks, calendars and coding-decoding"
+              ]
+            },
+            {
+              "type": "example",
+              "title": "Series",
+              "body": "2, 6, 12, 20, 30, ? — differences are 4, 6, 8, 10, so the next difference is 12. Answer: **42**. (Also n × (n + 1): 1×2, 2×3, … 6×7 = 42.)"
+            },
+            {
+              "type": "example",
+              "title": "Direction sense",
+              "body": "Ravi walks 3 km north, turns right and walks 4 km. How far is he from the start? He is 3 km north and 4 km east, so distance = √(3² + 4²) = **5 km**, towards the north-east."
+            },
+            {
+              "type": "example",
+              "title": "Syllogism",
+              "body": "All pens are books. Some books are bags. Conclusion: 'Some pens are bags'? **Does not follow** — the books that are bags may not include any pens. Draw Venn diagrams to test every possibility."
+            },
+            {
+              "type": "quiz",
+              "q": "Find the next term: 3, 9, 27, 81, ?",
+              "options": [
+                "162",
+                "243",
+                "324",
+                "108"
+              ],
+              "answer": 1,
+              "explain": "Each term is multiplied by 3: 81 × 3 = 243."
+            },
+            {
+              "type": "quiz",
+              "q": "A is B's brother. C is A's mother. How is B related to C?",
+              "options": [
+                "Mother",
+                "Child",
+                "Sister only",
+                "Grandchild"
+              ],
+              "answer": 1,
+              "explain": "A and B are siblings and C is A's mother, so B is C's child (B's gender is not given)."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2025,
+      "items": [
+        {
+          "label": "CSE Prelims 2025 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2025 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "items": [
+        {
+          "label": "CSE Prelims 2024 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2024 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "items": [
+        {
+          "label": "CSE Prelims 2023 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2023 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "items": [
+        {
+          "label": "CSE Prelims 2022 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2022 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "items": [
+        {
+          "label": "CSE Prelims 2021 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2021 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "items": [
+        {
+          "label": "CSE Prelims 2020 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2020 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "items": [
+        {
+          "label": "CSE Prelims 2019 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2019 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "items": [
+        {
+          "label": "CSE Prelims 2018 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2018 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "items": [
+        {
+          "label": "CSE Prelims 2017 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2017 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "items": [
+        {
+          "label": "CSE Prelims 2016 — GS Paper I & CSAT",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        },
+        {
+          "label": "CSE Mains 2016 — Essay, GS I–IV, Optional",
+          "url": "https://upsc.gov.in/examinations/previous-question-papers",
+          "source": "UPSC (official archive)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "UPSC official website",
+      "url": "https://upsc.gov.in",
+      "note": "Notifications, syllabus, exam calendar, results and previous question papers",
+      "free": true
+    },
+    {
+      "label": "NCERT textbooks (Classes 1–12)",
+      "url": "https://ncert.nic.in/textbook.php",
+      "note": "Free official PDFs — the foundation for every GS subject",
+      "free": true
+    },
+    {
+      "label": "Press Information Bureau",
+      "url": "https://pib.gov.in",
+      "note": "Official releases on government schemes, policies and data",
+      "free": true
+    },
+    {
+      "label": "PRS Legislative Research",
+      "url": "https://prsindia.org",
+      "note": "Plain-English summaries of bills, Acts, budgets and committee reports",
+      "free": true
+    },
+    {
+      "label": "Union Budget & Economic Survey",
+      "url": "https://www.indiabudget.gov.in",
+      "note": "Budget speech, key documents and the Economic Survey for GS III",
+      "free": true
+    },
+    {
+      "label": "Publications Division (Yojana, Kurukshetra)",
+      "url": "https://www.publicationsdivision.nic.in",
+      "note": "Monthly development journals; Yojana PDFs are available free. Also publishes the India reference annual (priced)",
+      "free": true
+    },
+    {
+      "label": "Reserve Bank of India",
+      "url": "https://www.rbi.org.in",
+      "note": "Monetary policy statements and reports for banking and inflation topics",
+      "free": true
+    },
+    {
+      "label": "Constitution of India (Legislative Department)",
+      "url": "https://lddashboard.legislative.gov.in/constitution-of-india",
+      "note": "Official, updated text of the Constitution for Polity",
+      "free": true
+    },
+    {
+      "label": "NIOS study material",
+      "url": "https://www.nios.ac.in",
+      "note": "Free self-learning material; useful for Art & Culture and basics",
+      "free": true
+    }
+  ]
+}

@@ -1,0 +1,311 @@
+{
+  "id": "capgemini",
+  "name": "Capgemini (Exceller: Analyst & Senior Analyst)",
+  "category": "it",
+  "core": "it-core",
+  "conductedBy": "Capgemini India",
+  "tagline": "Pseudo-code, game-based aptitude, English and behavioural tests",
+  "overview": {
+    "about": "Capgemini hires engineering freshers through its Exceller programme. The standard Analyst offer comes from an online assessment of pseudo-code, game-based aptitude, English communication and behavioural profiling; an additional coding round can lead to a higher-package Senior Analyst offer. Each section is reported to be eliminatory. Pattern as reported for 2025–26 drives; confirm on the official careers page.",
+    "eligibility": [
+      "B.E./B.Tech/M.E./M.Tech/MCA (some drives include BCA/B.Sc) from eligible batches",
+      "Typically 60% or more in 10th, 12th/diploma and graduation (as reported)",
+      "No active backlogs at joining"
+    ],
+    "pattern": [
+      {
+        "paper": "Pseudo-code (technical MCQ)",
+        "questions": "≈ 30",
+        "duration": "≈ 30 min",
+        "note": "Output tracing, C-style logic"
+      },
+      {
+        "paper": "Game-based aptitude",
+        "questions": "4 games",
+        "duration": "≈ 20–24 min",
+        "note": "Memory, reasoning, motion and grid challenges"
+      },
+      {
+        "paper": "English communication",
+        "questions": "≈ 30",
+        "duration": "≈ 30 min"
+      },
+      {
+        "paper": "Behavioural competency profiling",
+        "questions": "≈ 100",
+        "duration": "≈ 20 min",
+        "note": "Choose the statement that describes you better"
+      },
+      {
+        "paper": "Advanced coding (Senior Analyst)",
+        "questions": "≈ 2",
+        "duration": "≈ 45–60 min",
+        "note": "For the higher track"
+      },
+      {
+        "paper": "Interview",
+        "duration": "≈ 30 min",
+        "note": "Technical + HR"
+      }
+    ],
+    "frequency": "Campus drives and periodic off-campus Exceller drives",
+    "officialSite": "https://www.capgemini.com/in-en/careers/career-paths/students-and-graduates/"
+  },
+  "subjects": [
+    {
+      "id": "capgemini-specific",
+      "name": "Capgemini specifics",
+      "chapters": [
+        {
+          "id": "capgemini-pseudocode",
+          "title": "Pseudo-code round",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "What it tests",
+              "body": "About 30 MCQs where you trace short pseudo-code and pick the output. Loops, recursion, bitwise operators, arrays and basic OOP/DS questions. Pattern as reported for 2025–26 drives; confirm on the official careers page."
+            },
+            {
+              "type": "example",
+              "title": "Bitwise sample",
+              "body": "integer a = 6, b = 4\na = a & b   (110 & 100 = 100 → 4)\nb = a | 3   (100 | 011 = 111 → 7)\nprint a + b → 11"
+            },
+            {
+              "type": "example",
+              "title": "Recursion sample",
+              "body": "fun(n): if n == 0 return 0\n        return (n mod 2) + 10 * fun(n / 2)\nfun(5) → 101 (it prints the binary form as a decimal number)."
+            },
+            {
+              "type": "example",
+              "title": "Loop sample",
+              "body": "count = 0\nfor i = 1 to 20\n  if i mod 4 == 0 and i mod 6 == 0: count = count + 1\nprint count → only 12 → 1"
+            },
+            {
+              "type": "tip",
+              "title": "Speed trick",
+              "body": "For loops with 100s of iterations, find the pattern after 3–4 iterations instead of tracing everything (e.g. count multiples, sum of AP)."
+            },
+            {
+              "type": "concept",
+              "title": "Common traps",
+              "points": [
+                "Integer division truncation",
+                "Loop runs one fewer/more time than you think",
+                "Variable reassigned inside a nested loop",
+                "Pre- vs post-increment in conditions"
+              ]
+            },
+            {
+              "type": "quiz",
+              "q": "a = 12, b = 10\na = a ^ b\nprint a",
+              "options": [
+                "2",
+                "6",
+                "14",
+                "22"
+              ],
+              "answer": 1,
+              "explain": "1100 XOR 1010 = 0110 = 6."
+            },
+            {
+              "type": "quiz",
+              "q": "fun(n): if n == 0 return 0; return (n mod 2) + 10 * fun(n / 2). fun(6) = ?",
+              "options": [
+                "011",
+                "6",
+                "101",
+                "110"
+              ],
+              "answer": 3,
+              "explain": "6 in binary is 110."
+            },
+            {
+              "type": "quiz",
+              "q": "sum = 0; for i = 1 to 100: if i mod 10 == 0: sum = sum + i. print sum",
+              "options": [
+                "550",
+                "500",
+                "450",
+                "5050"
+              ],
+              "answer": 0,
+              "explain": "10 + 20 + … + 100 = 10 × 55 = 550."
+            }
+          ]
+        },
+        {
+          "id": "capgemini-games-behavioural",
+          "title": "Game-based aptitude & behavioural test",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Game-based aptitude",
+              "body": "Short games replace classic quant MCQs: remember sequences, deduce rules from shapes, move objects on a grid, track motion. Each lasts a few minutes. Pattern as reported for 2025–26 drives; confirm on the official careers page."
+            },
+            {
+              "type": "concept",
+              "title": "Common game types",
+              "points": [
+                "Memory: recall growing sequences of tiles/digits",
+                "Inductive reasoning: find the rule linking shapes",
+                "Grid / switch challenges: plan moves under limits",
+                "Motion: route an object to a target in few moves"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Games strategy",
+              "body": "Read every instruction, use the practice round, stay calm after a wrong answer — difficulty usually adapts, and accuracy outweighs speed."
+            },
+            {
+              "type": "concept",
+              "title": "Behavioural profiling",
+              "body": "Pairs of statements; choose which describes you better. Measures traits like teamwork, adaptability and drive. There are no 'right' answers, but consistency is checked."
+            },
+            {
+              "type": "tip",
+              "title": "Behavioural strategy",
+              "body": "Answer honestly and quickly. Trying to guess the ideal profile often creates contradictions that hurt more than any single trait."
+            },
+            {
+              "type": "concept",
+              "title": "English communication",
+              "body": "Grammar, sentence correction, vocabulary in context and reading comprehension, about 30 questions in 30 minutes."
+            },
+            {
+              "type": "quiz",
+              "q": "In a forced-choice behavioural test, the best approach is to:",
+              "options": [
+                "Pick the 'most impressive' statement every time",
+                "Answer randomly to save time",
+                "Answer honestly and consistently",
+                "Leave half the items blank"
+              ],
+              "answer": 2,
+              "explain": "Such tests detect inconsistent faking."
+            },
+            {
+              "type": "quiz",
+              "q": "Capgemini's game-based aptitude primarily replaces:",
+              "options": [
+                "The coding round",
+                "The HR interview",
+                "Traditional quantitative/logical MCQs",
+                "Document verification"
+              ],
+              "answer": 2,
+              "explain": "Games measure reasoning and memory instead of classic aptitude questions."
+            }
+          ]
+        },
+        {
+          "id": "capgemini-interviews",
+          "title": "Senior Analyst coding & interviews",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Senior Analyst coding",
+              "body": "Candidates who clear the main assessment may take an advanced coding test (about 2 problems). Clearing it can lead to a higher-package Senior Analyst offer."
+            },
+            {
+              "type": "example",
+              "title": "Sample coding task",
+              "body": "Rotate an array right by k:\ndef rotate(a, k):\n    k %= len(a)\n    return a[-k:] + a[:-k]\nrotate([1,2,3,4,5], 2) → [4,5,1,2,3]"
+            },
+            {
+              "type": "concept",
+              "title": "Technical interview",
+              "body": "Project, one language in depth, OOP, SQL, OS basics; sometimes cloud or testing basics. Be ready to write small programs on paper."
+            },
+            {
+              "type": "concept",
+              "title": "HR interview",
+              "body": "Introduction, why Capgemini, relocation and shift readiness, a STAR story about teamwork or failure."
+            },
+            {
+              "type": "tip",
+              "title": "Talk while you code",
+              "body": "Explain your approach before writing: brute force, then the better idea, then complexity. Silence makes interviewers guess."
+            },
+            {
+              "type": "example",
+              "title": "Common technical question",
+              "body": "\"Difference between a primary key and a unique key?\" Primary key: one per table, no NULLs. Unique key: many allowed, permits NULL (one in some DBMS)."
+            },
+            {
+              "type": "quiz",
+              "q": "rotate([1, 2, 3, 4, 5], 1) (rotate right by 1) gives:",
+              "options": [
+                "[2, 3, 4, 5, 1]",
+                "[5, 1, 2, 3, 4]",
+                "[1, 2, 3, 4, 5]",
+                "[4, 5, 1, 2, 3]"
+              ],
+              "answer": 1,
+              "explain": "a[-1:] + a[:-1]."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is true of a primary key?",
+              "options": [
+                "A table can have many",
+                "It allows duplicates",
+                "It must be a string",
+                "It cannot contain NULL values"
+              ],
+              "answer": 3,
+              "explain": "Primary keys are unique and NOT NULL; only one per table."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "Capgemini India — students & graduates (official process & openings)",
+          "url": "https://www.capgemini.com/in-en/careers/career-paths/students-and-graduates/",
+          "source": "Capgemini (official sample/practice — company does not publish past papers)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "Capgemini India careers (official)",
+      "url": "https://www.capgemini.com/in-en/careers/",
+      "note": "Exceller programme and job search",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    },
+    {
+      "label": "HackerRank",
+      "url": "https://www.hackerrank.com",
+      "note": "Many company tests run on HackerRank-style editors; SQL track is excellent",
+      "free": true
+    },
+    {
+      "label": "LeetCode",
+      "url": "https://leetcode.com",
+      "note": "Coding practice; free problem set is enough for service-company coding rounds",
+      "free": true
+    },
+    {
+      "label": "Harvard CS50x",
+      "url": "https://cs50.harvard.edu/x/",
+      "note": "Free intro to CS: C, Python, SQL, memory and algorithms",
+      "free": true
+    }
+  ]
+}

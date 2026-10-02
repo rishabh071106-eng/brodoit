@@ -1,0 +1,311 @@
+{
+  "id": "tcs-nqt",
+  "name": "TCS NQT (Ninja, Digital, Prime)",
+  "category": "it",
+  "core": "it-core",
+  "conductedBy": "Tata Consultancy Services (via TCS iON)",
+  "tagline": "One national test that routes you to TCS Ninja, Digital or Prime offers",
+  "overview": {
+    "about": "TCS hires most freshers through the TCS National Qualifier Test (NQT), delivered on TCS iON. A single test with a Foundation and an Advanced section decides which track you are considered for: Ninja (Foundation scores), or Digital and Prime (Advanced section, higher packages). Pattern as reported for 2025–26 drives; confirm on the official careers page.",
+    "eligibility": [
+      "B.E./B.Tech/M.E./M.Tech/MCA/M.Sc from the batches named in the notification",
+      "Typically 60% or more in 10th, 12th/diploma and graduation (as reported; check current notice)",
+      "Active backlogs must be cleared before joining; education-gap limits apply as per notice",
+      "Register on TCS NextStep and apply for the NQT drive before the deadline"
+    ],
+    "pattern": [
+      {
+        "paper": "Part A — Foundation: Numerical, Verbal, Reasoning",
+        "questions": "≈ 65",
+        "duration": "≈ 75 min",
+        "note": "Clears you for Ninja; sections are individually timed"
+      },
+      {
+        "paper": "Part B — Advanced Quantitative & Reasoning",
+        "questions": "≈ 15",
+        "duration": "≈ 25 min",
+        "note": "Needed for Digital/Prime"
+      },
+      {
+        "paper": "Part B — Advanced Coding",
+        "questions": "2–3 problems",
+        "duration": "≈ 90 min",
+        "note": "Hidden test cases; choose C/C++/Java/Python etc."
+      },
+      {
+        "paper": "Interview",
+        "duration": "≈ 30–60 min",
+        "note": "Technical + Managerial + HR, often one panel"
+      }
+    ],
+    "frequency": "NQT cycles run several times a year; dates are announced on TCS NextStep",
+    "officialSite": "https://www.tcs.com/careers/india/tcs-all-india-nqt-hiring"
+  },
+  "subjects": [
+    {
+      "id": "tcs-specific",
+      "name": "TCS NQT specifics",
+      "chapters": [
+        {
+          "id": "tcs-nqt-structure",
+          "title": "NQT structure & Ninja/Digital/Prime routing",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "One test, three outcomes",
+              "body": "You don't apply separately for Ninja and Digital any more. Everyone takes the NQT; your section scores decide whether you are interviewed for Ninja, Digital or Prime. Pattern as reported for 2025–26 drives; confirm on the official careers page."
+            },
+            {
+              "type": "concept",
+              "title": "Foundation section",
+              "body": "Numerical ability, verbal ability and reasoning ability, each with its own timer. Easy-to-moderate questions from the aptitude syllabus. Strong Foundation scores alone can get a Ninja interview."
+            },
+            {
+              "type": "concept",
+              "title": "Advanced section",
+              "body": "Advanced quantitative and reasoning MCQs plus an advanced coding section (2–3 problems, about 90 minutes). This is what makes you eligible for Digital and Prime."
+            },
+            {
+              "type": "concept",
+              "title": "The three tracks",
+              "points": [
+                "Ninja: entry-level developer role, Foundation-based",
+                "Digital: higher package, needs good Advanced + coding scores",
+                "Prime: highest fresher package, for top NQT performers",
+                "Packages change every year — read the offer details on the official page"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Timed sections",
+              "body": "Once a section's timer ends (or you submit it), you usually cannot return to it. Budget time per question and don't leave easy marks on the table."
+            },
+            {
+              "type": "tip",
+              "title": "Strategy",
+              "body": "Aim to clear Foundation comfortably first, then push in the Advanced section. Solve at least one coding problem fully (all test cases) rather than two problems partially."
+            },
+            {
+              "type": "quiz",
+              "q": "Which part of the NQT makes you eligible for TCS Digital or Prime?",
+              "options": [
+                "Only the verbal section",
+                "The Advanced section (advanced aptitude + coding)",
+                "The HR interview only",
+                "A separate Digital-only exam"
+              ],
+              "answer": 1,
+              "explain": "Digital and Prime are decided by Advanced-section performance, followed by interviews."
+            },
+            {
+              "type": "quiz",
+              "q": "Where do candidates register for the TCS NQT hiring process?",
+              "options": [
+                "Any third-party job board",
+                "By emailing the CEO",
+                "Only through coaching institutes",
+                "TCS NextStep / TCS iON portal"
+              ],
+              "answer": 3,
+              "explain": "Use the official TCS NextStep portal; TCS never charges recruitment fees."
+            }
+          ]
+        },
+        {
+          "id": "tcs-question-styles",
+          "title": "TCS question styles with solutions",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Numerical style",
+              "body": "Short calculation questions: percentages, ratios, time-work, speed, P&C, probability, data interpretation tables. Expect 1–2 minutes each."
+            },
+            {
+              "type": "example",
+              "title": "Sample numerical",
+              "body": "Q: A sum doubles in 5 years at simple interest. In how many years does it become 4 times?\nSI for 5 years = P → rate 20%. To gain 3P you need 15 years."
+            },
+            {
+              "type": "concept",
+              "title": "Verbal style",
+              "body": "Sentence completion, error spotting, reading comprehension, para-jumbles and word usage. Read each RC question before the passage."
+            },
+            {
+              "type": "concept",
+              "title": "Reasoning style",
+              "body": "Number/letter series, coding-decoding, blood relations, seating arrangement, statement–assumption, data sufficiency and visual reasoning."
+            },
+            {
+              "type": "example",
+              "title": "Sample data sufficiency",
+              "body": "Q: Is x even? (1) x² is even. (2) x is a multiple of 3.\n(1) alone: x² even ⇒ x even (for integers) → sufficient. (2) alone: 3 or 6 → not sufficient. Answer: statement 1 alone."
+            },
+            {
+              "type": "example",
+              "title": "Sample advanced quant",
+              "body": "Q: How many 3-digit numbers are divisible by 7?\nFirst 105, last 994 → (994 − 105)/7 + 1 = 128."
+            },
+            {
+              "type": "tip",
+              "title": "Practise on the real interface",
+              "body": "TCS iON tests use an on-screen interface with a timer per section. Take at least two full-length timed mocks before the test day."
+            },
+            {
+              "type": "quiz",
+              "q": "A sum doubles in 4 years at simple interest. The rate is:",
+              "options": [
+                "25%",
+                "20%",
+                "12.5%",
+                "50%"
+              ],
+              "answer": 0,
+              "explain": "SI = P in 4 years → R = 100/4 = 25%."
+            },
+            {
+              "type": "quiz",
+              "q": "How many 2-digit numbers are divisible by 6?",
+              "options": [
+                "16",
+                "14",
+                "15",
+                "17"
+              ],
+              "answer": 2,
+              "explain": "12 to 96: (96 − 12)/6 + 1 = 15."
+            },
+            {
+              "type": "quiz",
+              "q": "Is integer n odd? (1) n + 1 is even. (2) n² is odd. Which is sufficient?",
+              "options": [
+                "Statement 1 alone only",
+                "Statement 2 alone only",
+                "Each statement alone",
+                "Neither"
+              ],
+              "answer": 2,
+              "explain": "Both (1) and (2) independently force n to be odd."
+            }
+          ]
+        },
+        {
+          "id": "tcs-coding-interviews",
+          "title": "Coding round & TCS interviews",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Coding environment",
+              "body": "You read input from standard input and print to standard output. Hidden test cases check edge cases; output format must match exactly — no extra prompts like 'Enter n'."
+            },
+            {
+              "type": "example",
+              "title": "Typical easy problem",
+              "body": "Print the sum of digits of each number in a list.\nn = int(input())\nfor _ in range(n):\n    x = input().strip().lstrip('-')\n    print(sum(int(d) for d in x))"
+            },
+            {
+              "type": "concept",
+              "title": "Typical topics",
+              "points": [
+                "Arrays & strings: rotations, frequency, palindromes",
+                "Math: primes, GCD, digit manipulation",
+                "Greedy and simple DP for Advanced coding",
+                "Sorting with custom rules"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Technical interview",
+              "body": "Expect: your final-year project in depth, one language (OOP), DBMS/SQL queries, OS basics, a small code on paper, and why you chose your stream."
+            },
+            {
+              "type": "concept",
+              "title": "Managerial & HR",
+              "body": "Managerial checks situational judgement and attitude ('your teammate misses deadlines…'). HR covers relocation, shifts, documents and your interest in TCS."
+            },
+            {
+              "type": "tip",
+              "title": "Read the problem twice",
+              "body": "Most failed test cases come from ignoring constraints (n up to 10⁵, negative numbers, empty input). Test with the sample and one edge case before submitting."
+            },
+            {
+              "type": "quiz",
+              "q": "In the TCS coding round, your program should:",
+              "options": [
+                "Print 'Enter input' prompts before reading",
+                "Read from standard input and print only the required output",
+                "Hard-code the sample output",
+                "Read from a file named input.txt"
+              ],
+              "answer": 1,
+              "explain": "Extra text breaks automated output matching."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is most likely in a TCS technical interview for freshers?",
+              "options": [
+                "Designing a distributed database from scratch",
+                "A 3-hour system-design case",
+                "Only puzzles with no technical questions",
+                "Explaining your project and writing a small program"
+              ],
+              "answer": 3,
+              "explain": "Fresher technical rounds focus on fundamentals and your own work."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "TCS NextStep — registration, NQT application & status",
+          "url": "https://nextstep.tcs.com",
+          "source": "TCS (official sample/practice — company does not publish past papers)"
+        },
+        {
+          "label": "TCS All India NQT hiring page — eligibility & process",
+          "url": "https://www.tcs.com/careers/india/tcs-all-india-nqt-hiring",
+          "source": "TCS (official sample/practice — company does not publish past papers)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "TCS All India NQT hiring (official)",
+      "url": "https://www.tcs.com/careers/india/tcs-all-india-nqt-hiring",
+      "note": "Current eligibility, dates and process from TCS",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    },
+    {
+      "label": "HackerRank",
+      "url": "https://www.hackerrank.com",
+      "note": "Many company tests run on HackerRank-style editors; SQL track is excellent",
+      "free": true
+    },
+    {
+      "label": "LeetCode",
+      "url": "https://leetcode.com",
+      "note": "Coding practice; free problem set is enough for service-company coding rounds",
+      "free": true
+    },
+    {
+      "label": "NPTEL — Programming, Data Structures and Algorithms using Python",
+      "url": "https://nptel.ac.in/courses/106106145",
+      "note": "Prof. Madhavan Mukund's course: Python basics to DP and backtracking",
+      "free": true
+    }
+  ]
+}

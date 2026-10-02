@@ -1,0 +1,243 @@
+{
+  "id": "accenture",
+  "name": "Accenture (ASE & Advanced ASE)",
+  "category": "it",
+  "core": "it-core",
+  "conductedBy": "Accenture India",
+  "tagline": "Cognitive, technical, coding and communication assessments",
+  "overview": {
+    "about": "Accenture hires engineering freshers mainly as Associate Software Engineer (ASE), with a higher-package Advanced ASE track for strong coders. The process combines a cognitive & technical assessment, a coding assessment, an AI-scored communication assessment and an interview. Recent cycles report game-based cognitive items. Pattern as reported for 2025–26 drives; confirm on the official careers page.",
+    "eligibility": [
+      "B.E./B.Tech/M.E./M.Tech/MCA/M.Sc from eligible batches (as notified)",
+      "Typically 60% or more (or equivalent) in 10th, 12th/diploma and graduation (as reported)",
+      "No active backlogs at joining; gap rules per notice"
+    ],
+    "pattern": [
+      {
+        "paper": "Cognitive assessment — critical reasoning, abstract reasoning, English",
+        "questions": "≈ 50",
+        "duration": "≈ 50 min",
+        "note": "Game-based items reported for recent batches"
+      },
+      {
+        "paper": "Technical assessment — pseudo-code, MS Office, networking, security, cloud basics",
+        "questions": "≈ 40",
+        "duration": "≈ 40 min"
+      },
+      {
+        "paper": "Coding assessment",
+        "questions": "2 problems",
+        "duration": "≈ 45 min",
+        "note": "At least one fully working solution expected"
+      },
+      {
+        "paper": "Communication assessment",
+        "duration": "≈ 30 min",
+        "note": "Speaking & listening, AI-scored"
+      },
+      {
+        "paper": "Interview",
+        "duration": "≈ 30 min",
+        "note": "Technical + HR, often one round"
+      }
+    ],
+    "frequency": "Campus and off-campus drives through the year",
+    "officialSite": "https://www.accenture.com/in-en/careers/life-at-accenture/entry-level"
+  },
+  "subjects": [
+    {
+      "id": "accenture-specific",
+      "name": "Accenture specifics",
+      "chapters": [
+        {
+          "id": "accenture-cognitive-technical",
+          "title": "Cognitive & technical assessment",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Cognitive assessment",
+              "body": "Critical reasoning (arithmetic word problems, logical deductions), abstract reasoning (patterns, series, odd-one-out, matrices) and English (RC, grammar, vocabulary). Pattern as reported for 2025–26 drives; confirm on the official careers page."
+            },
+            {
+              "type": "concept",
+              "title": "Technical assessment",
+              "points": [
+                "Pseudo-code output tracing",
+                "MS Office & common applications (Excel functions, Word, PowerPoint)",
+                "Networking & security basics (OSI, ports, firewalls, encryption)",
+                "Cloud fundamentals (IaaS/PaaS/SaaS, public vs private)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Cloud basics in one card",
+              "points": [
+                "IaaS: rent VMs/storage (e.g. EC2-type services)",
+                "PaaS: platform to deploy code without managing servers",
+                "SaaS: finished software over the web (email, CRM)",
+                "Public / private / hybrid cloud"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Security basics",
+              "body": "Symmetric encryption uses one shared key (AES); asymmetric uses a public/private pair (RSA). Phishing is social engineering; a firewall filters traffic by rules."
+            },
+            {
+              "type": "example",
+              "title": "MS Office style",
+              "body": "Q: Which Excel function returns the number of non-empty cells in A1:A10?\nCOUNTA(A1:A10). COUNT counts only numeric cells."
+            },
+            {
+              "type": "tip",
+              "title": "Game-based items",
+              "body": "If you get game-style cognitive tasks, read instructions fully — practice rounds don't count. Accuracy usually matters more than raw speed."
+            },
+            {
+              "type": "quiz",
+              "q": "Web email delivered to users over the internet is an example of:",
+              "options": [
+                "IaaS",
+                "SaaS",
+                "PaaS",
+                "On-premise software"
+              ],
+              "answer": 1,
+              "explain": "Users consume finished software; the provider manages everything."
+            },
+            {
+              "type": "quiz",
+              "q": "Which encryption uses a public/private key pair?",
+              "options": [
+                "Symmetric (e.g. AES)",
+                "Hashing (e.g. SHA-256)",
+                "Base64 encoding",
+                "Asymmetric (e.g. RSA)"
+              ],
+              "answer": 3,
+              "explain": "Base64 isn't encryption; hashing is one-way."
+            },
+            {
+              "type": "quiz",
+              "q": "Excel: count numeric cells only in A1:A10:",
+              "options": [
+                "COUNT(A1:A10)",
+                "COUNTA(A1:A10)",
+                "SUM(A1:A10)",
+                "LEN(A1:A10)"
+              ],
+              "answer": 0,
+              "explain": "COUNT counts numbers; COUNTA counts any non-empty cell."
+            }
+          ]
+        },
+        {
+          "id": "accenture-coding-communication",
+          "title": "Coding, communication & interview",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Coding assessment",
+              "body": "Two problems, about 45 minutes. Function-based or full-program style. Typical topics: arrays, strings, simple math, sorting, occasionally basic DP. One fully passing solution is the usual minimum."
+            },
+            {
+              "type": "example",
+              "title": "Typical problem",
+              "body": "Return the sum of elements at even indices that are themselves odd.\ndef solve(a):\n    return sum(x for i, x in enumerate(a) if i % 2 == 0 and x % 2 == 1)\n[3, 4, 5, 6, 8] → 3 + 5 = 8"
+            },
+            {
+              "type": "concept",
+              "title": "Communication assessment",
+              "body": "Speaking and listening tasks: read sentences aloud, repeat what you hear, answer short questions. Scored on pronunciation, fluency and grammar by software."
+            },
+            {
+              "type": "tip",
+              "title": "Communication tips",
+              "body": "Use a quiet room and wired headset; speak at a steady pace; don't restart sentences. A clear neutral accent beats speed."
+            },
+            {
+              "type": "concept",
+              "title": "Interview",
+              "body": "Usually one combined technical + HR round: your project, a language of choice, OOP, DBMS, a basic program, cloud awareness, and willingness to relocate/work in shifts."
+            },
+            {
+              "type": "concept",
+              "title": "Advanced ASE",
+              "body": "A higher-package track for candidates who perform strongly in an additional/advanced coding assessment and interview. Check the current notice for how it is offered."
+            },
+            {
+              "type": "quiz",
+              "q": "solve([1, 2, 3, 4, 5]) with the 'odd values at even indices' rule returns:",
+              "options": [
+                "6",
+                "15",
+                "9",
+                "4"
+              ],
+              "answer": 2,
+              "explain": "Indices 0, 2, 4 hold 1, 3, 5 — all odd → 9."
+            },
+            {
+              "type": "quiz",
+              "q": "For an AI-scored speaking test, what helps most?",
+              "options": [
+                "Speaking as fast as possible",
+                "Using lots of slang",
+                "Steady pace, clear pronunciation, quiet room",
+                "Restarting each sentence until perfect"
+              ],
+              "answer": 2,
+              "explain": "Fluency and clarity are what the scoring measures."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pyq": [
+    {
+      "year": 2026,
+      "items": [
+        {
+          "label": "Accenture India — early careers (official process & openings)",
+          "url": "https://www.accenture.com/in-en/careers/life-at-accenture/entry-level",
+          "source": "Accenture (official sample/practice — company does not publish past papers)"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "label": "Accenture India careers (official)",
+      "url": "https://www.accenture.com/in-en/careers",
+      "note": "Search entry-level roles and apply",
+      "free": true
+    },
+    {
+      "label": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org",
+      "note": "Topic-wise articles and practice for DSA, DBMS, OS, CN and aptitude",
+      "free": true
+    },
+    {
+      "label": "HackerRank",
+      "url": "https://www.hackerrank.com",
+      "note": "Many company tests run on HackerRank-style editors; SQL track is excellent",
+      "free": true
+    },
+    {
+      "label": "LeetCode",
+      "url": "https://leetcode.com",
+      "note": "Coding practice; free problem set is enough for service-company coding rounds",
+      "free": true
+    },
+    {
+      "label": "SWAYAM (Govt. of India)",
+      "url": "https://swayam.gov.in",
+      "note": "Free MOOCs incl. NPTEL CS courses with optional certification exam",
+      "free": true
+    }
+  ]
+}

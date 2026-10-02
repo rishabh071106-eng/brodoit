@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Brodoit &mdash; NCERT books &amp; competitive exam prep</title>
+<meta name="description" content="Free NCERT textbooks for Classes 1–12 plus swipe-based lectures, audio lessons and 10 years of previous papers for NDA, CDS, AFCAT, SSB, UPSC IAS, bank exams and IT placements.">
+<meta property="og:title" content="Brodoit &mdash; NCERT books &amp; competitive exam prep">
+<meta property="og:description" content="NCERT 1–12, NDA, CDS, AFCAT, SSB, UPSC, Bank and IT prep. Swipe, listen, track progress.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-badge"><span class="pulse"></span> Free for every student</div>
+  <h1>Learn, swipe, listen.<br>Crack your exam.</h1>
+  <p class="lead">Every NCERT book from Class 1 to 12, plus bite-sized swipe lectures, audio lessons and 10 years of previous papers for NDA, CDS, AFCAT, SSB, UPSC, bank exams and IT placements.</p>
+  <div class="cta-row">
+    <a href="exams.html" class="btn btn-primary">Start exam prep &rarr;</a>
+    <a href="ncert.html" class="btn btn-ghost">NCERT books 1&ndash;12</a>
+  </div>
+</header>
+
+<main class="page" style="padding-top:0">
+  <div id="resume"></div>
+
+  <div class="grid">
+    <a class="tile big" href="ncert.html">
+      <div class="icon">📚</div>
+      <div class="kicker">School</div>
+      <h3>NCERT Books, Class 1&ndash;12</h3>
+      <p>Every current NCERT textbook, chapter by chapter, straight from NCERT's official servers. Tick off chapters as you read them.</p>
+    </a>
+    <a class="tile big" href="exams.html">
+      <div class="icon">🎯</div>
+      <div class="kicker">Competitive exams</div>
+      <h3>Exam Prep</h3>
+      <p>Defence &amp; SSB, UPSC Civil Services, bank exams and IT placements. Swipe lectures, quizzes and previous papers.</p>
+    </a>
+    <a class="tile big" href="progress.html">
+      <div class="icon">📈</div>
+      <div class="kicker">Your board</div>
+      <h3>My Progress</h3>
+      <p>Chapters completed, minutes listened, quiz scores, daily streak and a full activity log.</p>
+    </a>
+  </div>
+
+  <h2 class="section-title">Exam categories</h2>
+  <p class="section-sub">Pick a track. Every chapter is a short deck you can swipe through or listen to like an audiobook.</p>
+  <div class="grid" id="cats"></div>
+</main>
+
+<script type="module">
+import { renderNav, renderFooter, loadCatalog, store, esc, timeAgo } from './assets/js/app.js';
+renderNav('index.html');
+renderFooter();
+
+const cat = await loadCatalog();
+document.getElementById('cats').innerHTML = cat.categories.map(c => `
+  <a class="tile" href="exams.html#${c.id}">
+    <div class="icon">${c.icon}</div>
+    <h3>${esc(c.name)}</h3>
+    <p>${esc(c.blurb)}</p>
+    <div class="meta">${c.exams.map(e => esc(e.name)).join(' · ')}</div>
+  </a>`).join('');
+
+const last = store.read().last;
+if (last) {
+  document.getElementById('resume').innerHTML = `
+    <a class="tile" href="${esc(last.href)}" style="margin-bottom:1.5rem;flex-direction:row;align-items:center;gap:1rem">
+      <div class="icon">▶️</div>
+      <div style="flex:1;min-width:0"><div class="kicker">Continue where you left off</div>
+      <h3>${esc(last.title || '')}</h3><div class="meta">${esc(last.exam || '')} · ${timeAgo(last.at)}</div></div>
+    </a>`;
+}
+</script>
+</body>
+</html>
