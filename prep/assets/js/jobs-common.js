@@ -77,6 +77,6 @@ export const JOB_CSS = `
 .jp.hot{background:color-mix(in srgb,var(--bad) 14%,var(--card));color:var(--bad)}
 .jp.closed{background:var(--card-2);color:var(--mute)}
 .jdate{flex:1;font-size:11.5px;color:var(--mute);font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.jwa{width:38px;height:38px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;flex-shrink:0}
-.jgo{font-size:13px;font-weight:800;background:var(--ink);color:var(--bg);padding:9px 13px;border-radius:999px;flex-shrink:0}
+.jwa{width:44px;height:44px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;flex-shrink:0}
+.jgo{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:800;background:var(--ink);color:var(--bg);padding:0 14px;border-radius:999px;flex-shrink:0}
 `;

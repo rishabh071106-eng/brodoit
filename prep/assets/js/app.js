@@ -123,15 +123,19 @@ const TABS = [
   ['progress.html', 'Board', 'me'],
 ];
 
-// Top bar (back + title + optional right slot) and the floating bottom tab bar.
+// Top bar ([← Brodoit] [parent back when `back` is set] [title] [right]) and the floating bottom tab bar.
+// The bar's markup and the Android back guard come from /lang/assets/topbar.js (window.bdTopbar, shared
+// with /lang and /speaker); its styles from /lang/assets/topbar.css. `title` is HTML.
 export function renderChrome({ active, title = '', back = null, right = '' } = {}) {
-  const top = document.createElement('header');
-  top.className = 'topbar';
-  const backHref = back || '/?learn=1';
-  top.innerHTML = `<div class="wrap">
-    <a class="icon-btn press" href="${backHref}" aria-label="${back ? 'Back' : 'Back to Brodoit'}">${ICON.back}</a>
-    <div class="title">${title || '<span class="brand">Brodoit <b>Prep</b></span>'}</div>${right}</div>`;
-  document.body.prepend(top);
+  const label = title || 'Prep';
+  let top;
+  if (typeof window.bdTopbar === 'function') top = window.bdTopbar({ back, title: label, right });
+  else {
+    top = document.createElement('header');
+    top.className = 'bd-top';
+    top.innerHTML = `<div class="bd-top-in"><a class="bd-home press" href="/?tab=learn" aria-label="Back to Brodoit">${ICON.back}<span>Brodoit</span></a>${back ? `<a class="bd-back press" href="${back}" aria-label="Back">${ICON.back}</a>` : ''}<div class="bd-title">${label}</div><div class="bd-right">${right}</div></div>`;
+    document.body.prepend(top);
+  }
   const bar = document.createElement('div');
   bar.className = 'tabbar';
   bar.innerHTML = `<nav>${TABS.map(([href, label, ic]) =>

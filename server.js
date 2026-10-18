@@ -266,15 +266,16 @@ app.post('/api/verify-otp',(req,res)=>{
 
 // ═══ AI CHAT — Multi-provider (Gemini Flash free → Groq free → failover) ═══
 // API keys stay on the server. The browser never sees them.
-const GEMINI_KEY=process.env.GEMINI_API_KEY||'';
-const GROQ_KEY=process.env.GROQ_API_KEY||'';
-console.log('[ai] gemini',GEMINI_KEY?'✅':'❌','groq',GROQ_KEY?'✅':'❌');
+// AI keys are read live: Admin (app_settings) first, then the environment — paste a key in You → Admin, no redeploy.
+function geminiKey(){try{if(global._getSetting){const v=global._getSetting('GEMINI_API_KEY');if(v)return v}}catch(e){}return process.env.GEMINI_API_KEY||''}
+function groqKey(){try{if(global._getSetting){const v=global._getSetting('GROQ_API_KEY');if(v)return v}}catch(e){}return process.env.GROQ_API_KEY||''}
+console.log('[ai] gemini',geminiKey()?'✅':'❌','groq',groqKey()?'✅':'❌');
 
 // ─── LLM Provider Abstraction ─────────────────────────────────────────────
 // Tries providers in order: Gemini Flash (1500 req/day free) → Groq (30 RPM free)
 // Each provider returns {reply:string} or throws on failure.
 async function _callGemini(messages,{maxTokens=4096,systemPrompt='',imageData=null}={}){
-  if(!GEMINI_KEY)throw new Error('no-key');
+  if(!geminiKey())throw new Error('no-key');
   // Convert OpenAI-style messages to Gemini format (supports inline images)
   const contents=messages.filter(m=>m.role!=='system').map(m=>{
     const parts=[];
@@ -287,7 +288,7 @@ async function _callGemini(messages,{maxTokens=4096,systemPrompt='',imageData=nu
   if(systemPrompt)body.systemInstruction={parts:[{text:systemPrompt}]};
   const ctrl=new AbortController();const tmr=setTimeout(()=>ctrl.abort(),50000);
   try{
-    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GEMINI_KEY,{
+    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+geminiKey(),{
       method:'POST',signal:ctrl.signal,
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(body)
@@ -303,7 +304,7 @@ async function _callGemini(messages,{maxTokens=4096,systemPrompt='',imageData=nu
 
 const GROQ_MODELS=['openai/gpt-oss-120b','qwen/qwen3.6-27b','openai/gpt-oss-20b'];
 async function _callGroq(messages,{maxTokens=4096,tools}={}){
-  if(!GROQ_KEY)throw new Error('no-key');
+  if(!groqKey())throw new Error('no-key');
   let lastErr='';
   for(const model of GROQ_MODELS){
     const body={model,max_tokens:maxTokens,messages};
@@ -314,7 +315,7 @@ async function _callGroq(messages,{maxTokens=4096,tools}={}){
       try{
         r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
           method:'POST',signal:ctrl.signal,
-          headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+groqKey()},
           body:JSON.stringify(body)
         });
       }catch(fe){clearTimeout(tmr);if(retry<1){await new Promise(ok=>setTimeout(ok,2000));continue}lastErr='timeout';r=null;break}
@@ -357,7 +358,7 @@ Be warm but direct. Never explain that you are an AI.`;
 app.post('/api/transcribe',async(req,res)=>{
   const t=req.headers['x-token'];if(!t)return res.status(401).json({error:'auth'});
   try{const u=jwt.verify(t,JWT_SECRET);if(!u)return res.status(401).json({error:'invalid'})}catch(e){return res.status(401).json({error:'invalid'})}
-  if(!GROQ_KEY)return res.status(503).json({error:'Transcription not configured'});
+  if(!groqKey())return res.status(503).json({error:'Transcription not configured'});
   try{
     const chunks=[];for await(const c of req)chunks.push(c);const buf=Buffer.concat(chunks);
     const FormData=(await import('node-fetch')).default?null:null;
@@ -366,22 +367,22 @@ app.post('/api/transcribe',async(req,res)=>{
     const head=Buffer.from('--'+boundary+'\\r\\nContent-Disposition: form-data; name="file"; filename="voice.webm"\\r\\nContent-Type: '+ct+'\\r\\n\\r\\n');
     const model=Buffer.from('\\r\\n--'+boundary+'\\r\\nContent-Disposition: form-data; name="model"\\r\\n\\r\\nwhisper-large-v3\\r\\n--'+boundary+'--\\r\\n');
     const body=Buffer.concat([head,buf,model]);
-    const r=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{method:'POST',headers:{'Authorization':'Bearer '+GROQ_KEY,'Content-Type':'multipart/form-data; boundary='+boundary},body});
+    const r=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{method:'POST',headers:{'Authorization':'Bearer '+groqKey(),'Content-Type':'multipart/form-data; boundary='+boundary},body});
     const d=await r.json();
     res.json({text:d.text||''});
   }catch(e){console.error('[transcribe]',e.message);res.status(500).json({error:'Transcription failed'})}
 });
 
 app.post('/api/coach/chat',auth,async(req,res)=>{
-  if(!GROQ_KEY&&!GEMINI_KEY)return res.status(503).json({error:'AI coach not configured.'});
+  if(!groqKey()&&!geminiKey())return res.status(503).json({error:'AI coach not configured.'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-20):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const sys=req.body.system||COACH_SYSTEM;
   const apiMsgs=[{role:'system',content:sys},...messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,4000)}))];
   try{
     let reply='';
-    if(GEMINI_KEY){try{const g=await _callGemini(apiMsgs,{maxTokens:600,systemPrompt:sys});reply=g.reply}catch(e){}}
-    if(!reply&&GROQ_KEY){try{const g=await _callGroq(apiMsgs,{maxTokens:600});reply=g.reply}catch(e){}}
+    if(geminiKey()){try{const g=await _callGemini(apiMsgs,{maxTokens:600,systemPrompt:sys});reply=g.reply}catch(e){}}
+    if(!reply&&groqKey()){try{const g=await _callGroq(apiMsgs,{maxTokens:600});reply=g.reply}catch(e){}}
     if(!reply)return res.status(502).json({error:'Coach is busy — try again in a moment.'});
     res.json({reply});
   }catch(e){res.status(500).json({error:String(e.message||e)})}
@@ -449,7 +450,7 @@ async function _broExecTool(toolName,input,userPhone,userTz){
 }
 
 app.post('/api/bro/chat',auth,async(req,res)=>{
-  if(!GROQ_KEY&&!GEMINI_KEY)return res.status(503).json({error:'Chat not configured (no AI keys set).'});
+  if(!groqKey()&&!geminiKey())return res.status(503).json({error:'Chat not configured (no AI keys set).'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-10):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const imageB64=req.body.image||null;
@@ -464,10 +465,10 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
   const mapped=messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:String(m.content||'').slice(0,3000)}));
   // Attach image to the last user message if provided
   if(imageB64&&mapped.length){mapped[mapped.length-1].image={data:imageB64,mime:imageMime}}
-  const groqTools=GROQ_KEY?BRO_TOOLS.map(t=>({type:'function',function:{name:t.name,description:t.description,parameters:t.input_schema}})):undefined;
+  const groqTools=groqKey()?BRO_TOOLS.map(t=>({type:'function',function:{name:t.name,description:t.description,parameters:t.input_schema}})):undefined;
   // Detect if user's message likely needs tools (task/calendar actions)
   const lastMsg=String((mapped[mapped.length-1]&&mapped[mapped.length-1].content)||'').toLowerCase();
-  const needsTools=mode==='ask'&&GROQ_KEY&&/\b(add|create|schedule|remind|task|event|block|calendar|complete|done|finish|mark)\b/i.test(lastMsg);
+  const needsTools=mode==='ask'&&groqKey()&&/\b(add|create|schedule|remind|task|event|block|calendar|complete|done|finish|mark)\b/i.test(lastMsg);
 
   // Check cache first
   const cacheKey=_aiCacheKey(mapped);
@@ -514,14 +515,14 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
     let lastError='';
     let draftReply='',draftProvider='';
     // Step 1: Try Gemini first (generous free tier: 1500 req/day, 1M tokens/min)
-    if(!draftReply&&GEMINI_KEY){
+    if(!draftReply&&geminiKey()){
       try{
         const g=await _callGemini(apiMsgs,{maxTokens:maxTok,systemPrompt:sys});
         draftReply=g.reply;draftProvider='gemini';
       }catch(e){lastError='Gemini: '+e.message;console.log('[bro] Gemini failed:',e.message)}
     }
     // Step 2: Groq fallback (auto-rotates models on rate limit)
-    if(!draftReply&&GROQ_KEY&&!imageB64){
+    if(!draftReply&&groqKey()&&!imageB64){
       try{
         const groqMsgs=apiMsgs.slice(0,1).concat(apiMsgs.slice(-6).map(m=>({...m,content:String(m.content||'').slice(0,2000)})));
         const g=await _callGroq(groqMsgs,{maxTokens:Math.min(maxTok,2048)});
@@ -530,7 +531,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
     }
     if(!draftReply){console.log('[bro] All providers failed:',lastError);return res.status(502).json({error:'Bro is taking a quick break — try again in a moment.'})}
     // Step 2: Verify/improve with the other model (skip for friend mode — keep it fast)
-    const verifyModel=(mode!=='friend')&&(draftProvider==='gemini'&&GROQ_KEY)?'groq':(mode!=='friend')&&(draftProvider==='groq'&&GEMINI_KEY)?'gemini':null;
+    const verifyModel=(mode!=='friend')&&(draftProvider==='gemini'&&groqKey())?'groq':(mode!=='friend')&&(draftProvider==='groq'&&geminiKey())?'gemini':null;
     if(verifyModel&&draftReply.length>40){
       try{
         const verifySys='You are a quality checker. You receive a draft response to a user question. Your job: check for factual errors, missing info, or unclear answers. If the draft is good, return it as-is. If it has issues, return an improved version. Keep the same tone and style. Do NOT add meta-commentary like "Here is the improved version" — just output the final answer directly. Do NOT add trailing questions like "Need anything else?" — just answer and stop.';
@@ -1357,7 +1358,7 @@ app.get('/api/mv-audio/:id', (req, res) => {
 
 // AI status — client-only check, no key exposure
 app.get('/api/coach/status',(req,res)=>{
-  res.json({chat:!!(GROQ_KEY||GEMINI_KEY),transcribe:false,tts:false});
+  res.json({chat:!!(groqKey()||geminiKey()),transcribe:false,tts:false});
 });
 
 // ═══ VOICE TRAINER — 90-day "zero to hero" English accent + functional-English course ═══
@@ -2076,6 +2077,7 @@ const NEWS_FEEDS={
   business:['https://feeds.reuters.com/reuters/businessNews','https://feeds.bbci.co.uk/news/business/rss.xml','https://www.livemint.com/rss/companies','https://rss.nytimes.com/services/xml/rss/nyt/Business.xml']
 };
 NEWS_FEEDS.ai=NEWS_FEEDS.tech;NEWS_FEEDS.technology=NEWS_FEEDS.tech;NEWS_FEEDS.global=NEWS_FEEDS.world;
+try{const _nf=require('./modules/newsfeeds.js');for(const k of Object.keys(_nf)){if(Array.isArray(_nf[k]))NEWS_FEEDS[k]=_nf[k]}console.log('[news] feeds from modules/newsfeeds.js')}catch(e){console.log('[news] feeds module not loaded:',e.message)}
 const UNSPLASH=(id)=>'https://images.unsplash.com/photo-'+id+'?w=900&q=80&auto=format&fit=crop';
 const FALLBACK_IMAGES={
   tech:[UNSPLASH('1677442136019-21780ecad995'),UNSPLASH('1518770660439-4636190af475'),UNSPLASH('1620712943543-bcc4688e7485'),UNSPLASH('1451187580459-43490279c0fa'),UNSPLASH('1531297484001-80022131f5a1'),UNSPLASH('1551434678-e076c223a692'),UNSPLASH('1550751827-4bd374c3f58b'),UNSPLASH('1485827404703-89b55fcc595e')],
@@ -2174,7 +2176,7 @@ async function _fetchArticleMeta(url){
 // using Gemini AI. This avoids copyright issues and creates original content.
 async function aiRewriteNews(items,cat){
   if(items.length===0)return items;
-  if(!GEMINI_KEY){console.log('[NEWS-AI] No GEMINI_API_KEY — using fallback descriptions for '+cat);return items;}
+  if(!geminiKey()){console.log('[NEWS-AI] No GEMINI_API_KEY — using fallback descriptions for '+cat);return items;}
   const batch=items.slice(0,15);
   const sysPrompt=`You are Brodoit News — a respected modern news platform known for making complex stories accessible and interesting. Rewrite each news article as a compelling, detailed summary that a reader can understand without clicking through.
 
@@ -2685,8 +2687,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=12"><link rel="stylesheet" href="/app/app.css?v=12"><link rel="stylesheet" href="/app/steps.css?v=12"><link rel="stylesheet" href="/app/admin.css?v=12"><link rel="stylesheet" href="/app/onboarding.css?v=12">
-<script src="/app/icons.js?v=12" defer></script><script src="/app/haptics.js?v=12" defer></script><script src="/app/mascot.js?v=12" defer></script><script src="/app/voice.js?v=12" defer></script><script src="/app/news.js?v=12" defer></script><script src="/app/steps.js?v=12" defer></script><script src="/app/admin.js?v=12" defer></script><script src="/app/onboarding.js?v=12" defer></script><script src="/app/motion.js?v=12" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=14"><link rel="stylesheet" href="/app/app.css?v=14"><link rel="stylesheet" href="/app/news.css?v=14"><link rel="stylesheet" href="/app/steps.css?v=14"><link rel="stylesheet" href="/app/admin.css?v=14"><link rel="stylesheet" href="/app/onboarding.css?v=14">
+<script src="/app/icons.js?v=14" defer></script><script src="/app/haptics.js?v=14" defer></script><script src="/app/mascot.js?v=14" defer></script><script src="/app/voice.js?v=14" defer></script><script src="/app/news.js?v=14" defer></script><script src="/app/steps.js?v=14" defer></script><script src="/app/admin.js?v=14" defer></script><script src="/app/onboarding.js?v=14" defer></script><script src="/app/motion.js?v=14" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -7418,6 +7420,7 @@ body:has(.player.on) .bk-mini{bottom:170px !important}
 .bk-streak{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:0 12px;min-height:36px;font:800 14px var(--sans);background:var(--divider);color:var(--ink)}.bk-streak.on{background:var(--accent-soft);color:var(--accent)}
 .bk-seg{display:flex;background:var(--bg-2,var(--divider));border-radius:999px;padding:4px;margin-bottom:14px}.bk-seg button{flex:1;border:none;background:none;border-radius:999px;min-height:38px;font:500 13.5px var(--sans);color:var(--text-mute);cursor:pointer}.bk-seg button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08);font-weight:600}
 .bk-sum-cover.has-img .bk-sum-ttl{display:none}
+.bk-sum-ttl{padding-right:58px;min-width:0}.bk-sum-ttl h5{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 .bk-sum-cover:not(.has-img){background:linear-gradient(160deg,#2E2A26 0%,#1F1E1C 100%)!important;border-color:rgba(255,255,255,.06)}
 .bk-sum-card:nth-child(3n+2) .bk-sum-cover:not(.has-img){background:linear-gradient(160deg,#6B2E22 0%,#3B1A13 100%)!important}
 .bk-sum-card:nth-child(3n) .bk-sum-cover:not(.has-img){background:linear-gradient(160deg,#4C4640 0%,#2A2724 100%)!important}
@@ -7439,7 +7442,7 @@ body:not([data-theme=aurora]) .bk-search-x{background:#F4F3EE;color:#6B6B6B}
 body:not([data-theme=aurora]) .bk-search-meta{color:#6B6B6B}
 .bk-cat{padding:7px 14px;border-radius:999px;border:1px solid #ECEAE3;background:#fff;color:#3D3D3D;font-family:inherit;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .2s}
 .bk-cat:hover{border-color:#111827;color:#111827}
-.bk-cat.on{background:#111827;color:#fff;border-color:#111827}
+.bk-cat.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 
 /* ═══════════════ DUOLINGO-STYLE LEARNING PATH ═══════════════ */
 .vp-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:24px 0 14px;flex-wrap:wrap}
@@ -7783,7 +7786,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .bk-sum-card.is-live .bk-sum-cover{box-shadow:0 0 0 2px #9B9A97, 0 22px 50px -10px rgba(55,53,47,.35)}
 @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(55,53,47,.55)}80%,100%{box-shadow:0 0 0 14px rgba(55,53,47,0)}}
 .bk-sum-cover h5{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:20px;line-height:1.05;letter-spacing:-.015em;color:#fff;margin:0}
-.bk-sum-cover .auth{font-family:'JetBrains Mono','Space Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.1em;color:rgba(255,255,255,.78);text-transform:uppercase;margin-top:6px}
+.bk-sum-cover .auth{font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.78);text-transform:uppercase;margin-top:6px}
 .bk-sum-mins{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.08em;color:#fff;text-transform:uppercase;border:1px solid rgba(255,255,255,.15)}
 .bk-sum-meta{font-size:13px;font-weight:500;letter-spacing:-.005em;color:#111827;line-height:1.25}
 .bk-sum-meta small{display:block;color:#6B6B6B;font-weight:400;font-size:11.5px;margin-top:3px}
@@ -13873,11 +13876,12 @@ function _youDash(){
   var st=(window.StepsTab&&StepsTab.sum)||null;var stepN=st&&st.today?Number(st.today.counted)||0:0;var streak=st?Number(st.streak)||0:0;
   var hi=S.lang==='hi';
   var h='<div class="yu-tiles">';
-  h+='<button class="yu-tile" onclick="switchTab(\\'steps\\')"><span class="yu-ic move">'+ic('footprints',20)+'</span><b>'+(stepN?stepN.toLocaleString('en-IN'):'0')+'</b><small>'+(hi?'\\u0915\\u0926\\u092E':'Steps')+'</small></button>';
-  h+='<button class="yu-tile" onclick="switchTab(\\'steps\\')"><span class="yu-ic fire">'+ic('flame',20)+'</span><b>'+streak+'</b><small>'+(hi?'\\u0938\\u094D\\u091F\\u094D\\u0930\\u0940\\u0915':'Streak')+'</small></button>';
-  h+='<button class="yu-tile" onclick="switchTab(\\'courses\\')"><span class="yu-ic learn">'+ic('graduation-cap',20)+'</span><b>'+fm(tot)+'</b><small>'+(hi?'\\u0906\\u091C':'Learning')+'</small></button>';
+  h+='<button class="yu-tile" onclick="switchTab(\\'steps\\')"><span class="yu-ic move">'+(window.ico?ico('footprints',20):'')+'</span><b>'+(stepN?stepN.toLocaleString('en-IN'):'0')+'</b><small>'+(hi?'\\u0915\\u0926\\u092E':'Steps')+'</small></button>';
+  h+='<button class="yu-tile" onclick="switchTab(\\'steps\\')"><span class="yu-ic fire">'+(window.ico?ico('flame',20):'')+'</span><b>'+streak+'</b><small>'+(hi?'\\u0938\\u094D\\u091F\\u094D\\u0930\\u0940\\u0915':'Streak')+'</small></button>';
+  h+='<button class="yu-tile" onclick="switchTab(\\'courses\\')"><span class="yu-ic learn">'+(window.ico?ico('graduation-cap',20):'')+'</span><b>'+fm(tot)+'</b><small>'+(hi?'\\u0906\\u091C':'Learning')+'</small></button>';
   h+='</div>';
-  h+='<div class="b-card" style="padding:12px 16px 10px;margin:10px 0"><div class="yu-week">'+week.map(function(w){return '<div><i style="height:'+Math.max(3,Math.round(w[1]/mx*70))+'px"></i>'+w[0]+'</div>'}).join('')+'</div></div>';
+  var _wkEmpty=week.every(function(w){return !w[1]});
+  h+='<div class="b-card" style="padding:12px 16px 10px;margin:10px 0"><div class="yu-week'+(_wkEmpty?' empty':'')+'">'+week.map(function(w){return '<div><i style="height:'+Math.max(3,Math.round(w[1]/mx*70))+'px"></i>'+w[0]+'</div>'}).join('')+'</div>'+(_wkEmpty?'<div class="yu-empty">'+(hi?'\\u0907\\u0938 \\u0939\\u092B\\u093C\\u094D\\u0924\\u0947 \\u0905\\u092D\\u0940 \\u0915\\u0941\\u091B \\u0928\\u0939\\u0940\\u0902':'Your week fills in as you use Brodoit')+'</div>':'')+'</div>';
   return h;
 }
 function _ltToggle(k){S.learnOpen=S.learnOpen===k?null:k;render();if(S.learnOpen)setTimeout(function(){var el=document.getElementById('lt-'+k);if(el&&el.getBoundingClientRect().top>window.innerHeight*0.55)el.scrollIntoView({behavior:'smooth',block:'start'})},40)}
@@ -15313,7 +15317,7 @@ if(S.tab==='tasks'){
     h+='<div class="tc-acts" style="display:flex;gap:4px;align-items:flex-start;margin-left:6px"><button class="ib" onclick="opE(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ib" style="color:#1F1E1C" onclick="del(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';
     h+='</div>';
   }
-  if(!_segTasks.length&&!f.length)h+='<div style="text-align:center;padding:40px 0"><div style="font-size:36px;margin-bottom:8px">\\u2728</div><div style="font:600 15px var(--sans);color:var(--ink)">No tasks yet</div><div style="font:400 13px var(--sans);color:var(--text-mute);margin-top:4px">Tap the card above to add your first task</div></div>';
+  if(!_segTasks.length&&!f.length)h+='<div style="text-align:center;padding:36px 0"><div style="margin:0 auto 10px;width:64px">'+(window.mascot?window.mascot('idle',64):'')+'</div><div style="font:400 24px var(--serif);color:var(--ink)">No tasks yet</div><div style="font:400 13px var(--sans);color:var(--text-mute);margin-top:4px">Tap the card above to add your first task</div></div>';
   else if(!_segTasks.length)h+='<div style="text-align:center;padding:30px 0"><div style="font:500 14px var(--sans);color:var(--text-mute)">No tasks in this view</div></div>';
   }
   // ── NOTES SUB-TAB ──
@@ -17333,7 +17337,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=122').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=124').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17836,7 +17840,7 @@ Return ONLY a JSON array (no prose). Each item: {"title","org","posts" (number o
 officialUrl and applyUrl MUST be on the organisation's official website (gov.in, nic.in or the official recruiter domain), never a job-news site. Up to 15 items.`;
   const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),90000);
   try{
-    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GEMINI_KEY,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json'},
+    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+geminiKey(),{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],tools:[{google_search:{}}],generationConfig:{temperature:0.1,maxOutputTokens:8192}})});
     clearTimeout(t);const j=await r.json();
     if(!r.ok)throw new Error((j.error&&j.error.message)||('HTTP '+r.status));
@@ -17849,7 +17853,7 @@ async function refreshGovJobs(){
   if(_jobsRunning)return;_jobsRunning=true;const start=Date.now();let added=0,seen=0;
   try{
     jobLoadSeed();
-    if(GEMINI_KEY){
+    if(geminiKey()){
       for(const cat of Object.keys(JOB_CATEGORIES)){
         const items=await jobAskGemini(cat);
         for(const raw of items){
@@ -17893,7 +17897,7 @@ app.use('/prep',express.static(path.join(__dirname,'prep'),{etag:true,setHeaders
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v170";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v172";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
@@ -17954,9 +17958,11 @@ app.get('/',(req,res)=>{
 // ═══ v9: Talking Bro, News Channel, Languages, Hindi book briefs ═══
 app.use('/app',express.static(path.join(__dirname,'app'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 let _settings=null;try{_settings=require('./modules/settings.js').install(db)}catch(e){console.log('[settings] module missing, env only:',e.message);_settings={getSetting:k=>process.env[k]||'',setSetting:()=>{throw new Error('settings module missing')},settingSource:k=>process.env[k]?'env':null}}
-const {getSetting,setSetting,settingSource}=_settings;
+const {getSetting,setSetting,settingSource}=_settings;global._getSetting=getSetting;
 const sha256=s=>crypto.createHash('sha256').update(String(s)).digest('hex');
 function pushTo(phone,payload){try{const subs=db.prepare('SELECT * FROM push_subs WHERE user_phone=?').all(phone);let n=0;for(const sub of subs){n++;webpush.sendNotification({endpoint:sub.endpoint,keys:{p256dh:sub.keys_p256dh,auth:sub.keys_auth}},typeof payload==='string'?payload:JSON.stringify(payload)).catch(err=>{if(err.statusCode===404||err.statusCode===410)db.prepare('DELETE FROM push_subs WHERE endpoint=?').run(sub.endpoint)})}return n}catch(e){return 0}}
+try{require('./modules/newsreader.js').install(app,{auth,getSetting,MEDIA_DIR})}catch(e){console.log('[newsreader] not installed:',e.message)}
+try{require('./modules/newsdesk.js').install(app,{db,auth,getSetting,isAdminUser,fetchFeed,feeds:NEWS_FEEDS})}catch(e){console.log('[desk] not installed:',e.message)}
 let _android=null;try{_android=require('./modules/android.js').install(app,{MEDIA_DIR,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',auth,isAdminUser})}catch(e){console.log('[android] not installed:',e.message)}
 if(_android)global._androidCert=function(){try{return _android.cert()}catch(e){return null}};
 let _steps=null;try{_steps=require('./modules/steps.js').install(app,{db,auth,dayKey,webpush,pushTo,MEDIA_DIR,android:_android,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',genId,sha256,getUserByPhone:phone=>db.prepare('SELECT phone,name,email,tz,created_at FROM users WHERE phone=?').get(phone),fitSync,_getUserTz,appRoot:__dirname});if(_steps&&_steps.ingest)global._stepsIngest=_steps.ingest}catch(e){console.log('[steps] not loaded:',e.message)}
@@ -17966,10 +17972,11 @@ let _speaker=null;try{_speaker=require('./modules/speaker.js').install(app,{db,a
 app.get('/api/book-hi/:id',(req,res)=>{const id=String(req.params.id||'').replace(/[^a-zA-Z0-9_-]/g,'');let f=path.join(MEDIA_DIR,'books-hi',id+'.json');if(!_fs.existsSync(f))f=path.join(__dirname,'books-hi',id+'.json');if(!_fs.existsSync(f))return res.status(404).json({error:'no hindi yet'});res.set('Cache-Control','public, max-age=86400');res.sendFile(f)});
 app.get('/api/book-hi',(req,res)=>{const ids=new Set();for(const d of [path.join(MEDIA_DIR,'books-hi'),path.join(__dirname,'books-hi')]){try{_fs.readdirSync(d).filter(f=>f.endsWith('.json')).forEach(f=>ids.add(f.slice(0,-5)))}catch(e){}}res.json({ids:[...ids]})});
 // Pre-recorded language lessons (scripts/lang-audio.js) are served from the persistent media dir first.
+app.get('/api/lang/audio-status',(_,res)=>{try{const fs2=require('fs');let total=0;try{for(const f of fs2.readdirSync(path.join(__dirname,'lang','audio')).filter(f=>f.endsWith('.json'))){const c=JSON.parse(fs2.readFileSync(path.join(__dirname,'lang','audio',f),'utf8'));total+=(c.lessons||[]).length}}catch(e){}let ready=0;try{const root=path.join(MEDIA_DIR,'lang-audio');for(const d of fs2.readdirSync(root)){try{ready+=fs2.readdirSync(path.join(root,d)).filter(f=>f.endsWith('.mp3')).length}catch(e){}}}catch(e){}let recording=false;try{const st=global._adminStatus&&global._adminStatus();recording=!!(st&&st.jobs&&st.jobs['lang-audio']&&st.jobs['lang-audio'].status==='running')}catch(e){}res.set('Cache-Control','no-cache');res.json({ready,total:total||60,recording,studio:!!(getSetting('ELEVENLABS_API_KEY'))})}catch(e){res.json({ready:0,total:60,recording:false})}});
 app.get('/lang/audio/:code/:file',(req,res,next)=>{const code=String(req.params.code).replace(/[^a-z]/g,''),file=String(req.params.file).replace(/[^a-zA-Z0-9_.-]/g,'');const m=path.join(MEDIA_DIR,'lang-audio',code,file);if(_fs.existsSync(m)){res.set('Cache-Control','public, max-age=31536000, immutable');return res.sendFile(m)}const r=path.join(__dirname,'lang','audio',code,file);if(_fs.existsSync(r))return res.sendFile(r);res.status(404).end()});
 const _allNewsItems=async()=>{const out=[];for(const c of NEWS_CATS){const cc=newsCache[c];if(cc&&cc.items&&cc.items.length)out.push(...cc.items);else{try{out.push(...await curateNewsCategory(c))}catch(e){}}}out.sort((a,b)=>(new Date(b.date||0).getTime()||0)-(new Date(a.date||0).getTime()||0));const seen=new Set();return out.filter(it=>{const k=(it.title||'').toLowerCase().slice(0,50);if(seen.has(k))return false;seen.add(k);return true})};
 const _bulletin=require('./modules/bulletin.js').install(app,{db,auth,mediaDir:MEDIA_DIR,getSetting,isAdmin:req=>{const t=String(req.query.token||req.headers['x-admin-token']||'').trim();if(ADMIN_TOKEN&&t===ADMIN_TOKEN)return true;try{const u=db.prepare('SELECT * FROM users WHERE token=?').get(String(req.headers['x-token']||''));return isAdminUser(u)}catch(e){return false}},callGemini:_callGemini,getNewsItems:_allNewsItems});
-require('./modules/voice.js').install(app,{auth,getSetting,BRO_TOOLS,_broExecTool,_getUserTz,_callGemini,_callGroq,getSteps:phone=>_steps&&_steps.getStepsTool?_steps.getStepsTool(phone):null,setStepGoal:(phone,goal)=>{try{db.prepare("INSERT INTO step_profile(user_phone,goal) VALUES(?,?) ON CONFLICT(user_phone) DO UPDATE SET goal=excluded.goal").run(phone,goal);return{ok:true,goal}}catch(e){return{error:e.message}}},getHeadlines:async topic=>{const all=await _allNewsItems();const t=String(topic||'').toLowerCase();const cat=t==='technology'?'tech':t;if(cat&&NEWS_CATS.includes(cat)){const cc=newsCache[cat];if(cc&&cc.items)return cc.items}return all},getBulletin:()=>_bulletin.latest('daily'),speakerSummary:phone=>_speaker&&_speaker.summaryFor?_speaker.summaryFor(phone):null});
+require('./modules/voice.js').install(app,{auth,getSetting,setSetting,BRO_TOOLS,_broExecTool,_getUserTz,_callGemini,_callGroq,hasGroq:()=>!!groqKey(),hasGemini:()=>!!geminiKey(),getSteps:phone=>_steps&&_steps.getStepsTool?_steps.getStepsTool(phone):null,setStepGoal:(phone,goal)=>{try{db.prepare("INSERT INTO step_profile(user_phone,goal) VALUES(?,?) ON CONFLICT(user_phone) DO UPDATE SET goal=excluded.goal").run(phone,goal);return{ok:true,goal}}catch(e){return{error:e.message}}},getHeadlines:async topic=>{const all=await _allNewsItems();const t=String(topic||'').toLowerCase();const cat=t==='technology'?'tech':t;if(cat&&NEWS_CATS.includes(cat)){const cc=newsCache[cat];if(cc&&cc.items)return cc.items}return all},getBulletin:()=>_bulletin.latest('daily'),speakerSummary:phone=>_speaker&&_speaker.summaryFor?_speaker.summaryFor(phone):null});
 try{require('./modules/admin.js').install(app,{db,auth,isAdminUser,MEDIA_DIR,DB_PATH,getSetting,setSetting,settingSource,bulletin:_bulletin,android:_android,scriptsDir:path.join(__dirname,'scripts'),appRoot:__dirname,steps:_steps})}catch(e){console.log('[admin] not loaded:',e.message)}
 app.get('*',(_,res)=>res.set('Cache-Control','no-cache, no-store, must-revalidate').type('html').send(HTML));
 const PORT=process.env.PORT||3000;

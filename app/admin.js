@@ -21,12 +21,14 @@
 
   const KEYS = [
     { k: 'OPENAI_API_KEY', label: 'OpenAI', sub: 'Talking Bro — real-time voice', ph: 'sk-…', icon: 'mic', url: 'https://platform.openai.com/api-keys', host: 'platform.openai.com' },
-    { k: 'ELEVENLABS_API_KEY', label: 'ElevenLabs', sub: 'Studio voices — bulletins, Hindi books, lessons', ph: 'xi-…', icon: 'radio', url: 'https://elevenlabs.io/app/settings/api-keys', host: 'elevenlabs.io' },
+    { k: 'ELEVENLABS_API_KEY', label: 'ElevenLabs', sub: 'Studio voices — Bro, bulletins, Hindi books, lessons', ph: 'xi-…', icon: 'radio', url: 'https://elevenlabs.io/app/settings/api-keys', host: 'elevenlabs.io' },
+    { k: 'GEMINI_API_KEY', label: 'Gemini', sub: 'Bro\'s brain (free tier works) — news, books, lessons text', ph: 'AIza…', icon: 'sparkles', url: 'https://aistudio.google.com/app/apikey', host: 'aistudio.google.com' },
+    { k: 'GROQ_API_KEY', label: 'Groq', sub: 'Optional second brain — fast replies', ph: 'gsk_…', icon: 'zap', url: 'https://console.groq.com/keys', host: 'console.groq.com' },
   ];
   const SERVICES = [
-    { k: 'realtime', label: 'Realtime voice', icon: 'mic', off: 'device voice' },
+    { k: 'brovoice', label: 'Bro voice', icon: 'mic', off: 'device voice' },
     { k: 'elevenlabs', label: 'ElevenLabs', icon: 'radio', off: 'device voice' },
-    { k: 'gemini', label: 'Gemini', icon: 'sparkles', off: 'set on server' },
+    { k: 'gemini', label: 'Gemini', icon: 'sparkles', off: 'paste a key' },
     { k: 'ffmpeg', label: 'ffmpeg', icon: 'film', off: 'lessons need it' },
     { k: 'android', label: 'Android app', icon: 'smartphone', off: 'building…' },
   ];
@@ -96,7 +98,7 @@
   }
   function body(a) {
     const st = a.status;
-    let h = '<p class="adm-lead b-body">Paste once. Saved on the server, live right away.</p>';
+    let h = '<p class="adm-lead b-body">Paste once. Saved on the server, live right away. Bro needs one brain key (OpenAI, Gemini or Groq) and the ElevenLabs key for studio voices.</p>';
     // service tiles
     h += '<div class="adm-tiles" id="admTiles">' + SERVICES.map(tileHtml).join('') + '</div>';
     // keys
@@ -110,6 +112,7 @@
     // recordings
     h += '<div class="adm-sec"><div class="b-eyebrow">Recordings</div>' + mediaHtml(st.media) + '</div>';
     // jobs
+    h += (function () { const v = S.adm && S.adm.status && S.adm.status.voice; if (!v) return ''; const eng = v.engine === 'elevenlabs' ? 'ElevenLabs agent' : v.engine === 'realtime' ? 'OpenAI Realtime' : v.engine === 'elevenlabs-pending' ? 'ElevenLabs agent (setting up…)' : 'classic pipeline'; return '<p class="adm-auto b-sm">' + ic('mic', 14) + ' Bro talks through ' + eng + (v.llm ? '' : ' · no brain key yet') + (v.agent_error ? '<br><span style="color:var(--b-primary)">Agent error: ' + _esc(v.agent_error.slice(0, 220)) + '</span>' : '') + '</p>'; })();
     h += (function () { const a = S.adm && S.adm.status && S.adm.status.auto; if (!a || a.on === false) return ''; const q = (a.running ? [a.running + ' (recording)'] : []).concat(a.queue || []); return '<p class="adm-auto b-sm">' + ic('zap', 14) + ' ' + (q.length ? 'Auto: ' + _esc(q.join(' → ')) : 'Recordings start by themselves once a key is saved.') + '</p>'; })();
     h += '<div class="adm-jobs" id="admJobs">' + JOBS.map(j => jobHtml(j)).join('') + '</div>';
     return h;

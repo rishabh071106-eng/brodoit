@@ -1,0 +1,38 @@
+/* Brodoit mini-app top bar — shared by /lang, /prep and /speaker (link after /app/theme.css).
+   One bar everywhere: [← Brodoit] [parent back, when the page has one] [title] [right slot].
+   Paper background, ink text, serif title, 44px targets, safe-area aware, sticky. Markup comes from
+   /lang/assets/topbar.js (window.bdTopbar). */
+.bd-top{position:sticky;top:0;z-index:40;padding-top:env(safe-area-inset-top);
+  background:color-mix(in srgb,var(--b-bg) 88%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--b-line);color:var(--b-ink)}
+@supports not (background:color-mix(in srgb,#000 50%,transparent)){.bd-top{background:var(--b-bg)}}
+.bd-top-in{display:flex;align-items:center;gap:8px;min-height:60px;padding:8px 16px;max-width:var(--bd-wrap,720px);margin:0 auto;box-sizing:border-box}
+.bd-home{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;min-height:44px;padding:0 14px 0 10px;border-radius:999px;
+  background:var(--b-card);border:1px solid var(--b-line-2);color:var(--b-ink);font:600 14px/1 var(--b-sans);letter-spacing:-.01em;text-decoration:none;
+  box-shadow:none;transition:transform 120ms cubic-bezier(.16,1,.3,1),background 200ms;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.bd-home svg{width:16px;height:16px;flex-shrink:0;display:block}
+.bd-home:active{transform:scale(.96);background:var(--b-bg-2)}
+.bd-back{width:44px;height:44px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;background:transparent;border:none;color:var(--b-ink);cursor:pointer;
+  text-decoration:none;-webkit-tap-highlight-color:transparent;margin-left:-4px;transition:transform 120ms cubic-bezier(.16,1,.3,1),background 200ms}
+.bd-back svg{width:22px;height:22px;display:block}
+.bd-back:active{transform:scale(.94);background:var(--b-bg-2)}
+.bd-title{flex:1;min-width:0;font:400 20px/1.2 var(--b-serif);letter-spacing:-.005em;color:var(--b-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-title small{display:block;font:500 12px/1.2 var(--b-sans);color:var(--b-mute);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-right{display:inline-flex;align-items:center;gap:8px;flex-shrink:0;min-width:0}
+.bd-right:empty{display:none}
+.bd-right .pill{min-height:44px}
+.bd-home:focus-visible,.bd-back:focus-visible{outline:2px solid var(--b-ink);outline-offset:2px}
+/* a quiet one-line notice under the bar (studio-voice status on /lang lessons) */
+.bd-note{display:flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:6px 16px;font:500 12.5px/1.3 var(--b-sans);color:var(--b-mute);
+  background:var(--b-bg-2);border-bottom:1px solid var(--b-line);text-align:center}
+.bd-note[hidden]{display:none}
+.bd-note i{width:6px;height:6px;border-radius:50%;background:var(--b-primary);flex-shrink:0;animation:bd-blink 1.6s ease-in-out infinite}
+@keyframes bd-blink{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.bd-note i{animation:none}}
+@media (max-width:359px){.bd-home span{display:none}.bd-home{padding:0 12px}}
+
+.bd-homeic{width:44px;height:44px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;border:1px solid var(--b-line-2);background:var(--b-card);color:var(--b-ink);text-decoration:none;-webkit-tap-highlight-color:transparent;transition:transform 120ms cubic-bezier(.16,1,.3,1)}
+.bd-homeic svg{width:20px;height:20px;display:block}
+.bd-homeic:active{transform:scale(.94)}
+.bd-back{margin-left:-8px}
+.bd-title{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.15}

@@ -24,6 +24,8 @@ import android.widget.TextView
 class EnableStepsActivity : Activity() {
     private lateinit var status: TextView
     private lateinit var allow: Button
+    private var rootView: View? = null
+    private fun root(): View = rootView ?: window.decorView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +54,11 @@ class EnableStepsActivity : Activity() {
             setOnClickListener { openApp() }
         }
         root.addView(icon); root.addView(title); root.addView(body); root.addView(status); root.addView(allow); root.addView(later)
+        rootView = root
         setContentView(root)
-        if (StepsEngine.hasPermission(this)) finishEnable()
+        // One tap total: the system "Allow" dialog opens straight away; this screen is only the backdrop.
+        // Android 9 and older need no runtime permission, so they enable with zero taps.
+        if (StepsEngine.hasPermission(this)) finishEnable() else if (savedInstanceState == null) root.post { ask() }
     }
 
     private fun ask() {
@@ -66,7 +71,11 @@ class EnableStepsActivity : Activity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != 7) return
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) finishEnable()
-        else { status.text = getString(R.string.enable_denied); status.visibility = View.VISIBLE }
+        else {
+            // Declined: never trap the user here — open the app; Steps tab offers "Turn on" again later.
+            status.text = getString(R.string.enable_denied); status.visibility = View.VISIBLE
+            root().postDelayed({ openApp() }, 1600)
+        }
     }
 
     private fun finishEnable() {

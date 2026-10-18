@@ -11,9 +11,11 @@
 <meta property="og:image" content="/icon-512.png">
 <meta name="theme-color" content="#F6F5F2">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=12">
-<link rel="stylesheet" href="assets/app.css?v=12">
-<script src="/app/icons.js?v=12" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=14">
+<link rel="stylesheet" href="assets/app.css?v=14">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=14">
+<script src="/app/icons.js?v=14" defer></script>
+<script src="/lang/assets/topbar.js?v=14" defer></script>
 <style id="jobcss"></style>
 <style>
   .jhero{border-radius:var(--r-xl);padding:22px;color:#fff;background:linear-gradient(140deg,#2A0A0A 0%,#FF5A1F 55%,#FFC24B 100%);position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
@@ -27,8 +29,8 @@
   .hstats span{font-size:11px;font-weight:700;opacity:.9}
   .tools{display:flex;gap:8px;margin:14px 0 4px}
   .search{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border-radius:999px;padding:4px 14px;box-shadow:var(--shadow)}
-  .search input{flex:1;border:none;background:none;font:600 15px var(--font);color:var(--ink);padding:10px 0;outline:none;min-width:0}
-  .age{display:flex;align-items:center;gap:6px;background:var(--card);border-radius:999px;padding:4px 12px;box-shadow:var(--shadow);font-weight:800;font-size:13px}
+  .search input{flex:1;border:none;background:none;font:600 15px var(--font);color:var(--ink);padding:10px 0;outline:none;min-width:0;min-height:44px}
+  .age{display:flex;align-items:center;gap:6px;min-height:48px;background:var(--card);border-radius:999px;padding:4px 12px;box-shadow:var(--shadow);font-weight:800;font-size:13px}
   .age input{width:44px;border:none;background:var(--card-2);border-radius:8px;padding:7px 6px;font:800 14px var(--font);color:var(--ink);text-align:center}
   .cats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
   .cat{border-radius:var(--r-md);padding:14px;color:#fff;min-height:104px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;box-shadow:var(--shadow);position:relative;overflow:hidden}
@@ -70,9 +72,9 @@
 <script type="module">
 import { renderChrome, esc, timeAgo } from './assets/js/app.js?v=9';
 import { CAT, JOB_CSS, jobCard, daysLeft, isNew } from './assets/js/jobs-common.js?v=9';
-import { ic, hydrateIcons } from './assets/js/ico.js?v=12';
+import { ic, hydrateIcons } from './assets/js/ico.js?v=14';
 document.getElementById('jobcss').textContent = JOB_CSS;
-renderChrome({ active: '', title: '<span class="brand">Brodoit <b>Jobs</b></span>' });
+renderChrome({ active: '', title: 'Jobs' });
 hydrateIcons();
 
 // Category icons (the shared jobCard() still prints the category emoji; swapJav() replaces it after each render).

@@ -158,3 +158,15 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
 - Steps client: `isTWA()` accepts `android-app://com.brodoit.*` and `?twa=1`; "Turn on" opens `intent://enable#Intent;scheme=brodoit;package=com.brodoit.app;end`.
 
 - `modules/admin.js` `autoRecord()` — self-starting recording chain (bulletin → hindi-books → lang-audio), triggered by key save, boot (+90 s) and a daily 03:30 IST sweep; `GET /api/admin/status` → `auto`, `POST /api/admin/auto` runs it now. `ADMIN_AUTO_RECORD=0` disables.
+
+## Voice (v9.5)
+- `modules/elevenvoice.js` — `pickVoice(key, lang, getSetting)` (Admin setting → env → account voices by name → Adam), `speak()` with `eleven_turbo_v2_5` + language_code (multilingual_v2 rejects language_code). Used by bulletin, lang-audio, hindi-books and Bro's TTS.
+- `modules/voice.js` — engines in order: ElevenLabs Conversational AI (`ensureAgent`, `/v1/convai/agents/create`, signed URL; `ELEVEN_AGENT_ID`/`_HASH` in settings; `global._voiceStatus()` for Admin) → OpenAI Realtime → classic (`/api/voice/turn`: OpenAI chat → Groq → Gemini with tools; `/api/voice/tts`; `/api/voice/transcribe`).
+- `app/voice.js` — `V.connectEleven` loads `@elevenlabs/client` from esm.sh/jsDelivr, client tools → `/api/voice/tool`; full-screen overlay; `V.speak` prefers `/api/voice/tts`.
+- AI keys in `server.js` are `geminiKey()` / `groqKey()` (Admin → env); `global._getSetting` is set once settings load.
+
+## News Desk + mini-app chrome (v9.5)
+- `modules/newsdesk.js` — batch every 30 min (+boot): all feeds → cluster duplicates (token Jaccard ≥ .28) → writer OpenAI → Gemini → Groq (JSON: headline, 55-65-word summary, why, Hindi trio, category; only facts from sources) or extractive fallback → `news_stories`. `GET /api/news/desk`, `POST /api/news/desk/run` (admin). `NEWS_DESK=0` disables.
+- `app/news.js` — default view `top`: Brodoit Desk cards (`N.deckHtml`, `N.card`, `N.sizeDeck`), Listen via `N.say` (studio TTS), Explain via `N.explainObj`, Read via `N.readItem`.
+- `lang/assets/topbar.{js,css}` — shared mini-app bar: one back control (parent ‹ or "← Brodoit"), home button on the right when there is a parent; cold-open back guard (referrer-based) so Android back lands in the app.
+- Android first open asks the system Physical-activity permission directly (one tap); declining opens the app.

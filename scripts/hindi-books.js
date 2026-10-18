@@ -12,7 +12,8 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const GEMINI_KEY = process.env.GEMINI_API_KEY || '';
 const ELEVEN_KEY = process.env.ELEVENLABS_API_KEY || '';
-const VOICE_HI = process.env.ELEVEN_VOICE_HI || 'pNInz6obpgDQGcFmaJgB';
+let VOICE_HI = process.env.ELEVEN_VOICE_HI || 'pNInz6obpgDQGcFmaJgB';
+const EV = require('../modules/elevenvoice.js');
 const args = process.argv.slice(2);
 const textOnly = args.includes('--text-only');
 const only = args.filter(a => !a.startsWith('--'));
@@ -60,7 +61,7 @@ async function record(text, out) {
   for (let i = 0; i < chunks.length; i++) {
     const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_HI}?output_format=mp3_44100_128`, {
       method: 'POST', headers: { 'xi-api-key': ELEVEN_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: chunks[i], model_id: 'eleven_multilingual_v2', language_code: 'hi', voice_settings: { stability: 0.55, similarity_boost: 0.8, style: 0.15, use_speaker_boost: true } }),
+      body: JSON.stringify({ text: chunks[i], model_id: 'eleven_turbo_v2_5', language_code: 'hi', voice_settings: { stability: 0.55, similarity_boost: 0.8, style: 0.15, use_speaker_boost: true } }),
     });
     if (!r.ok) throw new Error('ElevenLabs ' + r.status + ' ' + (await r.text()).slice(0, 200));
     bufs.push(Buffer.from(await r.arrayBuffer()));
@@ -69,6 +70,7 @@ async function record(text, out) {
   fs.writeFileSync(out, Buffer.concat(bufs));
 }
 (async () => {
+  try { VOICE_HI = await EV.pickVoice(ELEVEN_KEY, 'hi'); console.log('voice', VOICE_HI); } catch (e) {}
   const books = loadBooks().filter(b => !only.length || only.includes(b.id));
   console.log(`[hindi-books] output → ${MEDIA_DIR}`);
   console.log(`[hindi-books] ${books.length} books · gemini ${GEMINI_KEY ? '✅' : '❌'} · elevenlabs ${ELEVEN_KEY ? '✅' : '❌'}${textOnly ? ' · text only' : ''}`);

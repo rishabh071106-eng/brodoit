@@ -6,6 +6,7 @@
 // call itself, and asks us to run tools via /api/voice/tool (tasks, reminders, news…).
 // Fallback engine (no key): browser speech recognition → /api/voice/turn (Gemini/Groq) → browser TTS.
 'use strict';
+const EV = require('./elevenvoice.js');
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime';
 
 const PERSONAS = {
@@ -61,15 +62,10 @@ function install(app, deps) {
   const DEFAULT_VOICE = 'pNInz6obpgDQGcFmaJgB';
   const elevenVoice = lang => getSetting(lang === 'hi' ? 'ELEVEN_VOICE_HI' : 'ELEVEN_VOICE_EN') || process.env[lang === 'hi' ? 'ELEVEN_VOICE_HI' : 'ELEVEN_VOICE_EN'] || DEFAULT_VOICE;
   async function elevenSpeak(text, lang, key) {
-    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 20000);
     try {
-      const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${elevenVoice(lang)}?output_format=mp3_44100_64`, {
-        method: 'POST', signal: ctrl.signal, headers: { 'xi-api-key': key, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, model_id: 'eleven_turbo_v2_5', language_code: lang === 'hi' ? 'hi' : 'en', voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.25, use_speaker_boost: true } }),
-      });
-      if (!r.ok) { console.log('[voice] elevenlabs', r.status, (await r.text()).slice(0, 160)); return null; }
-      return Buffer.from(await r.arrayBuffer());
-    } finally { clearTimeout(t); }
+      const voice = await EV.pickVoice(key, lang, getSetting);
+      return await EV.speak(key, text, lang, voice, { format: 'mp3_44100_64', timeout: 20000, chunk: 1500, voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.25, use_speaker_boost: true } });
+    } catch (e) { console.log('[voice] elevenlabs', e.message); return null; }
   }
   async function openaiSpeak(text, lang, key) {
     const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 20000);
@@ -115,13 +111,104 @@ function install(app, deps) {
     } catch (e) { res.status(502).json({ error: e.message }); }
   });
 
+  // 0b. ElevenLabs Conversational AI — Bro's primary voice engine when an ElevenLabs key exists: their speech recognition,
+  //     their LLM orchestration and their voices, interruptible, Hindi/English. One private agent per server, created on first
+  //     use and refreshed when the prompt or tools change. Tools run in the browser (client tools) through /api/voice/tool.
+  const AGENT = { id: null, hash: null, error: '', at: 0, creating: null };
+  const agentPrompt = () => PERSONAS.bro + ' Modes: when the user asks to learn or explain, teach patiently like a tutor; when they ask to practise a language, run a short spoken lesson. Match the user\'s language exactly (Hindi, English or Hinglish). Use tools whenever they ask to add or complete tasks, set reminders, create events, read their schedule, read the news, or check or set steps; confirm in one short line after a tool. Audio only: never read URLs, markdown or emojis. Keep answers to one to three sentences unless asked to explain.';
+  const clientTools = () => tools.map(t => ({ type: 'client', name: t.name, description: (t.description || '').slice(0, 400), parameters: t.input_schema || { type: 'object', properties: {} }, expects_response: true }));
+  async function elevenApi(key, method, path, body) {
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 20000);
+    try {
+      const r = await fetch('https://api.elevenlabs.io' + path, { method, signal: ctrl.signal, headers: Object.assign({ 'xi-api-key': key }, body ? { 'Content-Type': 'application/json' } : {}), body: body ? JSON.stringify(body) : undefined });
+      const text = await r.text(); let j = null; try { j = text ? JSON.parse(text) : null; } catch (e) { j = { raw: text.slice(0, 300) }; }
+      return { ok: r.ok, status: r.status, body: j };
+    } finally { clearTimeout(t); }
+  }
+  async function agentConfig(key) {
+    return {
+      name: 'Brodoit Bro',
+      conversation_config: {
+        agent: {
+          first_message: "Hey, I'm Bro. What's up?",
+          language: 'en',
+          prompt: { prompt: agentPrompt(), llm: getSetting('ELEVEN_AGENT_LLM') || 'gemini-2.0-flash', temperature: 0.6, max_tokens: 350 },
+        },
+        tts: { voice_id: await EV.pickVoice(key, 'en', getSetting), model_id: 'eleven_turbo_v2_5', stability: 0.45, similarity_boost: 0.8 },
+        asr: { quality: 'high', provider: 'elevenlabs' },
+        turn: { turn_timeout: 7 },
+        conversation: { max_duration_seconds: 1800 },
+      },
+      platform_settings: { auth: { enable_auth: true } },
+    };
+  }
+  function hashOf(o) { return require('crypto').createHash('sha1').update(JSON.stringify(o)).digest('hex').slice(0, 12); }
+  async function ensureAgent(key) {
+    if (AGENT.creating) return AGENT.creating;
+    AGENT.creating = (async () => {
+      const cfg = await agentConfig(key); const want = hashOf({ cfg, tools: clientTools().map(t => t.name) });
+      const savedId = getSetting('ELEVEN_AGENT_ID') || AGENT.id, savedHash = getSetting('ELEVEN_AGENT_HASH') || AGENT.hash;
+      if (savedId && savedHash === want) { AGENT.id = savedId; AGENT.hash = want; return savedId; }
+      if (AGENT.error && Date.now() - AGENT.at < 10 * 60 * 1000 && !savedId) return null; // don't hammer a failing API
+      // tools: try the tools API (tool_ids), then inline tools, then none — whichever the account's API version accepts
+      const attempts = [];
+      try {
+        const ids = [];
+        for (const t of clientTools()) { const r = await elevenApi(key, 'POST', '/v1/convai/tools', { tool_config: t }); if (r.ok && r.body && r.body.id) ids.push(r.body.id); else { ids.length = 0; attempts.push('tools api ' + r.status + ' ' + JSON.stringify(r.body).slice(0, 120)); break; } }
+        if (ids.length) attempts.push({ cfg: JSON.parse(JSON.stringify(cfg)), set: c => { c.conversation_config.agent.prompt.tool_ids = ids; } });
+      } catch (e) { attempts.push('tools api: ' + e.message); }
+      attempts.push({ cfg: JSON.parse(JSON.stringify(cfg)), set: c => { c.conversation_config.agent.prompt.tools = clientTools(); } });
+      attempts.push({ cfg: JSON.parse(JSON.stringify(cfg)), set: c => {} });
+      const errors = attempts.filter(a => typeof a === 'string');
+      for (const a of attempts) {
+        if (typeof a === 'string') continue;
+        a.set(a.cfg);
+        const r = savedId ? await elevenApi(key, 'PATCH', '/v1/convai/agents/' + encodeURIComponent(savedId), a.cfg) : await elevenApi(key, 'POST', '/v1/convai/agents/create', a.cfg);
+        const id = (r.body && (r.body.agent_id || r.body.id)) || (r.ok ? savedId : null);
+        if (r.ok && id) {
+          AGENT.id = id; AGENT.hash = want; AGENT.error = ''; AGENT.at = Date.now();
+          try { if (deps.setSetting) { deps.setSetting('ELEVEN_AGENT_ID', id); deps.setSetting('ELEVEN_AGENT_HASH', want); } } catch (e) {}
+          console.log('[voice] elevenlabs agent ready', id, errors.length ? '(' + errors.join('; ') + ')' : '');
+          return id;
+        }
+        errors.push((savedId ? 'update ' : 'create ') + r.status + ' ' + JSON.stringify(r.body).slice(0, 200));
+        if (r.status === 404 && savedId) { try { deps.setSetting && deps.setSetting('ELEVEN_AGENT_ID', ''); } catch (e) {} }
+      }
+      AGENT.error = errors.join(' | ').slice(0, 600); AGENT.at = Date.now();
+      console.log('[voice] elevenlabs agent failed:', AGENT.error);
+      return null;
+    })().catch(e => { AGENT.error = e.message; AGENT.at = Date.now(); return null; }).finally(() => { AGENT.creating = null; });
+    return AGENT.creating;
+  }
+  async function signedUrl(key, agentId) {
+    const r = await elevenApi(key, 'GET', '/v1/convai/conversation/get-signed-url?agent_id=' + encodeURIComponent(agentId));
+    if (r.ok && r.body && r.body.signed_url) return { signed_url: r.body.signed_url };
+    const t = await elevenApi(key, 'GET', '/v1/convai/conversation/token?agent_id=' + encodeURIComponent(agentId));
+    if (t.ok && t.body && t.body.token) return { conversation_token: t.body.token };
+    throw new Error('signed url ' + r.status + ' ' + JSON.stringify(r.body).slice(0, 160));
+  }
+  global._voiceStatus = () => ({ engine: elevenKey() ? (AGENT.id ? 'elevenlabs' : (AGENT.error ? 'fallback' : 'elevenlabs-pending')) : (openaiKey() ? 'realtime' : 'fallback'), agent_id: AGENT.id || getSetting('ELEVEN_AGENT_ID') || null, agent_error: AGENT.error || '', llm: hasLLM(), tts: !!(elevenKey() || openaiKey()) });
+  if (elevenKey()) setTimeout(() => ensureAgent(elevenKey()).catch(() => {}), 15000);
+
   // 1. Session: hand the browser a short-lived Realtime client secret.
   app.post('/api/voice/session', auth, async (req, res) => {
     const persona = String(req.body && req.body.persona || 'bro');
     const lang = String(req.body && req.body.lang || '');
     const instructions = instructionsFor(persona, lang, req.user, String(req.body && req.body.speak || ''));
+    const ek = elevenKey();
+    if (ek && String(req.body && req.body.engine || '') !== 'classic') {
+      try {
+        const agentId = await ensureAgent(ek);
+        if (agentId) {
+          const su = await signedUrl(ek, agentId);
+          const name = (req.user && req.user.name || '').split(' ')[0];
+          const context = 'Mode: ' + persona + (lang ? ' (language practice: ' + lang + ')' : '') + '. ' + (String(req.body && req.body.speak || '') === 'hi' ? 'Speak Hindi.' : String(req.body && req.body.speak || '') === 'en' ? 'Speak English.' : 'Match the user\'s language.') + (name ? ' The user\'s name is ' + name + '.' : '') + ' Today is ' + new Date().toISOString().slice(0, 10) + '.';
+          return res.json(Object.assign({ mode: 'eleven', persona, agent_id: agentId, tools: tools.map(t => t.name), context }, su));
+        }
+      } catch (e) { console.log('[voice] elevenlabs session failed, next engine:', e.message); }
+    }
     const key = openaiKey();
-    const caps = { tts: !!(elevenKey() || key), stt: !!key };
+    const caps = { tts: !!(elevenKey() || key), stt: !!key, llm: hasLLM() };
     if (!key) return res.json({ mode: 'fallback', persona, caps, instructions: instructions.slice(0, 400) });
     try {
       const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 12000);
@@ -155,45 +242,70 @@ function install(app, deps) {
     catch (e) { res.json({ result: { error: e.message } }); }
   });
 
-  // 3. Fallback turn: text in → text out, with simple tool handling, for devices without Realtime.
+  // 3. Classic turn: text in → text out with tools. Providers in order: OpenAI (gpt-4o-mini) → Groq → Gemini; whichever has a key.
+  async function callOpenAIChat(key, messages, { maxTokens = 800, tools } = {}) {
+    const body = { model: getSetting('OPENAI_CHAT_MODEL') || 'gpt-4o-mini', messages, max_tokens: maxTokens, temperature: 0.7 };
+    if (tools && tools.length) { body.tools = tools; body.tool_choice = 'auto'; }
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 30000);
+    try {
+      const r = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', signal: ctrl.signal, headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const j = await r.json();
+      if (!r.ok) throw new Error((j.error && j.error.message) || ('OpenAI ' + r.status));
+      const m = j.choices && j.choices[0] && j.choices[0].message;
+      return { message: m, reply: (m && m.content) || '' };
+    } finally { clearTimeout(t); }
+  }
+  const hasGroq = () => { try { return !!(deps.hasGroq ? deps.hasGroq() : process.env.GROQ_API_KEY); } catch (e) { return false; } };
+  const hasGemini = () => { try { return !!(deps.hasGemini ? deps.hasGemini() : process.env.GEMINI_API_KEY); } catch (e) { return false; } };
+  function providers() {
+    const out = [];
+    const ok = openaiKey(); if (ok) out.push({ name: 'openai', tools: true, call: (m, o) => callOpenAIChat(ok, m, o) });
+    if (_callGroq && hasGroq()) out.push({ name: 'groq', tools: true, call: (m, o) => _callGroq(m, o) });
+    if (_callGemini && hasGemini()) out.push({ name: 'gemini', tools: false, call: async (m, o) => { const sys = (m.find(x => x.role === 'system') || {}).content || ''; const g = await _callGemini(m.filter(x => x.role !== 'system'), { maxTokens: o.maxTokens || 600, systemPrompt: sys }); return { message: { content: g.reply }, reply: g.reply }; } });
+    return out;
+  }
+  const hasLLM = () => providers().length > 0;
   app.post('/api/voice/turn', auth, async (req, res) => {
     const persona = String(req.body && req.body.persona || 'bro');
     const lang = String(req.body && req.body.lang || '');
+    const speak = String(req.body && req.body.speak || '');
     const msgs = Array.isArray(req.body && req.body.messages) ? req.body.messages.slice(-12).map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content || '').slice(0, 2000) })) : [];
     if (!msgs.length) return res.status(400).json({ error: 'messages required' });
-    const sys = instructionsFor(persona, lang, req.user, String(req.body && req.body.speak || '')) + ' Reply in plain spoken sentences, no lists, no markdown.';
+    const sys = instructionsFor(persona, lang, req.user, speak) + ' Reply in plain spoken sentences, no lists, no markdown.';
+    const list = providers();
+    if (!list.length) return res.status(503).json({ error: speak === 'hi' ? 'Bro का दिमाग़ अभी जुड़ा नहीं — You → Admin में OpenAI, Gemini या Groq की key डालो।' : 'Bro has no brain yet — paste an OpenAI, Gemini or Groq key in You → Admin.' });
     const last = msgs[msgs.length - 1].content.toLowerCase();
-    const actions = [];
-    try {
-      const wantsTool = /\b(add|create|schedule|remind|task|event|block|complete|done|finish|mark|news|headline|khabar|samachar)\b/i.test(last);
-      if (wantsTool && _callGroq) {
-        const groqTools = tools.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.input_schema } }));
+    const wantsTool = /\b(add|create|schedule|remind|task|event|block|complete|done|finish|mark|news|headline|steps|goal|khabar|samachar|yaad|kaam)\b/i.test(last);
+    const fnTools = tools.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.input_schema } }));
+    let lastErr = null;
+    for (const p of list) {
+      const actions = [];
+      try {
         let apiMsgs = [{ role: 'system', content: sys }, ...msgs];
         for (let loop = 0; loop < 3; loop++) {
-          const g = await _callGroq(apiMsgs, { maxTokens: 800, tools: groqTools });
+          const g = await p.call(apiMsgs, { maxTokens: 800, tools: p.tools && wantsTool ? fnTools : undefined });
           const m = g.message;
-          if (m && m.tool_calls && m.tool_calls.length) {
+          if (p.tools && m && m.tool_calls && m.tool_calls.length) {
             apiMsgs.push(m);
             for (const tc of m.tool_calls) {
-              const args = typeof tc.function.arguments === 'string' ? JSON.parse(tc.function.arguments || '{}') : (tc.function.arguments || {});
+              let args = {}; try { args = typeof tc.function.arguments === 'string' ? JSON.parse(tc.function.arguments || '{}') : (tc.function.arguments || {}); } catch (e) {}
               const result = await runTool(tc.function.name, args, req.user);
               actions.push({ tool: tc.function.name, input: args, result });
               apiMsgs.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result).slice(0, 4000) });
             }
             continue;
           }
-          return res.json({ reply: (m && m.content) || g.reply || '', actions });
+          const reply = ((m && m.content) || g.reply || '').trim();
+          if (!reply) throw new Error('empty reply');
+          return res.json({ reply, actions, provider: p.name });
         }
-      }
-      const g = await _callGemini(msgs, { maxTokens: 600, systemPrompt: sys });
-      res.json({ reply: g.reply, actions });
-    } catch (e) {
-      try { const g = await _callGroq([{ role: 'system', content: sys }, ...msgs], { maxTokens: 600 }); return res.json({ reply: g.reply, actions }); } catch (e2) {}
-      res.status(503).json({ error: /no-key/.test(e.message) ? 'Bro\'s brain is not connected yet — add GEMINI_API_KEY or GROQ_API_KEY on the server.' : 'Bro lost the connection for a second — try again.' });
+        throw new Error('tool loop did not finish');
+      } catch (e) { lastErr = e; console.log('[voice] turn via', p.name, 'failed:', e.message); }
     }
+    res.status(503).json({ error: speak === 'hi' ? 'Bro एक सेकंड के लिए कट गया — फिर बोलो।' : 'Bro lost the connection for a second — try again.' + (lastErr ? '' : '') });
   });
 
-  console.log('[voice] realtime', openaiKey() ? '✅ ' + REALTIME_MODEL : '❌ (fallback mode: browser speech — paste an OpenAI key in You → Admin)');
+  console.log('[voice] engines · elevenlabs', elevenKey() ? '✅ agent' : '❌', '· realtime', openaiKey() ? '✅ ' + REALTIME_MODEL : '❌', '· brain', hasLLM() ? '✅' : '❌ (paste a key in You → Admin)');
 }
 
 module.exports = { install, PERSONAS };
