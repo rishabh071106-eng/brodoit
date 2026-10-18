@@ -35,6 +35,8 @@ async function tts(provider, text, lang, role, slow) {
 (async () => {
   await resolveVoices(env('ELEVENLABS_API_KEY'));
   const tmp = fs.mkdtempSync(path.join(require('os').tmpdir(), 'langaudio-'));
+  // Paid-for step audio is kept on the volume until its lesson is stitched, so a run that stops midway never pays twice.
+  const PARTS = path.join(OUT_ROOT, '.parts'); fs.mkdirSync(PARTS, { recursive: true });
   for (const f of fs.readdirSync(ROOT).filter(f => f.endsWith('.json'))) {
     const code = f.slice(0, -5); if (only.length && !only.includes(code)) continue;
     const course = JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'));
@@ -52,8 +54,17 @@ async function tts(provider, text, lang, role, slow) {
         if (s.p) { dur = s.p; }
         else {
           const text = s.n || s.q || s.t; const isTarget = 't' in s;
-          const buf = await tts(provider, text, isTarget ? tLang : nLang, isTarget ? 'native' : 'narrator', !!s.slow);
-          file = path.join(tmp, `${code}-${lesson.id}-${i}.mp3`); fs.writeFileSync(file, buf); dur = ffprobeSec(file) + 0.35;
+          file = path.join(PARTS, `${code}-${lesson.id}-${provider}-${i}.mp3`);
+          if (!(fs.existsSync(file) && fs.statSync(file).size > 0)) {
+            let buf;
+            try { buf = await tts(provider, text, isTarget ? tLang : nLang, isTarget ? 'native' : 'narrator', !!s.slow); }
+            catch (e) {
+              if (['credits', 'key', 'rate'].includes(e.code)) { console.log(`[lang-audio] stopping in ${code}/${lesson.id}: ${e.message.slice(0, 120)}. Finished steps are kept; the nightly sweep continues later.`); process.exit(0); }
+              throw e;
+            }
+            fs.writeFileSync(file + '.tmp', buf); fs.renameSync(file + '.tmp', file);
+          }
+          dur = ffprobeSec(file) + 0.35;
         }
         timings.push({ start: +t.toFixed(2), end: +(t + dur).toFixed(2) });
         parts.push(file ? `file '${file}'` : `file '${silence(dur)}'`); t += dur;
@@ -62,6 +73,7 @@ async function tts(provider, text, lang, role, slow) {
       execFileSync('ffmpeg', ['-y', '-f', 'concat', '-safe', '0', '-i', list, '-c:a', 'libmp3lame', '-b:a', '96k', mp3 + '.part']);
       fs.renameSync(mp3 + '.part', mp3);
       fs.writeFileSync(path.join(outDir, lesson.id + '.json'), JSON.stringify({ steps: timings, duration: +t.toFixed(2) }));
+      for (const f of fs.readdirSync(PARTS)) if (f.startsWith(`${code}-${lesson.id}-`)) fs.unlinkSync(path.join(PARTS, f));
       console.log(`   → ${Math.round(t / 60)} min`);
     }
   }

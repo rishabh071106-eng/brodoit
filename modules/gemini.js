@@ -21,10 +21,19 @@ const retired = (status, msg) => status === 404 || (status === 400 && /not (foun
 function errorFrom(status, j) {
   const msg = (j && j.error && j.error.message) || ('Gemini HTTP ' + status);
   const e = new Error(msg); e.status = status;
-  if (status === 402 || (status === 429 && /prepayment credits are depleted|billing|credit/i.test(msg))) { e.code = 'credits'; e.message = 'Gemini credit is used up — top up the Google AI Studio project (ai.studio/projects)'; }
+  if (status === 402 || /prepayment credits|prepaid credit/i.test(msg)) { e.code = 'credits'; e.message = 'Gemini credit is used up — top up the Google AI Studio project (ai.studio/projects)'; }
   else if (status === 429) e.code = 'rate';
   else if ((status === 400 && /api key not valid|API_KEY_INVALID/i.test(msg)) || status === 401 || status === 403) e.code = 'key';
   return e;
+}
+
+// 2.5+ models think before answering and the thinking counts against maxOutputTokens (gemini-2.0-flash did not), so a short
+// reply could come back empty. Text calls on 2.5 Flash turn thinking off; other models get headroom on the token limit.
+function forModel(model, body) {
+  const gc = body && body.generationConfig; if (!gc || gc.responseModalities || gc.thinkingConfig) return body;
+  if (/^gemini-2\.5-flash/.test(model)) return Object.assign({}, body, { generationConfig: Object.assign({}, gc, { thinkingConfig: { thinkingBudget: 0 } }) });
+  if (gc.maxOutputTokens) return Object.assign({}, body, { generationConfig: Object.assign({}, gc, { maxOutputTokens: gc.maxOutputTokens + 2048 }) });
+  return body;
 }
 
 // body: a generateContent request body. Returns { json, model }.
@@ -37,7 +46,7 @@ async function generate(key, body, opts) {
   for (const model of (opts.models || chain(tier, opts.getSetting))) {
     const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), opts.timeout || 50000);
     try {
-      const r = await fetchFn(BASE + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(key), { method: 'POST', signal: ctrl.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const r = await fetchFn(BASE + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(key), { method: 'POST', signal: ctrl.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(forModel(model, body)) });
       const j = await r.json().catch(() => ({}));
       if (r.ok) { if (!opts.models) working[tier] = model; return { json: j, model }; }
       const msg = (j.error && j.error.message) || '';
