@@ -6,13 +6,16 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn, spawnSync } = require('child_process');
+const GEM = require('./gemini.js');
+const STUDIO = require('./studio.js');
+const EV = require('./elevenvoice.js');
 
 const RING = 300;          // lines kept in memory per job
 const TAIL = 40;           // lines sent with /status
 const VERIFY_MS = 8000;    // provider check timeout
 const BOOKS_TOTAL = 106;
 const LESSONS_TOTAL = 60;
-const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI'];
+const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'STUDIO_VOICE'];
 const VERIFIABLE = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
 const STATUS_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
 const JOBS = {
@@ -40,15 +43,26 @@ async function verifyKey(key, value, fetchFn) {
   const who = { OPENAI_API_KEY: 'OpenAI', ELEVENLABS_API_KEY: 'ElevenLabs', GEMINI_API_KEY: 'Gemini', GROQ_API_KEY: 'Groq' }[key] || key;
   try {
     const r = key === 'OPENAI_API_KEY' ? await fetchFn('https://api.openai.com/v1/models', { headers: { Authorization: 'Bearer ' + value }, signal: ctrl.signal })
-      : key === 'GEMINI_API_KEY' ? await fetchFn('https://generativelanguage.googleapis.com/v1beta/models?key=' + encodeURIComponent(value), { signal: ctrl.signal })
+      : key === 'GEMINI_API_KEY' ? await geminiProbe(value, fetchFn)
       : key === 'GROQ_API_KEY' ? await fetchFn('https://api.groq.com/openai/v1/models', { headers: { Authorization: 'Bearer ' + value }, signal: ctrl.signal })
       : await fetchFn('https://api.elevenlabs.io/v1/user', { headers: { 'xi-api-key': value }, signal: ctrl.signal });
-    if (r.ok) return { valid: true };
+    if (r.ok) return r.warning ? { valid: true, warning: r.warning } : { valid: true };
     if (r.status === 401 || r.status === 403 || (key === 'GEMINI_API_KEY' && r.status === 400)) return { valid: false, error: who + ' rejected this key (' + r.status + ')' };
     return { valid: null, error: 'Could not verify with ' + who + ' (' + r.status + ')' };
   } catch (e) {
     return { valid: null, error: e && e.name === 'AbortError' ? 'Could not reach ' + who + ' (timeout)' : 'Could not reach ' + who };
   } finally { clearTimeout(t); }
+}
+
+// Listing models works even when the Google project has no credit, so Gemini is checked with a one-token call. A key whose
+// project is out of prepaid credit is real (saved) but comes back with a warning the Admin card shows.
+async function geminiProbe(value, fetchFn) {
+  const c = await GEM.check(value, fetchFn);
+  if (c.ok) return { ok: true, status: 200 };
+  if (c.code === 'credits' || c.code === 'rate') return { ok: true, status: 200, warning: c.code === 'credits' ? 'Key saved, but its Google project has no credit left — top up at ai.studio/projects (a few dollars lasts months)' : 'Key saved; Google is rate-limiting it right now' };
+  if (c.code === 'key') return { ok: false, status: c.status === 400 ? 400 : (c.status || 401) };
+  if (c.code === 'timeout') throw Object.assign(new Error('timeout'), { name: 'AbortError' });
+  return { ok: false, status: c.status || 0 };
 }
 
 // Splits a stream into lines on \n and \r so "chunk 3/9\r" progress updates become lines too.
@@ -66,6 +80,7 @@ function install(app, deps) {
   const fetchFn = deps.fetch || ((...a) => fetch(...a));
   const booksTotal = deps.booksTotal || BOOKS_TOTAL;
   const JOBS_DIR = path.join(MEDIA_DIR, 'jobs');
+  STUDIO.configure({ mediaDir: MEDIA_DIR });
   try { fs.mkdirSync(JOBS_DIR, { recursive: true }); } catch (e) {}
 
   const requireAdmin = (req, res, next) => { let ok = false; try { ok = !!isAdminUser(req.user); } catch (e) {} if (!ok) return res.status(403).json({ error: 'admin only' }); next(); };
@@ -101,10 +116,10 @@ function install(app, deps) {
 
   // Which inputs a job needs before it can start; returns an error string or null.
   function preflight(kind, opts) {
-    const eleven = getSetting('ELEVENLABS_API_KEY'), gemini = getSetting('GEMINI_API_KEY');
+    const voice = STUDIO.available(getSetting).length > 0, gemini = getSetting('GEMINI_API_KEY');
     if (kind === 'bulletin') return bulletin && typeof bulletin.ensureToday === 'function' ? null : 'news channel not loaded';
-    if (kind === 'hindi-books') { if (!gemini) return 'GEMINI_API_KEY is not set'; if (!eleven && !(opts && opts.textOnly)) return 'Paste an ElevenLabs key first (or run text only)'; return null; }
-    if (kind === 'lang-audio') { if (!eleven) return 'Paste an ElevenLabs key first'; if (!hasFfmpeg()) return 'ffmpeg is not installed on the server'; return null; }
+    if (kind === 'hindi-books') { if (!gemini) return 'GEMINI_API_KEY is not set'; if (!voice && !(opts && opts.textOnly)) return 'Paste a voice key first — ElevenLabs, Gemini or OpenAI (or run text only)'; return null; }
+    if (kind === 'lang-audio') { if (!voice) return 'Paste a voice key first — ElevenLabs, Gemini or OpenAI'; if (!hasFfmpeg()) return 'ffmpeg is not installed on the server'; return null; }
     return 'unknown job';
   }
 
@@ -112,8 +127,8 @@ function install(app, deps) {
     const def = JOBS[j.kind];
     const script = path.join(scriptsDir, def.script);
     if (!fs.existsSync(script)) return { error: 'script missing: ' + def.script, status: 404 };
-    const env = { ...process.env, DB_PATH: DB_PATH || '', MEDIA_DIR, GEMINI_API_KEY: getSetting('GEMINI_API_KEY') || '', ELEVENLABS_API_KEY: getSetting('ELEVENLABS_API_KEY') || '', FORCE_COLOR: '0' };
-    for (const k of ['ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI']) { const v = getSetting(k); if (v) env[k] = v; }
+    const env = { ...process.env, DB_PATH: DB_PATH || '', MEDIA_DIR, GEMINI_API_KEY: getSetting('GEMINI_API_KEY') || '', ELEVENLABS_API_KEY: getSetting('ELEVENLABS_API_KEY') || '', OPENAI_API_KEY: getSetting('OPENAI_API_KEY') || '', FORCE_COLOR: '0' };
+    for (const k of ['ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'GEMINI_MODEL', 'GEMINI_TTS_MODEL', 'GEMINI_TTS_VOICE', 'GEMINI_TTS_VOICE_NATIVE', 'OPENAI_TTS_VOICE']) { const v = getSetting(k); if (v) env[k] = v; }
     const args = [script]; if (j.kind === 'hindi-books' && opts && opts.textOnly) args.push('--text-only');
     let p;
     try { p = spawn(process.execPath, args, { cwd: appRoot, env, stdio: ['ignore', 'pipe', 'pipe'] }); }
@@ -131,7 +146,7 @@ function install(app, deps) {
     try {
       const row = await bulletin.ensureToday();
       if (row) pushLine(j, `ready: ${row.title || row.id} · text ✓ · EN ${row.audio && row.audio.en ? '✓' : '—'} · HI ${row.audio && row.audio.hi ? '✓' : '—'}`);
-      if (row && !(row.audio && row.audio.en && row.audio.hi)) pushLine(j, getSetting('ELEVENLABS_API_KEY') ? 'audio incomplete — check the server log' : 'no ElevenLabs key: device voice will read this text');
+      if (row && !(row.audio && row.audio.en && row.audio.hi)) pushLine(j, STUDIO.available(getSetting).length ? 'audio incomplete — no voice budget or provider error (see the server log)' : 'no voice key: the device voice reads this text');
       finish(j, 0);
     } catch (e) { pushLine(j, 'error: ' + (e && e.message || e)); finish(j, 1); }
   }
@@ -170,6 +185,7 @@ function install(app, deps) {
     if (Object.keys(jobs).some(k => jobs[k].status === 'running')) { clearTimeout(auto.timer); auto.timer = setTimeout(pump, 15000); return; }
     const kind = auto.queue.shift(); if (!kind) return;
     if (!needs(kind) || preflight(kind)) return pump();
+    const prev = getJob(kind); if (prev.finishedAt && Date.now() - Date.parse(prev.finishedAt) < 10 * 60e3) return pump(); // just ran (by hand or auto): don't pay for it twice
     const r = start(kind, {});
     if (r.status !== 200) { console.log('[admin] auto-record', kind, 'did not start:', r.body && r.body.error); return pump(); }
     auto.running = kind; console.log('[admin] auto-record started', kind);
@@ -232,7 +248,17 @@ function install(app, deps) {
     };
   }
   global._adminStatus = () => { try { return statusBody(); } catch (e) { return null; } };
-  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })() });
+  // Credit states: ElevenLabs plan (credits used / allowance) and whether the Gemini project can still answer. Checked at
+  // boot, then every 3 hours, so the Admin card says "credit used up" before anything silently falls back.
+  let gemState = null;
+  async function refreshCredits() {
+    const ek = getSetting('ELEVENLABS_API_KEY'); if (ek) { try { await EV.subscription(ek, true); } catch (e) {} }
+    const gk = getSetting('GEMINI_API_KEY');
+    if (gk) { try { const c = await GEM.check(gk, fetchFn, getSetting); gemState = { at: Date.now(), ok: c.ok, code: c.code || '', warning: c.ok ? '' : c.code === 'credits' ? 'Gemini credit is used up — top up at ai.studio/projects' : c.error || '' }; } catch (e) {} }
+  }
+  if (deps.creditChecks !== false) { setTimeout(() => refreshCredits().catch(() => {}), 45000); setInterval(() => refreshCredits().catch(() => {}), 3 * 3600e3); }
+  const spend = () => { try { return Object.assign(STUDIO.usage(getSetting), { gemini_state: gemState, order: STUDIO.available(getSetting) }); } catch (e) { return null; } };
+  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), spend: spend(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })() });
 
   // ── routes ──
   app.get('/api/admin/status', auth, requireAdmin, (req, res) => { try { res.json(statusBody()); } catch (e) { res.status(500).json({ error: e.message }); } });
@@ -249,14 +275,16 @@ function install(app, deps) {
     if (!VERIFIABLE.includes(key) && value && !/^[A-Za-z0-9_-]{1,64}$/.test(value)) return res.status(400).json({ error: 'voice names are letters, digits, - and _' });
     try {
       if (!value) { setSetting(key, ''); return res.json({ ok: true, valid: null, saved: true, removed: true, ...current() }); }
-      let valid = null, error = null;
+      let valid = null, error = null, warning = null;
       if (verify && !force && VERIFIABLE.includes(key)) {
-        const v = await verifyKey(key, value, fetchFn); valid = v.valid; error = v.error || null;
+        const v = await verifyKey(key, value, fetchFn); valid = v.valid; error = v.error || null; warning = v.warning || null;
         if (valid !== true) return res.json({ ok: false, valid, saved: false, error, ...current() });
       }
       setSetting(key, value);
+      if (key === 'GEMINI_API_KEY') gemState = { at: Date.now(), ok: !warning, warning: warning || '' };
+      if (key === 'ELEVENLABS_API_KEY') EV.subscription(value, true).catch(() => {});
       if (key === 'ELEVENLABS_API_KEY' || key === 'OPENAI_API_KEY' || key === 'GEMINI_API_KEY') setTimeout(() => { try { autoRecord('key saved'); } catch (e) {} }, 1500);
-      res.json({ ok: true, valid, saved: true, forced: !!force, ...current() });
+      res.json({ ok: true, valid, saved: true, forced: !!force, ...(warning ? { warning } : {}), ...current() });
     } catch (e) { res.status(500).json({ error: e.message }); }
   });
 

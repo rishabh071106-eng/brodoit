@@ -64,11 +64,51 @@ async function speak(key, text, lang, voiceId, opts) {
         method: 'POST', signal: ctrl.signal, headers: { 'xi-api-key': key, 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: c, model_id: opts.model || MODEL, language_code: l, voice_settings: Object.assign({ stability: 0.5, similarity_boost: 0.8, style: 0.2, use_speaker_boost: true }, opts.speed ? { speed: opts.speed } : {}, opts.voice_settings || {}) }),
       });
-      if (!r.ok) throw new Error('ElevenLabs ' + r.status + ' ' + (await r.text()).slice(0, 200));
+      if (!r.ok) { const body = (await r.text()).slice(0, 300); const e = new Error('ElevenLabs ' + r.status + ' ' + body.slice(0, 200)); e.status = r.status; if (isQuota(r.status, body)) { e.code = 'credits'; markOut(key); } else if (r.status === 401) e.code = 'key'; throw e; }
       bufs.push(Buffer.from(await r.arrayBuffer()));
+      spent(key, c.length);
     } finally { clearTimeout(t); }
   }
   return Buffer.concat(bufs);
 }
 
-module.exports = { pickVoice, speak, listVoices, chunk, MODEL, DEFAULT, PREF };
+// ── credit guard ──
+// ElevenLabs bills credits per character (turbo/flash ≈ 0.5 credit per character). We read the plan's monthly allowance and
+// keep a reserve so bulk recordings never eat the credits Bro's live voice and the daily bulletin need, and nothing ever
+// runs past the allowance into overage. Purposes: 'live' (Bro talking) may use everything that is left; 'daily' (bulletin,
+// News "Listen") keeps 5%; 'bulk' (lessons, Hindi books) keeps 35% of the month for the other two.
+const PER_CHAR = () => parseFloat(process.env.ELEVEN_CREDITS_PER_CHAR || '') || 0.5;
+const subs = new Map(); // key → { at, tier, used, limit, reset, ok, error, out }
+const isQuota = (status, body) => status === 402 || /quota_exceeded|exceeds your quota|insufficient.*credits|credits? (remaining|left)|payment_required/i.test(String(body || ''));
+function markOut(key) { const s = subs.get(key) || {}; s.out = Date.now(); subs.set(key, s); }
+function spent(key, chars) { const s = subs.get(key); if (s && s.limit) s.used = (s.used || 0) + Math.ceil(chars * PER_CHAR()); }
+async function subscription(key, fresh) {
+  if (!key) return null;
+  const s = subs.get(key);
+  if (s && !fresh && Date.now() - s.at < 10 * 60e3) return s;
+  const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 10000);
+  try {
+    const r = await fetch('https://api.elevenlabs.io/v1/user/subscription', { headers: { 'xi-api-key': key }, signal: ctrl.signal });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { const n = Object.assign(s || {}, { at: Date.now(), ok: false, error: 'subscription ' + r.status }); subs.set(key, n); return n; }
+    const n = { at: Date.now(), ok: true, tier: String(j.tier || ''), used: +j.character_count || 0, limit: +j.character_limit || 0, reset: j.next_character_count_reset_unix ? new Date(j.next_character_count_reset_unix * 1000).toISOString() : null, overage: !!(j.can_extend_character_limit && j.allowed_to_extend_character_limit), out: s && s.out };
+    if (n.out && n.limit && n.used < n.limit * 0.98 && Date.now() - n.out > 30 * 60e3) n.out = 0; // credits came back (new month / top-up)
+    subs.set(key, n); return n;
+  } catch (e) { const n = Object.assign(s || {}, { at: Date.now(), ok: false, error: e.name === 'AbortError' ? 'timeout' : e.message }); subs.set(key, n); return n; }
+  finally { clearTimeout(t); }
+}
+const RESERVE = { live: 0, daily: 0.05, bulk: 0.35 };
+// Can this purpose spend `chars` characters now? { ok, reason, left }. Unknown plan (key without user access) → allowed;
+// a quota error from a real call still stops it.
+async function budget(key, chars, purpose) {
+  const s = await subscription(key);
+  if (s && s.out && Date.now() - s.out < 6 * 3600e3) return { ok: false, reason: 'ElevenLabs credits are used up for this month', left: 0 };
+  if (!s || !s.ok || !s.limit) return { ok: true, reason: 'plan unknown', left: null };
+  const left = s.limit - s.used, need = Math.ceil((chars || 0) * PER_CHAR());
+  const keep = Math.max(purpose === 'bulk' ? 4000 : purpose === 'daily' ? 1500 : 0, s.limit * (RESERVE[purpose] || 0));
+  if (left - need < keep) return { ok: false, reason: purpose === 'bulk' ? 'keeping the rest of this month\'s ElevenLabs credits for Bro and the daily news' : 'ElevenLabs credits are nearly used up', left };
+  return { ok: true, left };
+}
+const snapshot = key => { const s = subs.get(key); return s ? { tier: s.tier || '', used: s.used || 0, limit: s.limit || 0, reset: s.reset || null, ok: !!s.ok, out: !!(s.out && Date.now() - s.out < 6 * 3600e3), error: s.error || '', overage: !!s.overage } : null; };
+
+module.exports = { pickVoice, speak, listVoices, chunk, subscription, budget, snapshot, isQuota, MODEL, DEFAULT, PREF, PER_CHAR };
