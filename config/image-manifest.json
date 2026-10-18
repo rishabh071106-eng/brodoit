@@ -1,0 +1,166 @@
+{
+ "note": "Card photos. Each key lists Wikipedia article titles in order of preference; CI (workflow 'Card photos') takes the first article whose lead image is a free-licensed Wikimedia Commons photo, crops it to 960x640 and writes app/img/cards/<key>.jpg + credits.json. Delete a jpg to refetch it.",
+ "images": {
+  "cat-lang": [
+   "Plaza_de_España_(Seville)",
+   "Tower_Bridge",
+   "Trevi_Fountain"
+  ],
+  "cat-defence": [
+   "India_Gate",
+   "Republic_Day_(India)",
+   "Indian_Army"
+  ],
+  "cat-ias": [
+   "Rashtrapati_Bhavan",
+   "North_Block",
+   "Central_Vista"
+  ],
+  "cat-banking": [
+   "Bombay_Stock_Exchange",
+   "Phiroze_Jeejeebhoy_Towers",
+   "Fort,_Mumbai",
+   "Banknote"
+  ],
+  "cat-it": [
+   "Bangalore",
+   "Electronic_City",
+   "Infosys",
+   "HITEC_City"
+  ],
+  "cat-mba": [
+   "Indian_Institute_of_Management_Ahmedabad",
+   "Nariman_Point",
+   "Business_district"
+  ],
+  "cat-cs": [
+   "Data_center",
+   "Supercomputer",
+   "Computer",
+   "Server_(computing)"
+  ],
+  "lang-es": [
+   "Plaza_Mayor,_Madrid",
+   "Sagrada_Família",
+   "Alhambra",
+   "Madrid"
+  ],
+  "lang-fr": [
+   "Eiffel_Tower",
+   "Louvre",
+   "Paris"
+  ],
+  "lang-de": [
+   "Brandenburg_Gate",
+   "Neuschwanstein_Castle",
+   "Cologne_Cathedral"
+  ],
+  "lang-hi": [
+   "Taj_Mahal",
+   "Hawa_Mahal",
+   "Qutb_Minar",
+   "Varanasi"
+  ],
+  "lang-en": [
+   "Palace_of_Westminster",
+   "Tower_Bridge",
+   "Big_Ben"
+  ],
+  "lang-ja": [
+   "Mount_Fuji",
+   "Fushimi_Inari-taisha",
+   "Kinkaku-ji",
+   "Kyoto"
+  ],
+  "def-nda": [
+   "Delhi_Republic_Day_parade",
+   "Beating_Retreat",
+   "Indian_Army"
+  ],
+  "def-cds": [
+   "Delhi_Republic_Day_parade",
+   "Beating_Retreat",
+   "Indian_Army"
+  ],
+  "def-afcat": [
+   "Sukhoi_Su-30MKI",
+   "HAL_Tejas",
+   "Indian_Air_Force"
+  ],
+  "def-ssb": [
+   "Beating_Retreat",
+   "Indian_Navy",
+   "Indian_Army"
+  ],
+  "ias-upsc": [
+   "Dholpur_House",
+   "North_Block",
+   "Kartavya_Path",
+   "Union_Public_Service_Commission"
+  ],
+  "it-gate": [
+   "Indian_Institute_of_Technology_Bombay",
+   "Indian_Institute_of_Science",
+   "Indian_Institute_of_Technology_Delhi"
+  ],
+  "mba-gmat": [
+   "Baker_Library_(Harvard_Business_School)",
+   "Wall_Street",
+   "Bandra–Kurla_Complex",
+   "Harvard_Business_School"
+  ],
+  "cs-ai": [
+   "Robot",
+   "Deep_Blue_(chess_computer)",
+   "Humanoid_robot"
+  ],
+  "cs-python": [
+   "Raspberry_Pi",
+   "Laptop",
+   "Personal_computer"
+  ],
+  "more-jobs": [
+   "North_Block",
+   "Secretariat_Building,_New_Delhi",
+   "Central_Secretariat"
+  ],
+  "more-groups": [
+   "Classroom",
+   "Study_group",
+   "Library"
+  ],
+  "more-speaker": [
+   "Lecture",
+   "Auditorium",
+   "Public_speaking"
+  ],
+  "hero-steps": [
+   "Marine_Drive,_Mumbai",
+   "Lodhi_Gardens",
+   "Cubbon_Park",
+   "Walking"
+  ],
+  "hero-news": [
+   "Newsstand",
+   "Newspaper_vendor",
+   "Kiosk",
+   "Newspaper"
+  ],
+  "hero-books": [
+   "Library",
+   "Bodleian_Library",
+   "Trinity_College_Library",
+   "Book"
+  ],
+  "hero-learn": [
+   "Nalanda_mahavihara",
+   "Library_of_Trinity_College_Dublin",
+   "Library"
+  ],
+  "hero-tasks": [
+   "Notebook",
+   "Desk",
+   "Stationery"
+  ]
+ }
+}

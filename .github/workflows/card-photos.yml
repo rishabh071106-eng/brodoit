@@ -1,0 +1,29 @@
+# Fetches free-licensed card photos (scripts/fetch-images.js) and commits them to the branch that asked for them.
+name: Card photos
+on:
+  push:
+    branches: ['claude/**']
+    paths: ['config/image-manifest.json', 'scripts/fetch-images.js']
+permissions:
+  contents: write
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install sharp (outside the app)
+        run: mkdir -p /tmp/imgtools && cd /tmp/imgtools && npm init -y >/dev/null && npm i sharp@0.33.5 --no-audit --no-fund
+      - name: Fetch photos
+        run: SHARP_PATH=/tmp/imgtools/node_modules/sharp node scripts/fetch-images.js
+      - name: Commit photos
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/img/cards
+          if git diff --cached --quiet; then echo "no new photos"; exit 0; fi
+          git commit -m "Card photos from Wikimedia Commons (free licenses; credits in app/img/cards/credits.json)"
+          git push

@@ -1,0 +1,40 @@
+/* Tasks — card UI v12 (markup in server.js, S.tab==='tasks'). Everything is scoped under #app and uses !important only where
+   the legacy inline styles or !important rules leave no other way. */
+#app .qc-bar{background:var(--b-card)!important;border:0!important;border-radius:20px!important;padding:10px 10px 10px 16px!important;box-shadow:0 1px 2px rgba(31,30,28,.05),0 12px 26px -18px rgba(31,30,28,.45)!important;margin:4px 0 0!important}
+#app .qc-bar .qc-row{align-items:center;gap:10px}
+#app .qc-bar .qc-input{min-height:46px;padding:12px 0!important;border:0!important;background:transparent!important;font:500 16px/1.35 var(--b-sans)!important;color:var(--b-ink)!important}
+#app .qc-bar button[onclick="voiceAddTask()"]{width:46px!important;height:46px!important;background:var(--b-primary-soft)!important;color:var(--b-primary)!important}
+#app .qc-bar .qc-send{width:46px!important;height:46px!important;background:var(--b-ink)!important}
+#app .qc-chip{min-height:36px;border-radius:999px;background:var(--b-bg-2);border:0}
+#app .rd-segmented{display:flex;gap:8px!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;margin-top:16px!important;overflow-x:auto;scrollbar-width:none}
+#app .rd-segmented button{flex:0 0 auto;min-height:40px;padding:0 18px!important;border:0!important;border-radius:999px!important;background:var(--b-bg-2)!important;color:var(--b-ink-2)!important;font:600 14px var(--b-sans)!important;box-shadow:none!important}
+#app .rd-segmented button.on{background:var(--b-ink)!important;color:var(--b-bg)!important}
+#app .rd-section-label{margin:22px 4px 10px!important;font:600 11px var(--b-sans)!important;letter-spacing:.14em!important;color:var(--b-mute)!important}
+#app .rd-task-row{gap:14px!important;padding:16px!important;margin:0 0 10px;border:0!important;border-radius:18px;background:var(--b-card);box-shadow:0 1px 2px rgba(31,30,28,.05),0 10px 22px -18px rgba(31,30,28,.45)}
+#app .rd-task-row.done{opacity:.72}
+#app .rd-check-empty{width:28px!important;height:28px!important;border-radius:50%!important;border:2px solid var(--b-line-2)!important;margin-top:1px}
+#app .rd-check-done{width:28px!important;height:28px!important;border-radius:50%!important;background:var(--b-ink)!important;display:grid;place-items:center}
+#app .rd-task-title{font:600 16px/1.35 var(--b-sans)!important;color:var(--b-ink)!important}
+#app .rd-task-row.done .rd-task-title{text-decoration:line-through;color:var(--b-mute)!important}
+#app .rd-task-meta{gap:6px!important;margin-top:8px!important;flex-wrap:wrap}
+#app .rd-task-meta .badge,#app .rd-task-meta>span{border-radius:999px!important;padding:4px 10px!important;background:var(--b-bg-2)!important;color:var(--b-ink-2)!important;font:600 12px var(--b-sans)!important}
+#app .rd-task-meta .rd-email-pill{background:var(--b-primary-soft)!important;color:var(--b-primary)!important}
+#app .tk-empty{margin-top:18px}
+#app .tk-empty .cv-title{font-size:28px}
+html[data-theme="dark"] #app .qc-bar,body[data-theme=aurora] #app .qc-bar,html[data-theme="dark"] #app .rd-task-row,body[data-theme=aurora] #app .rd-task-row{background:var(--b-card)!important;box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 22px -18px rgba(0,0,0,.8)!important}
+html[data-theme="dark"] #app .rd-check-done,body[data-theme=aurora] #app .rd-check-done{background:var(--b-primary)!important}
+#app .rd-task-row .tc-acts{border:0!important;padding:0!important;margin-left:4px!important}
+#app .rd-task-row .tc-acts .ib{width:44px!important;height:44px!important;border-radius:12px;color:var(--b-mute)}
+#app .tk-pri{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;background:var(--b-mute)}
+#app .tk-pri.tk-high{background:var(--b-primary)}#app .tk-pri.tk-medium{background:#C7765F}#app .tk-pri.tk-low{background:var(--b-mute-2)}
+#app .rd-task-meta .badge{min-height:28px}
+#app .rd-task-row .tc-acts .ib svg{stroke:var(--b-mute)!important}
+/* bigger hit areas without bigger visuals */
+#app .rd-check-empty,#app .rd-check-done,#app .rd-task-meta .badge{position:relative}
+#app .rd-check-empty::after,#app .rd-check-done::after{content:"";position:absolute;inset:-9px}
+#app .rd-task-meta .badge::after{content:"";position:absolute;inset:-8px -2px}
+#app .lt-head .bk-seg button,#app .bk-seg button{min-height:44px}
+#app .rd-task-meta>span:has(>.tk-pri){font-size:0!important;padding:0!important;background:none!important;min-width:10px}
+#app .rd-task-meta>span:has(>.tk-pri) .tk-pri{margin:0}
+#app .tk-hero{margin:16px 0 4px}
+#app .tk-hero .cv-title{font-size:24px}
