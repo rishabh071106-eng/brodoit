@@ -7,7 +7,9 @@
 // Fallback engine (no key): browser speech recognition → /api/voice/turn (Gemini/Groq) → browser TTS.
 'use strict';
 const EV = require('./elevenvoice.js');
-const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime';
+const STUDIO = require('./studio.js');
+const fs = require('fs'), path = require('path'), crypto = require('crypto');
+const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime-mini'; // ~3x cheaper than gpt-realtime, same voices
 
 const PERSONAS = {
   bro: `You are Bro — the user's best friend who lives inside the Brodoit app, talking to them out loud like a real bro: warm, witty, direct, zero corporate tone. You can also read their steps, streak and friends rank (get_steps) and set their step goal (set_step_goal). Keep spoken replies SHORT (1–3 sentences) unless the user asks you to explain or teach. Match the user's language: if they speak Hindi or Hinglish, answer in natural Hinglish. You can: add tasks, complete tasks, set reminders, create calendar events, read today's schedule, read today's news and explain it simply. When the user wants something done, call the tool and then confirm in one line. Never invent a task — only create what they asked. Be a hype man when they're low, a coach when they're stuck, a teacher when they ask to learn.`,
@@ -56,37 +58,35 @@ function install(app, deps) {
     return _broExecTool(name, args || {}, user.phone, user.tz || _getUserTz(user.phone));
   }
 
-  // 0. Studio voice for the classic pipeline (listen → think → speak): ElevenLabs first, OpenAI TTS second, else 404 so the
-  //    browser falls back to its device voice.
+  // 0. Studio voice for the classic pipeline and News "Listen": modules/studio.js picks ElevenLabs (within the month's
+  //    credits), then Gemini / OpenAI TTS; 404 when none can speak, so the browser uses its device voice. Results are cached
+  //    on the volume by text, so a story many people play is paid for once.
   const elevenKey = () => getSetting('ELEVENLABS_API_KEY') || process.env.ELEVENLABS_API_KEY || '';
-  const DEFAULT_VOICE = 'pNInz6obpgDQGcFmaJgB';
-  const elevenVoice = lang => getSetting(lang === 'hi' ? 'ELEVEN_VOICE_HI' : 'ELEVEN_VOICE_EN') || process.env[lang === 'hi' ? 'ELEVEN_VOICE_HI' : 'ELEVEN_VOICE_EN'] || DEFAULT_VOICE;
-  async function elevenSpeak(text, lang, key) {
-    try {
-      const voice = await EV.pickVoice(key, lang, getSetting);
-      return await EV.speak(key, text, lang, voice, { format: 'mp3_44100_64', timeout: 20000, chunk: 1500, voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.25, use_speaker_boost: true } });
-    } catch (e) { console.log('[voice] elevenlabs', e.message); return null; }
-  }
-  async function openaiSpeak(text, lang, key) {
-    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 20000);
-    try {
-      const r = await fetch('https://api.openai.com/v1/audio/speech', {
-        method: 'POST', signal: ctrl.signal, headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'gpt-4o-mini-tts', voice: getSetting('OPENAI_TTS_VOICE') || 'ash', input: text, response_format: 'mp3', instructions: lang === 'hi' ? 'Speak natural, warm Hindi at an easy pace, like a close friend.' : 'Warm, confident Indian English. Natural pace, friendly, never robotic.' }),
-      });
-      if (!r.ok) { console.log('[voice] openai tts', r.status, (await r.text()).slice(0, 160)); return null; }
-      return Buffer.from(await r.arrayBuffer());
-    } finally { clearTimeout(t); }
+  const CACHE = deps.mediaDir ? path.join(deps.mediaDir, 'tts-cache') : '';
+  if (CACHE) { try { fs.mkdirSync(CACHE, { recursive: true }); } catch (e) {} }
+  let cacheWrites = 0;
+  function pruneCache() {
+    try { const files = fs.readdirSync(CACHE).map(f => ({ f, t: fs.statSync(path.join(CACHE, f)).mtimeMs })).sort((x, y) => y.t - x.t); for (const x of files.slice(3000)) fs.unlinkSync(path.join(CACHE, x.f)); } catch (e) {}
   }
   app.post('/api/voice/tts', auth, async (req, res) => {
     const text = String(req.body && req.body.text || '').replace(/\s+/g, ' ').trim().slice(0, 1500);
     if (!text) return res.status(400).json({ error: 'text required' });
     const lang = String(req.body && req.body.lang || '') === 'hi' ? 'hi' : 'en';
+    const news = String(req.body && req.body.kind || '') === 'news';
+    const role = news ? 'narrator' : 'bro';
+    const id = crypto.createHash('sha1').update(lang + '|' + role + '|' + text).digest('hex');
+    if (CACHE && news) {
+      for (const [ext, mime] of [['mp3', 'audio/mpeg'], ['wav', 'audio/wav']]) {
+        const f = path.join(CACHE, id + '.' + ext);
+        if (fs.existsSync(f)) { res.set('Content-Type', mime); res.set('Cache-Control', 'private, max-age=86400'); return res.send(fs.readFileSync(f)); }
+      }
+    }
     try {
-      let buf = null;
-      const ek = elevenKey(); if (ek) buf = await elevenSpeak(text, lang, ek);
-      const ok = openaiKey(); if (!buf && ok) buf = await openaiSpeak(text, lang, ok);
-      if (buf) { res.set('Content-Type', 'audio/mpeg'); res.set('Cache-Control', 'no-store'); return res.send(buf); }
+      const out = await STUDIO.speak({ text, lang, purpose: news ? 'daily' : 'live', role, getSetting, timeout: 25000, eleven: { format: 'mp3_44100_64', timeout: 20000, chunk: 1500, voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.25, use_speaker_boost: true } } });
+      if (out) {
+        if (CACHE && news) { try { fs.writeFileSync(path.join(CACHE, id + (out.mime === 'audio/wav' ? '.wav' : '.mp3')), out.buf); if (++cacheWrites % 200 === 0) pruneCache(); } catch (e) {} }
+        res.set('Content-Type', out.mime); res.set('Cache-Control', 'no-store'); res.set('X-Voice', out.provider); return res.send(out.buf);
+      }
     } catch (e) { console.log('[voice] tts error', e.message); }
     res.status(404).json({ error: 'no studio voice configured' });
   });
@@ -115,6 +115,7 @@ function install(app, deps) {
   //     their LLM orchestration and their voices, interruptible, Hindi/English. One private agent per server, created on first
   //     use and refreshed when the prompt or tools change. Tools run in the browser (client tools) through /api/voice/tool.
   const AGENT = { id: null, hash: null, error: '', at: 0, creating: null };
+  const AGENT_LLMS = ['gemini-2.5-flash', 'gpt-4o-mini', 'gemini-2.0-flash']; // billed by ElevenLabs, no extra key
   const agentPrompt = () => PERSONAS.bro + ' Modes: when the user asks to learn or explain, teach patiently like a tutor; when they ask to practise a language, run a short spoken lesson. Match the user\'s language exactly (Hindi, English or Hinglish). Use tools whenever they ask to add or complete tasks, set reminders, create events, read their schedule, read the news, or check or set steps; confirm in one short line after a tool. Audio only: never read URLs, markdown or emojis. Keep answers to one to three sentences unless asked to explain.';
   const clientTools = () => tools.map(t => ({ type: 'client', name: t.name, description: (t.description || '').slice(0, 400), parameters: t.input_schema || { type: 'object', properties: {} }, expects_response: true }));
   async function elevenApi(key, method, path, body) {
@@ -132,7 +133,7 @@ function install(app, deps) {
         agent: {
           first_message: "Hey, I'm Bro. What's up?",
           language: 'en',
-          prompt: { prompt: agentPrompt(), llm: getSetting('ELEVEN_AGENT_LLM') || 'gemini-2.0-flash', temperature: 0.6, max_tokens: 350 },
+          prompt: { prompt: agentPrompt(), llm: getSetting('ELEVEN_AGENT_LLM') || AGENT_LLMS[0], temperature: 0.6, max_tokens: 350 },
         },
         tts: { voice_id: await EV.pickVoice(key, 'en', getSetting), model_id: 'eleven_turbo_v2_5', stability: 0.45, similarity_boost: 0.8 },
         asr: { quality: 'high', provider: 'elevenlabs' },
@@ -142,7 +143,7 @@ function install(app, deps) {
       platform_settings: { auth: { enable_auth: true } },
     };
   }
-  function hashOf(o) { return require('crypto').createHash('sha1').update(JSON.stringify(o)).digest('hex').slice(0, 12); }
+  function hashOf(o) { return crypto.createHash('sha1').update(JSON.stringify(o)).digest('hex').slice(0, 12); }
   async function ensureAgent(key) {
     if (AGENT.creating) return AGENT.creating;
     AGENT.creating = (async () => {
@@ -174,6 +175,11 @@ function install(app, deps) {
         errors.push((savedId ? 'update ' : 'create ') + r.status + ' ' + JSON.stringify(r.body).slice(0, 200));
         if (r.status === 404 && savedId) { try { deps.setSetting && deps.setSetting('ELEVEN_AGENT_ID', ''); } catch (e) {} }
       }
+      // ElevenLabs retires LLM ids too: when the refusal names the model, remember the next one and try again (once per model)
+      const llmNow = cfg.conversation_config.agent.prompt.llm, nextLlm = AGENT_LLMS[AGENT_LLMS.indexOf(llmNow) + 1];
+      if (nextLlm && /llm|model/i.test(errors.join(' ')) && deps.setSetting) {
+        try { deps.setSetting('ELEVEN_AGENT_LLM', nextLlm); console.log('[voice] agent LLM', llmNow, 'refused → trying', nextLlm); AGENT.creating = null; return await ensureAgent(key); } catch (e) {}
+      }
       AGENT.error = errors.join(' | ').slice(0, 600); AGENT.at = Date.now();
       console.log('[voice] elevenlabs agent failed:', AGENT.error);
       return null;
@@ -187,7 +193,7 @@ function install(app, deps) {
     if (t.ok && t.body && t.body.token) return { conversation_token: t.body.token };
     throw new Error('signed url ' + r.status + ' ' + JSON.stringify(r.body).slice(0, 160));
   }
-  global._voiceStatus = () => ({ engine: elevenKey() ? (AGENT.id ? 'elevenlabs' : (AGENT.error ? 'fallback' : 'elevenlabs-pending')) : (openaiKey() ? 'realtime' : 'fallback'), agent_id: AGENT.id || getSetting('ELEVEN_AGENT_ID') || null, agent_error: AGENT.error || '', llm: hasLLM(), tts: !!(elevenKey() || openaiKey()) });
+  global._voiceStatus = () => ({ engine: elevenKey() ? (AGENT.id ? 'elevenlabs' : (AGENT.error ? 'fallback' : 'elevenlabs-pending')) : (openaiKey() ? 'realtime' : 'fallback'), agent_id: AGENT.id || getSetting('ELEVEN_AGENT_ID') || null, agent_error: AGENT.error || '', llm: hasLLM(), tts: STUDIO.available(getSetting).length > 0 });
   if (elevenKey()) setTimeout(() => ensureAgent(elevenKey()).catch(() => {}), 15000);
 
   // 1. Session: hand the browser a short-lived Realtime client secret.
@@ -198,6 +204,7 @@ function install(app, deps) {
     const ek = elevenKey();
     if (ek && String(req.body && req.body.engine || '') !== 'classic') {
       try {
+        const b = await EV.budget(ek, 0, 'live'); if (!b.ok) throw new Error(b.reason); // out of credits → the next engine, no overage
         const agentId = await ensureAgent(ek);
         if (agentId) {
           const su = await signedUrl(ek, agentId);
@@ -208,7 +215,7 @@ function install(app, deps) {
       } catch (e) { console.log('[voice] elevenlabs session failed, next engine:', e.message); }
     }
     const key = openaiKey();
-    const caps = { tts: !!(elevenKey() || key), stt: !!key, llm: hasLLM() };
+    const caps = { tts: STUDIO.available(getSetting).length > 0, stt: !!key, llm: hasLLM() };
     if (!key) return res.json({ mode: 'fallback', persona, caps, instructions: instructions.slice(0, 400) });
     try {
       const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 12000);

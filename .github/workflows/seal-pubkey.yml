@@ -1,0 +1,21 @@
+# Prints the live server's public sealing key (modules/sealed.js) so new settings can be encrypted for it.
+# The key is public by design; only the server's private half can open what is sealed with it.
+name: Server public key
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pubkey:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Fetch /api/seal/pubkey (waits for a deploy that is still rolling out)
+        run: |
+          for i in $(seq 1 40); do
+            if curl -fsS --max-time 20 https://brodoit.com/api/seal/pubkey -o pub.json && grep -q '"fp"' pub.json; then
+              echo "PUBKEY_JSON_BEGIN"; cat pub.json; echo; echo "PUBKEY_JSON_END"; exit 0
+            fi
+            echo "not ready yet ($i)"; sleep 30
+          done
+          exit 1

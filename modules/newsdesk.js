@@ -8,6 +8,7 @@
 //   POST /api/news/desk/run (admin)   → runs a batch now
 // Batches run on boot (+2 min) and every 30 minutes; stories older than 3 days drop off.
 'use strict';
+const GEM = require('./gemini.js');
 const crypto = require('crypto');
 
 const STOP = new Set('a an the of to in on for and or but with at by from as is are was were be been it its this that these those after before over under into about than then new says said say will would can could may might not no yes up down out more most what why how who when where which while amid amid as india india’s'.split(/\s+/));
@@ -82,10 +83,9 @@ function install(app, deps) {
     return JSON.parse(j.choices[0].message.content);
   }
   async function viaGemini(key, text) {
-    const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(key), { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(40000),
-      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYS }] }, contents: [{ role: 'user', parts: [{ text }] }], generationConfig: { temperature: 0.3, responseMimeType: 'application/json' } }) });
-    const j = await r.json(); if (!r.ok) throw new Error((j.error && j.error.message) || 'gemini ' + r.status);
-    return JSON.parse(j.candidates[0].content.parts.map(p => p.text || '').join(''));
+    // the lite tier: a story is short structured writing, and the desk runs every 30 minutes
+    const { json: j } = await GEM.generate(key, { systemInstruction: { parts: [{ text: SYS }] }, contents: [{ role: 'user', parts: [{ text }] }], generationConfig: { temperature: 0.3, responseMimeType: 'application/json' } }, { tier: 'lite', getSetting, timeout: 40000 });
+    return JSON.parse(GEM.textOf(j));
   }
   async function viaGroq(key, text) {
     const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(40000),
