@@ -66,7 +66,6 @@ async function speak(key, text, lang, voiceId, opts) {
       });
       if (!r.ok) { const body = (await r.text()).slice(0, 300); const e = new Error('ElevenLabs ' + r.status + ' ' + body.slice(0, 200)); e.status = r.status; if (isQuota(r.status, body)) { e.code = 'credits'; markOut(key); } else if (r.status === 401) e.code = 'key'; throw e; }
       bufs.push(Buffer.from(await r.arrayBuffer()));
-      spent(key, c.length);
     } finally { clearTimeout(t); }
   }
   return Buffer.concat(bufs);
@@ -79,36 +78,53 @@ async function speak(key, text, lang, voiceId, opts) {
 // News "Listen") stops with 30% of the month left for Bro; 'bulk' (lessons, Hindi books) only uses the first 40%.
 const PER_CHAR = () => parseFloat(process.env.ELEVEN_CREDITS_PER_CHAR || '') || 0.5;
 const subs = new Map(); // key → { at, tier, used, limit, reset, ok, error, out }
+// Credits approved but not yet visible in the plan's count. Kept apart from the plan snapshot so a refresh can't wipe them;
+// a hold is dropped once a refresh taken a minute after it (ElevenLabs has counted it by then) or when its call fails.
+const holds = new Map(); // key → [{ id, credits, at }]
+const inflight = new Map(); // key → pending subscription fetch (one request at a time per key)
+let holdSeq = 0;
+const held = key => (holds.get(key) || []).reduce((n, h) => n + h.credits, 0);
+function release(key, id) { const l = holds.get(key); if (l) holds.set(key, l.filter(h => h.id !== id)); }
 const isQuota = (status, body) => status === 402 || /quota_exceeded|exceeds your quota|insufficient.*credits|credits? (remaining|left)|payment_required/i.test(String(body || ''));
 function markOut(key) { const s = subs.get(key) || {}; s.out = Date.now(); subs.set(key, s); }
-function spent(key, chars) { const s = subs.get(key); if (s && s.limit) s.used = (s.used || 0) + Math.ceil(chars * PER_CHAR()); }
 async function subscription(key, fresh) {
   if (!key) return null;
   const s = subs.get(key);
   if (s && !fresh && Date.now() - s.at < 10 * 60e3) return s;
+  if (inflight.has(key)) return inflight.get(key);
+  const p = fetchSubscription(key, s).finally(() => inflight.delete(key));
+  inflight.set(key, p); return p;
+}
+async function fetchSubscription(key, s) {
+  const started = Date.now();
   const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 10000);
   try {
     const r = await fetch('https://api.elevenlabs.io/v1/user/subscription', { headers: { 'xi-api-key': key }, signal: ctrl.signal });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok) { const n = Object.assign(s || {}, { at: Date.now(), ok: false, error: 'subscription ' + r.status }); subs.set(key, n); return n; }
+    if (!r.ok) { const n = Object.assign(s || {}, { at: Date.now() - 8 * 60e3, ok: false, error: 'subscription ' + r.status }); subs.set(key, n); return n; } // keep last known numbers; retry in 2 min
     const n = { at: Date.now(), ok: true, tier: String(j.tier || ''), used: +j.character_count || 0, limit: +j.character_limit || 0, reset: j.next_character_count_reset_unix ? new Date(j.next_character_count_reset_unix * 1000).toISOString() : null, overage: !!(j.can_extend_character_limit && j.allowed_to_extend_character_limit), out: s && s.out };
     if (n.out && n.limit && n.used < n.limit * 0.98 && Date.now() - n.out > 30 * 60e3) n.out = 0; // credits came back (new month / top-up)
+    const l = holds.get(key); if (l) holds.set(key, l.filter(h => h.at > started - 60e3)); // older holds are in the count now
     subs.set(key, n); return n;
-  } catch (e) { const n = Object.assign(s || {}, { at: Date.now(), ok: false, error: e.name === 'AbortError' ? 'timeout' : e.message }); subs.set(key, n); return n; }
+  } catch (e) { const n = Object.assign(s || {}, { at: Date.now() - 8 * 60e3, ok: false, error: e.name === 'AbortError' ? 'timeout' : e.message }); subs.set(key, n); return n; }
   finally { clearTimeout(t); }
 }
 const RESERVE = { live: 0, daily: 0.30, bulk: 0.60 }; // Bro's live voice matters most, then the news, then bulk
-// Can this purpose spend `chars` characters now? { ok, reason, left }. Unknown plan (key without user access) → allowed;
-// a quota error from a real call still stops it.
+const LIVE_MIN = 2000; // a live Bro session needs at least ~2 minutes of credit, or it would cut out mid-sentence
+// Can this purpose spend `chars` characters now? { ok, reason, left }. Approval reserves the credits immediately, so parallel
+// requests can't all squeeze through the same gap; the next plan refresh (≤10 min) replaces the estimate with real numbers.
+// A failed refresh keeps the last known numbers. Never-known plan (key without "user read" access) → left:null, and the
+// caller (studio.js) applies fixed monthly caps instead.
 async function budget(key, chars, purpose) {
   const s = await subscription(key);
   if (s && s.out && Date.now() - s.out < 6 * 3600e3) return { ok: false, reason: 'ElevenLabs credits are used up for this month', left: 0 };
-  if (!s || !s.ok || !s.limit) return { ok: true, reason: 'plan unknown', left: null };
-  const left = s.limit - s.used, need = Math.ceil((chars || 0) * PER_CHAR());
-  const keep = Math.max(purpose === 'bulk' ? 4000 : purpose === 'daily' ? 1500 : 0, s.limit * (RESERVE[purpose] || 0));
+  if (!s || !s.limit) return { ok: true, reason: 'plan unknown', left: null };
+  const left = s.limit - s.used - held(key), need = Math.ceil((chars || 0) * PER_CHAR());
+  const keep = Math.max(purpose === 'bulk' ? 4000 : purpose === 'daily' ? 1500 : (s.overage ? LIVE_MIN * 3 : LIVE_MIN), s.limit * (RESERVE[purpose] || 0));
   if (left - need < keep) return { ok: false, reason: purpose === 'bulk' ? 'keeping the rest of this month\'s ElevenLabs credits for Bro and the daily news' : 'ElevenLabs credits are nearly used up', left };
-  return { ok: true, left };
+  const id = ++holdSeq; if (need) holds.set(key, (holds.get(key) || []).concat({ id, credits: need, at: Date.now() }));
+  return { ok: true, left: left - need, hold: need ? id : 0 };
 }
-const snapshot = key => { const s = subs.get(key); return s ? { tier: s.tier || '', used: s.used || 0, limit: s.limit || 0, reset: s.reset || null, ok: !!s.ok, out: !!(s.out && Date.now() - s.out < 6 * 3600e3), error: s.error || '', overage: !!s.overage } : null; };
+const snapshot = key => { const s = subs.get(key); return s ? { at: s.at || 0, tier: s.tier || '', used: (s.used || 0) + held(key), limit: s.limit || 0, reset: s.reset || null, ok: !!s.ok, out: !!(s.out && Date.now() - s.out < 6 * 3600e3), error: s.error || '', overage: !!s.overage } : null; };
 
-module.exports = { pickVoice, speak, listVoices, chunk, subscription, budget, snapshot, isQuota, MODEL, DEFAULT, PREF, PER_CHAR };
+module.exports = { pickVoice, speak, listVoices, chunk, subscription, budget, release, snapshot, isQuota, MODEL, DEFAULT, PREF, PER_CHAR };

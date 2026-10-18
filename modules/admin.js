@@ -154,6 +154,8 @@ function install(app, deps) {
     const j = getJob(kind); if (!j) return { status: 404, body: { error: 'unknown job' } };
     if (j.status === 'running') return { status: 409, body: { error: 'already running', job: pub(j) } };
     const pre = preflight(kind, opts); if (pre) return { status: 400, body: { error: pre, job: pub(j) } };
+    const other = ['hindi-books', 'lang-audio'].find(k => k !== kind && kind !== 'bulletin' && getJob(k).status === 'running');
+    if (other) return { status: 409, body: { error: getJob(other).label + ' is running — one recording at a time keeps the credit budget honest', job: pub(j) } };
     if (kind === 'bulletin') { runBulletin(j); return { status: 200, body: { ok: true, job: pub(j) } }; }
     const r = startScript(j, opts); if (r.error) return { status: r.status || 500, body: { error: r.error, job: pub(j) } };
     return { status: 200, body: { ok: true, job: pub(j) } };
@@ -226,7 +228,7 @@ function install(app, deps) {
   }
   function lessonsAudio() {
     const root = path.join(MEDIA_DIR, 'lang-audio'); let n = 0;
-    try { for (const d of fs.readdirSync(root)) n += countFiles(path.join(root, d), /\.mp3$/); } catch (e) {}
+    try { for (const d of fs.readdirSync(root)) if (!d.startsWith('.')) n += countFiles(path.join(root, d), /\.mp3$/); } catch (e) {} // .parts = unfinished lesson steps
     return n;
   }
   function newsToday() {
@@ -274,14 +276,14 @@ function install(app, deps) {
     if (/\s/.test(value)) return res.status(400).json({ error: 'a key has no spaces — check what you pasted' });
     if (!VERIFIABLE.includes(key) && value && !/^[A-Za-z0-9_-]{1,64}$/.test(value)) return res.status(400).json({ error: 'voice names are letters, digits, - and _' });
     try {
-      if (!value) { setSetting(key, ''); return res.json({ ok: true, valid: null, saved: true, removed: true, ...current() }); }
+      if (!value) { setSetting(key, ''); if (key === 'GEMINI_API_KEY') gemState = null; return res.json({ ok: true, valid: null, saved: true, removed: true, ...current() }); }
       let valid = null, error = null, warning = null;
       if (verify && !force && VERIFIABLE.includes(key)) {
         const v = await verifyKey(key, value, fetchFn); valid = v.valid; error = v.error || null; warning = v.warning || null;
         if (valid !== true) return res.json({ ok: false, valid, saved: false, error, ...current() });
       }
       setSetting(key, value);
-      if (key === 'GEMINI_API_KEY') gemState = { at: Date.now(), ok: !warning, warning: warning || '' };
+      if (key === 'GEMINI_API_KEY') { gemState = verify && !force ? { at: Date.now(), ok: !warning, warning: warning || '' } : null; if (!gemState) refreshCredits().catch(() => {}); }
       if (key === 'ELEVENLABS_API_KEY') EV.subscription(value, true).catch(() => {});
       if (key === 'ELEVENLABS_API_KEY' || key === 'OPENAI_API_KEY' || key === 'GEMINI_API_KEY') setTimeout(() => { try { autoRecord('key saved'); } catch (e) {} }, 1500);
       res.json({ ok: true, valid, saved: true, forced: !!force, ...(warning ? { warning } : {}), ...current() });
