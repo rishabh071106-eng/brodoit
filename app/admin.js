@@ -110,6 +110,7 @@
     // recordings
     h += '<div class="adm-sec"><div class="b-eyebrow">Recordings</div>' + mediaHtml(st.media) + '</div>';
     // jobs
+    h += (function () { const a = S.adm && S.adm.status && S.adm.status.auto; if (!a || a.on === false) return ''; const q = (a.running ? [a.running + ' (recording)'] : []).concat(a.queue || []); return '<p class="adm-auto b-sm">' + ic('zap', 14) + ' ' + (q.length ? 'Auto: ' + _esc(q.join(' → ')) : 'Recordings start by themselves once a key is saved.') + '</p>'; })();
     h += '<div class="adm-jobs" id="admJobs">' + JOBS.map(j => jobHtml(j)).join('') + '</div>';
     return h;
   }

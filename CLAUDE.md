@@ -156,3 +156,5 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
 - `android/` — Kotlin TWA + background steps (`LauncherActivity`, `EnableStepsActivity`, `StepsEngine` → `RecordingProvider`/`SensorProvider`, `SyncJobService`, `Scheduler`, `Api`). Package `com.brodoit.app`, built by `.github/workflows/android.yml`.
 - `modules/android.js` — fetches the newest GitHub release, signs with the on-volume upload key, serves `/download/brodoit.apk`, `/android`, `/api/android/status`; `global._androidCert()` feeds `/.well-known/assetlinks.json`.
 - Steps client: `isTWA()` accepts `android-app://com.brodoit.*` and `?twa=1`; "Turn on" opens `intent://enable#Intent;scheme=brodoit;package=com.brodoit.app;end`.
+
+- `modules/admin.js` `autoRecord()` — self-starting recording chain (bulletin → hindi-books → lang-audio), triggered by key save, boot (+90 s) and a daily 03:30 IST sweep; `GET /api/admin/status` → `auto`, `POST /api/admin/auto` runs it now. `ADMIN_AUTO_RECORD=0` disables.

@@ -143,6 +143,55 @@ function install(app, deps) {
     return { status: 200, body: { ok: true, job: pub(j) } };
   }
 
+  // ── auto-record: recordings start themselves once the keys exist (no Record taps needed) ──
+  // Order: today's bulletin → Hindi books → language lessons. Each step runs through start(kind) exactly like a
+  // manual tap, is skipped when its inputs are missing (preflight) or its media is already complete, and the next
+  // step waits for the previous job to finish. Triggers: a key saved in Admin, server boot, a daily sweep at 03:30 IST.
+  const AUTO_ON = String(process.env.ADMIN_AUTO_RECORD || '1') !== '0';
+  const auto = { queue: [], running: null, reason: '', lastRun: null, lastSweep: null, timer: null };
+  function needs(kind) {
+    let m; try { m = mediaInfo(); } catch (e) { return false; }
+    if (kind === 'bulletin') { const t = m.news.today; return !(t && t.en && t.hi); }
+    if (kind === 'hindi-books') return m.books.audio < m.books.total;
+    if (kind === 'lang-audio') return m.lessons.audio < m.lessons.total;
+    return false;
+  }
+  function autoRecord(reason) {
+    if (!AUTO_ON) return { queued: [], off: true };
+    const todo = ['bulletin', 'hindi-books', 'lang-audio'].filter(k => needs(k) && !preflight(k) && getJob(k).status !== 'running' && !auto.queue.includes(k) && auto.running !== k);
+    for (const k of todo) auto.queue.push(k);
+    if (todo.length) { auto.reason = reason || 'auto'; console.log('[admin] auto-record queued', todo.join(', '), '·', auto.reason); }
+    pump();
+    return { queued: auto.queue.slice(), running: auto.running };
+  }
+  function pump() {
+    if (auto.running) return;
+    if (Object.keys(jobs).some(k => jobs[k].status === 'running')) { clearTimeout(auto.timer); auto.timer = setTimeout(pump, 15000); return; }
+    const kind = auto.queue.shift(); if (!kind) return;
+    if (!needs(kind) || preflight(kind)) return pump();
+    const r = start(kind, {});
+    if (r.status !== 200) { console.log('[admin] auto-record', kind, 'did not start:', r.body && r.body.error); return pump(); }
+    auto.running = kind; console.log('[admin] auto-record started', kind);
+    const wait = () => {
+      const j = getJob(kind);
+      if (j.status === 'running') { auto.timer = setTimeout(wait, 15000); return; }
+      auto.lastRun = { kind, status: j.status, at: new Date().toISOString() }; auto.running = null;
+      auto.timer = setTimeout(pump, 2000);
+    };
+    auto.timer = setTimeout(wait, 5000);
+  }
+  const autoInfo = () => ({ on: AUTO_ON, queue: auto.queue.slice(), running: auto.running, lastRun: auto.lastRun, reason: auto.reason, needs: { bulletin: needs('bulletin'), 'hindi-books': needs('hindi-books'), 'lang-audio': needs('lang-audio') } });
+  if (AUTO_ON) {
+    setTimeout(() => { try { autoRecord('boot'); } catch (e) {} }, 90000);
+    setInterval(() => {
+      try {
+        const ist = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', hour12: false }).format(new Date());
+        const today = dayKey();
+        if (ist === '03' && auto.lastSweep !== today) { auto.lastSweep = today; autoRecord('daily sweep'); }
+      } catch (e) {}
+    }, 20 * 60 * 1000);
+  }
+
   // ── status pieces ──
   function keysInfo() {
     const out = {};
@@ -181,7 +230,7 @@ function install(app, deps) {
       news: { today: newsToday() },
     };
   }
-  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs() });
+  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo() });
 
   // ── routes ──
   app.get('/api/admin/status', auth, requireAdmin, (req, res) => { try { res.json(statusBody()); } catch (e) { res.status(500).json({ error: e.message }); } });
@@ -204,10 +253,12 @@ function install(app, deps) {
         if (valid !== true) return res.json({ ok: false, valid, saved: false, error, ...current() });
       }
       setSetting(key, value);
+      if (key === 'ELEVENLABS_API_KEY' || key === 'OPENAI_API_KEY') setTimeout(() => { try { autoRecord('key saved'); } catch (e) {} }, 1500);
       res.json({ ok: true, valid, saved: true, forced: !!force, ...current() });
     } catch (e) { res.status(500).json({ error: e.message }); }
   });
 
+  app.post('/api/admin/auto', auth, requireAdmin, (req, res) => { res.json({ ok: true, ...autoRecord('admin') }); });
   app.get('/api/admin/jobs', auth, requireAdmin, (req, res) => {
     const kind = String(req.query.kind || '');
     if (kind) { const j = getJob(kind); if (!j) return res.status(404).json({ error: 'unknown job' }); return res.json({ job: pub(j, req.query.full === '1' || req.query.full === 'true') }); }
