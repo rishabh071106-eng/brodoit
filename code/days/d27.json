@@ -1,0 +1,436 @@
+{
+ "day": 27,
+ "phase": 3,
+ "title": "Iterators and generators",
+ "subtitle": "Process endless data with almost no memory",
+ "minutes": 55,
+ "goal": "Explain the iteration protocol, write generators with yield, and build lazy pipelines that process big files one item at a time.",
+ "outcomes": [
+  "Explain iter(), next() and StopIteration, and why iterators are one-pass",
+  "Make a class iterable with __iter__ and __next__",
+  "Write generator functions with yield and generator expressions",
+  "Use itertools.islice with infinite generators",
+  "Chain generators into a lazy log-processing pipeline"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 27: Lazy power",
+   "body": "A server log can be 50 GB. Load it into a list and your program dies. Professionals process data **one item at a time**, only when it is needed.\n\nToday you look inside the `for` loop and learn **generators**: Python's tool for lazy, memory-light pipelines.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Ask for the next item",
+     "Process it",
+     "Let it go",
+     "Repeat until the data runs out"
+    ]
+   },
+   "say": "A busy server can write a fifty gigabyte log in a day. Load that into a list and your program runs out of memory. Professionals process data one item at a time, only when it is needed. Today you look inside the for loop itself, and learn generators, Python's tool for lazy pipelines that use almost no memory."
+  },
+  {
+   "type": "concept",
+   "title": "What a for loop really does",
+   "body": "Behind every `for` loop:\n\n- `iter(items)` gets an **iterator**: an object that remembers where you are\n- `next(iterator)` returns the next item\n- when nothing is left, `next` raises **StopIteration** and the loop ends quietly",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "it = iter(items)",
+      "s": "pill"
+     },
+     {
+      "t": "next(it) gives an item?",
+      "s": "diamond",
+      "yes": "Run the loop body",
+      "no": "StopIteration: loop ends"
+     },
+     {
+      "t": "Back to next(it)"
+     }
+    ]
+   },
+   "say": "Every for loop follows the same protocol behind the scenes. First Python calls iter on your data to get an iterator, an object that remembers its position. Then it calls next again and again, running the loop body for each item. When nothing is left, next raises a special exception called stop iteration, and the loop ends quietly."
+  },
+  {
+   "type": "code",
+   "title": "The protocol by hand",
+   "code": "stations = [\"Mumbai CST\", \"Dadar\", \"Thane\"]\nit = iter(stations)\nprint(next(it))\nprint(next(it))\nprint(next(it))\ntry:\n    next(it)\nexcept StopIteration:\n    print(\"StopIteration: end of the line\")\n\n# What a for loop does for you:\nit = iter(stations)\nwhile True:\n    try:\n        station = next(it)\n    except StopIteration:\n        break\n    print(\"Arriving at\", station)",
+   "expect": "Mumbai CST\nDadar\nThane\nStopIteration: end of the line\nArriving at Mumbai CST\nArriving at Dadar\nArriving at Thane\n",
+   "explain": [
+    [
+     2,
+     "Ask the list for an iterator."
+    ],
+    [
+     3,
+     "Each next() hands over one station and moves forward."
+    ],
+    [
+     7,
+     "There is no fourth station, so next raises StopIteration."
+    ],
+    [
+     13,
+     "A for loop is exactly this while loop, written for you."
+    ],
+    [
+     16,
+     "StopIteration is the signal to stop."
+    ]
+   ],
+   "say": "Let's run the protocol by hand. We get an iterator from the list of stations, and each call to next hands over one station. The fourth call has nothing left, so it raises stop iteration. The second half is exactly what a for loop does for you: keep calling next, and stop when stop iteration arrives."
+  },
+  {
+   "type": "concept",
+   "title": "Iterables vs iterators",
+   "body": "An **iterable** can give you an iterator: lists, strings, dicts, ranges, files.\n\nAn **iterator** is the bookmark itself. It moves only forward, and once used up, it stays empty.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "",
+     "Iterable",
+     "Iterator"
+    ],
+    "rows": [
+     [
+      "Examples",
+      "list, str, dict, range",
+      "iter(list), files, generators"
+     ],
+     [
+      "Loop over it twice?",
+      "yes, fresh each time",
+      "no, it is used up"
+     ],
+     [
+      "Has next()?",
+      "no",
+      "yes"
+     ],
+     [
+      "Supports len() and [i]?",
+      "usually",
+      "no"
+     ]
+    ]
+   },
+   "say": "Two words that sound alike. An iterable is anything you can loop over, because it can hand you a fresh iterator: lists, strings, dictionaries, ranges and files. An iterator is the bookmark itself. It only moves forward, and once it is used up, it stays empty. You can loop over a list a hundred times, but an iterator only once."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "nums = iter([1, 2, 3])\nprint(sum(nums), sum(nums))",
+   "options": [
+    "6 6",
+    "6 0",
+    "StopIteration",
+    "0 0"
+   ],
+   "answer": 1,
+   "why": "The first `sum` consumes the iterator completely. The second `sum` finds nothing left and returns 0. With the list itself, `sum` would work twice, because a list hands out a fresh iterator each time.",
+   "say": "We make an iterator over one, two and three, and sum it twice. What prints? Remember, an iterator is a bookmark that only moves forward."
+  },
+  {
+   "type": "code",
+   "title": "Make your class iterable",
+   "body": "Give a class `__iter__` and `__next__`, and `for`, `list()`, `sum()` and friends all work on it.",
+   "code": "class Countdown:\n    def __init__(self, start):\n        self.current = start\n\n    def __iter__(self):\n        return self\n\n    def __next__(self):\n        if self.current <= 0:\n            raise StopIteration\n        value = self.current\n        self.current -= 1\n        return value\n\n\nfor n in Countdown(3):\n    print(n, end=\" \")\nprint(\"Lift off!\")\nprint(list(Countdown(5)))",
+   "expect": "3 2 1 Lift off!\n[5, 4, 3, 2, 1]\n",
+   "explain": [
+    [
+     5,
+     "__iter__ returns the iterator; this object is its own iterator."
+    ],
+    [
+     8,
+     "__next__ returns one value each time it is called."
+    ],
+    [
+     10,
+     "No values left: signal the end."
+    ],
+    [
+     16,
+     "for calls iter() once, then next() until StopIteration."
+    ],
+    [
+     19,
+     "list() uses the same protocol."
+    ]
+   ],
+   "say": "Our countdown class follows the protocol. Dunder iter returns the iterator, and here the object is its own iterator. Dunder next returns one number each time, and raises stop iteration when it reaches zero. Now for loops, list and sum all work on it. It works, but that is a lot of code for a countdown. There is a much better way."
+  },
+  {
+   "type": "concept",
+   "title": "Generators: yield",
+   "body": "A function containing `yield` becomes a **generator function**. Calling it runs nothing yet; it returns a generator, which is an iterator.\n\nEach `next()` runs the function until the next `yield`, hands that value out, and **pauses** right there, local variables and all.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "gen = countdown(3): nothing runs yet",
+     "next(gen): run to the first yield, hand out 3, pause",
+     "next(gen): resume after the yield, hand out 2, pause",
+     "Function body ends: StopIteration"
+    ]
+   },
+   "say": "Any function that contains the word yield becomes a generator function. Calling it does not run its body. Instead it returns a generator, which is an iterator. Each time you call next, the function runs until it reaches a yield, hands out that value, and pauses right there, remembering all its local variables. The next call resumes exactly where it left off."
+  },
+  {
+   "type": "code",
+   "title": "Countdown as a generator",
+   "body": "Same behaviour as the class, in a third of the code. Watch when `(starting)` appears.",
+   "code": "def countdown(start):\n    print(\"(starting)\")\n    while start > 0:\n        yield start\n        start -= 1\n    print(\"(finished)\")\n\n\ngen = countdown(3)\nprint(type(gen))\nprint(next(gen))\nprint(next(gen))\nfor n in gen:\n    print(\"loop got\", n)",
+   "expect": "<class 'generator'>\n(starting)\n3\n2\nloop got 1\n(finished)\n",
+   "explain": [
+    [
+     4,
+     "yield hands out a value and pauses the function here."
+    ],
+    [
+     9,
+     "Calling the function only creates the generator. Nothing printed yet."
+    ],
+    [
+     11,
+     "The first next() runs from the top until the first yield."
+    ],
+    [
+     12,
+     "The second next() resumes after the yield, with start now 2."
+    ],
+    [
+     13,
+     "The loop continues from where we are; the generator remembers."
+    ],
+    [
+     6,
+     "When the body ends, the generator raises StopIteration for you."
+    ]
+   ],
+   "say": "Here is the same countdown as a generator. It is a third of the code. Notice that calling countdown prints nothing, because the body has not started. The first next runs until the first yield and hands out three. The second resumes and hands out two. The for loop picks up from there, and when the function ends, the loop ends. Tap watch it run to see the pauses."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "def numbers():\n    print(\"A\")\n    yield 1\n    print(\"B\")\n    yield 2\n\n\ng = numbers()\nprint(\"C\")\nprint(next(g))",
+   "options": [
+    "A\nC\n1",
+    "C\nA\n1",
+    "A\nB\nC\n1",
+    "C\n1"
+   ],
+   "answer": 1,
+   "why": "Calling `numbers()` runs **nothing**. C prints first. `next(g)` then runs the body up to the first `yield`: it prints A and hands out 1. B never prints, because nobody asked for a second value.",
+   "say": "This generator prints letters as it runs. We create it, print C, then ask for one value. In what order do things appear? This one shows exactly how lazy generators are."
+  },
+  {
+   "type": "code",
+   "title": "Infinite Fibonacci, safely",
+   "body": "A generator can be **infinite**, because it only computes what you ask for. `itertools.islice` takes the first n items of any iterator.",
+   "code": "from itertools import islice\n\n\ndef fibonacci():\n    a, b = 0, 1\n    while True:  # infinite, and that is fine\n        yield a\n        a, b = b, a + b\n\n\nprint(list(islice(fibonacci(), 10)))\n\nfor position, f in enumerate(fibonacci()):\n    if f > 1000:\n        print(f\"First Fibonacci number over 1000: {f}, at position {position}\")\n        break",
+   "expect": "[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]\nFirst Fibonacci number over 1000: 1597, at position 17\n",
+   "explain": [
+    [
+     6,
+     "An infinite loop inside a generator is safe: it pauses at every yield."
+    ],
+    [
+     8,
+     "Tuple unpacking moves the pair along the sequence."
+    ],
+    [
+     11,
+     "islice(gen, 10) takes just the first 10 values."
+    ],
+    [
+     13,
+     "A for loop over an infinite generator needs a break."
+    ]
+   ],
+   "say": "Because a generator only computes what you ask for, it can describe an infinite sequence. This one produces Fibonacci numbers forever. Islice, from the itertools module, takes the first ten, the way slicing works on a list. And a for loop with a break finds the first Fibonacci number over a thousand without ever computing the rest."
+  },
+  {
+   "type": "concept",
+   "title": "Generator expressions",
+   "body": "Swap the square brackets of a list comprehension for round ones and you get a **generator expression**: same syntax, but lazy.\n\n`sum(n * n for n in range(1_000_000))` never builds the million-item list. Inside a function call, the call's own brackets are enough.",
+   "visual": {
+    "kind": "chart",
+    "title": "Bytes of memory for a million squares (64-bit laptop, approx.)",
+    "bars": [
+     [
+      "list comprehension",
+      8448728
+     ],
+     [
+      "generator expression",
+      208
+     ]
+    ]
+   },
+   "say": "Take a list comprehension and swap the square brackets for round ones. Now you have a generator expression. Same syntax, but lazy. The sum of a million squares can be computed without ever building a million item list. And when it is the only argument to a function, the function call's own brackets are enough."
+  },
+  {
+   "type": "code",
+   "title": "List vs generator",
+   "code": "import sys\n\nsquares_list = [n * n for n in range(100_000)]\nsquares_gen = (n * n for n in range(100_000))\n\nprint(type(squares_gen).__name__)\nprint(\"Same total:\", sum(squares_gen) == sum(squares_list))\nprint(\"List over 100 KB:\", sys.getsizeof(squares_list) > 100_000)\nprint(\"Generator under 1 KB:\", sys.getsizeof(squares_gen) < 1_000)\n\nmarks = [78, 92, 85, 64, 92]\nprint(\"Any failures?\", any(m < 35 for m in marks))\nprint(\"Toppers:\", sum(1 for m in marks if m >= 90))",
+   "expect": "generator\nSame total: True\nList over 100 KB: True\nGenerator under 1 KB: True\nAny failures? False\nToppers: 2\n",
+   "explain": [
+    [
+     3,
+     "Builds all 100,000 squares in memory at once. Underscores in numbers are just for readability."
+    ],
+    [
+     4,
+     "Round brackets: a generator that will compute squares on demand."
+    ],
+    [
+     8,
+     "getsizeof reports how many bytes an object takes."
+    ],
+    [
+     9,
+     "The generator stays tiny however long the range is."
+    ],
+    [
+     12,
+     "any stops as soon as it finds one True value."
+    ],
+    [
+     13,
+     "A neat counting trick: add 1 for each match."
+    ]
+   ],
+   "say": "Both give the same total, but the list holds every square in memory at once, while the generator stays tiny no matter how long the range is. Generator expressions shine inside functions like sum and any. Any even stops at the first match it finds. And adding one for each matching mark is a neat way to count toppers."
+  },
+  {
+   "type": "concept",
+   "title": "Lazy pipelines",
+   "body": "Chain generators like pipes. Each line of a file flows through **every stage** before the next line is even read, so memory stays flat whether the log has 8 lines or 80 million.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "read_lines(\"app.log\")",
+      "s": "pill"
+     },
+     {
+      "t": "only(\"ERROR\", lines)"
+     },
+     {
+      "t": "messages(lines)"
+     },
+     {
+      "t": "islice(..., 2): stop after two",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Now the real power. Chain generators together like pipes. One stage reads lines, the next keeps only the errors, the next pulls out the message. Each line flows through every stage before the next line is even read from disk. So the memory use stays flat whether the log has eight lines or eighty million. This is how real log processors and data tools work."
+  },
+  {
+   "type": "code",
+   "title": "A lazy log pipeline",
+   "body": "Three tiny generators, plugged together. We ask for just **two** errors, so the file is read only as far as needed.",
+   "code": "from itertools import islice\n\n\ndef read_lines(path):\n    with open(path, encoding=\"utf-8\") as f:\n        for line in f:\n            yield line.rstrip(\"\\n\")\n\n\ndef only(level, lines):\n    for line in lines:\n        if f\" {level} \" in line:\n            yield line\n\n\ndef messages(lines):\n    for line in lines:\n        yield line.split(\" \", 3)[3]\n\n\nerrors = messages(only(\"ERROR\", read_lines(\"app.log\")))\nprint(type(errors).__name__)\nfor msg in islice(errors, 2):\n    print(\"-\", msg)",
+   "expect": "generator\n- Payment gateway timeout\n- Database connection lost\n",
+   "explain": [
+    [
+     4,
+     "Stage 1: yield the file one line at a time."
+    ],
+    [
+     10,
+     "Stage 2: pass on only lines with the given level."
+    ],
+    [
+     16,
+     "Stage 3: split off date, time and level; keep the message."
+    ],
+    [
+     21,
+     "Building the pipeline does no work at all yet."
+    ],
+    [
+     23,
+     "Asking for two items pulls exactly enough lines through the pipes."
+    ]
+   ],
+   "files": {
+    "app.log": "2026-10-18 09:00:01 INFO Server started\n2026-10-18 09:00:07 ERROR Payment gateway timeout\n2026-10-18 09:00:09 INFO GET /home 200\n2026-10-18 09:01:15 WARNING Slow query on orders\n2026-10-18 09:02:40 ERROR Database connection lost\n2026-10-18 09:02:41 INFO Reconnected to database\n2026-10-18 09:03:30 ERROR Disk 91 percent full\n2026-10-18 09:04:00 INFO GET /cart 200\n"
+   },
+   "say": "Three tiny generators, each doing one job. Read lines yields the file line by line. Only passes on lines with the level we want. Messages strips off the date, time and level. Plugging them together does no work at all. Then we ask for just two errors, and only enough lines are read to find them. The rest of the file is never touched."
+  },
+  {
+   "type": "quiz",
+   "title": "List or generator?",
+   "q": "When is a **list** the better choice than a generator?",
+   "options": [
+    "When you need to loop over the data more than once, index it, or know its len()",
+    "When the data is too big for memory",
+    "When you are reading a huge file line by line",
+    "Never: generators are always better"
+   ],
+   "answer": 0,
+   "why": "Generators are one-pass and have no `len()` or indexing. If you need those, or the data is small and reused, a list is simpler. For big or streaming data, use a generator.",
+   "say": "Generators are wonderful, but not always the right tool. When is a list the better choice?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "This report crashes with **TypeError: object of type 'generator' has no len()**, and even `sum` would find the generator empty after `max` used it up. Fix it with **one change** so it prints the highest score (91) and the average (83.3).",
+   "starter": "def read_scores(lines):\n    for line in lines:\n        name, score = line.split(\",\")\n        yield int(score)\n\n\nscores = read_scores([\"Riya,82\", \"Arjun,91\", \"Meera,77\"])\nprint(\"Highest:\", max(scores))\nprint(\"Average:\", round(sum(scores) / len(scores), 1))\n",
+   "solution": "def read_scores(lines):\n    for line in lines:\n        name, score = line.split(\",\")\n        yield int(score)\n\n\nscores = list(read_scores([\"Riya,82\", \"Arjun,91\", \"Meera,77\"]))\nprint(\"Highest:\", max(scores))\nprint(\"Average:\", round(sum(scores) / len(scores), 1))",
+   "tests": "assert \"Highest: 91\" in __out__, \"The report should print Highest: 91.\"\nassert \"Average: 83.3\" in __out__, \"The report should print Average: 83.3. Is the data still there for the second pass?\"\nassert \"yield\" in __code__, \"Keep read_scores as a generator; fix how its result is used.\"",
+   "hints": [
+    "The report needs the scores three times: for max, sum and len. A generator can only be read once.",
+    "Turn the generator into a list once: scores = list(read_scores(...))"
+   ],
+   "say": "A classic generator bug. This report uses the scores three times, for the maximum, the sum and the length. But a generator can only be read once, and it has no length at all. Fix it with one small change, while keeping read scores as a generator."
+  },
+  {
+   "type": "exercise",
+   "title": "Batches for an SMS API",
+   "task": "Many APIs accept at most N items per request. Write a **generator** `batches(items, size)` that yields lists of up to `size` items.\n\n`list(batches(range(10), 4))` → `[[0, 1, 2, 3], [4, 5, 6, 7], [8, 9]]`",
+   "starter": "def batches(items, size):\n    pass\n\n\nfor batch in batches(range(1, 11), 4):\n    print(\"Sending SMS to users\", batch)\n",
+   "solution": "def batches(items, size):\n    batch = []\n    for item in items:\n        batch.append(item)\n        if len(batch) == size:\n            yield batch\n            batch = []\n    if batch:\n        yield batch\n\n\nfor batch in batches(range(1, 11), 4):\n    print(\"Sending SMS to users\", batch)",
+   "tests": "assert type(batches([1], 1)).__name__ == \"generator\", \"batches should be a generator function: use yield, not return.\"\nassert list(batches(range(10), 4)) == [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9]], f\"Expected [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9]], got {list(batches(range(10), 4))}. Is the last, smaller batch included?\"\nassert list(batches(range(6), 3)) == [[0, 1, 2], [3, 4, 5]], \"When the items divide exactly, there should be no empty batch at the end.\"\nassert list(batches([], 5)) == [], \"No items means no batches.\"\ndef numbers():\n    n = 0\n    while True:\n        yield n\n        n += 1\nfirst = next(batches(numbers(), 2))\nassert first == [0, 1], \"batches should work lazily, even on an endless stream of items.\"",
+   "hints": [
+    "Collect items into a list called batch.",
+    "When len(batch) == size, yield it and start a new empty list.",
+    "After the loop, yield what is left, but only if it is not empty."
+   ],
+   "say": "Real APIs limit how many items you can send in one request. Write a generator called batches that groups any stream of items into lists of a given size, with a smaller batch at the end if needed. The tests even feed it an endless stream, so it must stay lazy."
+  },
+  {
+   "type": "exercise",
+   "title": "Pipeline stages for big logs",
+   "task": "Write two lazy pipeline stages:\n\n- `read_log(path)`: yields each line of the file **without** its newline\n- `matching(word, lines)`: yields only the lines that contain `word`\n\nBoth must be generators, so they work on files bigger than memory.",
+   "starter": "def read_log(path):\n    pass\n\n\ndef matching(word, lines):\n    pass\n\n\nfor line in matching(\"ERROR\", read_log(\"app.log\")):\n    print(line)\n",
+   "solution": "def read_log(path):\n    with open(path, encoding=\"utf-8\") as f:\n        for line in f:\n            yield line.rstrip(\"\\n\")\n\n\ndef matching(word, lines):\n    for line in lines:\n        if word in line:\n            yield line\n\n\nfor line in matching(\"ERROR\", read_log(\"app.log\")):\n    print(line)",
+   "tests": "assert type(read_log(\"app.log\")).__name__ == \"generator\", \"read_log should be a generator: use yield inside the loop over the file.\"\nlines = list(read_log(\"app.log\"))\nassert len(lines) == 8 and lines[0] == \"2026-10-18 09:00:01 INFO Server started\", \"read_log should yield all 8 lines with the newline removed.\"\nerrors = list(matching(\"ERROR\", read_log(\"app.log\")))\nassert len(errors) == 3 and all(\"ERROR\" in e for e in errors), f\"There are 3 ERROR lines in app.log, got {len(errors)}.\"\nassert list(matching(\"Database\", [\"a Database b\", \"nothing\"])) == [\"a Database b\"], \"matching should work on any iterable of lines.\"\ndef feed():\n    yield \"ERROR one\"\n    yield \"INFO two\"\n    yield \"ERROR three\"\n    raise AssertionError(\"matching read further than it needed to. Yield each match as soon as you find it instead of building a list.\")\nit = matching(\"ERROR\", feed())\nassert next(it) == \"ERROR one\" and next(it) == \"ERROR three\", \"matching should yield matches one at a time, in order.\"",
+   "hints": [
+    "read_log: open the file with with, loop over it, and yield line.rstrip(\"\\n\").",
+    "matching: loop over lines and yield each line that contains word.",
+    "Do not build lists: yield is what makes them lazy."
+   ],
+   "files": {
+    "app.log": "2026-10-18 09:00:01 INFO Server started\n2026-10-18 09:00:07 ERROR Payment gateway timeout\n2026-10-18 09:00:09 INFO GET /home 200\n2026-10-18 09:01:15 WARNING Slow query on orders\n2026-10-18 09:02:40 ERROR Database connection lost\n2026-10-18 09:02:41 INFO Reconnected to database\n2026-10-18 09:03:30 ERROR Disk 91 percent full\n2026-10-18 09:04:00 INFO GET /cart 200\n"
+   },
+   "say": "Build the first two stages of a log pipeline. Read log yields each line of a file without its newline, and matching yields only the lines containing a word. Both must be generators. The last test feeds matching a stream that complains if it is read too far, so you will know if your code is truly lazy."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 27 complete",
+   "points": [
+    "for loops call iter() once, then next() until StopIteration",
+    "Iterables give fresh iterators; iterators are one-pass bookmarks",
+    "__iter__ and __next__ make a class iterable, but yield is usually simpler",
+    "A generator pauses at each yield and resumes on next()",
+    "Generator expressions and itertools.islice keep memory flat, even for infinite data",
+    "Chain small generators into lazy pipelines for big files"
+   ],
+   "say": "Mission twenty seven complete. You now know what a for loop really does, how to make your own iterables, and how generators pause and resume to process endless data in almost no memory. Tomorrow we treat functions themselves as data, with lambda, map, filter, closures and caching. See you on day twenty eight."
+  }
+ ]
+}

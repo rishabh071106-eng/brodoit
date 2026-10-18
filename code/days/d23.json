@@ -1,0 +1,471 @@
+{
+ "day": 23,
+ "phase": 3,
+ "title": "Files II: CSV and JSON",
+ "subtitle": "Spreadsheets, APIs and saved app state",
+ "minutes": 55,
+ "goal": "Read and write CSV and JSON files, convert between them, and save and load app state safely.",
+ "outcomes": [
+  "Read CSV with csv.reader and DictReader, converting values to numbers",
+  "Write CSV reports with DictWriter",
+  "Parse and produce JSON with loads, dumps, load and dump",
+  "Edit a settings.json file and handle invalid JSON with defaults",
+  "Convert a CSV export into a JSON file for an app"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 23: CSV and JSON",
+   "body": "Plain text is great for logs. Real apps need **structured** data:\n\n- **CSV**: what every spreadsheet, bank statement and school portal exports\n- **JSON**: what every web API and settings file speaks\n\nToday your programs read and write both.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "marks.csv exported from a spreadsheet",
+     "Python reads each row",
+     "Your code builds a report",
+     "Save it as JSON for a web app"
+    ]
+   },
+   "say": "Plain text is perfect for logs and notes, but real apps need structured data. CSV is what every spreadsheet, bank statement and school portal exports. JSON is the language of web APIs and settings files. Today you learn to read and write both, and to convert one into the other."
+  },
+  {
+   "type": "concept",
+   "title": "CSV: a table in a text file",
+   "body": "**Comma-separated values**: the first line is the header, each following line is a row. A field that contains a comma is wrapped in quotes, like `\"Sharma, Riya\"`.\n\nThat is why you never split CSV by hand: the `csv` module handles quotes for you.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "name",
+     "city",
+     "maths",
+     "science"
+    ],
+    "rows": [
+     [
+      "Sharma, Riya",
+      "Pune",
+      "92",
+      "88"
+     ],
+     [
+      "Arjun Mehta",
+      "Delhi",
+      "78",
+      "95"
+     ],
+     [
+      "Meera Iyer",
+      "Chennai",
+      "85",
+      "79"
+     ],
+     [
+      "Kabir Khan",
+      "Lucknow",
+      "64",
+      "71"
+     ]
+    ]
+   },
+   "say": "CSV stands for comma separated values. The first line is a header with the column names, and every line after it is one row. When a field itself contains a comma, like a name written surname first, it is wrapped in quotes. That is exactly why you should never split CSV lines by hand. The csv module understands the quotes for you."
+  },
+  {
+   "type": "code",
+   "title": "csv.reader vs splitting by hand",
+   "body": "Open CSV files with `newline=\"\"`, as the csv docs recommend. Watch what splitting by hand does to Riya.",
+   "code": "import csv\n\nwith open(\"marks.csv\", encoding=\"utf-8\", newline=\"\") as f:\n    lines = f.read().splitlines()\nprint(\"By hand:\", lines[1].split(\",\"))\n\nwith open(\"marks.csv\", encoding=\"utf-8\", newline=\"\") as f:\n    reader = csv.reader(f)\n    header = next(reader)\n    print(\"Header:\", header)\n    for row in reader:\n        print(row)",
+   "expect": "By hand: ['\"Sharma', ' Riya\"', 'Pune', '92', '88']\nHeader: ['name', 'city', 'maths', 'science']\n['Sharma, Riya', 'Pune', '92', '88']\n['Arjun Mehta', 'Delhi', '78', '95']\n['Meera Iyer', 'Chennai', '85', '79']\n['Kabir Khan', 'Lucknow', '64', '71']\n",
+   "explain": [
+    [
+     5,
+     "Splitting on commas cuts \"Sharma, Riya\" into two broken fields."
+    ],
+    [
+     8,
+     "csv.reader turns each line into a list of fields, respecting quotes."
+    ],
+    [
+     9,
+     "next takes one row: the header. Day 27 shows how next works."
+    ],
+    [
+     11,
+     "Every remaining row is a list of strings."
+    ]
+   ],
+   "files": {
+    "marks.csv": "name,city,maths,science\n\"Sharma, Riya\",Pune,92,88\nArjun Mehta,Delhi,78,95\nMeera Iyer,Chennai,85,79\nKabir Khan,Lucknow,64,71\n"
+   },
+   "say": "First the wrong way. Splitting Riya's line on commas breaks her name into two pieces and shifts every column. Then the right way. Csv dot reader respects the quotes and gives each row as a clean list. We use next to grab the header row first. Notice every value is a string, even the marks."
+  },
+  {
+   "type": "concept",
+   "title": "DictReader: rows with names",
+   "body": "`csv.DictReader` uses the header to turn each row into a **dict**. Now you write `row[\"maths\"]` instead of remembering that maths is column 2.\n\nCareful: every value is still a **string**. Convert with `int()` or `float()` before doing maths.",
+   "visual": {
+    "kind": "dict",
+    "name": "row",
+    "pairs": [
+     [
+      "'name'",
+      "'Sharma, Riya'"
+     ],
+     [
+      "'city'",
+      "'Pune'"
+     ],
+     [
+      "'maths'",
+      "'92'"
+     ],
+     [
+      "'science'",
+      "'88'"
+     ]
+    ]
+   },
+   "say": "Remembering that maths is column two is fragile. Csv dot DictReader reads the header for you and turns every row into a dictionary, so you can write row, maths. If someone adds a column to the spreadsheet tomorrow, your code still works. One thing to remember: every value is still a string, so convert it with int or float before doing maths."
+  },
+  {
+   "type": "code",
+   "title": "A marks report",
+   "code": "import csv\n\nwith open(\"marks.csv\", encoding=\"utf-8\", newline=\"\") as f:\n    students = list(csv.DictReader(f))\n\nprint(len(students), \"students\")\nfor s in students:\n    total = int(s[\"maths\"]) + int(s[\"science\"])\n    print(f\"{s['name']:<14} {s['city']:<8} {total:>4}\")\n\nmaths = [int(s[\"maths\"]) for s in students]\nprint(\"Maths average:\", sum(maths) / len(maths))",
+   "expect": "4 students\nSharma, Riya   Pune      180\nArjun Mehta    Delhi     173\nMeera Iyer     Chennai   164\nKabir Khan     Lucknow   135\nMaths average: 79.75\n",
+   "explain": [
+    [
+     4,
+     "list() reads every row into a list of dicts while the file is open."
+    ],
+    [
+     8,
+     "Convert the strings to ints before adding."
+    ],
+    [
+     9,
+     "Format specs from Day 5 line the report up into columns."
+    ],
+    [
+     11,
+     "A comprehension pulls one column out as numbers."
+    ]
+   ],
+   "files": {
+    "marks.csv": "name,city,maths,science\n\"Sharma, Riya\",Pune,92,88\nArjun Mehta,Delhi,78,95\nMeera Iyer,Chennai,85,79\nKabir Khan,Lucknow,64,71\n"
+   },
+   "say": "We read every row into a list of dictionaries. Then, for each student, we convert the two marks to integers, add them, and print a neatly aligned report using the format specs from day five. Finally a comprehension pulls out the maths column, and we calculate the class average."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "import csv\n\nrows = list(csv.reader([\"name,score\", \"Riya,9\", \"Arjun,10\"]))\nprint(rows[1][1] + rows[2][1])",
+   "options": [
+    "19",
+    "910",
+    "TypeError: unsupported operand type(s) for +: 'int' and 'int'",
+    "9 10"
+   ],
+   "answer": 1,
+   "why": "csv gives you **strings**. `\"9\" + \"10\"` joins them into `\"910\"`. Convert first: `int(rows[1][1]) + int(rows[2][1])` is 19. (csv.reader also accepts any list of lines, handy for testing.)",
+   "say": "Csv dot reader can read from a plain list of lines too, which is handy for testing. Here we add Riya's score to Arjun's. What prints? Think carefully about the type of each value."
+  },
+  {
+   "type": "code",
+   "title": "Writing CSV with DictWriter",
+   "body": "`DictWriter` needs the column order in `fieldnames`. Write the header once, then the rows. This file opens straight in Excel or Google Sheets.",
+   "code": "import csv\n\nresults = [\n    {\"name\": \"Riya\", \"total\": 180, \"grade\": \"A\"},\n    {\"name\": \"Arjun\", \"total\": 173, \"grade\": \"A\"},\n    {\"name\": \"Kabir\", \"total\": 135, \"grade\": \"C\"},\n]\n\nwith open(\"report.csv\", \"w\", encoding=\"utf-8\", newline=\"\") as f:\n    writer = csv.DictWriter(f, fieldnames=[\"name\", \"total\", \"grade\"])\n    writer.writeheader()\n    writer.writerows(results)\n\nwith open(\"report.csv\", encoding=\"utf-8\") as f:\n    print(f.read())",
+   "expect": "name,total,grade\nRiya,180,A\nArjun,173,A\nKabir,135,C\n\n",
+   "explain": [
+    [
+     9,
+     "Mode w with newline=\"\" so csv controls the line endings."
+    ],
+    [
+     10,
+     "fieldnames sets the columns and their order."
+    ],
+    [
+     11,
+     "writeheader writes the first line: name,total,grade."
+    ],
+    [
+     12,
+     "writerows writes one line per dict; numbers become text automatically."
+    ]
+   ],
+   "say": "Writing is the mirror image. A dict writer needs the column names, in order. We write the header once, then all the rows in one call, and numbers are turned into text for us. The result opens straight in Excel or Google Sheets, which is how most automated reports reach managers."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "You used `DictWriter` and `writerows`, but the CSV has **no header line**. What did you forget?",
+   "options": [
+    "newline=\"\"",
+    "writer.writeheader()",
+    "encoding=\"utf-8\"",
+    "csv.reader"
+   ],
+   "answer": 1,
+   "why": "`DictWriter` only writes the header when you call `writeheader()`. Without it, the spreadsheet opens with no column names.",
+   "say": "Quick check. You wrote your rows with a dict writer, but when you open the file there is no header line. What did you forget to call?"
+  },
+  {
+   "type": "concept",
+   "title": "JSON: data that travels",
+   "body": "**JSON** looks almost like Python dicts and lists, and maps onto them directly. Watch the small differences: `true`, `false`, `null`, and **double quotes only**.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "JSON",
+     "Python"
+    ],
+    "rows": [
+     [
+      "{\"city\": \"Pune\"}",
+      "dict {'city': 'Pune'}"
+     ],
+     [
+      "[1, 2, 3]",
+      "list [1, 2, 3]"
+     ],
+     [
+      "\"text\"",
+      "str 'text'"
+     ],
+     [
+      "42, 3.5",
+      "int 42, float 3.5"
+     ],
+     [
+      "true / false",
+      "True / False"
+     ],
+     [
+      "null",
+      "None"
+     ]
+    ]
+   },
+   "say": "JSON is the data format of the web. Every API, from cricket scores to UPI payment status, sends JSON. It looks almost exactly like Python dictionaries and lists, and maps onto them directly. Watch the small differences: lowercase true and false, null instead of None, and strings always in double quotes."
+  },
+  {
+   "type": "code",
+   "title": "loads and dumps: JSON as text",
+   "body": "An API sends JSON as **text**. `json.loads` turns the text into Python objects. `json.dumps` turns them back into text.",
+   "code": "import json\n\nresponse = '{\"city\": \"Mumbai\", \"temp_c\": 31.5, \"rain\": false, \"alerts\": null, \"forecast\": [30, 29, 32]}'\nweather = json.loads(response)\n\nprint(type(weather))\nprint(weather[\"city\"], weather[\"temp_c\"])\nprint(weather[\"rain\"], weather[\"alerts\"])\nprint(\"Hottest:\", max(weather[\"forecast\"]))\n\nweather[\"rain\"] = True\nprint(json.dumps(weather))",
+   "expect": "<class 'dict'>\nMumbai 31.5\nFalse None\nHottest: 32\n{\"city\": \"Mumbai\", \"temp_c\": 31.5, \"rain\": true, \"alerts\": null, \"forecast\": [30, 29, 32]}\n",
+   "explain": [
+    [
+     3,
+     "A weather API response is just a string."
+    ],
+    [
+     4,
+     "loads parses the string into a real dict."
+    ],
+    [
+     8,
+     "false became False, and null became None."
+    ],
+    [
+     12,
+     "dumps turns the dict back into JSON text, ready to send."
+    ]
+   ],
+   "say": "An API sends its answer as text. Json dot loads, where the s stands for string, parses that text into a real Python dictionary, so false becomes False and null becomes None. We can work with it like any dict. Json dot dumps goes the other way, turning Python objects back into JSON text, ready to send."
+  },
+  {
+   "type": "concept",
+   "title": "load vs loads, dump vs dumps",
+   "body": "The **s** means **string**. Without it, the function works with a **file**.\n\n- `indent=2` makes files readable for humans\n- `ensure_ascii=False` keeps ₹ and हिंदी as they are instead of escape codes",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Function",
+     "From",
+     "To"
+    ],
+    "rows": [
+     [
+      "json.loads(text)",
+      "JSON string",
+      "Python object"
+     ],
+     [
+      "json.dumps(obj)",
+      "Python object",
+      "JSON string"
+     ],
+     [
+      "json.load(f)",
+      "open file",
+      "Python object"
+     ],
+     [
+      "json.dump(obj, f)",
+      "Python object",
+      "open file"
+     ]
+    ]
+   },
+   "say": "Here is the trick to remembering the four functions. The s at the end means string. Loads and dumps work with strings in memory. Load and dump, without the s, read from and write to a file. Two options are worth knowing: indent makes files readable for humans, and ensure ascii false keeps the rupee sign and Hindi text as they are."
+  },
+  {
+   "type": "code",
+   "title": "Edit settings.json",
+   "body": "Apps keep preferences in a settings file. Load it, change it, save it back. Open the **settings.json** tab first.",
+   "code": "import json\n\nwith open(\"settings.json\", encoding=\"utf-8\") as f:\n    settings = json.load(f)\n\nprint(settings[\"theme\"], settings[\"notifications\"][\"sms\"])\nsettings[\"font_size\"] = 16\nsettings[\"notifications\"][\"sms\"] = True\n\nwith open(\"settings.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump(settings, f, indent=2)\n\nwith open(\"settings.json\", encoding=\"utf-8\") as f:\n    print(f.read())",
+   "expect": "dark False\n{\n  \"theme\": \"dark\",\n  \"font_size\": 16,\n  \"language\": \"hi\",\n  \"notifications\": {\n    \"email\": true,\n    \"sms\": true\n  }\n}\n",
+   "explain": [
+    [
+     4,
+     "json.load reads and parses the whole file in one step."
+    ],
+    [
+     6,
+     "Nested JSON is nested dicts: chain the keys."
+    ],
+    [
+     7,
+     "Change values like any dict."
+    ],
+    [
+     11,
+     "json.dump writes the dict to the file; indent=2 keeps it readable."
+    ]
+   ],
+   "files": {
+    "settings.json": "{\n  \"theme\": \"dark\",\n  \"font_size\": 14,\n  \"language\": \"hi\",\n  \"notifications\": {\"email\": true, \"sms\": false}\n}\n"
+   },
+   "say": "Almost every app keeps its preferences in a file like this. We load the settings into a dictionary, read a nested value, bump the font size and switch on SMS alerts. Then we dump the whole thing back to the file with an indent of two, so it stays readable for the next developer who opens it."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "import json\n\ndata = {\"ok\": True, \"items\": (1, 2), \"note\": None}\nprint(json.dumps(data))",
+   "options": [
+    "{'ok': True, 'items': (1, 2), 'note': None}",
+    "{\"ok\": true, \"items\": [1, 2], \"note\": null}",
+    "{\"ok\": True, \"items\": [1, 2], \"note\": None}",
+    "TypeError: Object of type tuple is not JSON serializable"
+   ],
+   "answer": 1,
+   "why": "`dumps` writes real JSON: double quotes, `true`, `null`. JSON has no tuples, so a tuple becomes a JSON array, `[1, 2]`. Load it back and you get a list, not a tuple.",
+   "say": "We turn a dictionary that contains True, a tuple and None into JSON text. What does the text look like? Remember, JSON has its own spellings, and it has no tuples."
+  },
+  {
+   "type": "code",
+   "title": "Convert CSV to JSON for a web app",
+   "body": "A classic job: the school exports a spreadsheet, the website wants JSON. Note the marks become real **numbers** in JSON.",
+   "code": "import csv\nimport json\n\nwith open(\"marks.csv\", encoding=\"utf-8\", newline=\"\") as f:\n    rows = list(csv.DictReader(f))\n\nstudents = []\nfor row in rows:\n    students.append({\n        \"name\": row[\"name\"],\n        \"city\": row[\"city\"],\n        \"marks\": {\"maths\": int(row[\"maths\"]), \"science\": int(row[\"science\"])},\n    })\n\nwith open(\"students.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump(students, f, indent=2, ensure_ascii=False)\n\nprint(len(students), \"students saved to students.json\")\nprint(json.dumps(students[0]))",
+   "expect": "4 students saved to students.json\n{\"name\": \"Sharma, Riya\", \"city\": \"Pune\", \"marks\": {\"maths\": 92, \"science\": 88}}\n",
+   "explain": [
+    [
+     5,
+     "Read every CSV row as a dict of strings."
+    ],
+    [
+     9,
+     "Build a new, nested record for each student."
+    ],
+    [
+     12,
+     "Convert marks to int, so JSON stores numbers, not text."
+    ],
+    [
+     16,
+     "Save the whole list as one JSON file."
+    ]
+   ],
+   "files": {
+    "marks.csv": "name,city,maths,science\n\"Sharma, Riya\",Pune,92,88\nArjun Mehta,Delhi,78,95\nMeera Iyer,Chennai,85,79\nKabir Khan,Lucknow,64,71\n"
+   },
+   "say": "Here is a job developers do constantly. The school exports a spreadsheet, but the website wants JSON. We read the CSV rows, reshape each one into a nested record with the marks converted to real numbers, and dump the whole list into a JSON file. Five minutes of Python replaces an afternoon of copying and pasting."
+  },
+  {
+   "type": "code",
+   "title": "Bad JSON and missing keys",
+   "body": "Hand-edited files break. Single quotes or a trailing comma make **invalid JSON**, which raises `json.JSONDecodeError`. Start from defaults so missing keys never crash the app.",
+   "code": "import json\n\nDEFAULTS = {\"theme\": \"light\", \"font_size\": 14}\n\n\ndef load_settings(text):\n    try:\n        user = json.loads(text)\n    except json.JSONDecodeError as e:\n        print(\"Bad settings, using defaults:\", e.msg)\n        user = {}\n    settings = dict(DEFAULTS)\n    settings.update(user)\n    return settings\n\n\nprint(load_settings('{\"theme\": \"dark\"}'))\nprint(load_settings(\"{'theme': 'dark'}\"))",
+   "expect": "{'theme': 'dark', 'font_size': 14}\nBad settings, using defaults: Expecting property name enclosed in double quotes\n{'theme': 'light', 'font_size': 14}\n",
+   "explain": [
+    [
+     8,
+     "Parse the user settings text."
+    ],
+    [
+     9,
+     "JSONDecodeError is raised for text that is not valid JSON."
+    ],
+    [
+     12,
+     "Start from a copy of the defaults."
+    ],
+    [
+     13,
+     "update overwrites only the keys the user actually set."
+    ],
+    [
+     18,
+     "Single quotes are fine in Python but not valid JSON."
+    ]
+   ],
+   "say": "People edit settings files by hand, and they make mistakes. Single quotes look fine to a Python developer, but they are not valid JSON, and loads raises a JSON decode error. We catch it and fall back to defaults. And by starting from a copy of the defaults and updating it, any key the user did not set still has a sensible value."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "This game saves its state fine, but **loading crashes**. Fix `load_state` so the round trip works.",
+   "starter": "import json\n\n\ndef save_state(state, filename):\n    with open(filename, \"w\", encoding=\"utf-8\") as f:\n        json.dump(state, f)\n\n\ndef load_state(filename):\n    with open(filename, encoding=\"utf-8\") as f:\n        return json.loads(f)\n\n\nsave_state({\"level\": 3, \"coins\": 250}, \"game.json\")\nprint(load_state(\"game.json\"))\n",
+   "solution": "import json\n\n\ndef save_state(state, filename):\n    with open(filename, \"w\", encoding=\"utf-8\") as f:\n        json.dump(state, f)\n\n\ndef load_state(filename):\n    with open(filename, encoding=\"utf-8\") as f:\n        return json.load(f)\n\n\nsave_state({\"level\": 3, \"coins\": 250}, \"game.json\")\nprint(load_state(\"game.json\"))",
+   "tests": "state = {\"level\": 7, \"inventory\": [\"sword\", \"map\"], \"boss_beaten\": False}\nsave_state(state, \"check.json\")\nloaded = load_state(\"check.json\")\nassert loaded == state, f\"Loading should give back exactly what was saved. Got {loaded}.\"\nassert \"loads(f)\" not in __code__, \"loads expects a string. For an open file, use json.load(f).\"",
+   "hints": [
+    "Read the error: loads wants a str, but it got a file object.",
+    "The s in loads means string. Which function reads from a file?"
+   ],
+   "say": "This game saves its progress perfectly, but loading crashes. Read the error message carefully. It tells you exactly which type the function wanted and which type it got. Then think about load versus loads."
+  },
+  {
+   "type": "exercise",
+   "title": "Subject average from marks.csv",
+   "task": "Write `subject_average(filename, subject)` that reads a marks CSV with `DictReader` and **returns** the average for that subject column, rounded to 1 decimal.\n\n- `subject_average(\"marks.csv\", \"maths\")` → `79.8`\n- `subject_average(\"marks.csv\", \"science\")` → `83.2`",
+   "starter": "import csv\n\n\ndef subject_average(filename, subject):\n    pass\n\n\nprint(subject_average(\"marks.csv\", \"maths\"))\n",
+   "solution": "import csv\n\n\ndef subject_average(filename, subject):\n    with open(filename, encoding=\"utf-8\", newline=\"\") as f:\n        scores = [int(row[subject]) for row in csv.DictReader(f)]\n    return round(sum(scores) / len(scores), 1)\n\n\nprint(subject_average(\"marks.csv\", \"maths\"))",
+   "tests": "assert subject_average(\"marks.csv\", \"maths\") == 79.8, f\"Maths marks are 92, 78, 85 and 64, so the average is 79.8. Got {subject_average('marks.csv', 'maths')}.\"\nassert subject_average(\"marks.csv\", \"science\") == 83.2, \"Science marks are 88, 95, 79 and 71. Use the subject argument as the column name.\"\nwith open(\"small.csv\", \"w\", encoding=\"utf-8\", newline=\"\") as fh:\n    fh.write(\"name,english\\nZoya,90\\nDev,81\\n\")\nassert subject_average(\"small.csv\", \"english\") == 85.5, \"Use the filename argument too: small.csv has an english column averaging 85.5.\"",
+   "hints": [
+    "Open the file with newline=\"\" and wrap it in csv.DictReader.",
+    "Collect int(row[subject]) for every row, then divide the sum by the count.",
+    "return round(total / count, 1)"
+   ],
+   "files": {
+    "marks.csv": "name,city,maths,science\n\"Sharma, Riya\",Pune,92,88\nArjun Mehta,Delhi,78,95\nMeera Iyer,Chennai,85,79\nKabir Khan,Lucknow,64,71\n"
+   },
+   "say": "Back to the marks file. Write subject average, which reads any marks CSV with a dict reader and returns the average for the subject you ask for, rounded to one decimal. The tests use a second file too, so use both arguments rather than hard coding anything."
+  },
+  {
+   "type": "exercise",
+   "title": "Save high scores",
+   "task": "Build a high-score table stored in a JSON file.\n\n`add_score(name, score, filename)` should load the existing list from the file (or start with `[]` if the file does not exist), append `{\"name\": name, \"score\": score}`, save it back with `indent=2`, and **return** the list.",
+   "starter": "import json\nimport os\n\n\ndef add_score(name, score, filename):\n    pass\n\n\nprint(add_score(\"Riya\", 4200, \"scores.json\"))\n",
+   "solution": "import json\nimport os\n\n\ndef add_score(name, score, filename):\n    scores = []\n    if os.path.exists(filename):\n        with open(filename, encoding=\"utf-8\") as f:\n            scores = json.load(f)\n    scores.append({\"name\": name, \"score\": score})\n    with open(filename, \"w\", encoding=\"utf-8\") as f:\n        json.dump(scores, f, indent=2)\n    return scores\n\n\nprint(add_score(\"Riya\", 4200, \"scores.json\"))",
+   "tests": "import json, os\nif os.path.exists(\"hs.json\"):\n    os.remove(\"hs.json\")\nfirst = add_score(\"Arjun\", 3100, \"hs.json\")\nassert first == [{\"name\": \"Arjun\", \"score\": 3100}], f\"With no file yet, the list should hold just the new score. Got {first}.\"\nadd_score(\"Meera\", 5600, \"hs.json\")\nwith open(\"hs.json\", encoding=\"utf-8\") as fh:\n    saved = json.load(fh)\nassert saved == [{\"name\": \"Arjun\", \"score\": 3100}, {\"name\": \"Meera\", \"score\": 5600}], f\"The file should keep both scores, in order. It has {saved}.\"\nwith open(\"hs.json\", encoding=\"utf-8\") as fh:\n    assert \"\\n\" in fh.read(), \"Save with indent=2 so the file is readable.\"",
+   "hints": [
+    "If os.path.exists(filename), load the list with json.load; otherwise start with [].",
+    "Append a dict, then open the file in mode \"w\" and json.dump(scores, f, indent=2)."
+   ],
+   "say": "Games keep high scores between sessions, so let's build that. Add score loads the existing list from a JSON file, or starts empty if there is no file yet, appends the new score, saves everything back, and returns the list. This load, change, save pattern is how countless small apps keep their state."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 23 complete",
+   "points": [
+    "csv.reader gives lists; csv.DictReader gives dicts keyed by the header",
+    "CSV values are always strings: convert with int() or float()",
+    "csv.DictWriter with fieldnames, writeheader() and writerows()",
+    "json.loads and dumps work with strings; load and dump work with files",
+    "indent=2 for humans, ensure_ascii=False for ₹ and Hindi",
+    "Load, change, save: how small apps keep their state"
+   ],
+   "say": "Mission twenty three complete. You can read and write CSV like a data analyst and handle JSON like a backend developer, and convert between the two. Tomorrow begins one of the biggest ideas in programming, object oriented programming, where you design your own types. See you on day twenty four."
+  }
+ ]
+}

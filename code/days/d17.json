@@ -1,0 +1,431 @@
+{
+ "day": 17,
+ "phase": 2,
+ "title": "Functions I: write it once",
+ "subtitle": "Define, call and return like a pro",
+ "minutes": 55,
+ "goal": "Write your own functions that take parameters and return values, and combine small functions into bigger ones.",
+ "outcomes": [
+  "Define and call functions with def, parameters and arguments",
+  "Choose return over print, and explain where None comes from",
+  "Follow the call stack when functions call other functions",
+  "Keep variables local and document functions with docstrings"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 17: Functions",
+   "body": "Every app is built from small, named pieces: `calculate_gst`, `send_otp`, `format_price`. You've **used** functions since Day 1: `print`, `len`, `sum`.\n\nToday you **write** your own.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Arguments go in",
+     "The function body does the work",
+     "A return value comes out"
+    ]
+   },
+   "say": "Welcome to day seventeen, one of the most important days of the course. Every real app is built from small, named pieces of code: calculate GST, send OTP, format price. You have been using functions since day one: print, len and sum. Today you start writing your own, and your programs will never look the same again."
+  },
+  {
+   "type": "concept",
+   "title": "Why functions? Don't repeat yourself",
+   "body": "Copy-pasted code means fixing every bug in many places. A **function** gives a block of code a name, so you write it **once** and call it anywhere.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Copy-paste",
+     "code": "tax1 = 1000 * 0.18\ntax2 = 250 * 0.18\ntax3 = 799 * 0.18\n# rate changes? edit every line"
+    },
+    "right": {
+     "title": "A function",
+     "code": "def gst(amount):\n    return amount * 0.18\n\ntax1 = gst(1000)\ntax2 = gst(250)\ntax3 = gst(799)"
+    },
+    "verdict": "When the GST rate changes, you fix one line, not thirty."
+   },
+   "say": "Imagine the GST calculation is copied into thirty places in your app, and then the tax rate changes. You would have to find and fix all thirty, and you would miss one. Developers call the cure DRY: don't repeat yourself. A function gives a block of code a name, so you write it once and call it from anywhere."
+  },
+  {
+   "type": "code",
+   "title": "Your first function",
+   "code": "def greet(name):\n    print(f\"Namaste, {name}! Welcome to Brodoit.\")\n\nprint(\"Starting up\")\ngreet(\"Riya\")\ngreet(\"Arjun\")",
+   "expect": "Starting up\nNamaste, Riya! Welcome to Brodoit.\nNamaste, Arjun! Welcome to Brodoit.\n",
+   "explain": [
+    [
+     1,
+     "def starts a definition: the name greet and a parameter called name."
+    ],
+    [
+     2,
+     "The indented body. Nothing runs yet!"
+    ],
+    [
+     4,
+     "The first line that actually runs."
+    ],
+    [
+     5,
+     "A call: name becomes \"Riya\" and the body runs."
+    ],
+    [
+     6,
+     "Call it again with a different argument."
+    ]
+   ],
+   "say": "Def defines a function called greet, with one input called name. The indented lines are its body. Defining a function does not run it: Python just remembers it. Starting up prints first. Then each call runs the body, with name set to whatever we pass in. Watch it run and see Python jump into the function and back."
+  },
+  {
+   "type": "concept",
+   "title": "Anatomy of a function",
+   "body": "**Parameters** are the names in the definition. **Arguments** are the values you pass in a call.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Part",
+     "In the code",
+     "Meaning"
+    ],
+    "rows": [
+     [
+      "def",
+      "def area(width, height):",
+      "start defining a function"
+     ],
+     [
+      "name",
+      "area",
+      "what you call it: a verb, snake_case"
+     ],
+     [
+      "parameters",
+      "width, height",
+      "placeholders for the inputs"
+     ],
+     [
+      "body",
+      "the indented lines",
+      "what the function does"
+     ],
+     [
+      "return",
+      "return width * height",
+      "the result handed back"
+     ],
+     [
+      "call",
+      "area(4, 5)",
+      "run it with the arguments 4 and 5"
+     ]
+    ]
+   },
+   "say": "Let's name the parts. Def starts the definition, followed by the function's name, usually a verb in snake case. The names in the brackets are parameters, placeholders for the inputs. The indented lines are the body, and return hands a result back. When you call area with four and five, those values are the arguments."
+  },
+  {
+   "type": "code",
+   "title": "return gives back a value",
+   "code": "def gst(amount):\n    \"\"\"Return the 18% GST on an amount in rupees.\"\"\"\n    return amount * 0.18\n\ntax = gst(1000)\nprint(tax)\nprint(gst(250) + gst(750))\ntotal = 1000 + gst(1000)\nprint(f\"Pay ₹{total:,.2f}\")",
+   "expect": "180.0\n180.0\nPay ₹1,180.00\n",
+   "explain": [
+    [
+     2,
+     "A docstring describes the function. More on this soon."
+    ],
+    [
+     3,
+     "return sends the result back to whoever called gst."
+    ],
+    [
+     5,
+     "The call is replaced by its result: tax = 180.0."
+    ],
+    [
+     7,
+     "Results work in any expression."
+    ],
+    [
+     9,
+     "Commas and 2 decimals, as on Day 5."
+    ]
+   ],
+   "say": "This time the function returns its result instead of printing it. A call to gst is replaced by the value it returns, so you can store it in a variable, add two results together, or use it inside a bigger calculation. That is what makes functions such powerful building blocks."
+  },
+  {
+   "type": "concept",
+   "title": "return or print?",
+   "body": "- `print` shows a value to a **human**, then it's gone\n- `return` hands a value back to your **code**, to store and reuse\n\nA function without `return` gives back `None`.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Prints: the value is lost",
+     "code": "def gst(amount):\n    print(amount * 0.18)\n\nx = gst(100)   # shows 18.0\n# x is None"
+    },
+    "right": {
+     "title": "Returns: the value is yours",
+     "code": "def gst(amount):\n    return amount * 0.18\n\nx = gst(100)\n# x is 18.0"
+    },
+    "verdict": "Return values, and let the caller decide whether to print."
+   },
+   "say": "This is the most common beginner confusion with functions. Print shows a value on the screen for a human, and then it is gone. Return hands the value back to your code, so it can be stored, compared and reused. If a function has no return, Python gives back None, its value for nothing. Good functions usually return, and let the caller decide what to print."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "def double(n):\n    print(n * 2)\n\nresult = double(5)\nprint(result)",
+   "options": [
+    "10\n10",
+    "10\nNone",
+    "None\n10"
+   ],
+   "answer": 1,
+   "why": "double prints 10 but returns nothing, so result is None. Printing None shows the word None.",
+   "say": "Here is that confusion in action. The function prints, but it does not return. What do the two lines of output say?"
+  },
+  {
+   "type": "visual",
+   "title": "The call stack",
+   "body": "Every call gets a **frame** with its own variables, stacked on top of its caller. When a function returns, its frame is removed and the value goes to the frame below.",
+   "visual": {
+    "kind": "stack",
+    "frames": [
+     {
+      "name": "main",
+      "vars": [
+       [
+        "price",
+        "500"
+       ]
+      ]
+     },
+     {
+      "name": "total_with_gst(amount=500)",
+      "vars": [
+       [
+        "amount",
+        "500"
+       ]
+      ]
+     },
+     {
+      "name": "gst(amount=500)",
+      "vars": [
+       [
+        "amount",
+        "500"
+       ]
+      ],
+      "ret": "90.0"
+     }
+    ]
+   },
+   "say": "When one function calls another, Python keeps a stack of frames, like a pile of plates. Main is at the bottom. Calling total with GST puts a new frame on top, with its own amount variable. That calls gst, which adds another frame. When gst returns ninety, its frame is removed and the value drops into the frame below."
+  },
+  {
+   "type": "code",
+   "title": "Functions calling functions",
+   "code": "def gst(amount):\n    return amount * 0.18\n\ndef total_with_gst(amount):\n    return amount + gst(amount)\n\ndef format_rupees(x):\n    return f\"₹{x:,.2f}\"\n\nprice = 500\nprint(format_rupees(total_with_gst(price)))\nprint(format_rupees(gst(25000)))",
+   "expect": "₹590.00\n₹4,500.00\n",
+   "explain": [
+    [
+     4,
+     "This function uses another function: small pieces, combined."
+    ],
+    [
+     7,
+     "A formatter: it returns a string instead of printing it."
+    ],
+    [
+     11,
+     "Inside out: total_with_gst(500) runs first, then format_rupees gets 590.0."
+    ],
+    [
+     12,
+     "Each function is reusable on its own."
+    ]
+   ],
+   "say": "Here three small functions work together. Total with GST calls gst. Format rupees turns any number into a tidy price string. The print line runs from the inside out: first the total is calculated, then it is formatted. Watch it run to see the stack grow and shrink, exactly like the picture."
+  },
+  {
+   "type": "code",
+   "title": "Decisions inside functions",
+   "code": "def is_even(n):\n    return n % 2 == 0\n\ndef grade(marks):\n    if marks >= 90:\n        return \"A\"\n    if marks >= 75:\n        return \"B\"\n    if marks >= 40:\n        return \"C\"\n    return \"F\"\n\nprint(is_even(10), is_even(7))\nfor m in [95, 80, 52, 12]:\n    print(m, grade(m))",
+   "expect": "True False\n95 A\n80 B\n52 C\n12 F\n",
+   "explain": [
+    [
+     2,
+     "A comparison is already True or False: return it directly."
+    ],
+    [
+     6,
+     "return exits the function at once, so no elif is needed."
+    ],
+    [
+     11,
+     "Only reached when every check above failed."
+    ],
+    [
+     15,
+     "Call the function once per item."
+    ]
+   ],
+   "say": "Is even returns the result of a comparison, which is already true or false, so it needs no if at all. Grade shows a key fact: return ends the function immediately. Once a grade is returned, the remaining checks never run, which is why we don't need elif here. The last return only runs when every check above has failed."
+  },
+  {
+   "type": "quiz",
+   "title": "Parameters or arguments?",
+   "q": "In `def area(width, height):` and the call `area(4, 5)`, what are `4` and `5`?",
+   "options": [
+    "Parameters",
+    "Arguments",
+    "Return values"
+   ],
+   "answer": 1,
+   "why": "Parameters are the names in the definition (width, height). Arguments are the actual values passed in a call (4, 5).",
+   "say": "Quick vocabulary check. In the definition of area and the call area of four and five, what do we call the four and the five?"
+  },
+  {
+   "type": "concept",
+   "title": "Docstrings and good names",
+   "body": "- Name functions with **verbs**: `calculate_total`, `is_valid_pin`, `send_otp`\n- The first line of the body can be a **docstring**: a triple-quoted description\n- Editors show it on hover, and `help(gst)` prints it",
+   "say": "Good functions are easy to understand at a glance. Name them with verbs that say what they do, like calculate total or is valid pin. And put a docstring on the first line of the body: a short description in triple quotes. Editors show it when you hover over a call, and the help function prints it."
+  },
+  {
+   "type": "code",
+   "title": "Local variables stay inside",
+   "code": "def apply_discount(price, percent):\n    \"\"\"Return price after a percentage discount.\"\"\"\n    saving = price * percent / 100\n    return price - saving\n\nprint(apply_discount(800, 25))\nprint(apply_discount(1999, 10))\nprint(apply_discount.__doc__)",
+   "expect": "600.0\n1799.1\nReturn price after a percentage discount.\n",
+   "explain": [
+    [
+     3,
+     "saving is a local variable: it exists only while this call runs."
+    ],
+    [
+     6,
+     "Each call gets fresh local variables."
+    ],
+    [
+     8,
+     "The docstring is stored on the function itself."
+    ]
+   ],
+   "say": "Apply discount creates a variable called saving inside its body. That is a local variable: it is born when the call starts and disappears when the call returns. Each call gets a fresh one. The last line prints the docstring, which Python stores on the function itself."
+  },
+  {
+   "type": "visual",
+   "title": "Each call gets its own variables",
+   "body": "`saving` lives in the function's frame. When the call returns, the frame and its variables are gone: `main` only gets the returned value.",
+   "visual": {
+    "kind": "stack",
+    "frames": [
+     {
+      "name": "main",
+      "vars": [
+       [
+        "final",
+        "600.0"
+       ]
+      ]
+     },
+     {
+      "name": "apply_discount(price=800, percent=25)",
+      "vars": [
+       [
+        "price",
+        "800"
+       ],
+       [
+        "percent",
+        "25"
+       ],
+       [
+        "saving",
+        "200.0"
+       ]
+      ],
+      "ret": "600.0"
+     }
+    ]
+   },
+   "say": "Here is what happens inside. The call gets its own frame holding price, percent and saving. When it returns six hundred, the whole frame is thrown away. Main only ever sees the returned value, never the local variables. That isolation is what makes functions safe to reuse. You will explore scope fully tomorrow."
+  },
+  {
+   "type": "predict",
+   "title": "Outside the function",
+   "code": "def apply_discount(price, percent):\n    saving = price * percent / 100\n    return price - saving\n\nfinal = apply_discount(800, 25)\nprint(saving)",
+   "options": [
+    "200.0",
+    "600.0",
+    "NameError: name 'saving' is not defined"
+   ],
+   "answer": 2,
+   "why": "saving is local to apply_discount. Once the call returns, it no longer exists, so main can't see it. Only the returned value, stored in final, survives.",
+   "say": "The function has finished. Now main tries to print saving, the local variable from inside it. What happens?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: GST total",
+   "task": "This checkout crashes with a TypeError. `gst()` should **give back** the tax, not just show it. Fix it so `total` is `590.0`.",
+   "starter": "def gst(amount):\n    print(amount * 0.18)\n\ntotal = 500 + gst(500)\nprint(\"Total:\", total)\n",
+   "solution": "def gst(amount):\n    return amount * 0.18\n\ntotal = 500 + gst(500)\nprint(\"Total:\", total)",
+   "tests": "assert gst(500) == 90.0, f\"gst(500) should return 90.0, but it returned {gst(500)}. Use return instead of print.\"\nassert gst(0) == 0, \"gst(0) should return 0.\"\nassert total == 590.0, f\"total should be 590.0, not {total}.\"",
+   "hints": [
+    "Read the error: unsupported operand type(s) for +: 'int' and 'NoneType'. Which value is None?",
+    "A function without return gives back None.",
+    "Replace print(...) with return amount * 0.18"
+   ],
+   "say": "Bug hunt. This checkout crashes with a type error about None. The function shows the tax on screen, but does it give anything back to the code that called it? Fix it so the total comes to five hundred and ninety."
+  },
+  {
+   "type": "exercise",
+   "title": "Write format_rupees()",
+   "task": "Write `format_rupees(amount)` that **returns** a price string with the rupee sign, thousands commas and 2 decimals:\n- `format_rupees(1234.5)` returns `\"₹1,234.50\"`\n- `format_rupees(0)` returns `\"₹0.00\"`",
+   "starter": "def format_rupees(amount):\n    \"\"\"Return amount as a price string like ₹1,234.50.\"\"\"\n    return \"\"  # replace this line\n\n\nprint(format_rupees(1234.5))\n",
+   "solution": "def format_rupees(amount):\n    \"\"\"Return amount as a price string like ₹1,234.50.\"\"\"\n    return f\"₹{amount:,.2f}\"\n\n\nprint(format_rupees(1234.5))",
+   "tests": "assert format_rupees(1234.5) == \"₹1,234.50\", f\"format_rupees(1234.5) should return '₹1,234.50', not {format_rupees(1234.5)!r}. Try the format spec :,.2f\"\nassert format_rupees(0) == \"₹0.00\", f\"format_rupees(0) should return '₹0.00', not {format_rupees(0)!r}.\"\nassert format_rupees(2500000) == \"₹2,500,000.00\", f\"format_rupees(2500000) should return '₹2,500,000.00', not {format_rupees(2500000)!r}.\"\nassert format_rupees(99.999) == \"₹100.00\", \"format_rupees(99.999) should round to '₹100.00'.\"",
+   "hints": [
+    "An f-string can format a number: f\"{amount:,.2f}\"",
+    "Put the ₹ sign before the braces: f\"₹{amount:,.2f}\"",
+    "Python groups digits in thousands (2,500,000). Indian lakh style (25,00,000) needs custom code: a nice challenge for later."
+   ],
+   "say": "Every shopping app needs a price formatter. Write a function that takes an amount and returns it as a string with the rupee sign, commas between thousands, and exactly two decimals. Remember to return the string, not print it. The checker calls your function directly with several amounts."
+  },
+  {
+   "type": "exercise",
+   "title": "Valid PIN code?",
+   "task": "Write `is_valid_pin(pin)` that returns `True` only for a valid Indian PIN code: exactly **6 digits**, not starting with **0**. Anything else returns `False`.\n- `is_valid_pin(\"411001\")` is `True`\n- `is_valid_pin(\"011001\")` is `False`",
+   "starter": "def is_valid_pin(pin):\n    \"\"\"Return True if pin is a 6-digit Indian PIN code that doesn't start with 0.\"\"\"\n    return False  # replace this line\n\n\nprint(is_valid_pin(\"411001\"))\nprint(is_valid_pin(\"4110\"))\n",
+   "solution": "def is_valid_pin(pin):\n    \"\"\"Return True if pin is a 6-digit Indian PIN code that doesn't start with 0.\"\"\"\n    return len(pin) == 6 and pin.isdigit() and pin[0] != \"0\"\n\n\nprint(is_valid_pin(\"411001\"))\nprint(is_valid_pin(\"4110\"))",
+   "tests": "cases = {\"411001\": True, \"110001\": True, \"011001\": False, \"41100\": False, \"4110011\": False, \"41100a\": False, \"\": False}\nfor pin, expected in cases.items():\n    got = is_valid_pin(pin)\n    assert got == expected, f\"is_valid_pin({pin!r}) should be {expected}, but it returned {got}.\"",
+   "hints": [
+    "Three checks: len(pin) == 6, pin.isdigit(), and pin[0] != \"0\".",
+    "Combine them with and. Check the length first, so pin[0] is safe even for an empty string.",
+    "return len(pin) == 6 and pin.isdigit() and pin[0] != \"0\""
+   ],
+   "say": "Delivery apps validate PIN codes before accepting an address. Write a function that returns true only for a valid Indian PIN code: exactly six digits, and not starting with zero. Return the result of your checks directly. The checker tries tricky inputs, including letters, the wrong length, and an empty string."
+  },
+  {
+   "type": "exercise",
+   "title": "Checkout with helpers",
+   "task": "Write two functions:\n- `subtotal(prices)` returns the sum of a list of prices\n- `checkout(prices)` returns the subtotal **plus 18% GST**, rounded to 2 decimals, by **calling** `subtotal()`\n\n`checkout([100, 200])` returns `354.0`",
+   "starter": "def subtotal(prices):\n    return 0  # replace this line\n\n\ndef checkout(prices):\n    return 0  # replace this line: call subtotal()\n\n\nprint(checkout([100, 200]))\n",
+   "solution": "def subtotal(prices):\n    return sum(prices)\n\n\ndef checkout(prices):\n    amount = subtotal(prices)\n    return round(amount * 1.18, 2)\n\n\nprint(checkout([100, 200]))",
+   "tests": "assert subtotal([100, 200, 50]) == 350, f\"subtotal([100, 200, 50]) should be 350, not {subtotal([100, 200, 50])}.\"\nassert subtotal([]) == 0, \"An empty cart has a subtotal of 0.\"\nassert checkout([100, 200]) == 354.0, f\"checkout([100, 200]) should be 300 + 18% = 354.0, not {checkout([100, 200])}.\"\nassert checkout([999]) == 1178.82, f\"checkout([999]) should be 1178.82, not {checkout([999])}. Round to 2 decimals.\"\nassert checkout([]) == 0, \"An empty cart should check out at 0.\"\ncalls = [n.func.id for n in ast.walk(__tree__) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)]\nassert \"subtotal\" in calls, \"checkout() should call subtotal() instead of repeating its work.\"",
+   "hints": [
+    "subtotal can simply return sum(prices).",
+    "Inside checkout, call subtotal(prices) and store the result.",
+    "return round(amount * 1.18, 2)"
+   ],
+   "say": "Last one: compose functions like a professional. Write subtotal, which adds up a list of prices, and checkout, which calls subtotal and adds eighteen percent GST, rounded to two decimals. Small functions that call each other are easier to test and to change. Don't forget the empty cart."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 17 complete",
+   "points": [
+    "def name(params): defines a function; nothing runs until you call it",
+    "Parameters are the names in the definition; arguments are the values you pass",
+    "return hands a value back; without it, a function returns None",
+    "Every call gets its own frame on the call stack, with its own local variables",
+    "Name functions with verbs and describe them with a docstring"
+   ],
+   "say": "Mission seventeen complete. You can define functions, pass arguments, and return values instead of printing them, and you understand the call stack and local variables. You also composed small functions into bigger ones, which is how all real software is built. Tomorrow: default values, keyword arguments, scope, and a famous trap. See you on day eighteen."
+  }
+ ]
+}

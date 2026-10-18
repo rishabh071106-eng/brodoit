@@ -127,7 +127,7 @@
     w(0, 'RIFF'); u32(4, 36 + n); w(8, 'WAVE'); w(12, 'fmt '); u32(16, 16); u16(20, 1); u16(22, 1); u32(24, 8000); u32(28, 8000); u16(32, 1); u16(34, 8); w(36, 'data'); u32(40, n); b.fill(128, 44);
     return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
   };
-  N.say = function (text, key, lang) {
+  N.say = function (text, key, lang, opts) {
     text = String(text || '').replace(/\s+/g, ' ').trim(); if (!text) return;
     key = key || 'txt:' + text.slice(0, 80);
     if (N.voice && N.voice.key === key) { N.voiceToggle(); return; }
@@ -135,6 +135,10 @@
     lang = lang || (hasDev(text) ? 'hi' : 'en');
     const a = document.createElement('audio'); a.preload = 'auto'; a.setAttribute('playsinline', '');
     const v = N.voice = { key, state: 'loading', chunks: splitChunks(text, 1200), i: 0, audio: a, lang, urls: {}, mode: 'studio', unlocking: true };
+    // v13: News audio is recorded in batches (modules/newsvoice.js). A recorded clip plays as is; anything
+    // without one is read by the phone's own voice — nothing is rendered on demand.
+    if (!(opts && opts.clip)) { N.voiceFallback(v); return; }
+    v.chunks = [text]; v.urls[0] = opts.clip;
     try { a.src = silentClip(); a.play().catch(() => {}); } catch (e) {}           // unlock playback inside the tap
     a.onended = () => { if (N.voice !== v || v.unlocking || v.state !== 'playing') return; v.i++; if (v.i >= v.chunks.length) N.voiceEnd(); else N.voicePlay(v); };
     a.onerror = () => { if (N.voice !== v || v.unlocking) return; if (v.i === 0) N.voiceFallback(v); else N.voiceEnd(); };
@@ -318,16 +322,18 @@
     h += '</div></div></article>';
     return h;
   };
-  N.sayStory = function (i) { const st = N.desk.stories[i]; if (st) N.say(N.storyText(st), 'desk:' + st.id, N.lang === 'hi' && st.summary_hi ? 'hi' : 'en'); };
-  N.explainStory = function (i) { const st = N.desk.stories[i]; if (!st) return; const f = (st.sources || [])[0] || {}; N.explainObj({ title: st.headline, desc: st.summary + ' ' + (st.why || ''), link: f.link }); };
-  N.readStory = function (i) { const st = N.desk.stories[i]; if (!st) return; const f = (st.sources || [])[0] || {}; N.readItem({ title: f.title || st.headline, link: f.link, source: f.name, desc: st.summary, img: st.image }); };
+  N.clipFor = (st, part) => { const l = N.lang === 'hi' && st.headline_hi ? 'hi' : 'en'; return st && st.voice && st.voice[l] && st.voice[l][part] ? '/api/news/voice/' + encodeURIComponent(st.id) + '-' + l + '-' + part + '.mp3' : null; };
+  N.sayStory = function (i) { const st = N.view_list()[i]; if (!st) return; N.hlStop(true); N.say(N.storyText(st), 'desk:' + st.id, N.lang === 'hi' && st.summary_hi ? 'hi' : 'en', { clip: N.clipFor(st, 's') }); };
+  N.explainStory = function (i) { const st = N.view_list()[i]; if (!st) return; const f = (st.sources || [])[0] || {}; N.explainObj({ title: st.headline, desc: st.summary + ' ' + (st.why || ''), link: f.link }); };
+  N.readStory = function (i) { const st = N.view_list()[i]; if (!st) return; const f = (st.sources || [])[0] || {}; N.readItem({ title: f.title || st.headline, link: f.link, source: f.name, desc: st.summary, img: st.image }); };
   N.deckHtml = function () {
     if (!N.desk.loaded) { N.loadDesk(); return skelRows(3); }
     N.loadDesk();
-    const list = N.desk.stories || [];
+    const list = N.view_list();
+    if (!list.length && N.cat && (N.desk.stories || []).length) return '<div class="nx-soon"><span>' + (N.lang === 'hi' ? 'इस सेक्शन में अभी कोई ख़बर नहीं।' : 'No stories in this section yet.') + '</span></div>';
     if (!list.length) {
       const live = items();
-      const soon = window.Cards ? '<div class="nx-cover">' + Cards.cover({ key: 'hero-news', icon: 'newspaper', tone: 'ink', size: 'wide', kick: N.lang === 'hi' ? 'न्यूज़रूम' : 'Newsroom', title: N.lang === 'hi' ? 'आज की ख़बरें लिखी जा रही हैं' : "Writing today's stories", sub: N.lang === 'hi' ? 'कुछ मिनट में यहाँ — तब तक ताज़ा हेडलाइन' : 'They land here within minutes — meanwhile, live headlines', go: 'arrow', onclick: "NewsChannel.setView('live')" }) + '</div>'
+      const soon = window.Cards ? '<div class="nx-cover">' + Cards.cover({ key: 'hero-news', icon: 'newspaper', tone: 'ink', size: 'wide', kick: N.lang === 'hi' ? 'न्यूज़रूम' : 'Newsroom', title: N.lang === 'hi' ? 'आज की ख़बरें लिखी जा रही हैं' : "Writing today's stories", sub: N.lang === 'hi' ? 'कुछ मिनट में यहाँ — तब तक ताज़ा हेडलाइन' : 'They land here within minutes — meanwhile, live headlines' }) + '</div>'
         : '<div class="nx-soon">' + (window.mascot ? window.mascot('idle', 44) : '') + '<span>' + (N.lang === 'hi' ? 'Brodoit डेस्क पहली ख़बरें लिख रहा है — कुछ मिनट में यहाँ।' : 'The Brodoit desk is writing its first stories — they land here within minutes.') + '</span></div>';
       return soon + (live.length ? '<div class="nx-list">' + live.slice(0, 12).map(N.row).join('') + '</div>' : skelRows(4));
     }
@@ -339,34 +345,95 @@
     const d = document.getElementById('nxDeck'); if (!d) return;
     const bar = document.querySelector('.tabs.page-t'); const r = bar && bar.getBoundingClientRect();
     const bottom = r && r.top > innerHeight * 0.6 ? r.top : innerHeight;
-    const hgt = Math.max(360, Math.floor(bottom - d.getBoundingClientRect().top - 10));
+    const hgt = Math.max(260, Math.floor(bottom - d.getBoundingClientRect().top - 10));
     if (Math.abs((parseFloat(d.style.height) || 0) - hgt) > 1) d.style.height = hgt + 'px';
   };
   window.addEventListener('resize', () => { if (window.S && S.tab === 'news') N.sizeDeck(); });
 
+  const CATS = [['', 'All', 'सभी'], ['india', 'India', 'भारत'], ['world', 'World', 'दुनिया'], ['business', 'Business', 'कारोबार'], ['tech', 'Tech', 'टेक'], ['science', 'Science', 'विज्ञान']];
+  N.cat = '';
+  N.view_list = () => (N.desk.stories || []).filter(st => !N.cat || st.category === N.cat);
+  N.setCat = function (c) { N.cat = c; N.hlStop(true); N.voiceStop(); N.rerender(); try { window.scrollTo({ top: 0 }); } catch (e) {} };
+  // Old deep links (?view=live…) land on the cards.
+  N.setView = function () { N.view = 'top'; N.rerender(); };
+
+  // ── "Listen to headlines": the recorded headline clips back to back; the deck follows along ──
+  N.hl = null;
+  const hlText = st => (N.lang === 'hi' && st.headline_hi) || st.headline;
+  N.playHeadlines = function () {
+    if (N.hl) { N.hlToggle(); return; }
+    N.voiceStop(); if (N.playing) N.stop();
+    const lang = N.lang === 'hi' ? 'hi' : 'en';
+    const list = N.view_list().slice(0, 20);
+    if (!list.length) return;
+    const q = [{ i: -1, text: lang === 'hi' ? 'ये हैं Brodoit News की बड़ी ख़बरें।' : 'Here are the top headlines from Brodoit News.', clip: '/api/news/voice/intro-' + lang + '-h.mp3' }]
+      .concat(list.map((st, i) => ({ i, id: st.id, text: hlText(st), clip: N.clipFor(st, 'h') })));
+    const a = new Audio(); a.setAttribute('playsinline', '');
+    try { a.src = silentClip(); a.play().catch(() => {}); } catch (e) {}
+    N.hl = { q, pos: 0, lang, state: 'playing', audio: a, gen: 0 };
+    N.rerender(); hlStep(); requestAnimationFrame(N.sizeDeck);
+  };
+  function hlStep() {
+    const h = N.hl; if (!h) return;
+    if (h.pos >= h.q.length) { N.hlStop(); return; }
+    const it = h.q[h.pos], gen = ++h.gen;
+    const next = () => { if (N.hl !== h || h.gen !== gen) return; if (h.state === 'paused') { h.resume = next; return; } h.pos++; setTimeout(hlStep, 350); };
+    hlPaint();
+    if (it.i >= 0) hlFollow(it.i);
+    const device = () => {
+      if (!('speechSynthesis' in window)) return next();
+      try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(it.text); u.lang = h.lang === 'hi' ? 'hi-IN' : 'en-IN'; u.onend = next; u.onerror = next; speechSynthesis.speak(u); } catch (e) { next(); }
+    };
+    if (!it.clip) return device();
+    h.audio.onended = next;
+    h.audio.onerror = () => { if (N.hl === h && h.gen === gen) device(); };
+    h.audio.src = it.clip; h.audio.play().catch(() => { if (N.hl === h && h.gen === gen) device(); });
+  }
+  function hlFollow(i) {
+    document.querySelectorAll('.nx-card.nx-now').forEach(c => c.classList.remove('nx-now'));
+    const card = document.querySelector('.nx-card[data-i="' + i + '"]'), deck = document.getElementById('nxDeck');
+    if (!card) return;
+    card.classList.add('nx-now');
+    if (deck) deck.scrollTo({ top: card.offsetTop - deck.offsetTop, behavior: 'smooth' });
+  }
+  function hlPaint() {
+    const h = N.hl, el = document.getElementById('nxHl'); if (!el) return;
+    if (!h) { el.innerHTML = ''; return; }
+    const it = h.q[h.pos] || {}, n = h.q.length - 1;
+    el.innerHTML = '<div class="nx-hl-p"><div class="nx-hl-bars' + (h.state === 'playing' ? ' on' : '') + '"><i></i><i></i><i></i><i></i></div><div class="nx-hl-t"><small>' + (it.i >= 0 ? (N.lang === 'hi' ? 'हेडलाइन ' : 'Headline ') + (it.i + 1) + ' / ' + n : (N.lang === 'hi' ? 'बड़ी ख़बरें' : 'Top headlines')) + '</small><b>' + esc(it.text || '') + '</b></div>'
+      + '<button class="nx-hl-b" aria-label="' + (h.state === 'playing' ? 'Pause' : 'Play') + '" onclick="NewsChannel.hlToggle()">' + I(h.state === 'playing' ? 'pause' : 'play', 18) + '</button>'
+      + '<button class="nx-hl-b" aria-label="Next headline" onclick="NewsChannel.hlNext()">' + I('skip-forward', 18) + '</button>'
+      + '<button class="nx-hl-b" aria-label="Stop" onclick="NewsChannel.hlStop()">' + I('x', 18) + '</button></div>'
+      + '<div class="nx-hl-dots">' + h.q.slice(1).map((_, k) => '<i class="' + (k + 1 < h.pos ? 'd' : k + 1 === h.pos ? 'on' : '') + '"></i>').join('') + '</div>';
+  }
+  N.hlToggle = function () {
+    const h = N.hl; if (!h) return;
+    if (h.state === 'playing') { h.state = 'paused'; try { h.audio.pause(); speechSynthesis.pause(); } catch (e) {} }
+    else { h.state = 'playing'; try { if (h.audio.src && !h.audio.ended) h.audio.play().catch(() => {}); speechSynthesis.resume(); } catch (e) {} if (h.resume) { const r = h.resume; h.resume = null; r(); } }
+    hlPaint();
+  };
+  N.hlNext = function () { const h = N.hl; if (!h) return; try { h.audio.pause(); speechSynthesis.cancel(); } catch (e) {} h.state = 'playing'; h.pos++; h.gen++; hlStep(); };
+  N.hlStop = function (quiet) {
+    const h = N.hl; if (!h) return; N.hl = null; h.gen++;
+    try { h.audio.pause(); h.audio.removeAttribute('src'); speechSynthesis.cancel(); } catch (e) {}
+    document.querySelectorAll('.nx-card.nx-now').forEach(c => c.classList.remove('nx-now'));
+    if (!quiet) N.rerender();
+    requestAnimationFrame(N.sizeDeck);
+  };
+
   N.html = function () {
     const hi = N.lang === 'hi';
-    let h = '<div class="nw">';
-    h += '<div class="nw-top"><div class="b-h1">' + (hi ? 'ख़बरें' : 'News') + '</div><div class="nw-lang"><button class="' + (N.lang === 'en' ? 'on' : '') + '" onclick="NewsChannel.setLang(\'en\')">English</button><button class="' + (N.lang === 'hi' ? 'on' : '') + '" onclick="NewsChannel.setLang(\'hi\')">हिंदी</button></div></div>';
-    h += '<div class="nw-tabs">' + [['top', hi ? 'टॉप' : 'Top'], ['today', hi ? 'बुलेटिन' : 'Bulletin'], ['live', T('live')], ['archive', T('past')], ['monthly', T('monthly')]].map(x => '<button class="' + (N.view === x[0] ? 'on' : '') + '" onclick="NewsChannel.setView(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div>';
-    const list = items();
-    if (N.view === 'top') h += N.deckHtml();
-    else if (!N.loaded) h += skelRows(4);
-    else if (N.view === 'today') {
-      h += N.latest ? N.bulletinCard(N.latest, { hero: true, full: true }) : '<div class="nx-soon">' + (window.mascot ? window.mascot('sleeping', 44) : '') + '<span>' + T('empty') + '</span></div>';
-      if (list.length) h += '<div class="nx-sec"><h2>' + T('top') + '</h2><button class="b-chip" onclick="NewsChannel.setView(\'live\')">' + T('seeAll') + '</button></div><div class="nx-list">' + list.slice(0, 12).map(N.row).join('') + '</div>';
-      else if (S.newsLoading || !(S.news && S.news.all)) h += '<div class="nx-sec"><h2>' + T('top') + '</h2></div>' + skelRows(4);
-    } else if (N.view === 'live') {
-      if (!list.length) h += (S.newsLoading || !(S.news && S.news.all)) ? skelRows(6) : '<div class="nw-empty">' + (window.mascot ? window.mascot('sleeping', 96) : '') + '<b>' + T('emptyLive') + '</b></div>';
-      else { h += '<div class="nx-list">' + list.slice(0, N.liveLimit).map(N.row).join('') + '</div>'; if (list.length > N.liveLimit) h += '<div class="nx-more"><button class="b-chip" onclick="NewsChannel.liveLimit+=12;NewsChannel.rerender()">' + T('more') + ' · ' + (list.length - N.liveLimit) + '</button></div>'; }
-    } else if (N.view === 'archive') {
-      const past = N.list.filter(b => !N.latest || b.id !== N.latest.id);
-      h += past.length ? past.map(b => N.bulletinCard(b, {})).join('') : '<div class="nw-empty">' + (window.mascot ? window.mascot('idle', 96) : '') + '<b>' + T('past') + '</b>' + T('past0') + '</div>';
-    } else {
-      h += N.monthly.length ? N.monthly.map(b => N.bulletinCard(b, { full: true })).join('') : '<div class="nw-empty">' + (window.mascot ? window.mascot('idle', 96) : '') + '<b>' + T('month') + '</b>' + T('monthly0') + '</div>';
-    }
+    let h = '<div class="nw nw13">';
+    const list0 = N.view_list();
+    const hlBtn = list0.length ? '<button class="nx-hlbtn' + (N.hl ? ' on' : '') + '" onclick="NewsChannel.playHeadlines()" aria-label="' + (hi ? 'हेडलाइन सुनें' : 'Listen to headlines') + '">' + I(N.hl ? 'pause' : 'headphones', 20) + '<span>' + (hi ? 'सुनें' : 'Listen') + '</span></button>' : '';
+    h += '<div class="nw-top"><div class="b-h1">' + (hi ? 'ख़बरें' : 'News') + '</div>' + hlBtn + '<div class="nw-lang"><button class="' + (N.lang === 'en' ? 'on' : '') + '" onclick="NewsChannel.hlStop(true);NewsChannel.setLang(\'en\')">English</button><button class="' + (N.lang === 'hi' ? 'on' : '') + '" onclick="NewsChannel.hlStop(true);NewsChannel.setLang(\'hi\')">हिंदी</button></div></div>';
+    h += '<div class="nw-tabs nx-cats">' + CATS.map(c => '<button class="' + (N.cat === c[0] ? 'on' : '') + '" onclick="NewsChannel.setCat(\'' + c[0] + '\')">' + (hi ? c[2] : c[1]) + '</button>').join('') + '</div>';
+    const list = N.view_list();
+    if (list.length) h += '<div class="nx-hl" id="nxHl"></div>';
+    h += N.deckHtml();
     h += '</div>';
     N._paintReader();
+    if (N.hl) requestAnimationFrame(() => { hlPaint(); const it = N.hl && N.hl.q[N.hl.pos]; if (it && it.i >= 0) hlFollow(it.i); });
     return h;
   };
   // "Explain simply" sheet — unchanged markup.

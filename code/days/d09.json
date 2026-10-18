@@ -1,0 +1,457 @@
+{
+ "day": 9,
+ "phase": 1,
+ "title": "Loops II: for and range",
+ "subtitle": "Loop over anything, a set number of times",
+ "minutes": 55,
+ "goal": "Use for loops over strings and ranges, apply the accumulator and counting patterns, and build nested loops for tables and patterns.",
+ "outcomes": [
+  "Loop over every character of a string with for",
+  "Generate number sequences with range(start, stop, step), without off-by-one bugs",
+  "Total, count and track maximums with the accumulator pattern",
+  "Write nested loops for tables, seat maps and patterns",
+  "Use for...else to report when a search found nothing"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 9: for and range",
+   "body": "`while` repeats **until** something happens. `for` repeats **over** something: every character in a password, every number from 1 to 100, every seat in a row.\n\nIt's the loop you'll write most often, and it can't run forever by accident.",
+   "visual": {
+    "kind": "list",
+    "name": "word",
+    "items": [
+     "'c'",
+     "'h'",
+     "'a'",
+     "'i'"
+    ],
+    "mark": [
+     0
+    ]
+   },
+   "say": "Welcome to day nine. Yesterday's while loop repeats until something happens. Today's for loop repeats over something: every character in a password, every number from one to a hundred, every seat in a row. It's the loop professional Python developers write most often, and it can't run forever by accident."
+  },
+  {
+   "type": "concept",
+   "title": "for: one item at a time",
+   "body": "`for ch in \"chai\":` points `ch` at each character in turn, runs the body, and stops by itself after the last one.\n\nNo counter to update, nothing to forget.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "ch = 'c': run the body",
+     "ch = 'h': run the body",
+     "ch = 'a': run the body",
+     "ch = 'i': run the body",
+     "No items left: the loop ends"
+    ]
+   },
+   "say": "A for loop takes a sequence, like a string, and hands you its items one at a time. Each round, the loop variable points to the next item, and the body runs. After the last item, the loop ends by itself. There's no counter to update and nothing to forget, so a for loop over a string can never run forever."
+  },
+  {
+   "type": "code",
+   "title": "Loop over a string",
+   "code": "word = \"chai\"\nfor ch in word:\n    print(ch.upper())\n\npassword = \"Brod0it2026\"\ndigits = 0\nfor ch in password:\n    if ch.isdigit():\n        digits += 1\nprint(f\"{password} has {digits} digits\")",
+   "expect": "C\nH\nA\nI\nBrod0it2026 has 5 digits\n",
+   "explain": [
+    [
+     2,
+     "ch points to 'c', then 'h', then 'a', then 'i'."
+    ],
+    [
+     3,
+     "The body runs once per character."
+    ],
+    [
+     7,
+     "Visit every character of the password."
+    ],
+    [
+     8,
+     "Count only the digits."
+    ],
+    [
+     10,
+     "After the loop: use the result."
+    ]
+   ],
+   "say": "The first loop visits each letter of chai and prints it in capitals. The second loop is a real password checker. For every character, if it's a digit, add one to the counter. That's the counting pattern from yesterday, but now the for loop does the stepping for us."
+  },
+  {
+   "type": "concept",
+   "title": "range(): numbers on demand",
+   "body": "`range(start, stop, step)` produces numbers from start up to, but **not including**, stop. Just like slicing on Day 4.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Call",
+     "Numbers"
+    ],
+    "rows": [
+     [
+      "range(5)",
+      "0 1 2 3 4"
+     ],
+     [
+      "range(1, 6)",
+      "1 2 3 4 5"
+     ],
+     [
+      "range(0, 20, 5)",
+      "0 5 10 15"
+     ],
+     [
+      "range(10, 0, -2)",
+      "10 8 6 4 2"
+     ]
+    ]
+   },
+   "say": "Range generates a sequence of numbers for a for loop. With one number, it counts from zero up to, but not including, that number. Give a start and a stop to begin somewhere else, and a step to jump by more than one, or to count backwards. The stop is never included, exactly like slicing on day four."
+  },
+  {
+   "type": "code",
+   "title": "range in action",
+   "code": "for i in range(5):\n    print(i, end=\" \")\nprint()\n\nfor n in range(1, 6):\n    print(n, end=\" \")\nprint()\n\nfor year in range(2026, 2041, 5):\n    print(year, end=\" \")\nprint()\n\nfor t in range(10, 0, -3):\n    print(t, end=\" \")\nprint()",
+   "expect": "0 1 2 3 4 \n1 2 3 4 5 \n2026 2031 2036 \n10 7 4 1 \n",
+   "explain": [
+    [
+     1,
+     "One argument: 0 up to 4."
+    ],
+    [
+     2,
+     "end=\" \" keeps the numbers on one line."
+    ],
+    [
+     3,
+     "An empty print() just ends the line."
+    ],
+    [
+     9,
+     "A step of 5: 2026, 2031, 2036."
+    ],
+    [
+     13,
+     "A negative step counts down: 10, 7, 4, 1."
+    ]
+   ],
+   "say": "Each loop prints its numbers on one line, using end from day one, and an empty print finishes the line. Range of five starts at zero. One to six gives one to five. The years jump by five, and the last loop counts down by three. Notice that the stop value never appears."
+  },
+  {
+   "type": "predict",
+   "title": "Which numbers?",
+   "code": "for i in range(2, 11, 4):\n    print(i)",
+   "options": [
+    "2\n6\n10",
+    "2\n6",
+    "2\n4\n6\n8\n10",
+    "2\n6\n10\n14"
+   ],
+   "answer": 0,
+   "why": "Start at 2 and add 4 each time: 2, 6, 10. The next would be 14, which isn't below the stop of 11. The stop is excluded, but 10 is below 11, so it's included.",
+   "say": "Range from two, up to eleven, stepping by four. Which numbers does this loop print?"
+  },
+  {
+   "type": "concept",
+   "title": "The accumulator pattern",
+   "body": "Three steps, every time:\n- **before** the loop: `total = 0`\n- **inside**: `total += mark`\n- **after**: use `total`\n\nThe same shape gives sums, counts, maximums and strings built piece by piece.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Before: total = 0",
+     "Inside: total += mark (once per item)",
+     "After: average = total / count"
+    ]
+   },
+   "say": "The accumulator pattern is three steps. Before the loop, set up the result, like a total of zero. Inside the loop, update it with each item. After the loop, use it. The same shape gives you sums, counts, the biggest value, or a string built piece by piece. Learn this shape and half of all loop problems are solved."
+  },
+  {
+   "type": "code",
+   "title": "Report card",
+   "code": "subjects = 5\ntotal = 0\nhighest = 0\n\nfor i in range(1, subjects + 1):\n    mark = int(input(f\"Subject {i} marks: \"))\n    total += mark\n    highest = max(highest, mark)\n\naverage = total / subjects\nprint(f\"Total: {total} / {subjects * 100}\")\nprint(f\"Average: {average:.1f}\")\nprint(f\"Highest: {highest}\")",
+   "stdin": "78\n85\n92\n64\n71\n",
+   "expect": "Subject 1 marks: Subject 2 marks: Subject 3 marks: Subject 4 marks: Subject 5 marks: Total: 390 / 500\nAverage: 78.0\nHighest: 92\n",
+   "explain": [
+    [
+     2,
+     "Accumulators start before the loop."
+    ],
+    [
+     5,
+     "range(1, 6): i is 1, 2, 3, 4, 5."
+    ],
+    [
+     7,
+     "Running total."
+    ],
+    [
+     8,
+     "Running maximum."
+    ],
+    [
+     10,
+     "Use the results after the loop."
+    ]
+   ],
+   "say": "A report card in a dozen lines. The loop runs once per subject, and the loop variable i labels each prompt. Inside, two accumulators update: total adds each mark, and highest keeps the bigger of itself and the new mark. After the loop, we work out the average just once. Change the marks in the input box and run it again."
+  },
+  {
+   "type": "code",
+   "title": "Counting and building strings",
+   "body": "New: `ch in \"aeiou\"` is True when `ch` appears inside the string `\"aeiou\"`.",
+   "code": "sentence = \"Python makes boring tasks fun\"\nvowels = 0\nfor ch in sentence.lower():\n    if ch in \"aeiou\":\n        vowels += 1\nprint(f\"Vowels: {vowels}\")\n\nbackwards = \"\"\nfor ch in \"stressed\":\n    backwards = ch + backwards\nprint(backwards)\n\nacronym = \"\"\nfor word in \"indian space research organisation\".split():\n    acronym += word[0].upper()\nprint(acronym)",
+   "expect": "Vowels: 7\ndesserts\nISRO\n",
+   "explain": [
+    [
+     4,
+     "in checks membership: is ch one of the vowels?"
+    ],
+    [
+     10,
+     "Put each new character in front: s, ts, rts..."
+    ],
+    [
+     14,
+     "split() gives a list of words (Day 11); for works on lists too."
+    ],
+    [
+     15,
+     "Add each word's first letter, capitalised."
+    ]
+   ],
+   "say": "Three accumulators, three shapes. Counting vowels uses the in operator, which checks whether a character appears inside a string. Building a reversed word puts each new character in front. And looping over the words from split builds an acronym: ISRO. Same pattern every time: start empty, add inside the loop, use it after."
+  },
+  {
+   "type": "quiz",
+   "title": "The off-by-one trap",
+   "q": "You want to print the numbers 1 to 10, **including 10**. Which loop is correct?",
+   "options": [
+    "for n in range(10):",
+    "for n in range(1, 10):",
+    "for n in range(1, 11):",
+    "for n in range(0, 10, 1):"
+   ],
+   "answer": 2,
+   "why": "range stops before the stop value, so to include 10 the stop must be 11. range(10) gives 0 to 9, and range(1, 10) stops at 9.",
+   "say": "Quick check, and a classic off by one trap. Which loop prints one to ten, including ten?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the pagination",
+   "task": "A search page should list its pages as `Page 1 of 5` up to `Page 5 of 5`. Users see **Page 0**, and the last page is missing. Fix the range so it works for any number of pages.",
+   "starter": "total_pages = int(input(\"Total pages: \"))\nfor page in range(total_pages):\n    print(f\"Page {page} of {total_pages}\")\n",
+   "stdin": "5\n",
+   "solution": "total_pages = int(input(\"Total pages: \"))\nfor page in range(1, total_pages + 1):\n    print(f\"Page {page} of {total_pages}\")",
+   "tests": "out = await run_program(\"5\\n\")\nassert \"Page 0 \" not in out, \"Humans count pages from 1: there should be no Page 0.\"\nassert \"Page 5 of 5\" in out, \"The last page is missing. range stops before its stop value.\"\nassert out.count(\"Page\") == 5, f\"5 pages should give exactly 5 lines, but you printed {out.count('Page')}.\"\nout = await run_program(\"1\\n\")\nassert \"Page 1 of 1\" in out and out.count(\"Page\") == 1, \"With 1 page, print just Page 1 of 1.\"",
+   "hints": [
+    "range starts at 0 unless you give it a start.",
+    "The stop is never included. To reach total_pages, stop one higher: range(1, total_pages + 1)"
+   ],
+   "say": "A classic off by one bug in a pagination feature. Users see page zero, and the last page is missing. Fix the range so it prints page one up to the final page, whatever the total is."
+  },
+  {
+   "type": "concept",
+   "title": "Nested loops",
+   "body": "A loop inside a loop: for **each** outer item, the inner loop runs **completely**.\n\n3 rows × 4 seats = 12 inner iterations. Grids, tables, seat maps and games all work this way.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "",
+     "Seat 1",
+     "Seat 2",
+     "Seat 3",
+     "Seat 4"
+    ],
+    "rows": [
+     [
+      "Row A",
+      "A1",
+      "A2",
+      "A3",
+      "A4"
+     ],
+     [
+      "Row B",
+      "B1",
+      "B2",
+      "B3",
+      "B4"
+     ],
+     [
+      "Row C",
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+     ]
+    ]
+   },
+   "say": "You can put a loop inside another loop. For each round of the outer loop, the inner loop runs all the way through. Picture a cinema: for each row, visit every seat in that row. Three rows of four seats means twelve visits in total. Grids, tables, seat maps and games all use nested loops."
+  },
+  {
+   "type": "code",
+   "title": "Multiplication table and seat map",
+   "code": "for row in range(1, 6):\n    for col in range(1, 6):\n        print(f\"{row * col:>4}\", end=\"\")\n    print()\n\nprint()\nfor row in \"ABC\":\n    for seat in range(1, 5):\n        print(f\"{row}{seat}\", end=\" \")\n    print()",
+   "expect": "   1   2   3   4   5\n   2   4   6   8  10\n   3   6   9  12  15\n   4   8  12  16  20\n   5  10  15  20  25\n\nA1 A2 A3 A4 \nB1 B2 B3 B4 \nC1 C2 C3 C4 \n",
+   "explain": [
+    [
+     1,
+     "Outer loop: one iteration per row."
+    ],
+    [
+     2,
+     "Inner loop: runs fully for every row."
+    ],
+    [
+     3,
+     "Right-align each product in 4 characters (Day 5)."
+    ],
+    [
+     4,
+     "Back in the outer loop: end the row."
+    ],
+    [
+     7,
+     "Loop over the letters A, B, C."
+    ]
+   ],
+   "say": "The outer loop picks a row, and the inner loop walks across every column of that row, printing the product in a neat four character column. After each row, an empty print starts a new line. The seat map works the same way: for each row letter, every seat number. Watch it run to see the inner loop finish before the outer one moves on."
+  },
+  {
+   "type": "predict",
+   "title": "Nested pattern",
+   "code": "for i in range(1, 4):\n    for j in range(i):\n        print(\"#\", end=\"\")\n    print()",
+   "options": [
+    "###\n###\n###",
+    "#\n##\n###",
+    "#\n#\n#",
+    "###\n##\n#"
+   ],
+   "answer": 1,
+   "why": "The inner loop runs range(i) times: once when i is 1, twice when i is 2, three times when i is 3. Each row ends with print().",
+   "say": "The inner loop depends on the outer one. How many hashes does each row get? Predict the pattern."
+  },
+  {
+   "type": "code",
+   "title": "Star patterns",
+   "code": "height = 4\nfor i in range(1, height + 1):\n    print(\"*\" * i)\n\nprint()\nfor i in range(1, height + 1):\n    spaces = \" \" * (height - i)\n    stars = \"*\" * (2 * i - 1)\n    print(spaces + stars)",
+   "expect": "*\n**\n***\n****\n\n   *\n  ***\n *****\n*******\n",
+   "explain": [
+    [
+     3,
+     "Row i has i stars (Day 4's string repetition)."
+    ],
+    [
+     7,
+     "Fewer spaces on each row..."
+    ],
+    [
+     8,
+     "...and 1, 3, 5, 7 stars."
+    ],
+    [
+     9,
+     "Join them: a centred pyramid."
+    ]
+   ],
+   "say": "Patterns are a favourite interview warm up, because they test loop thinking. The first triangle prints i stars on row i. The pyramid adds spaces before the stars: one fewer space and two more stars on each row. Change height to six and watch the pattern grow. The question to ask is always: what changes from one row to the next?"
+  },
+  {
+   "type": "concept",
+   "title": "for...else",
+   "body": "A `for` loop can have an `else`. It runs only if the loop finished **without** `break`.\n\nPerfect for searching: `break` when you find it; `else` means \"not found\".",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "for each item",
+      "s": "pill"
+     },
+     {
+      "t": "Is it a match?",
+      "s": "diamond",
+      "yes": "break: found it, skip else",
+      "no": "Try the next item"
+     },
+     {
+      "t": "Loop ran out of items: else runs",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Here's a feature many developers don't know. A for loop can have an else block, and it runs only if the loop finished without hitting break. It's perfect for searching. Break the moment you find what you want. If the loop runs out of items without a break, else tells you it was never found."
+  },
+  {
+   "type": "code",
+   "title": "Search with for...else",
+   "body": "The `else` lines up with `for`, not with `if`.",
+   "code": "password = \"sunshine\"\nfor ch in password:\n    if ch.isdigit():\n        print(\"Has a digit: good\")\n        break\nelse:\n    print(\"Weak: add at least one digit\")\n\nn = 29\nfor d in range(2, n):\n    if n % d == 0:\n        print(n, \"is divisible by\", d)\n        break\nelse:\n    print(n, \"is prime\")",
+   "expect": "Weak: add at least one digit\n29 is prime\n",
+   "explain": [
+    [
+     5,
+     "Found one: break, and the else is skipped."
+    ],
+    [
+     6,
+     "Runs only because the loop never hit break."
+    ],
+    [
+     10,
+     "Try every divisor from 2 to 28."
+    ],
+    [
+     13,
+     "A divisor means it isn't prime: stop searching."
+    ],
+    [
+     14,
+     "No divisor found: 29 is prime."
+    ]
+   ],
+   "say": "The first loop searches the password for a digit. It finds none, so the loop never breaks, and the else block warns that the password is weak. The second loop is a prime checker. Try every possible divisor, and break if one divides evenly. If nothing divides twenty nine, the else block declares it prime. Try changing n to twenty one."
+  },
+  {
+   "type": "exercise",
+   "title": "FizzBuzz",
+   "task": "The world's most famous coding warm-up. Read `n` and print the numbers 1 to n, one per line, but:\n- multiples of 3: `Fizz`\n- multiples of 5: `Buzz`\n- multiples of both: `FizzBuzz`",
+   "starter": "n = int(input(\"Up to: \"))\n# Print 1 to n with Fizz, Buzz and FizzBuzz\n",
+   "stdin": "15\n",
+   "solution": "n = int(input(\"Up to: \"))\nfor i in range(1, n + 1):\n    if i % 15 == 0:\n        print(\"FizzBuzz\")\n    elif i % 3 == 0:\n        print(\"Fizz\")\n    elif i % 5 == 0:\n        print(\"Buzz\")\n    else:\n        print(i)",
+   "tests": "def expected(n):\n    r = []\n    for i in range(1, n + 1):\n        r.append(\"FizzBuzz\" if i % 15 == 0 else \"Fizz\" if i % 3 == 0 else \"Buzz\" if i % 5 == 0 else str(i))\n    return r\nasync def got(n):\n    return (await run_program(f\"{n}\\n\")).replace(\"Up to:\", \"\").split()\nr = await got(15)\nassert len(r) == 15, f\"For n = 15, print exactly 15 lines (1 to 15). You printed {len(r)}.\"\nassert r[2] == \"Fizz\" and r[4] == \"Buzz\", \"3 should print Fizz and 5 should print Buzz.\"\nassert r[14] == \"FizzBuzz\", \"15 is a multiple of both 3 and 5, so it should print FizzBuzz. Check that case first.\"\nassert r == expected(15), \"Some lines are wrong. Expected: \" + \" \".join(expected(15))\nassert await got(1) == [\"1\"], \"For n = 1, print just 1.\"\nassert await got(30) == expected(30), \"Check your output up to 30.\"",
+   "hints": [
+    "Loop with for i in range(1, n + 1).",
+    "Divisible by 3 means i % 3 == 0.",
+    "Test for FizzBuzz (i % 15 == 0) first, or it will never be reached."
+   ],
+   "say": "Time for the most famous coding warm up in the world, asked in countless interviews. Print one to n, but multiples of three become Fizz, multiples of five become Buzz, and multiples of both become FizzBuzz. Think carefully about the order of your checks."
+  },
+  {
+   "type": "exercise",
+   "title": "Over-by-over chart",
+   "task": "Read the number of **overs**, then the runs in each over (one `int(input())` per over). Print a bar for each over, then the total and the best over:\n`Over 1: #### 4`\n`Over 2: ############ 12`\n`Total: 16`\n`Best: over 2 (12 runs)`\n\nIf overs tie, report the **earlier** one.",
+   "starter": "overs = int(input(\"Overs: \"))\n# For each over: runs = int(input()), print its bar, update the total and the best\n",
+   "stdin": "3\n4\n12\n0\n",
+   "solution": "overs = int(input(\"Overs: \"))\ntotal = 0\nbest_over = 0\nbest_runs = -1\nfor over in range(1, overs + 1):\n    runs = int(input())\n    print(f\"Over {over}: {'#' * runs} {runs}\")\n    total += runs\n    if runs > best_runs:\n        best_runs = runs\n        best_over = over\nprint(f\"Total: {total}\")\nprint(f\"Best: over {best_over} ({best_runs} runs)\")",
+   "tests": "import re\ndef bar(out, i):\n    for line in out.splitlines():\n        m = re.search(rf\"Over\\s+{i}\\s*:(.*)\", line)\n        if m:\n            return m.group(1).count(\"#\")\n    assert False, f\"Print a line for Over {i}, like Over {i}: #### 4\"\nout = await run_program(\"3\\n4\\n12\\n0\\n\")\nassert (bar(out, 1), bar(out, 2), bar(out, 3)) == (4, 12, 0), \"Each bar needs one # per run: 4, 12 and 0 for these overs.\"\nassert \"Total: 16\" in out, \"4 + 12 + 0 runs makes Total: 16.\"\nassert \"over 2 (12 runs)\" in out, \"The best over here is over 2, with 12 runs.\"\nout = await run_program(\"3\\n6\\n10\\n10\\n\")\nassert \"over 2 (10 runs)\" in out, \"Overs 2 and 3 tie on 10 runs: report the earlier one, over 2. Use > rather than >=.\"\nout = await run_program(\"2\\n0\\n0\\n\")\nassert \"Total: 0\" in out and \"over 1 (0 runs)\" in out, \"If every over is 0, the total is 0 and the best is over 1. Start best_runs below 0.\"",
+   "hints": [
+    "A bar is a string repeated: \"#\" * runs",
+    "Keep two accumulators: total, and the best runs plus which over it was.",
+    "Start best_runs at -1, and update only when runs > best_runs."
+   ],
+   "say": "Cricket apps show a bar for every over. Build it in the terminal. Read the runs for each over, draw a bar of hashes, keep a running total, and track the best over. Watch the edge cases: tied overs, and an innings of dot balls."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 9 complete",
+   "points": [
+    "for item in sequence visits every item, then stops by itself",
+    "range(start, stop, step) excludes stop: range(1, n + 1) gives 1 to n",
+    "Accumulator: set up before the loop, update inside, use after",
+    "Nested loops: the inner loop runs completely for each outer item",
+    "for...else: else runs only when the loop finished without break"
+   ],
+   "say": "Mission nine complete. You can loop over strings and ranges, total and count anything, build grids and patterns with nested loops, and search with for else. Tomorrow is project day. You'll design and build a complete number guessing game using everything from phase one. See you on day ten."
+  }
+ ]
+}

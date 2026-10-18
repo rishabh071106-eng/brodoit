@@ -1,0 +1,479 @@
+{
+ "day": 13,
+ "phase": 2,
+ "title": "Tuples and unpacking",
+ "subtitle": "Fixed records and elegant assignments",
+ "minutes": 50,
+ "goal": "Use tuples for fixed records, unpack them into readable names (including star-unpacking), and pair lists with zip.",
+ "outcomes": [
+  "Create tuples, including one-item tuples, and explain why they are immutable",
+  "Pack and unpack values, and use star-unpacking for the rest",
+  "Loop over a list of tuples as records, and sort it",
+  "Pair related lists with zip()",
+  "Choose between a tuple and a list for a given piece of data"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 13: Tuples and unpacking",
+   "body": "Some data should **never change** once created: a GPS location, a date, an RGB colour, a row from a database.\n\nToday: **tuples**, Python's fixed records, and **unpacking**, the trick that makes Python code so clean.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "location",
+      "(28.61, 77.21)",
+      "tuple"
+     ],
+     [
+      "order_date",
+      "(2026, 10, 18)",
+      "tuple"
+     ],
+     [
+      "saffron",
+      "(255, 153, 51)",
+      "tuple"
+     ]
+    ]
+   },
+   "say": "Welcome to day thirteen. Some data should never change once it is created: the location of a railway station, the date of an order, the colour of a logo, a row from a database. Python has a perfect type for this, the tuple. Today you will also learn unpacking, one of the tricks that makes Python code so clean and readable."
+  },
+  {
+   "type": "concept",
+   "title": "Tuples: sequences that can't change",
+   "body": "A tuple is an ordered sequence written with **round brackets**. You can index it, slice it, loop over it and use `len()`, but you **cannot** change it once it's made.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "List: mutable",
+     "code": "point = [28.61, 77.21]\npoint[0] = 0      # allowed\npoint.append(5)   # allowed"
+    },
+    "right": {
+     "title": "Tuple: immutable",
+     "code": "point = (28.61, 77.21)\npoint[0] = 0      # TypeError\npoint.append(5)   # AttributeError"
+    },
+    "verdict": "A tuple promises that a record stays exactly as it was created."
+   },
+   "say": "A tuple is like a list that has been locked. It is ordered, and you can index it, slice it, loop over it and take its length, exactly like a list. But once a tuple is created, you cannot change, add or remove items. You write tuples with round brackets instead of square ones."
+  },
+  {
+   "type": "code",
+   "title": "Creating and reading tuples",
+   "code": "location = (28.6139, 77.2090)   # New Delhi: latitude, longitude\nsaffron = (255, 153, 51)        # red, green, blue\nprint(location[0])\nprint(saffron[-1])\nprint(len(saffron), type(saffron))\norder_date = 2026, 10, 18\nprint(order_date)\nprint(saffron[:2])\nfor part in saffron:\n    print(part, end=\" \")",
+   "expect": "28.6139\n51\n3 <class 'tuple'>\n(2026, 10, 18)\n(255, 153)\n255 153 51 ",
+   "explain": [
+    [
+     1,
+     "A tuple of two floats: a map location."
+    ],
+    [
+     2,
+     "A colour as red, green and blue values."
+    ],
+    [
+     3,
+     "Indexing works exactly as with lists."
+    ],
+    [
+     6,
+     "The commas make the tuple; the brackets are optional here."
+    ],
+    [
+     8,
+     "A slice of a tuple is a new tuple."
+    ],
+    [
+     9,
+     "Loops work too."
+    ]
+   ],
+   "say": "Here are a map location and a colour, both stored as tuples. Indexing, negative indexes, len and slicing all work just like lists. Now look at the order date: there are no brackets at all. It is the commas that make a tuple, and the brackets are mostly there for clarity."
+  },
+  {
+   "type": "predict",
+   "title": "Try to change a tuple",
+   "code": "saffron = (255, 153, 51)\nsaffron[0] = 200\nprint(saffron)",
+   "options": [
+    "(200, 153, 51)",
+    "(255, 153, 51)",
+    "TypeError: 'tuple' object does not support item assignment"
+   ],
+   "answer": 2,
+   "why": "Tuples are immutable. Assigning to an index raises TypeError before print ever runs. To get a different colour you build a new tuple instead, like (200,) + saffron[1:].",
+   "say": "What happens when we try to change the first number inside a tuple? Predict before you run it."
+  },
+  {
+   "type": "concept",
+   "title": "Why would you want that?",
+   "body": "- **Safety**: no code can accidentally change your record\n- **Meaning**: a tuple says \"one thing with fixed parts\"\n- **Dict keys and set items**: tuples can be, lists can't (Days 14 and 15)\n- **Lighter** than lists",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "",
+     "list",
+     "tuple"
+    ],
+    "rows": [
+     [
+      "Brackets",
+      "[1, 2]",
+      "(1, 2)"
+     ],
+     [
+      "Change items?",
+      "yes",
+      "no"
+     ],
+     [
+      "Typical use",
+      "a collection that grows",
+      "one fixed record"
+     ],
+     [
+      "Dict key?",
+      "no",
+      "yes"
+     ]
+    ]
+   },
+   "say": "Why would anyone want a list they cannot change? Safety, for a start: no part of your program can accidentally overwrite a record. A tuple also tells other developers that this is one thing with fixed parts, like a date. And tuples can be dictionary keys and set items, which lists cannot, as you will see over the next two days."
+  },
+  {
+   "type": "code",
+   "title": "One-item tuples and tuple methods",
+   "code": "not_a_tuple = (5)\na_tuple = (5,)\nprint(type(not_a_tuple), type(a_tuple))\nempty = ()\nprint(len(empty))\nratings = (5, 4, 5, 3, 5)\nprint(ratings.count(5), ratings.index(3))\nprint(max(ratings), sum(ratings))\nprint(4 in ratings)",
+   "expect": "<class 'int'> <class 'tuple'>\n0\n3 3\n5 22\nTrue\n",
+   "explain": [
+    [
+     1,
+     "Just a number in brackets: brackets alone don't make a tuple."
+    ],
+    [
+     2,
+     "The trailing comma makes a one-item tuple."
+    ],
+    [
+     4,
+     "An empty tuple."
+    ],
+    [
+     7,
+     "Tuples have only two methods: count() and index()."
+    ],
+    [
+     8,
+     "Built-ins like max() and sum() work on tuples."
+    ]
+   ],
+   "say": "Here is a famous gotcha. Five in brackets is just the number five, because brackets also group maths. A one item tuple needs a trailing comma. Tuples have only two methods, count and index, since nothing else makes sense for data that cannot change. And built ins like max, sum and in work exactly as they do on lists."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "Which of these is a tuple with one item?",
+   "options": [
+    "(7)",
+    "(7,)",
+    "[7]"
+   ],
+   "answer": 1,
+   "why": "The comma makes the tuple. (7) is just the number 7 in brackets, and [7] is a list.",
+   "say": "Quick check. Which of these is a tuple holding exactly one item?"
+  },
+  {
+   "type": "concept",
+   "title": "Packing and unpacking",
+   "body": "**Packing**: `point = 3, 4` puts values into a tuple.\n**Unpacking**: `x, y = point` hands them out to names, in order.\n\nThe number of names must match the number of items.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "point",
+      "(3, 4)",
+      "tuple"
+     ],
+     [
+      "x",
+      "3",
+      "int"
+     ],
+     [
+      "y",
+      "4",
+      "int"
+     ]
+    ]
+   },
+   "say": "Packing means putting several values into one tuple, just by writing them with commas. Unpacking is the reverse: you write several names on the left, and Python hands out the items in order, one to each name. The swap trick from day two is really packing on the right and unpacking on the left."
+  },
+  {
+   "type": "code",
+   "title": "Unpacking records",
+   "code": "train = (\"12951\", \"Mumbai Rajdhani\", \"16:35\")\nnumber, name, departs = train\nprint(name, \"leaves at\", departs)\na, b = 10, 20\na, b = b, a\nprint(a, b)\nhours, minutes = divmod(135, 60)\nprint(f\"{hours}h {minutes}m\")\nfor player, runs in [(\"Riya\", 54), (\"Arjun\", 71)]:\n    print(player, \"scored\", runs)",
+   "expect": "Mumbai Rajdhani leaves at 16:35\n20 10\n2h 15m\nRiya scored 54\nArjun scored 71\n",
+   "explain": [
+    [
+     2,
+     "Three names, three items: each name gets one."
+    ],
+    [
+     5,
+     "Swap: the right side packs (20, 10), the left side unpacks it."
+    ],
+    [
+     7,
+     "divmod() returns a tuple (quotient, remainder): two values from one call."
+    ],
+    [
+     9,
+     "Unpacking in a for loop: exactly what enumerate() did on Day 12."
+    ]
+   ],
+   "say": "Unpacking turns a record into readable names in one line. The swap is packing and unpacking working together. The built in divmod returns two values at once, the quotient and the remainder, and we unpack them straight into hours and minutes. Your own functions will do this on day seventeen. Last, unpacking in a for loop, just like enumerate yesterday."
+  },
+  {
+   "type": "predict",
+   "title": "Too many values",
+   "code": "x, y = (1, 2, 3)\nprint(x, y)",
+   "options": [
+    "1 2",
+    "1 2 3",
+    "ValueError: too many values to unpack (expected 2)"
+   ],
+   "answer": 2,
+   "why": "Unpacking is strict: two names need exactly two items. With three items Python raises ValueError instead of guessing. Star-unpacking, coming next, handles the leftovers.",
+   "say": "Two names, three items. Does Python quietly drop the extra one? Predict."
+  },
+  {
+   "type": "concept",
+   "title": "Star-unpacking: take the rest",
+   "body": "Put a `*` before **one** name to collect everything else into a **list**.\n\n- `first, *rest = items`\n- `*history, latest = versions`\n- `head, *middle, tail = items`",
+   "visual": {
+    "kind": "list",
+    "name": "scores",
+    "items": [
+     "98",
+     "87",
+     "76",
+     "65",
+     "54"
+    ],
+    "mark": [
+     0
+    ]
+   },
+   "say": "When you don't know exactly how many items there are, put a star in front of one name. That name collects everything left over, always as a list. You can grab the first item and the rest, everything except the last, or the head and the tail with the middle in between. Only one name may have the star."
+  },
+  {
+   "type": "code",
+   "title": "Star-unpacking in practice",
+   "code": "scores = (98, 87, 76, 65, 54)\ntop, *others = scores\nprint(top, others)\n*history, latest = [\"v1.0\", \"v1.1\", \"v1.2\", \"v2.0\"]\nprint(\"latest release:\", latest)\nprint(\"older:\", history)\nlog = \"2026-10-18 ERROR payment gateway timed out\"\ndate, level, *words = log.split()\nprint(level, \"on\", date, \"->\", \" \".join(words))",
+   "expect": "98 [87, 76, 65, 54]\nlatest release: v2.0\nolder: ['v1.0', 'v1.1', 'v1.2']\nERROR on 2026-10-18 -> payment gateway timed out\n",
+   "explain": [
+    [
+     2,
+     "top gets the first score; others collects the rest as a list."
+    ],
+    [
+     4,
+     "The star can come first: history gets everything but the last."
+    ],
+    [
+     8,
+     "Split a log line into the date, the level and all remaining words."
+    ],
+    [
+     9,
+     "join() rebuilds the message from the leftover words."
+    ]
+   ],
+   "say": "The top score goes into one name, and the rest go into a list. Version history works the other way round: everything except the latest. The last example is a real logging task. We split a log line and unpack the date, the level, and every remaining word, however many there are. Then join puts the message back together."
+  },
+  {
+   "type": "concept",
+   "title": "zip(): walk lists side by side",
+   "body": "`zip(a, b)` pairs up items, first with first, second with second, giving **tuples**. It stops at the **shortest** list.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "students",
+     "marks",
+     "zip gives"
+    ],
+    "rows": [
+     [
+      "'Riya'",
+      "91",
+      "('Riya', 91)"
+     ],
+     [
+      "'Arjun'",
+      "78",
+      "('Arjun', 78)"
+     ],
+     [
+      "'Meera'",
+      "85",
+      "('Meera', 85)"
+     ]
+    ]
+   },
+   "say": "Often you have related data in separate lists: names in one, marks in another. Zip walks through them side by side and pairs them up as tuples, first with first, second with second. Combine it with unpacking in a for loop and the code reads almost like English. Be aware that zip stops at the shortest list."
+  },
+  {
+   "type": "code",
+   "title": "A report card with zip",
+   "code": "students = [\"Riya\", \"Arjun\", \"Meera\"]\nmarks = [91, 78, 85]\nfor name, mark in zip(students, marks):\n    print(f\"{name:<6} {mark}\")\npairs = list(zip(students, marks))\nprint(pairs)\nbest_mark, topper = max(zip(marks, students))\nprint(\"Topper:\", topper, best_mark)\nprint(list(zip([1, 2, 3], [\"a\", \"b\"])))",
+   "expect": "Riya   91\nArjun  78\nMeera  85\n[('Riya', 91), ('Arjun', 78), ('Meera', 85)]\nTopper: Riya 91\n[(1, 'a'), (2, 'b')]\n",
+   "explain": [
+    [
+     3,
+     "Each turn, zip hands over one (name, mark) tuple, unpacked into two names."
+    ],
+    [
+     4,
+     ":<6 pads the name to 6 characters (Day 5), so the marks line up."
+    ],
+    [
+     5,
+     "list() shows all the pairs at once."
+    ],
+    [
+     7,
+     "Tuples compare item by item, so max() picks the highest mark; then we unpack it."
+    ],
+    [
+     9,
+     "zip stops at the shortest list: the 3 is dropped."
+    ]
+   ],
+   "say": "Zip pairs each student with their mark, and the f string pads the names so the marks line up. Turning zip into a list shows the pairs. Now a neat trick: tuples compare item by item, so if we zip the marks first, max finds the pair with the highest mark, and we unpack it. The last line shows zip stopping at the shorter list."
+  },
+  {
+   "type": "concept",
+   "title": "Tuples as records",
+   "body": "A **list of tuples** is like a spreadsheet: each tuple is a row, each position a column. Sorting compares the first items, and only looks at the second on a tie.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "order_id",
+     "customer",
+     "amount"
+    ],
+    "rows": [
+     [
+      "'ORD-104'",
+      "'Riya'",
+      "1250"
+     ],
+     [
+      "'ORD-101'",
+      "'Arjun'",
+      "499"
+     ],
+     [
+      "'ORD-103'",
+      "'Meera'",
+      "2399"
+     ]
+    ]
+   },
+   "say": "Put tuples inside a list and you get a table of records, like a spreadsheet. Each tuple is a row, and each position is a column. Loop over it with unpacking to give every column a name. When you sort a list of tuples, Python compares the first items, and only looks at the second item when there is a tie."
+  },
+  {
+   "type": "code",
+   "title": "A day of orders",
+   "code": "orders = [\n    (\"ORD-104\", \"Riya\", 1250),\n    (\"ORD-101\", \"Arjun\", 499),\n    (\"ORD-103\", \"Meera\", 2399),\n    (\"ORD-102\", \"Kabir\", 899),\n]\nrevenue = 0\nfor order_id, customer, amount in orders:\n    revenue += amount\n    if amount >= 1000:\n        print(customer, \"gets free delivery\")\nprint(\"Revenue:\", revenue)\nfor order_id, customer, amount in sorted(orders):\n    print(order_id, amount)",
+   "expect": "Riya gets free delivery\nMeera gets free delivery\nRevenue: 5047\nORD-101 499\nORD-102 899\nORD-103 2399\nORD-104 1250\n",
+   "explain": [
+    [
+     1,
+     "Four records, each a fixed (id, customer, amount) tuple."
+    ],
+    [
+     8,
+     "Unpack every row into three readable names."
+    ],
+    [
+     10,
+     "A business rule: big orders ship free."
+    ],
+    [
+     13,
+     "Sorting tuples compares the first item: the order id."
+    ]
+   ],
+   "say": "Here is a day of orders, each one a fixed record. The loop unpacks every row into an id, a customer and an amount, adds up the revenue, and applies a free delivery rule. Then sorted puts the orders in id order, because tuples sort by their first item."
+  },
+  {
+   "type": "quiz",
+   "title": "Tuple or list?",
+   "q": "Which of these is the best fit for a tuple?",
+   "options": [
+    "A cart the user keeps adding items to",
+    "The (year, month, day) of an order",
+    "A queue of songs the user can reorder"
+   ],
+   "answer": 1,
+   "why": "A date is one record with fixed parts that should never change: a tuple. Carts and queues grow, shrink and reorder, so they need a list.",
+   "say": "Tuple or list? Think about whether the data needs to change after it is created. Which of these is the best fit for a tuple?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: unpacking the bill",
+   "task": "This bill should come to **₹60**, but it crashes. Read the error message, then fix the unpacking so `bill` is `60`.",
+   "starter": "products = [(\"Chai\", 20), (\"Samosa\", 15), (\"Vada pav\", 25)]\nbill = 0\nfor item in products:\n    name, price, qty = item\n    bill += price\nprint(\"Bill:\", bill)\n",
+   "solution": "products = [(\"Chai\", 20), (\"Samosa\", 15), (\"Vada pav\", 25)]\nbill = 0\nfor item in products:\n    name, price = item\n    bill += price\nprint(\"Bill:\", bill)",
+   "tests": "assert bill == 60, f\"bill should be 20 + 15 + 25 = 60, but it is {bill}.\"\nassert \"Bill: 60\" in __out__, \"Print the bill: Bill: 60.\"",
+   "hints": [
+    "The error says: not enough values to unpack (expected 3, got 2).",
+    "Each product tuple has two items: a name and a price.",
+    "name, price = item"
+   ],
+   "say": "Bug hunt. This bill crashes before it can add anything up. Read the last line of the error carefully: it tells you how many names Python expected and how many items it actually got. Match them up and the bill should come to sixty rupees."
+  },
+  {
+   "type": "exercise",
+   "title": "Parse a log line",
+   "task": "Log lines look like `2026-10-18 ERROR payment failed for order 104`. Read one line and use **star-unpacking** to print:\n- `Level: ERROR`\n- `Message: payment failed for order 104`",
+   "stdin": "2026-10-18 ERROR payment failed for order 104\n",
+   "starter": "line = input(\"Log line: \")\n# Unpack the date, the level, and all remaining words\n",
+   "solution": "line = input(\"Log line: \")\ndate, level, *words = line.split()\nprint(\"Level:\", level)\nprint(\"Message:\", \" \".join(words))",
+   "tests": "out = await run_program(\"2026-10-18 ERROR payment failed for order 104\\n\")\nassert \"Level: ERROR\" in out, \"Print Level: ERROR for that line. The level is the second word.\"\nassert \"Message: payment failed for order 104\" in out, \"Print Message: followed by every word after the level, joined with spaces.\"\nout = await run_program(\"2026-10-19 INFO started\\n\")\nassert \"Level: INFO\" in out and \"Message: started\" in out, \"With a one-word message, 2026-10-19 INFO started, print Level: INFO and Message: started.\"\nout = await run_program(\"2026-10-20 WARNING disk 91% full on server 2\\n\")\nassert \"Level: WARNING\" in out and \"Message: disk 91% full on server 2\" in out, \"Long messages should come through in full: Message: disk 91% full on server 2.\"\nassert \"*\" in __code__, \"Use star-unpacking, like date, level, *words = line.split().\"",
+   "hints": [
+    "line.split() gives a list of words.",
+    "date, level, *words = line.split() puts the rest into words.",
+    "\" \".join(words) rebuilds the message."
+   ],
+   "say": "Real servers write millions of log lines like this one: a date, a level, and a message of any length. Use star unpacking to pull out the level and the message, then print both. The checker will try messages of different lengths, including a single word."
+  },
+  {
+   "type": "exercise",
+   "title": "Class topper",
+   "task": "Read two lines: names separated by commas, then marks separated by spaces. Use `zip` to print every student as `Riya: 91`, then print `Topper: Riya`.\n\nNo two students share a mark.",
+   "stdin": "Riya,Arjun,Meera\n91 78 85\n",
+   "starter": "names = input(\"Names: \").split(\",\")\nmarks = []\nfor piece in input(\"Marks: \").split():\n    marks.append(int(piece))\n# Use zip to print each \"name: mark\" line, then the topper\n",
+   "solution": "names = input(\"Names: \").split(\",\")\nmarks = []\nfor piece in input(\"Marks: \").split():\n    marks.append(int(piece))\nfor name, mark in zip(names, marks):\n    print(f\"{name}: {mark}\")\nbest, topper = max(zip(marks, names))\nprint(\"Topper:\", topper)",
+   "tests": "out = await run_program(\"Riya,Arjun,Meera\\n91 78 85\\n\")\nfor line in [\"Riya: 91\", \"Arjun: 78\", \"Meera: 85\"]:\n    assert line in out, f\"Expected a line {line}. Pair names and marks with zip(names, marks).\"\nassert \"Topper: Riya\" in out, \"Riya has the highest mark, 91, so print Topper: Riya.\"\nout = await run_program(\"Kabir,Zoya\\n64 99\\n\")\nassert \"Zoya: 99\" in out and \"Topper: Zoya\" in out, \"For Kabir 64 and Zoya 99 the topper is Zoya, even though she comes last.\"\nout = await run_program(\"Dev\\n70\\n\")\nassert \"Dev: 70\" in out and \"Topper: Dev\" in out, \"In a class of one, Dev is the topper.\"\nassert \"zip\" in __code__, \"Use zip() to walk both lists together.\"",
+   "hints": [
+    "for name, mark in zip(names, marks): gives you one pair per turn.",
+    "max(zip(marks, names)) finds the (mark, name) tuple with the highest mark.",
+    "best, topper = max(zip(marks, names))"
+   ],
+   "say": "Build a mini report card. Names arrive on one line and marks on the next. Use zip to print each student with their mark, then find the topper. Tip: zip the marks first, and max will compare marks for you. The checker tries a class where the topper comes last, and a class of one."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 13 complete",
+   "points": [
+    "A tuple is an ordered, immutable sequence: (a, b, c), and (x,) for one item",
+    "Packing: t = 1, 2. Unpacking: a, b = t, with exactly matching counts",
+    "Star-unpacking collects the leftovers into a list: first, *rest = items",
+    "zip() walks lists side by side, giving tuples, and stops at the shortest",
+    "Use tuples for fixed records and lists for collections that change"
+   ],
+   "say": "Mission thirteen complete. You know tuples, the locked records of Python, and how to pack and unpack them, including star unpacking for the leftovers. You can zip lists together and treat a list of tuples like a table. Tomorrow you meet the most useful data structure in Python, the dictionary. See you on day fourteen."
+  }
+ ]
+}

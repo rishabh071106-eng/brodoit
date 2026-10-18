@@ -1,0 +1,516 @@
+{
+ "day": 3,
+ "phase": 1,
+ "title": "Numbers and maths",
+ "subtitle": "Integers, decimals and the operators behind every app",
+ "minutes": 50,
+ "goal": "Do real calculations with int and float, the seven arithmetic operators, precedence, rounding and the math module.",
+ "outcomes": [
+  "Tell int from float and predict which one an operation produces",
+  "Use + - * / // % ** and predict the order Python applies them",
+  "Split amounts and convert units with // and %",
+  "Tidy results with round(), abs(), min() and max()",
+  "Use math.sqrt, ceil, floor and pi, and explain why 0.1 + 0.2 isn't 0.3"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 3: Numbers and maths",
+   "body": "Payments, EMIs, scoreboards, timers, maps: under every app is arithmetic.\n\nToday Python becomes your **calculator**, and you'll learn the traps that catch even senior developers. Look at that last line...",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python"
+     ],
+     [
+      ">>>",
+      "1499 * 3"
+     ],
+     [
+      "",
+      "4497"
+     ],
+     [
+      ">>>",
+      "135 // 60, 135 % 60"
+     ],
+     [
+      "",
+      "(2, 15)"
+     ],
+     [
+      ">>>",
+      "0.1 + 0.2"
+     ],
+     [
+      "",
+      "0.30000000000000004"
+     ]
+    ]
+   },
+   "say": "Welcome to day three. Under every payment, EMI, scoreboard and timer there's arithmetic. Today Python becomes your calculator. You'll learn the two kinds of numbers, seven operators, and one famous trap that catches even senior developers. See the last line on screen? By the end of today, you'll know exactly why it happens."
+  },
+  {
+   "type": "concept",
+   "title": "Two kinds of numbers",
+   "body": "- `int`: whole numbers of any size: `42`, `-7`, `10 ** 100`\n- `float`: numbers with a decimal point: `3.5`, `99.0`\n\nUnderscores make big numbers readable: `1_00_000` is one lakh. Python ignores them.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "players",
+      "11",
+      "int"
+     ],
+     [
+      "price",
+      "349.5",
+      "float"
+     ],
+     [
+      "one_crore",
+      "10000000",
+      "int"
+     ],
+     [
+      "temperature",
+      "-2.5",
+      "float"
+     ]
+    ]
+   },
+   "say": "Python has two main kinds of numbers. Integers, or int, are whole numbers, and they can be as big as you like. Floats are numbers with a decimal point. One neat trick for big numbers: you can put underscores between the digits, the way we write commas, and Python simply ignores them. That makes one lakh or one crore easy to read."
+  },
+  {
+   "type": "code",
+   "title": "int and float in action",
+   "code": "price = 349\ndiscount = 49.5\nprint(type(price), type(discount))\nprint(price + 1)           # int + int gives an int\nprint(price - discount)    # int and float give a float\nprint(10 / 2)              # / always gives a float\nprint(type(10 / 2))\none_crore = 1_00_00_000\nprint(one_crore)\nprint(2 ** 100)            # ints never overflow",
+   "expect": "<class 'int'> <class 'float'>\n350\n299.5\n5.0\n<class 'float'>\n10000000\n1267650600228229401496703205376\n",
+   "explain": [
+    [
+     4,
+     "int + int stays an int."
+    ],
+    [
+     5,
+     "Mixing int and float gives a float."
+    ],
+    [
+     6,
+     "/ always returns a float, even for an exact result."
+    ],
+    [
+     8,
+     "Underscores are only for humans reading the code."
+    ],
+    [
+     10,
+     "2 to the power 100: Python ints have no size limit."
+    ]
+   ],
+   "say": "Adding two integers gives an integer. Mix in a float and the answer becomes a float, because Python keeps the decimal part. Division with a single slash always gives a float, even ten divided by two. The underscores vanish when one crore is printed. And the last line shows that Python integers can grow as large as you need."
+  },
+  {
+   "type": "visual",
+   "title": "The seven operators",
+   "body": "`//` and `%` are a pair: how many **whole** times, and what's **left over**.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Operator",
+     "Meaning",
+     "Example"
+    ],
+    "rows": [
+     [
+      "+",
+      "add",
+      "7 + 2 → 9"
+     ],
+     [
+      "-",
+      "subtract",
+      "7 - 2 → 5"
+     ],
+     [
+      "*",
+      "multiply",
+      "7 * 2 → 14"
+     ],
+     [
+      "/",
+      "divide (always a float)",
+      "7 / 2 → 3.5"
+     ],
+     [
+      "//",
+      "floor divide",
+      "7 // 2 → 3"
+     ],
+     [
+      "%",
+      "remainder (modulo)",
+      "7 % 2 → 1"
+     ],
+     [
+      "**",
+      "power",
+      "7 ** 2 → 49"
+     ]
+    ]
+   },
+   "say": "These are the seven arithmetic operators. You know the first four. Double slash is floor division: it divides, then drops the fraction. Percent is called modulo, and it gives the remainder. Double star is power. Floor division and modulo work as a team: how many whole times something fits, and what's left over."
+  },
+  {
+   "type": "code",
+   "title": "Floor division and remainder",
+   "code": "total_minutes = 135\nhours = total_minutes // 60\nminutes = total_minutes % 60\nprint(total_minutes, \"minutes is\", hours, \"h\", minutes, \"min\")\n\nsamosas = 20\nfriends = 6\neach = samosas // friends\nleft_over = samosas % friends\nprint(\"Each friend gets\", each, \"and\", left_over, \"are left\")\n\nprint(17 % 2, 18 % 2)   # 1 means odd, 0 means even",
+   "expect": "135 minutes is 2 h 15 min\nEach friend gets 3 and 2 are left\n1 0\n",
+   "explain": [
+    [
+     2,
+     "How many whole hours fit in 135 minutes: 2."
+    ],
+    [
+     3,
+     "What's left after those hours: 15."
+    ],
+    [
+     8,
+     "Whole samosas each: 20 // 6 is 3."
+    ],
+    [
+     9,
+     "Left over: 20 % 6 is 2."
+    ],
+    [
+     12,
+     "Remainder 1 means odd; 0 means even."
+    ]
+   ],
+   "say": "Here's why developers love this pair. One hundred and thirty five minutes, floor divided by sixty, is two whole hours, and the remainder is fifteen minutes. That's how every timer and video length display works. The same idea shares twenty samosas among six friends. And the remainder after dividing by two is the classic test for odd or even."
+  },
+  {
+   "type": "predict",
+   "title": "Predict all four",
+   "code": "print(10 / 5)\nprint(10 // 4)\nprint(10 % 4)\nprint(2 ** 10)",
+   "options": [
+    "2\n2\n2\n1024",
+    "2.0\n2\n2\n1024",
+    "2.0\n2.5\n2\n20",
+    "2.0\n2\n2.5\n1024"
+   ],
+   "answer": 1,
+   "why": "/ always returns a float, so 10 / 5 is 2.0. 10 // 4 keeps the whole part, 2, and the remainder is also 2. And 2 ** 10 is 1024, which is why a kilobyte is often 1024 bytes.",
+   "say": "Predict all four lines. Watch out for the first one. Is ten divided by five just two, or something slightly different?"
+  },
+  {
+   "type": "concept",
+   "title": "Precedence: who goes first",
+   "body": "Same order as school maths (BODMAS / PEMDAS). Operators on the same level run **left to right**.\n\nWhen in doubt, add brackets. They cost nothing and make your intent obvious.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Order",
+     "Operators",
+     "Example"
+    ],
+    "rows": [
+     [
+      "1",
+      "( ) brackets",
+      "(2 + 3) * 4 → 20"
+     ],
+     [
+      "2",
+      "** power",
+      "2 * 3 ** 2 → 18"
+     ],
+     [
+      "3",
+      "* / // %",
+      "10 - 6 / 2 → 7.0"
+     ],
+     [
+      "4",
+      "+ -",
+      "2 + 3 * 4 → 14"
+     ]
+    ]
+   },
+   "say": "Python follows the same order you learned in school, often called BODMAS or PEMDAS. Brackets first, then powers, then multiply and divide, then add and subtract. Operators on the same level go left to right. A professional habit: if a reader might hesitate, add brackets. They cost nothing and make your intent obvious."
+  },
+  {
+   "type": "code",
+   "title": "Precedence decides the answer",
+   "code": "maths = 81\nscience = 90\nenglish = 75\n\nwrong = maths + science + english / 3\nright = (maths + science + english) / 3\nprint(\"Without brackets:\", wrong)\nprint(\"With brackets:\", right)\n\nprint(2 + 3 * 4)\nprint((2 + 3) * 4)\nprint(2 * 3 ** 2)",
+   "expect": "Without brackets: 196.0\nWith brackets: 82.0\n14\n20\n18\n",
+   "explain": [
+    [
+     5,
+     "Only english is divided by 3, because / runs before +."
+    ],
+    [
+     6,
+     "Brackets force the sum first: 246 / 3."
+    ],
+    [
+     10,
+     "3 * 4 first, then + 2."
+    ],
+    [
+     11,
+     "Brackets first: 5 * 4."
+    ],
+    [
+     12,
+     "Power first: 3 ** 2 is 9, then 2 * 9."
+    ]
+   ],
+   "say": "A classic bug. To average three marks, you must add them first, then divide. Without brackets, Python divides only the last mark by three, and the average comes out as one hundred and ninety six, which is impossible. With brackets, you get eighty two. The last three lines show the order of operations in action."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: precedence",
+   "q": "What does this print?",
+   "code": "print(10 - 4 / 2 * 3)",
+   "options": [
+    "9.0",
+    "4.0",
+    "1.0",
+    "4"
+   ],
+   "answer": 1,
+   "why": "/ and * share a level, so they run left to right: 4 / 2 is 2.0, times 3 is 6.0. Then 10 - 6.0 is 4.0, a float because / was involved.",
+   "say": "Quick check on precedence. Work it out step by step in your head. What does Python print?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bill split",
+   "task": "Four friends share a dinner bill of **1800** plus a **200** tip. Each should pay **500.0**, but this program says 1850.0. Fix the calculation so it works for any bill, tip and group size.",
+   "starter": "bill = 1800\ntip = 200\npeople = 4\nper_person = bill + tip / people\nprint(\"Each person pays:\", per_person)\n",
+   "solution": "bill = 1800\ntip = 200\npeople = 4\nper_person = (bill + tip) / people\nprint(\"Each person pays:\", per_person)",
+   "tests": "import re\ndef again(b, t, p):\n    src = re.sub(r\"^bill\\s*=.*$\", f\"bill = {b}\", __code__, count=1, flags=re.M)\n    src = re.sub(r\"^tip\\s*=.*$\", f\"tip = {t}\", src, count=1, flags=re.M)\n    src = re.sub(r\"^people\\s*=.*$\", f\"people = {p}\", src, count=1, flags=re.M)\n    ns = {}\n    exec(src, ns)\n    return ns[\"per_person\"]\nassert per_person == 500, f\"Each person should pay 500.0 for an 1800 bill plus 200 tip shared by 4, but per_person is {per_person}. Python divides before it adds. What do brackets do?\"\nassert again(999, 0, 3) == 333, \"With bill = 999, tip = 0 and 3 people, each should pay 333.0. Keep using the variables, not fixed numbers.\"\nassert again(1200, 300, 5) == 300, \"With bill = 1200, tip = 300 and 5 people, each should pay 300.0.\"\nassert \"500\" in __out__, \"Print how much each person pays.\"",
+   "hints": [
+    "/ runs before +, so only the tip is being split.",
+    "Add the bill and tip first by putting them in brackets."
+   ],
+   "say": "Four friends share a dinner bill and a tip. Each should pay five hundred, but this program says one thousand eight hundred and fifty. Find the precedence bug and fix it, so it works for any bill, tip and group size."
+  },
+  {
+   "type": "concept",
+   "title": "Built-in number helpers",
+   "body": "No import needed:\n- `round(x)` / `round(x, 2)`: to a whole number / 2 decimals\n- `abs(x)`: distance from zero\n- `min(a, b, ...)` / `max(...)`: smallest / largest",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Call",
+     "Result"
+    ],
+    "rows": [
+     [
+      "round(3.756, 2)",
+      "3.76"
+     ],
+     [
+      "round(3.756)",
+      "4"
+     ],
+     [
+      "abs(-250)",
+      "250"
+     ],
+     [
+      "min(30, 12, 45)",
+      "12"
+     ],
+     [
+      "max(30, 12, 45)",
+      "45"
+     ]
+    ]
+   },
+   "say": "Python has handy built in helpers for numbers. Round rounds to a whole number, or to as many decimal places as you ask for. Abs gives the distance from zero, so minus two hundred and fifty becomes two hundred and fifty. Min and max pick the smallest and largest of any number of values. You don't need to import anything to use them."
+  },
+  {
+   "type": "code",
+   "title": "Split a bill, EMI-style",
+   "code": "dinner = 2000\nfriends = 3\nshare = dinner / friends\nprint(\"Exact share:\", share)\nprint(\"Rounded share:\", round(share, 2))\nprint(\"Whole rupees:\", round(share))\n\nphone_price = 24999\nmonths = 9\nprint(\"Monthly EMI:\", round(phone_price / months, 2))\n\nbalance_change = -1250\nprint(\"Amount moved:\", abs(balance_change))\nprint(\"Cheapest plan:\", min(799, 649, 1099))\nprint(\"Priciest plan:\", max(799, 649, 1099))",
+   "expect": "Exact share: 666.6666666666666\nRounded share: 666.67\nWhole rupees: 667\nMonthly EMI: 2777.67\nAmount moved: 1250\nCheapest plan: 649\nPriciest plan: 1099\n",
+   "explain": [
+    [
+     3,
+     "/ gives a long float: 666.666..."
+    ],
+    [
+     5,
+     "Round to 2 decimal places: paise."
+    ],
+    [
+     6,
+     "Round to the nearest whole number."
+    ],
+    [
+     10,
+     "Round the EMI as you print it."
+    ],
+    [
+     13,
+     "abs drops the minus sign."
+    ],
+    [
+     14,
+     "min accepts as many values as you like."
+    ]
+   ],
+   "say": "Two thousand split three ways never divides evenly, so the raw answer is full of sixes. Round with two gives paise, round on its own gives whole rupees. The phone EMI works the same way. Abs turns a debit of minus one thousand two hundred and fifty into a plain amount, and min and max pick the cheapest and priciest plans."
+  },
+  {
+   "type": "predict",
+   "title": "Rounding surprise",
+   "code": "print(round(2.5), round(3.5))\nprint(abs(-7) + max(2, 9, 4))",
+   "options": [
+    "3 4\n16",
+    "2 4\n16",
+    "3 4\n-5",
+    "2 4\n-5"
+   ],
+   "answer": 1,
+   "why": "Python rounds exact halves to the nearest **even** number (banker's rounding), so 2.5 becomes 2 and 3.5 becomes 4. Then abs(-7) is 7 and the max is 9: 7 + 9 = 16.",
+   "say": "Two lines with a surprise hidden in the first one. Think carefully about how Python rounds an exact half. Predict, then run."
+  },
+  {
+   "type": "concept",
+   "title": "Floats are approximations",
+   "body": "Floats are stored in binary, and most decimals, like `0.1`, can't be stored exactly. Tiny errors appear.\n\n- round floats before showing them\n- never expect floats to be exactly equal\n- for money, count **paise** as an int",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Float rupees",
+     "code": "price = 0.1 + 0.2\nprint(price)\n# 0.30000000000000004"
+    },
+    "right": {
+     "title": "Integer paise",
+     "code": "paise = 10 + 20\nprint(paise / 100)\n# 0.3"
+    },
+    "verdict": "Payment apps store money as whole paise (or use the decimal module) to avoid drift."
+   },
+   "say": "Here's the famous trap. Computers store floats in binary, and a number like zero point one can't be stored exactly, just as one third can't be written exactly in decimal. Tiny errors creep in. Payment systems avoid this by storing money as whole paise in an integer, or by using Python's decimal module. For display, round your floats."
+  },
+  {
+   "type": "code",
+   "title": "See the precision trap",
+   "code": "print(0.1 + 0.2)\nprint(round(0.1 + 0.2, 2))\n\ntotal = 0\ntotal += 0.1\ntotal += 0.1\ntotal += 0.1\nprint(total)\n\n# Store money as whole paise instead\npaise = 10 + 10 + 10\nprint(paise, \"paise is\", paise / 100, \"rupees\")",
+   "expect": "0.30000000000000004\n0.3\n0.30000000000000004\n30 paise is 0.3 rupees\n",
+   "explain": [
+    [
+     1,
+     "The famous 0.30000000000000004."
+    ],
+    [
+     2,
+     "Rounding hides the error for display."
+    ],
+    [
+     8,
+     "Three small additions, same drift."
+    ],
+    [
+     11,
+     "Whole numbers are always exact."
+    ],
+    [
+     12,
+     "Convert to rupees only to display."
+    ]
+   ],
+   "say": "There it is: zero point one plus zero point two isn't quite zero point three. Rounding cleans it up for display. Adding ten paise three times as a float drifts in the same way. Imagine that error repeated across a million transactions. Counting whole paise as an integer keeps every sum exact until the moment you display it."
+  },
+  {
+   "type": "concept",
+   "title": "The math module",
+   "body": "Python ships with a toolbox called `math`. **Import** it once at the top, then use its tools with a dot:\n- `math.sqrt(x)`: square root\n- `math.ceil(x)`: round **up**\n- `math.floor(x)`: round **down**\n- `math.pi`: 3.14159...",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "import math",
+     "math.ceil(3.2) → 4",
+     "math.floor(3.9) → 3",
+     "math.sqrt(144) → 12.0",
+     "math.pi → 3.141592653589793"
+    ]
+   },
+   "say": "Python comes with a huge standard library, and math is your first taste. Write import math at the top, then reach in with a dot: math dot sqrt for square roots, ceil to round up, floor to round down, and pi. Ceil is short for ceiling, the whole number above. Floor is the whole number below. You'll explore many more modules on day twenty one."
+  },
+  {
+   "type": "code",
+   "title": "math in real problems",
+   "code": "import math\n\nguests = 43\nseats_per_bus = 12\nbuses = math.ceil(guests / seats_per_bus)\nprint(\"Buses needed:\", buses)\n\nboxes = math.floor(100 / 12)\nprint(\"Full boxes of 12 from 100 laddoos:\", boxes)\n\nradius = 7\narea = math.pi * radius ** 2\nprint(\"Pizza area:\", round(area, 1), \"sq cm\")\n\nprint(\"Side of a 144 sq m plot:\", math.sqrt(144), \"m\")",
+   "expect": "Buses needed: 4\nFull boxes of 12 from 100 laddoos: 8\nPizza area: 153.9 sq cm\nSide of a 144 sq m plot: 12.0 m\n",
+   "explain": [
+    [
+     1,
+     "Load the math module once, at the top."
+    ],
+    [
+     5,
+     "43 / 12 is 3.58...; ceil rounds up to 4."
+    ],
+    [
+     8,
+     "100 / 12 is 8.33...; floor rounds down to 8."
+    ],
+    [
+     12,
+     "Area of a circle: pi times r squared."
+    ],
+    [
+     15,
+     "sqrt always returns a float."
+    ]
+   ],
+   "say": "Rounding direction matters in real life. Forty three guests on twelve seat buses means booking four buses, not three point five eight, so we use ceil. Full boxes of laddoos are floored, because a part box doesn't count. Pi and power give a pizza's area, and square root turns an area back into a side length."
+  },
+  {
+   "type": "exercise",
+   "title": "Video length formatter",
+   "task": "A video is `seconds = 7384` long. Use `//` and `%` to work out `hours`, `minutes` and `secs`, then print them like `2 h 3 min 4 s`.\n\nYour code must work for **any** value of `seconds`.",
+   "starter": "seconds = 7384\n# hours = ...\n# minutes = ...\n# secs = ...\n",
+   "solution": "seconds = 7384\nhours = seconds // 3600\nminutes = seconds % 3600 // 60\nsecs = seconds % 60\nprint(hours, \"h\", minutes, \"min\", secs, \"s\")",
+   "tests": "import re\ndef again(n):\n    ns = {}\n    exec(re.sub(r\"^seconds\\s*=.*$\", f\"seconds = {n}\", __code__, count=1, flags=re.M), ns)\n    return ns[\"hours\"], ns[\"minutes\"], ns[\"secs\"]\nfor name in (\"hours\", \"minutes\", \"secs\"):\n    assert name in globals(), f\"Create a variable called {name}.\"\nassert (hours, minutes, secs) == (2, 3, 4), f\"7384 seconds is 2 h 3 min 4 s, but you got {hours} h {minutes} min {secs} s. An hour has 3600 seconds.\"\nassert again(59) == (0, 0, 59), \"With seconds = 59 you should get 0 h 0 min 59 s. Use // and % on seconds, not fixed numbers.\"\nassert again(3600) == (1, 0, 0), \"Exactly 3600 seconds is 1 h 0 min 0 s. Check the minutes: take what's left after the hours.\"\nassert again(86399) == (23, 59, 59), \"86399 seconds should be 23 h 59 min 59 s.\"\nassert \"2 h 3 min 4 s\" in __out__, \"Print the result like: 2 h 3 min 4 s\"",
+   "hints": [
+    "An hour has 3600 seconds: hours = seconds // 3600",
+    "Leftover seconds after the hours: seconds % 3600. Floor-divide that by 60 for minutes.",
+    "The final seconds are seconds % 60."
+   ],
+   "say": "Every video player shows a length like two hours, three minutes, four seconds. Build that display. Use floor division and remainder to break seconds into hours, minutes and seconds, and make sure it works for any length, not just this one."
+  },
+  {
+   "type": "exercise",
+   "title": "BMI calculator",
+   "task": "Body mass index is weight in kg divided by height in metres **squared**. Using `weight_kg` and `height_m`, store the BMI rounded to **1 decimal** in `bmi`, then print it.\n\nWatch the precedence!",
+   "starter": "weight_kg = 68\nheight_m = 1.72\n# bmi = ...\n",
+   "solution": "weight_kg = 68\nheight_m = 1.72\nbmi = round(weight_kg / height_m ** 2, 1)\nprint(\"BMI:\", bmi)",
+   "tests": "import re\ndef again(w, h):\n    src = re.sub(r\"^weight_kg\\s*=.*$\", f\"weight_kg = {w}\", __code__, count=1, flags=re.M)\n    src = re.sub(r\"^height_m\\s*=.*$\", f\"height_m = {h}\", src, count=1, flags=re.M)\n    ns = {}\n    exec(src, ns)\n    return ns[\"bmi\"]\nassert \"bmi\" in globals(), \"Store the result in a variable called bmi.\"\nassert bmi != round(weight_kg / height_m * height_m, 1), \"weight_kg / height_m * height_m divides, then multiplies back: precedence! Square the height with ** 2 or put it in brackets.\"\nassert bmi == 23.0, f\"For 68 kg and 1.72 m the BMI is 23.0, but you got {bmi}. Divide the weight by the height squared, then round to 1 decimal.\"\nassert again(50, 1.6) == 19.5, \"For 50 kg and 1.6 m the BMI should be 19.5. Use the variables, not fixed numbers.\"\nassert again(95, 1.8) == 29.3, \"For 95 kg and 1.8 m the BMI should be 29.3.\"\nassert \"23.0\" in __out__, \"Print the BMI.\"",
+   "hints": [
+    "Height squared is height_m ** 2, and ** runs before /.",
+    "round(value, 1) keeps one decimal place."
+   ],
+   "say": "Build a BMI calculator: weight in kilograms divided by height in metres, squared. Round it to one decimal place. Careful, this formula is a precedence trap waiting to happen."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 3 complete",
+   "points": [
+    "int is whole, float has a decimal point; / always returns a float",
+    "// and % give the whole part and the remainder: perfect for time and splitting",
+    "Precedence: brackets, then **, then * / // %, then + -; add brackets when in doubt",
+    "round(), abs(), min() and max() are built in; import math for sqrt, ceil, floor and pi",
+    "Floats are approximations: round for display, and keep money in whole paise"
+   ],
+   "say": "Mission three complete. You know int from float, all seven operators, the order Python applies them, and why zero point one plus zero point two misbehaves. Tomorrow we turn to text: strings, indexing and slicing, the tools for names, codes and messages. See you on day four."
+  }
+ ]
+}

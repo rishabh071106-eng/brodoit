@@ -338,3 +338,25 @@ html[data-theme=dark],body[data-theme=aurora]{--b-violet:#A99AFF;--b-violet-soft
 body{max-width:100vw}
 @supports (overflow:clip){html,body{overflow-x:clip}}
 .path,.path *{max-width:100%}
+
+/* v13 lesson feel: staggered slide-in, combo streak, floating XP, a burst every 5 in a row, a shake on a miss */
+.ex>*{animation:exIn .5s cubic-bezier(.16,1,.3,1) both}
+.ex>*:nth-child(2){animation-delay:.06s}.ex>*:nth-child(3){animation-delay:.12s}.ex>*:nth-child(4){animation-delay:.18s}.ex>*:nth-child(5){animation-delay:.24s}
+.ex .opts>*,.ex .chips>*,.ex .bank>*,.ex .match .col>*{animation:exPop .45s cubic-bezier(.34,1.56,.64,1) both}
+.ex .opts>*:nth-child(2),.ex .chips>*:nth-child(2),.ex .bank>*:nth-child(2),.ex .match .col>*:nth-child(2){animation-delay:.05s}
+.ex .opts>*:nth-child(3),.ex .chips>*:nth-child(3),.ex .bank>*:nth-child(3),.ex .match .col>*:nth-child(3){animation-delay:.1s}
+.ex .opts>*:nth-child(4),.ex .chips>*:nth-child(4),.ex .bank>*:nth-child(4),.ex .match .col>*:nth-child(4){animation-delay:.15s}
+.ex .opts>*:nth-child(n+5),.ex .chips>*:nth-child(n+5),.ex .bank>*:nth-child(n+5),.ex .match .col>*:nth-child(n+5){animation-delay:.2s}
+.ex.miss{animation:shake .4s}
+@keyframes exIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes exPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+.combo{display:none;align-items:center;gap:3px;height:30px;padding:0 10px;border-radius:999px;background:linear-gradient(135deg,#FFB627,#FF6B3D);color:#fff;font:800 14px var(--b-sans);box-shadow:0 6px 16px -8px #FF6B3D}
+.combo.on{display:inline-flex}
+.combo.pop{animation:comboPop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes comboPop{0%{transform:scale(.6)}60%{transform:scale(1.2)}100%{transform:none}}
+.xp-pop{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 130px);z-index:80;transform:translateX(-50%);font:800 22px var(--b-sans);color:#F5A524;text-shadow:0 2px 0 rgba(0,0,0,.12);pointer-events:none;animation:xpUp 1.1s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes xpUp{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-70px) scale(1)}}
+.burst{position:fixed;left:50%;top:45%;z-index:85;pointer-events:none}
+.burst i{position:absolute;width:9px;height:9px;border-radius:3px;animation:burst 1s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes burst{from{transform:rotate(var(--a)) translateY(0) scale(1);opacity:1}to{transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){.ex>*,.ex .opts>*,.ex .chips>*,.ex .bank>*,.ex .match .col>*,.xp-pop,.burst i{animation:none}}

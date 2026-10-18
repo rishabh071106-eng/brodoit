@@ -1,0 +1,485 @@
+{
+ "day": 15,
+ "phase": 2,
+ "title": "Nested data and sets",
+ "subtitle": "Real-world data shapes and lightning-fast membership",
+ "minutes": 55,
+ "goal": "Work with nested, JSON-shaped data, group and rank records with dictionaries, and use sets for uniqueness and group comparisons.",
+ "outcomes": [
+  "Read and change lists of dicts and dicts inside dicts",
+  "Group records with setdefault()",
+  "Rank a dictionary by its values with sorted(d, key=d.get)",
+  "Remove duplicates and test membership with sets",
+  "Compare groups with union, intersection and difference"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 15: Nested data and sets",
+   "body": "Real data is **nested**: an API returns a list of users, each a dict, each with a list of skills.\n\nToday you navigate that shape, group and rank records, and use **sets** for unique visitors and mutual friends.",
+   "visual": {
+    "kind": "dict",
+    "name": "students[0]",
+    "pairs": [
+     [
+      "'name'",
+      "'Riya'"
+     ],
+     [
+      "'city'",
+      "'Pune'"
+     ],
+     [
+      "'marks'",
+      "91"
+     ],
+     [
+      "'skills'",
+      "['Python', 'SQL']"
+     ]
+    ]
+   },
+   "say": "Welcome to day fifteen. Real world data is nested. When an app asks a server for users, it gets back a list, where each user is a dictionary with more lists and dictionaries inside. Today you learn to navigate that shape, group and rank records, and use sets to find unique visitors and mutual friends."
+  },
+  {
+   "type": "concept",
+   "title": "A list of dicts is a table",
+   "body": "Each dict is one **row** (a record); each key is a **column**. JSON from an API, a CSV file and a database query all look like this in Python.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "",
+     "'name'",
+     "'city'",
+     "'marks'"
+    ],
+    "rows": [
+     [
+      "students[0]",
+      "'Riya'",
+      "'Pune'",
+      "91"
+     ],
+     [
+      "students[1]",
+      "'Arjun'",
+      "'Delhi'",
+      "78"
+     ],
+     [
+      "students[2]",
+      "'Meera'",
+      "'Pune'",
+      "85"
+     ]
+    ]
+   },
+   "say": "When you put dictionaries inside a list, you get a table. Each dictionary is one row, a single record, and each key is a column. JSON from a web API, a row from a CSV file, and the result of a database query all look exactly like this in Python. Master this shape and you can handle most real data."
+  },
+  {
+   "type": "code",
+   "title": "Student records",
+   "code": "students = [\n    {\"name\": \"Riya\", \"city\": \"Pune\", \"marks\": 91},\n    {\"name\": \"Arjun\", \"city\": \"Delhi\", \"marks\": 78},\n    {\"name\": \"Meera\", \"city\": \"Pune\", \"marks\": 85},\n]\nprint(students[0][\"name\"])\nprint(students[-1][\"marks\"])\ntotal = 0\nfor s in students:\n    print(f\"{s['name']:<6} {s['city']:<6} {s['marks']}\")\n    total += s[\"marks\"]\nprint(\"Class average:\", round(total / len(students), 1))\nstudents.append({\"name\": \"Kabir\", \"city\": \"Goa\", \"marks\": 66})\nprint(len(students), \"students\")",
+   "expect": "Riya\n85\nRiya   Pune   91\nArjun  Delhi  78\nMeera  Pune   85\nClass average: 84.7\n4 students\n",
+   "explain": [
+    [
+     1,
+     "A list of three dicts: three rows."
+    ],
+    [
+     6,
+     "First pick the row, then the column."
+    ],
+    [
+     9,
+     "Each turn, s is one whole record."
+    ],
+    [
+     10,
+     "Single quotes inside the f-string's double quotes."
+    ],
+    [
+     13,
+     "Adding a record is just append()."
+    ]
+   ],
+   "say": "Two steps reach any value: first the row, by index, then the column, by key. The loop hands us one whole record at a time, so we can print a neat table and add up the marks for the class average. Adding a new student is just an append."
+  },
+  {
+   "type": "concept",
+   "title": "Dicts inside dicts",
+   "body": "Values can be lists or dicts too. Chain the lookups from the outside in:\n\n`user[\"address\"][\"city\"]`\n\nIn user, take address; in that, take city.",
+   "visual": {
+    "kind": "dict",
+    "name": "user",
+    "pairs": [
+     [
+      "'name'",
+      "'Riya Sharma'"
+     ],
+     [
+      "'skills'",
+      "['Python', 'SQL']"
+     ],
+     [
+      "'address'",
+      "{'city': 'Pune', 'pin': '411001'}"
+     ]
+    ]
+   },
+   "say": "Values can be lists or dictionaries too, so data can nest several levels deep. To reach a value, chain your lookups from the outside in: user, then address, then city. Read each pair of square brackets as one step deeper into the data."
+  },
+  {
+   "type": "code",
+   "title": "A profile from an API",
+   "code": "user = {\n    \"id\": 4521,\n    \"name\": \"Riya Sharma\",\n    \"skills\": [\"Python\", \"SQL\"],\n    \"address\": {\"city\": \"Pune\", \"pin\": \"411001\"},\n}\nprint(user[\"address\"][\"city\"])\nprint(user[\"skills\"][0])\nuser[\"skills\"].append(\"Git\")\nprint(user[\"skills\"])\nuser[\"address\"][\"pin\"] = \"411038\"\nprint(user[\"address\"])\nprint(user.get(\"phone\", \"no phone on file\"))",
+   "expect": "Pune\nPython\n['Python', 'SQL', 'Git']\n{'city': 'Pune', 'pin': '411038'}\nno phone on file\n",
+   "explain": [
+    [
+     1,
+     "The kind of dict a web API sends back."
+    ],
+    [
+     7,
+     "Two steps: the address dict, then its city."
+    ],
+    [
+     8,
+     "A value that is a list: index it."
+    ],
+    [
+     9,
+     "Change the inner list in place."
+    ],
+    [
+     11,
+     "Change a value inside the inner dict."
+    ],
+    [
+     13,
+     "get() still protects you from missing keys."
+    ]
+   ],
+   "say": "This is the kind of profile a web API sends back. We chain lookups to reach the city and the first skill. Because skills is a real list, we can append to it, and because the address is a real dictionary, we can change the pin code inside it. And get still protects us from fields that are missing."
+  },
+  {
+   "type": "predict",
+   "title": "Navigate the order",
+   "code": "order = {\"id\": 7, \"items\": [{\"name\": \"chai\", \"qty\": 2}, {\"name\": \"samosa\", \"qty\": 3}]}\nprint(order[\"items\"][1][\"qty\"])",
+   "options": [
+    "2",
+    "3",
+    "samosa"
+   ],
+   "answer": 1,
+   "why": "order[\"items\"] is the list, [1] is its second dict (the samosa), and [\"qty\"] is 3.",
+   "say": "Follow the path one step at a time: into the items, then item number one, then its quantity. What gets printed?"
+  },
+  {
+   "type": "concept",
+   "title": "Grouping with setdefault()",
+   "body": "`d.setdefault(key, default)` gives `d[key]`, first storing `default` if the key is missing.\n\n`by_city.setdefault(city, []).append(name)`\n\nOne line: create the group if needed, then add to it.",
+   "visual": {
+    "kind": "dict",
+    "name": "by_city",
+    "pairs": [
+     [
+      "'Pune'",
+      "['Riya', 'Meera']"
+     ],
+     [
+      "'Delhi'",
+      "['Arjun', 'Zoya']"
+     ],
+     [
+      "'Goa'",
+      "['Kabir']"
+     ]
+    ]
+   },
+   "say": "Grouping records is one of the most common data tasks, and set default is made for it. It gives you the value for a key, but if the key is missing, it first stores the default you provide. So set default with a city and an empty list either creates a new group or finds the existing one, and append adds the name."
+  },
+  {
+   "type": "code",
+   "title": "Students grouped by city",
+   "code": "students = [(\"Riya\", \"Pune\"), (\"Arjun\", \"Delhi\"), (\"Meera\", \"Pune\"),\n            (\"Kabir\", \"Goa\"), (\"Zoya\", \"Delhi\")]\nby_city = {}\nfor name, city in students:\n    by_city.setdefault(city, []).append(name)\nprint(by_city)\nfor city, names in by_city.items():\n    print(f\"{city}: {', '.join(names)} ({len(names)})\")",
+   "expect": "{'Pune': ['Riya', 'Meera'], 'Delhi': ['Arjun', 'Zoya'], 'Goa': ['Kabir']}\nPune: Riya, Meera (2)\nDelhi: Arjun, Zoya (2)\nGoa: Kabir (1)\n",
+   "explain": [
+    [
+     1,
+     "A list of (name, city) tuples."
+    ],
+    [
+     5,
+     "A new city gets an empty list; either way, the name is appended."
+    ],
+    [
+     7,
+     "Each value is a list of names."
+    ],
+    [
+     8,
+     "join() the names into one tidy line."
+    ]
+   ],
+   "say": "Here we group students by city. For each student, set default either creates an empty list for a new city or returns the existing list, and append adds the name. The result maps each city to everyone who lives there. The last loop prints a tidy summary with a count for each group."
+  },
+  {
+   "type": "concept",
+   "title": "Sorting a dict by its values",
+   "body": "- `sorted(d)`: the keys, **alphabetically**\n- `sorted(d, key=d.get)`: the keys, ordered by their **values**\n- add `reverse=True` for biggest first",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "sorted(runs)",
+     "code": "['Aarav', 'Dev', 'Ishaan', 'Kabir']\n# keys, alphabetical"
+    },
+    "right": {
+     "title": "sorted(runs, key=runs.get, reverse=True)",
+     "code": "['Ishaan', 'Aarav', 'Kabir', 'Dev']\n# highest runs first"
+    },
+    "verdict": "key=d.get ranks the keys by their values: the leaderboard trick."
+   },
+   "say": "Sorting a dictionary directly sorts its keys alphabetically. To rank by value, use the key trick from day twelve with the dictionary's own get method. Python looks up each key's value and sorts by that. Add reverse equals true and you have a leaderboard."
+  },
+  {
+   "type": "code",
+   "title": "Match leaderboard",
+   "code": "runs = {\"Aarav\": 82, \"Dev\": 45, \"Ishaan\": 104, \"Kabir\": 67}\nprint(sorted(runs))\nranking = sorted(runs, key=runs.get, reverse=True)\nprint(ranking)\nfor pos, player in enumerate(ranking, start=1):\n    print(pos, player, runs[player])\nprint(\"Player of the match:\", ranking[0])\nprint(\"Top two:\", ranking[:2])",
+   "expect": "['Aarav', 'Dev', 'Ishaan', 'Kabir']\n['Ishaan', 'Aarav', 'Kabir', 'Dev']\n1 Ishaan 104\n2 Aarav 82\n3 Kabir 67\n4 Dev 45\nPlayer of the match: Ishaan\nTop two: ['Ishaan', 'Aarav']\n",
+   "explain": [
+    [
+     2,
+     "Keys only, alphabetical."
+    ],
+    [
+     3,
+     "Keys ranked by their values, highest first."
+    ],
+    [
+     5,
+     "enumerate() (Day 12) numbers the ranking."
+    ],
+    [
+     8,
+     "It's a normal list, so slicing works."
+    ]
+   ],
+   "say": "Plain sorted lists the batters alphabetically. With a key of runs dot get and reverse true, we get them ranked by runs. Enumerate numbers the ranking, and since it is a normal list, the first item is the player of the match and a slice gives the top two."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "What does `sorted(prices, key=prices.get)` return?",
+   "options": [
+    "The values, smallest first",
+    "The keys, ordered by their values",
+    "A new dict sorted by value"
+   ],
+   "answer": 1,
+   "why": "sorted() over a dict works on its keys. key=prices.get only changes how they're compared: by their values. The result is a list of keys.",
+   "say": "Quick check. When you sort a dictionary of prices using prices dot get as the key, what comes back?"
+  },
+  {
+   "type": "concept",
+   "title": "Sets: unique items only",
+   "body": "A **set** is an unordered collection with **no duplicates**, and membership checks are lightning fast.\n\n- `{\"riya\", \"amit\"}` or `set(a_list)`\n- `set()` is empty; `{}` is an empty **dict**\n- No order, so no indexes",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "A list keeps every visit",
+     "code": "visits = ['riya', 'amit', 'riya', 'riya']\nlen(visits)     # 4"
+    },
+    "right": {
+     "title": "A set keeps each visitor once",
+     "code": "visitors = set(visits)\nlen(visitors)   # 2"
+    },
+    "verdict": "Need \"how many different\"? Use a set."
+   },
+   "say": "A set is a collection with no duplicates and no order. Pass a list to the set function and every duplicate disappears. Checking whether something is in a set is lightning fast, even with millions of items. Two gotchas: sets have no indexes, and empty curly braces give you an empty dictionary, so an empty set is written with the set function."
+  },
+  {
+   "type": "code",
+   "title": "Unique visitors",
+   "code": "visits = [\"riya\", \"arjun\", \"riya\", \"meera\", \"arjun\", \"riya\"]\nvisitors = set(visits)\nprint(len(visits), \"visits from\", len(visitors), \"people\")\nprint(\"meera\" in visitors)\nvisitors.add(\"kabir\")\nvisitors.add(\"riya\")\nvisitors.discard(\"arjun\")\nprint(sorted(visitors))\nprint(type({}), type(set()))",
+   "expect": "6 visits from 3 people\nTrue\n['kabir', 'meera', 'riya']\n<class 'dict'> <class 'set'>\n",
+   "explain": [
+    [
+     2,
+     "set() drops the duplicates."
+    ],
+    [
+     4,
+     "Membership: very fast."
+    ],
+    [
+     5,
+     "add() puts in a new item..."
+    ],
+    [
+     6,
+     "...and adding an existing one changes nothing."
+    ],
+    [
+     7,
+     "discard() removes an item, and never crashes if it's missing."
+    ],
+    [
+     8,
+     "Sets have no order, so sort them for a stable display."
+    ],
+    [
+     9,
+     "{} is a dict! An empty set is set()."
+    ]
+   ],
+   "say": "Six visits, but only three people. Adding kabir grows the set, while adding riya again changes nothing. Discard removes arjun, and would quietly do nothing if he was not there. Sets have no order, so we sort them before printing to get predictable output. The last line proves that empty curly braces make a dictionary."
+  },
+  {
+   "type": "concept",
+   "title": "Set maths",
+   "body": "Compare whole groups with one operator. Each one gives you a **new set**.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Operation",
+     "Symbol",
+     "Gives you"
+    ],
+    "rows": [
+     [
+      "union",
+      "a | b",
+      "everything in either set"
+     ],
+     [
+      "intersection",
+      "a & b",
+      "only what is in both"
+     ],
+     [
+      "difference",
+      "a - b",
+      "in a but not in b"
+     ],
+     [
+      "symmetric difference",
+      "a ^ b",
+      "in exactly one of them"
+     ]
+    ]
+   },
+   "say": "Sets come with the maths of groups built in. Union, the vertical bar, combines two sets. Intersection, the ampersand, keeps only what both share, like mutual friends. Difference, the minus sign, keeps what is in the first set but not the second. And symmetric difference keeps what is in exactly one of them."
+  },
+  {
+   "type": "code",
+   "title": "Mutual friends",
+   "code": "riya = {\"arjun\", \"meera\", \"kabir\", \"zoya\"}\ndev = {\"meera\", \"zoya\", \"ishaan\"}\nprint(\"Mutual friends:\", sorted(riya & dev))\nprint(\"Everyone:\", sorted(riya | dev))\nprint(\"Only Riya's:\", sorted(riya - dev))\nprint(\"Not shared:\", sorted(riya ^ dev))\nprint(len(riya & dev), \"in common\")",
+   "expect": "Mutual friends: ['meera', 'zoya']\nEveryone: ['arjun', 'ishaan', 'kabir', 'meera', 'zoya']\nOnly Riya's: ['arjun', 'kabir']\nNot shared: ['arjun', 'ishaan', 'kabir']\n2 in common\n",
+   "explain": [
+    [
+     1,
+     "Each person's friends as a set."
+    ],
+    [
+     3,
+     "& keeps names in both sets."
+    ],
+    [
+     4,
+     "| combines them, without duplicates."
+    ],
+    [
+     5,
+     "- keeps Riya's friends that Dev doesn't know: suggestions for Dev."
+    ],
+    [
+     6,
+     "^ keeps names that are in exactly one set."
+    ]
+   ],
+   "say": "Every social app does this. The ampersand finds mutual friends. The bar gives everyone either of them knows, with no duplicates. Riya minus Dev gives the people Riya knows but Dev doesn't, which is exactly a friend suggestion list for Dev. Each result is a set, sorted for display."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the sizes",
+   "code": "a = {1, 2, 3, 4}\nb = {3, 4, 5}\nprint(len(a | b), len(a & b))",
+   "options": [
+    "7 2",
+    "5 2",
+    "5 4"
+   ],
+   "answer": 1,
+   "why": "a | b is {1, 2, 3, 4, 5}: shared items count once, so 5. a & b is {3, 4}, so 2.",
+   "say": "Predict the sizes. How many items are in the union of these two sets, and how many in their intersection?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: tag collector",
+   "task": "This should collect the **unique** tags from a blog's posts, but it crashes. Fix it so `tags` is the set `{'python', 'ai', 'web'}`.",
+   "starter": "posts = [[\"python\", \"ai\"], [\"python\", \"web\"], [\"ai\"]]\ntags = {}\nfor post_tags in posts:\n    for tag in post_tags:\n        tags.add(tag)\nprint(sorted(tags))\n",
+   "solution": "posts = [[\"python\", \"ai\"], [\"python\", \"web\"], [\"ai\"]]\ntags = set()\nfor post_tags in posts:\n    for tag in post_tags:\n        tags.add(tag)\nprint(sorted(tags))",
+   "tests": "assert isinstance(tags, set), f\"tags should be a set, but it is a {type(tags).__name__}. Remember: {{}} makes an empty dict.\"\nassert tags == {\"python\", \"ai\", \"web\"}, f\"tags should hold python, ai and web once each, not {tags}.\"",
+   "hints": [
+    "The error says 'dict' object has no attribute 'add'. Which line made tags a dict?",
+    "Empty curly braces make an empty dict. An empty set is set()."
+   ],
+   "say": "Bug hunt. This blog engine collects the unique tags from all its posts, but it crashes. Read the error closely: it mentions a dictionary, even though we wanted a set. Find where tags was created and fix it."
+  },
+  {
+   "type": "exercise",
+   "title": "Visitors on two days",
+   "task": "Read Monday's and Tuesday's visitors, each one comma-separated line. Print:\n- `Monday: 3 unique`\n- `Both days: arjun, riya` (sorted)\n- `New on Tuesday: kabir` (sorted)\n\nPrint `none` for an empty group.",
+   "stdin": "riya,arjun,riya,meera\narjun,kabir,riya\n",
+   "starter": "monday = set(input(\"Monday visitors: \").split(\",\"))\ntuesday = set(input(\"Tuesday visitors: \").split(\",\"))\n# Use set operators to find who came both days and who is new on Tuesday,\n# then print the three lines\n",
+   "solution": "monday = set(input(\"Monday visitors: \").split(\",\"))\ntuesday = set(input(\"Tuesday visitors: \").split(\",\"))\nboth = monday & tuesday\nnew = tuesday - monday\nprint(f\"Monday: {len(monday)} unique\")\nif both:\n    print(\"Both days:\", \", \".join(sorted(both)))\nelse:\n    print(\"Both days: none\")\nif new:\n    print(\"New on Tuesday:\", \", \".join(sorted(new)))\nelse:\n    print(\"New on Tuesday: none\")",
+   "tests": "out = await run_program(\"riya,arjun,riya,meera\\narjun,kabir,riya\\n\")\nassert \"Monday: 3 unique\" in out, \"Monday had riya, arjun, riya, meera: print Monday: 3 unique, because a set counts riya once.\"\nassert \"Both days: arjun, riya\" in out, \"arjun and riya came both days: print Both days: arjun, riya (sorted, joined with a comma and space).\"\nassert \"New on Tuesday: kabir\" in out, \"Only kabir is new on Tuesday: tuesday - monday.\"\nout = await run_program(\"asha,ben\\ncara,dev\\n\")\nassert \"Both days: none\" in out, \"When nobody came both days, print Both days: none.\"\nassert \"New on Tuesday: cara, dev\" in out, \"For asha,ben then cara,dev everyone on Tuesday is new: New on Tuesday: cara, dev.\"\nout = await run_program(\"zoya,zoya,zoya\\nzoya\\n\")\nassert \"Monday: 1 unique\" in out and \"New on Tuesday: none\" in out, \"zoya three times is 1 unique visitor, and nobody is new on Tuesday.\"",
+   "hints": [
+    "monday & tuesday gives the people who came both days; tuesday - monday gives the new ones.",
+    "\", \".join(sorted(both)) turns a set into a tidy, sorted line.",
+    "An empty set is falsy: if both: ... else: print(\"Both days: none\")"
+   ],
+   "say": "A store owner wants to know about returning customers. Read Monday's and Tuesday's visitor lists, and use set operations to report how many unique people came on Monday, who came on both days, and who was new on Tuesday. When a group is empty, print none instead of a blank."
+  },
+  {
+   "type": "exercise",
+   "title": "Top customers",
+   "task": "The starter reads orders like `Riya 1250` into `orders`, a list of dicts. Total each customer's spend in `spend`, then print customers **highest first** as `Riya: ₹1749`.",
+   "stdin": "Riya 1250\nArjun 499\nRiya 499\nMeera 899\nend\n",
+   "starter": "orders = []\nline = input(\"Order: \")\nwhile line != \"end\":\n    name, amount = line.split()\n    orders.append({\"customer\": name, \"amount\": int(amount)})\n    line = input(\"Order: \")\n\nspend = {}\n# 1. Add up each customer's total in spend\n# 2. Print customers by total spend, highest first, like Riya: ₹1749\n",
+   "solution": "orders = []\nline = input(\"Order: \")\nwhile line != \"end\":\n    name, amount = line.split()\n    orders.append({\"customer\": name, \"amount\": int(amount)})\n    line = input(\"Order: \")\n\nspend = {}\nfor order in orders:\n    name = order[\"customer\"]\n    spend[name] = spend.get(name, 0) + order[\"amount\"]\nfor name in sorted(spend, key=spend.get, reverse=True):\n    print(f\"{name}: ₹{spend[name]}\")",
+   "tests": "out = await run_program(\"Riya 1250\\nArjun 499\\nRiya 499\\nMeera 899\\nend\\n\")\nfor expected in [\"Riya: ₹1749\", \"Meera: ₹899\", \"Arjun: ₹499\"]:\n    assert expected in out, f\"Expected {expected}. Add up every order for the same customer.\"\nassert out.index(\"Riya: ₹1749\") < out.index(\"Meera: ₹899\") < out.index(\"Arjun: ₹499\"), \"Print the biggest spender first: sorted(spend, key=spend.get, reverse=True).\"\nout = await run_program(\"Kabir 100\\nKabir 250\\nKabir 50\\nend\\n\")\nassert \"Kabir: ₹400\" in out, \"One customer with three orders (100 + 250 + 50) should total ₹400.\"\nout = await run_program(\"end\\n\")\nassert \"₹\" not in out, \"With no orders at all, print nothing.\"",
+   "hints": [
+    "Use the counting pattern, but add order[\"amount\"] instead of 1.",
+    "spend[name] = spend.get(name, 0) + order[\"amount\"]",
+    "for name in sorted(spend, key=spend.get, reverse=True):"
+   ],
+   "say": "Businesses always want to know their top customers. The starter reads orders into a list of dictionaries, exactly like data from an API. Add up each customer's total with the counting pattern, then print everyone ranked from the biggest spender down. The checker also tries one loyal customer and a day with no orders."
+  },
+  {
+   "type": "quiz",
+   "title": "Pick the right structure",
+   "q": "Your sign-up page checks, thousands of times a second, whether a username is already taken. What should hold the usernames?",
+   "options": [
+    "A list",
+    "A set",
+    "A tuple"
+   ],
+   "answer": 1,
+   "why": "Set membership is near-instant however big the set gets, while a list checks its items one by one. You'll measure the difference on Day 41.",
+   "say": "Choosing the right data structure is a real engineering skill. Your sign up page checks thousands of times a second whether a username is taken. What should hold the usernames?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 15 complete",
+   "points": [
+    "A list of dicts is a table of records: rows[i][\"column\"]",
+    "Chain lookups to reach nested data: user[\"address\"][\"city\"]",
+    "setdefault(key, []).append(x) groups records in one line",
+    "sorted(d, key=d.get, reverse=True) ranks keys by their values",
+    "Sets hold unique items: add, discard, in, and | & - ^ for group maths"
+   ],
+   "say": "Mission fifteen complete. You can navigate nested data shaped like real API responses, group records with set default, rank a dictionary by its values, and use sets for unique items and group maths. Tomorrow you learn comprehensions, a Pythonic way to transform and filter all this data in one readable line. See you on day sixteen."
+  }
+ ]
+}

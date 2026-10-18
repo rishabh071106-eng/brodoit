@@ -1,0 +1,525 @@
+{
+ "day": 31,
+ "phase": 4,
+ "title": "The standard library's power tools",
+ "subtitle": "collections and itertools: batteries included",
+ "minutes": 55,
+ "goal": "Replace hand-written loops with collections and itertools: count, group, queue, combine and accumulate data like a senior developer.",
+ "outcomes": [
+  "Count and rank anything with Counter and most_common",
+  "Group records with defaultdict and name them with namedtuple",
+  "Build queues and sliding windows with deque",
+  "Combine, pair up, group and accumulate sequences with itertools"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 31: Power tools",
+   "body": "Welcome to **Phase 4: Deep space**. Ten days of the habits that separate hobby code from professional code.\n\nPython ships with 200+ modules: *batteries included*. Today: `collections` and `itertools`, the tools seniors reach for **before** writing a loop.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Day 14 you",
+     "code": "counts = {}\nfor w in words:\n    counts[w] = counts.get(w, 0) + 1"
+    },
+    "right": {
+     "title": "Day 31 you",
+     "code": "from collections import Counter\ncounts = Counter(words)"
+    },
+    "verdict": "Same result in one line, and it comes with most_common() for free."
+   },
+   "say": "Welcome to phase four, deep space. For the next ten days we learn the habits that make code professional. Python ships with hundreds of ready-made modules, which is why people say it comes with batteries included. Today we open two of the best toolboxes, collections and itertools, the tools senior developers reach for before they write a loop."
+  },
+  {
+   "type": "concept",
+   "title": "Batteries included",
+   "body": "You already used `math`, `random`, `json` and `csv`. Two more modules save you hundreds of lines:\n\n- `collections`: smarter containers\n- `itertools`: fast, lazy ways to loop\n\nThey are optimised and tested by millions of developers: faster and safer than your own version.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Module",
+     "Tool",
+     "Use it for"
+    ],
+    "rows": [
+     [
+      "collections",
+      "Counter",
+      "counting and top-N"
+     ],
+     [
+      "collections",
+      "defaultdict",
+      "grouping without key checks"
+     ],
+     [
+      "collections",
+      "deque",
+      "queues, sliding windows"
+     ],
+     [
+      "collections",
+      "namedtuple",
+      "small read-only records"
+     ],
+     [
+      "itertools",
+      "chain, product, combinations",
+      "combining sequences"
+     ],
+     [
+      "itertools",
+      "groupby, accumulate",
+      "grouping runs, running totals"
+     ]
+    ]
+   },
+   "say": "You have already met math, random, json and csv. Today we add two more. Collections gives you smarter containers than plain lists and dicts. Itertools gives you fast, lazy ways to loop. Both are heavily optimised, used by millions of developers, and far less likely to have bugs than code you write at midnight."
+  },
+  {
+   "type": "code",
+   "title": "Counter: count anything",
+   "body": "`Counter` is a dict subclass: keys are items, values are counts. Missing keys count as **0**.",
+   "code": "from collections import Counter\n\nreview = \"chai was great chai was hot samosa was cold chai again\"\ncounts = Counter(review.split())\n\nprint(counts[\"chai\"])\nprint(counts[\"coffee\"])\nprint(counts.most_common(2))",
+   "expect": "3\n0\n[('chai', 3), ('was', 3)]\n",
+   "explain": [
+    [
+     1,
+     "Import just the class we need."
+    ],
+    [
+     4,
+     "Counter takes any iterable: here, a list of words."
+    ],
+    [
+     6,
+     "Reading a count is a normal dict lookup."
+    ],
+    [
+     7,
+     "A missing key gives 0, not a KeyError."
+    ],
+    [
+     8,
+     "most_common(n): the top n as (item, count) pairs, highest first."
+    ]
+   ],
+   "say": "Give Counter any iterable and it counts every item. Asking for a missing word gives zero instead of a KeyError. And most common two returns the top two as pairs of word and count. When counts tie, the item seen first comes first. This is how trending hashtags and top products are computed."
+  },
+  {
+   "type": "code",
+   "title": "Counter maths: stock left",
+   "code": "from collections import Counter\n\nstock = Counter(chai=120, samosa=40, vada=25)\nsold = Counter(chai=95, samosa=40, vada=10)\n\nleft = stock - sold\nprint(left)\n\nstock.update(chai=50)\nprint(stock[\"chai\"])\nprint(sum(left.values()))",
+   "expect": "Counter({'chai': 25, 'vada': 15})\n170\n40\n",
+   "explain": [
+    [
+     3,
+     "Build a Counter from keyword arguments."
+    ],
+    [
+     6,
+     "Subtraction keeps only positive counts: samosa hit 0, so it is dropped."
+    ],
+    [
+     9,
+     "update() adds to the counts, it does not overwrite them."
+    ],
+    [
+     11,
+     "Values are plain ints, so sum() works."
+    ]
+   ],
+   "say": "Counters can be added and subtracted like inventories. Stock minus sold gives what is left, and notice that samosa vanished: subtraction drops anything that reaches zero or below. Update adds to existing counts instead of replacing them, so chai goes from one hundred and twenty to one hundred and seventy."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the vote",
+   "code": "from collections import Counter\n\nvotes = Counter([\"UPI\", \"Card\", \"UPI\", \"Cash\", \"UPI\", \"Card\"])\nprint(votes.most_common(1)[0][0], votes[\"Wallet\"])",
+   "options": [
+    "UPI 3",
+    "UPI 0",
+    "KeyError: 'Wallet'"
+   ],
+   "answer": 1,
+   "why": "most_common(1) is a list with one pair, ('UPI', 3), so [0][0] is 'UPI'. A Counter returns 0 for a missing key instead of raising KeyError.",
+   "say": "A quick payment survey. Which method won, and how many votes did Wallet get? Remember how Counter treats a key it has never seen. Predict, then run."
+  },
+  {
+   "type": "concept",
+   "title": "defaultdict: no more key checks",
+   "body": "A `defaultdict` calls a **factory** the first time you touch a missing key.\n\n- `defaultdict(list)`: missing key starts as `[]`\n- `defaultdict(int)`: missing key starts as `0`\n- `defaultdict(set)`: missing key starts as `set()`\n\nNo more `if key not in d:` before every append.",
+   "visual": {
+    "kind": "dict",
+    "name": "by_city",
+    "pairs": [
+     [
+      "'Pune'",
+      "[450, 300]"
+     ],
+     [
+      "'Delhi'",
+      "[1200, 650]"
+     ],
+     [
+      "'Chennai'",
+      "[800]"
+     ]
+    ]
+   },
+   "say": "A default dict is a dictionary that fills in its own blanks. You give it a factory, like list or int. The first time you use a missing key, it calls the factory and stores the result. So grouping orders by city is just append, with no checking whether the city exists yet."
+  },
+  {
+   "type": "code",
+   "title": "Group orders by city",
+   "code": "from collections import defaultdict\n\norders = [(\"Pune\", 450), (\"Delhi\", 1200), (\"Pune\", 300),\n          (\"Chennai\", 800), (\"Delhi\", 650)]\n\nby_city = defaultdict(list)\nrevenue = defaultdict(int)\nfor city, amount in orders:\n    by_city[city].append(amount)\n    revenue[city] += amount\n\nprint(dict(by_city))\nprint(revenue[\"Delhi\"], revenue[\"Mumbai\"])\nprint(len(revenue))",
+   "expect": "{'Pune': [450, 300], 'Delhi': [1200, 650], 'Chennai': [800]}\n1850 0\n4\n",
+   "explain": [
+    [
+     6,
+     "Missing keys start as an empty list."
+    ],
+    [
+     7,
+     "Missing keys start as 0."
+    ],
+    [
+     9,
+     "No 'if city not in by_city' needed."
+    ],
+    [
+     10,
+     "+= works on a brand new key, because it starts at 0."
+    ],
+    [
+     12,
+     "Wrap in dict() for a clean printout."
+    ],
+    [
+     13,
+     "Reading 'Mumbai' gives 0, and silently adds it."
+    ],
+    [
+     14,
+     "So there are now 4 keys, not 3."
+    ]
+   ],
+   "say": "Two default dicts do two jobs in one loop: one groups the amounts, one adds up revenue. Now look closely at the last line. We only had three cities, but the length is four. Simply reading Mumbai created it with a value of zero. That surprise catches a lot of developers."
+  },
+  {
+   "type": "quiz",
+   "title": "The defaultdict catch",
+   "q": "After d = defaultdict(int) and print(d['x']), what is len(d)?",
+   "options": [
+    "0",
+    "1",
+    "It raises KeyError"
+   ],
+   "answer": 1,
+   "why": "Reading a missing key calls the factory and stores the result, so 'x' now exists with value 0. To look without creating, use `d.get('x')` or `'x' in d`.",
+   "say": "Quick check on the trap we just saw. If you only read a missing key from a default dict, how many keys does it have afterwards?"
+  },
+  {
+   "type": "concept",
+   "title": "namedtuple: tuples with names",
+   "body": "`namedtuple` builds a tiny, **immutable** record class. Fields have names, but it is still a tuple: you can index it and unpack it.\n\n`s.runs` reads far better than `s[1]`. You'll meet its big brother, `@dataclass`, on Day 34.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "s.player",
+      "'Kohli'",
+      "str"
+     ],
+     [
+      "s.runs",
+      "101",
+      "int"
+     ],
+     [
+      "s.balls",
+      "88",
+      "int"
+     ],
+     [
+      "s[1]",
+      "101",
+      "int"
+     ]
+    ]
+   },
+   "say": "A named tuple is a tuple whose positions have names. Instead of remembering that position one means runs, you write s dot runs. It is immutable and memory light, and it still behaves like a tuple, so unpacking and indexing work. On day thirty four you will meet its bigger, more flexible brother, the data class."
+  },
+  {
+   "type": "code",
+   "title": "Cricket scorecard records",
+   "code": "from collections import namedtuple\n\nScore = namedtuple(\"Score\", [\"player\", \"runs\", \"balls\"])\ninnings = [Score(\"Rohit\", 83, 61), Score(\"Gill\", 45, 40),\n           Score(\"Kohli\", 101, 88)]\n\nbest = max(innings, key=lambda s: s.runs)\nprint(best)\nprint(best.player, f\"{best.runs / best.balls * 100:.1f}\")\n\nname, runs, balls = innings[1]\nprint(name, runs)",
+   "expect": "Score(player='Kohli', runs=101, balls=88)\nKohli 114.8\nGill 45\n",
+   "explain": [
+    [
+     3,
+     "Create the record type: a name and its field names."
+    ],
+    [
+     4,
+     "Build records by position, like a function call."
+    ],
+    [
+     7,
+     "Read fields by name inside the key function."
+    ],
+    [
+     8,
+     "A readable repr, for free."
+    ],
+    [
+     9,
+     "Strike rate: runs per 100 balls."
+    ],
+    [
+     11,
+     "Still a tuple, so unpacking works."
+    ]
+   ],
+   "say": "We define a Score record with three fields, then build an innings. Max with a key picks the highest scorer, and the printout even shows the field names, which makes debugging pleasant. Strike rate is runs divided by balls times one hundred. And because it is still a tuple, unpacking into three names just works."
+  },
+  {
+   "type": "concept",
+   "title": "deque: a fast double-ended queue",
+   "body": "`deque` (say *deck*) adds and removes at **both ends** in constant time. `list.pop(0)` has to shift every item; `deque.popleft()` doesn't.\n\nWith `maxlen=3` it keeps only the newest 3 items: a perfect **sliding window**.",
+   "visual": {
+    "kind": "list",
+    "name": "window = deque(maxlen=3)",
+    "items": [
+     "104",
+     "98",
+     "110"
+    ],
+    "mark": [
+     2
+    ]
+   },
+   "say": "A deque, pronounced deck, is a double ended queue. Adding or removing at either end is instant, while popping the front of a list makes Python shift every other item. Give it a max length and it becomes a sliding window: when a new item arrives at one end, the oldest falls off the other."
+  },
+  {
+   "type": "code",
+   "title": "A sliding window: moving average",
+   "code": "from collections import deque\n\nprices = [101, 104, 98, 110, 107, 115]\nwindow = deque(maxlen=3)\n\nfor p in prices:\n    window.append(p)\n    if len(window) == 3:\n        avg = sum(window) / 3\n        print(list(window), f\"{avg:.1f}\")",
+   "expect": "[101, 104, 98] 101.0\n[104, 98, 110] 104.0\n[98, 110, 107] 105.0\n[110, 107, 115] 110.7\n",
+   "explain": [
+    [
+     4,
+     "maxlen=3: the deque never holds more than 3 items."
+    ],
+    [
+     7,
+     "append adds on the right; when full, the leftmost item is dropped."
+    ],
+    [
+     8,
+     "Only report once the window is full."
+    ],
+    [
+     9,
+     "Average of the last 3 prices."
+    ]
+   ],
+   "say": "Here is a moving average, the line every stock chart and fitness app draws. Each new price goes in on the right. Once the window is full, the oldest price drops off the left automatically. Watch it run and you will see the window slide one step at a time."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the history",
+   "code": "from collections import deque\n\nrecent = deque(maxlen=3)\nfor page in [\"home\", \"cart\", \"pay\", \"done\"]:\n    recent.append(page)\nprint(recent.popleft(), len(recent))",
+   "options": [
+    "home 3",
+    "cart 2",
+    "home 2",
+    "done 2"
+   ],
+   "answer": 1,
+   "why": "With maxlen=3, adding 'done' pushed 'home' out. The deque holds cart, pay, done. popleft() removes and returns 'cart', leaving 2 items.",
+   "say": "A browser keeps the last three pages you visited. After four visits, what does pop left return, and how many pages remain?"
+  },
+  {
+   "type": "concept",
+   "title": "itertools: loops you don't have to write",
+   "body": "Every `itertools` function returns a **lazy iterator** (Day 27), so wrap it in `list()` to see it.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Function",
+     "Gives you",
+     "Example result"
+    ],
+    "rows": [
+     [
+      "chain('AB', 'CD')",
+      "one long sequence",
+      "A B C D"
+     ],
+     [
+      "combinations('ABC', 2)",
+      "groups, order ignored",
+      "AB AC BC"
+     ],
+     [
+      "permutations('ABC', 2)",
+      "arrangements, order matters",
+      "AB AC BA BC CA CB"
+     ],
+     [
+      "product('AB', '12')",
+      "every pairing",
+      "A1 A2 B1 B2"
+     ],
+     [
+      "accumulate([1, 2, 3])",
+      "running totals",
+      "1 3 6"
+     ],
+     [
+      "groupby('AAB')",
+      "runs of equal items",
+      "A: AA, B: B"
+     ]
+    ]
+   },
+   "say": "Itertools is a collection of loop building blocks. Each function returns a lazy iterator, just like the generators from day twenty seven, so nothing is computed until you ask. Wrap the result in list to see it. Combinations pick groups where order does not matter. Permutations care about order. Product gives every pairing."
+  },
+  {
+   "type": "code",
+   "title": "Teams, fixtures and variants",
+   "code": "from itertools import combinations, permutations, product\n\nplayers = [\"Asha\", \"Ravi\", \"Meera\"]\nprint(list(combinations(players, 2)))\nprint(len(list(permutations(players, 2))))\n\nsizes = [\"S\", \"M\"]\ncolours = [\"red\", \"black\"]\nfor size, colour in product(sizes, colours):\n    print(size + \"-\" + colour, end=\" \")\nprint()",
+   "expect": "[('Asha', 'Ravi'), ('Asha', 'Meera'), ('Ravi', 'Meera')]\n6\nS-red S-black M-red M-black\n",
+   "explain": [
+    [
+     4,
+     "Pairs where order does not matter: 3 of them."
+    ],
+    [
+     5,
+     "Ordered pairs (captain, vice-captain): 6."
+    ],
+    [
+     9,
+     "product = a nested loop in one line."
+    ],
+    [
+     10,
+     "Each variant on the same line."
+    ],
+    [
+     11,
+     "Finish the line."
+    ]
+   ],
+   "say": "Three players give three possible pairs for a doubles match, because Asha with Ravi is the same pair as Ravi with Asha. Permutations count order, like choosing a captain and a vice captain, so there are six. And product builds every size and colour combination, exactly how an online shop generates its product variants."
+  },
+  {
+   "type": "code",
+   "title": "chain and accumulate: a wallet",
+   "code": "from itertools import accumulate, chain\n\nweek1 = [500, -120, -80]\nweek2 = [1000, -450]\n\ntxns = list(chain(week1, week2))\nprint(txns)\nprint(list(accumulate(txns)))\nprint(list(accumulate(txns, initial=2000)))",
+   "expect": "[500, -120, -80, 1000, -450]\n[500, 380, 300, 1300, 850]\n[2000, 2500, 2380, 2300, 3300, 2850]\n",
+   "explain": [
+    [
+     6,
+     "chain() walks week1, then week2, as one stream."
+    ],
+    [
+     8,
+     "Running total after each transaction."
+    ],
+    [
+     9,
+     "initial= sets the starting balance."
+    ]
+   ],
+   "say": "Chain glues sequences together without building a new list in between. Accumulate gives running totals, which is exactly a wallet's balance after each transaction. Pass initial to start from an opening balance of two thousand rupees."
+  },
+  {
+   "type": "code",
+   "title": "groupby: sort first!",
+   "body": "`groupby` only groups **neighbouring** items. Always sort by the same key first.",
+   "code": "from itertools import groupby\n\nlogs = [(\"ERROR\", \"db down\"), (\"INFO\", \"retry\"), (\"ERROR\", \"timeout\"),\n        (\"INFO\", \"ok\"), (\"WARN\", \"slow\")]\n\nlogs.sort(key=lambda row: row[0])\nfor level, rows in groupby(logs, key=lambda row: row[0]):\n    messages = [msg for _, msg in rows]\n    print(level, messages)",
+   "expect": "ERROR ['db down', 'timeout']\nINFO ['retry', 'ok']\nWARN ['slow']\n",
+   "explain": [
+    [
+     6,
+     "Sort by level so equal levels sit next to each other."
+    ],
+    [
+     7,
+     "Each step gives a key and an iterator of its rows."
+    ],
+    [
+     8,
+     "Use the rows straight away: they are consumed once."
+    ]
+   ],
+   "say": "Groupby collects runs of neighbouring items that share a key. The key word is neighbouring. If the list is not sorted by the same key first, the same level shows up in several groups. So the professional pattern is always the same: sort by the key, then group by the key."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: Pune counted twice",
+   "task": "`city_totals` should return each city's total sales, but Pune and Delhi come out too low. Run it, spot why `groupby` misbehaves, and fix it so the totals are right.",
+   "starter": "from itertools import groupby\n\nsales = [(\"Pune\", 300), (\"Delhi\", 500), (\"Pune\", 200),\n         (\"Delhi\", 100), (\"Agra\", 50)]\n\ndef city_totals(rows):\n    totals = {}\n    for city, group in groupby(rows, key=lambda r: r[0]):\n        totals[city] = sum(amount for _, amount in group)\n    return totals\n\nprint(city_totals(sales))\n",
+   "solution": "from itertools import groupby\n\nsales = [(\"Pune\", 300), (\"Delhi\", 500), (\"Pune\", 200),\n         (\"Delhi\", 100), (\"Agra\", 50)]\n\ndef city_totals(rows):\n    totals = {}\n    ordered = sorted(rows, key=lambda r: r[0])\n    for city, group in groupby(ordered, key=lambda r: r[0]):\n        totals[city] = sum(amount for _, amount in group)\n    return totals\n\nprint(city_totals(sales))\n",
+   "tests": "sales_check = [(\"Pune\", 300), (\"Delhi\", 500), (\"Pune\", 200), (\"Delhi\", 100), (\"Agra\", 50)]\ngot = city_totals(sales_check)\nassert got == {\"Pune\": 500, \"Delhi\": 600, \"Agra\": 50}, f\"Expected Pune 500, Delhi 600, Agra 50 but got {got}. groupby only joins neighbours: sort the rows by city first.\"\nassert city_totals([]) == {}, \"With no sales, city_totals should return an empty dict.\"\nassert city_totals([(\"Goa\", 10), (\"Goa\", 5)]) == {\"Goa\": 15}, \"Two sales for one city should add up: Goa 10 + 5 = 15.\"",
+   "hints": [
+    "Each new run of Pune starts a fresh group, and the second group overwrites the first in the dict.",
+    "Sort before grouping: ordered = sorted(rows, key=lambda r: r[0])"
+   ],
+   "say": "Bug hunt. This report should give each city its total sales, but Pune and Delhi come out too low. Run it and think about what groupby does when the same city appears in two separate places. Then fix it."
+  },
+  {
+   "type": "exercise",
+   "title": "Top words in customer reviews",
+   "task": "Write `top_words(text, k)` that returns the `k` most common words as `(word, count)` pairs.\n\n- ignore case: `Chai` and `chai` are the same\n- strip `.,!?` from each word\n- skip anything that ends up empty\n\nUse `Counter`.",
+   "starter": "from collections import Counter\n\ndef top_words(text, k):\n    # your code here\n    return []\n\nprint(top_words(\"Chai, chai! Coffee? chai and coffee.\", 2))\n",
+   "solution": "from collections import Counter\n\ndef top_words(text, k):\n    words = (w.strip(\".,!?\").lower() for w in text.split())\n    counts = Counter(w for w in words if w)\n    return counts.most_common(k)\n\nprint(top_words(\"Chai, chai! Coffee? chai and coffee.\", 2))\n",
+   "tests": "r1 = top_words(\"Chai, chai! Coffee? chai and coffee.\", 2)\nassert r1 == [(\"chai\", 3), (\"coffee\", 2)], f\"For the sample text expected [('chai', 3), ('coffee', 2)], got {r1}. Lower-case each word and strip .,!? first.\"\nassert top_words(\"\", 3) == [], \"Empty text has no words, so return an empty list.\"\nr3 = top_words(\"Fast app. FAST delivery! fast\", 1)\nassert r3 == [(\"fast\", 3)], f\"'Fast', 'FAST' and 'fast' are one word: expected [('fast', 3)], got {r3}.\"\nr4 = top_words(\"ok ok ! ?\", 5)\nassert r4 == [(\"ok\", 2)], f\"Punctuation on its own becomes empty after strip: skip it. Expected [('ok', 2)], got {r4}.\"\nassert \"Counter\" in __code__, \"Use collections.Counter: counting is exactly its job.\"",
+   "hints": [
+    "Clean each word with w.strip('.,!?').lower() and skip empty strings.",
+    "Counter(clean_words).most_common(k) returns exactly the list of pairs you need."
+   ],
+   "say": "Your turn. Product teams love knowing what customers talk about. Write top words, which returns the k most common words in some review text. Ignore case, strip punctuation from each word, skip anything empty, and let Counter do the counting."
+  },
+  {
+   "type": "exercise",
+   "title": "Smooth noisy response times",
+   "task": "Server response times jump around. Write `moving_average(times, k)` that returns the average of every **full** window of `k` readings, each rounded to 1 decimal place. Use a `deque` with `maxlen`.\n\nFewer than `k` readings? Return `[]`.",
+   "starter": "from collections import deque\n\ndef moving_average(times, k):\n    # your code here\n    return []\n\nprint(moving_average([120, 80, 100, 300, 90], 3))\n",
+   "solution": "from collections import deque\n\ndef moving_average(times, k):\n    window = deque(maxlen=k)\n    averages = []\n    for t in times:\n        window.append(t)\n        if len(window) == k:\n            averages.append(round(sum(window) / k, 1))\n    return averages\n\nprint(moving_average([120, 80, 100, 300, 90], 3))\n",
+   "tests": "r1 = moving_average([120, 80, 100, 300, 90], 3)\nassert r1 == [100.0, 160.0, 163.3], f\"Windows are [120, 80, 100], [80, 100, 300], [100, 300, 90], so expected [100.0, 160.0, 163.3], got {r1}.\"\nassert moving_average([50, 60], 3) == [], \"With fewer readings than k there is no full window: return [].\"\nr3 = moving_average([10, 20, 30], 1)\nassert r3 == [10.0, 20.0, 30.0], f\"With k = 1 every reading is its own window: expected [10.0, 20.0, 30.0], got {r3}.\"\nassert \"deque\" in __code__, \"Use collections.deque with maxlen=k for the window.\"",
+   "hints": [
+    "window = deque(maxlen=k) keeps only the newest k readings.",
+    "After each append, if len(window) == k, add round(sum(window) / k, 1) to your result list."
+   ],
+   "say": "Monitoring dashboards smooth out noisy numbers with a moving average. Write moving average using a deque with a max length. Return the rounded average of every full window, and an empty list if there are not enough readings yet."
+  },
+  {
+   "type": "quiz",
+   "title": "Pick the right tool",
+   "q": "Five teams play a round-robin: every team plays every other team once. Which call lists all the fixtures?",
+   "options": [
+    "permutations(teams, 2)",
+    "combinations(teams, 2)",
+    "product(teams, teams)"
+   ],
+   "answer": 1,
+   "why": "India vs Australia is the same match as Australia vs India, so order doesn't matter: combinations. permutations would schedule each match twice, and product would even pair a team with itself.",
+   "say": "Last check. Five teams, and each team plays every other team exactly once. Which itertools function gives you the fixture list?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 31 complete",
+   "points": [
+    "Counter counts anything; most_common(n) gives the top n; missing keys count as 0",
+    "defaultdict fills missing keys from a factory, but even reading a key creates it",
+    "namedtuple gives tuples readable field names; deque gives fast queues and sliding windows",
+    "itertools: chain, combinations, permutations, product, accumulate, and groupby after sorting",
+    "Reach for the standard library before writing your own loop"
+   ],
+   "say": "Mission thirty one complete. You can count with Counter, group with default dict, name records with named tuple, slide windows with deque, and combine sequences with itertools. Tomorrow we tackle one of the trickiest topics in all of programming: dates, times and time zones. See you on day thirty two."
+  }
+ ]
+}

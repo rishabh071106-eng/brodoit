@@ -1,0 +1,491 @@
+{
+ "day": 24,
+ "phase": 3,
+ "title": "OOP I: classes and objects",
+ "subtitle": "Design your own types",
+ "minutes": 55,
+ "goal": "Design and write classes with __init__, attributes and methods, and use objects that enforce their own rules.",
+ "outcomes": [
+  "Explain the difference between a class and an object",
+  "Write __init__ and explain exactly what self is",
+  "Add methods that read and update attributes",
+  "Raise errors from methods to protect an object's rules",
+  "Make objects work together, like a transfer between accounts"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 24: Design your own types",
+   "body": "You have used `str`, `list` and `dict` for weeks. Each is a **class**: a type that bundles data with the actions that make sense for it.\n\nToday you write your own classes, like `Player` and `BankAccount`. This is **object-oriented programming**, the way Django, games and most big apps are organised.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Spot a thing with data and actions",
+     "Write a class: the blueprint",
+     "Create objects from it",
+     "Call their methods"
+    ]
+   },
+   "say": "For weeks you have used strings, lists and dictionaries. Each one is a class, a type that bundles some data together with the actions that make sense for it. Today you create your own classes, like a cricket player and a bank account. This is object oriented programming, and it is how Django, game engines and most large applications are organised."
+  },
+  {
+   "type": "concept",
+   "title": "Why objects?",
+   "body": "With dicts and loose functions, nothing stops code from setting a balance to -500, and the functions that belong to the data live somewhere else.\n\nA class keeps **data** (attributes) and **behaviour** (methods) together, and the object enforces its own rules.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Dict + loose functions",
+     "code": "acct = {\"owner\": \"Riya\", \"balance\": 1000}\n\ndef withdraw(acct, amount): ...\n\nacct[\"balance\"] = -500  # nothing stops this"
+    },
+    "right": {
+     "title": "A class",
+     "code": "acct = BankAccount(\"Riya\", 1000)\nacct.withdraw(300)\nacct.deposit(500)\n# rules live inside the class"
+    },
+    "verdict": "Data and the code that guards it travel together."
+   },
+   "say": "Imagine a bank account stored as a dictionary, with deposit and withdraw as separate functions. Nothing stops some other part of the program from setting the balance to minus five hundred directly, and the functions that belong to the data live somewhere else. A class keeps the data, called attributes, and the behaviour, called methods, together, and the object can enforce its own rules."
+  },
+  {
+   "type": "code",
+   "title": "You already use objects",
+   "body": "Every value in Python is an **object** made from a class. Methods like `.title()` and `.append()` are behaviour that belongs to that class.",
+   "code": "name = \"riya sharma\"\nprint(type(name))\nprint(name.title())\n\nscores = [3, 1, 2]\nscores.append(5)\nprint(type(scores), scores)\n\nprint(isinstance(scores, list))\nprint(isinstance(name, list))",
+   "expect": "<class 'str'>\nRiya Sharma\n<class 'list'> [3, 1, 2, 5]\nTrue\nFalse\n",
+   "explain": [
+    [
+     2,
+     "name is an object of class str."
+    ],
+    [
+     3,
+     "title is a method: an action that str objects know how to do."
+    ],
+    [
+     6,
+     "append is a method of list objects; it changes this list."
+    ],
+    [
+     9,
+     "isinstance asks: is this object made from that class?"
+    ]
+   ],
+   "say": "Every value you have used is an object, made from a class. The text riya sharma is an object of class str, and title is one of its methods. The scores list is an object of class list, and append is its method. Isinstance asks whether an object was made from a particular class."
+  },
+  {
+   "type": "concept",
+   "title": "Class vs object",
+   "body": "A **class** is a blueprint. An **object** (or **instance**) is one thing built from it. One class, as many objects as you like, each with its **own** data.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Class (blueprint)",
+     "Objects (instances)"
+    ],
+    "rows": [
+     [
+      "str",
+      "\"hi\", \"chai\", \"Pune\""
+     ],
+     [
+      "list",
+      "[1, 2], [\"pen\", \"ink\"]"
+     ],
+     [
+      "Player",
+      "riya, kabir, meera"
+     ],
+     [
+      "BankAccount",
+      "Riya's account, Arjun's account"
+     ]
+    ]
+   },
+   "say": "A class is a blueprint, and an object, also called an instance, is one thing built from that blueprint. The str class has made millions of string objects. In the same way, one Player class can make a player object for every person in the squad, and each object keeps its own data."
+  },
+  {
+   "type": "code",
+   "title": "Your first class",
+   "body": "Class names use **CapitalWords**. `__init__` sets up each new object. Tap **Watch it run** to see the objects being built.",
+   "code": "class Player:\n    def __init__(self, name, team):\n        self.name = name\n        self.team = team\n        self.runs = 0\n\n\nriya = Player(\"Riya\", \"Mumbai\")\nkabir = Player(\"Kabir\", \"Chennai\")\n\nprint(riya.name, riya.team, riya.runs)\nprint(kabir.name, kabir.team, kabir.runs)\nprint(type(riya))\nprint(riya is kabir)",
+   "expect": "Riya Mumbai 0\nKabir Chennai 0\n<class '__main__.Player'>\nFalse\n",
+   "explain": [
+    [
+     1,
+     "class Player: starts the blueprint."
+    ],
+    [
+     2,
+     "__init__ runs automatically every time a new Player is created."
+    ],
+    [
+     3,
+     "self.name = name stores the value on this particular object."
+    ],
+    [
+     5,
+     "Every new player starts with 0 runs."
+    ],
+    [
+     8,
+     "Calling the class like a function creates a new object."
+    ],
+    [
+     13,
+     "The type is our own class, defined in the main program."
+    ],
+    [
+     14,
+     "Two separate objects."
+    ]
+   ],
+   "say": "We write class Player, with a capital P by convention. Inside is a special method called dunder init, which runs automatically every time a new player is created. It stores the name, the team and a starting score of zero on the new object. Calling Player with a name and a team builds a fresh object, so riya and kabir are two separate players with their own data."
+  },
+  {
+   "type": "concept",
+   "title": "__init__ and self",
+   "body": "`Player(\"Riya\", \"Mumbai\")` does two things:\n\n- Python creates a new, empty `Player` object\n- it calls `__init__` with that object as `self`, plus your arguments\n\n`self.name = name` means \"store name **on this object**\". `self` is simply the object being worked on.",
+   "visual": {
+    "kind": "stack",
+    "frames": [
+     {
+      "name": "main",
+      "vars": [
+       [
+        "riya",
+        "(being built)"
+       ]
+      ]
+     },
+     {
+      "name": "__init__(self, name, team)",
+      "vars": [
+       [
+        "self",
+        "<new Player>"
+       ],
+       [
+        "name",
+        "'Riya'"
+       ],
+       [
+        "team",
+        "'Mumbai'"
+       ]
+      ],
+      "ret": "None (riya now has name, team, runs)"
+     }
+    ]
+   },
+   "say": "When you call Player with Riya and Mumbai, Python first creates a brand new, empty player object. Then it calls dunder init, passing that new object in as self, followed by your arguments. So self dot name equals name means: store this name on this particular object. Self is simply the object being worked on right now."
+  },
+  {
+   "type": "visual",
+   "title": "Two objects in memory",
+   "body": "Each object is a separate box in memory with its **own** attributes. Changing `riya.runs` cannot touch `kabir.runs`.",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "riya",
+     "kabir"
+    ],
+    "objects": [
+     {
+      "id": "p1",
+      "r": "Player  name='Riya'  team='Mumbai'  runs=6",
+      "t": "Player"
+     },
+     {
+      "id": "p2",
+      "r": "Player  name='Kabir'  team='Chennai'  runs=0",
+      "t": "Player"
+     }
+    ],
+    "links": [
+     [
+      "riya",
+      "p1"
+     ],
+     [
+      "kabir",
+      "p2"
+     ]
+    ]
+   },
+   "say": "Here is the picture to keep in your head. The names riya and kabir each point at their own object in memory, and each object carries its own name, team and runs. When Riya hits a six, only her object changes. Kabir's runs are untouched."
+  },
+  {
+   "type": "code",
+   "title": "Methods: behaviour for objects",
+   "body": "A **method** is a function defined inside a class. Its first parameter is always `self`.",
+   "code": "class Player:\n    def __init__(self, name, team):\n        self.name = name\n        self.team = team\n        self.runs = 0\n        self.balls = 0\n\n    def score(self, runs):\n        self.runs += runs\n        self.balls += 1\n\n    def strike_rate(self):\n        if self.balls == 0:\n            return 0.0\n        return round(self.runs / self.balls * 100, 1)\n\n\nriya = Player(\"Riya\", \"Mumbai\")\nfor r in [4, 0, 6, 1, 1]:\n    riya.score(r)\n\nprint(riya.name, riya.runs, \"runs off\", riya.balls, \"balls\")\nprint(\"Strike rate:\", riya.strike_rate())",
+   "expect": "Riya 12 runs off 5 balls\nStrike rate: 240.0\n",
+   "explain": [
+    [
+     8,
+     "A method: a function that belongs to Player objects."
+    ],
+    [
+     9,
+     "It updates the attributes of whichever player it was called on."
+    ],
+    [
+     12,
+     "Methods can also calculate and return values."
+    ],
+    [
+     13,
+     "Guard against dividing by zero before the first ball."
+    ],
+    [
+     20,
+     "riya.score(r) calls score with self set to riya."
+    ]
+   ],
+   "say": "Methods are functions defined inside a class, and their first parameter is always self. Score adds the runs and counts the ball for whichever player it is called on. Strike rate calculates runs per hundred balls, and carefully returns zero before the first ball, so we never divide by zero. Five balls and twelve runs gives Riya a strike rate of two hundred and forty."
+  },
+  {
+   "type": "concept",
+   "title": "What a method call really is",
+   "body": "`riya.score(4)` is a friendly way to write `Player.score(riya, 4)`. Python fills in `self` for you with the object before the dot.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "What you write",
+     "code": "riya.score(4)"
+    },
+    "right": {
+     "title": "What Python does",
+     "code": "Player.score(riya, 4)\n#            self  runs"
+    },
+    "verdict": "The object before the dot becomes self."
+   },
+   "say": "Here is the secret behind self. When you write riya dot score with four, Python turns it into Player dot score, passing riya as the first argument, then four. That is why every method has self as its first parameter, and why you never pass it yourself. The object before the dot becomes self."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "class Counter:\n    def __init__(self):\n        self.count = 0\n\n    def tap(self):\n        self.count += 1\n\n\na = Counter()\nb = Counter()\na.tap()\na.tap()\nb.tap()\nprint(a.count, b.count)",
+   "options": [
+    "3 3",
+    "2 1",
+    "1 1",
+    "2 2"
+   ],
+   "answer": 1,
+   "why": "`a` and `b` are separate objects, each with its own `count`. `a.tap()` changes only `a`, because inside the method `self` is `a`.",
+   "say": "Two counter objects. We tap the first one twice and the second one once. What are their counts? Think about which object self is during each call."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "Inside a method, what is `self`?",
+   "options": [
+    "The class itself",
+    "The object the method was called on",
+    "A keyword you must import",
+    "The first argument you type in the call"
+   ],
+   "answer": 1,
+   "why": "`self` is the instance before the dot. In `acct.deposit(500)`, `self` is `acct`. It is only a naming convention, but every Python developer uses it.",
+   "say": "Quick check. Inside a method, what exactly is self?"
+  },
+  {
+   "type": "concept",
+   "title": "Designing a BankAccount",
+   "body": "Good classes start on paper. What does the thing **know**, and what can it **do**? Rules like \"no overdrafts\" belong **inside** the methods, so no caller can break them.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "",
+     "Name",
+     "Purpose"
+    ],
+    "rows": [
+     [
+      "attribute",
+      "owner",
+      "who holds the account"
+     ],
+     [
+      "attribute",
+      "balance",
+      "money in rupees"
+     ],
+     [
+      "method",
+      "deposit(amount)",
+      "add money; must be positive"
+     ],
+     [
+      "method",
+      "withdraw(amount)",
+      "take money; never below zero"
+     ]
+    ]
+   },
+   "say": "Good classes are designed before they are coded. Ask two questions. What does this thing know? Those are its attributes. And what can it do? Those are its methods. A bank account knows its owner and balance, and it can accept deposits and withdrawals. Rules like no overdrafts belong inside the methods, so no caller can break them."
+  },
+  {
+   "type": "code",
+   "title": "BankAccount",
+   "body": "Invalid actions **raise** errors, just like built-in types do. The account protects itself.",
+   "code": "class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        if amount <= 0:\n            raise ValueError(\"Deposit must be positive\")\n        self.balance += amount\n\n    def withdraw(self, amount):\n        if amount > self.balance:\n            raise ValueError(\"Insufficient funds\")\n        self.balance -= amount\n\n\nacct = BankAccount(\"Riya\", 1000)\nacct.deposit(500)\nacct.withdraw(300)\nprint(acct.owner, acct.balance)\ntry:\n    acct.withdraw(5000)\nexcept ValueError as e:\n    print(\"Blocked:\", e)\nprint(\"Balance is still\", acct.balance)",
+   "expect": "Riya 1200\nBlocked: Insufficient funds\nBalance is still 1200\n",
+   "explain": [
+    [
+     2,
+     "balance=0 is a default: new accounts can start empty."
+    ],
+    [
+     7,
+     "Rules are checked before anything changes."
+    ],
+    [
+     12,
+     "No overdrafts: raise instead of going negative."
+    ],
+    [
+     20,
+     "Deposit 500, withdraw 300: the balance is 1200."
+    ],
+    [
+     22,
+     "A withdrawal that is too big is blocked."
+    ],
+    [
+     25,
+     "The failed withdrawal changed nothing."
+    ]
+   ],
+   "say": "Here is a proper bank account. New accounts can start with a default balance of zero. Deposit refuses amounts that are not positive, and withdraw refuses to overdraw, by raising a value error, exactly the way built in types complain about bad input. When the big withdrawal is blocked, the balance stays untouched. The object protects its own rules."
+  },
+  {
+   "type": "code",
+   "title": "Objects that remember: a UPI wallet",
+   "body": "Attributes can be lists too. A leading underscore, `_record`, tells other developers: **internal helper, don't call me from outside**.",
+   "code": "class Wallet:\n    def __init__(self, owner):\n        self.owner = owner\n        self.balance = 0\n        self.history = []\n\n    def _record(self, kind, amount):\n        self.history.append((kind, amount))\n\n    def add_money(self, amount):\n        self.balance += amount\n        self._record(\"added\", amount)\n\n    def pay(self, merchant, amount):\n        if amount > self.balance:\n            return False\n        self.balance -= amount\n        self._record(\"paid \" + merchant, amount)\n        return True\n\n\nw = Wallet(\"Arjun\")\nw.add_money(500)\nprint(w.pay(\"Chai Point\", 40), w.pay(\"Croma\", 9000))\nprint(w.balance, w.history)",
+   "expect": "True False\n460 [('added', 500), ('paid Chai Point', 40)]\n",
+   "explain": [
+    [
+     5,
+     "Each wallet gets its own, fresh history list."
+    ],
+    [
+     7,
+     "The underscore marks an internal helper method."
+    ],
+    [
+     12,
+     "Methods can call other methods through self."
+    ],
+    [
+     15,
+     "Not enough money: report failure by returning False."
+    ],
+    [
+     24,
+     "The first payment works, the second is refused."
+    ],
+    [
+     25,
+     "The history only records what really happened."
+    ]
+   ],
+   "say": "Attributes can hold any value, including lists. Every wallet gets its own history list in dunder init. Methods call other methods through self, like underscore record. That leading underscore is a convention meaning internal helper, please don't call this from outside. The chai payment succeeds, the expensive one is refused, and the history records only what really happened."
+  },
+  {
+   "type": "code",
+   "title": "Peek inside an object",
+   "body": "Under the hood, an object keeps its attributes in a **dict**. `vars()` shows it, which is great for debugging.",
+   "code": "class Player:\n    def __init__(self, name, team):\n        self.name = name\n        self.team = team\n        self.runs = 0\n\n\nriya = Player(\"Riya\", \"Mumbai\")\nriya.runs += 50\nprint(vars(riya))\nprint(isinstance(riya, Player))\nprint(Player.__name__)\nprint(hasattr(riya, \"runs\"), hasattr(riya, \"wickets\"))",
+   "expect": "{'name': 'Riya', 'team': 'Mumbai', 'runs': 50}\nTrue\nPlayer\nTrue False\n",
+   "explain": [
+    [
+     9,
+     "Attributes can be updated with += like any variable."
+    ],
+    [
+     10,
+     "vars shows the attribute dict of an object."
+    ],
+    [
+     12,
+     "A class is an object too, and it knows its own name."
+    ],
+    [
+     13,
+     "hasattr asks whether an object has an attribute."
+    ]
+   ],
+   "say": "Under the hood, every object keeps its attributes in a dictionary. The vars function shows it to you, which is a great debugging trick when an object is not behaving. Hasattr asks whether an object has a particular attribute, and even the class itself is an object that knows its own name."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "class Box:\n    def __init__(self, items):\n        self.items = items\n\n\na = Box([\"pen\"])\nb = a\nb.items.append(\"ink\")\nprint(a.items, a is b)",
+   "options": [
+    "['pen'] False",
+    "['pen', 'ink'] True",
+    "['pen'] True",
+    "['pen', 'ink'] False"
+   ],
+   "answer": 1,
+   "why": "`b = a` does not copy the object; both names point at the **same** Box, exactly like list aliasing on Day 12. To get a second box you must call `Box(...)` again.",
+   "say": "We make one box, then write b equals a, and append ink through b. What does a's list look like, and are a and b the same object? Remember how names point at objects."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "This shopping cart crashes with **AttributeError** as soon as you add an item. Find the line in `__init__` that does not do what its author meant, and fix it.",
+   "starter": "class Cart:\n    def __init__(self):\n        items = []\n\n    def add(self, item, price):\n        self.items.append((item, price))\n\n    def total(self):\n        result = 0\n        for item, price in self.items:\n            result += price\n        return result\n\n\ncart = Cart()\ncart.add(\"Notebook\", 60)\ncart.add(\"Pen\", 20)\nprint(cart.total())\n",
+   "solution": "class Cart:\n    def __init__(self):\n        self.items = []\n\n    def add(self, item, price):\n        self.items.append((item, price))\n\n    def total(self):\n        result = 0\n        for item, price in self.items:\n            result += price\n        return result\n\n\ncart = Cart()\ncart.add(\"Notebook\", 60)\ncart.add(\"Pen\", 20)\nprint(cart.total())",
+   "tests": "c1 = Cart()\nc1.add(\"Chai\", 20)\nc1.add(\"Samosa\", 15)\nassert c1.total() == 35, \"A cart with Chai (20) and Samosa (15) should total 35.\"\nc2 = Cart()\nassert c2.total() == 0, \"A new, empty cart should total 0.\"\nassert c1.total() == 35, \"Each cart needs its own items list: a new cart must not change the old one.\"",
+   "hints": [
+    "items = [] makes a local variable that disappears when __init__ ends.",
+    "Store it on the object: self.items = []"
+   ],
+   "say": "This cart crashes with an attribute error the moment you add an item. The error is raised in add, but the real mistake is earlier, in dunder init. Look closely at how the list is stored."
+  },
+  {
+   "type": "exercise",
+   "title": "A shop Product",
+   "task": "Write a class `Product` for a shop's stock system:\n\n- `Product(name, price, stock)` stores all three\n- `restock(qty)` adds to stock\n- `sell(qty)` reduces stock and **returns** the bill (`price * qty`)\n- selling more than is in stock raises `ValueError` and changes nothing",
+   "starter": "class Product:\n    def __init__(self, name, price, stock):\n        pass  # store name, price and stock on self\n\n    def restock(self, qty):\n        pass\n\n    def sell(self, qty):\n        pass\n\n\ntea = Product(\"Assam Tea 250g\", 180, 10)\nprint(tea.sell(3), tea.stock)\n",
+   "solution": "class Product:\n    def __init__(self, name, price, stock):\n        self.name = name\n        self.price = price\n        self.stock = stock\n\n    def restock(self, qty):\n        self.stock += qty\n\n    def sell(self, qty):\n        if qty > self.stock:\n            raise ValueError(\"Not enough stock\")\n        self.stock -= qty\n        return self.price * qty\n\n\ntea = Product(\"Assam Tea 250g\", 180, 10)\nprint(tea.sell(3), tea.stock)",
+   "tests": "p = Product(\"Assam Tea 250g\", 180, 10)\nassert (p.name, p.price, p.stock) == (\"Assam Tea 250g\", 180, 10), \"Store name, price and stock as attributes in __init__.\"\nassert p.sell(3) == 540, \"sell(3) at 180 each should return a bill of 540.\"\nassert p.stock == 7, \"After selling 3 of 10, stock should be 7.\"\np.restock(5)\nassert p.stock == 12, \"restock(5) should add 5 to the stock.\"\nassert p.sell(12) == 2160 and p.stock == 0, \"Selling exactly all the stock is allowed.\"\ntry:\n    p.sell(1)\n    raise AssertionError(\"Selling more than the stock should raise ValueError.\")\nexcept ValueError:\n    pass\nassert p.stock == 0, \"A failed sale must not change the stock.\"",
+   "hints": [
+    "In __init__, store each argument on self.",
+    "In sell, check qty > self.stock first and raise ValueError.",
+    "Then subtract and return self.price * qty."
+   ],
+   "say": "Design a product class for a shop's stock system. It stores a name, a price and the stock count. Restock adds items, and sell reduces the stock and returns the bill. If someone tries to sell more than you have, raise a value error and leave the stock exactly as it was. Selling every last item should still work."
+  },
+  {
+   "type": "exercise",
+   "title": "Transfers between accounts",
+   "task": "Add a `transfer(self, other, amount)` method to `BankAccount` that moves money from this account into `other`.\n\nReuse `withdraw` and `deposit`. If the withdrawal fails, the `ValueError` should propagate and **neither** balance changes.",
+   "starter": "class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        if amount <= 0:\n            raise ValueError(\"Deposit must be positive\")\n        self.balance += amount\n\n    def withdraw(self, amount):\n        if amount <= 0:\n            raise ValueError(\"Withdrawal must be positive\")\n        if amount > self.balance:\n            raise ValueError(\"Insufficient funds\")\n        self.balance -= amount\n\n    def transfer(self, other, amount):\n        pass\n\n\nriya = BankAccount(\"Riya\", 1000)\narjun = BankAccount(\"Arjun\", 200)\nriya.transfer(arjun, 300)\nprint(riya.balance, arjun.balance)\n",
+   "solution": "class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        if amount <= 0:\n            raise ValueError(\"Deposit must be positive\")\n        self.balance += amount\n\n    def withdraw(self, amount):\n        if amount <= 0:\n            raise ValueError(\"Withdrawal must be positive\")\n        if amount > self.balance:\n            raise ValueError(\"Insufficient funds\")\n        self.balance -= amount\n\n    def transfer(self, other, amount):\n        self.withdraw(amount)\n        other.deposit(amount)\n\n\nriya = BankAccount(\"Riya\", 1000)\narjun = BankAccount(\"Arjun\", 200)\nriya.transfer(arjun, 300)\nprint(riya.balance, arjun.balance)",
+   "tests": "a = BankAccount(\"Riya\", 1000)\nb = BankAccount(\"Arjun\", 200)\na.transfer(b, 300)\nassert (a.balance, b.balance) == (700, 500), f\"After moving 300, Riya should have 700 and Arjun 500. Got {a.balance} and {b.balance}.\"\nb.transfer(a, 500)\nassert (a.balance, b.balance) == (1200, 0), \"Arjun should be able to transfer his whole balance.\"\ntry:\n    b.transfer(a, 1)\n    raise AssertionError(\"Transferring more than the balance should raise ValueError.\")\nexcept ValueError:\n    pass\nassert (a.balance, b.balance) == (1200, 0), \"A failed transfer must leave both balances unchanged.\"",
+   "hints": [
+    "Call self.withdraw(amount) first: it raises if there is not enough money.",
+    "Only if that worked, call other.deposit(amount)."
+   ],
+   "say": "Objects become powerful when they work together. Add a transfer method that moves money from this account into another account. Reuse withdraw and deposit instead of touching balances directly. Withdraw first, so that if it fails, the error stops everything and neither balance changes."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 24 complete",
+   "points": [
+    "A class is a blueprint; objects (instances) are built from it",
+    "__init__ sets up each new object; self is the object being worked on",
+    "Attributes store data on an object; methods are its behaviour",
+    "obj.method(x) is Class.method(obj, x): the object becomes self",
+    "Put rules inside methods and raise errors for invalid actions",
+    "b = a shares one object; call the class again for a new one"
+   ],
+   "say": "Mission twenty four complete. You designed your own types, built objects from them, and wrote methods that protect their own rules. Tomorrow we make your classes feel truly Pythonic, so they print nicely, compare, sort and validate themselves. See you on day twenty five."
+  }
+ ]
+}

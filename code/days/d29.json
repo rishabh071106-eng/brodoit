@@ -1,0 +1,477 @@
+{
+ "day": 29,
+ "phase": 3,
+ "title": "Decorators and context managers",
+ "subtitle": "Add behaviour to any function, and guarantee cleanup",
+ "minutes": 60,
+ "goal": "Write decorators (with and without arguments) using functools.wraps, and build context managers with classes and contextlib.",
+ "outcomes": [
+  "Explain a decorator as a function that returns a wrapper, using closures",
+  "Write logging and timing decorators that work on any function",
+  "Keep metadata with functools.wraps",
+  "Write decorators with arguments, like retry and permission checks",
+  "Build context managers with __enter__/__exit__ and @contextmanager"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 29: Decorators and context managers",
+   "body": "You have already used `@property`, `@lru_cache` and `with open(...)`. Today you build your own.\n\n- **Decorators** add behaviour (logging, timing, retries, permissions) to any function without touching its code\n- **Context managers** guarantee setup and cleanup around a block",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Copy-pasted in every function",
+     "code": "def fetch_scores():\n    start = time.perf_counter()\n    ...\n    print(\"took\", time.perf_counter() - start)\n\ndef build_report():\n    start = time.perf_counter()\n    ..."
+    },
+    "right": {
+     "title": "Written once, applied anywhere",
+     "code": "@timer\ndef fetch_scores(): ...\n\n@timer\ndef build_report(): ..."
+    },
+    "verdict": "A decorator keeps cross-cutting code in one place."
+   },
+   "say": "You have already used at property, at lru cache, and with open. Today you learn how they work, and you build your own. Decorators add behaviour like logging, timing, retries and permission checks to any function, without touching its code. Context managers guarantee that setup and cleanup happen around a block of code, even when something goes wrong."
+  },
+  {
+   "type": "concept",
+   "title": "Function in, function out",
+   "body": "A **decorator** is a function that takes a function and returns a new one, usually a `wrapper` that does something extra and calls the original.\n\nIt relies on yesterday's closures: the wrapper **remembers** the original function.",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "greet"
+    ],
+    "objects": [
+     {
+      "id": "w",
+      "r": "function wrapper  (remembers func)",
+      "t": "function"
+     },
+     {
+      "id": "o",
+      "r": "original greet: returns \"namaste\"",
+      "t": "function"
+     }
+    ],
+    "links": [
+     [
+      "greet",
+      "w"
+     ]
+    ]
+   },
+   "say": "A decorator is simply a function that takes a function and returns a new function. Usually the new one is a wrapper that does something extra, then calls the original. It works because of yesterday's closures. The wrapper remembers the original function it was given, so after decorating, the name greet points at the wrapper, and the wrapper still knows the real greet."
+  },
+  {
+   "type": "code",
+   "title": "A decorator by hand",
+   "code": "def shout(func):\n    def wrapper():\n        result = func()\n        return result.upper() + \"!\"\n    return wrapper\n\n\ndef greet():\n    return \"namaste\"\n\n\nprint(greet())\ngreet = shout(greet)\nprint(greet())\n\n\n@shout\ndef welcome():\n    return \"welcome to day 29\"\n\n\nprint(welcome())",
+   "expect": "namaste\nNAMASTE!\nWELCOME TO DAY 29!\n",
+   "explain": [
+    [
+     1,
+     "shout takes a function..."
+    ],
+    [
+     2,
+     "...defines a wrapper that calls it and changes the result..."
+    ],
+    [
+     5,
+     "...and returns the wrapper."
+    ],
+    [
+     13,
+     "Decorating by hand: the name greet now points at the wrapper."
+    ],
+    [
+     17,
+     "@shout above a def does exactly the same thing, automatically."
+    ]
+   ],
+   "say": "Shout takes a function, builds a wrapper that calls it and shouts the result, and returns the wrapper. First we decorate by hand: greet equals shout of greet. Now the name greet points at the wrapper. The at sign syntax does exactly the same thing for us, right where the function is defined. That is all a decorator is."
+  },
+  {
+   "type": "concept",
+   "title": "The @ line, and wrappers that fit any function",
+   "body": "`@timer` above `def report(...)` is shorthand for `report = timer(report)`.\n\nTo wrap **any** function, whatever its arguments, the wrapper accepts `*args, **kwargs` (Day 18) and passes them straight through. And it must **return** the result.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "By hand",
+     "code": "def report(rows):\n    ...\nreport = timer(report)"
+    },
+    "right": {
+     "title": "With @",
+     "code": "@timer\ndef report(rows):\n    ..."
+    },
+    "verdict": "Identical result. The @ form keeps the decoration next to the definition."
+   },
+   "say": "The at timer line above a function is shorthand for report equals timer of report. To make one decorator fit any function, whatever its parameters, the wrapper accepts star args and double star kwargs, which you met on day eighteen, and passes them straight through to the original. And it must return the original's result, or the caller gets None."
+  },
+  {
+   "type": "code",
+   "title": "A logging decorator",
+   "body": "One decorator, two very different functions. Debugging a big app often starts with exactly this.",
+   "code": "def log_calls(func):\n    def wrapper(*args, **kwargs):\n        print(f\"-> {func.__name__} called with {args} {kwargs}\")\n        result = func(*args, **kwargs)\n        print(f\"<- {func.__name__} returned {result!r}\")\n        return result\n    return wrapper\n\n\n@log_calls\ndef gst(amount, rate=0.18):\n    return round(amount * rate, 2)\n\n\n@log_calls\ndef greet(name):\n    return f\"Hello, {name}\"\n\n\ntotal = gst(1000) + gst(500, rate=0.05)\ngreet(\"Meera\")\nprint(\"Total GST:\", total)",
+   "expect": "-> gst called with (1000,) {}\n<- gst returned 180.0\n-> gst called with (500,) {'rate': 0.05}\n<- gst returned 25.0\n-> greet called with ('Meera',) {}\n<- greet returned 'Hello, Meera'\nTotal GST: 205.0\n",
+   "explain": [
+    [
+     2,
+     "Accept any positional and keyword arguments."
+    ],
+    [
+     3,
+     "Do something before the call."
+    ],
+    [
+     4,
+     "Call the original with exactly the same arguments."
+    ],
+    [
+     6,
+     "Hand the result back to the caller."
+    ],
+    [
+     19,
+     "Every call now logs itself, with no change inside gst."
+    ]
+   ],
+   "say": "This logging decorator works on any function. The wrapper accepts any arguments, logs the call, passes everything through to the original, logs the result and returns it. We apply it to a GST calculator and a greeting function, which take completely different arguments. Debugging a large app often starts with a decorator just like this."
+  },
+  {
+   "type": "visual",
+   "title": "What happens on a decorated call",
+   "body": "Calling `gst(1000)` really calls `wrapper(1000)`, which calls the original `gst`. The original's result travels back up through the wrapper.",
+   "visual": {
+    "kind": "stack",
+    "frames": [
+     {
+      "name": "main",
+      "vars": [
+       [
+        "total",
+        "(waiting)"
+       ]
+      ]
+     },
+     {
+      "name": "wrapper(*args, **kwargs)",
+      "vars": [
+       [
+        "args",
+        "(1000,)"
+       ],
+       [
+        "kwargs",
+        "{}"
+       ],
+       [
+        "func",
+        "original gst"
+       ]
+      ]
+     },
+     {
+      "name": "gst(amount=1000, rate=0.18)",
+      "vars": [
+       [
+        "amount",
+        "1000"
+       ],
+       [
+        "rate",
+        "0.18"
+       ]
+      ],
+      "ret": "180.0"
+     }
+    ]
+   },
+   "say": "Here is the call stack when you call gst of a thousand. The name gst points at the wrapper, so the wrapper runs first, with the arguments packed into args. The wrapper calls the original function, which returns a hundred and eighty. The result travels back up through the wrapper, which returns it to main."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "def register(func):\n    print(\"registering\", func.__name__)\n    return func\n\n\n@register\ndef hello():\n    print(\"hello!\")\n\n\nprint(\"start\")\nhello()",
+   "options": [
+    "start\nregistering hello\nhello!",
+    "registering hello\nstart\nhello!",
+    "start\nhello!",
+    "start\nregistering hello\nhello!\nregistering hello"
+   ],
+   "answer": 1,
+   "why": "The decorator runs **once, when the def runs**, not on each call. `register` returns the function unchanged, so calling `hello()` just says hello. Web frameworks like Flask register their URL routes this way.",
+   "say": "This decorator prints a message and returns the function unchanged. When does that message appear: when the function is defined, or when it is called? Predict the order."
+  },
+  {
+   "type": "concept",
+   "title": "functools.wraps",
+   "body": "A plain wrapper hides the original: `report.__name__` becomes `\"wrapper\"` and the docstring is lost. Logs, tracebacks and tools all get confused.\n\nDecorate your wrapper with `@functools.wraps(func)` to copy the name, docstring and more. Always do it.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Without wraps",
+     "code": "report.__name__   # 'wrapper'\nreport.__doc__    # None"
+    },
+    "right": {
+     "title": "With @wraps(func)",
+     "code": "report.__name__   # 'report'\nreport.__doc__    # 'Build the report.'"
+    },
+    "verdict": "wraps keeps the decorated function honest about who it is."
+   },
+   "say": "There is a catch with plain wrappers. After decorating, the function's name becomes wrapper, and its docstring disappears. Logs, tracebacks and documentation tools all get confused. The fix is one line: decorate your wrapper with functools dot wraps, passing the original function. It copies the name, the docstring and more. Professionals always do this."
+  },
+  {
+   "type": "code",
+   "title": "A timer decorator",
+   "code": "import time\nfrom functools import wraps\n\n\ndef timer(func):\n    @wraps(func)\n    def wrapper(*args, **kwargs):\n        start = time.perf_counter()\n        result = func(*args, **kwargs)\n        elapsed = time.perf_counter() - start\n        print(f\"{func.__name__} took {elapsed:.1f}s\")\n        return result\n    return wrapper\n\n\n@timer\ndef generate_report(rows):\n    \"\"\"Build the monthly sales report.\"\"\"\n    time.sleep(0.2)  # pretend this is slow work\n    return f\"Report with {rows} rows\"\n\n\nprint(generate_report(500))\nprint(generate_report.__name__, \"|\", generate_report.__doc__)",
+   "expect": "generate_report took 0.2s\nReport with 500 rows\ngenerate_report | Build the monthly sales report.\n",
+   "explain": [
+    [
+     6,
+     "@wraps(func) copies the name and docstring onto the wrapper."
+    ],
+    [
+     8,
+     "Start a precise stopwatch."
+    ],
+    [
+     10,
+     "How long did the real work take?"
+    ],
+    [
+     12,
+     "Return the result, so the caller gets it as usual."
+    ],
+    [
+     23,
+     "Thanks to wraps, the name and docstring survive."
+    ]
+   ],
+   "say": "Here is a real timing decorator. It starts a stopwatch, calls the function, measures how long it took, prints it and returns the result. Notice at wraps on the wrapper. Thanks to it, the decorated function still reports its true name and docstring. Put at timer on any slow function and you know exactly where your time goes."
+  },
+  {
+   "type": "concept",
+   "title": "Decorators with arguments",
+   "body": "`@retry(times=3)` has brackets, so `retry(times=3)` runs **first** and must return the actual decorator. That means three layers of functions.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "retry(times=3) runs, remembers times, returns decorator",
+     "decorator(fetch_score) runs, returns wrapper",
+     "fetch_score() calls wrapper, which tries up to 3 times"
+    ]
+   },
+   "say": "Some decorators take settings, like retry three times. Because there are brackets, retry with times equals three runs first, and it must return the actual decorator. That decorator receives your function and returns the wrapper. So there are three layers: the settings, the decorator, and the wrapper. It looks like a lot of nesting, but each layer has one clear job."
+  },
+  {
+   "type": "code",
+   "title": "A retry decorator for flaky APIs",
+   "body": "Networks fail. A live-score API that is busy for a moment should not crash your app. This one fails twice, then succeeds.",
+   "code": "from functools import wraps\n\n\ndef retry(times):\n    def decorator(func):\n        @wraps(func)\n        def wrapper(*args, **kwargs):\n            for attempt in range(1, times + 1):\n                try:\n                    return func(*args, **kwargs)\n                except ConnectionError as e:\n                    print(f\"Attempt {attempt} failed: {e}\")\n            raise ConnectionError(f\"{func.__name__} failed {times} times\")\n        return wrapper\n    return decorator\n\n\ncalls = {\"count\": 0}\n\n\n@retry(times=3)\ndef fetch_score():\n    calls[\"count\"] += 1\n    if calls[\"count\"] < 3:\n        raise ConnectionError(\"server busy\")\n    return \"IND 287/4\"\n\n\nprint(fetch_score())",
+   "expect": "Attempt 1 failed: server busy\nAttempt 2 failed: server busy\nIND 287/4\n",
+   "explain": [
+    [
+     4,
+     "Layer 1: receives the setting and remembers it."
+    ],
+    [
+     5,
+     "Layer 2: receives the function."
+    ],
+    [
+     7,
+     "Layer 3: the wrapper that runs on every call."
+    ],
+    [
+     10,
+     "Success: return immediately, no more attempts."
+    ],
+    [
+     13,
+     "Every attempt failed: raise a clear error."
+    ],
+    [
+     24,
+     "Our fake API fails on the first two calls."
+    ]
+   ],
+   "trace": false,
+   "say": "Networks fail all the time, and a cricket score API that is busy for a moment should not crash your app. Retry takes the number of attempts, the decorator takes the function, and the wrapper loops. Each failure is printed, a success returns at once, and if every attempt fails, it raises a clear error. Our pretend API fails twice, then returns the score."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "In `@retry(times=3)`, what must `retry(times=3)` return?",
+   "options": [
+    "The final result of the function",
+    "A decorator: a function that takes a function",
+    "The number 3",
+    "Nothing; Python handles it"
+   ],
+   "answer": 1,
+   "why": "Python first evaluates `retry(times=3)`, then uses whatever it returns as the decorator. So it must return a function that accepts `func` and returns the wrapper.",
+   "say": "Quick check. When Python sees at retry with times equals three, it calls retry first. What must that call return?"
+  },
+  {
+   "type": "concept",
+   "title": "Context managers: the with protocol",
+   "body": "`with` works with any object that has two methods:\n\n- `__enter__()`: runs at the start; its return value goes to `as`\n- `__exit__(exc_type, exc, tb)`: runs at the end, **always**, even after an error. It receives the error, if any. Return True to swallow it.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "with Transaction(wallet) as w:",
+      "s": "pill"
+     },
+     {
+      "t": "w = __enter__()"
+     },
+     {
+      "t": "Block raised an error?",
+      "s": "diamond",
+      "yes": "__exit__(type, error, tb)",
+      "no": "__exit__(None, None, None)"
+     },
+     {
+      "t": "Continue after the with block",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "The with statement works with any object that has two special methods. Dunder enter runs at the start, and whatever it returns goes into the name after as. Dunder exit runs at the end, always, even if the block raised an error, and it receives that error. If dunder exit returns True, the error is swallowed. That is how files close themselves."
+  },
+  {
+   "type": "code",
+   "title": "A transaction that rolls back",
+   "body": "Databases work like this: either **every** change in the block happens, or **none** does.",
+   "code": "class Transaction:\n    def __init__(self, wallet):\n        self.wallet = wallet\n\n    def __enter__(self):\n        self.backup = dict(self.wallet)\n        return self.wallet\n\n    def __exit__(self, exc_type, exc, tb):\n        if exc_type is not None:\n            self.wallet.clear()\n            self.wallet.update(self.backup)\n            print(\"Rolled back:\", exc)\n        return True  # we handled the error\n\n\nwallet = {\"riya\": 500, \"arjun\": 100}\nwith Transaction(wallet) as w:\n    w[\"riya\"] -= 200\n    w[\"arjun\"] += 200\nprint(wallet)\nwith Transaction(wallet) as w:\n    w[\"riya\"] -= 300\n    raise ConnectionError(\"network dropped mid-transfer\")\nprint(wallet)",
+   "expect": "{'riya': 300, 'arjun': 300}\nRolled back: network dropped mid-transfer\n{'riya': 300, 'arjun': 300}\n",
+   "explain": [
+    [
+     6,
+     "Save a copy of the wallet before the block runs."
+    ],
+    [
+     7,
+     "This becomes w in the with statement."
+    ],
+    [
+     10,
+     "An error happened inside the block..."
+    ],
+    [
+     12,
+     "...so restore the backup."
+    ],
+    [
+     14,
+     "Returning True swallows the error. Most context managers return nothing, so errors carry on."
+    ],
+    [
+     24,
+     "Half a transfer, then a failure: Riya's 300 rupees come back."
+    ]
+   ],
+   "say": "Here is how databases keep your money safe. Dunder enter saves a backup of the wallet. If the block finishes, nothing more is needed. If an error interrupts it halfway, dunder exit restores the backup, so the half finished transfer is undone. We return True to say the error is handled. Most context managers return nothing, which lets the error carry on."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "class Door:\n    def __enter__(self):\n        print(\"open\")\n        return self\n\n    def __exit__(self, exc_type, exc, tb):\n        print(\"close\")\n\n\ntry:\n    with Door():\n        print(\"inside\")\n        1 / 0\n        print(\"never\")\nexcept ZeroDivisionError:\n    print(\"caught\")",
+   "options": [
+    "open\ninside\ncaught",
+    "open\ninside\nclose\ncaught",
+    "open\ninside\ncaught\nclose",
+    "open\ninside\nnever\nclose"
+   ],
+   "answer": 1,
+   "why": "The error stops the block, but `__exit__` **still runs** before the error leaves the `with`. It returns None, so the error is not swallowed and the outer `except` catches it. Cleanup first, then the error.",
+   "say": "The block divides by zero halfway through. Dunder exit returns nothing. In what order do open, inside, close and caught appear?"
+  },
+  {
+   "type": "code",
+   "title": "@contextmanager: the quick way",
+   "body": "`contextlib.contextmanager` turns a **generator** into a context manager: code before `yield` is the setup, code after it is the cleanup. Put the cleanup in `finally` so it runs even on errors. Test suites use this to change settings temporarily.",
+   "code": "from contextlib import contextmanager\n\n\n@contextmanager\ndef override(config, **changes):\n    old = dict(config)\n    config.update(changes)\n    try:\n        yield config\n    finally:\n        config.clear()\n        config.update(old)\n\n\nsettings = {\"debug\": False, \"currency\": \"INR\"}\nwith override(settings, debug=True):\n    print(\"Inside:\", settings)\nprint(\"After:\", settings)\n\ntry:\n    with override(settings, currency=\"USD\"):\n        raise RuntimeError(\"test failed\")\nexcept RuntimeError:\n    pass\nprint(\"Still restored:\", settings)",
+   "expect": "Inside: {'debug': True, 'currency': 'INR'}\nAfter: {'debug': False, 'currency': 'INR'}\nStill restored: {'debug': False, 'currency': 'INR'}\n",
+   "explain": [
+    [
+     4,
+     "The decorator turns this generator into a context manager."
+    ],
+    [
+     7,
+     "Setup: apply the temporary changes."
+    ],
+    [
+     9,
+     "yield hands control to the with block; the value goes to as."
+    ],
+    [
+     10,
+     "finally: the cleanup runs even if the block raised."
+    ],
+    [
+     20,
+     "The block fails, but the settings are still restored."
+    ]
+   ],
+   "say": "Writing a class with two dunder methods is not always needed. Contextlib's contextmanager decorator turns a generator into a context manager. Everything before yield is setup, everything after is cleanup, and putting the cleanup in finally makes sure it runs even when the block fails. Test suites use exactly this to change settings temporarily."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "The decorator logs the call, but `add_gst(1000)` now returns **None** instead of 1180.0. Fix the wrapper.",
+   "starter": "from functools import wraps\n\n\ndef log_calls(func):\n    @wraps(func)\n    def wrapper(*args, **kwargs):\n        print(\"Calling\", func.__name__)\n        func(*args, **kwargs)\n    return wrapper\n\n\n@log_calls\ndef add_gst(amount):\n    return round(amount * 1.18, 2)\n\n\nprice = add_gst(1000)\nprint(\"Price with GST:\", price)\n",
+   "solution": "from functools import wraps\n\n\ndef log_calls(func):\n    @wraps(func)\n    def wrapper(*args, **kwargs):\n        print(\"Calling\", func.__name__)\n        return func(*args, **kwargs)\n    return wrapper\n\n\n@log_calls\ndef add_gst(amount):\n    return round(amount * 1.18, 2)\n\n\nprice = add_gst(1000)\nprint(\"Price with GST:\", price)",
+   "tests": "assert add_gst(1000) == 1180.0, \"add_gst(1000) should still return 1180.0 after decorating. Does the wrapper return the result?\"\n@log_calls\ndef double(x):\n    return x * 2\nassert double(21) == 42, \"Any decorated function should return its normal result.\"\nassert \"Calling add_gst\" in __out__, \"Keep the logging: the wrapper should still print Calling add_gst.\"\nassert double.__name__ == \"double\", \"Keep @wraps(func) so the name survives.\"",
+   "hints": [
+    "The wrapper calls func, but what does it do with the answer?",
+    "return func(*args, **kwargs)"
+   ],
+   "say": "The most common decorator bug in the world. The logging works, but the decorated function now returns None. Remember what a wrapper must always do with the original function's result."
+  },
+  {
+   "type": "exercise",
+   "title": "A permission decorator",
+   "task": "Web frameworks guard pages with decorators like `@login_required`. Write a decorator **with an argument**, `require_role(role)`.\n\nThe decorated function's first argument is a `user` dict. If `user[\"role\"]` is not `role`, raise `PermissionError`. Otherwise call the function and return its result. Use `@wraps`.",
+   "starter": "from functools import wraps\n\n\ndef require_role(role):\n    pass\n\n\n@require_role(\"admin\")\ndef delete_user(user, username):\n    return f\"{username} deleted by {user['name']}\"\n\n\nprint(delete_user({\"name\": \"Riya\", \"role\": \"admin\"}, \"kabir\"))\n",
+   "solution": "from functools import wraps\n\n\ndef require_role(role):\n    def decorator(func):\n        @wraps(func)\n        def wrapper(user, *args, **kwargs):\n            if user.get(\"role\") != role:\n                raise PermissionError(f\"{func.__name__} needs role {role}\")\n            return func(user, *args, **kwargs)\n        return wrapper\n    return decorator\n\n\n@require_role(\"admin\")\ndef delete_user(user, username):\n    return f\"{username} deleted by {user['name']}\"\n\n\nprint(delete_user({\"name\": \"Riya\", \"role\": \"admin\"}, \"kabir\"))",
+   "tests": "admin = {\"name\": \"Riya\", \"role\": \"admin\"}\nviewer = {\"name\": \"Kabir\", \"role\": \"viewer\"}\nassert delete_user(admin, \"kabir\") == \"kabir deleted by Riya\", \"An admin should be allowed, and get the function's result back.\"\ntry:\n    delete_user(viewer, \"riya\")\n    raise AssertionError(\"A viewer calling an admin-only function should raise PermissionError.\")\nexcept PermissionError:\n    pass\n@require_role(\"editor\")\ndef publish(user, title, draft=True):\n    return (title, draft)\nassert publish({\"name\": \"Meera\", \"role\": \"editor\"}, \"Budget 2026\", draft=False) == (\"Budget 2026\", False), \"Pass every other argument, including keyword arguments, through to the function.\"\nassert publish.__name__ == \"publish\", \"Use @wraps(func) so the decorated function keeps its name.\"",
+   "hints": [
+    "Three layers: require_role(role) returns decorator(func), which returns wrapper(user, *args, **kwargs).",
+    "In wrapper: if user[\"role\"] != role, raise PermissionError(...).",
+    "Otherwise return func(user, *args, **kwargs). Put @wraps(func) above wrapper."
+   ],
+   "say": "Web frameworks protect pages with decorators. Write require role, a decorator that takes an argument. The wrapper checks the user's role, raises a permission error if it does not match, and otherwise calls the function and returns its result. You will need all three layers, and remember wraps."
+  },
+  {
+   "type": "exercise",
+   "title": "A Timer context manager",
+   "task": "Write a class-based context manager `Timer`:\n\n- `__enter__` records the start time with `time.perf_counter()` and returns `self`\n- `__exit__` stores the seconds taken in `self.elapsed`, and must **not** swallow errors\n\nUsage: `with Timer() as t: ...` then read `t.elapsed`.",
+   "starter": "import time\n\n\nclass Timer:\n    pass\n\n\nwith Timer() as t:\n    time.sleep(0.1)\nprint(f\"Took about {t.elapsed:.1f}s\")\n",
+   "solution": "import time\n\n\nclass Timer:\n    def __enter__(self):\n        self.start = time.perf_counter()\n        return self\n\n    def __exit__(self, exc_type, exc, tb):\n        self.elapsed = time.perf_counter() - self.start\n        return False\n\n\nwith Timer() as t:\n    time.sleep(0.1)\nprint(f\"Took about {t.elapsed:.1f}s\")",
+   "tests": "import time\nwith Timer() as t1:\n    time.sleep(0.05)\nassert isinstance(t1, Timer), \"__enter__ should return self, so with Timer() as t gives you the Timer.\"\nassert 0.04 <= t1.elapsed < 1, f\"Sleeping 0.05s should give an elapsed time of about 0.05, got {t1.elapsed}.\"\nt2 = Timer()\ntry:\n    with t2:\n        raise KeyError(\"boom\")\n    raise AssertionError(\"The KeyError disappeared. __exit__ must not swallow errors: return False or nothing.\")\nexcept KeyError:\n    pass\nassert hasattr(t2, \"elapsed\"), \"elapsed should be set even when the block raises an error.\"",
+   "hints": [
+    "__enter__(self): save time.perf_counter() in self.start and return self.",
+    "__exit__(self, exc_type, exc, tb): set self.elapsed = time.perf_counter() - self.start.",
+    "Return False (or nothing) so errors are not swallowed."
+   ],
+   "say": "Build a timer you can wrap around any block of code. Dunder enter records the start time and returns the timer itself. Dunder exit stores the elapsed seconds. It must not swallow errors, and it must still record the time when the block fails. The tests check both."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 29 complete",
+   "points": [
+    "A decorator takes a function and returns a wrapper; @deco means f = deco(f)",
+    "Wrappers accept *args, **kwargs, call the original, and return its result",
+    "Always use @functools.wraps(func) on the wrapper",
+    "Decorators with arguments need three layers: settings, decorator, wrapper",
+    "with calls __enter__, then __exit__ always, even after errors",
+    "@contextlib.contextmanager: setup, yield, cleanup in finally"
+   ],
+   "say": "Mission twenty nine complete. You can write decorators that log, time, retry and guard functions, and context managers that guarantee cleanup, even when things go wrong. Tomorrow is project day: you will use everything from this phase to build a library management system with classes, files and JSON. See you on day thirty."
+  }
+ ]
+}

@@ -1,0 +1,514 @@
+{
+ "day": 59,
+ "phase": 6,
+ "title": "Capstone II: Ship it",
+ "subtitle": "From working code to a real product",
+ "minutes": 80,
+ "goal": "Turn the task manager core into a shippable product: an argparse CLI, reports, logging, packaging, Git, CI and deployment.",
+ "outcomes": [
+  "Build a subcommand CLI with argparse and testable exit codes",
+  "Write readable reports as pure functions",
+  "Polish an app with friendly errors, verbose logs and a README",
+  "Package a project with pyproject.toml and a console script",
+  "Explain branches, pull requests, CI and Docker-based deployment"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 59: Capstone, part two: ship it",
+   "body": "Yesterday you built Kaam's core. Today it becomes a **product**: a real command line, reports, logging, a README, packaging, Git, CI and deployment.\n\nShipped beats perfect.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "A CLI with subcommands (argparse)",
+     "Reports people want to read",
+     "Polish: logging, errors, README",
+     "Package with pyproject.toml",
+     "Git, CI and deployment"
+    ]
+   },
+   "say": "Yesterday you built the core of Kaam. Today it becomes a product. You give it a real command line with subcommands, add a report, polish it with logging and friendly errors, package it so anyone can install it, and learn how professionals use Git, run tests automatically on every push, and deploy Python apps. Shipped beats perfect."
+  },
+  {
+   "type": "concept",
+   "title": "Subcommands, like git",
+   "body": "Big CLIs have **subcommands**, each with its own options: `git commit -m`, `pip install -U`. argparse does this with `add_subparsers()`.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "kaam add \"Pay electricity bill\" --priority high --due 2026-10-25"
+     ],
+     [
+      "",
+      "added #1: Pay electricity bill"
+     ],
+     [
+      "$",
+      "kaam add \"Call plumber\" --priority low"
+     ],
+     [
+      "",
+      "added #2: Call plumber"
+     ],
+     [
+      "$",
+      "kaam list"
+     ],
+     [
+      "",
+      "#1   HIGH   2026-10-25 Pay electricity bill"
+     ],
+     [
+      "",
+      "#2   LOW    -          Call plumber"
+     ],
+     [
+      "$",
+      "kaam done 2"
+     ],
+     [
+      "",
+      "done #2: Call plumber"
+     ]
+    ]
+   },
+   "say": "Big command line tools use subcommands. Git has commit, push and log, each with its own options. Kaam will work the same way: kaam add with a title and options, kaam list, kaam done with a task number. Argparse supports this with add subparsers, and it writes separate help for every subcommand."
+  },
+  {
+   "type": "code",
+   "title": "Build the parser",
+   "body": "`choices=` rejects anything but low, medium or high, before your code even runs.",
+   "code": "import argparse\n\ndef build_parser() -> argparse.ArgumentParser:\n    parser = argparse.ArgumentParser(prog=\"kaam\", description=\"A tiny task manager.\")\n    sub = parser.add_subparsers(dest=\"command\", required=True)\n\n    add = sub.add_parser(\"add\", help=\"add a task\")\n    add.add_argument(\"title\")\n    add.add_argument(\"--priority\", choices=[\"low\", \"medium\", \"high\"], default=\"medium\")\n    add.add_argument(\"--due\", help=\"YYYY-MM-DD\")\n\n    sub.add_parser(\"list\", help=\"show open tasks\")\n    done = sub.add_parser(\"done\", help=\"mark a task done\")\n    done.add_argument(\"task_id\", type=int)\n    return parser\n\nparser = build_parser()\nprint(parser.parse_args([\"add\", \"Pay electricity bill\", \"--priority\", \"high\"]))\nprint(parser.parse_args([\"done\", \"3\"]))\nprint(parser.parse_args([\"list\"]))",
+   "expect": "Namespace(command='add', title='Pay electricity bill', priority='high', due=None)\nNamespace(command='done', task_id=3)\nNamespace(command='list')\n",
+   "explain": [
+    [
+     5,
+     "A group of subcommands; dest records which one was chosen."
+    ],
+    [
+     7,
+     "Each subcommand gets its own parser and options."
+    ],
+    [
+     9,
+     "choices: argparse rejects 'urgent' with a clear error."
+    ],
+    [
+     14,
+     "type=int: '3' arrives as the number 3."
+    ],
+    [
+     18,
+     "Pretend command lines, exactly like tests use."
+    ]
+   ],
+   "say": "Add subparsers creates the group of subcommands, and dest equals command records which one was used. The add command takes a title, a priority limited to three choices, and an optional due date. Done takes a task number that argparse converts to an integer. Parsing three pretend command lines shows exactly what main will receive."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: what argparse hands you",
+   "code": "import argparse\n\nparser = argparse.ArgumentParser(prog=\"kaam\")\nparser.add_argument(\"task_id\", type=int)\nparser.add_argument(\"--tag\", action=\"append\", default=[])\nargs = parser.parse_args([\"7\", \"--tag\", \"home\", \"--tag\", \"urgent\"])\nprint(args.task_id * 2, args.tag)",
+   "options": [
+    "77 ['home', 'urgent']",
+    "14 ['home', 'urgent']",
+    "14 ['urgent']"
+   ],
+   "answer": 1,
+   "why": "`type=int` converts `\"7\"` to the number 7, so doubling gives 14 (a string would give `77`). `action=\"append\"` collects every `--tag` into a list.",
+   "say": "Two argparse features in one go: a type conversion, and an option you can repeat. What does this print?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: two bugs, one line",
+   "task": "`format_task` prints a task as one aligned line. It shows `<10` instead of the date, and it crashes for tasks with no due date. Fix it so it prints `-` when there is no due date.",
+   "starter": "from datetime import date\n\nfrom models import Priority, Task\n\ndef format_task(task: Task) -> str:\n    return f\"#{task.id:<3} {task.priority.name:<6} {task.due:<10} {task.title}\"\n\nprint(format_task(Task(1, \"Pay electricity bill\", Priority.HIGH, date(2026, 10, 25))))\nprint(format_task(Task(3, \"Call plumber\", Priority.LOW)))",
+   "solution": "from datetime import date\n\nfrom models import Priority, Task\n\ndef format_task(task: Task) -> str:\n    due = task.due.isoformat() if task.due else \"-\"\n    return f\"#{task.id:<3} {task.priority.name:<6} {due:<10} {task.title}\"\n\nprint(format_task(Task(1, \"Pay electricity bill\", Priority.HIGH, date(2026, 10, 25))))\nprint(format_task(Task(3, \"Call plumber\", Priority.LOW)))",
+   "tests": "from datetime import date\nfrom models import Priority, Task\na = format_task(Task(1, \"Pay electricity bill\", Priority.HIGH, date(2026, 10, 25)))\nassert a == \"#1   HIGH   2026-10-25 Pay electricity bill\", \"Expected '#1   HIGH   2026-10-25 Pay electricity bill' but got \" + repr(a) + \". A date treats '<10' as a strftime pattern: turn it into text first.\"\nb = format_task(Task(3, \"Call plumber\", Priority.LOW))\nassert b == \"#3   LOW    -          Call plumber\", \"A task without a due date should show '-' padded to 10 characters. Got \" + repr(b)",
+   "hints": [
+    "Run it: the crash says `NoneType.__format__`. A `None` can't be padded.",
+    "And a `date` reads `<10` as a strftime pattern, so it prints `<10` literally!",
+    "Make the text first: `due = task.due.isoformat() if task.due else \"-\"`, then pad `{due:<10}`."
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n",
+    "errors.py": "class KaamError(Exception):\n    \"\"\"Base class for every error Kaam reports to the user.\"\"\"\n\n\nclass ValidationError(KaamError):\n    \"\"\"Bad input: an empty title, an unknown priority, a malformed date.\"\"\"\n\n\nclass TaskNotFound(KaamError):\n    \"\"\"No task has the requested id.\"\"\"\n\n\nclass StorageError(KaamError):\n    \"\"\"The task file is unreadable or corrupt.\"\"\"\n",
+    "storage.py": "import json\nimport os\nfrom pathlib import Path\n\nfrom errors import StorageError\nfrom models import Task\n\n\nclass MemoryStorage:\n    \"\"\"Keeps tasks in memory as plain dicts, like a real store would. Perfect for tests.\"\"\"\n\n    def __init__(self):\n        self.rows: list[dict] = []\n\n    def load(self) -> list[Task]:\n        return [Task.from_dict(row) for row in self.rows]\n\n    def save(self, tasks: list[Task]) -> None:\n        self.rows = [task.to_dict() for task in tasks]\n\n\nclass JsonStorage:\n    \"\"\"Keeps tasks in a JSON file, written atomically.\"\"\"\n\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        if not self.path.exists():\n            return []\n        try:\n            rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n            return [Task.from_dict(row) for row in rows]\n        except (json.JSONDecodeError, KeyError, ValueError) as err:\n            raise StorageError(f\"{self.path} is corrupt ({type(err).__name__})\") from err\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)\n"
+   },
+   "say": "Here is a sneaky one from real life. This formatter should print each task as one neat line. With a due date it prints a strange less than ten instead of the date, and without a due date it crashes. Both bugs live in the same expression. Turn the due date into text first, with a dash when there is none."
+  },
+  {
+   "type": "code",
+   "title": "Wire the CLI to the service",
+   "body": "`cli.py` holds `build_parser()` and the fixed `format_task()`. The service and storage are yesterday's.",
+   "code": "from cli import build_parser, format_task\nfrom errors import KaamError\nfrom services import TaskService\nfrom storage import MemoryStorage\n\ndef main(argv: list[str], service: TaskService) -> int:\n    args = build_parser().parse_args(argv)\n    try:\n        if args.command == \"add\":\n            task = service.add(args.title, args.priority, args.due)\n            print(f\"added #{task.id}: {task.title}\")\n        elif args.command == \"list\":\n            for task in service.pending():\n                print(format_task(task))\n    except KaamError as err:\n        print(f\"error: {err}\")\n        return 1\n    return 0\n\nservice = TaskService(MemoryStorage())\nmain([\"add\", \"Pay electricity bill\", \"--priority\", \"high\", \"--due\", \"2026-10-25\"], service)\nmain([\"add\", \"Call plumber\", \"--priority\", \"low\"], service)\nprint(\"exit code:\", main([\"add\", \"Renew passport\", \"--due\", \"30-11-2026\"], service))\nmain([\"list\"], service)",
+   "expect": "added #1: Pay electricity bill\nadded #2: Call plumber\nerror: due date must look like 2026-10-25, not '30-11-2026'\nexit code: 1\n#1   HIGH   2026-10-25 Pay electricity bill\n#2   LOW    -          Call plumber\n",
+   "explain": [
+    [
+     6,
+     "main takes argv and the service: easy to test."
+    ],
+    [
+     7,
+     "Parse once, then dispatch on the subcommand."
+    ],
+    [
+     15,
+     "Every domain error becomes a friendly message..."
+    ],
+    [
+     17,
+     "...and a non-zero exit code, so scripts can detect failure."
+    ],
+    [
+     23,
+     "A badly formatted date: rejected by the service."
+    ]
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n",
+    "errors.py": "class KaamError(Exception):\n    \"\"\"Base class for every error Kaam reports to the user.\"\"\"\n\n\nclass ValidationError(KaamError):\n    \"\"\"Bad input: an empty title, an unknown priority, a malformed date.\"\"\"\n\n\nclass TaskNotFound(KaamError):\n    \"\"\"No task has the requested id.\"\"\"\n\n\nclass StorageError(KaamError):\n    \"\"\"The task file is unreadable or corrupt.\"\"\"\n",
+    "storage.py": "import json\nimport os\nfrom pathlib import Path\n\nfrom errors import StorageError\nfrom models import Task\n\n\nclass MemoryStorage:\n    \"\"\"Keeps tasks in memory as plain dicts, like a real store would. Perfect for tests.\"\"\"\n\n    def __init__(self):\n        self.rows: list[dict] = []\n\n    def load(self) -> list[Task]:\n        return [Task.from_dict(row) for row in self.rows]\n\n    def save(self, tasks: list[Task]) -> None:\n        self.rows = [task.to_dict() for task in tasks]\n\n\nclass JsonStorage:\n    \"\"\"Keeps tasks in a JSON file, written atomically.\"\"\"\n\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        if not self.path.exists():\n            return []\n        try:\n            rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n            return [Task.from_dict(row) for row in rows]\n        except (json.JSONDecodeError, KeyError, ValueError) as err:\n            raise StorageError(f\"{self.path} is corrupt ({type(err).__name__})\") from err\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)\n",
+    "services.py": "from datetime import date, timedelta\n\nfrom errors import TaskNotFound, ValidationError\nfrom models import Priority, Task\n\n\nclass TaskService:\n    def __init__(self, storage):\n        self.storage = storage\n\n    def add(self, title: str, priority: str = \"medium\", due: str | None = None) -> Task:\n        title = title.strip()\n        if not 1 <= len(title) <= 80:\n            raise ValidationError(\"title must be 1 to 80 characters\")\n        try:\n            level = Priority[priority.upper()]\n        except KeyError:\n            raise ValidationError(f\"priority must be low, medium or high, not {priority!r}\") from None\n        try:\n            due_date = date.fromisoformat(due) if due else None\n        except ValueError:\n            raise ValidationError(f\"due date must look like 2026-10-25, not {due!r}\") from None\n        tasks = self.storage.load()\n        task = Task(max((t.id for t in tasks), default=0) + 1, title, level, due_date)\n        self.storage.save(tasks + [task])\n        return task\n\n    def complete(self, task_id: int) -> Task:\n        tasks = self.storage.load()\n        task = self._find(tasks, task_id)\n        task.done = True\n        self.storage.save(tasks)\n        return task\n\n    def delete(self, task_id: int) -> Task:\n        tasks = self.storage.load()\n        task = self._find(tasks, task_id)\n        self.storage.save([t for t in tasks if t.id != task_id])\n        return task\n\n    def pending(self) -> list[Task]:\n        open_tasks = [t for t in self.storage.load() if not t.done]\n        return sorted(open_tasks, key=lambda t: (-t.priority.value, t.due or date.max, t.id))\n\n    def due_soon(self, today: date, days: int = 3) -> list[Task]:\n        limit = today + timedelta(days=days)\n        return [t for t in self.pending() if t.due and t.due <= limit]\n\n    def all(self) -> list[Task]:\n        return self.storage.load()\n\n    @staticmethod\n    def _find(tasks: list[Task], task_id: int) -> Task:\n        for task in tasks:\n            if task.id == task_id:\n                return task\n        raise TaskNotFound(f\"no task with id {task_id}\")\n",
+    "cli.py": "import argparse\n\ndef build_parser() -> argparse.ArgumentParser:\n    parser = argparse.ArgumentParser(prog=\"kaam\", description=\"A tiny task manager.\")\n    sub = parser.add_subparsers(dest=\"command\", required=True)\n\n    add = sub.add_parser(\"add\", help=\"add a task\")\n    add.add_argument(\"title\")\n    add.add_argument(\"--priority\", choices=[\"low\", \"medium\", \"high\"], default=\"medium\")\n    add.add_argument(\"--due\", help=\"YYYY-MM-DD\")\n\n    sub.add_parser(\"list\", help=\"show open tasks\")\n    done = sub.add_parser(\"done\", help=\"mark a task done\")\n    done.add_argument(\"task_id\", type=int)\n    return parser\n\n\ndef format_task(task) -> str:\n    due = task.due.isoformat() if task.due else \"-\"\n    return f\"#{task.id:<3} {task.priority.name:<6} {due:<10} {task.title}\"\n"
+   },
+   "say": "Main is the whole interface layer in one function. It parses the arguments, calls the right service method, and prints the result. Every Kaam error becomes a friendly one line message and exit code one, instead of a traceback. Watch the passport task: its date is in the wrong format, so we get a clear error and nothing is saved."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: why return an exit code?",
+   "q": "Why does `main(argv, service)` **return** an exit code instead of calling `sys.exit()` itself?",
+   "options": [
+    "Tests can call `main([...], fake_service)` and check the result; the real entry point does `sys.exit(main(sys.argv[1:], service))`",
+    "`sys.exit()` is deprecated in Python 3.13",
+    "Exit codes are only needed on Windows"
+   ],
+   "answer": 0,
+   "why": "A function that exits the program is hard to test. Returning 0 or 1 keeps `main` a normal function; only the thin entry point talks to the operating system. Shell scripts, cron and CI read that exit code.",
+   "say": "Main returns zero or one, and something else passes that to sys exit. Why split it like that?"
+  },
+  {
+   "type": "concept",
+   "title": "Reports people actually read",
+   "body": "- **summary first**, details after\n- align columns and sort meaningfully\n- show what needs **action** (overdue!) before what doesn't\n- dates in a friendly format, the same everywhere",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "kaam report"
+     ],
+     [
+      "",
+      "Kaam report for 20 Oct 2026"
+     ],
+     [
+      "",
+      "Done: 1 of 4"
+     ],
+     [
+      "",
+      "Open by priority: high 1, medium 2, low 0"
+     ],
+     [
+      "",
+      "Overdue (2):"
+     ],
+     [
+      "",
+      "  #1 Pay electricity bill (due 15 Oct)"
+     ],
+     [
+      "",
+      "  #4 Buy diyas (due 18 Oct)"
+     ]
+    ]
+   },
+   "say": "A good report respects the reader's time. Put the summary first and the details after. Align the columns and sort them in a meaningful order. Show what needs action, like overdue tasks, before everything else. And format dates and numbers the same way everywhere. Here is the report we are about to build."
+  },
+  {
+   "type": "code",
+   "title": "Build the report",
+   "body": "A pure function: `today` is a parameter, so the report is testable and repeatable.",
+   "code": "from collections import Counter\nfrom datetime import date\n\nfrom models import Priority, Task\n\ndef report(tasks: list[Task], today: date) -> str:\n    open_tasks = [t for t in tasks if not t.done]\n    overdue = sorted((t for t in open_tasks if t.due and t.due < today), key=lambda t: t.due)\n    by_priority = Counter(t.priority.name.lower() for t in open_tasks)\n    lines = [f\"Kaam report for {today:%d %b %Y}\",\n             f\"Done: {len(tasks) - len(open_tasks)} of {len(tasks)}\",\n             \"Open by priority: \" + \", \".join(f\"{p} {by_priority[p]}\" for p in (\"high\", \"medium\", \"low\")),\n             f\"Overdue ({len(overdue)}):\"]\n    lines += [f\"  #{t.id} {t.title} (due {t.due:%d %b})\" for t in overdue] or [\"  nothing overdue\"]\n    return \"\\n\".join(lines)\n\ntasks = [Task(1, \"Pay electricity bill\", Priority.HIGH, date(2026, 10, 15)),\n         Task(2, \"Call plumber\", Priority.LOW, done=True),\n         Task(3, \"Renew passport\", due=date(2026, 11, 30)),\n         Task(4, \"Buy diyas\", due=date(2026, 10, 18))]\nprint(report(tasks, today=date(2026, 10, 20)))",
+   "expect": "Kaam report for 20 Oct 2026\nDone: 1 of 4\nOpen by priority: high 1, medium 2, low 0\nOverdue (2):\n  #1 Pay electricity bill (due 15 Oct)\n  #4 Buy diyas (due 18 Oct)\n",
+   "explain": [
+    [
+     8,
+     "Overdue: open, has a due date, and it is before today."
+    ],
+    [
+     9,
+     "Counter tallies open tasks per priority."
+    ],
+    [
+     10,
+     "Inside an f-string, a date takes strftime codes: 20 Oct 2026."
+    ],
+    [
+     14,
+     "An empty list is falsy, so 'or' supplies a friendly line."
+    ]
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n"
+   },
+   "say": "The report is a pure function: tasks and today's date in, text out, which makes it trivial to test. It counts what is done, finds overdue tasks and sorts them by date, and counts open tasks per priority with a Counter. Dates use strftime patterns inside the f string. Notice that today is a parameter, never date dot today, so the output is predictable."
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: a progress bar",
+   "task": "Write `progress_bar(done, total, width=20)` for the report:\n- `progress_bar(2, 5)` → `\"[########------------] 40%\"`\n- filled cells: `round(width * done / total)`\n- the percent is rounded to a whole number\n- `total == 0` gives an empty bar and `0%` (no crash)",
+   "starter": "def progress_bar(done: int, total: int, width: int = 20) -> str:\n    filled = round(width * done / total)\n    return \"[\" + \"#\" * filled + \"]\"\n\nprint(progress_bar(2, 5))",
+   "solution": "def progress_bar(done: int, total: int, width: int = 20) -> str:\n    if total == 0:\n        return \"[\" + \"-\" * width + \"] 0%\"\n    filled = round(width * done / total)\n    percent = round(100 * done / total)\n    return \"[\" + \"#\" * filled + \"-\" * (width - filled) + f\"] {percent}%\"\n\nprint(progress_bar(2, 5))",
+   "tests": "assert progress_bar(2, 5) == \"[########------------] 40%\", \"progress_bar(2, 5) should be '[########------------] 40%'. Got \" + repr(progress_bar(2, 5))\nassert progress_bar(5, 5) == \"[####################] 100%\", \"All done should be a full bar and 100%.\"\nassert progress_bar(1, 4, width=8) == \"[##------] 25%\", \"Respect width: progress_bar(1, 4, width=8) is '[##------] 25%'.\"\nassert progress_bar(1, 3) == \"[#######-------------] 33%\", \"Round both parts: progress_bar(1, 3) is '[#######-------------] 33%'.\"\ntry:\n    empty = progress_bar(0, 0)\nexcept ZeroDivisionError:\n    raise AssertionError(\"progress_bar(0, 0) crashed with ZeroDivisionError. A brand-new task list has total 0: return an empty bar and 0%.\")\nassert empty == \"[--------------------] 0%\", \"progress_bar(0, 0) should be '[--------------------] 0%'. Got \" + repr(empty)",
+   "hints": [
+    "Pad the rest with dashes: `\"-\" * (width - filled)`.",
+    "Percent: `round(100 * done / total)`, then `f\"] {percent}%\"`.",
+    "Handle `total == 0` first, before dividing."
+   ],
+   "say": "Give the report a progress bar. Fill the bar with hashes for the done part and dashes for the rest, add the percentage, and respect the width. And think about a brand new user with zero tasks: dividing by zero must not crash their very first report."
+  },
+  {
+   "type": "concept",
+   "title": "Polish: logging, errors, README",
+   "body": "- users see **friendly errors**; developers get **logs** (`--verbose` switches on debug)\n- a **README** with: what it is, install, usage examples, running the tests, licence\n- `--help` text on every command",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Before polish",
+     "code": "$ kaam done 99\nTraceback (most recent call last):\n  File \"cli.py\", line 41, in main\n    task = self._find(tasks, task_id)\nTaskNotFound: no task with id 99"
+    },
+    "right": {
+     "title": "After polish",
+     "code": "$ kaam done 99\nerror: no task with id 99\n\n$ kaam --verbose done 99\nDEBUG kaam: looking up task 99\nerror: no task with id 99"
+    },
+    "verdict": "Friendly for users, detailed for developers when they ask for it."
+   },
+   "say": "Polish is what separates a project from a product. Users should see a short, friendly message, never a traceback, while developers get detailed logs, switched on with a verbose flag. And every project needs a README: what it does, how to install it, a few usage examples, how to run the tests, and the licence. Recruiters read READMEs."
+  },
+  {
+   "type": "code",
+   "title": "A --verbose flag for debug logs",
+   "body": "In the real CLI, `--verbose` is just `parser.add_argument(\"--verbose\", action=\"store_true\")`.",
+   "code": "import logging\nimport sys\n\nlog = logging.getLogger(\"kaam\")\n\ndef configure_logging(verbose: bool) -> None:\n    logging.basicConfig(\n        level=logging.DEBUG if verbose else logging.WARNING,\n        format=\"%(levelname)s %(name)s: %(message)s\",\n        stream=sys.stdout, force=True,\n    )\n\ndef complete(task_id: int, tasks: dict) -> str:\n    log.debug(\"looking up task %s among %s tasks\", task_id, len(tasks))\n    if task_id not in tasks:\n        log.warning(\"task %s not found\", task_id)\n        return f\"error: no task with id {task_id}\"\n    return f\"done #{task_id}: {tasks[task_id]}\"\n\ntasks = {1: \"Pay electricity bill\"}\nfor verbose in (False, True):\n    configure_logging(verbose)\n    print(f\"-- verbose={verbose}\")\n    print(complete(1, tasks))\n    print(complete(9, tasks))",
+   "expect": "-- verbose=False\ndone #1: Pay electricity bill\nWARNING kaam: task 9 not found\nerror: no task with id 9\n-- verbose=True\nDEBUG kaam: looking up task 1 among 1 tasks\ndone #1: Pay electricity bill\nDEBUG kaam: looking up task 9 among 1 tasks\nWARNING kaam: task 9 not found\nerror: no task with id 9\n",
+   "explain": [
+    [
+     4,
+     "One named logger for the app."
+    ],
+    [
+     8,
+     "The level decides which lines appear."
+    ],
+    [
+     10,
+     "force=True lets us reconfigure (here: twice in one run)."
+    ],
+    [
+     14,
+     "Debug lines cost nothing when the level is WARNING."
+    ]
+   ],
+   "say": "The app logs with a logger named kaam. Configure logging sets the level once: warnings only by default, everything when verbose is on. Running the same two commands both ways shows the difference. Normally the user just sees the result and one warning. With verbose, the debug lines explain exactly what the program was doing."
+  },
+  {
+   "type": "concept",
+   "title": "Packaging with pyproject.toml",
+   "body": "`pyproject.toml` describes your package: name, version, Python version, dependencies and **commands**. `[project.scripts]` turns `kaam = \"kaam.cli:run\"` into a real `kaam` command.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "pip install -e \".[dev]\""
+     ],
+     [
+      "",
+      "Successfully installed kaam-0.1.0"
+     ],
+     [
+      "$",
+      "kaam --help"
+     ],
+     [
+      "",
+      "usage: kaam [-h] {add,list,done,delete,soon} ..."
+     ],
+     [
+      "$",
+      "python -m build"
+     ],
+     [
+      "",
+      "Successfully built kaam-0.1.0.tar.gz and kaam-0.1.0-py3-none-any.whl"
+     ],
+     [
+      "$",
+      "pipx install kaam"
+     ],
+     [
+      "",
+      "installed package kaam 0.1.0: command kaam"
+     ]
+    ]
+   },
+   "say": "Pyproject dot toml is the standard description of a Python package: its name, version, required Python version, dependencies, and the commands it installs. The project scripts table is the magic part: it creates a real kaam command that calls a function in your code. Install it in editable mode while developing, or with pipx for everyday use."
+  },
+  {
+   "type": "code",
+   "title": "Read your pyproject.toml",
+   "body": "`tomllib` (standard library since 3.11) reads TOML. Packaging tools read this exact file.",
+   "code": "import tomllib\nfrom pathlib import Path\n\nconfig = tomllib.loads(Path(\"pyproject.toml\").read_text(encoding=\"utf-8\"))\nproject = config[\"project\"]\n\nprint(f\"{project['name']} {project['version']}: {project['description']}\")\nprint(\"Python:\", project[\"requires-python\"])\nprint(\"Runtime dependencies:\", project[\"dependencies\"] or \"none\")\nprint(\"Dev tools:\", \", \".join(project[\"optional-dependencies\"][\"dev\"]))\nfor command, target in project[\"scripts\"].items():\n    print(f\"Installs the command '{command}', which calls {target}\")",
+   "expect": "kaam 0.1.0: A tiny, well-tested command-line task manager\nPython: >=3.11\nRuntime dependencies: none\nDev tools: pytest>=8, ruff>=0.6\nInstalls the command 'kaam', which calls kaam.cli:run\n",
+   "explain": [
+    [
+     4,
+     "Parse TOML into ordinary dicts and lists."
+    ],
+    [
+     9,
+     "No runtime dependencies: nothing extra to install."
+    ],
+    [
+     11,
+     "[project.scripts]: command name -> module:function."
+    ]
+   ],
+   "files": {
+    "pyproject.toml": "[build-system]\nrequires = [\"setuptools>=69\"]\nbuild-backend = \"setuptools.build_meta\"\n\n[project]\nname = \"kaam\"\nversion = \"0.1.0\"\ndescription = \"A tiny, well-tested command-line task manager\"\nreadme = \"README.md\"\nrequires-python = \">=3.11\"\ndependencies = []\nauthors = [{ name = \"Riya Sharma\" }]\n\n[project.optional-dependencies]\ndev = [\"pytest>=8\", \"ruff>=0.6\"]\n\n[project.scripts]\nkaam = \"kaam.cli:run\"\n"
+   },
+   "say": "Kaam's pyproject file sits next to this program, and the standard library's toml lib can read it. Kaam needs Python three point eleven or newer and has no runtime dependencies at all, only development tools. The scripts table installs a kaam command that calls the run function inside kaam dot c l i."
+  },
+  {
+   "type": "concept",
+   "title": "A professional Git workflow",
+   "body": "- one **branch per change**, small focused commits with clear messages\n- open a **pull request**; CI runs, a teammate reviews\n- merge when green, delete the branch\n- `.gitignore`: `.venv/`, `__pycache__/`, `tasks.json`, `.env`",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "git switch -c feature/soon-command"
+     ],
+     [
+      "",
+      "Switched to a new branch 'feature/soon-command'"
+     ],
+     [
+      "$",
+      "git add src/kaam/cli.py tests/test_cli.py"
+     ],
+     [
+      "$",
+      "git commit -m \"Add 'soon' command for tasks due in N days\""
+     ],
+     [
+      "",
+      "[feature/soon-command 3f2a9c1] Add 'soon' command for tasks due in N days"
+     ],
+     [
+      "$",
+      "git push -u origin feature/soon-command"
+     ],
+     [
+      "",
+      "Create a pull request: github.com/riya/kaam/pull/new/feature/soon-command"
+     ]
+    ]
+   },
+   "say": "Professionals never work directly on main. Create a branch for each change, make small commits with clear messages, push, and open a pull request. Automated tests run, a teammate reviews, and only then is it merged. Keep junk and secrets out of the repository with a git ignore file: virtual environments, caches, your personal task data and any dot env file."
+  },
+  {
+   "type": "concept",
+   "title": "CI: tests on every push",
+   "body": "**Continuous integration** runs your linter and tests on a fresh machine for every push and pull request. Red means don't merge.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": ".github/workflows/ci.yml",
+     "code": "name: tests\non: [push, pull_request]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.13\"\n      - run: pip install -e \".[dev]\"\n      - run: ruff check .\n      - run: python -m unittest discover tests"
+    },
+    "right": {
+     "title": "What happens",
+     "code": "# 1. a fresh Ubuntu machine starts\n# 2. your code is checked out\n# 3. Python 3.13 is installed\n# 4. your package and dev tools install\n# 5. the linter runs\n# 6. every test runs\n# green tick: safe to merge"
+    },
+    "verdict": "Broken code can't sneak into main when every change must pass the same checks."
+   },
+   "say": "Continuous integration means a fresh machine runs your linter and your tests on every push and every pull request. GitHub Actions reads a small YAML file in your repository: check out the code, install Python, install the package, run ruff, run the tests. A green tick means safe to merge. A red cross means fix it first."
+  },
+  {
+   "type": "concept",
+   "title": "Deploying Python apps",
+   "body": "- **CLI tools** ship to PyPI: `pipx install kaam`\n- **web apps and APIs** ship as **Docker** images to platforms such as Railway, Render or Fly.io\n- config and secrets come from the platform's environment variables (Day 55)",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Dockerfile",
+     "code": "FROM python:3.13-slim\nWORKDIR /app\nCOPY . .\nRUN pip install --no-cache-dir .\nENV KAAM_DB=/data/tasks.json\nCMD [\"kaam\", \"list\"]"
+    },
+    "right": {
+     "title": "Railway / Render",
+     "code": "# 1. push the repo to GitHub\n# 2. new project -> deploy from repo\n# 3. it builds the Dockerfile\n# 4. set env vars in the dashboard\n# 5. every push to main redeploys"
+    },
+    "verdict": "Docker makes 'it works on my machine' true on every machine."
+   },
+   "say": "How you deploy depends on what you built. Command line tools are published to PyPI, and people install them with pipx. Web apps and APIs are usually packaged as a Docker image: Python plus your code in one box that runs the same everywhere. Platforms like Railway and Render build that image from your repository and redeploy on every push."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: the red cross",
+   "q": "Your pull request shows a red cross: one CI test fails, but the feature works on your laptop. What do you do?",
+   "options": [
+    "Merge anyway: it works on your machine",
+    "Read the CI log, reproduce the failure locally, fix the code (or a genuinely wrong test), push again",
+    "Delete the failing test so CI goes green",
+    "Turn off CI for this repository"
+   ],
+   "answer": 1,
+   "why": "CI exists to catch exactly the bugs your laptop hides: a missing dependency, a different Python version, a file only you have. Fix the cause, never the signal.",
+   "say": "The tests pass on your laptop but fail in CI, and your pull request has a red cross. What does a professional do?"
+  },
+  {
+   "type": "project",
+   "title": "Project: ship the Kaam CLI",
+   "brief": "Finish Kaam's command line in `main.py`. The service and storage from yesterday sit next to your file.",
+   "steps": [
+    "Add a `delete` subcommand (int `task_id`) and a `soon` subcommand with `--days` (int, default 3) and `--today` (`type=date.fromisoformat`)",
+    "`list` prints one `format_task` line per open task, or `nothing to do`",
+    "`done` / `delete` print `done #2: Call plumber` / `deleted #2: Call plumber`",
+    "`soon` prints `service.due_soon(today, days)` the same way, or `nothing due soon`",
+    "Catch every `KaamError`: print `error: <message>` and return 1; return 0 on success"
+   ],
+   "starter": "import argparse\nfrom datetime import date\n\nfrom errors import KaamError\nfrom services import TaskService\nfrom storage import MemoryStorage\n\ndef build_parser() -> argparse.ArgumentParser:\n    parser = argparse.ArgumentParser(prog=\"kaam\", description=\"A tiny task manager.\")\n    sub = parser.add_subparsers(dest=\"command\", required=True)\n    add = sub.add_parser(\"add\", help=\"add a task\")\n    add.add_argument(\"title\")\n    add.add_argument(\"--priority\", choices=[\"low\", \"medium\", \"high\"], default=\"medium\")\n    add.add_argument(\"--due\", help=\"YYYY-MM-DD\")\n    sub.add_parser(\"list\", help=\"show open tasks\")\n    done = sub.add_parser(\"done\", help=\"mark a task done\")\n    done.add_argument(\"task_id\", type=int)\n    # TODO: \"delete\" with an int task_id\n    # TODO: \"soon\" with --days (int, default 3) and --today (type=date.fromisoformat)\n    return parser\n\ndef format_task(task) -> str:\n    due = task.due.isoformat() if task.due else \"-\"\n    return f\"#{task.id:<3} {task.priority.name:<6} {due:<10} {task.title}\"\n\ndef main(argv: list[str], service: TaskService) -> int:\n    args = build_parser().parse_args(argv)\n    if args.command == \"add\":\n        task = service.add(args.title, args.priority, args.due)\n        print(f\"added #{task.id}: {task.title}\")\n    elif args.command == \"list\":\n        for task in service.pending():\n            print(format_task(task))\n    # TODO: \"nothing to do\" for an empty list; done, delete and soon\n    # TODO: catch KaamError -> print \"error: <message>\" and return 1\n    return 0\n\nservice = TaskService(MemoryStorage())\nmain([\"add\", \"Pay electricity bill\", \"--priority\", \"high\", \"--due\", \"2026-10-25\"], service)\nmain([\"add\", \"Call plumber\", \"--priority\", \"low\"], service)\nmain([\"list\"], service)",
+   "solution": "import argparse\nfrom datetime import date\n\nfrom errors import KaamError\nfrom services import TaskService\nfrom storage import MemoryStorage\n\ndef build_parser() -> argparse.ArgumentParser:\n    parser = argparse.ArgumentParser(prog=\"kaam\", description=\"A tiny task manager.\")\n    sub = parser.add_subparsers(dest=\"command\", required=True)\n    add = sub.add_parser(\"add\", help=\"add a task\")\n    add.add_argument(\"title\")\n    add.add_argument(\"--priority\", choices=[\"low\", \"medium\", \"high\"], default=\"medium\")\n    add.add_argument(\"--due\", help=\"YYYY-MM-DD\")\n    sub.add_parser(\"list\", help=\"show open tasks\")\n    done = sub.add_parser(\"done\", help=\"mark a task done\")\n    done.add_argument(\"task_id\", type=int)\n    delete = sub.add_parser(\"delete\", help=\"delete a task\")\n    delete.add_argument(\"task_id\", type=int)\n    soon = sub.add_parser(\"soon\", help=\"tasks due soon, overdue included\")\n    soon.add_argument(\"--days\", type=int, default=3)\n    soon.add_argument(\"--today\", type=date.fromisoformat, default=None, help=\"YYYY-MM-DD\")\n    return parser\n\ndef format_task(task) -> str:\n    due = task.due.isoformat() if task.due else \"-\"\n    return f\"#{task.id:<3} {task.priority.name:<6} {due:<10} {task.title}\"\n\ndef print_tasks(tasks, empty_message: str) -> None:\n    for task in tasks:\n        print(format_task(task))\n    if not tasks:\n        print(empty_message)\n\ndef main(argv: list[str], service: TaskService) -> int:\n    args = build_parser().parse_args(argv)\n    try:\n        if args.command == \"add\":\n            task = service.add(args.title, args.priority, args.due)\n            print(f\"added #{task.id}: {task.title}\")\n        elif args.command == \"list\":\n            print_tasks(service.pending(), \"nothing to do\")\n        elif args.command == \"done\":\n            task = service.complete(args.task_id)\n            print(f\"done #{task.id}: {task.title}\")\n        elif args.command == \"delete\":\n            task = service.delete(args.task_id)\n            print(f\"deleted #{task.id}: {task.title}\")\n        elif args.command == \"soon\":\n            today = args.today or date.today()\n            print_tasks(service.due_soon(today, args.days), \"nothing due soon\")\n    except KaamError as err:\n        print(f\"error: {err}\")\n        return 1\n    return 0\n\nservice = TaskService(MemoryStorage())\nmain([\"add\", \"Pay electricity bill\", \"--priority\", \"high\", \"--due\", \"2026-10-25\"], service)\nmain([\"add\", \"Call plumber\", \"--priority\", \"low\"], service)\nmain([\"list\"], service)",
+   "tests": "import contextlib, io\nfrom services import TaskService\nfrom storage import MemoryStorage\n\ndef cli(argv, service):\n    buf = io.StringIO()\n    with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(io.StringIO()):\n        try:\n            code = main(argv, service)\n        except SystemExit:\n            raise AssertionError(\"argparse rejected \" + str(argv) + \". Did you add that command to build_parser()?\")\n    return code, buf.getvalue().strip()\n\ns = TaskService(MemoryStorage())\ncode, out = cli([\"add\", \"Pay electricity bill\", \"--priority\", \"high\", \"--due\", \"2026-10-25\"], s)\nassert code == 0 and \"added #1: Pay electricity bill\" in out, \"add should print 'added #1: Pay electricity bill' and return 0. Printed \" + repr(out)\ncli([\"add\", \"Call plumber\", \"--priority\", \"low\"], s)\ncli([\"add\", \"Buy diyas\", \"--due\", \"2026-10-19\"], s)\ncode, out = cli([\"list\"], s)\nlines = out.splitlines()\nassert code == 0 and len(lines) == 3 and lines[0].startswith(\"#1\") and \"Call plumber\" in lines[2], \"list should print one format_task line per open task, most urgent first. Printed \" + repr(out)\ncode, out = cli([\"done\", \"2\"], s)\nassert code == 0 and out == \"done #2: Call plumber\", \"done 2 should print 'done #2: Call plumber'. Printed \" + repr(out)\ncode, out = cli([\"soon\", \"--today\", \"2026-10-22\", \"--days\", \"3\"], s)\nassert code == 0 and [l.split()[0] for l in out.splitlines()] == [\"#1\", \"#3\"], \"soon on 2026-10-22 should list #1 (due 25 Oct) and overdue #3. Printed \" + repr(out)\ncode, out = cli([\"delete\", \"3\"], s)\nassert code == 0 and out == \"deleted #3: Buy diyas\", \"delete 3 should print 'deleted #3: Buy diyas'. Printed \" + repr(out)\nassert [t.id for t in s.all()] == [1, 2], \"delete should really remove the task through the service.\"\ncode, out = cli([\"done\", \"99\"], s)\nassert code == 1 and out == \"error: no task with id 99\", \"done 99 should print 'error: no task with id 99' and return 1. Got \" + repr((code, out))\ncode, out = cli([\"add\", \"   \"], s)\nassert code == 1 and out.startswith(\"error:\"), \"A blank title should print an error line and return 1, not crash.\"\ncli([\"done\", \"1\"], s)\ncode, out = cli([\"list\"], s)\nassert out == \"nothing to do\", \"With no open tasks, list should print 'nothing to do'. Printed \" + repr(out)",
+   "hints": [
+    "Each new subcommand is `sub.add_parser(\"delete\")` plus its own `add_argument` calls.",
+    "Wrap the whole `if/elif` chain in `try:` ... `except KaamError as err:`.",
+    "A small helper `print_tasks(tasks, empty_message)` keeps `list` and `soon` short."
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n",
+    "errors.py": "class KaamError(Exception):\n    \"\"\"Base class for every error Kaam reports to the user.\"\"\"\n\n\nclass ValidationError(KaamError):\n    \"\"\"Bad input: an empty title, an unknown priority, a malformed date.\"\"\"\n\n\nclass TaskNotFound(KaamError):\n    \"\"\"No task has the requested id.\"\"\"\n\n\nclass StorageError(KaamError):\n    \"\"\"The task file is unreadable or corrupt.\"\"\"\n",
+    "storage.py": "import json\nimport os\nfrom pathlib import Path\n\nfrom errors import StorageError\nfrom models import Task\n\n\nclass MemoryStorage:\n    \"\"\"Keeps tasks in memory as plain dicts, like a real store would. Perfect for tests.\"\"\"\n\n    def __init__(self):\n        self.rows: list[dict] = []\n\n    def load(self) -> list[Task]:\n        return [Task.from_dict(row) for row in self.rows]\n\n    def save(self, tasks: list[Task]) -> None:\n        self.rows = [task.to_dict() for task in tasks]\n\n\nclass JsonStorage:\n    \"\"\"Keeps tasks in a JSON file, written atomically.\"\"\"\n\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        if not self.path.exists():\n            return []\n        try:\n            rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n            return [Task.from_dict(row) for row in rows]\n        except (json.JSONDecodeError, KeyError, ValueError) as err:\n            raise StorageError(f\"{self.path} is corrupt ({type(err).__name__})\") from err\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)\n",
+    "services.py": "from datetime import date, timedelta\n\nfrom errors import TaskNotFound, ValidationError\nfrom models import Priority, Task\n\n\nclass TaskService:\n    def __init__(self, storage):\n        self.storage = storage\n\n    def add(self, title: str, priority: str = \"medium\", due: str | None = None) -> Task:\n        title = title.strip()\n        if not 1 <= len(title) <= 80:\n            raise ValidationError(\"title must be 1 to 80 characters\")\n        try:\n            level = Priority[priority.upper()]\n        except KeyError:\n            raise ValidationError(f\"priority must be low, medium or high, not {priority!r}\") from None\n        try:\n            due_date = date.fromisoformat(due) if due else None\n        except ValueError:\n            raise ValidationError(f\"due date must look like 2026-10-25, not {due!r}\") from None\n        tasks = self.storage.load()\n        task = Task(max((t.id for t in tasks), default=0) + 1, title, level, due_date)\n        self.storage.save(tasks + [task])\n        return task\n\n    def complete(self, task_id: int) -> Task:\n        tasks = self.storage.load()\n        task = self._find(tasks, task_id)\n        task.done = True\n        self.storage.save(tasks)\n        return task\n\n    def delete(self, task_id: int) -> Task:\n        tasks = self.storage.load()\n        task = self._find(tasks, task_id)\n        self.storage.save([t for t in tasks if t.id != task_id])\n        return task\n\n    def pending(self) -> list[Task]:\n        open_tasks = [t for t in self.storage.load() if not t.done]\n        return sorted(open_tasks, key=lambda t: (-t.priority.value, t.due or date.max, t.id))\n\n    def due_soon(self, today: date, days: int = 3) -> list[Task]:\n        limit = today + timedelta(days=days)\n        return [t for t in self.pending() if t.due and t.due <= limit]\n\n    def all(self) -> list[Task]:\n        return self.storage.load()\n\n    @staticmethod\n    def _find(tasks: list[Task], task_id: int) -> Task:\n        for task in tasks:\n            if task.id == task_id:\n                return task\n        raise TaskNotFound(f\"no task with id {task_id}\")\n"
+   },
+   "say": "Final build of the capstone. Finish the Kaam command line: add the delete and soon subcommands to the parser, handle done, delete and soon in main, print a friendly line when a list is empty, and turn every Kaam error into an error message with exit code one. The tests drive your CLI exactly like a user would, command by command."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 59 complete",
+   "points": [
+    "argparse subcommands give Kaam a real CLI; `main(argv, service)` returns an exit code",
+    "Reports are pure functions: summary first, today as a parameter",
+    "Polish: friendly errors for users, `--verbose` logs for developers, a README",
+    "`pyproject.toml` packages it; `[project.scripts]` creates the `kaam` command",
+    "Branches, pull requests and CI on every push; Docker and platforms to deploy"
+   ],
+   "say": "Mission fifty nine complete, and Kaam is shipped. It has a real command line, a report, friendly errors and logs, packaging, and you know the Git, CI and deployment workflow used by professional teams. Push it to GitHub with a good README: it is your first portfolio project. Tomorrow is graduation day."
+  }
+ ]
+}

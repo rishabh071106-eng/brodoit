@@ -1,0 +1,500 @@
+{
+ "day": 44,
+ "phase": 5,
+ "title": "Graphs, trees and dynamic programming",
+ "subtitle": "Model connections, walk them, and stop repeating work",
+ "minutes": 65,
+ "goal": "Model real problems as graphs and trees, search them with BFS and DFS, and speed up recursive solutions with dynamic programming.",
+ "outcomes": [
+  "Store a graph as an adjacency list and explain nodes and edges",
+  "Find the fewest-stops route with BFS and order dependencies with DFS",
+  "Build a binary search tree and traverse it in-order and pre-order",
+  "Solve climbing stairs and coin change with memoisation and tabulation",
+  "Match interview problems to the right pattern"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 44: Graphs, trees and dynamic programming",
+   "body": "Maps finding your route, LinkedIn's 'people you may know', the folders on your laptop, the caching behind fast apps: all **graphs**, **trees** and **dynamic programming**.\n\nThey fill the hardest interview rounds. Today you'll see they're friendlier than they look.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Model it: nodes and edges",
+     "Walk it: BFS for fewest steps, DFS to explore",
+     "Remember answers: dynamic programming"
+    ]
+   },
+   "say": "Google Maps finding your route, LinkedIn suggesting people you may know, the folders on your laptop, the caching behind every fast app. All of these are graphs, trees and dynamic programming. These topics fill the hardest interview rounds, and today you will see they are much friendlier than they look."
+  },
+  {
+   "type": "concept",
+   "title": "Graphs: nodes and edges",
+   "body": "A **graph** is things (**nodes**) plus connections (**edges**): stations and tracks, people and friendships, pages and links.\n\nStore it as an **adjacency list**: a dict that maps each node to its neighbours.",
+   "visual": {
+    "kind": "dict",
+    "name": "metro",
+    "pairs": [
+     [
+      "'Rajiv Chowk'",
+      "['Chandni Chowk', 'Central Secretariat', 'Karol Bagh', 'Mandi House']"
+     ],
+     [
+      "'Karol Bagh'",
+      "['Rajiv Chowk', 'Dwarka']"
+     ],
+     [
+      "'Dwarka'",
+      "['Karol Bagh']"
+     ],
+     [
+      "…",
+      "…"
+     ]
+    ]
+   },
+   "say": "A graph is just things and the connections between them. Stations and tracks, people and friendships, web pages and links. The things are called nodes and the connections are called edges. In Python we store a graph as an adjacency list: a dict that maps each node to a list of its neighbours."
+  },
+  {
+   "type": "code",
+   "title": "Build an adjacency list",
+   "code": "from collections import defaultdict\n\ntracks = [\n    (\"Kashmere Gate\", \"Chandni Chowk\"), (\"Chandni Chowk\", \"Rajiv Chowk\"),\n    (\"Rajiv Chowk\", \"Central Secretariat\"), (\"Central Secretariat\", \"INA\"),\n    (\"INA\", \"Hauz Khas\"), (\"Rajiv Chowk\", \"Karol Bagh\"),\n    (\"Karol Bagh\", \"Dwarka\"), (\"Rajiv Chowk\", \"Mandi House\"),\n    (\"Mandi House\", \"Central Secretariat\"), (\"Kashmere Gate\", \"Mandi House\"),\n]\n\nmetro = defaultdict(list)\nfor a, b in tracks:\n    metro[a].append(b)      # trains run both ways,\n    metro[b].append(a)      # so add the edge in both directions\n\nprint(metro[\"Rajiv Chowk\"])\nprint(len(metro), \"stations,\", len(tracks), \"tracks\")\n",
+   "expect": "['Chandni Chowk', 'Central Secretariat', 'Karol Bagh', 'Mandi House']\n9 stations, 10 tracks\n",
+   "explain": [
+    [
+     3,
+     "Each track is an edge between two stations."
+    ],
+    [
+     11,
+     "A missing key starts as an empty list."
+    ],
+    [
+     13,
+     "Undirected: add the edge both ways."
+    ],
+    [
+     16,
+     "Neighbours of one station: an O(1) lookup."
+    ]
+   ],
+   "say": "We start from a list of tracks on a simplified metro map, each one a pair of stations. A defaultdict of lists builds the adjacency list in one loop. Trains run both ways, so this is an undirected graph, and we add every edge in both directions. Now a station's neighbours are a single dict lookup away."
+  },
+  {
+   "type": "concept",
+   "title": "BFS: explore in rings",
+   "body": "**Breadth-first search** visits the start, then everything 1 stop away, then 2 stops away… using a **queue**.\n\nBecause it explores in rings, the first time BFS reaches a node it got there by the **fewest edges**.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Put the start in a queue and mark it seen",
+      "s": "pill"
+     },
+     {
+      "t": "Take the node at the front"
+     },
+     {
+      "t": "Is it the goal?",
+      "s": "diamond",
+      "yes": "done, fewest steps",
+      "no": "keep exploring"
+     },
+     {
+      "t": "Add unseen neighbours to the back"
+     },
+     {
+      "t": "Repeat until the queue is empty",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Breadth first search explores like ripples in a pond. First the start, then every station one stop away, then two stops away, and so on. It uses a queue, so the nearest stations are always handled first. Because of those rings, the first time BFS reaches a station, it got there with the fewest stops possible."
+  },
+  {
+   "type": "code",
+   "title": "BFS: stops from Rajiv Chowk",
+   "body": "`metro.py` (next to your program) holds the same graph. BFS prints stations ring by ring.",
+   "code": "from collections import deque\nfrom metro import metro          # the graph we just built\n\ndef stops_from(graph, start):\n    dist = {start: 0}\n    queue = deque([start])\n    while queue:\n        station = queue.popleft()\n        for nxt in graph[station]:\n            if nxt not in dist:              # first visit = fewest stops\n                dist[nxt] = dist[station] + 1\n                queue.append(nxt)\n    return dist\n\nprint(\"stops  station\")\nfor station, n in stops_from(metro, \"Rajiv Chowk\").items():\n    print(f\"{n:>5}  {station}\")\n",
+   "expect": "stops  station\n    0  Rajiv Chowk\n    1  Chandni Chowk\n    1  Central Secretariat\n    1  Karol Bagh\n    1  Mandi House\n    2  Kashmere Gate\n    2  INA\n    2  Dwarka\n    3  Hauz Khas\n",
+   "files": {
+    "metro.py": "from collections import defaultdict\n\nTRACKS = [\n    (\"Kashmere Gate\", \"Chandni Chowk\"), (\"Chandni Chowk\", \"Rajiv Chowk\"),\n    (\"Rajiv Chowk\", \"Central Secretariat\"), (\"Central Secretariat\", \"INA\"),\n    (\"INA\", \"Hauz Khas\"), (\"Rajiv Chowk\", \"Karol Bagh\"),\n    (\"Karol Bagh\", \"Dwarka\"), (\"Rajiv Chowk\", \"Mandi House\"),\n    (\"Mandi House\", \"Central Secretariat\"), (\"Kashmere Gate\", \"Mandi House\"),\n]\n\nmetro = defaultdict(list)\nfor a, b in TRACKS:\n    metro[a].append(b)\n    metro[b].append(a)\nmetro = dict(metro)\n"
+   },
+   "explain": [
+    [
+     5,
+     "dist remembers each station's stop count, and which ones we've seen."
+    ],
+    [
+     8,
+     "Oldest first: that's what makes the rings."
+    ],
+    [
+     10,
+     "Not seen before: this is the shortest way to reach it."
+    ],
+    [
+     11,
+     "One more stop than the station we came from."
+    ]
+   ],
+   "say": "The graph now lives in a small module called metro, next to your program. BFS keeps a dict of distances, which doubles as the set of stations already seen. Each station we take from the front of the queue adds its unseen neighbours, one stop further away. Notice the output comes out ring by ring."
+  },
+  {
+   "type": "predict",
+   "title": "BFS visiting order",
+   "code": "from collections import deque\ngraph = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [\"D\", \"E\"], \"D\": [], \"E\": []}\nseen, queue, order = {\"A\"}, deque([\"A\"]), []\nwhile queue:\n    node = queue.popleft()\n    order.append(node)\n    for nxt in graph[node]:\n        if nxt not in seen:\n            seen.add(nxt)\n            queue.append(nxt)\nprint(\" \".join(order))",
+   "options": [
+    "A B C D E",
+    "A B D C E",
+    "A C E D B",
+    "A B D E C"
+   ],
+   "answer": 0,
+   "why": "BFS finishes each ring before the next: A, then its neighbours B and C, then D and E. The order A B D C E would be depth-first: diving down one branch first.",
+   "say": "A small directed graph, explored with breadth first search. Remember, a queue serves the oldest item first. In what order are the nodes visited?"
+  },
+  {
+   "type": "exercise",
+   "title": "Fewest stops on the metro",
+   "task": "Write `shortest_route(graph, start, goal)`: the list of stations on a route with the **fewest stops**, `start` and `goal` included. Return `[start]` if they're the same and `None` if the goal can't be reached.\n\nUse BFS, remember each station's **parent**, then walk back from the goal.",
+   "starter": "from collections import deque\nfrom metro import metro\n\ndef shortest_route(graph, start, goal):\n    parent = {start: None}       # station -> the station we reached it from\n    queue = deque([start])\n    # BFS. When you take goal off the queue, walk back through parent\n    return None\n\nprint(shortest_route(metro, \"Kashmere Gate\", \"Hauz Khas\"))\n",
+   "solution": "from collections import deque\nfrom metro import metro\n\ndef shortest_route(graph, start, goal):\n    parent = {start: None}       # station -> the station we reached it from\n    queue = deque([start])\n    while queue:\n        station = queue.popleft()\n        if station == goal:\n            route = []\n            while station is not None:\n                route.append(station)\n                station = parent[station]\n            return route[::-1]\n        for nxt in graph.get(station, []):\n            if nxt not in parent:\n                parent[nxt] = station\n                queue.append(nxt)\n    return None\n\nprint(shortest_route(metro, \"Kashmere Gate\", \"Hauz Khas\"))\n",
+   "tests": "route = shortest_route(metro, \"Kashmere Gate\", \"Hauz Khas\")\nassert route is not None, \"Kashmere Gate and Hauz Khas are connected, so return a route, not None.\"\nassert route[0] == \"Kashmere Gate\" and route[-1] == \"Hauz Khas\", f\"The route should start at Kashmere Gate and end at Hauz Khas. Yours: {route}\"\nassert all(b in metro[a] for a, b in zip(route, route[1:])), \"Every two neighbouring stations in your route must be joined by a track.\"\nassert len(route) == 5, f\"The fewest-stops route has 5 stations (via Mandi House); yours has {len(route)}. Use a queue (BFS), not a stack.\"\nassert shortest_route(metro, \"INA\", \"INA\") == [\"INA\"], \"When start and goal are the same, the route is just [start].\"\nisland = {\"A\": [\"B\"], \"B\": [\"A\"], \"C\": []}\nassert shortest_route(island, \"A\", \"C\") is None, \"If the goal can't be reached, return None.\"",
+   "hints": [
+    "When you take the goal off the queue, follow `parent` from the goal back to `None`, then reverse the list.",
+    "Only enqueue a neighbour that isn't in `parent` yet: that also stops you going round in circles.",
+    "If the queue empties without reaching the goal, return None."
+   ],
+   "files": {
+    "metro.py": "from collections import defaultdict\n\nTRACKS = [\n    (\"Kashmere Gate\", \"Chandni Chowk\"), (\"Chandni Chowk\", \"Rajiv Chowk\"),\n    (\"Rajiv Chowk\", \"Central Secretariat\"), (\"Central Secretariat\", \"INA\"),\n    (\"INA\", \"Hauz Khas\"), (\"Rajiv Chowk\", \"Karol Bagh\"),\n    (\"Karol Bagh\", \"Dwarka\"), (\"Rajiv Chowk\", \"Mandi House\"),\n    (\"Mandi House\", \"Central Secretariat\"), (\"Kashmere Gate\", \"Mandi House\"),\n]\n\nmetro = defaultdict(list)\nfor a, b in TRACKS:\n    metro[a].append(b)\n    metro[b].append(a)\nmetro = dict(metro)\n"
+   },
+   "say": "Now the real thing. Write shortest route: breadth first search from the start, remembering for every station which station you reached it from. When you reach the goal, walk those parent links backwards to build the route, then reverse it. Handle the edge cases too: the same start and goal, and a goal you cannot reach."
+  },
+  {
+   "type": "concept",
+   "title": "DFS: go deep first",
+   "body": "**Depth-first search** follows one path as far as it can, then backtracks. Recursion (or a stack) does the bookkeeping.\n\nUse it to explore **everything** reachable, find cycles, solve mazes, or order tasks by their dependencies.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "1 · myapp",
+     "c": [
+      {
+       "t": "2 · flask",
+       "c": [
+        {
+         "t": "3 · werkzeug",
+         "c": [
+          {
+           "t": "4 · markupsafe"
+          }
+         ]
+        },
+        {
+         "t": "5 · jinja2"
+        }
+       ]
+      },
+      {
+       "t": "6 · sqlalchemy"
+      }
+     ]
+    }
+   },
+   "say": "Depth first search is the opposite mood. It follows one path as deep as it can go, then backtracks and tries the next branch. Recursion does the bookkeeping for free. Use it when you need to explore everything reachable, detect cycles, solve mazes, or work out the order to install packages that depend on each other."
+  },
+  {
+   "type": "code",
+   "title": "DFS: the order to install packages",
+   "code": "deps = {\n    \"myapp\": [\"flask\", \"sqlalchemy\"],\n    \"flask\": [\"werkzeug\", \"jinja2\"],\n    \"werkzeug\": [\"markupsafe\"],\n    \"jinja2\": [\"markupsafe\"],\n    \"markupsafe\": [],\n    \"sqlalchemy\": [],\n}\n\ndef install_order(root):\n    order, done = [], set()\n\n    def visit(pkg):\n        if pkg in done:\n            return\n        done.add(pkg)\n        for dep in deps[pkg]:      # dependencies first…\n            visit(dep)\n        order.append(pkg)          # …then the package itself\n\n    visit(root)\n    return order\n\nprint(install_order(\"myapp\"))\n",
+   "expect": "['markupsafe', 'werkzeug', 'jinja2', 'flask', 'sqlalchemy', 'myapp']\n",
+   "explain": [
+    [
+     1,
+     "A directed graph: each package points to what it needs."
+    ],
+    [
+     14,
+     "Already handled: don't visit twice."
+    ],
+    [
+     17,
+     "Go deep: finish every dependency first."
+    ],
+    [
+     19,
+     "Only then add this package."
+    ]
+   ],
+   "say": "This is how a package installer decides what to install first. Depth first search visits a package's dependencies before adding the package itself, so markup safe goes in before the libraries that need it. The done set makes sure a shared dependency is handled only once. This algorithm is called a topological sort."
+  },
+  {
+   "type": "bug",
+   "title": "The friend finder that never ends",
+   "task": "`reachable` should return everyone you can reach through friends of friends. It crashes with a **RecursionError**.\n\nFriendships go both ways, so the search runs in circles. Fix it so each person is visited only once.",
+   "starter": "friends = {\n    \"Asha\": [\"Ravi\", \"Neha\"],\n    \"Ravi\": [\"Asha\", \"Kabir\"],\n    \"Neha\": [\"Asha\"],\n    \"Kabir\": [\"Ravi\"],\n    \"Zoya\": [],\n}\n\ndef reachable(graph, start):\n    found = set()\n\n    def visit(person):\n        found.add(person)\n        for friend in graph[person]:\n            visit(friend)\n\n    visit(start)\n    return found\n\nprint(sorted(reachable(friends, \"Asha\")))\n",
+   "solution": "friends = {\n    \"Asha\": [\"Ravi\", \"Neha\"],\n    \"Ravi\": [\"Asha\", \"Kabir\"],\n    \"Neha\": [\"Asha\"],\n    \"Kabir\": [\"Ravi\"],\n    \"Zoya\": [],\n}\n\ndef reachable(graph, start):\n    found = set()\n\n    def visit(person):\n        found.add(person)\n        for friend in graph[person]:\n            if friend not in found:\n                visit(friend)\n\n    visit(start)\n    return found\n\nprint(sorted(reachable(friends, \"Asha\")))\n",
+   "tests": "assert reachable(friends, \"Asha\") == {\"Asha\", \"Ravi\", \"Neha\", \"Kabir\"}, \"From Asha you can reach Ravi, Neha and Kabir (and Asha herself).\"\nassert reachable(friends, \"Zoya\") == {\"Zoya\"}, \"Zoya has no friends listed, so only Zoya is reachable.\"\nring = {\"A\": [\"B\"], \"B\": [\"C\"], \"C\": [\"A\"]}\nassert reachable(ring, \"B\") == {\"A\", \"B\", \"C\"}, \"In a ring A → B → C → A, everyone is reachable from B.\"",
+   "hints": [
+    "Asha visits Ravi, Ravi visits Asha, Asha visits Ravi… Who has already been found?",
+    "Only call `visit(friend)` if `friend not in found`."
+   ],
+   "say": "This friend finder crashes with a recursion error. Friendships go both ways, so Asha leads to Ravi, who leads straight back to Asha, forever. Every graph search needs to remember who it has already visited. Fix the function so it returns everyone reachable from the start, visiting each person once."
+  },
+  {
+   "type": "quiz",
+   "title": "BFS or DFS?",
+   "q": "LinkedIn shows whether someone is a 1st, 2nd or 3rd degree connection. Which algorithm fits best?",
+   "options": [
+    "DFS, because it goes deep",
+    "BFS, because it explores level by level",
+    "Binary search",
+    "Merge sort"
+   ],
+   "answer": 1,
+   "why": "Degrees of connection are levels: everyone 1 step away, then 2 steps away… BFS explores in exactly that order and always finds the fewest steps. DFS might reach someone through a long detour first.",
+   "say": "LinkedIn shows whether someone is a first, second or third degree connection. Which algorithm fits that best?"
+  },
+  {
+   "type": "concept",
+   "title": "Binary trees",
+   "body": "A **tree** is a graph with a root and no cycles. In a **binary tree** each node has at most two children, `left` and `right`.\n\nIn a **binary search tree** (BST), smaller values go left and bigger values go right, so a search is O(log n) when the tree is balanced.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "50",
+     "c": [
+      {
+       "t": "30",
+       "c": [
+        {
+         "t": "20"
+        },
+        {
+         "t": "40"
+        }
+       ]
+      },
+      {
+       "t": "70",
+       "c": [
+        {
+         "t": "60"
+        },
+        {
+         "t": "80"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "A tree is a graph with a root and no loops. In a binary tree every node has at most two children, called left and right. A binary search tree adds a rule: smaller values go left, bigger values go right. That turns search into binary search on a tree, which is O of log n when the tree is balanced."
+  },
+  {
+   "type": "code",
+   "title": "Build and traverse a BST",
+   "code": "class Node:\n    def __init__(self, value):\n        self.value, self.left, self.right = value, None, None\n\ndef insert(node, value):\n    if node is None:\n        return Node(value)\n    if value < node.value:\n        node.left = insert(node.left, value)\n    else:\n        node.right = insert(node.right, value)\n    return node\n\ndef in_order(node):              # left subtree, node, right subtree\n    if node is None:\n        return []\n    return in_order(node.left) + [node.value] + in_order(node.right)\n\nroot = None\nfor v in [50, 30, 70, 20, 40, 60, 80]:\n    root = insert(root, v)\nprint(in_order(root))\nprint(\"root:\", root.value, \"| left:\", root.left.value, \"| right:\", root.right.value)\n",
+   "expect": "[20, 30, 40, 50, 60, 70, 80]\nroot: 50 | left: 30 | right: 70\n",
+   "explain": [
+    [
+     6,
+     "Empty spot found: the new value lives here."
+    ],
+    [
+     8,
+     "Smaller goes left…"
+    ],
+    [
+     10,
+     "…bigger goes right."
+    ],
+    [
+     16,
+     "Left, node, right: sorted order for a BST."
+    ]
+   ],
+   "say": "Insert walks down the tree, going left for smaller values and right for bigger ones, until it finds an empty spot. In order traversal visits the left subtree, then the node, then the right subtree, and on a binary search tree that gives the values in sorted order. That is a favourite interview fact."
+  },
+  {
+   "type": "predict",
+   "title": "Pre-order traversal",
+   "code": "tree = (1, (2, (4, None, None), (5, None, None)), (3, None, None))\n\ndef pre_order(node):\n    if node is None:\n        return []\n    value, left, right = node\n    return [value] + pre_order(left) + pre_order(right)\n\nprint(pre_order(tree))",
+   "options": [
+    "[1, 2, 4, 5, 3]",
+    "[4, 2, 5, 1, 3]",
+    "[4, 5, 2, 3, 1]",
+    "[1, 2, 3, 4, 5]"
+   ],
+   "answer": 0,
+   "why": "Pre-order visits the node **first**, then its whole left subtree, then the right: 1, then 2, 4, 5, then 3. In-order would give 4 2 5 1 3, post-order 4 5 2 3 1, and level order (BFS) 1 2 3 4 5.",
+   "say": "Here a tree is stored as nested tuples of value, left and right. Pre order visits the node first, then its left subtree, then its right. What does it print?"
+  },
+  {
+   "type": "concept",
+   "title": "Dynamic programming: stop repeating work",
+   "body": "Some recursive solutions solve the **same subproblem** again and again. Dynamic programming solves each one **once** and remembers it.\n- **Memoisation** (top-down): recursion plus a cache\n- **Tabulation** (bottom-up): fill a table from the smallest case up",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "ways(4)",
+     "c": [
+      {
+       "t": "ways(3)",
+       "c": [
+        {
+         "t": "ways(2) ← repeat",
+         "c": [
+          {
+           "t": "ways(1)"
+          },
+          {
+           "t": "ways(0)"
+          }
+         ]
+        },
+        {
+         "t": "ways(1)"
+        }
+       ]
+      },
+      {
+       "t": "ways(2) ← repeat",
+       "c": [
+        {
+         "t": "ways(1)"
+        },
+        {
+         "t": "ways(0)"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "Some recursive solutions solve the same small problem again and again. In this tree, ways of two is worked out twice, and for bigger inputs the repeats explode. Dynamic programming solves each subproblem once and remembers the answer. Memoisation does it top down, with recursion and a cache. Tabulation does it bottom up, filling a table."
+  },
+  {
+   "type": "code",
+   "title": "Climbing stairs: naive vs memoised",
+   "code": "from functools import lru_cache\n\ncalls = 0\ndef ways_naive(n):            # 1 or 2 steps at a time\n    global calls\n    calls += 1\n    if n <= 1:\n        return 1\n    return ways_naive(n - 1) + ways_naive(n - 2)\n\n@lru_cache(maxsize=None)\ndef ways_memo(n):\n    if n <= 1:\n        return 1\n    return ways_memo(n - 1) + ways_memo(n - 2)\n\nprint(ways_naive(25), \"ways,\", calls, \"calls without memo\")\nprint(ways_memo(25), \"ways,\", ways_memo.cache_info().misses, \"calls with memo\")\nprint(ways_memo(200))\n",
+   "expect": "121393 ways, 242785 calls without memo\n121393 ways, 26 calls with memo\n453973694165307953197296969697410619233826\n",
+   "explain": [
+    [
+     9,
+     "Last move was 1 step or 2 steps: add both counts."
+    ],
+    [
+     11,
+     "lru_cache remembers every answer it has computed."
+    ],
+    [
+     17,
+     "The same answer, with a tiny fraction of the work."
+    ],
+    [
+     19,
+     "Without the cache this would outlive the universe."
+    ]
+   ],
+   "say": "You can climb a staircase one or two steps at a time. How many different ways are there to reach the top? Each answer is the sum of the two before it. The naive version makes almost a quarter of a million calls for twenty five stairs. Add lru cache, from day twenty eight, and it needs just twenty six. Two hundred stairs, instantly."
+  },
+  {
+   "type": "code",
+   "title": "Tabulation: build the table",
+   "code": "def ways_to_pay(amount, coins):\n    table = [1] + [0] * amount        # table[a] = ways to pay a rupees\n    for coin in coins:\n        for a in range(coin, amount + 1):\n            table[a] += table[a - coin]\n    return table\n\ntable = ways_to_pay(10, [1, 2, 5])\nprint(\"ways for ₹0 to ₹10:\", table)\nprint(\"ways to pay ₹10 with ₹1, ₹2 and ₹5 coins:\", table[10])\n",
+   "expect": "ways for ₹0 to ₹10: [1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 10]\nways to pay ₹10 with ₹1, ₹2 and ₹5 coins: 10\n",
+   "explain": [
+    [
+     2,
+     "There's exactly one way to pay ₹0: no coins."
+    ],
+    [
+     3,
+     "Bring in one coin type at a time."
+    ],
+    [
+     5,
+     "Ways to pay a = ways so far + ways to pay what's left after this coin."
+    ]
+   ],
+   "say": "Tabulation flips the idea around. Instead of recursing down, we build a table from zero rupees upwards. Table of a holds the number of ways to pay a rupees, and each coin adds the ways to pay whatever is left. No recursion, no cache, just loops. And the table is a great debugging tool, because you can print it."
+  },
+  {
+   "type": "exercise",
+   "title": "Coin change: fewest coins",
+   "task": "Write `min_coins(coins, amount)`: the **fewest** coins that add up to `amount`, or `-1` if it's impossible. Tabulate: `best[a]` = fewest coins for `a` rupees.\n\nCareful: greedy (biggest coin first) fails for coins `[1, 3, 4]` and ₹6. The answer is 2 (3 + 3), not 3 (4 + 1 + 1).",
+   "starter": "def min_coins(coins, amount):\n    INF = float(\"inf\")\n    best = [0] + [INF] * amount      # best[a] = fewest coins to make a\n    # For every amount a from 1 up, try every coin that fits\n    return -1\n\nprint(min_coins([1, 2, 5], 11))   # 3  (5 + 5 + 1)\nprint(min_coins([1, 3, 4], 6))    # 2  (3 + 3)\n",
+   "solution": "def min_coins(coins, amount):\n    INF = float(\"inf\")\n    best = [0] + [INF] * amount      # best[a] = fewest coins to make a\n    for a in range(1, amount + 1):\n        for coin in coins:\n            if coin <= a and best[a - coin] + 1 < best[a]:\n                best[a] = best[a - coin] + 1\n    return best[amount] if best[amount] != INF else -1\n\nprint(min_coins([1, 2, 5], 11))   # 3  (5 + 5 + 1)\nprint(min_coins([1, 3, 4], 6))    # 2  (3 + 3)\n",
+   "tests": "got = min_coins([1, 2, 5], 11)\nassert got == 3, f\"₹11 with coins 1, 2, 5 needs 3 coins (5 + 5 + 1). You returned {got}.\"\ngot = min_coins([1, 3, 4], 6)\nassert got == 2, f\"₹6 with coins 1, 3, 4 needs just 2 coins (3 + 3), but you returned {got}. Greedy grabs 4 first: try every coin for every amount instead.\"\nassert min_coins([2], 3) == -1, \"₹3 can't be made from ₹2 coins alone: return -1.\"\nassert min_coins([1, 5], 0) == 0, \"₹0 needs zero coins.\"\nassert min_coins([1, 2, 5, 10, 20], 99) == 8, \"₹99 with coins 1, 2, 5, 10, 20 needs 8 coins (four 20s, then 10 + 5 + 2 + 2).\"",
+   "hints": [
+    "Loop `a` from 1 to `amount`; for each `a`, try every coin with `coin <= a`.",
+    "Using a coin leaves `a - coin`, which you've already solved: that's `best[a - coin] + 1` coins.",
+    "If `best[amount]` is still infinity at the end, return -1."
+   ],
+   "say": "The classic dynamic programming interview question. Find the fewest coins that make an amount, or minus one if it cannot be done. Build a table from zero up. For each amount, try every coin and reuse the answer you already have for what is left. Watch out: grabbing the biggest coin first is a trap, as the example shows."
+  },
+  {
+   "type": "concept",
+   "title": "Cracking these in interviews",
+   "body": "Map the problem to a pattern, then talk through your plan out loud: brute force first, then optimise, then test the edge cases.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "If the problem says…",
+     "Reach for…"
+    ],
+    "rows": [
+     [
+      "fewest steps, shortest route, degrees apart",
+      "BFS"
+     ],
+     [
+      "explore all, dependencies, cycles, mazes",
+      "DFS"
+     ],
+     [
+      "sorted data, find it fast",
+      "binary search"
+     ],
+     [
+      "count the ways, min or max with choices",
+      "dynamic programming"
+     ],
+     [
+      "most urgent next, top k",
+      "heap"
+     ]
+    ]
+   },
+   "say": "In interviews, the trick is to recognise the pattern. Fewest steps or shortest route? Breadth first search. Explore everything, or dependencies? Depth first search. Sorted data? Binary search. Count the ways, or a minimum with choices at every step? Dynamic programming. Then talk through your plan and test the edge cases out loud."
+  },
+  {
+   "type": "quiz",
+   "title": "When does DP help?",
+   "q": "When does dynamic programming actually help?",
+   "options": [
+    "Whenever a function contains a loop",
+    "When the same subproblems are solved again and again",
+    "Only when the input is sorted",
+    "When you need random results"
+   ],
+   "answer": 1,
+   "why": "DP pays off when subproblems **overlap**, like ways(2) being computed many times. If every subproblem is different, a cache just costs memory.",
+   "say": "Final check. When does dynamic programming actually help?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 44 complete",
+   "points": [
+    "Graphs are nodes plus edges; store them as an adjacency list (a dict of lists)",
+    "BFS uses a queue and finds the fewest steps; DFS goes deep and suits dependencies and full exploration",
+    "Every graph search needs a seen set, or cycles send it round forever",
+    "In a BST smaller values go left and bigger go right; in-order traversal gives sorted output",
+    "Dynamic programming solves overlapping subproblems once: memoisation (top-down) or tabulation (bottom-up)"
+   ],
+   "say": "Mission forty four complete. You modelled a metro map as a graph, found the fewest stops with BFS, ordered packages with DFS, traversed a tree, and solved coin change with dynamic programming. Tomorrow we switch to real data: cleaning messy CSV files, computing statistics and printing reports."
+  }
+ ]
+}

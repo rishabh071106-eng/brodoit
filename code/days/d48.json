@@ -1,0 +1,540 @@
+{
+ "day": 48,
+ "phase": 5,
+ "title": "Databases with SQL",
+ "subtitle": "Store, query and protect your data with sqlite3",
+ "minutes": 65,
+ "goal": "Create and query a SQL database from Python: filter, group, join, update safely in transactions, and never fall for SQL injection.",
+ "outcomes": [
+  "Create tables and insert rows with sqlite3",
+  "Ask questions with SELECT, WHERE, ORDER BY and LIMIT",
+  "Summarise with GROUP BY and combine tables with JOIN",
+  "Stop SQL injection with ? placeholders",
+  "Keep data consistent with transactions, and know what an ORM does"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 48: Databases with SQL",
+   "body": "Every UPI payment, train booking and chat message lives in a **database**. SQL is the 50-year-old language every developer still uses to talk to them.\n\nToday: `sqlite3`, a complete SQL database built into Python.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "id",
+     "name",
+     "city",
+     "balance"
+    ],
+    "rows": [
+     [
+      "1",
+      "Asha",
+      "Pune",
+      "5200"
+     ],
+     [
+      "2",
+      "Ravi",
+      "Delhi",
+      "800"
+     ],
+     [
+      "3",
+      "Neha",
+      "Mumbai",
+      "12500"
+     ]
+    ]
+   },
+   "say": "Every UPI payment, train booking and chat message you have ever sent lives in a database. SQL is the language developers use to talk to databases, and it is over fifty years old and still everywhere. Today you learn it with sqlite3, a complete SQL database built right into Python."
+  },
+  {
+   "type": "concept",
+   "title": "Tables, rows and keys",
+   "body": "A **table** is a strict spreadsheet: **columns** have names and types, each **row** is one record. A **primary key** (`id`) identifies each row.\n\nSQL is **declarative**: you say *what* you want; the database works out *how*.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "SQL",
+     "What it does"
+    ],
+    "rows": [
+     [
+      "CREATE TABLE",
+      "define columns and types"
+     ],
+     [
+      "INSERT",
+      "add rows"
+     ],
+     [
+      "SELECT … WHERE",
+      "read matching rows"
+     ],
+     [
+      "UPDATE / DELETE",
+      "change or remove rows"
+     ],
+     [
+      "JOIN",
+      "combine tables"
+     ]
+    ]
+   },
+   "say": "A table is like a spreadsheet with strict rules. Every column has a name and a type, and every row is one record. A primary key, usually called i d, uniquely identifies each row. SQL is declarative: you describe what you want, and the database works out how to get it fast. These five commands cover most of what you will ever write."
+  },
+  {
+   "type": "code",
+   "title": "Your first database",
+   "body": "SQL keywords are written in CAPITALS by convention. Triple quotes keep long queries readable.",
+   "code": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")       # a database that lives in memory\nconn.execute(\"\"\"\n    CREATE TABLE customers (\n        id INTEGER PRIMARY KEY,\n        name TEXT NOT NULL,\n        city TEXT\n    )\n\"\"\")\nconn.execute(\"INSERT INTO customers (name, city) VALUES ('Asha', 'Pune')\")\nconn.execute(\"INSERT INTO customers (name, city) VALUES ('Ravi', 'Delhi')\")\nconn.commit()\n\nfor row in conn.execute(\"SELECT id, name, city FROM customers\"):\n    print(row)\n",
+   "expect": "(1, 'Asha', 'Pune')\n(2, 'Ravi', 'Delhi')\n",
+   "needs": [
+    "sqlite3"
+   ],
+   "explain": [
+    [
+     3,
+     "A real database, in memory: perfect for learning and tests."
+    ],
+    [
+     6,
+     "INTEGER PRIMARY KEY: SQLite numbers the rows for you."
+    ],
+    [
+     7,
+     "NOT NULL: every customer must have a name."
+    ],
+    [
+     13,
+     "commit() saves the changes."
+    ],
+    [
+     15,
+     "Each row comes back as a tuple."
+    ]
+   ],
+   "say": "Connect to colon memory colon and you get a fresh database in memory, perfect for learning and for tests. Create table defines the columns and their types, and integer primary key makes SQLite number the rows for you. Insert adds rows, commit saves them, and select reads them back as tuples."
+  },
+  {
+   "type": "concept",
+   "title": "SELECT: asking questions",
+   "body": "`SELECT` columns `FROM` a table, then optionally:\n- `WHERE` to filter rows\n- `ORDER BY col DESC` to sort\n- `LIMIT n` to keep the first n\n\nInsert many rows with `executemany` and `?` placeholders (more on why soon).",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Clause",
+     "Example"
+    ],
+    "rows": [
+     [
+      "SELECT",
+      "SELECT customer, amount"
+     ],
+     [
+      "FROM",
+      "FROM orders"
+     ],
+     [
+      "WHERE",
+      "WHERE city = 'Pune' AND amount >= 400"
+     ],
+     [
+      "ORDER BY",
+      "ORDER BY amount DESC"
+     ],
+     [
+      "LIMIT",
+      "LIMIT 3"
+     ]
+    ]
+   },
+   "say": "Select is how you ask questions. Choose the columns, name the table, filter rows with where, sort with order by, and keep only the first few with limit. They always appear in this order. To insert many rows at once, use execute many with question mark placeholders. You will soon see why those placeholders matter so much."
+  },
+  {
+   "type": "code",
+   "title": "Filtering and sorting",
+   "code": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE orders (id INTEGER PRIMARY KEY, customer TEXT, city TEXT, amount REAL)\")\nconn.executemany(\n    \"INSERT INTO orders (customer, city, amount) VALUES (?, ?, ?)\",\n    [(\"Asha\", \"Pune\", 450), (\"Ravi\", \"Delhi\", 1200), (\"Neha\", \"Pune\", 300),\n     (\"Kabir\", \"Mumbai\", 780), (\"Asha\", \"Pune\", 950)],\n)\n\nrows = conn.execute(\"\"\"\n    SELECT customer, amount FROM orders\n    WHERE city = 'Pune' AND amount >= 400\n    ORDER BY amount DESC\n\"\"\").fetchall()\nprint(rows)\n\nconn.row_factory = sqlite3.Row            # rows that act like dicts\ntop = conn.execute(\"SELECT * FROM orders ORDER BY amount DESC LIMIT 1\").fetchone()\nprint(top[\"customer\"], top[\"amount\"])\n",
+   "expect": "[('Asha', 950.0), ('Asha', 450.0)]\nRavi 1200.0\n",
+   "needs": [
+    "sqlite3"
+   ],
+   "explain": [
+    [
+     5,
+     "executemany: one statement, many rows."
+    ],
+    [
+     6,
+     "Each ? is filled with one value from the tuple."
+    ],
+    [
+     12,
+     "Filter, then sort, in plain SQL."
+    ],
+    [
+     16,
+     "fetchall() returns a list of tuples."
+    ],
+    [
+     19,
+     "sqlite3.Row lets you use column names."
+    ]
+   ],
+   "say": "Execute many inserts a whole list of rows in one call, with question marks marking where each value goes. The query reads almost like English: customer and amount from orders, where the city is Pune and the amount is at least four hundred, biggest first. Setting row factory to sqlite3 dot Row lets you read columns by name, like a dict."
+  },
+  {
+   "type": "predict",
+   "title": "Read the query",
+   "code": "import sqlite3\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE trains (name TEXT, hours REAL)\")\nconn.executemany(\"INSERT INTO trains VALUES (?, ?)\", [\n    (\"Rajdhani\", 16.5), (\"Shatabdi\", 7.0), (\"Duronto\", 14.0), (\"Vande Bharat\", 8.0)])\nrows = conn.execute(\"SELECT name FROM trains WHERE hours < 15 ORDER BY hours DESC LIMIT 2\").fetchall()\nprint([name for (name,) in rows])",
+   "options": [
+    "['Duronto', 'Vande Bharat']",
+    "['Shatabdi', 'Vande Bharat']",
+    "['Rajdhani', 'Duronto']",
+    "['Duronto', 'Shatabdi']"
+   ],
+   "answer": 0,
+   "why": "WHERE keeps the three trains under 15 hours, ORDER BY hours DESC puts the longest first (Duronto 14, Vande Bharat 8, Shatabdi 7), and LIMIT 2 keeps the top two.",
+   "needs": [
+    "sqlite3"
+   ],
+   "say": "Read the query clause by clause: where, then order by, then limit. Which two train names come back?"
+  },
+  {
+   "type": "concept",
+   "title": "GROUP BY: totals per category",
+   "body": "`GROUP BY city` makes one row per city, and aggregates summarise each group: `COUNT(*)`, `SUM()`, `AVG()`, `MIN()`, `MAX()`.\n\n`WHERE` filters rows **before** grouping; `HAVING` filters **groups** after.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Python (Day 45)",
+     "code": "totals = defaultdict(float)\nfor o in orders:\n    totals[o.city] += o.amount"
+    },
+    "right": {
+     "title": "SQL",
+     "code": "SELECT city, SUM(amount)\nFROM orders\nGROUP BY city"
+    },
+    "verdict": "Same result. The database does it right next to the data, even for billions of rows."
+   },
+   "say": "Group by squashes many rows into one row per category, and aggregate functions like count, sum and average summarise each group. It is exactly the defaultdict pattern from day forty five, in a single line of SQL. Where filters individual rows before grouping, and having filters whole groups afterwards."
+  },
+  {
+   "type": "code",
+   "title": "Revenue per city",
+   "code": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE orders (customer TEXT, city TEXT, amount REAL)\")\nconn.executemany(\"INSERT INTO orders VALUES (?, ?, ?)\", [\n    (\"Asha\", \"Pune\", 450), (\"Ravi\", \"Delhi\", 1200), (\"Neha\", \"Pune\", 300),\n    (\"Kabir\", \"Mumbai\", 780), (\"Asha\", \"Pune\", 950), (\"Zoya\", \"Delhi\", 150),\n])\n\nquery = \"\"\"\n    SELECT city, COUNT(*) AS orders, SUM(amount) AS revenue, ROUND(AVG(amount), 1) AS avg\n    FROM orders\n    GROUP BY city\n    HAVING COUNT(*) >= 2\n    ORDER BY revenue DESC\n\"\"\"\nfor city, n, revenue, avg in conn.execute(query):\n    print(f\"{city:<7} {n} orders  ₹{revenue:>6,.0f}  avg ₹{avg}\")\n",
+   "expect": "Pune    3 orders  ₹ 1,700  avg ₹566.7\nDelhi   2 orders  ₹ 1,350  avg ₹675.0\n",
+   "needs": [
+    "sqlite3"
+   ],
+   "explain": [
+    [
+     12,
+     "Aggregates summarise each group; AS names the result columns."
+    ],
+    [
+     14,
+     "One output row per city."
+    ],
+    [
+     15,
+     "HAVING filters groups: Mumbai has only 1 order."
+    ],
+    [
+     16,
+     "Sort by the named column."
+    ]
+   ],
+   "say": "This one query produces a whole report. Group by city makes one row per city, count, sum and average summarise each group, and having drops cities with fewer than two orders, so Mumbai disappears. The word as gives each result column a readable name, which order by can then use."
+  },
+  {
+   "type": "concept",
+   "title": "JOIN: combining tables",
+   "body": "Good databases don't repeat data: customers in one table, orders in another, linked by `customer_id`. A **JOIN** puts them back together.\n- `JOIN` (inner): only rows that match in both\n- `LEFT JOIN`: every row from the left table, `NULL` (Python's `None`) when nothing matches",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "customers.id",
+     "name",
+     "orders.customer_id",
+     "amount"
+    ],
+    "rows": [
+     [
+      "1",
+      "Asha",
+      "1",
+      "450"
+     ],
+     [
+      "1",
+      "Asha",
+      "1",
+      "950"
+     ],
+     [
+      "2",
+      "Ravi",
+      "2",
+      "1200"
+     ],
+     [
+      "3",
+      "Neha",
+      "NULL (LEFT JOIN only)",
+      "NULL"
+     ]
+    ]
+   },
+   "say": "Good databases never repeat the same data. Customers live in one table, orders in another, and each order points to its customer with a customer id. A join puts them back together. An inner join keeps only rows that match in both tables. A left join keeps every customer, and fills in null, which Python sees as None, when someone has no orders."
+  },
+  {
+   "type": "code",
+   "title": "INNER and LEFT JOIN",
+   "code": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.executescript(\"\"\"\n    CREATE TABLE customers (id INTEGER PRIMARY KEY, name TEXT);\n    CREATE TABLE orders (id INTEGER PRIMARY KEY, customer_id INTEGER REFERENCES customers(id), amount REAL);\n    INSERT INTO customers (name) VALUES ('Asha'), ('Ravi'), ('Neha');\n    INSERT INTO orders (customer_id, amount) VALUES (1, 450), (2, 1200), (1, 950);\n\"\"\")\n\ninner = conn.execute(\"\"\"\n    SELECT c.name, o.amount FROM customers c\n    JOIN orders o ON o.customer_id = c.id ORDER BY o.amount\"\"\").fetchall()\nprint(inner)\n\nleft = conn.execute(\"\"\"\n    SELECT c.name, COUNT(o.id), SUM(o.amount) FROM customers c\n    LEFT JOIN orders o ON o.customer_id = c.id\n    GROUP BY c.id ORDER BY c.name\"\"\").fetchall()\nprint(left)\n",
+   "expect": "[('Asha', 450.0), ('Asha', 950.0), ('Ravi', 1200.0)]\n[('Asha', 2, 1400.0), ('Neha', 0, None), ('Ravi', 1, 1200.0)]\n",
+   "needs": [
+    "sqlite3"
+   ],
+   "explain": [
+    [
+     4,
+     "executescript runs several statements in one go."
+    ],
+    [
+     6,
+     "REFERENCES documents the link between the tables."
+    ],
+    [
+     12,
+     "c and o are short aliases for the two tables."
+    ],
+    [
+     13,
+     "ON says how rows match: order.customer_id = customer.id."
+    ],
+    [
+     18,
+     "LEFT JOIN keeps Neha even though she has no orders."
+    ]
+   ],
+   "say": "Execute script runs several statements at once, handy for setting up tables. The inner join pairs each order with its customer's name, matching customer id to id. The left join with group by gives a per customer summary, and Neha appears with zero orders and None, because a left join keeps everyone from the left table."
+  },
+  {
+   "type": "quiz",
+   "title": "Which join?",
+   "q": "Marketing wants **every** customer with their order count, including people who never ordered (to send them a coupon). Which query shape?",
+   "options": [
+    "`customers JOIN orders`",
+    "`customers LEFT JOIN orders`, grouped by customer",
+    "`SELECT * FROM orders`",
+    "`orders WHERE amount > 0`"
+   ],
+   "answer": 1,
+   "why": "An inner join drops customers with no orders, exactly the people marketing wants. A LEFT JOIN from customers keeps everyone, and `COUNT(o.id)` is 0 for them.",
+   "say": "Marketing wants every customer and their order count, including people who have never ordered, so they can send them a coupon. Which query shape do you need?"
+  },
+  {
+   "type": "concept",
+   "title": "SQL injection",
+   "body": "**Never** build SQL with f-strings. If a user types `' OR '1'='1` as a PIN, your query's meaning changes, and they're in.\n\nUse **`?` placeholders**: values travel separately and are treated as data, never as SQL.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Dangerous",
+     "code": "q = f\"SELECT * FROM users WHERE name = '{name}' AND pin = '{pin}'\"\nconn.execute(q)"
+    },
+    "right": {
+     "title": "Safe",
+     "code": "conn.execute(\n    \"SELECT * FROM users WHERE name = ? AND pin = ?\",\n    (name, pin),\n)"
+    },
+    "verdict": "Placeholders send values separately from the SQL, so input can never become code."
+   },
+   "say": "Here is the most famous security bug in history. If you build SQL by pasting user input into an f string, a user can type a quote followed by more SQL, and change what your query means. With question mark placeholders, the values travel separately from the SQL, so the database treats them as plain data. They can never become code."
+  },
+  {
+   "type": "code",
+   "title": "Watch an injection attack",
+   "code": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE users (name TEXT, pin TEXT)\")\nconn.execute(\"INSERT INTO users VALUES ('asha', '4821')\")\n\ndef login_unsafe(name, pin):\n    q = f\"SELECT name FROM users WHERE name = '{name}' AND pin = '{pin}'\"\n    print(\"SQL:\", q)\n    return conn.execute(q).fetchone() is not None\n\ndef login_safe(name, pin):\n    q = \"SELECT name FROM users WHERE name = ? AND pin = ?\"\n    return conn.execute(q, (name, pin)).fetchone() is not None\n\nattack = \"' OR '1'='1\"\nprint(\"unsafe login:\", login_unsafe(\"asha\", attack))\nprint(\"safe login:  \", login_safe(\"asha\", attack))\nprint(\"real pin:    \", login_safe(\"asha\", \"4821\"))\n",
+   "expect": "SQL: SELECT name FROM users WHERE name = 'asha' AND pin = '' OR '1'='1'\nunsafe login: True\nsafe login:   False\nreal pin:     True\n",
+   "needs": [
+    "sqlite3"
+   ],
+   "explain": [
+    [
+     8,
+     "User input pasted straight into SQL: the bug."
+    ],
+    [
+     13,
+     "Placeholders: the SQL text never changes."
+    ],
+    [
+     16,
+     "The attacker's 'PIN'."
+    ],
+    [
+     17,
+     "The printed SQL shows OR '1'='1': always true."
+    ],
+    [
+     18,
+     "Same input, treated as plain data: no match."
+    ]
+   ],
+   "say": "Watch the attack happen. The attacker types a quote, then or one equals one, as the PIN. The unsafe version pastes it into the SQL, and the printed query now says: the PIN is empty, or one equals one, which is always true. Logged in without the PIN. The safe version passes the same text as data, so it simply does not match."
+  },
+  {
+   "type": "bug",
+   "title": "Make the search safe",
+   "task": "`find_customers` builds SQL with an f-string. A name like **O'Brien** crashes it, and an attacker can dump the whole table.\n\nRewrite it with a `?` placeholder. It must still find partial matches with `LIKE`.",
+   "starter": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE customers (name TEXT, phone TEXT)\")\nconn.executemany(\"INSERT INTO customers VALUES (?, ?)\", [\n    (\"Asha Rao\", \"98200 11111\"), (\"Ravi Kumar\", \"98110 22222\"), (\"Liam O'Brien\", \"99300 33333\")])\n\ndef find_customers(conn, text):\n    query = f\"SELECT name FROM customers WHERE name LIKE '%{text}%' ORDER BY name\"\n    return [name for (name,) in conn.execute(query)]\n\nprint(find_customers(conn, \"Ra\"))\n",
+   "solution": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE customers (name TEXT, phone TEXT)\")\nconn.executemany(\"INSERT INTO customers VALUES (?, ?)\", [\n    (\"Asha Rao\", \"98200 11111\"), (\"Ravi Kumar\", \"98110 22222\"), (\"Liam O'Brien\", \"99300 33333\")])\n\ndef find_customers(conn, text):\n    query = \"SELECT name FROM customers WHERE name LIKE ? ORDER BY name\"\n    return [name for (name,) in conn.execute(query, (f\"%{text}%\",))]\n\nprint(find_customers(conn, \"Ra\"))\n",
+   "tests": "assert find_customers(conn, \"Ra\") == [\"Asha Rao\", \"Ravi Kumar\"], \"Searching 'Ra' should find Asha Rao and Ravi Kumar.\"\ntry:\n    got = find_customers(conn, \"O'Brien\")\nexcept sqlite3.Error as e:\n    raise AssertionError(f\"A name with an apostrophe crashed your query ({e}). Pass the value with a ? placeholder.\")\nassert got == [\"Liam O'Brien\"], f\"Searching O'Brien should find Liam O'Brien, not {got}.\"\ntry:\n    attack = find_customers(conn, \"x' OR 1=1 --\")\nexcept sqlite3.Error:\n    attack = \"a crash\"\nassert attack == [], f\"An injection attempt should simply match nobody, but it returned {attack}.\"",
+   "hints": [
+    "Write the query with `LIKE ?`, with no quotes around the `?`.",
+    "Build the pattern in Python and pass it in a tuple: `conn.execute(query, (f\"%{text}%\",))`."
+   ],
+   "needs": [
+    "sqlite3"
+   ],
+   "say": "This customer search builds its SQL with an f string. Search for a name with an apostrophe, like O'Brien, and it crashes. Worse, an attacker could list every customer in your database. Rewrite it with a question mark placeholder, building the like pattern in Python and passing it in as a value."
+  },
+  {
+   "type": "concept",
+   "title": "UPDATE, DELETE and transactions",
+   "body": "`UPDATE … SET … WHERE …` changes rows; `DELETE FROM … WHERE …` removes them. Forget `WHERE` and you hit **every** row.\n\nA **transaction** groups changes: all happen, or none. `with conn:` commits on success and **rolls back** on any exception.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "with conn:  (a transaction begins)",
+      "s": "pill"
+     },
+     {
+      "t": "UPDATE: give ₹500 to Ravi"
+     },
+     {
+      "t": "UPDATE: take ₹500 from Asha"
+     },
+     {
+      "t": "Any error?",
+      "s": "diamond",
+      "yes": "ROLLBACK, nothing changed",
+      "no": "COMMIT, both saved"
+     }
+    ]
+   },
+   "say": "Update changes existing rows and delete removes them, and both almost always need a where clause, or they hit every row in the table. When several changes belong together, like moving money between two accounts, wrap them in a transaction. With conn commits if everything succeeds, and rolls everything back if anything fails, so money never vanishes halfway."
+  },
+  {
+   "type": "code",
+   "title": "A safe money transfer",
+   "code": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE accounts (name TEXT PRIMARY KEY, balance INTEGER CHECK (balance >= 0))\")\nconn.executemany(\"INSERT INTO accounts VALUES (?, ?)\", [(\"Asha\", 1000), (\"Ravi\", 200)])\nconn.commit()\n\ndef transfer(sender, receiver, amount):\n    try:\n        with conn:   # commit if the block succeeds, roll back if it fails\n            conn.execute(\"UPDATE accounts SET balance = balance + ? WHERE name = ?\", (amount, receiver))\n            conn.execute(\"UPDATE accounts SET balance = balance - ? WHERE name = ?\", (amount, sender))\n        print(f\"sent ₹{amount} from {sender} to {receiver}\")\n    except sqlite3.IntegrityError:\n        print(f\"failed: {sender} can't send ₹{amount}, nothing changed\")\n\ntransfer(\"Asha\", \"Ravi\", 300)\ntransfer(\"Ravi\", \"Asha\", 5000)\nprint(dict(conn.execute(\"SELECT name, balance FROM accounts\")))\n",
+   "expect": "sent ₹300 from Asha to Ravi\nfailed: Ravi can't send ₹5000, nothing changed\n{'Asha': 700, 'Ravi': 500}\n",
+   "needs": [
+    "sqlite3"
+   ],
+   "explain": [
+    [
+     4,
+     "CHECK: the database itself refuses negative balances."
+    ],
+    [
+     10,
+     "One transaction around both updates."
+    ],
+    [
+     11,
+     "Credit first…"
+    ],
+    [
+     12,
+     "…then debit. If this fails, the credit is undone too."
+    ],
+    [
+     14,
+     "The constraint failure arrives as IntegrityError."
+    ]
+   ],
+   "say": "Notice the order inside the transaction: we credit the receiver first, then debit the sender. When Ravi tries to send five thousand rupees he does not have, the check constraint rejects the second update. But Asha had already been credited! The with block rolls back the whole transaction, so the final balances show nothing changed. That is atomicity."
+  },
+  {
+   "type": "predict",
+   "title": "After the rollback",
+   "code": "import sqlite3\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE stock (item TEXT, qty INTEGER CHECK (qty >= 0))\")\nconn.execute(\"INSERT INTO stock VALUES ('chai', 5)\")\nconn.commit()\ntry:\n    with conn:\n        conn.execute(\"UPDATE stock SET qty = qty - 2 WHERE item = 'chai'\")\n        conn.execute(\"UPDATE stock SET qty = qty - 4 WHERE item = 'chai'\")\nexcept sqlite3.IntegrityError:\n    pass\nprint(conn.execute(\"SELECT qty FROM stock\").fetchone()[0])",
+   "options": [
+    "5",
+    "3",
+    "-1",
+    "1"
+   ],
+   "answer": 0,
+   "why": "The second update would make qty -1, so the CHECK constraint fails. Both updates were in one `with conn:` transaction, so the first one is rolled back too: qty is back to 5.",
+   "needs": [
+    "sqlite3"
+   ],
+   "say": "Two updates in one transaction, and the second one breaks a check constraint. What quantity is left in stock?"
+  },
+  {
+   "type": "exercise",
+   "title": "Top customers report",
+   "task": "Write `top_customers(conn, n)`: the top `n` customers by total spend, as `(name, total)` tuples, biggest first. Customers with no orders are left out.\n\nUse a **JOIN**, **GROUP BY**, **ORDER BY**, and a `?` placeholder for the `LIMIT`.",
+   "starter": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.executescript(\"\"\"\n    CREATE TABLE customers (id INTEGER PRIMARY KEY, name TEXT);\n    CREATE TABLE orders (id INTEGER PRIMARY KEY, customer_id INTEGER, amount REAL);\n    INSERT INTO customers (name) VALUES ('Asha'), ('Ravi'), ('Neha'), ('Kabir');\n    INSERT INTO orders (customer_id, amount) VALUES\n        (1, 450), (2, 1200), (1, 950), (4, 300), (2, 100), (4, 250);\n\"\"\")\n\ndef top_customers(conn, n):\n    # JOIN customers to orders, GROUP BY customer, ORDER BY total DESC, LIMIT ?\n    return []\n\nprint(top_customers(conn, 2))   # [('Asha', 1400.0), ('Ravi', 1300.0)]\n",
+   "solution": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.executescript(\"\"\"\n    CREATE TABLE customers (id INTEGER PRIMARY KEY, name TEXT);\n    CREATE TABLE orders (id INTEGER PRIMARY KEY, customer_id INTEGER, amount REAL);\n    INSERT INTO customers (name) VALUES ('Asha'), ('Ravi'), ('Neha'), ('Kabir');\n    INSERT INTO orders (customer_id, amount) VALUES\n        (1, 450), (2, 1200), (1, 950), (4, 300), (2, 100), (4, 250);\n\"\"\")\n\ndef top_customers(conn, n):\n    query = \"\"\"\n        SELECT c.name, SUM(o.amount) AS total\n        FROM customers c\n        JOIN orders o ON o.customer_id = c.id\n        GROUP BY c.id\n        ORDER BY total DESC\n        LIMIT ?\n    \"\"\"\n    return conn.execute(query, (n,)).fetchall()\n\nprint(top_customers(conn, 2))   # [('Asha', 1400.0), ('Ravi', 1300.0)]\n",
+   "tests": "got = top_customers(conn, 2)\nassert got == [(\"Asha\", 1400.0), (\"Ravi\", 1300.0)], f\"The top 2 by total spend are [('Asha', 1400.0), ('Ravi', 1300.0)], not {got}.\"\ngot = top_customers(conn, 10)\nassert [name for name, _ in got] == [\"Asha\", \"Ravi\", \"Kabir\"], f\"Neha has no orders, so she shouldn't appear. With n=10 expect Asha, Ravi, Kabir; got {got}.\"\nassert top_customers(conn, 0) == [], \"n=0 should return an empty list.\"\nconn.execute(\"INSERT INTO orders (customer_id, amount) VALUES (3, 5000)\")\nassert top_customers(conn, 1) == [(\"Neha\", 5000.0)], \"After Neha orders ₹5000 she should top the list. Query the database every time; don't hard-code.\"\nassert \"?\" in __code__.split(\"def top_customers\", 1)[1], \"Pass n with a placeholder: LIMIT ?\"",
+   "hints": [
+    "`FROM customers c JOIN orders o ON o.customer_id = c.id` drops customers with no orders automatically.",
+    "`GROUP BY c.id` with `SUM(o.amount) AS total`, then `ORDER BY total DESC`.",
+    "End with `LIMIT ?` and run `conn.execute(query, (n,)).fetchall()`."
+   ],
+   "needs": [
+    "sqlite3"
+   ],
+   "say": "Time for a real report query. Top customers returns the biggest spenders as name and total pairs, biggest first. Join customers to orders, group by customer, sum the amounts, sort, and limit to n, passing n safely with a placeholder. Customers who never ordered should not appear at all."
+  },
+  {
+   "type": "concept",
+   "title": "ORMs: classes instead of SQL",
+   "body": "An **ORM** (SQLAlchemy, Django ORM) maps classes to tables and objects to rows: you write Python, it writes the SQL, placeholders included.\n\nGreat for apps. Still learn SQL: you'll debug the queries it generates.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "SQL",
+     "code": "SELECT name FROM customers\nWHERE city = ?\nORDER BY name"
+    },
+    "right": {
+     "title": "SQLAlchemy ORM",
+     "code": "stmt = (select(Customer.name)\n        .where(Customer.city == city)\n        .order_by(Customer.name))\nsession.scalars(stmt).all()"
+    },
+    "verdict": "Same query. The ORM writes the SQL, adds the placeholders, and returns Python objects."
+   },
+   "say": "In bigger apps, many teams use an ORM, an object relational mapper, like SQL Alchemy or the Django ORM. You define classes, and the ORM maps them to tables, writes the SQL and uses placeholders for you. It is a huge productivity win, but keep your SQL sharp, because one day you will need to debug the query the ORM generated."
+  },
+  {
+   "type": "quiz",
+   "title": "Why placeholders work",
+   "q": "Why are `?` placeholders safe against SQL injection?",
+   "options": [
+    "They escape quotes by adding backslashes",
+    "The values are sent separately from the SQL text, so they're never parsed as SQL",
+    "They only allow numbers",
+    "SQLite blocks the word OR"
+   ],
+   "answer": 1,
+   "why": "The database compiles the SQL first, then binds the values as plain data. Whatever the user types, it can't change the structure of the query.",
+   "say": "One last check on the most important lesson of the day. Why are question mark placeholders safe against SQL injection?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 48 complete",
+   "points": [
+    "sqlite3 gives you a real SQL database; \":memory:\" is perfect for learning and tests",
+    "SELECT … WHERE … ORDER BY … LIMIT asks questions; GROUP BY with COUNT, SUM and AVG summarises",
+    "JOIN combines tables through keys; LEFT JOIN keeps rows with no match (as None)",
+    "Always use ? placeholders: f-strings in SQL mean SQL injection",
+    "with conn: makes a transaction, so everything commits or everything rolls back"
+   ],
+   "say": "Mission forty eight complete. You created tables, asked questions with select, summarised with group by, combined tables with joins, stopped an injection attack, and moved money safely with a transaction. Tomorrow you make programs do many things at once, with async and concurrency."
+  }
+ ]
+}

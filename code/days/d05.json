@@ -1,0 +1,446 @@
+{
+ "day": 5,
+ "phase": 1,
+ "title": "String methods and f-strings",
+ "subtitle": "Clean messy text and format output like a pro",
+ "minutes": 55,
+ "goal": "Clean and analyse text with string methods, and produce polished, aligned output with f-strings.",
+ "outcomes": [
+  "Call string methods like strip, lower, replace and split, and chain them",
+  "Search text with find, count, startswith and endswith",
+  "Check whether text is all digits with isdigit",
+  "Build output with f-strings, including expressions inside the braces",
+  "Format money and columns with :.2f, :, and alignment specs"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 5: Clean text, beautiful output",
+   "body": "Real text is messy: `\"  RIYA@Gmail.COM \"` from a sign-up form, a city typed five different ways.\n\nToday you'll **clean** text with string methods and **format** polished output with f-strings, all the way to a printed receipt.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "What the user typed",
+     "code": "\"  RIYA@Gmail.COM \""
+    },
+    "right": {
+     "title": "What you store",
+     "code": "\"riya@gmail.com\""
+    },
+    "verdict": "One line of chained methods: .strip().lower()"
+   },
+   "say": "Welcome to day five. Text from real users is messy: extra spaces, random capitals, inconsistent spellings. Today you'll learn the string methods developers use to clean it up, and f strings, the modern way to produce polished output like receipts, tables and reports."
+  },
+  {
+   "type": "concept",
+   "title": "Methods: functions that belong to a value",
+   "body": "A **method** is called with a dot: `city.upper()`.\n\nStrings are immutable (Day 4), so a method never changes the original. It **returns a new string** that you print or store.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "city = \"pune\"",
+     "city.upper() runs",
+     "It returns a new string: \"PUNE\"",
+     "city is still \"pune\""
+    ]
+   },
+   "say": "A method is a function that belongs to a value. You call it with a dot after the value, like city dot upper. Remember from yesterday that strings are immutable. So a string method never changes the original. It hands you back a brand new string, and if you want to keep it, you assign it to a name."
+  },
+  {
+   "type": "code",
+   "title": "Case and whitespace",
+   "code": "city = \"  new DELHI  \"\nprint(city.upper())\nprint(city.lower())\nprint(city.title())\nprint(city.strip())\nprint(city.strip().title())   # chain: left to right\nprint(len(city), len(city.strip()))\nprint(city)                   # unchanged!",
+   "expect": "  NEW DELHI  \n  new delhi  \n  New Delhi  \nnew DELHI\nNew Delhi\n13 9\n  new DELHI  \n",
+   "explain": [
+    [
+     2,
+     "Every letter in capitals."
+    ],
+    [
+     4,
+     "Capital first letter for each word."
+    ],
+    [
+     5,
+     "Remove spaces at both ends."
+    ],
+    [
+     6,
+     "Chaining: strip() returns a string, then .title() runs on it."
+    ],
+    [
+     7,
+     "13 characters before stripping, 9 after."
+    ],
+    [
+     8,
+     "Methods return new strings; city is untouched."
+    ]
+   ],
+   "say": "Upper, lower and title change the case. Strip removes spaces from both ends, which is the first thing you should do with any text a user types. Line six chains two methods: strip runs first, then title runs on its result. The length line proves the spaces are gone, and the last line proves the original string never changed."
+  },
+  {
+   "type": "code",
+   "title": "Search and replace",
+   "code": "review = \"The food was good. The service was good too.\"\nprint(review.replace(\"good\", \"great\"))\nprint(review.count(\"good\"))\nprint(review.find(\"service\"))\nprint(review.find(\"price\"))       # -1 means not found\nprint(review.startswith(\"The\"))\nprint(review.endswith(\"!\"))",
+   "expect": "The food was great. The service was great too.\n2\n23\n-1\nTrue\nFalse\n",
+   "explain": [
+    [
+     2,
+     "Every 'good' becomes 'great'."
+    ],
+    [
+     3,
+     "'good' appears twice."
+    ],
+    [
+     4,
+     "'service' starts at index 23."
+    ],
+    [
+     5,
+     "Not found: find() returns -1."
+    ],
+    [
+     6,
+     "True or False: does it start with 'The'?"
+    ]
+   ],
+   "say": "Replace swaps every match for new text. Count tells you how many times something appears. Find returns the index where a match starts, or minus one if it isn't there, so always watch for that minus one. Startswith and endswith answer yes or no questions with True or False, a type you'll use to make decisions on day seven."
+  },
+  {
+   "type": "concept",
+   "title": "split and join",
+   "body": "- `text.split(\",\")` cuts text into a **list** of pieces\n- `text.split()` splits on any run of spaces\n- `\" | \".join(pieces)` glues pieces with a separator\n\nYou'll master lists on Day 11. For now: a list is a row of numbered slots, indexed like a string.",
+   "visual": {
+    "kind": "list",
+    "name": "parts",
+    "items": [
+     "'Riya Sharma'",
+     "'21'",
+     "'Pune'",
+     "'riya@example.com'"
+    ],
+    "mark": [
+     0
+    ],
+    "neg": true
+   },
+   "say": "Split cuts a string into pieces wherever it finds a separator, and gives you a list of the pieces. With no argument, it splits on spaces, tabs and new lines. Join does the reverse: it glues pieces together with the separator you call it on. You'll master lists on day eleven. For now, a list is a row of numbered slots, indexed just like a string."
+  },
+  {
+   "type": "code",
+   "title": "Parse a CSV line",
+   "code": "row = \"Riya Sharma,21,Pune,riya@example.com\"\nparts = row.split(\",\")\nprint(parts)\nprint(parts[0])\nprint(parts[-1])\n\ntags = \"python   ai  web\"\nwords = tags.split()\nprint(words)\nprint(\" | \".join(words))\nprint(\"-\".join(\"2026 10 18\".split()))",
+   "expect": "['Riya Sharma', '21', 'Pune', 'riya@example.com']\nRiya Sharma\nriya@example.com\n['python', 'ai', 'web']\npython | ai | web\n2026-10-18\n",
+   "explain": [
+    [
+     2,
+     "Cut at every comma: a list of 4 strings."
+    ],
+    [
+     4,
+     "Index 0: the first field."
+    ],
+    [
+     5,
+     "Index -1: the last field."
+    ],
+    [
+     8,
+     "No argument: split on any run of spaces."
+    ],
+    [
+     10,
+     "Glue the words back together with ' | '."
+    ],
+    [
+     11,
+     "Split, then join: spaces become dashes."
+    ]
+   ],
+   "say": "A line from a CSV file holds several fields separated by commas. Split turns it into a list, and indexes pull out each field: index zero is the name and minus one is the email. Split with no argument copes with messy spacing between words. Join then rebuilds the text with any separator you like."
+  },
+  {
+   "type": "predict",
+   "title": "Clean an email",
+   "code": "email = \"  Riya.S@Gmail.com \"\nclean = email.strip().lower()\nprint(clean)\nprint(clean.split(\"@\")[1])",
+   "options": [
+    "riya.s@gmail.com\ngmail.com",
+    "Riya.S@Gmail.com\nGmail.com",
+    "riya.s@gmail.com\nriya.s",
+    "riya.s@gmail.com\n@gmail.com"
+   ],
+   "answer": 0,
+   "why": "strip() removes the outer spaces and lower() fixes the case. split(\"@\") gives ['riya.s', 'gmail.com'], and index 1 is the domain.",
+   "say": "Predict both lines. First we clean the email, then we split it at the at sign and take the piece at index one. What do you get?"
+  },
+  {
+   "type": "code",
+   "title": "isdigit: is it a number?",
+   "code": "pin = \"411001\"\nprint(pin.isdigit())\nprint(\"4110O1\".isdigit())     # a letter O, not a zero\nprint(\"\".isdigit())\nprint(\"-5\".isdigit())\nprint(\"12.5\".isdigit())\nprint(\" 42 \".strip().isdigit())",
+   "expect": "True\nFalse\nFalse\nFalse\nFalse\nTrue\n",
+   "explain": [
+    [
+     2,
+     "All six characters are digits: True."
+    ],
+    [
+     3,
+     "One character is the letter O: False."
+    ],
+    [
+     4,
+     "Empty text has no digits: False."
+    ],
+    [
+     5,
+     "The minus sign isn't a digit."
+    ],
+    [
+     6,
+     "Neither is the decimal point."
+    ],
+    [
+     7,
+     "Strip first, then check."
+    ]
+   ],
+   "say": "Isdigit returns True only when every character is a digit and the string isn't empty. It's the quickest check before turning user input into a number. Notice the traps: a letter O hiding among zeros, an empty string, a minus sign and a decimal point all give False. Stripping spaces first makes the check fair."
+  },
+  {
+   "type": "predict",
+   "title": "The forgotten result",
+   "code": "name = \"riya\"\nname.upper()\nprint(name)",
+   "options": [
+    "RIYA",
+    "riya",
+    "Riya"
+   ],
+   "answer": 1,
+   "why": "upper() returns a new string, but this code throws it away. name still points to the original 'riya'. To keep the result, write name = name.upper().",
+   "say": "A trap that bites every beginner. We call upper on name, then print name. What appears?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the sign-up form",
+   "task": "This form should save a clean username: no spaces around it, all lowercase. It prints `[  Riya_Codes  ]` instead of `[riya_codes]`. Fix it.",
+   "starter": "username = \"  Riya_Codes  \"\nusername.strip()\nusername.lower()\nprint(\"Saved username: [\" + username + \"]\")\n",
+   "solution": "username = \"  Riya_Codes  \"\nusername = username.strip().lower()\nprint(\"Saved username: [\" + username + \"]\")",
+   "tests": "assert username == \"riya_codes\", f\"username is still {username!r}. strip() and lower() return NEW strings: store the result, for example username = username.strip().\"\nassert \"[riya_codes]\" in __out__, \"Print the cleaned username inside the brackets.\"",
+   "hints": [
+    "Strings are immutable. A method gives back a new string; it doesn't change the old one.",
+    "Assign the result back: username = username.strip().lower()"
+   ],
+   "say": "This sign up form should save a clean, lowercase username without spaces. But the saved value is still messy. Work out why, and fix it. Hint: think about what a method does, and doesn't do, to the original string."
+  },
+  {
+   "type": "concept",
+   "title": "f-strings: the modern way to format",
+   "body": "Put `f` before the quotes and drop values straight into `{ }`:\n`f\"Hi {name}, you have {count} messages\"`\n\nAny expression works inside the braces: `{qty * price}`, `{name.upper()}`. Numbers just work, no conversion needed.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Plus and commas",
+     "code": "print(\"Hi \" + name + \"! Total:\", total)"
+    },
+    "right": {
+     "title": "f-string",
+     "code": "print(f\"Hi {name}! Total: {total}\")"
+    },
+    "verdict": "One readable string, values exactly where you want them."
+   },
+   "say": "F strings are the modern way to build text. Put the letter f just before the opening quote, then write any variable or expression inside curly braces, right where you want it in the sentence. Python fills in the value. No plus signs, no fiddling with spaces, and numbers just work. Professional Python code uses f strings everywhere."
+  },
+  {
+   "type": "code",
+   "title": "f-strings with expressions",
+   "code": "name = \"Kabir\"\nitem = \"Masala chai\"\nqty = 3\nprice = 25\n\nprint(f\"Hi {name}!\")\nprint(f\"{qty} x {item} = {qty * price} rupees\")\nprint(f\"Shouting: {name.upper()}\")\nprint(f\"{name} has {len(name)} letters\")\nprint(f\"{qty=}, {price=}\")    # a debugging trick",
+   "expect": "Hi Kabir!\n3 x Masala chai = 75 rupees\nShouting: KABIR\nKabir has 5 letters\nqty=3, price=25\n",
+   "explain": [
+    [
+     6,
+     "A variable inside braces."
+    ],
+    [
+     7,
+     "A calculation inside braces: 3 * 25."
+    ],
+    [
+     8,
+     "A method call inside braces."
+    ],
+    [
+     9,
+     "Any expression works, even len()."
+    ],
+    [
+     10,
+     "{qty=} prints the name and the value: great for debugging."
+    ]
+   ],
+   "say": "Inside the braces you can put any expression: a calculation, a method call, even len. Python works it out and drops the result into the text. The last line is a favourite debugging trick. Put an equals sign after a name inside the braces, and Python prints both the name and its value."
+  },
+  {
+   "type": "visual",
+   "title": "Format specs",
+   "body": "After a **colon** inside the braces, a format spec controls how the value looks.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Spec",
+     "Meaning",
+     "Example → result"
+    ],
+    "rows": [
+     [
+      ":.2f",
+      "2 decimal places",
+      "f\"{3.14159:.2f}\" → 3.14"
+     ],
+     [
+      ":,",
+      "thousands separators",
+      "f\"{1250000:,}\" → 1,250,000"
+     ],
+     [
+      ":,.2f",
+      "both",
+      "f\"{1234.5:,.2f}\" → 1,234.50"
+     ],
+     [
+      ":>10",
+      "right-align in 10 characters",
+      "f\"{'chai':>10}\" → '      chai'"
+     ],
+     [
+      ":<10",
+      "left-align",
+      "f\"{'chai':<10}\" → 'chai      '"
+     ],
+     [
+      ":^10",
+      "centre",
+      "f\"{'chai':^10}\" → '   chai   '"
+     ]
+    ]
+   },
+   "say": "Add a colon inside the braces and you get format specs, a tiny language for presentation. Point two f shows exactly two decimal places, perfect for money. A comma adds thousands separators. And the arrow and caret symbols align text inside a fixed width: right, left or centre. That's how you build neat tables in a terminal."
+  },
+  {
+   "type": "code",
+   "title": "Money and alignment",
+   "code": "total = 1234.5\ngst = total * 0.18\nprint(f\"Total: {total:.2f}\")\nprint(f\"GST:   {gst:.2f}\")\nprint(f\"Salary: {1250000:,} rupees\")\nprint(f\"Grand total: ₹{total + gst:,.2f}\")\n\nprint(f\"[{'chai':<10}]\")\nprint(f\"[{'chai':>10}]\")\nprint(f\"[{'chai':^10}]\")\nprint(f\"[{42:>6}]\")",
+   "expect": "Total: 1234.50\nGST:   222.21\nSalary: 1,250,000 rupees\nGrand total: ₹1,456.71\n[chai      ]\n[      chai]\n[   chai   ]\n[    42]\n",
+   "explain": [
+    [
+     2,
+     "18% GST: the raw float is 222.20999999999998."
+    ],
+    [
+     4,
+     ".2f rounds it for display: 222.21."
+    ],
+    [
+     5,
+     "Thousands separators."
+    ],
+    [
+     6,
+     "Combine both: separators and 2 decimals."
+    ],
+    [
+     8,
+     "Pad to 10 characters, text on the left."
+    ],
+    [
+     11,
+     "Numbers can be aligned too."
+    ]
+   ],
+   "say": "Point two f always shows two decimals, so one thousand two hundred thirty four point five is shown as point five zero, the way money should look. The GST is rounded for display too. Comma adds separators to big numbers. In the second half, the square brackets make the padding visible: left, right and centre inside ten characters."
+  },
+  {
+   "type": "code",
+   "title": "A formatted receipt",
+   "body": "Widths add up to 32 characters per line, so every column lines up.",
+   "code": "shop = \"Monsoon Cafe, Pune\"\nitem1, qty1, price1 = \"Masala chai\", 12, 25\nitem2, qty2, price2 = \"Veg sandwich\", 8, 80\nitem3, qty3, price3 = \"Brownie\", 6, 65\n\ntotal1 = qty1 * price1\ntotal2 = qty2 * price2\ntotal3 = qty3 * price3\nsubtotal = total1 + total2 + total3\ngst = subtotal * 0.05\ngrand = subtotal + gst\n\nprint(f\"{shop:^32}\")\nprint(\"-\" * 32)\nprint(f\"{item1:<16}{qty1:>4}{total1:>12,.2f}\")\nprint(f\"{item2:<16}{qty2:>4}{total2:>12,.2f}\")\nprint(f\"{item3:<16}{qty3:>4}{total3:>12,.2f}\")\nprint(\"-\" * 32)\nprint(f\"{'Subtotal':<20}{subtotal:>12,.2f}\")\nprint(f\"{'GST 5%':<20}{gst:>12,.2f}\")\nprint(f\"{'TOTAL (₹)':<20}{grand:>12,.2f}\")",
+   "expect": "       Monsoon Cafe, Pune       \n--------------------------------\nMasala chai       12      300.00\nVeg sandwich       8      640.00\nBrownie            6      390.00\n--------------------------------\nSubtotal                1,330.00\nGST 5%                     66.50\nTOTAL (₹)               1,396.50\n",
+   "explain": [
+    [
+     2,
+     "Multiple assignment from Day 2: three values in one line."
+    ],
+    [
+     10,
+     "5% GST on the subtotal."
+    ],
+    [
+     13,
+     "Centre the shop name in 32 characters."
+    ],
+    [
+     15,
+     "16 for the name, 4 for the quantity, 12 for the amount."
+    ],
+    [
+     21,
+     "Text can be aligned with a spec too."
+    ]
+   ],
+   "say": "Here's everything together: a real receipt. Each line uses widths and alignment, so item names line up on the left and amounts line up on the right, with exactly two decimals. Big totals get a thousands separator. Change a quantity and run it again. The layout stays perfect. This is how billing systems print a bill."
+  },
+  {
+   "type": "quiz",
+   "title": "Pick the format",
+   "q": "`price = 1499`. Which line prints `1,499.00`?",
+   "options": [
+    "print(f\"{price:.2f}\")",
+    "print(f\"{price:,}\")",
+    "print(f\"{price:,.2f}\")",
+    "print(f\"{price:2,f}\")"
+   ],
+   "answer": 2,
+   "why": ":, adds separators and .2f gives two decimals. Combine them as :,.2f. The first option prints 1499.00 and the second prints 1,499.",
+   "say": "Quick check. The price is fourteen ninety nine. Which f string displays it with a thousands separator and two decimal places?"
+  },
+  {
+   "type": "exercise",
+   "title": "Normalise a phone number",
+   "task": "Users type phone numbers every way imaginable. Turn `raw` into `phone`: just the 10 digits.\n- strip the spaces around it\n- remove `+91`, dashes and inner spaces with `replace()`\n\nPrint `phone` and `phone.isdigit()`.",
+   "starter": "raw = \" +91 98765-43210 \"\n# phone = ...\n",
+   "solution": "raw = \" +91 98765-43210 \"\nphone = raw.strip().replace(\"+91\", \"\").replace(\"-\", \"\").replace(\" \", \"\")\nprint(phone, phone.isdigit())",
+   "tests": "import re\ndef again(r):\n    ns = {}\n    exec(re.sub(r\"^raw\\s*=.*$\", f'raw = \"{r}\"', __code__, count=1, flags=re.M), ns)\n    return ns[\"phone\"]\nassert \"phone\" in globals(), \"Create a variable called phone.\"\nassert phone == \"9876543210\", f\"phone should be '9876543210', but it is {phone!r}. Remove +91, dashes and spaces.\"\nassert again(\"98765 43210\") == \"9876543210\", \"For '98765 43210' you should get '9876543210'. Remove the space in the middle too.\"\nassert again(\"+91-91234-56789\") == \"9123456789\", \"For '+91-91234-56789' you should get '9123456789'.\"\nassert again(\"  080-2345 6789 \") == \"08023456789\", \"A landline like '  080-2345 6789 ' should become '08023456789'. Chain your replace() calls on raw.\"\nassert \"True\" in __out__, \"Also print phone.isdigit(), so you can see the result is digits only.\"",
+   "hints": [
+    "Chain methods: raw.strip().replace(\"+91\", \"\")...",
+    "replace(\"-\", \"\") deletes every dash; replace(\" \", \"\") deletes every space."
+   ],
+   "say": "Users type phone numbers every way imaginable: with the country code, with dashes, with spaces. Write one line of chained methods that turns any of them into plain digits. Then print isdigit to prove it worked."
+  },
+  {
+   "type": "exercise",
+   "title": "Payment confirmation",
+   "task": "Build `message` with an f-string, like a payments app:\n`Paid ₹2,500.00 to Ravi Kumar`\n\n- the payee's name stripped and in title case\n- the amount with separators and 2 decimals\n\nPrint `message`.",
+   "starter": "payee = \"  ravi kumar \"\namount = 2500\n# message = f\"...\"\n",
+   "solution": "payee = \"  ravi kumar \"\namount = 2500\nmessage = f\"Paid ₹{amount:,.2f} to {payee.strip().title()}\"\nprint(message)",
+   "tests": "import re\ndef again(p, a):\n    src = re.sub(r\"^payee\\s*=.*$\", f'payee = \"{p}\"', __code__, count=1, flags=re.M)\n    src = re.sub(r\"^amount\\s*=.*$\", f\"amount = {a}\", src, count=1, flags=re.M)\n    ns = {}\n    exec(src, ns)\n    return ns[\"message\"]\nassert \"message\" in globals(), \"Create a variable called message.\"\nassert message == \"Paid ₹2,500.00 to Ravi Kumar\", f\"message should be 'Paid ₹2,500.00 to Ravi Kumar', but it is {message!r}.\"\nassert again(\"ANITA\", 99.5) == \"Paid ₹99.50 to Anita\", \"For payee 'ANITA' and amount 99.5 you should get 'Paid ₹99.50 to Anita'. Use :,.2f and .title().\"\nassert again(\" dev \", 1234567.891) == \"Paid ₹1,234,567.89 to Dev\", \"For 1234567.891 the amount should show as ₹1,234,567.89.\"\nassert message in __out__, \"Print the message.\"",
+   "hints": [
+    "Inside the braces: {amount:,.2f}",
+    "Clean the name inside the braces too: {payee.strip().title()}"
+   ],
+   "say": "Every payments app shows a confirmation like paid two thousand five hundred rupees to Ravi Kumar. Build that message with a single f string. Clean the payee's name, and format the amount with separators and two decimals."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 5 complete",
+   "points": [
+    "Methods return new strings: strip, lower, upper, title, replace; chain them left to right",
+    "find, count, startswith and endswith search text; find returns -1 when nothing matches",
+    "split() cuts text into a list; join() glues pieces with a separator",
+    "isdigit() checks for digits only before you convert",
+    "f\"{value:,.2f}\" and :<, :>, :^ give money and columns a professional look"
+   ],
+   "say": "Mission five complete. You can clean messy text, search it, split it into fields, and format beautiful output with f strings. Tomorrow your programs start listening: you'll read input from the user and convert it into numbers. See you on day six."
+  }
+ ]
+}

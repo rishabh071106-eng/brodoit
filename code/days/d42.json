@@ -1,0 +1,516 @@
+{
+ "day": 42,
+ "phase": 5,
+ "title": "Searching, sorting and recursion",
+ "subtitle": "Find it fast, put it in order, and think in smaller problems",
+ "minutes": 60,
+ "goal": "Implement linear and binary search, three classic sorts and recursive functions, and know when Python's built-ins beat them.",
+ "outcomes": [
+  "Write linear search and binary search, and explain why binary search needs sorted data",
+  "Use bisect for fast lookups and sorted inserts",
+  "Trace bubble, insertion and merge sort step by step",
+  "Write recursive functions with a base case and read the call stack",
+  "Choose sorted() with key= for real code, and explain why"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 42: Searching, sorting and recursion",
+   "body": "Every search bar, leaderboard and file explorer runs on three ideas: **searching**, **sorting** and **recursion**.\n\nToday you build them yourself, so you know exactly what Python's tools cost, and you're ready for the interview questions about them.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Search: find one item fast",
+     "Sort: put everything in order",
+     "Recursion: solve a smaller copy of the same problem"
+    ]
+   },
+   "say": "Every search bar, leaderboard and file explorer runs on three ideas: searching, sorting and recursion. Today you build all three yourself. You will know exactly what Python's built in tools cost, and you will be ready for the interview questions that always come up."
+  },
+  {
+   "type": "concept",
+   "title": "Linear search: check every item",
+   "body": "The simplest search walks from the start until it finds the target. It works on **any** list, sorted or not.\n\nCost: **O(n)**. The target might be last, or missing.",
+   "visual": {
+    "kind": "list",
+    "name": "pnrs",
+    "items": [
+     "'K8Q2'",
+     "'A1Z9'",
+     "'M4T7'",
+     "'B6R3'",
+     "'X2L5'"
+    ],
+    "mark": [
+     3
+    ]
+   },
+   "say": "Linear search is what you would do with a pile of train tickets: check each one until you find the right PNR. It works on any list, sorted or not. But in the worst case the ticket is last, or missing, so you check all n items. That is O of n."
+  },
+  {
+   "type": "code",
+   "title": "Linear search",
+   "code": "def linear_search(items, target):\n    for i, item in enumerate(items):\n        if item == target:\n            return i\n    return -1\n\npnrs = [\"K8Q2\", \"A1Z9\", \"M4T7\", \"B6R3\", \"X2L5\"]\nprint(linear_search(pnrs, \"B6R3\"))\nprint(linear_search(pnrs, \"Z0Z0\"))\nprint(pnrs.index(\"B6R3\"))      # Python's built-in linear search\n",
+   "expect": "3\n-1\n3\n",
+   "explain": [
+    [
+     2,
+     "enumerate gives each position and item."
+    ],
+    [
+     4,
+     "Found it: stop and return the position."
+    ],
+    [
+     5,
+     "The loop finished without a match: -1 means not found."
+    ],
+    [
+     10,
+     "list.index() is the same O(n) scan, written in C."
+    ]
+   ],
+   "say": "Here it is in five lines. Enumerate gives us each position and item, and we return the position as soon as we find a match. If the loop finishes, the item is not there, so we return minus one. Python's own index method does the same scan, but raises an error when the item is missing."
+  },
+  {
+   "type": "concept",
+   "title": "Binary search: halve it every time",
+   "body": "If the list is **sorted**, look at the middle:\n- target is bigger: throw away the left half\n- target is smaller: throw away the right half\n\nEach step halves the problem: **O(log n)**. A million items take about 20 checks.",
+   "visual": {
+    "kind": "list",
+    "name": "scores",
+    "items": [
+     "3",
+     "8",
+     "15",
+     "22",
+     "31",
+     "47",
+     "56",
+     "72",
+     "89"
+    ],
+    "mark": [
+     4
+    ],
+    "slice": [
+     5,
+     9
+    ]
+   },
+   "say": "If the list is sorted, we can be much smarter. Look at the middle item. If the target is bigger, the whole left half can be thrown away in one go. Keep halving, and a million items need only about twenty checks. Here we want seventy two. The middle is thirty one, so only the highlighted right half remains."
+  },
+  {
+   "type": "code",
+   "title": "Binary search, step by step",
+   "code": "def binary_search(items, target):\n    lo, hi = 0, len(items) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        print(f\"  look at index {mid}: {items[mid]}\")\n        if items[mid] == target:\n            return mid\n        elif items[mid] < target:\n            lo = mid + 1          # target is in the right half\n        else:\n            hi = mid - 1          # target is in the left half\n    return -1\n\nscores = [3, 8, 15, 22, 31, 47, 56, 72, 89]\nprint(\"found at\", binary_search(scores, 72))\nprint(\"found at\", binary_search(scores, 10))\n",
+   "expect": "  look at index 4: 31\n  look at index 6: 56\n  look at index 7: 72\nfound at 7\n  look at index 4: 31\n  look at index 1: 8\n  look at index 2: 15\nfound at -1\n",
+   "explain": [
+    [
+     2,
+     "lo and hi mark the part of the list still in play."
+    ],
+    [
+     4,
+     "The middle position, rounded down."
+    ],
+    [
+     9,
+     "Middle too small: the target must be to the right."
+    ],
+    [
+     11,
+     "Middle too big: the target must be to the left."
+    ],
+    [
+     12,
+     "lo passed hi: nothing left to check."
+    ]
+   ],
+   "say": "Two markers, lo and hi, mark the part of the list that could still hold the target. Each loop checks the middle and moves one marker past it. Seventy two is found in three looks, and ten is ruled out in three. Notice the condition: lo less than or equal to hi. That detail matters, as you are about to find out."
+  },
+  {
+   "type": "bug",
+   "title": "Binary search misses items",
+   "task": "This binary search sometimes says an item is missing when it's right there. Try a one-item list, or the last item of a list.\n\nFind the bug and fix it: every item must be found, and missing items return `-1`.",
+   "starter": "def binary_search(items, target):\n    lo, hi = 0, len(items) - 1\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if items[mid] == target:\n            return mid\n        elif items[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n\nprint(binary_search([5], 5))           # should be 0\nprint(binary_search([1, 3, 5], 5))     # should be 2\n",
+   "solution": "def binary_search(items, target):\n    lo, hi = 0, len(items) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if items[mid] == target:\n            return mid\n        elif items[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n\nprint(binary_search([5], 5))           # should be 0\nprint(binary_search([1, 3, 5], 5))     # should be 2\n",
+   "tests": "data = [2, 4, 7, 9, 13, 21, 34]\nfor i, x in enumerate(data):\n    got = binary_search(data, x)\n    assert got == i, f\"binary_search(data, {x}) should return {i}, but returned {got}. When lo == hi there is still one item left to check.\"\nassert binary_search([5], 5) == 0, \"In the one-item list [5], 5 is at index 0.\"\nassert binary_search(data, 8) == -1, \"8 is not in the list, so return -1.\"\nassert binary_search([], 3) == -1, \"An empty list contains nothing: return -1.\"",
+   "hints": [
+    "Trace `[5]` by hand: lo and hi both start at 0. Does the loop run at all?",
+    "When `lo == hi`, exactly one item is still unchecked.",
+    "Change the loop condition to `lo <= hi`."
+   ],
+   "say": "Bug hunt. This binary search says some items are missing when they are right there. Try a list with one item, or search for the last item. Work out which check gets skipped, and fix it. Off by one errors like this are the most common binary search bug, even for experienced developers."
+  },
+  {
+   "type": "code",
+   "title": "bisect: binary search built in",
+   "code": "import bisect\n\n# Below 40 is F, 40-54 D, 55-69 C, 70-84 B, 85 and up A\ncutoffs = [40, 55, 70, 85]\ngrades = \"FDCBA\"\n\ndef grade(marks):\n    return grades[bisect.bisect_right(cutoffs, marks)]\n\nprint([grade(m) for m in [33, 40, 68, 70, 85]])\n\nleaderboard = [120, 340, 560, 910]\nbisect.insort(leaderboard, 450)       # insert and stay sorted\nprint(leaderboard)\n",
+   "expect": "['F', 'D', 'C', 'B', 'A']\n[120, 340, 450, 560, 910]\n",
+   "explain": [
+    [
+     4,
+     "Sorted boundaries between grades."
+    ],
+    [
+     8,
+     "bisect_right counts how many cutoffs are at or below the marks: 0 to 4."
+    ],
+    [
+     10,
+     "That count picks the grade letter."
+    ],
+    [
+     13,
+     "insort finds the spot in O(log n) and inserts there."
+    ]
+   ],
+   "say": "In real code you rarely write binary search by hand. The bisect module does it for you, in fast C code. Bisect right tells you where a value would go in a sorted list, which turns grade boundaries into a one line lookup. And insort adds an item while keeping the list sorted, perfect for leaderboards."
+  },
+  {
+   "type": "predict",
+   "title": "bisect_left vs bisect_right",
+   "code": "import bisect\nprices = [100, 200, 200, 300]\nprint(bisect.bisect_left(prices, 200), bisect.bisect_right(prices, 200))",
+   "options": [
+    "1 3",
+    "1 2",
+    "2 3",
+    "0 3"
+   ],
+   "answer": 0,
+   "why": "`bisect_left` gives the position **before** any equal items (1); `bisect_right` gives the position **after** them (3). Their difference, 3 - 1 = 2, counts the 200s in O(log n).",
+   "say": "The list has two prices of two hundred. Bisect left and bisect right both look for two hundred. What do they return?"
+  },
+  {
+   "type": "concept",
+   "title": "Sorting: why build what sorted() does?",
+   "body": "In real code you'll use `sorted()`. Building sorts yourself teaches the patterns behind every algorithm, and interviewers love them.\n\n**Bubble sort**: swap neighbours that are out of order. Each pass bubbles the biggest item to the end. **O(n²)**.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Pass",
+     "List after the pass"
+    ],
+    "rows": [
+     [
+      "start",
+      "5  2  4  1"
+     ],
+     [
+      "1",
+      "2  4  1  5"
+     ],
+     [
+      "2",
+      "2  1  4  5"
+     ],
+     [
+      "3",
+      "1  2  4  5"
+     ]
+    ]
+   },
+   "say": "You will always use sorted in real code. But writing a few sorts yourself teaches the patterns behind every algorithm, and interviewers love asking. Bubble sort is the simplest: walk the list, and swap any two neighbours in the wrong order. After each pass, the biggest remaining item has bubbled to the end."
+  },
+  {
+   "type": "code",
+   "title": "Bubble sort",
+   "code": "def bubble_sort(items):\n    items = items[:]                      # work on a copy\n    for end in range(len(items) - 1, 0, -1):\n        swapped = False\n        for i in range(end):\n            if items[i] > items[i + 1]:\n                items[i], items[i + 1] = items[i + 1], items[i]\n                swapped = True\n        print(\"pass:\", items)\n        if not swapped:                   # already sorted: stop early\n            break\n    return items\n\nprint(bubble_sort([5, 2, 4, 1]))\n",
+   "expect": "pass: [2, 4, 1, 5]\npass: [2, 1, 4, 5]\npass: [1, 2, 4, 5]\n[1, 2, 4, 5]\n",
+   "explain": [
+    [
+     2,
+     "Copy, so we never change the caller's list."
+    ],
+    [
+     3,
+     "Each pass can stop one place earlier: the end is already sorted."
+    ],
+    [
+     7,
+     "Swap two neighbours with tuple unpacking."
+    ],
+    [
+     10,
+     "No swaps in a whole pass means sorted: stop early."
+    ]
+   ],
+   "say": "Here is bubble sort with a professional touch. We copy the list so the caller's data is untouched, and if a whole pass makes no swaps we stop early, because the list is already sorted. Watch each pass push the largest number to the end. Two nested loops, so it is O of n squared."
+  },
+  {
+   "type": "code",
+   "title": "Insertion sort: how you sort cards",
+   "code": "def insertion_sort(items):\n    items = items[:]\n    for i in range(1, len(items)):\n        card = items[i]\n        j = i - 1\n        while j >= 0 and items[j] > card:   # shift bigger cards right\n            items[j + 1] = items[j]\n            j -= 1\n        items[j + 1] = card                 # drop the card in the gap\n        print(f\"insert {card}: {items}\")\n    return items\n\ninsertion_sort([7, 3, 9, 1])\n",
+   "expect": "insert 3: [3, 7, 9, 1]\ninsert 9: [3, 7, 9, 1]\ninsert 1: [1, 3, 7, 9]\n",
+   "explain": [
+    [
+     4,
+     "Pick up the next card."
+    ],
+    [
+     6,
+     "Slide every bigger card one place to the right."
+    ],
+    [
+     9,
+     "Drop the card into the gap."
+    ]
+   ],
+   "say": "Insertion sort is how most people sort a hand of cards. Take the next card, slide the bigger ones one place to the right, and drop the card into the gap. It is still O of n squared in the worst case, but on data that is almost sorted it is very fast, which is why Python's own sort uses it for small pieces."
+  },
+  {
+   "type": "concept",
+   "title": "Recursion: a function that calls itself",
+   "body": "A recursive function solves a problem by solving a **smaller copy** of it.\n- **Base case**: small enough to answer directly, so stop\n- **Recursive case**: shrink the problem and call yourself\n\nEach call gets its own frame on the call stack.",
+   "visual": {
+    "kind": "stack",
+    "frames": [
+     {
+      "name": "main",
+      "vars": []
+     },
+     {
+      "name": "factorial(n=3)",
+      "vars": [
+       [
+        "n",
+        "3"
+       ],
+       [
+        "waiting for",
+        "factorial(2)"
+       ]
+      ]
+     },
+     {
+      "name": "factorial(n=2)",
+      "vars": [
+       [
+        "n",
+        "2"
+       ],
+       [
+        "waiting for",
+        "factorial(1)"
+       ]
+      ]
+     },
+     {
+      "name": "factorial(n=1)",
+      "vars": [
+       [
+        "n",
+        "1"
+       ]
+      ],
+      "ret": "1"
+     }
+    ]
+   },
+   "say": "Recursion means a function calls itself on a smaller version of the same problem. Every recursive function needs two parts. A base case, small enough to answer directly, so the calls stop. And a recursive case that shrinks the problem. Each call gets its own frame on the call stack, as you can see here for factorial of three."
+  },
+  {
+   "type": "code",
+   "title": "Factorial, recursively",
+   "code": "def factorial(n):\n    if n <= 1:                    # base case\n        return 1\n    return n * factorial(n - 1)   # recursive case: a smaller problem\n\nprint(factorial(3))\nprint(factorial(5))\n",
+   "expect": "6\n120\n",
+   "explain": [
+    [
+     2,
+     "Base case: 1! is 1, no more calls."
+    ],
+    [
+     4,
+     "n! = n × (n-1)!: the same problem, one smaller."
+    ],
+    [
+     6,
+     "3 × 2 × 1 = 6"
+    ],
+    [
+     7,
+     "5 × 4 × 3 × 2 × 1 = 120"
+    ]
+   ],
+   "say": "Factorial of five is five times factorial of four, which is four times factorial of three, and so on down to one, the base case. Tap watch it run and follow the call stack grow as each call waits for the one below it, then shrink as the answers come back up."
+  },
+  {
+   "type": "predict",
+   "title": "Before and after the call",
+   "code": "def countdown(n):\n    if n == 0:\n        print(\"Lift off!\")\n        return\n    print(n)\n    countdown(n - 1)\n    print(\"back in\", n)\n\ncountdown(2)",
+   "options": [
+    "2\n1\nLift off!\nback in 1\nback in 2",
+    "2\n1\nLift off!\nback in 2\nback in 1",
+    "2\nback in 2\n1\nback in 1\nLift off!"
+   ],
+   "answer": 0,
+   "why": "Each call prints its number, then **waits** while the smaller call runs. Only after Lift off! do the waiting calls finish, newest first: back in 1, then back in 2. That's the call stack unwinding.",
+   "say": "This one is a classic. The function prints a number, calls itself, and then prints again after that call returns. In what order do the lines appear?"
+  },
+  {
+   "type": "visual",
+   "title": "Merge sort: divide and conquer",
+   "body": "Split until each piece has one item, then **merge** sorted pieces back up, always taking the smaller front item. O(n log n).",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "[38, 27, 43, 3]  →  [3, 27, 38, 43]",
+     "c": [
+      {
+       "t": "[38, 27]  →  [27, 38]",
+       "c": [
+        {
+         "t": "[38]"
+        },
+        {
+         "t": "[27]"
+        }
+       ]
+      },
+      {
+       "t": "[43, 3]  →  [3, 43]",
+       "c": [
+        {
+         "t": "[43]"
+        },
+        {
+         "t": "[3]"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "Merge sort is recursion at its best. Split the list in half, and keep splitting until every piece has one item, which is already sorted. Then merge the sorted pieces back together, always taking the smaller front item. It is O of n log n: log n levels of splitting, and n work to merge each level."
+  },
+  {
+   "type": "exercise",
+   "title": "Write merge sort",
+   "task": "Complete `merge(left, right)`, which combines two **sorted** lists into one sorted list. Then finish `merge_sort(items)`: split in half, sort each half recursively, and merge.\n\nNo `sorted()` or `.sort()` this time.",
+   "starter": "def merge(left, right):\n    result = []\n    i = j = 0\n    # While both lists have items, append the smaller front item\n    # Then add whatever is left over in either list\n    return result\n\ndef merge_sort(items):\n    if len(items) <= 1:          # base case\n        return items[:]\n    mid = len(items) // 2\n    # Sort each half recursively, then merge them\n    return items\n\nprint(merge_sort([38, 27, 43, 3, 9, 82, 10]))\n",
+   "solution": "def merge(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i])\n            i += 1\n        else:\n            result.append(right[j])\n            j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result\n\ndef merge_sort(items):\n    if len(items) <= 1:          # base case\n        return items[:]\n    mid = len(items) // 2\n    return merge(merge_sort(items[:mid]), merge_sort(items[mid:]))\n\nprint(merge_sort([38, 27, 43, 3, 9, 82, 10]))\n",
+   "tests": "assert merge([1, 4, 9], [2, 3, 10]) == [1, 2, 3, 4, 9, 10], \"merge([1, 4, 9], [2, 3, 10]) should give [1, 2, 3, 4, 9, 10]. Take the smaller front item each time.\"\nassert merge([], [5, 6]) == [5, 6], \"Merging with an empty list: add all the leftovers from the other list.\"\nassert merge_sort([38, 27, 43, 3, 9, 82, 10]) == [3, 9, 10, 27, 38, 43, 82], \"merge_sort should return the numbers in ascending order.\"\nassert merge_sort([]) == [] and merge_sort([7]) == [7], \"Empty and one-item lists are already sorted.\"\nassert merge_sort([5, 1, 5, 1]) == [1, 1, 5, 5], \"Keep every duplicate: [5, 1, 5, 1] becomes [1, 1, 5, 5].\"\nassert \"sorted(\" not in __code__ and \".sort(\" not in __code__, \"Build it yourself this time: no sorted() or .sort().\"",
+   "hints": [
+    "In `merge`, compare `left[i]` with `right[j]`, append the smaller one and move that index on.",
+    "After the loop one list may still have items: `result.extend(left[i:])`, and the same for `right`.",
+    "`merge_sort` returns `merge(merge_sort(items[:mid]), merge_sort(items[mid:]))`."
+   ],
+   "say": "Time to build a real O of n log n sort. First complete merge, which zips two sorted lists into one by always taking the smaller front item. Then finish merge sort: split in half, sort each half by calling itself, and merge the results. No sorted allowed this time."
+  },
+  {
+   "type": "concept",
+   "title": "RecursionError: no way out",
+   "body": "Forget the base case and the calls never stop. Python protects itself with a limit of about **1,000** nested calls.\n\nFor very deep data (say 100,000 levels), use a loop instead.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python main.py"
+     ],
+     [
+      "",
+      "  File \"main.py\", line 2, in countdown"
+     ],
+     [
+      "",
+      "    return countdown(n - 1)"
+     ],
+     [
+      "",
+      "  [Previous line repeated 996 more times]"
+     ],
+     [
+      "",
+      "RecursionError: maximum recursion depth exceeded"
+     ]
+    ]
+   },
+   "say": "Forget the base case, and a recursive function calls itself forever. Python protects your program with a limit of about a thousand nested calls, then raises a recursion error. The traceback even tells you the line repeated hundreds of times. For very deep data, use a loop instead."
+  },
+  {
+   "type": "code",
+   "title": "Hitting the limit safely",
+   "code": "import sys\n\ndef count_down(n):\n    if n == 0:\n        return \"done\"\n    return count_down(n - 1)\n\nprint(\"limit:\", sys.getrecursionlimit())\nprint(count_down(500))\n\ntry:\n    count_down(5000)\nexcept RecursionError:\n    print(\"5000 deep: RecursionError, so use a loop instead\")\n",
+   "expect": "limit: 1000\ndone\n5000 deep: RecursionError, so use a loop instead\n",
+   "explain": [
+    [
+     8,
+     "Python's safety limit on nested calls."
+    ],
+    [
+     9,
+     "500 levels: fine."
+    ],
+    [
+     12,
+     "5,000 levels: over the limit."
+    ],
+    [
+     13,
+     "Catch it like any other exception."
+    ]
+   ],
+   "say": "You can check the limit with sys dot get recursion limit. Five hundred calls deep is fine, but five thousand is too many, and Python raises a recursion error. We catch it here to show what happens. In real code, if your data can be that deep, rewrite the function with a loop."
+  },
+  {
+   "type": "code",
+   "title": "Why Python's sorted() wins",
+   "body": "`sorted()` uses **Timsort**: O(n log n), written in C, **stable**, and extra fast on partly sorted data.",
+   "code": "orders = [\n    (\"Asha\", \"Pune\", 450),\n    (\"Vikram\", \"Delhi\", 1200),\n    (\"Meera\", \"Pune\", 1200),\n    (\"Kabir\", \"Delhi\", 300),\n]\n\nby_amount = sorted(orders, key=lambda o: o[2], reverse=True)\nfor name, city, amount in by_amount:\n    print(name, amount)\n\n# Stable: equal keys keep their order, so sorts can be chained\nby_city = sorted(by_amount, key=lambda o: o[1])\nprint([name for name, city, amount in by_city])\n",
+   "expect": "Vikram 1200\nMeera 1200\nAsha 450\nKabir 300\n['Vikram', 'Kabir', 'Meera', 'Asha']\n",
+   "explain": [
+    [
+     8,
+     "key= picks what to sort by; reverse=True puts the biggest first."
+    ],
+    [
+     13,
+     "Sort again by city. Within each city, the amount order survives."
+    ]
+   ],
+   "say": "In real code, always reach for sorted. It uses Timsort, an O of n log n algorithm written in C that is extra fast on partly sorted data, which real data often is. It is also stable: items with equal keys keep their original order. So after sorting by amount and then by city, each city stays ordered by amount."
+  },
+  {
+   "type": "quiz",
+   "title": "The big idea",
+   "q": "Why does binary search only work on a **sorted** list?",
+   "options": [
+    "Sorted lists use less memory",
+    "Throwing away half is only safe if everything on one side is smaller than everything on the other",
+    "Python raises an error on unsorted lists",
+    "It works just as well on unsorted lists"
+   ],
+   "answer": 1,
+   "why": "Binary search discards half the list after one comparison. That's only correct when order guarantees the target can't be in the discarded half. On an unsorted list it silently gives wrong answers.",
+   "say": "Quick check on the big idea. Why does binary search only work on a sorted list?"
+  },
+  {
+   "type": "exercise",
+   "title": "Total size of a folder",
+   "task": "A folder is a dict: each file maps to its size in KB, each sub-folder maps to another dict. Write a **recursive** `folder_size(folder)` that returns the total KB of every file inside it, at any depth.",
+   "starter": "project = {\n    \"main.py\": 12,\n    \"README.md\": 4,\n    \"data\": {\"sales.csv\": 300, \"old\": {\"2023.csv\": 250}},\n    \"assets\": {},\n}\n\ndef folder_size(folder):\n    total = 0\n    # For each entry: add a file's size, or recurse into a sub-folder (a dict)\n    return total\n\nprint(folder_size(project))   # 566\n",
+   "solution": "project = {\n    \"main.py\": 12,\n    \"README.md\": 4,\n    \"data\": {\"sales.csv\": 300, \"old\": {\"2023.csv\": 250}},\n    \"assets\": {},\n}\n\ndef folder_size(folder):\n    total = 0\n    for name, entry in folder.items():\n        if isinstance(entry, dict):\n            total += folder_size(entry)   # a sub-folder: recurse\n        else:\n            total += entry                # a file: add its size\n    return total\n\nprint(folder_size(project))   # 566\n",
+   "tests": "assert folder_size({\"a.txt\": 5, \"b.txt\": 7}) == 12, \"Two files of 5 and 7 KB should total 12.\"\nassert folder_size(project) == 566, f\"The project folder holds 566 KB at all depths, but you returned {folder_size(project)}.\"\nassert folder_size({}) == 0, \"An empty folder has size 0.\"\nassert folder_size({\"x\": {\"y\": {\"z\": {\"deep.log\": 9}}}}) == 9, \"Files can sit many folders deep: recurse into every dict.\"",
+   "hints": [
+    "`isinstance(entry, dict)` tells you whether an entry is a sub-folder.",
+    "For a sub-folder, add `folder_size(entry)`: the function calls itself.",
+    "The base case is built in: a folder with no sub-folders just adds up its files."
+   ],
+   "say": "Recursion shines on nested data like folders. Each folder is a dict: files map to their size, and sub folders map to another dict. Write folder size so it adds up every file at any depth, by calling itself whenever it meets a sub folder."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 42 complete",
+   "points": [
+    "Linear search is O(n) and works on any list; binary search is O(log n) but needs sorted data",
+    "bisect gives you binary search, grade lookups and sorted inserts for free",
+    "Bubble and insertion sort are O(n²); merge sort is O(n log n) by divide and conquer",
+    "Recursion = a base case + a smaller recursive call; Python stops at about 1,000 levels",
+    "In real code, use sorted() with key=: Timsort is fast, stable and written in C"
+   ],
+   "say": "Mission forty two complete. You built linear and binary search, three sorting algorithms and your first recursive functions, and you know why sorted wins in real code. Tomorrow you build the data structures behind undo buttons, task schedulers and Python's own dict."
+  }
+ ]
+}

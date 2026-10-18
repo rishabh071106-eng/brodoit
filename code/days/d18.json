@@ -1,0 +1,483 @@
+{
+ "day": 18,
+ "phase": 2,
+ "title": "Functions II: flexible and safe",
+ "subtitle": "Defaults, keyword arguments, scope and a famous trap",
+ "minutes": 55,
+ "goal": "Write flexible functions with defaults, keyword arguments, *args and **kwargs, and keep them safe with pure design and correct defaults.",
+ "outcomes": [
+  "Give parameters default values and call functions with keyword arguments",
+  "Accept any number of arguments with *args and **kwargs",
+  "Explain how Python finds names with the LEGB rule",
+  "Prefer pure functions over globals",
+  "Spot and fix the mutable default argument trap"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 18: Flexible, safe functions",
+   "body": "You've been calling flexible functions for weeks: `print(a, b, sep=\"-\")`, `sorted(x, reverse=True)`, `max(4, 8, 15)`.\n\nToday you build your own: **defaults**, **keyword arguments**, `*args` and `**kwargs`, plus **scope** and a famous trap.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "You've called",
+     "Today you'll write"
+    ],
+    "rows": [
+     [
+      "print(a, b, sep='-')",
+      "def book(passenger, quota='GN')"
+     ],
+     [
+      "sorted(x, reverse=True)",
+      "book('Riya', quota='TQ')"
+     ],
+     [
+      "max(4, 8, 15)",
+      "def average(*nums)"
+     ]
+    ]
+   },
+   "say": "Welcome to day eighteen. You have been calling flexible functions for weeks: print with a custom separator, sorted with reverse equals true, max with any number of values. Today you learn to build functions like that yourself. Then we look at scope, and a famous trap that has bitten thousands of developers."
+  },
+  {
+   "type": "concept",
+   "title": "Default values",
+   "body": "Give a parameter a **default** with `=` in the definition. Callers can skip it, or override it.\n\n`def make_greeting(name, greeting=\"Namaste\"):`",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Without a default",
+     "code": "def make_greeting(name, greeting):\n    ...\n\nmake_greeting(\"Riya\")\n# TypeError: missing 1 required\n# positional argument"
+    },
+    "right": {
+     "title": "With a default",
+     "code": "def make_greeting(name, greeting=\"Namaste\"):\n    ...\n\nmake_greeting(\"Riya\")\nmake_greeting(\"Riya\", \"Hello\")"
+    },
+    "verdict": "Defaults make the common case short and the special case possible."
+   },
+   "say": "A default value makes a parameter optional. You write an equals sign and the value right in the definition. If the caller leaves it out, Python uses the default. If the caller passes a value, that value wins. Defaults keep the common case short, while still allowing the special case."
+  },
+  {
+   "type": "code",
+   "title": "make_greeting()",
+   "code": "def make_greeting(name, greeting=\"Namaste\"):\n    return f\"{greeting}, {name}!\"\n\nprint(make_greeting(\"Riya\"))\nprint(make_greeting(\"Arjun\", \"Hello\"))\nprint(make_greeting(\"Meera\", greeting=\"Vanakkam\"))",
+   "expect": "Namaste, Riya!\nHello, Arjun!\nVanakkam, Meera!\n",
+   "explain": [
+    [
+     1,
+     "greeting is optional: it defaults to \"Namaste\"."
+    ],
+    [
+     4,
+     "Left out: the default is used."
+    ],
+    [
+     5,
+     "Passed by position: it overrides the default."
+    ],
+    [
+     6,
+     "Passed by name: a keyword argument."
+    ]
+   ],
+   "say": "The first call uses the default greeting. The second passes a greeting by position, which replaces the default. The third names the parameter in the call, greeting equals Vanakkam. That is a keyword argument, and it makes the call read like a sentence."
+  },
+  {
+   "type": "concept",
+   "title": "Keyword arguments",
+   "body": "Pass any argument **by name**: `book_ticket(passenger=\"Riya\", train=\"12951\")`.\n\n- Keyword arguments can come in any order\n- In a call, positional arguments come first\n- In a definition, parameters with defaults come last",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Call",
+     "Works?",
+     "Why"
+    ],
+    "rows": [
+     [
+      "book(\"Riya\", \"12951\")",
+      "yes",
+      "positional, in order"
+     ],
+     [
+      "book(train=\"12951\", passenger=\"Riya\")",
+      "yes",
+      "keywords, any order"
+     ],
+     [
+      "book(\"Riya\", quota=\"TQ\", train=\"12951\")",
+      "yes",
+      "positional first, then keywords"
+     ],
+     [
+      "book(passenger=\"Riya\", \"12951\")",
+      "no",
+      "SyntaxError: positional after keyword"
+     ]
+    ]
+   },
+   "say": "Any argument can be passed by name. Keyword arguments can come in any order, and they make calls with many options self explanatory. There are two rules. In a call, positional arguments come first, then keyword ones. And in a definition, parameters with defaults go after the ones without."
+  },
+  {
+   "type": "code",
+   "title": "Booking a train ticket",
+   "code": "def book_ticket(passenger, train, seat_class=\"SL\", quota=\"GN\"):\n    return f\"{passenger} | train {train} | {seat_class} | {quota}\"\n\nprint(book_ticket(\"Riya\", \"12951\"))\nprint(book_ticket(\"Arjun\", \"22691\", quota=\"TQ\"))\nprint(book_ticket(train=\"12627\", passenger=\"Meera\", seat_class=\"3A\"))",
+   "expect": "Riya | train 12951 | SL | GN\nArjun | train 22691 | SL | TQ\nMeera | train 12627 | 3A | GN\n",
+   "explain": [
+    [
+     1,
+     "Two required parameters, then two with defaults."
+    ],
+    [
+     4,
+     "Only the required ones: both defaults are used."
+    ],
+    [
+     5,
+     "Skip seat_class but set quota: only possible with a keyword."
+    ],
+    [
+     6,
+     "All keywords, in any order."
+    ]
+   ],
+   "say": "Railway booking has many options, and most people want the defaults: sleeper class and the general quota. The second call changes only the quota and skips seat class entirely, which is only possible with a keyword argument. The third uses keywords for everything, in a different order, and Python still matches each value to the right parameter."
+  },
+  {
+   "type": "predict",
+   "title": "Which default stays?",
+   "code": "def price(amount, discount=0, gst=18):\n    after = amount - discount\n    return after + after * gst / 100\n\nprint(price(100, gst=5))",
+   "options": [
+    "118.0",
+    "105.0",
+    "100.0"
+   ],
+   "answer": 1,
+   "why": "discount keeps its default of 0, and gst is 5, so the result is 100 + 100 * 5 / 100 = 105.0.",
+   "say": "Predict. We pass an amount and override only gst, by name. Which default stays, and what is the final price?"
+  },
+  {
+   "type": "concept",
+   "title": "*args: any number of arguments",
+   "body": "A `*` before a parameter collects **all extra positional arguments** into a **tuple**. That's how `print` and `max` work.\n\nA `*` in a **call** does the reverse: it spreads a list into separate arguments.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "nums",
+      "(4, 8, 15, 16)",
+      "tuple"
+     ],
+     [
+      "len(nums)",
+      "4",
+      "int"
+     ],
+     [
+      "sum(nums)",
+      "43",
+      "int"
+     ]
+    ]
+   },
+   "say": "Sometimes you don't know how many values a caller will pass. Put a star before a parameter name, and Python collects every extra positional argument into a tuple. That is how print and max accept any number of values. By convention it is called args, but any name works. A star in a call does the opposite: it spreads a list out into separate arguments."
+  },
+  {
+   "type": "code",
+   "title": "average(*nums)",
+   "code": "def average(*nums):\n    if len(nums) == 0:\n        return 0\n    return round(sum(nums) / len(nums), 2)\n\nprint(average(4, 8, 15, 16, 23, 42))\nprint(average(90, 75))\nprint(average())\nscores = [88, 92, 79]\nprint(average(*scores))",
+   "expect": "18.0\n82.5\n0\n86.33\n",
+   "explain": [
+    [
+     1,
+     "nums collects every argument into a tuple."
+    ],
+    [
+     2,
+     "Guard against dividing by zero when nothing is passed."
+    ],
+    [
+     6,
+     "Six arguments: nums is a 6-item tuple."
+    ],
+    [
+     10,
+     "* in a call spreads the list: the same as average(88, 92, 79)."
+    ]
+   ],
+   "say": "Average accepts any number of values. Inside, nums is just a tuple, so sum and len work on it. We guard against the empty case, so calling it with nothing returns zero instead of crashing. On the last line, a star in the call spreads a list of scores out into separate arguments."
+  },
+  {
+   "type": "concept",
+   "title": "**kwargs: any number of keyword arguments",
+   "body": "`**` collects **extra keyword arguments** into a **dict**. Great for options, settings and profiles.\n\nOrder in a definition: normal, `*args`, keyword-only, `**kwargs`.",
+   "visual": {
+    "kind": "dict",
+    "name": "details",
+    "pairs": [
+     [
+      "'city'",
+      "'Pune'"
+     ],
+     [
+      "'role'",
+      "'developer'"
+     ]
+    ]
+   },
+   "say": "Two stars collect any extra keyword arguments into a dictionary, where each name becomes a key. It is perfect for options and settings, and by convention it is called kwargs. When you combine everything in one definition, the order is: normal parameters, then star args, then keyword only parameters, then double star kwargs."
+  },
+  {
+   "type": "code",
+   "title": "Profiles and logs",
+   "code": "def build_profile(name, **details):\n    profile = {\"name\": name}\n    for key, value in details.items():\n        profile[key] = value\n    return profile\n\nprint(build_profile(\"Riya\", city=\"Pune\", role=\"developer\"))\nprint(build_profile(\"Arjun\"))\n\ndef log(message, *tags, level=\"INFO\", **extra):\n    print(f\"[{level}] {message} tags={tags} extra={extra}\")\n\nlog(\"Payment failed\", \"upi\", \"urgent\", level=\"ERROR\", order=104)\nlog(\"User signed in\")",
+   "expect": "{'name': 'Riya', 'city': 'Pune', 'role': 'developer'}\n{'name': 'Arjun'}\n[ERROR] Payment failed tags=('upi', 'urgent') extra={'order': 104}\n[INFO] User signed in tags=() extra={}\n",
+   "explain": [
+    [
+     1,
+     "details collects every extra keyword argument into a dict."
+    ],
+    [
+     7,
+     "city and role become keys."
+    ],
+    [
+     8,
+     "No extras: details is an empty dict."
+    ],
+    [
+     10,
+     "All four kinds together. level comes after *tags, so it can only be passed by name."
+    ],
+    [
+     13,
+     "upi and urgent go to tags; order goes to extra."
+    ]
+   ],
+   "say": "Build profile accepts any extra details by name and copies them into the profile. The log function uses all four kinds of parameter at once. Two tags land in a tuple, level comes after the star so it can only be passed by name, and the order number lands in the extra dictionary. Real logging libraries look a lot like this."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "Inside `def f(*args, **kwargs):`, what are `args` and `kwargs`?",
+   "options": [
+    "Both lists",
+    "A tuple and a dict",
+    "A dict and a tuple"
+   ],
+   "answer": 1,
+   "why": "One star collects extra positional arguments into a tuple; two stars collect extra keyword arguments into a dict.",
+   "say": "Quick check. Inside a function defined with star args and double star kwargs, what types are args and kwargs?"
+  },
+  {
+   "type": "concept",
+   "title": "Scope: where names live (LEGB)",
+   "body": "When you use a name, Python searches four places **in order** and stops at the first match.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "L: Local",
+      "names made inside this function",
+      "1st"
+     ],
+     [
+      "E: Enclosing",
+      "names in an outer function",
+      "2nd"
+     ],
+     [
+      "G: Global",
+      "names at the top of main.py",
+      "3rd"
+     ],
+     [
+      "B: Built-in",
+      "print, len, sum",
+      "4th"
+     ]
+    ]
+   },
+   "say": "When you use a name, Python looks for it in four places, in order: local, enclosing, global, built in. That is the LEGB rule. First the current function's own variables, then any outer function it sits inside, then the top level of your file, and finally Python's built ins like print and len. The first match wins."
+  },
+  {
+   "type": "code",
+   "title": "LEGB in action",
+   "code": "rate = 18  # global\n\ndef gst(amount):\n    tax = amount * rate / 100   # tax: local, rate: global\n    return tax\n\ndef make_label():\n    prefix = \"ORD\"              # local to make_label\n    def label(number):\n        return f\"{prefix}-{number}\"   # prefix: enclosing\n    return label(104)\n\nprint(gst(200))\nprint(make_label())\nprint(len(\"built-in\"))",
+   "expect": "36.0\nORD-104\n8\n",
+   "explain": [
+    [
+     1,
+     "A global: defined at the top level of the file."
+    ],
+    [
+     4,
+     "tax is Local; rate isn't, so Python finds it in Global."
+    ],
+    [
+     9,
+     "A function defined inside another function."
+    ],
+    [
+     10,
+     "prefix isn't local to label, so Python finds it in the Enclosing function."
+    ],
+    [
+     15,
+     "len isn't defined in our file: it's Built-in."
+    ]
+   ],
+   "say": "Inside gst, tax is local, while rate is found one level up, in the global scope. Label is a function defined inside another function, and it finds prefix in the enclosing scope. Len is not defined anywhere in our file, so Python finds it among the built ins. Watch it run to see each lookup."
+  },
+  {
+   "type": "predict",
+   "title": "Same name, different variable",
+   "code": "count = 10\n\ndef reset():\n    count = 0\n    return count\n\nreset()\nprint(count)",
+   "options": [
+    "0",
+    "10",
+    "None"
+   ],
+   "answer": 1,
+   "why": "Assigning inside a function creates a new local variable. reset's count is a different variable from the global count, which stays 10.",
+   "say": "This one surprises people. A function assigns zero to a variable with the same name as a global. After calling it, what is the global value?"
+  },
+  {
+   "type": "concept",
+   "title": "Avoid globals, write pure functions",
+   "body": "A **pure function** gets everything through its parameters and gives everything back with `return`. Same input, same output, no side effects.\n\n`global` lets a function change a global variable, but it's a code smell.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Impure: changes a global",
+     "code": "balance = 1000\n\ndef withdraw(amount):\n    global balance\n    balance -= amount"
+    },
+    "right": {
+     "title": "Pure: input in, result out",
+     "code": "def withdraw(balance, amount):\n    return balance - amount\n\nbalance = withdraw(balance, 200)"
+    },
+    "verdict": "Pure functions can be tested in one line and reused anywhere."
+   },
+   "say": "The global keyword lets a function change a global variable, but professionals avoid it. Any part of the program might change that variable, so bugs become hard to trace. A pure function takes everything it needs as parameters and gives its result back with return. Same input, same output, every time. That makes it easy to test and safe to reuse."
+  },
+  {
+   "type": "code",
+   "title": "Pure vs impure",
+   "code": "balance = 1000\n\ndef withdraw_impure(amount):\n    global balance\n    balance -= amount\n\ndef withdraw(balance, amount):\n    return balance - amount\n\nwithdraw_impure(200)\nprint(\"after impure:\", balance)\nnew_balance = withdraw(balance, 300)\nprint(\"pure result:\", new_balance, \"| global still:\", balance)\nprint(withdraw(5000, 300), withdraw(5000, 300))",
+   "expect": "after impure: 800\npure result: 500 | global still: 800\n4700 4700\n",
+   "explain": [
+    [
+     4,
+     "global lets this function change the global balance: a hidden side effect."
+    ],
+    [
+     7,
+     "The pure version: everything comes in as parameters."
+    ],
+    [
+     11,
+     "The global changed behind our back."
+    ],
+    [
+     13,
+     "The pure function changed nothing; the caller decides what to keep."
+    ],
+    [
+     14,
+     "Same input, same output, every time."
+    ]
+   ],
+   "say": "The impure version reaches out and changes the global balance, a side effect you can't see from the call. The pure version just calculates and returns. The global stays the same until the caller chooses to store the result. And calling it twice with the same inputs always gives the same answer."
+  },
+  {
+   "type": "visual",
+   "title": "The mutable default trap",
+   "body": "A default value is created **once**, when `def` runs, not on every call. A mutable default like `[]` is **one list shared by every call**.",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "the default",
+     "cart in call 1",
+     "cart in call 2"
+    ],
+    "objects": [
+     {
+      "id": "o1",
+      "r": "['tea', 'coffee']",
+      "t": "list"
+     }
+    ],
+    "links": [
+     [
+      "the default",
+      "o1"
+     ],
+     [
+      "cart in call 1",
+      "o1"
+     ],
+     [
+      "cart in call 2",
+      "o1"
+     ]
+    ]
+   },
+   "say": "Now the famous trap. Default values are created once, when the def line runs, not each time the function is called. That is fine for numbers and strings. But if the default is a list, every call that uses the default gets the very same list. Add something in one call, and the next call sees it. It is aliasing again, hiding inside a function."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: shared default cart",
+   "task": "Each call to `add_item` without a cart should start a **fresh** cart, but carts leak into each other. Use `cart=None` and create the list inside the function.\n\nExpected: Riya `['tea']`, Arjun `['coffee']`",
+   "starter": "def add_item(item, cart=[]):\n    cart.append(item)\n    return cart\n\nriya = add_item(\"tea\")\narjun = add_item(\"coffee\")\nprint(\"Riya:\", riya)\nprint(\"Arjun:\", arjun)\n",
+   "solution": "def add_item(item, cart=None):\n    if cart is None:\n        cart = []\n    cart.append(item)\n    return cart\n\nriya = add_item(\"tea\")\narjun = add_item(\"coffee\")\nprint(\"Riya:\", riya)\nprint(\"Arjun:\", arjun)",
+   "tests": "assert riya == [\"tea\"] and arjun == [\"coffee\"], f\"Riya should have ['tea'] and Arjun ['coffee'], not {riya} and {arjun}. The default list is shared between calls.\"\nfirst = add_item(\"chai\")\nsecond = add_item(\"lassi\")\nassert first == [\"chai\"] and second == [\"lassi\"], f\"Every call without a cart needs a brand new list, but got {first} and {second}. Create it inside the function.\"\nmine = [\"milk\"]\nresult = add_item(\"bread\", mine)\nassert result == [\"milk\", \"bread\"] and result is mine, \"When a cart is passed in, add to that same list and return it.\"",
+   "hints": [
+    "The default [] is created once and shared by every call.",
+    "Use None as the default: def add_item(item, cart=None):",
+    "Inside the function: if cart is None: cart = []"
+   ],
+   "say": "Bug hunt, featuring the famous trap. Each call without a cart should start an empty one, but Arjun ends up with Riya's tea. Use None as the default instead, and create a brand new list inside the function when no cart is given. Check for it with is None, using the is operator from day twelve."
+  },
+  {
+   "type": "exercise",
+   "title": "Order total with options",
+   "task": "Write `order_total(*prices, discount=0, gst=18)` that adds up any number of prices, subtracts `discount` (in rupees), adds `gst` percent, and returns the result rounded to 2 decimals.\n\n- `order_total(100, 200)` returns `354.0`\n- `order_total(500, gst=5)` returns `525.0`",
+   "starter": "def order_total(*prices, discount=0, gst=18):\n    return 0  # replace this line\n\n\nprint(order_total(100, 200))\nprint(order_total(100, 200, discount=50))\n",
+   "solution": "def order_total(*prices, discount=0, gst=18):\n    after = sum(prices) - discount\n    return round(after * (1 + gst / 100), 2)\n\n\nprint(order_total(100, 200))\nprint(order_total(100, 200, discount=50))",
+   "tests": "assert order_total(100, 200) == 354.0, f\"order_total(100, 200) should be 300 + 18% = 354.0, not {order_total(100, 200)}.\"\nassert order_total(100, 200, discount=50) == 295.0, f\"order_total(100, 200, discount=50) should be 250 + 18% = 295.0, not {order_total(100, 200, discount=50)}.\"\nassert order_total(500, gst=5) == 525.0, f\"order_total(500, gst=5) should be 525.0, not {order_total(500, gst=5)}.\"\nassert order_total(49.99, 49.99, 49.99) == 176.96, f\"order_total(49.99, 49.99, 49.99) should be 176.96 after rounding to 2 decimals, not {order_total(49.99, 49.99, 49.99)}.\"\nassert order_total() == 0, \"With no prices at all, the total is 0.\"",
+   "hints": [
+    "prices is a tuple, so sum(prices) works.",
+    "Subtract the discount first, then add GST: after * (1 + gst / 100).",
+    "return round(after * (1 + gst / 100), 2)"
+   ],
+   "say": "Write an order total function that accepts any number of prices, plus two options: a discount in rupees and a GST rate, each with a sensible default. Because they come after star prices, callers must pass them by name, which keeps every call clear. Return the total rounded to two decimals."
+  },
+  {
+   "type": "exercise",
+   "title": "Build an API URL",
+   "task": "Write `build_url(base, **params)` that returns `base` + `?` + each `key=value` joined with `&`:\n\n`build_url(\"https://api.shop.in/search\", q=\"shoes\", page=2)` returns `\"https://api.shop.in/search?q=shoes&page=2\"`\n\nWith no params, return `base` unchanged.",
+   "starter": "def build_url(base, **params):\n    return base  # replace this line\n\n\nprint(build_url(\"https://api.shop.in/search\", q=\"shoes\", page=2))\n",
+   "solution": "def build_url(base, **params):\n    if not params:\n        return base\n    parts = [f\"{key}={value}\" for key, value in params.items()]\n    return base + \"?\" + \"&\".join(parts)\n\n\nprint(build_url(\"https://api.shop.in/search\", q=\"shoes\", page=2))",
+   "tests": "url = build_url(\"https://api.shop.in/search\", q=\"shoes\", page=2)\nassert url == \"https://api.shop.in/search?q=shoes&page=2\", f\"Expected https://api.shop.in/search?q=shoes&page=2, but got {url}\"\nurl = build_url(\"https://api.cricket.in/scores\", team=\"IND\")\nassert url == \"https://api.cricket.in/scores?team=IND\", f\"With one option, expected https://api.cricket.in/scores?team=IND, but got {url}\"\nurl = build_url(\"https://api.shop.in/home\")\nassert url == \"https://api.shop.in/home\", f\"With no options, return the base unchanged, not {url}\"",
+   "hints": [
+    "params is a dict: loop over params.items().",
+    "Build a list of \"key=value\" strings, then join them with \"&\".join(...).",
+    "Real code also escapes spaces and symbols with urllib.parse.urlencode. You'll use it on Day 46."
+   ],
+   "say": "Every web API takes options in the URL, after a question mark, joined by ampersands. Write a function that accepts a base address and any number of keyword options, and builds the full URL. A comprehension and join keep it short. If there are no options, return the base address unchanged."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 18 complete",
+   "points": [
+    "Defaults make parameters optional: def f(name, greeting=\"Hi\")",
+    "Keyword arguments pass values by name, in any order, after positional ones",
+    "*args collects extra positional arguments into a tuple; **kwargs collects keyword ones into a dict",
+    "Python finds names in order: Local, Enclosing, Global, Built-in",
+    "Prefer pure functions, and never use a mutable default like []: use None"
+   ],
+   "say": "Mission eighteen complete. You can write flexible functions with defaults, keyword arguments, star args and double star kwargs. You understand the LEGB rule, why pure functions beat globals, and how to dodge the mutable default trap. Tomorrow you learn to handle errors, so your programs never crash on bad input. See you on day nineteen."
+  }
+ ]
+}

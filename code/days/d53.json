@@ -1,0 +1,513 @@
+{
+ "day": 53,
+ "phase": 6,
+ "title": "A taste of data science",
+ "subtitle": "numpy, pandas and the road to machine learning",
+ "minutes": 55,
+ "goal": "Use numpy arrays and pandas DataFrames to select, filter and group data, fit a first model, and choose the right data tool for a job.",
+ "outcomes": [
+  "Do vectorised maths and boolean masks with numpy arrays",
+  "Load, filter, add columns and group a DataFrame with pandas",
+  "Rebuild groupby and min-max scaling in plain Python",
+  "Describe the machine learning workflow and fit a simple model",
+  "Pick between Python, numpy, pandas, scikit-learn and SQL"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 53: A taste of data science",
+   "body": "Data scientists answer questions with data: which product sells, which customers will leave, what demand looks like next week.\n\nToday is a guided tour of their toolkit, so you know **what each tool does** and **when to reach for it**.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Lists, dicts, csv, statistics: you know these",
+     "numpy: fast arrays of numbers",
+     "pandas: tables with labels",
+     "scikit-learn: models that learn from data"
+    ]
+   },
+   "say": "Data scientists answer questions with data. Which product sells best, which customers might leave, how much stock we need next week. Today is a guided tour of their toolkit: numpy for fast numbers, pandas for tables, and the road to machine learning. The goal is not to master them in a day, but to know exactly when to reach for each one."
+  },
+  {
+   "type": "concept",
+   "title": "Why numpy?",
+   "body": "A Python list can hold anything, and loops over it run one item at a time in Python.\n\nA numpy **array** holds one type of number, packed tightly, and runs whole-array operations in fast C code. This is called **vectorisation**.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Python list",
+     "code": "prices = [180, 1299, 240]\nwith_gst = [p * 1.18 for p in prices]"
+    },
+    "right": {
+     "title": "numpy array",
+     "code": "prices = np.array([180, 1299, 240])\nwith_gst = prices * 1.18"
+    },
+    "verdict": "Same answer. numpy runs the loop in C: often 10 to 100 times faster on large data."
+   },
+   "say": "A Python list can hold anything, and every loop over it runs in Python, one item at a time. A numpy array holds numbers of a single type, packed tightly in memory, and applies an operation to the whole array at once in fast compiled code. That is called vectorisation, and on big data it is often ten to a hundred times faster."
+  },
+  {
+   "type": "code",
+   "title": "Your first arrays",
+   "body": "This slide loads **numpy** the first time you run it (it needs the internet for a moment).",
+   "code": "import numpy as np\n\nprices = np.array([180, 1299, 240, 499])\nprint(prices)\nprint(prices.dtype, prices.shape)\n\nwith_gst = prices * 1.18            # every item at once, no loop\nprint(with_gst.round(2))\nprint(prices.sum(), prices.mean(), prices.max())\nprint(prices[prices > 300])          # a boolean mask keeps the expensive ones",
+   "expect": null,
+   "explain": [
+    [
+     3,
+     "np.array turns a list into a fast, single-type array."
+    ],
+    [
+     5,
+     "dtype is the item type; shape is the size of each dimension."
+    ],
+    [
+     7,
+     "Maths on the whole array: vectorised."
+    ],
+    [
+     10,
+     "prices > 300 is an array of True/False; it filters the array."
+    ]
+   ],
+   "needs": [
+    "numpy"
+   ],
+   "say": "We make an array of four prices. Its d type says every item is the same kind of integer, and its shape says it has four items. Multiplying by one point one eight adds G S T to every price at once. Sum, mean and max are built in. The last line is a favourite: a condition creates a mask of trues and falses, and the mask selects just the matching items."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: lists vs arrays",
+   "q": "What do these two lines print?",
+   "code": "import numpy as np\nprint([1, 2, 3] * 2)\nprint(np.array([1, 2, 3]) * 2)",
+   "options": [
+    "`[2, 4, 6]` then `[2 4 6]`",
+    "`[1, 2, 3, 1, 2, 3]` then `[2 4 6]`",
+    "`[1, 2, 3, 1, 2, 3]` both times",
+    "An error: you can't multiply a list"
+   ],
+   "answer": 1,
+   "why": "For a list, `* 2` means **repeat** the list. For an array, `* 2` is maths on **every element**. Same symbol, different meaning.",
+   "say": "Here is a classic surprise. The same multiply by two, once on a list and once on a numpy array. What does each line print?"
+  },
+  {
+   "type": "concept",
+   "title": "Rows, columns and axes",
+   "body": "A 2-D array is a grid. `axis=0` works **down the rows** (one result per column); `axis=1` works **across the columns** (one result per row).",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "sales",
+     "Mon",
+     "Tue",
+     "Wed",
+     "Thu",
+     "sum(axis=1)"
+    ],
+    "rows": [
+     [
+      "Store 1",
+      "12",
+      "15",
+      "11",
+      "18",
+      "56"
+     ],
+     [
+      "Store 2",
+      "9",
+      "7",
+      "14",
+      "10",
+      "40"
+     ],
+     [
+      "Store 3",
+      "20",
+      "22",
+      "19",
+      "25",
+      "86"
+     ],
+     [
+      "sum(axis=0)",
+      "41",
+      "44",
+      "44",
+      "53",
+      ""
+     ]
+    ]
+   },
+   "say": "Real data is usually a grid. Here, each row is a store and each column is a day. When you add up with axis zero, numpy collapses the rows and gives one total per column, so per day. With axis one it collapses the columns and gives one total per row, so per store. Axis is the direction that disappears."
+  },
+  {
+   "type": "code",
+   "title": "Grids of numbers",
+   "code": "import numpy as np\n\n# rows = 3 stores, columns = Mon, Tue, Wed, Thu (sales in ₹ thousand)\nsales = np.array([\n    [12, 15, 11, 18],\n    [ 9,  7, 14, 10],\n    [20, 22, 19, 25],\n])\ndays = [\"Mon\", \"Tue\", \"Wed\", \"Thu\"]\nprint(sales.shape)\nprint(\"per store:\", sales.sum(axis=1))\nprint(\"per day:  \", sales.sum(axis=0))\nprint(\"best day: \", days[sales.sum(axis=0).argmax()])\nprint(\"store 3 on Tue:\", sales[2, 1])\nprint(\"store-days above 15:\", (sales > 15).sum())",
+   "expect": null,
+   "explain": [
+    [
+     10,
+     "(3, 4): 3 rows, 4 columns."
+    ],
+    [
+     11,
+     "axis=1: across each row, one total per store."
+    ],
+    [
+     12,
+     "axis=0: down each column, one total per day."
+    ],
+    [
+     13,
+     "argmax gives the index of the largest value."
+    ],
+    [
+     14,
+     "[row, column]: zero-based, like lists."
+    ],
+    [
+     15,
+     "True counts as 1, so sum() counts matches."
+    ]
+   ],
+   "needs": [
+    "numpy"
+   ],
+   "say": "The same grid in code. Shape three by four means three rows and four columns. Summing along axis one gives a total per store, along axis zero a total per day, and arg max finds the position of the biggest day. Indexing with row two, column one picks a single cell. And counting the trues in a mask tells us how many store days beat fifteen thousand."
+  },
+  {
+   "type": "concept",
+   "title": "pandas: tables with labels",
+   "body": "A **DataFrame** is a table: named columns, an index of rows, a type per column. A single column is a **Series**.\n\nOne line reads CSV, Excel, JSON or SQL into a DataFrame. It is like a spreadsheet you control with code.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "",
+     "order_id",
+     "city",
+     "product",
+     "qty",
+     "price"
+    ],
+    "rows": [
+     [
+      "0",
+      "1001",
+      "Pune",
+      "Masala Chai",
+      "3",
+      "180"
+     ],
+     [
+      "1",
+      "1002",
+      "Delhi",
+      "Brass Kettle",
+      "1",
+      "1299"
+     ],
+     [
+      "2",
+      "1003",
+      "Bengaluru",
+      "Clay Cups",
+      "2",
+      "240"
+     ],
+     [
+      "…",
+      "…",
+      "…",
+      "…",
+      "…",
+      "…"
+     ]
+    ]
+   },
+   "say": "pandas gives you the DataFrame: a table with named columns, a row index, and a type for each column. One column on its own is called a Series. A single line reads a CSV file, an Excel sheet, JSON or a SQL query into a DataFrame. Think of it as a spreadsheet you drive with code, which means it is repeatable and testable."
+  },
+  {
+   "type": "code",
+   "title": "Load and look",
+   "body": "`orders.csv` (10 orders) sits next to the program. This slide loads **pandas**, which takes a few seconds the first time.",
+   "code": "import pandas as pd\n\ndf = pd.read_csv(\"orders.csv\", parse_dates=[\"date\"])\nprint(df.shape)\nprint(df.head(3))\nprint(df.dtypes)",
+   "expect": null,
+   "explain": [
+    [
+     3,
+     "One line: CSV file to DataFrame, with real date values."
+    ],
+    [
+     4,
+     "(rows, columns)"
+    ],
+    [
+     5,
+     "The first rows: always eyeball your data first."
+    ],
+    [
+     6,
+     "The type pandas picked for each column."
+    ]
+   ],
+   "files": {
+    "orders.csv": "order_id,date,city,product,qty,price\n1001,2026-10-01,Pune,Masala Chai,3,180\n1002,2026-10-01,Delhi,Brass Kettle,1,1299\n1003,2026-10-02,Bengaluru,Clay Cups,2,240\n1004,2026-10-02,Pune,Brass Kettle,1,1299\n1005,2026-10-03,Delhi,Masala Chai,5,180\n1006,2026-10-03,Mumbai,Clay Cups,4,240\n1007,2026-10-04,Pune,Clay Cups,6,240\n1008,2026-10-04,Bengaluru,Masala Chai,2,180\n1009,2026-10-05,Mumbai,Brass Kettle,2,1299\n1010,2026-10-05,Delhi,Clay Cups,1,240\n"
+   },
+   "needs": [
+    "pandas"
+   ],
+   "say": "Read csv loads the whole file into a DataFrame, and parse dates turns the date column into real dates. Shape says ten rows and six columns. Head shows the first rows, so you can sanity check the data. D types shows the type pandas chose for each column. Always look at your data before you analyse it."
+  },
+  {
+   "type": "code",
+   "title": "Select, filter, add a column",
+   "code": "import pandas as pd\n\ndf = pd.read_csv(\"orders.csv\")\ndf[\"revenue\"] = df[\"qty\"] * df[\"price\"]      # a new column for every row\n\npune = df[df[\"city\"] == \"Pune\"]\nprint(pune[[\"order_id\", \"product\", \"revenue\"]])\n\nbig = df[(df[\"revenue\"] >= 1000) & (df[\"city\"] != \"Delhi\")]\nprint(len(big), \"big orders outside Delhi\")\nprint(df.sort_values(\"revenue\", ascending=False).head(3)[[\"city\", \"revenue\"]])",
+   "expect": null,
+   "explain": [
+    [
+     4,
+     "Column maths is vectorised, like numpy."
+    ],
+    [
+     6,
+     "A mask of True/False selects rows."
+    ],
+    [
+     7,
+     "Double brackets select several columns."
+    ],
+    [
+     9,
+     "& means AND for whole columns; brackets are required."
+    ],
+    [
+     11,
+     "Sort, take the top 3, keep two columns."
+    ]
+   ],
+   "files": {
+    "orders.csv": "order_id,date,city,product,qty,price\n1001,2026-10-01,Pune,Masala Chai,3,180\n1002,2026-10-01,Delhi,Brass Kettle,1,1299\n1003,2026-10-02,Bengaluru,Clay Cups,2,240\n1004,2026-10-02,Pune,Brass Kettle,1,1299\n1005,2026-10-03,Delhi,Masala Chai,5,180\n1006,2026-10-03,Mumbai,Clay Cups,4,240\n1007,2026-10-04,Pune,Clay Cups,6,240\n1008,2026-10-04,Bengaluru,Masala Chai,2,180\n1009,2026-10-05,Mumbai,Brass Kettle,2,1299\n1010,2026-10-05,Delhi,Clay Cups,1,240\n"
+   },
+   "needs": [
+    "pandas"
+   ],
+   "say": "Multiplying two columns creates a revenue column for every row in one line. A condition on a column gives a mask, and the mask filters rows, just like numpy. Combine conditions with the ampersand, each one wrapped in brackets. Sort values plus head gives a top three in one expression."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: combining filters",
+   "q": "Which line keeps the rows where city is Pune **and** qty is more than 2?",
+   "options": [
+    "`df[df[\"city\"] == \"Pune\" and df[\"qty\"] > 2]`",
+    "`df[(df[\"city\"] == \"Pune\") & (df[\"qty\"] > 2)]`",
+    "`df[df.city == \"Pune\", df.qty > 2]`"
+   ],
+   "answer": 1,
+   "why": "`and` works on single True/False values, so it fails on whole columns. `&` combines masks element by element, and the brackets are needed because `&` binds tighter than `==`.",
+   "say": "Combining filters is where most pandas beginners stumble. Which line keeps rows from Pune where the quantity is more than two?"
+  },
+  {
+   "type": "code",
+   "title": "Group and aggregate",
+   "code": "import pandas as pd\n\ndf = pd.read_csv(\"orders.csv\")\ndf[\"revenue\"] = df[\"qty\"] * df[\"price\"]\n\nby_city = df.groupby(\"city\")[\"revenue\"].sum().sort_values(ascending=False)\nprint(by_city)\n\nsummary = df.groupby(\"product\").agg(\n    orders=(\"order_id\", \"count\"), units=(\"qty\", \"sum\"), revenue=(\"revenue\", \"sum\"))\nprint(summary.sort_values(\"revenue\", ascending=False))\nprint(\"Average order value: ₹\", round(df[\"revenue\"].mean()))",
+   "expect": null,
+   "explain": [
+    [
+     6,
+     "Split by city, sum revenue in each group, sort."
+    ],
+    [
+     9,
+     "agg: several named aggregates per group."
+    ],
+    [
+     12,
+     "mean() of a column: the average order value."
+    ]
+   ],
+   "files": {
+    "orders.csv": "order_id,date,city,product,qty,price\n1001,2026-10-01,Pune,Masala Chai,3,180\n1002,2026-10-01,Delhi,Brass Kettle,1,1299\n1003,2026-10-02,Bengaluru,Clay Cups,2,240\n1004,2026-10-02,Pune,Brass Kettle,1,1299\n1005,2026-10-03,Delhi,Masala Chai,5,180\n1006,2026-10-03,Mumbai,Clay Cups,4,240\n1007,2026-10-04,Pune,Clay Cups,6,240\n1008,2026-10-04,Bengaluru,Masala Chai,2,180\n1009,2026-10-05,Mumbai,Brass Kettle,2,1299\n1010,2026-10-05,Delhi,Clay Cups,1,240\n"
+   },
+   "needs": [
+    "pandas"
+   ],
+   "say": "Group by is the heart of analysis. Group the rows by city, take the revenue column, sum each group and sort: revenue per city in one line. With agg you compute several named results per group at once, here the number of orders, units and revenue per product. This is the same question as a SQL GROUP BY from Day 48."
+  },
+  {
+   "type": "concept",
+   "title": "What pandas does for you",
+   "body": "You already know how to do this by hand (Day 45). pandas saves the typing and runs much faster on big data. Knowing both means you can debug either.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Plain Python",
+     "code": "totals = defaultdict(int)\nfor row in csv.DictReader(f):\n    totals[row[\"city\"]] += int(row[\"qty\"]) * int(row[\"price\"])\nranked = sorted(totals.items(), key=lambda kv: -kv[1])"
+    },
+    "right": {
+     "title": "pandas",
+     "code": "df[\"revenue\"] = df[\"qty\"] * df[\"price\"]\ndf.groupby(\"city\")[\"revenue\"].sum().sort_values(ascending=False)"
+    },
+    "verdict": "Same answer. pandas wins on large tables; plain Python wins for tiny scripts with no dependencies."
+   },
+   "say": "None of this is magic. You already wrote group by totals with dictionaries on day forty five. pandas does the same thing with far less typing, and much faster on large data, because the loops run in compiled code. Knowing the plain Python version means you understand what pandas does, and you can debug it when the numbers look wrong."
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: write your own groupby",
+   "task": "Write `group_sum(rows, key, value)` for a list of dicts. Return a dict of **group → total**, ordered from the **largest total to the smallest** (what pandas `groupby().sum().sort_values()` gives you).\n\nAn empty list gives `{}`.",
+   "starter": "def group_sum(rows: list[dict], key: str, value: str) -> dict:\n    # TODO: add up row[value] for each row[key], then sort by total, biggest first\n    return {}\n\norders = [\n    {\"city\": \"Pune\", \"product\": \"Chai\", \"revenue\": 540},\n    {\"city\": \"Delhi\", \"product\": \"Kettle\", \"revenue\": 1299},\n    {\"city\": \"Pune\", \"product\": \"Kettle\", \"revenue\": 1299},\n]\nprint(group_sum(orders, \"city\", \"revenue\"))",
+   "solution": "from collections import defaultdict\n\ndef group_sum(rows: list[dict], key: str, value: str) -> dict:\n    totals = defaultdict(int)\n    for row in rows:\n        totals[row[key]] += row[value]\n    return dict(sorted(totals.items(), key=lambda kv: kv[1], reverse=True))\n\norders = [\n    {\"city\": \"Pune\", \"product\": \"Chai\", \"revenue\": 540},\n    {\"city\": \"Delhi\", \"product\": \"Kettle\", \"revenue\": 1299},\n    {\"city\": \"Pune\", \"product\": \"Kettle\", \"revenue\": 1299},\n]\nprint(group_sum(orders, \"city\", \"revenue\"))",
+   "tests": "rows = [\n    {\"city\": \"Pune\", \"product\": \"Chai\", \"revenue\": 540},\n    {\"city\": \"Delhi\", \"product\": \"Kettle\", \"revenue\": 1299},\n    {\"city\": \"Pune\", \"product\": \"Kettle\", \"revenue\": 1299},\n    {\"city\": \"Mumbai\", \"product\": \"Kettle\", \"revenue\": 2598},\n    {\"city\": \"Delhi\", \"product\": \"Chai\", \"revenue\": 900},\n]\ngot = group_sum(rows, \"city\", \"revenue\")\nassert got == {\"Mumbai\": 2598, \"Delhi\": 2199, \"Pune\": 1839}, \"Totals per city should be Mumbai 2598, Delhi 2199, Pune 1839. Got \" + str(got)\nassert list(got) == [\"Mumbai\", \"Delhi\", \"Pune\"], \"Order the result from the biggest total to the smallest. Got the order \" + str(list(got))\nby_product = group_sum(rows, \"product\", \"revenue\")\nassert list(by_product.items()) == [(\"Kettle\", 5196), (\"Chai\", 1440)], \"Grouping by product should give Kettle 5196, then Chai 1440. Use the key argument, not a fixed column name.\"\nassert group_sum([], \"city\", \"revenue\") == {}, \"An empty list of rows should give an empty dict.\"",
+   "hints": [
+    "A `defaultdict(int)` makes adding to a new group easy: `totals[row[key]] += row[value]`.",
+    "Sort the pairs by total: `sorted(totals.items(), key=lambda kv: kv[1], reverse=True)`, then wrap in `dict()`."
+   ],
+   "say": "Now prove you understand what pandas does underneath. Write group sum: add up the value column for each group, then return the groups ordered from the biggest total to the smallest. The tests group by city and by product, so use the key you are given, and they check the empty case too."
+  },
+  {
+   "type": "concept",
+   "title": "The path to machine learning",
+   "body": "Machine learning means **learning a pattern from examples** (features `X`, target `y`) and using it to **predict** new cases.\n\nMost of the work is the first step: clean data. Data scientists usually explore in **Jupyter notebooks**.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Collect and clean data (pandas)",
+     "Split: a training set and a test set",
+     "Fit a model on the training set",
+     "Measure it on the test set, never the training set",
+     "Predict for new data"
+    ]
+   },
+   "say": "Machine learning means learning a pattern from examples, then using it to predict new cases. The inputs are called features, and the answer you want is the target. Most of the real work is the first step: collecting and cleaning data with pandas. Then you split the data, train on one part, and measure honestly on the part the model has never seen."
+  },
+  {
+   "type": "code",
+   "title": "Your first model: a straight line",
+   "body": "No installs needed: `statistics.linear_regression` fits a best straight line, the simplest model there is.",
+   "code": "from statistics import correlation, linear_regression\n\nad_spend = [10, 20, 30, 40, 50]      # ₹ thousand per week\nunits    = [52, 71, 88, 112, 128]    # units sold that week\n\nslope, intercept = linear_regression(ad_spend, units)\nprint(f\"units = {slope:.2f} x spend + {intercept:.2f}\")\nprint(f\"correlation: {correlation(ad_spend, units):.3f}\")\n\nfor spend in [35, 60]:\n    print(f\"spend {spend}k -> predict {slope * spend + intercept:.0f} units\")",
+   "expect": "units = 1.93 x spend + 32.30\ncorrelation: 0.998\nspend 35k -> predict 100 units\nspend 60k -> predict 148 units\n",
+   "explain": [
+    [
+     6,
+     "Fit: find the slope and intercept of the best line."
+    ],
+    [
+     8,
+     "Close to 1.0 means a strong straight-line relationship."
+    ],
+    [
+     11,
+     "Predict: plug a new spend into the line."
+    ]
+   ],
+   "say": "The standard library can already fit a simple model. Linear regression finds the straight line that best matches five weeks of ad spend and sales. Each extra thousand rupees brings about two more units. A correlation near one says the relationship is strong. Then we predict: that is machine learning in its simplest form, fit then predict."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: feature scaling",
+   "code": "values = [10, 20, 30, 50]\nlo, hi = min(values), max(values)\nprint([(v - lo) / (hi - lo) for v in values])",
+   "options": [
+    "[0.2, 0.4, 0.6, 1.0]",
+    "[0.0, 0.25, 0.5, 1.0]",
+    "[0, 0.25, 0.5, 1]"
+   ],
+   "answer": 1,
+   "why": "Min-max scaling maps the smallest value to 0 and the largest to 1. Division always gives floats, so 0 prints as `0.0`. Models train better when features share a scale.",
+   "say": "Many models train better when every feature is on the same scale. This is min max scaling. What list does it print? Watch out for how Python prints the results of division."
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: a min-max scaler",
+   "task": "Write `scale(values)` that maps a list of numbers onto **0 to 1** with min-max scaling, rounding each result to 3 decimals.\n\nEdge cases: if every value is the same, return all `0.0` (no division by zero!). An empty list gives `[]`.",
+   "starter": "def scale(values: list[float]) -> list[float]:\n    lo, hi = min(values), max(values)\n    return [round((v - lo) / (hi - lo), 3) for v in values]\n\nprint(scale([10, 20, 30, 50]))",
+   "solution": "def scale(values: list[float]) -> list[float]:\n    if not values:\n        return []\n    lo, hi = min(values), max(values)\n    if hi == lo:\n        return [0.0 for _ in values]\n    return [round((v - lo) / (hi - lo), 3) for v in values]\n\nprint(scale([10, 20, 30, 50]))",
+   "tests": "assert scale([10, 20, 30, 50]) == [0.0, 0.25, 0.5, 1.0], \"scale([10, 20, 30, 50]) should be [0.0, 0.25, 0.5, 1.0].\"\nassert scale([3, 1, 2]) == [1.0, 0.0, 0.5], \"Keep the original order: scale([3, 1, 2]) is [1.0, 0.0, 0.5].\"\nassert scale([1, 2, 4]) == [0.0, 0.333, 1.0], \"Round each value to 3 decimals: scale([1, 2, 4]) is [0.0, 0.333, 1.0].\"\ntry:\n    same = scale([7, 7, 7])\nexcept ZeroDivisionError:\n    raise AssertionError(\"scale([7, 7, 7]) crashed with ZeroDivisionError. When max equals min, return 0.0 for every value.\")\nassert same == [0.0, 0.0, 0.0], \"When every value is the same, return all 0.0. Got \" + str(same)\ntry:\n    empty = scale([])\nexcept ValueError:\n    raise AssertionError(\"scale([]) crashed: min() of an empty list fails. Return [] first.\")\nassert empty == [], \"An empty list should give [].\"",
+   "hints": [
+    "Handle the edge cases first: `if not values: return []`, then `if hi == lo: ...`",
+    "The formula is `(v - lo) / (hi - lo)`, rounded with `round(x, 3)`."
+   ],
+   "say": "This scaler works on normal data, but real data is never normal. Make it survive the edge cases: a column where every value is identical would divide by zero, and an empty list makes min fail. Handle both, and keep rounding to three decimals."
+  },
+  {
+   "type": "concept",
+   "title": "scikit-learn: same verbs, many models",
+   "body": "scikit-learn (`pip install scikit-learn`) gives hundreds of models with **one interface**: `fit`, `predict`, `score`. Swap a straight line for a random forest by changing one line.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "statistics (standard library)",
+     "code": "slope, intercept = linear_regression(spend, units)\nprediction = slope * 60 + intercept"
+    },
+    "right": {
+     "title": "scikit-learn",
+     "code": "from sklearn.linear_model import LinearRegression\nmodel = LinearRegression()\nmodel.fit(X_train, y_train)          # learn\nprint(model.score(X_test, y_test))   # measure\nprint(model.predict([[60]]))         # use"
+    },
+    "verdict": "fit, score, predict: the same three verbs work across scikit-learn's models."
+   },
+   "say": "When you outgrow the standard library, scikit-learn is the next step. It offers hundreds of models, from straight lines to random forests, all with the same interface. Fit learns from the training data, predict makes predictions, and score measures accuracy on data the model has not seen. Learn the pattern once and every model feels familiar."
+  },
+  {
+   "type": "concept",
+   "title": "Which tool, when?",
+   "body": "Pick the **simplest tool that fits the job**. Adding pandas to a 20-line script that reads 50 rows is overkill; looping over 30 million rows in plain Python is pain.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "The job",
+     "Reach for"
+    ],
+    "rows": [
+     [
+      "A few hundred rows, a quick script",
+      "Plain Python, csv, statistics"
+     ],
+     [
+      "Maths on big arrays, images, matrices",
+      "numpy"
+     ],
+     [
+      "Tables: clean, filter, group, join",
+      "pandas"
+     ],
+     [
+      "Predict or classify",
+      "scikit-learn"
+     ],
+     [
+      "Bigger than memory, many users",
+      "A database (SQL)"
+     ]
+    ]
+   },
+   "say": "Choosing tools is a senior skill. For a small script with a few hundred rows, plain Python and the csv module are perfect. For maths on big grids of numbers, numpy. For tables you clean, filter, group and join, pandas. For predictions, scikit-learn. And when data outgrows memory or many people share it, a database. Pick the simplest tool that fits."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: choose the tool",
+   "q": "You have a 2 GB CSV of 30 million UPI transactions and need the total amount per merchant category. What is the best first move?",
+   "options": [
+    "A `for` loop that appends every row to a list of dicts",
+    "pandas reading the file in chunks (or a database `GROUP BY`)",
+    "scikit-learn",
+    "A regular expression over the whole file"
+   ],
+   "answer": 1,
+   "why": "This is a group-and-sum on a big table: pandas (with `chunksize=` so it fits in memory) or SQL. A list of 30 million dicts would exhaust memory, and nothing here needs a model.",
+   "say": "Thirty million UPI transactions in a two gigabyte file, and you need the total per merchant category. Which tool do you reach for first?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 53 complete",
+   "points": [
+    "numpy arrays: one type, vectorised maths, boolean masks, `axis=`",
+    "pandas DataFrames: `read_csv`, new columns, filters with `&`, `groupby().agg()`",
+    "You can rebuild groupby and scaling in plain Python, so you understand them",
+    "Machine learning: clean, split, fit, measure on unseen data, predict",
+    "Choose the simplest tool that fits: Python, numpy, pandas, scikit-learn or SQL"
+   ],
+   "say": "Mission fifty three complete. You have used numpy arrays and masks, loaded, filtered and grouped data with pandas, fitted your first model, and you know when each tool is the right one. Data science is a whole career of its own, and today you took the first real step. Tomorrow: design patterns, the shared vocabulary of senior developers."
+  }
+ ]
+}

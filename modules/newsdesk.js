@@ -98,7 +98,14 @@ function install(app, deps) {
     const o = getSetting('OPENAI_API_KEY'); if (o) w.push(['openai', t => viaOpenAI(o, t)]);
     const g = getSetting('GEMINI_API_KEY'); if (g) w.push(['gemini', t => viaGemini(g, t)]);
     const r = getSetting('GROQ_API_KEY'); if (r) w.push(['groq', t => viaGroq(r, t)]);
-    return w;
+    const B = global._elevenBrain; if (B && B.available()) w.push(['elevenlabs', t => viaEleven(B, t)]);
+    // Gemini out of prepaid credit: skip it for an hour so each story does not wait on a failing call
+    return w.filter(x => !(x[0] === 'gemini' && (global._geminiDownUntil || 0) > Date.now()));
+  }
+  async function viaEleven(B, text) {
+    const out = await B.ask({ system: SYS + ' Reply with the JSON object only, no other text.', messages: [{ role: 'user', content: text }], timeout: 40000 });
+    const m = String(out).match(/\{[\s\S]*\}/); if (!m) throw new Error('no JSON in reply');
+    return JSON.parse(m[0]);
   }
   function extractive(c) {
     const lead = c.items.slice().sort((a, b) => (b.desc || '').length - (a.desc || '').length)[0];
@@ -118,7 +125,7 @@ function install(app, deps) {
         if (wrote >= 24) break;
         if (have.has(c.key)) { skipped++; continue; }
         let s = null, by = 'extractive';
-        for (const [name, fn] of ws) { try { const out = await fn(promptFor(c)); if (valid(out)) { s = out; by = name; break; } } catch (e) { state.lastError = name + ': ' + e.message; } }
+        for (const [name, fn] of ws) { try { const out = await fn(promptFor(c)); if (valid(out)) { s = out; by = name; break; } } catch (e) { state.lastError = name + ': ' + e.message; if (name === 'gemini' && /402|credit|prepay|billing/i.test(e.message)) global._geminiDownUntil = Date.now() + 3600e3; } }
         if (!s) { if (c.sources < 2 && ws.length) continue; s = extractive(c); }
         const sources = []; const seen = new Set();
         for (const i of c.items) { if (seen.has(i.source)) continue; seen.add(i.source); sources.push({ name: i.source, link: i.link, title: i.title }); }
@@ -133,12 +140,14 @@ function install(app, deps) {
       q("DELETE FROM news_stories WHERE created_at < datetime('now','-4 days')").run();
       state.last = { at: new Date().toISOString(), reason, items: items.length, clusters: clusters.length, wrote, skipped, ms: Date.now() - t0, writer: state.writer };
       log('batch', JSON.stringify(state.last));
+      // record the new headlines and top stories right away (modules/newsvoice.js)
+      if (wrote && global._newsVoice) setTimeout(() => global._newsVoice.run('desk batch').catch(() => {}), 3000);
       return state.last;
     } catch (e) { state.lastError = e.message; log('batch failed', e.message); return { error: e.message }; }
     finally { state.running = false; }
   }
 
-  const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: (() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })(), image: r.image, writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at });
+  const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: (() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })(), image: r.image, writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at, voice: global._newsVoice ? global._newsVoice.flags(r.id) : {} });
   app.get('/api/news/desk', (req, res) => {
     const cat = String(req.query.cat || '').toLowerCase(); const lim = Math.max(1, Math.min(60, parseInt(req.query.limit) || 40));
     const rows = CAT_LABEL[cat] ? q('SELECT * FROM news_stories WHERE category=? ORDER BY source_count DESC, published_at DESC LIMIT ?').all(cat, lim)

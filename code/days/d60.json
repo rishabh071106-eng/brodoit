@@ -1,0 +1,439 @@
+{
+ "day": 60,
+ "phase": 6,
+ "title": "Graduation: You are a Python developer",
+ "subtitle": "Career paths, portfolio and interview practice",
+ "minutes": 60,
+ "goal": "Choose a career path, plan a portfolio, and solve classic live-coding problems the way interviewers want to see them.",
+ "outcomes": [
+  "Compare Python career paths and the tools each one needs",
+  "Plan portfolio projects that get interviews",
+  "Answer common Python interview questions precisely",
+  "Solve two-sum, group anagrams and valid brackets efficiently",
+  "Make a plan to keep learning after the course"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 60: Graduation",
+   "body": "Sixty days ago you printed `Hello, world!`. Today you can design, test, secure and ship real software.\n\nThis last mission turns skills into a career: paths, portfolio, interviews, and how to keep growing.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Days 1–10: foundations",
+     "11–20: data and functions",
+     "21–30: programs that scale",
+     "31–40: professional Python",
+     "41–50: algorithms, data and the web",
+     "51–60: build like a pro"
+    ]
+   },
+   "say": "Sixty days ago, you printed hello world. Today you can design, test, secure and ship real software. That is an enormous journey, and you made it, one mission at a time. This final mission turns your skills into a career: the paths you can take, a portfolio that gets interviews, live coding practice, and how to keep growing for years."
+  },
+  {
+   "type": "concept",
+   "title": "Career paths for Python developers",
+   "body": "Python opens many doors. You already have the foundation for every one of them; each path adds a few specialist tools.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Path",
+     "You build",
+     "Learn next"
+    ],
+    "rows": [
+     [
+      "Backend",
+      "APIs, services",
+      "FastAPI or Django, PostgreSQL, Docker"
+     ],
+     [
+      "Data",
+      "Reports, pipelines",
+      "pandas, SQL, a BI tool, Airflow"
+     ],
+     [
+      "ML / AI",
+      "Models, LLM apps",
+      "scikit-learn, PyTorch, LLM APIs"
+     ],
+     [
+      "Automation / QA",
+      "Scripts, bots, tests",
+      "pytest, Playwright, CI"
+     ],
+     [
+      "DevOps / platform",
+      "Pipelines, infrastructure",
+      "Linux, Docker, Kubernetes, Terraform"
+     ]
+    ]
+   },
+   "say": "Python opens many doors. Backend developers build APIs and services. Data analysts and engineers turn messy data into answers. Machine learning and AI engineers train models and build apps on top of language models. Automation and QA engineers make computers do the repetitive work. DevOps and platform engineers keep it all running. You already have the foundation for every one."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: which path fits?",
+   "q": "Meera loves turning messy spreadsheets into dashboards and answering business questions with numbers. Which path and next steps fit her best?",
+   "options": [
+    "Backend: Django and REST APIs",
+    "Data: pandas, SQL and a BI tool like Power BI or Metabase",
+    "DevOps: Kubernetes and Terraform"
+   ],
+   "answer": 1,
+   "why": "Her joy is answers from data: that's the data path. The best career is the one whose daily work you enjoy, because that is what keeps you learning.",
+   "say": "Meera loves taking messy spreadsheets and turning them into dashboards that answer business questions. Which path suits her?"
+  },
+  {
+   "type": "concept",
+   "title": "A portfolio that gets interviews",
+   "body": "**Three polished projects beat twenty tutorials.** Each one needs a clear README, tests, and a demo (deployed, or a 60-second screen recording).\n\nFrom this course: **Kaam** (Days 58–59), a price tracker (Days 51, 52, 48), a data dashboard (Days 50, 53), an API (Day 47).",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Pick a real problem you or your family have",
+     "Build the smallest useful version",
+     "Add tests, a README and CI",
+     "Deploy it or record a 60-second demo",
+     "Write a short post about what you learned"
+    ]
+   },
+   "say": "Recruiters spend about a minute on your GitHub. Three polished projects beat twenty half finished tutorials. Each one needs a clear README, real tests, and a demo, either deployed or a one minute screen recording. You already have candidates: Kaam, a price tracker built from scraping, automation and SQLite, a data dashboard, or your own API."
+  },
+  {
+   "type": "concept",
+   "title": "How live coding interviews work",
+   "body": "Interviewers care about **how you think** as much as the final code. Talk through every step.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Clarify: inputs, outputs, an example",
+      "s": "pill"
+     },
+     {
+      "t": "Brute force first: say its Big-O"
+     },
+     {
+      "t": "Can a dict, set, stack or sort help?",
+      "s": "diamond",
+      "yes": "explain the better idea",
+      "no": "code the brute force well"
+     },
+     {
+      "t": "Code it cleanly, thinking aloud"
+     },
+     {
+      "t": "Test: normal case, edge cases",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "In a live coding interview, the interviewer cares about how you think as much as the final answer. First, clarify the problem and walk through an example. Say a simple brute force idea and its Big O out loud. Then improve it with the right data structure. Code it cleanly, with good names. Finally, test it yourself with a normal case and an edge case."
+  },
+  {
+   "type": "concept",
+   "title": "Questions you will hear",
+   "body": "Short, precise answers win. You have learned every one of these in this course.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Question",
+     "A crisp answer"
+    ],
+    "rows": [
+     [
+      "List vs tuple?",
+      "Lists are mutable; tuples are immutable and hashable, so they can be dict keys"
+     ],
+     [
+      "is vs ==?",
+      "== compares values; is checks for the very same object"
+     ],
+     [
+      "What is a decorator?",
+      "A function that wraps another to add behaviour, without editing it"
+     ],
+     [
+      "Generator vs list?",
+      "A generator yields items lazily, one at a time, using tiny memory"
+     ],
+     [
+      "What is the GIL?",
+      "In standard CPython one thread runs Python code at a time: asyncio for I/O, processes for CPU work"
+     ],
+     [
+      "*args, **kwargs?",
+      "Extra positional arguments as a tuple, extra keyword arguments as a dict"
+     ]
+    ]
+   },
+   "say": "Some questions come up in almost every Python interview. The difference between a list and a tuple. Is versus double equals. What a decorator does. Why a generator saves memory. What the GIL is. And what star args and double star kwargs mean. Short, precise answers win, and you learned every one of these somewhere in the last sixty days."
+  },
+  {
+   "type": "predict",
+   "title": "Interview classic: the mutable default",
+   "code": "def add_item(item, basket=[]):\n    basket.append(item)\n    return basket\n\nprint(add_item(\"chai\"))\nprint(add_item(\"samosa\"))",
+   "options": [
+    "['chai']\n['samosa']",
+    "['chai']\n['chai', 'samosa']",
+    "['chai', 'samosa']\n['chai', 'samosa']"
+   ],
+   "answer": 1,
+   "why": "The default list is created **once**, when the function is defined, and shared by every call. Use `basket=None` and create a new list inside. (Day 18.)",
+   "say": "This one appears in interviews all the time. A function with a list as its default argument, called twice. What does it print?"
+  },
+  {
+   "type": "predict",
+   "title": "Interview classic: is versus ==",
+   "code": "a = [1, 2, 3]\nb = a\nc = a[:]\nprint(a == c, a is c, a is b)",
+   "options": [
+    "True True True",
+    "True False True",
+    "False False True"
+   ],
+   "answer": 1,
+   "why": "`c` is a copy: equal values, different object. `b` is just another name for the same list as `a`. (The memory visuals from Days 2 and 12.)",
+   "say": "Another favourite. A list, a second name for it, and a copy made with a slice. Which comparisons are true?"
+  },
+  {
+   "type": "code",
+   "title": "Two-sum: brute force first",
+   "body": "**Two-sum**: return the indices of two numbers that add up to `target`. Always state the brute force and its Big-O first.",
+   "code": "def two_sum_brute(nums: list[int], target: int):\n    checks = 0\n    for i in range(len(nums)):\n        for j in range(i + 1, len(nums)):\n            checks += 1\n            if nums[i] + nums[j] == target:\n                return (i, j), checks\n    return None, checks\n\nprint(two_sum_brute([2, 7, 11, 15], 9))\nprint(two_sum_brute(list(range(1_000)), 1_997))",
+   "expect": "((0, 1), 1)\n((998, 999), 499500)\n",
+   "explain": [
+    [
+     3,
+     "Every i..."
+    ],
+    [
+     4,
+     "...paired with every later j: about n²/2 pairs."
+    ],
+    [
+     7,
+     "Return the pair and how much work it took."
+    ],
+    [
+     11,
+     "1,000 numbers: 499,500 checks. Quadratic."
+    ]
+   ],
+   "say": "Two sum: find the positions of two numbers that add up to a target. The brute force checks every pair, and we count the checks. For four numbers, the answer comes after one check. For a thousand numbers, with the pair at the very end, it takes almost half a million checks. Say this out loud in an interview: correct, but O of n squared."
+  },
+  {
+   "type": "concept",
+   "title": "The O(n) idea: remember what you've seen",
+   "body": "Walk through the list once. For each number `x`, the partner you need is `target - x`. Keep a **dict of value → index** for everything seen so far: if the partner is in it, you're done.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "i",
+     "x",
+     "need = 10 - x",
+     "seen so far",
+     "result"
+    ],
+    "rows": [
+     [
+      "0",
+      "3",
+      "7",
+      "{}",
+      "store 3 → 0"
+     ],
+     [
+      "1",
+      "8",
+      "2",
+      "{3: 0}",
+      "store 8 → 1"
+     ],
+     [
+      "2",
+      "4",
+      "6",
+      "{3: 0, 8: 1}",
+      "store 4 → 2"
+     ],
+     [
+      "3",
+      "6",
+      "4",
+      "{3: 0, 8: 1, 4: 2}",
+      "found: (2, 3)"
+     ]
+    ]
+   },
+   "say": "Here is the trick. Walk through the list once. For each number, work out the partner you would need: the target minus that number. Keep a dictionary of every number you have already seen, mapped to its position. If the partner is already in the dictionary, you have your answer. Each lookup is O of one, so the whole thing is O of n."
+  },
+  {
+   "type": "exercise",
+   "title": "Interview practice: two-sum in O(n)",
+   "task": "Write `two_sum(nums, target)` that returns a tuple `(i, j)` with `i < j` and `nums[i] + nums[j] == target`, or `None` if no pair exists.\n\nUse **one pass and a dict**. The tests count your additions and subtractions, so a nested loop will be caught.",
+   "starter": "def two_sum(nums: list[int], target: int) -> tuple[int, int] | None:\n    # One pass: for each x, is target - x already in a dict of value -> index?\n    return None\n\nprint(two_sum([2, 7, 11, 15], 9))",
+   "solution": "def two_sum(nums: list[int], target: int) -> tuple[int, int] | None:\n    seen: dict[int, int] = {}\n    for i, x in enumerate(nums):\n        need = target - x\n        if need in seen:\n            return seen[need], i\n        seen[x] = i\n    return None\n\nprint(two_sum([2, 7, 11, 15], 9))",
+   "tests": "def pair(result):\n    return None if result is None else tuple(result)\n\nassert pair(two_sum([2, 7, 11, 15], 9)) == (0, 1), \"two_sum([2, 7, 11, 15], 9) should be (0, 1).\"\nassert pair(two_sum([3, 2, 4], 6)) == (1, 2), \"two_sum([3, 2, 4], 6) should be (1, 2): don't use the same element twice.\"\nassert pair(two_sum([3, 3], 6)) == (0, 1), \"Duplicates are fine: two_sum([3, 3], 6) should be (0, 1).\"\nassert two_sum([1, 2, 3], 100) is None, \"When no pair adds up to target, return None.\"\nassert two_sum([], 5) is None, \"An empty list has no pair: return None.\"\n\nclass Num(int):\n    ops = 0\n    def _count(self, other, op):\n        Num.ops += 1\n        return op(int(self), int(other))\n    def __add__(self, o): return self._count(o, int.__add__)\n    def __radd__(self, o): return self._count(o, int.__add__)\n    def __sub__(self, o): return self._count(o, int.__sub__)\n    def __rsub__(self, o): return Num._count(Num(o), self, int.__sub__)\n    __hash__ = int.__hash__\n\nnums = [Num(v) for v in range(600)]\nresult = pair(two_sum(nums, Num(1197)))\nassert result == (598, 599), \"For 0..599 and target 1197 the answer is (598, 599). Got \" + str(result)\nassert Num.ops <= 5 * len(nums), \"Your solution did \" + format(Num.ops, \",\") + \" additions or subtractions for 600 numbers: that's O(n squared). Keep a dict of the numbers you have seen.\"",
+   "hints": [
+    "For each `i, x` in `enumerate(nums)`: compute `need = target - x`.",
+    "If `need in seen`, return `(seen[need], i)`; otherwise store `seen[x] = i`.",
+    "Check before you store, so a number never pairs with itself."
+   ],
+   "say": "Interview time. Write two sum in a single pass, using a dictionary of the numbers you have already seen. The tests include duplicates, a list with no answer and an empty list. Then they hand you six hundred special numbers that count every addition and subtraction, so a nested loop will be politely exposed."
+  },
+  {
+   "type": "code",
+   "title": "Your interview toolkit",
+   "body": "Five tools that crack most interview problems: `Counter`, `defaultdict`, `sorted(key=)`, `enumerate`, and sorting as a signature.",
+   "code": "from collections import Counter, defaultdict\n\ntext = \"chai chai coffee lassi chai coffee\"\nprint(Counter(text.split()).most_common(2))              # top-k frequency\n\nby_length = defaultdict(list)\nfor word in [\"tea\", \"chai\", \"lassi\", \"kahwa\", \"soda\"]:\n    by_length[len(word)].append(word)\nprint(dict(by_length))                                    # grouping\n\nscores = {\"riya\": 91, \"arjun\": 78, \"meera\": 91}\nprint(sorted(scores, key=lambda name: (-scores[name], name)))   # sort by value, then name\n\nprint([i for i, ch in enumerate(\"banana\") if ch == \"a\"])        # positions\nprint(sorted(\"listen\") == sorted(\"silent\"))                      # same letters?",
+   "expect": "[('chai', 3), ('coffee', 2)]\n{3: ['tea'], 4: ['chai', 'soda'], 5: ['lassi', 'kahwa']}\n['meera', 'riya', 'arjun']\n[1, 3, 5]\nTrue\n",
+   "explain": [
+    [
+     4,
+     "Counter: frequencies and top-k in one line."
+    ],
+    [
+     6,
+     "defaultdict(list): group items by any key."
+    ],
+    [
+     12,
+     "A key tuple: score descending, then name ascending."
+    ],
+    [
+     14,
+     "enumerate gives index and value together."
+    ],
+    [
+     15,
+     "Same sorted letters means same letters: an anagram check."
+    ]
+   ],
+   "say": "Most interview problems are solved by a handful of tools you already know. Counter finds the most common items in one line. A default dict of lists groups things by a key. Sorted with a key tuple sorts by score, highest first, and breaks ties by name. Enumerate gives positions. And sorting the letters of two words tells you whether they are anagrams."
+  },
+  {
+   "type": "exercise",
+   "title": "Interview practice: group anagrams",
+   "task": "Write `group_anagrams(words)`: put words that are anagrams of each other (same letters, any order) in the same group.\n- groups appear in the order their **first** word appears\n- words keep their original order inside a group\n- `[]` gives `[]`",
+   "starter": "def group_anagrams(words: list[str]) -> list[list[str]]:\n    # Hint: which \"signature\" is identical for every anagram of a word?\n    return [words]\n\nprint(group_anagrams([\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]))",
+   "solution": "from collections import defaultdict\n\ndef group_anagrams(words: list[str]) -> list[list[str]]:\n    groups: dict[str, list[str]] = defaultdict(list)\n    for word in words:\n        groups[\"\".join(sorted(word))].append(word)\n    return list(groups.values())\n\nprint(group_anagrams([\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]))",
+   "tests": "got = group_anagrams([\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"])\nassert got == [[\"eat\", \"tea\", \"ate\"], [\"tan\", \"nat\"], [\"bat\"]], \"Expected [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']] but got \" + str(got)\nassert group_anagrams([\"listen\", \"google\", \"silent\", \"enlist\"]) == [[\"listen\", \"silent\", \"enlist\"], [\"google\"]], \"listen, silent and enlist are anagrams; google is on its own.\"\nassert group_anagrams([\"a\"]) == [[\"a\"]], \"A single word is a group of one.\"\nassert group_anagrams([]) == [], \"No words means no groups: return [].\"",
+   "hints": [
+    "The signature: `\"\".join(sorted(word))`. Every anagram of `eat` gives `aet`.",
+    "Use a `defaultdict(list)` from signature to words; dicts keep insertion order.",
+    "Return `list(groups.values())`."
+   ],
+   "say": "Second interview problem: group anagrams. Words with exactly the same letters, in any order, belong in the same group. The key insight is a signature that is identical for every anagram of a word. Groups should appear in the order their first word appeared, and an empty list of words gives no groups."
+  },
+  {
+   "type": "concept",
+   "title": "Valid brackets: think stack",
+   "body": "Read the text left to right. **Push** every opening bracket. On a closing bracket, the **top** of the stack must be its partner: pop it. At the end, the stack must be **empty**.",
+   "visual": {
+    "kind": "list",
+    "name": "stack after reading '{[('",
+    "items": [
+     "'{'",
+     "'['",
+     "'('"
+    ],
+    "mark": [
+     2
+    ]
+   },
+   "say": "Third problem: are the brackets in some code balanced? This is a stack problem. Read left to right. Every opening bracket is pushed onto the stack. Every closing bracket must match the bracket on top of the stack, which you pop. If it does not match, or the stack is empty, the text is invalid. At the end, the stack must be empty too."
+  },
+  {
+   "type": "exercise",
+   "title": "Interview practice: valid brackets",
+   "task": "Write `is_balanced(text)`: `True` if every `(`, `[` and `{` is closed by the matching bracket in the right order. **Ignore** every other character, so it works on real code like `print(nums[0])`.",
+   "starter": "PAIRS = {\")\": \"(\", \"]\": \"[\", \"}\": \"{\"}\n\ndef is_balanced(text: str) -> bool:\n    # Push opening brackets; a closing one must match the top of the stack.\n    return text.count(\"(\") == text.count(\")\")\n\nprint(is_balanced(\"print(nums[0])\"), is_balanced(\"([)]\"))",
+   "solution": "PAIRS = {\")\": \"(\", \"]\": \"[\", \"}\": \"{\"}\n\ndef is_balanced(text: str) -> bool:\n    stack = []\n    for ch in text:\n        if ch in \"([{\":\n            stack.append(ch)\n        elif ch in PAIRS:\n            if not stack or stack.pop() != PAIRS[ch]:\n                return False\n    return not stack\n\nprint(is_balanced(\"print(nums[0])\"), is_balanced(\"([)]\"))",
+   "tests": "for text in [\"()[]{}\", \"{[()]}\", \"print(len(nums[0]))\", \"\", \"no brackets at all\"]:\n    assert is_balanced(text) is True, \"is_balanced(\" + repr(text) + \") should be True.\"\nfor text in [\"([)]\", \"(]\", \"((\", \"))((\", \"{'a': [1, 2}\", \")\"]:\n    assert is_balanced(text) is False, \"is_balanced(\" + repr(text) + \") should be False.\"",
+   "hints": [
+    "Use a list as a stack: `append` to push, `pop()` to take the top.",
+    "On a closing bracket: if the stack is empty, or `stack.pop() != PAIRS[ch]`, return `False`.",
+    "At the end, return `not stack`: leftovers mean unclosed brackets."
+   ],
+   "say": "Final interview problem, and a favourite at product companies. Check whether the brackets in a piece of text are balanced, ignoring every other character. The starter just counts round brackets, which is a trap: crossed brackets, and closing before opening, both fool it. Use a stack."
+  },
+  {
+   "type": "code",
+   "title": "Test like an interviewer",
+   "body": "Before you say \"done\", run a table of cases: normal, tricky, no answer, empty, single item.",
+   "code": "from collections import Counter\n\ndef first_unique(s: str) -> int:\n    \"\"\"Index of the first character that appears exactly once, or -1.\"\"\"\n    counts = Counter(s)\n    for i, ch in enumerate(s):\n        if counts[ch] == 1:\n            return i\n    return -1\n\ncases = [(\"swiss\", 1), (\"kadak\", 2), (\"aabb\", -1), (\"\", -1), (\"z\", 0)]\nfor given, expected in cases:\n    got = first_unique(given)\n    status = \"PASS\" if got == expected else \"FAIL\"\n    print(f\"{status}  first_unique({given!r}) = {got}, expected {expected}\")",
+   "expect": "PASS  first_unique('swiss') = 1, expected 1\nPASS  first_unique('kadak') = 2, expected 2\nPASS  first_unique('aabb') = -1, expected -1\nPASS  first_unique('') = -1, expected -1\nPASS  first_unique('z') = 0, expected 0\n",
+   "explain": [
+    [
+     5,
+     "Count every character once: O(n)."
+    ],
+    [
+     6,
+     "Walk again in order; the first count of 1 wins."
+    ],
+    [
+     11,
+     "Table-driven tests: easy to read, easy to extend."
+    ],
+    [
+     14,
+     "Say each case out loud in a real interview."
+    ]
+   ],
+   "say": "Strong candidates test their own code before the interviewer asks. Write a small table of cases: a normal one, a tricky one, one with no answer, the empty string, and a single character. Loop over them and print pass or fail. In an interview, just walking through these cases out loud earns real credit."
+  },
+  {
+   "type": "concept",
+   "title": "How to keep learning",
+   "body": "The best developers never stop learning, a little every week.\n- **build** something you want to exist\n- **read** good code (the standard library, popular projects)\n- **contribute** to open source: docs and tests are great first PRs\n- **teach**: write about what you learned",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Pick your path and one project for it",
+     "Learn its main framework through the official docs",
+     "Ship the project with tests, a README and CI",
+     "Practise one interview problem a day",
+     "Share what you build and help others"
+    ]
+   },
+   "say": "Graduation is not the end of learning, it is the start of learning on your own. Keep building things you actually want to exist. Read good code, including the standard library you have used all course. Contribute to open source, where documentation and tests make great first pull requests. And teach others, because explaining something is the best way to master it."
+  },
+  {
+   "type": "code",
+   "title": "Your certificate",
+   "body": "Type **your name** in the Input box, then Run. Every skill on it is real.",
+   "code": "print(\"What name goes on your certificate?\")\nname = input().strip() or \"Python Developer\"\nskills = [\"Python fundamentals\", \"OOP, clean code, design patterns\", \"Testing and debugging\",\n          \"Algorithms and data structures\", \"Data, APIs and databases\", \"Security, performance, shipping\"]\nwidth = 44\n\nprint(\"+\" + \"-\" * width + \"+\")\nprint(\"|\" + \"CERTIFICATE OF COMPLETION\".center(width) + \"|\")\nprint(\"|\" + \"Python: Zero to Hero\".center(width) + \"|\")\nprint(\"|\" + \" \" * width + \"|\")\nprint(\"|\" + name.center(width) + \"|\")\nprint(\"|\" + \"completed all 60 missions\".center(width) + \"|\")\nprint(\"|\" + \" \" * width + \"|\")\nfor skill in skills:\n    print(\"|\" + f\"  ✓ {skill}\".ljust(width) + \"|\")\nprint(\"+\" + \"-\" * width + \"+\")",
+   "expect": "What name goes on your certificate?\n+--------------------------------------------+\n|         CERTIFICATE OF COMPLETION          |\n|            Python: Zero to Hero            |\n|                                            |\n|                Riya Sharma                 |\n|         completed all 60 missions          |\n|                                            |\n|  ✓ Python fundamentals                     |\n|  ✓ OOP, clean code, design patterns        |\n|  ✓ Testing and debugging                   |\n|  ✓ Algorithms and data structures          |\n|  ✓ Data, APIs and databases                |\n|  ✓ Security, performance, shipping         |\n+--------------------------------------------+\n",
+   "explain": [
+    [
+     2,
+     "input() reads your name; 'or' supplies a default if it's blank."
+    ],
+    [
+     8,
+     "center() pads text evenly on both sides."
+    ],
+    [
+     15,
+     "ljust() pads on the right so the border lines up."
+    ]
+   ],
+   "stdin": "Riya Sharma\n",
+   "say": "One last program, built only from things you learned in the first week: input, strings, center, l just, loops and print. Type your name in the input box and run it. Every line of this certificate is true. You earned it, mission by mission. Take a screenshot, you have earned the right to be proud."
+  },
+  {
+   "type": "recap",
+   "title": "Graduation: you are a Python developer",
+   "points": [
+    "You can write, test, debug, secure and ship real Python software",
+    "You have shipped a capstone project and know how to build a portfolio",
+    "You can solve interview problems: brute force first, then the right data structure",
+    "Pick a path, build in public, and practise a little every day",
+    "Thank you for learning with Brodoit. Now go build something wonderful"
+   ],
+   "say": "This is it. Sixty missions complete. You started with a single print, and now you write tested, secure, well designed software, and you have shipped a real application. That took courage and consistency, and both are yours to keep. Pick a path, build things you care about, and keep learning a little every day. Congratulations, Python developer. Now go build something wonderful."
+  }
+ ]
+}

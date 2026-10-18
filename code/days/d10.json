@@ -1,0 +1,456 @@
+{
+ "day": 10,
+ "phase": 1,
+ "title": "Project: Command-line games",
+ "subtitle": "Design and build a complete number-guessing game",
+ "minutes": 60,
+ "goal": "Plan a program before coding it, then build a complete, replayable number-guessing game using everything from Days 1 to 9.",
+ "outcomes": [
+  "Break a program into inputs, outputs, state and steps before coding",
+  "Generate repeatable random numbers with random.seed and random.randint",
+  "Combine loops, conditions, validation and counters in one program",
+  "Add replay with an outer loop that resets per-game state",
+  "Test a program against a plan, including edge cases"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 10: Your first complete program",
+   "body": "Phase 1 finale. Today you **design** and **build** a real game: the computer picks a secret number, you guess, it gives hints, counts attempts and offers a rematch.\n\nEvery idea from Days 1 to 9 shows up.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python guess.py"
+     ],
+     [
+      "",
+      "I'm thinking of a number from 1 to 100."
+     ],
+     [
+      "",
+      "Guess: 50"
+     ],
+     [
+      "",
+      "Too low!"
+     ],
+     [
+      "",
+      "Guess: 80"
+     ],
+     [
+      "",
+      "Too high!"
+     ],
+     [
+      "",
+      "Guess: 74"
+     ],
+     [
+      "",
+      "Correct! You got it in 3 attempts."
+     ],
+     [
+      "",
+      "Play again? (y/n): n"
+     ],
+     [
+      "",
+      "Thanks for playing!"
+     ]
+    ]
+   },
+   "say": "Welcome to day ten, the finale of phase one. Today you'll design and build a complete game. The computer picks a secret number, you guess, it tells you higher or lower, counts your attempts, and offers a rematch. Every idea from the last nine days comes together here. Let's warm up with a quick review."
+  },
+  {
+   "type": "predict",
+   "title": "Review: names and print",
+   "code": "a = 3\nb = a\na = 10\nprint(a, b, sep=\" | \")",
+   "options": [
+    "10 | 10",
+    "10 | 3",
+    "3 | 10",
+    "10 3"
+   ],
+   "answer": 1,
+   "why": "b = a points b at the value 3. Moving a to 10 later doesn't move b, because names are labels on values (Day 2). sep=\" | \" goes between the values (Day 1).",
+   "say": "Review time, starting with days one and two. A is three, b is set to a, then a changes to ten. What does print show?"
+  },
+  {
+   "type": "predict",
+   "title": "Review: numbers and strings",
+   "code": "print(f\"{7 // 2} {7 % 2} {'ab' * 2} {'Python'[-2:]}\")",
+   "options": [
+    "3.5 1 abab on",
+    "3 1 abab on",
+    "3 1 ab2 on",
+    "3 1 abab th"
+   ],
+   "answer": 1,
+   "why": "7 // 2 is 3 and 7 % 2 is 1 (Day 3). 'ab' * 2 repeats to 'abab' and [-2:] takes the last two characters, 'on' (Day 4). The f-string drops each result into place (Day 5).",
+   "say": "Next, days three to five, all in one f string: floor division, remainder, string repetition and a slice. What's the result?"
+  },
+  {
+   "type": "quiz",
+   "title": "Review: input and decisions",
+   "q": "A program runs `age = input(\"Age: \")`, the user types **18**, and then `if age >= 18:` crashes. Why?",
+   "options": [
+    "18 isn't a valid age",
+    "input() returns a str, and Python can't compare a str with an int",
+    "if needs brackets around its condition",
+    "18 should be written 18.0"
+   ],
+   "answer": 1,
+   "why": "input() always returns text (Day 6). Convert first: age = int(input(\"Age: \")). Then the comparison works (Day 7).",
+   "say": "Days six and seven. A program reads an age with input, then checks if age is at least eighteen, and it crashes. Why?"
+  },
+  {
+   "type": "predict",
+   "title": "Review: loops",
+   "code": "total = 0\nfor n in range(1, 10):\n    if n % 2 == 0:\n        continue\n    if n > 7:\n        break\n    total += n\nprint(total)",
+   "options": [
+    "16",
+    "25",
+    "9",
+    "24"
+   ],
+   "answer": 0,
+   "why": "Even numbers are skipped by continue. The odd ones 1, 3, 5 and 7 are added: 16. At 9, break ends the loop before it's added.",
+   "say": "And loops from days eight and nine. Continue skips the even numbers, and break stops above seven. Trace it and predict the total."
+  },
+  {
+   "type": "concept",
+   "title": "Design before you code",
+   "body": "Professionals plan first. Answer four questions:\n- **Inputs**: what does the user give? (guesses, y or n)\n- **Outputs**: what do they see? (hints, results)\n- **State**: what must we remember? (secret, attempts)\n- **Steps**: what repeats, and when does it stop?",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Requirements: what must it do?",
+     "Inputs and outputs",
+     "State: the variables to track",
+     "Steps: loops and decisions",
+     "Build it in small, tested pieces",
+     "Test it, including edge cases"
+    ]
+   },
+   "say": "Before writing a single line, professional developers plan. Ask four questions. What are the inputs? What should the user see? What does the program need to remember, which becomes your variables? And what repeats, and when does it stop, which becomes your loops? Ten minutes of planning saves hours of debugging."
+  },
+  {
+   "type": "visual",
+   "title": "The game as a flowchart",
+   "body": "Two loops: an **inner** loop for guesses, inside an **outer** loop for replays.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Pick a secret number",
+      "s": "pill"
+     },
+     {
+      "t": "Read a guess"
+     },
+     {
+      "t": "Is it a whole number?",
+      "s": "diamond",
+      "yes": "Count the attempt",
+      "no": "Warn, don't count it"
+     },
+     {
+      "t": "guess == secret?",
+      "s": "diamond",
+      "yes": "Celebrate: show attempts",
+      "no": "Hint: too high or too low"
+     },
+     {
+      "t": "Attempts left?",
+      "s": "diamond",
+      "yes": "Read another guess",
+      "no": "Reveal the number"
+     },
+     {
+      "t": "Play again?",
+      "s": "diamond",
+      "yes": "New secret",
+      "no": "Thanks for playing!"
+     }
+    ]
+   },
+   "say": "Here's the plan as a flowchart. Pick a secret number. Read a guess, check that it's a whole number, then compare it with the secret. Too high or too low gives a hint, and we keep going while attempts remain. After each game, ask to play again. Notice the shape: an inner loop for guesses, inside an outer loop for replays."
+  },
+  {
+   "type": "concept",
+   "title": "Random numbers you can test",
+   "body": "`import random`, then:\n- `random.randint(1, 100)`: a whole number from 1 to 100, **both ends included**\n- `random.seed(42)`: makes the sequence **repeatable**\n\nPlayers get real randomness; tests and demos use a seed so every run is identical.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "random.seed(42)",
+      "fixes the sequence",
+      ""
+     ],
+     [
+      "1st randint(1, 100)",
+      "82",
+      "int"
+     ],
+     [
+      "2nd randint(1, 100)",
+      "15",
+      "int"
+     ],
+     [
+      "3rd randint(1, 100)",
+      "4",
+      "int"
+     ]
+    ]
+   },
+   "say": "Python's random module makes games unpredictable. Randint gives a whole number between two limits, and unlike range, both ends are included. But unpredictable code is hard to test. So developers call random dot seed with a fixed number first. The sequence still looks random, but it's identical on every run. That's how we'll test today's game."
+  },
+  {
+   "type": "code",
+   "title": "Seeded randomness",
+   "code": "import random\n\nrandom.seed(42)\nprint(random.randint(1, 100))\nprint(random.randint(1, 100))\nprint(random.randint(1, 100))\n\nrandom.seed(42)                 # same seed...\nprint(random.randint(1, 100))   # ...same first number\n\ndice = random.randint(1, 6)\nprint(\"Dice roll:\", dice)",
+   "expect": "82\n15\n4\n82\nDice roll: 1\n",
+   "explain": [
+    [
+     1,
+     "Load the random module, like math on Day 3."
+    ],
+    [
+     3,
+     "Fix the starting point of the sequence."
+    ],
+    [
+     4,
+     "randint(1, 100) can return 1, 100 or anything between."
+    ],
+    [
+     8,
+     "Reseeding restarts the same sequence."
+    ],
+    [
+     11,
+     "A dice roll: 1 to 6, both included."
+    ]
+   ],
+   "say": "Seed forty two, then three random numbers. Run it again and again: they never change. Reseed with forty two and the sequence restarts from the same first number. Delete the seed lines and the numbers change on every run. That's real randomness: great for players, terrible for tests."
+  },
+  {
+   "type": "code",
+   "title": "Step 1: one guess, one hint",
+   "code": "import random\n\nrandom.seed(7)\nsecret = random.randint(1, 100)\n\nguess = int(input(\"Guess (1-100): \"))\nif guess < secret:\n    print(\"Too low!\")\nelif guess > secret:\n    print(\"Too high!\")\nelse:\n    print(\"Correct!\")\nprint(f\"(The secret was {secret})\")",
+   "stdin": "50\n",
+   "expect": "Guess (1-100): Too high!\n(The secret was 42)\n",
+   "explain": [
+    [
+     4,
+     "With seed 7, the secret is always the same."
+    ],
+    [
+     6,
+     "Convert straight away (Day 6)."
+    ],
+    [
+     7,
+     "Three outcomes: low, high or correct."
+    ],
+    [
+     13,
+     "A debugging line: delete it before shipping."
+    ]
+   ],
+   "say": "We build the game in small steps, testing as we go. Step one: pick a secret, read one guess, and give one hint. It's just an if, elif and else from day seven. We print the secret at the end only while developing, to check our logic. Real players never see that line."
+  },
+  {
+   "type": "code",
+   "title": "Step 2: loop until correct",
+   "code": "import random\n\nrandom.seed(7)\nsecret = random.randint(1, 100)\nattempts = 0\n\nwhile True:\n    guess = int(input(\"Guess: \"))\n    attempts += 1\n    if guess < secret:\n        print(\"Too low!\")\n    elif guess > secret:\n        print(\"Too high!\")\n    else:\n        print(f\"Correct! You took {attempts} attempts.\")\n        break",
+   "stdin": "50\n25\n37\n43\n42\n",
+   "expect": "Guess: Too high!\nGuess: Too low!\nGuess: Too low!\nGuess: Too high!\nGuess: Correct! You took 5 attempts.\n",
+   "explain": [
+    [
+     5,
+     "The counter starts before the loop."
+    ],
+    [
+     7,
+     "Keep asking until a break."
+    ],
+    [
+     9,
+     "Count every guess."
+    ],
+    [
+     16,
+     "Correct: leave the loop."
+    ]
+   ],
+   "say": "Step two wraps the guess in a while True loop, with a counter for attempts. Each wrong guess gets a hint and the loop asks again. A correct guess prints the result and breaks out. Notice that the input box holds a whole sequence of guesses, like a real player narrowing down the range."
+  },
+  {
+   "type": "quiz",
+   "title": "How many guesses do you need?",
+   "q": "If you always guess the **middle** of the range that's left, what's the most guesses you'd ever need to find a number from 1 to 100?",
+   "options": [
+    "100",
+    "50",
+    "10",
+    "7"
+   ],
+   "answer": 3,
+   "why": "Each middle guess halves what's left: 100, 50, 25, 13, 7, 4, 2, 1. Seven guesses always suffice, because 2 ** 7 = 128 is at least 100. That's binary search, coming back on Day 42. So 7 attempts is a fair limit.",
+   "say": "A brain teaser before step three. If you always guess the middle of the remaining range, what's the most guesses you'd ever need, for a number from one to a hundred?"
+  },
+  {
+   "type": "code",
+   "title": "Step 3: the replay loop",
+   "code": "import random\n\nrandom.seed(3)\nrounds = 0\nplaying = True\n\nwhile playing:\n    rounds += 1\n    roll = random.randint(1, 6)\n    print(f\"Round {rounds}: you rolled {roll}\")\n    again = input(\"Roll again? (y/n): \").strip().lower()\n    playing = again == \"y\"\n\nprint(f\"Thanks for playing {rounds} rounds!\")",
+   "stdin": "y\ny\nn\n",
+   "expect": "Round 1: you rolled 2\nRoll again? (y/n): Round 2: you rolled 5\nRoll again? (y/n): Round 3: you rolled 5\nRoll again? (y/n): Thanks for playing 3 rounds!\n",
+   "explain": [
+    [
+     5,
+     "A flag controls the outer loop."
+    ],
+    [
+     7,
+     "One iteration is one round (or one whole game)."
+    ],
+    [
+     11,
+     "Clean the answer: ' Y ' still counts."
+    ],
+    [
+     12,
+     "True only if they typed y."
+    ]
+   ],
+   "say": "Here's the replay pattern on its own, with a tiny dice game. A boolean called playing controls the outer loop. At the end of each round we ask, and store whether the answer was y. Any other answer ends the loop. In the guessing game, a whole game goes where the dice roll is."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the rematch",
+   "task": "In this mini guessing game (3 attempts, numbers 1 to 10), the **second** game is broken: the player gets no guesses at all. Fix it so every game starts fresh.",
+   "starter": "import random\n\nrandom.seed(3)\nmax_attempts = 3\nattempts = 0\nplaying = True\n\nwhile playing:\n    secret = random.randint(1, 10)\n    print(\"New game: guess 1 to 10\")\n    while attempts < max_attempts:\n        guess = int(input(\"Guess: \"))\n        attempts += 1\n        if guess == secret:\n            print(f\"Correct in {attempts}!\")\n            break\n        print(\"Nope\")\n    playing = input(\"Again? (y/n): \").strip().lower() == \"y\"\nprint(\"Bye!\")\n",
+   "stdin": "7\n7\n7\ny\n7\n10\nn\n",
+   "solution": "import random\n\nrandom.seed(3)\nmax_attempts = 3\nplaying = True\n\nwhile playing:\n    secret = random.randint(1, 10)\n    attempts = 0\n    print(\"New game: guess 1 to 10\")\n    while attempts < max_attempts:\n        guess = int(input(\"Guess: \"))\n        attempts += 1\n        if guess == secret:\n            print(f\"Correct in {attempts}!\")\n            break\n        print(\"Nope\")\n    playing = input(\"Again? (y/n): \").strip().lower() == \"y\"\nprint(\"Bye!\")",
+   "tests": "import random as _r\n_r.seed(3)\ns1, s2 = _r.randint(1, 10), _r.randint(1, 10)\nw = [n for n in range(1, 11) if n not in (s1, s2)][0]\nout = await run_program(f\"{w}\\n{w}\\n{w}\\ny\\n{w}\\n{s2}\\nn\\n\")\nassert \"Correct in 2!\" in out, \"After losing game 1, game 2 should give 3 fresh attempts, and the player wins on the 2nd guess. Where should attempts go back to 0?\"\nout = await run_program(f\"{s1}\\ny\\n{s2}\\nn\\n\")\nassert out.count(\"Correct in 1!\") == 2, \"Two games won on the first guess should both say Correct in 1!. The attempt counter must restart for every game.\"",
+   "hints": [
+    "Trace attempts: what is it when the second game starts?",
+    "Anything that belongs to one game must be reset inside the outer loop.",
+    "Move attempts = 0 to just after the new secret is picked."
+   ],
+   "say": "Here's a bug that bites every game developer once. The first game works, but the rematch is broken: the player gets no guesses at all. Trace the attempts variable across two games, and fix it so every game starts fresh."
+  },
+  {
+   "type": "concept",
+   "title": "Define done: a test plan",
+   "body": "Decide what **done** means before you code. With `random.seed(10)` the first secret is always **74** and the second is **5**, so every test is repeatable.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Test",
+     "Input",
+     "Expected"
+    ],
+    "rows": [
+     [
+      "Win with hints",
+      "50, 80, 74",
+      "Too low!, Too high!, Correct! in 3 attempts"
+     ],
+     [
+      "Bad input",
+      "abc",
+      "a warning; not counted as an attempt"
+     ],
+     [
+      "Lose",
+      "7 wrong guesses",
+      "reveal the number: 74"
+     ],
+     [
+      "Replay",
+      "y after a game",
+      "new secret, 7 fresh attempts"
+     ],
+     [
+      "Quit",
+      "n",
+      "Thanks for playing!"
+     ]
+    ]
+   },
+   "say": "Before building the full game, decide what done means, with a test plan. With seed ten, the first secret is always seventy four, and the second is five. So we can plan exact inputs and expected results: a win with hints, a loss, a bad input that shouldn't count, and a replay. When every row passes, the game is finished."
+  },
+  {
+   "type": "project",
+   "title": "Project: Number-guessing game",
+   "brief": "Build the complete game:\n- the secret comes from `random.randint(1, 100)` (the seed is set for you)\n- up to **7 attempts**, with `Too low!` and `Too high!` hints\n- a guess that isn't a whole number gets a warning and **doesn't count**\n- win: `Correct!` and the number of attempts; lose: reveal the number\n- then `Play again? (y/n): `, where `y` starts a fresh game",
+   "steps": [
+    "Plan your state: secret, attempts and won (reset for every game)",
+    "Write the guess loop: while attempts < max_attempts and not won",
+    "Validate with strip() and isdigit(): warn, then continue without counting",
+    "Compare and hint; on a correct guess, set won and print the attempts",
+    "After the inner loop: if not won, reveal the secret",
+    "Wrap it all in an outer while loop that asks Play again?"
+   ],
+   "starter": "import random\n\nrandom.seed(10)        # keeps the game testable: don't change this\nmax_attempts = 7\n\n# Outer loop: one game per iteration\n#   secret = random.randint(1, 100), and reset attempts and won\n#   inner loop: read a guess, validate it, hint, count the attempt\n#   after the inner loop: reveal the number if the player lost\n#   ask \"Play again? (y/n): \"\nprint(\"Thanks for playing!\")\n",
+   "stdin": "50\n80\n74\nn\n",
+   "solution": "import random\n\nrandom.seed(10)        # keeps the game testable: don't change this\nmax_attempts = 7\n\nplaying = True\nwhile playing:\n    secret = random.randint(1, 100)\n    attempts = 0\n    won = False\n    print(\"I'm thinking of a number from 1 to 100.\")\n\n    while attempts < max_attempts and not won:\n        text = input(\"Guess: \").strip()\n        if not text.isdigit():\n            print(\"Please enter a whole number.\")\n            continue\n        guess = int(text)\n        attempts += 1\n        if guess < secret:\n            print(\"Too low!\")\n        elif guess > secret:\n            print(\"Too high!\")\n        else:\n            won = True\n            print(f\"Correct! You got it in {attempts} attempts.\")\n\n    if not won:\n        print(f\"Out of attempts. The number was {secret}.\")\n\n    again = input(\"Play again? (y/n): \").strip().lower()\n    playing = again == \"y\"\n\nprint(\"Thanks for playing!\")",
+   "tests": "import re\nimport random as _r\n_r.seed(10)\ns1, s2 = _r.randint(1, 100), _r.randint(1, 100)\n\nasync def play(lines, why):\n    try:\n        return await run_program(\"\\n\".join(str(x) for x in lines) + \"\\n\")\n    except AssertionError as e:\n        assert False, why + \" Your program stopped with: \" + str(e).split(\"crashed: \")[-1]\n\ndef win_numbers(out):\n    wins = [l for l in out.splitlines() if \"correct\" in l.lower()]\n    assert wins, \"When the guess equals the secret, print a message with Correct in it.\"\n    return [int(x) for x in re.findall(r\"\\d+\", wins[0].lower().split(\"correct\")[-1])]\n\nout = await play([1, 100, s1, \"n\"], \"A game won on the 3rd guess, then n, should end cleanly.\")\nassert \"too low\" in out.lower(), \"A guess of 1 is below the secret: print Too low!\"\nassert \"too high\" in out.lower(), \"A guess of 100 is above the secret: print Too high!\"\nassert 3 in win_numbers(out), \"The win message should show the attempts: 3 for this game.\"\n\nout = await play([1] * 7 + [\"n\"], \"After 7 wrong guesses the game should end and ask Play again?, not ask for an 8th guess.\")\nassert \"correct\" not in out.lower(), \"Seven wrong guesses shouldn't print Correct: save that word for wins.\"\nassert str(s1) in out, f\"When the player runs out of attempts, reveal the number ({s1}).\"\n\nout = await play([\"abc\", \"\", 50, s1, \"n\"], \"Invalid guesses shouldn't crash the game.\")\nassert 2 in win_numbers(out) and 4 not in win_numbers(out), \"abc and an empty line aren't attempts: this game was won in 2 attempts. Warn, then continue without counting.\"\n\nout = await play([s1, \"y\", s2, \"n\"], f\"After y, a new game should start with a fresh secret ({s2} with this seed). Seed only once, at the top, and pick the secret inside the outer loop.\")\nassert out.lower().count(\"correct\") == 2, f\"Replay: after y, pick a new secret inside the outer loop (it will be {s2}). Seed only once, at the top.\"\n\nout = await play([1] * 7 + [\"y\", s2, \"n\"], \"After a lost game and y, the next game needs fresh attempts.\")\nassert \"correct\" in out.lower() and 1 in win_numbers(out), \"The second game should start with 7 fresh attempts: reset attempts and won inside the outer loop.\"",
+   "hints": [
+    "Reset attempts = 0 and won = False at the start of every game, inside the outer loop.",
+    "For a bad guess: print a warning, then continue (before attempts += 1).",
+    "After the inner loop, if not won: print the secret. Then playing = input(...).strip().lower() == \"y\""
+   ],
+   "say": "Here it is, your phase one project. Build the complete number guessing game: seven attempts, hints, input validation that doesn't waste a turn, a reveal when you lose, and a rematch. Follow the steps, run it with your test plan, and keep going until every check passes. Take your time. This is real software."
+  },
+  {
+   "type": "exercise",
+   "title": "Tip calculator",
+   "task": "Read the **bill**, the **tip %** and the number of **people**. If people is below 1, print a message and **ask again** until it's valid. Then print, with 2 decimals:\n- `Tip: 120.00`\n- `Total: 1320.00`\n- `Each pays: 330.00`\n\n(for a 1200 bill, 10% tip, 4 people)",
+   "starter": "# Read the bill, the tip % and the number of people\n# Keep asking while people is below 1\n",
+   "stdin": "1200\n10\n4\n",
+   "solution": "bill = float(input(\"Bill: \"))\ntip_percent = float(input(\"Tip %: \"))\npeople = int(input(\"People: \"))\nwhile people < 1:\n    print(\"At least 1 person, please\")\n    people = int(input(\"People: \"))\n\ntip = bill * tip_percent / 100\ntotal = bill + tip\nshare = total / people\nprint(f\"Tip: {tip:.2f}\")\nprint(f\"Total: {total:.2f}\")\nprint(f\"Each pays: {share:.2f}\")",
+   "tests": "out = await run_program(\"1200\\n10\\n4\\n\")\nassert \"120.00\" in out and \"1320.00\" in out and \"330.00\" in out, \"For 1200, 10% and 4 people: Tip 120.00, Total 1320.00, Each pays 330.00.\"\nout = await run_program(\"850\\n15\\n3\\n\")\nassert \"127.50\" in out and \"977.50\" in out and \"325.83\" in out, \"For 850, 15% and 3 people: Tip 127.50, Total 977.50, Each pays 325.83. Use :.2f\"\ntry:\n    out = await run_program(\"500\\n0\\n0\\n2\\n\")\nexcept AssertionError:\n    assert False, \"With 0 people your program crashed. Keep asking while people is below 1, then divide.\"\nassert \"250.00\" in out, \"After 0 people, the user typed 2: each pays 250.00.\"",
+   "hints": [
+    "The tip is bill * tip_percent / 100.",
+    "A validation loop: while people < 1, print a message and read people again.",
+    "Format each value with :.2f"
+   ],
+   "say": "Every restaurant group needs this. Build a tip calculator: read the bill, the tip percentage and the number of people, refuse zero people with a validation loop, and print the tip, the total and each person's share."
+  },
+  {
+   "type": "exercise",
+   "title": "Mental maths trainer",
+   "task": "Build a 5-question times-table quiz. For each question, pick `a = random.randint(2, 9)` **then** `b = random.randint(2, 9)`, and ask `a x b`.\n- correct: print `Right!` and add a point\n- anything else (wrong, or not a number): print `Wrong, it's 42` with the real answer\n\nFinish with `Score: 3/5`.",
+   "starter": "import random\n\nrandom.seed(5)       # keeps the quiz testable: don't change this\nscore = 0\n# For q in 1 to 5:\n#   a = random.randint(2, 9), then b = random.randint(2, 9)\n#   answer = input(f\"Q{q}: {a} x {b} = \").strip()\n#   correct (digits, and equal to a * b): \"Right!\", add a point\n#   otherwise: \"Wrong, it's ...\" with the real answer\nprint(f\"Score: {score}/5\")\n",
+   "stdin": "42\n18\n10\n12\n63\n",
+   "solution": "import random\n\nrandom.seed(5)       # keeps the quiz testable: don't change this\nscore = 0\nfor q in range(1, 6):\n    a = random.randint(2, 9)\n    b = random.randint(2, 9)\n    answer = input(f\"Q{q}: {a} x {b} = \").strip()\n    if answer.isdigit() and int(answer) == a * b:\n        print(\"Right!\")\n        score += 1\n    else:\n        print(f\"Wrong, it's {a * b}\")\nprint(f\"Score: {score}/5\")",
+   "tests": "import random as _r\n_r.seed(5)\nproducts = []\nfor _ in range(5):\n    a = _r.randint(2, 9)\n    b = _r.randint(2, 9)\n    products.append(a * b)\nout = await run_program(\"\\n\".join(map(str, products)) + \"\\n\")\nassert out.count(\"Right!\") == 5 and \"Score: 5/5\" in out, f\"Answering every question correctly ({', '.join(map(str, products))}) should give five Right! lines and Score: 5/5. Pick a, then b, once per question.\"\nout = await run_program(\"0\\n0\\n0\\n0\\n0\\n\")\nassert \"Score: 0/5\" in out, \"Five wrong answers should give Score: 0/5.\"\nassert all(f\"Wrong, it's {p}\" in out for p in products), \"For a wrong answer, show the real one, like Wrong, it's 42.\"\ntry:\n    out = await run_program(f\"{products[0]}\\nabc\\n\\n{products[3]}\\n1\\n\")\nexcept AssertionError:\n    assert False, \"An answer like abc (or an empty line) crashed the quiz. Check isdigit() before int().\"\nassert \"Score: 2/5\" in out, \"Two right answers plus abc, an empty line and a wrong number should score 2/5.\"",
+   "hints": [
+    "A for loop over range(1, 6) asks five questions.",
+    "Check answer.isdigit() and int(answer) == a * b in one condition: and stops early if it isn't digits.",
+    "Keep a score accumulator and print it after the loop."
+   ],
+   "say": "One more game for your collection: a mental maths trainer. Five random times table questions, a point for each right answer, and the correct answer shown for each wrong one. Make sure typing nonsense never crashes it. Then try beating five out of five yourself."
+  },
+  {
+   "type": "recap",
+   "title": "Phase 1 complete",
+   "points": [
+    "Plan first: inputs, outputs, state and steps; then build and test in small pieces",
+    "random.seed() makes randomness repeatable for tests; randint includes both ends",
+    "An inner loop runs one game; an outer loop handles replays, and per-game state resets inside it",
+    "Validate input before converting, and decide what doesn't count",
+    "Phase 1 toolkit: print, variables, numbers, strings, f-strings, input, if, while and for"
+   ],
+   "say": "Phase one complete! In ten days you went from your first print to a complete, replayable game, with input validation, seeded randomness and a test plan. That's real programming. Next comes phase two, Ascent, where lists, dictionaries and functions let you handle real data. Take a moment to be proud, then see you on day eleven."
+  }
+ ]
+}

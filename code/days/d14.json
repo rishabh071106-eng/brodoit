@@ -1,0 +1,437 @@
+{
+ "day": 14,
+ "phase": 2,
+ "title": "Dictionaries: look it up",
+ "subtitle": "Store data by name, not by position",
+ "minutes": 50,
+ "goal": "Store and look up data by key with dictionaries, update them safely, loop over them, and count things with the counting pattern.",
+ "outcomes": [
+  "Create dictionaries and read values with d[key] and d.get(key, default)",
+  "Add, update and delete pairs with assignment, update(), del and pop()",
+  "Loop over keys, values() and items()",
+  "Count words and votes with the counting pattern",
+  "Explain which values can be dictionary keys"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 14: Dictionaries",
+   "body": "Contacts on your phone, a restaurant menu, a user profile from an API: you look things up by **name**, not by position.\n\nThat's a **dictionary**, Python's most used data structure, and the shape of JSON on the web.",
+   "visual": {
+    "kind": "dict",
+    "name": "user",
+    "pairs": [
+     [
+      "'name'",
+      "'Riya'"
+     ],
+     [
+      "'city'",
+      "'Pune'"
+     ],
+     [
+      "'plan'",
+      "'premium'"
+     ],
+     [
+      "'age'",
+      "21"
+     ]
+    ]
+   },
+   "say": "Welcome to day fourteen. When you open your phone's contacts, you don't search for contact number thirty seven. You search for a name. Menus, user profiles and settings all work the same way: you look things up by a key. That is a dictionary, the most used data structure in Python, and the shape of almost every API response on the web."
+  },
+  {
+   "type": "concept",
+   "title": "Keys and values",
+   "body": "A dictionary maps **keys** to **values**: `{key: value, key: value}`.\n\n- Keys are unique, usually strings\n- Values can be anything\n- Look up with `d[key]`, not a number",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "A list: what is item 2?",
+     "code": "user = [\"Riya\", 21, \"Pune\"]\nprint(user[2])   # city? age?"
+    },
+    "right": {
+     "title": "A dict: say what you mean",
+     "code": "user = {\"name\": \"Riya\",\n        \"age\": 21,\n        \"city\": \"Pune\"}\nprint(user[\"city\"])"
+    },
+    "verdict": "Keys make data self-describing: no more guessing what index 2 means."
+   },
+   "say": "A dictionary stores pairs: a key and its value. You write them inside curly braces, with a colon between each key and its value. Keys must be unique, and they are usually strings. Values can be anything at all. Instead of asking for item number two, you ask for the city, so your code reads like plain English."
+  },
+  {
+   "type": "code",
+   "title": "Menu prices",
+   "code": "menu = {\"chai\": 20, \"samosa\": 15, \"vada pav\": 25, \"lassi\": 40}\nprint(menu[\"chai\"])\nprint(len(menu), \"items on the menu\")\norder = \"lassi\"\nprint(f\"One {order} costs ₹{menu[order]}\")\nprint(menu)\nprint(type(menu))",
+   "expect": "20\n4 items on the menu\nOne lassi costs ₹40\n{'chai': 20, 'samosa': 15, 'vada pav': 25, 'lassi': 40}\n<class 'dict'>\n",
+   "explain": [
+    [
+     1,
+     "Four key-value pairs: item name to price."
+    ],
+    [
+     2,
+     "Square brackets with a key give its value."
+    ],
+    [
+     3,
+     "len() counts the pairs."
+    ],
+    [
+     5,
+     "The key can come from a variable."
+    ],
+    [
+     6,
+     "Printing shows every pair, in the order they were added."
+    ]
+   ],
+   "say": "Here is a cafe menu as a dictionary, mapping each item to its price. Square brackets with a key give you the value. Len counts the pairs. The key can come from a variable, which is exactly how a real ordering app looks up whatever the customer tapped."
+  },
+  {
+   "type": "predict",
+   "title": "Ask for a missing key",
+   "code": "menu = {\"chai\": 20, \"samosa\": 15}\nprint(menu[\"coffee\"])",
+   "options": [
+    "None",
+    "0",
+    "KeyError: 'coffee'"
+   ],
+   "answer": 2,
+   "why": "Square-bracket lookup demands that the key exists. coffee isn't on the menu, so Python raises KeyError and names the missing key.",
+   "say": "What happens when a customer orders something that is not on the menu? Predict."
+  },
+  {
+   "type": "concept",
+   "title": "get(): look up without crashing",
+   "body": "- `menu.get(\"coffee\")` gives `None` if the key is missing\n- `menu.get(\"coffee\", 0)` gives your default instead\n- `\"coffee\" in menu` checks the **keys**",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "menu.get(key, default)",
+      "s": "pill"
+     },
+     {
+      "t": "Is key in menu?",
+      "s": "diamond",
+      "yes": "Give menu[key]",
+      "no": "Give default"
+     },
+     {
+      "t": "Program keeps running",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Get is the polite way to look something up. If the key exists, you get its value. If not, you get None, Python's value for nothing, or any default you choose, and your program keeps running. The word in checks whether a key exists. Remember that it checks keys, not values."
+  },
+  {
+   "type": "code",
+   "title": "A phone book",
+   "code": "phone_book = {\"Riya\": \"98200 11111\", \"Arjun\": \"98330 22222\"}\nprint(phone_book.get(\"Riya\"))\nprint(phone_book.get(\"Meera\"))\nprint(phone_book.get(\"Meera\", \"not saved\"))\nprint(\"Arjun\" in phone_book)\nprint(\"98200 11111\" in phone_book)\nname = \"Kabir\"\nif name in phone_book:\n    print(\"Calling\", phone_book[name])\nelse:\n    print(name, \"is not in your contacts\")",
+   "expect": "98200 11111\nNone\nnot saved\nTrue\nFalse\nKabir is not in your contacts\n",
+   "explain": [
+    [
+     2,
+     "Found: the number."
+    ],
+    [
+     3,
+     "Missing: None, and no crash."
+    ],
+    [
+     4,
+     "Missing, with a friendly default."
+    ],
+    [
+     5,
+     "in checks the keys..."
+    ],
+    [
+     6,
+     "...so searching for a number gives False."
+    ],
+    [
+     8,
+     "Check first, then square brackets are safe."
+    ]
+   ],
+   "say": "Get finds Riya's number, gives None for Meera, and gives a friendly default when we ask for one. In confirms that Arjun is a contact, but searching for a phone number gives false, because in only looks at keys. The last part is the classic pattern: check first, then use."
+  },
+  {
+   "type": "concept",
+   "title": "Add, change, delete",
+   "body": "Dictionaries are mutable, like lists. Assigning to a key **adds** it, or **replaces** the value if the key exists.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Code",
+     "What happens"
+    ],
+    "rows": [
+     [
+      "d[key] = value",
+      "adds the pair, or replaces the old value"
+     ],
+     [
+      "d.update(other)",
+      "adds or replaces many pairs at once"
+     ],
+     [
+      "del d[key]",
+      "deletes the pair (KeyError if missing)"
+     ],
+     [
+      "d.pop(key)",
+      "deletes it and gives back the value"
+     ],
+     [
+      "d.pop(key, default)",
+      "the same, but no crash if missing"
+     ]
+    ]
+   },
+   "say": "Dictionaries are mutable, like lists. Assigning to a key adds a new pair, or replaces the value if the key already exists. Update merges in many pairs at once. Del removes a pair, and pop removes it and hands you the value. Give pop a default and it never crashes."
+  },
+  {
+   "type": "code",
+   "title": "A grocery cart by quantity",
+   "code": "cart = {\"atta\": 1}\ncart[\"dal\"] = 2\ncart[\"atta\"] = 3\ncart.update({\"ghee\": 1, \"rice\": 5})\nprint(cart)\ndel cart[\"rice\"]\nremoved = cart.pop(\"ghee\")\nprint(\"Removed ghee, quantity\", removed)\nprint(cart)\nprint(cart.pop(\"sugar\", 0))",
+   "expect": "{'atta': 3, 'dal': 2, 'ghee': 1, 'rice': 5}\nRemoved ghee, quantity 1\n{'atta': 3, 'dal': 2}\n0\n",
+   "explain": [
+    [
+     2,
+     "A new key: added."
+    ],
+    [
+     3,
+     "An existing key: the value is replaced, not duplicated."
+    ],
+    [
+     4,
+     "Merge in two pairs at once."
+    ],
+    [
+     6,
+     "del removes a pair."
+    ],
+    [
+     7,
+     "pop() removes it and gives back the value."
+    ],
+    [
+     10,
+     "With a default, pop() never crashes."
+    ]
+   ],
+   "say": "This cart maps each item to a quantity. Adding dal creates a new pair. Setting atta to three replaces the old quantity, because keys are unique. Update adds two more. Then del and pop remove items, and pop with a default safely handles sugar, which was never in the cart."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "`prices` already has the key `\"tea\"`. What does `prices[\"tea\"] = 30` do?",
+   "options": [
+    "Raises KeyError",
+    "Adds a second \"tea\" key",
+    "Replaces the old price with 30"
+   ],
+   "answer": 2,
+   "why": "Keys are unique. Assigning to an existing key overwrites its value; assigning to a new key adds a pair.",
+   "say": "Quick check. The prices dictionary already has tea in it. What happens when we assign thirty to the tea key?"
+  },
+  {
+   "type": "concept",
+   "title": "Looping over a dictionary",
+   "body": "- `for key in d`: the keys\n- `d.values()`: just the values\n- `d.items()`: `(key, value)` tuples, unpacked in the loop\n\nThe order is the order you added them.",
+   "visual": {
+    "kind": "dict",
+    "name": "stock",
+    "pairs": [
+     [
+      "'pens'",
+      "120"
+     ],
+     [
+      "'notebooks'",
+      "45"
+     ],
+     [
+      "'erasers'",
+      "0"
+     ],
+     [
+      "'rulers'",
+      "30"
+     ]
+    ]
+   },
+   "say": "A for loop over a dictionary gives you the keys. Values gives you just the values, which is perfect for totals. Items gives you key and value pairs as tuples, which you unpack right in the loop, just like yesterday. Python remembers the order in which you added the keys."
+  },
+  {
+   "type": "code",
+   "title": "Stock check",
+   "code": "stock = {\"pens\": 120, \"notebooks\": 45, \"erasers\": 0, \"rulers\": 30}\nfor item in stock:\n    print(item, end=\" \")\nprint()\nprint(\"Total units:\", sum(stock.values()))\nfor item, qty in stock.items():\n    if qty == 0:\n        print(\"Out of stock:\", item)\n    elif qty < 50:\n        print(\"Running low:\", item, qty)\nprint(list(stock.keys()))",
+   "expect": "pens notebooks erasers rulers \nTotal units: 195\nRunning low: notebooks 45\nOut of stock: erasers\nRunning low: rulers 30\n['pens', 'notebooks', 'erasers', 'rulers']\n",
+   "explain": [
+    [
+     2,
+     "Looping over a dict gives its keys."
+    ],
+    [
+     4,
+     "print() with nothing just ends the line."
+    ],
+    [
+     5,
+     "values() feeds straight into sum()."
+    ],
+    [
+     6,
+     "items() gives (key, value) pairs, unpacked into two names."
+    ],
+    [
+     11,
+     "keys() turned into a list."
+    ]
+   ],
+   "say": "A shop's stock as a dictionary. The first loop prints the keys. Sum over the values gives the total number of units. The items loop unpacks every pair into an item and a quantity, and flags anything out of stock or running low. That is a real inventory alert in a few lines."
+  },
+  {
+   "type": "predict",
+   "title": "What does the loop give you?",
+   "code": "ages = {\"Riya\": 21, \"Arjun\": 25}\nfor x in ages:\n    print(x)",
+   "options": [
+    "21\n25",
+    "Riya\nArjun",
+    "('Riya', 21)\n('Arjun', 25)"
+   ],
+   "answer": 1,
+   "why": "Looping over a dictionary gives its keys. Use .values() for the values, or .items() for (key, value) pairs.",
+   "say": "A quick one. When you loop directly over a dictionary, what does the loop variable hold?"
+  },
+  {
+   "type": "concept",
+   "title": "The counting pattern",
+   "body": "To count things, use a dict as a **tally**:\n\n`counts[word] = counts.get(word, 0) + 1`\n\nA new word gets 0 from `get`, so it becomes 1. A word seen before goes up by one.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Take the next word",
+     "counts.get(word, 0): its count so far, or 0 if new",
+     "Add 1",
+     "Store it back under the same key"
+    ]
+   },
+   "say": "Here is a pattern you will use for the rest of your career. To count things, use a dictionary as a tally. For each word, get its count so far, with a default of zero for words you have never seen, add one, and store it back. Word clouds, vote counts and analytics dashboards all start like this."
+  },
+  {
+   "type": "code",
+   "title": "Word frequency",
+   "code": "review = \"great food great service slow delivery great price\"\ncounts = {}\nfor word in review.split():\n    counts[word] = counts.get(word, 0) + 1\nprint(counts)\nprint(\"great appears\", counts[\"great\"], \"times\")\nmost = max(counts, key=counts.get)\nprint(\"Most common word:\", most)",
+   "expect": "{'great': 3, 'food': 1, 'service': 1, 'slow': 1, 'delivery': 1, 'price': 1}\ngreat appears 3 times\nMost common word: great\n",
+   "explain": [
+    [
+     2,
+     "Start with an empty tally."
+    ],
+    [
+     4,
+     "The counting pattern: 0 for new words, then add one."
+    ],
+    [
+     7,
+     "max() over the keys, comparing them by their counts. key= from Day 12."
+    ]
+   ],
+   "say": "Let's analyse a customer review. We split it into words and run the counting pattern on each one. The result shows every word with its count. The final trick reuses key from day twelve: max goes through the keys, but compares them by their counts, so it finds the most common word."
+  },
+  {
+   "type": "code",
+   "title": "Build a dict from two lists",
+   "code": "names = [\"Riya\", \"Arjun\", \"Meera\"]\nphones = [\"98200 11111\", \"98330 22222\", \"99870 33333\"]\nphone_book = dict(zip(names, phones))\nprint(phone_book)\nprint(phone_book[\"Meera\"])\nempty = dict()\nprint(empty, len(empty))",
+   "expect": "{'Riya': '98200 11111', 'Arjun': '98330 22222', 'Meera': '99870 33333'}\n99870 33333\n{} 0\n",
+   "explain": [
+    [
+     3,
+     "zip() makes (name, phone) pairs; dict() turns the pairs into entries."
+    ],
+    [
+     6,
+     "dict() with nothing is an empty dict, the same as {}."
+    ]
+   ],
+   "say": "Here zip from yesterday meets dictionaries. Zip pairs each name with a phone number, and the dict function turns those pairs straight into a dictionary. This is a common way to build a lookup table from two columns of data."
+  },
+  {
+   "type": "quiz",
+   "title": "What can be a key?",
+   "q": "Which of these **cannot** be a dictionary key?",
+   "options": [
+    "\"name\"",
+    "42",
+    "(19.07, 72.87)",
+    "[1, 2]"
+   ],
+   "answer": 3,
+   "why": "Keys must be immutable: strings, numbers and tuples all work. A list can change, so Python refuses it with TypeError: unhashable type: 'list'.",
+   "say": "Dictionary keys have one rule: they must not be able to change. With that in mind, which of these cannot be a key?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: vote counter",
+   "task": "This poll counter crashes on the very first vote. Fix it so `tally` becomes `{'tea': 3, 'coffee': 2, 'juice': 1}`.",
+   "starter": "votes = [\"tea\", \"coffee\", \"tea\", \"juice\", \"tea\", \"coffee\"]\ntally = {}\nfor drink in votes:\n    tally[drink] += 1\nprint(tally)\n",
+   "solution": "votes = [\"tea\", \"coffee\", \"tea\", \"juice\", \"tea\", \"coffee\"]\ntally = {}\nfor drink in votes:\n    tally[drink] = tally.get(drink, 0) + 1\nprint(tally)",
+   "tests": "assert tally == {\"tea\": 3, \"coffee\": 2, \"juice\": 1}, f\"tally should be {{'tea': 3, 'coffee': 2, 'juice': 1}}, but it is {tally}.\"",
+   "hints": [
+    "The error is KeyError: 'tea'. The first time you see tea, it isn't in tally yet.",
+    "tally.get(drink, 0) gives 0 for a drink you haven't counted yet.",
+    "tally[drink] = tally.get(drink, 0) + 1"
+   ],
+   "say": "Bug hunt. This poll counter crashes on the very first vote, and the error names the key that was missing. Think about what tally looks like the first time it sees tea, and use the counting pattern to fix it."
+  },
+  {
+   "type": "exercise",
+   "title": "Cafe bill",
+   "task": "The customer types one order per line, like `chai 2`, then `done`. Using `menu`:\n- known item: add price × quantity to `total`\n- unknown item: print `Sorry, we don't have dosa`\n\nThe starter prints `Total: ₹55` at the end.",
+   "stdin": "chai 2\nsamosa 1\ndosa 1\ndone\n",
+   "starter": "menu = {\"chai\": 20, \"samosa\": 15, \"vada pav\": 25, \"lassi\": 40}\ntotal = 0\nline = input(\"Order: \")\nwhile line != \"done\":\n    *words, qty = line.split()\n    item = \" \".join(words)     # \"vada pav\" has two words\n    qty = int(qty)\n    # Add to total if item is on the menu, otherwise say sorry\n\n    line = input(\"Order: \")\nprint(f\"Total: ₹{total}\")\n",
+   "solution": "menu = {\"chai\": 20, \"samosa\": 15, \"vada pav\": 25, \"lassi\": 40}\ntotal = 0\nline = input(\"Order: \")\nwhile line != \"done\":\n    *words, qty = line.split()\n    item = \" \".join(words)     # \"vada pav\" has two words\n    qty = int(qty)\n    if item in menu:\n        total += menu[item] * qty\n    else:\n        print(f\"Sorry, we don't have {item}\")\n    line = input(\"Order: \")\nprint(f\"Total: ₹{total}\")",
+   "tests": "def total_line(out):\n    for line in out.splitlines():\n        if \"Total\" in line:\n            return line\n    return \"\"\n\nout = await run_program(\"chai 2\\nsamosa 1\\ndone\\n\")\nassert \"55\" in total_line(out), \"2 chai (2 × 20) + 1 samosa (15) = 55. Add menu[item] * qty to total for items on the menu.\"\nout = await run_program(\"vada pav 2\\ndosa 1\\nlassi 1\\ndone\\n\")\nassert \"Sorry\" in out and \"dosa\" in out, \"dosa isn't on the menu, so print Sorry, we don't have dosa.\"\nassert \"90\" in total_line(out), \"2 vada pav (50) + 1 lassi (40) = 90. Unknown items add nothing.\"\nout = await run_program(\"done\\n\")\nassert \"0\" in total_line(out), \"If the customer orders nothing, the total is ₹0.\"",
+   "hints": [
+    "Check with if item in menu: before using menu[item].",
+    "The cost of one line is menu[item] * qty.",
+    "if item in menu:\n    total += menu[item] * qty\nelse:\n    print(f\"Sorry, we don't have {item}\")"
+   ],
+   "say": "Let's build a cafe ordering screen. The customer types an item and a quantity on each line, and done when finished. Look up each item on the menu and add its cost to the bill, or apologise if the cafe does not serve it. The starter already handles items with two words, like vada pav."
+  },
+  {
+   "type": "exercise",
+   "title": "Word counter",
+   "task": "Read one line of text and count each word, **ignoring case**. Print one line per word, in first-seen order.\n\nFor `The cat and the hat`: `the: 2`, `cat: 1`, `and: 1`, `hat: 1`",
+   "stdin": "The cat and the hat\n",
+   "starter": "text = input(\"Text: \")\ncounts = {}\n# Count each lowercase word with the counting pattern\n\n# Print each word and its count\n",
+   "solution": "text = input(\"Text: \")\ncounts = {}\nfor word in text.lower().split():\n    counts[word] = counts.get(word, 0) + 1\nfor word, n in counts.items():\n    print(f\"{word}: {n}\")",
+   "tests": "out = await run_program(\"The cat and the hat\\n\")\nfor line in [\"the: 2\", \"cat: 1\", \"and: 1\", \"hat: 1\"]:\n    assert line in out, f\"Expected the line {line} for 'The cat and the hat'. Lowercase each word before counting.\"\nout = await run_program(\"Hello hello HELLO\\n\")\nassert \"hello: 3\" in out, \"Hello, hello and HELLO are the same word: print hello: 3.\"\nout = await run_program(\"one two two three three three\\n\")\nassert \"one: 1\" in out and \"two: 2\" in out and \"three: 3\" in out, \"For one two two three three three, print one: 1, two: 2 and three: 3.\"\nassert out.index(\"one: 1\") < out.index(\"two: 2\") < out.index(\"three: 3\"), \"Print the words in the order they first appear.\"",
+   "hints": [
+    "text.lower().split() gives you lowercase words.",
+    "counts[word] = counts.get(word, 0) + 1",
+    "for word, n in counts.items():\n    print(f\"{word}: {n}\")"
+   ],
+   "say": "Your turn to build a word frequency tool, the first step of every search engine and text analysis project. Read a line, count each word without caring about capital letters, and print every word with its count. Dictionaries remember insertion order, so the words come out in the order they first appeared."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 14 complete",
+   "points": [
+    "A dict maps unique keys to values: {\"chai\": 20}",
+    "d[key] reads a value (KeyError if missing); d.get(key, default) never crashes",
+    "d[key] = value adds or replaces; del and pop remove",
+    "Loop with for key in d, .values() and .items()",
+    "The counting pattern: counts[x] = counts.get(x, 0) + 1"
+   ],
+   "say": "Mission fourteen complete. You can build dictionaries, look things up safely with get, add, change and delete pairs, and loop over keys, values and items. And you know the counting pattern, which powers everything from polls to analytics. Tomorrow we nest dictionaries inside lists, the real shape of API data, and meet sets. See you on day fifteen."
+  }
+ ]
+}

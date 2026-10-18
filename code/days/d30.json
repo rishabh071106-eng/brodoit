@@ -1,0 +1,400 @@
+{
+ "day": 30,
+ "phase": 3,
+ "title": "Project: Library management system",
+ "subtitle": "Classes, rules and JSON persistence in one real system",
+ "minutes": 75,
+ "goal": "Design and build an object-oriented library system with borrow and return rules, custom exceptions, JSON persistence and a report.",
+ "outcomes": [
+  "Design classes by listing what each one knows and does",
+  "Create a family of custom exceptions and raise them with helpful messages",
+  "Convert objects to dicts and back to save and load them as JSON",
+  "Enforce business rules inside methods so data stays consistent",
+  "Combine modules, files, OOP and functional tools in one project"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 30: Library management system",
+   "body": "Phase 3 project day. A college library wants software: books, members, loans, and records that **survive a restart**.\n\nYou will combine everything from this phase: modules, files and JSON, classes with dunder methods, custom exceptions built with inheritance, and clean reports.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "Library",
+     "c": [
+      {
+       "t": "books: {book_id: Book}"
+      },
+      {
+       "t": "members: {member_id: Member}"
+      },
+      {
+       "t": "save() / load(): library.json"
+      }
+     ]
+    }
+   },
+   "say": "Welcome to project day, the finale of phase three. A college library needs software to track its books, its members and every loan, and the records must survive a restart. You will combine everything from this phase: modules, files and JSON, classes with dunder methods, custom exceptions built with inheritance, and a clean report."
+  },
+  {
+   "type": "concept",
+   "title": "Design before code",
+   "body": "Professionals sketch the classes first. For each one: what does it **know**, and what can it **do**? Then the **rules**:\n\n- a book is with at most one member\n- a member holds at most **3** books\n- you can only return what you borrowed",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Class",
+     "Knows",
+     "Does"
+    ],
+    "rows": [
+     [
+      "Book",
+      "book_id, title, author, available",
+      "__str__, to_dict, from_dict"
+     ],
+     [
+      "Member",
+      "member_id, name, borrowed",
+      "can_borrow, to_dict, from_dict"
+     ],
+     [
+      "Library",
+      "books, members",
+      "borrow, return_book, save, load, report"
+     ]
+    ]
+   },
+   "say": "Before writing any code, professionals sketch the design. For each class, ask what it knows and what it can do. A book knows its id, title, author and whether it is available. A member knows their borrowed books. The library holds both and enforces the rules: one member per book, at most three books each, and you can only return what you borrowed."
+  },
+  {
+   "type": "quiz",
+   "title": "Review: is-a or has-a?",
+   "q": "How should `Library` relate to `Book`?",
+   "options": [
+    "class Library(Book): a library is a book",
+    "Composition: a Library has a dict of Book objects",
+    "class Book(Library)",
+    "Copy Book's methods into Library"
+   ],
+   "answer": 1,
+   "why": "A library is not a kind of book; it **has** books (Day 26). Store them in an attribute, `self.books`, keyed by id for instant lookup.",
+   "say": "A quick design review from day twenty six. How should the library class relate to the book class?"
+  },
+  {
+   "type": "quiz",
+   "title": "Review: modules",
+   "q": "`models.py` ends with a quick self-test that prints sample books. How do you stop it running when `main.py` does `from models import Book`?",
+   "options": [
+    "Delete the self-test",
+    "Put it under if __name__ == \"__main__\":",
+    "Use import models as m",
+    "Rename the file to main.py"
+   ],
+   "answer": 1,
+   "why": "When a file is imported, its `__name__` is the module name, not `\"__main__\"`. Guarded code runs only when the file is run directly (Day 21).",
+   "say": "Review from day twenty one. Our models file has a little self test at the bottom. How do you stop it running when main imports the module?"
+  },
+  {
+   "type": "predict",
+   "title": "Review: predict the output",
+   "code": "class Book:\n    count = 0\n\n    def __init__(self, title):\n        self.title = title\n        Book.count += 1\n\n    def __str__(self):\n        return f\"<{self.title}>\"\n\n\na = Book(\"Godan\")\nb = Book(\"Gitanjali\")\nprint(a, Book.count, b.count)",
+   "options": [
+    "<Godan> 2 2",
+    "<Godan> 1 1",
+    "<Godan> 2 1",
+    "Book object 2 2"
+   ],
+   "answer": 0,
+   "why": "`print` uses `__str__`, giving `<Godan>`. `count` is a **class attribute** shared by all books; each `__init__` adds 1 through the class, so both the class and `b` see 2 (Days 24 and 25).",
+   "say": "A review of days twenty four and twenty five. A class attribute counts books, and dunder str controls printing. What prints?"
+  },
+  {
+   "type": "concept",
+   "title": "Custom exceptions",
+   "body": "Your own exceptions make errors **precise**. Inherit from `Exception`, and build a family: catch `LibraryError` to handle any rule violation, or one child for a specific case.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "Exception",
+     "c": [
+      {
+       "t": "LibraryError",
+       "c": [
+        {
+         "t": "BookUnavailableError"
+        },
+        {
+         "t": "BorrowLimitError"
+        },
+        {
+         "t": "FineDueError"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "Built-in errors like value error are too vague for a library. Who broke which rule? Custom exceptions make errors precise, and they are just classes that inherit from Exception. Build a small family. Catching library error handles any rule violation, while catching a child like book unavailable error handles one specific case. Inheritance from day twenty six, put to work."
+  },
+  {
+   "type": "code",
+   "title": "Raising your own errors",
+   "code": "class LibraryError(Exception):\n    \"\"\"Base class for every library rule violation.\"\"\"\n\n\nclass BookUnavailableError(LibraryError):\n    pass\n\n\nclass BorrowLimitError(LibraryError):\n    pass\n\n\ndef check_loan(title, available, books_held, limit=3):\n    if not available:\n        raise BookUnavailableError(f\"{title} is already borrowed\")\n    if books_held >= limit:\n        raise BorrowLimitError(f\"limit of {limit} books reached\")\n    return f\"Enjoy {title}!\"\n\n\nfor args in [(\"Godan\", True, 0), (\"Gitanjali\", False, 1), (\"Malgudi Days\", True, 3)]:\n    try:\n        print(check_loan(*args))\n    except LibraryError as e:\n        print(type(e).__name__, \"->\", e)",
+   "expect": "Enjoy Godan!\nBookUnavailableError -> Gitanjali is already borrowed\nBorrowLimitError -> limit of 3 books reached\n",
+   "explain": [
+    [
+     1,
+     "A custom exception is a class that inherits from Exception."
+    ],
+    [
+     2,
+     "A docstring is enough of a body."
+    ],
+    [
+     5,
+     "Children of LibraryError, one per rule."
+    ],
+    [
+     15,
+     "Raise the specific error with a helpful message."
+    ],
+    [
+     22,
+     "The star unpacks each tuple into the three arguments."
+    ],
+    [
+     23,
+     "Catching the parent catches all of its children."
+    ]
+   ],
+   "say": "Three tiny classes give us a family of errors. Check loan raises the specific one for each broken rule, with a helpful message. In the loop, a single except for the parent, library error, catches every child. Printing the type's name shows exactly which rule was broken. The star in the call unpacks each tuple into the three arguments."
+  },
+  {
+   "type": "exercise",
+   "title": "A FineDueError",
+   "task": "Late returns cost **₹5 per day**. Complete:\n\n- `FineDueError(days_late)` stores `days_late` and `fine`, and passes the message `Returned 3 days late: fine ₹15` to `super().__init__`\n- `return_book(days_kept, allowed=14)` raises it when `days_kept > allowed`, otherwise returns `\"Returned on time\"`",
+   "starter": "class LibraryError(Exception):\n    \"\"\"Base class for every library rule violation.\"\"\"\n\n\nclass FineDueError(LibraryError):\n    def __init__(self, days_late):\n        pass\n\n\ndef return_book(days_kept, allowed=14):\n    pass\n\n\nprint(return_book(10))\n",
+   "solution": "class LibraryError(Exception):\n    \"\"\"Base class for every library rule violation.\"\"\"\n\n\nclass FineDueError(LibraryError):\n    FINE_PER_DAY = 5\n\n    def __init__(self, days_late):\n        self.days_late = days_late\n        self.fine = days_late * self.FINE_PER_DAY\n        super().__init__(f\"Returned {days_late} days late: fine ₹{self.fine}\")\n\n\ndef return_book(days_kept, allowed=14):\n    if days_kept > allowed:\n        raise FineDueError(days_kept - allowed)\n    return \"Returned on time\"\n\n\nprint(return_book(10))",
+   "tests": "assert issubclass(FineDueError, LibraryError), \"FineDueError should inherit from LibraryError.\"\nassert return_book(10) == \"Returned on time\", \"10 days is within the 14 allowed: return 'Returned on time'.\"\nassert return_book(14) == \"Returned on time\", \"Exactly 14 days is still on time.\"\ntry:\n    return_book(17)\n    raise AssertionError(\"Keeping a book 17 days should raise FineDueError.\")\nexcept FineDueError as e:\n    assert e.days_late == 3, f\"17 days kept with 14 allowed is 3 days late, got {getattr(e, 'days_late', None)}.\"\n    assert e.fine == 15, \"3 days late at ₹5 a day is a fine of 15.\"\n    assert str(e) == \"Returned 3 days late: fine ₹15\", f\"The message should be 'Returned 3 days late: fine ₹15', got {str(e)!r}. Pass it to super().__init__.\"\ntry:\n    return_book(9, allowed=7)\nexcept LibraryError as e:\n    assert e.fine == 10, \"Use the allowed argument: 9 days with 7 allowed is 2 days late, fine 10.\"\nelse:\n    raise AssertionError(\"return_book(9, allowed=7) should raise, because 9 is more than 7.\")",
+   "hints": [
+    "In __init__, set self.days_late and self.fine = days_late * 5.",
+    "Then call super().__init__(message) so str(error) shows the message.",
+    "return_book raises FineDueError(days_kept - allowed) when days_kept > allowed."
+   ],
+   "say": "Write your own exception with extra information. A fine due error remembers how many days late the book is, and the fine at five rupees a day, and passes a clear message to its parent class through super. Then write return book, which raises it only when the book was kept too long. Exactly fourteen days is still on time."
+  },
+  {
+   "type": "code",
+   "title": "Objects to dicts and back",
+   "body": "JSON cannot store objects, only dicts, lists, strings, numbers and booleans. So each class learns to turn itself **into a dict** and to be **rebuilt from one**.",
+   "code": "class Book:\n    def __init__(self, book_id, title, author, available=True):\n        self.book_id = book_id\n        self.title = title\n        self.author = author\n        self.available = available\n\n    def to_dict(self):\n        return {\"book_id\": self.book_id, \"title\": self.title,\n                \"author\": self.author, \"available\": self.available}\n\n    @classmethod\n    def from_dict(cls, data):\n        return cls(**data)\n\n\nb = Book(\"B101\", \"Malgudi Days\", \"R. K. Narayan\")\ndata = b.to_dict()\nprint(data)\ncopy = Book.from_dict(data)\nprint(copy.title, copy.available, copy is b)",
+   "expect": "{'book_id': 'B101', 'title': 'Malgudi Days', 'author': 'R. K. Narayan', 'available': True}\nMalgudi Days True False\n",
+   "explain": [
+    [
+     9,
+     "to_dict returns plain data that json can store."
+    ],
+    [
+     13,
+     "A classmethod factory, from Day 25."
+    ],
+    [
+     14,
+     "The two stars unpack the dict into keyword arguments: book_id=..., title=... and so on."
+    ],
+    [
+     20,
+     "A brand new Book with the same data."
+    ]
+   ],
+   "say": "JSON cannot store objects. It only understands dictionaries, lists, strings, numbers and booleans. So each class learns two tricks. To dict turns the object into plain data, and from dict, a class method factory, rebuilds an object from that data. The double star unpacks the dictionary into keyword arguments, so the keys must match the parameter names."
+  },
+  {
+   "type": "exercise",
+   "title": "A Book that prints itself",
+   "task": "Give `Book` a `__str__` for the report:\n\n- `Malgudi Days by R. K. Narayan [available]`\n- or `[borrowed]` when `available` is False",
+   "starter": "class Book:\n    def __init__(self, book_id, title, author, available=True):\n        self.book_id = book_id\n        self.title = title\n        self.author = author\n        self.available = available\n\n\nprint(Book(\"B101\", \"Malgudi Days\", \"R. K. Narayan\"))\n",
+   "solution": "class Book:\n    def __init__(self, book_id, title, author, available=True):\n        self.book_id = book_id\n        self.title = title\n        self.author = author\n        self.available = available\n\n    def __str__(self):\n        status = \"available\" if self.available else \"borrowed\"\n        return f\"{self.title} by {self.author} [{status}]\"\n\n\nprint(Book(\"B101\", \"Malgudi Days\", \"R. K. Narayan\"))",
+   "tests": "b = Book(\"B101\", \"Malgudi Days\", \"R. K. Narayan\")\nassert str(b) == \"Malgudi Days by R. K. Narayan [available]\", f\"Expected 'Malgudi Days by R. K. Narayan [available]', got {str(b)!r}.\"\nb.available = False\nassert str(b) == \"Malgudi Days by R. K. Narayan [borrowed]\", \"When available is False, the status should be [borrowed].\"\ng = Book(\"B102\", \"Godan\", \"Premchand\", available=False)\nassert f\"{g}\" == \"Godan by Premchand [borrowed]\", \"f-strings should use your __str__ too.\"\nassert \"Malgudi Days by R. K. Narayan [available]\" in __out__, \"print(book) should show the friendly text.\"",
+   "hints": [
+    "Define __str__(self) and return a string; don't print inside it.",
+    "Choose the status with a conditional expression: \"available\" if self.available else \"borrowed\"."
+   ],
+   "say": "Give the book class a friendly dunder str for the library report. It shows the title, the author, and the status in square brackets, available or borrowed. Return the text, don't print it."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "Riya borrows a book, but **Arjun's list changes too**! Fix `Member` so every member gets their own borrowed list. Passing a list in should still work.",
+   "starter": "class Member:\n    def __init__(self, member_id, name, borrowed=[]):\n        self.member_id = member_id\n        self.name = name\n        self.borrowed = borrowed\n\n    def borrow(self, book_id):\n        self.borrowed.append(book_id)\n\n\nriya = Member(\"M1\", \"Riya\")\narjun = Member(\"M2\", \"Arjun\")\nriya.borrow(\"B101\")\nprint(\"Riya:\", riya.borrowed)\nprint(\"Arjun:\", arjun.borrowed)\n",
+   "solution": "class Member:\n    def __init__(self, member_id, name, borrowed=None):\n        self.member_id = member_id\n        self.name = name\n        self.borrowed = borrowed if borrowed is not None else []\n\n    def borrow(self, book_id):\n        self.borrowed.append(book_id)\n\n\nriya = Member(\"M1\", \"Riya\")\narjun = Member(\"M2\", \"Arjun\")\nriya.borrow(\"B101\")\nprint(\"Riya:\", riya.borrowed)\nprint(\"Arjun:\", arjun.borrowed)",
+   "tests": "a, b = Member(\"X1\", \"Zoya\"), Member(\"X2\", \"Dev\")\na.borrow(\"B7\")\nassert b.borrowed == [], f\"Dev never borrowed anything, but his list is {b.borrowed}. The default list is being shared.\"\nassert a.borrowed == [\"B7\"], \"Zoya's own borrow should be recorded.\"\nassert Member(\"X3\", \"Meera\", [\"B1\", \"B2\"]).borrowed == [\"B1\", \"B2\"], \"A borrowed list passed in should still be used.\"\nassert \"Arjun: []\" in __out__, \"Arjun's list should be empty in the printed output.\"",
+   "hints": [
+    "This is the mutable default trap from Day 18: borrowed=[] is created once and shared by every call.",
+    "Use borrowed=None, then self.borrowed = borrowed if borrowed is not None else []"
+   ],
+   "say": "Here is a bug that has shipped in real systems. Riya borrows a book, and Arjun's list changes too. It is the mutable default argument trap from day eighteen, now hiding inside a class. Fix it so every member gets their own list."
+  },
+  {
+   "type": "quiz",
+   "title": "Review: files and JSON",
+   "q": "Which line saves the `data` dict to `library.json` so a human can read it?",
+   "options": [
+    "json.dumps(data, \"library.json\")",
+    "with open(\"library.json\", \"w\", encoding=\"utf-8\") as f: json.dump(data, f, indent=2)",
+    "with open(\"library.json\") as f: json.load(data)",
+    "open(\"library.json\", \"a\").write(data)"
+   ],
+   "answer": 1,
+   "why": "Open in `\"w\"` mode with UTF-8, then `json.dump(obj, file)`. `indent=2` makes it readable. `dumps` returns a string, `load` reads, and `write` needs a string (Days 22 and 23).",
+   "say": "Review from days twenty two and twenty three. Which line correctly saves the data dictionary to library dot json, in a form a human can read?"
+  },
+  {
+   "type": "concept",
+   "title": "Persistence: surviving a restart",
+   "body": "Saving is a two-step translation, and loading reverses it. Keep the JSON shape simple and documented: `{\"books\": [...], \"members\": [...]}`.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Objects in memory: Book, Member",
+     "to_dict(): plain dicts and lists",
+     "json.dump(): library.json on disk",
+     "json.load() + from_dict(): objects again"
+    ]
+   },
+   "say": "Persistence means your data survives when the program stops. Saving is a two step translation. Objects become plain dictionaries with to dict, then json dump writes them to disk. Loading reverses it: json load reads the dictionaries, and from dict rebuilds the objects. Keep the file's shape simple, one list of books and one list of members, so any developer can open it and understand it."
+  },
+  {
+   "type": "code",
+   "title": "Save and load a shelf of books",
+   "body": "`Book` now lives in **models.py** (open the tab), with `__str__`, `__repr__`, `to_dict` and `from_dict`. One module, imported wherever it is needed.",
+   "code": "import json\nfrom models import Book\n\nshelf = [Book(\"B101\", \"Malgudi Days\", \"R. K. Narayan\"),\n         Book(\"B103\", \"Gitanjali\", \"Rabindranath Tagore\", available=False)]\n\nwith open(\"books.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump([b.to_dict() for b in shelf], f, indent=2, ensure_ascii=False)\n\nwith open(\"books.json\", encoding=\"utf-8\") as f:\n    loaded = [Book.from_dict(item) for item in json.load(f)]\n\nprint(len(loaded), \"books restored\")\nfor book in loaded:\n    print(book)\nprint(loaded)",
+   "expect": "2 books restored\nMalgudi Days by R. K. Narayan [available]\nGitanjali by Rabindranath Tagore [borrowed]\n[Book('B101', 'Malgudi Days'), Book('B103', 'Gitanjali')]\n",
+   "explain": [
+    [
+     2,
+     "Import the model from its own module, as on Day 21."
+    ],
+    [
+     8,
+     "Objects become dicts, then JSON on disk."
+    ],
+    [
+     11,
+     "JSON becomes dicts, then objects again."
+    ],
+    [
+     15,
+     "print uses __str__..."
+    ],
+    [
+     16,
+     "...and a list shows each item with __repr__."
+    ]
+   ],
+   "files": {
+    "models.py": "\"\"\"Library models: rule errors and the Book class.\"\"\"\n\n\nclass LibraryError(Exception):\n    \"\"\"Base class for every library rule violation.\"\"\"\n\n\nclass BookUnavailableError(LibraryError):\n    \"\"\"The book is already with another member.\"\"\"\n\n\nclass BorrowLimitError(LibraryError):\n    \"\"\"The member already holds the maximum number of books.\"\"\"\n\n\nclass Book:\n    def __init__(self, book_id, title, author, available=True):\n        self.book_id = book_id\n        self.title = title\n        self.author = author\n        self.available = available\n\n    def __str__(self):\n        status = \"available\" if self.available else \"borrowed\"\n        return f\"{self.title} by {self.author} [{status}]\"\n\n    def __repr__(self):\n        return f\"Book({self.book_id!r}, {self.title!r})\"\n\n    def to_dict(self):\n        return {\"book_id\": self.book_id, \"title\": self.title,\n                \"author\": self.author, \"available\": self.available}\n\n    @classmethod\n    def from_dict(cls, data):\n        return cls(**data)\n"
+   },
+   "say": "The book class now lives in its own module, models dot p y, so open that tab first. We save a shelf of two books by turning each into a dictionary and dumping the list to a JSON file. Then we load the file and rebuild real book objects. Printing a book uses its friendly str, and printing the list uses repr."
+  },
+  {
+   "type": "predict",
+   "title": "Review: predict the output",
+   "code": "books = [(\"Godan\", 1936), (\"Gitanjali\", 1910), (\"Malgudi Days\", 1943)]\noldest = min(books, key=lambda b: b[1])\nmodern = (title for title, year in books if year > 1920)\nprint(oldest[0], list(modern), list(modern))",
+   "options": [
+    "Gitanjali ['Godan', 'Malgudi Days'] ['Godan', 'Malgudi Days']",
+    "Gitanjali ['Godan', 'Malgudi Days'] []",
+    "Godan ['Godan', 'Malgudi Days'] []",
+    "Gitanjali [] []"
+   ],
+   "answer": 1,
+   "why": "`min` with a key finds the earliest year: Gitanjali (Day 28). `modern` is a generator expression, so the first `list()` uses it up and the second gets nothing (Day 27).",
+   "say": "A review of days twenty seven and twenty eight. We find the oldest book with a key function, and build a generator of modern titles, then turn it into a list twice. What prints?"
+  },
+  {
+   "type": "code",
+   "title": "A clean report",
+   "body": "Reports are where users judge your software. Sort, align, summarise.",
+   "code": "from models import Book\n\nbooks = [Book(\"B104\", \"Wings of Fire\", \"A. P. J. Abdul Kalam\"),\n         Book(\"B101\", \"Malgudi Days\", \"R. K. Narayan\", available=False),\n         Book(\"B102\", \"Godan\", \"Premchand\")]\n\nprint(f\"{'Title':<15} {'Author':<21} Status\")\nprint(\"-\" * 46)\nfor b in sorted(books, key=lambda b: b.title):\n    status = \"available\" if b.available else \"borrowed\"\n    print(f\"{b.title:<15} {b.author:<21} {status}\")\n\nborrowed = sum(1 for b in books if not b.available)\nprint(f\"{len(books)} books, {borrowed} borrowed\")",
+   "expect": "Title           Author                Status\n----------------------------------------------\nGodan           Premchand             available\nMalgudi Days    R. K. Narayan         borrowed\nWings of Fire   A. P. J. Abdul Kalam  available\n3 books, 1 borrowed\n",
+   "explain": [
+    [
+     7,
+     "A header row, aligned with the same widths as the data."
+    ],
+    [
+     9,
+     "Sort by title with a key function."
+    ],
+    [
+     10,
+     "A conditional expression picks the status word."
+    ],
+    [
+     13,
+     "A generator expression counts the borrowed books."
+    ]
+   ],
+   "files": {
+    "models.py": "\"\"\"Library models: rule errors and the Book class.\"\"\"\n\n\nclass LibraryError(Exception):\n    \"\"\"Base class for every library rule violation.\"\"\"\n\n\nclass BookUnavailableError(LibraryError):\n    \"\"\"The book is already with another member.\"\"\"\n\n\nclass BorrowLimitError(LibraryError):\n    \"\"\"The member already holds the maximum number of books.\"\"\"\n\n\nclass Book:\n    def __init__(self, book_id, title, author, available=True):\n        self.book_id = book_id\n        self.title = title\n        self.author = author\n        self.available = available\n\n    def __str__(self):\n        status = \"available\" if self.available else \"borrowed\"\n        return f\"{self.title} by {self.author} [{status}]\"\n\n    def __repr__(self):\n        return f\"Book({self.book_id!r}, {self.title!r})\"\n\n    def to_dict(self):\n        return {\"book_id\": self.book_id, \"title\": self.title,\n                \"author\": self.author, \"available\": self.available}\n\n    @classmethod\n    def from_dict(cls, data):\n        return cls(**data)\n"
+   },
+   "say": "Reports are where users judge your software. We print an aligned header, then sort the books by title with a key function, and print each row with the same column widths. A conditional expression picks the status word, and a generator expression counts the borrowed books for the summary line."
+  },
+  {
+   "type": "quiz",
+   "title": "Review: decorators and with",
+   "q": "You add `@audit` above `def borrow(self, member_id, book_id):`. What is `borrow` afterwards?",
+   "options": [
+    "Exactly the original function",
+    "Whatever audit(borrow) returned, usually a wrapper",
+    "A context manager",
+    "A generator"
+   ],
+   "answer": 1,
+   "why": "`@audit` means `borrow = audit(borrow)`. With `@functools.wraps` inside, the wrapper keeps the name and docstring (Day 29). And for files, `with open(...)` guarantees the file closes even if `json.dump` fails.",
+   "say": "Final review, from day twenty nine. You decorate the borrow method with an audit decorator. What is borrow after that?"
+  },
+  {
+   "type": "project",
+   "title": "Project: the library system",
+   "brief": "Build the core of a college library system. Books, members and loans must **survive a restart**, so everything is saved to JSON.\n\n`Book` and the exceptions are ready in **models.py**. You write `Member` and `Library` in main.py. Open **library.json** to see the data format.",
+   "steps": [
+    "Member(member_id, name, borrowed=None): every member gets their own borrowed list; can_borrow() checks MAX_BOOKS; add to_dict() and from_dict() like Book's",
+    "Library.add_book and add_member store objects in the dicts, keyed by their id",
+    "borrow(member_id, book_id): LibraryError for unknown ids, BookUnavailableError if the book is out, BorrowLimitError at 3 books; then update the book and the member",
+    "return_book(member_id, book_id): LibraryError if the member does not have that book; otherwise undo the loan",
+    "save(path) writes {\"books\": [...], \"members\": [...]}; Library.load(path) is a @classmethod that rebuilds everything",
+    "report() returns one str(book) line per book sorted by title, then a final line like \"4 books, 2 borrowed\"",
+    "Uncomment the demo under the main guard and run your library"
+   ],
+   "starter": "import json\nfrom models import Book, LibraryError, BookUnavailableError, BorrowLimitError\n\n\nclass Member:\n    MAX_BOOKS = 3\n\n    def __init__(self, member_id, name, borrowed=None):\n        pass  # store all three; every member needs their OWN borrowed list\n\n    def can_borrow(self):\n        pass\n\n    def to_dict(self):\n        pass\n\n    @classmethod\n    def from_dict(cls, data):\n        pass\n\n\nclass Library:\n    def __init__(self):\n        self.books = {}    # book_id -> Book\n        self.members = {}  # member_id -> Member\n\n    def add_book(self, book):\n        pass\n\n    def add_member(self, member):\n        pass\n\n    def borrow(self, member_id, book_id):\n        pass\n\n    def return_book(self, member_id, book_id):\n        pass\n\n    def save(self, path):\n        pass\n\n    @classmethod\n    def load(cls, path):\n        pass\n\n    def report(self):\n        pass\n\n\nif __name__ == \"__main__\":\n    # Last step: uncomment this demo once load, borrow and report work.\n    # lib = Library.load(\"library.json\")\n    # lib.borrow(\"M1\", \"B101\")\n    # print(lib.report())\n    pass\n",
+   "solution": "import json\nfrom models import Book, LibraryError, BookUnavailableError, BorrowLimitError\n\n\nclass Member:\n    MAX_BOOKS = 3\n\n    def __init__(self, member_id, name, borrowed=None):\n        self.member_id = member_id\n        self.name = name\n        self.borrowed = list(borrowed) if borrowed is not None else []\n\n    def can_borrow(self):\n        return len(self.borrowed) < self.MAX_BOOKS\n\n    def to_dict(self):\n        return {\"member_id\": self.member_id, \"name\": self.name,\n                \"borrowed\": list(self.borrowed)}\n\n    @classmethod\n    def from_dict(cls, data):\n        return cls(**data)\n\n\nclass Library:\n    def __init__(self):\n        self.books = {}    # book_id -> Book\n        self.members = {}  # member_id -> Member\n\n    def add_book(self, book):\n        self.books[book.book_id] = book\n\n    def add_member(self, member):\n        self.members[member.member_id] = member\n\n    def _find(self, member_id, book_id):\n        if member_id not in self.members:\n            raise LibraryError(f\"No member with id {member_id}\")\n        if book_id not in self.books:\n            raise LibraryError(f\"No book with id {book_id}\")\n        return self.members[member_id], self.books[book_id]\n\n    def borrow(self, member_id, book_id):\n        member, book = self._find(member_id, book_id)\n        if not book.available:\n            raise BookUnavailableError(f\"{book.title} is already borrowed\")\n        if not member.can_borrow():\n            raise BorrowLimitError(f\"{member.name} already has {member.MAX_BOOKS} books\")\n        book.available = False\n        member.borrowed.append(book_id)\n\n    def return_book(self, member_id, book_id):\n        member, book = self._find(member_id, book_id)\n        if book_id not in member.borrowed:\n            raise LibraryError(f\"{member.name} has not borrowed {book.title}\")\n        member.borrowed.remove(book_id)\n        book.available = True\n\n    def save(self, path):\n        data = {\"books\": [b.to_dict() for b in self.books.values()],\n                \"members\": [m.to_dict() for m in self.members.values()]}\n        with open(path, \"w\", encoding=\"utf-8\") as f:\n            json.dump(data, f, indent=2, ensure_ascii=False)\n\n    @classmethod\n    def load(cls, path):\n        library = cls()\n        with open(path, encoding=\"utf-8\") as f:\n            data = json.load(f)\n        for item in data[\"books\"]:\n            library.add_book(Book.from_dict(item))\n        for item in data[\"members\"]:\n            library.add_member(Member.from_dict(item))\n        return library\n\n    def report(self):\n        books = sorted(self.books.values(), key=lambda b: b.title)\n        lines = [str(b) for b in books]\n        out = sum(1 for b in books if not b.available)\n        lines.append(f\"{len(books)} books, {out} borrowed\")\n        return \"\\n\".join(lines)\n\n\nif __name__ == \"__main__\":\n    lib = Library.load(\"library.json\")\n    lib.borrow(\"M1\", \"B101\")\n    print(lib.report())",
+   "tests": "import json\nwith open(\"start.json\", \"w\", encoding=\"utf-8\") as fh:\n    fh.write('{\\n  \"books\": [\\n    {\"book_id\": \"B101\", \"title\": \"Malgudi Days\", \"author\": \"R. K. Narayan\", \"available\": true},\\n    {\"book_id\": \"B102\", \"title\": \"Godan\", \"author\": \"Premchand\", \"available\": true},\\n    {\"book_id\": \"B103\", \"title\": \"Gitanjali\", \"author\": \"Rabindranath Tagore\", \"available\": false},\\n    {\"book_id\": \"B104\", \"title\": \"Wings of Fire\", \"author\": \"A. P. J. Abdul Kalam\", \"available\": true}\\n  ],\\n  \"members\": [\\n    {\"member_id\": \"M1\", \"name\": \"Riya\", \"borrowed\": []},\\n    {\"member_id\": \"M2\", \"name\": \"Arjun\", \"borrowed\": [\"B103\"]}\\n  ]\\n}\\n')\n\ndef expect_error(kind, action, message):\n    try:\n        action()\n    except kind:\n        return\n    except Exception as e:\n        raise AssertionError(f\"{message} Your code raised {type(e).__name__} instead.\")\n    raise AssertionError(message + \" Nothing was raised.\")\n\n\nm1, m2 = Member(\"X1\", \"Zoya\"), Member(\"X2\", \"Dev\")\nassert getattr(m1, \"member_id\", None) == \"X1\" and getattr(m1, \"name\", None) == \"Zoya\", \"Step 1: Member.__init__ should store member_id and name on self.\"\nassert getattr(m1, \"borrowed\", None) == [], \"Step 1: a new Member should start with an empty borrowed list, self.borrowed.\"\nassert m1.borrowed is not m2.borrowed, \"Every Member needs their own, new borrowed list. Never share one list between members.\"\nassert m1.can_borrow() is True, \"A member with no books can borrow: can_borrow() should return True.\"\nassert Member(\"X6\", \"Isha\", [\"A\", \"B\", \"C\"]).can_borrow() is False, \"With 3 books (MAX_BOOKS), can_borrow() should return False.\"\nassert Member(\"X3\", \"Meera\", [\"B1\"]).borrowed == [\"B1\"], \"Member(id, name, borrowed) should keep the borrowed list it is given.\"\nassert Member(\"X4\", \"Kabir\").to_dict() == {\"member_id\": \"X4\", \"name\": \"Kabir\", \"borrowed\": []}, \"Member.to_dict() should return member_id, name and borrowed.\"\nassert isinstance(Member.from_dict({\"member_id\": \"X5\", \"name\": \"Isha\", \"borrowed\": []}), Member), \"Member.from_dict should return a Member.\"\n\nlib = Library.load(\"start.json\")\nassert isinstance(lib, Library), \"Library.load(path) should return a Library object. Make it a @classmethod that ends with return library.\"\nassert len(lib.books) == 4 and len(lib.members) == 2, f\"start.json has 4 books and 2 members, but load found {len(lib.books)} and {len(lib.members)}.\"\nassert isinstance(lib.books[\"B101\"], Book) and isinstance(lib.members[\"M1\"], Member), \"books and members should map ids to Book and Member objects.\"\n\nlib.borrow(\"M1\", \"B101\")\nassert lib.books[\"B101\"].available is False, \"After borrowing, the book should no longer be available.\"\nassert lib.members[\"M1\"].borrowed == [\"B101\"], \"After borrowing, the book id should be in the member's borrowed list.\"\nexpect_error(BookUnavailableError, lambda: lib.borrow(\"M2\", \"B101\"), \"Borrowing a book that is already out should raise BookUnavailableError.\")\nexpect_error(LibraryError, lambda: lib.borrow(\"M9\", \"B102\"), \"borrow with an unknown member id should raise LibraryError.\")\nexpect_error(LibraryError, lambda: lib.borrow(\"M1\", \"B999\"), \"borrow with an unknown book id should raise LibraryError.\")\n\nbig = Library()\nbig.add_member(Member(\"M1\", \"Riya\"))\nfor i in range(1, 5):\n    big.add_book(Book(f\"B{i}\", f\"Book {i}\", \"Author\"))\nfor i in range(1, 4):\n    big.borrow(\"M1\", f\"B{i}\")\nexpect_error(BorrowLimitError, lambda: big.borrow(\"M1\", \"B4\"), \"A member with 3 books should get BorrowLimitError on the 4th.\")\nassert big.books[\"B4\"].available, \"A refused loan must not change the book.\"\n\nlib.return_book(\"M1\", \"B101\")\nassert lib.books[\"B101\"].available and lib.members[\"M1\"].borrowed == [], \"Returning should make the book available and remove it from the member's list.\"\nexpect_error(LibraryError, lambda: lib.return_book(\"M1\", \"B101\"), \"Returning a book the member does not have should raise LibraryError.\")\n\nimport os\nlib.borrow(\"M1\", \"B104\")\nlib.save(\"saved.json\")\nassert os.path.exists(\"saved.json\"), \"save(path) should write the library to a JSON file at that path.\"\nwith open(\"saved.json\", encoding=\"utf-8\") as fh:\n    raw = json.load(fh)\nassert set(raw) == {\"books\", \"members\"}, \"save should write a JSON object with 'books' and 'members' lists.\"\nagain = Library.load(\"saved.json\")\nassert again.books[\"B104\"].available is False and again.members[\"M1\"].borrowed == [\"B104\"], \"After save and load, loans should still be there.\"\nassert again.members[\"M2\"].borrowed == [\"B103\"], \"Arjun's earlier loan should survive a save and load too.\"\n\ntext = again.report()\nassert isinstance(text, str), \"report() should return the report as one string (lines joined with newlines), not print it.\"\nlines = text.splitlines()\nassert lines[0] == \"Gitanjali by Rabindranath Tagore [borrowed]\", f\"report should list books sorted by title, using str(book). First line was {lines[0]!r}.\"\nassert lines[-1] == \"4 books, 2 borrowed\", f\"The last report line should be '4 books, 2 borrowed', got {lines[-1]!r}.\"",
+   "hints": [
+    "Write a helper _find(member_id, book_id) that raises LibraryError for unknown ids and returns (member, book). borrow and return_book can both use it.",
+    "Check the rules before changing anything, so a refused loan leaves everything as it was.",
+    "load: library = cls(), then for each dict in data[\"books\"] call library.add_book(Book.from_dict(item)); same for members with Member.from_dict.",
+    "report: sorted(self.books.values(), key=lambda b: b.title), then \"\\n\".join(lines)."
+   ],
+   "files": {
+    "models.py": "\"\"\"Library models: rule errors and the Book class.\"\"\"\n\n\nclass LibraryError(Exception):\n    \"\"\"Base class for every library rule violation.\"\"\"\n\n\nclass BookUnavailableError(LibraryError):\n    \"\"\"The book is already with another member.\"\"\"\n\n\nclass BorrowLimitError(LibraryError):\n    \"\"\"The member already holds the maximum number of books.\"\"\"\n\n\nclass Book:\n    def __init__(self, book_id, title, author, available=True):\n        self.book_id = book_id\n        self.title = title\n        self.author = author\n        self.available = available\n\n    def __str__(self):\n        status = \"available\" if self.available else \"borrowed\"\n        return f\"{self.title} by {self.author} [{status}]\"\n\n    def __repr__(self):\n        return f\"Book({self.book_id!r}, {self.title!r})\"\n\n    def to_dict(self):\n        return {\"book_id\": self.book_id, \"title\": self.title,\n                \"author\": self.author, \"available\": self.available}\n\n    @classmethod\n    def from_dict(cls, data):\n        return cls(**data)\n",
+    "library.json": "{\n  \"books\": [\n    {\"book_id\": \"B101\", \"title\": \"Malgudi Days\", \"author\": \"R. K. Narayan\", \"available\": true},\n    {\"book_id\": \"B102\", \"title\": \"Godan\", \"author\": \"Premchand\", \"available\": true},\n    {\"book_id\": \"B103\", \"title\": \"Gitanjali\", \"author\": \"Rabindranath Tagore\", \"available\": false},\n    {\"book_id\": \"B104\", \"title\": \"Wings of Fire\", \"author\": \"A. P. J. Abdul Kalam\", \"available\": true}\n  ],\n  \"members\": [\n    {\"member_id\": \"M1\", \"name\": \"Riya\", \"borrowed\": []},\n    {\"member_id\": \"M2\", \"name\": \"Arjun\", \"borrowed\": [\"B103\"]}\n  ]\n}\n"
+   },
+   "say": "Here is your phase three project. Book and the exceptions are ready for you in the models module, and library dot json shows the data format. You write the member and library classes: borrowing and returning with every rule enforced, saving and loading with JSON, and a sorted report. The tests check each rule, so read their messages. Take your time, this is real software."
+  },
+  {
+   "type": "recap",
+   "title": "Phase 3 complete: Orbit",
+   "points": [
+    "Modules, packages and the main guard organise real projects",
+    "Files, CSV and JSON give programs memory and talk to other software",
+    "Classes with dunder methods, properties and factories model real things",
+    "Inheritance, polymorphism, ABCs and composition structure bigger systems",
+    "Generators, functional tools, decorators and context managers keep code lean and safe",
+    "You built a persistent, rule-checked library system from scratch"
+   ],
+   "say": "Phase three complete. You reached orbit. In ten days you learned to organise code into modules, work with files and data formats, design object oriented systems, and write lean, elegant Python with generators, decorators and context managers. And you built a real library system that remembers everything. Next comes phase four, Deep space, where you work like a professional. See you on day thirty one."
+  }
+ ]
+}

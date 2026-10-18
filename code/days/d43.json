@@ -1,0 +1,431 @@
+{
+ "day": 43,
+ "phase": 5,
+ "title": "Data structures you build",
+ "subtitle": "Stacks, queues, linked lists, hash maps and heaps from scratch",
+ "minutes": 60,
+ "goal": "Build a stack, a queue, a linked list, a hash map and a priority queue yourself, and know which one each problem needs.",
+ "outcomes": [
+  "Use a stack for undo, back buttons and bracket matching",
+  "Build fair queues with deque instead of list.pop(0)",
+  "Write a linked list class and reverse it in place",
+  "Explain how a hash map uses buckets to make dict lookups O(1)",
+  "Schedule work by priority with heapq"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 43: Data structures you build",
+   "body": "Undo in Google Docs, the back button, a delivery app's order queue, Python's own `dict`: all are **data structures**.\n\nToday you build five from scratch, so you know what's inside the tools you use every day.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Structure",
+     "Rule",
+     "You use it in…"
+    ],
+    "rows": [
+     [
+      "Stack",
+      "last in, first out",
+      "undo, back button"
+     ],
+     [
+      "Queue",
+      "first in, first out",
+      "order queues, print jobs"
+     ],
+     [
+      "Linked list",
+      "each node points to the next",
+      "playlists, LRU caches"
+     ],
+     [
+      "Hash map",
+      "key → bucket → value",
+      "dict, set"
+     ],
+     [
+      "Heap",
+      "smallest always on top",
+      "schedulers, top-k lists"
+     ]
+    ]
+   },
+   "say": "The undo button, the browser's back button, a food delivery order queue, Python's own dict. All of them are data structures. Today you build five from scratch, so you know exactly what is inside the tools you use every day, and why each one is fast at some things and slow at others."
+  },
+  {
+   "type": "concept",
+   "title": "Stack: last in, first out",
+   "body": "A stack is a pile of plates: you **push** onto the top and **pop** from the top. The last thing in is the first thing out.\n\nA Python list is a perfect stack: `append()` and `pop()` at the end are both **O(1)**.",
+   "visual": {
+    "kind": "list",
+    "name": "history",
+    "items": [
+     "'home'",
+     "'search'",
+     "'product'",
+     "'cart'"
+    ],
+    "mark": [
+     3
+    ]
+   },
+   "say": "A stack works like a pile of plates. You push a new plate on top, and you pop from the top, so the last thing in is the first thing out. A Python list makes a perfect stack, because adding and removing at the end are both O of 1. Here the top of the stack is the cart page."
+  },
+  {
+   "type": "code",
+   "title": "A browser back button",
+   "code": "class Stack:\n    def __init__(self):\n        self._items = []\n\n    def push(self, item):\n        self._items.append(item)\n\n    def pop(self):\n        if not self._items:\n            raise IndexError(\"pop from an empty stack\")\n        return self._items.pop()\n\n    def peek(self):\n        return self._items[-1] if self._items else None\n\n    def __len__(self):\n        return len(self._items)\n\nhistory = Stack()\nfor page in [\"home\", \"search\", \"product\", \"cart\"]:\n    history.push(page)\n\nprint(\"Back from\", history.pop(), \"to\", history.peek())\nprint(\"Back from\", history.pop(), \"to\", history.peek())\nprint(len(history), \"pages left\")\n",
+   "expect": "Back from cart to product\nBack from product to search\n2 pages left\n",
+   "explain": [
+    [
+     3,
+     "The underscore says: private, use the methods."
+    ],
+    [
+     11,
+     "pop() from the end of a list: O(1)."
+    ],
+    [
+     14,
+     "peek looks at the top without removing it."
+    ],
+    [
+     22,
+     "Pressing back: pop the current page, peek at the new top."
+    ]
+   ],
+   "say": "Here is a Stack class wrapping a list. We hide the list behind push, pop and peek, so nobody can mess with the middle. Each page you visit is pushed. Pressing back pops the current page, and peek shows where you land. Notice the clear error message for popping an empty stack."
+  },
+  {
+   "type": "predict",
+   "title": "Undo, undo",
+   "code": "edits = []\nedits.append(\"type Hello\")\nedits.append(\"bold\")\nedits.append(\"type World\")\nedits.pop()\nedits.append(\"italic\")\nprint(edits.pop(), \"|\", edits[-1])",
+   "options": [
+    "italic | bold",
+    "type World | italic",
+    "type Hello | bold",
+    "italic | type World"
+   ],
+   "answer": 0,
+   "why": "The first `pop()` removed type World. Then italic was pushed on top, so the next pop returns italic, leaving bold on top.",
+   "say": "A text editor keeps its undo history in a stack. Follow the pushes and pops carefully. What gets printed?"
+  },
+  {
+   "type": "exercise",
+   "title": "Bracket checker for a code editor",
+   "task": "Editors underline the bracket that breaks your code. Write `bracket_error(code)`:\n- every `( [ {` closed in the right order: return `None`\n- a closer that doesn't match, or has nothing to close: return **its index**\n- brackets still open at the end: return the index of the **last** unclosed one\n\nIgnore every other character.",
+   "starter": "def bracket_error(code):\n    pairs = {\")\": \"(\", \"]\": \"[\", \"}\": \"{\"}\n    stack = []          # holds (index, bracket) for each open bracket\n    for i, ch in enumerate(code):\n        pass            # push openers, check closers against the top\n    return None\n\nprint(bracket_error(\"print(len([1, 2]))\"))   # None\nprint(bracket_error(\"print((1, 2)\"))         # 5\n",
+   "solution": "def bracket_error(code):\n    pairs = {\")\": \"(\", \"]\": \"[\", \"}\": \"{\"}\n    stack = []          # holds (index, bracket) for each open bracket\n    for i, ch in enumerate(code):\n        if ch in \"([{\":\n            stack.append((i, ch))\n        elif ch in pairs:\n            if not stack or stack[-1][1] != pairs[ch]:\n                return i\n            stack.pop()\n    if stack:\n        return stack[-1][0]\n    return None\n\nprint(bracket_error(\"print(len([1, 2]))\"))   # None\nprint(bracket_error(\"print((1, 2)\"))         # 5\n",
+   "tests": "assert bracket_error(\"print(len([1, 2]))\") is None, \"print(len([1, 2])) is balanced, so return None.\"\nassert bracket_error(\"\") is None, \"An empty string has nothing unbalanced: return None.\"\ngot = bracket_error(\"f([1, 2)\")\nassert got == 7, f\"In f([1, 2) the ) at index 7 tries to close a [. Return 7, not {got}.\"\nassert bracket_error(\")(\") == 0, \"A ) with nothing open is an error at its own index: return 0.\"\ngot = bracket_error(\"print((1, 2)\")\nassert got == 5, f\"In print((1, 2) the ( at index 5 is never closed: return the last unclosed opener's index, 5. You returned {got}.\"\nassert bracket_error(\"{'a': [1, 2], 'b': (3)}\") is None, \"All the brackets in this dict literal match: return None.\"",
+   "hints": [
+    "Push `(i, ch)` for every opener, so you remember **where** it was.",
+    "For a closer: if the stack is empty or `stack[-1][1] != pairs[ch]`, return `i`. Otherwise pop.",
+    "After the loop, anything left on the stack is unclosed: return `stack[-1][0]`."
+   ],
+   "say": "Here is a classic interview problem with a real world twist. Code editors underline the exact bracket that breaks your code. Push every opening bracket, with its position, onto a stack, and check every closing bracket against the top. Return the position of the problem, or None if everything matches."
+  },
+  {
+   "type": "concept",
+   "title": "Queue: first in, first out",
+   "body": "A queue is the line at a ticket counter: join at the **back**, leave from the **front**.\n\n`list.pop(0)` is **O(n)**: every other item shifts left. `collections.deque` adds and removes at both ends in **O(1)**.",
+   "visual": {
+    "kind": "list",
+    "name": "orders",
+    "items": [
+     "'#101 Asha'",
+     "'#102 Ravi'",
+     "'#103 Neha'",
+     "'#104 Sam'"
+    ],
+    "mark": [
+     0
+    ]
+   },
+   "say": "A queue is the line at a ticket counter. You join at the back and leave from the front, so the first in is the first out. Do not build one with a list: popping from the front of a list is O of n, because every other item shifts along. Use a deque from collections, which is O of 1 at both ends."
+  },
+  {
+   "type": "code",
+   "title": "A food delivery order queue",
+   "code": "from collections import deque\n\norders = deque()\norders.append(\"#101 Asha: 2 masala dosa\")\norders.append(\"#102 Ravi: paneer roll\")\norders.append(\"#103 Neha: filter coffee\")\n\nwhile orders:\n    order = orders.popleft()          # O(1), oldest first\n    print(\"Preparing\", order, \"| waiting:\", len(orders))\n\nrecent = deque(maxlen=3)              # keeps only the newest 3\nfor city in [\"Pune\", \"Goa\", \"Delhi\", \"Agra\", \"Kochi\"]:\n    recent.append(city)\nprint(list(recent))\n",
+   "expect": "Preparing #101 Asha: 2 masala dosa | waiting: 2\nPreparing #102 Ravi: paneer roll | waiting: 1\nPreparing #103 Neha: filter coffee | waiting: 0\n['Delhi', 'Agra', 'Kochi']\n",
+   "explain": [
+    [
+     4,
+     "New orders join at the back."
+    ],
+    [
+     8,
+     "An empty deque is falsy, so the loop stops when all orders are done."
+    ],
+    [
+     9,
+     "popleft() takes the oldest order: O(1)."
+    ],
+    [
+     12,
+     "maxlen=3: adding a 4th item drops the oldest automatically."
+    ]
+   ],
+   "say": "Orders join at the back with append, and the kitchen takes the oldest one from the front with pop left, in O of 1. The loop runs while the queue is not empty. As a bonus, a deque with a max length keeps only the newest items, which is perfect for a recently viewed list."
+  },
+  {
+   "type": "bug",
+   "title": "The unfair support queue",
+   "task": "Customers are furious: the **newest** ticket always gets served first!\n\nFix `next_ticket` so tickets are served in the order they arrived, still in O(1).",
+   "starter": "from collections import deque\n\ntickets = deque()\n\ndef add_ticket(name):\n    tickets.append(name)\n\ndef next_ticket():\n    return tickets.pop()\n\nfor name in [\"Asha\", \"Ravi\", \"Neha\"]:\n    add_ticket(name)\nprint(next_ticket())   # should be Asha\n",
+   "solution": "from collections import deque\n\ntickets = deque()\n\ndef add_ticket(name):\n    tickets.append(name)\n\ndef next_ticket():\n    return tickets.popleft()\n\nfor name in [\"Asha\", \"Ravi\", \"Neha\"]:\n    add_ticket(name)\nprint(next_ticket())   # should be Asha\n",
+   "tests": "tickets.clear()\nfor name in [\"first\", \"second\", \"third\"]:\n    add_ticket(name)\ngot = [next_ticket(), next_ticket(), next_ticket()]\nassert got == [\"first\", \"second\", \"third\"], f\"Tickets should come out in arrival order, but came out as {got}. A queue serves from the front.\"\nadd_ticket(\"late\")\nassert next_ticket() == \"late\", \"After the queue empties, a new ticket should be served next.\"",
+   "hints": [
+    "`pop()` takes from the right end, where the newest ticket is.",
+    "A deque can take from the left end too, in O(1): `popleft()`."
+   ],
+   "say": "A bug report from support: the newest customer always gets served first, and the people who waited longest are furious. That is a stack, not a queue. Fix next ticket so tickets come out in the order they arrived, without losing the O of 1 speed."
+  },
+  {
+   "type": "concept",
+   "title": "Linked list: nodes that point onward",
+   "body": "A linked list stores each item in a **node** that points to the next one. The list only remembers the `head`.\n\nAdding at the front is **O(1)**: nothing shifts. The price: no `items[5]`. To reach the 5th node you follow 5 links, **O(n)**.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "head",
+      "s": "pill"
+     },
+     {
+      "t": "Node('Kesariya')"
+     },
+     {
+      "t": "Node('Tum Hi Ho')"
+     },
+     {
+      "t": "Node('Raabta')"
+     },
+     {
+      "t": "None",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "A linked list stores each item in a small object called a node, and every node points to the next one. The list itself only remembers the head. Adding at the front is O of 1, because nothing has to shift. The price is that you cannot jump to position five. You follow the links one by one, which is O of n."
+  },
+  {
+   "type": "code",
+   "title": "A playlist as a linked list",
+   "code": "class Node:\n    def __init__(self, value, next_node=None):\n        self.value = value\n        self.next = next_node\n\nclass Playlist:\n    def __init__(self):\n        self.head = None\n\n    def add_first(self, song):          # O(1): nothing shifts\n        self.head = Node(song, self.head)\n\n    def __iter__(self):                 # follow the links\n        node = self.head\n        while node:\n            yield node.value\n            node = node.next\n\nsongs = Playlist()\nfor song in [\"Raabta\", \"Tum Hi Ho\", \"Kesariya\"]:\n    songs.add_first(song)\nprint(list(songs))\nprint(\"Raabta\" in songs)\n",
+   "expect": "['Kesariya', 'Tum Hi Ho', 'Raabta']\nTrue\n",
+   "explain": [
+    [
+     4,
+     "The link to the next node, or None at the end."
+    ],
+    [
+     11,
+     "New node points at the old head, then becomes the head."
+    ],
+    [
+     13,
+     "A generator: yield each value while following next."
+    ],
+    [
+     23,
+     "in works too: Python falls back to __iter__."
+    ]
+   ],
+   "say": "Each Node holds a value and a link to the next node. Add first creates a new node that points at the old head, then makes it the new head, in one step. Because we wrote dunder iter with yield, the playlist works with list, for loops and even the in operator. Watch it run to see the links being followed."
+  },
+  {
+   "type": "exercise",
+   "title": "Reverse the linked list",
+   "task": "Add a `reverse()` method that reverses the playlist **in place** by flipping every `next` link. Don't build a Python list.\n\nThis is one of the most-asked interview questions ever.",
+   "starter": "class Node:\n    def __init__(self, value, next_node=None):\n        self.value = value\n        self.next = next_node\n\nclass Playlist:\n    def __init__(self, songs=()):\n        self.head = None\n        for song in reversed(songs):\n            self.head = Node(song, self.head)\n\n    def __iter__(self):\n        node = self.head\n        while node:\n            yield node.value\n            node = node.next\n\n    def reverse(self):\n        pass   # flip every link, then point head at the old last node\n\np = Playlist([\"A\", \"B\", \"C\"])\np.reverse()\nprint(list(p))   # ['C', 'B', 'A']\n",
+   "solution": "class Node:\n    def __init__(self, value, next_node=None):\n        self.value = value\n        self.next = next_node\n\nclass Playlist:\n    def __init__(self, songs=()):\n        self.head = None\n        for song in reversed(songs):\n            self.head = Node(song, self.head)\n\n    def __iter__(self):\n        node = self.head\n        while node:\n            yield node.value\n            node = node.next\n\n    def reverse(self):\n        prev, node = None, self.head\n        while node:\n            nxt = node.next      # remember the rest of the list\n            node.next = prev     # flip this link\n            prev, node = node, nxt\n        self.head = prev\n\np = Playlist([\"A\", \"B\", \"C\"])\np.reverse()\nprint(list(p))   # ['C', 'B', 'A']\n",
+   "tests": "p = Playlist([\"A\", \"B\", \"C\", \"D\"])\nfirst_node = p.head\np.reverse()\nassert list(p) == [\"D\", \"C\", \"B\", \"A\"], f\"After reverse() the playlist should be D, C, B, A, not {list(p)}.\"\nassert first_node.next is None, \"The old first node is now the last one, so its next must be None. Flip the links of the existing nodes.\"\none = Playlist([\"solo\"])\none.reverse()\nassert list(one) == [\"solo\"], \"Reversing a one-song playlist leaves it unchanged.\"\nempty = Playlist()\nempty.reverse()\nassert list(empty) == [], \"Reversing an empty playlist should not crash, and it stays empty.\"\nfn = [n for n in ast.walk(__tree__) if isinstance(n, ast.FunctionDef) and n.name == \"reverse\"][0]\nbuilds = any(isinstance(n, (ast.List, ast.ListComp)) or (isinstance(n, ast.Call) and getattr(n.func, \"id\", \"\") in (\"list\", \"reversed\", \"sorted\")) for n in ast.walk(fn))\nassert not builds, \"Reverse it by flipping the next links, without building a Python list.\"",
+   "hints": [
+    "Start with `prev = None` and `node = self.head`.",
+    "In the loop: save `nxt = node.next`, set `node.next = prev`, then step on: `prev, node = node, nxt`.",
+    "When the loop ends, `prev` is the new head."
+   ],
+   "say": "One of the most asked interview questions of all time. Add a reverse method that flips the playlist in place, by turning every next link around. Walk the list with three names, the previous node, the current node and the next one, so you never lose the rest of the list. No Python lists allowed."
+  },
+  {
+   "type": "concept",
+   "title": "Hash map: how dict is so fast",
+   "body": "A hash map keeps a list of **buckets**. To store a key:\n- turn it into a number, its **hash**\n- `hash % number_of_buckets` picks a bucket\n- keep `(key, value)` pairs in that bucket\n\nA lookup repeats the same sum: **O(1)** on average, however big the dict.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Bucket",
+     "Pairs inside"
+    ],
+    "rows": [
+     [
+      "0",
+      "('chai', 20), ('upma', 35)  ← collision"
+     ],
+     [
+      "1",
+      "(empty)"
+     ],
+     [
+      "2",
+      "('vada', 30)"
+     ],
+     [
+      "3",
+      "('dosa', 60), ('idli', 40)  ← collision"
+     ],
+     [
+      "4",
+      "(empty)"
+     ]
+    ]
+   },
+   "say": "How does a dict find one key among millions instantly? It keeps a list of buckets. The key is turned into a number called its hash, and the remainder after dividing by the number of buckets picks the bucket. A lookup repeats the same sum and goes straight there. When two keys land in the same bucket, that is a collision, and the bucket holds both."
+  },
+  {
+   "type": "code",
+   "title": "A hash map from scratch",
+   "body": "We write our own hash because Python randomises `hash()` for strings on every run, a security feature. Real dicts also **grow** their buckets as they fill up.",
+   "code": "class HashMap:\n    def __init__(self, size=5):\n        self.buckets = [[] for _ in range(size)]\n\n    def _index(self, key):\n        h = 0\n        for ch in key:                  # a simple, repeatable string hash\n            h = h * 31 + ord(ch)\n        return h % len(self.buckets)\n\n    def put(self, key, value):\n        bucket = self.buckets[self._index(key)]\n        for i, (k, _) in enumerate(bucket):\n            if k == key:\n                bucket[i] = (key, value)    # existing key: update it\n                return\n        bucket.append((key, value))         # new key: add a pair\n\n    def get(self, key, default=None):\n        for k, v in self.buckets[self._index(key)]:\n            if k == key:\n                return v\n        return default\n\nmenu = HashMap()\nfor item, price in [(\"chai\", 20), (\"dosa\", 60), (\"idli\", 40), (\"vada\", 30), (\"upma\", 35), (\"chai\", 25)]:\n    menu.put(item, price)\nprint(menu.get(\"chai\"), menu.get(\"idli\"), menu.get(\"pizza\", \"not on menu\"))\nfor i, bucket in enumerate(menu.buckets):\n    print(i, bucket)\n",
+   "expect": "25 40 not on menu\n0 [('chai', 25), ('upma', 35)]\n1 []\n2 [('vada', 30)]\n3 [('dosa', 60), ('idli', 40)]\n4 []\n",
+   "explain": [
+    [
+     3,
+     "A list of empty buckets."
+    ],
+    [
+     8,
+     "Turn the text into a number, the same number every time."
+    ],
+    [
+     9,
+     "The remainder picks a bucket."
+    ],
+    [
+     15,
+     "Same key again: replace the old pair."
+    ],
+    [
+     20,
+     "Only one small bucket is searched, not the whole map."
+    ]
+   ],
+   "say": "Here is a working hash map. Underscore index turns a string into a bucket number with a simple, repeatable hash. Put either updates an existing key or adds a new pair, and get searches only one small bucket. In the printout, chai was updated to twenty five, and you can see exactly which keys collided."
+  },
+  {
+   "type": "quiz",
+   "title": "Why keys must be immutable",
+   "q": "Why can't you use a list as a dict key?",
+   "options": [
+    "Lists are too slow to compare",
+    "If the list changed, its hash would change and the dict would search the wrong bucket",
+    "Dicts can only hold strings and numbers",
+    "Lists have no length"
+   ],
+   "answer": 1,
+   "why": "A key's hash decides its bucket. A mutable key could change after it was stored, and every later lookup would go to the wrong bucket. So keys must be hashable: str, int, tuple, frozenset.",
+   "say": "Now that you know how buckets work, here is a classic interview question. Why can't a list be a dict key?"
+  },
+  {
+   "type": "concept",
+   "title": "Heap: the smallest is always on top",
+   "body": "A **min-heap** is a tree stored in a list, where every parent is smaller than its children. So `heap[0]` is always the smallest.\n- `heapq.heappush`: O(log n)\n- `heapq.heappop`: O(log n), returns the smallest\n\nPerfect whenever you ask: what's most urgent next?",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "1",
+     "c": [
+      {
+       "t": "3",
+       "c": [
+        {
+         "t": "8"
+        },
+        {
+         "t": "5"
+        }
+       ]
+      },
+      {
+       "t": "2",
+       "c": [
+        {
+         "t": "9"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "A heap is a clever tree, stored inside an ordinary list, where every parent is smaller than its children. That means the smallest item is always at position zero. Pushing and popping cost only O of log n, because an item just bubbles up or down one branch. Whenever you ask what is most urgent next, think heap."
+  },
+  {
+   "type": "code",
+   "title": "Hospital triage with heapq",
+   "code": "import heapq\n\nwaiting = []\nheapq.heappush(waiting, (3, \"sprained ankle\"))\nheapq.heappush(waiting, (1, \"chest pain\"))\nheapq.heappush(waiting, (2, \"high fever\"))\nheapq.heappush(waiting, (1, \"breathing trouble\"))\nprint(\"Top of heap:\", waiting[0])\n\nwhile waiting:\n    priority, case = heapq.heappop(waiting)\n    print(priority, case)\n\nfares = [4200, 3100, 5600, 2900, 3800]\nprint(\"3 cheapest flights:\", heapq.nsmallest(3, fares))\n",
+   "expect": "Top of heap: (1, 'breathing trouble')\n1 breathing trouble\n1 chest pain\n2 high fever\n3 sprained ankle\n3 cheapest flights: [2900, 3100, 3800]\n",
+   "explain": [
+    [
+     4,
+     "Push (priority, case): tuples compare by the first item."
+    ],
+    [
+     8,
+     "heap[0] is always the smallest."
+    ],
+    [
+     11,
+     "heappop removes and returns the smallest: O(log n)."
+    ],
+    [
+     15,
+     "nsmallest: top-k without sorting everything."
+    ]
+   ],
+   "say": "Python's heapq module turns a plain list into a heap. We push tuples of priority and case, and tuples compare by their first item, so priority one comes out first. But look closely: the two priority one patients come out in alphabetical order, not arrival order. You will fix that next. And n smallest finds the cheapest fares without a full sort."
+  },
+  {
+   "type": "exercise",
+   "title": "A fair task scheduler",
+   "task": "Build `Scheduler` with `add(task, priority)` and `next()`. Lower numbers are more urgent. Tasks with **equal** priority must come out in the order they were added, and `next()` returns `None` when empty.\n\nUse `heapq` and store `(priority, counter, task)`, so ties break by arrival.",
+   "starter": "import heapq\n\nclass Scheduler:\n    def __init__(self):\n        self._heap = []\n        self._count = 0          # goes up by one with every add\n\n    def add(self, task, priority):\n        pass\n\n    def next(self):\n        pass\n\ns = Scheduler()\ns.add(\"send invoices\", 2)\ns.add(\"fix login bug\", 1)\ns.add(\"reply to client\", 2)\nprint(s.next(), \"|\", s.next(), \"|\", s.next())\n",
+   "solution": "import heapq\n\nclass Scheduler:\n    def __init__(self):\n        self._heap = []\n        self._count = 0          # goes up by one with every add\n\n    def add(self, task, priority):\n        heapq.heappush(self._heap, (priority, self._count, task))\n        self._count += 1\n\n    def next(self):\n        if not self._heap:\n            return None\n        return heapq.heappop(self._heap)[2]\n\ns = Scheduler()\ns.add(\"send invoices\", 2)\ns.add(\"fix login bug\", 1)\ns.add(\"reply to client\", 2)\nprint(s.next(), \"|\", s.next(), \"|\", s.next())\n",
+   "tests": "s = Scheduler()\ns.add(\"deploy\", 3)\ns.add(\"hotfix\", 1)\ns.add(\"standup\", 2)\nassert s.next() == \"hotfix\", \"Priority 1 is the most urgent, so hotfix should come out first.\"\ns2 = Scheduler()\nfor name in [\"zebra report\", \"alpha report\", \"mid report\"]:\n    s2.add(name, 5)\ngot = [s2.next(), s2.next(), s2.next()]\nassert got == [\"zebra report\", \"alpha report\", \"mid report\"], f\"Equal priorities must come out in the order added, not alphabetically. Got {got}. Store the counter between priority and task.\"\nassert s2.next() is None, \"When the scheduler is empty, next() should return None.\"\nassert \"heappush\" in __code__, \"Use heapq.heappush so add and next stay O(log n).\"",
+   "hints": [
+    "In `add`: `heapq.heappush(self._heap, (priority, self._count, task))`, then add 1 to the counter.",
+    "The counter is unique, so Python never needs to compare two task names.",
+    "In `next`: return None if the heap is empty, otherwise `heapq.heappop(self._heap)[2]`."
+   ],
+   "say": "Build a fair task scheduler. Lower numbers are more urgent, and tasks with the same priority must come out in the order they were added. The trick professionals use is to store a running counter between the priority and the task, so ties are broken by arrival time."
+  },
+  {
+   "type": "quiz",
+   "title": "Deque or list?",
+   "q": "Which operation is O(1) on a `deque` but O(n) on a `list`?",
+   "options": [
+    "Appending to the end",
+    "Removing from the front",
+    "Reading the last item",
+    "Checking the length"
+   ],
+   "answer": 1,
+   "why": "Removing from the front of a list shifts every other item left: O(n). A deque is built to add and remove at both ends in O(1).",
+   "say": "Last check. Which of these operations is fast on a deque but slow on a list?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 43 complete",
+   "points": [
+    "Stack (last in, first out): a list with append() and pop(), for undo, back buttons and bracket matching",
+    "Queue (first in, first out): deque with append() and popleft(), never list.pop(0)",
+    "Linked list: O(1) insert at the head, O(n) to reach position i",
+    "Hash map: hash → bucket → pairs, which is why dict and set lookups are O(1)",
+    "Heap: heapq keeps the smallest on top; (priority, counter, item) breaks ties fairly"
+   ],
+   "say": "Mission forty three complete. You built a stack, a queue, a linked list, a hash map and a fair scheduler, and you know when each one is the right tool. Tomorrow we go further with graphs, trees and dynamic programming: the algorithms behind maps, social networks and smart caching."
+  }
+ ]
+}
