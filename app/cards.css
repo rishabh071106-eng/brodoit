@@ -1,0 +1,121 @@
+/* Brodoit cards v12 — the Books look everywhere: big image-led cover cards, one solid button system.
+   Tokens come from theme.css (paper, ink, one brick red). Every screen builds from these pieces:
+   .cv (cover card) · .cv-rail (swipe row) · .cv-grid (2-up grid) · .sec-h (section header) · .btn (buttons) · .pill (filters) */
+
+/* ── cover card ─────────────────────────────────────────────────────────────── */
+.cv{position:relative;display:block;width:100%;border:0;padding:0;margin:0;text-align:left;cursor:pointer;color:#fff;font:inherit;
+  border-radius:22px;overflow:hidden;isolation:isolate;aspect-ratio:4/5;background:var(--cv-bg,linear-gradient(160deg,#2E2A26,#1F1E1C));
+  box-shadow:0 1px 2px rgba(31,30,28,.06),0 14px 30px -18px rgba(31,30,28,.55);transition:transform .35s var(--ease,cubic-bezier(.16,1,.3,1)),box-shadow .35s;-webkit-tap-highlight-color:transparent}
+.cv:active{transform:scale(.975)}
+.cv:focus-visible{outline:3px solid var(--b-primary);outline-offset:3px}
+.cv.wide{aspect-ratio:16/10}.cv.hero{aspect-ratio:5/4}.cv.tall{aspect-ratio:3/4}.cv.square{aspect-ratio:1}.cv.strip{aspect-ratio:auto;min-height:112px}
+.cv>img.cv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .8s var(--ease,cubic-bezier(.16,1,.3,1))}
+.cv:hover>img.cv-img{transform:scale(1.03)}
+.cv::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(14,12,10,0) 30%,rgba(14,12,10,.38) 58%,rgba(14,12,10,.86) 100%);pointer-events:none}
+.cv.noshade::after{display:none}
+/* art fallback when there is no photo: soft light + a large outlined icon, like a designed book cover */
+.cv-art{position:absolute;inset:0;z-index:-2;overflow:hidden;background:radial-gradient(120% 80% at 100% 0%,rgba(255,255,255,.14),rgba(255,255,255,0) 55%),radial-gradient(90% 70% at 0% 100%,rgba(0,0,0,.28),rgba(0,0,0,0) 60%)}
+.cv-art svg{position:absolute;right:-8%;top:6%;width:62%;height:auto;color:rgba(255,255,255,.16);transform:rotate(-8deg)}
+.cv-body{position:absolute;left:0;right:0;bottom:0;padding:16px 16px 15px;display:flex;flex-direction:column;gap:4px}
+.cv-kick{font:600 11px/1 var(--b-sans);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+.cv-title{font:400 25px/1.05 var(--b-serif);letter-spacing:-.01em;color:#fff;text-wrap:balance;overflow-wrap:anywhere}
+.cv.sm .cv-title{font-size:20px}.cv.lg .cv-title{font-size:32px}
+.cv-sub{font:500 13px/1.35 var(--b-sans);color:rgba(255,255,255,.82);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cv-tag{position:absolute;top:12px;right:12px;padding:6px 10px;border-radius:999px;background:rgba(20,18,16,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  font:600 11px/1 var(--b-sans);letter-spacing:.08em;text-transform:uppercase;color:#fff;display:inline-flex;align-items:center;gap:5px}
+.cv-tag.l{left:12px;right:auto}
+.cv-row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.cv-row>div{min-width:0;display:flex;flex-direction:column;gap:4px}
+/* round play/go button inside a cover (the Books play button) */
+.cv-go{flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:#fff;color:#1F1E1C;display:grid;place-items:center;box-shadow:0 8px 18px -8px rgba(0,0,0,.6)}
+.cv-go svg{width:20px;height:20px}
+/* tones (no photo): all inside the paper/ink/brick palette */
+.tone-ink{--cv-bg:linear-gradient(160deg,#34302B 0%,#1F1E1C 100%)}
+.tone-brick{--cv-bg:linear-gradient(160deg,#B5402A 0%,#6B2617 100%)}
+.tone-wine{--cv-bg:linear-gradient(160deg,#6B2E22 0%,#3B1A13 100%)}
+.tone-umber{--cv-bg:linear-gradient(160deg,#5A5149 0%,#2A2724 100%)}
+.tone-clay{--cv-bg:linear-gradient(160deg,#C7765F 0%,#8E3F2B 100%)}
+.tone-sand{--cv-bg:linear-gradient(160deg,#EFE7DB 0%,#DDCFBD 100%);color:#1F1E1C}
+.tone-sand::after{background:none}
+.tone-sand .cv-title,.tone-sand .cv-kick,.tone-sand .cv-sub{color:#1F1E1C}.tone-sand .cv-art svg{color:rgba(31,30,28,.10)}
+
+/* ── layout ─────────────────────────────────────────────────────────────────── */
+.cv-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cv-grid.one{grid-template-columns:1fr}
+.cv-rail{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:2px 20px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-padding:0 20px}
+.cv-rail::-webkit-scrollbar{display:none}
+.cv-rail>.cv,.cv-rail>.mini{flex:0 0 72%;scroll-snap-align:start}
+.cv-rail.half>.cv,.cv-rail.half>.mini{flex-basis:46%}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px}
+.sec-h h2{margin:0;font:400 26px/1.1 var(--b-serif);letter-spacing:-.01em;color:var(--b-ink)}
+.sec-h a,.sec-h button{border:0;background:none;padding:8px 0;cursor:pointer;font:600 14px var(--b-sans);color:var(--b-primary);text-decoration:none;min-height:44px}
+.page-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:4px 0 16px}
+.page-h h1{margin:0;font:400 40px/1 var(--b-serif);letter-spacing:-.02em;color:var(--b-ink)}
+.page-h p{margin:6px 0 0;font:500 14px var(--b-sans);color:var(--b-mute)}
+
+/* small light card (stats, quick actions) */
+.mini{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:10px;min-height:104px;padding:14px;border:0;border-radius:20px;background:var(--b-card);color:var(--b-ink);
+  text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 2px rgba(31,30,28,.05),0 10px 24px -18px rgba(31,30,28,.45);transition:transform .3s var(--ease,cubic-bezier(.16,1,.3,1))}
+.mini:active{transform:scale(.97)}
+.mini .mi-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--b-primary-soft);color:var(--b-primary)}
+.mini .mi-ic svg{width:20px;height:20px}
+.mini b{display:block;font:600 15px/1.25 var(--b-sans);color:var(--b-ink)}
+.mini small{display:block;font:500 12px/1.3 var(--b-sans);color:var(--b-mute);margin-top:2px}
+.mini .mi-num{font:400 34px/1 var(--b-serif);color:var(--b-ink);font-variant-numeric:tabular-nums}
+
+/* list row card (courses, tasks): photo thumb + text + chevron */
+.rowc{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;padding:10px 14px 10px 10px;border:0;border-radius:18px;background:var(--b-card);color:var(--b-ink);
+  text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 2px rgba(31,30,28,.05),0 8px 20px -16px rgba(31,30,28,.4);transition:transform .25s var(--ease,cubic-bezier(.16,1,.3,1))}
+.rowc+.rowc{margin-top:10px}
+.rowc:active{transform:scale(.98)}
+.rowc .rc-th{flex:0 0 56px;width:56px;height:56px;border-radius:14px;overflow:hidden;position:relative;background:var(--cv-bg,linear-gradient(160deg,#34302B,#1F1E1C));display:grid;place-items:center;color:rgba(255,255,255,.85)}
+.rowc .rc-th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rowc .rc-th svg{width:24px;height:24px}
+.rowc .rc-tx{flex:1;min-width:0}
+.rowc .rc-tx b{display:block;font:600 15px/1.3 var(--b-sans);color:var(--b-ink);overflow-wrap:anywhere}
+.rowc .rc-tx small{display:block;margin-top:2px;font:500 13px/1.35 var(--b-sans);color:var(--b-mute)}
+.rowc .rc-go{flex:0 0 auto;color:var(--b-mute-2)}
+
+/* ── buttons: one system, no chunky bottom edge ─────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 22px;border:0;border-radius:16px;cursor:pointer;
+  font:600 16px/1 var(--b-sans);letter-spacing:-.005em;text-decoration:none;user-select:none;-webkit-tap-highlight-color:transparent;
+  background:var(--b-ink);color:var(--b-bg);box-shadow:0 10px 22px -14px rgba(31,30,28,.75);transition:transform .15s var(--ease,cubic-bezier(.16,1,.3,1)),opacity .15s,background .2s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.btn svg{width:19px;height:19px}
+.btn.wide{width:100%}
+.btn.sm{min-height:42px;padding:0 16px;font-size:14px;border-radius:13px}
+.btn.accent{background:var(--b-primary);color:#fff;box-shadow:0 12px 24px -14px rgba(181,64,42,.8)}
+.btn.soft{background:var(--b-bg-2);color:var(--b-ink);box-shadow:none}
+.btn.light{background:#fff;color:#1F1E1C;box-shadow:0 10px 24px -12px rgba(0,0,0,.55)}
+.btn.glass{background:rgba(255,255,255,.16);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:none}
+.btn.line{background:transparent;color:var(--b-ink);box-shadow:inset 0 0 0 1.5px var(--b-line-2)}
+.btn-ic{width:46px;height:46px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:var(--b-bg-2);color:var(--b-ink);flex:0 0 auto;transition:transform .15s}
+.btn-ic:active{transform:scale(.92)}
+.btn-ic svg{width:20px;height:20px}
+/* filter pills: filled, quiet, never outlined */
+.pill-row{display:flex;gap:8px;overflow-x:auto;margin:0 -20px;padding:2px 20px 4px;scrollbar-width:none}
+.pill-row::-webkit-scrollbar{display:none}
+.pill{flex:0 0 auto;min-height:40px;padding:0 16px;border:0;border-radius:999px;cursor:pointer;background:var(--b-bg-2);color:var(--b-ink-2);font:600 14px/1 var(--b-sans);white-space:nowrap;transition:background .2s,color .2s}
+.pill.on{background:var(--b-ink);color:var(--b-bg)}
+
+/* the old chunky buttons, restyled once so every legacy screen matches */
+.b-btn{min-height:52px;border-radius:16px!important;font:600 16px var(--b-sans)!important;background:var(--b-ink)!important;color:var(--b-bg)!important;box-shadow:0 10px 22px -14px rgba(31,30,28,.75)!important;transform:none}
+.b-btn:active{transform:scale(.97)!important;box-shadow:0 6px 14px -10px rgba(31,30,28,.75)!important}
+.b-btn.ghost{background:var(--b-bg-2)!important;color:var(--b-ink)!important;box-shadow:none!important;border:0!important}
+.b-chip{border:0!important;background:var(--b-bg-2);min-height:40px;border-radius:999px;font:600 14px var(--b-sans)}
+.b-chip.on{background:var(--b-ink);color:var(--b-bg)}
+
+/* rise-in for card lists (motion.js adds .in; reduced motion handled globally) */
+@keyframes cv-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.cv-anim>*{animation:cv-rise .5s var(--ease,cubic-bezier(.16,1,.3,1)) both}
+.cv-anim>*:nth-child(2){animation-delay:50ms}.cv-anim>*:nth-child(3){animation-delay:100ms}.cv-anim>*:nth-child(4){animation-delay:150ms}
+.cv-anim>*:nth-child(5){animation-delay:200ms}.cv-anim>*:nth-child(6){animation-delay:250ms}.cv-anim>*:nth-child(n+7){animation-delay:300ms}
+
+/* dark mode: cards lift off a dark page; light cards become warm charcoal */
+html[data-theme="dark"] .mini,body[data-theme=aurora] .mini,html[data-theme="dark"] .rowc,body[data-theme=aurora] .rowc{background:var(--b-card);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 24px -18px rgba(0,0,0,.8)}
+html[data-theme="dark"] .cv,body[data-theme=aurora] .cv{box-shadow:0 14px 30px -18px rgba(0,0,0,.9)}
+html[data-theme="dark"] .btn:not(.accent):not(.light):not(.glass):not(.soft):not(.line),body[data-theme=aurora] .btn:not(.accent):not(.light):not(.glass):not(.soft):not(.line){background:#F3F0EA;color:#141311}
+html[data-theme="dark"] .tone-sand,body[data-theme=aurora] .tone-sand{--cv-bg:linear-gradient(160deg,#2C2925 0%,#23211D 100%);color:#F3F0EA}
+html[data-theme="dark"] .tone-sand .cv-title,html[data-theme="dark"] .tone-sand .cv-kick,html[data-theme="dark"] .tone-sand .cv-sub,body[data-theme=aurora] .tone-sand .cv-title,body[data-theme=aurora] .tone-sand .cv-kick,body[data-theme=aurora] .tone-sand .cv-sub{color:#F3F0EA}
+@media (max-width:370px){.cv-title{font-size:22px}.cv.lg .cv-title{font-size:28px}.page-h h1{font-size:34px}.cv-rail>.cv,.cv-rail>.mini{flex-basis:80%}}

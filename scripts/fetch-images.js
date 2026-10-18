@@ -15,20 +15,21 @@ const strip = h => String(h || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').
 
 async function json(url) { const r = await fetch(url, { headers: UA }); if (!r.ok) throw new Error(r.status + ' ' + url); return r.json(); }
 async function tryTitle(title) {
-  const s = await json('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title));
-  const img = s.originalimage || s.thumbnail; if (!img || !img.source) return { skip: 'no lead image' };
-  if (!/upload\.wikimedia\.org\/wikipedia\/commons\//.test(img.source)) return { skip: 'not on Commons (may be non-free)' };
-  if (!/\.jpe?g$/i.test(img.source.split('?')[0])) return { skip: 'not a photo (' + img.source.split('.').pop() + ')' };
-  if ((img.width || 0) < 800) return { skip: 'too small' };
-  const file = decodeURIComponent(img.source.split('/').pop());
-  const q = await json('https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1280&titles=' + encodeURIComponent('File:' + file));
-  const page = Object.values((q.query || {}).pages || {})[0] || {}; const ii = (page.imageinfo || [])[0];
-  if (!ii) return { skip: 'no imageinfo' };
+  // pilicense=free: the article's lead image only when it is free-licensed (never fair-use logos or posters)
+  const q = await json('https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=name|original&pilicense=free&titles=' + encodeURIComponent(title));
+  const page = Object.values((q.query || {}).pages || {})[0] || {};
+  if ('missing' in page) return { skip: 'no such article' };
+  const name = page.pageimage; if (!name) return { skip: 'no free lead image' };
+  if (!/\.jpe?g$/i.test(name)) return { skip: 'not a photo (' + name.split('.').pop() + ')' };
+  if (page.original && page.original.width && page.original.width < 800) return { skip: 'too small' };
+  const r1 = await json('https://en.wikipedia.org/w/api.php?action=query&format=json&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1280&titles=' + encodeURIComponent('File:' + name));
+  const fp = Object.values((r1.query || {}).pages || {})[0] || {}; const ii = (fp.imageinfo || [])[0];
+  if (!ii) return { skip: 'no imageinfo for ' + name };
   const m = ii.extmetadata || {}; const lic = strip(m.LicenseShortName && m.LicenseShortName.value);
   if (!FREE.test(lic)) return { skip: 'license ' + lic };
   const r = await fetch(ii.thumburl || ii.url, { headers: UA }); if (!r.ok) return { skip: 'download ' + r.status };
   const buf = Buffer.from(await r.arrayBuffer());
-  return { buf, credit: { article: title, file, page: 'https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(file.replace(/ /g, '_')), artist: strip(m.Artist && m.Artist.value).slice(0, 160) || 'Unknown', license: lic, licenseUrl: strip(m.LicenseUrl && m.LicenseUrl.value) } };
+  return { buf, credit: { article: title, file: name, page: ii.descriptionurl || 'https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(name), artist: strip(m.Artist && m.Artist.value).slice(0, 160) || 'Unknown', license: lic, licenseUrl: strip(m.LicenseUrl && m.LicenseUrl.value) } };
 }
 
 (async () => {

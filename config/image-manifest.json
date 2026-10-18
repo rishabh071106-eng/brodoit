@@ -1,36 +1,168 @@
 {
  "note": "Card photos. Each key lists Wikipedia article titles in order of preference; CI (workflow 'Card photos') takes the first article whose lead image is a free-licensed Wikimedia Commons photo, crops it to 960x640 and writes app/img/cards/<key>.jpg + credits.json. Delete a jpg to refetch it.",
  "images": {
-  "cat-lang": ["Plaza_de_España,_Seville", "Tower_Bridge"],
-  "cat-defence": ["India_Gate", "Indian_Military_Academy"],
-  "cat-ias": ["Rashtrapati_Bhavan", "Parliament_House,_New_Delhi"],
-  "cat-banking": ["Phiroze_Jeejeebhoy_Towers", "Bombay_Stock_Exchange", "Nariman_Point"],
-  "cat-it": ["Electronic_City", "HITEC_City", "Bangalore"],
-  "cat-mba": ["Indian_Institute_of_Management_Ahmedabad", "Indian_Institute_of_Management_Bangalore", "Nariman_Point"],
-  "cat-cs": ["Data_center", "Supercomputer", "Server_room"],
-  "lang-es": ["Plaza_Mayor,_Madrid", "Sagrada_Família", "Alhambra"],
-  "lang-fr": ["Eiffel_Tower", "Louvre", "Mont-Saint-Michel"],
-  "lang-de": ["Brandenburg_Gate", "Neuschwanstein_Castle", "Cologne_Cathedral"],
-  "lang-hi": ["Taj_Mahal", "Hawa_Mahal", "Qutb_Minar"],
-  "lang-en": ["Palace_of_Westminster", "Tower_Bridge", "Big_Ben"],
-  "lang-ja": ["Mount_Fuji", "Fushimi_Inari-taisha", "Kinkaku-ji"],
-  "def-nda": ["National_Defence_Academy_(India)", "Khadakwasla_Dam"],
-  "def-cds": ["Indian_Military_Academy", "Officers_Training_Academy,_Chennai"],
-  "def-afcat": ["Sukhoi_Su-30MKI", "HAL_Tejas"],
-  "def-ssb": ["Officers_Training_Academy,_Chennai", "Indian_Naval_Academy"],
-  "ias-upsc": ["Dholpur_House", "North_Block", "Rajpath"],
-  "bank-core": ["Reserve_Bank_of_India_Headquarters", "Phiroze_Jeejeebhoy_Towers"],
-  "it-gate": ["Indian_Institute_of_Technology_Bombay", "Indian_Institute_of_Science"],
-  "mba-gmat": ["Harvard_Business_School", "Indian_School_of_Business"],
-  "cs-ai": ["Deep_Blue_(chess_computer)", "Robot"],
-  "cs-python": ["Raspberry_Pi", "Laptop"],
-  "more-jobs": ["North_Block", "Secretariat_Building,_New_Delhi"],
-  "more-groups": ["Classroom", "Study_group"],
-  "more-speaker": ["Lecture", "Auditorium"],
-  "hero-steps": ["Marine_Drive,_Mumbai", "Lodhi_Garden", "Cubbon_Park"],
-  "hero-news": ["Newspaper", "Printing_press"],
-  "hero-books": ["Library", "Bodleian_Library", "Trinity_College_Library"],
-  "hero-learn": ["Nalanda_mahavihara", "Library_of_Trinity_College_Dublin"],
-  "hero-tasks": ["Notebook", "Desk"]
+  "cat-lang": [
+   "Plaza_de_España_(Seville)",
+   "Tower_Bridge",
+   "Trevi_Fountain"
+  ],
+  "cat-defence": [
+   "India_Gate",
+   "Republic_Day_(India)",
+   "Indian_Army"
+  ],
+  "cat-ias": [
+   "Rashtrapati_Bhavan",
+   "North_Block",
+   "Central_Vista"
+  ],
+  "cat-banking": [
+   "Bombay_Stock_Exchange",
+   "Phiroze_Jeejeebhoy_Towers",
+   "Fort,_Mumbai",
+   "Banknote"
+  ],
+  "cat-it": [
+   "Bangalore",
+   "Electronic_City",
+   "Infosys",
+   "HITEC_City"
+  ],
+  "cat-mba": [
+   "Indian_Institute_of_Management_Ahmedabad",
+   "Nariman_Point",
+   "Business_district"
+  ],
+  "cat-cs": [
+   "Data_center",
+   "Supercomputer",
+   "Computer",
+   "Server_(computing)"
+  ],
+  "lang-es": [
+   "Plaza_Mayor,_Madrid",
+   "Sagrada_Família",
+   "Alhambra",
+   "Madrid"
+  ],
+  "lang-fr": [
+   "Eiffel_Tower",
+   "Louvre",
+   "Paris"
+  ],
+  "lang-de": [
+   "Brandenburg_Gate",
+   "Neuschwanstein_Castle",
+   "Cologne_Cathedral"
+  ],
+  "lang-hi": [
+   "Taj_Mahal",
+   "Hawa_Mahal",
+   "Qutb_Minar",
+   "Varanasi"
+  ],
+  "lang-en": [
+   "Palace_of_Westminster",
+   "Tower_Bridge",
+   "Big_Ben"
+  ],
+  "lang-ja": [
+   "Mount_Fuji",
+   "Fushimi_Inari-taisha",
+   "Kinkaku-ji",
+   "Kyoto"
+  ],
+  "def-nda": [
+   "National_Defence_Academy_(India)",
+   "Indian_Army",
+   "Khadakwasla_Dam"
+  ],
+  "def-cds": [
+   "Indian_Military_Academy",
+   "Indian_Army"
+  ],
+  "def-afcat": [
+   "Sukhoi_Su-30MKI",
+   "HAL_Tejas",
+   "Indian_Air_Force"
+  ],
+  "def-ssb": [
+   "Officers_Training_Academy",
+   "Indian_Naval_Academy",
+   "Indian_Navy"
+  ],
+  "ias-upsc": [
+   "Dholpur_House",
+   "North_Block",
+   "Kartavya_Path",
+   "Union_Public_Service_Commission"
+  ],
+  "bank-core": [
+   "Reserve_Bank_of_India",
+   "Phiroze_Jeejeebhoy_Towers",
+   "Indian_rupee"
+  ],
+  "it-gate": [
+   "Indian_Institute_of_Technology_Bombay",
+   "Indian_Institute_of_Science",
+   "Indian_Institute_of_Technology_Delhi"
+  ],
+  "mba-gmat": [
+   "Harvard_Business_School",
+   "Indian_School_of_Business",
+   "London_Business_School"
+  ],
+  "cs-ai": [
+   "Robot",
+   "Deep_Blue_(chess_computer)",
+   "Humanoid_robot"
+  ],
+  "cs-python": [
+   "Raspberry_Pi",
+   "Laptop",
+   "Personal_computer"
+  ],
+  "more-jobs": [
+   "North_Block",
+   "Secretariat_Building,_New_Delhi",
+   "Central_Secretariat"
+  ],
+  "more-groups": [
+   "Classroom",
+   "Study_group",
+   "Library"
+  ],
+  "more-speaker": [
+   "Lecture",
+   "Auditorium",
+   "Public_speaking"
+  ],
+  "hero-steps": [
+   "Marine_Drive,_Mumbai",
+   "Lodhi_Gardens",
+   "Cubbon_Park",
+   "Walking"
+  ],
+  "hero-news": [
+   "Newspaper",
+   "Printing_press",
+   "News"
+  ],
+  "hero-books": [
+   "Library",
+   "Bodleian_Library",
+   "Trinity_College_Library",
+   "Book"
+  ],
+  "hero-learn": [
+   "Nalanda_mahavihara",
+   "Library_of_Trinity_College_Dublin",
+   "Library"
+  ],
+  "hero-tasks": [
+   "Notebook",
+   "Desk",
+   "Stationery"
+  ]
  }
 }
