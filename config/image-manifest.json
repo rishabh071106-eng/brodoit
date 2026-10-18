@@ -73,12 +73,13 @@
    "Kyoto"
   ],
   "def-nda": [
-   "National_Defence_Academy_(India)",
-   "Indian_Army",
-   "Khadakwasla_Dam"
+   "Delhi_Republic_Day_parade",
+   "Beating_Retreat",
+   "Indian_Army"
   ],
   "def-cds": [
-   "Indian_Military_Academy",
+   "Delhi_Republic_Day_parade",
+   "Beating_Retreat",
    "Indian_Army"
   ],
   "def-afcat": [
@@ -87,9 +88,9 @@
    "Indian_Air_Force"
   ],
   "def-ssb": [
-   "Officers_Training_Academy",
-   "Indian_Naval_Academy",
-   "Indian_Navy"
+   "Beating_Retreat",
+   "Indian_Navy",
+   "Indian_Army"
   ],
   "ias-upsc": [
    "Dholpur_House",
@@ -108,9 +109,10 @@
    "Indian_Institute_of_Technology_Delhi"
   ],
   "mba-gmat": [
-   "Harvard_Business_School",
-   "Indian_School_of_Business",
-   "London_Business_School"
+   "Baker_Library_(Harvard_Business_School)",
+   "Wall_Street",
+   "Bandra–Kurla_Complex",
+   "Harvard_Business_School"
   ],
   "cs-ai": [
    "Robot",
@@ -144,9 +146,10 @@
    "Walking"
   ],
   "hero-news": [
-   "Newspaper",
-   "Printing_press",
-   "News"
+   "Newsstand",
+   "Newspaper_vendor",
+   "Kiosk",
+   "Newspaper"
   ],
   "hero-books": [
    "Library",
