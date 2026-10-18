@@ -3,6 +3,9 @@
 name: Server public key
 on:
   workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/seal-request']
 permissions:
   contents: read
 jobs:

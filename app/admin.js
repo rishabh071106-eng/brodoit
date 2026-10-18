@@ -114,9 +114,17 @@
     // jobs
     h += (function () { const v = S.adm && S.adm.status && S.adm.status.voice; if (!v) return ''; const eng = v.engine === 'elevenlabs' ? 'ElevenLabs agent' : v.engine === 'realtime' ? 'OpenAI Realtime' : v.engine === 'elevenlabs-pending' ? 'ElevenLabs agent (setting up…)' : 'classic pipeline'; return '<p class="adm-auto b-sm">' + ic('mic', 14) + ' Bro talks through ' + eng + (v.llm ? '' : ' · no brain key yet') + (v.agent_error ? '<br><span style="color:var(--b-primary)">Agent error: ' + _esc(v.agent_error.slice(0, 220)) + '</span>' : '') + '</p>'; })();
     h += (function () { const a = S.adm && S.adm.status && S.adm.status.auto; if (!a || a.on === false) return ''; const q = (a.running ? [a.running + ' (recording)'] : []).concat(a.queue || []); return '<p class="adm-auto b-sm">' + ic('zap', 14) + ' ' + (q.length ? 'Auto: ' + _esc(q.join(' → ')) : 'Recordings start by themselves once a key is saved.') + '</p>'; })();
-    h += spendHtml(st.spend);
+    h += spendHtml(st.spend) + sealedHtml(st.sealed);
     h += '<div class="adm-jobs" id="admJobs">' + JOBS.map(j => jobHtml(j)).join('') + '</div>';
     return h;
+  }
+  // Keys that arrived encrypted through the repo (modules/sealed.js): names and masked hints, so a swap is visible.
+  function sealedHtml(se) {
+    if (!se || (!(se.applied || []).length && !(se.skipped || []).length && !se.error)) return '';
+    const names = { ELEVENLABS_API_KEY: 'ElevenLabs', GEMINI_API_KEY: 'Gemini', OPENAI_API_KEY: 'OpenAI', GROQ_API_KEY: 'Groq' };
+    const a = (se.applied || []).map(x => (names[x.key] || x.key) + ' ' + x.hint).join(' · ');
+    const k = (se.skipped || []).map(x => (names[x.key] || x.key) + ' (' + x.why + ')').join(' · ');
+    return '<p class="adm-auto b-sm">' + ic('lock', 14) + ' ' + (a ? 'Installed securely on this start: ' + _esc(a) : 'Secure key delivery ready') + (k || se.error ? '<br><span style="color:var(--b-primary)">' + _esc([k, se.error].filter(Boolean).join(' · ')) + '</span>' : '') + '</p>';
   }
   // "Voice this month": ElevenLabs credits used of the plan, Gemini / OpenAI minutes and their dollar cost, credit warnings.
   function spendHtml(sp) {

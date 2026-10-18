@@ -75,7 +75,14 @@ Only report what the sources say; do not add facts. Avoid graphic details. STORI
   // Renders whichever of EN/HI is still missing. Errors are logged and swallowed for the hourly
   // tick; pass strict=true (admin job) to surface them to the caller instead.
   // Voice: modules/studio.js — ElevenLabs within the month's credits, else Gemini / OpenAI TTS, else the device voice.
-  async function renderAudio(id, en, hi, strict) {
+  // One render per bulletin at a time: the hourly tick, auto-record and an Admin tap can overlap, and each would pay again.
+  const rendering = new Map();
+  function renderAudio(id, en, hi, strict) {
+    if (rendering.has(id)) return rendering.get(id);
+    const p = renderOnce(id, en, hi, strict).finally(() => rendering.delete(id));
+    rendering.set(id, p); return p;
+  }
+  async function renderOnce(id, en, hi, strict) {
     if (!hasVoice()) return;
     const r = get.get(id); if (!r) return;
     try {
