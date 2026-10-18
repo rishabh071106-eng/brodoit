@@ -103,14 +103,6 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
  },
- "def-nda": {
-  "article": "Khadakwasla_Dam",
-  "file": "Khadakwasla_Dam_image.JPG",
-  "page": "https://commons.wikimedia.org/wiki/File:Khadakwasla_Dam_image.JPG",
-  "artist": "Advaitk at English Wikipedia",
-  "license": "CC BY-SA 3.0",
-  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/"
- },
  "def-afcat": {
   "article": "Sukhoi_Su-30MKI",
   "file": "Darwin_Pitch_Black_2022_5WAL8054_(52336923377).jpg",
@@ -144,12 +136,12 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
  },
  "mba-gmat": {
-  "article": "London_Business_School",
-  "file": "RS9327_LBS_Standard_Logo_RGB_AW-hpr.jpg",
-  "page": "https://commons.wikimedia.org/wiki/File:RS9327_LBS_Standard_Logo_RGB_AW-hpr.jpg",
-  "artist": "Jhaake01",
-  "license": "CC BY-SA 4.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  "article": "Wall_Street",
+  "file": "Wall_Street_(55314253740).jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Wall_Street_(55314253740).jpg",
+  "artist": "Ajay Suresh",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
  },
  "cs-ai": {
   "article": "Robot",
@@ -200,12 +192,12 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
  },
  "hero-news": {
-  "article": "Newspaper",
-  "file": "NYTimes-Page1-11-11-1918.jpg",
-  "page": "https://commons.wikimedia.org/wiki/File:NYTimes-Page1-11-11-1918.jpg",
-  "artist": "Charles Ransom Miller",
-  "license": "Public domain",
-  "licenseUrl": ""
+  "article": "Newsstand",
+  "file": "Street_Scene_-_Salta_-_Argentina.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Street_Scene_-_Salta_-_Argentina.jpg",
+  "artist": "Adam Jones Adam63",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
  },
  "hero-books": {
   "article": "Library",
