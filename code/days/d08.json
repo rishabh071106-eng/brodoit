@@ -1,0 +1,401 @@
+{
+ "day": 8,
+ "phase": 1,
+ "title": "Loops I: while",
+ "subtitle": "Repeat until the job is done",
+ "minutes": 55,
+ "goal": "Repeat work with while loops, control them with counters, sentinels, break and continue, and avoid accidental infinite loops.",
+ "outcomes": [
+  "Write a while loop whose condition eventually becomes False",
+  "Use counters and accumulators that update on every iteration",
+  "Stop on a sentinel value, or early with break",
+  "Skip an iteration with continue",
+  "Build input validation loops that keep asking until the input is good"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 8: Loops",
+   "body": "Computers never get bored. Retry a payment 3 times, keep a game running until you quit, ask for a PIN until it's right: that's a **loop**.\n\nToday: `while`, the loop that repeats as long as a condition holds.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Start",
+      "s": "pill"
+     },
+     {
+      "t": "Condition True?",
+      "s": "diamond",
+      "yes": "Run the body, then check again",
+      "no": "Leave the loop"
+     },
+     {
+      "t": "Carry on below the loop",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Welcome to day eight. Computers are brilliant at the one thing humans hate: repetition. Retry a payment three times. Keep a game running until the player quits. Ask for a PIN until it's correct. That's a loop. Today you'll master the while loop, which repeats as long as a condition stays True."
+  },
+  {
+   "type": "concept",
+   "title": "while: an if that repeats",
+   "body": "`while condition:` works like `if`, but after the body runs, Python **jumps back** and checks again. It stops when the condition is False.\n\nSo something inside the loop must move it towards stopping.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Check the condition",
+     "True: run the indented body",
+     "Jump back to step 1",
+     "False: continue after the loop"
+    ]
+   },
+   "say": "A while loop is an if statement on repeat. Python checks the condition. If it's True, it runs the indented body, then jumps back up and checks again. The moment the condition is False, Python leaves the loop and continues below it. That means something inside the loop must change, or it would never stop."
+  },
+  {
+   "type": "code",
+   "title": "Countdown",
+   "code": "count = 5\nwhile count > 0:\n    print(count)\n    count -= 1\nprint(\"Lift off!\")",
+   "expect": "5\n4\n3\n2\n1\nLift off!\n",
+   "explain": [
+    [
+     1,
+     "Set up before the loop."
+    ],
+    [
+     2,
+     "Checked before every iteration."
+    ],
+    [
+     4,
+     "Moves count towards 0, so the loop can end."
+    ],
+    [
+     5,
+     "Runs once, after the loop finishes."
+    ]
+   ],
+   "say": "Count starts at five. Each time round, we print it and subtract one. When count reaches zero, the condition count greater than zero is False, so the loop ends and we lift off. Tap watch it run and follow count as it falls. Each trip through the body is called an iteration."
+  },
+  {
+   "type": "predict",
+   "title": "Triple it",
+   "code": "n = 1\nwhile n < 20:\n    n = n * 3\nprint(n)",
+   "options": [
+    "9",
+    "20",
+    "27",
+    "81"
+   ],
+   "answer": 2,
+   "why": "The loop checks before each round: 1, 3 and 9 are below 20, so it multiplies again. 27 fails the check and the loop ends. The print is outside the loop, so it runs once.",
+   "say": "This loop triples n while it's below twenty. The print is outside the loop. What single number appears?"
+  },
+  {
+   "type": "concept",
+   "title": "Counters and accumulators",
+   "body": "Two patterns you'll use forever:\n- **counter**: `months += 1` counts iterations\n- **accumulator**: `savings += deposit` builds a running total\n\nCreate them **before** the loop, update them **inside** it.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "months",
+      "0 → 1 → 2 → ...",
+      "int"
+     ],
+     [
+      "savings",
+      "0 → 6060.0 → 12180.6 → ...",
+      "float"
+     ]
+    ]
+   },
+   "say": "Two patterns appear in almost every loop. A counter adds one each time, to count iterations. An accumulator adds a value each time, to build up a running total. Both start before the loop, and are updated inside it. Get the starting value wrong, and every answer after it is wrong too."
+  },
+  {
+   "type": "code",
+   "title": "Savings goal simulator",
+   "code": "goal = 50000\nmonthly = 6000\nrate = 0.01          # 1% interest per month\nsavings = 0\nmonths = 0\n\nwhile savings < goal:\n    savings += monthly\n    savings += savings * rate\n    months += 1\n\nprint(f\"Goal reached in {months} months\")\nprint(f\"Savings: {savings:,.2f} rupees\")",
+   "expect": "Goal reached in 8 months\nSavings: 50,211.16 rupees\n",
+   "explain": [
+    [
+     4,
+     "The accumulator starts at 0."
+    ],
+    [
+     5,
+     "The counter starts at 0."
+    ],
+    [
+     7,
+     "Keep going while we're short of the goal."
+    ],
+    [
+     9,
+     "Interest on everything saved so far."
+    ],
+    [
+     10,
+     "Count one more month."
+    ]
+   ],
+   "say": "Here's a real simulation. Every month you save six thousand rupees and earn one percent interest. The loop keeps going while you're short of the goal, and months counts the iterations. We don't know in advance how many months it will take. That's exactly when a while loop is the right tool."
+  },
+  {
+   "type": "concept",
+   "title": "Infinite loops",
+   "body": "If the condition never becomes False, the loop never ends. Usual causes:\n- forgot to update the variable\n- updated it in the wrong direction\n\nOn a laptop, press **Ctrl+C**. Here, the runner stops programs that run too long.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Runs forever",
+     "code": "count = 5\nwhile count > 0:\n    print(count)\n# count never changes"
+    },
+    "right": {
+     "title": "Ends",
+     "code": "count = 5\nwhile count > 0:\n    print(count)\n    count -= 1"
+    },
+    "verdict": "Every loop needs a step that moves it towards stopping."
+   },
+   "say": "If the condition never becomes False, you've written an infinite loop, and the program runs forever. It usually means you forgot to update the loop variable, or changed it in the wrong direction. On a laptop you'd press control C to stop it. In this course, the runner stops programs that run too long, so experiment without fear."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the runaway countdown",
+   "task": "This flash-sale countdown never ends. Run it and watch the runner stop it. Then fix it so it prints `10 seconds left` down to `1 seconds left`, then `Sale over!`",
+   "starter": "# Count down the last 10 seconds of a flash sale\nseconds = 10\nwhile seconds > 0:\n    print(f\"{seconds} seconds left\")\n    seconds += 1\nprint(\"Sale over!\")\n",
+   "solution": "# Count down the last 10 seconds of a flash sale\nseconds = 10\nwhile seconds > 0:\n    print(f\"{seconds} seconds left\")\n    seconds -= 1\nprint(\"Sale over!\")",
+   "tests": "assert out_lines and \"10 seconds left\" in out_lines[0], \"Start the countdown at 10 seconds.\"\nassert \"1 seconds left\" in out_lines, \"The last countdown line should be 1 seconds left.\"\nassert \"0 seconds left\" not in out_lines, \"Stop before 0: the loop runs while seconds > 0.\"\nassert out_lines[-1] == \"Sale over!\", \"Finish with Sale over! once the loop ends.\"\nassert len(out_lines) == 11, f\"Expected 10 countdown lines plus Sale over!, but got {len(out_lines)} lines.\"",
+   "hints": [
+    "Watch the value of seconds: is it moving towards 0, or away from it?",
+    "Each iteration should take one second off: seconds -= 1"
+   ],
+   "say": "This flash sale countdown never ends. Run it, and watch the runner step in and stop it. Then find the line that moves seconds in the wrong direction, and fix it so it counts down from ten to one and announces the end of the sale."
+  },
+  {
+   "type": "concept",
+   "title": "Sentinels and break",
+   "body": "A **sentinel** is a special input that means stop, like `done`.\n\n`while True:` loops forever on purpose, and `break` exits the loop **immediately**, from anywhere inside the body.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "while True",
+      "s": "pill"
+     },
+     {
+      "t": "Read an entry"
+     },
+     {
+      "t": "entry == 'done'?",
+      "s": "diamond",
+      "yes": "break: leave the loop",
+      "no": "Process it, then loop again"
+     }
+    ]
+   },
+   "say": "Often you don't know how many inputs are coming. So you agree on a sentinel, a special value like done that means stop. A common pattern is while True, which loops forever on purpose, with a break inside. Break exits the loop immediately, skipping the rest of the body. Think of it as the emergency exit of a loop."
+  },
+  {
+   "type": "code",
+   "title": "Running total until done",
+   "code": "total = 0\ncount = 0\n\nwhile True:\n    entry = input(\"Expense (or done): \").strip().lower()\n    if entry == \"done\":\n        break\n    total += float(entry)\n    count += 1\n\nprint(f\"{count} expenses, total {total:.2f}\")\nif count > 0:\n    print(f\"Average: {total / count:.2f}\")",
+   "stdin": "120\n80.5\n45\ndone\n",
+   "expect": "Expense (or done): Expense (or done): Expense (or done): Expense (or done): 3 expenses, total 245.50\nAverage: 81.83\n",
+   "explain": [
+    [
+     4,
+     "Loop forever... until break."
+    ],
+    [
+     6,
+     "The sentinel check comes first."
+    ],
+    [
+     7,
+     "Jump straight to the line after the loop."
+    ],
+    [
+     8,
+     "Accumulator: add this expense."
+    ],
+    [
+     12,
+     "A guard: never divide by zero."
+    ]
+   ],
+   "say": "This expense logger accepts as many amounts as you like, then the word done. While True keeps asking, and the moment the entry is done, break jumps out of the loop. Notice the guard at the end. If no expenses were entered, dividing by zero would crash, so we only print the average when count is above zero."
+  },
+  {
+   "type": "quiz",
+   "title": "What does break skip?",
+   "q": "When `break` runs inside a loop, what happens to the lines **below it** in the loop body?",
+   "options": [
+    "They run once more, then the loop stops",
+    "They're skipped, and Python continues after the loop",
+    "Python restarts the loop from the top"
+   ],
+   "answer": 1,
+   "why": "break exits the loop immediately. Nothing else in the body runs; the program continues with the first line after the loop.",
+   "say": "Quick check. When break runs, what happens to the lines below it inside the loop?"
+  },
+  {
+   "type": "concept",
+   "title": "continue: skip to the next round",
+   "body": "`continue` jumps straight back to the condition, **skipping** the rest of the body for this iteration only.\n\nUse it to ignore bad or unwanted items without stopping the loop.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "break",
+     "code": "while True:\n    ...\n    break     # leave the loop"
+    },
+    "right": {
+     "title": "continue",
+     "code": "while True:\n    ...\n    continue  # next iteration"
+    },
+    "verdict": "break ends the loop. continue only ends this round."
+   },
+   "say": "Continue is break's gentler cousin. Instead of leaving the loop, it skips the rest of the current iteration and jumps straight back to the condition for the next round. Use it to ignore bad input, or items you don't care about, without stopping everything."
+  },
+  {
+   "type": "code",
+   "title": "Skip bad entries",
+   "code": "total_steps = 0\ndays = 0\n\nwhile True:\n    entry = input(\"Steps (or stop): \").strip()\n    if entry == \"stop\":\n        break\n    if not entry.isdigit():\n        print(\"  Skipping invalid entry:\", entry)\n        continue\n    total_steps += int(entry)\n    days += 1\n\nprint(f\"{days} days logged, {total_steps:,} steps\")",
+   "stdin": "8500\nabc\n12000\n6400\nstop\n",
+   "expect": "Steps (or stop): Steps (or stop):   Skipping invalid entry: abc\nSteps (or stop): Steps (or stop): Steps (or stop): 3 days logged, 26,900 steps\n",
+   "explain": [
+    [
+     6,
+     "The sentinel: stop the whole loop."
+    ],
+    [
+     8,
+     "Not a number? Then..."
+    ],
+    [
+     10,
+     "...skip the rest of this round."
+    ],
+    [
+     11,
+     "Only valid entries get this far."
+    ]
+   ],
+   "say": "Real data is messy, so the loop has to survive bad entries. If an entry isn't all digits, we print a warning and continue, skipping the rest of this round. The bad value never reaches int, so nothing crashes. The loop keeps going until the sentinel word stop."
+  },
+  {
+   "type": "predict",
+   "title": "continue meets break",
+   "code": "n = 0\nwhile n < 6:\n    n += 1\n    if n == 2:\n        continue\n    if n == 5:\n        break\n    print(n)",
+   "options": [
+    "1\n2\n3\n4",
+    "1\n3\n4",
+    "1\n3\n4\n5",
+    "1\n3\n4\n6"
+   ],
+   "answer": 1,
+   "why": "n becomes 1: printed. At 2, continue skips the print. 3 and 4 are printed. At 5, break ends the loop before the print, so 5 and 6 never appear.",
+   "say": "This one combines continue and break. Trace n carefully, one iteration at a time. Which numbers get printed?"
+  },
+  {
+   "type": "code",
+   "title": "PIN attempts",
+   "code": "correct_pin = \"2580\"\nmax_attempts = 3\nattempts = 0\nunlocked = False\n\nwhile attempts < max_attempts and not unlocked:\n    pin = input(\"Enter PIN: \")\n    attempts += 1\n    if pin == correct_pin:\n        unlocked = True\n    else:\n        print(f\"Wrong PIN, {max_attempts - attempts} left\")\n\nif unlocked:\n    print(f\"Unlocked after {attempts} attempt(s)\")\nelse:\n    print(\"Card blocked. Contact your bank.\")",
+   "stdin": "1111\n2580\n",
+   "expect": "Enter PIN: Wrong PIN, 2 left\nEnter PIN: Unlocked after 2 attempt(s)\n",
+   "explain": [
+    [
+     4,
+     "A flag: has the right PIN been entered yet?"
+    ],
+    [
+     6,
+     "Stop on either: out of attempts, or unlocked."
+    ],
+    [
+     8,
+     "Count every try."
+    ],
+    [
+     10,
+     "Setting the flag ends the loop at the next check."
+    ],
+    [
+     14,
+     "After the loop, the flag tells us why it ended."
+    ]
+   ],
+   "say": "An ATM gives you three tries. The loop runs while you have attempts left and haven't unlocked, two conditions joined with and. A boolean flag remembers whether the PIN matched, and after the loop we use it to pick the message. Try three wrong PINs in the input box and watch the card get blocked."
+  },
+  {
+   "type": "code",
+   "title": "Keep asking until it's valid",
+   "body": "The **validation loop**: ask, then re-ask while the answer is bad.",
+   "code": "age_text = input(\"Age: \").strip()\nwhile not age_text.isdigit() or int(age_text) > 120:\n    print(\"Please enter a whole number from 0 to 120\")\n    age_text = input(\"Age: \").strip()\n\nage = int(age_text)\nprint(f\"Thanks! In 5 years you'll be {age + 5}\")",
+   "stdin": "abc\n150\n25\n",
+   "expect": "Age: Please enter a whole number from 0 to 120\nAge: Please enter a whole number from 0 to 120\nAge: Thanks! In 5 years you'll be 30\n",
+   "explain": [
+    [
+     1,
+     "Ask once before the loop."
+    ],
+    [
+     2,
+     "If the text isn't digits, or stops early and int() never runs."
+    ],
+    [
+     4,
+     "Ask again inside the loop."
+    ],
+    [
+     6,
+     "After the loop, conversion is guaranteed safe."
+    ]
+   ],
+   "say": "This is the pattern for bulletproof input. Ask once, then loop while the answer is bad, asking again each time. The condition relies on a neat detail. Or stops as soon as its left side is True, so int is never called on text like abc. When the loop ends, you know the input is valid."
+  },
+  {
+   "type": "exercise",
+   "title": "The Collatz puzzle",
+   "task": "Start with any whole number. If it's even, halve it; if it's odd, make it `3 * n + 1`. Repeat until you reach 1. (No one has proved it always gets there!)\n\nPrint the steps and the highest value reached:\n`6 takes 8 steps, peaking at 16`",
+   "starter": "n = int(input(\"Start number: \"))\n# Loop while n isn't 1: count the steps and track the peak\n",
+   "stdin": "6\n",
+   "solution": "n = int(input(\"Start number: \"))\nstart = n\nsteps = 0\npeak = n\nwhile n != 1:\n    if n % 2 == 0:\n        n = n // 2\n    else:\n        n = 3 * n + 1\n    steps += 1\n    peak = max(peak, n)\nprint(f\"{start} takes {steps} steps, peaking at {peak}\")",
+   "tests": "out = await run_program(\"6\\n\")\nassert \"8 steps\" in out, \"6 goes 3, 10, 5, 16, 8, 4, 2, 1: that's 8 steps. Count one step per iteration.\"\nassert \"16\" in out, \"The highest value reached from 6 is 16. Track it with peak = max(peak, n).\"\nout = await run_program(\"27\\n\")\nassert \"111 steps\" in out and \"9232\" in out, \"27 is famous: it takes 111 steps and peaks at 9232.\"\nout = await run_program(\"1\\n\")\nassert \"0 steps\" in out, \"Starting at 1, you're already done: 0 steps. Does your loop check before the first step?\"",
+   "hints": [
+    "Even means n % 2 == 0. Use // to halve, so n stays a whole number.",
+    "Keep the original in another variable before the loop changes n.",
+    "peak = max(peak, n) after each step."
+   ],
+   "say": "Here's a puzzle that has defeated mathematicians for decades. Halve even numbers, triple odd numbers and add one, and repeat until you reach one. Write the loop, count the steps, and track the highest value. Then try twenty seven. You won't believe how far it climbs."
+  },
+  {
+   "type": "exercise",
+   "title": "ATM session",
+   "task": "Start with `balance = 5000`. Keep reading withdrawals until the user enters **0**:\n- more than the balance: print `Insufficient funds`, skip it\n- not a multiple of 100: print `Use multiples of 100`, skip it\n- otherwise: take it out and print the new balance\n\nFinally print `Final balance: ...`",
+   "starter": "balance = 5000\n# Loop: amount = int(input(\"Withdraw (0 to finish): \"))\n#   0 -> stop the loop\n#   more than balance -> \"Insufficient funds\", skip\n#   not a multiple of 100 -> \"Use multiples of 100\", skip\n#   otherwise -> take it out, print the new balance\nprint(f\"Final balance: {balance}\")\n",
+   "stdin": "2000\n1500\n0\n",
+   "solution": "balance = 5000\nwhile True:\n    amount = int(input(\"Withdraw (0 to finish): \"))\n    if amount == 0:\n        break\n    if amount > balance:\n        print(\"Insufficient funds\")\n        continue\n    if amount % 100 != 0:\n        print(\"Use multiples of 100\")\n        continue\n    balance -= amount\n    print(f\"Dispensed {amount}. Balance: {balance}\")\nprint(f\"Final balance: {balance}\")",
+   "tests": "out = await run_program(\"2000\\n1500\\n0\\n\")\nassert \"Final balance: 1500\" in out, \"Withdrawing 2000 then 1500 from 5000 should leave Final balance: 1500.\"\nout = await run_program(\"6000\\n250\\n1000\\n0\\n\")\nassert \"insufficient\" in out.lower(), \"6000 is more than the 5000 balance: print Insufficient funds.\"\nassert \"multiples of 100\" in out.lower(), \"250 isn't a multiple of 100: print Use multiples of 100.\"\nassert \"Final balance: 4000\" in out, \"Rejected withdrawals mustn't change the balance: after 1000 it should be 4000. Use continue to skip them.\"\nout = await run_program(\"5000\\n100\\n0\\n\")\nassert \"Final balance: 0\" in out, \"Withdrawing the whole 5000 is allowed. After that, even 100 is too much: Final balance: 0.\"\nout = await run_program(\"0\\n\")\nassert \"Final balance: 5000\" in out, \"If the first entry is 0, stop at once: Final balance: 5000.\"",
+   "hints": [
+    "Use while True: with a break when amount == 0.",
+    "Check amount > balance and amount % 100 != 0, each with continue.",
+    "Only the last case does balance -= amount."
+   ],
+   "say": "Build an ATM session. Keep reading withdrawal amounts until the customer enters zero. Reject amounts above the balance, and amounts that aren't multiples of one hundred, without stopping the session. Then print the final balance. Break and continue will do the heavy lifting."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 8 complete",
+   "points": [
+    "while repeats its body as long as the condition is True; something inside must move it towards stopping",
+    "Counters (+= 1) and accumulators (+= value) start before the loop and update inside it",
+    "while True with break handles sentinel values like done or 0",
+    "continue skips the rest of one iteration; break leaves the loop",
+    "Validation loop: ask, then re-ask while the input is bad"
+   ],
+   "say": "Mission eight complete. You can repeat work with while, count and total as you go, stop on a sentinel, skip bad data, and keep asking until the input is valid. Tomorrow we meet the for loop and range, the loop Python developers use most. See you on day nine."
+  }
+ ]
+}

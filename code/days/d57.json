@@ -1,0 +1,456 @@
+{
+ "day": 57,
+ "phase": 6,
+ "title": "Security essentials",
+ "subtitle": "Habits that protect your users",
+ "minutes": 65,
+ "goal": "Defend Python apps against injection, unsafe eval, weak password storage, guessable tokens, leaked keys and risky dependencies.",
+ "outcomes": [
+  "Validate untrusted input with allow-lists",
+  "Prevent SQL injection with parameterised queries",
+  "Replace eval with json, literal_eval or a parsed allow-list",
+  "Store passwords with salts, pbkdf2 and compare_digest",
+  "Use secrets for tokens, env vars for keys, and audit dependencies"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 57: Security essentials",
+   "body": "One unsafe line can leak every user's data. Security is not a separate job: it is a set of **habits** in every function you write.\n\nToday: the attacks that hit Python apps most, and the standard-library defences.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Threat",
+     "Defence"
+    ],
+    "rows": [
+     [
+      "SQL injection",
+      "Parameterised queries"
+     ],
+     [
+      "Code injection (eval)",
+      "json, ast.literal_eval, allow-lists"
+     ],
+     [
+      "Stolen password database",
+      "Salted, slow hashes"
+     ],
+     [
+      "Guessable tokens",
+      "The secrets module"
+     ],
+     [
+      "Leaked API keys",
+      "Environment variables, never git"
+     ],
+     [
+      "Malicious packages",
+      "Pin, audit, review"
+     ]
+    ]
+   },
+   "say": "One unsafe line of code can leak every user's data, and the headline will carry your company's name. Security is not a separate job for someone else. It is a set of habits in every function you write. Today you learn the attacks that hit Python apps most often, and the standard library tools that stop them."
+  },
+  {
+   "type": "concept",
+   "title": "Never trust input",
+   "body": "Anything from outside your code is **untrusted**: forms, URLs, files, API responses, headers, even your own database if users wrote it.\n\nParse it into the right type, then validate with an **allow-list** (what is permitted), not a block-list (what you remembered to forbid).",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Raw input (always text)",
+      "s": "pill"
+     },
+     {
+      "t": "Parse into the right type: int, date, enum"
+     },
+     {
+      "t": "Allowed format, length and range?",
+      "s": "diamond",
+      "yes": "use it",
+      "no": "reject with a clear error"
+     }
+    ]
+   },
+   "say": "The first rule of security: never trust input. Anything that comes from outside your code could be hostile: form fields, URLs, uploaded files, API responses, headers, even rows in your own database that users wrote. Parse every input into the right type, then validate it against an allow list of what is permitted. Block lists always forget something."
+  },
+  {
+   "type": "code",
+   "title": "Validate with an allow-list",
+   "body": "Describe what **is** allowed. `fullmatch` means the whole string must match, not just part of it.",
+   "code": "import re\n\nUSERNAME = re.compile(r\"[a-z0-9_]{3,20}\")\n\ndef clean_username(raw: str) -> str:\n    name = raw.strip().lower()\n    if not USERNAME.fullmatch(name):\n        raise ValueError(\"username must be 3 to 20 letters, digits or _\")\n    return name\n\ndef clean_quantity(raw: str) -> int:\n    qty = int(raw)                         # ValueError if it isn't a number\n    if not 1 <= qty <= 10:\n        raise ValueError(\"quantity must be 1 to 10\")\n    return qty\n\nfor raw in [\"Riya_21\", \"  arjun \", \"x\", \"riya'; DROP TABLE users;--\"]:\n    try:\n        print(\"ok  \", clean_username(raw))\n    except ValueError as err:\n        print(\"nope\", repr(raw), \"->\", err)\nprint(\"qty:\", clean_quantity(\"3\"))",
+   "expect": "ok   riya_21\nok   arjun\nnope 'x' -> username must be 3 to 20 letters, digits or _\nnope \"riya'; DROP TABLE users;--\" -> username must be 3 to 20 letters, digits or _\nqty: 3\n",
+   "explain": [
+    [
+     3,
+     "The allow-list: exactly which characters, and how many."
+    ],
+    [
+     7,
+     "fullmatch: the entire string must fit the pattern."
+    ],
+    [
+     12,
+     "Convert first: int() rejects text that isn't a number."
+    ],
+    [
+     13,
+     "Then check the range."
+    ]
+   ],
+   "say": "The username rule says exactly what is allowed: three to twenty lower case letters, digits or underscores, and full match makes the whole string obey it. Anything else is rejected, including that nasty attack string. Quantities are converted to integers first, then checked against a range. Clear rules, clear errors, no surprises."
+  },
+  {
+   "type": "concept",
+   "title": "SQL injection",
+   "body": "Building SQL with f-strings lets **input become code**. An attacker types a quote, and the rest of their text runs as SQL.\n\nParameterised queries (`?` placeholders, Day 48) send values **separately**, so they are always treated as data.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Vulnerable",
+     "code": "sql = f\"SELECT * FROM users WHERE name = '{name}'\"\nconn.execute(sql)"
+    },
+    "right": {
+     "title": "Safe",
+     "code": "conn.execute(\n    \"SELECT * FROM users WHERE name = ?\",\n    (name,),\n)"
+    },
+    "verdict": "With ? placeholders, input can never change the shape of your query."
+   },
+   "say": "SQL injection is still one of the most common attacks on the web. If you build SQL with an f string, an attacker can type a quote character, close your string early, and the rest of their text runs as SQL. With parameterised queries, you write question marks in the SQL and pass the values separately, so the database always treats them as plain data."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: the query the attacker wrote",
+   "code": "name = \"x' OR '1'='1\"\nprint(f\"SELECT * FROM users WHERE name = '{name}'\")",
+   "options": [
+    "SELECT * FROM users WHERE name = 'x' OR '1'='1'",
+    "SELECT * FROM users WHERE name = \"x' OR '1'='1\"",
+    "SELECT * FROM users WHERE name = '{name}'"
+   ],
+   "answer": 0,
+   "why": "The attacker's quote closes the string early. What remains is `OR '1'='1'`, which is true for **every** row. The query now returns the whole table.",
+   "say": "An attacker types this strange name into a search box. The app builds its SQL with an f string. What query does the database actually receive?"
+  },
+  {
+   "type": "code",
+   "title": "Watch the attack, then stop it",
+   "body": "This slide loads **sqlite3**. Same search, two ways of building the query.",
+   "code": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE users (name TEXT, balance INTEGER)\")\nconn.executemany(\"INSERT INTO users VALUES (?, ?)\",\n                 [(\"riya\", 5200), (\"arjun\", 830), (\"meera\", 12000)])\n\ndef find_user_unsafe(name):\n    sql = f\"SELECT name, balance FROM users WHERE name = '{name}'\"\n    return conn.execute(sql).fetchall()\n\ndef find_user_safe(name):\n    return conn.execute(\"SELECT name, balance FROM users WHERE name = ?\", (name,)).fetchall()\n\nattack = \"x' OR '1'='1\"\nprint(\"unsafe:\", find_user_unsafe(attack))\nprint(\"safe:  \", find_user_safe(attack))\nprint(\"safe:  \", find_user_safe(\"riya\"))",
+   "expect": "unsafe: [('riya', 5200), ('arjun', 830), ('meera', 12000)]\nsafe:   []\nsafe:   [('riya', 5200)]\n",
+   "explain": [
+    [
+     9,
+     "Input pasted into SQL: the attacker controls the query."
+    ],
+    [
+     13,
+     "A placeholder: the value travels separately, as data."
+    ],
+    [
+     16,
+     "The attack leaks every row."
+    ],
+    [
+     17,
+     "The same text, safely treated as a name: no match."
+    ]
+   ],
+   "needs": [
+    "sqlite3"
+   ],
+   "say": "A tiny in memory database with three users and their balances. The unsafe search, given the attack string, returns every user's balance: a full data leak. The safe search with a question mark placeholder looks for a user literally named with that strange text, finds nobody, and returns an empty list. Normal searches still work perfectly."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: an injectable search",
+   "task": "This order search builds SQL with an f-string. It is injectable, and it even crashes for real customers like **D'Souza**. Rewrite `orders_for` with a `?` placeholder.",
+   "starter": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE orders (id INTEGER, customer TEXT, total INTEGER)\")\nconn.executemany(\"INSERT INTO orders VALUES (?, ?, ?)\",\n                 [(1, \"riya\", 749), (2, \"D'Souza\", 1299), (3, \"riya\", 180), (4, \"arjun\", 99)])\n\ndef orders_for(customer: str) -> list[tuple]:\n    sql = f\"SELECT id, total FROM orders WHERE customer = '{customer}' ORDER BY id\"\n    return conn.execute(sql).fetchall()\n\nprint(orders_for(\"riya\"))",
+   "solution": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE orders (id INTEGER, customer TEXT, total INTEGER)\")\nconn.executemany(\"INSERT INTO orders VALUES (?, ?, ?)\",\n                 [(1, \"riya\", 749), (2, \"D'Souza\", 1299), (3, \"riya\", 180), (4, \"arjun\", 99)])\n\ndef orders_for(customer: str) -> list[tuple]:\n    sql = \"SELECT id, total FROM orders WHERE customer = ? ORDER BY id\"\n    return conn.execute(sql, (customer,)).fetchall()\n\nprint(orders_for(\"riya\"))",
+   "tests": "assert orders_for(\"riya\") == [(1, 749), (3, 180)], \"orders_for('riya') should return [(1, 749), (3, 180)].\"\ntry:\n    got = orders_for(\"D'Souza\")\nexcept Exception as err:\n    raise AssertionError(\"orders_for(\\\"D'Souza\\\") crashed with \" + type(err).__name__ + \". The apostrophe breaks f-string SQL. Pass the value with a ? placeholder.\")\nassert got == [(2, 1299)], \"orders_for(\\\"D'Souza\\\") should return [(2, 1299)].\"\nleaked = orders_for(\"x' OR '1'='1\")\nassert leaked == [], \"The injection string returned \" + str(len(leaked)) + \" rows! Use conn.execute(sql, (customer,)) with ? in the SQL.\"",
+   "hints": [
+    "Put a `?` where the value goes, with no quotes around it.",
+    "Pass the value as a tuple: `conn.execute(sql, (customer,))`. Note the comma."
+   ],
+   "needs": [
+    "sqlite3"
+   ],
+   "say": "Here is a search that would fail a security review. It builds SQL with an f string, so it can be injected, and it even crashes for a real customer named D'Souza, because the apostrophe ends the string early. Rewrite it with a question mark placeholder. One fix solves both problems."
+  },
+  {
+   "type": "concept",
+   "title": "eval is a back door",
+   "body": "`eval` and `exec` run **any** Python: `eval(\"__import__('os').remove('data.db')\")`.\n- for data: `json.loads` or `ast.literal_eval` (literals only)\n- for maths or formulas: parse and allow-list the operations\n- never `eval` text from users, files or the network",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Dangerous",
+     "code": "settings = eval(text)\nresult = eval(user_formula)"
+    },
+    "right": {
+     "title": "Safe",
+     "code": "settings = json.loads(text)\nsettings = ast.literal_eval(text)\nresult = safe_calc(user_formula)  # allow-list"
+    },
+    "verdict": "literal_eval accepts values, never function calls or imports."
+   },
+   "say": "eval and exec run any Python code at all. If user text reaches eval, the user can import the os module and delete your files, or read your secrets. For data, use json loads, or a s t literal eval, which only accepts plain values like numbers, strings, lists and dicts. For formulas, parse the expression and allow only the operations you trust."
+  },
+  {
+   "type": "code",
+   "title": "literal_eval says no",
+   "body": "`ast.literal_eval` reads Python **values** (dicts, lists, numbers, strings) and refuses everything else.",
+   "code": "import ast\n\nsafe_text = \"{'theme': 'dark', 'font_size': 14, 'langs': ['hi', 'en']}\"\nevil_text = \"__import__('os').listdir('.')\"\n\nprint(ast.literal_eval(safe_text))\ntry:\n    ast.literal_eval(evil_text)\nexcept ValueError as err:\n    print(\"literal_eval blocked it:\", type(err).__name__)\n\nresult = eval(evil_text)                     # never do this with real input\nprint(\"eval ran it and returned a\", type(result).__name__)",
+   "expect": "{'theme': 'dark', 'font_size': 14, 'langs': ['hi', 'en']}\nliteral_eval blocked it: ValueError\neval ran it and returned a list\n",
+   "explain": [
+    [
+     6,
+     "Plain values: allowed."
+    ],
+    [
+     8,
+     "A function call: refused with ValueError."
+    ],
+    [
+     12,
+     "eval runs anything it is given. That is the danger."
+    ]
+   ],
+   "say": "Literal eval happily reads a dictionary of settings, because it only contains plain values. Given text that imports a module and calls a function, it refuses with a value error. Plain eval runs the same text without a second thought, and returns a listing of our files. Imagine that text had deleted them instead."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: a safe calculator",
+   "q": "A calculator API receives expressions like `2 + 3 * 4` from users. Which approach is safe?",
+   "options": [
+    "`eval(expr)`",
+    "`eval(expr, {\"__builtins__\": {}})`: no builtins, so it's safe",
+    "Parse with `ast` and allow only numbers and `+ - * /`",
+    "`exec(expr)` inside `try/except`"
+   ],
+   "answer": 2,
+   "why": "Stripping builtins is a famous false fix: attackers can still reach dangerous objects through attributes like `().__class__`. Only an allow-list of parsed operations is safe. You will build one at the end of today.",
+   "say": "A calculator API that accepts formulas from users. One option removes all built in functions before calling eval. Is that enough? Which approach is actually safe?"
+  },
+  {
+   "type": "concept",
+   "title": "Storing passwords: salt and slow hashes",
+   "body": "Never store passwords, not even encrypted. Store a **hash**:\n- a **random salt per user**, so equal passwords look different and precomputed tables fail\n- a **slow** function, so guessing billions of passwords is too expensive\n\nStandard library: `hashlib.pbkdf2_hmac`. In production: **argon2** or **bcrypt** (`argon2-cffi`, `bcrypt` on PyPI).",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "User signs up with a password",
+     "salt = secrets.token_bytes(16)",
+     "hash = pbkdf2_hmac('sha256', password, salt, many iterations)",
+     "Store salt and hash; never the password",
+     "Login: hash the attempt with the same salt, compare_digest"
+    ]
+   },
+   "say": "Never store passwords, not even encrypted ones. Store a hash instead. Give every user a random salt, so two people with the same password get different hashes and precomputed tables become useless. And use a deliberately slow function, so an attacker who steals your database cannot test billions of guesses. In production, use argon2 or bcrypt."
+  },
+  {
+   "type": "code",
+   "title": "Why a plain hash is not enough",
+   "body": "A hash is a one-way fingerprint. Identical passwords give identical hashes, until you add a salt. (This slide loads **hashlib**'s full backend, used for the rest of today.)",
+   "code": "import hashlib\n\ndef sha(text: str) -> str:\n    return hashlib.sha256(text.encode()).hexdigest()[:16]\n\nprint(\"riya :\", sha(\"chai@123\"))\nprint(\"arjun:\", sha(\"chai@123\"))     # same password, same hash: crack one, crack both\nprint(\"one character changed:\", sha(\"chai@124\"))\n\nsalt_riya, salt_arjun = \"9f2c\", \"41aa\"      # random per user in real life\nprint(\"riya  + salt:\", sha(salt_riya + \"chai@123\"))\nprint(\"arjun + salt:\", sha(salt_arjun + \"chai@123\"))",
+   "expect": "riya : e0ac55b93f0722e9\narjun: e0ac55b93f0722e9\none character changed: f43da98e04c9ee72\nriya  + salt: 486b366288b15a1f\narjun + salt: ffaf48e591e3caac\n",
+   "explain": [
+    [
+     4,
+     "sha256 gives a fixed-size fingerprint; we show the first 16 hex digits."
+    ],
+    [
+     7,
+     "Same input, same hash: a leak reveals both users."
+    ],
+    [
+     10,
+     "A salt is random, public, and different for every user."
+    ]
+   ],
+   "needs": [
+    "hashlib"
+   ],
+   "say": "S H A two five six turns any text into a fixed fingerprint, and changing one character changes everything. But two users with the same password get the same hash, so cracking one cracks both, and attackers keep huge tables of common hashes. Adding a different salt per user makes the same password produce completely different hashes."
+  },
+  {
+   "type": "code",
+   "title": "Salted, slow hashing with pbkdf2",
+   "body": "This slide loads **hashlib**'s fast OpenSSL backend. `compare_digest` compares in constant time, so timing can't leak the hash.",
+   "code": "import hashlib\nimport hmac\nimport secrets\n\nITERATIONS = 100_000         # OWASP suggests 600,000 for sha256; fewer here so phones stay quick\n\ndef hash_password(password: str, salt: bytes | None = None) -> tuple[bytes, bytes]:\n    salt = salt or secrets.token_bytes(16)\n    digest = hashlib.pbkdf2_hmac(\"sha256\", password.encode(), salt, ITERATIONS)\n    return salt, digest\n\ndef verify_password(password: str, salt: bytes, expected: bytes) -> bool:\n    _, digest = hash_password(password, salt)\n    return hmac.compare_digest(digest, expected)\n\nsalt, stored = hash_password(\"chai@123\")\nprint(len(salt), \"byte salt,\", len(stored), \"byte hash\")\nprint(\"right password:\", verify_password(\"chai@123\", salt, stored))\nprint(\"wrong password:\", verify_password(\"chai@124\", salt, stored))\nprint(\"same password, new salt, same hash?\", hash_password(\"chai@123\")[1] == stored)",
+   "expect": "16 byte salt, 32 byte hash\nright password: True\nwrong password: False\nsame password, new salt, same hash? False\n",
+   "explain": [
+    [
+     5,
+     "Iterations make every guess slow for attackers."
+    ],
+    [
+     8,
+     "A fresh random salt for every new password."
+    ],
+    [
+     9,
+     "pbkdf2_hmac: a slow, salted key-derivation function."
+    ],
+    [
+     14,
+     "Constant-time comparison: no timing hints."
+    ]
+   ],
+   "needs": [
+    "hashlib"
+   ],
+   "say": "This is a real password scheme. A sixteen byte random salt from the secrets module, and P B K D F 2 running S H A two five six a hundred thousand times, so each guess costs an attacker real work. To log in, we hash the attempt with the stored salt and compare with compare digest, which takes the same time whether the first byte or the last byte differs."
+  },
+  {
+   "type": "concept",
+   "title": "Secrets: tokens and keys",
+   "body": "- `random` is **predictable** (seeded, Day 21): fine for games, never for security\n- `secrets` makes unguessable tokens: reset links, OTPs, API keys\n- API keys and passwords come from **environment variables** or a secrets manager; add `.env` to `.gitignore`",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Never",
+     "code": "API_KEY = \"sk_live_51Hx...\"   # now in git forever\notp = random.randint(100000, 999999)"
+    },
+    "right": {
+     "title": "Always",
+     "code": "API_KEY = os.environ[\"PAYMENT_API_KEY\"]\notp = \"\".join(secrets.choice(\"0123456789\")\n              for _ in range(6))"
+    },
+    "verdict": "Keys live outside the code; tokens come from a cryptographically secure source."
+   },
+   "say": "The random module is built for simulations and games. It is predictable: anyone who learns its state can reproduce every number. For password reset links, one time passwords and API keys, use the secrets module. And keep real keys out of your code: read them from environment variables or a secrets manager, and never commit them to git."
+  },
+  {
+   "type": "code",
+   "title": "The secrets module",
+   "body": "We print lengths, not values: real tokens are different on every run.",
+   "code": "import os\nimport secrets\nimport string\n\nreset_token = secrets.token_urlsafe(32)\nprint(\"reset-link token length:\", len(reset_token))\nprint(\"hex API key length:\", len(secrets.token_hex(16)))\n\notp = \"\".join(secrets.choice(string.digits) for _ in range(6))\nprint(\"OTP is 6 digits:\", len(otp) == 6 and otp.isdigit())\n\napi_key = os.environ.get(\"PAYMENT_API_KEY\")\nif api_key is None:\n    print(\"PAYMENT_API_KEY is not set: refusing to start payments\")",
+   "expect": "reset-link token length: 43\nhex API key length: 32\nOTP is 6 digits: True\nPAYMENT_API_KEY is not set: refusing to start payments\n",
+   "explain": [
+    [
+     5,
+     "32 random bytes, encoded safely for URLs."
+    ],
+    [
+     9,
+     "secrets.choice: an unpredictable pick for each digit."
+    ],
+    [
+     12,
+     "Secrets come from the environment, not the source code."
+    ],
+    [
+     14,
+     "Fail safely when a secret is missing."
+    ]
+   ],
+   "needs": [
+    "hashlib"
+   ],
+   "say": "Token u r l safe gives a random token that is safe inside a link: thirty two random bytes become forty three characters. Token hex is great for API keys. Secrets dot choice builds a six digit one time password. We print lengths, not the tokens, because they change every run. Finally, the API key is read from the environment, and the app refuses to start without it."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: how random is random?",
+   "code": "import random\n\nrandom.seed(2026)\nfirst = [random.randint(0, 9) for _ in range(6)]\nrandom.seed(2026)\nsecond = [random.randint(0, 9) for _ in range(6)]\nprint(first == second)",
+   "options": [
+    "True",
+    "False"
+   ],
+   "answer": 0,
+   "why": "Same seed, same sequence, every time. That is perfect for tests and games, and a disaster for OTPs: anyone who can guess the seed can generate your codes.",
+   "say": "Two six digit sequences from the random module, both after seeding with the same number. Are they equal?"
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: a salted password store",
+   "task": "Write `hash_password(password)` and `verify(password, stored)`:\n- a new 16-byte salt from `secrets` for every call\n- `hashlib.pbkdf2_hmac(\"sha256\", ...)` with `ITERATIONS`\n- store as `\"salt_hex$hash_hex\"`\n- `verify` re-hashes with the stored salt and uses `hmac.compare_digest`\n- an empty password raises `ValueError`",
+   "starter": "import hashlib\nimport hmac\nimport secrets\n\nITERATIONS = 100_000\n\ndef hash_password(password: str) -> str:\n    \"\"\"Return 'salt_hex$hash_hex' to store in the database.\"\"\"\n    return password                      # TODO: never store the real password!\n\ndef verify(password: str, stored: str) -> bool:\n    return password == stored            # TODO: re-hash with the stored salt, then compare_digest\n\nrecord = hash_password(\"chai@123\")\nprint(record)\nprint(verify(\"chai@123\", record), verify(\"chai@124\", record))",
+   "solution": "import hashlib\nimport hmac\nimport secrets\n\nITERATIONS = 100_000\n\ndef hash_password(password: str) -> str:\n    \"\"\"Return 'salt_hex$hash_hex' to store in the database.\"\"\"\n    if not password:\n        raise ValueError(\"password must not be empty\")\n    salt = secrets.token_bytes(16)\n    digest = hashlib.pbkdf2_hmac(\"sha256\", password.encode(), salt, ITERATIONS)\n    return salt.hex() + \"$\" + digest.hex()\n\ndef verify(password: str, stored: str) -> bool:\n    salt_hex, digest_hex = stored.split(\"$\")\n    digest = hashlib.pbkdf2_hmac(\"sha256\", password.encode(), bytes.fromhex(salt_hex), ITERATIONS)\n    return hmac.compare_digest(digest.hex(), digest_hex)\n\nrecord = hash_password(\"chai@123\")\nprint(record)\nprint(verify(\"chai@123\", record), verify(\"chai@124\", record))",
+   "tests": "a = hash_password(\"chai@123\")\nassert \"chai@123\" not in a, \"The stored value contains the real password! Store a salted hash instead.\"\nassert a.count(\"$\") == 1, \"Store it as 'salt_hex$hash_hex': exactly one $ between salt and hash.\"\nsalt_hex, hash_hex = a.split(\"$\")\nassert len(bytes.fromhex(salt_hex)) >= 16, \"Use a random salt of at least 16 bytes: secrets.token_bytes(16).\"\nassert \"pbkdf2_hmac\" in __code__ or \"scrypt\" in __code__, \"Use a slow key-derivation function: hashlib.pbkdf2_hmac('sha256', ...).\"\nassert verify(\"chai@123\", a) is True, \"verify should return True for the right password.\"\nassert verify(\"chai@124\", a) is False, \"verify should return False for a wrong password.\"\nb = hash_password(\"chai@123\")\nassert a != b, \"Hashing the same password twice must give different results: a new random salt every time.\"\nassert verify(\"chai@123\", b), \"Each stored value should verify with its own salt.\"\ntry:\n    hash_password(\"\")\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError(\"An empty password should raise ValueError.\")",
+   "hints": [
+    "Salt: `salt = secrets.token_bytes(16)`; hash: `hashlib.pbkdf2_hmac(\"sha256\", password.encode(), salt, ITERATIONS)`.",
+    "Store `salt.hex() + \"$\" + digest.hex()`. In `verify`, split on `$` and use `bytes.fromhex(salt_hex)`.",
+    "Compare with `hmac.compare_digest(new_hex, stored_hex)`."
+   ],
+   "needs": [
+    "hashlib"
+   ],
+   "say": "Now build the password store a real app needs. Every call gets a fresh random salt, the password goes through P B K D F 2, and you store the salt and the hash together, separated by a dollar sign. Verify splits them apart, re hashes the attempt with the same salt, and compares safely. The starter stores the plain password: the tests will not let that pass."
+  },
+  {
+   "type": "concept",
+   "title": "Dependency risks",
+   "body": "Your app is your code **plus hundreds of packages**. Risks: known vulnerabilities, typosquats (`reqeusts`), abandoned or hijacked projects.\n- pin versions (with hashes) and update on purpose\n- run `pip-audit` in CI; turn on Dependabot or Renovate\n- review a package before adding it: maintainers, activity, downloads",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "pip-audit -r requirements.txt"
+     ],
+     [
+      "",
+      "Found 1 known vulnerability in 1 package"
+     ],
+     [
+      "",
+      "Name    Version  ID              Fix Versions"
+     ],
+     [
+      "",
+      "jinja2  3.1.2    CVE-2024-22195  3.1.3"
+     ],
+     [
+      "$",
+      "pip install --require-hashes -r requirements.txt"
+     ],
+     [
+      "",
+      "Every downloaded file is checked against its pinned hash"
+     ]
+    ]
+   },
+   "say": "Your application is your code plus hundreds of packages written by strangers. Some will have known vulnerabilities. Some are typosquats, malicious packages with names one letter away from popular ones. Some get abandoned or hijacked. Pin your versions, run pip audit in your CI pipeline, let a bot propose updates, and look at a package's health before you add it."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: the typo",
+   "q": "A blog post tells you to run `pip install reqeusts`. What is the risk?",
+   "options": [
+    "None: PyPI checks every package for malware",
+    "It may be a **typosquat**: a malicious package named like a popular one",
+    "It will just install an older version of requests"
+   ],
+   "answer": 1,
+   "why": "Anyone can publish to PyPI. Attackers register names one typo away from popular packages, and their install scripts can steal keys from your machine. Copy names from official docs and check the package page first.",
+   "say": "A blog post says to run pip install, followed by a name that looks a lot like requests. What is the risk?"
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: a safe calculator",
+   "task": "Replace `eval` with an **allow-list**. Make `safe_calc` call `_walk(ast.parse(expr, mode=\"eval\"))` and finish `_walk`:\n- numbers (`ast.Constant`) are allowed\n- `ast.BinOp` only with an operator in `OPS`\n- `ast.UnaryOp` only with `ast.USub` (minus)\n- **everything else** raises `ValueError` (names, calls, attributes, `**`)",
+   "starter": "import ast\nimport operator\n\nOPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv}\n\ndef safe_calc(expr: str) -> float:\n    return eval(expr)          # TODO: return _walk(ast.parse(expr, mode=\"eval\"))\n\ndef _walk(node):\n    if isinstance(node, ast.Expression):\n        return _walk(node.body)\n    if isinstance(node, ast.Constant) and type(node.value) in (int, float):\n        return node.value\n    # TODO: ast.BinOp whose type(node.op) is in OPS -> OPS[type(node.op)](left, right)\n    # TODO: ast.UnaryOp whose op is ast.USub -> minus the operand\n    raise ValueError(f\"not allowed: {type(node).__name__}\")\n\nprint(safe_calc(\"2 + 3 * 4\"))",
+   "solution": "import ast\nimport operator\n\nOPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv}\n\ndef safe_calc(expr: str) -> float:\n    return _walk(ast.parse(expr, mode=\"eval\"))\n\ndef _walk(node):\n    if isinstance(node, ast.Expression):\n        return _walk(node.body)\n    if isinstance(node, ast.Constant) and type(node.value) in (int, float):\n        return node.value\n    if isinstance(node, ast.BinOp) and type(node.op) in OPS:\n        return OPS[type(node.op)](_walk(node.left), _walk(node.right))\n    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.USub):\n        return -_walk(node.operand)\n    raise ValueError(f\"not allowed: {type(node).__name__}\")\n\nprint(safe_calc(\"2 + 3 * 4\"))",
+   "tests": "assert safe_calc(\"2 + 3 * 4\") == 14, \"safe_calc('2 + 3 * 4') should be 14.\"\nassert safe_calc(\"(10 - 4) / 3\") == 2.0, \"safe_calc('(10 - 4) / 3') should be 2.0.\"\nassert safe_calc(\"-5 + 2\") == -3, \"Support unary minus: safe_calc('-5 + 2') should be -3.\"\nfor evil in [\"__import__('os').getcwd()\", \"open('secrets.txt').read()\", \"2 ** 100000000\", \"price * 2\"]:\n    try:\n        result = safe_calc(evil)\n    except ValueError:\n        continue\n    raise AssertionError(\"safe_calc(\" + repr(evil) + \") was evaluated instead of raising ValueError. Use the ast allow-list, not eval.\")",
+   "hints": [
+    "First line of `safe_calc`: `return _walk(ast.parse(expr, mode=\"eval\"))`.",
+    "BinOp: `if isinstance(node, ast.BinOp) and type(node.op) in OPS: return OPS[type(node.op)](_walk(node.left), _walk(node.right))`",
+    "UnaryOp: `if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.USub): return -_walk(node.operand)`"
+   ],
+   "say": "Final challenge: close the eval back door. Parse the formula into a syntax tree, then walk it, allowing only numbers, the four basic operators and a minus sign. Anything else, a name, a function call, an import, even the power operator that could freeze your server, must raise a value error. The tests try some genuinely nasty inputs."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 57 complete",
+   "points": [
+    "Never trust input: parse it, then validate with an allow-list",
+    "SQL: always `?` placeholders, never f-strings",
+    "No `eval` on outside text: `json`, `ast.literal_eval` or a parsed allow-list",
+    "Passwords: random salt + slow hash (`pbkdf2_hmac`; argon2 or bcrypt in production) + `compare_digest`",
+    "`secrets` for tokens, environment variables for keys, and audit your dependencies"
+   ],
+   "say": "Mission fifty seven complete. You can validate input with allow lists, stop SQL injection, close the eval back door, store passwords with salts and slow hashes, generate secure tokens, keep keys out of your code, and watch your dependencies. These habits protect real people. Tomorrow the capstone begins: you build a complete application."
+  }
+ ]
+}

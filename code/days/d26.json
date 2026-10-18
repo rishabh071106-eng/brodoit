@@ -1,0 +1,446 @@
+{
+ "day": 26,
+ "phase": 3,
+ "title": "OOP III: inheritance and composition",
+ "subtitle": "Families of classes, and objects built from parts",
+ "minutes": 55,
+ "goal": "Share behaviour with inheritance and super(), write polymorphic code, enforce contracts with abstract base classes, and choose composition when it fits better.",
+ "outcomes": [
+  "Create child classes that inherit, override and extend parent methods",
+  "Use super().__init__ correctly in a child class",
+  "Write polymorphic code that works with any subclass",
+  "Define an abstract base class with abc",
+  "Decide between inheritance (is-a) and composition (has-a)"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 26: Families of classes",
+   "body": "A shop app has UPI, card and cash-on-delivery payments. A transport app has cars, bikes and autos. They share a lot, but each has its own twist.\n\nToday: **inheritance** to share code across a family, **polymorphism** to treat them all alike, and **composition** to build objects from parts.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "Vehicle",
+     "c": [
+      {
+       "t": "Car",
+       "c": [
+        {
+         "t": "ElectricCar"
+        }
+       ]
+      },
+      {
+       "t": "Bike"
+      },
+      {
+       "t": "Auto"
+      }
+     ]
+    }
+   },
+   "say": "A shop app accepts UPI, cards and cash on delivery. A transport app handles cars, bikes and autos. Each family shares a lot of behaviour, but every member has its own twist. Today you learn inheritance, to share code across a family of classes, polymorphism, to treat them all the same way, and composition, to build objects out of smaller parts."
+  },
+  {
+   "type": "concept",
+   "title": "Inheritance: \"is a\"",
+   "body": "`class Bike(Vehicle):` means a Bike **is a** Vehicle. It inherits every attribute and method of the **parent** (or **base**) class, and can add its own.\n\nWrite shared code once, in the parent.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Copy and paste",
+     "code": "class Car:\n    def describe(self): ...\n    def honk(self): ...\n\nclass Bike:\n    def describe(self): ...  # same code again\n    def honk(self): ...      # and again"
+    },
+    "right": {
+     "title": "Inherit",
+     "code": "class Vehicle:\n    def describe(self): ...\n    def honk(self): ...\n\nclass Car(Vehicle): ...\nclass Bike(Vehicle): ..."
+    },
+    "verdict": "Fix a bug in Vehicle once, and every child gets the fix."
+   },
+   "say": "Writing class Bike, with Vehicle in brackets, means a bike is a vehicle. The bike class inherits every method of its parent, also called the base class, and can add new methods of its own. Shared behaviour is written once, in the parent, instead of being copied into every child class."
+  },
+  {
+   "type": "code",
+   "title": "A Bike is a Vehicle",
+   "code": "class Vehicle:\n    def __init__(self, brand, wheels):\n        self.brand = brand\n        self.wheels = wheels\n\n    def describe(self):\n        return f\"{self.brand} with {self.wheels} wheels\"\n\n    def honk(self):\n        return \"Beep!\"\n\n\nclass Bike(Vehicle):\n    def wheelie(self):\n        return f\"The {self.brand} pops a wheelie\"\n\n\nb = Bike(\"Royal Enfield\", 2)\nprint(b.describe())\nprint(b.honk())\nprint(b.wheelie())\nprint(isinstance(b, Bike), isinstance(b, Vehicle))\nprint(issubclass(Bike, Vehicle))",
+   "expect": "Royal Enfield with 2 wheels\nBeep!\nThe Royal Enfield pops a wheelie\nTrue True\nTrue\n",
+   "explain": [
+    [
+     13,
+     "Bike inherits from Vehicle."
+    ],
+    [
+     18,
+     "Bike has no __init__, so Vehicle.__init__ runs."
+    ],
+    [
+     19,
+     "describe is found on the parent class."
+    ],
+    [
+     21,
+     "wheelie exists only on Bike."
+    ],
+    [
+     22,
+     "A Bike is a Bike, and also a Vehicle."
+    ]
+   ],
+   "say": "Bike inherits from Vehicle and adds just one method, wheelie. When we create a bike, Python looks for dunder init on Bike, does not find one, and uses the parent's. Describe and honk are found on the parent too. And isinstance confirms what inheritance means: a bike is a bike, and it is also a vehicle."
+  },
+  {
+   "type": "concept",
+   "title": "Overriding and super()",
+   "body": "A child can **override** a parent method by defining one with the same name.\n\n`super()` reaches the parent's version, so you can **extend** it instead of copying it. Most often: `super().__init__(...)` sets up the parent's attributes first, then the child adds its own.",
+   "visual": {
+    "kind": "stack",
+    "frames": [
+     {
+      "name": "main",
+      "vars": [
+       [
+        "car",
+        "(being built)"
+       ]
+      ]
+     },
+     {
+      "name": "Car.__init__(brand, seats)",
+      "vars": [
+       [
+        "seats",
+        "5"
+       ]
+      ]
+     },
+     {
+      "name": "Vehicle.__init__(brand, wheels=4)",
+      "vars": [
+       [
+        "brand",
+        "'Tata Nexon'"
+       ],
+       [
+        "wheels",
+        "4"
+       ]
+      ],
+      "ret": "None"
+     }
+    ]
+   },
+   "say": "A child class can override a method by defining one with the same name. Its version wins. But often you want to extend the parent's behaviour, not replace it. Super gives you the parent's version. The most common use is in dunder init: call super dot dunder init to set up the parent's attributes, then add the child's own."
+  },
+  {
+   "type": "code",
+   "title": "Extending with super()",
+   "code": "class Vehicle:\n    def __init__(self, brand, wheels):\n        self.brand = brand\n        self.wheels = wheels\n\n    def describe(self):\n        return f\"{self.brand} with {self.wheels} wheels\"\n\n\nclass Car(Vehicle):\n    def __init__(self, brand, seats):\n        super().__init__(brand, wheels=4)\n        self.seats = seats\n\n    def describe(self):\n        return super().describe() + f\" and {self.seats} seats\"\n\n\ncar = Car(\"Tata Nexon\", 5)\nprint(car.describe())\nprint(car.wheels, car.seats)\nprint(Vehicle(\"Bajaj auto\", 3).describe())",
+   "expect": "Tata Nexon with 4 wheels and 5 seats\n4 5\nBajaj auto with 3 wheels\n",
+   "explain": [
+    [
+     11,
+     "Car has its own __init__, with different parameters."
+    ],
+    [
+     12,
+     "Let Vehicle set brand and wheels; every car has 4."
+    ],
+    [
+     13,
+     "Then add what only cars have."
+    ],
+    [
+     15,
+     "Override describe..."
+    ],
+    [
+     16,
+     "...but reuse the parent version and extend it."
+    ],
+    [
+     22,
+     "The parent class still works on its own."
+    ]
+   ],
+   "say": "Car has its own dunder init, but instead of copying the parent's code, it calls super dot dunder init with the brand and four wheels, then adds the seats. Describe is overridden too, and it calls the parent's describe and adds to the end. If Vehicle's describe ever changes, Car picks up the change automatically."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "class Animal:\n    def speak(self):\n        return \"...\"\n\n    def intro(self):\n        return \"I say \" + self.speak()\n\n\nclass Dog(Animal):\n    def speak(self):\n        return \"Woof\"\n\n\nprint(Dog().intro(), \"|\", Animal().intro())",
+   "options": [
+    "I say ... | I say ...",
+    "I say Woof | I say ...",
+    "I say Woof | I say Woof",
+    "AttributeError: 'Dog' object has no attribute 'intro'"
+   ],
+   "answer": 1,
+   "why": "`intro` lives in Animal, but `self` is a Dog, so `self.speak()` finds Dog's version first. Python always starts the search at the object's own class. This is what makes overriding powerful.",
+   "say": "Here is a subtle one. Intro is defined only in Animal, and it calls self dot speak. Dog overrides speak. What does a dog's intro say? Think about what self is."
+  },
+  {
+   "type": "concept",
+   "title": "Polymorphism: one interface, many forms",
+   "body": "**Polymorphism**: different classes offer the **same method**, each in its own way. Code that calls `method.pay(amount)` works with every payment type, including ones written next year.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Class",
+     "fee(1499)",
+     "pay(1499)"
+    ],
+    "rows": [
+     [
+      "UPI",
+      "0",
+      "₹1,499.00"
+     ],
+     [
+      "Card",
+      "2% = 29.98",
+      "₹1,528.98"
+     ],
+     [
+      "COD",
+      "flat 40",
+      "₹1,539.00"
+     ]
+    ]
+   },
+   "say": "Polymorphism is a big word for a simple idea. Different classes offer the same method, each in its own way. Your checkout code calls pay on whatever payment method it is given, and does not care whether it is UPI, a card or cash. Next year someone adds a new payment type, and checkout keeps working without a single change."
+  },
+  {
+   "type": "code",
+   "title": "Payment methods",
+   "body": "`pay` is written once in the parent. Each child only overrides the part that differs: its `fee`.",
+   "code": "class Payment:\n    def fee(self, amount):\n        return 0\n\n    def pay(self, amount):\n        total = amount + self.fee(amount)\n        return f\"{type(self).__name__}: paid ₹{total:,.2f}\"\n\n\nclass UPI(Payment):\n    pass  # no fee: the parent's fee() is already right\n\n\nclass Card(Payment):\n    def fee(self, amount):\n        return round(amount * 0.02, 2)\n\n\nclass COD(Payment):\n    def fee(self, amount):\n        return 40\n\n\nfor method in [UPI(), Card(), COD()]:\n    print(method.pay(1499))",
+   "expect": "UPI: paid ₹1,499.00\nCard: paid ₹1,528.98\nCOD: paid ₹1,539.00\n",
+   "explain": [
+    [
+     5,
+     "pay lives in the parent and calls self.fee, whatever kind of payment self is."
+    ],
+    [
+     7,
+     "type(self).__name__ is the name of the object's class, like Card."
+    ],
+    [
+     10,
+     "UPI changes nothing, so it inherits fee() of 0."
+    ],
+    [
+     14,
+     "Card overrides fee with a 2 percent charge."
+    ],
+    [
+     19,
+     "COD charges a flat 40 rupees."
+    ],
+    [
+     24,
+     "One loop, three classes, one method call: polymorphism."
+    ]
+   ],
+   "say": "The parent writes pay once. It adds the fee and formats a receipt. Each child only overrides the part that differs, its fee. UPI changes nothing, a card adds two percent, and cash on delivery adds a flat forty rupees. The loop at the bottom calls pay on each one without knowing or caring which class it is. That is polymorphism."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "`checkout(method)` calls `method.pay(amount)`. You add `class NetBanking(Payment)` with its own `fee`. What must change in `checkout`?",
+   "options": [
+    "Add an if for NetBanking",
+    "Nothing",
+    "Rename pay to netbanking_pay",
+    "Make checkout a class method"
+   ],
+   "answer": 1,
+   "why": "That is the point of polymorphism: `checkout` depends only on the shared method `pay`. New payment types plug in without touching existing, tested code.",
+   "say": "Quick check. Checkout calls pay on whatever method it receives. You add a new net banking class with its own fee. What must change inside checkout?"
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "class A:\n    def hi(self):\n        return \"A\"\n\n\nclass B(A):\n    pass\n\n\nclass C(B):\n    def hi(self):\n        return \"C\" + super().hi()\n\n\nprint(C().hi(), B().hi())",
+   "options": [
+    "C A",
+    "CA A",
+    "CBA A",
+    "CA B"
+   ],
+   "answer": 1,
+   "why": "`super()` in C starts looking in C's parent, B. B has no `hi`, so the search continues to A. `B().hi()` also finds A's version. Python walks up the family tree until it finds the method.",
+   "say": "Three generations of classes. C overrides hi and calls super. B defines nothing. What prints for C and for B?"
+  },
+  {
+   "type": "concept",
+   "title": "Abstract base classes",
+   "body": "Some parents should never be used directly: what would a plain \"payment method\" charge? An **abstract base class** (`abc` module) declares methods every child **must** implement.\n\nForget one, and Python refuses to create the object, so the bug shows up at once, not at checkout.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Plain parent",
+     "code": "card = GiftCard()      # works...\ncard.pay(500)          # crashes at checkout"
+    },
+    "right": {
+     "title": "Abstract parent",
+     "code": "card = GiftCard()\n# TypeError right away:\n# no implementation for pay"
+    },
+    "verdict": "Fail early, where the developer is, not late, where the customer is."
+   },
+   "say": "Some parent classes should never be used directly. What would a plain payment method even do? An abstract base class, from the abc module, declares the methods every child must implement. If a child forgets one, Python refuses to create the object at all. The bug appears the moment you build the object, not when a customer is halfway through checkout."
+  },
+  {
+   "type": "code",
+   "title": "An abstract PaymentMethod",
+   "code": "from abc import ABC, abstractmethod\n\n\nclass PaymentMethod(ABC):\n    @abstractmethod\n    def pay(self, amount):\n        \"\"\"Charge the amount and return a receipt.\"\"\"\n\n\nclass UPI(PaymentMethod):\n    def pay(self, amount):\n        return f\"UPI: ₹{amount}\"\n\n\nclass GiftCard(PaymentMethod):\n    def redeem(self, amount):  # oops: never implemented pay\n        return f\"Gift card: ₹{amount}\"\n\n\nprint(UPI().pay(250))\nfor cls in (GiftCard, PaymentMethod):\n    try:\n        cls()\n    except TypeError as e:\n        print(\"TypeError:\", e)",
+   "expect": "UPI: ₹250\nTypeError: Can't instantiate abstract class GiftCard without an implementation for abstract method 'pay'\nTypeError: Can't instantiate abstract class PaymentMethod without an implementation for abstract method 'pay'\n",
+   "explain": [
+    [
+     4,
+     "Inheriting from ABC makes this an abstract base class."
+    ],
+    [
+     5,
+     "@abstractmethod: every child must define pay."
+    ],
+    [
+     6,
+     "The body is just a docstring describing the contract."
+    ],
+    [
+     10,
+     "UPI implements pay, so it can be created."
+    ],
+    [
+     15,
+     "GiftCard forgot pay."
+    ],
+    [
+     23,
+     "Creating a GiftCard, or the abstract parent itself, fails immediately."
+    ]
+   ],
+   "say": "Payment method inherits from ABC and marks pay as an abstract method, with just a docstring describing the contract. UPI implements pay, so it works normally. Gift card forgot to, so Python refuses to create one, with a clear message naming the missing method. And the abstract parent itself cannot be created either."
+  },
+  {
+   "type": "concept",
+   "title": "Composition: \"has a\"",
+   "body": "Not everything is a family. A Car **has an** Engine. An Order **has a** customer, items and a payment method. Store the parts as attributes and delegate work to them.\n\nRule of thumb: use inheritance for **is-a**, composition for **has-a**. When unsure, prefer composition: parts can be swapped.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "Order",
+     "c": [
+      {
+       "t": "customer: Customer"
+      },
+      {
+       "t": "items: list of LineItem"
+      },
+      {
+       "t": "payment: UPI or Card"
+      }
+     ]
+    }
+   },
+   "say": "Not every relationship is a family. A car is not a kind of engine, it has an engine. An order has a customer, some items and a payment method. That is composition: store the parts as attributes and hand work over to them. Use inheritance for is a, and composition for has a. When you are unsure, prefer composition, because parts can be swapped later."
+  },
+  {
+   "type": "code",
+   "title": "A Car has an engine",
+   "code": "class PetrolEngine:\n    def start(self):\n        return \"Vroom\"\n\n\nclass ElectricMotor:\n    def start(self):\n        return \"Hmmm (silent)\"\n\n\nclass Car:\n    def __init__(self, brand, engine):\n        self.brand = brand\n        self.engine = engine  # a Car HAS an engine\n\n    def start(self):\n        return f\"{self.brand}: {self.engine.start()}\"\n\n\nthar = Car(\"Mahindra Thar\", PetrolEngine())\nnexon = Car(\"Tata Nexon EV\", ElectricMotor())\nprint(thar.start())\nprint(nexon.start())\nthar.engine = ElectricMotor()  # swap the part, keep the car\nprint(thar.start())",
+   "expect": "Mahindra Thar: Vroom\nTata Nexon EV: Hmmm (silent)\nMahindra Thar: Hmmm (silent)\n",
+   "explain": [
+    [
+     11,
+     "Car does not inherit from any engine."
+    ],
+    [
+     14,
+     "It stores whichever engine object it was given."
+    ],
+    [
+     17,
+     "Delegation: the car asks its engine to do the work."
+    ],
+    [
+     20,
+     "Different parts, same Car class."
+    ],
+    [
+     24,
+     "Composition lets you swap a part at runtime."
+    ]
+   ],
+   "say": "Car does not inherit from an engine. It holds one, as an attribute, and its start method simply asks the engine to start. That is called delegation. We can build cars with petrol engines or electric motors from the same Car class, and we can even swap the engine later. With inheritance, changing the parent class at runtime is impossible."
+  },
+  {
+   "type": "quiz",
+   "title": "is-a or has-a?",
+   "q": "Which pair is a good fit for **inheritance**?",
+   "options": [
+    "Library and Book",
+    "SavingsAccount and BankAccount",
+    "Car and Engine",
+    "Order and Customer"
+   ],
+   "answer": 1,
+   "why": "A savings account **is a** bank account with extras like interest, so it inherits. A library **has** books, a car **has** an engine, an order **has** a customer: those are composition.",
+   "say": "Which of these pairs is a good fit for inheritance? Ask yourself, is it really a kind of the other thing, or does it just have one?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "`SavingsAccount` crashes with **AttributeError** when adding interest. The child's `__init__` forgot something. Fix it so the parent's attributes are set up too.",
+   "starter": "class Account:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        self.balance += amount\n\n\nclass SavingsAccount(Account):\n    def __init__(self, owner, balance=0, rate=0.04):\n        self.rate = rate\n\n    def add_interest(self):\n        self.deposit(round(self.balance * self.rate, 2))\n\n\ns = SavingsAccount(\"Riya\", 10000)\ns.add_interest()\nprint(s.owner, s.balance)\n",
+   "solution": "class Account:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        self.balance += amount\n\n\nclass SavingsAccount(Account):\n    def __init__(self, owner, balance=0, rate=0.04):\n        super().__init__(owner, balance)\n        self.rate = rate\n\n    def add_interest(self):\n        self.deposit(round(self.balance * self.rate, 2))\n\n\ns = SavingsAccount(\"Riya\", 10000)\ns.add_interest()\nprint(s.owner, s.balance)",
+   "tests": "a = SavingsAccount(\"Arjun\", 5000, 0.1)\na.add_interest()\nassert a.owner == \"Arjun\", \"The owner should be set. Let the parent's __init__ do it.\"\nassert a.balance == 5500, f\"5000 at 10% interest should become 5500, got {a.balance}.\"\nb = SavingsAccount(\"Meera\")\nassert b.balance == 0 and b.rate == 0.04, \"Defaults should still work: balance 0, rate 0.04.\"\nassert isinstance(b, Account), \"SavingsAccount should still inherit from Account.\"\nassert \"super()\" in __code__, \"Call super().__init__(owner, balance) instead of copying the parent's code.\"",
+   "hints": [
+    "Defining __init__ in the child replaces the parent's __init__ completely.",
+    "Add super().__init__(owner, balance) as the first line of SavingsAccount.__init__."
+   ],
+   "say": "This savings account crashes when it adds interest. The error says there is no balance attribute. When a child defines its own dunder init, the parent's one no longer runs by itself. Fix it the professional way, with super."
+  },
+  {
+   "type": "exercise",
+   "title": "UPI and Card",
+   "task": "`PaymentMethod` is an abstract base class. Write two subclasses:\n\n- `UPI`: `fee` is 0\n- `Card`: `fee` is 2% of the amount rounded to 2 decimals, but **at least ₹5**\n\n`charge(amount)` is inherited: it returns amount + fee.",
+   "starter": "from abc import ABC, abstractmethod\n\n\nclass PaymentMethod(ABC):\n    @abstractmethod\n    def fee(self, amount):\n        \"\"\"Return the fee for this amount.\"\"\"\n\n    def charge(self, amount):\n        return amount + self.fee(amount)\n\n\n# Write class UPI and class Card below\n",
+   "solution": "from abc import ABC, abstractmethod\n\n\nclass PaymentMethod(ABC):\n    @abstractmethod\n    def fee(self, amount):\n        \"\"\"Return the fee for this amount.\"\"\"\n\n    def charge(self, amount):\n        return amount + self.fee(amount)\n\n\nclass UPI(PaymentMethod):\n    def fee(self, amount):\n        return 0\n\n\nclass Card(PaymentMethod):\n    def fee(self, amount):\n        return max(5, round(amount * 0.02, 2))",
+   "tests": "assert \"UPI\" in dir() and \"Card\" in dir(), \"Define two classes, UPI and Card.\"\nassert issubclass(UPI, PaymentMethod) and issubclass(Card, PaymentMethod), \"Both should inherit from PaymentMethod.\"\nassert UPI().charge(1000) == 1000, \"UPI has no fee: charge(1000) should be 1000.\"\nassert Card().charge(1000) == 1020, f\"Card fee is 2%: charge(1000) should be 1020, got {Card().charge(1000)}.\"\nassert Card().fee(100) == 5, \"2% of 100 is 2, but the minimum card fee is 5.\"\nassert Card().fee(1499) == 29.98, \"2% of 1499 is 29.98 (rounded to 2 decimals).\"\ntotal = sum(m.charge(500) for m in [UPI(), Card(), UPI()])\nassert total == 1510, \"Polymorphism check: UPI + Card + UPI on 500 each should total 1510.\"",
+   "hints": [
+    "Each class only needs a fee(self, amount) method; charge is inherited.",
+    "UPI.fee returns 0.",
+    "Card.fee returns max(5, round(amount * 0.02, 2))."
+   ],
+   "say": "Payment method is an abstract base class with one abstract method, fee, and a ready made charge method. Write two subclasses. UPI charges no fee. A card charges two percent, rounded to two decimals, with a minimum of five rupees. Charge is inherited, so you only write the fees."
+  },
+  {
+   "type": "exercise",
+   "title": "An Order has a payment method",
+   "task": "Use **composition**. Complete `Order`:\n\n- `Order(payment)` stores a payment object and an empty items list\n- `add(name, price, qty=1)` records a line\n- `total()` returns the sum of price × qty\n- `checkout()` returns `self.payment.charge(self.total())`",
+   "starter": "class UPI:\n    def charge(self, amount):\n        return amount\n\n\nclass Card:\n    def charge(self, amount):\n        return round(amount * 1.02, 2)\n\n\nclass Order:\n    def __init__(self, payment):\n        pass\n\n    def add(self, name, price, qty=1):\n        pass\n\n    def total(self):\n        pass\n\n    def checkout(self):\n        pass\n\n\norder = Order(UPI())\norder.add(\"Masala chai\", 20, 2)\norder.add(\"Samosa\", 15)\nprint(order.total(), order.checkout())\n",
+   "solution": "class UPI:\n    def charge(self, amount):\n        return amount\n\n\nclass Card:\n    def charge(self, amount):\n        return round(amount * 1.02, 2)\n\n\nclass Order:\n    def __init__(self, payment):\n        self.payment = payment\n        self.items = []\n\n    def add(self, name, price, qty=1):\n        self.items.append((name, price, qty))\n\n    def total(self):\n        return sum([price * qty for name, price, qty in self.items])\n\n    def checkout(self):\n        return self.payment.charge(self.total())\n\n\norder = Order(UPI())\norder.add(\"Masala chai\", 20, 2)\norder.add(\"Samosa\", 15)\nprint(order.total(), order.checkout())",
+   "tests": "o = Order(UPI())\no.add(\"Masala chai\", 20, 2)\no.add(\"Samosa\", 15)\nassert o.total() == 55, f\"2 chai at 20 plus 1 samosa at 15 is 55, got {o.total()}.\"\nassert o.checkout() == 55, \"With UPI, checkout should charge exactly the total.\"\nc = Order(Card())\nc.add(\"Headphones\", 1000)\nassert c.checkout() == 1020.0, \"With Card, checkout should use Card.charge: 1000 becomes 1020.0.\"\nassert Order(UPI()).total() == 0, \"A new order should total 0.\"\nclass TestPayment:\n    def charge(self, amount):\n        return f\"charged {amount}\"\nt = Order(TestPayment())\nt.add(\"Pen\", 10, 3)\nassert t.checkout() == \"charged 30\", \"checkout should hand the total to whatever payment object the order has.\"",
+   "hints": [
+    "In __init__: self.payment = payment and self.items = [].",
+    "add appends a tuple (name, price, qty).",
+    "total adds price * qty for every item; checkout returns self.payment.charge(self.total())."
+   ],
+   "say": "Now build with composition. An order has a payment method, given when it is created, and a list of items. Add records a line, total adds up price times quantity, and checkout asks the payment object to charge the total. The tests even pass in a fake payment object, which works because the order only relies on the charge method."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 26 complete",
+   "points": [
+    "class Child(Parent): inherits everything; use it for \"is a\"",
+    "Override a method by redefining it; super() reaches the parent version",
+    "Call super().__init__(...) when the child has its own __init__",
+    "Polymorphism: same method, different classes, one piece of calling code",
+    "abc.ABC and @abstractmethod force children to implement a contract",
+    "Composition (\"has a\") stores parts as attributes; prefer it when unsure"
+   ],
+   "say": "Mission twenty six complete. You can build families of classes, extend them with super, write code that works with any member of the family, enforce contracts with abstract base classes, and compose objects from parts. Tomorrow we look inside the for loop itself, with iterators and generators. See you on day twenty seven."
+  }
+ ]
+}

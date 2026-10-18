@@ -1,0 +1,440 @@
+{
+ "day": 52,
+ "phase": 6,
+ "title": "Web scraping and parsing",
+ "subtitle": "Turn web pages into clean data, responsibly",
+ "minutes": 60,
+ "goal": "Extract links, names and prices from HTML with html.parser, resolve URLs correctly and scrape within ethical and legal limits.",
+ "outcomes": [
+  "Explain HTML as a tree of tags, attributes and text",
+  "Write HTMLParser subclasses that extract links and prices",
+  "Resolve relative links with urljoin and audit domains with urlparse",
+  "Choose between regex and a parser, and know what BeautifulSoup adds",
+  "Scrape responsibly: robots.txt, rate limits, terms and APIs"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 52: Web scraping and parsing",
+   "body": "Price trackers, job alerts, research datasets: a lot of the world's data lives inside HTML pages.\n\nToday you read HTML the way a browser does, pull out exactly the data you need, and learn to scrape **responsibly**.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Fetch the page (HTTP, Day 46)",
+     "Parse the HTML into tags and text",
+     "Extract only the data you need",
+     "Save it: CSV, JSON or SQLite"
+    ]
+   },
+   "say": "Price trackers, job alerts, research datasets. A huge amount of the world's data lives inside web pages. Today you learn to read HTML the way a browser does, pull out exactly the pieces you need, like product names, prices and links, and do it responsibly, respecting the sites you collect from."
+  },
+  {
+   "type": "concept",
+   "title": "HTML is a tree",
+   "body": "A page is nested **tags**. Each tag can have **attributes** (`class`, `href`) and contain **text** or more tags.\n\nScraping means walking that tree and picking out the parts you want.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "html",
+     "c": [
+      {
+       "t": "head",
+       "c": [
+        {
+         "t": "title: Today's deals"
+        }
+       ]
+      },
+      {
+       "t": "body",
+       "c": [
+        {
+         "t": "nav: 3 links"
+        },
+        {
+         "t": "div.product [data-sku=CH-250]",
+         "c": [
+          {
+           "t": "h2.name: Masala Chai 250g"
+          },
+          {
+           "t": "span.price: ₹180"
+          },
+          {
+           "t": "a href=/p/masala-chai"
+          }
+         ]
+        },
+        {
+         "t": "div.product.sale",
+         "c": [
+          {
+           "t": "h2.name: Brass Kettle"
+          },
+          {
+           "t": "span.price: ₹1,299"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "An HTML page is a tree of nested tags. The html tag contains a head and a body, the body contains divs, and each product div contains a heading, a price and a link. Tags carry attributes like class and href, and they wrap text. Scraping is simply walking this tree and keeping the parts you care about."
+  },
+  {
+   "type": "concept",
+   "title": "How HTMLParser sees a page",
+   "body": "`html.parser.HTMLParser` (standard library) reads HTML and calls **your methods** for each piece it meets. You subclass it and override the ones you need.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "HTML piece",
+     "HTMLParser calls"
+    ],
+    "rows": [
+     [
+      "<a href=\"/deals\">",
+      "handle_starttag('a', [('href', '/deals')])"
+     ],
+     [
+      "Deals",
+      "handle_data('Deals')"
+     ],
+     [
+      "</a>",
+      "handle_endtag('a')"
+     ],
+     [
+      "<br>",
+      "handle_starttag('br', [])"
+     ]
+    ]
+   },
+   "say": "The standard library's HTMLParser reads HTML from start to end and calls a method every time it meets something. A start tag calls handle start tag, with the tag name and a list of attribute pairs. Text calls handle data. A closing tag calls handle end tag. You write a subclass and fill in only the methods you need."
+  },
+  {
+   "type": "code",
+   "title": "Watch the parser's events",
+   "body": "Subclass `HTMLParser`, override the handlers, then call `feed()` with the HTML text.",
+   "code": "from html.parser import HTMLParser\n\nclass EventPrinter(HTMLParser):\n    def handle_starttag(self, tag, attrs):\n        print(\"start\", tag, attrs)\n\n    def handle_endtag(self, tag):\n        print(\"end  \", tag)\n\n    def handle_data(self, data):\n        if data.strip():\n            print(\"text \", repr(data.strip()))\n\nEventPrinter().feed('<p class=\"note\">Fresh <b>chai</b> daily</p>')",
+   "expect": "start p [('class', 'note')]\ntext  'Fresh'\nstart b []\ntext  'chai'\nend   b\ntext  'daily'\nend   p\n",
+   "explain": [
+    [
+     3,
+     "Our parser inherits all the hard work from HTMLParser."
+    ],
+    [
+     4,
+     "attrs is a list of (name, value) pairs."
+    ],
+    [
+     10,
+     "Text between tags; we skip pure whitespace."
+    ],
+    [
+     14,
+     "feed() runs the parser over a string of HTML."
+    ]
+   ],
+   "say": "We subclass HTMLParser and print every event. Feeding it one small paragraph shows the exact order: the start of p with its class attribute, the text Fresh, the bold tag opening and closing around chai, more text, and finally the end of p. Every scraper you write is built on these three methods."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the attributes",
+   "code": "from html.parser import HTMLParser\n\nclass P(HTMLParser):\n    def handle_starttag(self, tag, attrs):\n        print(dict(attrs))\n\nP().feed('<a href=\"/cart\" ID=\"buy\" disabled>Buy</a>')",
+   "options": [
+    "{'href': '/cart', 'ID': 'buy', 'disabled': ''}",
+    "{'href': '/cart', 'id': 'buy', 'disabled': None}",
+    "[('href', '/cart'), ('id', 'buy'), ('disabled', None)]"
+   ],
+   "answer": 1,
+   "why": "HTMLParser lower-cases attribute names (`ID` becomes `id`), and an attribute with no value, like `disabled`, gets `None`. `dict(attrs)` turns the pairs into a dictionary.",
+   "say": "Two details trip up every new scraper. This tag has an upper case attribute name and an attribute with no value at all. What does the dictionary of attributes look like?"
+  },
+  {
+   "type": "code",
+   "title": "Extract every link",
+   "body": "`shop.html` is a small product page saved next to the program. `urljoin` turns relative links into full URLs.",
+   "code": "from html.parser import HTMLParser\nfrom pathlib import Path\nfrom urllib.parse import urljoin\n\nclass LinkExtractor(HTMLParser):\n    def __init__(self, base_url):\n        super().__init__()\n        self.base_url = base_url\n        self.links = []\n\n    def handle_starttag(self, tag, attrs):\n        href = dict(attrs).get(\"href\")\n        if tag == \"a\" and href and not href.startswith(\"#\"):\n            self.links.append(urljoin(self.base_url, href))\n\nparser = LinkExtractor(\"https://chaishop.example/deals\")\nparser.feed(Path(\"shop.html\").read_text(encoding=\"utf-8\"))\nfor link in parser.links:\n    print(link)",
+   "expect": "https://chaishop.example/\nhttps://chaishop.example/deals\nhttps://chaishop.example/p/masala-chai\nhttps://chaishop.example/p/brass-kettle\nhttps://partner.example/cups\n",
+   "explain": [
+    [
+     7,
+     "Our own __init__ must call the parent's with super()."
+    ],
+    [
+     9,
+     "State lives on the object: the links found so far."
+    ],
+    [
+     13,
+     "Skip #anchors: they point inside the same page."
+    ],
+    [
+     14,
+     "urljoin('https://chaishop.example/deals', '/p/x') gives a full URL."
+    ]
+   ],
+   "files": {
+    "shop.html": "<!doctype html>\n<html>\n<head><title>Chai Shop: Today's deals</title></head>\n<body>\n  <nav><a href=\"/\">Home</a> <a href=\"/deals\">Deals</a> <a href=\"#top\">Top</a></nav>\n  <h1>Today's deals</h1>\n  <div class=\"product\" data-sku=\"CH-250\">\n    <h2 class=\"name\">Masala Chai 250g</h2>\n    <span class=\"price\">₹180</span>\n    <a href=\"/p/masala-chai\">View</a>\n  </div>\n  <div class=\"product sale\" data-sku=\"KT-01\">\n    <h2 class=\"name\">Brass Kettle</h2>\n    <span class=\"price\">₹1,299</span>\n    <a href=\"/p/brass-kettle\">View</a>\n  </div>\n  <div class=\"product\" data-sku=\"CP-06\">\n    <h2 class=\"name\">Clay Cups (set of 6)</h2>\n    <span class=\"price\">₹240</span>\n    <a href=\"https://partner.example/cups\">View</a>\n  </div>\n</body>\n</html>\n"
+   },
+   "say": "A link extractor keeps state on the parser object: a list of links. For every a tag with an href, we skip in page anchors that start with a hash sign, and turn relative links like slash deals into full addresses with urljoin. The partner link was already absolute, so it stays as it is."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: relative links",
+   "code": "from urllib.parse import urljoin\n\nbase = \"https://chaishop.example/deals/today\"\nprint(urljoin(base, \"/p/kettle\"))\nprint(urljoin(base, \"kettle\"))",
+   "options": [
+    "https://chaishop.example/p/kettle\nhttps://chaishop.example/deals/today/kettle",
+    "https://chaishop.example/p/kettle\nhttps://chaishop.example/deals/kettle",
+    "https://chaishop.example/deals/today/p/kettle\nhttps://chaishop.example/kettle"
+   ],
+   "answer": 1,
+   "why": "A link starting with `/` is relative to the site root. A link without `/` replaces the last part of the path (`today`), just like a browser does.",
+   "say": "Relative links are a classic scraping bug. One link starts with a slash and one does not. Where does each one point?"
+  },
+  {
+   "type": "concept",
+   "title": "State: knowing where you are",
+   "body": "To grab a price you must know you are **inside** `<span class=\"price\">`. Keep a flag on the parser:\n- set it in `handle_starttag`\n- read text in `handle_data` only while it is set\n- clear it in `handle_endtag`",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "handle_starttag: span with class price?",
+      "s": "diamond",
+      "yes": "self.field = 'price'",
+      "no": "ignore"
+     },
+     {
+      "t": "handle_data: is self.field set?",
+      "s": "diamond",
+      "yes": "save the text",
+      "no": "skip it"
+     },
+     {
+      "t": "handle_endtag: self.field = None",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Text arrives on its own, without saying which tag it belongs to. So the parser has to remember where it is. When the price span starts, set a flag. While the flag is set, save the text you see. When the span ends, clear the flag. Forget that last step and you will happily collect text that is not a price at all."
+  },
+  {
+   "type": "code",
+   "title": "Extract products and prices",
+   "body": "Each `div.product` starts a new record. Splitting `class` handles tags like `class=\"product sale\"`.",
+   "code": "from html.parser import HTMLParser\nfrom pathlib import Path\n\nclass ProductParser(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.products, self.field = [], None\n\n    def handle_starttag(self, tag, attrs):\n        attrs = dict(attrs)\n        classes = (attrs.get(\"class\") or \"\").split()\n        if tag == \"div\" and \"product\" in classes:\n            self.products.append({\"sku\": attrs.get(\"data-sku\")})\n        elif self.products and (\"name\" in classes or \"price\" in classes):\n            self.field = \"name\" if \"name\" in classes else \"price\"\n\n    def handle_endtag(self, tag):\n        self.field = None\n\n    def handle_data(self, data):\n        if self.field and data.strip():\n            self.products[-1][self.field] = data.strip()\n\nparser = ProductParser()\nparser.feed(Path(\"shop.html\").read_text(encoding=\"utf-8\"))\nfor p in parser.products:\n    rupees = int(p[\"price\"].removeprefix(\"₹\").replace(\",\", \"\"))\n    print(f\"{p['sku']:<7} {p['name']:<22} {rupees:>6,}\")",
+   "expect": "CH-250  Masala Chai 250g          180\nKT-01   Brass Kettle            1,299\nCP-06   Clay Cups (set of 6)      240\n",
+   "explain": [
+    [
+     11,
+     "class can hold several names: split it into a list."
+    ],
+    [
+     13,
+     "A new product record, starting with its data-sku attribute."
+    ],
+    [
+     15,
+     "Remember which field the next text belongs to."
+    ],
+    [
+     18,
+     "Any closing tag ends the field."
+    ],
+    [
+     27,
+     "Clean '₹1,299' into the integer 1299."
+    ]
+   ],
+   "files": {
+    "shop.html": "<!doctype html>\n<html>\n<head><title>Chai Shop: Today's deals</title></head>\n<body>\n  <nav><a href=\"/\">Home</a> <a href=\"/deals\">Deals</a> <a href=\"#top\">Top</a></nav>\n  <h1>Today's deals</h1>\n  <div class=\"product\" data-sku=\"CH-250\">\n    <h2 class=\"name\">Masala Chai 250g</h2>\n    <span class=\"price\">₹180</span>\n    <a href=\"/p/masala-chai\">View</a>\n  </div>\n  <div class=\"product sale\" data-sku=\"KT-01\">\n    <h2 class=\"name\">Brass Kettle</h2>\n    <span class=\"price\">₹1,299</span>\n    <a href=\"/p/brass-kettle\">View</a>\n  </div>\n  <div class=\"product\" data-sku=\"CP-06\">\n    <h2 class=\"name\">Clay Cups (set of 6)</h2>\n    <span class=\"price\">₹240</span>\n    <a href=\"https://partner.example/cups\">View</a>\n  </div>\n</body>\n</html>\n"
+   },
+   "say": "Each product div starts a new dictionary, holding the s k u from its data attribute. Inside it, the name and price classes switch on the field we are collecting, and any closing tag switches it off. At the end we clean the price text into a real integer, so we can sort, compare and save it."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: matching classes",
+   "q": "A tag is `<div class=\"product sale\">`. Which check finds it reliably?",
+   "options": [
+    "`dict(attrs)[\"class\"] == \"product\"`",
+    "`\"product\" in (dict(attrs).get(\"class\") or \"\").split()`",
+    "`\"product\" in attrs`"
+   ],
+   "answer": 1,
+   "why": "`class` holds a space-separated list of names. Split it and check membership. The first option fails for `product sale`, and `attrs` is a list of pairs, not names.",
+   "say": "Real pages give one tag several classes, like product and sale together. Which check finds every product, however many classes it has?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: the greedy price parser",
+   "task": "This parser should collect **only prices**. Run it: it also grabs text that comes after the price. Fix it so `prices` is exactly `['₹180', '₹1,299']`.",
+   "starter": "from html.parser import HTMLParser\n\nclass PriceParser(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.in_price = False\n        self.prices = []\n\n    def handle_starttag(self, tag, attrs):\n        if tag == \"span\" and dict(attrs).get(\"class\") == \"price\":\n            self.in_price = True\n\n    def handle_data(self, data):\n        if self.in_price and data.strip():\n            self.prices.append(data.strip())\n\nhtml = ('<div><span class=\"price\">₹180</span> <a href=\"/p/1\">View deal</a></div>'\n        '<div><span class=\"price\">₹1,299</span> <em>Free delivery</em></div>')\nparser = PriceParser()\nparser.feed(html)\nprint(parser.prices)",
+   "solution": "from html.parser import HTMLParser\n\nclass PriceParser(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.in_price = False\n        self.prices = []\n\n    def handle_starttag(self, tag, attrs):\n        if tag == \"span\" and dict(attrs).get(\"class\") == \"price\":\n            self.in_price = True\n\n    def handle_endtag(self, tag):\n        if tag == \"span\":\n            self.in_price = False\n\n    def handle_data(self, data):\n        if self.in_price and data.strip():\n            self.prices.append(data.strip())\n\nhtml = ('<div><span class=\"price\">₹180</span> <a href=\"/p/1\">View deal</a></div>'\n        '<div><span class=\"price\">₹1,299</span> <em>Free delivery</em></div>')\nparser = PriceParser()\nparser.feed(html)\nprint(parser.prices)",
+   "tests": "p = PriceParser()\np.feed('<span class=\"price\">₹180</span> <a href=\"/p/1\">View deal</a> <span class=\"price\">₹1,299</span> <em>Free delivery</em>')\nassert p.prices == [\"₹180\", \"₹1,299\"], \"Expected only the prices, but got \" + str(p.prices) + \". After </span> the parser still thinks it is inside a price. Clear in_price in handle_endtag.\"\np = PriceParser()\np.feed('<p>No deals today</p>')\nassert p.prices == [], \"A page with no price spans should give an empty list.\"",
+   "hints": [
+    "When does `in_price` ever become `False` again?",
+    "Add `def handle_endtag(self, tag):` and set `self.in_price = False` when `tag == \"span\"`."
+   ],
+   "say": "This price parser is greedy. It switches on at the price span, but it never switches off, so it also collects the link text and the delivery note. Add the missing piece so it stops collecting when the span closes."
+  },
+  {
+   "type": "concept",
+   "title": "Regex or a parser?",
+   "body": "Regular expressions match **patterns in text**. HTML is **structure**: attributes change order, quotes change, tags nest and break across lines.\n\nRule of thumb: parse the HTML with a parser, then use regex on the **text** you extracted.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Regex on HTML: fragile",
+     "code": "re.findall(r'<span class=\"price\">(.*?)</span>', html)\n# misses <span id=\"p1\" class=\"price\">\n# misses class='price' and class=\"price sale\""
+    },
+    "right": {
+     "title": "Parser for structure, regex for text",
+     "code": "parser.feed(html)          # finds every price span\nfor text in parser.prices:\n    PRICE.search(text)      # '₹1,299' -> 1299"
+    },
+    "verdict": "Parsers understand HTML; regex understands text. Use each for what it is good at."
+   },
+   "say": "Regular expressions are brilliant at patterns inside text, like a price or a date. But HTML is structure. Attributes appear in any order, quotes change, tags nest and split across lines, and a regex written for one page breaks on the next. Use a parser to walk the structure, then use regex on the small pieces of text you pulled out."
+  },
+  {
+   "type": "code",
+   "title": "Regex shines on extracted text",
+   "body": "Same tool, two uses: unreliable on raw HTML, excellent on the short texts a parser gives you.",
+   "code": "import re\n\nhtml = '<span class=\"price\">₹1,299</span> <span id=\"p2\" class=\"price\">₹180</span>'\nnaive = re.findall(r'<span class=\"price\">(.*?)</span>', html)\nprint(\"regex on HTML found:\", naive)\n\nPRICE = re.compile(r\"₹\\s?([\\d,]+(?:\\.\\d{1,2})?)\")\ntexts = [\"₹1,299\", \"Now ₹ 849.50 only\", \"MRP ₹2,000 (save 20%)\"]\nfor text in texts:\n    amount = float(PRICE.search(text).group(1).replace(\",\", \"\"))\n    print(f\"{text!r:<26} -> {amount:>9,.2f}\")",
+   "expect": "regex on HTML found: ['₹1,299']\n'₹1,299'                   ->  1,299.00\n'Now ₹ 849.50 only'        ->    849.50\n'MRP ₹2,000 (save 20%)'    ->  2,000.00\n",
+   "explain": [
+    [
+     4,
+     "Written for one exact tag: the second span slips through."
+    ],
+    [
+     7,
+     "₹, an optional space, digits and commas, optional paise."
+    ],
+    [
+     10,
+     "group(1) is the number part; remove commas before float()."
+    ]
+   ],
+   "say": "First the trap: a regex written for one exact tag misses the second price, just because its attributes are in a different order. Then the right use: on short price texts, a regex finds the rupee sign, optional space and digits with commas, and we turn each into a number. Same tool, very different reliability."
+  },
+  {
+   "type": "concept",
+   "title": "BeautifulSoup and friends",
+   "body": "In real projects you will `pip install` helpers:\n- **BeautifulSoup**: CSS selectors like `soup.select(\"div.product .price\")`\n- **lxml**: very fast parsing\n- **Playwright / Selenium**: pages built by JavaScript\n- **Scrapy**: large crawls with queues and retries\n\nCheck for an official **API** first: it beats scraping every time.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "html.parser (standard library)",
+     "code": "class ProductParser(HTMLParser):\n    def handle_starttag(self, tag, attrs): ...\n    def handle_endtag(self, tag): ...\n    def handle_data(self, data): ..."
+    },
+    "right": {
+     "title": "BeautifulSoup (pip install beautifulsoup4)",
+     "code": "soup = BeautifulSoup(html, \"html.parser\")\nfor card in soup.select(\"div.product\"):\n    name = card.select_one(\".name\").get_text(strip=True)\n    price = card.select_one(\".price\").get_text(strip=True)"
+    },
+    "verdict": "Same idea, less code. You now understand what BeautifulSoup does underneath."
+   },
+   "say": "In real projects you will reach for helpers from PyPI. BeautifulSoup lets you find elements with CSS selectors in one line. lxml parses very fast. Playwright and Selenium drive a real browser for pages built by JavaScript. Scrapy runs big crawls. But always check for an official API first: it is faster, more stable and clearly allowed."
+  },
+  {
+   "type": "concept",
+   "title": "Scrape responsibly",
+   "body": "Scraping is powerful, so use it with care:\n- read **robots.txt** and the site's **terms**\n- go slowly: about one request per second, honour `Crawl-delay`\n- send an honest `User-Agent` with contact details\n- **cache** pages; never download the same page twice\n- skip personal data unless you have a clear legal basis",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Is there an official API? Use it",
+     "Read robots.txt and the terms of use",
+     "Identify yourself and go slowly",
+     "Cache pages, retry politely on errors",
+     "Store only the data you need"
+    ]
+   },
+   "say": "With great scraping power comes responsibility. Read the site's robots dot t x t file and its terms of use. Go slowly, about one request per second, and honour any crawl delay. Identify your bot honestly. Cache pages so you never download the same one twice. And stay away from personal data unless you clearly have the right to collect it."
+  },
+  {
+   "type": "code",
+   "title": "Read robots.txt with the standard library",
+   "body": "`urllib.robotparser` answers \"may I fetch this URL?\" On a real site you would call `set_url(...)` and `read()`.",
+   "code": "from urllib.robotparser import RobotFileParser\n\nrobots_txt = \"\"\"\nUser-agent: *\nDisallow: /checkout/\nDisallow: /account/\nCrawl-delay: 2\n\nUser-agent: BadBot\nDisallow: /\n\"\"\"\nrules = RobotFileParser()\nrules.parse(robots_txt.splitlines())\n\nfor path in [\"/deals\", \"/checkout/pay\", \"/p/brass-kettle\"]:\n    ok = rules.can_fetch(\"BrodoitBot\", \"https://chaishop.example\" + path)\n    print(f\"{path:<16} {'allowed' if ok else 'blocked'}\")\nprint(\"BadBot on /deals:\", rules.can_fetch(\"BadBot\", \"https://chaishop.example/deals\"))\nprint(\"Crawl delay:\", rules.crawl_delay(\"BrodoitBot\"), \"seconds\")",
+   "expect": "/deals           allowed\n/checkout/pay    blocked\n/p/brass-kettle  allowed\nBadBot on /deals: False\nCrawl delay: 2 seconds\n",
+   "explain": [
+    [
+     13,
+     "parse() reads the rules from a list of lines."
+    ],
+    [
+     16,
+     "Ask before every request: may this bot fetch this URL?"
+    ],
+    [
+     18,
+     "BadBot is disallowed everywhere."
+    ],
+    [
+     19,
+     "crawl_delay tells you how long to wait between requests."
+    ]
+   ],
+   "say": "Python can read robots files for you. We parse a sample file: every bot must stay out of checkout and account pages and wait two seconds between requests, and one bad bot is banned completely. Then we ask can fetch before visiting a URL, and read the crawl delay to pace ourselves."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: being a good citizen",
+   "q": "You need data from 500 product pages for a price tracker. Which approach is responsible?",
+   "options": [
+    "Fire all 500 requests at once with asyncio to finish quickly",
+    "Use the official API if there is one; otherwise follow robots.txt, add a delay, an honest User-Agent and a cache",
+    "Rotate fake browser User-Agents so the site can't block you",
+    "Scrape at night when nobody is looking"
+   ],
+   "answer": 1,
+   "why": "Speed is never an excuse to overload someone's server. APIs first; if you must scrape, follow the rules, go slowly, identify yourself and cache.",
+   "say": "Five hundred product pages to collect. Which approach keeps you fast enough and still a good citizen of the web?"
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: a product extractor",
+   "task": "Write `extract_products(html)` that returns a list of `{\"name\": str, \"price\": int}` for every `div` whose classes include `product`.\n- names are stripped of spaces\n- `\"₹1,299\"` becomes `1299`\n- a page without products gives `[]`",
+   "starter": "from html.parser import HTMLParser\n\nclass ProductParser(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.products = []\n        self.field = None\n    # TODO: handle_starttag: a div with class \"product\" starts a new {} in self.products;\n    #       a tag with class \"name\" or \"price\" sets self.field\n    # TODO: handle_endtag: clear self.field\n    # TODO: handle_data: store stripped text in self.products[-1][self.field]\n\ndef extract_products(html: str) -> list[dict]:\n    # TODO: feed a NEW parser, then convert each price to int\n    return []\n\nprint(extract_products('<div class=\"product\"><h2 class=\"name\">Masala Chai</h2><span class=\"price\">₹180</span></div>'))",
+   "solution": "from html.parser import HTMLParser\n\nclass ProductParser(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.products = []\n        self.field = None\n\n    def handle_starttag(self, tag, attrs):\n        classes = (dict(attrs).get(\"class\") or \"\").split()\n        if tag == \"div\" and \"product\" in classes:\n            self.products.append({})\n        elif self.products and (\"name\" in classes or \"price\" in classes):\n            self.field = \"name\" if \"name\" in classes else \"price\"\n\n    def handle_endtag(self, tag):\n        self.field = None\n\n    def handle_data(self, data):\n        if self.field and data.strip():\n            self.products[-1][self.field] = data.strip()\n\ndef extract_products(html: str) -> list[dict]:\n    parser = ProductParser()\n    parser.feed(html)\n    return [{\"name\": p[\"name\"], \"price\": int(p[\"price\"].replace(\"₹\", \"\").replace(\",\", \"\"))}\n            for p in parser.products]\n\nprint(extract_products('<div class=\"product\"><h2 class=\"name\">Masala Chai</h2><span class=\"price\">₹180</span></div>'))",
+   "tests": "page = \"\"\"\n<div class=\"product\"><h2 class=\"name\">Masala Chai</h2><span class=\"price\">₹180</span></div>\n<div class=\"sale product\">\n  <h2 class=\"name\">  Brass Kettle </h2>\n  <span class=\"price\">₹1,299</span>\n</div>\"\"\"\ngot = extract_products(page)\nwant = [{\"name\": \"Masala Chai\", \"price\": 180}, {\"name\": \"Brass Kettle\", \"price\": 1299}]\nassert got == want, \"Expected \" + str(want) + \" but got \" + str(got) + \". Check class splitting (class=\\\"sale product\\\"), stripping and the price conversion.\"\nagain = extract_products(page)\nassert again == want, \"Calling extract_products twice gave \" + str(len(again)) + \" products. Create a new parser inside the function each time.\"\nassert extract_products(\"<p>No products today</p>\") == [], \"A page without products should give an empty list.\"",
+   "hints": [
+    "Split the class attribute: `(dict(attrs).get(\"class\") or \"\").split()`.",
+    "In `handle_data`, only store text while `self.field` is set, then clear it in `handle_endtag`.",
+    "Price: `int(text.replace(\"₹\", \"\").replace(\",\", \"\"))`."
+   ],
+   "say": "Time to build a real extractor. Finish the parser so every product div starts a new record and the name and price text land in it, then write extract products to return clean names and integer prices. The tests use a product with two classes, messy spaces, and a page with nothing on it."
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: an external link auditor",
+   "task": "SEO and security teams audit where a site links to. Finish `external_links(html, base_url)`:\n- make each href absolute with `urljoin`\n- keep only `http`/`https` links whose **domain** (`netloc`) differs from the base's\n- return them **sorted, without duplicates**",
+   "starter": "from html.parser import HTMLParser\nfrom urllib.parse import urljoin, urlparse\n\nclass HrefCollector(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.hrefs = []\n\n    def handle_starttag(self, tag, attrs):\n        href = dict(attrs).get(\"href\")\n        if tag == \"a\" and href:\n            self.hrefs.append(href)\n\ndef external_links(html: str, base_url: str) -> list[str]:\n    collector = HrefCollector()\n    collector.feed(html)\n    # TODO: absolute = urljoin(base_url, href); parts = urlparse(absolute)\n    # TODO: keep http/https links whose parts.netloc differs from the base's netloc\n    return []\n\nprint(external_links('<a href=\"https://partner.example/cups\">Cups</a>', \"https://chaishop.example/\"))",
+   "solution": "from html.parser import HTMLParser\nfrom urllib.parse import urljoin, urlparse\n\nclass HrefCollector(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.hrefs = []\n\n    def handle_starttag(self, tag, attrs):\n        href = dict(attrs).get(\"href\")\n        if tag == \"a\" and href:\n            self.hrefs.append(href)\n\ndef external_links(html: str, base_url: str) -> list[str]:\n    collector = HrefCollector()\n    collector.feed(html)\n    home = urlparse(base_url).netloc\n    found = set()\n    for href in collector.hrefs:\n        parts = urlparse(urljoin(base_url, href))\n        if parts.scheme in (\"http\", \"https\") and parts.netloc != home:\n            found.add(parts.geturl())\n    return sorted(found)\n\nprint(external_links('<a href=\"https://partner.example/cups\">Cups</a>', \"https://chaishop.example/\"))",
+   "tests": "page = \"\"\"<a href=\"/about\">About</a> <a href=\"https://partner.example/cups\">Cups</a>\n<a href=\"#top\">Top</a> <a href=\"mailto:hello@chaishop.example\">Mail us</a>\n<a href=\"https://partner.example/cups\">Cups again</a> <a href=\"//cdn.example/app.js\">CDN</a>\n<a href=\"https://chaishop.example/deals\">Deals</a> <a>no href at all</a>\"\"\"\ngot = external_links(page, \"https://chaishop.example/blog/\")\nwant = [\"https://cdn.example/app.js\", \"https://partner.example/cups\"]\nassert got == want, \"Expected \" + str(want) + \" but got \" + str(got) + \". Make links absolute, drop mailto and same-site links, remove duplicates and sort.\"\nassert external_links('<a href=\"/deals\">Deals</a>', \"https://chaishop.example/\") == [], \"A page with only internal links has no external links: return [].\"\nassert external_links(\"\", \"https://chaishop.example/\") == [], \"An empty page should return [].\"",
+   "hints": [
+    "`home = urlparse(base_url).netloc` gives `chaishop.example`.",
+    "For each href: `parts = urlparse(urljoin(base_url, href))`, then check `parts.scheme` and `parts.netloc`.",
+    "Collect into a `set`, then `return sorted(found)`."
+   ],
+   "say": "One more, and this one is about URLs. Finish external links: turn every link into a full address, keep only web links that point to a different domain, and return them sorted with no duplicates. Watch out for the mail link, the in page anchor, and the sneaky link that starts with two slashes."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 52 complete",
+   "points": [
+    "HTML is a tree of tags, attributes and text",
+    "Subclass `HTMLParser`: `handle_starttag`, `handle_data`, `handle_endtag`",
+    "Keep state on the parser to know where you are; reset it on end tags",
+    "`urljoin` resolves relative links; `urlparse` splits a URL into parts",
+    "Parse structure with a parser; use regex on extracted text",
+    "API first, robots.txt, slow requests, honest User-Agent, cache"
+   ],
+   "say": "Mission fifty two complete. You can read HTML as a tree, write parsers that extract links, names and prices, resolve relative links, use regex where it belongs, and you know the rules of scraping responsibly. Tomorrow, a taste of data science: numpy, pandas and the road to machine learning."
+  }
+ ]
+}

@@ -1,0 +1,489 @@
+{
+ "day": 2,
+ "phase": 1,
+ "title": "Variables: names for values",
+ "subtitle": "Give your data a name, and change it as your program runs",
+ "minutes": 45,
+ "goal": "Store values in well-named variables, update them as a program runs, and check what type of value each name holds.",
+ "outcomes": [
+  "Create variables with = and explain why it means assign, not equals",
+  "Update a variable from its own old value, including with += and -=",
+  "Choose clear snake_case names that follow Python's rules",
+  "Assign several names at once and swap two values in one line",
+  "Use type() to tell int, float and str apart, and fix a NameError"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 2: Variables",
+   "body": "Every app remembers things: your UPI balance, the score in a match, the name on your profile.\n\nPrograms remember with **variables**: names for values. Today you'll create them, update them and check their type.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "owner",
+      "'Riya'",
+      "str"
+     ],
+     [
+      "balance",
+      "2500",
+      "int"
+     ],
+     [
+      "run_rate",
+      "8.25",
+      "float"
+     ]
+    ]
+   },
+   "say": "Welcome to day two. Every app you use remembers things: your UPI balance, the score in a cricket match, the name on your profile. Programs remember using variables, which are names for values. Today you'll create them, change them, and ask Python what type of value each one holds."
+  },
+  {
+   "type": "concept",
+   "title": "A variable is a name for a value",
+   "body": "`balance = 2500` does two things: Python creates the value `2500`, then attaches the name `balance` to it.\n\nLater, whenever you write `balance`, Python looks up the value behind the name.",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "owner",
+     "balance"
+    ],
+    "objects": [
+     {
+      "id": "o1",
+      "r": "'Riya'",
+      "t": "str"
+     },
+     {
+      "id": "o2",
+      "r": "2500",
+      "t": "int"
+     }
+    ],
+    "links": [
+     [
+      "owner",
+      "o1"
+     ],
+     [
+      "balance",
+      "o2"
+     ]
+    ]
+   },
+   "say": "When you write balance equals two thousand five hundred, Python does two things. It creates the value, then attaches a name tag called balance to it. From then on, whenever your code says balance, Python looks up the value behind that name. Think of a variable as a label on a value, not a box the value is locked inside."
+  },
+  {
+   "type": "code",
+   "title": "Your first variables",
+   "body": "Create a variable with `name = value`. Use it anywhere you'd use the value itself.",
+   "code": "# A UPI wallet\nowner = \"Riya\"\nbalance = 2500\nprint(owner, \"has\", balance, \"rupees\")\nprint(\"After a 199 rupee recharge:\", balance - 199)\nprint(\"Balance is still\", balance)",
+   "expect": "Riya has 2500 rupees\nAfter a 199 rupee recharge: 2301\nBalance is still 2500\n",
+   "explain": [
+    [
+     2,
+     "A text value, labelled owner."
+    ],
+    [
+     3,
+     "A whole number, labelled balance."
+    ],
+    [
+     4,
+     "print swaps each name for its value."
+    ],
+    [
+     5,
+     "Calculates with balance, but doesn't store the answer."
+    ],
+    [
+     6,
+     "No assignment happened, so balance is unchanged."
+    ]
+   ],
+   "say": "Two variables, owner and balance. When print meets a name, it looks up the value. Now look at line five. We calculate balance minus one hundred and ninety nine, but we never store the result, so the last line proves balance hasn't changed. Only an assignment changes what a name points to."
+  },
+  {
+   "type": "concept",
+   "title": "= means assign, not equals",
+   "body": "In maths, `x = 5` states a fact. In Python, `=` is an **action**: work out the right side, then point the name on the left at the result.\n\n- `score = 10` works\n- `10 = score` is a SyntaxError\n- testing equality uses `==` (Day 7)",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Work out the right side: 2500 - 199",
+     "Get a value: 2301",
+     "Point the name on the left at it"
+    ]
+   },
+   "say": "Here's the biggest mindset shift of today. In maths, x equals five is a fact. In Python, the equals sign is an action called assignment. Python first works out the right side, then points the name on the left at that value. That's why ten equals score is an error. Checking whether two things are equal uses a double equals, which you'll meet on day seven."
+  },
+  {
+   "type": "code",
+   "title": "Reassignment: values can change",
+   "body": "`score = score + 6` reads the **old** value, adds 6, and stores the result under the same name. `+=` and `-=` are shortcuts.",
+   "code": "score = 0\nprint(\"Start:\", score)\nscore = 4          # a boundary\nprint(\"After the four:\", score)\nscore = score + 6  # a six: old value plus 6\nprint(\"After the six:\", score)\nscore += 1         # a single: short for score = score + 1\nprint(\"After a single:\", score)\nscore -= 5         # penalty runs taken away\nprint(\"After a penalty:\", score)",
+   "expect": "Start: 0\nAfter the four: 4\nAfter the six: 10\nAfter a single: 11\nAfter a penalty: 6\n",
+   "explain": [
+    [
+     1,
+     "score starts at 0."
+    ],
+    [
+     3,
+     "Reassign: score now points to 4."
+    ],
+    [
+     5,
+     "Right side first: 4 + 6 is 10. Then score points to 10."
+    ],
+    [
+     7,
+     "+= 1 is shorthand for score = score + 1."
+    ],
+    [
+     9,
+     "-= works the same way for subtraction."
+    ]
+   ],
+   "say": "Variables can change, that's why they're called variables. Line three moves score to a new value. Line five is a pattern you'll write thousands of times: take the old value, add six, and store it back under the same name. Plus equals and minus equals are shortcuts for exactly that. Tap watch it run and see score change line by line."
+  },
+  {
+   "type": "visual",
+   "title": "Reassignment moves the label",
+   "body": "`score = score + 6` creates a **new** value, 10, and moves the label to it. Nothing uses 4 any more, so Python frees that memory.",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "score"
+    ],
+    "objects": [
+     {
+      "id": "o1",
+      "r": "4",
+      "t": "int"
+     },
+     {
+      "id": "o2",
+      "r": "10",
+      "t": "int"
+     }
+    ],
+    "links": [
+     [
+      "score",
+      "o2"
+     ]
+    ]
+   },
+   "say": "Here's what really happened in memory. Python worked out four plus six, created a new value, ten, and moved the label score onto it. Nothing points at four any more, so Python quietly cleans it up. Names move. The values themselves stay put."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the wallet",
+   "code": "wallet = 500\nwallet = wallet - 120\nwallet = wallet + 50\nprint(wallet)",
+   "options": [
+    "500",
+    "430",
+    "380",
+    "670"
+   ],
+   "answer": 1,
+   "why": "Each line uses the current value: 500 - 120 is 380, then 380 + 50 is 430.",
+   "say": "Your turn to predict. A wallet starts at five hundred, pays one hundred and twenty, then gets fifty back as cashback. What does the last line print?"
+  },
+  {
+   "type": "concept",
+   "title": "Naming rules",
+   "body": "Python's rules:\n- letters, digits and `_` only\n- can't start with a digit\n- case-sensitive: `Score` and `score` differ\n- not a keyword like `if` or `class`\n\nThe Python style is **snake_case**: lowercase words joined by `_`.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Name",
+     "Valid?",
+     "Why"
+    ],
+    "rows": [
+     [
+      "run_rate",
+      "Yes",
+      "snake_case: the Python style"
+     ],
+     [
+      "2nd_innings",
+      "No",
+      "starts with a digit"
+     ],
+     [
+      "total-price",
+      "No",
+      "- means minus"
+     ],
+     [
+      "class",
+      "No",
+      "a reserved keyword"
+     ],
+     [
+      "RunRate",
+      "Works",
+      "but this style is for class names (Day 24)"
+     ]
+    ]
+   },
+   "say": "Names follow a few rules. Use letters, digits and underscores, never start with a digit, and avoid Python's own keywords. Names are case sensitive, so a capital S score and a small s score are two different variables. The Python style, called snake case, uses lowercase words joined by underscores, like run rate or total price."
+  },
+  {
+   "type": "concept",
+   "title": "Good names are documentation",
+   "body": "Code is read far more often than it's written. A good name says **what the value means**, so the code explains itself.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Hard to read",
+     "code": "a = 250\nb = 3\nc = a * b\nprint(c)"
+    },
+    "right": {
+     "title": "Reads like English",
+     "code": "ticket_price = 250\ntickets = 3\ntotal = ticket_price * tickets\nprint(total)"
+    },
+    "verdict": "Same output. The right one explains itself."
+   },
+   "say": "Both programs print seven hundred and fifty. Only one tells you what that number means. Code is read far more often than it's written, by teammates, reviewers and future you. A good name says what the value represents, so your code reads almost like a sentence."
+  },
+  {
+   "type": "quiz",
+   "title": "Pick the best name",
+   "q": "You need a variable for the number of overs bowled. Which name is valid **and** follows Python style?",
+   "options": [
+    "Overs-Bowled",
+    "overs_bowled",
+    "2overs",
+    "overs bowled"
+   ],
+   "answer": 1,
+   "why": "overs_bowled is snake_case. A dash means minus, a name can't start with a digit, and spaces aren't allowed.",
+   "say": "Quick check. You need a variable for the number of overs bowled. Which name is valid, and follows Python style?"
+  },
+  {
+   "type": "code",
+   "title": "Cricket chase calculator",
+   "body": "A T20 chase: each line names one result, and later lines build on earlier names.",
+   "code": "target = 181\nruns = 120\novers_played = 15\n\ncurrent_rate = runs / overs_played\nruns_needed = target - runs\novers_left = 20 - overs_played\nrequired_rate = runs_needed / overs_left\n\nprint(\"Current run rate:\", current_rate)\nprint(\"Need\", runs_needed, \"from\", overs_left, \"overs\")\nprint(\"Required run rate:\", required_rate)",
+   "expect": "Current run rate: 8.0\nNeed 61 from 5 overs\nRequired run rate: 12.2\n",
+   "explain": [
+    [
+     1,
+     "The score to chase."
+    ],
+    [
+     5,
+     "Runs per over so far: 120 / 15."
+    ],
+    [
+     6,
+     "How many runs are still needed."
+    ],
+    [
+     7,
+     "A T20 innings has 20 overs."
+    ],
+    [
+     8,
+     "Built from two earlier variables."
+    ]
+   ],
+   "say": "Real programs build an answer step by step, naming each result along the way. Here's a T twenty chase. We work out the current run rate, the runs still needed, the overs left, and the rate needed to win. Each good name makes the next line easy to read. Change runs to one hundred and fifty, run it again, and watch every answer update."
+  },
+  {
+   "type": "predict",
+   "title": "The swap trap",
+   "code": "x = 1\ny = 2\nx = y\ny = x\nprint(x, y)",
+   "options": [
+    "2 1",
+    "2 2",
+    "1 1",
+    "1 2"
+   ],
+   "answer": 1,
+   "why": "After x = y, both names point to 2 and the original 1 is lost. Then y = x copies that 2 back. To swap safely you need Python's next trick.",
+   "say": "Here's a puzzle. We want to swap x and y, so we set x to y, then y to x. Predict what actually gets printed."
+  },
+  {
+   "type": "concept",
+   "title": "Multiple assignment and swapping",
+   "body": "Assign several names in one line:\n`x, y = 10, 20`\n\nSwap two values without losing either:\n`a, b = b, a`\n\nPython builds the **whole** right side first, then hands the values out left to right.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "The long way",
+     "code": "temp = a\na = b\nb = temp"
+    },
+    "right": {
+     "title": "The Python way",
+     "code": "a, b = b, a"
+    },
+    "verdict": "The right side is evaluated first, so no value is lost."
+   },
+   "say": "Python lets you assign several names in one line by separating them with commas. That gives a famous trick: to swap two values, write a comma b equals b comma a. Python works out the whole right side first, then hands out the values, so nothing gets overwritten. In many other languages you'd need a temporary variable."
+  },
+  {
+   "type": "code",
+   "title": "Swap the batters",
+   "code": "striker, non_striker = \"Rohit\", \"Gill\"\nprint(\"On strike:\", striker)\n\n# They run a single, so they swap ends\nstriker, non_striker = non_striker, striker\nprint(\"On strike:\", striker)\nprint(\"Other end:\", non_striker)\n\n# One starting value for several names\nwins = losses = 0\nprint(wins, losses)",
+   "expect": "On strike: Rohit\nOn strike: Gill\nOther end: Rohit\n0 0\n",
+   "explain": [
+    [
+     1,
+     "Two names, two values, one line."
+    ],
+    [
+     5,
+     "Right side first: (\"Gill\", \"Rohit\"), then assigned in order."
+    ],
+    [
+     10,
+     "Chained assignment: both names start at 0."
+    ]
+   ],
+   "say": "In cricket, when the batters run a single, they swap ends. Line one assigns two names at once. Line five swaps them in a single step. The last part shows chained assignment, which points several names at the same starting value. It's handy for counters that all begin at zero."
+  },
+  {
+   "type": "concept",
+   "title": "Every value has a type",
+   "body": "`type()` tells you what kind of value a name points to:\n- `int`: whole numbers like `2500`\n- `float`: decimals like `8.25`\n- `str`: text like `\"Pune\"`\n\nThe type decides what you can do with the value.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "players",
+      "11",
+      "int"
+     ],
+     [
+      "price",
+      "49.99",
+      "float"
+     ],
+     [
+      "city",
+      "'Pune'",
+      "str"
+     ]
+    ]
+   },
+   "say": "Every value in Python has a type, and the built in function called type tells you what it is. Whole numbers are int, decimals are float, and text is str, short for string. The type decides what operations make sense. You can subtract one number from another, but what would it mean to subtract one city from another?"
+  },
+  {
+   "type": "code",
+   "title": "Ask Python for the type",
+   "code": "players = 11\nprice = 49.99\ncity = \"Pune\"\nprint(type(players))\nprint(type(price))\nprint(type(city))\nprint(type(\"11\"))\n\n# A name can point to a different type later\nplayers = \"eleven\"\nprint(type(players))",
+   "expect": "<class 'int'>\n<class 'float'>\n<class 'str'>\n<class 'str'>\n<class 'str'>\n",
+   "explain": [
+    [
+     4,
+     "11 is an int."
+    ],
+    [
+     5,
+     "49.99 is a float."
+    ],
+    [
+     6,
+     "Text in quotes is a str."
+    ],
+    [
+     7,
+     "Quotes make it text, even if it looks like a number."
+    ],
+    [
+     10,
+     "The name now points to a str value."
+    ]
+   ],
+   "say": "Type shows the class of each value. Look at line seven: eleven inside quotes is a string, not a number, even though it looks like one. And Python is flexible. Near the end we point players at a string, and its type changes with it. That's allowed, but keep each name to one meaning, or your code gets confusing fast."
+  },
+  {
+   "type": "concept",
+   "title": "NameError: Python doesn't know that name",
+   "body": "Using a name before assigning it, or misspelling it, gives a **NameError**. Python often suggests the closest name it knows.\n\nNames are case-sensitive, so `Balance` is a typo for `balance`.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python main.py"
+     ],
+     [
+      "",
+      "Traceback (most recent call last):"
+     ],
+     [
+      "",
+      "  File \"main.py\", line 2, in <module>"
+     ],
+     [
+      "",
+      "    print(balence)"
+     ],
+     [
+      "",
+      "NameError: name 'balence' is not defined. Did you mean: 'balance'?"
+     ]
+    ]
+   },
+   "say": "The most common error with variables is a name error. It means Python has never seen that name, usually because of a typo, or because you used the name before assigning it. Modern Python is helpful here. It often suggests the name you probably meant. And remember, names are case sensitive, so a stray capital letter counts as a typo."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the fare calculator",
+   "task": "This train fare calculator crashes with a **NameError**. Read the error, fix the name, and run again. There may be more than one typo.\n\nIt should print the total for 3 passengers at 450 rupees each.",
+   "starter": "fare_per_person = 450\npassengers = 3\ntotal_fare = fare_per_person * Passengers\nprint(\"Fare for\", passengers, \"passengers:\", total_fair)\n",
+   "solution": "fare_per_person = 450\npassengers = 3\ntotal_fare = fare_per_person * passengers\nprint(\"Fare for\", passengers, \"passengers:\", total_fare)",
+   "tests": "assert \"1350\" in __out__, \"The program should print 1350, the fare for 3 passengers at 450 each. Keep fixing until it runs.\"\nassert total_fare == 1350, \"total_fare should be fare_per_person * passengers, which is 1350.\"\nassert \"1350\" not in __code__, \"Let Python calculate 1350; don't type it yourself.\"",
+   "hints": [
+    "Python names are case-sensitive: Passengers and passengers are different names.",
+    "Compare the name in the last print with the name created on line 3."
+   ],
+   "say": "Bug hunt. This train fare calculator crashes with a name error. Read the message from the bottom up, fix the name, and run again. Careful, there may be more than one typo hiding in here."
+  },
+  {
+   "type": "exercise",
+   "title": "UPI wallet tracker",
+   "task": "Start with `balance = 1000`. Then, in order:\n- pay **250** for groceries\n- receive **500** from a friend\n- pay **120** for a movie ticket\n\nUpdate `balance` after **each** transaction, then print the final balance.",
+   "starter": "balance = 1000\n# Pay 250 for groceries\n\n# Receive 500 from a friend\n\n# Pay 120 for a movie ticket\n\nprint(\"Final balance:\", balance)\n",
+   "solution": "balance = 1000\n# Pay 250 for groceries\nbalance -= 250\n# Receive 500 from a friend\nbalance += 500\n# Pay 120 for a movie ticket\nbalance -= 120\nprint(\"Final balance:\", balance)",
+   "tests": "assert \"balance\" in globals(), \"Keep the variable name balance.\"\nassert balance == 1130, f\"balance should end at 1130 (1000 - 250 + 500 - 120), but it is {balance}. Check each update.\"\nassert \"1130\" in __out__, \"Print the final balance at the end.\"\nassert \"1130\" not in __code__, \"Let Python calculate the balance; don't type 1130 yourself.\"\nassert __code__.count(\"balance\") >= 5, \"Update balance once for each of the three transactions, so the code reads like a statement.\"",
+   "hints": [
+    "Paying money takes it away: balance -= 250",
+    "Receiving money adds to it: balance += 500"
+   ],
+   "say": "Time to build. Model a UPI wallet. Start with one thousand rupees, pay for groceries, receive money from a friend, and pay for a movie ticket. Update the same balance variable after every transaction, then print the final balance."
+  },
+  {
+   "type": "exercise",
+   "title": "Fix the seating",
+   "task": "A booking app put two passengers in the wrong seats. Swap the values of `seat_a` and `seat_b` using **one line** of multiple assignment. Don't retype the names.",
+   "starter": "seat_a = \"Kabir\"\nseat_b = \"Meera\"\n# Swap them in one line\n\nprint(\"Seat A:\", seat_a)\nprint(\"Seat B:\", seat_b)\n",
+   "solution": "seat_a = \"Kabir\"\nseat_b = \"Meera\"\n# Swap them in one line\nseat_a, seat_b = seat_b, seat_a\nprint(\"Seat A:\", seat_a)\nprint(\"Seat B:\", seat_b)",
+   "tests": "assert seat_a == \"Meera\" and seat_b == \"Kabir\", f\"After the swap, seat_a should be 'Meera' and seat_b 'Kabir'. Right now seat_a is {seat_a!r}.\"\nswaps = [n for n in ast.walk(__tree__) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Tuple)]\nassert swaps, \"Swap with one line of multiple assignment: seat_a, seat_b = seat_b, seat_a\"\nassert __code__.count(\"Meera\") == 1 and __code__.count(\"Kabir\") == 1, \"Don't retype the names. Swap the variables so the code works for any passengers.\"\nassert \"Seat A: Meera\" in __out__, \"Print the seats after swapping.\"",
+   "hints": [
+    "Put both names on the left and the right of one =, separated by commas.",
+    "seat_a, seat_b = seat_b, seat_a"
+   ],
+   "say": "A booking app seated two passengers in each other's seats. Fix it with the one line swap you just learned. Don't type the names again. Swap the variables themselves."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 2 complete",
+   "points": [
+    "A variable is a name that points to a value; = assigns, it doesn't compare",
+    "Reassign freely: score = score + 6, or the shortcuts += and -=",
+    "Names use letters, digits and _, can't start with a digit, and are case-sensitive; write snake_case",
+    "x, y = 10, 20 assigns several names; a, b = b, a swaps them",
+    "type() reveals int, float or str; a NameError usually means a typo"
+   ],
+   "say": "Mission two complete. You can name values, update them, swap them in one line, check their type, and fix a name error in seconds. Tomorrow Python becomes your calculator, with whole numbers, decimals, and the maths behind EMIs and timers. See you on day three."
+  }
+ ]
+}

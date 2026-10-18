@@ -1,0 +1,441 @@
+{
+ "day": 58,
+ "phase": 6,
+ "title": "Capstone I: Task manager core",
+ "subtitle": "Design and build the heart of a real app",
+ "minutes": 80,
+ "goal": "Design and build the core of a task manager: dataclass models, a validating service layer, JSON storage and a unit test suite.",
+ "outcomes": [
+  "Turn requirements into models, services and storage",
+  "Model data with dataclasses, enums and to_dict/from_dict",
+  "Enforce rules in a service layer with domain exceptions",
+  "Store data in JSON atomically and handle corrupt files",
+  "Prove behaviour with a unittest suite"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 58: Capstone, part one",
+   "body": "Two days, one real application: **Kaam**, a command-line task manager you can show in interviews.\n\nToday: the core (models, rules, storage and tests). Tomorrow: the command line, polish and shipping.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Requirements: what must it do?",
+     "Models: the data (dataclasses, enums)",
+     "Service: the rules",
+     "Storage: JSON on disk",
+     "Tests: prove it works"
+    ]
+   },
+   "say": "Welcome to the capstone. Over two days you build Kaam, a real task manager that you can put on GitHub and talk about in interviews. Today you build its core, the way professionals do: requirements first, then the data model, the service layer with its rules, storage on disk, and tests that prove it all works. Tomorrow you ship it."
+  },
+  {
+   "type": "concept",
+   "title": "Requirements first",
+   "body": "Before code, write down what users need, then what each need becomes in code. This table is your plan for two days.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Users need to…",
+     "In code"
+    ],
+    "rows": [
+     [
+      "Add a task: title, due date, priority",
+      "Task dataclass + TaskService.add"
+     ],
+     [
+      "Never save junk (empty titles, bad dates)",
+      "ValidationError"
+     ],
+     [
+      "See open tasks, most urgent first",
+      "TaskService.pending()"
+     ],
+     [
+      "Mark done, delete",
+      "complete(id), delete(id), TaskNotFound"
+     ],
+     [
+      "Find tasks again tomorrow",
+      "JsonStorage (load, save)"
+     ]
+    ]
+   },
+   "say": "Professionals start with requirements, not code. A user must be able to add a task with a title, an optional due date and a priority, see open tasks with the most urgent first, mark tasks done, delete them, and find everything still there tomorrow. Next to each need, we write the piece of code that will deliver it. That table is our plan."
+  },
+  {
+   "type": "concept",
+   "title": "The architecture",
+   "body": "Same layers as Day 55, one module per job. `errors.py` holds **KaamError** and its children: `ValidationError`, `TaskNotFound`, `StorageError`.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "kaam/",
+     "c": [
+      {
+       "t": "models.py: Task, Priority"
+      },
+      {
+       "t": "errors.py: KaamError and children"
+      },
+      {
+       "t": "storage.py: MemoryStorage, JsonStorage"
+      },
+      {
+       "t": "services.py: TaskService (the rules)"
+      },
+      {
+       "t": "cli.py: tomorrow"
+      },
+      {
+       "t": "tests/: test_services.py"
+      }
+     ]
+    }
+   },
+   "say": "Kaam uses the layers from day fifty five. Models dot p y holds the data classes. Errors dot p y holds one base exception, Kaam error, with specific children for validation, missing tasks and storage problems. Storage dot p y saves and loads. Services dot p y holds the rules. Tomorrow, c l i dot p y becomes the interface. Each file has exactly one job."
+  },
+  {
+   "type": "code",
+   "title": "The model: an enum and a dataclass",
+   "body": "An `Enum` makes invalid priorities impossible. `to_dict()` converts to JSON-friendly values for storage.",
+   "code": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\ntask = Task(1, \"Pay electricity bill\", Priority.HIGH, date(2026, 10, 25), tags=[\"home\"])\nprint(task)\nprint(task.to_dict())",
+   "expect": "Task(id=1, title='Pay electricity bill', priority=<Priority.HIGH: 3>, due=datetime.date(2026, 10, 25), done=False, tags=['home'])\n{'id': 1, 'title': 'Pay electricity bill', 'priority': 'high', 'due': '2026-10-25', 'done': False, 'tags': ['home']}\n",
+   "explain": [
+    [
+     5,
+     "Enum members have a name and a value; HIGH > LOW by value."
+    ],
+    [
+     10,
+     "@dataclass writes __init__, __repr__ and __eq__ for us (Day 34)."
+    ],
+    [
+     15,
+     "date | None: a due date is optional."
+    ],
+    [
+     17,
+     "default_factory=list: every task gets its own new list."
+    ],
+    [
+     20,
+     "asdict converts the dataclass into a dict."
+    ],
+    [
+     21,
+     "Store the enum as plain text: 'high'."
+    ]
+   ],
+   "say": "Priority is an enum, so a typo like hihg is impossible. Task is a dataclass with sensible defaults: medium priority, no due date, not done, and an empty tag list made fresh for every task. To dict turns a task into plain JSON friendly values, so the enum becomes the word high and the date becomes text."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: why default_factory?",
+   "code": "from dataclasses import dataclass, field\n\n@dataclass\nclass Task:\n    title: str\n    tags: list[str] = field(default_factory=list)\n\na, b = Task(\"Buy milk\"), Task(\"Call bank\")\na.tags.append(\"home\")\nprint(a.tags, b.tags)",
+   "options": [
+    "['home'] ['home']",
+    "['home'] []",
+    "[] []"
+   ],
+   "answer": 1,
+   "why": "`default_factory=list` calls `list()` for **each** new Task, so every task has its own list. (A plain `tags: list = []` is refused by dataclasses for exactly this reason: the mutable default trap from Day 18.)",
+   "say": "Remember the mutable default trap from day eighteen? Two tasks, and we add a tag to only the first one. What do both tag lists look like?"
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: Task.from_dict",
+   "task": "Storage needs the reverse of `to_dict()`. Finish the classmethod `Task.from_dict(data)`:\n- `\"high\"` (any case) becomes `Priority.HIGH`\n- `\"2026-10-25\"` becomes `date(2026, 10, 25)`; `None` stays `None`\n- missing `priority`, `due`, `done` or `tags` get the defaults",
+   "starter": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        # TODO: convert priority and due, and give missing fields their defaults\n        return cls(id=data[\"id\"], title=data[\"title\"])\n\nprint(Task.from_dict({\"id\": 7, \"title\": \"Call bank\", \"priority\": \"high\", \"due\": \"2026-10-25\"}))",
+   "solution": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n\n\nprint(Task.from_dict({\"id\": 7, \"title\": \"Call bank\", \"priority\": \"high\", \"due\": \"2026-10-25\"}))",
+   "tests": "from datetime import date\noriginal = Task(3, \"Renew passport\", Priority.HIGH, date(2026, 11, 30), done=True, tags=[\"govt\", \"travel\"])\nback = Task.from_dict(original.to_dict())\nassert back == original, \"Task.from_dict(task.to_dict()) should give back an equal Task. Got \" + repr(back)\nassert isinstance(back.due, date) and back.priority is Priority.HIGH, \"due must become a date and priority a Priority member, not strings.\"\nminimal = Task.from_dict({\"id\": 9, \"title\": \"Buy milk\"})\nassert minimal == Task(9, \"Buy milk\"), \"Missing fields should get the defaults (MEDIUM, None, False, []). Got \" + repr(minimal)\nassert Task.from_dict({\"id\": 1, \"title\": \"x\", \"priority\": \"High\"}).priority is Priority.HIGH, \"Accept any case: 'High' should become Priority.HIGH.\"\nassert Task.from_dict({\"id\": 1, \"title\": \"x\", \"due\": None}).due is None, \"A due of None should stay None.\"",
+   "hints": [
+    "Priority by name: `Priority[data.get(\"priority\", \"medium\").upper()]`.",
+    "Due: `date.fromisoformat(due) if due else None`.",
+    "Defaults: `data.get(\"done\", False)` and `list(data.get(\"tags\", []))`."
+   ],
+   "say": "Your first capstone task. Storage will save tasks as dictionaries, so we need the reverse of to dict. Finish from dict: turn the priority text back into the enum, whatever its case, turn the date text back into a real date, and give any missing fields their defaults. The tests check a full round trip and a minimal record."
+  },
+  {
+   "type": "concept",
+   "title": "The service layer: rules live here",
+   "body": "`TaskService` receives a storage object and enforces every rule. It **never prints** and **never touches files** directly; it raises `KaamError`s instead.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "service.add('Pay bill', 'high', '2026-10-25')",
+      "s": "pill"
+     },
+     {
+      "t": "Title, priority and date all valid?",
+      "s": "diamond",
+      "yes": "build Task with the next id",
+      "no": "raise ValidationError"
+     },
+     {
+      "t": "storage.save(tasks + [task])"
+     },
+     {
+      "t": "return the new Task",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "The service layer is the heart of Kaam. Task service receives a storage object from outside, and every rule lives here: titles must be one to eighty characters, priorities must exist, dates must be real dates, and IDs are assigned automatically. It never prints and never opens files. When something is wrong, it raises one of our Kaam errors."
+  },
+  {
+   "type": "code",
+   "title": "TaskService.add",
+   "body": "`models.py` (with your `from_dict`), `errors.py` and `storage.py` sit next to this file. `MemoryStorage` keeps tasks as dicts in memory: ideal for trying things and for tests.",
+   "code": "from errors import ValidationError\nfrom models import Priority, Task\nfrom storage import MemoryStorage\n\nclass TaskService:\n    def __init__(self, storage):\n        self.storage = storage\n\n    def add(self, title: str, priority: str = \"medium\") -> Task:\n        title = title.strip()\n        if not 1 <= len(title) <= 80:\n            raise ValidationError(\"title must be 1 to 80 characters\")\n        tasks = self.storage.load()\n        next_id = max((t.id for t in tasks), default=0) + 1\n        task = Task(next_id, title, Priority[priority.upper()])\n        self.storage.save(tasks + [task])\n        return task\n\nservice = TaskService(MemoryStorage())\nprint(service.add(\"Pay electricity bill\", \"high\"))\nprint(service.add(\"  Renew passport  \"))\ntry:\n    service.add(\"   \")\nexcept ValidationError as err:\n    print(\"rejected:\", err)",
+   "expect": "Task(id=1, title='Pay electricity bill', priority=<Priority.HIGH: 3>, due=None, done=False, tags=[])\nTask(id=2, title='Renew passport', priority=<Priority.MEDIUM: 2>, due=None, done=False, tags=[])\nrejected: title must be 1 to 80 characters\n",
+   "explain": [
+    [
+     6,
+     "The storage is injected: memory today, JSON in production."
+    ],
+    [
+     10,
+     "Normalise input before checking it."
+    ],
+    [
+     12,
+     "Rules raise domain exceptions; the service never prints."
+    ],
+    [
+     14,
+     "max(..., default=0) handles the very first task."
+    ],
+    [
+     16,
+     "Save the whole new list."
+    ]
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n",
+    "errors.py": "class KaamError(Exception):\n    \"\"\"Base class for every error Kaam reports to the user.\"\"\"\n\n\nclass ValidationError(KaamError):\n    \"\"\"Bad input: an empty title, an unknown priority, a malformed date.\"\"\"\n\n\nclass TaskNotFound(KaamError):\n    \"\"\"No task has the requested id.\"\"\"\n\n\nclass StorageError(KaamError):\n    \"\"\"The task file is unreadable or corrupt.\"\"\"\n",
+    "storage.py": "import json\nimport os\nfrom pathlib import Path\n\nfrom errors import StorageError\nfrom models import Task\n\n\nclass MemoryStorage:\n    \"\"\"Keeps tasks in memory as plain dicts, like a real store would. Perfect for tests.\"\"\"\n\n    def __init__(self):\n        self.rows: list[dict] = []\n\n    def load(self) -> list[Task]:\n        return [Task.from_dict(row) for row in self.rows]\n\n    def save(self, tasks: list[Task]) -> None:\n        self.rows = [task.to_dict() for task in tasks]\n\n\nclass JsonStorage:\n    \"\"\"Keeps tasks in a JSON file, written atomically.\"\"\"\n\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        if not self.path.exists():\n            return []\n        try:\n            rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n            return [Task.from_dict(row) for row in rows]\n        except (json.JSONDecodeError, KeyError, ValueError) as err:\n            raise StorageError(f\"{self.path} is corrupt ({type(err).__name__})\") from err\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)\n"
+   },
+   "say": "The service validates first: strip the title, and reject it unless it is one to eighty characters. Then it loads the current tasks, picks the next ID, builds the task and saves the new list. The demo uses memory storage, so nothing touches the disk. Notice how the blank title is rejected with a clear message."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: why inject storage?",
+   "q": "Why does `TaskService` take `storage` as a parameter instead of creating a `JsonStorage` itself?",
+   "options": [
+    "So tests can pass `MemoryStorage` and production can pass `JsonStorage`, with no change to the service",
+    "Because Python requires every class to take a parameter",
+    "It makes the service run faster"
+   ],
+   "answer": 0,
+   "why": "Dependency injection (Day 54): the service depends on \"something with load and save\", not on a specific file. Tests stay fast and never touch your real tasks.",
+   "say": "Task service could create its own JSON storage. Instead, it receives storage from outside. Why is that the better design?"
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: validate priority and due date",
+   "task": "`add` crashes on bad input. Make it raise **`ValidationError`** instead:\n- an unknown priority (like `\"urgent\"`) must not leak a `KeyError`\n- `due` is `None` or text like `\"2026-10-25\"`: convert it with `date.fromisoformat`; bad text (`\"25/10/2026\"`, `\"2026-02-30\"`) is a `ValidationError`\n- nothing is saved when validation fails",
+   "starter": "from datetime import date\n\nfrom errors import ValidationError\nfrom models import Priority, Task\nfrom storage import MemoryStorage\n\nclass TaskService:\n    def __init__(self, storage):\n        self.storage = storage\n\n    def add(self, title: str, priority: str = \"medium\", due: str | None = None) -> Task:\n        title = title.strip()\n        if not 1 <= len(title) <= 80:\n            raise ValidationError(\"title must be 1 to 80 characters\")\n        level = Priority[priority.upper()]     # TODO: unknown priority -> ValidationError\n        due_date = due                         # TODO: text -> date; None stays None; bad -> ValidationError\n        tasks = self.storage.load()\n        task = Task(max((t.id for t in tasks), default=0) + 1, title, level, due_date)\n        self.storage.save(tasks + [task])\n        return task\n\nservice = TaskService(MemoryStorage())\nprint(service.add(\"Call plumber\", \"low\"))",
+   "solution": "from datetime import date, timedelta\n\nfrom errors import TaskNotFound, ValidationError\nfrom models import Priority, Task\n\n\nclass TaskService:\n    def __init__(self, storage):\n        self.storage = storage\n\n    def add(self, title: str, priority: str = \"medium\", due: str | None = None) -> Task:\n        title = title.strip()\n        if not 1 <= len(title) <= 80:\n            raise ValidationError(\"title must be 1 to 80 characters\")\n        try:\n            level = Priority[priority.upper()]\n        except KeyError:\n            raise ValidationError(f\"priority must be low, medium or high, not {priority!r}\") from None\n        try:\n            due_date = date.fromisoformat(due) if due else None\n        except ValueError:\n            raise ValidationError(f\"due date must look like 2026-10-25, not {due!r}\") from None\n        tasks = self.storage.load()\n        task = Task(max((t.id for t in tasks), default=0) + 1, title, level, due_date)\n        self.storage.save(tasks + [task])\n        return task\n\n\nfrom storage import MemoryStorage\n\nservice = TaskService(MemoryStorage())\nprint(service.add(\"Call plumber\", \"low\"))",
+   "tests": "from datetime import date\nfrom errors import ValidationError\nfrom models import Priority\nfrom storage import MemoryStorage\nstore = MemoryStorage()\nservice = TaskService(store)\ntry:\n    t = service.add(\"Pay electricity bill\", \"HIGH\", \"2026-10-25\")\nexcept Exception as err:\n    raise AssertionError(\"add('Pay electricity bill', 'HIGH', '2026-10-25') crashed with \" + type(err).__name__ + \": \" + str(err) + \". Convert the due text with date.fromisoformat().\")\nassert t.priority is Priority.HIGH and t.due == date(2026, 10, 25), \"Expected priority HIGH and due date(2026, 10, 25). Got \" + repr(t)\nt2 = service.add(\"Call plumber\")\nassert t2.due is None and t2.priority is Priority.MEDIUM, \"With no due date, due should stay None and priority default to MEDIUM.\"\ncases = [({\"priority\": \"urgent\"}, \"an unknown priority\"), ({\"due\": \"25/10/2026\"}, \"a date that isn't YYYY-MM-DD\"), ({\"due\": \"2026-02-30\"}, \"an impossible date (30 February)\")]\nfor kwargs, what in cases:\n    try:\n        service.add(\"Bad task\", **kwargs)\n    except ValidationError:\n        pass\n    except Exception as err:\n        raise AssertionError(\"add with \" + what + \" raised \" + type(err).__name__ + \". Catch it and raise ValidationError instead, so the CLI can show a friendly message.\")\n    else:\n        raise AssertionError(\"add with \" + what + \" should raise ValidationError.\")\nassert [t.id for t in store.load()] == [1, 2], \"Rejected tasks must not be saved. Validate everything before saving.\"",
+   "hints": [
+    "Wrap the lookup: `try: level = Priority[priority.upper()]` / `except KeyError: raise ValidationError(...) from None`.",
+    "`date.fromisoformat(\"2026-02-30\")` raises `ValueError`: catch it the same way.",
+    "Do all the checks **before** `self.storage.load()` and `save()`."
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n",
+    "errors.py": "class KaamError(Exception):\n    \"\"\"Base class for every error Kaam reports to the user.\"\"\"\n\n\nclass ValidationError(KaamError):\n    \"\"\"Bad input: an empty title, an unknown priority, a malformed date.\"\"\"\n\n\nclass TaskNotFound(KaamError):\n    \"\"\"No task has the requested id.\"\"\"\n\n\nclass StorageError(KaamError):\n    \"\"\"The task file is unreadable or corrupt.\"\"\"\n",
+    "storage.py": "import json\nimport os\nfrom pathlib import Path\n\nfrom errors import StorageError\nfrom models import Task\n\n\nclass MemoryStorage:\n    \"\"\"Keeps tasks in memory as plain dicts, like a real store would. Perfect for tests.\"\"\"\n\n    def __init__(self):\n        self.rows: list[dict] = []\n\n    def load(self) -> list[Task]:\n        return [Task.from_dict(row) for row in self.rows]\n\n    def save(self, tasks: list[Task]) -> None:\n        self.rows = [task.to_dict() for task in tasks]\n\n\nclass JsonStorage:\n    \"\"\"Keeps tasks in a JSON file, written atomically.\"\"\"\n\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        if not self.path.exists():\n            return []\n        try:\n            rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n            return [Task.from_dict(row) for row in rows]\n        except (json.JSONDecodeError, KeyError, ValueError) as err:\n            raise StorageError(f\"{self.path} is corrupt ({type(err).__name__})\") from err\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)\n"
+   },
+   "say": "Real users type real nonsense. Right now an unknown priority leaks a key error, and the due date is stored as raw text. Make add convert the date text into a real date, and turn every kind of bad input into a validation error with a helpful message. The tests also check that nothing gets saved when validation fails."
+  },
+  {
+   "type": "concept",
+   "title": "Storage: same interface, two backends",
+   "body": "`JsonStorage` offers the **same two methods** as `MemoryStorage`: `load()` and `save(tasks)`. The service cannot tell them apart (duck typing).\n\nSave **atomically**: write a temporary file, then `os.replace` it, so a crash mid-write never leaves a half-written file.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "MemoryStorage",
+     "code": "def load(self):\n    return [Task.from_dict(r) for r in self.rows]\n\ndef save(self, tasks):\n    self.rows = [t.to_dict() for t in tasks]"
+    },
+    "right": {
+     "title": "JsonStorage",
+     "code": "def load(self):\n    rows = json.loads(self.path.read_text())\n    return [Task.from_dict(r) for r in rows]\n\ndef save(self, tasks):\n    tmp.write_text(json.dumps(...))\n    os.replace(tmp, self.path)"
+    },
+    "verdict": "Same methods, different backend: swap one for the other without touching the service."
+   },
+   "say": "Json storage offers exactly the same two methods as memory storage, load and save, so the service cannot tell them apart. That is duck typing. One important detail: save atomically. Write to a temporary file first, then swap it into place with os dot replace. If the power cuts out halfway through a write, your old file is still intact."
+  },
+  {
+   "type": "code",
+   "title": "JsonStorage with atomic writes",
+   "code": "import json\nimport os\nfrom pathlib import Path\n\nfrom models import Priority, Task\n\nclass JsonStorage:\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        if not self.path.exists():\n            return []\n        rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n        return [Task.from_dict(row) for row in rows]\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)          # atomic: never a half-written file\n\nstore = JsonStorage(\"tasks.json\")\nstore.save([Task(1, \"Pay electricity bill\", Priority.HIGH), Task(2, \"Call plumber\", tags=[\"home\"])])\nprint(Path(\"tasks.json\").read_text(encoding=\"utf-8\"))\nprint(store.load()[1])",
+   "expect": "[\n  {\n    \"id\": 1,\n    \"title\": \"Pay electricity bill\",\n    \"priority\": \"high\",\n    \"due\": null,\n    \"done\": false,\n    \"tags\": []\n  },\n  {\n    \"id\": 2,\n    \"title\": \"Call plumber\",\n    \"priority\": \"medium\",\n    \"due\": null,\n    \"done\": false,\n    \"tags\": [\n      \"home\"\n    ]\n  }\n]\nTask(id=2, title='Call plumber', priority=<Priority.MEDIUM: 2>, due=None, done=False, tags=['home'])\n",
+   "explain": [
+    [
+     12,
+     "No file yet means no tasks yet."
+    ],
+    [
+     15,
+     "Rebuild real Task objects with your from_dict."
+    ],
+    [
+     18,
+     "tasks.tmp sits next to tasks.json."
+    ],
+    [
+     20,
+     "os.replace swaps the files in one step."
+    ]
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n"
+   },
+   "say": "Save converts every task to a dictionary, writes the JSON to a temporary file, then replaces the real file in one atomic step. Load reads the file back and rebuilds each task with your from dict. We print the file so you can see exactly what lands on disk, then load the second task back as a real Task object."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: JSON and dates",
+   "code": "import json\nfrom datetime import date\n\nprint(json.dumps({\"title\": \"Pay bill\", \"due\": date(2026, 10, 25)}))",
+   "options": [
+    "{\"title\": \"Pay bill\", \"due\": \"2026-10-25\"}",
+    "TypeError: Object of type date is not JSON serializable",
+    "{\"title\": \"Pay bill\", \"due\": null}"
+   ],
+   "answer": 1,
+   "why": "JSON only knows strings, numbers, booleans, null, lists and objects. A `date` (or an `Enum`) must be converted first, which is exactly why `Task.to_dict()` exists.",
+   "say": "JSON knows text, numbers, true and false, null, lists and objects. What happens when you hand it a Python date?"
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: storage that fails well",
+   "task": "Make `JsonStorage.load()` robust:\n- a **missing** file means no tasks yet: return `[]`\n- **broken** JSON, or a row that can't become a Task, raises `StorageError` whose message names the file\n- `save` then `load` still round-trips\n\n`tasks.json` and `old.json` next to this program are both broken.",
+   "starter": "import json\nimport os\nfrom pathlib import Path\n\nfrom errors import StorageError\nfrom models import Priority, Task\n\nclass JsonStorage:\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        # TODO: missing file -> []\n        # TODO: json.JSONDecodeError, KeyError or ValueError -> raise StorageError naming self.path\n        rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n        return [Task.from_dict(row) for row in rows]\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)\n\nprint(JsonStorage(\"missing.json\").load())",
+   "solution": "import json\nimport os\nfrom pathlib import Path\n\nfrom errors import StorageError\nfrom models import Priority, Task\n\nclass JsonStorage:\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        if not self.path.exists():\n            return []\n        try:\n            rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n            return [Task.from_dict(row) for row in rows]\n        except (json.JSONDecodeError, KeyError, ValueError) as err:\n            raise StorageError(f\"{self.path} is corrupt ({type(err).__name__})\") from err\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)\n\nprint(JsonStorage(\"missing.json\").load())",
+   "tests": "from errors import StorageError\nfrom models import Priority, Task\nassert JsonStorage(\"missing.json\").load() == [], \"A missing file means no tasks yet: load() should return [].\"\nfor name in [\"tasks.json\", \"old.json\"]:\n    try:\n        JsonStorage(name).load()\n    except StorageError as err:\n        assert name in str(err), \"Name the file in the StorageError message, so the user knows which file is broken. It said: \" + str(err)\n    except Exception as err:\n        raise AssertionError(\"Loading the broken \" + name + \" raised \" + type(err).__name__ + \". Catch it and raise StorageError instead.\")\n    else:\n        raise AssertionError(name + \" is broken, so load() should raise StorageError.\")\nstore = JsonStorage(\"fresh.json\")\nstore.save([Task(1, \"Pay bill\", Priority.HIGH)])\nassert store.load() == [Task(1, \"Pay bill\", Priority.HIGH)], \"save() then load() should give the same tasks back.\"",
+   "hints": [
+    "Start `load` with `if not self.path.exists(): return []`.",
+    "Wrap the parsing in `try:` and catch `(json.JSONDecodeError, KeyError, ValueError) as err`.",
+    "`raise StorageError(f\"{self.path} is corrupt\") from err` keeps the original error for debugging."
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n",
+    "errors.py": "class KaamError(Exception):\n    \"\"\"Base class for every error Kaam reports to the user.\"\"\"\n\n\nclass ValidationError(KaamError):\n    \"\"\"Bad input: an empty title, an unknown priority, a malformed date.\"\"\"\n\n\nclass TaskNotFound(KaamError):\n    \"\"\"No task has the requested id.\"\"\"\n\n\nclass StorageError(KaamError):\n    \"\"\"The task file is unreadable or corrupt.\"\"\"\n",
+    "tasks.json": "[{\"id\": 1, \"title\": \"Pay electricity bill\", \"priority\": \"high\"\n",
+    "old.json": "[{\"name\": \"Call plumber\", \"priority\": \"low\"}]\n"
+   },
+   "say": "Files on disk get corrupted: a crash mid write, a manual edit, an old format. Make load fail well. A missing file simply means no tasks yet. Broken JSON, or a row that cannot become a task, should raise a storage error that names the file. Two broken files are waiting next to your program."
+  },
+  {
+   "type": "project",
+   "title": "Project: finish the Kaam core",
+   "brief": "`add` is done. Finish the rest of `TaskService` so Kaam can run a real to-do list. `models.py`, `errors.py` and `storage.py` sit next to your file.",
+   "steps": [
+    "`complete(task_id)`: load, find the task, set `done = True`, save, return it",
+    "`delete(task_id)`: load, find it, save the list **without** it, return it",
+    "Unknown ids raise `TaskNotFound` (write one `_find` helper and use it twice)",
+    "`pending()`: open tasks only, sorted by priority (high first), then due date (no date last), then id",
+    "`due_soon(today, days=3)`: pending tasks due on or before `today + days`, overdue ones included"
+   ],
+   "starter": "from datetime import date, timedelta\n\nfrom errors import TaskNotFound, ValidationError\nfrom models import Priority, Task\n\n\nclass TaskService:\n    def __init__(self, storage):\n        self.storage = storage\n\n    def add(self, title: str, priority: str = \"medium\", due: str | None = None) -> Task:\n        title = title.strip()\n        if not 1 <= len(title) <= 80:\n            raise ValidationError(\"title must be 1 to 80 characters\")\n        try:\n            level = Priority[priority.upper()]\n        except KeyError:\n            raise ValidationError(f\"priority must be low, medium or high, not {priority!r}\") from None\n        try:\n            due_date = date.fromisoformat(due) if due else None\n        except ValueError:\n            raise ValidationError(f\"due date must look like 2026-10-25, not {due!r}\") from None\n        tasks = self.storage.load()\n        task = Task(max((t.id for t in tasks), default=0) + 1, title, level, due_date)\n        self.storage.save(tasks + [task])\n        return task\n\n    def complete(self, task_id: int) -> Task:\n        ...  # TODO: load, find the task (TaskNotFound if missing), mark done, save, return it\n\n    def delete(self, task_id: int) -> Task:\n        ...  # TODO: load, find the task, save the list without it, return it\n\n    def pending(self) -> list[Task]:\n        return []  # TODO: open tasks, sorted by priority (high first), due date (none last), id\n\n    def due_soon(self, today: date, days: int = 3) -> list[Task]:\n        return []  # TODO: pending tasks due on or before today + days (overdue ones too)\n\n\nfrom storage import MemoryStorage\n\nservice = TaskService(MemoryStorage())\nservice.add(\"Pay electricity bill\", \"high\", \"2026-10-25\")\nservice.add(\"Call plumber\", \"low\")\nservice.add(\"Book Tatkal ticket\", \"high\", \"2026-10-21\")\nprint([t.title for t in service.pending()])",
+   "solution": "from datetime import date, timedelta\n\nfrom errors import TaskNotFound, ValidationError\nfrom models import Priority, Task\n\n\nclass TaskService:\n    def __init__(self, storage):\n        self.storage = storage\n\n    def add(self, title: str, priority: str = \"medium\", due: str | None = None) -> Task:\n        title = title.strip()\n        if not 1 <= len(title) <= 80:\n            raise ValidationError(\"title must be 1 to 80 characters\")\n        try:\n            level = Priority[priority.upper()]\n        except KeyError:\n            raise ValidationError(f\"priority must be low, medium or high, not {priority!r}\") from None\n        try:\n            due_date = date.fromisoformat(due) if due else None\n        except ValueError:\n            raise ValidationError(f\"due date must look like 2026-10-25, not {due!r}\") from None\n        tasks = self.storage.load()\n        task = Task(max((t.id for t in tasks), default=0) + 1, title, level, due_date)\n        self.storage.save(tasks + [task])\n        return task\n\n    def complete(self, task_id: int) -> Task:\n        tasks = self.storage.load()\n        task = self._find(tasks, task_id)\n        task.done = True\n        self.storage.save(tasks)\n        return task\n\n    def delete(self, task_id: int) -> Task:\n        tasks = self.storage.load()\n        task = self._find(tasks, task_id)\n        self.storage.save([t for t in tasks if t.id != task_id])\n        return task\n\n    def pending(self) -> list[Task]:\n        open_tasks = [t for t in self.storage.load() if not t.done]\n        return sorted(open_tasks, key=lambda t: (-t.priority.value, t.due or date.max, t.id))\n\n    def due_soon(self, today: date, days: int = 3) -> list[Task]:\n        limit = today + timedelta(days=days)\n        return [t for t in self.pending() if t.due and t.due <= limit]\n\n    def all(self) -> list[Task]:\n        return self.storage.load()\n\n    @staticmethod\n    def _find(tasks: list[Task], task_id: int) -> Task:\n        for task in tasks:\n            if task.id == task_id:\n                return task\n        raise TaskNotFound(f\"no task with id {task_id}\")\n\n\nfrom storage import MemoryStorage\n\nservice = TaskService(MemoryStorage())\nservice.add(\"Pay electricity bill\", \"high\", \"2026-10-25\")\nservice.add(\"Call plumber\", \"low\")\nservice.add(\"Book Tatkal ticket\", \"high\", \"2026-10-21\")\nprint([t.title for t in service.pending()])",
+   "tests": "from datetime import date\nfrom errors import TaskNotFound\nfrom storage import MemoryStorage\nstore = MemoryStorage()\ns = TaskService(store)\ns.add(\"Pay electricity bill\", \"high\", \"2026-10-25\")   # 1\ns.add(\"Renew passport\", \"medium\", \"2026-11-30\")       # 2\ns.add(\"Call plumber\", \"low\")                          # 3\ns.add(\"Book Tatkal ticket\", \"high\", \"2026-10-21\")     # 4\ns.add(\"Buy diyas\", \"medium\", \"2026-10-19\")            # 5\norder = [t.id for t in s.pending()]\nassert order == [4, 1, 5, 2, 3], \"pending() should order by priority (high first), then due date, then id: expected ids [4, 1, 5, 2, 3], got \" + str(order)\ndone = s.complete(4)\nassert done is not None and done.id == 4 and done.done, \"complete(4) should return task 4 with done=True.\"\nassert any(t.id == 4 and t.done for t in store.load()), \"complete() must save the change through self.storage.save(...).\"\nassert [t.id for t in s.pending()] == [1, 5, 2, 3], \"Completed tasks should disappear from pending().\"\nsoon = [t.id for t in s.due_soon(date(2026, 10, 22), days=3)]\nassert soon == [1, 5], \"On 22 Oct with days=3: task 1 (due 25 Oct) and overdue task 5 (19 Oct), in pending order. Got \" + str(soon)\nremoved = s.delete(3)\nassert removed is not None and removed.title == \"Call plumber\", \"delete(3) should return the deleted task.\"\nassert 3 not in [t.id for t in store.load()], \"delete() must save the list without the task.\"\nfor action in (s.complete, s.delete):\n    try:\n        action(99)\n    except TaskNotFound:\n        pass\n    else:\n        raise AssertionError(action.__name__ + \"(99) should raise TaskNotFound: there is no task 99.\")",
+   "hints": [
+    "Write `_find(tasks, task_id)` first: loop, return the match, else `raise TaskNotFound(...)`.",
+    "Sort key for pending: `lambda t: (-t.priority.value, t.due or date.max, t.id)`.",
+    "due_soon: `limit = today + timedelta(days=days)` and keep pending tasks with `t.due and t.due <= limit`."
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n",
+    "errors.py": "class KaamError(Exception):\n    \"\"\"Base class for every error Kaam reports to the user.\"\"\"\n\n\nclass ValidationError(KaamError):\n    \"\"\"Bad input: an empty title, an unknown priority, a malformed date.\"\"\"\n\n\nclass TaskNotFound(KaamError):\n    \"\"\"No task has the requested id.\"\"\"\n\n\nclass StorageError(KaamError):\n    \"\"\"The task file is unreadable or corrupt.\"\"\"\n",
+    "storage.py": "import json\nimport os\nfrom pathlib import Path\n\nfrom errors import StorageError\nfrom models import Task\n\n\nclass MemoryStorage:\n    \"\"\"Keeps tasks in memory as plain dicts, like a real store would. Perfect for tests.\"\"\"\n\n    def __init__(self):\n        self.rows: list[dict] = []\n\n    def load(self) -> list[Task]:\n        return [Task.from_dict(row) for row in self.rows]\n\n    def save(self, tasks: list[Task]) -> None:\n        self.rows = [task.to_dict() for task in tasks]\n\n\nclass JsonStorage:\n    \"\"\"Keeps tasks in a JSON file, written atomically.\"\"\"\n\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        if not self.path.exists():\n            return []\n        try:\n            rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n            return [Task.from_dict(row) for row in rows]\n        except (json.JSONDecodeError, KeyError, ValueError) as err:\n            raise StorageError(f\"{self.path} is corrupt ({type(err).__name__})\") from err\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)\n"
+   },
+   "say": "Project time. Add is done; now finish the rest of the core. Complete and delete must load, find the task, save, and return it, and both must raise task not found for an ID that does not exist. Pending returns open tasks with the most urgent first. Due soon finds what is due in the next few days, including anything already overdue. The tests run a whole week of tasks."
+  },
+  {
+   "type": "concept",
+   "title": "Testing the core",
+   "body": "- test the **service** with `MemoryStorage`: fast, no files\n- test `JsonStorage` separately, in a temporary folder\n- one behaviour per test, named like a sentence\n- Arrange, Act, Assert (Day 35)",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Test",
+     "Act",
+     "Assert"
+    ],
+    "rows": [
+     [
+      "test_add_assigns_increasing_ids",
+      "add three tasks",
+      "ids are 1, 2, 3"
+     ],
+     [
+      "test_blank_title_is_rejected",
+      "add('   ')",
+      "raises ValidationError"
+     ],
+     [
+      "test_complete_unknown_task",
+      "complete(42)",
+      "raises TaskNotFound"
+     ],
+     [
+      "test_pending_most_urgent_first",
+      "add low, then high",
+      "high comes first"
+     ]
+    ]
+   },
+   "say": "Now we prove Kaam works. Test the service with memory storage, so tests are fast and never touch real files. Test the JSON storage separately in a temporary folder. Each test checks one behaviour, and its name reads like a sentence, so a failure tells you exactly what broke. Arrange, act, assert, just like day thirty five."
+  },
+  {
+   "type": "code",
+   "title": "A unittest suite for the service",
+   "body": "`services.py` here holds the finished `TaskService` from the project. On a laptop: `python -m unittest discover tests`.",
+   "code": "import io\nimport unittest\n\nfrom errors import TaskNotFound, ValidationError\nfrom services import TaskService\nfrom storage import MemoryStorage\n\nclass TaskServiceTests(unittest.TestCase):\n    def setUp(self):\n        self.service = TaskService(MemoryStorage())\n\n    def test_add_assigns_increasing_ids(self):\n        ids = [self.service.add(title).id for title in (\"A\", \"B\", \"C\")]\n        self.assertEqual(ids, [1, 2, 3])\n\n    def test_blank_title_is_rejected(self):\n        with self.assertRaises(ValidationError):\n            self.service.add(\"   \")\n\n    def test_complete_unknown_task(self):\n        with self.assertRaises(TaskNotFound):\n            self.service.complete(42)\n\n    def test_pending_most_urgent_first(self):\n        self.service.add(\"Low one\", \"low\")\n        self.service.add(\"Urgent\", \"high\", due=\"2026-10-20\")\n        self.assertEqual([t.title for t in self.service.pending()], [\"Urgent\", \"Low one\"])\n\nsuite = unittest.defaultTestLoader.loadTestsFromTestCase(TaskServiceTests)\nresult = unittest.TextTestRunner(stream=io.StringIO()).run(suite)\nprint(f\"ran {result.testsRun} tests: {len(result.failures)} failures, {len(result.errors)} errors\")\nprint(\"OK\" if result.wasSuccessful() else \"FAILED\")",
+   "expect": "ran 4 tests: 0 failures, 0 errors\nOK\n",
+   "explain": [
+    [
+     9,
+     "setUp runs before every test: a fresh, empty service each time."
+    ],
+    [
+     12,
+     "One behaviour per test, named like a sentence."
+    ],
+    [
+     17,
+     "assertRaises checks that the rule is enforced."
+    ],
+    [
+     30,
+     "Run quietly and print our own summary."
+    ]
+   ],
+   "files": {
+    "models.py": "from dataclasses import asdict, dataclass, field\nfrom datetime import date\nfrom enum import Enum\n\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    priority: Priority = Priority.MEDIUM\n    due: date | None = None\n    done: bool = False\n    tags: list[str] = field(default_factory=list)\n\n    def to_dict(self) -> dict:\n        data = asdict(self)\n        data[\"priority\"] = self.priority.name.lower()\n        data[\"due\"] = self.due.isoformat() if self.due else None\n        return data\n\n    @classmethod\n    def from_dict(cls, data: dict) -> \"Task\":\n        due = data.get(\"due\")\n        return cls(\n            id=data[\"id\"],\n            title=data[\"title\"],\n            priority=Priority[data.get(\"priority\", \"medium\").upper()],\n            due=date.fromisoformat(due) if due else None,\n            done=data.get(\"done\", False),\n            tags=list(data.get(\"tags\", [])),\n        )\n",
+    "errors.py": "class KaamError(Exception):\n    \"\"\"Base class for every error Kaam reports to the user.\"\"\"\n\n\nclass ValidationError(KaamError):\n    \"\"\"Bad input: an empty title, an unknown priority, a malformed date.\"\"\"\n\n\nclass TaskNotFound(KaamError):\n    \"\"\"No task has the requested id.\"\"\"\n\n\nclass StorageError(KaamError):\n    \"\"\"The task file is unreadable or corrupt.\"\"\"\n",
+    "storage.py": "import json\nimport os\nfrom pathlib import Path\n\nfrom errors import StorageError\nfrom models import Task\n\n\nclass MemoryStorage:\n    \"\"\"Keeps tasks in memory as plain dicts, like a real store would. Perfect for tests.\"\"\"\n\n    def __init__(self):\n        self.rows: list[dict] = []\n\n    def load(self) -> list[Task]:\n        return [Task.from_dict(row) for row in self.rows]\n\n    def save(self, tasks: list[Task]) -> None:\n        self.rows = [task.to_dict() for task in tasks]\n\n\nclass JsonStorage:\n    \"\"\"Keeps tasks in a JSON file, written atomically.\"\"\"\n\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> list[Task]:\n        if not self.path.exists():\n            return []\n        try:\n            rows = json.loads(self.path.read_text(encoding=\"utf-8\"))\n            return [Task.from_dict(row) for row in rows]\n        except (json.JSONDecodeError, KeyError, ValueError) as err:\n            raise StorageError(f\"{self.path} is corrupt ({type(err).__name__})\") from err\n\n    def save(self, tasks: list[Task]) -> None:\n        tmp = self.path.with_suffix(\".tmp\")\n        tmp.write_text(json.dumps([t.to_dict() for t in tasks], indent=2), encoding=\"utf-8\")\n        os.replace(tmp, self.path)\n",
+    "services.py": "from datetime import date, timedelta\n\nfrom errors import TaskNotFound, ValidationError\nfrom models import Priority, Task\n\n\nclass TaskService:\n    def __init__(self, storage):\n        self.storage = storage\n\n    def add(self, title: str, priority: str = \"medium\", due: str | None = None) -> Task:\n        title = title.strip()\n        if not 1 <= len(title) <= 80:\n            raise ValidationError(\"title must be 1 to 80 characters\")\n        try:\n            level = Priority[priority.upper()]\n        except KeyError:\n            raise ValidationError(f\"priority must be low, medium or high, not {priority!r}\") from None\n        try:\n            due_date = date.fromisoformat(due) if due else None\n        except ValueError:\n            raise ValidationError(f\"due date must look like 2026-10-25, not {due!r}\") from None\n        tasks = self.storage.load()\n        task = Task(max((t.id for t in tasks), default=0) + 1, title, level, due_date)\n        self.storage.save(tasks + [task])\n        return task\n\n    def complete(self, task_id: int) -> Task:\n        tasks = self.storage.load()\n        task = self._find(tasks, task_id)\n        task.done = True\n        self.storage.save(tasks)\n        return task\n\n    def delete(self, task_id: int) -> Task:\n        tasks = self.storage.load()\n        task = self._find(tasks, task_id)\n        self.storage.save([t for t in tasks if t.id != task_id])\n        return task\n\n    def pending(self) -> list[Task]:\n        open_tasks = [t for t in self.storage.load() if not t.done]\n        return sorted(open_tasks, key=lambda t: (-t.priority.value, t.due or date.max, t.id))\n\n    def due_soon(self, today: date, days: int = 3) -> list[Task]:\n        limit = today + timedelta(days=days)\n        return [t for t in self.pending() if t.due and t.due <= limit]\n\n    def all(self) -> list[Task]:\n        return self.storage.load()\n\n    @staticmethod\n    def _find(tasks: list[Task], task_id: int) -> Task:\n        for task in tasks:\n            if task.id == task_id:\n                return task\n        raise TaskNotFound(f\"no task with id {task_id}\")\n"
+   },
+   "say": "Set up gives every test a fresh service with empty memory storage, so tests never affect each other. Each test checks one behaviour: increasing IDs, blank titles rejected, unknown IDs refused, and the most urgent task first. We run the suite and print a short summary. On your laptop, python dash m unittest finds and runs all of these for you."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 58 complete",
+   "points": [
+    "Requirements first, then models, services, storage and tests",
+    "Dataclass + Enum model with `to_dict` / `from_dict` for storage",
+    "A service layer that validates input and raises `KaamError`s",
+    "Interchangeable storage: `MemoryStorage` for tests, atomic `JsonStorage` for real use",
+    "A unittest suite that proves the rules hold"
+   ],
+   "say": "Mission fifty eight complete, and Kaam has a real core: a clean data model, a service that enforces every rule, storage that saves atomically and fails well, and tests that prove it. That is the same shape as backend services in real companies. Tomorrow you give it a command line, polish it, and learn how to ship it to the world."
+  }
+ ]
+}

@@ -1,0 +1,537 @@
+{
+ "day": 21,
+ "phase": 3,
+ "title": "Modules and imports",
+ "subtitle": "Borrow superpowers, organise your own code",
+ "minutes": 50,
+ "goal": "Import from the standard library, split your code into your own modules and packages, and structure scripts with a main guard.",
+ "outcomes": [
+  "Use import, from-import and aliases, and explain when each is clearest",
+  "Use math, statistics, random with a seed, datetime and os for everyday jobs",
+  "Write your own module and import it from main.py",
+  "Use if __name__ == \"__main__\": so modules can be imported silently",
+  "Avoid shadowing standard modules with your own file names"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 21: Modules and imports",
+   "body": "Welcome to **Phase 3: Orbit**. Real apps are not one giant file. They are dozens of small files that import each other, plus thousands of modules other developers already wrote.\n\nToday you learn to **borrow** code and to **organise** your own.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "One giant script",
+     "Split it into modules",
+     "Import what each file needs",
+     "Reuse it in every project"
+    ]
+   },
+   "say": "Welcome to phase three, Orbit. From here on, your programs grow up. Real apps are not one giant file, they are many small files that work together, plus thousands of modules other developers have already written for you. Today you learn to borrow that code, and to organise your own."
+  },
+  {
+   "type": "concept",
+   "title": "What is a module?",
+   "body": "A **module** is just a `.py` file full of code you can reuse. Python ships with a huge **standard library** of them.\n\n`import math` runs the math module once and gives you a name, `math`, pointing at a module object. Reach inside with a dot: `math.sqrt`, `math.pi`.",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "math"
+    ],
+    "objects": [
+     {
+      "id": "m",
+      "r": "<module 'math'>  sqrt, ceil, floor, pi, …",
+      "t": "module"
+     }
+    ],
+    "links": [
+     [
+      "math",
+      "m"
+     ]
+    ]
+   },
+   "say": "A module is simply a dot p y file full of code you can reuse. Python comes with hundreds of them, called the standard library. When you write import math, Python loads that module once and gives you a name, math, that points at a module object. You reach inside it with a dot, like math dot sqrt."
+  },
+  {
+   "type": "code",
+   "title": "Borrowing the math module",
+   "body": "A school trip: 130 students, 40 seats per bus. Rounding **up** is a job for `math.ceil`.",
+   "code": "import math\n\nstudents = 130\nseats_per_bus = 40\nbuses = math.ceil(students / seats_per_bus)\nprint(\"Buses needed:\", buses)\n\nprint(\"Screen diagonal:\", math.sqrt(3**2 + 4**2))\nprint(\"Pi to 3 places:\", round(math.pi, 3))\nprint(type(math))",
+   "expect": "Buses needed: 4\nScreen diagonal: 5.0\nPi to 3 places: 3.142\n<class 'module'>\n",
+   "explain": [
+    [
+     1,
+     "Load the math module and bind it to the name math."
+    ],
+    [
+     5,
+     "130 / 40 is 3.25, and ceil rounds up to 4: nobody is left behind."
+    ],
+    [
+     8,
+     "sqrt lives inside math, so we write math.sqrt."
+    ],
+    [
+     9,
+     "math.pi is a value, not a function: no brackets."
+    ],
+    [
+     10,
+     "A module is an object too, of type module."
+    ]
+   ],
+   "say": "A school trip with a hundred and thirty students and forty seats per bus. Dividing gives three point two five, but you cannot book a quarter of a bus, so math dot ceil rounds up to four. Then we use sqrt and pi from the same module. Notice the last line: a module is an object, just like a list or a string."
+  },
+  {
+   "type": "concept",
+   "title": "Three ways to import",
+   "body": "Pick the style that keeps code **clear**:\n\n- `import math` keeps the module name, so readers see where `sqrt` came from\n- `from math import sqrt` copies just that name into your file\n- `import statistics as stats` gives a long name a short alias\n\nAvoid `from math import *`: it dumps every name in and hides their origin.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Style",
+     "Then you write",
+     "Best for"
+    ],
+    "rows": [
+     [
+      "import math",
+      "math.sqrt(9)",
+      "clarity, most code"
+     ],
+     [
+      "from math import sqrt",
+      "sqrt(9)",
+      "a few names used often"
+     ],
+     [
+      "import statistics as stats",
+      "stats.mean(marks)",
+      "long module names"
+     ],
+     [
+      "from math import *",
+      "sqrt(9)  (from where?)",
+      "avoid it"
+     ]
+    ]
+   },
+   "say": "There are three common ways to import. Import math keeps the module name, so anyone reading knows exactly where sqrt came from. From math import sqrt copies just that one name into your file. And import statistics as stats gives a long module a short nickname. One style to avoid is import star, which dumps every name in and hides where they came from."
+  },
+  {
+   "type": "code",
+   "title": "from and as in action",
+   "body": "`statistics` turns a list of marks into a class report in three lines.",
+   "code": "from math import sqrt, floor\nimport statistics as stats\n\nmarks = [78, 92, 85, 64, 92]\naverage = stats.mean(marks)\nprint(\"Average:\", average)\nprint(\"Median:\", stats.median(marks))\nprint(\"Most common:\", stats.mode(marks))\nprint(\"Average, rounded down:\", floor(average))\nprint(\"Root of 2:\", round(sqrt(2), 4))",
+   "expect": "Average: 82.2\nMedian: 85\nMost common: 92\nAverage, rounded down: 82\nRoot of 2: 1.4142\n",
+   "explain": [
+    [
+     1,
+     "Copy two names, sqrt and floor, straight into this file."
+    ],
+    [
+     2,
+     "Import statistics under the shorter alias stats."
+    ],
+    [
+     5,
+     "mean adds the marks and divides by how many there are."
+    ],
+    [
+     7,
+     "median sorts the marks and takes the middle one."
+    ],
+    [
+     8,
+     "mode is the most frequent mark."
+    ],
+    [
+     9,
+     "floor needs no prefix because we imported it by name."
+    ]
+   ],
+   "say": "Here we import two names from math directly, and the statistics module under the alias stats. With it, a list of marks becomes a mini report: the mean, the median, and the most common mark. Because we imported floor and sqrt by name, we use them without any prefix."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "After `from math import sqrt`, which line works?",
+   "options": [
+    "math.sqrt(16)",
+    "sqrt(16)",
+    "Math.sqrt(16)"
+   ],
+   "answer": 1,
+   "why": "`from math import sqrt` creates only the name `sqrt` in your file. The name `math` is never created, so `math.sqrt` raises NameError. And Python is case-sensitive: `Math` is a different name.",
+   "say": "Quick check. After from math import sqrt, which of these lines actually works? Think about which names now exist in your file."
+  },
+  {
+   "type": "visual",
+   "title": "A tour of the standard library",
+   "body": "\"Batteries included\": before you write a helper, check whether Python already ships one.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Module",
+     "What it gives you",
+     "Example"
+    ],
+    "rows": [
+     [
+      "math",
+      "maths functions and constants",
+      "math.ceil(3.2) → 4"
+     ],
+     [
+      "random",
+      "repeatable pseudo-random choices",
+      "random.choice(team)"
+     ],
+     [
+      "datetime",
+      "dates, times, durations",
+      "date(2026, 10, 18)"
+     ],
+     [
+      "os",
+      "talk to the operating system",
+      "os.listdir()"
+     ],
+     [
+      "pathlib, csv, json",
+      "files and data formats",
+      "Days 22 and 23"
+     ]
+    ]
+   },
+   "say": "Python's motto is batteries included. Before you write a helper yourself, check whether the standard library already has one. Here are the modules you will use this phase and the next. You have met math and statistics. Next come random, datetime and os, and later in this phase, pathlib, csv and json."
+  },
+  {
+   "type": "code",
+   "title": "random, but repeatable",
+   "body": "Games, tests and simulations need randomness. A **seed** makes it repeatable, so a bug you saw once can be reproduced.",
+   "code": "import random\n\nrandom.seed(7)  # same seed, same sequence, every run\ndice = [random.randint(1, 6) for _ in range(5)]\nprint(\"Dice:\", dice)\n\nteam = [\"Riya\", \"Arjun\", \"Meera\", \"Kabir\"]\nprint(\"Toss winner:\", random.choice(team))\nrandom.shuffle(team)\nprint(\"Batting order:\", team)\nprint(\"Two openers:\", random.sample(team, 2))",
+   "expect": "Dice: [3, 2, 4, 6, 1]\nToss winner: Riya\nBatting order: ['Meera', 'Kabir', 'Arjun', 'Riya']\nTwo openers: ['Kabir', 'Meera']\n",
+   "explain": [
+    [
+     3,
+     "Seeding fixes the starting point of the random sequence."
+    ],
+    [
+     4,
+     "randint(1, 6) includes both ends, like a real die. The underscore means we do not need the loop variable."
+    ],
+    [
+     8,
+     "choice picks one item from a list."
+    ],
+    [
+     9,
+     "shuffle reorders the list in place and returns None."
+    ],
+    [
+     11,
+     "sample picks 2 different items without repeats."
+    ]
+   ],
+   "say": "Python's random numbers are pseudo-random: they come from a formula that starts at a seed. Set the seed and you get the same sequence every run, which is gold when you need to reproduce a bug or write a test. Then we roll dice, pick a toss winner, shuffle the batting order in place, and sample two different openers."
+  },
+  {
+   "type": "code",
+   "title": "datetime and os: a first peek",
+   "body": "Two modules you will use constantly. `datetime` does calendar maths (Day 32 goes deep). `os` talks to the operating system: paths and folders.",
+   "code": "from datetime import date\nimport os\n\ntoday = date(2026, 10, 18)\nexam = date(2026, 12, 1)\nprint(\"Days until the exam:\", (exam - today).days)\nprint(\"Day of the week:\", today.strftime(\"%A\"))\n\nprint(os.path.join(\"reports\", \"october.csv\"))\nprint(os.path.splitext(\"invoice_042.pdf\"))\nprint(sorted(os.listdir()))",
+   "expect": "Days until the exam: 44\nDay of the week: Sunday\nreports/october.csv\n('invoice_042', '.pdf')\n['marks.csv', 'notes.txt']\n",
+   "explain": [
+    [
+     1,
+     "date is a class inside the datetime module."
+    ],
+    [
+     6,
+     "Subtracting two dates gives a duration; .days is the number of days."
+    ],
+    [
+     7,
+     "strftime formats a date; %A means the full weekday name."
+    ],
+    [
+     9,
+     "join builds a path with the right separator for this computer."
+    ],
+    [
+     10,
+     "splitext splits a file name into name and extension."
+    ],
+    [
+     11,
+     "listdir lists the files in the current folder."
+    ]
+   ],
+   "files": {
+    "marks.csv": "name,marks\nRiya,92\n",
+    "notes.txt": "Buy chai\n"
+   },
+   "say": "A first peek at two modules you will use all the time. With datetime, subtracting two dates gives a duration, so counting days to an exam is one line. With os, you can build file paths safely, split a file name from its extension, and list the files in a folder. This folder has two files, a marks file and a notes file."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "import math as m\n\npi = 3\nprint(pi, round(m.pi, 2))",
+   "options": [
+    "3 3.14",
+    "3.14 3.14",
+    "3 3",
+    "NameError: name 'math' is not defined"
+   ],
+   "answer": 0,
+   "why": "The module's `pi` lives inside the module, reached as `m.pi`. Your own `pi` is a separate name in your file. Modules keep names apart, which is exactly why big programs use them.",
+   "say": "Here we import math under the alias m, then create our own variable called pi. Do the two pis clash? Predict what prints."
+  },
+  {
+   "type": "concept",
+   "title": "Your own module",
+   "body": "Any `.py` file you write is a module. Put reusable functions in `helpers.py`, then `import helpers` from `main.py`.\n\nIn this course, `files` creates extra files next to `main.py`. Tap the **helpers.py** tab to see one.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "import helpers",
+     "Python finds helpers.py next to main.py",
+     "Runs it once, top to bottom",
+     "Binds the name helpers to the module"
+    ]
+   },
+   "say": "Here is the best part. Any dot p y file you write is a module too. Move your reusable functions into a file like helpers dot p y, and import it from main dot p y. In this course, some examples come with extra files sitting next to your main program. Tap the helpers tab to read it."
+  },
+  {
+   "type": "code",
+   "title": "Importing helpers.py",
+   "body": "`helpers.py` holds the shop's money logic. Every file in the app can now share one tested version.",
+   "code": "import helpers\nfrom helpers import rupees\n\nprice = 2499\nprint(\"GST rate:\", helpers.GST_RATE)\nprint(\"Final price:\", rupees(helpers.with_gst(price)))\nprint(helpers.__doc__)",
+   "expect": "GST rate: 0.18\nFinal price: ₹2,948.82\nSmall money helpers for a shop app.\n",
+   "explain": [
+    [
+     1,
+     "Loads helpers.py and binds the name helpers."
+    ],
+    [
+     2,
+     "Also copy rupees in directly, for convenience."
+    ],
+    [
+     5,
+     "Constants in a module are reached with a dot, like functions."
+    ],
+    [
+     6,
+     "with_gst adds 18 percent; rupees formats with commas and two decimals."
+    ],
+    [
+     7,
+     "The string at the top of helpers.py is its docstring."
+    ]
+   ],
+   "files": {
+    "helpers.py": "\"\"\"Small money helpers for a shop app.\"\"\"\nGST_RATE = 0.18\n\n\ndef with_gst(amount):\n    return round(amount * (1 + GST_RATE), 2)\n\n\ndef rupees(amount):\n    return f\"₹{amount:,.2f}\"\n"
+   },
+   "say": "Our helpers file holds the shop's money logic: a GST rate constant and two functions. Main imports the module, and also pulls rupees in directly. Now every file in the app can share one tested version of this logic instead of copying it around. The last line prints the module's docstring, the description at the top of the file."
+  },
+  {
+   "type": "concept",
+   "title": "The main guard",
+   "body": "Every module has a built-in variable `__name__`:\n\n- run the file directly, and it is `\"__main__\"`\n- import it, and it is the module's name, like `\"tools\"`\n\nSo `if __name__ == \"__main__\":` means \"only when run directly\". Put demos and self-tests there so importing stays silent.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Python loads tools.py",
+      "s": "pill"
+     },
+     {
+      "t": "Run directly?",
+      "s": "diamond",
+      "yes": "__name__ is '__main__'",
+      "no": "__name__ is 'tools'"
+     },
+     {
+      "t": "Guarded block runs only when run directly"
+     }
+    ]
+   },
+   "say": "Every module has a built-in variable called dunder name. When you run a file directly, its value is the text main, with underscores around it. When the file is imported, it holds the module's own name instead. So the check, if dunder name equals main, means only do this when I am the program being run. Put demos and quick self tests there, so importing the module stays quiet."
+  },
+  {
+   "type": "code",
+   "title": "Watch __name__ change",
+   "body": "Open **tools.py** first. Its self-test is guarded, so it stays silent when imported.",
+   "code": "import tools\n\nprint(\"main.py sees __name__ =\", __name__)\nprint(tools.slugify(\"Python Zero to Hero\"))",
+   "expect": "tools.py sees __name__ = tools\nmain.py sees __name__ = __main__\npython-zero-to-hero\n",
+   "explain": [
+    [
+     1,
+     "Importing runs tools.py: its print shows __name__ is tools, and the guarded self-test is skipped."
+    ],
+    [
+     3,
+     "This file is the one being run, so its __name__ is __main__."
+    ],
+    [
+     4,
+     "The function is still available to use."
+    ]
+   ],
+   "files": {
+    "tools.py": "def slugify(title):\n    return title.strip().lower().replace(\" \", \"-\")\n\n\nprint(\"tools.py sees __name__ =\", __name__)\n\nif __name__ == \"__main__\":\n    print(\"Self-test:\", slugify(\"  Hello World \"))\n"
+   },
+   "say": "Read the tools file first. It prints its own dunder name, and it has a self-test inside the main guard. When main imports it, tools sees its name as tools, so the self-test is skipped. Main itself is the program being run, so its name is main. This one pattern is in almost every professional Python file."
+  },
+  {
+   "type": "quiz",
+   "title": "Imported twice?",
+   "q": "`counter.py` contains one line: `print(\"Loading counter\")`. What does this `main.py` print?",
+   "code": "import counter\nimport counter\nprint(\"done\")",
+   "options": [
+    "Loading counter\nLoading counter\ndone",
+    "Loading counter\ndone",
+    "done",
+    "ImportError"
+   ],
+   "answer": 1,
+   "why": "Python runs a module only the **first** time it is imported, then caches it in `sys.modules`. The second `import` just reuses the same module object. That is why module-level setup runs once.",
+   "say": "A module called counter prints a message when it loads. Main imports it twice, then prints done. How many times does the loading message appear?"
+  },
+  {
+   "type": "concept",
+   "title": "Packages: folders of modules",
+   "body": "As apps grow, related modules go in a **package**: a folder, usually with an `__init__.py` file. Dots in the import follow the folders.\n\n`from shop.pricing import with_gst` means: folder `shop`, file `pricing.py`, name `with_gst`.\n\nOn Day 39 you install other people's packages with pip.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "my_app/",
+     "c": [
+      {
+       "t": "main.py"
+      },
+      {
+       "t": "shop/",
+       "c": [
+        {
+         "t": "__init__.py"
+        },
+        {
+         "t": "cart.py"
+        },
+        {
+         "t": "pricing.py"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "When an app grows, related modules are grouped into a package, which is just a folder, usually with a file called dunder init inside. The dots in an import follow the folders. From shop dot pricing import with gst means: go into the shop folder, open pricing dot p y, and take the with gst function. On day thirty nine you will install packages written by others with pip."
+  },
+  {
+   "type": "code",
+   "title": "Importing from a package",
+   "body": "Here `cart.py` itself imports from `pricing.py`. Modules importing modules is how large apps are wired.",
+   "code": "from shop.cart import cart_total\nimport shop.pricing\n\nbasket = [499, 1299, 250]\nprint(\"Subtotal:\", sum(basket))\nprint(\"Total with GST:\", cart_total(basket))\nprint(\"Rate used:\", shop.pricing.GST_RATE)",
+   "expect": "Subtotal: 2048\nTotal with GST: 2416.64\nRate used: 0.18\n",
+   "explain": [
+    [
+     1,
+     "Folder shop, file cart.py, function cart_total."
+    ],
+    [
+     2,
+     "Or import the module with its full dotted path."
+    ],
+    [
+     6,
+     "cart_total calls with_gst, which it imported from shop.pricing."
+    ],
+    [
+     7,
+     "A full dotted path reaches the constant."
+    ]
+   ],
+   "files": {
+    "shop/__init__.py": "",
+    "shop/cart.py": "from shop.pricing import with_gst\n\n\ndef cart_total(prices):\n    return with_gst(sum(prices))\n",
+    "shop/pricing.py": "GST_RATE = 0.18\n\n\ndef with_gst(amount):\n    return round(amount * (1 + GST_RATE), 2)\n"
+   },
+   "say": "Our shop package has two modules. The cart module imports with gst from the pricing module, and main imports from cart. Modules importing other modules is exactly how large apps are wired together. You can also import a module by its full dotted path, and reach inside it from there."
+  },
+  {
+   "type": "quiz",
+   "title": "A classic trap",
+   "q": "You save your practice script as `random.py`. Now `import random` followed by `random.randint(1, 6)` fails with AttributeError. Why?",
+   "options": [
+    "The random module was removed in Python 3.13",
+    "Python imported your random.py instead of the standard one, because the script's folder is searched first",
+    "You must write from random import randint",
+    "randint only works inside functions"
+   ],
+   "answer": 1,
+   "why": "Python searches the script's own folder before the standard library, so your file **shadows** the real module. Never name files `random.py`, `math.py`, `json.py` or `csv.py`. Rename it, and the real module comes back.",
+   "say": "Here is a trap that catches almost every beginner once. You name your practice file random dot p y, and suddenly the random module seems broken. Why does this happen?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "This program crashes with a **NameError**. The `pricing.py` module is fine (open its tab). Fix the **import** so the program prints the price of a ₹1,000 item with GST.",
+   "starter": "import pricing\n\nprice = 1000\nprint(\"With GST:\", with_gst(price))\n",
+   "solution": "from pricing import with_gst\n\nprice = 1000\nprint(\"With GST:\", with_gst(price))",
+   "tests": "assert \"1180\" in __out__, \"Print the price with GST. with_gst(1000) should give 1180.0.\"\nassert \"with_gst(\" in __code__, \"Use the with_gst function from pricing.py, don't calculate GST by hand.\"",
+   "hints": [
+    "import pricing creates the name pricing, not with_gst.",
+    "Either call pricing.with_gst(price), or change the import to from pricing import with_gst."
+   ],
+   "files": {
+    "pricing.py": "GST_RATE = 0.18\n\n\ndef with_gst(amount):\n    \"\"\"Price including 18% GST, rounded to paise.\"\"\"\n    return round(amount * (1 + GST_RATE), 2)\n"
+   },
+   "say": "Your first bug hunt of the phase. The pricing module is fine, so open its tab and read it. The problem is in how main imports it. Read the error, think about which names the import actually created, and fix it."
+  },
+  {
+   "type": "exercise",
+   "title": "Delivery trips",
+   "task": "A van carries `capacity` parcels per trip. Write `trips_needed(parcels, capacity)` that **returns** how many trips are needed. Use `math.ceil`.\n\n- `trips_needed(130, 40)` → 4\n- `trips_needed(120, 40)` → 3\n- `trips_needed(0, 40)` → 0",
+   "starter": "import math\n\n\ndef trips_needed(parcels, capacity):\n    pass  # replace this with your code\n\n\nprint(trips_needed(130, 40))\n",
+   "solution": "import math\n\n\ndef trips_needed(parcels, capacity):\n    return math.ceil(parcels / capacity)\n\n\nprint(trips_needed(130, 40))",
+   "tests": "assert trips_needed(130, 40) == 4, \"130 parcels with 40 per trip needs 4 trips: 3 full trips and 1 more for the last 10.\"\nassert trips_needed(120, 40) == 3, \"120 parcels fit exactly in 3 trips. Are you always adding 1? Let math.ceil round up only when needed.\"\nassert trips_needed(0, 40) == 0, \"No parcels means no trips.\"\nassert trips_needed(1, 40) == 1, \"Even 1 parcel needs a trip.\"\nassert isinstance(trips_needed(130, 40), int), \"Return a whole number of trips, an int.\"\nassert \"math.ceil\" in __code__, \"Use math.ceil to round up.\"",
+   "hints": [
+    "Divide parcels by capacity, then round up.",
+    "return math.ceil(parcels / capacity)"
+   ],
+   "say": "Logistics apps solve this every day. A van carries a fixed number of parcels per trip. Write trips needed, which returns how many trips it takes, using math dot ceil to round up. Watch the edge cases: an exact fit, and zero parcels."
+  },
+  {
+   "type": "exercise",
+   "title": "Give your script a front door",
+   "task": "Professional scripts keep logic in functions and start from a guarded `main()`.\n\n- Write `class_average(marks)` that **returns** the average rounded to 1 decimal\n- Write `main()` that prints `Class average: 80.0` for `[70, 80, 90]`\n- Call `main()` only under `if __name__ == \"__main__\":`",
+   "starter": "marks = [70, 80, 90]\nprint(\"Class average:\", round(sum(marks) / len(marks), 1))\n",
+   "solution": "def class_average(marks):\n    return round(sum(marks) / len(marks), 1)\n\n\ndef main():\n    print(\"Class average:\", class_average([70, 80, 90]))\n\n\nif __name__ == \"__main__\":\n    main()",
+   "tests": "assert \"class_average\" in dir() and callable(class_average), \"Define a function called class_average(marks).\"\nassert class_average([70, 80, 90]) == 80.0, \"class_average([70, 80, 90]) should return 80.0.\"\nassert class_average([33, 34]) == 33.5, \"class_average([33, 34]) should return 33.5.\"\nassert class_average([91, 92, 92]) == 91.7, \"Round the average to 1 decimal place.\"\nassert \"main\" in dir() and callable(main), \"Define a main() function that prints the report.\"\nguards = [n for n in ast.walk(__tree__) if isinstance(n, ast.If) and \"__name__\" in ast.unparse(n.test)]\nassert guards, 'Call main() inside if __name__ == \"__main__\":'\nassert \"Class average: 80.0\" in __out__, \"Running the script should print Class average: 80.0\"",
+   "hints": [
+    "Move the maths into class_average and return the result instead of printing it.",
+    "main() calls class_average([70, 80, 90]) and prints it.",
+    "Finish with: if __name__ == \"__main__\": then main() indented below it."
+   ],
+   "say": "Let's turn a quick script into a professional one. Put the calculation in a function that returns the class average, write a main function that prints the report, and call main only inside the main guard. Now other files could import class average without anything printing."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 21 complete",
+   "points": [
+    "A module is a .py file; import runs it once and gives you a module object",
+    "import x, from x import y, and import x as z: choose the clearest",
+    "The standard library has math, random (seed it!), datetime, os and much more",
+    "Your own files are modules; packages are folders of modules",
+    "if __name__ == \"__main__\": runs code only when the file is run directly",
+    "Never name your file after a module you import, like random.py"
+   ],
+   "say": "Mission twenty one complete. You can import from the standard library, write your own modules and packages, and use the main guard like a professional. Tomorrow your programs learn to remember things between runs, by reading and writing files. See you on day twenty two."
+  }
+ ]
+}

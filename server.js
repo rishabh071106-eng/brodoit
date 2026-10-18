@@ -276,7 +276,24 @@ console.log('[ai] gemini',geminiKey()?'✅':'❌','groq',groqKey()?'✅':'❌');
 // Each provider returns {reply:string} or throws on failure.
 const _gemini=require('./modules/gemini.js');
 const _gset=k=>{try{return global._getSetting?global._getSetting(k):''}catch(e){return''}};
+// When Gemini has no key, is out of prepaid credit (402) or fails, text calls go to the ElevenLabs brain
+// (modules/elevenbrain.js: an ElevenLabs agent whose LLM is billed to the ElevenLabs plan).
+async function _viaElevenBrain(messages,systemPrompt,why){
+  const B=global._elevenBrain;
+  if(!B||!B.available()||messages.some(m=>m&&m.image))throw why||new Error('no-key');
+  const sys=systemPrompt||((messages.find(m=>m.role==='system')||{}).content)||'You are Bro, a warm, helpful friend inside the Brodoit app.';
+  const reply=await B.ask({system:sys,messages:messages.filter(m=>m.role!=='system').map(m=>({role:m.role,content:String(m.content||'')}))});
+  return{reply,provider:'elevenlabs'};
+}
 async function _callGemini(messages,{maxTokens=4096,systemPrompt='',imageData=null}={}){
+  if(!geminiKey()||(global._geminiDownUntil||0)>Date.now())return _viaElevenBrain(messages,systemPrompt,new Error('no-key'));
+  try{return await _callGeminiDirect(messages,{maxTokens,systemPrompt,imageData})}
+  catch(e){
+    if(e.code==='credits'||e.status===402||/402|prepay|credit|billing/i.test(String(e.message)))global._geminiDownUntil=Date.now()+3600e3;
+    return _viaElevenBrain(messages,systemPrompt,e);
+  }
+}
+async function _callGeminiDirect(messages,{maxTokens=4096,systemPrompt='',imageData=null}={}){
   if(!geminiKey())throw new Error('no-key');
   // Convert OpenAI-style messages to Gemini format (supports inline images)
   const contents=messages.filter(m=>m.role!=='system').map(m=>{
@@ -445,7 +462,7 @@ async function _broExecTool(toolName,input,userPhone,userTz){
 }
 
 app.post('/api/bro/chat',auth,async(req,res)=>{
-  if(!groqKey()&&!geminiKey())return res.status(503).json({error:'Chat not configured (no AI keys set).'});
+  if(!groqKey()&&!geminiKey()&&!(global._elevenBrain&&global._elevenBrain.available()))return res.status(503).json({error:'Chat not configured (no AI keys set).'});
   const messages=Array.isArray(req.body&&req.body.messages)?req.body.messages.slice(-10):null;
   if(!messages||!messages.length)return res.status(400).json({error:'messages required'});
   const imageB64=req.body.image||null;
@@ -510,7 +527,7 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
     let lastError='';
     let draftReply='',draftProvider='';
     // Step 1: Try Gemini first (generous free tier: 1500 req/day, 1M tokens/min)
-    if(!draftReply&&geminiKey()){
+    if(!draftReply&&(geminiKey()||(global._elevenBrain&&global._elevenBrain.available()))){
       try{
         const g=await _callGemini(apiMsgs,{maxTokens:maxTok,systemPrompt:sys});
         draftReply=g.reply;draftProvider='gemini';
@@ -526,7 +543,8 @@ app.post('/api/bro/chat',auth,async(req,res)=>{
     }
     if(!draftReply){console.log('[bro] All providers failed:',lastError);return res.status(502).json({error:'Bro is taking a quick break — try again in a moment.'})}
     // Step 2: Verify/improve with the other model (skip for friend mode — keep it fast)
-    const verifyModel=(mode!=='friend')&&(draftProvider==='gemini'&&groqKey())?'groq':(mode!=='friend')&&(draftProvider==='groq'&&geminiKey())?'gemini':null;
+    // v13: no second 'verify' pass — it doubled every reply's wait; one good model answers directly.
+    const verifyModel=null;
     if(verifyModel&&draftReply.length>40){
       try{
         const verifySys='You are a quality checker. You receive a draft response to a user question. Your job: check for factual errors, missing info, or unclear answers. If the draft is good, return it as-is. If it has issues, return an improved version. Keep the same tone and style. Do NOT add meta-commentary like "Here is the improved version" — just output the final answer directly. Do NOT add trailing questions like "Need anything else?" — just answer and stop.';
@@ -2682,8 +2700,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=16"><link rel="stylesheet" href="/app/app.css?v=16"><link rel="stylesheet" href="/app/news.css?v=16"><link rel="stylesheet" href="/app/steps.css?v=16"><link rel="stylesheet" href="/app/admin.css?v=16"><link rel="stylesheet" href="/app/onboarding.css?v=16"><link rel="stylesheet" href="/app/cards.css?v=16"><link rel="stylesheet" href="/app/home.css?v=16"><link rel="stylesheet" href="/app/tasks.css?v=16"><link rel="stylesheet" href="/app/books.css?v=16">
-<script src="/app/icons.js?v=16" defer></script><script src="/app/cards.js?v=16" defer></script><script src="/app/learn.js?v=16" defer></script><script src="/app/you.js?v=16" defer></script><script src="/app/haptics.js?v=16" defer></script><script src="/app/mascot.js?v=16" defer></script><script src="/app/voice.js?v=16" defer></script><script src="/app/news.js?v=16" defer></script><script src="/app/steps.js?v=16" defer></script><script src="/app/admin.js?v=16" defer></script><script src="/app/onboarding.js?v=16" defer></script><script src="/app/motion.js?v=16" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=17"><link rel="stylesheet" href="/app/app.css?v=17"><link rel="stylesheet" href="/app/news.css?v=17"><link rel="stylesheet" href="/app/steps.css?v=17"><link rel="stylesheet" href="/app/admin.css?v=17"><link rel="stylesheet" href="/app/onboarding.css?v=17"><link rel="stylesheet" href="/app/cards.css?v=17"><link rel="stylesheet" href="/app/home.css?v=17"><link rel="stylesheet" href="/app/tasks.css?v=17"><link rel="stylesheet" href="/app/books.css?v=17"><link rel="stylesheet" href="/app/learn.css?v=17">
+<script src="/app/icons.js?v=17" defer></script><script src="/app/cards.js?v=17" defer></script><script src="/app/learn.js?v=17" defer></script><script src="/app/you.js?v=17" defer></script><script src="/app/haptics.js?v=17" defer></script><script src="/app/mascot.js?v=17" defer></script><script src="/app/voice.js?v=17" defer></script><script src="/app/news.js?v=17" defer></script><script src="/app/steps.js?v=17" defer></script><script src="/app/admin.js?v=17" defer></script><script src="/app/onboarding.js?v=17" defer></script><script src="/app/motion.js?v=17" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -13809,7 +13827,6 @@ var _LT=[
   ['German','12 audio lessons + practice','u:/lang/course.html?c=de','\\u{1F1E9}\\u{1F1EA}'],
   ['Hindi','For English speakers','u:/lang/course.html?c=hi','\\u{1F1EE}\\u{1F1F3}'],
   ['English (\\u0939\\u093F\\u0902\\u0926\\u0940 \\u092C\\u094B\\u0932\\u0928\\u0947 \\u0935\\u093E\\u0932\\u094B\\u0902 \\u0915\\u0947 \\u0932\\u093F\\u090F)','Spoken English, step by step','u:/lang/course.html?c=en','\\u{1F1EC}\\u{1F1E7}'],
-  ['Japanese','Hiragana to conversations','u:/lang/course.html?c=ja','\\u{1F1EF}\\u{1F1F5}'],
   ['Talk to Bro in a language','Live spoken practice','u:/?tab=bro&persona=language','\\u{1F919}']]},
  {k:'defence',e:'\\u{1F396}\\uFE0F',t:'Defence',s:'NDA \\u00B7 CDS \\u00B7 AFCAT \\u00B7 SSB interview',g:'linear-gradient(140deg,#0F3D2E,#1F7A4D 60%,#9BD36A)',c:[
   ['NDA &amp; NA','After Class 12 \\u2014 Maths + GAT, full syllabus','p:exam.html?id=nda','\\u2693'],
@@ -13880,8 +13897,11 @@ function _youDash(){
   return h;
 }
 function _ltToggle(k){S.learnOpen=S.learnOpen===k?null:k;render();if(S.learnOpen)setTimeout(function(){var el=document.getElementById('lt-'+k);if(el&&el.getBoundingClientRect().top>window.innerHeight*0.55)el.scrollIntoView({behavior:'smooth',block:'start'})},40)}
-function _openPrep(p){location.href='/prep/'+p}
+function _openPrep(p){location.href='/?tab=learn'}
 function _openSection(id){
+  // v13: the old in-app sections are retired; Python lives in /code (real Python, 60 days)
+  if(id==='python'||id==='ai'){location.href='/code/';return}
+  S.learnSection=null;S.tab='courses';render();return;
   S.learnSection=id;
   render();
   window.scrollTo(0,0);
@@ -15167,7 +15187,7 @@ if(isMain){
   };
   var _learnTabs=['games','courses'];
   var _youTabs=['profile','cal'];
-  const tabsHtml=[{k:'bro',l:'Bro',i:'bro'},{k:'steps',l:'Steps',i:'steps'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learn',i:'learn'},{k:'books',l:'Books',i:'books'},{k:'profile',l:'You',i:'you'}].map(function(x){
+  const tabsHtml=[{k:'bro',l:'Bro',i:'bro'},{k:'news',l:'News',i:'news'},{k:'steps',l:'Steps',i:'steps'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learn',i:'learn'},{k:'books',l:'Books',i:'books'}].map(function(x){
     var isOn=(x.k==='bro')?(!S.tab||S.tab==='home'||S.tab==='bro'):(x.k==='profile'?(S.tab==='profile'||S.tab==='cal'):S.tab===x.k);
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
@@ -17339,7 +17359,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=126').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=127').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17869,8 +17889,11 @@ async function refreshGovJobs(){
   }finally{_jobsRunning=false}
 }
 // Run shortly after boot if the last run is older than 20 h, then check every hour.
+// v13: the jobs section is retired with exam prep; its daily Gemini agent only runs if JOBS_AGENT=1.
+if(process.env.JOBS_AGENT==='1'){
 setTimeout(()=>{const last=Date.parse(jobMeta('lastRun')||0);if(!last||Date.now()-last>20*3600000)refreshGovJobs();else jobLoadSeed()},30000);
 setInterval(()=>{const last=Date.parse(jobMeta('lastRun')||0);if(!last||Date.now()-last>24*3600000)refreshGovJobs()},3600000);
+}
 
 function jobsAll(){
   const today=new Date().toISOString().slice(0,10);
@@ -17885,7 +17908,7 @@ app.get('/j/:id',(req,res)=>{
   const j=r?JSON.parse(r.data):null,e=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const title=j?`${j.title} — apply by ${j.lastDate||'see notice'} | Brodoit Jobs`:'Government jobs | Brodoit';
   const desc=j?`${j.posts?j.posts+' posts · ':''}${j.qualification||''}${j.ageMax?' · age up to '+j.ageMax:''}. Full details, process and official apply link on Brodoit.`:'Fresh government job notifications every day on Brodoit.';
-  const to='/prep/job.html?id='+encodeURIComponent(req.params.id);
+  const to='/?tab=learn';
   res.type('html').send(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${e(title)}</title><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta property="og:title" content="${e(title)}"><meta property="og:description" content="${e(desc)}"><meta property="og:image" content="https://brodoit.com/icon-512.png"><meta property="og:site_name" content="Brodoit">
 <meta http-equiv="refresh" content="0;url=${e(to)}"></head><body><a href="${e(to)}">Open on Brodoit</a></body></html>`);
@@ -17893,11 +17916,11 @@ app.get('/j/:id',(req,res)=>{
 
 // Exam prep + NCERT (static pages and JSON content in ./prep)
 // no-cache + ETag: phones revalidate on every open, so a deploy shows up immediately
-app.use('/prep',express.static(path.join(__dirname,'prep'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
-app.get('/learning/ml-algorithms',(_,res)=>{
-  res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
-});
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v174";
+// v13: Learn is two schools (Python, Languages). Exam prep, jobs and the ML lab were retired; old links land on Learn.
+app.get(/^\/prep(\/.*)?$/,(_,res)=>res.redirect(302,'/?tab=learn'));
+app.get(/^\/learning(\/.*)?$/,(_,res)=>res.redirect(302,'/code/'));
+app.get(['/lang/phrases.html','/lang/phrase-lesson.html'],(_,res)=>res.redirect(302,'/lang/'));
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v175";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
@@ -17959,17 +17982,22 @@ app.get('/',(req,res)=>{
 app.use('/app',express.static(path.join(__dirname,'app'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 let _settings=null;try{_settings=require('./modules/settings.js').install(db)}catch(e){console.log('[settings] module missing, env only:',e.message);_settings={getSetting:k=>process.env[k]||'',setSetting:()=>{throw new Error('settings module missing')},settingSource:k=>process.env[k]?'env':null}}
 const {getSetting,setSetting,settingSource}=_settings;global._getSetting=getSetting;
+try{require('./modules/elevenbrain.js').install({getSetting,setSetting})}catch(e){console.log('[eleven-brain] off:',e.message)}
 // keys handed over in chat arrive encrypted in config/sealed-settings.json (public repo) — applied before anything reads them
 try{require('./modules/sealed.js').install(app,{dataDir:path.dirname(DB_PATH),appRoot:__dirname,setSetting,settingUpdatedAt:_settings.settingUpdatedAt,allowed:['OPENAI_API_KEY','ELEVENLABS_API_KEY','GEMINI_API_KEY','GROQ_API_KEY']})}catch(e){console.log('[sealed] off:',e.message)}
 const sha256=s=>crypto.createHash('sha256').update(String(s)).digest('hex');
 function pushTo(phone,payload){try{const subs=db.prepare('SELECT * FROM push_subs WHERE user_phone=?').all(phone);let n=0;for(const sub of subs){n++;webpush.sendNotification({endpoint:sub.endpoint,keys:{p256dh:sub.keys_p256dh,auth:sub.keys_auth}},typeof payload==='string'?payload:JSON.stringify(payload)).catch(err=>{if(err.statusCode===404||err.statusCode===410)db.prepare('DELETE FROM push_subs WHERE endpoint=?').run(sub.endpoint)})}return n}catch(e){return 0}}
 try{require('./modules/newsreader.js').install(app,{auth,getSetting,MEDIA_DIR})}catch(e){console.log('[newsreader] not installed:',e.message)}
 try{require('./modules/newsdesk.js').install(app,{db,auth,getSetting,isAdminUser,fetchFeed,feeds:NEWS_FEEDS})}catch(e){console.log('[desk] not installed:',e.message)}
+try{const _st=require('./modules/studio.js');_st.configure({mediaDir:MEDIA_DIR});require('./modules/newsvoice.js').install(app,{db,getSetting,mediaDir:MEDIA_DIR,STUDIO:_st,schedule:String(process.env.NEWS_DESK||'1')!=='0'})}catch(e){console.log('[news-voice] off:',e.message)}
 let _android=null;try{_android=require('./modules/android.js').install(app,{MEDIA_DIR,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',auth,isAdminUser})}catch(e){console.log('[android] not installed:',e.message)}
 if(_android)global._androidCert=function(){try{return _android.cert()}catch(e){return null}};
 let _steps=null;try{_steps=require('./modules/steps.js').install(app,{db,auth,dayKey,webpush,pushTo,MEDIA_DIR,android:_android,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',genId,sha256,getUserByPhone:phone=>db.prepare('SELECT phone,name,email,tz,created_at FROM users WHERE phone=?').get(phone),fitSync,_getUserTz,appRoot:__dirname});if(_steps&&_steps.ingest)global._stepsIngest=_steps.ingest}catch(e){console.log('[steps] not loaded:',e.message)}
 app.use('/lang',express.static(path.join(__dirname,'lang'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 app.use('/speaker',express.static(path.join(__dirname,'speaker'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
+// Python: Zero to Hero — real CPython in the browser (modules/pyhost.js) + the course pages in /code.
+let _pyhost={version:''};try{_pyhost=require('./modules/pyhost.js').install(app,{cacheDir:path.join(MEDIA_DIR,'.cache')})}catch(e){console.log('[python] host off:',e.message)}
+app.use('/code',express.static(path.join(__dirname,'code'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 let _speaker=null;try{_speaker=require('./modules/speaker.js').install(app,{db,auth,callGemini:_callGemini,genId,fetchFeed,createTask:({phone,title,due_date,notes})=>{const id=genId();db.prepare('INSERT INTO tasks(id,user_phone,title,notes,priority,status,due_date,reminder_time,source,board)VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,phone,String(title||'').slice(0,200),String(notes||'').slice(0,2000),'high','pending',due_date||'','','speaker','office');return {id}}})}catch(e){console.log('[speaker] not loaded:',e.message)}
 app.get('/api/book-hi/:id',(req,res)=>{const id=String(req.params.id||'').replace(/[^a-zA-Z0-9_-]/g,'');let f=path.join(MEDIA_DIR,'books-hi',id+'.json');if(!_fs.existsSync(f))f=path.join(__dirname,'books-hi',id+'.json');if(!_fs.existsSync(f))return res.status(404).json({error:'no hindi yet'});res.set('Cache-Control','public, max-age=86400');res.sendFile(f)});
 app.get('/api/book-hi',(req,res)=>{const ids=new Set();for(const d of [path.join(MEDIA_DIR,'books-hi'),path.join(__dirname,'books-hi')]){try{_fs.readdirSync(d).filter(f=>f.endsWith('.json')).forEach(f=>ids.add(f.slice(0,-5)))}catch(e){}}res.json({ids:[...ids]})});
@@ -17980,6 +18008,8 @@ const _allNewsItems=async()=>{const out=[];for(const c of NEWS_CATS){const cc=ne
 const _bulletin=require('./modules/bulletin.js').install(app,{db,auth,mediaDir:MEDIA_DIR,getSetting,isAdmin:req=>{const t=String(req.query.token||req.headers['x-admin-token']||'').trim();if(ADMIN_TOKEN&&t===ADMIN_TOKEN)return true;try{const u=db.prepare('SELECT * FROM users WHERE token=?').get(String(req.headers['x-token']||''));return isAdminUser(u)}catch(e){return false}},callGemini:_callGemini,getNewsItems:_allNewsItems});
 require('./modules/voice.js').install(app,{auth,getSetting,setSetting,mediaDir:MEDIA_DIR,BRO_TOOLS,_broExecTool,_getUserTz,_callGemini,_callGroq,hasGroq:()=>!!groqKey(),hasGemini:()=>!!geminiKey(),getSteps:phone=>_steps&&_steps.getStepsTool?_steps.getStepsTool(phone):null,setStepGoal:(phone,goal)=>{try{db.prepare("INSERT INTO step_profile(user_phone,goal) VALUES(?,?) ON CONFLICT(user_phone) DO UPDATE SET goal=excluded.goal").run(phone,goal);return{ok:true,goal}}catch(e){return{error:e.message}}},getHeadlines:async topic=>{const all=await _allNewsItems();const t=String(topic||'').toLowerCase();const cat=t==='technology'?'tech':t;if(cat&&NEWS_CATS.includes(cat)){const cc=newsCache[cat];if(cc&&cc.items)return cc.items}return all},getBulletin:()=>_bulletin.latest('daily'),speakerSummary:phone=>_speaker&&_speaker.summaryFor?_speaker.summaryFor(phone):null});
 try{require('./modules/credits.js').install(app,{appRoot:__dirname})}catch(e){console.log('[credits] off:',e.message)}
+// Learning schools (Python + Languages): progress, Bro the mission AI, narration recorded once (modules/learn.js).
+let _learn=null;try{const _st=require('./modules/studio.js');_st.configure({mediaDir:MEDIA_DIR});_learn=require('./modules/learn.js').install(app,{db,auth,getSetting,appRoot:__dirname,mediaDir:MEDIA_DIR,STUDIO:_st,_callGemini,_callGroq,hasGroq:()=>!!groqKey(),hasGemini:()=>!!geminiKey()})}catch(e){console.log('[learn] off:',e.message)}
 try{require('./modules/admin.js').install(app,{db,auth,isAdminUser,MEDIA_DIR,DB_PATH,getSetting,setSetting,settingSource,bulletin:_bulletin,android:_android,scriptsDir:path.join(__dirname,'scripts'),appRoot:__dirname,steps:_steps})}catch(e){console.log('[admin] not loaded:',e.message)}
 app.get('*',(_,res)=>res.set('Cache-Control','no-cache, no-store, must-revalidate').type('html').send(HTML));
 const PORT=process.env.PORT||3000;

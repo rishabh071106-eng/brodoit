@@ -33,9 +33,9 @@
     { k: 'android', label: 'Android app', icon: 'smartphone', off: 'building…' },
   ];
   const JOBS = [
-    { k: 'bulletin', label: "Record today's bulletin", sub: 'English + Hindi · once per day', icon: 'radio' },
-    { k: 'hindi-books', label: 'Record Hindi books', sub: '106 briefs · runs for hours · resumable', icon: 'book-open' },
+    { k: 'learn-audio', label: 'Record Python + language narration', sub: 'every course line, once · kept forever · resumable', icon: 'mic' },
     { k: 'lang-audio', label: 'Record language lessons', sub: '60 lessons · needs ffmpeg · resumable', icon: 'languages' },
+    { k: 'hindi-books', label: 'Record Hindi books', sub: '106 briefs · runs for hours · resumable', icon: 'book-open' },
   ];
   const ST = { idle: 'Idle', running: 'Running', done: 'Done', failed: 'Failed' };
 
@@ -114,7 +114,7 @@
     // jobs
     h += (function () { const v = S.adm && S.adm.status && S.adm.status.voice; if (!v) return ''; const eng = v.engine === 'elevenlabs' ? 'ElevenLabs agent' : v.engine === 'realtime' ? 'OpenAI Realtime' : v.engine === 'elevenlabs-pending' ? 'ElevenLabs agent (setting up…)' : 'classic pipeline'; return '<p class="adm-auto b-sm">' + ic('mic', 14) + ' Bro talks through ' + eng + (v.llm ? '' : ' · no brain key yet') + (v.agent_error ? '<br><span style="color:var(--b-primary)">Agent error: ' + _esc(v.agent_error.slice(0, 220)) + '</span>' : '') + '</p>'; })();
     h += (function () { const a = S.adm && S.adm.status && S.adm.status.auto; if (!a || a.on === false) return ''; const q = (a.running ? [a.running + ' (recording)'] : []).concat(a.queue || []); return '<p class="adm-auto b-sm">' + ic('zap', 14) + ' ' + (q.length ? 'Auto: ' + _esc(q.join(' → ')) : 'Recordings start by themselves once a key is saved.') + '</p>'; })();
-    h += spendHtml(st.spend) + sealedHtml(st.sealed);
+    h += spendHtml(st.spend) + voiceLines(st) + sealedHtml(st.sealed);
     h += '<div class="adm-jobs" id="admJobs">' + JOBS.map(j => jobHtml(j)).join('') + '</div>';
     return h;
   }
@@ -125,6 +125,16 @@
     const a = (se.applied || []).map(x => (names[x.key] || x.key) + ' ' + x.hint).join(' · ');
     const k = (se.skipped || []).map(x => (names[x.key] || x.key) + ' (' + x.why + ')').join(' · ');
     return '<p class="adm-auto b-sm">' + ic('lock', 14) + ' ' + (a ? 'Installed securely on this start: ' + _esc(a) : 'Secure key delivery ready') + (k || se.error ? '<br><span style="color:var(--b-primary)">' + _esc([k, se.error].filter(Boolean).join(' · ')) + '</span>' : '') + '</p>';
+  }
+  // Recorded-once voice: News headlines (batch, ElevenLabs) and Python + language narration.
+  function voiceLines(st) {
+    let h = '';
+    const nv = st.newsVoice, lv = st.learnVoice;
+    if (nv) h += '<p class="adm-auto b-sm">' + ic('radio', 14) + ' News voice: ' + nv.today.clips + ' clips recorded today via ' + _esc(nv.provider) + ' (headlines for every story, ' + nv.fullPerDay + ' full read-outs a day per language)' + (nv.error ? '<br><span style="color:var(--b-primary)">' + _esc(nv.error) + '</span>' : '') + '</p>';
+    const br = st.brain;
+    if (br && br.available) h += '<p class="adm-auto b-sm">' + ic('sparkles', 14) + ' Text AI: ' + (st.geminiDown ? 'Gemini is out of credit, so ' : '') + 'Bro chat, the coach and the news desk ' + (st.geminiDown ? 'use' : 'fall back to') + ' the ElevenLabs brain' + (br.ok ? ' (' + br.ok + ' answers, last in ' + (br.lastMs / 1000).toFixed(1) + 's)' : '') + (br.error ? '<br><span style="color:var(--b-primary)">' + _esc(br.error) + '</span>' : '') + '</p>';
+    if (lv) h += '<p class="adm-auto b-sm">' + ic('mic', 14) + ' Course narration: ' + Number(lv.recorded).toLocaleString('en-IN') + ' of ' + Number(lv.total).toLocaleString('en-IN') + ' lines recorded and kept</p>';
+    return h;
   }
   // "Voice this month": ElevenLabs credits used of the plan, Gemini / OpenAI minutes and their dollar cost, credit warnings.
   function spendHtml(sp) {

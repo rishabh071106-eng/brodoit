@@ -1,0 +1,393 @@
+{
+ "day": 54,
+ "phase": 6,
+ "title": "Design patterns in Python",
+ "subtitle": "Proven designs, without the ceremony",
+ "minutes": 60,
+ "goal": "Apply SOLID, strategy, factory, observer, adapter and dependency injection the Pythonic way, and know when a pattern is overkill.",
+ "outcomes": [
+  "Explain the SOLID principles in plain words",
+  "Use functions as strategies and dicts as registries",
+  "Build a factory, an event bus and an adapter",
+  "Inject dependencies so code can be tested with fakes",
+  "Spot Java-style ceremony and simplify it"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 54: Design patterns",
+   "body": "Patterns are **named, proven answers** to design problems that keep coming back. Say \"use a strategy here\" in a code review and every senior developer knows what you mean.\n\nToday: the patterns you will meet most, written the **Pythonic** way.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Pattern",
+     "Problem it solves"
+    ],
+    "rows": [
+     [
+      "Strategy",
+      "Swap an algorithm at runtime"
+     ],
+     [
+      "Factory",
+      "Create the right object from data"
+     ],
+     [
+      "Observer",
+      "Tell many listeners that something happened"
+     ],
+     [
+      "Adapter",
+      "Make an incompatible interface fit"
+     ],
+     [
+      "Dependency injection",
+      "Pass in what a class needs, so you can test it"
+     ]
+    ]
+   },
+   "say": "Design patterns are named, proven answers to design problems that keep coming back. They give developers a shared vocabulary: say use a strategy here in a code review, and everyone knows what you mean. Today you learn the patterns you will meet most often, and how Python makes them far lighter than the textbook versions."
+  },
+  {
+   "type": "concept",
+   "title": "SOLID in plain words",
+   "body": "Five principles behind most patterns. You do not need to memorise the names; you need the instincts.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "",
+     "Principle",
+     "In plain words"
+    ],
+    "rows": [
+     [
+      "S",
+      "Single responsibility",
+      "One reason to change"
+     ],
+     [
+      "O",
+      "Open/closed",
+      "Extend by adding code, not editing it"
+     ],
+     [
+      "L",
+      "Liskov substitution",
+      "A subclass works wherever its parent works"
+     ],
+     [
+      "I",
+      "Interface segregation",
+      "Small, focused interfaces"
+     ],
+     [
+      "D",
+      "Dependency inversion",
+      "Depend on abstractions; pass dependencies in"
+     ]
+    ]
+   },
+   "say": "SOLID is five principles behind most patterns. Single responsibility: a class should have one reason to change. Open closed: add features by adding code, not by editing working code. Liskov: a subclass must work anywhere its parent does. Interface segregation: keep interfaces small. Dependency inversion: depend on abstractions, and pass dependencies in."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: SOLID",
+   "q": "An `Invoice` class calculates GST, renders a PDF and emails the customer. Which principle does it break most clearly?",
+   "options": [
+    "Single responsibility",
+    "Liskov substitution",
+    "Interface segregation"
+   ],
+   "answer": 0,
+   "why": "Tax rules, PDF layout and email delivery change for different reasons and at different times. Split them: a calculator, a renderer and a sender.",
+   "say": "An invoice class that calculates tax, draws a PDF and sends emails. Which principle is it breaking?"
+  },
+  {
+   "type": "concept",
+   "title": "Strategy: swap the algorithm",
+   "body": "Different ways of doing one job (pricing, sorting, shipping) behind one shape. In Java you write an interface and a class per strategy. In Python, **functions are objects**: a strategy is often just a function you pass in.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Java-style ceremony",
+     "code": "class DiscountStrategy(ABC):\n    @abstractmethod\n    def apply(self, total): ...\n\nclass Festive(DiscountStrategy):\n    def apply(self, total):\n        return total * 0.9\n\ncheckout(cart, Festive())"
+    },
+    "right": {
+     "title": "Pythonic",
+     "code": "def festive(total):\n    return total * 0.9\n\ncheckout(cart, festive)"
+    },
+    "verdict": "A strategy with one method is just a function. Pass it in."
+   },
+   "say": "The strategy pattern puts different ways of doing one job behind the same shape, so you can swap them at runtime. In Java that means an interface and a class for every strategy. In Python, functions are objects you can pass around, so a strategy is usually just a function. Less ceremony, same flexibility."
+  },
+  {
+   "type": "code",
+   "title": "Strategy with plain functions",
+   "body": "Every rule has the same shape: total in, total out. `checkout` doesn't know or care which one it gets.",
+   "code": "from typing import Callable\n\nPriceRule = Callable[[float], float]\n\ndef regular(total: float) -> float:\n    return total\n\ndef festive(total: float) -> float:\n    return total * 0.90\n\ndef bulk(total: float) -> float:\n    return total - 200 if total >= 2000 else total\n\ndef checkout(total: float, rule: PriceRule) -> str:\n    return f\"₹{rule(total):,.2f}\"\n\nfor rule in (regular, festive, bulk):\n    print(f\"{rule.__name__:<8} {checkout(2500, rule)}\")\nprint(\"bulk on a small cart:\", checkout(1500, bulk))",
+   "expect": "regular  ₹2,500.00\nfestive  ₹2,250.00\nbulk     ₹2,300.00\nbulk on a small cart: ₹1,500.00\n",
+   "explain": [
+    [
+     3,
+     "A type alias names the shape: a function from float to float."
+    ],
+    [
+     11,
+     "Rules can have their own logic inside."
+    ],
+    [
+     14,
+     "checkout just calls whatever rule it was given."
+    ],
+    [
+     17,
+     "Functions are objects: loop over them, read their __name__."
+    ]
+   ],
+   "say": "Three pricing rules, each a plain function with the same shape: a total in, a total out. Checkout does not care which rule it gets; it just calls it. The type alias documents the shape for your editor and type checker. Adding a new sale next Diwali means writing one new function, without touching checkout at all."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: strategies are everywhere",
+   "code": "def by_price(item):\n    return item[1]\n\ndef by_name(item):\n    return item[0]\n\nmenu = [(\"tea\", 40), (\"coffee\", 60), (\"lassi\", 50)]\nfor rule in (by_price, by_name):\n    print([name for name, _ in sorted(menu, key=rule)])",
+   "options": [
+    "['tea', 'lassi', 'coffee']\n['coffee', 'lassi', 'tea']",
+    "['coffee', 'lassi', 'tea']\n['tea', 'lassi', 'coffee']",
+    "['tea', 'coffee', 'lassi']\n['coffee', 'lassi', 'tea']"
+   ],
+   "answer": 0,
+   "why": "`key=` is the strategy pattern built into Python: `sorted` keeps the algorithm, you plug in the rule. By price: 40, 50, 60. By name: alphabetical.",
+   "say": "You have been using strategies since day twelve without knowing it. The key argument of sorted takes a function. What do the two sorted menus look like?"
+  },
+  {
+   "type": "code",
+   "title": "Factory: build the right object from data",
+   "body": "Data from an API or a JSON file says **what** to build; the factory decides **how**. The registry is a plain dict of classes.",
+   "code": "from dataclasses import dataclass\n\n@dataclass\nclass UpiPayment:\n    vpa: str\n    def pay(self, amount: int) -> str:\n        return f\"UPI ₹{amount} to {self.vpa}\"\n\n@dataclass\nclass CardPayment:\n    last4: str\n    def pay(self, amount: int) -> str:\n        return f\"Card ₹{amount} on card ending {self.last4}\"\n\nPAYMENT_TYPES = {\"upi\": UpiPayment, \"card\": CardPayment}\n\ndef make_payment(data: dict):\n    fields = dict(data)\n    kind = fields.pop(\"type\")\n    if kind not in PAYMENT_TYPES:\n        raise ValueError(f\"unknown payment type: {kind!r}\")\n    return PAYMENT_TYPES[kind](**fields)\n\nfor raw in [{\"type\": \"upi\", \"vpa\": \"riya@okaxis\"}, {\"type\": \"card\", \"last4\": \"4242\"}]:\n    print(make_payment(raw).pay(499))",
+   "expect": "UPI ₹499 to riya@okaxis\nCard ₹499 on card ending 4242\n",
+   "explain": [
+    [
+     15,
+     "Classes are objects: store them in a dict."
+    ],
+    [
+     18,
+     "Copy first, so we never change the caller's data."
+    ],
+    [
+     20,
+     "Fail loudly on unknown types."
+    ],
+    [
+     22,
+     "Look up the class and call it with the remaining fields."
+    ]
+   ],
+   "say": "Data arrives as JSON, but your code wants real objects. A factory reads the type field and builds the matching class. In Python the registry is just a dictionary from names to classes, because classes are objects too. Supporting wallets next month means one new class and one new line in the dictionary."
+  },
+  {
+   "type": "concept",
+   "title": "Observer: publish an event",
+   "body": "When an order is placed, many things must happen: a receipt, stock updates, analytics. The checkout code should not know about all of them.\n\nIt **publishes** an event; **subscribers** react. Add a new reaction without touching checkout.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "bus.publish('order_placed', order)",
+     "c": [
+      {
+       "t": "send_receipt(order)"
+      },
+      {
+       "t": "reserve_stock(order)"
+      },
+      {
+       "t": "track_sale(order)"
+      },
+      {
+       "t": "…added later, checkout unchanged"
+      }
+     ]
+    }
+   },
+   "say": "When an order is placed, lots of things should happen: send a receipt, reserve stock, record analytics. If checkout calls all of them directly, it grows forever and breaks often. With the observer pattern, checkout just publishes an event called order placed. Anything that cares subscribes to it. Adding a new reaction never touches checkout."
+  },
+  {
+   "type": "code",
+   "title": "Build an event bus",
+   "body": "The publisher only knows the event name. Subscribers can be added or removed without changing it.",
+   "code": "from collections import defaultdict\nfrom typing import Callable\n\nclass EventBus:\n    def __init__(self):\n        self._subscribers: dict[str, list[Callable]] = defaultdict(list)\n\n    def subscribe(self, event: str, handler: Callable) -> None:\n        self._subscribers[event].append(handler)\n\n    def publish(self, event: str, **data) -> None:\n        for handler in self._subscribers[event]:\n            handler(**data)\n\ndef send_receipt(order_id, total):\n    print(f\"email: receipt for {order_id}\")\n\ndef track_sale(order_id, total):\n    print(f\"analytics: +₹{total}\")\n\nbus = EventBus()\nbus.subscribe(\"order_placed\", send_receipt)\nbus.subscribe(\"order_placed\", track_sale)\nbus.publish(\"order_placed\", order_id=\"A-1001\", total=749)\nbus.publish(\"order_cancelled\", order_id=\"A-1001\", total=749)   # nobody listens",
+   "expect": "email: receipt for A-1001\nanalytics: +₹749\n",
+   "explain": [
+    [
+     6,
+     "defaultdict(list): every event starts with an empty handler list."
+    ],
+    [
+     9,
+     "Subscribing just stores the function."
+    ],
+    [
+     12,
+     "Publishing calls each handler with the event data."
+    ],
+    [
+     25,
+     "No subscribers: a quiet no-op, not a crash."
+    ]
+   ],
+   "say": "The bus keeps a list of handlers for each event name. Subscribe adds a handler to the list, and publish calls every handler for that event with the event's data. The second publish has no subscribers, so nothing happens and nothing breaks. Real systems use the same idea at scale, with tools like Kafka or Redis between services."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: everyone hears everything",
+   "task": "This bus gives each event its own handler list. Or does it? Run it: the `login` event also fires the `signup` handler. Fix `__init__` so every event gets a **separate** list.",
+   "starter": "class EventBus:\n    def __init__(self, events: list[str]):\n        self.handlers = dict.fromkeys(events, [])\n\n    def subscribe(self, event: str, handler) -> None:\n        self.handlers[event].append(handler)\n\n    def publish(self, event: str, payload: str) -> list[str]:\n        return [handler(payload) for handler in self.handlers[event]]\n\nbus = EventBus([\"signup\", \"login\"])\nbus.subscribe(\"signup\", lambda user: f\"welcome email to {user}\")\nbus.subscribe(\"login\", lambda user: f\"audit log: {user} logged in\")\nprint(bus.publish(\"login\", \"riya\"))",
+   "solution": "class EventBus:\n    def __init__(self, events: list[str]):\n        self.handlers = {event: [] for event in events}\n\n    def subscribe(self, event: str, handler) -> None:\n        self.handlers[event].append(handler)\n\n    def publish(self, event: str, payload: str) -> list[str]:\n        return [handler(payload) for handler in self.handlers[event]]\n\nbus = EventBus([\"signup\", \"login\"])\nbus.subscribe(\"signup\", lambda user: f\"welcome email to {user}\")\nbus.subscribe(\"login\", lambda user: f\"audit log: {user} logged in\")\nprint(bus.publish(\"login\", \"riya\"))",
+   "tests": "bus = EventBus([\"signup\", \"login\", \"logout\"])\nbus.subscribe(\"signup\", lambda u: \"welcome \" + u)\nbus.subscribe(\"login\", lambda u: \"audit \" + u)\ngot = bus.publish(\"login\", \"arjun\")\nassert got == [\"audit arjun\"], \"publish('login') should only run the login handler, but returned \" + str(got) + \". Are all events sharing ONE list?\"\nassert bus.publish(\"signup\", \"meera\") == [\"welcome meera\"], \"publish('signup') should only run the signup handler.\"\nassert bus.publish(\"logout\", \"riya\") == [], \"An event with no subscribers should return an empty list.\"",
+   "hints": [
+    "`dict.fromkeys(keys, [])` puts the **same** list object under every key. Remember the aliasing visual from Day 12?",
+    "Build a new list per event: `{event: [] for event in events}`"
+   ],
+   "say": "Here is a bug that has fooled many professionals. This event bus is supposed to keep a separate list of handlers for each event, but when we publish login, the signup handler runs too. Think back to aliasing on day twelve: how many list objects does dict from keys really create?"
+  },
+  {
+   "type": "concept",
+   "title": "Adapter: make it fit",
+   "body": "Your app sends notifications with `sender.send(to, text)`. A third-party SMS library offers `dispatch_message(number=, body=)` instead, and you cannot change it.\n\nWrite a small **adapter** that translates one interface into the other.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Without an adapter",
+     "code": "if channel == \"sms\":\n    gateway.dispatch_message(number=to, body=text)\nelse:\n    sender.send(to, text)\n# ...repeated everywhere you notify"
+    },
+    "right": {
+     "title": "With an adapter",
+     "code": "class SmsAdapter:\n    def __init__(self, gateway):\n        self.gateway = gateway\n    def send(self, to, text):\n        return self.gateway.dispatch_message(\n            number=to, body=text)"
+    },
+    "verdict": "The mismatch is handled in one small class; the rest of the app stays clean."
+   },
+   "say": "Your app sends notifications through anything with a send method that takes a recipient and a text. Then you add an SMS provider whose library uses a completely different method name and arguments, and you cannot change their code. Instead of rewriting your app, you write a tiny adapter class that offers send, and translates the call for the library."
+  },
+  {
+   "type": "code",
+   "title": "Adapter in practice",
+   "code": "class LegacySmsGateway:                  # third-party code: you can't change it\n    def dispatch_message(self, number: str, body: str, priority: int = 1) -> str:\n        return f\"[sms p{priority}] {number}: {body}\"\n\nclass EmailSender:\n    def send(self, to: str, text: str) -> str:\n        return f\"[email] {to}: {text}\"\n\nclass SmsAdapter:\n    \"\"\"Gives LegacySmsGateway the send(to, text) interface our app expects.\"\"\"\n    def __init__(self, gateway: LegacySmsGateway):\n        self.gateway = gateway\n\n    def send(self, to: str, text: str) -> str:\n        return self.gateway.dispatch_message(number=to, body=text)\n\ndef notify(senders_and_targets, text: str) -> None:\n    for sender, to in senders_and_targets:\n        print(sender.send(to, text))\n\nnotify([(EmailSender(), \"riya@example.com\"), (SmsAdapter(LegacySmsGateway()), \"+91 98765 43210\")],\n       \"Your order has shipped\")",
+   "expect": "[email] riya@example.com: Your order has shipped\n[sms p1] +91 98765 43210: Your order has shipped\n",
+   "explain": [
+    [
+     1,
+     "Pretend this came from a library we can't edit."
+    ],
+    [
+     9,
+     "The adapter wraps the gateway (composition, not inheritance)."
+    ],
+    [
+     15,
+     "Translate our interface into theirs."
+    ],
+    [
+     17,
+     "notify only knows about send(to, text)."
+    ]
+   ],
+   "say": "The notify function only knows one interface: send, with a recipient and a text. The email sender already fits. The legacy gateway does not, so we wrap it in an adapter whose send method translates the call. Notify treats both the same way, which is polymorphism from day twenty six, made possible by a ten line class."
+  },
+  {
+   "type": "concept",
+   "title": "Dependency injection: pass it in",
+   "body": "A class that creates its own database, clock or HTTP client is **hard-wired**: tests can't control it.\n\nPass dependencies **in** (usually through `__init__`). Production passes the real thing; tests pass simple fakes. No framework needed.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Hard-wired",
+     "code": "class AttendanceService:\n    def __init__(self):\n        self.db = PostgresDB(\"prod-url\")\n    def check_in(self, name):\n        now = datetime.now()\n        ..."
+    },
+    "right": {
+     "title": "Injected",
+     "code": "class AttendanceService:\n    def __init__(self, store, clock):\n        self.store = store\n        self.clock = clock\n    def check_in(self, name):\n        now = self.clock()\n        ..."
+    },
+    "verdict": "Tests pass an in-memory store and a fixed clock: fast, deterministic, no patching."
+   },
+   "say": "A class that creates its own database connection, its own clock or its own HTTP client is hard wired. You cannot test it without a real database, and you cannot test time based rules without waiting for the right time. Dependency injection simply means passing those things in. Production passes the real ones, tests pass simple fakes. In Python you rarely need a framework for it."
+  },
+  {
+   "type": "code",
+   "title": "Inject a store and a clock",
+   "code": "from datetime import datetime\n\nclass InMemoryStore:\n    def __init__(self):\n        self.saved = []\n\n    def save(self, record: dict) -> None:\n        self.saved.append(record)\n\nclass AttendanceService:\n    def __init__(self, store, clock):\n        self.store, self.clock = store, clock\n\n    def check_in(self, employee: str) -> str:\n        now = self.clock()\n        status = \"late\" if now.hour >= 10 else \"on time\"\n        self.store.save({\"employee\": employee, \"at\": now.strftime(\"%H:%M\"), \"status\": status})\n        return f\"{employee} is {status}\"\n\nstore = InMemoryStore()\nprint(AttendanceService(store, clock=lambda: datetime(2026, 10, 19, 9, 45)).check_in(\"Arjun\"))\nprint(AttendanceService(store, clock=lambda: datetime(2026, 10, 19, 10, 5)).check_in(\"Meera\"))\nprint(store.saved)",
+   "expect": "Arjun is on time\nMeera is late\n[{'employee': 'Arjun', 'at': '09:45', 'status': 'on time'}, {'employee': 'Meera', 'at': '10:05', 'status': 'late'}]\n",
+   "explain": [
+    [
+     3,
+     "A fake store: a list in memory."
+    ],
+    [
+     11,
+     "Dependencies come in through __init__."
+    ],
+    [
+     15,
+     "Ask the injected clock, never datetime.now() directly."
+    ],
+    [
+     21,
+     "A fake clock: a lambda returning a fixed time."
+    ]
+   ],
+   "say": "The service asks for two things: somewhere to save records and a clock to ask the time. We pass an in memory store and a fake clock frozen at quarter to ten, then one frozen at five past ten. Now the late rule is tested in milliseconds, without waiting until ten in the morning. In production you would pass a real database and datetime dot now."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: Pythonic or ceremony?",
+   "q": "A teammate wrote `SortStrategyFactory`, an abstract `SortStrategy` class and two subclasses, just to sort orders by date or by amount. What is the Pythonic fix?",
+   "options": [
+    "Add a singleton so there is only one factory",
+    "Pass a `key` function, or pick one from a small dict of functions",
+    "Use a global variable for the sort order",
+    "Copy the sorting code into both places"
+   ],
+   "answer": 1,
+   "why": "Patterns solve problems; they are not goals. A dict like `{\"date\": by_date, \"amount\": by_amount}` plus `sorted(orders, key=...)` does the whole job.",
+   "say": "Patterns can be overdone. Three classes and a factory, just to choose between two sort orders. What would a Pythonista write instead?"
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: shipping strategies",
+   "task": "Write two strategies and a lookup:\n- `standard(kg)` = ₹40 + ₹20 per kg\n- `express(kg)` = ₹99 + ₹35 per kg\n- `quote(kg, method)` looks the method up in the `SHIPPING` dict and returns the price; an unknown method raises `ValueError`\n\nAdding a new method must only need **a new entry in `SHIPPING`**.",
+   "starter": "def standard(kg: float) -> float:\n    ...  # TODO: 40 + 20 per kg\n\ndef express(kg: float) -> float:\n    ...  # TODO: 99 + 35 per kg\n\nSHIPPING = {}   # TODO: map \"standard\" and \"express\" to the functions\n\ndef quote(kg: float, method: str) -> float:\n    # TODO: look up the strategy in SHIPPING; unknown method -> ValueError\n    if method == \"standard\":\n        return 40 + 20 * kg\n    return 99 + 35 * kg\n\nprint(quote(2, \"standard\"), quote(2, \"express\"))",
+   "solution": "def standard(kg: float) -> float:\n    return 40 + 20 * kg\n\ndef express(kg: float) -> float:\n    return 99 + 35 * kg\n\nSHIPPING = {\"standard\": standard, \"express\": express}\n\ndef quote(kg: float, method: str) -> float:\n    if method not in SHIPPING:\n        raise ValueError(f\"unknown shipping method: {method}\")\n    return SHIPPING[method](kg)\n\nprint(quote(2, \"standard\"), quote(2, \"express\"))",
+   "tests": "assert standard(2) == 80 and express(2) == 169, \"standard(2) should be 80 and express(2) should be 169.\"\nassert quote(3, \"standard\") == 100 and quote(1, \"express\") == 134, \"quote should call the strategy for that method: quote(3, 'standard') is 100.\"\ntry:\n    quote(1, \"teleport\")\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError(\"quote(1, 'teleport') should raise ValueError for an unknown method.\")\nSHIPPING[\"pickup\"] = lambda kg: 0\nassert quote(5, \"pickup\") == 0, \"After adding SHIPPING['pickup'], quote(5, 'pickup') should be 0 with no other changes. Make quote look strategies up in SHIPPING.\"",
+   "hints": [
+    "`SHIPPING = {\"standard\": standard, \"express\": express}` stores the functions themselves (no brackets).",
+    "In `quote`: check `if method not in SHIPPING`, then `return SHIPPING[method](kg)`."
+   ],
+   "say": "Your turn to apply the strategy pattern. Write the standard and express pricing functions, put them in the shipping dictionary, and make quote look the method up there. The final test sneaks in a brand new pickup method by only adding a dictionary entry. If your quote has an if for every method, that test will catch it."
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: an event bus with unsubscribe",
+   "task": "Build `EventBus`:\n- `subscribe(event, handler)` stores the handler and **returns a function** that unsubscribes it\n- `publish(event, payload)` calls each handler for that event, in subscribe order, and **returns how many** it called\n- unknown events return `0`",
+   "starter": "class EventBus:\n    def __init__(self):\n        self.handlers = {}\n\n    def subscribe(self, event, handler):\n        # TODO: store handler under event; return a function that removes it\n        pass\n\n    def publish(self, event, payload) -> int:\n        # TODO: call every handler for event with payload; return the count\n        return 0\n\nbus = EventBus()\nstop = bus.subscribe(\"price_drop\", lambda item: print(\"alert:\", item))\nprint(bus.publish(\"price_drop\", \"Brass Kettle\"))",
+   "solution": "class EventBus:\n    def __init__(self):\n        self.handlers = {}\n\n    def subscribe(self, event, handler):\n        self.handlers.setdefault(event, []).append(handler)\n\n        def unsubscribe():\n            self.handlers[event].remove(handler)\n\n        return unsubscribe\n\n    def publish(self, event, payload) -> int:\n        handlers = list(self.handlers.get(event, []))\n        for handler in handlers:\n            handler(payload)\n        return len(handlers)\n\nbus = EventBus()\nstop = bus.subscribe(\"price_drop\", lambda item: print(\"alert:\", item))\nprint(bus.publish(\"price_drop\", \"Brass Kettle\"))",
+   "tests": "seen = []\nbus = EventBus()\nstop_sms = bus.subscribe(\"price_drop\", lambda p: seen.append(\"sms \" + p))\nbus.subscribe(\"price_drop\", lambda p: seen.append(\"push \" + p))\nn = bus.publish(\"price_drop\", \"kettle\")\nassert seen == [\"sms kettle\", \"push kettle\"], \"Both handlers should run, in subscribe order. Got \" + str(seen)\nassert n == 2, \"publish should return how many handlers it called (2). Got \" + str(n)\nassert callable(stop_sms), \"subscribe should return a function that unsubscribes the handler.\"\nstop_sms()\nseen.clear()\nassert bus.publish(\"price_drop\", \"cups\") == 1 and seen == [\"push cups\"], \"After calling the unsubscribe function, only the push handler should run. Got \" + str(seen)\nassert bus.publish(\"nobody_listens\", \"x\") == 0, \"Publishing an event with no subscribers should return 0, not crash.\"",
+   "hints": [
+    "`self.handlers.setdefault(event, []).append(handler)` creates the list on first use.",
+    "Define `def unsubscribe(): self.handlers[event].remove(handler)` inside `subscribe` and `return unsubscribe` (a closure, Day 28).",
+    "In `publish`, use `self.handlers.get(event, [])` so unknown events give an empty list."
+   ],
+   "say": "Now build an event bus that real apps need: one where you can unsubscribe. Subscribe should return a little function that removes that handler, which is a closure from day twenty eight. Publish calls the handlers in order and returns how many ran. And publishing an event nobody listens to should simply return zero."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 54 complete",
+   "points": [
+    "SOLID: one responsibility, extend by adding, pass dependencies in",
+    "Strategy: a function you pass in (`key=` is one); registries are dicts",
+    "Factory: build the right class from data with a dict of classes",
+    "Observer: publish events, let subscribers react; Adapter: wrap a mismatched interface",
+    "Dependency injection makes code testable with fakes; skip Java-style ceremony"
+   ],
+   "say": "Mission fifty four complete. You can now speak the language of design: strategies as plain functions, factories from data, event buses, adapters, and dependency injection that makes code easy to test. Remember, patterns are tools, not goals. Tomorrow we zoom out to the architecture of whole applications."
+  }
+ ]
+}

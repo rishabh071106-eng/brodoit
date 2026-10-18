@@ -7,11 +7,11 @@
 <title>Lesson · Brodoit Languages</title>
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=14">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=14">
-<link rel="stylesheet" href="/lang/assets/topbar.css?v=14">
-<script src="/app/icons.js?v=14" defer></script>
-<script src="/lang/assets/topbar.js?v=14" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=16">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=15">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=15">
+<script src="/app/icons.js?v=16" defer></script>
+<script src="/lang/assets/topbar.js?v=15" defer></script>
 </head>
 <body>
 <div class="runner" id="runner">
@@ -24,7 +24,7 @@
 </div></div>
 
 <script type="module">
-import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, recognize, hasSR, similarity, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=9';
+import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, recognize, hasSR, similarity, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=10';
 import { ic } from '/lang/assets/ico.js?v=14';
 
 const $ = id => document.getElementById(id);
@@ -178,6 +178,25 @@ if (!lesson) {
   const renderHearts = () => { $('hearts').innerHTML = `${ic('heart', 18)} ${hearts}`; };
   const renderBar = () => { $('bar').style.width = `${Math.round((pos / queue.length) * 100)}%`; };
 
+  // v13: a combo streak in the header, a floating +XP, a burst on 5 in a row, a shake on a miss.
+  let combo = 0;
+  function fx(ok) {
+    const hd = document.querySelector('.runner .hd');
+    let cb = document.getElementById('combo');
+    if (!cb && hd) { cb = document.createElement('div'); cb.id = 'combo'; cb.className = 'combo'; hd.insertBefore(cb, hd.lastElementChild); }
+    if (cb) { cb.innerHTML = combo >= 2 ? `${ic('flame', 16)}<b>${combo}</b>` : ''; cb.classList.toggle('on', combo >= 2); cb.classList.remove('pop'); void cb.offsetWidth; if (combo >= 2) cb.classList.add('pop'); }
+    if (ok) {
+      const pop = document.createElement('div'); pop.className = 'xp-pop'; pop.textContent = combo >= 3 ? `+${combo} combo` : '+XP';
+      document.body.appendChild(pop); setTimeout(() => pop.remove(), 1100);
+      if (combo && combo % 5 === 0) burst();
+    } else { exEl.classList.remove('miss'); void exEl.offsetWidth; exEl.classList.add('miss'); }
+  }
+  function burst() {
+    const b = document.createElement('div'); b.className = 'burst';
+    const C = ['#FFC93C', '#E0603F', '#2F7D4F', '#3B7FD0', '#8B5CF6'];
+    for (let i = 0; i < 36; i++) { const s = document.createElement('i'); s.style.cssText = `--a:${i * 10}deg;--d:${80 + Math.random() * 90}px;background:${C[i % 5]};animation-delay:${Math.random() * 0.12}s`; b.appendChild(s); }
+    document.body.appendChild(b); setTimeout(() => b.remove(), 1200);
+  }
   function show() {
     stopSpeaking();
     if (pos >= queue.length) return complete();
@@ -199,9 +218,9 @@ if (!lesson) {
     $('rT').textContent = ok ? (res.skip ? t(lang, 'continue') : t(lang, 'correct')) : t(lang, 'wrong');
     $('rS').innerHTML = ok ? (res.correct && res.skip ? esc(res.correct) : (res.mistakes ? `${res.mistakes} ${lang === 'hi' ? 'गलत कोशिशें' : 'wrong tries'}` : '')) : `${t(lang, 'answer')}:<b>${esc(res.correct)}</b>`;
     checkBtn.className = 'check' + (ok ? '' : ' red'); checkBtn.textContent = t(lang, 'continue'); setCheck(true);
-    if (ok) { haptic(12); if (!res.skip) { right++; if (!res.mistakes) sayTargetIfAny(cur.it); } }
+    if (ok) { haptic(12); if (!res.skip) { right++; combo++; fx(true); if (!res.mistakes) sayTargetIfAny(cur.it); } }
     else {
-      wrong++; hearts = Math.max(0, hearts - 1); renderHearts(); haptic([30, 40, 30]);
+      wrong++; combo = 0; fx(false); hearts = Math.max(0, hearts - 1); renderHearts(); haptic([30, 40, 30]);
       $('hearts').classList.remove('shake'); void $('hearts').offsetWidth; $('hearts').classList.add('shake');
       queue.push({ it: cur.it, id: cur.id, retry: true });
       if (!hearts) setTimeout(heartsOut, 600);
@@ -229,7 +248,7 @@ if (!lesson) {
     const secs = Math.round((Date.now() - t0) / 1000);
     const acc = right + wrong ? Math.round((right / (right + wrong)) * 100) : 100;
     const xp = LESSON_XP + (wrong === 0 ? 10 : 0);
-    completeLesson(key, xp);
+    completeLesson(key, xp, { accuracy: acc, wrong });
     foot.style.display = 'none';
     const idx = unit.lessons.findIndex(l => l.id === lesson.id);
     const nextL = unit.lessons[idx + 1] || null;

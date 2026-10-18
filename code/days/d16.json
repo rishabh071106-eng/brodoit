@@ -1,0 +1,374 @@
+{
+ "day": 16,
+ "phase": 2,
+ "title": "Comprehensions",
+ "subtitle": "Transform and filter data in one clear line",
+ "minutes": 50,
+ "goal": "Build new lists, dicts and sets with comprehensions that transform and filter data, and know when a plain loop reads better.",
+ "outcomes": [
+  "Rewrite a loop-and-append pattern as a list comprehension",
+  "Filter with an if at the end, and transform with an if-else at the front",
+  "Build dicts and sets with comprehensions",
+  "Flatten grids and make combinations with two for clauses",
+  "Choose a plain loop when a comprehension would hurt readability"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 16: Comprehensions",
+   "body": "Clean a list of emails, add GST to every price, keep only successful payments: transforming data is half of real programming.\n\nToday: **comprehensions**, one readable line that builds a new list, dict or set.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Take each item",
+     "Keep only the ones you want (optional)",
+     "Transform it",
+     "Collect the results in a new list"
+    ]
+   },
+   "say": "Welcome to day sixteen. Cleaning email addresses, adding tax to every price, keeping only the payments that succeeded: transforming data is half of real programming. Today you learn comprehensions, the Pythonic way to build a new list, dictionary or set in one clear line. Professional Python code uses them everywhere."
+  },
+  {
+   "type": "concept",
+   "title": "From loop to comprehension",
+   "body": "You've written this many times: make an empty list, loop, append. A **list comprehension** says the same thing in one line, inside square brackets.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "The loop way",
+     "code": "squares = []\nfor n in nums:\n    squares.append(n * n)"
+    },
+    "right": {
+     "title": "The comprehension",
+     "code": "squares = [n * n for n in nums]"
+    },
+    "verdict": "Same result. Read it as: n times n, for each n in nums."
+   },
+   "say": "You have written this pattern many times: create an empty list, loop over something, and append a new value each time. A list comprehension says exactly the same thing in one line. Inside square brackets, write what you want for each item, then the for part. Read it aloud as: n times n, for each n in nums."
+  },
+  {
+   "type": "code",
+   "title": "Your first comprehensions",
+   "code": "nums = [1, 2, 3, 4, 5]\nsquares = [n * n for n in nums]\nprint(squares)\nprices = [100, 250, 999]\nwith_gst = [round(p * 1.18, 2) for p in prices]\nprint(with_gst)\nnames = [\"  riya \", \"ARJUN\", \"meera  \"]\nclean = [name.strip().title() for name in names]\nprint(clean)\nlengths = [len(name) for name in clean]\nprint(lengths)",
+   "expect": "[1, 4, 9, 16, 25]\n[118.0, 295.0, 1178.82]\n['Riya', 'Arjun', 'Meera']\n[4, 5, 5]\n",
+   "explain": [
+    [
+     2,
+     "For each n in nums, put n * n in the new list."
+    ],
+    [
+     5,
+     "Add 18% GST to every price."
+    ],
+    [
+     8,
+     "Clean every name with method chaining (Day 5)."
+    ],
+    [
+     10,
+     "Any expression works, including function calls."
+    ]
+   ],
+   "say": "Four real transformations, each in one line. Squares of numbers. Prices with eighteen percent GST added. Messy names cleaned with strip and title. The part before the for can be any expression at all, including method calls and functions like len."
+  },
+  {
+   "type": "visual",
+   "title": "Anatomy of a comprehension",
+   "body": "`[n * n for n in nums if n > 0]`\n\nPython runs the **for**, checks the **if**, then evaluates the **expression**.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "n * n: what goes into the new list",
+     "for n in nums: where the items come from",
+     "if n > 0: optional, which items to keep"
+    ]
+   },
+   "say": "Every comprehension has up to three parts. First, the expression: what goes into the new list. Then the for clause: where the items come from. And optionally an if clause at the end, which acts as a filter. Python runs the for, checks the if, and only evaluates the expression for items that pass."
+  },
+  {
+   "type": "code",
+   "title": "Filtering with if",
+   "code": "payments = [450, -20, 1200, 0, 799, -5]\nvalid = [p for p in payments if p > 0]\nprint(valid)\nemails = [\"riya@gmail.com\", \"not-an-email\", \"arjun@yahoo.in\", \"\"]\ngood = [e for e in emails if \"@\" in e]\nprint(good)\nevens = [n for n in range(1, 21) if n % 2 == 0]\nprint(evens)\nbig_spend = sum([p for p in payments if p > 500])\nprint(big_spend)",
+   "expect": "[450, 1200, 799]\n['riya@gmail.com', 'arjun@yahoo.in']\n[2, 4, 6, 8, 10, 12, 14, 16, 18, 20]\n1999\n",
+   "explain": [
+    [
+     2,
+     "Keep only the positive payments."
+    ],
+    [
+     5,
+     "Keep strings that contain an @."
+    ],
+    [
+     7,
+     "Works on anything you can loop over, including range()."
+    ],
+    [
+     9,
+     "Build a filtered list and total it in one go."
+    ]
+   ],
+   "say": "Add an if at the end and the comprehension becomes a filter. We keep only real payments, only strings that look like emails, and only the even numbers from a range. The last example filters and then sums, answering a business question in one line: how much came from big payments?"
+  },
+  {
+   "type": "predict",
+   "title": "Filter and transform",
+   "code": "words = [\"chai\", \"samosa\", \"jalebi\", \"idli\"]\nprint([w.upper() for w in words if len(w) > 4])",
+   "options": [
+    "['CHAI', 'IDLI']",
+    "['SAMOSA', 'JALEBI']",
+    "['samosa', 'jalebi']"
+   ],
+   "answer": 1,
+   "why": "The if keeps words longer than 4 letters (samosa and jalebi), and the expression w.upper() transforms them.",
+   "say": "Predict. We filter by length and transform with upper, in a single comprehension. What does the new list look like?"
+  },
+  {
+   "type": "concept",
+   "title": "Filter or transform: where the if goes",
+   "body": "- `if` at the **end** filters: fewer items\n- `if ... else` at the **front** transforms: the same number of items\n\nThe front one is the conditional expression from Day 7.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Filter: drop some",
+     "code": "[m for m in marks if m >= 40]\n# [82, 47, 91]"
+    },
+    "right": {
+     "title": "Transform: change each",
+     "code": "['pass' if m >= 40 else 'fail'\n for m in marks]\n# ['fail', 'pass', 'pass',\n#  'pass', 'fail']"
+    },
+    "verdict": "An if at the end picks which items; an if-else at the front picks what each becomes."
+   },
+   "say": "This trips everyone up at first. An if at the end is a filter, so some items are dropped and the new list can be shorter. An if with an else at the front is the conditional expression from day seven. It decides what each item becomes, so the new list always has the same length."
+  },
+  {
+   "type": "code",
+   "title": "Pass or fail",
+   "code": "marks = [35, 82, 47, 91, 28]\nresults = [\"pass\" if m >= 40 else \"fail\" for m in marks]\nprint(results)\npassed = [m for m in marks if m >= 40]\nprint(passed)\ncapped = [m if m <= 90 else 90 for m in marks]\nprint(capped)\nprint(len(results), len(passed), len(capped))",
+   "expect": "['fail', 'pass', 'pass', 'pass', 'fail']\n[82, 47, 91]\n[35, 82, 47, 90, 28]\n5 3 5\n",
+   "explain": [
+    [
+     2,
+     "If-else at the front: every mark becomes a word."
+    ],
+    [
+     4,
+     "If at the end: only passing marks are kept."
+    ],
+    [
+     6,
+     "Cap every mark at 90."
+    ],
+    [
+     8,
+     "Transforming keeps the length; filtering can shrink it."
+    ]
+   ],
+   "say": "Watch the lengths. Turning marks into pass or fail keeps all five items. Filtering keeps only the three passing marks. Capping marks at ninety transforms each one, so it keeps five again. Same tool, two very different jobs, depending on where the if goes."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "Which comprehension always gives a list the **same length** as `prices`?",
+   "options": [
+    "[p for p in prices if p > 100]",
+    "[p * 0.9 if p > 100 else p for p in prices]",
+    "[p for p in prices if p]"
+   ],
+   "answer": 1,
+   "why": "An if-else at the front transforms every item, so the length stays the same. An if at the end filters, so items can be dropped.",
+   "say": "Quick check. Which of these comprehensions always produces a list with the same number of items as prices?"
+  },
+  {
+   "type": "concept",
+   "title": "Dict and set comprehensions",
+   "body": "Same idea, curly brackets:\n\n- `{key: value for ...}` builds a **dict**\n- `{value for ...}` builds a **set**, so duplicates vanish",
+   "visual": {
+    "kind": "dict",
+    "name": "with_gst",
+    "pairs": [
+     [
+      "'chai'",
+      "21.0"
+     ],
+     [
+      "'samosa'",
+      "15.75"
+     ],
+     [
+      "'lassi'",
+      "42.0"
+     ]
+    ]
+   },
+   "say": "The same idea works for dictionaries and sets. Use curly braces with a key, a colon and a value, and you build a dictionary. Use curly braces with just a value, and you build a set, so duplicates disappear automatically."
+  },
+  {
+   "type": "code",
+   "title": "Menus, lengths and domains",
+   "code": "menu = {\"chai\": 20, \"samosa\": 15, \"lassi\": 40}\nwith_gst = {item: round(price * 1.05, 2) for item, price in menu.items()}\nprint(with_gst)\ncheap = {item: price for item, price in menu.items() if price < 30}\nprint(cheap)\nnames = [\"Riya\", \"Arjun\", \"Meera\"]\nprint({name: len(name) for name in names})\nemails = [\"a@gmail.com\", \"b@yahoo.in\", \"c@gmail.com\"]\ndomains = {e.split(\"@\")[1] for e in emails}\nprint(sorted(domains))",
+   "expect": "{'chai': 21.0, 'samosa': 15.75, 'lassi': 42.0}\n{'chai': 20, 'samosa': 15}\n{'Riya': 4, 'Arjun': 5, 'Meera': 5}\n['gmail.com', 'yahoo.in']\n",
+   "explain": [
+    [
+     2,
+     "Unpack each (item, price) pair; keep the key, transform the value: 5% restaurant GST."
+    ],
+    [
+     4,
+     "Filters work in dict comprehensions too."
+    ],
+    [
+     7,
+     "Build a dict from a list."
+    ],
+    [
+     9,
+     "A set comprehension: each domain once."
+    ],
+    [
+     10,
+     "Sets have no order, so sort before printing."
+    ]
+   ],
+   "say": "We add five percent restaurant GST to every price on the menu, keeping the same keys. Then a filtered dictionary keeps only the cheap items. A dictionary comprehension can also build a lookup from a list. And the set comprehension collects email domains, so gmail appears only once."
+  },
+  {
+   "type": "predict",
+   "title": "How many airports?",
+   "code": "codes = [\"DEL\", \"bom\", \"del\", \"BLR\", \"Bom\"]\nprint(len({c.upper() for c in codes}))",
+   "options": [
+    "5",
+    "3",
+    "4"
+   ],
+   "answer": 1,
+   "why": "Upper-casing gives DEL, BOM, DEL, BLR, BOM. A set keeps each one once: DEL, BOM and BLR, so 3.",
+   "say": "Airport codes typed by users, in mixed case. We upper case them inside a set comprehension. How many unique codes are left?"
+  },
+  {
+   "type": "concept",
+   "title": "Nested comprehensions",
+   "body": "Several `for` clauses read **left to right**, exactly like nested loops squeezed onto one line.\n\nGreat for flattening a grid or making combinations. Stop at two levels.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Nested loops",
+     "code": "flat = []\nfor row in grid:\n    for n in row:\n        flat.append(n)"
+    },
+    "right": {
+     "title": "Nested comprehension",
+     "code": "flat = [n for row in grid\n          for n in row]"
+    },
+    "verdict": "The for clauses appear in the same order as the loops."
+   },
+   "say": "A comprehension can have more than one for clause. They read from left to right, in exactly the same order as nested loops would be written. This is handy for flattening a grid into a single list, or building every combination of sizes and colours. Beyond two levels, though, a regular loop is kinder to the reader."
+  },
+  {
+   "type": "code",
+   "title": "Grids and combinations",
+   "code": "grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\nflat = [n for row in grid for n in row]\nprint(flat)\ntable = [[r * c for c in range(1, 4)] for r in range(1, 4)]\nprint(table)\nsizes = [\"S\", \"M\"]\ncolours = [\"red\", \"blue\"]\nvariants = [f\"{size}-{colour}\" for size in sizes for colour in colours]\nprint(variants)",
+   "expect": "[1, 2, 3, 4, 5, 6, 7, 8, 9]\n[[1, 2, 3], [2, 4, 6], [3, 6, 9]]\n['S-red', 'S-blue', 'M-red', 'M-blue']\n",
+   "explain": [
+    [
+     2,
+     "Outer loop first (row), then the inner one (n): the grid flattened."
+    ],
+    [
+     4,
+     "A comprehension inside a comprehension builds a table, row by row."
+    ],
+    [
+     8,
+     "Every size with every colour: product variants for an online shop."
+    ]
+   ],
+   "say": "Flattening reads like the nested loops: for each row, for each number in that row. Putting one comprehension inside another builds a grid, here a small multiplication table. And two for clauses produce every combination of size and colour, exactly how an online shop generates its product variants."
+  },
+  {
+   "type": "concept",
+   "title": "When a loop is better",
+   "body": "Comprehensions are for **building** a collection. Use a normal loop when:\n- you only want side effects, like printing\n- the logic needs several steps or an `elif`\n- it no longer fits comfortably on one line",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Too clever",
+     "code": "[print(p) for p in prices if p > 0]\n\nresult = [x * y for x in a\n  if x > 0 for y in b if y != x]"
+    },
+    "right": {
+     "title": "Clear",
+     "code": "for p in prices:\n    if p > 0:\n        print(p)"
+    },
+    "verdict": "If a comprehension needs explaining, write a loop instead."
+   },
+   "say": "Comprehensions are for building a new collection. Don't use one just to print things, because that builds a useless list of None values. And when the logic needs several steps, an elif, or no longer fits comfortably on one line, a normal loop is clearer. Code is read far more often than it is written, so readability wins."
+  },
+  {
+   "type": "quiz",
+   "title": "Good taste",
+   "q": "Which of these is a **bad** use of a comprehension?",
+   "options": [
+    "[print(n) for n in nums]",
+    "[n * 2 for n in nums]",
+    "{n % 7 for n in nums}"
+   ],
+   "answer": 0,
+   "why": "It's used only for the side effect of printing, and it builds a throwaway list of None values. A plain for loop says what you mean.",
+   "say": "Which of these is a bad use of a comprehension?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: messy prices",
+   "task": "Prices scraped from a website include junk like `\"abc\"` and empty strings, so this crashes. Add a filter so `amounts` keeps only the digit strings, converted to int: `[120, 45, 300]`.",
+   "starter": "prices = [\"120\", \"abc\", \"45\", \"\", \"300\"]\namounts = [int(p) for p in prices]\nprint(amounts, sum(amounts))\n",
+   "solution": "prices = [\"120\", \"abc\", \"45\", \"\", \"300\"]\namounts = [int(p) for p in prices if p.isdigit()]\nprint(amounts, sum(amounts))",
+   "tests": "assert amounts == [120, 45, 300], f\"amounts should be [120, 45, 300], not {amounts}. Keep only strings where p.isdigit() is True.\"\nassert any(isinstance(node, ast.ListComp) for node in ast.walk(__tree__)), \"Keep it as a list comprehension: add an if at the end.\"",
+   "hints": [
+    "int(\"abc\") raises ValueError. Skip those strings before converting.",
+    "\"120\".isdigit() is True; \"abc\".isdigit() and \"\".isdigit() are False.",
+    "[int(p) for p in prices if p.isdigit()]"
+   ],
+   "say": "Bug hunt. These prices were scraped from a website, and some entries are junk, so the comprehension crashes when it tries to convert them. Add a filter so only real digit strings get converted. Remember, a filter goes at the end."
+  },
+  {
+   "type": "exercise",
+   "title": "Clean the sign-up list",
+   "task": "Emails arrive as one comma-separated line with stray spaces, capitals, blanks and duplicates. Use comprehensions to:\n1. strip and lowercase each one\n2. keep only those containing `@`\n3. print the **unique** emails, sorted, as a list\n\n`Riya@Gmail.com , junk,riya@gmail.com` gives `['riya@gmail.com']`",
+   "stdin": " Riya@Gmail.com , junk,riya@gmail.com,,ARJUN@yahoo.in\n",
+   "starter": "raw = input(\"Emails: \").split(\",\")\ncleaned = raw    # strip and lowercase every email\nvalid = cleaned  # keep only the ones with an @\nunique = valid   # remove duplicates, then sort\nprint(unique)\n",
+   "solution": "raw = input(\"Emails: \").split(\",\")\ncleaned = [e.strip().lower() for e in raw]\nvalid = [e for e in cleaned if \"@\" in e]\nunique = sorted(set(valid))\nprint(unique)",
+   "tests": "out = await run_program(\" Riya@Gmail.com , junk,riya@gmail.com,,ARJUN@yahoo.in\\n\")\nassert \"['arjun@yahoo.in', 'riya@gmail.com']\" in out, \"Expected ['arjun@yahoo.in', 'riya@gmail.com']: strip and lowercase first, drop anything without an @, then remove duplicates and sort.\"\nout = await run_program(\"nope,also nope\\n\")\nassert \"[]\" in out, \"If no entry has an @, print an empty list: [].\"\nout = await run_program(\"Z@x.in,a@x.in,A@X.IN\\n\")\nassert \"['a@x.in', 'z@x.in']\" in out, \"a@x.in and A@X.IN are the same email once lowercased. Expected ['a@x.in', 'z@x.in'].\"\ncomps = [n for n in ast.walk(__tree__) if isinstance(n, (ast.ListComp, ast.SetComp))]\nassert len(comps) >= 2, \"Use at least two comprehensions: one to clean, one to filter.\"",
+   "hints": [
+    "[e.strip().lower() for e in raw] cleans every email.",
+    "[e for e in cleaned if \"@\" in e] keeps the valid ones.",
+    "sorted(set(valid)) removes duplicates and gives a sorted list."
+   ],
+   "say": "Every sign up form collects messy data. Emails arrive with stray spaces, capital letters, blanks and duplicates. Use comprehensions to clean them and keep only the ones that contain an at sign, then remove duplicates and sort them. The checker also tries a line with no valid emails at all."
+  },
+  {
+   "type": "exercise",
+   "title": "GST invoice",
+   "task": "`prices` maps products to prices before tax. Using comprehensions, build:\n- `with_gst`: the same products with **18% GST** added, rounded to 2 decimals\n- `premium`: a **sorted list** of product names whose price with GST is over ₹1000",
+   "starter": "prices = {\"mouse\": 499, \"keyboard\": 1299, \"monitor\": 8999, \"cable\": 199, \"webcam\": 849}\nwith_gst = {}\npremium = []\nprint(with_gst)\nprint(premium)\n",
+   "solution": "prices = {\"mouse\": 499, \"keyboard\": 1299, \"monitor\": 8999, \"cable\": 199, \"webcam\": 849}\nwith_gst = {item: round(price * 1.18, 2) for item, price in prices.items()}\npremium = sorted([item for item, price in with_gst.items() if price > 1000])\nprint(with_gst)\nprint(premium)",
+   "tests": "expected = {\"mouse\": 588.82, \"keyboard\": 1532.82, \"monitor\": 10618.82, \"cable\": 234.82, \"webcam\": 1001.82}\nfor item, value in expected.items():\n    assert item in with_gst, f\"with_gst is missing {item}. Build it from prices.items().\"\n    assert abs(with_gst[item] - value) < 0.01, f\"{item} with 18% GST should be {value}, but with_gst has {with_gst[item]}. Multiply by 1.18 and round to 2 decimals.\"\nassert premium == [\"keyboard\", \"monitor\", \"webcam\"], f\"premium should be ['keyboard', 'monitor', 'webcam'], not {premium}. Look at the webcam: ₹849 becomes ₹1001.82 after GST.\"\nassert any(isinstance(n, ast.DictComp) for n in ast.walk(__tree__)), \"Build with_gst with a dict comprehension: {item: ... for item, price in prices.items()}.\"",
+   "hints": [
+    "{item: round(price * 1.18, 2) for item, price in prices.items()}",
+    "Filter with_gst, not prices: the webcam only crosses ₹1000 after tax.",
+    "premium = sorted([item for item, price in with_gst.items() if price > 1000])"
+   ],
+   "say": "Now an invoice tool. Add eighteen percent GST to every product with a dictionary comprehension, rounding to two decimals. Then build a sorted list of the premium products, the ones costing more than a thousand rupees after tax. Watch out for the webcam: it only crosses the line once GST is added."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 16 complete",
+   "points": [
+    "[expr for x in items] builds a new list in one readable line",
+    "An if at the end filters; an if-else at the front transforms every item",
+    "{k: v for ...} builds a dict; {v for ...} builds a set",
+    "Several for clauses read left to right, like nested loops",
+    "Comprehensions build collections: use a loop for side effects or complex logic"
+   ],
+   "say": "Mission sixteen complete. You can transform and filter data with list, dictionary and set comprehensions, you know exactly where the if goes for filtering versus transforming, and you know when a plain loop is the better choice. Tomorrow is a big day: you start writing your own functions. See you on day seventeen."
+  }
+ ]
+}

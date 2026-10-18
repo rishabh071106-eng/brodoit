@@ -1,0 +1,417 @@
+{
+ "day": 34,
+ "phase": 4,
+ "title": "Type hints, dataclasses and enums",
+ "subtitle": "Make your code say exactly what it means",
+ "minutes": 55,
+ "goal": "Describe data precisely with type hints, model records with dataclasses, and name fixed choices with enums.",
+ "outcomes": [
+  "Annotate variables and functions with types like list[int] and dict[str, float]",
+  "Use X | None, Optional and Callable in function signatures",
+  "Explain what type checkers like mypy and pyright catch, and that Python ignores hints at runtime",
+  "Build dataclasses with defaults, field(default_factory=...), frozen and order",
+  "Replace magic strings with enum.Enum"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 34: Say what you mean",
+   "body": "In a team, code is read far more often than it is written. Today, three tools that make it say what it means:\n\n- **type hints** tell readers and tools what goes in and out\n- **dataclasses** remove class boilerplate\n- **enums** remove typo-prone magic strings",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Guess what it takes",
+     "code": "def total(items, gst):\n    ...\n# items of what? gst as 18 or 0.18?"
+    },
+    "right": {
+     "title": "Self-explaining",
+     "code": "def total(items: list[float],\n          gst_rate: float) -> float:\n    ..."
+    },
+    "verdict": "The signature now answers the questions before anyone asks."
+   },
+   "say": "In a real team, your code is read many more times than it is written. Today we learn three tools that make code explain itself. Type hints say what a function expects and returns. Data classes write the boring parts of a class for you. And enums replace fragile magic strings with named choices."
+  },
+  {
+   "type": "concept",
+   "title": "Type hints",
+   "body": "Write `name: type` for parameters and `-> type` for the return value.\n\nHints are **not enforced** when the program runs. Your editor and type checkers read them and warn you **before** you run anything.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Hint",
+     "Means"
+    ],
+    "rows": [
+     [
+      "int, float, str, bool",
+      "a single value of that type"
+     ],
+     [
+      "list[int]",
+      "a list of ints"
+     ],
+     [
+      "dict[str, float]",
+      "str keys, float values"
+     ],
+     [
+      "tuple[str, int]",
+      "exactly a str then an int"
+     ],
+     [
+      "set[str]",
+      "a set of strings"
+     ],
+     [
+      "str | None",
+      "a str, or None"
+     ],
+     [
+      "Callable[[int], str]",
+      "a function taking an int, returning a str"
+     ]
+    ]
+   },
+   "say": "A type hint is a note after a name, with a colon and a type, and an arrow before the return type. Here is the surprising part: Python itself ignores them when the program runs. Their power comes from tools. Your editor uses them for autocomplete, and type checkers use them to find bugs before you ever run the code."
+  },
+  {
+   "type": "code",
+   "title": "Hints in action, and ignored",
+   "code": "def gst_total(prices: list[float], rate: float = 0.18) -> float:\n    return round(sum(prices) * (1 + rate), 2)\n\nprint(gst_total([100.0, 250.5]))\nprint(gst_total.__annotations__)\n\ndef shout(text: str) -> str:\n    return text * 2\n\nprint(shout(21))  # wrong type, but Python runs it anyway",
+   "expect": "413.59\n{'prices': list[float], 'rate': <class 'float'>, 'return': <class 'float'>}\n42\n",
+   "explain": [
+    [
+     1,
+     "Each parameter gets : type, the return gets -> type."
+    ],
+    [
+     5,
+     "Python just stores the hints here."
+    ],
+    [
+     7,
+     "shout promises to take a str."
+    ],
+    [
+     10,
+     "An int sneaks in: no error at runtime, 21 * 2 = 42."
+    ]
+   ],
+   "say": "The first function reads like a contract: a list of floats and a rate go in, a float comes out. Python stores the hints in a special attribute, and that is all it does with them. Look at shout. It promises to take text, we pass the number twenty one, and Python happily returns forty two. A type checker would have flagged that line straight away."
+  },
+  {
+   "type": "concept",
+   "title": "Type checkers catch it first",
+   "body": "**mypy** and **pyright** (built into VS Code's Pylance) read your hints and report mismatches without running the code. Teams run them in CI, next to tests.\n\n- `str | None`: maybe a str (Python 3.10+)\n- `Optional[str]`: the older spelling of the same thing",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "mypy shop.py"
+     ],
+     [
+      "",
+      "shop.py:10: error: Argument 1 to \"shout\" has incompatible type \"int\"; expected \"str\"  [arg-type]"
+     ],
+     [
+      "",
+      "Found 1 error in 1 file (checked 1 source file)"
+     ]
+    ]
+   },
+   "say": "Tools like mypy and pyright read your hints and check every call, without running anything. Pyright is what powers the red squiggles in VS Code. Most teams run a type checker automatically on every change, right next to their tests. For values that might be missing, write the type, a vertical bar, and None. Older code spells that Optional."
+  },
+  {
+   "type": "code",
+   "title": "Optional values and Callable",
+   "code": "from typing import Callable\n\nMENU: dict[str, float] = {\"chai\": 20.0, \"samosa\": 15.0}\n\ndef find_price(item: str) -> float | None:\n    return MENU.get(item)\n\ndef apply_all(prices: list[float], rule: Callable[[float], float]) -> list[float]:\n    return [rule(p) for p in prices]\n\nprice = find_price(\"vada\")\nif price is None:\n    print(\"vada is not on the menu\")\n\nprint(apply_all([20.0, 15.0], lambda p: p * 0.9))",
+   "expect": "vada is not on the menu\n[18.0, 13.5]\n",
+   "explain": [
+    [
+     3,
+     "Variables can be annotated too."
+    ],
+    [
+     5,
+     "float | None: callers must handle a missing price."
+    ],
+    [
+     8,
+     "Callable[[float], float]: a function from float to float."
+    ],
+    [
+     12,
+     "The hint reminds us to check for None."
+    ],
+    [
+     15,
+     "Pass any matching function, here a 10% discount."
+    ]
+   ],
+   "say": "Find price might not find anything, and the hint float or None says so honestly. That reminds every caller to check for None before using the result. Apply all takes a function as an argument. Callable describes it: a function that takes one float and returns a float. Here we pass a lambda that gives a ten percent discount."
+  },
+  {
+   "type": "quiz",
+   "title": "Hints at runtime",
+   "q": "What happens when this runs?",
+   "code": "def area(r: float) -> float:\n    return 3.14 * r * r\n\narea(\"2\")",
+   "options": [
+    "Python refuses to start because \"2\" is not a float",
+    "A TypeError at the multiplication: hints aren't checked, but a type checker would have warned you",
+    "Python converts \"2\" to 2.0 automatically"
+   ],
+   "answer": 1,
+   "why": "Python ignores hints at runtime, so the call goes ahead and fails inside the function: 3.14 * \"2\" raises TypeError. mypy or pyright would have flagged area(\"2\") before you ran it.",
+   "say": "Quick check. The function promises a float, but we pass the text two. What actually happens when Python runs it?"
+  },
+  {
+   "type": "concept",
+   "title": "Dataclasses: classes without boilerplate",
+   "body": "Most classes just hold data. `@dataclass` reads the annotated fields and **writes** `__init__`, `__repr__` and `__eq__` for you.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "By hand (Day 25)",
+     "code": "class Product:\n    def __init__(self, name, price, qty=1):\n        self.name = name\n        self.price = price\n        self.qty = qty\n    def __repr__(self):\n        return f\"Product({self.name!r}, ...)\"\n    def __eq__(self, other):\n        return (self.name, self.price, self.qty) == ..."
+    },
+    "right": {
+     "title": "@dataclass",
+     "code": "@dataclass\nclass Product:\n    name: str\n    price: float\n    qty: int = 1"
+    },
+    "verdict": "The decorator generates __init__, __repr__ and __eq__ from the fields."
+   },
+   "say": "Many classes exist only to hold data, and writing init, repr and equality by hand for each one is tedious and error prone. The data class decorator reads your annotated fields and generates those methods for you. Same behaviour, a third of the code, and nothing to forget when you add a field."
+  },
+  {
+   "type": "code",
+   "title": "Your first dataclass",
+   "code": "from dataclasses import dataclass\n\n@dataclass\nclass Product:\n    name: str\n    price: float\n    qty: int = 1\n\n    def total(self) -> float:\n        return self.price * self.qty\n\nchai = Product(\"Masala chai\", 20.0, 3)\nprint(chai)\nprint(chai.total())\nprint(chai == Product(\"Masala chai\", 20.0, 3))\nprint(Product(\"Samosa\", 15.0))",
+   "expect": "Product(name='Masala chai', price=20.0, qty=3)\n60.0\nTrue\nProduct(name='Samosa', price=15.0, qty=1)\n",
+   "explain": [
+    [
+     3,
+     "The decorator turns annotated fields into a full class."
+    ],
+    [
+     7,
+     "Fields with defaults must come after fields without."
+    ],
+    [
+     9,
+     "Ordinary methods work as usual."
+    ],
+    [
+     13,
+     "A generated __repr__ with field names."
+    ],
+    [
+     15,
+     "A generated __eq__ compares every field."
+    ],
+    [
+     16,
+     "qty fell back to its default of 1."
+    ]
+   ],
+   "say": "Three annotated fields, one with a default, and a normal method. Creating a product works like any class. Printing it shows a helpful repr with every field name, which makes debugging and logging pleasant. Two products with the same fields are equal, because the generated equality compares field by field."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: equal or the same?",
+   "code": "from dataclasses import dataclass\n\n@dataclass\nclass Point:\n    x: int\n    y: int\n\na = Point(1, 2)\nb = Point(1, 2)\nprint(a == b, a is b)",
+   "options": [
+    "True True",
+    "True False",
+    "False False",
+    "False True"
+   ],
+   "answer": 1,
+   "why": "== uses the generated __eq__, which compares fields: equal. is checks identity, and a and b are two separate objects in memory.",
+   "say": "Two points with the same coordinates. Are they equal? And are they the very same object? Remember the difference between double equals and is."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: shared shopping list",
+   "task": "This `Order` model crashes the moment Python reads the class. Read the error message carefully, then fix the `items` field so every order gets **its own** empty list.",
+   "starter": "from dataclasses import dataclass\n\n@dataclass\nclass Order:\n    order_id: int\n    customer: str\n    items: list[str] = []\n\n    def add(self, item: str) -> None:\n        self.items.append(item)\n\na = Order(1, \"Riya\")\na.add(\"chai\")\nprint(a)\n",
+   "solution": "from dataclasses import dataclass, field\n\n@dataclass\nclass Order:\n    order_id: int\n    customer: str\n    items: list[str] = field(default_factory=list)\n\n    def add(self, item: str) -> None:\n        self.items.append(item)\n\na = Order(1, \"Riya\")\na.add(\"chai\")\nprint(a)\n",
+   "tests": "a1 = Order(1, \"Riya\")\nb1 = Order(2, \"Arjun\")\na1.add(\"chai\")\nassert a1.items == [\"chai\"], f\"After adding chai, Riya's items should be ['chai'], got {a1.items}.\"\nassert b1.items == [], f\"Arjun's order must stay empty, got {b1.items}. Each order needs its own list: field(default_factory=list).\"\nassert Order(3, \"Kabir\").items == [], \"A brand new order should start with an empty list.\"",
+   "hints": [
+    "The error says mutable defaults are not allowed and suggests default_factory.",
+    "from dataclasses import dataclass, field, then items: list[str] = field(default_factory=list)"
+   ],
+   "say": "Remember the mutable default trap from day eighteen? Data classes protect you from it by refusing to even create the class. Run it, read the error message, which tells you exactly what to use instead, and fix the items field."
+  },
+  {
+   "type": "code",
+   "title": "frozen and order",
+   "code": "from dataclasses import dataclass, FrozenInstanceError\n\n@dataclass(frozen=True, order=True)\nclass Version:\n    major: int\n    minor: int\n    patch: int = 0\n\nreleases = [Version(3, 12), Version(3, 9, 7), Version(3, 13, 1)]\nprint(sorted(releases)[0])\nprint(max(releases))\n\nv = Version(3, 13)\ntry:\n    v.minor = 14\nexcept FrozenInstanceError as e:\n    print(\"Can't change:\", e)\nprint({v: \"current\"})   # frozen objects can be dict keys",
+   "expect": "Version(major=3, minor=9, patch=7)\nVersion(major=3, minor=13, patch=1)\nCan't change: cannot assign to field 'minor'\n{Version(major=3, minor=13, patch=0): 'current'}\n",
+   "explain": [
+    [
+     3,
+     "order=True: compare field by field. frozen=True: read-only."
+    ],
+    [
+     10,
+     "Sorted like tuples: (3, 9, 7) < (3, 12, 0)."
+    ],
+    [
+     15,
+     "Assigning to a frozen field raises an error."
+    ],
+    [
+     18,
+     "Frozen dataclasses are hashable: usable as keys."
+    ]
+   ],
+   "say": "Two options make data classes even more useful. Order true generates comparisons that compare fields in order, like a tuple, so versions sort correctly: three point nine comes before three point twelve. Frozen true makes objects read-only, so nothing can change them by accident, and that also makes them hashable, so they can be dictionary keys."
+  },
+  {
+   "type": "concept",
+   "title": "Enums: named choices",
+   "body": "Strings like `\"shipped\"`, `\"Shipped\"` and `\"shiped\"` all look valid until production. An `Enum` makes the allowed choices a **type**: a typo becomes an immediate error, and your editor autocompletes the options.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Member",
+     ".name",
+     ".value"
+    ],
+    "rows": [
+     [
+      "Status.PLACED",
+      "'PLACED'",
+      "'placed'"
+     ],
+     [
+      "Status.SHIPPED",
+      "'SHIPPED'",
+      "'shipped'"
+     ],
+     [
+      "Status.DELIVERED",
+      "'DELIVERED'",
+      "'delivered'"
+     ]
+    ]
+   },
+   "say": "Imagine order statuses stored as plain strings. One developer writes shipped with a capital S, another makes a typo, and the bug hides until production. An enum defines the allowed choices once, as named members. A typo becomes an immediate error, and your editor can autocomplete every option."
+  },
+  {
+   "type": "code",
+   "title": "Enum in action",
+   "code": "from enum import Enum\n\nclass Status(Enum):\n    PLACED = \"placed\"\n    SHIPPED = \"shipped\"\n    DELIVERED = \"delivered\"\n\ns = Status.SHIPPED\nprint(s, s.name, s.value)\nprint(Status(\"delivered\"))\nprint(s == Status.SHIPPED, s == \"shipped\")\nprint([m.name for m in Status])\n\ntry:\n    Status(\"lost\")\nexcept ValueError as e:\n    print(e)",
+   "expect": "Status.SHIPPED SHIPPED shipped\nStatus.DELIVERED\nTrue False\n['PLACED', 'SHIPPED', 'DELIVERED']\n'lost' is not a valid Status\n",
+   "explain": [
+    [
+     3,
+     "Subclass Enum; each member gets a value."
+    ],
+    [
+     9,
+     "Every member has a .name and a .value."
+    ],
+    [
+     10,
+     "Look a member up by its value, e.g. text from JSON."
+    ],
+    [
+     11,
+     "Members are not equal to raw strings."
+    ],
+    [
+     12,
+     "Iterate over all allowed choices."
+    ],
+    [
+     15,
+     "Unknown values fail fast."
+    ]
+   ],
+   "say": "Each member has a name and a value. Calling the enum with a value, for example from a database or a JSON file, looks up the matching member. Notice that a member is not equal to its raw string: compare members with members. You can loop over every choice, and an unknown value is rejected immediately."
+  },
+  {
+   "type": "code",
+   "title": "Putting it together: a typed Order",
+   "code": "from dataclasses import dataclass, field\nfrom enum import Enum\n\nclass Status(Enum):\n    PLACED = \"placed\"\n    PAID = \"paid\"\n    CANCELLED = \"cancelled\"\n\n@dataclass\nclass Order:\n    order_id: int\n    items: dict[str, int] = field(default_factory=dict)\n    status: Status = Status.PLACED\n\n    def __post_init__(self) -> None:\n        if self.order_id <= 0:\n            raise ValueError(\"order_id must be positive\")\n\n    def total(self, menu: dict[str, float]) -> float:\n        return sum(menu[name] * qty for name, qty in self.items.items())\n\norder = Order(101, {\"chai\": 2, \"samosa\": 3})\nprint(order.total({\"chai\": 20.0, \"samosa\": 15.0}))\norder.status = Status.PAID\nprint(order)",
+   "expect": "85.0\nOrder(order_id=101, items={'chai': 2, 'samosa': 3}, status=<Status.PAID: 'paid'>)\n",
+   "explain": [
+    [
+     12,
+     "A fresh dict for every order."
+    ],
+    [
+     13,
+     "The status can only be a Status member."
+    ],
+    [
+     15,
+     "__post_init__ runs after the generated __init__: validate here."
+    ],
+    [
+     19,
+     "Typed method: a menu of prices in, a float out."
+    ],
+    [
+     24,
+     "Change the status with a member, never a raw string."
+    ]
+   ],
+   "say": "Here is the kind of model you will write at work. Typed fields, a safe default for the items dictionary, and a status that can only be one of three members. Post init runs right after the generated init, which is the place to validate. An order with a negative id is rejected the moment someone tries to create it."
+  },
+  {
+   "type": "exercise",
+   "title": "Model an invoice",
+   "task": "Build two dataclasses:\n\n- `LineItem`: `name: str`, `price: float`, `qty: int = 1`, and `subtotal()` returning `price * qty`\n- `Invoice`: `customer: str`, `items: list[LineItem]` (empty by default), `add(item)`, and `total(gst_rate=0.18)` returning the GST-inclusive total rounded to 2 decimals",
+   "starter": "from dataclasses import dataclass, field\n\n# TODO: LineItem with name, price, qty (default 1) and subtotal()\n\n# TODO: Invoice with customer, items (empty list by default),\n#       add(item) and total(gst_rate=0.18)\n",
+   "solution": "from dataclasses import dataclass, field\n\n@dataclass\nclass LineItem:\n    name: str\n    price: float\n    qty: int = 1\n\n    def subtotal(self) -> float:\n        return self.price * self.qty\n\n@dataclass\nclass Invoice:\n    customer: str\n    items: list[LineItem] = field(default_factory=list)\n\n    def add(self, item: LineItem) -> None:\n        self.items.append(item)\n\n    def total(self, gst_rate: float = 0.18) -> float:\n        return round(sum(i.subtotal() for i in self.items) * (1 + gst_rate), 2)\n\ninv = Invoice(\"Riya\")\ninv.add(LineItem(\"Masala chai\", 20.0, 3))\nprint(inv.total())\n",
+   "tests": "import dataclasses as _dc\nassert \"LineItem\" in globals() and \"Invoice\" in globals(), \"Define two classes called LineItem and Invoice.\"\nassert _dc.is_dataclass(LineItem) and _dc.is_dataclass(Invoice), \"Decorate both classes with @dataclass.\"\nassert LineItem(\"Masala chai\", 20.0, 3).subtotal() == 60.0, \"subtotal() should be price * qty: 20.0 * 3 = 60.0.\"\nassert LineItem(\"Samosa\", 15.0).qty == 1, \"qty should default to 1.\"\na = Invoice(\"Riya\")\nb = Invoice(\"Arjun\")\na.add(LineItem(\"Masala chai\", 20.0, 3))\na.add(LineItem(\"Samosa\", 15.0, 2))\nassert b.items == [], \"Each invoice needs its own list of items: use field(default_factory=list).\"\nassert a.total() == 106.2, f\"(60 + 30) with 18% GST is 106.2, got {a.total()}.\"\nassert a.total(gst_rate=0.05) == 94.5, f\"With 5% GST the total is 94.5, got {a.total(gst_rate=0.05)}.\"\nassert Invoice(\"Empty\").total() == 0.0, \"An invoice with no items totals 0.0.\"",
+   "hints": [
+    "Fields are annotated class attributes: name: str, price: float, qty: int = 1.",
+    "For the list: items: list[LineItem] = field(default_factory=list)",
+    "total: round(sum(i.subtotal() for i in self.items) * (1 + gst_rate), 2)"
+   ],
+   "say": "Time to model real business data. Build a line item and an invoice as data classes, with type hints on every field. Make sure each invoice gets its own list of items, and that the total includes GST, rounded to two decimal places."
+  },
+  {
+   "type": "exercise",
+   "title": "Triage support tickets",
+   "task": "1. Finish the `Priority` enum: `LOW = 1`, `MEDIUM = 2`, `HIGH = 3`.\n2. `parse_priority(text)`: ignore case and spaces (`\"  high \"` → `Priority.HIGH`); raise `ValueError` for unknown names.\n3. `most_urgent(tickets)`: given `(title, Priority)` pairs, return the title with the highest priority (first one wins a tie), or `None` if empty.",
+   "starter": "from enum import Enum\n\nclass Priority(Enum):\n    LOW = 1\n    # TODO: MEDIUM and HIGH\n\ndef parse_priority(text: str) -> Priority:\n    # TODO: ignore case and spaces, raise ValueError for unknown names\n    return Priority.LOW\n\ndef most_urgent(tickets: list[tuple[str, Priority]]) -> str | None:\n    # TODO\n    return None\n",
+   "solution": "from enum import Enum\n\nclass Priority(Enum):\n    LOW = 1\n    MEDIUM = 2\n    HIGH = 3\n\ndef parse_priority(text: str) -> Priority:\n    try:\n        return Priority[text.strip().upper()]\n    except KeyError:\n        raise ValueError(f\"unknown priority: {text!r}\") from None\n\ndef most_urgent(tickets: list[tuple[str, Priority]]) -> str | None:\n    if not tickets:\n        return None\n    title, _ = max(tickets, key=lambda t: t[1].value)\n    return title\n\nprint(most_urgent([(\"Fix typo\", Priority.LOW), (\"Payment failing\", Priority.HIGH)]))\n",
+   "tests": "assert [p.name for p in Priority] == [\"LOW\", \"MEDIUM\", \"HIGH\"], \"Priority should have exactly LOW, MEDIUM and HIGH, in that order.\"\nassert Priority.HIGH.value == 3 and Priority.MEDIUM.value == 2, \"Give MEDIUM the value 2 and HIGH the value 3.\"\nassert parse_priority(\"  high \") is Priority.HIGH, \"parse_priority('  high ') should return Priority.HIGH: strip spaces and ignore case.\"\nassert parse_priority(\"Low\") is Priority.LOW, \"parse_priority('Low') should return Priority.LOW.\"\ntry:\n    parse_priority(\"urgent\")\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError(\"parse_priority('urgent') should raise ValueError: it is not a known priority.\")\nt = [(\"Fix typo\", Priority.LOW), (\"Payment failing\", Priority.HIGH), (\"Slow page\", Priority.MEDIUM), (\"Login down\", Priority.HIGH)]\nassert most_urgent(t) == \"Payment failing\", f\"Expected 'Payment failing' (HIGH, and first of the two HIGH tickets), got {most_urgent(t)!r}.\"\nassert most_urgent([]) is None, \"With no tickets, most_urgent should return None.\"",
+   "hints": [
+    "Look members up by name with Priority[name]. An unknown name raises KeyError, so catch it and raise ValueError instead.",
+    "max(tickets, key=lambda t: t[1].value) picks the highest priority, and max keeps the first one in a tie."
+   ],
+   "say": "Support teams triage tickets by priority. Finish the priority enum, write parse priority, which turns messy text into a member and rejects unknown names, and write most urgent, which returns the title of the most important ticket."
+  },
+  {
+   "type": "quiz",
+   "title": "Pick the option",
+   "q": "You want Location objects that can be dict keys and can never be changed after creation. Which dataclass option do you need?",
+   "options": [
+    "@dataclass(order=True)",
+    "@dataclass(frozen=True)",
+    "field(default_factory=dict)"
+   ],
+   "answer": 1,
+   "why": "frozen=True makes instances read-only, and that also makes them hashable, so they can be dict keys or set members. order=True only adds < and > comparisons.",
+   "say": "Last check. Which data class option makes objects unchangeable, and usable as dictionary keys?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 34 complete",
+   "points": [
+    "Type hints document inputs and outputs; Python ignores them, mypy and pyright check them",
+    "Use list[int], dict[str, float], X | None and Callable[[A], B] in signatures",
+    "@dataclass writes __init__, __repr__ and __eq__; mutable defaults need field(default_factory=...)",
+    "frozen=True makes records read-only and hashable; order=True makes them sortable",
+    "Enums replace magic strings with named, checkable choices"
+   ],
+   "say": "Mission thirty four complete. Your code now says exactly what it means, with type hints, data classes and enums. Tomorrow we prove that it actually works, by writing automated tests with unittest. See you on day thirty five."
+  }
+ ]
+}

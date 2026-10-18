@@ -1,0 +1,449 @@
+{
+ "day": 7,
+ "phase": 1,
+ "title": "Decisions with if",
+ "subtitle": "Teach your program to choose",
+ "minutes": 55,
+ "goal": "Make programs choose between paths using comparisons, logical operators and if, elif and else.",
+ "outcomes": [
+  "Compare values with == != < > <= >= and get True or False",
+  "Combine conditions with and, or and not",
+  "Write if, elif and else blocks with correct indentation and order",
+  "Use truthiness and the one-line conditional expression",
+  "Build real decision logic: ticket pricing, grades, logins and slab billing"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 7: Decisions",
+   "body": "Every app decides. Is the password right? Is the balance enough? Is the user over 18?\n\nToday your programs learn to **choose**. This is the moment code starts to feel smart.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Pay 899",
+      "s": "pill"
+     },
+     {
+      "t": "balance >= 899?",
+      "s": "diamond",
+      "yes": "Payment successful",
+      "no": "Insufficient balance"
+     },
+     {
+      "t": "Show the result",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Welcome to day seven, the day your programs start to feel smart. Every app makes decisions. Is the password right? Is there enough balance to pay? Is the user old enough? Today you'll write code that chooses its own path."
+  },
+  {
+   "type": "concept",
+   "title": "Booleans and comparisons",
+   "body": "A comparison produces a **bool**: `True` or `False`.\n\nRemember Day 2: `=` assigns, `==` compares.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Operator",
+     "Meaning",
+     "Example → result"
+    ],
+    "rows": [
+     [
+      "==",
+      "equal to",
+      "5 == 5 → True"
+     ],
+     [
+      "!=",
+      "not equal to",
+      "5 != 3 → True"
+     ],
+     [
+      "<",
+      "less than",
+      "3 < 2 → False"
+     ],
+     [
+      ">",
+      "greater than",
+      "10 > 2 → True"
+     ],
+     [
+      "<=",
+      "at most",
+      "18 <= 18 → True"
+     ],
+     [
+      ">=",
+      "at least",
+      "17 >= 18 → False"
+     ]
+    ]
+   },
+   "say": "A comparison asks a question and gets back a boolean, either True or False. Double equals asks, are these equal? An exclamation mark followed by equals asks, are they different? And the angle brackets compare sizes. Remember day two: a single equals sign assigns, a double one compares. Mixing them up is one of the most common bugs in programming."
+  },
+  {
+   "type": "code",
+   "title": "Comparisons give True or False",
+   "code": "age = 17\nbalance = 1500\nprint(age >= 18)\nprint(balance > 1000)\nprint(age == 17, age != 17)\nprint(\"riya\" == \"Riya\")            # case matters\nprint(\"riya\" == \"Riya\".lower())\nis_adult = age >= 18\nprint(is_adult, type(is_adult))",
+   "expect": "False\nTrue\nTrue False\nFalse\nTrue\nFalse <class 'bool'>\n",
+   "explain": [
+    [
+     3,
+     "17 >= 18 is False."
+    ],
+    [
+     5,
+     "== asks equal?, != asks different?"
+    ],
+    [
+     6,
+     "Strings must match exactly, including case."
+    ],
+    [
+     7,
+     "Lowercase first, then compare: True."
+    ],
+    [
+     8,
+     "Store the answer in a well-named bool."
+    ]
+   ],
+   "say": "Each comparison prints True or False. String comparisons are exact, so a lowercase riya and a capitalised Riya are different. That's why login systems lowercase usernames before comparing them. The last two lines store a comparison in a variable. Names like is adult make later code read like English."
+  },
+  {
+   "type": "concept",
+   "title": "if: run code only when",
+   "body": "`if balance >= price:` then the lines below, **indented 4 spaces**, run only when the condition is True.\n\n- a colon ends the `if` line\n- the block ends where the indentation ends\n- in Python, indentation **is** the structure",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Start",
+      "s": "pill"
+     },
+     {
+      "t": "balance >= price?",
+      "s": "diamond",
+      "yes": "Run the indented block",
+      "no": "Skip it"
+     },
+     {
+      "t": "Carry on with the next unindented line",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "An if statement runs a block of code only when its condition is True. Write if, then the condition, then a colon. The lines underneath that belong to the if are indented by four spaces. When the indentation stops, the if block is over, and Python carries on either way. In Python, indentation isn't decoration. It's the structure."
+  },
+  {
+   "type": "code",
+   "title": "Your first if",
+   "code": "balance = 1500\nprice = 899\n\nif balance >= price:\n    balance = balance - price\n    print(\"Payment successful\")\n    print(f\"New balance: {balance}\")\n\nprint(\"Thank you for shopping\")",
+   "expect": "Payment successful\nNew balance: 601\nThank you for shopping\n",
+   "explain": [
+    [
+     4,
+     "The condition: 1500 >= 899 is True."
+    ],
+    [
+     5,
+     "Indented: runs only when the condition is True."
+    ],
+    [
+     9,
+     "Not indented: always runs."
+    ]
+   ],
+   "say": "The balance is enough, so the condition is True and all three indented lines run. The last line isn't indented, so it runs no matter what. Change the price to two thousand and run it again. The indented block is skipped, but the thank you still appears."
+  },
+  {
+   "type": "concept",
+   "title": "else and elif",
+   "body": "- `else:` runs when the `if` was False\n- `elif` (else if) adds more checks\n- Python checks from the top and runs **only the first** block that matches, then skips the rest",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "marks >= 90?",
+      "s": "diamond",
+      "yes": "Grade A",
+      "no": "next check"
+     },
+     {
+      "t": "marks >= 75?",
+      "s": "diamond",
+      "yes": "Grade B",
+      "no": "next check"
+     },
+     {
+      "t": "marks >= 50?",
+      "s": "diamond",
+      "yes": "Grade C",
+      "no": "else: Needs improvement"
+     }
+    ]
+   },
+   "say": "Else gives you a plan B: it runs when the if condition is False. Elif, short for else if, lets you add as many extra checks as you need. Python tests them from top to bottom, runs only the first block whose condition is True, and skips the rest. So the order of your conditions matters."
+  },
+  {
+   "type": "code",
+   "title": "Grade calculator",
+   "code": "marks = int(input(\"Marks out of 100: \"))\n\nif marks >= 90:\n    grade = \"A\"\nelif marks >= 75:\n    grade = \"B\"\nelif marks >= 50:\n    grade = \"C\"\nelse:\n    grade = \"Needs improvement\"\n\nprint(f\"Grade: {grade}\")",
+   "stdin": "82\n",
+   "expect": "Marks out of 100: Grade: B\n",
+   "explain": [
+    [
+     3,
+     "82 >= 90 is False, so move on."
+    ],
+    [
+     5,
+     "82 >= 75 is True: grade is B."
+    ],
+    [
+     7,
+     "Skipped: a branch already matched."
+    ],
+    [
+     9,
+     "else catches everything that's left."
+    ],
+    [
+     12,
+     "Runs after whichever branch ran."
+    ]
+   ],
+   "say": "Eighty two isn't ninety or more, so the first check fails. It is seventy five or more, so grade becomes B, and Python skips everything below. Notice we don't need to write marks below ninety in the second check. Reaching that elif already means it is. Try ninety five, fifty, and twelve."
+  },
+  {
+   "type": "predict",
+   "title": "Order matters",
+   "code": "marks = 95\nif marks >= 50:\n    print(\"C\")\nelif marks >= 75:\n    print(\"B\")\nelif marks >= 90:\n    print(\"A\")",
+   "options": [
+    "A",
+    "B",
+    "C",
+    "C\nB\nA"
+   ],
+   "answer": 2,
+   "why": "Python runs only the first branch that's True. 95 >= 50 is already True, so it prints C and skips the rest. Put the strictest condition first.",
+   "say": "Same grades, but the conditions are in a different order. A student scores ninety five. What gets printed?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the delivery fee",
+   "task": "Orders of **499 or more** get free delivery; smaller orders pay **40**. This program won't even start. Fix the syntax so it prints the fee and the amount to pay.",
+   "starter": "order_total = float(input(\"Order total: \"))\n\nif order_total >= 499\n    fee = 0\nelse:\nfee = 40\n\nprint(f\"Delivery fee: {fee}\")\nprint(f\"To pay: {order_total + fee:.2f}\")\n",
+   "stdin": "650\n",
+   "solution": "order_total = float(input(\"Order total: \"))\n\nif order_total >= 499:\n    fee = 0\nelse:\n    fee = 40\n\nprint(f\"Delivery fee: {fee}\")\nprint(f\"To pay: {order_total + fee:.2f}\")",
+   "tests": "out = await run_program(\"650\\n\")\nassert \"650.00\" in out, \"An order of 650 gets free delivery, so the amount to pay is 650.00.\"\nout = await run_program(\"200\\n\")\nassert \"240.00\" in out, \"An order of 200 pays the 40 fee, so the amount to pay is 240.00.\"\nout = await run_program(\"499\\n\")\nassert \"499.00\" in out, \"Exactly 499 qualifies for free delivery: the amount to pay is 499.00.\"",
+   "hints": [
+    "Every if, elif and else line ends with a colon.",
+    "The line inside else must be indented by 4 spaces, like the line inside if."
+   ],
+   "say": "Free delivery starts at four hundred and ninety nine rupees. This program should work out the delivery fee, but it won't even start. Read the syntax errors one at a time, fix each one, and run again."
+  },
+  {
+   "type": "concept",
+   "title": "and, or, not",
+   "body": "Combine conditions into one:\n`age >= 18 and has_ticket`\n\nMixing `and` with `or`? Add brackets to make your meaning clear.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Expression",
+     "True when..."
+    ],
+    "rows": [
+     [
+      "a and b",
+      "both are True"
+     ],
+     [
+      "a or b",
+      "at least one is True"
+     ],
+     [
+      "not a",
+      "a is False"
+     ]
+    ]
+   },
+   "say": "Logical operators combine conditions. And is True only when both sides are True. Or is True when at least one side is True. Not flips True to False, and False to True. They read just like English, which is one reason developers love Python. When you mix and with or, add brackets to make your meaning clear."
+  },
+  {
+   "type": "code",
+   "title": "Login check",
+   "body": "Real apps never store plain passwords: you'll learn hashing on Day 57.",
+   "code": "saved_user = \"riya\"\nsaved_password = \"chai123\"\n\nuser = input(\"Username: \").strip().lower()\npassword = input(\"Password: \")\n\nif user == saved_user and password == saved_password:\n    print(\"Welcome back, Riya!\")\nelif user == saved_user:\n    print(\"Wrong password\")\nelse:\n    print(\"No account with that username\")",
+   "stdin": "  Riya\nchai123\n",
+   "expect": "Username: Password: Welcome back, Riya!\n",
+   "explain": [
+    [
+     4,
+     "Usernames are cleaned: '  Riya' becomes 'riya'."
+    ],
+    [
+     5,
+     "Passwords are never changed: case matters."
+    ],
+    [
+     7,
+     "and: both checks must be True."
+    ],
+    [
+     9,
+     "Only reached if the first check failed."
+    ]
+   ],
+   "say": "A tiny login system. We clean up the username, because users type capitals and spaces, but we never change the password. Both must match, so we join the checks with and. If only the username matched, we give a more helpful message. Try a wrong password in the input box, then an unknown user."
+  },
+  {
+   "type": "quiz",
+   "title": "Get the range right",
+   "q": "A ride allows ages **18 to 60, inclusive**. Which condition is correct?",
+   "options": [
+    "age > 18 and age < 60",
+    "age >= 18 or age <= 60",
+    "age >= 18 and age <= 60",
+    "not age < 18"
+   ],
+   "answer": 2,
+   "why": "Both limits must hold, so use and, with >= and <= to include the ends. The or version is True for every age! Python also allows the neat chained form 18 <= age <= 60.",
+   "say": "Quick check. A ride is allowed for ages eighteen to sixty, including both ends. Which condition gets it exactly right?"
+  },
+  {
+   "type": "exercise",
+   "title": "Leap year checker",
+   "task": "Read a year and print `2024 is a leap year` or `2026 is not a leap year`. The calendar rule:\n- divisible by 4: leap\n- **except** centuries (divisible by 100): not leap\n- **except** every 400 years: leap again",
+   "starter": "year = int(input(\"Year: \"))\n# Divisible means the remainder is 0: year % 4 == 0\n",
+   "stdin": "2024\n",
+   "solution": "year = int(input(\"Year: \"))\nif year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):\n    print(f\"{year} is a leap year\")\nelse:\n    print(f\"{year} is not a leap year\")",
+   "tests": "async def says_leap(y):\n    out = (await run_program(f\"{y}\\n\")).lower()\n    assert \"leap\" in out, f\"For {y}, print whether it is a leap year.\"\n    return \"not\" not in out\nassert await says_leap(2024), \"2024 is divisible by 4 and isn't a century: it is a leap year.\"\nassert not await says_leap(2026), \"2026 isn't divisible by 4, so it is not a leap year.\"\nassert not await says_leap(1900), \"1900 is a century not divisible by 400, so it is NOT a leap year. Check the 100 rule.\"\nassert await says_leap(2000), \"2000 is divisible by 400, so it IS a leap year. Check the 400 rule.\"",
+   "hints": [
+    "year % 4 == 0 means divisible by 4.",
+    "Leap if divisible by 4 and (not divisible by 100, or divisible by 400).",
+    "if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):"
+   ],
+   "say": "Every date library has to answer this question. Is a year a leap year? Divisible by four means leap, except centuries, except every four hundred years. Turn that rule into one if statement, and test it with two thousand and nineteen hundred."
+  },
+  {
+   "type": "code",
+   "title": "Ticket pricing",
+   "code": "age = int(input(\"Age: \"))\nis_weekend = input(\"Weekend? (y/n): \").strip().lower() == \"y\"\n\nif age < 3:\n    price = 0\nelif age < 12 or age >= 60:\n    price = 150\nelse:\n    price = 250\n\nif is_weekend:\n    if price > 0:\n        price = price + 50      # weekend surcharge\n    print(\"Weekend show\")\n\nprint(f\"Ticket price: {price} rupees\")",
+   "stdin": "65\ny\n",
+   "expect": "Age: Weekend? (y/n): Weekend show\nTicket price: 200 rupees\n",
+   "explain": [
+    [
+     2,
+     "A comparison stored as a bool: True if they typed y."
+    ],
+    [
+     6,
+     "or: children OR seniors get the lower price."
+    ],
+    [
+     11,
+     "if is_weekend reads like English."
+    ],
+    [
+     12,
+     "A nested if: only paid tickets get the surcharge."
+    ],
+    [
+     16,
+     "Always runs."
+    ]
+   ],
+   "say": "Real pricing rules combine everything. Toddlers are free, children and seniors pay less, everyone else pays full price. Line two stores a comparison straight into a boolean. Then a nested if adds a weekend surcharge, but only to paid tickets. Notice the deeper indentation for the inner block. Try different ages and days."
+  },
+  {
+   "type": "concept",
+   "title": "Truthiness",
+   "body": "An `if` accepts any value, not just a bool. Day 6's rule applies: `0` and `\"\"` are falsy, everything else is truthy.\n\n`if name:` means \"if name isn't empty\".",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Verbose",
+     "code": "if len(name) > 0:\n    print(\"Hi\", name)"
+    },
+    "right": {
+     "title": "Pythonic",
+     "code": "if name:\n    print(\"Hi\", name)"
+    },
+    "verdict": "An empty string is falsy, so if name: already means not empty."
+   },
+   "say": "If doesn't need a real boolean. It uses the truthiness rule from yesterday: zero and empty strings count as False, everything else as True. So if name, on its own, means if the name isn't empty. Experienced Python developers write it this way all the time. It's shorter, and it reads naturally."
+  },
+  {
+   "type": "code",
+   "title": "Truthiness and the one-line if",
+   "body": "**Conditional expression**: `a if condition else b` picks one of two values in one line.",
+   "code": "nickname = input(\"Nickname (optional): \").strip()\nif not nickname:\n    nickname = \"Guest\"\nprint(f\"Hello, {nickname}!\")\n\ncart_items = 3\nlabel = \"item\" if cart_items == 1 else \"items\"\nprint(f\"You have {cart_items} {label} in your cart\")\n\nscore = 47\nprint(\"Pass\" if score >= 40 else \"Fail\")",
+   "stdin": "\n",
+   "expect": "Nickname (optional): Hello, Guest!\nYou have 3 items in your cart\nPass\n",
+   "explain": [
+    [
+     2,
+     "An empty string is falsy, so not nickname is True."
+    ],
+    [
+     3,
+     "Fall back to a default."
+    ],
+    [
+     7,
+     "item if there's exactly one, otherwise items."
+    ],
+    [
+     11,
+     "Works anywhere a value is expected, even inside print."
+    ]
+   ],
+   "say": "The user left the nickname empty, so not nickname is True, and we fall back to Guest. Then meet the conditional expression: a value, if a condition, else another value. It picks one of two values in a single line, perfect for small choices like item versus items. Keep it for simple cases, and use a full if when there's real logic."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the discount tiers",
+   "task": "A shop gives **15%** off from 5000, **10%** from 2000 and **5%** from 1000. The program runs without errors, but a 6000 cart only gets 5% off. Find the logic bug.",
+   "starter": "amount = float(input(\"Cart value: \"))\n\nif amount >= 1000:\n    discount = 5\nelif amount >= 2000:\n    discount = 10\nelif amount >= 5000:\n    discount = 15\nelse:\n    discount = 0\n\nsaving = amount * discount / 100\nprint(f\"Discount: {discount}%\")\nprint(f\"You pay: {amount - saving:.2f}\")\n",
+   "stdin": "6000\n",
+   "solution": "amount = float(input(\"Cart value: \"))\n\nif amount >= 5000:\n    discount = 15\nelif amount >= 2000:\n    discount = 10\nelif amount >= 1000:\n    discount = 5\nelse:\n    discount = 0\n\nsaving = amount * discount / 100\nprint(f\"Discount: {discount}%\")\nprint(f\"You pay: {amount - saving:.2f}\")",
+   "tests": "out = await run_program(\"6000\\n\")\nassert \"5100.00\" in out, \"A 6000 cart gets 15% off, so the customer pays 5100.00. Which condition does Python check first?\"\nout = await run_program(\"2500\\n\")\nassert \"2250.00\" in out, \"A 2500 cart gets 10% off: 2250.00.\"\nout = await run_program(\"1000\\n\")\nassert \"950.00\" in out, \"Exactly 1000 gets 5% off: 950.00.\"\nout = await run_program(\"999\\n\")\nassert \"999.00\" in out, \"A 999 cart gets no discount: 999.00.\"",
+   "hints": [
+    "Python runs only the first branch that's True. Is 6000 >= 1000 True?",
+    "Check the biggest threshold first, then work down."
+   ],
+   "say": "This bug is sneakier: no error message at all. A six thousand rupee cart should get fifteen percent off, but only gets five. Bugs that don't crash are the dangerous ones. Find the logic problem and fix it."
+  },
+  {
+   "type": "exercise",
+   "title": "Electricity bill slabs",
+   "task": "Read the units used and print the bill. Slab rates:\n- first 100 units: ₹3 each\n- units 101 to 200: ₹5 each\n- above 200: ₹7 each\n\n250 units costs 300 + 500 + 350: `Bill: ₹1150`",
+   "starter": "units = int(input(\"Units used: \"))\n# Work out the bill slab by slab\n",
+   "stdin": "250\n",
+   "solution": "units = int(input(\"Units used: \"))\nif units <= 100:\n    bill = units * 3\nelif units <= 200:\n    bill = 100 * 3 + (units - 100) * 5\nelse:\n    bill = 100 * 3 + 100 * 5 + (units - 200) * 7\nprint(f\"Bill: ₹{bill}\")",
+   "tests": "async def bill_for(u):\n    return await run_program(f\"{u}\\n\")\nassert \"240\" in await bill_for(80), \"80 units are all in the first slab: 80 x 3 = 240.\"\nassert \"550\" in await bill_for(150), \"150 units: the first 100 cost 300, the next 50 cost 250. Total 550.\"\nassert \"1150\" in await bill_for(250), \"250 units: 300 + 500 + 50 x 7 = 1150.\"\nassert \"300\" in await bill_for(100), \"Exactly 100 units stays in the first slab: 300.\"\nassert \"800\" in await bill_for(200), \"Exactly 200 units: 300 + 500 = 800. Check your <= boundaries.\"",
+   "hints": [
+    "Use if / elif / else with units <= 100 and units <= 200.",
+    "In the second slab, the first 100 units always cost 100 * 3.",
+    "Above 200: 100 * 3 + 100 * 5 + (units - 200) * 7"
+   ],
+   "say": "Electricity boards in India bill in slabs: the more you use, the higher the rate for the extra units. Build the calculator. Watch the boundaries carefully. Exactly one hundred units and exactly two hundred units are the edge cases that catch bugs."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 7 complete",
+   "points": [
+    "Comparisons (== != < > <= >=) give True or False; = assigns, == compares",
+    "if / elif / else: Python runs only the first matching branch, so order matters",
+    "Indentation defines blocks: a colon, then 4 spaces",
+    "and, or, not combine conditions; use brackets when mixing them",
+    "if name: uses truthiness; a if condition else b picks a value in one line"
+   ],
+   "say": "Mission seven complete. Your programs can compare, combine conditions, and choose between paths, from grades to logins to electricity bills. You also met the sneakiest bug of all, one that doesn't crash. Tomorrow we teach programs to repeat themselves with while loops. See you on day eight."
+  }
+ ]
+}

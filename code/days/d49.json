@@ -1,0 +1,363 @@
+{
+ "day": 49,
+ "phase": 5,
+ "title": "Async and concurrency",
+ "subtitle": "Do more while you wait",
+ "minutes": 60,
+ "goal": "Write async code that overlaps waiting with gather, tasks, timeouts and semaphores, and choose between asyncio, threads and processes.",
+ "outcomes": [
+  "Explain blocking vs non-blocking code and what concurrency speeds up",
+  "Write coroutines with async def and await, and run them with asyncio.run",
+  "Run many calls at once with asyncio.gather and background tasks",
+  "Add timeouts and limit concurrency with a Semaphore",
+  "Pick asyncio, threads or processes, and explain the GIL in plain words"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 49: Async and concurrency",
+   "body": "A web server spends most of its time **waiting**: for databases, APIs, disks. **Async** lets one program do useful work while it waits.\n\n100 API calls then take about as long as the slowest one, not all of them added up.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Sequential: wait, then wait, then wait",
+     "Concurrent: start them all, wait once",
+     "Same work, a fraction of the time"
+    ]
+   },
+   "say": "A web server spends most of its life waiting: for the database, for other APIs, for the disk. Async programming lets one program do useful work while it waits. A hundred API calls can then take about as long as the slowest one, instead of all of them added together. Today you learn async and await, the tools behind FastAPI and modern Python services."
+  },
+  {
+   "type": "concept",
+   "title": "Blocking vs non-blocking",
+   "body": "Making chai: while the water boils, you don't stare at the pot, you chop ginger.\n\nCode that **blocks** stares at the pot. Code that **awaits** says: wake me when it's ready, and lets other work run.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Blocking: one thing at a time",
+     "code": "boil_water()    # 3 min, staring\nwarm_milk()     # 2 min\nchop_ginger()   # 1 min\n# total: 6 min"
+    },
+    "right": {
+     "title": "Concurrent: overlap the waiting",
+     "code": "start boil_water   # 3 min\nstart warm_milk    # at the same time\nchop_ginger()      # while both heat\n# total: about 3 min"
+    },
+    "verdict": "Concurrency overlaps waiting. It doesn't make any single task faster."
+   },
+   "say": "Think about making chai. While the water boils, you do not stare at the pot. You chop the ginger and warm the milk. Code that blocks stares at the pot. Code that awaits says, wake me up when it is ready, and lets other work run in the meantime. Concurrency overlaps the waiting. It does not make any single task faster."
+  },
+  {
+   "type": "concept",
+   "title": "async def, await and the event loop",
+   "body": "- `async def` makes a **coroutine function**: calling it gives a coroutine, which does nothing yet\n- `await` runs a coroutine and pauses **this** one until it's done, so others can run\n- `asyncio.run(main())` starts the **event loop** that juggles them all",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "asyncio.run(main())",
+      "s": "pill"
+     },
+     {
+      "t": "The event loop runs main until it awaits"
+     },
+     {
+      "t": "Waiting on I/O?",
+      "s": "diamond",
+      "yes": "run another ready task",
+      "no": "keep going"
+     },
+     {
+      "t": "Result ready: resume right where it paused",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Three keywords make it work. Async def creates a coroutine function. Calling it does not run it, it just gives you a coroutine object, like a recipe card. Await runs a coroutine and pauses the current one until the result is ready, letting other tasks run meanwhile. And asyncio dot run starts the event loop, the scheduler that juggles them all."
+  },
+  {
+   "type": "code",
+   "title": "Your first coroutine",
+   "code": "import asyncio\n\nasync def brew(drink):\n    print(f\"start brewing {drink}\")\n    await asyncio.sleep(0.2)          # pretend I/O: a network call, a DB query\n    print(f\"{drink} ready\")\n    return f\"a cup of {drink}\"\n\npending = brew(\"chai\")\nprint(type(pending).__name__)          # nothing has run yet\npending.close()                        # tidy up the unused coroutine\n\nresult = asyncio.run(brew(\"chai\"))\nprint(result)\n",
+   "expect": "coroutine\nstart brewing chai\nchai ready\na cup of chai\n",
+   "explain": [
+    [
+     3,
+     "async def: a coroutine function."
+    ],
+    [
+     5,
+     "await asyncio.sleep: wait without blocking anyone else."
+    ],
+    [
+     9,
+     "Calling it only creates a coroutine. Nothing runs yet."
+    ],
+    [
+     13,
+     "asyncio.run starts the event loop and runs it to the end."
+    ]
+   ],
+   "say": "Calling brew does not brew anything. It returns a coroutine object, and nothing is printed until we actually run it. We close the unused one to keep Python tidy. Asyncio dot run then executes the coroutine on the event loop. Asyncio dot sleep stands in for real waiting, like a network call, and lets other tasks run while it waits."
+  },
+  {
+   "type": "predict",
+   "title": "Who is served first?",
+   "code": "import asyncio\n\nasync def order(name, seconds):\n    print(\"ordered\", name)\n    await asyncio.sleep(seconds)\n    print(\"served\", name)\n\nasync def main():\n    await asyncio.gather(order(\"dosa\", 0.3), order(\"chai\", 0.1))\n\nasyncio.run(main())",
+   "options": [
+    "ordered dosa\nordered chai\nserved chai\nserved dosa",
+    "ordered dosa\nserved dosa\nordered chai\nserved chai",
+    "ordered dosa\nordered chai\nserved dosa\nserved chai",
+    "ordered chai\nserved chai\nordered dosa\nserved dosa"
+   ],
+   "answer": 0,
+   "why": "`gather` starts both orders at once. Each prints 'ordered' and then awaits, so both orders go in straight away. Chai's 0.1 s wait ends first, so chai is served before dosa.",
+   "say": "Two orders go to a cafe kitchen at the same time with gather. Dosa takes longer than chai. In what order do the four lines print?"
+  },
+  {
+   "type": "code",
+   "title": "gather: many calls at once",
+   "code": "import asyncio, time\n\nasync def fetch_price(symbol):\n    await asyncio.sleep(0.3)              # each API call takes 0.3 s\n    return {\"TCS\": 4100, \"INFY\": 1850, \"HDFCBANK\": 1650}[symbol]\n\nasync def sequential(symbols):\n    return [await fetch_price(s) for s in symbols]\n\nasync def concurrent(symbols):\n    return await asyncio.gather(*(fetch_price(s) for s in symbols))\n\nsymbols = [\"TCS\", \"INFY\", \"HDFCBANK\"]\nfor strategy in (sequential, concurrent):\n    start = time.perf_counter()\n    prices = asyncio.run(strategy(symbols))\n    elapsed = time.perf_counter() - start\n    print(f\"{strategy.__name__:<10} {prices}  done in under 0.5 s: {elapsed < 0.5}\")\n",
+   "expect": "sequential [4100, 1850, 1650]  done in under 0.5 s: False\nconcurrent [4100, 1850, 1650]  done in under 0.5 s: True\n",
+   "explain": [
+    [
+     8,
+     "One at a time: the waits add up to about 0.9 s."
+    ],
+    [
+     11,
+     "gather starts all three at once (the star unpacks the coroutines): about 0.3 s."
+    ],
+    [
+     18,
+     "Results always come back in the order you passed them."
+    ]
+   ],
+   "say": "Three stock prices, and each API call takes a third of a second. The sequential version awaits them one by one, so the waits add up to about point nine seconds. Gather starts all three at once and waits for them together, so the total is about one single call. Notice gather still returns the results in the order you asked."
+  },
+  {
+   "type": "quiz",
+   "title": "What does await do?",
+   "q": "Inside an `async def`, what does `await fetch()` do?",
+   "options": [
+    "Runs fetch on a new CPU core",
+    "Pauses this coroutine until fetch finishes, letting other tasks run meanwhile",
+    "Skips fetch if it's slow",
+    "Freezes the whole program until fetch finishes"
+   ],
+   "answer": 1,
+   "why": "`await` suspends only the current coroutine and hands control back to the event loop, which runs other ready tasks. No extra cores, no threads: one thread that's very good at waiting.",
+   "say": "Quick check. Inside an async function, what exactly does await fetch do?"
+  },
+  {
+   "type": "bug",
+   "title": "The missing await",
+   "task": "This portfolio tracker crashes with `TypeError: ... 'coroutine' and 'int'`.\n\nCalling an async function doesn't run it: it just creates a coroutine. Find the missing keyword.",
+   "starter": "import asyncio\n\nPRICES = {\"TCS\": 4100, \"INFY\": 1850, \"HDFCBANK\": 1650}\n\nasync def fetch_price(symbol):\n    await asyncio.sleep(0.05)\n    return PRICES[symbol]\n\nasync def portfolio_value(holdings):\n    total = 0\n    for symbol, qty in holdings.items():\n        price = fetch_price(symbol)\n        total += price * qty\n    return total\n\nprint(asyncio.run(portfolio_value({\"TCS\": 2, \"INFY\": 10})))\n",
+   "solution": "import asyncio\n\nPRICES = {\"TCS\": 4100, \"INFY\": 1850, \"HDFCBANK\": 1650}\n\nasync def fetch_price(symbol):\n    await asyncio.sleep(0.05)\n    return PRICES[symbol]\n\nasync def portfolio_value(holdings):\n    total = 0\n    for symbol, qty in holdings.items():\n        price = await fetch_price(symbol)\n        total += price * qty\n    return total\n\nprint(asyncio.run(portfolio_value({\"TCS\": 2, \"INFY\": 10})))\n",
+   "tests": "got = await portfolio_value({\"TCS\": 2, \"INFY\": 10})\nassert got == 26700, f\"2 TCS at ₹4100 plus 10 INFY at ₹1850 is ₹26,700, not {got}.\"\nassert await portfolio_value({}) == 0, \"An empty portfolio is worth 0.\"\nassert await portfolio_value({\"HDFCBANK\": 1}) == 1650, \"1 HDFCBANK share is worth ₹1650.\"",
+   "hints": [
+    "`fetch_price(symbol)` gives you a coroutine object, not a price.",
+    "Put `await` in front of the call: `price = await fetch_price(symbol)`."
+   ],
+   "say": "The most common async bug of all. This portfolio tracker crashes with a type error about a coroutine and an int. Calling an async function does not run it, it only creates a coroutine. Find the missing keyword. Bonus: notice Python's warning that a coroutine was never awaited."
+  },
+  {
+   "type": "concept",
+   "title": "Tasks: start now, await later",
+   "body": "`asyncio.create_task(coro)` schedules a coroutine to start **right away**, in the background. You get a `Task` you can await later, check, or cancel.\n\n`gather` is the easy way when you just want all the results.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "task = asyncio.create_task(download())  → it starts running",
+     "Do other work while it runs",
+     "result = await task  → collect the result, or the error"
+    ]
+   },
+   "say": "Gather is perfect when you want a bunch of results together. When you want more control, create task schedules a coroutine to start right away in the background, and gives you a task object. You can do other work, then await the task later to collect its result, check whether it is done, or cancel it."
+  },
+  {
+   "type": "code",
+   "title": "Background tasks",
+   "code": "import asyncio\n\nasync def download(name, seconds):\n    await asyncio.sleep(seconds)\n    print(f\"  downloaded {name}\")\n    return name\n\nasync def main():\n    report = asyncio.create_task(download(\"report.pdf\", 0.6))\n    photo = asyncio.create_task(download(\"photo.jpg\", 0.1))\n    print(\"both downloads started; meanwhile, updating the screen\")\n    await asyncio.sleep(0.3)\n    print(\"photo done?\", photo.done(), \"| report done?\", report.done())\n    print(\"results:\", await report, await photo)\n\nasyncio.run(main())\n",
+   "expect": "both downloads started; meanwhile, updating the screen\n  downloaded photo.jpg\nphoto done? True | report done? False\n  downloaded report.pdf\nresults: report.pdf photo.jpg\n",
+   "explain": [
+    [
+     9,
+     "create_task: start now, in the background."
+    ],
+    [
+     11,
+     "main keeps going straight away."
+    ],
+    [
+     13,
+     "done() checks without waiting."
+    ],
+    [
+     14,
+     "await a task to collect its result."
+    ]
+   ],
+   "say": "Create task starts both downloads immediately, and main carries on, like an app updating its screen while files download. After a short wait, done tells us the photo has finished but the report has not. Awaiting a task collects its result, and only waits if the task is still running."
+  },
+  {
+   "type": "concept",
+   "title": "Timeouts: never wait forever",
+   "body": "A slow API shouldn't freeze your app. `asyncio.wait_for(coro, timeout=2)` cancels the work and raises **`TimeoutError`** if it takes too long.\n\nCatch it and fall back: a cached value, a friendly message, a retry.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "await asyncio.wait_for(fetch(), timeout=0.3)",
+      "s": "pill"
+     },
+     {
+      "t": "Finished in time?",
+      "s": "diamond",
+      "yes": "use the fresh result",
+      "no": "TimeoutError, work cancelled"
+     },
+     {
+      "t": "except TimeoutError: use the cached value",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "A slow API should never freeze your app. Wait for runs a coroutine with a time limit. If it finishes in time, you get the result. If not, the work is cancelled and a timeout error is raised, which you catch and handle, perhaps by showing a cached value. Every network call in production deserves a timeout, just like in the HTTP lesson."
+  },
+  {
+   "type": "code",
+   "title": "A timeout with a fallback",
+   "code": "import asyncio\n\nCACHE = {\"Pune\": 29.0}\n\nasync def live_temperature(city, delay):\n    await asyncio.sleep(delay)            # how slow the weather API is today\n    return 31.5\n\nasync def temperature(city, delay):\n    try:\n        return await asyncio.wait_for(live_temperature(city, delay), timeout=0.3)\n    except TimeoutError:\n        print(f\"  {city}: API too slow, using the cached value\")\n        return CACHE[city]\n\nasync def main():\n    print(\"fast API:\", await temperature(\"Pune\", 0.1))\n    print(\"slow API:\", await temperature(\"Pune\", 2.0))\n\nasyncio.run(main())\n",
+   "expect": "fast API: 31.5\n  Pune: API too slow, using the cached value\nslow API: 29.0\n",
+   "explain": [
+    [
+     11,
+     "Give the call at most 0.3 seconds."
+    ],
+    [
+     12,
+     "Too slow: the call is cancelled and TimeoutError is raised."
+    ],
+    [
+     14,
+     "Degrade gracefully instead of crashing."
+    ]
+   ],
+   "say": "The fast call returns in a tenth of a second, well inside the limit, so we get the live temperature. The slow call would take two seconds, but wait for gives up after point three, cancels it and raises a timeout error. We catch it and fall back to the cached value, so the user still sees something useful."
+  },
+  {
+   "type": "exercise",
+   "title": "Fetch every city at once",
+   "task": "This dashboard fetches cities **one after another**, so 4 cities take 4 times as long as one.\n\nRewrite `fetch_all(cities)` to start every `fetch_weather` call together with `asyncio.gather`, and return a dict `{city: result}`. An empty list returns `{}`.",
+   "starter": "import asyncio\n\nasync def fetch_weather(city):\n    await asyncio.sleep(0.2)                 # a slow weather API\n    return {\"Pune\": 31, \"Delhi\": 38, \"Shimla\": 14, \"Chennai\": 33}.get(city)\n\nasync def fetch_all(cities):\n    result = {}\n    for city in cities:                      # one at a time: too slow!\n        result[city] = await fetch_weather(city)\n    return result\n\nprint(asyncio.run(fetch_all([\"Pune\", \"Delhi\", \"Shimla\"])))\n",
+   "solution": "import asyncio\n\nasync def fetch_weather(city):\n    await asyncio.sleep(0.2)                 # a slow weather API\n    return {\"Pune\": 31, \"Delhi\": 38, \"Shimla\": 14, \"Chennai\": 33}.get(city)\n\nasync def fetch_all(cities):\n    temps = await asyncio.gather(*(fetch_weather(city) for city in cities))\n    return dict(zip(cities, temps))\n\nprint(asyncio.run(fetch_all([\"Pune\", \"Delhi\", \"Shimla\"])))\n",
+   "tests": "import asyncio as _asyncio\nstate = {\"active\": 0, \"peak\": 0}\n\nasync def tracked_fetch(city):\n    state[\"active\"] += 1\n    state[\"peak\"] = max(state[\"peak\"], state[\"active\"])\n    await _asyncio.sleep(0.05)\n    state[\"active\"] -= 1\n    return len(city)\n\nfetch_all.__globals__[\"fetch_weather\"] = tracked_fetch\ngot = await fetch_all([\"Pune\", \"Delhi\", \"Goa\", \"Shimla\"])\nassert got == {\"Pune\": 4, \"Delhi\": 5, \"Goa\": 3, \"Shimla\": 6}, f\"Return a dict of city -> result for every city. Got {got}.\"\nassert state[\"peak\"] == 4, f\"Only {state['peak']} request(s) were in flight at once. Start all 4 together with asyncio.gather so they overlap.\"\nassert await fetch_all([]) == {}, \"No cities means an empty dict.\"",
+   "hints": [
+    "Build all the coroutines first: `(fetch_weather(c) for c in cities)`.",
+    "`temps = await asyncio.gather(*coroutines)` runs them together and keeps their order.",
+    "`dict(zip(cities, temps))` pairs each city with its result."
+   ],
+   "say": "This weather dashboard fetches each city one after another, so four cities take four times as long as one. Rewrite fetch all so every request starts at once with gather, then pair the cities with their results in a dict. The tests count how many requests are in flight at the same moment."
+  },
+  {
+   "type": "code",
+   "title": "Respect rate limits with a Semaphore",
+   "code": "import asyncio\n\nlimit = asyncio.Semaphore(2)              # at most 2 requests at a time\nstate = {\"active\": 0, \"peak\": 0}\n\nasync def call_api(n):\n    async with limit:                      # wait here if 2 are already running\n        state[\"active\"] += 1\n        state[\"peak\"] = max(state[\"peak\"], state[\"active\"])\n        await asyncio.sleep(0.1)\n        state[\"active\"] -= 1\n        return n * n\n\nasync def main():\n    results = await asyncio.gather(*(call_api(n) for n in range(1, 7)))\n    print(results)\n    print(\"most requests at once:\", state[\"peak\"])\n\nasyncio.run(main())\n",
+   "expect": "[1, 4, 9, 16, 25, 36]\nmost requests at once: 2\n",
+   "explain": [
+    [
+     3,
+     "Two free slots."
+    ],
+    [
+     7,
+     "Take a slot, or wait until one frees up."
+    ],
+    [
+     9,
+     "Track the most requests running together."
+    ],
+    [
+     15,
+     "Six calls queued, but never more than two at once."
+    ]
+   ],
+   "say": "Remember rate limits from the HTTP lesson? Firing a thousand requests at once will get you blocked. A semaphore is a counter of free slots. Async with limit waits for a free slot before calling the API, so at most two requests are ever in flight, while gather still collects all six results in order."
+  },
+  {
+   "type": "concept",
+   "title": "Threads, processes or asyncio?",
+   "body": "Python has three tools for doing several things at once. Pick by what the work spends its time on: **waiting** or **computing**.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Tool",
+     "Best for",
+     "Example"
+    ],
+    "rows": [
+     [
+      "asyncio",
+      "thousands of network waits, one thread",
+      "API calls, chat servers, FastAPI"
+     ],
+     [
+      "threading",
+      "waiting, with libraries that aren't async",
+      "downloads with requests, file I/O"
+     ],
+     [
+      "multiprocessing",
+      "heavy CPU work on many cores",
+      "resizing 10,000 photos, number crunching"
+     ]
+    ]
+   },
+   "say": "Python gives you three tools for doing several things at once. Asyncio handles thousands of network waits in one thread, and powers FastAPI. Threads also help with waiting, especially with libraries that are not async. And multiprocessing runs separate Python processes on separate CPU cores, for heavy number crunching."
+  },
+  {
+   "type": "concept",
+   "title": "The GIL, in plain words",
+   "body": "Standard CPython has a **Global Interpreter Lock** (GIL): only one thread runs Python code at a time. Threads still help with waiting, because the lock is released during I/O. CPU-heavy work needs **processes**.\n\nThreads can't start in this in-browser Python, so this code is shown, not run.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Threads: waiting on I/O",
+     "code": "from concurrent.futures import ThreadPoolExecutor\n\nwith ThreadPoolExecutor(max_workers=8) as pool:\n    pages = list(pool.map(download, urls))"
+    },
+    "right": {
+     "title": "Processes: CPU work",
+     "code": "from concurrent.futures import ProcessPoolExecutor\n\nwith ProcessPoolExecutor() as pool:\n    thumbs = list(pool.map(resize, photos))"
+    },
+    "verdict": "Same API, different engines. Waiting: asyncio or threads. Crunching: processes."
+   },
+   "say": "Here is the famous GIL in plain words. Standard Python has a global interpreter lock, so only one thread runs Python code at any moment. Threads still help with waiting, because the lock is released during network and disk waits. But for CPU heavy work, use processes, which each get their own interpreter. Python three point thirteen even has an experimental build without the GIL."
+  },
+  {
+   "type": "quiz",
+   "title": "Pick the tool",
+   "q": "You must resize 10,000 photos (pure CPU work) as fast as possible on an 8-core laptop. Which tool?",
+   "options": [
+    "`asyncio.gather`",
+    "A `ThreadPoolExecutor`",
+    "A `ProcessPoolExecutor` (multiprocessing)",
+    "`time.sleep` in a loop"
+   ],
+   "answer": 2,
+   "why": "Resizing is computing, not waiting. asyncio and threads share one interpreter and one GIL, so they can't use all 8 cores for Python work. Separate processes can.",
+   "say": "You need to resize ten thousand photos, pure CPU work, as fast as possible on an eight core laptop. Which tool do you reach for?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 49 complete",
+   "points": [
+    "Concurrency overlaps waiting; it doesn't make any single task faster",
+    "async def creates coroutines, await pauses this one so others can run, asyncio.run starts the event loop",
+    "gather runs many coroutines together and keeps result order; create_task starts work in the background",
+    "Forget await and you get a coroutine object, not a result",
+    "wait_for adds timeouts, Semaphore respects rate limits, and CPU-heavy work needs processes because of the GIL"
+   ],
+   "say": "Mission forty nine complete. You can explain blocking versus waiting, write coroutines, run many calls at once with gather, start background tasks, add timeouts, respect rate limits with a semaphore, and choose between asyncio, threads and processes. Tomorrow is project day: a complete data dashboard built from everything in this phase."
+  }
+ ]
+}

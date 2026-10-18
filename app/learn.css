@@ -1,0 +1,55 @@
+/* Learn tab v13 — two schools: Python (deep-space card, matches /code) and Languages (photo card + rows). */
+#app .lx{padding-bottom:20px}
+#app .lx-head{margin:4px 0 14px}
+#app .lx-head p{margin:4px 0 0;color:var(--b-ink-2);font:500 15px/1.45 var(--b-sans)}
+#app .lx-py{position:relative;display:flex;flex-direction:column;gap:6px;padding:20px 18px 16px;border-radius:24px;overflow:hidden;color:#EEF2FF;text-decoration:none;isolation:isolate;
+  background:radial-gradient(80% 60% at 100% 0%,rgba(90,169,240,.35),transparent 60%),radial-gradient(70% 60% at 0% 100%,rgba(255,138,91,.22),transparent 60%),#0A0F1C;
+  box-shadow:0 22px 44px -22px rgba(7,11,20,.85);animation:lxIn .7s cubic-bezier(.16,1,.3,1) both}
+#app .lx-stars{position:absolute;inset:0;z-index:-1;opacity:.7;background-image:radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 140px 70px,#cfe3ff,transparent),radial-gradient(1.5px 1.5px at 80px 140px,#fff,transparent),radial-gradient(1px 1px at 220px 40px,#ffe9b0,transparent),radial-gradient(1.5px 1.5px at 300px 160px,#fff,transparent);background-size:320px 200px;animation:lxDrift 40s linear infinite}
+@keyframes lxDrift{to{background-position:0 200px}}
+#app .lx-orbit{position:absolute;right:10px;top:10px;width:96px;height:96px;z-index:-1}
+#app .lx-orbit .pl{position:absolute;inset:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF1B0,#FFD43B 45%,#C26A10);box-shadow:0 0 40px rgba(255,212,59,.55)}
+#app .lx-orbit .rg{position:absolute;inset:6px;border-radius:50%;border:1.5px dashed rgba(156,203,255,.45);animation:lxSpin 16s linear infinite}
+#app .lx-orbit .rk{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px;display:grid;place-items:center;color:#fff;animation:lxOrbit 6s linear infinite}
+@keyframes lxSpin{to{transform:rotate(360deg)}}
+@keyframes lxOrbit{from{transform:rotate(0) translateX(42px) rotate(45deg)}to{transform:rotate(360deg) translateX(42px) rotate(405deg)}}
+#app .lx-k{font:800 11px var(--b-sans);letter-spacing:.16em;text-transform:uppercase;color:#9CCBFF}
+#app .lx-t{font:800 44px/1 var(--b-sans);letter-spacing:-.04em;background:linear-gradient(120deg,#fff 30%,#FFD43B 70%,#FF8A5B);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:2px}
+#app .lx-t small{display:block;font:700 16px var(--b-sans);letter-spacing:-.01em;margin-top:6px;background:linear-gradient(90deg,#9CCBFF,#C9B8FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+#app .lx-s{font:500 14px/1.5 var(--b-sans);color:#C6CEE2;max-width:78%}
+#app .lx-row{display:flex;align-items:center;gap:12px;margin-top:10px;padding:10px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(148,163,200,.18)}
+#app .lx-ring{position:relative;width:52px;height:52px;flex:none}
+#app .lx-ring svg{width:52px;height:52px;transform:rotate(-90deg)}
+#app .lx-ring circle{fill:none;stroke-width:7;stroke-linecap:round}
+#app .lx-ring .t{stroke:rgba(255,255,255,.12)}
+#app .lx-ring .v{stroke:#FFD43B;transition:stroke-dashoffset 1s}
+#app .lx-ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 12px var(--b-sans)}
+#app .lx-meta{flex:1;min-width:0}
+#app .lx-meta b{display:block;font:700 15px var(--b-sans)}
+#app .lx-meta small{display:block;font:500 12px var(--b-sans);color:#8D99B6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .lx-go{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:14px;background:linear-gradient(135deg,#FFD43B,#FFB627);color:#1A1405;font:800 14px var(--b-sans);flex:none;box-shadow:0 10px 24px -12px rgba(255,212,59,.8)}
+#app .lx-link{display:flex;align-items:center;gap:8px;min-height:48px;margin:8px 0 18px;padding:0 14px;border-radius:14px;background:var(--b-bg-2);color:var(--b-ink);font:600 14px var(--b-sans);text-decoration:none}
+#app .lx-link span{flex:1}
+#app .lx-lang{position:relative;height:150px;border-radius:24px;overflow:hidden;color:#fff;animation:lxIn .7s cubic-bezier(.16,1,.3,1) .08s both}
+#app .lx-lang img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#app .lx-lshade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.72))}
+#app .lx-lb{position:absolute;left:16px;right:16px;bottom:14px}
+#app .lx-lb .lx-k{color:rgba(255,255,255,.8)}
+#app .lx-lb b{display:block;font:800 22px/1.15 var(--b-sans);letter-spacing:-.02em;margin-top:4px}
+#app .lx-lb small{display:block;font:500 13px/1.4 var(--b-sans);opacity:.85;margin-top:2px}
+#app .lx-langs{display:flex;flex-direction:column;gap:8px;margin:10px 0 16px}
+#app .lx-li{display:flex;align-items:center;gap:12px;min-height:68px;padding:10px 12px 10px 10px;border-radius:18px;background:var(--b-card);border:1px solid var(--b-line);color:var(--b-ink);text-decoration:none;box-shadow:var(--sh-1);animation:lxIn .6s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 60ms + 120ms)}
+#app .lx-lph{width:48px;height:48px;border-radius:14px;overflow:hidden;flex:none;background:var(--b-bg-2)}
+#app .lx-lph img{width:100%;height:100%;object-fit:cover}
+#app .lx-lt{flex:1;min-width:0}
+#app .lx-lt b{display:block;font:700 16px var(--b-sans)}
+#app .lx-lt b em{font-style:normal;font-weight:500;color:var(--b-mute);font-size:13px;margin-left:4px}
+#app .lx-lt small{display:block;font:500 12.5px var(--b-sans);color:var(--b-ink-2)}
+#app .lx-bar{display:block;height:4px;border-radius:2px;background:var(--b-bg-2);margin-top:6px;overflow:hidden}
+#app .lx-bar i{display:block;height:100%;border-radius:2px;background:var(--b-primary)}
+#app .lx-bro{display:flex;align-items:center;gap:12px;width:100%;min-height:72px;padding:12px 14px;border-radius:20px;border:1px solid var(--b-line);background:var(--b-card);color:var(--b-ink);text-align:left;cursor:pointer;box-shadow:var(--sh-1)}
+#app .lx-bro span{flex:1;min-width:0}
+#app .lx-bro b{display:block;font:700 16px var(--b-sans)}
+#app .lx-bro small{display:block;font:500 13px/1.4 var(--b-sans);color:var(--b-ink-2)}
+@keyframes lxIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#app .lx-stars,#app .lx-orbit .rg,#app .lx-orbit .rk{animation:none}}

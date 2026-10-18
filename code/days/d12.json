@@ -1,0 +1,532 @@
+{
+ "day": 12,
+ "phase": 2,
+ "title": "Lists II: sort, search, copy",
+ "subtitle": "Order your data and dodge the aliasing trap",
+ "minutes": 55,
+ "goal": "Sort and search lists, number items with enumerate, build grids, and copy lists safely instead of aliasing them.",
+ "outcomes": [
+  "Choose between sort() and sorted(), and sort by any key with reverse order",
+  "Search a list with in, index() and count() without crashing",
+  "Use enumerate() to loop with positions",
+  "Explain aliasing and make real (shallow) copies",
+  "Read and change nested lists such as seat maps"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 12: Sort, search, copy",
+   "body": "Leaderboards, cheapest-first product listings, search results, cinema seat maps: real apps **sort**, **search** and **copy** lists all day.\n\nToday you learn all three, plus the **aliasing** trap that silently corrupts data.",
+   "visual": {
+    "kind": "list",
+    "name": "leaderboard",
+    "items": [
+     "98",
+     "95",
+     "88",
+     "72",
+     "64"
+    ],
+    "mark": [
+     0
+    ]
+   },
+   "say": "Welcome to day twelve. Every shopping app sorts products by price, every game sorts its leaderboard, and every cinema app shows a grid of seats. Today you learn to sort, search and copy lists, and you will meet the aliasing trap, a bug that silently corrupts data in real projects. Let's go."
+  },
+  {
+   "type": "concept",
+   "title": "sort() or sorted()?",
+   "body": "- `scores.sort()` sorts the list **in place** and returns `None`\n- `sorted(scores)` returns a **new** sorted list; the original stays untouched\n\nBoth accept `reverse=True` for biggest first.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "list.sort(): changes the list",
+     "code": "scores = [72, 95, 64]\nscores.sort()\n# scores is now [64, 72, 95]"
+    },
+    "right": {
+     "title": "sorted(): makes a new list",
+     "code": "scores = [72, 95, 64]\nranked = sorted(scores)\n# ranked: [64, 72, 95]\n# scores: [72, 95, 64]"
+    },
+    "verdict": "Need the original order later? Use sorted()."
+   },
+   "say": "Python gives you two ways to sort. The sort method rearranges the list itself, in place, and gives back nothing. The sorted function leaves your list alone and returns a brand new sorted list. Both accept reverse equals true when you want the biggest first. If you still need the original order later, reach for sorted."
+  },
+  {
+   "type": "code",
+   "title": "Sorting in action",
+   "code": "scores = [72, 95, 64, 88, 95, 51]\nranked = sorted(scores)\nprint(\"new list:\", ranked)\nprint(\"original:\", scores)\nscores.sort(reverse=True)\nprint(\"in place:\", scores)\nnames = [\"zoya\", \"amit\", \"Riya\", \"Dev\"]\nprint(sorted(names))\nprint(sorted(names, key=str.lower))",
+   "expect": "new list: [51, 64, 72, 88, 95, 95]\noriginal: [72, 95, 64, 88, 95, 51]\nin place: [95, 95, 88, 72, 64, 51]\n['Dev', 'Riya', 'amit', 'zoya']\n['amit', 'Dev', 'Riya', 'zoya']\n",
+   "explain": [
+    [
+     2,
+     "sorted() builds a new list, smallest first."
+    ],
+    [
+     4,
+     "The original is untouched."
+    ],
+    [
+     5,
+     "sort() rearranges scores itself; reverse=True puts the biggest first."
+    ],
+    [
+     8,
+     "Text sorts by character code: every capital letter comes before every small letter."
+    ],
+    [
+     9,
+     "key=str.lower compares lowercase versions, so case is ignored."
+    ]
+   ],
+   "say": "Sorted gives us a new list, and the original is untouched. Then sort with reverse true rearranges the scores themselves, biggest first. Now look at the names. Plain sorting puts capital letters before small ones, which surprises everyone. Passing a key of string lower tells Python to compare lowercase versions, so the order finally looks right."
+  },
+  {
+   "type": "concept",
+   "title": "Sort by anything with key=",
+   "body": "`key=` takes a **function**. Python calls it on every item and sorts by the results.\n\nPass the function's name **without brackets**: Python calls it for you.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "You write",
+     "Python sorts by",
+     "Result"
+    ],
+    "rows": [
+     [
+      "sorted(words, key=len)",
+      "length of each word",
+      "['pay', 'bank', 'wallet']"
+     ],
+     [
+      "sorted(names, key=str.lower)",
+      "the lowercase name",
+      "['amit', 'Dev', 'Riya']"
+     ],
+     [
+      "sorted(changes, key=abs)",
+      "distance from zero",
+      "[-5, 15, -40]"
+     ],
+     [
+      "max(words, key=len)",
+      "the longest wins",
+      "'wallet'"
+     ]
+    ]
+   },
+   "say": "The key option is one of Python's superpowers. You give it a function, Python calls that function on every item, and it sorts by the results. A key of len sorts words by length. A key of abs sorts numbers by their distance from zero. You pass the function's name without brackets, because Python calls it for you. Max and min accept a key too."
+  },
+  {
+   "type": "code",
+   "title": "Sorting by length and size",
+   "code": "words = [\"upi\", \"wallet\", \"pay\", \"transaction\", \"bank\"]\nprint(sorted(words, key=len))\nprint(sorted(words, key=len, reverse=True))\nchanges = [-40, 15, -5, 30, -60]\nprint(sorted(changes, key=abs))\nprint(max(words, key=len))\nprint(min(changes), min(changes, key=abs))",
+   "expect": "['upi', 'pay', 'bank', 'wallet', 'transaction']\n['transaction', 'wallet', 'bank', 'upi', 'pay']\n[-5, 15, 30, -40, -60]\ntransaction\n-60 -5\n",
+   "explain": [
+    [
+     2,
+     "Shortest first. Ties keep their original order: upi before pay."
+    ],
+    [
+     3,
+     "Longest first."
+    ],
+    [
+     5,
+     "By size, ignoring the minus sign."
+    ],
+    [
+     6,
+     "max() with a key: the longest word."
+    ],
+    [
+     7,
+     "min() alone finds the most negative; with key=abs it finds the one closest to zero."
+    ]
+   ],
+   "say": "Sorting by length puts the shortest words first, and words of the same length keep their original order. That is called a stable sort. Reverse flips it. Sorting price changes by absolute value shows the smallest moves first. And max with a key of len finds the longest word in one line."
+  },
+  {
+   "type": "predict",
+   "title": "The None trap",
+   "code": "prices = [300, 120, 450]\nresult = prices.sort()\nprint(result)\nprint(prices)",
+   "options": [
+    "[120, 300, 450]\n[120, 300, 450]",
+    "None\n[120, 300, 450]",
+    "None\n[300, 120, 450]"
+   ],
+   "answer": 1,
+   "why": "sort() changes prices in place and returns None. So result is None, while prices itself is now sorted. Want a value back? Use sorted(prices).",
+   "say": "Predict this one carefully. We store the result of calling sort, then print both that result and the original list. What appears?"
+  },
+  {
+   "type": "concept",
+   "title": "Searching a list",
+   "body": "- `x in items`: is it there? `True` or `False`\n- `items.index(x)`: **where** is the first one? Crashes with `ValueError` if it's missing\n- `items.count(x)`: **how many** are there?\n\nCheck with `in` before you call `index()`.",
+   "visual": {
+    "kind": "list",
+    "name": "trains",
+    "items": [
+     "'12951'",
+     "'12002'",
+     "'22691'",
+     "'12951'",
+     "'12627'"
+    ],
+    "mark": [
+     2
+    ]
+   },
+   "say": "Three tools cover most searching. In tells you whether an item is there at all. Index tells you the position of the first match, but it crashes with a value error if the item is missing, so check with in first. And count tells you how many times an item appears."
+  },
+  {
+   "type": "code",
+   "title": "Find my train",
+   "code": "trains = [\"12951\", \"12002\", \"22691\", \"12951\", \"12627\"]\nprint(\"22691\" in trains)\nprint(trains.index(\"22691\"))\nprint(trains.count(\"12951\"))\nfor target in [\"12627\", \"11077\"]:\n    if target in trains:\n        print(target, \"is at position\", trains.index(target))\n    else:\n        print(target, \"is not running today\")",
+   "expect": "True\n2\n2\n12627 is at position 4\n11077 is not running today\n",
+   "explain": [
+    [
+     2,
+     "Membership: True."
+    ],
+    [
+     3,
+     "index() gives the position of the first match."
+    ],
+    [
+     4,
+     "count() tallies the matches."
+    ],
+    [
+     6,
+     "Look before you leap: call index() only when you know the item is there."
+    ]
+   ],
+   "say": "Here we search a list of train numbers from a departures board. In confirms a train is there, index finds its position, and count shows that one train number appears twice. The loop then looks for two trains, and checks with in before calling index, so a missing train never crashes the program."
+  },
+  {
+   "type": "concept",
+   "title": "enumerate(): position and item together",
+   "body": "Need the **index** and the **item**? `enumerate()` hands you both on every turn of the loop.\n\nAdd `start=1` when the numbers are for humans.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Turn",
+     "index",
+     "item"
+    ],
+    "rows": [
+     [
+      "1st",
+      "0",
+      "'Riya'"
+     ],
+     [
+      "2nd",
+      "1",
+      "'Arjun'"
+     ],
+     [
+      "3rd",
+      "2",
+      "'Meera'"
+     ]
+    ]
+   },
+   "say": "Often you need the position and the item at the same time, for example to print a numbered ranking. Enumerate gives you both on every turn of the loop. You write two names after for: one for the number, one for the item. Add start equals one when the numbers are for humans, who count from one. Day thirteen explains how two names in a loop work."
+  },
+  {
+   "type": "code",
+   "title": "A numbered leaderboard",
+   "code": "leaderboard = [\"Riya\", \"Arjun\", \"Meera\", \"Kabir\"]\nfor rank, name in enumerate(leaderboard, start=1):\n    print(f\"{rank}. {name}\")\ntemps = [31, 35, 29, 38, 36]\nhot_days = []\nfor day, temp in enumerate(temps):\n    if temp > 34:\n        hot_days.append(day)\nprint(\"Hot days at positions:\", hot_days)",
+   "expect": "1. Riya\n2. Arjun\n3. Meera\n4. Kabir\nHot days at positions: [1, 3, 4]\n",
+   "explain": [
+    [
+     2,
+     "rank counts 1, 2, 3 and name is each item."
+    ],
+    [
+     3,
+     "An f-string builds each line."
+    ],
+    [
+     6,
+     "Without start=, counting begins at 0: real indexes."
+    ],
+    [
+     8,
+     "Collect every matching position: a search that finds all, not just the first."
+    ]
+   ],
+   "say": "The first loop prints a numbered leaderboard starting from one. The second loop uses enumerate without a start, so the numbers are real indexes, and it collects the position of every hot day. That is a search that finds all the matches, not just the first one like index does."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "You need the scores in order for a report, but `scores` must keep its original order. What do you write?",
+   "options": [
+    "scores.sort()",
+    "ranked = sorted(scores)",
+    "ranked = scores.sort()"
+   ],
+   "answer": 1,
+   "why": "sorted() returns a new list and leaves scores alone. sort() rearranges the original, and it returns None, so ranked = scores.sort() gives you None.",
+   "say": "Quick check. You need sorted scores for a report, but the original list must keep its order. Which line do you write?"
+  },
+  {
+   "type": "concept",
+   "title": "Two names, one list",
+   "body": "`shared = original` does **not** copy a list. It puts a second name on the **same** list. Change it through either name and both see the change. This is called **aliasing**.",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "original",
+     "shared"
+    ],
+    "objects": [
+     {
+      "id": "o1",
+      "r": "['milk', 'bread', 'eggs']",
+      "t": "list"
+     }
+    ],
+    "links": [
+     [
+      "original",
+      "o1"
+     ],
+     [
+      "shared",
+      "o1"
+     ]
+    ]
+   },
+   "say": "Here is the trap. On day two you learned that names are labels on values. Writing shared equals original does not copy the list. It sticks a second label on the same list. So if you append through one name, the other name sees it too, because there is only one list. Developers call this aliasing, and it causes some of the sneakiest bugs in real code."
+  },
+  {
+   "type": "code",
+   "title": "Aliasing in action",
+   "code": "original = [\"milk\", \"bread\"]\nshared = original\nshared.append(\"eggs\")\nprint(\"original:\", original)\nprint(\"shared:  \", shared)\nprint(shared is original)",
+   "expect": "original: ['milk', 'bread', 'eggs']\nshared:   ['milk', 'bread', 'eggs']\nTrue\n",
+   "explain": [
+    [
+     2,
+     "No copy: shared is a second name for the same list."
+    ],
+    [
+     3,
+     "Change the list through shared..."
+    ],
+    [
+     4,
+     "...and original shows the change too."
+    ],
+    [
+     6,
+     "is asks: are these the very same object? Yes."
+    ]
+   ],
+   "say": "We append eggs through the name shared, and the original list changes too. The last line uses the word is, which asks whether two names point at the very same object. The answer is true. Watch it run and notice there is only ever one list."
+  },
+  {
+   "type": "visual",
+   "title": "Making a real copy",
+   "body": "Three ways to make a **new** list with the same items:\n- `backup = plan.copy()`\n- `backup = plan[:]`\n- `backup = list(plan)`",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "plan",
+     "backup"
+    ],
+    "objects": [
+     {
+      "id": "o1",
+      "r": "['Delhi', 'Agra', 'Jaipur', 'Udaipur']",
+      "t": "list"
+     },
+     {
+      "id": "o2",
+      "r": "['Delhi', 'Agra', 'Jaipur']",
+      "t": "list"
+     }
+    ],
+    "links": [
+     [
+      "plan",
+      "o1"
+     ],
+     [
+      "backup",
+      "o2"
+     ]
+    ]
+   },
+   "say": "To get an independent list, make a copy. The copy method, a full slice, and the list function all build a brand new list with the same items. Now there are two separate objects, so changing the plan leaves the backup untouched."
+  },
+  {
+   "type": "code",
+   "title": "Copies are independent",
+   "code": "plan = [\"Delhi\", \"Agra\", \"Jaipur\"]\nbackup = plan.copy()\nalso = plan[:]\nplan.append(\"Udaipur\")\nprint(plan)\nprint(backup)\nprint(also)\nprint(backup == also, backup is also)",
+   "expect": "['Delhi', 'Agra', 'Jaipur', 'Udaipur']\n['Delhi', 'Agra', 'Jaipur']\n['Delhi', 'Agra', 'Jaipur']\nTrue False\n",
+   "explain": [
+    [
+     2,
+     "copy() builds a new list."
+    ],
+    [
+     3,
+     "A full slice builds a new list too."
+    ],
+    [
+     4,
+     "Only plan changes."
+    ],
+    [
+     8,
+     "== asks: same contents? Yes. is asks: same object? No. Two separate lists."
+    ]
+   ],
+   "say": "We make two copies of a travel plan, one with the copy method and one with a full slice. Then we add Udaipur to the plan. Only the plan changes. The last line shows the difference between double equals, which compares contents, and is, which checks whether two names share one object."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: shared carts",
+   "task": "Riya and Amit should each start with **their own copy** of the default cart, but right now they share one list. Fix it so:\n- `riya_cart` is `['water bottle', 'headphones']`\n- `amit_cart` is `['water bottle', 'charger']`\n- `default_cart` stays `['water bottle']`",
+   "starter": "default_cart = [\"water bottle\"]\nriya_cart = default_cart\namit_cart = default_cart\nriya_cart.append(\"headphones\")\namit_cart.append(\"charger\")\nprint(\"Riya:\", riya_cart)\nprint(\"Amit:\", amit_cart)\n",
+   "solution": "default_cart = [\"water bottle\"]\nriya_cart = default_cart.copy()\namit_cart = default_cart.copy()\nriya_cart.append(\"headphones\")\namit_cart.append(\"charger\")\nprint(\"Riya:\", riya_cart)\nprint(\"Amit:\", amit_cart)",
+   "tests": "assert default_cart == [\"water bottle\"], f\"default_cart changed to {default_cart}. Give each user a copy instead of the same list.\"\nassert riya_cart == [\"water bottle\", \"headphones\"], f\"riya_cart should be ['water bottle', 'headphones'], not {riya_cart}.\"\nassert amit_cart == [\"water bottle\", \"charger\"], f\"amit_cart should be ['water bottle', 'charger'], not {amit_cart}.\"\nassert riya_cart is not amit_cart, \"Riya and Amit still share one list. Use default_cart.copy() for each of them.\"",
+   "hints": [
+    "riya_cart = default_cart makes a second name, not a second list.",
+    "Use default_cart.copy() (or default_cart[:]) for each user."
+   ],
+   "say": "Imagine this in a real shopping app. Every new user should start with a copy of the default cart, but they all share one list, so everyone sees everyone else's items. Run it, see the damage, and fix it so each user gets their own list."
+  },
+  {
+   "type": "concept",
+   "title": "Lists inside lists",
+   "body": "A list can hold other lists: perfect for **grids** like seat maps, game boards and spreadsheets.\n\n`seats[row][col]`: first pick the row, then the item inside it.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "",
+     "col 0",
+     "col 1",
+     "col 2",
+     "col 3"
+    ],
+    "rows": [
+     [
+      "row 0",
+      "A1",
+      "A2",
+      "A3",
+      "A4"
+     ],
+     [
+      "row 1",
+      "B1",
+      "B2",
+      "B3",
+      "B4"
+     ],
+     [
+      "row 2",
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+     ]
+    ]
+   },
+   "say": "A list can contain other lists. That gives you a grid, like a cinema seat map, a chess board, or a spreadsheet. To reach one cell, use two indexes: the first picks the row, and the second picks the item inside that row."
+  },
+  {
+   "type": "code",
+   "title": "A cinema seat map",
+   "code": "seats = [\n    [\"A1\", \"A2\", \"A3\", \"A4\"],\n    [\"B1\", \"B2\", \"B3\", \"B4\"],\n    [\"C1\", \"C2\", \"C3\", \"C4\"],\n]\nprint(seats[1])\nprint(seats[1][2])\nprint(len(seats), \"rows of\", len(seats[0]), \"seats\")\nseats[0][1] = \"XX\"\nseats[2][-1] = \"XX\"\nfor row in seats:\n    print(\" \".join(row))",
+   "expect": "['B1', 'B2', 'B3', 'B4']\nB3\n3 rows of 4 seats\nA1 XX A3 A4\nB1 B2 B3 B4\nC1 C2 C3 XX\n",
+   "explain": [
+    [
+     1,
+     "Three rows, each a list of four seats."
+    ],
+    [
+     6,
+     "One index gives a whole row."
+    ],
+    [
+     7,
+     "Two indexes give one seat: row 1, position 2."
+    ],
+    [
+     8,
+     "len(seats) counts rows; len(seats[0]) counts seats in a row."
+    ],
+    [
+     9,
+     "Book a seat by replacing it."
+    ],
+    [
+     11,
+     "Loop over the rows and join each one into a line."
+    ]
+   ],
+   "say": "Our seat map is a list of three rows. One index gives a whole row, and two indexes give a single seat. We book two seats by replacing them with X X, and then a loop prints each row as one line. This is how booking apps think about seats."
+  },
+  {
+   "type": "predict",
+   "title": "Does copy() protect a grid?",
+   "code": "grid = [[0, 0], [0, 0]]\nsnapshot = grid.copy()\nsnapshot[0][0] = 9\nprint(grid)",
+   "options": [
+    "[[0, 0], [0, 0]]",
+    "[[9, 0], [0, 0]]",
+    "[[9, 0], [9, 0]]"
+   ],
+   "answer": 1,
+   "why": "copy() is shallow: it makes a new outer list, but the rows inside are the same row lists. Changing snapshot[0][0] changes a shared row. For a fully independent grid, use deepcopy() from the copy module.",
+   "say": "This one fools professionals. We copy a grid, change one cell in the copy, and print the original. Did the copy protect it? Predict, then run."
+  },
+  {
+   "type": "exercise",
+   "title": "Top three scores",
+   "task": "Scores arrive on one line, like `45 88 72 95 60`. Print the **top three**, highest first, as a list: `[95, 88, 72]`.\n\nWith fewer than three scores, print them all, highest first.",
+   "stdin": "45 88 72 95 60\n",
+   "starter": "scores = []\nfor piece in input(\"Scores: \").split():\n    scores.append(int(piece))\n# Sort highest first, then take the first three\ntop3 = scores\nprint(top3)\n",
+   "solution": "scores = []\nfor piece in input(\"Scores: \").split():\n    scores.append(int(piece))\ntop3 = sorted(scores, reverse=True)[:3]\nprint(top3)",
+   "tests": "out = await run_program(\"45 88 72 95 60\\n\")\nassert \"[95, 88, 72]\" in out, \"For 45 88 72 95 60 the top three are [95, 88, 72]. Sort with reverse=True, then slice the first three.\"\nout = await run_program(\"10 20\\n\")\nassert \"[20, 10]\" in out, \"With only two scores, 10 and 20, print both, highest first: [20, 10]. A slice never crashes on a short list.\"\nout = await run_program(\"5 5 9 1\\n\")\nassert \"[9, 5, 5]\" in out, \"Duplicate scores count: for 5 5 9 1 the top three are [9, 5, 5].\"",
+   "hints": [
+    "sorted(scores, reverse=True) gives highest first.",
+    "A slice like [:3] takes the first three, and still works if there are fewer.",
+    "top3 = sorted(scores, reverse=True)[:3]"
+   ],
+   "say": "Every game shows a top three. Scores arrive on one line, and the starter already turns them into a list of numbers. Sort them highest first and slice off the first three. Make sure it still works when only two people have played."
+  },
+  {
+   "type": "exercise",
+   "title": "Book a seat",
+   "task": "In `seats`, `\"O\"` is free and `\"X\"` is booked. The user types a row and seat, counting from **1**, like `2 3`.\n- Free: set it to `\"X\"` and print `Booked`\n- Taken: print `Sorry, that seat is taken`\n\nThe starter then prints the map.",
+   "stdin": "2 3\n",
+   "starter": "seats = [\n    [\"O\", \"O\", \"X\", \"O\"],\n    [\"O\", \"O\", \"O\", \"O\"],\n    [\"X\", \"X\", \"O\", \"O\"],\n]\nparts = input(\"Row and seat: \").split()\nr = int(parts[0]) - 1   # humans count from 1, lists from 0\nc = int(parts[1]) - 1\n# Book the seat if it is free, otherwise say sorry\n\nfor row in seats:\n    print(\" \".join(row))\n",
+   "solution": "seats = [\n    [\"O\", \"O\", \"X\", \"O\"],\n    [\"O\", \"O\", \"O\", \"O\"],\n    [\"X\", \"X\", \"O\", \"O\"],\n]\nparts = input(\"Row and seat: \").split()\nr = int(parts[0]) - 1   # humans count from 1, lists from 0\nc = int(parts[1]) - 1\nif seats[r][c] == \"O\":\n    seats[r][c] = \"X\"\n    print(\"Booked\")\nelse:\n    print(\"Sorry, that seat is taken\")\n\nfor row in seats:\n    print(\" \".join(row))",
+   "tests": "def rows(out):\n    return [line.split() for line in out.strip().splitlines()[-3:]]\n\nout = await run_program(\"2 3\\n\")\nassert \"Booked\" in out and \"taken\" not in out, \"Row 2, seat 3 is free: book it and print Booked.\"\nassert rows(out)[1] == [\"O\", \"O\", \"X\", \"O\"], \"After booking row 2, seat 3, row 2 should print as O O X O. Did you set seats[r][c] = \\\"X\\\"?\"\nout = await run_program(\"1 3\\n\")\nassert \"taken\" in out and \"Booked\" not in out, \"Row 1, seat 3 is already X, so print Sorry, that seat is taken.\"\nassert rows(out)[0] == [\"O\", \"O\", \"X\", \"O\"], \"A taken seat must stay exactly as it was.\"\nout = await run_program(\"3 4\\n\")\nassert rows(out)[2] == [\"X\", \"X\", \"O\", \"X\"], \"Booking the last seat, row 3 seat 4, should give X X O X. Use seats[r][c], which already counts from 0.\"",
+   "hints": [
+    "seats[r][c] is the seat the user asked for.",
+    "Compare it with \"O\" to see whether it is free.",
+    "if seats[r][c] == \"O\":\n    seats[r][c] = \"X\"\n    print(\"Booked\")\nelse:\n    print(\"Sorry, that seat is taken\")"
+   ],
+   "say": "Now build the heart of a booking app. The seat map uses O for free and X for booked. The user types a row and a seat, counting from one, and the starter already turns those into list indexes. If the seat is free, book it. If not, apologise. Then the map is printed so the user can see it."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 12 complete",
+   "points": [
+    "sorted() returns a new list; .sort() changes the list in place and returns None",
+    "key= sorts by anything: key=len, key=str.lower, key=abs; reverse=True flips the order",
+    "in, index() and count() search a list; check with in before calling index()",
+    "enumerate() gives you the position and the item together",
+    "b = a makes an alias, not a copy: use .copy(), [:] or list(), and remember copies are shallow",
+    "Nested lists make grids: grid[row][col]"
+   ],
+   "say": "Mission twelve complete. You can sort with sort and sorted, order things by any key, search with in, index and count, number items with enumerate, and build grids from nested lists. Above all, you know the difference between an alias and a copy, which will save you hours of debugging. Tomorrow: tuples and unpacking. See you on day thirteen."
+  }
+ ]
+}

@@ -1,0 +1,466 @@
+{
+ "day": 40,
+ "phase": 4,
+ "title": "Project: Bank system with tests",
+ "subtitle": "Dataclasses, exceptions, logging and a test suite, together",
+ "minutes": 75,
+ "goal": "Design and build a tested, logged banking core with dataclasses, enums and custom exceptions, using the whole Phase 4 toolkit.",
+ "outcomes": [
+  "Plan a small system as errors, models, a service and tests before writing code",
+  "Model accounts and an immutable transaction history with dataclasses and enums",
+  "Enforce business rules with a custom exception hierarchy",
+  "Log every money movement and extend a unittest suite that catches real bugs",
+  "Recall the key tools from Days 31 to 39"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 40: The bank",
+   "body": "Phase 4 finale. Today you build the core of a **bank**: accounts, transfers, interest and a full transaction history.\n\nIt uses dataclasses, enums, custom exceptions and logging, and it ships with a **test suite** strong enough to catch real bugs.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Design the errors and models",
+     "Build Account: deposit and withdraw",
+     "Log every money movement",
+     "Build Bank: transfer and interest",
+     "Prove it with a test suite"
+    ]
+   },
+   "say": "Welcome to the phase four finale. Today you build the core of a small bank: accounts, transfers, interest and a complete transaction history. It brings together data classes, enums, custom exceptions and logging, and it comes with a test suite strong enough to catch real bugs. This is what professional Python looks like."
+  },
+  {
+   "type": "concept",
+   "title": "Your Phase 4 toolkit",
+   "body": "Ten days ago you knew Python. Now you know how professionals **work** with it. A quick review first, then the build.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Day",
+     "You learned",
+     "Pro habit"
+    ],
+    "rows": [
+     [
+      "31",
+      "collections, itertools",
+      "reach for the standard library first"
+     ],
+     [
+      "32",
+      "datetime, zoneinfo",
+      "store UTC, display local"
+     ],
+     [
+      "33",
+      "regular expressions",
+      "validate with fullmatch"
+     ],
+     [
+      "34",
+      "type hints, dataclasses, enums",
+      "say what you mean"
+     ],
+     [
+      "35–36",
+      "unittest, TDD, mocks",
+      "prove it works"
+     ],
+     [
+      "37",
+      "debugging, logging",
+      "let code report what it does"
+     ],
+     [
+      "38",
+      "clean code",
+      "names, constants, guard clauses"
+     ],
+     [
+      "39",
+      "venv, pip, pyproject",
+      "reproducible projects"
+     ]
+    ]
+   },
+   "say": "Look at how far you have come in ten days. You know the standard library's power tools, dates and time zones, regular expressions, type hints and data classes, testing and mocking, logging, clean code and project setup. Let's warm up with a quick review, then start building."
+  },
+  {
+   "type": "quiz",
+   "title": "Review: Day 31",
+   "q": "You have 10,000 error codes from a log file. What's the cleanest way to get the 3 most frequent?",
+   "options": [
+    "sorted(set(codes))[:3]",
+    "Counter(codes).most_common(3)",
+    "A dict, a nested loop and a manual sort"
+   ],
+   "answer": 1,
+   "why": "Counter counts every item in one pass, and most_common(3) returns the top three (code, count) pairs. sorted(set(codes)) just sorts the codes alphabetically.",
+   "say": "Review time, starting with day thirty one. Ten thousand error codes, and you want the three most frequent. What is the cleanest tool?"
+  },
+  {
+   "type": "predict",
+   "title": "Review: Day 32",
+   "code": "from datetime import date, timedelta\n\ndue = date(2026, 12, 25) + timedelta(days=10)\nprint(due.strftime(\"%d %b %Y\"))",
+   "options": [
+    "35 Dec 2026",
+    "04 Jan 2027",
+    "05 Jan 2027",
+    "04 Jan 2026"
+   ],
+   "answer": 1,
+   "why": "December has 31 days: 25 December + 6 days is 31 December, and 4 more days is 4 January 2027. timedelta handles month and year boundaries for you.",
+   "say": "Day thirty two. A bill dated Christmas Day is due ten days later. What date does Python print?"
+  },
+  {
+   "type": "quiz",
+   "title": "Review: Day 33",
+   "q": "Which call accepts \"9876543210\" but rejects \"call 9876543210 now\"?",
+   "options": [
+    "re.search(r\"[6-9]\\d{9}\", s)",
+    "re.fullmatch(r\"[6-9]\\d{9}\", s)",
+    "re.findall(r\"[6-9]\\d{9}\", s)"
+   ],
+   "answer": 1,
+   "why": "fullmatch requires the whole string to match. search and findall happily find the number inside the longer text, which is why validation always uses fullmatch.",
+   "say": "Day thirty three. You want to validate that a whole field is a mobile number, with nothing else around it. Which call do you use?"
+  },
+  {
+   "type": "predict",
+   "title": "Review: Day 34",
+   "code": "from dataclasses import dataclass\n\n@dataclass(order=True)\nclass Note:\n    value: int\n    currency: str = \"INR\"\n\nprint(sorted([Note(500), Note(100), Note(2000)])[0])",
+   "options": [
+    "Note(value=100, currency='INR')",
+    "Note(value=2000, currency='INR')",
+    "TypeError: '<' not supported between instances of 'Note' and 'Note'",
+    "100"
+   ],
+   "answer": 0,
+   "why": "order=True generates comparisons that compare fields in order, starting with value, so sorting works and the smallest note comes first. The dataclass repr shows every field.",
+   "say": "Day thirty four. A data class with order set to true, and three bank notes. What is the first item after sorting?"
+  },
+  {
+   "type": "concept",
+   "title": "Design before code",
+   "body": "Four layers, each with one job. Money is stored as **whole rupees in an `int`**: never `float` for money. (Real banks use integer paise or `decimal.Decimal`.)",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "bank system",
+     "c": [
+      {
+       "t": "Errors",
+       "c": [
+        {
+         "t": "BankError",
+         "c": [
+          {
+           "t": "InvalidAmountError"
+          },
+          {
+           "t": "InsufficientFundsError"
+          },
+          {
+           "t": "AccountNotFoundError"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "t": "Models",
+       "c": [
+        {
+         "t": "Kind (Enum)"
+        },
+        {
+         "t": "Transaction (frozen dataclass)"
+        },
+        {
+         "t": "Account (dataclass)"
+        }
+       ]
+      },
+      {
+       "t": "Service",
+       "c": [
+        {
+         "t": "Bank: open_account, get, transfer, add_interest"
+        }
+       ]
+      },
+      {
+       "t": "Tests",
+       "c": [
+        {
+         "t": "TestAccount, TestBank"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "Professionals design before they type. Our bank has four layers. Errors: one base class, and a specific error for each broken rule. Models: an enum for transaction kinds, a frozen transaction, and an account. A service, the Bank, that moves money. And tests. One more rule: money is stored as whole rupees in an integer, never a float, because floats cannot represent most decimals exactly."
+  },
+  {
+   "type": "code",
+   "title": "A family of exceptions",
+   "code": "class BankError(Exception):\n    '''Base class: catch this to handle any bank rule.'''\n\nclass InvalidAmountError(BankError):\n    pass\n\nclass InsufficientFundsError(BankError):\n    def __init__(self, balance, requested):\n        super().__init__(f\"balance {balance}, requested {requested}\")\n        self.balance = balance\n        self.requested = requested\n\ndef withdraw(balance, amount):\n    if amount <= 0:\n        raise InvalidAmountError(f\"amount must be positive, got {amount}\")\n    if amount > balance:\n        raise InsufficientFundsError(balance, amount)\n    return balance - amount\n\nfor amount in [300, -5, 5000]:\n    try:\n        print(\"left:\", withdraw(1000, amount))\n    except BankError as e:\n        print(type(e).__name__, \"->\", e)",
+   "expect": "left: 700\nInvalidAmountError -> amount must be positive, got -5\nInsufficientFundsError -> balance 1000, requested 5000\n",
+   "explain": [
+    [
+     1,
+     "One base class for the whole family."
+    ],
+    [
+     4,
+     "Specific errors inherit from it."
+    ],
+    [
+     8,
+     "A custom __init__ builds the message and keeps the numbers."
+    ],
+    [
+     17,
+     "Guard clauses raise the right error."
+    ],
+    [
+     23,
+     "Catching the base class catches every bank error."
+    ]
+   ],
+   "say": "Every rule gets its own exception class, and they all inherit from one base class, bank error. Callers can catch one specific error, or catch bank error to handle any rule at once, as our loop does. Insufficient funds error also stores the balance and the requested amount as attributes, so code that catches it can show the customer a precise message."
+  },
+  {
+   "type": "code",
+   "title": "Models: an audit trail that can't be edited",
+   "code": "from dataclasses import dataclass, field\nfrom enum import Enum\n\nclass Kind(Enum):\n    DEPOSIT = \"deposit\"\n    WITHDRAW = \"withdraw\"\n\n@dataclass(frozen=True)\nclass Transaction:\n    kind: Kind\n    amount: int\n    balance_after: int\n\n@dataclass\nclass Account:\n    number: str\n    owner: str\n    balance: int = 0\n    history: list[Transaction] = field(default_factory=list)\n\nacct = Account(\"AC1001\", \"Riya\")\nacct.balance += 500\nacct.history.append(Transaction(Kind.DEPOSIT, 500, acct.balance))\nprint(acct.history[0])",
+   "expect": "Transaction(kind=<Kind.DEPOSIT: 'deposit'>, amount=500, balance_after=500)\n",
+   "explain": [
+    [
+     4,
+     "Transaction kinds are an Enum: no magic strings."
+    ],
+    [
+     8,
+     "frozen=True: history entries can't be edited."
+    ],
+    [
+     19,
+     "Each account gets its own history list."
+    ],
+    [
+     22,
+     "Changing state by hand skips every rule. Methods will fix that."
+    ]
+   ],
+   "say": "Each transaction is a frozen data class, because a bank's history must never be edited after the fact. The kind is an enum, so a typo like deposti is impossible. But notice what we did at the bottom: we changed the balance and history by hand. Nothing stopped a negative amount or a missing record. Protecting those rules is the job of methods, and that is your first exercise."
+  },
+  {
+   "type": "exercise",
+   "title": "Build Account.deposit and withdraw",
+   "task": "Write a helper `check_amount(amount)` and the two methods:\n\n- amounts must be **positive ints**, else `InvalidAmountError`\n- `withdraw` more than the balance raises `InsufficientFundsError(balance, amount)` and **changes nothing**\n- each success appends a `Transaction` with the new balance",
+   "starter": "from dataclasses import dataclass, field\nfrom enum import Enum\n\nclass BankError(Exception):\n    \"\"\"Base class for every bank rule violation.\"\"\"\n\n\nclass InvalidAmountError(BankError):\n    pass\n\n\nclass InsufficientFundsError(BankError):\n    def __init__(self, balance, requested):\n        super().__init__(f\"balance {balance}, requested {requested}\")\n        self.balance = balance\n        self.requested = requested\n\n\nclass Kind(Enum):\n    DEPOSIT = \"deposit\"\n    WITHDRAW = \"withdraw\"\n\n\n@dataclass(frozen=True)\nclass Transaction:\n    kind: Kind\n    amount: int\n    balance_after: int\n\n\n@dataclass\nclass Account:\n    number: str\n    owner: str\n    balance: int = 0\n    history: list[Transaction] = field(default_factory=list)\n\n    def deposit(self, amount: int) -> None:\n        # TODO: reject amounts that aren't positive ints (InvalidAmountError),\n        #       add to the balance, append a DEPOSIT Transaction\n        pass\n\n    def withdraw(self, amount: int) -> None:\n        # TODO: reject bad amounts, refuse overdrafts with InsufficientFundsError\n        #       (change nothing!), subtract, append a WITHDRAW Transaction\n        pass\n\n\nacct = Account(\"AC1001\", \"Riya\")\nacct.deposit(5000)\nacct.withdraw(1200)\nprint(acct.balance, len(acct.history))\n",
+   "solution": "from dataclasses import dataclass, field\nfrom enum import Enum\n\nclass BankError(Exception):\n    \"\"\"Base class for every bank rule violation.\"\"\"\n\n\nclass InvalidAmountError(BankError):\n    pass\n\n\nclass InsufficientFundsError(BankError):\n    def __init__(self, balance, requested):\n        super().__init__(f\"balance {balance}, requested {requested}\")\n        self.balance = balance\n        self.requested = requested\n\n\nclass Kind(Enum):\n    DEPOSIT = \"deposit\"\n    WITHDRAW = \"withdraw\"\n\n\n@dataclass(frozen=True)\nclass Transaction:\n    kind: Kind\n    amount: int\n    balance_after: int\n\n\ndef check_amount(amount):\n    if not isinstance(amount, int) or amount <= 0:\n        raise InvalidAmountError(f\"amount must be a positive whole number, got {amount!r}\")\n\n\n@dataclass\nclass Account:\n    number: str\n    owner: str\n    balance: int = 0\n    history: list[Transaction] = field(default_factory=list)\n\n    def deposit(self, amount: int) -> None:\n        check_amount(amount)\n        self.balance += amount\n        self.history.append(Transaction(Kind.DEPOSIT, amount, self.balance))\n\n    def withdraw(self, amount: int) -> None:\n        check_amount(amount)\n        if amount > self.balance:\n            raise InsufficientFundsError(self.balance, amount)\n        self.balance -= amount\n        self.history.append(Transaction(Kind.WITHDRAW, amount, self.balance))\n\n\nacct = Account(\"AC1001\", \"Riya\")\nacct.deposit(5000)\nacct.withdraw(1200)\nprint(acct.balance, len(acct.history))\n",
+   "tests": "acct_t = Account(\"AC1\", \"Riya\")\nacct_t.deposit(5000)\nassert acct_t.balance == 5000, f\"After depositing 5000 the balance should be 5000, got {acct_t.balance}.\"\nassert acct_t.history == [Transaction(Kind.DEPOSIT, 5000, 5000)], f\"Record Transaction(Kind.DEPOSIT, 5000, 5000), got {acct_t.history}.\"\nacct_t.withdraw(1200)\nassert acct_t.balance == 3800, f\"5000 - 1200 = 3800, got {acct_t.balance}.\"\nassert acct_t.history[-1] == Transaction(Kind.WITHDRAW, 1200, 3800), f\"Record Transaction(Kind.WITHDRAW, 1200, 3800), got {acct_t.history[-1]}.\"\ntry:\n    acct_t.withdraw(10000)\nexcept InsufficientFundsError as e:\n    assert (e.balance, e.requested) == (3800, 10000), \"Raise InsufficientFundsError(self.balance, amount).\"\nelse:\n    raise AssertionError(\"Withdrawing 10000 from 3800 should raise InsufficientFundsError.\")\nassert acct_t.balance == 3800 and len(acct_t.history) == 2, \"A refused withdrawal must change nothing: same balance, no new transaction.\"\nfor bad in (0, -50, 10.5):\n    for name in (\"deposit\", \"withdraw\"):\n        try:\n            getattr(acct_t, name)(bad)\n        except InvalidAmountError:\n            pass\n        else:\n            raise AssertionError(f\"{name}({bad!r}) should raise InvalidAmountError: amounts must be positive whole rupees.\")\nassert acct_t.balance == 3800 and len(acct_t.history) == 2, \"Rejected amounts must not change the balance or the history.\"\nfull = Account(\"AC2\", \"Arjun\", balance=100)\nfull.withdraw(100)\nassert full.balance == 0, \"Withdrawing exactly the whole balance is allowed and leaves 0.\"",
+   "hints": [
+    "check_amount: if not isinstance(amount, int) or amount <= 0: raise InvalidAmountError(...)",
+    "In withdraw, check the balance and raise BEFORE subtracting anything.",
+    "Record with self.history.append(Transaction(Kind.DEPOSIT, amount, self.balance)) after updating the balance."
+   ],
+   "say": "First build. Write check amount and the two account methods. Amounts must be positive whole rupees. A withdrawal larger than the balance raises insufficient funds and changes nothing at all. And every successful operation adds a transaction to the history."
+  },
+  {
+   "type": "code",
+   "title": "The audit trail in the logs",
+   "body": "`account.py` is the exercise solution plus `log.info` / `log.warning` calls on a `bank.account` logger.",
+   "code": "import logging\nimport sys\nfrom account import Account, BankError\n\nlogging.basicConfig(stream=sys.stdout, level=logging.INFO, force=True,\n                    format=\"%(levelname)-7s %(name)s | %(message)s\")\n\nacct = Account(\"AC1001\", \"Riya\")\nacct.deposit(5000)\nacct.withdraw(1200)\ntry:\n    acct.withdraw(10_000)\nexcept BankError as e:\n    print(\"Blocked:\", e)\nprint(\"Balance:\", acct.balance, \"| transactions:\", len(acct.history))",
+   "expect": "INFO    bank.account | AC1001 deposit 5000, balance 5000\nINFO    bank.account | AC1001 withdraw 1200, balance 3800\nWARNING bank.account | AC1001 withdraw 10000 refused: balance 3800\nBlocked: balance 3800, requested 10000\nBalance: 3800 | transactions: 2\n",
+   "files": {
+    "account.py": "\"\"\"Account model for the bank (the solution to the Account exercise, plus logging).\"\"\"\nimport logging\nfrom dataclasses import dataclass, field\nfrom enum import Enum\n\nlog = logging.getLogger(\"bank.account\")\n\nclass BankError(Exception):\n    \"\"\"Base class for every bank rule violation.\"\"\"\n\n\nclass InvalidAmountError(BankError):\n    pass\n\n\nclass InsufficientFundsError(BankError):\n    def __init__(self, balance, requested):\n        super().__init__(f\"balance {balance}, requested {requested}\")\n        self.balance = balance\n        self.requested = requested\n\n\nclass Kind(Enum):\n    DEPOSIT = \"deposit\"\n    WITHDRAW = \"withdraw\"\n\n\n@dataclass(frozen=True)\nclass Transaction:\n    kind: Kind\n    amount: int\n    balance_after: int\n\n\ndef check_amount(amount):\n    if not isinstance(amount, int) or amount <= 0:\n        raise InvalidAmountError(f\"amount must be a positive whole number, got {amount!r}\")\n\n\n@dataclass\nclass Account:\n    number: str\n    owner: str\n    balance: int = 0\n    history: list[Transaction] = field(default_factory=list)\n\n    def deposit(self, amount: int) -> None:\n        check_amount(amount)\n        self.balance += amount\n        self.history.append(Transaction(Kind.DEPOSIT, amount, self.balance))\n        log.info(\"%s deposit %d, balance %d\", self.number, amount, self.balance)\n\n    def withdraw(self, amount: int) -> None:\n        check_amount(amount)\n        if amount > self.balance:\n            log.warning(\"%s withdraw %d refused: balance %d\", self.number, amount, self.balance)\n            raise InsufficientFundsError(self.balance, amount)\n        self.balance -= amount\n        self.history.append(Transaction(Kind.WITHDRAW, amount, self.balance))\n        log.info(\"%s withdraw %d, balance %d\", self.number, amount, self.balance)\n"
+   },
+   "explain": [
+    [
+     3,
+     "Import from our own module, account.py."
+    ],
+    [
+     5,
+     "The application configures logging once; modules just log."
+    ],
+    [
+     12,
+     "The refused withdrawal logs a WARNING, then raises."
+    ],
+    [
+     13,
+     "Catch the whole family with BankError."
+    ]
+   ],
+   "say": "Here is the exercise's solution, saved as account dot py, with logging added to each method. Every money movement writes an INFO line, and a refused withdrawal writes a WARNING before raising. That is an audit trail: weeks later, support can see exactly what happened to an account. Open the files tab to read account dot py."
+  },
+  {
+   "type": "code",
+   "title": "Tests for the account",
+   "code": "import logging\nimport unittest\nfrom account import Account, InsufficientFundsError\n\nlogging.basicConfig(level=logging.ERROR, force=True)   # quiet logs in tests\n\nclass TestAccount(unittest.TestCase):\n    def setUp(self):\n        self.acct = Account(\"AC1001\", \"Riya\", balance=1000)\n\n    def test_deposit_adds_and_records(self):\n        self.acct.deposit(500)\n        self.assertEqual(self.acct.balance, 1500)\n        self.assertEqual(self.acct.history[-1].balance_after, 1500)\n\n    def test_overdraw_raises_and_changes_nothing(self):\n        with self.assertRaises(InsufficientFundsError):\n            self.acct.withdraw(5000)\n        self.assertEqual(self.acct.balance, 1000)\n        self.assertEqual(self.acct.history, [])\n\nresult = unittest.main(argv=[\"x\"], exit=False).result\nprint(f\"{result.testsRun} tests, all passed: {result.wasSuccessful()}\")",
+   "expect": "2 tests, all passed: True\n",
+   "files": {
+    "account.py": "\"\"\"Account model for the bank (the solution to the Account exercise, plus logging).\"\"\"\nimport logging\nfrom dataclasses import dataclass, field\nfrom enum import Enum\n\nlog = logging.getLogger(\"bank.account\")\n\nclass BankError(Exception):\n    \"\"\"Base class for every bank rule violation.\"\"\"\n\n\nclass InvalidAmountError(BankError):\n    pass\n\n\nclass InsufficientFundsError(BankError):\n    def __init__(self, balance, requested):\n        super().__init__(f\"balance {balance}, requested {requested}\")\n        self.balance = balance\n        self.requested = requested\n\n\nclass Kind(Enum):\n    DEPOSIT = \"deposit\"\n    WITHDRAW = \"withdraw\"\n\n\n@dataclass(frozen=True)\nclass Transaction:\n    kind: Kind\n    amount: int\n    balance_after: int\n\n\ndef check_amount(amount):\n    if not isinstance(amount, int) or amount <= 0:\n        raise InvalidAmountError(f\"amount must be a positive whole number, got {amount!r}\")\n\n\n@dataclass\nclass Account:\n    number: str\n    owner: str\n    balance: int = 0\n    history: list[Transaction] = field(default_factory=list)\n\n    def deposit(self, amount: int) -> None:\n        check_amount(amount)\n        self.balance += amount\n        self.history.append(Transaction(Kind.DEPOSIT, amount, self.balance))\n        log.info(\"%s deposit %d, balance %d\", self.number, amount, self.balance)\n\n    def withdraw(self, amount: int) -> None:\n        check_amount(amount)\n        if amount > self.balance:\n            log.warning(\"%s withdraw %d refused: balance %d\", self.number, amount, self.balance)\n            raise InsufficientFundsError(self.balance, amount)\n        self.balance -= amount\n        self.history.append(Transaction(Kind.WITHDRAW, amount, self.balance))\n        log.info(\"%s withdraw %d, balance %d\", self.number, amount, self.balance)\n"
+   },
+   "explain": [
+    [
+     5,
+     "Silence INFO and WARNING logs while testing."
+    ],
+    [
+     9,
+     "Arrange: a fresh account before each test."
+    ],
+    [
+     17,
+     "The error must be raised…"
+    ],
+    [
+     19,
+     "…and nothing may change. This is the important part."
+    ]
+   ],
+   "say": "Now we lock the behaviour in with tests. Notice the second test: it checks that the error is raised, and then that the balance and the history did not change. Checking that nothing changed is what separates a real test from a shallow one. We also raise the log level to ERROR so warnings don't clutter the test report."
+  },
+  {
+   "type": "quiz",
+   "title": "Review: Days 35–36",
+   "q": "You're testing that a transfer with insufficient funds is refused. What must a strong test check?",
+   "options": [
+    "Only that InsufficientFundsError was raised",
+    "That it raised AND that neither balance nor any history changed",
+    "That a log line was printed"
+   ],
+   "answer": 1,
+   "why": "A buggy transfer could take the money and then raise. Only a test that also checks the balances afterwards catches that. You'll need exactly this in the project.",
+   "say": "A review of days thirty five and thirty six, and a hint for the project. What should a strong test for a refused transfer check?"
+  },
+  {
+   "type": "project",
+   "title": "Project: the Bank",
+   "brief": "Build the **Bank** service: it opens accounts, moves money safely between them, pays interest, and logs every movement. Errors, models and `Account` are done. You write `transfer` and `add_interest`, then extend `TestBank` so it catches real bugs.",
+   "steps": [
+    "Read the starter and run it: the 2 given tests pass. Rupees are whole ints.",
+    "transfer(src, dst, amount): look up both accounts first with self.get(), raise BankError if they are the same account, then check_amount(amount).",
+    "Not enough money? log.warning(...) and raise InsufficientFundsError, changing nothing. Otherwise move the money, record TRANSFER_OUT and TRANSFER_IN with account.record(...), and log.info(...).",
+    "add_interest(rate_percent): a negative rate raises ValueError. For each account, interest = round(balance * rate_percent / 100); if it's positive, add it and record INTEREST. Return the total paid.",
+    "Extend TestBank: test_transfer_moves_money (check BOTH balances) and test_transfer_without_funds_changes_nothing (balances and history unchanged).",
+    "Run until all tests pass. The checker also runs your tests against two buggy transfers: they must catch both."
+   ],
+   "starter": "import logging\nimport sys\nimport unittest\nfrom dataclasses import dataclass, field\nfrom enum import Enum\n\n# WARNING keeps test output readable. Switch to logging.INFO to watch the audit trail.\nlogging.basicConfig(stream=sys.stdout, level=logging.WARNING, force=True,\n                    format=\"%(levelname)-7s %(name)s | %(message)s\")\nlog = logging.getLogger(\"bank\")\n\n\n# ---------- Errors ----------\n\nclass BankError(Exception):\n    \"\"\"Base class for every bank rule violation.\"\"\"\n\n\nclass InvalidAmountError(BankError):\n    pass\n\n\nclass InsufficientFundsError(BankError):\n    def __init__(self, balance, requested):\n        super().__init__(f\"balance {balance}, requested {requested}\")\n        self.balance = balance\n        self.requested = requested\n\n\nclass AccountNotFoundError(BankError):\n    pass\n\n\n# ---------- Models ----------\nclass Kind(Enum):\n    DEPOSIT = \"deposit\"\n    WITHDRAW = \"withdraw\"\n    TRANSFER_IN = \"transfer_in\"\n    TRANSFER_OUT = \"transfer_out\"\n    INTEREST = \"interest\"\n\n\n@dataclass(frozen=True)\nclass Transaction:\n    kind: Kind\n    amount: int\n    balance_after: int\n    note: str = \"\"\n\n\ndef check_amount(amount):\n    if not isinstance(amount, int) or amount <= 0:\n        raise InvalidAmountError(f\"amount must be a positive whole number, got {amount!r}\")\n\n\n@dataclass\nclass Account:\n    number: str\n    owner: str\n    balance: int = 0\n    history: list[Transaction] = field(default_factory=list)\n\n    def record(self, kind: Kind, amount: int, note: str = \"\") -> None:\n        self.history.append(Transaction(kind, amount, self.balance, note))\n\n    def deposit(self, amount: int, note: str = \"\") -> None:\n        check_amount(amount)\n        self.balance += amount\n        self.record(Kind.DEPOSIT, amount, note)\n\n    def withdraw(self, amount: int, note: str = \"\") -> None:\n        check_amount(amount)\n        if amount > self.balance:\n            raise InsufficientFundsError(self.balance, amount)\n        self.balance -= amount\n        self.record(Kind.WITHDRAW, amount, note)\n\n\n# ---------- Service ----------\nclass Bank:\n    def __init__(self, name: str):\n        self.name = name\n        self.accounts: dict[str, Account] = {}\n        self._next_number = 1001\n\n    def open_account(self, owner: str, initial: int = 0) -> Account:\n        number = f\"AC{self._next_number}\"\n        self._next_number += 1\n        account = Account(number, owner)\n        self.accounts[number] = account\n        if initial:\n            account.deposit(initial, \"opening deposit\")\n        log.info(\"opened %s for %s\", number, owner)\n        return account\n\n    def get(self, number: str) -> Account:\n        if number not in self.accounts:\n            raise AccountNotFoundError(number)\n        return self.accounts[number]\n\n    def transfer(self, src: str, dst: str, amount: int) -> None:\n        # TODO (steps 2 and 3)\n        raise NotImplementedError\n\n    def add_interest(self, rate_percent: float) -> int:\n        # TODO (step 4)\n        raise NotImplementedError\n\n\n# ---------- Tests ----------\nclass TestBank(unittest.TestCase):\n    def setUp(self):\n        self.bank = Bank(\"Brodoit Bank\")\n        self.riya = self.bank.open_account(\"Riya\", 5000)    # AC1001\n        self.arjun = self.bank.open_account(\"Arjun\")        # AC1002\n\n    def test_account_numbers_are_sequential(self):\n        self.assertEqual([self.riya.number, self.arjun.number], [\"AC1001\", \"AC1002\"])\n\n    def test_unknown_account_raises(self):\n        with self.assertRaises(AccountNotFoundError):\n            self.bank.get(\"AC9999\")\n\n    # TODO (step 5): test_transfer_moves_money\n    # TODO (step 5): test_transfer_without_funds_changes_nothing\n\n\nunittest.main(argv=[\"x\"], exit=False)\n",
+   "solution": "import logging\nimport sys\nimport unittest\nfrom dataclasses import dataclass, field\nfrom enum import Enum\n\n# WARNING keeps test output readable. Switch to logging.INFO to watch the audit trail.\nlogging.basicConfig(stream=sys.stdout, level=logging.WARNING, force=True,\n                    format=\"%(levelname)-7s %(name)s | %(message)s\")\nlog = logging.getLogger(\"bank\")\n\n\n# ---------- Errors ----------\n\nclass BankError(Exception):\n    \"\"\"Base class for every bank rule violation.\"\"\"\n\n\nclass InvalidAmountError(BankError):\n    pass\n\n\nclass InsufficientFundsError(BankError):\n    def __init__(self, balance, requested):\n        super().__init__(f\"balance {balance}, requested {requested}\")\n        self.balance = balance\n        self.requested = requested\n\n\nclass AccountNotFoundError(BankError):\n    pass\n\n\n# ---------- Models ----------\nclass Kind(Enum):\n    DEPOSIT = \"deposit\"\n    WITHDRAW = \"withdraw\"\n    TRANSFER_IN = \"transfer_in\"\n    TRANSFER_OUT = \"transfer_out\"\n    INTEREST = \"interest\"\n\n\n@dataclass(frozen=True)\nclass Transaction:\n    kind: Kind\n    amount: int\n    balance_after: int\n    note: str = \"\"\n\n\ndef check_amount(amount):\n    if not isinstance(amount, int) or amount <= 0:\n        raise InvalidAmountError(f\"amount must be a positive whole number, got {amount!r}\")\n\n\n@dataclass\nclass Account:\n    number: str\n    owner: str\n    balance: int = 0\n    history: list[Transaction] = field(default_factory=list)\n\n    def record(self, kind: Kind, amount: int, note: str = \"\") -> None:\n        self.history.append(Transaction(kind, amount, self.balance, note))\n\n    def deposit(self, amount: int, note: str = \"\") -> None:\n        check_amount(amount)\n        self.balance += amount\n        self.record(Kind.DEPOSIT, amount, note)\n\n    def withdraw(self, amount: int, note: str = \"\") -> None:\n        check_amount(amount)\n        if amount > self.balance:\n            raise InsufficientFundsError(self.balance, amount)\n        self.balance -= amount\n        self.record(Kind.WITHDRAW, amount, note)\n\n\n# ---------- Service ----------\nclass Bank:\n    def __init__(self, name: str):\n        self.name = name\n        self.accounts: dict[str, Account] = {}\n        self._next_number = 1001\n\n    def open_account(self, owner: str, initial: int = 0) -> Account:\n        number = f\"AC{self._next_number}\"\n        self._next_number += 1\n        account = Account(number, owner)\n        self.accounts[number] = account\n        if initial:\n            account.deposit(initial, \"opening deposit\")\n        log.info(\"opened %s for %s\", number, owner)\n        return account\n\n    def get(self, number: str) -> Account:\n        if number not in self.accounts:\n            raise AccountNotFoundError(number)\n        return self.accounts[number]\n\n    def transfer(self, src: str, dst: str, amount: int) -> None:\n        sender = self.get(src)          # look up both first: nothing changes\n        receiver = self.get(dst)        # if either account is unknown\n        if sender is receiver:\n            raise BankError(\"cannot transfer to the same account\")\n        check_amount(amount)\n        if amount > sender.balance:\n            log.warning(\"transfer %s -> %s of %d refused: balance %d\", src, dst, amount, sender.balance)\n            raise InsufficientFundsError(sender.balance, amount)\n        sender.balance -= amount\n        sender.record(Kind.TRANSFER_OUT, amount, f\"to {dst}\")\n        receiver.balance += amount\n        receiver.record(Kind.TRANSFER_IN, amount, f\"from {src}\")\n        log.info(\"transfer %s -> %s: %d\", src, dst, amount)\n\n    def add_interest(self, rate_percent: float) -> int:\n        if rate_percent < 0:\n            raise ValueError(\"interest rate cannot be negative\")\n        paid = 0\n        for account in self.accounts.values():\n            interest = round(account.balance * rate_percent / 100)\n            if interest <= 0:\n                continue\n            account.balance += interest\n            account.record(Kind.INTEREST, interest, f\"{rate_percent}% interest\")\n            paid += interest\n        log.info(\"interest at %s%%: %d paid\", rate_percent, paid)\n        return paid\n\n\n# ---------- Tests ----------\nclass TestBank(unittest.TestCase):\n    def setUp(self):\n        self.bank = Bank(\"Brodoit Bank\")\n        self.riya = self.bank.open_account(\"Riya\", 5000)    # AC1001\n        self.arjun = self.bank.open_account(\"Arjun\")        # AC1002\n\n    def test_account_numbers_are_sequential(self):\n        self.assertEqual([self.riya.number, self.arjun.number], [\"AC1001\", \"AC1002\"])\n\n    def test_unknown_account_raises(self):\n        with self.assertRaises(AccountNotFoundError):\n            self.bank.get(\"AC9999\")\n\n    def test_transfer_moves_money(self):\n        self.bank.transfer(\"AC1001\", \"AC1002\", 1200)\n        self.assertEqual(self.riya.balance, 3800)\n        self.assertEqual(self.arjun.balance, 1200)\n        self.assertEqual(self.arjun.history[-1].kind, Kind.TRANSFER_IN)\n\n    def test_transfer_without_funds_changes_nothing(self):\n        with self.assertRaises(InsufficientFundsError):\n            self.bank.transfer(\"AC1002\", \"AC1001\", 500)\n        self.assertEqual(self.arjun.balance, 0)\n        self.assertEqual(self.riya.balance, 5000)\n        self.assertEqual(self.arjun.history, [])\n\n    def test_interest_is_rounded_and_recorded(self):\n        paid = self.bank.add_interest(4)\n        self.assertEqual(paid, 200)\n        self.assertEqual(self.riya.balance, 5200)\n        self.assertEqual(self.riya.history[-1].kind, Kind.INTEREST)\n        self.assertEqual(self.arjun.history, [])\n\n\nunittest.main(argv=[\"x\"], exit=False)\n",
+   "tests": "import logging as _l\nimport unittest as _u\n\nb = Bank(\"Test\")\nr = b.open_account(\"Riya\", 5000)\na = b.open_account(\"Arjun\")\ntry:\n    b.transfer(r.number, a.number, 1200)\nexcept NotImplementedError:\n    raise AssertionError(\"Steps 2 and 3: write Bank.transfer. It still raises NotImplementedError.\") from None\nassert (r.balance, a.balance) == (3800, 1200), f\"Moving 1200 from Riya (5000) to Arjun (0) should leave 3800 and 1200, got {r.balance} and {a.balance}.\"\nt_out, t_in = r.history[-1], a.history[-1]\nassert t_out.kind == Kind.TRANSFER_OUT and t_out.amount == 1200 and t_out.balance_after == 3800, \"Record a TRANSFER_OUT of 1200 on the sender (balance_after 3800) with sender.record(...).\"\nassert t_in.kind == Kind.TRANSFER_IN and t_in.amount == 1200 and t_in.balance_after == 1200, \"Record a TRANSFER_IN of 1200 on the receiver (balance_after 1200).\"\n\n_before = (r.balance, a.balance, len(r.history), len(a.history))\ntry:\n    b.transfer(a.number, r.number, 5000)\nexcept InsufficientFundsError:\n    pass\nelse:\n    raise AssertionError(\"Arjun has 1200, so sending 5000 must raise InsufficientFundsError.\")\nassert (r.balance, a.balance, len(r.history), len(a.history)) == _before, \"A refused transfer must change nothing: no balances and no history.\"\nfor _bad in (0, -50):\n    try:\n        b.transfer(r.number, a.number, _bad)\n    except InvalidAmountError:\n        pass\n    else:\n        raise AssertionError(f\"A transfer of {_bad} should raise InvalidAmountError: call check_amount(amount).\")\ntry:\n    b.transfer(r.number, \"AC9999\", 100)\nexcept AccountNotFoundError:\n    pass\nelse:\n    raise AssertionError(\"Sending to AC9999 (no such account) should raise AccountNotFoundError: use self.get().\")\nassert r.balance == 3800, \"A transfer to an unknown account must not touch the sender's money. Look up both accounts before moving anything.\"\ntry:\n    b.transfer(r.number, r.number, 100)\nexcept BankError:\n    pass\nelse:\n    raise AssertionError(\"A transfer from an account to itself should raise BankError.\")\nassert r.balance == 3800 and len(r.history) == 2, \"A refused same-account transfer must not change anything.\"\n\n_tc = _u.TestCase()\ntry:\n    with _tc.assertLogs(\"bank\", level=\"INFO\"):\n        b.transfer(r.number, a.number, 100)\nexcept AssertionError:\n    raise AssertionError(\"Log an INFO line with the bank logger, log.info(...), for every successful transfer.\") from None\ntry:\n    with _tc.assertLogs(\"bank\", level=\"WARNING\"):\n        try:\n            b.transfer(a.number, r.number, 10 ** 6)\n        except InsufficientFundsError:\n            pass\nexcept AssertionError:\n    raise AssertionError(\"Log a WARNING, log.warning(...), when a transfer is refused for insufficient funds.\") from None\n\nb2 = Bank(\"Interest\")\nx = b2.open_account(\"Meera\", 1234)\ny = b2.open_account(\"Kabir\")\ntry:\n    paid = b2.add_interest(3.5)\nexcept NotImplementedError:\n    raise AssertionError(\"Step 4: write Bank.add_interest. It still raises NotImplementedError.\") from None\nassert x.balance == 1277, f\"3.5% of 1234 is 43.19, rounded to 43, so Meera's balance should be 1277, got {x.balance}.\"\nassert paid == 43, f\"add_interest should return the total interest paid, 43, got {paid!r}.\"\nassert x.history[-1].kind == Kind.INTEREST and x.history[-1].amount == 43, \"Record an INTEREST transaction of 43 on Meera's account.\"\nassert y.balance == 0 and y.history == [], \"An empty account earns nothing: don't record an INTEREST transaction for it.\"\ntry:\n    b2.add_interest(-1)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError(\"A negative interest rate should raise ValueError.\")\nassert x.balance == 1277, \"A rejected interest rate must not change any balance.\"\n\nassert \"TestBank\" in globals(), \"Keep the TestBank class: step 5 extends it.\"\n_suite = lambda: _u.defaultTestLoader.loadTestsFromTestCase(TestBank)\n_n = _suite().countTestCases()\nassert _n >= 4, f\"Step 5: TestBank needs the 2 given tests plus at least 2 of yours (found {_n}).\"\n_orig = Bank.transfer\n_l.disable(_l.CRITICAL)\ntry:\n    _res = _u.TestResult()\n    _suite().run(_res)\n    _bad = _res.failures + _res.errors\n    assert not _bad, (f\"Your TestBank suite should pass on your own code, but {_bad[0][0].id().split('.')[-1]} failed: \"\n                      f\"{_bad[0][1].strip().splitlines()[-1]}\") if _bad else \"\"\n\n    def _no_credit(self, src, dst, amount):\n        s, d = self.get(src), self.get(dst)\n        check_amount(amount)\n        if amount > s.balance:\n            raise InsufficientFundsError(s.balance, amount)\n        s.balance -= amount\n        s.record(Kind.TRANSFER_OUT, amount, \"to \" + dst)\n\n    def _debit_first(self, src, dst, amount):\n        s, d = self.get(src), self.get(dst)\n        check_amount(amount)\n        s.balance -= amount\n        if s.balance < 0:\n            raise InsufficientFundsError(s.balance + amount, amount)\n        d.balance += amount\n        s.record(Kind.TRANSFER_OUT, amount, \"to \" + dst)\n        d.record(Kind.TRANSFER_IN, amount, \"from \" + src)\n\n    def _caught(fn):\n        Bank.transfer = fn\n        _r2 = _u.TestResult()\n        _suite().run(_r2)\n        return not _r2.wasSuccessful()\n\n    assert _caught(_no_credit), \"Your tests passed even when transfer forgot to credit the receiver. In test_transfer_moves_money, check BOTH balances.\"\n    assert _caught(_debit_first), \"Your tests passed even when a refused transfer still took the money. In test_transfer_without_funds_changes_nothing, assert the sender's balance is unchanged.\"\nfinally:\n    Bank.transfer = _orig\n    _l.disable(_l.NOTSET)",
+   "hints": [
+    "Order matters in transfer: self.get(src), self.get(dst), the same-account check, check_amount, the funds check, and only then change balances.",
+    "After changing sender.balance, call sender.record(Kind.TRANSFER_OUT, amount, f\"to {dst}\"), so balance_after is the new balance.",
+    "In add_interest, skip accounts whose interest is 0 with continue, and add each interest to a running total.",
+    "In test_transfer_without_funds_changes_nothing, use with self.assertRaises(InsufficientFundsError): then assertEqual on both balances."
+   ],
+   "say": "Project time. The starter has the errors, the models and a working account. You build the bank's transfer and interest methods, with logging, and then extend the test suite. When you check, we also run your tests against two subtly broken transfers. Your tests pass the challenge only if they catch both. Follow the steps one at a time, and run often."
+  },
+  {
+   "type": "exercise",
+   "title": "A command line for the bank",
+   "task": "Tellers type commands. Write `parse_command(line)`:\n\n- `\"deposit AC1001 500\"` → `(\"deposit\", \"AC1001\", 500)` (same for `withdraw`)\n- `\"transfer AC1001 AC1002 1200\"` → `(\"transfer\", \"AC1001\", \"AC1002\", 1200)`\n- any case, extra spaces OK; account numbers come back upper case\n- anything else, or an amount of 0, raises `ValueError`",
+   "starter": "import re\n\ndef parse_command(line):\n    # TODO: return a tuple, or raise ValueError for anything invalid\n    return None\n\nprint(parse_command(\"deposit AC1001 500\"))\nprint(parse_command(\"transfer AC1001 AC1002 1200\"))\n",
+   "solution": "import re\n\nSIMPLE = re.compile(r\"(deposit|withdraw) (AC\\d{4}) (\\d+)\", re.IGNORECASE)\nTRANSFER = re.compile(r\"transfer (AC\\d{4}) (AC\\d{4}) (\\d+)\", re.IGNORECASE)\n\ndef parse_command(line):\n    text = \" \".join(line.split())      # trim and squeeze spaces\n    m = SIMPLE.fullmatch(text)\n    if m:\n        action, account, amount = m.groups()\n        result = (action.lower(), account.upper(), int(amount))\n    else:\n        m = TRANSFER.fullmatch(text)\n        if m is None:\n            raise ValueError(f\"unknown command: {line!r}\")\n        src, dst, amount = m.groups()\n        result = (\"transfer\", src.upper(), dst.upper(), int(amount))\n    if result[-1] == 0:\n        raise ValueError(\"amount must be positive\")\n    return result\n\nprint(parse_command(\"deposit AC1001 500\"))\nprint(parse_command(\"transfer AC1001 AC1002 1200\"))\n",
+   "tests": "good = {\"deposit AC1001 500\": (\"deposit\", \"AC1001\", 500),\n        \"withdraw AC1002 250\": (\"withdraw\", \"AC1002\", 250),\n        \"transfer AC1001 AC1002 1200\": (\"transfer\", \"AC1001\", \"AC1002\", 1200),\n        \"  Transfer  ac1001   AC1002 75 \": (\"transfer\", \"AC1001\", \"AC1002\", 75),\n        \"DEPOSIT ac1003 1\": (\"deposit\", \"AC1003\", 1)}\nfor line, want in good.items():\n    got = parse_command(line)\n    assert got == want, f\"parse_command({line!r}) should return {want}, got {got!r}.\"\nfor line in [\"deposit AC1001 -5\", \"deposit AC1001 0\", \"pay AC1001 50\", \"deposit AC12 50\", \"transfer AC1001 500\", \"\", \"withdraw AC1001 12.5\"]:\n    try:\n        parse_command(line)\n    except ValueError:\n        continue\n    raise AssertionError(f\"parse_command({line!r}) should raise ValueError.\")",
+   "hints": [
+    "Normalise first: text = \" \".join(line.split()) trims and squeezes spaces.",
+    "Two patterns with re.IGNORECASE and fullmatch: (deposit|withdraw) (AC\\d{4}) (\\d+) and transfer (AC\\d{4}) (AC\\d{4}) (\\d+)",
+    "\\d+ can't match -5 or 12.5, so those fail to match: raise ValueError. Check for 0 separately."
+   ],
+   "say": "Bank tellers type short commands, and your program must understand them. Write parse command, which turns a typed line into a clean tuple and rejects anything malformed. This is day thirty three's regex skills put to work on a real interface."
+  },
+  {
+   "type": "concept",
+   "title": "On your laptop",
+   "body": "Split the file into a real project: `src/bank/` (errors, models, service) and `tests/`, with a `pyproject.toml`. Then the whole team runs the same commands:",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python -m venv .venv && source .venv/bin/activate"
+     ],
+     [
+      "(.venv) $",
+      "pip install -e \".[dev]\""
+     ],
+     [
+      "(.venv) $",
+      "python -m unittest discover -s tests"
+     ],
+     [
+      "",
+      "........"
+     ],
+     [
+      "",
+      "Ran 8 tests in 0.004s"
+     ],
+     [
+      "",
+      "OK"
+     ],
+     [
+      "(.venv) $",
+      "ruff check . && black --check ."
+     ],
+     [
+      "",
+      "All checks passed!"
+     ],
+     [
+      "",
+      "6 files would be left unchanged."
+     ]
+    ]
+   },
+   "say": "On your laptop, this project would be split into a real layout: a bank package inside src, with modules for errors, models and the service, and a tests folder. Then everyone on the team runs the same commands: create the virtual environment, install the project in editable mode with its dev tools, run the tests, and let ruff and black check the style before every commit."
+  },
+  {
+   "type": "quiz",
+   "title": "Review: Day 37",
+   "q": "A transfer is refused because the account doesn't have enough money. Which log level fits?",
+   "options": [
+    "DEBUG",
+    "WARNING",
+    "CRITICAL"
+   ],
+   "answer": 1,
+   "why": "It's unusual and worth noticing, but the system handled it correctly: WARNING. CRITICAL means the application itself is in trouble; DEBUG is for developer detail.",
+   "say": "Day thirty seven. Your bank refuses a transfer for insufficient funds. Which log level should that message use?"
+  },
+  {
+   "type": "quiz",
+   "title": "Review: Days 38–39",
+   "q": "Your bank must run requests version 2.32.3 in production, exactly. What goes in requirements.txt?",
+   "options": [
+    "requests",
+    "requests==2.32.3",
+    "requests>=2"
+   ],
+   "answer": 1,
+   "why": "== pins the exact version, so every deployment installs the same code. Without a pin, a new release could change behaviour under you, like an unnamed magic number in your dependencies.",
+   "say": "Last review question. Production must run exactly version two point thirty two point three of requests. What do you write in the requirements file?"
+  },
+  {
+   "type": "recap",
+   "title": "Phase 4 complete",
+   "points": [
+    "A custom exception hierarchy turns every business rule into a clear, catchable error",
+    "Dataclasses and enums model accounts and an immutable transaction history",
+    "Validate first, then change state: refused operations must change nothing",
+    "Logging gives you an audit trail; tests that check what did NOT change catch the subtle bugs",
+    "You now work like a professional: standard library, types, tests, logs, clean code and real projects"
+   ],
+   "say": "Phase four complete. You designed and built a tested, logged banking core, and along the way you learned the habits that make Python professional. Next comes phase five, Developer: algorithms, data structures, data work, web APIs and databases. Take a well-earned break, and see you on day forty one."
+  }
+ ]
+}

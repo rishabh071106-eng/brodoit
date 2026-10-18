@@ -7,96 +7,135 @@
 <title>Course · Brodoit Languages</title>
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=14">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=14">
-<link rel="stylesheet" href="/lang/assets/topbar.css?v=14">
-<script src="/app/icons.js?v=14" defer></script>
-<script src="/lang/assets/topbar.js?v=14" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=16">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=15">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=15">
+<link rel="stylesheet" href="/lang/assets/stages.css?v=1">
+<script src="/app/icons.js?v=16" defer></script>
+<script src="/lang/assets/topbar.js?v=15" defer></script>
 </head>
-<body>
-<main class="wrap" style="padding-bottom:40px">
+<body class="stg-page">
+<main class="wrap" style="padding-bottom:60px">
   <div id="head"></div>
   <div id="body"></div>
 </main>
 <script type="module">
-import { renderChrome, loadCourses, loadCourse, loadAudioCourse, store, esc, t, param, courseProgress, computeStreak, ICON, setCourse, toast, comingSoonHTML } from '/lang/assets/lang.js?v=9';
-import { loadPhraseCatalog, loadPhraseLang, phraseProgress, phrasesHref, PHRASE_OF } from '/lang/assets/phrases.js?v=9';
+import { renderChrome, loadCourses, loadCourse, loadAudioCourse, store, esc, t, param, courseProgress, computeStreak, setCourse, toast, comingSoonHTML } from '/lang/assets/lang.js?v=10';
 import { ic } from '/lang/assets/ico.js?v=14';
 
-// UI strings carry a leading emoji ("🎧 Audio lessons"); the v10 chrome draws the icon instead.
-const label = key => t(lang, key).replace(/^[^\p{L}\p{N}]+\s*/u, '');
+// The School of Languages: Spanish, French, German and Hindi (taught in English), English (taught in Hindi).
+const SCHOOL = ['es', 'fr', 'de', 'hi', 'en'];
 const code = param('c') || 'es';
+if (!SCHOOL.includes(code)) location.replace('/lang/');
 const courses = await loadCourses();
-const meta = courses.find(c => c.code === code) || { code, name: code.toUpperCase(), native: '', flag: '🌍', from: 'en', tagline: '', hasAudio: true };
+const meta = courses.find(c => c.code === code) || { code, name: code.toUpperCase(), native: '', flag: '', from: 'en', tagline: '', hasAudio: true };
 const lang = meta.from;
+const H = lang === 'hi';
+const L = (en, hi) => H ? hi : en;
 document.title = `${meta.name} · Brodoit Languages`;
 const [course, audio] = await Promise.all([loadCourse(code), meta.hasAudio === false ? null : loadAudioCourse(code)]);
 setCourse(code);
 const s = store.read();
-renderChrome({ title: meta.name, right: `<span class="pill">${ic('flame', 16)} ${computeStreak(s.daily)}</span>` });
+const streak = computeStreak(s.daily);
+renderChrome({ title: meta.name, right: `<span class="pill">${ic('flame', 16)} ${streak}</span>` });
 
 const head = document.getElementById('head'), body = document.getElementById('body');
+const HUES = ['#E0603F', '#2F7D4F', '#3B7FD0', '#8B5CF6', '#C2410C', '#0E9F9A', '#B5402A', '#6D28D9', '#B45309', '#BE185D'];
+
 if (!course && !audio) {
-  head.innerHTML = `<div class="chead rise"><div class="flag">${meta.flag}</div><div><div class="t">${esc(meta.name)}</div><div class="s">${esc(meta.tagline)}</div></div></div>`;
   body.innerHTML = comingSoonHTML(lang);
 } else {
   const p = courseProgress(code, course, audio);
-  const audioDone = (audio?.lessons || []).filter(l => s.done[`${code}/${l.id}`]).length;
+  const r = 24, circ = 2 * Math.PI * r;
   head.innerHTML = `
-    <div class="chead rise"><div class="flag">${meta.flag}</div>
-      <div><div class="t">${esc(meta.name)} <span class="muted" style="font-size:16px;font-weight:700">${esc(meta.native)}</span></div><div class="s">${esc(meta.tagline || course?.tagline || '')}</div></div></div>
-    <div class="stats rise" style="animation-delay:.05s">
-      <div class="b-card stat"><b>${s.xp || 0}</b><span>${t(lang, 'xp')}</span></div>
-      <div class="b-card stat"><b>${p.done}/${p.total}</b><span>${t(lang, 'lessons')}</span></div>
-      <div class="b-card stat"><b>${p.pct}%</b><span>${t(lang, 'done')}</span></div>
-    </div>
-    <div class="seg rise" id="seg" style="animation-delay:.1s"><div class="thumb"></div>
-      <button data-m="audio" class="on">${ic('headphones', 16)} ${label('audio')}</button><button data-m="practice">${ic('pencil', 16)} ${label('practice')}</button></div>`;
+    <section class="stg-hero">
+      <img src="/app/img/cards/lang-${code}.jpg" alt="" onerror="this.remove()">
+      <div class="stg-hshade"></div>
+      <div class="stg-hb">
+        <div class="stg-hk"><span class="stg-flag">${meta.flag || ''}</span>${L('School of Languages', 'भाषा स्कूल')} · ${L('taught in', 'पढ़ाई')} ${esc(meta.fromName || 'English')}</div>
+        <h1>${esc(meta.name)} <span>${esc(meta.native || '')}</span></h1>
+        <p>${esc(meta.tagline || course?.tagline || '')}</p>
+        <div class="stg-stats">
+          <span class="stg-ring"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="${r}" class="t"/><circle cx="28" cy="28" r="${r}" class="v" style="stroke-dasharray:${circ};stroke-dashoffset:${circ * (1 - p.pct / 100)}"/></svg><b>${p.pct}%</b></span>
+          <span class="stg-chip">${ic('flame', 15)}<b>${streak}</b> ${L('day streak', 'दिन')}</span>
+          <span class="stg-chip">${ic('zap', 15)}<b>${s.xp || 0}</b> XP</span>
+        </div>
+      </div>
+    </section>
+    <div class="seg stg-seg" id="seg"><div class="thumb"></div>
+      <button data-m="audio" class="on">${ic('headphones', 16)} ${L('Listen', 'सुनो')}</button><button data-m="practice">${ic('star', 16)} ${L('Practice stages', 'अभ्यास स्टेज')}</button></div>`;
 
-  // ---- Audio path ----
+  // ---- Listen: audio episodes ----
   const audioHTML = () => {
     if (!audio?.lessons?.length) return comingSoonHTML(lang, '/lang/');
     const ls = audio.lessons;
-    let firstOpen = ls.findIndex(l => !s.done[`${code}/${l.id}`]);
-    const offs = [0, 40, 64, 40, 0, -40, -64, -40];
-    return `<div class="path">${ls.map((l, i) => {
-      const done = !!s.done[`${code}/${l.id}`], open = i === firstOpen || (i > 0 && s.done[`${code}/${ls[i - 1].id}`]) || i === 0;
-      const st = done ? 'done' : open ? 'open' : 'locked';
-      const x = offs[i % offs.length];
+    const firstOpen = ls.findIndex(l => !s.done[`${code}/${l.id}`]);
+    return `<div class="ep-intro">${ic('headphones', 18)}<span>${L('Listen, repeat aloud, answer. Earbuds in, phone in pocket.', 'सुनो, दोहराओ, जवाब दो। ईयरफ़ोन लगाओ और चल पड़ो।')}</span></div>
+      <div class="eps">${ls.map((l, i) => {
+      const done = !!s.done[`${code}/${l.id}`], open = done || i === 0 || !!s.done[`${code}/${ls[i - 1].id}`] || i === firstOpen;
+      const cur = i === firstOpen;
       const title = String(l.title || '').replace(/^Lesson\s*\d+\s*[—–-]\s*/i, '').replace(/^पाठ\s*\d+\s*[—–-]\s*/, '');
-      const inner = `${i === firstOpen ? `<span class="start">${t(lang, 'start')}</span>` : ''}
-        <span class="btn">${done ? ICON.check.replace('<svg', '<svg width="36" height="36"') : st === 'locked' ? ICON.lock.replace('<svg', '<svg width="30" height="30"') : ICON.headphones.replace('<svg', '<svg width="36" height="36"')}<span class="num">${i + 1}</span></span>
-        <span class="lbl">${esc(title)}<small>${l.minutes || 15} ${t(lang, 'min')}${done ? ' · ✓' : ''}</small></span>`;
-      const side = x > 0 ? 'R' : x < 0 ? 'L' : (i % 2 ? 'R' : 'L');
-      return st === 'locked'
-        ? `<button class="node ${st} ${side}" style="--x:${x}px" data-locked aria-label="${esc(l.title)}">${inner}</button>`
-        : `<a class="node ${st} ${side}" style="--x:${x}px" href="/lang/audio.html?c=${code}&l=${encodeURIComponent(l.id)}">${inner}</a>`;
+      const inner = `<span class="ep-n">${done ? ic('check', 20) : !open ? ic('lock', 16) : i + 1}</span>
+        <span class="ep-t"><b>${esc(title)}</b><small>${l.minutes || 15} ${t(lang, 'min')}${l.goal ? ' · ' + esc(l.goal) : ''}</small></span>
+        ${cur ? `<span class="ep-play">${ic('play', 18)}</span>` : ''}`;
+      return open ? `<a class="ep${done ? ' done' : ''}${cur ? ' cur' : ''}" style="--i:${i}" href="/lang/audio.html?c=${code}&l=${encodeURIComponent(l.id)}">${inner}</a>`
+        : `<button class="ep locked" style="--i:${i}" data-locked>${inner}</button>`;
     }).join('')}</div>`;
   };
 
-  // ---- Practice path ----
+  // ---- Practice: one stage per unit, four lessons each, Bro waiting at your next lesson ----
+  const all = (course?.units || []).flatMap(u => u.lessons.map(l => ({ u, l })));
+  const firstOpenK = all.findIndex(x => !s.done[`${code}/${x.l.id}`]);
   const practiceHTML = () => {
     if (!course?.units?.length) return comingSoonHTML(lang, '/lang/');
-    const all = course.units.flatMap(u => u.lessons.map(l => ({ u, l })));
-    const firstOpen = all.findIndex(x => !s.done[`${code}/${x.l.id}`]);
-    const offs = [0, 52, 0, -52];
-    const alts = ['', 'alt', 'alt2', 'alt3', 'alt4'];
     let k = -1;
-    return `<div class="path">${course.units.map((u, ui) => `
-      <div class="unit-hd ${alts[ui % alts.length]}"><div class="e">${u.emoji || '📘'}</div><div><div class="k">${t(lang, 'unit')} ${ui + 1}</div><div class="t">${esc(u.title)}</div><div class="g">${esc(u.goal || '')}</div></div></div>
-      ${u.lessons.map((l, li) => {
-        k++;
-        const done = !!s.done[`${code}/${l.id}`], open = k === 0 || done || (k > 0 && s.done[`${code}/${all[k - 1].l.id}`]);
-        const st = done ? 'done' : open ? 'open' : 'locked';
-        const x = offs[li % offs.length], side = x > 0 ? 'R' : x < 0 ? 'L' : (li % 2 ? 'R' : 'L');
-        const inner = `${k === firstOpen ? `<span class="start">${t(lang, 'start')}</span>` : ''}
-          <span class="btn">${done ? ICON.check.replace('<svg', '<svg width="36" height="36"') : st === 'locked' ? ICON.lock.replace('<svg', '<svg width="30" height="30"') : li === u.lessons.length - 1 ? ICON.star.replace('<svg', '<svg width="34" height="34"') : ICON.pen.replace('<svg', '<svg width="34" height="34"')}</span>
-          <span class="lbl">${esc(l.title)}<small>${l.items?.length || 0} ${lang === 'hi' ? 'अभ्यास' : 'exercises'}</small></span>`;
-        return st === 'locked'
-          ? `<button class="node ${st} ${side}" style="--x:${x}px" data-locked aria-label="${esc(l.title)}">${inner}</button>`
-          : `<a class="node ${st} ${side}" style="--x:${x}px" href="/lang/lesson.html?c=${code}&u=${encodeURIComponent(u.id)}&l=${encodeURIComponent(l.id)}">${inner}</a>`;
-      }).join('')}`).join('')}</div>`;
+    return course.units.map((u, ui) => {
+      const ks = u.lessons.map(() => ++k);
+      const doneN = u.lessons.filter(l => s.done[`${code}/${l.id}`]).length;
+      const firstK = ks[0];
+      const unlocked = firstK === 0 || !!s.done[`${code}/${all[firstK - 1].l.id}`] || doneN > 0;
+      const state = doneN === u.lessons.length ? 'done' : (ks.includes(firstOpenK) ? 'cur' : unlocked ? 'open' : 'locked');
+      const offs = [0, 56, 0, -56];
+      const nodes = u.lessons.map((l, li) => {
+        const kk = ks[li], done = !!s.done[`${code}/${l.id}`];
+        const open = kk === 0 || done || !!s.done[`${code}/${all[kk - 1].l.id}`];
+        const cur = kk === firstOpenK, last = li === u.lessons.length - 1;
+        const cls = done ? 'done' : cur ? 'cur' : open ? 'open' : 'locked';
+        const icn = done ? ic('check', 26) : !open ? ic('lock', 20) : last ? ic('trophy', 24) : ic('star', 24);
+        const href = `/lang/lesson.html?c=${code}&u=${encodeURIComponent(u.id)}&l=${encodeURIComponent(l.id)}`;
+        return `<div class="nd-w" style="--x:${offs[li % 4]}px;--j:${li}">
+          ${cur ? `<span class="nd-bro"><img src="/app/mascot.svg" alt="" width="40" height="40"><i>${L('Next up', 'अगला')}</i></span>` : ''}
+          <button class="nd ${cls}" ${open ? `data-go="${esc(href)}" data-stage="${ui + 1}" data-lesson="${li + 1}" data-title="${esc(l.title)}" data-n="${l.items?.length || 0}" data-e="${esc(u.emoji || '')}"` : 'data-locked'} aria-label="${esc(l.title)}">${icn}</button>
+          <span class="nd-l">${esc(l.title)}</span></div>`;
+      }).join('');
+      return `<section class="stg ${state}" style="--hue:${HUES[ui % HUES.length]};--i:${ui}" id="stg${ui + 1}">
+        <div class="stg-h"><span class="stg-e">${u.emoji || ''}</span>
+          <div class="stg-ht"><small>${L('Stage', 'स्टेज')} ${ui + 1}${state === 'done' ? ' · ' + L('cleared', 'पूरा') : ''}</small><b>${esc(u.title)}</b><span>${esc(u.goal || '')}</span></div>
+          <span class="stg-c">${state === 'locked' ? ic('lock', 16) : `${doneN}/${u.lessons.length}`}</span></div>
+        <div class="stg-path">${nodes}</div>
+        ${state === 'done' ? `<div class="stg-won">${ic('trophy', 16)} ${L('Stage cleared', 'स्टेज पूरा')}</div>` : ''}
+      </section>`;
+    }).join('') + `<div class="stg-end">${ic('trophy', 18)} ${L('Clear all 10 stages to finish the course', 'सभी 10 स्टेज पूरे करो, कोर्स पूरा')}</div>`;
   };
+
+  // ---- the gate: entering a lesson feels like entering a level ----
+  function gate(b) {
+    const hue = (b.closest('.stg') && b.closest('.stg').style.getPropertyValue('--hue')) || '#E0603F';
+    const g = document.createElement('div'); g.className = 'gate'; g.setAttribute('role', 'dialog');
+    g.innerHTML = `<div class="gate-card" style="--hue:${hue}">
+      <div class="gate-burst" aria-hidden="true"></div><div class="gate-e">${b.dataset.e || ''}</div>
+      <small>${L('Stage', 'स्टेज')} ${b.dataset.stage} · ${L('Lesson', 'पाठ')} ${b.dataset.lesson}</small>
+      <h2>${esc(b.dataset.title)}</h2>
+      <p>${b.dataset.n} ${L('quick exercises, about 5 minutes', 'छोटे अभ्यास, लगभग 5 मिनट')}</p>
+      <a class="gate-go" href="${b.dataset.go}">${L("Let's go", 'चलो शुरू करें')} ${ic('arrow-right', 18)}</a>
+      <button class="gate-x" aria-label="${L('Close', 'बंद')}">${ic('x', 20)}</button></div>`;
+    document.body.appendChild(g);
+    requestAnimationFrame(() => g.classList.add('in'));
+    const close = () => { g.classList.remove('in'); setTimeout(() => g.remove(), 280); };
+    g.addEventListener('click', e => { if (e.target === g || e.target.closest('.gate-x')) close(); });
+    g.querySelector('.gate-go').addEventListener('click', e => { e.preventDefault(); g.classList.add('zoom'); setTimeout(() => { location.href = b.dataset.go; }, 360); });
+    try { navigator.vibrate && navigator.vibrate(12); } catch (e) { /* ignore */ }
+  }
 
   let mode = (location.hash === '#practice' || !audio?.lessons?.length) ? 'practice' : 'audio';
   const seg = document.getElementById('seg');
@@ -105,28 +144,15 @@ if (!course && !audio) {
     seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === mode));
     body.innerHTML = `<div class="pane on">${mode === 'audio' ? audioHTML() : practiceHTML()}</div>`;
     history.replaceState(null, '', mode === 'practice' ? '#practice' : location.pathname + location.search);
-    const start = body.querySelector('.node.open');
-    if (start && body.querySelectorAll('.node.done').length > 2) setTimeout(() => start.scrollIntoView({ block: 'center', behavior: 'smooth' }), 80);
+    const cur = body.querySelector(mode === 'practice' ? '.stg.cur' : '.ep.cur');
+    if (cur && (mode === 'practice' ? cur.id !== 'stg1' : body.querySelectorAll('.ep.done').length > 2)) setTimeout(() => cur.scrollIntoView({ block: 'center', behavior: 'smooth' }), 120);
   };
   seg.addEventListener('click', e => { const b = e.target.closest('button[data-m]'); if (b && b.dataset.m !== mode) { mode = b.dataset.m; render(); } });
-  body.addEventListener('click', e => { if (e.target.closest('[data-locked]')) toast(`🔒 ${t(lang, 'firstLesson')}`); });
+  body.addEventListener('click', e => {
+    if (e.target.closest('[data-locked]')) { toast(t(lang, 'firstLesson')); return; }
+    const n = e.target.closest('.nd[data-go]'); if (n) gate(n);
+  });
   render();
-}
-
-// ---- 📖 Phrasebook: Meera's phrase course for this language (lives here, not in the index list).
-if (PHRASE_OF[code]) {
-  const [pcat, plang] = await Promise.all([loadPhraseCatalog(), loadPhraseLang(PHRASE_OF[code])]);
-  if (pcat && plang) {
-    const pp = phraseProgress(plang.id, pcat, s);
-    const nPhr = plang.lessons.reduce((n, x) => n + x.phrases.length, 0);
-    const card = `<a class="b-card pbook press rise" href="${phrasesHref(plang.id)}" style="animation-delay:.08s">
-      <div class="e">${ic('book-open', 24)}</div>
-      <div style="min-width:0"><div class="t">Phrasebook <span class="muted" style="font-weight:700">· with ${esc(pcat.host.name)}</span></div>
-        <div class="s">${pp.total} lessons · ${nPhr} phrases${pp.done ? ` · ${pp.done}/${pp.total} done` : ''} · 60-day challenge</div></div>
-      <div class="arr">${ic('chevron-right', 20)}</div></a>`;
-    const stats = head.querySelector('.stats');
-    if (stats) stats.insertAdjacentHTML('afterend', card); else head.insertAdjacentHTML('beforeend', card);
-  }
 }
 </script>
 </body>

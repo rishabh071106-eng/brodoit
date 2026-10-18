@@ -1,0 +1,449 @@
+{
+ "day": 28,
+ "phase": 3,
+ "title": "Functional tools",
+ "subtitle": "Functions as values, closures and caching",
+ "minutes": 55,
+ "goal": "Pass and return functions, sort with key functions and lambda, use map, filter and zip, build closures, and apply functools tools.",
+ "outcomes": [
+  "Store and pass functions as values, like a command router",
+  "Sort and rank data with sorted(key=lambda ...) and tuple keys",
+  "Use map, filter, zip, any and all",
+  "Write closure factories and use nonlocal",
+  "Use functools.reduce, partial and lru_cache, and measure the speed-up"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 28: Functions are values",
+   "body": "In Python a function is an object, just like a number or a list. You can store it, pass it to another function, return it, even cache its results.\n\nThat unlocks the tools behind every leaderboard, data pipeline and web framework: `lambda`, `map`, `filter`, closures and `functools`.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Store a function in a variable",
+     "Pass it to another function",
+     "Return a new function from a function",
+     "Cache its results"
+    ]
+   },
+   "say": "In Python, a function is an object, just like a number or a list. You can store it in a variable, pass it to another function, return it from a function, and even cache its results. That one idea unlocks the tools behind leaderboards, data pipelines and web frameworks. Today: lambda, map, filter, closures, and the functools module."
+  },
+  {
+   "type": "concept",
+   "title": "A function is an object",
+   "body": "`def show_help():` creates a function object and binds the name `show_help` to it. Without brackets, `show_help` is the function itself; with brackets, `show_help()` **calls** it.\n\nSo functions can live in variables, lists and dicts.",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "show_help",
+     "handler"
+    ],
+    "objects": [
+     {
+      "id": "f",
+      "r": "function show_help",
+      "t": "function"
+     }
+    ],
+    "links": [
+     [
+      "show_help",
+      "f"
+     ],
+     [
+      "handler",
+      "f"
+     ]
+    ]
+   },
+   "say": "When Python runs def show help, it creates a function object and points the name show help at it. Without brackets, the name is the function itself. Add brackets, and you call it. That small difference means functions can be stored in variables, lists and dictionaries, just like any other value."
+  },
+  {
+   "type": "code",
+   "title": "A command router",
+   "body": "Chat bots and web frameworks route requests with exactly this trick: a dict from names to functions.",
+   "code": "def show_help():\n    return \"Commands: /help, /balance\"\n\n\ndef show_balance():\n    return \"Balance: ₹1,250\"\n\n\ncommands = {\"/help\": show_help, \"/balance\": show_balance}\n\nfor text in [\"/balance\", \"/help\", \"/pay\"]:\n    handler = commands.get(text)\n    if handler:\n        print(handler())\n    else:\n        print(\"Unknown command:\", text)\n\nshout = print  # built-in functions are values too\nshout(\"Functions are objects!\", show_help.__name__)",
+   "expect": "Balance: ₹1,250\nCommands: /help, /balance\nUnknown command: /pay\nFunctions are objects! show_help\n",
+   "explain": [
+    [
+     9,
+     "The dict stores the functions themselves: no brackets, so nothing is called yet."
+    ],
+    [
+     12,
+     "Look up the right function for this command."
+    ],
+    [
+     14,
+     "Now call it, with brackets."
+    ],
+    [
+     18,
+     "Even print can be given another name."
+    ],
+    [
+     19,
+     "Every function knows its own name."
+    ]
+   ],
+   "say": "A chat bot needs to run a different function for each command. We store the functions themselves in a dictionary, without brackets, so nothing runs yet. For each message, we look up the handler and call it. Unknown commands get a polite reply. Web frameworks route web addresses to functions using exactly this idea."
+  },
+  {
+   "type": "concept",
+   "title": "lambda: a function in one expression",
+   "body": "`lambda x: x * 2` makes a small, unnamed function. It can only hold **one expression**, whose value is returned.\n\nUse it for short throwaway functions, mostly as a `key=` or callback. Anything longer deserves a proper `def` with a name.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "def",
+     "code": "def by_runs(player):\n    return player[\"runs\"]\n\nsorted(players, key=by_runs)"
+    },
+    "right": {
+     "title": "lambda",
+     "code": "sorted(players,\n       key=lambda p: p[\"runs\"])"
+    },
+    "verdict": "Same function. lambda is handy when it is short and used once."
+   },
+   "say": "Lambda creates a small function without a name, in a single expression. Lambda x, colon, x times two, is a function that doubles its input. It can only hold one expression, and that value is returned automatically. Use lambda for short throwaway functions, mostly as a sort key or a callback. Anything longer deserves a proper def with a good name."
+  },
+  {
+   "type": "code",
+   "title": "Leaderboards with sorted(key=...)",
+   "code": "players = [\n    {\"name\": \"Riya\", \"runs\": 120, \"balls\": 30},\n    {\"name\": \"Kabir\", \"runs\": 95, \"balls\": 22},\n    {\"name\": \"Meera\", \"runs\": 140, \"balls\": 41},\n    {\"name\": \"Arjun\", \"runs\": 120, \"balls\": 25},\n]\n\nby_runs = sorted(players, key=lambda p: p[\"runs\"], reverse=True)\nprint(\"By runs:\", [p[\"name\"] for p in by_runs])\n\nby_rate = sorted(players, key=lambda p: p[\"runs\"] / p[\"balls\"], reverse=True)\nprint(\"By strike rate:\", [p[\"name\"] for p in by_rate])\n\nranked = sorted(players, key=lambda p: (-p[\"runs\"], p[\"name\"]))\nprint(\"Runs, then name:\", [p[\"name\"] for p in ranked])\n\nbest = max(players, key=lambda p: p[\"runs\"] / p[\"balls\"])\nprint(\"Fastest scorer:\", best[\"name\"])",
+   "expect": "By runs: ['Meera', 'Riya', 'Arjun', 'Kabir']\nBy strike rate: ['Arjun', 'Kabir', 'Riya', 'Meera']\nRuns, then name: ['Meera', 'Arjun', 'Riya', 'Kabir']\nFastest scorer: Arjun\n",
+   "explain": [
+    [
+     8,
+     "key is called once per player; sorting uses its result."
+    ],
+    [
+     11,
+     "Any calculation works as a key, like strike rate."
+    ],
+    [
+     14,
+     "A tuple key sorts by the first item, then the second. The minus sign gives most runs first, while names stay A to Z."
+    ],
+    [
+     17,
+     "max and min accept key= too."
+    ]
+   ],
+   "say": "Sorted calls the key function once for every player and sorts by its result. Sort by runs, highest first, or by strike rate, which is calculated on the fly. To break ties, return a tuple: negative runs puts the highest first, while the name sorts alphabetically. And max and min take a key too, so the fastest scorer is one line."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "words = [\"chai\", \"samosa\", \"vada\", \"idli\"]\nprint(sorted(words, key=len))",
+   "options": [
+    "['chai', 'idli', 'samosa', 'vada']",
+    "['chai', 'vada', 'idli', 'samosa']",
+    "['vada', 'idli', 'chai', 'samosa']",
+    "[4, 4, 4, 6]"
+   ],
+   "answer": 1,
+   "why": "The key is the length, so the three 4-letter words come before samosa. Python's sort is **stable**: items with equal keys keep their original order, so chai, vada, idli stay as they were.",
+   "say": "We sort four snacks using len as the key. Three of them have four letters. What order do they come out in? This tests a property of Python's sort that professionals rely on."
+  },
+  {
+   "type": "concept",
+   "title": "map, filter, zip, any, all",
+   "body": "Built-in tools that take functions or iterables and return **lazy iterators** (Day 27):\n\n- `map(f, items)`: apply f to every item\n- `filter(pred, items)`: keep items where pred is true\n- `zip(a, b)`: pair items up\n- `any(...)`, `all(...)`: is at least one, or every, value true?",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Tool",
+     "Comprehension equivalent"
+    ],
+    "rows": [
+     [
+      "map(f, xs)",
+      "[f(x) for x in xs]"
+     ],
+     [
+      "filter(p, xs)",
+      "[x for x in xs if p(x)]"
+     ],
+     [
+      "zip(names, scores)",
+      "pairs: (names[i], scores[i])"
+     ],
+     [
+      "any(x > 90 for x in xs)",
+      "True if one matches"
+     ]
+    ]
+   },
+   "say": "Python has built-in tools that take a function and an iterable. Map applies a function to every item. Filter keeps only the items where a function returns true. Zip pairs up items from two sequences. Any and all ask whether at least one, or every, value is true. Map, filter and zip return lazy iterators, just like the generators from yesterday."
+  },
+  {
+   "type": "code",
+   "title": "map, filter and zip in action",
+   "code": "prices = [499, 1299, 250, 89]\nwith_gst = list(map(lambda p: round(p * 1.18, 2), prices))\nprint(with_gst)\n\nunder_500 = list(filter(lambda p: p < 500, prices))\nprint(under_500)\n\nprint(list(map(str.upper, [\"upi\", \"card\", \"cod\"])))\n\nnames = [\"Riya\", \"Arjun\", \"Meera\"]\nscores = [88, 92, 79]\nprint(list(zip(names, scores)))\nprint(dict(zip(names, scores)))\nprint(any(s > 90 for s in scores), all(s >= 35 for s in scores))",
+   "expect": "[588.82, 1532.82, 295.0, 105.02]\n[499, 250, 89]\n['UPI', 'CARD', 'COD']\n[('Riya', 88), ('Arjun', 92), ('Meera', 79)]\n{'Riya': 88, 'Arjun': 92, 'Meera': 79}\nTrue True\n",
+   "explain": [
+    [
+     2,
+     "map applies the lambda to every price; list() collects the lazy results."
+    ],
+    [
+     5,
+     "filter keeps the prices for which the lambda returns True."
+    ],
+    [
+     8,
+     "Any function works, even a method like str.upper."
+    ],
+    [
+     12,
+     "zip pairs the two lists item by item."
+    ],
+    [
+     13,
+     "A classic trick: dict(zip(keys, values))."
+    ],
+    [
+     14,
+     "Is anyone above 90? Has everyone passed?"
+    ]
+   ],
+   "say": "Map adds GST to every price, and filter keeps the ones under five hundred. Both return lazy iterators, so we wrap them in list to see the results. Map works with any function, even the upper method of strings. Zip pairs names with scores, and dict of zip turns two lists into a dictionary. Finally, any and all answer yes or no questions about the whole list."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "In Python 3, what does `map(str.upper, names)` return?",
+   "options": [
+    "A list of uppercase names",
+    "A lazy iterator that computes each name when asked",
+    "A tuple",
+    "Nothing until you call it with brackets"
+   ],
+   "answer": 1,
+   "why": "`map` returns a **map object**, a lazy iterator. Wrap it in `list()` to see everything, or loop over it once. Like any iterator, it is used up after one pass.",
+   "say": "Quick check. In Python three, what does map actually give you back?"
+  },
+  {
+   "type": "concept",
+   "title": "Closures: functions that remember",
+   "body": "A function defined **inside** another function can use the outer function's variables, and it keeps them even after the outer function has returned. That bundle is a **closure**.\n\nIt is how you build **function factories**: functions that make customised functions.",
+   "visual": {
+    "kind": "stack",
+    "frames": [
+     {
+      "name": "make_discount(percent=20)",
+      "vars": [
+       [
+        "percent",
+        "20"
+       ]
+      ],
+      "ret": "apply, which remembers percent = 20"
+     },
+     {
+      "name": "diwali_sale(price=1000)",
+      "vars": [
+       [
+        "price",
+        "1000"
+       ],
+       [
+        "percent",
+        "20 (remembered)"
+       ]
+      ],
+      "ret": "800.0"
+     }
+    ]
+   },
+   "say": "A function defined inside another function can use the outer function's variables. Here is the magic: it keeps them, even after the outer function has finished. That bundle of a function plus its remembered variables is called a closure. Closures let you build function factories, functions that make customised functions, and they are the foundation of decorators tomorrow."
+  },
+  {
+   "type": "code",
+   "title": "Function factories",
+   "code": "def make_discount(percent):\n    def apply(price):\n        return round(price * (1 - percent / 100), 2)\n    return apply\n\n\ndiwali_sale = make_discount(20)\nmember_price = make_discount(5)\nprint(diwali_sale(1000), member_price(1000))\n\n\ndef make_counter():\n    count = 0\n\n    def increment():\n        nonlocal count\n        count += 1\n        return count\n    return increment\n\n\nnext_ticket = make_counter()\nprint(next_ticket(), next_ticket(), next_ticket())",
+   "expect": "800.0 950.0\n1 2 3\n",
+   "explain": [
+    [
+     2,
+     "apply is defined inside make_discount, so it can see percent."
+    ],
+    [
+     4,
+     "Return the inner function itself, without calling it."
+    ],
+    [
+     7,
+     "Each call makes a new apply with its own remembered percent."
+    ],
+    [
+     16,
+     "nonlocal: count belongs to the enclosing function, and we want to change it."
+    ],
+    [
+     22,
+     "Each call updates the remembered count."
+    ]
+   ],
+   "say": "Make discount returns the inner function apply, which remembers the percent it was made with. So diwali sale knocks off twenty percent, and member price five. The counter factory goes further. Its inner function changes the remembered count, which needs the nonlocal keyword, meaning this variable belongs to the enclosing function. Every call hands out the next ticket number."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "def make_counter():\n    count = 0\n\n    def inc():\n        nonlocal count\n        count += 1\n        return count\n    return inc\n\n\na = make_counter()\nb = make_counter()\na()\na()\nprint(a(), b())",
+   "options": [
+    "3 3",
+    "3 1",
+    "1 1",
+    "3 4"
+   ],
+   "answer": 1,
+   "why": "Each call to `make_counter()` creates a **new** `count` variable and a new closure around it. `a` has counted to 3; `b` is separate and starts at 1.",
+   "say": "We make two counters, call a twice, then print one more call of a, and one call of b. Do they share a count?"
+  },
+  {
+   "type": "concept",
+   "title": "functools: reduce, partial, lru_cache",
+   "body": "The `functools` module has three tools worth knowing. The `@` line for `lru_cache` is a decorator: tomorrow you learn how it works.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Tool",
+     "What it does",
+     "Example"
+    ],
+    "rows": [
+     [
+      "reduce(f, xs, start)",
+      "fold a sequence into one value",
+      "compound growth of an investment"
+     ],
+     [
+      "partial(f, x=...)",
+      "pre-fill some arguments",
+      "square = partial(power, exponent=2)"
+     ],
+     [
+      "@lru_cache",
+      "remember results by arguments",
+      "fast recursive Fibonacci"
+     ]
+    ]
+   },
+   "say": "The functools module holds three tools every Python developer should know. Reduce folds a whole sequence into one value, step by step. Partial pre-fills some arguments of a function, making a specialised version. And lru cache remembers the results of a function, so repeated calls with the same arguments return instantly. Writing it with an at sign is a decorator, which you will learn tomorrow."
+  },
+  {
+   "type": "code",
+   "title": "reduce and partial",
+   "code": "from functools import reduce, partial\n\nyearly_returns = [0.12, -0.05, 0.18]\nfinal = reduce(lambda value, r: value * (1 + r), yearly_returns, 10000)\nprint(\"₹10,000 grows to\", round(final, 2))\n\n\ndef power(base, exponent):\n    return base ** exponent\n\n\nsquare = partial(power, exponent=2)\ncube = partial(power, exponent=3)\nprint(square(12), cube(3))\n\nfrom_binary = partial(int, base=2)\nprint(from_binary(\"1010\"), from_binary(\"11111111\"))",
+   "expect": "₹10,000 grows to 12555.2\n144 27\n10 255\n",
+   "explain": [
+    [
+     4,
+     "reduce starts at 10000, then applies the lambda with each year's return in turn."
+    ],
+    [
+     5,
+     "Up 12 percent, down 5, up 18: compounding."
+    ],
+    [
+     12,
+     "partial makes a new function with exponent already filled in."
+    ],
+    [
+     16,
+     "Works on built-ins too: int with base=2 reads binary."
+    ]
+   ],
+   "say": "An investment of ten thousand rupees gains twelve percent, loses five, then gains eighteen. Reduce folds the list of returns into one final value, starting from ten thousand and applying each year in turn. Partial pre-fills arguments: square and cube are just power with the exponent already set. It works on built-ins too, like reading binary numbers with int."
+  },
+  {
+   "type": "code",
+   "title": "Memoised Fibonacci with timing",
+   "body": "These functions call **themselves** (recursion, Day 42). The plain version repeats the same sums thousands of times. The cached one computes each value once.",
+   "code": "import time\nfrom functools import lru_cache\n\n\ndef slow_fib(n):\n    return n if n < 2 else slow_fib(n - 1) + slow_fib(n - 2)\n\n\n@lru_cache(maxsize=None)\ndef fast_fib(n):\n    return n if n < 2 else fast_fib(n - 1) + fast_fib(n - 2)\n\n\nstart = time.perf_counter()\nprint(slow_fib(22))\nslow = time.perf_counter() - start\n\nstart = time.perf_counter()\nprint(fast_fib(22))\nfast = time.perf_counter() - start\n\nprint(\"Cache was faster:\", fast < slow)\nprint(fast_fib.cache_info())\nprint(fast_fib(150))",
+   "expect": "17711\n17711\nCache was faster: True\nCacheInfo(hits=20, misses=23, maxsize=None, currsize=23)\n9969216677189303386214405760200\n",
+   "explain": [
+    [
+     6,
+     "slow_fib(22) makes about 57,000 calls, most of them repeats."
+    ],
+    [
+     9,
+     "@lru_cache stores each result, keyed by the argument."
+    ],
+    [
+     14,
+     "perf_counter is a precise stopwatch for timing code."
+    ],
+    [
+     21,
+     "We print a comparison, not the times, because times vary by device."
+    ],
+    [
+     22,
+     "Only 23 real computations; every other call was a cache hit."
+    ],
+    [
+     23,
+     "Even fast_fib(150) is instant now."
+    ]
+   ],
+   "say": "Both functions compute Fibonacci numbers by calling themselves, which you will study properly on day forty two. The plain version repeats the same work tens of thousands of times. The cached version remembers each answer, so it computes every value only once. We time both with perf counter, and cache info shows the hits. Even the hundred and fiftieth Fibonacci number is instant."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "Prices came from a CSV file, so they are **strings**. The \"cheapest first\" list is in the wrong order. Fix the `key` so products are sorted by their **numeric** price.",
+   "starter": "products = [(\"Kettle\", \"1299\"), (\"Mug\", \"250\"), (\"Tea\", \"89\"), (\"Mixer\", \"3499\")]\ncheapest_first = sorted(products, key=lambda p: p[1])\nfor name, price in cheapest_first:\n    print(name, price)\n",
+   "solution": "products = [(\"Kettle\", \"1299\"), (\"Mug\", \"250\"), (\"Tea\", \"89\"), (\"Mixer\", \"3499\")]\ncheapest_first = sorted(products, key=lambda p: int(p[1]))\nfor name, price in cheapest_first:\n    print(name, price)",
+   "tests": "names = [p[0] for p in cheapest_first]\nassert names == [\"Tea\", \"Mug\", \"Kettle\", \"Mixer\"], f\"Cheapest first should be Tea, Mug, Kettle, Mixer, got {names}. Strings compare character by character.\"\nassert cheapest_first[0] == (\"Tea\", \"89\"), \"Keep the original tuples; only change how they are compared.\"",
+   "hints": [
+    "As strings, \"1299\" comes before \"250\" because \"1\" is less than \"2\".",
+    "Convert inside the key: key=lambda p: int(p[1])"
+   ],
+   "say": "These prices came from a CSV file, so they are strings, and the cheapest first list is in a strange order. Remember from day twenty three: CSV values are always text. Fix the key so the products are compared by their numeric price."
+  },
+  {
+   "type": "exercise",
+   "title": "Rank the leaderboard",
+   "task": "Write `leaderboard(players)` that takes a list of `(name, points)` tuples and **returns the names** ranked by points, highest first. Ties go **alphabetically** by name.\n\nUse `sorted` with a `key`.",
+   "starter": "def leaderboard(players):\n    pass\n\n\nprint(leaderboard([(\"Riya\", 120), (\"Kabir\", 95), (\"Arjun\", 120)]))\n",
+   "solution": "def leaderboard(players):\n    ranked = sorted(players, key=lambda p: (-p[1], p[0]))\n    return [name for name, points in ranked]\n\n\nprint(leaderboard([(\"Riya\", 120), (\"Kabir\", 95), (\"Arjun\", 120)]))",
+   "tests": "r = leaderboard([(\"Riya\", 120), (\"Kabir\", 95), (\"Meera\", 140)])\nassert r == [\"Meera\", \"Riya\", \"Kabir\"], f\"Highest points first: expected ['Meera', 'Riya', 'Kabir'], got {r}.\"\nr = leaderboard([(\"Riya\", 120), (\"Kabir\", 95), (\"Arjun\", 120)])\nassert r == [\"Arjun\", \"Riya\", \"Kabir\"], f\"Riya and Arjun tie on 120, so Arjun comes first alphabetically. Got {r}.\"\nassert leaderboard([]) == [], \"An empty leaderboard should return an empty list.\"\ndata = [(\"Zoya\", 10), (\"Dev\", 20)]\nleaderboard(data)\nassert data == [(\"Zoya\", 10), (\"Dev\", 20)], \"Don't change the caller's list: use sorted(), not .sort().\"",
+   "hints": [
+    "sorted(players, key=...) with a lambda that returns a tuple.",
+    "key=lambda p: (-p[1], p[0]) sorts by points descending, then name ascending.",
+    "Finish with a comprehension that keeps only the names."
+   ],
+   "say": "Every game needs a leaderboard. Write a function that ranks players by points, highest first, and breaks ties alphabetically by name. Return just the names. Use sorted with a key, and remember the tuple trick with a minus sign."
+  },
+  {
+   "type": "exercise",
+   "title": "A currency converter factory",
+   "task": "Write a **closure factory** `make_converter(rate, symbol)` that returns a function. The returned function takes an amount in rupees and returns a string like `\"$12.00\"`.\n\n- `usd = make_converter(0.012, \"$\")`, then `usd(1000)` → `\"$12.00\"`\n- `eur = make_converter(0.011, \"€\")`, then `eur(500)` → `\"€5.50\"`",
+   "starter": "def make_converter(rate, symbol):\n    pass\n\n\nusd = make_converter(0.012, \"$\")\nprint(usd(1000))\n",
+   "solution": "def make_converter(rate, symbol):\n    def convert(rupees):\n        return f\"{symbol}{rupees * rate:.2f}\"\n    return convert\n\n\nusd = make_converter(0.012, \"$\")\nprint(usd(1000))",
+   "tests": "usd = make_converter(0.012, \"$\")\nassert callable(usd), \"make_converter should return a function (the inner function, without calling it).\"\nassert usd(1000) == \"$12.00\", f\"usd(1000) should be '$12.00', got {usd(1000)!r}.\"\neur = make_converter(0.011, \"€\")\nassert eur(500) == \"€5.50\", f\"eur(500) should be '€5.50', got {eur(500)!r}. Format with :.2f\"\nassert usd(1000) == \"$12.00\", \"Each converter must remember its own rate and symbol.\"\nassert usd(0) == \"$0.00\", \"Zero rupees should be '$0.00'.\"",
+   "hints": [
+    "Define an inner function convert(rupees) inside make_converter.",
+    "It returns f\"{symbol}{rupees * rate:.2f}\"",
+    "make_converter ends with return convert, without brackets."
+   ],
+   "say": "Write a function factory. Make converter takes an exchange rate and a currency symbol, and returns a brand new function that converts rupees into that currency, formatted with two decimals. Each converter you make must remember its own rate and symbol."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 28 complete",
+   "points": [
+    "Functions are objects: store them in dicts, pass them, return them",
+    "lambda makes a tiny one-expression function, perfect for key=",
+    "sorted, max and min take key=; tuple keys break ties; sorting is stable",
+    "map, filter and zip are lazy; any and all answer yes-or-no questions",
+    "Closures remember variables from the enclosing function; nonlocal changes them",
+    "functools: reduce folds, partial pre-fills, lru_cache memoises"
+   ],
+   "say": "Mission twenty eight complete. You treated functions as values, sorted leaderboards with keys, built function factories with closures, and made slow code fast with a cache. Tomorrow these ideas come together in decorators and context managers, two of Python's most elegant features. See you on day twenty nine."
+  }
+ ]
+}

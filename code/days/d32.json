@@ -1,0 +1,481 @@
+{
+ "day": 32,
+ "phase": 4,
+ "title": "Dates and times",
+ "subtitle": "Timestamps, time zones and the maths of calendars",
+ "minutes": 55,
+ "goal": "Create, format, parse and calculate with dates and times, and convert safely between UTC and IST.",
+ "outcomes": [
+  "Build date, time and datetime objects and read their parts",
+  "Do calendar maths with timedelta: ages, deadlines, countdowns",
+  "Format with strftime, parse with strptime, and exchange ISO 8601 strings",
+  "Store times in UTC and convert them to IST or any zone for display"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 32: Taming time",
+   "body": "Every app touches time: order timestamps, train departures, EMI due dates, subscription renewals.\n\nTime bugs are famous: leap years, month lengths, time zones, daylight saving. Today you learn the **golden rule** that avoids most of them.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Store every moment in UTC",
+     "Calculate with timedelta",
+     "Convert to the user's zone only for display"
+    ]
+   },
+   "say": "Every real app deals with time. Order timestamps, train departures, EMI due dates, subscriptions that renew every month. And time is full of traps: leap years, months of different lengths, time zones and daylight saving. Today you learn the tools, and one golden rule that prevents most time bugs."
+  },
+  {
+   "type": "concept",
+   "title": "Four types in datetime",
+   "body": "The `datetime` module gives you four building blocks.\n\nReal apps use `date.today()` and `datetime.now()`. In this course we use **fixed dates** so every run prints the same thing, which is also how you write good tests.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Type",
+     "Holds",
+     "Example"
+    ],
+    "rows": [
+     [
+      "date",
+      "year, month, day",
+      "2026-10-18"
+     ],
+     [
+      "time",
+      "hour, minute, second",
+      "21:45:00"
+     ],
+     [
+      "datetime",
+      "date + time (+ zone)",
+      "2026-10-18 21:45:00"
+     ],
+     [
+      "timedelta",
+      "a duration",
+      "3 days, 4:00:00"
+     ]
+    ]
+   },
+   "say": "The datetime module has four main types. A date is a calendar day. A time is a clock time. A datetime is both together. And a timedelta is a duration, like three days and four hours. Real apps ask for today or now, but our examples use fixed dates, so the output never changes. That is exactly how professionals write tests too."
+  },
+  {
+   "type": "code",
+   "title": "Dates and their parts",
+   "code": "from datetime import date, datetime\n\nlaunch = date(2026, 10, 18)\nprint(launch)\nprint(launch.year, launch.month, launch.day)\nprint(launch.weekday())   # Monday is 0, Sunday is 6\nprint(launch.isoformat())\n\ntrain = datetime(2026, 10, 18, 21, 45)\nprint(train)\nprint(train.date(), train.time())",
+   "expect": "2026-10-18\n2026 10 18\n6\n2026-10-18\n2026-10-18 21:45:00\n2026-10-18 21:45:00\n",
+   "explain": [
+    [
+     3,
+     "date(year, month, day)."
+    ],
+    [
+     5,
+     "Each part is an int attribute."
+    ],
+    [
+     6,
+     "weekday(): Monday 0 … Sunday 6."
+    ],
+    [
+     7,
+     "ISO format: year-month-day, the format machines love."
+    ],
+    [
+     9,
+     "datetime adds hours and minutes."
+    ],
+    [
+     11,
+     "Split a datetime back into a date and a time."
+    ]
+   ],
+   "say": "We build a date from year, month and day, and read each part back as an attribute. Weekday gives a number where Monday is zero, so six means Sunday. A datetime adds the clock time, here a train at quarter to ten at night, and you can split it back into its date and its time."
+  },
+  {
+   "type": "concept",
+   "title": "timedelta: maths with durations",
+   "body": "Subtract two dates and you get a `timedelta`. Add a `timedelta` to a date and you get a new date.\n\nPython knows month lengths and leap years, so you never count days by hand.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Expression",
+     "Result type",
+     "Example"
+    ],
+    "rows": [
+     [
+      "date − date",
+      "timedelta",
+      "100 days, 0:00:00"
+     ],
+     [
+      "date + timedelta",
+      "date",
+      "2026-11-17"
+     ],
+     [
+      "datetime − timedelta",
+      "datetime",
+      "two hours earlier"
+     ],
+     [
+      "timedelta × 2",
+      "timedelta",
+      "double the duration"
+     ]
+    ]
+   },
+   "say": "A timedelta is a duration. Subtract one date from another and you get a timedelta. Add a timedelta to a date and you get a new date. Python already knows that February is short and that leap years exist, so you should never count days by hand again."
+  },
+  {
+   "type": "code",
+   "title": "Countdowns and due dates",
+   "code": "from datetime import date, timedelta\n\ntoday = date(2026, 10, 18)\nrepublic_day = date(2027, 1, 26)\n\nleft = republic_day - today\nprint(left)\nprint(left.days, \"days to Republic Day\")\n\ndue = today + timedelta(days=30)\nprint(\"EMI due:\", due)\nprint(\"Two weeks ago:\", today - timedelta(weeks=2))",
+   "expect": "100 days, 0:00:00\n100 days to Republic Day\nEMI due: 2026-11-17\nTwo weeks ago: 2026-10-04\n",
+   "explain": [
+    [
+     6,
+     "date minus date gives a timedelta."
+    ],
+    [
+     8,
+     ".days is the whole number of days."
+    ],
+    [
+     10,
+     "date plus timedelta gives a date: month lengths handled."
+    ],
+    [
+     12,
+     "weeks=, days=, hours=, minutes= all work."
+    ]
+   ],
+   "say": "How many days until Republic Day? Subtract the dates and you get a timedelta of exactly one hundred days. Its days attribute gives the plain number. Adding thirty days gives an EMI due date in November, and Python handled October having thirty one days for us."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: February in 2028",
+   "code": "from datetime import date\n\nprint(date(2028, 3, 1) - date(2028, 2, 1))",
+   "options": [
+    "28 days, 0:00:00",
+    "29 days, 0:00:00",
+    "1 month",
+    "30 days, 0:00:00"
+   ],
+   "answer": 1,
+   "why": "2028 is a leap year, so February has 29 days. A timedelta counts days, never months, because months have different lengths.",
+   "say": "How long is February 2028? Subtract the first of February from the first of March. Think about leap years, then predict what Python prints."
+  },
+  {
+   "type": "code",
+   "title": "An age calculator that's actually right",
+   "code": "from datetime import date\n\ndef age_on(born, today):\n    years = today.year - born.year\n    if (today.month, today.day) < (born.month, born.day):\n        years -= 1   # birthday not reached yet this year\n    return years\n\ntoday = date(2026, 10, 18)\nprint(age_on(date(2000, 5, 12), today))\nprint(age_on(date(2000, 12, 25), today))\nprint(age_on(date(2008, 10, 18), today))",
+   "expect": "26\n25\n18\n",
+   "explain": [
+    [
+     4,
+     "Start with the difference in years."
+    ],
+    [
+     5,
+     "Tuples compare month first, then day."
+    ],
+    [
+     6,
+     "Birthday still ahead this year: one year less."
+    ],
+    [
+     12,
+     "Birthday is today: counts as 18. A key edge case."
+    ]
+   ],
+   "say": "Dividing days by three sixty five drifts because of leap years, so here is the correct approach. Subtract the years, then take one away if this year's birthday has not happened yet. Comparing month and day as tuples does that check in one line. The last person turns eighteen today, exactly the kind of edge case worth testing."
+  },
+  {
+   "type": "concept",
+   "title": "strftime and strptime",
+   "body": "- `strftime`: **f**ormat a datetime into text\n- `strptime`: **p**arse text into a datetime\n\nBoth use the same codes. Watch out: `%m` is **month**, `%M` is **minute**.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Code",
+     "Means",
+     "For 2026-10-18 21:45"
+    ],
+    "rows": [
+     [
+      "%d",
+      "day, 2 digits",
+      "18"
+     ],
+     [
+      "%m",
+      "month, 2 digits",
+      "10"
+     ],
+     [
+      "%Y",
+      "year",
+      "2026"
+     ],
+     [
+      "%b / %B",
+      "month name",
+      "Oct / October"
+     ],
+     [
+      "%A",
+      "weekday name",
+      "Sunday"
+     ],
+     [
+      "%H / %I",
+      "hour, 24h / 12h",
+      "21 / 09"
+     ],
+     [
+      "%M",
+      "minute",
+      "45"
+     ],
+     [
+      "%p",
+      "AM or PM",
+      "PM"
+     ]
+    ]
+   },
+   "say": "Two methods with similar names. Strftime, with an f, formats a datetime into text. Strptime, with a p, parses text into a datetime. Both use the same percent codes, like percent d for the day and percent Y for a four digit year. One classic trap: small m is the month, but capital M is the minute."
+  },
+  {
+   "type": "code",
+   "title": "Formatting for humans",
+   "code": "from datetime import datetime\n\ndep = datetime(2026, 10, 18, 21, 45)\nprint(dep.strftime(\"%d/%m/%Y\"))\nprint(dep.strftime(\"%A, %d %b %Y\"))\nprint(dep.strftime(\"%I:%M %p\"))\nprint(f\"Departs {dep:%d %b at %H:%M}\")",
+   "expect": "18/10/2026\nSunday, 18 Oct 2026\n09:45 PM\nDeparts 18 Oct at 21:45\n",
+   "explain": [
+    [
+     4,
+     "Indian style: day/month/year."
+    ],
+    [
+     5,
+     "Weekday name and short month name."
+    ],
+    [
+     6,
+     "12-hour clock with AM/PM."
+    ],
+    [
+     7,
+     "f-strings accept strftime codes after the colon."
+    ]
+   ],
+   "say": "The same moment, four ways. Day, month, year for an Indian receipt. A friendly weekday format for an email. A twelve hour clock with AM or PM for a ticket. And a neat trick: an f-string can take the same codes after a colon, so you rarely need to call strftime directly."
+  },
+  {
+   "type": "code",
+   "title": "Parsing text and ISO 8601",
+   "code": "from datetime import datetime\n\nraw = \"18-10-2026 07:30\"\nbooked = datetime.strptime(raw, \"%d-%m-%Y %H:%M\")\nprint(booked)\nprint(repr(booked))\n\nstamp = booked.isoformat()\nprint(stamp)\nprint(datetime.fromisoformat(\"2026-10-18T07:30:00\") == booked)",
+   "expect": "2026-10-18 07:30:00\ndatetime.datetime(2026, 10, 18, 7, 30)\n2026-10-18T07:30:00\nTrue\n",
+   "explain": [
+    [
+     4,
+     "The pattern must match the text exactly."
+    ],
+    [
+     6,
+     "repr shows it really is a datetime object now."
+    ],
+    [
+     8,
+     "ISO 8601: the standard for JSON, APIs and databases."
+    ],
+    [
+     10,
+     "fromisoformat parses it back."
+    ]
+   ],
+   "say": "Strptime reads text from a form or a file, using a pattern that describes exactly how the text is laid out. For saving and sending times, use ISO eight six oh one, the international standard: year, month, day, a capital T, then the time. It sorts correctly as text, every API understands it, and from iso format reads it straight back."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: bookings in May?",
+   "task": "A Christmas booking `\"25/12/2026 18:05\"` is being saved as **25 May 2026 at 18:12**. Nothing crashes, so the bug went unnoticed. Fix `parse_booking`.",
+   "starter": "from datetime import datetime\n\ndef parse_booking(text):\n    # text looks like \"25/12/2026 18:05\"\n    return datetime.strptime(text, \"%d/%M/%Y %H:%m\")\n\nprint(parse_booking(\"25/12/2026 18:05\"))\n",
+   "solution": "from datetime import datetime\n\ndef parse_booking(text):\n    # text looks like \"25/12/2026 18:05\"\n    return datetime.strptime(text, \"%d/%m/%Y %H:%M\")\n\nprint(parse_booking(\"25/12/2026 18:05\"))\n",
+   "tests": "from datetime import datetime as _dt\ngot = parse_booking(\"25/12/2026 18:05\")\nassert got == _dt(2026, 12, 25, 18, 5), f\"Expected 25 Dec 2026 at 18:05, got {got}. In strptime, %m is the month and %M is the minute.\"\ngot2 = parse_booking(\"01/02/2027 09:30\")\nassert got2 == _dt(2027, 2, 1, 9, 30), f\"'01/02/2027 09:30' is 1 February 2027 at 09:30, got {got2}.\"\ngot3 = parse_booking(\"31/01/2027 23:59\")\nassert got3 == _dt(2027, 1, 31, 23, 59), f\"'31/01/2027 23:59' should parse to 31 Jan 2027, 23:59, got {got3}.\"",
+   "hints": [
+    "Compare the codes with the table: which one is month and which one is minute?",
+    "The pattern should be \"%d/%m/%Y %H:%M\"."
+   ],
+   "say": "This is the worst kind of bug: nothing crashes. Christmas bookings are being saved in May. Look closely at the strptime pattern, remember the trap between small m and capital M, and fix it."
+  },
+  {
+   "type": "concept",
+   "title": "Naive vs aware: time zones",
+   "body": "A **naive** datetime has no zone: 10:00 *where?* An **aware** one carries its UTC offset, so it can be compared and converted safely.\n\nIST is UTC **+05:30** all year (no daylight saving). Servers store UTC; apps show local time.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Naive: ambiguous",
+     "code": "datetime(2026, 10, 18, 10, 0)\n# 10:00 ... in Pune? London?"
+    },
+    "right": {
+     "title": "Aware: exact",
+     "code": "datetime(2026, 10, 18, 10, 0,\n         tzinfo=IST)\n# 10:00+05:30"
+    },
+    "verdict": "An aware datetime pins down one exact moment on Earth."
+   },
+   "say": "A datetime without a time zone is called naive. Ten o'clock, but where? An aware datetime carries its offset from UTC, so Python can convert and compare it safely. India Standard Time is five and a half hours ahead of UTC, all year round. The professional rule: servers store UTC, and apps convert to the user's zone only when showing it."
+  },
+  {
+   "type": "code",
+   "title": "UTC and IST",
+   "code": "from datetime import datetime, timedelta, timezone\n\nIST = timezone(timedelta(hours=5, minutes=30), \"IST\")\n\npaid = datetime(2026, 10, 18, 10, 0, tzinfo=IST)\nprint(paid)\nprint(paid.astimezone(timezone.utc))\n\nserver = datetime(2026, 10, 18, 22, 15, tzinfo=timezone.utc)\nprint(server.astimezone(IST).strftime(\"%d %b %H:%M %Z\"))",
+   "expect": "2026-10-18 10:00:00+05:30\n2026-10-18 04:30:00+00:00\n19 Oct 03:45 IST\n",
+   "explain": [
+    [
+     3,
+     "A fixed-offset zone: UTC+05:30, named IST."
+    ],
+    [
+     5,
+     "Attach the zone with tzinfo=."
+    ],
+    [
+     7,
+     "astimezone converts to another zone: same moment, different clock."
+    ],
+    [
+     9,
+     "A UTC time from a server."
+    ],
+    [
+     10,
+     "In IST it's already the next day. %Z prints the zone name."
+    ]
+   ],
+   "say": "We define IST as a fixed offset of five hours thirty minutes. A UPI payment at ten in the morning in India is four thirty in UTC, and astimezone does the conversion. Going the other way, a server event at quarter past ten at night UTC is already the next morning in India. That date change is exactly where hand-written conversions go wrong."
+  },
+  {
+   "type": "code",
+   "title": "Real zones with zoneinfo",
+   "body": "`zoneinfo` uses the official time zone database, including daylight-saving rules. (Here it loads a small `tzdata` package first.)",
+   "code": "from datetime import datetime\nfrom zoneinfo import ZoneInfo\n\nIST = ZoneInfo(\"Asia/Kolkata\")\nfor day in [20, 30]:\n    call = datetime(2026, 10, day, 19, 30, tzinfo=IST)\n    london = call.astimezone(ZoneInfo(\"Europe/London\"))\n    new_york = call.astimezone(ZoneInfo(\"America/New_York\"))\n    print(f\"{call:%d %b %H:%M} IST = London {london:%H:%M %Z}, \"\n          f\"New York {new_york:%H:%M %Z}\")",
+   "expect": "20 Oct 19:30 IST = London 15:00 BST, New York 10:00 EDT\n30 Oct 19:30 IST = London 14:00 GMT, New York 10:00 EDT\n",
+   "needs": [
+    "tzdata"
+   ],
+   "explain": [
+    [
+     2,
+     "ZoneInfo knows every region's rules, past and future."
+    ],
+    [
+     4,
+     "Use region names like Asia/Kolkata, not offsets."
+    ],
+    [
+     7,
+     "London: BST in summer, GMT in winter."
+    ],
+    [
+     8,
+     "New York switches on a different date."
+    ]
+   ],
+   "say": "Fixed offsets are fine for India, but many countries shift their clocks for daylight saving. Zoneinfo knows every zone's rules. Look at London: the same seven thirty evening call in India is three o'clock in London on the twentieth, but two o'clock on the thirtieth, because the UK changed its clocks in between. Never hard-code those offsets yourself."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: crossing midnight",
+   "code": "from datetime import datetime, timedelta, timezone\n\nIST = timezone(timedelta(hours=5, minutes=30))\nt = datetime(2026, 3, 1, 2, 0, tzinfo=IST)\nprint(t.astimezone(timezone.utc).strftime(\"%d %H:%M\"))",
+   "options": [
+    "01 07:30",
+    "28 20:30",
+    "29 20:30",
+    "01 20:30"
+   ],
+   "answer": 1,
+   "why": "2:00 IST minus 5:30 is 20:30 the previous day. The previous day of 1 March 2026 is 28 February, because 2026 is not a leap year.",
+   "say": "Two in the morning on the first of March in India. What is that in UTC? Careful: subtracting five and a half hours crosses midnight, and a month boundary too."
+  },
+  {
+   "type": "code",
+   "title": "Unix timestamps",
+   "body": "A Unix timestamp counts seconds since **1 Jan 1970 UTC**. APIs and logs use it everywhere. To measure how long code takes, use `time.perf_counter()`.",
+   "code": "from datetime import datetime, timezone\n\nlaunch = datetime(2026, 10, 18, tzinfo=timezone.utc)\nprint(launch.timestamp())\n\nprint(datetime.fromtimestamp(1_800_000_000, tz=timezone.utc))\nprint(datetime.fromtimestamp(0, tz=timezone.utc).isoformat())",
+   "expect": "1792281600.0\n2027-01-15 08:00:00+00:00\n1970-01-01T00:00:00+00:00\n",
+   "explain": [
+    [
+     4,
+     "Seconds since the epoch, as a float."
+    ],
+    [
+     6,
+     "Back from seconds to an aware datetime."
+    ],
+    [
+     7,
+     "Timestamp 0 is the epoch itself."
+    ]
+   ],
+   "say": "Many systems store time as a single number: seconds since the first of January nineteen seventy, UTC, called the Unix epoch. Timestamp turns a datetime into that number, and from timestamp turns it back. Always pass a time zone, or Python silently uses the computer's local zone. To time how long code takes, use time dot perf counter instead."
+  },
+  {
+   "type": "exercise",
+   "title": "Show server times in IST",
+   "task": "Your API sends UTC times as ISO strings like `\"2026-10-18T22:15:00+00:00\"` (or ending in `Z`). Write `ist_display(utc_text)` that returns the time in IST formatted like:\n\n`19 Oct 2026, 03:45 AM IST`",
+   "starter": "from datetime import datetime, timedelta, timezone\n\nIST = timezone(timedelta(hours=5, minutes=30), \"IST\")\n\ndef ist_display(utc_text):\n    moment = datetime.fromisoformat(utc_text)\n    # convert to IST, then format like \"19 Oct 2026, 03:45 AM IST\"\n    return moment.strftime(\"%d %b %Y, %I:%M %p\")\n\nprint(ist_display(\"2026-10-18T22:15:00+00:00\"))\n",
+   "solution": "from datetime import datetime, timedelta, timezone\n\nIST = timezone(timedelta(hours=5, minutes=30), \"IST\")\n\ndef ist_display(utc_text):\n    moment = datetime.fromisoformat(utc_text)\n    return moment.astimezone(IST).strftime(\"%d %b %Y, %I:%M %p %Z\")\n\nprint(ist_display(\"2026-10-18T22:15:00+00:00\"))\n",
+   "tests": "r1 = ist_display(\"2026-10-18T22:15:00+00:00\")\nassert r1 == \"19 Oct 2026, 03:45 AM IST\", f\"22:15 UTC is 03:45 the next morning in IST. Expected '19 Oct 2026, 03:45 AM IST', got {r1!r}.\"\nr2 = ist_display(\"2026-12-31T18:30:00+00:00\")\nassert r2 == \"01 Jan 2027, 12:00 AM IST\", f\"18:30 UTC on 31 Dec is midnight in India: a new year! Expected '01 Jan 2027, 12:00 AM IST', got {r2!r}.\"\nr3 = ist_display(\"2026-06-01T06:00:00Z\")\nassert r3 == \"01 Jun 2026, 11:30 AM IST\", f\"A Z suffix means UTC. 06:00 UTC is 11:30 AM in IST, got {r3!r}.\"",
+   "hints": [
+    "Convert first with moment.astimezone(IST).",
+    "Then format with \"%d %b %Y, %I:%M %p %Z\": %Z prints the zone name IST."
+   ],
+   "say": "Your server speaks UTC, but your users live in India. Write IST display, which takes a UTC time as an ISO string and returns a friendly IST version. Watch the test that lands exactly on New Year's midnight in India."
+  },
+  {
+   "type": "exercise",
+   "title": "Delivery date in working days",
+   "task": "A courier promises delivery in *n* **working days** (Monday to Friday). Write `add_working_days(start, n)` that returns the delivery `date`, skipping Saturdays and Sundays.\n\n`n = 0` returns `start` unchanged.",
+   "starter": "from datetime import date, timedelta\n\ndef add_working_days(start, n):\n    # TODO: skip Saturdays and Sundays\n    return start + timedelta(days=n)\n\nprint(add_working_days(date(2026, 10, 16), 1))  # a Friday\n",
+   "solution": "from datetime import date, timedelta\n\ndef add_working_days(start, n):\n    day = start\n    added = 0\n    while added < n:\n        day += timedelta(days=1)\n        if day.weekday() < 5:   # Monday 0 ... Friday 4\n            added += 1\n    return day\n\nprint(add_working_days(date(2026, 10, 16), 1))  # a Friday\n",
+   "tests": "from datetime import date as _d\nr1 = add_working_days(_d(2026, 10, 16), 1)\nassert r1 == _d(2026, 10, 19), f\"One working day after Friday 16 Oct is Monday 19 Oct, got {r1}. Skip days whose weekday() is 5 or 6.\"\nr2 = add_working_days(_d(2026, 10, 19), 5)\nassert r2 == _d(2026, 10, 26), f\"Five working days after Monday 19 Oct is Monday 26 Oct, got {r2}.\"\nr3 = add_working_days(_d(2026, 10, 22), 3)\nassert r3 == _d(2026, 10, 27), f\"Three working days after Thursday 22 Oct: Fri 23, Mon 26, Tue 27. Got {r3}.\"\nr4 = add_working_days(_d(2026, 10, 17), 0)\nassert r4 == _d(2026, 10, 17), f\"With n = 0 return the start date unchanged, got {r4}.\"",
+   "hints": [
+    "Step one day at a time with day += timedelta(days=1).",
+    "Only count a day when day.weekday() < 5, and stop once you have counted n days."
+   ],
+   "say": "Couriers and banks count working days, not calendar days. Write add working days, which moves forward one day at a time and only counts Monday to Friday. The starter adds calendar days, so a Friday order lands on a Saturday. Fix that."
+  },
+  {
+   "type": "quiz",
+   "title": "The golden rule",
+   "q": "Your app's server logs when each order is placed. Users are in India, Dubai and London. What should the server store?",
+   "options": [
+    "The server's local time",
+    "UTC, converted to each user's zone only for display",
+    "A text string like \"18/10/2026 9pm\""
+   ],
+   "answer": 1,
+   "why": "UTC is one unambiguous timeline: easy to sort, compare and convert. Local server time changes when the server moves or the clocks shift, and text strings are hard to sort and parse.",
+   "say": "Final check. Your users are spread across India, Dubai and London. What should your server store for each order time?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 32 complete",
+   "points": [
+    "date, time, datetime and timedelta cover almost every time task",
+    "Subtracting dates gives a timedelta; Python handles month lengths and leap years",
+    "strftime formats, strptime parses; %m is month and %M is minute",
+    "ISO 8601 strings and Unix timestamps are how machines exchange times",
+    "Store UTC with aware datetimes; convert with astimezone and zoneinfo for display"
+   ],
+   "say": "Mission thirty two complete. You can build and format dates, do calendar maths, parse text, and convert between UTC and IST without falling into the classic traps. Tomorrow we learn a tiny language for describing text patterns: regular expressions. See you on day thirty three."
+  }
+ ]
+}

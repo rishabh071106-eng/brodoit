@@ -1,0 +1,386 @@
+{
+ "day": 47,
+ "phase": 5,
+ "title": "Build your own API",
+ "subtitle": "Routes, handlers and JSON responses, from scratch",
+ "minutes": 60,
+ "goal": "Build a JSON API from scratch, with routing, path parameters, validation and status codes, as a real WSGI app you can test without a server.",
+ "outcomes": [
+  "Model requests and responses as data and write handler functions",
+  "Route by method and path, answering 404 and 405 correctly",
+  "Capture path parameters with a decorator-based router",
+  "Validate input and reply with 400 or 201 and clear JSON errors",
+  "Write and test a WSGI app, and map it to Flask and FastAPI"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 47: Build your own API",
+   "body": "Yesterday you **called** APIs. Today you **build** one: routing, handlers, JSON responses, status codes and validation.\n\nThen you turn it into a real **WSGI** app, the interface under Flask and Django.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Request comes in",
+      "s": "pill"
+     },
+     {
+      "t": "Router: which function handles this method and path?"
+     },
+     {
+      "t": "Handler: validate, then do the work"
+     },
+     {
+      "t": "Response: status + headers + JSON body",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Yesterday you called other people's APIs. Today you switch sides and build one. A request comes in, a router decides which function handles it, the handler validates the input and does the work, and a response goes back with a status code and a JSON body. Then we turn it into a real WSGI app, the interface Flask and Django are built on."
+  },
+  {
+   "type": "concept",
+   "title": "Requests and responses as data",
+   "body": "Strip away the network and a web framework is a function: **request in, response out**.\n\nModel both as dicts and you can build and test the whole API without a server.",
+   "visual": {
+    "kind": "dict",
+    "name": "request",
+    "pairs": [
+     [
+      "'method'",
+      "'POST'"
+     ],
+     [
+      "'path'",
+      "'/orders'"
+     ],
+     [
+      "'query'",
+      "{}"
+     ],
+     [
+      "'body'",
+      "{'item': 'dosa', 'qty': 2}"
+     ]
+    ]
+   },
+   "say": "Strip away the network, and a web framework is just a function: a request goes in, a response comes out. If we model both as plain dicts, with a method, a path, a query and a body coming in, and a status, headers and a body going out, we can build and test a whole API without any server at all."
+  },
+  {
+   "type": "code",
+   "title": "Handlers and a JSON helper",
+   "code": "import json\n\nMENU = {\"dosa\": 90, \"idli\": 50, \"chai\": 20}\n\ndef json_response(data, status=200):\n    return {\"status\": status,\n            \"headers\": {\"Content-Type\": \"application/json\"},\n            \"body\": json.dumps(data)}\n\ndef list_menu(request):\n    return json_response(MENU)\n\ndef get_item(request, name):\n    if name not in MENU:\n        return json_response({\"error\": f\"no item called {name!r}\"}, 404)\n    return json_response({\"item\": name, \"price\": MENU[name]})\n\nprint(list_menu({\"method\": \"GET\", \"path\": \"/menu\"}))\nprint(get_item({\"method\": \"GET\"}, \"pizza\")[\"status\"])\nprint(get_item({\"method\": \"GET\"}, \"idli\")[\"body\"])\n",
+   "expect": "{'status': 200, 'headers': {'Content-Type': 'application/json'}, 'body': '{\"dosa\": 90, \"idli\": 50, \"chai\": 20}'}\n404\n{\"item\": \"idli\", \"price\": 50}\n",
+   "explain": [
+    [
+     5,
+     "One helper builds every response the same way."
+    ],
+    [
+     8,
+     "The body is JSON text, ready for the network."
+    ],
+    [
+     10,
+     "A handler: request in, response out."
+    ],
+    [
+     15,
+     "Unknown item: 404 plus a message the client can show."
+    ]
+   ],
+   "say": "A handler is an ordinary function that takes a request and returns a response. Json response is a tiny helper every handler shares, so the content type header is never forgotten. Get item returns four oh four with a helpful error message when the item does not exist. Notice the body is JSON text, ready to send over the network."
+  },
+  {
+   "type": "concept",
+   "title": "Routing: which function runs?",
+   "body": "A **router** maps (method, path) to a handler. Two different failures:\n- unknown path: **404 Not Found**\n- known path, wrong method: **405 Method Not Allowed**",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Request",
+     "Result"
+    ],
+    "rows": [
+     [
+      "GET /menu",
+      "list_menu → 200"
+     ],
+     [
+      "GET /health",
+      "health → 200"
+     ],
+     [
+      "DELETE /menu",
+      "405: the path exists, the method doesn't"
+     ],
+     [
+      "GET /pizza",
+      "404: no such path"
+     ]
+    ]
+   },
+   "say": "A router is a lookup table from method and path to a handler function. There are two different ways to fail. If nobody knows the path, that is four oh four, not found. If the path exists but not with that method, like deleting the whole menu, that is four oh five, method not allowed. Good APIs tell the client exactly which mistake they made."
+  },
+  {
+   "type": "code",
+   "title": "A routing table",
+   "code": "def health(request):\n    return {\"status\": 200, \"body\": {\"ok\": True}}\n\ndef list_menu(request):\n    return {\"status\": 200, \"body\": {\"dosa\": 90, \"idli\": 50}}\n\nROUTES = {\n    (\"GET\", \"/health\"): health,\n    (\"GET\", \"/menu\"): list_menu,\n}\n\ndef dispatch(request):\n    handler = ROUTES.get((request[\"method\"], request[\"path\"]))\n    if handler:\n        return handler(request)\n    if any(path == request[\"path\"] for _, path in ROUTES):\n        return {\"status\": 405, \"body\": {\"error\": \"method not allowed\"}}\n    return {\"status\": 404, \"body\": {\"error\": \"not found\"}}\n\nfor method, path in [(\"GET\", \"/menu\"), (\"DELETE\", \"/menu\"), (\"GET\", \"/pizza\")]:\n    r = dispatch({\"method\": method, \"path\": path})\n    print(method, path, \"->\", r[\"status\"], r[\"body\"])\n",
+   "expect": "GET /menu -> 200 {'dosa': 90, 'idli': 50}\nDELETE /menu -> 405 {'error': 'method not allowed'}\nGET /pizza -> 404 {'error': 'not found'}\n",
+   "explain": [
+    [
+     7,
+     "Keys: (method, path). Values: the functions themselves."
+    ],
+    [
+     13,
+     "One dict lookup finds the handler."
+    ],
+    [
+     16,
+     "The path exists with another method: 405."
+    ],
+    [
+     17,
+     "Nobody knows this path: 404."
+    ]
+   ],
+   "say": "The routing table is a dict whose keys are tuples of method and path, and whose values are the handler functions themselves. Remember, functions are values. Dispatch looks up the handler. If there is none, it checks whether the path exists with some other method, to choose between four oh five and four oh four."
+  },
+  {
+   "type": "predict",
+   "title": "Which status comes back?",
+   "code": "ROUTES = {(\"GET\", \"/orders\"): \"list\", (\"POST\", \"/orders\"): \"create\", (\"GET\", \"/health\"): \"health\"}\n\ndef status_for(method, path):\n    if (method, path) in ROUTES:\n        return 200\n    if any(p == path for _, p in ROUTES):\n        return 405\n    return 404\n\nprint(status_for(\"POST\", \"/orders\"), status_for(\"PUT\", \"/orders\"), status_for(\"GET\", \"/order\"))",
+   "options": [
+    "200 405 404",
+    "200 404 404",
+    "200 405 405",
+    "201 405 404"
+   ],
+   "answer": 0,
+   "why": "POST /orders is in the table: 200. PUT /orders: the path exists, but not with PUT, so 405. `/order` (no s) is an unknown path: 404. One letter matters!",
+   "say": "Three requests hit this router: a post to orders, a put to orders, and a get to order, without the s. Which three status codes come back?"
+  },
+  {
+   "type": "concept",
+   "title": "Path parameters",
+   "body": "Real APIs put IDs in the path: `/orders/42`, `/users/riya`. Turn a pattern like `/orders/<id>` into a **regex** with a named group (Day 33), then pass what it captures to the handler.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Pattern: /orders/<order_id>",
+     "Regex: ^/orders/(?P<order_id>[^/]+)$",
+     "Request /orders/42 matches",
+     "Call get_order(request, order_id='42')"
+    ]
+   },
+   "say": "Real APIs put IDs inside the path, like orders slash forty two. Frameworks let you write a pattern with a placeholder, and turn it into a regular expression with a named group, which you met on day thirty three. When a request path matches, the captured values are passed to the handler as keyword arguments."
+  },
+  {
+   "type": "code",
+   "title": "A decorator-based router",
+   "code": "import re\n\nROUTES = []   # (method, regex, handler)\n\ndef route(method, pattern):\n    regex = re.compile(\"^\" + re.sub(r\"<(\\w+)>\", r\"(?P<\\1>[^/]+)\", pattern) + \"$\")\n    def register(handler):\n        ROUTES.append((method, regex, handler))\n        return handler\n    return register\n\n@route(\"GET\", \"/users/<name>/orders/<order_id>\")\ndef user_order(request, name, order_id):\n    return {\"status\": 200, \"body\": f\"{name}'s order {order_id}\"}\n\ndef dispatch(request):\n    for method, regex, handler in ROUTES:\n        m = regex.match(request[\"path\"])\n        if m and method == request[\"method\"]:\n            return handler(request, **m.groupdict())\n    return {\"status\": 404, \"body\": \"not found\"}\n\nfor path in [\"/users/riya/orders/42\", \"/users/riya/orders\", \"/users/riya/orders/42/items\"]:\n    print(path, \"->\", dispatch({\"method\": \"GET\", \"path\": path}))\n",
+   "expect": "/users/riya/orders/42 -> {'status': 200, 'body': \"riya's order 42\"}\n/users/riya/orders -> {'status': 404, 'body': 'not found'}\n/users/riya/orders/42/items -> {'status': 404, 'body': 'not found'}\n",
+   "explain": [
+    [
+     6,
+     "Every <name> becomes a named group that matches one path segment."
+    ],
+    [
+     8,
+     "Registering is a side effect…"
+    ],
+    [
+     9,
+     "…and the function itself is returned unchanged."
+    ],
+    [
+     12,
+     "The decorator runs once, when the function is defined."
+    ],
+    [
+     20,
+     "groupdict() → {'name': 'riya', 'order_id': '42'} → keyword arguments."
+    ]
+   ],
+   "say": "This is how Flask's app dot route works under the hood. The route decorator, built like the decorators you wrote on day twenty nine, turns the pattern into a regex and registers the handler in a list. Dispatch tries each route, and when one matches, group dict hands the captured values to the handler as keyword arguments."
+  },
+  {
+   "type": "exercise",
+   "title": "Validate a new order",
+   "task": "Write `create_order(request)` for `POST /orders`. The body is a dict like `{\"item\": \"dosa\", \"qty\": 2}`.\n- unknown item: **400** with an `error` field\n- `qty` missing, not an int, or outside 1 to 20: **400**\n- valid: store it and return **201** with `id`, `item`, `qty` and `total` (ids start at 1)",
+   "starter": "import json\n\nMENU = {\"dosa\": 90, \"idli\": 50, \"chai\": 20}\nORDERS = []\n\ndef json_response(data, status=200):\n    return {\"status\": status, \"body\": json.dumps(data)}\n\ndef create_order(request):\n    body = request.get(\"body\") or {}\n    # validate item and qty, then store the order and return 201\n    return json_response({\"error\": \"not implemented\"}, 500)\n\nprint(create_order({\"method\": \"POST\", \"path\": \"/orders\", \"body\": {\"item\": \"dosa\", \"qty\": 2}}))\n",
+   "solution": "import json\n\nMENU = {\"dosa\": 90, \"idli\": 50, \"chai\": 20}\nORDERS = []\n\ndef json_response(data, status=200):\n    return {\"status\": status, \"body\": json.dumps(data)}\n\ndef create_order(request):\n    body = request.get(\"body\") or {}\n    item, qty = body.get(\"item\"), body.get(\"qty\")\n    if item not in MENU:\n        return json_response({\"error\": f\"unknown item {item!r}\"}, 400)\n    if not isinstance(qty, int) or not 1 <= qty <= 20:\n        return json_response({\"error\": \"qty must be a whole number from 1 to 20\"}, 400)\n    order = {\"id\": len(ORDERS) + 1, \"item\": item, \"qty\": qty, \"total\": MENU[item] * qty}\n    ORDERS.append(order)\n    return json_response(order, 201)\n\nprint(create_order({\"method\": \"POST\", \"path\": \"/orders\", \"body\": {\"item\": \"dosa\", \"qty\": 2}}))\n",
+   "tests": "import json as _json\nORDERS.clear()\nr = create_order({\"method\": \"POST\", \"path\": \"/orders\", \"body\": {\"item\": \"idli\", \"qty\": 3}})\nassert r[\"status\"] == 201, f\"A valid order should return 201 Created, not {r['status']}.\"\ndata = _json.loads(r[\"body\"])\nassert data.get(\"item\") == \"idli\" and data.get(\"qty\") == 3 and data.get(\"total\") == 150, f\"The body should include item, qty and total (3 idli = ₹150). Got {data}.\"\nassert data.get(\"id\") == 1, \"The first order should get id 1.\"\nr2 = create_order({\"body\": {\"item\": \"chai\", \"qty\": 1}})\nassert _json.loads(r2[\"body\"]).get(\"id\") == 2, \"The second order should get id 2.\"\nfor bad in [{\"item\": \"pizza\", \"qty\": 1}, {\"item\": \"dosa\"}, {\"item\": \"dosa\", \"qty\": \"two\"}, {\"item\": \"dosa\", \"qty\": 0}, {\"item\": \"dosa\", \"qty\": 50}]:\n    r = create_order({\"body\": bad})\n    assert r[\"status\"] == 400, f\"{bad} is invalid, so return 400 Bad Request, not {r['status']}.\"\n    assert \"error\" in _json.loads(r[\"body\"]), f\"For {bad}, explain the problem in an 'error' field.\"\nassert create_order({})[\"status\"] == 400, \"A request with no body at all is a bad request: 400.\"\nassert len(ORDERS) == 2, f\"Only the 2 valid orders should be stored, but ORDERS has {len(ORDERS)}.\"",
+   "hints": [
+    "Check `item not in MENU` first and return `json_response({...}, 400)`.",
+    "The valid case is `isinstance(qty, int) and 1 <= qty <= 20`.",
+    "New id: `len(ORDERS) + 1`; total: `MENU[item] * qty`; return status 201."
+   ],
+   "say": "The most important rule of building APIs: never trust the client. Write create order for post slash orders. Reject unknown items and silly quantities with four hundred and a clear error message. For a valid order, store it, give it the next id, and answer two oh one, created, with the total price included."
+  },
+  {
+   "type": "concept",
+   "title": "WSGI: the plug between server and app",
+   "body": "**WSGI** is Python's standard for web apps. Your app is one function, `app(environ, start_response)`:\n- `environ`: a dict describing the request\n- `start_response(status, headers)`: call it once\n- return the body as a list of **bytes**",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Phone or browser",
+      "s": "pill"
+     },
+     {
+      "t": "WSGI server (gunicorn) parses the HTTP"
+     },
+     {
+      "t": "app(environ, start_response)"
+     },
+     {
+      "t": "start_response('200 OK', headers)"
+     },
+     {
+      "t": "return [b'{\"ok\": true}']",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "WSGI is the standard plug between Python web servers and Python web apps. Your app is one function that takes environ, a dict describing the request, and start response, which you call once with the status and headers. Then you return the body as a list of bytes. Gunicorn, Flask and Django all speak WSGI, so understand this one function and you understand them all."
+  },
+  {
+   "type": "code",
+   "title": "A real WSGI app, called directly",
+   "code": "import json\nfrom wsgiref.util import setup_testing_defaults\n\ndef app(environ, start_response):\n    body = json.dumps({\"path\": environ[\"PATH_INFO\"], \"method\": environ[\"REQUEST_METHOD\"]})\n    start_response(\"200 OK\", [(\"Content-Type\", \"application/json\")])\n    return [body.encode(\"utf-8\")]\n\ndef call(app, method=\"GET\", path=\"/\"):\n    environ = {\"REQUEST_METHOD\": method, \"PATH_INFO\": path}\n    setup_testing_defaults(environ)          # fills in the other standard keys\n    captured = {}\n    def start_response(status, headers):\n        captured[\"status\"] = status\n    body = b\"\".join(app(environ, start_response))\n    return captured[\"status\"], body.decode(\"utf-8\")\n\nprint(call(app, \"GET\", \"/menu\"))\nprint(call(app, \"POST\", \"/orders\"))\n",
+   "expect": "('200 OK', '{\"path\": \"/menu\", \"method\": \"GET\"}')\n('200 OK', '{\"path\": \"/orders\", \"method\": \"POST\"}')\n",
+   "explain": [
+    [
+     4,
+     "The whole app: one function with the standard signature."
+    ],
+    [
+     6,
+     "Status is a string: code plus reason."
+    ],
+    [
+     7,
+     "The body is a list of bytes."
+    ],
+    [
+     11,
+     "Fill in the keys a real server would provide."
+    ],
+    [
+     15,
+     "Join the chunks, like a server sending them."
+    ]
+   ],
+   "say": "Here is a genuine WSGI app, the same shape gunicorn would run in production. We cannot open a port on your phone, so call plays the part of the server. It builds an environ with setup testing defaults, which fills in every standard key, provides a start response that records the status, and joins the returned bytes."
+  },
+  {
+   "type": "code",
+   "title": "Query strings and POST bodies",
+   "code": "import io, json\nfrom urllib.parse import parse_qs\nfrom wsgiref.util import setup_testing_defaults\n\ndef app(environ, start_response):\n    if environ[\"REQUEST_METHOD\"] == \"GET\":\n        query = parse_qs(environ.get(\"QUERY_STRING\", \"\"))\n        data = {\"search\": query.get(\"q\", [\"\"])[0]}\n    else:\n        size = int(environ.get(\"CONTENT_LENGTH\") or 0)\n        data = {\"received\": json.loads(environ[\"wsgi.input\"].read(size) or b\"{}\")}\n    start_response(\"200 OK\", [(\"Content-Type\", \"application/json\")])\n    return [json.dumps(data).encode()]\n\ndef call(method, path, query=\"\", body=b\"\"):\n    env = {\"REQUEST_METHOD\": method, \"PATH_INFO\": path, \"QUERY_STRING\": query,\n           \"CONTENT_LENGTH\": str(len(body)), \"wsgi.input\": io.BytesIO(body)}\n    setup_testing_defaults(env)\n    return b\"\".join(app(env, lambda status, headers: None)).decode()\n\nprint(call(\"GET\", \"/search\", query=\"q=masala+dosa\"))\nprint(call(\"POST\", \"/orders\", body=b'{\"item\": \"chai\", \"qty\": 2}'))\n",
+   "expect": "{\"search\": \"masala dosa\"}\n{\"received\": {\"item\": \"chai\", \"qty\": 2}}\n",
+   "explain": [
+    [
+     7,
+     "GET options: decode the query string."
+    ],
+    [
+     10,
+     "How many bytes did the client send?"
+    ],
+    [
+     11,
+     "Read exactly that many bytes from the input stream, then parse the JSON."
+    ]
+   ],
+   "say": "Two more parts of the request live in environ. A get request's options arrive in the query string, which parse q s from yesterday decodes. A post body arrives as a stream of bytes in w s g i dot input, and content length says how many bytes to read. Then json loads turns it into a dict."
+  },
+  {
+   "type": "predict",
+   "title": "Health check, with a typo",
+   "code": "def app(environ, start_response):\n    if environ[\"PATH_INFO\"] != \"/health\":\n        start_response(\"404 Not Found\", [(\"Content-Type\", \"text/plain\")])\n        return [b\"nothing here\"]\n    start_response(\"200 OK\", [(\"Content-Type\", \"text/plain\")])\n    return [b\"ok\"]\n\ndef fake_start(status, headers):\n    print(\"status:\", status)\n\nbody = app({\"PATH_INFO\": \"/healthz\", \"REQUEST_METHOD\": \"GET\"}, fake_start)\nprint(b\"\".join(body).decode())",
+   "options": [
+    "status: 200 OK\nok",
+    "status: 404 Not Found\nnothing here",
+    "status: 404 Not Found\nok",
+    "nothing here\nstatus: 404 Not Found"
+   ],
+   "answer": 1,
+   "why": "`/healthz` isn't `/health`, so the first branch runs. `start_response` is called (printing the status) **before** the body is returned and printed.",
+   "say": "A monitoring tool calls this app on the path health z, with an extra z. What gets printed, and in what order?"
+  },
+  {
+   "type": "exercise",
+   "title": "A tiny menu API with WSGI",
+   "task": "Finish the WSGI `app`:\n- `GET /menu`: `200` with the whole menu\n- `GET /menu/<item>`: `200` with `{\"item\": name, \"price\": p}`, or `404` if unknown\n- other methods on those paths: `405`\n- anything else: `404`\n\nStatuses look like `'200 OK'`. Answer through `respond(...)`.",
+   "starter": "import json\nfrom wsgiref.util import setup_testing_defaults\n\nMENU = {\"dosa\": 90, \"idli\": 50, \"chai\": 20}\n\ndef respond(start_response, status, data):\n    start_response(status, [(\"Content-Type\", \"application/json\")])\n    return [json.dumps(data).encode(\"utf-8\")]\n\ndef app(environ, start_response):\n    method, path = environ[\"REQUEST_METHOD\"], environ[\"PATH_INFO\"]\n    # route /menu and /menu/<item>; answer 200, 404 or 405\n    return respond(start_response, \"404 Not Found\", {\"error\": \"not found\"})\n\nenv = {\"REQUEST_METHOD\": \"GET\", \"PATH_INFO\": \"/menu/idli\"}\nsetup_testing_defaults(env)\nprint(app(env, lambda status, headers: print(status)))\n",
+   "solution": "import json\nfrom wsgiref.util import setup_testing_defaults\n\nMENU = {\"dosa\": 90, \"idli\": 50, \"chai\": 20}\n\ndef respond(start_response, status, data):\n    start_response(status, [(\"Content-Type\", \"application/json\")])\n    return [json.dumps(data).encode(\"utf-8\")]\n\ndef app(environ, start_response):\n    method, path = environ[\"REQUEST_METHOD\"], environ[\"PATH_INFO\"]\n    parts = path.strip(\"/\").split(\"/\")\n    if parts[0] != \"menu\" or len(parts) > 2:\n        return respond(start_response, \"404 Not Found\", {\"error\": \"not found\"})\n    if method != \"GET\":\n        return respond(start_response, \"405 Method Not Allowed\", {\"error\": \"method not allowed\"})\n    if len(parts) == 1:\n        return respond(start_response, \"200 OK\", MENU)\n    name = parts[1]\n    if name not in MENU:\n        return respond(start_response, \"404 Not Found\", {\"error\": f\"no item {name!r}\"})\n    return respond(start_response, \"200 OK\", {\"item\": name, \"price\": MENU[name]})\n\nenv = {\"REQUEST_METHOD\": \"GET\", \"PATH_INFO\": \"/menu/idli\"}\nsetup_testing_defaults(env)\nprint(app(env, lambda status, headers: print(status)))\n",
+   "tests": "import json as _json\n\ndef call(method, path):\n    env = {\"REQUEST_METHOD\": method, \"PATH_INFO\": path}\n    setup_testing_defaults(env)\n    seen = {}\n    def start_response(status, headers):\n        seen[\"status\"] = status\n    chunks = list(app(env, start_response))\n    assert all(isinstance(c, bytes) for c in chunks), \"A WSGI app must return a list of bytes: encode the JSON with .encode('utf-8').\"\n    return seen.get(\"status\", \"\"), _json.loads(b\"\".join(chunks) or b\"null\")\n\nstatus, data = call(\"GET\", \"/menu\")\nassert status.startswith(\"200\"), f\"GET /menu should be 200 OK, not {status!r}.\"\nassert data == MENU, \"GET /menu should return the whole menu as JSON.\"\nstatus, data = call(\"GET\", \"/menu/idli\")\nassert status.startswith(\"200\") and data == {\"item\": \"idli\", \"price\": 50}, f\"GET /menu/idli should be 200 with {{'item': 'idli', 'price': 50}}. Got {status!r} and {data}.\"\nstatus, _ = call(\"GET\", \"/menu/pizza\")\nassert status.startswith(\"404\"), f\"pizza isn't on the menu, so GET /menu/pizza is 404, not {status!r}.\"\nstatus, _ = call(\"DELETE\", \"/menu/idli\")\nassert status.startswith(\"405\"), f\"DELETE on a menu path should be 405 Method Not Allowed, not {status!r}.\"\nstatus, _ = call(\"GET\", \"/admin\")\nassert status == \"404 Not Found\", f\"Unknown paths like /admin should be '404 Not Found', not {status!r}.\"",
+   "hints": [
+    "Split the path: `path.strip('/').split('/')` gives `['menu']` or `['menu', 'idli']`.",
+    "Check the path first (404), then the method (405), then the item (404 or 200).",
+    "Every answer goes through `respond(start_response, '200 OK', data)`."
+   ],
+   "say": "Put it all together in a real WSGI app. Get menu returns the whole menu. Get menu slash an item returns its price, or four oh four. Other methods on those paths get four oh five, and anything else is four oh four. The tests act as the web server, so return bytes and proper status strings."
+  },
+  {
+   "type": "bug",
+   "title": "It crashes the real server",
+   "task": "This health check works in a quick test but crashes gunicorn. It's wrapped in `wsgiref.validate.validator`, the official WSGI rule checker.\n\nRun it, read the checker's complaint, and fix **both** mistakes.",
+   "starter": "import json\nfrom wsgiref.util import setup_testing_defaults\nfrom wsgiref.validate import validator\n\ndef app(environ, start_response):\n    body = json.dumps({\"status\": \"ok\", \"version\": \"1.4.2\"})\n    start_response(200, [(\"Content-Type\", \"application/json\")])\n    return [body]\n\nchecked = validator(app)               # wraps app and checks every rule\nenv = {\"QUERY_STRING\": \"\"}\nsetup_testing_defaults(env)\nresult = checked(env, lambda status, headers, exc_info=None: None)\nprint(b\"\".join(result))\nresult.close()\n",
+   "solution": "import json\nfrom wsgiref.util import setup_testing_defaults\nfrom wsgiref.validate import validator\n\ndef app(environ, start_response):\n    body = json.dumps({\"status\": \"ok\", \"version\": \"1.4.2\"})\n    start_response(\"200 OK\", [(\"Content-Type\", \"application/json\")])\n    return [body.encode(\"utf-8\")]\n\nchecked = validator(app)               # wraps app and checks every rule\nenv = {\"QUERY_STRING\": \"\"}\nsetup_testing_defaults(env)\nresult = checked(env, lambda status, headers, exc_info=None: None)\nprint(b\"\".join(result))\nresult.close()\n",
+   "tests": "import json as _json\nenv2 = {\"QUERY_STRING\": \"\"}\nsetup_testing_defaults(env2)\nstatuses = []\nresult = validator(app)(env2, lambda status, headers, exc_info=None: statuses.append(status))\nbody = b\"\".join(result)\nresult.close()\nassert statuses and statuses[0].startswith(\"200 \"), \"Call start_response with a status string like '200 OK'.\"\nassert _json.loads(body).get(\"status\") == \"ok\", \"The body should still be the JSON health report.\"",
+   "hints": [
+    "The checker's first complaint: the status must be a **string** with a code and a reason, like `'200 OK'`.",
+    "Its second: every chunk of the body must be **bytes**. Encode the JSON with `.encode('utf-8')`."
+   ],
+   "say": "This health check endpoint works in a quick test but crashes a real server. Python ships an official rule checker, the validator in w s g i ref. Run the app through it, read each complaint, and fix both mistakes. Running the official checker in your tests is exactly what professionals do."
+  },
+  {
+   "type": "concept",
+   "title": "Flask and FastAPI: today's ideas, packaged",
+   "body": "**Flask** (WSGI) and **FastAPI** (ASGI, the async cousin) automate today's work. FastAPI even reads your **type hints** (Day 34) to validate input and write API docs.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Flask",
+     "code": "from flask import Flask, jsonify\napp = Flask(__name__)   # a WSGI app\n\n@app.get(\"/menu/<name>\")\ndef get_item(name):\n    if name not in MENU:\n        return jsonify(error=\"not found\"), 404\n    return jsonify(item=name, price=MENU[name])"
+    },
+    "right": {
+     "title": "FastAPI",
+     "code": "from fastapi import FastAPI\nfrom pydantic import BaseModel\napp = FastAPI()         # an ASGI app\n\nclass Order(BaseModel):\n    item: str\n    qty: int\n\n@app.post(\"/orders\", status_code=201)\ndef create_order(order: Order):\n    return {\"item\": order.item, \"qty\": order.qty}"
+    },
+    "verdict": "The decorator is your routing table; the type hints are your validation code. You built both by hand today."
+   },
+   "say": "Here is the payoff. Flask's route decorator is your routing table, and the app it creates is a WSGI app just like yours. FastAPI goes further: it reads your type hints from day thirty four to validate the request body, and even writes interactive documentation. It runs on ASGI, the async version of WSGI, which will make sense after day forty nine."
+  },
+  {
+   "type": "quiz",
+   "title": "Bad input, which status?",
+   "q": "A client sends `POST /orders` with `{\"item\": \"dosa\", \"qty\": -3}`. What should your API answer?",
+   "options": [
+    "200 OK, and store it anyway",
+    "400 Bad Request, with an error message",
+    "404 Not Found",
+    "500 Internal Server Error"
+   ],
+   "answer": 1,
+   "why": "The client sent invalid data, so it's a 4xx: **400 Bad Request**, with a message saying what's wrong. A 500 would wrongly blame your server and hide the real problem.",
+   "say": "A client posts a new order with a quantity of minus three. What should your API answer?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 47 complete",
+   "points": [
+    "A web app is a function: request in, response out (status, headers, body)",
+    "A routing table maps (method, path) to handlers: 404 for unknown paths, 405 for the wrong method",
+    "Path parameters come from regex named groups; a decorator registers routes like Flask's @app.route",
+    "Never trust the client: validate, answer 400 with a clear error, and 201 when something is created",
+    "WSGI is app(environ, start_response) returning bytes; wsgiref lets you test it without a server"
+   ],
+   "say": "Mission forty seven complete. You built handlers, a routing table, path parameters with a decorator router, input validation, and a real WSGI app that gunicorn could serve. Tomorrow your API gets a memory: databases and SQL, with sqlite3."
+  }
+ ]
+}

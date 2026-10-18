@@ -1,0 +1,452 @@
+{
+ "day": 37,
+ "phase": 4,
+ "title": "Debugging and logging",
+ "subtitle": "Find bugs systematically and let your code report what it does",
+ "minutes": 55,
+ "goal": "Debug systematically, read tracebacks through nested calls to the real cause, and replace print debugging with proper logging.",
+ "outcomes": [
+  "Follow a repeatable process: reproduce, isolate, fix, test",
+  "Read a traceback through several function calls and find the real cause",
+  "Configure logging with levels, formats, named loggers and log files",
+  "Use log.exception to record errors with their traceback",
+  "Explain breakpoint() and pdb, and rubber-duck a bug"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 37: Bug hunter",
+   "body": "Developers spend more time **reading and debugging** code than writing it. Great debuggers aren't luckier: they follow a **process** instead of guessing.\n\nToday: the process, tracebacks through nested calls, and `logging`, the tool that replaces scattered `print()` calls.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Reproduce: make it fail on demand",
+     "Isolate: shrink to the smallest failing case",
+     "Fix: change one thing, for a reason",
+     "Test: lock the fix in with a test"
+    ]
+   },
+   "say": "Here is an industry secret: developers spend more time reading and debugging code than writing it. Great debuggers are not luckier than everyone else. They follow a process instead of guessing. Today you learn that process, how to read tracebacks through nested calls, and logging, the professional replacement for scattered print statements."
+  },
+  {
+   "type": "concept",
+   "title": "Tracebacks through nested calls",
+   "body": "Read **bottom-up**: the last line is *what* went wrong. Each `File ... line` above it is one function call, outermost at the top. The crash happened in the last frame, but the **cause** is often a caller passing bad data.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "",
+      "Traceback (most recent call last):"
+     ],
+     [
+      "",
+      "  File \"main.py\", line 14, in <module>"
+     ],
+     [
+      "",
+      "    print(order_total(\"chai x2, samosa x3\"))"
+     ],
+     [
+      "",
+      "  File \"main.py\", line 11, in order_total"
+     ],
+     [
+      "",
+      "    total += price_of(name) * int(qty)"
+     ],
+     [
+      "",
+      "  File \"main.py\", line 4, in price_of"
+     ],
+     [
+      "",
+      "    return MENU[item]"
+     ],
+     [
+      "",
+      "KeyError: ' samosa'"
+     ]
+    ]
+   },
+   "say": "When the error happens deep inside nested calls, the traceback lists every call on the way down. Read it from the bottom. The last line says what went wrong: here, a key error for space samosa. Each pair of lines above it is one function call, with the outermost call at the top. The crash happened in price of, but notice the leading space: the real cause is the caller."
+  },
+  {
+   "type": "visual",
+   "title": "The call stack at the crash",
+   "body": "`price_of` crashed, but the bad value `' samosa'` was **created** one frame up, in `order_total`.",
+   "visual": {
+    "kind": "stack",
+    "frames": [
+     {
+      "name": "main",
+      "vars": [
+       [
+        "MENU",
+        "{'chai': 20, ...}"
+       ]
+      ]
+     },
+     {
+      "name": "order_total(order_text='chai x2, samosa x3')",
+      "vars": [
+       [
+        "part",
+        "' samosa x3'"
+       ],
+       [
+        "name",
+        "' samosa'"
+       ],
+       [
+        "qty",
+        "'3'"
+       ]
+      ]
+     },
+     {
+      "name": "price_of(item=' samosa')",
+      "vars": [
+       [
+        "item",
+        "' samosa'"
+       ]
+      ],
+      "ret": "KeyError"
+     }
+    ]
+   },
+   "say": "Here is the same moment as a call stack. Main called order total, which called price of. Price of did nothing wrong: it was handed a name with a space in front. The bad value was created one level up, when order total split the text on commas. Always ask where a bad value came from, not just where it exploded."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: the space that broke orders",
+   "task": "Run it and read the traceback bottom-up. Fix the **cause** in `order_total` so orders like `\"chai x2, samosa x3\"` work, even with extra spaces.",
+   "starter": "MENU = {\"chai\": 20, \"samosa\": 15, \"vada pav\": 25}\n\ndef price_of(item):\n    return MENU[item]\n\ndef order_total(order_text):\n    # order_text looks like \"chai x2, samosa x3\"\n    total = 0\n    for part in order_text.split(\",\"):\n        name, qty = part.split(\" x\")\n        total += price_of(name) * int(qty)\n    return total\n\nprint(order_total(\"chai x2, samosa x3\"))\n",
+   "solution": "MENU = {\"chai\": 20, \"samosa\": 15, \"vada pav\": 25}\n\ndef price_of(item):\n    return MENU[item]\n\ndef order_total(order_text):\n    # order_text looks like \"chai x2, samosa x3\"\n    total = 0\n    for part in order_text.split(\",\"):\n        name, qty = part.split(\" x\")\n        total += price_of(name.strip()) * int(qty)\n    return total\n\nprint(order_total(\"chai x2, samosa x3\"))\n",
+   "tests": "assert order_total(\"chai x2, samosa x3\") == 85, \"2 chai (40) + 3 samosa (45) = 85. Strip the spaces around each name.\"\nassert order_total(\"vada pav x1\") == 25, \"One vada pav costs 25: names can contain spaces inside, so only strip the ends.\"\nassert order_total(\"chai x1,   vada pav x2\") == 70, \"Extra spaces after a comma should not matter: 20 + 50 = 70.\"",
+   "hints": [
+    "The KeyError shows ' samosa' with a leading space. Where does that space come from?",
+    "Splitting on ',' leaves a space at the start of each later part. Call name.strip() before looking it up."
+   ],
+   "say": "Bug hunt. A food ordering function crashes on the second item. Read the traceback from the bottom, notice the exact key in the error, and trace the bad value back to where it was made. Fix the cause, not the symptom."
+  },
+  {
+   "type": "concept",
+   "title": "print debugging vs logging",
+   "body": "`print()` is fine for a quick look, but it has no levels, no timestamps, can't be switched off, and you must remember to delete it. `logging` is built for this.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "print debugging",
+     "code": "print(\"DEBUG total is\", total)\n# delete before shipping...\n# ...and forget one"
+    },
+    "right": {
+     "title": "logging",
+     "code": "log.debug(\"total is %s\", total)\n# hidden in production\n# switch on when needed"
+    },
+    "verdict": "Log messages can stay in the code forever; you choose which levels to show."
+   },
+   "say": "Print is fine for a quick look, and every developer uses it. But print statements pile up, have no levels, no timestamps, and must be deleted before you ship. Logging fixes all of that. Every message has a level, you switch details on or off with one setting, and the same messages can go to the screen, a file, or a monitoring service."
+  },
+  {
+   "type": "concept",
+   "title": "Log levels",
+   "body": "Each message has a **level**. The logger shows messages at or above its configured level. The default is `WARNING`.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Level",
+     "Number",
+     "Use it for"
+    ],
+    "rows": [
+     [
+      "DEBUG",
+      "10",
+      "details for developers: values, steps"
+     ],
+     [
+      "INFO",
+      "20",
+      "normal events: order placed, user logged in"
+     ],
+     [
+      "WARNING",
+      "30",
+      "odd but handled: retrying, low stock (default)"
+     ],
+     [
+      "ERROR",
+      "40",
+      "an operation failed: payment declined"
+     ],
+     [
+      "CRITICAL",
+      "50",
+      "the app itself is in trouble"
+     ]
+    ]
+   },
+   "say": "There are five standard levels. Debug is for detailed developer information. Info records normal events, like an order being placed. Warning means something odd happened but the program carries on. Error means an operation failed. Critical means the whole application may be going down. The logger shows only messages at or above the level you choose."
+  },
+  {
+   "type": "code",
+   "title": "Your first logs",
+   "body": "`stream=sys.stdout` shows logs here (the default is the error stream). `force=True` replaces any earlier setup, which matters when code re-runs in the same session.",
+   "code": "import logging\nimport sys\n\nlogging.basicConfig(stream=sys.stdout, level=logging.INFO,\n                    format=\"%(levelname)s:%(message)s\", force=True)\n\nlogging.debug(\"cart contents: %s\", [\"chai\"])   # below INFO: hidden\nlogging.info(\"order 101 placed\")\nlogging.warning(\"stock low: %d samosas left\", 3)\nlogging.error(\"payment failed for order %s\", 101)",
+   "expect": "INFO:order 101 placed\nWARNING:stock low: 3 samosas left\nERROR:payment failed for order 101\n",
+   "explain": [
+    [
+     4,
+     "Configure once: level, format and destination."
+    ],
+    [
+     5,
+     "force=True resets any previous configuration."
+    ],
+    [
+     7,
+     "DEBUG is below INFO, so it is filtered out."
+    ],
+    [
+     9,
+     "Pass values as arguments: %d, %s are filled in lazily."
+    ]
+   ],
+   "say": "Basic config sets up logging once, at the start of your program. We choose the INFO level, a simple format, and send output to standard out so it appears here. The debug message is hidden because it is below INFO. Notice the values are passed separately, not with an f-string: logging only builds the text if the message will actually be shown."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: what gets through?",
+   "code": "import logging\nimport sys\n\nlogging.basicConfig(stream=sys.stdout, level=logging.WARNING,\n                    format=\"%(levelname)s %(message)s\", force=True)\nlogging.info(\"starting import\")\nlogging.warning(\"disk 91 percent full\")\nlogging.debug(\"x = 5\")",
+   "options": [
+    "INFO starting import\nWARNING disk 91 percent full\nDEBUG x = 5",
+    "WARNING disk 91 percent full",
+    "INFO starting import\nWARNING disk 91 percent full",
+    "DEBUG x = 5"
+   ],
+   "answer": 1,
+   "why": "The level is WARNING, so only WARNING, ERROR and CRITICAL get through. INFO (20) and DEBUG (10) are below WARNING (30).",
+   "say": "This time the level is set to warning. Three messages are logged at three different levels. Which ones are actually printed?"
+  },
+  {
+   "type": "code",
+   "title": "Named loggers and formats",
+   "code": "import logging\nimport sys\n\nlogging.basicConfig(stream=sys.stdout, level=logging.DEBUG, force=True,\n                    format=\"%(levelname)-8s %(name)s | %(message)s\")\nlog = logging.getLogger(\"shop.payments\")\n\ndef charge(order_id, amount):\n    log.debug(\"charging order %s: Rs %.2f\", order_id, amount)\n    if amount <= 0:\n        log.error(\"rejected order %s: bad amount %s\", order_id, amount)\n        return False\n    log.info(\"order %s charged\", order_id)\n    return True\n\ncharge(101, 450)\ncharge(102, -5)",
+   "expect": "DEBUG    shop.payments | charging order 101: Rs 450.00\nINFO     shop.payments | order 101 charged\nDEBUG    shop.payments | charging order 102: Rs -5.00\nERROR    shop.payments | rejected order 102: bad amount -5\n",
+   "explain": [
+    [
+     5,
+     "%(levelname)-8s pads the level to 8 characters so columns line up."
+    ],
+    [
+     6,
+     "One named logger per module; normally getLogger(__name__)."
+    ],
+    [
+     9,
+     "DEBUG: details useful while developing."
+    ],
+    [
+     11,
+     "ERROR: the operation failed."
+    ],
+    [
+     13,
+     "INFO: a normal, successful event."
+    ]
+   ],
+   "say": "Real applications give each module its own named logger, and the name appears in every line, so you instantly know which part of the system spoke. In a real module you would write get logger with double underscore name. The format string can include the level, padded to line up, the logger name and the message. Production formats usually add a timestamp too."
+  },
+  {
+   "type": "code",
+   "title": "log.exception: errors with their traceback",
+   "code": "import logging\nimport sys\n\nlogging.basicConfig(stream=sys.stdout, level=logging.INFO, force=True,\n                    format=\"%(levelname)s %(name)s: %(message)s\")\nlog = logging.getLogger(\"importer\")\n\ndef parse_amount(text):\n    return int(text.replace(\",\", \"\"))\n\ntotal = 0\nfor row in [\"450\", \"1,200\", \"abc\"]:\n    try:\n        total += parse_amount(row)\n    except ValueError:\n        log.exception(\"skipping bad row %r\", row)\nlog.info(\"total imported: %d\", total)",
+   "expect": "ERROR importer: skipping bad row 'abc'\nTraceback (most recent call last):\n  File \"<main.py>\", line 14, in <module>\n    total += parse_amount(row)\n             ~~~~~~~~~~~~^^^^^\n  File \"<main.py>\", line 9, in parse_amount\n    return int(text.replace(\",\", \"\"))\nValueError: invalid literal for int() with base 10: 'abc'\nINFO importer: total imported: 1650\n",
+   "explain": [
+    [
+     16,
+     "log.exception = ERROR level + the full traceback. Use it inside except."
+    ],
+    [
+     17,
+     "The import carries on with the good rows."
+    ]
+   ],
+   "say": "Inside an except block, log dot exception logs an error message and attaches the full traceback. The program keeps running, the bad row is skipped, and whoever reads the log later sees exactly which row failed and where. Compare that with an empty except that silently swallows the problem."
+  },
+  {
+   "type": "code",
+   "title": "Logs that outlive the program",
+   "code": "import logging\n\nlogging.basicConfig(filename=\"app.log\", level=logging.INFO, force=True,\n                    format=\"%(levelname)s %(name)s: %(message)s\")\nlog = logging.getLogger(\"bank\")\n\nlog.info(\"deposit 500 to AC1001\")\nlog.warning(\"AC1002 balance below minimum\")\n\nwith open(\"app.log\") as f:\n    print(f.read(), end=\"\")",
+   "expect": "INFO bank: deposit 500 to AC1001\nWARNING bank: AC1002 balance below minimum\n",
+   "explain": [
+    [
+     3,
+     "filename= sends every log line to a file instead of the screen."
+    ],
+    [
+     10,
+     "Read the file back to see what was written."
+    ]
+   ],
+   "say": "Servers run without anyone watching the screen, so logs go to files instead. Give basic config a file name, and every message is appended to that file. Here we read the file back to prove it. In production, log files are rotated daily and shipped to tools where a whole team can search them."
+  },
+  {
+   "type": "concept",
+   "title": "Pausing time: breakpoint() and pdb",
+   "body": "Put `breakpoint()` on a line and Python **pauses there** in the debugger, `pdb`. Inspect variables, step line by line, continue. VS Code and PyCharm do the same when you click in the margin.\n\nInteractive debuggers need a real terminal, so you'll use them on your laptop.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python report.py"
+     ],
+     [
+      "",
+      "> report.py(4)average()"
+     ],
+     [
+      "",
+      "-> return sum(values) / len(values)"
+     ],
+     [
+      "(Pdb)",
+      "p values"
+     ],
+     [
+      "",
+      "[]"
+     ],
+     [
+      "(Pdb)",
+      "w"
+     ],
+     [
+      "",
+      "  report.py(9)<module>  ->  report.py(4)average()"
+     ],
+     [
+      "(Pdb)",
+      "c"
+     ]
+    ]
+   },
+   "say": "Sometimes you want to stop time and look around. Put breakpoint on any line, and when Python reaches it, it pauses inside the built-in debugger called pdb. You can print any variable, step to the next line, step into a function, or continue. Editors like VS Code do the same when you click in the margin. You will use this on your laptop, since it needs a real terminal."
+  },
+  {
+   "type": "quiz",
+   "title": "pdb in practice",
+   "q": "Python paused at your breakpoint(). You want to see the current value of total. What do you type?",
+   "options": [
+    "p total",
+    "c",
+    "q"
+   ],
+   "answer": 0,
+   "why": "p prints an expression. The other essentials: n (next line), s (step into a call), c (continue running), w (where am I), l (list code), q (quit).",
+   "say": "Quick check. The debugger has paused your program. Which command prints the value of the variable total?"
+  },
+  {
+   "type": "concept",
+   "title": "Debug like a scientist",
+   "body": "- **Reproduce**: get the exact input that fails\n- **Isolate**: shrink it, or comment out half the code (binary search)\n- **Hypothesise**, then test it with one log, assert or print\n- **Fix** one thing; add a **test**\n\nStuck? Explain the code line by line to a rubber duck. You'll often hear the bug yourself.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Bug report",
+      "s": "pill"
+     },
+     {
+      "t": "Can you reproduce it?",
+      "s": "diamond",
+      "yes": "Shrink the input",
+      "no": "Collect logs and inputs"
+     },
+     {
+      "t": "Form one hypothesis"
+     },
+     {
+      "t": "Test it: a log, an assert, a breakpoint"
+     },
+     {
+      "t": "Fix + add a test",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Debug like a scientist. First reproduce the bug with the exact input that triggers it. Then isolate it: shrink the input, or switch off half the code, and see which half still fails. Form a hypothesis and test it with one log line or an assert. And when you are stuck, explain the code out loud, line by line, to a rubber duck. You will be amazed how often you hear the bug yourself."
+  },
+  {
+   "type": "code",
+   "title": "Isolate: find the failing input",
+   "code": "def parse_price(text):\n    return float(text.replace(\"Rs\", \"\").strip())\n\nrows = [\"Rs 450\", \"Rs 1200\", \"Rs 99.50\", \"Rs 1,250\", \"Rs 30\"]\n\nfor i, row in enumerate(rows):\n    try:\n        parse_price(row)\n    except ValueError as e:\n        print(f\"row {i} fails: {row!r} -> {e}\")",
+   "expect": "row 3 fails: 'Rs 1,250' -> could not convert string to float: '1,250'\n",
+   "explain": [
+    [
+     6,
+     "Try every input, one by one."
+    ],
+    [
+     9,
+     "Catch the failure and report the exact input."
+    ]
+   ],
+   "say": "A report crashes on a file of thousands of prices. Instead of staring at the code, we isolate: run the function on each input and report exactly which one fails, and why. Now the bug is obvious. Prices with a thousands comma break float. That one tiny input becomes the regression test for the fix."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: let the logs talk",
+   "task": "A customer paid **12 EMIs of ₹5,000**, but `total_paid` reports 55000. Run it and read the DEBUG log: which month never appears? Fix the loop.",
+   "starter": "import logging\nimport sys\n\nlogging.basicConfig(stream=sys.stdout, level=logging.DEBUG, force=True,\n                    format=\"%(levelname)s %(message)s\")\nlog = logging.getLogger(\"emi\")\n\ndef total_paid(emi, months):\n    total = 0\n    for month in range(1, months):\n        total += emi\n        log.debug(\"month %d: total %d\", month, total)\n    return total\n\nprint(total_paid(5000, 12))\n",
+   "solution": "import logging\nimport sys\n\nlogging.basicConfig(stream=sys.stdout, level=logging.DEBUG, force=True,\n                    format=\"%(levelname)s %(message)s\")\nlog = logging.getLogger(\"emi\")\n\ndef total_paid(emi, months):\n    total = 0\n    for month in range(1, months + 1):\n        total += emi\n        log.debug(\"month %d: total %d\", month, total)\n    return total\n\nprint(total_paid(5000, 12))\n",
+   "tests": "import logging as _l\n_l.disable(_l.CRITICAL)\ntry:\n    r1 = total_paid(5000, 12)\n    assert r1 == 60000, f\"12 EMIs of 5000 is 60000, got {r1}. The log stops at month 11: range(1, months) never reaches months.\"\n    assert total_paid(1000, 1) == 1000, \"One EMI of 1000 should total 1000.\"\n    assert total_paid(1000, 0) == 0, \"With 0 months nothing is paid: 0.\"\nfinally:\n    _l.disable(_l.NOTSET)",
+   "hints": [
+    "The last DEBUG line says month 11. range(1, 12) stops before 12.",
+    "Use range(1, months + 1) so the loop includes the final month."
+   ],
+   "say": "Let the logs do the talking. The debug log prints a line for every month of a loan. Run it, look at the last month that appears, and you will spot the bug in seconds. This is why good debug logging is worth leaving in your code."
+  },
+  {
+   "type": "exercise",
+   "title": "No more silent failures",
+   "task": "`import_amounts` hides bad rows with `except: pass`, so nobody knows data was lost. Keep returning the total of the good rows, but log a **WARNING** with the `importer` logger for **each** skipped row, including the row text (use `%r`).",
+   "starter": "import logging\nimport sys\n\nlogging.basicConfig(stream=sys.stdout, level=logging.INFO, force=True,\n                    format=\"%(levelname)s %(name)s: %(message)s\")\nlog = logging.getLogger(\"importer\")\n\ndef import_amounts(rows):\n    total = 0\n    for row in rows:\n        try:\n            total += int(row.replace(\",\", \"\"))\n        except ValueError:\n            pass   # TODO: never fail silently\n    return total\n\nprint(import_amounts([\"450\", \"1,200\", \"abc\", \"\"]))\n",
+   "solution": "import logging\nimport sys\n\nlogging.basicConfig(stream=sys.stdout, level=logging.INFO, force=True,\n                    format=\"%(levelname)s %(name)s: %(message)s\")\nlog = logging.getLogger(\"importer\")\n\ndef import_amounts(rows):\n    total = 0\n    for row in rows:\n        try:\n            total += int(row.replace(\",\", \"\"))\n        except ValueError:\n            log.warning(\"skipping bad row %r\", row)\n    return total\n\nprint(import_amounts([\"450\", \"1,200\", \"abc\", \"\"]))\n",
+   "tests": "import logging as _l\nimport unittest as _u\n_tc = _u.TestCase()\ntry:\n    with _tc.assertLogs(\"importer\", level=\"WARNING\") as cm:\n        total = import_amounts([\"450\", \"1,200\", \"abc\", \"12x\"])\nexcept AssertionError:\n    raise AssertionError(\"No WARNING was logged for the bad rows. In the except block call log.warning(...) on the importer logger.\") from None\nassert total == 1650, f\"The good rows 450 and 1,200 should still add up to 1650, got {total}.\"\nwarns = [r for r in cm.records if r.levelno == _l.WARNING]\nassert len(warns) == 2, f\"Log exactly one WARNING per bad row: 2 bad rows, but {len(warns)} warnings.\"\nassert \"abc\" in warns[0].getMessage() and \"12x\" in warns[1].getMessage(), \"Include the row text in each warning, for example log.warning(\\\"skipping bad row %r\\\", row).\"\nwith _tc.assertNoLogs(\"importer\", level=\"WARNING\"):\n    assert import_amounts([\"10\", \"20\"]) == 30, \"Two good rows 10 and 20 should total 30.\"",
+   "hints": [
+    "Replace pass with log.warning(...) on the importer logger, not print.",
+    "log.warning(\"skipping bad row %r\", row) puts the exact row, with quotes, in the message."
+   ],
+   "say": "An empty except with pass is one of the most dangerous lines in programming: data disappears and nobody ever knows. Keep the import working for good rows, but log a warning for every row that gets skipped, so the problem is visible in the logs."
+  },
+  {
+   "type": "quiz",
+   "title": "Choose the level",
+   "q": "A call to the payment gateway timed out, and your code will retry automatically. Which level fits best?",
+   "options": [
+    "DEBUG",
+    "WARNING",
+    "CRITICAL"
+   ],
+   "answer": 1,
+   "why": "Something unexpected happened but it is being handled: WARNING. If every retry fails and the payment can't go through, log an ERROR. CRITICAL is for the whole application being in trouble.",
+   "say": "Last check. A payment call timed out, but your code will retry it. Which log level would a senior developer choose?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 37 complete",
+   "points": [
+    "Debug with a process: reproduce, isolate, hypothesise, fix, add a test",
+    "Read tracebacks bottom-up; the crash site is not always the cause",
+    "logging levels: DEBUG, INFO, WARNING, ERROR, CRITICAL; basicConfig sets level, format and destination",
+    "Use named loggers, pass values as arguments, and log.exception inside except blocks",
+    "breakpoint() pauses in pdb; a rubber duck works surprisingly well too"
+   ],
+   "say": "Mission thirty seven complete. You can hunt bugs with a process, follow a traceback to the real cause, and make your programs report what they are doing with proper logging. Tomorrow we make code a pleasure to read, with clean code and refactoring. See you on day thirty eight."
+  }
+ ]
+}

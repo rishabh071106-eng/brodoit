@@ -6,7 +6,7 @@
   'use strict';
   var KEY_DONE = 'bd_onboarded', KEY_GOALS = 'bd_goals';
   var STEPS = [6000, 8000, 10000];
-  var LANGS = [['en', 'English'], ['hi', 'Hindi'], ['es', 'Spanish'], ['fr', 'French'], ['de', 'German'], ['ja', 'Japanese']];
+  var LANGS = [['en', 'English'], ['hi', 'Hindi'], ['es', 'Spanish'], ['fr', 'French'], ['de', 'German']];
   var EXAMS = [['upsc-cse', 'UPSC CSE'], ['sbi-po', 'SBI PO'], ['nda', 'NDA'], ['gate-cse', 'GATE CSE'], ['tcs-nqt', 'TCS NQT'], ['gmat', 'GMAT']];
   var O = window.Onboarding = { i: 0, n: 4, root: null, onDone: null, _goals: null, _timers: [], _prevOverflow: null };
 

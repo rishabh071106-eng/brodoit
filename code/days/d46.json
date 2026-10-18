@@ -1,0 +1,506 @@
+{
+ "day": 46,
+ "phase": 5,
+ "title": "HTTP and APIs",
+ "subtitle": "How apps talk to each other",
+ "minutes": 60,
+ "goal": "Understand HTTP requests and responses, build safe URLs, and parse, paginate and retry real-world JSON APIs.",
+ "outcomes": [
+  "Explain methods, status codes, headers and bodies in an HTTP exchange",
+  "Split and build URLs safely with urllib.parse",
+  "Parse nested JSON responses defensively with keys, indexes and .get()",
+  "Collect every page from a paginated API",
+  "Retry only the errors worth retrying, and know what requests does for you"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 46: HTTP and APIs",
+   "body": "Pay with UPI, check the weather, refresh a cricket score: your app sends an **HTTP request** and gets a **response**, usually JSON.\n\nToday you learn the language of the web, and read real API responses like a pro.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Your app",
+      "s": "pill"
+     },
+     {
+      "t": "Request: GET /v1/score?match=ind-aus"
+     },
+     {
+      "t": "Server finds the data"
+     },
+     {
+      "t": "Response: 200 OK + JSON body"
+     },
+     {
+      "t": "Your app shows the score",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "When you pay with UPI, check the weather or refresh a cricket score, your app sends an HTTP request to a server and gets a response back, usually in JSON. Today you learn the language of the web: methods, status codes, headers, and how to read real API responses like a professional."
+  },
+  {
+   "type": "concept",
+   "title": "Anatomy of an HTTP exchange",
+   "body": "**Request**: a method, a URL, headers, sometimes a body.\n**Response**: a status code, headers, a body.\n\nIt's all just text. Here's a real exchange, as `curl -i` shows it.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "curl -i \"https://api.weather.example/v1/now?city=Pune\""
+     ],
+     [
+      "",
+      "HTTP/1.1 200 OK"
+     ],
+     [
+      "",
+      "Content-Type: application/json"
+     ],
+     [
+      "",
+      "Cache-Control: max-age=600"
+     ],
+     [
+      "",
+      " "
+     ],
+     [
+      "",
+      "{\"city\": \"Pune\", \"temp_c\": 31.5, \"condition\": \"Sunny\"}"
+     ]
+    ]
+   },
+   "say": "Every web conversation has two halves. The request carries a method, a URL, some headers, and sometimes a body. The response carries a status code, headers and a body. Underneath, it is all just text. The curl tool shows it raw: a status line, headers, a blank line, then the JSON body."
+  },
+  {
+   "type": "concept",
+   "title": "Methods: what you want to do",
+   "body": "The method says what you want. **GET must never change data**, so browsers, caches and retries can repeat it safely.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Method",
+     "Meaning",
+     "Example"
+    ],
+    "rows": [
+     [
+      "GET",
+      "read",
+      "GET /orders/42"
+     ],
+     [
+      "POST",
+      "create",
+      "POST /orders"
+     ],
+     [
+      "PUT",
+      "replace",
+      "PUT /users/7"
+     ],
+     [
+      "PATCH",
+      "change part",
+      "PATCH /users/7  {\"city\": \"Pune\"}"
+     ],
+     [
+      "DELETE",
+      "remove",
+      "DELETE /cart/items/3"
+     ]
+    ]
+   },
+   "say": "The method says what you want to do. Get reads data, post creates something new, put replaces a thing completely, patch changes part of it, and delete removes it. One rule matters a lot: a get request must never change anything, so browsers, caches and retries can repeat it safely."
+  },
+  {
+   "type": "concept",
+   "title": "Status codes: how it went",
+   "body": "The first digit tells the story:\n- **2xx** success\n- **3xx** look somewhere else\n- **4xx** your request is wrong\n- **5xx** the server failed",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Code",
+     "Meaning"
+    ],
+    "rows": [
+     [
+      "200 OK",
+      "here's your data"
+     ],
+     [
+      "201 Created",
+      "the new thing exists"
+     ],
+     [
+      "204 No Content",
+      "done, nothing to send"
+     ],
+     [
+      "301 / 304",
+      "moved / not modified"
+     ],
+     [
+      "400 Bad Request",
+      "your input is invalid"
+     ],
+     [
+      "401 / 403",
+      "who are you? / not allowed"
+     ],
+     [
+      "404 Not Found",
+      "no such resource"
+     ],
+     [
+      "429 Too Many Requests",
+      "slow down"
+     ],
+     [
+      "500 / 503",
+      "server error / unavailable"
+     ]
+    ]
+   },
+   "say": "The status code tells you how it went, and the first digit tells the whole story. Two hundreds mean success. Three hundreds mean look somewhere else. Four hundreds mean your request was wrong, so fix it before trying again. Five hundreds mean the server failed, and trying again later might work."
+  },
+  {
+   "type": "quiz",
+   "title": "Too many requests",
+   "q": "Your app gets **429 Too Many Requests** from a payments API. What should it do?",
+   "options": [
+    "Retry immediately, in a tight loop",
+    "Wait (check the Retry-After header), then retry",
+    "Show 'Page not found'",
+    "Treat it as a successful payment"
+   ],
+   "answer": 1,
+   "why": "429 means you're being rate limited: slow down. Good clients wait, often for the number of seconds in the `Retry-After` header, and back off further if it happens again.",
+   "say": "Your app calls a payments API and gets status four twenty nine, too many requests. What should your code do?"
+  },
+  {
+   "type": "code",
+   "title": "Taking a URL apart",
+   "code": "from urllib.parse import urlparse, parse_qs\n\nurl = \"https://api.cricdata.example/v2/matches?series=ipl-2026&team=CSK&page=2\"\nparts = urlparse(url)\n\nprint(parts.scheme)\nprint(parts.netloc)\nprint(parts.path)\nquery = parse_qs(parts.query)\nprint(query)\nprint(query[\"team\"][0], int(query[\"page\"][0]))\n",
+   "expect": "https\napi.cricdata.example\n/v2/matches\n{'series': ['ipl-2026'], 'team': ['CSK'], 'page': ['2']}\nCSK 2\n",
+   "explain": [
+    [
+     4,
+     "urlparse splits the URL into named parts."
+    ],
+    [
+     6,
+     "The protocol."
+    ],
+    [
+     7,
+     "The server's address."
+    ],
+    [
+     8,
+     "Which resource you want."
+    ],
+    [
+     9,
+     "The query string, as a dict of lists."
+    ],
+    [
+     11,
+     "Values are always text: convert numbers yourself."
+    ]
+   ],
+   "say": "A URL has parts, and url lib dot parse splits them for you. The scheme is the protocol, the net loc is the server, the path picks the resource, and the query string after the question mark carries the options. Parse q s turns the query into a dict. Each value is a list, because a key can appear more than once."
+  },
+  {
+   "type": "code",
+   "title": "Building query strings safely",
+   "code": "from urllib.parse import urlencode, quote\n\nparams = {\"q\": \"chai & samosa\", \"city\": \"Navi Mumbai\", \"veg\": \"true\", \"page\": 1}\nprint(urlencode(params))\n\nbase = \"https://api.food.example/v1/search\"\nprint(f\"{base}?{urlencode(params)}\")\n\nprint(quote(\"Café Coffee Day/Andheri\"))\n",
+   "expect": "q=chai+%26+samosa&city=Navi+Mumbai&veg=true&page=1\nhttps://api.food.example/v1/search?q=chai+%26+samosa&city=Navi+Mumbai&veg=true&page=1\nCaf%C3%A9%20Coffee%20Day/Andheri\n",
+   "explain": [
+    [
+     3,
+     "User input can contain &, spaces, anything."
+    ],
+    [
+     4,
+     "urlencode escapes each key and value, then joins them with &."
+    ],
+    [
+     7,
+     "You add the ? yourself."
+    ],
+    [
+     9,
+     "quote escapes one path segment; / is kept by default."
+    ]
+   ],
+   "say": "Never glue user input into a URL by hand. The ampersand in chai and samosa would split the query in two. Url encode escapes everything safely: spaces become plus signs and the ampersand becomes percent two six. Quote does the same for a piece of a path, even turning the accented e into its U T F eight bytes."
+  },
+  {
+   "type": "predict",
+   "title": "Encode the search",
+   "code": "from urllib.parse import urlencode\nprint(urlencode({\"from\": \"Pune\", \"to\": \"New Delhi\", \"date\": \"2026-11-05\"}))",
+   "options": [
+    "from=Pune&to=New+Delhi&date=2026-11-05",
+    "from=Pune&to=New Delhi&date=2026-11-05",
+    "from=Pune,to=New+Delhi,date=2026-11-05",
+    "?from=Pune&to=New%20Delhi&date=2026-11-05"
+   ],
+   "answer": 0,
+   "why": "`urlencode` joins pairs with `&`, puts `=` between key and value, turns spaces into `+`, and does **not** add the `?`: that's your job when you build the full URL.",
+   "say": "You are building a train search request. What exact query string does url encode produce?"
+  },
+  {
+   "type": "concept",
+   "title": "JSON APIs",
+   "body": "Most APIs answer with **JSON** text. `json.loads()` turns it into dicts and lists; you navigate with keys and indexes.\n\nReal responses are **nested**, and some fields are sometimes missing.",
+   "visual": {
+    "kind": "dict",
+    "name": "response",
+    "pairs": [
+     [
+      "'city'",
+      "'Pune'"
+     ],
+     [
+      "'current'",
+      "{'temp_c': 31.5, 'condition': 'Sunny', 'humidity': 42}"
+     ],
+     [
+      "'forecast'",
+      "[{'day': 'Thu', 'max': 33, …}, …]"
+     ]
+    ]
+   },
+   "say": "Most APIs answer with JSON text. Json dot loads, from day twenty three, turns it into ordinary dicts and lists, and you navigate with keys and indexes. Real responses are nested several levels deep, and some fields are sometimes missing, so read them carefully and defensively."
+  },
+  {
+   "type": "code",
+   "title": "Reading a weather API response",
+   "body": "No network in the course, so the response body is pasted in as text, exactly as a server would send it.",
+   "code": "import json\n\nbody = '''{\n  \"city\": \"Pune\",\n  \"current\": {\"temp_c\": 31.5, \"condition\": \"Sunny\", \"humidity\": 42},\n  \"forecast\": [\n    {\"day\": \"Thu\", \"max\": 33, \"min\": 21, \"rain_chance\": 10},\n    {\"day\": \"Fri\", \"max\": 30, \"min\": 22, \"rain_chance\": 70},\n    {\"day\": \"Sat\", \"max\": 28, \"min\": 21, \"rain_chance\": 90}\n  ]\n}'''\n\ndata = json.loads(body)\nnow = data[\"current\"]\nprint(f\"{data['city']}: {now['temp_c']}°C, {now['condition']}\")\n\nfor day in data[\"forecast\"]:\n    note = \"  take an umbrella\" if day[\"rain_chance\"] >= 60 else \"\"\n    print(f\"{day['day']}  {day['min']}-{day['max']}°C{note}\")\n\nprint(\"Air quality:\", data.get(\"aqi\", \"not provided\"))\n",
+   "expect": "Pune: 31.5°C, Sunny\nThu  21-33°C\nFri  22-30°C  take an umbrella\nSat  21-28°C  take an umbrella\nAir quality: not provided\n",
+   "explain": [
+    [
+     13,
+     "Text in, dicts and lists out."
+    ],
+    [
+     14,
+     "A nested dict inside the response."
+    ],
+    [
+     17,
+     "The forecast is a list: loop over it."
+    ],
+    [
+     21,
+     ".get() with a default: missing fields don't crash you."
+    ]
+   ],
+   "say": "Here is a realistic weather API response, stored as text exactly as it would arrive over the network. After json loads, the current conditions are a nested dict and the forecast is a list of dicts. Look at the last line: this response has no air quality field, so we use get with a default instead of crashing."
+  },
+  {
+   "type": "code",
+   "title": "Cricket scores: nested JSON",
+   "code": "import json\n\nbody = '''{\"match\": \"IND vs AUS, 3rd ODI\", \"status\": \"live\",\n \"innings\": [{\"team\": \"IND\", \"runs\": 287, \"wickets\": 6, \"overs\": 45.2,\n   \"batters\": [{\"name\": \"Gill\", \"runs\": 82, \"balls\": 71},\n               {\"name\": \"Kohli\", \"runs\": 104, \"balls\": 96},\n               {\"name\": \"Pant\", \"runs\": 31}]}]}'''\n\ninnings = json.loads(body)[\"innings\"][0]\nballs = int(innings[\"overs\"]) * 6 + round(innings[\"overs\"] % 1 * 10)\nprint(f\"{innings['team']} {innings['runs']}/{innings['wickets']} in {innings['overs']} overs\")\nprint(\"Run rate:\", round(innings[\"runs\"] / balls * 6, 2))\n\ntop = max(innings[\"batters\"], key=lambda b: b[\"runs\"])\nprint(\"Top scorer:\", top[\"name\"], top[\"runs\"])\nfor b in innings[\"batters\"]:\n    print(f\"  {b['name']:<6} {b['runs']:>3} ({b.get('balls', '?')} balls)\")\n",
+   "expect": "IND 287/6 in 45.2 overs\nRun rate: 6.33\nTop scorer: Kohli 104\n  Gill    82 (71 balls)\n  Kohli  104 (96 balls)\n  Pant    31 (? balls)\n",
+   "explain": [
+    [
+     9,
+     "Drill down: the first innings of the match."
+    ],
+    [
+     10,
+     "45.2 overs = 45 × 6 + 2 = 272 balls."
+    ],
+    [
+     14,
+     "max with a key finds the top scorer."
+    ],
+    [
+     17,
+     "Pant has no balls field, so .get() shows ?."
+    ]
+   ],
+   "say": "Cricket APIs are deeply nested: a match has innings, and an innings has batters. We drill down with keys and indexes. There is one cricket gotcha: forty five point two overs means forty five overs and two balls, not a decimal, so we convert to balls before computing the run rate. And notice Pant's entry has no balls field."
+  },
+  {
+   "type": "exercise",
+   "title": "Parse a live scorecard",
+   "task": "Write `scorecard(data)` for a parsed cricket API response. Return one string per batter of the first innings, **highest score first**: `'Kohli 104 (96)'`. If `balls` is missing, show `?`: `'Pant 31 (?)'`.\n\nAn error response, or one with no innings yet, returns `[]`.",
+   "starter": "import json\n\nsample = json.loads('''{\"status\": \"live\", \"innings\": [{\"team\": \"IND\", \"batters\": [\n  {\"name\": \"Gill\", \"runs\": 82, \"balls\": 71},\n  {\"name\": \"Kohli\", \"runs\": 104, \"balls\": 96},\n  {\"name\": \"Pant\", \"runs\": 31}]}]}''')\n\ndef scorecard(data):\n    lines = []\n    # error or no innings -> []; otherwise sort the first innings' batters by runs\n    return lines\n\nprint(scorecard(sample))\n",
+   "solution": "import json\n\nsample = json.loads('''{\"status\": \"live\", \"innings\": [{\"team\": \"IND\", \"batters\": [\n  {\"name\": \"Gill\", \"runs\": 82, \"balls\": 71},\n  {\"name\": \"Kohli\", \"runs\": 104, \"balls\": 96},\n  {\"name\": \"Pant\", \"runs\": 31}]}]}''')\n\ndef scorecard(data):\n    if data.get(\"status\") == \"error\" or not data.get(\"innings\"):\n        return []\n    batters = data[\"innings\"][0].get(\"batters\", [])\n    lines = []\n    for b in sorted(batters, key=lambda b: b[\"runs\"], reverse=True):\n        lines.append(f\"{b['name']} {b['runs']} ({b.get('balls', '?')})\")\n    return lines\n\nprint(scorecard(sample))\n",
+   "tests": "got = scorecard(sample)\nassert got == [\"Kohli 104 (96)\", \"Gill 82 (71)\", \"Pant 31 (?)\"], f\"Expected ['Kohli 104 (96)', 'Gill 82 (71)', 'Pant 31 (?)'] but got {got}. Sort by runs, highest first, and use ? when balls is missing.\"\nassert scorecard({\"status\": \"error\", \"message\": \"match not found\"}) == [], \"An error response should give an empty list, not a crash.\"\nassert scorecard({\"status\": \"upcoming\", \"innings\": []}) == [], \"A match that hasn't started has no innings: return [].\"\none = {\"status\": \"live\", \"innings\": [{\"team\": \"AUS\", \"batters\": [{\"name\": \"Head\", \"runs\": 0, \"balls\": 3}]}]}\nassert scorecard(one) == [\"Head 0 (3)\"], \"A duck still counts: 'Head 0 (3)'.\"",
+   "hints": [
+    "Check `data.get(\"status\") == \"error\"` and `not data.get(\"innings\")` first.",
+    "`sorted(batters, key=lambda b: b[\"runs\"], reverse=True)` puts the top scorer first.",
+    "`b.get(\"balls\", \"?\")` gives ? when the key is missing."
+   ],
+   "say": "Your turn to read a real looking API response. Scorecard returns one line per batter, highest score first, with the balls faced in brackets, or a question mark when the API left that field out. Real APIs also return errors and matches that have not started, so handle those without crashing."
+  },
+  {
+   "type": "concept",
+   "title": "Pagination: one page at a time",
+   "body": "APIs never send a million records at once. They send a **page**, plus a way to get the next one: a page number or a `next` cursor.\n\nKeep fetching until there's no next page.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "GET /orders (first page)",
+      "s": "pill"
+     },
+     {
+      "t": "Keep this page's items"
+     },
+     {
+      "t": "Is next empty?",
+      "s": "diamond",
+      "yes": "stop",
+      "no": "GET /orders?cursor=next"
+     },
+     {
+      "t": "Return every item",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "APIs never send a million records in one response. They send one page, plus a way to get the next: a page number, or a next cursor. Your code keeps fetching until the response says there is no next page. Get this loop right, because a bug here either loses data or loops forever."
+  },
+  {
+   "type": "code",
+   "title": "Following the pages",
+   "code": "PAGES = {   # what a paginated API returns for each cursor\n    None: {\"items\": [\"Order 1\", \"Order 2\"], \"next\": \"abc\"},\n    \"abc\": {\"items\": [\"Order 3\", \"Order 4\"], \"next\": \"def\"},\n    \"def\": {\"items\": [\"Order 5\"], \"next\": None},\n}\n\ndef fetch(cursor=None):\n    print(\"GET /orders\" + (f\"?cursor={cursor}\" if cursor else \"\"))\n    return PAGES[cursor]\n\ncursor, everything = None, []\nwhile True:\n    page = fetch(cursor)\n    everything.extend(page[\"items\"])\n    cursor = page[\"next\"]\n    if cursor is None:\n        break\nprint(len(everything), \"orders:\", everything)\n",
+   "expect": "GET /orders\nGET /orders?cursor=abc\nGET /orders?cursor=def\n5 orders: ['Order 1', 'Order 2', 'Order 3', 'Order 4', 'Order 5']\n",
+   "explain": [
+    [
+     1,
+     "Pretend server data: one entry per page."
+    ],
+    [
+     7,
+     "A stand-in for a real HTTP request."
+    ],
+    [
+     13,
+     "Ask for the current page."
+    ],
+    [
+     15,
+     "The server tells us where the next page is."
+    ],
+    [
+     16,
+     "No next cursor: that was the last page."
+    ]
+   ],
+   "say": "There is no internet in this course, so fetch is a stand in that returns realistic pages from a dict and prints the request it would make. The loop asks for a page, keeps its items and follows the next cursor. When next is None, we stop. Swap fetch for a real HTTP call and this loop works unchanged."
+  },
+  {
+   "type": "exercise",
+   "title": "Collect every page",
+   "task": "Write `fetch_all(fetch)`. Calling `fetch(page)` returns `{\"results\": [...], \"total_pages\": n}`, with pages numbered from **1**. Return every result from every page, in order, calling `fetch` **once per page**.\n\nCareful: an empty result set reports `total_pages` as 0.",
+   "starter": "def fetch_all(fetch):\n    results = []\n    # fetch page 1, read total_pages, then fetch the rest\n    return results\n\n# A pretend hotel-search API with 3 pages\nDATA = {1: [\"Taj\", \"Oberoi\"], 2: [\"ITC\", \"Leela\"], 3: [\"Lemon Tree\"]}\ndef fake_fetch(page):\n    return {\"results\": DATA[page], \"total_pages\": 3}\n\nprint(fetch_all(fake_fetch))\n",
+   "solution": "def fetch_all(fetch):\n    first = fetch(1)\n    results = list(first[\"results\"])\n    for page in range(2, first[\"total_pages\"] + 1):\n        results.extend(fetch(page)[\"results\"])\n    return results\n\n# A pretend hotel-search API with 3 pages\nDATA = {1: [\"Taj\", \"Oberoi\"], 2: [\"ITC\", \"Leela\"], 3: [\"Lemon Tree\"]}\ndef fake_fetch(page):\n    return {\"results\": DATA[page], \"total_pages\": 3}\n\nprint(fetch_all(fake_fetch))\n",
+   "tests": "calls = []\ndef api(page):\n    calls.append(page)\n    pages = {1: [\"a\", \"b\"], 2: [\"c\", \"d\"], 3: [\"e\"]}\n    return {\"results\": pages[page], \"total_pages\": 3}\n\ngot = fetch_all(api)\nassert got == [\"a\", \"b\", \"c\", \"d\", \"e\"], f\"The 3 pages hold a, b, c, d, e. You returned {got}.\"\nassert calls == [1, 2, 3], f\"Call fetch once per page, in order: [1, 2, 3]. You called it with {calls}. Every extra call costs money and rate limit.\"\n\ndef single(page):\n    return {\"results\": [\"only\"], \"total_pages\": 1}\nassert fetch_all(single) == [\"only\"], \"With a single page, return its results.\"\n\ndef empty(page):\n    assert page == 1, \"When total_pages is 0, there's nothing beyond page 1 to fetch.\"\n    return {\"results\": [], \"total_pages\": 0}\nassert fetch_all(empty) == [], \"No results at all: return an empty list.\"",
+   "hints": [
+    "Fetch page 1 first: it tells you `total_pages`.",
+    "Then loop `for page in range(2, total_pages + 1)` and extend your list.",
+    "`range(2, 1)` and `range(2, 2)` are both empty, so 0 or 1 total pages need no special case."
+   ],
+   "say": "Many APIs number their pages from one, and tell you the total page count in every response. Write fetch all: get page one, read the total, then fetch the remaining pages in order, exactly once each. Every extra call costs money and rate limit, and the tests are counting."
+  },
+  {
+   "type": "concept",
+   "title": "Errors, retries and rate limits",
+   "body": "Networks fail. Professional clients:\n- set a **timeout** on every request\n- **retry** only what can succeed later: timeouts, 429, 5xx\n- never retry 400 or 404: they'll fail again\n- **back off**: wait 1 s, 2 s, 4 s… between tries",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Send the request (with a timeout)",
+      "s": "pill"
+     },
+     {
+      "t": "Status 2xx?",
+      "s": "diamond",
+      "yes": "use the data",
+      "no": "look at the code"
+     },
+     {
+      "t": "429 or 5xx?",
+      "s": "diamond",
+      "yes": "wait, then retry",
+      "no": "4xx: raise an error now"
+     },
+     {
+      "t": "Out of retries: raise",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Networks fail all the time, so professional clients are defensive. Every request gets a timeout. Only retry things that might succeed later: timeouts, rate limits and server errors. Never retry a four hundred or a four oh four, because it will fail exactly the same way. And back off: wait one second, then two, then four, so you do not hammer a struggling server."
+  },
+  {
+   "type": "bug",
+   "title": "The retry loop that wastes calls",
+   "task": "This client retries **every** error, even 404 Not Found, which can never succeed. That burns your rate limit.\n\nFix it: retry only statuses in `RETRYABLE`; for anything else raise `APIError` straight away.",
+   "starter": "class APIError(Exception):\n    pass\n\nRETRYABLE = {429, 500, 502, 503}\n\ndef fetch_with_retry(get, url, retries=3):\n    for attempt in range(1, retries + 1):\n        response = get(url)\n        status = response[\"status\"]\n        if status == 200:\n            return response[\"body\"]\n        print(f\"attempt {attempt}: got {status}, retrying\")\n        # real code would wait here: time.sleep(2 ** attempt)\n    raise APIError(f\"gave up on {url}\")\n\ndef fake_get(url):              # this user doesn't exist\n    return {\"status\": 404, \"body\": None}\n\ntry:\n    fetch_with_retry(fake_get, \"/v1/users/999\")\nexcept APIError as e:\n    print(\"Error:\", e)\n",
+   "solution": "class APIError(Exception):\n    pass\n\nRETRYABLE = {429, 500, 502, 503}\n\ndef fetch_with_retry(get, url, retries=3):\n    for attempt in range(1, retries + 1):\n        response = get(url)\n        status = response[\"status\"]\n        if status == 200:\n            return response[\"body\"]\n        if status not in RETRYABLE:\n            raise APIError(f\"{status} for {url}: not worth retrying\")\n        print(f\"attempt {attempt}: got {status}, retrying\")\n        # real code would wait here: time.sleep(2 ** attempt)\n    raise APIError(f\"gave up on {url}\")\n\ndef fake_get(url):              # this user doesn't exist\n    return {\"status\": 404, \"body\": None}\n\ntry:\n    fetch_with_retry(fake_get, \"/v1/users/999\")\nexcept APIError as e:\n    print(\"Error:\", e)\n",
+   "tests": "def make_get(statuses):\n    calls = []\n    def get(url):\n        calls.append(url)\n        status = statuses[len(calls) - 1]\n        return {\"status\": status, \"body\": {\"ok\": True} if status == 200 else None}\n    return get, calls\n\nget, calls = make_get([404, 200, 200])\ntry:\n    fetch_with_retry(get, \"/v1/users/999\")\n    raised = False\nexcept APIError:\n    raised = True\nassert len(calls) == 1, f\"A 404 will never succeed, so call get once and raise APIError. Your code called get {len(calls)} times.\"\nassert raised, \"A 404 should raise APIError.\"\n\nget, calls = make_get([503, 429, 200])\nassert fetch_with_retry(get, \"/v1/scores\") == {\"ok\": True}, \"503 and 429 are worth retrying: the third call succeeds, so return its body.\"\nassert len(calls) == 3, \"Retry 503 and 429 until the 200 arrives.\"\n\nget, calls = make_get([500, 500, 500, 200])\ntry:\n    fetch_with_retry(get, \"/v1/scores\", retries=3)\n    raised = False\nexcept APIError:\n    raised = True\nassert raised and len(calls) == 3, \"After 3 failed attempts, stop and raise APIError.\"",
+   "hints": [
+    "After the 200 check, ask: is `status` in `RETRYABLE`?",
+    "If it isn't, `raise APIError(...)` immediately instead of looping again."
+   ],
+   "say": "This API client retries every error, including four oh four not found, which can never succeed. In production that burns your rate limit and slows every page down. Fix it so it retries only the statuses in the retryable set, and raises an API error straight away for anything else."
+  },
+  {
+   "type": "concept",
+   "title": "requests: what you'll use for real",
+   "body": "Outside this course, most Python developers call APIs with the **requests** library (`pip install requests`). Same ideas, friendlier code.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Standard library",
+     "code": "from urllib.request import urlopen\nimport json\n\nwith urlopen(url, timeout=5) as r:\n    data = json.loads(r.read())"
+    },
+    "right": {
+     "title": "requests",
+     "code": "import requests\n\nr = requests.get(url, params={\"city\": \"Pune\"},\n                 timeout=5)\nr.raise_for_status()  # 4xx/5xx -> error\ndata = r.json()"
+    },
+    "verdict": "requests builds query strings, decodes JSON and raises on errors for you. Always pass a timeout."
+   },
+   "say": "In real projects, most Python developers call APIs with the requests library, which you install with pip. It builds the query string for you, decodes JSON with one method call, and raise for status turns error codes into exceptions. The standard library can do the same with url open. Whichever you use, always pass a timeout."
+  },
+  {
+   "type": "quiz",
+   "title": "Create a booking",
+   "q": "Your app creates a new booking through an API. Which method should it use, and which status means it worked?",
+   "options": [
+    "GET, then 200",
+    "POST, then 201",
+    "DELETE, then 204",
+    "POST, then 404"
+   ],
+   "answer": 1,
+   "why": "POST creates a new resource, and **201 Created** is the proper success code for it, usually with the new booking in the response body.",
+   "say": "Final check. Your app creates a new booking through an API. Which method should it use, and which status code tells you it worked?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 46 complete",
+   "points": [
+    "HTTP is a request (method, URL, headers, body) and a response (status, headers, body)",
+    "GET reads, POST creates, PUT and PATCH update, DELETE removes; 2xx ok, 4xx your fault, 5xx theirs",
+    "urllib.parse splits URLs, and urlencode builds query strings safely",
+    "json.loads turns API text into dicts and lists; use .get() for fields that may be missing",
+    "Follow pagination to the end; retry only 429 and 5xx with backoff, and always set a timeout"
+   ],
+   "say": "Mission forty six complete. You can read a raw HTTP exchange, choose methods and status codes, build safe URLs, parse nested JSON, follow pagination, and retry like a professional. Tomorrow you switch sides and build your own API, from a routing table to a real WSGI app."
+  }
+ ]
+}

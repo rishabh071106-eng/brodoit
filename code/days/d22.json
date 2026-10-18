@@ -1,0 +1,521 @@
+{
+ "day": 22,
+ "phase": 3,
+ "title": "Files I: reading and writing",
+ "subtitle": "Give your programs a memory",
+ "minutes": 50,
+ "goal": "Read, write and append text files safely with with-blocks and pathlib, and analyse a log file line by line.",
+ "outcomes": [
+  "Open files with the right mode and always close them with with",
+  "Read a whole file, one line at a time, or with readline and readlines",
+  "Write and append text without losing data",
+  "Use pathlib.Path to build paths, check, read, write and glob files",
+  "Explain UTF-8 and handle a missing file gracefully"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 22: Files that remember",
+   "body": "When a program ends, every variable vanishes. **Files** are how software remembers: logs, notes, settings, exports, saved games.\n\nToday you read and write text files like a backend developer, and analyse a real server log.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Open the file",
+     "Read from it or write to it",
+     "Close it (with does this for you)"
+    ]
+   },
+   "say": "When a program ends, every variable it made disappears. Files are how software remembers: server logs, notes, settings, exports and saved games. Today you learn to read and write text files the way backend developers do, and you will analyse a real server log by the end of the lesson."
+  },
+  {
+   "type": "concept",
+   "title": "Text files are lines",
+   "body": "A text file is characters on disk, split into **lines** by newline characters (`\\n`). A file name like `server.log` is a **relative path**: Python looks for it in the current folder, next to `main.py`.\n\nThis is the log we will analyse today.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "cat server.log"
+     ],
+     [
+      "",
+      "2026-10-18 09:00:01 INFO Server started on port 8000"
+     ],
+     [
+      "",
+      "2026-10-18 09:00:05 INFO GET /home 200"
+     ],
+     [
+      "",
+      "2026-10-18 09:01:12 WARNING Slow response 2.4s on /search"
+     ],
+     [
+      "",
+      "2026-10-18 09:02:40 ERROR Payment gateway timeout"
+     ],
+     [
+      "",
+      "..."
+     ]
+    ]
+   },
+   "say": "A text file is just characters stored on disk, split into lines by newline characters. A name like server dot log is a relative path, which means Python looks for it in the current folder, right next to your main program. Here is the server log we will work with today. Each line has a date, a time, a level and a message."
+  },
+  {
+   "type": "code",
+   "title": "Read a whole file",
+   "body": "`open` returns a **file object**. `.read()` gives the whole file as one string. Tap the **server.log** tab to see the file.",
+   "code": "with open(\"server.log\", encoding=\"utf-8\") as f:\n    text = f.read()\n\nprint(type(text), len(text), \"characters\")\nprint(text)",
+   "expect": "<class 'str'> 290 characters\n2026-10-18 09:00:01 INFO Server started on port 8000\n2026-10-18 09:00:05 INFO GET /home 200\n2026-10-18 09:01:12 WARNING Slow response 2.4s on /search\n2026-10-18 09:02:40 ERROR Payment gateway timeout\n2026-10-18 09:03:02 INFO GET /cart 200\n2026-10-18 09:04:15 ERROR Database connection lost\n\n",
+   "explain": [
+    [
+     1,
+     "Open server.log for reading, as UTF-8 text, and call the file object f."
+    ],
+    [
+     2,
+     "read() returns everything in the file as one string."
+    ],
+    [
+     4,
+     "Outside the with block the file is already closed, but text is a normal string."
+    ],
+    [
+     5,
+     "Print the whole log."
+    ]
+   ],
+   "files": {
+    "server.log": "2026-10-18 09:00:01 INFO Server started on port 8000\n2026-10-18 09:00:05 INFO GET /home 200\n2026-10-18 09:01:12 WARNING Slow response 2.4s on /search\n2026-10-18 09:02:40 ERROR Payment gateway timeout\n2026-10-18 09:03:02 INFO GET /cart 200\n2026-10-18 09:04:15 ERROR Database connection lost\n"
+   },
+   "say": "We open server dot log with the with keyword, read the entire file into one string, and the file closes automatically when the block ends. The result is an ordinary string, so everything you learned about strings works on it. Tap the server log tab to compare it with the output."
+  },
+  {
+   "type": "concept",
+   "title": "Why with?",
+   "body": "Open files hold an operating-system resource. Forget to close them and writes can be lost or files stay locked.\n\n`with` closes the file when the block ends, **even if an error happens** inside. Use it every time.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Manual: easy to forget",
+     "code": "f = open(\"notes.txt\", \"w\")\nf.write(\"Hi\\n\")\n# crash here and close never runs\nf.close()"
+    },
+    "right": {
+     "title": "with: always closed",
+     "code": "with open(\"notes.txt\", \"w\") as f:\n    f.write(\"Hi\\n\")\n# closed here, even after an error"
+    },
+    "verdict": "with guarantees the file is closed, so nothing is lost or locked."
+   },
+   "say": "An open file holds a resource from the operating system. If you forget to close it, data you wrote might never reach the disk, and on some systems the file stays locked. The with statement closes the file for you when the block ends, even if an error happens halfway through. Professionals use it every single time."
+  },
+  {
+   "type": "concept",
+   "title": "Open modes",
+   "body": "The second argument to `open` is the **mode**. And always pass `encoding=\"utf-8\"` for text, so ₹ and हिंदी work on every computer.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Mode",
+     "Meaning",
+     "If the file exists",
+     "If it is missing"
+    ],
+    "rows": [
+     [
+      "\"r\"",
+      "read (default)",
+      "reads it",
+      "FileNotFoundError"
+     ],
+     [
+      "\"w\"",
+      "write",
+      "erases it first!",
+      "creates it"
+     ],
+     [
+      "\"a\"",
+      "append",
+      "adds to the end",
+      "creates it"
+     ],
+     [
+      "\"x\"",
+      "create new",
+      "FileExistsError",
+      "creates it"
+     ]
+    ]
+   },
+   "say": "The second argument to open is the mode. R reads, and it is the default. W writes, and be careful: it creates the file, or wipes an existing one clean. A appends to the end, keeping what is there. X creates a new file and refuses if it already exists. And always pass encoding utf-8 for text, so the rupee sign and Hindi work on every computer."
+  },
+  {
+   "type": "code",
+   "title": "Loop over lines: find the errors",
+   "body": "Looping over a file gives you **one line at a time**. It works on a 10 GB log too, because Python never loads the whole file.",
+   "code": "errors = 0\nwith open(\"server.log\", encoding=\"utf-8\") as f:\n    for line in f:\n        if \" ERROR \" in line:\n            errors += 1\n            print(line.strip())\n\nprint(\"Errors found:\", errors)",
+   "expect": "2026-10-18 09:02:40 ERROR Payment gateway timeout\n2026-10-18 09:04:15 ERROR Database connection lost\nErrors found: 2\n",
+   "explain": [
+    [
+     3,
+     "Each pass of the loop reads the next line from the file."
+    ],
+    [
+     4,
+     "Every line is a string, so in works as usual."
+    ],
+    [
+     6,
+     "Lines end with a newline character; strip removes it so print does not add a blank line."
+    ],
+    [
+     8,
+     "After the loop: a count of the errors."
+    ]
+   ],
+   "files": {
+    "server.log": "2026-10-18 09:00:01 INFO Server started on port 8000\n2026-10-18 09:00:05 INFO GET /home 200\n2026-10-18 09:01:12 WARNING Slow response 2.4s on /search\n2026-10-18 09:02:40 ERROR Payment gateway timeout\n2026-10-18 09:03:02 INFO GET /cart 200\n2026-10-18 09:04:15 ERROR Database connection lost\n"
+   },
+   "say": "This is the pattern you will use most. Looping over a file object gives you one line at a time. Each line still ends with its newline character, so we strip it before printing. Because only one line is in memory at a time, this works on a ten gigabyte log just as well as on our six lines. You will learn why on day twenty seven."
+  },
+  {
+   "type": "code",
+   "title": "readline, readlines and the cursor",
+   "body": "A file object remembers a **position**, like a bookmark. Every read moves it forward.\n\n- `readline()`: the next line\n- `readlines()`: all remaining lines as a list",
+   "code": "with open(\"server.log\", encoding=\"utf-8\") as f:\n    first = f.readline()\n    second = f.readline()\n    rest = f.readlines()\n\nprint(repr(first))\nprint(second.strip())\nprint(len(rest), \"more lines\")\nprint(rest[-1].strip())",
+   "expect": "'2026-10-18 09:00:01 INFO Server started on port 8000\\n'\n2026-10-18 09:00:05 INFO GET /home 200\n4 more lines\n2026-10-18 09:04:15 ERROR Database connection lost\n",
+   "explain": [
+    [
+     2,
+     "Reads line 1; the bookmark moves to line 2."
+    ],
+    [
+     3,
+     "Reads line 2."
+    ],
+    [
+     4,
+     "Reads everything left, as a list of strings."
+    ],
+    [
+     6,
+     "repr shows the hidden newline at the end of the line."
+    ],
+    [
+     8,
+     "Only 4 lines were left, because 2 were already read."
+    ]
+   ],
+   "files": {
+    "server.log": "2026-10-18 09:00:01 INFO Server started on port 8000\n2026-10-18 09:00:05 INFO GET /home 200\n2026-10-18 09:01:12 WARNING Slow response 2.4s on /search\n2026-10-18 09:02:40 ERROR Payment gateway timeout\n2026-10-18 09:03:02 INFO GET /cart 200\n2026-10-18 09:04:15 ERROR Database connection lost\n"
+   },
+   "say": "A file object keeps a position, like a bookmark. Readline reads the next line and moves the bookmark forward. Readlines reads everything that is left and gives you a list. Notice we only get four more lines, because the first two were already read. And repr reveals the newline character hiding at the end of each line."
+  },
+  {
+   "type": "code",
+   "title": "Write and append: a notes app",
+   "body": "`\"w\"` creates the file fresh. `\"a\"` adds to the end. `print(..., file=f)` writes a line to a file instead of the screen.",
+   "code": "notes = [\"Call Riya about the demo\", \"Pay electricity bill\"]\n\nwith open(\"notes.txt\", \"w\", encoding=\"utf-8\") as f:\n    for note in notes:\n        f.write(note + \"\\n\")  # write adds no newline for you\n\nwith open(\"notes.txt\", \"a\", encoding=\"utf-8\") as f:\n    f.write(\"Book Tatkal ticket\\n\")\n    print(\"Buy chai patti\", file=f)\n\nwith open(\"notes.txt\", encoding=\"utf-8\") as f:\n    for number, line in enumerate(f, start=1):\n        print(number, line.strip())",
+   "expect": "1 Call Riya about the demo\n2 Pay electricity bill\n3 Book Tatkal ticket\n4 Buy chai patti\n",
+   "explain": [
+    [
+     3,
+     "Mode w: create notes.txt, or wipe it if it exists."
+    ],
+    [
+     5,
+     "write takes one string and adds nothing to it, so we add the newline ourselves."
+    ],
+    [
+     7,
+     "Mode a: keep the existing lines and add to the end."
+    ],
+    [
+     9,
+     "print can write to a file; it adds the newline for you."
+    ],
+    [
+     12,
+     "Read it back with line numbers."
+    ]
+   ],
+   "say": "Our notes app writes two notes with mode w, which creates the file fresh. Write adds nothing on its own, so we add the newline ourselves. Then mode a appends two more notes without touching the first two. One neat trick: print with file equals f writes a line into the file instead of the screen. Finally we read everything back, numbered."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "with open(\"todo.txt\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"milk\\n\")\n\nwith open(\"todo.txt\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"bread\\n\")\n\nwith open(\"todo.txt\", encoding=\"utf-8\") as f:\n    print(f.read().strip())",
+   "options": [
+    "milk\nbread",
+    "bread",
+    "milk",
+    "bread\nmilk"
+   ],
+   "answer": 1,
+   "why": "Mode `\"w\"` **erases** the file before writing. The second `open` wiped out milk. To keep old lines, use `\"a\"`. This exact mistake has deleted real logs in production.",
+   "say": "The program opens the same file twice in write mode, writing milk and then bread. Then it reads the file. What survives? Predict before you run."
+  },
+  {
+   "type": "quiz",
+   "title": "Pick the mode",
+   "q": "Your app writes one line to `audit.log` every time a user logs in. Old lines must never be lost. Which mode?",
+   "options": [
+    "\"r\"",
+    "\"w\"",
+    "\"a\"",
+    "\"x\""
+   ],
+   "answer": 2,
+   "why": "`\"a\"` appends to the end and creates the file if it is missing. `\"w\"` would wipe the history on every login, and `\"x\"` would fail after the first one.",
+   "say": "Your app writes a line to an audit log every time a user logs in, and old lines must never be lost. Which mode do you open the file with?"
+  },
+  {
+   "type": "concept",
+   "title": "pathlib: paths as objects",
+   "body": "`pathlib.Path` is the modern way to work with files. A path becomes an object with handy methods, and `/` joins folders.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "You write",
+     "You get"
+    ],
+    "rows": [
+     [
+      "Path(\"logs\") / \"app.log\"",
+      "logs/app.log"
+     ],
+     [
+      "p.name, p.stem, p.suffix",
+      "'app.log', 'app', '.log'"
+     ],
+     [
+      "p.exists()",
+      "True or False"
+     ],
+     [
+      "p.read_text(encoding=\"utf-8\")",
+      "the whole file as a string"
+     ],
+     [
+      "p.write_text(text, encoding=\"utf-8\")",
+      "create or replace the file"
+     ],
+     [
+      "Path(\"logs\").glob(\"*.log\")",
+      "every .log file in logs"
+     ]
+    ]
+   },
+   "say": "Modern Python code uses pathlib. A Path is an object that represents a file or folder, with handy methods for everything. The slash operator joins folders, so you never glue strings together by hand. You can check if a file exists, read or write all of its text in one call, and use glob to find every file that matches a pattern."
+  },
+  {
+   "type": "code",
+   "title": "pathlib in action",
+   "body": "No `open`, no `with`: `write_text` and `read_text` open and close the file for you.",
+   "code": "from pathlib import Path\n\nlog = Path(\"logs\") / \"app.log\"\nprint(log, \"|\", log.name, \"|\", log.stem, \"|\", log.suffix)\nprint(\"Exists?\", log.exists())\n\nlog.parent.mkdir(exist_ok=True)\nlog.write_text(\"App started\\n\", encoding=\"utf-8\")\nprint(\"Exists now?\", log.exists())\nprint(repr(log.read_text(encoding=\"utf-8\")))",
+   "expect": "logs/app.log | app.log | app | .log\nExists? False\nExists now? True\n'App started\\n'\n",
+   "explain": [
+    [
+     3,
+     "The slash operator joins the folder and the file name into one path."
+    ],
+    [
+     4,
+     "name is the full file name, stem drops the extension, suffix is the extension."
+    ],
+    [
+     7,
+     "log.parent is the logs folder; mkdir creates it, and exist_ok means no error if it is already there."
+    ],
+    [
+     8,
+     "write_text opens, writes and closes in one call."
+    ],
+    [
+     10,
+     "read_text does the same for reading."
+    ]
+   ],
+   "say": "We build a path by joining the logs folder and the file name with a slash. A path knows its name, its stem and its suffix. It does not exist yet, so we create the parent folder and write some text in one call. Read text and write text open and close the file for you, which makes small files a one-liner."
+  },
+  {
+   "type": "code",
+   "title": "Analyse a week of logs with glob",
+   "body": "The `logs` folder holds one file per day, plus a README. `glob(\"*.log\")` finds only the logs.",
+   "code": "from pathlib import Path\n\ntotal = 0\nfor path in sorted(Path(\"logs\").glob(\"*.log\")):\n    lines = path.read_text(encoding=\"utf-8\").splitlines()\n    errors = [line for line in lines if line.startswith(\"ERROR\")]\n    print(f\"{path.name}: lines={len(lines)}, errors={len(errors)}\")\n    total += len(errors)\n\nprint(\"Total errors this week:\", total)",
+   "expect": "mon.log: lines=3, errors=1\ntue.log: lines=2, errors=0\nwed.log: lines=4, errors=2\nTotal errors this week: 3\n",
+   "explain": [
+    [
+     4,
+     "glob finds every file in logs ending in .log; sorted gives a stable order."
+    ],
+    [
+     5,
+     "splitlines splits the text into lines and drops the newline characters."
+    ],
+    [
+     6,
+     "A comprehension keeps only the error lines."
+    ],
+    [
+     7,
+     "One summary line per file."
+    ]
+   ],
+   "files": {
+    "logs/mon.log": "INFO boot\nERROR disk full\nINFO retry ok\n",
+    "logs/tue.log": "INFO boot\nINFO GET /home\n",
+    "logs/wed.log": "INFO boot\nERROR timeout\nERROR timeout\nWARNING slow\n",
+    "logs/README.md": "Logs are rotated daily.\n"
+   },
+   "say": "Real servers write one log file per day. Here the logs folder has three days of logs and a readme. Glob with star dot log finds only the log files, and we sort them so the order is stable. For each file we read its lines, keep the errors with a comprehension, and print a summary. This is a genuine ops script in ten lines."
+  },
+  {
+   "type": "concept",
+   "title": "Encodings: text becomes bytes",
+   "body": "Disks store **bytes**, not letters. An encoding maps characters to bytes. **UTF-8** covers every language: English letters take 1 byte, ₹ and Hindi letters take 3.\n\nSome computers default to other encodings, so always write `encoding=\"utf-8\"`.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Character",
+     "UTF-8 bytes",
+     "Count"
+    ],
+    "rows": [
+     [
+      "A",
+      "41",
+      "1"
+     ],
+     [
+      "₹",
+      "e2 82 b9",
+      "3"
+     ],
+     [
+      "न",
+      "e0 a4 a8",
+      "3"
+     ]
+    ]
+   },
+   "say": "Disks do not store letters, they store bytes. An encoding is the rule that turns characters into bytes and back. UTF-8 covers every language on earth. A plain English letter takes one byte, while the rupee sign and Hindi letters take three. Some computers default to a different encoding, so always say utf-8 explicitly, or your file may come back as garbage."
+  },
+  {
+   "type": "code",
+   "title": "UTF-8 in practice",
+   "code": "from pathlib import Path\n\nmenu = \"Chai ₹20 नमस्ते\"\ndata = menu.encode(\"utf-8\")\nprint(len(menu), \"characters\")\nprint(len(data), \"bytes\")\nprint(\"₹\".encode(\"utf-8\"))\n\nPath(\"menu.txt\").write_text(menu, encoding=\"utf-8\")\nprint(Path(\"menu.txt\").read_text(encoding=\"utf-8\"))",
+   "expect": "15 characters\n29 bytes\nb'\\xe2\\x82\\xb9'\nChai ₹20 नमस्ते\n",
+   "explain": [
+    [
+     4,
+     "encode turns the string into bytes using UTF-8."
+    ],
+    [
+     5,
+     "len of a string counts characters."
+    ],
+    [
+     6,
+     "len of bytes counts bytes: more than characters, because ₹ and Hindi need 3 each."
+    ],
+    [
+     7,
+     "A bytes value prints with a b in front."
+    ],
+    [
+     10,
+     "Written and read with the same encoding, the text survives perfectly."
+    ]
+   ],
+   "say": "Our menu line mixes English, the rupee sign and Hindi. It is fifteen characters long, but twenty nine bytes on disk, because the rupee sign and every Hindi letter take three bytes each. Write and read with the same encoding, utf-8, and the text comes back perfectly."
+  },
+  {
+   "type": "code",
+   "title": "When the file is missing",
+   "body": "Reading a file that does not exist raises **FileNotFoundError**. On first launch, an app has no saved data yet, so handle it gracefully.",
+   "code": "from pathlib import Path\n\n\ndef load_notes(filename):\n    try:\n        with open(filename, encoding=\"utf-8\") as f:\n            return f.read().splitlines()\n    except FileNotFoundError:\n        print(f\"No {filename} yet, starting fresh.\")\n        return []\n\n\nprint(load_notes(\"notes.txt\"))\nPath(\"notes.txt\").write_text(\"Revise Day 21\\nPractise files\\n\", encoding=\"utf-8\")\nprint(load_notes(\"notes.txt\"))",
+   "expect": "No notes.txt yet, starting fresh.\n[]\n['Revise Day 21', 'Practise files']\n",
+   "explain": [
+    [
+     5,
+     "Try to open and read the file."
+    ],
+    [
+     8,
+     "Only this specific error is handled; other bugs still show up."
+    ],
+    [
+     10,
+     "An empty list is a sensible starting point."
+    ],
+    [
+     13,
+     "First call: no file yet."
+    ],
+    [
+     15,
+     "After saving, the same call returns the notes."
+    ]
+   ],
+   "say": "On the very first launch, an app has no saved data yet, and opening a missing file raises file not found error. We catch exactly that error, the way you learned on day nineteen, and start with an empty list. Once the file exists, the same function returns the saved notes."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "`log_event` should **add** one line to `events.log` each time it is called. Right now the log only ever keeps the last event. Fix it.",
+   "starter": "def log_event(message):\n    with open(\"events.log\", \"w\", encoding=\"utf-8\") as f:\n        f.write(message + \"\\n\")\n\n\nlog_event(\"user logged in\")\nlog_event(\"payment received\")\nwith open(\"events.log\", encoding=\"utf-8\") as f:\n    print(f.read())\n",
+   "solution": "def log_event(message):\n    with open(\"events.log\", \"a\", encoding=\"utf-8\") as f:\n        f.write(message + \"\\n\")\n\n\nlog_event(\"user logged in\")\nlog_event(\"payment received\")\nwith open(\"events.log\", encoding=\"utf-8\") as f:\n    print(f.read())",
+   "tests": "import os\nif os.path.exists(\"events.log\"):\n    os.remove(\"events.log\")\nlog_event(\"first\")\nlog_event(\"second\")\nlog_event(\"third\")\nwith open(\"events.log\", encoding=\"utf-8\") as fh:\n    lines = fh.read().splitlines()\nassert lines != [\"third\"], \"Only the last event survived. Mode w wipes the file on every call. Which mode adds to the end?\"\nassert lines == [\"first\", \"second\", \"third\"], f\"After three events the log should have three lines in order, but it has {lines}.\"",
+   "hints": [
+    "Look at the mode passed to open.",
+    "Mode \"w\" erases the file first; mode \"a\" appends."
+   ],
+   "say": "A bug that has cost real teams their logs. Log event should add a line every time it is called, but the file only ever holds the last event. Find the one character that causes it."
+  },
+  {
+   "type": "exercise",
+   "title": "Log levels report",
+   "task": "Write `count_levels(filename)` that reads a log and **returns** a dict counting each level (the 3rd word on each line).\n\nFor `server.log`: `{'INFO': 3, 'WARNING': 1, 'ERROR': 2}`. Skip blank lines. An empty file gives `{}`.",
+   "starter": "def count_levels(filename):\n    counts = {}\n    # open the file, loop over its lines, count the 3rd word\n    return counts\n\n\nprint(count_levels(\"server.log\"))\n",
+   "solution": "def count_levels(filename):\n    counts = {}\n    with open(filename, encoding=\"utf-8\") as f:\n        for line in f:\n            parts = line.split()\n            if len(parts) < 3:\n                continue\n            level = parts[2]\n            counts[level] = counts.get(level, 0) + 1\n    return counts\n\n\nprint(count_levels(\"server.log\"))",
+   "tests": "result = count_levels(\"server.log\")\nassert isinstance(result, dict), \"count_levels should return a dict, not print it.\"\nassert result == {\"INFO\": 3, \"WARNING\": 1, \"ERROR\": 2}, f\"For server.log expected 3 INFO, 1 WARNING, 2 ERROR, got {result}.\"\nwith open(\"extra.log\", \"w\", encoding=\"utf-8\") as fh:\n    fh.write(\"2026-10-19 10:00:00 ERROR Disk full\\n\\n2026-10-19 10:05:00 ERROR Disk full\\n\")\nassert count_levels(\"extra.log\") == {\"ERROR\": 2}, \"Blank lines should be skipped. A log with 2 errors and a blank line should give {'ERROR': 2}.\"\nopen(\"empty.log\", \"w\").close()\nassert count_levels(\"empty.log\") == {}, \"An empty log should give an empty dict.\"",
+   "hints": [
+    "Loop over the file line by line, and split each line into words.",
+    "The level is parts[2]. Skip the line if it has fewer than 3 parts.",
+    "Count with counts[level] = counts.get(level, 0) + 1"
+   ],
+   "files": {
+    "server.log": "2026-10-18 09:00:01 INFO Server started on port 8000\n2026-10-18 09:00:05 INFO GET /home 200\n2026-10-18 09:01:12 WARNING Slow response 2.4s on /search\n2026-10-18 09:02:40 ERROR Payment gateway timeout\n2026-10-18 09:03:02 INFO GET /cart 200\n2026-10-18 09:04:15 ERROR Database connection lost\n"
+   },
+   "say": "Time for real log analysis. Write count levels, which reads a log file and returns a dictionary counting each level, like info, warning and error. The level is the third word on each line. Make sure blank lines are skipped and an empty file gives an empty dictionary."
+  },
+  {
+   "type": "exercise",
+   "title": "A notes app that remembers",
+   "task": "Build the storage for a notes app using `pathlib`:\n\n- `add_note(text)` appends one line to `notes.txt`\n- `list_notes()` returns the notes as a list of strings, or `[]` if the file does not exist yet",
+   "starter": "from pathlib import Path\n\nNOTES = Path(\"notes.txt\")\n\n\ndef add_note(text):\n    pass\n\n\ndef list_notes():\n    pass\n",
+   "solution": "from pathlib import Path\n\nNOTES = Path(\"notes.txt\")\n\n\ndef add_note(text):\n    with open(NOTES, \"a\", encoding=\"utf-8\") as f:\n        f.write(text + \"\\n\")\n\n\ndef list_notes():\n    if not NOTES.exists():\n        return []\n    return NOTES.read_text(encoding=\"utf-8\").splitlines()",
+   "tests": "import os\nif os.path.exists(\"notes.txt\"):\n    os.remove(\"notes.txt\")\nassert list_notes() == [], \"Before any note is added, list_notes() should return an empty list, not crash.\"\nadd_note(\"Revise pathlib\")\nadd_note(\"Call Arjun at 6\")\nassert os.path.exists(\"notes.txt\"), \"add_note should create notes.txt.\"\nassert list_notes() == [\"Revise pathlib\", \"Call Arjun at 6\"], f\"After two notes, list_notes() should return both, in order. Got {list_notes()}.\"\nadd_note(\"चाय ₹20\")\nassert list_notes()[-1] == \"चाय ₹20\", \"Notes with ₹ or Hindi should survive. Did you use encoding='utf-8'?\"",
+   "hints": [
+    "add_note: open NOTES in mode \"a\" and write the text plus a newline.",
+    "list_notes: return [] if not NOTES.exists(), otherwise read_text().splitlines()."
+   ],
+   "say": "Let's build the storage for a notes app. Add note appends one line to the notes file, and list notes returns all the notes as a list, or an empty list if nothing has been saved yet. The tests also save a note with Hindi and the rupee sign, so remember your encoding."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 22 complete",
+   "points": [
+    "with open(...) as f: reads or writes and always closes the file",
+    "Modes: \"r\" read, \"w\" write (erases!), \"a\" append, \"x\" create new",
+    "Loop over a file for one line at a time; strip the newline",
+    "pathlib.Path: /, exists, read_text, write_text, glob",
+    "Always pass encoding=\"utf-8\" for text files",
+    "Handle FileNotFoundError on first launch"
+   ],
+   "say": "Mission twenty two complete. Your programs can now remember. You can read files whole or line by line, write and append safely, find files with pathlib and glob, and handle missing files gracefully. Tomorrow we level up to structured data: CSV spreadsheets and JSON, the language of APIs. See you on day twenty three."
+  }
+ ]
+}
