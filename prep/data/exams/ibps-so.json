@@ -59,6 +59,418 @@
     "frequency": "Once a year (notification around July–August)",
     "officialSite": "https://www.ibps.in"
   },
+  "syllabus": [
+    {
+      "section": "Prelims — English Language",
+      "topics": [
+        {
+          "t": "Reading comprehension",
+          "ch": [
+            "core:english/reading-comprehension"
+          ]
+        },
+        {
+          "t": "Cloze test",
+          "ch": [
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Error detection",
+          "ch": [
+            "core:english/error-spotting"
+          ]
+        },
+        {
+          "t": "Sentence improvement & phrase replacement",
+          "ch": [
+            "core:english/error-spotting",
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Para jumbles & sentence rearrangement",
+          "ch": [
+            "core:english/para-jumbles"
+          ]
+        },
+        {
+          "t": "Fillers (single/double) & word usage",
+          "ch": [
+            "core:english/fillers-word-usage",
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Connectors, sentence starters & column-based combining",
+          "ch": [
+            "core:english/connectors-sentence-combining"
+          ]
+        },
+        {
+          "t": "Vocabulary — synonyms, antonyms, idioms & phrasal verbs",
+          "ch": [
+            "core:english/vocabulary-idioms"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Prelims — Reasoning",
+      "topics": [
+        {
+          "t": "Puzzles — floor, box, scheduling (day/month/year), comparison",
+          "ch": [
+            "core:reasoning/floor-box-scheduling",
+            "core:reasoning/puzzles-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — linear & double row",
+          "ch": [
+            "core:reasoning/linear-square-seating",
+            "core:reasoning/puzzles-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — circular",
+          "ch": [
+            "core:reasoning/circular-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — square & rectangular tables",
+          "ch": [
+            "core:reasoning/linear-square-seating"
+          ]
+        },
+        {
+          "t": "Syllogism incl. only-a-few & possibility cases",
+          "ch": [
+            "core:reasoning/syllogism"
+          ]
+        },
+        {
+          "t": "Inequality — direct & coded",
+          "ch": [
+            "core:reasoning/inequality"
+          ]
+        },
+        {
+          "t": "Coding–decoding — classic & new pattern",
+          "ch": [
+            "core:reasoning/coding-decoding",
+            "core:reasoning/coding-new-pattern"
+          ]
+        },
+        {
+          "t": "Blood relations",
+          "ch": [
+            "core:reasoning/blood-relations"
+          ]
+        },
+        {
+          "t": "Direction sense & distance",
+          "ch": [
+            "core:reasoning/direction-sense"
+          ]
+        },
+        {
+          "t": "Order & ranking",
+          "ch": [
+            "core:reasoning/order-ranking"
+          ]
+        },
+        {
+          "t": "Alphanumeric & letter series",
+          "ch": [
+            "core:reasoning/alphanumeric-series"
+          ]
+        },
+        {
+          "t": "Input–output (machine input)",
+          "ch": [
+            "core:reasoning/input-output"
+          ]
+        },
+        {
+          "t": "Data sufficiency (reasoning)",
+          "ch": [
+            "core:reasoning/data-sufficiency"
+          ]
+        },
+        {
+          "t": "Logical reasoning — assumptions, arguments, conclusions",
+          "ch": [
+            "core:reasoning/assumptions-arguments"
+          ]
+        },
+        {
+          "t": "Logical reasoning — course of action, cause & effect, inferences, strengthen/weaken",
+          "ch": [
+            "core:reasoning/course-action-inference"
+          ]
+        },
+        {
+          "t": "Decision making & eligibility-based questions",
+          "ch": [
+            "core:reasoning/course-action-inference"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Prelims — Quantitative Aptitude (IT, AFO, HR, Marketing)",
+      "topics": [
+        {
+          "t": "Simplification & approximation (BODMAS, fractions, surds, percentages)",
+          "ch": [
+            "core:quant/simplification"
+          ]
+        },
+        {
+          "t": "Number series — missing number, wrong number, new-pattern (all types)",
+          "ch": [
+            "core:quant/number-series",
+            "core:quant/number-series-advanced"
+          ]
+        },
+        {
+          "t": "Quadratic equations & quantity comparison",
+          "ch": [
+            "core:quant/quadratic"
+          ]
+        },
+        {
+          "t": "Percentage",
+          "ch": [
+            "core:quant/percentage"
+          ]
+        },
+        {
+          "t": "Ratio & proportion",
+          "ch": [
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Averages",
+          "ch": [
+            "core:quant/averages-ages",
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Profit, loss & discount",
+          "ch": [
+            "core:quant/profit-loss"
+          ]
+        },
+        {
+          "t": "Simple & compound interest",
+          "ch": [
+            "core:quant/si-ci"
+          ]
+        },
+        {
+          "t": "Time & work",
+          "ch": [
+            "core:quant/time-work-speed"
+          ]
+        },
+        {
+          "t": "Time, speed & distance",
+          "ch": [
+            "core:quant/time-work-speed"
+          ]
+        },
+        {
+          "t": "Mensuration — 2D & 3D",
+          "ch": [
+            "core:quant/mensuration"
+          ]
+        },
+        {
+          "t": "Permutation & combination",
+          "ch": [
+            "core:quant/permutation-combination"
+          ]
+        },
+        {
+          "t": "Probability",
+          "ch": [
+            "core:quant/probability"
+          ]
+        },
+        {
+          "t": "Data interpretation — table, bar, line, pie, radar & mixed charts",
+          "ch": [
+            "core:quant/data-interpretation",
+            "core:quant/di-advanced"
+          ]
+        },
+        {
+          "t": "Caselet DI, missing DI & arithmetic DI",
+          "ch": [
+            "core:quant/di-advanced",
+            "core:quant/data-interpretation"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Prelims — General Awareness with special reference to banking (Law, Rajbhasha)",
+      "topics": [
+        {
+          "t": "Banking history, structure & types of banks",
+          "ch": [
+            "core:banking-awareness/types-of-banks"
+          ]
+        },
+        {
+          "t": "RBI — functions, monetary policy & tools",
+          "ch": [
+            "core:banking-awareness/rbi-monetary-policy"
+          ]
+        },
+        {
+          "t": "Regulators & financial institutions (SEBI, IRDAI, PFRDA, NABARD, SIDBI, EXIM, NHB, NPCI, DICGC)",
+          "ch": [
+            "core:banking-awareness/regulators-institutions"
+          ]
+        },
+        {
+          "t": "Financial markets — money, capital, bond & forex",
+          "ch": [
+            "core:banking-awareness/financial-markets"
+          ]
+        },
+        {
+          "t": "Basel norms, NPAs, SARFAESI & IBC",
+          "ch": [
+            "core:banking-awareness/basel-npa"
+          ]
+        },
+        {
+          "t": "Payment systems & digital banking",
+          "ch": [
+            "core:banking-awareness/payment-systems"
+          ]
+        },
+        {
+          "t": "Banking products, terms & the Negotiable Instruments Act",
+          "ch": [
+            "core:banking-awareness/banking-terms-products"
+          ]
+        },
+        {
+          "t": "Financial inclusion & social security schemes",
+          "ch": [
+            "core:banking-awareness/financial-inclusion"
+          ]
+        },
+        {
+          "t": "Government schemes (credit, farm, health, housing, savings)",
+          "ch": [
+            "core:banking-awareness/government-schemes",
+            "core:banking-awareness/financial-inclusion"
+          ]
+        },
+        {
+          "t": "Union Budget, fiscal terms & Economic Survey basics",
+          "ch": [
+            "core:banking-awareness/budget-economic-survey"
+          ]
+        },
+        {
+          "t": "International organisations & reports",
+          "ch": [
+            "core:banking-awareness/international-organisations"
+          ]
+        },
+        {
+          "t": "Current affairs & static GK — sources and method",
+          "ch": [
+            "core:banking-awareness/current-affairs-method"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Mains — Professional Knowledge",
+      "topics": [
+        {
+          "t": "IT Officer — DBMS, networking, OS, security",
+          "ch": [
+            "ibps-so-specific/it-officer-pk",
+            "core:computer/dbms-basics",
+            "core:computer/networking-security"
+          ]
+        },
+        {
+          "t": "IT Officer — data structures, software engineering, web, cloud, computer organisation",
+          "ch": [
+            "ibps-so-specific/it-dsa-se-web"
+          ]
+        },
+        {
+          "t": "Agricultural Field Officer — crops, soils, fertilisers, credit",
+          "ch": [
+            "ibps-so-specific/afo-pk"
+          ]
+        },
+        {
+          "t": "Agricultural Field Officer — plant protection, horticulture, animal husbandry, agri engineering & project appraisal",
+          "ch": [
+            "ibps-so-specific/afo-plant-protection-allied"
+          ]
+        },
+        {
+          "t": "Law Officer — banking, recovery & insolvency statutes, AML",
+          "ch": [
+            "ibps-so-specific/law-banking-statutes",
+            "core:banking-awareness/basel-npa"
+          ]
+        },
+        {
+          "t": "Law Officer — contracts, securities, NI Act & banker–customer law",
+          "ch": [
+            "ibps-so-specific/law-contract-securities",
+            "core:banking-awareness/banking-terms-products"
+          ]
+        },
+        {
+          "t": "HR/Personnel Officer — HRM, HRD, IR & labour codes",
+          "ch": [
+            "ibps-so-specific/hr-officer-pk"
+          ]
+        },
+        {
+          "t": "Marketing Officer — marketing management, services & bank marketing",
+          "ch": [
+            "ibps-so-specific/marketing-officer-pk"
+          ]
+        },
+        {
+          "t": "Rajbhasha Adhikari — pattern and preparation (objective + descriptive)",
+          "ch": [
+            "ibps-so-specific/strategy-pk"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Strategy & interview",
+      "topics": [
+        {
+          "t": "Prelims as a filter, PK study plan & interview",
+          "ch": [
+            "ibps-so-specific/strategy-pk"
+          ]
+        }
+      ]
+    }
+  ],
   "subjects": [
     {
       "id": "ibps-so-specific",
@@ -112,6 +524,53 @@
               ],
               "answer": 1,
               "explain": "Law Officer and Rajbhasha Adhikari take GA (banking) instead of Quant."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Exam structure and where rank is made",
+              "p": "IBPS SO recruits specialist officers: **IT Officer, Agricultural Field Officer (AFO), Rajbhasha Adhikari, Law Officer, HR/Personnel Officer and Marketing Officer**. The process is **Prelims → Mains → Interview**.\n\n**Prelims** is qualifying. For IT, AFO, HR and Marketing it has **English (50 Q, 25 marks), Reasoning (50 Q, 50 marks) and Quant (50 Q, 50 marks)**. For **Law Officer and Rajbhasha Adhikari**, Quant is replaced by **General Awareness with special reference to banking**.\n\n**Mains** is the **Professional Knowledge (PK)** test, typically **60 questions in 45 minutes** (Rajbhasha has 45 objective + 2 descriptive questions). With so few questions, a handful of marks separates hundreds of candidates. The **final merit** combines Mains and the interview in **80 : 20** (check the latest notification)."
+            },
+            {
+              "h": "Prelims plan: clear cut-offs, don't over-invest",
+              "p": "English carries only **0.5 marks per question**, so aim to clear its cut-off efficiently and invest more in Reasoning and Quant/GA, each worth 50 marks.\n\n**Worked example: marks per question**\nEnglish: 25 ÷ 50 = **0.5**.\nReasoning: 50 ÷ 50 = **1**.\nQuant or GA: 50 ÷ 50 = **1**.\nA wrong English answer costs 0.5 × ¼ = **0.125**; a wrong Reasoning answer costs **0.25**. Accuracy matters in both, but each correct Reasoning answer is worth twice an English answer."
+            },
+            {
+              "h": "PK preparation by post",
+              "p": "Use standard textbooks from your degree and focus on topics IBPS repeats.",
+              "points": [
+                "**IT:** DBMS and SQL, networking and OSI, operating systems, data structures, software engineering, cyber security.",
+                "**AFO:** agronomy, soil science, horticulture, animal husbandry, fisheries, agri-economics, government agri-schemes, agri-credit.",
+                "**HR:** labour laws (including the labour codes), HRM functions, training, performance appraisal, industrial relations.",
+                "**Marketing:** 4Ps, segmentation–targeting–positioning, consumer behaviour, digital marketing, bank product marketing.",
+                "**Law:** banking laws, contract, negotiable instruments, SARFAESI, IBC, RBI and banking regulation.",
+                "**Rajbhasha:** official language policy, translation (Hindi ↔ English), essay writing."
+              ]
+            },
+            {
+              "h": "A 12-week PK study plan",
+              "p": "Weeks 1–6: cover the full PK syllabus once, making one-page notes per topic.\nWeeks 7–9: solve previous-year PK questions and topic-wise MCQs; note weak areas.\nWeeks 10–11: full-length 60-question PK mocks (45 minutes) three times a week.\nWeek 12: revise notes and errors only; no new topics.\n\nRun Prelims practice in parallel (1 hour daily) because Prelims must still be cleared."
+            },
+            {
+              "h": "Common mistakes",
+              "p": "Avoid these.",
+              "points": [
+                "Preparing only for Prelims and leaving PK until after the result.",
+                "Spending equal time on English and Reasoning despite different marks.",
+                "Studying PK from random notes instead of standard textbooks.",
+                "Ignoring banking-related applications of your specialisation (e.g. agri-credit for AFO, cyber security for IT)."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Prelims: English 50 Q/25 marks; Reasoning and Quant (or GA) 50 marks each.",
+                "Law and Rajbhasha: GA replaces Quant.",
+                "Mains: PK, about 60 Q in 45 min; Rajbhasha has descriptive questions too.",
+                "Final: Mains + interview (80 : 20).",
+                "Start PK from day one."
+              ]
             }
           ]
         },
@@ -196,6 +655,60 @@
               "answer": 2,
               "explain": "IPv6 addresses are 128 bits; IPv4 addresses are 32 bits."
             }
+          ],
+          "notes": [
+            {
+              "h": "DBMS and SQL",
+              "p": "DBMS is the most heavily tested IT area.",
+              "points": [
+                "**Keys:** primary key (unique, not null), candidate key (any minimal unique key), foreign key (refers to another table's primary key), super key (any set that uniquely identifies rows).",
+                "**Normal forms:** 1NF (atomic values) → 2NF (no partial dependency on part of a composite key) → 3NF (no transitive dependency) → BCNF (every determinant is a candidate key).",
+                "**ACID:** Atomicity, Consistency, Isolation, Durability.",
+                "**SQL types:** DDL (CREATE, ALTER, DROP, TRUNCATE), DML (SELECT, INSERT, UPDATE, DELETE), DCL (GRANT, REVOKE), TCL (COMMIT, ROLLBACK, SAVEPOINT).",
+                "**Joins:** INNER (matching rows only), LEFT (all left rows), RIGHT, FULL OUTER."
+              ]
+            },
+            {
+              "h": "Worked example: SQL output",
+              "p": "Table EMP:\n(1, 'Asha', 'IT', 50000), (2, 'Ravi', 'HR', 40000), (3, 'Meera', 'IT', 60000), (4, 'Kiran', 'HR', 45000), (5, 'Sohan', 'Ops', 30000)\n\nQuery: SELECT dept, AVG(salary) FROM EMP GROUP BY dept HAVING COUNT(*) > 1;\nStep 1 (group): IT → 50000, 60000; HR → 40000, 45000; Ops → 30000.\nStep 2 (HAVING COUNT > 1): IT (2 rows) ✓, HR (2) ✓, Ops (1) ✗.\nStep 3 (average): IT = (50000 + 60000) ÷ 2 = **55000**; HR = (40000 + 45000) ÷ 2 = **42500**.\nOutput: two rows — IT 55000, HR 42500.\nRemember: **WHERE filters rows before grouping; HAVING filters groups after grouping**."
+            },
+            {
+              "h": "Networking and a subnetting example",
+              "p": "OSI has 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, Application. Hub = layer 1, switch = layer 2, router = layer 3. TCP is connection-oriented and reliable; UDP is connectionless and fast. IPv4 = 32 bits; IPv6 = 128 bits.\n\n**Worked example: subnet 192.168.1.0/26.**\nHost bits = 32 − 26 = 6 → addresses per subnet = 2⁶ = **64**; usable hosts = 64 − 2 = **62** (network and broadcast addresses excluded).\nSubnet mask: /26 → 255.255.255.**192** (128 + 64).\nSubnets: .0, .64, .128, .192.\nFirst subnet: network 192.168.1.0, usable .1 to .62, broadcast **.63**.",
+              "points": [
+                "IPv4 classes: A 1–126, B 128–191, C 192–223 (127 is loopback).",
+                "Private ranges: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16."
+              ]
+            },
+            {
+              "h": "Operating systems and data structures",
+              "p": "These topics give quick, factual questions.",
+              "points": [
+                "**Deadlock conditions (all four needed):** mutual exclusion, hold and wait, no pre-emption, circular wait.",
+                "**Scheduling:** FCFS, SJF (minimum average waiting time), Round Robin (time quantum), Priority.",
+                "**Paging** avoids external fragmentation; **thrashing** = too much paging, too little work.",
+                "**Stack:** LIFO; **queue:** FIFO.",
+                "**Complexities:** binary search O(log n); bubble/insertion sort O(n²); merge sort O(n log n) always; quicksort O(n log n) average, O(n²) worst.",
+                "Binary search on 1,024 sorted items needs at most ⌊log₂ 1024⌋ + 1 = **11** comparisons."
+              ]
+            },
+            {
+              "h": "Security essentials",
+              "p": "**Symmetric** encryption uses one shared key (AES, DES). **Asymmetric** uses a public–private key pair (RSA, ECC). **Hashing** (SHA-256) is one-way and used for integrity and password storage. A **digital signature** is created with the sender's private key and verified with the public key.\n\nWeb attacks: **SQL injection** (malicious SQL through input fields; prevented by parameterised queries), **XSS** (malicious scripts in web pages), **CSRF** (forged requests from a logged-in user), **DDoS** (flooding a service)."
+            },
+            {
+              "h": "Quick revision",
+              "p": "Last-day list.",
+              "points": [
+                "3NF removes transitive dependency; BCNF: every determinant is a candidate key.",
+                "WHERE before grouping; HAVING after grouping.",
+                "/26 → 64 addresses, 62 usable, mask .192.",
+                "Router L3, switch L2, hub L1.",
+                "Four deadlock conditions.",
+                "Quicksort worst O(n²); merge sort O(n log n).",
+                "Symmetric = AES/DES; asymmetric = RSA."
+              ]
+            }
           ]
         },
         {
@@ -272,6 +785,843 @@
               ],
               "answer": 1,
               "explain": "Black soil retains moisture and is ideal for cotton."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Crop seasons and major crops",
+              "p": "India has three cropping seasons.",
+              "points": [
+                "**Kharif** (sown June–July with the monsoon, harvested Sept–Oct): rice, maize, jowar, bajra, cotton, soybean, groundnut, arhar.",
+                "**Rabi** (sown Oct–Dec, harvested March–April): wheat, mustard, gram, barley, peas.",
+                "**Zaid** (short summer season between rabi and kharif): watermelon, cucumber, muskmelon, moong.",
+                "India is the world's largest producer of milk and pulses and among the top producers of rice and wheat (check the latest data)."
+              ]
+            },
+            {
+              "h": "Soils and soil management",
+              "p": "Know the soil, its features and its crops.",
+              "points": [
+                "**Alluvial:** most widespread; Indo-Gangetic plains; fertile; rice, wheat, sugarcane.",
+                "**Black (regur):** high clay, retains moisture, cracks when dry; **cotton**.",
+                "**Red:** red due to iron oxide; low in nitrogen; Deccan plateau.",
+                "**Laterite:** leached and acidic; tea, coffee, cashew.",
+                "**Acidic soils** are corrected with **lime**; **alkaline/sodic soils** with **gypsum**.",
+                "Ideal NPK use ratio is commonly cited as **4 : 2 : 1**."
+              ]
+            },
+            {
+              "h": "Fertiliser calculations: worked examples",
+              "p": "Fertiliser grades show nutrient percentage: **urea 46% N**, **DAP 18% N and 46% P₂O₅**, **MOP 60% K₂O**, **SSP 16% P₂O₅**.\n\n**Worked example 1:** How much urea supplies 60 kg of nitrogen?\nUrea needed = 60 ÷ 0.46 = **130.4 kg** (about 130 kg).\nCheck: 130.4 × 0.46 = 60.0 ✓.\n\n**Worked example 2:** A field needs 46 kg P₂O₅ and 40 kg N. DAP is applied first.\nDAP for P = 46 ÷ 0.46 = **100 kg** → this also supplies 100 × 0.18 = 18 kg N.\nRemaining N = 40 − 18 = 22 kg → urea = 22 ÷ 0.46 ≈ **47.8 kg**.\nAlways supply the nutrient available from only one source (here P from DAP) first, then top up the others."
+            },
+            {
+              "h": "KCC limit: scale of finance method",
+              "p": "As AFO you appraise **agri loans**. For crop loans under KCC, the first-year short-term limit is worked out as: **scale of finance × area cultivated + 10% for post-harvest/household/consumption needs + 20% for repairs and maintenance of farm assets + crop insurance and asset insurance premium**. The limit is usually raised each later year for cost escalation; check the current RBI master circular on KCC.\n\n**Worked example:** Scale of finance for a crop = ₹40,000 per acre; farmer cultivates 2 acres; insurance premium = ₹2,000.\nCrop component = 40,000 × 2 = ₹80,000.\n+10% = ₹8,000. +20% = ₹16,000. + insurance ₹2,000.\nFirst-year limit = 80,000 + 8,000 + 16,000 + 2,000 = **₹1,06,000**."
+            },
+            {
+              "h": "Revolutions, schemes and institutions",
+              "p": "Frequently asked facts.",
+              "points": [
+                "**Green** (food grains, HYV seeds; M.S. Swaminathan); **White** (milk; Operation Flood 1970, Verghese Kurien); **Blue** (fisheries); **Yellow** (oilseeds); **Golden** (horticulture/honey); **Silver** (eggs/poultry).",
+                "**PM-KISAN:** ₹6,000 a year in three instalments to landholding farmer families.",
+                "**PMFBY (2016):** crop insurance; farmer premium 2% kharif, 1.5% rabi, 5% commercial/horticultural crops.",
+                "**Soil Health Card (2015)**, **e-NAM (2016)** online mandi, **PMKSY** (micro-irrigation: 'More crop per drop').",
+                "Seed chain: nucleus → breeder (golden-yellow tag) → foundation (white tag) → certified (blue tag).",
+                "MSP is announced by the Government on the recommendation of the **CACP**."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Last-day list.",
+              "points": [
+                "Kharif: rice, cotton, soybean; Rabi: wheat, mustard, gram; Zaid: melons, moong.",
+                "Black soil → cotton; acidic soil → lime; sodic soil → gypsum.",
+                "Urea 46% N; DAP 18-46-0; MOP 60% K₂O; SSP 16% P₂O₅.",
+                "KCC limit = SoF × area + 10% + 20% + insurance.",
+                "PMFBY premiums 2% / 1.5% / 5%.",
+                "Breeder tag golden-yellow, foundation white, certified blue."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "it-dsa-se-web",
+          "title": "IT Officer PK: data structures, software engineering, web & cloud",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Data structures & complexity",
+              "points": [
+                "Array access O(1); linked list search O(n)",
+                "Stack (LIFO), queue (FIFO); BST search O(log n) average, O(n) worst",
+                "Binary search O(log n) on sorted data",
+                "Sorting: merge/heap O(n log n); quicksort average O(n log n), worst O(n²); bubble/insertion O(n²)",
+                "Hash table average O(1) lookup"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "SDLC models",
+              "points": [
+                "Waterfall: sequential phases; suits fixed requirements",
+                "V-model: testing planned for each phase",
+                "Spiral: risk-driven iterations (Boehm)",
+                "Agile/Scrum: short sprints, continuous feedback"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Testing",
+              "points": [
+                "Unit → integration → system → acceptance",
+                "White-box (internal logic) vs black-box (requirements)",
+                "Regression testing after changes",
+                "Alpha (in-house) vs beta (real users)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Web and cloud",
+              "body": "HTTP is stateless; cookies/sessions keep state; HTTPS uses TLS. Cloud service models: **IaaS**, **PaaS**, **SaaS**; deployment: public, private, hybrid, community."
+            },
+            {
+              "type": "tip",
+              "title": "OOP pillars",
+              "body": "Encapsulation, abstraction, inheritance, polymorphism. Overloading = compile-time polymorphism; overriding = run-time polymorphism."
+            },
+            {
+              "type": "quiz",
+              "q": "The worst-case time complexity of quicksort is:",
+              "options": [
+                "O(n)",
+                "O(n log n)",
+                "O(n²)",
+                "O(log n)"
+              ],
+              "answer": 2,
+              "explain": "With poor pivots (e.g. sorted input and first-element pivot)."
+            },
+            {
+              "type": "quiz",
+              "q": "Which data structure follows LIFO?",
+              "options": [
+                "Queue",
+                "Stack",
+                "Linked list",
+                "Heap"
+              ],
+              "answer": 1,
+              "explain": "Last in, first out."
+            },
+            {
+              "type": "quiz",
+              "q": "Gmail is an example of which cloud service model?",
+              "options": [
+                "IaaS",
+                "PaaS",
+                "SaaS",
+                "On-premise"
+              ],
+              "answer": 2,
+              "explain": "Users consume ready software."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Scope of IT PK",
+              "p": "IBPS SO IT Officer Mains PK covers DBMS, networking, operating systems, data structures, software engineering, computer organisation, web technologies, cloud and security. This chapter covers the topics not in the IT essentials chapter: data structures and algorithms, software engineering, web and cloud."
+            },
+            {
+              "h": "Data structures and algorithms",
+              "p": "**Linear:** arrays, linked lists, stacks, queues. **Non-linear:** trees (binary, BST, AVL, B-trees for databases), graphs (BFS uses a queue, DFS uses a stack/recursion), heaps (priority queues), hash tables.\n\n**Worked example 1 (stack):** Evaluate the postfix expression 5 3 + 2 *.\nPush 5, push 3; \"+\" pops 3 and 5 → push 8; push 2; \"*\" pops 2 and 8 → push **16**.\n\n**Worked example 2 (binary search):** In a sorted list of 1,024 records, binary search needs at most log₂1,024 = **10** comparisons (plus one for the final check in some implementations), versus up to 1,024 for linear search."
+            },
+            {
+              "h": "Software engineering",
+              "p": "The **SDLC** runs through requirements, design, coding, testing, deployment and maintenance. **Waterfall** is linear; **Agile** delivers in sprints with user feedback; **DevOps** integrates development and operations with continuous integration/continuous delivery (CI/CD).\n\n**Coupling** (dependence between modules) should be low; **cohesion** (focus within a module) should be high. **COCOMO** estimates effort from lines of code. **Cyclomatic complexity** = E − N + 2P for a control-flow graph — the number of independent paths.\n\n**Worked example 3:** A control-flow graph has 9 edges, 7 nodes and 1 connected component. Cyclomatic complexity = 9 − 7 + 2 = **4** → at least 4 test cases for path coverage."
+            },
+            {
+              "h": "Web technologies and cloud",
+              "p": "HTML structures pages, CSS styles them, JavaScript adds behaviour. HTTP methods: GET (retrieve), POST (create), PUT (replace), DELETE. Status codes: 200 OK, 301 moved, 404 not found, 500 server error. **REST APIs** exchange JSON over HTTP; banks expose APIs for UPI, account aggregation and partner integration.\n\n**Cloud:** IaaS (virtual machines), PaaS (managed platforms), SaaS (applications). Benefits: scalability and pay-per-use; concerns for banks: data localisation, vendor lock-in and outsourcing risk — governed by RBI’s IT outsourcing directions.",
+              "points": [
+                "Virtualisation: hypervisor runs multiple VMs on one host.",
+                "Containers share the host OS kernel (e.g. Docker)."
+              ]
+            },
+            {
+              "h": "Computer organisation essentials",
+              "p": "**Number representation:** two’s complement for signed integers; IEEE 754 for floating point. **Memory hierarchy:** registers → cache (L1/L2/L3) → RAM → SSD/HDD. **Cache mapping:** direct, associative, set-associative. **Pipelining** overlaps instruction stages; hazards are structural, data and control.\n\n**Worked example 4:** A 4-stage pipeline with 1 ns per stage runs 100 instructions in (4 + 100 − 1) = **103 ns**, versus 400 ns without pipelining — a speed-up of about 3.9."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "BFS uses a queue; DFS a stack.",
+                "Quicksort worst case is O(n²).",
+                "Low coupling, high cohesion is the goal.",
+                "Overloading is compile-time; overriding is run-time."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Binary search O(log n); merge sort O(n log n).",
+                "Stack LIFO; queue FIFO.",
+                "SDLC models: waterfall, V, spiral, agile.",
+                "Cyclomatic complexity = E − N + 2P.",
+                "IaaS, PaaS, SaaS.",
+                "HTTP 200/301/404/500."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "afo-plant-protection-allied",
+          "title": "AFO PK: plant protection, horticulture, animal husbandry & agri-economics",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Plant protection basics",
+              "points": [
+                "Fungal diseases: blast (rice), rust (wheat), late blight (potato)",
+                "Bacterial: bacterial leaf blight (rice), citrus canker",
+                "Viral: tomato leaf curl, yellow vein mosaic (bhindi)",
+                "Pests: stem borer, bollworm (pink bollworm in cotton), aphids, locusts"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Horticulture",
+              "points": [
+                "Propagation: seeds, cuttings, layering, grafting, budding",
+                "Protected cultivation: polyhouses, shade nets",
+                "Post-harvest: grading, packing, pre-cooling, cold storage",
+                "MIDH supports area expansion and post-harvest infrastructure"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Animal husbandry",
+              "points": [
+                "Indigenous cattle: Gir, Sahiwal, Red Sindhi, Tharparkar",
+                "Buffalo: Murrah (highest milk), Jaffarabadi, Mehsana",
+                "Exotic cattle: Holstein Friesian (highest milk), Jersey",
+                "Diseases: FMD, HS, brucellosis; vaccination under NADCP"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Agri economics for bankers",
+              "points": [
+                "Scale of finance: per-acre credit norm fixed by district technical committee",
+                "Economics of a project: NPV, BCR, IRR, DSCR",
+                "Margin money and subsidy in project finance",
+                "Repayment matched to income cycles (seasonal crop loans, monthly dairy income)"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "DSCR",
+              "body": "Debt Service Coverage Ratio = (net profit + depreciation + interest) ÷ (instalment + interest). Banks usually look for an average DSCR of about 1.5 for agri term loans."
+            },
+            {
+              "type": "quiz",
+              "q": "Blast is a major fungal disease of:",
+              "options": [
+                "Wheat",
+                "Rice",
+                "Cotton",
+                "Potato"
+              ],
+              "answer": 1,
+              "explain": "Caused by Magnaporthe oryzae."
+            },
+            {
+              "type": "quiz",
+              "q": "Which buffalo breed is known for the highest milk yield in India?",
+              "options": [
+                "Murrah",
+                "Mehsana",
+                "Jaffarabadi",
+                "Surti"
+              ],
+              "answer": 0,
+              "explain": "Murrah, from Haryana."
+            },
+            {
+              "type": "quiz",
+              "q": "A project has annual cash available for debt service of ₹1.5 lakh and annual debt service of ₹1 lakh. DSCR is:",
+              "options": [
+                "0.67",
+                "1.0",
+                "1.5",
+                "2.5"
+              ],
+              "answer": 2,
+              "explain": "1.5 ÷ 1.0 = 1.5."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Scope of AFO PK",
+              "p": "The AFO Professional Knowledge paper covers agronomy, soils, horticulture, plant protection, animal husbandry, fisheries, agricultural engineering, agri economics and finance, and government schemes. This chapter adds plant protection, horticulture, livestock breeds and project appraisal to the AFO essentials chapter."
+            },
+            {
+              "h": "Plant protection",
+              "p": "Crop losses come from insects, diseases and weeds. **Fungal** diseases are the most common (rusts and smuts of wheat, blast and sheath blight of rice, late blight of potato — the cause of the Irish famine). **Bacterial** diseases include bacterial leaf blight of rice. **Viral** diseases are spread by vectors such as whiteflies and aphids.\n\n**IPM** combines resistant varieties, cultural practices, traps, bio-control (Trichogramma against borers; Trichoderma against soil fungi; NPV against caterpillars) and need-based pesticide use. Pesticide labels carry colour-coded toxicity triangles: red (extremely toxic), yellow, blue, green (least toxic)."
+            },
+            {
+              "h": "Horticulture and livestock",
+              "p": "Horticulture covers fruits, vegetables, flowers, spices, plantation and medicinal crops. Vegetative propagation (grafting in mango, budding in citrus and rose) keeps true-to-type plants. **Protected cultivation** extends seasons and raises yields of high-value crops.\n\nLivestock: India has many indigenous breeds — **Gir** and **Sahiwal** (dairy cattle), **Murrah** (buffalo), **Marwari** (horse), **Jamunapari** and **Beetal** (goats). Crossbreeding with **Holstein Friesian** and **Jersey** raises yields but needs better feed and care. The **National Animal Disease Control Programme** vaccinates against foot-and-mouth disease and brucellosis."
+            },
+            {
+              "h": "Project appraisal for agri loans",
+              "p": "An AFO appraises technical feasibility, economic viability and bankability.\n\n**Worked example 1 (dairy unit):** Cost ₹5 lakh; margin 25% (₹1.25 lakh) from the farmer; bank loan ₹3.75 lakh over 5 years at 10%. Year-1 interest ≈ ₹37,500; principal instalment ₹75,000 → debt service ≈ ₹1.125 lakh. If net income + depreciation + interest = ₹1.8 lakh, DSCR = 1.8 ÷ 1.125 = **1.6** — acceptable.\n\n**Worked example 2 (crop loan by scale of finance):** Scale of finance for paddy ₹60,000/ha; farmer grows 2 ha. Crop component = **₹1.2 lakh**; KCC limits then add post-harvest/household needs (10%) and farm-asset maintenance (20%) per RBI–NABARD norms.",
+              "points": [
+                "BCR (benefit–cost ratio) > 1 indicates viability."
+              ]
+            },
+            {
+              "h": "Agricultural engineering and post-harvest",
+              "p": "**Farm machinery:** primary tillage (mould-board plough, disc plough), secondary tillage (harrow, cultivator, rotavator), sowing (seed drill, zero-till drill), harvesting (combine harvester, reaper). **Post-harvest losses** are high for fruits and vegetables; cold chains, pack-houses and processing cut losses.\n\n**Soil and water conservation structures:** contour bunds, terraces, check dams, farm ponds. **Worked recall example:** a zero-till drill sows wheat directly into rice stubble, saving time and reducing stubble burning."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Rust is a wheat disease; blast is rice.",
+                "Murrah is buffalo; Gir and Sahiwal are cattle.",
+                "DSCR includes interest in both numerator and denominator.",
+                "Red triangle = most toxic pesticide."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Rice blast; wheat rust; potato late blight.",
+                "IPM: cultural, mechanical, biological, need-based chemical.",
+                "Grafting (mango), budding (citrus, rose).",
+                "Gir, Sahiwal, Murrah; HF and Jersey.",
+                "DSCR ≈ 1.5 for agri term loans.",
+                "Scale of finance → KCC limit."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "law-banking-statutes",
+          "title": "Law Officer PK: banking & recovery statutes",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Core banking statutes",
+              "points": [
+                "RBI Act, 1934 — RBI’s constitution, monetary policy (Sec 45ZB MPC)",
+                "Banking Regulation Act, 1949 — licensing (Sec 22), Sec 35A directions, Sec 45 moratorium/amalgamation",
+                "Banking Companies (Acquisition) Acts 1970/1980 — nationalised banks",
+                "Payment and Settlement Systems Act, 2007"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Recovery and resolution",
+              "points": [
+                "RDB Act, 1993 (now RDBF) — Debt Recovery Tribunals for claims of ₹20 lakh and above",
+                "SARFAESI Act, 2002 — enforce security without court; 60-day demand notice (Sec 13(2))",
+                "IBC, 2016 — CIRP before NCLT; 180 days, extendable by 90; overall 330-day outer limit",
+                "Lok Adalats for small claims and settlements"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Other laws for bankers",
+              "points": [
+                "PMLA, 2002 — KYC, record keeping, reporting to FIU-IND",
+                "NI Act, 1881 — Sec 138 cheque dishonour",
+                "FEMA, 1999 — foreign exchange",
+                "Limitation Act, 1963 — 3 years for most money claims; acknowledgment restarts the period"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "SARFAESI essentials",
+              "body": "Applies to secured debts classified as **NPA**; not to agricultural land or loans below ₹1 lakh, or where the outstanding is less than 20% of principal and interest. After 60 days’ notice the bank may take possession (Sec 13(4)); borrowers may appeal to the DRT (Sec 17)."
+            },
+            {
+              "type": "tip",
+              "title": "Remember section numbers",
+              "body": "Sec 13(2) SARFAESI notice; Sec 14 assistance of CMM/DM; Sec 17 appeal to DRT. IBC: Sec 7 (financial creditor), Sec 9 (operational creditor), Sec 10 (corporate debtor itself)."
+            },
+            {
+              "type": "quiz",
+              "q": "Under SARFAESI, the borrower is given a demand notice period of:",
+              "options": [
+                "30 days",
+                "45 days",
+                "60 days",
+                "90 days"
+              ],
+              "answer": 2,
+              "explain": "Sec 13(2): 60 days to discharge liabilities."
+            },
+            {
+              "type": "quiz",
+              "q": "A financial creditor initiates CIRP under which section of the IBC?",
+              "options": [
+                "Section 7",
+                "Section 9",
+                "Section 10",
+                "Section 12"
+              ],
+              "answer": 0,
+              "explain": "Sec 9 operational creditor; Sec 10 corporate debtor."
+            },
+            {
+              "type": "quiz",
+              "q": "The pecuniary threshold for approaching a DRT is a debt of:",
+              "options": [
+                "₹1 lakh",
+                "₹10 lakh",
+                "₹20 lakh",
+                "₹1 crore"
+              ],
+              "answer": 2,
+              "explain": "Raised from ₹10 lakh to ₹20 lakh in 2018."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Scope",
+              "p": "The Law Officer PK paper focuses on laws a bank’s legal department uses daily: banking regulation, recovery and insolvency, negotiable instruments, contracts and securities, KYC/AML, and consumer protection. Questions cite section numbers, so memorise the high-frequency ones."
+            },
+            {
+              "h": "Banking regulation",
+              "p": "The **RBI Act, 1934** constitutes the RBI and frames monetary policy (inflation targeting and the MPC under Chapter IIIF). The **Banking Regulation Act, 1949** governs licensing, capital, management, audits, directions (Sec 35A), removal of managerial persons (Sec 36AA), supersession of boards (Sec 36ACA) and moratorium/amalgamation (Sec 45). The **Banking Regulation (Amendment) Act, 2020** extended RBI supervision over cooperative banks. The **Banking Laws (Amendment) Act, 2025** allowed up to four nominees for deposit accounts and changed the \"substantial interest\" threshold — check the notified provisions."
+            },
+            {
+              "h": "Recovery tools with an example",
+              "p": "**DRTs** under the RDB Act adjudicate bank claims of ₹20 lakh or more; appeals go to the **DRAT**. **SARFAESI** allows secured creditors to enforce security interest without court intervention after classifying the account as NPA.\n\n**Worked example 1 (SARFAESI eligibility):** A loan of ₹50 lakh secured by a factory building, NPA since 4 months; outstanding ₹45 lakh. Not agricultural land, above ₹1 lakh, and outstanding exceeds 20% of principal + interest → SARFAESI **applies**. Steps: Sec 13(2) notice (60 days) → consider objections (reply within 15 days) → Sec 13(4) possession → valuation and auction.\n\n**IBC**: CIRP must be completed within 180 days (extendable by 90), with an outer limit of 330 days including litigation; the minimum default to trigger CIRP is ₹1 crore (raised in 2020)."
+            },
+            {
+              "h": "AML and consumer protection",
+              "p": "The **PMLA, 2002** and RBI’s KYC Master Direction require customer due diligence, periodic KYC updation, and reporting of cash transaction reports (CTR) and suspicious transaction reports (STR) to **FIU-IND**. The **Consumer Protection Act, 2019** and the **RBI Integrated Ombudsman Scheme (2021)** provide redress to bank customers.\n\n**Worked example 2 (limitation):** A loan instalment fell due on 1 April 2022. The bank must file a recovery suit within 3 years — by 1 April 2025, since the day of default is excluded when computing the period — unless the borrower acknowledged the debt in writing within that period, which starts a fresh 3-year period from the acknowledgment."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "DRT threshold ₹20 lakh; IBC trigger ₹1 crore; SARFAESI minimum ₹1 lakh.",
+                "SARFAESI does not apply to agricultural land.",
+                "Sec 7 vs 9 vs 10 of the IBC.",
+                "Limitation is usually 3 years for money claims; 12 years for mortgage suits."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "RBI Act 1934; BR Act 1949 (Sec 35A, 45).",
+                "RDB Act 1993 — DRT ≥ ₹20 lakh.",
+                "SARFAESI 2002 — Sec 13(2) 60 days; Sec 17 appeal.",
+                "IBC 2016 — 180 + 90 days; 330-day cap; ₹1 crore trigger.",
+                "PMLA 2002 — CTR/STR to FIU-IND.",
+                "Integrated Ombudsman Scheme 2021."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "law-contract-securities",
+          "title": "Law Officer PK: contracts, securities & banker–customer law",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Indian Contract Act, 1872",
+              "points": [
+                "Valid contract: offer, acceptance, lawful consideration, competent parties, free consent, lawful object (Sec 10)",
+                "Minor’s agreement is void (Mohori Bibee v. Dharmodas Ghose, 1903)",
+                "Indemnity (Sec 124) vs guarantee (Sec 126): guarantee has three parties",
+                "Bailment (Sec 148); pledge (Sec 172) — bailment of goods as security"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Charges on security",
+              "points": [
+                "Pledge — possession with the lender (goods, gold)",
+                "Hypothecation — possession with the borrower (vehicles, stock)",
+                "Mortgage — immovable property (Transfer of Property Act, 1882, Sec 58)",
+                "Lien — right to retain; banker’s general lien",
+                "Assignment — transfer of actionable claims (book debts, LIC policies)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Types of mortgage (Sec 58 TPA)",
+              "points": [
+                "Simple, usufructuary, English, conditional sale",
+                "Equitable mortgage (by deposit of title deeds) — notified towns",
+                "Anomalous mortgage — any other combination"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Banker–customer relationship",
+              "body": "Primarily **debtor–creditor** for deposits (reversed for loans), with additional roles: trustee, bailee (safe custody), agent (collecting cheques), lessor–lessee (lockers). Bankers owe a duty of secrecy subject to legal exceptions."
+            },
+            {
+              "type": "tip",
+              "title": "Guarantor’s rights",
+              "body": "A surety’s liability is co-extensive with the principal debtor (Sec 128). A surety is discharged by variance in terms without consent (Sec 133) or release of the principal debtor (Sec 134)."
+            },
+            {
+              "type": "quiz",
+              "q": "An agreement with a minor is:",
+              "options": [
+                "valid",
+                "voidable",
+                "void ab initio",
+                "illegal"
+              ],
+              "answer": 2,
+              "explain": "Mohori Bibee v. Dharmodas Ghose (1903)."
+            },
+            {
+              "type": "quiz",
+              "q": "A car loan where the vehicle stays with the borrower typically involves:",
+              "options": [
+                "Pledge",
+                "Hypothecation",
+                "Mortgage",
+                "Lien"
+              ],
+              "answer": 1,
+              "explain": "Charge without transfer of possession."
+            },
+            {
+              "type": "quiz",
+              "q": "A contract of guarantee is defined in Section ___ of the Indian Contract Act:",
+              "options": [
+                "124",
+                "126",
+                "148",
+                "172"
+              ],
+              "answer": 1,
+              "explain": "Sec 124 indemnity; 148 bailment; 172 pledge."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Why contract law matters to bankers",
+              "p": "Every loan, guarantee and security document is a contract. A Law Officer must check that documents are validly executed, that securities are properly created and registered, and that limitation is not missed. Questions frequently test definitions and leading case law."
+            },
+            {
+              "h": "Contracts and guarantees",
+              "p": "**Sec 10** lists the essentials of a valid contract. Agreements without consideration are void except in Sec 25 cases (natural love and affection in writing and registered; compensation for past voluntary service; promise to pay a time-barred debt in writing).\n\nA **contract of guarantee** (Sec 126) involves the creditor, the principal debtor and the surety. The surety’s liability is co-extensive (Sec 128), but the surety is discharged by variance without consent (Sec 133), release of the debtor (Sec 134) or the creditor’s act impairing the surety’s remedy (Sec 139).\n\n**Worked example 1:** A bank extends a loan’s tenure and raises the rate without the guarantor’s consent. Under **Sec 133**, the guarantor is discharged for transactions after the variance. Banks therefore take guarantor consent for any material change."
+            },
+            {
+              "h": "Creating security",
+              "p": "**Pledge** — delivery of movable goods as security (gold loans). **Hypothecation** — charge on movables without possession; registered with the **ROC** for companies and with **CERSAI** for security interests. **Mortgage** — interest in immovable property; an **equitable mortgage** by deposit of title deeds is common in housing loans in notified towns. **Assignment** — of book debts or insurance policies.\n\n**Worked example 2:** A company borrows working capital against stock. The bank takes **hypothecation**, files the charge with the ROC within the prescribed period, and registers it on **CERSAI** so later lenders can see the prior charge."
+            },
+            {
+              "h": "Banker–customer law",
+              "p": "Relationships: **debtor–creditor** (deposits), **creditor–debtor** (loans), **bailor–bailee** (safe custody), **principal–agent** (collections), **lessor–lessee** (lockers). The banker’s **general lien** allows retaining securities for any debt due, unless an express contract excludes it. Secrecy exceptions (Tournier v. National Provincial Bank, 1924): compulsion by law, duty to the public, bank’s own interest, customer’s consent.",
+              "points": [
+                "Garnishee order: court attaches funds of the judgment debtor held by the bank.",
+                "Right of set-off: combine accounts of the same customer in the same capacity."
+              ]
+            },
+            {
+              "h": "Negotiable instruments for lawyers",
+              "p": "Under the **NI Act**, a holder in due course takes an instrument for value, before maturity, in good faith — and gets a better title than the transferor. **Sec 138** complaints require a demand notice within 30 days of the dishonour memo, 15 days for payment, and a complaint within one month after that. **Sec 143A** allows interim compensation of up to 20% of the cheque amount. Endorsements may be blank, full, restrictive or conditional."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Indemnity has two parties; guarantee three.",
+                "Pledge needs possession; hypothecation does not.",
+                "Minor’s agreement: void, not voidable.",
+                "Tournier case: four exceptions to secrecy."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Sec 10 essentials; Sec 25 exceptions.",
+                "Sec 124 indemnity; 126 guarantee; 128 co-extensive; 133 variance.",
+                "Sec 148 bailment; 172 pledge.",
+                "TPA Sec 58: six types of mortgage.",
+                "CERSAI registration of security interests.",
+                "Tournier (1924): secrecy exceptions."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hr-officer-pk",
+          "title": "HR/Personnel Officer PK essentials",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "HR functions",
+              "points": [
+                "HR planning → recruitment → selection → induction",
+                "Training & development; career and succession planning",
+                "Performance management; compensation & benefits",
+                "Employee relations, grievance handling, discipline, separation"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Labour law framework",
+              "points": [
+                "Four labour codes: Wages (2019); Industrial Relations, Social Security, OSH (2020)",
+                "IR Code: standing orders and prior permission for lay-off/retrenchment/closure above 300 workers (states may vary)",
+                "Social Security Code: EPF, ESI, gratuity, maternity benefit; covers gig and platform workers",
+                "Payment of gratuity: 15 days’ wages per completed year (after 5 years’ service under the old Act)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Training evaluation and appraisal",
+              "points": [
+                "Kirkpatrick: reaction → learning → behaviour → results",
+                "Appraisal: rating scales, MBO, BARS, 360-degree, assessment centre",
+                "Errors: halo, horns, leniency, central tendency, recency"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Industrial relations",
+              "body": "Collective bargaining, grievance redressal, conciliation, arbitration and adjudication (labour courts, tribunals). Banks negotiate wages industry-wide through **bipartite settlements** between IBA and unions."
+            },
+            {
+              "type": "tip",
+              "title": "HR metrics",
+              "body": "Attrition rate = separations ÷ average headcount × 100. Cost per hire, time to hire, training hours per employee, absenteeism rate."
+            },
+            {
+              "type": "quiz",
+              "q": "Kirkpatrick’s four levels of training evaluation, in order, are:",
+              "options": [
+                "Learning, reaction, results, behaviour",
+                "Reaction, learning, behaviour, results",
+                "Behaviour, learning, reaction, results",
+                "Results, behaviour, learning, reaction"
+              ],
+              "answer": 1,
+              "explain": "Reaction → learning → behaviour → results."
+            },
+            {
+              "type": "quiz",
+              "q": "Wage settlements in Indian public sector banks are decided mainly through:",
+              "options": [
+                "state labour departments",
+                "bipartite settlements between IBA and unions",
+                "the Supreme Court",
+                "the RBI"
+              ],
+              "answer": 1,
+              "explain": "Periodic bipartite settlements."
+            },
+            {
+              "type": "quiz",
+              "q": "A bank had 50 separations with an average headcount of 1,000. Annual attrition rate:",
+              "options": [
+                "0.5%",
+                "5%",
+                "10%",
+                "50%"
+              ],
+              "answer": 1,
+              "explain": "50 ÷ 1,000 × 100 = 5%."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Scope of HR PK",
+              "p": "The HR/Personnel Officer paper covers HRM concepts, HRD, performance management, compensation, industrial relations, labour laws, organisational behaviour and contemporary HR (HR analytics, employer branding, diversity). Answers are objective, so precise definitions and law details matter."
+            },
+            {
+              "h": "Acquiring and developing talent",
+              "p": "**Job analysis** produces a **job description** (duties) and **job specification** (qualities needed). Recruitment can be internal (promotions, transfers) or external (campus, exams like IBPS). Selection tools: tests, group discussions, interviews, reference checks. **Induction** integrates new hires.\n\n**Training** methods: on-the-job (coaching, job rotation, apprenticeship) and off-the-job (lectures, case studies, simulations, e-learning). **Kirkpatrick’s model** evaluates reaction, learning, behaviour and results.\n\n**Worked example 1:** A bank needs 120 clerks next year: 60 retirements, 40 new branches’ posts, and expected attrition of 2% on 1,000 staff (20). Requirement = 60 + 40 + 20 = **120** — confirming the plan."
+            },
+            {
+              "h": "Compensation and appraisal",
+              "p": "Compensation includes basic pay, allowances (DA, HRA), incentives, and benefits (PF, gratuity, pension, medical). **Job evaluation** methods: ranking, grading, point-factor, factor comparison. **Performance-linked incentives** have been introduced in PSBs through bipartite settlements.\n\n**Worked example 2 (gratuity, old Act formula):** Last drawn monthly wages ₹52,000; service 20 years. Gratuity = 15/26 × 52,000 × 20 = **₹6 lakh** (subject to the statutory ceiling of ₹20 lakh under the old Act; check provisions under the Social Security Code)."
+            },
+            {
+              "h": "Industrial relations and labour laws",
+              "p": "The **four labour codes** consolidated 29 central labour laws. The **IR Code** covers trade unions, standing orders, strikes (notice requirements) and dispute resolution; the **Social Security Code** covers EPF, ESI, gratuity, maternity benefit and gig workers; the **Code on Wages** sets a national floor wage and timely payment; the **OSH Code** covers safety, health and working conditions. Since state and central rules continue to evolve, verify current provisions.",
+              "points": [
+                "Grievance procedure: immediate supervisor → department head → grievance committee → management.",
+                "Domestic enquiry: charge-sheet → reply → enquiry → findings → penalty, following natural justice."
+              ]
+            },
+            {
+              "h": "Contemporary HR",
+              "p": "**HR analytics** uses data on hiring, performance and attrition to predict risks and guide decisions. **Competency mapping** defines the skills each role needs. **Employee engagement** surveys and **employer branding** help retention. **Diversity and inclusion** policies, **POSH Act (2013)** compliance (Internal Committee in every office with 10 or more employees), and **hybrid work** arrangements are frequent interview topics.\n\n**Worked example 3:** If annual attrition among new officers falls from 12% to 8% in a cohort of 2,500, the bank retains **100** more officers each year, saving recruitment and training costs."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Job description (job) vs job specification (person).",
+                "Kirkpatrick order: reaction, learning, behaviour, results.",
+                "Gratuity divisor is 26 (working days), with 15 days’ wages per year.",
+                "Conciliation ≠ arbitration (arbitration is binding)."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "HR cycle: plan, recruit, select, induct, train, appraise, reward, separate.",
+                "Four labour codes (2019–2020).",
+                "Kirkpatrick: four levels.",
+                "Gratuity = 15/26 × wages × years.",
+                "Attrition = separations ÷ average headcount.",
+                "Bipartite settlements set PSB wages."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "marketing-officer-pk",
+          "title": "Marketing Officer PK essentials",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Core concepts",
+              "points": [
+                "Marketing mix 4Ps: product, price, place, promotion; services add people, process, physical evidence (7Ps)",
+                "STP: segmentation → targeting → positioning",
+                "Product life cycle: introduction, growth, maturity, decline",
+                "Maslow-based needs; wants; demand"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Services marketing",
+              "points": [
+                "Services are intangible, inseparable, variable, perishable",
+                "SERVQUAL dimensions: reliability, assurance, tangibles, empathy, responsiveness (RATER)",
+                "Service gaps model (Parasuraman, Zeithaml, Berry)"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Strategy tools",
+              "points": [
+                "BCG matrix: stars, cash cows, question marks, dogs",
+                "Ansoff matrix: market penetration, market development, product development, diversification",
+                "SWOT and PESTEL analysis",
+                "Porter’s five forces"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Bank marketing",
+              "body": "Products: deposits, loans, cards, third-party products (insurance, mutual funds). Channels: branches, BCs, mobile, internet, DSAs. **CRM** tracks customer lifetime value; **cross-selling** sells additional products to existing customers."
+            },
+            {
+              "type": "tip",
+              "title": "Digital marketing",
+              "body": "SEO, SEM, social media, content marketing, email. Metrics: CTR = clicks ÷ impressions; conversion rate = conversions ÷ visitors; CAC = marketing cost ÷ new customers."
+            },
+            {
+              "type": "quiz",
+              "q": "Which is NOT one of the original 4Ps?",
+              "options": [
+                "Product",
+                "Price",
+                "People",
+                "Promotion"
+              ],
+              "answer": 2,
+              "explain": "People is an added P in services marketing."
+            },
+            {
+              "type": "quiz",
+              "q": "In the BCG matrix, a high-share product in a low-growth market is a:",
+              "options": [
+                "Star",
+                "Cash cow",
+                "Question mark",
+                "Dog"
+              ],
+              "answer": 1,
+              "explain": "Generates cash with little investment."
+            },
+            {
+              "type": "quiz",
+              "q": "An ad gets 50,000 impressions and 1,000 clicks. CTR is:",
+              "options": [
+                "0.5%",
+                "2%",
+                "5%",
+                "20%"
+              ],
+              "answer": 1,
+              "explain": "1,000 ÷ 50,000 = 2%."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Scope of Marketing PK",
+              "p": "The Marketing Officer paper covers marketing management fundamentals, consumer behaviour, product and pricing, distribution, promotion, services and bank marketing, CRM, digital marketing and market research. Questions are mostly conceptual with some calculations."
+            },
+            {
+              "h": "Fundamentals",
+              "p": "**Marketing** identifies and satisfies customer needs profitably. Philosophies have evolved: production → product → selling → marketing → **societal marketing**. **STP**: divide the market into segments (demographic, geographic, psychographic, behavioural), choose target segments, and position the offering in customers’ minds.\n\n**Worked example 1:** A bank designs a zero-balance salary account with free insurance for young IT employees in metros (demographic + geographic + behavioural segmentation) and positions it as \"banking that moves at your speed\"."
+            },
+            {
+              "h": "Product, price, place, promotion",
+              "p": "**Product** levels: core benefit, actual product, augmented product. **PLC** strategies differ by stage — awareness in introduction, differentiation in maturity. **Pricing**: cost-plus, value-based, penetration (low entry price), skimming (high entry price), psychological (₹999).\n\n**Worked example 2 (break-even):** A credit-card variant has fixed costs of ₹50 lakh a year, revenue of ₹2,500 per card and variable cost ₹1,500 per card. Break-even = 50,00,000 ÷ (2,500 − 1,500) = **5,000 cards**.\n\n**Place**: distribution channels and coverage. **Promotion**: advertising, sales promotion, personal selling, public relations, direct and digital marketing — the **IMC** approach keeps messages consistent."
+            },
+            {
+              "h": "Services and bank marketing",
+              "p": "Bank products are services, so quality depends on people and processes. **SERVQUAL** measures the gap between expected and perceived service on reliability, assurance, tangibles, empathy and responsiveness. **CRM** uses customer data to retain and grow relationships; retaining a customer is usually cheaper than acquiring one. **Customer lifetime value** guides how much to spend on acquisition.",
+              "points": [
+                "Consumer decision process: need recognition → information search → evaluation → purchase → post-purchase behaviour.",
+                "AIDA: attention, interest, desire, action."
+              ]
+            },
+            {
+              "h": "Market research and consumer behaviour",
+              "p": "**Market research** process: define the problem → research design (exploratory, descriptive, causal) → data collection (primary via surveys, interviews, observation; secondary from reports) → sampling (probability: random, stratified, cluster; non-probability: convenience, quota, judgement) → analysis → report.\n\n**Consumer behaviour** is shaped by cultural, social, personal and psychological factors. **Cognitive dissonance** after a purchase is reduced by reassurance and good after-sales service.\n\n**Worked example 3:** A bank surveys 400 customers; 300 say they would recommend it, 60 are neutral and 40 would not. If promoters are 300 and detractors 40, a simple **Net Promoter Score** = (300 − 40) ÷ 400 × 100 = **65**."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Cash cow = high share, low growth; star = high share, high growth.",
+                "Skimming = high initial price; penetration = low.",
+                "SERVQUAL has five dimensions (RATER).",
+                "Ansoff diversification = new product + new market."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "4Ps + people, process, physical evidence.",
+                "STP; PLC four stages.",
+                "BCG, Ansoff, SWOT, Porter’s five forces.",
+                "SERVQUAL: RATER.",
+                "Break-even = fixed cost ÷ contribution per unit.",
+                "CTR, conversion rate, CAC."
+              ]
             }
           ]
         }

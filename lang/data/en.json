@@ -1,0 +1,7136 @@
+{
+ "code": "en",
+ "name": "English",
+ "native": "English",
+ "flag": "🇬🇧",
+ "from": "hi",
+ "fromName": "हिंदी",
+ "voice": "en-IN",
+ "tagline": "ऑफिस, शॉपिंग, सफ़र और इंटरव्यू के लिए रोज़मर्रा की बोलचाल वाली अंग्रेज़ी।",
+ "units": [
+  {
+   "id": "u1",
+   "title": "बेसिक्स 1",
+   "emoji": "👋",
+   "goal": "नमस्ते कहना और अपना परिचय देना",
+   "lessons": [
+    {
+     "id": "u1l1",
+     "title": "नमस्ते!",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Hello",
+       "tl": "हैलो",
+       "meaning": "नमस्ते",
+       "example": "Hello! Good morning.",
+       "exampleMeaning": "नमस्ते! सुप्रभात।"
+      },
+      {
+       "t": "learn",
+       "word": "Good morning",
+       "tl": "गुड मॉर्निंग",
+       "meaning": "सुप्रभात",
+       "example": "Good morning, sir.",
+       "exampleMeaning": "सुप्रभात, सर।"
+      },
+      {
+       "t": "learn",
+       "word": "How are you?",
+       "tl": "हाउ आर यू?",
+       "meaning": "आप कैसे हैं?",
+       "example": "Hello! How are you?",
+       "exampleMeaning": "नमस्ते! आप कैसे हैं?"
+      },
+      {
+       "t": "learn",
+       "word": "I am fine, thank you.",
+       "tl": "आइ ऐम फ़ाइन, थैंक यू",
+       "meaning": "मैं ठीक हूँ, धन्यवाद।",
+       "example": "I am fine, thank you. And you?",
+       "exampleMeaning": "मैं ठीक हूँ, धन्यवाद। और आप?"
+      },
+      {
+       "t": "choose",
+       "prompt": "'सुप्रभात' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Good morning",
+        "Thank you",
+        "Hello",
+        "Good night"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "How are you?",
+       "meaning": "आप कैसे हैं?",
+       "bank": [
+        "fine",
+        "you",
+        "you?",
+        "How",
+        "are",
+        "is"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मैं ठीक हूँ, धन्यवाद।",
+       "answer": "I am fine, thank you.",
+       "bank": [
+        "fine,",
+        "good",
+        "am",
+        "you",
+        "am.",
+        "you.",
+        "I",
+        "thank"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Hello! Good morning.",
+       "meaning": "नमस्ते! सुप्रभात।"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Hello",
+         "नमस्ते"
+        ],
+        [
+         "Good morning",
+         "सुप्रभात"
+        ],
+        [
+         "How are you?",
+         "आप कैसे हैं?"
+        ],
+        [
+         "thank you",
+         "धन्यवाद"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "I ___ fine, thank you.",
+       "meaning": "मैं ठीक हूँ, धन्यवाद।",
+       "options": [
+        "be",
+        "am",
+        "is",
+        "are"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Thank you' का मतलब क्या है?",
+       "options": [
+        "माफ़ कीजिए",
+        "ठीक हूँ",
+        "धन्यवाद",
+        "नमस्ते"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Hello! How are you?",
+       "answer": "नमस्ते! आप कैसे हैं?",
+       "bank": [
+        "धन्यवाद",
+        "लिए",
+        "आप",
+        "कैसे",
+        "ठीक",
+        "हैं?",
+        "नमस्ते!"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "I am fine, thank you.",
+       "meaning": "मैं ठीक हूँ, धन्यवाद।",
+       "bank": [
+        "yes",
+        "are",
+        "good",
+        "fine,",
+        "I",
+        "thank",
+        "you.",
+        "am"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u1l2",
+     "title": "मेरा नाम",
+     "items": [
+      {
+       "t": "learn",
+       "word": "My name is Rahul.",
+       "tl": "माइ नेम इज़ राहुल",
+       "meaning": "मेरा नाम राहुल है।",
+       "example": "Hello, my name is Rahul.",
+       "exampleMeaning": "नमस्ते, मेरा नाम राहुल है।"
+      },
+      {
+       "t": "learn",
+       "word": "What is your name?",
+       "tl": "व्हॉट इज़ यॉर नेम?",
+       "meaning": "आपका नाम क्या है?",
+       "example": "Hi! What is your name?",
+       "exampleMeaning": "हाय! आपका नाम क्या है?"
+      },
+      {
+       "t": "learn",
+       "word": "Nice to meet you.",
+       "tl": "नाइस टु मीट यू",
+       "meaning": "आपसे मिलकर अच्छा लगा।",
+       "example": "Nice to meet you, Priya.",
+       "exampleMeaning": "आपसे मिलकर अच्छा लगा, प्रिया।"
+      },
+      {
+       "t": "learn",
+       "word": "I am from Delhi.",
+       "tl": "आइ ऐम फ़्रॉम डेल्ही",
+       "meaning": "मैं दिल्ली से हूँ।",
+       "example": "I am from Delhi. Where are you from?",
+       "exampleMeaning": "मैं दिल्ली से हूँ। आप कहाँ से हैं?"
+      },
+      {
+       "t": "choose",
+       "prompt": "'आपका नाम क्या है?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "My name is Rahul.",
+        "How are you?",
+        "Nice to meet you.",
+        "What is your name?"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मेरा नाम प्रिया है।",
+       "answer": "My name is Priya.",
+       "bank": [
+        "name",
+        "your",
+        "is",
+        "Rahul.",
+        "Priya.",
+        "am",
+        "My"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Nice to meet you.",
+       "meaning": "आपसे मिलकर अच्छा लगा।",
+       "bank": [
+        "and",
+        "meet",
+        "good",
+        "see",
+        "Nice",
+        "you.",
+        "to"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Where ___ you from?",
+       "meaning": "आप कहाँ से हैं?",
+       "options": [
+        "are",
+        "am",
+        "is",
+        "do"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "My name is Rahul. I am from Delhi.",
+       "meaning": "मेरा नाम राहुल है। मैं दिल्ली से हूँ।"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "name",
+         "नाम"
+        ],
+        [
+         "Nice to meet you.",
+         "आपसे मिलकर अच्छा लगा।"
+        ],
+        [
+         "Where are you from?",
+         "आप कहाँ से हैं?"
+        ],
+        [
+         "I am from Delhi.",
+         "मैं दिल्ली से हूँ।"
+        ],
+        [
+         "your",
+         "आपका"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "What is your name?",
+       "answer": "आपका नाम क्या है?",
+       "bank": [
+        "मेरा",
+        "आपका",
+        "कौन",
+        "नाम",
+        "है?",
+        "से",
+        "क्या"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं मुंबई से हूँ।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "My name is Mumbai.",
+        "I am from Mumbai.",
+        "I from Mumbai.",
+        "I am Mumbai."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "आप कहाँ से हैं?",
+       "answer": "Where are you from?",
+       "bank": [
+        "Where",
+        "name",
+        "what",
+        "you",
+        "from?",
+        "is",
+        "are"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u1l3",
+     "title": "शिष्टाचार और गिनती",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Please",
+       "tl": "प्लीज़",
+       "meaning": "कृपया",
+       "example": "One tea, please.",
+       "exampleMeaning": "एक चाय, कृपया।"
+      },
+      {
+       "t": "learn",
+       "word": "Sorry",
+       "tl": "सॉरी",
+       "meaning": "माफ़ कीजिए",
+       "example": "Sorry, I am late.",
+       "exampleMeaning": "माफ़ कीजिए, मुझे देर हो गई।"
+      },
+      {
+       "t": "learn",
+       "word": "Excuse me",
+       "tl": "एक्सक्यूज़ मी",
+       "meaning": "सुनिए / माफ़ कीजिए",
+       "example": "Excuse me, where is the bus stop?",
+       "exampleMeaning": "सुनिए, बस स्टॉप कहाँ है?"
+      },
+      {
+       "t": "learn",
+       "word": "one, two, three, four, five",
+       "tl": "वन, टू, थ्री, फ़ोर, फ़ाइव",
+       "meaning": "एक, दो, तीन, चार, पाँच",
+       "example": "I have two brothers.",
+       "exampleMeaning": "मेरे दो भाई हैं।"
+      },
+      {
+       "t": "learn",
+       "word": "six, seven, eight, nine, ten",
+       "tl": "सिक्स, सेवन, एट, नाइन, टेन",
+       "meaning": "छह, सात, आठ, नौ, दस",
+       "example": "My son is ten years old.",
+       "exampleMeaning": "मेरा बेटा दस साल का है।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'तीन' अंग्रेज़ी में क्या है?",
+       "options": [
+        "two",
+        "nine",
+        "three",
+        "four"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "एक चाय, कृपया।",
+       "answer": "One tea, please.",
+       "bank": [
+        "coffee,",
+        "sorry",
+        "two",
+        "One",
+        "please.",
+        "tea,"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Sorry, I am late.",
+       "meaning": "माफ़ कीजिए, मुझे देर हो गई।",
+       "bank": [
+        "early",
+        "he",
+        "I",
+        "Sorry,",
+        "late.",
+        "am",
+        "very"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "one",
+         "एक"
+        ],
+        [
+         "five",
+         "पाँच"
+        ],
+        [
+         "seven",
+         "सात"
+        ],
+        [
+         "ten",
+         "दस"
+        ],
+        [
+         "sorry",
+         "माफ़ कीजिए"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Excuse me, one coffee, please.",
+       "meaning": "सुनिए, एक कॉफ़ी, कृपया।"
+      },
+      {
+       "t": "fill",
+       "sentence": "I have ___ brothers.",
+       "meaning": "मेरे दो भाई हैं।",
+       "options": [
+        "six",
+        "nine",
+        "four",
+        "two"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "choose",
+       "prompt": "'Excuse me' कब बोलते हैं?",
+       "options": [
+        "किसी का ध्यान खींचने के लिए",
+        "धन्यवाद कहने के लिए",
+        "सोने से पहले",
+        "खाना खाते समय"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "My son is ten years old.",
+       "answer": "मेरा बेटा दस साल का है।",
+       "bank": [
+        "साल",
+        "का",
+        "आठ",
+        "क्या",
+        "दस",
+        "बेटा",
+        "मेरा",
+        "है।",
+        "बेटी"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "माफ़ कीजिए, मुझे देर हो गई।",
+       "answer": "Sorry, I am late.",
+       "bank": [
+        "early",
+        "I",
+        "Sorry,",
+        "late.",
+        "Please,",
+        "am",
+        "you"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u1l4",
+     "title": "रिवीज़न: बेसिक्स",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Good night",
+       "tl": "गुड नाइट",
+       "meaning": "शुभ रात्रि",
+       "example": "Good night, see you tomorrow.",
+       "exampleMeaning": "शुभ रात्रि, कल मिलते हैं।"
+      },
+      {
+       "t": "learn",
+       "word": "Bye! See you.",
+       "tl": "बाय! सी यू",
+       "meaning": "बाय! फिर मिलते हैं।",
+       "example": "Bye! See you on Monday.",
+       "exampleMeaning": "बाय! सोमवार को मिलते हैं।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'शुभ रात्रि' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Good bye",
+        "Good night",
+        "Good day",
+        "Good morning"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Good night",
+         "शुभ रात्रि"
+        ],
+        [
+         "See you.",
+         "फिर मिलते हैं।"
+        ],
+        [
+         "Please",
+         "कृपया"
+        ],
+        [
+         "Excuse me",
+         "सुनिए"
+        ],
+        [
+         "eight",
+         "आठ"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "नमस्ते, मेरा नाम अमित है।",
+       "answer": "Hello, my name is Amit.",
+       "bank": [
+        "your",
+        "name",
+        "is",
+        "Amit.",
+        "from",
+        "are",
+        "my",
+        "Hello,"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Nice to meet you. Where are you from?",
+       "meaning": "आपसे मिलकर अच्छा लगा। आप कहाँ से हैं?",
+       "bank": [
+        "what",
+        "is",
+        "not",
+        "from?",
+        "meet",
+        "are",
+        "Where",
+        "you.",
+        "Nice",
+        "to",
+        "you"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ name is Neha.",
+       "meaning": "मेरा नाम नेहा है।",
+       "options": [
+        "Your",
+        "Me",
+        "My",
+        "I"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "Good night! See you tomorrow.",
+       "meaning": "शुभ रात्रि! कल मिलते हैं।"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "I am fine, thank you. And you?",
+       "answer": "मैं ठीक हूँ, धन्यवाद। और आप?",
+       "bank": [
+        "मैं",
+        "और",
+        "ठीक",
+        "धन्यवाद।",
+        "है",
+        "हूँ,",
+        "नहीं",
+        "मेरा",
+        "आप?"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Where are you from?' का मतलब क्या है?",
+       "options": [
+        "आप कैसे हैं?",
+        "आपका नाम क्या है?",
+        "आप कहाँ जा रहे हैं?",
+        "आप कहाँ से हैं?"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "बाय! फिर मिलते हैं।",
+       "answer": "Bye! See you.",
+       "bank": [
+        "Bye!",
+        "night",
+        "See",
+        "me",
+        "Good",
+        "you."
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "I have ___ sisters.",
+       "meaning": "मेरी तीन बहनें हैं।",
+       "options": [
+        "three",
+        "five",
+        "ten",
+        "one"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Excuse me, one tea, please.",
+       "meaning": "सुनिए, एक चाय, कृपया।",
+       "bank": [
+        "one",
+        "two",
+        "Excuse",
+        "please.",
+        "coffee,",
+        "me",
+        "me,",
+        "tea,"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u2",
+   "title": "परिवार और काम",
+   "emoji": "👨‍👩‍👧",
+   "goal": "परिवार के बारे में बताना और अपना पेशा बताना",
+   "lessons": [
+    {
+     "id": "u2l1",
+     "title": "मेरा परिवार",
+     "items": [
+      {
+       "t": "learn",
+       "word": "family",
+       "tl": "फ़ैमिली",
+       "meaning": "परिवार",
+       "example": "This is my family.",
+       "exampleMeaning": "यह मेरा परिवार है।"
+      },
+      {
+       "t": "learn",
+       "word": "mother, father",
+       "tl": "मदर, फ़ादर",
+       "meaning": "माँ, पिता",
+       "example": "My mother is a teacher.",
+       "exampleMeaning": "मेरी माँ शिक्षिका हैं।"
+      },
+      {
+       "t": "learn",
+       "word": "brother, sister",
+       "tl": "ब्रदर, सिस्टर",
+       "meaning": "भाई, बहन",
+       "example": "I have one brother and two sisters.",
+       "exampleMeaning": "मेरा एक भाई और दो बहनें हैं।"
+      },
+      {
+       "t": "learn",
+       "word": "wife, husband",
+       "tl": "वाइफ़, हज़्बंड",
+       "meaning": "पत्नी, पति",
+       "example": "This is my wife, Sunita.",
+       "exampleMeaning": "यह मेरी पत्नी सुनीता हैं।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'बहन' अंग्रेज़ी में क्या है?",
+       "options": [
+        "mother",
+        "sister",
+        "wife",
+        "brother"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "यह मेरा परिवार है।",
+       "answer": "This is my family.",
+       "bank": [
+        "my",
+        "family.",
+        "that",
+        "father.",
+        "This",
+        "is",
+        "your"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "My mother is a teacher.",
+       "meaning": "मेरी माँ शिक्षिका हैं।",
+       "bank": [
+        "doctor.",
+        "a",
+        "My",
+        "are",
+        "mother",
+        "is",
+        "teacher.",
+        "father"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "father",
+         "पिता"
+        ],
+        [
+         "mother",
+         "माँ"
+        ],
+        [
+         "brother",
+         "भाई"
+        ],
+        [
+         "husband",
+         "पति"
+        ],
+        [
+         "family",
+         "परिवार"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "This is my brother, Arjun.",
+       "meaning": "यह मेरा भाई अर्जुन है।"
+      },
+      {
+       "t": "fill",
+       "sentence": "I have one brother and two ___.",
+       "meaning": "मेरा एक भाई और दो बहनें हैं।",
+       "options": [
+        "mothers",
+        "wives",
+        "sisters",
+        "fathers"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "This is my wife, Sunita.",
+       "answer": "यह मेरी पत्नी सुनीता हैं।",
+       "bank": [
+        "लिए",
+        "हैं।",
+        "पत्नी",
+        "पति",
+        "मेरी",
+        "बहन",
+        "सुनीता",
+        "यह"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'My father' का मतलब क्या है?",
+       "options": [
+        "मेरा भाई",
+        "मेरे पति",
+        "मेरी माँ",
+        "मेरे पिता"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मेरी दो बहनें हैं।",
+       "answer": "I have two sisters.",
+       "bank": [
+        "three",
+        "brothers.",
+        "have",
+        "sisters.",
+        "I",
+        "two",
+        "am"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u2l2",
+     "title": "वह कौन है?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Who is this?",
+       "tl": "हू इज़ दिस?",
+       "meaning": "यह कौन है?",
+       "example": "Who is this? Is this your son?",
+       "exampleMeaning": "यह कौन है? क्या यह आपका बेटा है?"
+      },
+      {
+       "t": "learn",
+       "word": "He is / She is",
+       "tl": "ही इज़ / शी इज़",
+       "meaning": "वह (पुरुष) है / वह (स्त्री) है",
+       "example": "He is my friend. She is my cousin.",
+       "exampleMeaning": "वह मेरा दोस्त है। वह मेरी कज़िन है।"
+      },
+      {
+       "t": "learn",
+       "word": "son, daughter",
+       "tl": "सन, डॉटर",
+       "meaning": "बेटा, बेटी",
+       "example": "My daughter is five years old.",
+       "exampleMeaning": "मेरी बेटी पाँच साल की है।"
+      },
+      {
+       "t": "learn",
+       "word": "friend",
+       "tl": "फ़्रेंड",
+       "meaning": "दोस्त",
+       "example": "Ravi is my best friend.",
+       "exampleMeaning": "रवि मेरा सबसे अच्छा दोस्त है।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'वह मेरी बेटी है।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "She is my daughter.",
+        "He is my daughter.",
+        "She is my son.",
+        "This is my brother."
+       ],
+       "answer": 0
+      },
+      {
+       "t": "fill",
+       "sentence": "___ is my friend, Ravi.",
+       "meaning": "वह मेरा दोस्त रवि है।",
+       "options": [
+        "It",
+        "He",
+        "She",
+        "They"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Who is this?",
+       "meaning": "यह कौन है?",
+       "bank": [
+        "that?",
+        "this?",
+        "Who",
+        "what",
+        "how",
+        "is"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "वह मेरा बेटा है।",
+       "answer": "He is my son.",
+       "bank": [
+        "daughter.",
+        "am",
+        "is",
+        "He",
+        "son.",
+        "my",
+        "She"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "She is my sister. He is my brother.",
+       "meaning": "वह मेरी बहन है। वह मेरा भाई है।"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "son",
+         "बेटा"
+        ],
+        [
+         "daughter",
+         "बेटी"
+        ],
+        [
+         "friend",
+         "दोस्त"
+        ],
+        [
+         "Who is this?",
+         "यह कौन है?"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ravi is my best friend.",
+       "answer": "रवि मेरा सबसे अच्छा दोस्त है।",
+       "bank": [
+        "रवि",
+        "दोस्त",
+        "अच्छा",
+        "सबसे",
+        "भाई",
+        "नहीं",
+        "है।",
+        "क्या",
+        "मेरा"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'She' किसके लिए इस्तेमाल होता है?",
+       "options": [
+        "चीज़",
+        "कई लोग",
+        "स्त्री",
+        "पुरुष"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "fill",
+       "sentence": "My daughter ___ five years old.",
+       "meaning": "मेरी बेटी पाँच साल की है।",
+       "options": [
+        "be",
+        "am",
+        "are",
+        "is"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "He is my friend.",
+       "meaning": "वह मेरा दोस्त है।",
+       "bank": [
+        "She",
+        "in",
+        "brother.",
+        "friend.",
+        "my",
+        "He",
+        "is"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u2l3",
+     "title": "आप क्या करते हैं?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "What do you do?",
+       "tl": "व्हॉट डु यू डू?",
+       "meaning": "आप क्या करते हैं? (काम)",
+       "example": "What do you do? I am an engineer.",
+       "exampleMeaning": "आप क्या करते हैं? मैं इंजीनियर हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "I am a student.",
+       "tl": "आइ ऐम अ स्टूडेंट",
+       "meaning": "मैं विद्यार्थी हूँ।",
+       "example": "I am a student at Delhi University.",
+       "exampleMeaning": "मैं दिल्ली यूनिवर्सिटी में विद्यार्थी हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "engineer, doctor, teacher",
+       "tl": "इंजीनियर, डॉक्टर, टीचर",
+       "meaning": "इंजीनियर, डॉक्टर, शिक्षक",
+       "example": "My sister is a doctor.",
+       "exampleMeaning": "मेरी बहन डॉक्टर है।"
+      },
+      {
+       "t": "learn",
+       "word": "I work in a bank.",
+       "tl": "आइ वर्क इन अ बैंक",
+       "meaning": "मैं बैंक में काम करता हूँ।",
+       "example": "I work in a bank in Pune.",
+       "exampleMeaning": "मैं पुणे में एक बैंक में काम करता हूँ।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं शिक्षक हूँ।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I am a teacher.",
+        "I am a student.",
+        "I am a doctor.",
+        "I work in a bank."
+       ],
+       "answer": 0
+      },
+      {
+       "t": "fill",
+       "sentence": "I am ___ engineer.",
+       "meaning": "मैं इंजीनियर हूँ।",
+       "options": [
+        "the",
+        "an",
+        "a",
+        "is"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "आप क्या करते हैं?",
+       "answer": "What do you do?",
+       "bank": [
+        "are",
+        "is",
+        "What",
+        "work",
+        "do",
+        "do?",
+        "you"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "I work in a bank.",
+       "meaning": "मैं बैंक में काम करता हूँ।",
+       "bank": [
+        "a",
+        "bank.",
+        "we",
+        "work",
+        "at",
+        "I",
+        "in",
+        "school."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "I am a student. What do you do?",
+       "meaning": "मैं विद्यार्थी हूँ। आप क्या करते हैं?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "engineer",
+         "इंजीनियर"
+        ],
+        [
+         "doctor",
+         "डॉक्टर"
+        ],
+        [
+         "teacher",
+         "शिक्षक"
+        ],
+        [
+         "student",
+         "विद्यार्थी"
+        ],
+        [
+         "work",
+         "काम"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "My sister is a doctor.",
+       "answer": "मेरी बहन डॉक्टर है।",
+       "bank": [
+        "हम",
+        "मेरी",
+        "इंजीनियर",
+        "बहन",
+        "डॉक्टर",
+        "भाई",
+        "है।"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'I work in a bank.' का मतलब क्या है?",
+       "options": [
+        "मेरा बैंक अच्छा है।",
+        "मैं बैंक जा रहा हूँ।",
+        "मैं बैंक में काम करता हूँ।",
+        "बैंक कहाँ है?"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मेरे पिता इंजीनियर हैं।",
+       "answer": "My father is an engineer.",
+       "bank": [
+        "mother",
+        "doctor.",
+        "is",
+        "engineer.",
+        "an",
+        "a",
+        "My",
+        "father"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u2l4",
+     "title": "रिवीज़न: परिवार और काम",
+     "items": [
+      {
+       "t": "learn",
+       "word": "grandfather, grandmother",
+       "tl": "ग्रैंडफ़ादर, ग्रैंडमदर",
+       "meaning": "दादा/नाना, दादी/नानी",
+       "example": "My grandmother lives with us.",
+       "exampleMeaning": "मेरी दादी हमारे साथ रहती हैं।"
+      },
+      {
+       "t": "learn",
+       "word": "They are",
+       "tl": "दे आर",
+       "meaning": "वे हैं",
+       "example": "They are my parents.",
+       "exampleMeaning": "वे मेरे माता-पिता हैं।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'They are my parents.' का मतलब क्या है?",
+       "options": [
+        "वे मेरे दोस्त हैं।",
+        "वे मेरे भाई हैं।",
+        "यह मेरा परिवार है।",
+        "वे मेरे माता-पिता हैं।"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "grandmother",
+         "दादी"
+        ],
+        [
+         "parents",
+         "माता-पिता"
+        ],
+        [
+         "They are",
+         "वे हैं"
+        ],
+        [
+         "daughter",
+         "बेटी"
+        ],
+        [
+         "doctor",
+         "डॉक्टर"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "वह मेरी माँ हैं। वह शिक्षिका हैं।",
+       "answer": "She is my mother. She is a teacher.",
+       "bank": [
+        "mother.",
+        "He",
+        "is",
+        "She",
+        "a",
+        "my",
+        "teacher.",
+        "is",
+        "She",
+        "father.",
+        "doctor."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "What do you do? I am a student.",
+       "meaning": "आप क्या करते हैं? मैं विद्यार्थी हूँ।",
+       "bank": [
+        "I",
+        "a",
+        "you",
+        "will",
+        "student.",
+        "teacher.",
+        "do",
+        "What",
+        "are",
+        "do?",
+        "am"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ are my parents.",
+       "meaning": "वे मेरे माता-पिता हैं।",
+       "options": [
+        "They",
+        "He",
+        "It",
+        "She"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "This is my family. They are my parents.",
+       "meaning": "यह मेरा परिवार है। वे मेरे माता-पिता हैं।"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "I work in a bank in Pune.",
+       "answer": "मैं पुणे में एक बैंक में काम करता हूँ।",
+       "bank": [
+        "में",
+        "मैं",
+        "करता",
+        "पुणे",
+        "दिल्ली",
+        "स्कूल",
+        "में",
+        "काम",
+        "एक",
+        "के",
+        "हूँ।",
+        "बैंक"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "सही वाक्य चुनिए:",
+       "options": [
+        "He is a engineer.",
+        "He is an engineer.",
+        "He are an engineer.",
+        "He am an engineer."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "यह कौन है? क्या यह आपका बेटा है?",
+       "answer": "Who is this? Is this your son?",
+       "bank": [
+        "son?",
+        "your",
+        "is",
+        "this",
+        "daughter?",
+        "this?",
+        "he",
+        "Who",
+        "Is",
+        "my"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "My grandmother ___ with us.",
+       "meaning": "मेरी दादी हमारे साथ रहती हैं।",
+       "options": [
+        "live",
+        "is live",
+        "lives",
+        "living"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Ravi is my best friend.",
+       "meaning": "रवि मेरा सबसे अच्छा दोस्त है।",
+       "bank": [
+        "brother.",
+        "best",
+        "of",
+        "Ravi",
+        "good",
+        "my",
+        "friend.",
+        "is"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मेरी दो बेटियाँ हैं।",
+       "answer": "I have two daughters.",
+       "bank": [
+        "have",
+        "two",
+        "sons.",
+        "I",
+        "daughters.",
+        "has",
+        "three"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u3",
+   "title": "ऑफिस इंग्लिश",
+   "emoji": "💼",
+   "goal": "ऑफिस में अनुरोध करना और फ़ोन पर बात करना",
+   "lessons": [
+    {
+     "id": "u3l1",
+     "title": "ऑफिस में",
+     "items": [
+      {
+       "t": "learn",
+       "word": "office",
+       "tl": "ऑफ़िस",
+       "meaning": "दफ़्तर",
+       "example": "I go to the office at nine.",
+       "exampleMeaning": "मैं नौ बजे ऑफिस जाता हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "meeting",
+       "tl": "मीटिंग",
+       "meaning": "बैठक",
+       "example": "We have a meeting at ten.",
+       "exampleMeaning": "हमारी दस बजे मीटिंग है।"
+      },
+      {
+       "t": "learn",
+       "word": "boss, colleague",
+       "tl": "बॉस, कॉलीग",
+       "meaning": "बॉस, सहकर्मी",
+       "example": "My boss is very busy today.",
+       "exampleMeaning": "मेरे बॉस आज बहुत व्यस्त हैं।"
+      },
+      {
+       "t": "learn",
+       "word": "I am busy.",
+       "tl": "आइ ऐम बिज़ी",
+       "meaning": "मैं व्यस्त हूँ।",
+       "example": "Sorry, I am busy right now.",
+       "exampleMeaning": "माफ़ कीजिए, मैं अभी व्यस्त हूँ।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'बैठक' अंग्रेज़ी में क्या है?",
+       "options": [
+        "boss",
+        "busy",
+        "office",
+        "meeting"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "हमारी दस बजे मीटिंग है।",
+       "answer": "We have a meeting at ten.",
+       "bank": [
+        "office",
+        "a",
+        "We",
+        "at",
+        "has",
+        "ten.",
+        "nine.",
+        "meeting",
+        "have"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Sorry, I am busy right now.",
+       "meaning": "माफ़ कीजिए, मैं अभी व्यस्त हूँ।",
+       "bank": [
+        "right",
+        "today.",
+        "free",
+        "where",
+        "am",
+        "Sorry,",
+        "I",
+        "now.",
+        "busy"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "office",
+         "दफ़्तर"
+        ],
+        [
+         "meeting",
+         "बैठक"
+        ],
+        [
+         "colleague",
+         "सहकर्मी"
+        ],
+        [
+         "busy",
+         "व्यस्त"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "My boss is in a meeting.",
+       "meaning": "मेरे बॉस मीटिंग में हैं।"
+      },
+      {
+       "t": "fill",
+       "sentence": "I go to the ___ at nine.",
+       "meaning": "मैं नौ बजे ऑफिस जाता हूँ।",
+       "options": [
+        "office",
+        "meeting",
+        "family",
+        "bank"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "My boss is very busy today.",
+       "answer": "मेरे बॉस आज बहुत व्यस्त हैं।",
+       "bank": [
+        "हैं।",
+        "मीटिंग",
+        "कल",
+        "मेरे",
+        "आज",
+        "बहुत",
+        "कहाँ",
+        "बॉस",
+        "व्यस्त"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'colleague' का मतलब क्या है?",
+       "options": [
+        "ग्राहक",
+        "सहकर्मी",
+        "दोस्त",
+        "बॉस"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "वह मेरा सहकर्मी है।",
+       "answer": "He is my colleague.",
+       "bank": [
+        "He",
+        "boss.",
+        "friend.",
+        "my",
+        "She",
+        "is",
+        "colleague."
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u3l2",
+     "title": "विनम्र अनुरोध",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Could you please...?",
+       "tl": "कुड यू प्लीज़...?",
+       "meaning": "क्या आप कृपया... कर सकते हैं?",
+       "example": "Could you please send me the file?",
+       "exampleMeaning": "क्या आप कृपया मुझे फ़ाइल भेज सकते हैं?"
+      },
+      {
+       "t": "learn",
+       "word": "Can I...?",
+       "tl": "कैन आइ...?",
+       "meaning": "क्या मैं... सकता हूँ?",
+       "example": "Can I come in?",
+       "exampleMeaning": "क्या मैं अंदर आ सकता हूँ?"
+      },
+      {
+       "t": "learn",
+       "word": "Sure. / No problem.",
+       "tl": "श्योर / नो प्रॉब्लम",
+       "meaning": "ज़रूर। / कोई बात नहीं।",
+       "example": "Sure, no problem.",
+       "exampleMeaning": "ज़रूर, कोई बात नहीं।"
+      },
+      {
+       "t": "learn",
+       "word": "deadline",
+       "tl": "डेडलाइन",
+       "meaning": "आख़िरी तारीख़",
+       "example": "The deadline is Friday.",
+       "exampleMeaning": "डेडलाइन शुक्रवार है।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'क्या मैं अंदर आ सकता हूँ?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Could you come in?",
+        "I come in.",
+        "Can I come in?",
+        "Please come in."
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या आप कृपया मुझे फ़ाइल भेज सकते हैं?",
+       "answer": "Could you please send me the file?",
+       "bank": [
+        "file?",
+        "give",
+        "please",
+        "you",
+        "Could",
+        "send",
+        "me",
+        "meeting?",
+        "the",
+        "can"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Sure, no problem.",
+       "meaning": "ज़रूर, कोई बात नहीं।",
+       "bank": [
+        "problem.",
+        "no",
+        "yes,",
+        "sorry",
+        "they",
+        "Sure,"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ you please call me back?",
+       "meaning": "क्या आप कृपया मुझे वापस कॉल कर सकते हैं?",
+       "options": [
+        "Can I",
+        "Do",
+        "Am",
+        "Could"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "Could you please help me?",
+       "meaning": "क्या आप कृपया मेरी मदद कर सकते हैं?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Could you please...?",
+         "क्या आप कृपया...?"
+        ],
+        [
+         "Sure.",
+         "ज़रूर।"
+        ],
+        [
+         "No problem.",
+         "कोई बात नहीं।"
+        ],
+        [
+         "deadline",
+         "आख़िरी तारीख़"
+        ],
+        [
+         "send",
+         "भेजना"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "The deadline is Friday.",
+       "answer": "डेडलाइन शुक्रवार है।",
+       "bank": [
+        "शुक्रवार",
+        "डेडलाइन",
+        "है।",
+        "कहाँ",
+        "सोमवार",
+        "मीटिंग"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "बॉस से कुछ माँगने का सबसे विनम्र तरीका कौन सा है?",
+       "options": [
+        "Could you please send me the file?",
+        "File, now.",
+        "Give me the file.",
+        "Send file."
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या मैं एक सवाल पूछ सकता हूँ?",
+       "answer": "Can I ask a question?",
+       "bank": [
+        "I",
+        "ask",
+        "a",
+        "you",
+        "Can",
+        "question?",
+        "answer",
+        "Could"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u3l3",
+     "title": "फ़ोन पर बात",
+     "items": [
+      {
+       "t": "learn",
+       "word": "May I speak to...?",
+       "tl": "मे आइ स्पीक टु...?",
+       "meaning": "क्या मैं... से बात कर सकता हूँ?",
+       "example": "Hello, may I speak to Mr. Sharma?",
+       "exampleMeaning": "हैलो, क्या मैं मिस्टर शर्मा से बात कर सकता हूँ?"
+      },
+      {
+       "t": "learn",
+       "word": "Who is calling?",
+       "tl": "हू इज़ कॉलिंग?",
+       "meaning": "कौन बोल रहा है?",
+       "example": "Who is calling, please?",
+       "exampleMeaning": "कौन बोल रहा है, कृपया?"
+      },
+      {
+       "t": "learn",
+       "word": "Please hold on.",
+       "tl": "प्लीज़ होल्ड ऑन",
+       "meaning": "कृपया लाइन पर रहिए।",
+       "example": "Please hold on, I will check.",
+       "exampleMeaning": "कृपया लाइन पर रहिए, मैं देखता हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "I will call you back.",
+       "tl": "आइ विल कॉल यू बैक",
+       "meaning": "मैं आपको वापस कॉल करूँगा।",
+       "example": "I am busy, I will call you back.",
+       "exampleMeaning": "मैं व्यस्त हूँ, मैं आपको वापस कॉल करूँगा।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'कौन बोल रहा है?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Please hold on.",
+        "Who is calling?",
+        "May I speak?",
+        "Who is this?"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "कृपया लाइन पर रहिए।",
+       "answer": "Please hold on.",
+       "bank": [
+        "on.",
+        "hold",
+        "back.",
+        "call",
+        "Please",
+        "wait"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Hello, may I speak to Mr. Sharma?",
+       "meaning": "हैलो, क्या मैं मिस्टर शर्मा से बात कर सकता हूँ?",
+       "bank": [
+        "I",
+        "Sharma?",
+        "to",
+        "may",
+        "Mrs.",
+        "can",
+        "what",
+        "Hello,",
+        "speak",
+        "Mr."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "This is Rahul speaking. Who is calling?",
+       "meaning": "राहुल बोल रहा हूँ। कौन बोल रहा है?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "hold on",
+         "लाइन पर रहना"
+        ],
+        [
+         "call back",
+         "वापस कॉल करना"
+        ],
+        [
+         "Who is calling?",
+         "कौन बोल रहा है?"
+        ],
+        [
+         "speak",
+         "बात करना"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "I ___ call you back in ten minutes.",
+       "meaning": "मैं दस मिनट में आपको वापस कॉल करूँगा।",
+       "options": [
+        "do",
+        "is",
+        "will",
+        "am"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "I am busy, I will call you back.",
+       "answer": "मैं व्यस्त हूँ, मैं आपको वापस कॉल करूँगा।",
+       "bank": [
+        "वे",
+        "मैं",
+        "मैं",
+        "ठीक",
+        "कॉल",
+        "वापस",
+        "आपको",
+        "व्यस्त",
+        "करूँगा।",
+        "कल",
+        "हूँ,"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "फ़ोन पर 'Please hold on.' का मतलब क्या है?",
+       "options": [
+        "वापस कॉल कीजिए",
+        "ज़ोर से बोलिए",
+        "फ़ोन काट दीजिए",
+        "लाइन पर रहिए"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या मैं प्रिया से बात कर सकता हूँ?",
+       "answer": "May I speak to Priya?",
+       "bank": [
+        "to",
+        "I",
+        "speak",
+        "call",
+        "Priya?",
+        "May",
+        "Who",
+        "Can"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "I will call you back.",
+       "meaning": "मैं आपको वापस कॉल करूँगा।",
+       "bank": [
+        "you",
+        "later.",
+        "I",
+        "back.",
+        "will",
+        "call",
+        "no",
+        "can"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u3l4",
+     "title": "रिवीज़न: ऑफिस",
+     "items": [
+      {
+       "t": "learn",
+       "word": "email",
+       "tl": "ईमेल",
+       "meaning": "ईमेल",
+       "example": "I will send you an email.",
+       "exampleMeaning": "मैं आपको ईमेल भेजूँगा।"
+      },
+      {
+       "t": "learn",
+       "word": "Thank you for your help.",
+       "tl": "थैंक यू फ़ॉर यॉर हेल्प",
+       "meaning": "आपकी मदद के लिए धन्यवाद।",
+       "example": "Thank you for your help, Anil.",
+       "exampleMeaning": "आपकी मदद के लिए धन्यवाद, अनिल।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं आपको ईमेल भेजूँगा।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I will send you an email.",
+        "Send me an email.",
+        "I will call you.",
+        "I have an email."
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "email",
+         "ईमेल"
+        ],
+        [
+         "meeting",
+         "बैठक"
+        ],
+        [
+         "deadline",
+         "आख़िरी तारीख़"
+        ],
+        [
+         "Thank you for your help.",
+         "आपकी मदद के लिए धन्यवाद।"
+        ],
+        [
+         "colleague",
+         "सहकर्मी"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या आप कृपया मुझे ईमेल भेज सकते हैं?",
+       "answer": "Could you please send me an email?",
+       "bank": [
+        "send",
+        "me",
+        "an",
+        "file?",
+        "Could",
+        "Can",
+        "please",
+        "email?",
+        "you",
+        "call"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "We have a meeting at ten. Please hold on.",
+       "meaning": "हमारी दस बजे मीटिंग है। कृपया लाइन पर रहिए।",
+       "bank": [
+        "We",
+        "nine.",
+        "a",
+        "on.",
+        "ten.",
+        "meeting",
+        "call",
+        "the",
+        "hold",
+        "Please",
+        "have",
+        "at"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Can I ___ in?",
+       "meaning": "क्या मैं अंदर आ सकता हूँ?",
+       "options": [
+        "speak",
+        "come",
+        "go",
+        "call"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Thank you for your help. I will call you back.",
+       "meaning": "आपकी मदद के लिए धन्यवाद। मैं आपको वापस कॉल करूँगा।"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Who is calling, please?",
+       "answer": "कौन बोल रहा है, कृपया?",
+       "bank": [
+        "था",
+        "आप",
+        "है,",
+        "कृपया?",
+        "क्या",
+        "बोल",
+        "रहा",
+        "कौन"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'The deadline is Friday.' का मतलब क्या है?",
+       "options": [
+        "शुक्रवार को मीटिंग है।",
+        "शुक्रवार छुट्टी है।",
+        "डेडलाइन शुक्रवार है।",
+        "शुक्रवार को कॉल करना है।"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "माफ़ कीजिए, मैं अभी व्यस्त हूँ।",
+       "answer": "Sorry, I am busy right now.",
+       "bank": [
+        "sure",
+        "now.",
+        "free",
+        "Sorry,",
+        "I",
+        "am",
+        "the",
+        "busy",
+        "right"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "May I ___ to Mr. Verma?",
+       "meaning": "क्या मैं मिस्टर वर्मा से बात कर सकता हूँ?",
+       "options": [
+        "talk",
+        "call",
+        "say",
+        "speak"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "Sure, no problem. Thank you for your help.",
+       "meaning": "ज़रूर, कोई बात नहीं। आपकी मदद के लिए धन्यवाद।",
+       "bank": [
+        "help.",
+        "you",
+        "problem.",
+        "no",
+        "sorry",
+        "for",
+        "Sure,",
+        "yes",
+        "your",
+        "are",
+        "Thank"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u4",
+   "title": "शॉपिंग और खाना",
+   "emoji": "🛍️",
+   "goal": "बाज़ार में दाम पूछना और रेस्टोरेंट में ऑर्डर करना",
+   "lessons": [
+    {
+     "id": "u4l1",
+     "title": "बाज़ार में",
+     "items": [
+      {
+       "t": "learn",
+       "word": "How much is this?",
+       "tl": "हाउ मच इज़ दिस?",
+       "meaning": "यह कितने का है?",
+       "example": "Excuse me, how much is this shirt?",
+       "exampleMeaning": "सुनिए, यह शर्ट कितने की है?"
+      },
+      {
+       "t": "learn",
+       "word": "It is too expensive.",
+       "tl": "इट इज़ टू एक्सपेंसिव",
+       "meaning": "यह बहुत महँगा है।",
+       "example": "Five hundred? It is too expensive.",
+       "exampleMeaning": "पाँच सौ? यह बहुत महँगा है।"
+      },
+      {
+       "t": "learn",
+       "word": "discount",
+       "tl": "डिस्काउंट",
+       "meaning": "छूट",
+       "example": "Can you give me a discount?",
+       "exampleMeaning": "क्या आप मुझे छूट दे सकते हैं?"
+      },
+      {
+       "t": "learn",
+       "word": "cheap",
+       "tl": "चीप",
+       "meaning": "सस्ता",
+       "example": "This one is cheap and good.",
+       "exampleMeaning": "यह वाला सस्ता और अच्छा है।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'यह कितने का है?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "How much is this?",
+        "What is this?",
+        "Is this cheap?",
+        "Where is this?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "यह बहुत महँगा है।",
+       "answer": "It is too expensive.",
+       "bank": [
+        "is",
+        "expensive.",
+        "This",
+        "too",
+        "cheap.",
+        "It",
+        "very"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Can you give me a discount?",
+       "meaning": "क्या आप मुझे छूट दे सकते हैं?",
+       "bank": [
+        "price?",
+        "you",
+        "Can",
+        "me",
+        "a",
+        "how",
+        "take",
+        "discount?",
+        "give"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "expensive",
+         "महँगा"
+        ],
+        [
+         "cheap",
+         "सस्ता"
+        ],
+        [
+         "discount",
+         "छूट"
+        ],
+        [
+         "How much?",
+         "कितने का?"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "How much is this? It is too expensive.",
+       "meaning": "यह कितने का है? यह बहुत महँगा है।"
+      },
+      {
+       "t": "fill",
+       "sentence": "Can you give me a ___?",
+       "meaning": "क्या आप मुझे छूट दे सकते हैं?",
+       "options": [
+        "shirt",
+        "discount",
+        "meeting",
+        "price"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "This one is cheap and good.",
+       "answer": "यह वाला सस्ता और अच्छा है।",
+       "bank": [
+        "अच्छा",
+        "सस्ता",
+        "वाला",
+        "यह",
+        "नहीं",
+        "महँगा",
+        "कैसे",
+        "और",
+        "है।"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'cheap' का मतलब क्या है?",
+       "options": [
+        "अच्छा",
+        "नया",
+        "सस्ता",
+        "महँगा"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "सुनिए, यह शर्ट कितने की है?",
+       "answer": "Excuse me, how much is this shirt?",
+       "bank": [
+        "how",
+        "is",
+        "me,",
+        "cheap",
+        "this",
+        "shirt?",
+        "much",
+        "that",
+        "price",
+        "Excuse"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u4l2",
+     "title": "रेस्टोरेंट में",
+     "items": [
+      {
+       "t": "learn",
+       "word": "menu",
+       "tl": "मेन्यू",
+       "meaning": "मेन्यू",
+       "example": "Can I have the menu, please?",
+       "exampleMeaning": "क्या मुझे मेन्यू मिल सकता है, कृपया?"
+      },
+      {
+       "t": "learn",
+       "word": "I would like...",
+       "tl": "आइ वुड लाइक...",
+       "meaning": "मुझे... चाहिए",
+       "example": "I would like one masala dosa.",
+       "exampleMeaning": "मुझे एक मसाला डोसा चाहिए।"
+      },
+      {
+       "t": "learn",
+       "word": "water, tea, coffee",
+       "tl": "वॉटर, टी, कॉफ़ी",
+       "meaning": "पानी, चाय, कॉफ़ी",
+       "example": "Two teas and one water, please.",
+       "exampleMeaning": "दो चाय और एक पानी, कृपया।"
+      },
+      {
+       "t": "learn",
+       "word": "The bill, please.",
+       "tl": "द बिल, प्लीज़",
+       "meaning": "बिल, कृपया।",
+       "example": "Excuse me, the bill, please.",
+       "exampleMeaning": "सुनिए, बिल, कृपया।"
+      },
+      {
+       "t": "learn",
+       "word": "spicy",
+       "tl": "स्पाइसी",
+       "meaning": "तीखा",
+       "example": "Not too spicy, please.",
+       "exampleMeaning": "ज़्यादा तीखा नहीं, कृपया।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'बिल, कृपया।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "The menu, please.",
+        "The tea, please.",
+        "The water, please.",
+        "The bill, please."
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मुझे एक मसाला डोसा चाहिए।",
+       "answer": "I would like one masala dosa.",
+       "bank": [
+        "I",
+        "two",
+        "like",
+        "masala",
+        "would",
+        "please.",
+        "dosa.",
+        "want",
+        "one"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Not too spicy, please.",
+       "meaning": "ज़्यादा तीखा नहीं, कृपया।",
+       "bank": [
+        "where",
+        "very",
+        "Not",
+        "too",
+        "sweet,",
+        "please.",
+        "spicy,"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "menu",
+         "मेन्यू"
+        ],
+        [
+         "water",
+         "पानी"
+        ],
+        [
+         "bill",
+         "बिल"
+        ],
+        [
+         "spicy",
+         "तीखा"
+        ],
+        [
+         "coffee",
+         "कॉफ़ी"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Two teas and one coffee, please.",
+       "meaning": "दो चाय और एक कॉफ़ी, कृपया।"
+      },
+      {
+       "t": "fill",
+       "sentence": "Can I ___ the menu, please?",
+       "meaning": "क्या मुझे मेन्यू मिल सकता है, कृपया?",
+       "options": [
+        "have",
+        "take",
+        "give",
+        "go"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "I would like one water, please.",
+       "answer": "मुझे एक पानी चाहिए, कृपया।",
+       "bank": [
+        "कृपया।",
+        "चाहिए,",
+        "मुझे",
+        "कहाँ",
+        "पानी",
+        "चाय",
+        "दो",
+        "एक"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'I would like...' कब बोलते हैं?",
+       "options": [
+        "माफ़ी माँगते समय",
+        "कुछ विनम्रता से ऑर्डर करते समय",
+        "अलविदा कहते समय",
+        "गुस्से में"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "सुनिए, बिल, कृपया।",
+       "answer": "Excuse me, the bill, please.",
+       "bank": [
+        "bill,",
+        "menu,",
+        "please.",
+        "a",
+        "the",
+        "me,",
+        "Sorry,",
+        "Excuse"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u4l3",
+     "title": "पैसे और बड़ी संख्याएँ",
+     "items": [
+      {
+       "t": "learn",
+       "word": "twenty, fifty, hundred",
+       "tl": "ट्वेंटी, फ़िफ़्टी, हंड्रेड",
+       "meaning": "बीस, पचास, सौ",
+       "example": "It is two hundred rupees.",
+       "exampleMeaning": "यह दो सौ रुपये है।"
+      },
+      {
+       "t": "learn",
+       "word": "thousand",
+       "tl": "थाउज़ंड",
+       "meaning": "हज़ार",
+       "example": "This phone is ten thousand rupees.",
+       "exampleMeaning": "यह फ़ोन दस हज़ार रुपये का है।"
+      },
+      {
+       "t": "learn",
+       "word": "rupees",
+       "tl": "रुपीज़",
+       "meaning": "रुपये",
+       "example": "Fifty rupees only.",
+       "exampleMeaning": "सिर्फ़ पचास रुपये।"
+      },
+      {
+       "t": "learn",
+       "word": "change",
+       "tl": "चेंज",
+       "meaning": "खुल्ले / बाकी पैसे",
+       "example": "Do you have change for five hundred?",
+       "exampleMeaning": "क्या आपके पास पाँच सौ के खुल्ले हैं?"
+      },
+      {
+       "t": "learn",
+       "word": "Can I pay by card?",
+       "tl": "कैन आइ पे बाइ कार्ड?",
+       "meaning": "क्या मैं कार्ड से पे कर सकता हूँ?",
+       "example": "Can I pay by card or UPI?",
+       "exampleMeaning": "क्या मैं कार्ड या यूपीआई से पे कर सकता हूँ?"
+      },
+      {
+       "t": "choose",
+       "prompt": "'हज़ार' अंग्रेज़ी में क्या है?",
+       "options": [
+        "hundred",
+        "twenty",
+        "thousand",
+        "fifty"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "यह दो सौ रुपये है।",
+       "answer": "It is two hundred rupees.",
+       "bank": [
+        "It",
+        "three",
+        "hundred",
+        "This",
+        "two",
+        "thousand",
+        "rupees.",
+        "is"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Can I pay by card?",
+       "meaning": "क्या मैं कार्ड से पे कर सकता हूँ?",
+       "bank": [
+        "what",
+        "card?",
+        "by",
+        "Could",
+        "Can",
+        "pay",
+        "I",
+        "cash?"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "twenty",
+         "बीस"
+        ],
+        [
+         "fifty",
+         "पचास"
+        ],
+        [
+         "hundred",
+         "सौ"
+        ],
+        [
+         "thousand",
+         "हज़ार"
+        ],
+        [
+         "change",
+         "खुल्ले"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Do you have change for five hundred?",
+       "meaning": "क्या आपके पास पाँच सौ के खुल्ले हैं?"
+      },
+      {
+       "t": "fill",
+       "sentence": "This phone is ten ___ rupees.",
+       "meaning": "यह फ़ोन दस हज़ार रुपये का है।",
+       "options": [
+        "hundred",
+        "fifty",
+        "twenty",
+        "thousand"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Fifty rupees only.",
+       "answer": "सिर्फ़ पचास रुपये।",
+       "bank": [
+        "सिर्फ़",
+        "रुपये।",
+        "होगा",
+        "बीस",
+        "सौ",
+        "पचास"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Do you have change?' का मतलब क्या है?",
+       "options": [
+        "क्या आपके पास खुल्ले हैं?",
+        "क्या आप बदल गए?",
+        "क्या आप कार्ड लेते हैं?",
+        "क्या यह महँगा है?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या मैं यूपीआई से पे कर सकता हूँ?",
+       "answer": "Can I pay by UPI?",
+       "bank": [
+        "card?",
+        "Can",
+        "pay",
+        "Could",
+        "by",
+        "I",
+        "UPI?",
+        "cash"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u4l4",
+     "title": "रिवीज़न: शॉपिंग और खाना",
+     "items": [
+      {
+       "t": "learn",
+       "word": "size",
+       "tl": "साइज़",
+       "meaning": "साइज़ / माप",
+       "example": "Do you have this in a large size?",
+       "exampleMeaning": "क्या यह बड़े साइज़ में है?"
+      },
+      {
+       "t": "learn",
+       "word": "delicious",
+       "tl": "डिलिशस",
+       "meaning": "स्वादिष्ट",
+       "example": "The food is delicious!",
+       "exampleMeaning": "खाना स्वादिष्ट है!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'स्वादिष्ट' अंग्रेज़ी में क्या है?",
+       "options": [
+        "expensive",
+        "delicious",
+        "cheap",
+        "spicy"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "size",
+         "साइज़"
+        ],
+        [
+         "delicious",
+         "स्वादिष्ट"
+        ],
+        [
+         "expensive",
+         "महँगा"
+        ],
+        [
+         "bill",
+         "बिल"
+        ],
+        [
+         "rupees",
+         "रुपये"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या यह बड़े साइज़ में है?",
+       "answer": "Do you have this in a large size?",
+       "bank": [
+        "a",
+        "Do",
+        "small",
+        "have",
+        "size?",
+        "you",
+        "this",
+        "is",
+        "that",
+        "in",
+        "large"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "How much is this? Two hundred rupees.",
+       "meaning": "यह कितने का है? दो सौ रुपये।",
+       "bank": [
+        "How",
+        "rupees.",
+        "hundred",
+        "thousand",
+        "what",
+        "much",
+        "from",
+        "this?",
+        "is",
+        "Two"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "The food is ___! Not too spicy.",
+       "meaning": "खाना स्वादिष्ट है! ज़्यादा तीखा नहीं।",
+       "options": [
+        "busy",
+        "expensive",
+        "delicious",
+        "cheap"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "The bill, please. Can I pay by card?",
+       "meaning": "बिल, कृपया। क्या मैं कार्ड से पे कर सकता हूँ?"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Can you give me a discount? It is too expensive.",
+       "answer": "क्या आप मुझे छूट दे सकते हैं? यह बहुत महँगा है।",
+       "bank": [
+        "सकते",
+        "है।",
+        "क्या",
+        "छूट",
+        "बहुत",
+        "महँगा",
+        "सस्ता",
+        "पानी",
+        "भी",
+        "दे",
+        "मुझे",
+        "हैं?",
+        "आप",
+        "यह"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'I would like two coffees.' का मतलब क्या है?",
+       "options": [
+        "मुझे कॉफ़ी पसंद है।",
+        "मुझे दो चाय चाहिए।",
+        "दो कॉफ़ी कितने की हैं?",
+        "मुझे दो कॉफ़ी चाहिए।"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "यह वाला सस्ता और स्वादिष्ट है।",
+       "answer": "This one is cheap and delicious.",
+       "bank": [
+        "is",
+        "delicious.",
+        "expensive",
+        "cheap",
+        "and",
+        "one",
+        "that",
+        "spicy",
+        "This"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Do you have ___ for one thousand?",
+       "meaning": "क्या आपके पास एक हज़ार के खुल्ले हैं?",
+       "options": [
+        "change",
+        "size",
+        "discount",
+        "menu"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "I would like one masala dosa and one coffee.",
+       "meaning": "मुझे एक मसाला डोसा और एक कॉफ़ी चाहिए।",
+       "bank": [
+        "one",
+        "masala",
+        "coffee.",
+        "of",
+        "I",
+        "like",
+        "one",
+        "and",
+        "two",
+        "dosa",
+        "would",
+        "tea"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u5",
+   "title": "सफ़र और रास्ते",
+   "emoji": "🚆",
+   "goal": "रास्ता पूछना, टिकट लेना और होटल में बात करना",
+   "lessons": [
+    {
+     "id": "u5l1",
+     "title": "रास्ता पूछना",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Where is...?",
+       "tl": "व्हेयर इज़...?",
+       "meaning": "... कहाँ है?",
+       "example": "Where is the railway station?",
+       "exampleMeaning": "रेलवे स्टेशन कहाँ है?"
+      },
+      {
+       "t": "learn",
+       "word": "left, right",
+       "tl": "लेफ़्ट, राइट",
+       "meaning": "बाएँ, दाएँ",
+       "example": "Turn left at the signal.",
+       "exampleMeaning": "सिग्नल पर बाएँ मुड़िए।"
+      },
+      {
+       "t": "learn",
+       "word": "Go straight.",
+       "tl": "गो स्ट्रेट",
+       "meaning": "सीधे जाइए।",
+       "example": "Go straight and turn right.",
+       "exampleMeaning": "सीधे जाइए और दाएँ मुड़िए।"
+      },
+      {
+       "t": "learn",
+       "word": "near, far",
+       "tl": "नियर, फ़ार",
+       "meaning": "पास, दूर",
+       "example": "The bank is near the market.",
+       "exampleMeaning": "बैंक बाज़ार के पास है।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'बाएँ मुड़िए।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Go near.",
+        "Turn left.",
+        "Go straight.",
+        "Turn right."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "रेलवे स्टेशन कहाँ है?",
+       "answer": "Where is the railway station?",
+       "bank": [
+        "Where",
+        "railway",
+        "station?",
+        "bus",
+        "What",
+        "is",
+        "near",
+        "the"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Go straight and turn right.",
+       "meaning": "सीधे जाइए और दाएँ मुड़िए।",
+       "bank": [
+        "near",
+        "right.",
+        "that",
+        "Go",
+        "and",
+        "left.",
+        "turn",
+        "straight"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "left",
+         "बाएँ"
+        ],
+        [
+         "right",
+         "दाएँ"
+        ],
+        [
+         "straight",
+         "सीधे"
+        ],
+        [
+         "near",
+         "पास"
+        ],
+        [
+         "far",
+         "दूर"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Excuse me, where is the bank?",
+       "meaning": "सुनिए, बैंक कहाँ है?"
+      },
+      {
+       "t": "fill",
+       "sentence": "The bank is ___ the market.",
+       "meaning": "बैंक बाज़ार के पास है।",
+       "options": [
+        "left",
+        "straight",
+        "near",
+        "far"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Turn left at the signal.",
+       "answer": "सिग्नल पर बाएँ मुड़िए।",
+       "bank": [
+        "पर",
+        "सीधे",
+        "बाएँ",
+        "सिग्नल",
+        "दाएँ",
+        "मुड़िए।",
+        "हूँ"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Is it far?' का मतलब क्या है?",
+       "options": [
+        "क्या यह पास है?",
+        "क्या यह बंद है?",
+        "यह कहाँ है?",
+        "क्या यह दूर है?"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "सीधे जाइए, बैंक बाएँ है।",
+       "answer": "Go straight, the bank is on the left.",
+       "bank": [
+        "straight,",
+        "left.",
+        "is",
+        "near",
+        "on",
+        "the",
+        "the",
+        "far",
+        "Go",
+        "bank",
+        "right."
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u5l2",
+     "title": "ट्रेन, बस और ऑटो",
+     "items": [
+      {
+       "t": "learn",
+       "word": "ticket",
+       "tl": "टिकट",
+       "meaning": "टिकट",
+       "example": "One ticket to Mumbai, please.",
+       "exampleMeaning": "मुंबई का एक टिकट, कृपया।"
+      },
+      {
+       "t": "learn",
+       "word": "platform",
+       "tl": "प्लैटफ़ॉर्म",
+       "meaning": "प्लेटफ़ॉर्म",
+       "example": "Which platform for the Rajdhani?",
+       "exampleMeaning": "राजधानी कौन से प्लेटफ़ॉर्म पर आएगी?"
+      },
+      {
+       "t": "learn",
+       "word": "bus stop",
+       "tl": "बस स्टॉप",
+       "meaning": "बस स्टॉप",
+       "example": "The bus stop is near the temple.",
+       "exampleMeaning": "बस स्टॉप मंदिर के पास है।"
+      },
+      {
+       "t": "learn",
+       "word": "How do I get to...?",
+       "tl": "हाउ डु आइ गेट टु...?",
+       "meaning": "मैं... कैसे जाऊँ?",
+       "example": "How do I get to the airport?",
+       "exampleMeaning": "मैं एयरपोर्ट कैसे जाऊँ?"
+      },
+      {
+       "t": "learn",
+       "word": "Take an auto.",
+       "tl": "टेक ऐन ऑटो",
+       "meaning": "ऑटो ले लीजिए।",
+       "example": "Take an auto, it is ten minutes.",
+       "exampleMeaning": "ऑटो ले लीजिए, दस मिनट लगते हैं।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं एयरपोर्ट कैसे जाऊँ?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "How do I get to the airport?",
+        "Take an auto to the airport.",
+        "Where is the airport?",
+        "Is the airport far?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मुंबई का एक टिकट, कृपया।",
+       "answer": "One ticket to Mumbai, please.",
+       "bank": [
+        "two",
+        "ticket",
+        "Delhi,",
+        "Mumbai,",
+        "to",
+        "One",
+        "platform",
+        "please."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Which platform for the Rajdhani?",
+       "meaning": "राजधानी कौन से प्लेटफ़ॉर्म पर आएगी?",
+       "bank": [
+        "bus",
+        "platform",
+        "at",
+        "for",
+        "Rajdhani?",
+        "where",
+        "Which",
+        "the"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "ticket",
+         "टिकट"
+        ],
+        [
+         "platform",
+         "प्लेटफ़ॉर्म"
+        ],
+        [
+         "bus stop",
+         "बस स्टॉप"
+        ],
+        [
+         "airport",
+         "एयरपोर्ट"
+        ],
+        [
+         "auto",
+         "ऑटो"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "How do I get to the railway station?",
+       "meaning": "मैं रेलवे स्टेशन कैसे जाऊँ?"
+      },
+      {
+       "t": "fill",
+       "sentence": "Take an ___, it is ten minutes.",
+       "meaning": "ऑटो ले लीजिए, दस मिनट लगते हैं।",
+       "options": [
+        "office",
+        "auto",
+        "platform",
+        "ticket"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "The bus stop is near the temple.",
+       "answer": "बस स्टॉप मंदिर के पास है।",
+       "bank": [
+        "पास",
+        "पर",
+        "स्टेशन",
+        "के",
+        "है।",
+        "दूर",
+        "स्टॉप",
+        "मंदिर",
+        "बस"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Which platform?' का मतलब क्या है?",
+       "options": [
+        "कौन सी ट्रेन?",
+        "कितने का टिकट?",
+        "कौन सा प्लेटफ़ॉर्म?",
+        "कितने बजे?"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "बस स्टॉप कहाँ है? क्या यह दूर है?",
+       "answer": "Where is the bus stop? Is it far?",
+       "bank": [
+        "it",
+        "far?",
+        "the",
+        "How",
+        "Is",
+        "is",
+        "Where",
+        "near?",
+        "stop?",
+        "platform",
+        "bus"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u5l3",
+     "title": "होटल में",
+     "items": [
+      {
+       "t": "learn",
+       "word": "I have a booking.",
+       "tl": "आइ हैव अ बुकिंग",
+       "meaning": "मेरी बुकिंग है।",
+       "example": "Hello, I have a booking for two nights.",
+       "exampleMeaning": "हैलो, मेरी दो रातों की बुकिंग है।"
+      },
+      {
+       "t": "learn",
+       "word": "room",
+       "tl": "रूम",
+       "meaning": "कमरा",
+       "example": "Is a room available?",
+       "exampleMeaning": "क्या कोई कमरा खाली है?"
+      },
+      {
+       "t": "learn",
+       "word": "check-in, check-out",
+       "tl": "चेक-इन, चेक-आउट",
+       "meaning": "चेक-इन, चेक-आउट",
+       "example": "Check-out is at eleven.",
+       "exampleMeaning": "चेक-आउट ग्यारह बजे है।"
+      },
+      {
+       "t": "learn",
+       "word": "available",
+       "tl": "अवेलेबल",
+       "meaning": "उपलब्ध / खाली",
+       "example": "Is Wi-Fi available?",
+       "exampleMeaning": "क्या वाई-फ़ाई उपलब्ध है?"
+      },
+      {
+       "t": "learn",
+       "word": "key",
+       "tl": "की",
+       "meaning": "चाबी",
+       "example": "Here is your key, room 204.",
+       "exampleMeaning": "यह आपकी चाबी है, कमरा 204।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'क्या कोई कमरा खाली है?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "The room is far.",
+        "I have a room.",
+        "Where is the room?",
+        "Is a room available?"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मेरी दो रातों की बुकिंग है।",
+       "answer": "I have a booking for two nights.",
+       "bank": [
+        "room",
+        "nights.",
+        "have",
+        "is",
+        "for",
+        "I",
+        "two",
+        "three",
+        "booking",
+        "a"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Check-out is at eleven.",
+       "meaning": "चेक-आउट ग्यारह बजे है।",
+       "bank": [
+        "is",
+        "Check-in",
+        "can",
+        "at",
+        "ten.",
+        "Check-out",
+        "eleven."
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "room",
+         "कमरा"
+        ],
+        [
+         "key",
+         "चाबी"
+        ],
+        [
+         "booking",
+         "बुकिंग"
+        ],
+        [
+         "available",
+         "उपलब्ध"
+        ],
+        [
+         "check-out",
+         "चेक-आउट"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Hello, I have a booking. My name is Rahul.",
+       "meaning": "हैलो, मेरी बुकिंग है। मेरा नाम राहुल है।"
+      },
+      {
+       "t": "fill",
+       "sentence": "Here is your ___, room 204.",
+       "meaning": "यह आपकी चाबी है, कमरा 204।",
+       "options": [
+        "key",
+        "ticket",
+        "bill",
+        "menu"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Is Wi-Fi available?",
+       "answer": "क्या वाई-फ़ाई उपलब्ध है?",
+       "bank": [
+        "उपलब्ध",
+        "है?",
+        "है",
+        "क्या",
+        "नहीं",
+        "वाई-फ़ाई",
+        "कमरा"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "होटल में 'check-in' का मतलब क्या है?",
+       "options": [
+        "कमरा छोड़ना",
+        "कमरा लेने की प्रक्रिया",
+        "बिल देना",
+        "चाबी खोना"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या मैं अभी चेक-इन कर सकता हूँ?",
+       "answer": "Can I check in now?",
+       "bank": [
+        "Can",
+        "now?",
+        "Could",
+        "later?",
+        "in",
+        "out",
+        "I",
+        "check"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u5l4",
+     "title": "रिवीज़न: सफ़र",
+     "items": [
+      {
+       "t": "learn",
+       "word": "How long does it take?",
+       "tl": "हाउ लॉन्ग डज़ इट टेक?",
+       "meaning": "कितना समय लगता है?",
+       "example": "How long does it take by train?",
+       "exampleMeaning": "ट्रेन से कितना समय लगता है?"
+      },
+      {
+       "t": "learn",
+       "word": "about",
+       "tl": "अबाउट",
+       "meaning": "लगभग",
+       "example": "About two hours.",
+       "exampleMeaning": "लगभग दो घंटे।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'कितना समय लगता है?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "How much is it?",
+        "How do I get there?",
+        "How long does it take?",
+        "How far is it?"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "How long?",
+         "कितना समय?"
+        ],
+        [
+         "about",
+         "लगभग"
+        ],
+        [
+         "platform",
+         "प्लेटफ़ॉर्म"
+        ],
+        [
+         "key",
+         "चाबी"
+        ],
+        [
+         "straight",
+         "सीधे"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "ट्रेन से कितना समय लगता है?",
+       "answer": "How long does it take by train?",
+       "bank": [
+        "long",
+        "train?",
+        "take",
+        "much",
+        "by",
+        "How",
+        "does",
+        "bus?",
+        "it",
+        "far"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Go straight and turn left. The station is near.",
+       "meaning": "सीधे जाइए और बाएँ मुड़िए। स्टेशन पास है।",
+       "bank": [
+        "near.",
+        "for",
+        "straight",
+        "station",
+        "right.",
+        "left.",
+        "The",
+        "far.",
+        "Go",
+        "turn",
+        "and",
+        "is"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ two hours by bus.",
+       "meaning": "बस से लगभग दो घंटे।",
+       "options": [
+        "Far",
+        "Straight",
+        "Near",
+        "About"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "One ticket to Pune, please. Which platform?",
+       "meaning": "पुणे का एक टिकट, कृपया। कौन सा प्लेटफ़ॉर्म?"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Take an auto, it is ten minutes.",
+       "answer": "ऑटो ले लीजिए, दस मिनट लगते हैं।",
+       "bank": [
+        "लीजिए,",
+        "अच्छा",
+        "ऑटो",
+        "घंटे",
+        "हैं।",
+        "दस",
+        "ले",
+        "लगते",
+        "बस",
+        "मिनट"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Is a room available?' का मतलब क्या है?",
+       "options": [
+        "क्या कोई कमरा खाली है?",
+        "कमरा कितने का है?",
+        "कमरा बड़ा है?",
+        "कमरा कहाँ है?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "सुनिए, एयरपोर्ट कहाँ है? क्या यह दूर है?",
+       "answer": "Excuse me, where is the airport? Is it far?",
+       "bank": [
+        "me,",
+        "is",
+        "Is",
+        "it",
+        "airport?",
+        "the",
+        "How",
+        "Excuse",
+        "far?",
+        "where",
+        "station",
+        "near?"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "I have a ___ for two nights.",
+       "meaning": "मेरी दो रातों की बुकिंग है।",
+       "options": [
+        "key",
+        "booking",
+        "platform",
+        "ticket"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "How do I get to the bus stop?",
+       "meaning": "मैं बस स्टॉप कैसे जाऊँ?",
+       "bank": [
+        "Where",
+        "station?",
+        "bus",
+        "I",
+        "to",
+        "do",
+        "How",
+        "get",
+        "stop?",
+        "was",
+        "the"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u6",
+   "title": "समय और दिनचर्या",
+   "emoji": "⏰",
+   "goal": "समय, दिन और अपनी दिनचर्या बताना",
+   "lessons": [
+    {
+     "id": "u6l1",
+     "title": "कितने बजे हैं?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "What time is it?",
+       "tl": "व्हॉट टाइम इज़ इट?",
+       "meaning": "कितने बजे हैं?",
+       "example": "Excuse me, what time is it?",
+       "exampleMeaning": "सुनिए, कितने बजे हैं?"
+      },
+      {
+       "t": "learn",
+       "word": "It is five o'clock.",
+       "tl": "इट इज़ फ़ाइव ओ'क्लॉक",
+       "meaning": "पाँच बजे हैं।",
+       "example": "It is five o'clock. Let's go.",
+       "exampleMeaning": "पाँच बजे हैं। चलिए।"
+      },
+      {
+       "t": "learn",
+       "word": "half past",
+       "tl": "हाफ़ पास्ट",
+       "meaning": "साढ़े",
+       "example": "The meeting is at half past nine.",
+       "exampleMeaning": "मीटिंग साढ़े नौ बजे है।"
+      },
+      {
+       "t": "learn",
+       "word": "morning, afternoon, evening",
+       "tl": "मॉर्निंग, आफ़्टरनून, ईवनिंग",
+       "meaning": "सुबह, दोपहर, शाम",
+       "example": "I will call you in the evening.",
+       "exampleMeaning": "मैं आपको शाम को कॉल करूँगा।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'कितने बजे हैं?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "How long is it?",
+        "What is it?",
+        "What time is it?",
+        "Which time?"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "पाँच बजे हैं।",
+       "answer": "It is five o'clock.",
+       "bank": [
+        "It",
+        "time",
+        "o'clock.",
+        "half",
+        "six",
+        "is",
+        "five"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "The meeting is at half past nine.",
+       "meaning": "मीटिंग साढ़े नौ बजे है।",
+       "bank": [
+        "nine.",
+        "o'clock",
+        "The",
+        "meeting",
+        "very",
+        "ten.",
+        "at",
+        "past",
+        "half",
+        "is"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "morning",
+         "सुबह"
+        ],
+        [
+         "afternoon",
+         "दोपहर"
+        ],
+        [
+         "evening",
+         "शाम"
+        ],
+        [
+         "half past",
+         "साढ़े"
+        ],
+        [
+         "o'clock",
+         "बजे"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "What time is it? It is ten o'clock.",
+       "meaning": "कितने बजे हैं? दस बजे हैं।"
+      },
+      {
+       "t": "fill",
+       "sentence": "I will call you in the ___.",
+       "meaning": "मैं आपको शाम को कॉल करूँगा।",
+       "options": [
+        "meeting",
+        "office",
+        "morning",
+        "evening"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "It is half past seven.",
+       "answer": "साढ़े सात बजे हैं।",
+       "bank": [
+        "क्या",
+        "साढ़े",
+        "बजे",
+        "हैं।",
+        "सुबह",
+        "आठ",
+        "सात"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'half past nine' का मतलब क्या है?",
+       "options": [
+        "साढ़े नौ",
+        "आठ बजे",
+        "नौ बजे",
+        "साढ़े आठ"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मीटिंग दोपहर दो बजे है।",
+       "answer": "The meeting is at two in the afternoon.",
+       "bank": [
+        "afternoon.",
+        "is",
+        "two",
+        "morning",
+        "meeting",
+        "in",
+        "at",
+        "the",
+        "The",
+        "evening.",
+        "half"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u6l2",
+     "title": "दिन और तारीख़",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Monday, Tuesday, Wednesday",
+       "tl": "मंडे, ट्यूज़डे, वेन्ज़डे",
+       "meaning": "सोमवार, मंगलवार, बुधवार",
+       "example": "The office is closed on Monday.",
+       "exampleMeaning": "सोमवार को ऑफिस बंद है।"
+      },
+      {
+       "t": "learn",
+       "word": "Thursday, Friday, Saturday, Sunday",
+       "tl": "थर्सडे, फ़्राइडे, सैटरडे, संडे",
+       "meaning": "गुरुवार, शुक्रवार, शनिवार, रविवार",
+       "example": "Sunday is a holiday.",
+       "exampleMeaning": "रविवार को छुट्टी है।"
+      },
+      {
+       "t": "learn",
+       "word": "today, tomorrow, yesterday",
+       "tl": "टुडे, टुमॉरो, येस्टरडे",
+       "meaning": "आज, कल (आने वाला), कल (बीता)",
+       "example": "Today is Tuesday. Tomorrow is Wednesday.",
+       "exampleMeaning": "आज मंगलवार है। कल बुधवार है।"
+      },
+      {
+       "t": "learn",
+       "word": "weekend",
+       "tl": "वीकेंड",
+       "meaning": "सप्ताहांत",
+       "example": "What are you doing this weekend?",
+       "exampleMeaning": "आप इस वीकेंड क्या कर रहे हैं?"
+      },
+      {
+       "t": "choose",
+       "prompt": "'शुक्रवार' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Thursday",
+        "Friday",
+        "Sunday",
+        "Saturday"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "आज मंगलवार है।",
+       "answer": "Today is Tuesday.",
+       "bank": [
+        "is",
+        "was",
+        "Tuesday.",
+        "Tomorrow",
+        "Monday.",
+        "Today"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Sunday is a holiday.",
+       "meaning": "रविवार को छुट्टी है।",
+       "bank": [
+        "Saturday",
+        "a",
+        "holiday.",
+        "weekend.",
+        "is",
+        "from",
+        "Sunday"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Monday",
+         "सोमवार"
+        ],
+        [
+         "Wednesday",
+         "बुधवार"
+        ],
+        [
+         "Saturday",
+         "शनिवार"
+        ],
+        [
+         "tomorrow",
+         "कल (आने वाला)"
+        ],
+        [
+         "weekend",
+         "सप्ताहांत"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "What are you doing this weekend?",
+       "meaning": "आप इस वीकेंड क्या कर रहे हैं?"
+      },
+      {
+       "t": "fill",
+       "sentence": "The office is ___ on Sunday.",
+       "meaning": "रविवार को ऑफिस बंद है।",
+       "options": [
+        "busy",
+        "near",
+        "closed",
+        "open"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Tomorrow is Wednesday.",
+       "answer": "कल बुधवार है।",
+       "bank": [
+        "होगा",
+        "बुधवार",
+        "कल",
+        "आज",
+        "गुरुवार",
+        "है।"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'yesterday' का मतलब क्या है?",
+       "options": [
+        "आज",
+        "परसों",
+        "कल (आने वाला)",
+        "कल (बीता)"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "डेडलाइन गुरुवार है, शुक्रवार नहीं।",
+       "answer": "The deadline is Thursday, not Friday.",
+       "bank": [
+        "The",
+        "on",
+        "Thursday,",
+        "meeting",
+        "deadline",
+        "is",
+        "Tuesday,",
+        "Friday.",
+        "not"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u6l3",
+     "title": "मेरी दिनचर्या",
+     "items": [
+      {
+       "t": "learn",
+       "word": "I wake up at six.",
+       "tl": "आइ वेक अप ऐट सिक्स",
+       "meaning": "मैं छह बजे उठता हूँ।",
+       "example": "I wake up at six every day.",
+       "exampleMeaning": "मैं हर दिन छह बजे उठता हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "every day",
+       "tl": "एवरी डे",
+       "meaning": "हर दिन",
+       "example": "I go to the gym every day.",
+       "exampleMeaning": "मैं हर दिन जिम जाता हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "usually",
+       "tl": "यूज़ुअली",
+       "meaning": "आम तौर पर",
+       "example": "I usually have lunch at one.",
+       "exampleMeaning": "मैं आम तौर पर एक बजे लंच करता हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "breakfast, lunch, dinner",
+       "tl": "ब्रेकफ़ास्ट, लंच, डिनर",
+       "meaning": "नाश्ता, दोपहर का खाना, रात का खाना",
+       "example": "We have dinner at nine.",
+       "exampleMeaning": "हम नौ बजे डिनर करते हैं।"
+      },
+      {
+       "t": "learn",
+       "word": "I go to bed at eleven.",
+       "tl": "आइ गो टु बेड ऐट इलेवन",
+       "meaning": "मैं ग्यारह बजे सोता हूँ।",
+       "example": "I usually go to bed at eleven.",
+       "exampleMeaning": "मैं आम तौर पर ग्यारह बजे सोता हूँ।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं हर दिन छह बजे उठता हूँ।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I wake up at six every day.",
+        "I go to bed at six every day.",
+        "I have lunch at six.",
+        "I wake up at seven."
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मैं आम तौर पर एक बजे लंच करता हूँ।",
+       "answer": "I usually have lunch at one.",
+       "bank": [
+        "one.",
+        "I",
+        "every",
+        "at",
+        "dinner",
+        "two.",
+        "have",
+        "usually",
+        "lunch"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "We have dinner at nine.",
+       "meaning": "हम नौ बजे डिनर करते हैं।",
+       "bank": [
+        "dinner",
+        "We",
+        "have",
+        "breakfast",
+        "nine.",
+        "ten.",
+        "at",
+        "good"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "wake up",
+         "उठना"
+        ],
+        [
+         "breakfast",
+         "नाश्ता"
+        ],
+        [
+         "usually",
+         "आम तौर पर"
+        ],
+        [
+         "every day",
+         "हर दिन"
+        ],
+        [
+         "go to bed",
+         "सोने जाना"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "I wake up at six and go to the office at nine.",
+       "meaning": "मैं छह बजे उठता हूँ और नौ बजे ऑफिस जाता हूँ।"
+      },
+      {
+       "t": "fill",
+       "sentence": "I ___ go to bed at eleven.",
+       "meaning": "मैं आम तौर पर ग्यारह बजे सोता हूँ।",
+       "options": [
+        "today",
+        "usually",
+        "tomorrow",
+        "every"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "I go to the gym every day.",
+       "answer": "मैं हर दिन जिम जाता हूँ।",
+       "bank": [
+        "हूँ।",
+        "हर",
+        "ऑफिस",
+        "और",
+        "जिम",
+        "कभी",
+        "जाता",
+        "मैं",
+        "दिन"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'dinner' का मतलब क्या है?",
+       "options": [
+        "नाश्ता",
+        "चाय",
+        "रात का खाना",
+        "दोपहर का खाना"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "आप कितने बजे उठते हैं?",
+       "answer": "What time do you wake up?",
+       "bank": [
+        "What",
+        "wake",
+        "time",
+        "is",
+        "do",
+        "you",
+        "go",
+        "sleep?",
+        "up?"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u6l4",
+     "title": "रिवीज़न: समय और दिनचर्या",
+     "items": [
+      {
+       "t": "learn",
+       "word": "late, early",
+       "tl": "लेट, अर्ली",
+       "meaning": "देर, जल्दी",
+       "example": "I am late for the meeting.",
+       "exampleMeaning": "मुझे मीटिंग के लिए देर हो गई।"
+      },
+      {
+       "t": "learn",
+       "word": "on time",
+       "tl": "ऑन टाइम",
+       "meaning": "समय पर",
+       "example": "Please come on time.",
+       "exampleMeaning": "कृपया समय पर आइए।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'समय पर' अंग्रेज़ी में क्या है?",
+       "options": [
+        "late",
+        "every day",
+        "early",
+        "on time"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "late",
+         "देर"
+        ],
+        [
+         "early",
+         "जल्दी"
+        ],
+        [
+         "on time",
+         "समय पर"
+        ],
+        [
+         "Friday",
+         "शुक्रवार"
+        ],
+        [
+         "afternoon",
+         "दोपहर"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "कृपया समय पर आइए। मीटिंग साढ़े नौ बजे है।",
+       "answer": "Please come on time. The meeting is at half past nine.",
+       "bank": [
+        "past",
+        "The",
+        "Please",
+        "ten.",
+        "come",
+        "meeting",
+        "late.",
+        "is",
+        "at",
+        "early",
+        "half",
+        "on",
+        "time.",
+        "nine."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "What time is it? It is half past seven.",
+       "meaning": "कितने बजे हैं? साढ़े सात बजे हैं।",
+       "bank": [
+        "this",
+        "o'clock",
+        "What",
+        "is",
+        "half",
+        "time",
+        "It",
+        "it?",
+        "past",
+        "seven.",
+        "eight.",
+        "is"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Today is Friday. ___ is Saturday.",
+       "meaning": "आज शुक्रवार है। कल शनिवार है।",
+       "options": [
+        "Tomorrow",
+        "Monday",
+        "Yesterday",
+        "Today"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "I usually wake up early. I go to bed at eleven.",
+       "meaning": "मैं आम तौर पर जल्दी उठता हूँ। मैं ग्यारह बजे सोता हूँ।"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "What are you doing this weekend?",
+       "answer": "आप इस वीकेंड क्या कर रहे हैं?",
+       "bank": [
+        "आप",
+        "ऑफिस",
+        "इस",
+        "क्या",
+        "कर",
+        "पर",
+        "वीकेंड",
+        "हैं?",
+        "कल",
+        "रहे"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'I am late for the meeting.' का मतलब क्या है?",
+       "options": [
+        "मीटिंग देर से है।",
+        "मुझे मीटिंग के लिए देर हो गई।",
+        "मैं मीटिंग में हूँ।",
+        "मीटिंग जल्दी है।"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "सोमवार को ऑफिस बंद है।",
+       "answer": "The office is closed on Monday.",
+       "bank": [
+        "at",
+        "is",
+        "on",
+        "Monday.",
+        "closed",
+        "office",
+        "Sunday.",
+        "The",
+        "open"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "I usually ___ breakfast at eight.",
+       "meaning": "मैं आम तौर पर आठ बजे नाश्ता करता हूँ।",
+       "options": [
+        "wake",
+        "do",
+        "have",
+        "go"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "I go to the gym every day in the morning.",
+       "meaning": "मैं हर दिन सुबह जिम जाता हूँ।",
+       "bank": [
+        "the",
+        "in",
+        "I",
+        "the",
+        "morning.",
+        "can",
+        "every",
+        "go",
+        "day",
+        "gym",
+        "usually",
+        "evening.",
+        "to"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u7",
+   "title": "छोटी-छोटी बातें",
+   "emoji": "☀️",
+   "goal": "मौसम, पसंद और तबीयत के बारे में बात करना",
+   "lessons": [
+    {
+     "id": "u7l1",
+     "title": "मौसम की बात",
+     "items": [
+      {
+       "t": "learn",
+       "word": "weather",
+       "tl": "वेदर",
+       "meaning": "मौसम",
+       "example": "The weather is nice today.",
+       "exampleMeaning": "आज मौसम अच्छा है।"
+      },
+      {
+       "t": "learn",
+       "word": "It is very hot.",
+       "tl": "इट इज़ वेरी हॉट",
+       "meaning": "बहुत गर्मी है।",
+       "example": "It is very hot in Delhi in May.",
+       "exampleMeaning": "मई में दिल्ली में बहुत गर्मी होती है।"
+      },
+      {
+       "t": "learn",
+       "word": "cold",
+       "tl": "कोल्ड",
+       "meaning": "ठंड / ठंडा",
+       "example": "It is cold in the morning.",
+       "exampleMeaning": "सुबह ठंड होती है।"
+      },
+      {
+       "t": "learn",
+       "word": "It is raining.",
+       "tl": "इट इज़ रेनिंग",
+       "meaning": "बारिश हो रही है।",
+       "example": "It is raining, take an umbrella.",
+       "exampleMeaning": "बारिश हो रही है, छाता ले लीजिए।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'बारिश हो रही है।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "It is cold.",
+        "It is nice.",
+        "It is hot.",
+        "It is raining."
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "आज मौसम अच्छा है।",
+       "answer": "The weather is nice today.",
+       "bank": [
+        "is",
+        "today.",
+        "weather",
+        "hot",
+        "The",
+        "cold",
+        "tomorrow.",
+        "nice"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "It is very hot in Delhi in May.",
+       "meaning": "मई में दिल्ली में बहुत गर्मी होती है।",
+       "bank": [
+        "It",
+        "in",
+        "hot",
+        "May.",
+        "is",
+        "June.",
+        "very",
+        "cold",
+        "in",
+        "Delhi",
+        "for"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "weather",
+         "मौसम"
+        ],
+        [
+         "hot",
+         "गर्म"
+        ],
+        [
+         "cold",
+         "ठंडा"
+        ],
+        [
+         "raining",
+         "बारिश हो रही"
+        ],
+        [
+         "umbrella",
+         "छाता"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "It is raining. Take an umbrella.",
+       "meaning": "बारिश हो रही है। छाता ले लीजिए।"
+      },
+      {
+       "t": "fill",
+       "sentence": "It is ___ in the morning.",
+       "meaning": "सुबह ठंड होती है।",
+       "options": [
+        "cold",
+        "raining",
+        "hot",
+        "nice"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "The weather is nice today.",
+       "answer": "आज मौसम अच्छा है।",
+       "bank": [
+        "कल",
+        "है।",
+        "के",
+        "मौसम",
+        "गर्म",
+        "आज",
+        "अच्छा"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'How is the weather?' का मतलब क्या है?",
+       "options": [
+        "क्या ठंड है?",
+        "मौसम कैसा है?",
+        "बारिश कब होगी?",
+        "कितने बजे हैं?"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मुंबई में बहुत गर्मी है।",
+       "answer": "It is very hot in Mumbai.",
+       "bank": [
+        "It",
+        "cold",
+        "in",
+        "hot",
+        "is",
+        "Mumbai.",
+        "the",
+        "very",
+        "raining"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u7l2",
+     "title": "मुझे पसंद है",
+     "items": [
+      {
+       "t": "learn",
+       "word": "I like...",
+       "tl": "आइ लाइक...",
+       "meaning": "मुझे... पसंद है",
+       "example": "I like cricket and music.",
+       "exampleMeaning": "मुझे क्रिकेट और संगीत पसंद है।"
+      },
+      {
+       "t": "learn",
+       "word": "I love...",
+       "tl": "आइ लव...",
+       "meaning": "मुझे... बहुत पसंद है",
+       "example": "I love Bollywood movies.",
+       "exampleMeaning": "मुझे बॉलीवुड फ़िल्में बहुत पसंद हैं।"
+      },
+      {
+       "t": "learn",
+       "word": "I don't like...",
+       "tl": "आइ डोंट लाइक...",
+       "meaning": "मुझे... पसंद नहीं है",
+       "example": "I don't like cold coffee.",
+       "exampleMeaning": "मुझे कोल्ड कॉफ़ी पसंद नहीं है।"
+      },
+      {
+       "t": "learn",
+       "word": "favourite",
+       "tl": "फ़ेवरिट",
+       "meaning": "पसंदीदा",
+       "example": "My favourite food is biryani.",
+       "exampleMeaning": "मेरा पसंदीदा खाना बिरयानी है।"
+      },
+      {
+       "t": "learn",
+       "word": "hobby",
+       "tl": "हॉबी",
+       "meaning": "शौक",
+       "example": "My hobby is reading.",
+       "exampleMeaning": "मेरा शौक पढ़ना है।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मुझे क्रिकेट पसंद है।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I don't like cricket.",
+        "I love cricket.",
+        "I like cricket.",
+        "My favourite is cricket."
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मुझे बॉलीवुड फ़िल्में बहुत पसंद हैं।",
+       "answer": "I love Bollywood movies.",
+       "bank": [
+        "movies.",
+        "love",
+        "like",
+        "I",
+        "Bollywood",
+        "don't",
+        "music."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "My favourite food is biryani.",
+       "meaning": "मेरा पसंदीदा खाना बिरयानी है।",
+       "bank": [
+        "food",
+        "biryani.",
+        "hobby",
+        "My",
+        "favourite",
+        "dosa.",
+        "you",
+        "is"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "I like",
+         "मुझे पसंद है"
+        ],
+        [
+         "I love",
+         "मुझे बहुत पसंद है"
+        ],
+        [
+         "I don't like",
+         "मुझे पसंद नहीं है"
+        ],
+        [
+         "favourite",
+         "पसंदीदा"
+        ],
+        [
+         "hobby",
+         "शौक"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "I like music. My hobby is reading.",
+       "meaning": "मुझे संगीत पसंद है। मेरा शौक पढ़ना है।"
+      },
+      {
+       "t": "fill",
+       "sentence": "I ___ like cold coffee.",
+       "meaning": "मुझे कोल्ड कॉफ़ी पसंद नहीं है।",
+       "options": [
+        "am not",
+        "no",
+        "not",
+        "don't"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "My hobby is reading.",
+       "answer": "मेरा शौक पढ़ना है।",
+       "bank": [
+        "खाना",
+        "शौक",
+        "पसंदीदा",
+        "मेरा",
+        "है।",
+        "कृपया",
+        "पढ़ना"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'What is your favourite movie?' का मतलब क्या है?",
+       "options": [
+        "आपकी पसंदीदा फ़िल्म कौन सी है?",
+        "आप कौन सी फ़िल्म देख रहे हैं?",
+        "आपको फ़िल्में पसंद हैं?",
+        "फ़िल्म कितने बजे है?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या आपको चाय पसंद है?",
+       "answer": "Do you like tea?",
+       "bank": [
+        "love",
+        "tea?",
+        "Do",
+        "coffee?",
+        "you",
+        "Are",
+        "like"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u7l3",
+     "title": "तबीयत और मन",
+     "items": [
+      {
+       "t": "learn",
+       "word": "I am tired.",
+       "tl": "आइ ऐम टायर्ड",
+       "meaning": "मैं थका हुआ हूँ।",
+       "example": "I am very tired today.",
+       "exampleMeaning": "मैं आज बहुत थका हुआ हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "I am happy.",
+       "tl": "आइ ऐम हैपी",
+       "meaning": "मैं खुश हूँ।",
+       "example": "I am happy to see you.",
+       "exampleMeaning": "आपको देखकर मैं खुश हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "I have a headache.",
+       "tl": "आइ हैव अ हेडेक",
+       "meaning": "मुझे सिरदर्द है।",
+       "example": "I have a headache and a fever.",
+       "exampleMeaning": "मुझे सिरदर्द और बुख़ार है।"
+      },
+      {
+       "t": "learn",
+       "word": "I am not feeling well.",
+       "tl": "आइ ऐम नॉट फ़ीलिंग वेल",
+       "meaning": "मेरी तबीयत ठीक नहीं है।",
+       "example": "I am not feeling well, I need a doctor.",
+       "exampleMeaning": "मेरी तबीयत ठीक नहीं है, मुझे डॉक्टर चाहिए।"
+      },
+      {
+       "t": "learn",
+       "word": "Get well soon.",
+       "tl": "गेट वेल सून",
+       "meaning": "जल्दी ठीक हो जाइए।",
+       "example": "Take rest. Get well soon!",
+       "exampleMeaning": "आराम करिए। जल्दी ठीक हो जाइए!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं थका हुआ हूँ।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I am busy.",
+        "I am tired.",
+        "I am happy.",
+        "I am late."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मुझे सिरदर्द है।",
+       "answer": "I have a headache.",
+       "bank": [
+        "a",
+        "have",
+        "headache.",
+        "fever.",
+        "tired",
+        "I",
+        "am"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "I am not feeling well.",
+       "meaning": "मेरी तबीयत ठीक नहीं है।",
+       "bank": [
+        "for",
+        "not",
+        "very",
+        "am",
+        "well.",
+        "feeling",
+        "happy",
+        "I"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "tired",
+         "थका हुआ"
+        ],
+        [
+         "happy",
+         "खुश"
+        ],
+        [
+         "headache",
+         "सिरदर्द"
+        ],
+        [
+         "fever",
+         "बुख़ार"
+        ],
+        [
+         "Get well soon.",
+         "जल्दी ठीक हो जाइए।"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "I am not feeling well. I have a fever.",
+       "meaning": "मेरी तबीयत ठीक नहीं है। मुझे बुख़ार है।"
+      },
+      {
+       "t": "fill",
+       "sentence": "Take rest. Get ___ soon!",
+       "meaning": "आराम करिए। जल्दी ठीक हो जाइए!",
+       "options": [
+        "fine",
+        "good",
+        "well",
+        "happy"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "I am happy to see you.",
+       "answer": "आपको देखकर मैं खुश हूँ।",
+       "bank": [
+        "मैं",
+        "थका",
+        "बहुत",
+        "नहीं",
+        "देखकर",
+        "खुश",
+        "आपको",
+        "हूँ।"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "बीमार दोस्त को क्या बोलेंगे?",
+       "options": [
+        "See you.",
+        "Good morning.",
+        "Nice to meet you.",
+        "Get well soon."
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मैं आज बहुत थका हुआ हूँ।",
+       "answer": "I am very tired today.",
+       "bank": [
+        "very",
+        "tired",
+        "not",
+        "today.",
+        "tomorrow.",
+        "am",
+        "I",
+        "happy"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u7l4",
+     "title": "रिवीज़न: छोटी-छोटी बातें",
+     "items": [
+      {
+       "t": "learn",
+       "word": "How was your day?",
+       "tl": "हाउ वॉज़ यॉर डे?",
+       "meaning": "आपका दिन कैसा था?",
+       "example": "Hi! How was your day?",
+       "exampleMeaning": "हाय! आपका दिन कैसा था?"
+      },
+      {
+       "t": "learn",
+       "word": "Not bad.",
+       "tl": "नॉट बैड",
+       "meaning": "बुरा नहीं। / ठीक-ठाक।",
+       "example": "Not bad, a little tired.",
+       "exampleMeaning": "ठीक-ठाक, थोड़ा थका हुआ।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'आपका दिन कैसा था?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "How was your day?",
+        "How are you?",
+        "What do you do?",
+        "Where were you?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "How was your day?",
+         "आपका दिन कैसा था?"
+        ],
+        [
+         "Not bad.",
+         "ठीक-ठाक।"
+        ],
+        [
+         "weather",
+         "मौसम"
+        ],
+        [
+         "favourite",
+         "पसंदीदा"
+        ],
+        [
+         "headache",
+         "सिरदर्द"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "ठीक-ठाक, थोड़ा थका हुआ।",
+       "answer": "Not bad, a little tired.",
+       "bank": [
+        "tired.",
+        "a",
+        "happy.",
+        "very",
+        "bad,",
+        "Not",
+        "little",
+        "good"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "The weather is nice. I like it.",
+       "meaning": "मौसम अच्छा है। मुझे पसंद है।",
+       "bank": [
+        "will",
+        "nice.",
+        "I",
+        "hot.",
+        "like",
+        "love",
+        "weather",
+        "is",
+        "The",
+        "it."
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "I ___ Bollywood movies. They are my favourite.",
+       "meaning": "मुझे बॉलीवुड फ़िल्में बहुत पसंद हैं। वे मेरी पसंदीदा हैं।",
+       "options": [
+        "am",
+        "love",
+        "have",
+        "don't like"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "How was your day? Not bad, thank you.",
+       "meaning": "आपका दिन कैसा था? ठीक-ठाक, धन्यवाद।"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "It is raining, take an umbrella.",
+       "answer": "बारिश हो रही है, छाता ले लीजिए।",
+       "bank": [
+        "ले",
+        "लीजिए।",
+        "रही",
+        "बारिश",
+        "है,",
+        "हो",
+        "के",
+        "कल",
+        "गर्मी",
+        "छाता"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'I have a fever.' का मतलब क्या है?",
+       "options": [
+        "मुझे सिरदर्द है।",
+        "मैं खुश हूँ।",
+        "मुझे बुख़ार है।",
+        "मैं थका हुआ हूँ।"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मुझे ठंड पसंद नहीं है। मुझे गर्मी पसंद है।",
+       "answer": "I don't like the cold. I like the heat.",
+       "bank": [
+        "heat.",
+        "very",
+        "I",
+        "like",
+        "love",
+        "the",
+        "cold.",
+        "like",
+        "rain.",
+        "the",
+        "don't",
+        "I"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "My ___ is cricket.",
+       "meaning": "मेरा शौक क्रिकेट है।",
+       "options": [
+        "day",
+        "weather",
+        "headache",
+        "hobby"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "I am not feeling well today. I have a headache.",
+       "meaning": "आज मेरी तबीयत ठीक नहीं है। मुझे सिरदर्द है।",
+       "bank": [
+        "fever.",
+        "yes",
+        "a",
+        "not",
+        "feeling",
+        "I",
+        "have",
+        "well",
+        "I",
+        "today.",
+        "am",
+        "tired",
+        "headache."
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u8",
+   "title": "बीता हुआ समय",
+   "emoji": "🕰️",
+   "goal": "बीती बातें बताना और पूछना",
+   "lessons": [
+    {
+     "id": "u8l1",
+     "title": "कल क्या किया?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "I went to...",
+       "tl": "आइ वेंट टु...",
+       "meaning": "मैं... गया था",
+       "example": "Yesterday I went to the market.",
+       "exampleMeaning": "कल मैं बाज़ार गया था।"
+      },
+      {
+       "t": "learn",
+       "word": "I ate / I drank",
+       "tl": "आइ एट / आइ ड्रैंक",
+       "meaning": "मैंने खाया / मैंने पिया",
+       "example": "I ate dosa and drank coffee.",
+       "exampleMeaning": "मैंने डोसा खाया और कॉफ़ी पी।"
+      },
+      {
+       "t": "learn",
+       "word": "I saw",
+       "tl": "आइ सॉ",
+       "meaning": "मैंने देखा",
+       "example": "I saw a good movie last night.",
+       "exampleMeaning": "मैंने कल रात एक अच्छी फ़िल्म देखी।"
+      },
+      {
+       "t": "learn",
+       "word": "last night, last week",
+       "tl": "लास्ट नाइट, लास्ट वीक",
+       "meaning": "कल रात, पिछले हफ़्ते",
+       "example": "Last week I was in Jaipur.",
+       "exampleMeaning": "पिछले हफ़्ते मैं जयपुर में था।"
+      },
+      {
+       "t": "learn",
+       "word": "I was / We were",
+       "tl": "आइ वॉज़ / वी वर",
+       "meaning": "मैं था / हम थे",
+       "example": "We were very tired.",
+       "exampleMeaning": "हम बहुत थके हुए थे।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं बाज़ार गया था।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I went to the market.",
+        "I will go to the market.",
+        "I am in the market.",
+        "I go to the market."
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "कल मैं बाज़ार गया था।",
+       "answer": "Yesterday I went to the market.",
+       "bank": [
+        "office.",
+        "went",
+        "I",
+        "the",
+        "go",
+        "to",
+        "Tomorrow",
+        "market.",
+        "Yesterday"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "I saw a good movie last night.",
+       "meaning": "मैंने कल रात एक अच्छी फ़िल्म देखी।",
+       "bank": [
+        "see",
+        "night.",
+        "movie",
+        "last",
+        "I",
+        "this",
+        "a",
+        "week.",
+        "good",
+        "saw"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "went",
+         "गया"
+        ],
+        [
+         "ate",
+         "खाया"
+        ],
+        [
+         "saw",
+         "देखा"
+        ],
+        [
+         "was",
+         "था"
+        ],
+        [
+         "last week",
+         "पिछले हफ़्ते"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Last week I was in Jaipur. It was very hot.",
+       "meaning": "पिछले हफ़्ते मैं जयपुर में था। बहुत गर्मी थी।"
+      },
+      {
+       "t": "fill",
+       "sentence": "I ___ dosa and drank coffee.",
+       "meaning": "मैंने डोसा खाया और कॉफ़ी पी।",
+       "options": [
+        "eat",
+        "ate",
+        "eats",
+        "eating"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "We were very tired.",
+       "answer": "हम बहुत थके हुए थे।",
+       "bank": [
+        "बहुत",
+        "हुए",
+        "कहाँ",
+        "हैं",
+        "थके",
+        "खुश",
+        "हम",
+        "थे।"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'went' किसका past tense है?",
+       "options": [
+        "see",
+        "drink",
+        "go",
+        "eat"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "हम कल रात खुश थे।",
+       "answer": "We were happy last night.",
+       "bank": [
+        "were",
+        "was",
+        "We",
+        "tired",
+        "night.",
+        "are",
+        "happy",
+        "last"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u8l2",
+     "title": "क्या आपने...?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Did you...?",
+       "tl": "डिड यू...?",
+       "meaning": "क्या आपने...?",
+       "example": "Did you see the match yesterday?",
+       "exampleMeaning": "क्या आपने कल मैच देखा?"
+      },
+      {
+       "t": "learn",
+       "word": "Yes, I did. / No, I didn't.",
+       "tl": "येस, आइ डिड / नो, आइ डिडंट",
+       "meaning": "हाँ, किया। / नहीं, नहीं किया।",
+       "example": "Did you eat? Yes, I did.",
+       "exampleMeaning": "क्या आपने खाया? हाँ, खाया।"
+      },
+      {
+       "t": "learn",
+       "word": "How was...?",
+       "tl": "हाउ वॉज़...?",
+       "meaning": "... कैसा था?",
+       "example": "How was the trip?",
+       "exampleMeaning": "सफ़र कैसा था?"
+      },
+      {
+       "t": "learn",
+       "word": "It was great.",
+       "tl": "इट वॉज़ ग्रेट",
+       "meaning": "बहुत अच्छा था।",
+       "example": "How was the movie? It was great!",
+       "exampleMeaning": "फ़िल्म कैसी थी? बहुत अच्छी थी!"
+      },
+      {
+       "t": "learn",
+       "word": "Where did you go?",
+       "tl": "व्हेयर डिड यू गो?",
+       "meaning": "आप कहाँ गए थे?",
+       "example": "Where did you go on Sunday?",
+       "exampleMeaning": "आप रविवार को कहाँ गए थे?"
+      },
+      {
+       "t": "choose",
+       "prompt": "'सफ़र कैसा था?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Where was the trip?",
+        "Did you trip?",
+        "How is the trip?",
+        "How was the trip?"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या आपने कल मैच देखा?",
+       "answer": "Did you see the match yesterday?",
+       "bank": [
+        "Do",
+        "Did",
+        "yesterday?",
+        "saw",
+        "see",
+        "the",
+        "you",
+        "movie",
+        "match"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Where did you go on Sunday?",
+       "meaning": "आप रविवार को कहाँ गए थे?",
+       "bank": [
+        "went",
+        "did",
+        "you",
+        "go",
+        "Where",
+        "the",
+        "Sunday?",
+        "on",
+        "Monday?"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Did you...?",
+         "क्या आपने...?"
+        ],
+        [
+         "How was...?",
+         "... कैसा था?"
+        ],
+        [
+         "It was great.",
+         "बहुत अच्छा था।"
+        ],
+        [
+         "No, I didn't.",
+         "नहीं, नहीं किया।"
+        ],
+        [
+         "trip",
+         "सफ़र"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "How was the movie? It was great!",
+       "meaning": "फ़िल्म कैसी थी? बहुत अच्छी थी!"
+      },
+      {
+       "t": "fill",
+       "sentence": "___ you eat lunch? Yes, I did.",
+       "meaning": "क्या आपने लंच किया? हाँ, किया।",
+       "options": [
+        "Did",
+        "Were",
+        "Are",
+        "Do"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Did you see the match yesterday?",
+       "answer": "क्या आपने कल मैच देखा?",
+       "bank": [
+        "कल",
+        "कहाँ",
+        "फ़िल्म",
+        "मैच",
+        "आज",
+        "आपने",
+        "क्या",
+        "देखा?"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Did you call him?' का सही जवाब कौन सा है?",
+       "options": [
+        "Yes, I do.",
+        "Yes, I did.",
+        "Yes, I am.",
+        "Yes, I will."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "आप पिछले हफ़्ते कहाँ गए थे?",
+       "answer": "Where did you go last week?",
+       "bank": [
+        "Why",
+        "yesterday?",
+        "last",
+        "you",
+        "went",
+        "go",
+        "Where",
+        "did",
+        "week?"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u8l3",
+     "title": "क्या आप कभी...?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Have you ever...?",
+       "tl": "हैव यू एवर...?",
+       "meaning": "क्या आपने कभी...?",
+       "example": "Have you ever been to Goa?",
+       "exampleMeaning": "क्या आप कभी गोवा गए हैं?"
+      },
+      {
+       "t": "learn",
+       "word": "I have been to...",
+       "tl": "आइ हैव बीन टु...",
+       "meaning": "मैं... गया हूँ (कभी)",
+       "example": "I have been to Goa twice.",
+       "exampleMeaning": "मैं गोवा दो बार गया हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "never",
+       "tl": "नेवर",
+       "meaning": "कभी नहीं",
+       "example": "I have never been to Kerala.",
+       "exampleMeaning": "मैं कभी केरल नहीं गया।"
+      },
+      {
+       "t": "learn",
+       "word": "already",
+       "tl": "ऑलरेडी",
+       "meaning": "पहले ही",
+       "example": "I have already eaten.",
+       "exampleMeaning": "मैंने पहले ही खा लिया है।"
+      },
+      {
+       "t": "learn",
+       "word": "not yet",
+       "tl": "नॉट येट",
+       "meaning": "अभी नहीं",
+       "example": "Have you finished? Not yet.",
+       "exampleMeaning": "क्या आपने पूरा कर लिया? अभी नहीं।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'क्या आप कभी गोवा गए हैं?' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Will you go to Goa?",
+        "Did you go to Goa?",
+        "Have you ever been to Goa?",
+        "Are you in Goa?"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मैं कभी केरल नहीं गया।",
+       "answer": "I have never been to Kerala.",
+       "bank": [
+        "been",
+        "ever",
+        "went",
+        "I",
+        "never",
+        "Kerala.",
+        "to",
+        "have",
+        "Goa."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "I have already eaten.",
+       "meaning": "मैंने पहले ही खा लिया है।",
+       "bank": [
+        "yet.",
+        "I",
+        "never",
+        "have",
+        "already",
+        "eaten.",
+        "my"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Have you ever...?",
+         "क्या आपने कभी...?"
+        ],
+        [
+         "never",
+         "कभी नहीं"
+        ],
+        [
+         "already",
+         "पहले ही"
+        ],
+        [
+         "not yet",
+         "अभी नहीं"
+        ],
+        [
+         "twice",
+         "दो बार"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "I have been to Goa twice. It was great.",
+       "meaning": "मैं गोवा दो बार गया हूँ। बहुत अच्छा था।"
+      },
+      {
+       "t": "fill",
+       "sentence": "Have you finished? ___ yet.",
+       "meaning": "क्या आपने पूरा कर लिया? अभी नहीं।",
+       "options": [
+        "No",
+        "Never",
+        "Already",
+        "Not"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Have you ever been to Goa?",
+       "answer": "क्या आप कभी गोवा गए हैं?",
+       "bank": [
+        "आप",
+        "क्या",
+        "अच्छा",
+        "गोवा",
+        "हैं?",
+        "था",
+        "केरल",
+        "गए",
+        "कभी"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'I have never been to Kerala.' का मतलब क्या है?",
+       "options": [
+        "मैं कभी केरल नहीं गया।",
+        "मुझे केरल पसंद है।",
+        "मैं केरल गया था।",
+        "मैं केरल जा रहा हूँ।"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या आपने कभी बिरयानी खाई है?",
+       "answer": "Have you ever eaten biryani?",
+       "bank": [
+        "Have",
+        "ate",
+        "Did",
+        "ever",
+        "dosa?",
+        "eaten",
+        "biryani?",
+        "you"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u8l4",
+     "title": "रिवीज़न: बीता हुआ समय",
+     "items": [
+      {
+       "t": "learn",
+       "word": "I met",
+       "tl": "आइ मेट",
+       "meaning": "मैं मिला",
+       "example": "I met my old friend yesterday.",
+       "exampleMeaning": "मैं कल अपने पुराने दोस्त से मिला।"
+      },
+      {
+       "t": "learn",
+       "word": "I bought",
+       "tl": "आइ बॉट",
+       "meaning": "मैंने ख़रीदा",
+       "example": "I bought a new phone last week.",
+       "exampleMeaning": "मैंने पिछले हफ़्ते नया फ़ोन ख़रीदा।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैंने ख़रीदा' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I met",
+        "I bought",
+        "I saw",
+        "I buy"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "met",
+         "मिला"
+        ],
+        [
+         "bought",
+         "ख़रीदा"
+        ],
+        [
+         "went",
+         "गया"
+        ],
+        [
+         "already",
+         "पहले ही"
+        ],
+        [
+         "How was...?",
+         "... कैसा था?"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मैंने पिछले हफ़्ते नया फ़ोन ख़रीदा।",
+       "answer": "I bought a new phone last week.",
+       "bank": [
+        "phone",
+        "new",
+        "a",
+        "buy",
+        "bought",
+        "old",
+        "I",
+        "last",
+        "week.",
+        "yesterday."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Where did you go yesterday? I went to the office.",
+       "meaning": "आप कल कहाँ गए थे? मैं ऑफिस गया था।",
+       "bank": [
+        "market.",
+        "you",
+        "the",
+        "very",
+        "office.",
+        "to",
+        "did",
+        "I",
+        "went",
+        "Where",
+        "yesterday?",
+        "will",
+        "go"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "I ___ my old friend yesterday.",
+       "meaning": "मैं कल अपने पुराने दोस्त से मिला।",
+       "options": [
+        "meet",
+        "meeting",
+        "met",
+        "meets"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "Did you see the movie? Yes, I did. It was great.",
+       "meaning": "क्या आपने फ़िल्म देखी? हाँ, देखी। बहुत अच्छी थी।"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "I have already eaten. I am not hungry.",
+       "answer": "मैंने पहले ही खा लिया है। मुझे भूख नहीं है।",
+       "bank": [
+        "ही",
+        "कभी",
+        "है।",
+        "मुझे",
+        "भूख",
+        "है।",
+        "लिया",
+        "नहीं",
+        "खा",
+        "आप",
+        "था",
+        "मैंने",
+        "पहले"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "सही वाक्य चुनिए:",
+       "options": [
+        "I have went to Goa.",
+        "I goed to Goa.",
+        "I go to Goa yesterday.",
+        "I went to Goa."
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या आप कभी मुंबई गए हैं? अभी नहीं।",
+       "answer": "Have you ever been to Mumbai? Not yet.",
+       "bank": [
+        "yet.",
+        "been",
+        "you",
+        "Not",
+        "to",
+        "Mumbai?",
+        "went",
+        "Have",
+        "ever",
+        "Did",
+        "never"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Have you ever ___ to Jaipur?",
+       "meaning": "क्या आप कभी जयपुर गए हैं?",
+       "options": [
+        "been",
+        "go",
+        "went",
+        "going"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Last night I ate biryani and saw a movie.",
+       "meaning": "कल रात मैंने बिरयानी खाई और एक फ़िल्म देखी।",
+       "bank": [
+        "and",
+        "night",
+        "biryani",
+        "I",
+        "week",
+        "movie.",
+        "eat",
+        "ate",
+        "is",
+        "a",
+        "saw",
+        "Last"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u9",
+   "title": "भविष्य और इंटरव्यू",
+   "emoji": "🎯",
+   "goal": "योजनाएँ बताना, न्योता देना और इंटरव्यू में बोलना",
+   "lessons": [
+    {
+     "id": "u9l1",
+     "title": "आगे की योजना",
+     "items": [
+      {
+       "t": "learn",
+       "word": "I am going to...",
+       "tl": "आइ ऐम गोइंग टु...",
+       "meaning": "मैं... करने वाला हूँ",
+       "example": "I am going to buy a car next year.",
+       "exampleMeaning": "मैं अगले साल कार ख़रीदने वाला हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "I will...",
+       "tl": "आइ विल...",
+       "meaning": "मैं... करूँगा",
+       "example": "I will call you tomorrow.",
+       "exampleMeaning": "मैं आपको कल कॉल करूँगा।"
+      },
+      {
+       "t": "learn",
+       "word": "next week, next month",
+       "tl": "नेक्स्ट वीक, नेक्स्ट मंथ",
+       "meaning": "अगले हफ़्ते, अगले महीने",
+       "example": "Next month I am going to Bangalore.",
+       "exampleMeaning": "अगले महीने मैं बैंगलोर जा रहा हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "plan",
+       "tl": "प्लैन",
+       "meaning": "योजना",
+       "example": "What is your plan for Diwali?",
+       "exampleMeaning": "दिवाली के लिए आपकी क्या योजना है?"
+      },
+      {
+       "t": "learn",
+       "word": "maybe",
+       "tl": "मेबी",
+       "meaning": "शायद",
+       "example": "Maybe I will go home.",
+       "exampleMeaning": "शायद मैं घर जाऊँगा।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं आपको कल कॉल करूँगा।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I called you yesterday.",
+        "I will call you tomorrow.",
+        "I am calling you.",
+        "Call me tomorrow."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मैं अगले साल कार ख़रीदने वाला हूँ।",
+       "answer": "I am going to buy a car next year.",
+       "bank": [
+        "buy",
+        "I",
+        "am",
+        "a",
+        "bought",
+        "car",
+        "month.",
+        "going",
+        "year.",
+        "next",
+        "to",
+        "will"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "What is your plan for Diwali?",
+       "meaning": "दिवाली के लिए आपकी क्या योजना है?",
+       "bank": [
+        "Holi?",
+        "your",
+        "plan",
+        "for",
+        "What",
+        "was",
+        "the",
+        "is",
+        "Diwali?"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "I am going to",
+         "मैं करने वाला हूँ"
+        ],
+        [
+         "I will",
+         "मैं करूँगा"
+        ],
+        [
+         "next month",
+         "अगले महीने"
+        ],
+        [
+         "plan",
+         "योजना"
+        ],
+        [
+         "maybe",
+         "शायद"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Next week I am going to Bangalore. Maybe I will visit Mysore.",
+       "meaning": "अगले हफ़्ते मैं बैंगलोर जा रहा हूँ। शायद मैं मैसूर जाऊँगा।"
+      },
+      {
+       "t": "fill",
+       "sentence": "Next month I ___ going to Bangalore.",
+       "meaning": "अगले महीने मैं बैंगलोर जा रहा हूँ।",
+       "options": [
+        "is",
+        "was",
+        "am",
+        "will"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Maybe I will go home.",
+       "answer": "शायद मैं घर जाऊँगा।",
+       "bank": [
+        "जाऊँगा।",
+        "मैं",
+        "ऑफिस",
+        "शायद",
+        "गया",
+        "घर",
+        "के"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'next week' का मतलब क्या है?",
+       "options": [
+        "हर हफ़्ते",
+        "इस हफ़्ते",
+        "पिछले हफ़्ते",
+        "अगले हफ़्ते"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "आपकी क्या योजना है? शायद मैं घर जाऊँगा।",
+       "answer": "What is your plan? Maybe I will go home.",
+       "bank": [
+        "is",
+        "What",
+        "will",
+        "plan?",
+        "your",
+        "I",
+        "Maybe",
+        "going",
+        "office.",
+        "was",
+        "home.",
+        "go"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u9l2",
+     "title": "चलें? / क्या आप आएँगे?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Would you like to...?",
+       "tl": "वुड यू लाइक टु...?",
+       "meaning": "क्या आप... चाहेंगे?",
+       "example": "Would you like to have coffee?",
+       "exampleMeaning": "क्या आप कॉफ़ी पीना चाहेंगे?"
+      },
+      {
+       "t": "learn",
+       "word": "Let's...",
+       "tl": "लेट्स...",
+       "meaning": "चलो... करें",
+       "example": "Let's go for a movie on Saturday.",
+       "exampleMeaning": "चलो शनिवार को फ़िल्म देखने चलें।"
+      },
+      {
+       "t": "learn",
+       "word": "Sounds good!",
+       "tl": "साउंड्स गुड!",
+       "meaning": "बढ़िया लगता है!",
+       "example": "Dinner at eight? Sounds good!",
+       "exampleMeaning": "आठ बजे डिनर? बढ़िया लगता है!"
+      },
+      {
+       "t": "learn",
+       "word": "Sorry, I can't.",
+       "tl": "सॉरी, आइ कांट",
+       "meaning": "माफ़ कीजिए, मैं नहीं आ सकता।",
+       "example": "Sorry, I can't. I am busy tomorrow.",
+       "exampleMeaning": "माफ़ कीजिए, मैं नहीं आ सकता। मैं कल व्यस्त हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "Are you free...?",
+       "tl": "आर यू फ़्री...?",
+       "meaning": "क्या आप... खाली हैं?",
+       "example": "Are you free this weekend?",
+       "exampleMeaning": "क्या आप इस वीकेंड खाली हैं?"
+      },
+      {
+       "t": "choose",
+       "prompt": "'चलो फ़िल्म देखने चलें।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Let's go for a movie.",
+        "I saw a movie.",
+        "Would you like a movie?",
+        "Sounds good!"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "क्या आप कॉफ़ी पीना चाहेंगे?",
+       "answer": "Would you like to have coffee?",
+       "bank": [
+        "Would",
+        "yes",
+        "like",
+        "coffee?",
+        "Do",
+        "you",
+        "to",
+        "have",
+        "tea?"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Are you free this weekend?",
+       "meaning": "क्या आप इस वीकेंड खाली हैं?",
+       "bank": [
+        "busy",
+        "weekend?",
+        "in",
+        "you",
+        "Are",
+        "this",
+        "free",
+        "Sunday?"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Would you like to...?",
+         "क्या आप... चाहेंगे?"
+        ],
+        [
+         "Let's",
+         "चलो"
+        ],
+        [
+         "Sounds good!",
+         "बढ़िया लगता है!"
+        ],
+        [
+         "I can't.",
+         "मैं नहीं कर सकता।"
+        ],
+        [
+         "free",
+         "खाली"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Are you free on Sunday? Let's have lunch.",
+       "meaning": "क्या आप रविवार को खाली हैं? चलो लंच करें।"
+      },
+      {
+       "t": "fill",
+       "sentence": "Dinner at eight? ___ good!",
+       "meaning": "आठ बजे डिनर? बढ़िया लगता है!",
+       "options": [
+        "Feels",
+        "Sounds",
+        "Looks",
+        "Is"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Sorry, I can't. I am busy tomorrow.",
+       "answer": "माफ़ कीजिए, मैं नहीं आ सकता। मैं कल व्यस्त हूँ।",
+       "bank": [
+        "खाली",
+        "आज",
+        "हूँ।",
+        "व्यस्त",
+        "मैं",
+        "आ",
+        "सकता।",
+        "कीजिए,",
+        "नहीं",
+        "हूँ",
+        "मैं",
+        "कल",
+        "माफ़"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "न्योता मानने के लिए क्या बोलेंगे?",
+       "options": [
+        "I am tired.",
+        "Not yet.",
+        "Sounds good!",
+        "Sorry, I can't."
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "चलो शनिवार को फ़िल्म देखने चलें।",
+       "answer": "Let's go for a movie on Saturday.",
+       "bank": [
+        "Let's",
+        "a",
+        "movie",
+        "dinner",
+        "Sunday.",
+        "for",
+        "on",
+        "Saturday.",
+        "go",
+        "Would"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u9l3",
+     "title": "इंटरव्यू",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Tell me about yourself.",
+       "tl": "टेल मी अबाउट यॉरसेल्फ़",
+       "meaning": "अपने बारे में बताइए।",
+       "example": "Tell me about yourself. - I am a software engineer from Pune.",
+       "exampleMeaning": "अपने बारे में बताइए। - मैं पुणे से सॉफ़्टवेयर इंजीनियर हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "experience",
+       "tl": "एक्सपीरियंस",
+       "meaning": "अनुभव",
+       "example": "I have three years of experience.",
+       "exampleMeaning": "मुझे तीन साल का अनुभव है।"
+      },
+      {
+       "t": "learn",
+       "word": "strength, weakness",
+       "tl": "स्ट्रेंथ, वीकनेस",
+       "meaning": "ताकत, कमज़ोरी",
+       "example": "My strength is hard work.",
+       "exampleMeaning": "मेरी ताकत मेहनत है।"
+      },
+      {
+       "t": "learn",
+       "word": "Why do you want this job?",
+       "tl": "व्हाइ डु यू वॉन्ट दिस जॉब?",
+       "meaning": "आप यह नौकरी क्यों चाहते हैं?",
+       "example": "Why do you want this job? - I want to learn and grow.",
+       "exampleMeaning": "आप यह नौकरी क्यों चाहते हैं? - मैं सीखना और आगे बढ़ना चाहता हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "I am a team player.",
+       "tl": "आइ ऐम अ टीम प्लेयर",
+       "meaning": "मैं टीम में अच्छा काम करता हूँ।",
+       "example": "I am a team player and a quick learner.",
+       "exampleMeaning": "मैं टीम में अच्छा काम करता हूँ और जल्दी सीखता हूँ।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मुझे तीन साल का अनुभव है।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I worked for three years.",
+        "I am three years old.",
+        "My experience is three.",
+        "I have three years of experience."
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मेरी ताकत मेहनत है।",
+       "answer": "My strength is hard work.",
+       "bank": [
+        "work.",
+        "are",
+        "weakness",
+        "team",
+        "is",
+        "hard",
+        "strength",
+        "My"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Tell me about yourself.",
+       "meaning": "अपने बारे में बताइए।",
+       "bank": [
+        "Tell",
+        "your",
+        "family.",
+        "yourself.",
+        "me",
+        "about",
+        "what"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "experience",
+         "अनुभव"
+        ],
+        [
+         "strength",
+         "ताकत"
+        ],
+        [
+         "weakness",
+         "कमज़ोरी"
+        ],
+        [
+         "job",
+         "नौकरी"
+        ],
+        [
+         "team player",
+         "टीम में अच्छा काम करने वाला"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "I am a software engineer. I have three years of experience.",
+       "meaning": "मैं सॉफ़्टवेयर इंजीनियर हूँ। मुझे तीन साल का अनुभव है।"
+      },
+      {
+       "t": "fill",
+       "sentence": "Why do you ___ this job?",
+       "meaning": "आप यह नौकरी क्यों चाहते हैं?",
+       "options": [
+        "want",
+        "do",
+        "have",
+        "like"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "I want to learn and grow.",
+       "answer": "मैं सीखना और आगे बढ़ना चाहता हूँ।",
+       "bank": [
+        "नहीं",
+        "बढ़ना",
+        "सीखना",
+        "आगे",
+        "और",
+        "चाहता",
+        "काम",
+        "मैं",
+        "लिए",
+        "हूँ।"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "इंटरव्यू में 'My weakness is...' का मतलब क्या है?",
+       "options": [
+        "मेरी नौकरी है...",
+        "मेरी कमज़ोरी है...",
+        "मेरी ताकत है...",
+        "मेरा अनुभव है..."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मैं टीम में अच्छा काम करता हूँ और जल्दी सीखता हूँ।",
+       "answer": "I am a team player and a quick learner.",
+       "bank": [
+        "a",
+        "team",
+        "engineer",
+        "and",
+        "am",
+        "quick",
+        "slow",
+        "learner.",
+        "a",
+        "player",
+        "have",
+        "I"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u9l4",
+     "title": "रिवीज़न: भविष्य और इंटरव्यू",
+     "items": [
+      {
+       "t": "learn",
+       "word": "goal",
+       "tl": "गोल",
+       "meaning": "लक्ष्य",
+       "example": "My goal is to become a manager.",
+       "exampleMeaning": "मेरा लक्ष्य मैनेजर बनना है।"
+      },
+      {
+       "t": "learn",
+       "word": "Thank you for your time.",
+       "tl": "थैंक यू फ़ॉर यॉर टाइम",
+       "meaning": "आपके समय के लिए धन्यवाद।",
+       "example": "Thank you for your time, sir.",
+       "exampleMeaning": "आपके समय के लिए धन्यवाद, सर।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'लक्ष्य' अंग्रेज़ी में क्या है?",
+       "options": [
+        "job",
+        "strength",
+        "goal",
+        "plan"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "goal",
+         "लक्ष्य"
+        ],
+        [
+         "Thank you for your time.",
+         "आपके समय के लिए धन्यवाद।"
+        ],
+        [
+         "next year",
+         "अगले साल"
+        ],
+        [
+         "Sounds good!",
+         "बढ़िया लगता है!"
+        ],
+        [
+         "experience",
+         "अनुभव"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मेरा लक्ष्य मैनेजर बनना है।",
+       "answer": "My goal is to become a manager.",
+       "bank": [
+        "will",
+        "engineer.",
+        "become",
+        "manager.",
+        "is",
+        "goal",
+        "a",
+        "plan",
+        "to",
+        "My"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Would you like to have dinner on Friday? Sounds good!",
+       "meaning": "क्या आप शुक्रवार को डिनर करना चाहेंगे? बढ़िया लगता है!",
+       "bank": [
+        "good!",
+        "Would",
+        "to",
+        "have",
+        "the",
+        "Saturday?",
+        "Sounds",
+        "lunch",
+        "on",
+        "like",
+        "you",
+        "Friday?",
+        "dinner"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Next year I ___ going to buy a house.",
+       "meaning": "अगले साल मैं घर ख़रीदने वाला हूँ।",
+       "options": [
+        "will",
+        "have",
+        "was",
+        "am"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "Tell me about yourself. I am a teacher from Lucknow.",
+       "meaning": "अपने बारे में बताइए। मैं लखनऊ से शिक्षक हूँ।"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Are you free this weekend? Sorry, I can't.",
+       "answer": "क्या आप इस वीकेंड खाली हैं? माफ़ कीजिए, मैं नहीं आ सकता।",
+       "bank": [
+        "वीकेंड",
+        "माफ़",
+        "आ",
+        "क्या",
+        "कल",
+        "कृपया",
+        "हैं?",
+        "आप",
+        "ज़रूर",
+        "खाली",
+        "इस",
+        "नहीं",
+        "कीजिए,",
+        "सकता।",
+        "मैं"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'I will call you next week.' का मतलब क्या है?",
+       "options": [
+        "मैं अगले हफ़्ते कॉल करूँगा।",
+        "आप मुझे कॉल करें।",
+        "मैं हर हफ़्ते कॉल करता हूँ।",
+        "मैंने पिछले हफ़्ते कॉल किया।"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "आप यह नौकरी क्यों चाहते हैं?",
+       "answer": "Why do you want this job?",
+       "bank": [
+        "like",
+        "do",
+        "Why",
+        "you",
+        "office?",
+        "this",
+        "job?",
+        "Where",
+        "want"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "I have five years of ___ in sales.",
+       "meaning": "मुझे सेल्स में पाँच साल का अनुभव है।",
+       "options": [
+        "goal",
+        "experience",
+        "strength",
+        "plan"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Maybe I will go to Goa next month. Let's go together!",
+       "meaning": "शायद मैं अगले महीने गोवा जाऊँगा। चलो साथ चलें!",
+       "bank": [
+        "next",
+        "Goa",
+        "week.",
+        "to",
+        "go",
+        "Maybe",
+        "Let's",
+        "went",
+        "together!",
+        "will",
+        "go",
+        "I",
+        "month.",
+        "he"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u10",
+   "title": "राय और सलाह",
+   "emoji": "💬",
+   "goal": "अपनी राय देना, सलाह देना और बातचीत आगे बढ़ाना",
+   "lessons": [
+    {
+     "id": "u10l1",
+     "title": "मेरी राय में",
+     "items": [
+      {
+       "t": "learn",
+       "word": "I think...",
+       "tl": "आइ थिंक...",
+       "meaning": "मुझे लगता है...",
+       "example": "I think this is a good idea.",
+       "exampleMeaning": "मुझे लगता है यह अच्छा विचार है।"
+      },
+      {
+       "t": "learn",
+       "word": "In my opinion",
+       "tl": "इन माइ ओपिनियन",
+       "meaning": "मेरी राय में",
+       "example": "In my opinion, the price is too high.",
+       "exampleMeaning": "मेरी राय में, दाम बहुत ज़्यादा है।"
+      },
+      {
+       "t": "learn",
+       "word": "I agree. / I disagree.",
+       "tl": "आइ अग्री / आइ डिसअग्री",
+       "meaning": "मैं सहमत हूँ। / मैं असहमत हूँ।",
+       "example": "I agree with you.",
+       "exampleMeaning": "मैं आपसे सहमत हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "What do you think?",
+       "tl": "व्हॉट डु यू थिंक?",
+       "meaning": "आप क्या सोचते हैं?",
+       "example": "What do you think about this plan?",
+       "exampleMeaning": "आप इस योजना के बारे में क्या सोचते हैं?"
+      },
+      {
+       "t": "learn",
+       "word": "idea",
+       "tl": "आइडिया",
+       "meaning": "विचार",
+       "example": "That is a great idea!",
+       "exampleMeaning": "यह बहुत अच्छा विचार है!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं सहमत हूँ।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I like.",
+        "I think.",
+        "I agree.",
+        "I disagree."
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मुझे लगता है यह अच्छा विचार है।",
+       "answer": "I think this is a good idea.",
+       "bank": [
+        "bad",
+        "think",
+        "is",
+        "plan.",
+        "this",
+        "I",
+        "good",
+        "agree",
+        "a",
+        "idea."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "What do you think about this plan?",
+       "meaning": "आप इस योजना के बारे में क्या सोचते हैं?",
+       "bank": [
+        "plan?",
+        "What",
+        "think",
+        "idea?",
+        "about",
+        "of",
+        "How",
+        "do",
+        "you",
+        "this"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "I think",
+         "मुझे लगता है"
+        ],
+        [
+         "In my opinion",
+         "मेरी राय में"
+        ],
+        [
+         "I agree.",
+         "मैं सहमत हूँ।"
+        ],
+        [
+         "I disagree.",
+         "मैं असहमत हूँ।"
+        ],
+        [
+         "idea",
+         "विचार"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "In my opinion, this is a great idea. What do you think?",
+       "meaning": "मेरी राय में, यह बहुत अच्छा विचार है। आप क्या सोचते हैं?"
+      },
+      {
+       "t": "fill",
+       "sentence": "I ___ with you. The price is too high.",
+       "meaning": "मैं आपसे सहमत हूँ। दाम बहुत ज़्यादा है।",
+       "options": [
+        "like",
+        "want",
+        "think",
+        "agree"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "I agree with you.",
+       "answer": "मैं आपसे सहमत हूँ।",
+       "bank": [
+        "नहीं",
+        "असहमत",
+        "पर",
+        "मैं",
+        "सहमत",
+        "आपसे",
+        "हूँ।"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'I disagree.' का मतलब क्या है?",
+       "options": [
+        "मैं असहमत हूँ।",
+        "मैं नहीं जानता।",
+        "मुझे लगता है।",
+        "मैं सहमत हूँ।"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मेरी राय में, दाम बहुत ज़्यादा है।",
+       "answer": "In my opinion, the price is too high.",
+       "bank": [
+        "price",
+        "the",
+        "high.",
+        "In",
+        "I",
+        "is",
+        "think",
+        "low.",
+        "opinion,",
+        "too",
+        "my"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u10l2",
+     "title": "सलाह और तुलना",
+     "items": [
+      {
+       "t": "learn",
+       "word": "You should...",
+       "tl": "यू शुड...",
+       "meaning": "आपको... चाहिए",
+       "example": "You should take rest.",
+       "exampleMeaning": "आपको आराम करना चाहिए।"
+      },
+      {
+       "t": "learn",
+       "word": "better, best",
+       "tl": "बेटर, बेस्ट",
+       "meaning": "बेहतर, सबसे अच्छा",
+       "example": "This phone is better than that one.",
+       "exampleMeaning": "यह फ़ोन उससे बेहतर है।"
+      },
+      {
+       "t": "learn",
+       "word": "You must...",
+       "tl": "यू मस्ट...",
+       "meaning": "आपको... ज़रूर करना चाहिए",
+       "example": "You must try the biryani here.",
+       "exampleMeaning": "आपको यहाँ की बिरयानी ज़रूर खानी चाहिए।"
+      },
+      {
+       "t": "learn",
+       "word": "Why don't you...?",
+       "tl": "व्हाइ डोंट यू...?",
+       "meaning": "आप... क्यों नहीं करते?",
+       "example": "Why don't you talk to your boss?",
+       "exampleMeaning": "आप अपने बॉस से बात क्यों नहीं करते?"
+      },
+      {
+       "t": "learn",
+       "word": "more, less",
+       "tl": "मोर, लेस",
+       "meaning": "ज़्यादा, कम",
+       "example": "Drink more water and less coffee.",
+       "exampleMeaning": "ज़्यादा पानी और कम कॉफ़ी पीजिए।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'आपको आराम करना चाहिए।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Rest is good.",
+        "You should take rest.",
+        "You are resting.",
+        "You rest."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "यह फ़ोन उससे बेहतर है।",
+       "answer": "This phone is better than that one.",
+       "bank": [
+        "phone",
+        "do",
+        "better",
+        "cheaper",
+        "best",
+        "one.",
+        "that",
+        "This",
+        "than",
+        "is"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Why don't you talk to your boss?",
+       "meaning": "आप अपने बॉस से बात क्यों नहीं करते?",
+       "bank": [
+        "talk",
+        "don't",
+        "your",
+        "Why",
+        "me",
+        "should",
+        "to",
+        "boss?",
+        "colleague?",
+        "you"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "should",
+         "चाहिए"
+        ],
+        [
+         "better",
+         "बेहतर"
+        ],
+        [
+         "best",
+         "सबसे अच्छा"
+        ],
+        [
+         "must",
+         "ज़रूर"
+        ],
+        [
+         "more",
+         "ज़्यादा"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "You should drink more water. You must take rest.",
+       "meaning": "आपको ज़्यादा पानी पीना चाहिए। आपको ज़रूर आराम करना चाहिए।"
+      },
+      {
+       "t": "fill",
+       "sentence": "You ___ try the biryani here.",
+       "meaning": "आपको यहाँ की बिरयानी ज़रूर खानी चाहिए।",
+       "options": [
+        "were",
+        "did",
+        "must",
+        "are"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Drink more water and less coffee.",
+       "answer": "ज़्यादा पानी और कम कॉफ़ी पीजिए।",
+       "bank": [
+        "कल",
+        "कम",
+        "कॉफ़ी",
+        "खाइए",
+        "पीजिए।",
+        "पानी",
+        "ज़्यादा",
+        "और",
+        "चाय"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'the best' का मतलब क्या है?",
+       "options": [
+        "बेहतर",
+        "अच्छा",
+        "बुरा",
+        "सबसे अच्छा"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "आप डॉक्टर के पास क्यों नहीं जाते?",
+       "answer": "Why don't you go to the doctor?",
+       "bank": [
+        "don't",
+        "you",
+        "go",
+        "Why",
+        "doctor?",
+        "office?",
+        "to",
+        "should",
+        "the",
+        "Do"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u10l3",
+     "title": "बातचीत के शब्द",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Actually",
+       "tl": "ऐक्चुअली",
+       "meaning": "दरअसल",
+       "example": "Actually, I have a different idea.",
+       "exampleMeaning": "दरअसल, मेरा एक अलग विचार है।"
+      },
+      {
+       "t": "learn",
+       "word": "Honestly",
+       "tl": "ऑनेस्टली",
+       "meaning": "सच कहूँ तो",
+       "example": "Honestly, I did not like the movie.",
+       "exampleMeaning": "सच कहूँ तो, मुझे फ़िल्म पसंद नहीं आई।"
+      },
+      {
+       "t": "learn",
+       "word": "Anyway",
+       "tl": "एनीवे",
+       "meaning": "ख़ैर",
+       "example": "Anyway, let's talk tomorrow.",
+       "exampleMeaning": "ख़ैर, कल बात करते हैं।"
+      },
+      {
+       "t": "learn",
+       "word": "That's fine.",
+       "tl": "दैट्स फ़ाइन",
+       "meaning": "ठीक है। / कोई बात नहीं।",
+       "example": "You are late? That's fine.",
+       "exampleMeaning": "आपको देर हो गई? ठीक है।"
+      },
+      {
+       "t": "learn",
+       "word": "Of course",
+       "tl": "ऑफ़ कोर्स",
+       "meaning": "बिल्कुल",
+       "example": "Can you help me? Of course!",
+       "exampleMeaning": "क्या आप मेरी मदद कर सकते हैं? बिल्कुल!"
+      },
+      {
+       "t": "learn",
+       "word": "I am not sure.",
+       "tl": "आइ ऐम नॉट श्योर",
+       "meaning": "मुझे पक्का नहीं पता।",
+       "example": "I am not sure, let me check.",
+       "exampleMeaning": "मुझे पक्का नहीं पता, मैं देखता हूँ।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'दरअसल' अंग्रेज़ी में क्या है?",
+       "options": [
+        "Actually",
+        "Anyway",
+        "Of course",
+        "Honestly"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "ख़ैर, कल बात करते हैं।",
+       "answer": "Anyway, let's talk tomorrow.",
+       "bank": [
+        "today.",
+        "Actually,",
+        "Anyway,",
+        "tomorrow.",
+        "will",
+        "talk",
+        "let's"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "I am not sure, let me check.",
+       "meaning": "मुझे पक्का नहीं पता, मैं देखता हूँ।",
+       "bank": [
+        "am",
+        "do",
+        "sure,",
+        "I",
+        "not",
+        "check.",
+        "me",
+        "let",
+        "sure.",
+        "you"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Actually",
+         "दरअसल"
+        ],
+        [
+         "Honestly",
+         "सच कहूँ तो"
+        ],
+        [
+         "Anyway",
+         "ख़ैर"
+        ],
+        [
+         "Of course",
+         "बिल्कुल"
+        ],
+        [
+         "That's fine.",
+         "ठीक है।"
+        ]
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Honestly, I am not sure. Anyway, that's fine.",
+       "meaning": "सच कहूँ तो, मुझे पक्का नहीं पता। ख़ैर, ठीक है।"
+      },
+      {
+       "t": "fill",
+       "sentence": "Can you help me? ___ course!",
+       "meaning": "क्या आप मेरी मदद कर सकते हैं? बिल्कुल!",
+       "options": [
+        "On",
+        "Of",
+        "Off",
+        "For"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Actually, I have a different idea.",
+       "answer": "दरअसल, मेरा एक अलग विचार है।",
+       "bank": [
+        "विचार",
+        "नहीं",
+        "अलग",
+        "मेरा",
+        "दरअसल,",
+        "वही",
+        "है।",
+        "कहाँ",
+        "एक"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "सच कहूँ तो, मुझे फ़िल्म पसंद नहीं आई।",
+       "answer": "Honestly, I did not like the movie.",
+       "bank": [
+        "loved",
+        "not",
+        "I",
+        "did",
+        "idea.",
+        "like",
+        "movie.",
+        "Actually,",
+        "Honestly,",
+        "the"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u10l4",
+     "title": "रिवीज़न: राय और सलाह",
+     "items": [
+      {
+       "t": "learn",
+       "word": "I understand.",
+       "tl": "आइ अंडरस्टैंड",
+       "meaning": "मैं समझता हूँ।",
+       "example": "I understand your point.",
+       "exampleMeaning": "मैं आपकी बात समझता हूँ।"
+      },
+      {
+       "t": "learn",
+       "word": "Let me think.",
+       "tl": "लेट मी थिंक",
+       "meaning": "मुझे सोचने दीजिए।",
+       "example": "Good question. Let me think.",
+       "exampleMeaning": "अच्छा सवाल। मुझे सोचने दीजिए।"
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं समझता हूँ।' अंग्रेज़ी में क्या है?",
+       "options": [
+        "I agree.",
+        "I think.",
+        "I understand.",
+        "I am sure."
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "I understand.",
+         "मैं समझता हूँ।"
+        ],
+        [
+         "Let me think.",
+         "मुझे सोचने दीजिए।"
+        ],
+        [
+         "should",
+         "चाहिए"
+        ],
+        [
+         "In my opinion",
+         "मेरी राय में"
+        ],
+        [
+         "Honestly",
+         "सच कहूँ तो"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "मैं आपकी बात समझता हूँ, लेकिन मैं असहमत हूँ।",
+       "answer": "I understand your point, but I disagree.",
+       "bank": [
+        "but",
+        "think",
+        "and",
+        "I",
+        "your",
+        "agree.",
+        "I",
+        "disagree.",
+        "understand",
+        "point,"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "What do you think? Honestly, I am not sure.",
+       "meaning": "आप क्या सोचते हैं? सच कहूँ तो, मुझे पक्का नहीं पता।",
+       "bank": [
+        "Actually,",
+        "agree.",
+        "not",
+        "Honestly,",
+        "sure.",
+        "am",
+        "you",
+        "do",
+        "think?",
+        "are",
+        "What",
+        "I"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "You ___ talk to your boss about the deadline.",
+       "meaning": "आपको डेडलाइन के बारे में अपने बॉस से बात करनी चाहिए।",
+       "options": [
+        "are",
+        "did",
+        "were",
+        "should"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "In my opinion, this is the best plan. I agree with you.",
+       "meaning": "मेरी राय में, यह सबसे अच्छी योजना है। मैं आपसे सहमत हूँ।"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "That is a great idea! Of course I will come.",
+       "answer": "यह बहुत अच्छा विचार है! बिल्कुल मैं आऊँगा।",
+       "bank": [
+        "बहुत",
+        "आऊँगा।",
+        "है!",
+        "बिल्कुल",
+        "यह",
+        "मैं",
+        "शायद",
+        "नहीं",
+        "हम",
+        "विचार",
+        "अच्छा"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'This is better than that.' का मतलब क्या है?",
+       "options": [
+        "यह उससे बेहतर है।",
+        "दोनों एक जैसे हैं।",
+        "यह सबसे अच्छा है।",
+        "यह उससे बुरा है।"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "ख़ैर, अच्छा सवाल। मुझे सोचने दीजिए।",
+       "answer": "Anyway, good question. Let me think.",
+       "bank": [
+        "Actually,",
+        "question.",
+        "Anyway,",
+        "idea.",
+        "good",
+        "you",
+        "think.",
+        "Let",
+        "me"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Actually, I ___ not like spicy food.",
+       "meaning": "दरअसल, मुझे तीखा खाना पसंद नहीं है।",
+       "options": [
+        "am",
+        "do",
+        "was",
+        "did"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "You must drink more water and take rest. Get well soon!",
+       "meaning": "आपको ज़्यादा पानी पीना चाहिए और आराम करना चाहिए। जल्दी ठीक हो जाइए!",
+       "bank": [
+        "water",
+        "must",
+        "well",
+        "take",
+        "drink",
+        "will",
+        "Get",
+        "soon!",
+        "You",
+        "should",
+        "and",
+        "rest.",
+        "less",
+        "more"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

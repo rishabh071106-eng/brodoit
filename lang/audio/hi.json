@@ -1,0 +1,8955 @@
+{
+ "code": "hi",
+ "name": "Hindi",
+ "from": "en",
+ "narratorVoice": "en-IN",
+ "targetVoice": "hi-IN",
+ "lessons": [
+  {
+   "id": "a1",
+   "title": "Lesson 1 — Hello, do you understand?",
+   "minutes": 16,
+   "goal": "Greet someone politely and say whether you understand English or Hindi",
+   "steps": [
+    {
+     "n": "Listen to this conversation between two people meeting for the first time in India."
+    },
+    {
+     "t": "नमस्ते। क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "namaste. kyā āp angrezī samajhte hain?"
+    },
+    {
+     "t": "जी नहीं, मैं अंग्रेज़ी नहीं समझता।",
+     "tl": "jī nahīn, main angrezī nahīn samajhtā."
+    },
+    {
+     "t": "मैं थोड़ी हिंदी समझता हूँ।",
+     "tl": "main thoṛī hindī samajhtā hūn."
+    },
+    {
+     "n": "In the next few minutes you will learn to say all of that yourself. Let's start with the greeting."
+    },
+    {
+     "n": "This greeting works at any time of day, for hello and goodbye. Listen and repeat, starting from the end of the word."
+    },
+    {
+     "t": "नमस्ते",
+     "tl": "namaste"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "ते",
+     "slow": true,
+     "tl": "te"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मस्ते",
+     "slow": true,
+     "tl": "maste"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "नमस्ते",
+     "slow": true,
+     "tl": "namaste"
+    },
+    {
+     "p": 3,
+     "expect": "नमस्ते"
+    },
+    {
+     "t": "नमस्ते",
+     "tl": "namaste"
+    },
+    {
+     "p": 3,
+     "expect": "नमस्ते"
+    },
+    {
+     "n": "Once more, say 'hello'."
+    },
+    {
+     "p": 3,
+     "expect": "नमस्ते"
+    },
+    {
+     "t": "नमस्ते",
+     "tl": "namaste"
+    },
+    {
+     "n": "In India people often say this with their palms pressed together in front of the chest. Now say 'hello'."
+    },
+    {
+     "p": 3,
+     "expect": "नमस्ते"
+    },
+    {
+     "t": "नमस्ते",
+     "tl": "namaste"
+    },
+    {
+     "n": "Here is the word for the English language. Listen and repeat."
+    },
+    {
+     "t": "अंग्रेज़ी",
+     "tl": "angrezī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "ज़ी",
+     "slow": true,
+     "tl": "zī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ग्रेज़ी",
+     "slow": true,
+     "tl": "grezī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "अंग्रेज़ी",
+     "slow": true,
+     "tl": "angrezī"
+    },
+    {
+     "p": 3,
+     "expect": "अंग्रेज़ी"
+    },
+    {
+     "t": "अंग्रेज़ी",
+     "tl": "angrezī"
+    },
+    {
+     "p": 3,
+     "expect": "अंग्रेज़ी"
+    },
+    {
+     "n": "Now, 'you understand', speaking politely to one person. Listen and repeat."
+    },
+    {
+     "t": "समझते हैं",
+     "tl": "samajhte hain"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "हैं",
+     "slow": true,
+     "tl": "hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "समझते",
+     "slow": true,
+     "tl": "samajhte"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "समझते हैं",
+     "slow": true,
+     "tl": "samajhte hain"
+    },
+    {
+     "p": 3,
+     "expect": "समझते हैं"
+    },
+    {
+     "t": "समझते हैं",
+     "tl": "samajhte hain"
+    },
+    {
+     "p": 3,
+     "expect": "समझते हैं"
+    },
+    {
+     "n": "Say 'English'."
+    },
+    {
+     "p": 3,
+     "expect": "अंग्रेज़ी"
+    },
+    {
+     "t": "अंग्रेज़ी",
+     "tl": "angrezī"
+    },
+    {
+     "n": "The polite word for 'you' is this. Listen and repeat."
+    },
+    {
+     "t": "आप",
+     "tl": "āp"
+    },
+    {
+     "p": 2,
+     "expect": "आप"
+    },
+    {
+     "n": "Now say 'you understand English'. In Hindi the verb comes at the end: 'you English understand'. Listen and repeat."
+    },
+    {
+     "t": "आप अंग्रेज़ी समझते हैं",
+     "tl": "āp angrezī samajhte hain"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "अंग्रेज़ी समझते हैं",
+     "slow": true,
+     "tl": "angrezī samajhte hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आप अंग्रेज़ी समझते हैं",
+     "slow": true,
+     "tl": "āp angrezī samajhte hain"
+    },
+    {
+     "p": 3,
+     "expect": "आप अंग्रेज़ी समझते हैं"
+    },
+    {
+     "t": "आप अंग्रेज़ी समझते हैं",
+     "tl": "āp angrezī samajhte hain"
+    },
+    {
+     "p": 3,
+     "expect": "आप अंग्रेज़ी समझते हैं"
+    },
+    {
+     "n": "To turn that into a question, put a small question word at the front. Listen and repeat."
+    },
+    {
+     "t": "क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "kyā āp angrezī samajhte hain?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "क्या",
+     "slow": true,
+     "tl": "kyā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्या आप अंग्रेज़ी समझते हैं?",
+     "slow": true,
+     "tl": "kyā āp angrezī samajhte hain?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आप अंग्रेज़ी समझते हैं?"
+    },
+    {
+     "t": "क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "kyā āp angrezī samajhte hain?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आप अंग्रेज़ी समझते हैं?"
+    },
+    {
+     "n": "Ask me if I understand English."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आप अंग्रेज़ी समझते हैं?"
+    },
+    {
+     "t": "क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "kyā āp angrezī samajhte hain?"
+    },
+    {
+     "n": "Here is a polite 'no'. The first little word adds respect. Listen and repeat."
+    },
+    {
+     "t": "जी नहीं",
+     "tl": "jī nahīn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "नहीं",
+     "slow": true,
+     "tl": "nahīn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "जी नहीं",
+     "slow": true,
+     "tl": "jī nahīn"
+    },
+    {
+     "p": 3,
+     "expect": "जी नहीं"
+    },
+    {
+     "t": "जी नहीं",
+     "tl": "jī nahīn"
+    },
+    {
+     "p": 3,
+     "expect": "जी नहीं"
+    },
+    {
+     "n": "And a polite 'yes'. Listen and repeat."
+    },
+    {
+     "t": "जी हाँ",
+     "tl": "jī hān"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "हाँ",
+     "slow": true,
+     "tl": "hān"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "जी हाँ",
+     "slow": true,
+     "tl": "jī hān"
+    },
+    {
+     "p": 3,
+     "expect": "जी हाँ"
+    },
+    {
+     "t": "जी हाँ",
+     "tl": "jī hān"
+    },
+    {
+     "p": 3,
+     "expect": "जी हाँ"
+    },
+    {
+     "n": "Say 'no'."
+    },
+    {
+     "p": 3,
+     "expect": "जी नहीं"
+    },
+    {
+     "t": "जी नहीं",
+     "tl": "jī nahīn"
+    },
+    {
+     "n": "Say 'yes'."
+    },
+    {
+     "p": 3,
+     "expect": "जी हाँ"
+    },
+    {
+     "t": "जी हाँ",
+     "tl": "jī hān"
+    },
+    {
+     "n": "Ask me again if I understand English."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आप अंग्रेज़ी समझते हैं?"
+    },
+    {
+     "t": "क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "kyā āp angrezī samajhte hain?"
+    },
+    {
+     "n": "Now, 'I understand'. A man says it like this. Listen and repeat."
+    },
+    {
+     "t": "मैं समझता हूँ",
+     "tl": "main samajhtā hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "हूँ",
+     "slow": true,
+     "tl": "hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "समझता हूँ",
+     "slow": true,
+     "tl": "samajhtā hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं समझता हूँ",
+     "slow": true,
+     "tl": "main samajhtā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं समझता हूँ"
+    },
+    {
+     "t": "मैं समझता हूँ",
+     "tl": "main samajhtā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं समझता हूँ"
+    },
+    {
+     "n": "A woman changes the ending of the verb. Listen, and if you are a woman, repeat this form from now on."
+    },
+    {
+     "t": "मैं समझती हूँ",
+     "tl": "main samajhtī hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "n": "Here is 'I don't understand'. The word for 'not' goes just before the verb. Listen and repeat."
+    },
+    {
+     "t": "मैं नहीं समझता",
+     "tl": "main nahīn samajhtā"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "समझता",
+     "slow": true,
+     "tl": "samajhtā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "नहीं समझता",
+     "slow": true,
+     "tl": "nahīn samajhtā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं नहीं समझता",
+     "slow": true,
+     "tl": "main nahīn samajhtā"
+    },
+    {
+     "p": 3,
+     "expect": "मैं नहीं समझता"
+    },
+    {
+     "t": "मैं नहीं समझता",
+     "tl": "main nahīn samajhtā"
+    },
+    {
+     "p": 3,
+     "expect": "मैं नहीं समझता"
+    },
+    {
+     "n": "Tell me you understand."
+    },
+    {
+     "p": 3,
+     "expect": "मैं समझता हूँ"
+    },
+    {
+     "t": "मैं समझता हूँ",
+     "tl": "main samajhtā hūn"
+    },
+    {
+     "n": "Tell me you don't understand."
+    },
+    {
+     "p": 3,
+     "expect": "मैं नहीं समझता"
+    },
+    {
+     "t": "मैं नहीं समझता",
+     "tl": "main nahīn samajhtā"
+    },
+    {
+     "n": "Now, 'I don't understand English'. Listen and repeat."
+    },
+    {
+     "t": "मैं अंग्रेज़ी नहीं समझता",
+     "tl": "main angrezī nahīn samajhtā"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "अंग्रेज़ी नहीं समझता",
+     "slow": true,
+     "tl": "angrezī nahīn samajhtā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं अंग्रेज़ी नहीं समझता",
+     "slow": true,
+     "tl": "main angrezī nahīn samajhtā"
+    },
+    {
+     "p": 3,
+     "expect": "मैं अंग्रेज़ी नहीं समझता"
+    },
+    {
+     "t": "मैं अंग्रेज़ी नहीं समझता",
+     "tl": "main angrezī nahīn samajhtā"
+    },
+    {
+     "p": 3,
+     "expect": "मैं अंग्रेज़ी नहीं समझता"
+    },
+    {
+     "n": "Say 'no, I don't understand English'."
+    },
+    {
+     "p": 4,
+     "expect": "जी नहीं, मैं अंग्रेज़ी नहीं समझता।"
+    },
+    {
+     "t": "जी नहीं, मैं अंग्रेज़ी नहीं समझता।",
+     "tl": "jī nahīn, main angrezī nahīn samajhtā."
+    },
+    {
+     "n": "Say 'hello'."
+    },
+    {
+     "p": 3,
+     "expect": "नमस्ते"
+    },
+    {
+     "t": "नमस्ते",
+     "tl": "namaste"
+    },
+    {
+     "n": "Here is the word for the Hindi language. Listen and repeat."
+    },
+    {
+     "t": "हिंदी",
+     "tl": "hindī"
+    },
+    {
+     "p": 2,
+     "expect": "हिंदी"
+    },
+    {
+     "n": "Here is 'a little'. Notice the flapped 'r' sound in the middle. Listen and repeat."
+    },
+    {
+     "t": "थोड़ी",
+     "tl": "thoṛī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "ड़ी",
+     "slow": true,
+     "tl": "ṛī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "थोड़ी",
+     "slow": true,
+     "tl": "thoṛī"
+    },
+    {
+     "p": 3,
+     "expect": "थोड़ी"
+    },
+    {
+     "t": "थोड़ी",
+     "tl": "thoṛī"
+    },
+    {
+     "p": 3,
+     "expect": "थोड़ी"
+    },
+    {
+     "n": "Now put it together: 'I understand a little Hindi'. Listen and repeat."
+    },
+    {
+     "t": "मैं थोड़ी हिंदी समझता हूँ",
+     "tl": "main thoṛī hindī samajhtā hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "हिंदी समझता हूँ",
+     "slow": true,
+     "tl": "hindī samajhtā hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "थोड़ी हिंदी समझता हूँ",
+     "slow": true,
+     "tl": "thoṛī hindī samajhtā hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं थोड़ी हिंदी समझता हूँ",
+     "slow": true,
+     "tl": "main thoṛī hindī samajhtā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं थोड़ी हिंदी समझता हूँ"
+    },
+    {
+     "t": "मैं थोड़ी हिंदी समझता हूँ",
+     "tl": "main thoṛī hindī samajhtā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं थोड़ी हिंदी समझता हूँ"
+    },
+    {
+     "n": "Ask me if I understand English."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आप अंग्रेज़ी समझते हैं?"
+    },
+    {
+     "t": "क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "kyā āp angrezī samajhte hain?"
+    },
+    {
+     "n": "Tell me you understand a little Hindi."
+    },
+    {
+     "p": 4,
+     "expect": "मैं थोड़ी हिंदी समझता हूँ"
+    },
+    {
+     "t": "मैं थोड़ी हिंदी समझता हूँ",
+     "tl": "main thoṛī hindī samajhtā hūn"
+    },
+    {
+     "q": "I'll ask you something in Hindi. Answer that you understand."
+    },
+    {
+     "t": "क्या आप हिंदी समझते हैं?",
+     "tl": "kyā āp hindī samajhte hain?"
+    },
+    {
+     "p": 4,
+     "expect": "मैं समझता हूँ"
+    },
+    {
+     "t": "जी हाँ, मैं समझता हूँ",
+     "tl": "jī hān, main samajhtā hūn"
+    },
+    {
+     "n": "Notice the word order again: subject, then object, then the verb at the very end. Say 'I don't understand English'."
+    },
+    {
+     "p": 4,
+     "expect": "मैं अंग्रेज़ी नहीं समझता"
+    },
+    {
+     "t": "मैं अंग्रेज़ी नहीं समझता",
+     "tl": "main angrezī nahīn samajhtā"
+    },
+    {
+     "n": "Tell me you understand a little Hindi."
+    },
+    {
+     "p": 4,
+     "expect": "मैं थोड़ी हिंदी समझता हूँ"
+    },
+    {
+     "t": "मैं थोड़ी हिंदी समझता हूँ",
+     "tl": "main thoṛī hindī samajhtā hūn"
+    },
+    {
+     "n": "Now take the first speaker's part. Greet me, then ask if I understand English."
+    },
+    {
+     "p": 5,
+     "expect": "नमस्ते। क्या आप अंग्रेज़ी समझते हैं?"
+    },
+    {
+     "t": "नमस्ते। क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "namaste. kyā āp angrezī samajhte hain?"
+    },
+    {
+     "n": "Now answer: 'no, I don't understand English'."
+    },
+    {
+     "p": 5,
+     "expect": "जी नहीं, मैं अंग्रेज़ी नहीं समझता।"
+    },
+    {
+     "t": "जी नहीं, मैं अंग्रेज़ी नहीं समझता।",
+     "tl": "jī nahīn, main angrezī nahīn samajhtā."
+    },
+    {
+     "n": "Add: 'I understand a little Hindi'."
+    },
+    {
+     "p": 4,
+     "expect": "मैं थोड़ी हिंदी समझता हूँ।"
+    },
+    {
+     "t": "मैं थोड़ी हिंदी समझता हूँ।",
+     "tl": "main thoṛī hindī samajhtā hūn."
+    },
+    {
+     "n": "Listen to the conversation from the beginning once more."
+    },
+    {
+     "t": "नमस्ते। क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "namaste. kyā āp angrezī samajhte hain?"
+    },
+    {
+     "t": "जी नहीं, मैं अंग्रेज़ी नहीं समझता।",
+     "tl": "jī nahīn, main angrezī nahīn samajhtā."
+    },
+    {
+     "t": "मैं थोड़ी हिंदी समझता हूँ।",
+     "tl": "main thoṛī hindī samajhtā hūn."
+    },
+    {
+     "n": "Well done. In the next lesson you will learn to ask how someone is, say thank you, and say that you speak a little Hindi. This is the end of lesson one."
+    }
+   ]
+  },
+  {
+   "id": "a2",
+   "title": "Lesson 2 — How are you? Thank you",
+   "minutes": 16,
+   "goal": "Ask how someone is, answer, thank them, and say you speak a little Hindi",
+   "steps": [
+    {
+     "n": "Listen to two colleagues greeting each other in the morning."
+    },
+    {
+     "t": "नमस्ते, आप कैसे हैं?",
+     "tl": "namaste, āp kaise hain?"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद। और आप?",
+     "tl": "main ṭhīk hūn, dhanyavād. aur āp?"
+    },
+    {
+     "t": "मैं भी ठीक हूँ। क्या आप हिंदी बोलते हैं?",
+     "tl": "main bhī ṭhīk hūn. kyā āp hindī bolte hain?"
+    },
+    {
+     "t": "जी हाँ, थोड़ी।",
+     "tl": "jī hān, thoṛī."
+    },
+    {
+     "n": "You already know some of this. By the end of this lesson you will be able to say all of it. First, a quick review."
+    },
+    {
+     "n": "Say 'hello'."
+    },
+    {
+     "p": 3,
+     "expect": "नमस्ते"
+    },
+    {
+     "t": "नमस्ते",
+     "tl": "namaste"
+    },
+    {
+     "n": "Ask me if I understand English."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आप अंग्रेज़ी समझते हैं?"
+    },
+    {
+     "t": "क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "kyā āp angrezī samajhte hain?"
+    },
+    {
+     "n": "Say 'no, I don't understand English'."
+    },
+    {
+     "p": 4,
+     "expect": "जी नहीं, मैं अंग्रेज़ी नहीं समझता।"
+    },
+    {
+     "t": "जी नहीं, मैं अंग्रेज़ी नहीं समझता।",
+     "tl": "jī nahīn, main angrezī nahīn samajhtā."
+    },
+    {
+     "n": "Tell me you understand a little Hindi."
+    },
+    {
+     "p": 4,
+     "expect": "मैं थोड़ी हिंदी समझता हूँ"
+    },
+    {
+     "t": "मैं थोड़ी हिंदी समझता हूँ",
+     "tl": "main thoṛī hindī samajhtā hūn"
+    },
+    {
+     "n": "Now, 'how are you?', said politely. Listen and repeat, from the end."
+    },
+    {
+     "t": "आप कैसे हैं?",
+     "tl": "āp kaise hain?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "हैं",
+     "slow": true,
+     "tl": "hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कैसे हैं",
+     "slow": true,
+     "tl": "kaise hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आप कैसे हैं?",
+     "slow": true,
+     "tl": "āp kaise hain?"
+    },
+    {
+     "p": 3,
+     "expect": "आप कैसे हैं?"
+    },
+    {
+     "t": "आप कैसे हैं?",
+     "tl": "āp kaise hain?"
+    },
+    {
+     "p": 3,
+     "expect": "आप कैसे हैं?"
+    },
+    {
+     "n": "You already know the first word, the polite 'you'. Now greet me and ask how I am."
+    },
+    {
+     "p": 4,
+     "expect": "नमस्ते, आप कैसे हैं?"
+    },
+    {
+     "t": "नमस्ते, आप कैसे हैं?",
+     "tl": "namaste, āp kaise hain?"
+    },
+    {
+     "n": "Here is the answer, 'I am fine'. The word for fine also means okay or correct. Listen and repeat."
+    },
+    {
+     "t": "मैं ठीक हूँ",
+     "tl": "main ṭhīk hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "हूँ",
+     "slow": true,
+     "tl": "hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ठीक हूँ",
+     "slow": true,
+     "tl": "ṭhīk hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं ठीक हूँ",
+     "slow": true,
+     "tl": "main ṭhīk hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं ठीक हूँ"
+    },
+    {
+     "t": "मैं ठीक हूँ",
+     "tl": "main ṭhīk hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं ठीक हूँ"
+    },
+    {
+     "n": "Ask me how I am."
+    },
+    {
+     "p": 3,
+     "expect": "आप कैसे हैं?"
+    },
+    {
+     "t": "आप कैसे हैं?",
+     "tl": "āp kaise hain?"
+    },
+    {
+     "n": "Tell me you are fine."
+    },
+    {
+     "p": 3,
+     "expect": "मैं ठीक हूँ"
+    },
+    {
+     "t": "मैं ठीक हूँ",
+     "tl": "main ṭhīk hūn"
+    },
+    {
+     "n": "Here is 'thank you'. It is a formal, Sanskrit-based word. Listen and repeat."
+    },
+    {
+     "t": "धन्यवाद",
+     "tl": "dhanyavād"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "वाद",
+     "slow": true,
+     "tl": "vād"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "न्यवाद",
+     "slow": true,
+     "tl": "nyavād"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "धन्यवाद",
+     "slow": true,
+     "tl": "dhanyavād"
+    },
+    {
+     "p": 3,
+     "expect": "धन्यवाद"
+    },
+    {
+     "t": "धन्यवाद",
+     "tl": "dhanyavād"
+    },
+    {
+     "p": 3,
+     "expect": "धन्यवाद"
+    },
+    {
+     "n": "Once more, say 'thank you'."
+    },
+    {
+     "p": 3,
+     "expect": "धन्यवाद"
+    },
+    {
+     "t": "धन्यवाद",
+     "tl": "dhanyavād"
+    },
+    {
+     "n": "There is a second, everyday word for thanks, borrowed from Urdu. Both are fine anywhere in India. Listen and repeat."
+    },
+    {
+     "t": "शुक्रिया",
+     "tl": "shukriyā"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "शुक्रिया",
+     "slow": true,
+     "tl": "shukriyā"
+    },
+    {
+     "p": 3,
+     "expect": "शुक्रिया"
+    },
+    {
+     "t": "शुक्रिया",
+     "tl": "shukriyā"
+    },
+    {
+     "n": "Listen: 'I am fine, thank you'."
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद",
+     "tl": "main ṭhīk hūn, dhanyavād"
+    },
+    {
+     "n": "Now you say it."
+    },
+    {
+     "p": 4,
+     "expect": "मैं ठीक हूँ, धन्यवाद"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद",
+     "tl": "main ṭhīk hūn, dhanyavād"
+    },
+    {
+     "n": "Now, 'and you?'. Listen and repeat."
+    },
+    {
+     "t": "और आप?",
+     "tl": "aur āp?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "और आप?",
+     "slow": true,
+     "tl": "aur āp?"
+    },
+    {
+     "p": 3,
+     "expect": "और आप?"
+    },
+    {
+     "t": "और आप?",
+     "tl": "aur āp?"
+    },
+    {
+     "n": "Say 'I am fine, thank you. And you?'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं ठीक हूँ, धन्यवाद। और आप?"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद। और आप?",
+     "tl": "main ṭhīk hūn, dhanyavād. aur āp?"
+    },
+    {
+     "n": "Here is 'I am also fine'. The little word for 'also' comes right after 'I'. Listen and repeat."
+    },
+    {
+     "t": "मैं भी ठीक हूँ",
+     "tl": "main bhī ṭhīk hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "ठीक हूँ",
+     "slow": true,
+     "tl": "ṭhīk hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "भी ठीक हूँ",
+     "slow": true,
+     "tl": "bhī ṭhīk hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं भी ठीक हूँ",
+     "slow": true,
+     "tl": "main bhī ṭhīk hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं भी ठीक हूँ"
+    },
+    {
+     "t": "मैं भी ठीक हूँ",
+     "tl": "main bhī ṭhīk hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं भी ठीक हूँ"
+    },
+    {
+     "n": "Say 'I am also fine'."
+    },
+    {
+     "p": 3,
+     "expect": "मैं भी ठीक हूँ"
+    },
+    {
+     "t": "मैं भी ठीक हूँ",
+     "tl": "main bhī ṭhīk hūn"
+    },
+    {
+     "n": "Now, 'Do you speak Hindi?'. Compare 'you speak' with 'you understand', which you know. Listen and repeat."
+    },
+    {
+     "t": "क्या आप हिंदी बोलते हैं?",
+     "tl": "kyā āp hindī bolte hain?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "बोलते हैं",
+     "slow": true,
+     "tl": "bolte hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "हिंदी बोलते हैं",
+     "slow": true,
+     "tl": "hindī bolte hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्या आप हिंदी बोलते हैं?",
+     "slow": true,
+     "tl": "kyā āp hindī bolte hain?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आप हिंदी बोलते हैं?"
+    },
+    {
+     "t": "क्या आप हिंदी बोलते हैं?",
+     "tl": "kyā āp hindī bolte hain?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आप हिंदी बोलते हैं?"
+    },
+    {
+     "n": "Ask me if I speak Hindi."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आप हिंदी बोलते हैं?"
+    },
+    {
+     "t": "क्या आप हिंदी बोलते हैं?",
+     "tl": "kyā āp hindī bolte hain?"
+    },
+    {
+     "n": "Now, 'I speak a little Hindi'. Listen and repeat."
+    },
+    {
+     "t": "मैं थोड़ी हिंदी बोलता हूँ",
+     "tl": "main thoṛī hindī boltā hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "बोलता हूँ",
+     "slow": true,
+     "tl": "boltā hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "हिंदी बोलता हूँ",
+     "slow": true,
+     "tl": "hindī boltā hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं थोड़ी हिंदी बोलता हूँ",
+     "slow": true,
+     "tl": "main thoṛī hindī boltā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं थोड़ी हिंदी बोलता हूँ"
+    },
+    {
+     "t": "मैं थोड़ी हिंदी बोलता हूँ",
+     "tl": "main thoṛī hindī boltā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं थोड़ी हिंदी बोलता हूँ"
+    },
+    {
+     "n": "A woman says it with the feminine ending. Listen, and repeat if that is your form."
+    },
+    {
+     "t": "मैं थोड़ी हिंदी बोलती हूँ",
+     "tl": "main thoṛī hindī boltī hūn"
+    },
+    {
+     "p": 4
+    },
+    {
+     "n": "Say 'yes, a little'."
+    },
+    {
+     "p": 3,
+     "expect": "जी हाँ, थोड़ी"
+    },
+    {
+     "t": "जी हाँ, थोड़ी",
+     "tl": "jī hān, thoṛī"
+    },
+    {
+     "n": "Tell me you speak a little Hindi."
+    },
+    {
+     "p": 4,
+     "expect": "मैं थोड़ी हिंदी बोलता हूँ"
+    },
+    {
+     "t": "मैं थोड़ी हिंदी बोलता हूँ",
+     "tl": "main thoṛī hindī boltā hūn"
+    },
+    {
+     "n": "Here is 'excuse me', or 'sorry'. You use it to get attention or to apologise. Listen and repeat."
+    },
+    {
+     "t": "माफ़ कीजिए",
+     "tl": "māf kījiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "कीजिए",
+     "slow": true,
+     "tl": "kījiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "माफ़ कीजिए",
+     "slow": true,
+     "tl": "māf kījiye"
+    },
+    {
+     "p": 3,
+     "expect": "माफ़ कीजिए"
+    },
+    {
+     "t": "माफ़ कीजिए",
+     "tl": "māf kījiye"
+    },
+    {
+     "p": 3,
+     "expect": "माफ़ कीजिए"
+    },
+    {
+     "n": "Say 'thank you'."
+    },
+    {
+     "p": 3,
+     "expect": "धन्यवाद"
+    },
+    {
+     "t": "धन्यवाद",
+     "tl": "dhanyavād"
+    },
+    {
+     "n": "Say 'excuse me'."
+    },
+    {
+     "p": 3,
+     "expect": "माफ़ कीजिए"
+    },
+    {
+     "t": "माफ़ कीजिए",
+     "tl": "māf kījiye"
+    },
+    {
+     "n": "Listen: 'excuse me, do you speak Hindi?'."
+    },
+    {
+     "t": "माफ़ कीजिए, क्या आप हिंदी बोलते हैं?",
+     "tl": "māf kījiye, kyā āp hindī bolte hain?"
+    },
+    {
+     "n": "Now you excuse yourself and ask if I speak Hindi."
+    },
+    {
+     "p": 5,
+     "expect": "माफ़ कीजिए, क्या आप हिंदी बोलते हैं?"
+    },
+    {
+     "t": "माफ़ कीजिए, क्या आप हिंदी बोलते हैं?",
+     "tl": "māf kījiye, kyā āp hindī bolte hain?"
+    },
+    {
+     "n": "Here is 'please'. Hindi speakers use it less than English speakers do; politeness usually sits in the verb ending instead. Listen and repeat."
+    },
+    {
+     "t": "कृपया",
+     "tl": "kripayā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कृपया",
+     "slow": true,
+     "tl": "kripayā"
+    },
+    {
+     "p": 3,
+     "expect": "कृपया"
+    },
+    {
+     "t": "कृपया",
+     "tl": "kripayā"
+    },
+    {
+     "n": "Say 'I am also fine'."
+    },
+    {
+     "p": 3,
+     "expect": "मैं भी ठीक हूँ"
+    },
+    {
+     "t": "मैं भी ठीक हूँ",
+     "tl": "main bhī ṭhīk hūn"
+    },
+    {
+     "n": "Here is a friendly goodbye, 'we'll meet again'. Listen and repeat."
+    },
+    {
+     "t": "फिर मिलेंगे",
+     "tl": "phir milenge"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "मिलेंगे",
+     "slow": true,
+     "tl": "milenge"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "फिर मिलेंगे",
+     "slow": true,
+     "tl": "phir milenge"
+    },
+    {
+     "p": 3,
+     "expect": "फिर मिलेंगे"
+    },
+    {
+     "t": "फिर मिलेंगे",
+     "tl": "phir milenge"
+    },
+    {
+     "p": 3,
+     "expect": "फिर मिलेंगे"
+    },
+    {
+     "t": "आप कैसे हैं?",
+     "tl": "āp kaise hain?"
+    },
+    {
+     "q": "Someone asks you how you are. Answer that you are fine and thank them."
+    },
+    {
+     "p": 4,
+     "expect": "मैं ठीक हूँ, धन्यवाद"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद",
+     "tl": "main ṭhīk hūn, dhanyavād"
+    },
+    {
+     "n": "Say 'see you again'."
+    },
+    {
+     "p": 3,
+     "expect": "फिर मिलेंगे"
+    },
+    {
+     "t": "फिर मिलेंगे",
+     "tl": "phir milenge"
+    },
+    {
+     "n": "Say 'thanks', the everyday way."
+    },
+    {
+     "p": 3,
+     "expect": "शुक्रिया"
+    },
+    {
+     "t": "शुक्रिया",
+     "tl": "shukriyā"
+    },
+    {
+     "n": "Now you take both parts of the conversation. Greet me and ask how I am."
+    },
+    {
+     "p": 4,
+     "expect": "नमस्ते, आप कैसे हैं?"
+    },
+    {
+     "t": "नमस्ते, आप कैसे हैं?",
+     "tl": "namaste, āp kaise hain?"
+    },
+    {
+     "n": "Answer: 'I am fine, thank you. And you?'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं ठीक हूँ, धन्यवाद। और आप?"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद। और आप?",
+     "tl": "main ṭhīk hūn, dhanyavād. aur āp?"
+    },
+    {
+     "n": "Say 'I am also fine. Do you speak Hindi?'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं भी ठीक हूँ। क्या आप हिंदी बोलते हैं?"
+    },
+    {
+     "t": "मैं भी ठीक हूँ। क्या आप हिंदी बोलते हैं?",
+     "tl": "main bhī ṭhīk hūn. kyā āp hindī bolte hain?"
+    },
+    {
+     "n": "Answer: 'yes, a little'."
+    },
+    {
+     "p": 3,
+     "expect": "जी हाँ, थोड़ी।"
+    },
+    {
+     "t": "जी हाँ, थोड़ी।",
+     "tl": "jī hān, thoṛī."
+    },
+    {
+     "n": "And say goodbye: 'see you again'."
+    },
+    {
+     "p": 3,
+     "expect": "फिर मिलेंगे"
+    },
+    {
+     "t": "फिर मिलेंगे",
+     "tl": "phir milenge"
+    },
+    {
+     "n": "Listen to the whole conversation once more."
+    },
+    {
+     "t": "नमस्ते, आप कैसे हैं?",
+     "tl": "namaste, āp kaise hain?"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद। और आप?",
+     "tl": "main ṭhīk hūn, dhanyavād. aur āp?"
+    },
+    {
+     "t": "मैं भी ठीक हूँ। क्या आप हिंदी बोलते हैं?",
+     "tl": "main bhī ṭhīk hūn. kyā āp hindī bolte hain?"
+    },
+    {
+     "t": "जी हाँ, थोड़ी।",
+     "tl": "jī hān, thoṛī."
+    },
+    {
+     "n": "Very good. Next time you will learn to ask where something is, ask how much it costs, and count from one to ten. This is the end of lesson two."
+    }
+   ]
+  },
+  {
+   "id": "a3",
+   "title": "Lesson 3 — Where is it? How much?",
+   "minutes": 16,
+   "goal": "Ask where something is, ask prices, and count from one to ten",
+   "steps": [
+    {
+     "n": "Listen to a traveller asking for help near a market."
+    },
+    {
+     "t": "माफ़ कीजिए, स्टेशन कहाँ है?",
+     "tl": "māf kījiye, sṭeshan kahān hai?"
+    },
+    {
+     "t": "स्टेशन वहाँ है।",
+     "tl": "sṭeshan vahān hai."
+    },
+    {
+     "t": "धन्यवाद। और यह कितने का है?",
+     "tl": "dhanyavād. aur yah kitne kā hai?"
+    },
+    {
+     "t": "दस रुपये।",
+     "tl": "das rupaye."
+    },
+    {
+     "n": "Soon you will be able to ask where things are and how much they cost. First, some review."
+    },
+    {
+     "n": "Say 'excuse me'."
+    },
+    {
+     "p": 3,
+     "expect": "माफ़ कीजिए"
+    },
+    {
+     "t": "माफ़ कीजिए",
+     "tl": "māf kījiye"
+    },
+    {
+     "n": "Say 'I am fine, thank you. And you?'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं ठीक हूँ, धन्यवाद। और आप?"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद। और आप?",
+     "tl": "main ṭhīk hūn, dhanyavād. aur āp?"
+    },
+    {
+     "n": "Ask me if I speak Hindi."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आप हिंदी बोलते हैं?"
+    },
+    {
+     "t": "क्या आप हिंदी बोलते हैं?",
+     "tl": "kyā āp hindī bolte hain?"
+    },
+    {
+     "n": "Here is 'where is?'. The word for 'is' comes last, as always. Listen and repeat."
+    },
+    {
+     "t": "कहाँ है",
+     "tl": "kahān hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "है",
+     "slow": true,
+     "tl": "hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कहाँ है",
+     "slow": true,
+     "tl": "kahān hai"
+    },
+    {
+     "p": 3,
+     "expect": "कहाँ है"
+    },
+    {
+     "t": "कहाँ है",
+     "tl": "kahān hai"
+    },
+    {
+     "p": 3,
+     "expect": "कहाँ है"
+    },
+    {
+     "n": "The word for station is borrowed from English. Listen and repeat."
+    },
+    {
+     "t": "स्टेशन",
+     "tl": "sṭeshan"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "स्टेशन",
+     "slow": true,
+     "tl": "sṭeshan"
+    },
+    {
+     "p": 3,
+     "expect": "स्टेशन"
+    },
+    {
+     "t": "स्टेशन",
+     "tl": "sṭeshan"
+    },
+    {
+     "n": "Now, 'where is the station?'. The thing you are looking for comes first. Listen and repeat."
+    },
+    {
+     "t": "स्टेशन कहाँ है?",
+     "tl": "sṭeshan kahān hai?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "स्टेशन कहाँ है?",
+     "slow": true,
+     "tl": "sṭeshan kahān hai?"
+    },
+    {
+     "p": 3,
+     "expect": "स्टेशन कहाँ है?"
+    },
+    {
+     "t": "स्टेशन कहाँ है?",
+     "tl": "sṭeshan kahān hai?"
+    },
+    {
+     "n": "Excuse yourself and ask where the station is."
+    },
+    {
+     "p": 5,
+     "expect": "माफ़ कीजिए, स्टेशन कहाँ है?"
+    },
+    {
+     "t": "माफ़ कीजिए, स्टेशन कहाँ है?",
+     "tl": "māf kījiye, sṭeshan kahān hai?"
+    },
+    {
+     "n": "Here is the answer 'it is there'. Listen and repeat."
+    },
+    {
+     "t": "वहाँ है",
+     "tl": "vahān hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "वहाँ",
+     "slow": true,
+     "tl": "vahān"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "वहाँ है",
+     "slow": true,
+     "tl": "vahān hai"
+    },
+    {
+     "p": 3,
+     "expect": "वहाँ है"
+    },
+    {
+     "t": "वहाँ है",
+     "tl": "vahān hai"
+    },
+    {
+     "p": 3,
+     "expect": "वहाँ है"
+    },
+    {
+     "n": "And 'here'. Notice how close the two words sound. Listen and repeat."
+    },
+    {
+     "t": "यहाँ",
+     "tl": "yahān"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "यहाँ",
+     "slow": true,
+     "tl": "yahān"
+    },
+    {
+     "p": 3,
+     "expect": "यहाँ"
+    },
+    {
+     "t": "यहाँ",
+     "tl": "yahān"
+    },
+    {
+     "n": "Say 'the station is there'."
+    },
+    {
+     "p": 4,
+     "expect": "स्टेशन वहाँ है"
+    },
+    {
+     "t": "स्टेशन वहाँ है",
+     "tl": "sṭeshan vahān hai"
+    },
+    {
+     "n": "Here is 'hotel'. Listen and repeat."
+    },
+    {
+     "t": "होटल",
+     "tl": "hoṭal"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "होटल",
+     "slow": true,
+     "tl": "hoṭal"
+    },
+    {
+     "p": 3,
+     "expect": "होटल"
+    },
+    {
+     "t": "होटल",
+     "tl": "hoṭal"
+    },
+    {
+     "t": "होटल कहाँ है?",
+     "tl": "hoṭal kahān hai?"
+    },
+    {
+     "n": "Ask where the hotel is."
+    },
+    {
+     "p": 4,
+     "expect": "होटल कहाँ है?"
+    },
+    {
+     "t": "होटल कहाँ है?",
+     "tl": "hoṭal kahān hai?"
+    },
+    {
+     "n": "And a very useful word: 'bathroom'. Listen and repeat."
+    },
+    {
+     "t": "बाथरूम",
+     "tl": "bāthrūm"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बाथरूम",
+     "slow": true,
+     "tl": "bāthrūm"
+    },
+    {
+     "p": 3,
+     "expect": "बाथरूम"
+    },
+    {
+     "t": "बाथरूम",
+     "tl": "bāthrūm"
+    },
+    {
+     "t": "बाथरूम कहाँ है?",
+     "tl": "bāthrūm kahān hai?"
+    },
+    {
+     "n": "Ask where the bathroom is."
+    },
+    {
+     "p": 4,
+     "expect": "बाथरूम कहाँ है?"
+    },
+    {
+     "t": "बाथरूम कहाँ है?",
+     "tl": "bāthrūm kahān hai?"
+    },
+    {
+     "n": "Now the numbers from one to ten. Listen and repeat each one."
+    },
+    {
+     "t": "एक",
+     "tl": "ek"
+    },
+    {
+     "p": 2,
+     "expect": "एक"
+    },
+    {
+     "t": "दो",
+     "tl": "do"
+    },
+    {
+     "p": 2,
+     "expect": "दो"
+    },
+    {
+     "t": "तीन",
+     "tl": "tīn"
+    },
+    {
+     "p": 2,
+     "expect": "तीन"
+    },
+    {
+     "n": "Again: one, two, three."
+    },
+    {
+     "t": "एक, दो, तीन",
+     "tl": "ek, do, tīn"
+    },
+    {
+     "p": 3,
+     "expect": "एक, दो, तीन"
+    },
+    {
+     "t": "चार",
+     "tl": "chār"
+    },
+    {
+     "p": 2,
+     "expect": "चार"
+    },
+    {
+     "t": "पाँच",
+     "tl": "pānch"
+    },
+    {
+     "p": 2,
+     "expect": "पाँच"
+    },
+    {
+     "t": "छह",
+     "tl": "chhah"
+    },
+    {
+     "p": 2,
+     "expect": "छह"
+    },
+    {
+     "n": "Four, five, six."
+    },
+    {
+     "t": "चार, पाँच, छह",
+     "tl": "chār, pānch, chhah"
+    },
+    {
+     "p": 3,
+     "expect": "चार, पाँच, छह"
+    },
+    {
+     "t": "सात",
+     "tl": "sāt"
+    },
+    {
+     "p": 2,
+     "expect": "सात"
+    },
+    {
+     "t": "आठ",
+     "tl": "āṭh"
+    },
+    {
+     "p": 2,
+     "expect": "आठ"
+    },
+    {
+     "t": "नौ",
+     "tl": "nau"
+    },
+    {
+     "p": 2,
+     "expect": "नौ"
+    },
+    {
+     "t": "दस",
+     "tl": "das"
+    },
+    {
+     "p": 2,
+     "expect": "दस"
+    },
+    {
+     "n": "Seven, eight, nine, ten."
+    },
+    {
+     "t": "सात, आठ, नौ, दस",
+     "tl": "sāt, āṭh, nau, das"
+    },
+    {
+     "p": 4,
+     "expect": "सात, आठ, नौ, दस"
+    },
+    {
+     "n": "Now count from one to ten on your own."
+    },
+    {
+     "p": 6
+    },
+    {
+     "t": "एक, दो, तीन, चार, पाँच, छह, सात, आठ, नौ, दस",
+     "tl": "ek, do, tīn, chār, pānch, chhah, sāt, āṭh, nau, das"
+    },
+    {
+     "n": "Say 'three'."
+    },
+    {
+     "p": 2,
+     "expect": "तीन"
+    },
+    {
+     "t": "तीन",
+     "tl": "tīn"
+    },
+    {
+     "n": "Say 'ten'."
+    },
+    {
+     "p": 2,
+     "expect": "दस"
+    },
+    {
+     "t": "दस",
+     "tl": "das"
+    },
+    {
+     "n": "Ask where the station is."
+    },
+    {
+     "p": 4,
+     "expect": "स्टेशन कहाँ है?"
+    },
+    {
+     "t": "स्टेशन कहाँ है?",
+     "tl": "sṭeshan kahān hai?"
+    },
+    {
+     "n": "Here is 'how much is it?', literally 'of how much is it'. Listen and repeat."
+    },
+    {
+     "t": "कितने का है",
+     "tl": "kitne kā hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "का है",
+     "slow": true,
+     "tl": "kā hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कितने का है",
+     "slow": true,
+     "tl": "kitne kā hai"
+    },
+    {
+     "p": 3,
+     "expect": "कितने का है"
+    },
+    {
+     "t": "कितने का है",
+     "tl": "kitne kā hai"
+    },
+    {
+     "p": 3,
+     "expect": "कितने का है"
+    },
+    {
+     "n": "Here is 'this'. Listen and repeat."
+    },
+    {
+     "t": "यह",
+     "tl": "yah"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "यह",
+     "slow": true,
+     "tl": "yah"
+    },
+    {
+     "p": 3,
+     "expect": "यह"
+    },
+    {
+     "t": "यह",
+     "tl": "yah"
+    },
+    {
+     "n": "Now, 'how much is this?'."
+    },
+    {
+     "t": "यह कितने का है?",
+     "tl": "yah kitne kā hai?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "यह कितने का है?",
+     "slow": true,
+     "tl": "yah kitne kā hai?"
+    },
+    {
+     "p": 3,
+     "expect": "यह कितने का है?"
+    },
+    {
+     "t": "यह कितने का है?",
+     "tl": "yah kitne kā hai?"
+    },
+    {
+     "n": "Here is the Indian currency, 'rupees'. Listen and repeat."
+    },
+    {
+     "t": "रुपये",
+     "tl": "rupaye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "पये",
+     "slow": true,
+     "tl": "paye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "रुपये",
+     "slow": true,
+     "tl": "rupaye"
+    },
+    {
+     "p": 3,
+     "expect": "रुपये"
+    },
+    {
+     "t": "रुपये",
+     "tl": "rupaye"
+    },
+    {
+     "p": 3,
+     "expect": "रुपये"
+    },
+    {
+     "t": "दस रुपये",
+     "tl": "das rupaye"
+    },
+    {
+     "n": "Say 'ten rupees'."
+    },
+    {
+     "p": 3,
+     "expect": "दस रुपये"
+    },
+    {
+     "t": "दस रुपये",
+     "tl": "das rupaye"
+    },
+    {
+     "n": "Ask how much this is."
+    },
+    {
+     "p": 4,
+     "expect": "यह कितने का है?"
+    },
+    {
+     "t": "यह कितने का है?",
+     "tl": "yah kitne kā hai?"
+    },
+    {
+     "t": "पाँच रुपये",
+     "tl": "pānch rupaye"
+    },
+    {
+     "n": "Answer: 'five rupees'."
+    },
+    {
+     "p": 3,
+     "expect": "पाँच रुपये"
+    },
+    {
+     "t": "पाँच रुपये",
+     "tl": "pānch rupaye"
+    },
+    {
+     "n": "Here is 'very expensive'. In many Indian markets a polite 'very expensive' opens a friendly bargain. Listen and repeat."
+    },
+    {
+     "t": "बहुत महँगा",
+     "tl": "bahut mahangā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बहुत महँगा",
+     "slow": true,
+     "tl": "bahut mahangā"
+    },
+    {
+     "p": 3,
+     "expect": "बहुत महँगा"
+    },
+    {
+     "t": "बहुत महँगा",
+     "tl": "bahut mahangā"
+    },
+    {
+     "n": "Say 'very expensive'."
+    },
+    {
+     "p": 3,
+     "expect": "बहुत महँगा"
+    },
+    {
+     "t": "बहुत महँगा",
+     "tl": "bahut mahangā"
+    },
+    {
+     "n": "Ask where the bathroom is."
+    },
+    {
+     "p": 4,
+     "expect": "बाथरूम कहाँ है?"
+    },
+    {
+     "t": "बाथरूम कहाँ है?",
+     "tl": "bāthrūm kahān hai?"
+    },
+    {
+     "n": "Say 'how much is this?'."
+    },
+    {
+     "p": 4,
+     "expect": "यह कितने का है?"
+    },
+    {
+     "t": "यह कितने का है?",
+     "tl": "yah kitne kā hai?"
+    },
+    {
+     "n": "Now take the traveller's part. Excuse yourself and ask where the station is."
+    },
+    {
+     "p": 5,
+     "expect": "माफ़ कीजिए, स्टेशन कहाँ है?"
+    },
+    {
+     "t": "माफ़ कीजिए, स्टेशन कहाँ है?",
+     "tl": "māf kījiye, sṭeshan kahān hai?"
+    },
+    {
+     "n": "Answer: 'the station is there'."
+    },
+    {
+     "p": 4,
+     "expect": "स्टेशन वहाँ है।"
+    },
+    {
+     "t": "स्टेशन वहाँ है।",
+     "tl": "sṭeshan vahān hai."
+    },
+    {
+     "n": "Say 'thank you. And how much is this?'."
+    },
+    {
+     "p": 5,
+     "expect": "धन्यवाद। और यह कितने का है?"
+    },
+    {
+     "t": "धन्यवाद। और यह कितने का है?",
+     "tl": "dhanyavād. aur yah kitne kā hai?"
+    },
+    {
+     "n": "Answer: 'ten rupees'."
+    },
+    {
+     "p": 3,
+     "expect": "दस रुपये।"
+    },
+    {
+     "t": "दस रुपये।",
+     "tl": "das rupaye."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "माफ़ कीजिए, स्टेशन कहाँ है?",
+     "tl": "māf kījiye, sṭeshan kahān hai?"
+    },
+    {
+     "t": "स्टेशन वहाँ है।",
+     "tl": "sṭeshan vahān hai."
+    },
+    {
+     "t": "धन्यवाद। और यह कितने का है?",
+     "tl": "dhanyavād. aur yah kitne kā hai?"
+    },
+    {
+     "t": "दस रुपये।",
+     "tl": "das rupaye."
+    },
+    {
+     "n": "Excellent. In the next lesson you will order tea and food, and learn to say what you would like. This is the end of lesson three."
+    }
+   ]
+  },
+  {
+   "id": "a4",
+   "title": "Lesson 4 — Tea, water and food",
+   "minutes": 16,
+   "goal": "Order drinks and food, say what you would like, and ask for the bill",
+   "steps": [
+    {
+     "n": "Listen to a customer at a small tea stall."
+    },
+    {
+     "t": "नमस्ते जी, क्या चाहिए?",
+     "tl": "namaste jī, kyā chāhiye?"
+    },
+    {
+     "t": "एक चाय दीजिए, बिना चीनी।",
+     "tl": "ek chāy dījiye, binā chīnī."
+    },
+    {
+     "t": "और कुछ?",
+     "tl": "aur kuchh?"
+    },
+    {
+     "t": "जी हाँ, पानी भी। धन्यवाद।",
+     "tl": "jī hān, pānī bhī. dhanyavād."
+    },
+    {
+     "n": "By the end of this lesson you will order tea, water and food. First, some review."
+    },
+    {
+     "n": "Say 'how much is this?'."
+    },
+    {
+     "p": 4,
+     "expect": "यह कितने का है?"
+    },
+    {
+     "t": "यह कितने का है?",
+     "tl": "yah kitne kā hai?"
+    },
+    {
+     "n": "Say 'ten rupees'."
+    },
+    {
+     "p": 3,
+     "expect": "दस रुपये"
+    },
+    {
+     "t": "दस रुपये",
+     "tl": "das rupaye"
+    },
+    {
+     "n": "Here is 'tea'. In India it is usually boiled with milk and sugar. Listen and repeat."
+    },
+    {
+     "t": "चाय",
+     "tl": "chāy"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "चाय",
+     "slow": true,
+     "tl": "chāy"
+    },
+    {
+     "p": 3,
+     "expect": "चाय"
+    },
+    {
+     "t": "चाय",
+     "tl": "chāy"
+    },
+    {
+     "n": "Here is 'please give'. The ending makes it polite, like 'excuse me', which ends the same way. Listen and repeat."
+    },
+    {
+     "t": "दीजिए",
+     "tl": "dījiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "जिए",
+     "slow": true,
+     "tl": "jiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "दीजिए",
+     "slow": true,
+     "tl": "dījiye"
+    },
+    {
+     "p": 3,
+     "expect": "दीजिए"
+    },
+    {
+     "t": "दीजिए",
+     "tl": "dījiye"
+    },
+    {
+     "p": 3,
+     "expect": "दीजिए"
+    },
+    {
+     "n": "Now, 'please give one tea'. Listen and repeat."
+    },
+    {
+     "t": "एक चाय दीजिए",
+     "tl": "ek chāy dījiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "एक चाय दीजिए",
+     "slow": true,
+     "tl": "ek chāy dījiye"
+    },
+    {
+     "p": 3,
+     "expect": "एक चाय दीजिए"
+    },
+    {
+     "t": "एक चाय दीजिए",
+     "tl": "ek chāy dījiye"
+    },
+    {
+     "n": "Here is 'water'. Listen and repeat."
+    },
+    {
+     "t": "पानी",
+     "tl": "pānī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "पानी",
+     "slow": true,
+     "tl": "pānī"
+    },
+    {
+     "p": 3,
+     "expect": "पानी"
+    },
+    {
+     "t": "पानी",
+     "tl": "pānī"
+    },
+    {
+     "t": "पानी दीजिए",
+     "tl": "pānī dījiye"
+    },
+    {
+     "n": "Ask for water: 'please give water'."
+    },
+    {
+     "p": 4,
+     "expect": "पानी दीजिए"
+    },
+    {
+     "t": "पानी दीजिए",
+     "tl": "pānī dījiye"
+    },
+    {
+     "n": "Here is 'sugar'. Listen and repeat."
+    },
+    {
+     "t": "चीनी",
+     "tl": "chīnī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "नी",
+     "slow": true,
+     "tl": "nī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "चीनी",
+     "slow": true,
+     "tl": "chīnī"
+    },
+    {
+     "p": 3,
+     "expect": "चीनी"
+    },
+    {
+     "t": "चीनी",
+     "tl": "chīnī"
+    },
+    {
+     "p": 3,
+     "expect": "चीनी"
+    },
+    {
+     "n": "And 'without sugar'. Listen and repeat."
+    },
+    {
+     "t": "बिना चीनी",
+     "tl": "binā chīnī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "बिना",
+     "slow": true,
+     "tl": "binā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बिना चीनी",
+     "slow": true,
+     "tl": "binā chīnī"
+    },
+    {
+     "p": 3,
+     "expect": "बिना चीनी"
+    },
+    {
+     "t": "बिना चीनी",
+     "tl": "binā chīnī"
+    },
+    {
+     "p": 3,
+     "expect": "बिना चीनी"
+    },
+    {
+     "t": "एक चाय दीजिए, बिना चीनी",
+     "tl": "ek chāy dījiye, binā chīnī"
+    },
+    {
+     "n": "Order one tea without sugar."
+    },
+    {
+     "p": 5,
+     "expect": "एक चाय दीजिए, बिना चीनी"
+    },
+    {
+     "t": "एक चाय दीजिए, बिना चीनी",
+     "tl": "ek chāy dījiye, binā chīnī"
+    },
+    {
+     "n": "Here is 'I would like', literally 'to me is needed'. The first word means 'to me'. Listen and repeat."
+    },
+    {
+     "t": "मुझे चाहिए",
+     "tl": "mujhe chāhiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "चाहिए",
+     "slow": true,
+     "tl": "chāhiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मुझे चाहिए",
+     "slow": true,
+     "tl": "mujhe chāhiye"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे चाहिए"
+    },
+    {
+     "t": "मुझे चाहिए",
+     "tl": "mujhe chāhiye"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे चाहिए"
+    },
+    {
+     "n": "Now, 'I would like water'. The thing you want goes in the middle. Listen and repeat."
+    },
+    {
+     "t": "मुझे पानी चाहिए",
+     "tl": "mujhe pānī chāhiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "मुझे पानी चाहिए",
+     "slow": true,
+     "tl": "mujhe pānī chāhiye"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे पानी चाहिए"
+    },
+    {
+     "t": "मुझे पानी चाहिए",
+     "tl": "mujhe pānī chāhiye"
+    },
+    {
+     "t": "मुझे चाय चाहिए",
+     "tl": "mujhe chāy chāhiye"
+    },
+    {
+     "n": "Say 'I would like tea'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे चाय चाहिए"
+    },
+    {
+     "t": "मुझे चाय चाहिए",
+     "tl": "mujhe chāy chāhiye"
+    },
+    {
+     "n": "Here is what a shopkeeper asks: 'what would you like?'. Listen and repeat."
+    },
+    {
+     "t": "क्या चाहिए?",
+     "tl": "kyā chāhiye?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "चाहिए",
+     "slow": true,
+     "tl": "chāhiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्या चाहिए?",
+     "slow": true,
+     "tl": "kyā chāhiye?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या चाहिए?"
+    },
+    {
+     "t": "क्या चाहिए?",
+     "tl": "kyā chāhiye?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या चाहिए?"
+    },
+    {
+     "n": "You heard the shopkeeper add a little word after the greeting. It is a respectful tag you can add to names and to yes and no. Listen."
+    },
+    {
+     "t": "नमस्ते जी",
+     "tl": "namaste jī"
+    },
+    {
+     "p": 2,
+     "expect": "नमस्ते जी"
+    },
+    {
+     "n": "Ask me what I would like."
+    },
+    {
+     "p": 3,
+     "expect": "क्या चाहिए?"
+    },
+    {
+     "t": "क्या चाहिए?",
+     "tl": "kyā chāhiye?"
+    },
+    {
+     "n": "Answer: 'I would like water'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे पानी चाहिए"
+    },
+    {
+     "t": "मुझे पानी चाहिए",
+     "tl": "mujhe pānī chāhiye"
+    },
+    {
+     "n": "Here is 'coffee'. Listen and repeat."
+    },
+    {
+     "t": "कॉफ़ी",
+     "tl": "kŏfī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कॉफ़ी",
+     "slow": true,
+     "tl": "kŏfī"
+    },
+    {
+     "p": 3,
+     "expect": "कॉफ़ी"
+    },
+    {
+     "t": "कॉफ़ी",
+     "tl": "kŏfī"
+    },
+    {
+     "n": "Here is 'anything else?', literally 'more something?'. Listen and repeat."
+    },
+    {
+     "t": "और कुछ?",
+     "tl": "aur kuchh?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "कुछ",
+     "slow": true,
+     "tl": "kuchh"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "और कुछ?",
+     "slow": true,
+     "tl": "aur kuchh?"
+    },
+    {
+     "p": 3,
+     "expect": "और कुछ?"
+    },
+    {
+     "t": "और कुछ?",
+     "tl": "aur kuchh?"
+    },
+    {
+     "p": 3,
+     "expect": "और कुछ?"
+    },
+    {
+     "n": "Ask me 'anything else?'."
+    },
+    {
+     "p": 3,
+     "expect": "और कुछ?"
+    },
+    {
+     "t": "और कुछ?",
+     "tl": "aur kuchh?"
+    },
+    {
+     "t": "जी हाँ, पानी भी",
+     "tl": "jī hān, pānī bhī"
+    },
+    {
+     "n": "Answer: 'yes, water too'."
+    },
+    {
+     "p": 4,
+     "expect": "जी हाँ, पानी भी"
+    },
+    {
+     "t": "जी हाँ, पानी भी",
+     "tl": "jī hān, pānī bhī"
+    },
+    {
+     "n": "Here is 'food', which is also the verb 'to eat'. Listen and repeat."
+    },
+    {
+     "t": "खाना",
+     "tl": "khānā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "खाना",
+     "slow": true,
+     "tl": "khānā"
+    },
+    {
+     "p": 3,
+     "expect": "खाना"
+    },
+    {
+     "t": "खाना",
+     "tl": "khānā"
+    },
+    {
+     "t": "मुझे खाना चाहिए",
+     "tl": "mujhe khānā chāhiye"
+    },
+    {
+     "n": "Say 'I would like food'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे खाना चाहिए"
+    },
+    {
+     "t": "मुझे खाना चाहिए",
+     "tl": "mujhe khānā chāhiye"
+    },
+    {
+     "n": "Two common dishes. First, the everyday flatbread. Listen and repeat."
+    },
+    {
+     "t": "रोटी",
+     "tl": "roṭī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "टी",
+     "slow": true,
+     "tl": "ṭī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "रोटी",
+     "slow": true,
+     "tl": "roṭī"
+    },
+    {
+     "p": 3,
+     "expect": "रोटी"
+    },
+    {
+     "t": "रोटी",
+     "tl": "roṭī"
+    },
+    {
+     "p": 3,
+     "expect": "रोटी"
+    },
+    {
+     "n": "And lentil curry, eaten almost every day across India. Listen and repeat."
+    },
+    {
+     "t": "दाल",
+     "tl": "dāl"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "दाल",
+     "slow": true,
+     "tl": "dāl"
+    },
+    {
+     "p": 3,
+     "expect": "दाल"
+    },
+    {
+     "t": "दाल",
+     "tl": "dāl"
+    },
+    {
+     "t": "दाल और रोटी दीजिए",
+     "tl": "dāl aur roṭī dījiye"
+    },
+    {
+     "n": "Order lentils and flatbread: 'please give lentils and flatbread'."
+    },
+    {
+     "p": 5,
+     "expect": "दाल और रोटी दीजिए"
+    },
+    {
+     "t": "दाल और रोटी दीजिए",
+     "tl": "dāl aur roṭī dījiye"
+    },
+    {
+     "n": "To compliment the cook, say 'it is very tasty'. Listen and repeat."
+    },
+    {
+     "t": "बहुत स्वादिष्ट है",
+     "tl": "bahut svādishṭ hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "स्वादिष्ट",
+     "slow": true,
+     "tl": "svādishṭ"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बहुत स्वादिष्ट है",
+     "slow": true,
+     "tl": "bahut svādishṭ hai"
+    },
+    {
+     "p": 3,
+     "expect": "बहुत स्वादिष्ट है"
+    },
+    {
+     "t": "बहुत स्वादिष्ट है",
+     "tl": "bahut svādishṭ hai"
+    },
+    {
+     "p": 3,
+     "expect": "बहुत स्वादिष्ट है"
+    },
+    {
+     "n": "Tell me the food is very tasty."
+    },
+    {
+     "p": 4,
+     "expect": "बहुत स्वादिष्ट है"
+    },
+    {
+     "t": "बहुत स्वादिष्ट है",
+     "tl": "bahut svādishṭ hai"
+    },
+    {
+     "n": "Here is 'bill'. Listen and repeat."
+    },
+    {
+     "t": "बिल",
+     "tl": "bil"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बिल",
+     "slow": true,
+     "tl": "bil"
+    },
+    {
+     "p": 3,
+     "expect": "बिल"
+    },
+    {
+     "t": "बिल",
+     "tl": "bil"
+    },
+    {
+     "t": "बिल दीजिए",
+     "tl": "bil dījiye"
+    },
+    {
+     "n": "Ask for the bill."
+    },
+    {
+     "p": 4,
+     "expect": "बिल दीजिए"
+    },
+    {
+     "t": "बिल दीजिए",
+     "tl": "bil dījiye"
+    },
+    {
+     "n": "Order one tea without sugar."
+    },
+    {
+     "p": 5,
+     "expect": "एक चाय दीजिए, बिना चीनी"
+    },
+    {
+     "t": "एक चाय दीजिए, बिना चीनी",
+     "tl": "ek chāy dījiye, binā chīnī"
+    },
+    {
+     "n": "Ask how much this is."
+    },
+    {
+     "p": 4,
+     "expect": "यह कितने का है?"
+    },
+    {
+     "t": "यह कितने का है?",
+     "tl": "yah kitne kā hai?"
+    },
+    {
+     "n": "Now take the customer's part. I am the tea seller."
+    },
+    {
+     "t": "नमस्ते जी, क्या चाहिए?",
+     "tl": "namaste jī, kyā chāhiye?"
+    },
+    {
+     "n": "Order one tea without sugar."
+    },
+    {
+     "p": 5,
+     "expect": "एक चाय दीजिए, बिना चीनी।"
+    },
+    {
+     "t": "एक चाय दीजिए, बिना चीनी।",
+     "tl": "ek chāy dījiye, binā chīnī."
+    },
+    {
+     "t": "और कुछ?",
+     "tl": "aur kuchh?"
+    },
+    {
+     "n": "Answer: 'yes, water too. Thank you'."
+    },
+    {
+     "p": 5,
+     "expect": "जी हाँ, पानी भी। धन्यवाद।"
+    },
+    {
+     "t": "जी हाँ, पानी भी। धन्यवाद।",
+     "tl": "jī hān, pānī bhī. dhanyavād."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "नमस्ते जी, क्या चाहिए?",
+     "tl": "namaste jī, kyā chāhiye?"
+    },
+    {
+     "t": "एक चाय दीजिए, बिना चीनी।",
+     "tl": "ek chāy dījiye, binā chīnī."
+    },
+    {
+     "t": "और कुछ?",
+     "tl": "aur kuchh?"
+    },
+    {
+     "t": "जी हाँ, पानी भी। धन्यवाद।",
+     "tl": "jī hān, pānī bhī. dhanyavād."
+    },
+    {
+     "n": "Well done. Next time you will ask for directions and take an auto-rickshaw. This is the end of lesson four."
+    }
+   ]
+  },
+  {
+   "id": "a5",
+   "title": "Lesson 5 — How far? Go straight",
+   "minutes": 16,
+   "goal": "Ask how far a place is, follow simple directions, and bargain for an auto",
+   "steps": [
+    {
+     "n": "Listen to a traveller asking a shopkeeper about the airport."
+    },
+    {
+     "t": "भाई साहब, एयरपोर्ट कितनी दूर है?",
+     "tl": "bhāī sāhab, eyarporṭ kitnī dūr hai?"
+    },
+    {
+     "t": "ज़्यादा दूर नहीं। सीधे जाइए, फिर बाएँ।",
+     "tl": "zyādā dūr nahīn. sīdhe jāiye, phir bāyen."
+    },
+    {
+     "t": "ऑटो से कितना होगा?",
+     "tl": "auṭo se kitnā hogā?"
+    },
+    {
+     "t": "दो सौ रुपये।",
+     "tl": "do sau rupaye."
+    },
+    {
+     "n": "In this lesson you will ask how far something is, understand simple directions, and take an auto-rickshaw. A little review first."
+    },
+    {
+     "n": "Ask where the station is."
+    },
+    {
+     "p": 4,
+     "expect": "स्टेशन कहाँ है?"
+    },
+    {
+     "t": "स्टेशन कहाँ है?",
+     "tl": "sṭeshan kahān hai?"
+    },
+    {
+     "n": "Say 'I would like water'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे पानी चाहिए"
+    },
+    {
+     "t": "मुझे पानी चाहिए",
+     "tl": "mujhe pānī chāhiye"
+    },
+    {
+     "n": "In north India you call a man you don't know 'brother sir'. It is friendly and respectful. Listen and repeat."
+    },
+    {
+     "t": "भाई साहब",
+     "tl": "bhāī sāhab"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "साहब",
+     "slow": true,
+     "tl": "sāhab"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "भाई साहब",
+     "slow": true,
+     "tl": "bhāī sāhab"
+    },
+    {
+     "p": 3,
+     "expect": "भाई साहब"
+    },
+    {
+     "t": "भाई साहब",
+     "tl": "bhāī sāhab"
+    },
+    {
+     "p": 3,
+     "expect": "भाई साहब"
+    },
+    {
+     "n": "Here is 'airport', borrowed from English. Listen and repeat."
+    },
+    {
+     "t": "एयरपोर्ट",
+     "tl": "eyarporṭ"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "एयरपोर्ट",
+     "slow": true,
+     "tl": "eyarporṭ"
+    },
+    {
+     "p": 3,
+     "expect": "एयरपोर्ट"
+    },
+    {
+     "t": "एयरपोर्ट",
+     "tl": "eyarporṭ"
+    },
+    {
+     "n": "Here is 'how far is it?'. The word for 'far' is in the middle. Listen and repeat."
+    },
+    {
+     "t": "कितनी दूर है",
+     "tl": "kitnī dūr hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "दूर है",
+     "slow": true,
+     "tl": "dūr hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कितनी दूर है",
+     "slow": true,
+     "tl": "kitnī dūr hai"
+    },
+    {
+     "p": 3,
+     "expect": "कितनी दूर है"
+    },
+    {
+     "t": "कितनी दूर है",
+     "tl": "kitnī dūr hai"
+    },
+    {
+     "p": 3,
+     "expect": "कितनी दूर है"
+    },
+    {
+     "n": "Now, 'how far is the airport?'. Listen and repeat."
+    },
+    {
+     "t": "एयरपोर्ट कितनी दूर है?",
+     "tl": "eyarporṭ kitnī dūr hai?"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "एयरपोर्ट कितनी दूर है?",
+     "slow": true,
+     "tl": "eyarporṭ kitnī dūr hai?"
+    },
+    {
+     "p": 4,
+     "expect": "एयरपोर्ट कितनी दूर है?"
+    },
+    {
+     "t": "एयरपोर्ट कितनी दूर है?",
+     "tl": "eyarporṭ kitnī dūr hai?"
+    },
+    {
+     "n": "Get a man's attention and ask how far the airport is."
+    },
+    {
+     "p": 5,
+     "expect": "भाई साहब, एयरपोर्ट कितनी दूर है?"
+    },
+    {
+     "t": "भाई साहब, एयरपोर्ट कितनी दूर है?",
+     "tl": "bhāī sāhab, eyarporṭ kitnī dūr hai?"
+    },
+    {
+     "t": "स्टेशन कितनी दूर है?",
+     "tl": "sṭeshan kitnī dūr hai?"
+    },
+    {
+     "n": "Ask how far the station is."
+    },
+    {
+     "p": 4,
+     "expect": "स्टेशन कितनी दूर है?"
+    },
+    {
+     "t": "स्टेशन कितनी दूर है?",
+     "tl": "sṭeshan kitnī dūr hai?"
+    },
+    {
+     "n": "Here is the answer 'not very far'. The first word means 'more' or 'too much'. Listen and repeat."
+    },
+    {
+     "t": "ज़्यादा दूर नहीं",
+     "tl": "zyādā dūr nahīn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "नहीं",
+     "slow": true,
+     "tl": "nahīn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "दूर नहीं",
+     "slow": true,
+     "tl": "dūr nahīn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ज़्यादा दूर नहीं",
+     "slow": true,
+     "tl": "zyādā dūr nahīn"
+    },
+    {
+     "p": 3,
+     "expect": "ज़्यादा दूर नहीं"
+    },
+    {
+     "t": "ज़्यादा दूर नहीं",
+     "tl": "zyādā dūr nahīn"
+    },
+    {
+     "p": 3,
+     "expect": "ज़्यादा दूर नहीं"
+    },
+    {
+     "n": "Say 'not very far'."
+    },
+    {
+     "p": 4,
+     "expect": "ज़्यादा दूर नहीं"
+    },
+    {
+     "t": "ज़्यादा दूर नहीं",
+     "tl": "zyādā dūr nahīn"
+    },
+    {
+     "n": "Now, 'go straight', said politely. The verb ending is the same polite one as in 'please give'. Listen and repeat."
+    },
+    {
+     "t": "सीधे जाइए",
+     "tl": "sīdhe jāiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "जाइए",
+     "slow": true,
+     "tl": "jāiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "सीधे जाइए",
+     "slow": true,
+     "tl": "sīdhe jāiye"
+    },
+    {
+     "p": 3,
+     "expect": "सीधे जाइए"
+    },
+    {
+     "t": "सीधे जाइए",
+     "tl": "sīdhe jāiye"
+    },
+    {
+     "p": 3,
+     "expect": "सीधे जाइए"
+    },
+    {
+     "n": "Here is 'left'. Listen and repeat."
+    },
+    {
+     "t": "बाएँ",
+     "tl": "bāyen"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बाएँ",
+     "slow": true,
+     "tl": "bāyen"
+    },
+    {
+     "p": 3,
+     "expect": "बाएँ"
+    },
+    {
+     "t": "बाएँ",
+     "tl": "bāyen"
+    },
+    {
+     "n": "And 'right'. Listen and repeat."
+    },
+    {
+     "t": "दाएँ",
+     "tl": "dāyen"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "दाएँ",
+     "slow": true,
+     "tl": "dāyen"
+    },
+    {
+     "p": 3,
+     "expect": "दाएँ"
+    },
+    {
+     "t": "दाएँ",
+     "tl": "dāyen"
+    },
+    {
+     "n": "Tell me to go straight."
+    },
+    {
+     "p": 3,
+     "expect": "सीधे जाइए"
+    },
+    {
+     "t": "सीधे जाइए",
+     "tl": "sīdhe jāiye"
+    },
+    {
+     "t": "सीधे जाइए, फिर बाएँ",
+     "tl": "sīdhe jāiye, phir bāyen"
+    },
+    {
+     "n": "You know 'again' from 'see you again'; it also means 'then'. Say 'go straight, then left'."
+    },
+    {
+     "p": 5,
+     "expect": "सीधे जाइए, फिर बाएँ"
+    },
+    {
+     "t": "सीधे जाइए, फिर बाएँ",
+     "tl": "sīdhe jāiye, phir bāyen"
+    },
+    {
+     "t": "सीधे जाइए, फिर दाएँ",
+     "tl": "sīdhe jāiye, phir dāyen"
+    },
+    {
+     "n": "Say 'go straight, then right'."
+    },
+    {
+     "p": 5,
+     "expect": "सीधे जाइए, फिर दाएँ"
+    },
+    {
+     "t": "सीधे जाइए, फिर दाएँ",
+     "tl": "sīdhe jāiye, phir dāyen"
+    },
+    {
+     "n": "Here is the three-wheeled auto-rickshaw, simply called 'auto'. Listen and repeat."
+    },
+    {
+     "t": "ऑटो",
+     "tl": "auṭo"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ऑटो",
+     "slow": true,
+     "tl": "auṭo"
+    },
+    {
+     "p": 3,
+     "expect": "ऑटो"
+    },
+    {
+     "t": "ऑटो",
+     "tl": "auṭo"
+    },
+    {
+     "n": "And 'taxi'. Listen and repeat."
+    },
+    {
+     "t": "टैक्सी",
+     "tl": "ṭaiksī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "टैक्सी",
+     "slow": true,
+     "tl": "ṭaiksī"
+    },
+    {
+     "p": 3,
+     "expect": "टैक्सी"
+    },
+    {
+     "t": "टैक्सी",
+     "tl": "ṭaiksī"
+    },
+    {
+     "n": "Now, 'how much will it be by auto?'. The little word after 'auto' means 'by' or 'from'. Listen and repeat."
+    },
+    {
+     "t": "ऑटो से कितना होगा?",
+     "tl": "auṭo se kitnā hogā?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "होगा",
+     "slow": true,
+     "tl": "hogā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कितना होगा",
+     "slow": true,
+     "tl": "kitnā hogā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ऑटो से कितना होगा?",
+     "slow": true,
+     "tl": "auṭo se kitnā hogā?"
+    },
+    {
+     "p": 3,
+     "expect": "ऑटो से कितना होगा?"
+    },
+    {
+     "t": "ऑटो से कितना होगा?",
+     "tl": "auṭo se kitnā hogā?"
+    },
+    {
+     "p": 3,
+     "expect": "ऑटो से कितना होगा?"
+    },
+    {
+     "t": "टैक्सी से कितना होगा?",
+     "tl": "ṭaiksī se kitnā hogā?"
+    },
+    {
+     "n": "Ask how much it will be by taxi."
+    },
+    {
+     "p": 5,
+     "expect": "टैक्सी से कितना होगा?"
+    },
+    {
+     "t": "टैक्सी से कितना होगा?",
+     "tl": "ṭaiksī se kitnā hogā?"
+    },
+    {
+     "n": "Ask how far the airport is."
+    },
+    {
+     "p": 4,
+     "expect": "एयरपोर्ट कितनी दूर है?"
+    },
+    {
+     "t": "एयरपोर्ट कितनी दूर है?",
+     "tl": "eyarporṭ kitnī dūr hai?"
+    },
+    {
+     "n": "Here is 'one hundred'. Listen and repeat."
+    },
+    {
+     "t": "सौ",
+     "tl": "sau"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "सौ",
+     "slow": true,
+     "tl": "sau"
+    },
+    {
+     "p": 3,
+     "expect": "सौ"
+    },
+    {
+     "t": "सौ",
+     "tl": "sau"
+    },
+    {
+     "n": "'Two hundred'."
+    },
+    {
+     "t": "दो सौ",
+     "tl": "do sau"
+    },
+    {
+     "p": 3,
+     "expect": "दो सौ"
+    },
+    {
+     "n": "'Five hundred'."
+    },
+    {
+     "t": "पाँच सौ",
+     "tl": "pānch sau"
+    },
+    {
+     "p": 3,
+     "expect": "पाँच सौ"
+    },
+    {
+     "t": "दो सौ रुपये",
+     "tl": "do sau rupaye"
+    },
+    {
+     "n": "Say 'two hundred rupees'."
+    },
+    {
+     "p": 4,
+     "expect": "दो सौ रुपये"
+    },
+    {
+     "t": "दो सौ रुपये",
+     "tl": "do sau rupaye"
+    },
+    {
+     "n": "Say 'very expensive'."
+    },
+    {
+     "p": 3,
+     "expect": "बहुत महँगा"
+    },
+    {
+     "t": "बहुत महँगा",
+     "tl": "bahut mahangā"
+    },
+    {
+     "n": "Ask how much it will be by auto."
+    },
+    {
+     "p": 5,
+     "expect": "ऑटो से कितना होगा?"
+    },
+    {
+     "t": "ऑटो से कितना होगा?",
+     "tl": "auṭo se kitnā hogā?"
+    },
+    {
+     "n": "When you reach your stop, say 'stop here'. Listen and repeat."
+    },
+    {
+     "t": "यहाँ रोकिए",
+     "tl": "yahān rokiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "रोकिए",
+     "slow": true,
+     "tl": "rokiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "यहाँ रोकिए",
+     "slow": true,
+     "tl": "yahān rokiye"
+    },
+    {
+     "p": 3,
+     "expect": "यहाँ रोकिए"
+    },
+    {
+     "t": "यहाँ रोकिए",
+     "tl": "yahān rokiye"
+    },
+    {
+     "p": 3,
+     "expect": "यहाँ रोकिए"
+    },
+    {
+     "n": "Tell the driver to stop here."
+    },
+    {
+     "p": 3,
+     "expect": "यहाँ रोकिए"
+    },
+    {
+     "t": "यहाँ रोकिए",
+     "tl": "yahān rokiye"
+    },
+    {
+     "n": "Many auto drivers do not use the meter, so agree the fare before you get in. Ask 'how much will it be by auto?', then say 'very expensive'."
+    },
+    {
+     "p": 5,
+     "expect": "ऑटो से कितना होगा?"
+    },
+    {
+     "t": "ऑटो से कितना होगा?",
+     "tl": "auṭo se kitnā hogā?"
+    },
+    {
+     "p": 3,
+     "expect": "बहुत महँगा"
+    },
+    {
+     "t": "बहुत महँगा",
+     "tl": "bahut mahangā"
+    },
+    {
+     "t": "एयरपोर्ट ज़्यादा दूर नहीं।",
+     "tl": "eyarporṭ zyādā dūr nahīn."
+    },
+    {
+     "q": "The driver says the airport is not very far. Repeat what he said."
+    },
+    {
+     "p": 4,
+     "expect": "ज़्यादा दूर नहीं"
+    },
+    {
+     "t": "ज़्यादा दूर नहीं",
+     "tl": "zyādā dūr nahīn"
+    },
+    {
+     "n": "Say 'go straight, then left'."
+    },
+    {
+     "p": 5,
+     "expect": "सीधे जाइए, फिर बाएँ"
+    },
+    {
+     "t": "सीधे जाइए, फिर बाएँ",
+     "tl": "sīdhe jāiye, phir bāyen"
+    },
+    {
+     "t": "धन्यवाद, भाई साहब",
+     "tl": "dhanyavād, bhāī sāhab"
+    },
+    {
+     "n": "Say 'thank you, brother'."
+    },
+    {
+     "p": 4,
+     "expect": "धन्यवाद, भाई साहब"
+    },
+    {
+     "t": "धन्यवाद, भाई साहब",
+     "tl": "dhanyavād, bhāī sāhab"
+    },
+    {
+     "n": "Now take the traveller's part. Get the shopkeeper's attention and ask how far the airport is."
+    },
+    {
+     "p": 5,
+     "expect": "भाई साहब, एयरपोर्ट कितनी दूर है?"
+    },
+    {
+     "t": "भाई साहब, एयरपोर्ट कितनी दूर है?",
+     "tl": "bhāī sāhab, eyarporṭ kitnī dūr hai?"
+    },
+    {
+     "t": "ज़्यादा दूर नहीं। सीधे जाइए, फिर बाएँ।",
+     "tl": "zyādā dūr nahīn. sīdhe jāiye, phir bāyen."
+    },
+    {
+     "n": "Ask how much it will be by auto."
+    },
+    {
+     "p": 5,
+     "expect": "ऑटो से कितना होगा?"
+    },
+    {
+     "t": "ऑटो से कितना होगा?",
+     "tl": "auṭo se kitnā hogā?"
+    },
+    {
+     "t": "दो सौ रुपये।",
+     "tl": "do sau rupaye."
+    },
+    {
+     "n": "Say 'very expensive'."
+    },
+    {
+     "p": 3,
+     "expect": "बहुत महँगा"
+    },
+    {
+     "t": "बहुत महँगा",
+     "tl": "bahut mahangā"
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "भाई साहब, एयरपोर्ट कितनी दूर है?",
+     "tl": "bhāī sāhab, eyarporṭ kitnī dūr hai?"
+    },
+    {
+     "t": "ज़्यादा दूर नहीं। सीधे जाइए, फिर बाएँ।",
+     "tl": "zyādā dūr nahīn. sīdhe jāiye, phir bāyen."
+    },
+    {
+     "t": "ऑटो से कितना होगा?",
+     "tl": "auṭo se kitnā hogā?"
+    },
+    {
+     "t": "दो सौ रुपये।",
+     "tl": "do sau rupaye."
+    },
+    {
+     "n": "Very good. In the next lesson you will ask the time and learn the days of the week. This is the end of lesson five."
+    }
+   ]
+  },
+  {
+   "id": "a6",
+   "title": "Lesson 6 — What time is it?",
+   "minutes": 16,
+   "goal": "Ask and tell the time, say today and tomorrow, and name the days of the week",
+   "steps": [
+    {
+     "n": "Listen to someone asking the time and the day."
+    },
+    {
+     "t": "माफ़ कीजिए, कितने बजे हैं?",
+     "tl": "māf kījiye, kitne baje hain?"
+    },
+    {
+     "t": "तीन बजे हैं।",
+     "tl": "tīn baje hain."
+    },
+    {
+     "t": "और आज कौन सा दिन है?",
+     "tl": "aur āj kaun sā din hai?"
+    },
+    {
+     "t": "आज सोमवार है। कल मंगलवार।",
+     "tl": "āj somvār hai. kal mangalvār."
+    },
+    {
+     "n": "In this lesson you will ask and tell the time, and learn the days of the week. First, review."
+    },
+    {
+     "n": "Ask how much it will be by auto."
+    },
+    {
+     "p": 5,
+     "expect": "ऑटो से कितना होगा?"
+    },
+    {
+     "t": "ऑटो से कितना होगा?",
+     "tl": "auṭo se kitnā hogā?"
+    },
+    {
+     "n": "Say 'two hundred rupees'."
+    },
+    {
+     "p": 4,
+     "expect": "दो सौ रुपये"
+    },
+    {
+     "t": "दो सौ रुपये",
+     "tl": "do sau rupaye"
+    },
+    {
+     "n": "Count from one to ten."
+    },
+    {
+     "p": 6,
+     "expect": "एक, दो, तीन, चार, पाँच, छह, सात, आठ, नौ, दस"
+    },
+    {
+     "t": "एक, दो, तीन, चार, पाँच, छह, सात, आठ, नौ, दस",
+     "tl": "ek, do, tīn, chār, pānch, chhah, sāt, āṭh, nau, das"
+    },
+    {
+     "n": "Here is 'what time is it?', literally 'how many o'clock are there?'. Listen and repeat."
+    },
+    {
+     "t": "कितने बजे हैं?",
+     "tl": "kitne baje hain?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "हैं",
+     "slow": true,
+     "tl": "hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बजे हैं",
+     "slow": true,
+     "tl": "baje hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कितने बजे हैं?",
+     "slow": true,
+     "tl": "kitne baje hain?"
+    },
+    {
+     "p": 3,
+     "expect": "कितने बजे हैं?"
+    },
+    {
+     "t": "कितने बजे हैं?",
+     "tl": "kitne baje hain?"
+    },
+    {
+     "p": 3,
+     "expect": "कितने बजे हैं?"
+    },
+    {
+     "n": "The answer uses the same pattern: 'it is three o'clock'. Listen and repeat."
+    },
+    {
+     "t": "तीन बजे हैं",
+     "tl": "tīn baje hain"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "तीन बजे हैं",
+     "slow": true,
+     "tl": "tīn baje hain"
+    },
+    {
+     "p": 3,
+     "expect": "तीन बजे हैं"
+    },
+    {
+     "t": "तीन बजे हैं",
+     "tl": "tīn baje hain"
+    },
+    {
+     "t": "पाँच बजे हैं",
+     "tl": "pānch baje hain"
+    },
+    {
+     "n": "Say 'it is five o'clock'."
+    },
+    {
+     "p": 4,
+     "expect": "पाँच बजे हैं"
+    },
+    {
+     "t": "पाँच बजे हैं",
+     "tl": "pānch baje hain"
+    },
+    {
+     "n": "One o'clock is special: it is singular, so the ending changes. Listen and repeat."
+    },
+    {
+     "t": "एक बजा है",
+     "tl": "ek bajā hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "एक बजा है",
+     "slow": true,
+     "tl": "ek bajā hai"
+    },
+    {
+     "p": 3,
+     "expect": "एक बजा है"
+    },
+    {
+     "t": "एक बजा है",
+     "tl": "ek bajā hai"
+    },
+    {
+     "n": "Excuse yourself and ask what time it is."
+    },
+    {
+     "p": 5,
+     "expect": "माफ़ कीजिए, कितने बजे हैं?"
+    },
+    {
+     "t": "माफ़ कीजिए, कितने बजे हैं?",
+     "tl": "māf kījiye, kitne baje hain?"
+    },
+    {
+     "n": "Answer: 'it is three o'clock'."
+    },
+    {
+     "p": 4,
+     "expect": "तीन बजे हैं"
+    },
+    {
+     "t": "तीन बजे हैं",
+     "tl": "tīn baje hain"
+    },
+    {
+     "n": "Here is 'today'. Listen and repeat."
+    },
+    {
+     "t": "आज",
+     "tl": "āj"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आज",
+     "slow": true,
+     "tl": "āj"
+    },
+    {
+     "p": 3,
+     "expect": "आज"
+    },
+    {
+     "t": "आज",
+     "tl": "āj"
+    },
+    {
+     "n": "Here is 'tomorrow'. The same word also means 'yesterday'; the verb tense tells you which. Listen and repeat."
+    },
+    {
+     "t": "कल",
+     "tl": "kal"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कल",
+     "slow": true,
+     "tl": "kal"
+    },
+    {
+     "p": 3,
+     "expect": "कल"
+    },
+    {
+     "t": "कल",
+     "tl": "kal"
+    },
+    {
+     "n": "Here is 'morning'. Listen and repeat."
+    },
+    {
+     "t": "सुबह",
+     "tl": "subah"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "सुबह",
+     "slow": true,
+     "tl": "subah"
+    },
+    {
+     "p": 3,
+     "expect": "सुबह"
+    },
+    {
+     "t": "सुबह",
+     "tl": "subah"
+    },
+    {
+     "n": "Here is 'evening'. Listen and repeat."
+    },
+    {
+     "t": "शाम",
+     "tl": "shām"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "शाम",
+     "slow": true,
+     "tl": "shām"
+    },
+    {
+     "p": 3,
+     "expect": "शाम"
+    },
+    {
+     "t": "शाम",
+     "tl": "shām"
+    },
+    {
+     "n": "And 'night'. Listen and repeat."
+    },
+    {
+     "t": "रात",
+     "tl": "rāt"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "रात",
+     "slow": true,
+     "tl": "rāt"
+    },
+    {
+     "p": 3,
+     "expect": "रात"
+    },
+    {
+     "t": "रात",
+     "tl": "rāt"
+    },
+    {
+     "t": "कल सुबह",
+     "tl": "kal subah"
+    },
+    {
+     "n": "Say 'tomorrow morning'."
+    },
+    {
+     "p": 3,
+     "expect": "कल सुबह"
+    },
+    {
+     "t": "कल सुबह",
+     "tl": "kal subah"
+    },
+    {
+     "n": "To say 'in the evening', you add a small word after 'evening'. Here is 'this evening'. Listen and repeat."
+    },
+    {
+     "t": "आज शाम को",
+     "tl": "āj shām ko"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "शाम को",
+     "slow": true,
+     "tl": "shām ko"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आज शाम को",
+     "slow": true,
+     "tl": "āj shām ko"
+    },
+    {
+     "p": 3,
+     "expect": "आज शाम को"
+    },
+    {
+     "t": "आज शाम को",
+     "tl": "āj shām ko"
+    },
+    {
+     "p": 3,
+     "expect": "आज शाम को"
+    },
+    {
+     "t": "कल शाम को",
+     "tl": "kal shām ko"
+    },
+    {
+     "n": "Say 'tomorrow evening'."
+    },
+    {
+     "p": 3,
+     "expect": "कल शाम को"
+    },
+    {
+     "t": "कल शाम को",
+     "tl": "kal shām ko"
+    },
+    {
+     "n": "Say 'it is one o'clock'."
+    },
+    {
+     "p": 3,
+     "expect": "एक बजा है"
+    },
+    {
+     "t": "एक बजा है",
+     "tl": "ek bajā hai"
+    },
+    {
+     "n": "Now the days of the week. Most end in the word for 'day'. Listen and repeat each one. Monday."
+    },
+    {
+     "t": "सोमवार",
+     "tl": "somvār"
+    },
+    {
+     "p": 3,
+     "expect": "सोमवार"
+    },
+    {
+     "n": "Tuesday."
+    },
+    {
+     "t": "मंगलवार",
+     "tl": "mangalvār"
+    },
+    {
+     "p": 3,
+     "expect": "मंगलवार"
+    },
+    {
+     "n": "Wednesday."
+    },
+    {
+     "t": "बुधवार",
+     "tl": "budhvār"
+    },
+    {
+     "p": 3,
+     "expect": "बुधवार"
+    },
+    {
+     "n": "Thursday."
+    },
+    {
+     "t": "गुरुवार",
+     "tl": "guruvār"
+    },
+    {
+     "p": 3,
+     "expect": "गुरुवार"
+    },
+    {
+     "n": "Friday."
+    },
+    {
+     "t": "शुक्रवार",
+     "tl": "shukravār"
+    },
+    {
+     "p": 3,
+     "expect": "शुक्रवार"
+    },
+    {
+     "n": "Saturday."
+    },
+    {
+     "t": "शनिवार",
+     "tl": "shanivār"
+    },
+    {
+     "p": 3,
+     "expect": "शनिवार"
+    },
+    {
+     "n": "Sunday."
+    },
+    {
+     "t": "रविवार",
+     "tl": "ravivār"
+    },
+    {
+     "p": 3,
+     "expect": "रविवार"
+    },
+    {
+     "n": "Listen to the whole week, then say it yourself."
+    },
+    {
+     "t": "सोमवार, मंगलवार, बुधवार, गुरुवार, शुक्रवार, शनिवार, रविवार",
+     "tl": "somvār, mangalvār, budhvār, guruvār, shukravār, shanivār, ravivār"
+    },
+    {
+     "p": 6
+    },
+    {
+     "n": "Here is 'what day is it today?', literally 'today which day is?'. Listen and repeat."
+    },
+    {
+     "t": "आज कौन सा दिन है?",
+     "tl": "āj kaun sā din hai?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "दिन है",
+     "slow": true,
+     "tl": "din hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कौन सा दिन है",
+     "slow": true,
+     "tl": "kaun sā din hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आज कौन सा दिन है?",
+     "slow": true,
+     "tl": "āj kaun sā din hai?"
+    },
+    {
+     "p": 3,
+     "expect": "आज कौन सा दिन है?"
+    },
+    {
+     "t": "आज कौन सा दिन है?",
+     "tl": "āj kaun sā din hai?"
+    },
+    {
+     "p": 3,
+     "expect": "आज कौन सा दिन है?"
+    },
+    {
+     "n": "Answer: 'today is Monday'. Listen and repeat."
+    },
+    {
+     "t": "आज सोमवार है",
+     "tl": "āj somvār hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "आज सोमवार है",
+     "slow": true,
+     "tl": "āj somvār hai"
+    },
+    {
+     "p": 3,
+     "expect": "आज सोमवार है"
+    },
+    {
+     "t": "आज सोमवार है",
+     "tl": "āj somvār hai"
+    },
+    {
+     "t": "आज शुक्रवार है",
+     "tl": "āj shukravār hai"
+    },
+    {
+     "n": "Say 'today is Friday'."
+    },
+    {
+     "p": 4,
+     "expect": "आज शुक्रवार है"
+    },
+    {
+     "t": "आज शुक्रवार है",
+     "tl": "āj shukravār hai"
+    },
+    {
+     "t": "कल मंगलवार है",
+     "tl": "kal mangalvār hai"
+    },
+    {
+     "n": "Say 'tomorrow is Tuesday'."
+    },
+    {
+     "p": 4,
+     "expect": "कल मंगलवार है"
+    },
+    {
+     "t": "कल मंगलवार है",
+     "tl": "kal mangalvār hai"
+    },
+    {
+     "n": "Ask what day it is today."
+    },
+    {
+     "p": 4,
+     "expect": "आज कौन सा दिन है?"
+    },
+    {
+     "t": "आज कौन सा दिन है?",
+     "tl": "āj kaun sā din hai?"
+    },
+    {
+     "n": "Here is 'now'. Listen and repeat."
+    },
+    {
+     "t": "अभी",
+     "tl": "abhī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "अभी",
+     "slow": true,
+     "tl": "abhī"
+    },
+    {
+     "p": 3,
+     "expect": "अभी"
+    },
+    {
+     "t": "अभी",
+     "tl": "abhī"
+    },
+    {
+     "t": "अभी तीन बजे हैं",
+     "tl": "abhī tīn baje hain"
+    },
+    {
+     "n": "Say 'now it is three o'clock'."
+    },
+    {
+     "p": 4,
+     "expect": "अभी तीन बजे हैं"
+    },
+    {
+     "t": "अभी तीन बजे हैं",
+     "tl": "abhī tīn baje hain"
+    },
+    {
+     "n": "Many Indians use an older form for Thursday and Sunday too. Listen, so you recognise them."
+    },
+    {
+     "t": "बृहस्पतिवार",
+     "tl": "brihaspativār"
+    },
+    {
+     "t": "इतवार",
+     "tl": "itvār"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कितने बजे हैं?",
+     "tl": "kitne baje hain?"
+    },
+    {
+     "t": "सात बजे हैं",
+     "tl": "sāt baje hain"
+    },
+    {
+     "q": "I will ask you the time. Answer that it is seven o'clock."
+    },
+    {
+     "p": 4,
+     "expect": "सात बजे हैं"
+    },
+    {
+     "t": "सात बजे हैं",
+     "tl": "sāt baje hain"
+    },
+    {
+     "n": "Say 'today is Monday'."
+    },
+    {
+     "p": 4,
+     "expect": "आज सोमवार है"
+    },
+    {
+     "t": "आज सोमवार है",
+     "tl": "āj somvār hai"
+    },
+    {
+     "n": "Now take the first speaker's part. Excuse yourself and ask the time."
+    },
+    {
+     "p": 5,
+     "expect": "माफ़ कीजिए, कितने बजे हैं?"
+    },
+    {
+     "t": "माफ़ कीजिए, कितने बजे हैं?",
+     "tl": "māf kījiye, kitne baje hain?"
+    },
+    {
+     "t": "तीन बजे हैं।",
+     "tl": "tīn baje hain."
+    },
+    {
+     "n": "Ask 'and what day is it today?'."
+    },
+    {
+     "p": 5,
+     "expect": "और आज कौन सा दिन है?"
+    },
+    {
+     "t": "और आज कौन सा दिन है?",
+     "tl": "aur āj kaun sā din hai?"
+    },
+    {
+     "n": "Now answer: 'today is Monday. Tomorrow Tuesday'."
+    },
+    {
+     "p": 5,
+     "expect": "आज सोमवार है। कल मंगलवार।"
+    },
+    {
+     "t": "आज सोमवार है। कल मंगलवार।",
+     "tl": "āj somvār hai. kal mangalvār."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "माफ़ कीजिए, कितने बजे हैं?",
+     "tl": "māf kījiye, kitne baje hain?"
+    },
+    {
+     "t": "तीन बजे हैं।",
+     "tl": "tīn baje hain."
+    },
+    {
+     "t": "और आज कौन सा दिन है?",
+     "tl": "aur āj kaun sā din hai?"
+    },
+    {
+     "t": "आज सोमवार है। कल मंगलवार।",
+     "tl": "āj somvār hai. kal mangalvār."
+    },
+    {
+     "n": "Well done. In the next lesson you will introduce yourself and talk about your family. This is the end of lesson six."
+    }
+   ]
+  },
+  {
+   "id": "a7",
+   "title": "Lesson 7 — My name is… This is my family",
+   "minutes": 16,
+   "goal": "Introduce yourself, say where you are from, and introduce family members",
+   "steps": [
+    {
+     "n": "Listen to two people introducing themselves at a wedding."
+    },
+    {
+     "t": "नमस्ते, मेरा नाम राहुल है। आपका नाम क्या है?",
+     "tl": "namaste, merā nām rāhul hai. āpkā nām kyā hai?"
+    },
+    {
+     "t": "मेरा नाम अना है। आप कहाँ से हैं?",
+     "tl": "merā nām anā hai. āp kahān se hain?"
+    },
+    {
+     "t": "मैं दिल्ली से हूँ। यह मेरी पत्नी है।",
+     "tl": "main dillī se hūn. yah merī patnī hai."
+    },
+    {
+     "t": "आपसे मिलकर ख़ुशी हुई।",
+     "tl": "āpse milkar khushī huī."
+    },
+    {
+     "n": "In this lesson you will say your name, where you are from, and introduce your family. Some review first."
+    },
+    {
+     "n": "Say 'hello, how are you?'."
+    },
+    {
+     "p": 4,
+     "expect": "नमस्ते, आप कैसे हैं?"
+    },
+    {
+     "t": "नमस्ते, आप कैसे हैं?",
+     "tl": "namaste, āp kaise hain?"
+    },
+    {
+     "n": "Tell me you speak a little Hindi."
+    },
+    {
+     "p": 4,
+     "expect": "मैं थोड़ी हिंदी बोलता हूँ"
+    },
+    {
+     "t": "मैं थोड़ी हिंदी बोलता हूँ",
+     "tl": "main thoṛī hindī boltā hūn"
+    },
+    {
+     "n": "Here is 'name'. Listen and repeat."
+    },
+    {
+     "t": "नाम",
+     "tl": "nām"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "नाम",
+     "slow": true,
+     "tl": "nām"
+    },
+    {
+     "p": 3,
+     "expect": "नाम"
+    },
+    {
+     "t": "नाम",
+     "tl": "nām"
+    },
+    {
+     "n": "Now, 'my name is Rahul'. Listen and repeat."
+    },
+    {
+     "t": "मेरा नाम राहुल है",
+     "tl": "merā nām rāhul hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "मेरा नाम राहुल है",
+     "slow": true,
+     "tl": "merā nām rāhul hai"
+    },
+    {
+     "p": 3,
+     "expect": "मेरा नाम राहुल है"
+    },
+    {
+     "t": "मेरा नाम राहुल है",
+     "tl": "merā nām rāhul hai"
+    },
+    {
+     "n": "Now say it with your own name."
+    },
+    {
+     "p": 4
+    },
+    {
+     "n": "Here is 'what is your name?'. The word for 'your' is built from the polite 'you'. Listen and repeat."
+    },
+    {
+     "t": "आपका नाम क्या है?",
+     "tl": "āpkā nām kyā hai?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "क्या है",
+     "slow": true,
+     "tl": "kyā hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "नाम क्या है",
+     "slow": true,
+     "tl": "nām kyā hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आपका नाम क्या है?",
+     "slow": true,
+     "tl": "āpkā nām kyā hai?"
+    },
+    {
+     "p": 3,
+     "expect": "आपका नाम क्या है?"
+    },
+    {
+     "t": "आपका नाम क्या है?",
+     "tl": "āpkā nām kyā hai?"
+    },
+    {
+     "p": 3,
+     "expect": "आपका नाम क्या है?"
+    },
+    {
+     "n": "Ask me my name."
+    },
+    {
+     "p": 4,
+     "expect": "आपका नाम क्या है?"
+    },
+    {
+     "t": "आपका नाम क्या है?",
+     "tl": "āpkā nām kyā hai?"
+    },
+    {
+     "n": "Say 'my name is Rahul'."
+    },
+    {
+     "p": 4,
+     "expect": "मेरा नाम राहुल है"
+    },
+    {
+     "t": "मेरा नाम राहुल है",
+     "tl": "merā nām rāhul hai"
+    },
+    {
+     "n": "Here is 'where are you from?'. You know 'where' and the little word for 'from'. Listen and repeat."
+    },
+    {
+     "t": "आप कहाँ से हैं?",
+     "tl": "āp kahān se hain?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "से हैं",
+     "slow": true,
+     "tl": "se hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कहाँ से हैं",
+     "slow": true,
+     "tl": "kahān se hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आप कहाँ से हैं?",
+     "slow": true,
+     "tl": "āp kahān se hain?"
+    },
+    {
+     "p": 3,
+     "expect": "आप कहाँ से हैं?"
+    },
+    {
+     "t": "आप कहाँ से हैं?",
+     "tl": "āp kahān se hain?"
+    },
+    {
+     "p": 3,
+     "expect": "आप कहाँ से हैं?"
+    },
+    {
+     "n": "Here is 'I am from America'. Listen and repeat."
+    },
+    {
+     "t": "मैं अमेरिका से हूँ",
+     "tl": "main amerikā se hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "से हूँ",
+     "slow": true,
+     "tl": "se hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "अमेरिका से हूँ",
+     "slow": true,
+     "tl": "amerikā se hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं अमेरिका से हूँ",
+     "slow": true,
+     "tl": "main amerikā se hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं अमेरिका से हूँ"
+    },
+    {
+     "t": "मैं अमेरिका से हूँ",
+     "tl": "main amerikā se hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं अमेरिका से हूँ"
+    },
+    {
+     "t": "मैं दिल्ली से हूँ",
+     "tl": "main dillī se hūn"
+    },
+    {
+     "n": "Say 'I am from Delhi'."
+    },
+    {
+     "p": 4,
+     "expect": "मैं दिल्ली से हूँ"
+    },
+    {
+     "t": "मैं दिल्ली से हूँ",
+     "tl": "main dillī se hūn"
+    },
+    {
+     "n": "Ask me where I am from."
+    },
+    {
+     "p": 4,
+     "expect": "आप कहाँ से हैं?"
+    },
+    {
+     "t": "आप कहाँ से हैं?",
+     "tl": "āp kahān se hain?"
+    },
+    {
+     "n": "Answer: 'I am from America'."
+    },
+    {
+     "p": 4,
+     "expect": "मैं अमेरिका से हूँ"
+    },
+    {
+     "t": "मैं अमेरिका से हूँ",
+     "tl": "main amerikā se hūn"
+    },
+    {
+     "n": "Here is 'this is my wife'. Notice 'my' now ends in a long 'ee', because wife is feminine. Listen and repeat."
+    },
+    {
+     "t": "यह मेरी पत्नी है",
+     "tl": "yah merī patnī hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "पत्नी है",
+     "slow": true,
+     "tl": "patnī hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मेरी पत्नी है",
+     "slow": true,
+     "tl": "merī patnī hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "यह मेरी पत्नी है",
+     "slow": true,
+     "tl": "yah merī patnī hai"
+    },
+    {
+     "p": 3,
+     "expect": "यह मेरी पत्नी है"
+    },
+    {
+     "t": "यह मेरी पत्नी है",
+     "tl": "yah merī patnī hai"
+    },
+    {
+     "p": 3,
+     "expect": "यह मेरी पत्नी है"
+    },
+    {
+     "n": "And 'this is my husband'. For respect, a husband takes the plural form, so 'my' and 'is' both change. Listen and repeat."
+    },
+    {
+     "t": "यह मेरे पति हैं",
+     "tl": "yah mere pati hain"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "यह मेरे पति हैं",
+     "slow": true,
+     "tl": "yah mere pati hain"
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरे पति हैं"
+    },
+    {
+     "t": "यह मेरे पति हैं",
+     "tl": "yah mere pati hain"
+    },
+    {
+     "n": "Introduce your wife."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरी पत्नी है"
+    },
+    {
+     "t": "यह मेरी पत्नी है",
+     "tl": "yah merī patnī hai"
+    },
+    {
+     "n": "Introduce your husband."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरे पति हैं"
+    },
+    {
+     "t": "यह मेरे पति हैं",
+     "tl": "yah mere pati hain"
+    },
+    {
+     "n": "Here is 'son'. Listen and repeat."
+    },
+    {
+     "t": "बेटा",
+     "tl": "beṭā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बेटा",
+     "slow": true,
+     "tl": "beṭā"
+    },
+    {
+     "p": 3,
+     "expect": "बेटा"
+    },
+    {
+     "t": "बेटा",
+     "tl": "beṭā"
+    },
+    {
+     "n": "And 'daughter'. Listen and repeat."
+    },
+    {
+     "t": "बेटी",
+     "tl": "beṭī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बेटी",
+     "slow": true,
+     "tl": "beṭī"
+    },
+    {
+     "p": 3,
+     "expect": "बेटी"
+    },
+    {
+     "t": "बेटी",
+     "tl": "beṭī"
+    },
+    {
+     "t": "यह मेरा बेटा है",
+     "tl": "yah merā beṭā hai"
+    },
+    {
+     "n": "Say 'this is my son'."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरा बेटा है"
+    },
+    {
+     "t": "यह मेरा बेटा है",
+     "tl": "yah merā beṭā hai"
+    },
+    {
+     "t": "यह मेरी बेटी है",
+     "tl": "yah merī beṭī hai"
+    },
+    {
+     "n": "Say 'this is my daughter'."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरी बेटी है"
+    },
+    {
+     "t": "यह मेरी बेटी है",
+     "tl": "yah merī beṭī hai"
+    },
+    {
+     "n": "So: masculine nouns take 'my' with an 'aa' sound, feminine nouns with an 'ee' sound, and respected elders take the plural form. Ask me my name."
+    },
+    {
+     "p": 4,
+     "expect": "आपका नाम क्या है?"
+    },
+    {
+     "t": "आपका नाम क्या है?",
+     "tl": "āpkā nām kyā hai?"
+    },
+    {
+     "n": "Here is 'mother'. Listen and repeat."
+    },
+    {
+     "t": "माँ",
+     "tl": "mān"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "माँ",
+     "slow": true,
+     "tl": "mān"
+    },
+    {
+     "p": 3,
+     "expect": "माँ"
+    },
+    {
+     "t": "माँ",
+     "tl": "mān"
+    },
+    {
+     "n": "And 'father'. Listen and repeat."
+    },
+    {
+     "t": "पिता",
+     "tl": "pitā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "पिता",
+     "slow": true,
+     "tl": "pitā"
+    },
+    {
+     "p": 3,
+     "expect": "पिता"
+    },
+    {
+     "t": "पिता",
+     "tl": "pitā"
+    },
+    {
+     "t": "यह मेरी माँ हैं",
+     "tl": "yah merī mān hain"
+    },
+    {
+     "n": "Say 'this is my mother'."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरी माँ हैं"
+    },
+    {
+     "t": "यह मेरी माँ हैं",
+     "tl": "yah merī mān hain"
+    },
+    {
+     "t": "यह मेरे पिता हैं",
+     "tl": "yah mere pitā hain"
+    },
+    {
+     "n": "Say 'this is my father'."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरे पिता हैं"
+    },
+    {
+     "t": "यह मेरे पिता हैं",
+     "tl": "yah mere pitā hain"
+    },
+    {
+     "n": "Here is 'brother'. Listen and repeat."
+    },
+    {
+     "t": "भाई",
+     "tl": "bhāī"
+    },
+    {
+     "p": 2,
+     "expect": "भाई"
+    },
+    {
+     "n": "And 'sister'."
+    },
+    {
+     "t": "बहन",
+     "tl": "bahan"
+    },
+    {
+     "p": 2,
+     "expect": "बहन"
+    },
+    {
+     "t": "यह मेरा भाई है",
+     "tl": "yah merā bhāī hai"
+    },
+    {
+     "n": "Say 'this is my brother'."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरा भाई है"
+    },
+    {
+     "t": "यह मेरा भाई है",
+     "tl": "yah merā bhāī hai"
+    },
+    {
+     "t": "यह मेरी बहन है",
+     "tl": "yah merī bahan hai"
+    },
+    {
+     "n": "Say 'this is my sister'."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरी बहन है"
+    },
+    {
+     "t": "यह मेरी बहन है",
+     "tl": "yah merī bahan hai"
+    },
+    {
+     "n": "Here is 'pleased to meet you', literally 'having met you, happiness happened'. Listen and repeat."
+    },
+    {
+     "t": "आपसे मिलकर ख़ुशी हुई",
+     "tl": "āpse milkar khushī huī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "हुई",
+     "slow": true,
+     "tl": "huī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ख़ुशी हुई",
+     "slow": true,
+     "tl": "khushī huī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मिलकर ख़ुशी हुई",
+     "slow": true,
+     "tl": "milkar khushī huī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आपसे मिलकर ख़ुशी हुई",
+     "slow": true,
+     "tl": "āpse milkar khushī huī"
+    },
+    {
+     "p": 3,
+     "expect": "आपसे मिलकर ख़ुशी हुई"
+    },
+    {
+     "t": "आपसे मिलकर ख़ुशी हुई",
+     "tl": "āpse milkar khushī huī"
+    },
+    {
+     "p": 3,
+     "expect": "आपसे मिलकर ख़ुशी हुई"
+    },
+    {
+     "n": "Say 'pleased to meet you'."
+    },
+    {
+     "p": 5,
+     "expect": "आपसे मिलकर ख़ुशी हुई"
+    },
+    {
+     "t": "आपसे मिलकर ख़ुशी हुई",
+     "tl": "āpse milkar khushī huī"
+    },
+    {
+     "t": "आप कहाँ से हैं?",
+     "tl": "āp kahān se hain?"
+    },
+    {
+     "q": "Someone asks where you are from. Answer that you are from America."
+    },
+    {
+     "p": 4,
+     "expect": "मैं अमेरिका से हूँ"
+    },
+    {
+     "t": "मैं अमेरिका से हूँ",
+     "tl": "main amerikā se hūn"
+    },
+    {
+     "n": "Introduce your daughter."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरी बेटी है"
+    },
+    {
+     "t": "यह मेरी बेटी है",
+     "tl": "yah merī beṭī hai"
+    },
+    {
+     "n": "Now take Rahul's part. Greet her, say your name is Rahul, and ask her name."
+    },
+    {
+     "p": 6,
+     "expect": "नमस्ते, मेरा नाम राहुल है। आपका नाम क्या है?"
+    },
+    {
+     "t": "नमस्ते, मेरा नाम राहुल है। आपका नाम क्या है?",
+     "tl": "namaste, merā nām rāhul hai. āpkā nām kyā hai?"
+    },
+    {
+     "t": "मेरा नाम अना है। आप कहाँ से हैं?",
+     "tl": "merā nām anā hai. āp kahān se hain?"
+    },
+    {
+     "n": "Say 'I am from Delhi. This is my wife'."
+    },
+    {
+     "p": 6,
+     "expect": "मैं दिल्ली से हूँ। यह मेरी पत्नी है।"
+    },
+    {
+     "t": "मैं दिल्ली से हूँ। यह मेरी पत्नी है।",
+     "tl": "main dillī se hūn. yah merī patnī hai."
+    },
+    {
+     "n": "Now take Ana's part: 'pleased to meet you'."
+    },
+    {
+     "p": 5,
+     "expect": "आपसे मिलकर ख़ुशी हुई।"
+    },
+    {
+     "t": "आपसे मिलकर ख़ुशी हुई।",
+     "tl": "āpse milkar khushī huī."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "नमस्ते, मेरा नाम राहुल है। आपका नाम क्या है?",
+     "tl": "namaste, merā nām rāhul hai. āpkā nām kyā hai?"
+    },
+    {
+     "t": "मेरा नाम अना है। आप कहाँ से हैं?",
+     "tl": "merā nām anā hai. āp kahān se hain?"
+    },
+    {
+     "t": "मैं दिल्ली से हूँ। यह मेरी पत्नी है।",
+     "tl": "main dillī se hūn. yah merī patnī hai."
+    },
+    {
+     "t": "आपसे मिलकर ख़ुशी हुई।",
+     "tl": "āpse milkar khushī huī."
+    },
+    {
+     "n": "Excellent. Next time you will say what you like and what you want to do. This is the end of lesson seven."
+    }
+   ]
+  },
+  {
+   "id": "a8",
+   "title": "Lesson 8 — I like it, I want to go",
+   "minutes": 16,
+   "goal": "Say what you like and dislike, and what you want or want to do",
+   "steps": [
+    {
+     "n": "Listen to a host and a guest talking about food."
+    },
+    {
+     "t": "क्या आपको भारतीय खाना पसंद है?",
+     "tl": "kyā āpko bhāratīya khānā pasand hai?"
+    },
+    {
+     "t": "जी हाँ, मुझे बहुत पसंद है। ख़ासकर दाल।",
+     "tl": "jī hān, mujhe bahut pasand hai. khāskar dāl."
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "t": "जी नहीं, मैं कॉफ़ी चाहता हूँ।",
+     "tl": "jī nahīn, main kŏfī chāhtā hūn."
+    },
+    {
+     "n": "In this lesson you will say what you like and what you want to do. First, some review."
+    },
+    {
+     "n": "Say 'I would like tea'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे चाय चाहिए"
+    },
+    {
+     "t": "मुझे चाय चाहिए",
+     "tl": "mujhe chāy chāhiye"
+    },
+    {
+     "n": "Ask me where I am from."
+    },
+    {
+     "p": 4,
+     "expect": "आप कहाँ से हैं?"
+    },
+    {
+     "t": "आप कहाँ से हैं?",
+     "tl": "āp kahān se hain?"
+    },
+    {
+     "n": "Here is 'I like', literally 'to me it is pleasing'. You know the first word from 'I would like'. Listen and repeat."
+    },
+    {
+     "t": "मुझे पसंद है",
+     "tl": "mujhe pasand hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "है",
+     "slow": true,
+     "tl": "hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "पसंद है",
+     "slow": true,
+     "tl": "pasand hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मुझे पसंद है",
+     "slow": true,
+     "tl": "mujhe pasand hai"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे पसंद है"
+    },
+    {
+     "t": "मुझे पसंद है",
+     "tl": "mujhe pasand hai"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे पसंद है"
+    },
+    {
+     "n": "Now, 'I like tea'. The thing you like goes in the middle, just like before. Listen and repeat."
+    },
+    {
+     "t": "मुझे चाय पसंद है",
+     "tl": "mujhe chāy pasand hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "मुझे चाय पसंद है",
+     "slow": true,
+     "tl": "mujhe chāy pasand hai"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे चाय पसंद है"
+    },
+    {
+     "t": "मुझे चाय पसंद है",
+     "tl": "mujhe chāy pasand hai"
+    },
+    {
+     "n": "Here is 'Indian'. Listen and repeat."
+    },
+    {
+     "t": "भारतीय",
+     "tl": "bhāratīya"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "भारतीय",
+     "slow": true,
+     "tl": "bhāratīya"
+    },
+    {
+     "p": 3,
+     "expect": "भारतीय"
+    },
+    {
+     "t": "भारतीय",
+     "tl": "bhāratīya"
+    },
+    {
+     "t": "मुझे भारतीय खाना पसंद है",
+     "tl": "mujhe bhāratīya khānā pasand hai"
+    },
+    {
+     "n": "Say 'I like Indian food'."
+    },
+    {
+     "p": 5,
+     "expect": "मुझे भारतीय खाना पसंद है"
+    },
+    {
+     "t": "मुझे भारतीय खाना पसंद है",
+     "tl": "mujhe bhāratīya khānā pasand hai"
+    },
+    {
+     "n": "Here is 'to you', the partner of 'to me'. Listen and repeat."
+    },
+    {
+     "t": "आपको",
+     "tl": "āpko"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आपको",
+     "slow": true,
+     "tl": "āpko"
+    },
+    {
+     "p": 3,
+     "expect": "आपको"
+    },
+    {
+     "t": "आपको",
+     "tl": "āpko"
+    },
+    {
+     "n": "Now, 'do you like Indian food?'. Listen and repeat."
+    },
+    {
+     "t": "क्या आपको भारतीय खाना पसंद है?",
+     "tl": "kyā āpko bhāratīya khānā pasand hai?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "पसंद है?",
+     "slow": true,
+     "tl": "pasand hai?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "भारतीय खाना पसंद है?",
+     "slow": true,
+     "tl": "bhāratīya khānā pasand hai?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्या आपको भारतीय खाना पसंद है?",
+     "slow": true,
+     "tl": "kyā āpko bhāratīya khānā pasand hai?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आपको भारतीय खाना पसंद है?"
+    },
+    {
+     "t": "क्या आपको भारतीय खाना पसंद है?",
+     "tl": "kyā āpko bhāratīya khānā pasand hai?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आपको भारतीय खाना पसंद है?"
+    },
+    {
+     "t": "क्या आपको चाय पसंद है?",
+     "tl": "kyā āpko chāy pasand hai?"
+    },
+    {
+     "n": "Ask me if I like tea."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आपको चाय पसंद है?"
+    },
+    {
+     "t": "क्या आपको चाय पसंद है?",
+     "tl": "kyā āpko chāy pasand hai?"
+    },
+    {
+     "t": "जी हाँ, मुझे बहुत पसंद है",
+     "tl": "jī hān, mujhe bahut pasand hai"
+    },
+    {
+     "n": "Answer: 'yes, I like it a lot'."
+    },
+    {
+     "p": 4,
+     "expect": "जी हाँ, मुझे बहुत पसंद है"
+    },
+    {
+     "t": "जी हाँ, मुझे बहुत पसंद है",
+     "tl": "jī hān, mujhe bahut pasand hai"
+    },
+    {
+     "n": "Here is 'I don't like coffee'. Notice that 'not' slips in just before 'is'. Listen and repeat."
+    },
+    {
+     "t": "मुझे कॉफ़ी पसंद नहीं है",
+     "tl": "mujhe kŏfī pasand nahīn hai"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "पसंद नहीं है",
+     "slow": true,
+     "tl": "pasand nahīn hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मुझे कॉफ़ी पसंद नहीं है",
+     "slow": true,
+     "tl": "mujhe kŏfī pasand nahīn hai"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे कॉफ़ी पसंद नहीं है"
+    },
+    {
+     "t": "मुझे कॉफ़ी पसंद नहीं है",
+     "tl": "mujhe kŏfī pasand nahīn hai"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे कॉफ़ी पसंद नहीं है"
+    },
+    {
+     "n": "Here is 'music'. Listen and repeat."
+    },
+    {
+     "t": "संगीत",
+     "tl": "sangīt"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "संगीत",
+     "slow": true,
+     "tl": "sangīt"
+    },
+    {
+     "p": 3,
+     "expect": "संगीत"
+    },
+    {
+     "t": "संगीत",
+     "tl": "sangīt"
+    },
+    {
+     "t": "मुझे संगीत पसंद है",
+     "tl": "mujhe sangīt pasand hai"
+    },
+    {
+     "n": "Say 'I like music'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे संगीत पसंद है"
+    },
+    {
+     "t": "मुझे संगीत पसंद है",
+     "tl": "mujhe sangīt pasand hai"
+    },
+    {
+     "n": "Say 'I don't like coffee'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे कॉफ़ी पसंद नहीं है"
+    },
+    {
+     "t": "मुझे कॉफ़ी पसंद नहीं है",
+     "tl": "mujhe kŏfī pasand nahīn hai"
+    },
+    {
+     "n": "Here is 'especially'. Listen and repeat."
+    },
+    {
+     "t": "ख़ासकर",
+     "tl": "khāskar"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ख़ासकर",
+     "slow": true,
+     "tl": "khāskar"
+    },
+    {
+     "p": 3,
+     "expect": "ख़ासकर"
+    },
+    {
+     "t": "ख़ासकर",
+     "tl": "khāskar"
+    },
+    {
+     "t": "ख़ासकर दाल",
+     "tl": "khāskar dāl"
+    },
+    {
+     "n": "Say 'especially lentils'."
+    },
+    {
+     "p": 3,
+     "expect": "ख़ासकर दाल"
+    },
+    {
+     "t": "ख़ासकर दाल",
+     "tl": "khāskar dāl"
+    },
+    {
+     "n": "Here is 'do you want tea?'. This is the verb 'to want', related to 'I would like'. Listen and repeat."
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "चाहते हैं",
+     "slow": true,
+     "tl": "chāhte hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "चाय चाहते हैं",
+     "slow": true,
+     "tl": "chāy chāhte hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "slow": true,
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आप चाय चाहते हैं?"
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आप चाय चाहते हैं?"
+    },
+    {
+     "n": "And 'I want coffee', a man speaking. Listen and repeat."
+    },
+    {
+     "t": "मैं कॉफ़ी चाहता हूँ",
+     "tl": "main kŏfī chāhtā hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "चाहता हूँ",
+     "slow": true,
+     "tl": "chāhtā hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कॉफ़ी चाहता हूँ",
+     "slow": true,
+     "tl": "kŏfī chāhtā hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं कॉफ़ी चाहता हूँ",
+     "slow": true,
+     "tl": "main kŏfī chāhtā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं कॉफ़ी चाहता हूँ"
+    },
+    {
+     "t": "मैं कॉफ़ी चाहता हूँ",
+     "tl": "main kŏfī chāhtā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं कॉफ़ी चाहता हूँ"
+    },
+    {
+     "n": "A woman says it like this. Repeat if that is your form."
+    },
+    {
+     "t": "मैं कॉफ़ी चाहती हूँ",
+     "tl": "main kŏfī chāhtī hūn"
+    },
+    {
+     "p": 4
+    },
+    {
+     "n": "Ask me if I want tea."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आप चाय चाहते हैं?"
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "t": "जी नहीं, मैं कॉफ़ी चाहता हूँ",
+     "tl": "jī nahīn, main kŏfī chāhtā hūn"
+    },
+    {
+     "n": "Answer: 'no, I want coffee'."
+    },
+    {
+     "p": 5,
+     "expect": "जी नहीं, मैं कॉफ़ी चाहता हूँ"
+    },
+    {
+     "t": "जी नहीं, मैं कॉफ़ी चाहता हूँ",
+     "tl": "jī nahīn, main kŏfī chāhtā hūn"
+    },
+    {
+     "n": "Here is 'to go'. Verbs in their basic form end in this 'naa' sound. Listen and repeat."
+    },
+    {
+     "t": "जाना",
+     "tl": "jānā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "जाना",
+     "slow": true,
+     "tl": "jānā"
+    },
+    {
+     "p": 3,
+     "expect": "जाना"
+    },
+    {
+     "t": "जाना",
+     "tl": "jānā"
+    },
+    {
+     "n": "Now, 'I want to go'. Put the basic verb before 'want'. Listen and repeat."
+    },
+    {
+     "t": "मैं जाना चाहता हूँ",
+     "tl": "main jānā chāhtā hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "जाना चाहता हूँ",
+     "slow": true,
+     "tl": "jānā chāhtā hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं जाना चाहता हूँ",
+     "slow": true,
+     "tl": "main jānā chāhtā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं जाना चाहता हूँ"
+    },
+    {
+     "t": "मैं जाना चाहता हूँ",
+     "tl": "main jānā chāhtā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "मैं जाना चाहता हूँ"
+    },
+    {
+     "t": "मैं दिल्ली जाना चाहता हूँ",
+     "tl": "main dillī jānā chāhtā hūn"
+    },
+    {
+     "n": "Say 'I want to go to Delhi'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं दिल्ली जाना चाहता हूँ"
+    },
+    {
+     "t": "मैं दिल्ली जाना चाहता हूँ",
+     "tl": "main dillī jānā chāhtā hūn"
+    },
+    {
+     "n": "Here is 'to see' or 'to watch'. Listen and repeat."
+    },
+    {
+     "t": "देखना",
+     "tl": "dekhnā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "देखना",
+     "slow": true,
+     "tl": "dekhnā"
+    },
+    {
+     "p": 3,
+     "expect": "देखना"
+    },
+    {
+     "t": "देखना",
+     "tl": "dekhnā"
+    },
+    {
+     "n": "And 'film'. Listen and repeat."
+    },
+    {
+     "t": "फ़िल्म",
+     "tl": "film"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "फ़िल्म",
+     "slow": true,
+     "tl": "film"
+    },
+    {
+     "p": 3,
+     "expect": "फ़िल्म"
+    },
+    {
+     "t": "फ़िल्म",
+     "tl": "film"
+    },
+    {
+     "t": "मैं फ़िल्म देखना चाहता हूँ",
+     "tl": "main film dekhnā chāhtā hūn"
+    },
+    {
+     "n": "Say 'I want to watch a film'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं फ़िल्म देखना चाहता हूँ"
+    },
+    {
+     "t": "मैं फ़िल्म देखना चाहता हूँ",
+     "tl": "main film dekhnā chāhtā hūn"
+    },
+    {
+     "n": "Remember that 'food' is also the verb 'to eat', so 'I want to eat food' repeats the word. Listen and repeat."
+    },
+    {
+     "t": "मैं खाना खाना चाहता हूँ",
+     "tl": "main khānā khānā chāhtā hūn"
+    },
+    {
+     "p": 5,
+     "expect": "मैं खाना खाना चाहता हूँ"
+    },
+    {
+     "t": "मैं खाना खाना चाहता हूँ",
+     "tl": "main khānā khānā chāhtā hūn"
+    },
+    {
+     "n": "Say 'I like music'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे संगीत पसंद है"
+    },
+    {
+     "t": "मुझे संगीत पसंद है",
+     "tl": "mujhe sangīt pasand hai"
+    },
+    {
+     "n": "Ask me if I like Indian food."
+    },
+    {
+     "p": 5,
+     "expect": "क्या आपको भारतीय खाना पसंद है?"
+    },
+    {
+     "t": "क्या आपको भारतीय खाना पसंद है?",
+     "tl": "kyā āpko bhāratīya khānā pasand hai?"
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "q": "I will ask if you want tea. Say no, you want coffee."
+    },
+    {
+     "p": 5,
+     "expect": "जी नहीं, मैं कॉफ़ी चाहता हूँ"
+    },
+    {
+     "t": "जी नहीं, मैं कॉफ़ी चाहता हूँ",
+     "tl": "jī nahīn, main kŏfī chāhtā hūn"
+    },
+    {
+     "n": "Say 'I want to watch a film'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं फ़िल्म देखना चाहता हूँ"
+    },
+    {
+     "t": "मैं फ़िल्म देखना चाहता हूँ",
+     "tl": "main film dekhnā chāhtā hūn"
+    },
+    {
+     "n": "Now take the guest's part. I am the host."
+    },
+    {
+     "t": "क्या आपको भारतीय खाना पसंद है?",
+     "tl": "kyā āpko bhāratīya khānā pasand hai?"
+    },
+    {
+     "n": "Say 'yes, I like it a lot. Especially lentils'."
+    },
+    {
+     "p": 6,
+     "expect": "जी हाँ, मुझे बहुत पसंद है। ख़ासकर दाल।"
+    },
+    {
+     "t": "जी हाँ, मुझे बहुत पसंद है। ख़ासकर दाल।",
+     "tl": "jī hān, mujhe bahut pasand hai. khāskar dāl."
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "n": "Say 'no, I want coffee'."
+    },
+    {
+     "p": 5,
+     "expect": "जी नहीं, मैं कॉफ़ी चाहता हूँ।"
+    },
+    {
+     "t": "जी नहीं, मैं कॉफ़ी चाहता हूँ।",
+     "tl": "jī nahīn, main kŏfī chāhtā hūn."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "क्या आपको भारतीय खाना पसंद है?",
+     "tl": "kyā āpko bhāratīya khānā pasand hai?"
+    },
+    {
+     "t": "जी हाँ, मुझे बहुत पसंद है। ख़ासकर दाल।",
+     "tl": "jī hān, mujhe bahut pasand hai. khāskar dāl."
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "t": "जी नहीं, मैं कॉफ़ी चाहता हूँ।",
+     "tl": "jī nahīn, main kŏfī chāhtā hūn."
+    },
+    {
+     "n": "Very good. In the next lesson you will talk about what you did yesterday. This is the end of lesson eight."
+    }
+   ]
+  },
+  {
+   "id": "a9",
+   "title": "Lesson 9 — Where did you go yesterday?",
+   "minutes": 16,
+   "goal": "Say where you went and what you ate, drank and saw, and ask others",
+   "steps": [
+    {
+     "n": "Listen to two friends talking about yesterday."
+    },
+    {
+     "t": "कल आप कहाँ गए?",
+     "tl": "kal āp kahān gaye?"
+    },
+    {
+     "t": "मैं बाज़ार गया। मैंने चाय पी।",
+     "tl": "main bāzār gayā. mainne chāy pī."
+    },
+    {
+     "t": "क्या आपने खाना खाया?",
+     "tl": "kyā āpne khānā khāyā?"
+    },
+    {
+     "t": "जी हाँ, बहुत अच्छा था।",
+     "tl": "jī hān, bahut achchhā thā."
+    },
+    {
+     "n": "In this lesson you will talk about the past: where you went, what you ate and drank. Some review first."
+    },
+    {
+     "n": "Say 'I want to go to Delhi'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं दिल्ली जाना चाहता हूँ"
+    },
+    {
+     "t": "मैं दिल्ली जाना चाहता हूँ",
+     "tl": "main dillī jānā chāhtā hūn"
+    },
+    {
+     "n": "Ask me if I like Indian food."
+    },
+    {
+     "p": 5,
+     "expect": "क्या आपको भारतीय खाना पसंद है?"
+    },
+    {
+     "t": "क्या आपको भारतीय खाना पसंद है?",
+     "tl": "kyā āpko bhāratīya khānā pasand hai?"
+    },
+    {
+     "n": "Here is 'I went to the market', a man speaking. The past form of 'go' comes at the end. Listen and repeat."
+    },
+    {
+     "t": "मैं बाज़ार गया",
+     "tl": "main bāzār gayā"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "गया",
+     "slow": true,
+     "tl": "gayā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बाज़ार गया",
+     "slow": true,
+     "tl": "bāzār gayā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं बाज़ार गया",
+     "slow": true,
+     "tl": "main bāzār gayā"
+    },
+    {
+     "p": 3,
+     "expect": "मैं बाज़ार गया"
+    },
+    {
+     "t": "मैं बाज़ार गया",
+     "tl": "main bāzār gayā"
+    },
+    {
+     "p": 3,
+     "expect": "मैं बाज़ार गया"
+    },
+    {
+     "n": "A woman says 'went' with the feminine ending. Listen, and repeat if that is your form."
+    },
+    {
+     "t": "मैं बाज़ार गई",
+     "tl": "main bāzār gaī"
+    },
+    {
+     "p": 4
+    },
+    {
+     "n": "Here is 'where did you go?'. With the polite 'you', the verb takes a plural ending. Listen and repeat."
+    },
+    {
+     "t": "आप कहाँ गए?",
+     "tl": "āp kahān gaye?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "गए",
+     "slow": true,
+     "tl": "gaye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कहाँ गए",
+     "slow": true,
+     "tl": "kahān gaye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आप कहाँ गए?",
+     "slow": true,
+     "tl": "āp kahān gaye?"
+    },
+    {
+     "p": 3,
+     "expect": "आप कहाँ गए?"
+    },
+    {
+     "t": "आप कहाँ गए?",
+     "tl": "āp kahān gaye?"
+    },
+    {
+     "p": 3,
+     "expect": "आप कहाँ गए?"
+    },
+    {
+     "n": "You know the word for tomorrow. With a past verb it means 'yesterday'. Ask 'where did you go yesterday?'."
+    },
+    {
+     "t": "कल आप कहाँ गए?",
+     "tl": "kal āp kahān gaye?"
+    },
+    {
+     "p": 5,
+     "expect": "कल आप कहाँ गए?"
+    },
+    {
+     "t": "कल आप कहाँ गए?",
+     "tl": "kal āp kahān gaye?"
+    },
+    {
+     "n": "Answer: 'I went to the market'."
+    },
+    {
+     "p": 4,
+     "expect": "मैं बाज़ार गया"
+    },
+    {
+     "t": "मैं बाज़ार गया",
+     "tl": "main bāzār gayā"
+    },
+    {
+     "t": "कल मैं दिल्ली गया",
+     "tl": "kal main dillī gayā"
+    },
+    {
+     "n": "Say 'yesterday I went to Delhi'."
+    },
+    {
+     "p": 5,
+     "expect": "कल मैं दिल्ली गया"
+    },
+    {
+     "t": "कल मैं दिल्ली गया",
+     "tl": "kal main dillī gayā"
+    },
+    {
+     "n": "Here is 'I ate food'. In the past tense, verbs that take an object use a special form of 'I', with an extra syllable. Listen and repeat."
+    },
+    {
+     "t": "मैंने खाना खाया",
+     "tl": "mainne khānā khāyā"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "खाया",
+     "slow": true,
+     "tl": "khāyā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "खाना खाया",
+     "slow": true,
+     "tl": "khānā khāyā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैंने खाना खाया",
+     "slow": true,
+     "tl": "mainne khānā khāyā"
+    },
+    {
+     "p": 3,
+     "expect": "मैंने खाना खाया"
+    },
+    {
+     "t": "मैंने खाना खाया",
+     "tl": "mainne khānā khāyā"
+    },
+    {
+     "p": 3,
+     "expect": "मैंने खाना खाया"
+    },
+    {
+     "n": "That special form appears only in the past with verbs like eat, drink or see, never with 'go'. Say 'I ate food'."
+    },
+    {
+     "p": 4,
+     "expect": "मैंने खाना खाया"
+    },
+    {
+     "t": "मैंने खाना खाया",
+     "tl": "mainne khānā khāyā"
+    },
+    {
+     "n": "Here is 'I drank tea'. The verb agrees with 'tea', which is feminine, so it ends in a long 'ee'. Listen and repeat."
+    },
+    {
+     "t": "मैंने चाय पी",
+     "tl": "mainne chāy pī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "पी",
+     "slow": true,
+     "tl": "pī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "चाय पी",
+     "slow": true,
+     "tl": "chāy pī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैंने चाय पी",
+     "slow": true,
+     "tl": "mainne chāy pī"
+    },
+    {
+     "p": 3,
+     "expect": "मैंने चाय पी"
+    },
+    {
+     "t": "मैंने चाय पी",
+     "tl": "mainne chāy pī"
+    },
+    {
+     "p": 3,
+     "expect": "मैंने चाय पी"
+    },
+    {
+     "n": "Say 'I went to the market. I drank tea'."
+    },
+    {
+     "p": 6,
+     "expect": "मैं बाज़ार गया। मैंने चाय पी।"
+    },
+    {
+     "t": "मैं बाज़ार गया। मैंने चाय पी।",
+     "tl": "main bāzār gayā. mainne chāy pī."
+    },
+    {
+     "n": "Here is 'did you eat?'. 'You' takes the same extra syllable. Listen and repeat."
+    },
+    {
+     "t": "क्या आपने खाना खाया?",
+     "tl": "kyā āpne khānā khāyā?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "खाया",
+     "slow": true,
+     "tl": "khāyā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आपने खाना खाया",
+     "slow": true,
+     "tl": "āpne khānā khāyā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्या आपने खाना खाया?",
+     "slow": true,
+     "tl": "kyā āpne khānā khāyā?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आपने खाना खाया?"
+    },
+    {
+     "t": "क्या आपने खाना खाया?",
+     "tl": "kyā āpne khānā khāyā?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आपने खाना खाया?"
+    },
+    {
+     "t": "क्या आपने चाय पी?",
+     "tl": "kyā āpne chāy pī?"
+    },
+    {
+     "n": "Ask me if I drank tea."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आपने चाय पी?"
+    },
+    {
+     "t": "क्या आपने चाय पी?",
+     "tl": "kyā āpne chāy pī?"
+    },
+    {
+     "n": "Ask me where I went yesterday."
+    },
+    {
+     "p": 5,
+     "expect": "कल आप कहाँ गए?"
+    },
+    {
+     "t": "कल आप कहाँ गए?",
+     "tl": "kal āp kahān gaye?"
+    },
+    {
+     "n": "Here is 'good'. On its own it also means 'I see' or 'okay', and you will hear it constantly. Listen and repeat."
+    },
+    {
+     "t": "अच्छा",
+     "tl": "achchhā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "अच्छा",
+     "slow": true,
+     "tl": "achchhā"
+    },
+    {
+     "p": 3,
+     "expect": "अच्छा"
+    },
+    {
+     "t": "अच्छा",
+     "tl": "achchhā"
+    },
+    {
+     "n": "Here is 'it was very good'. The last word is 'was'. Listen and repeat."
+    },
+    {
+     "t": "बहुत अच्छा था",
+     "tl": "bahut achchhā thā"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "था",
+     "slow": true,
+     "tl": "thā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "अच्छा था",
+     "slow": true,
+     "tl": "achchhā thā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बहुत अच्छा था",
+     "slow": true,
+     "tl": "bahut achchhā thā"
+    },
+    {
+     "p": 3,
+     "expect": "बहुत अच्छा था"
+    },
+    {
+     "t": "बहुत अच्छा था",
+     "tl": "bahut achchhā thā"
+    },
+    {
+     "p": 3,
+     "expect": "बहुत अच्छा था"
+    },
+    {
+     "t": "खाना बहुत अच्छा था",
+     "tl": "khānā bahut achchhā thā"
+    },
+    {
+     "n": "Say 'the food was very good'."
+    },
+    {
+     "p": 5,
+     "expect": "खाना बहुत अच्छा था"
+    },
+    {
+     "t": "खाना बहुत अच्छा था",
+     "tl": "khānā bahut achchhā thā"
+    },
+    {
+     "n": "Ask me if I ate."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आपने खाना खाया?"
+    },
+    {
+     "t": "क्या आपने खाना खाया?",
+     "tl": "kyā āpne khānā khāyā?"
+    },
+    {
+     "t": "जी हाँ, बहुत अच्छा था",
+     "tl": "jī hān, bahut achchhā thā"
+    },
+    {
+     "n": "Answer: 'yes, it was very good'."
+    },
+    {
+     "p": 4,
+     "expect": "जी हाँ, बहुत अच्छा था"
+    },
+    {
+     "t": "जी हाँ, बहुत अच्छा था",
+     "tl": "jī hān, bahut achchhā thā"
+    },
+    {
+     "n": "Here is 'I watched a film'. Film is feminine, so 'saw' ends in 'ee' too. Listen and repeat."
+    },
+    {
+     "t": "मैंने फ़िल्म देखी",
+     "tl": "mainne film dekhī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "देखी",
+     "slow": true,
+     "tl": "dekhī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "फ़िल्म देखी",
+     "slow": true,
+     "tl": "film dekhī"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैंने फ़िल्म देखी",
+     "slow": true,
+     "tl": "mainne film dekhī"
+    },
+    {
+     "p": 3,
+     "expect": "मैंने फ़िल्म देखी"
+    },
+    {
+     "t": "मैंने फ़िल्म देखी",
+     "tl": "mainne film dekhī"
+    },
+    {
+     "p": 3,
+     "expect": "मैंने फ़िल्म देखी"
+    },
+    {
+     "t": "कल मैंने फ़िल्म देखी",
+     "tl": "kal mainne film dekhī"
+    },
+    {
+     "n": "Say 'yesterday I watched a film'."
+    },
+    {
+     "p": 5,
+     "expect": "कल मैंने फ़िल्म देखी"
+    },
+    {
+     "t": "कल मैंने फ़िल्म देखी",
+     "tl": "kal mainne film dekhī"
+    },
+    {
+     "n": "'The film was very good' uses the feminine 'was'. Listen and repeat."
+    },
+    {
+     "t": "फ़िल्म बहुत अच्छी थी",
+     "tl": "film bahut achchhī thī"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "फ़िल्म बहुत अच्छी थी",
+     "slow": true,
+     "tl": "film bahut achchhī thī"
+    },
+    {
+     "p": 4,
+     "expect": "फ़िल्म बहुत अच्छी थी"
+    },
+    {
+     "t": "फ़िल्म बहुत अच्छी थी",
+     "tl": "film bahut achchhī thī"
+    },
+    {
+     "n": "Here is 'came'. Listen and repeat."
+    },
+    {
+     "t": "आया",
+     "tl": "āyā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "आया",
+     "slow": true,
+     "tl": "āyā"
+    },
+    {
+     "p": 3,
+     "expect": "आया"
+    },
+    {
+     "t": "आया",
+     "tl": "āyā"
+    },
+    {
+     "t": "मैं कल आया",
+     "tl": "main kal āyā"
+    },
+    {
+     "n": "Say 'I came yesterday'."
+    },
+    {
+     "p": 4,
+     "expect": "मैं कल आया"
+    },
+    {
+     "t": "मैं कल आया",
+     "tl": "main kal āyā"
+    },
+    {
+     "n": "Here is 'before' or 'earlier'. Listen and repeat."
+    },
+    {
+     "t": "पहले",
+     "tl": "pahle"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "पहले",
+     "slow": true,
+     "tl": "pahle"
+    },
+    {
+     "p": 3,
+     "expect": "पहले"
+    },
+    {
+     "t": "पहले",
+     "tl": "pahle"
+    },
+    {
+     "n": "'I went to Delhi before', meaning 'I have been to Delhi'. Listen and repeat."
+    },
+    {
+     "t": "मैं पहले दिल्ली गया था",
+     "tl": "main pahle dillī gayā thā"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "मैं पहले दिल्ली गया था",
+     "slow": true,
+     "tl": "main pahle dillī gayā thā"
+    },
+    {
+     "p": 5,
+     "expect": "मैं पहले दिल्ली गया था"
+    },
+    {
+     "t": "मैं पहले दिल्ली गया था",
+     "tl": "main pahle dillī gayā thā"
+    },
+    {
+     "n": "Say 'I ate food'."
+    },
+    {
+     "p": 4,
+     "expect": "मैंने खाना खाया"
+    },
+    {
+     "t": "मैंने खाना खाया",
+     "tl": "mainne khānā khāyā"
+    },
+    {
+     "t": "कल आप कहाँ गए?",
+     "tl": "kal āp kahān gaye?"
+    },
+    {
+     "q": "I will ask where you went yesterday. Answer that you went to the market."
+    },
+    {
+     "p": 4,
+     "expect": "मैं बाज़ार गया"
+    },
+    {
+     "t": "मैं बाज़ार गया",
+     "tl": "main bāzār gayā"
+    },
+    {
+     "n": "Say 'I drank tea'."
+    },
+    {
+     "p": 4,
+     "expect": "मैंने चाय पी"
+    },
+    {
+     "t": "मैंने चाय पी",
+     "tl": "mainne chāy pī"
+    },
+    {
+     "n": "Say 'I have been to Delhi before'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं पहले दिल्ली गया था"
+    },
+    {
+     "t": "मैं पहले दिल्ली गया था",
+     "tl": "main pahle dillī gayā thā"
+    },
+    {
+     "n": "Now take the second friend's part. I will ask where you went yesterday."
+    },
+    {
+     "t": "कल आप कहाँ गए?",
+     "tl": "kal āp kahān gaye?"
+    },
+    {
+     "n": "Say 'I went to the market. I drank tea'."
+    },
+    {
+     "p": 6,
+     "expect": "मैं बाज़ार गया। मैंने चाय पी।"
+    },
+    {
+     "t": "मैं बाज़ार गया। मैंने चाय पी।",
+     "tl": "main bāzār gayā. mainne chāy pī."
+    },
+    {
+     "n": "Now ask me: 'did you eat?'."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आपने खाना खाया?"
+    },
+    {
+     "t": "क्या आपने खाना खाया?",
+     "tl": "kyā āpne khānā khāyā?"
+    },
+    {
+     "n": "Answer: 'yes, it was very good'."
+    },
+    {
+     "p": 4,
+     "expect": "जी हाँ, बहुत अच्छा था।"
+    },
+    {
+     "t": "जी हाँ, बहुत अच्छा था।",
+     "tl": "jī hān, bahut achchhā thā."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "कल आप कहाँ गए?",
+     "tl": "kal āp kahān gaye?"
+    },
+    {
+     "t": "मैं बाज़ार गया। मैंने चाय पी।",
+     "tl": "main bāzār gayā. mainne chāy pī."
+    },
+    {
+     "t": "क्या आपने खाना खाया?",
+     "tl": "kyā āpne khānā khāyā?"
+    },
+    {
+     "t": "जी हाँ, बहुत अच्छा था।",
+     "tl": "jī hān, bahut achchhā thā."
+    },
+    {
+     "n": "Well done. Next time you will make plans with a friend. This is the end of lesson nine."
+    }
+   ]
+  },
+  {
+   "id": "a10",
+   "title": "Lesson 10 — Let's go! What time shall we meet?",
+   "minutes": 16,
+   "goal": "Suggest plans, accept or hedge, and agree on a meeting time",
+   "steps": [
+    {
+     "n": "Listen to two friends making plans for tomorrow evening."
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं?",
+     "tl": "kal shām ko kyā kar rahe hain?"
+    },
+    {
+     "t": "कुछ नहीं। क्यों?",
+     "tl": "kuchh nahīn. kyon?"
+    },
+    {
+     "t": "चलिए, फ़िल्म देखने चलें।",
+     "tl": "chaliye, film dekhne chalen."
+    },
+    {
+     "t": "ज़रूर! कितने बजे मिलेंगे?",
+     "tl": "zarūr! kitne baje milenge?"
+    },
+    {
+     "t": "सात बजे, ठीक है?",
+     "tl": "sāt baje, ṭhīk hai?"
+    },
+    {
+     "t": "ठीक है, फिर मिलेंगे।",
+     "tl": "ṭhīk hai, phir milenge."
+    },
+    {
+     "n": "In this lesson you will suggest doing something together and agree on a time. Some review first."
+    },
+    {
+     "n": "Say 'tomorrow evening'."
+    },
+    {
+     "p": 3,
+     "expect": "कल शाम को"
+    },
+    {
+     "t": "कल शाम को",
+     "tl": "kal shām ko"
+    },
+    {
+     "n": "Say 'I want to watch a film'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं फ़िल्म देखना चाहता हूँ"
+    },
+    {
+     "t": "मैं फ़िल्म देखना चाहता हूँ",
+     "tl": "main film dekhnā chāhtā hūn"
+    },
+    {
+     "n": "Say 'it is seven o'clock'."
+    },
+    {
+     "p": 4,
+     "expect": "सात बजे हैं"
+    },
+    {
+     "t": "सात बजे हैं",
+     "tl": "sāt baje hain"
+    },
+    {
+     "n": "Here is 'what are you doing?'. The two words after 'do' make it 'doing right now'. Listen and repeat."
+    },
+    {
+     "t": "क्या कर रहे हैं?",
+     "tl": "kyā kar rahe hain?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "रहे हैं",
+     "slow": true,
+     "tl": "rahe hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कर रहे हैं",
+     "slow": true,
+     "tl": "kar rahe hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्या कर रहे हैं?",
+     "slow": true,
+     "tl": "kyā kar rahe hain?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या कर रहे हैं?"
+    },
+    {
+     "t": "क्या कर रहे हैं?",
+     "tl": "kyā kar rahe hain?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या कर रहे हैं?"
+    },
+    {
+     "n": "Now, 'what are you doing tomorrow evening?'."
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं?",
+     "tl": "kal shām ko kyā kar rahe hain?"
+    },
+    {
+     "p": 5,
+     "expect": "कल शाम को क्या कर रहे हैं?"
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं?",
+     "tl": "kal shām ko kyā kar rahe hain?"
+    },
+    {
+     "n": "Here is 'nothing', literally 'something not'. Listen and repeat."
+    },
+    {
+     "t": "कुछ नहीं",
+     "tl": "kuchh nahīn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कुछ नहीं",
+     "slow": true,
+     "tl": "kuchh nahīn"
+    },
+    {
+     "p": 3,
+     "expect": "कुछ नहीं"
+    },
+    {
+     "t": "कुछ नहीं",
+     "tl": "kuchh nahīn"
+    },
+    {
+     "n": "And 'why?'. Listen and repeat."
+    },
+    {
+     "t": "क्यों",
+     "tl": "kyon"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्यों",
+     "slow": true,
+     "tl": "kyon"
+    },
+    {
+     "p": 3,
+     "expect": "क्यों"
+    },
+    {
+     "t": "क्यों",
+     "tl": "kyon"
+    },
+    {
+     "n": "Ask me what I am doing tomorrow evening."
+    },
+    {
+     "p": 5,
+     "expect": "कल शाम को क्या कर रहे हैं?"
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं?",
+     "tl": "kal shām ko kyā kar rahe hain?"
+    },
+    {
+     "n": "Answer: 'nothing. Why?'."
+    },
+    {
+     "p": 4,
+     "expect": "कुछ नहीं। क्यों?"
+    },
+    {
+     "t": "कुछ नहीं। क्यों?",
+     "tl": "kuchh nahīn. kyon?"
+    },
+    {
+     "n": "Here is 'come on' or 'let's'. It is the polite form of 'go', used to get things moving. Listen and repeat."
+    },
+    {
+     "t": "चलिए",
+     "tl": "chaliye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "चलिए",
+     "slow": true,
+     "tl": "chaliye"
+    },
+    {
+     "p": 3,
+     "expect": "चलिए"
+    },
+    {
+     "t": "चलिए",
+     "tl": "chaliye"
+    },
+    {
+     "n": "Here is 'let's go to watch a film'. 'To watch' changes its ending slightly before 'let's go'. Listen and repeat."
+    },
+    {
+     "t": "फ़िल्म देखने चलें",
+     "tl": "film dekhne chalen"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "चलें",
+     "slow": true,
+     "tl": "chalen"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "देखने चलें",
+     "slow": true,
+     "tl": "dekhne chalen"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "फ़िल्म देखने चलें",
+     "slow": true,
+     "tl": "film dekhne chalen"
+    },
+    {
+     "p": 3,
+     "expect": "फ़िल्म देखने चलें"
+    },
+    {
+     "t": "फ़िल्म देखने चलें",
+     "tl": "film dekhne chalen"
+    },
+    {
+     "p": 3,
+     "expect": "फ़िल्म देखने चलें"
+    },
+    {
+     "t": "चलिए, फ़िल्म देखने चलें",
+     "tl": "chaliye, film dekhne chalen"
+    },
+    {
+     "n": "Say 'come on, let's go watch a film'."
+    },
+    {
+     "p": 5,
+     "expect": "चलिए, फ़िल्म देखने चलें"
+    },
+    {
+     "t": "चलिए, फ़िल्म देखने चलें",
+     "tl": "chaliye, film dekhne chalen"
+    },
+    {
+     "t": "खाना खाने चलें",
+     "tl": "khānā khāne chalen"
+    },
+    {
+     "n": "Say 'let's go eat'."
+    },
+    {
+     "p": 4,
+     "expect": "खाना खाने चलें"
+    },
+    {
+     "t": "खाना खाने चलें",
+     "tl": "khānā khāne chalen"
+    },
+    {
+     "n": "Here is 'of course' or 'sure'. Listen and repeat."
+    },
+    {
+     "t": "ज़रूर",
+     "tl": "zarūr"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ज़रूर",
+     "slow": true,
+     "tl": "zarūr"
+    },
+    {
+     "p": 3,
+     "expect": "ज़रूर"
+    },
+    {
+     "t": "ज़रूर",
+     "tl": "zarūr"
+    },
+    {
+     "n": "And 'maybe'. Listen and repeat."
+    },
+    {
+     "t": "शायद",
+     "tl": "shāyad"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "शायद",
+     "slow": true,
+     "tl": "shāyad"
+    },
+    {
+     "p": 3,
+     "expect": "शायद"
+    },
+    {
+     "t": "शायद",
+     "tl": "shāyad"
+    },
+    {
+     "n": "Say 'sure'."
+    },
+    {
+     "p": 2,
+     "expect": "ज़रूर"
+    },
+    {
+     "t": "ज़रूर",
+     "tl": "zarūr"
+    },
+    {
+     "n": "Say 'maybe'."
+    },
+    {
+     "p": 2,
+     "expect": "शायद"
+    },
+    {
+     "t": "शायद",
+     "tl": "shāyad"
+    },
+    {
+     "n": "Here is 'what time shall we meet?'. You know 'we'll meet' from 'see you again'. Listen and repeat."
+    },
+    {
+     "t": "कितने बजे मिलेंगे?",
+     "tl": "kitne baje milenge?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "मिलेंगे",
+     "slow": true,
+     "tl": "milenge"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कितने बजे मिलेंगे?",
+     "slow": true,
+     "tl": "kitne baje milenge?"
+    },
+    {
+     "p": 3,
+     "expect": "कितने बजे मिलेंगे?"
+    },
+    {
+     "t": "कितने बजे मिलेंगे?",
+     "tl": "kitne baje milenge?"
+    },
+    {
+     "p": 3,
+     "expect": "कितने बजे मिलेंगे?"
+    },
+    {
+     "n": "Here is 'okay' or 'fine', which you know as 'I am fine'. With a rising tone it asks 'okay?'. Listen and repeat."
+    },
+    {
+     "t": "ठीक है",
+     "tl": "ṭhīk hai"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ठीक है",
+     "slow": true,
+     "tl": "ṭhīk hai"
+    },
+    {
+     "p": 3,
+     "expect": "ठीक है"
+    },
+    {
+     "t": "ठीक है",
+     "tl": "ṭhīk hai"
+    },
+    {
+     "n": "Now, 'seven o'clock, okay?'."
+    },
+    {
+     "t": "सात बजे, ठीक है?",
+     "tl": "sāt baje, ṭhīk hai?"
+    },
+    {
+     "p": 4,
+     "expect": "सात बजे, ठीक है?"
+    },
+    {
+     "t": "सात बजे, ठीक है?",
+     "tl": "sāt baje, ṭhīk hai?"
+    },
+    {
+     "n": "Ask what time we shall meet."
+    },
+    {
+     "p": 4,
+     "expect": "कितने बजे मिलेंगे?"
+    },
+    {
+     "t": "कितने बजे मिलेंगे?",
+     "tl": "kitne baje milenge?"
+    },
+    {
+     "t": "छह बजे, ठीक है?",
+     "tl": "chhah baje, ṭhīk hai?"
+    },
+    {
+     "n": "Say 'six o'clock, okay?'."
+    },
+    {
+     "p": 4,
+     "expect": "छह बजे, ठीक है?"
+    },
+    {
+     "t": "छह बजे, ठीक है?",
+     "tl": "chhah baje, ṭhīk hai?"
+    },
+    {
+     "n": "Here is 'tomorrow we will go to the market'. The word for 'we' is short. Listen and repeat."
+    },
+    {
+     "t": "कल हम बाज़ार जाएँगे",
+     "tl": "kal ham bāzār jāenge"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "जाएँगे",
+     "slow": true,
+     "tl": "jāenge"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बाज़ार जाएँगे",
+     "slow": true,
+     "tl": "bāzār jāenge"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कल हम बाज़ार जाएँगे",
+     "slow": true,
+     "tl": "kal ham bāzār jāenge"
+    },
+    {
+     "p": 3,
+     "expect": "कल हम बाज़ार जाएँगे"
+    },
+    {
+     "t": "कल हम बाज़ार जाएँगे",
+     "tl": "kal ham bāzār jāenge"
+    },
+    {
+     "p": 3,
+     "expect": "कल हम बाज़ार जाएँगे"
+    },
+    {
+     "n": "Here is 'will you come?'. Listen and repeat."
+    },
+    {
+     "t": "क्या आप आएँगे?",
+     "tl": "kyā āp āenge?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "आएँगे",
+     "slow": true,
+     "tl": "āenge"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्या आप आएँगे?",
+     "slow": true,
+     "tl": "kyā āp āenge?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आप आएँगे?"
+    },
+    {
+     "t": "क्या आप आएँगे?",
+     "tl": "kyā āp āenge?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या आप आएँगे?"
+    },
+    {
+     "n": "And 'I will come', a man speaking. Listen and repeat."
+    },
+    {
+     "t": "मैं आऊँगा",
+     "tl": "main āūngā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं आऊँगा",
+     "slow": true,
+     "tl": "main āūngā"
+    },
+    {
+     "p": 3,
+     "expect": "मैं आऊँगा"
+    },
+    {
+     "t": "मैं आऊँगा",
+     "tl": "main āūngā"
+    },
+    {
+     "n": "A woman says it like this. Repeat if that is your form."
+    },
+    {
+     "t": "मैं आऊँगी",
+     "tl": "main āūngī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "कल हम बाज़ार जाएँगे। क्या आप आएँगे?",
+     "tl": "kal ham bāzār jāenge. kyā āp āenge?"
+    },
+    {
+     "n": "Say 'tomorrow we will go to the market. Will you come?'."
+    },
+    {
+     "p": 6,
+     "expect": "कल हम बाज़ार जाएँगे। क्या आप आएँगे?"
+    },
+    {
+     "t": "कल हम बाज़ार जाएँगे। क्या आप आएँगे?",
+     "tl": "kal ham bāzār jāenge. kyā āp āenge?"
+    },
+    {
+     "t": "ज़रूर, मैं आऊँगा",
+     "tl": "zarūr, main āūngā"
+    },
+    {
+     "n": "Answer: 'sure, I will come'."
+    },
+    {
+     "p": 4,
+     "expect": "ज़रूर, मैं आऊँगा"
+    },
+    {
+     "t": "ज़रूर, मैं आऊँगा",
+     "tl": "zarūr, main āūngā"
+    },
+    {
+     "n": "Answer: 'maybe'."
+    },
+    {
+     "p": 2,
+     "expect": "शायद"
+    },
+    {
+     "t": "शायद",
+     "tl": "shāyad"
+    },
+    {
+     "n": "Indians often agree to plans warmly even when they are unsure, so 'maybe' can be a soft no. Say 'come on, let's go eat'."
+    },
+    {
+     "t": "चलिए, खाना खाने चलें",
+     "tl": "chaliye, khānā khāne chalen"
+    },
+    {
+     "p": 5,
+     "expect": "चलिए, खाना खाने चलें"
+    },
+    {
+     "t": "चलिए, खाना खाने चलें",
+     "tl": "chaliye, khānā khāne chalen"
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं?",
+     "tl": "kal shām ko kyā kar rahe hain?"
+    },
+    {
+     "q": "I will ask what you are doing tomorrow evening. Say 'nothing. Why?'."
+    },
+    {
+     "p": 4,
+     "expect": "कुछ नहीं। क्यों?"
+    },
+    {
+     "t": "कुछ नहीं। क्यों?",
+     "tl": "kuchh nahīn. kyon?"
+    },
+    {
+     "n": "Say 'let's go watch a film'."
+    },
+    {
+     "p": 4,
+     "expect": "फ़िल्म देखने चलें"
+    },
+    {
+     "t": "फ़िल्म देखने चलें",
+     "tl": "film dekhne chalen"
+    },
+    {
+     "n": "Ask 'will you come?'."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आप आएँगे?"
+    },
+    {
+     "t": "क्या आप आएँगे?",
+     "tl": "kyā āp āenge?"
+    },
+    {
+     "t": "ठीक है, फिर मिलेंगे",
+     "tl": "ṭhīk hai, phir milenge"
+    },
+    {
+     "n": "Say 'okay, see you again'."
+    },
+    {
+     "p": 4,
+     "expect": "ठीक है, फिर मिलेंगे"
+    },
+    {
+     "t": "ठीक है, फिर मिलेंगे",
+     "tl": "ṭhīk hai, phir milenge"
+    },
+    {
+     "n": "Now take the first friend's part. Ask what I am doing tomorrow evening."
+    },
+    {
+     "p": 5,
+     "expect": "कल शाम को क्या कर रहे हैं?"
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं?",
+     "tl": "kal shām ko kyā kar rahe hain?"
+    },
+    {
+     "t": "कुछ नहीं। क्यों?",
+     "tl": "kuchh nahīn. kyon?"
+    },
+    {
+     "n": "Say 'come on, let's go watch a film'."
+    },
+    {
+     "p": 5,
+     "expect": "चलिए, फ़िल्म देखने चलें।"
+    },
+    {
+     "t": "चलिए, फ़िल्म देखने चलें।",
+     "tl": "chaliye, film dekhne chalen."
+    },
+    {
+     "t": "ज़रूर! कितने बजे मिलेंगे?",
+     "tl": "zarūr! kitne baje milenge?"
+    },
+    {
+     "n": "Say 'seven o'clock, okay?'."
+    },
+    {
+     "p": 4,
+     "expect": "सात बजे, ठीक है?"
+    },
+    {
+     "t": "सात बजे, ठीक है?",
+     "tl": "sāt baje, ṭhīk hai?"
+    },
+    {
+     "n": "Now take the other part: 'okay, see you again'."
+    },
+    {
+     "p": 4,
+     "expect": "ठीक है, फिर मिलेंगे।"
+    },
+    {
+     "t": "ठीक है, फिर मिलेंगे।",
+     "tl": "ṭhīk hai, phir milenge."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं?",
+     "tl": "kal shām ko kyā kar rahe hain?"
+    },
+    {
+     "t": "कुछ नहीं। क्यों?",
+     "tl": "kuchh nahīn. kyon?"
+    },
+    {
+     "t": "चलिए, फ़िल्म देखने चलें।",
+     "tl": "chaliye, film dekhne chalen."
+    },
+    {
+     "t": "ज़रूर! कितने बजे मिलेंगे?",
+     "tl": "zarūr! kitne baje milenge?"
+    },
+    {
+     "t": "सात बजे, ठीक है?",
+     "tl": "sāt baje, ṭhīk hai?"
+    },
+    {
+     "t": "ठीक है, फिर मिलेंगे।",
+     "tl": "ṭhīk hai, phir milenge."
+    },
+    {
+     "n": "Very good. In the next lesson you will go shopping and bargain in a market. This is the end of lesson ten."
+    }
+   ]
+  },
+  {
+   "id": "a11",
+   "title": "Lesson 11 — Bargaining at the market",
+   "minutes": 16,
+   "goal": "Bargain politely, use hundreds and thousands, and ask about paying by card",
+   "steps": [
+    {
+     "n": "Listen to a shopper bargaining in a market."
+    },
+    {
+     "t": "भाई साहब, यह कितने का है?",
+     "tl": "bhāī sāhab, yah kitne kā hai?"
+    },
+    {
+     "t": "पाँच सौ रुपये।",
+     "tl": "pānch sau rupaye."
+    },
+    {
+     "t": "बहुत महँगा है। थोड़ा कम कीजिए।",
+     "tl": "bahut mahangā hai. thoṛā kam kījiye."
+    },
+    {
+     "t": "ठीक है, चार सौ।",
+     "tl": "ṭhīk hai, chār sau."
+    },
+    {
+     "t": "ठीक है, मुझे यह चाहिए। क्या कार्ड चलेगा?",
+     "tl": "ṭhīk hai, mujhe yah chāhiye. kyā kārḍ chalegā?"
+    },
+    {
+     "t": "जी नहीं, सिर्फ़ नक़द।",
+     "tl": "jī nahīn, sirf naqad."
+    },
+    {
+     "n": "In this lesson you will bargain politely, handle larger numbers, and ask about paying by card. Review first."
+    },
+    {
+     "n": "Ask how much this is."
+    },
+    {
+     "p": 4,
+     "expect": "यह कितने का है?"
+    },
+    {
+     "t": "यह कितने का है?",
+     "tl": "yah kitne kā hai?"
+    },
+    {
+     "n": "Say 'two hundred rupees'."
+    },
+    {
+     "p": 4,
+     "expect": "दो सौ रुपये"
+    },
+    {
+     "t": "दो सौ रुपये",
+     "tl": "do sau rupaye"
+    },
+    {
+     "n": "Here is 'shop'. Listen and repeat."
+    },
+    {
+     "t": "दुकान",
+     "tl": "dukān"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "दुकान",
+     "slow": true,
+     "tl": "dukān"
+    },
+    {
+     "p": 3,
+     "expect": "दुकान"
+    },
+    {
+     "t": "दुकान",
+     "tl": "dukān"
+    },
+    {
+     "n": "You know 'very expensive'. As a full sentence it is 'it is very expensive'. Listen and repeat."
+    },
+    {
+     "t": "बहुत महँगा है",
+     "tl": "bahut mahangā hai"
+    },
+    {
+     "p": 3,
+     "expect": "बहुत महँगा है"
+    },
+    {
+     "t": "बहुत महँगा है",
+     "tl": "bahut mahangā hai"
+    },
+    {
+     "n": "And the opposite, 'cheap'. Listen and repeat."
+    },
+    {
+     "t": "सस्ता",
+     "tl": "sastā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "सस्ता",
+     "slow": true,
+     "tl": "sastā"
+    },
+    {
+     "p": 3,
+     "expect": "सस्ता"
+    },
+    {
+     "t": "सस्ता",
+     "tl": "sastā"
+    },
+    {
+     "n": "Here is the bargaining phrase 'reduce it a little', literally 'a little less do'. Listen and repeat."
+    },
+    {
+     "t": "थोड़ा कम कीजिए",
+     "tl": "thoṛā kam kījiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "कीजिए",
+     "slow": true,
+     "tl": "kījiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कम कीजिए",
+     "slow": true,
+     "tl": "kam kījiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "थोड़ा कम कीजिए",
+     "slow": true,
+     "tl": "thoṛā kam kījiye"
+    },
+    {
+     "p": 3,
+     "expect": "थोड़ा कम कीजिए"
+    },
+    {
+     "t": "थोड़ा कम कीजिए",
+     "tl": "thoṛā kam kījiye"
+    },
+    {
+     "p": 3,
+     "expect": "थोड़ा कम कीजिए"
+    },
+    {
+     "n": "Say 'it is very expensive. Reduce it a little'."
+    },
+    {
+     "p": 6,
+     "expect": "बहुत महँगा है। थोड़ा कम कीजिए।"
+    },
+    {
+     "t": "बहुत महँगा है। थोड़ा कम कीजिए।",
+     "tl": "bahut mahangā hai. thoṛā kam kījiye."
+    },
+    {
+     "n": "Now larger numbers. 'Three hundred'."
+    },
+    {
+     "t": "तीन सौ",
+     "tl": "tīn sau"
+    },
+    {
+     "p": 3,
+     "expect": "तीन सौ"
+    },
+    {
+     "n": "'Four hundred'."
+    },
+    {
+     "t": "चार सौ",
+     "tl": "chār sau"
+    },
+    {
+     "p": 3,
+     "expect": "चार सौ"
+    },
+    {
+     "n": "'Five hundred rupees'."
+    },
+    {
+     "t": "पाँच सौ रुपये",
+     "tl": "pānch sau rupaye"
+    },
+    {
+     "p": 4,
+     "expect": "पाँच सौ रुपये"
+    },
+    {
+     "n": "Here is 'fifty'. Listen and repeat."
+    },
+    {
+     "t": "पचास",
+     "tl": "pachās"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "पचास",
+     "slow": true,
+     "tl": "pachās"
+    },
+    {
+     "p": 3,
+     "expect": "पचास"
+    },
+    {
+     "t": "पचास",
+     "tl": "pachās"
+    },
+    {
+     "n": "And 'one thousand'. Listen and repeat."
+    },
+    {
+     "t": "हज़ार",
+     "tl": "hazār"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "हज़ार",
+     "slow": true,
+     "tl": "hazār"
+    },
+    {
+     "p": 3,
+     "expect": "हज़ार"
+    },
+    {
+     "t": "हज़ार",
+     "tl": "hazār"
+    },
+    {
+     "t": "हज़ार रुपये",
+     "tl": "hazār rupaye"
+    },
+    {
+     "n": "Say 'one thousand rupees'."
+    },
+    {
+     "p": 4,
+     "expect": "हज़ार रुपये"
+    },
+    {
+     "t": "हज़ार रुपये",
+     "tl": "hazār rupaye"
+    },
+    {
+     "t": "ठीक है, चार सौ",
+     "tl": "ṭhīk hai, chār sau"
+    },
+    {
+     "n": "Say 'okay, four hundred'."
+    },
+    {
+     "p": 4,
+     "expect": "ठीक है, चार सौ"
+    },
+    {
+     "t": "ठीक है, चार सौ",
+     "tl": "ṭhīk hai, chār sau"
+    },
+    {
+     "t": "मुझे यह चाहिए",
+     "tl": "mujhe yah chāhiye"
+    },
+    {
+     "n": "Say 'I would like this one'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे यह चाहिए"
+    },
+    {
+     "t": "मुझे यह चाहिए",
+     "tl": "mujhe yah chāhiye"
+    },
+    {
+     "n": "Here is 'that', the partner of 'this'. Listen and repeat."
+    },
+    {
+     "t": "वह",
+     "tl": "vah"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "वह",
+     "slow": true,
+     "tl": "vah"
+    },
+    {
+     "p": 3,
+     "expect": "वह"
+    },
+    {
+     "t": "वह",
+     "tl": "vah"
+    },
+    {
+     "t": "मुझे वह चाहिए",
+     "tl": "mujhe vah chāhiye"
+    },
+    {
+     "n": "Say 'I would like that one'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे वह चाहिए"
+    },
+    {
+     "t": "मुझे वह चाहिए",
+     "tl": "mujhe vah chāhiye"
+    },
+    {
+     "n": "Here is 'I don't want it'. Shopkeepers can be persistent; this, said with a smile, settles it. Listen and repeat."
+    },
+    {
+     "t": "मुझे नहीं चाहिए",
+     "tl": "mujhe nahīn chāhiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "नहीं चाहिए",
+     "slow": true,
+     "tl": "nahīn chāhiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मुझे नहीं चाहिए",
+     "slow": true,
+     "tl": "mujhe nahīn chāhiye"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे नहीं चाहिए"
+    },
+    {
+     "t": "मुझे नहीं चाहिए",
+     "tl": "mujhe nahīn chāhiye"
+    },
+    {
+     "p": 3,
+     "expect": "मुझे नहीं चाहिए"
+    },
+    {
+     "n": "Say 'reduce it a little'."
+    },
+    {
+     "p": 4,
+     "expect": "थोड़ा कम कीजिए"
+    },
+    {
+     "t": "थोड़ा कम कीजिए",
+     "tl": "thoṛā kam kījiye"
+    },
+    {
+     "t": "मुझे नहीं चाहिए, धन्यवाद",
+     "tl": "mujhe nahīn chāhiye, dhanyavād"
+    },
+    {
+     "n": "Say 'I don't want it, thank you'."
+    },
+    {
+     "p": 5,
+     "expect": "मुझे नहीं चाहिए, धन्यवाद"
+    },
+    {
+     "t": "मुझे नहीं चाहिए, धन्यवाद",
+     "tl": "mujhe nahīn chāhiye, dhanyavād"
+    },
+    {
+     "n": "Here is 'will a card work?', literally 'will card walk?'. Listen and repeat."
+    },
+    {
+     "t": "क्या कार्ड चलेगा?",
+     "tl": "kyā kārḍ chalegā?"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "चलेगा",
+     "slow": true,
+     "tl": "chalegā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कार्ड चलेगा",
+     "slow": true,
+     "tl": "kārḍ chalegā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "क्या कार्ड चलेगा?",
+     "slow": true,
+     "tl": "kyā kārḍ chalegā?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या कार्ड चलेगा?"
+    },
+    {
+     "t": "क्या कार्ड चलेगा?",
+     "tl": "kyā kārḍ chalegā?"
+    },
+    {
+     "p": 3,
+     "expect": "क्या कार्ड चलेगा?"
+    },
+    {
+     "n": "Here is 'only cash'. Listen and repeat."
+    },
+    {
+     "t": "सिर्फ़ नक़द",
+     "tl": "sirf naqad"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "सिर्फ़ नक़द",
+     "slow": true,
+     "tl": "sirf naqad"
+    },
+    {
+     "p": 3,
+     "expect": "सिर्फ़ नक़द"
+    },
+    {
+     "t": "सिर्फ़ नक़द",
+     "tl": "sirf naqad"
+    },
+    {
+     "n": "Ask if a card will work."
+    },
+    {
+     "p": 4,
+     "expect": "क्या कार्ड चलेगा?"
+    },
+    {
+     "t": "क्या कार्ड चलेगा?",
+     "tl": "kyā kārḍ chalegā?"
+    },
+    {
+     "t": "जी नहीं, सिर्फ़ नक़द",
+     "tl": "jī nahīn, sirf naqad"
+    },
+    {
+     "n": "Answer: 'no, only cash'."
+    },
+    {
+     "p": 4,
+     "expect": "जी नहीं, सिर्फ़ नक़द"
+    },
+    {
+     "t": "जी नहीं, सिर्फ़ नक़द",
+     "tl": "jī nahīn, sirf naqad"
+    },
+    {
+     "n": "Here is 'I'm just looking', a man speaking. You know 'only' and 'see'. Listen and repeat."
+    },
+    {
+     "t": "सिर्फ़ देख रहा हूँ",
+     "tl": "sirf dekh rahā hūn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "देख रहा हूँ",
+     "slow": true,
+     "tl": "dekh rahā hūn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "सिर्फ़ देख रहा हूँ",
+     "slow": true,
+     "tl": "sirf dekh rahā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "सिर्फ़ देख रहा हूँ"
+    },
+    {
+     "t": "सिर्फ़ देख रहा हूँ",
+     "tl": "sirf dekh rahā hūn"
+    },
+    {
+     "p": 3,
+     "expect": "सिर्फ़ देख रहा हूँ"
+    },
+    {
+     "n": "A woman says it like this. Repeat if that is your form."
+    },
+    {
+     "t": "सिर्फ़ देख रही हूँ",
+     "tl": "sirf dekh rahī hūn"
+    },
+    {
+     "p": 4
+    },
+    {
+     "n": "Here is 'clothes'. Listen and repeat."
+    },
+    {
+     "t": "कपड़े",
+     "tl": "kapṛe"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कपड़े",
+     "slow": true,
+     "tl": "kapṛe"
+    },
+    {
+     "p": 3,
+     "expect": "कपड़े"
+    },
+    {
+     "t": "कपड़े",
+     "tl": "kapṛe"
+    },
+    {
+     "t": "कपड़े कहाँ हैं?",
+     "tl": "kapṛe kahān hain?"
+    },
+    {
+     "n": "Ask 'where are the clothes?'. Clothes is plural, so 'is' becomes 'are'."
+    },
+    {
+     "p": 4,
+     "expect": "कपड़े कहाँ हैं?"
+    },
+    {
+     "t": "कपड़े कहाँ हैं?",
+     "tl": "kapṛe kahān hain?"
+    },
+    {
+     "n": "Here is 'I don't have money', literally 'near me money is not'. Listen and repeat."
+    },
+    {
+     "t": "मेरे पास पैसे नहीं हैं",
+     "tl": "mere pās paise nahīn hain"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "नहीं हैं",
+     "slow": true,
+     "tl": "nahīn hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "पैसे नहीं हैं",
+     "slow": true,
+     "tl": "paise nahīn hain"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मेरे पास पैसे नहीं हैं",
+     "slow": true,
+     "tl": "mere pās paise nahīn hain"
+    },
+    {
+     "p": 3,
+     "expect": "मेरे पास पैसे नहीं हैं"
+    },
+    {
+     "t": "मेरे पास पैसे नहीं हैं",
+     "tl": "mere pās paise nahīn hain"
+    },
+    {
+     "p": 3,
+     "expect": "मेरे पास पैसे नहीं हैं"
+    },
+    {
+     "n": "Say 'I'm just looking'."
+    },
+    {
+     "p": 4,
+     "expect": "सिर्फ़ देख रहा हूँ"
+    },
+    {
+     "t": "सिर्फ़ देख रहा हूँ",
+     "tl": "sirf dekh rahā hūn"
+    },
+    {
+     "n": "Say 'I don't have money'."
+    },
+    {
+     "p": 5,
+     "expect": "मेरे पास पैसे नहीं हैं"
+    },
+    {
+     "t": "मेरे पास पैसे नहीं हैं",
+     "tl": "mere pās paise nahīn hain"
+    },
+    {
+     "t": "पाँच सौ रुपये।",
+     "tl": "pānch sau rupaye."
+    },
+    {
+     "q": "The shopkeeper says five hundred rupees. Say it is very expensive and ask him to reduce it a little."
+    },
+    {
+     "p": 6,
+     "expect": "बहुत महँगा है। थोड़ा कम कीजिए।"
+    },
+    {
+     "t": "बहुत महँगा है। थोड़ा कम कीजिए।",
+     "tl": "bahut mahangā hai. thoṛā kam kījiye."
+    },
+    {
+     "t": "मुझे यह चाहिए। क्या कार्ड चलेगा?",
+     "tl": "mujhe yah chāhiye. kyā kārḍ chalegā?"
+    },
+    {
+     "n": "Say 'I would like this one. Will a card work?'."
+    },
+    {
+     "p": 6,
+     "expect": "मुझे यह चाहिए। क्या कार्ड चलेगा?"
+    },
+    {
+     "t": "मुझे यह चाहिए। क्या कार्ड चलेगा?",
+     "tl": "mujhe yah chāhiye. kyā kārḍ chalegā?"
+    },
+    {
+     "n": "Now take the shopper's part. Get the seller's attention and ask how much this is."
+    },
+    {
+     "p": 5,
+     "expect": "भाई साहब, यह कितने का है?"
+    },
+    {
+     "t": "भाई साहब, यह कितने का है?",
+     "tl": "bhāī sāhab, yah kitne kā hai?"
+    },
+    {
+     "t": "पाँच सौ रुपये।",
+     "tl": "pānch sau rupaye."
+    },
+    {
+     "n": "Say it is very expensive and ask him to reduce it a little."
+    },
+    {
+     "p": 6,
+     "expect": "बहुत महँगा है। थोड़ा कम कीजिए।"
+    },
+    {
+     "t": "बहुत महँगा है। थोड़ा कम कीजिए।",
+     "tl": "bahut mahangā hai. thoṛā kam kījiye."
+    },
+    {
+     "t": "ठीक है, चार सौ।",
+     "tl": "ṭhīk hai, chār sau."
+    },
+    {
+     "n": "Say 'okay, I would like this one. Will a card work?'."
+    },
+    {
+     "p": 6,
+     "expect": "ठीक है, मुझे यह चाहिए। क्या कार्ड चलेगा?"
+    },
+    {
+     "t": "ठीक है, मुझे यह चाहिए। क्या कार्ड चलेगा?",
+     "tl": "ṭhīk hai, mujhe yah chāhiye. kyā kārḍ chalegā?"
+    },
+    {
+     "t": "जी नहीं, सिर्फ़ नक़द।",
+     "tl": "jī nahīn, sirf naqad."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "भाई साहब, यह कितने का है?",
+     "tl": "bhāī sāhab, yah kitne kā hai?"
+    },
+    {
+     "t": "पाँच सौ रुपये।",
+     "tl": "pānch sau rupaye."
+    },
+    {
+     "t": "बहुत महँगा है। थोड़ा कम कीजिए।",
+     "tl": "bahut mahangā hai. thoṛā kam kījiye."
+    },
+    {
+     "t": "ठीक है, चार सौ।",
+     "tl": "ṭhīk hai, chār sau."
+    },
+    {
+     "t": "ठीक है, मुझे यह चाहिए। क्या कार्ड चलेगा?",
+     "tl": "ṭhīk hai, mujhe yah chāhiye. kyā kārḍ chalegā?"
+    },
+    {
+     "t": "जी नहीं, सिर्फ़ नक़द।",
+     "tl": "jī nahīn, sirf naqad."
+    },
+    {
+     "n": "Excellent. The last lesson reviews everything in one real conversation. This is the end of lesson eleven."
+    }
+   ]
+  },
+  {
+   "id": "a12",
+   "title": "Lesson 12 — Review: a real conversation",
+   "minutes": 16,
+   "goal": "Handle a real conversation using everything from the course, and ask people to repeat or slow down",
+   "steps": [
+    {
+     "n": "This is the last lesson. Listen to a longer conversation: a visitor from America chats with the owner of a tea stall. You know almost all of it."
+    },
+    {
+     "t": "नमस्ते जी, आप कैसे हैं?",
+     "tl": "namaste jī, āp kaise hain?"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद। आप कहाँ से हैं?",
+     "tl": "main ṭhīk hūn, dhanyavād. āp kahān se hain?"
+    },
+    {
+     "t": "मैं अमेरिका से हूँ। मैं थोड़ी हिंदी बोलता हूँ।",
+     "tl": "main amerikā se hūn. main thoṛī hindī boltā hūn."
+    },
+    {
+     "t": "बहुत अच्छा! कल आप कहाँ गए?",
+     "tl": "bahut achchhā! kal āp kahān gaye?"
+    },
+    {
+     "t": "माफ़ कीजिए, फिर से कहिए। धीरे बोलिए।",
+     "tl": "māf kījiye, phir se kahiye. dhīre boliye."
+    },
+    {
+     "t": "कोई बात नहीं। कल आप कहाँ गए?",
+     "tl": "koī bāt nahīn. kal āp kahān gaye?"
+    },
+    {
+     "t": "अच्छा, मैं समझ गया। कल मैं बाज़ार गया। बहुत महँगा था।",
+     "tl": "achchhā, main samajh gayā. kal main bāzār gayā. bahut mahangā thā."
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "t": "जी हाँ, एक चाय दीजिए, बिना चीनी।",
+     "tl": "jī hān, ek chāy dījiye, binā chīnī."
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं? चलिए, खाना खाने चलें।",
+     "tl": "kal shām ko kyā kar rahe hain? chaliye, khānā khāne chalen."
+    },
+    {
+     "t": "ज़रूर! कितने बजे मिलेंगे?",
+     "tl": "zarūr! kitne baje milenge?"
+    },
+    {
+     "t": "सात बजे, ठीक है?",
+     "tl": "sāt baje, ṭhīk hai?"
+    },
+    {
+     "t": "ठीक है, फिर मिलेंगे।",
+     "tl": "ṭhīk hai, phir milenge."
+    },
+    {
+     "n": "Only a few phrases were new: 'say it again', 'speak slowly', 'no problem' and 'I understood'. You will learn them now, then review the whole course."
+    },
+    {
+     "n": "Here is 'please say it again'. Listen and repeat."
+    },
+    {
+     "t": "फिर से कहिए",
+     "tl": "phir se kahiye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "कहिए",
+     "slow": true,
+     "tl": "kahiye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "फिर से कहिए",
+     "slow": true,
+     "tl": "phir se kahiye"
+    },
+    {
+     "p": 3,
+     "expect": "फिर से कहिए"
+    },
+    {
+     "t": "फिर से कहिए",
+     "tl": "phir se kahiye"
+    },
+    {
+     "p": 3,
+     "expect": "फिर से कहिए"
+    },
+    {
+     "n": "And 'please speak slowly'. These two phrases will rescue you in any conversation. Listen and repeat."
+    },
+    {
+     "t": "धीरे बोलिए",
+     "tl": "dhīre boliye"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "बोलिए",
+     "slow": true,
+     "tl": "boliye"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "धीरे बोलिए",
+     "slow": true,
+     "tl": "dhīre boliye"
+    },
+    {
+     "p": 3,
+     "expect": "धीरे बोलिए"
+    },
+    {
+     "t": "धीरे बोलिए",
+     "tl": "dhīre boliye"
+    },
+    {
+     "p": 3,
+     "expect": "धीरे बोलिए"
+    },
+    {
+     "n": "Say 'excuse me, say it again. Speak slowly'."
+    },
+    {
+     "p": 6,
+     "expect": "माफ़ कीजिए, फिर से कहिए। धीरे बोलिए।"
+    },
+    {
+     "t": "माफ़ कीजिए, फिर से कहिए। धीरे बोलिए।",
+     "tl": "māf kījiye, phir se kahiye. dhīre boliye."
+    },
+    {
+     "n": "Here is 'no problem', literally 'no matter at all'. It also answers an apology, like 'never mind'. Listen and repeat."
+    },
+    {
+     "t": "कोई बात नहीं",
+     "tl": "koī bāt nahīn"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "नहीं",
+     "slow": true,
+     "tl": "nahīn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "बात नहीं",
+     "slow": true,
+     "tl": "bāt nahīn"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "कोई बात नहीं",
+     "slow": true,
+     "tl": "koī bāt nahīn"
+    },
+    {
+     "p": 3,
+     "expect": "कोई बात नहीं"
+    },
+    {
+     "t": "कोई बात नहीं",
+     "tl": "koī bāt nahīn"
+    },
+    {
+     "p": 3,
+     "expect": "कोई बात नहीं"
+    },
+    {
+     "n": "Here is 'I understood', or 'got it', a man speaking. Listen and repeat."
+    },
+    {
+     "t": "मैं समझ गया",
+     "tl": "main samajh gayā"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "मैं समझ गया",
+     "slow": true,
+     "tl": "main samajh gayā"
+    },
+    {
+     "p": 3,
+     "expect": "मैं समझ गया"
+    },
+    {
+     "t": "मैं समझ गया",
+     "tl": "main samajh gayā"
+    },
+    {
+     "n": "A woman says it like this. Repeat if that is your form."
+    },
+    {
+     "t": "मैं समझ गई",
+     "tl": "main samajh gaī"
+    },
+    {
+     "p": 3
+    },
+    {
+     "n": "Say 'no problem'."
+    },
+    {
+     "p": 3,
+     "expect": "कोई बात नहीं"
+    },
+    {
+     "t": "कोई बात नहीं",
+     "tl": "koī bāt nahīn"
+    },
+    {
+     "t": "अच्छा, मैं समझ गया",
+     "tl": "achchhā, main samajh gayā"
+    },
+    {
+     "n": "Say 'okay, I understood'."
+    },
+    {
+     "p": 4,
+     "expect": "अच्छा, मैं समझ गया"
+    },
+    {
+     "t": "अच्छा, मैं समझ गया",
+     "tl": "achchhā, main samajh gayā"
+    },
+    {
+     "n": "Now a review of the whole course, from lesson one onwards. Say 'hello'."
+    },
+    {
+     "p": 3,
+     "expect": "नमस्ते"
+    },
+    {
+     "t": "नमस्ते",
+     "tl": "namaste"
+    },
+    {
+     "n": "Ask me if I understand English."
+    },
+    {
+     "p": 4,
+     "expect": "क्या आप अंग्रेज़ी समझते हैं?"
+    },
+    {
+     "t": "क्या आप अंग्रेज़ी समझते हैं?",
+     "tl": "kyā āp angrezī samajhte hain?"
+    },
+    {
+     "n": "Say 'I don't understand English'."
+    },
+    {
+     "p": 4,
+     "expect": "मैं अंग्रेज़ी नहीं समझता"
+    },
+    {
+     "t": "मैं अंग्रेज़ी नहीं समझता",
+     "tl": "main angrezī nahīn samajhtā"
+    },
+    {
+     "n": "Ask me how I am."
+    },
+    {
+     "p": 3,
+     "expect": "आप कैसे हैं?"
+    },
+    {
+     "t": "आप कैसे हैं?",
+     "tl": "āp kaise hain?"
+    },
+    {
+     "n": "Say 'I am fine, thank you. And you?'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं ठीक हूँ, धन्यवाद। और आप?"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद। और आप?",
+     "tl": "main ṭhīk hūn, dhanyavād. aur āp?"
+    },
+    {
+     "n": "Say 'please say it again'."
+    },
+    {
+     "p": 3,
+     "expect": "फिर से कहिए"
+    },
+    {
+     "t": "फिर से कहिए",
+     "tl": "phir se kahiye"
+    },
+    {
+     "n": "Ask where the station is."
+    },
+    {
+     "p": 4,
+     "expect": "स्टेशन कहाँ है?"
+    },
+    {
+     "t": "स्टेशन कहाँ है?",
+     "tl": "sṭeshan kahān hai?"
+    },
+    {
+     "n": "Ask how much this is."
+    },
+    {
+     "p": 4,
+     "expect": "यह कितने का है?"
+    },
+    {
+     "t": "यह कितने का है?",
+     "tl": "yah kitne kā hai?"
+    },
+    {
+     "n": "Count from one to ten."
+    },
+    {
+     "p": 6,
+     "expect": "एक, दो, तीन, चार, पाँच, छह, सात, आठ, नौ, दस"
+    },
+    {
+     "t": "एक, दो, तीन, चार, पाँच, छह, सात, आठ, नौ, दस",
+     "tl": "ek, do, tīn, chār, pānch, chhah, sāt, āṭh, nau, das"
+    },
+    {
+     "n": "Order one tea without sugar."
+    },
+    {
+     "p": 5,
+     "expect": "एक चाय दीजिए, बिना चीनी"
+    },
+    {
+     "t": "एक चाय दीजिए, बिना चीनी",
+     "tl": "ek chāy dījiye, binā chīnī"
+    },
+    {
+     "n": "Say 'I would like water'."
+    },
+    {
+     "p": 4,
+     "expect": "मुझे पानी चाहिए"
+    },
+    {
+     "t": "मुझे पानी चाहिए",
+     "tl": "mujhe pānī chāhiye"
+    },
+    {
+     "n": "Ask how far the airport is."
+    },
+    {
+     "p": 4,
+     "expect": "एयरपोर्ट कितनी दूर है?"
+    },
+    {
+     "t": "एयरपोर्ट कितनी दूर है?",
+     "tl": "eyarporṭ kitnī dūr hai?"
+    },
+    {
+     "n": "Say 'go straight, then left'."
+    },
+    {
+     "p": 5,
+     "expect": "सीधे जाइए, फिर बाएँ"
+    },
+    {
+     "t": "सीधे जाइए, फिर बाएँ",
+     "tl": "sīdhe jāiye, phir bāyen"
+    },
+    {
+     "n": "Tell the driver to stop here."
+    },
+    {
+     "p": 3,
+     "expect": "यहाँ रोकिए"
+    },
+    {
+     "t": "यहाँ रोकिए",
+     "tl": "yahān rokiye"
+    },
+    {
+     "n": "Say 'please speak slowly'."
+    },
+    {
+     "p": 3,
+     "expect": "धीरे बोलिए"
+    },
+    {
+     "t": "धीरे बोलिए",
+     "tl": "dhīre boliye"
+    },
+    {
+     "n": "Ask what time it is."
+    },
+    {
+     "p": 4,
+     "expect": "कितने बजे हैं?"
+    },
+    {
+     "t": "कितने बजे हैं?",
+     "tl": "kitne baje hain?"
+    },
+    {
+     "n": "Say 'today is Monday'."
+    },
+    {
+     "p": 4,
+     "expect": "आज सोमवार है"
+    },
+    {
+     "t": "आज सोमवार है",
+     "tl": "āj somvār hai"
+    },
+    {
+     "n": "Ask me my name."
+    },
+    {
+     "p": 4,
+     "expect": "आपका नाम क्या है?"
+    },
+    {
+     "t": "आपका नाम क्या है?",
+     "tl": "āpkā nām kyā hai?"
+    },
+    {
+     "n": "Say 'I am from America'."
+    },
+    {
+     "p": 4,
+     "expect": "मैं अमेरिका से हूँ"
+    },
+    {
+     "t": "मैं अमेरिका से हूँ",
+     "tl": "main amerikā se hūn"
+    },
+    {
+     "n": "Introduce your wife."
+    },
+    {
+     "p": 4,
+     "expect": "यह मेरी पत्नी है"
+    },
+    {
+     "t": "यह मेरी पत्नी है",
+     "tl": "yah merī patnī hai"
+    },
+    {
+     "n": "Say 'pleased to meet you'."
+    },
+    {
+     "p": 5,
+     "expect": "आपसे मिलकर ख़ुशी हुई"
+    },
+    {
+     "t": "आपसे मिलकर ख़ुशी हुई",
+     "tl": "āpse milkar khushī huī"
+    },
+    {
+     "n": "Say 'I like Indian food'."
+    },
+    {
+     "p": 5,
+     "expect": "मुझे भारतीय खाना पसंद है"
+    },
+    {
+     "t": "मुझे भारतीय खाना पसंद है",
+     "tl": "mujhe bhāratīya khānā pasand hai"
+    },
+    {
+     "n": "Say 'I want to go to Delhi'."
+    },
+    {
+     "p": 5,
+     "expect": "मैं दिल्ली जाना चाहता हूँ"
+    },
+    {
+     "t": "मैं दिल्ली जाना चाहता हूँ",
+     "tl": "main dillī jānā chāhtā hūn"
+    },
+    {
+     "n": "Ask me where I went yesterday."
+    },
+    {
+     "p": 4,
+     "expect": "कल आप कहाँ गए?"
+    },
+    {
+     "t": "कल आप कहाँ गए?",
+     "tl": "kal āp kahān gaye?"
+    },
+    {
+     "n": "Say 'I drank tea'."
+    },
+    {
+     "p": 4,
+     "expect": "मैंने चाय पी"
+    },
+    {
+     "t": "मैंने चाय पी",
+     "tl": "mainne chāy pī"
+    },
+    {
+     "n": "Say 'come on, let's go eat'."
+    },
+    {
+     "p": 5,
+     "expect": "चलिए, खाना खाने चलें"
+    },
+    {
+     "t": "चलिए, खाना खाने चलें",
+     "tl": "chaliye, khānā khāne chalen"
+    },
+    {
+     "n": "Ask what time we shall meet."
+    },
+    {
+     "p": 4,
+     "expect": "कितने बजे मिलेंगे?"
+    },
+    {
+     "t": "कितने बजे मिलेंगे?",
+     "tl": "kitne baje milenge?"
+    },
+    {
+     "n": "Say 'reduce it a little'."
+    },
+    {
+     "p": 4,
+     "expect": "थोड़ा कम कीजिए"
+    },
+    {
+     "t": "थोड़ा कम कीजिए",
+     "tl": "thoṛā kam kījiye"
+    },
+    {
+     "n": "Ask if a card will work."
+    },
+    {
+     "p": 4,
+     "expect": "क्या कार्ड चलेगा?"
+    },
+    {
+     "t": "क्या कार्ड चलेगा?",
+     "tl": "kyā kārḍ chalegā?"
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं? चलिए, खाना खाने चलें।",
+     "tl": "kal shām ko kyā kar rahe hain? chaliye, khānā khāne chalen."
+    },
+    {
+     "q": "I will say something fast. Ask me to say it again and speak slowly."
+    },
+    {
+     "p": 6,
+     "expect": "माफ़ कीजिए, फिर से कहिए। धीरे बोलिए।"
+    },
+    {
+     "t": "माफ़ कीजिए, फिर से कहिए। धीरे बोलिए।",
+     "tl": "māf kījiye, phir se kahiye. dhīre boliye."
+    },
+    {
+     "n": "Now the real conversation. You are the visitor; I am the tea stall owner. Greet me and ask how I am."
+    },
+    {
+     "p": 5,
+     "expect": "नमस्ते जी, आप कैसे हैं?"
+    },
+    {
+     "t": "नमस्ते जी, आप कैसे हैं?",
+     "tl": "namaste jī, āp kaise hain?"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद। आप कहाँ से हैं?",
+     "tl": "main ṭhīk hūn, dhanyavād. āp kahān se hain?"
+    },
+    {
+     "n": "Say 'I am from America. I speak a little Hindi'."
+    },
+    {
+     "p": 6,
+     "expect": "मैं अमेरिका से हूँ। मैं थोड़ी हिंदी बोलता हूँ।"
+    },
+    {
+     "t": "मैं अमेरिका से हूँ। मैं थोड़ी हिंदी बोलता हूँ।",
+     "tl": "main amerikā se hūn. main thoṛī hindī boltā hūn."
+    },
+    {
+     "t": "बहुत अच्छा! कल आप कहाँ गए?",
+     "tl": "bahut achchhā! kal āp kahān gaye?"
+    },
+    {
+     "n": "You didn't catch that. Ask me to say it again and speak slowly."
+    },
+    {
+     "p": 6,
+     "expect": "माफ़ कीजिए, फिर से कहिए। धीरे बोलिए।"
+    },
+    {
+     "t": "माफ़ कीजिए, फिर से कहिए। धीरे बोलिए।",
+     "tl": "māf kījiye, phir se kahiye. dhīre boliye."
+    },
+    {
+     "t": "कोई बात नहीं। कल आप कहाँ गए?",
+     "tl": "koī bāt nahīn. kal āp kahān gaye?"
+    },
+    {
+     "n": "Say 'okay, I understood. Yesterday I went to the market. It was very expensive'."
+    },
+    {
+     "p": 6,
+     "expect": "अच्छा, मैं समझ गया। कल मैं बाज़ार गया। बहुत महँगा था।"
+    },
+    {
+     "t": "अच्छा, मैं समझ गया। कल मैं बाज़ार गया। बहुत महँगा था।",
+     "tl": "achchhā, main samajh gayā. kal main bāzār gayā. bahut mahangā thā."
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "n": "Say 'yes, one tea please, without sugar'."
+    },
+    {
+     "p": 6,
+     "expect": "जी हाँ, एक चाय दीजिए, बिना चीनी।"
+    },
+    {
+     "t": "जी हाँ, एक चाय दीजिए, बिना चीनी।",
+     "tl": "jī hān, ek chāy dījiye, binā chīnī."
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं? चलिए, खाना खाने चलें।",
+     "tl": "kal shām ko kyā kar rahe hain? chaliye, khānā khāne chalen."
+    },
+    {
+     "n": "Say 'sure! What time shall we meet?'."
+    },
+    {
+     "p": 5,
+     "expect": "ज़रूर! कितने बजे मिलेंगे?"
+    },
+    {
+     "t": "ज़रूर! कितने बजे मिलेंगे?",
+     "tl": "zarūr! kitne baje milenge?"
+    },
+    {
+     "t": "सात बजे, ठीक है?",
+     "tl": "sāt baje, ṭhīk hai?"
+    },
+    {
+     "n": "Say 'okay, see you again'."
+    },
+    {
+     "p": 4,
+     "expect": "ठीक है, फिर मिलेंगे।"
+    },
+    {
+     "t": "ठीक है, फिर मिलेंगे।",
+     "tl": "ṭhīk hai, phir milenge."
+    },
+    {
+     "n": "Listen to the whole conversation once more."
+    },
+    {
+     "t": "नमस्ते जी, आप कैसे हैं?",
+     "tl": "namaste jī, āp kaise hain?"
+    },
+    {
+     "t": "मैं ठीक हूँ, धन्यवाद। आप कहाँ से हैं?",
+     "tl": "main ṭhīk hūn, dhanyavād. āp kahān se hain?"
+    },
+    {
+     "t": "मैं अमेरिका से हूँ। मैं थोड़ी हिंदी बोलता हूँ।",
+     "tl": "main amerikā se hūn. main thoṛī hindī boltā hūn."
+    },
+    {
+     "t": "बहुत अच्छा! कल आप कहाँ गए?",
+     "tl": "bahut achchhā! kal āp kahān gaye?"
+    },
+    {
+     "t": "माफ़ कीजिए, फिर से कहिए। धीरे बोलिए।",
+     "tl": "māf kījiye, phir se kahiye. dhīre boliye."
+    },
+    {
+     "t": "कोई बात नहीं। कल आप कहाँ गए?",
+     "tl": "koī bāt nahīn. kal āp kahān gaye?"
+    },
+    {
+     "t": "अच्छा, मैं समझ गया। कल मैं बाज़ार गया। बहुत महँगा था।",
+     "tl": "achchhā, main samajh gayā. kal main bāzār gayā. bahut mahangā thā."
+    },
+    {
+     "t": "क्या आप चाय चाहते हैं?",
+     "tl": "kyā āp chāy chāhte hain?"
+    },
+    {
+     "t": "जी हाँ, एक चाय दीजिए, बिना चीनी।",
+     "tl": "jī hān, ek chāy dījiye, binā chīnī."
+    },
+    {
+     "t": "कल शाम को क्या कर रहे हैं? चलिए, खाना खाने चलें।",
+     "tl": "kal shām ko kyā kar rahe hain? chaliye, khānā khāne chalen."
+    },
+    {
+     "t": "ज़रूर! कितने बजे मिलेंगे?",
+     "tl": "zarūr! kitne baje milenge?"
+    },
+    {
+     "t": "सात बजे, ठीक है?",
+     "tl": "sāt baje, ṭhīk hai?"
+    },
+    {
+     "t": "ठीक है, फिर मिलेंगे।",
+     "tl": "ṭhīk hai, phir milenge."
+    },
+    {
+     "n": "Congratulations. You can now greet people, ask for help, order food, get around, talk about your family, your likes and your plans, and bargain in a market, all in Hindi. Keep listening, keep speaking, and never be afraid to say 'please say it again'. This is the end of the course."
+    }
+   ]
+  }
+ ]
+}

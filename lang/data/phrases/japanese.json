@@ -1,0 +1,277 @@
+{
+  "id": "japanese",
+  "name": "Japanese",
+  "native": "日本語",
+  "category": "international",
+  "bcp47": "ja-JP",
+  "script": "Hiragana, katakana and kanji",
+  "region": "Japan, plus large communities in Brazil, Hawaii and the US",
+  "speakers": "≈ 125 million",
+  "about": "Japanese mixes three scripts in one sentence: hiragana for grammar, katakana for foreign words, and kanji borrowed from Chinese. The verb always comes at the end, just like in Hindi, so sentence order will feel surprisingly familiar.",
+  "pronunciation": [
+    "Japanese has only five vowels, a, i, u, e, o, said short and clean like in Hindi.",
+    "Long vowels, written with a line on top like ō, are held for twice as long and can change the meaning.",
+    "The r sound is a light tap between r and l, close to the soft Hindi sound in the middle of ladka.",
+    "Keep every syllable even and flat; Japanese uses pitch, not strong stress, so avoid punching one syllable."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "Konnichiwa! Today we start with the polite little words that open every door in Japan. Bow slightly as you say them, and you will already sound respectful.",
+      "tip": "Japanese changes words by politeness level. With strangers, shopkeepers and elders, use the polite desu and masu endings. Bowing replaces handshakes, and a small nod of the head is perfectly fine for learners.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "こんにちは",
+          "roman": "konnichiwa",
+          "note": "Konnichiwa is the standard hello for daytime. In the morning say ohayō gozaimasu, and in the evening say konbanwa."
+        },
+        {
+          "key": "how-are-you",
+          "native": "お元気ですか？",
+          "roman": "o-genki desu ka?",
+          "note": "O-genki desu ka means are you well. Japanese people use it when they have not seen someone for a while, not as an everyday greeting."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "元気です。",
+          "roman": "genki desu.",
+          "note": "Genki desu means I am fine. To sound extra polite, add okagesama de at the start, which means thanks to you."
+        },
+        {
+          "key": "thank-you",
+          "native": "ありがとうございます。",
+          "roman": "arigatō gozaimasu.",
+          "note": "Arigatō gozaimasu is the polite thank you. With close friends you can just say arigatō."
+        },
+        {
+          "key": "sorry",
+          "native": "すみません。",
+          "roman": "sumimasen.",
+          "note": "Sumimasen is the most useful word in Japan. It means excuse me, sorry, and even thank you for the trouble. For a real apology, say gomen nasai."
+        },
+        {
+          "key": "goodbye",
+          "native": "さようなら。",
+          "roman": "sayōnara.",
+          "note": "Sayōnara is a formal goodbye, often for longer partings. With friends say jā, mata ne, which means see you."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Now let us introduce ourselves the Japanese way. Introductions here are short, polite and always end with a little bow.",
+      "tip": "Japanese people usually drop watashi, meaning I, once it is clear who is speaking. Never add san after your own name; san is only for other people.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "私はプリヤです。",
+          "roman": "watashi wa Puriya desu.",
+          "note": "Watashi wa Puriya desu means I am Priya. In formal settings you can say Puriya to mōshimasu, which is more humble."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "お名前は何ですか？",
+          "roman": "o-namae wa nan desu ka?",
+          "note": "O-namae wa nan desu ka politely asks for someone's name. The o at the start makes the word name respectful."
+        },
+        {
+          "key": "where-from",
+          "native": "どちらから来ましたか？",
+          "roman": "dochira kara kimashita ka?",
+          "note": "Dochira kara kimashita ka literally means which direction did you come from. Dochira is a polite way to say where."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "インドから来ました。",
+          "roman": "Indo kara kimashita.",
+          "note": "Indo kara kimashita means I came from India. You can also say Indo-jin desu, which means I am Indian."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "はじめまして。よろしくお願いします。",
+          "roman": "hajimemashite. yoroshiku onegai shimasu.",
+          "note": "Hajimemashite means meeting you for the first time. Yoroshiku onegai shimasu adds please treat me kindly, and Japanese people almost always say both together."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "日本語が少し話せます。",
+          "roman": "nihongo ga sukoshi hanasemasu.",
+          "note": "Nihongo ga sukoshi hanasemasu means I can speak a little Japanese. Expect people to answer, jōzu desu ne, you are good at it!"
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Time for numbers! Japanese counting is very regular, so once you learn one to ten, bigger numbers come easily.",
+      "tip": "Four and seven each have two readings. Yon and nana are safer in daily life, because shi sounds like the word for death and is often avoided.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "一、二、三、四、五",
+          "roman": "ichi, ni, san, yon, go",
+          "note": "Ichi, ni, san, yon, go. Four is also read shi, but yon is the safer choice when counting."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "六、七、八、九、十",
+          "roman": "roku, nana, hachi, kyū, jū",
+          "note": "Roku, nana, hachi, kyū, jū. Seven can also be shichi, and nine can be ku, especially when telling the time."
+        },
+        {
+          "key": "what-time",
+          "native": "今、何時ですか？",
+          "roman": "ima, nan-ji desu ka?",
+          "note": "Ima nan-ji desu ka means what time is it now. Ji means o'clock, so three o'clock is san-ji."
+        },
+        {
+          "key": "today",
+          "native": "今日",
+          "roman": "kyō",
+          "note": "Kyō means today. Keep the long o sound, because kyo with a short vowel sounds unclear."
+        },
+        {
+          "key": "tomorrow",
+          "native": "明日",
+          "roman": "ashita",
+          "note": "Ashita means tomorrow. In formal speech you may also hear asu. Mata ashita means see you tomorrow."
+        },
+        {
+          "key": "yesterday",
+          "native": "昨日",
+          "roman": "kinō",
+          "note": "Kinō means yesterday. Like today, it is used without any extra word for on."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "Let us go shopping and eat! Japanese food is wonderful, and a few polite phrases will make every meal and every shop easier.",
+      "tip": "Bargaining is rare in Japan, and tipping is not expected; it can even confuse staff. Before eating say itadakimasu, and after the meal say gochisōsama deshita.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "これはいくらですか？",
+          "roman": "kore wa ikura desu ka?",
+          "note": "Kore wa ikura desu ka means how much is this. Point at the item as you say kore, which means this."
+        },
+        {
+          "key": "too-expensive",
+          "native": "ちょっと高すぎます。",
+          "roman": "chotto takasugimasu.",
+          "note": "Chotto takasugimasu means it is a bit too expensive. Chotto softens the sentence, which Japanese people appreciate. Prices are usually fixed, so use it gently."
+        },
+        {
+          "key": "water-please",
+          "native": "お水をください。",
+          "roman": "o-mizu o kudasai.",
+          "note": "O-mizu o kudasai means water, please. In most restaurants cold water is free, so you can ask for it any time."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "私はベジタリアンです。",
+          "roman": "watashi wa bejitarian desu.",
+          "note": "Watashi wa bejitarian desu means I am vegetarian. Many soups use fish stock called dashi, so also ask, dashi wa haitte imasu ka."
+        },
+        {
+          "key": "very-tasty",
+          "native": "とてもおいしいです。",
+          "roman": "totemo oishii desu.",
+          "note": "Totemo oishii desu means it is very delicious. Cooks love hearing it, and friends often just say oishii!"
+        },
+        {
+          "key": "bill-please",
+          "native": "お会計をお願いします。",
+          "roman": "o-kaikei o onegai shimasu.",
+          "note": "O-kaikei o onegai shimasu means the bill, please. In many restaurants you take the bill slip and pay at the counter near the door."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "Japan's trains are famous for being on time. Let us learn how to find the station and follow directions without getting lost.",
+      "tip": "Kudasai after a verb turns it into a polite request, like please turn or please go. Big stations have many exits, so ask for the exit name too.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "駅はどこですか？",
+          "roman": "eki wa doko desu ka?",
+          "note": "Eki wa doko desu ka means where is the station. Eki is the word for train station, and you will see it on signs everywhere."
+        },
+        {
+          "key": "turn-left",
+          "native": "左に曲がってください。",
+          "roman": "hidari ni magatte kudasai.",
+          "note": "Hidari ni magatte kudasai means please turn left. Hidari is left."
+        },
+        {
+          "key": "turn-right",
+          "native": "右に曲がってください。",
+          "roman": "migi ni magatte kudasai.",
+          "note": "Migi ni magatte kudasai means please turn right. Migi is right."
+        },
+        {
+          "key": "go-straight",
+          "native": "まっすぐ行ってください。",
+          "roman": "massugu itte kudasai.",
+          "note": "Massugu itte kudasai means please go straight. Hold the double s and double t with a tiny pause."
+        },
+        {
+          "key": "how-far",
+          "native": "ここからどのくらいですか？",
+          "roman": "koko kara dono kurai desu ka?",
+          "note": "Koko kara dono kurai desu ka means how far is it from here. People usually answer in minutes of walking rather than in kilometres."
+        },
+        {
+          "key": "please-help",
+          "native": "助けてください。",
+          "roman": "tasukete kudasai.",
+          "note": "Tasukete kudasai means please help me, and it is for real trouble. For small help, like asking the way, start with sumimasen instead."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "In our last lesson, we learn the phrases that keep a conversation going, even when you get a little lost. You have come so far!",
+      "tip": "Japanese people often avoid a direct no. If you hear chotto, meaning a little, with a pause, it usually means no, politely.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "はい / いいえ",
+          "roman": "hai / iie",
+          "note": "Hai means yes, and iie means no. Hai also means I am listening, so it does not always mean agreement."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "わかりません。",
+          "roman": "wakarimasen.",
+          "note": "Wakarimasen means I don't understand. Say sumimasen first to sound softer."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "ゆっくり話してください。",
+          "roman": "yukkuri hanashite kudasai.",
+          "note": "Yukkuri hanashite kudasai means please speak slowly. Yukkuri means slowly or relaxed."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "これはどういう意味ですか？",
+          "roman": "kore wa dō iu imi desu ka?",
+          "note": "Kore wa dō iu imi desu ka means what does this mean. Imi is the word for meaning."
+        },
+        {
+          "key": "i-like-it",
+          "native": "好きです。",
+          "roman": "suki desu.",
+          "note": "Suki desu means I like it. For something you just saw or tried, ki ni irimashita, meaning it has won me over, also sounds natural."
+        },
+        {
+          "key": "good-night",
+          "native": "おやすみなさい。",
+          "roman": "oyasuminasai.",
+          "note": "Oyasuminasai is good night, said before going to bed. With family and friends, just oyasumi is fine."
+        }
+      ]
+    }
+  ]
+}

@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>SSB Journey — Brodoit Prep</title>
 <meta name="description" content="Your illustrated journey from the NDA/CDS/AFCAT written exam through the 5-day SSB to the academy. What happens each day, practice drills, packing list and the 15 OLQs.">
 <meta name="theme-color" content="#F6F5F2">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="/app/theme.css?v=12">
+<link rel="stylesheet" href="assets/app.css?v=12">
+<script src="/app/icons.js?v=12" defer></script>
 <style>
-  .seg-sticky{position:sticky;top:56px;z-index:30;padding:8px 0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .seg-sticky{position:sticky;top:60px;z-index:30;padding:8px 0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
   .meter{height:8px;border-radius:8px;background:rgba(255,255,255,.25);overflow:hidden;margin-top:14px}
   .meter i{display:block;height:100%;background:#fff;border-radius:8px;transition:width .6s}
   .hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
@@ -28,7 +29,7 @@
   .stage .when{position:absolute;right:12px;bottom:12px;background:rgba(14,14,16,.75);color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px}
   .stage .inner{padding:16px}
   .stage ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:10px}
-  .stage li{display:flex;gap:10px;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+  .stage li{display:flex;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)}
   .stage li::before{content:"";flex:0 0 7px;height:7px;border-radius:50%;background:var(--c);margin-top:8px}
   .stage li strong{color:var(--ink)}
   .stage details{margin-top:12px;border-radius:var(--r-md);background:var(--card-2);padding:12px 14px}
@@ -36,7 +37,8 @@
   .stage summary::-webkit-details-marker{display:none}
   .stage summary::after{content:"+";font-size:18px;line-height:1}
   .stage details[open] summary::after{content:"–"}
-  .stage .tip{font-size:13.5px;padding:6px 0;display:flex;gap:8px}
+  .stage .tip{font-size:13px;padding:6px 0;display:flex;gap:8px;align-items:flex-start}
+  .stage .tip .ico{margin-top:2px;color:var(--mute)}
   .stage .actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
   .stage .actions a,.stage .actions button{flex:1;min-width:140px;padding:12px 14px;font-size:14px}
 
@@ -49,14 +51,38 @@
   .olq-group{margin-top:18px}
   .olq{display:flex;gap:12px;padding:12px 14px;background:var(--card);border-radius:var(--r-md);box-shadow:var(--shadow);margin-top:8px}
   .olq .n{width:30px;height:30px;border-radius:10px;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex-shrink:0}
-  .check{display:flex;gap:12px;align-items:flex-start;padding:12px 2px;border-bottom:1px solid var(--line);font-size:14.5px;cursor:pointer}
+  .check{display:flex;gap:12px;align-items:flex-start;padding:12px 2px;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer}
   .check input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0;margin-top:1px}
   .check.on span{text-decoration:line-through;color:var(--mute)}
 
+  .entry{border-radius:var(--r-lg);padding:16px;color:#fff;margin:6px 0 18px;box-shadow:var(--shadow)}
+  .entry .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+  .entry .grid div{background:rgba(255,255,255,.14);border-radius:var(--r-sm);padding:10px 12px;font-size:12px;font-weight:600}
+  .entry .grid b{display:block;font-size:15px;font-weight:800;margin-top:2px}
+  .entry ul{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+  .entry li::before{content:"★ ";opacity:.8}
+  .task{width:230px;border-radius:var(--r-lg);overflow:hidden;background:var(--card);box-shadow:var(--shadow);text-align:left}
+  .task .pic{height:150px}.task .pic svg{width:100%;height:100%}
+  .task .tx{padding:12px 14px}
+  .task .tx b{display:block;font-size:15px;font-weight:800;letter-spacing:-.01em}
+  .task .tx span{font-size:12px;color:var(--mute);font-weight:700}
+  .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:95;animation:rise .2s both}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:96;max-height:88vh;overflow:auto;background:var(--card);border-radius:var(--r-lg) var(--r-lg) 0 0;padding-bottom:calc(20px + env(safe-area-inset-bottom));animation:rise var(--m-enter) var(--ease) both;max-width:640px;margin:0 auto}
+  .sheet .pic{height:220px}.sheet .pic svg{width:100%;height:100%}
+  .sheet .grab{width:44px;height:5px;border-radius:5px;background:rgba(255,255,255,.8);position:absolute;left:50%;top:10px;transform:translateX(-50%)}
+  .sheet .in{padding:18px}
+  .sheet h3{font-size:24px;font-weight:800;letter-spacing:-.03em}
+  .sheet .lbl{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:16px 0 4px}
+  .sheet p{font-size:15px;color:var(--ink-2);line-height:1.55}
+  .step{width:250px;border-radius:var(--r-md);overflow:hidden;background:var(--card-2)}
+  .step .pic{height:170px}.step .pic svg{width:100%;height:100%}
+  .step .cap{display:flex;gap:8px;align-items:center;padding:10px 12px;font-size:13px;font-weight:700}
+  .step .cap b{width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:12px;flex-shrink:0}
+  .sheet .rail{margin:0 -18px;padding-left:18px;padding-right:18px}
   /* fullscreen drill runner */
   .runner{position:fixed;inset:0;z-index:100;background:#0B0B0D;color:#fff;display:flex;flex-direction:column;padding:16px 16px calc(16px + env(safe-area-inset-bottom));animation:rise .3s both}
   .runner .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .runner .x{width:40px;height:40px;border-radius:50%;background:#1F1F24;display:grid;place-items:center;font-size:18px}
+  .runner .x{width:44px;height:44px;border-radius:50%;background:#1F1F24;color:#fff;display:grid;place-items:center}
   .runner .stage-area{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;max-width:560px;width:100%;margin:0 auto}
   .runner .pic{border-radius:20px;overflow:hidden;aspect-ratio:4/3;background:#222}
   .runner .pic svg{width:100%;height:100%}
@@ -82,10 +108,11 @@
   </section>
 
   <div class="seg-sticky"><div class="seg" id="seg">
-    <button class="on" data-v="journey">Journey</button><button data-v="drills">Drills</button><button data-v="pack">Pack list</button><button data-v="olqs">OLQs</button>
+    <button class="on" data-v="journey">Journey</button><button data-v="tasks">Tasks</button><button data-v="drills">Drills</button><button data-v="pack">Pack</button><button data-v="olqs">OLQs</button>
   </div></div>
 
-  <section data-view="journey"><div class="tl" id="timeline"></div></section>
+  <section data-view="journey"><div id="entry"></div><div class="tl" id="timeline"></div></section>
+  <section data-view="tasks" hidden><p class="muted" style="margin:6px 0 4px;font-weight:600">Every task you'll face, in order. Tap a card for what happens, how it's judged and tips.</p><div id="tasks"></div></section>
   <section data-view="drills" hidden>
     <p class="muted" style="margin:6px 0 14px;font-weight:600">Timed exactly like the real tests. Do one a day.</p>
     <div id="drills"></div>
@@ -108,12 +135,28 @@
 </main>
 
 <script type="module">
-import { renderChrome, store, esc, richText, logActivity, addTime, toast } from './assets/js/app.js';
-import { art } from './assets/js/art.js';
-import { STAGES, OLQS, PACK, WAT_WORDS, SRT_ITEMS, PPDT_PICS } from './assets/js/ssb-data.js';
+import { renderChrome, store, esc, richText, logActivity, addTime, toast } from './assets/js/app.js?v=9';
+import { art } from './assets/js/art.js?v=9';
+import { STAGES, OLQS, PACK, WAT_WORDS, SRT_ITEMS, PPDT_PICS, ENTRIES } from './assets/js/ssb-data.js?v=9';
+import { TASK_GROUPS, taskArt } from './assets/js/ssb-tasks.js?v=9';
+import { STEPS } from './assets/js/ssb-steps.js?v=9';
+import { ic } from './assets/js/ico.js?v=12';
 
-renderChrome({ active: 'ssb.html', title: 'SSB Journey' });
+const forId = new URLSearchParams(location.search).get('for');
+const E = ENTRIES[forId];
+// Entry card is a solid colour: the gradient on this screen belongs to the hero only.
+const ENTRY_BG = { nda: 'var(--c-defence)', cds: '#1F5A7A', afcat: '#2563EB' };
+renderChrome({ active: 'ssb.html', title: E ? `SSB for ${E.name}` : 'SSB Journey', back: E ? `exam.html?id=${forId}` : null });
 document.getElementById('heroArt').innerHTML = art.ssb(false);
+if (E) {
+  document.title = `SSB for ${E.name} — Brodoit Prep`;
+  document.querySelector('.hero .tag').textContent = `${E.name} · ${E.board}`;
+  document.querySelector('.hero h1').innerHTML = E.headline;
+  document.getElementById('entry').innerHTML = `<div class="entry" style="background:${ENTRY_BG[forId] || E.bg}">
+    <div class="eyebrow" style="opacity:.85">Your SSB as a ${esc(E.name)} candidate</div>
+    <div class="grid">${E.facts.map(([k, v]) => `<div>${esc(k)}<b>${esc(v)}</b></div>`).join('')}</div>
+    <ul>${E.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>`;
+}
 
 // ---------- tabs ----------
 const seg = document.getElementById('seg');
@@ -135,8 +178,8 @@ document.getElementById('timeline').innerHTML = STAGES.map((st, i) => `
       <div class="h-md" style="font-size:20px">${esc(st.title)}</div>
       <ul>${st.what.map(w => `<li><span>${richText(w)}</span></li>`).join('')}</ul>
       ${st.tips.length || st.avoid.length ? `<details><summary>Insider tips & mistakes</summary>
-        ${st.tips.map(t => `<div class="tip">✅ <span>${esc(t)}</span></div>`).join('')}
-        ${st.avoid.map(t => `<div class="tip">⛔ <span>${esc(t)}</span></div>`).join('')}</details>` : ''}
+        ${st.tips.map(t => `<div class="tip">${ic('check-circle', 16)} <span>${esc(t)}</span></div>`).join('')}
+        ${st.avoid.map(t => `<div class="tip">${ic('ban', 16)} <span>${esc(t)}</span></div>`).join('')}</details>` : ''}
       <div class="actions">
         ${st.lesson ? `<a class="btn btn-dark press" href="${st.lesson}">Swipe lesson →</a>` : ''}
         ${st.drill ? `<button class="btn btn-accent press" data-drill="${st.drill}">Practice now</button>` : ''}
@@ -185,24 +228,52 @@ drawPack();
 let olqN = 0;
 document.getElementById('olqs').innerHTML = OLQS.map(g => `
   <div class="olq-group"><div class="eyebrow" style="color:${g.c}">${esc(g.f)}</div>
-  ${g.q.map(([name, d]) => `<div class="olq"><div class="n" style="background:${g.c}">${++olqN}</div><div><b>${esc(name)}</b><div class="muted" style="font-size:13.5px">${esc(d)}</div></div></div>`).join('')}</div>`).join('');
+  ${g.q.map(([name, d]) => `<div class="olq"><div class="n" style="background:${g.c}">${++olqN}</div><div><b>${esc(name)}</b><div class="muted" style="font-size:13px">${esc(d)}</div></div></div>`).join('')}</div>`).join('');
+
+// ---------- task gallery ----------
+const showCpss = !E || E.cpss;
+document.getElementById('tasks').innerHTML = TASK_GROUPS.map(g => `
+  <div class="section"><div class="h-md" style="color:${g.color}">${esc(g.title)}</div></div>
+  <div class="rail">${g.tasks.filter(t => t.id !== 'cpss' || showCpss).map(t => `
+    <button class="task press" data-task="${t.id}"><div class="pic">${taskArt(t.id)}</div>
+      <div class="tx"><b>${esc(t.name)}</b><span>${esc(t.time)}</span></div></button>`).join('')}</div>`).join('');
+const allTasks = TASK_GROUPS.flatMap(g => g.tasks.map(t => ({ ...t, color: g.color })));
+document.getElementById('tasks').addEventListener('click', e => {
+  const b = e.target.closest('[data-task]'); if (!b) return;
+  const t = allTasks.find(x => x.id === b.dataset.task);
+  const bg = Object.assign(document.createElement('div'), { className: 'sheet-bg' });
+  const sh = Object.assign(document.createElement('div'), { className: 'sheet' });
+  sh.innerHTML = `<div style="position:relative"><div class="pic">${taskArt(t.id)}</div><div class="grab"></div></div>
+    <div class="in"><span class="pill" style="box-shadow:none;background:color-mix(in srgb,${t.color} 14%,var(--card));color:${t.color}">${esc(t.time)}</span>
+      <h3 style="margin-top:10px">${esc(t.name)}</h3>
+      <div class="lbl">What happens</div><p>${esc(t.what)}</p>
+      ${STEPS[t.id] ? `<div class="lbl">How it's done — swipe →</div><div class="rail" style="padding-top:2px">${STEPS[t.id].map((st, i) => `
+        <div class="step"><div class="pic">${st.a()}</div><div class="cap"><b>${i + 1}</b>${esc(st.cap)}</div></div>`).join('')}</div>` : ''}
+      <div class="lbl">How it's judged</div><p>${esc(t.judged)}</p>
+      <div class="lbl">Tips</div>${t.tips.map(x => `<p style="margin-top:4px">${ic('check-circle', 14)} ${esc(x)}</p>`).join('')}
+      <div style="display:flex;gap:8px;margin-top:18px">${t.drill ? `<button class="btn btn-accent press" style="flex:1" data-drill="${t.drill}">Practice now</button>` : ''}<button class="btn btn-ghost press" style="flex:1" id="shClose">Close</button></div></div>`;
+  const close = () => { bg.remove(); sh.remove(); document.body.style.overflow = ''; };
+  bg.onclick = close; sh.querySelector('#shClose').onclick = close;
+  sh.querySelector('[data-drill]')?.addEventListener('click', close);
+  document.body.append(bg, sh); document.body.style.overflow = 'hidden';
+});
 
 // ---------- drills ----------
 const DRILLS = [
-  { id: 'ppdt', name: 'PPDT simulator', sub: '30 s picture · 1 min notes · 3 min story', bg: 'var(--g-it)', a: art.screening },
-  { id: 'wat', name: 'Word Association', sub: '15 words · 15 seconds each', bg: 'var(--g-ssb)', a: art.psych },
-  { id: 'srt', name: 'Situation Reaction', sub: '10 situations · 30 seconds each', bg: 'var(--g-defence)', a: art.gto },
+  { id: 'ppdt', name: 'PPDT simulator', sub: '30 s picture · 1 min notes · 3 min story', bg: 'var(--c-it)', a: art.screening },
+  { id: 'wat', name: 'Word Association', sub: '15 words · 15 seconds each', bg: 'var(--c-ssb)', a: art.psych },
+  { id: 'srt', name: 'Situation Reaction', sub: '10 situations · 30 seconds each', bg: 'var(--c-defence)', a: art.gto },
 ];
 document.getElementById('drills').innerHTML = DRILLS.map(d => `
   <button class="drill press" data-drill="${d.id}" style="background:${d.bg}">
     <div class="art">${d.a()}</div>
     <div style="flex:1"><div class="eyebrow" style="opacity:.85">Drill</div><div class="h-md" style="font-size:21px">${d.name}</div><div style="font-size:13px;opacity:.9;margin-top:2px">${d.sub}</div></div>
-    <div style="font-size:28px">▶</div></button>`).join('');
+    <div>${ic('play', 28)}</div></button>`).join('');
 
 function drawLog() {
   const log = (store.read().drills || []).slice(0, 10);
   document.getElementById('drillLog').innerHTML = log.length ? log.map(l => `
-    <div class="row"><div class="thumb" style="background:var(--g-ssb)">${l.kind === 'ppdt' ? '🖼️' : l.kind === 'wat' ? '💬' : '⚡'}</div>
+    <div class="row"><div class="thumb" style="background:var(--c-ssb)">${ic(l.kind === 'ppdt' ? 'image' : l.kind === 'wat' ? 'message-circle' : 'zap', 24)}</div>
     <div class="body"><div class="t">${esc(l.title)}</div><div class="s">${new Date(l.at).toLocaleString()} · ${esc(l.summary)}</div></div></div>`).join('')
     : '<p class="muted">No drills yet. Your answers stay on this device.</p>';
 }
@@ -228,7 +299,7 @@ function closeRunner() {
 function phase({ label, seconds, html, onDone, nextText = 'Next →' }) {
   clearInterval(tick);
   let left = seconds;
-  runner.innerHTML = `<div class="top"><button class="x" id="rx" aria-label="Close">✕</button>
+  runner.innerHTML = `<div class="top"><button class="x" id="rx" aria-label="Close">${ic('x', 20)}</button>
       <div class="phase">${label}</div>
       ${seconds ? `<div class="timer" id="tm"><span id="tmv">${left}</span></div>` : '<div style="width:64px"></div>'}</div>
     <div class="stage-area">${html}</div>

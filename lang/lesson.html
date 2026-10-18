@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lesson · Brodoit Languages</title>
+<meta name="theme-color" content="#FBF8F3">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="/app/theme.css?v=12">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=12">
+<script src="/app/icons.js?v=12" defer></script>
+</head>
+<body>
+<div class="runner" id="runner">
+  <div class="hd"><a class="icon-btn press" id="close" href="/lang/" aria-label="Close"></a><div class="b-progress"><i id="bar" style="width:0%"></i></div><div class="hearts" id="hearts" aria-label="Hearts">3</div></div>
+  <div class="ex" id="ex"></div>
+</div>
+<div class="foot" id="foot"><div class="in">
+  <div class="result"><div class="ic" id="rIc">✓</div><div><div class="t" id="rT"></div><div class="s" id="rS"></div></div></div>
+  <button class="check" id="check" disabled>Check</button>
+</div></div>
+
+<script type="module">
+import { loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, recognize, hasSR, similarity, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=9';
+import { ic } from '/lang/assets/ico.js?v=12';
+
+const $ = id => document.getElementById(id);
+const code = param('c') || 'es', unitId = param('u'), lessonId = param('l');
+const courses = await loadCourses();
+const meta = courses.find(c => c.code === code) || { code, name: code, from: 'en', voice: 'en-US' };
+const lang = meta.from;
+const fromLang = lang === 'hi' ? 'hi-IN' : 'en-IN';
+$('close').innerHTML = ICON.close; $('close').href = `/lang/course.html?c=${code}#practice`;
+$('check').textContent = t(lang, 'check');
+setCourse(code);
+
+const course = await loadCourse(code);
+const voice = course?.voice || meta.voice || 'en-US';
+let unit = course?.units?.find(u => u.id === unitId) || course?.units?.find(u => u.lessons.some(l => l.id === lessonId));
+const lesson = unit?.lessons.find(l => l.id === lessonId) || (lessonId ? null : unit?.lessons[0]);
+const exEl = $('ex'), foot = $('foot'), checkBtn = $('check');
+
+if (!lesson) {
+  exEl.innerHTML = comingSoonHTML(lang, `/lang/course.html?c=${code}`);
+  foot.style.display = 'none';
+} else {
+  document.title = `${lesson.title} · ${meta.name} · Brodoit`;
+  const key = `${code}/${lesson.id}`;
+  const t0 = Date.now();
+  let queue = lesson.items.map((it, i) => ({ it, id: i })), pos = 0, hearts = 3, right = 0, wrong = 0, cur = null, resultShown = false;
+  const scored = () => queue.filter(q => q.it.t !== 'learn').length;
+
+  const sayTarget = (text, slow = false, btn) => { btn?.classList.add('busy'); stopSpeaking(); speak(text, { lang: voice, slow }).finally(() => btn?.classList.remove('busy')); };
+  const spkBtn = (text, slow = false) => { const b = document.createElement('button'); b.className = 'spk' + (slow ? ' sm' : ''); b.innerHTML = slow ? ICON.turtle : ICON.speaker; b.setAttribute('aria-label', slow ? 'Play slowly' : 'Play'); b.onclick = () => sayTarget(text, slow, b); return b; };
+  const head = (kind, title, big = false) => `<div class="kind">${kind}</div>${title ? `<h2 class="${big ? 'lg' : ''}">${esc(title)}</h2>` : ''}`;
+  const setCheck = on => { checkBtn.disabled = !on; };
+
+  // ---- word bank with FLIP animation ----
+  function bankUI(bank, hint) {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<div class="answer-row empty" data-hint="${esc(hint)}"></div><div class="bank"></div>`;
+    const row = wrap.firstElementChild, bankEl = wrap.lastElementChild;
+    const chosen = [];
+    const flip = (el, from) => { const to = el.getBoundingClientRect(); const dx = from.left - to.left, dy = from.top - to.top; if (!dx && !dy) return; el.style.transition = 'none'; el.style.transform = `translate(${dx}px,${dy}px)`; requestAnimationFrame(() => { el.style.transition = 'transform .3s cubic-bezier(.2,.8,.3,1)'; el.style.transform = ''; el.addEventListener('transitionend', () => { el.style.transition = ''; }, { once: true }); }); };
+    shuffle(bank).forEach((w, i) => {
+      const slot = document.createElement('span'); slot.style.display = 'contents';
+      const ghost = document.createElement('button'); ghost.className = 'chip ghost'; ghost.textContent = w; ghost.tabIndex = -1;
+      const chip = document.createElement('button'); chip.className = 'chip'; chip.textContent = w; chip.dataset.i = i;
+      slot.append(chip); bankEl.append(slot);
+      chip.onclick = () => {
+        haptic(8);
+        const from = chip.getBoundingClientRect();
+        if (chip.parentElement === slot) { slot.append(ghost); row.append(chip); chosen.push(chip); }
+        else { chosen.splice(chosen.indexOf(chip), 1); ghost.remove(); slot.append(chip); }
+        row.classList.toggle('empty', !chosen.length);
+        flip(chip, from);
+        setCheck(!!chosen.length);
+      };
+    });
+    return { el: wrap, answer: () => chosen.map(c => c.textContent).join(' '), lock: () => wrap.querySelectorAll('button').forEach(b => { b.disabled = true; }) };
+  }
+
+  // ---- exercise builders: each returns {el, check():{ok,correct}|null, lock()} ----
+  const build = {
+    learn(it) {
+      const el = document.createElement('div');
+      el.innerHTML = head(`${ic('sparkles', 14)} ${t(lang, 'newWord')}`, '') + `<div class="b-card learn-card pop"><div class="w">${esc(it.word)}</div>${it.tl ? `<div class="tl">${esc(it.tl)}</div>` : ''}<div class="m">${esc(it.meaning)}</div>
+        ${it.example ? `<div class="ex-l">${esc(it.example)}<small>${esc(it.exampleMeaning || '')}</small></div>` : ''}</div>`;
+      const card = el.querySelector('.learn-card'); card.append(spkBtn(it.word));
+      setTimeout(() => sayTarget(it.word), 350);
+      setCheck(true); checkBtn.textContent = t(lang, 'continue');
+      return { el, check: () => null, lock() {} };
+    },
+    choose(it) {
+      const el = document.createElement('div'); let sel = -1;
+      el.innerHTML = head(`${ic('brain', 14)} ${t(lang, 'chooseKind')}`, it.prompt) + `<div class="opts">${it.options.map((o, i) => `<button class="opt" data-i="${i}"><span class="n">${i + 1}</span><span>${esc(o)}</span></button>`).join('')}</div>`;
+      el.querySelectorAll('.opt').forEach(b => b.onclick = () => { haptic(8); sel = +b.dataset.i; el.querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', x === b)); setCheck(true); });
+      return { el, check() { const ok = sel === it.answer; el.querySelectorAll('.opt').forEach((x, i) => { if (i === it.answer) x.classList.add('ok'); else if (i === sel) x.classList.add('bad'); }); return { ok, correct: it.options[it.answer] }; }, lock() { el.querySelectorAll('.opt').forEach(b => { b.disabled = true; }); } };
+    },
+    translate(it) {
+      const el = document.createElement('div');
+      const toTarget = it.dir !== 'from';
+      el.innerHTML = head(`${ic('languages', 14)} ${t(lang, 'translateKind')}`, '') + `<div class="prompt-row"></div>`;
+      const pr = el.querySelector('.prompt-row');
+      if (!toTarget) pr.append(spkBtn(it.text));
+      pr.insertAdjacentHTML('beforeend', `<div class="bubble">${esc(it.text)}</div>`);
+      if (!toTarget) setTimeout(() => sayTarget(it.text), 300);
+      const bank = bankUI(it.bank || it.answer.split(' '), t(lang, 'wordsHint'));
+      el.append(bank.el);
+      return { el, check() { const a = bank.answer(); return { ok: sameAnswer(a, it.answer), correct: it.answer }; }, lock: bank.lock };
+    },
+    listen(it) {
+      const el = document.createElement('div');
+      el.innerHTML = head(`${ic('ear', 14)} ${t(lang, 'listenKind')}`, '') + `<div class="prompt-row" style="justify-content:center;gap:14px;margin:14px 0 24px"></div>`;
+      const pr = el.querySelector('.prompt-row'); pr.append(spkBtn(it.text), spkBtn(it.text, true));
+      setTimeout(() => sayTarget(it.text), 350);
+      const bank = bankUI(it.bank || it.text.split(' '), t(lang, 'wordsHint'));
+      el.append(bank.el);
+      return { el, check() { const a = bank.answer(); return { ok: sameAnswer(a, it.text), correct: `${it.text}${it.meaning ? ` — ${it.meaning}` : ''}` }; }, lock: bank.lock };
+    },
+    speak(it) {
+      const el = document.createElement('div'); let heard = '', skipped = false, busy = false;
+      el.innerHTML = head(`${ic('mic', 14)} ${t(lang, 'speakKind')}`, '') + `<div class="prompt-row"></div><div class="muted" style="font-weight:600;font-size:14px;margin-top:-8px">${esc(it.meaning || '')}</div>
+        <button class="mic" id="mic" aria-label="Speak">${ICON.mic}</button><div class="heard" id="heard">${hasSR ? t(lang, 'tapToSpeak') : t(lang, 'noMic')}</div><button class="skip-link" id="skipSpeak">${t(lang, 'cantSpeak')}</button>`;
+      const pr = el.querySelector('.prompt-row'); pr.append(spkBtn(it.text)); pr.insertAdjacentHTML('beforeend', `<div class="bubble">${esc(it.text)}</div>`);
+      setTimeout(() => sayTarget(it.text), 300);
+      const mic = el.querySelector('#mic'), heardEl = el.querySelector('#heard');
+      mic.onclick = async () => {
+        if (busy) return;
+        if (!hasSR) { toast(t(lang, 'noMic')); return; }
+        busy = true; stopSpeaking(); mic.classList.add('on'); heardEl.textContent = t(lang, 'listening'); haptic(15);
+        heard = await recognize(voice, { ms: 6000, onInterim: txt => { heardEl.textContent = txt; } });
+        mic.classList.remove('on'); busy = false;
+        heardEl.textContent = heard ? `${t(lang, 'heard')}: “${heard}”` : t(lang, 'tapToSpeak');
+        if (heard) { setCheck(true); if (similarity(heard, it.text) >= 0.6) checkBtn.click(); }
+      };
+      el.querySelector('#skipSpeak').onclick = () => { skipped = true; setCheck(true); checkBtn.click(); };
+      return { el, check() { if (skipped) return { ok: true, skip: true, correct: it.text }; return { ok: similarity(heard, it.text) >= 0.6, correct: it.text }; }, lock() { mic.disabled = true; el.querySelector('#skipSpeak').disabled = true; } };
+    },
+    match(it) {
+      const el = document.createElement('div');
+      const L = shuffle(it.pairs.map((p, i) => ({ w: p[0], i }))), R = shuffle(it.pairs.map((p, i) => ({ w: p[1], i })));
+      el.innerHTML = head(`${ic('link', 14)} ${t(lang, 'matchKind')}`, '') + `<div class="match"><div class="col">${L.map(x => `<button class="mt" data-side="l" data-i="${x.i}">${esc(x.w)}</button>`).join('')}</div><div class="col">${R.map(x => `<button class="mt" data-side="r" data-i="${x.i}">${esc(x.w)}</button>`).join('')}</div></div>`;
+      let selL = null, selR = null, matched = 0, mistakes = 0, finished = false;
+      const tryMatch = () => {
+        if (!selL || !selR) return;
+        const a = selL, b = selR; selL = selR = null;
+        if (a.dataset.i === b.dataset.i) {
+          matched++; haptic(12); [a, b].forEach(x => { x.classList.remove('sel'); x.classList.add('ok'); setTimeout(() => x.classList.add('gone'), 450); });
+          if (matched === it.pairs.length && !finished) { finished = true; setCheck(true); setTimeout(() => checkBtn.click(), 500); }
+        } else { mistakes++; haptic(30); [a, b].forEach(x => { x.classList.remove('sel'); x.classList.add('bad'); setTimeout(() => x.classList.remove('bad'), 420); }); }
+      };
+      el.querySelectorAll('.mt').forEach(b => b.onclick = () => {
+        if (b.classList.contains('ok')) return;
+        const side = b.dataset.side;
+        if (side === 'l') { selL?.classList.remove('sel'); selL = b; sayTarget(b.textContent); }
+        else { selR?.classList.remove('sel'); selR = b; }
+        b.classList.add('sel'); tryMatch();
+      });
+      return { el, check: () => ({ ok: true, correct: '', mistakes }), lock() { el.querySelectorAll('.mt').forEach(b => { b.disabled = true; }); } };
+    },
+    fill(it) {
+      const el = document.createElement('div'); let sel = -1;
+      const parts = it.sentence.split(/_{2,}/);
+      el.innerHTML = head(`${ic('pen-line', 14)} ${t(lang, 'fillKind')}`, '') + `<div class="sentence">${esc(parts[0])}<span class="blank" id="blank">&nbsp;</span>${esc(parts.slice(1).join(' ___ '))}</div><div class="muted" style="font-weight:600;font-size:15px">${esc(it.meaning || '')}</div>
+        <div class="chips">${it.options.map((o, i) => `<button class="chip" data-i="${i}">${esc(o)}</button>`).join('')}</div>`;
+      const blank = el.querySelector('#blank');
+      el.querySelectorAll('.chips .chip').forEach(b => b.onclick = () => { haptic(8); sel = +b.dataset.i; el.querySelectorAll('.chips .chip').forEach(x => x.classList.toggle('sel', x === b)); blank.textContent = it.options[sel]; blank.classList.add('set'); setCheck(true); });
+      return { el, check() { const ok = sel === it.answer; blank.style.color = ok ? 'var(--b-mint)' : 'var(--b-red)'; return { ok, correct: it.sentence.replace(/_{2,}/, it.options[it.answer]) }; }, lock() { el.querySelectorAll('.chip').forEach(b => { b.disabled = true; }); } };
+    },
+  };
+
+  const renderHearts = () => { $('hearts').innerHTML = `${ic('heart', 18)} ${hearts}`; };
+  const renderBar = () => { $('bar').style.width = `${Math.round((pos / queue.length) * 100)}%`; };
+
+  function show() {
+    stopSpeaking();
+    if (pos >= queue.length) return complete();
+    cur = queue[pos];
+    renderBar();
+    foot.className = 'foot'; resultShown = false; checkBtn.className = 'check'; checkBtn.textContent = t(lang, 'check'); setCheck(false);
+    const b = build[cur.it.t] || build.learn;
+    cur.ui = b(cur.it);
+    exEl.replaceChildren(cur.ui.el);
+    exEl.style.animation = 'none'; void exEl.offsetWidth; exEl.style.animation = '';
+    window.scrollTo(0, 0);
+  }
+
+  function showResult(res) {
+    resultShown = true; cur.ui.lock();
+    const ok = res.ok;
+    foot.className = 'foot ' + (ok ? 'ok' : 'bad');
+    $('rIc').innerHTML = ok ? (res.skip ? ic('skip-forward', 26) : ic('check', 26, 3)) : ic('x', 26, 3);
+    $('rT').textContent = ok ? (res.skip ? t(lang, 'continue') : t(lang, 'correct')) : t(lang, 'wrong');
+    $('rS').innerHTML = ok ? (res.correct && res.skip ? esc(res.correct) : (res.mistakes ? `${res.mistakes} ${lang === 'hi' ? 'गलत कोशिशें' : 'wrong tries'}` : '')) : `${t(lang, 'answer')}:<b>${esc(res.correct)}</b>`;
+    checkBtn.className = 'check' + (ok ? '' : ' red'); checkBtn.textContent = t(lang, 'continue'); setCheck(true);
+    if (ok) { haptic(12); if (!res.skip) { right++; if (!res.mistakes) sayTargetIfAny(cur.it); } }
+    else {
+      wrong++; hearts = Math.max(0, hearts - 1); renderHearts(); haptic([30, 40, 30]);
+      $('hearts').classList.remove('shake'); void $('hearts').offsetWidth; $('hearts').classList.add('shake');
+      queue.push({ it: cur.it, id: cur.id, retry: true });
+      if (!hearts) setTimeout(heartsOut, 600);
+    }
+  }
+  function sayTargetIfAny(it) { const txt = it.t === 'translate' ? (it.dir !== 'from' ? it.answer : it.text) : it.t === 'listen' || it.t === 'speak' ? it.text : it.t === 'fill' ? it.sentence.replace(/_{2,}/, it.options[it.answer]) : null; if (txt) speak(txt, { lang: voice }); }
+
+  checkBtn.onclick = () => {
+    if (checkBtn.disabled) return;
+    if (resultShown) { pos++; return show(); }
+    const res = cur.ui.check();
+    if (!res) { pos++; return show(); }  // learn card
+    showResult(res);
+  };
+
+  function heartsOut() {
+    const bg = document.createElement('div'); bg.className = 'sheet-bg';
+    bg.innerHTML = `<div class="sheet"><div class="e">💔</div><h3>${t(lang, 'outOfHearts')}</h3><p>${t(lang, 'outOfHeartsSub')}</p>
+      <button class="b-btn wide" id="refill">${t(lang, 'refill')}</button><a class="b-btn ghost wide" href="/lang/course.html?c=${code}#practice">${t(lang, 'quit')}</a></div>`;
+    document.body.append(bg);
+    bg.querySelector('#refill').onclick = () => { hearts = 3; renderHearts(); bg.remove(); };
+  }
+
+  function complete() {
+    const secs = Math.round((Date.now() - t0) / 1000);
+    const acc = right + wrong ? Math.round((right / (right + wrong)) * 100) : 100;
+    const xp = LESSON_XP + (wrong === 0 ? 10 : 0);
+    completeLesson(key, xp);
+    foot.style.display = 'none';
+    const idx = unit.lessons.findIndex(l => l.id === lesson.id);
+    const nextL = unit.lessons[idx + 1] || null;
+    const nextU = !nextL && course.units[course.units.indexOf(unit) + 1];
+    const nextHref = nextL ? `/lang/lesson.html?c=${code}&u=${unit.id}&l=${nextL.id}` : nextU ? `/lang/lesson.html?c=${code}&u=${nextU.id}&l=${nextU.lessons[0].id}` : null;
+    document.getElementById('runner').innerHTML = `<div class="done-screen">
+      <div class="e">${wrong === 0 ? '🏆' : '🎉'}</div><h1>${t(lang, 'lessonDone')}</h1><p>${esc(unit.title)} · ${esc(lesson.title)}</p>
+      <div class="tiles"><div class="tile xp"><b>+${xp}</b><span>${t(lang, 'xp')}</span></div><div class="tile acc"><b>${acc}%</b><span>${t(lang, 'accuracy')}</span></div><div class="tile time"><b>${fmtTime(secs)}</b><span>${t(lang, 'time')}</span></div></div>
+      <div style="width:100%;max-width:400px;display:grid;gap:10px;margin-top:24px">
+        ${nextHref ? `<a class="b-btn wide" href="${nextHref}">${t(lang, 'next')} →</a>` : ''}
+        <a class="b-btn ghost wide" href="/lang/course.html?c=${code}#practice">${t(lang, 'back')}</a>
+        <a class="skip-link" href="${location.pathname}${location.search}">${t(lang, 'again')}</a></div></div>`;
+    confetti();
+  }
+
+  addEventListener('pagehide', stopSpeaking);
+  renderHearts(); show();
+  window.__langLesson = { get queue() { return queue; }, get pos() { return pos; }, get hearts() { return hearts; } };
+}
+</script>
+</body>
+</html>

@@ -68,6 +68,571 @@
     "frequency": "Once a year",
     "officialSite": "https://opportunities.rbi.org.in"
   },
+  "syllabus": [
+    {
+      "section": "Phase I — General Awareness",
+      "topics": [
+        {
+          "t": "Banking history, structure & types of banks",
+          "ch": [
+            "core:banking-awareness/types-of-banks"
+          ]
+        },
+        {
+          "t": "RBI — functions, monetary policy & tools",
+          "ch": [
+            "core:banking-awareness/rbi-monetary-policy"
+          ]
+        },
+        {
+          "t": "Regulators & financial institutions (SEBI, IRDAI, PFRDA, NABARD, SIDBI, EXIM, NHB, NPCI, DICGC)",
+          "ch": [
+            "core:banking-awareness/regulators-institutions"
+          ]
+        },
+        {
+          "t": "Financial markets — money, capital, bond & forex",
+          "ch": [
+            "core:banking-awareness/financial-markets"
+          ]
+        },
+        {
+          "t": "Basel norms, NPAs, SARFAESI & IBC",
+          "ch": [
+            "core:banking-awareness/basel-npa"
+          ]
+        },
+        {
+          "t": "Payment systems & digital banking",
+          "ch": [
+            "core:banking-awareness/payment-systems"
+          ]
+        },
+        {
+          "t": "Banking products, terms & the Negotiable Instruments Act",
+          "ch": [
+            "core:banking-awareness/banking-terms-products"
+          ]
+        },
+        {
+          "t": "Financial inclusion & social security schemes",
+          "ch": [
+            "core:banking-awareness/financial-inclusion"
+          ]
+        },
+        {
+          "t": "Government schemes (credit, farm, health, housing, savings)",
+          "ch": [
+            "core:banking-awareness/government-schemes",
+            "core:banking-awareness/financial-inclusion"
+          ]
+        },
+        {
+          "t": "Union Budget, fiscal terms & Economic Survey basics",
+          "ch": [
+            "core:banking-awareness/budget-economic-survey"
+          ]
+        },
+        {
+          "t": "International organisations & reports",
+          "ch": [
+            "core:banking-awareness/international-organisations"
+          ]
+        },
+        {
+          "t": "Current affairs & static GK — sources and method",
+          "ch": [
+            "core:banking-awareness/current-affairs-method"
+          ]
+        },
+        {
+          "t": "Economy & social issues for GA",
+          "ch": [
+            "esi/esi-growth-development",
+            "esi/esi-external-sector"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Phase I — Reasoning",
+      "topics": [
+        {
+          "t": "Puzzles — floor, box, scheduling (day/month/year), comparison",
+          "ch": [
+            "core:reasoning/floor-box-scheduling",
+            "core:reasoning/puzzles-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — linear & double row",
+          "ch": [
+            "core:reasoning/linear-square-seating",
+            "core:reasoning/puzzles-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — circular",
+          "ch": [
+            "core:reasoning/circular-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — square & rectangular tables",
+          "ch": [
+            "core:reasoning/linear-square-seating"
+          ]
+        },
+        {
+          "t": "Syllogism incl. only-a-few & possibility cases",
+          "ch": [
+            "core:reasoning/syllogism"
+          ]
+        },
+        {
+          "t": "Inequality — direct & coded",
+          "ch": [
+            "core:reasoning/inequality"
+          ]
+        },
+        {
+          "t": "Coding–decoding — classic & new pattern",
+          "ch": [
+            "core:reasoning/coding-decoding",
+            "core:reasoning/coding-new-pattern"
+          ]
+        },
+        {
+          "t": "Blood relations",
+          "ch": [
+            "core:reasoning/blood-relations"
+          ]
+        },
+        {
+          "t": "Direction sense & distance",
+          "ch": [
+            "core:reasoning/direction-sense"
+          ]
+        },
+        {
+          "t": "Order & ranking",
+          "ch": [
+            "core:reasoning/order-ranking"
+          ]
+        },
+        {
+          "t": "Alphanumeric & letter series",
+          "ch": [
+            "core:reasoning/alphanumeric-series"
+          ]
+        },
+        {
+          "t": "Input–output (machine input)",
+          "ch": [
+            "core:reasoning/input-output"
+          ]
+        },
+        {
+          "t": "Data sufficiency (reasoning)",
+          "ch": [
+            "core:reasoning/data-sufficiency"
+          ]
+        },
+        {
+          "t": "Logical reasoning — assumptions, arguments, conclusions",
+          "ch": [
+            "core:reasoning/assumptions-arguments"
+          ]
+        },
+        {
+          "t": "Logical reasoning — course of action, cause & effect, inferences, strengthen/weaken",
+          "ch": [
+            "core:reasoning/course-action-inference"
+          ]
+        },
+        {
+          "t": "Decision making & eligibility-based questions",
+          "ch": [
+            "core:reasoning/course-action-inference"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Phase I — English Language",
+      "topics": [
+        {
+          "t": "Reading comprehension",
+          "ch": [
+            "core:english/reading-comprehension"
+          ]
+        },
+        {
+          "t": "Cloze test",
+          "ch": [
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Error detection",
+          "ch": [
+            "core:english/error-spotting"
+          ]
+        },
+        {
+          "t": "Sentence improvement & phrase replacement",
+          "ch": [
+            "core:english/error-spotting",
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Para jumbles & sentence rearrangement",
+          "ch": [
+            "core:english/para-jumbles"
+          ]
+        },
+        {
+          "t": "Fillers (single/double) & word usage",
+          "ch": [
+            "core:english/fillers-word-usage",
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Connectors, sentence starters & column-based combining",
+          "ch": [
+            "core:english/connectors-sentence-combining"
+          ]
+        },
+        {
+          "t": "Vocabulary — synonyms, antonyms, idioms & phrasal verbs",
+          "ch": [
+            "core:english/vocabulary-idioms"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Phase I — Quantitative Aptitude",
+      "topics": [
+        {
+          "t": "Simplification & approximation (BODMAS, fractions, surds, percentages)",
+          "ch": [
+            "core:quant/simplification"
+          ]
+        },
+        {
+          "t": "Number system — divisibility, HCF & LCM, remainders, unit digits",
+          "ch": [
+            "core:quant/number-system"
+          ]
+        },
+        {
+          "t": "Number series — missing number, wrong number, new-pattern (all types)",
+          "ch": [
+            "core:quant/number-series",
+            "core:quant/number-series-advanced"
+          ]
+        },
+        {
+          "t": "Quadratic equations & quantity comparison",
+          "ch": [
+            "core:quant/quadratic"
+          ]
+        },
+        {
+          "t": "Percentage",
+          "ch": [
+            "core:quant/percentage"
+          ]
+        },
+        {
+          "t": "Ratio & proportion",
+          "ch": [
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Partnership",
+          "ch": [
+            "core:quant/partnership"
+          ]
+        },
+        {
+          "t": "Mixtures & alligation",
+          "ch": [
+            "core:quant/mixtures-alligation",
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Averages",
+          "ch": [
+            "core:quant/averages-ages",
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Problems on ages",
+          "ch": [
+            "core:quant/averages-ages"
+          ]
+        },
+        {
+          "t": "Profit, loss & discount",
+          "ch": [
+            "core:quant/profit-loss"
+          ]
+        },
+        {
+          "t": "Simple & compound interest",
+          "ch": [
+            "core:quant/si-ci"
+          ]
+        },
+        {
+          "t": "Time & work",
+          "ch": [
+            "core:quant/time-work-speed"
+          ]
+        },
+        {
+          "t": "Pipes & cisterns",
+          "ch": [
+            "core:quant/pipes-cisterns"
+          ]
+        },
+        {
+          "t": "Time, speed & distance",
+          "ch": [
+            "core:quant/time-work-speed"
+          ]
+        },
+        {
+          "t": "Boats & streams",
+          "ch": [
+            "core:quant/boats-streams"
+          ]
+        },
+        {
+          "t": "Problems on trains",
+          "ch": [
+            "core:quant/trains"
+          ]
+        },
+        {
+          "t": "Mensuration — 2D & 3D",
+          "ch": [
+            "core:quant/mensuration"
+          ]
+        },
+        {
+          "t": "Permutation & combination",
+          "ch": [
+            "core:quant/permutation-combination"
+          ]
+        },
+        {
+          "t": "Probability",
+          "ch": [
+            "core:quant/probability"
+          ]
+        },
+        {
+          "t": "Data interpretation — table, bar, line, pie, radar & mixed charts",
+          "ch": [
+            "core:quant/data-interpretation",
+            "core:quant/di-advanced"
+          ]
+        },
+        {
+          "t": "Caselet DI, missing DI & arithmetic DI",
+          "ch": [
+            "core:quant/di-advanced",
+            "core:quant/data-interpretation"
+          ]
+        },
+        {
+          "t": "Quantitative data sufficiency",
+          "ch": [
+            "core:quant/di-advanced",
+            "core:reasoning/data-sufficiency"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Phase II Paper I — Economic & Social Issues",
+      "topics": [
+        {
+          "t": "Growth & development — measurement, national income, HDI, sustainable development",
+          "ch": [
+            "esi/esi-growth-development",
+            "rbi-grade-b-specific/esi-essentials"
+          ]
+        },
+        {
+          "t": "Poverty alleviation, employment generation & inequality",
+          "ch": [
+            "esi/esi-poverty-employment"
+          ]
+        },
+        {
+          "t": "Indian economy — economic reforms since 1991, industrial & labour policy, privatisation",
+          "ch": [
+            "esi/esi-reforms-industry-labour"
+          ]
+        },
+        {
+          "t": "Monetary & fiscal policy, taxation, public debt, inflation",
+          "ch": [
+            "esi/esi-fiscal-monetary",
+            "core:banking-awareness/rbi-monetary-policy",
+            "core:banking-awareness/budget-economic-survey"
+          ]
+        },
+        {
+          "t": "Globalisation — balance of payments, exchange rates, FDI, WTO",
+          "ch": [
+            "esi/esi-external-sector"
+          ]
+        },
+        {
+          "t": "Social structure — demography, urbanisation, education, health, gender, social justice",
+          "ch": [
+            "esi/esi-social-issues",
+            "rbi-grade-b-specific/esi-essentials"
+          ]
+        },
+        {
+          "t": "Indian political system & governance",
+          "ch": [
+            "esi/esi-social-issues"
+          ]
+        },
+        {
+          "t": "Writing descriptive ESI answers",
+          "ch": [
+            "rbi-grade-b-specific/esi-essentials"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Phase II Paper II — English (Writing Skills)",
+      "topics": [
+        {
+          "t": "Essay, précis & comprehension (typed)",
+          "ch": [
+            "rbi-grade-b-specific/descriptive-english"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Phase II Paper III — Finance",
+      "topics": [
+        {
+          "t": "Financial system — regulators, RBI functions, banking system, financial institutions",
+          "ch": [
+            "core:banking-awareness/regulators-institutions",
+            "core:banking-awareness/rbi-monetary-policy",
+            "core:banking-awareness/types-of-banks"
+          ]
+        },
+        {
+          "t": "Financial markets — primary & secondary, money, bond, equity, forex, derivatives",
+          "ch": [
+            "core:banking-awareness/financial-markets",
+            "rbi-grade-b-specific/finance-management"
+          ]
+        },
+        {
+          "t": "Risk management in banks & Basel III",
+          "ch": [
+            "finance/fin-risk-basel",
+            "core:banking-awareness/basel-npa"
+          ]
+        },
+        {
+          "t": "Changing landscape of banking — fintech, CBDC, digital lending, alternative finance, PPP, green finance",
+          "ch": [
+            "finance/fin-banking-trends",
+            "core:banking-awareness/payment-systems"
+          ]
+        },
+        {
+          "t": "Corporate finance — time value, capital budgeting, cost of capital, working capital, ratios",
+          "ch": [
+            "finance/fin-corporate-finance",
+            "rbi-grade-b-specific/finance-management"
+          ]
+        },
+        {
+          "t": "Corporate governance in banks, financial stability, inflation & crises",
+          "ch": [
+            "finance/fin-governance-stability"
+          ]
+        },
+        {
+          "t": "Financial inclusion and government schemes",
+          "ch": [
+            "core:banking-awareness/financial-inclusion",
+            "core:banking-awareness/government-schemes"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Phase II Paper III — Management",
+      "topics": [
+        {
+          "t": "Fundamentals — nature, functions, planning, organising, control, decision-making",
+          "ch": [
+            "management/mgmt-fundamentals",
+            "rbi-grade-b-specific/finance-management"
+          ]
+        },
+        {
+          "t": "Leadership & motivation theories",
+          "ch": [
+            "management/mgmt-leadership-motivation"
+          ]
+        },
+        {
+          "t": "Human resource development & performance appraisal",
+          "ch": [
+            "management/mgmt-hrm-ob-communication"
+          ]
+        },
+        {
+          "t": "Communication, organisational behaviour & change management",
+          "ch": [
+            "management/mgmt-hrm-ob-communication"
+          ]
+        },
+        {
+          "t": "Ethics, corporate governance & CSR",
+          "ch": [
+            "management/mgmt-hrm-ob-communication",
+            "finance/fin-governance-stability"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Strategy & interview",
+      "topics": [
+        {
+          "t": "Phase I filter, Phase II plan, final merit & interview",
+          "ch": [
+            "rbi-grade-b-specific/phase-one-strategy"
+          ]
+        }
+      ]
+    }
+  ],
   "subjects": [
     {
       "id": "rbi-grade-b-specific",
@@ -130,6 +695,63 @@
               ],
               "answer": 1,
               "explain": "Phase I is qualifying; merit = Phase II (300) + interview (75)."
+            }
+          ],
+          "notes": [
+            {
+              "h": "The three stages and how merit is built",
+              "p": "RBI Grade B (DR) – General has **Phase I** (objective, qualifying), **Phase II** (three papers) and an **Interview**. Phase I has **General Awareness (80 marks), Reasoning (60), English (30) and Quantitative Aptitude (30)** — 200 marks in total — with **sectional and overall cut-offs**, and its marks do **not** count in the final merit.\n\nThe final merit uses **Phase II (300 marks)**: Economic & Social Issues (100), English Writing Skills (100) and Finance & Management (100), plus the **Interview (75)** — **375 marks** in all. Check the latest notification for timings and any changes.",
+              "points": [
+                "Phase I: filter with steep cut-offs.",
+                "Phase II: ESI + English + FM = 300.",
+                "Interview: 75.",
+                "Final = 375 marks."
+              ]
+            },
+            {
+              "h": "Worked example: how much each section is worth in Phase I",
+              "p": "Phase I has sectional timers. Comparing **marks per minute** shows where effort pays most.\nGA: 80 marks in 25 minutes → 80 ÷ 25 = **3.2 marks/min**.\nReasoning: 60 marks in 45 minutes → 60 ÷ 45 ≈ **1.33 marks/min**.\nEnglish: 30 marks in 25 minutes → **1.2 marks/min**.\nQuant: 30 marks in 25 minutes → **1.2 marks/min**.\nGA is worth more than twice per minute compared with any other section. Thorough GA preparation is the single biggest lever for clearing Phase I."
+            },
+            {
+              "h": "GA preparation",
+              "p": "GA questions are factual and quick, so coverage and revision decide your score.",
+              "points": [
+                "Cover **6–8 months** of current affairs before the exam.",
+                "Read RBI press releases, monetary policy statements and major circulars.",
+                "Union Budget and Economic Survey highlights; key government schemes.",
+                "International organisations, reports and indices (who publishes what).",
+                "Revise in short daily cycles; make one-line notes you can revise in 30 minutes.",
+                "For values that change (policy rates, limits), always check the latest RBI announcement."
+              ]
+            },
+            {
+              "h": "Reasoning: the hardest cut-off",
+              "p": "Reasoning (60 questions in 45 minutes) is puzzle-heavy and often the hardest section to clear. Practise **high-level puzzles and mixed seating arrangements daily** from the start. In the exam, attempt quick topics (inequality, syllogism, coding, blood relations) first, then the puzzles that look easiest. Do not spend more than 6–7 minutes on any single puzzle."
+            },
+            {
+              "h": "Plan Phase II from day one",
+              "p": "The gap between Phase I and Phase II is short. Successful candidates study **ESI and FM alongside Phase I** from the start, because Phase II plus the interview is the real merit list.\n\n**Sample weekly split (6 days):** GA 2 hours daily; Reasoning 1.5 hours; Quant and English 1 hour on alternate days; ESI/FM 1.5 hours daily. Take one full Phase I mock each week and one Phase II descriptive answer every two days."
+            },
+            {
+              "h": "Common mistakes",
+              "p": "Avoid these.",
+              "points": [
+                "Starting ESI/FM only after Phase I results.",
+                "Under-preparing GA because it 'is just current affairs'.",
+                "Neglecting Reasoning puzzles until the last month.",
+                "Using outdated policy figures in GA answers."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Phase I: GA 80, Reasoning 60, English 30, Quant 30 = 200; qualifying.",
+                "GA: about 3.2 marks per minute — the biggest lever.",
+                "Final merit: Phase II (300) + Interview (75) = 375.",
+                "Study ESI and FM from day one.",
+                "Daily puzzles for Reasoning."
+              ]
             }
           ]
         },
@@ -203,6 +825,66 @@
               ],
               "answer": 1,
               "explain": "0 means everyone has the same income; 1 means one person has all of it."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Syllabus map",
+              "p": "Economic & Social Issues (ESI) covers four blocks. Learn concepts, then connect them to current Indian data from the Economic Survey, Union Budget and RBI reports.",
+              "points": [
+                "**Growth and development:** measurement of growth, national income, poverty, inequality, employment.",
+                "**Indian economy:** fiscal policy, monetary policy, inflation, external sector, industrial and agricultural policy.",
+                "**Globalisation:** WTO (1995), IMF and World Bank (Bretton Woods, 1944), balance of payments, exchange rates.",
+                "**Social structure:** demographics, education, health, gender, social justice, social sector schemes."
+              ]
+            },
+            {
+              "h": "National income: worked example",
+              "p": "**GDP at market prices = GVA at basic prices + product taxes − product subsidies**. **Nominal GDP** uses current prices; **real GDP** uses base-year prices. The **GDP deflator** = nominal GDP ÷ real GDP × 100.\n\n**Worked example:** Nominal GDP = ₹330 lakh crore; real GDP = ₹300 lakh crore.\nDeflator = 330 ÷ 300 × 100 = **110**, meaning prices are about **10%** higher than in the base year.\nIf real GDP grows from ₹300 to ₹321 lakh crore the next year, real growth = 21 ÷ 300 × 100 = **7%**."
+            },
+            {
+              "h": "Deficits: worked example",
+              "p": "**Fiscal deficit (FD)** = total expenditure − (revenue receipts + non-debt capital receipts). **Primary deficit** = FD − interest payments. **Revenue deficit (RD)** = revenue expenditure − revenue receipts. **Effective revenue deficit** = RD − grants for creation of capital assets.\n\n**Worked example (₹ lakh crore):** total expenditure 50 (revenue 40, capital 10); revenue receipts 30; non-debt capital receipts 2; interest 8; grants for capital assets 3.\nFD = 50 − (30 + 2) = **18**.\nPrimary deficit = 18 − 8 = **10**.\nRD = 40 − 30 = **10**.\nEffective RD = 10 − 3 = **7**.\nA falling primary deficit shows that the government is borrowing less for current needs beyond paying interest on past debt."
+            },
+            {
+              "h": "Measuring development, poverty and inequality",
+              "p": "Learn what each index measures and who publishes it.",
+              "points": [
+                "**HDI (UNDP):** life expectancy, education (mean and expected years of schooling) and GNI per capita.",
+                "**Gini coefficient:** 0 = perfect equality, 1 = perfect inequality; derived from the **Lorenz curve**.",
+                "**Multidimensional Poverty Index:** NITI Aayog's national MPI uses health, education and living standards.",
+                "**Inflation:** CPI (used for RBI's inflation target) and WPI; base years are revised periodically, so check the current base.",
+                "**Phillips curve:** short-run trade-off between inflation and unemployment."
+              ]
+            },
+            {
+              "h": "Inflation types and policy response",
+              "p": "**Demand-pull** inflation comes from too much demand (money) chasing goods; **cost-push** from rising input costs such as fuel or wages; **stagflation** is high inflation with low growth. **Core inflation** excludes volatile food and fuel.\n\nPolicy response: monetary tightening (higher repo rate) works best against demand-pull; supply-side measures (imports, stock limits, storage) help against food-driven cost-push inflation."
+            },
+            {
+              "h": "Writing descriptive ESI answers",
+              "p": "Phase II ESI includes descriptive questions typed on screen. Use a fixed structure.",
+              "points": [
+                "**Define** the concept in one or two lines.",
+                "Give **one or two data points** from the Economic Survey, Budget or RBI reports.",
+                "List **issues/causes** in short points.",
+                "Mention **government/RBI measures** by name.",
+                "End with a **way forward** of 3–4 points.",
+                "Use headings since diagrams are not possible."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "GDP (MP) = GVA + product taxes − product subsidies.",
+                "Deflator = nominal ÷ real × 100.",
+                "Primary deficit = FD − interest.",
+                "Effective RD = RD − grants for capital assets.",
+                "HDI: health, education, GNI per capita.",
+                "Gini 0 = equality; 1 = inequality.",
+                "Answer format: define → data → issues → measures → way forward."
+              ]
             }
           ]
         },
@@ -286,6 +968,78 @@
               "answer": 2,
               "explain": "T-bills are issued for 91, 182 and 364 days."
             }
+          ],
+          "notes": [
+            {
+              "h": "Financial markets and regulators",
+              "p": "The **money market** deals in short-term funds (up to one year); the **capital market** in long-term funds (shares, bonds).",
+              "points": [
+                "**Treasury bills:** 91, 182 and 364 days; issued at a discount by RBI for the Government.",
+                "**Commercial paper:** 7 days to 1 year, issued by companies; **certificates of deposit:** issued by banks, 7 days to 1 year.",
+                "**Call money:** overnight; **notice money:** 2–14 days; **term money:** beyond 14 days.",
+                "**Regulators:** RBI (banks, money market, forex), SEBI (securities market; statutory since 1992), IRDAI (insurance), PFRDA (pensions)."
+              ]
+            },
+            {
+              "h": "Time value of money: worked examples",
+              "p": "**Future value:** FV = PV × (1 + r)ⁿ. **Present value:** PV = FV ÷ (1 + r)ⁿ. **NPV** = PV of inflows − initial investment; accept projects with **NPV > 0**.\n\n**Worked example 1:** ₹10,000 invested at 8% for 2 years.\nFV = 10,000 × 1.08² = 10,000 × 1.1664 = **₹11,664**.\n\n**Worked example 2 (NPV):** invest ₹1,000 today; receive ₹600 at the end of year 1 and ₹600 at the end of year 2; discount rate 10%.\nPV of year 1 = 600 ÷ 1.1 = 545.45.\nPV of year 2 = 600 ÷ 1.21 = 495.87.\nTotal PV = 1,041.32; NPV = 1,041.32 − 1,000 = **₹41.32** → accept.\n\n**Bond prices** move **inversely** to interest rates: when market rates rise, existing bonds with lower coupons fall in price."
+            },
+            {
+              "h": "Risk management and derivatives",
+              "p": "Banks face **credit risk** (borrower default), **market risk** (interest-rate, forex and equity price moves), **operational risk** (people, processes, systems, fraud) and **liquidity risk** (cannot meet outflows). Basel III capital covers credit, market and operational risk, while LCR and NSFR address liquidity.",
+              "points": [
+                "**Forward:** customised over-the-counter contract to buy/sell later.",
+                "**Future:** standardised, exchange-traded forward with daily settlement.",
+                "**Call option:** right, not obligation, to buy; **put option:** right to sell.",
+                "**Swap:** exchange of cash flows (e.g. fixed vs floating interest)."
+              ]
+            },
+            {
+              "h": "Key financial ratios",
+              "p": "Ratio questions test both formulas and interpretation.",
+              "points": [
+                "**Current ratio** = current assets ÷ current liabilities (liquidity; around 2 is traditionally comfortable).",
+                "**Quick ratio** = (current assets − inventory) ÷ current liabilities.",
+                "**Debt–equity** = total debt ÷ shareholders' equity (leverage).",
+                "**Return on equity** = net profit ÷ shareholders' equity × 100.",
+                "**Example:** current assets ₹6 crore, inventory ₹2 crore, current liabilities ₹4 crore → current ratio 1.5; quick ratio (6 − 2) ÷ 4 = 1.0."
+              ]
+            },
+            {
+              "h": "Management theories",
+              "p": "Management carries a large part of the FM paper.",
+              "points": [
+                "**Maslow:** physiological → safety → social → esteem → self-actualisation.",
+                "**Herzberg:** hygiene factors (salary, policy, working conditions) prevent dissatisfaction; motivators (achievement, recognition, growth) create satisfaction.",
+                "**McGregor:** Theory X (people avoid work, need control) vs Theory Y (people seek responsibility).",
+                "**Vroom:** motivation = expectancy × instrumentality × valence.",
+                "**McClelland:** needs for achievement, affiliation and power.",
+                "**Leadership styles:** autocratic, democratic, laissez-faire, transformational, transactional."
+              ]
+            },
+            {
+              "h": "Common mistakes",
+              "p": "Often confused.",
+              "points": [
+                "Salary is a **hygiene factor**, not a motivator (Herzberg).",
+                "A call option is a **right**, not an obligation, for the buyer.",
+                "T-bills have no 273-day tenor (91, 182, 364 only).",
+                "NPV uses discounting; do not add raw cash flows.",
+                "Quick ratio excludes inventory."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Money market ≤ 1 year; capital market > 1 year.",
+                "FV = PV(1 + r)ⁿ; accept NPV > 0.",
+                "Bond price ↓ when interest rates ↑.",
+                "Credit, market, operational, liquidity risk.",
+                "Maslow, Herzberg, McGregor, Vroom, McClelland.",
+                "Current ratio = CA ÷ CL; quick ratio excludes inventory."
+              ]
+            }
           ]
         },
         {
@@ -340,6 +1094,1637 @@
               ],
               "answer": 2,
               "explain": "A précis condenses the original's main ideas, in your own words, to about one-third of its length."
+            }
+          ],
+          "notes": [
+            {
+              "h": "What Paper II tests",
+              "p": "The English (Writing Skills) paper is **100 marks in 90 minutes**, typed on screen. It usually has an **essay** (with a choice of topics), a **précis** and a **reading comprehension** with written answers. Marks reward a clear argument, logical structure, correct grammar and staying within word limits. It counts fully in the final merit, so it deserves as much practice as ESI and FM."
+            },
+            {
+              "h": "Time plan",
+              "p": "Keep to a strict split so that no part is left incomplete.",
+              "points": [
+                "**Essay:** about 40 minutes (plan 5, write 30, check 5).",
+                "**Précis:** about 25 minutes.",
+                "**Comprehension:** about 25 minutes.",
+                "If one part runs over, cut from the planning time of the next, not from checking."
+              ]
+            },
+            {
+              "h": "Essay: structure and a worked outline",
+              "p": "Use four parts: introduction, body arguments, way forward and conclusion.\n\n**Worked outline: 'Digital public infrastructure and financial inclusion'**\n**Introduction:** define DPI (open, shared digital systems such as Aadhaar, UPI and account aggregators) and state the thesis: DPI has lowered the cost of reaching the unbanked.\n**Argument 1:** identity and payments at scale — instant KYC and low-cost UPI transfers.\n**Argument 2:** credit access — data-sharing frameworks help lenders assess thin-file borrowers.\n**Argument 3:** risks — fraud, data privacy and the digital divide.\n**Way forward:** strong data protection, digital literacy, grievance redress, offline options.\n**Conclusion:** DPI is a means; inclusion needs trust and capability too.\nPrepare similar outlines for inflation targeting, CBDC, climate finance, demographic dividend and women in the workforce."
+            },
+            {
+              "h": "Précis: worked method",
+              "p": "Read the passage twice, list the main ideas, then write about **one-third** of the original length in your own words with a short title. Do not add opinions or examples.\n\n**Worked example:** original passage = 330 words.\nTarget length = 330 ÷ 3 = **110 words** (stay within about ±10%, i.e. 100–120).\nStep 1: underline 5–6 key ideas.\nStep 2: merge related ideas into 3–4 sentences.\nStep 3: write the précis, count words, and add a title of 3–6 words.\nTip: replace lists with one general word ('rising prices of food, fuel and rent' → 'rising living costs')."
+            },
+            {
+              "h": "Comprehension with written answers",
+              "p": "Answer in **your own words**, in complete sentences, and only from the passage. Keep answers brief: 2–4 sentences for most questions. If asked for the meaning of a word, give the meaning in context and, if helpful, use it in a short sentence."
+            },
+            {
+              "h": "Common mistakes",
+              "p": "These cost marks in Paper II.",
+              "points": [
+                "Spending 55 minutes on the essay and rushing the précis.",
+                "Exceeding or falling far short of word limits.",
+                "Copying sentences from the passage in the précis or comprehension.",
+                "Long, unbroken paragraphs; use clear paragraphing.",
+                "Not leaving 3–5 minutes to correct typing errors."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "100 marks, 90 minutes, typed.",
+                "Essay ~40 min, précis ~25 min, comprehension ~25 min.",
+                "Essay: intro with thesis, 3 arguments, way forward, conclusion.",
+                "Précis = one-third length, own words, title, no opinions.",
+                "Comprehension: own words, from the passage only.",
+                "Practise typing and word counting weekly."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "esi",
+      "name": "Economic & Social Issues (Phase II)",
+      "chapters": [
+        {
+          "id": "esi-growth-development",
+          "title": "Growth, development & national income",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Growth vs development",
+              "body": "**Economic growth** is a rise in real output (GDP). **Development** is broader: better health, education, living standards, equity and freedom. Growth is necessary but not sufficient for development."
+            },
+            {
+              "type": "formula",
+              "title": "National income aggregates",
+              "points": [
+                "GDP at market prices − depreciation = NDP",
+                "GDP + net factor income from abroad (NFIA) = GNP",
+                "NNP at factor cost = NNP at MP − net indirect taxes = national income",
+                "GVA at basic prices + product taxes − product subsidies = GDP",
+                "Per capita income = national income ÷ population"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Measuring development",
+              "body": "**Human Development Index** (UNDP): health (life expectancy), education (mean and expected years of schooling) and standard of living (GNI per capita, PPP), combined by a **geometric mean**. Also: MPI, Gender Development Index, Gender Inequality Index."
+            },
+            {
+              "type": "concept",
+              "title": "Sustainable development",
+              "body": "\"Development that meets the needs of the present without compromising the ability of future generations to meet their own needs\" — **Brundtland Report (1987)**. The UN’s **2030 Agenda** has **17 SDGs** and 169 targets; NITI Aayog publishes the SDG India Index."
+            },
+            {
+              "type": "tip",
+              "title": "Real vs nominal",
+              "body": "Nominal GDP uses current prices; real GDP uses base-year prices. Real growth ≈ nominal growth − inflation (GDP deflator). MoSPI periodically revises the base year — check the current series."
+            },
+            {
+              "type": "quiz",
+              "q": "Which three dimensions make up the HDI?",
+              "options": [
+                "Health, education, standard of living",
+                "Income, inflation, employment",
+                "Health, gender, environment",
+                "Education, poverty, inequality"
+              ],
+              "answer": 0,
+              "explain": "Long and healthy life, knowledge, decent standard of living."
+            },
+            {
+              "type": "quiz",
+              "q": "NNP at factor cost is also called:",
+              "options": [
+                "GDP",
+                "National income",
+                "Personal income",
+                "GVA"
+              ],
+              "answer": 1,
+              "explain": "National income = NNP at factor cost."
+            },
+            {
+              "type": "quiz",
+              "q": "How many Sustainable Development Goals are there?",
+              "options": [
+                "8",
+                "15",
+                "17",
+                "21"
+              ],
+              "answer": 2,
+              "explain": "17 SDGs under the 2030 Agenda (2015)."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Why this chapter matters",
+              "p": "\"Growth and Development\" is the first block of the ESI syllabus for RBI Grade B and appears in NABARD ESI too. Objective questions test definitions and indices; descriptive questions ask you to distinguish growth from development, evaluate inclusive growth, or discuss sustainability."
+            },
+            {
+              "h": "Measuring national income",
+              "p": "Three methods give the same total in principle: **production (value added)**, **income** (wages + rent + interest + profit + mixed income) and **expenditure** (C + I + G + X − M).\n\n**Worked example 1:** GDP at market prices = ₹200 lakh crore; depreciation = ₹20; NFIA = −₹5; net indirect taxes = ₹15 (all in lakh crore).\nGNP at MP = 200 − 5 = **195**.\nNNP at MP = 195 − 20 = **175**.\nNNP at FC (national income) = 175 − 15 = **160**.\nIf population is 140 crore, per capita national income = 160 lakh crore ÷ 140 crore ≈ **₹1.14 lakh**.\n\nIndia reports **GVA at basic prices** by sector and GDP at market prices; growth is usually quoted in real terms."
+            },
+            {
+              "h": "Real and nominal growth",
+              "p": "**Worked example 2:** Nominal GDP rises from ₹300 lakh crore to ₹330 lakh crore (10%), while the GDP deflator rises 4%. Real growth ≈ 10 − 4 = **6%** (exactly 1.10/1.04 − 1 ≈ 5.8%).\n\nGDP has limits as a welfare measure: it ignores distribution, unpaid household work, environmental damage and leisure. Hence alternative measures — HDI, green GDP, happiness indices."
+            },
+            {
+              "h": "Development indicators",
+              "p": "**HDI** (UNDP, since 1990) combines life expectancy at birth, mean and expected years of schooling, and GNI per capita (PPP) through a geometric mean, so poor performance in one dimension cannot be fully offset by another. **MPI** (UNDP–OPHI) counts deprivations in health, education and living standards; NITI Aayog publishes a **national MPI** using NFHS data. **Gender Inequality Index** covers reproductive health, empowerment and labour market participation.\n\nFor the latest ranks and values, refer to the most recent Human Development Report — they change annually."
+            },
+            {
+              "h": "Inclusive and sustainable growth",
+              "p": "**Inclusive growth** means growth whose benefits reach all sections — through jobs, access to finance, education and health. **Sustainable development** balances economic, social and environmental goals across generations. In descriptive answers, link: financial inclusion (PMJDY), skill development, social protection and green finance as instruments of inclusive and sustainable growth.",
+              "points": [
+                "Kuznets curve: inequality first rises then falls with income (a hypothesis, debated).",
+                "Environmental Kuznets curve: pollution first rises then falls with income."
+              ]
+            },
+            {
+              "h": "Answer-writing pointers",
+              "p": "Define terms in the first two lines, add one data point or example, give two to three arguments, and close with a balanced conclusion. Avoid quoting numbers you are unsure of; use qualitative phrasing (\"India has seen a steady rise in HDI value over three decades\")."
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Growth = output; development = well-being.",
+                "GNP = GDP + NFIA; NNP = GNP − depreciation.",
+                "National income = NNP at factor cost.",
+                "HDI: health, education, income; geometric mean.",
+                "Brundtland 1987; 17 SDGs (2030 Agenda).",
+                "Real growth ≈ nominal − inflation."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "esi-poverty-employment",
+          "title": "Poverty, inequality & employment",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Poverty lines in India",
+              "body": "Expert groups: **Lakdawala (1993)**, **Tendulkar (2009)** — 21.9% poverty in 2011–12, **Rangarajan (2014)** — 29.5% for 2011–12. NITI Aayog’s **national MPI** measures multidimensional deprivation using NFHS data."
+            },
+            {
+              "type": "formula",
+              "title": "Labour market measures",
+              "points": [
+                "Labour force = employed + unemployed (seeking/available)",
+                "LFPR = labour force ÷ population × 100",
+                "WPR = employed ÷ population × 100",
+                "Unemployment rate = unemployed ÷ labour force × 100",
+                "PLFS (NSO) gives usual status and current weekly status estimates"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Types of unemployment",
+              "body": "**Structural** (skill or sector mismatch), **frictional** (between jobs), **cyclical** (demand slump), **seasonal** (agriculture), **disguised** (more workers than needed; marginal product ≈ 0), **educated** unemployment."
+            },
+            {
+              "type": "concept",
+              "title": "Inequality",
+              "body": "The **Lorenz curve** plots cumulative income share against population share; the **Gini coefficient** = area between the equality line and the Lorenz curve ÷ total area under the equality line (0 = perfect equality, 1 = extreme inequality)."
+            },
+            {
+              "type": "tip",
+              "title": "Descriptive frame",
+              "body": "For poverty or jobs answers: causes → current status (cite PLFS/MPI qualitatively) → government measures → gaps → way forward. It fits most questions."
+            },
+            {
+              "type": "quiz",
+              "q": "Disguised unemployment means:",
+              "options": [
+                "workers whose marginal productivity is near zero",
+                "workers who change jobs often",
+                "unemployment during a recession",
+                "unemployment due to new technology"
+              ],
+              "answer": 0,
+              "explain": "Removing them does not reduce output."
+            },
+            {
+              "type": "quiz",
+              "q": "Of 1,000 persons aged 15+, 560 are employed and 40 unemployed. The unemployment rate is:",
+              "options": [
+                "4%",
+                "6.67%",
+                "5.6%",
+                "40%"
+              ],
+              "answer": 1,
+              "explain": "40 ÷ (560 + 40) = 6.67%."
+            },
+            {
+              "type": "quiz",
+              "q": "The poverty line estimate of 21.9% for 2011–12 is based on the methodology of the:",
+              "options": [
+                "Lakdawala group",
+                "Tendulkar committee",
+                "Rangarajan committee",
+                "Alagh committee"
+              ],
+              "answer": 1,
+              "explain": "Rangarajan gave 29.5% for the same year."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Concepts of poverty",
+              "p": "**Absolute poverty** is the inability to meet a minimum standard of consumption; **relative poverty** compares with others in society. India historically measured absolute poverty with **consumption-based poverty lines** set by expert groups. The **Tendulkar** methodology moved away from calorie norms to a basket of goods and services; the **Rangarajan** group (2014) raised the line. No official poverty line has been notified after these; the government and researchers now often refer to **multidimensional poverty** and to household consumption surveys (HCES 2022–23 and 2023–24)."
+            },
+            {
+              "h": "Multidimensional poverty",
+              "p": "NITI Aayog’s **National MPI** uses 12 indicators across health (nutrition, child and adolescent mortality, maternal health), education (years of schooling, attendance) and standard of living (cooking fuel, sanitation, drinking water, electricity, housing, assets, bank account). A household is MPI-poor if it is deprived in at least one-third of weighted indicators. NITI reports have shown a large fall in multidimensional poverty over the last decade — quote the current report’s figure only if you are sure of it."
+            },
+            {
+              "h": "Employment measurement with worked examples",
+              "p": "The **Periodic Labour Force Survey (PLFS)** by the NSO provides annual estimates on **usual status** (reference year) and **current weekly status** (reference week), plus quarterly urban and, since 2025, monthly bulletins.\n\n**Worked example 1:** Population aged 15+ = 1,000; employed = 560; unemployed = 40.\nLabour force = 600 → **LFPR = 60%**.\n**WPR = 56%**.\n**Unemployment rate = 40/600 = 6.67%**.\n\n**Worked example 2:** If 50 discouraged persons start seeking work and none find it, labour force = 650, unemployed = 90 → UR = 90/650 ≈ **13.8%**, even though employment did not fall. This is why unemployment rates can rise when job-seeking increases."
+            },
+            {
+              "h": "Inequality",
+              "p": "Inequality is measured by the **Gini coefficient**, income/consumption shares of top and bottom deciles, and the **Palma ratio** (top 10% ÷ bottom 40%). Consumption-based Gini is usually lower than income- or wealth-based Gini. Policy levers: progressive taxation, public spending on health and education, transfers, minimum wages and financial inclusion.\n\n**Worked example 3:** If the top 10% of households account for 30% of consumption and the bottom 40% for 20%, the **Palma ratio** = 30 ÷ 20 = **1.5**. A rising Palma ratio signals that gains are concentrating at the top even if average consumption grows."
+            },
+            {
+              "h": "Government measures",
+              "p": "Wage employment: **MGNREGA** (100 days guaranteed). Self-employment and livelihoods: **DAY-NRLM** (SHGs), **PMEGP**, **MUDRA**. Skilling: **PMKVY**, **DDU-GKY**. Social protection: NFSA (subsidised grain), PM-JAY, pensions. Urban: **DAY-NULM**, PM SVANidhi. Labour reforms: four labour codes consolidating 29 central laws.",
+              "points": [
+                "Mention women’s LFPR and informality as structural issues.",
+                "Link skill gaps to structural unemployment."
+              ]
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Unemployment rate is a share of the labour force, not of population.",
+                "Tendulkar (21.9%) vs Rangarajan (29.5%) for 2011–12.",
+                "Disguised ≠ seasonal unemployment.",
+                "Gini 0 = equality."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "LFPR, WPR, UR formulas.",
+                "PLFS: usual status and CWS.",
+                "Tendulkar 2009; Rangarajan 2014.",
+                "National MPI: 12 indicators, 3 dimensions.",
+                "Gini and Lorenz curve.",
+                "Schemes: MGNREGA, DAY-NRLM, PMEGP, PMKVY."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "esi-reforms-industry-labour",
+          "title": "Economic reforms, industrial & labour policy",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "1991 crisis and reforms",
+              "body": "A balance-of-payments crisis in 1991 (reserves covering only weeks of imports) led to **LPG reforms**: liberalisation, privatisation and globalisation — delicensing, opening to FDI, trade and tariff cuts, financial-sector reforms, and rupee devaluation."
+            },
+            {
+              "type": "formula",
+              "title": "Industrial policy milestones",
+              "points": [
+                "IPR 1948: mixed economy",
+                "IPR 1956: public sector leads (Schedules A, B, C)",
+                "NIP 1991: end of licence raj for most industries; MRTP curbs removed; PSU reform",
+                "2014: Make in India; 2020: PLI schemes; Atmanirbhar Bharat"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Privatisation and disinvestment",
+              "body": "**Disinvestment** sells part of government equity; **strategic sale** transfers management control (e.g. Air India to the Tata group, 2022). **New PSE Policy (2021)** keeps a minimal presence in strategic sectors; DIPAM manages the process."
+            },
+            {
+              "type": "concept",
+              "title": "Labour codes",
+              "body": "29 central labour laws were merged into four codes: **Code on Wages (2019)**, **Industrial Relations Code (2020)**, **Code on Social Security (2020)** and **Occupational Safety, Health and Working Conditions Code (2020)**. Check the current status of central and state rules."
+            },
+            {
+              "type": "tip",
+              "title": "Answer frame",
+              "body": "For reform questions: background → key measures → outcomes (growth, FDI, competition) → criticisms (jobless growth, agrarian distress, inequality) → way forward."
+            },
+            {
+              "type": "quiz",
+              "q": "The immediate trigger for India’s 1991 reforms was:",
+              "options": [
+                "a balance-of-payments crisis",
+                "a bumper harvest",
+                "the WTO agreement of 1995",
+                "demonetisation"
+              ],
+              "answer": 0,
+              "explain": "Forex reserves fell to very low levels."
+            },
+            {
+              "type": "quiz",
+              "q": "How many labour codes replaced the earlier central labour laws?",
+              "options": [
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+              ],
+              "answer": 2,
+              "explain": "Wages, Industrial Relations, Social Security, OSH."
+            },
+            {
+              "type": "quiz",
+              "q": "Which policy first divided industries into three schedules with a leading role for the public sector?",
+              "options": [
+                "IPR 1948",
+                "IPR 1956",
+                "NIP 1991",
+                "Make in India"
+              ],
+              "answer": 1,
+              "explain": "Schedule A was reserved for the State."
+            }
+          ],
+          "notes": [
+            {
+              "h": "From planning to reforms",
+              "p": "After independence, India followed a **mixed economy** with the public sector at the \"commanding heights\" (IPR 1948, IPR 1956) and an extensive **licensing** system. The **Planning Commission** (1950) ran Five-Year Plans until it was replaced by **NITI Aayog** in 2015, which works as a policy think tank promoting cooperative federalism.\n\nBy the late 1980s, fiscal deficits, rising external debt and the Gulf war oil shock produced the **1991 BoP crisis**."
+            },
+            {
+              "h": "The 1991 reforms",
+              "p": "Main measures:\n- **Industrial**: abolition of licensing except for a short list; MRTP asset limits removed; public-sector reservation cut.\n- **Trade**: tariff cuts, removal of quantitative restrictions, current-account convertibility (1994).\n- **Foreign investment**: automatic approval for FDI in many sectors; FPI allowed.\n- **Financial**: Narasimham Committee reforms — lower CRR/SLR, interest-rate deregulation, entry of private banks, prudential norms.\n- **Fiscal**: tax reform and deficit reduction.\n\nOutcomes: faster growth, rising FDI, services-led expansion. Criticisms: limited manufacturing jobs, agrarian distress, regional and income inequality.\n\nIn descriptive answers, note the sequencing: **stabilisation** (fiscal correction, devaluation, IMF support) came first, followed by **structural reforms** (industrial, trade, financial). Second-generation reforms later covered insurance, pensions, GST, the IBC and labour law."
+            },
+            {
+              "h": "Industrial policy today",
+              "p": "**Make in India** (2014) aims to raise manufacturing; **Production Linked Incentive (PLI)** schemes (from 2020) reward incremental sales in sectors such as mobile phones, pharmaceuticals, automobiles and solar modules. **MSMEs** are classified by investment and turnover; the limits were raised from April 2025 (micro up to ₹2.5 crore investment and ₹10 crore turnover; small up to ₹25 crore and ₹100 crore; medium up to ₹125 crore and ₹500 crore) — verify against the latest notification.\n\n**Worked example 1:** A firm with ₹4 crore investment in plant and machinery and ₹30 crore turnover is classified as **small** under the revised limits, because it exceeds the micro investment cap of ₹2.5 crore."
+            },
+            {
+              "h": "Labour policy",
+              "p": "The **four labour codes** aim to simplify compliance, widen social security (including gig and platform workers under the Social Security Code), define a national floor wage, and ease rules on standing orders and retrenchment for larger firms. Debates: flexibility vs job security, implementation through state rules, and coverage of informal workers. Around 90% of India’s workforce is informal, so social security portability (e-Shram portal, launched 2021) is a key theme.\n\n**Worked example 2:** Under the IR Code, the threshold for prior government permission for lay-off/retrenchment/closure rose from 100 to **300 workers**, with states allowed to vary it. In a descriptive answer, present both sides: flexibility for firms vs worker protection."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "IPR 1956 (three schedules) vs NIP 1991 (delicensing).",
+                "Disinvestment vs strategic sale.",
+                "NITI Aayog replaced the Planning Commission in 2015.",
+                "Labour codes: four, not five."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "1991 BoP crisis → LPG reforms.",
+                "IPR 1948, 1956; NIP 1991.",
+                "Make in India 2014; PLI 2020.",
+                "New PSE Policy 2021; Air India sale 2022.",
+                "Four labour codes; e-Shram 2021.",
+                "MSME limits revised from April 2025 (check)."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "esi-fiscal-monetary",
+          "title": "Fiscal policy, taxation, public debt & inflation management",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Two arms of macro policy",
+              "body": "**Fiscal policy** (government) uses taxes, spending and borrowing. **Monetary policy** (RBI) uses interest rates and liquidity. Both aim at growth with price stability; coordination matters."
+            },
+            {
+              "type": "concept",
+              "title": "Inflation targeting",
+              "body": "Under the amended **RBI Act (2016)**, the Government sets the inflation target in consultation with the RBI: **4% CPI inflation, band 2–6%**. The six-member **MPC** sets the repo rate; failure means inflation outside the band for three consecutive quarters."
+            },
+            {
+              "type": "formula",
+              "title": "Tax concepts",
+              "points": [
+                "Progressive: rate rises with income; regressive: falls as share of income",
+                "Direct: income and corporate tax; indirect: GST, customs",
+                "Tax buoyancy = % change in tax revenue ÷ % change in GDP",
+                "GST (from 1 July 2017): CGST + SGST on intra-state; IGST on inter-state supplies"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Debt dynamics",
+              "points": [
+                "Change in debt/GDP ≈ primary deficit/GDP + (r − g) × debt/GDP",
+                "r = nominal interest rate on debt; g = nominal GDP growth",
+                "If g > r, debt ratio can fall even with a small primary deficit"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Crowding out",
+              "body": "Heavy government borrowing can raise interest rates and reduce private investment (\"crowding out\"). In a slump with idle capacity, crowding out is weaker and fiscal multipliers are larger."
+            },
+            {
+              "type": "quiz",
+              "q": "India’s inflation target under the flexible inflation targeting framework is:",
+              "options": [
+                "2% ± 1%",
+                "4% ± 2%",
+                "5% ± 1%",
+                "6% ± 2%"
+              ],
+              "answer": 1,
+              "explain": "4% CPI inflation with a band of 2–6%."
+            },
+            {
+              "type": "quiz",
+              "q": "Tax revenue grows 15% when nominal GDP grows 10%. Tax buoyancy is:",
+              "options": [
+                "0.67",
+                "1.0",
+                "1.5",
+                "2.5"
+              ],
+              "answer": 2,
+              "explain": "15 ÷ 10 = 1.5."
+            },
+            {
+              "type": "quiz",
+              "q": "GST on an inter-state supply is levied as:",
+              "options": [
+                "CGST only",
+                "SGST only",
+                "CGST + SGST",
+                "IGST"
+              ],
+              "answer": 3,
+              "explain": "IGST is collected by the Centre and apportioned."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Fiscal policy and its tools",
+              "p": "Fiscal policy influences demand and allocation through **taxation**, **public expenditure** and **borrowing**. Expansionary policy (higher spending, lower taxes) supports demand in slowdowns; contractionary policy reduces deficits and cools demand. **Automatic stabilisers** (progressive taxes, unemployment benefits) act without new decisions.\n\nFiscal rules: the **FRBM Act, 2003** set targets for deficits and debt; the N.K. Singh committee (2017) recommended a debt anchor. Recent Budgets have emphasised a declining debt-to-GDP path."
+            },
+            {
+              "h": "Taxation",
+              "p": "India’s tax system has **direct taxes** (personal income tax, corporation tax) and **indirect taxes** (GST, customs, excise on petroleum and tobacco). **GST** subsumed many central and state taxes; the GST Council (Art. 279A) decides rates. In September 2025 GST rates were rationalised largely into two main slabs (5% and 18%) with a higher rate for select luxury/sin goods — check current rates before answering.\n\n**Worked example 1:** Tax revenue rises from ₹20 lakh crore to ₹23 lakh crore (15%) while nominal GDP grows 10%. **Buoyancy = 1.5** — revenue grows faster than the economy, a sign of improving compliance or progressive structure."
+            },
+            {
+              "h": "Public debt with a worked example",
+              "p": "Public debt sustainability depends on the gap between the interest rate (r) and nominal growth (g).\n\n**Worked example 2:** Debt = 80% of GDP; r = 7%; g = 10%; primary deficit = 2% of GDP.\nChange in debt ratio ≈ 2 + (0.07 − 0.10) × 80 = 2 − 2.4 = **−0.4 percentage points**.\nThe debt ratio falls even though the government runs a primary deficit, because growth outpaces interest.\nIf g fell to 6%: 2 + (0.07 − 0.06) × 80 = **+2.8 points** — debt rises fast."
+            },
+            {
+              "h": "Inflation: causes and control",
+              "p": "**Demand-pull** inflation arises from excess demand; **cost-push** from rising input costs (oil, wages); **structural** inflation from supply bottlenecks (food storage, logistics). **Core inflation** excludes food and fuel.\n\nRBI tools: repo rate, CRR, OMOs, SDF/MSF corridor. Fiscal tools: buffer-stock releases, export curbs, import duty cuts, supply-side reforms. Food inflation often needs supply measures more than rate hikes.",
+              "points": [
+                "CPI (combined) is the target measure; WPI tracks producer prices.",
+                "Stagflation = high inflation + low growth."
+              ]
+            },
+            {
+              "h": "Monetary–fiscal coordination",
+              "p": "High fiscal deficits can fuel inflation or crowd out private credit, forcing tighter monetary policy. Since 1997 automatic monetisation through ad hoc Treasury bills has ended, and the FRBM Act restricted RBI subscription to primary G-sec issues except in specified circumstances. Ways and Means Advances cover temporary mismatches."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Inflation target is set by the Government (in consultation with RBI), not by the MPC.",
+                "Buoyancy uses actual revenue changes; elasticity excludes discretionary changes.",
+                "IGST for inter-state supplies.",
+                "r − g uses nominal rates."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Target 4% ± 2% CPI; six-member MPC.",
+                "FRBM 2003; debt anchor focus.",
+                "GST from 1 July 2017; Council under Art. 279A.",
+                "Buoyancy = %Δ tax ÷ %Δ GDP.",
+                "Δ debt ratio ≈ PD + (r − g) × debt.",
+                "Demand-pull, cost-push, structural inflation."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "esi-external-sector",
+          "title": "Balance of payments, exchange rates & globalisation",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "BoP structure",
+              "points": [
+                "Current account: merchandise trade + invisibles (services, primary income, transfers/remittances)",
+                "Capital account: FDI, FPI, external commercial borrowings, NRI deposits, banking capital",
+                "Overall balance ⇒ change in forex reserves",
+                "CAD = imports of goods & services + net outflows − exports − inflows on current items"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Exchange rate regimes",
+              "body": "India follows a **market-determined (managed float)** rate since 1993, with RBI intervention to curb volatility. **NEER** is a weighted average against trading partners; **REER** adjusts NEER for relative inflation."
+            },
+            {
+              "type": "concept",
+              "title": "Depreciation effects",
+              "body": "A weaker rupee makes exports cheaper abroad and imports dearer at home. It may widen the trade gap in the short run (J-curve) before improving it, and it adds to imported inflation (especially oil)."
+            },
+            {
+              "type": "concept",
+              "title": "Globalisation and WTO",
+              "body": "**WTO** (1995) agreements: goods (GATT), services (GATS), intellectual property (TRIPS), Agreement on Agriculture — subsidy boxes: **amber** (trade-distorting), **blue** (production-limiting), **green** (minimally distorting)."
+            },
+            {
+              "type": "tip",
+              "title": "Answer frame",
+              "body": "For CAD questions: define → components → causes (oil, gold, services surplus, remittances) → financing (FDI vs volatile FPI) → policy measures."
+            },
+            {
+              "type": "quiz",
+              "q": "Remittances from Indians abroad are recorded in the:",
+              "options": [
+                "capital account",
+                "current account",
+                "financial account only",
+                "forex reserves directly"
+              ],
+              "answer": 1,
+              "explain": "They are current transfers (secondary income)."
+            },
+            {
+              "type": "quiz",
+              "q": "REER differs from NEER because it adjusts for:",
+              "options": [
+                "trade volumes",
+                "relative inflation",
+                "tariffs",
+                "interest rates"
+              ],
+              "answer": 1,
+              "explain": "REER = NEER adjusted for price differences."
+            },
+            {
+              "type": "quiz",
+              "q": "Under the WTO Agreement on Agriculture, minimally trade-distorting subsidies fall in the:",
+              "options": [
+                "Amber box",
+                "Blue box",
+                "Green box",
+                "Red box"
+              ],
+              "answer": 2,
+              "explain": "Green box subsidies are not capped."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Why the external sector matters",
+              "p": "The external sector links India to world demand, capital flows and commodity prices. RBI Grade B questions ask about BoP trends, rupee movements, FDI policy, forex reserves and trade agreements. Use RBI’s quarterly BoP releases for current figures."
+            },
+            {
+              "h": "Balance of payments",
+              "p": "The BoP records all transactions between residents and non-residents.\n\n**Current account:** goods trade (India usually runs a large deficit), services (a large surplus led by software and business services), primary income (investment income, usually a deficit), and secondary income (remittances — India is the world’s largest recipient).\n**Capital/financial account:** FDI, FPI, ECBs, NRI deposits, trade credit.\n\n**Worked example 1 (US$ billion):** goods exports 450, goods imports 700, net services +160, net primary income −40, net transfers +110.\nCurrent account = 450 − 700 + 160 − 40 + 110 = **−20** (a CAD of $20 billion).\nIf net capital inflows are $45 billion, the overall balance is **+25**, added to reserves."
+            },
+            {
+              "h": "Exchange rates",
+              "p": "Under a floating regime, demand for and supply of dollars set the rupee’s value. The RBI intervenes in spot and forward markets to smooth volatility, not to defend a fixed level.\n\n**Worked example 2:** The rupee moves from ₹80 to ₹84 per dollar. Rupee depreciation = (84 − 80)/80 = **5%** in rupee terms; the dollar appreciated 5%. An exporter earning $1 million now receives ₹84 million instead of ₹80 million.\n\n**Convertibility:** full on current account since 1994; partial on capital account, liberalised over time under FEMA, 1999.\n\n**Forex reserves** comprise foreign currency assets, gold, SDRs and the reserve tranche position with the IMF. Adequacy is judged by **import cover** (months of imports reserves can pay for) and by the ratio of reserves to short-term external debt. The RBI publishes reserves weekly in its Weekly Statistical Supplement."
+            },
+            {
+              "h": "FDI and globalisation",
+              "p": "FDI enters through the **automatic route** (no prior approval) or the **government route**. Sectoral caps apply (e.g. insurance raised to 100% in Budget 2025–26 for companies investing the entire premium in India — check notification). FDI is stable and brings technology; FPI is volatile (\"hot money\").\n\n**Globalisation** — integration through trade, capital, technology and people — raised growth and service exports but exposed India to global shocks and import competition. India has signed recent trade agreements (e.g. with the UAE and Australia in 2022, EFTA in 2024, and the UK in 2025); verify current status before writing."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Remittances are current account, not capital account.",
+                "A CAD is financed by capital inflows or reserves.",
+                "Depreciation helps exporters but raises import costs.",
+                "Green box (allowed) vs amber box (capped)."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "BoP = current + capital/financial account.",
+                "India: goods deficit, services surplus, high remittances.",
+                "Managed float since 1993; current account convertible 1994.",
+                "NEER vs REER (inflation-adjusted).",
+                "FEMA 1999; automatic vs government FDI routes.",
+                "WTO 1995; amber, blue, green boxes."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "esi-social-issues",
+          "title": "Demography, social sector & the Indian political system",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Census 2011 facts",
+              "points": [
+                "Population: about 121 crore",
+                "Sex ratio: 943 females per 1,000 males",
+                "Literacy: 74.04%",
+                "Urban share: 31.1%",
+                "Next Census: scheduled for 2027 (reference date 1 March 2027 for most areas; check notification)"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Demographic dividend",
+              "body": "A rising share of working-age population (15–64) can boost growth if people are healthy, skilled and employed. India’s window is expected to last into the 2040s; the payoff depends on jobs and human capital."
+            },
+            {
+              "type": "concept",
+              "title": "Education and health",
+              "body": "**RTE Act, 2009** (free and compulsory education for ages 6–14, Art. 21A). **NEP 2020**: 5+3+3+4 structure, mother-tongue instruction in early years, multidisciplinary higher education. Health: **NHM**, **Ayushman Bharat** (health and wellness centres + PM-JAY)."
+            },
+            {
+              "type": "concept",
+              "title": "Political system essentials",
+              "body": "Parliamentary democracy; federal structure with a strong Centre; **73rd and 74th Amendments (1992)** created constitutional status for panchayats and municipalities; Directive Principles guide social policy."
+            },
+            {
+              "type": "tip",
+              "title": "Social justice",
+              "body": "\"Positive discrimination\" means reservations and targeted schemes for SCs, STs, OBCs and EWS; in answers, discuss both outcomes and implementation gaps."
+            },
+            {
+              "type": "quiz",
+              "q": "Sex ratio in Census 2011 was:",
+              "options": [
+                "927",
+                "933",
+                "940",
+                "943"
+              ],
+              "answer": 3,
+              "explain": "943 females per 1,000 males."
+            },
+            {
+              "type": "quiz",
+              "q": "Which constitutional amendment gave constitutional status to Panchayati Raj institutions?",
+              "options": [
+                "42nd",
+                "61st",
+                "73rd",
+                "86th"
+              ],
+              "answer": 2,
+              "explain": "73rd Amendment (1992); 74th for urban local bodies."
+            },
+            {
+              "type": "quiz",
+              "q": "The 5+3+3+4 school structure was introduced by:",
+              "options": [
+                "RTE Act 2009",
+                "NEP 2020",
+                "Kothari Commission",
+                "NEP 1986"
+              ],
+              "answer": 1,
+              "explain": "It replaces the 10+2 structure."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Population and demographic transition",
+              "p": "The **demographic transition** has four stages: high birth and death rates → falling death rates (population boom) → falling birth rates → low birth and death rates. India is in the late third stage: the total fertility rate fell to about the replacement level of 2.1 (NFHS-5, 2019–21: 2.0), though it varies widely across states.\n\n**Worked example 1 (dependency ratio):** Population aged 0–14 = 350 million, 65+ = 100 million, 15–64 = 950 million.\nDependency ratio = (350 + 100) ÷ 950 × 100 ≈ **47.4**. A falling ratio means more workers per dependant — the basis of the demographic dividend."
+            },
+            {
+              "h": "Urbanisation and migration",
+              "p": "Urban share rose to **31.1%** in Census 2011 and is estimated to be higher today. Issues: housing, informal settlements, transport, water and waste. Programmes: **Smart Cities Mission**, **AMRUT**, **PMAY-U**, **Swachh Bharat (Urban)**. Migration is largely internal and short-distance; seasonal migrants face gaps in social security, addressed partly by **One Nation One Ration Card** and the e-Shram portal.\n\n**Worked example 2 (urban growth):** If a town grows from 2,00,000 to 2,42,000 people over two years, the compound annual growth rate is √(2,42,000 ÷ 2,00,000) − 1 = √1.21 − 1 = **10%** a year — a pace that would double the population in about seven years, straining services planned for the original size."
+            },
+            {
+              "h": "Education and health",
+              "p": "**Education:** near-universal enrolment at the primary level; challenges are learning outcomes, dropouts at secondary level and teacher quality. **NEP 2020** aims at foundational literacy and numeracy (NIPUN Bharat), flexible higher education, and a target of 50% gross enrolment ratio in higher education by 2035.\n\n**Health:** public spending on health has historically been low as a share of GDP; out-of-pocket expenditure is high but has been falling. Ayushman Bharat combines primary care through **Ayushman Arogya Mandirs** and hospital insurance through **PM-JAY**."
+            },
+            {
+              "h": "Social justice and gender",
+              "p": "Constitutional provisions: Articles 15(4), 16(4) (reservations), 17 (abolition of untouchability), 46 (promotion of weaker sections). EWS reservation of 10% (103rd Amendment, 2019) was upheld by the Supreme Court in 2022. Gender issues: low female LFPR (rising in recent PLFS rounds), sex ratio at birth, safety and political representation — the **Women’s Reservation Act, 2023** (106th Amendment) reserves one-third of seats in Lok Sabha and state assemblies, effective after the next delimitation."
+            },
+            {
+              "h": "Indian political system",
+              "p": "India is a **sovereign, socialist, secular, democratic republic** with a parliamentary system: the President is the constitutional head, the Prime Minister and Council of Ministers are collectively responsible to the Lok Sabha. **Federalism** distributes powers through the Union, State and Concurrent Lists (Seventh Schedule). Local self-government: the 73rd (Panchayats, Part IX) and 74th (Municipalities, Part IXA) Amendments. Cooperative federalism is institutionalised through NITI Aayog and the GST Council.",
+              "points": [
+                "Finance Commission — Art. 280.",
+                "Inter-State Council — Art. 263."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Census 2011: 121 crore, sex ratio 943, literacy 74.04%, urban 31.1%.",
+                "TFR about 2.0 (NFHS-5).",
+                "RTE 2009; NEP 2020 (5+3+3+4).",
+                "73rd/74th Amendments, 1992.",
+                "EWS 10% (103rd Amendment); Women’s Reservation (106th).",
+                "Dependency ratio = dependants ÷ working-age × 100."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "name": "Finance (Phase II)",
+      "chapters": [
+        {
+          "id": "fin-risk-basel",
+          "title": "Risk management in banks & Basel III",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Main risks",
+              "body": "**Credit risk** (borrower default), **market risk** (losses from interest-rate, FX, equity price moves), **operational risk** (failed processes, people, systems, external events, incl. cyber and fraud), **liquidity risk** (cannot meet obligations), plus concentration, reputational and climate risk."
+            },
+            {
+              "type": "formula",
+              "title": "Basel III capital in India (RBI)",
+              "points": [
+                "CET1: 5.5% of RWAs",
+                "Tier 1: 7%",
+                "Total capital: 9%",
+                "Capital Conservation Buffer: 2.5% (CET1) → total with CCB 11.5%",
+                "D-SIBs carry an extra CET1 surcharge"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Liquidity ratios",
+              "points": [
+                "LCR = HQLA ÷ net cash outflows over 30 days ≥ 100%",
+                "NSFR = available stable funding ÷ required stable funding ≥ 100%",
+                "Leverage ratio (Tier 1 ÷ exposure): 4% for D-SIBs, 3.5% for other banks in India"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Three pillars",
+              "body": "**Pillar 1** — minimum capital for credit, market and operational risk. **Pillar 2** — supervisory review (ICAAP). **Pillar 3** — market discipline through disclosures."
+            },
+            {
+              "type": "tip",
+              "title": "Market-risk tools",
+              "body": "**Duration** measures bond price sensitivity to rates; **Value at Risk (VaR)** estimates the maximum loss at a confidence level over a horizon; **gap analysis** compares rate-sensitive assets and liabilities."
+            },
+            {
+              "type": "quiz",
+              "q": "Minimum total capital plus capital conservation buffer for Indian banks under Basel III is:",
+              "options": [
+                "8%",
+                "9%",
+                "10.5%",
+                "11.5%"
+              ],
+              "answer": 3,
+              "explain": "9% total capital + 2.5% CCB = 11.5%."
+            },
+            {
+              "type": "quiz",
+              "q": "The Liquidity Coverage Ratio requires HQLA to cover net cash outflows over:",
+              "options": [
+                "7 days",
+                "30 days",
+                "90 days",
+                "one year"
+              ],
+              "answer": 1,
+              "explain": "30-day stress period; minimum 100%."
+            },
+            {
+              "type": "quiz",
+              "q": "Losses from a failed IT system or fraud are classified as:",
+              "options": [
+                "Credit risk",
+                "Market risk",
+                "Operational risk",
+                "Liquidity risk"
+              ],
+              "answer": 2,
+              "explain": "Basel definition: inadequate or failed processes, people, systems or external events."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Why risk management is central",
+              "p": "Banks borrow short and lend long, use high leverage and hold others’ money, so small errors can threaten solvency. Risk management identifies, measures, monitors and controls risks; capital and liquidity rules make sure banks can absorb losses. RBI Grade B Finance repeatedly asks about Basel III, LCR/NSFR, types of risk and stress testing."
+            },
+            {
+              "h": "Credit risk",
+              "p": "Credit risk is measured through **probability of default (PD)**, **loss given default (LGD)** and **exposure at default (EAD)**. **Expected loss = PD × LGD × EAD**.\n\n**Worked example 1:** A loan of ₹10 crore has PD = 2% and LGD = 45%. Expected loss = 0.02 × 0.45 × 10 = **₹0.09 crore (₹9 lakh)**. Banks price expected loss into interest rates and provisions; capital covers unexpected loss.\n\nIndia has moved towards an **expected credit loss (ECL)** provisioning framework; check the effective date in the latest RBI directions. Tools: credit rating, collateral, covenants, diversification, early-warning signals (SMA classification)."
+            },
+            {
+              "h": "Market and interest-rate risk",
+              "p": "**Worked example 2 (duration):** A bond portfolio has modified duration 5. If yields rise by 1 percentage point, value falls by about 5 × 1% = **5%**. On a ₹1,000 crore portfolio, that is ≈ ₹50 crore mark-to-market loss.\n\n**Gap analysis:** if rate-sensitive liabilities exceed rate-sensitive assets (negative gap), rising rates squeeze net interest income. **VaR** at 99% over 10 days of ₹20 crore means losses should exceed ₹20 crore only 1% of the time under normal conditions — not a worst-case figure."
+            },
+            {
+              "h": "Operational and liquidity risk",
+              "p": "Operational risk includes fraud, system failures, cyber attacks, legal risk and process errors. Controls: segregation of duties, maker-checker, audits, business continuity plans, cyber-security frameworks.\n\nLiquidity risk is managed through **ALM** (structural liquidity statements), the **LCR** (high-quality liquid assets for a 30-day stress) and the **NSFR** (stable funding for a one-year horizon). Contingency funding plans and stress tests complete the toolkit."
+            },
+            {
+              "h": "Basel III in India",
+              "p": "Basel III, framed after the 2008 crisis, raised the quality and quantity of capital, added buffers (CCB; countercyclical buffer, currently not activated in India), introduced the leverage ratio and liquidity standards, and imposed surcharges on systemically important banks. In India, SBI, HDFC Bank and ICICI Bank are designated **D-SIBs** (check the latest list). RBI norms are stricter than the Basel minimum (total capital 9% vs 8%).",
+              "points": [
+                "CRAR = eligible capital ÷ risk-weighted assets.",
+                "Tier 2 includes subordinated debt and general provisions (within limits)."
+              ]
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "India’s minimum total capital is 9% (Basel: 8%).",
+                "LCR is 30 days; NSFR one year.",
+                "VaR is not a maximum possible loss.",
+                "Fraud is operational risk, not credit risk."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "EL = PD × LGD × EAD.",
+                "CET1 5.5%, Tier 1 7%, total 9%, +2.5% CCB = 11.5%.",
+                "LCR ≥ 100% (30 days); NSFR ≥ 100% (1 year).",
+                "Leverage ratio: 4% D-SIBs, 3.5% others.",
+                "Pillars: capital, supervisory review, disclosure.",
+                "Duration × Δyield ≈ % price change."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin-banking-trends",
+          "title": "Changing landscape: fintech, digital banking & alternative finance",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Digital public infrastructure",
+              "body": "**Aadhaar + UPI + DigiLocker + Account Aggregator** form India’s digital public infrastructure. The **Account Aggregator** framework (RBI NBFC-AA licences) lets customers share financial data with consent."
+            },
+            {
+              "type": "concept",
+              "title": "CBDC",
+              "body": "The RBI’s **e₹** pilots began in **November 2022 (wholesale)** and **December 2022 (retail)**. A CBDC is a central-bank liability in digital form, unlike bank deposits or UPI balances."
+            },
+            {
+              "type": "formula",
+              "title": "Differentiated and new entities",
+              "points": [
+                "Payments banks: deposits up to ₹2 lakh per customer, no lending",
+                "Small finance banks: 75% of ANBC to priority sector",
+                "NBFC scale-based regulation (2021): base, middle, upper, top layers",
+                "Digital lending guidelines (2022): loans disbursed and repaid directly via regulated entity accounts"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Alternative sources of finance",
+              "points": [
+                "Venture capital, angel investors, private equity",
+                "Crowdfunding and peer-to-peer lending (RBI-regulated NBFC-P2P)",
+                "REITs and InvITs (SEBI-regulated)",
+                "ECBs, masala bonds, green bonds",
+                "Trade Receivables Discounting System (TReDS) for MSMEs"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Answer frame",
+              "body": "Fintech answers: opportunity (inclusion, cost, speed) → risks (data privacy, mis-selling, cyber, systemic) → regulation (sandbox, digital lending rules, DPDP Act 2023) → way forward."
+            },
+            {
+              "type": "quiz",
+              "q": "RBI’s retail CBDC pilot began in:",
+              "options": [
+                "November 2021",
+                "December 2022",
+                "April 2023",
+                "January 2024"
+              ],
+              "answer": 1,
+              "explain": "Wholesale pilot Nov 2022; retail Dec 2022."
+            },
+            {
+              "type": "quiz",
+              "q": "The maximum balance a payments bank may hold per customer is:",
+              "options": [
+                "₹1 lakh",
+                "₹2 lakh",
+                "₹5 lakh",
+                "No limit"
+              ],
+              "answer": 1,
+              "explain": "Raised from ₹1 lakh to ₹2 lakh in 2021."
+            },
+            {
+              "type": "quiz",
+              "q": "TReDS primarily helps:",
+              "options": [
+                "MSMEs get their trade receivables financed",
+                "banks raise Tier 1 capital",
+                "states borrow from RBI",
+                "farmers obtain crop insurance"
+              ],
+              "answer": 0,
+              "explain": "Invoices of MSMEs are auctioned to financiers."
+            }
+          ],
+          "notes": [
+            {
+              "h": "A changing industry",
+              "p": "Indian banking has moved from branch-centric public-sector dominance to a mixed system with private banks, differentiated banks, NBFCs and fintechs, all riding on digital public infrastructure. Exams test both facts (dates, limits) and analysis (risks and regulatory responses).\n\nDrivers of change: technology (mobile, cloud, AI-based underwriting), regulation (licensing of differentiated banks, open data), competition from big-tech and fintech, and customer expectations of instant, 24×7 service. Responses by banks include digital-first subsidiaries, API banking, partnerships with fintechs and branch rationalisation."
+            },
+            {
+              "h": "Digital public infrastructure and payments",
+              "p": "**UPI** (2016) dominates retail digital payments by volume. **Account Aggregators** allow consent-based data sharing for lending and wealth management. The RBI is developing the **Unified Lending Interface (ULI)** to bring together data for credit appraisal. **ONDC** extends open networks to commerce. The **Digital Personal Data Protection Act, 2023** sets the privacy framework."
+            },
+            {
+              "h": "Fintech and digital lending",
+              "p": "Fintechs offer payments, lending, wealth and insurance services, often in partnership with banks and NBFCs. RBI’s **digital lending guidelines (2022)** require loans to be disbursed into and repaid from the borrower’s and regulated entity’s accounts directly, disclosure of the annual percentage rate through a **Key Fact Statement**, and a cooling-off period. The **regulatory sandbox** lets firms test products under supervision.\n\n**Worked example 1:** A digital loan of ₹50,000 for 6 months carries interest of ₹3,000 and processing fee ₹1,000. Total cost ₹4,000 on ₹50,000 for half a year → roughly **16% annualised** before compounding, which the KFS must disclose as APR (computed precisely by the lender)."
+            },
+            {
+              "h": "Alternative sources of finance",
+              "p": "For firms: **venture capital** and **angel** funding for start-ups; **private equity** for growth; **REITs** and **InvITs** to monetise real estate and infrastructure; **ECBs**, **masala bonds** and **green bonds** for overseas and thematic funding. For MSMEs: **TReDS** (invoice discounting), **SIDBI** refinance, **CGTMSE** guarantees, and SME exchanges.\n\n**PPP models** in infrastructure: **BOT**, **BOOT**, **annuity**, and the **Hybrid Annuity Model (HAM)** — the government pays 40% of project cost during construction and the rest as annuities.\n\n**Worked example 2:** A ₹1,000 crore HAM road project: government pays **₹400 crore** during construction; the developer arranges ₹600 crore and is repaid through annuities plus interest."
+            },
+            {
+              "h": "Green and climate finance",
+              "p": "RBI issued a **framework for green deposits** (2023) and draft climate-risk disclosure guidelines; the government issues **sovereign green bonds** (since 2023). Banks are expected to assess climate risk in their portfolios. In answers, connect green finance to SDGs and to transition risk for carbon-intensive borrowers."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "CBDC ≠ UPI balance; it is a central-bank liability.",
+                "Payments banks cannot lend.",
+                "REITs/InvITs are regulated by SEBI, not RBI.",
+                "HAM: 40% by government during construction."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "e₹ pilots: wholesale Nov 2022, retail Dec 2022.",
+                "Payments bank deposit cap ₹2 lakh.",
+                "SBR for NBFCs (2021): four layers.",
+                "Digital lending rules 2022; KFS and APR.",
+                "TReDS for MSME receivables.",
+                "DPDP Act 2023; green deposits framework 2023."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin-corporate-finance",
+          "title": "Corporate finance: capital budgeting, cost of capital & working capital",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Capital budgeting",
+              "points": [
+                "NPV = Σ CFₜ/(1 + r)ᵗ − initial investment; accept if NPV > 0",
+                "IRR: discount rate at which NPV = 0; accept if IRR > cost of capital",
+                "Payback period: time to recover the investment (ignores time value)",
+                "Profitability index = PV of inflows ÷ initial outlay"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Cost of capital",
+              "points": [
+                "WACC = (E/V)·Ke + (D/V)·Kd·(1 − t)",
+                "Ke (CAPM) = Rf + β(Rm − Rf)",
+                "Debt is cheaper after tax because interest is tax-deductible"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Working capital",
+              "points": [
+                "Gross WC = current assets; net WC = CA − CL",
+                "Operating cycle = inventory days + receivable days",
+                "Cash conversion cycle = operating cycle − payable days",
+                "Current ratio = CA ÷ CL; quick ratio = (CA − inventory) ÷ CL"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Leverage",
+              "body": "**Operating leverage** — sensitivity of operating profit to sales (fixed costs). **Financial leverage** — sensitivity of EPS to EBIT (debt). Combined leverage = DOL × DFL."
+            },
+            {
+              "type": "tip",
+              "title": "Ranking conflicts",
+              "body": "NPV and IRR may rank mutually exclusive projects differently (scale or timing differences). Prefer **NPV**: it measures value added in rupees."
+            },
+            {
+              "type": "quiz",
+              "q": "Rf = 6%, β = 1.2, market return = 11%. Cost of equity by CAPM is:",
+              "options": [
+                "11%",
+                "12%",
+                "13.2%",
+                "7.2%"
+              ],
+              "answer": 1,
+              "explain": "6 + 1.2 × (11 − 6) = 12%."
+            },
+            {
+              "type": "quiz",
+              "q": "A project costs ₹100 and returns ₹30 a year. Its payback period is:",
+              "options": [
+                "3 years",
+                "3.33 years",
+                "4 years",
+                "30 years"
+              ],
+              "answer": 1,
+              "explain": "100 ÷ 30 = 3.33 years."
+            },
+            {
+              "type": "quiz",
+              "q": "Cash conversion cycle with inventory 60 days, receivables 45 days and payables 30 days:",
+              "options": [
+                "135 days",
+                "105 days",
+                "75 days",
+                "45 days"
+              ],
+              "answer": 2,
+              "explain": "60 + 45 − 30 = 75 days."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Where this fits",
+              "p": "Corporate finance explains how firms choose investments, raise funds and manage day-to-day liquidity. For bankers it underpins credit appraisal: whether a project is viable, how leveraged a borrower is, and how much working-capital finance is justified. It complements the time-value and ratio topics in the FM essentials chapter."
+            },
+            {
+              "h": "Capital budgeting with worked examples",
+              "p": "**Worked example 1 (NPV):** Investment ₹1,000; inflows ₹600 at the end of years 1 and 2; discount rate 10%.\nPV = 600/1.1 + 600/1.21 = 545.45 + 495.87 = 1,041.32.\nNPV = 1,041.32 − 1,000 = **₹41.32 > 0** → accept.\n\n**IRR:** find r such that 600/(1 + r) + 600/(1 + r)² = 1,000. At 13%: 530.97 + 469.89 = 1,000.86 ≈ 1,000 → **IRR ≈ 13%**, above the 10% cost of capital, consistent with a positive NPV.\n\n**Payback** = 1,000/600 ≈ 1.67 years; simple but ignores time value and cash flows after payback."
+            },
+            {
+              "h": "Cost of capital",
+              "p": "The **weighted average cost of capital (WACC)** is the hurdle rate for average-risk projects.\n\n**Worked example 2:** Equity ₹60 crore at Ke = 14%; debt ₹40 crore at Kd = 10%; tax rate 25%.\nAfter-tax Kd = 10 × 0.75 = 7.5%.\nWACC = 0.6 × 14 + 0.4 × 7.5 = 8.4 + 3.0 = **11.4%**.\n\nAdding debt lowers WACC up to a point (tax shield), but beyond that, financial distress costs push both Ke and Kd up."
+            },
+            {
+              "h": "Working capital management",
+              "p": "Working capital finances inventory and receivables. Banks assess it using projected balance sheets and the **operating cycle**.\n\n**Worked example 3:** Annual sales ₹365 crore, receivables ₹45 crore → receivable days = 45 ÷ (365/365) = **45 days**. Inventory ₹60 crore on cost of goods ₹365 crore → **60 days**. Payables ₹30 crore → **30 days**. Cash conversion cycle = 60 + 45 − 30 = **75 days**: the firm needs funds for 75 days of operations, financed by bank limits (cash credit) and its own margin."
+            },
+            {
+              "h": "Leverage and capital structure",
+              "p": "**DOL** = % change in EBIT ÷ % change in sales; **DFL** = % change in EPS ÷ % change in EBIT = EBIT ÷ (EBIT − interest). High DOL × high DFL means very volatile earnings — a credit red flag. Theories: Modigliani–Miller (without taxes, capital structure does not affect value), trade-off theory, and pecking order (internal funds → debt → equity).",
+              "points": [
+                "Dividend policy: Walter and Gordon models; MM dividend irrelevance.",
+                "Debt–equity ratio and interest coverage are key lender metrics."
+              ]
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Using pre-tax cost of debt in WACC.",
+                "Preferring IRR over NPV for mutually exclusive projects.",
+                "Payback ignores time value.",
+                "Net WC = CA − CL, not CA alone."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Formulas.",
+              "points": [
+                "NPV = PV inflows − outlay; accept if > 0.",
+                "IRR: NPV = 0.",
+                "WACC = wₑKₑ + w_dK_d(1 − t).",
+                "CAPM: Ke = Rf + β(Rm − Rf).",
+                "CCC = inventory + receivable − payable days.",
+                "DFL = EBIT ÷ (EBIT − interest)."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fin-governance-stability",
+          "title": "Corporate governance, financial stability & crises",
+          "minutes": 5,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Corporate governance in banks",
+              "body": "Board independence, fit-and-proper directors, risk and audit committees, and separation of chair and CEO. **P.J. Nayak Committee (2014)** recommended reforming PSB governance; the **Banks Board Bureau** (2016) was replaced by the **FSIB** (2022) for PSB/PSI appointments."
+            },
+            {
+              "type": "concept",
+              "title": "Financial stability",
+              "body": "The RBI publishes the **Financial Stability Report** twice a year with system-wide stress tests. The **FSDC**, chaired by the Finance Minister, coordinates regulators on systemic risk."
+            },
+            {
+              "type": "formula",
+              "title": "Crisis episodes to know",
+              "points": [
+                "2008 Global Financial Crisis: US subprime, Lehman collapse",
+                "2018 IL&FS default: NBFC liquidity stress",
+                "2020 Yes Bank reconstruction under a moratorium (SBI-led)",
+                "2019 PMC Bank fraud: tightened co-operative bank supervision"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Resolution tools",
+              "body": "**Prompt Corrective Action (PCA)** framework, **IBC (2016)** for corporate insolvency, **SARFAESI (2002)** for asset recovery, **deposit insurance** (DICGC), and RBI powers under the Banking Regulation Act to supersede boards or amalgamate banks."
+            },
+            {
+              "type": "tip",
+              "title": "Inflation and banks",
+              "body": "High inflation raises nominal rates, hurts bond portfolios (MTM losses) and can raise defaults; very low inflation compresses margins. In answers, link inflation to credit quality, deposit growth and real returns."
+            },
+            {
+              "type": "quiz",
+              "q": "Which body replaced the Banks Board Bureau in 2022?",
+              "options": [
+                "FSDC",
+                "FSIB",
+                "IBBI",
+                "NARCL"
+              ],
+              "answer": 1,
+              "explain": "Financial Services Institutions Bureau."
+            },
+            {
+              "type": "quiz",
+              "q": "The RBI’s Financial Stability Report is published:",
+              "options": [
+                "monthly",
+                "quarterly",
+                "half-yearly",
+                "annually"
+              ],
+              "answer": 2,
+              "explain": "Twice a year, usually June and December."
+            },
+            {
+              "type": "quiz",
+              "q": "The IL&FS default of 2018 mainly triggered stress in:",
+              "options": [
+                "payments banks",
+                "NBFC funding markets",
+                "RRBs",
+                "insurance companies"
+              ],
+              "answer": 1,
+              "explain": "Lenders became wary of NBFC paper, causing a liquidity squeeze."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Why governance matters in banking",
+              "p": "Banks are highly leveraged and hold public deposits, so poor governance creates systemic risk. Good governance means a competent, independent board; strong risk, audit and nomination committees; transparent disclosure; and aligned incentives (e.g. compensation with malus and clawback, which RBI guidelines require for private-bank executives).\n\nRBI guidelines on governance in commercial banks (2021) cap the tenure of MD & CEO/whole-time directors in private banks at 15 years, set an upper age of 70, require independent chairs for board committees such as audit, and make the board responsible for risk culture. Ownership norms limit promoter holdings over time to dilute concentration."
+            },
+            {
+              "h": "PSB governance reforms",
+              "p": "The **P.J. Nayak Committee (2014)** found PSB boards weak and recommended reducing government stake, creating a bank investment company and professionalising appointments. Steps since: the **Indradhanush** plan (2015), the **Banks Board Bureau** (2016), recapitalisation, **mega-mergers** (2019–2020; 10 PSBs merged into 4), and the **FSIB** (2022).\n\n**Worked recall example:** \"Which body recommends whole-time directors of PSBs today?\" → **FSIB**."
+            },
+            {
+              "h": "Financial stability and crises",
+              "p": "**2008 GFC:** securitised subprime mortgages and high leverage spread losses globally; responses included Basel III and central-bank liquidity support.\n**IL&FS (2018):** a large infrastructure lender defaulted, freezing NBFC funding; RBI later introduced **scale-based regulation** for NBFCs.\n**Yes Bank (2020):** governance and asset-quality failures; RBI imposed a moratorium and a reconstruction scheme with SBI and other banks investing.\n\n**Worked example (stress test logic):** A bank has CRAR 15% with RWAs ₹1,00,000 crore (capital ₹15,000 crore). A severe scenario causes losses of ₹6,000 crore and raises RWAs to ₹1,05,000 crore. New CRAR = 9,000 ÷ 1,05,000 ≈ **8.6%** — below the 11.5% requirement, signalling a capital need."
+            },
+            {
+              "h": "Resolution framework",
+              "p": "**PCA** triggers restrictions on dividends, branch expansion and lending when capital, asset quality or leverage cross thresholds. **IBC** offers time-bound resolution via the NCLT. **SARFAESI** lets secured creditors enforce security without courts. **NARCL** (2021) acquires large stressed assets. Inflation, rate cycles and asset bubbles feed into all these channels.\n\n**Inflation and crises:** inflation erodes real deposit returns, can push savers to physical assets, and raises defaults when real incomes fall. Sudden rate hikes to fight inflation produce bond losses and can expose weak banks — as in the 2023 failure of Silicon Valley Bank in the US, where depositors fled after large unrealised losses on long-dated bonds became known.",
+              "points": [
+                "Moratorium under Section 45 of the BR Act is used to protect depositors during reconstruction."
+              ]
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "FSDC is chaired by the Finance Minister, not the RBI Governor.",
+                "FSR is half-yearly.",
+                "BBB was replaced by FSIB in 2022.",
+                "PCA is a supervisory tool, not a resolution scheme."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "P.J. Nayak 2014; BBB 2016; FSIB 2022.",
+                "FSR twice a year; FSDC under the FM.",
+                "GFC 2008; IL&FS 2018; Yes Bank 2020.",
+                "PCA, IBC, SARFAESI, NARCL.",
+                "PSB mega-merger: 10 into 4."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "management",
+      "name": "Management (Phase II)",
+      "chapters": [
+        {
+          "id": "mgmt-fundamentals",
+          "title": "Management: nature, functions, planning & decision-making",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "Nature of management",
+              "body": "Management is getting things done through people efficiently (doing things right) and effectively (doing the right things). It is both an art and a science, and a profession in a limited sense."
+            },
+            {
+              "type": "formula",
+              "title": "Functions",
+              "points": [
+                "Fayol: planning, organising, commanding, coordinating, controlling",
+                "Gulick: POSDCORB — planning, organising, staffing, directing, coordinating, reporting, budgeting",
+                "Modern: plan → organise → staff → direct (lead) → control"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Classical thinkers",
+              "body": "**F.W. Taylor** — scientific management (time and motion study, differential piece rate). **Henri Fayol** — 14 principles (division of work, unity of command, scalar chain, esprit de corps…). **Max Weber** — bureaucracy (rules, hierarchy, impersonality)."
+            },
+            {
+              "type": "concept",
+              "title": "Planning and MBO",
+              "body": "Plans: mission, objectives, strategies, policies, procedures, rules, budgets. **Management by Objectives (Peter Drucker)**: superiors and subordinates jointly set measurable goals and review performance against them."
+            },
+            {
+              "type": "tip",
+              "title": "Decision-making",
+              "body": "Rational model: define problem → generate alternatives → evaluate → choose → implement → review. Herbert Simon’s **bounded rationality**: managers \"satisfice\" rather than optimise."
+            },
+            {
+              "type": "quiz",
+              "q": "POSDCORB was given by:",
+              "options": [
+                "Henri Fayol",
+                "Luther Gulick",
+                "F.W. Taylor",
+                "Peter Drucker"
+              ],
+              "answer": 1,
+              "explain": "Gulick (with Urwick), 1937."
+            },
+            {
+              "type": "quiz",
+              "q": "\"Unity of command\" means:",
+              "options": [
+                "one employee should receive orders from one superior only",
+                "all departments should share one goal",
+                "one plan for the whole firm",
+                "orders flow in a chain"
+              ],
+              "answer": 0,
+              "explain": "One of Fayol’s 14 principles."
+            },
+            {
+              "type": "quiz",
+              "q": "Management by Objectives was popularised by:",
+              "options": [
+                "Max Weber",
+                "Peter Drucker",
+                "Elton Mayo",
+                "Abraham Maslow"
+              ],
+              "answer": 1,
+              "explain": "Drucker, The Practice of Management (1954)."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Management in the RBI syllabus",
+              "p": "Paper III (Finance & Management) gives about half its weight to management: fundamentals, leadership, motivation, communication, HRM, organisational behaviour, change, ethics and corporate governance. Descriptive questions reward clear definitions, a theory, and a banking example."
+            },
+            {
+              "h": "Evolution of thought",
+              "p": "**Classical school:** Taylor’s scientific management (one best way, standardisation, incentives); Fayol’s administrative principles; Weber’s bureaucracy.\n**Neo-classical/human relations:** Elton Mayo’s **Hawthorne studies** (1920s–30s) showed that social factors and attention affect productivity.\n**Behavioural:** Maslow, McGregor, Herzberg.\n**Systems and contingency approaches:** organisations are open systems; the best approach depends on the situation.\n**Modern:** TQM, lean, knowledge management, agile.\n\n**Worked recall example:** \"Which approach says there is no single best way to manage, and that structure and style must fit the environment?\" → the **contingency approach** (Burns and Stalker, Lawrence and Lorsch). It suits banks operating in very different settings, such as metro corporate branches and remote rural branches."
+            },
+            {
+              "h": "Functions of management",
+              "p": "**Planning** sets objectives and decides how to achieve them. **Organising** groups activities, assigns authority and creates structure (functional, divisional, matrix, network). **Staffing** recruits, trains and retains people. **Directing** includes leadership, motivation and communication. **Controlling** compares performance with standards and corrects deviations.\n\n**Worked example 1 (control):** A branch’s target for CASA growth is 12%; actual is 9%. Deviation = −3 points. Corrective action: analyse causes (competition, staff, product), set monthly targets, revise the plan.\n\n**Controlling techniques:** budgets, variance analysis, **management information systems (MIS)**, internal audit, ratio analysis, PERT/CPM for projects and the **balanced scorecard** (financial, customer, internal process, learning and growth perspectives). Effective control is timely, objective, focused on critical points and economical."
+            },
+            {
+              "h": "Organisation structures",
+              "p": "**Span of control** is the number of subordinates a manager supervises; a wide span means a flat organisation. **Centralisation** keeps decisions at the top; **decentralisation** delegates them. **Delegation** passes authority, not accountability. **Line** authority is direct; **staff** authority is advisory.\n\n**Worked example 2:** 64 employees with a span of 4 need 16 supervisors, 4 managers above them, and 1 head = 3 levels of management. With a span of 8: 8 supervisors and 1 head = 2 levels — a flatter structure."
+            },
+            {
+              "h": "Decision-making",
+              "p": "Types: **programmed** (routine, rule-based — e.g. a standard loan under scoring) and **non-programmed** (novel — entering a new market). Techniques: brainstorming, Delphi technique, nominal group technique, decision trees, cost–benefit analysis. Biases: anchoring, confirmation bias, overconfidence, groupthink.\n\n**Worked example 3 (expected value):** A bank can launch a product with a 60% chance of earning ₹10 crore and a 40% chance of losing ₹5 crore. Expected value = 0.6 × 10 − 0.4 × 5 = **₹4 crore**, so the launch is attractive if the bank can bear the downside. Decision trees extend this to several stages.",
+              "points": [
+                "Simon: bounded rationality and satisficing.",
+                "Delphi: anonymous expert rounds to reach consensus."
+              ]
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "POSDCORB is Gulick, not Fayol.",
+                "Delegation transfers authority, not accountability.",
+                "Hawthorne studies — Elton Mayo.",
+                "Efficiency ≠ effectiveness."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Fayol: 14 principles; 5 functions.",
+                "Taylor: scientific management.",
+                "Weber: bureaucracy.",
+                "Drucker: MBO.",
+                "Span of control ↔ levels of hierarchy.",
+                "Programmed vs non-programmed decisions."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mgmt-leadership-motivation",
+          "title": "Leadership & motivation theories",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "formula",
+              "title": "Content theories of motivation",
+              "points": [
+                "Maslow: physiological → safety → social → esteem → self-actualisation",
+                "Herzberg: hygiene factors (prevent dissatisfaction) vs motivators (create satisfaction)",
+                "McClelland: needs for achievement, affiliation and power",
+                "Alderfer ERG: existence, relatedness, growth"
+              ]
+            },
+            {
+              "type": "formula",
+              "title": "Process theories",
+              "points": [
+                "Vroom expectancy: Motivation = Expectancy × Instrumentality × Valence",
+                "Adams equity: compare own input/output ratio with others",
+                "Locke goal-setting: specific, difficult goals with feedback raise performance",
+                "Skinner reinforcement: behaviour shaped by consequences"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "McGregor and Ouchi",
+              "body": "**Theory X**: people dislike work and need control. **Theory Y**: people seek responsibility and self-direction. **Theory Z (William Ouchi)**: Japanese-style long-term employment, collective decisions, concern for employees."
+            },
+            {
+              "type": "formula",
+              "title": "Leadership theories",
+              "points": [
+                "Trait theory: leaders have certain inborn traits",
+                "Behavioural: Ohio State (initiating structure, consideration); Blake–Mouton managerial grid (9,9 team management)",
+                "Contingency: Fiedler (LPC); Hersey–Blanchard situational (telling, selling, participating, delegating); House path–goal",
+                "Transformational vs transactional leadership"
+              ]
+            },
+            {
+              "type": "tip",
+              "title": "Exam pairing",
+              "body": "Pair each theory with its author: hygiene–Herzberg; expectancy–Vroom; equity–Adams; LPC–Fiedler; grid–Blake & Mouton; Theory Z–Ouchi."
+            },
+            {
+              "type": "quiz",
+              "q": "In Herzberg’s theory, salary and working conditions are:",
+              "options": [
+                "motivators",
+                "hygiene factors",
+                "self-actualisation needs",
+                "valence"
+              ],
+              "answer": 1,
+              "explain": "Their absence causes dissatisfaction; presence does not motivate."
+            },
+            {
+              "type": "quiz",
+              "q": "Expectancy theory was given by:",
+              "options": [
+                "Victor Vroom",
+                "J. Stacy Adams",
+                "David McClelland",
+                "Douglas McGregor"
+              ],
+              "answer": 0,
+              "explain": "M = E × I × V."
+            },
+            {
+              "type": "quiz",
+              "q": "In the Hersey–Blanchard model, a highly able and willing team is best led by:",
+              "options": [
+                "telling",
+                "selling",
+                "participating",
+                "delegating"
+              ],
+              "answer": 3,
+              "explain": "High readiness → delegating style."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Why these theories matter",
+              "p": "Banks depend on frontline motivation and strong branch leadership. RBI and NABARD papers ask both objective questions (author–theory pairs, levels of needs) and descriptive ones (\"How would you motivate staff in a rural branch?\"). Use a theory as the backbone of every descriptive answer."
+            },
+            {
+              "h": "Content theories",
+              "p": "**Maslow (1943):** needs form a hierarchy; a satisfied need no longer motivates. **Herzberg (two-factor):** hygiene factors — pay, policy, supervision, conditions — prevent dissatisfaction; motivators — achievement, recognition, the work itself, responsibility, growth — create satisfaction. **McClelland:** people high in need for achievement prefer moderate risks and feedback; need for power predicts managerial success when it is institutional, not personal.\n\n**Worked example 1:** A branch manager raises pay but staff remain unmotivated. Herzberg explains why: pay is a hygiene factor. Adding recognition, responsibility (e.g. ownership of a product line) and growth opportunities targets motivators.\n\n**Applying Maslow in a bank:** job security and safe premises meet safety needs; teamwork and recognition events meet social and esteem needs; challenging assignments, specialised roles and training meet self-actualisation needs. A new recruit posted far from home may first need safety and social support before higher needs motivate."
+            },
+            {
+              "h": "Process theories",
+              "p": "**Vroom’s expectancy theory:** M = E × I × V.\n\n**Worked example 2:** An officer believes extra effort will meet a sales target with probability 0.8 (E), that meeting it leads to a bonus with probability 0.5 (I), and values the bonus at 0.9 (V). M = 0.8 × 0.5 × 0.9 = **0.36**. If management guarantees the bonus (I = 1), M rises to **0.72** — clarifying the reward link doubles motivation.\n\n**Adams’ equity theory:** perceived unfairness (others get more for the same input) reduces effort. **Locke:** specific, challenging goals with feedback lift performance."
+            },
+            {
+              "h": "Leadership theories",
+              "p": "**Trait theories** look for qualities such as intelligence, integrity and confidence. **Behavioural theories** classify behaviour: Ohio State (initiating structure vs consideration), Michigan (job-centred vs employee-centred), and the **Blake–Mouton grid** — (1,1) impoverished, (9,1) task, (1,9) country club, (5,5) middle-of-the-road, (9,9) team.\n**Contingency theories:** **Fiedler** — effectiveness depends on fit between style (LPC score) and situation; **Hersey–Blanchard** — adapt style to follower readiness; **path–goal** — leaders clarify paths to goals.\n**Transformational** leaders inspire change through vision and individual consideration; **transactional** leaders use rewards and corrections.\n\n**Other approaches:** **servant leadership** (Greenleaf) puts followers’ growth first; **situational/adaptive leadership** adjusts to change; **charismatic leadership** relies on the leader’s personal appeal. In a crisis such as a cyber incident, a directive style is usually appropriate; for innovation projects, participative styles work better."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Pay is a hygiene factor (Herzberg).",
+                "Theory Z is Ouchi, not McGregor.",
+                "Fiedler’s style is fixed; Hersey–Blanchard’s is flexible.",
+                "ERG allows several needs at once, unlike Maslow’s strict order."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Theory–author pairs.",
+              "points": [
+                "Maslow: hierarchy; Alderfer: ERG.",
+                "Herzberg: hygiene vs motivators.",
+                "McClelland: achievement, affiliation, power.",
+                "Vroom: E × I × V; Adams: equity; Locke: goals.",
+                "McGregor X/Y; Ouchi Z.",
+                "Fiedler LPC; Hersey–Blanchard; Blake–Mouton grid."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mgmt-hrm-ob-communication",
+          "title": "HRM, organisational behaviour, communication & ethics",
+          "minutes": 6,
+          "cards": [
+            {
+              "type": "concept",
+              "title": "HRM functions",
+              "body": "Human resource planning, recruitment and selection, training and development, performance appraisal, compensation, employee relations, and separation. **HRD** focuses on growth of capabilities."
+            },
+            {
+              "type": "formula",
+              "title": "Appraisal methods",
+              "points": [
+                "Traditional: ranking, paired comparison, rating scales, critical incidents",
+                "Modern: MBO, 360-degree feedback, BARS, assessment centres",
+                "Errors: halo effect, recency, leniency/strictness, central tendency"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Communication",
+              "body": "Process: sender → encoding → channel → decoding → receiver → feedback, with noise. Barriers: semantic, physical, psychological, organisational. Formal channels (downward, upward, horizontal) and informal **grapevine**."
+            },
+            {
+              "type": "formula",
+              "title": "OB concepts",
+              "points": [
+                "Personality: Big Five (OCEAN)",
+                "Perception errors: stereotyping, halo, projection",
+                "Group development (Tuckman): forming, storming, norming, performing, adjourning",
+                "Conflict styles (Thomas–Kilmann): competing, collaborating, compromising, avoiding, accommodating"
+              ]
+            },
+            {
+              "type": "concept",
+              "title": "Change and ethics",
+              "body": "**Kurt Lewin:** unfreeze → change → refreeze. **Kotter:** 8 steps. **CSR** under Section 135 of the Companies Act, 2013: qualifying companies spend 2% of average net profits of the last three years."
+            },
+            {
+              "type": "quiz",
+              "q": "Feedback collected from superiors, peers, subordinates and customers is called:",
+              "options": [
+                "MBO",
+                "360-degree appraisal",
+                "BARS",
+                "Ranking"
+              ],
+              "answer": 1,
+              "explain": "Multi-source feedback."
+            },
+            {
+              "type": "quiz",
+              "q": "The correct order in Tuckman’s model is:",
+              "options": [
+                "forming, norming, storming, performing",
+                "forming, storming, norming, performing",
+                "storming, forming, performing, norming",
+                "norming, forming, storming, performing"
+              ],
+              "answer": 1,
+              "explain": "Adjourning was added later."
+            },
+            {
+              "type": "quiz",
+              "q": "Lewin’s change model has the stages:",
+              "options": [
+                "plan, do, check, act",
+                "unfreeze, change, refreeze",
+                "forming, storming, norming",
+                "awareness, desire, knowledge"
+              ],
+              "answer": 1,
+              "explain": "Three-step model."
+            }
+          ],
+          "notes": [
+            {
+              "h": "People management in banks",
+              "p": "Banks are service organisations: customer experience depends on employee skills and attitudes. RBI’s management syllabus covers HRM, motivation, communication, organisational behaviour, change, ethics and corporate governance. Descriptive answers should define, apply a model, and give a banking example."
+            },
+            {
+              "h": "Human resource management",
+              "p": "**HR planning** forecasts manpower needs. **Recruitment** attracts candidates; **selection** chooses among them (tests, interviews). **Training** improves current job skills; **development** prepares for future roles. **Performance appraisal** evaluates and guides; **compensation** includes pay, incentives and benefits.\n\n**Worked example 1:** A bank expects 300 retirements and 200 new posts next year, with 5% attrition on 4,000 staff. Hiring need = 300 + 200 + 0.05 × 4,000 = 300 + 200 + 200 = **700**.\n\nCommon appraisal errors: **halo** (one trait colours all ratings), **recency** (only recent events count), **central tendency** (rating everyone average)."
+            },
+            {
+              "h": "Communication",
+              "p": "Effective communication is clear, concise, complete, correct and courteous (the \"7 Cs\" also include concrete and considerate). **Barriers:** jargon (semantic), noise and distance (physical), emotions and perception (psychological), hierarchy and too many levels (organisational). **Grapevine** spreads fast and is often partly accurate; managers should use it to sense mood and counter rumours with formal information.\n\n**Worked example 2:** Branch staff misunderstand a new KYC circular. Fix: a short briefing with examples (decoding), a written FAQ (channel), and a check-back session (feedback)."
+            },
+            {
+              "h": "Organisational behaviour",
+              "p": "Topics: **personality** (Big Five: openness, conscientiousness, extraversion, agreeableness, neuroticism), **perception**, **attitudes** (job satisfaction, organisational commitment), **groups and teams** (Tuckman’s stages), **conflict** (functional vs dysfunctional; Thomas–Kilmann styles), **stress** and **organisational culture**. **Emotional intelligence** (Goleman): self-awareness, self-regulation, motivation, empathy, social skills.\n\n**Organisational culture** — shared values and norms — shapes conduct. Schein describes three levels: artefacts (visible symbols), espoused values, and basic assumptions. Culture change after a merger (such as the PSB amalgamations) requires attention to all three levels, not just new logos and systems.",
+              "points": [
+                "Johari window: open, blind, hidden, unknown areas of self-awareness."
+              ]
+            },
+            {
+              "h": "Change, ethics and CSR",
+              "p": "**Lewin’s model:** unfreeze (create readiness), change (implement), refreeze (embed). Resistance arises from fear, habit, and loss of status; reduce it through communication, participation and support.\n\n**Ethics:** utilitarian, rights and justice approaches. Banks face ethical issues in mis-selling, conflicts of interest and data privacy.\n\n**CSR:** Section 135 applies to companies with net worth ≥ ₹500 crore, turnover ≥ ₹1,000 crore or net profit ≥ ₹5 crore; they must spend 2% of average net profits of the preceding three years.\n\n**Worked example 3:** Average net profit of last three years = ₹150 crore → CSR spend = **₹3 crore**."
+            },
+            {
+              "h": "Common traps",
+              "p": "Mix-ups to avoid.",
+              "points": [
+                "Training (current job) vs development (future).",
+                "Halo vs horns effect.",
+                "Tuckman order: forming, storming, norming, performing.",
+                "CSR 2% applies to average net profit of three preceding years."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "HRM: plan, recruit, select, train, appraise, reward.",
+                "360-degree, MBO, BARS.",
+                "Communication barriers: semantic, physical, psychological, organisational.",
+                "Big Five; Tuckman; Thomas–Kilmann.",
+                "Lewin: unfreeze–change–refreeze.",
+                "CSR: Section 135, 2%."
+              ]
             }
           ]
         }

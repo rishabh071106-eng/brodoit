@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Brodoit" parent="android:Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">@color/brodoit_bg</item>
+        <item name="android:statusBarColor">@color/brodoit_bg</item>
+        <item name="android:navigationBarColor">@color/brodoit_bg</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorAccent">@color/brodoit_primary</item>
+    </style>
+    <style name="Theme.Brodoit.Launcher">
+        <item name="android:windowBackground">@drawable/splash_window</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>

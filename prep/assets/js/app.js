@@ -110,6 +110,7 @@ const ICON = {
   exams: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>',
   ssb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.8 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg>',
   me: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/></svg>',
+  groups: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
   chev: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
 };
 export { ICON };
@@ -117,8 +118,9 @@ export { ICON };
 const TABS = [
   ['index.html', 'Home', 'home'],
   ['exams.html', 'Exams', 'exams'],
-  ['ssb.html', 'SSB Journey', 'ssb'],
-  ['progress.html', 'My Board', 'me'],
+  ['ssb.html', 'SSB', 'ssb'],
+  ['groups.html', 'Groups', 'groups'],
+  ['progress.html', 'Board', 'me'],
 ];
 
 // Top bar (back + title + optional right slot) and the floating bottom tab bar.
@@ -141,4 +143,45 @@ export function toast(msg) {
   const t = Object.assign(document.createElement('div'), { className: 'toast', textContent: msg });
   document.body.append(t);
   setTimeout(() => t.remove(), 2200);
+}
+
+// ---- Brodoit account API (same token as the main app) ----
+export function token() { try { return localStorage.getItem('tf_token') || ''; } catch { return ''; } }
+export async function api(path, { method = 'GET', body } = {}) {
+  const r = await fetch('/api/prep' + path, {
+    method,
+    headers: { 'x-token': token(), ...(body ? { 'Content-Type': 'application/json' } : {}) },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(data.error || `Error ${r.status}`); e.status = r.status; throw e; }
+  return data;
+}
+export function signInCard() {
+  return `<div class="card" style="padding:22px;text-align:center;margin-top:10px">
+    <div style="font-size:44px">🔐</div><div class="h-md" style="margin-top:6px">Sign in to join groups</div>
+    <p class="muted" style="font-size:14px;margin:6px 0 14px">Groups use your Brodoit account so approvers know who is joining.</p>
+    <a class="btn btn-dark press" href="/">Sign in on Brodoit</a>
+    <p class="muted" style="font-size:12px;margin-top:10px">After signing in, come back to Learn → Groups.</p></div>`;
+}
+
+// ---- Exam countdowns (also read by the main app's Learn tab from the same storage key) ----
+export function examCountdowns() {
+  const t0 = new Date(new Date().toDateString()).getTime();
+  return Object.entries(store.read().examDates || {})
+    .map(([key, x]) => ({ key, ...x, days: Math.round((new Date(x.date + 'T00:00:00').getTime() - t0) / 86400000) }))
+    .sort((a, b) => (a.days < 0) - (b.days < 0) || a.days - b.days);
+}
+export function setExamDate(key, { name, date, examId }) {
+  store.update(s => { s.examDates = { ...(s.examDates || {}), [key]: { name, date, examId, setAt: Date.now() } }; });
+}
+export function removeExamDate(key) { store.update(s => { if (s.examDates) delete s.examDates[key]; }); }
+export function countdownStrip(max = 3) {
+  const list = examCountdowns().filter(x => x.days >= 0).slice(0, max);
+  if (!list.length) return `<a class="row press" href="countdown.html" style="margin-top:14px;border:1px dashed var(--line)"><div class="thumb" style="background:var(--g-ssb);font-size:24px">⏳</div>
+    <div class="body"><div class="t">Set your exam date</div><div class="s">See the days left on every screen</div></div><span class="chev">›</span></a>`;
+  return `<div class="rail" style="margin-top:12px">${list.map(x => `<a class="press" href="countdown.html" style="min-width:150px;border-radius:20px;padding:14px 16px;color:#fff;background:linear-gradient(140deg,#14213D,#2B4C8C 60%,#F2A541);box-shadow:var(--shadow)">
+    <div style="font-size:32px;font-weight:800;letter-spacing:-.04em;line-height:1">${x.days}</div><div style="font-size:11px;font-weight:700;opacity:.85">${x.days === 1 ? 'day' : 'days'} to go</div>
+    <div style="font-size:13.5px;font-weight:800;margin-top:6px">${esc(x.name)}</div></a>`).join('')}
+    <a class="press" href="countdown.html" style="min-width:110px;border-radius:20px;padding:14px;display:grid;place-items:center;background:var(--card);box-shadow:var(--shadow);font-weight:800;font-size:13px;text-align:center">＋<br>Add exam</a></div>`;
 }

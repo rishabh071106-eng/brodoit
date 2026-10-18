@@ -1,0 +1,7797 @@
+{
+ "code": "es",
+ "name": "Spanish",
+ "from": "en",
+ "narratorVoice": "en-IN",
+ "targetVoice": "es-ES",
+ "lessons": [
+  {
+   "id": "a1",
+   "title": "Lesson 1 — Excuse me, do you speak English?",
+   "minutes": 16,
+   "goal": "Ask if someone speaks English or understands Spanish, and answer yes, no, or a little",
+   "steps": [
+    {
+     "n": "Welcome to Brodoit Spanish. Listen to this conversation between an American man and a Spanish woman meeting on a street in Madrid."
+    },
+    {
+     "t": "Perdone, señora. ¿Habla usted inglés?"
+    },
+    {
+     "t": "No, señor. No hablo inglés."
+    },
+    {
+     "t": "¿Entiende usted español?"
+    },
+    {
+     "t": "Sí, un poco."
+    },
+    {
+     "n": "He said: Excuse me, madam. Do you speak English? She answered: No, sir. I don't speak English. Do you understand Spanish? And he said: Yes, a little. In the next fifteen minutes you will learn to say all of that yourself."
+    },
+    {
+     "n": "Let's begin with the word for 'Spanish', the language. Listen, then repeat each part."
+    },
+    {
+     "t": "español"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ñol",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "ñol"
+    },
+    {
+     "t": "pañol",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "pañol"
+    },
+    {
+     "t": "español",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "español"
+    },
+    {
+     "t": "español"
+    },
+    {
+     "p": 3,
+     "expect": "español"
+    },
+    {
+     "n": "Now the phrase 'do you understand', or 'you understand'. Listen, then repeat each part."
+    },
+    {
+     "t": "entiende"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "de",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "de"
+    },
+    {
+     "t": "tiende",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "tiende"
+    },
+    {
+     "t": "entiende",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "entiende"
+    },
+    {
+     "t": "entiende"
+    },
+    {
+     "p": 3,
+     "expect": "entiende"
+    },
+    {
+     "n": "Here is the polite word for 'you'. In Spain you use it with strangers and older people. Listen and repeat."
+    },
+    {
+     "t": "usted"
+    },
+    {
+     "p": 2,
+     "expect": "usted"
+    },
+    {
+     "t": "usted"
+    },
+    {
+     "n": "Spanish puts the word for 'you' after the verb in a question. Try to ask 'do you understand?', with the word for 'you' included."
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "¿Entiende usted?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Entiende usted?"
+    },
+    {
+     "t": "¿Entiende usted?"
+    },
+    {
+     "n": "Now ask 'do you understand Spanish?' Listen, then repeat each part."
+    },
+    {
+     "t": "¿Entiende usted español?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "español",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "español"
+    },
+    {
+     "t": "usted español",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "usted español"
+    },
+    {
+     "t": "¿Entiende usted español?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Entiende usted español?"
+    },
+    {
+     "t": "¿Entiende usted español?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Entiende usted español?"
+    },
+    {
+     "n": "Ask me if I understand Spanish."
+    },
+    {
+     "p": 3,
+     "expect": "¿Entiende usted español?"
+    },
+    {
+     "t": "¿Entiende usted español?"
+    },
+    {
+     "n": "Here is how to say 'I understand'. Notice the ending changes from 'eh' to 'oh'. Listen, then repeat each part."
+    },
+    {
+     "t": "entiendo"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "do",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "do"
+    },
+    {
+     "t": "tiendo",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "tiendo"
+    },
+    {
+     "t": "entiendo",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "entiendo"
+    },
+    {
+     "t": "entiendo"
+    },
+    {
+     "p": 3,
+     "expect": "entiendo"
+    },
+    {
+     "n": "Here is the word for 'no'. It is easy."
+    },
+    {
+     "t": "no"
+    },
+    {
+     "p": 2,
+     "expect": "no"
+    },
+    {
+     "t": "no"
+    },
+    {
+     "n": "Say 'I don't understand'. Just put 'no' in front."
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "No entiendo."
+    },
+    {
+     "p": 3,
+     "expect": "No entiendo."
+    },
+    {
+     "t": "No entiendo."
+    },
+    {
+     "n": "Say 'I don't understand'."
+    },
+    {
+     "p": 3,
+     "expect": "No entiendo."
+    },
+    {
+     "t": "No entiendo."
+    },
+    {
+     "n": "Here is 'yes'."
+    },
+    {
+     "t": "sí"
+    },
+    {
+     "p": 2,
+     "expect": "sí"
+    },
+    {
+     "t": "sí"
+    },
+    {
+     "n": "Here is the word for 'English'. Listen, then repeat each part."
+    },
+    {
+     "t": "inglés"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "glés",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "glés"
+    },
+    {
+     "t": "inglés",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "inglés"
+    },
+    {
+     "t": "inglés"
+    },
+    {
+     "p": 3,
+     "expect": "inglés"
+    },
+    {
+     "n": "Here is 'do you speak', or 'you speak'. Listen, then repeat each part."
+    },
+    {
+     "t": "habla"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "bla",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "bla"
+    },
+    {
+     "t": "habla",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "habla"
+    },
+    {
+     "t": "habla"
+    },
+    {
+     "p": 3,
+     "expect": "habla"
+    },
+    {
+     "n": "Now ask 'do you speak English?' Remember, the word for 'you' goes after the verb. Listen, then repeat each part."
+    },
+    {
+     "t": "¿Habla usted inglés?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "inglés",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "inglés"
+    },
+    {
+     "t": "usted inglés",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "usted inglés"
+    },
+    {
+     "t": "¿Habla usted inglés?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Habla usted inglés?"
+    },
+    {
+     "t": "¿Habla usted inglés?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Habla usted inglés?"
+    },
+    {
+     "n": "Ask her if she speaks English."
+    },
+    {
+     "p": 3,
+     "expect": "¿Habla usted inglés?"
+    },
+    {
+     "t": "¿Habla usted inglés?"
+    },
+    {
+     "n": "Here is 'I speak'. Again the ending changes to 'oh'."
+    },
+    {
+     "t": "hablo"
+    },
+    {
+     "p": 2,
+     "expect": "hablo"
+    },
+    {
+     "t": "hablo"
+    },
+    {
+     "n": "Say 'I don't speak English'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "No hablo inglés."
+    },
+    {
+     "p": 4,
+     "expect": "No hablo inglés."
+    },
+    {
+     "t": "No hablo inglés."
+    },
+    {
+     "n": "Say 'I don't understand'."
+    },
+    {
+     "p": 3,
+     "expect": "No entiendo."
+    },
+    {
+     "t": "No entiendo."
+    },
+    {
+     "n": "Say 'I don't speak English'."
+    },
+    {
+     "p": 3,
+     "expect": "No hablo inglés."
+    },
+    {
+     "t": "No hablo inglés."
+    },
+    {
+     "n": "Here is how to say 'a little'. Listen, then repeat each part."
+    },
+    {
+     "t": "un poco"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "poco",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "poco"
+    },
+    {
+     "t": "un poco",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "un poco"
+    },
+    {
+     "t": "un poco"
+    },
+    {
+     "p": 3,
+     "expect": "un poco"
+    },
+    {
+     "n": "Say 'Yes, a little.'"
+    },
+    {
+     "p": 3,
+     "expect": "Sí, un poco."
+    },
+    {
+     "t": "Sí, un poco."
+    },
+    {
+     "n": "Say 'I speak a little Spanish.' Say 'I speak', then 'a little', then 'Spanish'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Hablo un poco español."
+    },
+    {
+     "p": 4,
+     "expect": "Hablo un poco español."
+    },
+    {
+     "t": "Hablo un poco español."
+    },
+    {
+     "n": "To address a woman politely you say 'madam'. Listen, then repeat each part."
+    },
+    {
+     "t": "señora"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ñora",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "ñora"
+    },
+    {
+     "t": "señora",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "señora"
+    },
+    {
+     "t": "señora"
+    },
+    {
+     "p": 3,
+     "expect": "señora"
+    },
+    {
+     "n": "And here is 'sir'. It is the same word without the final 'ah'."
+    },
+    {
+     "t": "señor"
+    },
+    {
+     "p": 2,
+     "expect": "señor"
+    },
+    {
+     "t": "señor"
+    },
+    {
+     "n": "Here is how to say 'excuse me' to get someone's attention. Listen, then repeat each part."
+    },
+    {
+     "t": "perdone"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "done",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "done"
+    },
+    {
+     "t": "perdone",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "perdone"
+    },
+    {
+     "t": "perdone"
+    },
+    {
+     "p": 3,
+     "expect": "perdone"
+    },
+    {
+     "n": "Say 'Excuse me, madam.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Perdone, señora."
+    },
+    {
+     "p": 3,
+     "expect": "Perdone, señora."
+    },
+    {
+     "t": "Perdone, señora."
+    },
+    {
+     "n": "A note on politeness: the words for 'sir' and 'madam' are used far more in Spain than in English. Adding them to 'excuse me' or 'no' is simply good manners, not stiffness."
+    },
+    {
+     "n": "Ask me if I speak English."
+    },
+    {
+     "p": 3,
+     "expect": "¿Habla usted inglés?"
+    },
+    {
+     "t": "¿Habla usted inglés?"
+    },
+    {
+     "n": "Answer: 'No, sir. I don't speak English.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "No, señor. No hablo inglés."
+    },
+    {
+     "p": 4,
+     "expect": "No, señor. No hablo inglés."
+    },
+    {
+     "t": "No, señor. No hablo inglés."
+    },
+    {
+     "n": "Ask me if I understand Spanish."
+    },
+    {
+     "p": 3,
+     "expect": "¿Entiende usted español?"
+    },
+    {
+     "t": "¿Entiende usted español?"
+    },
+    {
+     "n": "Answer: 'Yes, a little.'"
+    },
+    {
+     "p": 3,
+     "expect": "Sí, un poco."
+    },
+    {
+     "t": "Sí, un poco."
+    },
+    {
+     "q": "How would you say 'I speak a little Spanish'?"
+    },
+    {
+     "p": 3,
+     "expect": "Hablo un poco español."
+    },
+    {
+     "t": "Hablo un poco español."
+    },
+    {
+     "n": "Say 'Excuse me, madam. Do you speak English?'"
+    },
+    {
+     "p": 5,
+     "expect": "Perdone, señora. ¿Habla usted inglés?"
+    },
+    {
+     "t": "Perdone, señora. ¿Habla usted inglés?"
+    },
+    {
+     "n": "Now listen to the conversation from the beginning of the lesson once more. You will understand everything."
+    },
+    {
+     "t": "Perdone, señora. ¿Habla usted inglés?"
+    },
+    {
+     "t": "No, señor. No hablo inglés."
+    },
+    {
+     "t": "¿Entiende usted español?"
+    },
+    {
+     "t": "Sí, un poco."
+    },
+    {
+     "n": "In the next lesson you will learn to greet people, say please and thank you, and say where you are from. This is the end of lesson one."
+    }
+   ]
+  },
+  {
+   "id": "a2",
+   "title": "Lesson 2 — Good morning, how are you?",
+   "minutes": 16,
+   "goal": "Greet people, say please and thank you, and say where you are from",
+   "steps": [
+    {
+     "n": "This is lesson two. Listen to this conversation. A Spanish woman greets an American man she has met before."
+    },
+    {
+     "t": "Buenos días, señor. ¿Cómo está usted?"
+    },
+    {
+     "t": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "t": "Bien, gracias. ¿Es usted americano?"
+    },
+    {
+     "t": "Sí, soy americano. Soy de Nueva York."
+    },
+    {
+     "n": "She said: Good morning, sir. How are you? He said: Very well, thank you. And you? She said: Fine, thanks. Are you American? And he said: Yes, I'm American. I'm from New York. Let's start with a quick review of lesson one."
+    },
+    {
+     "n": "Ask her if she speaks English."
+    },
+    {
+     "p": 3,
+     "expect": "¿Habla usted inglés?"
+    },
+    {
+     "t": "¿Habla usted inglés?"
+    },
+    {
+     "n": "Say 'I speak a little Spanish.'"
+    },
+    {
+     "p": 4,
+     "expect": "Hablo un poco español."
+    },
+    {
+     "t": "Hablo un poco español."
+    },
+    {
+     "n": "Here is how to say 'good morning'. Listen, then repeat each part."
+    },
+    {
+     "t": "Buenos días"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "días",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "días"
+    },
+    {
+     "t": "Buenos",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "Buenos"
+    },
+    {
+     "t": "Buenos días",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Buenos días"
+    },
+    {
+     "t": "Buenos días"
+    },
+    {
+     "p": 3,
+     "expect": "Buenos días"
+    },
+    {
+     "n": "Say 'Good morning, sir.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Buenos días, señor."
+    },
+    {
+     "p": 3,
+     "expect": "Buenos días, señor."
+    },
+    {
+     "t": "Buenos días, señor."
+    },
+    {
+     "n": "Here is 'thank you'. Listen and repeat."
+    },
+    {
+     "t": "gracias"
+    },
+    {
+     "p": 2,
+     "expect": "gracias"
+    },
+    {
+     "t": "gracias"
+    },
+    {
+     "n": "Here is the word 'many' or 'much', used with 'thanks'."
+    },
+    {
+     "t": "muchas"
+    },
+    {
+     "p": 2,
+     "expect": "muchas"
+    },
+    {
+     "t": "muchas"
+    },
+    {
+     "n": "Say 'many thanks', that is, 'thank you very much'."
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Muchas gracias."
+    },
+    {
+     "p": 3,
+     "expect": "Muchas gracias."
+    },
+    {
+     "t": "Muchas gracias."
+    },
+    {
+     "n": "Here is 'please'. Literally it means 'as a favour'. Listen, then repeat each part."
+    },
+    {
+     "t": "por favor"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "favor",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "favor"
+    },
+    {
+     "t": "por favor",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "por favor"
+    },
+    {
+     "t": "por favor"
+    },
+    {
+     "p": 3,
+     "expect": "por favor"
+    },
+    {
+     "n": "Say 'thank you very much'."
+    },
+    {
+     "p": 3,
+     "expect": "Muchas gracias."
+    },
+    {
+     "t": "Muchas gracias."
+    },
+    {
+     "n": "When someone thanks you, you answer 'it's nothing', the Spanish 'you're welcome'. Listen and repeat."
+    },
+    {
+     "t": "De nada."
+    },
+    {
+     "p": 2,
+     "expect": "De nada."
+    },
+    {
+     "t": "De nada."
+    },
+    {
+     "n": "I say: thank you very much. You answer 'you're welcome'."
+    },
+    {
+     "p": 3,
+     "expect": "De nada."
+    },
+    {
+     "t": "De nada."
+    },
+    {
+     "n": "Now, 'how are you?' Literally: how are you, politely. Listen, then repeat each part."
+    },
+    {
+     "t": "¿Cómo está usted?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "usted",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "usted"
+    },
+    {
+     "t": "está usted",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "está usted"
+    },
+    {
+     "t": "¿Cómo está usted?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Cómo está usted?"
+    },
+    {
+     "t": "¿Cómo está usted?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Cómo está usted?"
+    },
+    {
+     "n": "Ask me how I am."
+    },
+    {
+     "p": 3,
+     "expect": "¿Cómo está usted?"
+    },
+    {
+     "t": "¿Cómo está usted?"
+    },
+    {
+     "n": "Here is how to answer 'very well'. Listen, then repeat each part."
+    },
+    {
+     "t": "Muy bien"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "bien",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "bien"
+    },
+    {
+     "t": "Muy bien",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Muy bien"
+    },
+    {
+     "t": "Muy bien"
+    },
+    {
+     "p": 3,
+     "expect": "Muy bien"
+    },
+    {
+     "n": "To return the question you say 'and you?'. Listen and repeat."
+    },
+    {
+     "t": "¿Y usted?"
+    },
+    {
+     "p": 2,
+     "expect": "¿Y usted?"
+    },
+    {
+     "t": "¿Y usted?"
+    },
+    {
+     "n": "Say 'Very well, thank you. And you?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "p": 4,
+     "expect": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "t": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "n": "Now say 'Good morning, sir. How are you?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Buenos días, señor. ¿Cómo está usted?"
+    },
+    {
+     "p": 4,
+     "expect": "Buenos días, señor. ¿Cómo está usted?"
+    },
+    {
+     "t": "Buenos días, señor. ¿Cómo está usted?"
+    },
+    {
+     "n": "Here is 'American', for a man. Listen, then repeat each part."
+    },
+    {
+     "t": "americano"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ricano",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "ricano"
+    },
+    {
+     "t": "americano",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "americano"
+    },
+    {
+     "t": "americano"
+    },
+    {
+     "p": 3,
+     "expect": "americano"
+    },
+    {
+     "n": "For a woman the word ends in 'ah' instead of 'oh'. Listen and repeat."
+    },
+    {
+     "t": "americana"
+    },
+    {
+     "p": 2,
+     "expect": "americana"
+    },
+    {
+     "t": "americana"
+    },
+    {
+     "n": "A note on gender: in Spanish, words describing people change their ending. A man is 'oh', a woman is 'ah'. You already met this with 'sir' and 'madam'."
+    },
+    {
+     "n": "Here is how to ask a man 'are you American?' Listen, then repeat each part."
+    },
+    {
+     "t": "¿Es usted americano?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "americano",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "americano"
+    },
+    {
+     "t": "usted americano",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "usted americano"
+    },
+    {
+     "t": "¿Es usted americano?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Es usted americano?"
+    },
+    {
+     "t": "¿Es usted americano?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Es usted americano?"
+    },
+    {
+     "n": "Ask a woman if she is American."
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "¿Es usted americana?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Es usted americana?"
+    },
+    {
+     "t": "¿Es usted americana?"
+    },
+    {
+     "n": "Here is 'I am'. Listen and repeat."
+    },
+    {
+     "t": "soy"
+    },
+    {
+     "p": 2,
+     "expect": "soy"
+    },
+    {
+     "t": "soy"
+    },
+    {
+     "n": "Say 'I am American', if you are a man."
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Soy americano."
+    },
+    {
+     "p": 3,
+     "expect": "Soy americano."
+    },
+    {
+     "t": "Soy americano."
+    },
+    {
+     "n": "Here is the word 'from', or 'of'."
+    },
+    {
+     "t": "de"
+    },
+    {
+     "p": 2,
+     "expect": "de"
+    },
+    {
+     "t": "de"
+    },
+    {
+     "n": "Say 'I'm from New York.' The city keeps its Spanish name."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Soy de Nueva York."
+    },
+    {
+     "p": 4,
+     "expect": "Soy de Nueva York."
+    },
+    {
+     "t": "Soy de Nueva York."
+    },
+    {
+     "n": "Ask a man if he is American."
+    },
+    {
+     "p": 3,
+     "expect": "¿Es usted americano?"
+    },
+    {
+     "t": "¿Es usted americano?"
+    },
+    {
+     "n": "Answer: 'No, I'm not American.' Put 'no' before 'I am'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "No, no soy americano."
+    },
+    {
+     "p": 4,
+     "expect": "No, no soy americano."
+    },
+    {
+     "t": "No, no soy americano."
+    },
+    {
+     "n": "Here is 'hello', for any time of day."
+    },
+    {
+     "t": "Hola"
+    },
+    {
+     "p": 2,
+     "expect": "Hola"
+    },
+    {
+     "t": "Hola"
+    },
+    {
+     "n": "And here is 'goodbye'."
+    },
+    {
+     "t": "Adiós"
+    },
+    {
+     "p": 2,
+     "expect": "Adiós"
+    },
+    {
+     "t": "Adiós"
+    },
+    {
+     "n": "Spaniards usually say 'see you later' rather than 'goodbye'. Listen, then repeat each part."
+    },
+    {
+     "t": "Hasta luego"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "luego",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "luego"
+    },
+    {
+     "t": "Hasta",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "Hasta"
+    },
+    {
+     "t": "Hasta luego",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Hasta luego"
+    },
+    {
+     "t": "Hasta luego"
+    },
+    {
+     "p": 3,
+     "expect": "Hasta luego"
+    },
+    {
+     "n": "'Good morning' is used until lunch, around two in the afternoon. After that you say 'good afternoon'. Listen and repeat."
+    },
+    {
+     "t": "Buenas tardes"
+    },
+    {
+     "p": 2,
+     "expect": "Buenas tardes"
+    },
+    {
+     "t": "Buenas tardes"
+    },
+    {
+     "n": "Say 'good afternoon'."
+    },
+    {
+     "p": 3,
+     "expect": "Buenas tardes"
+    },
+    {
+     "t": "Buenas tardes"
+    },
+    {
+     "n": "Say 'you're welcome'."
+    },
+    {
+     "p": 3,
+     "expect": "De nada."
+    },
+    {
+     "t": "De nada."
+    },
+    {
+     "q": "How do you ask a man if he is American?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Es usted americano?"
+    },
+    {
+     "t": "¿Es usted americano?"
+    },
+    {
+     "q": "How do you say 'I'm from New York'?"
+    },
+    {
+     "p": 3,
+     "expect": "Soy de Nueva York."
+    },
+    {
+     "t": "Soy de Nueva York."
+    },
+    {
+     "n": "Say 'No, sir. I don't speak English.'"
+    },
+    {
+     "p": 4,
+     "expect": "No, señor. No hablo inglés."
+    },
+    {
+     "t": "No, señor. No hablo inglés."
+    },
+    {
+     "n": "Now listen once more to the conversation from the start of this lesson."
+    },
+    {
+     "t": "Buenos días, señor. ¿Cómo está usted?"
+    },
+    {
+     "t": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "t": "Bien, gracias. ¿Es usted americano?"
+    },
+    {
+     "t": "Sí, soy americano. Soy de Nueva York."
+    },
+    {
+     "n": "Next time you will learn to ask where things are, how much they cost, and to count to ten. This is the end of lesson two."
+    }
+   ]
+  },
+  {
+   "id": "a3",
+   "title": "Lesson 3 — Where is it? How much is it?",
+   "minutes": 16,
+   "goal": "Ask where something is and how much it costs, and count to ten",
+   "steps": [
+    {
+     "n": "This is lesson three. Listen to this conversation. An American woman asks a man in the street for help."
+    },
+    {
+     "t": "Perdone, señor. ¿Dónde está el hotel Palace?"
+    },
+    {
+     "t": "Está allí, en la calle Mayor."
+    },
+    {
+     "t": "Gracias. ¿Cuánto cuesta un taxi?"
+    },
+    {
+     "t": "Cinco euros, más o menos."
+    },
+    {
+     "n": "She said: Excuse me, sir. Where is the Palace Hotel? He said: It's over there, on Mayor Street. She said: Thanks. How much does a taxi cost? He said: Five euros, more or less. First, a short review."
+    },
+    {
+     "n": "Say 'Good morning, sir. How are you?'"
+    },
+    {
+     "p": 4,
+     "expect": "Buenos días, señor. ¿Cómo está usted?"
+    },
+    {
+     "t": "Buenos días, señor. ¿Cómo está usted?"
+    },
+    {
+     "n": "Say 'Very well, thank you. And you?'"
+    },
+    {
+     "p": 4,
+     "expect": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "t": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "n": "Now, here is how to ask 'where is?' Listen, then repeat each part."
+    },
+    {
+     "t": "¿Dónde está?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "está",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "está"
+    },
+    {
+     "t": "Dónde está",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "Dónde está"
+    },
+    {
+     "t": "¿Dónde está?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está?"
+    },
+    {
+     "t": "¿Dónde está?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está?"
+    },
+    {
+     "n": "Here is 'the hotel'. Notice the little word 'the' in front, used for masculine words."
+    },
+    {
+     "t": "el hotel"
+    },
+    {
+     "p": 2,
+     "expect": "el hotel"
+    },
+    {
+     "t": "el hotel"
+    },
+    {
+     "n": "Ask 'Where is the hotel?'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "¿Dónde está el hotel?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está el hotel?"
+    },
+    {
+     "t": "¿Dónde está el hotel?"
+    },
+    {
+     "n": "Here is 'the street'. This word is feminine, so 'the' sounds different. Listen and repeat."
+    },
+    {
+     "t": "la calle"
+    },
+    {
+     "p": 2,
+     "expect": "la calle"
+    },
+    {
+     "t": "la calle"
+    },
+    {
+     "n": "A note on gender: every Spanish noun is masculine or feminine, and 'the' changes to match. You will simply learn each word together with its 'the'."
+    },
+    {
+     "n": "Ask 'Where is Mayor Street?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Dónde está la calle Mayor?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Dónde está la calle Mayor?"
+    },
+    {
+     "t": "¿Dónde está la calle Mayor?"
+    },
+    {
+     "n": "Here is 'over there'."
+    },
+    {
+     "t": "allí"
+    },
+    {
+     "p": 2,
+     "expect": "allí"
+    },
+    {
+     "t": "allí"
+    },
+    {
+     "n": "And here is 'here'."
+    },
+    {
+     "t": "aquí"
+    },
+    {
+     "p": 2,
+     "expect": "aquí"
+    },
+    {
+     "t": "aquí"
+    },
+    {
+     "n": "Say 'It's over there.' You just need 'is' and 'over there'."
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Está allí."
+    },
+    {
+     "p": 3,
+     "expect": "Está allí."
+    },
+    {
+     "t": "Está allí."
+    },
+    {
+     "n": "Ask 'Where is the hotel?'"
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está el hotel?"
+    },
+    {
+     "t": "¿Dónde está el hotel?"
+    },
+    {
+     "n": "Answer 'It's over there.'"
+    },
+    {
+     "p": 3,
+     "expect": "Está allí."
+    },
+    {
+     "t": "Está allí."
+    },
+    {
+     "n": "Now, 'how much does it cost?' Listen, then repeat each part."
+    },
+    {
+     "t": "¿Cuánto cuesta?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "cuesta",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "cuesta"
+    },
+    {
+     "t": "Cuánto",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "Cuánto"
+    },
+    {
+     "t": "¿Cuánto cuesta?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Cuánto cuesta?"
+    },
+    {
+     "t": "¿Cuánto cuesta?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Cuánto cuesta?"
+    },
+    {
+     "n": "Here is 'a taxi'. 'A' for masculine words sounds like this."
+    },
+    {
+     "t": "un taxi"
+    },
+    {
+     "p": 2,
+     "expect": "un taxi"
+    },
+    {
+     "t": "un taxi"
+    },
+    {
+     "n": "Ask 'How much does a taxi cost?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Cuánto cuesta un taxi?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Cuánto cuesta un taxi?"
+    },
+    {
+     "t": "¿Cuánto cuesta un taxi?"
+    },
+    {
+     "n": "To answer you need numbers. Let's count from one to five. Listen and repeat each number."
+    },
+    {
+     "t": "uno"
+    },
+    {
+     "p": 2,
+     "expect": "uno"
+    },
+    {
+     "t": "uno"
+    },
+    {
+     "t": "dos"
+    },
+    {
+     "p": 2,
+     "expect": "dos"
+    },
+    {
+     "t": "dos"
+    },
+    {
+     "t": "tres"
+    },
+    {
+     "p": 2,
+     "expect": "tres"
+    },
+    {
+     "t": "tres"
+    },
+    {
+     "t": "cuatro"
+    },
+    {
+     "p": 2,
+     "expect": "cuatro"
+    },
+    {
+     "t": "cuatro"
+    },
+    {
+     "t": "cinco"
+    },
+    {
+     "p": 2,
+     "expect": "cinco"
+    },
+    {
+     "t": "cinco"
+    },
+    {
+     "n": "Say 'three'."
+    },
+    {
+     "p": 3,
+     "expect": "tres"
+    },
+    {
+     "t": "tres"
+    },
+    {
+     "n": "Say 'five'."
+    },
+    {
+     "p": 3,
+     "expect": "cinco"
+    },
+    {
+     "t": "cinco"
+    },
+    {
+     "n": "Here is 'euros'."
+    },
+    {
+     "t": "euros"
+    },
+    {
+     "p": 2,
+     "expect": "euros"
+    },
+    {
+     "t": "euros"
+    },
+    {
+     "n": "Say 'five euros'."
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Cinco euros."
+    },
+    {
+     "p": 3,
+     "expect": "Cinco euros."
+    },
+    {
+     "t": "Cinco euros."
+    },
+    {
+     "n": "Here is the very common phrase 'more or less'. Listen, then repeat each part."
+    },
+    {
+     "t": "más o menos"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "menos",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "menos"
+    },
+    {
+     "t": "o menos",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "o menos"
+    },
+    {
+     "t": "más o menos",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "más o menos"
+    },
+    {
+     "t": "más o menos"
+    },
+    {
+     "p": 3,
+     "expect": "más o menos"
+    },
+    {
+     "n": "Say 'Five euros, more or less.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Cinco euros, más o menos."
+    },
+    {
+     "p": 4,
+     "expect": "Cinco euros, más o menos."
+    },
+    {
+     "t": "Cinco euros, más o menos."
+    },
+    {
+     "n": "Ask how much a taxi costs."
+    },
+    {
+     "p": 4,
+     "expect": "¿Cuánto cuesta un taxi?"
+    },
+    {
+     "t": "¿Cuánto cuesta un taxi?"
+    },
+    {
+     "n": "Ask where Mayor Street is."
+    },
+    {
+     "p": 4,
+     "expect": "¿Dónde está la calle Mayor?"
+    },
+    {
+     "t": "¿Dónde está la calle Mayor?"
+    },
+    {
+     "n": "Now the numbers six to ten. Listen and repeat."
+    },
+    {
+     "t": "seis"
+    },
+    {
+     "p": 2,
+     "expect": "seis"
+    },
+    {
+     "t": "seis"
+    },
+    {
+     "t": "siete"
+    },
+    {
+     "p": 2,
+     "expect": "siete"
+    },
+    {
+     "t": "siete"
+    },
+    {
+     "t": "ocho"
+    },
+    {
+     "p": 2,
+     "expect": "ocho"
+    },
+    {
+     "t": "ocho"
+    },
+    {
+     "t": "nueve"
+    },
+    {
+     "p": 2,
+     "expect": "nueve"
+    },
+    {
+     "t": "nueve"
+    },
+    {
+     "t": "diez"
+    },
+    {
+     "p": 2,
+     "expect": "diez"
+    },
+    {
+     "t": "diez"
+    },
+    {
+     "n": "Say 'eight'."
+    },
+    {
+     "p": 3,
+     "expect": "ocho"
+    },
+    {
+     "t": "ocho"
+    },
+    {
+     "n": "Say 'ten'."
+    },
+    {
+     "p": 3,
+     "expect": "diez"
+    },
+    {
+     "t": "diez"
+    },
+    {
+     "n": "Say 'ten euros'."
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Diez euros."
+    },
+    {
+     "p": 3,
+     "expect": "Diez euros."
+    },
+    {
+     "t": "Diez euros."
+    },
+    {
+     "n": "Say 'It costs eight euros.' Start with 'it costs'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Cuesta ocho euros."
+    },
+    {
+     "p": 4,
+     "expect": "Cuesta ocho euros."
+    },
+    {
+     "t": "Cuesta ocho euros."
+    },
+    {
+     "n": "Say 'Excuse me, sir. Where is the hotel?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Perdone, señor. ¿Dónde está el hotel?"
+    },
+    {
+     "p": 4,
+     "expect": "Perdone, señor. ¿Dónde está el hotel?"
+    },
+    {
+     "t": "Perdone, señor. ¿Dónde está el hotel?"
+    },
+    {
+     "n": "Ask how much it costs."
+    },
+    {
+     "p": 3,
+     "expect": "¿Cuánto cuesta?"
+    },
+    {
+     "t": "¿Cuánto cuesta?"
+    },
+    {
+     "n": "Say 'Six euros, more or less.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Seis euros, más o menos."
+    },
+    {
+     "p": 4,
+     "expect": "Seis euros, más o menos."
+    },
+    {
+     "t": "Seis euros, más o menos."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "Perdone, señor. ¿Dónde está el hotel Palace?"
+    },
+    {
+     "t": "Está allí, en la calle Mayor."
+    },
+    {
+     "t": "Gracias. ¿Cuánto cuesta un taxi?"
+    },
+    {
+     "t": "Cinco euros, más o menos."
+    },
+    {
+     "n": "Next time: food and drink, and how to order in a café. This is the end of lesson three."
+    }
+   ]
+  },
+  {
+   "id": "a4",
+   "title": "Lesson 4 — I would like a coffee, please",
+   "minutes": 16,
+   "goal": "Order food and drink in a café and ask for the bill",
+   "steps": [
+    {
+     "n": "This is lesson four. Listen to this conversation in a café in Seville, between a waiter and an American customer."
+    },
+    {
+     "t": "Buenas tardes. ¿Qué desea?"
+    },
+    {
+     "t": "Quisiera un café con leche, por favor."
+    },
+    {
+     "t": "¿Algo más?"
+    },
+    {
+     "t": "Sí, una cerveza también. ¿Cuánto es?"
+    },
+    {
+     "t": "Cuatro euros."
+    },
+    {
+     "n": "The waiter said: Good afternoon. What would you like? The customer said: I would like a coffee with milk, please. Anything else? Yes, a beer too. How much is it? Four euros. Let's review first."
+    },
+    {
+     "n": "Say 'good afternoon'."
+    },
+    {
+     "p": 3,
+     "expect": "Buenas tardes"
+    },
+    {
+     "t": "Buenas tardes"
+    },
+    {
+     "n": "Ask how much a taxi costs."
+    },
+    {
+     "p": 4,
+     "expect": "¿Cuánto cuesta un taxi?"
+    },
+    {
+     "t": "¿Cuánto cuesta un taxi?"
+    },
+    {
+     "n": "Say 'Five euros, more or less.'"
+    },
+    {
+     "p": 4,
+     "expect": "Cinco euros, más o menos."
+    },
+    {
+     "t": "Cinco euros, más o menos."
+    },
+    {
+     "n": "Here is the polite way to say 'I would like'. It is the word you use to order anything. Listen, then repeat each part."
+    },
+    {
+     "t": "Quisiera"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "siera",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "siera"
+    },
+    {
+     "t": "Quisiera",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Quisiera"
+    },
+    {
+     "t": "Quisiera"
+    },
+    {
+     "p": 3,
+     "expect": "Quisiera"
+    },
+    {
+     "n": "Here is 'a coffee'."
+    },
+    {
+     "t": "un café"
+    },
+    {
+     "p": 2,
+     "expect": "un café"
+    },
+    {
+     "t": "un café"
+    },
+    {
+     "n": "Say 'I would like a coffee.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Quisiera un café."
+    },
+    {
+     "p": 3,
+     "expect": "Quisiera un café."
+    },
+    {
+     "t": "Quisiera un café."
+    },
+    {
+     "n": "Here is 'with milk'. In Spain a coffee with milk is the everyday breakfast coffee. Listen, then repeat each part."
+    },
+    {
+     "t": "con leche"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "leche",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "leche"
+    },
+    {
+     "t": "con leche",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "con leche"
+    },
+    {
+     "t": "con leche"
+    },
+    {
+     "p": 3,
+     "expect": "con leche"
+    },
+    {
+     "n": "Say 'I would like a coffee with milk, please.'"
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "Quisiera un café con leche, por favor."
+    },
+    {
+     "p": 5,
+     "expect": "Quisiera un café con leche, por favor."
+    },
+    {
+     "t": "Quisiera un café con leche, por favor."
+    },
+    {
+     "n": "Here is 'a beer'. The word is feminine, so 'a' sounds like 'oona'. Listen, then repeat each part."
+    },
+    {
+     "t": "una cerveza"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "veza",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "veza"
+    },
+    {
+     "t": "cerveza",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "cerveza"
+    },
+    {
+     "t": "una cerveza",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "una cerveza"
+    },
+    {
+     "t": "una cerveza"
+    },
+    {
+     "p": 3,
+     "expect": "una cerveza"
+    },
+    {
+     "n": "Remember: 'a' is 'oon' for masculine words, like coffee and taxi, and 'oona' for feminine words, like beer."
+    },
+    {
+     "n": "Say 'I would like a beer, please.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Quisiera una cerveza, por favor."
+    },
+    {
+     "p": 4,
+     "expect": "Quisiera una cerveza, por favor."
+    },
+    {
+     "t": "Quisiera una cerveza, por favor."
+    },
+    {
+     "n": "Here is 'also' or 'too'."
+    },
+    {
+     "t": "también"
+    },
+    {
+     "p": 2,
+     "expect": "también"
+    },
+    {
+     "t": "también"
+    },
+    {
+     "n": "Here is what the waiter asks: 'what would you like?' Listen, then repeat each part."
+    },
+    {
+     "t": "¿Qué desea?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "desea",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "desea"
+    },
+    {
+     "t": "¿Qué desea?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Qué desea?"
+    },
+    {
+     "t": "¿Qué desea?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Qué desea?"
+    },
+    {
+     "n": "And here is 'anything else?' Literally: something more? Listen, then repeat each part."
+    },
+    {
+     "t": "¿Algo más?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "más",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "más"
+    },
+    {
+     "t": "Algo",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "Algo"
+    },
+    {
+     "t": "¿Algo más?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Algo más?"
+    },
+    {
+     "t": "¿Algo más?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Algo más?"
+    },
+    {
+     "n": "Ask me what I would like."
+    },
+    {
+     "p": 3,
+     "expect": "¿Qué desea?"
+    },
+    {
+     "t": "¿Qué desea?"
+    },
+    {
+     "n": "Answer: 'I would like a beer, please.'"
+    },
+    {
+     "p": 4,
+     "expect": "Quisiera una cerveza, por favor."
+    },
+    {
+     "t": "Quisiera una cerveza, por favor."
+    },
+    {
+     "n": "Ask 'anything else?'"
+    },
+    {
+     "p": 3,
+     "expect": "¿Algo más?"
+    },
+    {
+     "t": "¿Algo más?"
+    },
+    {
+     "n": "Answer: 'Yes, a coffee too.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Sí, un café también."
+    },
+    {
+     "p": 3,
+     "expect": "Sí, un café también."
+    },
+    {
+     "t": "Sí, un café también."
+    },
+    {
+     "n": "Here is 'water'."
+    },
+    {
+     "t": "agua"
+    },
+    {
+     "p": 2,
+     "expect": "agua"
+    },
+    {
+     "t": "agua"
+    },
+    {
+     "n": "And 'wine'. Spanish wine is famous, so you will need this one."
+    },
+    {
+     "t": "vino"
+    },
+    {
+     "p": 2,
+     "expect": "vino"
+    },
+    {
+     "t": "vino"
+    },
+    {
+     "n": "Say 'I would like water, please.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Quisiera agua, por favor."
+    },
+    {
+     "p": 4,
+     "expect": "Quisiera agua, por favor."
+    },
+    {
+     "t": "Quisiera agua, por favor."
+    },
+    {
+     "n": "Here is 'how much is it?', the phrase for asking for the total."
+    },
+    {
+     "t": "¿Cuánto es?"
+    },
+    {
+     "p": 2,
+     "expect": "¿Cuánto es?"
+    },
+    {
+     "t": "¿Cuánto es?"
+    },
+    {
+     "n": "Ask how much it is."
+    },
+    {
+     "p": 3,
+     "expect": "¿Cuánto es?"
+    },
+    {
+     "t": "¿Cuánto es?"
+    },
+    {
+     "n": "Answer: 'Four euros.'"
+    },
+    {
+     "p": 3,
+     "expect": "Cuatro euros."
+    },
+    {
+     "t": "Cuatro euros."
+    },
+    {
+     "n": "Here is 'I want'. It is more direct than 'I would like'. Spaniards use it often, but with 'please' it stays polite."
+    },
+    {
+     "t": "Quiero"
+    },
+    {
+     "p": 2,
+     "expect": "Quiero"
+    },
+    {
+     "t": "Quiero"
+    },
+    {
+     "n": "Here is 'to eat'."
+    },
+    {
+     "t": "comer"
+    },
+    {
+     "p": 2,
+     "expect": "comer"
+    },
+    {
+     "t": "comer"
+    },
+    {
+     "n": "Say 'I want to eat something.' You know 'something' from 'anything else?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Quiero comer algo."
+    },
+    {
+     "p": 4,
+     "expect": "Quiero comer algo."
+    },
+    {
+     "t": "Quiero comer algo."
+    },
+    {
+     "n": "Here is 'to drink'."
+    },
+    {
+     "t": "beber"
+    },
+    {
+     "p": 2,
+     "expect": "beber"
+    },
+    {
+     "t": "beber"
+    },
+    {
+     "n": "Say 'I want to drink something.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Quiero beber algo."
+    },
+    {
+     "p": 4,
+     "expect": "Quiero beber algo."
+    },
+    {
+     "t": "Quiero beber algo."
+    },
+    {
+     "n": "Ask 'Do you want to eat something?' Use the polite 'you' form, which ends in 'eh'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Quiere usted comer algo?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Quiere usted comer algo?"
+    },
+    {
+     "t": "¿Quiere usted comer algo?"
+    },
+    {
+     "n": "Here is 'the bill', or 'the check'."
+    },
+    {
+     "t": "la cuenta"
+    },
+    {
+     "p": 2,
+     "expect": "la cuenta"
+    },
+    {
+     "t": "la cuenta"
+    },
+    {
+     "n": "Say 'The bill, please.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "La cuenta, por favor."
+    },
+    {
+     "p": 3,
+     "expect": "La cuenta, por favor."
+    },
+    {
+     "t": "La cuenta, por favor."
+    },
+    {
+     "n": "A culture note: in Spain the waiter will not bring the bill until you ask. Lingering over a coffee for an hour is completely normal."
+    },
+    {
+     "n": "Say 'I would like a coffee with milk, please.'"
+    },
+    {
+     "p": 5,
+     "expect": "Quisiera un café con leche, por favor."
+    },
+    {
+     "t": "Quisiera un café con leche, por favor."
+    },
+    {
+     "n": "Ask 'anything else?'"
+    },
+    {
+     "p": 3,
+     "expect": "¿Algo más?"
+    },
+    {
+     "t": "¿Algo más?"
+    },
+    {
+     "n": "Say 'Yes, a beer too.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Sí, una cerveza también."
+    },
+    {
+     "p": 4,
+     "expect": "Sí, una cerveza también."
+    },
+    {
+     "t": "Sí, una cerveza también."
+    },
+    {
+     "n": "Ask how much it is."
+    },
+    {
+     "p": 3,
+     "expect": "¿Cuánto es?"
+    },
+    {
+     "t": "¿Cuánto es?"
+    },
+    {
+     "n": "Say 'The bill, please.'"
+    },
+    {
+     "p": 3,
+     "expect": "La cuenta, por favor."
+    },
+    {
+     "t": "La cuenta, por favor."
+    },
+    {
+     "q": "How does the waiter ask what you would like?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Qué desea?"
+    },
+    {
+     "t": "¿Qué desea?"
+    },
+    {
+     "n": "Say 'Thank you very much. See you later.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Muchas gracias. Hasta luego."
+    },
+    {
+     "p": 4,
+     "expect": "Muchas gracias. Hasta luego."
+    },
+    {
+     "t": "Muchas gracias. Hasta luego."
+    },
+    {
+     "n": "Listen to the café conversation once more."
+    },
+    {
+     "t": "Buenas tardes. ¿Qué desea?"
+    },
+    {
+     "t": "Quisiera un café con leche, por favor."
+    },
+    {
+     "t": "¿Algo más?"
+    },
+    {
+     "t": "Sí, una cerveza también. ¿Cuánto es?"
+    },
+    {
+     "t": "Cuatro euros."
+    },
+    {
+     "n": "Next time you will learn to ask for directions and take the train, the bus and the metro. This is the end of lesson four."
+    }
+   ]
+  },
+  {
+   "id": "a5",
+   "title": "Lesson 5 — Where is the station?",
+   "minutes": 16,
+   "goal": "Ask for and understand directions, and buy a ticket",
+   "steps": [
+    {
+     "n": "This is lesson five. Listen to this conversation. An American asks a woman the way to the station."
+    },
+    {
+     "t": "Perdone, ¿dónde está la estación?"
+    },
+    {
+     "t": "Todo recto, y luego a la izquierda."
+    },
+    {
+     "t": "¿Está lejos?"
+    },
+    {
+     "t": "No, está cerca. Cinco minutos."
+    },
+    {
+     "t": "Muchas gracias."
+    },
+    {
+     "n": "He said: Excuse me, where is the station? She said: Straight ahead, and then to the left. Is it far? No, it's near. Five minutes. Thank you very much. A quick review first."
+    },
+    {
+     "n": "Ask where the hotel is."
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está el hotel?"
+    },
+    {
+     "t": "¿Dónde está el hotel?"
+    },
+    {
+     "n": "Say 'It's over there.'"
+    },
+    {
+     "p": 3,
+     "expect": "Está allí."
+    },
+    {
+     "t": "Está allí."
+    },
+    {
+     "n": "Say 'I would like a coffee with milk, please.'"
+    },
+    {
+     "p": 5,
+     "expect": "Quisiera un café con leche, por favor."
+    },
+    {
+     "t": "Quisiera un café con leche, por favor."
+    },
+    {
+     "n": "Here is 'the station'. It is feminine. Listen, then repeat each part."
+    },
+    {
+     "t": "la estación"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ción",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "ción"
+    },
+    {
+     "t": "estación",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "estación"
+    },
+    {
+     "t": "la estación",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "la estación"
+    },
+    {
+     "t": "la estación"
+    },
+    {
+     "p": 3,
+     "expect": "la estación"
+    },
+    {
+     "n": "Ask 'Where is the station?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Dónde está la estación?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Dónde está la estación?"
+    },
+    {
+     "t": "¿Dónde está la estación?"
+    },
+    {
+     "n": "Here is 'to the right'. Listen, then repeat each part."
+    },
+    {
+     "t": "a la derecha"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "recha",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "recha"
+    },
+    {
+     "t": "derecha",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "derecha"
+    },
+    {
+     "t": "a la derecha",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "a la derecha"
+    },
+    {
+     "t": "a la derecha"
+    },
+    {
+     "p": 3,
+     "expect": "a la derecha"
+    },
+    {
+     "n": "And 'to the left'. Listen, then repeat each part."
+    },
+    {
+     "t": "a la izquierda"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "quierda",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "quierda"
+    },
+    {
+     "t": "izquierda",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "izquierda"
+    },
+    {
+     "t": "a la izquierda",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "a la izquierda"
+    },
+    {
+     "t": "a la izquierda"
+    },
+    {
+     "p": 3,
+     "expect": "a la izquierda"
+    },
+    {
+     "n": "Say 'to the right'."
+    },
+    {
+     "p": 3,
+     "expect": "a la derecha"
+    },
+    {
+     "t": "a la derecha"
+    },
+    {
+     "n": "Say 'to the left'."
+    },
+    {
+     "p": 3,
+     "expect": "a la izquierda"
+    },
+    {
+     "t": "a la izquierda"
+    },
+    {
+     "n": "Here is 'straight ahead'. Listen, then repeat each part."
+    },
+    {
+     "t": "todo recto"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "recto",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "recto"
+    },
+    {
+     "t": "todo recto",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "todo recto"
+    },
+    {
+     "t": "todo recto"
+    },
+    {
+     "p": 3,
+     "expect": "todo recto"
+    },
+    {
+     "n": "Here is 'and then'. You already know 'then' from 'see you later'."
+    },
+    {
+     "t": "y luego"
+    },
+    {
+     "p": 2,
+     "expect": "y luego"
+    },
+    {
+     "t": "y luego"
+    },
+    {
+     "n": "Say 'Straight ahead, and then to the left.'"
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "Todo recto, y luego a la izquierda."
+    },
+    {
+     "p": 5,
+     "expect": "Todo recto, y luego a la izquierda."
+    },
+    {
+     "t": "Todo recto, y luego a la izquierda."
+    },
+    {
+     "n": "Here is 'far'."
+    },
+    {
+     "t": "lejos"
+    },
+    {
+     "p": 2,
+     "expect": "lejos"
+    },
+    {
+     "t": "lejos"
+    },
+    {
+     "n": "Ask 'Is it far?'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "¿Está lejos?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Está lejos?"
+    },
+    {
+     "t": "¿Está lejos?"
+    },
+    {
+     "n": "Here is 'near'."
+    },
+    {
+     "t": "cerca"
+    },
+    {
+     "p": 2,
+     "expect": "cerca"
+    },
+    {
+     "t": "cerca"
+    },
+    {
+     "n": "Answer: 'No, it's near.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "No, está cerca."
+    },
+    {
+     "p": 3,
+     "expect": "No, está cerca."
+    },
+    {
+     "t": "No, está cerca."
+    },
+    {
+     "n": "Here is 'minutes'."
+    },
+    {
+     "t": "minutos"
+    },
+    {
+     "p": 2,
+     "expect": "minutos"
+    },
+    {
+     "t": "minutos"
+    },
+    {
+     "n": "Say 'Five minutes.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Cinco minutos."
+    },
+    {
+     "p": 3,
+     "expect": "Cinco minutos."
+    },
+    {
+     "t": "Cinco minutos."
+    },
+    {
+     "n": "Ask where the station is."
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está la estación?"
+    },
+    {
+     "t": "¿Dónde está la estación?"
+    },
+    {
+     "n": "Ask if it is far."
+    },
+    {
+     "p": 3,
+     "expect": "¿Está lejos?"
+    },
+    {
+     "t": "¿Está lejos?"
+    },
+    {
+     "n": "Here is 'the train'."
+    },
+    {
+     "t": "el tren"
+    },
+    {
+     "p": 2,
+     "expect": "el tren"
+    },
+    {
+     "t": "el tren"
+    },
+    {
+     "n": "Here is 'the bus'."
+    },
+    {
+     "t": "el autobús"
+    },
+    {
+     "p": 2,
+     "expect": "el autobús"
+    },
+    {
+     "t": "el autobús"
+    },
+    {
+     "n": "And 'the metro', the underground."
+    },
+    {
+     "t": "el metro"
+    },
+    {
+     "p": 2,
+     "expect": "el metro"
+    },
+    {
+     "t": "el metro"
+    },
+    {
+     "n": "Ask 'Where is the metro?'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "¿Dónde está el metro?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está el metro?"
+    },
+    {
+     "t": "¿Dónde está el metro?"
+    },
+    {
+     "n": "Ask 'Where is the bus?'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "¿Dónde está el autobús?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está el autobús?"
+    },
+    {
+     "t": "¿Dónde está el autobús?"
+    },
+    {
+     "n": "Here is 'a ticket', for a train or bus. In Spain this word is also used for banknotes. Listen, then repeat each part."
+    },
+    {
+     "t": "un billete"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "llete",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "llete"
+    },
+    {
+     "t": "billete",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "billete"
+    },
+    {
+     "t": "un billete",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "un billete"
+    },
+    {
+     "t": "un billete"
+    },
+    {
+     "p": 3,
+     "expect": "un billete"
+    },
+    {
+     "n": "Here is 'for' or 'to', used for destinations."
+    },
+    {
+     "t": "para"
+    },
+    {
+     "p": 2,
+     "expect": "para"
+    },
+    {
+     "t": "para"
+    },
+    {
+     "n": "Say 'A ticket to Madrid, please.'"
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "Un billete para Madrid, por favor."
+    },
+    {
+     "p": 5,
+     "expect": "Un billete para Madrid, por favor."
+    },
+    {
+     "t": "Un billete para Madrid, por favor."
+    },
+    {
+     "n": "Ask 'How much does a ticket cost?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Cuánto cuesta un billete?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Cuánto cuesta un billete?"
+    },
+    {
+     "t": "¿Cuánto cuesta un billete?"
+    },
+    {
+     "n": "Answer: 'It costs eight euros.'"
+    },
+    {
+     "p": 3,
+     "expect": "Cuesta ocho euros."
+    },
+    {
+     "t": "Cuesta ocho euros."
+    },
+    {
+     "n": "A culture note: in Spanish cities the metro is cheap and fast, and people are used to being asked for directions. A polite 'excuse me' first always helps."
+    },
+    {
+     "n": "Say 'Excuse me, where is the station?'"
+    },
+    {
+     "p": 4,
+     "expect": "Perdone, ¿dónde está la estación?"
+    },
+    {
+     "t": "Perdone, ¿dónde está la estación?"
+    },
+    {
+     "n": "Say 'Straight ahead, and then to the left.'"
+    },
+    {
+     "p": 5,
+     "expect": "Todo recto, y luego a la izquierda."
+    },
+    {
+     "t": "Todo recto, y luego a la izquierda."
+    },
+    {
+     "n": "Say 'No, it's near. Five minutes.'"
+    },
+    {
+     "p": 4,
+     "expect": "No, está cerca. Cinco minutos."
+    },
+    {
+     "t": "No, está cerca. Cinco minutos."
+    },
+    {
+     "n": "Ask where the bus is."
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está el autobús?"
+    },
+    {
+     "t": "¿Dónde está el autobús?"
+    },
+    {
+     "n": "Say 'A ticket to Madrid, please.'"
+    },
+    {
+     "p": 4,
+     "expect": "Un billete para Madrid, por favor."
+    },
+    {
+     "t": "Un billete para Madrid, por favor."
+    },
+    {
+     "q": "How do you say 'to the left'?"
+    },
+    {
+     "p": 3,
+     "expect": "a la izquierda"
+    },
+    {
+     "t": "a la izquierda"
+    },
+    {
+     "q": "How do you ask if it is far?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Está lejos?"
+    },
+    {
+     "t": "¿Está lejos?"
+    },
+    {
+     "n": "Say 'I don't understand.'"
+    },
+    {
+     "p": 3,
+     "expect": "No entiendo."
+    },
+    {
+     "t": "No entiendo."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "Perdone, ¿dónde está la estación?"
+    },
+    {
+     "t": "Todo recto, y luego a la izquierda."
+    },
+    {
+     "t": "¿Está lejos?"
+    },
+    {
+     "t": "No, está cerca. Cinco minutos."
+    },
+    {
+     "t": "Muchas gracias."
+    },
+    {
+     "n": "Next time: telling the time, and the days of the week. This is the end of lesson five."
+    }
+   ]
+  },
+  {
+   "id": "a6",
+   "title": "Lesson 6 — What time is it?",
+   "minutes": 16,
+   "goal": "Tell the time, ask when something leaves, and name the days of the week",
+   "steps": [
+    {
+     "n": "This is lesson six. Listen to this conversation at a station."
+    },
+    {
+     "t": "Perdone, ¿qué hora es?"
+    },
+    {
+     "t": "Son las tres y media."
+    },
+    {
+     "t": "Gracias. ¿A qué hora sale el tren?"
+    },
+    {
+     "t": "A las cinco. Hoy no, mañana."
+    },
+    {
+     "n": "He asked: Excuse me, what time is it? She said: It's half past three. Thanks. What time does the train leave? At five. Not today, tomorrow. Let's review."
+    },
+    {
+     "n": "Ask where the station is."
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está la estación?"
+    },
+    {
+     "t": "¿Dónde está la estación?"
+    },
+    {
+     "n": "Say 'Straight ahead, and then to the left.'"
+    },
+    {
+     "p": 5,
+     "expect": "Todo recto, y luego a la izquierda."
+    },
+    {
+     "t": "Todo recto, y luego a la izquierda."
+    },
+    {
+     "n": "Say 'A ticket to Madrid, please.'"
+    },
+    {
+     "p": 4,
+     "expect": "Un billete para Madrid, por favor."
+    },
+    {
+     "t": "Un billete para Madrid, por favor."
+    },
+    {
+     "n": "Here is 'what time is it?' Listen, then repeat each part."
+    },
+    {
+     "t": "¿Qué hora es?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "hora es",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "hora es"
+    },
+    {
+     "t": "¿Qué hora es?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Qué hora es?"
+    },
+    {
+     "t": "¿Qué hora es?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Qué hora es?"
+    },
+    {
+     "n": "Here is 'it's one o'clock'. One is the only hour that uses 'is', in the singular."
+    },
+    {
+     "t": "Es la una."
+    },
+    {
+     "p": 2,
+     "expect": "Es la una."
+    },
+    {
+     "t": "Es la una."
+    },
+    {
+     "n": "From two onwards you say 'they are'. Here is 'it's two o'clock'. Listen, then repeat each part."
+    },
+    {
+     "t": "Son las dos."
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "las dos",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "las dos"
+    },
+    {
+     "t": "Son las dos.",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Son las dos."
+    },
+    {
+     "t": "Son las dos."
+    },
+    {
+     "p": 3,
+     "expect": "Son las dos."
+    },
+    {
+     "n": "Say 'It's three o'clock.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Son las tres."
+    },
+    {
+     "p": 3,
+     "expect": "Son las tres."
+    },
+    {
+     "t": "Son las tres."
+    },
+    {
+     "n": "Ask what time it is."
+    },
+    {
+     "p": 3,
+     "expect": "¿Qué hora es?"
+    },
+    {
+     "t": "¿Qué hora es?"
+    },
+    {
+     "n": "Here is 'and a half', for half past."
+    },
+    {
+     "t": "y media"
+    },
+    {
+     "p": 2,
+     "expect": "y media"
+    },
+    {
+     "t": "y media"
+    },
+    {
+     "n": "Say 'It's half past three.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Son las tres y media."
+    },
+    {
+     "p": 4,
+     "expect": "Son las tres y media."
+    },
+    {
+     "t": "Son las tres y media."
+    },
+    {
+     "n": "Here is 'and a quarter'."
+    },
+    {
+     "t": "y cuarto"
+    },
+    {
+     "p": 2,
+     "expect": "y cuarto"
+    },
+    {
+     "t": "y cuarto"
+    },
+    {
+     "n": "Say 'It's a quarter past eight.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Son las ocho y cuarto."
+    },
+    {
+     "p": 4,
+     "expect": "Son las ocho y cuarto."
+    },
+    {
+     "t": "Son las ocho y cuarto."
+    },
+    {
+     "n": "Here is 'at what time?' Listen, then repeat each part."
+    },
+    {
+     "t": "¿A qué hora?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "hora",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "hora"
+    },
+    {
+     "t": "qué hora",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "qué hora"
+    },
+    {
+     "t": "¿A qué hora?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿A qué hora?"
+    },
+    {
+     "t": "¿A qué hora?"
+    },
+    {
+     "p": 3,
+     "expect": "¿A qué hora?"
+    },
+    {
+     "n": "Here is 'does the train leave', or 'the train leaves'."
+    },
+    {
+     "t": "sale el tren"
+    },
+    {
+     "p": 2,
+     "expect": "sale el tren"
+    },
+    {
+     "t": "sale el tren"
+    },
+    {
+     "n": "Ask 'What time does the train leave?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿A qué hora sale el tren?"
+    },
+    {
+     "p": 4,
+     "expect": "¿A qué hora sale el tren?"
+    },
+    {
+     "t": "¿A qué hora sale el tren?"
+    },
+    {
+     "n": "Answer: 'At five.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "A las cinco."
+    },
+    {
+     "p": 3,
+     "expect": "A las cinco."
+    },
+    {
+     "t": "A las cinco."
+    },
+    {
+     "n": "Here is 'today'."
+    },
+    {
+     "t": "hoy"
+    },
+    {
+     "p": 2,
+     "expect": "hoy"
+    },
+    {
+     "t": "hoy"
+    },
+    {
+     "n": "Here is 'tomorrow'. The same word also means 'morning'."
+    },
+    {
+     "t": "mañana"
+    },
+    {
+     "p": 2,
+     "expect": "mañana"
+    },
+    {
+     "t": "mañana"
+    },
+    {
+     "n": "Here is 'now'."
+    },
+    {
+     "t": "ahora"
+    },
+    {
+     "p": 2,
+     "expect": "ahora"
+    },
+    {
+     "t": "ahora"
+    },
+    {
+     "n": "Say 'Not today, tomorrow.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Hoy no, mañana."
+    },
+    {
+     "p": 3,
+     "expect": "Hoy no, mañana."
+    },
+    {
+     "t": "Hoy no, mañana."
+    },
+    {
+     "n": "Here is 'in the morning'."
+    },
+    {
+     "t": "por la mañana"
+    },
+    {
+     "p": 2,
+     "expect": "por la mañana"
+    },
+    {
+     "t": "por la mañana"
+    },
+    {
+     "n": "Here is 'in the afternoon'."
+    },
+    {
+     "t": "por la tarde"
+    },
+    {
+     "p": 2,
+     "expect": "por la tarde"
+    },
+    {
+     "t": "por la tarde"
+    },
+    {
+     "n": "And 'at night'."
+    },
+    {
+     "t": "por la noche"
+    },
+    {
+     "p": 2,
+     "expect": "por la noche"
+    },
+    {
+     "t": "por la noche"
+    },
+    {
+     "n": "Say 'Tomorrow morning.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Mañana por la mañana."
+    },
+    {
+     "p": 3,
+     "expect": "Mañana por la mañana."
+    },
+    {
+     "t": "Mañana por la mañana."
+    },
+    {
+     "n": "Now the days of the week, starting with Monday. Spanish weeks start on Monday, and the days are not written with capital letters. Listen and repeat."
+    },
+    {
+     "t": "lunes"
+    },
+    {
+     "p": 2,
+     "expect": "lunes"
+    },
+    {
+     "t": "lunes"
+    },
+    {
+     "t": "martes"
+    },
+    {
+     "p": 2,
+     "expect": "martes"
+    },
+    {
+     "t": "martes"
+    },
+    {
+     "t": "miércoles"
+    },
+    {
+     "p": 2,
+     "expect": "miércoles"
+    },
+    {
+     "t": "miércoles"
+    },
+    {
+     "t": "jueves"
+    },
+    {
+     "p": 2,
+     "expect": "jueves"
+    },
+    {
+     "t": "jueves"
+    },
+    {
+     "t": "viernes"
+    },
+    {
+     "p": 2,
+     "expect": "viernes"
+    },
+    {
+     "t": "viernes"
+    },
+    {
+     "t": "sábado"
+    },
+    {
+     "p": 2,
+     "expect": "sábado"
+    },
+    {
+     "t": "sábado"
+    },
+    {
+     "t": "domingo"
+    },
+    {
+     "p": 2,
+     "expect": "domingo"
+    },
+    {
+     "t": "domingo"
+    },
+    {
+     "n": "Say 'Monday'."
+    },
+    {
+     "p": 3,
+     "expect": "lunes"
+    },
+    {
+     "t": "lunes"
+    },
+    {
+     "n": "Say 'Friday'."
+    },
+    {
+     "p": 3,
+     "expect": "viernes"
+    },
+    {
+     "t": "viernes"
+    },
+    {
+     "n": "Say 'Sunday'."
+    },
+    {
+     "p": 3,
+     "expect": "domingo"
+    },
+    {
+     "t": "domingo"
+    },
+    {
+     "n": "To say 'on Monday' you use 'the' before the day."
+    },
+    {
+     "t": "el lunes"
+    },
+    {
+     "p": 2,
+     "expect": "el lunes"
+    },
+    {
+     "t": "el lunes"
+    },
+    {
+     "n": "Say 'On Monday in the afternoon.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "El lunes por la tarde."
+    },
+    {
+     "p": 4,
+     "expect": "El lunes por la tarde."
+    },
+    {
+     "t": "El lunes por la tarde."
+    },
+    {
+     "n": "Say 'On Saturday at night.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "El sábado por la noche."
+    },
+    {
+     "p": 4,
+     "expect": "El sábado por la noche."
+    },
+    {
+     "t": "El sábado por la noche."
+    },
+    {
+     "n": "A culture note: Spanish days run late. Lunch is around two, dinner rarely before nine at night, and 'afternoon' lasts until about eight."
+    },
+    {
+     "n": "Say 'It's a quarter past eight.'"
+    },
+    {
+     "p": 4,
+     "expect": "Son las ocho y cuarto."
+    },
+    {
+     "t": "Son las ocho y cuarto."
+    },
+    {
+     "n": "Ask what time the train leaves."
+    },
+    {
+     "p": 4,
+     "expect": "¿A qué hora sale el tren?"
+    },
+    {
+     "t": "¿A qué hora sale el tren?"
+    },
+    {
+     "n": "Answer: 'At five. Not today, tomorrow.'"
+    },
+    {
+     "p": 4,
+     "expect": "A las cinco. Hoy no, mañana."
+    },
+    {
+     "t": "A las cinco. Hoy no, mañana."
+    },
+    {
+     "q": "How do you say 'tomorrow morning'?"
+    },
+    {
+     "p": 3,
+     "expect": "Mañana por la mañana."
+    },
+    {
+     "t": "Mañana por la mañana."
+    },
+    {
+     "q": "How do you say 'Wednesday'?"
+    },
+    {
+     "p": 3,
+     "expect": "miércoles"
+    },
+    {
+     "t": "miércoles"
+    },
+    {
+     "n": "Say 'I would like a beer, please.'"
+    },
+    {
+     "p": 4,
+     "expect": "Quisiera una cerveza, por favor."
+    },
+    {
+     "t": "Quisiera una cerveza, por favor."
+    },
+    {
+     "n": "Listen to the station conversation once more."
+    },
+    {
+     "t": "Perdone, ¿qué hora es?"
+    },
+    {
+     "t": "Son las tres y media."
+    },
+    {
+     "t": "Gracias. ¿A qué hora sale el tren?"
+    },
+    {
+     "t": "A las cinco. Hoy no, mañana."
+    },
+    {
+     "n": "Next time you will learn to introduce yourself and talk about your family. This is the end of lesson six."
+    }
+   ]
+  },
+  {
+   "id": "a7",
+   "title": "Lesson 7 — My name is...",
+   "minutes": 16,
+   "goal": "Introduce yourself and your family, and ask people's names and where they are from",
+   "steps": [
+    {
+     "n": "This is lesson seven. Listen to this conversation. Two people meet at a dinner party in Valencia."
+    },
+    {
+     "t": "Hola, me llamo Carmen. ¿Cómo se llama usted?"
+    },
+    {
+     "t": "Me llamo David. Mucho gusto."
+    },
+    {
+     "t": "Encantada. ¿Tiene usted hijos?"
+    },
+    {
+     "t": "Sí, tengo dos hijos. Y esta es mi esposa, Laura."
+    },
+    {
+     "n": "She said: Hello, my name is Carmen. What is your name? He said: My name is David. Pleased to meet you. She said: Delighted. Do you have children? He said: Yes, I have two children. And this is my wife, Laura. First a short review."
+    },
+    {
+     "n": "Say 'Good morning, sir. How are you?'"
+    },
+    {
+     "p": 4,
+     "expect": "Buenos días, señor. ¿Cómo está usted?"
+    },
+    {
+     "t": "Buenos días, señor. ¿Cómo está usted?"
+    },
+    {
+     "n": "Ask a man if he is American."
+    },
+    {
+     "p": 3,
+     "expect": "¿Es usted americano?"
+    },
+    {
+     "t": "¿Es usted americano?"
+    },
+    {
+     "n": "Say 'It's half past three.'"
+    },
+    {
+     "p": 4,
+     "expect": "Son las tres y media."
+    },
+    {
+     "t": "Son las tres y media."
+    },
+    {
+     "n": "Here is 'my name is'. Literally: I call myself. Listen, then repeat each part."
+    },
+    {
+     "t": "Me llamo"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "llamo",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "llamo"
+    },
+    {
+     "t": "Me llamo",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Me llamo"
+    },
+    {
+     "t": "Me llamo"
+    },
+    {
+     "p": 3,
+     "expect": "Me llamo"
+    },
+    {
+     "n": "Say 'My name is David.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Me llamo David."
+    },
+    {
+     "p": 3,
+     "expect": "Me llamo David."
+    },
+    {
+     "t": "Me llamo David."
+    },
+    {
+     "n": "Here is 'what is your name?' Literally: how do you call yourself? Listen, then repeat each part."
+    },
+    {
+     "t": "¿Cómo se llama usted?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "usted",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "usted"
+    },
+    {
+     "t": "se llama usted",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "se llama usted"
+    },
+    {
+     "t": "¿Cómo se llama usted?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Cómo se llama usted?"
+    },
+    {
+     "t": "¿Cómo se llama usted?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Cómo se llama usted?"
+    },
+    {
+     "n": "Ask me my name."
+    },
+    {
+     "p": 3,
+     "expect": "¿Cómo se llama usted?"
+    },
+    {
+     "t": "¿Cómo se llama usted?"
+    },
+    {
+     "n": "Answer with 'My name is David.'"
+    },
+    {
+     "p": 3,
+     "expect": "Me llamo David."
+    },
+    {
+     "t": "Me llamo David."
+    },
+    {
+     "n": "Here is 'pleased to meet you'. Literally: much pleasure. Listen, then repeat each part."
+    },
+    {
+     "t": "Mucho gusto"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "gusto",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "gusto"
+    },
+    {
+     "t": "Mucho gusto",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Mucho gusto"
+    },
+    {
+     "t": "Mucho gusto"
+    },
+    {
+     "p": 3,
+     "expect": "Mucho gusto"
+    },
+    {
+     "n": "A man can also say 'delighted', like this."
+    },
+    {
+     "t": "Encantado"
+    },
+    {
+     "p": 2,
+     "expect": "Encantado"
+    },
+    {
+     "t": "Encantado"
+    },
+    {
+     "n": "A woman says it with the 'ah' ending."
+    },
+    {
+     "t": "Encantada"
+    },
+    {
+     "p": 2,
+     "expect": "Encantada"
+    },
+    {
+     "t": "Encantada"
+    },
+    {
+     "n": "Both phrases are common. 'Much pleasure' never changes, so it is the safe choice if you are unsure."
+    },
+    {
+     "n": "Say 'pleased to meet you'."
+    },
+    {
+     "p": 3,
+     "expect": "Mucho gusto"
+    },
+    {
+     "t": "Mucho gusto"
+    },
+    {
+     "n": "Here is 'I have'."
+    },
+    {
+     "t": "tengo"
+    },
+    {
+     "p": 2,
+     "expect": "tengo"
+    },
+    {
+     "t": "tengo"
+    },
+    {
+     "n": "Here is 'children', or 'sons'."
+    },
+    {
+     "t": "hijos"
+    },
+    {
+     "p": 2,
+     "expect": "hijos"
+    },
+    {
+     "t": "hijos"
+    },
+    {
+     "n": "Say 'I have two children.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Tengo dos hijos."
+    },
+    {
+     "p": 3,
+     "expect": "Tengo dos hijos."
+    },
+    {
+     "t": "Tengo dos hijos."
+    },
+    {
+     "n": "Here is 'do you have', or 'you have'."
+    },
+    {
+     "t": "tiene"
+    },
+    {
+     "p": 2,
+     "expect": "tiene"
+    },
+    {
+     "t": "tiene"
+    },
+    {
+     "n": "Ask 'Do you have children?' Remember where the word for 'you' goes."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Tiene usted hijos?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Tiene usted hijos?"
+    },
+    {
+     "t": "¿Tiene usted hijos?"
+    },
+    {
+     "n": "Here is 'a daughter'."
+    },
+    {
+     "t": "una hija"
+    },
+    {
+     "p": 2,
+     "expect": "una hija"
+    },
+    {
+     "t": "una hija"
+    },
+    {
+     "n": "And 'a son'."
+    },
+    {
+     "t": "un hijo"
+    },
+    {
+     "p": 2,
+     "expect": "un hijo"
+    },
+    {
+     "t": "un hijo"
+    },
+    {
+     "n": "Say 'I have a son and a daughter.' 'And' is the sound 'ee'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Tengo un hijo y una hija."
+    },
+    {
+     "p": 4,
+     "expect": "Tengo un hijo y una hija."
+    },
+    {
+     "t": "Tengo un hijo y una hija."
+    },
+    {
+     "n": "Ask me if I have children."
+    },
+    {
+     "p": 3,
+     "expect": "¿Tiene usted hijos?"
+    },
+    {
+     "t": "¿Tiene usted hijos?"
+    },
+    {
+     "n": "Answer: 'I have two children.'"
+    },
+    {
+     "p": 4,
+     "expect": "Tengo dos hijos."
+    },
+    {
+     "t": "Tengo dos hijos."
+    },
+    {
+     "n": "Here is 'my wife'."
+    },
+    {
+     "t": "mi esposa"
+    },
+    {
+     "p": 2,
+     "expect": "mi esposa"
+    },
+    {
+     "t": "mi esposa"
+    },
+    {
+     "n": "And 'my husband'. In Spain people also often say a more everyday word, but this one is understood everywhere."
+    },
+    {
+     "t": "mi marido"
+    },
+    {
+     "p": 2,
+     "expect": "mi marido"
+    },
+    {
+     "t": "mi marido"
+    },
+    {
+     "n": "Here is 'this is', when introducing a woman."
+    },
+    {
+     "t": "Esta es"
+    },
+    {
+     "p": 2,
+     "expect": "Esta es"
+    },
+    {
+     "t": "Esta es"
+    },
+    {
+     "n": "Say 'This is my wife, Laura.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Esta es mi esposa, Laura."
+    },
+    {
+     "p": 4,
+     "expect": "Esta es mi esposa, Laura."
+    },
+    {
+     "t": "Esta es mi esposa, Laura."
+    },
+    {
+     "n": "For a man you say 'this is' with the 'eh' ending."
+    },
+    {
+     "t": "Este es"
+    },
+    {
+     "p": 2,
+     "expect": "Este es"
+    },
+    {
+     "t": "Este es"
+    },
+    {
+     "n": "Say 'This is my husband.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Este es mi marido."
+    },
+    {
+     "p": 3,
+     "expect": "Este es mi marido."
+    },
+    {
+     "t": "Este es mi marido."
+    },
+    {
+     "n": "Here is 'my friend', a man."
+    },
+    {
+     "t": "mi amigo"
+    },
+    {
+     "p": 2,
+     "expect": "mi amigo"
+    },
+    {
+     "t": "mi amigo"
+    },
+    {
+     "n": "And 'my friend', a woman."
+    },
+    {
+     "t": "mi amiga"
+    },
+    {
+     "p": 2,
+     "expect": "mi amiga"
+    },
+    {
+     "t": "mi amiga"
+    },
+    {
+     "n": "Say 'This is my friend, Carmen.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Esta es mi amiga, Carmen."
+    },
+    {
+     "p": 4,
+     "expect": "Esta es mi amiga, Carmen."
+    },
+    {
+     "t": "Esta es mi amiga, Carmen."
+    },
+    {
+     "n": "Here is 'where are you from?' Literally: from where are you? Listen, then repeat each part."
+    },
+    {
+     "t": "¿De dónde es usted?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "es usted",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "es usted"
+    },
+    {
+     "t": "dónde es usted",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "dónde es usted"
+    },
+    {
+     "t": "¿De dónde es usted?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿De dónde es usted?"
+    },
+    {
+     "t": "¿De dónde es usted?"
+    },
+    {
+     "p": 3,
+     "expect": "¿De dónde es usted?"
+    },
+    {
+     "n": "Answer: 'I'm from Chicago.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Soy de Chicago."
+    },
+    {
+     "p": 3,
+     "expect": "Soy de Chicago."
+    },
+    {
+     "t": "Soy de Chicago."
+    },
+    {
+     "n": "Ask me where I am from."
+    },
+    {
+     "p": 3,
+     "expect": "¿De dónde es usted?"
+    },
+    {
+     "t": "¿De dónde es usted?"
+    },
+    {
+     "n": "Say 'I'm from New York.'"
+    },
+    {
+     "p": 3,
+     "expect": "Soy de Nueva York."
+    },
+    {
+     "t": "Soy de Nueva York."
+    },
+    {
+     "n": "A culture note: Spaniards greet friends with two kisses on the cheek, even when meeting for the first time in a social setting. A handshake is for business."
+    },
+    {
+     "n": "Say 'Hello, my name is Carmen. What is your name?'"
+    },
+    {
+     "p": 5,
+     "expect": "Hola, me llamo Carmen. ¿Cómo se llama usted?"
+    },
+    {
+     "t": "Hola, me llamo Carmen. ¿Cómo se llama usted?"
+    },
+    {
+     "n": "Say 'My name is David. Pleased to meet you.'"
+    },
+    {
+     "p": 4,
+     "expect": "Me llamo David. Mucho gusto."
+    },
+    {
+     "t": "Me llamo David. Mucho gusto."
+    },
+    {
+     "n": "Say 'This is my wife.' then add her name, Laura."
+    },
+    {
+     "p": 4,
+     "expect": "Esta es mi esposa, Laura."
+    },
+    {
+     "t": "Esta es mi esposa, Laura."
+    },
+    {
+     "n": "Say 'I have a son and a daughter.'"
+    },
+    {
+     "p": 4,
+     "expect": "Tengo un hijo y una hija."
+    },
+    {
+     "t": "Tengo un hijo y una hija."
+    },
+    {
+     "q": "How does a woman say 'delighted'?"
+    },
+    {
+     "p": 3,
+     "expect": "Encantada"
+    },
+    {
+     "t": "Encantada"
+    },
+    {
+     "q": "How do you ask 'do you have children?'"
+    },
+    {
+     "p": 3,
+     "expect": "¿Tiene usted hijos?"
+    },
+    {
+     "t": "¿Tiene usted hijos?"
+    },
+    {
+     "n": "Ask 'Do you want to eat something?'"
+    },
+    {
+     "p": 4,
+     "expect": "¿Quiere usted comer algo?"
+    },
+    {
+     "t": "¿Quiere usted comer algo?"
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "Hola, me llamo Carmen. ¿Cómo se llama usted?"
+    },
+    {
+     "t": "Me llamo David. Mucho gusto."
+    },
+    {
+     "t": "Encantada. ¿Tiene usted hijos?"
+    },
+    {
+     "t": "Sí, tengo dos hijos. Y esta es mi esposa, Laura."
+    },
+    {
+     "n": "Next time you will learn to say what you like and what you want to do. This is the end of lesson seven."
+    }
+   ]
+  },
+  {
+   "id": "a8",
+   "title": "Lesson 8 — I like Spain",
+   "minutes": 16,
+   "goal": "Say what you like, what you want to do, and what you need",
+   "steps": [
+    {
+     "n": "This is lesson eight. Listen to this conversation between a Spanish colleague and an American visitor."
+    },
+    {
+     "t": "¿Le gusta España?"
+    },
+    {
+     "t": "Sí, me gusta mucho. Me gusta la comida española."
+    },
+    {
+     "t": "¿Quiere usted ir a Barcelona?"
+    },
+    {
+     "t": "Me gustaría, pero no puedo. Necesito trabajar."
+    },
+    {
+     "n": "She asked: Do you like Spain? He said: Yes, I like it a lot. I like Spanish food. Do you want to go to Barcelona? I would like to, but I can't. I need to work. First, a review."
+    },
+    {
+     "n": "Ask me my name."
+    },
+    {
+     "p": 3,
+     "expect": "¿Cómo se llama usted?"
+    },
+    {
+     "t": "¿Cómo se llama usted?"
+    },
+    {
+     "n": "Ask me where I am from."
+    },
+    {
+     "p": 3,
+     "expect": "¿De dónde es usted?"
+    },
+    {
+     "t": "¿De dónde es usted?"
+    },
+    {
+     "n": "Say 'I want to eat something.'"
+    },
+    {
+     "p": 3,
+     "expect": "Quiero comer algo."
+    },
+    {
+     "t": "Quiero comer algo."
+    },
+    {
+     "n": "Here is 'I like'. Literally it means 'it pleases me'. Listen, then repeat each part."
+    },
+    {
+     "t": "Me gusta"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "gusta",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "gusta"
+    },
+    {
+     "t": "Me gusta",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Me gusta"
+    },
+    {
+     "t": "Me gusta"
+    },
+    {
+     "p": 3,
+     "expect": "Me gusta"
+    },
+    {
+     "n": "Here is 'Spain'."
+    },
+    {
+     "t": "España"
+    },
+    {
+     "p": 2,
+     "expect": "España"
+    },
+    {
+     "t": "España"
+    },
+    {
+     "n": "Say 'I like Spain.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Me gusta España."
+    },
+    {
+     "p": 3,
+     "expect": "Me gusta España."
+    },
+    {
+     "t": "Me gusta España."
+    },
+    {
+     "n": "Here is 'do you like?' Literally: does it please you?"
+    },
+    {
+     "t": "¿Le gusta?"
+    },
+    {
+     "p": 2,
+     "expect": "¿Le gusta?"
+    },
+    {
+     "t": "¿Le gusta?"
+    },
+    {
+     "n": "Ask 'Do you like Spain?'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "¿Le gusta España?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Le gusta España?"
+    },
+    {
+     "t": "¿Le gusta España?"
+    },
+    {
+     "n": "Here is 'a lot', or 'much'."
+    },
+    {
+     "t": "mucho"
+    },
+    {
+     "p": 2,
+     "expect": "mucho"
+    },
+    {
+     "t": "mucho"
+    },
+    {
+     "n": "Say 'Yes, I like it a lot.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Sí, me gusta mucho."
+    },
+    {
+     "p": 3,
+     "expect": "Sí, me gusta mucho."
+    },
+    {
+     "t": "Sí, me gusta mucho."
+    },
+    {
+     "n": "Say 'I don't like it.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "No me gusta."
+    },
+    {
+     "p": 3,
+     "expect": "No me gusta."
+    },
+    {
+     "t": "No me gusta."
+    },
+    {
+     "n": "Ask me if I like Spain."
+    },
+    {
+     "p": 3,
+     "expect": "¿Le gusta España?"
+    },
+    {
+     "t": "¿Le gusta España?"
+    },
+    {
+     "n": "Answer: 'Yes, I like it a lot.'"
+    },
+    {
+     "p": 3,
+     "expect": "Sí, me gusta mucho."
+    },
+    {
+     "t": "Sí, me gusta mucho."
+    },
+    {
+     "n": "Here is 'the food'."
+    },
+    {
+     "t": "la comida"
+    },
+    {
+     "p": 2,
+     "expect": "la comida"
+    },
+    {
+     "t": "la comida"
+    },
+    {
+     "n": "Here is 'Spanish' describing a feminine word, like food. It ends in 'ah'."
+    },
+    {
+     "t": "española"
+    },
+    {
+     "p": 2,
+     "expect": "española"
+    },
+    {
+     "t": "española"
+    },
+    {
+     "n": "Notice: describing words come after the noun in Spanish, and they match its gender. Spanish food takes the 'ah' ending; Spanish wine would take the masculine form you learned in lesson one."
+    },
+    {
+     "n": "Say 'I like Spanish food.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Me gusta la comida española."
+    },
+    {
+     "p": 4,
+     "expect": "Me gusta la comida española."
+    },
+    {
+     "t": "Me gusta la comida española."
+    },
+    {
+     "n": "Ask 'Do you like Spanish food?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Le gusta la comida española?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Le gusta la comida española?"
+    },
+    {
+     "t": "¿Le gusta la comida española?"
+    },
+    {
+     "n": "Say 'I like the coffee.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Me gusta el café."
+    },
+    {
+     "p": 3,
+     "expect": "Me gusta el café."
+    },
+    {
+     "t": "Me gusta el café."
+    },
+    {
+     "n": "Here is 'to go'."
+    },
+    {
+     "t": "ir"
+    },
+    {
+     "p": 2,
+     "expect": "ir"
+    },
+    {
+     "t": "ir"
+    },
+    {
+     "n": "You know 'do you want' from lesson four. Here is 'do you want to go?'"
+    },
+    {
+     "t": "¿Quiere usted ir?"
+    },
+    {
+     "p": 2,
+     "expect": "¿Quiere usted ir?"
+    },
+    {
+     "t": "¿Quiere usted ir?"
+    },
+    {
+     "n": "Ask 'Do you want to go to Barcelona?' 'To' a place is the sound 'ah'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Quiere usted ir a Barcelona?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Quiere usted ir a Barcelona?"
+    },
+    {
+     "t": "¿Quiere usted ir a Barcelona?"
+    },
+    {
+     "n": "Say 'I want to go to Madrid.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Quiero ir a Madrid."
+    },
+    {
+     "p": 3,
+     "expect": "Quiero ir a Madrid."
+    },
+    {
+     "t": "Quiero ir a Madrid."
+    },
+    {
+     "n": "Here is 'I would like to'. It is softer than 'I want'. Listen, then repeat each part."
+    },
+    {
+     "t": "Me gustaría"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ría",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "ría"
+    },
+    {
+     "t": "gustaría",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "gustaría"
+    },
+    {
+     "t": "Me gustaría",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Me gustaría"
+    },
+    {
+     "t": "Me gustaría"
+    },
+    {
+     "p": 3,
+     "expect": "Me gustaría"
+    },
+    {
+     "n": "Say 'I would like to go to Barcelona.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Me gustaría ir a Barcelona."
+    },
+    {
+     "p": 4,
+     "expect": "Me gustaría ir a Barcelona."
+    },
+    {
+     "t": "Me gustaría ir a Barcelona."
+    },
+    {
+     "n": "Here is 'but'."
+    },
+    {
+     "t": "pero"
+    },
+    {
+     "p": 2,
+     "expect": "pero"
+    },
+    {
+     "t": "pero"
+    },
+    {
+     "n": "Here is 'I can't'."
+    },
+    {
+     "t": "no puedo"
+    },
+    {
+     "p": 2,
+     "expect": "no puedo"
+    },
+    {
+     "t": "no puedo"
+    },
+    {
+     "n": "Say 'I would like to, but I can't.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Me gustaría, pero no puedo."
+    },
+    {
+     "p": 4,
+     "expect": "Me gustaría, pero no puedo."
+    },
+    {
+     "t": "Me gustaría, pero no puedo."
+    },
+    {
+     "n": "Ask me if I want to go to Barcelona."
+    },
+    {
+     "p": 4,
+     "expect": "¿Quiere usted ir a Barcelona?"
+    },
+    {
+     "t": "¿Quiere usted ir a Barcelona?"
+    },
+    {
+     "n": "Answer: 'I would like to, but I can't.'"
+    },
+    {
+     "p": 4,
+     "expect": "Me gustaría, pero no puedo."
+    },
+    {
+     "t": "Me gustaría, pero no puedo."
+    },
+    {
+     "n": "Here is 'I need'. Listen, then repeat each part."
+    },
+    {
+     "t": "Necesito"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "sito",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "sito"
+    },
+    {
+     "t": "necesito",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "necesito"
+    },
+    {
+     "t": "Necesito",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Necesito"
+    },
+    {
+     "t": "Necesito"
+    },
+    {
+     "p": 3,
+     "expect": "Necesito"
+    },
+    {
+     "n": "Here is 'to work'."
+    },
+    {
+     "t": "trabajar"
+    },
+    {
+     "p": 2,
+     "expect": "trabajar"
+    },
+    {
+     "t": "trabajar"
+    },
+    {
+     "n": "Say 'I need to work.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Necesito trabajar."
+    },
+    {
+     "p": 3,
+     "expect": "Necesito trabajar."
+    },
+    {
+     "t": "Necesito trabajar."
+    },
+    {
+     "n": "Say 'I need to eat something.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Necesito comer algo."
+    },
+    {
+     "p": 3,
+     "expect": "Necesito comer algo."
+    },
+    {
+     "t": "Necesito comer algo."
+    },
+    {
+     "n": "Say 'I need a taxi, please.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Necesito un taxi, por favor."
+    },
+    {
+     "p": 4,
+     "expect": "Necesito un taxi, por favor."
+    },
+    {
+     "t": "Necesito un taxi, por favor."
+    },
+    {
+     "n": "Say 'I like Spanish food.'"
+    },
+    {
+     "p": 4,
+     "expect": "Me gusta la comida española."
+    },
+    {
+     "t": "Me gusta la comida española."
+    },
+    {
+     "n": "Say 'I don't like it.'"
+    },
+    {
+     "p": 3,
+     "expect": "No me gusta."
+    },
+    {
+     "t": "No me gusta."
+    },
+    {
+     "n": "Say 'I would like to go to Barcelona.'"
+    },
+    {
+     "p": 4,
+     "expect": "Me gustaría ir a Barcelona."
+    },
+    {
+     "t": "Me gustaría ir a Barcelona."
+    },
+    {
+     "n": "Say 'I need to work.'"
+    },
+    {
+     "p": 3,
+     "expect": "Necesito trabajar."
+    },
+    {
+     "t": "Necesito trabajar."
+    },
+    {
+     "q": "How do you ask 'do you like Spain?'"
+    },
+    {
+     "p": 3,
+     "expect": "¿Le gusta España?"
+    },
+    {
+     "t": "¿Le gusta España?"
+    },
+    {
+     "n": "Say 'I would like a coffee with milk, please.'"
+    },
+    {
+     "p": 5,
+     "expect": "Quisiera un café con leche, por favor."
+    },
+    {
+     "t": "Quisiera un café con leche, por favor."
+    },
+    {
+     "n": "Say 'I like the coffee.'"
+    },
+    {
+     "p": 3,
+     "expect": "Me gusta el café."
+    },
+    {
+     "t": "Me gusta el café."
+    },
+    {
+     "n": "A culture note: Spaniards love to ask visitors whether they like Spain, and the food in particular. 'I like it a lot' is always the right answer, and it is usually true."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "¿Le gusta España?"
+    },
+    {
+     "t": "Sí, me gusta mucho. Me gusta la comida española."
+    },
+    {
+     "t": "¿Quiere usted ir a Barcelona?"
+    },
+    {
+     "t": "Me gustaría, pero no puedo. Necesito trabajar."
+    },
+    {
+     "n": "Next time you will learn to talk about what you did yesterday. This is the end of lesson eight."
+    }
+   ]
+  },
+  {
+   "id": "a9",
+   "title": "Lesson 9 — What did you do yesterday?",
+   "minutes": 16,
+   "goal": "Talk about what you did, where you went and what you ate, in the past",
+   "steps": [
+    {
+     "n": "This is lesson nine. Listen to this conversation. A hotel receptionist chats with a guest."
+    },
+    {
+     "t": "¿Qué hizo usted ayer?"
+    },
+    {
+     "t": "Fui a Toledo. Visité la catedral."
+    },
+    {
+     "t": "¿Le gustó?"
+    },
+    {
+     "t": "Sí, mucho. Comí muy bien y compré un regalo."
+    },
+    {
+     "n": "She asked: What did you do yesterday? He said: I went to Toledo. I visited the cathedral. Did you like it? Yes, a lot. I ate very well and I bought a present. A quick review first."
+    },
+    {
+     "n": "Say 'I like Spanish food.'"
+    },
+    {
+     "p": 4,
+     "expect": "Me gusta la comida española."
+    },
+    {
+     "t": "Me gusta la comida española."
+    },
+    {
+     "n": "Say 'I would like to, but I can't.'"
+    },
+    {
+     "p": 4,
+     "expect": "Me gustaría, pero no puedo."
+    },
+    {
+     "t": "Me gustaría, pero no puedo."
+    },
+    {
+     "n": "Say 'On Saturday at night.'"
+    },
+    {
+     "p": 4,
+     "expect": "El sábado por la noche."
+    },
+    {
+     "t": "El sábado por la noche."
+    },
+    {
+     "n": "Here is 'yesterday'."
+    },
+    {
+     "t": "ayer"
+    },
+    {
+     "p": 2,
+     "expect": "ayer"
+    },
+    {
+     "t": "ayer"
+    },
+    {
+     "n": "Here is 'what did you do?' Listen, then repeat each part."
+    },
+    {
+     "t": "¿Qué hizo usted?"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "usted",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "usted"
+    },
+    {
+     "t": "hizo usted",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "hizo usted"
+    },
+    {
+     "t": "¿Qué hizo usted?",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "¿Qué hizo usted?"
+    },
+    {
+     "t": "¿Qué hizo usted?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Qué hizo usted?"
+    },
+    {
+     "n": "Ask 'What did you do yesterday?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Qué hizo usted ayer?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Qué hizo usted ayer?"
+    },
+    {
+     "t": "¿Qué hizo usted ayer?"
+    },
+    {
+     "n": "Here is 'I went'."
+    },
+    {
+     "t": "fui"
+    },
+    {
+     "p": 2,
+     "expect": "fui"
+    },
+    {
+     "t": "fui"
+    },
+    {
+     "n": "Say 'I went to Toledo.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Fui a Toledo."
+    },
+    {
+     "p": 3,
+     "expect": "Fui a Toledo."
+    },
+    {
+     "t": "Fui a Toledo."
+    },
+    {
+     "n": "Here is 'I visited'. Notice the stress on the final 'eh'; that ending marks 'I did' for many verbs. Listen, then repeat each part."
+    },
+    {
+     "t": "visité"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "té",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "té"
+    },
+    {
+     "t": "visité",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "visité"
+    },
+    {
+     "t": "visité",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "visité"
+    },
+    {
+     "t": "visité"
+    },
+    {
+     "p": 3,
+     "expect": "visité"
+    },
+    {
+     "n": "Here is 'the cathedral'."
+    },
+    {
+     "t": "la catedral"
+    },
+    {
+     "p": 2,
+     "expect": "la catedral"
+    },
+    {
+     "t": "la catedral"
+    },
+    {
+     "n": "Say 'I visited the cathedral.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Visité la catedral."
+    },
+    {
+     "p": 4,
+     "expect": "Visité la catedral."
+    },
+    {
+     "t": "Visité la catedral."
+    },
+    {
+     "n": "Here is 'the museum'."
+    },
+    {
+     "t": "el museo"
+    },
+    {
+     "p": 2,
+     "expect": "el museo"
+    },
+    {
+     "t": "el museo"
+    },
+    {
+     "n": "Say 'Yesterday I visited the museum.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Ayer visité el museo."
+    },
+    {
+     "p": 4,
+     "expect": "Ayer visité el museo."
+    },
+    {
+     "t": "Ayer visité el museo."
+    },
+    {
+     "n": "Ask me what I did yesterday."
+    },
+    {
+     "p": 4,
+     "expect": "¿Qué hizo usted ayer?"
+    },
+    {
+     "t": "¿Qué hizo usted ayer?"
+    },
+    {
+     "n": "Answer: 'I went to Toledo.'"
+    },
+    {
+     "p": 3,
+     "expect": "Fui a Toledo."
+    },
+    {
+     "t": "Fui a Toledo."
+    },
+    {
+     "n": "Here is 'did you like it?' It is 'do you like' with the past ending 'oh'."
+    },
+    {
+     "t": "¿Le gustó?"
+    },
+    {
+     "p": 2,
+     "expect": "¿Le gustó?"
+    },
+    {
+     "t": "¿Le gustó?"
+    },
+    {
+     "n": "Answer: 'Yes, I liked it a lot.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Sí, me gustó mucho."
+    },
+    {
+     "p": 4,
+     "expect": "Sí, me gustó mucho."
+    },
+    {
+     "t": "Sí, me gustó mucho."
+    },
+    {
+     "n": "Here is 'I ate'."
+    },
+    {
+     "t": "comí"
+    },
+    {
+     "p": 2,
+     "expect": "comí"
+    },
+    {
+     "t": "comí"
+    },
+    {
+     "n": "Say 'I ate very well.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Comí muy bien."
+    },
+    {
+     "p": 3,
+     "expect": "Comí muy bien."
+    },
+    {
+     "t": "Comí muy bien."
+    },
+    {
+     "n": "Here is 'I drank'."
+    },
+    {
+     "t": "bebí"
+    },
+    {
+     "p": 2,
+     "expect": "bebí"
+    },
+    {
+     "t": "bebí"
+    },
+    {
+     "n": "Notice the pattern: 'I ate', 'I drank' end in a stressed 'ee'. 'I visited' and 'I bought' end in a stressed 'eh'. Both mean 'I did it'."
+    },
+    {
+     "n": "Here is 'I bought'. Listen, then repeat each part."
+    },
+    {
+     "t": "compré"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "pré",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "pré"
+    },
+    {
+     "t": "compré",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "compré"
+    },
+    {
+     "t": "compré",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "compré"
+    },
+    {
+     "t": "compré"
+    },
+    {
+     "p": 3,
+     "expect": "compré"
+    },
+    {
+     "n": "Here is 'a present', or 'a gift'."
+    },
+    {
+     "t": "un regalo"
+    },
+    {
+     "p": 2,
+     "expect": "un regalo"
+    },
+    {
+     "t": "un regalo"
+    },
+    {
+     "n": "Say 'I bought a present.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Compré un regalo."
+    },
+    {
+     "p": 3,
+     "expect": "Compré un regalo."
+    },
+    {
+     "t": "Compré un regalo."
+    },
+    {
+     "n": "Say 'I visited the cathedral.'"
+    },
+    {
+     "p": 3,
+     "expect": "Visité la catedral."
+    },
+    {
+     "t": "Visité la catedral."
+    },
+    {
+     "n": "Say 'I ate very well.'"
+    },
+    {
+     "p": 3,
+     "expect": "Comí muy bien."
+    },
+    {
+     "t": "Comí muy bien."
+    },
+    {
+     "n": "Here is 'last night'."
+    },
+    {
+     "t": "anoche"
+    },
+    {
+     "p": 2,
+     "expect": "anoche"
+    },
+    {
+     "t": "anoche"
+    },
+    {
+     "n": "Here is 'a restaurant'."
+    },
+    {
+     "t": "un restaurante"
+    },
+    {
+     "p": 2,
+     "expect": "un restaurante"
+    },
+    {
+     "t": "un restaurante"
+    },
+    {
+     "n": "Say 'Last night I ate in a restaurant.' 'In' is the sound 'en'."
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "Anoche comí en un restaurante."
+    },
+    {
+     "p": 5,
+     "expect": "Anoche comí en un restaurante."
+    },
+    {
+     "t": "Anoche comí en un restaurante."
+    },
+    {
+     "n": "Here is 'I spoke'."
+    },
+    {
+     "t": "hablé"
+    },
+    {
+     "p": 2,
+     "expect": "hablé"
+    },
+    {
+     "t": "hablé"
+    },
+    {
+     "n": "Say 'I spoke with my friend.' 'With' you know from 'coffee with milk'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Hablé con mi amigo."
+    },
+    {
+     "p": 4,
+     "expect": "Hablé con mi amigo."
+    },
+    {
+     "t": "Hablé con mi amigo."
+    },
+    {
+     "n": "Here is 'did you go?'"
+    },
+    {
+     "t": "¿Fue usted?"
+    },
+    {
+     "p": 2,
+     "expect": "¿Fue usted?"
+    },
+    {
+     "t": "¿Fue usted?"
+    },
+    {
+     "n": "Ask 'Did you go to Toledo?'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "¿Fue usted a Toledo?"
+    },
+    {
+     "p": 3,
+     "expect": "¿Fue usted a Toledo?"
+    },
+    {
+     "t": "¿Fue usted a Toledo?"
+    },
+    {
+     "n": "Answer: 'Yes, I went to Toledo.'"
+    },
+    {
+     "p": 3,
+     "expect": "Fui a Toledo."
+    },
+    {
+     "t": "Fui a Toledo."
+    },
+    {
+     "n": "A culture note: Toledo, an hour from Madrid, is the classic day trip. Spaniards will happily ask what you did and where you ate; food is always part of the story."
+    },
+    {
+     "n": "Ask me if I liked it."
+    },
+    {
+     "p": 3,
+     "expect": "¿Le gustó?"
+    },
+    {
+     "t": "¿Le gustó?"
+    },
+    {
+     "n": "Say 'Yes, I liked it a lot.'"
+    },
+    {
+     "p": 4,
+     "expect": "Sí, me gustó mucho."
+    },
+    {
+     "t": "Sí, me gustó mucho."
+    },
+    {
+     "n": "Say 'I bought a present.'"
+    },
+    {
+     "p": 3,
+     "expect": "Compré un regalo."
+    },
+    {
+     "t": "Compré un regalo."
+    },
+    {
+     "n": "Say 'Last night I ate in a restaurant.'"
+    },
+    {
+     "p": 5,
+     "expect": "Anoche comí en un restaurante."
+    },
+    {
+     "t": "Anoche comí en un restaurante."
+    },
+    {
+     "q": "How do you say 'yesterday'?"
+    },
+    {
+     "p": 3,
+     "expect": "ayer"
+    },
+    {
+     "t": "ayer"
+    },
+    {
+     "q": "How do you ask 'what did you do yesterday?'"
+    },
+    {
+     "p": 4,
+     "expect": "¿Qué hizo usted ayer?"
+    },
+    {
+     "t": "¿Qué hizo usted ayer?"
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "¿Qué hizo usted ayer?"
+    },
+    {
+     "t": "Fui a Toledo. Visité la catedral."
+    },
+    {
+     "t": "¿Le gustó?"
+    },
+    {
+     "t": "Sí, mucho. Comí muy bien y compré un regalo."
+    },
+    {
+     "n": "Next time you will learn to make plans with people. This is the end of lesson nine."
+    }
+   ]
+  },
+  {
+   "id": "a10",
+   "title": "Lesson 10 — Shall we go to the cinema?",
+   "minutes": 16,
+   "goal": "Invite someone, accept or decline politely, and agree on a time and place",
+   "steps": [
+    {
+     "n": "This is lesson ten. Listen to two colleagues making plans after work."
+    },
+    {
+     "t": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "t": "Lo siento, esta noche no puedo. Estoy ocupado."
+    },
+    {
+     "t": "¿Y mañana? ¿Vamos al cine?"
+    },
+    {
+     "t": "Perfecto. ¿A qué hora nos vemos?"
+    },
+    {
+     "t": "A las ocho, en el hotel."
+    },
+    {
+     "t": "De acuerdo. Hasta mañana."
+    },
+    {
+     "n": "She asked: Do you want to have dinner with me tonight? He said: I'm sorry, tonight I can't. I'm busy. And tomorrow? Shall we go to the cinema? Perfect. What time shall we meet? At eight, at the hotel. All right. See you tomorrow. Let's review."
+    },
+    {
+     "n": "Ask 'What did you do yesterday?'"
+    },
+    {
+     "p": 4,
+     "expect": "¿Qué hizo usted ayer?"
+    },
+    {
+     "t": "¿Qué hizo usted ayer?"
+    },
+    {
+     "n": "Say 'I need to work.'"
+    },
+    {
+     "p": 3,
+     "expect": "Necesito trabajar."
+    },
+    {
+     "t": "Necesito trabajar."
+    },
+    {
+     "n": "Ask 'Do you want to go to Barcelona?'"
+    },
+    {
+     "p": 4,
+     "expect": "¿Quiere usted ir a Barcelona?"
+    },
+    {
+     "t": "¿Quiere usted ir a Barcelona?"
+    },
+    {
+     "n": "Here is 'to have dinner'."
+    },
+    {
+     "t": "cenar"
+    },
+    {
+     "p": 2,
+     "expect": "cenar"
+    },
+    {
+     "t": "cenar"
+    },
+    {
+     "n": "Here is 'with me'."
+    },
+    {
+     "t": "conmigo"
+    },
+    {
+     "p": 2,
+     "expect": "conmigo"
+    },
+    {
+     "t": "conmigo"
+    },
+    {
+     "n": "Here is 'tonight'. Literally: this night."
+    },
+    {
+     "t": "esta noche"
+    },
+    {
+     "p": 2,
+     "expect": "esta noche"
+    },
+    {
+     "t": "esta noche"
+    },
+    {
+     "n": "Ask 'Do you want to have dinner with me tonight?'"
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "p": 5,
+     "expect": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "t": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "n": "Here is 'I'm sorry'. Literally: I feel it. Listen, then repeat each part."
+    },
+    {
+     "t": "Lo siento"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "siento",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "siento"
+    },
+    {
+     "t": "Lo siento",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Lo siento"
+    },
+    {
+     "t": "Lo siento"
+    },
+    {
+     "p": 3,
+     "expect": "Lo siento"
+    },
+    {
+     "n": "Say 'I'm sorry, I can't.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Lo siento, no puedo."
+    },
+    {
+     "p": 3,
+     "expect": "Lo siento, no puedo."
+    },
+    {
+     "t": "Lo siento, no puedo."
+    },
+    {
+     "n": "Here is 'I am', for states and places. It is different from the 'I am' you use for where you are from."
+    },
+    {
+     "t": "estoy"
+    },
+    {
+     "p": 2,
+     "expect": "estoy"
+    },
+    {
+     "t": "estoy"
+    },
+    {
+     "n": "Here is 'busy', for a man."
+    },
+    {
+     "t": "ocupado"
+    },
+    {
+     "p": 2,
+     "expect": "ocupado"
+    },
+    {
+     "t": "ocupado"
+    },
+    {
+     "n": "And 'busy', for a woman."
+    },
+    {
+     "t": "ocupada"
+    },
+    {
+     "p": 2,
+     "expect": "ocupada"
+    },
+    {
+     "t": "ocupada"
+    },
+    {
+     "n": "Say 'I'm sorry, tonight I can't. I'm busy.'"
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "Lo siento, esta noche no puedo. Estoy ocupado."
+    },
+    {
+     "p": 5,
+     "expect": "Lo siento, esta noche no puedo. Estoy ocupado."
+    },
+    {
+     "t": "Lo siento, esta noche no puedo. Estoy ocupado."
+    },
+    {
+     "n": "Ask me if I want to have dinner with you tonight."
+    },
+    {
+     "p": 5,
+     "expect": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "t": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "n": "Answer: 'I'm sorry, I can't.'"
+    },
+    {
+     "p": 3,
+     "expect": "Lo siento, no puedo."
+    },
+    {
+     "t": "Lo siento, no puedo."
+    },
+    {
+     "n": "Here is 'and tomorrow?'"
+    },
+    {
+     "t": "¿Y mañana?"
+    },
+    {
+     "p": 2,
+     "expect": "¿Y mañana?"
+    },
+    {
+     "t": "¿Y mañana?"
+    },
+    {
+     "n": "Here is 'the cinema'."
+    },
+    {
+     "t": "el cine"
+    },
+    {
+     "p": 2,
+     "expect": "el cine"
+    },
+    {
+     "t": "el cine"
+    },
+    {
+     "n": "Here is 'shall we go?', or 'let's go'."
+    },
+    {
+     "t": "¿Vamos?"
+    },
+    {
+     "p": 2,
+     "expect": "¿Vamos?"
+    },
+    {
+     "t": "¿Vamos?"
+    },
+    {
+     "n": "Ask 'Shall we go to the cinema?' 'To the', with a masculine word, blends into one short word."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Vamos al cine?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Vamos al cine?"
+    },
+    {
+     "t": "¿Vamos al cine?"
+    },
+    {
+     "n": "Here is 'perfect'."
+    },
+    {
+     "t": "Perfecto"
+    },
+    {
+     "p": 2,
+     "expect": "Perfecto"
+    },
+    {
+     "t": "Perfecto"
+    },
+    {
+     "n": "Here is 'we'll see each other', used for meeting up. Listen, then repeat each part."
+    },
+    {
+     "t": "nos vemos"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vemos",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "vemos"
+    },
+    {
+     "t": "nos vemos",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "nos vemos"
+    },
+    {
+     "t": "nos vemos"
+    },
+    {
+     "p": 3,
+     "expect": "nos vemos"
+    },
+    {
+     "n": "Ask 'What time shall we meet?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿A qué hora nos vemos?"
+    },
+    {
+     "p": 4,
+     "expect": "¿A qué hora nos vemos?"
+    },
+    {
+     "t": "¿A qué hora nos vemos?"
+    },
+    {
+     "n": "Answer: 'At eight, at the hotel.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "A las ocho, en el hotel."
+    },
+    {
+     "p": 4,
+     "expect": "A las ocho, en el hotel."
+    },
+    {
+     "t": "A las ocho, en el hotel."
+    },
+    {
+     "n": "Here is 'all right' or 'agreed'. Listen, then repeat each part."
+    },
+    {
+     "t": "De acuerdo"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "acuerdo",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "acuerdo"
+    },
+    {
+     "t": "De acuerdo",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "De acuerdo"
+    },
+    {
+     "t": "De acuerdo"
+    },
+    {
+     "p": 3,
+     "expect": "De acuerdo"
+    },
+    {
+     "n": "Here is 'see you tomorrow'."
+    },
+    {
+     "t": "Hasta mañana"
+    },
+    {
+     "p": 2,
+     "expect": "Hasta mañana"
+    },
+    {
+     "t": "Hasta mañana"
+    },
+    {
+     "n": "Say 'Perfect. What time shall we meet?'"
+    },
+    {
+     "p": 4,
+     "expect": "Perfecto. ¿A qué hora nos vemos?"
+    },
+    {
+     "t": "Perfecto. ¿A qué hora nos vemos?"
+    },
+    {
+     "n": "Say 'All right. See you tomorrow.'"
+    },
+    {
+     "p": 4,
+     "expect": "De acuerdo. Hasta mañana."
+    },
+    {
+     "t": "De acuerdo. Hasta mañana."
+    },
+    {
+     "n": "Here is 'the weekend'. Literally: the end of week. Listen, then repeat each part."
+    },
+    {
+     "t": "el fin de semana"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "semana",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "semana"
+    },
+    {
+     "t": "de semana",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "de semana"
+    },
+    {
+     "t": "el fin de semana",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "el fin de semana"
+    },
+    {
+     "t": "el fin de semana"
+    },
+    {
+     "p": 3,
+     "expect": "el fin de semana"
+    },
+    {
+     "n": "Here is 'do you do', or 'are you doing'."
+    },
+    {
+     "t": "hace"
+    },
+    {
+     "p": 2,
+     "expect": "hace"
+    },
+    {
+     "t": "hace"
+    },
+    {
+     "n": "Ask 'What are you doing at the weekend?'"
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "¿Qué hace usted el fin de semana?"
+    },
+    {
+     "p": 5,
+     "expect": "¿Qué hace usted el fin de semana?"
+    },
+    {
+     "t": "¿Qué hace usted el fin de semana?"
+    },
+    {
+     "n": "Here is 'I'm going'."
+    },
+    {
+     "t": "voy"
+    },
+    {
+     "p": 2,
+     "expect": "voy"
+    },
+    {
+     "t": "voy"
+    },
+    {
+     "n": "Here is 'the beach'."
+    },
+    {
+     "t": "la playa"
+    },
+    {
+     "p": 2,
+     "expect": "la playa"
+    },
+    {
+     "t": "la playa"
+    },
+    {
+     "n": "Say 'On Sunday I'm going to the beach.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "El domingo voy a la playa."
+    },
+    {
+     "p": 4,
+     "expect": "El domingo voy a la playa."
+    },
+    {
+     "t": "El domingo voy a la playa."
+    },
+    {
+     "n": "A culture note: 'see you later' and 'see you tomorrow' are real plans in Spain, but an invitation to dinner usually means ten at night. Confirm the time; you now know how."
+    },
+    {
+     "n": "Ask 'Shall we go to the cinema?'"
+    },
+    {
+     "p": 3,
+     "expect": "¿Vamos al cine?"
+    },
+    {
+     "t": "¿Vamos al cine?"
+    },
+    {
+     "n": "Say 'I'm sorry, tonight I can't.'"
+    },
+    {
+     "p": 5,
+     "expect": "Lo siento, esta noche no puedo. Estoy ocupado."
+    },
+    {
+     "t": "Lo siento, esta noche no puedo. Estoy ocupado."
+    },
+    {
+     "n": "Ask what time we shall meet."
+    },
+    {
+     "p": 4,
+     "expect": "¿A qué hora nos vemos?"
+    },
+    {
+     "t": "¿A qué hora nos vemos?"
+    },
+    {
+     "n": "Say 'At eight, at the hotel.'"
+    },
+    {
+     "p": 4,
+     "expect": "A las ocho, en el hotel."
+    },
+    {
+     "t": "A las ocho, en el hotel."
+    },
+    {
+     "n": "Ask what I am doing at the weekend."
+    },
+    {
+     "p": 5,
+     "expect": "¿Qué hace usted el fin de semana?"
+    },
+    {
+     "t": "¿Qué hace usted el fin de semana?"
+    },
+    {
+     "n": "Say 'On Sunday I'm going to the beach.'"
+    },
+    {
+     "p": 4,
+     "expect": "El domingo voy a la playa."
+    },
+    {
+     "t": "El domingo voy a la playa."
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "t": "Lo siento, esta noche no puedo. Estoy ocupado."
+    },
+    {
+     "t": "¿Y mañana? ¿Vamos al cine?"
+    },
+    {
+     "t": "Perfecto. ¿A qué hora nos vemos?"
+    },
+    {
+     "t": "A las ocho, en el hotel."
+    },
+    {
+     "t": "De acuerdo. Hasta mañana."
+    },
+    {
+     "n": "Next time: shopping, prices and paying. This is the end of lesson ten."
+    }
+   ]
+  },
+  {
+   "id": "a11",
+   "title": "Lesson 11 — Do you have anything cheaper?",
+   "minutes": 16,
+   "goal": "Shop for clothes, talk about prices, and pay",
+   "steps": [
+    {
+     "n": "This is lesson eleven. Listen to a customer and a shop assistant in a clothes shop in Madrid."
+    },
+    {
+     "t": "Buenos días. ¿Tiene usted camisas?"
+    },
+    {
+     "t": "Sí, claro. Esta es muy bonita."
+    },
+    {
+     "t": "¿Cuánto cuesta?"
+    },
+    {
+     "t": "Treinta euros."
+    },
+    {
+     "t": "Es un poco caro. ¿Tiene algo más barato?"
+    },
+    {
+     "t": "Esta cuesta veinte."
+    },
+    {
+     "t": "Me la llevo. ¿Puedo pagar con tarjeta?"
+    },
+    {
+     "t": "Sí, claro."
+    },
+    {
+     "n": "Good morning. Do you have shirts? Yes, of course. This one is very pretty. How much does it cost? Thirty euros. It's a bit expensive. Do you have anything cheaper? This one costs twenty. I'll take it. Can I pay by card? Yes, of course. Let's review first."
+    },
+    {
+     "n": "Ask how much it costs."
+    },
+    {
+     "p": 3,
+     "expect": "¿Cuánto cuesta?"
+    },
+    {
+     "t": "¿Cuánto cuesta?"
+    },
+    {
+     "n": "Ask 'Do you have children?'"
+    },
+    {
+     "p": 3,
+     "expect": "¿Tiene usted hijos?"
+    },
+    {
+     "t": "¿Tiene usted hijos?"
+    },
+    {
+     "n": "Say 'All right. See you tomorrow.'"
+    },
+    {
+     "p": 4,
+     "expect": "De acuerdo. Hasta mañana."
+    },
+    {
+     "t": "De acuerdo. Hasta mañana."
+    },
+    {
+     "n": "Here is 'a shirt'."
+    },
+    {
+     "t": "una camisa"
+    },
+    {
+     "p": 2,
+     "expect": "una camisa"
+    },
+    {
+     "t": "una camisa"
+    },
+    {
+     "n": "Ask 'Do you have shirts?' Shirts ends in 's'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Tiene usted camisas?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Tiene usted camisas?"
+    },
+    {
+     "t": "¿Tiene usted camisas?"
+    },
+    {
+     "n": "Here is 'of course'."
+    },
+    {
+     "t": "claro"
+    },
+    {
+     "p": 2,
+     "expect": "claro"
+    },
+    {
+     "t": "claro"
+    },
+    {
+     "n": "Here is 'pretty' or 'nice', for a feminine word."
+    },
+    {
+     "t": "bonita"
+    },
+    {
+     "p": 2,
+     "expect": "bonita"
+    },
+    {
+     "t": "bonita"
+    },
+    {
+     "n": "Say 'This one is very pretty.' You know 'this is' from introducing a woman."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Esta es muy bonita."
+    },
+    {
+     "p": 4,
+     "expect": "Esta es muy bonita."
+    },
+    {
+     "t": "Esta es muy bonita."
+    },
+    {
+     "n": "Now some bigger numbers. Twenty, thirty, forty, fifty, and one hundred. Listen and repeat."
+    },
+    {
+     "t": "veinte"
+    },
+    {
+     "p": 2,
+     "expect": "veinte"
+    },
+    {
+     "t": "veinte"
+    },
+    {
+     "t": "treinta"
+    },
+    {
+     "p": 2,
+     "expect": "treinta"
+    },
+    {
+     "t": "treinta"
+    },
+    {
+     "t": "cuarenta"
+    },
+    {
+     "p": 2,
+     "expect": "cuarenta"
+    },
+    {
+     "t": "cuarenta"
+    },
+    {
+     "t": "cincuenta"
+    },
+    {
+     "p": 2,
+     "expect": "cincuenta"
+    },
+    {
+     "t": "cincuenta"
+    },
+    {
+     "t": "cien"
+    },
+    {
+     "p": 2,
+     "expect": "cien"
+    },
+    {
+     "t": "cien"
+    },
+    {
+     "n": "Say 'Thirty euros.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Treinta euros."
+    },
+    {
+     "p": 3,
+     "expect": "Treinta euros."
+    },
+    {
+     "t": "Treinta euros."
+    },
+    {
+     "n": "Here is 'expensive'."
+    },
+    {
+     "t": "caro"
+    },
+    {
+     "p": 2,
+     "expect": "caro"
+    },
+    {
+     "t": "caro"
+    },
+    {
+     "n": "Say 'It's a bit expensive.' Use 'is' and 'a little'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Es un poco caro."
+    },
+    {
+     "p": 4,
+     "expect": "Es un poco caro."
+    },
+    {
+     "t": "Es un poco caro."
+    },
+    {
+     "n": "Here is 'cheap'."
+    },
+    {
+     "t": "barato"
+    },
+    {
+     "p": 2,
+     "expect": "barato"
+    },
+    {
+     "t": "barato"
+    },
+    {
+     "n": "Here is 'cheaper'. Literally: more cheap."
+    },
+    {
+     "t": "más barato"
+    },
+    {
+     "p": 2,
+     "expect": "más barato"
+    },
+    {
+     "t": "más barato"
+    },
+    {
+     "n": "Ask 'Do you have anything cheaper?' 'Anything' is the word from 'anything else?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Tiene algo más barato?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Tiene algo más barato?"
+    },
+    {
+     "t": "¿Tiene algo más barato?"
+    },
+    {
+     "n": "Say 'This one costs twenty.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Esta cuesta veinte."
+    },
+    {
+     "p": 3,
+     "expect": "Esta cuesta veinte."
+    },
+    {
+     "t": "Esta cuesta veinte."
+    },
+    {
+     "n": "Ask me if I have shirts."
+    },
+    {
+     "p": 3,
+     "expect": "¿Tiene usted camisas?"
+    },
+    {
+     "t": "¿Tiene usted camisas?"
+    },
+    {
+     "n": "Say 'Thirty euros.'"
+    },
+    {
+     "p": 3,
+     "expect": "Treinta euros."
+    },
+    {
+     "t": "Treinta euros."
+    },
+    {
+     "n": "Say 'It's a bit expensive.'"
+    },
+    {
+     "p": 3,
+     "expect": "Es un poco caro."
+    },
+    {
+     "t": "Es un poco caro."
+    },
+    {
+     "n": "Here is 'I'll take it', for a feminine word like shirt. Listen, then repeat each part."
+    },
+    {
+     "t": "Me la llevo"
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "llevo",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "llevo"
+    },
+    {
+     "t": "la llevo",
+     "slow": true
+    },
+    {
+     "p": 2,
+     "expect": "la llevo"
+    },
+    {
+     "t": "Me la llevo",
+     "slow": true
+    },
+    {
+     "p": 3,
+     "expect": "Me la llevo"
+    },
+    {
+     "t": "Me la llevo"
+    },
+    {
+     "p": 3,
+     "expect": "Me la llevo"
+    },
+    {
+     "n": "For a masculine thing, like a present, the little word changes to 'lo'."
+    },
+    {
+     "t": "Me lo llevo"
+    },
+    {
+     "p": 2,
+     "expect": "Me lo llevo"
+    },
+    {
+     "t": "Me lo llevo"
+    },
+    {
+     "n": "That little word 'it' matches the gender of the thing you are buying. If in doubt, just say 'this one' and point."
+    },
+    {
+     "n": "Here is 'to pay'."
+    },
+    {
+     "t": "pagar"
+    },
+    {
+     "p": 2,
+     "expect": "pagar"
+    },
+    {
+     "t": "pagar"
+    },
+    {
+     "n": "Here is 'by card'."
+    },
+    {
+     "t": "con tarjeta"
+    },
+    {
+     "p": 2,
+     "expect": "con tarjeta"
+    },
+    {
+     "t": "con tarjeta"
+    },
+    {
+     "n": "Here is 'can I?', or 'I can'. You know 'I can't'; drop the 'no'."
+    },
+    {
+     "t": "puedo"
+    },
+    {
+     "p": 2,
+     "expect": "puedo"
+    },
+    {
+     "t": "puedo"
+    },
+    {
+     "n": "Ask 'Can I pay by card?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Puedo pagar con tarjeta?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Puedo pagar con tarjeta?"
+    },
+    {
+     "t": "¿Puedo pagar con tarjeta?"
+    },
+    {
+     "n": "Say 'I'll take it', for a shirt."
+    },
+    {
+     "p": 3,
+     "expect": "Me la llevo"
+    },
+    {
+     "t": "Me la llevo"
+    },
+    {
+     "n": "Ask if you can pay by card."
+    },
+    {
+     "p": 4,
+     "expect": "¿Puedo pagar con tarjeta?"
+    },
+    {
+     "t": "¿Puedo pagar con tarjeta?"
+    },
+    {
+     "n": "Here is 'big'."
+    },
+    {
+     "t": "grande"
+    },
+    {
+     "p": 2,
+     "expect": "grande"
+    },
+    {
+     "t": "grande"
+    },
+    {
+     "n": "Here is 'small', for a masculine word."
+    },
+    {
+     "t": "pequeño"
+    },
+    {
+     "p": 2,
+     "expect": "pequeño"
+    },
+    {
+     "t": "pequeño"
+    },
+    {
+     "n": "Say 'Bigger, please.' 'Bigger' is 'more big'."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Más grande, por favor."
+    },
+    {
+     "p": 4,
+     "expect": "Más grande, por favor."
+    },
+    {
+     "t": "Más grande, por favor."
+    },
+    {
+     "n": "Here is 'too', as in 'too much'."
+    },
+    {
+     "t": "demasiado"
+    },
+    {
+     "p": 2,
+     "expect": "demasiado"
+    },
+    {
+     "t": "demasiado"
+    },
+    {
+     "n": "Say 'It's too expensive.'"
+    },
+    {
+     "p": 3
+    },
+    {
+     "t": "Es demasiado caro."
+    },
+    {
+     "p": 3,
+     "expect": "Es demasiado caro."
+    },
+    {
+     "t": "Es demasiado caro."
+    },
+    {
+     "n": "A culture note: haggling is not done in Spanish shops, but at open-air markets a friendly 'do you have anything cheaper?' is perfectly normal."
+    },
+    {
+     "n": "Ask 'Do you have anything cheaper?'"
+    },
+    {
+     "p": 4,
+     "expect": "¿Tiene algo más barato?"
+    },
+    {
+     "t": "¿Tiene algo más barato?"
+    },
+    {
+     "n": "Say 'This one costs twenty.'"
+    },
+    {
+     "p": 3,
+     "expect": "Esta cuesta veinte."
+    },
+    {
+     "t": "Esta cuesta veinte."
+    },
+    {
+     "n": "Say 'It's too expensive.'"
+    },
+    {
+     "p": 3,
+     "expect": "Es demasiado caro."
+    },
+    {
+     "t": "Es demasiado caro."
+    },
+    {
+     "n": "Say 'I'll take it', for a present."
+    },
+    {
+     "p": 3,
+     "expect": "Me lo llevo"
+    },
+    {
+     "t": "Me lo llevo"
+    },
+    {
+     "q": "How do you say 'of course'?"
+    },
+    {
+     "p": 3,
+     "expect": "claro"
+    },
+    {
+     "t": "claro"
+    },
+    {
+     "q": "How do you say 'fifty'?"
+    },
+    {
+     "p": 3,
+     "expect": "cincuenta"
+    },
+    {
+     "t": "cincuenta"
+    },
+    {
+     "n": "Say 'The bill, please.'"
+    },
+    {
+     "p": 3,
+     "expect": "La cuenta, por favor."
+    },
+    {
+     "t": "La cuenta, por favor."
+    },
+    {
+     "n": "Say 'Thank you very much. See you later.'"
+    },
+    {
+     "p": 4,
+     "expect": "Muchas gracias. Hasta luego."
+    },
+    {
+     "t": "Muchas gracias. Hasta luego."
+    },
+    {
+     "n": "Listen to the shop conversation once more."
+    },
+    {
+     "t": "Buenos días. ¿Tiene usted camisas?"
+    },
+    {
+     "t": "Sí, claro. Esta es muy bonita."
+    },
+    {
+     "t": "¿Cuánto cuesta?"
+    },
+    {
+     "t": "Treinta euros."
+    },
+    {
+     "t": "Es un poco caro. ¿Tiene algo más barato?"
+    },
+    {
+     "t": "Esta cuesta veinte."
+    },
+    {
+     "t": "Me la llevo. ¿Puedo pagar con tarjeta?"
+    },
+    {
+     "t": "Sí, claro."
+    },
+    {
+     "n": "Next time is the final lesson: a full review and a real conversation. This is the end of lesson eleven."
+    }
+   ]
+  },
+  {
+   "id": "a12",
+   "title": "Lesson 12 — A real conversation",
+   "minutes": 16,
+   "goal": "Review everything and hold a full conversation in Spanish",
+   "steps": [
+    {
+     "n": "This is lesson twelve, the final lesson of this course. Listen to a long conversation between Ana, an American traveller, and a Spanish man she meets in a hotel bar. You will understand almost everything."
+    },
+    {
+     "t": "Buenas tardes. ¿Qué tal?"
+    },
+    {
+     "t": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "t": "Bien. ¿De dónde es usted?"
+    },
+    {
+     "t": "Soy de Chicago. Me llamo Ana."
+    },
+    {
+     "t": "Mucho gusto, Ana. ¿Le gusta España?"
+    },
+    {
+     "t": "Sí, me gusta mucho. Ayer fui a Toledo y visité la catedral."
+    },
+    {
+     "t": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "t": "Me gustaría, pero no puedo. Mañana por la mañana sale mi tren."
+    },
+    {
+     "t": "¿A qué hora?"
+    },
+    {
+     "t": "A las ocho y media. Necesito un taxi para la estación."
+    },
+    {
+     "t": "De acuerdo. Buen viaje, Ana."
+    },
+    {
+     "t": "Gracias. Hasta pronto."
+    },
+    {
+     "n": "You heard: Good afternoon. How's it going? Very well, thanks. And you? Fine. Where are you from? I'm from Chicago. My name is Ana. Pleased to meet you, Ana. Do you like Spain? Yes, I like it a lot. Yesterday I went to Toledo and visited the cathedral. Do you want to have dinner with me tonight? I would like to, but I can't. My train leaves tomorrow morning. At what time? At half past eight. I need a taxi to the station. All right. Have a good trip, Ana. Thanks. See you soon."
+    },
+    {
+     "n": "Only four phrases were new. Here is the informal 'how's it going?'"
+    },
+    {
+     "t": "¿Qué tal?"
+    },
+    {
+     "p": 2,
+     "expect": "¿Qué tal?"
+    },
+    {
+     "t": "¿Qué tal?"
+    },
+    {
+     "n": "Here is 'have a good trip'."
+    },
+    {
+     "t": "Buen viaje"
+    },
+    {
+     "p": 2,
+     "expect": "Buen viaje"
+    },
+    {
+     "t": "Buen viaje"
+    },
+    {
+     "n": "Here is 'see you soon'."
+    },
+    {
+     "t": "Hasta pronto"
+    },
+    {
+     "p": 2,
+     "expect": "Hasta pronto"
+    },
+    {
+     "t": "Hasta pronto"
+    },
+    {
+     "n": "And here is 'likewise', the answer when someone says 'pleased to meet you'."
+    },
+    {
+     "t": "Igualmente"
+    },
+    {
+     "p": 2,
+     "expect": "Igualmente"
+    },
+    {
+     "t": "Igualmente"
+    },
+    {
+     "n": "A note on formality: everything in this course used the polite 'you'. Young Spaniards switch quickly to the informal form with people their own age, but the polite form is never wrong, and nobody will mind."
+    },
+    {
+     "n": "Say 'Good afternoon. How's it going?'"
+    },
+    {
+     "p": 4,
+     "expect": "Buenas tardes. ¿Qué tal?"
+    },
+    {
+     "t": "Buenas tardes. ¿Qué tal?"
+    },
+    {
+     "n": "Answer: 'Very well, thanks. And you?'"
+    },
+    {
+     "p": 4,
+     "expect": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "t": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "n": "Ask where I am from."
+    },
+    {
+     "p": 3,
+     "expect": "¿De dónde es usted?"
+    },
+    {
+     "t": "¿De dónde es usted?"
+    },
+    {
+     "n": "Answer: 'I'm from Chicago. My name is Ana.'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Soy de Chicago. Me llamo Ana."
+    },
+    {
+     "p": 4,
+     "expect": "Soy de Chicago. Me llamo Ana."
+    },
+    {
+     "t": "Soy de Chicago. Me llamo Ana."
+    },
+    {
+     "n": "Say 'pleased to meet you'."
+    },
+    {
+     "p": 3,
+     "expect": "Mucho gusto"
+    },
+    {
+     "t": "Mucho gusto"
+    },
+    {
+     "n": "Answer 'likewise'."
+    },
+    {
+     "p": 3,
+     "expect": "Igualmente"
+    },
+    {
+     "t": "Igualmente"
+    },
+    {
+     "n": "Ask me if I like Spain."
+    },
+    {
+     "p": 3,
+     "expect": "¿Le gusta España?"
+    },
+    {
+     "t": "¿Le gusta España?"
+    },
+    {
+     "n": "Say 'Yes, I like it a lot.'"
+    },
+    {
+     "p": 3,
+     "expect": "Sí, me gusta mucho."
+    },
+    {
+     "t": "Sí, me gusta mucho."
+    },
+    {
+     "n": "Now let's go back to the beginning. Imagine you have just arrived in Madrid."
+    },
+    {
+     "n": "Say 'Excuse me, madam. Do you speak English?'"
+    },
+    {
+     "p": 5,
+     "expect": "Perdone, señora. ¿Habla usted inglés?"
+    },
+    {
+     "t": "Perdone, señora. ¿Habla usted inglés?"
+    },
+    {
+     "n": "She says no. Tell her you speak a little Spanish."
+    },
+    {
+     "p": 4,
+     "expect": "Hablo un poco español."
+    },
+    {
+     "t": "Hablo un poco español."
+    },
+    {
+     "n": "Ask where the station is."
+    },
+    {
+     "p": 3,
+     "expect": "¿Dónde está la estación?"
+    },
+    {
+     "t": "¿Dónde está la estación?"
+    },
+    {
+     "n": "She says: straight ahead, then to the left. Ask if it is far."
+    },
+    {
+     "p": 3,
+     "expect": "¿Está lejos?"
+    },
+    {
+     "t": "¿Está lejos?"
+    },
+    {
+     "n": "Say 'thank you very much'."
+    },
+    {
+     "p": 3,
+     "expect": "Muchas gracias."
+    },
+    {
+     "t": "Muchas gracias."
+    },
+    {
+     "n": "At the station, ask for a ticket to Madrid, please."
+    },
+    {
+     "p": 5,
+     "expect": "Un billete para Madrid, por favor."
+    },
+    {
+     "t": "Un billete para Madrid, por favor."
+    },
+    {
+     "n": "Ask what time the train leaves."
+    },
+    {
+     "p": 4,
+     "expect": "¿A qué hora sale el tren?"
+    },
+    {
+     "t": "¿A qué hora sale el tren?"
+    },
+    {
+     "n": "Say 'At half past three.'"
+    },
+    {
+     "p": 4,
+     "expect": "Son las tres y media."
+    },
+    {
+     "t": "Son las tres y media."
+    },
+    {
+     "n": "Ask how much a ticket costs."
+    },
+    {
+     "p": 4,
+     "expect": "¿Cuánto cuesta un billete?"
+    },
+    {
+     "t": "¿Cuánto cuesta un billete?"
+    },
+    {
+     "n": "Say 'thirty euros'."
+    },
+    {
+     "p": 3,
+     "expect": "Treinta euros."
+    },
+    {
+     "t": "Treinta euros."
+    },
+    {
+     "n": "Say 'It's a bit expensive.'"
+    },
+    {
+     "p": 3,
+     "expect": "Es un poco caro."
+    },
+    {
+     "t": "Es un poco caro."
+    },
+    {
+     "n": "Now you are in a café."
+    },
+    {
+     "n": "The waiter asks what you would like. Order a coffee with milk, please."
+    },
+    {
+     "p": 5,
+     "expect": "Quisiera un café con leche, por favor."
+    },
+    {
+     "t": "Quisiera un café con leche, por favor."
+    },
+    {
+     "n": "He asks 'anything else?' Say 'Yes, a beer too.'"
+    },
+    {
+     "p": 4,
+     "expect": "Sí, una cerveza también."
+    },
+    {
+     "t": "Sí, una cerveza también."
+    },
+    {
+     "n": "Say 'I want to eat something.'"
+    },
+    {
+     "p": 3,
+     "expect": "Quiero comer algo."
+    },
+    {
+     "t": "Quiero comer algo."
+    },
+    {
+     "n": "Ask for the bill, please."
+    },
+    {
+     "p": 3,
+     "expect": "La cuenta, por favor."
+    },
+    {
+     "t": "La cuenta, por favor."
+    },
+    {
+     "n": "Ask how much it is."
+    },
+    {
+     "p": 3,
+     "expect": "¿Cuánto es?"
+    },
+    {
+     "t": "¿Cuánto es?"
+    },
+    {
+     "n": "Say 'Can I pay by card?'"
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "¿Puedo pagar con tarjeta?"
+    },
+    {
+     "p": 4,
+     "expect": "¿Puedo pagar con tarjeta?"
+    },
+    {
+     "t": "¿Puedo pagar con tarjeta?"
+    },
+    {
+     "n": "Now you meet someone at a party."
+    },
+    {
+     "n": "Say 'Hello, my name is Carmen. What is your name?'"
+    },
+    {
+     "p": 5,
+     "expect": "Hola, me llamo Carmen. ¿Cómo se llama usted?"
+    },
+    {
+     "t": "Hola, me llamo Carmen. ¿Cómo se llama usted?"
+    },
+    {
+     "n": "Introduce your husband: 'This is my husband.'"
+    },
+    {
+     "p": 3,
+     "expect": "Este es mi marido."
+    },
+    {
+     "t": "Este es mi marido."
+    },
+    {
+     "n": "Say 'I have a son and a daughter.'"
+    },
+    {
+     "p": 4,
+     "expect": "Tengo un hijo y una hija."
+    },
+    {
+     "t": "Tengo un hijo y una hija."
+    },
+    {
+     "n": "Ask 'Do you have children?'"
+    },
+    {
+     "p": 3,
+     "expect": "¿Tiene usted hijos?"
+    },
+    {
+     "t": "¿Tiene usted hijos?"
+    },
+    {
+     "n": "Say 'I like Spanish food.'"
+    },
+    {
+     "p": 4,
+     "expect": "Me gusta la comida española."
+    },
+    {
+     "t": "Me gusta la comida española."
+    },
+    {
+     "n": "Ask 'What did you do yesterday?'"
+    },
+    {
+     "p": 4,
+     "expect": "¿Qué hizo usted ayer?"
+    },
+    {
+     "t": "¿Qué hizo usted ayer?"
+    },
+    {
+     "n": "Answer: 'Yesterday I went to Toledo and visited the cathedral.'"
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "Ayer fui a Toledo y visité la catedral."
+    },
+    {
+     "p": 5,
+     "expect": "Ayer fui a Toledo y visité la catedral."
+    },
+    {
+     "t": "Ayer fui a Toledo y visité la catedral."
+    },
+    {
+     "n": "Ask 'Do you want to have dinner with me tonight?'"
+    },
+    {
+     "p": 5,
+     "expect": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "t": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "n": "Decline: 'I would like to, but I can't.'"
+    },
+    {
+     "p": 4,
+     "expect": "Me gustaría, pero no puedo."
+    },
+    {
+     "t": "Me gustaría, pero no puedo."
+    },
+    {
+     "n": "Say 'My train leaves tomorrow morning.' Start with 'tomorrow morning', then 'leaves my train'."
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "Mañana por la mañana sale mi tren."
+    },
+    {
+     "p": 5,
+     "expect": "Mañana por la mañana sale mi tren."
+    },
+    {
+     "t": "Mañana por la mañana sale mi tren."
+    },
+    {
+     "n": "Ask 'Shall we go to the cinema?'"
+    },
+    {
+     "p": 3,
+     "expect": "¿Vamos al cine?"
+    },
+    {
+     "t": "¿Vamos al cine?"
+    },
+    {
+     "n": "Ask 'What time shall we meet?'"
+    },
+    {
+     "p": 4,
+     "expect": "¿A qué hora nos vemos?"
+    },
+    {
+     "t": "¿A qué hora nos vemos?"
+    },
+    {
+     "n": "Say 'At eight, at the hotel.'"
+    },
+    {
+     "p": 4,
+     "expect": "A las ocho, en el hotel."
+    },
+    {
+     "t": "A las ocho, en el hotel."
+    },
+    {
+     "n": "Say 'All right. See you tomorrow.'"
+    },
+    {
+     "p": 4,
+     "expect": "De acuerdo. Hasta mañana."
+    },
+    {
+     "t": "De acuerdo. Hasta mañana."
+    },
+    {
+     "n": "Say 'I need a taxi to the station.'"
+    },
+    {
+     "p": 5
+    },
+    {
+     "t": "Necesito un taxi para la estación."
+    },
+    {
+     "p": 5,
+     "expect": "Necesito un taxi para la estación."
+    },
+    {
+     "t": "Necesito un taxi para la estación."
+    },
+    {
+     "n": "Say 'Have a good trip.'"
+    },
+    {
+     "p": 3,
+     "expect": "Buen viaje"
+    },
+    {
+     "t": "Buen viaje"
+    },
+    {
+     "n": "Say 'See you soon.'"
+    },
+    {
+     "p": 3,
+     "expect": "Hasta pronto"
+    },
+    {
+     "t": "Hasta pronto"
+    },
+    {
+     "n": "Now take Ana's part in the conversation. I will play the Spanish man. Answer in the pauses."
+    },
+    {
+     "t": "Buenas tardes. ¿Qué tal?"
+    },
+    {
+     "p": 4,
+     "expect": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "t": "Bien. ¿De dónde es usted?"
+    },
+    {
+     "p": 4,
+     "expect": "Soy de Chicago. Me llamo Ana."
+    },
+    {
+     "t": "Mucho gusto, Ana. ¿Le gusta España?"
+    },
+    {
+     "p": 4,
+     "expect": "Sí, me gusta mucho."
+    },
+    {
+     "t": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "p": 4,
+     "expect": "Me gustaría, pero no puedo."
+    },
+    {
+     "t": "¿Y mañana?"
+    },
+    {
+     "p": 5,
+     "expect": "Mañana por la mañana sale mi tren."
+    },
+    {
+     "t": "De acuerdo. Buen viaje, Ana."
+    },
+    {
+     "p": 4,
+     "expect": "Gracias. Hasta pronto."
+    },
+    {
+     "n": "Well done. Listen to the full conversation one last time."
+    },
+    {
+     "t": "Buenas tardes. ¿Qué tal?"
+    },
+    {
+     "t": "Muy bien, gracias. ¿Y usted?"
+    },
+    {
+     "t": "Bien. ¿De dónde es usted?"
+    },
+    {
+     "t": "Soy de Chicago. Me llamo Ana."
+    },
+    {
+     "t": "Mucho gusto, Ana. ¿Le gusta España?"
+    },
+    {
+     "t": "Sí, me gusta mucho. Ayer fui a Toledo y visité la catedral."
+    },
+    {
+     "t": "¿Quiere usted cenar conmigo esta noche?"
+    },
+    {
+     "t": "Me gustaría, pero no puedo. Mañana por la mañana sale mi tren."
+    },
+    {
+     "t": "¿A qué hora?"
+    },
+    {
+     "t": "A las ocho y media. Necesito un taxi para la estación."
+    },
+    {
+     "t": "De acuerdo. Buen viaje, Ana."
+    },
+    {
+     "t": "Gracias. Hasta pronto."
+    },
+    {
+     "n": "You have finished the Brodoit Spanish audio course. You can greet people, order, ask the way, tell the time, talk about yourself and make plans, all out loud. Keep listening to Spanish, and repeat these lessons whenever you like. Goodbye, and have a good trip."
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,6507 @@
+{
+ "code": "hi",
+ "name": "Hindi",
+ "native": "हिन्दी",
+ "flag": "🇮🇳",
+ "from": "en",
+ "fromName": "English",
+ "voice": "hi-IN",
+ "tagline": "Chat with family, haggle in the bazaar, travel India with confidence.",
+ "units": [
+  {
+   "id": "u1",
+   "title": "Basics 1",
+   "emoji": "👋",
+   "goal": "Greet people and introduce yourself",
+   "lessons": [
+    {
+     "id": "u1l1",
+     "title": "Hello!",
+     "items": [
+      {
+       "t": "learn",
+       "word": "नमस्ते",
+       "tl": "namaste",
+       "meaning": "hello / goodbye",
+       "example": "नमस्ते, आप कैसे हैं?",
+       "exampleMeaning": "Hello, how are you?"
+      },
+      {
+       "t": "learn",
+       "word": "धन्यवाद",
+       "tl": "dhanyavaad",
+       "meaning": "thank you",
+       "example": "धन्यवाद, जी।",
+       "exampleMeaning": "Thank you, sir/ma'am."
+      },
+      {
+       "t": "learn",
+       "word": "हाँ",
+       "tl": "haan",
+       "meaning": "yes",
+       "example": "हाँ, ठीक है।",
+       "exampleMeaning": "Yes, okay."
+      },
+      {
+       "t": "learn",
+       "word": "नहीं",
+       "tl": "nahin",
+       "meaning": "no / not",
+       "example": "नहीं, धन्यवाद।",
+       "exampleMeaning": "No, thank you."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'thank you'?",
+       "options": [
+        "नमस्ते",
+        "हाँ",
+        "धन्यवाद",
+        "नहीं"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'नहीं' mean?",
+       "options": [
+        "yes",
+        "no",
+        "hello",
+        "thanks"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "नमस्ते",
+       "meaning": "hello",
+       "bank": [
+        "धन्यवाद",
+        "हाँ",
+        "नमस्ते"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Yes, thank you",
+       "answer": "हाँ धन्यवाद",
+       "bank": [
+        "नहीं",
+        "हाँ",
+        "नमस्ते",
+        "धन्यवाद"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "नमस्ते",
+       "meaning": "hello"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "नमस्ते",
+         "hello"
+        ],
+        [
+         "धन्यवाद",
+         "thank you"
+        ],
+        [
+         "हाँ",
+         "yes"
+        ],
+        [
+         "नहीं",
+         "no"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "नहीं",
+       "answer": "no",
+       "bank": [
+        "thanks",
+        "hello",
+        "no",
+        "yes"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "हाँ",
+       "meaning": "yes",
+       "bank": [
+        "हाँ",
+        "नहीं",
+        "धन्यवाद",
+        "नमस्ते"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "नहीं, धन्यवाद।",
+       "meaning": "No, thank you."
+      }
+     ]
+    },
+    {
+     "id": "u1l2",
+     "title": "How are you?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "आप",
+       "tl": "aap",
+       "meaning": "you (polite)",
+       "example": "आप कैसे हैं?",
+       "exampleMeaning": "How are you?"
+      },
+      {
+       "t": "learn",
+       "word": "कैसे हैं",
+       "tl": "kaise hain",
+       "meaning": "how are (you)",
+       "example": "आप कैसे हैं?",
+       "exampleMeaning": "How are you?"
+      },
+      {
+       "t": "learn",
+       "word": "मैं",
+       "tl": "main",
+       "meaning": "I",
+       "example": "मैं ठीक हूँ।",
+       "exampleMeaning": "I am fine."
+      },
+      {
+       "t": "learn",
+       "word": "ठीक हूँ",
+       "tl": "theek hoon",
+       "meaning": "am fine",
+       "example": "मैं ठीक हूँ, धन्यवाद।",
+       "exampleMeaning": "I am fine, thank you."
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'I'?",
+       "options": [
+        "आप",
+        "मैं",
+        "हाँ",
+        "ठीक"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How are you?",
+       "answer": "आप कैसे हैं?",
+       "bank": [
+        "कैसे",
+        "आप",
+        "हैं?",
+        "मैं",
+        "हूँ",
+        "ठीक"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मैं ठीक हूँ।",
+       "meaning": "I am fine.",
+       "bank": [
+        "हूँ।",
+        "ठीक",
+        "आप",
+        "नहीं",
+        "मैं",
+        "कैसे"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मैं ___ हूँ।",
+       "meaning": "I am fine.",
+       "options": [
+        "ठीक",
+        "कैसे",
+        "आप",
+        "नमस्ते"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "आप कैसे हैं?",
+       "meaning": "How are you?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "आप",
+         "you"
+        ],
+        [
+         "मैं",
+         "I"
+        ],
+        [
+         "ठीक",
+         "fine"
+        ],
+        [
+         "कैसे",
+         "how"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मैं ठीक हूँ।",
+       "answer": "I am fine.",
+       "bank": [
+        "am",
+        "are",
+        "how",
+        "I",
+        "fine.",
+        "You"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Someone asks 'आप कैसे हैं?' You reply:",
+       "options": [
+        "नहीं",
+        "नमस्ते",
+        "मैं ठीक हूँ।",
+        "धन्यवाद"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "मैं ठीक हूँ, धन्यवाद।",
+       "meaning": "I am fine, thank you."
+      }
+     ]
+    },
+    {
+     "id": "u1l3",
+     "title": "My name is...",
+     "items": [
+      {
+       "t": "learn",
+       "word": "मेरा नाम",
+       "tl": "mera naam",
+       "meaning": "my name",
+       "example": "मेरा नाम राहुल है।",
+       "exampleMeaning": "My name is Rahul."
+      },
+      {
+       "t": "learn",
+       "word": "है",
+       "tl": "hai",
+       "meaning": "is",
+       "example": "मेरा नाम अना है।",
+       "exampleMeaning": "My name is Ana."
+      },
+      {
+       "t": "learn",
+       "word": "आपका नाम क्या है?",
+       "tl": "aapka naam kya hai",
+       "meaning": "What is your name?",
+       "example": "नमस्ते! आपका नाम क्या है?",
+       "exampleMeaning": "Hello! What is your name?"
+      },
+      {
+       "t": "learn",
+       "word": "कृपया",
+       "tl": "kripya",
+       "meaning": "please",
+       "example": "कृपया, फिर से।",
+       "exampleMeaning": "Please, again."
+      },
+      {
+       "t": "learn",
+       "word": "माफ़ कीजिए",
+       "tl": "maaf keejiye",
+       "meaning": "excuse me / sorry",
+       "example": "माफ़ कीजिए, आपका नाम क्या है?",
+       "exampleMeaning": "Excuse me, what is your name?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'please'?",
+       "options": [
+        "कृपया",
+        "है",
+        "नाम",
+        "मेरा"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My name is Rahul.",
+       "answer": "मेरा नाम राहुल है।",
+       "bank": [
+        "क्या",
+        "मेरा",
+        "नाम",
+        "आपका",
+        "राहुल",
+        "है।",
+        "हूँ"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "आपका नाम क्या है?",
+       "meaning": "What is your name?",
+       "bank": [
+        "मेरा",
+        "है?",
+        "कृपया",
+        "क्या",
+        "है।",
+        "नाम",
+        "आपका"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मेरा ___ अना है।",
+       "meaning": "My name is Ana.",
+       "options": [
+        "नाम",
+        "आप",
+        "क्या",
+        "ठीक"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मेरा नाम अना है।",
+       "meaning": "My name is Ana."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "नाम",
+         "name"
+        ],
+        [
+         "क्या",
+         "what"
+        ],
+        [
+         "कृपया",
+         "please"
+        ],
+        [
+         "माफ़ कीजिए",
+         "excuse me"
+        ],
+        [
+         "मेरा",
+         "my"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "माफ़ कीजिए, आपका नाम क्या है?",
+       "answer": "Excuse me, what is your name?",
+       "bank": [
+        "Excuse",
+        "is",
+        "me,",
+        "name?",
+        "my",
+        "how",
+        "your",
+        "what"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'है' mean?",
+       "options": [
+        "am",
+        "is",
+        "you",
+        "my"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "माफ़ कीजिए।",
+       "meaning": "Excuse me."
+      }
+     ]
+    },
+    {
+     "id": "u1l4",
+     "title": "Review: Basics 1",
+     "items": [
+      {
+       "t": "learn",
+       "word": "फिर मिलेंगे",
+       "tl": "phir milenge",
+       "meaning": "see you again",
+       "example": "नमस्ते, फिर मिलेंगे!",
+       "exampleMeaning": "Bye, see you again!"
+      },
+      {
+       "t": "learn",
+       "word": "शुभ रात्रि",
+       "tl": "shubh raatri",
+       "meaning": "good night",
+       "example": "शुभ रात्रि, फिर मिलेंगे।",
+       "exampleMeaning": "Good night, see you again."
+      },
+      {
+       "t": "learn",
+       "word": "जी",
+       "tl": "jee",
+       "meaning": "yes / polite particle",
+       "example": "जी, धन्यवाद।",
+       "exampleMeaning": "Yes, thank you."
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'see you again'?",
+       "options": [
+        "शुभ रात्रि",
+        "फिर मिलेंगे",
+        "नमस्ते",
+        "कृपया"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "फिर मिलेंगे",
+         "see you again"
+        ],
+        [
+         "शुभ रात्रि",
+         "good night"
+        ],
+        [
+         "धन्यवाद",
+         "thank you"
+        ],
+        [
+         "माफ़ कीजिए",
+         "excuse me"
+        ],
+        [
+         "कृपया",
+         "please"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Hello, how are you?",
+       "answer": "नमस्ते, आप कैसे हैं?",
+       "bank": [
+        "ठीक",
+        "नमस्ते,",
+        "मैं",
+        "कैसे",
+        "नाम",
+        "आप",
+        "हैं?"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मेरा नाम राहुल है।",
+       "meaning": "My name is Rahul.",
+       "bank": [
+        "क्या",
+        "मेरा",
+        "नाम",
+        "आपका",
+        "राहुल",
+        "है।",
+        "हूँ"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "आप ___ हैं?",
+       "meaning": "How are you?",
+       "options": [
+        "कैसे",
+        "क्या",
+        "ठीक",
+        "नाम"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "शुभ रात्रि, फिर मिलेंगे।",
+       "answer": "Good night, see you again.",
+       "bank": [
+        "night,",
+        "thank",
+        "you",
+        "hello",
+        "see",
+        "morning",
+        "Good",
+        "again."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "नमस्ते, मेरा नाम अना है।",
+       "meaning": "Hello, my name is Ana."
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the reply to 'धन्यवाद':",
+       "options": [
+        "आपका नाम क्या है?",
+        "जी, ठीक है।",
+        "मैं ठीक हूँ।",
+        "शुभ रात्रि"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "जी, धन्यवाद।",
+       "meaning": "Yes, thank you.",
+       "bank": [
+        "हाँ",
+        "धन्यवाद।",
+        "जी,",
+        "नहीं",
+        "कृपया"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "फिर मिलेंगे!",
+       "meaning": "See you again!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u2",
+   "title": "Basics 2",
+   "emoji": "🧑‍🤝‍🧑",
+   "goal": "Talk about people and where they are from",
+   "lessons": [
+    {
+     "id": "u2l1",
+     "title": "This and that",
+     "items": [
+      {
+       "t": "learn",
+       "word": "यह",
+       "tl": "yah",
+       "meaning": "this / he / she (near)",
+       "example": "यह मेरा दोस्त है।",
+       "exampleMeaning": "This is my friend."
+      },
+      {
+       "t": "learn",
+       "word": "वह",
+       "tl": "vah",
+       "meaning": "that / he / she (far)",
+       "example": "वह राहुल है।",
+       "exampleMeaning": "That is Rahul."
+      },
+      {
+       "t": "learn",
+       "word": "दोस्त",
+       "tl": "dost",
+       "meaning": "friend",
+       "example": "यह मेरा दोस्त है।",
+       "exampleMeaning": "This is my friend."
+      },
+      {
+       "t": "learn",
+       "word": "लड़का",
+       "tl": "ladka",
+       "meaning": "boy",
+       "example": "वह लड़का है।",
+       "exampleMeaning": "That is a boy."
+      },
+      {
+       "t": "learn",
+       "word": "लड़की",
+       "tl": "ladki",
+       "meaning": "girl",
+       "example": "यह लड़की है।",
+       "exampleMeaning": "This is a girl."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'girl'?",
+       "options": [
+        "लड़का",
+        "लड़की",
+        "दोस्त",
+        "वह"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "This is my friend.",
+       "answer": "यह मेरा दोस्त है।",
+       "bank": [
+        "मेरा",
+        "लड़का",
+        "हूँ",
+        "यह",
+        "दोस्त",
+        "है।",
+        "वह"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "वह लड़का है।",
+       "meaning": "That is a boy.",
+       "bank": [
+        "लड़का",
+        "दोस्त",
+        "वह",
+        "लड़की",
+        "है।",
+        "यह"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ लड़की है।",
+       "meaning": "This is a girl.",
+       "options": [
+        "यह",
+        "मैं",
+        "आप",
+        "नाम"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "यह मेरा दोस्त है।",
+       "meaning": "This is my friend."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "यह",
+         "this"
+        ],
+        [
+         "वह",
+         "that"
+        ],
+        [
+         "दोस्त",
+         "friend"
+        ],
+        [
+         "लड़का",
+         "boy"
+        ],
+        [
+         "लड़की",
+         "girl"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "वह लड़की है।",
+       "answer": "That is a girl.",
+       "bank": [
+        "is",
+        "That",
+        "girl.",
+        "boy",
+        "a",
+        "friend",
+        "This"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'यह' mean?",
+       "options": [
+        "that",
+        "this",
+        "you",
+        "friend"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u2l2",
+     "title": "Who is that?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "कौन",
+       "tl": "kaun",
+       "meaning": "who",
+       "example": "वह कौन है?",
+       "exampleMeaning": "Who is that?"
+      },
+      {
+       "t": "learn",
+       "word": "आदमी",
+       "tl": "aadmi",
+       "meaning": "man",
+       "example": "वह आदमी कौन है?",
+       "exampleMeaning": "Who is that man?"
+      },
+      {
+       "t": "learn",
+       "word": "औरत",
+       "tl": "aurat",
+       "meaning": "woman",
+       "example": "यह औरत मेरी दोस्त है।",
+       "exampleMeaning": "This woman is my friend."
+      },
+      {
+       "t": "learn",
+       "word": "छात्र",
+       "tl": "chhaatra",
+       "meaning": "student",
+       "example": "मैं छात्र हूँ।",
+       "exampleMeaning": "I am a student."
+      },
+      {
+       "t": "learn",
+       "word": "शिक्षक",
+       "tl": "shikshak",
+       "meaning": "teacher",
+       "example": "वह शिक्षक है।",
+       "exampleMeaning": "He is a teacher."
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'who'?",
+       "options": [
+        "क्या",
+        "कैसे",
+        "कौन",
+        "कहाँ"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Who is that?",
+       "answer": "वह कौन है?",
+       "bank": [
+        "आदमी",
+        "है?",
+        "क्या",
+        "कौन",
+        "यह",
+        "वह"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "वह शिक्षक है।",
+       "meaning": "He is a teacher.",
+       "bank": [
+        "छात्र",
+        "मैं",
+        "शिक्षक",
+        "वह",
+        "हूँ",
+        "है।"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मैं ___ हूँ।",
+       "meaning": "I am a student.",
+       "options": [
+        "छात्र",
+        "शिक्षक",
+        "लड़की",
+        "औरत"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "वह आदमी कौन है?",
+       "meaning": "Who is that man?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "कौन",
+         "who"
+        ],
+        [
+         "आदमी",
+         "man"
+        ],
+        [
+         "औरत",
+         "woman"
+        ],
+        [
+         "छात्र",
+         "student"
+        ],
+        [
+         "शिक्षक",
+         "teacher"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "यह औरत शिक्षक है।",
+       "answer": "This woman is a teacher.",
+       "bank": [
+        "student",
+        "man",
+        "a",
+        "woman",
+        "That",
+        "is",
+        "teacher.",
+        "This"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the word for 'man':",
+       "options": [
+        "औरत",
+        "आदमी",
+        "लड़का",
+        "दोस्त"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "मैं छात्र हूँ।",
+       "meaning": "I am a student."
+      }
+     ]
+    },
+    {
+     "id": "u2l3",
+     "title": "Where are you from?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "कहाँ",
+       "tl": "kahaan",
+       "meaning": "where",
+       "example": "आप कहाँ से हैं?",
+       "exampleMeaning": "Where are you from?"
+      },
+      {
+       "t": "learn",
+       "word": "से",
+       "tl": "se",
+       "meaning": "from",
+       "example": "मैं भारत से हूँ।",
+       "exampleMeaning": "I am from India."
+      },
+      {
+       "t": "learn",
+       "word": "भारत",
+       "tl": "bhaarat",
+       "meaning": "India",
+       "example": "भारत बहुत बड़ा है।",
+       "exampleMeaning": "India is very big."
+      },
+      {
+       "t": "learn",
+       "word": "अमेरिका",
+       "tl": "amerika",
+       "meaning": "America",
+       "example": "वह अमेरिका से है।",
+       "exampleMeaning": "He is from America."
+      },
+      {
+       "t": "learn",
+       "word": "हैं",
+       "tl": "hain",
+       "meaning": "are (plural/polite)",
+       "example": "आप कहाँ से हैं?",
+       "exampleMeaning": "Where are you from?"
+      },
+      {
+       "t": "learn",
+       "word": "डॉक्टर",
+       "tl": "doctor",
+       "meaning": "doctor",
+       "example": "मेरा दोस्त डॉक्टर है।",
+       "exampleMeaning": "My friend is a doctor."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'from'?",
+       "options": [
+        "से",
+        "है",
+        "कहाँ",
+        "कौन"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Where are you from?",
+       "answer": "आप कहाँ से हैं?",
+       "bank": [
+        "कहाँ",
+        "मैं",
+        "से",
+        "आप",
+        "भारत",
+        "हूँ",
+        "हैं?"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मैं भारत से हूँ।",
+       "meaning": "I am from India.",
+       "bank": [
+        "हैं",
+        "भारत",
+        "हूँ।",
+        "मैं",
+        "आप",
+        "अमेरिका",
+        "से"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "वह अमेरिका ___ है।",
+       "meaning": "He is from America.",
+       "options": [
+        "से",
+        "में",
+        "का",
+        "है"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मैं अमेरिका से हूँ।",
+       "meaning": "I am from America."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "कहाँ",
+         "where"
+        ],
+        [
+         "से",
+         "from"
+        ],
+        [
+         "भारत",
+         "India"
+        ],
+        [
+         "अमेरिका",
+         "America"
+        ],
+        [
+         "डॉक्टर",
+         "doctor"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरा दोस्त डॉक्टर है।",
+       "answer": "My friend is a doctor.",
+       "bank": [
+        "student",
+        "doctor.",
+        "teacher",
+        "friend",
+        "Your",
+        "a",
+        "is",
+        "My"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Complete: 'आप कहाँ से ___?'",
+       "options": [
+        "हूँ",
+        "है",
+        "हैं",
+        "हो"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u2l4",
+     "title": "Review: Basics 2",
+     "items": [
+      {
+       "t": "learn",
+       "word": "हम",
+       "tl": "ham",
+       "meaning": "we",
+       "example": "हम दोस्त हैं।",
+       "exampleMeaning": "We are friends."
+      },
+      {
+       "t": "learn",
+       "word": "वे",
+       "tl": "ve",
+       "meaning": "they",
+       "example": "वे छात्र हैं।",
+       "exampleMeaning": "They are students."
+      },
+      {
+       "t": "learn",
+       "word": "अच्छा",
+       "tl": "achchha",
+       "meaning": "good / okay",
+       "example": "वह अच्छा आदमी है।",
+       "exampleMeaning": "He is a good man."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'we'?",
+       "options": [
+        "वे",
+        "हम",
+        "आप",
+        "मैं"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "हम",
+         "we"
+        ],
+        [
+         "वे",
+         "they"
+        ],
+        [
+         "अच्छा",
+         "good"
+        ],
+        [
+         "कौन",
+         "who"
+        ],
+        [
+         "कहाँ",
+         "where"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "We are friends.",
+       "answer": "हम दोस्त हैं।",
+       "bank": [
+        "हैं।",
+        "छात्र",
+        "है",
+        "हम",
+        "वे",
+        "दोस्त"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "वे छात्र हैं।",
+       "meaning": "They are students.",
+       "bank": [
+        "शिक्षक",
+        "हैं।",
+        "दोस्त",
+        "हम",
+        "वे",
+        "छात्र"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "यह ___ आदमी है।",
+       "meaning": "This is a good man.",
+       "options": [
+        "अच्छा",
+        "कौन",
+        "ठीक",
+        "कहाँ"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "वह औरत कहाँ से है?",
+       "answer": "Where is that woman from?",
+       "bank": [
+        "from?",
+        "woman",
+        "that",
+        "This",
+        "is",
+        "man",
+        "Where",
+        "who"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "हम भारत से हैं।",
+       "meaning": "We are from India."
+      },
+      {
+       "t": "choose",
+       "prompt": "'वह लड़की छात्र है।' means:",
+       "options": [
+        "That girl is a teacher.",
+        "That girl is a student.",
+        "This boy is a student.",
+        "That woman is a doctor."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "आप कौन हैं?",
+       "meaning": "Who are you?",
+       "bank": [
+        "कौन",
+        "क्या",
+        "हैं?",
+        "से",
+        "कहाँ",
+        "आप"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "वह अच्छा दोस्त है।",
+       "meaning": "He is a good friend."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u3",
+   "title": "Numbers",
+   "emoji": "🔢",
+   "goal": "Count, say your age and phone number",
+   "lessons": [
+    {
+     "id": "u3l1",
+     "title": "One to five",
+     "items": [
+      {
+       "t": "learn",
+       "word": "एक",
+       "tl": "ek",
+       "meaning": "one",
+       "example": "एक चाय, कृपया।",
+       "exampleMeaning": "One tea, please."
+      },
+      {
+       "t": "learn",
+       "word": "दो",
+       "tl": "do",
+       "meaning": "two",
+       "example": "दो दोस्त",
+       "exampleMeaning": "two friends"
+      },
+      {
+       "t": "learn",
+       "word": "तीन",
+       "tl": "teen",
+       "meaning": "three",
+       "example": "तीन लड़के",
+       "exampleMeaning": "three boys"
+      },
+      {
+       "t": "learn",
+       "word": "चार",
+       "tl": "chaar",
+       "meaning": "four",
+       "example": "चार छात्र",
+       "exampleMeaning": "four students"
+      },
+      {
+       "t": "learn",
+       "word": "पाँच",
+       "tl": "paanch",
+       "meaning": "five",
+       "example": "पाँच लड़कियाँ",
+       "exampleMeaning": "five girls"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'three'?",
+       "options": [
+        "एक",
+        "दो",
+        "तीन",
+        "चार"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'पाँच' mean?",
+       "options": [
+        "four",
+        "five",
+        "two",
+        "one"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "एक, दो, तीन",
+       "meaning": "one, two, three",
+       "bank": [
+        "तीन",
+        "पाँच",
+        "चार",
+        "दो,",
+        "एक,"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "two friends",
+       "answer": "दो दोस्त",
+       "bank": [
+        "दोस्त",
+        "तीन",
+        "एक",
+        "छात्र",
+        "दो"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "एक, दो, तीन, चार, पाँच",
+       "meaning": "one, two, three, four, five"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "एक",
+         "1"
+        ],
+        [
+         "दो",
+         "2"
+        ],
+        [
+         "तीन",
+         "3"
+        ],
+        [
+         "चार",
+         "4"
+        ],
+        [
+         "पाँच",
+         "5"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "चार छात्र",
+       "answer": "four students",
+       "bank": [
+        "three",
+        "students",
+        "four",
+        "friends",
+        "five"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ चाय, कृपया।",
+       "meaning": "One tea, please.",
+       "options": [
+        "एक",
+        "दो",
+        "पाँच",
+        "तीन"
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u3l2",
+     "title": "Six to ten",
+     "items": [
+      {
+       "t": "learn",
+       "word": "छह",
+       "tl": "chhah",
+       "meaning": "six",
+       "example": "छह बजे",
+       "exampleMeaning": "six o'clock"
+      },
+      {
+       "t": "learn",
+       "word": "सात",
+       "tl": "saat",
+       "meaning": "seven",
+       "example": "सात दिन",
+       "exampleMeaning": "seven days"
+      },
+      {
+       "t": "learn",
+       "word": "आठ",
+       "tl": "aath",
+       "meaning": "eight",
+       "example": "आठ लड़के",
+       "exampleMeaning": "eight boys"
+      },
+      {
+       "t": "learn",
+       "word": "नौ",
+       "tl": "nau",
+       "meaning": "nine",
+       "example": "नौ औरतें",
+       "exampleMeaning": "nine women"
+      },
+      {
+       "t": "learn",
+       "word": "दस",
+       "tl": "das",
+       "meaning": "ten",
+       "example": "दस रुपये",
+       "exampleMeaning": "ten rupees"
+      },
+      {
+       "t": "learn",
+       "word": "कितने",
+       "tl": "kitne",
+       "meaning": "how many",
+       "example": "कितने दोस्त?",
+       "exampleMeaning": "How many friends?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'eight'?",
+       "options": [
+        "छह",
+        "सात",
+        "आठ",
+        "नौ"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "सात, आठ, नौ, दस",
+       "meaning": "seven, eight, nine, ten",
+       "bank": [
+        "नौ,",
+        "आठ,",
+        "दस",
+        "पाँच",
+        "सात,",
+        "छह"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How many friends?",
+       "answer": "कितने दोस्त?",
+       "bank": [
+        "कौन",
+        "दस",
+        "छात्र",
+        "कितने",
+        "दोस्त?"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ दिन",
+       "meaning": "seven days",
+       "options": [
+        "सात",
+        "दस",
+        "नौ",
+        "चार"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "छह, सात, आठ, नौ, दस",
+       "meaning": "six, seven, eight, nine, ten"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "छह",
+         "6"
+        ],
+        [
+         "सात",
+         "7"
+        ],
+        [
+         "आठ",
+         "8"
+        ],
+        [
+         "नौ",
+         "9"
+        ],
+        [
+         "दस",
+         "10"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "कितने छात्र?",
+       "answer": "How many students?",
+       "bank": [
+        "friends",
+        "How",
+        "students?",
+        "many",
+        "who"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'कितने' means:",
+       "options": [
+        "how much money",
+        "how many",
+        "how are you",
+        "how"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u3l3",
+     "title": "How old are you?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "साल",
+       "tl": "saal",
+       "meaning": "year",
+       "example": "दस साल",
+       "exampleMeaning": "ten years"
+      },
+      {
+       "t": "learn",
+       "word": "उम्र",
+       "tl": "umra",
+       "meaning": "age",
+       "example": "आपकी उम्र क्या है?",
+       "exampleMeaning": "What is your age?"
+      },
+      {
+       "t": "learn",
+       "word": "बीस",
+       "tl": "bees",
+       "meaning": "twenty",
+       "example": "मैं बीस साल का हूँ।",
+       "exampleMeaning": "I am twenty years old."
+      },
+      {
+       "t": "learn",
+       "word": "तीस",
+       "tl": "tees",
+       "meaning": "thirty",
+       "example": "वह तीस साल की है।",
+       "exampleMeaning": "She is thirty years old."
+      },
+      {
+       "t": "learn",
+       "word": "का",
+       "tl": "kaa",
+       "meaning": "of (masculine)",
+       "example": "मैं बीस साल का हूँ।",
+       "exampleMeaning": "I am twenty years old (male)."
+      },
+      {
+       "t": "learn",
+       "word": "की",
+       "tl": "kee",
+       "meaning": "of (feminine)",
+       "example": "मैं बीस साल की हूँ।",
+       "exampleMeaning": "I am twenty years old (female)."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'twenty'?",
+       "options": [
+        "दस",
+        "बीस",
+        "तीस",
+        "नौ"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "What is your age?",
+       "answer": "आपकी उम्र क्या है?",
+       "bank": [
+        "मेरा",
+        "कितने",
+        "उम्र",
+        "है?",
+        "साल",
+        "क्या",
+        "आपकी"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मैं बीस साल का हूँ।",
+       "meaning": "I am twenty years old.",
+       "bank": [
+        "है",
+        "बीस",
+        "साल",
+        "मैं",
+        "की",
+        "हूँ।",
+        "का",
+        "तीस"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "वह तीस साल ___ है।",
+       "meaning": "She is thirty years old.",
+       "options": [
+        "की",
+        "का",
+        "के",
+        "से"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मैं बीस साल की हूँ।",
+       "meaning": "I am twenty years old."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "साल",
+         "year"
+        ],
+        [
+         "उम्र",
+         "age"
+        ],
+        [
+         "बीस",
+         "twenty"
+        ],
+        [
+         "तीस",
+         "thirty"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "वह दस साल का है।",
+       "answer": "He is ten years old.",
+       "bank": [
+        "twenty",
+        "old.",
+        "is",
+        "thirty",
+        "ten",
+        "years",
+        "She",
+        "He"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u3l4",
+     "title": "Review: Numbers",
+     "items": [
+      {
+       "t": "learn",
+       "word": "सौ",
+       "tl": "sau",
+       "meaning": "hundred",
+       "example": "सौ रुपये",
+       "exampleMeaning": "one hundred rupees"
+      },
+      {
+       "t": "learn",
+       "word": "नंबर",
+       "tl": "number",
+       "meaning": "number",
+       "example": "आपका फ़ोन नंबर क्या है?",
+       "exampleMeaning": "What is your phone number?"
+      },
+      {
+       "t": "learn",
+       "word": "फ़ोन",
+       "tl": "phone",
+       "meaning": "phone",
+       "example": "मेरा फ़ोन नंबर",
+       "exampleMeaning": "my phone number"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'hundred'?",
+       "options": [
+        "सौ",
+        "दस",
+        "बीस",
+        "तीस"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "सौ",
+         "100"
+        ],
+        [
+         "बीस",
+         "20"
+        ],
+        [
+         "दस",
+         "10"
+        ],
+        [
+         "पाँच",
+         "5"
+        ],
+        [
+         "सात",
+         "7"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "What is your phone number?",
+       "answer": "आपका फ़ोन नंबर क्या है?",
+       "bank": [
+        "आपका",
+        "है?",
+        "उम्र",
+        "नंबर",
+        "साल",
+        "क्या",
+        "फ़ोन",
+        "मेरा"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "नौ, आठ, सात, छह",
+       "meaning": "nine, eight, seven, six",
+       "bank": [
+        "आठ,",
+        "दस",
+        "पाँच",
+        "छह",
+        "नौ,",
+        "सात,"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "आपकी ___ क्या है?",
+       "meaning": "What is your age?",
+       "options": [
+        "उम्र",
+        "साल",
+        "नंबर",
+        "नाम"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरे तीन दोस्त हैं।",
+       "answer": "I have three friends.",
+       "bank": [
+        "students",
+        "two",
+        "three",
+        "I",
+        "friends.",
+        "have",
+        "four"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मेरा फ़ोन नंबर नौ, आठ, तीन, एक है।",
+       "meaning": "My phone number is nine, eight, three, one."
+      },
+      {
+       "t": "choose",
+       "prompt": "'वह बीस साल की है।' means:",
+       "options": [
+        "He is 30 years old.",
+        "She is 20 years old.",
+        "She is 10 years old.",
+        "He is 20 years old."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "दो चाय, कृपया।",
+       "meaning": "Two teas, please.",
+       "bank": [
+        "दो",
+        "तीन",
+        "कृपया।",
+        "धन्यवाद",
+        "एक",
+        "चाय,"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मैं तीस साल का हूँ।",
+       "meaning": "I am thirty years old."
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'how many'?",
+       "options": [
+        "कहाँ",
+        "कौन",
+        "कितने",
+        "क्या"
+       ],
+       "answer": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u4",
+   "title": "Food",
+   "emoji": "🍛",
+   "goal": "Order food and drinks and say what you like",
+   "lessons": [
+    {
+     "id": "u4l1",
+     "title": "Chai and water",
+     "items": [
+      {
+       "t": "learn",
+       "word": "चाय",
+       "tl": "chaay",
+       "meaning": "tea",
+       "example": "एक चाय, कृपया।",
+       "exampleMeaning": "One tea, please."
+      },
+      {
+       "t": "learn",
+       "word": "पानी",
+       "tl": "paani",
+       "meaning": "water",
+       "example": "पानी, कृपया।",
+       "exampleMeaning": "Water, please."
+      },
+      {
+       "t": "learn",
+       "word": "दूध",
+       "tl": "doodh",
+       "meaning": "milk",
+       "example": "दूध गरम है।",
+       "exampleMeaning": "The milk is hot."
+      },
+      {
+       "t": "learn",
+       "word": "मुझे",
+       "tl": "mujhe",
+       "meaning": "to me / I (want)",
+       "example": "मुझे चाय चाहिए।",
+       "exampleMeaning": "I want tea."
+      },
+      {
+       "t": "learn",
+       "word": "चाहिए",
+       "tl": "chaahiye",
+       "meaning": "want / need",
+       "example": "मुझे पानी चाहिए।",
+       "exampleMeaning": "I need water."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'water'?",
+       "options": [
+        "चाय",
+        "दूध",
+        "पानी",
+        "मुझे"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I want tea.",
+       "answer": "मुझे चाय चाहिए।",
+       "bank": [
+        "पानी",
+        "चाय",
+        "चाहिए।",
+        "मुझे",
+        "दूध",
+        "है"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मुझे पानी चाहिए।",
+       "meaning": "I need water.",
+       "bank": [
+        "कृपया",
+        "पानी",
+        "चाय",
+        "दूध",
+        "चाहिए।",
+        "मुझे"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ दूध चाहिए।",
+       "meaning": "I want milk.",
+       "options": [
+        "मुझे",
+        "मैं",
+        "मेरा",
+        "आप"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मुझे चाय चाहिए।",
+       "meaning": "I want tea."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "चाय",
+         "tea"
+        ],
+        [
+         "पानी",
+         "water"
+        ],
+        [
+         "दूध",
+         "milk"
+        ],
+        [
+         "चाहिए",
+         "want"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "दो चाय, कृपया।",
+       "answer": "Two teas, please.",
+       "bank": [
+        "Two",
+        "teas,",
+        "water",
+        "milk",
+        "one",
+        "please."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'चाहिए' means:",
+       "options": [
+        "is",
+        "want",
+        "from",
+        "please"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u4l2",
+     "title": "Roti and rice",
+     "items": [
+      {
+       "t": "learn",
+       "word": "खाना",
+       "tl": "khaana",
+       "meaning": "food / to eat",
+       "example": "खाना अच्छा है।",
+       "exampleMeaning": "The food is good."
+      },
+      {
+       "t": "learn",
+       "word": "रोटी",
+       "tl": "roti",
+       "meaning": "flatbread",
+       "example": "दो रोटी, कृपया।",
+       "exampleMeaning": "Two rotis, please."
+      },
+      {
+       "t": "learn",
+       "word": "चावल",
+       "tl": "chaaval",
+       "meaning": "rice",
+       "example": "मुझे चावल चाहिए।",
+       "exampleMeaning": "I want rice."
+      },
+      {
+       "t": "learn",
+       "word": "दाल",
+       "tl": "daal",
+       "meaning": "lentils",
+       "example": "दाल और चावल",
+       "exampleMeaning": "lentils and rice"
+      },
+      {
+       "t": "learn",
+       "word": "सब्ज़ी",
+       "tl": "sabzi",
+       "meaning": "vegetables / veg dish",
+       "example": "सब्ज़ी स्वादिष्ट है।",
+       "exampleMeaning": "The vegetables are tasty."
+      },
+      {
+       "t": "learn",
+       "word": "और",
+       "tl": "aur",
+       "meaning": "and",
+       "example": "रोटी और दाल",
+       "exampleMeaning": "roti and lentils"
+      },
+      {
+       "t": "learn",
+       "word": "स्वादिष्ट",
+       "tl": "swaadisht",
+       "meaning": "tasty",
+       "example": "खाना बहुत स्वादिष्ट है।",
+       "exampleMeaning": "The food is very tasty."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'and'?",
+       "options": [
+        "और",
+        "है",
+        "से",
+        "का"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "lentils and rice",
+       "answer": "दाल और चावल",
+       "bank": [
+        "दाल",
+        "पानी",
+        "चावल",
+        "सब्ज़ी",
+        "और",
+        "रोटी"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "खाना स्वादिष्ट है।",
+       "meaning": "The food is tasty.",
+       "bank": [
+        "चावल",
+        "अच्छा",
+        "स्वादिष्ट",
+        "रोटी",
+        "खाना",
+        "है।"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मुझे रोटी ___ सब्ज़ी चाहिए।",
+       "meaning": "I want roti and vegetables.",
+       "options": [
+        "और",
+        "से",
+        "है",
+        "का"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "दाल और चावल, कृपया।",
+       "meaning": "Lentils and rice, please."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "खाना",
+         "food"
+        ],
+        [
+         "रोटी",
+         "flatbread"
+        ],
+        [
+         "चावल",
+         "rice"
+        ],
+        [
+         "दाल",
+         "lentils"
+        ],
+        [
+         "सब्ज़ी",
+         "vegetables"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "खाना बहुत स्वादिष्ट है।",
+       "answer": "The food is very tasty.",
+       "bank": [
+        "tea",
+        "very",
+        "tasty.",
+        "good",
+        "water",
+        "food",
+        "is",
+        "The"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u4l3",
+     "title": "I like it",
+     "items": [
+      {
+       "t": "learn",
+       "word": "पसंद",
+       "tl": "pasand",
+       "meaning": "liking",
+       "example": "मुझे चाय पसंद है।",
+       "exampleMeaning": "I like tea."
+      },
+      {
+       "t": "learn",
+       "word": "फल",
+       "tl": "phal",
+       "meaning": "fruit",
+       "example": "मुझे फल पसंद हैं।",
+       "exampleMeaning": "I like fruit."
+      },
+      {
+       "t": "learn",
+       "word": "सेब",
+       "tl": "seb",
+       "meaning": "apple",
+       "example": "एक सेब",
+       "exampleMeaning": "one apple"
+      },
+      {
+       "t": "learn",
+       "word": "मीठा",
+       "tl": "meetha",
+       "meaning": "sweet",
+       "example": "सेब मीठा है।",
+       "exampleMeaning": "The apple is sweet."
+      },
+      {
+       "t": "learn",
+       "word": "तीखा",
+       "tl": "teekha",
+       "meaning": "spicy",
+       "example": "सब्ज़ी तीखी है।",
+       "exampleMeaning": "The vegetable dish is spicy."
+      },
+      {
+       "t": "learn",
+       "word": "भूख",
+       "tl": "bhookh",
+       "meaning": "hunger",
+       "example": "मुझे भूख लगी है।",
+       "exampleMeaning": "I am hungry."
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'I like tea'?",
+       "options": [
+        "मुझे चाय चाहिए।",
+        "मुझे चाय पसंद है।",
+        "चाय मीठी है।",
+        "चाय अच्छी है।"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I like fruit.",
+       "answer": "मुझे फल पसंद हैं।",
+       "bank": [
+        "चाहिए",
+        "फल",
+        "मुझे",
+        "सेब",
+        "है।",
+        "पसंद",
+        "हैं।"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मुझे भूख लगी है।",
+       "meaning": "I am hungry.",
+       "bank": [
+        "खाना",
+        "भूख",
+        "लगी",
+        "पसंद",
+        "है।",
+        "मुझे",
+        "चाय"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "सेब ___ है।",
+       "meaning": "The apple is sweet.",
+       "options": [
+        "मीठा",
+        "तीखा",
+        "पानी",
+        "खाना"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मुझे खाना पसंद है।",
+       "meaning": "I like food."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "पसंद",
+         "liking"
+        ],
+        [
+         "फल",
+         "fruit"
+        ],
+        [
+         "सेब",
+         "apple"
+        ],
+        [
+         "मीठा",
+         "sweet"
+        ],
+        [
+         "तीखा",
+         "spicy"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "खाना तीखा है।",
+       "answer": "The food is spicy.",
+       "bank": [
+        "The",
+        "food",
+        "tasty",
+        "sweet",
+        "spicy.",
+        "is",
+        "fruit"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'भूख' mean?",
+       "options": [
+        "thirst",
+        "hunger",
+        "sweet",
+        "fruit"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u4l4",
+     "title": "Review: Food",
+     "items": [
+      {
+       "t": "learn",
+       "word": "नहीं चाहिए",
+       "tl": "nahin chaahiye",
+       "meaning": "don't want",
+       "example": "मुझे दूध नहीं चाहिए।",
+       "exampleMeaning": "I don't want milk."
+      },
+      {
+       "t": "learn",
+       "word": "पीना",
+       "tl": "peena",
+       "meaning": "to drink",
+       "example": "मुझे पानी पीना है।",
+       "exampleMeaning": "I want to drink water."
+      },
+      {
+       "t": "learn",
+       "word": "बहुत",
+       "tl": "bahut",
+       "meaning": "very / a lot",
+       "example": "खाना बहुत अच्छा है।",
+       "exampleMeaning": "The food is very good."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'very'?",
+       "options": [
+        "बहुत",
+        "और",
+        "पसंद",
+        "मीठा"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "पीना",
+         "to drink"
+        ],
+        [
+         "खाना",
+         "to eat"
+        ],
+        [
+         "बहुत",
+         "very"
+        ],
+        [
+         "चाहिए",
+         "want"
+        ],
+        [
+         "पसंद",
+         "liking"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I don't want milk.",
+       "answer": "मुझे दूध नहीं चाहिए।",
+       "bank": [
+        "है",
+        "पसंद",
+        "नहीं",
+        "मुझे",
+        "चाहिए।",
+        "दूध",
+        "चाय"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मुझे दाल पसंद है।",
+       "meaning": "I like lentils.",
+       "bank": [
+        "पसंद",
+        "मुझे",
+        "चावल",
+        "है।",
+        "चाहिए",
+        "दाल",
+        "नहीं"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मुझे चाय ___ है।",
+       "meaning": "I like tea.",
+       "options": [
+        "पसंद",
+        "चाहिए",
+        "मीठा",
+        "भूख"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "खाना बहुत तीखा है।",
+       "answer": "The food is very spicy.",
+       "bank": [
+        "very",
+        "tea",
+        "spicy.",
+        "sweet",
+        "The",
+        "food",
+        "tasty",
+        "is"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मुझे रोटी और दाल चाहिए।",
+       "meaning": "I want roti and lentils."
+      },
+      {
+       "t": "choose",
+       "prompt": "'मुझे भूख लगी है।' means:",
+       "options": [
+        "I like food.",
+        "I am hungry.",
+        "I want water.",
+        "The food is sweet."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "एक चाय और दो रोटी, कृपया।",
+       "meaning": "One tea and two rotis, please.",
+       "bank": [
+        "एक",
+        "चावल",
+        "तीन",
+        "पानी",
+        "कृपया।",
+        "चाय",
+        "रोटी,",
+        "और",
+        "दो"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "खाना बहुत स्वादिष्ट है।",
+       "meaning": "The food is very tasty."
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the word for 'fruit':",
+       "options": [
+        "फल",
+        "सेब",
+        "दाल",
+        "दूध"
+       ],
+       "answer": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u5",
+   "title": "Family",
+   "emoji": "👨‍👩‍👧",
+   "goal": "Talk about your family and where you live",
+   "lessons": [
+    {
+     "id": "u5l1",
+     "title": "Mum and Dad",
+     "items": [
+      {
+       "t": "learn",
+       "word": "परिवार",
+       "tl": "parivaar",
+       "meaning": "family",
+       "example": "मेरा परिवार बड़ा है।",
+       "exampleMeaning": "My family is big."
+      },
+      {
+       "t": "learn",
+       "word": "माँ",
+       "tl": "maan",
+       "meaning": "mother",
+       "example": "मेरी माँ शिक्षक हैं।",
+       "exampleMeaning": "My mother is a teacher."
+      },
+      {
+       "t": "learn",
+       "word": "पिता",
+       "tl": "pita",
+       "meaning": "father",
+       "example": "मेरे पिता डॉक्टर हैं।",
+       "exampleMeaning": "My father is a doctor."
+      },
+      {
+       "t": "learn",
+       "word": "मेरी",
+       "tl": "meri",
+       "meaning": "my (feminine)",
+       "example": "मेरी माँ",
+       "exampleMeaning": "my mother"
+      },
+      {
+       "t": "learn",
+       "word": "मेरे",
+       "tl": "mere",
+       "meaning": "my (plural/respect)",
+       "example": "मेरे पिता",
+       "exampleMeaning": "my father"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'family'?",
+       "options": [
+        "माँ",
+        "पिता",
+        "परिवार",
+        "दोस्त"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My mother is a teacher.",
+       "answer": "मेरी माँ शिक्षक हैं।",
+       "bank": [
+        "मेरी",
+        "माँ",
+        "शिक्षक",
+        "हैं।",
+        "पिता",
+        "है।",
+        "मेरे"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मेरे पिता डॉक्टर हैं।",
+       "meaning": "My father is a doctor.",
+       "bank": [
+        "हैं।",
+        "मेरे",
+        "माँ",
+        "पिता",
+        "डॉक्टर",
+        "शिक्षक",
+        "मेरी"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ माँ अच्छी हैं।",
+       "meaning": "My mother is good.",
+       "options": [
+        "मेरी",
+        "मेरा",
+        "मेरे",
+        "आप"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मेरा परिवार बड़ा है।",
+       "meaning": "My family is big."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "परिवार",
+         "family"
+        ],
+        [
+         "माँ",
+         "mother"
+        ],
+        [
+         "पिता",
+         "father"
+        ],
+        [
+         "मेरी",
+         "my (f.)"
+        ],
+        [
+         "मेरे",
+         "my (pl.)"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरे पिता भारत से हैं।",
+       "answer": "My father is from India.",
+       "bank": [
+        "America",
+        "is",
+        "from",
+        "mother",
+        "India.",
+        "father",
+        "My",
+        "friend"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Why 'मेरे पिता' and not 'मेरा पिता'?",
+       "options": [
+        "पिता is plural",
+        "respect for elders uses plural",
+        "पिता is feminine",
+        "it is a mistake"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u5l2",
+     "title": "Brothers and sisters",
+     "items": [
+      {
+       "t": "learn",
+       "word": "भाई",
+       "tl": "bhaai",
+       "meaning": "brother",
+       "example": "मेरा भाई छात्र है।",
+       "exampleMeaning": "My brother is a student."
+      },
+      {
+       "t": "learn",
+       "word": "बहन",
+       "tl": "bahan",
+       "meaning": "sister",
+       "example": "मेरी बहन डॉक्टर है।",
+       "exampleMeaning": "My sister is a doctor."
+      },
+      {
+       "t": "learn",
+       "word": "बड़ा",
+       "tl": "bada",
+       "meaning": "big / elder",
+       "example": "बड़ा भाई",
+       "exampleMeaning": "elder brother"
+      },
+      {
+       "t": "learn",
+       "word": "छोटा",
+       "tl": "chhota",
+       "meaning": "small / younger",
+       "example": "छोटा भाई",
+       "exampleMeaning": "younger brother"
+      },
+      {
+       "t": "learn",
+       "word": "बड़ी",
+       "tl": "badi",
+       "meaning": "big / elder (f.)",
+       "example": "बड़ी बहन",
+       "exampleMeaning": "elder sister"
+      },
+      {
+       "t": "learn",
+       "word": "छोटी",
+       "tl": "chhoti",
+       "meaning": "small / younger (f.)",
+       "example": "छोटी बहन",
+       "exampleMeaning": "younger sister"
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'elder sister'?",
+       "options": [
+        "बड़ा भाई",
+        "छोटी बहन",
+        "बड़ी बहन",
+        "छोटा भाई"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My brother is a student.",
+       "answer": "मेरा भाई छात्र है।",
+       "bank": [
+        "है।",
+        "मेरा",
+        "भाई",
+        "शिक्षक",
+        "मेरी",
+        "बहन",
+        "छात्र"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मेरी छोटी बहन दस साल की है।",
+       "meaning": "My younger sister is ten years old.",
+       "bank": [
+        "है।",
+        "का",
+        "बहन",
+        "छोटी",
+        "बड़ी",
+        "भाई",
+        "दस",
+        "साल",
+        "की",
+        "मेरी"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मेरा ___ भाई बीस साल का है।",
+       "meaning": "My elder brother is twenty years old.",
+       "options": [
+        "बड़ा",
+        "बड़ी",
+        "छोटी",
+        "मेरी"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मेरी बड़ी बहन शिक्षक है।",
+       "meaning": "My elder sister is a teacher."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "भाई",
+         "brother"
+        ],
+        [
+         "बहन",
+         "sister"
+        ],
+        [
+         "बड़ा",
+         "big"
+        ],
+        [
+         "छोटा",
+         "small"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरे दो भाई हैं।",
+       "answer": "I have two brothers.",
+       "bank": [
+        "sisters",
+        "brothers.",
+        "I",
+        "two",
+        "My",
+        "have",
+        "three"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'छोटा' means:",
+       "options": [
+        "big",
+        "small",
+        "elder",
+        "sister"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u5l3",
+     "title": "Husband, wife, kids",
+     "items": [
+      {
+       "t": "learn",
+       "word": "पति",
+       "tl": "pati",
+       "meaning": "husband",
+       "example": "मेरे पति डॉक्टर हैं।",
+       "exampleMeaning": "My husband is a doctor."
+      },
+      {
+       "t": "learn",
+       "word": "पत्नी",
+       "tl": "patni",
+       "meaning": "wife",
+       "example": "मेरी पत्नी शिक्षक हैं।",
+       "exampleMeaning": "My wife is a teacher."
+      },
+      {
+       "t": "learn",
+       "word": "बेटा",
+       "tl": "beta",
+       "meaning": "son",
+       "example": "मेरा बेटा पाँच साल का है।",
+       "exampleMeaning": "My son is five years old."
+      },
+      {
+       "t": "learn",
+       "word": "बेटी",
+       "tl": "beti",
+       "meaning": "daughter",
+       "example": "मेरी बेटी छात्र है।",
+       "exampleMeaning": "My daughter is a student."
+      },
+      {
+       "t": "learn",
+       "word": "दादा",
+       "tl": "daada",
+       "meaning": "grandfather (paternal)",
+       "example": "मेरे दादा",
+       "exampleMeaning": "my grandfather"
+      },
+      {
+       "t": "learn",
+       "word": "दादी",
+       "tl": "daadi",
+       "meaning": "grandmother (paternal)",
+       "example": "मेरी दादी",
+       "exampleMeaning": "my grandmother"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'daughter'?",
+       "options": [
+        "बेटा",
+        "बेटी",
+        "पत्नी",
+        "दादी"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My wife is a teacher.",
+       "answer": "मेरी पत्नी शिक्षक हैं।",
+       "bank": [
+        "मेरी",
+        "हैं।",
+        "है।",
+        "पति",
+        "मेरे",
+        "पत्नी",
+        "शिक्षक"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मेरा बेटा पाँच साल का है।",
+       "meaning": "My son is five years old.",
+       "bank": [
+        "दस",
+        "पाँच",
+        "बेटा",
+        "बेटी",
+        "है।",
+        "की",
+        "मेरा",
+        "साल",
+        "का"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मेरे ___ डॉक्टर हैं।",
+       "meaning": "My husband is a doctor.",
+       "options": [
+        "पति",
+        "पत्नी",
+        "बेटी",
+        "बहन"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मेरी बेटी छात्र है।",
+       "meaning": "My daughter is a student."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "पति",
+         "husband"
+        ],
+        [
+         "पत्नी",
+         "wife"
+        ],
+        [
+         "बेटा",
+         "son"
+        ],
+        [
+         "बेटी",
+         "daughter"
+        ],
+        [
+         "दादी",
+         "grandmother"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरे दादा अच्छे हैं।",
+       "answer": "My grandfather is good.",
+       "bank": [
+        "is",
+        "father",
+        "good.",
+        "grandfather",
+        "My",
+        "grandmother",
+        "bad"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u5l4",
+     "title": "Review: Family",
+     "items": [
+      {
+       "t": "learn",
+       "word": "घर",
+       "tl": "ghar",
+       "meaning": "home / house",
+       "example": "मेरा घर बड़ा है।",
+       "exampleMeaning": "My house is big."
+      },
+      {
+       "t": "learn",
+       "word": "रहना",
+       "tl": "rahna",
+       "meaning": "to live / stay",
+       "example": "मैं दिल्ली में रहता हूँ।",
+       "exampleMeaning": "I live in Delhi."
+      },
+      {
+       "t": "learn",
+       "word": "में",
+       "tl": "mein",
+       "meaning": "in",
+       "example": "मैं भारत में रहती हूँ।",
+       "exampleMeaning": "I live in India (f.)."
+      },
+      {
+       "t": "learn",
+       "word": "रहता हूँ",
+       "tl": "rahta hoon",
+       "meaning": "I live (m.)",
+       "example": "मैं घर में रहता हूँ।",
+       "exampleMeaning": "I live at home."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'in'?",
+       "options": [
+        "में",
+        "से",
+        "का",
+        "और"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "घर",
+         "home"
+        ],
+        [
+         "में",
+         "in"
+        ],
+        [
+         "परिवार",
+         "family"
+        ],
+        [
+         "भाई",
+         "brother"
+        ],
+        [
+         "बेटी",
+         "daughter"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I live in India.",
+       "answer": "मैं भारत में रहता हूँ।",
+       "bank": [
+        "में",
+        "घर",
+        "भारत",
+        "हूँ।",
+        "मैं",
+        "है",
+        "से",
+        "रहता"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मेरा परिवार दिल्ली में रहता है।",
+       "meaning": "My family lives in Delhi.",
+       "bank": [
+        "में",
+        "घर",
+        "मेरा",
+        "हूँ",
+        "रहता",
+        "मेरी",
+        "है।",
+        "दिल्ली",
+        "परिवार"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मेरा ___ बड़ा है।",
+       "meaning": "My house is big.",
+       "options": [
+        "घर",
+        "में",
+        "भाई",
+        "साल"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरी माँ और पिता घर में हैं।",
+       "answer": "My mother and father are at home.",
+       "bank": [
+        "home.",
+        "father",
+        "My",
+        "sister",
+        "and",
+        "brother",
+        "mother",
+        "school",
+        "at",
+        "are"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मेरा परिवार भारत में रहता है।",
+       "meaning": "My family lives in India."
+      },
+      {
+       "t": "choose",
+       "prompt": "'मेरी छोटी बहन' means:",
+       "options": [
+        "my elder sister",
+        "my younger brother",
+        "my younger sister",
+        "my daughter"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "मेरे दो बेटे और एक बेटी हैं।",
+       "meaning": "I have two sons and one daughter.",
+       "bank": [
+        "तीन",
+        "बेटा",
+        "मेरे",
+        "हैं।",
+        "और",
+        "एक",
+        "बेटे",
+        "बेटी",
+        "भाई",
+        "दो"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मेरी दादी घर में हैं।",
+       "meaning": "My grandmother is at home."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u6",
+   "title": "Directions",
+   "emoji": "🗺️",
+   "goal": "Ask where places are and follow directions",
+   "lessons": [
+    {
+     "id": "u6l1",
+     "title": "Here and there",
+     "items": [
+      {
+       "t": "learn",
+       "word": "यहाँ",
+       "tl": "yahaan",
+       "meaning": "here",
+       "example": "मैं यहाँ हूँ।",
+       "exampleMeaning": "I am here."
+      },
+      {
+       "t": "learn",
+       "word": "वहाँ",
+       "tl": "vahaan",
+       "meaning": "there",
+       "example": "स्टेशन वहाँ है।",
+       "exampleMeaning": "The station is there."
+      },
+      {
+       "t": "learn",
+       "word": "स्टेशन",
+       "tl": "station",
+       "meaning": "station",
+       "example": "स्टेशन कहाँ है?",
+       "exampleMeaning": "Where is the station?"
+      },
+      {
+       "t": "learn",
+       "word": "बाज़ार",
+       "tl": "baazaar",
+       "meaning": "market",
+       "example": "बाज़ार यहाँ है।",
+       "exampleMeaning": "The market is here."
+      },
+      {
+       "t": "learn",
+       "word": "होटल",
+       "tl": "hotel",
+       "meaning": "hotel",
+       "example": "होटल कहाँ है?",
+       "exampleMeaning": "Where is the hotel?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'there'?",
+       "options": [
+        "यहाँ",
+        "वहाँ",
+        "कहाँ",
+        "घर"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Where is the station?",
+       "answer": "स्टेशन कहाँ है?",
+       "bank": [
+        "यहाँ",
+        "है?",
+        "बाज़ार",
+        "स्टेशन",
+        "वहाँ",
+        "कहाँ"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "बाज़ार वहाँ है।",
+       "meaning": "The market is there.",
+       "bank": [
+        "बाज़ार",
+        "कहाँ",
+        "वहाँ",
+        "होटल",
+        "है।",
+        "यहाँ"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "होटल ___ है?",
+       "meaning": "Where is the hotel?",
+       "options": [
+        "कहाँ",
+        "यहाँ",
+        "कौन",
+        "क्या"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "स्टेशन कहाँ है?",
+       "meaning": "Where is the station?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "यहाँ",
+         "here"
+        ],
+        [
+         "वहाँ",
+         "there"
+        ],
+        [
+         "स्टेशन",
+         "station"
+        ],
+        [
+         "बाज़ार",
+         "market"
+        ],
+        [
+         "होटल",
+         "hotel"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरा घर यहाँ है।",
+       "answer": "My house is here.",
+       "bank": [
+        "My",
+        "there",
+        "hotel",
+        "house",
+        "here.",
+        "is",
+        "market"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'कहाँ' means:",
+       "options": [
+        "here",
+        "there",
+        "where",
+        "who"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u6l2",
+     "title": "Left and right",
+     "items": [
+      {
+       "t": "learn",
+       "word": "दाएँ",
+       "tl": "daayen",
+       "meaning": "right",
+       "example": "दाएँ जाइए।",
+       "exampleMeaning": "Go right."
+      },
+      {
+       "t": "learn",
+       "word": "बाएँ",
+       "tl": "baayen",
+       "meaning": "left",
+       "example": "बाएँ जाइए।",
+       "exampleMeaning": "Go left."
+      },
+      {
+       "t": "learn",
+       "word": "सीधे",
+       "tl": "seedhe",
+       "meaning": "straight",
+       "example": "सीधे जाइए।",
+       "exampleMeaning": "Go straight."
+      },
+      {
+       "t": "learn",
+       "word": "जाइए",
+       "tl": "jaaiye",
+       "meaning": "go (polite)",
+       "example": "सीधे जाइए, फिर दाएँ।",
+       "exampleMeaning": "Go straight, then right."
+      },
+      {
+       "t": "learn",
+       "word": "फिर",
+       "tl": "phir",
+       "meaning": "then / again",
+       "example": "फिर बाएँ जाइए।",
+       "exampleMeaning": "Then go left."
+      },
+      {
+       "t": "learn",
+       "word": "रुकिए",
+       "tl": "rukiye",
+       "meaning": "stop / wait (polite)",
+       "example": "रुकिए, कृपया।",
+       "exampleMeaning": "Stop, please."
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'go left'?",
+       "options": [
+        "दाएँ जाइए।",
+        "बाएँ जाइए।",
+        "सीधे जाइए।",
+        "रुकिए।"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Go straight, then right.",
+       "answer": "सीधे जाइए, फिर दाएँ।",
+       "bank": [
+        "बाएँ",
+        "रुकिए",
+        "सीधे",
+        "दाएँ।",
+        "जाइए,",
+        "फिर",
+        "यहाँ"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "बाएँ जाइए।",
+       "meaning": "Go left.",
+       "bank": [
+        "फिर",
+        "जाइए।",
+        "सीधे",
+        "दाएँ",
+        "बाएँ"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ जाइए, कृपया।",
+       "meaning": "Go straight, please.",
+       "options": [
+        "सीधे",
+        "रुकिए",
+        "यहाँ",
+        "कहाँ"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "दाएँ जाइए।",
+       "meaning": "Go right."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "दाएँ",
+         "right"
+        ],
+        [
+         "बाएँ",
+         "left"
+        ],
+        [
+         "सीधे",
+         "straight"
+        ],
+        [
+         "जाइए",
+         "go"
+        ],
+        [
+         "रुकिए",
+         "stop"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "रुकिए, स्टेशन यहाँ है।",
+       "answer": "Stop, the station is here.",
+       "bank": [
+        "station",
+        "there",
+        "the",
+        "Stop,",
+        "go",
+        "market",
+        "is",
+        "here."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'फिर' mean?",
+       "options": [
+        "straight",
+        "then",
+        "stop",
+        "left"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u6l3",
+     "title": "Near and far",
+     "items": [
+      {
+       "t": "learn",
+       "word": "पास",
+       "tl": "paas",
+       "meaning": "near",
+       "example": "बैंक पास है।",
+       "exampleMeaning": "The bank is near."
+      },
+      {
+       "t": "learn",
+       "word": "दूर",
+       "tl": "door",
+       "meaning": "far",
+       "example": "स्टेशन दूर है।",
+       "exampleMeaning": "The station is far."
+      },
+      {
+       "t": "learn",
+       "word": "बैंक",
+       "tl": "bank",
+       "meaning": "bank",
+       "example": "बैंक कहाँ है?",
+       "exampleMeaning": "Where is the bank?"
+      },
+      {
+       "t": "learn",
+       "word": "अस्पताल",
+       "tl": "aspataal",
+       "meaning": "hospital",
+       "example": "अस्पताल दूर है।",
+       "exampleMeaning": "The hospital is far."
+      },
+      {
+       "t": "learn",
+       "word": "स्कूल",
+       "tl": "school",
+       "meaning": "school",
+       "example": "स्कूल घर के पास है।",
+       "exampleMeaning": "The school is near the house."
+      },
+      {
+       "t": "learn",
+       "word": "के पास",
+       "tl": "ke paas",
+       "meaning": "near (something)",
+       "example": "होटल स्टेशन के पास है।",
+       "exampleMeaning": "The hotel is near the station."
+      },
+      {
+       "t": "learn",
+       "word": "कितनी दूर",
+       "tl": "kitni door",
+       "meaning": "how far",
+       "example": "बाज़ार कितनी दूर है?",
+       "exampleMeaning": "How far is the market?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'far'?",
+       "options": [
+        "पास",
+        "दूर",
+        "सीधे",
+        "यहाँ"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How far is the bank?",
+       "answer": "बैंक कितनी दूर है?",
+       "bank": [
+        "बैंक",
+        "अस्पताल",
+        "पास",
+        "दूर",
+        "कहाँ",
+        "है?",
+        "कितनी"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "अस्पताल स्टेशन के पास है।",
+       "meaning": "The hospital is near the station.",
+       "bank": [
+        "है।",
+        "अस्पताल",
+        "बैंक",
+        "स्टेशन",
+        "स्कूल",
+        "के",
+        "दूर",
+        "पास"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "स्कूल घर ___ पास है।",
+       "meaning": "The school is near the house.",
+       "options": [
+        "के",
+        "का",
+        "की",
+        "से"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "बैंक कितनी दूर है?",
+       "meaning": "How far is the bank?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "पास",
+         "near"
+        ],
+        [
+         "दूर",
+         "far"
+        ],
+        [
+         "बैंक",
+         "bank"
+        ],
+        [
+         "अस्पताल",
+         "hospital"
+        ],
+        [
+         "स्कूल",
+         "school"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "अस्पताल बहुत दूर है।",
+       "answer": "The hospital is very far.",
+       "bank": [
+        "near",
+        "school",
+        "The",
+        "hospital",
+        "far.",
+        "very",
+        "bank",
+        "is"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u6l4",
+     "title": "Review: Directions",
+     "items": [
+      {
+       "t": "learn",
+       "word": "सामने",
+       "tl": "saamne",
+       "meaning": "in front / opposite",
+       "example": "बैंक होटल के सामने है।",
+       "exampleMeaning": "The bank is opposite the hotel."
+      },
+      {
+       "t": "learn",
+       "word": "पीछे",
+       "tl": "peechhe",
+       "meaning": "behind",
+       "example": "स्कूल बाज़ार के पीछे है।",
+       "exampleMeaning": "The school is behind the market."
+      },
+      {
+       "t": "learn",
+       "word": "जाना",
+       "tl": "jaana",
+       "meaning": "to go",
+       "example": "मुझे स्टेशन जाना है।",
+       "exampleMeaning": "I have to go to the station."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'behind'?",
+       "options": [
+        "सामने",
+        "पीछे",
+        "पास",
+        "दूर"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "सामने",
+         "in front"
+        ],
+        [
+         "पीछे",
+         "behind"
+        ],
+        [
+         "के पास",
+         "near"
+        ],
+        [
+         "कितनी दूर",
+         "how far"
+        ],
+        [
+         "जाइए",
+         "go"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I have to go to the market.",
+       "answer": "मुझे बाज़ार जाना है।",
+       "bank": [
+        "मुझे",
+        "स्टेशन",
+        "कहाँ",
+        "जाना",
+        "बाज़ार",
+        "जाइए",
+        "है।"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "सीधे जाइए, फिर बाएँ।",
+       "meaning": "Go straight, then left.",
+       "bank": [
+        "दाएँ",
+        "रुकिए",
+        "बाएँ।",
+        "फिर",
+        "पास",
+        "सीधे",
+        "जाइए,"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "बैंक होटल के ___ है।",
+       "meaning": "The bank is opposite the hotel.",
+       "options": [
+        "सामने",
+        "पास",
+        "दूर",
+        "यहाँ"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "माफ़ कीजिए, अस्पताल कहाँ है?",
+       "answer": "Excuse me, where is the hospital?",
+       "bank": [
+        "where",
+        "how",
+        "the",
+        "school",
+        "far",
+        "me,",
+        "is",
+        "hospital?",
+        "Excuse"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मुझे स्टेशन जाना है।",
+       "meaning": "I have to go to the station."
+      },
+      {
+       "t": "choose",
+       "prompt": "'स्कूल बाज़ार के पीछे है।' means:",
+       "options": [
+        "The school is near the market.",
+        "The school is behind the market.",
+        "The market is behind the school.",
+        "The school is far."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "स्टेशन यहाँ से दूर है।",
+       "meaning": "The station is far from here.",
+       "bank": [
+        "बाज़ार",
+        "वहाँ",
+        "दूर",
+        "यहाँ",
+        "है।",
+        "से",
+        "स्टेशन",
+        "पास"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "बाएँ जाइए, बैंक वहाँ है।",
+       "meaning": "Go left, the bank is there."
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the polite 'stop':",
+       "options": [
+        "जाइए",
+        "रुकिए",
+        "जाना",
+        "सीधे"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u7",
+   "title": "Time",
+   "emoji": "⏰",
+   "goal": "Tell the time and talk about days",
+   "lessons": [
+    {
+     "id": "u7l1",
+     "title": "What time is it?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "समय",
+       "tl": "samay",
+       "meaning": "time",
+       "example": "समय क्या हुआ है?",
+       "exampleMeaning": "What time is it?"
+      },
+      {
+       "t": "learn",
+       "word": "बजे",
+       "tl": "baje",
+       "meaning": "o'clock",
+       "example": "पाँच बजे",
+       "exampleMeaning": "five o'clock"
+      },
+      {
+       "t": "learn",
+       "word": "कितने बजे",
+       "tl": "kitne baje",
+       "meaning": "at what time",
+       "example": "कितने बजे?",
+       "exampleMeaning": "At what time?"
+      },
+      {
+       "t": "learn",
+       "word": "अभी",
+       "tl": "abhi",
+       "meaning": "now / right now",
+       "example": "अभी दो बजे हैं।",
+       "exampleMeaning": "It is two o'clock now."
+      },
+      {
+       "t": "learn",
+       "word": "घंटा",
+       "tl": "ghanta",
+       "meaning": "hour",
+       "example": "एक घंटा",
+       "exampleMeaning": "one hour"
+      },
+      {
+       "t": "learn",
+       "word": "मिनट",
+       "tl": "minute",
+       "meaning": "minute",
+       "example": "दस मिनट",
+       "exampleMeaning": "ten minutes"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'o'clock'?",
+       "options": [
+        "समय",
+        "बजे",
+        "घंटा",
+        "मिनट"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "What time is it?",
+       "answer": "समय क्या हुआ है?",
+       "bank": [
+        "है?",
+        "अभी",
+        "समय",
+        "क्या",
+        "हुआ",
+        "बजे",
+        "कितने"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "अभी दो बजे हैं।",
+       "meaning": "It is two o'clock now.",
+       "bank": [
+        "समय",
+        "हैं।",
+        "बजे",
+        "अभी",
+        "तीन",
+        "मिनट",
+        "दो"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "अभी पाँच ___ हैं।",
+       "meaning": "It is five o'clock now.",
+       "options": [
+        "बजे",
+        "घंटा",
+        "मिनट",
+        "समय"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "कितने बजे?",
+       "meaning": "At what time?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "समय",
+         "time"
+        ],
+        [
+         "बजे",
+         "o'clock"
+        ],
+        [
+         "अभी",
+         "now"
+        ],
+        [
+         "घंटा",
+         "hour"
+        ],
+        [
+         "मिनट",
+         "minute"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "दस मिनट",
+       "answer": "ten minutes",
+       "bank": [
+        "time",
+        "ten",
+        "hours",
+        "minutes",
+        "five"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'एक घंटा' means:",
+       "options": [
+        "one minute",
+        "one o'clock",
+        "one hour",
+        "one day"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u7l2",
+     "title": "Parts of the day",
+     "items": [
+      {
+       "t": "learn",
+       "word": "सुबह",
+       "tl": "subah",
+       "meaning": "morning",
+       "example": "सुबह सात बजे",
+       "exampleMeaning": "at seven in the morning"
+      },
+      {
+       "t": "learn",
+       "word": "दोपहर",
+       "tl": "dopahar",
+       "meaning": "afternoon",
+       "example": "दोपहर में खाना",
+       "exampleMeaning": "lunch in the afternoon"
+      },
+      {
+       "t": "learn",
+       "word": "शाम",
+       "tl": "shaam",
+       "meaning": "evening",
+       "example": "शाम को चाय",
+       "exampleMeaning": "tea in the evening"
+      },
+      {
+       "t": "learn",
+       "word": "रात",
+       "tl": "raat",
+       "meaning": "night",
+       "example": "रात को दस बजे",
+       "exampleMeaning": "at ten at night"
+      },
+      {
+       "t": "learn",
+       "word": "को",
+       "tl": "ko",
+       "meaning": "at (time)",
+       "example": "शाम को",
+       "exampleMeaning": "in the evening"
+      },
+      {
+       "t": "learn",
+       "word": "आज",
+       "tl": "aaj",
+       "meaning": "today",
+       "example": "आज शाम को",
+       "exampleMeaning": "this evening"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'evening'?",
+       "options": [
+        "सुबह",
+        "दोपहर",
+        "शाम",
+        "रात"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "tea in the evening",
+       "answer": "शाम को चाय",
+       "bank": [
+        "को",
+        "पानी",
+        "शाम",
+        "सुबह",
+        "रात",
+        "चाय"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "सुबह सात बजे",
+       "meaning": "at seven in the morning",
+       "bank": [
+        "आठ",
+        "बजे",
+        "को",
+        "सुबह",
+        "सात",
+        "शाम"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "रात ___ दस बजे",
+       "meaning": "at ten at night",
+       "options": [
+        "को",
+        "में",
+        "से",
+        "के"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "आज शाम को चाय।",
+       "meaning": "Tea this evening."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "सुबह",
+         "morning"
+        ],
+        [
+         "दोपहर",
+         "afternoon"
+        ],
+        [
+         "शाम",
+         "evening"
+        ],
+        [
+         "रात",
+         "night"
+        ],
+        [
+         "आज",
+         "today"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "आज सुबह आठ बजे",
+       "answer": "today at eight in the morning",
+       "bank": [
+        "morning",
+        "evening",
+        "today",
+        "seven",
+        "the",
+        "in",
+        "eight",
+        "night",
+        "at"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'दोपहर' means:",
+       "options": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u7l3",
+     "title": "Days of the week",
+     "items": [
+      {
+       "t": "learn",
+       "word": "सोमवार",
+       "tl": "somvaar",
+       "meaning": "Monday",
+       "example": "आज सोमवार है।",
+       "exampleMeaning": "Today is Monday."
+      },
+      {
+       "t": "learn",
+       "word": "मंगलवार",
+       "tl": "mangalvaar",
+       "meaning": "Tuesday",
+       "example": "मंगलवार को",
+       "exampleMeaning": "on Tuesday"
+      },
+      {
+       "t": "learn",
+       "word": "बुधवार",
+       "tl": "budhvaar",
+       "meaning": "Wednesday",
+       "example": "बुधवार को स्कूल",
+       "exampleMeaning": "school on Wednesday"
+      },
+      {
+       "t": "learn",
+       "word": "शुक्रवार",
+       "tl": "shukravaar",
+       "meaning": "Friday",
+       "example": "शुक्रवार को बाज़ार",
+       "exampleMeaning": "market on Friday"
+      },
+      {
+       "t": "learn",
+       "word": "रविवार",
+       "tl": "ravivaar",
+       "meaning": "Sunday",
+       "example": "रविवार को घर",
+       "exampleMeaning": "at home on Sunday"
+      },
+      {
+       "t": "learn",
+       "word": "कल",
+       "tl": "kal",
+       "meaning": "tomorrow / yesterday",
+       "example": "कल मंगलवार है।",
+       "exampleMeaning": "Tomorrow is Tuesday."
+      },
+      {
+       "t": "learn",
+       "word": "दिन",
+       "tl": "din",
+       "meaning": "day",
+       "example": "सात दिन",
+       "exampleMeaning": "seven days"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'Friday'?",
+       "options": [
+        "सोमवार",
+        "बुधवार",
+        "शुक्रवार",
+        "रविवार"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Today is Monday.",
+       "answer": "आज सोमवार है।",
+       "bank": [
+        "है।",
+        "सोमवार",
+        "कल",
+        "आज",
+        "मंगलवार",
+        "को"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "कल रविवार है।",
+       "meaning": "Tomorrow is Sunday.",
+       "bank": [
+        "दिन",
+        "कल",
+        "सोमवार",
+        "आज",
+        "रविवार",
+        "है।"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ बुधवार है।",
+       "meaning": "Today is Wednesday.",
+       "options": [
+        "आज",
+        "कल",
+        "दिन",
+        "अभी"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "आज शुक्रवार है।",
+       "meaning": "Today is Friday."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "सोमवार",
+         "Monday"
+        ],
+        [
+         "मंगलवार",
+         "Tuesday"
+        ],
+        [
+         "बुधवार",
+         "Wednesday"
+        ],
+        [
+         "शुक्रवार",
+         "Friday"
+        ],
+        [
+         "रविवार",
+         "Sunday"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "रविवार को मैं घर में हूँ।",
+       "answer": "On Sunday I am at home.",
+       "bank": [
+        "we",
+        "am",
+        "at",
+        "market",
+        "Monday",
+        "home.",
+        "Sunday",
+        "I",
+        "On"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u7l4",
+     "title": "Review: Time",
+     "items": [
+      {
+       "t": "learn",
+       "word": "सप्ताह",
+       "tl": "saptaah",
+       "meaning": "week",
+       "example": "एक सप्ताह में सात दिन",
+       "exampleMeaning": "seven days in a week"
+      },
+      {
+       "t": "learn",
+       "word": "महीना",
+       "tl": "maheena",
+       "meaning": "month",
+       "example": "एक महीना",
+       "exampleMeaning": "one month"
+      },
+      {
+       "t": "learn",
+       "word": "बाद में",
+       "tl": "baad mein",
+       "meaning": "later",
+       "example": "बाद में मिलेंगे।",
+       "exampleMeaning": "See you later."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'week'?",
+       "options": [
+        "दिन",
+        "सप्ताह",
+        "महीना",
+        "साल"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "सप्ताह",
+         "week"
+        ],
+        [
+         "महीना",
+         "month"
+        ],
+        [
+         "साल",
+         "year"
+        ],
+        [
+         "दिन",
+         "day"
+        ],
+        [
+         "बाद में",
+         "later"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "See you later.",
+       "answer": "बाद में मिलेंगे।",
+       "bank": [
+        "मिलेंगे।",
+        "बाद",
+        "कल",
+        "फिर",
+        "आज",
+        "में"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "आज शाम को छह बजे",
+       "meaning": "today at six in the evening",
+       "bank": [
+        "कल",
+        "छह",
+        "को",
+        "आज",
+        "सात",
+        "सुबह",
+        "शाम",
+        "बजे"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "एक ___ में सात दिन हैं।",
+       "meaning": "There are seven days in a week.",
+       "options": [
+        "सप्ताह",
+        "महीना",
+        "साल",
+        "घंटा"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "कल सुबह दस बजे स्टेशन",
+       "answer": "tomorrow at ten in the morning at the station",
+       "bank": [
+        "today",
+        "morning",
+        "in",
+        "ten",
+        "the",
+        "market",
+        "evening",
+        "at",
+        "tomorrow",
+        "station",
+        "night",
+        "hotel"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "अभी तीन बजे हैं।",
+       "meaning": "It is three o'clock now."
+      },
+      {
+       "t": "choose",
+       "prompt": "'कितने बजे?' means:",
+       "options": [
+        "How many days?",
+        "What time is it now?",
+        "At what time?",
+        "How many hours?"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "सोमवार को सुबह आठ बजे स्कूल",
+       "meaning": "school on Monday at eight in the morning",
+       "bank": [
+        "बजे",
+        "आठ",
+        "सोमवार",
+        "सुबह",
+        "रविवार",
+        "स्कूल",
+        "को",
+        "शाम",
+        "बाज़ार"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "शाम को छह बजे मिलेंगे।",
+       "meaning": "We'll meet at six in the evening."
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick 'month':",
+       "options": [
+        "सप्ताह",
+        "महीना",
+        "दिन",
+        "रात"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u8",
+   "title": "Shopping",
+   "emoji": "🛍️",
+   "goal": "Ask prices, bargain and describe things by colour",
+   "lessons": [
+    {
+     "id": "u8l1",
+     "title": "How much is it?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "दुकान",
+       "tl": "dukaan",
+       "meaning": "shop",
+       "example": "दुकान बाज़ार में है।",
+       "exampleMeaning": "The shop is in the market."
+      },
+      {
+       "t": "learn",
+       "word": "कितने का",
+       "tl": "kitne kaa",
+       "meaning": "how much (price)",
+       "example": "यह कितने का है?",
+       "exampleMeaning": "How much is this?"
+      },
+      {
+       "t": "learn",
+       "word": "रुपये",
+       "tl": "rupaye",
+       "meaning": "rupees",
+       "example": "सौ रुपये",
+       "exampleMeaning": "one hundred rupees"
+      },
+      {
+       "t": "learn",
+       "word": "महँगा",
+       "tl": "mahanga",
+       "meaning": "expensive",
+       "example": "यह बहुत महँगा है।",
+       "exampleMeaning": "This is very expensive."
+      },
+      {
+       "t": "learn",
+       "word": "सस्ता",
+       "tl": "sasta",
+       "meaning": "cheap",
+       "example": "यह सस्ता है।",
+       "exampleMeaning": "This is cheap."
+      },
+      {
+       "t": "learn",
+       "word": "पैसे",
+       "tl": "paise",
+       "meaning": "money",
+       "example": "मेरे पास पैसे नहीं हैं।",
+       "exampleMeaning": "I don't have money."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'cheap'?",
+       "options": [
+        "महँगा",
+        "सस्ता",
+        "दुकान",
+        "रुपये"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How much is this?",
+       "answer": "यह कितने का है?",
+       "bank": [
+        "कितने",
+        "रुपये",
+        "वह",
+        "है?",
+        "यह",
+        "का",
+        "सस्ता"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "यह बहुत महँगा है।",
+       "meaning": "This is very expensive.",
+       "bank": [
+        "बहुत",
+        "सस्ता",
+        "यह",
+        "रुपये",
+        "सौ",
+        "महँगा",
+        "है।"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "यह सौ ___ है।",
+       "meaning": "This is one hundred rupees.",
+       "options": [
+        "रुपये",
+        "पैसे",
+        "का",
+        "बजे"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "यह कितने का है?",
+       "meaning": "How much is this?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "दुकान",
+         "shop"
+        ],
+        [
+         "रुपये",
+         "rupees"
+        ],
+        [
+         "महँगा",
+         "expensive"
+        ],
+        [
+         "सस्ता",
+         "cheap"
+        ],
+        [
+         "पैसे",
+         "money"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "यह दुकान सस्ती है।",
+       "answer": "This shop is cheap.",
+       "bank": [
+        "shop",
+        "that",
+        "is",
+        "market",
+        "cheap.",
+        "This",
+        "expensive"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'पैसे' means:",
+       "options": [
+        "price",
+        "rupees",
+        "money",
+        "shop"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u8l2",
+     "title": "Clothes and shoes",
+     "items": [
+      {
+       "t": "learn",
+       "word": "कपड़े",
+       "tl": "kapde",
+       "meaning": "clothes",
+       "example": "मुझे कपड़े चाहिए।",
+       "exampleMeaning": "I need clothes."
+      },
+      {
+       "t": "learn",
+       "word": "कमीज़",
+       "tl": "kameez",
+       "meaning": "shirt",
+       "example": "यह कमीज़ अच्छी है।",
+       "exampleMeaning": "This shirt is good."
+      },
+      {
+       "t": "learn",
+       "word": "जूते",
+       "tl": "joote",
+       "meaning": "shoes",
+       "example": "जूते कितने के हैं?",
+       "exampleMeaning": "How much are the shoes?"
+      },
+      {
+       "t": "learn",
+       "word": "दिखाइए",
+       "tl": "dikhaaiye",
+       "meaning": "please show",
+       "example": "वह कमीज़ दिखाइए।",
+       "exampleMeaning": "Please show that shirt."
+      },
+      {
+       "t": "learn",
+       "word": "दीजिए",
+       "tl": "deejiye",
+       "meaning": "please give",
+       "example": "दो कमीज़ दीजिए।",
+       "exampleMeaning": "Please give two shirts."
+      },
+      {
+       "t": "learn",
+       "word": "लेना",
+       "tl": "lena",
+       "meaning": "to take / buy",
+       "example": "मुझे यह लेना है।",
+       "exampleMeaning": "I want to take this."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'please show'?",
+       "options": [
+        "दीजिए",
+        "दिखाइए",
+        "लेना",
+        "जाइए"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Please show that shirt.",
+       "answer": "वह कमीज़ दिखाइए।",
+       "bank": [
+        "दिखाइए।",
+        "दीजिए",
+        "यह",
+        "जूते",
+        "कमीज़",
+        "वह"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मुझे कपड़े चाहिए।",
+       "meaning": "I need clothes.",
+       "bank": [
+        "मुझे",
+        "जूते",
+        "पसंद",
+        "चाहिए।",
+        "कपड़े",
+        "कमीज़"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "एक कमीज़ ___।",
+       "meaning": "Please give one shirt.",
+       "options": [
+        "दीजिए",
+        "दिखाइए",
+        "लेना",
+        "जाइए"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "जूते कितने के हैं?",
+       "meaning": "How much are the shoes?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "कपड़े",
+         "clothes"
+        ],
+        [
+         "कमीज़",
+         "shirt"
+        ],
+        [
+         "जूते",
+         "shoes"
+        ],
+        [
+         "दिखाइए",
+         "show"
+        ],
+        [
+         "दीजिए",
+         "give"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मुझे यह कमीज़ लेना है।",
+       "answer": "I want to take this shirt.",
+       "bank": [
+        "want",
+        "to",
+        "this",
+        "give",
+        "take",
+        "that",
+        "shirt.",
+        "I",
+        "shoes"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'जूते' means:",
+       "options": [
+        "clothes",
+        "shirt",
+        "shoes",
+        "shop"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u8l3",
+     "title": "Colours",
+     "items": [
+      {
+       "t": "learn",
+       "word": "रंग",
+       "tl": "rang",
+       "meaning": "colour",
+       "example": "कौन सा रंग?",
+       "exampleMeaning": "Which colour?"
+      },
+      {
+       "t": "learn",
+       "word": "लाल",
+       "tl": "laal",
+       "meaning": "red",
+       "example": "लाल कमीज़",
+       "exampleMeaning": "red shirt"
+      },
+      {
+       "t": "learn",
+       "word": "नीला",
+       "tl": "neela",
+       "meaning": "blue",
+       "example": "नीला रंग",
+       "exampleMeaning": "blue colour"
+      },
+      {
+       "t": "learn",
+       "word": "हरा",
+       "tl": "hara",
+       "meaning": "green",
+       "example": "हरा सेब",
+       "exampleMeaning": "green apple"
+      },
+      {
+       "t": "learn",
+       "word": "सफ़ेद",
+       "tl": "safed",
+       "meaning": "white",
+       "example": "सफ़ेद जूते",
+       "exampleMeaning": "white shoes"
+      },
+      {
+       "t": "learn",
+       "word": "काला",
+       "tl": "kaala",
+       "meaning": "black",
+       "example": "काली कमीज़",
+       "exampleMeaning": "black shirt"
+      },
+      {
+       "t": "learn",
+       "word": "कौन सा",
+       "tl": "kaun sa",
+       "meaning": "which",
+       "example": "कौन सा रंग?",
+       "exampleMeaning": "Which colour?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'red'?",
+       "options": [
+        "नीला",
+        "हरा",
+        "लाल",
+        "काला"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Which colour?",
+       "answer": "कौन सा रंग?",
+       "bank": [
+        "सा",
+        "लाल",
+        "कहाँ",
+        "रंग?",
+        "क्या",
+        "कौन"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मुझे नीली कमीज़ चाहिए।",
+       "meaning": "I want the blue shirt.",
+       "bank": [
+        "लाल",
+        "मुझे",
+        "चाहिए।",
+        "जूते",
+        "कमीज़",
+        "नीली",
+        "पसंद"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ सेब मीठा है।",
+       "meaning": "The green apple is sweet.",
+       "options": [
+        "हरा",
+        "लाल",
+        "सफ़ेद",
+        "काला"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मुझे लाल रंग पसंद है।",
+       "meaning": "I like the colour red."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "लाल",
+         "red"
+        ],
+        [
+         "नीला",
+         "blue"
+        ],
+        [
+         "हरा",
+         "green"
+        ],
+        [
+         "सफ़ेद",
+         "white"
+        ],
+        [
+         "काला",
+         "black"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "सफ़ेद जूते कितने के हैं?",
+       "answer": "How much are the white shoes?",
+       "bank": [
+        "much",
+        "the",
+        "this",
+        "shoes?",
+        "How",
+        "are",
+        "black",
+        "white",
+        "shirt"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u8l4",
+     "title": "Review: Shopping",
+     "items": [
+      {
+       "t": "learn",
+       "word": "कम",
+       "tl": "kam",
+       "meaning": "less",
+       "example": "कम कीजिए।",
+       "exampleMeaning": "Make it less."
+      },
+      {
+       "t": "learn",
+       "word": "कीजिए",
+       "tl": "keejiye",
+       "meaning": "please do",
+       "example": "थोड़ा कम कीजिए।",
+       "exampleMeaning": "Please reduce a little."
+      },
+      {
+       "t": "learn",
+       "word": "थोड़ा",
+       "tl": "thoda",
+       "meaning": "a little",
+       "example": "थोड़ा सस्ता",
+       "exampleMeaning": "a little cheaper"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'a little'?",
+       "options": [
+        "बहुत",
+        "थोड़ा",
+        "कम",
+        "सस्ता"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "कम",
+         "less"
+        ],
+        [
+         "थोड़ा",
+         "a little"
+        ],
+        [
+         "महँगा",
+         "expensive"
+        ],
+        [
+         "कितने का",
+         "how much"
+        ],
+        [
+         "दिखाइए",
+         "show"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Please reduce a little.",
+       "answer": "थोड़ा कम कीजिए।",
+       "bank": [
+        "बहुत",
+        "कीजिए।",
+        "दीजिए",
+        "महँगा",
+        "कम",
+        "थोड़ा"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "यह कमीज़ कितने की है?",
+       "meaning": "How much is this shirt?",
+       "bank": [
+        "लाल",
+        "यह",
+        "कमीज़",
+        "का",
+        "जूते",
+        "की",
+        "कितने",
+        "है?"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "यह बहुत ___ है, थोड़ा कम कीजिए।",
+       "meaning": "This is very expensive, please reduce a little.",
+       "options": [
+        "महँगा",
+        "सस्ता",
+        "लाल",
+        "अच्छा"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मुझे काले जूते दिखाइए।",
+       "answer": "Please show me black shoes.",
+       "bank": [
+        "show",
+        "white",
+        "black",
+        "give",
+        "Please",
+        "shoes.",
+        "shirt",
+        "me"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "थोड़ा कम कीजिए।",
+       "meaning": "Please reduce a little."
+      },
+      {
+       "t": "choose",
+       "prompt": "'यह सस्ता है।' means:",
+       "options": [
+        "This is expensive.",
+        "This is cheap.",
+        "This is red.",
+        "This is a shop."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "लाल कमीज़ सौ रुपये की है।",
+       "meaning": "The red shirt is one hundred rupees.",
+       "bank": [
+        "है।",
+        "लाल",
+        "बीस",
+        "जूते",
+        "की",
+        "रुपये",
+        "नीली",
+        "कमीज़",
+        "सौ"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मुझे यह लेना है।",
+       "meaning": "I want to take this."
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick 'please give':",
+       "options": [
+        "दिखाइए",
+        "दीजिए",
+        "कीजिए",
+        "जाइए"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u9",
+   "title": "Daily Routine",
+   "emoji": "🌅",
+   "goal": "Describe your everyday activities",
+   "lessons": [
+    {
+     "id": "u9l1",
+     "title": "Waking up",
+     "items": [
+      {
+       "t": "learn",
+       "word": "उठना",
+       "tl": "uthna",
+       "meaning": "to get up",
+       "example": "मैं सुबह उठता हूँ।",
+       "exampleMeaning": "I get up in the morning."
+      },
+      {
+       "t": "learn",
+       "word": "उठता हूँ",
+       "tl": "uthta hoon",
+       "meaning": "I get up (m.)",
+       "example": "मैं छह बजे उठता हूँ।",
+       "exampleMeaning": "I get up at six o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "उठती हूँ",
+       "tl": "uthti hoon",
+       "meaning": "I get up (f.)",
+       "example": "मैं सात बजे उठती हूँ।",
+       "exampleMeaning": "I get up at seven o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "नहाना",
+       "tl": "nahaana",
+       "meaning": "to bathe",
+       "example": "मैं रोज़ नहाता हूँ।",
+       "exampleMeaning": "I bathe every day."
+      },
+      {
+       "t": "learn",
+       "word": "रोज़",
+       "tl": "roz",
+       "meaning": "every day",
+       "example": "मैं रोज़ चाय पीता हूँ।",
+       "exampleMeaning": "I drink tea every day."
+      },
+      {
+       "t": "learn",
+       "word": "पीता हूँ",
+       "tl": "peeta hoon",
+       "meaning": "I drink (m.)",
+       "example": "मैं चाय पीता हूँ।",
+       "exampleMeaning": "I drink tea."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'every day'?",
+       "options": [
+        "रोज़",
+        "अभी",
+        "आज",
+        "कल"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I get up at six o'clock.",
+       "answer": "मैं छह बजे उठता हूँ।",
+       "bank": [
+        "मैं",
+        "पीता",
+        "रोज़",
+        "सात",
+        "हूँ।",
+        "बजे",
+        "छह",
+        "उठता"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मैं रोज़ चाय पीता हूँ।",
+       "meaning": "I drink tea every day.",
+       "bank": [
+        "चाय",
+        "पानी",
+        "मैं",
+        "रोज़",
+        "सुबह",
+        "उठता",
+        "पीता",
+        "हूँ।"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मैं सुबह सात बजे ___ हूँ।",
+       "meaning": "I get up at seven in the morning (f.).",
+       "options": [
+        "उठती",
+        "उठता",
+        "पीता",
+        "नहाना"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मैं रोज़ सुबह नहाता हूँ।",
+       "meaning": "I bathe every morning."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "उठना",
+         "to get up"
+        ],
+        [
+         "नहाना",
+         "to bathe"
+        ],
+        [
+         "रोज़",
+         "every day"
+        ],
+        [
+         "पीना",
+         "to drink"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मैं रोज़ सुबह उठती हूँ।",
+       "answer": "I get up every morning.",
+       "bank": [
+        "I",
+        "tea",
+        "morning.",
+        "get",
+        "every",
+        "drink",
+        "up",
+        "evening"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "A woman says 'I get up':",
+       "options": [
+        "मैं उठता हूँ।",
+        "मैं उठती हूँ।",
+        "मैं उठना हूँ।",
+        "मैं उठते हैं।"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u9l2",
+     "title": "Work and study",
+     "items": [
+      {
+       "t": "learn",
+       "word": "काम",
+       "tl": "kaam",
+       "meaning": "work",
+       "example": "मैं काम करता हूँ।",
+       "exampleMeaning": "I work."
+      },
+      {
+       "t": "learn",
+       "word": "करना",
+       "tl": "karna",
+       "meaning": "to do",
+       "example": "क्या करना है?",
+       "exampleMeaning": "What is to be done?"
+      },
+      {
+       "t": "learn",
+       "word": "करता हूँ",
+       "tl": "karta hoon",
+       "meaning": "I do (m.)",
+       "example": "मैं काम करता हूँ।",
+       "exampleMeaning": "I do work."
+      },
+      {
+       "t": "learn",
+       "word": "करती हूँ",
+       "tl": "karti hoon",
+       "meaning": "I do (f.)",
+       "example": "मैं काम करती हूँ।",
+       "exampleMeaning": "I do work (f.)."
+      },
+      {
+       "t": "learn",
+       "word": "पढ़ना",
+       "tl": "padhna",
+       "meaning": "to read / study",
+       "example": "मैं हिन्दी पढ़ता हूँ।",
+       "exampleMeaning": "I study Hindi."
+      },
+      {
+       "t": "learn",
+       "word": "लिखना",
+       "tl": "likhna",
+       "meaning": "to write",
+       "example": "मैं लिखता हूँ।",
+       "exampleMeaning": "I write."
+      },
+      {
+       "t": "learn",
+       "word": "हिन्दी",
+       "tl": "hindi",
+       "meaning": "Hindi",
+       "example": "मुझे हिन्दी पसंद है।",
+       "exampleMeaning": "I like Hindi."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'to write'?",
+       "options": [
+        "पढ़ना",
+        "लिखना",
+        "करना",
+        "उठना"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I study Hindi.",
+       "answer": "मैं हिन्दी पढ़ता हूँ।",
+       "bank": [
+        "काम",
+        "लिखता",
+        "पढ़ता",
+        "करता",
+        "हिन्दी",
+        "हूँ।",
+        "मैं"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मैं काम करती हूँ।",
+       "meaning": "I work (f.).",
+       "bank": [
+        "काम",
+        "करता",
+        "करती",
+        "रोज़",
+        "हूँ।",
+        "पढ़ती",
+        "मैं"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मैं रोज़ हिन्दी ___ हूँ।",
+       "meaning": "I study Hindi every day (m.).",
+       "options": [
+        "पढ़ता",
+        "पढ़ती",
+        "लिखना",
+        "करता"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मैं काम करता हूँ।",
+       "meaning": "I work."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "काम",
+         "work"
+        ],
+        [
+         "करना",
+         "to do"
+        ],
+        [
+         "पढ़ना",
+         "to read"
+        ],
+        [
+         "लिखना",
+         "to write"
+        ],
+        [
+         "हिन्दी",
+         "Hindi"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरा भाई दोपहर में काम करता है।",
+       "answer": "My brother works in the afternoon.",
+       "bank": [
+        "afternoon.",
+        "brother",
+        "My",
+        "in",
+        "the",
+        "morning",
+        "works",
+        "sister",
+        "studies"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u9l3",
+     "title": "Evenings",
+     "items": [
+      {
+       "t": "learn",
+       "word": "खेलना",
+       "tl": "khelna",
+       "meaning": "to play",
+       "example": "बच्चे शाम को खेलते हैं।",
+       "exampleMeaning": "The children play in the evening."
+      },
+      {
+       "t": "learn",
+       "word": "देखना",
+       "tl": "dekhna",
+       "meaning": "to watch / see",
+       "example": "मैं टीवी देखता हूँ।",
+       "exampleMeaning": "I watch TV."
+      },
+      {
+       "t": "learn",
+       "word": "टीवी",
+       "tl": "TV",
+       "meaning": "TV",
+       "example": "रात को टीवी",
+       "exampleMeaning": "TV at night"
+      },
+      {
+       "t": "learn",
+       "word": "सुनना",
+       "tl": "sunna",
+       "meaning": "to listen",
+       "example": "मैं गाना सुनता हूँ।",
+       "exampleMeaning": "I listen to a song."
+      },
+      {
+       "t": "learn",
+       "word": "गाना",
+       "tl": "gaana",
+       "meaning": "song / to sing",
+       "example": "मुझे गाना पसंद है।",
+       "exampleMeaning": "I like songs."
+      },
+      {
+       "t": "learn",
+       "word": "सोना",
+       "tl": "sona",
+       "meaning": "to sleep",
+       "example": "मैं दस बजे सोता हूँ।",
+       "exampleMeaning": "I sleep at ten o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "बच्चे",
+       "tl": "bachche",
+       "meaning": "children",
+       "example": "बच्चे खेलते हैं।",
+       "exampleMeaning": "The children play."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'to sleep'?",
+       "options": [
+        "सोना",
+        "सुनना",
+        "देखना",
+        "खेलना"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I watch TV at night.",
+       "answer": "मैं रात को टीवी देखता हूँ।",
+       "bank": [
+        "गाना",
+        "देखता",
+        "रात",
+        "को",
+        "टीवी",
+        "हूँ।",
+        "शाम",
+        "मैं",
+        "सुनता"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "बच्चे शाम को खेलते हैं।",
+       "meaning": "The children play in the evening.",
+       "bank": [
+        "टीवी",
+        "बच्चे",
+        "शाम",
+        "सोते",
+        "हैं।",
+        "खेलते",
+        "सुबह",
+        "को"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मैं रात को दस बजे ___ हूँ।",
+       "meaning": "I sleep at ten at night (m.).",
+       "options": [
+        "सोता",
+        "सोती",
+        "देखता",
+        "खेलता"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मैं गाना सुनता हूँ।",
+       "meaning": "I listen to a song."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "खेलना",
+         "to play"
+        ],
+        [
+         "देखना",
+         "to watch"
+        ],
+        [
+         "सुनना",
+         "to listen"
+        ],
+        [
+         "सोना",
+         "to sleep"
+        ],
+        [
+         "गाना",
+         "song"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरी बहन रोज़ टीवी देखती है।",
+       "answer": "My sister watches TV every day.",
+       "bank": [
+        "plays",
+        "TV",
+        "listens",
+        "My",
+        "watches",
+        "every",
+        "brother",
+        "sister",
+        "day."
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u9l4",
+     "title": "Review: Daily Routine",
+     "items": [
+      {
+       "t": "learn",
+       "word": "रहा हूँ",
+       "tl": "raha hoon",
+       "meaning": "am ...-ing (m.)",
+       "example": "मैं खाना खा रहा हूँ।",
+       "exampleMeaning": "I am eating food."
+      },
+      {
+       "t": "learn",
+       "word": "रही हूँ",
+       "tl": "rahi hoon",
+       "meaning": "am ...-ing (f.)",
+       "example": "मैं पढ़ रही हूँ।",
+       "exampleMeaning": "I am studying."
+      },
+      {
+       "t": "learn",
+       "word": "जल्दी",
+       "tl": "jaldi",
+       "meaning": "early / quickly",
+       "example": "मैं जल्दी उठता हूँ।",
+       "exampleMeaning": "I get up early."
+      },
+      {
+       "t": "learn",
+       "word": "देर",
+       "tl": "der",
+       "meaning": "late",
+       "example": "आज मैं देर से उठा।",
+       "exampleMeaning": "Today I got up late."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'early'?",
+       "options": [
+        "देर",
+        "जल्दी",
+        "रोज़",
+        "अभी"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "जल्दी",
+         "early"
+        ],
+        [
+         "देर",
+         "late"
+        ],
+        [
+         "रोज़",
+         "every day"
+        ],
+        [
+         "काम",
+         "work"
+        ],
+        [
+         "सोना",
+         "to sleep"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I am eating food.",
+       "answer": "मैं खाना खा रहा हूँ।",
+       "bank": [
+        "रही",
+        "खा",
+        "सो",
+        "रहा",
+        "हूँ।",
+        "खाना",
+        "मैं",
+        "पी"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "मैं हिन्दी पढ़ रही हूँ।",
+       "meaning": "I am studying Hindi (f.).",
+       "bank": [
+        "रहा",
+        "लिख",
+        "पढ़",
+        "रही",
+        "मैं",
+        "हिन्दी",
+        "काम",
+        "हूँ।"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मैं रोज़ ___ उठता हूँ।",
+       "meaning": "I get up early every day.",
+       "options": [
+        "जल्दी",
+        "देर",
+        "रात",
+        "अभी"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मेरे पिता सुबह छह बजे उठते हैं।",
+       "answer": "My father gets up at six in the morning.",
+       "bank": [
+        "mother",
+        "up",
+        "gets",
+        "My",
+        "father",
+        "evening",
+        "the",
+        "six",
+        "sleeps",
+        "in",
+        "morning.",
+        "at"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मैं शाम को खेलता हूँ।",
+       "meaning": "I play in the evening."
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैं टीवी देख रहा हूँ।' means:",
+       "options": [
+        "I watch TV every day.",
+        "I am watching TV.",
+        "I will watch TV.",
+        "I like TV."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "बच्चे रात को जल्दी सोते हैं।",
+       "meaning": "The children sleep early at night.",
+       "bank": [
+        "हैं।",
+        "रात",
+        "देर",
+        "खेलते",
+        "सुबह",
+        "बच्चे",
+        "सोते",
+        "को",
+        "जल्दी"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मैं रोज़ काम करती हूँ।",
+       "meaning": "I work every day."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u10",
+   "title": "Past, Future & Opinions",
+   "emoji": "💬",
+   "goal": "Talk about yesterday, tomorrow and what you think",
+   "lessons": [
+    {
+     "id": "u10l1",
+     "title": "Yesterday",
+     "items": [
+      {
+       "t": "learn",
+       "word": "था",
+       "tl": "tha",
+       "meaning": "was (m.)",
+       "example": "खाना अच्छा था।",
+       "exampleMeaning": "The food was good."
+      },
+      {
+       "t": "learn",
+       "word": "थी",
+       "tl": "thi",
+       "meaning": "was (f.)",
+       "example": "चाय गरम थी।",
+       "exampleMeaning": "The tea was hot."
+      },
+      {
+       "t": "learn",
+       "word": "थे",
+       "tl": "the",
+       "meaning": "were",
+       "example": "वे घर में थे।",
+       "exampleMeaning": "They were at home."
+      },
+      {
+       "t": "learn",
+       "word": "गया",
+       "tl": "gaya",
+       "meaning": "went (m.)",
+       "example": "मैं बाज़ार गया।",
+       "exampleMeaning": "I went to the market."
+      },
+      {
+       "t": "learn",
+       "word": "गई",
+       "tl": "gayi",
+       "meaning": "went (f.)",
+       "example": "मैं स्कूल गई।",
+       "exampleMeaning": "I went to school."
+      },
+      {
+       "t": "learn",
+       "word": "किया",
+       "tl": "kiya",
+       "meaning": "did",
+       "example": "मैंने काम किया।",
+       "exampleMeaning": "I did work."
+      },
+      {
+       "t": "learn",
+       "word": "मैंने",
+       "tl": "mainne",
+       "meaning": "I (past, with object)",
+       "example": "मैंने चाय पी।",
+       "exampleMeaning": "I drank tea."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'was' (feminine)?",
+       "options": [
+        "था",
+        "थी",
+        "थे",
+        "गया"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The food was good.",
+       "answer": "खाना अच्छा था।",
+       "bank": [
+        "है",
+        "थे",
+        "खाना",
+        "था।",
+        "अच्छा",
+        "थी"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "कल मैं बाज़ार गया।",
+       "meaning": "Yesterday I went to the market.",
+       "bank": [
+        "मैं",
+        "कल",
+        "आज",
+        "स्कूल",
+        "गई",
+        "बाज़ार",
+        "गया।"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "चाय गरम ___।",
+       "meaning": "The tea was hot.",
+       "options": [
+        "थी",
+        "था",
+        "थे",
+        "है"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मैंने काम किया।",
+       "meaning": "I did work."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "था",
+         "was (m.)"
+        ],
+        [
+         "थी",
+         "was (f.)"
+        ],
+        [
+         "थे",
+         "were"
+        ],
+        [
+         "गया",
+         "went"
+        ],
+        [
+         "किया",
+         "did"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "कल मेरे दोस्त घर में थे।",
+       "answer": "Yesterday my friends were at home.",
+       "bank": [
+        "at",
+        "my",
+        "school",
+        "home.",
+        "were",
+        "Yesterday",
+        "today",
+        "friends",
+        "brother"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u10l2",
+     "title": "Tomorrow",
+     "items": [
+      {
+       "t": "learn",
+       "word": "जाऊँगा",
+       "tl": "jaaoonga",
+       "meaning": "I will go (m.)",
+       "example": "कल मैं दिल्ली जाऊँगा।",
+       "exampleMeaning": "Tomorrow I will go to Delhi."
+      },
+      {
+       "t": "learn",
+       "word": "जाऊँगी",
+       "tl": "jaaoongi",
+       "meaning": "I will go (f.)",
+       "example": "मैं बाज़ार जाऊँगी।",
+       "exampleMeaning": "I will go to the market."
+      },
+      {
+       "t": "learn",
+       "word": "करूँगा",
+       "tl": "karoonga",
+       "meaning": "I will do (m.)",
+       "example": "मैं काम करूँगा।",
+       "exampleMeaning": "I will do work."
+      },
+      {
+       "t": "learn",
+       "word": "करेंगे",
+       "tl": "karenge",
+       "meaning": "we/they will do",
+       "example": "हम काम करेंगे।",
+       "exampleMeaning": "We will do work."
+      },
+      {
+       "t": "learn",
+       "word": "मिलेंगे",
+       "tl": "milenge",
+       "meaning": "will meet",
+       "example": "कल मिलेंगे।",
+       "exampleMeaning": "We'll meet tomorrow."
+      },
+      {
+       "t": "learn",
+       "word": "ज़रूर",
+       "tl": "zaroor",
+       "meaning": "certainly",
+       "example": "हाँ, ज़रूर!",
+       "exampleMeaning": "Yes, certainly!"
+      },
+      {
+       "t": "learn",
+       "word": "शायद",
+       "tl": "shaayad",
+       "meaning": "maybe",
+       "example": "शायद कल।",
+       "exampleMeaning": "Maybe tomorrow."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'maybe'?",
+       "options": [
+        "ज़रूर",
+        "शायद",
+        "कल",
+        "अभी"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Tomorrow I will go to Delhi.",
+       "answer": "कल मैं दिल्ली जाऊँगा।",
+       "bank": [
+        "दिल्ली",
+        "आज",
+        "कल",
+        "मैं",
+        "गया",
+        "जाऊँगी",
+        "जाऊँगा।"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "हम कल काम करेंगे।",
+       "meaning": "We will do work tomorrow.",
+       "bank": [
+        "आज",
+        "करूँगा",
+        "काम",
+        "जाऊँगा",
+        "हम",
+        "कल",
+        "करेंगे।"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "मैं शाम को बाज़ार ___।",
+       "meaning": "I will go to the market in the evening (f.).",
+       "options": [
+        "जाऊँगी",
+        "जाऊँगा",
+        "गई",
+        "जाना"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "हाँ, ज़रूर!",
+       "meaning": "Yes, certainly!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "जाऊँगा",
+         "I will go"
+        ],
+        [
+         "करेंगे",
+         "we will do"
+        ],
+        [
+         "मिलेंगे",
+         "will meet"
+        ],
+        [
+         "ज़रूर",
+         "certainly"
+        ],
+        [
+         "शायद",
+         "maybe"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "शायद मैं कल स्कूल जाऊँगी।",
+       "answer": "Maybe I will go to school tomorrow.",
+       "bank": [
+        "I",
+        "tomorrow.",
+        "today",
+        "school",
+        "Maybe",
+        "will",
+        "market",
+        "go",
+        "certainly",
+        "to"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u10l3",
+     "title": "I think...",
+     "items": [
+      {
+       "t": "learn",
+       "word": "मुझे लगता है",
+       "tl": "mujhe lagta hai",
+       "meaning": "I think",
+       "example": "मुझे लगता है यह अच्छा है।",
+       "exampleMeaning": "I think this is good."
+      },
+      {
+       "t": "learn",
+       "word": "अच्छा लगा",
+       "tl": "achchha laga",
+       "meaning": "liked it",
+       "example": "मुझे खाना अच्छा लगा।",
+       "exampleMeaning": "I liked the food."
+      },
+      {
+       "t": "learn",
+       "word": "बुरा",
+       "tl": "bura",
+       "meaning": "bad",
+       "example": "यह बुरा है।",
+       "exampleMeaning": "This is bad."
+      },
+      {
+       "t": "learn",
+       "word": "क्यों",
+       "tl": "kyon",
+       "meaning": "why",
+       "example": "क्यों नहीं?",
+       "exampleMeaning": "Why not?"
+      },
+      {
+       "t": "learn",
+       "word": "क्योंकि",
+       "tl": "kyonki",
+       "meaning": "because",
+       "example": "क्योंकि मुझे भूख लगी है।",
+       "exampleMeaning": "Because I am hungry."
+      },
+      {
+       "t": "learn",
+       "word": "लेकिन",
+       "tl": "lekin",
+       "meaning": "but",
+       "example": "अच्छा है, लेकिन महँगा है।",
+       "exampleMeaning": "It's good, but expensive."
+      },
+      {
+       "t": "learn",
+       "word": "सच",
+       "tl": "sach",
+       "meaning": "true / truth",
+       "example": "यह सच है।",
+       "exampleMeaning": "This is true."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'because'?",
+       "options": [
+        "क्यों",
+        "क्योंकि",
+        "लेकिन",
+        "सच"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I think this is good.",
+       "answer": "मुझे लगता है यह अच्छा है।",
+       "bank": [
+        "था",
+        "अच्छा",
+        "लगता",
+        "बुरा",
+        "लेकिन",
+        "है।",
+        "मुझे",
+        "यह",
+        "है"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "अच्छा है, लेकिन महँगा है।",
+       "meaning": "It's good, but expensive.",
+       "bank": [
+        "है,",
+        "बुरा",
+        "सस्ता",
+        "है।",
+        "लेकिन",
+        "महँगा",
+        "अच्छा",
+        "क्योंकि"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "तुम क्यों नहीं खाते? ___ मुझे भूख नहीं है।",
+       "meaning": "Why don't you eat? Because I am not hungry.",
+       "options": [
+        "क्योंकि",
+        "लेकिन",
+        "शायद",
+        "सच"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "मुझे खाना अच्छा लगा।",
+       "meaning": "I liked the food."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "बुरा",
+         "bad"
+        ],
+        [
+         "क्यों",
+         "why"
+        ],
+        [
+         "क्योंकि",
+         "because"
+        ],
+        [
+         "लेकिन",
+         "but"
+        ],
+        [
+         "सच",
+         "true"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मुझे लगता है यह सच नहीं है।",
+       "answer": "I think this is not true.",
+       "bank": [
+        "I",
+        "bad",
+        "but",
+        "true.",
+        "not",
+        "is",
+        "this",
+        "because",
+        "think"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'क्यों नहीं?' means:",
+       "options": [
+        "Why not?",
+        "Because not.",
+        "But no.",
+        "Maybe not."
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u10l4",
+     "title": "Review: Past, Future & Opinions",
+     "items": [
+      {
+       "t": "learn",
+       "word": "कैसा",
+       "tl": "kaisa",
+       "meaning": "how (was it) / what kind",
+       "example": "खाना कैसा था?",
+       "exampleMeaning": "How was the food?"
+      },
+      {
+       "t": "learn",
+       "word": "मज़ा आया",
+       "tl": "maza aaya",
+       "meaning": "had fun",
+       "example": "बहुत मज़ा आया!",
+       "exampleMeaning": "It was great fun!"
+      },
+      {
+       "t": "learn",
+       "word": "ज़रूरी",
+       "tl": "zaroori",
+       "meaning": "important / necessary",
+       "example": "यह ज़रूरी है।",
+       "exampleMeaning": "This is important."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'had fun'?",
+       "options": [
+        "मज़ा आया",
+        "अच्छा लगा",
+        "ज़रूरी",
+        "बुरा"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "कैसा",
+         "how / what kind"
+        ],
+        [
+         "मज़ा आया",
+         "had fun"
+        ],
+        [
+         "ज़रूरी",
+         "important"
+        ],
+        [
+         "था",
+         "was"
+        ],
+        [
+         "जाऊँगा",
+         "I will go"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How was the food?",
+       "answer": "खाना कैसा था?",
+       "bank": [
+        "क्यों",
+        "खाना",
+        "थी",
+        "कैसा",
+        "था?",
+        "है"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "कल बाज़ार में बहुत मज़ा आया।",
+       "meaning": "Yesterday at the market it was great fun.",
+       "bank": [
+        "कल",
+        "बहुत",
+        "आज",
+        "आया।",
+        "मज़ा",
+        "स्कूल",
+        "अच्छा",
+        "बाज़ार",
+        "में"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "यह बहुत ___ है, क्योंकि कल परीक्षा है।",
+       "meaning": "This is very important, because tomorrow is the exam.",
+       "options": [
+        "ज़रूरी",
+        "बुरा",
+        "सच",
+        "शायद"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "मुझे लगता है कल मैं घर में रहूँगा।",
+       "answer": "I think tomorrow I will stay at home.",
+       "bank": [
+        "home.",
+        "I",
+        "stay",
+        "yesterday",
+        "tomorrow",
+        "think",
+        "went",
+        "market",
+        "at",
+        "will"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "मुझे लगता है यह सच है।",
+       "meaning": "I think this is true."
+      },
+      {
+       "t": "choose",
+       "prompt": "'मैंने चाय पी।' means:",
+       "options": [
+        "I will drink tea.",
+        "I drank tea.",
+        "I am drinking tea.",
+        "I like tea."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "चाय अच्छी थी, लेकिन खाना बुरा था।",
+       "meaning": "The tea was good, but the food was bad.",
+       "bank": [
+        "क्योंकि",
+        "थी,",
+        "अच्छी",
+        "चाय",
+        "बुरा",
+        "खाना",
+        "था।",
+        "मीठा",
+        "थे",
+        "लेकिन"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "कल मिलेंगे, ज़रूर!",
+       "meaning": "See you tomorrow, certainly!"
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the feminine 'went':",
+       "options": [
+        "गया",
+        "गई",
+        "गए",
+        "जाऊँगी"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

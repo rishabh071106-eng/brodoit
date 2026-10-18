@@ -70,6 +70,442 @@
     "frequency": "Once a year (state-wise vacancies)",
     "officialSite": "https://sbi.co.in/web/careers"
   },
+  "syllabus": [
+    {
+      "section": "Numerical Ability (Prelims) & Quantitative Aptitude (Mains)",
+      "topics": [
+        {
+          "t": "Simplification & approximation (BODMAS, fractions, surds, percentages)",
+          "ch": [
+            "core:quant/simplification"
+          ]
+        },
+        {
+          "t": "Number system — divisibility, HCF & LCM, remainders, unit digits",
+          "ch": [
+            "core:quant/number-system"
+          ]
+        },
+        {
+          "t": "Number series — missing number, wrong number, new-pattern (all types)",
+          "ch": [
+            "core:quant/number-series",
+            "core:quant/number-series-advanced"
+          ]
+        },
+        {
+          "t": "Quadratic equations & quantity comparison",
+          "ch": [
+            "core:quant/quadratic"
+          ]
+        },
+        {
+          "t": "Percentage",
+          "ch": [
+            "core:quant/percentage"
+          ]
+        },
+        {
+          "t": "Ratio & proportion",
+          "ch": [
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Partnership",
+          "ch": [
+            "core:quant/partnership"
+          ]
+        },
+        {
+          "t": "Mixtures & alligation",
+          "ch": [
+            "core:quant/mixtures-alligation",
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Averages",
+          "ch": [
+            "core:quant/averages-ages",
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Problems on ages",
+          "ch": [
+            "core:quant/averages-ages"
+          ]
+        },
+        {
+          "t": "Profit, loss & discount",
+          "ch": [
+            "core:quant/profit-loss"
+          ]
+        },
+        {
+          "t": "Simple & compound interest",
+          "ch": [
+            "core:quant/si-ci"
+          ]
+        },
+        {
+          "t": "Time & work",
+          "ch": [
+            "core:quant/time-work-speed"
+          ]
+        },
+        {
+          "t": "Pipes & cisterns",
+          "ch": [
+            "core:quant/pipes-cisterns"
+          ]
+        },
+        {
+          "t": "Time, speed & distance",
+          "ch": [
+            "core:quant/time-work-speed"
+          ]
+        },
+        {
+          "t": "Boats & streams",
+          "ch": [
+            "core:quant/boats-streams"
+          ]
+        },
+        {
+          "t": "Problems on trains",
+          "ch": [
+            "core:quant/trains"
+          ]
+        },
+        {
+          "t": "Mensuration — 2D & 3D",
+          "ch": [
+            "core:quant/mensuration"
+          ]
+        },
+        {
+          "t": "Permutation & combination",
+          "ch": [
+            "core:quant/permutation-combination"
+          ]
+        },
+        {
+          "t": "Probability",
+          "ch": [
+            "core:quant/probability"
+          ]
+        },
+        {
+          "t": "Data interpretation — table, bar, line, pie, radar & mixed charts",
+          "ch": [
+            "core:quant/data-interpretation",
+            "core:quant/di-advanced"
+          ]
+        },
+        {
+          "t": "Caselet DI, missing DI & arithmetic DI",
+          "ch": [
+            "core:quant/di-advanced",
+            "core:quant/data-interpretation"
+          ]
+        },
+        {
+          "t": "Quantitative data sufficiency",
+          "ch": [
+            "core:quant/di-advanced",
+            "core:reasoning/data-sufficiency"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Reasoning Ability (Prelims & Mains)",
+      "topics": [
+        {
+          "t": "Puzzles — floor, box, scheduling (day/month/year), comparison",
+          "ch": [
+            "core:reasoning/floor-box-scheduling",
+            "core:reasoning/puzzles-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — linear & double row",
+          "ch": [
+            "core:reasoning/linear-square-seating",
+            "core:reasoning/puzzles-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — circular",
+          "ch": [
+            "core:reasoning/circular-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — square & rectangular tables",
+          "ch": [
+            "core:reasoning/linear-square-seating"
+          ]
+        },
+        {
+          "t": "Syllogism incl. only-a-few & possibility cases",
+          "ch": [
+            "core:reasoning/syllogism"
+          ]
+        },
+        {
+          "t": "Inequality — direct & coded",
+          "ch": [
+            "core:reasoning/inequality"
+          ]
+        },
+        {
+          "t": "Coding–decoding — classic & new pattern",
+          "ch": [
+            "core:reasoning/coding-decoding",
+            "core:reasoning/coding-new-pattern"
+          ]
+        },
+        {
+          "t": "Blood relations",
+          "ch": [
+            "core:reasoning/blood-relations"
+          ]
+        },
+        {
+          "t": "Direction sense & distance",
+          "ch": [
+            "core:reasoning/direction-sense"
+          ]
+        },
+        {
+          "t": "Order & ranking",
+          "ch": [
+            "core:reasoning/order-ranking"
+          ]
+        },
+        {
+          "t": "Alphanumeric & letter series",
+          "ch": [
+            "core:reasoning/alphanumeric-series"
+          ]
+        },
+        {
+          "t": "Input–output (machine input)",
+          "ch": [
+            "core:reasoning/input-output"
+          ]
+        },
+        {
+          "t": "Data sufficiency (reasoning)",
+          "ch": [
+            "core:reasoning/data-sufficiency"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Computer Aptitude (Mains)",
+      "topics": [
+        {
+          "t": "Computer basics, generations & number systems",
+          "ch": [
+            "core:computer/computer-fundamentals"
+          ]
+        },
+        {
+          "t": "Hardware, input/output devices & memory",
+          "ch": [
+            "core:computer/hardware-os",
+            "core:computer/computer-fundamentals"
+          ]
+        },
+        {
+          "t": "Software & operating systems",
+          "ch": [
+            "core:computer/hardware-os",
+            "core:computer/computer-fundamentals"
+          ]
+        },
+        {
+          "t": "Networking & the internet",
+          "ch": [
+            "core:computer/networking-security"
+          ]
+        },
+        {
+          "t": "MS Office — Word, Excel, PowerPoint & shortcuts",
+          "ch": [
+            "core:computer/ms-office"
+          ]
+        },
+        {
+          "t": "Cyber security",
+          "ch": [
+            "core:computer/networking-security"
+          ]
+        },
+        {
+          "t": "DBMS basics",
+          "ch": [
+            "core:computer/dbms-basics"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "English Language (Prelims & Mains)",
+      "topics": [
+        {
+          "t": "Reading comprehension",
+          "ch": [
+            "core:english/reading-comprehension"
+          ]
+        },
+        {
+          "t": "Cloze test",
+          "ch": [
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Error detection",
+          "ch": [
+            "core:english/error-spotting"
+          ]
+        },
+        {
+          "t": "Sentence improvement & phrase replacement",
+          "ch": [
+            "core:english/error-spotting",
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Para jumbles & sentence rearrangement",
+          "ch": [
+            "core:english/para-jumbles"
+          ]
+        },
+        {
+          "t": "Fillers (single/double) & word usage",
+          "ch": [
+            "core:english/fillers-word-usage",
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Connectors, sentence starters & column-based combining",
+          "ch": [
+            "core:english/connectors-sentence-combining"
+          ]
+        },
+        {
+          "t": "Vocabulary — synonyms, antonyms, idioms & phrasal verbs",
+          "ch": [
+            "core:english/vocabulary-idioms"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "General/Financial Awareness (Mains)",
+      "topics": [
+        {
+          "t": "Banking history, structure & types of banks",
+          "ch": [
+            "core:banking-awareness/types-of-banks"
+          ]
+        },
+        {
+          "t": "RBI — functions, monetary policy & tools",
+          "ch": [
+            "core:banking-awareness/rbi-monetary-policy"
+          ]
+        },
+        {
+          "t": "Regulators & financial institutions (SEBI, IRDAI, PFRDA, NABARD, SIDBI, EXIM, NHB, NPCI, DICGC)",
+          "ch": [
+            "core:banking-awareness/regulators-institutions"
+          ]
+        },
+        {
+          "t": "Financial markets — money, capital, bond & forex",
+          "ch": [
+            "core:banking-awareness/financial-markets"
+          ]
+        },
+        {
+          "t": "Basel norms, NPAs, SARFAESI & IBC",
+          "ch": [
+            "core:banking-awareness/basel-npa"
+          ]
+        },
+        {
+          "t": "Payment systems & digital banking",
+          "ch": [
+            "core:banking-awareness/payment-systems"
+          ]
+        },
+        {
+          "t": "Banking products, terms & the Negotiable Instruments Act",
+          "ch": [
+            "core:banking-awareness/banking-terms-products"
+          ]
+        },
+        {
+          "t": "Financial inclusion & social security schemes",
+          "ch": [
+            "core:banking-awareness/financial-inclusion"
+          ]
+        },
+        {
+          "t": "Government schemes (credit, farm, health, housing, savings)",
+          "ch": [
+            "core:banking-awareness/government-schemes",
+            "core:banking-awareness/financial-inclusion"
+          ]
+        },
+        {
+          "t": "Union Budget, fiscal terms & Economic Survey basics",
+          "ch": [
+            "core:banking-awareness/budget-economic-survey"
+          ]
+        },
+        {
+          "t": "International organisations & reports",
+          "ch": [
+            "core:banking-awareness/international-organisations"
+          ]
+        },
+        {
+          "t": "Current affairs & static GK — sources and method",
+          "ch": [
+            "core:banking-awareness/current-affairs-method"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Language test & strategy",
+      "topics": [
+        {
+          "t": "Local Language Proficiency Test (qualifying)",
+          "ch": [
+            "sbi-clerk-specific/local-language-test"
+          ]
+        },
+        {
+          "t": "Exam pattern, cut-offs & preparation plan",
+          "ch": [
+            "sbi-clerk-specific/strategy-cutoff"
+          ]
+        }
+      ]
+    }
+  ],
   "subjects": [
     {
       "id": "sbi-clerk-specific",
@@ -129,6 +565,64 @@
               "answer": 3,
               "explain": "Reasoning & Computer Aptitude has 50 questions for 60 marks."
             }
+          ],
+          "notes": [
+            {
+              "h": "How SBI Clerk selection works",
+              "p": "SBI recruits **Junior Associates (Customer Support & Sales)** through a **Prelims**, a **Mains** and a **Local Language Proficiency Test (LLPT)**. There is **no interview**. Prelims only shortlists candidates; the **final merit is based on Mains marks (out of 200)**, provided you clear the language test.\n\nSelection is **state-wise and category-wise**: you compete only with candidates who applied for the same state and category.",
+              "points": [
+                "Prelims: qualifying; three sections with fixed 20-minute timers.",
+                "Mains: General/Financial Awareness, General English, Quantitative Aptitude, Reasoning & Computer Aptitude; 200 marks.",
+                "LLPT: qualifying; failing it cancels selection.",
+                "Negative marking: ¼ of the question's marks for each wrong answer."
+              ]
+            },
+            {
+              "h": "Mains: marks per minute",
+              "p": "Mains structure (as in recent notifications; check the current one): **General/Financial Awareness 50 Q, 50 marks, 35 min**; **General English 40 Q, 40 marks, 35 min**; **Quantitative Aptitude 50 Q, 50 marks, 45 min**; **Reasoning & Computer Aptitude 50 Q, 60 marks, 45 min**.\n\n**Worked example: where is time most valuable?**\nGA: 50 marks ÷ 35 min ≈ **1.43 marks per minute**.\nEnglish: 40 ÷ 35 ≈ **1.14**.\nQuant: 50 ÷ 45 ≈ **1.11**.\nReasoning & Computer: 60 ÷ 45 ≈ **1.33**.\nGA gives the highest return, and its questions take seconds each if you have revised well. Reasoning & Computer is next; computer questions are quick, so do them first in that section."
+            },
+            {
+              "h": "Prelims time plan",
+              "p": "Each Prelims section has a fixed 20 minutes; unused time is lost.",
+              "points": [
+                "**Numerical Ability:** simplification/approximation and series first (about 10 questions in 6 minutes), then arithmetic word problems, then DI.",
+                "**Reasoning:** inequality, syllogism, coding and direction/blood relations first; then puzzles.",
+                "**English:** error spotting and fillers are quick; RC can take longer, so time it in mocks.",
+                "Clerk cut-offs are high, so **accuracy above 90%** matters more than attempting every question."
+              ]
+            },
+            {
+              "h": "Choosing your state",
+              "p": "Vacancies and cut-offs differ by state. A state with few posts and many applicants usually has a higher cut-off. But the deciding factor must be **language**: you must be able to read, write, speak and understand the state's official language, or you will be disqualified at the LLPT even after clearing Mains.",
+              "points": [
+                "Check past state-wise cut-offs on the SBI careers page.",
+                "Choose a state whose language you know well; you cannot change later.",
+                "Keep Class 10/12 language certificates ready if you studied it in school."
+              ]
+            },
+            {
+              "h": "Common mistakes",
+              "p": "Avoid these.",
+              "points": [
+                "Treating Prelims as the main exam and starting Mains GA too late.",
+                "Choosing a state for a lower cut-off without knowing its language.",
+                "Attempting difficult puzzles first in a 20-minute section.",
+                "Guessing blindly in the last minute.",
+                "Ignoring SBI-specific products (YONO, schemes) that appear in GA and help on the job."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "No interview; Mains (200) decides merit.",
+                "LLPT is qualifying.",
+                "State-wise and category-wise selection.",
+                "Mains GA: best marks per minute.",
+                "Reasoning & Computer: 60 marks; do computer questions first.",
+                "Prelims accuracy 90%+."
+              ]
+            }
           ]
         },
         {
@@ -184,6 +678,56 @@
               ],
               "answer": 2,
               "explain": "It is a qualifying test; it carries no merit marks."
+            }
+          ],
+          "notes": [
+            {
+              "h": "What the LLPT is",
+              "p": "After Mains, SBI checks that each provisionally selected candidate can **read, write, speak and understand** the **official local language** of the state they applied for. The test is **qualifying**: it adds no marks, but failing it means **no appointment**, whatever your Mains score.\n\nThe reason is practical. Junior Associates work at the counter in urban, semi-urban and rural branches, opening accounts, handling cash and solving customer problems. Many customers prefer or only speak the local language."
+            },
+            {
+              "h": "Who is exempt",
+              "p": "Candidates who have **studied the specified local language in Class 10 or Class 12** and can show the **mark sheet or certificate** are exempt from the test. All others take the test after provisional selection. Check the notification for the exact list of languages for each state and the documents accepted.",
+              "points": [
+                "Keep the original mark sheet and a self-attested copy ready.",
+                "The language must appear as a subject on the mark sheet.",
+                "If your state has more than one official language listed, any one listed language usually suffices; confirm in the notification."
+              ]
+            },
+            {
+              "h": "How the test is usually conducted",
+              "p": "The format can vary, but candidates typically face simple tasks rather than a literature exam.",
+              "points": [
+                "**Reading:** read aloud a short passage, a notice or a bank form.",
+                "**Writing:** write a few sentences about yourself or a short application.",
+                "**Speaking and listening:** a short conversation on a banking situation such as opening an account, depositing cash or asking about a loan.",
+                "Clarity and confidence matter more than perfect grammar."
+              ]
+            },
+            {
+              "h": "A four-week preparation plan",
+              "p": "If you know the language but are out of practice, structured practice for a month is usually enough.\n\n**Week 1:** read a local-language newspaper for 15 minutes daily; note banking words (account, deposit, withdrawal, interest, loan, cheque).\n**Week 2:** write 5–6 sentences daily about yourself and your daily routine.\n**Week 3:** role-play customer conversations with a friend or family member: account opening, ATM card issue, passbook update.\n**Week 4:** read bank forms and notices aloud; practise filling a deposit slip in the local language.\n\n**Example dialogue to practise:** customer asks how to open a savings account → you list documents (Aadhaar, PAN, photograph), explain the minimum balance rules and offer to help fill the form."
+            },
+            {
+              "h": "Common mistakes",
+              "p": "These lead to disqualification.",
+              "points": [
+                "Choosing a state for its lower cut-off without knowing its language.",
+                "Assuming spoken fluency is enough; reading and writing are also tested.",
+                "Forgetting to carry the Class 10/12 certificate for exemption.",
+                "Not practising banking vocabulary in the local language."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "LLPT: read, write, speak, understand.",
+                "Qualifying only; failing = no selection.",
+                "Exempt if the language was studied in Class 10 or 12 (with proof).",
+                "Practise customer conversations and form reading.",
+                "Choose your state by language first, cut-off second."
+              ]
             }
           ]
         }

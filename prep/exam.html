@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Exam — Brodoit Prep</title>
 <meta name="theme-color" content="#F6F5F2">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="/app/theme.css?v=12">
+<link rel="stylesheet" href="assets/app.css?v=12">
+<script src="/app/icons.js?v=12" defer></script>
 <style>
-  .seg-sticky{position:sticky;top:56px;z-index:30;padding:8px 0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .seg-sticky{position:sticky;top:60px;z-index:30;padding:8px 0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
   .hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-  .hero-chips span{background:rgba(255,255,255,.18);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px;font-size:12px;font-weight:800}
-  .ch-num{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-weight:800;color:#fff;flex-shrink:0}
+  .hero-chips span{background:rgba(255,255,255,.18);backdrop-filter:blur(6px);padding:6px 11px;border-radius:var(--r-pill);font-size:12px;font-weight:800}
+  .ch-num{width:44px;height:44px;border-radius:var(--r-sm);display:grid;place-items:center;font-weight:800;color:#fff;flex-shrink:0}
   .year{background:var(--card);border-radius:var(--r-md);box-shadow:var(--shadow);padding:14px}
   .year + .year{margin-top:10px}
   .year a{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:14px;font-weight:600}
@@ -23,20 +24,24 @@
 <main class="wrap">
   <section class="hero rise" id="hero" style="min-height:250px"></section>
   <div class="seg-sticky"><div class="seg" id="seg">
-    <button class="on" data-v="lessons">Lessons</button><button data-v="pattern">Pattern</button><button data-v="papers">Past papers</button><button data-v="free">Free stuff</button>
+    <button class="on" data-v="lessons">Lessons</button><button data-v="syllabus">Syllabus</button><button data-v="pattern">Pattern</button><button data-v="papers">Past papers</button><button data-v="free">Free stuff</button>
   </div></div>
   <section data-view="lessons"><div class="chips" id="subj" style="margin-top:4px"></div><div id="chapters" style="margin-top:8px"></div></section>
+  <section data-view="syllabus" hidden id="syllabus"></section>
   <section data-view="pattern" hidden id="pattern"></section>
   <section data-view="papers" hidden id="papers"></section>
   <section data-view="free" hidden id="free"></section>
 </main>
 <script type="module">
-import { renderChrome, loadCatalog, loadExamWithCore, examChapters, store, esc, param, ICON } from './assets/js/app.js';
-import { art, categoryArt } from './assets/js/art.js';
+import { renderChrome, loadCatalog, loadExamWithCore, examChapters, store, esc, param, ICON, examCountdowns } from './assets/js/app.js?v=9';
+import { art, categoryArt } from './assets/js/art.js?v=9';
+import { ic } from './assets/js/ico.js?v=12';
 
 const id = param('id');
 if (id === 'ssb') location.replace('ssb.html');
-const [{ exam, core }, cat] = await Promise.all([loadExamWithCore(id), loadCatalog()]);
+let exam, core, cat;
+try { [{ exam, core }, cat] = await Promise.all([loadExamWithCore(id), loadCatalog()]); }
+catch (e) { document.querySelector('main').innerHTML = `<div class="card" style="padding:24px;text-align:center;margin-top:40px"><div style="font-size:44px">🧭</div><div class="h-lg" style="margin-top:8px">We couldn't find that course</div><p class="muted" style="margin:8px 0 16px">It may have moved. Pick one from the list.</p><a class="btn btn-dark press" href="exams.html">All exams</a></div>`; throw e; }
 const c = cat.categories.find(c => c.exams.some(e => e.id === id)) || cat.categories[0];
 renderChrome({ active: 'exams.html', title: exam.name, back: `exams.html#${c.id}` });
 document.title = `${exam.name} — Brodoit Prep`;
@@ -51,15 +56,36 @@ hero.innerHTML = `<div class="art">${categoryArt[c.id]()}</div><div class="shade
   <span class="tag">${esc(exam.conductedBy || '')}</span>
   <h1 class="h-xl" style="font-size:34px">${esc(exam.name)}</h1>
   <div style="opacity:.92;font-weight:600;font-size:14px;margin-top:4px">${esc(exam.tagline || '')}</div>
-  <div class="hero-chips"><span>${all.length} lessons</span><span>~${Math.round(mins / 60) || 1} h total</span><span>${nDone} done</span></div>`;
+  <div class="hero-chips"><span>${all.length} lessons</span><span>~${Math.round(mins / 60) || 1} h total</span><span>${nDone} done</span></div>
+  ${exam.kind === 'course' ? '' : (() => { const cd = examCountdowns().find(x => x.examId === exam.id && x.days >= 0);
+    return cd ? `<a class="cta" href="countdown.html">${ic('hourglass', 16)} ${cd.days} days to your exam</a>` : `<a class="cta" href="countdown.html?exam=${exam.id}">${ic('alarm-clock', 16)} Set exam date</a>`; })()}`;
 
 const seg = document.getElementById('seg');
+if (exam.kind === 'course') {
+  seg.querySelector('[data-v="papers"]').remove();
+  seg.querySelector('[data-v="syllabus"]').textContent = 'Curriculum';
+  seg.querySelector('[data-v="pattern"]').textContent = 'About';
+  seg.querySelector('[data-v="free"]').textContent = 'Reading list';
+}
+const HAS_SSB = ['nda', 'cds', 'afcat'].includes(id);
+if (HAS_SSB) {
+  seg.insertAdjacentHTML('beforeend', `<button data-go="ssb.html?for=${id}">SSB ${ic('star', 14)}</button>`);
+  seg.querySelector('[data-v="free"]').textContent = 'Free';
+  seg.querySelector('[data-v="papers"]').textContent = 'Papers';
+  document.querySelector('[data-view="lessons"]').insertAdjacentHTML('afterbegin', `
+    <a class="hero press" href="ssb.html?for=${id}" style="min-height:190px;margin:10px 0 6px;background:var(--c-ssb)">
+      <div class="art">${art.ssb(false)}</div><div class="shade"></div>
+      <span class="tag">After the written exam</span>
+      <div class="h-lg">Your ${esc(exam.name.split(' ')[0])} SSB</div>
+      <div style="opacity:.92;font-weight:600;font-size:13px;margin-top:2px">5 days day-by-day · every task illustrated · PPDT, WAT & SRT drills</div>
+      <span class="cta">Open SSB →</span></a>`);
+}
 function show(v) {
   seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   document.querySelectorAll('[data-view]').forEach(s => { s.hidden = s.dataset.view !== v; });
   history.replaceState(null, '', location.search + '#' + v);
 }
-seg.onclick = e => e.target.dataset.v && show(e.target.dataset.v);
+seg.onclick = e => { if (e.target.dataset.go) location.href = e.target.dataset.go; else if (e.target.dataset.v) show(e.target.dataset.v); };
 if (location.hash) show(location.hash.slice(1));
 
 // ---- lessons
@@ -79,7 +105,7 @@ function drawLessons() {
         const key = `${x.ex.id}/${x.s.id}/${ch.id}`, d = done[key]; n++;
         return `<a class="row press" href="lecture.html?exam=${x.ex.id}&s=${x.s.id}&c=${ch.id}&from=${exam.id}">
           <div class="ch-num" style="background:${d ? 'var(--ok)' : col}">${d ? '✓' : String(n).padStart(2, '0')}</div>
-          <div class="body"><div class="t">${esc(ch.title)}</div><div class="s">${ch.cards.length} cards · ${ch.minutes || 3} min${d && d.total ? ` · quiz ${d.score}/${d.total}` : ''} · 🎧</div></div>
+          <div class="body"><div class="t">${esc(ch.title)}</div><div class="s">${ch.cards.length} cards · ${ch.minutes || 3} min${ch.notes ? ` · ${ic('book-open', 12)} notes` : ''}${d && d.total ? ` · quiz ${d.score}/${d.total}` : ''} · ${ic('headphones', 12)}</div></div>
           <span class="chev">${ICON.chev}</span></a>`;
       }).join('')}`;
   }).join('');
@@ -87,36 +113,100 @@ function drawLessons() {
 document.getElementById('subj').onclick = e => { if (e.target.dataset.s) { pick = e.target.dataset.s; drawLessons(); } };
 drawLessons();
 
+// ---- syllabus checklist: every official topic → the lessons that cover it
+(function drawSyllabus() {
+  const el = document.getElementById('syllabus');
+  const secs = exam.syllabus || (core && core.syllabus) || [];
+  if (!secs.length) { seg.querySelector('[data-v="syllabus"]').remove(); return; }
+  const find = ref => {
+    const isCore = ref.startsWith('core:'), [sid, cid] = ref.replace(/^core:/, '').split('/');
+    const ex = isCore ? core : exam, sub = ex?.subjects.find(x => x.id === sid), ch = sub?.chapters.find(x => x.id === cid);
+    return ch ? { ex, sub, ch, key: `${ex.id}/${sid}/${cid}` } : null;
+  };
+  let topics = 0, covered = 0;
+  const html = secs.map(sec => `<div class="section"><div class="h-md">${esc(sec.section)}</div></div><div class="card" style="padding:4px 14px">
+    ${sec.topics.map(t => {
+      const refs = (t.ch || []).map(find).filter(Boolean);
+      const isDone = refs.length && refs.every(r => done[r.key]);
+      topics++; if (isDone) covered++;
+      return `<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)">
+        <span style="width:24px;height:24px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:12px;font-weight:800;${isDone ? 'background:var(--ok);color:#fff' : 'border:2px solid var(--line)'}">${isDone ? '✓' : ''}</span>
+        <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px">${esc(t.t)}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${refs.map(r => `<a class="pill press" style="box-shadow:none;background:${done[r.key] ? 'color-mix(in srgb,var(--ok) 14%,var(--card))' : 'var(--card-2)'};font-size:12px;white-space:normal;max-width:100%;line-height:1.35" href="lecture.html?exam=${r.ex.id}&s=${r.sub.id}&c=${r.ch.id}&from=${exam.id}">${done[r.key] ? ic('check', 12) : ic('play', 12)} ${esc(r.ch.title)}</a>`).join('')}</div></div></div>`;
+    }).join('')}</div>`).join('');
+  el.innerHTML = `<div class="card" style="padding:16px;margin-top:10px;background:var(--c-${c.id});color:#fff;border-color:transparent">
+      <div class="eyebrow" style="opacity:.85">${exam.kind === 'course' ? 'Programme curriculum' : 'Official syllabus'}</div>
+      <div class="h-lg" style="margin-top:4px">${covered} of ${topics} topics done</div>
+      <div style="height:8px;border-radius:8px;background:rgba(255,255,255,.25);margin-top:10px;overflow:hidden"><i style="display:block;height:100%;width:${(covered / topics) * 100}%;background:#fff"></i></div>
+      <div style="font-size:13px;font-weight:600;opacity:.92;margin-top:6px">${exam.kind === 'course' ? 'The full programme, term by term — finish every topic and you have covered what a top 2-year MBA teaches.' : 'Every topic in the official syllabus is mapped to lessons here — finish them all and you\'ve covered the exam.'}</div></div>` + html;
+})();
+
 // ---- pattern
 const o = exam.overview || {};
 document.getElementById('pattern').innerHTML = `
   ${o.about ? `<p style="margin:10px 0 14px;font-size:15px;color:var(--ink-2)">${esc(o.about)}</p>` : ''}
   <div class="stat-grid">
     ${o.frequency ? `<div class="stat"><span>How often</span><b style="font-size:16px;margin-top:4px">${esc(o.frequency)}</b></div>` : ''}
-    ${o.officialSite ? `<a class="stat press" href="${esc(o.officialSite)}" target="_blank" rel="noopener"><span>Official site</span><b style="font-size:15px;margin-top:4px;color:var(--accent);word-break:break-all">${esc(o.officialSite.replace(/^https?:\/\//, ''))} ↗</b></a>` : ''}
+    ${o.officialSite ? `<a class="stat press" href="${esc(o.officialSite)}" target="_blank" rel="noopener"><span>Official site</span><b style="font-size:15px;margin-top:4px;color:var(--accent);word-break:break-all">${esc(o.officialSite.replace(/^https?:\/\//, ''))} ${ic('external-link', 14)}</b></a>` : ''}
   </div>
-  ${o.pattern && o.pattern.length ? `<div class="section"><div class="h-md">Exam pattern</div></div>
+  ${o.pattern && o.pattern.length ? `<div class="section"><div class="h-md">${exam.kind === 'course' ? 'How the programme is structured' : 'Exam pattern'}</div></div>
     ${o.pattern.map(p => `<div class="card" style="padding:14px;margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;gap:10px"><b>${esc(p.paper)}</b><span class="muted" style="font-weight:700;font-size:13px;white-space:nowrap">${esc(p.duration ?? '')}</span></div>
       <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">${p.questions ? `<span class="pill" style="box-shadow:none;background:var(--card-2)">${esc(p.questions)} Qs</span>` : ''}${p.marks ? `<span class="pill" style="box-shadow:none;background:var(--card-2)">${esc(p.marks)} marks</span>` : ''}</div>
       ${p.note ? `<div class="muted" style="font-size:13px;margin-top:8px">${esc(p.note)}</div>` : ''}</div>`).join('')}` : ''}
-  ${o.eligibility ? `<div class="section"><div class="h-md">Eligibility</div></div><div class="card" style="padding:4px 16px"><ul class="list-clean">${o.eligibility.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
-  <p class="note" style="margin-top:14px">Rules change each cycle — always confirm with the latest official notification.</p>`;
+  ${o.eligibility ? `<div class="section"><div class="h-md">${exam.kind === 'course' ? 'Who this is for' : 'Eligibility'}</div></div><div class="card" style="padding:4px 16px"><ul class="list-clean">${o.eligibility.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
+  ${exam.kind === 'course' ? '' : '<p class="note" style="margin-top:14px">Rules change each cycle — always confirm with the latest official notification.</p>'}`;
 
-// ---- papers
+// ---- papers: year timeline with "solved" tracking
 const pyq = (exam.pyq || []).slice().sort((a, b) => b.year - a.year);
-document.getElementById('papers').innerHTML = pyq.length ? `
-  <p class="note" style="margin:8px 0 12px">Links open the official source. If an exam body doesn't publish papers, we say so instead of linking unofficial copies.</p>
-  ${pyq.map(y => `<div class="year"><div class="h-md">${y.year}</div>${y.items.map(it =>
-    `<a href="${esc(it.url)}" target="_blank" rel="noopener"><span>${esc(it.label)}<div class="muted" style="font-size:12px;font-weight:600">${esc(it.source || '')}</div></span><span style="color:var(--accent)">↗</span></a>`).join('')}</div>`).join('')}`
-  : '<p class="muted" style="margin-top:12px">No written papers for this track.</p>';
+const YEAR_GRAD = ['#FF5A1F', '#5B2BD9', '#13568C', '#1F7A4D', '#B5541B', '#C04BD9', '#0EA5E9', '#E5484D', '#7C3AED', '#16A34A'];
+let yearPick = 'all';
+function drawPapers() {
+  const solved = store.read().pyqDone || {};
+  const items = pyq.flatMap(y => y.items.map(it => ({ ...it, year: y.year, k: `${exam.id}/${y.year}/${it.label}` })));
+  const nSolved = items.filter(it => solved[it.k]).length;
+  const official = items.some(it => /official/i.test(it.source || ''));
+  const upsc = /upsc\.gov\.in/.test(items[0]?.url || '');
+  document.getElementById('papers').innerHTML = !pyq.length ? `<p class="muted" style="margin-top:12px">${esc(exam.papersNote || 'No written papers for this track.')}</p>` : `
+    <div class="card" style="padding:18px;margin-top:10px;background:var(--c-${c.id});color:#fff;border-color:transparent">
+      <div class="eyebrow" style="opacity:.85">Previous year papers</div>
+      <div class="h-lg" style="margin-top:4px">${pyq[pyq.length - 1].year}–${pyq[0].year} · ${items.length} papers</div>
+      <div style="height:8px;border-radius:8px;background:rgba(255,255,255,.25);margin-top:12px;overflow:hidden"><i style="display:block;height:100%;width:${(nSolved / items.length) * 100}%;background:#fff"></i></div>
+      <div style="font-size:13px;font-weight:700;margin-top:6px;opacity:.92">${nSolved} solved · tick each paper when you finish it</div>
+    </div>
+    ${upsc ? `<details class="card" style="padding:14px 16px;margin-top:10px"><summary style="font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:44px">${ic('download', 16)} How to download from UPSC</summary>
+      <ol style="margin:10px 0 0 18px;font-size:14px;line-height:1.7;color:var(--ink-2)"><li>Tap <b>Open official ↗</b> on any paper below.</li><li>On the UPSC page pick the <b>exam name</b> and the <b>year</b>.</li><li>Tap the question paper PDF for each subject to download it.</li></ol></details>` : ''}
+    ${!official ? '<p class="note" style="margin-top:10px">This exam body doesn\'t publish past papers. The links take you to the official page; practise with our lessons and quizzes.</p>' : ''}
+    <div class="chips" style="margin-top:12px" id="yrs"><button class="chip${yearPick === 'all' ? ' on' : ''}" data-y="all">All years</button>${pyq.map(y => `<button class="chip${String(y.year) === yearPick ? ' on' : ''}" data-y="${y.year}">${y.year}</button>`).join('')}</div>
+    ${pyq.filter(y => yearPick === 'all' || String(y.year) === yearPick).map((y, i) => {
+      const col = YEAR_GRAD[pyq.indexOf(y) % YEAR_GRAD.length];
+      return `<div class="card" style="margin-top:12px;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:${col};color:#fff">
+          <div style="font-size:30px;font-weight:800;letter-spacing:-.03em">${y.year}</div>
+          <div style="font-size:12px;font-weight:700;opacity:.92">${y.items.length} paper${y.items.length > 1 ? 's' : ''}</div></div>
+        ${y.items.map(it => { const k = `${exam.id}/${y.year}/${it.label}`, d = solved[k]; return `
+          <div style="display:flex;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)">
+            <label style="display:grid;place-items:center;width:44px;height:44px;border-radius:var(--r-sm);background:${d ? 'var(--ok)' : 'var(--card-2)'};color:${d ? '#fff' : 'var(--mute)'};flex-shrink:0;cursor:pointer">${d ? ic('check', 18) : ic('file-text', 18)}<input type="checkbox" data-k="${esc(k)}" ${d ? 'checked' : ''} hidden></label>
+            <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px">${esc(it.label)}</div><div class="muted" style="font-size:12px;font-weight:600">${esc(it.source || '')}</div></div>
+            <a class="btn btn-ghost press" style="min-height:44px;padding:0 12px;font-size:12px;flex-shrink:0" href="${esc(it.url)}" target="_blank" rel="noopener">Open ${ic('external-link', 14)}</a></div>`; }).join('')}
+      </div>`; }).join('')}
+    <div class="card" style="padding:16px;margin-top:12px"><div class="h-md">${ic('brain', 18)} How toppers use PYQs</div>
+      <ul class="list-clean" style="margin-top:6px"><li>Solve one full paper a week with a strict timer.</li><li>Mark every wrong answer and redo it after 3 days.</li><li>Notice which chapters repeat — revise those first.</li></ul></div>`;
+}
+document.getElementById('papers').addEventListener('click', e => { if (e.target.dataset.y) { yearPick = e.target.dataset.y; drawPapers(); } });
+document.getElementById('papers').addEventListener('change', e => {
+  const k = e.target.dataset.k; if (!k) return;
+  store.update(s => { s.pyqDone = s.pyqDone || {}; if (e.target.checked) s.pyqDone[k] = Date.now(); else delete s.pyqDone[k]; });
+  drawPapers();
+});
+drawPapers();
 
 // ---- free resources
 const res = [...(exam.resources || []), ...((core && core.resources) || [])];
 const seen = new Set();
 document.getElementById('free').innerHTML = res.filter(r => !seen.has(r.url) && seen.add(r.url)).map(r => `
   <a class="row press" href="${esc(r.url)}" target="_blank" rel="noopener" style="margin-top:10px">
-    <div class="thumb" style="background:var(--g-${c.id})">↗</div>
+    <div class="thumb" style="background:var(--c-${c.id})">${ic('external-link', 22)}</div>
     <div class="body"><div class="t">${esc(r.label)}</div><div class="s">${esc(r.note || '')}</div></div></a>`).join('');
 </script>
 </body>

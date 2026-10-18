@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phrase lesson · Brodoit Languages</title>
+<meta name="theme-color" content="#FBF8F3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- Plus Jakarta Sans comes from /app/theme.css; only the Indic/CJK script fonts are fetched here -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@700;800&family=Noto+Sans+Kannada:wght@700;800&family=Noto+Sans+Malayalam:wght@700;800&family=Noto+Sans+Tamil:wght@700;800&family=Noto+Sans+Telugu:wght@700;800&family=Noto+Sans+JP:wght@700;800&family=Noto+Sans+SC:wght@700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="/app/theme.css?v=12">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=12">
+<script src="/app/icons.js?v=12" defer></script>
+</head>
+<body>
+<main class="wrap" id="learn" style="padding-bottom:110px">
+  <div class="b-progress" style="margin-top:10px"><i id="bar" style="width:0%"></i></div>
+  <div id="content"></div>
+</main>
+<div class="foot practice-foot" id="learnFoot"><div class="in"><button class="b-btn violet" id="toPractice">Practice →</button></div></div>
+
+<div class="runner" id="runner" hidden>
+  <div class="hd"><a class="icon-btn press" id="close" href="/lang/" aria-label="Close"></a><div class="b-progress"><i id="pbar" style="width:0%"></i></div><div class="pill" id="pcount"></div></div>
+  <div class="ex" id="ex"></div>
+</div>
+<div class="foot" id="foot" hidden><div class="in">
+  <div class="result"><div class="ic" id="rIc">✓</div><div><div class="t" id="rT"></div><div class="s" id="rS"></div></div></div>
+  <button class="check" id="check" disabled>Check</button>
+</div></div>
+
+<script type="module">
+import { renderChrome, store, esc, param, ICON, speak, stopSpeaking, sleep, recognize, hasSR, hasTTS, similarity, completeLesson, confetti, toast, haptic, fmtTime, voicesLoaded, pickVoice } from '/lang/assets/lang.js?v=9';
+import { loadPhraseCatalog, loadPhraseLang, phraseKey, phrasesHref, phraseLessonHref, challengePlan, phraseQuiz, lessonPhrases, applyNativeFont, PHRASE_XP } from '/lang/assets/phrases.js?v=9';
+import { createPresenter } from '/lang/assets/presenter.js?v=9';
+import { ic } from '/lang/assets/ico.js?v=12';
+
+const $ = id => document.getElementById(id);
+const langId = param('l') || 'bengali', lessonId = param('n') || 'greetings';
+const [cat, language] = await Promise.all([loadPhraseCatalog(), loadPhraseLang(langId)]);
+const li = cat ? cat.lessons.findIndex(x => x.id === lessonId) : -1;
+const content = $('content');
+
+if (!cat || !language || li < 0) {
+  renderChrome({ title: 'Phrase lesson', back: '/lang/' });
+  $('learnFoot').hidden = true;
+  content.innerHTML = `<div class="b-card empty rise"><div class="e">📖</div><div class="t">Lesson not found</div><div class="s">Pick one from the language page.</div><a class="b-btn violet" href="/lang/">Browse courses</a></div>`;
+} else {
+  applyNativeFont(langId);
+  const meta = cat.lessons[li], lesson = language.lessons.find(x => x.id === lessonId);
+  const phrases = lessonPhrases(cat, language, lessonId);
+  const key = phraseKey(langId, lessonId);
+  const plan = challengePlan(cat), day = plan.find(p => p.key === key)?.day;
+  const nextPlan = plan[plan.findIndex(p => p.key === key) + 1];
+  const nextInLang = cat.lessons[li + 1];
+  const back = phrasesHref(langId);
+  const hostName = cat.host.name;
+  document.title = `${language.name}: ${meta.title} · Brodoit Languages`;
+  renderChrome({ title: language.name, back, right: `<span class="pill">Lesson ${li + 1}/${cat.lessons.length}</span>` });
+  $('close').innerHTML = ICON.close; $('close').href = back;
+
+  // ---------- Learn view: Meera + a card per phrase
+  const nat = t => `<span class="native" lang="${esc(language.bcp47)}">${esc(t)}</span>`;
+  content.innerHTML = `
+    <div class="plhd rise"><div class="b-eyebrow">${esc(language.name)} · Lesson ${li + 1}${day ? ` · Challenge day ${day}` : ''}</div><h1>${esc(meta.title)}</h1><p>${esc(meta.goal)}</p></div>
+    <div class="host-row rise" style="animation-delay:.04s">
+      <div class="presenter" id="host"></div>
+      <div class="b-card speech" id="speech"><div class="who"><span>${esc(hostName)}</span></div><span id="caption">${esc(lesson.intro)}</span></div>
+    </div>
+    <div class="transport rise" style="animation-delay:.08s">
+      <button class="b-btn violet" id="play">${ICON.play.replace('<svg', '<svg width="18" height="18"')} Play the lesson</button>
+      <button class="b-chip" id="slow" aria-pressed="false">${ic('turtle', 16)} Slow</button>
+    </div>
+    <div id="cards">${phrases.map((p, i) => `<div class="b-card pcard rise" data-i="${i}" style="animation-delay:${0.1 + i * 0.04}s">
+      <div class="num">Phrase ${i + 1} of ${phrases.length}</div>
+      <div class="n">${nat(p.native)}</div>
+      <div class="r">${esc(p.roman)}</div>
+      <div class="en">“${esc(p.en)}”</div>
+      <div class="side"><button class="spk" data-say="${i}" aria-label="Hear it">${ICON.speaker}</button><button class="spk sm" data-say="${i}" data-slow="1" aria-label="Hear it slowly">${ICON.turtle}</button></div>
+      <div class="note">${esc(p.note)}</div></div>`).join('')}</div>
+    <div class="b-card tipcard rise"><div class="e">${ic('lightbulb', 24)}</div><div><b>Quick tip.</b> ${esc(lesson.tip)}</div></div>`;
+
+  // ---------- Meera
+  let playing = false, ctrl = null;
+  const host = createPresenter($('host'));
+  host.setGesture('wave'); setTimeout(() => !playing && host.setGesture('idle'), 2600);
+  let talking = false;
+  (function meter() {
+    const t = performance.now() / 1000;
+    host.setLevel(talking ? Math.max(0, 0.45 * Math.abs(Math.sin(t * 11)) + 0.3 * Math.abs(Math.sin(t * 7.3)) - 0.08) : 0);
+    requestAnimationFrame(meter);
+  })();
+  const caption = $('caption');
+  const setCaption = html => { caption.innerHTML = html; };
+
+  // ---------- Voice: native voice when the device has one, else Meera reads the romanisation.
+  const voices = await voicesLoaded();
+  const nativeVoice = !!pickVoice(language.bcp47, voices);
+  let slow = false;
+  $('slow').onclick = () => { slow = !slow; $('slow').classList.toggle('on', slow); $('slow').setAttribute('aria-pressed', slow); };
+  async function say(text, { en = false, roman = '', signal, gesture } = {}) {
+    if (signal?.aborted) return;
+    talking = true; host.setTalking(true); if (gesture) host.setGesture(gesture);
+    if (en) await speak(text, { lang: 'en-IN', pitch: 1.05, rate: slow ? 0.85 : 1, signal });
+    else if (nativeVoice || !voices.length) await speak(text, { lang: language.bcp47, rate: slow ? 0.65 : 0.85, signal });
+    else await speak(roman || text, { lang: 'en-IN', rate: slow ? 0.7 : 0.85, signal });
+    talking = false; host.setTalking(false);
+  }
+  const cards = [...document.querySelectorAll('.pcard')];
+  const mark = i => cards.forEach((c, j) => c.classList.toggle('on', j === i));
+  $('cards').addEventListener('click', async e => {
+    const b = e.target.closest('[data-say]'); if (!b) return;
+    stopLesson(); const p = phrases[+b.dataset.say]; mark(+b.dataset.say);
+    const was = slow; slow = !!b.dataset.slow || slow;
+    b.classList.add('busy'); setCaption(`${nat(p.native)} <span class="muted">(${esc(p.roman)})</span>`);
+    host.setGesture('point');
+    await say(p.native, { roman: p.roman }); slow = was;
+    b.classList.remove('busy'); host.setGesture('idle');
+  });
+
+  // ---------- Play the whole lesson: cue → phrase → your turn → phrase again → note, then tip + outro
+  const playBtn = $('play');
+  const setPlaying = v => { playing = v; playBtn.innerHTML = v ? `${ICON.pause.replace('<svg', '<svg width="18" height="18"')} Pause` : `${ICON.play.replace('<svg', '<svg width="18" height="18"')} Play the lesson`; if (!v) { host.setTalking(false); host.setGesture('idle'); talking = false; } };
+  const progress = (i, n) => { $('bar').style.width = `${Math.round((100 * i) / n)}%`; };
+  function stopLesson() { if (ctrl) ctrl.abort(); ctrl = null; stopSpeaking(); setPlaying(false); }
+  async function runLesson() {
+    const c = ctrl = new AbortController(), sig = c.signal;
+    setPlaying(true);
+    const ordinal = ['one', 'two', 'three', 'four', 'five', 'six'];
+    setCaption(esc(lesson.intro));
+    await say(`${li === 0 ? `Hi, I'm ${hostName}. Welcome to ${language.name}! ` : 'Welcome back! '}This is lesson ${ordinal[li]}: ${meta.title}. ${lesson.intro} Listen to each phrase, then say it out loud after me.`, { en: true, signal: sig, gesture: 'wave' });
+    for (let i = 0; i < phrases.length && !sig.aborted; i++) {
+      const p = phrases[i]; mark(i); progress(i, phrases.length + 1);
+      cards[i].scrollIntoView({ block: 'center', behavior: 'smooth' });
+      setCaption(`${i === 0 ? 'First' : i === phrases.length - 1 ? 'And finally' : 'Next'}: “${esc(p.en)}”`);
+      await say(`${i === 0 ? 'First' : i === phrases.length - 1 ? 'And finally' : 'Next'}: ${p.en.replace(/ \/ /g, ', or, ')}`, { en: true, signal: sig, gesture: 'point' });
+      setCaption(`${nat(p.native)} <span class="muted">(${esc(p.roman)})</span>`);
+      await say(p.native, { roman: p.roman, signal: sig, gesture: 'point' });
+      setCaption(`<span class="yourturn"><i></i> Your turn — say it out loud</span>`); host.setGesture('listen');
+      await sleep(slow ? 3400 : 2600, sig);
+      setCaption(`${nat(p.native)} <span class="muted">(${esc(p.roman)})</span>`);
+      await say(p.native, { roman: p.roman, signal: sig, gesture: 'point' });
+      setCaption(esc(p.note));
+      await say(p.note, { en: true, signal: sig, gesture: 'explain' });
+      await sleep(400, sig);
+    }
+    if (sig.aborted) return;
+    mark(-1); progress(phrases.length, phrases.length + 1);
+    setCaption(`${ic('lightbulb', 14)} ${esc(lesson.tip)}`);
+    await say(`Here's a quick tip. ${lesson.tip}`, { en: true, signal: sig, gesture: 'explain' });
+    setCaption(`Wonderful work! Now take the quick check to lock it in.`);
+    await say(`Wonderful work! That's ${meta.title.toLowerCase()} in ${language.name}. Now take the quick check to lock it in.`, { en: true, signal: sig, gesture: 'wave' });
+    if (sig.aborted) return;
+    progress(1, 1); setPlaying(false); ctrl = null;
+    $('toPractice').classList.add('pop');
+  }
+  playBtn.onclick = () => { if (playing) stopLesson(); else runLesson(); };
+  addEventListener('pagehide', stopLesson);
+
+  // ---------- Practice: 2 × listen-and-pick, 2 × say-it-back (same runner look as lesson.html)
+  const runner = $('runner'), exEl = $('ex'), foot = $('foot'), checkBtn = $('check');
+  $('toPractice').onclick = startPractice;
+  let queue = [], pos = 0, right = 0, wrong = 0, cur = null, resultShown = false, t0 = 0;
+  const setCheck = on => { checkBtn.disabled = !on; };
+  const spkBtn = (p, slowB = false) => { const b = document.createElement('button'); b.className = 'spk' + (slowB ? ' sm' : ''); b.innerHTML = slowB ? ICON.turtle : ICON.speaker; b.setAttribute('aria-label', slowB ? 'Play slowly' : 'Play');
+    b.onclick = async () => { stopSpeaking(); b.classList.add('busy'); const was = slow; slow = slowB || slow; await say(p.native, { roman: p.roman }); slow = was; b.classList.remove('busy'); }; return b; };
+  const head = (kind, title = '') => `<div class="kind">${kind}</div>${title ? `<h2>${esc(title)}</h2>` : ''}`;
+
+  const build = {
+    listen(it) {
+      const el = document.createElement('div'); let sel = -1;
+      el.innerHTML = head(`${ic('ear', 14)} Listen and pick the meaning`) + `<div class="prompt-row" style="justify-content:center;gap:14px;margin:14px 0 24px"></div>
+        <div class="opts">${it.options.map((o, i) => `<button class="opt" data-i="${i}"><span class="n">${i + 1}</span><span>${esc(o.en)}</span></button>`).join('')}</div>`;
+      el.querySelector('.prompt-row').append(spkBtn(it.phrase), spkBtn(it.phrase, true));
+      setTimeout(() => { stopSpeaking(); say(it.phrase.native, { roman: it.phrase.roman }); }, 350);
+      el.querySelectorAll('.opt').forEach(b => b.onclick = () => { haptic(8); sel = +b.dataset.i; el.querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', x === b)); setCheck(true); });
+      return { el, check() { const ok = sel === it.answer; el.querySelectorAll('.opt').forEach((x, i) => { if (i === it.answer) x.classList.add('ok'); else if (i === sel) x.classList.add('bad'); }); return { ok, correct: `${it.phrase.native} · ${it.phrase.roman} — ${it.phrase.en}` }; }, lock() { el.querySelectorAll('.opt').forEach(b => { b.disabled = true; }); } };
+    },
+    speak(it) {
+      const el = document.createElement('div'); let heard = '', skipped = false, busy = false;
+      const p = it.phrase;
+      el.innerHTML = head(`${ic('mic', 14)} Say it back`) + `<div class="prompt-row"></div><div class="muted" style="font-weight:600;font-size:14px;margin-top:-8px">“${esc(p.en)}”</div>
+        <button class="mic" id="mic" aria-label="Speak">${ICON.mic}</button><div class="heard" id="heard">${hasSR ? 'Tap to speak' : 'Speech recognition is not available here — tap skip.'}</div><button class="skip-link" id="skipSpeak">Can't speak now</button>`;
+      const pr = el.querySelector('.prompt-row'); pr.append(spkBtn(p)); pr.insertAdjacentHTML('beforeend', `<div class="bubble">${nat(p.native)}<span class="r">${esc(p.roman)}</span></div>`);
+      setTimeout(() => { stopSpeaking(); say(p.native, { roman: p.roman }); }, 300);
+      const mic = el.querySelector('#mic'), heardEl = el.querySelector('#heard');
+      mic.onclick = async () => {
+        if (busy) return;
+        if (!hasSR) { toast('Speech recognition is not available here — tap skip.'); return; }
+        busy = true; stopSpeaking(); mic.classList.add('on'); heardEl.textContent = 'Listening…'; haptic(15); host.setGesture('listen');
+        heard = await recognize(language.bcp47, { ms: 6000, onInterim: txt => { heardEl.textContent = txt; } });
+        mic.classList.remove('on'); busy = false; host.setGesture('idle');
+        heardEl.textContent = heard ? `We heard: “${heard}”` : 'Tap to speak';
+        if (heard) { setCheck(true); if (score() >= 0.5) checkBtn.click(); }
+      };
+      const score = () => Math.max(similarity(heard, p.native), similarity(heard, p.roman));
+      el.querySelector('#skipSpeak').onclick = () => { skipped = true; setCheck(true); checkBtn.click(); };
+      return { el, check() { if (skipped) return { ok: true, skip: true, correct: `${p.native} · ${p.roman}` }; return { ok: score() >= 0.5, correct: `${p.native} · ${p.roman}` }; }, lock() { mic.disabled = true; el.querySelector('#skipSpeak').disabled = true; } };
+    },
+  };
+
+  function startPractice() {
+    stopLesson();
+    queue = phraseQuiz(cat, language, lessonId).map((it, i) => ({ it, id: i })); pos = 0; right = 0; wrong = 0; t0 = Date.now();
+    $('learn').hidden = true; $('learnFoot').hidden = true; document.querySelector('.topbar')?.remove();
+    runner.hidden = false; foot.hidden = false;
+    window.scrollTo(0, 0);
+    show();
+  }
+  function show() {
+    stopSpeaking();
+    if (pos >= queue.length) return complete();
+    cur = queue[pos];
+    $('pbar').style.width = `${Math.round((pos / queue.length) * 100)}%`; $('pcount').textContent = `${pos + 1}/${queue.length}`;
+    foot.className = 'foot'; resultShown = false; checkBtn.className = 'check'; checkBtn.textContent = 'Check'; setCheck(false);
+    cur.ui = build[cur.it.t](cur.it);
+    exEl.replaceChildren(cur.ui.el);
+    exEl.style.animation = 'none'; void exEl.offsetWidth; exEl.style.animation = '';
+    window.scrollTo(0, 0);
+  }
+  function showResult(res) {
+    resultShown = true; cur.ui.lock();
+    foot.className = 'foot ' + (res.ok ? 'ok' : 'bad');
+    $('rIc').innerHTML = res.ok ? (res.skip ? ic('skip-forward', 26) : ic('check', 26, 3)) : ic('x', 26, 3);
+    $('rT').textContent = res.ok ? (res.skip ? 'Continue' : 'Nicely done!') : 'Not quite';
+    $('rS').innerHTML = res.ok ? (res.skip ? esc(res.correct) : '') : `Correct answer:<b class="native">${esc(res.correct)}</b>`;
+    checkBtn.className = 'check' + (res.ok ? '' : ' red'); checkBtn.textContent = 'Continue'; setCheck(true);
+    if (res.ok) { haptic(12); if (!res.skip) right++; }
+    else { wrong++; haptic([30, 40, 30]); queue.push({ it: cur.it, id: cur.id, retry: true }); }
+  }
+  checkBtn.onclick = () => {
+    if (checkBtn.disabled) return;
+    if (resultShown) { pos++; return show(); }
+    showResult(cur.ui.check());
+  };
+  function complete() {
+    const secs = Math.round((Date.now() - t0) / 1000);
+    const acc = right + wrong ? Math.round((right / (right + wrong)) * 100) : 100;
+    const already = !!store.read().done[key];
+    completeLesson(key, PHRASE_XP);
+    foot.hidden = true;
+    const nextHref = nextInLang ? phraseLessonHref(langId, nextInLang.id) : nextPlan ? phraseLessonHref(nextPlan.lang, nextPlan.lesson) : null;
+    runner.innerHTML = `<div class="done-screen">
+      <div class="e">${wrong === 0 ? '🏆' : '🎉'}</div><h1>Lesson complete!</h1><p>${esc(language.name)} · ${esc(meta.title)}${day ? ` · day ${day} of ${cat.challenge.days}` : ''}${already ? ' · reviewed' : ''}</p>
+      <div class="tiles"><div class="tile xp"><b>+${PHRASE_XP}</b><span>XP</span></div><div class="tile acc"><b>${acc}%</b><span>accuracy</span></div><div class="tile time"><b>${fmtTime(secs)}</b><span>time</span></div></div>
+      <div style="width:100%;max-width:400px;display:grid;gap:10px;margin-top:24px">
+        ${nextHref ? `<a class="b-btn wide" href="${nextHref}">Next lesson →</a>` : ''}
+        <a class="b-btn ghost wide" href="${back}">All ${esc(language.name)} lessons</a>
+        <a class="skip-link" href="${location.pathname}${location.search}">Practice again</a></div></div>`;
+    confetti();
+  }
+  window.__phraseLesson = { get queue() { return queue; }, get pos() { return pos; }, startPractice };
+}
+</script>
+</body>
+</html>

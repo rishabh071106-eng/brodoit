@@ -112,6 +112,55 @@
               "answer": 3,
               "explain": "0.8 × MP = 480 → MP = 600."
             }
+          ],
+          "notes": [
+            {
+              "h": "Test structure",
+              "p": "HCLTech's fresher online test (for roles such as Graduate Engineer Trainee) is reported to cover **quantitative aptitude**, **logical reasoning**, **verbal ability** and **technical MCQs** (C programming, data structures, OS, DBMS, networks), with a **coding** section in some drives. Pattern as reported for recent drives; confirm on the official careers page.\n\nThe technical section has a bigger weight than at many service companies, so revise CS fundamentals as well as aptitude."
+            },
+            {
+              "h": "Aptitude walkthroughs",
+              "p": "**Quant.** A sum becomes ₹1,210 in 2 years at 10% compound interest. Principal? 1210/1.21 = **₹1,000**.\n\n**Quant.** Two numbers are in ratio 3 : 5 and their LCM is 150. Numbers: 3x and 5x with LCM 15x = 150 → x = 10 → **30 and 50**.\n\n**Logical.** Statements: Some pens are pencils. All pencils are erasers. Conclusion: Some pens are erasers → **follows** (Some + All = Some).\n\n**Verbal.** Antonym of 'transparent': **opaque**."
+            },
+            {
+              "h": "Technical MCQ walkthrough in C",
+              "p": "Predict the output, then check:\n\n`#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    int a = 5;\n    int *p = &a;\n    *p = *p * 2;\n    printf(\"%d\\n\", a);\n    printf(\"%d\\n\", 10 >> 1 | 1);\n    char str[] = \"HCL\";\n    printf(\"%zu %zu\\n\", sizeof(str), strlen(str));\n    int i, s = 0;\n    for (i = 1; i <= 10; i += 3) s += i;\n    printf(\"%d %d\\n\", s, i);\n    return 0;\n}`\n\nOutput:\n`10\n5\n4 3\n22 13`\n\nLine by line: `*p` changes `a` to 10. Shift binds tighter than `|`, so (10 >> 1) | 1 = 5 | 1 = 5. `sizeof` counts the hidden `\\0`, `strlen` does not. The loop adds 1 + 4 + 7 + 10 = 22 and stops when i becomes 13."
+            },
+            {
+              "h": "Other technical topics to revise",
+              "p": "Short facts frequently asked:",
+              "points": [
+                "Stack (LIFO) vs queue (FIFO); BST inorder gives sorted order.",
+                "Deadlock conditions; paging vs segmentation.",
+                "Primary vs foreign key; normal forms; ACID.",
+                "OSI layers; TCP vs UDP; common ports.",
+                "Time complexity of sorting and searching algorithms."
+              ]
+            },
+            {
+              "h": "Coding section sample",
+              "p": "When a coding section appears, problems are usually basic. **Problem:** print YES if a string is a palindrome ignoring case and spaces, else NO.\n\n`s = input()\nt = \"\".join(ch.lower() for ch in s if ch != \" \")\nprint(\"YES\" if t == t[::-1] else \"NO\")`\n\nSample input:\n`Never Odd Or Even`\n\nOutput:\n`YES`\n\nTime O(n). Clarify whether punctuation should be ignored too; hidden test cases follow the statement exactly."
+            },
+            {
+              "h": "Traps",
+              "p": "Common slips in HCLTech's test:",
+              "points": [
+                "Treating `sizeof` and `strlen` as the same for strings.",
+                "Forgetting operator precedence (shift vs bitwise OR, `*p++`).",
+                "Skipping technical MCQs because aptitude feels safer — both count."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Aptitude + strong technical MCQ section.",
+                "C output questions: pointers, precedence, sizeof vs strlen, loops.",
+                "CI: A = P(1 + r/100)ⁿ.",
+                "LCM of ratio numbers = ratio LCM × x.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -172,6 +221,45 @@
               ],
               "answer": 2,
               "explain": "Sort descending, de-duplicate, take 3."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Interview format",
+              "p": "After the online test, HCLTech usually conducts a **technical interview** and an **HR interview**; some drives add a group discussion or a communication check. Technical rounds focus on one programming language, CS fundamentals and your project. Pattern as reported for recent drives; confirm on the official careers page."
+            },
+            {
+              "h": "Technical questions with model answers",
+              "p": "**Q: What is a pointer? What is a null pointer?** A: A variable storing an address; a null pointer points to nothing and must not be dereferenced.\n\n**Q: Difference between malloc and calloc?** A: malloc allocates uninitialised memory; calloc allocates and zero-initialises memory for an array.\n\n**Q: What is polymorphism? Give an example.** A: One interface, many forms — a `Shape` reference calling `area()` on a Circle or Rectangle.\n\n**Q: What is a deadlock and how can it be prevented?** A: Processes waiting on each other forever; prevent by breaking a condition, e.g. acquiring resources in a fixed order.\n\n**Q: Explain normalisation up to 3NF.** A: 1NF atomic values; 2NF no partial dependency; 3NF no transitive dependency.\n\n**Q: Write a program to check if a number is prime.** A: Test divisors from 2 up to √n; O(√n)."
+            },
+            {
+              "h": "HR questions with model answers",
+              "p": "**Q: Tell me about yourself.** A: Present → past → future in about a minute.\n\n**Q: Why HCLTech?** A: Mention its engineering and IT services breadth, fresher training and your interest in its domains, with one specific fact from the official site.\n\n**Q: What are your strengths and weaknesses?** A: Strength with proof; a real weakness with the steps you are taking.\n\n**Q: Are you comfortable with a service agreement, relocation or night shifts?** A: Read the offer terms beforehand and answer honestly."
+            },
+            {
+              "h": "Preparation checklist",
+              "p": "Before the interview:",
+              "points": [
+                "Revise one language deeply (C or Java or Python): syntax, memory, OOP.",
+                "Practise 10 classic programs: prime, palindrome, Fibonacci, factorial, reverse, sorting, searching, string reverse, vowel count, matrix multiplication.",
+                "Prepare a 2-minute project explanation.",
+                "Keep documents ready for verification."
+              ]
+            },
+            {
+              "h": "Puzzle and scenario questions",
+              "p": "Some interviewers add a quick puzzle or workplace scenario to see how you think aloud.\n\n**Q: How can you measure exactly 4 litres with a 3-litre and a 5-litre jug?** A: Fill 5, pour into 3 (2 left), empty 3, pour the 2 into 3, fill 5 again, top up the 3 (needs 1) → 4 litres remain in the 5-litre jug.\n\n**Q: A production bug is reported on Friday evening and your lead is unreachable. What do you do?** A: Confirm and log the issue, check if a known workaround exists, inform the team channel/on-call contact as per process, and document what you did.\n\n**Q: If you could improve one thing in your project now, what would it be?** A: Name a concrete improvement — tests, input validation, password hashing — and why."
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Technical + HR (GD in some drives).",
+                "Know pointers, memory allocation, OOP, deadlock, normalisation.",
+                "Practise classic programs out loud.",
+                "Be honest about relocation and shifts.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
             }
           ]
         }

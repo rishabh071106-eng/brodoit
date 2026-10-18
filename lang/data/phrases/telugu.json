@@ -1,0 +1,277 @@
+{
+  "id": "telugu",
+  "name": "Telugu",
+  "native": "తెలుగు",
+  "category": "local",
+  "bcp47": "te-IN",
+  "script": "Telugu script",
+  "region": "Andhra Pradesh and Telangana, with large communities across India and abroad",
+  "speakers": "≈ 95 million",
+  "about": "Telugu is one of India's classical languages, and because almost every word ends in a vowel, it was nicknamed the Italian of the East. It is also one of the fastest growing languages among Indian communities in the United States.",
+  "pronunciation": [
+    "Almost every Telugu word ends in a vowel, so let words flow smoothly into each other.",
+    "Long vowels matter, so stretch the aa in namaskaaram and the ee in meeru.",
+    "Retroflex sounds like the d in rendu are made with the tongue curled back, just as in Hindi.",
+    "Stress is light and even, so avoid punching one syllable hard the way English does."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "Namaskaaram! Let's begin Telugu with the warm, everyday greetings you'll hear all over Hyderabad and Andhra.",
+      "tip": "Telugu has a respectful you, meeru, and a casual you, nuvvu. Use meeru with elders, strangers and anyone you've just met.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "నమస్కారం",
+          "roman": "namaskaaram",
+          "note": "Namaskaaram is the respectful hello, usually said with folded hands. Friends often just say hi or ela unnaav."
+        },
+        {
+          "key": "how-are-you",
+          "native": "మీరు ఎలా ఉన్నారు?",
+          "roman": "meeru elaa unnaaru?",
+          "note": "Meeru elaa unnaaru is the polite way to ask how someone is. With close friends you can say ela unnaav, or simply baagunnaaraa, meaning are you well."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "నేను బాగున్నాను.",
+          "roman": "nenu baagunnaanu.",
+          "note": "Nenu baagunnaanu means I am fine. People often reply with just baagunnaanu, and then ask back, meeru, meaning and you."
+        },
+        {
+          "key": "thank-you",
+          "native": "ధన్యవాదాలు",
+          "roman": "dhanyavaadaalu",
+          "note": "Dhanyavaadaalu is the proper thank you. In daily life many Telugu speakers simply say thanks in English, which is perfectly natural."
+        },
+        {
+          "key": "sorry",
+          "native": "క్షమించండి",
+          "roman": "kshaminchandi",
+          "note": "Kshaminchandi means please forgive me. It works both as sorry and as excuse me when you need someone's attention."
+        },
+        {
+          "key": "goodbye",
+          "native": "వెళ్ళొస్తాను",
+          "roman": "vellostaanu",
+          "note": "Vellostaanu literally means I'll go and come back. Telugu speakers avoid saying just I'm going, because it sounds final, so this is the polite goodbye."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Now let's introduce ourselves in Telugu. People love chatting about names and home towns, so these phrases will open many doors.",
+      "tip": "Telugu verbs come at the end of the sentence, and the word for is often disappears. Naa peru Priya is literally my name Priya.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "నా పేరు ప్రియ.",
+          "roman": "naa peru Priya.",
+          "note": "Naa peru Priya means my name is Priya. Just swap in your own name at the end."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "మీ పేరు ఏమిటి?",
+          "roman": "mee peru emiti?",
+          "note": "Mee peru emiti is the polite way to ask someone's name. In casual speech you'll also hear mee peru enti."
+        },
+        {
+          "key": "where-from",
+          "native": "మీది ఏ ఊరు?",
+          "roman": "meedi e ooru?",
+          "note": "Meedi e ooru literally means which town is yours. It's the most natural way to ask where someone is from."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "నేను భారతదేశం నుండి వచ్చాను.",
+          "roman": "nenu bhaaratadesham nundi vachchaanu.",
+          "note": "This means I have come from India. Bhaaratadesham is India. In everyday speech you can also say naadi India."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "మిమ్మల్ని కలవడం సంతోషంగా ఉంది.",
+          "roman": "mimmalni kalavadam santoshamgaa undi.",
+          "note": "This means meeting you makes me happy. It's polite and warm, perfect for a first meeting."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "నాకు కొంచెం తెలుగు వచ్చు.",
+          "roman": "naaku konchem telugu vachchu.",
+          "note": "Naaku konchem telugu vachchu literally means a little Telugu comes to me. People will be delighted to hear you try."
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Time for numbers! Telugu counting is easy and musical. Let's count together and learn today, tomorrow and yesterday.",
+      "tip": "In cities like Hyderabad people mix English numbers into Telugu, especially for prices and times, so don't be surprised to hear time entha, ten thirty.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "ఒకటి, రెండు, మూడు, నాలుగు, ఐదు",
+          "roman": "okati, rendu, moodu, naalugu, aidu",
+          "note": "Okati, rendu, moodu, naalugu, aidu are one to five. Notice how each number ends in a soft vowel."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "ఆరు, ఏడు, ఎనిమిది, తొమ్మిది, పది",
+          "roman": "aaru, edu, enimidi, tommidi, padi",
+          "note": "Aaru, edu, enimidi, tommidi, padi are six to ten. Keep the aa in aaru long and clear."
+        },
+        {
+          "key": "what-time",
+          "native": "టైం ఎంత అయింది?",
+          "roman": "time entha ayindi?",
+          "note": "Time entha ayindi literally means how much time has it become. This is how everyone asks the time. The formal word for time is samayam."
+        },
+        {
+          "key": "today",
+          "native": "ఈరోజు",
+          "roman": "eeroju",
+          "note": "Eeroju means today, literally this day. You'll also hear ivvaala in some regions."
+        },
+        {
+          "key": "tomorrow",
+          "native": "రేపు",
+          "roman": "repu",
+          "note": "Repu means tomorrow. Repu kaluddaam means let's meet tomorrow."
+        },
+        {
+          "key": "yesterday",
+          "native": "నిన్న",
+          "roman": "ninna",
+          "note": "Ninna means yesterday. Say it with a clear double n sound in the middle."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "Andhra food is famous for its spice! Let's learn how to order, ask prices and pay like a local.",
+      "tip": "Adding andi to the end of a sentence makes it more respectful. Shopkeepers will appreciate a polite idi entha andi.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "ఇది ఎంత?",
+          "roman": "idi entha?",
+          "note": "Idi entha means how much is this. Add andi at the end, idi entha andi, to sound extra polite."
+        },
+        {
+          "key": "too-expensive",
+          "native": "ధర చాలా ఎక్కువ.",
+          "roman": "dhara chaalaa ekkuva.",
+          "note": "Dhara chaalaa ekkuva means the price is too high. It's a gentle way to start bargaining at a market."
+        },
+        {
+          "key": "water-please",
+          "native": "కొంచెం మంచినీళ్ళు ఇవ్వండి.",
+          "roman": "konchem manchineellu ivvandi.",
+          "note": "This means please give me some drinking water. Manchineellu literally means good water, the word for drinking water."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "నేను శాకాహారిని.",
+          "roman": "nenu shaakaahaarini.",
+          "note": "Nenu shaakaahaarini means I am vegetarian. In restaurants it's just as common to say nenu non veg tinanu, meaning I don't eat non veg."
+        },
+        {
+          "key": "very-tasty",
+          "native": "ఇది చాలా రుచిగా ఉంది.",
+          "roman": "idi chaalaa ruchigaa undi.",
+          "note": "This means it is very tasty. A simple chaalaa baagundi, very nice, will also make the cook smile."
+        },
+        {
+          "key": "bill-please",
+          "native": "బిల్లు తీసుకురండి.",
+          "roman": "billu teesukurandi.",
+          "note": "Billu teesukurandi means please bring the bill. The ending andi makes the request polite."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "Let's get around! These phrases will help you find your way through busy Telugu streets and stations.",
+      "tip": "Telugu speakers often mix English words like station, bus and left into sentences. Using them is perfectly natural and widely understood.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "రైల్వే స్టేషన్ ఎక్కడ ఉంది?",
+          "roman": "railway station ekkada undi?",
+          "note": "Railway station ekkada undi means where is the railway station. Ekkada means where, and undi means it is."
+        },
+        {
+          "key": "turn-left",
+          "native": "ఎడమ వైపు తిరగండి.",
+          "roman": "edama vaipu tiragandi.",
+          "note": "Edama vaipu tiragandi means turn towards the left. Edama is left."
+        },
+        {
+          "key": "turn-right",
+          "native": "కుడి వైపు తిరగండి.",
+          "roman": "kudi vaipu tiragandi.",
+          "note": "Kudi vaipu tiragandi means turn towards the right. Kudi is right."
+        },
+        {
+          "key": "go-straight",
+          "native": "నేరుగా వెళ్ళండి.",
+          "roman": "nerugaa vellandi.",
+          "note": "Nerugaa vellandi means go straight. You'll often hear the mixed form straight gaa vellandi too."
+        },
+        {
+          "key": "how-far",
+          "native": "ఎంత దూరం ఉంది?",
+          "roman": "entha dooram undi?",
+          "note": "Entha dooram undi means how far is it. Dooram means distance."
+        },
+        {
+          "key": "please-help",
+          "native": "దయచేసి నాకు సహాయం చేయండి.",
+          "roman": "dayachesi naaku sahaayam cheyandi.",
+          "note": "This is the polite please help me. In casual speech people say konchem help cheyyandi."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "Our last Telugu lesson! These everyday phrases will keep any conversation going, even when you get a little lost.",
+      "tip": "Telugu has different words for no. Kaadu means it is not, ledu means there isn't, and vaddu means I don't want it.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "అవును / కాదు",
+          "roman": "avunu / kaadu",
+          "note": "Avunu means yes and kaadu means no, as in that's not so. You'll also hear a casual haa for yes."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "నాకు అర్థం కాలేదు.",
+          "roman": "naaku artham kaaledu.",
+          "note": "Naaku artham kaaledu means I didn't understand. Telugu uses the past tense here, as in the meaning didn't reach me."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "దయచేసి నెమ్మదిగా మాట్లాడండి.",
+          "roman": "dayachesi nemmadigaa maatlaadandi.",
+          "note": "This means please speak slowly. Nemmadigaa means slowly or gently."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "దీని అర్థం ఏమిటి?",
+          "roman": "deeni artham emiti?",
+          "note": "Deeni artham emiti means what is the meaning of this. Point at a word or sign and ask."
+        },
+        {
+          "key": "i-like-it",
+          "native": "నాకు ఇది నచ్చింది.",
+          "roman": "naaku idi nachchindi.",
+          "note": "Naaku idi nachchindi literally means this pleased me. It's how you say I like it."
+        },
+        {
+          "key": "good-night",
+          "native": "శుభ రాత్రి",
+          "roman": "shubha raatri",
+          "note": "Shubha raatri means good night. In everyday life many people simply say good night in English."
+        }
+      ]
+    }
+  ]
+}
