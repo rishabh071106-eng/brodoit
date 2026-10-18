@@ -39,3 +39,9 @@ The Steps tab works on honest data today: steps are **synced when you open Brodo
 - In the app: Steps → "Install Brodoit for Android" → Install → Open → **Allow** (Physical activity). Steps then count with the app closed (Recording API on mobile; hardware step counter as fallback) and sync every 30 minutes.
 - Pairing is automatic: the app opens the site with `device_id` + `ct`; the web app claims the phone for the logged-in account.
 - Play Console (optional, later): download the signed `.aab` from You → Admin (admin only, `/download/brodoit.aab`) and the upload-key backup from `/api/admin/android/keystore`.
+
+
+## Everything is automatic now
+- **Recordings**: once a key is saved in You → Admin, the server queues today's bulletin → Hindi books → language lessons by itself (also on boot and in a daily 03:30 IST sweep that resumes anything incomplete). The Record buttons stay as a manual override. Set `ADMIN_AUTO_RECORD=0` to switch it off.
+- **Android**: every push to `android/**` builds a release; the server signs and serves it. Nothing to tap.
+- **Deploys**: changes land on a `claude/*` branch, get a PR on both repos and are merged through the GitHub API on the owner's standing instruction; Railway deploys `main`.
