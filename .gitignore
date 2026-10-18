@@ -16,3 +16,5 @@ server.js.bak
 server.js.pre-theme-restore.bak
 server.js.bak115
 server.js.bak.v136
+secrets/
+config/*.local.json

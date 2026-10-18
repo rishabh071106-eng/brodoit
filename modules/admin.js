@@ -258,7 +258,7 @@ function install(app, deps) {
   }
   if (deps.creditChecks !== false) { setTimeout(() => refreshCredits().catch(() => {}), 45000); setInterval(() => refreshCredits().catch(() => {}), 3 * 3600e3); }
   const spend = () => { try { return Object.assign(STUDIO.usage(getSetting), { gemini_state: gemState, order: STUDIO.available(getSetting) }); } catch (e) { return null; } };
-  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), spend: spend(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })() });
+  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), spend: spend(), sealed: (() => { try { return global._sealedStatus ? global._sealedStatus() : null; } catch (e) { return null; } })(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })() });
 
   // ── routes ──
   app.get('/api/admin/status', auth, requireAdmin, (req, res) => { try { res.json(statusBody()); } catch (e) { res.status(500).json({ error: e.message }); } });

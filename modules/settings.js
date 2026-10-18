@@ -53,7 +53,10 @@ function install(db) {
     if (!v) qDel.run(k); else qPut.run(k, v);
     return settingSource(k);
   }
-  return { getSetting, setSetting, settingSource, maskKey, KEYS };
+  // When the in-app value was last saved (ms since epoch), 0 when none — lets sealed settings skip values the owner changed later.
+  const qAt = db.prepare('SELECT updated_at FROM app_settings WHERE key=?');
+  function settingUpdatedAt(k) { try { const r = qAt.get(String(k || '')); return r && r.updated_at ? Date.parse(String(r.updated_at).replace(' ', 'T') + 'Z') || 0 : 0; } catch (e) { return 0; } }
+  return { getSetting, setSetting, settingSource, settingUpdatedAt, maskKey, KEYS };
 }
 
 module.exports = { install, maskKey, KEYS };
