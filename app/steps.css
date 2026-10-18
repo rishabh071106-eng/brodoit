@@ -306,3 +306,14 @@ html[data-theme="dark"] #stepsRoot .b-card,body[data-theme=aurora] #stepsRoot .b
 #stepsRoot .st-week .day.today{fill:var(--b-primary)}
 html[data-theme="dark"] #stepsRoot .st-chip:not(.on),body[data-theme=aurora] #stepsRoot .st-chip:not(.on){color:var(--b-ink)!important}
 html[data-theme="dark"] #stepsRoot,html[data-theme="dark"] #stepsRoot .st,body[data-theme=aurora] #stepsRoot,body[data-theme=aurora] #stepsRoot .st{--st-move-ink:#F2A48F;--st-gold-ink:#F2A48F}
+#stepsRoot .st{padding-left:0;padding-right:0}
+#stepsRoot .st-live i{background:#E58A74;box-shadow:0 0 0 0 rgba(229,138,116,.7);animation-name:st-livepulse2}
+@keyframes st-livepulse2{0%{box-shadow:0 0 0 0 rgba(229,138,116,.7)}100%{box-shadow:0 0 0 10px rgba(229,138,116,0)}}
+/* the status line reads as a card row, not a tinted pill */
+#stepsRoot .st-under .st-pill{width:100%;justify-content:flex-start;gap:12px;min-height:58px;padding:0 16px;border-radius:18px;background:var(--b-card)!important;color:var(--b-ink)!important;box-shadow:0 1px 2px rgba(31,30,28,.05),0 10px 22px -18px rgba(31,30,28,.45);font:600 15px var(--b-sans)}
+#stepsRoot .st-under .st-pill .st-dot{background:var(--b-primary)!important}
+#stepsRoot .st-under .st-pill>svg:last-child{margin-left:auto;color:var(--b-mute)}
+#stepsRoot .st-scope-note{margin:8px 2px 0;font:500 12.5px var(--b-sans);color:var(--b-mute)}
+#stepsRoot .st-chip span{background:var(--b-primary-soft)!important;color:var(--b-primary)!important}
+#stepsRoot .st-chip{font-size:14px}
+html[data-theme="dark"] #stepsRoot .st-under .st-pill,body[data-theme=aurora] #stepsRoot .st-under .st-pill{box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 22px -18px rgba(0,0,0,.8)}

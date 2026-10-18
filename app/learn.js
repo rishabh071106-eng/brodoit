@@ -23,7 +23,7 @@
       const m = target.match(/id=(nda|cds|afcat)/); return m ? 'def-' + m[1] : '';
     }
     if (k === 'ias') return 'ias-upsc';
-    if (k === 'banking') return 'bank-core';
+    if (k === 'banking') return ''; // the category photo (bank-core was the same building)
     if (k === 'it') return 'it-gate';
     if (k === 'mba') return 'mba-gmat';
     if (k === 'cs') return /python/.test(title) ? 'cs-python' : 'cs-ai';
@@ -133,7 +133,7 @@
 #app .lu .lu-grid{align-items:start}
 #app .lu .lu-track .cv-kick{font-size:10.5px}
 #app .lu .lu-track .cv-tag{background:rgba(255,255,255,.92);color:#1F1E1C;-webkit-backdrop-filter:none;backdrop-filter:none}
-#app .lu .lu-track.lu-open{box-shadow:0 0 0 2.5px var(--b-bg),0 0 0 5px var(--b-ink),0 14px 30px -18px rgba(31,30,28,.55)}
+#app .lu .lu-track.lu-open{box-shadow:0 0 0 3px var(--b-bg),0 0 0 5px var(--b-primary),0 14px 30px -18px rgba(31,30,28,.55)}
 #app .lu .lu-panel{grid-column:1/-1;scroll-margin-top:84px;margin:2px 0 4px;padding:8px 10px 10px;border-radius:24px;background:var(--b-bg-2);animation:lu-open .38s var(--ease,cubic-bezier(.16,1,.3,1)) both}
 #app .lu .lu-ph{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px 10px 8px}
 #app .lu .lu-ph b{display:block;font:400 24px/1.1 var(--b-serif);color:var(--b-ink);letter-spacing:-.01em}
@@ -146,7 +146,7 @@
 #app .lu .lu-board .cv-art svg{width:72%;right:-14%;top:4%}
 #app .lu .lu-more{padding-bottom:10px}
 @keyframes lu-open{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-html[data-theme="dark"] #app .lu .lu-track.lu-open,body[data-theme=aurora] #app .lu .lu-track.lu-open{box-shadow:0 0 0 2.5px var(--b-bg),0 0 0 5px var(--b-ink)}
+html[data-theme="dark"] #app .lu .lu-track.lu-open,body[data-theme=aurora] #app .lu .lu-track.lu-open{box-shadow:0 0 0 3px var(--b-bg),0 0 0 5px var(--b-primary)}
 html[data-theme="dark"] #app .lu .lu-x,body[data-theme=aurora] #app .lu .lu-x{background:var(--b-card);color:var(--b-ink)}
 html[data-theme="dark"] #app .lu .lu-timer,body[data-theme=aurora] #app .lu .lu-timer{background:var(--b-card);color:var(--b-ink)}
 @media (max-width:370px){#app .lu .lu-track .cv-title{font-size:19px}#app .lu .lu-track .cv-body{padding:14px 13px 13px}}

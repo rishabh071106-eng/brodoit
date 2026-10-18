@@ -119,3 +119,32 @@ html[data-theme="dark"] .btn:not(.accent):not(.light):not(.glass):not(.soft):not
 html[data-theme="dark"] .tone-sand,body[data-theme=aurora] .tone-sand{--cv-bg:linear-gradient(160deg,#2C2925 0%,#23211D 100%);color:#F3F0EA}
 html[data-theme="dark"] .tone-sand .cv-title,html[data-theme="dark"] .tone-sand .cv-kick,html[data-theme="dark"] .tone-sand .cv-sub,body[data-theme=aurora] .tone-sand .cv-title,body[data-theme=aurora] .tone-sand .cv-kick,body[data-theme=aurora] .tone-sand .cv-sub{color:#F3F0EA}
 @media (max-width:370px){.cv-title{font-size:22px}.cv.lg .cv-title{font-size:28px}.page-h h1{font-size:34px}.cv-rail>.cv,.cv-rail>.mini{flex-basis:80%}}
+
+/* ── v12 polish (independent review): one dark background, one segmented control, solid wordmark, legible photo text ── */
+html[data-theme="dark"] body,body[data-theme=aurora]{background:#141311!important}
+body[data-theme=aurora]:not(.night-sky)::before,body[data-theme=aurora]:not(.night-sky)::after{background:none!important}
+/* wordmark: solid ink "Bro" + solid brick "doit", one weight, no halo */
+.hdr .logo,.hdr .logo span{background:none!important;-webkit-text-fill-color:currentColor!important;filter:none!important;text-shadow:none!important;font-weight:400!important}
+.hdr .logo{color:var(--b-ink)!important}.hdr .logo .b2,.hdr .logo .b3{color:var(--b-primary)!important}
+/* header circle buttons: filled, visible in both themes */
+.hdr .hdr-help{width:44px!important;height:44px!important;border:0!important;background:var(--b-bg-2)!important;color:var(--b-ink-2)!important;opacity:1!important}
+/* every segmented control: sand track, white active in light, paper-white active with dark text in dark */
+.bk-seg,.bh .hb-langs,.nw-lang,.rd-segmented-x{background:var(--b-bg-2)!important;border:0!important;border-radius:999px!important;padding:3px!important}
+.bk-seg button,.nw-lang button{min-height:42px!important;border-radius:999px!important;border:0!important;background:transparent!important;color:var(--b-mute)!important;font:600 14px var(--b-sans)!important;box-shadow:none!important}
+.bk-seg button.on,.bh .hb-langs button.on,.nw-lang button.on{background:var(--b-card)!important;color:var(--b-ink)!important;box-shadow:0 1px 3px rgba(31,30,28,.16)!important}
+html[data-theme="dark"] .bk-seg button.on,html[data-theme="dark"] .bh .hb-langs button.on,html[data-theme="dark"] .nw-lang button.on,body[data-theme=aurora] .bk-seg button.on,body[data-theme=aurora] .bh .hb-langs button.on,body[data-theme=aurora] .nw-lang button.on{background:#F3F0EA!important;color:#141311!important}
+/* You sub-tabs read as the same segmented control */
+.learn-sub-tabs{border:0!important;background:var(--b-bg-2);border-radius:999px;padding:3px;gap:0;margin:4px 0 16px!important}
+.learn-sub-tabs .lst{min-height:42px;border:0!important;border-radius:999px;text-transform:none!important;letter-spacing:0!important;font:600 14px var(--b-sans)!important;color:var(--b-mute)!important;background:transparent}
+.learn-sub-tabs .lst.on{background:var(--b-card)!important;color:var(--b-ink)!important;box-shadow:0 1px 3px rgba(31,30,28,.16)}
+html[data-theme="dark"] .learn-sub-tabs .lst.on,body[data-theme=aurora] .learn-sub-tabs .lst.on{background:#F3F0EA!important;color:#141311!important}
+/* text on photos: a deeper scrim; small cards keep subtitles to one line */
+.cv::after{background:linear-gradient(to top,rgba(20,19,17,.88) 0%,rgba(20,19,17,.55) 45%,rgba(20,19,17,0) 78%)}
+.cv.sm .cv-sub,.cv.square .cv-sub,.nx-cover .cv-sub{-webkit-line-clamp:1}
+.cv-kick{text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.cv-sub{text-wrap:balance}
+/* horizontal pill rows fade at the edge instead of stopping hard */
+.pill-row,.nw-tabs,.bk-cats{-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 28px),transparent)}
+.nw-tabs button{min-height:42px;border:0!important;border-radius:999px!important;background:var(--b-bg-2)!important;color:var(--b-ink-2)!important;font:600 14px var(--b-sans)!important}
+.nw-tabs button.on{background:var(--b-ink)!important;color:var(--b-bg)!important}
+.hdr-actions button[title="Profile"]{background:var(--b-primary)!important;width:44px!important;height:44px!important}

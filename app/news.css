@@ -181,3 +181,9 @@ html.nxr-open{overflow:hidden}
 .nx-card-a .b-chip.icon{flex:0 0 46px;width:46px;padding:0!important;justify-content:center}
 @media (max-width:370px){.nx-card-a .b-btn,.nx-card-a .b-chip{padding:0 12px!important;font-size:14px!important}}
 @media (max-width:400px){.nx-card-a{gap:6px}.nx-card-a .b-chip:not(.icon) svg{display:none}.nx-card-a .b-btn,.nx-card-a .b-chip:not(.icon){padding:0 13px!important;font-size:14px!important}.nx-card-a .b-chip.icon{flex-basis:44px;width:44px;min-height:44px!important}}
+.nx-deck .nx-card{padding:0!important}
+.nx-deck .nx-card-img{margin:0!important;border-radius:0!important}
+.nx-deck .nx-card-b p:not(.nx-why){display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.nx-deck .nx-card-b .nx-why{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nx-deck .nx-card-f{padding:0 16px 14px}
+@media (max-height:780px){.nx-deck .nx-card-b p:not(.nx-why){-webkit-line-clamp:3}}

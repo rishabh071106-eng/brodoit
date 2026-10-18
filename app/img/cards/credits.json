@@ -1,7 +1,7 @@
 {
  "cat-lang": {
-  "article": "Plaza_de_España_(Seville)",
-  "file": "Plaza_de_España_(Sevilla)_-_01.jpg",
+  "article": "Plaza_de_Espa\u00f1a_(Seville)",
+  "file": "Plaza_de_Espa\u00f1a_(Sevilla)_-_01.jpg",
   "page": "https://commons.wikimedia.org/wiki/File:Plaza_de_Espa%C3%B1a_(Sevilla)_-_01.jpg",
   "artist": "Carlos Delgado",
   "license": "CC BY-SA 4.0",
@@ -97,7 +97,7 @@
  },
  "lang-ja": {
   "article": "Mount_Fuji",
-  "file": "View_of_Mount_Fuji_from_Ōwakudani_20211202.jpg",
+  "file": "View_of_Mount_Fuji_from_\u014cwakudani_20211202.jpg",
   "page": "https://commons.wikimedia.org/wiki/File:View_of_Mount_Fuji_from_%C5%8Cwakudani_20211202.jpg",
   "artist": "Suicasmo",
   "license": "CC BY-SA 4.0",
@@ -119,19 +119,11 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
  },
- "bank-core": {
-  "article": "Phiroze_Jeejeebhoy_Towers",
-  "file": "BSE_Building_Side_View.jpg",
-  "page": "https://commons.wikimedia.org/wiki/File:BSE_Building_Side_View.jpg",
-  "artist": "Pradeep717",
-  "license": "CC BY-SA 4.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
- },
  "it-gate": {
   "article": "Indian_Institute_of_Technology_Bombay",
   "file": "IITBMainBuildingCROP.jpg",
   "page": "https://commons.wikimedia.org/wiki/File:IITBMainBuildingCROP.jpg",
-  "artist": "Arne Hückelheim",
+  "artist": "Arne H\u00fcckelheim",
   "license": "CC BY-SA 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
  },

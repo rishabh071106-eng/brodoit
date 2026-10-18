@@ -15168,7 +15168,7 @@ if(isMain){
   var _learnTabs=['games','courses'];
   var _youTabs=['profile','cal'];
   const tabsHtml=[{k:'bro',l:'Bro',i:'bro'},{k:'steps',l:'Steps',i:'steps'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learn',i:'learn'},{k:'books',l:'Books',i:'books'},{k:'profile',l:'You',i:'you'}].map(function(x){
-    var isOn=(x.k==='bro')?(!S.tab||S.tab==='home'||S.tab==='bro'||S.tab==='news'):(x.k==='profile'?(S.tab==='profile'||S.tab==='cal'):S.tab===x.k);
+    var isOn=(x.k==='bro')?(!S.tab||S.tab==='home'||S.tab==='bro'):(x.k==='profile'?(S.tab==='profile'||S.tab==='cal'):S.tab===x.k);
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
   // "Bro, do it!" mascot — a character with a speech bubble that animates
@@ -15276,11 +15276,13 @@ if(S.tab==='tasks'){
   h+='<button class="'+(S.taskSegment==='done'?'on':'')+'" onclick="S.taskSegment=\\'done\\';render()">Done</button>';
   h+='</div>';
   // Task list with segmented filtering
+  var _tkHero=true;
   const _tISO=new Date().toISOString().slice(0,10);
   let _segTasks=f;
   if(S.taskSegment==='today')_segTasks=f.filter(t=>t.status!=='done'&&(!t.due_date||(t.due_date||'').slice(0,10)<=_tISO));
   else if(S.taskSegment==='upcoming')_segTasks=f.filter(t=>t.status!=='done'&&t.due_date&&(t.due_date||'').slice(0,10)>_tISO);
   else if(S.taskSegment==='done')_segTasks=f.filter(t=>t.status==='done');
+  if(window.Cards&&_tkHero&&S.taskSegment==='today'&&_segTasks.length)h+=Cards.cover({key:'hero-tasks',icon:'check-square',tone:'umber',size:'strip',cls:'tk-hero',kick:(S.lang==='hi'?'\\u0906\\u091C':'Today'),title:_segTasks.length+(S.lang==='hi'?' \\u0915\\u093E\\u092E':(_segTasks.length===1?' thing to do':' things to do')),onclick:"var q=document.querySelector('.qc-input');if(q)q.focus()"});
   if(S.taskSegment==='today'){
     const _mornTasks=_segTasks.filter(t=>{const h=t.reminder_time?parseInt(t.reminder_time.split(':')[0],10):9;return h<12});
     const _aftTasks=_segTasks.filter(t=>{const h=t.reminder_time?parseInt(t.reminder_time.split(':')[0],10):9;return h>=12});
@@ -15301,7 +15303,7 @@ if(S.tab==='tasks'){
     h+='<div style="flex:1;min-width:0"><div class="rd-task-title">'+esc(t.title)+'</div>';
     if(t.notes)h+='<div style="font:400 13px var(--sans);color:var(--text-mute);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(t.notes)+'</div>';
     h+='<div class="rd-task-meta">';
-    h+='<button class="badge" style="background:'+st.bg+';color:'+st.c+';border-radius:0;font-family:var(--sans);font-size:11px" onclick="cyc(\\''+t.id+'\\')">'+st.l+'</button>';
+    if(!(window.Cards&&t.status==='pending'))h+='<button class="badge" style="background:'+st.bg+';color:'+st.c+';border-radius:0;font-family:var(--sans);font-size:11px" onclick="cyc(\\''+t.id+'\\')">'+st.l+'</button>';
     h+='<span style="font:600 11px var(--sans);background:'+p.c+'20;color:'+p.c+';padding:2px 7px;border-radius:0">'+(window.Cards?'<i class="tk-pri tk-'+t.priority+'"></i>':p.d+' ')+t.priority+'</span>';
     if(t.due_date)h+='<span style="font:500 12px var(--sans);color:'+(isOD(t.due_date,t.status)?'#1F1E1C':isTd(t.due_date)?'var(--accent)':'var(--text-mute)')+'">'+(window.Cards?'':'\\u{1F4C5} ')+fD(t.due_date)+(isOD(t.due_date,t.status)?' overdue':'')+'</span>';
     if(t.reminder_time&&!d)h+='<span class="rd-email-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>Email reminder</span>';

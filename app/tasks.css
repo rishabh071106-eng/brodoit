@@ -34,3 +34,7 @@ html[data-theme="dark"] #app .rd-check-done,body[data-theme=aurora] #app .rd-che
 #app .rd-check-empty::after,#app .rd-check-done::after{content:"";position:absolute;inset:-9px}
 #app .rd-task-meta .badge::after{content:"";position:absolute;inset:-8px -2px}
 #app .lt-head .bk-seg button,#app .bk-seg button{min-height:44px}
+#app .rd-task-meta>span:has(>.tk-pri){font-size:0!important;padding:0!important;background:none!important;min-width:10px}
+#app .rd-task-meta>span:has(>.tk-pri) .tk-pri{margin:0}
+#app .tk-hero{margin:16px 0 4px}
+#app .tk-hero .cv-title{font-size:24px}

@@ -35,12 +35,12 @@
     h += '<div class="yu-stats">' +
       C.mini({ icon: 'footprints', num: steps.toLocaleString('en-IN'), title: hi ? 'कदम आज' : 'Steps today', onclick: "switchTab('steps')" }) +
       C.mini({ icon: 'flame', num: String(streak), title: hi ? 'दिन की लय' : 'Day streak', onclick: "switchTab('steps')" }) +
-      C.mini({ icon: 'graduation-cap', num: fmtT(today), title: (hi ? 'सीखा · ' : 'Learned · ') + unitT(today), onclick: "switchTab('courses')" }) + '</div>';
+      C.mini({ icon: 'graduation-cap', num: String(Math.round(today / 60)), title: (hi ? 'मिनट सीखे' : 'Min learned'), onclick: "switchTab('courses')" }) + '</div>';
     // week
     const empty = week.every(w => !w.v);
     h += '<section class="yu-week12" aria-label="' + esc(hi ? 'यह हफ़्ता' : 'This week') + '"><div class="yu-wh"><b>' + esc(hi ? 'यह हफ़्ता' : 'This week') + '</b><small>' +
       esc(empty ? (hi ? 'जैसे-जैसे आप ब्रोडूइट इस्तेमाल करेंगे, यह भरता जाएगा' : 'Fills in as you use Brodoit') : (hi ? 'ऐप में बिताया समय' : 'Time in the app')) + '</small></div>' +
-      '<div class="yu-bars12">' + week.map(w => '<div class="yu-b' + (w.today ? ' t' : '') + '"><i style="height:' + Math.max(4, Math.round(w.v / mx * 72)) + 'px"></i><span>' + esc(w.l) + '</span></div>').join('') + '</div></section>';
+      '<div class="yu-bars12' + (empty ? ' empty' : '') + '">' + week.map(w => '<div class="yu-b' + (w.today ? ' t' : '') + '"><i style="height:' + Math.max(4, Math.round(w.v / mx * 72)) + 'px"></i><span>' + esc(w.l) + '</span></div>').join('') + '</div></section>';
     // shortcuts
     h += '<div class="yu-rows">' +
       C.row({ icon: 'calendar', tone: 'ink', title: hi ? 'कैलेंडर' : 'Calendar', sub: hi ? 'आपके दिन और काम' : 'Your days and tasks', onclick: "switchTab('cal')" }) +
@@ -66,6 +66,7 @@
 #app .yu12 .yu-b{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
 #app .yu12 .yu-b i{display:block;width:100%;max-width:26px;border-radius:8px;background:var(--b-bg-2)}
 #app .yu12 .yu-b.t i{background:var(--b-primary)}
+#app .yu12 .yu-bars12.empty{height:56px}
 #app .yu12 .yu-b span{font:600 11px var(--b-sans);color:var(--b-mute)}
 #app .yu12 .yu-b.t span{color:var(--b-primary)}
 #app .yu12 .yu-rows .rowc+.rowc{margin-top:8px}
