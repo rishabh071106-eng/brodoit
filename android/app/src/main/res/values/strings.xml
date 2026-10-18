@@ -6,7 +6,7 @@
     <!-- Digital Asset Links statement (app side). The site side is served at /.well-known/assetlinks.json. -->
     <string name="asset_statements">[{\"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": {\"namespace\": \"web\", \"site\": \"https://brodoit.com\"}}]</string>
     <string name="enable_title">Count steps automatically</string>
-    <string name="enable_body">Brodoit reads your phone\'s step sensor, even when the app is closed. No battery drain. No account needed.</string>
+    <string name="enable_body">Tap Allow once. Brodoit then counts your steps all day, even when the app is closed.</string>
     <string name="enable_allow">Allow</string>
     <string name="enable_later">Not now</string>
     <string name="enable_denied">Steps stay off until you allow Physical activity in Settings → Apps → Brodoit.</string>

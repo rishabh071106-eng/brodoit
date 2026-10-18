@@ -9,7 +9,7 @@ const SVG = `
 <svg viewBox="0 0 320 480" class="presenter-svg" role="img" aria-label="Meera, your language coach">
   <defs>
     <radialGradient id="pz-spot" cx="50%" cy="38%" r="60%">
-      <stop offset="0" stop-color="#6C4CF1" stop-opacity=".28"/><stop offset=".55" stop-color="#FF5A36" stop-opacity=".07"/><stop offset="1" stop-color="#6C4CF1" stop-opacity="0"/>
+      <stop offset="0" stop-color="#B5402A" stop-opacity=".22"/><stop offset=".55" stop-color="#B5402A" stop-opacity=".06"/><stop offset="1" stop-color="#B5402A" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="pz-skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2a982"/><stop offset="1" stop-color="#cf9169"/></linearGradient>
     <linearGradient id="pz-blazer" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a5cf0"/><stop offset="1" stop-color="#4a33b5"/></linearGradient>

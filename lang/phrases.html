@@ -10,9 +10,11 @@
 <!-- Plus Jakarta Sans comes from /app/theme.css; only the Indic/CJK script fonts are fetched here -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@700;800&family=Noto+Sans+Kannada:wght@700;800&family=Noto+Sans+Malayalam:wght@700;800&family=Noto+Sans+Tamil:wght@700;800&family=Noto+Sans+Telugu:wght@700;800&family=Noto+Sans+JP:wght@700;800&family=Noto+Sans+SC:wght@700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=12">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=12">
-<script src="/app/icons.js?v=12" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=14">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=14">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=14">
+<script src="/app/icons.js?v=14" defer></script>
+<script src="/lang/assets/topbar.js?v=14" defer></script>
 </head>
 <body>
 <main class="wrap" style="padding-bottom:40px">
@@ -23,7 +25,7 @@
 import { renderChrome, store, esc, param, ICON, computeStreak, speak, stopSpeaking, hasTTS } from '/lang/assets/lang.js?v=9';
 import { loadPhraseCatalog, loadPhraseLang, phraseKey, phraseLessonHref, phraseProgress, challengePlan, challengeStatus, startChallenge, emblem, applyNativeFont, COURSE_OF } from '/lang/assets/phrases.js?v=9';
 import { createPresenter } from '/lang/assets/presenter.js?v=9';
-import { ic } from '/lang/assets/ico.js?v=12';
+import { ic } from '/lang/assets/ico.js?v=14';
 
 const id = param('l') || 'bengali';
 const [cat, l] = await Promise.all([loadPhraseCatalog(), loadPhraseLang(id)]);

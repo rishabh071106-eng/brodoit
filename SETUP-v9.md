@@ -45,3 +45,10 @@ The Steps tab works on honest data today: steps are **synced when you open Brodo
 - **Recordings**: once a key is saved in You → Admin, the server queues today's bulletin → Hindi books → language lessons by itself (also on boot and in a daily 03:30 IST sweep that resumes anything incomplete). The Record buttons stay as a manual override. Set `ADMIN_AUTO_RECORD=0` to switch it off.
 - **Android**: every push to `android/**` builds a release; the server signs and serves it. Nothing to tap.
 - **Deploys**: changes land on a `claude/*` branch, get a PR on both repos and are merged through the GitHub API on the owner's standing instruction; Railway deploys `main`.
+
+
+## Keys (You → Admin) — v9.5
+- **ElevenLabs** — Bro's live voice (Conversational AI agent: their speech recognition, orchestration and voices, interruptible, Hindi/English) and every recording (bulletins, Hindi books, lessons). Recordings use `eleven_turbo_v2_5` with a language code; proper narrator voices are picked by name from your account (Brian/George/Daniel/Adam…), override with `ELEVEN_VOICE_EN`/`ELEVEN_VOICE_HI` in Admin.
+- **OpenAI** — Realtime voice when ElevenLabs is absent, `gpt-4o-mini` as Bro's brain for the classic pipeline, Whisper-class transcription for browsers without speech recognition.
+- **Gemini** or **Groq** — Bro's brain when there is no OpenAI key; Gemini also writes bulletin/books/lessons text. Any of the three brains is enough.
+- Keys are read live (Admin first, then env). The Admin card shows which engine Bro talks through and any ElevenLabs agent error verbatim.

@@ -8,8 +8,10 @@
 <meta name="description" content="Land college talks, guest lectures, workshops, panels and visiting-faculty roles in India — track, discover, and draft with AI.">
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=12">
-<script src="/app/icons.js?v=12" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=14">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=14">
+<script src="/app/icons.js?v=14" defer></script>
+<script src="/lang/assets/topbar.js?v=14" defer></script>
 <style>
 /* Speaker — on top of /app/theme.css v10 tokens: radii 12/16/24/pill, shadows --sh-1/--sh-2, motion --m-* + --ease. */
 .ico{display:inline-block;vertical-align:middle;flex-shrink:0;pointer-events:none}
@@ -17,14 +19,11 @@
 html,body{margin:0;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-sans);-webkit-font-smoothing:antialiased}
 body{min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}
 a{color:inherit}
+:root{--bd-wrap:560px}
 .wrap{max-width:560px;margin:0 auto;padding:0 16px 56px}
-.top{display:flex;align-items:center;gap:10px;min-height:60px;padding:8px 0 6px;position:sticky;top:0;background:color-mix(in srgb,var(--b-bg) 84%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:5}
-/* header component: 44px round icon buttons (back + profile) and a title block — same shape as /lang and /prep */
-.back,.iconbtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--b-bg-2);border:none;text-decoration:none;color:var(--b-ink);cursor:pointer;flex-shrink:0}
-.back:active,.iconbtn:active{transform:scale(.94)}
-.top .ttl{flex:1;min-width:0}
-.top .ttl b{display:block;font-size:17px;font-weight:800;letter-spacing:-.02em}
-.top .ttl span{display:block;font-size:12px;color:var(--b-mute);font-weight:600}
+/* header: the shared [← Brodoit] [title] bar from /lang/assets/topbar.css; the profile button is its right slot */
+.iconbtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--b-bg-2);border:none;text-decoration:none;color:var(--b-ink);cursor:pointer;flex-shrink:0}
+.iconbtn:active{transform:scale(.94)}
 .hero{margin-top:10px;padding:18px 18px 16px;border-radius:var(--r-lg);background:var(--b-grad);color:#fff;position:relative;overflow:hidden;box-shadow:var(--sh-2);animation:b-rise var(--m-enter) var(--ease) both}
 .hero::after{content:"🎤";position:absolute;right:-6px;top:-10px;font-size:84px;opacity:.18;transform:rotate(-12deg)}
 .hero .b-eyebrow{color:rgba(255,255,255,.75)}
@@ -81,6 +80,7 @@ a{color:inherit}
 .search input:focus{border-color:var(--b-primary)}
 .search .b-btn{padding:0 16px;font-size:14px;border-radius:var(--r-md)}
 .hint{font-size:12px;color:var(--b-mute);font-weight:600;margin:8px 2px 0}
+.hint a{display:inline-flex;align-items:center;min-height:44px;margin:-14px 0;padding:0 6px;color:var(--b-ink);font-weight:700}
 .links{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .link{display:block;padding:12px 12px 11px;border-radius:var(--r-md);text-decoration:none;background:var(--b-card);border:1px solid var(--b-line);box-shadow:var(--sh-1)}
 .link b{display:block;font-size:13px;font-weight:800;letter-spacing:-.01em}
@@ -108,7 +108,7 @@ label.f>span{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;t
 .f input:focus,.f textarea:focus,.f select:focus{border-color:var(--b-primary)}
 .f textarea{min-height:76px;resize:vertical;line-height:1.45}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tog{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:12px;border-radius:12px;background:var(--b-bg)}
+.tog{display:flex;align-items:center;justify-content:space-between;min-height:48px;margin-top:14px;padding:12px;border-radius:12px;background:var(--b-bg);cursor:pointer}
 .tog b{font-size:14px}
 .tog input{width:22px;height:22px;accent-color:var(--b-primary)}
 .draft{white-space:pre-wrap;font:500 14px/1.55 var(--b-sans);background:var(--b-bg);border-radius:var(--r-md);padding:14px;min-height:140px;color:var(--b-ink)}
@@ -126,12 +126,12 @@ label.f>span{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;t
 </style>
 </head>
 <body>
+<header class="bd-top"><div class="bd-top-in">
+  <a class="bd-home press" href="/?tab=learn" aria-label="Back to Brodoit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span>Brodoit</span></a>
+  <div class="bd-title">Speaker<small>Talks · guest lectures · visiting faculty</small></div>
+  <div class="bd-right"><button class="iconbtn" id="btnProfile" title="My speaker profile" aria-label="My speaker profile" data-ico="user" data-size="22"></button></div>
+</div></header>
 <div class="wrap">
-  <header class="top">
-    <a class="back" href="/?tab=learn" aria-label="Back to Brodoit" data-ico="chevron-left" data-size="22"></a>
-    <div class="ttl"><b>Speaker &amp; Teaching</b><span>Talks · guest lectures · visiting faculty</span></div>
-    <button class="iconbtn" id="btnProfile" title="My speaker profile" aria-label="My speaker profile" data-ico="user" data-size="22"></button>
-  </header>
 
   <section class="b-card lock hidden" id="lock">
     <div class="big">🔒</div>
@@ -203,7 +203,7 @@ label.f>span{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;t
       <label class="f"><span>Cities</span><input name="cities" placeholder="Pune, Mumbai, Bengaluru"></label>
       <div class="grid2">
         <label class="f"><span>Hours / week</span><input name="hoursPerWeek" type="number" min="0" max="60" inputmode="numeric" placeholder="6"></label>
-        <div class="tog" style="margin-top:12px"><b>Open to online</b><input type="checkbox" name="online"></div>
+        <label class="tog" style="margin-top:12px"><b>Open to online</b><input type="checkbox" name="online"></label>
       </div>
       <label class="f"><span>Resume / credentials (paste text)</span><textarea name="resume" maxlength="4000" placeholder="Degrees, roles, publications, talks already given…"></textarea></label>
     </form>

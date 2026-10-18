@@ -8,11 +8,13 @@
 <meta name="description" content="Your illustrated journey from the NDA/CDS/AFCAT written exam through the 5-day SSB to the academy. What happens each day, practice drills, packing list and the 15 OLQs.">
 <meta name="theme-color" content="#F6F5F2">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=12">
-<link rel="stylesheet" href="assets/app.css?v=12">
-<script src="/app/icons.js?v=12" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=14">
+<link rel="stylesheet" href="assets/app.css?v=14">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=14">
+<script src="/app/icons.js?v=14" defer></script>
+<script src="/lang/assets/topbar.js?v=14" defer></script>
 <style>
-  .seg-sticky{position:sticky;top:60px;z-index:30;padding:8px 0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .seg-sticky{position:sticky;top:calc(60px + env(safe-area-inset-top));z-index:30;padding:8px 0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
   .meter{height:8px;border-radius:8px;background:rgba(255,255,255,.25);overflow:hidden;margin-top:14px}
   .meter i{display:block;height:100%;background:#fff;border-radius:8px;transition:width .6s}
   .hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
@@ -140,7 +142,7 @@ import { art } from './assets/js/art.js?v=9';
 import { STAGES, OLQS, PACK, WAT_WORDS, SRT_ITEMS, PPDT_PICS, ENTRIES } from './assets/js/ssb-data.js?v=9';
 import { TASK_GROUPS, taskArt } from './assets/js/ssb-tasks.js?v=9';
 import { STEPS } from './assets/js/ssb-steps.js?v=9';
-import { ic } from './assets/js/ico.js?v=12';
+import { ic } from './assets/js/ico.js?v=14';
 
 const forId = new URLSearchParams(location.search).get('for');
 const E = ENTRIES[forId];

@@ -13,6 +13,8 @@ const VOICES = { // narrator (learner language) and native (target language) voi
   en: process.env.ELEVEN_VOICE_EN || 'pNInz6obpgDQGcFmaJgB', hi: process.env.ELEVEN_VOICE_HI || 'pNInz6obpgDQGcFmaJgB',
   es: process.env.ELEVEN_VOICE_ES || 'EXAVITQu4vr4xnSDxMaL', fr: process.env.ELEVEN_VOICE_FR || 'EXAVITQu4vr4xnSDxMaL', de: process.env.ELEVEN_VOICE_DE || 'EXAVITQu4vr4xnSDxMaL',
 };
+const EV = require('../modules/elevenvoice.js');
+async function resolveVoices(key) { for (const l of Object.keys(VOICES)) { try { VOICES[l] = await EV.pickVoice(key, l); } catch (e) {} } console.log('voices', JSON.stringify(VOICES)); }
 const ROOT = path.join(__dirname, '..', 'lang', 'audio');
 // Recordings go to the persistent media dir (next to the DB on the Railway volume): rendered once, kept forever.
 const MEDIA_DIR = process.env.MEDIA_DIR || (process.env.DB_PATH ? path.join(path.dirname(process.env.DB_PATH), 'media') : (fs.existsSync('/data') ? '/data/media' : path.join(__dirname, '..', 'media')));
@@ -24,12 +26,13 @@ function ffprobeSec(f) { return parseFloat(execFileSync('ffprobe', ['-v', 'error
 async function tts(text, voice, lang, slow) {
   const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`, {
     method: 'POST', headers: { 'xi-api-key': KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', language_code: lang, voice_settings: { stability: 0.6, similarity_boost: 0.8, speed: slow ? 0.75 : 0.95 } }),
+    body: JSON.stringify({ text, model_id: 'eleven_turbo_v2_5', language_code: lang, voice_settings: { stability: 0.6, similarity_boost: 0.8, speed: slow ? 0.75 : 0.95 } }),
   });
   if (!r.ok) throw new Error('ElevenLabs ' + r.status + ' ' + (await r.text()).slice(0, 160));
   return Buffer.from(await r.arrayBuffer());
 }
 (async () => {
+  await resolveVoices(process.env.ELEVENLABS_API_KEY || '');
   const tmp = fs.mkdtempSync(path.join(require('os').tmpdir(), 'langaudio-'));
   for (const f of fs.readdirSync(ROOT).filter(f => f.endsWith('.json'))) {
     const code = f.slice(0, -5); if (only.length && !only.includes(code)) continue;

@@ -68,7 +68,7 @@ html[data-theme="dark"] .st-pill.s-ios,:root[data-theme="dark"] .st-pill.s-ios,b
 .st-pod.p1 .st-pod-bar{height:56px;background:linear-gradient(180deg,rgba(181,64,42,.35),var(--b-bg-2));color:var(--st-gold-ink)}
 .st-pod.p2 .st-pod-bar{height:40px}.st-pod.p3 .st-pod-bar{height:28px}
 .st-pod.me .st-pod-name{color:var(--st-move-ink);font-weight:800}
-.st-empty{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;padding:16px}
+.st-empty{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:center;padding:16px}
 .st-empty img,.st-empty svg{width:96px;height:96px;display:block}
 .st-empty h3{font:var(--t-h3);color:var(--b-ink);margin:0 0 4px}
 .st-empty p{font:var(--t-sm);color:var(--b-mute);margin:0 0 10px}
