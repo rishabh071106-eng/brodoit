@@ -437,12 +437,12 @@ html:has(body.py-school){overflow-x:hidden}
 .mp-xp{font:800 12px var(--b-sans);color:var(--py-y);background:rgba(255,212,59,.1);border:1px solid rgba(255,212,59,.25);padding:7px 11px;border-radius:999px}
 .mp{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 16px calc(env(safe-area-inset-bottom) + 90px)}
 .mp-hero{position:relative;padding:8px 0 10px;animation:rise .8s var(--ease) both}
-.mp-orbit{position:absolute;right:4px;top:0;width:124px;height:124px;pointer-events:none}
-.mp-orbit .pl{position:absolute;inset:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#9CCBFF,#3B7FD0 50%,#173A6B);box-shadow:0 0 60px rgba(90,169,240,.45)}
+.mp-orbit{position:absolute;right:6px;top:2px;width:108px;height:108px;pointer-events:none}
+.mp-orbit .pl{position:absolute;inset:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#9CCBFF,#3B7FD0 50%,#173A6B);box-shadow:0 0 60px rgba(90,169,240,.45)}
 .mp-orbit .rg{position:absolute;inset:14px;border-radius:50%;border:1.5px dashed rgba(255,212,59,.35);animation:spin 20s linear infinite}
 .mp-orbit .rg.r2{inset:2px;border:1px solid rgba(167,139,250,.2);animation-duration:34s;animation-direction:reverse}
 .mp-orbit .rk{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px;display:grid;place-items:center;color:var(--py-y);animation:orbit2 7s linear infinite}
-@keyframes orbit2{from{transform:rotate(0) translateX(52px) rotate(45deg)}to{transform:rotate(360deg) translateX(52px) rotate(405deg)}}
+@keyframes orbit2{from{transform:rotate(0) translateX(42px) rotate(45deg)}to{transform:rotate(360deg) translateX(42px) rotate(405deg)}}
 .mp-k{font:800 11px var(--b-sans);letter-spacing:.18em;text-transform:uppercase;color:var(--py-b)}
 .mp-hero h1{margin:8px 0 10px;font-size:clamp(46px,14vw,72px);line-height:.92;letter-spacing:-.05em;font-weight:800;background:linear-gradient(120deg,#fff 20%,var(--py-y) 55%,#FF8A5B);-webkit-background-clip:text;background-clip:text;color:transparent;max-width:70%}
 .mp-hero h1 span{display:block;font-size:.42em;letter-spacing:-.02em;margin-top:6px;background:linear-gradient(90deg,var(--py-b),#C9B8FF);-webkit-background-clip:text;background-clip:text}
