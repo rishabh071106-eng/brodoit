@@ -64,10 +64,15 @@ function install(app, deps) {
   const elevenKey = () => getSetting('ELEVENLABS_API_KEY') || process.env.ELEVENLABS_API_KEY || '';
   const CACHE = deps.mediaDir ? path.join(deps.mediaDir, 'tts-cache') : '';
   if (CACHE) { try { fs.mkdirSync(CACHE, { recursive: true }); } catch (e) {} }
-  let cacheWrites = 0;
+  // Kept to the newest 3000 files and 400 MB, checked at boot and every 6 hours (the volume also holds the database).
   function pruneCache() {
-    try { const files = fs.readdirSync(CACHE).map(f => ({ f, t: fs.statSync(path.join(CACHE, f)).mtimeMs })).sort((x, y) => y.t - x.t); for (const x of files.slice(3000)) fs.unlinkSync(path.join(CACHE, x.f)); } catch (e) {}
+    try {
+      const files = fs.readdirSync(CACHE).map(f => { const st = fs.statSync(path.join(CACHE, f)); return { f, t: st.mtimeMs, n: st.size }; }).sort((x, y) => y.t - x.t);
+      let bytes = 0; files.forEach((x, i) => { bytes += x.n; if (i >= 3000 || bytes > 400 * 1024 * 1024) fs.unlinkSync(path.join(CACHE, x.f)); });
+    } catch (e) {}
   }
+  if (CACHE) { setTimeout(pruneCache, 30000); setInterval(pruneCache, 6 * 3600e3); }
+  const inflight = new Map(); // one synthesis per uncached News chunk, however many people tap Listen at once
   app.post('/api/voice/tts', auth, async (req, res) => {
     const text = String(req.body && req.body.text || '').replace(/\s+/g, ' ').trim().slice(0, 1500);
     if (!text) return res.status(400).json({ error: 'text required' });
@@ -82,9 +87,12 @@ function install(app, deps) {
       }
     }
     try {
-      const out = await STUDIO.speak({ text, lang, purpose: news ? 'daily' : 'live', role, getSetting, timeout: 25000, eleven: { format: 'mp3_44100_64', timeout: 20000, chunk: 1500, voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.25, use_speaker_boost: true } } });
+      const make = () => STUDIO.speak({ text, lang, purpose: news ? 'daily' : 'live', role, getSetting, timeout: 25000, eleven: { format: 'mp3_44100_64', timeout: 20000, chunk: 1500, voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.25, use_speaker_boost: true } } });
+      let out;
+      if (news) { if (!inflight.has(id)) inflight.set(id, make().finally(() => inflight.delete(id))); out = await inflight.get(id); }
+      else out = await make();
       if (out) {
-        if (CACHE && news) { try { fs.writeFileSync(path.join(CACHE, id + (out.mime === 'audio/wav' ? '.wav' : '.mp3')), out.buf); if (++cacheWrites % 200 === 0) pruneCache(); } catch (e) {} }
+        if (CACHE && news) { try { const f = path.join(CACHE, id + (out.mime === 'audio/wav' ? '.wav' : '.mp3')); if (!fs.existsSync(f)) fs.writeFileSync(f, out.buf); } catch (e) {} }
         res.set('Content-Type', out.mime); res.set('Cache-Control', 'no-store'); res.set('X-Voice', out.provider); return res.send(out.buf);
       }
     } catch (e) { console.log('[voice] tts error', e.message); }
@@ -138,7 +146,7 @@ function install(app, deps) {
         tts: { voice_id: await EV.pickVoice(key, 'en', getSetting), model_id: 'eleven_turbo_v2_5', stability: 0.45, similarity_boost: 0.8 },
         asr: { quality: 'high', provider: 'elevenlabs' },
         turn: { turn_timeout: 7 },
-        conversation: { max_duration_seconds: 1800 },
+        conversation: { max_duration_seconds: 600 }, // 10-minute calls: a long session can't run far past the plan
       },
       platform_settings: { auth: { enable_auth: true } },
     };
@@ -147,7 +155,8 @@ function install(app, deps) {
   async function ensureAgent(key) {
     if (AGENT.creating) return AGENT.creating;
     AGENT.creating = (async () => {
-      const cfg = await agentConfig(key); const want = hashOf({ cfg, tools: clientTools().map(t => t.name) });
+      // the hash includes a key fingerprint, so a different ElevenLabs account never reuses another account's agent id
+      const cfg = await agentConfig(key); const want = hashOf({ cfg, tools: clientTools().map(t => t.name), key: crypto.createHash('sha256').update(key).digest('hex').slice(0, 8) });
       const savedId = getSetting('ELEVEN_AGENT_ID') || AGENT.id, savedHash = getSetting('ELEVEN_AGENT_HASH') || AGENT.hash;
       if (savedId && savedHash === want) { AGENT.id = savedId; AGENT.hash = want; return savedId; }
       if (AGENT.error && Date.now() - AGENT.at < 10 * 60 * 1000 && !savedId) return null; // don't hammer a failing API
@@ -177,7 +186,8 @@ function install(app, deps) {
       }
       // ElevenLabs retires LLM ids too: when the refusal names the model, remember the next one and try again (once per model)
       const llmNow = cfg.conversation_config.agent.prompt.llm, nextLlm = AGENT_LLMS[AGENT_LLMS.indexOf(llmNow) + 1];
-      if (nextLlm && /llm|model/i.test(errors.join(' ')) && deps.setSetting) {
+      const llmRefused = errors.some(e => /^(create|update) /.test(e) && (/\bllm\b/i.test(e) || e.includes(llmNow)));
+      if (nextLlm && llmRefused && deps.setSetting) {
         try { deps.setSetting('ELEVEN_AGENT_LLM', nextLlm); console.log('[voice] agent LLM', llmNow, 'refused → trying', nextLlm); AGENT.creating = null; return await ensureAgent(key); } catch (e) {}
       }
       AGENT.error = errors.join(' | ').slice(0, 600); AGENT.at = Date.now();
@@ -191,6 +201,9 @@ function install(app, deps) {
     if (r.ok && r.body && r.body.signed_url) return { signed_url: r.body.signed_url };
     const t = await elevenApi(key, 'GET', '/v1/convai/conversation/token?agent_id=' + encodeURIComponent(agentId));
     if (t.ok && t.body && t.body.token) return { conversation_token: t.body.token };
+    if ([401, 403, 404].includes(r.status) && [401, 403, 404].includes(t.status)) { // agent deleted or belongs to another account
+      AGENT.id = null; AGENT.hash = null; try { deps.setSetting && deps.setSetting('ELEVEN_AGENT_ID', ''); deps.setSetting && deps.setSetting('ELEVEN_AGENT_HASH', ''); } catch (e) {}
+    }
     throw new Error('signed url ' + r.status + ' ' + JSON.stringify(r.body).slice(0, 160));
   }
   global._voiceStatus = () => ({ engine: elevenKey() ? (AGENT.id ? 'elevenlabs' : (AGENT.error ? 'fallback' : 'elevenlabs-pending')) : (openaiKey() ? 'realtime' : 'fallback'), agent_id: AGENT.id || getSetting('ELEVEN_AGENT_ID') || null, agent_error: AGENT.error || '', llm: hasLLM(), tts: STUDIO.available(getSetting).length > 0 });
@@ -204,6 +217,7 @@ function install(app, deps) {
     const ek = elevenKey();
     if (ek && String(req.body && req.body.engine || '') !== 'classic') {
       try {
+        const snap = EV.snapshot(ek); if (!snap || Date.now() - (snap.at || 0) > 120000) await EV.subscription(ek, true); // real numbers before a call
         const b = await EV.budget(ek, 0, 'live'); if (!b.ok) throw new Error(b.reason); // out of credits → the next engine, no overage
         const agentId = await ensureAgent(ek);
         if (agentId) {

@@ -2,7 +2,7 @@
 // audio. The API returns raw 24 kHz 16-bit mono PCM; we join the chunks and encode one MP3 with ffmpeg (WAV when ffmpeg is
 // missing). Voices are prebuilt names (Charon, Iapetus, Puck…); the language is read from the text itself.
 'use strict';
-const { spawnSync } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const GEM = require('./gemini.js');
 const MODELS = ['gemini-3.8-flash-tts', 'gemini-2.5-flash-preview-tts', 'gemini-3.1-flash-tts-preview'];
 const VOICES = { narrator: 'Charon', native: 'Iapetus', bro: 'Puck' }; // calm male narrator · clear second voice · warm friend
@@ -16,10 +16,16 @@ function wav(pcm, rate) {
   h.write('data', 36); h.writeUInt32LE(pcm.length, 40);
   return Buffer.concat([h, pcm]);
 }
+// Async so a long Hindi book chunk never blocks the server's event loop while it encodes.
 function mp3(pcm, rate) {
-  const r = spawnSync('ffmpeg', ['-v', 'error', '-f', 's16le', '-ar', String(rate), '-ac', '1', '-i', 'pipe:0', '-ar', '44100', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '96k', '-f', 'mp3', 'pipe:1'], { input: pcm, maxBuffer: 256 * 1024 * 1024, timeout: 120000 });
-  if (r.status !== 0 || !r.stdout || !r.stdout.length) throw new Error('ffmpeg encode failed ' + String(r.stderr || '').slice(0, 160));
-  return r.stdout;
+  return new Promise((resolve, reject) => {
+    const p = spawn('ffmpeg', ['-v', 'error', '-f', 's16le', '-ar', String(rate), '-ac', '1', '-i', 'pipe:0', '-ar', '44100', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '96k', '-f', 'mp3', 'pipe:1']);
+    const out = [], err = []; const t = setTimeout(() => p.kill('SIGKILL'), 120000);
+    p.stdout.on('data', c => out.push(c)); p.stderr.on('data', c => err.push(c));
+    p.on('error', e => { clearTimeout(t); reject(e); });
+    p.on('close', code => { clearTimeout(t); const b = Buffer.concat(out); if (code === 0 && b.length) resolve(b); else reject(new Error('ffmpeg encode failed ' + Buffer.concat(err).toString().slice(0, 160))); });
+    p.stdin.on('error', () => {}); p.stdin.end(pcm);
+  });
 }
 
 const STYLE = {
@@ -51,7 +57,7 @@ async function speak(key, text, lang, opts) {
     pcm.push(Buffer.from(d.data, 'base64'));
   }
   const raw = Buffer.concat(pcm);
-  if (hasFfmpeg()) return { buf: mp3(raw, rate), mime: 'audio/mpeg', secs: raw.length / (rate * 2) };
+  if (hasFfmpeg()) return { buf: await mp3(raw, rate), mime: 'audio/mpeg', secs: raw.length / (rate * 2) };
   return { buf: wav(raw, rate), mime: 'audio/wav', secs: raw.length / (rate * 2) };
 }
 

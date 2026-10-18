@@ -18,7 +18,10 @@ const down = new Map(); // provider → until (ms)
 
 function configure(o) { if (o && o.mediaDir) MEDIA = o.mediaDir; }
 const keys = gs => ({ eleven: gs('ELEVENLABS_API_KEY') || process.env.ELEVENLABS_API_KEY || '', gemini: gs('GEMINI_API_KEY') || process.env.GEMINI_API_KEY || '', openai: gs('OPENAI_API_KEY') || process.env.OPENAI_API_KEY || '' });
-const isDown = p => (down.get(p) || 0) > Date.now();
+// "out of credit / bad key / rate-limited" marks are shared with the recording scripts (separate processes) through the
+// usage file, so a nightly run doesn't rediscover a 402 on every book.
+function markDown(p, ms) { const until = Date.now() + ms; down.set(p, until); try { const u = readUsage(); u.down = u.down || {}; u.down[p] = until; writeUsage(u); } catch (e) {} }
+const isDown = p => { if ((down.get(p) || 0) > Date.now()) return true; try { const t = ((readUsage().down || {})[p]) || 0; if (t > Date.now()) { down.set(p, t); return true; } } catch (e) {} return false; };
 function order(gs, purpose) {
   const k = keys(gs); const pin = String(gs(purpose === 'bulk' ? 'BULK_VOICE' : 'STUDIO_VOICE') || '').toLowerCase();
   const all = ['eleven', 'gemini', 'openai'].filter(p => k[p]);
@@ -30,13 +33,22 @@ function available(gs) { return order(gs, 'daily').filter(p => !isDown(p)); }
 // "user read" access): bulk then stops at ELEVEN_BULK_MONTHLY_CHARS (default 40,000 ≈ 20,000 credits) of this month's use.
 async function elevenOk(key, chars, purpose) {
   const b = await EV.budget(key, chars, purpose);
-  if (b.ok && b.left === null && purpose === 'bulk') {
-    const cap = parseInt(process.env.ELEVEN_BULK_MONTHLY_CHARS || '', 10) || 40000;
-    const used = (((readUsage().months || {})[month()] || {}).eleven || {}).chars || 0;
-    if (used + chars > cap) return { ok: false, reason: 'plan unknown — bulk recording capped at ' + cap + ' characters this month' };
+  if (b.ok && b.left === null && purpose !== 'live') {
+    const cap = purpose === 'bulk' ? (parseInt(process.env.ELEVEN_BULK_MONTHLY_CHARS || '', 10) || 20000) : (parseInt(process.env.ELEVEN_DAILY_MONTHLY_CHARS || '', 10) || 60000);
+    const used = monthChars('eleven', purpose);
+    if (used + chars > cap) return { ok: false, reason: 'plan unknown — ' + purpose + ' voice capped at ' + cap + ' characters this month' };
   }
   return b;
 }
+// Gemini / OpenAI are pay-as-you-go: bulk recordings (lessons, books) stop at STUDIO_BULK_MONTHLY_USD (default $3 ≈ 200
+// minutes) a month, so they can never eat the prepaid credit Bro's brain and the news need. The nightly sweep resumes next month.
+function payOk(p, chars, purpose) {
+  if (purpose !== 'bulk') return { ok: true };
+  const cap = parseFloat(process.env.STUDIO_BULK_MONTHLY_USD || '') || 3;
+  const usd = (monthChars(p, 'bulk') + chars) / CHARS_PER_MIN * (USD_PER_MIN[p] || 0.015);
+  return usd > cap ? { ok: false, reason: p + ' bulk voice capped at $' + cap + ' this month' } : { ok: true };
+}
+const monthChars = (p, purpose) => { const r = (((readUsage().months || {})[month()] || {})[p]) || {}; return purpose ? ((r.by || {})[purpose] || 0) : (r.chars || 0); };
 
 // Which provider would take `chars` characters for this purpose right now (used to keep one voice for a whole lesson/book).
 async function plan(opts) {
@@ -45,6 +57,7 @@ async function plan(opts) {
     if (isDown(p)) continue;
     if (p === 'gemini' && opts.mp3 && !GV.hasFfmpeg()) continue;
     if (p === 'eleven' && !(await elevenOk(k.eleven, opts.chars || 0, opts.purpose || 'daily')).ok) continue;
+    if (p !== 'eleven' && !payOk(p, opts.chars || 0, opts.purpose || 'daily').ok) continue;
     return p;
   }
   return null;
@@ -81,13 +94,17 @@ async function speak(opts) {
         out = { buf: await EV.speak(k.eleven, text, lang, voice, opts.eleven || {}), mime: 'audio/mpeg' };
       } else if (p === 'gemini') {
         if (opts.mp3 && !GV.hasFfmpeg()) continue;
+        const pb = payOk(p, text.length, purpose); if (!pb.ok) { lastErr = new Error(pb.reason); continue; }
         out = await GV.speak(k.gemini, text, lang, { role: opts.role, slow: opts.slow, getSetting: gs, mp3: opts.mp3, timeout: opts.timeout });
-      } else out = await openaiSpeak(k.openai, text, lang, { role: opts.role, slow: opts.slow, getSetting: gs, timeout: opts.timeout });
-      track(p, text.length);
+      } else {
+        const pb = payOk(p, text.length, purpose); if (!pb.ok) { lastErr = new Error(pb.reason); continue; }
+        out = await openaiSpeak(k.openai, text, lang, { role: opts.role, slow: opts.slow, getSetting: gs, timeout: opts.timeout });
+      }
+      track(p, text.length, purpose);
       return { buf: out.buf, mime: out.mime, provider: p };
     } catch (e) {
       lastErr = e;
-      if (e.code === 'credits' || e.code === 'key') down.set(p, Date.now() + (e.code === 'key' ? 6 : 1) * 3600e3);
+      if (e.code === 'credits' || e.code === 'key' || e.code === 'rate') markDown(p, e.code === 'key' ? 6 * 3600e3 : e.code === 'credits' ? 3600e3 : 5 * 60e3);
       console.log('[studio]', p, 'failed:', e.message.slice(0, 160));
       if (opts.provider) break;
     }
@@ -100,14 +117,15 @@ async function speak(opts) {
 const month = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit' }).format(new Date()).slice(0, 7);
 const usageFile = () => MEDIA ? path.join(MEDIA, 'voice-usage.json') : '';
 function readUsage() { try { return JSON.parse(fs.readFileSync(usageFile(), 'utf8')); } catch (e) { return { months: {} }; } }
-function track(p, chars) {
-  const f = usageFile(); if (!f) return;
+function writeUsage(u) { const f = usageFile(); if (!f) return; const tmp = f + '.' + process.pid + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(u)); fs.renameSync(tmp, f); }
+function track(p, chars, purpose) {
+  if (!usageFile()) return;
   try {
     const u = readUsage(); const m = month(); u.months = u.months || {};
     const row = u.months[m] = u.months[m] || {}; const r = row[p] = row[p] || { chars: 0, calls: 0 };
-    r.chars += chars; r.calls += 1;
+    r.chars += chars; r.calls += 1; r.by = r.by || {}; r.by[purpose || 'daily'] = (r.by[purpose || 'daily'] || 0) + chars;
     for (const old of Object.keys(u.months).sort().slice(0, -6)) delete u.months[old];
-    const tmp = f + '.' + process.pid + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(u)); fs.renameSync(tmp, f);
+    writeUsage(u);
   } catch (e) { /* the meter must never break speech */ }
 }
 function usage(gs) {
@@ -124,4 +142,6 @@ function usage(gs) {
   return out;
 }
 
-module.exports = { configure, speak, plan, available, usage, track, keys, isDown, _down: down };
+function clearDown() { down.clear(); try { const u = readUsage(); if (u.down) { delete u.down; writeUsage(u); } } catch (e) {} }
+
+module.exports = { configure, speak, plan, available, usage, track, keys, isDown, markDown, clearDown, _down: down };
