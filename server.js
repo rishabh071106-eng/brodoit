@@ -274,6 +274,8 @@ console.log('[ai] gemini',geminiKey()?'✅':'❌','groq',groqKey()?'✅':'❌');
 // ─── LLM Provider Abstraction ─────────────────────────────────────────────
 // Tries providers in order: Gemini Flash (1500 req/day free) → Groq (30 RPM free)
 // Each provider returns {reply:string} or throws on failure.
+const _gemini=require('./modules/gemini.js');
+const _gset=k=>{try{return global._getSetting?global._getSetting(k):''}catch(e){return''}};
 async function _callGemini(messages,{maxTokens=4096,systemPrompt='',imageData=null}={}){
   if(!geminiKey())throw new Error('no-key');
   // Convert OpenAI-style messages to Gemini format (supports inline images)
@@ -286,20 +288,13 @@ async function _callGemini(messages,{maxTokens=4096,systemPrompt='',imageData=nu
   });
   const body={contents,generationConfig:{maxOutputTokens:maxTokens,temperature:0.7}};
   if(systemPrompt)body.systemInstruction={parts:[{text:systemPrompt}]};
-  const ctrl=new AbortController();const tmr=setTimeout(()=>ctrl.abort(),50000);
-  try{
-    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+geminiKey(),{
-      method:'POST',signal:ctrl.signal,
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(body)
-    });
-    clearTimeout(tmr);
-    const j=await r.json();
-    if(!r.ok){const msg=(j.error&&j.error.message)||'Gemini error';console.log('[ai] Gemini error:',r.status,msg);throw new Error(msg)}
-    const text=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0]&&j.candidates[0].content.parts[0].text;
-    if(!text)throw new Error('empty response');
-    return{reply:text,provider:'gemini'};
-  }catch(e){clearTimeout(tmr);throw e}
+  // model chain lives in modules/gemini.js (Google retires ids; gemini-2.0-flash is gone)
+  let j;
+  try{({json:j}=await _gemini.generate(geminiKey(),body,{getSetting:_gset,timeout:50000}))}
+  catch(e){console.log('[ai] Gemini error:',e.status||'',e.message);throw e}
+  const text=_gemini.textOf(j);
+  if(!text)throw new Error('empty response');
+  return{reply:text,provider:'gemini'};
 }
 
 const GROQ_MODELS=['openai/gpt-oss-120b','qwen/qwen3.6-27b','openai/gpt-oss-20b'];
@@ -2687,8 +2682,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=14"><link rel="stylesheet" href="/app/app.css?v=14"><link rel="stylesheet" href="/app/news.css?v=14"><link rel="stylesheet" href="/app/steps.css?v=14"><link rel="stylesheet" href="/app/admin.css?v=14"><link rel="stylesheet" href="/app/onboarding.css?v=14">
-<script src="/app/icons.js?v=14" defer></script><script src="/app/haptics.js?v=14" defer></script><script src="/app/mascot.js?v=14" defer></script><script src="/app/voice.js?v=14" defer></script><script src="/app/news.js?v=14" defer></script><script src="/app/steps.js?v=14" defer></script><script src="/app/admin.js?v=14" defer></script><script src="/app/onboarding.js?v=14" defer></script><script src="/app/motion.js?v=14" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=15"><link rel="stylesheet" href="/app/app.css?v=15"><link rel="stylesheet" href="/app/news.css?v=15"><link rel="stylesheet" href="/app/steps.css?v=15"><link rel="stylesheet" href="/app/admin.css?v=15"><link rel="stylesheet" href="/app/onboarding.css?v=15">
+<script src="/app/icons.js?v=15" defer></script><script src="/app/haptics.js?v=15" defer></script><script src="/app/mascot.js?v=15" defer></script><script src="/app/voice.js?v=15" defer></script><script src="/app/news.js?v=15" defer></script><script src="/app/steps.js?v=15" defer></script><script src="/app/admin.js?v=15" defer></script><script src="/app/onboarding.js?v=15" defer></script><script src="/app/motion.js?v=15" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -17337,7 +17332,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=124').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=125').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17840,11 +17835,9 @@ Return ONLY a JSON array (no prose). Each item: {"title","org","posts" (number o
 officialUrl and applyUrl MUST be on the organisation's official website (gov.in, nic.in or the official recruiter domain), never a job-news site. Up to 15 items.`;
   const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),90000);
   try{
-    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+geminiKey(),{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],tools:[{google_search:{}}],generationConfig:{temperature:0.1,maxOutputTokens:8192}})});
-    clearTimeout(t);const j=await r.json();
-    if(!r.ok)throw new Error((j.error&&j.error.message)||('HTTP '+r.status));
-    const text=((j.candidates||[])[0]?.content?.parts||[]).map(p=>p.text||'').join('');
+    const{json:j}=await _gemini.generate(geminiKey(),{contents:[{role:'user',parts:[{text:prompt}]}],tools:[{google_search:{}}],generationConfig:{temperature:0.1,maxOutputTokens:8192}},{getSetting:_gset,timeout:90000});
+    clearTimeout(t);
+    const text=_gemini.textOf(j);
     const m=text.match(/\[[\s\S]*\]/);return m?JSON.parse(m[0]):[];
   }catch(e){clearTimeout(t);console.log('[JOBS] gemini',cat,'failed:',e.message);return[]}
 }
@@ -17897,7 +17890,7 @@ app.use('/prep',express.static(path.join(__dirname,'prep'),{etag:true,setHeaders
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v172";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v173";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
@@ -17959,6 +17952,8 @@ app.get('/',(req,res)=>{
 app.use('/app',express.static(path.join(__dirname,'app'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 let _settings=null;try{_settings=require('./modules/settings.js').install(db)}catch(e){console.log('[settings] module missing, env only:',e.message);_settings={getSetting:k=>process.env[k]||'',setSetting:()=>{throw new Error('settings module missing')},settingSource:k=>process.env[k]?'env':null}}
 const {getSetting,setSetting,settingSource}=_settings;global._getSetting=getSetting;
+// keys handed over in chat arrive encrypted in config/sealed-settings.json (public repo) — applied before anything reads them
+try{require('./modules/sealed.js').install(app,{dataDir:path.dirname(DB_PATH),appRoot:__dirname,setSetting,allowed:['OPENAI_API_KEY','ELEVENLABS_API_KEY','GEMINI_API_KEY','GROQ_API_KEY']})}catch(e){console.log('[sealed] off:',e.message)}
 const sha256=s=>crypto.createHash('sha256').update(String(s)).digest('hex');
 function pushTo(phone,payload){try{const subs=db.prepare('SELECT * FROM push_subs WHERE user_phone=?').all(phone);let n=0;for(const sub of subs){n++;webpush.sendNotification({endpoint:sub.endpoint,keys:{p256dh:sub.keys_p256dh,auth:sub.keys_auth}},typeof payload==='string'?payload:JSON.stringify(payload)).catch(err=>{if(err.statusCode===404||err.statusCode===410)db.prepare('DELETE FROM push_subs WHERE endpoint=?').run(sub.endpoint)})}return n}catch(e){return 0}}
 try{require('./modules/newsreader.js').install(app,{auth,getSetting,MEDIA_DIR})}catch(e){console.log('[newsreader] not installed:',e.message)}
@@ -17976,7 +17971,7 @@ app.get('/api/lang/audio-status',(_,res)=>{try{const fs2=require('fs');let total
 app.get('/lang/audio/:code/:file',(req,res,next)=>{const code=String(req.params.code).replace(/[^a-z]/g,''),file=String(req.params.file).replace(/[^a-zA-Z0-9_.-]/g,'');const m=path.join(MEDIA_DIR,'lang-audio',code,file);if(_fs.existsSync(m)){res.set('Cache-Control','public, max-age=31536000, immutable');return res.sendFile(m)}const r=path.join(__dirname,'lang','audio',code,file);if(_fs.existsSync(r))return res.sendFile(r);res.status(404).end()});
 const _allNewsItems=async()=>{const out=[];for(const c of NEWS_CATS){const cc=newsCache[c];if(cc&&cc.items&&cc.items.length)out.push(...cc.items);else{try{out.push(...await curateNewsCategory(c))}catch(e){}}}out.sort((a,b)=>(new Date(b.date||0).getTime()||0)-(new Date(a.date||0).getTime()||0));const seen=new Set();return out.filter(it=>{const k=(it.title||'').toLowerCase().slice(0,50);if(seen.has(k))return false;seen.add(k);return true})};
 const _bulletin=require('./modules/bulletin.js').install(app,{db,auth,mediaDir:MEDIA_DIR,getSetting,isAdmin:req=>{const t=String(req.query.token||req.headers['x-admin-token']||'').trim();if(ADMIN_TOKEN&&t===ADMIN_TOKEN)return true;try{const u=db.prepare('SELECT * FROM users WHERE token=?').get(String(req.headers['x-token']||''));return isAdminUser(u)}catch(e){return false}},callGemini:_callGemini,getNewsItems:_allNewsItems});
-require('./modules/voice.js').install(app,{auth,getSetting,setSetting,BRO_TOOLS,_broExecTool,_getUserTz,_callGemini,_callGroq,hasGroq:()=>!!groqKey(),hasGemini:()=>!!geminiKey(),getSteps:phone=>_steps&&_steps.getStepsTool?_steps.getStepsTool(phone):null,setStepGoal:(phone,goal)=>{try{db.prepare("INSERT INTO step_profile(user_phone,goal) VALUES(?,?) ON CONFLICT(user_phone) DO UPDATE SET goal=excluded.goal").run(phone,goal);return{ok:true,goal}}catch(e){return{error:e.message}}},getHeadlines:async topic=>{const all=await _allNewsItems();const t=String(topic||'').toLowerCase();const cat=t==='technology'?'tech':t;if(cat&&NEWS_CATS.includes(cat)){const cc=newsCache[cat];if(cc&&cc.items)return cc.items}return all},getBulletin:()=>_bulletin.latest('daily'),speakerSummary:phone=>_speaker&&_speaker.summaryFor?_speaker.summaryFor(phone):null});
+require('./modules/voice.js').install(app,{auth,getSetting,setSetting,mediaDir:MEDIA_DIR,BRO_TOOLS,_broExecTool,_getUserTz,_callGemini,_callGroq,hasGroq:()=>!!groqKey(),hasGemini:()=>!!geminiKey(),getSteps:phone=>_steps&&_steps.getStepsTool?_steps.getStepsTool(phone):null,setStepGoal:(phone,goal)=>{try{db.prepare("INSERT INTO step_profile(user_phone,goal) VALUES(?,?) ON CONFLICT(user_phone) DO UPDATE SET goal=excluded.goal").run(phone,goal);return{ok:true,goal}}catch(e){return{error:e.message}}},getHeadlines:async topic=>{const all=await _allNewsItems();const t=String(topic||'').toLowerCase();const cat=t==='technology'?'tech':t;if(cat&&NEWS_CATS.includes(cat)){const cc=newsCache[cat];if(cc&&cc.items)return cc.items}return all},getBulletin:()=>_bulletin.latest('daily'),speakerSummary:phone=>_speaker&&_speaker.summaryFor?_speaker.summaryFor(phone):null});
 try{require('./modules/admin.js').install(app,{db,auth,isAdminUser,MEDIA_DIR,DB_PATH,getSetting,setSetting,settingSource,bulletin:_bulletin,android:_android,scriptsDir:path.join(__dirname,'scripts'),appRoot:__dirname,steps:_steps})}catch(e){console.log('[admin] not loaded:',e.message)}
 app.get('*',(_,res)=>res.set('Cache-Control','no-cache, no-store, must-revalidate').type('html').send(HTML));
 const PORT=process.env.PORT||3000;

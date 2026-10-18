@@ -7,6 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const EV = require('./elevenvoice.js');
+const STUDIO = require('./studio.js');
 
 const DEFAULT_VOICE = 'pNInz6obpgDQGcFmaJgB'; // Adam — warm news-anchor voice; multilingual v2 speaks Hindi with any voice
 let DIR = path.join(__dirname, '..', 'audio-news');
@@ -38,9 +39,7 @@ async function elevenTTS(text, voice, lang, key) {
 function install(app, deps) {
   const { db, auth, isAdmin, callGemini, getNewsItems } = deps;
   const getSetting = typeof deps.getSetting === 'function' ? deps.getSetting : (k => process.env[k] || '');
-  const elevenKey = () => getSetting('ELEVENLABS_API_KEY') || process.env.ELEVENLABS_API_KEY || '';
-  const voiceEn = () => getSetting('ELEVEN_VOICE_EN') || process.env.ELEVEN_VOICE_EN || DEFAULT_VOICE;
-  const voiceHi = () => getSetting('ELEVEN_VOICE_HI') || process.env.ELEVEN_VOICE_HI || DEFAULT_VOICE;
+  const hasVoice = () => STUDIO.available(getSetting).length > 0;
   if (deps.mediaDir) DIR = path.join(deps.mediaDir, 'news');
   fs.mkdirSync(DIR, { recursive: true });
   db.exec(`CREATE TABLE IF NOT EXISTS news_bulletins(id TEXT PRIMARY KEY,kind TEXT NOT NULL,date TEXT NOT NULL,title TEXT DEFAULT '',data TEXT NOT NULL,audio_en TEXT DEFAULT '',audio_hi TEXT DEFAULT '',created_at TEXT DEFAULT(datetime('now')));
@@ -75,12 +74,19 @@ Only report what the sources say; do not add facts. Avoid graphic details. STORI
 
   // Renders whichever of EN/HI is still missing. Errors are logged and swallowed for the hourly
   // tick; pass strict=true (admin job) to surface them to the caller instead.
+  // Voice: modules/studio.js — ElevenLabs within the month's credits, else Gemini / OpenAI TTS, else the device voice.
   async function renderAudio(id, en, hi, strict) {
-    const key = elevenKey(); if (!key) return;
+    if (!hasVoice()) return;
     const r = get.get(id); if (!r) return;
     try {
-      if (!r.audio_en) { const b = await elevenTTS(en, await EV.pickVoice(key, 'en', getSetting), 'en', key); if (b) { fs.writeFileSync(path.join(DIR, id + '-en.mp3'), b); db.prepare('UPDATE news_bulletins SET audio_en=? WHERE id=?').run(id + '-en.mp3', id); } }
-      if (!r.audio_hi) { const b = await elevenTTS(hi, await EV.pickVoice(key, 'hi', getSetting), 'hi', key); if (b) { fs.writeFileSync(path.join(DIR, id + '-hi.mp3'), b); db.prepare('UPDATE news_bulletins SET audio_hi=? WHERE id=?').run(id + '-hi.mp3', id); } }
+      for (const [lang, text, col] of [['en', en, 'audio_en'], ['hi', hi, 'audio_hi']]) {
+        if (r[col] || !text) continue;
+        const out = await STUDIO.speak({ text, lang, purpose: 'daily', role: 'narrator', getSetting, mp3: true, strict, eleven: { voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.2, use_speaker_boost: true } } });
+        if (!out) continue;
+        const file = id + '-' + lang + '.mp3';
+        fs.writeFileSync(path.join(DIR, file), out.buf); db.prepare('UPDATE news_bulletins SET ' + col + '=? WHERE id=?').run(file, id);
+        console.log('[NEWS-CH] recorded', file, 'via', out.provider);
+      }
     } catch (e) { console.log('[NEWS-CH] audio render failed', id, e.message); if (strict) throw e; }
   }
 
@@ -89,7 +95,7 @@ Only report what the sources say; do not add facts. Avoid graphic details. STORI
     const today = istDate(); const id = 'd-' + today;
     if (!get.get(id)) await writeDaily(today);
     let r = get.get(id); if (!r) throw new Error('bulletin not written');
-    if (elevenKey() && (!r.audio_en || !r.audio_hi)) { const d = JSON.parse(r.data); await renderAudio(id, d.script_en, d.script_hi, true); r = get.get(id); }
+    if (hasVoice() && (!r.audio_en || !r.audio_hi)) { const d = JSON.parse(r.data); await renderAudio(id, d.script_en, d.script_hi, true); r = get.get(id); }
     return row(r);
   }
 
@@ -111,7 +117,7 @@ HEADLINES:\n${src}`;
 
   async function tick() {
     const today = istDate();
-    try { if (!get.get('d-' + today)) await writeDaily(today); else { const r = get.get('d-' + today); if (elevenKey() && (!r.audio_en || !r.audio_hi)) { const d = JSON.parse(r.data); await renderAudio(r.id, d.script_en, d.script_hi); } } }
+    try { if (!get.get('d-' + today)) await writeDaily(today); else { const r = get.get('d-' + today); if (hasVoice() && (!r.audio_en || !r.audio_hi)) { const d = JSON.parse(r.data); await renderAudio(r.id, d.script_en, d.script_hi); } } }
     catch (e) { console.log('[NEWS-CH] daily failed', e.message); }
     try {
       const d = new Date(Date.now() + IST_OFFSET);
@@ -125,9 +131,9 @@ HEADLINES:\n${src}`;
   app.get('/api/bulletins', (req, res) => {
     const kind = req.query.kind === 'monthly' ? 'monthly' : 'daily';
     const list = db.prepare('SELECT * FROM news_bulletins WHERE kind=? ORDER BY date DESC LIMIT 31').all(kind).map(row);
-    res.json({ kind, items: list, hasAudio: !!elevenKey() });
+    res.json({ kind, items: list, hasAudio: hasVoice() });
   });
-  app.get('/api/bulletins/latest', (req, res) => res.json({ daily: latest('daily'), monthly: latest('monthly'), hasAudio: !!elevenKey() }));
+  app.get('/api/bulletins/latest', (req, res) => res.json({ daily: latest('daily'), monthly: latest('monthly'), hasAudio: hasVoice() }));
   app.get('/api/bulletins/:id', (req, res) => { const r = row(get.get(String(req.params.id))); if (!r) return res.status(404).json({ error: 'not found' }); res.json(r); });
   app.post('/api/bulletins/refresh', async (req, res) => {
     if (!isAdmin(req)) return res.status(403).json({ error: 'admin only' });
@@ -156,7 +162,7 @@ HEADLINES:\n${src}`;
     res.set('Cache-Control', 'public, max-age=31536000, immutable');
     res.sendFile(p);
   });
-  console.log('[NEWS-CH] channel ready; elevenlabs', elevenKey() ? '✅' : '❌ (device voice fallback — paste a key in You → Admin)');
+  console.log('[NEWS-CH] channel ready; studio voice', hasVoice() ? '✅ ' + STUDIO.available(getSetting).join(' → ') : '❌ (device voice fallback — paste a key in You → Admin)');
   return { tick, writeDaily, writeMonthly, latest, ensureToday, renderAudio };
 }
 

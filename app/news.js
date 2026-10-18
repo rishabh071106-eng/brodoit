@@ -142,7 +142,7 @@
   };
   N.voiceFetch = async function (v, i) {
     if (v.urls[i]) return v.urls[i];
-    const r = await fetch('/api/voice/tts', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': tok() }, body: JSON.stringify({ text: v.chunks[i], lang: v.lang }) });
+    const r = await fetch('/api/voice/tts', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': tok() }, body: JSON.stringify({ text: v.chunks[i], lang: v.lang, kind: 'news' }) });
     if (r.status === 404) { const e = new Error('no studio voice'); e.code = 404; throw e; }
     if (!r.ok) throw new Error('tts ' + r.status);
     const b = await r.blob(); if (!b.size) throw new Error('empty audio');

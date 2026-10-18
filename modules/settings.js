@@ -4,7 +4,16 @@
 // simply reads process.env so callers can treat it as the single source of truth.
 'use strict';
 
-const KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI'];
+// Every name the modules read through getSetting must be here, or reads fall through to env and saves throw — that is how
+// pasted Gemini/Groq keys and Bro's ElevenLabs agent id were silently lost before.
+const KEYS = [
+  'OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY',
+  'OPENAI_REALTIME_VOICE', 'OPENAI_CHAT_MODEL', 'OPENAI_TTS_VOICE', 'OPENAI_TTS_VOICE_NATIVE',
+  'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'ELEVEN_VOICE_ES', 'ELEVEN_VOICE_FR', 'ELEVEN_VOICE_DE', 'ELEVEN_VOICE_JA',
+  'ELEVEN_AGENT_ID', 'ELEVEN_AGENT_HASH', 'ELEVEN_AGENT_LLM',
+  'GEMINI_MODEL', 'GEMINI_LITE_MODEL', 'GEMINI_TTS_MODEL', 'GEMINI_TTS_VOICE', 'GEMINI_TTS_VOICE_NATIVE', 'GEMINI_TTS_VOICE_BRO',
+  'BULK_VOICE', 'STUDIO_VOICE',
+];
 
 // "sk-…k9Qz" — enough to recognise a key, never enough to use it.
 function maskKey(v) {
