@@ -2682,8 +2682,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=15"><link rel="stylesheet" href="/app/app.css?v=15"><link rel="stylesheet" href="/app/news.css?v=15"><link rel="stylesheet" href="/app/steps.css?v=15"><link rel="stylesheet" href="/app/admin.css?v=15"><link rel="stylesheet" href="/app/onboarding.css?v=15">
-<script src="/app/icons.js?v=15" defer></script><script src="/app/haptics.js?v=15" defer></script><script src="/app/mascot.js?v=15" defer></script><script src="/app/voice.js?v=15" defer></script><script src="/app/news.js?v=15" defer></script><script src="/app/steps.js?v=15" defer></script><script src="/app/admin.js?v=15" defer></script><script src="/app/onboarding.js?v=15" defer></script><script src="/app/motion.js?v=15" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=16"><link rel="stylesheet" href="/app/app.css?v=16"><link rel="stylesheet" href="/app/news.css?v=16"><link rel="stylesheet" href="/app/steps.css?v=16"><link rel="stylesheet" href="/app/admin.css?v=16"><link rel="stylesheet" href="/app/onboarding.css?v=16"><link rel="stylesheet" href="/app/cards.css?v=16"><link rel="stylesheet" href="/app/home.css?v=16"><link rel="stylesheet" href="/app/tasks.css?v=16"><link rel="stylesheet" href="/app/books.css?v=16">
+<script src="/app/icons.js?v=16" defer></script><script src="/app/cards.js?v=16" defer></script><script src="/app/learn.js?v=16" defer></script><script src="/app/you.js?v=16" defer></script><script src="/app/haptics.js?v=16" defer></script><script src="/app/mascot.js?v=16" defer></script><script src="/app/voice.js?v=16" defer></script><script src="/app/news.js?v=16" defer></script><script src="/app/steps.js?v=16" defer></script><script src="/app/admin.js?v=16" defer></script><script src="/app/onboarding.js?v=16" defer></script><script src="/app/motion.js?v=16" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -15168,7 +15168,7 @@ if(isMain){
   var _learnTabs=['games','courses'];
   var _youTabs=['profile','cal'];
   const tabsHtml=[{k:'bro',l:'Bro',i:'bro'},{k:'steps',l:'Steps',i:'steps'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learn',i:'learn'},{k:'books',l:'Books',i:'books'},{k:'profile',l:'You',i:'you'}].map(function(x){
-    var isOn=(x.k==='bro')?(!S.tab||S.tab==='home'||S.tab==='bro'||S.tab==='news'):(x.k==='profile'?(S.tab==='profile'||S.tab==='cal'):S.tab===x.k);
+    var isOn=(x.k==='bro')?(!S.tab||S.tab==='home'||S.tab==='bro'):(x.k==='profile'?(S.tab==='profile'||S.tab==='cal'):S.tab===x.k);
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
   // "Bro, do it!" mascot — a character with a speech bubble that animates
@@ -15276,11 +15276,13 @@ if(S.tab==='tasks'){
   h+='<button class="'+(S.taskSegment==='done'?'on':'')+'" onclick="S.taskSegment=\\'done\\';render()">Done</button>';
   h+='</div>';
   // Task list with segmented filtering
+  var _tkHero=true;
   const _tISO=new Date().toISOString().slice(0,10);
   let _segTasks=f;
   if(S.taskSegment==='today')_segTasks=f.filter(t=>t.status!=='done'&&(!t.due_date||(t.due_date||'').slice(0,10)<=_tISO));
   else if(S.taskSegment==='upcoming')_segTasks=f.filter(t=>t.status!=='done'&&t.due_date&&(t.due_date||'').slice(0,10)>_tISO);
   else if(S.taskSegment==='done')_segTasks=f.filter(t=>t.status==='done');
+  if(window.Cards&&_tkHero&&S.taskSegment==='today'&&_segTasks.length)h+=Cards.cover({key:'hero-tasks',icon:'check-square',tone:'umber',size:'strip',cls:'tk-hero',kick:(S.lang==='hi'?'\\u0906\\u091C':'Today'),title:_segTasks.length+(S.lang==='hi'?' \\u0915\\u093E\\u092E':(_segTasks.length===1?' thing to do':' things to do')),onclick:"var q=document.querySelector('.qc-input');if(q)q.focus()"});
   if(S.taskSegment==='today'){
     const _mornTasks=_segTasks.filter(t=>{const h=t.reminder_time?parseInt(t.reminder_time.split(':')[0],10):9;return h<12});
     const _aftTasks=_segTasks.filter(t=>{const h=t.reminder_time?parseInt(t.reminder_time.split(':')[0],10):9;return h>=12});
@@ -15301,18 +15303,19 @@ if(S.tab==='tasks'){
     h+='<div style="flex:1;min-width:0"><div class="rd-task-title">'+esc(t.title)+'</div>';
     if(t.notes)h+='<div style="font:400 13px var(--sans);color:var(--text-mute);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(t.notes)+'</div>';
     h+='<div class="rd-task-meta">';
-    h+='<button class="badge" style="background:'+st.bg+';color:'+st.c+';border-radius:0;font-family:var(--sans);font-size:11px" onclick="cyc(\\''+t.id+'\\')">'+st.l+'</button>';
-    h+='<span style="font:600 11px var(--sans);background:'+p.c+'20;color:'+p.c+';padding:2px 7px;border-radius:0">'+p.d+' '+t.priority+'</span>';
-    if(t.due_date)h+='<span style="font:500 12px var(--sans);color:'+(isOD(t.due_date,t.status)?'#1F1E1C':isTd(t.due_date)?'var(--accent)':'var(--text-mute)')+'">\\u{1F4C5} '+fD(t.due_date)+(isOD(t.due_date,t.status)?' overdue':'')+'</span>';
+    if(!(window.Cards&&t.status==='pending'))h+='<button class="badge" style="background:'+st.bg+';color:'+st.c+';border-radius:0;font-family:var(--sans);font-size:11px" onclick="cyc(\\''+t.id+'\\')">'+st.l+'</button>';
+    h+='<span style="font:600 11px var(--sans);background:'+p.c+'20;color:'+p.c+';padding:2px 7px;border-radius:0">'+(window.Cards?'<i class="tk-pri tk-'+t.priority+'"></i>':p.d+' ')+t.priority+'</span>';
+    if(t.due_date)h+='<span style="font:500 12px var(--sans);color:'+(isOD(t.due_date,t.status)?'#1F1E1C':isTd(t.due_date)?'var(--accent)':'var(--text-mute)')+'">'+(window.Cards?'':'\\u{1F4C5} ')+fD(t.due_date)+(isOD(t.due_date,t.status)?' overdue':'')+'</span>';
     if(t.reminder_time&&!d)h+='<span class="rd-email-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>Email reminder</span>';
     if(d&&_doneAt)h+='<span style="font:500 12px var(--sans);color:var(--text-mute)">'+_doneAt+'</span>';
     else if(_tTime&&!t.reminder_time)h+='<span style="font:500 12px var(--sans);color:var(--text-mute)">'+_tTime+'</span>';
-    if(addedTxt)h+='<span style="font:400 11px var(--sans);color:var(--text-dim)">\\u2795 '+esc(addedTxt)+'</span>';
+    if(addedTxt&&!window.Cards)h+='<span style="font:400 11px var(--sans);color:var(--text-dim)">\\u2795 '+esc(addedTxt)+'</span>';
     h+='</div></div>';
     h+='<div class="tc-acts" style="display:flex;gap:4px;align-items:flex-start;margin-left:6px"><button class="ib" onclick="opE(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ib" style="color:#1F1E1C" onclick="del(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';
     h+='</div>';
   }
-  if(!_segTasks.length&&!f.length)h+='<div style="text-align:center;padding:36px 0"><div style="margin:0 auto 10px;width:64px">'+(window.mascot?window.mascot('idle',64):'')+'</div><div style="font:400 24px var(--serif);color:var(--ink)">No tasks yet</div><div style="font:400 13px var(--sans);color:var(--text-mute);margin-top:4px">Tap the card above to add your first task</div></div>';
+  if(!_segTasks.length&&!f.length&&window.Cards)h+=Cards.cover({key:'hero-tasks',icon:'check-square',tone:'umber',size:'wide',cls:'tk-empty',kick:(S.lang==='hi'?'\\u0915\\u093E\\u092E':'Tasks'),title:(S.lang==='hi'?'\\u0925\\u093E\\u0932\\u0940 \\u0916\\u093C\\u093E\\u0932\\u0940 \\u0939\\u0948':'Nothing on your plate'),sub:(S.lang==='hi'?'\\u090F\\u0915 \\u0915\\u093E\\u092E \\u091C\\u094B\\u0921\\u093C\\u094B, \\u092F\\u093E Bro \\u0915\\u094B \\u092C\\u094B\\u0932 \\u0926\\u094B':'Add one, or just tell Bro'),go:'arrow',onclick:"var q=document.querySelector('.qc-input');if(q){q.focus();q.scrollIntoView({block:'center'})}"});
+  else if(!_segTasks.length&&!f.length)h+='<div style="text-align:center;padding:36px 0"><div style="margin:0 auto 10px;width:64px">'+(window.mascot?window.mascot('idle',64):'')+'</div><div style="font:400 24px var(--serif);color:var(--ink)">No tasks yet</div><div style="font:400 13px var(--sans);color:var(--text-mute);margin-top:4px">Tap the card above to add your first task</div></div>';
   else if(!_segTasks.length)h+='<div style="text-align:center;padding:30px 0"><div style="font:500 14px var(--sans);color:var(--text-mute)">No tasks in this view</div></div>';
   }
   // ── NOTES SUB-TAB ──
@@ -15638,6 +15641,9 @@ else if(S.tab==='courses'){
     h+='</div></div>'; // close lesson-fullpage-inner + lesson-fullpage
   } else {
   if(!S.learnSection){
+    // v12 card landing (app/learn.js); the legacy landing below stays as the fallback
+    var _luH=(window.LearnUI&&LearnUI.landing)?LearnUI.landing():'';
+    if(_luH){h+=_luH}else{
     // Learn landing: exam countdowns, Learning tree (Defence, IAS, Banking, IT, MBA, CS), tools
     var _ed={};try{_ed=(JSON.parse(localStorage.getItem('academy.progress.v1')||'{}').examDates)||{}}catch(e){}
     var _t0=new Date(new Date().toDateString()).getTime();
@@ -15665,6 +15671,7 @@ else if(S.tab==='courses'){
     h+='<button class="lt-tile sm" onclick="_openPrep(\\'progress.html\\')"><span class="lt-ti">'+(window.ico?ico('bar-chart-3',22):'')+'</span><b>My board</b></button>';
     h+='<button class="lt-tile sm" onclick="location.href=\\'/speaker/\\'"><span class="lt-ti">'+(window.ico?ico('mic',22):'')+'</span><b>Speaker</b></button>';
     h+='</div>';
+    }
   } else if(S.learnSection==='ai'){
     // AI Section — full curriculum
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">';
@@ -15905,7 +15912,7 @@ else if(S.tab==='news'){
 // PLAN TAB — calendar + day planner + quick actions
 else if(S.tab==='profile'){
   h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'profile\\')">My Plan</button><button class="lst" onclick="switchTab(\\'cal\\')">Calendar</button></div>';
-  h+=_youDash();
+  h+=(window.YouUI&&YouUI.html&&window.Cards)?YouUI.html():_youDash(); // v12 cards (app/you.js); legacy dashboard as fallback
   h+=(window.AdminPanel&&S.profile&&S.profile.admin)?AdminPanel.html():'';
   const _planNow=new Date();
   const _planToday=_planNow.toISOString().slice(0,10);
@@ -16028,7 +16035,7 @@ else if(S.tab==='board'){
       h+='<div class="kc" draggable="true" data-tid="'+t.id+'" ondragstart="dragS(event,\\''+t.id+'\\')" ondragend="dragE()" style="border-left-color:'+p.c+'">';
       h+='<div onclick="opE(\\''+t.id+'\\')" style="cursor:pointer"><div class="kc-t'+(t.status==='done'?'" style="text-decoration:line-through;color:#8E8E93':'')+'">'+esc(t.title)+'</div>';
       h+='<div class="kc-m"><span class="pri" style="background:'+p.c+'">'+t.priority+'</span>';
-      if(t.due_date)h+='<span class="due" style="color:'+(isOD(t.due_date,t.status)?'#1F1E1C':isTd(t.due_date)?'#E8912C':'#8E8E93')+'">\\u{1F4C5} '+fD(t.due_date)+'</span>';
+      if(t.due_date)h+='<span class="due" style="color:'+(isOD(t.due_date,t.status)?'#1F1E1C':isTd(t.due_date)?'#E8912C':'#8E8E93')+'">'+(window.Cards?'':'\\u{1F4C5} ')+fD(t.due_date)+'</span>';
       if(t.reminder_time&&t.status!=='done')h+='<span style="color:#37352F;font-weight:600">\\u{1F514} '+fT(t.reminder_time)+'</span>';
       h+='</div></div>';
       h+='<div class="kc-acts">';
@@ -17332,7 +17339,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=125').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=126').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17890,7 +17897,7 @@ app.use('/prep',express.static(path.join(__dirname,'prep'),{etag:true,setHeaders
 app.get('/learning/ml-algorithms',(_,res)=>{
   res.sendFile(path.join(__dirname,'learning','ml-algorithms.html'));
 });
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v173";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v174";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
@@ -17972,6 +17979,7 @@ app.get('/lang/audio/:code/:file',(req,res,next)=>{const code=String(req.params.
 const _allNewsItems=async()=>{const out=[];for(const c of NEWS_CATS){const cc=newsCache[c];if(cc&&cc.items&&cc.items.length)out.push(...cc.items);else{try{out.push(...await curateNewsCategory(c))}catch(e){}}}out.sort((a,b)=>(new Date(b.date||0).getTime()||0)-(new Date(a.date||0).getTime()||0));const seen=new Set();return out.filter(it=>{const k=(it.title||'').toLowerCase().slice(0,50);if(seen.has(k))return false;seen.add(k);return true})};
 const _bulletin=require('./modules/bulletin.js').install(app,{db,auth,mediaDir:MEDIA_DIR,getSetting,isAdmin:req=>{const t=String(req.query.token||req.headers['x-admin-token']||'').trim();if(ADMIN_TOKEN&&t===ADMIN_TOKEN)return true;try{const u=db.prepare('SELECT * FROM users WHERE token=?').get(String(req.headers['x-token']||''));return isAdminUser(u)}catch(e){return false}},callGemini:_callGemini,getNewsItems:_allNewsItems});
 require('./modules/voice.js').install(app,{auth,getSetting,setSetting,mediaDir:MEDIA_DIR,BRO_TOOLS,_broExecTool,_getUserTz,_callGemini,_callGroq,hasGroq:()=>!!groqKey(),hasGemini:()=>!!geminiKey(),getSteps:phone=>_steps&&_steps.getStepsTool?_steps.getStepsTool(phone):null,setStepGoal:(phone,goal)=>{try{db.prepare("INSERT INTO step_profile(user_phone,goal) VALUES(?,?) ON CONFLICT(user_phone) DO UPDATE SET goal=excluded.goal").run(phone,goal);return{ok:true,goal}}catch(e){return{error:e.message}}},getHeadlines:async topic=>{const all=await _allNewsItems();const t=String(topic||'').toLowerCase();const cat=t==='technology'?'tech':t;if(cat&&NEWS_CATS.includes(cat)){const cc=newsCache[cat];if(cc&&cc.items)return cc.items}return all},getBulletin:()=>_bulletin.latest('daily'),speakerSummary:phone=>_speaker&&_speaker.summaryFor?_speaker.summaryFor(phone):null});
+try{require('./modules/credits.js').install(app,{appRoot:__dirname})}catch(e){console.log('[credits] off:',e.message)}
 try{require('./modules/admin.js').install(app,{db,auth,isAdminUser,MEDIA_DIR,DB_PATH,getSetting,setSetting,settingSource,bulletin:_bulletin,android:_android,scriptsDir:path.join(__dirname,'scripts'),appRoot:__dirname,steps:_steps})}catch(e){console.log('[admin] not loaded:',e.message)}
 app.get('*',(_,res)=>res.set('Cache-Control','no-cache, no-store, must-revalidate').type('html').send(HTML));
 const PORT=process.env.PORT||3000;

@@ -258,3 +258,62 @@ html[data-theme="dark"] .st-hero,body[data-theme=aurora] .st-hero{box-shadow:0 1
 .st-chip{font:500 13px var(--b-sans)}.st-chip.on,.st-chip.move{background:var(--b-ink);color:var(--b-bg)}
 .st-streak b{font:600 16px var(--b-sans)}
 .st-empty h3,.st-board h3,.b-card h3{font:400 22px var(--b-serif)}
+
+/* ── v12 card UI: photo hero (hero-steps) with a white ring, live badge, cards below ─────────────────────────────── */
+#stepsRoot .st-top{align-items:flex-end;margin:4px 0 14px}
+#stepsRoot .st-h1{margin:0 0 4px;font:400 40px/1 var(--b-serif);letter-spacing:-.02em;color:var(--b-ink)}
+#stepsRoot .st-top-acts .icon-btn{width:46px;height:46px}
+#stepsRoot .st-hero.cv{border:0;margin:0;aspect-ratio:auto;display:grid;justify-items:center;gap:10px;padding:14px 16px 18px;cursor:default;color:#fff;animation:none}
+#stepsRoot .st-hero.cv:active{transform:none}
+#stepsRoot .st-hero.cv::after{background:linear-gradient(180deg,rgba(14,12,10,.38) 0%,rgba(14,12,10,.52) 45%,rgba(14,12,10,.82) 100%)}
+#stepsRoot .st-hero-top{justify-self:stretch;display:flex;align-items:center;justify-content:space-between;min-height:40px}
+#stepsRoot .st-live{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;background:rgba(20,18,16,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font:600 12px/1 var(--b-sans);letter-spacing:.08em;text-transform:uppercase;color:#fff}
+#stepsRoot .st-live i{width:8px;height:8px;border-radius:50%;background:#FF6B4A;box-shadow:0 0 0 0 rgba(255,107,74,.7);animation:st-livepulse 1.6s ease-out infinite}
+@keyframes st-livepulse{0%{box-shadow:0 0 0 0 rgba(255,107,74,.7)}100%{box-shadow:0 0 0 10px rgba(255,107,74,0)}}
+#stepsRoot .st-live-btn{min-height:40px}
+#stepsRoot .st-hero.cv .st-ring{width:208px;height:208px}
+#stepsRoot .st-hero.cv .st-ring .st-ring-track{stroke:rgba(255,255,255,.24)!important}
+#stepsRoot .st-hero.cv .st-ring .st-ring-prog{stroke:#fff!important;filter:drop-shadow(0 0 8px rgba(255,255,255,.35))}
+#stepsRoot .st-hero.cv .st-count{font:400 58px/1 var(--b-serif);letter-spacing:-.02em;color:#fff!important;font-variant-numeric:tabular-nums}
+#stepsRoot .st-hero.cv .st-count.live{color:#fff}
+#stepsRoot .st-hero.cv .st-of{font:500 14px var(--b-sans);color:rgba(255,255,255,.82)!important}
+#stepsRoot .st-hero.cv .st-metrics{color:rgba(255,255,255,.8)!important;font:500 14px var(--b-sans)}
+#stepsRoot .st-hero.cv .st-metrics b{color:#fff!important;font-weight:700}
+#stepsRoot .st-hero.cv .st-metrics i{background:rgba(255,255,255,.5)}
+#stepsRoot .st-hero.cv .st-done-check{background:#fff;color:#1F1E1C}
+#stepsRoot .st-hero.is-live .st-ring .st-ring-prog{transition:stroke-dashoffset .6s var(--ease)}
+#stepsRoot .st-under{display:grid;justify-items:center;gap:8px;margin:14px 0 4px}
+#stepsRoot .st-under .st-nudge{margin:0}
+#stepsRoot .st-pill{min-height:46px;padding:0 18px 0 14px}
+/* sections below the hero read as cards */
+#stepsRoot .b-card{border:0;border-radius:22px;background:var(--b-card);box-shadow:0 1px 2px rgba(31,30,28,.05),0 12px 26px -18px rgba(31,30,28,.45)}
+html[data-theme="dark"] #stepsRoot .b-card,body[data-theme=aurora] #stepsRoot .b-card{box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 12px 26px -18px rgba(0,0,0,.8)}
+#stepsRoot .st-chips{gap:10px}
+#stepsRoot .st-chip{border:0;border-radius:16px;background:var(--b-card);box-shadow:0 1px 2px rgba(31,30,28,.05),0 8px 20px -16px rgba(31,30,28,.4)}
+#stepsRoot .st-chip.move.on,#stepsRoot .st-chip.on{background:var(--b-ink);color:var(--b-bg)}
+@media (max-width:370px){#stepsRoot .st-hero.cv .st-ring{width:188px;height:188px}#stepsRoot .st-hero.cv .st-count{font-size:50px}#stepsRoot .st-h1{font-size:34px}}
+@media (prefers-reduced-motion:reduce){#stepsRoot .st-live i{animation:none}}
+/* v12 palette: paper / ink / brick only — no greens, golds or teals */
+#stepsRoot .st,#stepsRoot{--st-ok-ink:var(--b-ink);--st-move-ink:var(--b-primary);--st-gold-ink:var(--b-primary);--b-mint:var(--b-primary);--b-mint-soft:var(--b-primary-soft)}
+#stepsRoot .b-avatar{background:#5A5149!important;color:#fff}
+#stepsRoot .st-row.me .b-avatar,#stepsRoot .st-pod.me .b-avatar,#stepsRoot .me .b-avatar{background:var(--b-primary)!important}
+#stepsRoot .st-medal.m1{background:linear-gradient(160deg,#C7765F,#8E2F1E)}
+#stepsRoot .st-medal.m2{background:linear-gradient(160deg,#6B635B,#3A3530)}
+#stepsRoot .st-medal.m3{background:linear-gradient(160deg,#B9A58F,#7D6B58)}
+#stepsRoot .st-chip:not(.on){color:var(--b-ink)!important}
+#stepsRoot .st-chip span{background:var(--b-bg-2)!important;color:var(--b-ink)!important}
+#stepsRoot .st-chip.move span{background:var(--b-primary-soft)!important;color:var(--b-primary)!important}
+#stepsRoot .st-week .day.today{fill:var(--b-primary)}
+html[data-theme="dark"] #stepsRoot .st-chip:not(.on),body[data-theme=aurora] #stepsRoot .st-chip:not(.on){color:var(--b-ink)!important}
+html[data-theme="dark"] #stepsRoot,html[data-theme="dark"] #stepsRoot .st,body[data-theme=aurora] #stepsRoot,body[data-theme=aurora] #stepsRoot .st{--st-move-ink:#F2A48F;--st-gold-ink:#F2A48F}
+#stepsRoot .st{padding-left:0;padding-right:0}
+#stepsRoot .st-live i{background:#E58A74;box-shadow:0 0 0 0 rgba(229,138,116,.7);animation-name:st-livepulse2}
+@keyframes st-livepulse2{0%{box-shadow:0 0 0 0 rgba(229,138,116,.7)}100%{box-shadow:0 0 0 10px rgba(229,138,116,0)}}
+/* the status line reads as a card row, not a tinted pill */
+#stepsRoot .st-under .st-pill{width:100%;justify-content:flex-start;gap:12px;min-height:58px;padding:0 16px;border-radius:18px;background:var(--b-card)!important;color:var(--b-ink)!important;box-shadow:0 1px 2px rgba(31,30,28,.05),0 10px 22px -18px rgba(31,30,28,.45);font:600 15px var(--b-sans)}
+#stepsRoot .st-under .st-pill .st-dot{background:var(--b-primary)!important}
+#stepsRoot .st-under .st-pill>svg:last-child{margin-left:auto;color:var(--b-mute)}
+#stepsRoot .st-scope-note{margin:8px 2px 0;font:500 12.5px var(--b-sans);color:var(--b-mute)}
+#stepsRoot .st-chip span{background:var(--b-primary-soft)!important;color:var(--b-primary)!important}
+#stepsRoot .st-chip{font-size:14px}
+html[data-theme="dark"] #stepsRoot .st-under .st-pill,body[data-theme=aurora] #stepsRoot .st-under .st-pill{box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 22px -18px rgba(0,0,0,.8)}

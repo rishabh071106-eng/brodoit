@@ -1,0 +1,17 @@
+/* Books — card UI v12. The covers are what people like here; this only fixes the grid and matches pills/search to the rest. */
+#app .bk-sum-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#app .bk-sum-card{min-width:0}
+#app .bk-sum-cover{overflow:hidden}
+#app .bk-cats{gap:8px}
+#app .bk-cat{min-height:40px;padding:0 16px;border:0!important;border-radius:999px;background:var(--b-bg-2)!important;color:var(--b-ink-2)!important;font:600 14px var(--b-sans)!important;box-shadow:none!important}
+#app .bk-cat.on{background:var(--b-ink)!important;color:var(--b-bg)!important}
+#app .bk-search{border:0!important;border-radius:18px!important;background:var(--b-card)!important;min-height:52px;box-shadow:0 1px 2px rgba(31,30,28,.05),0 10px 24px -18px rgba(31,30,28,.45)!important}
+@media (min-width:600px){#app .bk-sum-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))!important}}
+#app .bk-seg button{min-height:44px}
+#app .bk-sum-ttl h5{word-break:normal!important;overflow-wrap:normal!important;hyphens:none;font-size:clamp(19px,5.6vw,26px)!important;line-height:1.08!important}
+#app .bk-streak{color:var(--b-ink)!important}#app .bk-streak svg{color:var(--b-primary)}
+#app .bk-sum-ttl{padding-right:0!important}
+#app .bk-sum-ttl h5{font-size:clamp(18px,5.2vw,24px)!important}
+/* The play button sits in its own band under the author, so long titles and names never run under it. */
+#app .bk-sum-ttl{padding-bottom:50px}
+#app .bk-sum-cover .auth{letter-spacing:.06em!important;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
