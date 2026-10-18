@@ -304,7 +304,10 @@
     const names = src.slice(0, 2).map(x => esc(SRC[String(x.name || '').replace(/\.(com|in|co\.uk|org|net)$/,'').replace(/\./g, '')] || x.name)).join(' · ') + (src.length > 2 ? ' +' + (src.length - 2) : '');
     const key = 'desk:' + st.id; const v = voiceBtn(key, 18);
     let h = '<article class="nx-card' + (hasDev(pick(st, 'summary')) ? ' hi' : '') + '" data-i="' + i + '">';
-    if (st.image) h += '<div class="nx-card-img"><img src="' + esc(st.image) + '" alt="" loading="lazy" onerror="this.parentNode.remove()"></div>';
+    // no picture from the source → a photo that fits the section (Rashtrapati Bhavan for India, the BSE for business…)
+    const fb = window.Cards && Cards.photo ? Cards.photo({ india: 'cat-ias', world: 'lang-en', business: 'cat-banking', tech: 'cat-it', science: 'cat-cs', sports: 'hero-steps' }[st.category] || 'hero-news') : '';
+    const img = st.image || fb;
+    if (img) h += '<div class="nx-card-img"><img src="' + esc(img) + '" alt="" loading="lazy" onerror="' + (fb && st.image ? 'if(this.dataset.f){this.parentNode.remove()}else{this.dataset.f=1;this.src=\'' + esc(fb) + '\'}' : 'this.parentNode.remove()') + '"></div>';
     h += '<div class="nx-card-b"><div class="nx-card-k"><span>' + esc(N.lang === 'hi' ? ({ india: 'भारत', world: 'दुनिया', business: 'कारोबार', tech: 'टेक', science: 'विज्ञान' }[st.category] || st.label || '') : (st.label || st.category || '')) + '</span>' + (agoD(st.published_at) ? ' · ' + agoD(st.published_at) : '') + '<em>' + (i + 1) + ' / ' + n + '</em></div>';
     h += '<h3>' + esc(pick(st, 'headline')) + '</h3><p>' + esc(pick(st, 'summary')) + '</p>';
     if (pick(st, 'why')) h += '<p class="nx-why"><b>' + (N.lang === 'hi' ? 'क्यों ज़रूरी' : 'Why it matters') + '</b> ' + esc(pick(st, 'why')) + '</p>';
@@ -324,7 +327,9 @@
     const list = N.desk.stories || [];
     if (!list.length) {
       const live = items();
-      return '<div class="nx-soon">' + (window.mascot ? window.mascot('idle', 44) : '') + '<span>' + (N.lang === 'hi' ? 'Brodoit डेस्क पहली ख़बरें लिख रहा है — कुछ मिनट में यहाँ।' : 'The Brodoit desk is writing its first stories — they land here within minutes.') + '</span></div>' + (live.length ? '<div class="nx-list">' + live.slice(0, 12).map(N.row).join('') + '</div>' : skelRows(4));
+      const soon = window.Cards ? '<div class="nx-cover">' + Cards.cover({ key: 'hero-news', icon: 'newspaper', tone: 'ink', size: 'wide', kick: N.lang === 'hi' ? 'न्यूज़रूम' : 'Newsroom', title: N.lang === 'hi' ? 'आज की ख़बरें लिखी जा रही हैं' : "Writing today's stories", sub: N.lang === 'hi' ? 'कुछ मिनट में यहाँ — तब तक ताज़ा हेडलाइन' : 'They land here within minutes — meanwhile, live headlines', go: 'arrow', onclick: "NewsChannel.setView('live')" }) + '</div>'
+        : '<div class="nx-soon">' + (window.mascot ? window.mascot('idle', 44) : '') + '<span>' + (N.lang === 'hi' ? 'Brodoit डेस्क पहली ख़बरें लिख रहा है — कुछ मिनट में यहाँ।' : 'The Brodoit desk is writing its first stories — they land here within minutes.') + '</span></div>';
+      return soon + (live.length ? '<div class="nx-list">' + live.slice(0, 12).map(N.row).join('') + '</div>' : skelRows(4));
     }
     requestAnimationFrame(N.sizeDeck);
     return '<div class="nx-deck" id="nxDeck">' + list.map((st, i) => N.card(st, i, list.length)).join('') + '</div>';

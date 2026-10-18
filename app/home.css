@@ -1,0 +1,56 @@
+/* Home (bro tab) — card UI v12: greeting row, ink hero cover with Bro and "Tap to talk", compose card, Today rail of photo
+   covers, Ask Bro minis. Markup from app/voice.js (BroVoice.html); pieces from app/cards.css. */
+#broVoiceRoot .bh{padding:2px 0 28px}
+.bh .hb-top{display:flex;align-items:center;gap:12px;margin:2px 0 16px}
+.bh .hb-face{width:40px;height:40px;flex:0 0 auto;display:block}
+.bh .hb-greet{flex:1;min-width:0;margin:0;font:400 30px/1.05 var(--b-serif);letter-spacing:-.01em;color:var(--b-ink);overflow-wrap:anywhere}
+.bh .hb-greet small{display:block;margin-bottom:3px;font:500 13px/1.2 var(--b-sans);letter-spacing:0;color:var(--b-mute)}
+.bh .hb-langs{flex:0 0 auto;display:flex;padding:3px;border-radius:999px;background:var(--b-bg-2)}
+.bh .hb-langs button{min-width:44px;height:42px;padding:0 10px;border:0;border-radius:999px;background:transparent;cursor:pointer;font:600 13px var(--b-sans);color:var(--b-mute);transition:background .2s,color .2s}
+.bh .hb-langs button.on{background:var(--b-card);color:var(--b-ink);box-shadow:0 1px 3px rgba(31,30,28,.14)}
+
+/* hero */
+.bh .hb-hero{aspect-ratio:auto;min-height:312px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;padding:14px 16px 18px;cursor:default}
+.bh .hb-hero:active{transform:none}
+.bh .hb-hero .cv-art svg,.bh .hb-hero .cv-art img{position:absolute;right:-22px;top:58px;width:188px;height:auto;color:inherit;transform:rotate(-7deg);filter:drop-shadow(0 18px 30px rgba(0,0,0,.45));transition:transform .6s var(--ease,cubic-bezier(.16,1,.3,1))}
+.bh .hb-hero.live .cv-art svg,.bh .hb-hero.live .cv-art img{animation:hb-bob 1.6s ease-in-out infinite}
+@keyframes hb-bob{0%,100%{transform:rotate(-7deg) translateY(0)}50%{transform:rotate(-4deg) translateY(-6px)}}
+.bh .hb-hero::after{background:linear-gradient(180deg,rgba(14,12,10,0) 25%,rgba(14,12,10,.55) 70%,rgba(14,12,10,.85) 100%)}
+.bh .hb-modes{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:6px}
+.bh .hb-mode{min-height:40px;padding:0 13px;border-radius:999px;font-size:13px;gap:6px}
+.bh .hb-mode svg{width:16px;height:16px}
+.bh .hb-hero-b{position:relative;z-index:1;display:flex;flex-direction:column;gap:6px;max-width:74%}
+.bh .hb-hero-b .cv-title{font-size:36px;line-height:1}
+.bh .hb-hero-b .cv-sub{-webkit-line-clamp:3;font-size:14px}
+.bh .hb-talk{align-self:flex-start;margin-top:10px;min-height:54px;padding:0 24px;font-size:16px;position:relative}
+.bh .hb-hero.live .hb-talk::before{content:"";position:absolute;inset:-5px;border-radius:20px;border:2px solid rgba(255,255,255,.55);animation:hb-ring 1.4s ease-out infinite}
+@keyframes hb-ring{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(1.12)}}
+
+/* compose */
+.bh .hb-compose{display:flex;align-items:center;gap:10px;margin:12px 0 0}
+.bh .hb-compose input{flex:1;min-width:0;height:54px;padding:0 18px;border:0;border-radius:18px;background:var(--b-card);color:var(--b-ink);font:500 16px var(--b-sans);box-shadow:0 1px 2px rgba(31,30,28,.05),0 10px 24px -18px rgba(31,30,28,.45);outline:none}
+.bh .hb-compose input::placeholder{color:var(--b-mute)}
+.bh .hb-compose input:focus{box-shadow:0 0 0 2px var(--b-ink),0 10px 24px -18px rgba(31,30,28,.45)}
+.bh .hb-send{flex:0 0 auto;width:54px;height:54px;border:0;border-radius:18px;display:grid;place-items:center;cursor:pointer;background:var(--b-ink);color:var(--b-bg);box-shadow:0 10px 22px -14px rgba(31,30,28,.75);transition:transform .15s}
+.bh .hb-send:active{transform:scale(.94)}
+.bh .hb-send svg{width:20px;height:20px}
+
+/* Today rail */
+.bh .hb-rail>.cv{flex-basis:68%}
+.bh .hb-tc .cv-title{font-size:23px}
+.bh .hb-bar{display:block;height:6px;margin-top:10px;border-radius:999px;background:rgba(255,255,255,.28);overflow:hidden}
+.bh .hb-bar i{display:block;height:100%;border-radius:inherit;background:#fff;transition:width .8s var(--ease,cubic-bezier(.16,1,.3,1))}
+.bh .hb-bk{position:absolute;z-index:-1;left:50%;top:16px;width:40%;aspect-ratio:2/3;transform:translateX(-50%) rotate(-3deg);border-radius:6px;overflow:hidden;box-shadow:0 18px 30px -12px rgba(0,0,0,.7)}
+.bh .hb-bk img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Ask Bro + language course pills */
+.bh .hb-ask .mini{min-height:118px}
+.bh .hb-courses{margin-top:12px}
+.bh .hb-thread{margin-top:18px;display:flex;flex-direction:column;gap:8px}
+.bh .hb-thread .bv-msg{display:flex}.bh .hb-thread .bv-msg.me,.bh .hb-thread .bv-msg.user{justify-content:flex-end}
+.bh .hb-thread .bv-bub{max-width:82%;padding:11px 14px;border-radius:18px;background:var(--b-card);color:var(--b-ink);font:500 15px/1.45 var(--b-sans);box-shadow:0 1px 2px rgba(31,30,28,.05)}
+.bh .hb-thread .bv-msg.me .bv-bub,.bh .hb-thread .bv-msg.user .bv-bub{background:var(--b-ink);color:var(--b-bg)}
+
+@media (max-width:370px){.bh .hb-greet{font-size:26px}.bh .hb-hero-b .cv-title{font-size:31px}.bh .hb-hero .cv-art svg,.bh .hb-hero .cv-art img{width:160px;right:-26px}.bh .hb-mode{padding:0 11px}}
+.bh .hb-hero-b{max-width:64%}
+html[data-theme="dark"] .bh .hb-hero,body[data-theme=aurora] .bh .hb-hero{box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 14px 30px -18px rgba(0,0,0,.9)}

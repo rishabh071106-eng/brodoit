@@ -156,14 +156,17 @@
   // ───────────────────────── derived state ─────────────────────────
   const STATES = ['bg', 'enable', 'ios', 'play', 'web', 'walk'];
   const guessState = () => isTWA() ? 'enable' : isIOS() ? 'ios' : isAndroid() ? 'play' : 'web';
-  T.stateNow = () => T.walk.on ? 'walk' : (T.sum && STATES.indexOf(T.sum.state) >= 0 && T.sum.state !== 'walk') ? T.sum.state : guessState();
+  T.stateNow = () => T.walk.on && T.walk.mode === 'walk' ? 'walk' : (T.sum && STATES.indexOf(T.sum.state) >= 0 && T.sum.state !== 'walk') ? T.sum.state : guessState();
   T.goal = () => (T.sum && Number(T.sum.goal)) || 8000;
   T.serverCounted = () => (T.sum && T.sum.today && Number(T.sum.today.counted)) || 0;
   T.pending = () => Math.max(0, T.walk.steps - T.walk.sent);
   // Ring count. While walking: never below server counted, never below (count at walk start + steps this walk) → monotonic, no
   // snap-back on each flush even when the server's counted() is owned by a higher-trust sample. After the walk: server truth, plus
   // deltas still queued for this user unless we already know the server ignores device deltas today (absorbs === false).
-  T.counted = () => { const s = T.serverCounted(); if (T.walk.absorbs === false) return s; if (T.walk.on) return Math.max(s, (Number(T.walk.base) || 0) + T.walk.steps); return s + queuedAdd(); };
+  // Live: while the motion sensor counts (auto-live or a walk) the ring shows max(server, count at start + live steps), so a
+  // background sync from the Android app never double counts. The highest number shown today is kept as a floor (per account,
+  // per day) so the ring never snaps back after the app closes and before the next sync catches up.
+  T.counted = () => { const s = T.serverCounted(), f = floorGet(); if (T.walk.on) return Math.max(s, f, (Number(T.walk.base) || 0) + T.walk.steps); if (T.walk.absorbs === false) return Math.max(s, f); return Math.max(s + queuedAdd(), f); };
   T.pct = () => clamp(T.counted() / T.goal(), 0, 1);
   const metrics = n => ({ km: (n * 0.00076).toFixed(n * 0.00076 >= 10 ? 0 : 1), kcal: Math.round(n * 0.04), min: Math.round(n / 100) });
   const ago = iso => { if (!iso) return ''; const d = (Date.now() - new Date(iso).getTime()) / 60000; if (!(d >= 0)) return ''; if (d < 2) return isHi() ? 'अभी' : 'just now'; if (d < 60) return Math.round(d) + (isHi() ? ' मिनट पहले' : ' min ago'); if (d < 36 * 60) return Math.round(d / 60) + (isHi() ? ' घं पहले' : ' h ago'); return Math.round(d / 1440) + (isHi() ? ' दिन पहले' : ' d ago'); };
@@ -204,18 +207,20 @@
   const skel = (cls, w, h) => '<span class="b-skel sk ' + (cls || '') + '" style="' + (w ? 'width:' + w + ';' : '') + (h ? 'height:' + h : '') + '"></span>';
   function hero() {
     const has = !!T.sum; const n = T.counted(), g = T.goal(), pct = T.pct(), done = has && n >= g; const m = metrics(n);
-    let h = '<section class="st-hero">';
-    h += '<div class="st-ring' + (done ? ' done' : '') + '">' + T.ringSVG(has ? pct : 0, 200, { stroke: 16, from: T._ringPct }) + (done ? '<span class="st-done-check">' + ic('check', 16) + '</span>' : '') + '<div class="st-ring-in">';
+    const photo = window.Cards && Cards.photo ? Cards.photo('hero-steps') : '';
+    let h = '<section class="st-hero cv tone-ink' + (done ? ' is-done' : '') + (T.walk.on ? ' is-live' : '') + '">' + (photo ? '<img class="cv-img" src="' + _esc(photo) + '" alt="" decoding="async" onerror="this.remove()">' : '');
+    h += '<div class="st-hero-top">' + (T.walk.on ? '<span class="st-live" id="stLive"><i></i>' + (isHi() ? 'लाइव गिनती' : 'Counting live') + '</span>' : liveAsk() ? '<button type="button" class="btn glass sm st-live-btn" onclick="StepsTab.liveStart(true)">' + ic('footprints', 16) + (isHi() ? 'लाइव गिनो' : 'Count live') + '</button>' : '<span></span>') + '</div>';
+    h += '<div class="st-ring' + (done ? ' done' : '') + '">' + T.ringSVG(has ? pct : 0, 200, { stroke: 12, from: T._ringPct }) + (done ? '<span class="st-done-check">' + ic('check', 16) + '</span>' : '') + '<div class="st-ring-in">';
     const failed = !has && T.loaded && !T.loading;
     if (has || failed) h += '<div class="st-count' + (T.walk.on ? ' live' : '') + '" id="stCount">' + fmt(n) + '</div><div class="st-of">' + _esc(t('of', { g: fmt(g) })) + '</div>';
     else h += skel('st-sk-count') + skel('st-sk-of');
     h += '</div></div>';
     if (has || failed) h += '<div class="st-metrics" id="stMetrics"><span><b>' + m.km + '</b> ' + _esc(t('km')) + '</span><i></i><span><b>' + fmt(m.kcal) + '</b> ' + _esc(t('kcal')) + '</span><i></i><span><b>' + fmt(m.min) + '</b> ' + _esc(t('min')) + '</span></div>';
     else h += '<div class="st-metrics">' + skel('', '180px', '12px') + '</div>';
-    h += pill();
+    h += '</section><div class="st-under">' + pill();
     if (has) h += '<p class="st-nudge" id="stNudge">' + _esc(nudge(n, g)) + '</p>';
     else if (failed) h += '<p class="st-nudge">' + _esc(t('noData')) + '</p><button class="b-chip" onclick="StepsTab.load(true)">' + ic('refresh-cw', 14) + (isHi() ? 'फिर कोशिश' : 'Retry') + '</button>';
-    h += '</section>';
+    h += '</div>';
     return h;
   }
   const nudge = (n, g) => { const left = g - n; return n >= g ? t('goalDone') : n === 0 ? t('start') : left <= 1000 ? t('almost', { n: fmt(left) }) : t('left', { n: fmt(left) }); };
@@ -235,7 +240,7 @@
     const td = (T.sum && T.sum.today) || {}; _toast((isHi() ? 'स्रोत: ' : 'Source: ') + ((SRC[td.source] || [td.source || 'device'])[0]) + (td.synced_at ? ' · ' + ago(td.synced_at) : ''));
   };
   function walkCard() {
-    if (!T.walk.on) return '';
+    if (!T.walk.on || T.walk.mode !== 'walk') return '';
     const n = T.walk.steps, m = metrics(n);
     return '<section class="b-card st-walk" id="stWalk"><div class="st-walk-head"><span class="b-eyebrow"><span class="st-dot" style="width:8px;height:8px;border-radius:50%;background:var(--move);display:inline-block"></span>' + _esc(t('walking')) + '</span><button class="b-btn ghost sm" onclick="StepsTab.walkStop()">' + ic('x', 16) + _esc(t('stop')) + '</button></div>' +
       '<div class="st-walk-nums"><div><b id="stWalkSteps">' + fmt(n) + '</b><small>' + (isHi() ? 'कदम' : 'steps') + '</small></div><div><b id="stWalkTime">' + walkTime() + '</b><small>' + (isHi() ? 'समय' : 'time') + '</small></div><div><b id="stWalkKm">' + m.km + '</b><small>' + _esc(t('km')) + '</small></div></div>' +
@@ -330,7 +335,7 @@
     return h + '</section>';
   }
   function chips() {
-    const on = T.walk.on;
+    const on = T.walk.on && T.walk.mode === 'walk';
     return '<nav class="st-chips" aria-label="Actions">' +
       '<button class="st-chip move' + (on ? ' on' : '') + '" onclick="StepsTab.' + (on ? 'walkStop' : 'walkStart') + '()"><span>' + ic('walk', 18) + '</span>' + _esc(on ? t('stop') : t('walkLearn')) + '</button>' +
       (T.stateNow() === 'bg' ? '<button class="st-chip on" onclick="StepsTab.pillTap()"><span>' + ic('zap', 18) + '</span>' + (isHi() ? 'ऑटो ✓' : 'Auto ✓') + '</button>' : '<button class="st-chip" onclick="StepsTab.pillTap()"><span>' + ic('smartphone', 18) + '</span>' + (isHi() ? 'ऑटो गिनती' : 'Auto-count') + '</button>') +
@@ -339,7 +344,7 @@
   }
   T.html = function () {
     let h = '<div class="st' + (isHi() ? ' hi' : '') + '" id="stRootIn">';
-    h += '<header class="st-top"><span class="b-eyebrow"><i></i>' + (isHi() ? 'मूव' : 'Move') + ' · ' + _esc(dateLabel()) + '</span><div class="st-top-acts"><button class="icon-btn" onclick="StepsTab.openSheet(\'invite\')" aria-label="Invite">' + ic('user-plus', 20) + '</button></div></header>';
+    h += '<header class="st-top"><div><h1 class="st-h1">' + (isHi() ? 'कदम' : 'Steps') + '</h1><span class="b-eyebrow"><i></i>' + (isHi() ? 'मूव' : 'Move') + ' · ' + _esc(dateLabel()) + '</span></div><div class="st-top-acts"><button class="icon-btn" onclick="StepsTab.openSheet(\'invite\')" aria-label="Invite">' + ic('user-plus', 20) + '</button></div></header>';
     h += hero() + walkCard() + podium() + streak() + week() + board() + chips();
     return h + '</div>';
   };
@@ -707,7 +712,11 @@
   function onVis() { if (!W.on) return; if (document.visibilityState === 'visible') wakeLock(); else T.walkFlush(true); }
   function onHide() { if (W.on) T.walkFlush(true); }
   function tickWalk() {
-    if (!W.on) return; const n = T.counted(); let el;
+    if (!W.on) return;
+    const sv = T.serverCounted(); if (sv > (Number(W.base) || 0) + W.steps) W.base = sv - W.steps; // a background sync arrived: count on from it
+    const n = T.counted(); let el; if (n > 0) floorSet(n);
+    if ((el = document.querySelector('#hbSteps .cv-title'))) el.textContent = fmt(n);
+    if ((el = document.querySelector('#hbSteps .hb-bar i'))) el.style.width = (T.pct() * 100).toFixed(1) + '%';
     if ((el = document.getElementById('stWalkSteps'))) el.textContent = fmt(W.steps);
     if ((el = document.getElementById('stWalkTime'))) el.textContent = walkTime();
     if ((el = document.getElementById('stWalkKm'))) el.textContent = metrics(W.steps).km;
@@ -716,16 +725,44 @@
     if ((el = document.getElementById('stMetrics'))) { const m = metrics(n); const b = el.querySelectorAll('b'); if (b.length === 3) { b[0].textContent = m.km; b[1].textContent = fmt(m.kcal); b[2].textContent = fmt(m.min); } }
     if ((el = document.getElementById('stNudge'))) { const txt = nudge(n, T.goal()); if (el.textContent !== txt) { el.textContent = txt; if (n >= T.goal() && !W._celebrated) { W._celebrated = true; hap('success'); T.rerender(); } } }
   }
+  // ── Live counting: whenever Brodoit is open on an Android phone the motion sensor counts quietly (no tap, no permission) and the
+  // number ticks up on Steps and on Home; iPhone needs one "Count live" tap (iOS asks for motion access). Stops when the app is
+  // hidden (the Android app keeps counting in the background), restarts when it comes back.
+  const liveCan = () => 'DeviceMotionEvent' in window && typeof DeviceMotionEvent.requestPermission !== 'function' && /Android/i.test(navigator.userAgent || '') && !T.liveOff;
+  const liveAsk = () => !T.walk.on && 'DeviceMotionEvent' in window && typeof DeviceMotionEvent.requestPermission === 'function';
+  const FKEY = 'bd_live_floor';
+  function floorGet() { const o = ownerId(); if (!o) return 0; try { const f = (JSON.parse(localStorage.getItem(FKEY) || '{}') || {})[o]; return f && f.date === dayKey(new Date()) ? Number(f.n) || 0 : 0; } catch (e) { return 0; } }
+  function floorSet(n) { const o = ownerId(); if (!o || !(n > 0)) return; try { const all = JSON.parse(localStorage.getItem(FKEY) || '{}') || {}; const d = dayKey(new Date()); const f = all[o]; if (f && f.date === d && f.n >= n) return; all[o] = { date: d, n: Math.round(n) }; localStorage.setItem(FKEY, JSON.stringify(all)); } catch (e) {} }
+  function begin(mode) {
+    const td = (T.sum && T.sum.today) || {};
+    Object.assign(W, { on: true, mode, steps: 0, sent: 0, base: Math.max(T.serverCounted(), floorGet()), absorbs: Number(td.trust) >= 2 ? false : (W.absorbs == null ? null : W.absorbs), started: Date.now(), lastFlush: Date.now(), _lp: 0, _sm: 0, _lastStep: 0, _above: false, _init: false, _celebrated: false });
+    window.addEventListener('devicemotion', onMotion); window.addEventListener('pagehide', onHide);
+    W.timer = setInterval(tickWalk, 1000); W.flushTimer = setInterval(() => T.walkFlush(false), 60000);
+  }
+  function end() {
+    window.removeEventListener('devicemotion', onMotion); window.removeEventListener('pagehide', onHide); document.removeEventListener('visibilitychange', onVis);
+    clearInterval(W.timer); clearInterval(W.flushTimer); W.timer = W.flushTimer = null;
+  }
+  T.liveStart = async function (tap) {
+    if (W.on || !ownerId() || !('DeviceMotionEvent' in window)) return false;
+    if (typeof DeviceMotionEvent.requestPermission === 'function') { if (!tap) return false; try { if (await DeviceMotionEvent.requestPermission() !== 'granted') { _toast(isHi() ? 'मोशन की अनुमति नहीं मिली' : 'Motion access was denied', 'err'); return false; } } catch (e) { return false; } }
+    begin('auto'); if (tap) hap('light'); T.rerender(); return true;
+  };
+  T.liveStop = function () { if (!W.on || W.mode !== 'auto') return; floorSet(T.counted()); const p = T.walkFlush(true); end(); W.on = false; W.mode = null; return p; };
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') { if (W.on && W.mode === 'auto') T.liveStop(); }
+    else if (!W.on && liveCan() && T.sum) T.liveStart(false).then(ok => { if (ok) T.rerender(); });
+  });
   T.walkStart = async function () {
-    if (W.on) return;
+    if (W.on && W.mode === 'walk') return;
+    if (W.on && W.mode === 'auto') { floorSet(T.counted()); await T.walkFlush(true); end(); W.on = false; }
     if (!('DeviceMotionEvent' in window)) { hap('error'); _toast(isHi() ? 'यह ब्राउज़र कदम नहीं गिन सकता — ऐप लें या लॉग करें' : 'This browser can’t count steps — get the app or log steps', 'err'); return; }
     try { if (typeof DeviceMotionEvent.requestPermission === 'function') { const p = await DeviceMotionEvent.requestPermission(); if (p !== 'granted') { hap('error'); _toast(isHi() ? 'मोशन की अनुमति नहीं मिली' : 'Motion access was denied', 'err'); return; } } } catch (e) { /* permission prompt needs a gesture; continue — events may still arrive */ }
     hap('medium');
     // absorbs: a trust≥2 sample already owns today → the server's counted() will ignore our deltas; say so up front instead of climbing and snapping back
     const td = (T.sum && T.sum.today) || {};
-    Object.assign(W, { on: true, steps: 0, sent: 0, base: T.serverCounted(), absorbs: Number(td.trust) >= 2 ? false : null, started: Date.now(), lastFlush: Date.now(), _lp: 0, _sm: 0, _lastStep: 0, _above: false, _init: false, _celebrated: false });
-    window.addEventListener('devicemotion', onMotion); document.addEventListener('visibilitychange', onVis); window.addEventListener('pagehide', onHide);
-    wakeLock(); W.timer = setInterval(tickWalk, 1000); W.flushTimer = setInterval(() => T.walkFlush(false), 60000);
+    begin('walk'); W.base = Math.max(T.serverCounted(), floorGet()); W.absorbs = Number(td.trust) >= 2 ? false : null;
+    document.addEventListener('visibilitychange', onVis); wakeLock();
     T.rerender(); const el = document.getElementById('stWalk'); if (el) el.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'center' });
   };
   // lastFlush gates the 60-s timer (reset at walk start); lastPost is the last real POST (the server's ≤1 flush/60 s rule, shared with the retry queue)
@@ -772,13 +809,13 @@
     absorbFrom(r); if (r.today) { T.sum = Object.assign({}, T.sum || {}, r); } T.rerender();
   }
   T.walkStop = async function () {
-    if (!W.on) return; hap('success'); const n = W.steps;
-    window.removeEventListener('devicemotion', onMotion); document.removeEventListener('visibilitychange', onVis); window.removeEventListener('pagehide', onHide);
-    clearInterval(W.timer); clearInterval(W.flushTimer); W.timer = W.flushTimer = null;
+    if (!W.on || W.mode !== 'walk') return; hap('success'); const n = W.steps;
+    floorSet(T.counted()); end();
     try { if (W.lock) { await W.lock.release(); } } catch (e) {} W.lock = null;
-    const p = T.walkFlush(true); W.on = false; T.rerender();
-    _toast(n ? t('walkSaved', { n: fmt(n) }) + (W.absorbs === false ? ' — ' + t('walkNoCount', { src: srcName() }) : '') : t('walkStopped'));
+    const p = T.walkFlush(true); W.on = false; W.mode = null; T.rerender();
+    _toast(n ? t('walkSaved', { n: fmt(n) }) : t('walkStopped'));
     await p; W.sent = W.steps = 0; T.loadBoard(true).then(() => T.rerender());
+    if (liveCan() && document.visibilityState !== 'hidden') T.liveStart(false);
   };
 
   // ───────────────────────── loading, mount, rerender ─────────────────────────
@@ -815,6 +852,7 @@
     if (T.loading) return; T.loading = true; checkMascot();
     await Promise.all([T.loadSummary(), T.loadBoard(force), T.loadFriends()]);
     T.loading = false; T.loaded = true; T.lastLoad = Date.now(); T.rerender();
+    if (liveCan() && !W.on && T.sum) T.liveStart(false);
     redeemJoinFallback(); flushStored();
     claimFromURL().then(ok => { if (ok) { hap('success'); _toast(isHi() ? 'स्टेप काउंट चालू — अब अपने आप सिंक होगा' : 'Step counting is on — syncing automatically'); T.loadSummary().then(() => T.rerender()); } });
     // learn whether city/india boards are open (cohort ≥ 20) so the chips can say so
@@ -829,6 +867,9 @@
     if (!T.loaded && !T.loading) T.load(); else if (T.lastLoad && Date.now() - T.lastLoad > 60000) T.load();
   };
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && T.loaded && document.getElementById('stepsRoot') && Date.now() - (T.lastLoad || 0) > 60000 && !W.on) T.load(); });
+  // live counting runs app-wide, not only on the Steps tab: start it once the user is signed in and today's summary is known
+  T.liveBoot = function () { if (T._liveBooted || !liveCan() || !ownerId()) return; T._liveBooted = true; (T.sum ? Promise.resolve() : T.loadSummary()).then(() => { if (T.sum && !W.on) T.liveStart(false); }).catch(() => {}); };
+  setTimeout(() => T.liveBoot(), 2500);
   // expose a few internals for the test harness / integrator
-  T._internals = { onMotion, metrics, guessState, isTWA, isHi, STR, flushStored, queuedAdd, ownerId, weekDays, jsStr, dayKey, claimFromURL };
+  T._internals = { onMotion, liveCan, floorGet, floorSet, metrics, guessState, isTWA, isHi, STR, flushStored, queuedAdd, ownerId, weekDays, jsStr, dayKey, claimFromURL };
 })();
