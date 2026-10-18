@@ -63,6 +63,16 @@ export const art = {
       <text x="40" y="110" font-family="monospace" font-weight="700" font-size="34" fill="#fff" opacity=".8">{</text><text x="340" y="200" font-family="monospace" font-weight="700" font-size="34" fill="#fff" opacity=".8">}</text>`,
       lin(g, ['#1B0B3A', '#5B2BD9', '#C04BD9']));
   },
+  mba() {
+    const g = uid('mb');
+    return svg(`<rect width="400" height="300" fill="url(#${g})"/>${sun(320, 70, 30, '#FFE7A3')}
+      <g fill="#0B1220" opacity=".55">${[[20,150,40,150],[66,120,34,180],[104,170,30,130],[300,140,36,160],[340,110,44,190]].map(([x,y,w,h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`).join('')}</g>
+      <path d="M40 250 L110 215 L170 228 L240 170 L300 182 L370 120" stroke="#FFD27A" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="370" cy="120" r="8" fill="#fff"/>
+      <g transform="translate(200 120)"><path d="M-80 0 L0 -36 L80 0 L0 36Z" fill="#111827"/><path d="M-46 16 v34 q46 26 92 0 v-34 L0 36Z" fill="#1F2937"/>
+      <path d="M62 8 v46" stroke="#FFC24B" stroke-width="4"/><circle cx="62" cy="58" r="7" fill="#FFC24B"/></g>`,
+      lin(g, ['#0F172A', '#334155', '#C08A2E']));
+  },
   me() {
     const g = uid('m');
     return svg(`<rect width="400" height="300" fill="url(#${g})"/>
@@ -210,5 +220,7 @@ export const art = {
   },
 };
 
-export const categoryArt = { defence: art.defence, civil: art.civil, banking: art.banking, it: art.it };
+export { svg, lin, person, sun, uid };
+
+export const categoryArt = { defence: art.defence, civil: art.civil, banking: art.banking, it: art.it, mba: art.mba };
 export const examArt = id => ({ ssb: art.ssb, nda: art.defence, cds: art.defence, afcat: art.defence, 'upsc-cse': art.civil, 'gate-cse': art.it }[id]);

@@ -179,6 +179,39 @@
         }
       ],
       "short": "IT jobs"
+    },
+    {
+      "id": "mba",
+      "name": "MBA",
+      "short": "MBA",
+      "icon": "🎓",
+      "blurb": "GMAT prep plus a complete 2-year MBA — core, electives, great thinkers and cases.",
+      "exams": [
+        {
+          "id": "gmat",
+          "name": "GMAT Focus",
+          "by": "GMAC",
+          "short": "Quant · Verbal · Data Insights · admissions"
+        },
+        {
+          "id": "mba-core",
+          "name": "MBA Year 1 — Core",
+          "by": "Brodoit MBA",
+          "short": "Accounting · Finance · Marketing · Ops · Strategy"
+        },
+        {
+          "id": "mba-electives",
+          "name": "MBA Year 2 — Electives",
+          "by": "Brodoit MBA",
+          "short": "Valuation · VC · Startups · Product · Consulting"
+        },
+        {
+          "id": "mba-thinkers",
+          "name": "Thinkers & Case Studies",
+          "by": "Brodoit MBA",
+          "short": "Drucker to Buffett · Jio, Amul, Netflix"
+        }
+      ]
     }
   ]
 }

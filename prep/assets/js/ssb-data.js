@@ -189,3 +189,40 @@ export const SRT_ITEMS = [
 ];
 
 export const PPDT_PICS = ['ppdt1', 'ppdt2', 'ppdt3'];
+
+// Entry-specific SSB notes, shown when the journey is opened from an exam (ssb.html?for=nda).
+export const ENTRIES = {
+  nda: {
+    name: 'NDA', board: 'Army · Navy · Air Force boards', cpss: true,
+    headline: 'Class 12 to<br>Khadakwasla.',
+    bg: 'var(--g-defence)',
+    facts: [['Merit', 'Written 900 + SSB 900'], ['Age', '16½ – 19½ years'], ['Board', 'By 1st service choice'], ['Academy', 'NDA, Khadakwasla']],
+    notes: [
+      'Your interview centres on school life, family, Class 11–12, sports and hobbies — the board expects maturity for your age, not a graduate.',
+      'Air Force as first choice? You also take the CPSS at an Air Force Selection Board.',
+      'Final merit adds your written and SSB marks; recommended candidates still need medical fitness.',
+    ],
+  },
+  cds: {
+    name: 'CDS', board: 'IMA · INA · AFA · OTA', cpss: true,
+    headline: 'Graduate to<br>officer.',
+    bg: 'linear-gradient(140deg,#0F2A3D 0%,#1F5A7A 55%,#9BD3C6 100%)',
+    facts: [['IMA / INA / AFA merit', 'Written 300 + SSB 300'], ['OTA merit', 'Written 200 + SSB 200'], ['Age', '19–25 (varies by academy)'], ['Who', 'Graduates / final-year']],
+    notes: [
+      'The interview digs into college, projects, internships or job — be ready to explain choices and gaps.',
+      'AFA candidates go to an Air Force Selection Board and take the CPSS for flying.',
+      'OTA candidates skip the maths paper, and their SSB is marked out of 200.',
+    ],
+  },
+  afcat: {
+    name: 'AFCAT', board: 'Air Force Selection Boards', cpss: true,
+    headline: 'AFCAT to<br>Dundigal.',
+    bg: 'linear-gradient(140deg,#0B1D3A 0%,#2563EB 55%,#93C5FD 100%)',
+    facts: [['Boards', 'Dehradun · Mysuru · Gandhinagar · Varanasi · Guwahati'], ['Flying age', '20–24 years'], ['Ground duty age', '20–26 years'], ['Academy', 'AFA, Dundigal']],
+    notes: [
+      'Stage I is screening (OIR + PPDT). Stage II is psychology, GTO and interview — same tasks as other SSBs.',
+      'Flying branch candidates take the CPSS. Candidates who have failed CPSS/PABT before can\'t be considered for flying.',
+      'Merit combines your AFCAT score and AFSB marks.',
+    ],
+  },
+};

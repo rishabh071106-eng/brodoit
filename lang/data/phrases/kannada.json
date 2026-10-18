@@ -1,0 +1,277 @@
+{
+  "id": "kannada",
+  "name": "Kannada",
+  "native": "ಕನ್ನಡ",
+  "category": "local",
+  "bcp47": "kn-IN",
+  "script": "Kannada script",
+  "region": "Karnataka, in South India, including Bengaluru and Mysuru",
+  "speakers": "≈ 60 million",
+  "about": "Kannada is a classical Dravidian language with a written literature going back more than a thousand years, and it has won more Jnanpith awards than almost any other Indian language. Its rounded script is a close cousin of the Telugu script.",
+  "pronunciation": [
+    "Most Kannada words end in a vowel, so say every final u and e clearly, as in hesaru and naale.",
+    "Long and short vowels change meaning, so hold the long aa in naanu and the long oo in mooru.",
+    "Retroflex sounds like the d in edakke and the l in elu are made with the tongue curled back.",
+    "Spoken Kannada often shortens written endings, so chennaagiddene becomes chennaagiddini in everyday talk."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "Namaskaara! Let's begin Kannada with the friendly words you'll hear across Bengaluru, from auto drivers to shopkeepers.",
+      "tip": "Kannada uses neevu as the respectful you and for groups, and neenu only with close friends or children. Polite verbs end in i, like kodi and maadi.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "ನಮಸ್ಕಾರ",
+          "roman": "namaskaara",
+          "note": "Namaskaara is the respectful hello, said with folded hands. It works at any time of day and with anyone."
+        },
+        {
+          "key": "how-are-you",
+          "native": "ಹೇಗಿದ್ದೀರಾ?",
+          "roman": "hegiddeera?",
+          "note": "Hegiddeera is the polite way to ask how are you. People also often ask chennaagiddeera, meaning are you well."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "ನಾನು ಚೆನ್ನಾಗಿದ್ದೇನೆ.",
+          "roman": "naanu chennaagiddene",
+          "note": "Naanu chennaagiddene means I am fine. In everyday speech you will hear the shorter chennaagiddini."
+        },
+        {
+          "key": "thank-you",
+          "native": "ಧನ್ಯವಾದಗಳು",
+          "roman": "dhanyavaadagalu",
+          "note": "Dhanyavaadagalu is the full, respectful thank you. In casual city talk, many people simply say thanks in English."
+        },
+        {
+          "key": "sorry",
+          "native": "ಕ್ಷಮಿಸಿ",
+          "roman": "kshamisi",
+          "note": "Kshamisi means please forgive me, and works for both sorry and excuse me. In casual speech many people also just say sorry."
+        },
+        {
+          "key": "goodbye",
+          "native": "ಹೋಗಿ ಬರ್ತೀನಿ",
+          "roman": "hogi bartini",
+          "note": "Hogi bartini literally means I'll go and come back, the Kannada way of saying goodbye. The host replies hogi banni, go and come back."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Let's introduce ourselves in Kannada. A little effort goes a long way, and people in Karnataka love hearing visitors try.",
+      "tip": "Kannada is a verb final language, so the verb comes at the end, and words like is are often dropped, as in nanna hesaru Priya.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "ನನ್ನ ಹೆಸರು ಪ್ರಿಯಾ.",
+          "roman": "nanna hesaru Priya",
+          "note": "Nanna hesaru Priya means my name is Priya. Hesaru means name, and you just add your own name at the end."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "ನಿಮ್ಮ ಹೆಸರೇನು?",
+          "roman": "nimma hesarenu?",
+          "note": "Nimma hesarenu means what is your name. Nimma is the respectful your, so it is safe with anyone."
+        },
+        {
+          "key": "where-from",
+          "native": "ನೀವು ಎಲ್ಲಿಯವರು?",
+          "roman": "neevu elliyavaru?",
+          "note": "Neevu elliyavaru means where are you from, literally you are of which place. It is a very common question in Karnataka."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "ನಾನು ಭಾರತದಿಂದ ಬಂದಿದ್ದೇನೆ.",
+          "roman": "naanu Bhaaratadinda bandiddene",
+          "note": "This means I have come from India. Bhaarata is India. A woman can also say naanu Bhaaratadavalu, and a man naanu Bhaaratadavanu."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "ನಿಮ್ಮನ್ನು ಭೇಟಿಯಾಗಿ ಸಂತೋಷವಾಯಿತು.",
+          "roman": "nimmannu bhetiyaagi santoshavaayitu",
+          "note": "This means I am happy to have met you. Santosha means happiness, and it is a warm, polite thing to say."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "ನನಗೆ ಸ್ವಲ್ಪ ಕನ್ನಡ ಬರುತ್ತೆ.",
+          "roman": "nanage swalpa Kannada barutte",
+          "note": "This is how Kannada says I speak a little Kannada, literally a little Kannada comes to me. Swalpa, meaning a little, is a word you'll hear everywhere."
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Let's count in Kannada and talk about time. These are Dravidian numbers, so they will sound quite new compared to Hindi.",
+      "tip": "Kannada counting is very regular after ten, so learning one to ten well unlocks the rest. Shops often quote prices in Kannada numbers.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "ಒಂದು, ಎರಡು, ಮೂರು, ನಾಲ್ಕು, ಐದು",
+          "roman": "ondu, eradu, mooru, naalku, aidu",
+          "note": "Ondu, eradu, mooru, naalku, aidu. Notice the long oo in mooru, which means three."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "ಆರು, ಏಳು, ಎಂಟು, ಒಂಬತ್ತು, ಹತ್ತು",
+          "roman": "aaru, elu, entu, ombattu, hattu",
+          "note": "Aaru, elu, entu, ombattu, hattu. Seven, elu, has a long e and a curled l sound."
+        },
+        {
+          "key": "what-time",
+          "native": "ಈಗ ಎಷ್ಟು ಗಂಟೆ?",
+          "roman": "eega eshtu gante?",
+          "note": "Eega eshtu gante means what time is it now. Gante means hour or o'clock, and many people simply ask time eshtu."
+        },
+        {
+          "key": "today",
+          "native": "ಇವತ್ತು",
+          "roman": "ivattu",
+          "note": "Ivattu is the everyday word for today. In books and news you will also see the formal word indu."
+        },
+        {
+          "key": "tomorrow",
+          "native": "ನಾಳೆ",
+          "roman": "naale",
+          "note": "Naale means tomorrow. Say it with a long aa and a clear e at the end."
+        },
+        {
+          "key": "yesterday",
+          "native": "ನಿನ್ನೆ",
+          "roman": "ninne",
+          "note": "Ninne means yesterday. Don't mix it up with naale, which is tomorrow."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "Now let's eat and shop in Kannada. From darshinis to street markets, these phrases will help you order and bargain politely.",
+      "tip": "Karnataka has a rich vegetarian food culture, from Udupi restaurants to masala dosa and bisi bele bath. Saying you are vegetarian is easy and well understood.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "ಇದರ ಬೆಲೆ ಎಷ್ಟು?",
+          "roman": "idara bele eshtu?",
+          "note": "Idara bele eshtu means what is the price of this. In shops people often say just idakke eshtu, how much for this."
+        },
+        {
+          "key": "too-expensive",
+          "native": "ತುಂಬಾ ದುಬಾರಿ.",
+          "roman": "tumba dubaari",
+          "note": "Tumba dubaari means very expensive. Follow it with swalpa kammi maadi, please reduce it a little, when bargaining."
+        },
+        {
+          "key": "water-please",
+          "native": "ಸ್ವಲ್ಪ ನೀರು ಕೊಡಿ.",
+          "roman": "swalpa neeru kodi",
+          "note": "Swalpa neeru kodi means please give me some water. Kodi is the polite form of give."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "ನಾನು ಸಸ್ಯಾಹಾರಿ.",
+          "roman": "naanu sasyaahaari",
+          "note": "Naanu sasyaahaari means I am vegetarian. In restaurants people also commonly say veg or ask for a veg meal."
+        },
+        {
+          "key": "very-tasty",
+          "native": "ತುಂಬಾ ರುಚಿಯಾಗಿದೆ.",
+          "roman": "tumba ruchiyaagide",
+          "note": "Tumba ruchiyaagide means it is very tasty. Ruchi means taste, and this compliment always makes a cook smile."
+        },
+        {
+          "key": "bill-please",
+          "native": "ಬಿಲ್ ಕೊಡಿ.",
+          "roman": "bill kodi",
+          "note": "Bill kodi means please give the bill. Adding the polite kodi keeps it friendly."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "Let's get around in Kannada. Knowing left, right and straight makes every auto ride and walk much easier.",
+      "tip": "Polite instructions in Kannada end in i, like tirugi and hogi. Many people mix in English words such as straight and station, which is perfectly normal.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "ರೈಲು ನಿಲ್ದಾಣ ಎಲ್ಲಿದೆ?",
+          "roman": "railu nildaana ellide?",
+          "note": "Railu nildaana ellide means where is the railway station. Nildaana is the word on signs, though in speech people often just say railway station ellide."
+        },
+        {
+          "key": "turn-left",
+          "native": "ಎಡಕ್ಕೆ ತಿರುಗಿ.",
+          "roman": "edakke tirugi",
+          "note": "Edakke tirugi means turn to the left. Eda means left."
+        },
+        {
+          "key": "turn-right",
+          "native": "ಬಲಕ್ಕೆ ತಿರುಗಿ.",
+          "roman": "balakke tirugi",
+          "note": "Balakke tirugi means turn to the right. Bala means right, and it also means strength."
+        },
+        {
+          "key": "go-straight",
+          "native": "ನೇರವಾಗಿ ಹೋಗಿ.",
+          "roman": "neravaagi hogi",
+          "note": "Neravaagi hogi means go straight. In everyday speech many people just say straight hogi."
+        },
+        {
+          "key": "how-far",
+          "native": "ಎಷ್ಟು ದೂರ ಇದೆ?",
+          "roman": "eshtu doora ide?",
+          "note": "Eshtu doora ide means how far is it. Doora means far, and it sounds a lot like Hindi."
+        },
+        {
+          "key": "please-help",
+          "native": "ದಯವಿಟ್ಟು ಸಹಾಯ ಮಾಡಿ.",
+          "roman": "dayavittu sahaaya maadi",
+          "note": "Dayavittu sahaaya maadi means please help me. Dayavittu is the word for please, and it makes any request polite."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "Let's finish with words that keep a conversation flowing. These will help you whenever Kannada starts moving a little too fast.",
+      "tip": "Kannada speakers often nod with a gentle head wobble while saying haudu. And swalpa adjust maadi, please adjust a little, is a famous Bengaluru phrase.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "ಹೌದು / ಇಲ್ಲ",
+          "roman": "haudu / illa",
+          "note": "Haudu means yes and illa means no. Illa also means there isn't, so you will hear it a lot."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "ನನಗೆ ಅರ್ಥ ಆಗಲಿಲ್ಲ.",
+          "roman": "nanage artha aagalilla",
+          "note": "Nanage artha aagalilla means I didn't understand, literally the meaning didn't come to me. It is the natural way to ask for help."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "ದಯವಿಟ್ಟು ನಿಧಾನವಾಗಿ ಮಾತಾಡಿ.",
+          "roman": "dayavittu nidhaanavaagi maataadi",
+          "note": "This means please speak slowly. Nidhaana means slow, and maataadi is the polite form of speak."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "ಇದರ ಅರ್ಥ ಏನು?",
+          "roman": "idara artha enu?",
+          "note": "Idara artha enu means what is the meaning of this. Use it for any new word or sign."
+        },
+        {
+          "key": "i-like-it",
+          "native": "ನನಗೆ ಇದು ಇಷ್ಟ ಆಯ್ತು.",
+          "roman": "nanage idu ishta aaytu",
+          "note": "Nanage idu ishta aaytu means I liked this. For something you like in general, just say nanage idu ishta."
+        },
+        {
+          "key": "good-night",
+          "native": "ಶುಭ ರಾತ್ರಿ",
+          "roman": "shubha raatri",
+          "note": "Shubha raatri means good night. It is a little formal, and among friends many people just say good night in English."
+        }
+      ]
+    }
+  ]
+}

@@ -79,6 +79,471 @@
     "frequency": "Once a year (notification around July–August)",
     "officialSite": "https://www.ibps.in"
   },
+  "syllabus": [
+    {
+      "section": "Quantitative Aptitude (Prelims) & Data Analysis & Interpretation (Mains)",
+      "topics": [
+        {
+          "t": "Simplification & approximation (BODMAS, fractions, surds, percentages)",
+          "ch": [
+            "core:quant/simplification"
+          ]
+        },
+        {
+          "t": "Number system — divisibility, HCF & LCM, remainders, unit digits",
+          "ch": [
+            "core:quant/number-system"
+          ]
+        },
+        {
+          "t": "Number series — missing number, wrong number, new-pattern (all types)",
+          "ch": [
+            "core:quant/number-series",
+            "core:quant/number-series-advanced"
+          ]
+        },
+        {
+          "t": "Quadratic equations & quantity comparison",
+          "ch": [
+            "core:quant/quadratic"
+          ]
+        },
+        {
+          "t": "Percentage",
+          "ch": [
+            "core:quant/percentage"
+          ]
+        },
+        {
+          "t": "Ratio & proportion",
+          "ch": [
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Partnership",
+          "ch": [
+            "core:quant/partnership"
+          ]
+        },
+        {
+          "t": "Mixtures & alligation",
+          "ch": [
+            "core:quant/mixtures-alligation",
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Averages",
+          "ch": [
+            "core:quant/averages-ages",
+            "core:quant/ratio-average"
+          ]
+        },
+        {
+          "t": "Problems on ages",
+          "ch": [
+            "core:quant/averages-ages"
+          ]
+        },
+        {
+          "t": "Profit, loss & discount",
+          "ch": [
+            "core:quant/profit-loss"
+          ]
+        },
+        {
+          "t": "Simple & compound interest",
+          "ch": [
+            "core:quant/si-ci"
+          ]
+        },
+        {
+          "t": "Time & work",
+          "ch": [
+            "core:quant/time-work-speed"
+          ]
+        },
+        {
+          "t": "Pipes & cisterns",
+          "ch": [
+            "core:quant/pipes-cisterns"
+          ]
+        },
+        {
+          "t": "Time, speed & distance",
+          "ch": [
+            "core:quant/time-work-speed"
+          ]
+        },
+        {
+          "t": "Boats & streams",
+          "ch": [
+            "core:quant/boats-streams"
+          ]
+        },
+        {
+          "t": "Problems on trains",
+          "ch": [
+            "core:quant/trains"
+          ]
+        },
+        {
+          "t": "Mensuration — 2D & 3D",
+          "ch": [
+            "core:quant/mensuration"
+          ]
+        },
+        {
+          "t": "Permutation & combination",
+          "ch": [
+            "core:quant/permutation-combination"
+          ]
+        },
+        {
+          "t": "Probability",
+          "ch": [
+            "core:quant/probability"
+          ]
+        },
+        {
+          "t": "Data interpretation — table, bar, line, pie, radar & mixed charts",
+          "ch": [
+            "core:quant/data-interpretation",
+            "core:quant/di-advanced"
+          ]
+        },
+        {
+          "t": "Caselet DI, missing DI & arithmetic DI",
+          "ch": [
+            "core:quant/di-advanced",
+            "core:quant/data-interpretation"
+          ]
+        },
+        {
+          "t": "Quantitative data sufficiency",
+          "ch": [
+            "core:quant/di-advanced",
+            "core:reasoning/data-sufficiency"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Reasoning Ability (Prelims & Mains)",
+      "topics": [
+        {
+          "t": "Puzzles — floor, box, scheduling (day/month/year), comparison",
+          "ch": [
+            "core:reasoning/floor-box-scheduling",
+            "core:reasoning/puzzles-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — linear & double row",
+          "ch": [
+            "core:reasoning/linear-square-seating",
+            "core:reasoning/puzzles-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — circular",
+          "ch": [
+            "core:reasoning/circular-seating"
+          ]
+        },
+        {
+          "t": "Seating arrangement — square & rectangular tables",
+          "ch": [
+            "core:reasoning/linear-square-seating"
+          ]
+        },
+        {
+          "t": "Syllogism incl. only-a-few & possibility cases",
+          "ch": [
+            "core:reasoning/syllogism"
+          ]
+        },
+        {
+          "t": "Inequality — direct & coded",
+          "ch": [
+            "core:reasoning/inequality"
+          ]
+        },
+        {
+          "t": "Coding–decoding — classic & new pattern",
+          "ch": [
+            "core:reasoning/coding-decoding",
+            "core:reasoning/coding-new-pattern"
+          ]
+        },
+        {
+          "t": "Blood relations",
+          "ch": [
+            "core:reasoning/blood-relations"
+          ]
+        },
+        {
+          "t": "Direction sense & distance",
+          "ch": [
+            "core:reasoning/direction-sense"
+          ]
+        },
+        {
+          "t": "Order & ranking",
+          "ch": [
+            "core:reasoning/order-ranking"
+          ]
+        },
+        {
+          "t": "Alphanumeric & letter series",
+          "ch": [
+            "core:reasoning/alphanumeric-series"
+          ]
+        },
+        {
+          "t": "Input–output (machine input)",
+          "ch": [
+            "core:reasoning/input-output"
+          ]
+        },
+        {
+          "t": "Data sufficiency (reasoning)",
+          "ch": [
+            "core:reasoning/data-sufficiency"
+          ]
+        },
+        {
+          "t": "Logical reasoning — assumptions, arguments, conclusions",
+          "ch": [
+            "core:reasoning/assumptions-arguments"
+          ]
+        },
+        {
+          "t": "Logical reasoning — course of action, cause & effect, inferences, strengthen/weaken",
+          "ch": [
+            "core:reasoning/course-action-inference"
+          ]
+        },
+        {
+          "t": "Decision making & eligibility-based questions",
+          "ch": [
+            "core:reasoning/course-action-inference"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Computer Aptitude (check the current notification for its section)",
+      "topics": [
+        {
+          "t": "Computer basics, generations & number systems",
+          "ch": [
+            "core:computer/computer-fundamentals"
+          ]
+        },
+        {
+          "t": "Hardware, input/output devices & memory",
+          "ch": [
+            "core:computer/hardware-os",
+            "core:computer/computer-fundamentals"
+          ]
+        },
+        {
+          "t": "Software & operating systems",
+          "ch": [
+            "core:computer/hardware-os",
+            "core:computer/computer-fundamentals"
+          ]
+        },
+        {
+          "t": "Networking & the internet",
+          "ch": [
+            "core:computer/networking-security"
+          ]
+        },
+        {
+          "t": "MS Office — Word, Excel, PowerPoint & shortcuts",
+          "ch": [
+            "core:computer/ms-office"
+          ]
+        },
+        {
+          "t": "Cyber security",
+          "ch": [
+            "core:computer/networking-security"
+          ]
+        },
+        {
+          "t": "DBMS basics",
+          "ch": [
+            "core:computer/dbms-basics"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "English Language (Prelims & Mains)",
+      "topics": [
+        {
+          "t": "Reading comprehension",
+          "ch": [
+            "core:english/reading-comprehension"
+          ]
+        },
+        {
+          "t": "Cloze test",
+          "ch": [
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Error detection",
+          "ch": [
+            "core:english/error-spotting"
+          ]
+        },
+        {
+          "t": "Sentence improvement & phrase replacement",
+          "ch": [
+            "core:english/error-spotting",
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Para jumbles & sentence rearrangement",
+          "ch": [
+            "core:english/para-jumbles"
+          ]
+        },
+        {
+          "t": "Fillers (single/double) & word usage",
+          "ch": [
+            "core:english/fillers-word-usage",
+            "core:english/cloze-test"
+          ]
+        },
+        {
+          "t": "Connectors, sentence starters & column-based combining",
+          "ch": [
+            "core:english/connectors-sentence-combining"
+          ]
+        },
+        {
+          "t": "Vocabulary — synonyms, antonyms, idioms & phrasal verbs",
+          "ch": [
+            "core:english/vocabulary-idioms"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "General/Economy/Banking Awareness (Mains)",
+      "topics": [
+        {
+          "t": "Banking history, structure & types of banks",
+          "ch": [
+            "core:banking-awareness/types-of-banks"
+          ]
+        },
+        {
+          "t": "RBI — functions, monetary policy & tools",
+          "ch": [
+            "core:banking-awareness/rbi-monetary-policy"
+          ]
+        },
+        {
+          "t": "Regulators & financial institutions (SEBI, IRDAI, PFRDA, NABARD, SIDBI, EXIM, NHB, NPCI, DICGC)",
+          "ch": [
+            "core:banking-awareness/regulators-institutions"
+          ]
+        },
+        {
+          "t": "Financial markets — money, capital, bond & forex",
+          "ch": [
+            "core:banking-awareness/financial-markets"
+          ]
+        },
+        {
+          "t": "Basel norms, NPAs, SARFAESI & IBC",
+          "ch": [
+            "core:banking-awareness/basel-npa"
+          ]
+        },
+        {
+          "t": "Payment systems & digital banking",
+          "ch": [
+            "core:banking-awareness/payment-systems"
+          ]
+        },
+        {
+          "t": "Banking products, terms & the Negotiable Instruments Act",
+          "ch": [
+            "core:banking-awareness/banking-terms-products"
+          ]
+        },
+        {
+          "t": "Financial inclusion & social security schemes",
+          "ch": [
+            "core:banking-awareness/financial-inclusion"
+          ]
+        },
+        {
+          "t": "Government schemes (credit, farm, health, housing, savings)",
+          "ch": [
+            "core:banking-awareness/government-schemes",
+            "core:banking-awareness/financial-inclusion"
+          ]
+        },
+        {
+          "t": "Union Budget, fiscal terms & Economic Survey basics",
+          "ch": [
+            "core:banking-awareness/budget-economic-survey"
+          ]
+        },
+        {
+          "t": "International organisations & reports",
+          "ch": [
+            "core:banking-awareness/international-organisations"
+          ]
+        },
+        {
+          "t": "Current affairs & static GK — sources and method",
+          "ch": [
+            "core:banking-awareness/current-affairs-method"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Descriptive (Mains)",
+      "topics": [
+        {
+          "t": "Essay & letter writing (typed)",
+          "ch": [
+            "ibps-po-specific/descriptive-essay-letter"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Interview & strategy",
+      "topics": [
+        {
+          "t": "Interview preparation",
+          "ch": [
+            "ibps-po-specific/interview"
+          ]
+        },
+        {
+          "t": "Exam pattern, cut-offs & preparation plan",
+          "ch": [
+            "ibps-po-specific/strategy-cutoff"
+          ]
+        }
+      ]
+    }
+  ],
   "subjects": [
     {
       "id": "ibps-po-specific",
@@ -147,6 +612,63 @@
               "answer": 1,
               "explain": "The 2025 notification lists 35 questions for 50 marks in 25 minutes."
             }
+          ],
+          "notes": [
+            {
+              "h": "How IBPS PO selection works",
+              "p": "IBPS conducts a common recruitment for Probationary Officers in participating public sector banks. There are three stages: **Prelims**, **Mains** (objective + descriptive) and **Interview**. A key difference from SBI PO: IBPS applies **sectional and overall cut-offs** in both Prelims and Mains, so every section must be cleared.\n\nPrelims marks are not counted in the final merit. The final score combines **Mains (out of 225)** and the **Interview (out of 100)** in the ratio **80 : 20**.",
+              "points": [
+                "Prelims: English, Quant, Reasoning; sectional timers; sectional + overall cut-offs.",
+                "Mains: objective sections plus a descriptive paper; total 225.",
+                "Interview: 100 marks; minimum qualifying score required.",
+                "Exact section-wise pattern is revised often; check the latest IBPS notification."
+              ]
+            },
+            {
+              "h": "Worked example: final score",
+              "p": "Formula: **Final = (Mains ÷ 225) × 80 + (Interview ÷ 100) × 20**.\n\n**Example 1:** Mains 90/225, Interview 60/100.\nMains part = 90 ÷ 225 × 80 = 0.4 × 80 = **32**.\nInterview part = 60 ÷ 100 × 20 = **12**.\nFinal = **44/100**.\n\n**Example 2:** Mains 135/225, Interview 50/100.\n135 ÷ 225 = 0.6 → 0.6 × 80 = **48**; 50 × 0.2 = **10**; Final = **58**.\n\n**Value of one mark:** one Mains mark = 80 ÷ 225 ≈ **0.36**; one interview mark = **0.2**. Mains dominates the final list."
+            },
+            {
+              "h": "Planning around sectional cut-offs",
+              "p": "Because each section has its own cut-off, the best plan is **safe scores everywhere** rather than a very high score in one section.",
+              "points": [
+                "Identify your weakest section from mocks and give it daily practice time.",
+                "In Prelims, aim comfortably above previous sectional cut-offs in every section.",
+                "In Mains, GA gives high marks per minute (in the 2025 pattern, 50 marks in 25 minutes); revise current affairs and static banking every day.",
+                "Test your section order in at least 10 full mocks before exam day."
+              ]
+            },
+            {
+              "h": "Negative marking and attempts",
+              "p": "A wrong answer costs **¼ of the question's marks**. In Mains GA, where some questions carry more than 1 mark, a wrong answer costs more in absolute terms.\n\n**Example:** If a GA question carries 2 marks, a wrong answer costs 0.5. Guess only after you have eliminated at least two options; a blind five-option guess has an expected value of zero and only adds risk."
+            },
+            {
+              "h": "Bank allotment",
+              "p": "After the final merit list, IBPS **provisionally allots** candidates to participating banks based on **merit, category, vacancies and your bank preference order**. Fill preferences carefully: you may be allotted to any bank you list. A reserve list may be used later for vacancies left unfilled."
+            },
+            {
+              "h": "Common mistakes",
+              "p": "Avoid these.",
+              "points": [
+                "Ignoring English because 'cut-offs are low' — it is still a sectional barrier.",
+                "Starting Mains GA preparation after Prelims.",
+                "Assuming Prelims marks count in the final list.",
+                "Weak descriptive preparation; it is part of the 225.",
+                "Careless bank preference listing."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "Sectional + overall cut-offs in Prelims and Mains.",
+                "Final = (Mains/225) × 80 + (Interview/100) × 20.",
+                "One Mains mark ≈ 0.36 final marks; one interview mark = 0.2.",
+                "GA: high marks per minute in Mains.",
+                "Negative marking: ¼ of question marks.",
+                "Allotment by merit + preference."
+              ]
+            }
           ]
         },
         {
@@ -214,6 +736,61 @@
               "answer": 2,
               "explain": "Hashtags belong to social media, not formal letters."
             }
+          ],
+          "notes": [
+            {
+              "h": "Format and evaluation",
+              "p": "The IBPS PO descriptive paper has **2 questions for 25 marks in 30 minutes**, typed in English, held right after the objective Mains test. The usual combination is **one essay and one letter**. It is evaluated **only for candidates who clear the objective cut-offs**, and you must also score the minimum qualifying marks in it.\n\nMarkers look at **relevance, structure, grammar, vocabulary and word limit**. Neat, well-organised answers score better than long, unstructured ones.",
+              "points": [
+                "Plan 2 minutes per answer, type 11 minutes, review 2 minutes.",
+                "Respect the word limit stated in the question.",
+                "Use short paragraphs and simple sentences."
+              ]
+            },
+            {
+              "h": "Formal letter layout",
+              "p": "Learn one layout and use it every time.",
+              "points": [
+                "Sender's address and date (top left).",
+                "Receiver's designation and address.",
+                "**Subject:** one clear line.",
+                "**Salutation:** Sir/Madam,",
+                "**Body:** three short paragraphs: purpose → details → request/action.",
+                "**Complimentary close:** Yours faithfully (to an unknown person/office) or Yours sincerely (to a named person).",
+                "Name and signature."
+              ]
+            },
+            {
+              "h": "Worked example: letter plan",
+              "p": "**Question:** Write a letter to the branch manager complaining that money was debited from your account for a failed ATM transaction.\n\n**Paragraph 1 (purpose):** I hold savings account no. XXXX at your branch; I am writing about a wrong debit of ₹5,000 on 12 August from a failed ATM withdrawal.\n**Paragraph 2 (details):** the ATM location and time, the fact that no cash was dispensed, and that the amount has not been reversed after several days.\n**Paragraph 3 (request):** please investigate and reverse the amount, along with any compensation due under RBI's rules for failed ATM transactions; attach the transaction slip.\n**Close:** Yours faithfully, name, mobile number.\nThis plan takes under 2 minutes and makes the typing fast."
+            },
+            {
+              "h": "Essay plan with structure",
+              "p": "Use the **intro – body – way forward – conclusion** model.\n\n**Topic: 'Financial literacy among young Indians'**\n**Intro:** define financial literacy; note that digital access has grown faster than financial understanding.\n**Body 1 (opportunities):** UPI, mutual funds and insurance are easy to access; early saving builds wealth.\n**Body 2 (challenges):** easy credit apps, online fraud, lack of budgeting habits.\n**Way forward:** financial education in college curricula; bank and RBI awareness campaigns; simple product disclosures.\n**Conclusion:** one balanced line on informed choices.\n\nKeep 3 facts ready for each common topic: PSB consolidation, UPI and digital rupee, cyber fraud, MSME credit, climate finance, AI in banking, women-led development."
+            },
+            {
+              "h": "Common mistakes",
+              "p": "Easy marks lost here.",
+              "points": [
+                "No subject line in a letter.",
+                "Informal tone ('Hi', 'Thanks a lot!!').",
+                "Hashtags, abbreviations like 'u' or 'pls'.",
+                "Leaving one answer unfinished.",
+                "Spelling errors from not reviewing."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Key points.",
+              "points": [
+                "2 questions, 25 marks, 30 minutes, typed.",
+                "Letter: addresses, date, subject, salutation, 3 paragraphs, close.",
+                "Yours faithfully (unnamed recipient); Yours sincerely (named).",
+                "Essay: intro, two body paragraphs, way forward, conclusion.",
+                "Plan 2 minutes before typing.",
+                "Prepare 3 facts per common topic."
+              ]
+            }
           ]
         },
         {
@@ -264,6 +841,66 @@
               ],
               "answer": 1,
               "explain": "40% for General; 35% for SC/ST/OBC/PwBD."
+            }
+          ],
+          "notes": [
+            {
+              "h": "What the panel is checking",
+              "p": "The IBPS PO interview is conducted by a panel from participating banks and IBPS. It carries **100 marks** and **20% weight** in the final score. You must score at least **40%** (35% for SC/ST/OBC/PwBD) to be considered at all, regardless of your Mains score.\n\nThe panel checks your **communication, clarity of thought, knowledge of banking and the economy, awareness of your own background, and attitude** towards customers, rural postings and transfers."
+            },
+            {
+              "h": "Must-prepare questions",
+              "p": "Prepare short, honest answers (30–60 seconds) for these.",
+              "points": [
+                "Introduce yourself (education, family background in one line, strengths, why banking).",
+                "Why banking? Why a public sector bank?",
+                "Why leave your current job (if employed)?",
+                "Questions from your graduation subject.",
+                "Your hometown or district's economy and banking needs.",
+                "Current repo rate and MPC stance (check the latest RBI announcement), a recent government scheme, a recent Budget point.",
+                "How you would handle an angry customer or a fraud complaint."
+              ]
+            },
+            {
+              "h": "Worked example: a strong introduction",
+              "p": "**Weak:** \"My name is Arjun. I am from Nagpur. I did B.Com. My hobbies are cricket and music.\"\n**Strong (about 45 seconds):** \"Good morning. I am Arjun Deshmukh from Nagpur. I completed my B.Com from Nagpur University in 2023, where I enjoyed accounting and banking law. For the last year I have worked as an accounts assistant at a small firm, which showed me how much small businesses depend on timely bank credit. I play cricket at the district level, which taught me teamwork, and I want to build a career in public sector banking because it combines public service with long-term growth.\"\nThe strong version links your background, skills and motivation, and gives the panel easy follow-up topics."
+            },
+            {
+              "h": "Documents and your application form",
+              "p": "Panels often frame questions from your **application form**. Re-read every hobby, achievement and job detail you listed. If you wrote 'reading', expect 'What was the last book you read?'.\n\nCarry all **original documents** in the order given in the call letter, with self-attested copies. Missing documents can stop the interview from happening at all."
+            },
+            {
+              "h": "Common mistakes",
+              "p": "Avoid these.",
+              "points": [
+                "Memorised answers that sound robotic.",
+                "Bluffing; it is better to say 'I am not sure, but I understand…'.",
+                "Negative comments about a past employer.",
+                "Reluctance about rural postings or transfers.",
+                "Outdated economic facts."
+              ]
+            },
+            {
+              "h": "Handling pressure and follow-ups",
+              "p": "Panels sometimes ask a follow-up question that you cannot answer, or challenge your answer to see how you react. Stay calm, keep eye contact and do not argue.",
+              "points": [
+                "If you don't know: 'I am not sure of the exact figure, sir, but I understand the idea is…'.",
+                "If challenged: acknowledge the point, then explain your view briefly.",
+                "If asked about a weakness: name a real one and what you are doing to improve it.",
+                "Thank the panel at the end; small courtesies are noticed."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "100 marks, 20% weight.",
+                "Minimum: 40% (35% for SC/ST/OBC/PwBD).",
+                "Answers of 30–60 seconds; link background to motivation.",
+                "Revise everything in your application form.",
+                "Know the latest repo rate, MPC stance and one recent scheme.",
+                "Carry all originals in call-letter order."
+              ]
             }
           ]
         }

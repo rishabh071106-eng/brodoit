@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Course · Brodoit Languages</title>
+<meta name="theme-color" content="#FBF8F3">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="/app/theme.css?v=12">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=12">
+<script src="/app/icons.js?v=12" defer></script>
+</head>
+<body>
+<main class="wrap" style="padding-bottom:40px">
+  <div id="head"></div>
+  <div id="body"></div>
+</main>
+<script type="module">
+import { renderChrome, loadCourses, loadCourse, loadAudioCourse, store, esc, t, param, courseProgress, computeStreak, ICON, setCourse, toast, comingSoonHTML } from '/lang/assets/lang.js?v=9';
+import { loadPhraseCatalog, loadPhraseLang, phraseProgress, phrasesHref, PHRASE_OF } from '/lang/assets/phrases.js?v=9';
+import { ic } from '/lang/assets/ico.js?v=12';
+
+// UI strings carry a leading emoji ("🎧 Audio lessons"); the v10 chrome draws the icon instead.
+const label = key => t(lang, key).replace(/^[^\p{L}\p{N}]+\s*/u, '');
+const code = param('c') || 'es';
+const courses = await loadCourses();
+const meta = courses.find(c => c.code === code) || { code, name: code.toUpperCase(), native: '', flag: '🌍', from: 'en', tagline: '', hasAudio: true };
+const lang = meta.from;
+document.title = `${meta.name} · Brodoit Languages`;
+const [course, audio] = await Promise.all([loadCourse(code), meta.hasAudio === false ? null : loadAudioCourse(code)]);
+setCourse(code);
+const s = store.read();
+renderChrome({ title: meta.name, right: `<span class="pill">${ic('flame', 16)} ${computeStreak(s.daily)}</span>` });
+
+const head = document.getElementById('head'), body = document.getElementById('body');
+if (!course && !audio) {
+  head.innerHTML = `<div class="chead rise"><div class="flag">${meta.flag}</div><div><div class="t">${esc(meta.name)}</div><div class="s">${esc(meta.tagline)}</div></div></div>`;
+  body.innerHTML = comingSoonHTML(lang);
+} else {
+  const p = courseProgress(code, course, audio);
+  const audioDone = (audio?.lessons || []).filter(l => s.done[`${code}/${l.id}`]).length;
+  head.innerHTML = `
+    <div class="chead rise"><div class="flag">${meta.flag}</div>
+      <div><div class="t">${esc(meta.name)} <span class="muted" style="font-size:16px;font-weight:700">${esc(meta.native)}</span></div><div class="s">${esc(meta.tagline || course?.tagline || '')}</div></div></div>
+    <div class="stats rise" style="animation-delay:.05s">
+      <div class="b-card stat"><b>${s.xp || 0}</b><span>${t(lang, 'xp')}</span></div>
+      <div class="b-card stat"><b>${p.done}/${p.total}</b><span>${t(lang, 'lessons')}</span></div>
+      <div class="b-card stat"><b>${p.pct}%</b><span>${t(lang, 'done')}</span></div>
+    </div>
+    <div class="seg rise" id="seg" style="animation-delay:.1s"><div class="thumb"></div>
+      <button data-m="audio" class="on">${ic('headphones', 16)} ${label('audio')}</button><button data-m="practice">${ic('pencil', 16)} ${label('practice')}</button></div>`;
+
+  // ---- Audio path ----
+  const audioHTML = () => {
+    if (!audio?.lessons?.length) return comingSoonHTML(lang, '/lang/');
+    const ls = audio.lessons;
+    let firstOpen = ls.findIndex(l => !s.done[`${code}/${l.id}`]);
+    const offs = [0, 40, 64, 40, 0, -40, -64, -40];
+    return `<div class="path">${ls.map((l, i) => {
+      const done = !!s.done[`${code}/${l.id}`], open = i === firstOpen || (i > 0 && s.done[`${code}/${ls[i - 1].id}`]) || i === 0;
+      const st = done ? 'done' : open ? 'open' : 'locked';
+      const x = offs[i % offs.length];
+      const title = String(l.title || '').replace(/^Lesson\s*\d+\s*[—–-]\s*/i, '').replace(/^पाठ\s*\d+\s*[—–-]\s*/, '');
+      const inner = `${i === firstOpen ? `<span class="start">${t(lang, 'start')}</span>` : ''}
+        <span class="btn">${done ? ICON.check.replace('<svg', '<svg width="36" height="36"') : st === 'locked' ? ICON.lock.replace('<svg', '<svg width="30" height="30"') : ICON.headphones.replace('<svg', '<svg width="36" height="36"')}<span class="num">${i + 1}</span></span>
+        <span class="lbl">${esc(title)}<small>${l.minutes || 15} ${t(lang, 'min')}${done ? ' · ✓' : ''}</small></span>`;
+      const side = x > 0 ? 'R' : x < 0 ? 'L' : (i % 2 ? 'R' : 'L');
+      return st === 'locked'
+        ? `<button class="node ${st} ${side}" style="--x:${x}px" data-locked aria-label="${esc(l.title)}">${inner}</button>`
+        : `<a class="node ${st} ${side}" style="--x:${x}px" href="/lang/audio.html?c=${code}&l=${encodeURIComponent(l.id)}">${inner}</a>`;
+    }).join('')}</div>`;
+  };
+
+  // ---- Practice path ----
+  const practiceHTML = () => {
+    if (!course?.units?.length) return comingSoonHTML(lang, '/lang/');
+    const all = course.units.flatMap(u => u.lessons.map(l => ({ u, l })));
+    const firstOpen = all.findIndex(x => !s.done[`${code}/${x.l.id}`]);
+    const offs = [0, 52, 0, -52];
+    const alts = ['', 'alt', 'alt2', 'alt3', 'alt4'];
+    let k = -1;
+    return `<div class="path">${course.units.map((u, ui) => `
+      <div class="unit-hd ${alts[ui % alts.length]}"><div class="e">${u.emoji || '📘'}</div><div><div class="k">${t(lang, 'unit')} ${ui + 1}</div><div class="t">${esc(u.title)}</div><div class="g">${esc(u.goal || '')}</div></div></div>
+      ${u.lessons.map((l, li) => {
+        k++;
+        const done = !!s.done[`${code}/${l.id}`], open = k === 0 || done || (k > 0 && s.done[`${code}/${all[k - 1].l.id}`]);
+        const st = done ? 'done' : open ? 'open' : 'locked';
+        const x = offs[li % offs.length], side = x > 0 ? 'R' : x < 0 ? 'L' : (li % 2 ? 'R' : 'L');
+        const inner = `${k === firstOpen ? `<span class="start">${t(lang, 'start')}</span>` : ''}
+          <span class="btn">${done ? ICON.check.replace('<svg', '<svg width="36" height="36"') : st === 'locked' ? ICON.lock.replace('<svg', '<svg width="30" height="30"') : li === u.lessons.length - 1 ? ICON.star.replace('<svg', '<svg width="34" height="34"') : ICON.pen.replace('<svg', '<svg width="34" height="34"')}</span>
+          <span class="lbl">${esc(l.title)}<small>${l.items?.length || 0} ${lang === 'hi' ? 'अभ्यास' : 'exercises'}</small></span>`;
+        return st === 'locked'
+          ? `<button class="node ${st} ${side}" style="--x:${x}px" data-locked aria-label="${esc(l.title)}">${inner}</button>`
+          : `<a class="node ${st} ${side}" style="--x:${x}px" href="/lang/lesson.html?c=${code}&u=${encodeURIComponent(u.id)}&l=${encodeURIComponent(l.id)}">${inner}</a>`;
+      }).join('')}`).join('')}</div>`;
+  };
+
+  let mode = (location.hash === '#practice' || !audio?.lessons?.length) ? 'practice' : 'audio';
+  const seg = document.getElementById('seg');
+  const render = () => {
+    seg.classList.toggle('r', mode === 'practice');
+    seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === mode));
+    body.innerHTML = `<div class="pane on">${mode === 'audio' ? audioHTML() : practiceHTML()}</div>`;
+    history.replaceState(null, '', mode === 'practice' ? '#practice' : location.pathname + location.search);
+    const start = body.querySelector('.node.open');
+    if (start && body.querySelectorAll('.node.done').length > 2) setTimeout(() => start.scrollIntoView({ block: 'center', behavior: 'smooth' }), 80);
+  };
+  seg.addEventListener('click', e => { const b = e.target.closest('button[data-m]'); if (b && b.dataset.m !== mode) { mode = b.dataset.m; render(); } });
+  body.addEventListener('click', e => { if (e.target.closest('[data-locked]')) toast(`🔒 ${t(lang, 'firstLesson')}`); });
+  render();
+}
+
+// ---- 📖 Phrasebook: Meera's phrase course for this language (lives here, not in the index list).
+if (PHRASE_OF[code]) {
+  const [pcat, plang] = await Promise.all([loadPhraseCatalog(), loadPhraseLang(PHRASE_OF[code])]);
+  if (pcat && plang) {
+    const pp = phraseProgress(plang.id, pcat, s);
+    const nPhr = plang.lessons.reduce((n, x) => n + x.phrases.length, 0);
+    const card = `<a class="b-card pbook press rise" href="${phrasesHref(plang.id)}" style="animation-delay:.08s">
+      <div class="e">${ic('book-open', 24)}</div>
+      <div style="min-width:0"><div class="t">Phrasebook <span class="muted" style="font-weight:700">· with ${esc(pcat.host.name)}</span></div>
+        <div class="s">${pp.total} lessons · ${nPhr} phrases${pp.done ? ` · ${pp.done}/${pp.total} done` : ''} · 60-day challenge</div></div>
+      <div class="arr">${ic('chevron-right', 20)}</div></a>`;
+    const stats = head.querySelector('.stats');
+    if (stats) stats.insertAdjacentHTML('afterend', card); else head.insertAdjacentHTML('beforeend', card);
+  }
+}
+</script>
+</body>
+</html>

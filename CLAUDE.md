@@ -48,6 +48,14 @@ Server-side code (outside the template literal) uses normal JS — raw emoji and
 | Night sky / stars | `night-sky` |
 | Tab bar render | `function renderTabs` or `tabBar` |
 | Marketing pages | `// ═══ MARKETING` |
+| v9 modules (voice, news channel, /lang, Hindi books) | `// ═══ v9:` — code lives in `modules/voice.js`, `modules/bulletin.js`, `app/*.js`, `lang/` |
+| Settings + Admin panel (keys live in `app_settings`, env is fallback) | `modules/settings.js`, `modules/admin.js`, `app/admin.js`; identity `isAdminUser` |
+| Steps (StepSetGo-style) | `modules/steps.js` (server), `app/steps.js` (tab), tab key `steps`; `dayKey(tz)` for IST days |
+| Design system v10 | `app/theme.css` (tokens), `app/icons.js` (`ico()`), `app/mascot.svg`, `app/haptics.js`, fonts in `app/fonts/` |
+| Talking Bro home screen | `broVoiceRoot` (render) + `app/voice.js` (client) |
+| News Channel | `newsRoot` (render) + `app/news.js` |
+| Learn tree | `var _LT=[` |
+| Book player v2 | `function bkpPlay` / `_bkBuild`; Hindi via `bkHiBook` |
 
 ## Themes
 
@@ -77,6 +85,9 @@ Key tables: `users`, `tasks`, `otps`, `mind_gym_progress`, `steps`, `push_subs`,
 | `WHATSAPP_VERIFY_TOKEN` | Webhook verification (default: `brodoit_verify_2024`) |
 | `WHATSAPP_NUMBER` | Business number with +country code |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google Calendar OAuth |
+| `OPENAI_API_KEY` | Talking Bro real-time voice (WebRTC); normally pasted in You → Admin instead; env is the fallback |
+| `ELEVENLABS_API_KEY` | Studio voices: bulletins (EN/HI), Hindi book briefs, language lessons; normally pasted in You → Admin |
+| `ADMIN_TOKEN` | `POST /api/bulletins/refresh?token=` to re-write today's bulletin |
 
 ## Common Tasks
 
@@ -139,3 +150,9 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
 - Don't commit `.env` — it's gitignored
 - Don't use `git push --force` — Railway tracks main branch
 - Don't assume HMR — server must restart for any change to take effect
+
+
+## Android (v9.4)
+- `android/` — Kotlin TWA + background steps (`LauncherActivity`, `EnableStepsActivity`, `StepsEngine` → `RecordingProvider`/`SensorProvider`, `SyncJobService`, `Scheduler`, `Api`). Package `com.brodoit.app`, built by `.github/workflows/android.yml`.
+- `modules/android.js` — fetches the newest GitHub release, signs with the on-volume upload key, serves `/download/brodoit.apk`, `/android`, `/api/android/status`; `global._androidCert()` feeds `/.well-known/assetlinks.json`.
+- Steps client: `isTWA()` accepts `android-app://com.brodoit.*` and `?twa=1`; "Turn on" opens `intent://enable#Intent;scheme=brodoit;package=com.brodoit.app;end`.

@@ -1,0 +1,6942 @@
+{
+ "code": "es",
+ "name": "Spanish",
+ "native": "Español",
+ "flag": "🇪🇸",
+ "from": "en",
+ "fromName": "English",
+ "voice": "es-ES",
+ "tagline": "Order tapas, make friends, travel Spain & Latin America.",
+ "units": [
+  {
+   "id": "u1",
+   "title": "Basics 1",
+   "emoji": "👋",
+   "goal": "Greet people and introduce yourself",
+   "lessons": [
+    {
+     "id": "u1l1",
+     "title": "Hello!",
+     "items": [
+      {
+       "t": "learn",
+       "word": "hola",
+       "tl": "OH-la",
+       "meaning": "hello",
+       "example": "¡Hola! ¿Qué tal?",
+       "exampleMeaning": "Hello! How's it going?"
+      },
+      {
+       "t": "learn",
+       "word": "buenos días",
+       "tl": "BWEH-nos DEE-as",
+       "meaning": "good morning",
+       "example": "Buenos días, señora.",
+       "exampleMeaning": "Good morning, ma'am."
+      },
+      {
+       "t": "learn",
+       "word": "adiós",
+       "tl": "ah-dee-OHS",
+       "meaning": "goodbye",
+       "example": "Adiós, hasta luego.",
+       "exampleMeaning": "Goodbye, see you later."
+      },
+      {
+       "t": "learn",
+       "word": "gracias",
+       "tl": "GRAH-see-as",
+       "meaning": "thank you",
+       "example": "Muchas gracias.",
+       "exampleMeaning": "Thank you very much."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'hello'?",
+       "options": [
+        "adiós",
+        "gracias",
+        "hola",
+        "días"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "hola",
+         "hello"
+        ],
+        [
+         "adiós",
+         "goodbye"
+        ],
+        [
+         "gracias",
+         "thank you"
+        ],
+        [
+         "buenos días",
+         "good morning"
+        ]
+       ]
+      },
+      {
+       "t": "learn",
+       "word": "por favor",
+       "tl": "por fa-VOR",
+       "meaning": "please",
+       "example": "Un café, por favor.",
+       "exampleMeaning": "A coffee, please."
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Good morning",
+       "answer": "Buenos días",
+       "bank": [
+        "adiós",
+        "Buenos",
+        "gracias",
+        "días",
+        "hola"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¡Hola, buenos días!",
+       "meaning": "Hello, good morning!",
+       "bank": [
+        "días!",
+        "adiós",
+        "buenos",
+        "por",
+        "gracias",
+        "¡Hola,"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Un café, ___ favor.",
+       "meaning": "A coffee, please.",
+       "options": [
+        "hola",
+        "por",
+        "adiós",
+        "gracias"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Hola, buenos días.",
+       "meaning": "Hello, good morning."
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'adiós' mean?",
+       "options": [
+        "thank you",
+        "hello",
+        "please",
+        "goodbye"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Gracias, adiós.",
+       "answer": "Thank you, goodbye.",
+       "bank": [
+        "goodbye.",
+        "morning",
+        "hello",
+        "Thank",
+        "you,",
+        "please"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u1l2",
+     "title": "How are you?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "¿Cómo estás?",
+       "tl": "KOH-mo es-TAS",
+       "meaning": "How are you?",
+       "example": "¡Hola! ¿Cómo estás?",
+       "exampleMeaning": "Hello! How are you?"
+      },
+      {
+       "t": "learn",
+       "word": "bien",
+       "tl": "bee-EN",
+       "meaning": "well / fine",
+       "example": "Estoy bien, gracias.",
+       "exampleMeaning": "I'm fine, thank you."
+      },
+      {
+       "t": "learn",
+       "word": "¿Y tú?",
+       "tl": "ee TOO",
+       "meaning": "And you?",
+       "example": "Bien, ¿y tú?",
+       "exampleMeaning": "Fine, and you?"
+      },
+      {
+       "t": "learn",
+       "word": "muy",
+       "tl": "MWEE",
+       "meaning": "very",
+       "example": "Muy bien, gracias.",
+       "exampleMeaning": "Very well, thank you."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'very well'?",
+       "options": [
+        "por favor",
+        "buenos días",
+        "muy bien",
+        "muy mal"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "¿Cómo estás?",
+       "meaning": "How are you?",
+       "bank": [
+        "estás?",
+        "bien",
+        "hola",
+        "¿Cómo",
+        "muy"
+       ]
+      },
+      {
+       "t": "learn",
+       "word": "mal",
+       "tl": "MAL",
+       "meaning": "bad / badly",
+       "example": "Estoy mal hoy.",
+       "exampleMeaning": "I'm not doing well today."
+      },
+      {
+       "t": "learn",
+       "word": "buenas noches",
+       "tl": "BWEH-nas NO-ches",
+       "meaning": "good night / good evening",
+       "example": "Buenas noches, hasta mañana.",
+       "exampleMeaning": "Good night, see you tomorrow."
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Very well, thank you.",
+       "answer": "Muy bien, gracias.",
+       "bank": [
+        "bien,",
+        "adiós",
+        "gracias.",
+        "Muy",
+        "mal",
+        "hola"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "bien",
+         "well"
+        ],
+        [
+         "mal",
+         "bad"
+        ],
+        [
+         "muy",
+         "very"
+        ],
+        [
+         "buenas noches",
+         "good night"
+        ],
+        [
+         "¿y tú?",
+         "and you?"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Estoy ___, gracias.",
+       "meaning": "I'm fine, thank you.",
+       "options": [
+        "hola",
+        "por",
+        "bien",
+        "noches"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "Muy bien, ¿y tú?",
+       "meaning": "Very well, and you?"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Buenas noches.",
+       "answer": "Good night.",
+       "bank": [
+        "hello",
+        "thanks",
+        "morning",
+        "Good",
+        "night."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you ask 'How are you?'",
+       "options": [
+        "Por favor",
+        "¿Cómo estás?",
+        "Buenas noches",
+        "¿Y tú?"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u1l3",
+     "title": "My name is...",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Me llamo",
+       "tl": "meh YAH-mo",
+       "meaning": "My name is / I'm called",
+       "example": "Me llamo Ana.",
+       "exampleMeaning": "My name is Ana."
+      },
+      {
+       "t": "learn",
+       "word": "¿Cómo te llamas?",
+       "tl": "KOH-mo teh YAH-mas",
+       "meaning": "What's your name?",
+       "example": "Hola, ¿cómo te llamas?",
+       "exampleMeaning": "Hello, what's your name?"
+      },
+      {
+       "t": "learn",
+       "word": "Mucho gusto",
+       "tl": "MOO-cho GOOS-to",
+       "meaning": "Nice to meet you",
+       "example": "Mucho gusto, Carlos.",
+       "exampleMeaning": "Nice to meet you, Carlos."
+      },
+      {
+       "t": "learn",
+       "word": "Soy de",
+       "tl": "soy deh",
+       "meaning": "I'm from",
+       "example": "Soy de Madrid.",
+       "exampleMeaning": "I'm from Madrid."
+      },
+      {
+       "t": "learn",
+       "word": "¿De dónde eres?",
+       "tl": "deh DON-deh EH-res",
+       "meaning": "Where are you from?",
+       "example": "¿De dónde eres, Ana?",
+       "exampleMeaning": "Where are you from, Ana?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'Nice to meet you'?",
+       "options": [
+        "Mucho gusto",
+        "Me llamo",
+        "Soy de",
+        "¿Y tú?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My name is Carlos.",
+       "answer": "Me llamo Carlos.",
+       "bank": [
+        "de",
+        "soy",
+        "Carlos.",
+        "gusto",
+        "llamo",
+        "Me"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿De dónde eres?",
+       "meaning": "Where are you from?",
+       "bank": [
+        "Me",
+        "¿De",
+        "mucho",
+        "dónde",
+        "llamas",
+        "eres?"
+       ]
+      },
+      {
+       "t": "learn",
+       "word": "España",
+       "tl": "es-PAH-nya",
+       "meaning": "Spain",
+       "example": "Soy de España.",
+       "exampleMeaning": "I'm from Spain."
+      },
+      {
+       "t": "learn",
+       "word": "Estados Unidos",
+       "tl": "es-TAH-dos oo-NEE-dos",
+       "meaning": "United States",
+       "example": "Soy de Estados Unidos.",
+       "exampleMeaning": "I'm from the United States."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Me llamo",
+         "My name is"
+        ],
+        [
+         "Mucho gusto",
+         "Nice to meet you"
+        ],
+        [
+         "Soy de",
+         "I'm from"
+        ],
+        [
+         "España",
+         "Spain"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "¿Cómo ___ llamas?",
+       "meaning": "What's your name?",
+       "options": [
+        "me",
+        "tú",
+        "de",
+        "te"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "Me llamo Ana. Mucho gusto.",
+       "meaning": "My name is Ana. Nice to meet you."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Soy de España.",
+       "answer": "I'm from Spain.",
+       "bank": [
+        "United",
+        "name",
+        "I'm",
+        "from",
+        "Spain.",
+        "States"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'¿De dónde eres?' means...",
+       "options": [
+        "How are you?",
+        "Where are you from?",
+        "Nice to meet you",
+        "What's your name?"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u1l4",
+     "title": "Review: Basics 1",
+     "items": [
+      {
+       "t": "learn",
+       "word": "hasta luego",
+       "tl": "AS-ta LWEH-go",
+       "meaning": "see you later",
+       "example": "¡Adiós, hasta luego!",
+       "exampleMeaning": "Bye, see you later!"
+      },
+      {
+       "t": "learn",
+       "word": "señor / señora",
+       "tl": "sen-YOR / sen-YO-ra",
+       "meaning": "sir / ma'am (Mr. / Mrs.)",
+       "example": "Buenos días, señor García.",
+       "exampleMeaning": "Good morning, Mr. García."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is a greeting for the evening?",
+       "options": [
+        "gracias",
+        "buenos días",
+        "hasta luego",
+        "buenas noches"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Hello, how are you?",
+       "answer": "Hola, ¿cómo estás?",
+       "bank": [
+        "¿cómo",
+        "bien",
+        "llamas",
+        "adiós",
+        "Hola,",
+        "estás?"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Mucho gusto, me llamo Pedro.",
+       "meaning": "Nice to meet you, my name is Pedro.",
+       "bank": [
+        "Mucho",
+        "me",
+        "gusto,",
+        "gracias",
+        "Pedro.",
+        "eres",
+        "dónde",
+        "llamo"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "hasta luego",
+         "see you later"
+        ],
+        [
+         "mucho gusto",
+         "nice to meet you"
+        ],
+        [
+         "buenas noches",
+         "good night"
+        ],
+        [
+         "¿cómo estás?",
+         "how are you?"
+        ],
+        [
+         "por favor",
+         "please"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Soy ___ Estados Unidos.",
+       "meaning": "I'm from the United States.",
+       "options": [
+        "de",
+        "por",
+        "te",
+        "muy"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "Buenas noches, hasta luego.",
+       "meaning": "Good night, see you later."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Muy bien, gracias. ¿Y tú?",
+       "answer": "Very well, thank you. And you?",
+       "bank": [
+        "bad",
+        "you.",
+        "Very",
+        "And",
+        "hello",
+        "well,",
+        "thank",
+        "you?",
+        "please",
+        "name"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Someone says 'Gracias'. You reply:",
+       "options": [
+        "Mal",
+        "De nada",
+        "Soy de",
+        "Me llamo"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "learn",
+       "word": "de nada",
+       "tl": "deh NAH-da",
+       "meaning": "you're welcome",
+       "example": "—Gracias. —De nada.",
+       "exampleMeaning": "—Thanks. —You're welcome."
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Where are you from?",
+       "answer": "¿De dónde eres?",
+       "bank": [
+        "¿De",
+        "dónde",
+        "estás",
+        "eres?",
+        "llamas",
+        "cómo"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "—¿Cómo estás? —___ bien.",
+       "meaning": "—How are you? —Very well.",
+       "options": [
+        "Hasta",
+        "Muy",
+        "Mal",
+        "Por"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "Choose the correct order:",
+       "options": [
+        "Cómo hola, ¿te llamas?",
+        "¿Te cómo hola llamas?",
+        "Llamas, ¿cómo te hola?",
+        "Hola, ¿cómo te llamas?"
+       ],
+       "answer": 3
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u2",
+   "title": "Numbers & People",
+   "emoji": "🔢",
+   "goal": "Count to 100, say your age and describe who people are",
+   "lessons": [
+    {
+     "id": "u2l1",
+     "title": "Numbers 1–10",
+     "items": [
+      {
+       "t": "learn",
+       "word": "uno, dos, tres",
+       "tl": "OO-no, dos, tres",
+       "meaning": "one, two, three",
+       "example": "Uno, dos, tres, ¡ya!",
+       "exampleMeaning": "One, two, three, go!"
+      },
+      {
+       "t": "learn",
+       "word": "cuatro, cinco",
+       "tl": "KWAH-tro, SEEN-ko",
+       "meaning": "four, five",
+       "example": "Tengo cinco euros.",
+       "exampleMeaning": "I have five euros."
+      },
+      {
+       "t": "learn",
+       "word": "seis, siete",
+       "tl": "says, see-EH-teh",
+       "meaning": "six, seven",
+       "example": "Son las siete.",
+       "exampleMeaning": "It's seven o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "ocho, nueve, diez",
+       "tl": "OH-cho, NWEH-veh, dee-ES",
+       "meaning": "eight, nine, ten",
+       "example": "Diez minutos, por favor.",
+       "exampleMeaning": "Ten minutes, please."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which number is 'siete'?",
+       "options": [
+        "7",
+        "6",
+        "8",
+        "9"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "uno",
+         "one"
+        ],
+        [
+         "tres",
+         "three"
+        ],
+        [
+         "cinco",
+         "five"
+        ],
+        [
+         "ocho",
+         "eight"
+        ],
+        [
+         "diez",
+         "ten"
+        ]
+       ]
+      },
+      {
+       "t": "learn",
+       "word": "¿Cuántos?",
+       "tl": "KWAN-tos",
+       "meaning": "How many?",
+       "example": "¿Cuántos euros?",
+       "exampleMeaning": "How many euros?"
+      },
+      {
+       "t": "listen",
+       "text": "Dos, cuatro, seis, ocho.",
+       "meaning": "Two, four, six, eight.",
+       "bank": [
+        "nueve",
+        "uno",
+        "tres",
+        "Dos,",
+        "ocho.",
+        "cuatro,",
+        "seis,"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Three coffees, please.",
+       "answer": "Tres cafés, por favor.",
+       "bank": [
+        "favor.",
+        "cinco",
+        "gracias",
+        "cafés,",
+        "Tres",
+        "dos",
+        "por"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Uno, dos, ___, cuatro.",
+       "meaning": "One, two, three, four.",
+       "options": [
+        "ocho",
+        "tres",
+        "seis",
+        "diez"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Cinco, seis, siete, ocho.",
+       "meaning": "Five, six, seven, eight."
+      },
+      {
+       "t": "choose",
+       "prompt": "'nueve' + 'uno' =",
+       "options": [
+        "nueve",
+        "siete",
+        "ocho",
+        "diez"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "¿Cuántos? Diez.",
+       "answer": "How many? Ten.",
+       "bank": [
+        "many?",
+        "Ten.",
+        "five",
+        "How",
+        "please",
+        "two"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u2l2",
+     "title": "People & articles",
+     "items": [
+      {
+       "t": "learn",
+       "word": "el hombre",
+       "tl": "el OM-breh",
+       "meaning": "the man",
+       "example": "El hombre es alto.",
+       "exampleMeaning": "The man is tall."
+      },
+      {
+       "t": "learn",
+       "word": "la mujer",
+       "tl": "la moo-HER",
+       "meaning": "the woman",
+       "example": "La mujer es de España.",
+       "exampleMeaning": "The woman is from Spain."
+      },
+      {
+       "t": "learn",
+       "word": "el niño / la niña",
+       "tl": "el NEE-nyo / la NEE-nya",
+       "meaning": "the boy / the girl",
+       "example": "El niño y la niña.",
+       "exampleMeaning": "The boy and the girl."
+      },
+      {
+       "t": "learn",
+       "word": "un amigo / una amiga",
+       "tl": "oon ah-MEE-go / OO-na ah-MEE-ga",
+       "meaning": "a (male) friend / a (female) friend",
+       "example": "Ana es una amiga.",
+       "exampleMeaning": "Ana is a friend."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which article goes with 'mujer'?",
+       "options": [
+        "un",
+        "los",
+        "la",
+        "el"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "learn",
+       "word": "soy / eres / es",
+       "tl": "soy / EH-res / es",
+       "meaning": "I am / you are / he, she, it is",
+       "example": "Yo soy estudiante. Tú eres profesor.",
+       "exampleMeaning": "I am a student. You are a teacher."
+      },
+      {
+       "t": "learn",
+       "word": "estudiante",
+       "tl": "es-too-dee-AN-teh",
+       "meaning": "student",
+       "example": "Soy estudiante.",
+       "exampleMeaning": "I'm a student."
+      },
+      {
+       "t": "learn",
+       "word": "profesor / profesora",
+       "tl": "pro-feh-SOR / pro-feh-SO-ra",
+       "meaning": "teacher (m/f)",
+       "example": "Ella es profesora.",
+       "exampleMeaning": "She is a teacher."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "el hombre",
+         "the man"
+        ],
+        [
+         "la mujer",
+         "the woman"
+        ],
+        [
+         "la niña",
+         "the girl"
+        ],
+        [
+         "un amigo",
+         "a friend"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "She is a teacher.",
+       "answer": "Ella es profesora.",
+       "bank": [
+        "es",
+        "profesora.",
+        "el",
+        "hombre",
+        "Ella",
+        "soy",
+        "eres"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "El niño es estudiante.",
+       "meaning": "The boy is a student.",
+       "bank": [
+        "niño",
+        "es",
+        "mujer",
+        "El",
+        "estudiante.",
+        "una",
+        "la"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Tú ___ de España.",
+       "meaning": "You are from Spain.",
+       "options": [
+        "la",
+        "eres",
+        "soy",
+        "es"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Yo soy estudiante y tú eres profesor.",
+       "meaning": "I am a student and you are a teacher."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Un amigo y una amiga.",
+       "answer": "A friend and a friend.",
+       "bank": [
+        "the",
+        "friend.",
+        "man",
+        "A",
+        "friend",
+        "a",
+        "woman",
+        "and"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Él es un hombre.' means...",
+       "options": [
+        "He is a man.",
+        "I am a man.",
+        "He is a boy.",
+        "She is a woman."
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u2l3",
+     "title": "Numbers 11–100 & age",
+     "items": [
+      {
+       "t": "learn",
+       "word": "once, doce, trece",
+       "tl": "ON-seh, DO-seh, TREH-seh",
+       "meaning": "eleven, twelve, thirteen",
+       "example": "Tengo trece años.",
+       "exampleMeaning": "I'm thirteen years old."
+      },
+      {
+       "t": "learn",
+       "word": "quince, veinte",
+       "tl": "KEEN-seh, VAYN-teh",
+       "meaning": "fifteen, twenty",
+       "example": "Veinte euros, por favor.",
+       "exampleMeaning": "Twenty euros, please."
+      },
+      {
+       "t": "learn",
+       "word": "treinta, cuarenta, cincuenta",
+       "tl": "TRAYN-ta, kwa-REN-ta, seen-KWEN-ta",
+       "meaning": "thirty, forty, fifty",
+       "example": "Mi padre tiene cincuenta años.",
+       "exampleMeaning": "My father is fifty years old."
+      },
+      {
+       "t": "learn",
+       "word": "cien",
+       "tl": "see-EN",
+       "meaning": "one hundred",
+       "example": "Cien personas.",
+       "exampleMeaning": "One hundred people."
+      },
+      {
+       "t": "learn",
+       "word": "¿Cuántos años tienes?",
+       "tl": "KWAN-tos AH-nyos tee-EH-nes",
+       "meaning": "How old are you?",
+       "example": "¿Cuántos años tienes, Ana?",
+       "exampleMeaning": "How old are you, Ana?"
+      },
+      {
+       "t": "learn",
+       "word": "Tengo ... años",
+       "tl": "TEN-go ... AH-nyos",
+       "meaning": "I am ... years old",
+       "example": "Tengo veinte años.",
+       "exampleMeaning": "I'm twenty years old."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'fifty'?",
+       "options": [
+        "cuarenta",
+        "cien",
+        "quince",
+        "cincuenta"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "once",
+         "eleven"
+        ],
+        [
+         "quince",
+         "fifteen"
+        ],
+        [
+         "veinte",
+         "twenty"
+        ],
+        [
+         "treinta",
+         "thirty"
+        ],
+        [
+         "cien",
+         "one hundred"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I am twenty years old.",
+       "answer": "Tengo veinte años.",
+       "bank": [
+        "cuántos",
+        "trece",
+        "años.",
+        "Tengo",
+        "veinte",
+        "tienes"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿Cuántos años tienes?",
+       "meaning": "How old are you?",
+       "bank": [
+        "años",
+        "tengo",
+        "hombre",
+        "doce",
+        "¿Cuántos",
+        "tienes?"
+       ]
+      },
+      {
+       "t": "learn",
+       "word": "el número de teléfono",
+       "tl": "el NOO-meh-ro deh teh-LEH-fo-no",
+       "meaning": "the phone number",
+       "example": "Mi número de teléfono es seis, cinco, uno...",
+       "exampleMeaning": "My phone number is six, five, one..."
+      },
+      {
+       "t": "fill",
+       "sentence": "Tengo treinta ___.",
+       "meaning": "I'm thirty years old.",
+       "options": [
+        "años",
+        "amigos",
+        "euros",
+        "días"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "Tengo doce años.",
+       "meaning": "I'm twelve years old."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Mi número es cuarenta y dos.",
+       "answer": "My number is forty-two.",
+       "bank": [
+        "My",
+        "is",
+        "fifty",
+        "twelve",
+        "forty-two.",
+        "number",
+        "phone"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'veinte' + 'diez' =",
+       "options": [
+        "trece",
+        "treinta",
+        "cuarenta",
+        "cincuenta"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u2l4",
+     "title": "Review: Numbers & People",
+     "items": [
+      {
+       "t": "learn",
+       "word": "y",
+       "tl": "ee",
+       "meaning": "and",
+       "example": "Un hombre y una mujer.",
+       "exampleMeaning": "A man and a woman."
+      },
+      {
+       "t": "learn",
+       "word": "¿Quién es?",
+       "tl": "kee-EN es",
+       "meaning": "Who is it?",
+       "example": "¿Quién es? Es mi amiga Ana.",
+       "exampleMeaning": "Who is it? It's my friend Ana."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which article goes with 'niño'?",
+       "options": [
+        "es",
+        "la",
+        "una",
+        "el"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The woman is a teacher.",
+       "answer": "La mujer es profesora.",
+       "bank": [
+        "mujer",
+        "hombre",
+        "La",
+        "estudiante",
+        "es",
+        "profesora.",
+        "el"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Tengo quince años.",
+       "meaning": "I'm fifteen years old.",
+       "bank": [
+        "veinte",
+        "tienes",
+        "años.",
+        "Tengo",
+        "quince",
+        "cien"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "dos",
+         "two"
+        ],
+        [
+         "doce",
+         "twelve"
+        ],
+        [
+         "veinte",
+         "twenty"
+        ],
+        [
+         "cuarenta",
+         "forty"
+        ],
+        [
+         "siete",
+         "seven"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "¿Cuántos años ___?",
+       "meaning": "How old are you?",
+       "options": [
+        "soy",
+        "tienes",
+        "tengo",
+        "eres"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "¿Quién es? Es un amigo.",
+       "meaning": "Who is it? It's a friend."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "El hombre tiene cincuenta años.",
+       "answer": "The man is fifty years old.",
+       "bank": [
+        "man",
+        "The",
+        "years",
+        "woman",
+        "fifty",
+        "old.",
+        "is",
+        "forty",
+        "student"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Yo ___ estudiante.'",
+       "options": [
+        "es",
+        "soy",
+        "eres",
+        "tienes"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Four friends and ten students.",
+       "answer": "Cuatro amigos y diez estudiantes.",
+       "bank": [
+        "cinco",
+        "profesores",
+        "Cuatro",
+        "y",
+        "tres",
+        "diez",
+        "estudiantes.",
+        "amigos"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ella ___ de Estados Unidos.",
+       "meaning": "She is from the United States.",
+       "options": [
+        "tengo",
+        "es",
+        "eres",
+        "soy"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "Which number is 'trece'?",
+       "options": [
+        "30",
+        "13",
+        "11",
+        "3"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Mi amiga tiene veinte años.",
+       "meaning": "My friend is twenty years old.",
+       "bank": [
+        "años.",
+        "veinte",
+        "amiga",
+        "tiene",
+        "hombre",
+        "treinta",
+        "Mi",
+        "niña"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u3",
+   "title": "Food & Drink",
+   "emoji": "🍽️",
+   "goal": "Order food and drinks and say what you like",
+   "lessons": [
+    {
+     "id": "u3l1",
+     "title": "At the café",
+     "items": [
+      {
+       "t": "learn",
+       "word": "el café",
+       "tl": "el ka-FEH",
+       "meaning": "the coffee",
+       "example": "Un café con leche, por favor.",
+       "exampleMeaning": "A coffee with milk, please."
+      },
+      {
+       "t": "learn",
+       "word": "el té",
+       "tl": "el TEH",
+       "meaning": "the tea",
+       "example": "Quiero un té.",
+       "exampleMeaning": "I want a tea."
+      },
+      {
+       "t": "learn",
+       "word": "el agua",
+       "tl": "el AH-gwa",
+       "meaning": "the water",
+       "example": "Un vaso de agua, por favor.",
+       "exampleMeaning": "A glass of water, please."
+      },
+      {
+       "t": "learn",
+       "word": "la leche",
+       "tl": "la LEH-cheh",
+       "meaning": "the milk",
+       "example": "Café con leche.",
+       "exampleMeaning": "Coffee with milk."
+      },
+      {
+       "t": "learn",
+       "word": "quiero",
+       "tl": "kee-EH-ro",
+       "meaning": "I want",
+       "example": "Quiero un café.",
+       "exampleMeaning": "I want a coffee."
+      },
+      {
+       "t": "learn",
+       "word": "con / sin",
+       "tl": "kon / seen",
+       "meaning": "with / without",
+       "example": "Té con leche, sin azúcar.",
+       "exampleMeaning": "Tea with milk, without sugar."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'without'?",
+       "options": [
+        "sin",
+        "y",
+        "con",
+        "de"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "el café",
+         "the coffee"
+        ],
+        [
+         "el té",
+         "the tea"
+        ],
+        [
+         "el agua",
+         "the water"
+        ],
+        [
+         "la leche",
+         "the milk"
+        ],
+        [
+         "quiero",
+         "I want"
+        ]
+       ]
+      },
+      {
+       "t": "learn",
+       "word": "el azúcar",
+       "tl": "el ah-SOO-kar",
+       "meaning": "the sugar",
+       "example": "¿Con azúcar?",
+       "exampleMeaning": "With sugar?"
+      },
+      {
+       "t": "learn",
+       "word": "el pan",
+       "tl": "el PAN",
+       "meaning": "the bread",
+       "example": "Pan con queso.",
+       "exampleMeaning": "Bread with cheese."
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I want a coffee with milk.",
+       "answer": "Quiero un café con leche.",
+       "bank": [
+        "té",
+        "agua",
+        "café",
+        "leche.",
+        "Quiero",
+        "con",
+        "un",
+        "sin"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Un té sin azúcar, por favor.",
+       "meaning": "A tea without sugar, please.",
+       "bank": [
+        "azúcar,",
+        "sin",
+        "café",
+        "con",
+        "leche",
+        "té",
+        "por",
+        "Un",
+        "favor."
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Quiero agua ___ gas.",
+       "meaning": "I want water without gas (still water).",
+       "options": [
+        "con",
+        "sin",
+        "por",
+        "de"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Un café con leche, por favor.",
+       "meaning": "A coffee with milk, please."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Quiero pan y té.",
+       "answer": "I want bread and tea.",
+       "bank": [
+        "water",
+        "bread",
+        "coffee",
+        "and",
+        "tea.",
+        "I",
+        "milk",
+        "want"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u3l2",
+     "title": "Ordering a meal",
+     "items": [
+      {
+       "t": "learn",
+       "word": "el camarero / la camarera",
+       "tl": "el ka-ma-REH-ro",
+       "meaning": "the waiter / the waitress",
+       "example": "¡Camarero, por favor!",
+       "exampleMeaning": "Waiter, please!"
+      },
+      {
+       "t": "learn",
+       "word": "la cuenta",
+       "tl": "la KWEN-ta",
+       "meaning": "the bill / check",
+       "example": "La cuenta, por favor.",
+       "exampleMeaning": "The bill, please."
+      },
+      {
+       "t": "learn",
+       "word": "el menú",
+       "tl": "el meh-NOO",
+       "meaning": "the menu",
+       "example": "El menú, por favor.",
+       "exampleMeaning": "The menu, please."
+      },
+      {
+       "t": "learn",
+       "word": "el pollo / el pescado",
+       "tl": "el PO-yo / el pes-KAH-do",
+       "meaning": "the chicken / the fish",
+       "example": "Pollo con arroz.",
+       "exampleMeaning": "Chicken with rice."
+      },
+      {
+       "t": "learn",
+       "word": "el arroz / la ensalada",
+       "tl": "el ah-RROS / la en-sa-LAH-da",
+       "meaning": "the rice / the salad",
+       "example": "Una ensalada, por favor.",
+       "exampleMeaning": "A salad, please."
+      },
+      {
+       "t": "learn",
+       "word": "el vino / la cerveza",
+       "tl": "el VEE-no / la ser-VEH-sa",
+       "meaning": "the wine / the beer",
+       "example": "Una cerveza fría.",
+       "exampleMeaning": "A cold beer."
+      },
+      {
+       "t": "learn",
+       "word": "para mí",
+       "tl": "PA-ra MEE",
+       "meaning": "for me",
+       "example": "Para mí, el pescado.",
+       "exampleMeaning": "For me, the fish."
+      },
+      {
+       "t": "choose",
+       "prompt": "What do you ask for to pay?",
+       "options": [
+        "el menú",
+        "el pollo",
+        "la cerveza",
+        "la cuenta"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "el pollo",
+         "the chicken"
+        ],
+        [
+         "el pescado",
+         "the fish"
+        ],
+        [
+         "el arroz",
+         "the rice"
+        ],
+        [
+         "la cuenta",
+         "the bill"
+        ],
+        [
+         "el vino",
+         "the wine"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "For me, chicken with rice.",
+       "answer": "Para mí, pollo con arroz.",
+       "bank": [
+        "sin",
+        "mí,",
+        "pollo",
+        "Para",
+        "arroz.",
+        "cuenta",
+        "pescado",
+        "con"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "La cuenta, por favor.",
+       "meaning": "The bill, please.",
+       "bank": [
+        "menú",
+        "por",
+        "favor.",
+        "camarero",
+        "vino",
+        "cuenta,",
+        "La"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Una ___ fría, por favor.",
+       "meaning": "A cold beer, please.",
+       "options": [
+        "mesa",
+        "ensalada",
+        "cuenta",
+        "cerveza"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "Camarero, el menú, por favor.",
+       "meaning": "Waiter, the menu, please."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Quiero pescado y una ensalada.",
+       "answer": "I want fish and a salad.",
+       "bank": [
+        "and",
+        "salad.",
+        "I",
+        "rice",
+        "chicken",
+        "beer",
+        "a",
+        "want",
+        "fish"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u3l3",
+     "title": "Likes & hunger",
+     "items": [
+      {
+       "t": "learn",
+       "word": "me gusta",
+       "tl": "meh GOOS-ta",
+       "meaning": "I like (one thing)",
+       "example": "Me gusta el café.",
+       "exampleMeaning": "I like coffee."
+      },
+      {
+       "t": "learn",
+       "word": "no me gusta",
+       "tl": "no meh GOOS-ta",
+       "meaning": "I don't like",
+       "example": "No me gusta el pescado.",
+       "exampleMeaning": "I don't like fish."
+      },
+      {
+       "t": "learn",
+       "word": "me gustan",
+       "tl": "meh GOOS-tan",
+       "meaning": "I like (plural things)",
+       "example": "Me gustan las manzanas.",
+       "exampleMeaning": "I like apples."
+      },
+      {
+       "t": "learn",
+       "word": "la manzana / la naranja",
+       "tl": "la man-SA-na / la na-RAN-ha",
+       "meaning": "the apple / the orange",
+       "example": "Una manzana y dos naranjas.",
+       "exampleMeaning": "An apple and two oranges."
+      },
+      {
+       "t": "learn",
+       "word": "el queso",
+       "tl": "el KEH-so",
+       "meaning": "the cheese",
+       "example": "Pan con queso.",
+       "exampleMeaning": "Bread with cheese."
+      },
+      {
+       "t": "learn",
+       "word": "comer / beber",
+       "tl": "ko-MER / beh-BER",
+       "meaning": "to eat / to drink",
+       "example": "Quiero comer pollo y beber agua.",
+       "exampleMeaning": "I want to eat chicken and drink water."
+      },
+      {
+       "t": "learn",
+       "word": "Tengo hambre / Tengo sed",
+       "tl": "TEN-go AM-breh / sed",
+       "meaning": "I'm hungry / I'm thirsty",
+       "example": "Tengo hambre. ¿Comemos?",
+       "exampleMeaning": "I'm hungry. Shall we eat?"
+      },
+      {
+       "t": "choose",
+       "prompt": "'Me gustan...' is used with:",
+       "options": [
+        "drinks only",
+        "people only",
+        "one thing",
+        "plural things"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la manzana",
+         "the apple"
+        ],
+        [
+         "la naranja",
+         "the orange"
+        ],
+        [
+         "el queso",
+         "the cheese"
+        ],
+        [
+         "comer",
+         "to eat"
+        ],
+        [
+         "beber",
+         "to drink"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I like coffee with milk.",
+       "answer": "Me gusta el café con leche.",
+       "bank": [
+        "sin",
+        "café",
+        "el",
+        "gustan",
+        "Me",
+        "té",
+        "con",
+        "gusta",
+        "leche."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Tengo hambre y tengo sed.",
+       "meaning": "I'm hungry and I'm thirsty.",
+       "bank": [
+        "Tengo",
+        "comer",
+        "hambre",
+        "y",
+        "tengo",
+        "sed.",
+        "gusta",
+        "no"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Me ___ las naranjas.",
+       "meaning": "I like oranges.",
+       "options": [
+        "gusta",
+        "tengo",
+        "gustan",
+        "quiero"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "No me gusta el pescado.",
+       "meaning": "I don't like fish."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Quiero comer queso y pan.",
+       "answer": "I want to eat cheese and bread.",
+       "bank": [
+        "drink",
+        "apple",
+        "to",
+        "I",
+        "fish",
+        "want",
+        "bread.",
+        "eat",
+        "cheese",
+        "and"
+       ]
+      },
+      {
+       "t": "learn",
+       "word": "delicioso",
+       "tl": "deh-lee-see-OH-so",
+       "meaning": "delicious",
+       "example": "¡El pollo está delicioso!",
+       "exampleMeaning": "The chicken is delicious!"
+      }
+     ]
+    },
+    {
+     "id": "u3l4",
+     "title": "Review: Food & Drink",
+     "items": [
+      {
+       "t": "learn",
+       "word": "¿Qué desea?",
+       "tl": "keh deh-SEH-a",
+       "meaning": "What would you like? (formal)",
+       "example": "—¿Qué desea? —Un café, por favor.",
+       "exampleMeaning": "—What would you like? —A coffee, please."
+      },
+      {
+       "t": "learn",
+       "word": "la mesa",
+       "tl": "la MEH-sa",
+       "meaning": "the table",
+       "example": "Una mesa para dos, por favor.",
+       "exampleMeaning": "A table for two, please."
+      },
+      {
+       "t": "choose",
+       "prompt": "The waiter says '¿Qué desea?'. You answer:",
+       "options": [
+        "La mujer es alta",
+        "Tengo sed",
+        "Me llamo Ana",
+        "Quiero un café"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "A table for two, please.",
+       "answer": "Una mesa para dos, por favor.",
+       "bank": [
+        "mesa",
+        "Una",
+        "por",
+        "cuenta",
+        "dos,",
+        "favor.",
+        "para",
+        "tres",
+        "mí"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Me gusta el vino, pero no me gusta la cerveza.",
+       "meaning": "I like wine, but I don't like beer.",
+       "bank": [
+        "agua",
+        "con",
+        "gusta",
+        "pero",
+        "Me",
+        "gustan",
+        "vino,",
+        "cerveza.",
+        "no",
+        "el",
+        "me",
+        "la",
+        "gusta"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "tengo hambre",
+         "I'm hungry"
+        ],
+        [
+         "tengo sed",
+         "I'm thirsty"
+        ],
+        [
+         "la mesa",
+         "the table"
+        ],
+        [
+         "delicioso",
+         "delicious"
+        ],
+        [
+         "la cuenta",
+         "the bill"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Para ___, pollo con arroz.",
+       "meaning": "For me, chicken with rice.",
+       "options": [
+        "yo",
+        "me",
+        "tú",
+        "mí"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "Tengo hambre. Quiero comer una ensalada.",
+       "meaning": "I'm hungry. I want to eat a salad."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Un café sin azúcar y un vaso de agua.",
+       "answer": "A coffee without sugar and a glass of water.",
+       "bank": [
+        "coffee",
+        "tea",
+        "and",
+        "sugar",
+        "without",
+        "glass",
+        "A",
+        "water.",
+        "of",
+        "with",
+        "milk",
+        "a"
+       ]
+      },
+      {
+       "t": "learn",
+       "word": "pero",
+       "tl": "PEH-ro",
+       "meaning": "but",
+       "example": "Me gusta el té, pero no me gusta el café.",
+       "exampleMeaning": "I like tea, but I don't like coffee."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is correct?",
+       "options": [
+        "Me gustan la manzana.",
+        "Me gusta las manzanas.",
+        "Me gustan las manzanas.",
+        "Gusta me las manzanas."
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I want to drink water, please.",
+       "answer": "Quiero beber agua, por favor.",
+       "bank": [
+        "gracias",
+        "favor.",
+        "beber",
+        "por",
+        "agua,",
+        "leche",
+        "comer",
+        "Quiero"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "El pescado está ___.",
+       "meaning": "The fish is delicious.",
+       "options": [
+        "delicioso",
+        "camarero",
+        "hambre",
+        "cuenta"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "choose",
+       "prompt": "'la cuenta' means...",
+       "options": [
+        "the menu",
+        "the bill",
+        "the waiter",
+        "the table"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u4",
+   "title": "Family",
+   "emoji": "👨‍👩‍👧",
+   "goal": "Talk about your family, home and pets",
+   "lessons": [
+    {
+     "id": "u4l1",
+     "title": "My family",
+     "items": [
+      {
+       "t": "learn",
+       "word": "la familia",
+       "tl": "la fa-MEE-lee-a",
+       "meaning": "the family",
+       "example": "Mi familia es grande.",
+       "exampleMeaning": "My family is big."
+      },
+      {
+       "t": "learn",
+       "word": "la madre / el padre",
+       "tl": "la MAH-dreh / el PAH-dreh",
+       "meaning": "the mother / the father",
+       "example": "Mi madre es profesora.",
+       "exampleMeaning": "My mother is a teacher."
+      },
+      {
+       "t": "learn",
+       "word": "el hermano / la hermana",
+       "tl": "el er-MAH-no / la er-MAH-na",
+       "meaning": "the brother / the sister",
+       "example": "Tengo un hermano y dos hermanas.",
+       "exampleMeaning": "I have one brother and two sisters."
+      },
+      {
+       "t": "learn",
+       "word": "el hijo / la hija",
+       "tl": "el EE-ho / la EE-ha",
+       "meaning": "the son / the daughter",
+       "example": "Mi hija tiene cinco años.",
+       "exampleMeaning": "My daughter is five years old."
+      },
+      {
+       "t": "learn",
+       "word": "el abuelo / la abuela",
+       "tl": "el ah-BWEH-lo / la ah-BWEH-la",
+       "meaning": "the grandfather / the grandmother",
+       "example": "Mi abuela tiene ochenta años.",
+       "exampleMeaning": "My grandmother is eighty years old."
+      },
+      {
+       "t": "learn",
+       "word": "mi / tu",
+       "tl": "mee / too",
+       "meaning": "my / your",
+       "example": "Mi padre y tu madre.",
+       "exampleMeaning": "My father and your mother."
+      },
+      {
+       "t": "learn",
+       "word": "tengo / tienes / tiene",
+       "tl": "TEN-go / tee-EH-nes / tee-EH-neh",
+       "meaning": "I have / you have / he, she has",
+       "example": "Tengo dos hermanos.",
+       "exampleMeaning": "I have two brothers."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the sister'?",
+       "options": [
+        "la abuela",
+        "la hija",
+        "la madre",
+        "la hermana"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la madre",
+         "the mother"
+        ],
+        [
+         "el padre",
+         "the father"
+        ],
+        [
+         "el hermano",
+         "the brother"
+        ],
+        [
+         "la hija",
+         "the daughter"
+        ],
+        [
+         "el abuelo",
+         "the grandfather"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I have two sisters.",
+       "answer": "Tengo dos hermanas.",
+       "bank": [
+        "hermanos",
+        "Tengo",
+        "mi",
+        "tienes",
+        "dos",
+        "hermanas."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Mi madre tiene cuarenta años.",
+       "meaning": "My mother is forty years old.",
+       "bank": [
+        "tu",
+        "padre",
+        "cuarenta",
+        "tiene",
+        "Mi",
+        "años.",
+        "treinta",
+        "madre"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ abuela es de España.",
+       "meaning": "My grandmother is from Spain.",
+       "options": [
+        "Yo",
+        "Tu",
+        "El",
+        "Mi"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "Mi familia es grande.",
+       "meaning": "My family is big."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "¿Tienes hermanos?",
+       "answer": "Do you have siblings?",
+       "bank": [
+        "siblings?",
+        "have",
+        "father",
+        "my",
+        "Do",
+        "you",
+        "sisters"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u4l2",
+     "title": "Describing people",
+     "items": [
+      {
+       "t": "learn",
+       "word": "alto / alta",
+       "tl": "AL-to / AL-ta",
+       "meaning": "tall (m/f)",
+       "example": "Mi hermano es alto.",
+       "exampleMeaning": "My brother is tall."
+      },
+      {
+       "t": "learn",
+       "word": "bajo / baja",
+       "tl": "BAH-ho / BAH-ha",
+       "meaning": "short (m/f)",
+       "example": "Mi hermana es baja.",
+       "exampleMeaning": "My sister is short."
+      },
+      {
+       "t": "learn",
+       "word": "joven / mayor",
+       "tl": "HO-ven / ma-YOR",
+       "meaning": "young / old (person)",
+       "example": "Mi abuelo es mayor.",
+       "exampleMeaning": "My grandfather is old."
+      },
+      {
+       "t": "learn",
+       "word": "simpático / simpática",
+       "tl": "seem-PAH-tee-ko",
+       "meaning": "nice, friendly (m/f)",
+       "example": "Tu madre es muy simpática.",
+       "exampleMeaning": "Your mother is very nice."
+      },
+      {
+       "t": "learn",
+       "word": "inteligente",
+       "tl": "een-teh-lee-HEN-teh",
+       "meaning": "intelligent",
+       "example": "Mi hija es inteligente.",
+       "exampleMeaning": "My daughter is intelligent."
+      },
+      {
+       "t": "learn",
+       "word": "guapo / guapa",
+       "tl": "GWAH-po / GWAH-pa",
+       "meaning": "handsome / pretty",
+       "example": "¡Tu hermano es muy guapo!",
+       "exampleMeaning": "Your brother is very handsome!"
+      },
+      {
+       "t": "choose",
+       "prompt": "Adjective for a woman who is tall:",
+       "options": [
+        "alto",
+        "alta",
+        "bajo",
+        "altos"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "learn",
+       "word": "son",
+       "tl": "son",
+       "meaning": "they are",
+       "example": "Mis hermanos son altos.",
+       "exampleMeaning": "My brothers are tall."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "alto",
+         "tall"
+        ],
+        [
+         "bajo",
+         "short"
+        ],
+        [
+         "joven",
+         "young"
+        ],
+        [
+         "simpático",
+         "nice"
+        ],
+        [
+         "inteligente",
+         "intelligent"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My sister is very intelligent.",
+       "answer": "Mi hermana es muy inteligente.",
+       "bank": [
+        "son",
+        "es",
+        "hermano",
+        "muy",
+        "inteligente.",
+        "Mi",
+        "alta",
+        "hermana"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Mi padre es alto y simpático.",
+       "meaning": "My father is tall and nice.",
+       "bank": [
+        "padre",
+        "es",
+        "simpático.",
+        "baja",
+        "mayor",
+        "madre",
+        "y",
+        "Mi",
+        "alto"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Mis abuelos ___ mayores.",
+       "meaning": "My grandparents are old.",
+       "options": [
+        "son",
+        "tiene",
+        "soy",
+        "es"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "Mi abuela es muy simpática.",
+       "meaning": "My grandmother is very nice."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Tu hermana es joven y guapa.",
+       "answer": "Your sister is young and pretty.",
+       "bank": [
+        "pretty.",
+        "and",
+        "brother",
+        "Your",
+        "sister",
+        "young",
+        "tall",
+        "is",
+        "my"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u4l3",
+     "title": "Home & pets",
+     "items": [
+      {
+       "t": "learn",
+       "word": "la casa",
+       "tl": "la KAH-sa",
+       "meaning": "the house",
+       "example": "Mi casa es pequeña.",
+       "exampleMeaning": "My house is small."
+      },
+      {
+       "t": "learn",
+       "word": "grande / pequeño",
+       "tl": "GRAN-deh / peh-KEH-nyo",
+       "meaning": "big / small",
+       "example": "Una casa grande.",
+       "exampleMeaning": "A big house."
+      },
+      {
+       "t": "learn",
+       "word": "el perro / el gato",
+       "tl": "el PEH-rro / el GAH-to",
+       "meaning": "the dog / the cat",
+       "example": "Tengo un perro y un gato.",
+       "exampleMeaning": "I have a dog and a cat."
+      },
+      {
+       "t": "learn",
+       "word": "vivo en",
+       "tl": "VEE-vo en",
+       "meaning": "I live in",
+       "example": "Vivo en Madrid.",
+       "exampleMeaning": "I live in Madrid."
+      },
+      {
+       "t": "learn",
+       "word": "hay",
+       "tl": "eye",
+       "meaning": "there is / there are",
+       "example": "Hay tres gatos en la casa.",
+       "exampleMeaning": "There are three cats in the house."
+      },
+      {
+       "t": "learn",
+       "word": "nuestro / nuestra",
+       "tl": "NWES-tro / NWES-tra",
+       "meaning": "our (m/f)",
+       "example": "Nuestra casa es grande.",
+       "exampleMeaning": "Our house is big."
+      },
+      {
+       "t": "learn",
+       "word": "el esposo / la esposa",
+       "tl": "el es-PO-so / la es-PO-sa",
+       "meaning": "the husband / the wife",
+       "example": "Mi esposa se llama Laura.",
+       "exampleMeaning": "My wife's name is Laura."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'there is'?",
+       "options": [
+        "tengo",
+        "hay",
+        "es",
+        "vivo"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la casa",
+         "the house"
+        ],
+        [
+         "el perro",
+         "the dog"
+        ],
+        [
+         "el gato",
+         "the cat"
+        ],
+        [
+         "grande",
+         "big"
+        ],
+        [
+         "pequeño",
+         "small"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I live in a small house.",
+       "answer": "Vivo en una casa pequeña.",
+       "bank": [
+        "perro",
+        "hay",
+        "casa",
+        "en",
+        "grande",
+        "pequeña.",
+        "Vivo",
+        "una"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Hay un perro en la casa.",
+       "meaning": "There is a dog in the house.",
+       "bank": [
+        "casa.",
+        "perro",
+        "en",
+        "dos",
+        "gato",
+        "Hay",
+        "la",
+        "un",
+        "grande"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ casa es grande.",
+       "meaning": "Our house is big.",
+       "options": [
+        "Mi",
+        "Nuestra",
+        "Tu",
+        "Nuestro"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Tengo un gato pequeño.",
+       "meaning": "I have a small cat."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Mi esposo vive en Barcelona.",
+       "answer": "My husband lives in Barcelona.",
+       "bank": [
+        "dog",
+        "My",
+        "husband",
+        "lives",
+        "house",
+        "Barcelona.",
+        "in",
+        "wife"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u4l4",
+     "title": "Review: Family",
+     "items": [
+      {
+       "t": "learn",
+       "word": "¿Cómo se llama?",
+       "tl": "KOH-mo seh YAH-ma",
+       "meaning": "What's his/her name?",
+       "example": "¿Cómo se llama tu hermano?",
+       "exampleMeaning": "What's your brother's name?"
+      },
+      {
+       "t": "learn",
+       "word": "los padres",
+       "tl": "los PAH-dres",
+       "meaning": "the parents",
+       "example": "Mis padres son simpáticos.",
+       "exampleMeaning": "My parents are nice."
+      },
+      {
+       "t": "choose",
+       "prompt": "'los padres' means...",
+       "options": [
+        "the brothers",
+        "the fathers",
+        "the grandparents",
+        "the parents"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My parents are tall.",
+       "answer": "Mis padres son altos.",
+       "bank": [
+        "altos.",
+        "es",
+        "son",
+        "Mis",
+        "hermanos",
+        "padres",
+        "bajos"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿Cómo se llama tu madre?",
+       "meaning": "What's your mother's name?",
+       "bank": [
+        "se",
+        "¿Cómo",
+        "madre?",
+        "llamo",
+        "tu",
+        "padre",
+        "llama",
+        "te"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la esposa",
+         "the wife"
+        ],
+        [
+         "el hijo",
+         "the son"
+        ],
+        [
+         "la abuela",
+         "the grandmother"
+        ],
+        [
+         "los padres",
+         "the parents"
+        ],
+        [
+         "joven",
+         "young"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Mi hermana ___ veinte años.",
+       "meaning": "My sister is twenty years old.",
+       "options": [
+        "hay",
+        "tiene",
+        "es",
+        "tengo"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Mi familia vive en una casa grande.",
+       "meaning": "My family lives in a big house."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Hay dos perros y un gato en mi casa.",
+       "answer": "There are two dogs and a cat in my house.",
+       "bank": [
+        "small",
+        "our",
+        "in",
+        "and",
+        "There",
+        "three",
+        "dogs",
+        "house.",
+        "a",
+        "two",
+        "cat",
+        "my",
+        "are"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is correct?",
+       "options": [
+        "Mi madre son alta.",
+        "Mi madre es alto.",
+        "Mi madre es alta.",
+        "Mi madre es altos."
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Our grandfather is old and very nice.",
+       "answer": "Nuestro abuelo es mayor y muy simpático.",
+       "bank": [
+        "abuela",
+        "es",
+        "abuelo",
+        "simpático.",
+        "Nuestro",
+        "mayor",
+        "y",
+        "joven",
+        "simpática",
+        "muy"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Tu hermano es muy ___.",
+       "meaning": "Your brother is very handsome.",
+       "options": [
+        "guapa",
+        "casa",
+        "guapo",
+        "hay"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Vivo con mi esposa y mis dos hijos.",
+       "meaning": "I live with my wife and my two sons.",
+       "bank": [
+        "hijas",
+        "esposo",
+        "dos",
+        "mi",
+        "esposa",
+        "hijos.",
+        "mis",
+        "y",
+        "Vivo",
+        "con",
+        "en"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'I have a brother'?",
+       "options": [
+        "Tiene una hermana",
+        "Tengo un hermano",
+        "Hay un hermano",
+        "Tienes un hermano"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u5",
+   "title": "Around Town",
+   "emoji": "🗺️",
+   "goal": "Ask for and give directions, and get around the city",
+   "lessons": [
+    {
+     "id": "u5l1",
+     "title": "Places in town",
+     "items": [
+      {
+       "t": "learn",
+       "word": "¿Dónde está...?",
+       "tl": "DON-deh es-TAH",
+       "meaning": "Where is...?",
+       "example": "¿Dónde está el banco?",
+       "exampleMeaning": "Where is the bank?"
+      },
+      {
+       "t": "learn",
+       "word": "la calle",
+       "tl": "la KA-yeh",
+       "meaning": "the street",
+       "example": "Vivo en la calle Mayor.",
+       "exampleMeaning": "I live on Mayor Street."
+      },
+      {
+       "t": "learn",
+       "word": "el banco",
+       "tl": "el BAN-ko",
+       "meaning": "the bank",
+       "example": "El banco está cerrado.",
+       "exampleMeaning": "The bank is closed."
+      },
+      {
+       "t": "learn",
+       "word": "la estación",
+       "tl": "la es-ta-see-ON",
+       "meaning": "the station",
+       "example": "La estación de tren.",
+       "exampleMeaning": "The train station."
+      },
+      {
+       "t": "learn",
+       "word": "el hospital / la farmacia",
+       "tl": "el os-pee-TAL / la far-MA-see-a",
+       "meaning": "the hospital / the pharmacy",
+       "example": "La farmacia está al lado del hospital.",
+       "exampleMeaning": "The pharmacy is next to the hospital."
+      },
+      {
+       "t": "learn",
+       "word": "el supermercado",
+       "tl": "el soo-per-mer-KAH-do",
+       "meaning": "the supermarket",
+       "example": "Voy al supermercado.",
+       "exampleMeaning": "I'm going to the supermarket."
+      },
+      {
+       "t": "learn",
+       "word": "el museo / el hotel",
+       "tl": "el moo-SEH-o / el o-TEL",
+       "meaning": "the museum / the hotel",
+       "example": "El museo está en el centro.",
+       "exampleMeaning": "The museum is downtown."
+      },
+      {
+       "t": "choose",
+       "prompt": "Where do you buy medicine?",
+       "options": [
+        "el banco",
+        "la estación",
+        "el museo",
+        "la farmacia"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la calle",
+         "the street"
+        ],
+        [
+         "el banco",
+         "the bank"
+        ],
+        [
+         "la estación",
+         "the station"
+        ],
+        [
+         "el hospital",
+         "the hospital"
+        ],
+        [
+         "el museo",
+         "the museum"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Where is the hotel?",
+       "answer": "¿Dónde está el hotel?",
+       "bank": [
+        "calle",
+        "hay",
+        "banco",
+        "¿Dónde",
+        "hotel?",
+        "está",
+        "el"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿Dónde está la estación?",
+       "meaning": "Where is the station?",
+       "bank": [
+        "estación?",
+        "farmacia",
+        "museo",
+        "está",
+        "¿Dónde",
+        "hotel",
+        "la"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "¿Dónde ___ el supermercado?",
+       "meaning": "Where is the supermarket?",
+       "options": [
+        "está",
+        "tiene",
+        "es",
+        "hay"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "¿Dónde está el banco, por favor?",
+       "meaning": "Where is the bank, please?"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "El museo está en la calle Mayor.",
+       "answer": "The museum is on Mayor Street.",
+       "bank": [
+        "Street.",
+        "is",
+        "Mayor",
+        "on",
+        "bank",
+        "museum",
+        "The",
+        "where",
+        "hotel"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u5l2",
+     "title": "Giving directions",
+     "items": [
+      {
+       "t": "learn",
+       "word": "a la derecha / a la izquierda",
+       "tl": "ah la deh-REH-cha / ees-kee-ER-da",
+       "meaning": "to the right / to the left",
+       "example": "El banco está a la derecha.",
+       "exampleMeaning": "The bank is on the right."
+      },
+      {
+       "t": "learn",
+       "word": "todo recto",
+       "tl": "TO-do REK-to",
+       "meaning": "straight ahead",
+       "example": "Siga todo recto.",
+       "exampleMeaning": "Go straight ahead."
+      },
+      {
+       "t": "learn",
+       "word": "cerca / lejos",
+       "tl": "SER-ka / LEH-hos",
+       "meaning": "near / far",
+       "example": "El hotel está cerca.",
+       "exampleMeaning": "The hotel is near."
+      },
+      {
+       "t": "learn",
+       "word": "aquí / allí",
+       "tl": "ah-KEE / ah-YEE",
+       "meaning": "here / there",
+       "example": "La farmacia está allí.",
+       "exampleMeaning": "The pharmacy is there."
+      },
+      {
+       "t": "learn",
+       "word": "al lado de",
+       "tl": "al LAH-do deh",
+       "meaning": "next to",
+       "example": "El banco está al lado del museo.",
+       "exampleMeaning": "The bank is next to the museum."
+      },
+      {
+       "t": "learn",
+       "word": "enfrente de",
+       "tl": "en-FREN-teh deh",
+       "meaning": "opposite / in front of",
+       "example": "La estación está enfrente del hotel.",
+       "exampleMeaning": "The station is opposite the hotel."
+      },
+      {
+       "t": "learn",
+       "word": "Gire / Siga",
+       "tl": "HEE-reh / SEE-ga",
+       "meaning": "Turn / Continue (formal)",
+       "example": "Gire a la izquierda y siga todo recto.",
+       "exampleMeaning": "Turn left and continue straight ahead."
+      },
+      {
+       "t": "choose",
+       "prompt": "'a la izquierda' means...",
+       "options": [
+        "straight ahead",
+        "to the right",
+        "far",
+        "to the left"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "a la derecha",
+         "to the right"
+        ],
+        [
+         "todo recto",
+         "straight ahead"
+        ],
+        [
+         "cerca",
+         "near"
+        ],
+        [
+         "lejos",
+         "far"
+        ],
+        [
+         "al lado de",
+         "next to"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Turn right.",
+       "answer": "Gire a la derecha.",
+       "bank": [
+        "derecha.",
+        "recto",
+        "la",
+        "Gire",
+        "izquierda",
+        "siga",
+        "a"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "El hospital está lejos de aquí.",
+       "meaning": "The hospital is far from here.",
+       "bank": [
+        "allí",
+        "cerca",
+        "aquí.",
+        "está",
+        "hospital",
+        "de",
+        "banco",
+        "lejos",
+        "El"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "La farmacia está ___ del supermercado.",
+       "meaning": "The pharmacy is next to the supermarket.",
+       "options": [
+        "recto",
+        "lejos",
+        "aquí",
+        "al lado"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "Siga todo recto y gire a la izquierda.",
+       "meaning": "Go straight ahead and turn left."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "El museo está enfrente de la estación.",
+       "answer": "The museum is opposite the station.",
+       "bank": [
+        "next",
+        "opposite",
+        "is",
+        "The",
+        "far",
+        "station.",
+        "to",
+        "the",
+        "museum",
+        "hotel"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u5l3",
+     "title": "Getting around",
+     "items": [
+      {
+       "t": "learn",
+       "word": "el autobús / el tren",
+       "tl": "el ow-to-BOOS / el tren",
+       "meaning": "the bus / the train",
+       "example": "El tren a Madrid.",
+       "exampleMeaning": "The train to Madrid."
+      },
+      {
+       "t": "learn",
+       "word": "el taxi / el metro",
+       "tl": "el TAK-see / el MEH-tro",
+       "meaning": "the taxi / the subway",
+       "example": "Tomo el metro.",
+       "exampleMeaning": "I take the subway."
+      },
+      {
+       "t": "learn",
+       "word": "el aeropuerto",
+       "tl": "el ah-eh-ro-PWER-to",
+       "meaning": "the airport",
+       "example": "Un taxi al aeropuerto, por favor.",
+       "exampleMeaning": "A taxi to the airport, please."
+      },
+      {
+       "t": "learn",
+       "word": "el billete",
+       "tl": "el bee-YEH-teh",
+       "meaning": "the ticket (Spain; 'boleto' in Latin America)",
+       "example": "Un billete para Sevilla.",
+       "exampleMeaning": "A ticket to Seville."
+      },
+      {
+       "t": "learn",
+       "word": "¿Cuánto cuesta?",
+       "tl": "KWAN-to KWES-ta",
+       "meaning": "How much does it cost?",
+       "example": "¿Cuánto cuesta el billete?",
+       "exampleMeaning": "How much does the ticket cost?"
+      },
+      {
+       "t": "learn",
+       "word": "voy a / necesito",
+       "tl": "voy ah / neh-seh-SEE-to",
+       "meaning": "I'm going to / I need",
+       "example": "Voy a la estación. Necesito un taxi.",
+       "exampleMeaning": "I'm going to the station. I need a taxi."
+      },
+      {
+       "t": "learn",
+       "word": "Perdón / Disculpe",
+       "tl": "per-DON / dees-KOOL-peh",
+       "meaning": "Excuse me / Sorry",
+       "example": "Disculpe, ¿dónde está el metro?",
+       "exampleMeaning": "Excuse me, where is the subway?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'I need'?",
+       "options": [
+        "necesito",
+        "voy",
+        "cuesta",
+        "gire"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "el autobús",
+         "the bus"
+        ],
+        [
+         "el tren",
+         "the train"
+        ],
+        [
+         "el aeropuerto",
+         "the airport"
+        ],
+        [
+         "el billete",
+         "the ticket"
+        ],
+        [
+         "necesito",
+         "I need"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How much does the ticket cost?",
+       "answer": "¿Cuánto cuesta el billete?",
+       "bank": [
+        "cuesta",
+        "billete?",
+        "taxi",
+        "necesito",
+        "tren",
+        "¿Cuánto",
+        "el"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Voy al aeropuerto en taxi.",
+       "meaning": "I'm going to the airport by taxi.",
+       "bank": [
+        "Voy",
+        "aeropuerto",
+        "al",
+        "metro",
+        "taxi.",
+        "tren",
+        "necesito",
+        "en"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___, ¿dónde está la estación de autobús?",
+       "meaning": "Excuse me, where is the bus station?",
+       "options": [
+        "Gracias",
+        "Adiós",
+        "Disculpe",
+        "Hola"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "Necesito un billete para Madrid.",
+       "meaning": "I need a ticket to Madrid."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Perdón, ¿cuánto cuesta el tren?",
+       "answer": "Excuse me, how much does the train cost?",
+       "bank": [
+        "much",
+        "where",
+        "how",
+        "Excuse",
+        "bus",
+        "train",
+        "me,",
+        "does",
+        "the",
+        "cost?",
+        "ticket"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u5l4",
+     "title": "Review: Around Town",
+     "items": [
+      {
+       "t": "learn",
+       "word": "el centro",
+       "tl": "el SEN-tro",
+       "meaning": "the city center / downtown",
+       "example": "Voy al centro en metro.",
+       "exampleMeaning": "I'm going downtown by subway."
+      },
+      {
+       "t": "learn",
+       "word": "Estoy perdido / perdida",
+       "tl": "es-TOY per-DEE-do",
+       "meaning": "I'm lost (m/f)",
+       "example": "Disculpe, estoy perdido.",
+       "exampleMeaning": "Excuse me, I'm lost."
+      },
+      {
+       "t": "choose",
+       "prompt": "Someone says 'Gire a la derecha'. You...",
+       "options": [
+        "turn right",
+        "go straight",
+        "stop",
+        "turn left"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Excuse me, where is the hospital?",
+       "answer": "Disculpe, ¿dónde está el hospital?",
+       "bank": [
+        "¿dónde",
+        "Disculpe,",
+        "hospital?",
+        "cerca",
+        "el",
+        "farmacia",
+        "está",
+        "gire"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "El supermercado está cerca, a la izquierda.",
+       "meaning": "The supermarket is near, on the left.",
+       "bank": [
+        "la",
+        "El",
+        "a",
+        "cerca,",
+        "lejos",
+        "está",
+        "recto",
+        "izquierda.",
+        "derecha",
+        "supermercado"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "el metro",
+         "the subway"
+        ],
+        [
+         "el centro",
+         "downtown"
+        ],
+        [
+         "enfrente de",
+         "opposite"
+        ],
+        [
+         "¿cuánto cuesta?",
+         "how much does it cost?"
+        ],
+        [
+         "estoy perdido",
+         "I'm lost"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "El hotel está ___ del banco.",
+       "meaning": "The hotel is opposite the bank.",
+       "options": [
+        "aquí",
+        "enfrente",
+        "recto",
+        "cuesta"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Estoy perdida. ¿Dónde está el centro?",
+       "meaning": "I'm lost. Where is downtown?"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Siga todo recto y el museo está a la derecha.",
+       "answer": "Go straight ahead and the museum is on the right.",
+       "bank": [
+        "Go",
+        "turn",
+        "is",
+        "and",
+        "the",
+        "ahead",
+        "on",
+        "near",
+        "museum",
+        "right.",
+        "the",
+        "straight",
+        "left"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Necesito un taxi al aeropuerto' means...",
+       "options": [
+        "I need a taxi to the airport",
+        "I'm going to the airport by train",
+        "Where is the airport?",
+        "I need a bus to the station"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The station is far from here.",
+       "answer": "La estación está lejos de aquí.",
+       "bank": [
+        "aquí.",
+        "allí",
+        "cerca",
+        "de",
+        "La",
+        "lejos",
+        "está",
+        "banco",
+        "estación"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "¿Cuánto ___ el billete de tren?",
+       "meaning": "How much does the train ticket cost?",
+       "options": [
+        "tiene",
+        "cuesta",
+        "está",
+        "hay"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Voy al banco y después al supermercado.",
+       "meaning": "I'm going to the bank and then to the supermarket.",
+       "bank": [
+        "supermercado.",
+        "tren",
+        "al",
+        "Voy",
+        "banco",
+        "y",
+        "al",
+        "después",
+        "museo",
+        "cerca"
+       ]
+      },
+      {
+       "t": "learn",
+       "word": "después",
+       "tl": "des-PWES",
+       "meaning": "after / then",
+       "example": "Primero el banco, después el museo.",
+       "exampleMeaning": "First the bank, then the museum."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u6",
+   "title": "Time & Dates",
+   "emoji": "⏰",
+   "goal": "Tell the time, name days, months and seasons",
+   "lessons": [
+    {
+     "id": "u6l1",
+     "title": "Days of the week",
+     "items": [
+      {
+       "t": "learn",
+       "word": "lunes, martes, miércoles",
+       "tl": "LOO-nes, MAR-tes, mee-ER-ko-les",
+       "meaning": "Monday, Tuesday, Wednesday",
+       "example": "El lunes trabajo.",
+       "exampleMeaning": "On Monday I work."
+      },
+      {
+       "t": "learn",
+       "word": "jueves, viernes",
+       "tl": "HWEH-ves, vee-ER-nes",
+       "meaning": "Thursday, Friday",
+       "example": "¡Por fin es viernes!",
+       "exampleMeaning": "It's finally Friday!"
+      },
+      {
+       "t": "learn",
+       "word": "sábado, domingo",
+       "tl": "SAH-ba-do, do-MEEN-go",
+       "meaning": "Saturday, Sunday",
+       "example": "El domingo como con mi familia.",
+       "exampleMeaning": "On Sunday I eat with my family."
+      },
+      {
+       "t": "learn",
+       "word": "hoy / mañana / ayer",
+       "tl": "oy / ma-NYA-na / ah-YER",
+       "meaning": "today / tomorrow / yesterday",
+       "example": "Hoy es lunes, mañana es martes.",
+       "exampleMeaning": "Today is Monday, tomorrow is Tuesday."
+      },
+      {
+       "t": "learn",
+       "word": "la semana",
+       "tl": "la seh-MAH-na",
+       "meaning": "the week",
+       "example": "Una semana tiene siete días.",
+       "exampleMeaning": "A week has seven days."
+      },
+      {
+       "t": "learn",
+       "word": "el fin de semana",
+       "tl": "el feen deh seh-MAH-na",
+       "meaning": "the weekend",
+       "example": "¡Buen fin de semana!",
+       "exampleMeaning": "Have a good weekend!"
+      },
+      {
+       "t": "learn",
+       "word": "¿Qué día es hoy?",
+       "tl": "keh DEE-a es oy",
+       "meaning": "What day is today?",
+       "example": "—¿Qué día es hoy? —Es jueves.",
+       "exampleMeaning": "—What day is today? —It's Thursday."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which day comes after 'martes'?",
+       "options": [
+        "miércoles",
+        "viernes",
+        "jueves",
+        "lunes"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "lunes",
+         "Monday"
+        ],
+        [
+         "miércoles",
+         "Wednesday"
+        ],
+        [
+         "viernes",
+         "Friday"
+        ],
+        [
+         "domingo",
+         "Sunday"
+        ],
+        [
+         "hoy",
+         "today"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Today is Saturday.",
+       "answer": "Hoy es sábado.",
+       "bank": [
+        "domingo",
+        "Hoy",
+        "ayer",
+        "mañana",
+        "es",
+        "sábado."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Mañana es viernes.",
+       "meaning": "Tomorrow is Friday.",
+       "bank": [
+        "viernes.",
+        "hoy",
+        "es",
+        "semana",
+        "jueves",
+        "Mañana"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "El ___ de semana voy al museo.",
+       "meaning": "On the weekend I go to the museum.",
+       "options": [
+        "hoy",
+        "fin",
+        "día",
+        "ayer"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "¿Qué día es hoy? Hoy es lunes.",
+       "meaning": "What day is today? Today is Monday."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ayer fue domingo.",
+       "answer": "Yesterday was Sunday.",
+       "bank": [
+        "Sunday.",
+        "tomorrow",
+        "today",
+        "Yesterday",
+        "was",
+        "Monday"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u6l2",
+     "title": "Telling time",
+     "items": [
+      {
+       "t": "learn",
+       "word": "¿Qué hora es?",
+       "tl": "keh OH-ra es",
+       "meaning": "What time is it?",
+       "example": "Perdón, ¿qué hora es?",
+       "exampleMeaning": "Excuse me, what time is it?"
+      },
+      {
+       "t": "learn",
+       "word": "Es la una",
+       "tl": "es la OO-na",
+       "meaning": "It's one o'clock",
+       "example": "Es la una de la tarde.",
+       "exampleMeaning": "It's one in the afternoon."
+      },
+      {
+       "t": "learn",
+       "word": "Son las dos",
+       "tl": "son las dos",
+       "meaning": "It's two o'clock",
+       "example": "Son las dos y diez.",
+       "exampleMeaning": "It's ten past two."
+      },
+      {
+       "t": "learn",
+       "word": "y media / y cuarto",
+       "tl": "ee MEH-dee-a / ee KWAR-to",
+       "meaning": "half past / quarter past",
+       "example": "Son las tres y media.",
+       "exampleMeaning": "It's half past three."
+      },
+      {
+       "t": "learn",
+       "word": "menos cuarto",
+       "tl": "MEH-nos KWAR-to",
+       "meaning": "quarter to",
+       "example": "Son las cinco menos cuarto.",
+       "exampleMeaning": "It's a quarter to five."
+      },
+      {
+       "t": "learn",
+       "word": "de la mañana / de la tarde / de la noche",
+       "tl": "deh la ma-NYA-na / TAR-deh / NO-cheh",
+       "meaning": "in the morning / afternoon / at night",
+       "example": "Son las ocho de la noche.",
+       "exampleMeaning": "It's eight at night."
+      },
+      {
+       "t": "learn",
+       "word": "ahora / tarde / temprano",
+       "tl": "ah-OH-ra / TAR-deh / tem-PRAH-no",
+       "meaning": "now / late / early",
+       "example": "Es tarde, ¡vamos!",
+       "exampleMeaning": "It's late, let's go!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'Son las cuatro y media' means...",
+       "options": [
+        "It's 3:45",
+        "It's 4:30",
+        "It's 4:45",
+        "It's 4:15"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "y media",
+         "half past"
+        ],
+        [
+         "y cuarto",
+         "quarter past"
+        ],
+        [
+         "menos cuarto",
+         "quarter to"
+        ],
+        [
+         "ahora",
+         "now"
+        ],
+        [
+         "temprano",
+         "early"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "It's half past seven.",
+       "answer": "Son las siete y media.",
+       "bank": [
+        "cuarto",
+        "siete",
+        "media.",
+        "y",
+        "una",
+        "las",
+        "Son",
+        "menos"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Son las diez de la mañana.",
+       "meaning": "It's ten in the morning.",
+       "bank": [
+        "las",
+        "diez",
+        "mañana.",
+        "tarde",
+        "una",
+        "noche",
+        "la",
+        "Son",
+        "de"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ la una y cuarto.",
+       "meaning": "It's a quarter past one.",
+       "options": [
+        "Es",
+        "Son",
+        "Está",
+        "Hay"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "¿Qué hora es? Son las nueve menos cuarto.",
+       "meaning": "What time is it? It's a quarter to nine."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Es tarde. Son las once de la noche.",
+       "answer": "It's late. It's eleven at night.",
+       "bank": [
+        "night.",
+        "at",
+        "early",
+        "It's",
+        "late.",
+        "eleven",
+        "morning",
+        "It's",
+        "now"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u6l3",
+     "title": "Months & seasons",
+     "items": [
+      {
+       "t": "learn",
+       "word": "enero, febrero, marzo, abril",
+       "tl": "eh-NEH-ro, feh-BREH-ro, MAR-so, ah-BREEL",
+       "meaning": "January, February, March, April",
+       "example": "Mi cumpleaños es en marzo.",
+       "exampleMeaning": "My birthday is in March."
+      },
+      {
+       "t": "learn",
+       "word": "mayo, junio, julio, agosto",
+       "tl": "MAH-yo, HOO-nee-o, HOO-lee-o, ah-GOS-to",
+       "meaning": "May, June, July, August",
+       "example": "En agosto no trabajo.",
+       "exampleMeaning": "In August I don't work."
+      },
+      {
+       "t": "learn",
+       "word": "septiembre, octubre, noviembre, diciembre",
+       "tl": "sep-tee-EM-breh, ok-TOO-breh, no-vee-EM-breh, dee-see-EM-breh",
+       "meaning": "September, October, November, December",
+       "example": "Diciembre es frío.",
+       "exampleMeaning": "December is cold."
+      },
+      {
+       "t": "learn",
+       "word": "el mes / el año",
+       "tl": "el mes / el AH-nyo",
+       "meaning": "the month / the year",
+       "example": "Un año tiene doce meses.",
+       "exampleMeaning": "A year has twelve months."
+      },
+      {
+       "t": "learn",
+       "word": "el cumpleaños",
+       "tl": "el koom-pleh-AH-nyos",
+       "meaning": "the birthday",
+       "example": "¡Feliz cumpleaños!",
+       "exampleMeaning": "Happy birthday!"
+      },
+      {
+       "t": "learn",
+       "word": "¿Cuándo?",
+       "tl": "KWAN-do",
+       "meaning": "When?",
+       "example": "¿Cuándo es tu cumpleaños?",
+       "exampleMeaning": "When is your birthday?"
+      },
+      {
+       "t": "learn",
+       "word": "verano, otoño, invierno, primavera",
+       "tl": "veh-RAH-no, o-TO-nyo, een-vee-ER-no, pree-ma-VEH-ra",
+       "meaning": "summer, autumn, winter, spring",
+       "example": "Me gusta el verano.",
+       "exampleMeaning": "I like summer."
+      },
+      {
+       "t": "learn",
+       "word": "Hace calor / Hace frío",
+       "tl": "AH-seh ka-LOR / FREE-o",
+       "meaning": "It's hot / It's cold (weather)",
+       "example": "En verano hace calor.",
+       "exampleMeaning": "In summer it's hot."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which month comes after 'junio'?",
+       "options": [
+        "julio",
+        "agosto",
+        "abril",
+        "mayo"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "enero",
+         "January"
+        ],
+        [
+         "mayo",
+         "May"
+        ],
+        [
+         "octubre",
+         "October"
+        ],
+        [
+         "el verano",
+         "summer"
+        ],
+        [
+         "el invierno",
+         "winter"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "When is your birthday?",
+       "answer": "¿Cuándo es tu cumpleaños?",
+       "bank": [
+        "hoy",
+        "cumpleaños?",
+        "tu",
+        "¿Cuándo",
+        "es",
+        "año",
+        "mes"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Mi cumpleaños es el cinco de abril.",
+       "meaning": "My birthday is on the fifth of April.",
+       "bank": [
+        "año",
+        "es",
+        "el",
+        "marzo",
+        "abril.",
+        "Mi",
+        "cinco",
+        "cuándo",
+        "cumpleaños",
+        "de"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "En invierno hace ___.",
+       "meaning": "In winter it's cold.",
+       "options": [
+        "tarde",
+        "calor",
+        "frío",
+        "mes"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "Hace calor en agosto.",
+       "meaning": "It's hot in August."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "¿Cuándo? En diciembre, en invierno.",
+       "answer": "When? In December, in winter.",
+       "bank": [
+        "hot",
+        "When?",
+        "In",
+        "December,",
+        "July",
+        "winter.",
+        "in",
+        "summer"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u6l4",
+     "title": "Review: Time",
+     "items": [
+      {
+       "t": "learn",
+       "word": "¿A qué hora?",
+       "tl": "ah keh OH-ra",
+       "meaning": "At what time?",
+       "example": "¿A qué hora es la clase?",
+       "exampleMeaning": "At what time is the class?"
+      },
+      {
+       "t": "learn",
+       "word": "a las ...",
+       "tl": "ah las",
+       "meaning": "at ... o'clock",
+       "example": "La clase es a las nueve.",
+       "exampleMeaning": "The class is at nine."
+      },
+      {
+       "t": "choose",
+       "prompt": "'¿A qué hora?' means...",
+       "options": [
+        "At what time?",
+        "When is it?",
+        "What day is it?",
+        "What time is it?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The train is at a quarter past eight.",
+       "answer": "El tren es a las ocho y cuarto.",
+       "bank": [
+        "y",
+        "El",
+        "media",
+        "ocho",
+        "son",
+        "menos",
+        "cuarto.",
+        "las",
+        "tren",
+        "a",
+        "es"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Hoy es martes y son las tres de la tarde.",
+       "meaning": "Today is Tuesday and it's three in the afternoon.",
+       "bank": [
+        "mañana",
+        "noche",
+        "de",
+        "son",
+        "Hoy",
+        "lunes",
+        "y",
+        "tarde.",
+        "las",
+        "martes",
+        "tres",
+        "la",
+        "es"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "el mes",
+         "the month"
+        ],
+        [
+         "la semana",
+         "the week"
+        ],
+        [
+         "el año",
+         "the year"
+        ],
+        [
+         "mañana",
+         "tomorrow"
+        ],
+        [
+         "¿a qué hora?",
+         "at what time?"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Mi cumpleaños es en ___.",
+       "meaning": "My birthday is in September.",
+       "options": [
+        "tarde",
+        "semana",
+        "sábado",
+        "septiembre"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "La clase es el lunes a las diez de la mañana.",
+       "meaning": "The class is on Monday at ten in the morning."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "En verano hace calor y en invierno hace frío.",
+       "answer": "In summer it's hot and in winter it's cold.",
+       "bank": [
+        "summer",
+        "autumn",
+        "and",
+        "hot",
+        "it's",
+        "winter",
+        "In",
+        "cold.",
+        "it's",
+        "spring",
+        "late",
+        "in"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is correct for 1:00?",
+       "options": [
+        "Es la una",
+        "Es las uno",
+        "Son las una",
+        "Son la una"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "What time is it? It's half past six.",
+       "answer": "¿Qué hora es? Son las seis y media.",
+       "bank": [
+        "y",
+        "cuarto",
+        "hora",
+        "es",
+        "es?",
+        "Son",
+        "seis",
+        "una",
+        "media.",
+        "las",
+        "¿Qué"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "El fin de semana es sábado y ___.",
+       "meaning": "The weekend is Saturday and Sunday.",
+       "options": [
+        "jueves",
+        "domingo",
+        "viernes",
+        "lunes"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "¿Cuándo? El viernes, a las siete menos cuarto.",
+       "meaning": "When? On Friday, at a quarter to seven.",
+       "bank": [
+        "a",
+        "menos",
+        "las",
+        "siete",
+        "ocho",
+        "media",
+        "¿Cuándo?",
+        "cuarto.",
+        "El",
+        "sábado",
+        "viernes,"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "How many months are in 'un año'?",
+       "options": [
+        "doce",
+        "diez",
+        "siete",
+        "cien"
+       ],
+       "answer": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u7",
+   "title": "Shopping",
+   "emoji": "🛍️",
+   "goal": "Buy clothes and food, talk about colors and prices",
+   "lessons": [
+    {
+     "id": "u7l1",
+     "title": "Clothes",
+     "items": [
+      {
+       "t": "learn",
+       "word": "la camisa / la camiseta",
+       "tl": "la ka-MEE-sa / ka-mee-SEH-ta",
+       "meaning": "the shirt / the T-shirt",
+       "example": "Una camisa blanca.",
+       "exampleMeaning": "A white shirt."
+      },
+      {
+       "t": "learn",
+       "word": "los pantalones",
+       "tl": "los pan-ta-LO-nes",
+       "meaning": "the trousers / pants",
+       "example": "Los pantalones son grandes.",
+       "exampleMeaning": "The trousers are big."
+      },
+      {
+       "t": "learn",
+       "word": "el vestido / la falda",
+       "tl": "el ves-TEE-do / la FAL-da",
+       "meaning": "the dress / the skirt",
+       "example": "Me gusta el vestido.",
+       "exampleMeaning": "I like the dress."
+      },
+      {
+       "t": "learn",
+       "word": "los zapatos",
+       "tl": "los sa-PAH-tos",
+       "meaning": "the shoes",
+       "example": "Necesito zapatos nuevos.",
+       "exampleMeaning": "I need new shoes."
+      },
+      {
+       "t": "learn",
+       "word": "la chaqueta / el sombrero",
+       "tl": "la cha-KEH-ta / el som-BREH-ro",
+       "meaning": "the jacket / the hat",
+       "example": "Hace frío, llevo una chaqueta.",
+       "exampleMeaning": "It's cold, I'm wearing a jacket."
+      },
+      {
+       "t": "learn",
+       "word": "llevar / comprar",
+       "tl": "yeh-VAR / kom-PRAR",
+       "meaning": "to wear / to buy",
+       "example": "Quiero comprar una camisa.",
+       "exampleMeaning": "I want to buy a shirt."
+      },
+      {
+       "t": "learn",
+       "word": "la talla",
+       "tl": "la TAH-ya",
+       "meaning": "the size (clothes)",
+       "example": "¿Qué talla tienes?",
+       "exampleMeaning": "What size are you?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which do you wear on your feet?",
+       "options": [
+        "la camisa",
+        "la falda",
+        "los zapatos",
+        "el sombrero"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la camisa",
+         "the shirt"
+        ],
+        [
+         "los pantalones",
+         "the trousers"
+        ],
+        [
+         "el vestido",
+         "the dress"
+        ],
+        [
+         "los zapatos",
+         "the shoes"
+        ],
+        [
+         "la chaqueta",
+         "the jacket"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I want to buy a dress.",
+       "answer": "Quiero comprar un vestido.",
+       "bank": [
+        "falda",
+        "talla",
+        "llevar",
+        "Quiero",
+        "vestido.",
+        "comprar",
+        "un"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿Tiene esta camisa en mi talla?",
+       "meaning": "Do you have this shirt in my size?",
+       "bank": [
+        "en",
+        "camisa",
+        "lleva",
+        "zapatos",
+        "grande",
+        "esta",
+        "mi",
+        "¿Tiene",
+        "talla?"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Hace frío. Llevo una ___.",
+       "meaning": "It's cold. I'm wearing a jacket.",
+       "options": [
+        "talla",
+        "chaqueta",
+        "falda",
+        "camiseta"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Necesito unos zapatos y un sombrero.",
+       "meaning": "I need some shoes and a hat."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Los pantalones son muy grandes.",
+       "answer": "The trousers are very big.",
+       "bank": [
+        "small",
+        "are",
+        "shoes",
+        "very",
+        "big.",
+        "The",
+        "shirt",
+        "trousers"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u7l2",
+     "title": "Colors & prices",
+     "items": [
+      {
+       "t": "learn",
+       "word": "rojo / azul / verde",
+       "tl": "RO-ho / ah-SOOL / VER-deh",
+       "meaning": "red / blue / green",
+       "example": "Una camisa azul.",
+       "exampleMeaning": "A blue shirt."
+      },
+      {
+       "t": "learn",
+       "word": "negro / blanco / amarillo",
+       "tl": "NEH-gro / BLAN-ko / ah-ma-REE-yo",
+       "meaning": "black / white / yellow",
+       "example": "Zapatos negros y un vestido amarillo.",
+       "exampleMeaning": "Black shoes and a yellow dress."
+      },
+      {
+       "t": "learn",
+       "word": "caro / barato",
+       "tl": "KAH-ro / ba-RAH-to",
+       "meaning": "expensive / cheap",
+       "example": "¡Es muy caro!",
+       "exampleMeaning": "It's very expensive!"
+      },
+      {
+       "t": "learn",
+       "word": "el dinero / los euros",
+       "tl": "el dee-NEH-ro / los EH-oo-ros",
+       "meaning": "the money / the euros",
+       "example": "No tengo dinero. Cuesta veinte euros.",
+       "exampleMeaning": "I don't have money. It costs twenty euros."
+      },
+      {
+       "t": "learn",
+       "word": "la tarjeta / en efectivo",
+       "tl": "la tar-HEH-ta / en eh-fek-TEE-vo",
+       "meaning": "the card / in cash",
+       "example": "¿Con tarjeta o en efectivo?",
+       "exampleMeaning": "By card or in cash?"
+      },
+      {
+       "t": "learn",
+       "word": "¿Cuánto cuestan?",
+       "tl": "KWAN-to KWES-tan",
+       "meaning": "How much do they cost?",
+       "example": "¿Cuánto cuestan los zapatos?",
+       "exampleMeaning": "How much do the shoes cost?"
+      },
+      {
+       "t": "learn",
+       "word": "demasiado",
+       "tl": "deh-ma-see-AH-do",
+       "meaning": "too much / too",
+       "example": "Es demasiado caro.",
+       "exampleMeaning": "It's too expensive."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'cheap'?",
+       "options": [
+        "barato",
+        "negro",
+        "demasiado",
+        "caro"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "rojo",
+         "red"
+        ],
+        [
+         "azul",
+         "blue"
+        ],
+        [
+         "verde",
+         "green"
+        ],
+        [
+         "blanco",
+         "white"
+        ],
+        [
+         "amarillo",
+         "yellow"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How much do the trousers cost?",
+       "answer": "¿Cuánto cuestan los pantalones?",
+       "bank": [
+        "pantalones?",
+        "dinero",
+        "los",
+        "¿Cuánto",
+        "cuesta",
+        "zapatos",
+        "cuestan"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "El vestido rojo cuesta cincuenta euros.",
+       "meaning": "The red dress costs fifty euros.",
+       "bank": [
+        "cuarenta",
+        "azul",
+        "euros.",
+        "rojo",
+        "vestido",
+        "cincuenta",
+        "barato",
+        "cuesta",
+        "El"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "¿Pago con ___ o en efectivo?",
+       "meaning": "Do I pay by card or in cash?",
+       "options": [
+        "euros",
+        "talla",
+        "dinero",
+        "tarjeta"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "Es demasiado caro. ¿Tiene algo más barato?",
+       "meaning": "It's too expensive. Do you have something cheaper?"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Los zapatos negros son baratos.",
+       "answer": "The black shoes are cheap.",
+       "bank": [
+        "are",
+        "white",
+        "The",
+        "shirt",
+        "expensive",
+        "shoes",
+        "cheap.",
+        "black"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u7l3",
+     "title": "At the market",
+     "items": [
+      {
+       "t": "learn",
+       "word": "el mercado / la tienda",
+       "tl": "el mer-KAH-do / la tee-EN-da",
+       "meaning": "the market / the shop",
+       "example": "Compro fruta en el mercado.",
+       "exampleMeaning": "I buy fruit at the market."
+      },
+      {
+       "t": "learn",
+       "word": "un kilo de",
+       "tl": "oon KEE-lo deh",
+       "meaning": "a kilo of",
+       "example": "Un kilo de tomates, por favor.",
+       "exampleMeaning": "A kilo of tomatoes, please."
+      },
+      {
+       "t": "learn",
+       "word": "los tomates / los huevos",
+       "tl": "los to-MAH-tes / los WEH-vos",
+       "meaning": "the tomatoes / the eggs",
+       "example": "Doce huevos y dos tomates.",
+       "exampleMeaning": "Twelve eggs and two tomatoes."
+      },
+      {
+       "t": "learn",
+       "word": "la carne / las verduras",
+       "tl": "la KAR-neh / las ver-DOO-ras",
+       "meaning": "the meat / the vegetables",
+       "example": "No como carne, como verduras.",
+       "exampleMeaning": "I don't eat meat, I eat vegetables."
+      },
+      {
+       "t": "learn",
+       "word": "un poco / mucho",
+       "tl": "oon PO-ko / MOO-cho",
+       "meaning": "a little / a lot",
+       "example": "Un poco de queso, por favor.",
+       "exampleMeaning": "A little cheese, please."
+      },
+      {
+       "t": "learn",
+       "word": "¿Algo más? / Nada más",
+       "tl": "AL-go mas / NAH-da mas",
+       "meaning": "Anything else? / Nothing else",
+       "example": "—¿Algo más? —No, nada más, gracias.",
+       "exampleMeaning": "—Anything else? —No, nothing else, thanks."
+      },
+      {
+       "t": "learn",
+       "word": "Quisiera",
+       "tl": "kee-see-EH-ra",
+       "meaning": "I would like (polite)",
+       "example": "Quisiera un kilo de naranjas.",
+       "exampleMeaning": "I would like a kilo of oranges."
+      },
+      {
+       "t": "choose",
+       "prompt": "The seller asks '¿Algo más?'. You are done. You say:",
+       "options": [
+        "Un poco",
+        "¿Cuánto cuestan?",
+        "Nada más, gracias",
+        "Demasiado caro"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "el mercado",
+         "the market"
+        ],
+        [
+         "los huevos",
+         "the eggs"
+        ],
+        [
+         "la carne",
+         "the meat"
+        ],
+        [
+         "las verduras",
+         "the vegetables"
+        ],
+        [
+         "un poco",
+         "a little"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I would like a kilo of tomatoes.",
+       "answer": "Quisiera un kilo de tomates.",
+       "bank": [
+        "un",
+        "de",
+        "kilo",
+        "compro",
+        "mucho",
+        "tomates.",
+        "Quisiera",
+        "huevos"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿Algo más? No, nada más.",
+       "meaning": "Anything else? No, nothing else.",
+       "bank": [
+        "¿Algo",
+        "mucho",
+        "más?",
+        "No,",
+        "nada",
+        "más.",
+        "poco",
+        "sí"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Compro verduras en el ___.",
+       "meaning": "I buy vegetables at the market.",
+       "options": [
+        "museo",
+        "mercado",
+        "banco",
+        "hotel"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Quisiera doce huevos y un poco de queso.",
+       "meaning": "I would like twelve eggs and a little cheese."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "La carne es cara, pero las verduras son baratas.",
+       "answer": "The meat is expensive, but the vegetables are cheap.",
+       "bank": [
+        "vegetables",
+        "very",
+        "meat",
+        "are",
+        "cheap.",
+        "fruit",
+        "The",
+        "eggs",
+        "is",
+        "expensive,",
+        "but",
+        "the"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u7l4",
+     "title": "Review: Shopping",
+     "items": [
+      {
+       "t": "learn",
+       "word": "este / esta",
+       "tl": "ES-teh / ES-ta",
+       "meaning": "this (m/f)",
+       "example": "Esta camisa es bonita.",
+       "exampleMeaning": "This shirt is pretty."
+      },
+      {
+       "t": "learn",
+       "word": "bonito / bonita",
+       "tl": "bo-NEE-to",
+       "meaning": "pretty, nice-looking",
+       "example": "¡Qué vestido tan bonito!",
+       "exampleMeaning": "What a pretty dress!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'demasiado caro' means...",
+       "options": [
+        "a little expensive",
+        "a lot of money",
+        "too expensive",
+        "very cheap"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "This blue shirt is pretty.",
+       "answer": "Esta camisa azul es bonita.",
+       "bank": [
+        "azul",
+        "camisa",
+        "vestido",
+        "es",
+        "rojo",
+        "Esta",
+        "cara",
+        "bonita."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Quisiera comprar unos zapatos negros.",
+       "meaning": "I would like to buy some black shoes.",
+       "bank": [
+        "blancos",
+        "comprar",
+        "llevar",
+        "negros.",
+        "Quisiera",
+        "pantalones",
+        "zapatos",
+        "unos"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la tienda",
+         "the shop"
+        ],
+        [
+         "en efectivo",
+         "in cash"
+        ],
+        [
+         "barato",
+         "cheap"
+        ],
+        [
+         "la talla",
+         "the size"
+        ],
+        [
+         "bonito",
+         "pretty"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "¿Cuánto ___ los tomates?",
+       "meaning": "How much do the tomatoes cost?",
+       "options": [
+        "cuesta",
+        "compra",
+        "cuestan",
+        "lleva"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "¿Cuánto cuesta este sombrero? ¿Puedo pagar con tarjeta?",
+       "meaning": "How much does this hat cost? Can I pay by card?"
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Un kilo de naranjas cuesta tres euros.",
+       "answer": "A kilo of oranges costs three euros.",
+       "bank": [
+        "two",
+        "of",
+        "kilo",
+        "euros.",
+        "A",
+        "oranges",
+        "costs",
+        "tomatoes",
+        "cheap",
+        "three"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is correct?",
+       "options": [
+        "El zapatos son caros.",
+        "Los zapatos son cara.",
+        "Los zapatos son caros.",
+        "Los zapatos es caro."
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I want a little cheese and nothing else.",
+       "answer": "Quiero un poco de queso y nada más.",
+       "bank": [
+        "mucho",
+        "algo",
+        "nada",
+        "poco",
+        "de",
+        "más.",
+        "y",
+        "queso",
+        "Quiero",
+        "un",
+        "carne"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Llevo una chaqueta ___ en invierno.",
+       "meaning": "I wear a black jacket in winter.",
+       "options": [
+        "blanca",
+        "negro",
+        "negra",
+        "negros"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Esta falda verde es demasiado grande.",
+       "meaning": "This green skirt is too big.",
+       "bank": [
+        "barata",
+        "pequeña",
+        "demasiado",
+        "camisa",
+        "falda",
+        "verde",
+        "es",
+        "Esta",
+        "grande."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'¿Con tarjeta o en efectivo?' asks about...",
+       "options": [
+        "color",
+        "price",
+        "size",
+        "payment method"
+       ],
+       "answer": 3
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u8",
+   "title": "Daily Routine",
+   "emoji": "🌅",
+   "goal": "Describe your day, work, studies and hobbies",
+   "lessons": [
+    {
+     "id": "u8l1",
+     "title": "In the morning",
+     "items": [
+      {
+       "t": "learn",
+       "word": "me levanto",
+       "tl": "meh leh-VAN-to",
+       "meaning": "I get up",
+       "example": "Me levanto a las siete.",
+       "exampleMeaning": "I get up at seven."
+      },
+      {
+       "t": "learn",
+       "word": "me ducho",
+       "tl": "meh DOO-cho",
+       "meaning": "I take a shower",
+       "example": "Me ducho por la mañana.",
+       "exampleMeaning": "I take a shower in the morning."
+      },
+      {
+       "t": "learn",
+       "word": "desayuno",
+       "tl": "deh-sa-YOO-no",
+       "meaning": "I have breakfast / breakfast",
+       "example": "Desayuno café con pan.",
+       "exampleMeaning": "I have coffee with bread for breakfast."
+      },
+      {
+       "t": "learn",
+       "word": "me visto",
+       "tl": "meh VEES-to",
+       "meaning": "I get dressed",
+       "example": "Me visto rápido.",
+       "exampleMeaning": "I get dressed quickly."
+      },
+      {
+       "t": "learn",
+       "word": "salgo de casa",
+       "tl": "SAL-go deh KAH-sa",
+       "meaning": "I leave the house",
+       "example": "Salgo de casa a las ocho.",
+       "exampleMeaning": "I leave the house at eight."
+      },
+      {
+       "t": "learn",
+       "word": "siempre / todos los días",
+       "tl": "see-EM-preh / TO-dos los DEE-as",
+       "meaning": "always / every day",
+       "example": "Todos los días desayuno a las ocho.",
+       "exampleMeaning": "Every day I have breakfast at eight."
+      },
+      {
+       "t": "learn",
+       "word": "por la mañana",
+       "tl": "por la ma-NYA-na",
+       "meaning": "in the morning",
+       "example": "Por la mañana trabajo.",
+       "exampleMeaning": "In the morning I work."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'I get up'?",
+       "options": [
+        "me ducho",
+        "me visto",
+        "desayuno",
+        "me levanto"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "me levanto",
+         "I get up"
+        ],
+        [
+         "me ducho",
+         "I take a shower"
+        ],
+        [
+         "desayuno",
+         "I have breakfast"
+        ],
+        [
+         "me visto",
+         "I get dressed"
+        ],
+        [
+         "siempre",
+         "always"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I get up at half past six.",
+       "answer": "Me levanto a las seis y media.",
+       "bank": [
+        "siete",
+        "las",
+        "levanto",
+        "seis",
+        "ducho",
+        "Me",
+        "salgo",
+        "media.",
+        "a",
+        "y"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Todos los días me ducho y desayuno.",
+       "meaning": "Every day I take a shower and have breakfast.",
+       "bank": [
+        "los",
+        "días",
+        "ducho",
+        "desayuno.",
+        "y",
+        "tarde",
+        "visto",
+        "Todos",
+        "me",
+        "siempre"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ de casa a las ocho de la mañana.",
+       "meaning": "I leave the house at eight in the morning.",
+       "options": [
+        "Levanto",
+        "Desayuno",
+        "Salgo",
+        "Voy"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "Me levanto temprano todos los días.",
+       "meaning": "I get up early every day."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Por la mañana desayuno café y pan.",
+       "answer": "In the morning I have coffee and bread for breakfast.",
+       "bank": [
+        "bread",
+        "night",
+        "morning",
+        "tea",
+        "have",
+        "always",
+        "coffee",
+        "I",
+        "the",
+        "breakfast.",
+        "In",
+        "and",
+        "for"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u8l2",
+     "title": "Work & study",
+     "items": [
+      {
+       "t": "learn",
+       "word": "trabajar / estudiar",
+       "tl": "tra-ba-HAR / es-too-dee-AR",
+       "meaning": "to work / to study",
+       "example": "Trabajo en un banco. Estudio español.",
+       "exampleMeaning": "I work at a bank. I study Spanish."
+      },
+      {
+       "t": "learn",
+       "word": "la oficina / la escuela",
+       "tl": "la o-fee-SEE-na / la es-KWEH-la",
+       "meaning": "the office / the school",
+       "example": "Mi hija va a la escuela.",
+       "exampleMeaning": "My daughter goes to school."
+      },
+      {
+       "t": "learn",
+       "word": "la universidad",
+       "tl": "la oo-nee-ver-see-DAD",
+       "meaning": "the university",
+       "example": "Estudio en la universidad.",
+       "exampleMeaning": "I study at the university."
+      },
+      {
+       "t": "learn",
+       "word": "leer / escribir",
+       "tl": "leh-ER / es-kree-BEER",
+       "meaning": "to read / to write",
+       "example": "Leo un libro y escribo un correo.",
+       "exampleMeaning": "I read a book and write an email."
+      },
+      {
+       "t": "learn",
+       "word": "hablar / aprender",
+       "tl": "ah-BLAR / ah-pren-DER",
+       "meaning": "to speak / to learn",
+       "example": "Hablo inglés y aprendo español.",
+       "exampleMeaning": "I speak English and I'm learning Spanish."
+      },
+      {
+       "t": "learn",
+       "word": "el español / el inglés",
+       "tl": "el es-pa-NYOL / el een-GLES",
+       "meaning": "Spanish / English",
+       "example": "¿Hablas español?",
+       "exampleMeaning": "Do you speak Spanish?"
+      },
+      {
+       "t": "learn",
+       "word": "el libro",
+       "tl": "el LEE-bro",
+       "meaning": "the book",
+       "example": "Leo un libro en español.",
+       "exampleMeaning": "I read a book in Spanish."
+      },
+      {
+       "t": "choose",
+       "prompt": "'aprender' means...",
+       "options": [
+        "to read",
+        "to write",
+        "to learn",
+        "to work"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "trabajar",
+         "to work"
+        ],
+        [
+         "estudiar",
+         "to study"
+        ],
+        [
+         "leer",
+         "to read"
+        ],
+        [
+         "escribir",
+         "to write"
+        ],
+        [
+         "la oficina",
+         "the office"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I work in an office.",
+       "answer": "Trabajo en una oficina.",
+       "bank": [
+        "escuela",
+        "una",
+        "oficina.",
+        "estudio",
+        "libro",
+        "en",
+        "Trabajo"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Estudio español en la universidad.",
+       "meaning": "I study Spanish at the university.",
+       "bank": [
+        "español",
+        "inglés",
+        "la",
+        "hablo",
+        "escuela",
+        "Estudio",
+        "universidad.",
+        "en"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "¿___ inglés? Sí, un poco.",
+       "meaning": "Do you speak English? Yes, a little.",
+       "options": [
+        "Hablas",
+        "Trabajas",
+        "Lees",
+        "Hablo"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "Aprendo español y leo libros todos los días.",
+       "meaning": "I learn Spanish and read books every day."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Mi hermano trabaja en una escuela.",
+       "answer": "My brother works at a school.",
+       "bank": [
+        "sister",
+        "office",
+        "studies",
+        "school.",
+        "a",
+        "My",
+        "works",
+        "at",
+        "brother"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u8l3",
+     "title": "Evenings & hobbies",
+     "items": [
+      {
+       "t": "learn",
+       "word": "ceno / veo la televisión",
+       "tl": "SEH-no / VEH-o la teh-leh-vee-see-ON",
+       "meaning": "I have dinner / I watch TV",
+       "example": "Ceno a las nueve y veo la televisión.",
+       "exampleMeaning": "I have dinner at nine and watch TV."
+      },
+      {
+       "t": "learn",
+       "word": "me acuesto / dormir",
+       "tl": "meh ah-KWES-to / dor-MEER",
+       "meaning": "I go to bed / to sleep",
+       "example": "Me acuesto a las once.",
+       "exampleMeaning": "I go to bed at eleven."
+      },
+      {
+       "t": "learn",
+       "word": "jugar al fútbol",
+       "tl": "hoo-GAR al FOOT-bol",
+       "meaning": "to play football (soccer)",
+       "example": "Juego al fútbol los sábados.",
+       "exampleMeaning": "I play football on Saturdays."
+      },
+      {
+       "t": "learn",
+       "word": "escuchar música / bailar",
+       "tl": "es-koo-CHAR MOO-see-ka / bay-LAR",
+       "meaning": "to listen to music / to dance",
+       "example": "Me gusta escuchar música y bailar.",
+       "exampleMeaning": "I like listening to music and dancing."
+      },
+      {
+       "t": "learn",
+       "word": "nadar / cocinar",
+       "tl": "na-DAR / ko-see-NAR",
+       "meaning": "to swim / to cook",
+       "example": "Mi padre cocina muy bien.",
+       "exampleMeaning": "My father cooks very well."
+      },
+      {
+       "t": "learn",
+       "word": "a veces / nunca",
+       "tl": "ah VEH-ses / NOON-ka",
+       "meaning": "sometimes / never",
+       "example": "A veces nado. Nunca bailo.",
+       "exampleMeaning": "Sometimes I swim. I never dance."
+      },
+      {
+       "t": "learn",
+       "word": "los fines de semana",
+       "tl": "los FEE-nes deh seh-MAH-na",
+       "meaning": "on weekends",
+       "example": "Los fines de semana cocino para mi familia.",
+       "exampleMeaning": "On weekends I cook for my family."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'never'?",
+       "options": [
+        "nunca",
+        "hoy",
+        "siempre",
+        "a veces"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "nadar",
+         "to swim"
+        ],
+        [
+         "cocinar",
+         "to cook"
+        ],
+        [
+         "bailar",
+         "to dance"
+        ],
+        [
+         "escuchar música",
+         "to listen to music"
+        ],
+        [
+         "a veces",
+         "sometimes"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I go to bed at eleven at night.",
+       "answer": "Me acuesto a las once de la noche.",
+       "bank": [
+        "Me",
+        "de",
+        "acuesto",
+        "once",
+        "levanto",
+        "a",
+        "ceno",
+        "la",
+        "noche.",
+        "las",
+        "mañana"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Los fines de semana juego al fútbol.",
+       "meaning": "On weekends I play football.",
+       "bank": [
+        "fútbol.",
+        "al",
+        "fines",
+        "nado",
+        "lunes",
+        "juego",
+        "Los",
+        "nunca",
+        "de",
+        "semana"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Me gusta ___ música por la noche.",
+       "meaning": "I like listening to music at night.",
+       "options": [
+        "escuchar",
+        "cenar",
+        "nadar",
+        "bailar"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "A veces cocino y veo la televisión.",
+       "meaning": "Sometimes I cook and watch TV."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Nunca nado en invierno.",
+       "answer": "I never swim in winter.",
+       "bank": [
+        "swim",
+        "never",
+        "dance",
+        "in",
+        "sometimes",
+        "I",
+        "summer",
+        "winter."
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u8l4",
+     "title": "Review: Daily Routine",
+     "items": [
+      {
+       "t": "learn",
+       "word": "normalmente",
+       "tl": "nor-mal-MEN-teh",
+       "meaning": "usually / normally",
+       "example": "Normalmente me levanto a las siete.",
+       "exampleMeaning": "I usually get up at seven."
+      },
+      {
+       "t": "learn",
+       "word": "¿A qué hora te levantas?",
+       "tl": "ah keh OH-ra teh leh-VAN-tas",
+       "meaning": "What time do you get up?",
+       "example": "¿A qué hora te levantas los lunes?",
+       "exampleMeaning": "What time do you get up on Mondays?"
+      },
+      {
+       "t": "choose",
+       "prompt": "'me acuesto' means...",
+       "options": [
+        "I have dinner",
+        "I get dressed",
+        "I get up",
+        "I go to bed"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I usually have dinner at nine.",
+       "answer": "Normalmente ceno a las nueve.",
+       "bank": [
+        "desayuno",
+        "ceno",
+        "ocho",
+        "nueve.",
+        "Normalmente",
+        "siempre",
+        "las",
+        "a"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Me levanto, me ducho y salgo de casa.",
+       "meaning": "I get up, take a shower and leave the house.",
+       "bank": [
+        "levanto,",
+        "ceno",
+        "y",
+        "ducho",
+        "me",
+        "de",
+        "Me",
+        "visto",
+        "casa.",
+        "trabajo",
+        "salgo"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "normalmente",
+         "usually"
+        ],
+        [
+         "nunca",
+         "never"
+        ],
+        [
+         "todos los días",
+         "every day"
+        ],
+        [
+         "me acuesto",
+         "I go to bed"
+        ],
+        [
+         "salgo de casa",
+         "I leave the house"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Los sábados ___ al fútbol con mis amigos.",
+       "meaning": "On Saturdays I play football with my friends.",
+       "options": [
+        "leo",
+        "juego",
+        "nado",
+        "trabajo"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Trabajo en una oficina y estudio español por la noche.",
+       "meaning": "I work in an office and study Spanish at night."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "¿A qué hora te levantas? A las seis y media.",
+       "answer": "What time do you get up? At half past six.",
+       "bank": [
+        "At",
+        "past",
+        "time",
+        "sleep",
+        "do",
+        "you",
+        "up?",
+        "go",
+        "half",
+        "six.",
+        "get",
+        "seven",
+        "bed",
+        "What"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is correct for 'I take a shower'?",
+       "options": [
+        "Ducho me",
+        "Te duchas",
+        "Me ducha",
+        "Me ducho"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Sometimes I read a book and listen to music.",
+       "answer": "A veces leo un libro y escucho música.",
+       "bank": [
+        "un",
+        "escucho",
+        "libro",
+        "y",
+        "bailo",
+        "nunca",
+        "A",
+        "música.",
+        "veces",
+        "escribo",
+        "leo"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Mi madre ___ muy bien.",
+       "meaning": "My mother cooks very well.",
+       "options": [
+        "baila",
+        "nada",
+        "cocino",
+        "cocina"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "Nunca veo la televisión por la mañana.",
+       "meaning": "I never watch TV in the morning.",
+       "bank": [
+        "noche",
+        "la",
+        "la",
+        "por",
+        "televisión",
+        "veo",
+        "Nunca",
+        "siempre",
+        "ceno",
+        "mañana."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Hablo inglés y aprendo español.' means...",
+       "options": [
+        "I teach English and Spanish",
+        "I speak English and learn Spanish",
+        "I speak Spanish and learn English",
+        "I read English and write Spanish"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u9",
+   "title": "Past & Future",
+   "emoji": "⏳",
+   "goal": "Talk about what you did and what you're going to do",
+   "lessons": [
+    {
+     "id": "u9l1",
+     "title": "Yesterday (past tense)",
+     "items": [
+      {
+       "t": "learn",
+       "word": "ayer / anoche",
+       "tl": "ah-YER / ah-NO-cheh",
+       "meaning": "yesterday / last night",
+       "example": "Anoche cené con mi familia.",
+       "exampleMeaning": "Last night I had dinner with my family."
+      },
+      {
+       "t": "learn",
+       "word": "la semana pasada / el año pasado",
+       "tl": "la seh-MAH-na pa-SAH-da / el AH-nyo pa-SAH-do",
+       "meaning": "last week / last year",
+       "example": "El año pasado viajé a México.",
+       "exampleMeaning": "Last year I traveled to Mexico."
+      },
+      {
+       "t": "learn",
+       "word": "fui",
+       "tl": "fwee",
+       "meaning": "I went / I was",
+       "example": "Ayer fui al mercado.",
+       "exampleMeaning": "Yesterday I went to the market."
+      },
+      {
+       "t": "learn",
+       "word": "comí / bebí",
+       "tl": "ko-MEE / beh-BEE",
+       "meaning": "I ate / I drank",
+       "example": "Comí pollo y bebí vino.",
+       "exampleMeaning": "I ate chicken and drank wine."
+      },
+      {
+       "t": "learn",
+       "word": "hablé / compré",
+       "tl": "ah-BLEH / kom-PREH",
+       "meaning": "I spoke / I bought",
+       "example": "Compré una camisa y hablé con el vendedor.",
+       "exampleMeaning": "I bought a shirt and spoke with the seller."
+      },
+      {
+       "t": "learn",
+       "word": "visité / viajé",
+       "tl": "vee-see-TEH / vee-a-HEH",
+       "meaning": "I visited / I traveled",
+       "example": "Visité un museo en Madrid.",
+       "exampleMeaning": "I visited a museum in Madrid."
+      },
+      {
+       "t": "learn",
+       "word": "trabajé / estudié",
+       "tl": "tra-ba-HEH / es-too-dee-EH",
+       "meaning": "I worked / I studied",
+       "example": "Ayer trabajé mucho.",
+       "exampleMeaning": "Yesterday I worked a lot."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is the past of 'como' (I eat)?",
+       "options": [
+        "comer",
+        "comí",
+        "como",
+        "comes"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "fui",
+         "I went"
+        ],
+        [
+         "comí",
+         "I ate"
+        ],
+        [
+         "compré",
+         "I bought"
+        ],
+        [
+         "viajé",
+         "I traveled"
+        ],
+        [
+         "anoche",
+         "last night"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Yesterday I went to the museum.",
+       "answer": "Ayer fui al museo.",
+       "bank": [
+        "anoche",
+        "banco",
+        "visité",
+        "Ayer",
+        "museo.",
+        "fui",
+        "al"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "La semana pasada compré zapatos nuevos.",
+       "meaning": "Last week I bought new shoes.",
+       "bank": [
+        "compré",
+        "pasada",
+        "viejos",
+        "ayer",
+        "comí",
+        "semana",
+        "zapatos",
+        "La",
+        "nuevos."
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Anoche ___ pescado con arroz.",
+       "meaning": "Last night I ate fish with rice.",
+       "options": [
+        "comí",
+        "bebí",
+        "hablé",
+        "fui"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "El año pasado viajé a España y visité Madrid.",
+       "meaning": "Last year I traveled to Spain and visited Madrid."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ayer estudié español y trabajé en la oficina.",
+       "answer": "Yesterday I studied Spanish and worked in the office.",
+       "bank": [
+        "bought",
+        "worked",
+        "studied",
+        "today",
+        "the",
+        "and",
+        "Yesterday",
+        "in",
+        "office.",
+        "traveled",
+        "Spanish",
+        "I"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u9l2",
+     "title": "Tomorrow (future with ir a)",
+     "items": [
+      {
+       "t": "learn",
+       "word": "voy a / vas a / va a",
+       "tl": "voy ah / vas ah / va ah",
+       "meaning": "I'm going to / you're going to / he, she is going to",
+       "example": "Voy a estudiar. ¿Vas a trabajar?",
+       "exampleMeaning": "I'm going to study. Are you going to work?"
+      },
+      {
+       "t": "learn",
+       "word": "vamos a",
+       "tl": "VAH-mos ah",
+       "meaning": "we're going to",
+       "example": "Vamos a comer.",
+       "exampleMeaning": "We're going to eat."
+      },
+      {
+       "t": "learn",
+       "word": "el próximo / la próxima",
+       "tl": "el PROK-see-mo",
+       "meaning": "next (m/f)",
+       "example": "La próxima semana voy a viajar.",
+       "exampleMeaning": "Next week I'm going to travel."
+      },
+      {
+       "t": "learn",
+       "word": "viajar / visitar",
+       "tl": "vee-a-HAR / vee-see-TAR",
+       "meaning": "to travel / to visit",
+       "example": "Quiero visitar Barcelona.",
+       "exampleMeaning": "I want to visit Barcelona."
+      },
+      {
+       "t": "learn",
+       "word": "la playa / las montañas",
+       "tl": "la PLAH-ya / las mon-TAH-nyas",
+       "meaning": "the beach / the mountains",
+       "example": "Vamos a la playa en verano.",
+       "exampleMeaning": "We go to the beach in summer."
+      },
+      {
+       "t": "learn",
+       "word": "las vacaciones",
+       "tl": "las va-ka-see-OH-nes",
+       "meaning": "the vacation / holidays",
+       "example": "¿Adónde vas de vacaciones?",
+       "exampleMeaning": "Where are you going on vacation?"
+      },
+      {
+       "t": "learn",
+       "word": "el verano que viene",
+       "tl": "el veh-RAH-no keh vee-EH-neh",
+       "meaning": "next summer / the coming summer",
+       "example": "El verano que viene voy a nadar mucho.",
+       "exampleMeaning": "Next summer I'm going to swim a lot."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Vamos a comer' means...",
+       "options": [
+        "We're going to eat",
+        "You eat",
+        "I'm going to eat",
+        "They ate"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "voy a",
+         "I'm going to"
+        ],
+        [
+         "vamos a",
+         "we're going to"
+        ],
+        [
+         "la playa",
+         "the beach"
+        ],
+        [
+         "las montañas",
+         "the mountains"
+        ],
+        [
+         "las vacaciones",
+         "the vacation"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Tomorrow I'm going to work.",
+       "answer": "Mañana voy a trabajar.",
+       "bank": [
+        "voy",
+        "a",
+        "ayer",
+        "Mañana",
+        "trabajar.",
+        "estudiar",
+        "vas"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "La próxima semana vamos a la playa.",
+       "meaning": "Next week we're going to the beach.",
+       "bank": [
+        "playa.",
+        "la",
+        "pasada",
+        "La",
+        "montañas",
+        "próxima",
+        "vamos",
+        "a",
+        "semana",
+        "voy"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "¿___ a visitar a tu abuela mañana?",
+       "meaning": "Are you going to visit your grandmother tomorrow?",
+       "options": [
+        "Voy",
+        "Vas",
+        "Va",
+        "Vamos"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "El verano que viene voy a viajar a las montañas.",
+       "meaning": "Next summer I'm going to travel to the mountains."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Mi hermana va a estudiar en la universidad.",
+       "answer": "My sister is going to study at the university.",
+       "bank": [
+        "school",
+        "the",
+        "at",
+        "study",
+        "to",
+        "My",
+        "brother",
+        "going",
+        "sister",
+        "is",
+        "work",
+        "university."
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u9l3",
+     "title": "Experiences",
+     "items": [
+      {
+       "t": "learn",
+       "word": "he estado en",
+       "tl": "eh es-TAH-do en",
+       "meaning": "I have been to",
+       "example": "He estado en México dos veces.",
+       "exampleMeaning": "I've been to Mexico twice."
+      },
+      {
+       "t": "learn",
+       "word": "nunca he",
+       "tl": "NOON-ka eh",
+       "meaning": "I have never",
+       "example": "Nunca he comido paella.",
+       "exampleMeaning": "I've never eaten paella."
+      },
+      {
+       "t": "learn",
+       "word": "¿Alguna vez has...?",
+       "tl": "al-GOO-na ves as",
+       "meaning": "Have you ever...?",
+       "example": "¿Alguna vez has visitado España?",
+       "exampleMeaning": "Have you ever visited Spain?"
+      },
+      {
+       "t": "learn",
+       "word": "estuve / viví",
+       "tl": "es-TOO-veh / vee-VEE",
+       "meaning": "I was (there) / I lived",
+       "example": "Viví en Sevilla un año.",
+       "exampleMeaning": "I lived in Seville for a year."
+      },
+      {
+       "t": "learn",
+       "word": "conocí",
+       "tl": "ko-no-SEE",
+       "meaning": "I met (for the first time)",
+       "example": "Conocí a mi esposa en la universidad.",
+       "exampleMeaning": "I met my wife at university."
+      },
+      {
+       "t": "learn",
+       "word": "hace dos años",
+       "tl": "AH-seh dos AH-nyos",
+       "meaning": "two years ago",
+       "example": "Hace dos años estuve en Perú.",
+       "exampleMeaning": "Two years ago I was in Peru."
+      },
+      {
+       "t": "learn",
+       "word": "cuando era niño / niña",
+       "tl": "KWAN-do EH-ra NEE-nyo",
+       "meaning": "when I was a child",
+       "example": "Cuando era niña, vivía en el campo.",
+       "exampleMeaning": "When I was a girl, I lived in the countryside."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Nunca he estado en Chile' means...",
+       "options": [
+        "I have been to Chile",
+        "I never go to Chile",
+        "I was in Chile",
+        "I have never been to Chile"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "he estado",
+         "I have been"
+        ],
+        [
+         "viví",
+         "I lived"
+        ],
+        [
+         "conocí",
+         "I met"
+        ],
+        [
+         "hace dos años",
+         "two years ago"
+        ],
+        [
+         "cuando era niño",
+         "when I was a child"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I have been to Spain twice.",
+       "answer": "He estado en España dos veces.",
+       "bank": [
+        "He",
+        "nunca",
+        "estado",
+        "en",
+        "tres",
+        "dos",
+        "veces.",
+        "viví",
+        "España"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿Alguna vez has comido paella?",
+       "meaning": "Have you ever eaten paella?",
+       "bank": [
+        "estado",
+        "comido",
+        "¿Alguna",
+        "paella?",
+        "bebido",
+        "vez",
+        "has",
+        "nunca"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Hace dos años ___ en Argentina.",
+       "meaning": "Two years ago I was in Argentina.",
+       "options": [
+        "he",
+        "estuve",
+        "era",
+        "conocí"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Conocí a mi mejor amigo cuando era niño.",
+       "meaning": "I met my best friend when I was a child."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Nunca he viajado a las montañas.",
+       "answer": "I have never traveled to the mountains.",
+       "bank": [
+        "to",
+        "have",
+        "mountains.",
+        "I",
+        "never",
+        "traveled",
+        "visited",
+        "the",
+        "beach",
+        "always"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u9l4",
+     "title": "Review: Past & Future",
+     "items": [
+      {
+       "t": "learn",
+       "word": "¿Qué hiciste ayer?",
+       "tl": "keh ee-SEES-teh ah-YER",
+       "meaning": "What did you do yesterday?",
+       "example": "—¿Qué hiciste ayer? —Fui al cine.",
+       "exampleMeaning": "—What did you do yesterday? —I went to the cinema."
+      },
+      {
+       "t": "learn",
+       "word": "¿Qué vas a hacer?",
+       "tl": "keh vas ah ah-SER",
+       "meaning": "What are you going to do?",
+       "example": "¿Qué vas a hacer el fin de semana?",
+       "exampleMeaning": "What are you going to do on the weekend?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which sentence is about the future?",
+       "options": [
+        "Ayer comí pollo.",
+        "Comí pollo anoche.",
+        "He comido pollo.",
+        "Mañana voy a comer pollo."
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Last week I went to the beach.",
+       "answer": "La semana pasada fui a la playa.",
+       "bank": [
+        "próxima",
+        "semana",
+        "voy",
+        "a",
+        "La",
+        "playa.",
+        "fui",
+        "montañas",
+        "la",
+        "pasada"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿Qué hiciste ayer? Visité a mi abuela.",
+       "meaning": "What did you do yesterday? I visited my grandmother.",
+       "bank": [
+        "abuelo",
+        "ayer?",
+        "hiciste",
+        "abuela.",
+        "¿Qué",
+        "Visité",
+        "a",
+        "vas",
+        "mañana",
+        "mi"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "ayer",
+         "yesterday"
+        ],
+        [
+         "mañana",
+         "tomorrow"
+        ],
+        [
+         "la semana pasada",
+         "last week"
+        ],
+        [
+         "la próxima semana",
+         "next week"
+        ],
+        [
+         "hace dos años",
+         "two years ago"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "El año pasado ___ a México.",
+       "meaning": "Last year I traveled to Mexico.",
+       "options": [
+        "voy",
+        "viajar",
+        "viajé",
+        "viajo"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "Anoche cené con mis amigos y mañana voy a trabajar.",
+       "meaning": "Last night I had dinner with my friends and tomorrow I'm going to work."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "¿Qué vas a hacer en las vacaciones? Voy a nadar.",
+       "answer": "What are you going to do on vacation? I'm going to swim.",
+       "bank": [
+        "on",
+        "I'm",
+        "went",
+        "yesterday",
+        "you",
+        "going",
+        "do",
+        "cook",
+        "vacation?",
+        "going",
+        "to",
+        "What",
+        "are",
+        "to",
+        "swim."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Hace dos años viví en España.' means...",
+       "options": [
+        "I'm going to live in Spain",
+        "I have lived in Spain for two years",
+        "In two years I'll live in Spain",
+        "Two years ago I lived in Spain"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Have you ever been to Mexico?",
+       "answer": "¿Alguna vez has estado en México?",
+       "bank": [
+        "en",
+        "nunca",
+        "México?",
+        "fui",
+        "he",
+        "¿Alguna",
+        "estado",
+        "vez",
+        "has"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Nunca ___ comido paella.",
+       "meaning": "I have never eaten paella.",
+       "options": [
+        "fui",
+        "comí",
+        "has",
+        "he"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "La próxima semana vamos a visitar un museo.",
+       "meaning": "Next week we're going to visit a museum.",
+       "bank": [
+        "a",
+        "fuimos",
+        "La",
+        "semana",
+        "visitar",
+        "vamos",
+        "pasada",
+        "próxima",
+        "museo.",
+        "playa",
+        "un"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is the past of 'compro' (I buy)?",
+       "options": [
+        "compra",
+        "compro",
+        "compré",
+        "comprar"
+       ],
+       "answer": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u10",
+   "title": "Opinions & Feelings",
+   "emoji": "💬",
+   "goal": "Share opinions, express feelings and make comparisons",
+   "lessons": [
+    {
+     "id": "u10l1",
+     "title": "Giving your opinion",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Creo que / Pienso que",
+       "tl": "KREH-o keh / pee-EN-so keh",
+       "meaning": "I think that / I believe that",
+       "example": "Creo que el español es fácil.",
+       "exampleMeaning": "I think Spanish is easy."
+      },
+      {
+       "t": "learn",
+       "word": "Me parece",
+       "tl": "meh pa-REH-seh",
+       "meaning": "It seems to me / I find it",
+       "example": "Me parece interesante.",
+       "exampleMeaning": "I find it interesting."
+      },
+      {
+       "t": "learn",
+       "word": "En mi opinión",
+       "tl": "en mee o-pee-nee-ON",
+       "meaning": "In my opinion",
+       "example": "En mi opinión, Madrid es bonita.",
+       "exampleMeaning": "In my opinion, Madrid is pretty."
+      },
+      {
+       "t": "learn",
+       "word": "Estoy de acuerdo / No estoy de acuerdo",
+       "tl": "es-TOY deh ah-KWER-do",
+       "meaning": "I agree / I don't agree",
+       "example": "No estoy de acuerdo contigo.",
+       "exampleMeaning": "I don't agree with you."
+      },
+      {
+       "t": "learn",
+       "word": "Tienes razón",
+       "tl": "tee-EH-nes ra-SON",
+       "meaning": "You're right",
+       "example": "Sí, tienes razón.",
+       "exampleMeaning": "Yes, you're right."
+      },
+      {
+       "t": "learn",
+       "word": "interesante / aburrido",
+       "tl": "een-teh-reh-SAN-teh / ah-boo-RREE-do",
+       "meaning": "interesting / boring",
+       "example": "La película es aburrida.",
+       "exampleMeaning": "The movie is boring."
+      },
+      {
+       "t": "learn",
+       "word": "importante / fácil / difícil",
+       "tl": "eem-por-TAN-teh / FAH-seel / dee-FEE-seel",
+       "meaning": "important / easy / difficult",
+       "example": "Es importante estudiar. No es difícil.",
+       "exampleMeaning": "It's important to study. It's not difficult."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Tienes razón' means...",
+       "options": [
+        "You're wrong",
+        "I agree",
+        "It's boring",
+        "You're right"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "creo que",
+         "I think that"
+        ],
+        [
+         "estoy de acuerdo",
+         "I agree"
+        ],
+        [
+         "interesante",
+         "interesting"
+        ],
+        [
+         "aburrido",
+         "boring"
+        ],
+        [
+         "difícil",
+         "difficult"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I think Spanish is easy.",
+       "answer": "Creo que el español es fácil.",
+       "bank": [
+        "que",
+        "difícil",
+        "parece",
+        "es",
+        "Creo",
+        "aburrido",
+        "español",
+        "el",
+        "fácil."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "En mi opinión, el libro es muy interesante.",
+       "meaning": "In my opinion, the book is very interesting.",
+       "bank": [
+        "mi",
+        "opinión,",
+        "película",
+        "libro",
+        "interesante.",
+        "muy",
+        "aburrido",
+        "el",
+        "En",
+        "creo",
+        "es"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "No estoy de ___ contigo.",
+       "meaning": "I don't agree with you.",
+       "options": [
+        "parece",
+        "acuerdo",
+        "opinión",
+        "razón"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Me parece importante aprender idiomas.",
+       "meaning": "I think it's important to learn languages."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Tienes razón, es muy difícil.",
+       "answer": "You're right, it's very difficult.",
+       "bank": [
+        "boring",
+        "it's",
+        "easy",
+        "wrong",
+        "You're",
+        "very",
+        "difficult.",
+        "right,"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u10l2",
+     "title": "Feelings",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Estoy feliz / triste",
+       "tl": "es-TOY feh-LEES / TREES-teh",
+       "meaning": "I'm happy / sad",
+       "example": "Hoy estoy muy feliz.",
+       "exampleMeaning": "Today I'm very happy."
+      },
+      {
+       "t": "learn",
+       "word": "cansado / cansada",
+       "tl": "kan-SAH-do",
+       "meaning": "tired (m/f)",
+       "example": "Estoy cansado después del trabajo.",
+       "exampleMeaning": "I'm tired after work."
+      },
+      {
+       "t": "learn",
+       "word": "enfadado / enfadada",
+       "tl": "en-fa-DAH-do",
+       "meaning": "angry (m/f; 'enojado' in Latin America)",
+       "example": "Mi hermana está enfadada.",
+       "exampleMeaning": "My sister is angry."
+      },
+      {
+       "t": "learn",
+       "word": "nervioso / preocupado",
+       "tl": "ner-vee-OH-so / preh-o-koo-PAH-do",
+       "meaning": "nervous / worried",
+       "example": "Estoy nervioso por el examen.",
+       "exampleMeaning": "I'm nervous about the exam."
+      },
+      {
+       "t": "learn",
+       "word": "porque / ¿Por qué?",
+       "tl": "POR-keh",
+       "meaning": "because / Why?",
+       "example": "—¿Por qué estás triste? —Porque estoy cansado.",
+       "exampleMeaning": "—Why are you sad? —Because I'm tired."
+      },
+      {
+       "t": "learn",
+       "word": "Me encanta / Odio",
+       "tl": "meh en-KAN-ta / OH-dee-o",
+       "meaning": "I love (it) / I hate",
+       "example": "Me encanta bailar. Odio el frío.",
+       "exampleMeaning": "I love dancing. I hate the cold."
+      },
+      {
+       "t": "learn",
+       "word": "Prefiero",
+       "tl": "preh-fee-EH-ro",
+       "meaning": "I prefer",
+       "example": "Prefiero el té al café.",
+       "exampleMeaning": "I prefer tea to coffee."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'worried'?",
+       "options": [
+        "cansado",
+        "feliz",
+        "preocupado",
+        "enfadado"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "feliz",
+         "happy"
+        ],
+        [
+         "triste",
+         "sad"
+        ],
+        [
+         "cansado",
+         "tired"
+        ],
+        [
+         "enfadado",
+         "angry"
+        ],
+        [
+         "nervioso",
+         "nervous"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I'm tired because I work a lot.",
+       "answer": "Estoy cansado porque trabajo mucho.",
+       "bank": [
+        "mucho.",
+        "porque",
+        "trabajo",
+        "triste",
+        "feliz",
+        "cansado",
+        "Estoy",
+        "qué"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿Por qué estás nervioso?",
+       "meaning": "Why are you nervous?",
+       "bank": [
+        "estoy",
+        "triste",
+        "nervioso?",
+        "estás",
+        "¿Por",
+        "porque",
+        "qué"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Me ___ la música española.",
+       "meaning": "I love Spanish music.",
+       "options": [
+        "prefiero",
+        "parece",
+        "encanta",
+        "odio"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "speak",
+       "text": "Prefiero la playa porque me encanta nadar.",
+       "meaning": "I prefer the beach because I love swimming."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Mi madre está preocupada y mi padre está enfadado.",
+       "answer": "My mother is worried and my father is angry.",
+       "bank": [
+        "sister",
+        "angry.",
+        "is",
+        "is",
+        "father",
+        "and",
+        "My",
+        "my",
+        "worried",
+        "tired",
+        "happy",
+        "mother"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u10l3",
+     "title": "Comparing & wishing",
+     "items": [
+      {
+       "t": "learn",
+       "word": "más ... que / menos ... que",
+       "tl": "mas ... keh / MEH-nos ... keh",
+       "meaning": "more ... than / less ... than",
+       "example": "Madrid es más grande que Sevilla.",
+       "exampleMeaning": "Madrid is bigger than Seville."
+      },
+      {
+       "t": "learn",
+       "word": "mejor / peor",
+       "tl": "meh-HOR / peh-OR",
+       "meaning": "better / worse",
+       "example": "El té es mejor que el café.",
+       "exampleMeaning": "Tea is better than coffee."
+      },
+      {
+       "t": "learn",
+       "word": "el mejor / la mejor",
+       "tl": "el meh-HOR",
+       "meaning": "the best (m/f)",
+       "example": "Es el mejor restaurante de la ciudad.",
+       "exampleMeaning": "It's the best restaurant in the city."
+      },
+      {
+       "t": "learn",
+       "word": "tan ... como",
+       "tl": "tan ... KO-mo",
+       "meaning": "as ... as",
+       "example": "Soy tan alto como mi padre.",
+       "exampleMeaning": "I'm as tall as my father."
+      },
+      {
+       "t": "learn",
+       "word": "Me gustaría",
+       "tl": "meh goos-ta-REE-a",
+       "meaning": "I would like",
+       "example": "Me gustaría viajar a Argentina.",
+       "exampleMeaning": "I would like to travel to Argentina."
+      },
+      {
+       "t": "learn",
+       "word": "Ojalá",
+       "tl": "o-ha-LAH",
+       "meaning": "I hope / hopefully",
+       "example": "¡Ojalá haga sol mañana!",
+       "exampleMeaning": "I hope it's sunny tomorrow!"
+      },
+      {
+       "t": "learn",
+       "word": "quizás / tal vez",
+       "tl": "kee-SAS / tal ves",
+       "meaning": "maybe / perhaps",
+       "example": "Quizás vamos a la playa.",
+       "exampleMeaning": "Maybe we'll go to the beach."
+      },
+      {
+       "t": "choose",
+       "prompt": "'mejor' means...",
+       "options": [
+        "better",
+        "worse",
+        "the same",
+        "more"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "mejor",
+         "better"
+        ],
+        [
+         "peor",
+         "worse"
+        ],
+        [
+         "más que",
+         "more than"
+        ],
+        [
+         "tan como",
+         "as as"
+        ],
+        [
+         "quizás",
+         "maybe"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I would like to visit Mexico.",
+       "answer": "Me gustaría visitar México.",
+       "bank": [
+        "Me",
+        "visitar",
+        "gustaría",
+        "ojalá",
+        "gusta",
+        "quizás",
+        "México."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "El tren es más rápido que el autobús.",
+       "meaning": "The train is faster than the bus.",
+       "bank": [
+        "más",
+        "taxi",
+        "es",
+        "El",
+        "menos",
+        "el",
+        "tren",
+        "rápido",
+        "que",
+        "autobús.",
+        "mejor"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Mi hermano es ___ alto como yo.",
+       "meaning": "My brother is as tall as me.",
+       "options": [
+        "más",
+        "tan",
+        "menos",
+        "muy"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Ojalá pueda viajar a España el año que viene.",
+       "meaning": "I hope I can travel to Spain next year."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Quizás el español es más fácil que el francés.",
+       "answer": "Maybe Spanish is easier than French.",
+       "bank": [
+        "Spanish",
+        "Maybe",
+        "than",
+        "difficult",
+        "easier",
+        "French.",
+        "is",
+        "better",
+        "English"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u10l4",
+     "title": "Review: Opinions & Feelings",
+     "items": [
+      {
+       "t": "learn",
+       "word": "¿Qué piensas?",
+       "tl": "keh pee-EN-sas",
+       "meaning": "What do you think?",
+       "example": "¿Qué piensas de la película?",
+       "exampleMeaning": "What do you think of the movie?"
+      },
+      {
+       "t": "learn",
+       "word": "¡Claro!",
+       "tl": "KLAH-ro",
+       "meaning": "Of course!",
+       "example": "—¿Vamos? —¡Claro!",
+       "exampleMeaning": "—Shall we go? —Of course!"
+      },
+      {
+       "t": "choose",
+       "prompt": "Someone says 'Tienes razón'. They...",
+       "options": [
+        "are tired",
+        "are sad",
+        "agree",
+        "disagree"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I think the movie is boring.",
+       "answer": "Creo que la película es aburrida.",
+       "bank": [
+        "aburrida.",
+        "Creo",
+        "es",
+        "película",
+        "parece",
+        "la",
+        "feliz",
+        "interesante",
+        "que"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "¿Qué piensas? Me parece muy interesante.",
+       "meaning": "What do you think? I find it very interesting.",
+       "bank": [
+        "¿Qué",
+        "difícil",
+        "muy",
+        "parece",
+        "aburrido",
+        "creo",
+        "Me",
+        "interesante.",
+        "piensas?"
+       ]
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "me encanta",
+         "I love it"
+        ],
+        [
+         "odio",
+         "I hate"
+        ],
+        [
+         "prefiero",
+         "I prefer"
+        ],
+        [
+         "me gustaría",
+         "I would like"
+        ],
+        [
+         "ojalá",
+         "hopefully"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Estoy triste ___ mi perro está enfermo.",
+       "meaning": "I'm sad because my dog is sick.",
+       "options": [
+        "porque",
+        "quizás",
+        "tan",
+        "por qué"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "speak",
+       "text": "En mi opinión, el verano es mejor que el invierno.",
+       "meaning": "In my opinion, summer is better than winter."
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Estoy de acuerdo. El español no es difícil.",
+       "answer": "I agree. Spanish is not difficult.",
+       "bank": [
+        "difficult.",
+        "think",
+        "easy",
+        "not",
+        "I",
+        "is",
+        "Spanish",
+        "boring",
+        "agree."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is correct?",
+       "options": [
+        "Soy tan alto que tú.",
+        "Estoy más alto que tú.",
+        "Soy más alto como tú.",
+        "Soy más alto que tú."
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Why are you tired? Because I work a lot.",
+       "answer": "¿Por qué estás cansado? Porque trabajo mucho.",
+       "bank": [
+        "mucho.",
+        "estudio",
+        "qué",
+        "¿Por",
+        "estás",
+        "cansado?",
+        "trabajo",
+        "Porque",
+        "triste",
+        "feliz"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Me ___ viajar a las montañas el verano que viene.",
+       "meaning": "I would like to travel to the mountains next summer.",
+       "options": [
+        "gustaría",
+        "gusta",
+        "encanta",
+        "parece"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Mi mejor amiga es tan simpática como mi hermana.",
+       "meaning": "My best friend is as nice as my sister.",
+       "bank": [
+        "hermana.",
+        "simpática",
+        "es",
+        "tan",
+        "como",
+        "madre",
+        "peor",
+        "Mi",
+        "mi",
+        "mejor",
+        "más",
+        "amiga"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Quizás mañana hace calor.' means...",
+       "options": [
+        "Yesterday it was hot",
+        "It's definitely hot tomorrow",
+        "Maybe tomorrow it's hot",
+        "I hope it's cold tomorrow"
+       ],
+       "answer": 2
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

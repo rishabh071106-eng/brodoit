@@ -1,0 +1,6737 @@
+{
+ "code": "de",
+ "name": "German",
+ "native": "Deutsch",
+ "flag": "🇩🇪",
+ "from": "en",
+ "fromName": "English",
+ "voice": "de-DE",
+ "tagline": "Order a Brezel, navigate Berlin, chat with new friends across Germany, Austria & Switzerland.",
+ "units": [
+  {
+   "id": "u1",
+   "title": "Basics 1",
+   "emoji": "👋",
+   "goal": "Greet people and introduce yourself",
+   "lessons": [
+    {
+     "id": "u1l1",
+     "title": "Hello!",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Hallo",
+       "tl": "HAH-lo",
+       "meaning": "hello",
+       "example": "Hallo, wie geht's?",
+       "exampleMeaning": "Hello, how's it going?"
+      },
+      {
+       "t": "learn",
+       "word": "Guten Morgen",
+       "tl": "GOO-ten MOR-gen",
+       "meaning": "good morning",
+       "example": "Guten Morgen, Anna!",
+       "exampleMeaning": "Good morning, Anna!"
+      },
+      {
+       "t": "learn",
+       "word": "Tschüss",
+       "tl": "chooss",
+       "meaning": "bye",
+       "example": "Tschüss, bis morgen!",
+       "exampleMeaning": "Bye, see you tomorrow!"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'hello'?",
+       "options": [
+        "Hallo",
+        "Tschüss",
+        "Morgen",
+        "Guten"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'Tschüss' mean?",
+       "options": [
+        "good morning",
+        "bye",
+        "hello",
+        "please"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Good morning",
+       "answer": "Guten Morgen",
+       "bank": [
+        "Tschüss",
+        "Morgen",
+        "Hallo",
+        "Abend",
+        "Guten"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Hallo, Anna!",
+       "meaning": "Hello, Anna!",
+       "bank": [
+        "Morgen",
+        "Tschüss",
+        "Hallo,",
+        "Guten",
+        "Anna!"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Guten Morgen!",
+       "meaning": "Good morning!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Hallo",
+         "hello"
+        ],
+        [
+         "Guten Morgen",
+         "good morning"
+        ],
+        [
+         "Tschüss",
+         "bye"
+        ],
+        [
+         "Anna",
+         "Anna"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Tschüss, Anna!",
+       "answer": "Bye, Anna!",
+       "bank": [
+        "morning",
+        "Anna!",
+        "Hello,",
+        "Bye,",
+        "good"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ Morgen!",
+       "meaning": "Good morning!",
+       "options": [
+        "Guten",
+        "Hallo",
+        "Tschüss",
+        "Gute"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Tschüss!",
+       "meaning": "Bye!",
+       "bank": [
+        "Hallo!",
+        "Morgen!",
+        "Guten",
+        "Tschüss!"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'bye'?",
+       "options": [
+        "Hallo",
+        "Guten Morgen",
+        "Tschüss",
+        "Anna"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u1l2",
+     "title": "How are you?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Wie geht's?",
+       "tl": "vee GAYTS",
+       "meaning": "How's it going? / How are you?",
+       "example": "Hallo! Wie geht's?",
+       "exampleMeaning": "Hello! How are you?"
+      },
+      {
+       "t": "learn",
+       "word": "gut",
+       "tl": "goot",
+       "meaning": "good / well",
+       "example": "Mir geht's gut.",
+       "exampleMeaning": "I'm doing well."
+      },
+      {
+       "t": "learn",
+       "word": "danke",
+       "tl": "DAHN-keh",
+       "meaning": "thank you",
+       "example": "Gut, danke!",
+       "exampleMeaning": "Good, thanks!"
+      },
+      {
+       "t": "learn",
+       "word": "und",
+       "tl": "oont",
+       "meaning": "and",
+       "example": "Gut, danke. Und dir?",
+       "exampleMeaning": "Good, thanks. And you?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'thank you'?",
+       "options": [
+        "gut",
+        "und",
+        "wie",
+        "danke"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How are you?",
+       "answer": "Wie geht's?",
+       "bank": [
+        "danke",
+        "Wie",
+        "Hallo",
+        "gut",
+        "geht's?"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Gut, danke!",
+       "meaning": "Good, thanks!",
+       "bank": [
+        "Gut,",
+        "und",
+        "Hallo",
+        "danke!",
+        "Morgen"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Wie geht's? Gut, danke.",
+       "meaning": "How are you? Good, thanks."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Wie geht's?",
+         "How are you?"
+        ],
+        [
+         "gut",
+         "good"
+        ],
+        [
+         "danke",
+         "thank you"
+        ],
+        [
+         "und",
+         "and"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Gut, danke. Und dir?",
+       "answer": "Good, thanks. And you?",
+       "bank": [
+        "morning",
+        "bye",
+        "Good,",
+        "And",
+        "hello",
+        "you?",
+        "thanks."
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Mir geht's ___.",
+       "meaning": "I'm doing well.",
+       "options": [
+        "danke",
+        "gut",
+        "und",
+        "Hallo"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'Und dir?' mean?",
+       "options": [
+        "And you?",
+        "Good morning",
+        "Thank you",
+        "Hello"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Hallo! Wie geht's?",
+       "meaning": "Hello! How are you?",
+       "bank": [
+        "danke",
+        "Hallo!",
+        "Wie",
+        "geht's?",
+        "Gut",
+        "Tschüss"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u1l3",
+     "title": "My name is...",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Ich heiße",
+       "tl": "ikh HY-seh",
+       "meaning": "my name is / I am called",
+       "example": "Ich heiße Anna.",
+       "exampleMeaning": "My name is Anna."
+      },
+      {
+       "t": "learn",
+       "word": "Wie heißt du?",
+       "tl": "vee hyst doo",
+       "meaning": "What's your name?",
+       "example": "Hallo, wie heißt du?",
+       "exampleMeaning": "Hello, what's your name?"
+      },
+      {
+       "t": "learn",
+       "word": "Freut mich",
+       "tl": "froyt mikh",
+       "meaning": "nice to meet you",
+       "example": "Freut mich, Max!",
+       "exampleMeaning": "Nice to meet you, Max!"
+      },
+      {
+       "t": "learn",
+       "word": "Ich bin",
+       "tl": "ikh bin",
+       "meaning": "I am",
+       "example": "Ich bin Max.",
+       "exampleMeaning": "I am Max."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'My name is'?",
+       "options": [
+        "Ich bin",
+        "Ich heiße",
+        "Wie heißt du?",
+        "Freut mich"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My name is Anna.",
+       "answer": "Ich heiße Anna.",
+       "bank": [
+        "heißt",
+        "Max.",
+        "bin",
+        "Ich",
+        "Anna.",
+        "heiße"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Wie heißt du?",
+       "meaning": "What's your name?",
+       "bank": [
+        "geht's",
+        "heißt",
+        "Ich",
+        "heiße",
+        "du?",
+        "Wie"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich heiße Max. Freut mich!",
+       "meaning": "My name is Max. Nice to meet you!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Ich heiße",
+         "my name is"
+        ],
+        [
+         "Wie heißt du?",
+         "What's your name?"
+        ],
+        [
+         "Freut mich",
+         "nice to meet you"
+        ],
+        [
+         "Ich bin",
+         "I am"
+        ],
+        [
+         "danke",
+         "thank you"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ich bin Anna. Freut mich!",
+       "answer": "I am Anna. Nice to meet you!",
+       "bank": [
+        "meet",
+        "my",
+        "you!",
+        "Anna.",
+        "to",
+        "thanks",
+        "Nice",
+        "am",
+        "name",
+        "I"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Wie ___ du?",
+       "meaning": "What's your name?",
+       "options": [
+        "heiße",
+        "heißt",
+        "bin",
+        "geht's"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Ich bin Max.",
+       "meaning": "I am Max.",
+       "bank": [
+        "Wie",
+        "Max.",
+        "heiße",
+        "Ich",
+        "bin",
+        "Anna."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'Freut mich' mean?",
+       "options": [
+        "Thank you",
+        "My name is",
+        "Nice to meet you",
+        "How are you?"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I am Max.",
+       "answer": "Ich bin Max.",
+       "bank": [
+        "Anna.",
+        "heiße",
+        "du",
+        "bin",
+        "Ich",
+        "Max."
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u1l4",
+     "title": "Review: Basics 1",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Guten Abend",
+       "tl": "GOO-ten AH-bent",
+       "meaning": "good evening",
+       "example": "Guten Abend, Herr Müller!",
+       "exampleMeaning": "Good evening, Mr. Müller!"
+      },
+      {
+       "t": "learn",
+       "word": "Auf Wiedersehen",
+       "tl": "owf VEE-der-zayn",
+       "meaning": "goodbye (formal)",
+       "example": "Auf Wiedersehen, Frau Schmidt!",
+       "exampleMeaning": "Goodbye, Mrs. Schmidt!"
+      },
+      {
+       "t": "learn",
+       "word": "bitte",
+       "tl": "BIT-teh",
+       "meaning": "please / you're welcome",
+       "example": "Danke! – Bitte!",
+       "exampleMeaning": "Thanks! – You're welcome!"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is the formal goodbye?",
+       "options": [
+        "Tschüss",
+        "Hallo",
+        "Guten Abend",
+        "Auf Wiedersehen"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Good evening, my name is Anna.",
+       "answer": "Guten Abend, ich heiße Anna.",
+       "bank": [
+        "Guten",
+        "Tschüss",
+        "Morgen,",
+        "Abend,",
+        "ich",
+        "bin",
+        "heiße",
+        "Anna."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Danke! Bitte!",
+       "meaning": "Thanks! You're welcome!",
+       "bank": [
+        "und",
+        "Danke!",
+        "gut",
+        "Hallo!",
+        "Bitte!"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Auf Wiedersehen!",
+       "meaning": "Goodbye!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Guten Abend",
+         "good evening"
+        ],
+        [
+         "Auf Wiedersehen",
+         "goodbye"
+        ],
+        [
+         "bitte",
+         "please"
+        ],
+        [
+         "Guten Morgen",
+         "good morning"
+        ],
+        [
+         "Tschüss",
+         "bye"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Hallo, wie geht's? Gut, danke.",
+       "answer": "Hello, how are you? Good, thanks.",
+       "bank": [
+        "name",
+        "Hello,",
+        "Good,",
+        "please",
+        "thanks.",
+        "evening",
+        "how",
+        "you?",
+        "are"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Guten ___, Herr Müller!",
+       "meaning": "Good evening, Mr. Müller!",
+       "options": [
+        "Morgen",
+        "Abend",
+        "Tschüss",
+        "danke"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'bitte' mean?",
+       "options": [
+        "please",
+        "good",
+        "thank you",
+        "and"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Ich heiße Anna. Und du?",
+       "meaning": "My name is Anna. And you?",
+       "bank": [
+        "Und",
+        "Anna.",
+        "du?",
+        "Freut",
+        "heiße",
+        "Ich",
+        "heißt",
+        "bin"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Nice to meet you! Bye!",
+       "answer": "Freut mich! Tschüss!",
+       "bank": [
+        "Danke!",
+        "Hallo!",
+        "Bitte!",
+        "mich!",
+        "Freut",
+        "Tschüss!"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u2",
+   "title": "Numbers & Age",
+   "emoji": "🔢",
+   "goal": "Count, say your age and ask where someone is from",
+   "lessons": [
+    {
+     "id": "u2l1",
+     "title": "One to five",
+     "items": [
+      {
+       "t": "learn",
+       "word": "eins",
+       "tl": "eyns",
+       "meaning": "one",
+       "example": "Ich habe eins.",
+       "exampleMeaning": "I have one."
+      },
+      {
+       "t": "learn",
+       "word": "zwei",
+       "tl": "tsvy",
+       "meaning": "two",
+       "example": "zwei Kaffee, bitte",
+       "exampleMeaning": "two coffees, please"
+      },
+      {
+       "t": "learn",
+       "word": "drei",
+       "tl": "dry",
+       "meaning": "three",
+       "example": "Eins, zwei, drei!",
+       "exampleMeaning": "One, two, three!"
+      },
+      {
+       "t": "learn",
+       "word": "vier",
+       "tl": "feer",
+       "meaning": "four",
+       "example": "vier Freunde",
+       "exampleMeaning": "four friends"
+      },
+      {
+       "t": "learn",
+       "word": "fünf",
+       "tl": "fuenf",
+       "meaning": "five",
+       "example": "fünf Euro",
+       "exampleMeaning": "five euros"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'three'?",
+       "options": [
+        "zwei",
+        "drei",
+        "vier",
+        "fünf"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "What is 'fünf'?",
+       "options": [
+        "two",
+        "four",
+        "five",
+        "one"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "One, two, three",
+       "answer": "Eins, zwei, drei",
+       "bank": [
+        "vier",
+        "zwei,",
+        "drei",
+        "fünf",
+        "Eins,",
+        "und"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Zwei, drei, vier",
+       "meaning": "Two, three, four",
+       "bank": [
+        "eins",
+        "Zwei,",
+        "vier",
+        "fünf",
+        "Hallo",
+        "drei,"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Eins, zwei, drei, vier, fünf.",
+       "meaning": "One, two, three, four, five."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "eins",
+         "one"
+        ],
+        [
+         "zwei",
+         "two"
+        ],
+        [
+         "drei",
+         "three"
+        ],
+        [
+         "vier",
+         "four"
+        ],
+        [
+         "fünf",
+         "five"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Eins, zwei, ___, vier.",
+       "meaning": "One, two, three, four.",
+       "options": [
+        "fünf",
+        "drei",
+        "eins",
+        "zwei"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Zwei Kaffee, bitte.",
+       "answer": "Two coffees, please.",
+       "bank": [
+        "three",
+        "coffees,",
+        "please.",
+        "Two",
+        "thanks",
+        "four"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u2l2",
+     "title": "Six to ten",
+     "items": [
+      {
+       "t": "learn",
+       "word": "sechs",
+       "tl": "zeks",
+       "meaning": "six",
+       "example": "Es ist sechs Uhr.",
+       "exampleMeaning": "It is six o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "sieben",
+       "tl": "ZEE-ben",
+       "meaning": "seven",
+       "example": "sieben Tage",
+       "exampleMeaning": "seven days"
+      },
+      {
+       "t": "learn",
+       "word": "acht",
+       "tl": "ahkht",
+       "meaning": "eight",
+       "example": "acht Euro",
+       "exampleMeaning": "eight euros"
+      },
+      {
+       "t": "learn",
+       "word": "neun",
+       "tl": "noyn",
+       "meaning": "nine",
+       "example": "neun Freunde",
+       "exampleMeaning": "nine friends"
+      },
+      {
+       "t": "learn",
+       "word": "zehn",
+       "tl": "tsayn",
+       "meaning": "ten",
+       "example": "Ich zähle bis zehn.",
+       "exampleMeaning": "I count to ten."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'eight'?",
+       "options": [
+        "sechs",
+        "sieben",
+        "neun",
+        "acht"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "choose",
+       "prompt": "What is 'sieben'?",
+       "options": [
+        "seven",
+        "six",
+        "nine",
+        "ten"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Six, seven, eight",
+       "answer": "Sechs, sieben, acht",
+       "bank": [
+        "sieben,",
+        "acht",
+        "neun",
+        "zehn",
+        "drei",
+        "Sechs,"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Neun, zehn",
+       "meaning": "Nine, ten",
+       "bank": [
+        "zehn",
+        "sechs",
+        "acht",
+        "Neun,",
+        "sieben"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Sechs, sieben, acht, neun, zehn.",
+       "meaning": "Six, seven, eight, nine, ten."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "sechs",
+         "six"
+        ],
+        [
+         "sieben",
+         "seven"
+        ],
+        [
+         "acht",
+         "eight"
+        ],
+        [
+         "neun",
+         "nine"
+        ],
+        [
+         "zehn",
+         "ten"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Sieben, acht, ___, zehn.",
+       "meaning": "Seven, eight, nine, ten.",
+       "options": [
+        "neun",
+        "sechs",
+        "fünf",
+        "vier"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Acht Euro, bitte.",
+       "answer": "Eight euros, please.",
+       "bank": [
+        "please.",
+        "euros,",
+        "Eight",
+        "nine",
+        "thanks",
+        "six"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which number comes after 'fünf'?",
+       "options": [
+        "vier",
+        "sechs",
+        "sieben",
+        "drei"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u2l3",
+     "title": "How old are you?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Wie alt bist du?",
+       "tl": "vee ahlt bist doo",
+       "meaning": "How old are you?",
+       "example": "Wie alt bist du, Max?",
+       "exampleMeaning": "How old are you, Max?"
+      },
+      {
+       "t": "learn",
+       "word": "Jahre alt",
+       "tl": "YAH-reh ahlt",
+       "meaning": "years old",
+       "example": "Ich bin zehn Jahre alt.",
+       "exampleMeaning": "I am ten years old."
+      },
+      {
+       "t": "learn",
+       "word": "zwanzig",
+       "tl": "TSVAHN-tsikh",
+       "meaning": "twenty",
+       "example": "Ich bin zwanzig.",
+       "exampleMeaning": "I am twenty."
+      },
+      {
+       "t": "learn",
+       "word": "dreißig",
+       "tl": "DRY-sikh",
+       "meaning": "thirty",
+       "example": "Sie ist dreißig Jahre alt.",
+       "exampleMeaning": "She is thirty years old."
+      },
+      {
+       "t": "learn",
+       "word": "Woher kommst du?",
+       "tl": "vo-HAIR komst doo",
+       "meaning": "Where are you from?",
+       "example": "Woher kommst du? Aus Berlin?",
+       "exampleMeaning": "Where are you from? From Berlin?"
+      },
+      {
+       "t": "learn",
+       "word": "Ich komme aus",
+       "tl": "ikh KOM-meh ows",
+       "meaning": "I come from",
+       "example": "Ich komme aus England.",
+       "exampleMeaning": "I come from England."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'twenty'?",
+       "options": [
+        "dreißig",
+        "zehn",
+        "zwanzig",
+        "zwei"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I am twenty years old.",
+       "answer": "Ich bin zwanzig Jahre alt.",
+       "bank": [
+        "heiße",
+        "zwanzig",
+        "du",
+        "Jahre",
+        "bin",
+        "Ich",
+        "dreißig",
+        "alt."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Wie alt bist du?",
+       "meaning": "How old are you?",
+       "bank": [
+        "Woher",
+        "kommst",
+        "du?",
+        "Wie",
+        "bist",
+        "Jahre",
+        "alt"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich komme aus England.",
+       "meaning": "I come from England."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Wie alt bist du?",
+         "How old are you?"
+        ],
+        [
+         "Jahre alt",
+         "years old"
+        ],
+        [
+         "Woher kommst du?",
+         "Where are you from?"
+        ],
+        [
+         "Ich komme aus",
+         "I come from"
+        ],
+        [
+         "dreißig",
+         "thirty"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Woher kommst du? Ich komme aus Berlin.",
+       "answer": "Where are you from? I come from Berlin.",
+       "bank": [
+        "you",
+        "Berlin.",
+        "name",
+        "old",
+        "from?",
+        "Where",
+        "from",
+        "I",
+        "years",
+        "come",
+        "are"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich ___ aus Berlin.",
+       "meaning": "I come from Berlin.",
+       "options": [
+        "bin",
+        "komme",
+        "heiße",
+        "kommst"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'dreißig' mean?",
+       "options": [
+        "thirteen",
+        "three",
+        "twenty",
+        "thirty"
+       ],
+       "answer": 3
+      }
+     ]
+    },
+    {
+     "id": "u2l4",
+     "title": "Review: Numbers",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Telefonnummer",
+       "tl": "tay-lay-FOHN-noom-mer",
+       "meaning": "phone number",
+       "example": "Meine Telefonnummer ist...",
+       "exampleMeaning": "My phone number is..."
+      },
+      {
+       "t": "learn",
+       "word": "null",
+       "tl": "nool",
+       "meaning": "zero",
+       "example": "null, eins, zwei",
+       "exampleMeaning": "zero, one, two"
+      },
+      {
+       "t": "learn",
+       "word": "Deutschland",
+       "tl": "DOYTCH-lahnt",
+       "meaning": "Germany",
+       "example": "Ich komme aus Deutschland.",
+       "exampleMeaning": "I come from Germany."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'zero'?",
+       "options": [
+        "null",
+        "neun",
+        "eins",
+        "zehn"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I come from Germany.",
+       "answer": "Ich komme aus Deutschland.",
+       "bank": [
+        "komme",
+        "Ich",
+        "Deutschland.",
+        "bin",
+        "Berlin.",
+        "aus",
+        "England."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Null, drei, sieben, acht",
+       "meaning": "Zero, three, seven, eight",
+       "bank": [
+        "sieben,",
+        "neun",
+        "acht",
+        "drei,",
+        "sechs",
+        "Null,",
+        "zwei"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Meine Telefonnummer ist null, eins, fünf, sieben.",
+       "meaning": "My phone number is zero, one, five, seven."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "null",
+         "zero"
+        ],
+        [
+         "Deutschland",
+         "Germany"
+        ],
+        [
+         "Telefonnummer",
+         "phone number"
+        ],
+        [
+         "zwanzig",
+         "twenty"
+        ],
+        [
+         "acht",
+         "eight"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ich bin dreißig Jahre alt.",
+       "answer": "I am thirty years old.",
+       "bank": [
+        "twenty",
+        "old.",
+        "am",
+        "thirty",
+        "come",
+        "I",
+        "from",
+        "years"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Wie ___ bist du?",
+       "meaning": "How old are you?",
+       "options": [
+        "heißt",
+        "alt",
+        "gut",
+        "aus"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'nine'?",
+       "options": [
+        "sechs",
+        "neun",
+        "sieben",
+        "vier"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Ich bin zwanzig Jahre alt.",
+       "meaning": "I am twenty years old.",
+       "bank": [
+        "alt.",
+        "Ich",
+        "Jahre",
+        "dreißig",
+        "bin",
+        "komme",
+        "aus",
+        "zwanzig"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Hello! How old are you?",
+       "answer": "Hallo! Wie alt bist du?",
+       "bank": [
+        "Hallo!",
+        "kommst",
+        "bist",
+        "Woher",
+        "Wie",
+        "heißt",
+        "du?",
+        "alt"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u3",
+   "title": "Food & Drink",
+   "emoji": "🥨",
+   "goal": "Order food and drinks in a café",
+   "lessons": [
+    {
+     "id": "u3l1",
+     "title": "At the café",
+     "items": [
+      {
+       "t": "learn",
+       "word": "der Kaffee",
+       "tl": "dair KAH-fay",
+       "meaning": "the coffee",
+       "example": "Ein Kaffee, bitte.",
+       "exampleMeaning": "A coffee, please."
+      },
+      {
+       "t": "learn",
+       "word": "das Wasser",
+       "tl": "dahs VAHS-ser",
+       "meaning": "the water",
+       "example": "Ein Wasser, bitte.",
+       "exampleMeaning": "A water, please."
+      },
+      {
+       "t": "learn",
+       "word": "der Tee",
+       "tl": "dair tay",
+       "meaning": "the tea",
+       "example": "Ich trinke Tee.",
+       "exampleMeaning": "I drink tea."
+      },
+      {
+       "t": "learn",
+       "word": "Ich möchte",
+       "tl": "ikh MERKH-teh",
+       "meaning": "I would like",
+       "example": "Ich möchte einen Kaffee.",
+       "exampleMeaning": "I would like a coffee."
+      },
+      {
+       "t": "learn",
+       "word": "trinken",
+       "tl": "TRIN-ken",
+       "meaning": "to drink",
+       "example": "Was möchtest du trinken?",
+       "exampleMeaning": "What would you like to drink?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'water'?",
+       "options": [
+        "Kaffee",
+        "Tee",
+        "Wasser",
+        "Brot"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I would like a coffee, please.",
+       "answer": "Ich möchte einen Kaffee, bitte.",
+       "bank": [
+        "Kaffee,",
+        "bitte.",
+        "Wasser,",
+        "trinke",
+        "einen",
+        "Tee,",
+        "Ich",
+        "möchte"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ein Wasser, bitte.",
+       "meaning": "A water, please.",
+       "bank": [
+        "Kaffee,",
+        "Wasser,",
+        "bitte.",
+        "Tee,",
+        "Ein",
+        "danke"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich möchte einen Tee, bitte.",
+       "meaning": "I would like a tea, please."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "der Kaffee",
+         "the coffee"
+        ],
+        [
+         "das Wasser",
+         "the water"
+        ],
+        [
+         "der Tee",
+         "the tea"
+        ],
+        [
+         "Ich möchte",
+         "I would like"
+        ],
+        [
+         "trinken",
+         "to drink"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Was möchtest du trinken?",
+       "answer": "What would you like to drink?",
+       "bank": [
+        "to",
+        "like",
+        "you",
+        "eat",
+        "drink?",
+        "would",
+        "coffee",
+        "please",
+        "What"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich ___ Tee.",
+       "meaning": "I drink tea.",
+       "options": [
+        "trinke",
+        "möchte",
+        "trinken",
+        "bin"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'Ich möchte' mean?",
+       "options": [
+        "I drink",
+        "I eat",
+        "I am",
+        "I would like"
+       ],
+       "answer": 3
+      }
+     ]
+    },
+    {
+     "id": "u3l2",
+     "title": "Bread & breakfast",
+     "items": [
+      {
+       "t": "learn",
+       "word": "das Brot",
+       "tl": "dahs broht",
+       "meaning": "the bread",
+       "example": "Das Brot ist frisch.",
+       "exampleMeaning": "The bread is fresh."
+      },
+      {
+       "t": "learn",
+       "word": "die Brezel",
+       "tl": "dee BRAY-tsel",
+       "meaning": "the pretzel",
+       "example": "Eine Brezel, bitte!",
+       "exampleMeaning": "A pretzel, please!"
+      },
+      {
+       "t": "learn",
+       "word": "der Käse",
+       "tl": "dair KAY-zeh",
+       "meaning": "the cheese",
+       "example": "Brot mit Käse",
+       "exampleMeaning": "bread with cheese"
+      },
+      {
+       "t": "learn",
+       "word": "essen",
+       "tl": "ES-sen",
+       "meaning": "to eat",
+       "example": "Ich esse Brot.",
+       "exampleMeaning": "I eat bread."
+      },
+      {
+       "t": "learn",
+       "word": "das Frühstück",
+       "tl": "dahs FRUE-shtuek",
+       "meaning": "the breakfast",
+       "example": "Das Frühstück ist gut.",
+       "exampleMeaning": "The breakfast is good."
+      },
+      {
+       "t": "learn",
+       "word": "mit",
+       "tl": "mit",
+       "meaning": "with",
+       "example": "Kaffee mit Milch",
+       "exampleMeaning": "coffee with milk"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'cheese'?",
+       "options": [
+        "Käse",
+        "Brot",
+        "Brezel",
+        "Frühstück"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I eat bread with cheese.",
+       "answer": "Ich esse Brot mit Käse.",
+       "bank": [
+        "Wasser",
+        "trinke",
+        "Ich",
+        "Brot",
+        "Käse.",
+        "mit",
+        "esse",
+        "Brezel"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Eine Brezel, bitte!",
+       "meaning": "A pretzel, please!",
+       "bank": [
+        "Käse,",
+        "Eine",
+        "Brezel,",
+        "bitte!",
+        "Brot,",
+        "esse"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Das Frühstück ist gut.",
+       "meaning": "The breakfast is good."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "das Brot",
+         "the bread"
+        ],
+        [
+         "die Brezel",
+         "the pretzel"
+        ],
+        [
+         "der Käse",
+         "the cheese"
+        ],
+        [
+         "essen",
+         "to eat"
+        ],
+        [
+         "mit",
+         "with"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ich esse Brot und trinke Kaffee.",
+       "answer": "I eat bread and drink coffee.",
+       "bank": [
+        "drink",
+        "bread",
+        "eat",
+        "cheese",
+        "water",
+        "tea",
+        "I",
+        "coffee.",
+        "and"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich ___ eine Brezel.",
+       "meaning": "I eat a pretzel.",
+       "options": [
+        "trinke",
+        "möchte",
+        "esse",
+        "bin"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "choose",
+       "prompt": "What is 'das Frühstück'?",
+       "options": [
+        "the dinner",
+        "the breakfast",
+        "the bread",
+        "the lunch"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u3l3",
+     "title": "Ordering & paying",
+     "items": [
+      {
+       "t": "learn",
+       "word": "die Speisekarte",
+       "tl": "dee SHPY-zeh-kar-teh",
+       "meaning": "the menu",
+       "example": "Die Speisekarte, bitte.",
+       "exampleMeaning": "The menu, please."
+      },
+      {
+       "t": "learn",
+       "word": "Ich hätte gern",
+       "tl": "ikh HET-teh gairn",
+       "meaning": "I'd like (polite order)",
+       "example": "Ich hätte gern eine Suppe.",
+       "exampleMeaning": "I'd like a soup."
+      },
+      {
+       "t": "learn",
+       "word": "die Rechnung",
+       "tl": "dee REKH-noong",
+       "meaning": "the bill",
+       "example": "Die Rechnung, bitte!",
+       "exampleMeaning": "The bill, please!"
+      },
+      {
+       "t": "learn",
+       "word": "Das kostet",
+       "tl": "dahs KOS-tet",
+       "meaning": "That costs",
+       "example": "Das kostet fünf Euro.",
+       "exampleMeaning": "That costs five euros."
+      },
+      {
+       "t": "learn",
+       "word": "lecker",
+       "tl": "LEK-ker",
+       "meaning": "tasty / delicious",
+       "example": "Das ist lecker!",
+       "exampleMeaning": "That is delicious!"
+      },
+      {
+       "t": "learn",
+       "word": "die Suppe",
+       "tl": "dee ZOOP-peh",
+       "meaning": "the soup",
+       "example": "Die Suppe ist heiß.",
+       "exampleMeaning": "The soup is hot."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the bill'?",
+       "options": [
+        "die Speisekarte",
+        "die Suppe",
+        "die Rechnung",
+        "das Brot"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The bill, please!",
+       "answer": "Die Rechnung, bitte!",
+       "bank": [
+        "Speisekarte,",
+        "Rechnung,",
+        "danke",
+        "Die",
+        "bitte!",
+        "Suppe,"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ich hätte gern eine Suppe.",
+       "meaning": "I'd like a soup.",
+       "bank": [
+        "Brezel.",
+        "Kaffee.",
+        "möchte",
+        "gern",
+        "Suppe.",
+        "Ich",
+        "eine",
+        "hätte"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Das ist lecker!",
+       "meaning": "That is delicious!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "die Speisekarte",
+         "the menu"
+        ],
+        [
+         "Ich hätte gern",
+         "I'd like"
+        ],
+        [
+         "die Rechnung",
+         "the bill"
+        ],
+        [
+         "Das kostet",
+         "That costs"
+        ],
+        [
+         "lecker",
+         "delicious"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Das kostet acht Euro.",
+       "answer": "That costs eight euros.",
+       "bank": [
+        "bill",
+        "euros.",
+        "eight",
+        "tasty",
+        "That",
+        "costs",
+        "nine"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Die ___, bitte!",
+       "meaning": "The menu, please!",
+       "options": [
+        "Rechnung",
+        "Speisekarte",
+        "Suppe",
+        "Brezel"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'lecker' mean?",
+       "options": [
+        "hot",
+        "expensive",
+        "cold",
+        "delicious"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "Das kostet drei Euro.",
+       "meaning": "That costs three euros.",
+       "bank": [
+        "Rechnung",
+        "Euro.",
+        "vier",
+        "kostet",
+        "Das",
+        "drei",
+        "lecker"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u3l4",
+     "title": "Review: Food",
+     "items": [
+      {
+       "t": "learn",
+       "word": "die Milch",
+       "tl": "dee milkh",
+       "meaning": "the milk",
+       "example": "Kaffee mit Milch, bitte.",
+       "exampleMeaning": "Coffee with milk, please."
+      },
+      {
+       "t": "learn",
+       "word": "das Bier",
+       "tl": "dahs beer",
+       "meaning": "the beer",
+       "example": "Ein Bier, bitte!",
+       "exampleMeaning": "A beer, please!"
+      },
+      {
+       "t": "learn",
+       "word": "ohne",
+       "tl": "OH-neh",
+       "meaning": "without",
+       "example": "Tee ohne Milch",
+       "exampleMeaning": "tea without milk"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'without'?",
+       "options": [
+        "ohne",
+        "und",
+        "mit",
+        "bitte"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Coffee with milk, please.",
+       "answer": "Kaffee mit Milch, bitte.",
+       "bank": [
+        "Kaffee",
+        "ohne",
+        "Tee",
+        "mit",
+        "Bier",
+        "bitte.",
+        "Milch,"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ein Bier und eine Brezel, bitte.",
+       "meaning": "A beer and a pretzel, please.",
+       "bank": [
+        "Käse",
+        "Wasser",
+        "und",
+        "Bier",
+        "Ein",
+        "Kaffee",
+        "bitte.",
+        "Brezel,",
+        "eine"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich hätte gern Tee ohne Milch.",
+       "meaning": "I'd like tea without milk."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "die Milch",
+         "the milk"
+        ],
+        [
+         "das Bier",
+         "the beer"
+        ],
+        [
+         "ohne",
+         "without"
+        ],
+        [
+         "mit",
+         "with"
+        ],
+        [
+         "die Rechnung",
+         "the bill"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Die Suppe ist lecker. Die Rechnung, bitte!",
+       "answer": "The soup is delicious. The bill, please!",
+       "bank": [
+        "The",
+        "delicious.",
+        "bread",
+        "soup",
+        "The",
+        "bill,",
+        "cheese",
+        "please!",
+        "menu",
+        "is"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich trinke Kaffee ___ Milch.",
+       "meaning": "I drink coffee without milk.",
+       "options": [
+        "mit",
+        "und",
+        "ohne",
+        "aus"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'Ich hätte gern' mean?",
+       "options": [
+        "I eat",
+        "I'd like",
+        "I drink",
+        "I have"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Was möchtest du essen?",
+       "meaning": "What would you like to eat?",
+       "bank": [
+        "essen?",
+        "du",
+        "trinken",
+        "Brot",
+        "möchtest",
+        "Was",
+        "lecker"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "That costs ten euros.",
+       "answer": "Das kostet zehn Euro.",
+       "bank": [
+        "Euro.",
+        "neun",
+        "Rechnung",
+        "lecker",
+        "kostet",
+        "Das",
+        "zehn"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which word is 'the bread'?",
+       "options": [
+        "der Käse",
+        "die Brezel",
+        "das Brot",
+        "die Suppe"
+       ],
+       "answer": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u4",
+   "title": "Family",
+   "emoji": "👨‍👩‍👧",
+   "goal": "Talk about your family and use 'to have' and possessives",
+   "lessons": [
+    {
+     "id": "u4l1",
+     "title": "Parents",
+     "items": [
+      {
+       "t": "learn",
+       "word": "die Familie",
+       "tl": "dee fah-MEE-lee-eh",
+       "meaning": "the family",
+       "example": "Meine Familie ist groß.",
+       "exampleMeaning": "My family is big."
+      },
+      {
+       "t": "learn",
+       "word": "die Mutter",
+       "tl": "dee MOOT-ter",
+       "meaning": "the mother",
+       "example": "Meine Mutter heißt Anna.",
+       "exampleMeaning": "My mother's name is Anna."
+      },
+      {
+       "t": "learn",
+       "word": "der Vater",
+       "tl": "dair FAH-ter",
+       "meaning": "the father",
+       "example": "Mein Vater ist Lehrer.",
+       "exampleMeaning": "My father is a teacher."
+      },
+      {
+       "t": "learn",
+       "word": "mein / meine",
+       "tl": "myn / MY-neh",
+       "meaning": "my (masc./neut. / fem.)",
+       "example": "Mein Vater und meine Mutter",
+       "exampleMeaning": "My father and my mother"
+      },
+      {
+       "t": "learn",
+       "word": "die Eltern",
+       "tl": "dee EL-tern",
+       "meaning": "the parents",
+       "example": "Meine Eltern wohnen in Berlin.",
+       "exampleMeaning": "My parents live in Berlin."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the mother'?",
+       "options": [
+        "der Vater",
+        "die Familie",
+        "die Eltern",
+        "die Mutter"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My father and my mother",
+       "answer": "Mein Vater und meine Mutter",
+       "bank": [
+        "meine",
+        "Mutter",
+        "Familie",
+        "Bruder",
+        "und",
+        "Eltern",
+        "Mein",
+        "Vater"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Meine Familie ist groß.",
+       "meaning": "My family is big.",
+       "bank": [
+        "groß.",
+        "Familie",
+        "ist",
+        "Eltern",
+        "Mutter",
+        "Meine",
+        "Vater"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Meine Mutter heißt Anna.",
+       "meaning": "My mother's name is Anna."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "die Familie",
+         "the family"
+        ],
+        [
+         "die Mutter",
+         "the mother"
+        ],
+        [
+         "der Vater",
+         "the father"
+        ],
+        [
+         "die Eltern",
+         "the parents"
+        ],
+        [
+         "mein",
+         "my"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Meine Eltern wohnen in Berlin.",
+       "answer": "My parents live in Berlin.",
+       "bank": [
+        "in",
+        "mother",
+        "live",
+        "Berlin.",
+        "parents",
+        "family",
+        "father",
+        "My"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ Vater heißt Max.",
+       "meaning": "My father's name is Max.",
+       "options": [
+        "Meine",
+        "Mein",
+        "Die",
+        "Der"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Meine Eltern' means...",
+       "options": [
+        "my parents",
+        "my mother",
+        "my family",
+        "my father"
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u4l2",
+     "title": "Siblings & 'haben'",
+     "items": [
+      {
+       "t": "learn",
+       "word": "der Bruder",
+       "tl": "dair BROO-der",
+       "meaning": "the brother",
+       "example": "Ich habe einen Bruder.",
+       "exampleMeaning": "I have a brother."
+      },
+      {
+       "t": "learn",
+       "word": "die Schwester",
+       "tl": "dee SHVES-ter",
+       "meaning": "the sister",
+       "example": "Meine Schwester ist zwanzig.",
+       "exampleMeaning": "My sister is twenty."
+      },
+      {
+       "t": "learn",
+       "word": "ich habe",
+       "tl": "ikh HAH-beh",
+       "meaning": "I have",
+       "example": "Ich habe zwei Schwestern.",
+       "exampleMeaning": "I have two sisters."
+      },
+      {
+       "t": "learn",
+       "word": "du hast",
+       "tl": "doo hahst",
+       "meaning": "you have",
+       "example": "Hast du Geschwister?",
+       "exampleMeaning": "Do you have siblings?"
+      },
+      {
+       "t": "learn",
+       "word": "die Geschwister",
+       "tl": "dee geh-SHVIS-ter",
+       "meaning": "the siblings",
+       "example": "Ich habe keine Geschwister.",
+       "exampleMeaning": "I have no siblings."
+      },
+      {
+       "t": "learn",
+       "word": "kein / keine",
+       "tl": "kyn / KY-neh",
+       "meaning": "no / not a",
+       "example": "Ich habe keinen Bruder.",
+       "exampleMeaning": "I don't have a brother."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the sister'?",
+       "options": [
+        "der Bruder",
+        "die Schwester",
+        "die Mutter",
+        "die Geschwister"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I have a brother.",
+       "answer": "Ich habe einen Bruder.",
+       "bank": [
+        "einen",
+        "hast",
+        "Ich",
+        "Bruder.",
+        "eine",
+        "habe",
+        "Schwester."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Hast du Geschwister?",
+       "meaning": "Do you have siblings?",
+       "bank": [
+        "Schwester",
+        "du",
+        "habe",
+        "Hast",
+        "Geschwister?",
+        "Bruder"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich habe zwei Schwestern.",
+       "meaning": "I have two sisters."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "der Bruder",
+         "the brother"
+        ],
+        [
+         "die Schwester",
+         "the sister"
+        ],
+        [
+         "ich habe",
+         "I have"
+        ],
+        [
+         "du hast",
+         "you have"
+        ],
+        [
+         "keine",
+         "no / none"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ich habe keine Geschwister.",
+       "answer": "I have no siblings.",
+       "bank": [
+        "brother",
+        "I",
+        "siblings.",
+        "sister",
+        "have",
+        "two",
+        "no"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ du einen Bruder?",
+       "meaning": "Do you have a brother?",
+       "options": [
+        "Habe",
+        "Hast",
+        "Bist",
+        "Heißt"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Ich habe keinen Bruder' means...",
+       "options": [
+        "I have a brother",
+        "I have two brothers",
+        "I don't have a brother",
+        "My brother is here"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u4l3",
+     "title": "He, she & grandparents",
+     "items": [
+      {
+       "t": "learn",
+       "word": "er",
+       "tl": "air",
+       "meaning": "he",
+       "example": "Er heißt Max.",
+       "exampleMeaning": "His name is Max."
+      },
+      {
+       "t": "learn",
+       "word": "sie",
+       "tl": "zee",
+       "meaning": "she",
+       "example": "Sie ist meine Schwester.",
+       "exampleMeaning": "She is my sister."
+      },
+      {
+       "t": "learn",
+       "word": "die Großmutter",
+       "tl": "dee GROHS-moot-ter",
+       "meaning": "the grandmother",
+       "example": "Meine Großmutter ist achtzig.",
+       "exampleMeaning": "My grandmother is eighty."
+      },
+      {
+       "t": "learn",
+       "word": "der Großvater",
+       "tl": "dair GROHS-fah-ter",
+       "meaning": "the grandfather",
+       "example": "Mein Großvater wohnt in München.",
+       "exampleMeaning": "My grandfather lives in Munich."
+      },
+      {
+       "t": "learn",
+       "word": "das Kind",
+       "tl": "dahs kint",
+       "meaning": "the child",
+       "example": "Das Kind ist drei Jahre alt.",
+       "exampleMeaning": "The child is three years old."
+      },
+      {
+       "t": "learn",
+       "word": "er / sie hat",
+       "tl": "air / zee haht",
+       "meaning": "he / she has",
+       "example": "Sie hat einen Hund.",
+       "exampleMeaning": "She has a dog."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'she'?",
+       "options": [
+        "er",
+        "ich",
+        "du",
+        "sie"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "He has a sister.",
+       "answer": "Er hat eine Schwester.",
+       "bank": [
+        "Sie",
+        "einen",
+        "hat",
+        "eine",
+        "Bruder.",
+        "Schwester.",
+        "Er"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Sie ist meine Großmutter.",
+       "meaning": "She is my grandmother.",
+       "bank": [
+        "meine",
+        "Er",
+        "ist",
+        "Großvater.",
+        "Großmutter.",
+        "Sie",
+        "hat"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Mein Großvater wohnt in München.",
+       "meaning": "My grandfather lives in Munich."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "er",
+         "he"
+        ],
+        [
+         "sie",
+         "she"
+        ],
+        [
+         "die Großmutter",
+         "the grandmother"
+        ],
+        [
+         "der Großvater",
+         "the grandfather"
+        ],
+        [
+         "das Kind",
+         "the child"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Das Kind hat einen Bruder.",
+       "answer": "The child has a brother.",
+       "bank": [
+        "child",
+        "The",
+        "a",
+        "has",
+        "two",
+        "sister",
+        "she",
+        "brother."
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Er ___ zwei Kinder.",
+       "meaning": "He has two children.",
+       "options": [
+        "habe",
+        "hast",
+        "hat",
+        "ist"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "choose",
+       "prompt": "'Sie ist meine Schwester' means...",
+       "options": [
+        "She is my sister",
+        "He is my brother",
+        "She has a sister",
+        "I am her sister"
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u4l4",
+     "title": "Review: Family",
+     "items": [
+      {
+       "t": "learn",
+       "word": "der Hund",
+       "tl": "dair hoont",
+       "meaning": "the dog",
+       "example": "Wir haben einen Hund.",
+       "exampleMeaning": "We have a dog."
+      },
+      {
+       "t": "learn",
+       "word": "die Katze",
+       "tl": "dee KAHT-seh",
+       "meaning": "the cat",
+       "example": "Die Katze heißt Mimi.",
+       "exampleMeaning": "The cat's name is Mimi."
+      },
+      {
+       "t": "learn",
+       "word": "wir haben",
+       "tl": "veer HAH-ben",
+       "meaning": "we have",
+       "example": "Wir haben eine Katze.",
+       "exampleMeaning": "We have a cat."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the cat'?",
+       "options": [
+        "der Hund",
+        "die Katze",
+        "das Kind",
+        "die Mutter"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "We have a dog and a cat.",
+       "answer": "Wir haben einen Hund und eine Katze.",
+       "bank": [
+        "eine",
+        "Kind",
+        "und",
+        "Bruder",
+        "hat",
+        "einen",
+        "Katze.",
+        "Hund",
+        "Wir",
+        "haben"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Meine Schwester hat einen Hund.",
+       "meaning": "My sister has a dog.",
+       "bank": [
+        "Meine",
+        "habe",
+        "Katze.",
+        "Schwester",
+        "hat",
+        "Bruder",
+        "einen",
+        "Hund."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich habe eine Mutter, einen Vater und einen Bruder.",
+       "meaning": "I have a mother, a father and a brother."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "der Hund",
+         "the dog"
+        ],
+        [
+         "die Katze",
+         "the cat"
+        ],
+        [
+         "wir haben",
+         "we have"
+        ],
+        [
+         "die Eltern",
+         "the parents"
+        ],
+        [
+         "der Großvater",
+         "the grandfather"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Hast du Geschwister? Ja, ich habe eine Schwester.",
+       "answer": "Do you have siblings? Yes, I have a sister.",
+       "bank": [
+        "Do",
+        "a",
+        "two",
+        "have",
+        "sister.",
+        "I",
+        "brother",
+        "have",
+        "you",
+        "Yes,",
+        "no",
+        "siblings?"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Meine Großmutter ___ achtzig Jahre alt.",
+       "meaning": "My grandmother is eighty years old.",
+       "options": [
+        "hat",
+        "ist",
+        "habe",
+        "bin"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'wir haben' mean?",
+       "options": [
+        "you have",
+        "he has",
+        "we have",
+        "I have"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Wie heißt deine Mutter?",
+       "meaning": "What's your mother's name?",
+       "bank": [
+        "Wie",
+        "Mutter?",
+        "hat",
+        "heißt",
+        "Vater",
+        "Schwester",
+        "deine"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "She is my sister.",
+       "answer": "Sie ist meine Schwester.",
+       "bank": [
+        "Schwester.",
+        "meine",
+        "Er",
+        "mein",
+        "ist",
+        "Sie",
+        "Bruder."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the correct form: 'Du ___ einen Hund.'",
+       "options": [
+        "habe",
+        "haben",
+        "hat",
+        "hast"
+       ],
+       "answer": 3
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u5",
+   "title": "Getting Around",
+   "emoji": "🚆",
+   "goal": "Ask for directions and use public transport",
+   "lessons": [
+    {
+     "id": "u5l1",
+     "title": "Where is...?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Wo ist...?",
+       "tl": "voh ist",
+       "meaning": "Where is...?",
+       "example": "Wo ist der Bahnhof?",
+       "exampleMeaning": "Where is the train station?"
+      },
+      {
+       "t": "learn",
+       "word": "der Bahnhof",
+       "tl": "dair BAHN-hohf",
+       "meaning": "the train station",
+       "example": "Der Bahnhof ist dort.",
+       "exampleMeaning": "The train station is there."
+      },
+      {
+       "t": "learn",
+       "word": "links",
+       "tl": "links",
+       "meaning": "left",
+       "example": "Gehen Sie links.",
+       "exampleMeaning": "Go left."
+      },
+      {
+       "t": "learn",
+       "word": "rechts",
+       "tl": "rekhts",
+       "meaning": "right",
+       "example": "Das Hotel ist rechts.",
+       "exampleMeaning": "The hotel is on the right."
+      },
+      {
+       "t": "learn",
+       "word": "geradeaus",
+       "tl": "geh-RAH-deh-ows",
+       "meaning": "straight ahead",
+       "example": "Immer geradeaus!",
+       "exampleMeaning": "Straight ahead all the way!"
+      },
+      {
+       "t": "learn",
+       "word": "Entschuldigung",
+       "tl": "ent-SHOOL-dee-goong",
+       "meaning": "excuse me / sorry",
+       "example": "Entschuldigung, wo ist der Bahnhof?",
+       "exampleMeaning": "Excuse me, where is the train station?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'left'?",
+       "options": [
+        "links",
+        "rechts",
+        "geradeaus",
+        "dort"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Excuse me, where is the train station?",
+       "answer": "Entschuldigung, wo ist der Bahnhof?",
+       "bank": [
+        "der",
+        "Bahnhof?",
+        "Hotel?",
+        "rechts",
+        "ist",
+        "links",
+        "Entschuldigung,",
+        "wo"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Gehen Sie links.",
+       "meaning": "Go left.",
+       "bank": [
+        "rechts.",
+        "Sie",
+        "links.",
+        "geradeaus.",
+        "Gehen",
+        "Wo"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Der Bahnhof ist rechts.",
+       "meaning": "The train station is on the right."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Wo ist...?",
+         "Where is...?"
+        ],
+        [
+         "der Bahnhof",
+         "the train station"
+        ],
+        [
+         "links",
+         "left"
+        ],
+        [
+         "rechts",
+         "right"
+        ],
+        [
+         "geradeaus",
+         "straight ahead"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Das Hotel ist geradeaus.",
+       "answer": "The hotel is straight ahead.",
+       "bank": [
+        "straight",
+        "left",
+        "is",
+        "ahead.",
+        "hotel",
+        "right",
+        "station",
+        "The"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Gehen Sie ___.",
+       "meaning": "Go straight ahead.",
+       "options": [
+        "links",
+        "rechts",
+        "geradeaus",
+        "Bahnhof"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u5l2",
+     "title": "Bus, train & tickets",
+     "items": [
+      {
+       "t": "learn",
+       "word": "der Zug",
+       "tl": "dair tsook",
+       "meaning": "the train",
+       "example": "Der Zug fährt um acht.",
+       "exampleMeaning": "The train leaves at eight."
+      },
+      {
+       "t": "learn",
+       "word": "der Bus",
+       "tl": "dair boos",
+       "meaning": "the bus",
+       "example": "Ich nehme den Bus.",
+       "exampleMeaning": "I take the bus."
+      },
+      {
+       "t": "learn",
+       "word": "die U-Bahn",
+       "tl": "dee OO-bahn",
+       "meaning": "the subway / underground",
+       "example": "Die U-Bahn ist schnell.",
+       "exampleMeaning": "The subway is fast."
+      },
+      {
+       "t": "learn",
+       "word": "die Fahrkarte",
+       "tl": "dee FAHR-kar-teh",
+       "meaning": "the ticket",
+       "example": "Eine Fahrkarte nach Berlin, bitte.",
+       "exampleMeaning": "A ticket to Berlin, please."
+      },
+      {
+       "t": "learn",
+       "word": "nach",
+       "tl": "nahkh",
+       "meaning": "to (a place)",
+       "example": "Ich fahre nach München.",
+       "exampleMeaning": "I'm going to Munich."
+      },
+      {
+       "t": "learn",
+       "word": "fahren",
+       "tl": "FAH-ren",
+       "meaning": "to go / travel / drive",
+       "example": "Wir fahren mit dem Zug.",
+       "exampleMeaning": "We travel by train."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the ticket'?",
+       "options": [
+        "der Zug",
+        "die Fahrkarte",
+        "der Bus",
+        "die U-Bahn"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "A ticket to Berlin, please.",
+       "answer": "Eine Fahrkarte nach Berlin, bitte.",
+       "bank": [
+        "nach",
+        "Fahrkarte",
+        "Eine",
+        "Bus",
+        "bitte.",
+        "München,",
+        "Zug",
+        "Berlin,"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ich nehme den Bus.",
+       "meaning": "I take the bus.",
+       "bank": [
+        "fahre",
+        "Bus.",
+        "U-Bahn.",
+        "nehme",
+        "Ich",
+        "den",
+        "Zug."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Wir fahren mit dem Zug nach München.",
+       "meaning": "We travel by train to Munich."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "der Zug",
+         "the train"
+        ],
+        [
+         "der Bus",
+         "the bus"
+        ],
+        [
+         "die U-Bahn",
+         "the subway"
+        ],
+        [
+         "die Fahrkarte",
+         "the ticket"
+        ],
+        [
+         "nach",
+         "to"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Der Zug fährt um acht.",
+       "answer": "The train leaves at eight.",
+       "bank": [
+        "eight.",
+        "at",
+        "The",
+        "nine",
+        "ticket",
+        "train",
+        "leaves",
+        "bus"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich fahre ___ Berlin.",
+       "meaning": "I'm going to Berlin.",
+       "options": [
+        "mit",
+        "nach",
+        "aus",
+        "in"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Die U-Bahn ist schnell' means...",
+       "options": [
+        "The bus is late",
+        "The train is here",
+        "The subway is fast",
+        "The ticket is cheap"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u5l3",
+     "title": "Places in town",
+     "items": [
+      {
+       "t": "learn",
+       "word": "die Stadt",
+       "tl": "dee shtaht",
+       "meaning": "the city / town",
+       "example": "Berlin ist eine große Stadt.",
+       "exampleMeaning": "Berlin is a big city."
+      },
+      {
+       "t": "learn",
+       "word": "die Straße",
+       "tl": "dee SHTRAH-seh",
+       "meaning": "the street",
+       "example": "Die Straße ist lang.",
+       "exampleMeaning": "The street is long."
+      },
+      {
+       "t": "learn",
+       "word": "das Hotel",
+       "tl": "dahs ho-TEL",
+       "meaning": "the hotel",
+       "example": "Das Hotel ist in der Stadt.",
+       "exampleMeaning": "The hotel is in the city."
+      },
+      {
+       "t": "learn",
+       "word": "der Supermarkt",
+       "tl": "dair ZOO-per-markt",
+       "meaning": "the supermarket",
+       "example": "Der Supermarkt ist links.",
+       "exampleMeaning": "The supermarket is on the left."
+      },
+      {
+       "t": "learn",
+       "word": "weit",
+       "tl": "vyt",
+       "meaning": "far",
+       "example": "Ist es weit?",
+       "exampleMeaning": "Is it far?"
+      },
+      {
+       "t": "learn",
+       "word": "hier / dort",
+       "tl": "heer / dort",
+       "meaning": "here / there",
+       "example": "Hier ist der Supermarkt, dort ist das Hotel.",
+       "exampleMeaning": "Here is the supermarket, there is the hotel."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the street'?",
+       "options": [
+        "die Stadt",
+        "der Supermarkt",
+        "das Hotel",
+        "die Straße"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Is it far?",
+       "answer": "Ist es weit?",
+       "bank": [
+        "dort",
+        "Stadt?",
+        "es",
+        "weit?",
+        "Ist",
+        "hier"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Das Hotel ist dort.",
+       "meaning": "The hotel is there.",
+       "bank": [
+        "ist",
+        "hier.",
+        "Hotel",
+        "Supermarkt",
+        "dort.",
+        "Das",
+        "weit"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Entschuldigung, wo ist der Supermarkt?",
+       "meaning": "Excuse me, where is the supermarket?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "die Stadt",
+         "the city"
+        ],
+        [
+         "die Straße",
+         "the street"
+        ],
+        [
+         "das Hotel",
+         "the hotel"
+        ],
+        [
+         "der Supermarkt",
+         "the supermarket"
+        ],
+        [
+         "weit",
+         "far"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Der Supermarkt ist nicht weit.",
+       "answer": "The supermarket is not far.",
+       "bank": [
+        "supermarket",
+        "The",
+        "not",
+        "is",
+        "left",
+        "hotel",
+        "here",
+        "far."
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Berlin ist eine große ___.",
+       "meaning": "Berlin is a big city.",
+       "options": [
+        "Straße",
+        "Stadt",
+        "Hotel",
+        "Bahnhof"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'hier' mean?",
+       "options": [
+        "here",
+        "far",
+        "there",
+        "left"
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u5l4",
+     "title": "Review: Getting Around",
+     "items": [
+      {
+       "t": "learn",
+       "word": "der Flughafen",
+       "tl": "dair FLOOK-hah-fen",
+       "meaning": "the airport",
+       "example": "Wie komme ich zum Flughafen?",
+       "exampleMeaning": "How do I get to the airport?"
+      },
+      {
+       "t": "learn",
+       "word": "Wie komme ich zu...?",
+       "tl": "vee KOM-meh ikh tsoo",
+       "meaning": "How do I get to...?",
+       "example": "Wie komme ich zum Bahnhof?",
+       "exampleMeaning": "How do I get to the train station?"
+      },
+      {
+       "t": "learn",
+       "word": "das Taxi",
+       "tl": "dahs TAHK-see",
+       "meaning": "the taxi",
+       "example": "Ich nehme ein Taxi.",
+       "exampleMeaning": "I take a taxi."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the airport'?",
+       "options": [
+        "der Bahnhof",
+        "der Flughafen",
+        "das Taxi",
+        "die Stadt"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How do I get to the train station?",
+       "answer": "Wie komme ich zum Bahnhof?",
+       "bank": [
+        "Bahnhof?",
+        "zum",
+        "wo",
+        "ich",
+        "Hotel?",
+        "Flughafen?",
+        "Wie",
+        "komme"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Gehen Sie rechts, dann geradeaus.",
+       "meaning": "Go right, then straight ahead.",
+       "bank": [
+        "geradeaus.",
+        "weit",
+        "Gehen",
+        "links,",
+        "Bahnhof",
+        "rechts,",
+        "dann",
+        "Sie"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Wie komme ich zum Flughafen? Mit der U-Bahn?",
+       "meaning": "How do I get to the airport? By subway?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "der Flughafen",
+         "the airport"
+        ],
+        [
+         "das Taxi",
+         "the taxi"
+        ],
+        [
+         "die Fahrkarte",
+         "the ticket"
+        ],
+        [
+         "geradeaus",
+         "straight ahead"
+        ],
+        [
+         "die Straße",
+         "the street"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Entschuldigung, ist der Bahnhof weit? Nein, er ist dort.",
+       "answer": "Excuse me, is the train station far? No, it is there.",
+       "bank": [
+        "far?",
+        "Excuse",
+        "here",
+        "it",
+        "hotel",
+        "No,",
+        "is",
+        "left",
+        "is",
+        "me,",
+        "train",
+        "there.",
+        "the",
+        "station"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich ___ ein Taxi.",
+       "meaning": "I take a taxi.",
+       "options": [
+        "fahre",
+        "nehme",
+        "gehe",
+        "habe"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Der Zug fährt nach München' means...",
+       "options": [
+        "The bus goes to Berlin",
+        "The taxi is far",
+        "The train goes to Munich",
+        "The train is on the left"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Eine Fahrkarte nach Hamburg, bitte.",
+       "meaning": "A ticket to Hamburg, please.",
+       "bank": [
+        "Hamburg,",
+        "nach",
+        "bitte.",
+        "Bus",
+        "Fahrkarte",
+        "Eine",
+        "Berlin,",
+        "Zug"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The hotel is on the left, the supermarket on the right.",
+       "answer": "Das Hotel ist links, der Supermarkt rechts.",
+       "bank": [
+        "Das",
+        "geradeaus",
+        "rechts.",
+        "dort",
+        "ist",
+        "Supermarkt",
+        "Bahnhof",
+        "links,",
+        "Hotel",
+        "der"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u6",
+   "title": "Time & Days",
+   "emoji": "⏰",
+   "goal": "Tell the time, name the days and make plans",
+   "lessons": [
+    {
+     "id": "u6l1",
+     "title": "What time is it?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Wie viel Uhr ist es?",
+       "tl": "vee feel oor ist es",
+       "meaning": "What time is it?",
+       "example": "Entschuldigung, wie viel Uhr ist es?",
+       "exampleMeaning": "Excuse me, what time is it?"
+      },
+      {
+       "t": "learn",
+       "word": "Es ist ... Uhr",
+       "tl": "es ist ... oor",
+       "meaning": "It is ... o'clock",
+       "example": "Es ist drei Uhr.",
+       "exampleMeaning": "It is three o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "halb",
+       "tl": "hahlp",
+       "meaning": "half (to the next hour)",
+       "example": "Es ist halb vier.",
+       "exampleMeaning": "It is half past three."
+      },
+      {
+       "t": "learn",
+       "word": "Viertel",
+       "tl": "FEER-tel",
+       "meaning": "quarter",
+       "example": "Viertel nach zwei",
+       "exampleMeaning": "quarter past two"
+      },
+      {
+       "t": "learn",
+       "word": "die Minute",
+       "tl": "dee mee-NOO-teh",
+       "meaning": "the minute",
+       "example": "fünf Minuten",
+       "exampleMeaning": "five minutes"
+      },
+      {
+       "t": "learn",
+       "word": "um",
+       "tl": "oom",
+       "meaning": "at (a time)",
+       "example": "um acht Uhr",
+       "exampleMeaning": "at eight o'clock"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'quarter'?",
+       "options": [
+        "halb",
+        "Uhr",
+        "Minute",
+        "Viertel"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "It is three o'clock.",
+       "answer": "Es ist drei Uhr.",
+       "bank": [
+        "ist",
+        "Uhr.",
+        "halb",
+        "drei",
+        "um",
+        "Es",
+        "vier"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Wie viel Uhr ist es?",
+       "meaning": "What time is it?",
+       "bank": [
+        "ist",
+        "viel",
+        "halb",
+        "drei",
+        "es?",
+        "Wie",
+        "Es",
+        "Uhr"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Es ist halb vier.",
+       "meaning": "It is half past three."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Wie viel Uhr ist es?",
+         "What time is it?"
+        ],
+        [
+         "halb",
+         "half"
+        ],
+        [
+         "Viertel",
+         "quarter"
+        ],
+        [
+         "die Minute",
+         "the minute"
+        ],
+        [
+         "um",
+         "at"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Es ist Viertel nach zwei.",
+       "answer": "It is quarter past two.",
+       "bank": [
+        "past",
+        "half",
+        "quarter",
+        "two.",
+        "is",
+        "three",
+        "at",
+        "It"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Der Zug fährt ___ acht Uhr.",
+       "meaning": "The train leaves at eight o'clock.",
+       "options": [
+        "mit",
+        "um",
+        "nach",
+        "es"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Es ist halb vier' means...",
+       "options": [
+        "It is 3:30",
+        "It is 4:30",
+        "It is 4:00",
+        "It is 3:15"
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u6l2",
+     "title": "Days of the week",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Montag",
+       "tl": "MOHN-tahk",
+       "meaning": "Monday",
+       "example": "Am Montag arbeite ich.",
+       "exampleMeaning": "On Monday I work."
+      },
+      {
+       "t": "learn",
+       "word": "Dienstag",
+       "tl": "DEENS-tahk",
+       "meaning": "Tuesday",
+       "example": "Dienstag ist gut.",
+       "exampleMeaning": "Tuesday is good."
+      },
+      {
+       "t": "learn",
+       "word": "Mittwoch",
+       "tl": "MIT-vokh",
+       "meaning": "Wednesday",
+       "example": "Mittwoch ist die Mitte der Woche.",
+       "exampleMeaning": "Wednesday is the middle of the week."
+      },
+      {
+       "t": "learn",
+       "word": "Donnerstag",
+       "tl": "DON-ners-tahk",
+       "meaning": "Thursday",
+       "example": "Am Donnerstag gehe ich schwimmen.",
+       "exampleMeaning": "On Thursday I go swimming."
+      },
+      {
+       "t": "learn",
+       "word": "Freitag",
+       "tl": "FRY-tahk",
+       "meaning": "Friday",
+       "example": "Endlich Freitag!",
+       "exampleMeaning": "Finally Friday!"
+      },
+      {
+       "t": "learn",
+       "word": "am",
+       "tl": "ahm",
+       "meaning": "on (a day)",
+       "example": "am Freitag",
+       "exampleMeaning": "on Friday"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'Wednesday'?",
+       "options": [
+        "Montag",
+        "Mittwoch",
+        "Freitag",
+        "Dienstag"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "On Monday I work.",
+       "answer": "Am Montag arbeite ich.",
+       "bank": [
+        "arbeite",
+        "Freitag",
+        "Am",
+        "ich.",
+        "um",
+        "Montag",
+        "Dienstag"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Endlich Freitag!",
+       "meaning": "Finally Friday!",
+       "bank": [
+        "Freitag!",
+        "Donnerstag",
+        "Endlich",
+        "Montag!",
+        "am"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Montag, Dienstag, Mittwoch, Donnerstag, Freitag.",
+       "meaning": "Monday, Tuesday, Wednesday, Thursday, Friday."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Montag",
+         "Monday"
+        ],
+        [
+         "Dienstag",
+         "Tuesday"
+        ],
+        [
+         "Mittwoch",
+         "Wednesday"
+        ],
+        [
+         "Donnerstag",
+         "Thursday"
+        ],
+        [
+         "Freitag",
+         "Friday"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Am Donnerstag gehe ich schwimmen.",
+       "answer": "On Thursday I go swimming.",
+       "bank": [
+        "Tuesday",
+        "On",
+        "go",
+        "swimming.",
+        "Thursday",
+        "Friday",
+        "I",
+        "work"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ Freitag fahre ich nach Berlin.",
+       "meaning": "On Friday I'm going to Berlin.",
+       "options": [
+        "Um",
+        "Am",
+        "Im",
+        "Mit"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u6l3",
+     "title": "Weekend & plans",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Samstag",
+       "tl": "ZAHMS-tahk",
+       "meaning": "Saturday",
+       "example": "Am Samstag schlafe ich lange.",
+       "exampleMeaning": "On Saturday I sleep in."
+      },
+      {
+       "t": "learn",
+       "word": "Sonntag",
+       "tl": "ZON-tahk",
+       "meaning": "Sunday",
+       "example": "Sonntag ist Familientag.",
+       "exampleMeaning": "Sunday is family day."
+      },
+      {
+       "t": "learn",
+       "word": "das Wochenende",
+       "tl": "dahs VO-khen-en-deh",
+       "meaning": "the weekend",
+       "example": "Schönes Wochenende!",
+       "exampleMeaning": "Have a nice weekend!"
+      },
+      {
+       "t": "learn",
+       "word": "heute",
+       "tl": "HOY-teh",
+       "meaning": "today",
+       "example": "Heute ist Montag.",
+       "exampleMeaning": "Today is Monday."
+      },
+      {
+       "t": "learn",
+       "word": "morgen",
+       "tl": "MOR-gen",
+       "meaning": "tomorrow",
+       "example": "Bis morgen!",
+       "exampleMeaning": "See you tomorrow!"
+      },
+      {
+       "t": "learn",
+       "word": "Hast du Zeit?",
+       "tl": "hahst doo tsyt",
+       "meaning": "Do you have time?",
+       "example": "Hast du morgen Zeit?",
+       "exampleMeaning": "Do you have time tomorrow?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the weekend'?",
+       "options": [
+        "Sonntag",
+        "heute",
+        "das Wochenende",
+        "Samstag"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Do you have time tomorrow?",
+       "answer": "Hast du morgen Zeit?",
+       "bank": [
+        "heute",
+        "Samstag",
+        "du",
+        "morgen",
+        "Uhr",
+        "Zeit?",
+        "Hast"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Schönes Wochenende!",
+       "meaning": "Have a nice weekend!",
+       "bank": [
+        "Wochenende!",
+        "morgen",
+        "Sonntag!",
+        "heute",
+        "Schönes"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Heute ist Samstag und morgen ist Sonntag.",
+       "meaning": "Today is Saturday and tomorrow is Sunday."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Samstag",
+         "Saturday"
+        ],
+        [
+         "Sonntag",
+         "Sunday"
+        ],
+        [
+         "das Wochenende",
+         "the weekend"
+        ],
+        [
+         "heute",
+         "today"
+        ],
+        [
+         "morgen",
+         "tomorrow"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Am Samstag schlafe ich lange.",
+       "answer": "On Saturday I sleep in.",
+       "bank": [
+        "Saturday",
+        "early",
+        "sleep",
+        "Sunday",
+        "I",
+        "in.",
+        "On",
+        "today"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ ist Sonntag.",
+       "meaning": "Today is Sunday.",
+       "options": [
+        "Morgen",
+        "Heute",
+        "Am",
+        "Wochenende"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Bis morgen!' means...",
+       "options": [
+        "Good morning!",
+        "Until Monday!",
+        "Have a nice weekend!",
+        "See you tomorrow!"
+       ],
+       "answer": 3
+      }
+     ]
+    },
+    {
+     "id": "u6l4",
+     "title": "Review: Time & Days",
+     "items": [
+      {
+       "t": "learn",
+       "word": "der Abend",
+       "tl": "dair AH-bent",
+       "meaning": "the evening",
+       "example": "Am Abend sehe ich fern.",
+       "exampleMeaning": "In the evening I watch TV."
+      },
+      {
+       "t": "learn",
+       "word": "die Woche",
+       "tl": "dee VO-kheh",
+       "meaning": "the week",
+       "example": "Nächste Woche fahre ich nach Wien.",
+       "exampleMeaning": "Next week I'm going to Vienna."
+      },
+      {
+       "t": "learn",
+       "word": "Wann?",
+       "tl": "vahn",
+       "meaning": "When?",
+       "example": "Wann fährt der Zug?",
+       "exampleMeaning": "When does the train leave?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'When?'",
+       "options": [
+        "Wann?",
+        "Wo?",
+        "Wie?",
+        "Was?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "When does the train leave? At half past eight.",
+       "answer": "Wann fährt der Zug? Um halb neun.",
+       "bank": [
+        "halb",
+        "Viertel",
+        "Um",
+        "Bus",
+        "Wo",
+        "der",
+        "neun.",
+        "Zug?",
+        "Wann",
+        "fährt"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Hast du am Wochenende Zeit?",
+       "meaning": "Do you have time at the weekend?",
+       "bank": [
+        "Hast",
+        "Uhr",
+        "Montag",
+        "du",
+        "am",
+        "heute",
+        "Wochenende",
+        "Zeit?"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Es ist Viertel nach sieben am Abend.",
+       "meaning": "It is quarter past seven in the evening."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "der Abend",
+         "the evening"
+        ],
+        [
+         "die Woche",
+         "the week"
+        ],
+        [
+         "Wann?",
+         "When?"
+        ],
+        [
+         "Mittwoch",
+         "Wednesday"
+        ],
+        [
+         "halb",
+         "half"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Heute ist Dienstag. Morgen ist Mittwoch.",
+       "answer": "Today is Tuesday. Tomorrow is Wednesday.",
+       "bank": [
+        "evening",
+        "week",
+        "Tuesday.",
+        "is",
+        "Today",
+        "Monday",
+        "Wednesday.",
+        "is",
+        "Tomorrow"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Wie viel ___ ist es?",
+       "meaning": "What time is it?",
+       "options": [
+        "Zeit",
+        "Uhr",
+        "Woche",
+        "Tag"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Es ist halb neun' means...",
+       "options": [
+        "It is 9:30",
+        "It is 8:30",
+        "It is 9:00",
+        "It is 8:15"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Am Sonntag um zehn Uhr.",
+       "meaning": "On Sunday at ten o'clock.",
+       "bank": [
+        "Am",
+        "Samstag",
+        "Uhr.",
+        "Sonntag",
+        "halb",
+        "neun",
+        "zehn",
+        "um"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Next week I'm going to Vienna.",
+       "answer": "Nächste Woche fahre ich nach Wien.",
+       "bank": [
+        "nach",
+        "Wien.",
+        "Woche",
+        "Berlin.",
+        "fahre",
+        "am",
+        "heute",
+        "ich",
+        "Nächste"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which day comes after Donnerstag?",
+       "options": [
+        "Mittwoch",
+        "Samstag",
+        "Freitag",
+        "Sonntag"
+       ],
+       "answer": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u7",
+   "title": "Shopping",
+   "emoji": "🛍️",
+   "goal": "Buy clothes and groceries, talk about prices and colours",
+   "lessons": [
+    {
+     "id": "u7l1",
+     "title": "How much is it?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Was kostet das?",
+       "tl": "vahs KOS-tet dahs",
+       "meaning": "How much is that?",
+       "example": "Entschuldigung, was kostet das?",
+       "exampleMeaning": "Excuse me, how much is that?"
+      },
+      {
+       "t": "learn",
+       "word": "teuer",
+       "tl": "TOY-er",
+       "meaning": "expensive",
+       "example": "Das ist zu teuer.",
+       "exampleMeaning": "That is too expensive."
+      },
+      {
+       "t": "learn",
+       "word": "billig",
+       "tl": "BIL-likh",
+       "meaning": "cheap",
+       "example": "Das Brot ist billig.",
+       "exampleMeaning": "The bread is cheap."
+      },
+      {
+       "t": "learn",
+       "word": "kaufen",
+       "tl": "KOW-fen",
+       "meaning": "to buy",
+       "example": "Ich kaufe eine Fahrkarte.",
+       "exampleMeaning": "I buy a ticket."
+      },
+      {
+       "t": "learn",
+       "word": "das Geld",
+       "tl": "dahs gelt",
+       "meaning": "the money",
+       "example": "Ich habe kein Geld.",
+       "exampleMeaning": "I have no money."
+      },
+      {
+       "t": "learn",
+       "word": "zu",
+       "tl": "tsoo",
+       "meaning": "too",
+       "example": "zu teuer",
+       "exampleMeaning": "too expensive"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'cheap'?",
+       "options": [
+        "teuer",
+        "kaufen",
+        "Geld",
+        "billig"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "How much is that? That is too expensive.",
+       "answer": "Was kostet das? Das ist zu teuer.",
+       "bank": [
+        "billig.",
+        "Das",
+        "das?",
+        "Geld",
+        "zu",
+        "teuer.",
+        "kaufe",
+        "ist",
+        "Was",
+        "kostet"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ich habe kein Geld.",
+       "meaning": "I have no money.",
+       "bank": [
+        "habe",
+        "kein",
+        "Zeit.",
+        "kaufe",
+        "Ich",
+        "Geld.",
+        "keine"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Das ist zu teuer!",
+       "meaning": "That is too expensive!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Was kostet das?",
+         "How much is that?"
+        ],
+        [
+         "teuer",
+         "expensive"
+        ],
+        [
+         "billig",
+         "cheap"
+        ],
+        [
+         "kaufen",
+         "to buy"
+        ],
+        [
+         "das Geld",
+         "the money"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ich kaufe Brot und Käse.",
+       "answer": "I buy bread and cheese.",
+       "bank": [
+        "sell",
+        "milk",
+        "bread",
+        "buy",
+        "I",
+        "money",
+        "cheese.",
+        "and"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Das Wasser ist ___ – nur ein Euro.",
+       "meaning": "The water is cheap – only one euro.",
+       "options": [
+        "teuer",
+        "billig",
+        "zu",
+        "Geld"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u7l2",
+     "title": "Clothes",
+     "items": [
+      {
+       "t": "learn",
+       "word": "die Hose",
+       "tl": "dee HOH-zeh",
+       "meaning": "the trousers / pants",
+       "example": "Die Hose ist zu groß.",
+       "exampleMeaning": "The trousers are too big."
+      },
+      {
+       "t": "learn",
+       "word": "das Hemd",
+       "tl": "dahs hemt",
+       "meaning": "the shirt",
+       "example": "Ich kaufe ein Hemd.",
+       "exampleMeaning": "I buy a shirt."
+      },
+      {
+       "t": "learn",
+       "word": "die Schuhe",
+       "tl": "dee SHOO-eh",
+       "meaning": "the shoes",
+       "example": "Die Schuhe sind teuer.",
+       "exampleMeaning": "The shoes are expensive."
+      },
+      {
+       "t": "learn",
+       "word": "die Jacke",
+       "tl": "dee YAH-keh",
+       "meaning": "the jacket",
+       "example": "Meine Jacke ist warm.",
+       "exampleMeaning": "My jacket is warm."
+      },
+      {
+       "t": "learn",
+       "word": "groß / klein",
+       "tl": "grohs / klyn",
+       "meaning": "big / small",
+       "example": "zu groß oder zu klein?",
+       "exampleMeaning": "too big or too small?"
+      },
+      {
+       "t": "learn",
+       "word": "anprobieren",
+       "tl": "AHN-pro-bee-ren",
+       "meaning": "to try on",
+       "example": "Kann ich das anprobieren?",
+       "exampleMeaning": "Can I try that on?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'the shoes'?",
+       "options": [
+        "die Schuhe",
+        "das Hemd",
+        "die Hose",
+        "die Jacke"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Can I try that on?",
+       "answer": "Kann ich das anprobieren?",
+       "bank": [
+        "Hose",
+        "kaufen?",
+        "Kann",
+        "das",
+        "anprobieren?",
+        "ich"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Die Hose ist zu groß.",
+       "meaning": "The trousers are too big.",
+       "bank": [
+        "klein.",
+        "Die",
+        "zu",
+        "groß.",
+        "Hose",
+        "Hemd",
+        "ist",
+        "Jacke"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich kaufe ein Hemd und eine Jacke.",
+       "meaning": "I buy a shirt and a jacket."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "die Hose",
+         "the trousers"
+        ],
+        [
+         "das Hemd",
+         "the shirt"
+        ],
+        [
+         "die Schuhe",
+         "the shoes"
+        ],
+        [
+         "die Jacke",
+         "the jacket"
+        ],
+        [
+         "klein",
+         "small"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Die Schuhe sind zu klein.",
+       "answer": "The shoes are too small.",
+       "bank": [
+        "big",
+        "expensive",
+        "jacket",
+        "small.",
+        "are",
+        "The",
+        "too",
+        "shoes"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Meine ___ ist warm.",
+       "meaning": "My jacket is warm.",
+       "options": [
+        "Hose",
+        "Jacke",
+        "Schuhe",
+        "Hemd"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'anprobieren' means...",
+       "options": [
+        "to buy",
+        "to try on",
+        "to pay",
+        "to wear"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u7l3",
+     "title": "Colours & sizes",
+     "items": [
+      {
+       "t": "learn",
+       "word": "rot",
+       "tl": "roht",
+       "meaning": "red",
+       "example": "Die Jacke ist rot.",
+       "exampleMeaning": "The jacket is red."
+      },
+      {
+       "t": "learn",
+       "word": "blau",
+       "tl": "blow",
+       "meaning": "blue",
+       "example": "ein blaues Hemd",
+       "exampleMeaning": "a blue shirt"
+      },
+      {
+       "t": "learn",
+       "word": "schwarz",
+       "tl": "shvarts",
+       "meaning": "black",
+       "example": "schwarze Schuhe",
+       "exampleMeaning": "black shoes"
+      },
+      {
+       "t": "learn",
+       "word": "weiß",
+       "tl": "vys",
+       "meaning": "white",
+       "example": "ein weißes Hemd",
+       "exampleMeaning": "a white shirt"
+      },
+      {
+       "t": "learn",
+       "word": "grün",
+       "tl": "gruen",
+       "meaning": "green",
+       "example": "Die Hose ist grün.",
+       "exampleMeaning": "The trousers are green."
+      },
+      {
+       "t": "learn",
+       "word": "die Größe",
+       "tl": "dee GRER-seh",
+       "meaning": "the size",
+       "example": "Welche Größe haben Sie?",
+       "exampleMeaning": "What size are you?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'black'?",
+       "options": [
+        "rot",
+        "blau",
+        "schwarz",
+        "weiß"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The jacket is red.",
+       "answer": "Die Jacke ist rot.",
+       "bank": [
+        "ist",
+        "blau.",
+        "Jacke",
+        "Hose",
+        "rot.",
+        "Die",
+        "grün."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Welche Größe haben Sie?",
+       "meaning": "What size are you?",
+       "bank": [
+        "Größe",
+        "Welche",
+        "Sie?",
+        "hast",
+        "du",
+        "haben",
+        "Farbe"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich möchte ein weißes Hemd, bitte.",
+       "meaning": "I would like a white shirt, please."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "rot",
+         "red"
+        ],
+        [
+         "blau",
+         "blue"
+        ],
+        [
+         "schwarz",
+         "black"
+        ],
+        [
+         "weiß",
+         "white"
+        ],
+        [
+         "grün",
+         "green"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Die Schuhe sind schwarz und die Hose ist blau.",
+       "answer": "The shoes are black and the trousers are blue.",
+       "bank": [
+        "are",
+        "are",
+        "the",
+        "blue.",
+        "trousers",
+        "green",
+        "red",
+        "and",
+        "black",
+        "The",
+        "shoes",
+        "jacket"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Das Hemd ist ___.",
+       "meaning": "The shirt is white.",
+       "options": [
+        "rot",
+        "weiß",
+        "grün",
+        "Größe"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'die Größe' mean?",
+       "options": [
+        "the colour",
+        "the price",
+        "the shop",
+        "the size"
+       ],
+       "answer": 3
+      }
+     ]
+    },
+    {
+     "id": "u7l4",
+     "title": "Review: Shopping",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Ich suche",
+       "tl": "ikh ZOO-kheh",
+       "meaning": "I'm looking for",
+       "example": "Ich suche eine Jacke.",
+       "exampleMeaning": "I'm looking for a jacket."
+      },
+      {
+       "t": "learn",
+       "word": "bezahlen",
+       "tl": "beh-TSAH-len",
+       "meaning": "to pay",
+       "example": "Ich möchte bezahlen.",
+       "exampleMeaning": "I would like to pay."
+      },
+      {
+       "t": "learn",
+       "word": "die Tasche",
+       "tl": "dee TAH-sheh",
+       "meaning": "the bag",
+       "example": "Die Tasche ist schwarz.",
+       "exampleMeaning": "The bag is black."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'to pay'?",
+       "options": [
+        "bezahlen",
+        "suchen",
+        "kaufen",
+        "anprobieren"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I'm looking for a black bag.",
+       "answer": "Ich suche eine schwarze Tasche.",
+       "bank": [
+        "Ich",
+        "schwarze",
+        "Tasche.",
+        "rote",
+        "kaufe",
+        "eine",
+        "suche",
+        "Jacke."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Was kostet die Jacke? Dreißig Euro.",
+       "meaning": "How much is the jacket? Thirty euros.",
+       "bank": [
+        "Was",
+        "zwanzig",
+        "Jacke?",
+        "Hose?",
+        "teuer",
+        "Euro.",
+        "Dreißig",
+        "die",
+        "kostet"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich möchte bezahlen, bitte.",
+       "meaning": "I would like to pay, please."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Ich suche",
+         "I'm looking for"
+        ],
+        [
+         "bezahlen",
+         "to pay"
+        ],
+        [
+         "die Tasche",
+         "the bag"
+        ],
+        [
+         "teuer",
+         "expensive"
+        ],
+        [
+         "die Größe",
+         "the size"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Die rote Jacke ist zu teuer. Ich kaufe die blaue.",
+       "answer": "The red jacket is too expensive. I buy the blue one.",
+       "bank": [
+        "shoes",
+        "green",
+        "I",
+        "blue",
+        "jacket",
+        "buy",
+        "red",
+        "The",
+        "expensive.",
+        "is",
+        "the",
+        "cheap",
+        "one.",
+        "too"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Kann ich die Hose ___?",
+       "meaning": "Can I try the trousers on?",
+       "options": [
+        "kaufen",
+        "bezahlen",
+        "anprobieren",
+        "suchen"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "choose",
+       "prompt": "'Das ist billig' means...",
+       "options": [
+        "That is big",
+        "That is cheap",
+        "That is red",
+        "That is small"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Ich habe kein Geld für die Schuhe.",
+       "meaning": "I have no money for the shoes.",
+       "bank": [
+        "kein",
+        "habe",
+        "Ich",
+        "für",
+        "Schuhe.",
+        "Jacke.",
+        "Zeit",
+        "teuer",
+        "die",
+        "Geld"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "What size are you? Size forty.",
+       "answer": "Welche Größe haben Sie? Größe vierzig.",
+       "bank": [
+        "Welche",
+        "Größe",
+        "dreißig.",
+        "hast",
+        "Farbe",
+        "Größe",
+        "vierzig.",
+        "Sie?",
+        "haben"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which colour is 'grün'?",
+       "options": [
+        "blue",
+        "red",
+        "green",
+        "white"
+       ],
+       "answer": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u8",
+   "title": "Daily Routine",
+   "emoji": "🌅",
+   "goal": "Describe your day, work and hobbies with separable verbs",
+   "lessons": [
+    {
+     "id": "u8l1",
+     "title": "Morning routine",
+     "items": [
+      {
+       "t": "learn",
+       "word": "aufstehen",
+       "tl": "OWF-shtay-en",
+       "meaning": "to get up",
+       "example": "Ich stehe um sieben Uhr auf.",
+       "exampleMeaning": "I get up at seven o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "frühstücken",
+       "tl": "FRUE-shtuek-en",
+       "meaning": "to have breakfast",
+       "example": "Wir frühstücken um acht.",
+       "exampleMeaning": "We have breakfast at eight."
+      },
+      {
+       "t": "learn",
+       "word": "duschen",
+       "tl": "DOO-shen",
+       "meaning": "to shower",
+       "example": "Ich dusche morgens.",
+       "exampleMeaning": "I shower in the morning."
+      },
+      {
+       "t": "learn",
+       "word": "morgens",
+       "tl": "MOR-gens",
+       "meaning": "in the morning(s)",
+       "example": "Morgens trinke ich Kaffee.",
+       "exampleMeaning": "In the morning I drink coffee."
+      },
+      {
+       "t": "learn",
+       "word": "dann",
+       "tl": "dahn",
+       "meaning": "then",
+       "example": "Dann gehe ich zur Arbeit.",
+       "exampleMeaning": "Then I go to work."
+      },
+      {
+       "t": "learn",
+       "word": "die Arbeit",
+       "tl": "dee AR-byt",
+       "meaning": "the work",
+       "example": "Ich gehe zur Arbeit.",
+       "exampleMeaning": "I go to work."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'to get up'?",
+       "options": [
+        "duschen",
+        "gehen",
+        "frühstücken",
+        "aufstehen"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I get up at seven o'clock.",
+       "answer": "Ich stehe um sieben Uhr auf.",
+       "bank": [
+        "sieben",
+        "dusche",
+        "acht",
+        "Uhr",
+        "dann",
+        "um",
+        "auf.",
+        "Ich",
+        "stehe"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Dann gehe ich zur Arbeit.",
+       "meaning": "Then I go to work.",
+       "bank": [
+        "fahre",
+        "ich",
+        "Morgens",
+        "Schule.",
+        "Dann",
+        "zur",
+        "Arbeit.",
+        "gehe"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Morgens dusche ich und dann frühstücke ich.",
+       "meaning": "In the morning I shower and then I have breakfast."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "aufstehen",
+         "to get up"
+        ],
+        [
+         "frühstücken",
+         "to have breakfast"
+        ],
+        [
+         "duschen",
+         "to shower"
+        ],
+        [
+         "morgens",
+         "in the morning"
+        ],
+        [
+         "die Arbeit",
+         "the work"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Wir frühstücken um acht Uhr.",
+       "answer": "We have breakfast at eight o'clock.",
+       "bank": [
+        "breakfast",
+        "o'clock.",
+        "nine",
+        "then",
+        "shower",
+        "have",
+        "eight",
+        "We",
+        "at"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich stehe um sechs Uhr ___.",
+       "meaning": "I get up at six o'clock.",
+       "options": [
+        "an",
+        "auf",
+        "aus",
+        "zu"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u8l2",
+     "title": "Work & school",
+     "items": [
+      {
+       "t": "learn",
+       "word": "arbeiten",
+       "tl": "AR-by-ten",
+       "meaning": "to work",
+       "example": "Ich arbeite in Berlin.",
+       "exampleMeaning": "I work in Berlin."
+      },
+      {
+       "t": "learn",
+       "word": "der Lehrer / die Lehrerin",
+       "tl": "dair LAY-rer / dee LAY-reh-rin",
+       "meaning": "the teacher (m/f)",
+       "example": "Meine Mutter ist Lehrerin.",
+       "exampleMeaning": "My mother is a teacher."
+      },
+      {
+       "t": "learn",
+       "word": "der Student / die Studentin",
+       "tl": "dair shtoo-DENT",
+       "meaning": "the student (m/f)",
+       "example": "Ich bin Student.",
+       "exampleMeaning": "I am a student."
+      },
+      {
+       "t": "learn",
+       "word": "die Schule",
+       "tl": "dee SHOO-leh",
+       "meaning": "the school",
+       "example": "Die Kinder gehen zur Schule.",
+       "exampleMeaning": "The children go to school."
+      },
+      {
+       "t": "learn",
+       "word": "lernen",
+       "tl": "LER-nen",
+       "meaning": "to learn / study",
+       "example": "Ich lerne Deutsch.",
+       "exampleMeaning": "I'm learning German."
+      },
+      {
+       "t": "learn",
+       "word": "Was machst du?",
+       "tl": "vahs mahkhst doo",
+       "meaning": "What do you do?",
+       "example": "Was machst du beruflich?",
+       "exampleMeaning": "What do you do for a living?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'to learn'?",
+       "options": [
+        "lernen",
+        "arbeiten",
+        "machen",
+        "gehen"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I'm learning German.",
+       "answer": "Ich lerne Deutsch.",
+       "bank": [
+        "Schule",
+        "lerne",
+        "arbeite",
+        "Ich",
+        "Deutsch.",
+        "Student"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Was machst du beruflich?",
+       "meaning": "What do you do for a living?",
+       "bank": [
+        "arbeitest",
+        "Was",
+        "beruflich?",
+        "Wo",
+        "machst",
+        "Lehrer",
+        "du"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich bin Studentin und ich lerne Deutsch.",
+       "meaning": "I am a student and I'm learning German."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "arbeiten",
+         "to work"
+        ],
+        [
+         "die Lehrerin",
+         "the teacher (f)"
+        ],
+        [
+         "der Student",
+         "the student"
+        ],
+        [
+         "die Schule",
+         "the school"
+        ],
+        [
+         "lernen",
+         "to learn"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Mein Vater arbeitet in München.",
+       "answer": "My father works in Munich.",
+       "bank": [
+        "learns",
+        "mother",
+        "school",
+        "Munich.",
+        "works",
+        "My",
+        "in",
+        "father"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich ___ Deutsch.",
+       "meaning": "I'm learning German.",
+       "options": [
+        "lerne",
+        "arbeite",
+        "mache",
+        "bin"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "choose",
+       "prompt": "'Was machst du?' means...",
+       "options": [
+        "Where are you?",
+        "What do you do?",
+        "How are you?",
+        "Who are you?"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u8l3",
+     "title": "Hobbies & evening",
+     "items": [
+      {
+       "t": "learn",
+       "word": "spielen",
+       "tl": "SHPEE-len",
+       "meaning": "to play",
+       "example": "Ich spiele Fußball.",
+       "exampleMeaning": "I play football."
+      },
+      {
+       "t": "learn",
+       "word": "der Fußball",
+       "tl": "dair FOOS-bahl",
+       "meaning": "football / soccer",
+       "example": "Fußball ist mein Hobby.",
+       "exampleMeaning": "Football is my hobby."
+      },
+      {
+       "t": "learn",
+       "word": "lesen",
+       "tl": "LAY-zen",
+       "meaning": "to read",
+       "example": "Abends lese ich.",
+       "exampleMeaning": "In the evening I read."
+      },
+      {
+       "t": "learn",
+       "word": "fernsehen",
+       "tl": "FERN-zay-en",
+       "meaning": "to watch TV",
+       "example": "Wir sehen abends fern.",
+       "exampleMeaning": "We watch TV in the evening."
+      },
+      {
+       "t": "learn",
+       "word": "kochen",
+       "tl": "KO-khen",
+       "meaning": "to cook",
+       "example": "Ich koche gern.",
+       "exampleMeaning": "I like cooking."
+      },
+      {
+       "t": "learn",
+       "word": "gern",
+       "tl": "gairn",
+       "meaning": "gladly / like to",
+       "example": "Ich lese gern.",
+       "exampleMeaning": "I like reading."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'to cook'?",
+       "options": [
+        "spielen",
+        "lesen",
+        "kochen",
+        "fernsehen"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I like reading.",
+       "answer": "Ich lese gern.",
+       "bank": [
+        "gern.",
+        "spiele",
+        "lese",
+        "Fußball",
+        "koche",
+        "Ich"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ich spiele gern Fußball.",
+       "meaning": "I like playing football.",
+       "bank": [
+        "spiele",
+        "Ich",
+        "Fußball.",
+        "koche",
+        "abends",
+        "gern",
+        "lese"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Abends koche ich und dann sehe ich fern.",
+       "meaning": "In the evening I cook and then I watch TV."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "spielen",
+         "to play"
+        ],
+        [
+         "lesen",
+         "to read"
+        ],
+        [
+         "fernsehen",
+         "to watch TV"
+        ],
+        [
+         "kochen",
+         "to cook"
+        ],
+        [
+         "gern",
+         "like to"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Wir sehen abends fern.",
+       "answer": "We watch TV in the evening.",
+       "bank": [
+        "read",
+        "the",
+        "in",
+        "morning",
+        "TV",
+        "play",
+        "evening.",
+        "We",
+        "watch"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich koche ___.",
+       "meaning": "I like cooking.",
+       "options": [
+        "gut",
+        "gern",
+        "dann",
+        "morgens"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Abends lese ich' means...",
+       "options": [
+        "In the morning I cook",
+        "Then I watch TV",
+        "I like football",
+        "In the evening I read"
+       ],
+       "answer": 3
+      }
+     ]
+    },
+    {
+     "id": "u8l4",
+     "title": "Review: Daily Routine",
+     "items": [
+      {
+       "t": "learn",
+       "word": "schlafen",
+       "tl": "SHLAH-fen",
+       "meaning": "to sleep",
+       "example": "Ich schlafe acht Stunden.",
+       "exampleMeaning": "I sleep eight hours."
+      },
+      {
+       "t": "learn",
+       "word": "die Stunde",
+       "tl": "dee SHTOON-deh",
+       "meaning": "the hour",
+       "example": "eine Stunde",
+       "exampleMeaning": "one hour"
+      },
+      {
+       "t": "learn",
+       "word": "einkaufen",
+       "tl": "YN-kow-fen",
+       "meaning": "to go shopping",
+       "example": "Am Samstag kaufe ich ein.",
+       "exampleMeaning": "On Saturday I go shopping."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'to sleep'?",
+       "options": [
+        "schlafen",
+        "lesen",
+        "kochen",
+        "arbeiten"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "On Saturday I go shopping.",
+       "answer": "Am Samstag kaufe ich ein.",
+       "bank": [
+        "Am",
+        "ein.",
+        "Sonntag",
+        "Samstag",
+        "auf",
+        "ich",
+        "kaufe",
+        "schlafe"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ich stehe um sieben auf und arbeite um neun.",
+       "meaning": "I get up at seven and work at nine.",
+       "bank": [
+        "Ich",
+        "um",
+        "lerne",
+        "arbeite",
+        "neun.",
+        "und",
+        "acht",
+        "um",
+        "stehe",
+        "auf",
+        "dusche",
+        "sieben"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich schlafe acht Stunden und stehe um sieben Uhr auf.",
+       "meaning": "I sleep eight hours and get up at seven o'clock."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "schlafen",
+         "to sleep"
+        ],
+        [
+         "die Stunde",
+         "the hour"
+        ],
+        [
+         "einkaufen",
+         "to go shopping"
+        ],
+        [
+         "aufstehen",
+         "to get up"
+        ],
+        [
+         "fernsehen",
+         "to watch TV"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Was machst du am Wochenende? Ich spiele Fußball und lese.",
+       "answer": "What do you do at the weekend? I play football and read.",
+       "bank": [
+        "work",
+        "football",
+        "do",
+        "I",
+        "you",
+        "cook",
+        "weekend?",
+        "Monday",
+        "What",
+        "the",
+        "do",
+        "play",
+        "read.",
+        "and",
+        "at"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Abends ___ ich gern fern.",
+       "meaning": "In the evening I like watching TV.",
+       "options": [
+        "lese",
+        "sehe",
+        "koche",
+        "spiele"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "Which sentence means 'My mother is a teacher'?",
+       "options": [
+        "Meine Mutter ist Studentin",
+        "Meine Mutter ist Lehrerin",
+        "Meine Mutter lernt Deutsch",
+        "Meine Mutter arbeitet"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Ich lerne jeden Tag eine Stunde Deutsch.",
+       "meaning": "I study German one hour every day.",
+       "bank": [
+        "jeden",
+        "lerne",
+        "Ich",
+        "eine",
+        "Deutsch.",
+        "zwei",
+        "Woche",
+        "arbeite",
+        "Stunde",
+        "Tag"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Then I have breakfast and go to work.",
+       "answer": "Dann frühstücke ich und gehe zur Arbeit.",
+       "bank": [
+        "morgens",
+        "Dann",
+        "frühstücke",
+        "Arbeit.",
+        "Schule.",
+        "dusche",
+        "zur",
+        "gehe",
+        "und",
+        "ich"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u9",
+   "title": "Past & Future",
+   "emoji": "📅",
+   "goal": "Say what you did yesterday and what you will do",
+   "lessons": [
+    {
+     "id": "u9l1",
+     "title": "Yesterday (sein & haben)",
+     "items": [
+      {
+       "t": "learn",
+       "word": "gestern",
+       "tl": "GES-tern",
+       "meaning": "yesterday",
+       "example": "Gestern war Sonntag.",
+       "exampleMeaning": "Yesterday was Sunday."
+      },
+      {
+       "t": "learn",
+       "word": "ich war",
+       "tl": "ikh vahr",
+       "meaning": "I was",
+       "example": "Ich war in Berlin.",
+       "exampleMeaning": "I was in Berlin."
+      },
+      {
+       "t": "learn",
+       "word": "ich hatte",
+       "tl": "ikh HAHT-teh",
+       "meaning": "I had",
+       "example": "Ich hatte keine Zeit.",
+       "exampleMeaning": "I had no time."
+      },
+      {
+       "t": "learn",
+       "word": "du warst",
+       "tl": "doo vahrst",
+       "meaning": "you were",
+       "example": "Wo warst du gestern?",
+       "exampleMeaning": "Where were you yesterday?"
+      },
+      {
+       "t": "learn",
+       "word": "er / sie war",
+       "tl": "air / zee vahr",
+       "meaning": "he / she was",
+       "example": "Sie war müde.",
+       "exampleMeaning": "She was tired."
+      },
+      {
+       "t": "learn",
+       "word": "müde",
+       "tl": "MUE-deh",
+       "meaning": "tired",
+       "example": "Ich bin müde.",
+       "exampleMeaning": "I am tired."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'I was'?",
+       "options": [
+        "ich bin",
+        "ich hatte",
+        "ich war",
+        "ich habe"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Yesterday I was in Berlin.",
+       "answer": "Gestern war ich in Berlin.",
+       "bank": [
+        "in",
+        "Berlin.",
+        "heute",
+        "München.",
+        "ich",
+        "hatte",
+        "Gestern",
+        "war"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Wo warst du gestern?",
+       "meaning": "Where were you yesterday?",
+       "bank": [
+        "gestern?",
+        "warst",
+        "du",
+        "müde",
+        "war",
+        "Wo",
+        "heute"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich war müde und hatte keine Zeit.",
+       "meaning": "I was tired and had no time."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "gestern",
+         "yesterday"
+        ],
+        [
+         "ich war",
+         "I was"
+        ],
+        [
+         "ich hatte",
+         "I had"
+        ],
+        [
+         "du warst",
+         "you were"
+        ],
+        [
+         "müde",
+         "tired"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Gestern war Montag.",
+       "answer": "Yesterday was Monday.",
+       "bank": [
+        "was",
+        "Monday.",
+        "today",
+        "Tuesday",
+        "tired",
+        "Yesterday"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Gestern ___ ich in der Stadt.",
+       "meaning": "Yesterday I was in the city.",
+       "options": [
+        "bin",
+        "war",
+        "hatte",
+        "warst"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u9l2",
+     "title": "What did you do? (Perfekt)",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Ich habe ... gemacht",
+       "tl": "ikh HAH-beh ... geh-MAHKHT",
+       "meaning": "I did / made",
+       "example": "Was hast du gestern gemacht?",
+       "exampleMeaning": "What did you do yesterday?"
+      },
+      {
+       "t": "learn",
+       "word": "Ich habe ... gegessen",
+       "tl": "geh-GES-sen",
+       "meaning": "I ate",
+       "example": "Ich habe Pizza gegessen.",
+       "exampleMeaning": "I ate pizza."
+      },
+      {
+       "t": "learn",
+       "word": "Ich habe ... getrunken",
+       "tl": "geh-TROON-ken",
+       "meaning": "I drank",
+       "example": "Ich habe Kaffee getrunken.",
+       "exampleMeaning": "I drank coffee."
+      },
+      {
+       "t": "learn",
+       "word": "Ich habe ... gekauft",
+       "tl": "geh-KOWFT",
+       "meaning": "I bought",
+       "example": "Ich habe Schuhe gekauft.",
+       "exampleMeaning": "I bought shoes."
+      },
+      {
+       "t": "learn",
+       "word": "Ich habe ... gespielt",
+       "tl": "geh-SHPEELT",
+       "meaning": "I played",
+       "example": "Wir haben Fußball gespielt.",
+       "exampleMeaning": "We played football."
+      },
+      {
+       "t": "learn",
+       "word": "Ich bin ... gegangen",
+       "tl": "geh-GAHNG-en",
+       "meaning": "I went",
+       "example": "Ich bin nach Hause gegangen.",
+       "exampleMeaning": "I went home."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'I ate'?",
+       "options": [
+        "Ich habe getrunken",
+        "Ich bin gegangen",
+        "Ich habe gekauft",
+        "Ich habe gegessen"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "What did you do yesterday?",
+       "answer": "Was hast du gestern gemacht?",
+       "bank": [
+        "du",
+        "habe",
+        "heute",
+        "gestern",
+        "gekauft?",
+        "hast",
+        "gemacht?",
+        "Was"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ich habe eine Jacke gekauft.",
+       "meaning": "I bought a jacket.",
+       "bank": [
+        "gegessen.",
+        "Jacke",
+        "Hose",
+        "habe",
+        "Ich",
+        "eine",
+        "gekauft."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich habe Brot gegessen und Tee getrunken.",
+       "meaning": "I ate bread and drank tea."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "gemacht",
+         "did / made"
+        ],
+        [
+         "gegessen",
+         "ate"
+        ],
+        [
+         "getrunken",
+         "drank"
+        ],
+        [
+         "gekauft",
+         "bought"
+        ],
+        [
+         "gegangen",
+         "went"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Wir haben Fußball gespielt.",
+       "answer": "We played football.",
+       "bank": [
+        "yesterday",
+        "watched",
+        "We",
+        "played",
+        "ate",
+        "football."
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich ___ nach Hause gegangen.",
+       "meaning": "I went home.",
+       "options": [
+        "habe",
+        "bin",
+        "war",
+        "hatte"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the correct participle: 'Ich habe Wasser ___.'",
+       "options": [
+        "getrunken",
+        "gegessen",
+        "gekauft",
+        "gegangen"
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u9l3",
+     "title": "Tomorrow & plans (werden)",
+     "items": [
+      {
+       "t": "learn",
+       "word": "ich werde",
+       "tl": "ikh VAIR-deh",
+       "meaning": "I will",
+       "example": "Ich werde morgen arbeiten.",
+       "exampleMeaning": "I will work tomorrow."
+      },
+      {
+       "t": "learn",
+       "word": "du wirst",
+       "tl": "doo veerst",
+       "meaning": "you will",
+       "example": "Was wirst du machen?",
+       "exampleMeaning": "What will you do?"
+      },
+      {
+       "t": "learn",
+       "word": "nächste Woche",
+       "tl": "NEKHS-teh VO-kheh",
+       "meaning": "next week",
+       "example": "Nächste Woche fahre ich nach Hamburg.",
+       "exampleMeaning": "Next week I'm going to Hamburg."
+      },
+      {
+       "t": "learn",
+       "word": "der Urlaub",
+       "tl": "dair OOR-lowp",
+       "meaning": "the holiday / vacation",
+       "example": "Im Urlaub schlafe ich lange.",
+       "exampleMeaning": "On holiday I sleep in."
+      },
+      {
+       "t": "learn",
+       "word": "reisen",
+       "tl": "RY-zen",
+       "meaning": "to travel",
+       "example": "Ich reise gern.",
+       "exampleMeaning": "I like travelling."
+      },
+      {
+       "t": "learn",
+       "word": "vielleicht",
+       "tl": "fee-LYKHT",
+       "meaning": "maybe",
+       "example": "Vielleicht gehe ich ins Kino.",
+       "exampleMeaning": "Maybe I'll go to the cinema."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'maybe'?",
+       "options": [
+        "morgen",
+        "vielleicht",
+        "nächste",
+        "Urlaub"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I will work tomorrow.",
+       "answer": "Ich werde morgen arbeiten.",
+       "bank": [
+        "wirst",
+        "morgen",
+        "werde",
+        "gestern",
+        "arbeiten.",
+        "reisen.",
+        "Ich"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Was wirst du am Wochenende machen?",
+       "meaning": "What will you do at the weekend?",
+       "bank": [
+        "du",
+        "werde",
+        "wirst",
+        "gestern",
+        "gemacht",
+        "am",
+        "machen?",
+        "Was",
+        "Wochenende"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Nächste Woche werde ich nach Hamburg reisen.",
+       "meaning": "Next week I will travel to Hamburg."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "ich werde",
+         "I will"
+        ],
+        [
+         "du wirst",
+         "you will"
+        ],
+        [
+         "nächste Woche",
+         "next week"
+        ],
+        [
+         "der Urlaub",
+         "the holiday"
+        ],
+        [
+         "reisen",
+         "to travel"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Vielleicht fahre ich im Urlaub nach Italien.",
+       "answer": "Maybe I'll go to Italy on holiday.",
+       "bank": [
+        "yesterday",
+        "to",
+        "go",
+        "holiday.",
+        "Maybe",
+        "I'll",
+        "will",
+        "on",
+        "Italy",
+        "work"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich ___ morgen einkaufen.",
+       "meaning": "I will go shopping tomorrow.",
+       "options": [
+        "bin",
+        "werde",
+        "wirst",
+        "war"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Im Urlaub schlafe ich lange' means...",
+       "options": [
+        "Next week I work",
+        "Tomorrow I travel",
+        "On holiday I sleep in",
+        "Maybe I will read"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u9l4",
+     "title": "Review: Past & Future",
+     "items": [
+      {
+       "t": "learn",
+       "word": "letzte Woche",
+       "tl": "LETS-teh VO-kheh",
+       "meaning": "last week",
+       "example": "Letzte Woche war ich krank.",
+       "exampleMeaning": "Last week I was sick."
+      },
+      {
+       "t": "learn",
+       "word": "krank",
+       "tl": "krahnk",
+       "meaning": "sick / ill",
+       "example": "Ich bin krank.",
+       "exampleMeaning": "I am sick."
+      },
+      {
+       "t": "learn",
+       "word": "Ich habe ... gesehen",
+       "tl": "geh-ZAY-en",
+       "meaning": "I saw",
+       "example": "Ich habe einen Film gesehen.",
+       "exampleMeaning": "I saw a film."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'last week'?",
+       "options": [
+        "nächste Woche",
+        "morgen",
+        "gestern",
+        "letzte Woche"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Last week I was sick.",
+       "answer": "Letzte Woche war ich krank.",
+       "bank": [
+        "hatte",
+        "war",
+        "müde.",
+        "ich",
+        "Nächste",
+        "Woche",
+        "Letzte",
+        "krank."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Gestern habe ich einen Film gesehen.",
+       "meaning": "Yesterday I saw a film.",
+       "bank": [
+        "Film",
+        "Gestern",
+        "einen",
+        "werde",
+        "habe",
+        "gegessen.",
+        "morgen",
+        "ich",
+        "gesehen."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Gestern habe ich gearbeitet, morgen werde ich reisen.",
+       "meaning": "Yesterday I worked, tomorrow I will travel."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "letzte Woche",
+         "last week"
+        ],
+        [
+         "krank",
+         "sick"
+        ],
+        [
+         "gesehen",
+         "saw"
+        ],
+        [
+         "vielleicht",
+         "maybe"
+        ],
+        [
+         "ich hatte",
+         "I had"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Was hast du gestern gemacht? Ich habe eingekauft.",
+       "answer": "What did you do yesterday? I went shopping.",
+       "bank": [
+        "went",
+        "What",
+        "yesterday?",
+        "ate",
+        "I",
+        "shopping.",
+        "did",
+        "do",
+        "tomorrow",
+        "you",
+        "will"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Nächste Woche ___ ich nach Wien fahren.",
+       "meaning": "Next week I will go to Vienna.",
+       "options": [
+        "war",
+        "habe",
+        "werde",
+        "hatte"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "choose",
+       "prompt": "'Ich war müde' means...",
+       "options": [
+        "I was tired",
+        "I am tired",
+        "I will be tired",
+        "I had time"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Ich werde vielleicht Fußball spielen.",
+       "meaning": "I will maybe play football.",
+       "bank": [
+        "Fußball",
+        "vielleicht",
+        "spielen.",
+        "gestern",
+        "werde",
+        "Ich",
+        "gespielt",
+        "habe"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Where were you yesterday? I was at home.",
+       "answer": "Wo warst du gestern? Ich war zu Hause.",
+       "bank": [
+        "Wo",
+        "zu",
+        "du",
+        "hatte",
+        "bin",
+        "Hause.",
+        "heute",
+        "war",
+        "gestern?",
+        "warst",
+        "Ich"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Choose the right word: 'Ich ___ Pizza gegessen.'",
+       "options": [
+        "bin",
+        "habe",
+        "war",
+        "werde"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u10",
+   "title": "Opinions & Feelings",
+   "emoji": "💬",
+   "goal": "Say what you like, agree or disagree, and explain why",
+   "lessons": [
+    {
+     "id": "u10l1",
+     "title": "I like / I don't like",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Ich mag",
+       "tl": "ikh mahk",
+       "meaning": "I like",
+       "example": "Ich mag Kaffee.",
+       "exampleMeaning": "I like coffee."
+      },
+      {
+       "t": "learn",
+       "word": "Ich mag nicht",
+       "tl": "ikh mahk nikht",
+       "meaning": "I don't like",
+       "example": "Ich mag keinen Tee.",
+       "exampleMeaning": "I don't like tea."
+      },
+      {
+       "t": "learn",
+       "word": "Ich finde",
+       "tl": "ikh FIN-deh",
+       "meaning": "I think / I find",
+       "example": "Ich finde das gut.",
+       "exampleMeaning": "I think that's good."
+      },
+      {
+       "t": "learn",
+       "word": "interessant",
+       "tl": "in-teh-reh-SAHNT",
+       "meaning": "interesting",
+       "example": "Das Buch ist interessant.",
+       "exampleMeaning": "The book is interesting."
+      },
+      {
+       "t": "learn",
+       "word": "langweilig",
+       "tl": "LAHNG-vy-likh",
+       "meaning": "boring",
+       "example": "Der Film war langweilig.",
+       "exampleMeaning": "The film was boring."
+      },
+      {
+       "t": "learn",
+       "word": "das Buch",
+       "tl": "dahs bookh",
+       "meaning": "the book",
+       "example": "Ich lese ein Buch.",
+       "exampleMeaning": "I'm reading a book."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'boring'?",
+       "options": [
+        "interessant",
+        "lecker",
+        "langweilig",
+        "gut"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I think the book is interesting.",
+       "answer": "Ich finde das Buch interessant.",
+       "bank": [
+        "Buch",
+        "interessant.",
+        "mag",
+        "Film",
+        "das",
+        "langweilig.",
+        "Ich",
+        "finde"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ich mag Fußball nicht.",
+       "meaning": "I don't like football.",
+       "bank": [
+        "nicht.",
+        "mag",
+        "Fußball",
+        "gern",
+        "finde",
+        "Ich",
+        "Kaffee"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich finde den Film langweilig.",
+       "meaning": "I think the film is boring."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Ich mag",
+         "I like"
+        ],
+        [
+         "Ich finde",
+         "I think"
+        ],
+        [
+         "interessant",
+         "interesting"
+        ],
+        [
+         "langweilig",
+         "boring"
+        ],
+        [
+         "das Buch",
+         "the book"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ich mag Berlin. Die Stadt ist interessant.",
+       "answer": "I like Berlin. The city is interesting.",
+       "bank": [
+        "is",
+        "The",
+        "Berlin.",
+        "book",
+        "city",
+        "interesting.",
+        "boring",
+        "like",
+        "think",
+        "I"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich ___ das Buch sehr interessant.",
+       "meaning": "I find the book very interesting.",
+       "options": [
+        "mag",
+        "finde",
+        "bin",
+        "habe"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u10l2",
+     "title": "Agree & disagree",
+     "items": [
+      {
+       "t": "learn",
+       "word": "Ich glaube",
+       "tl": "ikh GLOW-beh",
+       "meaning": "I believe / I think",
+       "example": "Ich glaube, das stimmt.",
+       "exampleMeaning": "I think that's right."
+      },
+      {
+       "t": "learn",
+       "word": "Das stimmt",
+       "tl": "dahs shtimt",
+       "meaning": "That's right",
+       "example": "Ja, das stimmt!",
+       "exampleMeaning": "Yes, that's right!"
+      },
+      {
+       "t": "learn",
+       "word": "Ich bin anderer Meinung",
+       "tl": "ikh bin AHN-deh-rer MY-noong",
+       "meaning": "I disagree (I'm of another opinion)",
+       "example": "Nein, ich bin anderer Meinung.",
+       "exampleMeaning": "No, I disagree."
+      },
+      {
+       "t": "learn",
+       "word": "die Meinung",
+       "tl": "dee MY-noong",
+       "meaning": "the opinion",
+       "example": "Was ist deine Meinung?",
+       "exampleMeaning": "What is your opinion?"
+      },
+      {
+       "t": "learn",
+       "word": "richtig / falsch",
+       "tl": "RIKH-tikh / fahlsh",
+       "meaning": "right / wrong",
+       "example": "Das ist richtig.",
+       "exampleMeaning": "That is right."
+      },
+      {
+       "t": "learn",
+       "word": "vielleicht",
+       "tl": "fee-LYKHT",
+       "meaning": "maybe",
+       "example": "Vielleicht hast du recht.",
+       "exampleMeaning": "Maybe you're right."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'That's right'?",
+       "options": [
+        "Ich glaube",
+        "Meinung",
+        "Falsch",
+        "Das stimmt"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I think that's right.",
+       "answer": "Ich glaube, das stimmt.",
+       "bank": [
+        "das",
+        "glaube,",
+        "Ich",
+        "stimmt.",
+        "falsch.",
+        "finde",
+        "Meinung"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Was ist deine Meinung?",
+       "meaning": "What is your opinion?",
+       "bank": [
+        "stimmt",
+        "Meinung?",
+        "glaube",
+        "ist",
+        "Was",
+        "deine",
+        "Ich"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Nein, ich bin anderer Meinung.",
+       "meaning": "No, I disagree."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "Ich glaube",
+         "I believe"
+        ],
+        [
+         "Das stimmt",
+         "That's right"
+        ],
+        [
+         "die Meinung",
+         "the opinion"
+        ],
+        [
+         "richtig",
+         "right"
+        ],
+        [
+         "falsch",
+         "wrong"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Das ist falsch. Ich bin anderer Meinung.",
+       "answer": "That is wrong. I disagree.",
+       "bank": [
+        "disagree.",
+        "I",
+        "That",
+        "maybe",
+        "believe",
+        "is",
+        "wrong.",
+        "right"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ja, das ___!",
+       "meaning": "Yes, that's right!",
+       "options": [
+        "falsch",
+        "stimmt",
+        "glaube",
+        "Meinung"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Vielleicht hast du recht' means...",
+       "options": [
+        "Maybe you're right",
+        "You are wrong",
+        "I disagree",
+        "What's your opinion?"
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u10l3",
+     "title": "Because & feelings",
+     "items": [
+      {
+       "t": "learn",
+       "word": "weil",
+       "tl": "vyl",
+       "meaning": "because",
+       "example": "Ich bleibe zu Hause, weil ich müde bin.",
+       "exampleMeaning": "I'm staying home because I'm tired."
+      },
+      {
+       "t": "learn",
+       "word": "glücklich",
+       "tl": "GLUEK-likh",
+       "meaning": "happy",
+       "example": "Ich bin glücklich.",
+       "exampleMeaning": "I am happy."
+      },
+      {
+       "t": "learn",
+       "word": "traurig",
+       "tl": "TROW-rikh",
+       "meaning": "sad",
+       "example": "Warum bist du traurig?",
+       "exampleMeaning": "Why are you sad?"
+      },
+      {
+       "t": "learn",
+       "word": "Warum?",
+       "tl": "vah-ROOM",
+       "meaning": "Why?",
+       "example": "Warum lernst du Deutsch?",
+       "exampleMeaning": "Why are you learning German?"
+      },
+      {
+       "t": "learn",
+       "word": "wichtig",
+       "tl": "VIKH-tikh",
+       "meaning": "important",
+       "example": "Familie ist wichtig.",
+       "exampleMeaning": "Family is important."
+      },
+      {
+       "t": "learn",
+       "word": "Ich hoffe",
+       "tl": "ikh HOF-feh",
+       "meaning": "I hope",
+       "example": "Ich hoffe, es geht dir gut.",
+       "exampleMeaning": "I hope you're well."
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'sad'?",
+       "options": [
+        "glücklich",
+        "traurig",
+        "wichtig",
+        "müde"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Why are you learning German?",
+       "answer": "Warum lernst du Deutsch?",
+       "bank": [
+        "wichtig",
+        "lernst",
+        "Wo",
+        "weil",
+        "du",
+        "Warum",
+        "Deutsch?"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ich bin glücklich, weil Freitag ist.",
+       "meaning": "I am happy because it's Friday.",
+       "bank": [
+        "traurig,",
+        "bin",
+        "glücklich,",
+        "ist.",
+        "weil",
+        "Warum",
+        "Freitag",
+        "Montag",
+        "Ich"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich lerne Deutsch, weil es wichtig ist.",
+       "meaning": "I'm learning German because it is important."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "weil",
+         "because"
+        ],
+        [
+         "glücklich",
+         "happy"
+        ],
+        [
+         "traurig",
+         "sad"
+        ],
+        [
+         "Warum?",
+         "Why?"
+        ],
+        [
+         "wichtig",
+         "important"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ich hoffe, es geht dir gut.",
+       "answer": "I hope you're well.",
+       "bank": [
+        "hope",
+        "I",
+        "well.",
+        "you're",
+        "believe",
+        "happy",
+        "why"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich bleibe zu Hause, ___ ich krank bin.",
+       "meaning": "I'm staying home because I'm sick.",
+       "options": [
+        "und",
+        "weil",
+        "aber",
+        "dann"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Familie ist wichtig' means...",
+       "options": [
+        "Family is sad",
+        "Family is big",
+        "Family is important",
+        "Family is happy"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u10l4",
+     "title": "Review: Opinions",
+     "items": [
+      {
+       "t": "learn",
+       "word": "aber",
+       "tl": "AH-ber",
+       "meaning": "but",
+       "example": "Ich mag Tee, aber nicht Kaffee.",
+       "exampleMeaning": "I like tea, but not coffee."
+      },
+      {
+       "t": "learn",
+       "word": "Lieblings-",
+       "tl": "LEEP-lings",
+       "meaning": "favourite (prefix)",
+       "example": "Mein Lieblingsessen ist Pizza.",
+       "exampleMeaning": "My favourite food is pizza."
+      },
+      {
+       "t": "learn",
+       "word": "Viel Glück!",
+       "tl": "feel gluek",
+       "meaning": "Good luck!",
+       "example": "Viel Glück beim Deutschlernen!",
+       "exampleMeaning": "Good luck with learning German!"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'but'?",
+       "options": [
+        "weil",
+        "dann",
+        "und",
+        "aber"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I like tea, but not coffee.",
+       "answer": "Ich mag Tee, aber nicht Kaffee.",
+       "bank": [
+        "weil",
+        "nicht",
+        "aber",
+        "finde",
+        "Tee,",
+        "Wasser.",
+        "Kaffee.",
+        "Ich",
+        "mag"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Mein Lieblingsessen ist Brot mit Käse.",
+       "meaning": "My favourite food is bread with cheese.",
+       "bank": [
+        "Mein",
+        "Suppe",
+        "langweilig",
+        "Lieblingsessen",
+        "ist",
+        "Käse.",
+        "Brot",
+        "mit",
+        "Buch"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ich finde Deutsch interessant, aber schwer.",
+       "meaning": "I find German interesting, but hard."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "aber",
+         "but"
+        ],
+        [
+         "Lieblings-",
+         "favourite"
+        ],
+        [
+         "Viel Glück!",
+         "Good luck!"
+        ],
+        [
+         "Das stimmt",
+         "That's right"
+        ],
+        [
+         "langweilig",
+         "boring"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ich glaube, das stimmt nicht. Ich bin anderer Meinung.",
+       "answer": "I think that's not right. I disagree.",
+       "bank": [
+        "that's",
+        "happy",
+        "I",
+        "disagree.",
+        "because",
+        "I",
+        "maybe",
+        "think",
+        "right.",
+        "not"
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ich bin glücklich, ___ ich Urlaub habe.",
+       "meaning": "I am happy because I have a holiday.",
+       "options": [
+        "aber",
+        "weil",
+        "und",
+        "vielleicht"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "choose",
+       "prompt": "'Warum bist du traurig?' means...",
+       "options": [
+        "Why are you sad?",
+        "Where are you sad?",
+        "Why are you happy?",
+        "Are you tired?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Was ist dein Lieblingsbuch?",
+       "meaning": "What is your favourite book?",
+       "bank": [
+        "Was",
+        "findest",
+        "Meinung",
+        "ist",
+        "Film",
+        "dein",
+        "Lieblingsbuch?"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Good luck! I hope you're well.",
+       "answer": "Viel Glück! Ich hoffe, es geht dir gut.",
+       "bank": [
+        "es",
+        "dir",
+        "gut.",
+        "Glück!",
+        "glaube",
+        "Ich",
+        "stimmt",
+        "geht",
+        "danke",
+        "hoffe,",
+        "Viel"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which word means 'important'?",
+       "options": [
+        "interessant",
+        "wichtig",
+        "richtig",
+        "traurig"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

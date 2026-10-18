@@ -1,0 +1,7889 @@
+{
+ "code": "fr",
+ "name": "French",
+ "from": "en",
+ "narratorVoice": "en-IN",
+ "targetVoice": "fr-FR",
+ "lessons": [
+  {
+   "id": "a1",
+   "title": "Lesson 1 — Hello, do you understand?",
+   "minutes": 16,
+   "goal": "Greet someone politely and say whether you speak or understand a language",
+   "steps": [
+    {
+     "n": "Listen to this conversation between an American man and a French woman who have just met."
+    },
+    {
+     "t": "Bonjour, madame. Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "t": "Non, monsieur. Je ne parle pas anglais."
+    },
+    {
+     "t": "Vous comprenez le français ?"
+    },
+    {
+     "t": "Oui, un peu."
+    },
+    {
+     "n": "In the next few minutes you will learn to say all of that yourself. Let's begin with 'hello', which in French also means 'good morning' and 'good day'."
+    },
+    {
+     "n": "Listen and repeat."
+    },
+    {
+     "t": "Bonjour"
+    },
+    {
+     "t": "jour",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bon-jour",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bonjour"
+    },
+    {
+     "p": 3,
+     "expect": "Bonjour"
+    },
+    {
+     "n": "Once more, 'hello'."
+    },
+    {
+     "p": 3,
+     "expect": "Bonjour"
+    },
+    {
+     "t": "Bonjour"
+    },
+    {
+     "n": "In France you always greet before anything else. Walking into a shop or up to a counter without saying hello is considered rude."
+    },
+    {
+     "n": "Here is how to say 'madam'. Listen and repeat."
+    },
+    {
+     "t": "madame"
+    },
+    {
+     "t": "dame",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ma-dame",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "madame"
+    },
+    {
+     "p": 3,
+     "expect": "madame"
+    },
+    {
+     "t": "madame"
+    },
+    {
+     "n": "Now put it together: 'hello, madam'. Listen, then repeat."
+    },
+    {
+     "t": "Bonjour, madame"
+    },
+    {
+     "p": 3,
+     "expect": "Bonjour, madame"
+    },
+    {
+     "t": "Bonjour, madame"
+    },
+    {
+     "n": "Here is how to say 'sir'. Listen and repeat."
+    },
+    {
+     "t": "monsieur",
+     "tl": "muh-syuh"
+    },
+    {
+     "t": "sieur",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "mon-sieur",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "monsieur"
+    },
+    {
+     "p": 3,
+     "expect": "monsieur"
+    },
+    {
+     "t": "monsieur"
+    },
+    {
+     "n": "Here is how to say 'excuse me'. Listen and repeat."
+    },
+    {
+     "t": "Excusez-moi"
+    },
+    {
+     "t": "moi",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "sez-moi",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Ex-cu-sez-moi",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Excusez-moi"
+    },
+    {
+     "p": 3,
+     "expect": "Excusez-moi"
+    },
+    {
+     "t": "Excusez-moi"
+    },
+    {
+     "n": "Here is how to say 'English, the language'. Listen and repeat."
+    },
+    {
+     "t": "anglais"
+    },
+    {
+     "t": "glais",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "an-glais",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "anglais"
+    },
+    {
+     "p": 3,
+     "expect": "anglais"
+    },
+    {
+     "t": "anglais"
+    },
+    {
+     "n": "Here is how to say 'you speak'. Listen and repeat."
+    },
+    {
+     "t": "vous parlez"
+    },
+    {
+     "t": "parlez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous par-lez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous parlez"
+    },
+    {
+     "p": 3,
+     "expect": "vous parlez"
+    },
+    {
+     "t": "vous parlez"
+    },
+    {
+     "n": "Now put it together: 'do you speak English?'. Listen, then repeat."
+    },
+    {
+     "t": "Vous parlez anglais ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous parlez anglais ?"
+    },
+    {
+     "t": "Vous parlez anglais ?"
+    },
+    {
+     "n": "Notice that in French you can turn a statement into a question just by raising your voice at the end. 'You speak English' and 'Do you speak English?' use exactly the same words."
+    },
+    {
+     "n": "Now put it together: 'excuse me, do you speak English?'. Listen, then repeat."
+    },
+    {
+     "t": "Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "p": 3,
+     "expect": "Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "t": "Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "n": "Here is how to say 'no'. Listen and repeat."
+    },
+    {
+     "t": "Non"
+    },
+    {
+     "t": "Non"
+    },
+    {
+     "p": 3,
+     "expect": "Non"
+    },
+    {
+     "t": "Non"
+    },
+    {
+     "n": "Here is how to say 'I don't speak'. Listen and repeat."
+    },
+    {
+     "t": "Je ne parle pas"
+    },
+    {
+     "t": "pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "parle pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je ne parle pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je ne parle pas"
+    },
+    {
+     "p": 3,
+     "expect": "Je ne parle pas"
+    },
+    {
+     "t": "Je ne parle pas"
+    },
+    {
+     "n": "To make a sentence negative, French wraps the verb in a sandwich: one little word before it and one after it. You just heard that sandwich."
+    },
+    {
+     "n": "Now put it together: 'I don't speak English'. Listen, then repeat."
+    },
+    {
+     "t": "Je ne parle pas anglais"
+    },
+    {
+     "p": 3,
+     "expect": "Je ne parle pas anglais"
+    },
+    {
+     "t": "Je ne parle pas anglais"
+    },
+    {
+     "n": "Now put it together: 'No, sir. I don't speak English.'. Listen, then repeat."
+    },
+    {
+     "t": "Non, monsieur. Je ne parle pas anglais."
+    },
+    {
+     "p": 3,
+     "expect": "Non, monsieur. Je ne parle pas anglais."
+    },
+    {
+     "t": "Non, monsieur. Je ne parle pas anglais."
+    },
+    {
+     "n": "Here is how to say 'you understand'. Listen and repeat."
+    },
+    {
+     "t": "vous comprenez"
+    },
+    {
+     "t": "prenez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous com-pre-nez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous comprenez"
+    },
+    {
+     "p": 3,
+     "expect": "vous comprenez"
+    },
+    {
+     "t": "vous comprenez"
+    },
+    {
+     "n": "Here is how to say 'French, the language'. Listen and repeat."
+    },
+    {
+     "t": "le français"
+    },
+    {
+     "t": "çais",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le fran-çais",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le français"
+    },
+    {
+     "p": 3,
+     "expect": "le français"
+    },
+    {
+     "t": "le français"
+    },
+    {
+     "n": "Now put it together: 'do you understand French?'. Listen, then repeat."
+    },
+    {
+     "t": "Vous comprenez le français ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous comprenez le français ?"
+    },
+    {
+     "t": "Vous comprenez le français ?"
+    },
+    {
+     "n": "Here is how to say 'yes'. Listen and repeat."
+    },
+    {
+     "t": "Oui"
+    },
+    {
+     "t": "Oui"
+    },
+    {
+     "p": 3,
+     "expect": "Oui"
+    },
+    {
+     "t": "Oui"
+    },
+    {
+     "n": "Here is how to say 'a little'. Listen and repeat."
+    },
+    {
+     "t": "un peu"
+    },
+    {
+     "t": "peu",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un peu",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un peu"
+    },
+    {
+     "p": 3,
+     "expect": "un peu"
+    },
+    {
+     "t": "un peu"
+    },
+    {
+     "n": "Now put it together: 'yes, a little'. Listen, then repeat."
+    },
+    {
+     "t": "Oui, un peu"
+    },
+    {
+     "p": 3,
+     "expect": "Oui, un peu"
+    },
+    {
+     "t": "Oui, un peu"
+    },
+    {
+     "n": "Here is how to say 'I don't understand'. Listen and repeat."
+    },
+    {
+     "t": "Je ne comprends pas"
+    },
+    {
+     "t": "pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "comprends pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je ne com-prends pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je ne comprends pas"
+    },
+    {
+     "p": 3,
+     "expect": "Je ne comprends pas"
+    },
+    {
+     "t": "Je ne comprends pas"
+    },
+    {
+     "n": "That last phrase is one of the most useful you will ever learn. Say it with a smile and most people will slow down and help you."
+    },
+    {
+     "q": "Someone asks whether you speak English, and you want to say that you don't. What do you say?"
+    },
+    {
+     "p": 4,
+     "expect": "Je ne parle pas anglais"
+    },
+    {
+     "t": "Je ne parle pas anglais"
+    },
+    {
+     "q": "A woman greets you in the morning. Greet her back politely."
+    },
+    {
+     "p": 4,
+     "expect": "Bonjour, madame"
+    },
+    {
+     "t": "Bonjour, madame"
+    },
+    {
+     "n": "Say 'yes, a little'."
+    },
+    {
+     "p": 3,
+     "expect": "Oui, un peu"
+    },
+    {
+     "t": "Oui, un peu"
+    },
+    {
+     "n": "Ask a woman if she understands French."
+    },
+    {
+     "p": 4,
+     "expect": "Vous comprenez le français ?"
+    },
+    {
+     "t": "Vous comprenez le français ?"
+    },
+    {
+     "n": "Say that you don't understand."
+    },
+    {
+     "p": 3,
+     "expect": "Je ne comprends pas"
+    },
+    {
+     "t": "Je ne comprends pas"
+    },
+    {
+     "n": "Say 'excuse me, do you speak English?'"
+    },
+    {
+     "p": 4,
+     "expect": "Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "t": "Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "n": "Answer: 'no, sir, I don't speak English.'"
+    },
+    {
+     "p": 5,
+     "expect": "Non, monsieur. Je ne parle pas anglais."
+    },
+    {
+     "t": "Non, monsieur. Je ne parle pas anglais."
+    },
+    {
+     "n": "Ask 'do you understand French?'"
+    },
+    {
+     "p": 4,
+     "expect": "Vous comprenez le français ?"
+    },
+    {
+     "t": "Vous comprenez le français ?"
+    },
+    {
+     "n": "Answer 'yes, a little'."
+    },
+    {
+     "p": 3,
+     "expect": "Oui, un peu"
+    },
+    {
+     "t": "Oui, un peu"
+    },
+    {
+     "n": "Now listen to the conversation from the beginning once more. You should understand every word."
+    },
+    {
+     "t": "Bonjour, madame. Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "t": "Non, monsieur. Je ne parle pas anglais."
+    },
+    {
+     "t": "Vous comprenez le français ?"
+    },
+    {
+     "t": "Oui, un peu."
+    },
+    {
+     "n": "Try to take part. You are the man. Greet the woman and ask if she speaks English."
+    },
+    {
+     "p": 5,
+     "expect": "Bonjour, madame. Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "t": "Bonjour, madame. Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "t": "Non, monsieur. Je ne parle pas anglais."
+    },
+    {
+     "n": "Now ask if she understands French."
+    },
+    {
+     "p": 4,
+     "expect": "Vous comprenez le français ?"
+    },
+    {
+     "t": "Vous comprenez le français ?"
+    },
+    {
+     "t": "Oui, un peu."
+    },
+    {
+     "n": "Well done. That is the end of lesson one. In the next lesson you will learn to say thank you and please, and to say where you are from."
+    }
+   ]
+  },
+  {
+   "id": "a2",
+   "title": "Lesson 2 — Thank you, and you?",
+   "minutes": 16,
+   "goal": "Exchange pleasantries, say please and thank you, and say your nationality",
+   "steps": [
+    {
+     "n": "Listen to this short conversation. A French woman runs into an American man she met yesterday."
+    },
+    {
+     "t": "Bonjour, monsieur. Ça va ?"
+    },
+    {
+     "t": "Ça va bien, merci. Et vous ?"
+    },
+    {
+     "t": "Très bien, merci. Vous êtes américain ?"
+    },
+    {
+     "t": "Oui, je suis américain. Au revoir, madame !"
+    },
+    {
+     "n": "You will be able to say all of this in a few minutes. But first, let's see what you remember from lesson one. Say 'hello, madam'."
+    },
+    {
+     "p": 3,
+     "expect": "Bonjour, madame"
+    },
+    {
+     "t": "Bonjour, madame"
+    },
+    {
+     "n": "Say 'excuse me, do you speak English?'"
+    },
+    {
+     "p": 4,
+     "expect": "Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "t": "Excusez-moi, vous parlez anglais ?"
+    },
+    {
+     "n": "Say that you don't understand."
+    },
+    {
+     "p": 3,
+     "expect": "Je ne comprends pas"
+    },
+    {
+     "t": "Je ne comprends pas"
+    },
+    {
+     "n": "Now here is the friendliest question in French: 'how's it going?' Listen and repeat."
+    },
+    {
+     "t": "Ça va ?"
+    },
+    {
+     "t": "va",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Ça va ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Ça va ?"
+    },
+    {
+     "p": 3,
+     "expect": "Ça va ?"
+    },
+    {
+     "t": "Ça va ?"
+    },
+    {
+     "n": "The same two words, said without the rising tone, are also the answer: 'it's going fine'. French people say them dozens of times a day."
+    },
+    {
+     "n": "Here is how to say 'very well'. Listen and repeat."
+    },
+    {
+     "t": "Très bien"
+    },
+    {
+     "t": "bien",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Très bien",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Très bien"
+    },
+    {
+     "p": 3,
+     "expect": "Très bien"
+    },
+    {
+     "t": "Très bien"
+    },
+    {
+     "n": "Here is how to say 'thank you'. Listen and repeat."
+    },
+    {
+     "t": "merci"
+    },
+    {
+     "t": "ci",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "mer-ci",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "merci"
+    },
+    {
+     "p": 3,
+     "expect": "merci"
+    },
+    {
+     "t": "merci"
+    },
+    {
+     "n": "Here is how to say 'and you?'. Listen and repeat."
+    },
+    {
+     "t": "Et vous ?"
+    },
+    {
+     "t": "Et vous ?"
+    },
+    {
+     "p": 3,
+     "expect": "Et vous ?"
+    },
+    {
+     "t": "Et vous ?"
+    },
+    {
+     "n": "Now put it together: 'it's going well, thank you. And you?'. Listen, then repeat."
+    },
+    {
+     "t": "Ça va bien, merci. Et vous ?"
+    },
+    {
+     "p": 3,
+     "expect": "Ça va bien, merci. Et vous ?"
+    },
+    {
+     "t": "Ça va bien, merci. Et vous ?"
+    },
+    {
+     "n": "Here is how to say 'American, said by a man'. Listen and repeat."
+    },
+    {
+     "t": "américain"
+    },
+    {
+     "t": "cain",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "a-mé-ri-cain",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "américain"
+    },
+    {
+     "p": 3,
+     "expect": "américain"
+    },
+    {
+     "t": "américain"
+    },
+    {
+     "n": "Here is how to say 'you are'. Listen and repeat."
+    },
+    {
+     "t": "vous êtes"
+    },
+    {
+     "t": "êtes",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous êtes",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous êtes"
+    },
+    {
+     "p": 3,
+     "expect": "vous êtes"
+    },
+    {
+     "t": "vous êtes"
+    },
+    {
+     "n": "Now put it together: 'are you American?'. Listen, then repeat."
+    },
+    {
+     "t": "Vous êtes américain ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous êtes américain ?"
+    },
+    {
+     "t": "Vous êtes américain ?"
+    },
+    {
+     "n": "Here is how to say 'I am'. Listen and repeat."
+    },
+    {
+     "t": "je suis"
+    },
+    {
+     "t": "suis",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "je suis",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "je suis"
+    },
+    {
+     "p": 3,
+     "expect": "je suis"
+    },
+    {
+     "t": "je suis"
+    },
+    {
+     "n": "Now put it together: 'I am American'. Listen, then repeat."
+    },
+    {
+     "t": "Je suis américain"
+    },
+    {
+     "p": 3,
+     "expect": "Je suis américain"
+    },
+    {
+     "t": "Je suis américain"
+    },
+    {
+     "n": "A woman says it slightly differently. The ending sounds like 'ken'. Listen and repeat."
+    },
+    {
+     "t": "américaine"
+    },
+    {
+     "t": "américaine"
+    },
+    {
+     "p": 3,
+     "expect": "américaine"
+    },
+    {
+     "t": "américaine"
+    },
+    {
+     "n": "Most French words that describe people have a masculine and a feminine form. Men say the short form, women add the final sound. You will hear this again and again."
+    },
+    {
+     "n": "Here is how to say 'French, said about a woman'. Listen and repeat."
+    },
+    {
+     "t": "française"
+    },
+    {
+     "t": "çaise",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "fran-çaise",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "française"
+    },
+    {
+     "p": 3,
+     "expect": "française"
+    },
+    {
+     "t": "française"
+    },
+    {
+     "n": "Now put it together: 'are you French? Asking a woman.'. Listen, then repeat."
+    },
+    {
+     "t": "Vous êtes française ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous êtes française ?"
+    },
+    {
+     "t": "Vous êtes française ?"
+    },
+    {
+     "n": "Say 'I am American' as a man would."
+    },
+    {
+     "p": 3,
+     "expect": "Je suis américain"
+    },
+    {
+     "t": "Je suis américain"
+    },
+    {
+     "n": "Now as a woman would."
+    },
+    {
+     "p": 3,
+     "expect": "américaine"
+    },
+    {
+     "t": "américaine"
+    },
+    {
+     "n": "Here is how to say 'goodbye'. Listen and repeat."
+    },
+    {
+     "t": "Au revoir"
+    },
+    {
+     "t": "voir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "re-voir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Au re-voir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Au revoir"
+    },
+    {
+     "p": 3,
+     "expect": "Au revoir"
+    },
+    {
+     "t": "Au revoir"
+    },
+    {
+     "n": "Here is how to say 'please'. Listen and repeat."
+    },
+    {
+     "t": "S'il vous plaît",
+     "tl": "seel voo pleh"
+    },
+    {
+     "t": "plaît",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous plaît",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "S'il vous plaît",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "S'il vous plaît"
+    },
+    {
+     "p": 3,
+     "expect": "S'il vous plaît"
+    },
+    {
+     "t": "S'il vous plaît"
+    },
+    {
+     "n": "Literally this means 'if it pleases you'. In France, please and thank you are not optional. Use them every single time."
+    },
+    {
+     "n": "Here is how to say 'a lot, very much'. Listen and repeat."
+    },
+    {
+     "t": "beaucoup"
+    },
+    {
+     "t": "coup",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "beau-coup",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "beaucoup"
+    },
+    {
+     "p": 3,
+     "expect": "beaucoup"
+    },
+    {
+     "t": "beaucoup"
+    },
+    {
+     "n": "Now put it together: 'thank you very much'. Listen, then repeat."
+    },
+    {
+     "t": "Merci beaucoup"
+    },
+    {
+     "p": 3,
+     "expect": "Merci beaucoup"
+    },
+    {
+     "t": "Merci beaucoup"
+    },
+    {
+     "n": "Here is how to say 'you're welcome, literally 'it's nothing''. Listen and repeat."
+    },
+    {
+     "t": "De rien"
+    },
+    {
+     "t": "rien",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "De rien",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "De rien"
+    },
+    {
+     "p": 3,
+     "expect": "De rien"
+    },
+    {
+     "t": "De rien"
+    },
+    {
+     "n": "Say 'thank you very much'."
+    },
+    {
+     "p": 3,
+     "expect": "Merci beaucoup"
+    },
+    {
+     "t": "Merci beaucoup"
+    },
+    {
+     "n": "Reply 'you're welcome'."
+    },
+    {
+     "p": 3,
+     "expect": "De rien"
+    },
+    {
+     "t": "De rien"
+    },
+    {
+     "n": "Say 'please'."
+    },
+    {
+     "p": 3,
+     "expect": "S'il vous plaît"
+    },
+    {
+     "t": "S'il vous plaît"
+    },
+    {
+     "q": "A French woman asks you how it's going. Tell her it's going well, thank you, and ask her back."
+    },
+    {
+     "p": 5,
+     "expect": "Ça va bien, merci. Et vous ?"
+    },
+    {
+     "t": "Ça va bien, merci. Et vous ?"
+    },
+    {
+     "q": "Someone asks if you are American. You're a man. Say yes, you are American."
+    },
+    {
+     "t": "Oui, je suis américain"
+    },
+    {
+     "p": 4,
+     "expect": "Oui, je suis américain"
+    },
+    {
+     "t": "Oui, je suis américain"
+    },
+    {
+     "n": "Ask a woman if she is French."
+    },
+    {
+     "p": 3,
+     "expect": "Vous êtes française ?"
+    },
+    {
+     "t": "Vous êtes française ?"
+    },
+    {
+     "n": "Say 'goodbye'."
+    },
+    {
+     "p": 3,
+     "expect": "Au revoir"
+    },
+    {
+     "t": "Au revoir"
+    },
+    {
+     "n": "Ask 'are you American?' to a man."
+    },
+    {
+     "p": 3,
+     "expect": "Vous êtes américain ?"
+    },
+    {
+     "t": "Vous êtes américain ?"
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "Bonjour, monsieur. Ça va ?"
+    },
+    {
+     "t": "Ça va bien, merci. Et vous ?"
+    },
+    {
+     "t": "Très bien, merci. Vous êtes américain ?"
+    },
+    {
+     "t": "Oui, je suis américain. Au revoir, madame !"
+    },
+    {
+     "n": "Now you are the man. The woman greets you and asks how it's going. Answer her and ask her back."
+    },
+    {
+     "t": "Bonjour, monsieur. Ça va ?"
+    },
+    {
+     "p": 5,
+     "expect": "Ça va bien, merci. Et vous ?"
+    },
+    {
+     "t": "Ça va bien, merci. Et vous ?"
+    },
+    {
+     "t": "Très bien, merci. Vous êtes américain ?"
+    },
+    {
+     "n": "Say yes, you are American, and say goodbye to her."
+    },
+    {
+     "p": 5,
+     "expect": "Oui, je suis américain. Au revoir, madame !"
+    },
+    {
+     "t": "Oui, je suis américain. Au revoir, madame !"
+    },
+    {
+     "n": "Excellent. In lesson three you will learn to ask where something is, how much it costs, and to count to ten."
+    }
+   ]
+  },
+  {
+   "id": "a3",
+   "title": "Lesson 3 — Where is it? How much?",
+   "minutes": 16,
+   "goal": "Ask where places are, ask prices and count from one to ten",
+   "steps": [
+    {
+     "n": "Listen to this conversation. A woman is asking a man on the street for directions."
+    },
+    {
+     "t": "Excusez-moi, monsieur. Où est la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "La gare ? C'est là-bas, madame."
+    },
+    {
+     "t": "Merci. Et un ticket, c'est combien ?"
+    },
+    {
+     "t": "Deux euros, madame."
+    },
+    {
+     "n": "First, a quick review. Say 'excuse me, sir'."
+    },
+    {
+     "p": 3,
+     "expect": "Excusez-moi"
+    },
+    {
+     "t": "Excusez-moi"
+    },
+    {
+     "t": "monsieur"
+    },
+    {
+     "n": "Say 'please'."
+    },
+    {
+     "p": 3,
+     "expect": "S'il vous plaît"
+    },
+    {
+     "t": "S'il vous plaît"
+    },
+    {
+     "n": "Now, here is how to ask 'where is'. Listen and repeat."
+    },
+    {
+     "t": "Où est"
+    },
+    {
+     "t": "est",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Où est",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Où est"
+    },
+    {
+     "p": 3,
+     "expect": "Où est"
+    },
+    {
+     "t": "Où est"
+    },
+    {
+     "n": "Here is how to say 'the train station'. Listen and repeat."
+    },
+    {
+     "t": "la gare"
+    },
+    {
+     "t": "gare",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "la gare",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "la gare"
+    },
+    {
+     "p": 3,
+     "expect": "la gare"
+    },
+    {
+     "t": "la gare"
+    },
+    {
+     "n": "Now put it together: 'where is the train station?'. Listen, then repeat."
+    },
+    {
+     "t": "Où est la gare ?"
+    },
+    {
+     "p": 3,
+     "expect": "Où est la gare ?"
+    },
+    {
+     "t": "Où est la gare ?"
+    },
+    {
+     "n": "Now put it together: 'where is the train station, please?'. Listen, then repeat."
+    },
+    {
+     "t": "Où est la gare, s'il vous plaît ?"
+    },
+    {
+     "p": 3,
+     "expect": "Où est la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "Où est la gare, s'il vous plaît ?"
+    },
+    {
+     "n": "Here is how to say 'the hotel'. Listen and repeat."
+    },
+    {
+     "t": "l'hôtel"
+    },
+    {
+     "t": "tel",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "l'hô-tel",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "l'hôtel"
+    },
+    {
+     "p": 3,
+     "expect": "l'hôtel"
+    },
+    {
+     "t": "l'hôtel"
+    },
+    {
+     "n": "In French every noun is either masculine or feminine. 'Station' is feminine, so it takes 'la'. Before a vowel, 'the' shrinks to a single sound, as you heard with 'hotel'."
+    },
+    {
+     "n": "Now put it together: 'where is the hotel?'. Listen, then repeat."
+    },
+    {
+     "t": "Où est l'hôtel ?"
+    },
+    {
+     "p": 3,
+     "expect": "Où est l'hôtel ?"
+    },
+    {
+     "t": "Où est l'hôtel ?"
+    },
+    {
+     "n": "Here is how to say 'it is, or it's'. Listen and repeat."
+    },
+    {
+     "t": "C'est"
+    },
+    {
+     "t": "C'est"
+    },
+    {
+     "p": 3,
+     "expect": "C'est"
+    },
+    {
+     "t": "C'est"
+    },
+    {
+     "n": "Here is how to say 'over there'. Listen and repeat."
+    },
+    {
+     "t": "là-bas"
+    },
+    {
+     "t": "bas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "là-bas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "là-bas"
+    },
+    {
+     "p": 3,
+     "expect": "là-bas"
+    },
+    {
+     "t": "là-bas"
+    },
+    {
+     "n": "Now put it together: 'it's over there'. Listen, then repeat."
+    },
+    {
+     "t": "C'est là-bas"
+    },
+    {
+     "p": 3,
+     "expect": "C'est là-bas"
+    },
+    {
+     "t": "C'est là-bas"
+    },
+    {
+     "n": "Answer 'it's over there'."
+    },
+    {
+     "p": 3,
+     "expect": "C'est là-bas"
+    },
+    {
+     "t": "C'est là-bas"
+    },
+    {
+     "n": "Here is how to say 'the toilets, the restroom'. Listen and repeat."
+    },
+    {
+     "t": "les toilettes"
+    },
+    {
+     "t": "lettes",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "les toi-lettes",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "les toilettes"
+    },
+    {
+     "p": 3,
+     "expect": "les toilettes"
+    },
+    {
+     "t": "les toilettes"
+    },
+    {
+     "n": "Here is how to say 'where are, for more than one thing'. Listen and repeat."
+    },
+    {
+     "t": "Où sont"
+    },
+    {
+     "t": "sont",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Où sont",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Où sont"
+    },
+    {
+     "p": 3,
+     "expect": "Où sont"
+    },
+    {
+     "t": "Où sont"
+    },
+    {
+     "n": "Now put it together: 'where are the toilets?'. Listen, then repeat."
+    },
+    {
+     "t": "Où sont les toilettes ?"
+    },
+    {
+     "p": 3,
+     "expect": "Où sont les toilettes ?"
+    },
+    {
+     "t": "Où sont les toilettes ?"
+    },
+    {
+     "n": "Here is how to say 'how much'. Listen and repeat."
+    },
+    {
+     "t": "combien"
+    },
+    {
+     "t": "bien",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "com-bien",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "combien"
+    },
+    {
+     "p": 3,
+     "expect": "combien"
+    },
+    {
+     "t": "combien"
+    },
+    {
+     "n": "Now put it together: 'how much is it?'. Listen, then repeat."
+    },
+    {
+     "t": "C'est combien ?"
+    },
+    {
+     "p": 3,
+     "expect": "C'est combien ?"
+    },
+    {
+     "t": "C'est combien ?"
+    },
+    {
+     "n": "Now let's count. One."
+    },
+    {
+     "t": "un"
+    },
+    {
+     "p": 2,
+     "expect": "un"
+    },
+    {
+     "t": "un"
+    },
+    {
+     "n": "Two."
+    },
+    {
+     "t": "deux"
+    },
+    {
+     "t": "deux"
+    },
+    {
+     "p": 3,
+     "expect": "deux"
+    },
+    {
+     "t": "deux"
+    },
+    {
+     "n": "Three."
+    },
+    {
+     "t": "trois"
+    },
+    {
+     "t": "trois"
+    },
+    {
+     "p": 3,
+     "expect": "trois"
+    },
+    {
+     "t": "trois"
+    },
+    {
+     "n": "Four."
+    },
+    {
+     "t": "quatre"
+    },
+    {
+     "t": "quatre"
+    },
+    {
+     "p": 3,
+     "expect": "quatre"
+    },
+    {
+     "t": "quatre"
+    },
+    {
+     "n": "Five."
+    },
+    {
+     "t": "cinq"
+    },
+    {
+     "t": "cinq"
+    },
+    {
+     "p": 3,
+     "expect": "cinq"
+    },
+    {
+     "t": "cinq"
+    },
+    {
+     "n": "Six."
+    },
+    {
+     "t": "six"
+    },
+    {
+     "t": "six"
+    },
+    {
+     "p": 3,
+     "expect": "six"
+    },
+    {
+     "t": "six"
+    },
+    {
+     "n": "Seven."
+    },
+    {
+     "t": "sept"
+    },
+    {
+     "t": "sept"
+    },
+    {
+     "p": 3,
+     "expect": "sept"
+    },
+    {
+     "t": "sept"
+    },
+    {
+     "n": "Eight."
+    },
+    {
+     "t": "huit"
+    },
+    {
+     "t": "huit"
+    },
+    {
+     "p": 3,
+     "expect": "huit"
+    },
+    {
+     "t": "huit"
+    },
+    {
+     "n": "Nine."
+    },
+    {
+     "t": "neuf"
+    },
+    {
+     "t": "neuf"
+    },
+    {
+     "p": 3,
+     "expect": "neuf"
+    },
+    {
+     "t": "neuf"
+    },
+    {
+     "n": "Ten."
+    },
+    {
+     "t": "dix"
+    },
+    {
+     "t": "dix"
+    },
+    {
+     "p": 3,
+     "expect": "dix"
+    },
+    {
+     "t": "dix"
+    },
+    {
+     "n": "Here is how to say 'euros'. Listen and repeat."
+    },
+    {
+     "t": "euros"
+    },
+    {
+     "t": "ros",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "eu-ros",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "euros"
+    },
+    {
+     "p": 3,
+     "expect": "euros"
+    },
+    {
+     "t": "euros"
+    },
+    {
+     "n": "Now put it together: 'two euros'. Listen, then repeat."
+    },
+    {
+     "t": "Deux euros"
+    },
+    {
+     "p": 3,
+     "expect": "Deux euros"
+    },
+    {
+     "t": "Deux euros"
+    },
+    {
+     "n": "Ask how much it is."
+    },
+    {
+     "p": 3,
+     "expect": "C'est combien ?"
+    },
+    {
+     "t": "C'est combien ?"
+    },
+    {
+     "q": "You're at a kiosk. Ask how much a ticket costs: 'a ticket, how much is it?'"
+    },
+    {
+     "n": "Listen first."
+    },
+    {
+     "t": "Un ticket, c'est combien ?"
+    },
+    {
+     "p": 4,
+     "expect": "Un ticket, c'est combien ?"
+    },
+    {
+     "t": "Un ticket, c'est combien ?"
+    },
+    {
+     "n": "Say 'three'."
+    },
+    {
+     "p": 3,
+     "expect": "trois"
+    },
+    {
+     "t": "trois"
+    },
+    {
+     "n": "Say 'eight'."
+    },
+    {
+     "p": 3,
+     "expect": "huit"
+    },
+    {
+     "t": "huit"
+    },
+    {
+     "n": "Listen to the conversation again."
+    },
+    {
+     "t": "Excusez-moi, monsieur. Où est la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "La gare ? C'est là-bas, madame."
+    },
+    {
+     "t": "Merci. Et un ticket, c'est combien ?"
+    },
+    {
+     "t": "Deux euros, madame."
+    },
+    {
+     "n": "Now you ask. Say 'excuse me, sir', then ask where the station is, please."
+    },
+    {
+     "p": 5,
+     "expect": "Où est la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "Excusez-moi, monsieur. Où est la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "La gare ? C'est là-bas, madame."
+    },
+    {
+     "n": "Thank him and ask how much a ticket is."
+    },
+    {
+     "p": 5,
+     "expect": "Un ticket, c'est combien ?"
+    },
+    {
+     "t": "Merci. Et un ticket, c'est combien ?"
+    },
+    {
+     "t": "Deux euros, madame."
+    },
+    {
+     "n": "Very good. In the next lesson you will go to a café and order something to drink."
+    }
+   ]
+  },
+  {
+   "id": "a4",
+   "title": "Lesson 4 — At the café",
+   "minutes": 16,
+   "goal": "Order drinks and snacks politely and ask for the bill",
+   "steps": [
+    {
+     "n": "You are sitting at a café in Paris. Listen to the conversation between the waitress and a customer."
+    },
+    {
+     "t": "Bonjour, monsieur. Vous désirez ?"
+    },
+    {
+     "t": "Je voudrais un café, s'il vous plaît."
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "t": "Un croissant. Et l'addition, s'il vous plaît."
+    },
+    {
+     "n": "Before we order, let's review. Ask how much it is."
+    },
+    {
+     "p": 3,
+     "expect": "C'est combien ?"
+    },
+    {
+     "t": "C'est combien ?"
+    },
+    {
+     "n": "Say 'two euros'."
+    },
+    {
+     "p": 3,
+     "expect": "Deux euros"
+    },
+    {
+     "t": "Deux euros"
+    },
+    {
+     "n": "Ask where the toilets are."
+    },
+    {
+     "p": 3,
+     "expect": "Où sont les toilettes ?"
+    },
+    {
+     "t": "Où sont les toilettes ?"
+    },
+    {
+     "n": "Here is what the waiter will ask you: 'what would you like?' Listen and repeat."
+    },
+    {
+     "t": "Vous désirez ?"
+    },
+    {
+     "t": "rez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "dé-si-rez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Vous dé-si-rez ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Vous désirez ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous désirez ?"
+    },
+    {
+     "t": "Vous désirez ?"
+    },
+    {
+     "n": "Here is how to say 'I would like'. Listen and repeat."
+    },
+    {
+     "t": "Je voudrais",
+     "tl": "zhuh voo-dreh"
+    },
+    {
+     "t": "drais",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vou-drais",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je vou-drais",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je voudrais"
+    },
+    {
+     "p": 3,
+     "expect": "Je voudrais"
+    },
+    {
+     "t": "Je voudrais"
+    },
+    {
+     "n": "'I would like' is the polite way to order anything in France. You will use it constantly."
+    },
+    {
+     "n": "Here is how to say 'a coffee'. Listen and repeat."
+    },
+    {
+     "t": "un café"
+    },
+    {
+     "t": "café",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un café",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un café"
+    },
+    {
+     "p": 3,
+     "expect": "un café"
+    },
+    {
+     "t": "un café"
+    },
+    {
+     "n": "Now put it together: 'I would like a coffee, please'. Listen, then repeat."
+    },
+    {
+     "t": "Je voudrais un café, s'il vous plaît"
+    },
+    {
+     "p": 3,
+     "expect": "Je voudrais un café, s'il vous plaît"
+    },
+    {
+     "t": "Je voudrais un café, s'il vous plaît"
+    },
+    {
+     "n": "Careful: in France 'a coffee' means a small, strong espresso. If you want milk in it, ask for 'a coffee with cream'. Listen and repeat."
+    },
+    {
+     "t": "un café crème"
+    },
+    {
+     "p": 3,
+     "expect": "un café crème"
+    },
+    {
+     "t": "un café crème"
+    },
+    {
+     "n": "Here is how to say 'a tea'. Listen and repeat."
+    },
+    {
+     "t": "un thé"
+    },
+    {
+     "t": "un thé"
+    },
+    {
+     "p": 3,
+     "expect": "un thé"
+    },
+    {
+     "t": "un thé"
+    },
+    {
+     "n": "Now put it together: 'I would like a tea'. Listen, then repeat."
+    },
+    {
+     "t": "Je voudrais un thé"
+    },
+    {
+     "p": 3,
+     "expect": "Je voudrais un thé"
+    },
+    {
+     "t": "Je voudrais un thé"
+    },
+    {
+     "n": "Here is how to say 'some water'. Listen and repeat."
+    },
+    {
+     "t": "de l'eau"
+    },
+    {
+     "t": "eau",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "de l'eau",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "de l'eau"
+    },
+    {
+     "p": 3,
+     "expect": "de l'eau"
+    },
+    {
+     "t": "de l'eau"
+    },
+    {
+     "n": "Now put it together: 'I would like some water, please'. Listen, then repeat."
+    },
+    {
+     "t": "Je voudrais de l'eau, s'il vous plaît"
+    },
+    {
+     "p": 3,
+     "expect": "Je voudrais de l'eau, s'il vous plaît"
+    },
+    {
+     "t": "Je voudrais de l'eau, s'il vous plaît"
+    },
+    {
+     "n": "Say 'what would you like?'"
+    },
+    {
+     "p": 3,
+     "expect": "Vous désirez ?"
+    },
+    {
+     "t": "Vous désirez ?"
+    },
+    {
+     "n": "Answer: 'I would like a coffee, please'."
+    },
+    {
+     "p": 4,
+     "expect": "Je voudrais un café, s'il vous plaît"
+    },
+    {
+     "t": "Je voudrais un café, s'il vous plaît"
+    },
+    {
+     "n": "Here is how to say 'a beer'. Listen and repeat."
+    },
+    {
+     "t": "une bière"
+    },
+    {
+     "t": "bière",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "une bière",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "une bière"
+    },
+    {
+     "p": 3,
+     "expect": "une bière"
+    },
+    {
+     "t": "une bière"
+    },
+    {
+     "n": "Did you notice? 'A coffee' uses one word for 'a', and 'a beer' uses another. Coffee is masculine, beer is feminine. Just learn each noun with its little word."
+    },
+    {
+     "n": "Here is how to say 'a glass of wine'. Listen and repeat."
+    },
+    {
+     "t": "un verre de vin"
+    },
+    {
+     "t": "vin",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "verre de vin",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un verre de vin",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un verre de vin"
+    },
+    {
+     "p": 3,
+     "expect": "un verre de vin"
+    },
+    {
+     "t": "un verre de vin"
+    },
+    {
+     "n": "Now put it together: 'a glass of wine, please'. Listen, then repeat."
+    },
+    {
+     "t": "Un verre de vin, s'il vous plaît"
+    },
+    {
+     "p": 3,
+     "expect": "Un verre de vin, s'il vous plaît"
+    },
+    {
+     "t": "Un verre de vin, s'il vous plaît"
+    },
+    {
+     "n": "Order a beer: 'I would like a beer'."
+    },
+    {
+     "p": 3,
+     "expect": "Je voudrais"
+    },
+    {
+     "t": "Je voudrais une bière"
+    },
+    {
+     "t": "Je voudrais une bière"
+    },
+    {
+     "n": "Here is how to say 'and with that?'. Listen and repeat."
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "t": "ça",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "a-vec ça",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "p": 3,
+     "expect": "Et avec ça ?"
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "n": "Here is how to say 'a croissant'. Listen and repeat."
+    },
+    {
+     "t": "un croissant"
+    },
+    {
+     "t": "ssant",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un croi-ssant",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un croissant"
+    },
+    {
+     "p": 3,
+     "expect": "un croissant"
+    },
+    {
+     "t": "un croissant"
+    },
+    {
+     "n": "Here is how to say 'the bill, the check'. Listen and repeat."
+    },
+    {
+     "t": "l'addition"
+    },
+    {
+     "t": "tion",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "a-ddi-tion",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "l'a-ddi-tion",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "l'addition"
+    },
+    {
+     "p": 3,
+     "expect": "l'addition"
+    },
+    {
+     "t": "l'addition"
+    },
+    {
+     "n": "Now put it together: 'the bill, please'. Listen, then repeat."
+    },
+    {
+     "t": "L'addition, s'il vous plaît"
+    },
+    {
+     "p": 3,
+     "expect": "L'addition, s'il vous plaît"
+    },
+    {
+     "t": "L'addition, s'il vous plaît"
+    },
+    {
+     "n": "In France the service charge is already included in the bill. Leaving a few extra coins is kind, but not expected."
+    },
+    {
+     "n": "Here is how to say 'enjoy your meal'. Listen and repeat."
+    },
+    {
+     "t": "Bon appétit"
+    },
+    {
+     "t": "tit",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "appé-tit",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bon appé-tit",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bon appétit"
+    },
+    {
+     "p": 3,
+     "expect": "Bon appétit"
+    },
+    {
+     "t": "Bon appétit"
+    },
+    {
+     "q": "The waiter asks 'and with that?'. Answer: 'a croissant'."
+    },
+    {
+     "p": 4,
+     "expect": "un croissant"
+    },
+    {
+     "t": "un croissant"
+    },
+    {
+     "n": "Now ask for the bill, please."
+    },
+    {
+     "p": 4,
+     "expect": "L'addition, s'il vous plaît"
+    },
+    {
+     "t": "L'addition, s'il vous plaît"
+    },
+    {
+     "n": "Say 'a glass of wine'."
+    },
+    {
+     "p": 3,
+     "expect": "un verre de vin"
+    },
+    {
+     "t": "un verre de vin"
+    },
+    {
+     "n": "Say 'some water'."
+    },
+    {
+     "p": 3,
+     "expect": "de l'eau"
+    },
+    {
+     "t": "de l'eau"
+    },
+    {
+     "n": "Say 'enjoy your meal'."
+    },
+    {
+     "p": 3,
+     "expect": "Bon appétit"
+    },
+    {
+     "t": "Bon appétit"
+    },
+    {
+     "n": "Say 'a beer'."
+    },
+    {
+     "p": 3,
+     "expect": "une bière"
+    },
+    {
+     "t": "une bière"
+    },
+    {
+     "q": "You want a coffee with milk. What do you ask for?"
+    },
+    {
+     "p": 4,
+     "expect": "un café crème"
+    },
+    {
+     "t": "un café crème"
+    },
+    {
+     "n": "Say 'I would like some water, please'."
+    },
+    {
+     "p": 4,
+     "expect": "Je voudrais de l'eau, s'il vous plaît"
+    },
+    {
+     "t": "Je voudrais de l'eau, s'il vous plaît"
+    },
+    {
+     "n": "Say 'and with that?'"
+    },
+    {
+     "p": 3,
+     "expect": "Et avec ça ?"
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "n": "Now listen to the café conversation again."
+    },
+    {
+     "t": "Bonjour, monsieur. Vous désirez ?"
+    },
+    {
+     "t": "Je voudrais un café, s'il vous plaît."
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "t": "Un croissant. Et l'addition, s'il vous plaît."
+    },
+    {
+     "n": "Now you are the customer. The waitress asks what you would like. Order a coffee, please."
+    },
+    {
+     "t": "Bonjour, monsieur. Vous désirez ?"
+    },
+    {
+     "p": 5,
+     "expect": "Je voudrais un café, s'il vous plaît"
+    },
+    {
+     "t": "Je voudrais un café, s'il vous plaît."
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "n": "Say 'a croissant', then ask for the bill, please."
+    },
+    {
+     "p": 5,
+     "expect": "L'addition, s'il vous plaît"
+    },
+    {
+     "t": "Un croissant. Et l'addition, s'il vous plaît."
+    },
+    {
+     "n": "Well done. Next time you will learn to find your way around: left, right, straight ahead, and the metro."
+    }
+   ]
+  },
+  {
+   "id": "a5",
+   "title": "Lesson 5 — Finding your way",
+   "minutes": 16,
+   "goal": "Ask for and understand directions and use public transport",
+   "steps": [
+    {
+     "n": "Listen. A tourist stops a woman in the street to ask the way."
+    },
+    {
+     "t": "Excusez-moi, madame. Pour aller à la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "C'est tout droit, puis à gauche."
+    },
+    {
+     "t": "C'est loin ?"
+    },
+    {
+     "t": "Non, non. C'est près. Cinq minutes à pied."
+    },
+    {
+     "n": "Let's warm up with what you know. Say 'I would like a coffee, please'."
+    },
+    {
+     "p": 4,
+     "expect": "Je voudrais un café, s'il vous plaît"
+    },
+    {
+     "t": "Je voudrais un café, s'il vous plaît"
+    },
+    {
+     "n": "Ask where the station is."
+    },
+    {
+     "p": 3,
+     "expect": "Où est la gare ?"
+    },
+    {
+     "t": "Où est la gare ?"
+    },
+    {
+     "n": "Say 'it's over there'."
+    },
+    {
+     "p": 3,
+     "expect": "C'est là-bas"
+    },
+    {
+     "t": "C'est là-bas"
+    },
+    {
+     "n": "Here is the standard way to ask for directions: 'to get to'. Listen and repeat."
+    },
+    {
+     "t": "Pour aller à"
+    },
+    {
+     "t": "à",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "aller à",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Pour aller à",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Pour aller à"
+    },
+    {
+     "p": 3,
+     "expect": "Pour aller à"
+    },
+    {
+     "t": "Pour aller à"
+    },
+    {
+     "n": "Now put it together: 'to get to the station, please?'. Listen, then repeat."
+    },
+    {
+     "t": "Pour aller à la gare, s'il vous plaît ?"
+    },
+    {
+     "p": 3,
+     "expect": "Pour aller à la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "Pour aller à la gare, s'il vous plaît ?"
+    },
+    {
+     "n": "Notice that there is no verb like 'how do I'. French people just say 'for going to the station, please?' and everyone understands."
+    },
+    {
+     "n": "Now put it together: 'to get to the hotel, please?'. Listen, then repeat."
+    },
+    {
+     "t": "Pour aller à l'hôtel, s'il vous plaît ?"
+    },
+    {
+     "p": 3,
+     "expect": "Pour aller à l'hôtel, s'il vous plaît ?"
+    },
+    {
+     "t": "Pour aller à l'hôtel, s'il vous plaît ?"
+    },
+    {
+     "n": "Here is how to say 'straight ahead'. Listen and repeat."
+    },
+    {
+     "t": "tout droit",
+     "tl": "too drwah"
+    },
+    {
+     "t": "droit",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "tout droit",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "tout droit"
+    },
+    {
+     "p": 3,
+     "expect": "tout droit"
+    },
+    {
+     "t": "tout droit"
+    },
+    {
+     "n": "Now put it together: 'it's straight ahead'. Listen, then repeat."
+    },
+    {
+     "t": "C'est tout droit"
+    },
+    {
+     "p": 3,
+     "expect": "C'est tout droit"
+    },
+    {
+     "t": "C'est tout droit"
+    },
+    {
+     "n": "Here is how to say 'to the left'. Listen and repeat."
+    },
+    {
+     "t": "à gauche"
+    },
+    {
+     "t": "gauche",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "à gauche",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "à gauche"
+    },
+    {
+     "p": 3,
+     "expect": "à gauche"
+    },
+    {
+     "t": "à gauche"
+    },
+    {
+     "n": "Here is how to say 'to the right'. Listen and repeat."
+    },
+    {
+     "t": "à droite"
+    },
+    {
+     "t": "droite",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "à droite",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "à droite"
+    },
+    {
+     "p": 3,
+     "expect": "à droite"
+    },
+    {
+     "t": "à droite"
+    },
+    {
+     "n": "Careful, 'straight ahead' and 'to the right' sound similar. The word for right has an extra sound at the end. Listen to both."
+    },
+    {
+     "t": "tout droit"
+    },
+    {
+     "t": "à droite"
+    },
+    {
+     "n": "Say 'to the right'."
+    },
+    {
+     "p": 3,
+     "expect": "à droite"
+    },
+    {
+     "t": "à droite"
+    },
+    {
+     "n": "Say 'straight ahead'."
+    },
+    {
+     "p": 3,
+     "expect": "tout droit"
+    },
+    {
+     "t": "tout droit"
+    },
+    {
+     "n": "Here is how to say 'then'. Listen and repeat."
+    },
+    {
+     "t": "puis"
+    },
+    {
+     "t": "puis"
+    },
+    {
+     "p": 3,
+     "expect": "puis"
+    },
+    {
+     "t": "puis"
+    },
+    {
+     "n": "Now put it together: 'it's straight ahead, then to the left'. Listen, then repeat."
+    },
+    {
+     "t": "C'est tout droit, puis à gauche"
+    },
+    {
+     "p": 3,
+     "expect": "C'est tout droit, puis à gauche"
+    },
+    {
+     "t": "C'est tout droit, puis à gauche"
+    },
+    {
+     "n": "Ask 'to get to the station, please?'"
+    },
+    {
+     "p": 4,
+     "expect": "Pour aller à la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "Pour aller à la gare, s'il vous plaît ?"
+    },
+    {
+     "n": "Here is how to say 'is it far?'. Listen and repeat."
+    },
+    {
+     "t": "C'est loin ?"
+    },
+    {
+     "t": "loin",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "C'est loin ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "C'est loin ?"
+    },
+    {
+     "p": 3,
+     "expect": "C'est loin ?"
+    },
+    {
+     "t": "C'est loin ?"
+    },
+    {
+     "n": "Here is how to say 'it's near'. Listen and repeat."
+    },
+    {
+     "t": "C'est près"
+    },
+    {
+     "t": "près",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "C'est près",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "C'est près"
+    },
+    {
+     "p": 3,
+     "expect": "C'est près"
+    },
+    {
+     "t": "C'est près"
+    },
+    {
+     "n": "Here is how to say 'on foot'. Listen and repeat."
+    },
+    {
+     "t": "à pied"
+    },
+    {
+     "t": "pied",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "à pied",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "à pied"
+    },
+    {
+     "p": 3,
+     "expect": "à pied"
+    },
+    {
+     "t": "à pied"
+    },
+    {
+     "n": "Now put it together: 'five minutes on foot'. Listen, then repeat."
+    },
+    {
+     "t": "Cinq minutes à pied"
+    },
+    {
+     "p": 3,
+     "expect": "Cinq minutes à pied"
+    },
+    {
+     "t": "Cinq minutes à pied"
+    },
+    {
+     "n": "Ask if it's far."
+    },
+    {
+     "p": 3,
+     "expect": "C'est loin ?"
+    },
+    {
+     "t": "C'est loin ?"
+    },
+    {
+     "n": "Answer: 'no, it's near'."
+    },
+    {
+     "p": 3,
+     "expect": "C'est près"
+    },
+    {
+     "t": "C'est près"
+    },
+    {
+     "n": "Here is how to say 'the metro, the subway'. Listen and repeat."
+    },
+    {
+     "t": "le métro"
+    },
+    {
+     "t": "métro",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le mé-tro",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le métro"
+    },
+    {
+     "p": 3,
+     "expect": "le métro"
+    },
+    {
+     "t": "le métro"
+    },
+    {
+     "n": "Here is how to say 'the bus'. Listen and repeat."
+    },
+    {
+     "t": "le bus"
+    },
+    {
+     "t": "le bus"
+    },
+    {
+     "p": 3,
+     "expect": "le bus"
+    },
+    {
+     "t": "le bus"
+    },
+    {
+     "n": "Here is how to say 'the train'. Listen and repeat."
+    },
+    {
+     "t": "le train"
+    },
+    {
+     "t": "le train"
+    },
+    {
+     "p": 3,
+     "expect": "le train"
+    },
+    {
+     "t": "le train"
+    },
+    {
+     "n": "Now put it together: 'where is the metro?'. Listen, then repeat."
+    },
+    {
+     "t": "Où est le métro ?"
+    },
+    {
+     "p": 3,
+     "expect": "Où est le métro ?"
+    },
+    {
+     "t": "Où est le métro ?"
+    },
+    {
+     "n": "Here is how to say 'I'm going to'. Listen and repeat."
+    },
+    {
+     "t": "Je vais à"
+    },
+    {
+     "t": "vais à",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je vais à",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je vais à"
+    },
+    {
+     "p": 3,
+     "expect": "Je vais à"
+    },
+    {
+     "t": "Je vais à"
+    },
+    {
+     "n": "Now put it together: 'I'm going to Paris'. Listen, then repeat."
+    },
+    {
+     "t": "Je vais à Paris"
+    },
+    {
+     "p": 3,
+     "expect": "Je vais à Paris"
+    },
+    {
+     "t": "Je vais à Paris"
+    },
+    {
+     "n": "Here is how to say 'a ticket'. Listen and repeat."
+    },
+    {
+     "t": "un billet"
+    },
+    {
+     "t": "billet",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un bi-llet",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un billet"
+    },
+    {
+     "p": 3,
+     "expect": "un billet"
+    },
+    {
+     "t": "un billet"
+    },
+    {
+     "n": "Now put it together: 'a ticket, please'. Listen, then repeat."
+    },
+    {
+     "t": "Un billet, s'il vous plaît"
+    },
+    {
+     "p": 3,
+     "expect": "Un billet, s'il vous plaît"
+    },
+    {
+     "t": "Un billet, s'il vous plaît"
+    },
+    {
+     "q": "You're at a ticket window. Ask for one ticket, please."
+    },
+    {
+     "p": 4,
+     "expect": "Un billet, s'il vous plaît"
+    },
+    {
+     "t": "Un billet, s'il vous plaît"
+    },
+    {
+     "q": "A stranger asks you the way to the metro. Tell them it's straight ahead, then to the left."
+    },
+    {
+     "p": 5,
+     "expect": "C'est tout droit, puis à gauche"
+    },
+    {
+     "t": "C'est tout droit, puis à gauche"
+    },
+    {
+     "n": "Say 'five minutes on foot'."
+    },
+    {
+     "p": 4,
+     "expect": "Cinq minutes à pied"
+    },
+    {
+     "t": "Cinq minutes à pied"
+    },
+    {
+     "n": "Say 'to get to the hotel, please?'"
+    },
+    {
+     "p": 4,
+     "expect": "Pour aller à l'hôtel, s'il vous plaît ?"
+    },
+    {
+     "t": "Pour aller à l'hôtel, s'il vous plaît ?"
+    },
+    {
+     "n": "Listen to the conversation again."
+    },
+    {
+     "t": "Excusez-moi, madame. Pour aller à la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "C'est tout droit, puis à gauche."
+    },
+    {
+     "t": "C'est loin ?"
+    },
+    {
+     "t": "Non, non. C'est près. Cinq minutes à pied."
+    },
+    {
+     "n": "Your turn. Stop the woman politely and ask the way to the station."
+    },
+    {
+     "p": 5,
+     "expect": "Pour aller à la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "Excusez-moi, madame. Pour aller à la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "C'est tout droit, puis à gauche."
+    },
+    {
+     "n": "Ask if it is far."
+    },
+    {
+     "p": 3,
+     "expect": "C'est loin ?"
+    },
+    {
+     "t": "C'est loin ?"
+    },
+    {
+     "t": "Non, non. C'est près. Cinq minutes à pied."
+    },
+    {
+     "n": "Very good. In lesson six you will learn to tell the time and the days of the week."
+    }
+   ]
+  },
+  {
+   "id": "a6",
+   "title": "Lesson 6 — What time is it?",
+   "minutes": 16,
+   "goal": "Tell the time, name the days of the week and talk about today and tomorrow",
+   "steps": [
+    {
+     "n": "Listen. A woman at the station asks a man about the time and her train."
+    },
+    {
+     "t": "Excusez-moi, monsieur. Quelle heure est-il ?"
+    },
+    {
+     "t": "Il est trois heures."
+    },
+    {
+     "t": "Merci. Et le train pour Lyon, c'est à quelle heure ?"
+    },
+    {
+     "t": "À quatre heures, madame. Demain aussi, à quatre heures."
+    },
+    {
+     "n": "A little review first. Say 'four'."
+    },
+    {
+     "p": 2,
+     "expect": "quatre"
+    },
+    {
+     "t": "quatre"
+    },
+    {
+     "n": "Here is how to ask the time. Listen and repeat."
+    },
+    {
+     "t": "Quelle heure est-il ?"
+    },
+    {
+     "t": "est-il",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "heure est-il",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Quelle heure est-il ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Quelle heure est-il ?"
+    },
+    {
+     "p": 3,
+     "expect": "Quelle heure est-il ?"
+    },
+    {
+     "t": "Quelle heure est-il ?"
+    },
+    {
+     "n": "Here is how to say 'it is, when telling time'. Listen and repeat."
+    },
+    {
+     "t": "Il est"
+    },
+    {
+     "t": "est",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Il est",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Il est"
+    },
+    {
+     "p": 3,
+     "expect": "Il est"
+    },
+    {
+     "t": "Il est"
+    },
+    {
+     "n": "Here is how to say 'hours, o'clock'. Listen and repeat."
+    },
+    {
+     "t": "heures"
+    },
+    {
+     "t": "heures"
+    },
+    {
+     "p": 3,
+     "expect": "heures"
+    },
+    {
+     "t": "heures"
+    },
+    {
+     "n": "Now put it together: 'it's three o'clock'. Listen, then repeat."
+    },
+    {
+     "t": "Il est trois heures"
+    },
+    {
+     "p": 3,
+     "expect": "Il est trois heures"
+    },
+    {
+     "t": "Il est trois heures"
+    },
+    {
+     "n": "To tell the time you just say 'it is', the number, and 'hours'. Notice how the number and 'hours' join together with a soft sound in between."
+    },
+    {
+     "n": "Ask what time it is."
+    },
+    {
+     "p": 4,
+     "expect": "Quelle heure est-il ?"
+    },
+    {
+     "t": "Quelle heure est-il ?"
+    },
+    {
+     "n": "Answer: 'it's three o'clock'."
+    },
+    {
+     "p": 3,
+     "expect": "Il est trois heures"
+    },
+    {
+     "t": "Il est trois heures"
+    },
+    {
+     "n": "Here is how to say 'and a half, half past'. Listen and repeat."
+    },
+    {
+     "t": "et demie"
+    },
+    {
+     "t": "demie",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "et demie",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "et demie"
+    },
+    {
+     "p": 3,
+     "expect": "et demie"
+    },
+    {
+     "t": "et demie"
+    },
+    {
+     "n": "Now put it together: 'it's half past three'. Listen, then repeat."
+    },
+    {
+     "t": "Il est trois heures et demie"
+    },
+    {
+     "p": 3,
+     "expect": "Il est trois heures et demie"
+    },
+    {
+     "t": "Il est trois heures et demie"
+    },
+    {
+     "n": "Here is how to say 'at what time?'. Listen and repeat."
+    },
+    {
+     "t": "À quelle heure ?"
+    },
+    {
+     "t": "heure",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "À quelle heure ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "À quelle heure ?"
+    },
+    {
+     "p": 3,
+     "expect": "À quelle heure ?"
+    },
+    {
+     "t": "À quelle heure ?"
+    },
+    {
+     "n": "Now put it together: 'the train, at what time is it?'. Listen, then repeat."
+    },
+    {
+     "t": "Le train, c'est à quelle heure ?"
+    },
+    {
+     "p": 3,
+     "expect": "Le train, c'est à quelle heure ?"
+    },
+    {
+     "t": "Le train, c'est à quelle heure ?"
+    },
+    {
+     "n": "Now put it together: 'at four o'clock'. Listen, then repeat."
+    },
+    {
+     "t": "À quatre heures"
+    },
+    {
+     "p": 3,
+     "expect": "À quatre heures"
+    },
+    {
+     "t": "À quatre heures"
+    },
+    {
+     "n": "Here is how to say 'tomorrow'. Listen and repeat."
+    },
+    {
+     "t": "demain"
+    },
+    {
+     "t": "main",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "de-main",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "demain"
+    },
+    {
+     "p": 3,
+     "expect": "demain"
+    },
+    {
+     "t": "demain"
+    },
+    {
+     "n": "Here is how to say 'today'. Listen and repeat."
+    },
+    {
+     "t": "aujourd'hui",
+     "tl": "oh-zhoor-dwee"
+    },
+    {
+     "t": "hui",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "jour-d'hui",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "au-jour-d'hui",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "aujourd'hui"
+    },
+    {
+     "p": 3,
+     "expect": "aujourd'hui"
+    },
+    {
+     "t": "aujourd'hui"
+    },
+    {
+     "n": "Here is how to say 'also, too'. Listen and repeat."
+    },
+    {
+     "t": "aussi"
+    },
+    {
+     "t": "aussi"
+    },
+    {
+     "p": 3,
+     "expect": "aussi"
+    },
+    {
+     "t": "aussi"
+    },
+    {
+     "n": "Ask 'the train, at what time is it?'"
+    },
+    {
+     "p": 4,
+     "expect": "Le train, c'est à quelle heure ?"
+    },
+    {
+     "t": "Le train, c'est à quelle heure ?"
+    },
+    {
+     "n": "Say 'at four o'clock'."
+    },
+    {
+     "p": 3,
+     "expect": "À quatre heures"
+    },
+    {
+     "t": "À quatre heures"
+    },
+    {
+     "n": "Now the days of the week. In France the week starts on Monday. Monday."
+    },
+    {
+     "t": "lundi"
+    },
+    {
+     "p": 2,
+     "expect": "lundi"
+    },
+    {
+     "t": "lundi"
+    },
+    {
+     "n": "Tuesday."
+    },
+    {
+     "t": "mardi"
+    },
+    {
+     "t": "mardi"
+    },
+    {
+     "p": 3,
+     "expect": "mardi"
+    },
+    {
+     "t": "mardi"
+    },
+    {
+     "n": "Wednesday."
+    },
+    {
+     "t": "mercredi"
+    },
+    {
+     "t": "mercredi"
+    },
+    {
+     "p": 3,
+     "expect": "mercredi"
+    },
+    {
+     "t": "mercredi"
+    },
+    {
+     "n": "Thursday."
+    },
+    {
+     "t": "jeudi"
+    },
+    {
+     "t": "jeudi"
+    },
+    {
+     "p": 3,
+     "expect": "jeudi"
+    },
+    {
+     "t": "jeudi"
+    },
+    {
+     "n": "Friday."
+    },
+    {
+     "t": "vendredi"
+    },
+    {
+     "t": "vendredi"
+    },
+    {
+     "p": 3,
+     "expect": "vendredi"
+    },
+    {
+     "t": "vendredi"
+    },
+    {
+     "n": "Saturday."
+    },
+    {
+     "t": "samedi"
+    },
+    {
+     "t": "samedi"
+    },
+    {
+     "p": 3,
+     "expect": "samedi"
+    },
+    {
+     "t": "samedi"
+    },
+    {
+     "n": "Sunday."
+    },
+    {
+     "t": "dimanche"
+    },
+    {
+     "t": "dimanche"
+    },
+    {
+     "p": 3,
+     "expect": "dimanche"
+    },
+    {
+     "t": "dimanche"
+    },
+    {
+     "n": "Did you hear it? Most days end with the same sound, which comes from the Latin word for day. Sunday is the odd one out."
+    },
+    {
+     "n": "Say 'Friday'."
+    },
+    {
+     "p": 3,
+     "expect": "vendredi"
+    },
+    {
+     "t": "vendredi"
+    },
+    {
+     "n": "Say 'Sunday'."
+    },
+    {
+     "p": 3,
+     "expect": "dimanche"
+    },
+    {
+     "t": "dimanche"
+    },
+    {
+     "n": "Here is how to say 'the morning'. Listen and repeat."
+    },
+    {
+     "t": "le matin"
+    },
+    {
+     "t": "matin",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le ma-tin",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le matin"
+    },
+    {
+     "p": 3,
+     "expect": "le matin"
+    },
+    {
+     "t": "le matin"
+    },
+    {
+     "n": "Now put it together: 'tomorrow morning'. Listen, then repeat."
+    },
+    {
+     "t": "demain matin"
+    },
+    {
+     "p": 3,
+     "expect": "demain matin"
+    },
+    {
+     "t": "demain matin"
+    },
+    {
+     "n": "Here is how to say 'the evening'. Listen and repeat."
+    },
+    {
+     "t": "le soir"
+    },
+    {
+     "t": "soir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le soir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le soir"
+    },
+    {
+     "p": 3,
+     "expect": "le soir"
+    },
+    {
+     "t": "le soir"
+    },
+    {
+     "n": "Here is how to say 'this evening, tonight'. Listen and repeat."
+    },
+    {
+     "t": "ce soir"
+    },
+    {
+     "t": "ce soir"
+    },
+    {
+     "p": 3,
+     "expect": "ce soir"
+    },
+    {
+     "t": "ce soir"
+    },
+    {
+     "q": "Someone asks you what time it is. It's three o'clock. Answer."
+    },
+    {
+     "p": 4,
+     "expect": "Il est trois heures"
+    },
+    {
+     "t": "Il est trois heures"
+    },
+    {
+     "q": "Tell a friend you are going to Paris tomorrow morning: 'I'm going to Paris', then 'tomorrow morning'."
+    },
+    {
+     "p": 4,
+     "expect": "Je vais à Paris"
+    },
+    {
+     "t": "Je vais à Paris"
+    },
+    {
+     "p": 3,
+     "expect": "demain matin"
+    },
+    {
+     "t": "demain matin"
+    },
+    {
+     "n": "Say 'today'."
+    },
+    {
+     "p": 3,
+     "expect": "aujourd'hui"
+    },
+    {
+     "t": "aujourd'hui"
+    },
+    {
+     "n": "Listen to the conversation once more."
+    },
+    {
+     "t": "Excusez-moi, monsieur. Quelle heure est-il ?"
+    },
+    {
+     "t": "Il est trois heures."
+    },
+    {
+     "t": "Merci. Et le train pour Lyon, c'est à quelle heure ?"
+    },
+    {
+     "t": "À quatre heures, madame. Demain aussi, à quatre heures."
+    },
+    {
+     "n": "Now you are the woman. Excuse yourself and ask the man what time it is."
+    },
+    {
+     "p": 4,
+     "expect": "Quelle heure est-il ?"
+    },
+    {
+     "t": "Excusez-moi, monsieur. Quelle heure est-il ?"
+    },
+    {
+     "t": "Il est trois heures."
+    },
+    {
+     "n": "Thank him and ask at what time the train for Lyon is."
+    },
+    {
+     "p": 5,
+     "expect": "Le train, c'est à quelle heure ?"
+    },
+    {
+     "t": "Merci. Et le train pour Lyon, c'est à quelle heure ?"
+    },
+    {
+     "t": "À quatre heures, madame. Demain aussi, à quatre heures."
+    },
+    {
+     "n": "Very good. In the next lesson you will introduce yourself and talk about your family."
+    }
+   ]
+  },
+  {
+   "id": "a7",
+   "title": "Lesson 7 — My name is...",
+   "minutes": 16,
+   "goal": "Introduce yourself, ask someone's name and talk about your family",
+   "steps": [
+    {
+     "n": "Listen. Two neighbours meet for the first time at a party."
+    },
+    {
+     "t": "Bonjour. Je m'appelle Marie. Et vous, comment vous appelez-vous ?"
+    },
+    {
+     "t": "Je m'appelle Paul. Enchanté, madame."
+    },
+    {
+     "t": "Enchantée. Vous êtes marié ?"
+    },
+    {
+     "t": "Oui. Voici ma femme, Anne, et nos deux enfants."
+    },
+    {
+     "n": "Quick review. Ask a man if he is American."
+    },
+    {
+     "p": 3,
+     "expect": "Vous êtes américain ?"
+    },
+    {
+     "t": "Vous êtes américain ?"
+    },
+    {
+     "n": "Say 'I am American' as a man."
+    },
+    {
+     "p": 3,
+     "expect": "Je suis américain"
+    },
+    {
+     "t": "Je suis américain"
+    },
+    {
+     "n": "Here is how to say your name. Listen and repeat."
+    },
+    {
+     "t": "Je m'appelle"
+    },
+    {
+     "t": "pelle",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "m'a-ppelle",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je m'a-ppelle",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je m'appelle"
+    },
+    {
+     "p": 3,
+     "expect": "Je m'appelle"
+    },
+    {
+     "t": "Je m'appelle"
+    },
+    {
+     "n": "Now put it together: 'my name is Paul'. Listen, then repeat."
+    },
+    {
+     "t": "Je m'appelle Paul"
+    },
+    {
+     "p": 3,
+     "expect": "Je m'appelle Paul"
+    },
+    {
+     "t": "Je m'appelle Paul"
+    },
+    {
+     "n": "Now say your own name the same way: 'my name is', and then your name."
+    },
+    {
+     "p": 4
+    },
+    {
+     "t": "Je m'appelle"
+    },
+    {
+     "n": "Here is how to say 'what's your name?'. Listen and repeat."
+    },
+    {
+     "t": "Comment vous appelez-vous ?"
+    },
+    {
+     "t": "vous",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "appelez-vous",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Comment vous appelez-vous ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Comment vous appelez-vous ?"
+    },
+    {
+     "p": 3,
+     "expect": "Comment vous appelez-vous ?"
+    },
+    {
+     "t": "Comment vous appelez-vous ?"
+    },
+    {
+     "n": "Here is how to say 'pleased to meet you, said by a man'. Listen and repeat."
+    },
+    {
+     "t": "Enchanté"
+    },
+    {
+     "t": "té",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "En-chan-té",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Enchanté"
+    },
+    {
+     "p": 3,
+     "expect": "Enchanté"
+    },
+    {
+     "t": "Enchanté"
+    },
+    {
+     "n": "A woman spells it with an extra letter, but it sounds exactly the same. Listen."
+    },
+    {
+     "t": "Enchantée"
+    },
+    {
+     "p": 2,
+     "expect": "Enchantée"
+    },
+    {
+     "t": "Enchantée"
+    },
+    {
+     "n": "Ask someone their name."
+    },
+    {
+     "p": 4,
+     "expect": "Comment vous appelez-vous ?"
+    },
+    {
+     "t": "Comment vous appelez-vous ?"
+    },
+    {
+     "n": "Here is how to say 'married, said of a man'. Listen and repeat."
+    },
+    {
+     "t": "marié"
+    },
+    {
+     "t": "rié",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ma-rié",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "marié"
+    },
+    {
+     "p": 3,
+     "expect": "marié"
+    },
+    {
+     "t": "marié"
+    },
+    {
+     "n": "Now put it together: 'are you married? Asking a man.'. Listen, then repeat."
+    },
+    {
+     "t": "Vous êtes marié ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous êtes marié ?"
+    },
+    {
+     "t": "Vous êtes marié ?"
+    },
+    {
+     "n": "With the formal 'you' you've been using, French people usually wait before switching to the informal form. Among family and close friends, the informal form is used instead. Stay with the formal 'you' and nobody will ever be offended."
+    },
+    {
+     "n": "Here is how to say 'here is, this is'. Listen and repeat."
+    },
+    {
+     "t": "Voici"
+    },
+    {
+     "t": "ci",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Voi-ci",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Voici"
+    },
+    {
+     "p": 3,
+     "expect": "Voici"
+    },
+    {
+     "t": "Voici"
+    },
+    {
+     "n": "Here is how to say 'my wife'. Listen and repeat."
+    },
+    {
+     "t": "ma femme",
+     "tl": "ma fam"
+    },
+    {
+     "t": "femme",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ma femme",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ma femme"
+    },
+    {
+     "p": 3,
+     "expect": "ma femme"
+    },
+    {
+     "t": "ma femme"
+    },
+    {
+     "n": "Now put it together: 'this is my wife'. Listen, then repeat."
+    },
+    {
+     "t": "Voici ma femme"
+    },
+    {
+     "p": 3,
+     "expect": "Voici ma femme"
+    },
+    {
+     "t": "Voici ma femme"
+    },
+    {
+     "n": "Here is how to say 'my husband'. Listen and repeat."
+    },
+    {
+     "t": "mon mari"
+    },
+    {
+     "t": "mari",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "mon ma-ri",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "mon mari"
+    },
+    {
+     "p": 3,
+     "expect": "mon mari"
+    },
+    {
+     "t": "mon mari"
+    },
+    {
+     "n": "Now put it together: 'this is my husband'. Listen, then repeat."
+    },
+    {
+     "t": "Voici mon mari"
+    },
+    {
+     "p": 3,
+     "expect": "Voici mon mari"
+    },
+    {
+     "t": "Voici mon mari"
+    },
+    {
+     "n": "'My' changes with the noun: 'wife' is feminine, so it's one word; 'husband' is masculine, so it's another. You already saw this with 'a coffee' and 'a beer'."
+    },
+    {
+     "n": "Say 'this is my wife'."
+    },
+    {
+     "p": 3,
+     "expect": "Voici ma femme"
+    },
+    {
+     "t": "Voici ma femme"
+    },
+    {
+     "n": "Here is how to say 'children'. Listen and repeat."
+    },
+    {
+     "t": "enfants"
+    },
+    {
+     "t": "fants",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "en-fants",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "enfants"
+    },
+    {
+     "p": 3,
+     "expect": "enfants"
+    },
+    {
+     "t": "enfants"
+    },
+    {
+     "n": "Here is how to say 'I have'. Listen and repeat."
+    },
+    {
+     "t": "J'ai"
+    },
+    {
+     "t": "J'ai"
+    },
+    {
+     "p": 3,
+     "expect": "J'ai"
+    },
+    {
+     "t": "J'ai"
+    },
+    {
+     "n": "Now put it together: 'I have two children'. Listen, then repeat."
+    },
+    {
+     "t": "J'ai deux enfants"
+    },
+    {
+     "p": 3,
+     "expect": "J'ai deux enfants"
+    },
+    {
+     "t": "J'ai deux enfants"
+    },
+    {
+     "n": "Here is how to say 'you have'. Listen and repeat."
+    },
+    {
+     "t": "vous avez"
+    },
+    {
+     "t": "avez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous a-vez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous avez"
+    },
+    {
+     "p": 3,
+     "expect": "vous avez"
+    },
+    {
+     "t": "vous avez"
+    },
+    {
+     "n": "Now put it together: 'do you have children?'. Listen, then repeat."
+    },
+    {
+     "t": "Vous avez des enfants ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous avez des enfants ?"
+    },
+    {
+     "t": "Vous avez des enfants ?"
+    },
+    {
+     "n": "Here is how to say 'our two children'. Listen and repeat."
+    },
+    {
+     "t": "nos deux enfants"
+    },
+    {
+     "t": "enfants",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "nos deux enfants",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "nos deux enfants"
+    },
+    {
+     "p": 3,
+     "expect": "nos deux enfants"
+    },
+    {
+     "t": "nos deux enfants"
+    },
+    {
+     "n": "Here is how to say 'my daughter'. Listen and repeat."
+    },
+    {
+     "t": "ma fille",
+     "tl": "ma fee-y"
+    },
+    {
+     "t": "fille",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ma fille",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ma fille"
+    },
+    {
+     "p": 3,
+     "expect": "ma fille"
+    },
+    {
+     "t": "ma fille"
+    },
+    {
+     "n": "Here is how to say 'my son'. Listen and repeat."
+    },
+    {
+     "t": "mon fils",
+     "tl": "mon feess"
+    },
+    {
+     "t": "fils",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "mon fils",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "mon fils"
+    },
+    {
+     "p": 3,
+     "expect": "mon fils"
+    },
+    {
+     "t": "mon fils"
+    },
+    {
+     "n": "Ask someone if they have children."
+    },
+    {
+     "p": 4,
+     "expect": "Vous avez des enfants ?"
+    },
+    {
+     "t": "Vous avez des enfants ?"
+    },
+    {
+     "n": "Answer: 'I have two children'."
+    },
+    {
+     "p": 3,
+     "expect": "J'ai deux enfants"
+    },
+    {
+     "t": "J'ai deux enfants"
+    },
+    {
+     "q": "Introduce your husband: 'this is my husband'."
+    },
+    {
+     "p": 4,
+     "expect": "Voici mon mari"
+    },
+    {
+     "t": "Voici mon mari"
+    },
+    {
+     "q": "A woman has just told you her name. Say you're pleased to meet her, as a man would."
+    },
+    {
+     "p": 4,
+     "expect": "Enchanté"
+    },
+    {
+     "t": "Enchanté"
+    },
+    {
+     "n": "Ask a man if he is married."
+    },
+    {
+     "p": 3,
+     "expect": "Vous êtes marié ?"
+    },
+    {
+     "t": "Vous êtes marié ?"
+    },
+    {
+     "n": "Listen to the conversation again."
+    },
+    {
+     "t": "Bonjour. Je m'appelle Marie. Et vous, comment vous appelez-vous ?"
+    },
+    {
+     "t": "Je m'appelle Paul. Enchanté, madame."
+    },
+    {
+     "t": "Enchantée. Vous êtes marié ?"
+    },
+    {
+     "t": "Oui. Voici ma femme, Anne, et nos deux enfants."
+    },
+    {
+     "n": "Now you are Paul. Marie tells you her name and asks yours. Say your name is Paul and that you're pleased to meet her."
+    },
+    {
+     "t": "Bonjour. Je m'appelle Marie. Et vous, comment vous appelez-vous ?"
+    },
+    {
+     "p": 5,
+     "expect": "Je m'appelle Paul"
+    },
+    {
+     "t": "Je m'appelle Paul. Enchanté, madame."
+    },
+    {
+     "t": "Enchantée. Vous êtes marié ?"
+    },
+    {
+     "n": "Say yes, and introduce your wife: 'this is my wife'."
+    },
+    {
+     "p": 4,
+     "expect": "Voici ma femme"
+    },
+    {
+     "t": "Oui. Voici ma femme, Anne, et nos deux enfants."
+    },
+    {
+     "n": "Excellent. In lesson eight you will say what you like and what you want."
+    }
+   ]
+  },
+  {
+   "id": "a8",
+   "title": "Lesson 8 — I like, I prefer",
+   "minutes": 16,
+   "goal": "Say what you like, dislike and prefer, and accept an offer politely",
+   "steps": [
+    {
+     "n": "Listen. Marie and Paul are chatting at the party."
+    },
+    {
+     "t": "Vous aimez le vin, Paul ?"
+    },
+    {
+     "t": "Oui, j'aime beaucoup le vin. Mais je préfère la bière."
+    },
+    {
+     "t": "Moi aussi ! Vous voulez une bière ?"
+    },
+    {
+     "t": "Oui, je veux bien. Merci."
+    },
+    {
+     "n": "First, review. Say 'I would like a beer, please'."
+    },
+    {
+     "p": 4,
+     "expect": "Je voudrais une bière"
+    },
+    {
+     "t": "Je voudrais une bière"
+    },
+    {
+     "t": "S'il vous plaît"
+    },
+    {
+     "n": "Ask someone if they have children."
+    },
+    {
+     "p": 4,
+     "expect": "Vous avez des enfants ?"
+    },
+    {
+     "t": "Vous avez des enfants ?"
+    },
+    {
+     "n": "Here is how to say 'I like'. Listen and repeat."
+    },
+    {
+     "t": "J'aime"
+    },
+    {
+     "t": "aime",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "J'aime",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "J'aime"
+    },
+    {
+     "p": 3,
+     "expect": "J'aime"
+    },
+    {
+     "t": "J'aime"
+    },
+    {
+     "n": "Here is how to say 'wine'. Listen and repeat."
+    },
+    {
+     "t": "le vin"
+    },
+    {
+     "t": "le vin"
+    },
+    {
+     "p": 3,
+     "expect": "le vin"
+    },
+    {
+     "t": "le vin"
+    },
+    {
+     "n": "Now put it together: 'I like wine'. Listen, then repeat."
+    },
+    {
+     "t": "J'aime le vin"
+    },
+    {
+     "p": 3,
+     "expect": "J'aime le vin"
+    },
+    {
+     "t": "J'aime le vin"
+    },
+    {
+     "n": "Notice the French say 'I like THE wine', even when they mean wine in general. Whenever you talk about liking something, keep the little word 'the'."
+    },
+    {
+     "n": "Now put it together: 'I like wine a lot'. Listen, then repeat."
+    },
+    {
+     "t": "J'aime beaucoup le vin"
+    },
+    {
+     "p": 3,
+     "expect": "J'aime beaucoup le vin"
+    },
+    {
+     "t": "J'aime beaucoup le vin"
+    },
+    {
+     "n": "Here is how to say 'you like'. Listen and repeat."
+    },
+    {
+     "t": "vous aimez"
+    },
+    {
+     "t": "aimez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous ai-mez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous aimez"
+    },
+    {
+     "p": 3,
+     "expect": "vous aimez"
+    },
+    {
+     "t": "vous aimez"
+    },
+    {
+     "n": "Now put it together: 'do you like wine?'. Listen, then repeat."
+    },
+    {
+     "t": "Vous aimez le vin ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous aimez le vin ?"
+    },
+    {
+     "t": "Vous aimez le vin ?"
+    },
+    {
+     "n": "Here is how to say 'I don't like'. Listen and repeat."
+    },
+    {
+     "t": "Je n'aime pas"
+    },
+    {
+     "t": "pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "n'aime pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je n'aime pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je n'aime pas"
+    },
+    {
+     "p": 3,
+     "expect": "Je n'aime pas"
+    },
+    {
+     "t": "Je n'aime pas"
+    },
+    {
+     "n": "Now put it together: 'I don't like coffee'. Listen, then repeat."
+    },
+    {
+     "t": "Je n'aime pas le café"
+    },
+    {
+     "p": 3,
+     "expect": "Je n'aime pas le café"
+    },
+    {
+     "t": "Je n'aime pas le café"
+    },
+    {
+     "n": "Say 'I like wine a lot'."
+    },
+    {
+     "p": 4,
+     "expect": "J'aime beaucoup le vin"
+    },
+    {
+     "t": "J'aime beaucoup le vin"
+    },
+    {
+     "n": "Ask 'do you like wine?'"
+    },
+    {
+     "p": 3,
+     "expect": "Vous aimez le vin ?"
+    },
+    {
+     "t": "Vous aimez le vin ?"
+    },
+    {
+     "n": "Here is how to say 'but'. Listen and repeat."
+    },
+    {
+     "t": "mais"
+    },
+    {
+     "t": "mais"
+    },
+    {
+     "p": 3,
+     "expect": "mais"
+    },
+    {
+     "t": "mais"
+    },
+    {
+     "n": "Here is how to say 'I prefer'. Listen and repeat."
+    },
+    {
+     "t": "je préfère"
+    },
+    {
+     "t": "fère",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "je pré-fère",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "je préfère"
+    },
+    {
+     "p": 3,
+     "expect": "je préfère"
+    },
+    {
+     "t": "je préfère"
+    },
+    {
+     "n": "Now put it together: 'but I prefer beer'. Listen, then repeat."
+    },
+    {
+     "t": "Mais je préfère la bière"
+    },
+    {
+     "p": 3,
+     "expect": "Mais je préfère la bière"
+    },
+    {
+     "t": "Mais je préfère la bière"
+    },
+    {
+     "n": "Here is how to say 'me too'. Listen and repeat."
+    },
+    {
+     "t": "Moi aussi"
+    },
+    {
+     "t": "aussi",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Moi aussi",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Moi aussi"
+    },
+    {
+     "p": 3,
+     "expect": "Moi aussi"
+    },
+    {
+     "t": "Moi aussi"
+    },
+    {
+     "n": "Here is how to say 'you want'. Listen and repeat."
+    },
+    {
+     "t": "vous voulez"
+    },
+    {
+     "t": "voulez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous vou-lez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous voulez"
+    },
+    {
+     "p": 3,
+     "expect": "vous voulez"
+    },
+    {
+     "t": "vous voulez"
+    },
+    {
+     "n": "Now put it together: 'do you want a beer?'. Listen, then repeat."
+    },
+    {
+     "t": "Vous voulez une bière ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous voulez une bière ?"
+    },
+    {
+     "t": "Vous voulez une bière ?"
+    },
+    {
+     "n": "Here is how to say 'yes please, literally 'I want well''. Listen and repeat."
+    },
+    {
+     "t": "Je veux bien"
+    },
+    {
+     "t": "bien",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "veux bien",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je veux bien",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je veux bien"
+    },
+    {
+     "p": 3,
+     "expect": "Je veux bien"
+    },
+    {
+     "t": "Je veux bien"
+    },
+    {
+     "n": "'I want' on its own sounds blunt in French. With 'well' after it, it becomes a warm 'yes, please'. For ordering, stick to 'I would like'."
+    },
+    {
+     "n": "Say 'I don't like coffee'."
+    },
+    {
+     "p": 3,
+     "expect": "Je n'aime pas le café"
+    },
+    {
+     "t": "Je n'aime pas le café"
+    },
+    {
+     "n": "Say 'me too'."
+    },
+    {
+     "p": 3,
+     "expect": "Moi aussi"
+    },
+    {
+     "t": "Moi aussi"
+    },
+    {
+     "n": "Here is how to say 'cheese'. Listen and repeat."
+    },
+    {
+     "t": "le fromage"
+    },
+    {
+     "t": "mage",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le fro-mage",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "le fromage"
+    },
+    {
+     "p": 3,
+     "expect": "le fromage"
+    },
+    {
+     "t": "le fromage"
+    },
+    {
+     "n": "Now put it together: 'I like cheese a lot'. Listen, then repeat."
+    },
+    {
+     "t": "J'aime beaucoup le fromage"
+    },
+    {
+     "p": 3,
+     "expect": "J'aime beaucoup le fromage"
+    },
+    {
+     "t": "J'aime beaucoup le fromage"
+    },
+    {
+     "n": "Here is how to say 'music'. Listen and repeat."
+    },
+    {
+     "t": "la musique"
+    },
+    {
+     "t": "sique",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "la mu-sique",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "la musique"
+    },
+    {
+     "p": 3,
+     "expect": "la musique"
+    },
+    {
+     "t": "la musique"
+    },
+    {
+     "n": "Now put it together: 'I don't like music'. Listen, then repeat."
+    },
+    {
+     "t": "Je n'aime pas la musique"
+    },
+    {
+     "p": 3,
+     "expect": "Je n'aime pas la musique"
+    },
+    {
+     "t": "Je n'aime pas la musique"
+    },
+    {
+     "n": "Here is how to say 'what do you like?'. Listen and repeat."
+    },
+    {
+     "t": "Qu'est-ce que vous aimez ?",
+     "tl": "kess kuh voo zeh-may"
+    },
+    {
+     "t": "aimez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous aimez",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Qu'est-ce que vous aimez ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Qu'est-ce que vous aimez ?"
+    },
+    {
+     "p": 3,
+     "expect": "Qu'est-ce que vous aimez ?"
+    },
+    {
+     "t": "Qu'est-ce que vous aimez ?"
+    },
+    {
+     "n": "The phrase at the start is the standard French way of asking 'what'. You'll hear it everywhere."
+    },
+    {
+     "q": "Someone offers you a glass of wine and asks if you want it. Say 'yes please'."
+    },
+    {
+     "n": "Listen first."
+    },
+    {
+     "t": "Oui, je veux bien"
+    },
+    {
+     "p": 4,
+     "expect": "Oui, je veux bien"
+    },
+    {
+     "t": "Oui, je veux bien"
+    },
+    {
+     "q": "Tell your host you like cheese a lot, but you prefer wine."
+    },
+    {
+     "p": 4,
+     "expect": "J'aime beaucoup le fromage"
+    },
+    {
+     "t": "J'aime beaucoup le fromage"
+    },
+    {
+     "p": 4,
+     "expect": "je préfère"
+    },
+    {
+     "t": "je préfère"
+    },
+    {
+     "t": "Mais je préfère le vin"
+    },
+    {
+     "n": "Ask 'what do you like?'"
+    },
+    {
+     "p": 4,
+     "expect": "Qu'est-ce que vous aimez ?"
+    },
+    {
+     "t": "Qu'est-ce que vous aimez ?"
+    },
+    {
+     "n": "Ask 'do you want a beer?'"
+    },
+    {
+     "p": 4,
+     "expect": "Vous voulez une bière ?"
+    },
+    {
+     "t": "Vous voulez une bière ?"
+    },
+    {
+     "n": "Say 'I don't like music'."
+    },
+    {
+     "p": 3,
+     "expect": "Je n'aime pas la musique"
+    },
+    {
+     "t": "Je n'aime pas la musique"
+    },
+    {
+     "n": "Listen to the conversation again."
+    },
+    {
+     "t": "Vous aimez le vin, Paul ?"
+    },
+    {
+     "t": "Oui, j'aime beaucoup le vin. Mais je préfère la bière."
+    },
+    {
+     "t": "Moi aussi ! Vous voulez une bière ?"
+    },
+    {
+     "t": "Oui, je veux bien. Merci."
+    },
+    {
+     "n": "You are Paul. Marie asks if you like wine. Say yes, you like wine a lot, but you prefer beer."
+    },
+    {
+     "t": "Vous aimez le vin, Paul ?"
+    },
+    {
+     "p": 5,
+     "expect": "J'aime beaucoup le vin"
+    },
+    {
+     "t": "Oui, j'aime beaucoup le vin. Mais je préfère la bière."
+    },
+    {
+     "t": "Moi aussi ! Vous voulez une bière ?"
+    },
+    {
+     "n": "Say 'yes please', and thank her."
+    },
+    {
+     "p": 4,
+     "expect": "Oui, je veux bien"
+    },
+    {
+     "t": "Oui, je veux bien. Merci."
+    },
+    {
+     "n": "Well done. In lesson nine you will talk about what you did yesterday."
+    }
+   ]
+  },
+  {
+   "id": "a9",
+   "title": "Lesson 9 — What did you do yesterday?",
+   "minutes": 16,
+   "goal": "Talk about what you did in the past and say how it was",
+   "steps": [
+    {
+     "n": "Listen. Marie asks Paul about his day yesterday."
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "t": "J'ai visité le Louvre. C'était magnifique."
+    },
+    {
+     "t": "Et le soir ?"
+    },
+    {
+     "t": "Le soir, j'ai mangé au restaurant avec ma femme. C'était très bon."
+    },
+    {
+     "n": "Review first. Say 'I like cheese a lot'."
+    },
+    {
+     "p": 4,
+     "expect": "J'aime beaucoup le fromage"
+    },
+    {
+     "t": "J'aime beaucoup le fromage"
+    },
+    {
+     "n": "Ask 'what do you like?'"
+    },
+    {
+     "p": 4,
+     "expect": "Qu'est-ce que vous aimez ?"
+    },
+    {
+     "t": "Qu'est-ce que vous aimez ?"
+    },
+    {
+     "n": "Now let's talk about the past. 'Yesterday'. Listen and repeat."
+    },
+    {
+     "t": "hier"
+    },
+    {
+     "t": "hier"
+    },
+    {
+     "p": 3,
+     "expect": "hier"
+    },
+    {
+     "t": "hier"
+    },
+    {
+     "n": "Here is how to say 'what did you do?'. Listen and repeat."
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait ?"
+    },
+    {
+     "t": "fait",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "vous avez fait",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait ?"
+    },
+    {
+     "p": 3,
+     "expect": "Qu'est-ce que vous avez fait ?"
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait ?"
+    },
+    {
+     "n": "You already know 'you have'. To talk about the past, French simply says 'you have done', 'I have eaten'. That's the whole trick."
+    },
+    {
+     "n": "Now put it together: 'what did you do yesterday?'. Listen, then repeat."
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "p": 3,
+     "expect": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "n": "Here is how to say 'I visited'. Listen and repeat."
+    },
+    {
+     "t": "J'ai visité"
+    },
+    {
+     "t": "visité",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "J'ai vi-si-té",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "J'ai visité"
+    },
+    {
+     "p": 3,
+     "expect": "J'ai visité"
+    },
+    {
+     "t": "J'ai visité"
+    },
+    {
+     "n": "Here is how to say 'the Louvre'. Listen and repeat."
+    },
+    {
+     "t": "le Louvre"
+    },
+    {
+     "t": "le Louvre"
+    },
+    {
+     "p": 3,
+     "expect": "le Louvre"
+    },
+    {
+     "t": "le Louvre"
+    },
+    {
+     "n": "Now put it together: 'I visited the Louvre'. Listen, then repeat."
+    },
+    {
+     "t": "J'ai visité le Louvre"
+    },
+    {
+     "p": 3,
+     "expect": "J'ai visité le Louvre"
+    },
+    {
+     "t": "J'ai visité le Louvre"
+    },
+    {
+     "n": "Ask 'what did you do yesterday?'"
+    },
+    {
+     "p": 4,
+     "expect": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "n": "Here is how to say 'it was'. Listen and repeat."
+    },
+    {
+     "t": "C'était"
+    },
+    {
+     "t": "tait",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "C'é-tait",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "C'était"
+    },
+    {
+     "p": 3,
+     "expect": "C'était"
+    },
+    {
+     "t": "C'était"
+    },
+    {
+     "n": "Here is how to say 'magnificent'. Listen and repeat."
+    },
+    {
+     "t": "magnifique"
+    },
+    {
+     "t": "fique",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "ma-gni-fique",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "magnifique"
+    },
+    {
+     "p": 3,
+     "expect": "magnifique"
+    },
+    {
+     "t": "magnifique"
+    },
+    {
+     "n": "Now put it together: 'it was magnificent'. Listen, then repeat."
+    },
+    {
+     "t": "C'était magnifique"
+    },
+    {
+     "p": 3,
+     "expect": "C'était magnifique"
+    },
+    {
+     "t": "C'était magnifique"
+    },
+    {
+     "n": "Now put it together: 'it was very good'. Listen, then repeat."
+    },
+    {
+     "t": "C'était très bon"
+    },
+    {
+     "p": 3,
+     "expect": "C'était très bon"
+    },
+    {
+     "t": "C'était très bon"
+    },
+    {
+     "n": "Say 'I visited the Louvre'."
+    },
+    {
+     "p": 3,
+     "expect": "J'ai visité le Louvre"
+    },
+    {
+     "t": "J'ai visité le Louvre"
+    },
+    {
+     "n": "Say 'it was magnificent'."
+    },
+    {
+     "p": 3,
+     "expect": "C'était magnifique"
+    },
+    {
+     "t": "C'était magnifique"
+    },
+    {
+     "n": "Here is how to say 'I ate'. Listen and repeat."
+    },
+    {
+     "t": "J'ai mangé"
+    },
+    {
+     "t": "mangé",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "J'ai man-gé",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "J'ai mangé"
+    },
+    {
+     "p": 3,
+     "expect": "J'ai mangé"
+    },
+    {
+     "t": "J'ai mangé"
+    },
+    {
+     "n": "Here is how to say 'at the restaurant'. Listen and repeat."
+    },
+    {
+     "t": "au restaurant"
+    },
+    {
+     "t": "rant",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "res-tau-rant",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "au res-tau-rant",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "au restaurant"
+    },
+    {
+     "p": 3,
+     "expect": "au restaurant"
+    },
+    {
+     "t": "au restaurant"
+    },
+    {
+     "n": "Now put it together: 'I ate at the restaurant'. Listen, then repeat."
+    },
+    {
+     "t": "J'ai mangé au restaurant"
+    },
+    {
+     "p": 3,
+     "expect": "J'ai mangé au restaurant"
+    },
+    {
+     "t": "J'ai mangé au restaurant"
+    },
+    {
+     "n": "Here is how to say 'with'. Listen and repeat."
+    },
+    {
+     "t": "avec"
+    },
+    {
+     "t": "avec"
+    },
+    {
+     "p": 3,
+     "expect": "avec"
+    },
+    {
+     "t": "avec"
+    },
+    {
+     "n": "Now put it together: 'with my wife'. Listen, then repeat."
+    },
+    {
+     "t": "avec ma femme"
+    },
+    {
+     "p": 3,
+     "expect": "avec ma femme"
+    },
+    {
+     "t": "avec ma femme"
+    },
+    {
+     "n": "Now put it together: 'I ate at the restaurant with my wife'. Listen, then repeat."
+    },
+    {
+     "t": "J'ai mangé au restaurant avec ma femme"
+    },
+    {
+     "p": 3,
+     "expect": "J'ai mangé au restaurant avec ma femme"
+    },
+    {
+     "t": "J'ai mangé au restaurant avec ma femme"
+    },
+    {
+     "n": "Say 'it was very good'."
+    },
+    {
+     "p": 3,
+     "expect": "C'était très bon"
+    },
+    {
+     "t": "C'était très bon"
+    },
+    {
+     "n": "Here is how to say 'I saw'. Listen and repeat."
+    },
+    {
+     "t": "J'ai vu"
+    },
+    {
+     "t": "vu",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "J'ai vu",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "J'ai vu"
+    },
+    {
+     "p": 3,
+     "expect": "J'ai vu"
+    },
+    {
+     "t": "J'ai vu"
+    },
+    {
+     "n": "Here is how to say 'the Eiffel Tower'. Listen and repeat."
+    },
+    {
+     "t": "la tour Eiffel"
+    },
+    {
+     "t": "Eiffel",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "la tour Eiffel",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "la tour Eiffel"
+    },
+    {
+     "p": 3,
+     "expect": "la tour Eiffel"
+    },
+    {
+     "t": "la tour Eiffel"
+    },
+    {
+     "n": "Now put it together: 'I saw the Eiffel Tower'. Listen, then repeat."
+    },
+    {
+     "t": "J'ai vu la tour Eiffel"
+    },
+    {
+     "p": 3,
+     "expect": "J'ai vu la tour Eiffel"
+    },
+    {
+     "t": "J'ai vu la tour Eiffel"
+    },
+    {
+     "n": "Here is how to say 'I went, said by a man'. Listen and repeat."
+    },
+    {
+     "t": "Je suis allé"
+    },
+    {
+     "t": "allé",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je suis a-llé",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je suis allé"
+    },
+    {
+     "p": 3,
+     "expect": "Je suis allé"
+    },
+    {
+     "t": "Je suis allé"
+    },
+    {
+     "n": "A handful of verbs, like 'to go', use 'I am' instead of 'I have' in the past. A woman writes 'went' with an extra letter, but it sounds the same."
+    },
+    {
+     "n": "Now put it together: 'I went to Paris'. Listen, then repeat."
+    },
+    {
+     "t": "Je suis allé à Paris"
+    },
+    {
+     "p": 3,
+     "expect": "Je suis allé à Paris"
+    },
+    {
+     "t": "Je suis allé à Paris"
+    },
+    {
+     "n": "Say 'I saw the Eiffel Tower'."
+    },
+    {
+     "p": 4,
+     "expect": "J'ai vu la tour Eiffel"
+    },
+    {
+     "t": "J'ai vu la tour Eiffel"
+    },
+    {
+     "q": "Marie asks what you did yesterday. Say you went to Paris."
+    },
+    {
+     "p": 4,
+     "expect": "Je suis allé à Paris"
+    },
+    {
+     "t": "Je suis allé à Paris"
+    },
+    {
+     "q": "Now tell her you ate at the restaurant, and it was very good."
+    },
+    {
+     "p": 4,
+     "expect": "J'ai mangé au restaurant"
+    },
+    {
+     "t": "J'ai mangé au restaurant"
+    },
+    {
+     "p": 3,
+     "expect": "C'était très bon"
+    },
+    {
+     "t": "C'était très bon"
+    },
+    {
+     "n": "Say 'yesterday'."
+    },
+    {
+     "p": 3,
+     "expect": "hier"
+    },
+    {
+     "t": "hier"
+    },
+    {
+     "n": "Say 'with my wife'."
+    },
+    {
+     "p": 3,
+     "expect": "avec ma femme"
+    },
+    {
+     "t": "avec ma femme"
+    },
+    {
+     "n": "Say 'I like wine a lot, but I prefer beer'."
+    },
+    {
+     "p": 4,
+     "expect": "J'aime beaucoup le vin"
+    },
+    {
+     "t": "J'aime beaucoup le vin"
+    },
+    {
+     "p": 4,
+     "expect": "Mais je préfère la bière"
+    },
+    {
+     "t": "Mais je préfère la bière"
+    },
+    {
+     "n": "Listen to the conversation again."
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "t": "J'ai visité le Louvre. C'était magnifique."
+    },
+    {
+     "t": "Et le soir ?"
+    },
+    {
+     "t": "Le soir, j'ai mangé au restaurant avec ma femme. C'était très bon."
+    },
+    {
+     "n": "You are Paul. Marie asks what you did yesterday. Say you visited the Louvre, and it was magnificent."
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "p": 5,
+     "expect": "J'ai visité le Louvre"
+    },
+    {
+     "t": "J'ai visité le Louvre. C'était magnifique."
+    },
+    {
+     "t": "Et le soir ?"
+    },
+    {
+     "n": "Say you ate at the restaurant with your wife."
+    },
+    {
+     "p": 5,
+     "expect": "J'ai mangé au restaurant avec ma femme"
+    },
+    {
+     "t": "Le soir, j'ai mangé au restaurant avec ma femme. C'était très bon."
+    },
+    {
+     "n": "Very good. In lesson ten you will make plans with a friend."
+    }
+   ]
+  },
+  {
+   "id": "a10",
+   "title": "Lesson 10 — Making plans",
+   "minutes": 16,
+   "goal": "Invite someone, accept or decline politely and agree on a time",
+   "steps": [
+    {
+     "n": "Listen. Marie invites Paul to dinner."
+    },
+    {
+     "t": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "t": "Avec plaisir ! À quelle heure ?"
+    },
+    {
+     "t": "À huit heures, au restaurant près de la gare."
+    },
+    {
+     "t": "D'accord. À ce soir !"
+    },
+    {
+     "n": "Review. Ask 'do you want a beer?'"
+    },
+    {
+     "p": 4,
+     "expect": "Vous voulez une bière ?"
+    },
+    {
+     "t": "Vous voulez une bière ?"
+    },
+    {
+     "n": "Ask 'at what time?'"
+    },
+    {
+     "p": 3,
+     "expect": "À quelle heure ?"
+    },
+    {
+     "t": "À quelle heure ?"
+    },
+    {
+     "n": "Here is 'to have dinner'. Listen and repeat."
+    },
+    {
+     "t": "dîner"
+    },
+    {
+     "t": "ner",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "dî-ner",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "dîner"
+    },
+    {
+     "p": 3,
+     "expect": "dîner"
+    },
+    {
+     "t": "dîner"
+    },
+    {
+     "n": "Here is how to say 'with us'. Listen and repeat."
+    },
+    {
+     "t": "avec nous"
+    },
+    {
+     "t": "nous",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "avec nous",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "avec nous"
+    },
+    {
+     "p": 3,
+     "expect": "avec nous"
+    },
+    {
+     "t": "avec nous"
+    },
+    {
+     "n": "Now put it together: 'do you want to have dinner with us this evening?'. Listen, then repeat."
+    },
+    {
+     "t": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "t": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "n": "Notice that after 'you want', the second verb stays in its basic form, just like English 'want to have dinner'. Easy."
+    },
+    {
+     "n": "Here is how to say 'with pleasure'. Listen and repeat."
+    },
+    {
+     "t": "Avec plaisir"
+    },
+    {
+     "t": "sir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "plai-sir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Avec plai-sir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Avec plaisir"
+    },
+    {
+     "p": 3,
+     "expect": "Avec plaisir"
+    },
+    {
+     "t": "Avec plaisir"
+    },
+    {
+     "n": "Now put it together: 'with pleasure! At what time?'. Listen, then repeat."
+    },
+    {
+     "t": "Avec plaisir ! À quelle heure ?"
+    },
+    {
+     "p": 3,
+     "expect": "Avec plaisir ! À quelle heure ?"
+    },
+    {
+     "t": "Avec plaisir ! À quelle heure ?"
+    },
+    {
+     "n": "Invite someone to dinner with you this evening."
+    },
+    {
+     "p": 5,
+     "expect": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "t": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "n": "Now put it together: 'at eight o'clock'. Listen, then repeat."
+    },
+    {
+     "t": "À huit heures"
+    },
+    {
+     "p": 3,
+     "expect": "À huit heures"
+    },
+    {
+     "t": "À huit heures"
+    },
+    {
+     "n": "Here is how to say 'near the station'. Listen and repeat."
+    },
+    {
+     "t": "près de la gare"
+    },
+    {
+     "t": "la gare",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "près de la gare",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "près de la gare"
+    },
+    {
+     "p": 3,
+     "expect": "près de la gare"
+    },
+    {
+     "t": "près de la gare"
+    },
+    {
+     "n": "Now put it together: 'at the restaurant near the station'. Listen, then repeat."
+    },
+    {
+     "t": "au restaurant près de la gare"
+    },
+    {
+     "p": 3,
+     "expect": "au restaurant près de la gare"
+    },
+    {
+     "t": "au restaurant près de la gare"
+    },
+    {
+     "n": "Here is how to say 'okay, agreed'. Listen and repeat."
+    },
+    {
+     "t": "D'accord"
+    },
+    {
+     "t": "cord",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "D'a-ccord",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "D'accord"
+    },
+    {
+     "p": 3,
+     "expect": "D'accord"
+    },
+    {
+     "t": "D'accord"
+    },
+    {
+     "n": "Here is how to say 'see you this evening'. Listen and repeat."
+    },
+    {
+     "t": "À ce soir"
+    },
+    {
+     "t": "À ce soir"
+    },
+    {
+     "p": 3,
+     "expect": "À ce soir"
+    },
+    {
+     "t": "À ce soir"
+    },
+    {
+     "n": "That little word 'at' is how French says 'see you'. 'See you this evening', 'see you tomorrow', 'see you Monday' all start the same way. Listen: 'see you tomorrow'."
+    },
+    {
+     "t": "À demain"
+    },
+    {
+     "p": 2,
+     "expect": "À demain"
+    },
+    {
+     "t": "À demain"
+    },
+    {
+     "n": "Here is how to say 'sorry, said by a man'. Listen and repeat."
+    },
+    {
+     "t": "Désolé"
+    },
+    {
+     "t": "lé",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Dé-so-lé",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Désolé"
+    },
+    {
+     "p": 3,
+     "expect": "Désolé"
+    },
+    {
+     "t": "Désolé"
+    },
+    {
+     "n": "Here is how to say 'I can't'. Listen and repeat."
+    },
+    {
+     "t": "Je ne peux pas"
+    },
+    {
+     "t": "pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "peux pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je ne peux pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je ne peux pas"
+    },
+    {
+     "p": 3,
+     "expect": "Je ne peux pas"
+    },
+    {
+     "t": "Je ne peux pas"
+    },
+    {
+     "n": "Now put it together: 'sorry, I can't'. Listen, then repeat."
+    },
+    {
+     "t": "Désolé, je ne peux pas"
+    },
+    {
+     "p": 3,
+     "expect": "Désolé, je ne peux pas"
+    },
+    {
+     "t": "Désolé, je ne peux pas"
+    },
+    {
+     "n": "A woman says 'sorry' with an extra letter, pronounced the same way. You know the pattern by now."
+    },
+    {
+     "n": "Here is how to say 'good idea'. Listen and repeat."
+    },
+    {
+     "t": "Bonne idée"
+    },
+    {
+     "t": "idée",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bonne i-dée",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bonne idée"
+    },
+    {
+     "p": 3,
+     "expect": "Bonne idée"
+    },
+    {
+     "t": "Bonne idée"
+    },
+    {
+     "n": "Here is how to say 'shall we go to the cinema? Literally 'one goes to the cinema?''. Listen and repeat."
+    },
+    {
+     "t": "On va au cinéma ?"
+    },
+    {
+     "t": "cinéma",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "au ci-né-ma",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "On va au ci-né-ma ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "On va au cinéma ?"
+    },
+    {
+     "p": 3,
+     "expect": "On va au cinéma ?"
+    },
+    {
+     "t": "On va au cinéma ?"
+    },
+    {
+     "n": "In everyday French, people say 'one' instead of 'we' all the time. 'One goes to the cinema' simply means 'shall we go to the cinema'."
+    },
+    {
+     "n": "Here is how to say 'tomorrow evening'. Listen and repeat."
+    },
+    {
+     "t": "demain soir"
+    },
+    {
+     "t": "soir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "demain soir",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "demain soir"
+    },
+    {
+     "p": 3,
+     "expect": "demain soir"
+    },
+    {
+     "t": "demain soir"
+    },
+    {
+     "n": "Now put it together: 'shall we go to the cinema tomorrow evening?'. Listen, then repeat."
+    },
+    {
+     "t": "On va au cinéma demain soir ?"
+    },
+    {
+     "p": 3,
+     "expect": "On va au cinéma demain soir ?"
+    },
+    {
+     "t": "On va au cinéma demain soir ?"
+    },
+    {
+     "n": "Here is how to say 'I'm free'. Listen and repeat."
+    },
+    {
+     "t": "Je suis libre"
+    },
+    {
+     "t": "libre",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je suis li-bre",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je suis libre"
+    },
+    {
+     "p": 3,
+     "expect": "Je suis libre"
+    },
+    {
+     "t": "Je suis libre"
+    },
+    {
+     "n": "Now put it together: 'I'm free tomorrow'. Listen, then repeat."
+    },
+    {
+     "t": "Je suis libre demain"
+    },
+    {
+     "p": 3,
+     "expect": "Je suis libre demain"
+    },
+    {
+     "t": "Je suis libre demain"
+    },
+    {
+     "n": "Say 'sorry, I can't'."
+    },
+    {
+     "p": 4,
+     "expect": "Désolé, je ne peux pas"
+    },
+    {
+     "t": "Désolé, je ne peux pas"
+    },
+    {
+     "q": "A friend suggests dinner tonight, but you're busy. Say sorry, you can't, but you're free tomorrow."
+    },
+    {
+     "p": 4,
+     "expect": "Désolé, je ne peux pas"
+    },
+    {
+     "t": "Désolé, je ne peux pas"
+    },
+    {
+     "p": 4,
+     "expect": "Je suis libre demain"
+    },
+    {
+     "t": "Je suis libre demain"
+    },
+    {
+     "q": "Suggest going to the cinema tomorrow evening."
+    },
+    {
+     "p": 5,
+     "expect": "On va au cinéma demain soir ?"
+    },
+    {
+     "t": "On va au cinéma demain soir ?"
+    },
+    {
+     "n": "Answer: 'good idea! At what time?'"
+    },
+    {
+     "p": 3,
+     "expect": "Bonne idée"
+    },
+    {
+     "t": "Bonne idée"
+    },
+    {
+     "p": 3,
+     "expect": "À quelle heure ?"
+    },
+    {
+     "t": "À quelle heure ?"
+    },
+    {
+     "n": "Say 'at eight o'clock'."
+    },
+    {
+     "p": 3,
+     "expect": "À huit heures"
+    },
+    {
+     "t": "À huit heures"
+    },
+    {
+     "n": "Say 'see you this evening'."
+    },
+    {
+     "p": 3,
+     "expect": "À ce soir"
+    },
+    {
+     "t": "À ce soir"
+    },
+    {
+     "n": "Say 'what did you do yesterday?'"
+    },
+    {
+     "p": 4,
+     "expect": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "n": "Listen to the conversation again."
+    },
+    {
+     "t": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "t": "Avec plaisir ! À quelle heure ?"
+    },
+    {
+     "t": "À huit heures, au restaurant près de la gare."
+    },
+    {
+     "t": "D'accord. À ce soir !"
+    },
+    {
+     "n": "You are Paul. Marie invites you to dinner. Accept with pleasure and ask at what time."
+    },
+    {
+     "t": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "p": 5,
+     "expect": "Avec plaisir ! À quelle heure ?"
+    },
+    {
+     "t": "Avec plaisir ! À quelle heure ?"
+    },
+    {
+     "t": "À huit heures, au restaurant près de la gare."
+    },
+    {
+     "n": "Say okay, see you this evening."
+    },
+    {
+     "p": 4,
+     "expect": "D'accord"
+    },
+    {
+     "t": "D'accord. À ce soir !"
+    },
+    {
+     "n": "Well done. Next, lesson eleven: shopping and money."
+    }
+   ]
+  },
+  {
+   "id": "a11",
+   "title": "Lesson 11 — Shopping and money",
+   "minutes": 16,
+   "goal": "Shop for things, talk about prices and pay by card",
+   "steps": [
+    {
+     "n": "Listen. Paul walks into a small shop in Paris."
+    },
+    {
+     "t": "Bonjour, madame. Je cherche un cadeau pour ma femme."
+    },
+    {
+     "t": "Ce sac, peut-être ? Il est à trente euros."
+    },
+    {
+     "t": "C'est un peu cher. Vous acceptez la carte ?"
+    },
+    {
+     "t": "Bien sûr, monsieur."
+    },
+    {
+     "n": "Review. Ask how much it is."
+    },
+    {
+     "p": 3,
+     "expect": "C'est combien ?"
+    },
+    {
+     "t": "C'est combien ?"
+    },
+    {
+     "n": "Remember: when you enter any French shop, greet the shopkeeper before anything else."
+    },
+    {
+     "n": "Here is 'I'm looking for'. Listen and repeat."
+    },
+    {
+     "t": "Je cherche"
+    },
+    {
+     "t": "cherche",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je cherche",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je cherche"
+    },
+    {
+     "p": 3,
+     "expect": "Je cherche"
+    },
+    {
+     "t": "Je cherche"
+    },
+    {
+     "n": "Here is how to say 'a gift, a present'. Listen and repeat."
+    },
+    {
+     "t": "un cadeau"
+    },
+    {
+     "t": "deau",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un ca-deau",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "un cadeau"
+    },
+    {
+     "p": 3,
+     "expect": "un cadeau"
+    },
+    {
+     "t": "un cadeau"
+    },
+    {
+     "n": "Now put it together: 'I'm looking for a gift'. Listen, then repeat."
+    },
+    {
+     "t": "Je cherche un cadeau"
+    },
+    {
+     "p": 3,
+     "expect": "Je cherche un cadeau"
+    },
+    {
+     "t": "Je cherche un cadeau"
+    },
+    {
+     "n": "Here is how to say 'for my wife'. Listen and repeat."
+    },
+    {
+     "t": "pour ma femme"
+    },
+    {
+     "t": "ma femme",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "pour ma femme",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "pour ma femme"
+    },
+    {
+     "p": 3,
+     "expect": "pour ma femme"
+    },
+    {
+     "t": "pour ma femme"
+    },
+    {
+     "n": "Now put it together: 'I'm looking for a gift for my wife'. Listen, then repeat."
+    },
+    {
+     "t": "Je cherche un cadeau pour ma femme"
+    },
+    {
+     "p": 3,
+     "expect": "Je cherche un cadeau pour ma femme"
+    },
+    {
+     "t": "Je cherche un cadeau pour ma femme"
+    },
+    {
+     "n": "Here is how to say 'this bag'. Listen and repeat."
+    },
+    {
+     "t": "ce sac"
+    },
+    {
+     "t": "ce sac"
+    },
+    {
+     "p": 3,
+     "expect": "ce sac"
+    },
+    {
+     "t": "ce sac"
+    },
+    {
+     "n": "Here is how to say 'maybe, perhaps'. Listen and repeat."
+    },
+    {
+     "t": "peut-être"
+    },
+    {
+     "t": "être",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "peut-être",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "peut-être"
+    },
+    {
+     "p": 3,
+     "expect": "peut-être"
+    },
+    {
+     "t": "peut-être"
+    },
+    {
+     "n": "Say 'I'm looking for a gift for my wife'."
+    },
+    {
+     "p": 5,
+     "expect": "Je cherche un cadeau pour ma femme"
+    },
+    {
+     "t": "Je cherche un cadeau pour ma femme"
+    },
+    {
+     "n": "Now some bigger numbers. Twenty."
+    },
+    {
+     "t": "vingt"
+    },
+    {
+     "p": 2,
+     "expect": "vingt"
+    },
+    {
+     "t": "vingt"
+    },
+    {
+     "n": "Thirty."
+    },
+    {
+     "t": "trente"
+    },
+    {
+     "t": "trente"
+    },
+    {
+     "p": 3,
+     "expect": "trente"
+    },
+    {
+     "t": "trente"
+    },
+    {
+     "n": "Fifty."
+    },
+    {
+     "t": "cinquante"
+    },
+    {
+     "t": "quante",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "cin-quante",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "cinquante"
+    },
+    {
+     "p": 3,
+     "expect": "cinquante"
+    },
+    {
+     "t": "cinquante"
+    },
+    {
+     "n": "One hundred."
+    },
+    {
+     "t": "cent"
+    },
+    {
+     "t": "cent"
+    },
+    {
+     "p": 3,
+     "expect": "cent"
+    },
+    {
+     "t": "cent"
+    },
+    {
+     "n": "Now put it together: 'thirty euros'. Listen, then repeat."
+    },
+    {
+     "t": "trente euros"
+    },
+    {
+     "p": 3,
+     "expect": "trente euros"
+    },
+    {
+     "t": "trente euros"
+    },
+    {
+     "n": "Here is how to say 'expensive'. Listen and repeat."
+    },
+    {
+     "t": "cher"
+    },
+    {
+     "t": "cher"
+    },
+    {
+     "p": 3,
+     "expect": "cher"
+    },
+    {
+     "t": "cher"
+    },
+    {
+     "n": "Now put it together: 'it's a little expensive'. Listen, then repeat."
+    },
+    {
+     "t": "C'est un peu cher"
+    },
+    {
+     "p": 3,
+     "expect": "C'est un peu cher"
+    },
+    {
+     "t": "C'est un peu cher"
+    },
+    {
+     "n": "Here is how to say 'too'. Listen and repeat."
+    },
+    {
+     "t": "trop"
+    },
+    {
+     "t": "trop"
+    },
+    {
+     "p": 3,
+     "expect": "trop"
+    },
+    {
+     "t": "trop"
+    },
+    {
+     "n": "Now put it together: 'it's too expensive'. Listen, then repeat."
+    },
+    {
+     "t": "C'est trop cher"
+    },
+    {
+     "p": 3,
+     "expect": "C'est trop cher"
+    },
+    {
+     "t": "C'est trop cher"
+    },
+    {
+     "n": "Here is how to say 'do you accept the card?'. Listen and repeat."
+    },
+    {
+     "t": "Vous acceptez la carte ?"
+    },
+    {
+     "t": "la carte",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "acceptez la carte",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Vous acceptez la carte ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Vous acceptez la carte ?"
+    },
+    {
+     "p": 3,
+     "expect": "Vous acceptez la carte ?"
+    },
+    {
+     "t": "Vous acceptez la carte ?"
+    },
+    {
+     "n": "Here is how to say 'of course'. Listen and repeat."
+    },
+    {
+     "t": "Bien sûr"
+    },
+    {
+     "t": "sûr",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bien sûr",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bien sûr"
+    },
+    {
+     "p": 3,
+     "expect": "Bien sûr"
+    },
+    {
+     "t": "Bien sûr"
+    },
+    {
+     "n": "Here is how to say 'I'll take it, literally 'I take that''. Listen and repeat."
+    },
+    {
+     "t": "Je prends ça"
+    },
+    {
+     "t": "ça",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "prends ça",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je prends ça",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je prends ça"
+    },
+    {
+     "p": 3,
+     "expect": "Je prends ça"
+    },
+    {
+     "t": "Je prends ça"
+    },
+    {
+     "n": "Here is how to say 'that's all'. Listen and repeat."
+    },
+    {
+     "t": "C'est tout"
+    },
+    {
+     "t": "C'est tout"
+    },
+    {
+     "p": 3,
+     "expect": "C'est tout"
+    },
+    {
+     "t": "C'est tout"
+    },
+    {
+     "n": "Shopkeepers will ask you if you need anything else. 'That's all, thank you' is the perfect answer. Say it."
+    },
+    {
+     "p": 3,
+     "expect": "C'est tout"
+    },
+    {
+     "t": "C'est tout"
+    },
+    {
+     "t": "merci"
+    },
+    {
+     "n": "Ask if they accept the card."
+    },
+    {
+     "p": 4,
+     "expect": "Vous acceptez la carte ?"
+    },
+    {
+     "t": "Vous acceptez la carte ?"
+    },
+    {
+     "n": "Answer 'of course'."
+    },
+    {
+     "p": 3,
+     "expect": "Bien sûr"
+    },
+    {
+     "t": "Bien sûr"
+    },
+    {
+     "n": "Here is how to say 'the bakery'. Listen and repeat."
+    },
+    {
+     "t": "la boulangerie"
+    },
+    {
+     "t": "rie",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "bou-lan-ge-rie",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "la bou-lan-ge-rie",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "la boulangerie"
+    },
+    {
+     "p": 3,
+     "expect": "la boulangerie"
+    },
+    {
+     "t": "la boulangerie"
+    },
+    {
+     "n": "Here is how to say 'a baguette'. Listen and repeat."
+    },
+    {
+     "t": "une baguette"
+    },
+    {
+     "t": "guette",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "une ba-guette",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "une baguette"
+    },
+    {
+     "p": 3,
+     "expect": "une baguette"
+    },
+    {
+     "t": "une baguette"
+    },
+    {
+     "n": "Now put it together: 'I would like a baguette, please'. Listen, then repeat."
+    },
+    {
+     "t": "Je voudrais une baguette, s'il vous plaît"
+    },
+    {
+     "p": 3,
+     "expect": "Je voudrais une baguette, s'il vous plaît"
+    },
+    {
+     "t": "Je voudrais une baguette, s'il vous plaît"
+    },
+    {
+     "q": "The shopkeeper shows you a bag for thirty euros. Say it's a little expensive."
+    },
+    {
+     "p": 4,
+     "expect": "C'est un peu cher"
+    },
+    {
+     "t": "C'est un peu cher"
+    },
+    {
+     "q": "You decide to buy it anyway. Say 'I'll take it'."
+    },
+    {
+     "p": 4,
+     "expect": "Je prends ça"
+    },
+    {
+     "t": "Je prends ça"
+    },
+    {
+     "n": "Order a baguette, please."
+    },
+    {
+     "p": 4,
+     "expect": "Je voudrais une baguette, s'il vous plaît"
+    },
+    {
+     "t": "Je voudrais une baguette, s'il vous plaît"
+    },
+    {
+     "n": "Listen to the conversation again."
+    },
+    {
+     "t": "Bonjour, madame. Je cherche un cadeau pour ma femme."
+    },
+    {
+     "t": "Ce sac, peut-être ? Il est à trente euros."
+    },
+    {
+     "t": "C'est un peu cher. Vous acceptez la carte ?"
+    },
+    {
+     "t": "Bien sûr, monsieur."
+    },
+    {
+     "n": "You are Paul. Greet the shopkeeper and say you're looking for a gift for your wife."
+    },
+    {
+     "p": 5,
+     "expect": "Je cherche un cadeau pour ma femme"
+    },
+    {
+     "t": "Bonjour, madame. Je cherche un cadeau pour ma femme."
+    },
+    {
+     "t": "Ce sac, peut-être ? Il est à trente euros."
+    },
+    {
+     "n": "Say it's a little expensive, and ask if they accept the card."
+    },
+    {
+     "p": 5,
+     "expect": "Vous acceptez la carte ?"
+    },
+    {
+     "t": "C'est un peu cher. Vous acceptez la carte ?"
+    },
+    {
+     "t": "Bien sûr, monsieur."
+    },
+    {
+     "n": "Excellent. The last lesson brings everything together in one long, real conversation."
+    }
+   ]
+  },
+  {
+   "id": "a12",
+   "title": "Lesson 12 — Putting it all together",
+   "minutes": 17,
+   "goal": "Review the whole course and hold a real conversation at a café",
+   "steps": [
+    {
+     "n": "This is the last lesson. Listen to a longer conversation. Paul is at the station café before his train to Lyon. Almost every word is one you already know."
+    },
+    {
+     "t": "Bonjour, monsieur. Vous désirez ?"
+    },
+    {
+     "t": "Bonjour, madame. Je voudrais un café et un croissant, s'il vous plaît."
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "t": "C'est tout, merci. Excusez-moi, le train pour Lyon, c'est à quelle heure ?"
+    },
+    {
+     "t": "À dix heures et demie. C'est là-bas, à gauche."
+    },
+    {
+     "t": "Merci beaucoup. Vous acceptez la carte ?"
+    },
+    {
+     "t": "Bien sûr. Ça fait cinq euros."
+    },
+    {
+     "t": "Au revoir, madame. Bonne journée !"
+    },
+    {
+     "n": "Two expressions were new. Here is the first: 'that makes', which is how shopkeepers announce a total. Listen and repeat."
+    },
+    {
+     "n": "'That makes'. Listen and repeat."
+    },
+    {
+     "t": "Ça fait"
+    },
+    {
+     "t": "fait",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Ça fait",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Ça fait"
+    },
+    {
+     "p": 3,
+     "expect": "Ça fait"
+    },
+    {
+     "t": "Ça fait"
+    },
+    {
+     "n": "Now put it together: 'that makes five euros'. Listen, then repeat."
+    },
+    {
+     "t": "Ça fait cinq euros"
+    },
+    {
+     "p": 3,
+     "expect": "Ça fait cinq euros"
+    },
+    {
+     "t": "Ça fait cinq euros"
+    },
+    {
+     "n": "Here is how to say 'have a good day'. Listen and repeat."
+    },
+    {
+     "t": "Bonne journée"
+    },
+    {
+     "t": "née",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "jour-née",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bonne jour-née",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Bonne journée"
+    },
+    {
+     "p": 3,
+     "expect": "Bonne journée"
+    },
+    {
+     "t": "Bonne journée"
+    },
+    {
+     "n": "French people say 'have a good day' when leaving a shop or café, right after goodbye. Say 'goodbye, madam, have a good day'."
+    },
+    {
+     "p": 5,
+     "expect": "Au revoir, madame. Bonne journée !"
+    },
+    {
+     "t": "Au revoir, madame. Bonne journée !"
+    },
+    {
+     "n": "Three more survival phrases before the review. 'I don't know'."
+    },
+    {
+     "n": "Listen and repeat."
+    },
+    {
+     "t": "Je ne sais pas"
+    },
+    {
+     "t": "pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "sais pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je ne sais pas",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Je ne sais pas"
+    },
+    {
+     "p": 3,
+     "expect": "Je ne sais pas"
+    },
+    {
+     "t": "Je ne sais pas"
+    },
+    {
+     "n": "Here is how to say 'can you repeat?'. Listen and repeat."
+    },
+    {
+     "t": "Pouvez-vous répéter ?"
+    },
+    {
+     "t": "répéter",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Pouvez-vous ré-pé-ter ?",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "Pouvez-vous répéter ?"
+    },
+    {
+     "p": 3,
+     "expect": "Pouvez-vous répéter ?"
+    },
+    {
+     "t": "Pouvez-vous répéter ?"
+    },
+    {
+     "n": "Here is how to say 'more slowly'. Listen and repeat."
+    },
+    {
+     "t": "plus lentement"
+    },
+    {
+     "t": "lentement",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "plus len-te-ment",
+     "slow": true
+    },
+    {
+     "p": 2
+    },
+    {
+     "t": "plus lentement"
+    },
+    {
+     "p": 3,
+     "expect": "plus lentement"
+    },
+    {
+     "t": "plus lentement"
+    },
+    {
+     "n": "Now put it together: 'can you repeat more slowly, please?'. Listen, then repeat."
+    },
+    {
+     "t": "Pouvez-vous répéter plus lentement, s'il vous plaît ?"
+    },
+    {
+     "p": 3,
+     "expect": "Pouvez-vous répéter plus lentement, s'il vous plaît ?"
+    },
+    {
+     "t": "Pouvez-vous répéter plus lentement, s'il vous plaît ?"
+    },
+    {
+     "n": "Say 'I don't know'."
+    },
+    {
+     "p": 3,
+     "expect": "Je ne sais pas"
+    },
+    {
+     "t": "Je ne sais pas"
+    },
+    {
+     "n": "Now, a tour through everything you have learned. Answer each prompt out loud. Greet a woman."
+    },
+    {
+     "p": 3,
+     "expect": "Bonjour, madame"
+    },
+    {
+     "t": "Bonjour, madame"
+    },
+    {
+     "n": "Ask him if he speaks English."
+    },
+    {
+     "p": 3,
+     "expect": "Vous parlez anglais ?"
+    },
+    {
+     "t": "Vous parlez anglais ?"
+    },
+    {
+     "n": "Say you don't understand."
+    },
+    {
+     "p": 3,
+     "expect": "Je ne comprends pas"
+    },
+    {
+     "t": "Je ne comprends pas"
+    },
+    {
+     "n": "Ask him to repeat more slowly, please."
+    },
+    {
+     "p": 5,
+     "expect": "Pouvez-vous répéter plus lentement, s'il vous plaît ?"
+    },
+    {
+     "t": "Pouvez-vous répéter plus lentement, s'il vous plaît ?"
+    },
+    {
+     "n": "Answer: 'very well'."
+    },
+    {
+     "p": 3,
+     "expect": "Très bien"
+    },
+    {
+     "t": "Très bien"
+    },
+    {
+     "n": "Say your name is Paul."
+    },
+    {
+     "p": 3,
+     "expect": "Je m'appelle Paul"
+    },
+    {
+     "t": "Je m'appelle Paul"
+    },
+    {
+     "n": "Ask 'what's your name?'"
+    },
+    {
+     "p": 4,
+     "expect": "Comment vous appelez-vous ?"
+    },
+    {
+     "t": "Comment vous appelez-vous ?"
+    },
+    {
+     "n": "Say 'I am American', as a man."
+    },
+    {
+     "p": 3,
+     "expect": "Je suis américain"
+    },
+    {
+     "t": "Je suis américain"
+    },
+    {
+     "n": "Introduce your wife."
+    },
+    {
+     "p": 3,
+     "expect": "Voici ma femme"
+    },
+    {
+     "t": "Voici ma femme"
+    },
+    {
+     "n": "Ask where the station is, please."
+    },
+    {
+     "p": 4,
+     "expect": "Où est la gare, s'il vous plaît ?"
+    },
+    {
+     "t": "Où est la gare, s'il vous plaît ?"
+    },
+    {
+     "n": "Say 'it's straight ahead, then to the left'."
+    },
+    {
+     "p": 4,
+     "expect": "C'est tout droit, puis à gauche"
+    },
+    {
+     "t": "C'est tout droit, puis à gauche"
+    },
+    {
+     "n": "Ask if it's far."
+    },
+    {
+     "p": 3,
+     "expect": "C'est loin ?"
+    },
+    {
+     "t": "C'est loin ?"
+    },
+    {
+     "n": "Ask what time it is."
+    },
+    {
+     "p": 3,
+     "expect": "Quelle heure est-il ?"
+    },
+    {
+     "t": "Quelle heure est-il ?"
+    },
+    {
+     "n": "Say 'it's half past three'."
+    },
+    {
+     "p": 4,
+     "expect": "Il est trois heures et demie"
+    },
+    {
+     "t": "Il est trois heures et demie"
+    },
+    {
+     "n": "Order a glass of wine, please."
+    },
+    {
+     "p": 4,
+     "expect": "Un verre de vin, s'il vous plaît"
+    },
+    {
+     "t": "Un verre de vin, s'il vous plaît"
+    },
+    {
+     "n": "Ask for the bill, please."
+    },
+    {
+     "p": 3,
+     "expect": "L'addition, s'il vous plaît"
+    },
+    {
+     "t": "L'addition, s'il vous plaît"
+    },
+    {
+     "n": "Say 'I like cheese a lot'."
+    },
+    {
+     "p": 4,
+     "expect": "J'aime beaucoup le fromage"
+    },
+    {
+     "t": "J'aime beaucoup le fromage"
+    },
+    {
+     "n": "Say 'but I prefer beer'."
+    },
+    {
+     "p": 3,
+     "expect": "Mais je préfère la bière"
+    },
+    {
+     "t": "Mais je préfère la bière"
+    },
+    {
+     "n": "Ask 'what did you do yesterday?'"
+    },
+    {
+     "p": 4,
+     "expect": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "t": "Qu'est-ce que vous avez fait hier ?"
+    },
+    {
+     "n": "Say 'I visited the Louvre'."
+    },
+    {
+     "p": 4,
+     "expect": "J'ai visité le Louvre"
+    },
+    {
+     "t": "J'ai visité le Louvre"
+    },
+    {
+     "n": "Invite someone to dinner with you this evening."
+    },
+    {
+     "p": 5,
+     "expect": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "t": "Vous voulez dîner avec nous ce soir ?"
+    },
+    {
+     "n": "Accept: 'with pleasure! At what time?'"
+    },
+    {
+     "p": 4,
+     "expect": "Avec plaisir ! À quelle heure ?"
+    },
+    {
+     "t": "Avec plaisir ! À quelle heure ?"
+    },
+    {
+     "n": "Say 'okay, see you this evening'."
+    },
+    {
+     "p": 3,
+     "expect": "D'accord"
+    },
+    {
+     "t": "D'accord"
+    },
+    {
+     "p": 2,
+     "expect": "À ce soir"
+    },
+    {
+     "t": "À ce soir"
+    },
+    {
+     "n": "Say 'I'm looking for a gift for my wife'."
+    },
+    {
+     "p": 5,
+     "expect": "Je cherche un cadeau pour ma femme"
+    },
+    {
+     "t": "Je cherche un cadeau pour ma femme"
+    },
+    {
+     "n": "Say 'it's too expensive'."
+    },
+    {
+     "p": 3,
+     "expect": "C'est trop cher"
+    },
+    {
+     "t": "C'est trop cher"
+    },
+    {
+     "n": "Ask if they accept the card."
+    },
+    {
+     "p": 4,
+     "expect": "Vous acceptez la carte ?"
+    },
+    {
+     "t": "Vous acceptez la carte ?"
+    },
+    {
+     "n": "Say 'that's all, thank you'."
+    },
+    {
+     "p": 3,
+     "expect": "C'est tout"
+    },
+    {
+     "t": "C'est tout"
+    },
+    {
+     "n": "Say 'good idea'."
+    },
+    {
+     "p": 3,
+     "expect": "Bonne idée"
+    },
+    {
+     "t": "Bonne idée"
+    },
+    {
+     "n": "Say 'me too'."
+    },
+    {
+     "p": 3,
+     "expect": "Moi aussi"
+    },
+    {
+     "t": "Moi aussi"
+    },
+    {
+     "n": "Say 'you're welcome'."
+    },
+    {
+     "p": 3,
+     "expect": "De rien"
+    },
+    {
+     "t": "De rien"
+    },
+    {
+     "n": "Say 'enjoy your meal'."
+    },
+    {
+     "p": 3,
+     "expect": "Bon appétit"
+    },
+    {
+     "t": "Bon appétit"
+    },
+    {
+     "n": "Now listen to the whole conversation once more."
+    },
+    {
+     "t": "Bonjour, monsieur. Vous désirez ?"
+    },
+    {
+     "t": "Bonjour, madame. Je voudrais un café et un croissant, s'il vous plaît."
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "t": "C'est tout, merci. Excusez-moi, le train pour Lyon, c'est à quelle heure ?"
+    },
+    {
+     "t": "À dix heures et demie. C'est là-bas, à gauche."
+    },
+    {
+     "t": "Merci beaucoup. Vous acceptez la carte ?"
+    },
+    {
+     "t": "Bien sûr. Ça fait cinq euros."
+    },
+    {
+     "t": "Au revoir, madame. Bonne journée !"
+    },
+    {
+     "n": "This time you are Paul. The waitress greets you and asks what you'd like. Greet her and order a coffee and a croissant, please."
+    },
+    {
+     "t": "Bonjour, monsieur. Vous désirez ?"
+    },
+    {
+     "p": 6,
+     "expect": "Je voudrais un café, s'il vous plaît"
+    },
+    {
+     "t": "Bonjour, madame. Je voudrais un café et un croissant, s'il vous plaît."
+    },
+    {
+     "t": "Et avec ça ?"
+    },
+    {
+     "n": "Say that's all, thank you. Then excuse yourself and ask at what time the train is."
+    },
+    {
+     "p": 6,
+     "expect": "Le train, c'est à quelle heure ?"
+    },
+    {
+     "t": "C'est tout, merci. Excusez-moi, le train pour Lyon, c'est à quelle heure ?"
+    },
+    {
+     "t": "À dix heures et demie. C'est là-bas, à gauche."
+    },
+    {
+     "n": "Thank her very much and ask if she accepts the card."
+    },
+    {
+     "p": 5,
+     "expect": "Vous acceptez la carte ?"
+    },
+    {
+     "t": "Merci beaucoup. Vous acceptez la carte ?"
+    },
+    {
+     "t": "Bien sûr. Ça fait cinq euros."
+    },
+    {
+     "n": "Say goodbye, and wish her a good day."
+    },
+    {
+     "p": 5,
+     "expect": "Au revoir, madame. Bonne journée !"
+    },
+    {
+     "t": "Au revoir, madame. Bonne journée !"
+    },
+    {
+     "n": "Congratulations. You have finished all twelve lessons. You can greet people, order, ask your way, tell the time, talk about your family, your likes and your plans, and shop with confidence. Keep listening, keep speaking, and have a wonderful time in France."
+    }
+   ]
+  }
+ ]
+}

@@ -106,6 +106,56 @@
               "answer": 3,
               "explain": "Intro, two body paragraphs, conclusion."
             }
+          ],
+          "notes": [
+            {
+              "h": "Test overview",
+              "p": "Tech Mahindra's fresher assessment is reported to include **aptitude** (quantitative, logical reasoning, verbal), an **essay writing** section, **technical MCQs**, a **psychometric test** and, in some drives, a **coding** section, followed by a communication assessment and interviews. Each part can be an elimination stage. Pattern as reported for recent drives; confirm on the official careers page."
+            },
+            {
+              "h": "Aptitude walkthroughs",
+              "p": "**Quant.** A shopkeeper buys 12 pens for ₹100 and sells 10 pens for ₹100. Profit%? CP per pen = 100/12, SP per pen = 10. Profit = (10 − 8.33)/8.33 = **20%**.\n\n**Quant.** Speed of a boat in still water 15 km/h, stream 3 km/h. Time to go 36 km upstream? 36/12 = **3 hours**.\n\n**Logical.** If in a code 'TEACHER' is 'VGCEJGT', how is 'SCHOOL' written? Each letter +2 → **UEJQQN**.\n\n**Logical.** Five people in a row: A is left of B, C is right of B, D is between A and B, E is at the extreme right. Order: **A D B C E**.\n\n**Verbal.** Fill in: 'She is good ___ mathematics.' → **at**."
+            },
+            {
+              "h": "Essay writing",
+              "p": "The essay is typically a short opinion essay on a general topic in limited time. It is graded for grammar, structure, relevance and vocabulary, often by software first. Aim for clear paragraphs and zero spelling errors.\n\n**Four-part structure:** introduction with your view → reason 1 with an example → reason 2 or counter-point with an example → conclusion with a suggestion.\n\n**Sample introduction** for 'Should coding be taught in schools?': 'Coding teaches children how to break problems into steps, a skill useful far beyond computers. For this reason, basic coding should be part of the school curriculum, taught alongside, not instead of, core subjects.'"
+            },
+            {
+              "h": "Traps",
+              "p": "Common mistakes:",
+              "points": [
+                "Writing a list of points instead of connected paragraphs.",
+                "Going under the word limit or far over it.",
+                "Copying phrases from memorised essays that do not fit the topic.",
+                "Ignoring a section because it seems easy — each part may have a cut-off."
+              ]
+            },
+            {
+              "h": "Section strategy",
+              "p": "Use your time well:",
+              "points": [
+                "Quant: do formula-based questions first (percentages, profit, TSD, interest).",
+                "Logical: coding-decoding and series are fast; long puzzles last.",
+                "Verbal: grammar and vocabulary in seconds; RC questions after skimming.",
+                "Essay: spend 2 minutes planning, most of the time writing, 2 minutes proofreading.",
+                "Do not leave questions blank if there is no negative marking in your drive."
+              ]
+            },
+            {
+              "h": "One more essay sample",
+              "p": "**Topic: 'Work from home vs work from office.'** Introduction: both models have value; a hybrid approach often works best. Body 1: home working saves commute time and helps focus on deep work. Body 2: office time builds mentoring and team relationships, especially for freshers. Conclusion: teams should agree on fixed office days for collaboration and flexible days for focused work."
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Aptitude, essay, technical, psychometric (+ coding in some drives).",
+                "Profit% on CP; upstream speed = u − v.",
+                "Essay: intro, two body paragraphs, conclusion.",
+                "Proofread every sentence before submitting.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -173,6 +223,56 @@
               "answer": 2,
               "explain": "Sprints deliver increments and adapt."
             }
+          ],
+          "notes": [
+            {
+              "h": "Technical MCQ section",
+              "p": "Technical MCQs are reported to cover **C/C++/Java basics**, **data structures**, **DBMS/SQL**, **operating systems**, **computer networks** and sometimes **software engineering**. Questions are mostly direct concept checks and short output predictions. Pattern as reported for recent drives; confirm on the official careers page."
+            },
+            {
+              "h": "Technical walkthroughs",
+              "p": "**Q1.** Which data structure is used for BFS? **Queue**.\n\n**Q2.** Worst-case time of quicksort? **O(n²)**.\n\n**Q3.** Which SQL clause filters groups? **HAVING**.\n\n**Q4.** Which layer of OSI does a router work at? **Network layer**.\n\n**Q5.** Which SDLC model suits changing requirements? **Agile**.\n\n**Q6.** Output of this Python snippet:\n\n`nums = [3, 1, 4, 1, 5]\nprint(sorted(set(nums)))\nprint(nums.index(1), nums.count(1))\nprint(\"-\".join(str(x * 2) for x in nums if x > 2))`\n\nOutput:\n`[1, 3, 4, 5]\n1 2\n6-8-10`"
+            },
+            {
+              "h": "Psychometric test",
+              "p": "The psychometric test is a long personality questionnaire (often 70–100+ statements). You rate how much you agree or choose the statement most like you. It checks work-related traits: **teamwork, reliability, stress handling, openness to learning, integrity**. There are no right answers, but your answers should be **consistent** — the same idea appears several times in different wording.",
+              "points": [
+                "Answer as you genuinely behave at work or in college projects.",
+                "Stay consistent; contradictions lower your profile.",
+                "Avoid always choosing the extreme option.",
+                "Do not try to guess what the company 'wants' on every item — it shows as inconsistency.",
+                "Keep a steady pace; there is usually a time limit."
+              ]
+            },
+            {
+              "h": "Sample psychometric statements",
+              "p": "**'I prefer to finish my own tasks before helping teammates.'** A balanced professional answer is usually near neutral — you complete your work but help others when needed.\n\n**'I get upset when plans change suddenly.'** Disagreeing slightly fits roles that need adaptability; answer honestly.\n\n**'I sometimes take credit for others' work.'** Integrity items like this are designed to catch faking; answer truthfully."
+            },
+            {
+              "h": "More technical samples",
+              "p": "**Q7.** Which normal form removes transitive dependencies? **3NF**.\n\n**Q8.** Which scheduling algorithm can cause starvation? **Priority scheduling** (and SJF); fixed with aging.\n\n**Q9.** In Java, which keyword prevents a method from being overridden? **final**.\n\n**Q10.** Time complexity of binary search? **O(log n)**.\n\n**Q11.** Which protocol assigns IP addresses automatically? **DHCP**.\n\n**Q12.** What does the `static` keyword on a Java method mean? It belongs to the class, so it can be called without an object."
+            },
+            {
+              "h": "Traps",
+              "p": "Common mistakes:",
+              "points": [
+                "Rushing technical MCQs and confusing similar terms (HAVING vs WHERE, TCP vs UDP).",
+                "Answering psychometric items inconsistently.",
+                "Changing answer style halfway through the long questionnaire because of fatigue.",
+                "Skipping the coding section if your drive includes one."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Technical MCQs: DS, DBMS, OS, CN, SDLC, language basics.",
+                "BFS uses a queue; HAVING filters groups; routers are layer 3.",
+                "Psychometric: honest, consistent, not extreme.",
+                "Integrity questions catch faking.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -233,6 +333,60 @@
               ],
               "answer": 1,
               "explain": "Genuine recruiters do not charge fees."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Communication test and interview flow",
+              "p": "Tech Mahindra commonly runs a **communication assessment** — an automated spoken-English test with tasks like reading aloud, repeating sentences, sentence building, answering short questions and passage retelling — before the **technical** and **HR interviews**. Pattern as reported for recent drives; confirm on the official careers page.",
+              "points": [
+                "Speak clearly at a natural pace; clarity matters more than accent.",
+                "Use a quiet room and a working headset.",
+                "In repeat tasks, keep going even if you miss a word.",
+                "Practise by reading news aloud for 10 minutes daily."
+              ]
+            },
+            {
+              "h": "Technical questions with model answers",
+              "p": "**Q: What is the difference between C and C++?** A: C is procedural; C++ adds classes, objects, inheritance, polymorphism, templates and the STL.\n\n**Q: What is a virtual function?** A: A base-class function that can be overridden so the call is decided at runtime based on the actual object.\n\n**Q: What is a foreign key?** A: A column referencing another table's primary key to keep data consistent.\n\n**Q: Explain the OSI model briefly.** A: Seven layers — physical, data link, network, transport, session, presentation, application — each handling one part of communication.\n\n**Q: Write a program to swap two numbers without a third variable.** A: `a = a + b; b = a - b; a = a - b;` (or XOR swap; watch overflow)."
+            },
+            {
+              "h": "HR questions with model answers",
+              "p": "**Q: Why Tech Mahindra?** A: Mention its strong telecom and digital transformation work, fresher training and your interest in those areas, with one fact from the official site.\n\n**Q: How do you handle pressure?** A: Prioritise, break work into steps, communicate early — with a short example.\n\n**Q: Are you willing to sign a service agreement and relocate?** A: Read the terms beforehand and answer honestly.\n\n**Q: What motivates you?** A: Learning new technologies and seeing users benefit from what you build."
+            },
+            {
+              "h": "Final-week checklist",
+              "p": "Before the interview day:",
+              "points": [
+                "Revise your resume line by line.",
+                "Practise a 1-minute self-introduction aloud.",
+                "Revise OOP, DBMS, OS and networks basics.",
+                "Prepare two STAR stories (teamwork, challenge).",
+                "Check camera, mic and internet for online rounds."
+              ]
+            },
+            {
+              "h": "Traps",
+              "p": "Avoid these in Tech Mahindra interviews:",
+              "points": [
+                "Memorised answers that sound robotic — speak naturally.",
+                "Not knowing what is written in your own resume.",
+                "Vague answers to 'why Tech Mahindra' without any specific fact.",
+                "Arguing with the interviewer instead of explaining your reasoning calmly.",
+                "Saying 'I don't know' and stopping — explain how you would find the answer instead.",
+                "Poor audio or video setup in online rounds; test everything 30 minutes early."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Communication test → technical → HR.",
+                "Clear, steady speech beats fast speech.",
+                "Know virtual functions, keys, OSI, swap logic.",
+                "Specific reasons for Tech Mahindra.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
             }
           ]
         }

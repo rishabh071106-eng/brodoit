@@ -1,0 +1,6961 @@
+{
+ "code": "fr",
+ "name": "French",
+ "native": "Français",
+ "flag": "🇫🇷",
+ "from": "en",
+ "fromName": "English",
+ "voice": "fr-FR",
+ "tagline": "Order croissants, chat in cafés, travel France & the francophone world.",
+ "units": [
+  {
+   "id": "u1",
+   "title": "Basics 1",
+   "emoji": "👋",
+   "goal": "Greet people and introduce yourself",
+   "lessons": [
+    {
+     "id": "u1l1",
+     "title": "Hello!",
+     "items": [
+      {
+       "t": "learn",
+       "word": "bonjour",
+       "tl": "bon-ZHOOR",
+       "meaning": "hello / good morning",
+       "example": "Bonjour, madame !",
+       "exampleMeaning": "Hello, ma'am!"
+      },
+      {
+       "t": "learn",
+       "word": "salut",
+       "tl": "sa-LU",
+       "meaning": "hi / bye (informal)",
+       "example": "Salut, ça va ?",
+       "exampleMeaning": "Hi, how's it going?"
+      },
+      {
+       "t": "learn",
+       "word": "merci",
+       "tl": "mehr-SEE",
+       "meaning": "thank you",
+       "example": "Merci beaucoup !",
+       "exampleMeaning": "Thank you very much!"
+      },
+      {
+       "t": "learn",
+       "word": "au revoir",
+       "tl": "oh ruh-VWAR",
+       "meaning": "goodbye",
+       "example": "Au revoir et merci !",
+       "exampleMeaning": "Goodbye and thank you!"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'thank you'?",
+       "options": [
+        "merci",
+        "bonjour",
+        "au revoir",
+        "salut"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "choose",
+       "prompt": "What does 'au revoir' mean?",
+       "options": [
+        "thanks",
+        "goodbye",
+        "please",
+        "hello"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Hello, ma'am!",
+       "answer": "Bonjour, madame !",
+       "bank": [
+        "madame",
+        "Bonjour,",
+        "merci",
+        "monsieur",
+        "!",
+        "Salut",
+        "revoir"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Merci beaucoup !",
+       "meaning": "Thank you very much!",
+       "bank": [
+        "salut",
+        "!",
+        "revoir",
+        "au",
+        "beaucoup",
+        "Bonjour",
+        "Merci"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Bonjour, madame !",
+       "meaning": "Hello, ma'am!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "bonjour",
+         "hello"
+        ],
+        [
+         "salut",
+         "hi"
+        ],
+        [
+         "merci",
+         "thank you"
+        ],
+        [
+         "au revoir",
+         "goodbye"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Au revoir et merci !",
+       "answer": "Goodbye and thank you!",
+       "bank": [
+        "Goodbye",
+        "you!",
+        "Hello",
+        "thank",
+        "and",
+        "please",
+        "good",
+        "hi"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is informal?",
+       "options": [
+        "bonjour",
+        "merci",
+        "salut",
+        "au revoir"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Salut, ça va ?",
+       "meaning": "Hi, how's it going?",
+       "bank": [
+        "Bonjour",
+        "?",
+        "ça",
+        "beaucoup",
+        "va",
+        "merci",
+        "Salut,",
+        "au"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u1l2",
+     "title": "Please and sorry",
+     "items": [
+      {
+       "t": "learn",
+       "word": "s'il vous plaît",
+       "tl": "seel voo PLEH",
+       "meaning": "please (formal)",
+       "example": "Un café, s'il vous plaît.",
+       "exampleMeaning": "A coffee, please."
+      },
+      {
+       "t": "learn",
+       "word": "oui / non",
+       "tl": "wee / noh",
+       "meaning": "yes / no",
+       "example": "Oui, merci. Non, merci.",
+       "exampleMeaning": "Yes, thank you. No, thank you."
+      },
+      {
+       "t": "learn",
+       "word": "pardon",
+       "tl": "par-DOH",
+       "meaning": "sorry / excuse me",
+       "example": "Pardon, monsieur !",
+       "exampleMeaning": "Excuse me, sir!"
+      },
+      {
+       "t": "learn",
+       "word": "de rien",
+       "tl": "duh RYAN",
+       "meaning": "you're welcome",
+       "example": "— Merci ! — De rien.",
+       "exampleMeaning": "— Thank you! — You're welcome."
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you say 'please' politely?",
+       "options": [
+        "de rien",
+        "pardon",
+        "merci",
+        "s'il vous plaît"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "fill",
+       "sentence": "Un café, ___ vous plaît.",
+       "meaning": "A coffee, please.",
+       "options": [
+        "s'il",
+        "de",
+        "merci",
+        "oui"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Excuse me, sir!",
+       "answer": "Pardon, monsieur !",
+       "bank": [
+        "!",
+        "Bonjour",
+        "non",
+        "madame",
+        "merci",
+        "Pardon,",
+        "monsieur"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "De rien, madame.",
+       "meaning": "You're welcome, ma'am.",
+       "bank": [
+        "oui",
+        "madame.",
+        "merci",
+        "Pardon",
+        "monsieur",
+        "De",
+        "rien,"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Un café, s'il vous plaît.",
+       "meaning": "A coffee, please."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "oui",
+         "yes"
+        ],
+        [
+         "non",
+         "no"
+        ],
+        [
+         "pardon",
+         "sorry"
+        ],
+        [
+         "de rien",
+         "you're welcome"
+        ],
+        [
+         "s'il vous plaît",
+         "please"
+        ]
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Someone says 'Merci !'. You reply:",
+       "options": [
+        "De rien",
+        "Pardon",
+        "Non",
+        "Au revoir"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Non, merci.",
+       "answer": "No, thank you.",
+       "bank": [
+        "Yes",
+        "hello",
+        "thank",
+        "sorry",
+        "you.",
+        "No,",
+        "please"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Oui, s'il vous plaît.",
+       "meaning": "Yes, please.",
+       "bank": [
+        "Oui,",
+        "plaît.",
+        "Non",
+        "pardon",
+        "s'il",
+        "merci",
+        "rien",
+        "vous"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u1l3",
+     "title": "My name is...",
+     "items": [
+      {
+       "t": "learn",
+       "word": "je m'appelle",
+       "tl": "zhuh ma-PEL",
+       "meaning": "my name is",
+       "example": "Je m'appelle Marie.",
+       "exampleMeaning": "My name is Marie."
+      },
+      {
+       "t": "learn",
+       "word": "comment tu t'appelles ?",
+       "tl": "ko-MOH tu ta-PEL",
+       "meaning": "what's your name? (informal)",
+       "example": "Comment tu t'appelles ?",
+       "exampleMeaning": "What's your name?"
+      },
+      {
+       "t": "learn",
+       "word": "enchanté / enchantée",
+       "tl": "on-shon-TAY",
+       "meaning": "nice to meet you (m / f)",
+       "example": "Enchanté, Marie !",
+       "exampleMeaning": "Nice to meet you, Marie!"
+      },
+      {
+       "t": "learn",
+       "word": "et toi ?",
+       "tl": "ay TWA",
+       "meaning": "and you? (informal)",
+       "example": "Je m'appelle Paul, et toi ?",
+       "exampleMeaning": "My name is Paul, and you?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'my name is'?",
+       "options": [
+        "enchanté",
+        "je m'appelle",
+        "pardon",
+        "et toi"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My name is Paul.",
+       "answer": "Je m'appelle Paul.",
+       "bank": [
+        "m'appelle",
+        "t'appelles",
+        "et",
+        "Comment",
+        "Marie",
+        "Je",
+        "Paul."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Comment tu t'appelles ?",
+       "meaning": "What's your name?",
+       "bank": [
+        "toi",
+        "Bonjour",
+        "Je",
+        "?",
+        "Comment",
+        "m'appelle",
+        "t'appelles",
+        "tu"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Enchanté, je m'appelle Marie.",
+       "meaning": "Nice to meet you, my name is Marie."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "je m'appelle",
+         "my name is"
+        ],
+        [
+         "enchanté",
+         "nice to meet you"
+        ],
+        [
+         "et toi ?",
+         "and you?"
+        ],
+        [
+         "comment",
+         "how / what"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Je ___ Léa, et toi ?",
+       "meaning": "My name is Léa, and you?",
+       "options": [
+        "m'appelle",
+        "t'appelles",
+        "merci",
+        "appelle"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Je m'appelle Paul, et toi ?",
+       "answer": "My name is Paul, and you?",
+       "bank": [
+        "My",
+        "Hello",
+        "nice",
+        "you?",
+        "am",
+        "name",
+        "and",
+        "Paul,",
+        "is"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "A woman says 'nice to meet you'. She writes:",
+       "options": [
+        "merci",
+        "salut",
+        "enchantée",
+        "enchanté"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Enchanté, Paul !",
+       "meaning": "Nice to meet you, Paul!",
+       "bank": [
+        "Marie",
+        "Je",
+        "Paul",
+        "!",
+        "m'appelle",
+        "merci",
+        "Enchanté,"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u1l4",
+     "title": "Review: Basics 1",
+     "items": [
+      {
+       "t": "learn",
+       "word": "bonsoir",
+       "tl": "bon-SWAR",
+       "meaning": "good evening",
+       "example": "Bonsoir, monsieur !",
+       "exampleMeaning": "Good evening, sir!"
+      },
+      {
+       "t": "learn",
+       "word": "à bientôt",
+       "tl": "a byan-TOH",
+       "meaning": "see you soon",
+       "example": "Au revoir, à bientôt !",
+       "exampleMeaning": "Goodbye, see you soon!"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'good evening'?",
+       "options": [
+        "bonjour",
+        "bientôt",
+        "salut",
+        "bonsoir"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "bonsoir",
+         "good evening"
+        ],
+        [
+         "à bientôt",
+         "see you soon"
+        ],
+        [
+         "pardon",
+         "excuse me"
+        ],
+        [
+         "de rien",
+         "you're welcome"
+        ],
+        [
+         "merci",
+         "thank you"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Goodbye, see you soon!",
+       "answer": "Au revoir, à bientôt !",
+       "bank": [
+        "!",
+        "à",
+        "Bonsoir",
+        "Salut",
+        "merci",
+        "Au",
+        "s'il",
+        "revoir,",
+        "bientôt"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Bonsoir, je m'appelle Léa.",
+       "meaning": "Good evening, my name is Léa.",
+       "bank": [
+        "Bonjour",
+        "merci",
+        "Léa.",
+        "Bonsoir,",
+        "m'appelle",
+        "je",
+        "toi",
+        "enchantée"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Au revoir, à bientôt !",
+       "meaning": "Goodbye, see you soon!"
+      },
+      {
+       "t": "fill",
+       "sentence": "Comment tu ___ ?",
+       "meaning": "What's your name?",
+       "options": [
+        "t'appelles",
+        "m'appelle",
+        "appelle",
+        "toi"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Pardon, madame. Merci beaucoup !",
+       "answer": "Excuse me, ma'am. Thank you very much!",
+       "bank": [
+        "ma'am.",
+        "very",
+        "you",
+        "me,",
+        "please",
+        "Excuse",
+        "sir",
+        "much!",
+        "Hello",
+        "welcome",
+        "Thank"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'De rien' means:",
+       "options": [
+        "you're welcome",
+        "please",
+        "sorry",
+        "nothing"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Oui, merci. Au revoir !",
+       "meaning": "Yes, thank you. Goodbye!",
+       "bank": [
+        "revoir",
+        "Non",
+        "Oui,",
+        "merci.",
+        "!",
+        "Au",
+        "Bonsoir",
+        "rien",
+        "s'il"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Hi, how's it going?",
+       "answer": "Salut, ça va ?",
+       "bank": [
+        "ça",
+        "merci",
+        "va",
+        "?",
+        "Salut,",
+        "toi",
+        "Bonjour",
+        "Comment"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the polite 'please':",
+       "options": [
+        "pardon",
+        "s'il vous plaît",
+        "de rien",
+        "et toi"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "speak",
+       "text": "Enchantée, et toi ?",
+       "meaning": "Nice to meet you, and you?"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u2",
+   "title": "Basics 2",
+   "emoji": "🔢",
+   "goal": "Count, say how you are and where you're from",
+   "lessons": [
+    {
+     "id": "u2l1",
+     "title": "How are you?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "ça va ?",
+       "tl": "sa VA",
+       "meaning": "how's it going? / fine",
+       "example": "— Ça va ? — Ça va bien, merci.",
+       "exampleMeaning": "— How's it going? — I'm fine, thanks."
+      },
+      {
+       "t": "learn",
+       "word": "comment allez-vous ?",
+       "tl": "ko-MOH ta-lay VOO",
+       "meaning": "how are you? (formal)",
+       "example": "Bonjour, comment allez-vous ?",
+       "exampleMeaning": "Hello, how are you?"
+      },
+      {
+       "t": "learn",
+       "word": "très bien",
+       "tl": "treh BYAN",
+       "meaning": "very well",
+       "example": "Je vais très bien, merci.",
+       "exampleMeaning": "I'm doing very well, thank you."
+      },
+      {
+       "t": "learn",
+       "word": "pas mal",
+       "tl": "pa MAL",
+       "meaning": "not bad",
+       "example": "— Ça va ? — Pas mal, et toi ?",
+       "exampleMeaning": "— How's it going? — Not bad, and you?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is the formal 'how are you?'",
+       "options": [
+        "Salut",
+        "Ça va ?",
+        "Comment allez-vous ?",
+        "Et toi ?"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I'm fine, thanks.",
+       "answer": "Ça va bien, merci.",
+       "bank": [
+        "très",
+        "merci.",
+        "mal",
+        "Bonjour",
+        "bien,",
+        "va",
+        "pas",
+        "Ça"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Comment allez-vous ?",
+       "meaning": "How are you?",
+       "bank": [
+        "?",
+        "toi",
+        "allez-vous",
+        "bien",
+        "Comment",
+        "va",
+        "Ça"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ça va bien, merci. Et toi ?",
+       "meaning": "I'm fine, thanks. And you?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "ça va",
+         "how's it going"
+        ],
+        [
+         "très bien",
+         "very well"
+        ],
+        [
+         "pas mal",
+         "not bad"
+        ],
+        [
+         "et toi ?",
+         "and you?"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Je vais très ___, merci.",
+       "meaning": "I'm doing very well, thank you.",
+       "options": [
+        "bien",
+        "mal",
+        "oui",
+        "va"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Pas mal, et toi ?",
+       "answer": "Not bad, and you?",
+       "bank": [
+        "well",
+        "hello",
+        "Very",
+        "and",
+        "bad,",
+        "you?",
+        "Not",
+        "thanks"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Très bien' means:",
+       "options": [
+        "so-so",
+        "not bad",
+        "goodbye",
+        "very well"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "Je vais très bien, merci.",
+       "meaning": "I'm doing very well, thank you.",
+       "bank": [
+        "très",
+        "vais",
+        "Je",
+        "va",
+        "pas",
+        "merci.",
+        "Ça",
+        "bien,",
+        "mal"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u2l2",
+     "title": "Numbers 1–10",
+     "items": [
+      {
+       "t": "learn",
+       "word": "un, deux, trois",
+       "tl": "uh, duh, trwa",
+       "meaning": "one, two, three",
+       "example": "Un, deux, trois, partez !",
+       "exampleMeaning": "One, two, three, go!"
+      },
+      {
+       "t": "learn",
+       "word": "quatre, cinq, six",
+       "tl": "katr, sank, sees",
+       "meaning": "four, five, six",
+       "example": "J'ai quatre frères.",
+       "exampleMeaning": "I have four brothers."
+      },
+      {
+       "t": "learn",
+       "word": "sept, huit, neuf, dix",
+       "tl": "set, weet, nuhf, dees",
+       "meaning": "seven, eight, nine, ten",
+       "example": "Il est dix heures.",
+       "exampleMeaning": "It is ten o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "combien ?",
+       "tl": "kom-BYAN",
+       "meaning": "how many? / how much?",
+       "example": "Combien de cafés ?",
+       "exampleMeaning": "How many coffees?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'five'?",
+       "options": [
+        "cinq",
+        "neuf",
+        "six",
+        "sept"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "choose",
+       "prompt": "'Huit' is:",
+       "options": [
+        "6",
+        "8",
+        "9",
+        "7"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "deux",
+         "two"
+        ],
+        [
+         "quatre",
+         "four"
+        ],
+        [
+         "sept",
+         "seven"
+        ],
+        [
+         "dix",
+         "ten"
+        ],
+        [
+         "neuf",
+         "nine"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Two coffees, please.",
+       "answer": "Deux cafés, s'il vous plaît.",
+       "bank": [
+        "cafés,",
+        "s'il",
+        "trois",
+        "un",
+        "café",
+        "Deux",
+        "plaît.",
+        "merci",
+        "vous"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Un, deux, trois, quatre, cinq.",
+       "meaning": "One, two, three, four, five.",
+       "bank": [
+        "huit",
+        "deux,",
+        "Un,",
+        "cinq.",
+        "dix",
+        "quatre,",
+        "sept",
+        "six",
+        "trois,"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Six, sept, huit, neuf, dix.",
+       "meaning": "Six, seven, eight, nine, ten."
+      },
+      {
+       "t": "fill",
+       "sentence": "Trois plus quatre font ___.",
+       "meaning": "Three plus four make seven.",
+       "options": [
+        "sept",
+        "six",
+        "huit",
+        "cinq"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Combien de cafés ?",
+       "answer": "How many coffees?",
+       "bank": [
+        "How",
+        "please",
+        "two",
+        "are",
+        "much",
+        "coffees?",
+        "many"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which number comes after 'cinq'?",
+       "options": [
+        "quatre",
+        "trois",
+        "six",
+        "sept"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Combien ? Trois, s'il vous plaît.",
+       "meaning": "How many? Three, please.",
+       "bank": [
+        "Combien",
+        "Deux",
+        "merci",
+        "deux",
+        "s'il",
+        "cafés",
+        "?",
+        "vous",
+        "Trois,",
+        "plaît."
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u2l3",
+     "title": "Where are you from?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "je suis",
+       "tl": "zhuh SWEE",
+       "meaning": "I am",
+       "example": "Je suis étudiant.",
+       "exampleMeaning": "I am a student."
+      },
+      {
+       "t": "learn",
+       "word": "tu es",
+       "tl": "tu EH",
+       "meaning": "you are (informal)",
+       "example": "Tu es français ?",
+       "exampleMeaning": "Are you French?"
+      },
+      {
+       "t": "learn",
+       "word": "d'où viens-tu ?",
+       "tl": "doo vyan TU",
+       "meaning": "where are you from?",
+       "example": "D'où viens-tu ? De Paris ?",
+       "exampleMeaning": "Where are you from? From Paris?"
+      },
+      {
+       "t": "learn",
+       "word": "je viens de",
+       "tl": "zhuh vyan duh",
+       "meaning": "I come from",
+       "example": "Je viens de Londres.",
+       "exampleMeaning": "I come from London."
+      },
+      {
+       "t": "learn",
+       "word": "anglais / française",
+       "tl": "on-GLEH / fron-SEZ",
+       "meaning": "English (m) / French (f)",
+       "example": "Je suis anglais. Elle est française.",
+       "exampleMeaning": "I am English. She is French."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je suis' means:",
+       "options": [
+        "we are",
+        "you are",
+        "he is",
+        "I am"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I come from London.",
+       "answer": "Je viens de Londres.",
+       "bank": [
+        "Je",
+        "viens",
+        "tu",
+        "es",
+        "Paris",
+        "Londres.",
+        "de",
+        "suis"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "D'où viens-tu ?",
+       "meaning": "Where are you from?",
+       "bank": [
+        "Je",
+        "D'où",
+        "viens",
+        "de",
+        "viens-tu",
+        "Paris",
+        "?"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Je suis anglais et je viens de Londres.",
+       "meaning": "I am English and I come from London."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "je suis",
+         "I am"
+        ],
+        [
+         "tu es",
+         "you are"
+        ],
+        [
+         "je viens de",
+         "I come from"
+        ],
+        [
+         "anglais",
+         "English"
+        ],
+        [
+         "française",
+         "French (f)"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Tu ___ français ?",
+       "meaning": "Are you French?",
+       "options": [
+        "es",
+        "suis",
+        "viens",
+        "est"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Je suis étudiant.",
+       "answer": "I am a student.",
+       "bank": [
+        "French",
+        "student.",
+        "You",
+        "a",
+        "am",
+        "are",
+        "I",
+        "from"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "A woman from France says:",
+       "options": [
+        "Je suis française.",
+        "Je suis français.",
+        "Je suis anglais.",
+        "Tu es française."
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u2l4",
+     "title": "Review: Basics 2",
+     "items": [
+      {
+       "t": "learn",
+       "word": "elle / il",
+       "tl": "el / eel",
+       "meaning": "she / he",
+       "example": "Elle est française. Il est anglais.",
+       "exampleMeaning": "She is French. He is English."
+      },
+      {
+       "t": "learn",
+       "word": "habiter",
+       "tl": "a-bee-TAY",
+       "meaning": "to live (somewhere)",
+       "example": "J'habite à Paris.",
+       "exampleMeaning": "I live in Paris."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Il est anglais' means:",
+       "options": [
+        "You are English",
+        "He is English",
+        "She is English",
+        "I am English"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "j'habite",
+         "I live"
+        ],
+        [
+         "je viens de",
+         "I come from"
+        ],
+        [
+         "combien",
+         "how many"
+        ],
+        [
+         "pas mal",
+         "not bad"
+        ],
+        [
+         "dix",
+         "ten"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I live in Paris.",
+       "answer": "J'habite à Paris.",
+       "bank": [
+        "viens",
+        "de",
+        "Londres",
+        "suis",
+        "Paris.",
+        "à",
+        "J'habite"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Elle est française et elle habite à Paris.",
+       "meaning": "She is French and she lives in Paris.",
+       "bank": [
+        "Londres",
+        "Elle",
+        "Il",
+        "à",
+        "et",
+        "est",
+        "anglais",
+        "suis",
+        "française",
+        "elle",
+        "habite",
+        "Paris."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Bonjour, je m'appelle Marie et j'habite à Paris.",
+       "meaning": "Hello, my name is Marie and I live in Paris."
+      },
+      {
+       "t": "fill",
+       "sentence": "Comment ___-vous ?",
+       "meaning": "How are you?",
+       "options": [
+        "allez",
+        "va",
+        "es",
+        "viens"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Je vais très bien, merci. Et toi ?",
+       "answer": "I'm doing very well, thank you. And you?",
+       "bank": [
+        "are",
+        "you",
+        "And",
+        "very",
+        "you?",
+        "not",
+        "I'm",
+        "bad",
+        "you.",
+        "doing",
+        "thank",
+        "well,"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'nine'?",
+       "options": [
+        "sept",
+        "dix",
+        "neuf",
+        "huit"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "J'ai deux frères.",
+       "meaning": "I have two brothers.",
+       "bank": [
+        "trois",
+        "frères.",
+        "quatre",
+        "J'ai",
+        "suis",
+        "Je",
+        "deux"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Four coffees, please.",
+       "answer": "Quatre cafés, s'il vous plaît.",
+       "bank": [
+        "s'il",
+        "merci",
+        "cafés,",
+        "cinq",
+        "Combien",
+        "vous",
+        "un",
+        "Quatre",
+        "plaît."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Complete: 'D'où ___-tu ?'",
+       "options": [
+        "habites",
+        "es",
+        "vais",
+        "viens"
+       ],
+       "answer": 3
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u3",
+   "title": "Food & Drink",
+   "emoji": "🥐",
+   "goal": "Order food and drinks in a café",
+   "lessons": [
+    {
+     "id": "u3l1",
+     "title": "At the café",
+     "items": [
+      {
+       "t": "learn",
+       "word": "un café / un thé",
+       "tl": "uh ka-FAY / uh TAY",
+       "meaning": "a coffee / a tea",
+       "example": "Un café et un thé, s'il vous plaît.",
+       "exampleMeaning": "A coffee and a tea, please."
+      },
+      {
+       "t": "learn",
+       "word": "un croissant",
+       "tl": "uh krwa-SOH",
+       "meaning": "a croissant",
+       "example": "Je voudrais un croissant.",
+       "exampleMeaning": "I would like a croissant."
+      },
+      {
+       "t": "learn",
+       "word": "je voudrais",
+       "tl": "zhuh voo-DREH",
+       "meaning": "I would like",
+       "example": "Je voudrais un thé, s'il vous plaît.",
+       "exampleMeaning": "I would like a tea, please."
+      },
+      {
+       "t": "learn",
+       "word": "l'eau",
+       "tl": "LOH",
+       "meaning": "water",
+       "example": "Une bouteille d'eau, s'il vous plaît.",
+       "exampleMeaning": "A bottle of water, please."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je voudrais' means:",
+       "options": [
+        "I would like",
+        "I am",
+        "I eat",
+        "I have"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I would like a coffee.",
+       "answer": "Je voudrais un café.",
+       "bank": [
+        "thé",
+        "une",
+        "voudrais",
+        "croissant",
+        "Je",
+        "suis",
+        "café.",
+        "un"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Un croissant et un café, s'il vous plaît.",
+       "meaning": "A croissant and a coffee, please.",
+       "bank": [
+        "vous",
+        "café,",
+        "merci",
+        "voudrais",
+        "plaît.",
+        "s'il",
+        "et",
+        "croissant",
+        "thé",
+        "un",
+        "Un",
+        "une"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Je voudrais un thé, s'il vous plaît.",
+       "meaning": "I would like a tea, please."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "un café",
+         "a coffee"
+        ],
+        [
+         "un thé",
+         "a tea"
+        ],
+        [
+         "un croissant",
+         "a croissant"
+        ],
+        [
+         "l'eau",
+         "water"
+        ],
+        [
+         "je voudrais",
+         "I would like"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Une bouteille ___, s'il vous plaît.",
+       "meaning": "A bottle of water, please.",
+       "options": [
+        "d'eau",
+        "de café",
+        "du thé",
+        "le pain"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Je voudrais un croissant et un thé.",
+       "answer": "I would like a croissant and a tea.",
+       "bank": [
+        "like",
+        "water",
+        "have",
+        "tea.",
+        "two",
+        "would",
+        "coffee",
+        "croissant",
+        "I",
+        "a",
+        "and"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "What do you drink in the morning in French: 'un ___'?",
+       "options": [
+        "eau",
+        "café",
+        "pain",
+        "croissant"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Je voudrais de l'eau.",
+       "meaning": "I would like some water.",
+       "bank": [
+        "de",
+        "merci",
+        "voudrais",
+        "thé",
+        "l'eau.",
+        "Je",
+        "un",
+        "café"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u3l2",
+     "title": "I eat, I drink",
+     "items": [
+      {
+       "t": "learn",
+       "word": "manger",
+       "tl": "mon-ZHAY",
+       "meaning": "to eat",
+       "example": "Je mange du pain.",
+       "exampleMeaning": "I eat bread."
+      },
+      {
+       "t": "learn",
+       "word": "boire",
+       "tl": "BWAR",
+       "meaning": "to drink",
+       "example": "Je bois du café. Tu bois du thé.",
+       "exampleMeaning": "I drink coffee. You drink tea."
+      },
+      {
+       "t": "learn",
+       "word": "le pain / le fromage",
+       "tl": "luh PAN / luh fro-MAZH",
+       "meaning": "bread / cheese",
+       "example": "Le pain et le fromage, c'est bon !",
+       "exampleMeaning": "Bread and cheese, that's good!"
+      },
+      {
+       "t": "learn",
+       "word": "avoir faim / avoir soif",
+       "tl": "a-VWAR FAN / SWAF",
+       "meaning": "to be hungry / thirsty",
+       "example": "J'ai faim et j'ai soif.",
+       "exampleMeaning": "I'm hungry and I'm thirsty."
+      },
+      {
+       "t": "learn",
+       "word": "c'est bon",
+       "tl": "seh BOH",
+       "meaning": "it's good / tasty",
+       "example": "Mmm, c'est bon !",
+       "exampleMeaning": "Mmm, it's good!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'J'ai soif' means:",
+       "options": [
+        "I'm tired",
+        "I eat",
+        "I'm thirsty",
+        "I'm hungry"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "fill",
+       "sentence": "Je ___ du pain.",
+       "meaning": "I eat bread.",
+       "options": [
+        "mange",
+        "bois",
+        "suis",
+        "ai"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I drink coffee.",
+       "answer": "Je bois du café.",
+       "bank": [
+        "café.",
+        "thé",
+        "du",
+        "mange",
+        "Je",
+        "le",
+        "pain",
+        "bois"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "J'ai faim et j'ai soif.",
+       "meaning": "I'm hungry and I'm thirsty.",
+       "bank": [
+        "mange",
+        "Tu",
+        "pain",
+        "faim",
+        "J'ai",
+        "et",
+        "bois",
+        "soif.",
+        "j'ai"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Le pain et le fromage, c'est bon !",
+       "meaning": "Bread and cheese, that's good!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "manger",
+         "to eat"
+        ],
+        [
+         "boire",
+         "to drink"
+        ],
+        [
+         "le pain",
+         "bread"
+        ],
+        [
+         "le fromage",
+         "cheese"
+        ],
+        [
+         "avoir faim",
+         "to be hungry"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Tu bois du thé ?",
+       "answer": "Do you drink tea?",
+       "bank": [
+        "bread",
+        "coffee",
+        "I",
+        "tea?",
+        "drink",
+        "you",
+        "eat",
+        "Do"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the correct form: 'Tu ___ du café.'",
+       "options": [
+        "bois du",
+        "boire",
+        "mange",
+        "bois"
+       ],
+       "answer": 3
+      }
+     ]
+    },
+    {
+     "id": "u3l3",
+     "title": "At the restaurant",
+     "items": [
+      {
+       "t": "learn",
+       "word": "le menu / la carte",
+       "tl": "luh muh-NU / la KART",
+       "meaning": "set menu / the menu",
+       "example": "La carte, s'il vous plaît.",
+       "exampleMeaning": "The menu, please."
+      },
+      {
+       "t": "learn",
+       "word": "l'addition",
+       "tl": "la-dee-SYOH",
+       "meaning": "the bill",
+       "example": "L'addition, s'il vous plaît !",
+       "exampleMeaning": "The bill, please!"
+      },
+      {
+       "t": "learn",
+       "word": "le poulet / le poisson",
+       "tl": "luh poo-LEH / luh pwa-SOH",
+       "meaning": "chicken / fish",
+       "example": "Je voudrais le poulet, pas le poisson.",
+       "exampleMeaning": "I'd like the chicken, not the fish."
+      },
+      {
+       "t": "learn",
+       "word": "délicieux",
+       "tl": "day-lee-SYUH",
+       "meaning": "delicious",
+       "example": "C'est délicieux !",
+       "exampleMeaning": "It's delicious!"
+      },
+      {
+       "t": "learn",
+       "word": "un verre de vin",
+       "tl": "uh vehr duh VAN",
+       "meaning": "a glass of wine",
+       "example": "Un verre de vin rouge, s'il vous plaît.",
+       "exampleMeaning": "A glass of red wine, please."
+      },
+      {
+       "t": "choose",
+       "prompt": "How do you ask for the bill?",
+       "options": [
+        "L'addition, s'il vous plaît.",
+        "Un verre de vin.",
+        "C'est délicieux.",
+        "La carte, s'il vous plaît."
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "A glass of red wine, please.",
+       "answer": "Un verre de vin rouge, s'il vous plaît.",
+       "bank": [
+        "eau",
+        "plaît.",
+        "Un",
+        "vin",
+        "s'il",
+        "verre",
+        "rouge,",
+        "blanc",
+        "de",
+        "la",
+        "poulet",
+        "vous"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Je voudrais le poisson, s'il vous plaît.",
+       "meaning": "I would like the fish, please.",
+       "bank": [
+        "s'il",
+        "voudrais",
+        "plaît.",
+        "vin",
+        "Je",
+        "poulet",
+        "le",
+        "carte",
+        "un",
+        "vous",
+        "poisson,"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "L'addition, s'il vous plaît !",
+       "meaning": "The bill, please!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "l'addition",
+         "the bill"
+        ],
+        [
+         "la carte",
+         "the menu"
+        ],
+        [
+         "le poulet",
+         "chicken"
+        ],
+        [
+         "le poisson",
+         "fish"
+        ],
+        [
+         "délicieux",
+         "delicious"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Le poulet est ___ !",
+       "meaning": "The chicken is delicious!",
+       "options": [
+        "délicieux",
+        "faim",
+        "soif",
+        "eau"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "La carte, s'il vous plaît.",
+       "answer": "The menu, please.",
+       "bank": [
+        "wine",
+        "menu,",
+        "fish",
+        "bill",
+        "The",
+        "glass",
+        "please."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Le poisson' is:",
+       "options": [
+        "cheese",
+        "fish",
+        "chicken",
+        "bread"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Un verre de vin et le poulet.",
+       "meaning": "A glass of wine and the chicken.",
+       "bank": [
+        "le",
+        "Un",
+        "poisson",
+        "et",
+        "vin",
+        "deux",
+        "eau",
+        "poulet.",
+        "de",
+        "verre",
+        "café"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u3l4",
+     "title": "Review: Food & Drink",
+     "items": [
+      {
+       "t": "learn",
+       "word": "une salade / une soupe",
+       "tl": "un sa-LAD / un SOOP",
+       "meaning": "a salad / a soup",
+       "example": "Une salade et une soupe, s'il vous plaît.",
+       "exampleMeaning": "A salad and a soup, please."
+      },
+      {
+       "t": "learn",
+       "word": "je prends",
+       "tl": "zhuh PROH",
+       "meaning": "I'll have (I take)",
+       "example": "Je prends le poulet.",
+       "exampleMeaning": "I'll have the chicken."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je prends le poisson' means:",
+       "options": [
+        "I drink fish",
+        "I like fish",
+        "I'll have the fish",
+        "I eat bread"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "une salade",
+         "a salad"
+        ],
+        [
+         "une soupe",
+         "a soup"
+        ],
+        [
+         "je prends",
+         "I'll have"
+        ],
+        [
+         "l'eau",
+         "water"
+        ],
+        [
+         "le fromage",
+         "cheese"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I'll have the chicken and a salad.",
+       "answer": "Je prends le poulet et une salade.",
+       "bank": [
+        "soupe",
+        "voudrais",
+        "le",
+        "Je",
+        "bois",
+        "salade.",
+        "poisson",
+        "et",
+        "poulet",
+        "une",
+        "prends"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "J'ai faim ! Je prends une soupe.",
+       "meaning": "I'm hungry! I'll have a soup.",
+       "bank": [
+        "soif",
+        "J'ai",
+        "Je",
+        "!",
+        "du",
+        "faim",
+        "une",
+        "mange",
+        "prends",
+        "salade",
+        "soupe."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Je voudrais un café et un croissant, s'il vous plaît.",
+       "meaning": "I would like a coffee and a croissant, please."
+      },
+      {
+       "t": "fill",
+       "sentence": "Tu ___ du vin ?",
+       "meaning": "Do you drink wine?",
+       "options": [
+        "bois",
+        "manges",
+        "prends",
+        "es"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "C'est délicieux ! L'addition, s'il vous plaît.",
+       "answer": "It's delicious! The bill, please.",
+       "bank": [
+        "water",
+        "It's",
+        "delicious!",
+        "good",
+        "thanks",
+        "menu",
+        "please.",
+        "The",
+        "bill,"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which word means 'bread'?",
+       "options": [
+        "le vin",
+        "le thé",
+        "le poulet",
+        "le pain"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "Je mange du pain et du fromage.",
+       "meaning": "I eat bread and cheese.",
+       "bank": [
+        "Je",
+        "bois",
+        "et",
+        "mange",
+        "Tu",
+        "du",
+        "pain",
+        "soupe",
+        "fromage.",
+        "poulet"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Two teas and water, please.",
+       "answer": "Deux thés et de l'eau, s'il vous plaît.",
+       "bank": [
+        "cafés",
+        "Deux",
+        "plaît.",
+        "vin",
+        "un",
+        "l'eau,",
+        "s'il",
+        "et",
+        "vous",
+        "thés",
+        "de",
+        "trois"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Complete: 'Un verre de ___ rouge.'",
+       "options": [
+        "vin",
+        "eau",
+        "thé",
+        "café"
+       ],
+       "answer": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u4",
+   "title": "Family & People",
+   "emoji": "👨‍👩‍👧",
+   "goal": "Talk about your family and describe people",
+   "lessons": [
+    {
+     "id": "u4l1",
+     "title": "My family",
+     "items": [
+      {
+       "t": "learn",
+       "word": "la famille",
+       "tl": "la fa-MEE",
+       "meaning": "the family",
+       "example": "J'aime ma famille.",
+       "exampleMeaning": "I love my family."
+      },
+      {
+       "t": "learn",
+       "word": "la mère / le père",
+       "tl": "la MEHR / luh PEHR",
+       "meaning": "mother / father",
+       "example": "Ma mère et mon père habitent à Lyon.",
+       "exampleMeaning": "My mother and father live in Lyon."
+      },
+      {
+       "t": "learn",
+       "word": "le frère / la sœur",
+       "tl": "luh FREHR / la SUHR",
+       "meaning": "brother / sister",
+       "example": "J'ai un frère et une sœur.",
+       "exampleMeaning": "I have a brother and a sister."
+      },
+      {
+       "t": "learn",
+       "word": "mon / ma",
+       "tl": "moh / ma",
+       "meaning": "my (m / f)",
+       "example": "Mon frère, ma sœur.",
+       "exampleMeaning": "My brother, my sister."
+      },
+      {
+       "t": "choose",
+       "prompt": "'La sœur' means:",
+       "options": [
+        "brother",
+        "sister",
+        "father",
+        "mother"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "fill",
+       "sentence": "___ mère s'appelle Claire.",
+       "meaning": "My mother's name is Claire.",
+       "options": [
+        "Ma",
+        "Mon",
+        "Le",
+        "La"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I have a brother and a sister.",
+       "answer": "J'ai un frère et une sœur.",
+       "bank": [
+        "père",
+        "et",
+        "un",
+        "J'ai",
+        "mère",
+        "deux",
+        "mon",
+        "frère",
+        "sœur.",
+        "une"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Mon père s'appelle Marc.",
+       "meaning": "My father's name is Marc.",
+       "bank": [
+        "s'appelle",
+        "mère",
+        "Ma",
+        "Marc.",
+        "Mon",
+        "est",
+        "père",
+        "frère"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ma mère et mon père habitent à Lyon.",
+       "meaning": "My mother and father live in Lyon."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la mère",
+         "mother"
+        ],
+        [
+         "le père",
+         "father"
+        ],
+        [
+         "le frère",
+         "brother"
+        ],
+        [
+         "la sœur",
+         "sister"
+        ],
+        [
+         "la famille",
+         "family"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "J'ai deux frères.",
+       "answer": "I have two brothers.",
+       "bank": [
+        "my",
+        "two",
+        "sisters",
+        "I",
+        "have",
+        "three",
+        "am",
+        "brothers."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is correct?",
+       "options": [
+        "ma père",
+        "ma frère",
+        "mon frère",
+        "mon sœur"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "J'aime ma famille.",
+       "meaning": "I love my family.",
+       "bank": [
+        "est",
+        "sœur",
+        "ma",
+        "famille.",
+        "frère",
+        "J'aime",
+        "Mon"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u4l2",
+     "title": "Describing people",
+     "items": [
+      {
+       "t": "learn",
+       "word": "grand / petit",
+       "tl": "GROH / puh-TEE",
+       "meaning": "tall, big / short, small",
+       "example": "Mon frère est grand et je suis petit.",
+       "exampleMeaning": "My brother is tall and I am short."
+      },
+      {
+       "t": "learn",
+       "word": "gentil / gentille",
+       "tl": "zhon-TEE / zhon-TEE-yuh",
+       "meaning": "kind (m / f)",
+       "example": "Ma sœur est très gentille.",
+       "exampleMeaning": "My sister is very kind."
+      },
+      {
+       "t": "learn",
+       "word": "jeune / vieux",
+       "tl": "ZHUHN / VYUH",
+       "meaning": "young / old",
+       "example": "Mon père n'est pas vieux, il est jeune !",
+       "exampleMeaning": "My father isn't old, he's young!"
+      },
+      {
+       "t": "learn",
+       "word": "ne ... pas",
+       "tl": "nuh ... PA",
+       "meaning": "not",
+       "example": "Je ne suis pas grand.",
+       "exampleMeaning": "I am not tall."
+      },
+      {
+       "t": "learn",
+       "word": "l'ami / l'amie",
+       "tl": "la-MEE",
+       "meaning": "friend (m / f)",
+       "example": "Paul est mon ami.",
+       "exampleMeaning": "Paul is my friend."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Il n'est pas grand' means:",
+       "options": [
+        "He is old",
+        "He is kind",
+        "He is tall",
+        "He is not tall"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "fill",
+       "sentence": "Ma sœur est ___.",
+       "meaning": "My sister is kind.",
+       "options": [
+        "gentille",
+        "gentil",
+        "grand",
+        "vieux"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I am not tall.",
+       "answer": "Je ne suis pas grand.",
+       "bank": [
+        "il",
+        "grand.",
+        "Je",
+        "petit",
+        "est",
+        "suis",
+        "très",
+        "pas",
+        "ne"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Mon ami est jeune et gentil.",
+       "meaning": "My friend is young and kind.",
+       "bank": [
+        "amie",
+        "Mon",
+        "est",
+        "et",
+        "grande",
+        "gentil.",
+        "vieux",
+        "jeune",
+        "ami",
+        "ne"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Ma mère est petite et très gentille.",
+       "meaning": "My mother is short and very kind."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "grand",
+         "tall"
+        ],
+        [
+         "petit",
+         "short"
+        ],
+        [
+         "jeune",
+         "young"
+        ],
+        [
+         "vieux",
+         "old"
+        ],
+        [
+         "gentil",
+         "kind"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Paul n'est pas vieux.",
+       "answer": "Paul is not old.",
+       "bank": [
+        "not",
+        "my",
+        "kind",
+        "Paul",
+        "young",
+        "is",
+        "tall",
+        "old."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the feminine form of 'gentil':",
+       "options": [
+        "gentille",
+        "gentil",
+        "gentils",
+        "gentile"
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u4l3",
+     "title": "Who is it?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "qui ?",
+       "tl": "KEE",
+       "meaning": "who?",
+       "example": "Qui est-ce ?",
+       "exampleMeaning": "Who is it?"
+      },
+      {
+       "t": "learn",
+       "word": "c'est",
+       "tl": "SEH",
+       "meaning": "it is / this is",
+       "example": "C'est ma sœur, Léa.",
+       "exampleMeaning": "This is my sister, Léa."
+      },
+      {
+       "t": "learn",
+       "word": "le mari / la femme",
+       "tl": "luh ma-REE / la FAM",
+       "meaning": "husband / wife",
+       "example": "C'est mon mari. C'est ma femme.",
+       "exampleMeaning": "This is my husband. This is my wife."
+      },
+      {
+       "t": "learn",
+       "word": "le fils / la fille",
+       "tl": "luh FEES / la FEE",
+       "meaning": "son / daughter",
+       "example": "J'ai un fils et une fille.",
+       "exampleMeaning": "I have a son and a daughter."
+      },
+      {
+       "t": "learn",
+       "word": "les enfants",
+       "tl": "lay zon-FOH",
+       "meaning": "the children",
+       "example": "Les enfants sont petits.",
+       "exampleMeaning": "The children are small."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Qui est-ce ?' means:",
+       "options": [
+        "What is it?",
+        "Who is it?",
+        "Where is it?",
+        "How is it?"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "This is my husband.",
+       "answer": "C'est mon mari.",
+       "bank": [
+        "est",
+        "femme",
+        "fils",
+        "mari.",
+        "C'est",
+        "mon",
+        "ma"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "C'est ma fille, elle est jeune.",
+       "meaning": "This is my daughter, she is young.",
+       "bank": [
+        "vieux",
+        "il",
+        "jeune.",
+        "mon",
+        "fille,",
+        "ma",
+        "elle",
+        "C'est",
+        "est",
+        "fils"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Qui est-ce ? C'est mon fils.",
+       "meaning": "Who is it? This is my son."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "le mari",
+         "husband"
+        ],
+        [
+         "la femme",
+         "wife"
+        ],
+        [
+         "le fils",
+         "son"
+        ],
+        [
+         "la fille",
+         "daughter"
+        ],
+        [
+         "les enfants",
+         "children"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Les enfants ___ petits.",
+       "meaning": "The children are small.",
+       "options": [
+        "sont",
+        "est",
+        "suis",
+        "es"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "J'ai un fils et une fille.",
+       "answer": "I have a son and a daughter.",
+       "bank": [
+        "two",
+        "brother",
+        "daughter.",
+        "and",
+        "I",
+        "sister",
+        "son",
+        "a",
+        "have",
+        "my"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'wife'?",
+       "options": [
+        "la mère",
+        "la sœur",
+        "la femme",
+        "la fille"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Qui est-ce ? C'est ma femme.",
+       "meaning": "Who is it? This is my wife.",
+       "bank": [
+        "C'est",
+        "fille",
+        "?",
+        "femme.",
+        "ma",
+        "Qui",
+        "mon",
+        "sœur",
+        "est-ce",
+        "mari"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u4l4",
+     "title": "Review: Family & People",
+     "items": [
+      {
+       "t": "learn",
+       "word": "les grands-parents",
+       "tl": "lay groh-pa-ROH",
+       "meaning": "grandparents",
+       "example": "Mes grands-parents habitent à Nice.",
+       "exampleMeaning": "My grandparents live in Nice."
+      },
+      {
+       "t": "learn",
+       "word": "mes / tes",
+       "tl": "may / tay",
+       "meaning": "my / your (plural)",
+       "example": "Mes enfants et tes enfants.",
+       "exampleMeaning": "My children and your children."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Mes grands-parents' means:",
+       "options": [
+        "my children",
+        "my parents",
+        "my friends",
+        "my grandparents"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "les grands-parents",
+         "grandparents"
+        ],
+        [
+         "les enfants",
+         "children"
+        ],
+        [
+         "le mari",
+         "husband"
+        ],
+        [
+         "gentille",
+         "kind (f)"
+        ],
+        [
+         "jeune",
+         "young"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My grandparents are old.",
+       "answer": "Mes grands-parents sont vieux.",
+       "bank": [
+        "est",
+        "petits",
+        "sont",
+        "Mon",
+        "grands-parents",
+        "Mes",
+        "jeunes",
+        "vieux."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Ma sœur n'est pas grande.",
+       "meaning": "My sister isn't tall.",
+       "bank": [
+        "Ma",
+        "vieux",
+        "frère",
+        "grande.",
+        "pas",
+        "mon",
+        "n'est",
+        "petit",
+        "sœur"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "C'est mon frère. Il est grand et gentil.",
+       "meaning": "This is my brother. He is tall and kind."
+      },
+      {
+       "t": "fill",
+       "sentence": "Tes enfants ___ gentils.",
+       "meaning": "Your children are kind.",
+       "options": [
+        "sont",
+        "est",
+        "es",
+        "ai"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Qui est-ce ? C'est ma mère.",
+       "answer": "Who is it? This is my mother.",
+       "bank": [
+        "This",
+        "is",
+        "my",
+        "it?",
+        "father",
+        "sister",
+        "mother.",
+        "he",
+        "Who",
+        "where"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which pairs correctly?",
+       "options": [
+        "mon père",
+        "ma père",
+        "ma fils",
+        "mon mère"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Mes enfants sont jeunes et mon mari est grand.",
+       "meaning": "My children are young and my husband is tall.",
+       "bank": [
+        "femme",
+        "mari",
+        "petite",
+        "et",
+        "grand.",
+        "jeunes",
+        "est",
+        "vieux",
+        "enfants",
+        "Mes",
+        "ta",
+        "mon",
+        "sont"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I have a daughter.",
+       "answer": "J'ai une fille.",
+       "bank": [
+        "fils",
+        "un",
+        "J'ai",
+        "mon",
+        "une",
+        "fille.",
+        "deux"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je ne suis pas vieux' means:",
+       "options": [
+        "I am young",
+        "I am not old",
+        "I am not young",
+        "I am old"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u5",
+   "title": "Around Town",
+   "emoji": "🗺️",
+   "goal": "Ask for and understand directions",
+   "lessons": [
+    {
+     "id": "u5l1",
+     "title": "Where is...?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "où est ... ?",
+       "tl": "oo EH",
+       "meaning": "where is ...?",
+       "example": "Où est la gare ?",
+       "exampleMeaning": "Where is the train station?"
+      },
+      {
+       "t": "learn",
+       "word": "la gare / le métro",
+       "tl": "la GAR / luh may-TRO",
+       "meaning": "train station / metro",
+       "example": "Le métro est près de la gare.",
+       "exampleMeaning": "The metro is near the station."
+      },
+      {
+       "t": "learn",
+       "word": "la rue",
+       "tl": "la RU",
+       "meaning": "the street",
+       "example": "J'habite rue de Rivoli.",
+       "exampleMeaning": "I live on Rue de Rivoli."
+      },
+      {
+       "t": "learn",
+       "word": "ici / là-bas",
+       "tl": "ee-SEE / la-BA",
+       "meaning": "here / over there",
+       "example": "La gare est là-bas.",
+       "exampleMeaning": "The station is over there."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Où est la gare ?' means:",
+       "options": [
+        "Over there",
+        "Where is the metro?",
+        "Where is the station?",
+        "Here is the street"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Where is the metro?",
+       "answer": "Où est le métro ?",
+       "bank": [
+        "Où",
+        "rue",
+        "métro",
+        "ici",
+        "est",
+        "gare",
+        "la",
+        "le",
+        "?"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "La gare est là-bas.",
+       "meaning": "The station is over there.",
+       "bank": [
+        "là-bas.",
+        "rue",
+        "Où",
+        "métro",
+        "est",
+        "gare",
+        "La",
+        "ici"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Pardon, où est la gare ?",
+       "meaning": "Excuse me, where is the station?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la gare",
+         "train station"
+        ],
+        [
+         "le métro",
+         "metro"
+        ],
+        [
+         "la rue",
+         "street"
+        ],
+        [
+         "ici",
+         "here"
+        ],
+        [
+         "là-bas",
+         "over there"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "___ est le métro ?",
+       "meaning": "Where is the metro?",
+       "options": [
+        "Où",
+        "Qui",
+        "Comment",
+        "Combien"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Le métro est ici.",
+       "answer": "The metro is here.",
+       "bank": [
+        "there",
+        "here.",
+        "is",
+        "street",
+        "The",
+        "station",
+        "where",
+        "metro"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Là-bas' means:",
+       "options": [
+        "here",
+        "right",
+        "left",
+        "over there"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "Pardon, où est la rue de Rivoli ?",
+       "meaning": "Excuse me, where is Rue de Rivoli?",
+       "bank": [
+        "la",
+        "Pardon,",
+        "le",
+        "Rivoli",
+        "ici",
+        "?",
+        "où",
+        "gare",
+        "est",
+        "rue",
+        "de",
+        "là-bas"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u5l2",
+     "title": "Left and right",
+     "items": [
+      {
+       "t": "learn",
+       "word": "à gauche / à droite",
+       "tl": "a GOHSH / a DRWAT",
+       "meaning": "to the left / to the right",
+       "example": "Tournez à gauche, puis à droite.",
+       "exampleMeaning": "Turn left, then right."
+      },
+      {
+       "t": "learn",
+       "word": "tout droit",
+       "tl": "too DRWA",
+       "meaning": "straight ahead",
+       "example": "Allez tout droit.",
+       "exampleMeaning": "Go straight ahead."
+      },
+      {
+       "t": "learn",
+       "word": "tournez",
+       "tl": "toor-NAY",
+       "meaning": "turn (formal)",
+       "example": "Tournez à droite !",
+       "exampleMeaning": "Turn right!"
+      },
+      {
+       "t": "learn",
+       "word": "près de / loin de",
+       "tl": "preh duh / lwan duh",
+       "meaning": "near / far from",
+       "example": "C'est loin d'ici ? Non, c'est près.",
+       "exampleMeaning": "Is it far from here? No, it's near."
+      },
+      {
+       "t": "choose",
+       "prompt": "'À gauche' means:",
+       "options": [
+        "to the left",
+        "far",
+        "straight",
+        "to the right"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "fill",
+       "sentence": "Allez ___ droit.",
+       "meaning": "Go straight ahead.",
+       "options": [
+        "tout",
+        "à",
+        "très",
+        "là"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Turn right.",
+       "answer": "Tournez à droite.",
+       "bank": [
+        "droit",
+        "gauche",
+        "Allez",
+        "Tournez",
+        "droite.",
+        "tout",
+        "à"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Tournez à gauche, puis tout droit.",
+       "meaning": "Turn left, then straight ahead.",
+       "bank": [
+        "droit.",
+        "loin",
+        "près",
+        "gauche,",
+        "à",
+        "Allez",
+        "droite",
+        "puis",
+        "Tournez",
+        "tout"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "La gare est à droite, près du métro.",
+       "meaning": "The station is on the right, near the metro."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "à gauche",
+         "left"
+        ],
+        [
+         "à droite",
+         "right"
+        ],
+        [
+         "tout droit",
+         "straight ahead"
+        ],
+        [
+         "près de",
+         "near"
+        ],
+        [
+         "loin de",
+         "far from"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "C'est loin d'ici ?",
+       "answer": "Is it far from here?",
+       "bank": [
+        "from",
+        "here?",
+        "left",
+        "where",
+        "far",
+        "near",
+        "station",
+        "Is",
+        "it"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Complete: 'La rue est ___ de la gare.' (near)",
+       "options": [
+        "droite",
+        "près",
+        "tout",
+        "loin"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "C'est près d'ici, à gauche.",
+       "meaning": "It's near here, on the left.",
+       "bank": [
+        "loin",
+        "droite",
+        "à",
+        "gare",
+        "tout",
+        "C'est",
+        "près",
+        "gauche.",
+        "d'ici,"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u5l3",
+     "title": "Places in town",
+     "items": [
+      {
+       "t": "learn",
+       "word": "la boulangerie",
+       "tl": "la boo-lon-zhuh-REE",
+       "meaning": "the bakery",
+       "example": "La boulangerie est à gauche.",
+       "exampleMeaning": "The bakery is on the left."
+      },
+      {
+       "t": "learn",
+       "word": "la pharmacie / l'hôpital",
+       "tl": "la far-ma-SEE / lo-pee-TAL",
+       "meaning": "pharmacy / hospital",
+       "example": "L'hôpital est loin de la pharmacie.",
+       "exampleMeaning": "The hospital is far from the pharmacy."
+      },
+      {
+       "t": "learn",
+       "word": "le musée / l'église",
+       "tl": "luh mu-ZAY / lay-GLEEZ",
+       "meaning": "museum / church",
+       "example": "Le musée est près de l'église.",
+       "exampleMeaning": "The museum is near the church."
+      },
+      {
+       "t": "learn",
+       "word": "je cherche",
+       "tl": "zhuh SHERSH",
+       "meaning": "I'm looking for",
+       "example": "Je cherche la boulangerie.",
+       "exampleMeaning": "I'm looking for the bakery."
+      },
+      {
+       "t": "learn",
+       "word": "aller",
+       "tl": "a-LAY",
+       "meaning": "to go",
+       "example": "Je vais au musée. Tu vas à la gare.",
+       "exampleMeaning": "I'm going to the museum. You're going to the station."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je cherche' means:",
+       "options": [
+        "I find",
+        "I'm going",
+        "I'm looking for",
+        "I see"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I'm looking for the pharmacy.",
+       "answer": "Je cherche la pharmacie.",
+       "bank": [
+        "pharmacie.",
+        "cherche",
+        "le",
+        "vais",
+        "Je",
+        "boulangerie",
+        "la",
+        "où"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Je vais au musée.",
+       "meaning": "I'm going to the museum.",
+       "bank": [
+        "Je",
+        "au",
+        "gare",
+        "la",
+        "vais",
+        "musée.",
+        "cherche",
+        "église"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Pardon, je cherche la boulangerie.",
+       "meaning": "Excuse me, I'm looking for the bakery."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la boulangerie",
+         "bakery"
+        ],
+        [
+         "la pharmacie",
+         "pharmacy"
+        ],
+        [
+         "l'hôpital",
+         "hospital"
+        ],
+        [
+         "le musée",
+         "museum"
+        ],
+        [
+         "l'église",
+         "church"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Je ___ au musée.",
+       "meaning": "I'm going to the museum.",
+       "options": [
+        "vais",
+        "vas",
+        "cherche",
+        "suis"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "L'église est loin d'ici.",
+       "answer": "The church is far from here.",
+       "bank": [
+        "near",
+        "The",
+        "here.",
+        "bakery",
+        "from",
+        "left",
+        "is",
+        "museum",
+        "church",
+        "far"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Where do you buy bread?",
+       "options": [
+        "le musée",
+        "l'église",
+        "la pharmacie",
+        "la boulangerie"
+       ],
+       "answer": 3
+      }
+     ]
+    },
+    {
+     "id": "u5l4",
+     "title": "Review: Around Town",
+     "items": [
+      {
+       "t": "learn",
+       "word": "la banque / l'hôtel",
+       "tl": "la BONK / lo-TEL",
+       "meaning": "bank / hotel",
+       "example": "L'hôtel est à côté de la banque.",
+       "exampleMeaning": "The hotel is next to the bank."
+      },
+      {
+       "t": "learn",
+       "word": "à côté de",
+       "tl": "a ko-TAY duh",
+       "meaning": "next to",
+       "example": "Le métro est à côté de l'hôtel.",
+       "exampleMeaning": "The metro is next to the hotel."
+      },
+      {
+       "t": "choose",
+       "prompt": "'À côté de' means:",
+       "options": [
+        "next to",
+        "in front of",
+        "far from",
+        "behind"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la banque",
+         "bank"
+        ],
+        [
+         "l'hôtel",
+         "hotel"
+        ],
+        [
+         "à côté de",
+         "next to"
+        ],
+        [
+         "tout droit",
+         "straight ahead"
+        ],
+        [
+         "je cherche",
+         "I'm looking for"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The hotel is next to the bank.",
+       "answer": "L'hôtel est à côté de la banque.",
+       "bank": [
+        "banque.",
+        "loin",
+        "côté",
+        "la",
+        "près",
+        "musée",
+        "gare",
+        "à",
+        "de",
+        "L'hôtel",
+        "est"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Allez tout droit, puis tournez à gauche.",
+       "meaning": "Go straight ahead, then turn left.",
+       "bank": [
+        "puis",
+        "tout",
+        "banque",
+        "droite",
+        "droit,",
+        "gauche.",
+        "ici",
+        "tournez",
+        "à",
+        "près",
+        "Allez"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Où est l'hôtel ? C'est loin d'ici ?",
+       "meaning": "Where is the hotel? Is it far from here?"
+      },
+      {
+       "t": "fill",
+       "sentence": "La pharmacie est ___ de l'hôpital.",
+       "meaning": "The pharmacy is near the hospital.",
+       "options": [
+        "près",
+        "tout",
+        "droite",
+        "gauche"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Je cherche la gare. Elle est là-bas, à droite.",
+       "answer": "I'm looking for the station. It's over there, on the right.",
+       "bank": [
+        "near",
+        "bank",
+        "right.",
+        "station.",
+        "here",
+        "left",
+        "It's",
+        "looking",
+        "for",
+        "over",
+        "the",
+        "on",
+        "there,",
+        "I'm"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Tournez à droite' means:",
+       "options": [
+        "Stop here",
+        "Turn right",
+        "Go straight",
+        "Turn left"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Je vais à la banque, à côté du musée.",
+       "meaning": "I'm going to the bank, next to the museum.",
+       "bank": [
+        "cherche",
+        "du",
+        "la",
+        "à",
+        "vais",
+        "banque,",
+        "musée.",
+        "Je",
+        "côté",
+        "gare",
+        "loin",
+        "église"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Where is the church?",
+       "answer": "Où est l'église ?",
+       "bank": [
+        "musée",
+        "ici",
+        "Qui",
+        "est",
+        "la",
+        "l'église",
+        "Où",
+        "?"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which place is for medicine?",
+       "options": [
+        "l'hôtel",
+        "la banque",
+        "la pharmacie",
+        "la boulangerie"
+       ],
+       "answer": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u6",
+   "title": "Time & Dates",
+   "emoji": "⏰",
+   "goal": "Tell the time, days and months",
+   "lessons": [
+    {
+     "id": "u6l1",
+     "title": "What time is it?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "quelle heure est-il ?",
+       "tl": "kel UHR eh-TEEL",
+       "meaning": "what time is it?",
+       "example": "Pardon, quelle heure est-il ?",
+       "exampleMeaning": "Excuse me, what time is it?"
+      },
+      {
+       "t": "learn",
+       "word": "il est ... heures",
+       "tl": "eel eh ... UHR",
+       "meaning": "it is ... o'clock",
+       "example": "Il est trois heures.",
+       "exampleMeaning": "It is three o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "et demie / et quart",
+       "tl": "ay duh-MEE / ay KAR",
+       "meaning": "half past / quarter past",
+       "example": "Il est deux heures et demie.",
+       "exampleMeaning": "It is half past two."
+      },
+      {
+       "t": "learn",
+       "word": "midi / minuit",
+       "tl": "mee-DEE / mee-NWEE",
+       "meaning": "noon / midnight",
+       "example": "Il est midi. On mange !",
+       "exampleMeaning": "It's noon. We eat!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'Il est midi' means:",
+       "options": [
+        "It's half past",
+        "It's midnight",
+        "It's two o'clock",
+        "It's noon"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "It is three o'clock.",
+       "answer": "Il est trois heures.",
+       "bank": [
+        "est",
+        "demie",
+        "heures.",
+        "deux",
+        "Il",
+        "midi",
+        "quart",
+        "trois"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Il est deux heures et demie.",
+       "meaning": "It is half past two.",
+       "bank": [
+        "midi",
+        "heure",
+        "est",
+        "demie.",
+        "Il",
+        "trois",
+        "heures",
+        "deux",
+        "et",
+        "quart"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Quelle heure est-il ? Il est dix heures.",
+       "meaning": "What time is it? It is ten o'clock."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "et demie",
+         "half past"
+        ],
+        [
+         "et quart",
+         "quarter past"
+        ],
+        [
+         "midi",
+         "noon"
+        ],
+        [
+         "minuit",
+         "midnight"
+        ],
+        [
+         "quelle heure",
+         "what time"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Il est cinq heures et ___.",
+       "meaning": "It is quarter past five.",
+       "options": [
+        "quart",
+        "demie",
+        "midi",
+        "heures"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Il est minuit.",
+       "answer": "It is midnight.",
+       "bank": [
+        "o'clock",
+        "noon",
+        "midnight.",
+        "is",
+        "ten",
+        "It",
+        "half"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Il est sept heures et demie' is:",
+       "options": [
+        "7:30",
+        "6:30",
+        "7:15",
+        "7:00"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Pardon, quelle heure est-il ?",
+       "meaning": "Excuse me, what time is it?",
+       "bank": [
+        "trois",
+        "quelle",
+        "Il",
+        "?",
+        "heures",
+        "midi",
+        "est-il",
+        "Pardon,",
+        "heure"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u6l2",
+     "title": "Days of the week",
+     "items": [
+      {
+       "t": "learn",
+       "word": "lundi, mardi, mercredi",
+       "tl": "lun-DEE, mar-DEE, mehr-kruh-DEE",
+       "meaning": "Monday, Tuesday, Wednesday",
+       "example": "Lundi, je travaille.",
+       "exampleMeaning": "On Monday, I work."
+      },
+      {
+       "t": "learn",
+       "word": "jeudi, vendredi",
+       "tl": "zhuh-DEE, von-druh-DEE",
+       "meaning": "Thursday, Friday",
+       "example": "Vendredi, c'est la fête !",
+       "exampleMeaning": "Friday is party time!"
+      },
+      {
+       "t": "learn",
+       "word": "samedi, dimanche",
+       "tl": "sam-DEE, dee-MONSH",
+       "meaning": "Saturday, Sunday",
+       "example": "Le week-end, c'est samedi et dimanche.",
+       "exampleMeaning": "The weekend is Saturday and Sunday."
+      },
+      {
+       "t": "learn",
+       "word": "aujourd'hui / demain",
+       "tl": "o-zhoor-DWEE / duh-MAN",
+       "meaning": "today / tomorrow",
+       "example": "Aujourd'hui, c'est lundi. Demain, c'est mardi.",
+       "exampleMeaning": "Today is Monday. Tomorrow is Tuesday."
+      },
+      {
+       "t": "learn",
+       "word": "quel jour ?",
+       "tl": "kel ZHOOR",
+       "meaning": "what day?",
+       "example": "Quel jour sommes-nous ?",
+       "exampleMeaning": "What day is it?"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'Thursday'?",
+       "options": [
+        "mercredi",
+        "jeudi",
+        "mardi",
+        "samedi"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "lundi",
+         "Monday"
+        ],
+        [
+         "mercredi",
+         "Wednesday"
+        ],
+        [
+         "vendredi",
+         "Friday"
+        ],
+        [
+         "dimanche",
+         "Sunday"
+        ],
+        [
+         "demain",
+         "tomorrow"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Today is Saturday.",
+       "answer": "Aujourd'hui, c'est samedi.",
+       "bank": [
+        "lundi",
+        "Aujourd'hui,",
+        "c'est",
+        "est",
+        "Demain",
+        "samedi.",
+        "dimanche"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Demain, c'est vendredi.",
+       "meaning": "Tomorrow is Friday.",
+       "bank": [
+        "vendredi.",
+        "est",
+        "samedi",
+        "Demain,",
+        "jeudi",
+        "c'est",
+        "Aujourd'hui"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Quel jour sommes-nous ? Aujourd'hui, c'est mardi.",
+       "meaning": "What day is it? Today is Tuesday."
+      },
+      {
+       "t": "fill",
+       "sentence": "Après lundi, c'est ___.",
+       "meaning": "After Monday, it's Tuesday.",
+       "options": [
+        "mardi",
+        "jeudi",
+        "dimanche",
+        "samedi"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Le week-end, c'est samedi et dimanche.",
+       "answer": "The weekend is Saturday and Sunday.",
+       "bank": [
+        "weekend",
+        "Sunday.",
+        "today",
+        "and",
+        "tomorrow",
+        "Friday",
+        "Monday",
+        "Saturday",
+        "The",
+        "is"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Aujourd'hui' means:",
+       "options": [
+        "yesterday",
+        "tomorrow",
+        "today",
+        "week"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u6l3",
+     "title": "Months and dates",
+     "items": [
+      {
+       "t": "learn",
+       "word": "janvier, février, mars",
+       "tl": "zhon-VYAY, fay-VREE-ay, MARS",
+       "meaning": "January, February, March",
+       "example": "En janvier, il fait froid.",
+       "exampleMeaning": "In January, it's cold."
+      },
+      {
+       "t": "learn",
+       "word": "avril, mai, juin",
+       "tl": "a-VREEL, MEH, ZHWAN",
+       "meaning": "April, May, June",
+       "example": "Mon anniversaire est en mai.",
+       "exampleMeaning": "My birthday is in May."
+      },
+      {
+       "t": "learn",
+       "word": "juillet, août, septembre",
+       "tl": "zhwee-YEH, OOT, sep-TOMBR",
+       "meaning": "July, August, September",
+       "example": "En août, je suis en vacances.",
+       "exampleMeaning": "In August, I'm on holiday."
+      },
+      {
+       "t": "learn",
+       "word": "octobre, novembre, décembre",
+       "tl": "ok-TOBR, no-VOMBR, day-SOMBR",
+       "meaning": "October, November, December",
+       "example": "Noël, c'est en décembre.",
+       "exampleMeaning": "Christmas is in December."
+      },
+      {
+       "t": "learn",
+       "word": "l'anniversaire",
+       "tl": "la-nee-vehr-SEHR",
+       "meaning": "birthday",
+       "example": "Bon anniversaire !",
+       "exampleMeaning": "Happy birthday!"
+      },
+      {
+       "t": "choose",
+       "prompt": "Which month is 'août'?",
+       "options": [
+        "June",
+        "April",
+        "October",
+        "August"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "janvier",
+         "January"
+        ],
+        [
+         "mars",
+         "March"
+        ],
+        [
+         "juin",
+         "June"
+        ],
+        [
+         "septembre",
+         "September"
+        ],
+        [
+         "décembre",
+         "December"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "My birthday is in May.",
+       "answer": "Mon anniversaire est en mai.",
+       "bank": [
+        "le",
+        "Ma",
+        "en",
+        "Mon",
+        "juillet",
+        "juin",
+        "est",
+        "mai.",
+        "anniversaire"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "En août, je suis en vacances.",
+       "meaning": "In August, I'm on holiday.",
+       "bank": [
+        "août,",
+        "mange",
+        "je",
+        "En",
+        "suis",
+        "vacances.",
+        "vais",
+        "juillet",
+        "en",
+        "mai"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Bon anniversaire ! C'est en avril ?",
+       "meaning": "Happy birthday! Is it in April?"
+      },
+      {
+       "t": "fill",
+       "sentence": "Noël, c'est en ___.",
+       "meaning": "Christmas is in December.",
+       "options": [
+        "décembre",
+        "juillet",
+        "mars",
+        "novembre"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "En janvier, il fait froid.",
+       "answer": "In January, it's cold.",
+       "bank": [
+        "cold.",
+        "we",
+        "In",
+        "January,",
+        "July",
+        "hot",
+        "is",
+        "it's"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which comes right after 'octobre'?",
+       "options": [
+        "novembre",
+        "décembre",
+        "août",
+        "septembre"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Mon anniversaire est le dix juin.",
+       "meaning": "My birthday is the tenth of June.",
+       "bank": [
+        "le",
+        "juin.",
+        "dix",
+        "demain",
+        "mai",
+        "Mon",
+        "anniversaire",
+        "en",
+        "est",
+        "deux"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u6l4",
+     "title": "Review: Time & Dates",
+     "items": [
+      {
+       "t": "learn",
+       "word": "le matin / le soir",
+       "tl": "luh ma-TAN / luh SWAR",
+       "meaning": "the morning / the evening",
+       "example": "Le matin, je bois un café. Le soir, je mange.",
+       "exampleMeaning": "In the morning I drink a coffee. In the evening I eat."
+      },
+      {
+       "t": "learn",
+       "word": "à quelle heure ?",
+       "tl": "a kel UHR",
+       "meaning": "at what time?",
+       "example": "À quelle heure tu manges ? À midi.",
+       "exampleMeaning": "At what time do you eat? At noon."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Le soir' means:",
+       "options": [
+        "tomorrow",
+        "the evening",
+        "noon",
+        "the morning"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "le matin",
+         "morning"
+        ],
+        [
+         "le soir",
+         "evening"
+        ],
+        [
+         "aujourd'hui",
+         "today"
+        ],
+        [
+         "et demie",
+         "half past"
+        ],
+        [
+         "l'anniversaire",
+         "birthday"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "At what time do you eat?",
+       "answer": "À quelle heure tu manges ?",
+       "bank": [
+        "tu",
+        "quelle",
+        "bois",
+        "midi",
+        "jour",
+        "manges",
+        "?",
+        "À",
+        "heure",
+        "Quel"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Le matin, je bois un café à huit heures.",
+       "meaning": "In the morning, I drink a coffee at eight o'clock.",
+       "bank": [
+        "Le",
+        "café",
+        "mange",
+        "à",
+        "demie",
+        "neuf",
+        "un",
+        "huit",
+        "soir",
+        "bois",
+        "matin,",
+        "je",
+        "heures."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Demain, c'est dimanche. Mon anniversaire est en juin.",
+       "meaning": "Tomorrow is Sunday. My birthday is in June."
+      },
+      {
+       "t": "fill",
+       "sentence": "Il est ___ heures et quart.",
+       "meaning": "It is quarter past four.",
+       "options": [
+        "quatre",
+        "quart",
+        "demie",
+        "midi"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Aujourd'hui, c'est jeudi. Il est midi.",
+       "answer": "Today is Thursday. It is noon.",
+       "bank": [
+        "Tuesday",
+        "evening",
+        "is",
+        "It",
+        "midnight",
+        "Today",
+        "Thursday.",
+        "tomorrow",
+        "noon."
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which day is between mardi and jeudi?",
+       "options": [
+        "lundi",
+        "samedi",
+        "mercredi",
+        "vendredi"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Quel jour sommes-nous ? C'est samedi.",
+       "meaning": "What day is it? It's Saturday.",
+       "bank": [
+        "?",
+        "C'est",
+        "sommes-nous",
+        "Quel",
+        "lundi",
+        "demain",
+        "jour",
+        "samedi.",
+        "heure",
+        "dimanche"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "It is half past nine in the evening.",
+       "answer": "Il est neuf heures et demie du soir.",
+       "bank": [
+        "midi",
+        "dix",
+        "et",
+        "soir.",
+        "demie",
+        "quart",
+        "heures",
+        "matin",
+        "Il",
+        "du",
+        "neuf",
+        "est"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'En juillet' means:",
+       "options": [
+        "in January",
+        "in June",
+        "in May",
+        "in July"
+       ],
+       "answer": 3
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u7",
+   "title": "Shopping",
+   "emoji": "🛍️",
+   "goal": "Buy things, ask prices and describe items",
+   "lessons": [
+    {
+     "id": "u7l1",
+     "title": "How much is it?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "c'est combien ?",
+       "tl": "seh kom-BYAN",
+       "meaning": "how much is it?",
+       "example": "C'est combien, ce sac ?",
+       "exampleMeaning": "How much is this bag?"
+      },
+      {
+       "t": "learn",
+       "word": "ça coûte",
+       "tl": "sa KOOT",
+       "meaning": "it costs",
+       "example": "Ça coûte dix euros.",
+       "exampleMeaning": "It costs ten euros."
+      },
+      {
+       "t": "learn",
+       "word": "l'euro",
+       "tl": "luh-RO",
+       "meaning": "euro",
+       "example": "Vingt euros, s'il vous plaît.",
+       "exampleMeaning": "Twenty euros, please."
+      },
+      {
+       "t": "learn",
+       "word": "cher / pas cher",
+       "tl": "SHEHR / pa SHEHR",
+       "meaning": "expensive / cheap",
+       "example": "C'est trop cher ! Ça, c'est pas cher.",
+       "exampleMeaning": "It's too expensive! That one's cheap."
+      },
+      {
+       "t": "learn",
+       "word": "vingt, trente, cinquante, cent",
+       "tl": "VAN, TRONT, san-KONT, SOH",
+       "meaning": "20, 30, 50, 100",
+       "example": "Ça coûte trente euros.",
+       "exampleMeaning": "It costs thirty euros."
+      },
+      {
+       "t": "choose",
+       "prompt": "'C'est combien ?' means:",
+       "options": [
+        "How much is it?",
+        "Where is it?",
+        "Who is it?",
+        "What is it?"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "It costs twenty euros.",
+       "answer": "Ça coûte vingt euros.",
+       "bank": [
+        "Ça",
+        "trente",
+        "vingt",
+        "cher",
+        "coûte",
+        "C'est",
+        "cent",
+        "euros."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "C'est trop cher !",
+       "meaning": "It's too expensive!",
+       "bank": [
+        "C'est",
+        "trop",
+        "cher",
+        "combien",
+        "euros",
+        "!",
+        "pas",
+        "coûte"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Pardon, c'est combien ?",
+       "meaning": "Excuse me, how much is it?"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "c'est combien ?",
+         "how much is it?"
+        ],
+        [
+         "ça coûte",
+         "it costs"
+        ],
+        [
+         "cher",
+         "expensive"
+        ],
+        [
+         "pas cher",
+         "cheap"
+        ],
+        [
+         "cent",
+         "one hundred"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Ça coûte ___ euros.",
+       "meaning": "It costs fifty euros.",
+       "options": [
+        "cinquante",
+        "vingt",
+        "trente",
+        "cent"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Ce sac n'est pas cher.",
+       "answer": "This bag is not expensive.",
+       "bank": [
+        "euros",
+        "not",
+        "bag",
+        "expensive.",
+        "very",
+        "how",
+        "This",
+        "is",
+        "costs"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'thirty'?",
+       "options": [
+        "vingt",
+        "trente",
+        "cinquante",
+        "cent"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u7l2",
+     "title": "Clothes & colours",
+     "items": [
+      {
+       "t": "learn",
+       "word": "une robe / un pantalon",
+       "tl": "un ROB / uh pon-ta-LOH",
+       "meaning": "a dress / trousers",
+       "example": "Je voudrais cette robe et ce pantalon.",
+       "exampleMeaning": "I would like this dress and these trousers."
+      },
+      {
+       "t": "learn",
+       "word": "une chemise / des chaussures",
+       "tl": "un shuh-MEEZ / day sho-SUR",
+       "meaning": "a shirt / shoes",
+       "example": "Les chaussures sont chères.",
+       "exampleMeaning": "The shoes are expensive."
+      },
+      {
+       "t": "learn",
+       "word": "rouge, bleu, vert",
+       "tl": "ROOZH, BLUH, VEHR",
+       "meaning": "red, blue, green",
+       "example": "Un pantalon bleu et une chemise verte.",
+       "exampleMeaning": "Blue trousers and a green shirt."
+      },
+      {
+       "t": "learn",
+       "word": "noir, blanc, jaune",
+       "tl": "NWAR, BLOH, ZHOHN",
+       "meaning": "black, white, yellow",
+       "example": "Une robe noire ou une robe blanche ?",
+       "exampleMeaning": "A black dress or a white dress?"
+      },
+      {
+       "t": "learn",
+       "word": "la taille",
+       "tl": "la TY",
+       "meaning": "the size",
+       "example": "Quelle taille ? Taille M.",
+       "exampleMeaning": "What size? Size M."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Les chaussures' are:",
+       "options": [
+        "trousers",
+        "dresses",
+        "shoes",
+        "shirts"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "rouge",
+         "red"
+        ],
+        [
+         "bleu",
+         "blue"
+        ],
+        [
+         "vert",
+         "green"
+        ],
+        [
+         "noir",
+         "black"
+        ],
+        [
+         "blanc",
+         "white"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I would like a blue shirt.",
+       "answer": "Je voudrais une chemise bleue.",
+       "bank": [
+        "rouge",
+        "robe",
+        "noire",
+        "chemise",
+        "un",
+        "voudrais",
+        "une",
+        "bleue.",
+        "Je"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Les chaussures noires sont chères.",
+       "meaning": "The black shoes are expensive.",
+       "bank": [
+        "robe",
+        "chères.",
+        "noires",
+        "pas",
+        "Les",
+        "blanches",
+        "coûte",
+        "chaussures",
+        "sont"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Une robe rouge, taille M, s'il vous plaît.",
+       "meaning": "A red dress, size M, please."
+      },
+      {
+       "t": "fill",
+       "sentence": "Un pantalon ___ et une chemise blanche.",
+       "meaning": "Black trousers and a white shirt.",
+       "options": [
+        "noir",
+        "noire",
+        "blanc",
+        "rouge"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Quelle taille ?",
+       "answer": "What size?",
+       "bank": [
+        "size?",
+        "What",
+        "price",
+        "much",
+        "colour",
+        "how"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the feminine form: 'une robe ___' (green)",
+       "options": [
+        "vertes",
+        "verts",
+        "vert",
+        "verte"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "Je voudrais un pantalon jaune.",
+       "meaning": "I would like yellow trousers.",
+       "bank": [
+        "jaune.",
+        "un",
+        "robe",
+        "pantalon",
+        "bleu",
+        "chaussures",
+        "voudrais",
+        "Je",
+        "une"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u7l3",
+     "title": "At the market",
+     "items": [
+      {
+       "t": "learn",
+       "word": "le marché",
+       "tl": "luh mar-SHAY",
+       "meaning": "the market",
+       "example": "Le samedi, je vais au marché.",
+       "exampleMeaning": "On Saturdays, I go to the market."
+      },
+      {
+       "t": "learn",
+       "word": "les pommes / les tomates",
+       "tl": "lay POM / lay to-MAT",
+       "meaning": "apples / tomatoes",
+       "example": "Un kilo de pommes, s'il vous plaît.",
+       "exampleMeaning": "A kilo of apples, please."
+      },
+      {
+       "t": "learn",
+       "word": "je peux ... ?",
+       "tl": "zhuh PUH",
+       "meaning": "can I ...?",
+       "example": "Je peux payer par carte ?",
+       "exampleMeaning": "Can I pay by card?"
+      },
+      {
+       "t": "learn",
+       "word": "payer / la carte",
+       "tl": "pay-YAY / la KART",
+       "meaning": "to pay / card",
+       "example": "Vous payez en espèces ou par carte ?",
+       "exampleMeaning": "Are you paying in cash or by card?"
+      },
+      {
+       "t": "learn",
+       "word": "voilà",
+       "tl": "vwa-LA",
+       "meaning": "here you go / there it is",
+       "example": "Voilà, dix euros. Merci !",
+       "exampleMeaning": "Here you go, ten euros. Thanks!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je peux payer par carte ?' means:",
+       "options": [
+        "Can I pay by card?",
+        "Do you have a card?",
+        "Here is my card",
+        "It costs ten euros"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "A kilo of tomatoes, please.",
+       "answer": "Un kilo de tomates, s'il vous plaît.",
+       "bank": [
+        "de",
+        "Je",
+        "pommes",
+        "s'il",
+        "vous",
+        "Un",
+        "deux",
+        "plaît.",
+        "marché",
+        "tomates,",
+        "kilo"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Je peux payer par carte ?",
+       "meaning": "Can I pay by card?",
+       "bank": [
+        "euros",
+        "Je",
+        "Voilà",
+        "payer",
+        "peux",
+        "combien",
+        "espèces",
+        "carte",
+        "par",
+        "?"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Voilà, vingt euros. Merci, au revoir !",
+       "meaning": "Here you go, twenty euros. Thanks, goodbye!"
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "le marché",
+         "market"
+        ],
+        [
+         "les pommes",
+         "apples"
+        ],
+        [
+         "les tomates",
+         "tomatoes"
+        ],
+        [
+         "payer",
+         "to pay"
+        ],
+        [
+         "voilà",
+         "here you go"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Le samedi, je ___ au marché.",
+       "meaning": "On Saturdays, I go to the market.",
+       "options": [
+        "vais",
+        "cherche",
+        "peux",
+        "bois"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Les pommes coûtent trois euros.",
+       "answer": "The apples cost three euros.",
+       "bank": [
+        "two",
+        "euros.",
+        "apples",
+        "tomatoes",
+        "market",
+        "cost",
+        "are",
+        "The",
+        "three"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Voilà' is used when:",
+       "options": [
+        "asking for help",
+        "handing something over",
+        "saying goodbye",
+        "asking a price"
+       ],
+       "answer": 1
+      }
+     ]
+    },
+    {
+     "id": "u7l4",
+     "title": "Review: Shopping",
+     "items": [
+      {
+       "t": "learn",
+       "word": "trop / un peu",
+       "tl": "TRO / uh PUH",
+       "meaning": "too (much) / a little",
+       "example": "C'est un peu cher. C'est trop grand.",
+       "exampleMeaning": "It's a little expensive. It's too big."
+      },
+      {
+       "t": "learn",
+       "word": "je prends / je ne prends pas",
+       "tl": "zhuh PROH",
+       "meaning": "I'll take / I won't take",
+       "example": "Je prends la robe bleue, pas la rouge.",
+       "exampleMeaning": "I'll take the blue dress, not the red one."
+      },
+      {
+       "t": "choose",
+       "prompt": "'C'est un peu cher' means:",
+       "options": [
+        "It's too big",
+        "It's very cheap",
+        "It's a little expensive",
+        "It's free"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "trop",
+         "too"
+        ],
+        [
+         "un peu",
+         "a little"
+        ],
+        [
+         "la taille",
+         "size"
+        ],
+        [
+         "ça coûte",
+         "it costs"
+        ],
+        [
+         "le marché",
+         "market"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "It's too expensive, I won't take it.",
+       "answer": "C'est trop cher, je ne prends pas.",
+       "bank": [
+        "trop",
+        "ne",
+        "euros",
+        "cher,",
+        "C'est",
+        "prends",
+        "peu",
+        "coûte",
+        "je",
+        "pas.",
+        "pas cher"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "La chemise verte coûte trente euros.",
+       "meaning": "The green shirt costs thirty euros.",
+       "bank": [
+        "trente",
+        "coûte",
+        "euros.",
+        "La",
+        "chemise",
+        "verte",
+        "vingt",
+        "robe",
+        "cinquante",
+        "bleue"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "C'est combien ? Je peux payer par carte ?",
+       "meaning": "How much is it? Can I pay by card?"
+      },
+      {
+       "t": "fill",
+       "sentence": "Un kilo de ___, s'il vous plaît.",
+       "meaning": "A kilo of apples, please.",
+       "options": [
+        "pommes",
+        "chaussures",
+        "robes",
+        "euros"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Je prends les chaussures noires, taille quarante.",
+       "answer": "I'll take the black shoes, size forty.",
+       "bank": [
+        "buy",
+        "thirty",
+        "dress",
+        "I'll",
+        "forty.",
+        "the",
+        "shoes,",
+        "white",
+        "black",
+        "take",
+        "size"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'one hundred'?",
+       "options": [
+        "vingt",
+        "cinquante",
+        "trente",
+        "cent"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "listen",
+       "text": "Voilà cinquante euros. C'est un peu cher !",
+       "meaning": "Here's fifty euros. It's a little expensive!",
+       "bank": [
+        "peu",
+        "pas",
+        "Voilà",
+        "cher",
+        "C'est",
+        "un",
+        "euros.",
+        "trente",
+        "cinquante",
+        "!",
+        "trop",
+        "carte"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The red dress is cheap.",
+       "answer": "La robe rouge n'est pas chère.",
+       "bank": [
+        "bleue",
+        "pas",
+        "cher",
+        "robe",
+        "rouge",
+        "La",
+        "coûte",
+        "est",
+        "chère.",
+        "n'est"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Complete: 'Je ___ payer par carte ?'",
+       "options": [
+        "peux",
+        "prends",
+        "vais",
+        "suis"
+       ],
+       "answer": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u8",
+   "title": "Daily Routine",
+   "emoji": "🌅",
+   "goal": "Describe your day and habits",
+   "lessons": [
+    {
+     "id": "u8l1",
+     "title": "Waking up",
+     "items": [
+      {
+       "t": "learn",
+       "word": "se lever",
+       "tl": "suh luh-VAY",
+       "meaning": "to get up",
+       "example": "Je me lève à sept heures.",
+       "exampleMeaning": "I get up at seven o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "se réveiller",
+       "tl": "suh ray-vay-YAY",
+       "meaning": "to wake up",
+       "example": "Je me réveille tôt.",
+       "exampleMeaning": "I wake up early."
+      },
+      {
+       "t": "learn",
+       "word": "tôt / tard",
+       "tl": "TOH / TAR",
+       "meaning": "early / late",
+       "example": "Tu te lèves tôt ou tard ?",
+       "exampleMeaning": "Do you get up early or late?"
+      },
+      {
+       "t": "learn",
+       "word": "le petit-déjeuner",
+       "tl": "luh puh-tee day-zhuh-NAY",
+       "meaning": "breakfast",
+       "example": "Je prends le petit-déjeuner à huit heures.",
+       "exampleMeaning": "I have breakfast at eight o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "tous les jours",
+       "tl": "too lay ZHOOR",
+       "meaning": "every day",
+       "example": "Tous les jours, je bois un café.",
+       "exampleMeaning": "Every day, I drink a coffee."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je me lève' means:",
+       "options": [
+        "I sleep",
+        "I get up",
+        "I eat",
+        "I wake up"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "fill",
+       "sentence": "Je me ___ à sept heures.",
+       "meaning": "I get up at seven o'clock.",
+       "options": [
+        "lève",
+        "lèves",
+        "réveille",
+        "mange"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I wake up early.",
+       "answer": "Je me réveille tôt.",
+       "bank": [
+        "tôt.",
+        "me",
+        "Je",
+        "réveille",
+        "tu",
+        "heures",
+        "lève",
+        "tard"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Tu te lèves tôt ou tard ?",
+       "meaning": "Do you get up early or late?",
+       "bank": [
+        "me",
+        "heures",
+        "tôt",
+        "te",
+        "Tu",
+        "?",
+        "ou",
+        "lèves",
+        "Je",
+        "tard",
+        "réveille"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Tous les jours, je me lève à six heures et demie.",
+       "meaning": "Every day, I get up at half past six."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "se lever",
+         "to get up"
+        ],
+        [
+         "se réveiller",
+         "to wake up"
+        ],
+        [
+         "tôt",
+         "early"
+        ],
+        [
+         "tard",
+         "late"
+        ],
+        [
+         "le petit-déjeuner",
+         "breakfast"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Je prends le petit-déjeuner à huit heures.",
+       "answer": "I have breakfast at eight o'clock.",
+       "bank": [
+        "at",
+        "I",
+        "have",
+        "late",
+        "early",
+        "o'clock.",
+        "breakfast",
+        "eight",
+        "dinner",
+        "nine"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the correct form: 'Tu ___ lèves tard.'",
+       "options": [
+        "tu",
+        "se",
+        "te",
+        "me"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u8l2",
+     "title": "Work and study",
+     "items": [
+      {
+       "t": "learn",
+       "word": "travailler",
+       "tl": "tra-va-YAY",
+       "meaning": "to work",
+       "example": "Je travaille à Paris.",
+       "exampleMeaning": "I work in Paris."
+      },
+      {
+       "t": "learn",
+       "word": "étudier",
+       "tl": "ay-tu-DYAY",
+       "meaning": "to study",
+       "example": "J'étudie le français.",
+       "exampleMeaning": "I study French."
+      },
+      {
+       "t": "learn",
+       "word": "le travail / l'école",
+       "tl": "luh tra-VY / lay-KOL",
+       "meaning": "work / school",
+       "example": "Je vais au travail. Les enfants vont à l'école.",
+       "exampleMeaning": "I go to work. The children go to school."
+      },
+      {
+       "t": "learn",
+       "word": "commencer / finir",
+       "tl": "ko-mon-SAY / fee-NEER",
+       "meaning": "to start / to finish",
+       "example": "Je commence à neuf heures et je finis à cinq heures.",
+       "exampleMeaning": "I start at nine and finish at five."
+      },
+      {
+       "t": "learn",
+       "word": "nous / vous",
+       "tl": "NOO / VOO",
+       "meaning": "we / you (plural, formal)",
+       "example": "Nous travaillons. Vous étudiez.",
+       "exampleMeaning": "We work. You study."
+      },
+      {
+       "t": "choose",
+       "prompt": "'J'étudie le français' means:",
+       "options": [
+        "I speak French",
+        "I like French",
+        "I am French",
+        "I study French"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I work in Paris.",
+       "answer": "Je travaille à Paris.",
+       "bank": [
+        "à",
+        "Paris.",
+        "Je",
+        "travaille",
+        "le",
+        "Lyon",
+        "étudie",
+        "nous"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Je commence à neuf heures et je finis à cinq heures.",
+       "meaning": "I start at nine and finish at five.",
+       "bank": [
+        "heures",
+        "cinq",
+        "à",
+        "nous",
+        "neuf",
+        "commence",
+        "Je",
+        "finis",
+        "travaille",
+        "et",
+        "je",
+        "six",
+        "dix",
+        "heures."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Nous travaillons tous les jours.",
+       "meaning": "We work every day."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "travailler",
+         "to work"
+        ],
+        [
+         "étudier",
+         "to study"
+        ],
+        [
+         "commencer",
+         "to start"
+        ],
+        [
+         "finir",
+         "to finish"
+        ],
+        [
+         "l'école",
+         "school"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Nous ___ à huit heures.",
+       "meaning": "We start at eight o'clock.",
+       "options": [
+        "commençons",
+        "commence",
+        "finis",
+        "travaille"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Les enfants vont à l'école.",
+       "answer": "The children go to school.",
+       "bank": [
+        "study",
+        "work",
+        "school's",
+        "children",
+        "school.",
+        "The",
+        "go",
+        "to",
+        "we"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'we work'?",
+       "options": [
+        "nous travaillons",
+        "je travaille",
+        "tu travailles",
+        "vous travaillez"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Vous étudiez le français ?",
+       "meaning": "Do you study French?",
+       "bank": [
+        "Nous",
+        "?",
+        "Vous",
+        "travaillez",
+        "français",
+        "le",
+        "anglais",
+        "étudiez"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u8l3",
+     "title": "Evening and night",
+     "items": [
+      {
+       "t": "learn",
+       "word": "le dîner",
+       "tl": "luh dee-NAY",
+       "meaning": "dinner",
+       "example": "Le dîner est à huit heures.",
+       "exampleMeaning": "Dinner is at eight o'clock."
+      },
+      {
+       "t": "learn",
+       "word": "regarder la télé",
+       "tl": "ruh-gar-DAY la tay-LAY",
+       "meaning": "to watch TV",
+       "example": "Le soir, je regarde la télé.",
+       "exampleMeaning": "In the evening, I watch TV."
+      },
+      {
+       "t": "learn",
+       "word": "lire / un livre",
+       "tl": "LEER / uh LEEVR",
+       "meaning": "to read / a book",
+       "example": "Je lis un livre avant de dormir.",
+       "exampleMeaning": "I read a book before sleeping."
+      },
+      {
+       "t": "learn",
+       "word": "dormir / se coucher",
+       "tl": "dor-MEER / suh koo-SHAY",
+       "meaning": "to sleep / to go to bed",
+       "example": "Je me couche à onze heures et je dors.",
+       "exampleMeaning": "I go to bed at eleven and I sleep."
+      },
+      {
+       "t": "learn",
+       "word": "souvent / parfois",
+       "tl": "soo-VOH / par-FWA",
+       "meaning": "often / sometimes",
+       "example": "Je lis souvent. Je regarde parfois la télé.",
+       "exampleMeaning": "I often read. I sometimes watch TV."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je me couche' means:",
+       "options": [
+        "I eat dinner",
+        "I go to bed",
+        "I get up",
+        "I read"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "In the evening, I watch TV.",
+       "answer": "Le soir, je regarde la télé.",
+       "bank": [
+        "la",
+        "lis",
+        "Le",
+        "je",
+        "télé.",
+        "livre",
+        "soir,",
+        "matin",
+        "regarde",
+        "dors"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Je lis un livre avant de dormir.",
+       "meaning": "I read a book before sleeping.",
+       "bank": [
+        "Je",
+        "souvent",
+        "de",
+        "dormir.",
+        "regarde",
+        "avant",
+        "lis",
+        "un",
+        "couche",
+        "livre",
+        "télé"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Le dîner est à huit heures, puis je me couche.",
+       "meaning": "Dinner is at eight o'clock, then I go to bed."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "le dîner",
+         "dinner"
+        ],
+        [
+         "regarder",
+         "to watch"
+        ],
+        [
+         "lire",
+         "to read"
+        ],
+        [
+         "dormir",
+         "to sleep"
+        ],
+        [
+         "souvent",
+         "often"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Je me ___ à onze heures.",
+       "meaning": "I go to bed at eleven o'clock.",
+       "options": [
+        "couche",
+        "lève",
+        "réveille",
+        "dors"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Je regarde parfois la télé.",
+       "answer": "I sometimes watch TV.",
+       "bank": [
+        "I",
+        "TV.",
+        "never",
+        "often",
+        "read",
+        "watch",
+        "book",
+        "sometimes"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Parfois' means:",
+       "options": [
+        "always",
+        "never",
+        "sometimes",
+        "often"
+       ],
+       "answer": 2
+      }
+     ]
+    },
+    {
+     "id": "u8l4",
+     "title": "Review: Daily Routine",
+     "items": [
+      {
+       "t": "learn",
+       "word": "le déjeuner",
+       "tl": "luh day-zhuh-NAY",
+       "meaning": "lunch",
+       "example": "Je déjeune à midi.",
+       "exampleMeaning": "I have lunch at noon."
+      },
+      {
+       "t": "learn",
+       "word": "faire du sport",
+       "tl": "fehr du SPOR",
+       "meaning": "to do sport / exercise",
+       "example": "Je fais du sport le week-end.",
+       "exampleMeaning": "I exercise at the weekend."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Le déjeuner' is:",
+       "options": [
+        "dinner",
+        "snack",
+        "breakfast",
+        "lunch"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "le déjeuner",
+         "lunch"
+        ],
+        [
+         "faire du sport",
+         "to exercise"
+        ],
+        [
+         "se coucher",
+         "to go to bed"
+        ],
+        [
+         "tous les jours",
+         "every day"
+        ],
+        [
+         "tard",
+         "late"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I exercise at the weekend.",
+       "answer": "Je fais du sport le week-end.",
+       "bank": [
+        "travaille",
+        "du",
+        "sport",
+        "fais",
+        "matin",
+        "lis",
+        "Je",
+        "souvent",
+        "week-end.",
+        "le"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Je me lève tôt et je travaille tous les jours.",
+       "meaning": "I get up early and I work every day.",
+       "bank": [
+        "couche",
+        "tôt",
+        "lève",
+        "les",
+        "je",
+        "étudie",
+        "travaille",
+        "jours.",
+        "et",
+        "Je",
+        "me",
+        "tous",
+        "parfois",
+        "tard"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Le matin, je me réveille à sept heures et je prends le petit-déjeuner.",
+       "meaning": "In the morning, I wake up at seven and have breakfast."
+      },
+      {
+       "t": "fill",
+       "sentence": "Nous ___ le français à l'école.",
+       "meaning": "We study French at school.",
+       "options": [
+        "étudions",
+        "travaillons",
+        "finis",
+        "étudie"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Le soir, je lis souvent un livre et je me couche à dix heures.",
+       "answer": "In the evening, I often read a book and go to bed at ten.",
+       "bank": [
+        "read",
+        "TV",
+        "and",
+        "a",
+        "go",
+        "often",
+        "book",
+        "at",
+        "the",
+        "eleven",
+        "I",
+        "watch",
+        "ten.",
+        "sometimes",
+        "bed",
+        "In",
+        "to",
+        "evening,"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'to finish'?",
+       "options": [
+        "finir",
+        "dormir",
+        "lire",
+        "commencer"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "listen",
+       "text": "Je déjeune à midi avec mes amis.",
+       "meaning": "I have lunch at noon with my friends.",
+       "bank": [
+        "déjeune",
+        "minuit",
+        "à",
+        "avec",
+        "frères",
+        "Je",
+        "amis.",
+        "soir",
+        "dîne",
+        "mes",
+        "midi"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Do you watch TV in the evening?",
+       "answer": "Tu regardes la télé le soir ?",
+       "bank": [
+        "livre",
+        "Tu",
+        "matin",
+        "regarde",
+        "télé",
+        "soir",
+        "le",
+        "la",
+        "regardes",
+        "lis",
+        "?"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Complete: 'Je ___ du sport.'",
+       "options": [
+        "prends",
+        "fais",
+        "suis",
+        "vais"
+       ],
+       "answer": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u9",
+   "title": "Past & Future",
+   "emoji": "📅",
+   "goal": "Talk about yesterday and tomorrow",
+   "lessons": [
+    {
+     "id": "u9l1",
+     "title": "Yesterday",
+     "items": [
+      {
+       "t": "learn",
+       "word": "hier",
+       "tl": "YEHR",
+       "meaning": "yesterday",
+       "example": "Hier, j'ai mangé une pizza.",
+       "exampleMeaning": "Yesterday, I ate a pizza."
+      },
+      {
+       "t": "learn",
+       "word": "j'ai mangé / j'ai bu",
+       "tl": "zhay mon-ZHAY / zhay BU",
+       "meaning": "I ate / I drank",
+       "example": "J'ai mangé du pain et j'ai bu un café.",
+       "exampleMeaning": "I ate bread and drank a coffee."
+      },
+      {
+       "t": "learn",
+       "word": "j'ai travaillé",
+       "tl": "zhay tra-va-YAY",
+       "meaning": "I worked",
+       "example": "Hier, j'ai travaillé tard.",
+       "exampleMeaning": "Yesterday, I worked late."
+      },
+      {
+       "t": "learn",
+       "word": "tu as ... ?",
+       "tl": "tu A",
+       "meaning": "did you ...? (you have)",
+       "example": "Tu as mangé ? Tu as bien dormi ?",
+       "exampleMeaning": "Did you eat? Did you sleep well?"
+      },
+      {
+       "t": "learn",
+       "word": "la semaine dernière",
+       "tl": "la suh-MEN dehr-NYEHR",
+       "meaning": "last week",
+       "example": "La semaine dernière, j'ai visité Paris.",
+       "exampleMeaning": "Last week, I visited Paris."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Hier' means:",
+       "options": [
+        "tomorrow",
+        "today",
+        "yesterday",
+        "last week"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "fill",
+       "sentence": "Hier, j'ai ___ une pizza.",
+       "meaning": "Yesterday, I ate a pizza.",
+       "options": [
+        "mangé",
+        "mange",
+        "bu",
+        "manger"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Yesterday, I worked late.",
+       "answer": "Hier, j'ai travaillé tard.",
+       "bank": [
+        "j'ai",
+        "mangé",
+        "Demain",
+        "Hier,",
+        "travaille",
+        "tard.",
+        "tôt",
+        "travaillé"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Tu as bien dormi ?",
+       "meaning": "Did you sleep well?",
+       "bank": [
+        "mangé",
+        "as",
+        "?",
+        "dormi",
+        "Tu",
+        "bu",
+        "bien",
+        "J'ai",
+        "hier"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "La semaine dernière, j'ai visité Paris.",
+       "meaning": "Last week, I visited Paris."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "hier",
+         "yesterday"
+        ],
+        [
+         "j'ai mangé",
+         "I ate"
+        ],
+        [
+         "j'ai bu",
+         "I drank"
+        ],
+        [
+         "j'ai travaillé",
+         "I worked"
+        ],
+        [
+         "la semaine dernière",
+         "last week"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "J'ai bu un café ce matin.",
+       "answer": "I drank a coffee this morning.",
+       "bank": [
+        "coffee",
+        "morning.",
+        "tea",
+        "yesterday",
+        "a",
+        "evening",
+        "this",
+        "ate",
+        "drank",
+        "I"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Tu as mangé ?' means:",
+       "options": [
+        "Are you eating?",
+        "Do you eat?",
+        "Will you eat?",
+        "Did you eat?"
+       ],
+       "answer": 3
+      }
+     ]
+    },
+    {
+     "id": "u9l2",
+     "title": "I went, I saw",
+     "items": [
+      {
+       "t": "learn",
+       "word": "je suis allé / allée",
+       "tl": "zhuh swee za-LAY",
+       "meaning": "I went (m / f)",
+       "example": "Je suis allé au cinéma.",
+       "exampleMeaning": "I went to the cinema."
+      },
+      {
+       "t": "learn",
+       "word": "j'ai vu",
+       "tl": "zhay VU",
+       "meaning": "I saw",
+       "example": "J'ai vu un bon film.",
+       "exampleMeaning": "I saw a good film."
+      },
+      {
+       "t": "learn",
+       "word": "j'ai fait",
+       "tl": "zhay FEH",
+       "meaning": "I did / I made",
+       "example": "J'ai fait du sport hier.",
+       "exampleMeaning": "I did sport yesterday."
+      },
+      {
+       "t": "learn",
+       "word": "le cinéma / le film",
+       "tl": "luh see-nay-MA / luh FEELM",
+       "meaning": "the cinema / the film",
+       "example": "Le film était super !",
+       "exampleMeaning": "The film was great!"
+      },
+      {
+       "t": "learn",
+       "word": "c'était",
+       "tl": "say-TEH",
+       "meaning": "it was",
+       "example": "C'était délicieux !",
+       "exampleMeaning": "It was delicious!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je suis allée' is said by:",
+       "options": [
+        "a woman",
+        "anyone",
+        "a man",
+        "a group"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I went to the cinema.",
+       "answer": "Je suis allé au cinéma.",
+       "bank": [
+        "cinéma.",
+        "Je",
+        "musée",
+        "allé",
+        "film",
+        "au",
+        "ai",
+        "vu",
+        "suis"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "J'ai vu un bon film, c'était super !",
+       "meaning": "I saw a good film, it was great!",
+       "bank": [
+        "bon",
+        "film,",
+        "mangé",
+        "vu",
+        "!",
+        "c'était",
+        "J'ai",
+        "fait",
+        "cinéma",
+        "allé",
+        "un",
+        "super"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Hier, j'ai fait du sport et je suis allé au marché.",
+       "meaning": "Yesterday, I did sport and I went to the market."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "je suis allé",
+         "I went"
+        ],
+        [
+         "j'ai vu",
+         "I saw"
+        ],
+        [
+         "j'ai fait",
+         "I did"
+        ],
+        [
+         "c'était",
+         "it was"
+        ],
+        [
+         "le film",
+         "the film"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "J'ai ___ un film au cinéma.",
+       "meaning": "I saw a film at the cinema.",
+       "options": [
+        "vu",
+        "fait",
+        "allé",
+        "bu"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "C'était délicieux !",
+       "answer": "It was delicious!",
+       "bank": [
+        "film",
+        "was",
+        "great",
+        "good",
+        "is",
+        "It",
+        "delicious!"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the correct: 'Je ___ allé à Paris.'",
+       "options": [
+        "es",
+        "suis",
+        "ai",
+        "vais"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "Je suis allée au musée avec ma sœur.",
+       "meaning": "I went to the museum with my sister.",
+       "bank": [
+        "fait",
+        "au",
+        "avec",
+        "vu",
+        "musée",
+        "suis",
+        "allée",
+        "cinéma",
+        "ma",
+        "sœur.",
+        "Je",
+        "frère"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u9l3",
+     "title": "Tomorrow and plans",
+     "items": [
+      {
+       "t": "learn",
+       "word": "je vais + verbe",
+       "tl": "zhuh VEH",
+       "meaning": "I am going to ...",
+       "example": "Demain, je vais travailler.",
+       "exampleMeaning": "Tomorrow, I'm going to work."
+      },
+      {
+       "t": "learn",
+       "word": "la semaine prochaine",
+       "tl": "la suh-MEN pro-SHEN",
+       "meaning": "next week",
+       "example": "La semaine prochaine, je vais visiter Lyon.",
+       "exampleMeaning": "Next week, I'm going to visit Lyon."
+      },
+      {
+       "t": "learn",
+       "word": "les vacances",
+       "tl": "lay va-KONS",
+       "meaning": "holidays",
+       "example": "En août, je vais partir en vacances.",
+       "exampleMeaning": "In August, I'm going to go on holiday."
+      },
+      {
+       "t": "learn",
+       "word": "partir / voyager",
+       "tl": "par-TEER / vwa-ya-ZHAY",
+       "meaning": "to leave / to travel",
+       "example": "J'aime voyager. Je pars demain.",
+       "exampleMeaning": "I love travelling. I leave tomorrow."
+      },
+      {
+       "t": "learn",
+       "word": "le week-end prochain",
+       "tl": "luh wee-KEND pro-SHAN",
+       "meaning": "next weekend",
+       "example": "Le week-end prochain, on va au cinéma ?",
+       "exampleMeaning": "Next weekend, shall we go to the cinema?"
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je vais manger' means:",
+       "options": [
+        "I ate",
+        "I eat",
+        "I'm going to eat",
+        "I would like to eat"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "fill",
+       "sentence": "Demain, je ___ travailler.",
+       "meaning": "Tomorrow, I'm going to work.",
+       "options": [
+        "vais",
+        "suis",
+        "ai",
+        "vas"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Next week, I'm going to visit Lyon.",
+       "answer": "La semaine prochaine, je vais visiter Lyon.",
+       "bank": [
+        "je",
+        "vais",
+        "prochaine,",
+        "semaine",
+        "ai",
+        "Paris",
+        "La",
+        "visiter",
+        "dernière",
+        "visité",
+        "Lyon."
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "En août, je vais partir en vacances.",
+       "meaning": "In August, I'm going to go on holiday.",
+       "bank": [
+        "En",
+        "je",
+        "août,",
+        "partir",
+        "en",
+        "voyager",
+        "vais",
+        "juillet",
+        "suis",
+        "allé",
+        "vacances."
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Le week-end prochain, je vais voyager avec mes amis.",
+       "meaning": "Next weekend, I'm going to travel with my friends."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "la semaine prochaine",
+         "next week"
+        ],
+        [
+         "les vacances",
+         "holidays"
+        ],
+        [
+         "partir",
+         "to leave"
+        ],
+        [
+         "voyager",
+         "to travel"
+        ],
+        [
+         "demain",
+         "tomorrow"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Je pars demain matin.",
+       "answer": "I leave tomorrow morning.",
+       "bank": [
+        "went",
+        "arrive",
+        "evening",
+        "morning.",
+        "tomorrow",
+        "I",
+        "yesterday",
+        "leave"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which is 'next week'?",
+       "options": [
+        "le week-end",
+        "la semaine dernière",
+        "hier",
+        "la semaine prochaine"
+       ],
+       "answer": 3
+      }
+     ]
+    },
+    {
+     "id": "u9l4",
+     "title": "Review: Past & Future",
+     "items": [
+      {
+       "t": "learn",
+       "word": "l'année dernière / l'année prochaine",
+       "tl": "la-NAY dehr-NYEHR / pro-SHEN",
+       "meaning": "last year / next year",
+       "example": "L'année dernière, j'ai visité Rome. L'année prochaine, je vais aller à Tokyo.",
+       "exampleMeaning": "Last year I visited Rome. Next year I'm going to Tokyo."
+      },
+      {
+       "t": "learn",
+       "word": "déjà / jamais",
+       "tl": "day-ZHA / zha-MEH",
+       "meaning": "already / never",
+       "example": "Tu as déjà visité Paris ? Non, jamais.",
+       "exampleMeaning": "Have you already visited Paris? No, never."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Jamais' means:",
+       "options": [
+        "never",
+        "already",
+        "always",
+        "soon"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "l'année dernière",
+         "last year"
+        ],
+        [
+         "l'année prochaine",
+         "next year"
+        ],
+        [
+         "déjà",
+         "already"
+        ],
+        [
+         "jamais",
+         "never"
+        ],
+        [
+         "c'était",
+         "it was"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "Last year, I visited Rome.",
+       "answer": "L'année dernière, j'ai visité Rome.",
+       "bank": [
+        "prochaine",
+        "visité",
+        "Paris",
+        "vais",
+        "j'ai",
+        "L'année",
+        "Rome.",
+        "dernière,",
+        "visiter"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Tu as déjà visité Paris ?",
+       "meaning": "Have you already visited Paris?",
+       "bank": [
+        "déjà",
+        "jamais",
+        "Tu",
+        "Paris",
+        "Lyon",
+        "as",
+        "vas",
+        "visité",
+        "?",
+        "hier"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Hier, j'ai vu un film. Demain, je vais faire du sport.",
+       "meaning": "Yesterday, I saw a film. Tomorrow, I'm going to do sport."
+      },
+      {
+       "t": "fill",
+       "sentence": "Je ___ allé au cinéma hier.",
+       "meaning": "I went to the cinema yesterday.",
+       "options": [
+        "suis",
+        "ai",
+        "vais",
+        "es"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "La semaine prochaine, je vais partir en vacances.",
+       "answer": "Next week, I'm going to go on holiday.",
+       "bank": [
+        "work",
+        "go",
+        "year",
+        "went",
+        "week,",
+        "holiday.",
+        "I'm",
+        "going",
+        "last",
+        "to",
+        "Next",
+        "on"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which sentence is in the past?",
+       "options": [
+        "Je voudrais manger.",
+        "J'ai mangé.",
+        "Je mange.",
+        "Je vais manger."
+       ],
+       "answer": 1
+      },
+      {
+       "t": "listen",
+       "text": "J'ai travaillé tard et j'ai bu un thé.",
+       "meaning": "I worked late and I drank a tea.",
+       "bank": [
+        "thé.",
+        "J'ai",
+        "j'ai",
+        "tôt",
+        "café",
+        "vais",
+        "bu",
+        "tard",
+        "mangé",
+        "un",
+        "travaillé",
+        "et"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "It was great!",
+       "answer": "C'était super !",
+       "bank": [
+        "était",
+        "délicieux",
+        "C'est",
+        "C'était",
+        "!",
+        "bon",
+        "super"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Complete: 'L'année ___, je vais aller à Tokyo.'",
+       "options": [
+        "dernière",
+        "hier",
+        "prochaine",
+        "demain"
+       ],
+       "answer": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u10",
+   "title": "Opinions & Feelings",
+   "emoji": "💬",
+   "goal": "Say what you like, think and feel",
+   "lessons": [
+    {
+     "id": "u10l1",
+     "title": "I like, I don't like",
+     "items": [
+      {
+       "t": "learn",
+       "word": "j'aime / je n'aime pas",
+       "tl": "ZHEM / zhuh NEM pa",
+       "meaning": "I like / I don't like",
+       "example": "J'aime le café. Je n'aime pas le thé.",
+       "exampleMeaning": "I like coffee. I don't like tea."
+      },
+      {
+       "t": "learn",
+       "word": "j'adore / je déteste",
+       "tl": "zha-DOR / zhuh day-TEST",
+       "meaning": "I love / I hate",
+       "example": "J'adore la musique ! Je déteste le froid.",
+       "exampleMeaning": "I love music! I hate the cold."
+      },
+      {
+       "t": "learn",
+       "word": "la musique / le sport",
+       "tl": "la mu-ZEEK / luh SPOR",
+       "meaning": "music / sport",
+       "example": "Tu aimes la musique ou le sport ?",
+       "exampleMeaning": "Do you like music or sport?"
+      },
+      {
+       "t": "learn",
+       "word": "préférer",
+       "tl": "pray-fay-RAY",
+       "meaning": "to prefer",
+       "example": "Je préfère le vin rouge.",
+       "exampleMeaning": "I prefer red wine."
+      },
+      {
+       "t": "learn",
+       "word": "beaucoup / un peu",
+       "tl": "bo-KOO / uh PUH",
+       "meaning": "a lot / a little",
+       "example": "J'aime beaucoup Paris.",
+       "exampleMeaning": "I like Paris a lot."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je déteste' means:",
+       "options": [
+        "I like",
+        "I love",
+        "I prefer",
+        "I hate"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I don't like tea.",
+       "answer": "Je n'aime pas le thé.",
+       "bank": [
+        "pas",
+        "thé.",
+        "n'aime",
+        "déteste",
+        "le",
+        "la",
+        "Je",
+        "café",
+        "aime"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "J'adore la musique !",
+       "meaning": "I love music!",
+       "bank": [
+        "aime",
+        "le",
+        "!",
+        "musique",
+        "la",
+        "sport",
+        "J'adore",
+        "déteste"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "J'aime beaucoup le fromage, mais je préfère le pain.",
+       "meaning": "I like cheese a lot, but I prefer bread."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "j'aime",
+         "I like"
+        ],
+        [
+         "j'adore",
+         "I love"
+        ],
+        [
+         "je déteste",
+         "I hate"
+        ],
+        [
+         "je préfère",
+         "I prefer"
+        ],
+        [
+         "beaucoup",
+         "a lot"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Je ___ le vin rouge.",
+       "meaning": "I prefer red wine.",
+       "options": [
+        "préfère",
+        "déteste",
+        "aime",
+        "bois"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Tu aimes le sport ?",
+       "answer": "Do you like sport?",
+       "bank": [
+        "sport?",
+        "music",
+        "like",
+        "hate",
+        "I",
+        "love",
+        "you",
+        "Do"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Pick the negative: 'Je ___ aime ___ le froid.'",
+       "options": [
+        "n' ... pas",
+        "pas ... ne",
+        "n' ... jamais",
+        "ne ... pas"
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u10l2",
+     "title": "What do you think?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "je pense que",
+       "tl": "zhuh PONS kuh",
+       "meaning": "I think that",
+       "example": "Je pense que c'est une bonne idée.",
+       "exampleMeaning": "I think that it's a good idea."
+      },
+      {
+       "t": "learn",
+       "word": "à mon avis",
+       "tl": "a mon a-VEE",
+       "meaning": "in my opinion",
+       "example": "À mon avis, le film est super.",
+       "exampleMeaning": "In my opinion, the film is great."
+      },
+      {
+       "t": "learn",
+       "word": "d'accord / pas d'accord",
+       "tl": "da-KOR",
+       "meaning": "agreed / not agreed",
+       "example": "Je suis d'accord avec toi.",
+       "exampleMeaning": "I agree with you."
+      },
+      {
+       "t": "learn",
+       "word": "intéressant / ennuyeux",
+       "tl": "an-tay-reh-SOH / on-nwee-YUH",
+       "meaning": "interesting / boring",
+       "example": "Le livre est intéressant, mais le film est ennuyeux.",
+       "exampleMeaning": "The book is interesting, but the film is boring."
+      },
+      {
+       "t": "learn",
+       "word": "pourquoi ? / parce que",
+       "tl": "poor-KWA / pars kuh",
+       "meaning": "why? / because",
+       "example": "Pourquoi ? Parce que c'est cher.",
+       "exampleMeaning": "Why? Because it's expensive."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Je suis d'accord' means:",
+       "options": [
+        "I prefer",
+        "I agree",
+        "I disagree",
+        "I think"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I think that it's a good idea.",
+       "answer": "Je pense que c'est une bonne idée.",
+       "bank": [
+        "idée.",
+        "pense",
+        "c'est",
+        "une",
+        "pourquoi",
+        "avis",
+        "mon",
+        "d'accord",
+        "Je",
+        "bonne",
+        "que"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "À mon avis, le film est ennuyeux.",
+       "meaning": "In my opinion, the film is boring.",
+       "bank": [
+        "super",
+        "film",
+        "livre",
+        "avis,",
+        "intéressant",
+        "mon",
+        "est",
+        "le",
+        "pense",
+        "ennuyeux.",
+        "À"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "Pourquoi ? Parce que c'est trop cher.",
+       "meaning": "Why? Because it's too expensive."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "je pense que",
+         "I think that"
+        ],
+        [
+         "à mon avis",
+         "in my opinion"
+        ],
+        [
+         "d'accord",
+         "agreed"
+        ],
+        [
+         "intéressant",
+         "interesting"
+        ],
+        [
+         "parce que",
+         "because"
+        ]
+       ]
+      },
+      {
+       "t": "fill",
+       "sentence": "Je ne suis pas ___ avec toi.",
+       "meaning": "I don't agree with you.",
+       "options": [
+        "d'accord",
+        "avis",
+        "pense",
+        "parce"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Le livre est très intéressant.",
+       "answer": "The book is very interesting.",
+       "bank": [
+        "good",
+        "interesting.",
+        "book",
+        "boring",
+        "very",
+        "film",
+        "is",
+        "a",
+        "The"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Pourquoi ?' means:",
+       "options": [
+        "where?",
+        "when?",
+        "why?",
+        "who?"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Je pense que tu as raison.",
+       "meaning": "I think that you are right.",
+       "bank": [
+        "pourquoi",
+        "avis",
+        "as",
+        "tu",
+        "d'accord",
+        "Je",
+        "parce",
+        "raison.",
+        "pense",
+        "que"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "u10l3",
+     "title": "How do you feel?",
+     "items": [
+      {
+       "t": "learn",
+       "word": "content / contente",
+       "tl": "kon-TOH / kon-TONT",
+       "meaning": "happy (m / f)",
+       "example": "Je suis très content aujourd'hui !",
+       "exampleMeaning": "I am very happy today!"
+      },
+      {
+       "t": "learn",
+       "word": "triste / fatigué",
+       "tl": "TREEST / fa-tee-GAY",
+       "meaning": "sad / tired",
+       "example": "Elle est triste et fatiguée.",
+       "exampleMeaning": "She is sad and tired."
+      },
+      {
+       "t": "learn",
+       "word": "avoir peur / avoir froid",
+       "tl": "a-VWAR PUHR / FRWA",
+       "meaning": "to be scared / to be cold",
+       "example": "J'ai peur ! J'ai froid !",
+       "exampleMeaning": "I'm scared! I'm cold!"
+      },
+      {
+       "t": "learn",
+       "word": "malade",
+       "tl": "ma-LAD",
+       "meaning": "sick",
+       "example": "Je suis malade, je reste à la maison.",
+       "exampleMeaning": "I'm sick, I'm staying at home."
+      },
+      {
+       "t": "learn",
+       "word": "ça va mieux",
+       "tl": "sa va MYUH",
+       "meaning": "it's better / I'm feeling better",
+       "example": "Aujourd'hui, ça va mieux.",
+       "exampleMeaning": "Today, I'm feeling better."
+      },
+      {
+       "t": "choose",
+       "prompt": "'Fatigué' means:",
+       "options": [
+        "sad",
+        "sick",
+        "happy",
+        "tired"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "fill",
+       "sentence": "Je suis ___, je reste à la maison.",
+       "meaning": "I'm sick, I'm staying at home.",
+       "options": [
+        "malade",
+        "content",
+        "peur",
+        "mieux"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I am very happy today!",
+       "answer": "Je suis très content aujourd'hui !",
+       "bank": [
+        "triste",
+        "content",
+        "très",
+        "!",
+        "ai",
+        "suis",
+        "Je",
+        "aujourd'hui",
+        "demain",
+        "fatigué"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "Elle est triste et fatiguée.",
+       "meaning": "She is sad and tired.",
+       "bank": [
+        "Il",
+        "fatiguée.",
+        "Elle",
+        "et",
+        "contente",
+        "triste",
+        "est",
+        "malade",
+        "peur"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "J'ai froid et je suis fatigué, mais ça va mieux.",
+       "meaning": "I'm cold and I'm tired, but I'm feeling better."
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "content",
+         "happy"
+        ],
+        [
+         "triste",
+         "sad"
+        ],
+        [
+         "fatigué",
+         "tired"
+        ],
+        [
+         "malade",
+         "sick"
+        ],
+        [
+         "avoir peur",
+         "to be scared"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Aujourd'hui, ça va mieux.",
+       "answer": "Today, I'm feeling better.",
+       "bank": [
+        "feeling",
+        "not",
+        "tired",
+        "yesterday",
+        "sick",
+        "better.",
+        "I'm",
+        "Today,"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which uses 'avoir'?",
+       "options": [
+        "J'ai froid.",
+        "Elle est contente.",
+        "Je suis malade.",
+        "Je suis triste."
+       ],
+       "answer": 0
+      }
+     ]
+    },
+    {
+     "id": "u10l4",
+     "title": "Review: Opinions & Feelings",
+     "items": [
+      {
+       "t": "learn",
+       "word": "plus ... que / moins ... que",
+       "tl": "PLU kuh / MWAN kuh",
+       "meaning": "more ... than / less ... than",
+       "example": "Le train est plus rapide que le bus.",
+       "exampleMeaning": "The train is faster than the bus."
+      },
+      {
+       "t": "learn",
+       "word": "le meilleur / la meilleure",
+       "tl": "luh may-YUHR",
+       "meaning": "the best (m / f)",
+       "example": "C'est le meilleur restaurant de Paris !",
+       "exampleMeaning": "It's the best restaurant in Paris!"
+      },
+      {
+       "t": "choose",
+       "prompt": "'Plus grand que' means:",
+       "options": [
+        "smaller than",
+        "taller than",
+        "the tallest",
+        "as tall as"
+       ],
+       "answer": 1
+      },
+      {
+       "t": "match",
+       "pairs": [
+        [
+         "plus ... que",
+         "more ... than"
+        ],
+        [
+         "le meilleur",
+         "the best"
+        ],
+        [
+         "ennuyeux",
+         "boring"
+        ],
+        [
+         "ça va mieux",
+         "feeling better"
+        ],
+        [
+         "je déteste",
+         "I hate"
+        ]
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "The train is faster than the bus.",
+       "answer": "Le train est plus rapide que le bus.",
+       "bank": [
+        "est",
+        "lent",
+        "rapide",
+        "Le",
+        "meilleur",
+        "moins",
+        "bus.",
+        "métro",
+        "plus",
+        "train",
+        "que",
+        "le"
+       ]
+      },
+      {
+       "t": "listen",
+       "text": "À mon avis, c'est le meilleur film de l'année.",
+       "meaning": "In my opinion, it's the best film of the year.",
+       "bank": [
+        "film",
+        "livre",
+        "pense",
+        "semaine",
+        "de",
+        "le",
+        "ennuyeux",
+        "avis,",
+        "c'est",
+        "À",
+        "l'année.",
+        "mon",
+        "meilleur"
+       ]
+      },
+      {
+       "t": "speak",
+       "text": "J'adore Paris ! Je pense que c'est la meilleure ville.",
+       "meaning": "I love Paris! I think that it's the best city."
+      },
+      {
+       "t": "fill",
+       "sentence": "Je suis ___ parce que je suis malade.",
+       "meaning": "I am sad because I am sick.",
+       "options": [
+        "triste",
+        "content",
+        "fatigué",
+        "peur"
+       ],
+       "answer": 0
+      },
+      {
+       "t": "translate",
+       "dir": "from",
+       "text": "Pourquoi tu n'aimes pas le film ? Parce qu'il est ennuyeux.",
+       "answer": "Why don't you like the film? Because it is boring.",
+       "bank": [
+        "interesting",
+        "is",
+        "film?",
+        "like",
+        "Because",
+        "book",
+        "don't",
+        "you",
+        "the",
+        "when",
+        "Why",
+        "boring.",
+        "it",
+        "long"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "Which means 'less expensive than'?",
+       "options": [
+        "plus cher que",
+        "pas cher",
+        "moins cher que",
+        "le plus cher"
+       ],
+       "answer": 2
+      },
+      {
+       "t": "listen",
+       "text": "Je préfère le thé, mais j'aime beaucoup le café.",
+       "meaning": "I prefer tea, but I like coffee a lot.",
+       "bank": [
+        "thé,",
+        "préfère",
+        "peu",
+        "vin",
+        "j'aime",
+        "beaucoup",
+        "Je",
+        "café.",
+        "mais",
+        "adore",
+        "déteste",
+        "le"
+       ]
+      },
+      {
+       "t": "translate",
+       "dir": "to",
+       "text": "I agree, it's a good idea.",
+       "answer": "Je suis d'accord, c'est une bonne idée.",
+       "bank": [
+        "idée.",
+        "Je",
+        "pense",
+        "mauvaise",
+        "suis",
+        "une",
+        "avis",
+        "bonne",
+        "c'est",
+        "d'accord,",
+        "pas"
+       ]
+      },
+      {
+       "t": "choose",
+       "prompt": "'Contente' describes:",
+       "options": [
+        "a tired man",
+        "a sad woman",
+        "a happy man",
+        "a happy woman"
+       ],
+       "answer": 3
+      },
+      {
+       "t": "speak",
+       "text": "Je suis fatigué, mais je suis content.",
+       "meaning": "I'm tired, but I'm happy."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

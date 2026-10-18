@@ -1,0 +1,277 @@
+{
+  "id": "malayalam",
+  "name": "Malayalam",
+  "native": "മലയാളം",
+  "category": "local",
+  "bcp47": "ml-IN",
+  "script": "Malayalam script",
+  "region": "Kerala and Lakshadweep, plus a large community in the Gulf countries",
+  "speakers": "≈ 35 million",
+  "about": "The name Malayalam is a palindrome in English, and the language has one of the largest alphabets among Indian scripts. Kerala has very high literacy, so you will see Malayalam everywhere, from newspapers to bus boards.",
+  "pronunciation": [
+    "The sound written zh, as in ezhu for seven, is like a soft r with the tongue curled back, close to the English r in a relaxed American accent.",
+    "Double consonants are held longer, so pathu with a long tt sound means ten, and the difference matters.",
+    "Many words end in a short, half-swallowed u sound, as in randu for two, so do not stress it.",
+    "Malayalam has three different l and n sounds; tongue position decides them, so listen carefully and copy Meera."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "Namaskaaram! Let us start with the words you will use every single day in Kerala. Say each one after me, slowly and with a smile.",
+      "tip": "Malayalis often greet with a question instead of hello, like asking whether you have eaten. Folding your hands for namaskaaram is a respectful greeting for elders.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "നമസ്കാരം",
+          "roman": "namaskaaram",
+          "note": "Namaskaaram is the respectful hello, good at any time of day. With friends, people often just say hi or ask a question instead."
+        },
+        {
+          "key": "how-are-you",
+          "native": "സുഖമാണോ?",
+          "roman": "sukhamaano?",
+          "note": "Sukhamaano literally asks, are you well? It works for everyone. Among friends you will also hear enthokke undu, meaning what's up."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "എനിക്ക് സുഖമാണ്",
+          "roman": "enikku sukhamaanu",
+          "note": "Enikku sukhamaanu means I am well. In a quick reply, people often just say sukham, or sukham thanne."
+        },
+        {
+          "key": "thank-you",
+          "native": "നന്ദി",
+          "roman": "nandi",
+          "note": "Nandi means thanks. For extra warmth say valare nandi, which means thank you very much. Many people also simply say thanks in English."
+        },
+        {
+          "key": "sorry",
+          "native": "ക്ഷമിക്കണം",
+          "roman": "kshamikkanam",
+          "note": "Kshamikkanam means please forgive me. Use it to apologise or to politely get someone's attention, like excuse me."
+        },
+        {
+          "key": "goodbye",
+          "native": "പോയി വരാം",
+          "roman": "poyi varaam",
+          "note": "Poyi varaam literally means I will go and come back. Malayalis prefer it to a final goodbye, because it promises you will meet again."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Now let us introduce ourselves. Keralites are curious and friendly, so expect to be asked your name and where you are from very quickly.",
+      "tip": "Use ningal for you with strangers and elders, and the more formal thaankal in very respectful settings. The casual nee is only for close friends or children.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "എന്റെ പേര് പ്രിയ എന്നാണ്",
+          "roman": "ente peru Priya ennaanu",
+          "note": "Ente peru Priya ennaanu means my name is Priya. Just swap in your own name. A shorter version is ente peru Priya."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "നിങ്ങളുടെ പേര് എന്താണ്?",
+          "roman": "ningalude peru enthaanu?",
+          "note": "Ningalude peru enthaanu is the polite way to ask someone's name. For a very formal tone, say thaankalude peru enthaanu."
+        },
+        {
+          "key": "where-from",
+          "native": "നിങ്ങൾ എവിടെ നിന്നാണ്?",
+          "roman": "ningal evide ninnaanu?",
+          "note": "Ningal evide ninnaanu means where are you from. Inside Kerala, people may ask naadu evideyaanu, meaning where is your home town."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "ഞാൻ ഇന്ത്യയിൽ നിന്നാണ്",
+          "roman": "njaan indiayil ninnaanu",
+          "note": "Njaan indiayil ninnaanu means I am from India. The word njaan, meaning I, starts with a soft nasal sound, like the ny in canyon."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "നിങ്ങളെ കണ്ടതിൽ സന്തോഷം",
+          "roman": "ningale kandathil santhosham",
+          "note": "This literally means happy to have seen you. Santhosham means happiness, and it is a warm way to end an introduction."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "എനിക്ക് കുറച്ച് മലയാളം സംസാരിക്കാൻ അറിയാം",
+          "roman": "enikku kurachu malayaalam samsaarikkaan ariyaam",
+          "note": "This means I know how to speak a little Malayalam. A shorter everyday version is enikku kurachu malayaalam ariyaam."
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Time for numbers! Once you can count to ten, prices, bus numbers and phone numbers become much easier. Count along with me.",
+      "tip": "Malayalam numbers often end in a short u sound, like onnu and randu. When asking about time, people use the word mani, which means hour or o'clock.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "ഒന്ന്, രണ്ട്, മൂന്ന്, നാല്, അഞ്ച്",
+          "roman": "onnu, randu, moonnu, naalu, anchu",
+          "note": "One to five: onnu, randu, moonnu, naalu, anchu. Keep the final u short and light."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "ആറ്, ഏഴ്, എട്ട്, ഒമ്പത്, പത്ത്",
+          "roman": "aaru, ezhu, ettu, ombathu, pathu",
+          "note": "Six to ten: aaru, ezhu, ettu, ombathu, pathu. The zh in ezhu is the famous Malayalam sound, a soft curled r."
+        },
+        {
+          "key": "what-time",
+          "native": "സമയം എത്രയായി?",
+          "roman": "samayam ethrayaayi?",
+          "note": "Samayam ethrayaayi literally asks how much time has it become. The answer sounds like moonnu mani, meaning three o'clock."
+        },
+        {
+          "key": "today",
+          "native": "ഇന്ന്",
+          "roman": "innu",
+          "note": "Innu means today. Do not confuse it with innale, which means yesterday."
+        },
+        {
+          "key": "tomorrow",
+          "native": "നാളെ",
+          "roman": "naale",
+          "note": "Naale means tomorrow. You will hear it a lot in naale kaanaam, meaning see you tomorrow."
+        },
+        {
+          "key": "yesterday",
+          "native": "ഇന്നലെ",
+          "roman": "innale",
+          "note": "Innale means yesterday. Think of it as today, innu, stretched into the past."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "Kerala food is famous, from appam to fish curry and banana chips. Let us learn how to order, ask prices and thank the cook.",
+      "tip": "Bargaining is normal in markets but not in shops with fixed prices. Meals are often served on a banana leaf, and eating with your right hand is completely normal.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "ഇതിന് എത്രയാണ്?",
+          "roman": "ithinu ethrayaanu?",
+          "note": "Ithinu ethrayaanu means how much for this. You can also say ithinte vila enthaanu, which asks what is the price of this."
+        },
+        {
+          "key": "too-expensive",
+          "native": "വില വളരെ കൂടുതലാണ്",
+          "roman": "vila valare kooduthalaanu",
+          "note": "This means the price is too high. Say it politely, then ask kurakkaamo, which means can you reduce it."
+        },
+        {
+          "key": "water-please",
+          "native": "കുറച്ച് വെള്ളം തരാമോ?",
+          "roman": "kurachu vellam tharaamo?",
+          "note": "This literally asks could you give me some water. In Kerala you are often served warm herbal water, called chukku vellam or jeera vellam."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "ഞാൻ വെജിറ്റേറിയൻ ആണ്",
+          "roman": "njaan vegetarian aanu",
+          "note": "People in Kerala commonly use the English word vegetarian. The pure Malayalam word is sasyaahaari, so you can also say njaan sasyaahaariyaanu."
+        },
+        {
+          "key": "very-tasty",
+          "native": "ഇതിന് നല്ല രുചിയുണ്ട്",
+          "roman": "ithinu nalla ruchiyundu",
+          "note": "This means it has a good taste. Young people often just say adipoli, which means awesome, and the cook will love it."
+        },
+        {
+          "key": "bill-please",
+          "native": "ബിൽ തരാമോ?",
+          "roman": "bill tharaamo?",
+          "note": "Bill tharaamo means could you give me the bill. Tharaamo makes any request polite, so it is a very handy word."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "Getting around Kerala is easy when you can ask for directions. Let us learn how to find the station and follow the way.",
+      "tip": "Directions are usually given with landmarks, like a temple, church or junction. The word junction is used everywhere, even in Malayalam sentences.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "റെയിൽവേ സ്റ്റേഷൻ എവിടെയാണ്?",
+          "roman": "railway station evideyaanu?",
+          "note": "Railway station evideyaanu means where is the railway station. Evideyaanu, meaning where is it, works for any place."
+        },
+        {
+          "key": "turn-left",
+          "native": "ഇടത്തോട്ട് തിരിയണം",
+          "roman": "idathottu thiriyanam",
+          "note": "Idathottu thiriyanam means you should turn left. Idathu means left, and you will hear it often in directions."
+        },
+        {
+          "key": "turn-right",
+          "native": "വലത്തോട്ട് തിരിയണം",
+          "roman": "valathottu thiriyanam",
+          "note": "Valathottu thiriyanam means you should turn right. Valathu means right."
+        },
+        {
+          "key": "go-straight",
+          "native": "നേരെ പോകണം",
+          "roman": "nere pokanam",
+          "note": "Nere pokanam means go straight. People may just say nere, nere, while pointing ahead."
+        },
+        {
+          "key": "how-far",
+          "native": "എത്ര ദൂരമുണ്ട്?",
+          "roman": "ethra dooramundu?",
+          "note": "Ethra dooramundu means how far is it. The answer is often given in kilometres, like randu kilometer."
+        },
+        {
+          "key": "please-help",
+          "native": "എന്നെ ഒന്ന് സഹായിക്കാമോ?",
+          "roman": "enne onnu sahaayikkaamo?",
+          "note": "This means could you help me a little. The small word onnu softens the request. In an emergency, you can add dayavaayi, meaning please."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "These are the lifesaver phrases that keep a conversation going. Even when you get stuck, they will help you stay in the chat.",
+      "tip": "Malayalam has two words for no. Illa means no or there is not, while alla means it is not that. A sideways head wobble often means yes.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "അതെ / ഇല്ല",
+          "roman": "athe / illa",
+          "note": "Athe means yes and illa means no. To say that is not it, use alla instead of illa."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "എനിക്ക് മനസ്സിലായില്ല",
+          "roman": "enikku manassilaayilla",
+          "note": "Enikku manassilaayilla means I did not understand. When you do understand, say manassilaayi."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "ദയവായി പതുക്കെ സംസാരിക്കാമോ?",
+          "roman": "dayavaayi pathukke samsaarikkaamo?",
+          "note": "This means could you please speak slowly. Malayalam is spoken fast, so this one will be useful."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "ഇതിന്റെ അർത്ഥം എന്താണ്?",
+          "roman": "ithinte artham enthaanu?",
+          "note": "Ithinte artham enthaanu means what is the meaning of this. Point to a word or sign as you ask."
+        },
+        {
+          "key": "i-like-it",
+          "native": "എനിക്ക് ഇത് ഇഷ്ടമാണ്",
+          "roman": "enikku ithu ishtamaanu",
+          "note": "This means I like it. Notice that in Malayalam you say to me, this is liked. For something you just tried, say ishtamaayi, meaning I liked it."
+        },
+        {
+          "key": "good-night",
+          "native": "ശുഭരാത്രി",
+          "roman": "shubharaathri",
+          "note": "Shubharaathri is the Malayalam word for good night. In everyday life, most people simply say good night in English."
+        }
+      ]
+    }
+  ]
+}

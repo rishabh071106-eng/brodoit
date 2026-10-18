@@ -1,7 +1,7 @@
 FROM node:18-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 make g++ curl ca-certificates bash \
+    python3 make g++ curl ca-certificates bash ffmpeg openjdk-17-jdk-headless \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

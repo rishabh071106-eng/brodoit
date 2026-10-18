@@ -110,6 +110,60 @@
               "answer": 3,
               "explain": "Use the official TCS NextStep portal; TCS never charges recruitment fees."
             }
+          ],
+          "notes": [
+            {
+              "h": "How the NQT works",
+              "p": "The **TCS National Qualifier Test (NQT)** is one test that decides which hiring track you are considered for. You register on **TCS NextStep**, apply for the drive, and take the test on **TCS iON** (at a centre or remotely, depending on the drive). Pattern as reported for recent drives; confirm on the official careers page.\n\nThe paper has two parts. **Part A — Foundation** (≈ 65 questions, ≈ 75 minutes) covers **Numerical Ability**, **Verbal Ability** and **Reasoning Ability**, each in its own timed section. **Part B — Advanced** has **Advanced Quantitative & Reasoning** (≈ 15 questions, ≈ 25 minutes) and **Advanced Coding** (2–3 problems, ≈ 90 minutes)."
+            },
+            {
+              "h": "Ninja, Digital and Prime",
+              "p": "Your **Foundation** score makes you eligible for **Ninja** interviews. Strong **Advanced** section scores (especially coding) make you eligible for **Digital** or **Prime** interviews, which carry higher packages and more demanding technical interviews. You do not choose the track yourself — the scores do — so attempt the Advanced section seriously even if you are aiming for Ninja.",
+              "points": [
+                "Ninja: Foundation-based shortlisting; interview covers basics, project and HR.",
+                "Digital: good Advanced scores; deeper coding, DSA and CS fundamentals.",
+                "Prime: top Advanced scores (usually solving coding problems fully); toughest interview.",
+                "Exact cut-offs are not published and vary by drive."
+              ]
+            },
+            {
+              "h": "Section-wise strategy",
+              "p": "Because each section is **individually timed** and you usually cannot return to a finished section, plan time per question and move on when stuck. No negative marking has been reported in recent NQT drives, so never leave a question blank — but confirm in your drive's instructions.",
+              "points": [
+                "**Numerical:** percentages, ratio, time-work, TSD, number system, mensuration, probability; use the on-screen calculator only for heavy arithmetic.",
+                "**Verbal:** sentence completion, error spotting, para-jumbles, reading comprehension; read questions before the passage.",
+                "**Reasoning:** series, coding-decoding, seating, blood relations, data sufficiency, statement–conclusion.",
+                "**Advanced Q&R:** fewer but harder questions; skip anything taking over 2 minutes and return if time remains.",
+                "**Coding:** read input from STDIN exactly as described; print only the required output."
+              ]
+            },
+            {
+              "h": "Sample walkthroughs",
+              "p": "**Numerical.** A shopkeeper marks a phone 25% above cost and gives a 12% discount. Profit%? 1.25 × 0.88 = 1.10 → **10% profit**.\n\n**Reasoning.** Series: 4, 9, 19, 39, 79, ? Each term = previous × 2 + 1 → **159**.\n\n**Verbal.** 'Each of the students ____ submitted the assignment.' Answer: **has** ('each' is singular).\n\n**Advanced quant.** How many integers from 1 to 1000 are divisible by 3 or 5 but not by 15? By 3: 333, by 5: 200, by 15: 66. By 3 or 5 = 333 + 200 − 66 = 467; remove multiples of 15 → **401**."
+            },
+            {
+              "h": "A four-week preparation plan",
+              "p": "Use this if you are starting late:",
+              "points": [
+                "Week 1: core aptitude formulas and 30 timed questions a day.",
+                "Week 2: verbal and reasoning practice; one sectional mock every two days.",
+                "Week 3: coding — arrays, strings, math problems, reading input correctly; 2 problems a day.",
+                "Week 4: full mocks under NQT timing; review every wrong answer.",
+                "Throughout: keep a mistake notebook and revise it before the test."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "One test decides Ninja, Digital or Prime eligibility.",
+                "Foundation: numerical, verbal, reasoning — separately timed.",
+                "Advanced: harder Q&R plus coding; it decides Digital/Prime.",
+                "Attempt everything if no negative marking is announced.",
+                "Practise on a similar test interface and with STDIN input.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -188,6 +242,47 @@
               "answer": 2,
               "explain": "Both (1) and (2) independently force n to be odd."
             }
+          ],
+          "notes": [
+            {
+              "h": "What TCS questions look like",
+              "p": "TCS questions are mostly **moderate difficulty but time-bound**: the challenge is speed and accuracy, not tricks. Questions are often wordy; underline the numbers and what is asked. Many numerical questions are **fill-in-the-blank** (type the answer) rather than multiple choice in some drives, so you cannot guess from options. Pattern as reported for recent drives; confirm on the official careers page."
+            },
+            {
+              "h": "Numerical ability walkthroughs",
+              "p": "**Q1 (ages).** The ratio of ages of A and B is 4 : 5. After 5 years it will be 5 : 6. Find A's age. (4x + 5)/(5x + 5) = 5/6 → 24x + 30 = 25x + 25 → x = 5 → **A = 20 years**.\n\n**Q2 (clocks).** Angle between the hands at 3:40? Angle = |30H − 5.5M| = |90 − 220| = **130°**.\n\n**Q3 (counting).** How many 3-digit numbers are divisible by 7? ⌊999/7⌋ − ⌊99/7⌋ = 142 − 14 = **128**.\n\n**Q4 (work).** A does a job in 12 days and B in 18. They work together for 4 days, then A leaves. Total = 36 units, A = 3/day, B = 2/day. In 4 days: 20 units; remaining 16 units by B: 8 days. **Total 12 days.**"
+            },
+            {
+              "h": "Reasoning and verbal walkthroughs",
+              "p": "**Q5 (statement–conclusion).** Statement: 'All trains to Delhi are cancelled today because of dense fog.' Conclusion I: Dense fog can disrupt train services. Conclusion II: No train to Delhi will run tomorrow. I is directly supported by the reason given; II talks about tomorrow, which the statement does not cover. **Only I follows.**\n\n**Q6 (data sufficiency).** Is x even? (1) 3x is even. (2) x + 1 is odd. Statement 1 alone: 3x even ⇒ x even (for integers). Statement 2 alone: x + 1 odd ⇒ x even. **Each alone is sufficient.**\n\n**Q7 (para-jumble).** Find the opening sentence (introduces a topic, no unexplained pronoun), then link by pronouns and connectors such as 'however' and 'as a result'.\n\n**Q8 (sentence completion).** 'The manager was ____ about the deadline; she would not allow any extension.' Options: lenient / adamant / casual. Answer **adamant** — the second clause explains the blank."
+            },
+            {
+              "h": "Check numeric answers in Python",
+              "p": "When practising, verify your answers with tiny programs — it also builds coding speed for the Advanced section:\n\n`x = next(x for x in range(1, 50) if 6 * (4 * x + 5) == 5 * (5 * x + 5))\nprint(\"A =\", 4 * x)\nprint(abs(30 * 3 - 5.5 * 40))\nprint(999 // 7 - 99 // 7)\nprint(sum(1 for n in range(1, 1001) if (n % 3 == 0 or n % 5 == 0) and n % 15 != 0))`\n\nOutput:\n`A = 20\n130.0\n128\n401`"
+            },
+            {
+              "h": "Traps in TCS questions",
+              "p": "Students lose marks here:",
+              "points": [
+                "Typing units or extra spaces in fill-in-the-blank answers when only a number is expected.",
+                "Spending too long on one question in a timed section.",
+                "Data sufficiency: solving fully instead of only checking sufficiency.",
+                "Statement–conclusion: using outside knowledge instead of the statement.",
+                "Not rounding as instructed (e.g. 'correct to two decimal places')."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Speed + accuracy beats difficult tricks.",
+                "Expect typed-answer numerical questions in some drives.",
+                "Clock angle = |30H − 5.5M|.",
+                "Count multiples with floor division.",
+                "Data sufficiency: test each statement alone, then together.",
+                "Practise with a timer every day."
+              ]
+            }
           ]
         },
         {
@@ -253,6 +348,36 @@
               ],
               "answer": 3,
               "explain": "Fresher technical rounds focus on fundamentals and your own work."
+            }
+          ],
+          "notes": [
+            {
+              "h": "The coding section",
+              "p": "The Advanced Coding section gives **2–3 problems in ≈ 90 minutes** on the TCS iON compiler with languages such as C, C++, Java and Python. Your code is judged on **hidden test cases**, so it must handle edge cases and read input **exactly** in the stated format from STDIN. Do not print prompts like 'Enter a number'. Pattern as reported for recent drives; confirm on the official careers page.\n\nTypical difficulty: the first problem is easy-to-medium (arrays, strings, math), the second medium-to-hard (greedy, sorting, DP, simulation). Solving the first fully and the second partially can still help; solving both is usually needed for Prime."
+            },
+            {
+              "h": "Sample problem 1: character frequency",
+              "p": "**Problem.** Given a lowercase string, print each distinct character followed by its count, in order of first appearance.\n\n`from collections import Counter\n\ns = input().strip()\nfreq = Counter(s)\nprint(\"\".join(ch + str(freq[ch]) for ch in dict.fromkeys(s)))`\n\nSample input:\n`aabccca`\n\nOutput:\n`a3b1c3`\n\n`dict.fromkeys(s)` keeps distinct characters in first-seen order. Time **O(n)**, space O(k) for k distinct characters."
+            },
+            {
+              "h": "Sample problem 2: sum of primes up to N",
+              "p": "**Problem.** Read N (up to 10⁶) and print the sum of all primes ≤ N. Checking each number by trial division is too slow for large N; use the **Sieve of Eratosthenes**.\n\n`n = int(input())\nis_prime = [True] * (n + 1)\nis_prime[0] = is_prime[1] = False      # assumes n >= 2\ni = 2\nwhile i * i <= n:\n    if is_prime[i]:\n        for j in range(i * i, n + 1, i):\n            is_prime[j] = False\n    i += 1\nprint(sum(i for i in range(n + 1) if is_prime[i]))`\n\nSample input:\n`20`\n\nOutput:\n`77`\n\nPrimes up to 20 are 2, 3, 5, 7, 11, 13, 17, 19, which sum to 77. The sieve runs in **O(N log log N)** time and O(N) space."
+            },
+            {
+              "h": "Interview rounds and model answers",
+              "p": "The interview is often one panel with **Technical (TR)**, **Managerial (MR)** and **HR** parts, lasting 30–60 minutes. Digital/Prime interviews go deeper into DSA, OOP, DBMS and your projects.\n\n**TR: 'Explain your final-year project.'** A: Problem, your role, tech stack, one challenge and how you solved it, result — in two minutes.\n\n**TR: 'Difference between C and Java?'** A: C is procedural, compiled to machine code, manual memory; Java is object-oriented, compiled to bytecode for the JVM, garbage-collected.\n\n**MR: 'The client changes requirements a day before delivery. What do you do?'** A: Understand the change, estimate impact, inform the lead, agree on priority and a revised timeline in writing.\n\n**HR: 'Are you comfortable with relocation and shifts?'** A: Answer honestly; TCS posts freshers across India."
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Read STDIN exactly; print only the answer.",
+                "Test edge cases: empty input, N = 1, large N.",
+                "Use efficient methods (sieve, hashing, sorting).",
+                "Interview: TR + MR + HR, often in one panel.",
+                "Know your project and resume line by line.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
             }
           ]
         }

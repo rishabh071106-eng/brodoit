@@ -1,0 +1,8 @@
+[
+  {"code":"es","name":"Spanish","native":"Español","flag":"🇪🇸","from":"en","fromName":"English","tagline":"Order tapas, make friends, travel Spain & Latin America.","voice":"es-ES","hasAudio":true},
+  {"code":"fr","name":"French","native":"Français","flag":"🇫🇷","from":"en","fromName":"English","tagline":"Order croissants, chat in cafés, travel the francophone world.","voice":"fr-FR","hasAudio":true},
+  {"code":"de","name":"German","native":"Deutsch","flag":"🇩🇪","from":"en","fromName":"English","tagline":"Order a Brezel, navigate Berlin, make friends across Germany, Austria & Switzerland.","voice":"de-DE","hasAudio":true},
+  {"code":"ja","name":"Japanese","native":"日本語","flag":"🇯🇵","from":"en","fromName":"English","tagline":"Read hiragana, order ramen, and chat politely across Japan.","voice":"ja-JP","hasAudio":false},
+  {"code":"hi","name":"Hindi","native":"हिन्दी","flag":"🇮🇳","from":"en","fromName":"English","tagline":"Chat with family, haggle in the bazaar, travel India with confidence.","voice":"hi-IN","hasAudio":true},
+  {"code":"en","name":"English","native":"English","flag":"🇬🇧","from":"hi","fromName":"हिंदी","tagline":"ऑफिस, शॉपिंग, सफ़र और इंटरव्यू के लिए रोज़मर्रा की बोलचाल वाली अंग्रेज़ी।","voice":"en-IN","hasAudio":true}
+]
