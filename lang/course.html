@@ -7,9 +7,11 @@
 <title>Course · Brodoit Languages</title>
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=12">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=12">
-<script src="/app/icons.js?v=12" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=14">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=14">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=14">
+<script src="/app/icons.js?v=14" defer></script>
+<script src="/lang/assets/topbar.js?v=14" defer></script>
 </head>
 <body>
 <main class="wrap" style="padding-bottom:40px">
@@ -19,7 +21,7 @@
 <script type="module">
 import { renderChrome, loadCourses, loadCourse, loadAudioCourse, store, esc, t, param, courseProgress, computeStreak, ICON, setCourse, toast, comingSoonHTML } from '/lang/assets/lang.js?v=9';
 import { loadPhraseCatalog, loadPhraseLang, phraseProgress, phrasesHref, PHRASE_OF } from '/lang/assets/phrases.js?v=9';
-import { ic } from '/lang/assets/ico.js?v=12';
+import { ic } from '/lang/assets/ico.js?v=14';
 
 // UI strings carry a leading emoji ("🎧 Audio lessons"); the v10 chrome draws the icon instead.
 const label = key => t(lang, key).replace(/^[^\p{L}\p{N}]+\s*/u, '');

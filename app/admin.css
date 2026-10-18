@@ -1,8 +1,8 @@
 /* Brodoit Admin card (You → Admin) — v10 tokens only (see /app/theme.css). Mobile-first 390px, 4-pt grid, ≥44px taps. */
 /* Small-text inks: the brand violet/red/mint fills stay as tokens, but 12–13px text on the soft tints needs deeper (light)
    or lighter (dark) inks to clear WCAG AA 4.5:1 — measured in the harness for both themes. */
-.adm{--adm-violet-ink:#5B3DE0;--adm-red-ink:#A8252B;--adm-mint-ink:#0B6B45;--adm-warn-ink:#8E2F1E}
-html[data-theme="dark"] .adm,:root[data-theme="dark"] .adm,body[data-theme=aurora] .adm{--adm-violet-ink:#A99AFF;--adm-red-ink:#FF8A8E;--adm-mint-ink:#5EE0A6;--adm-warn-ink:#FF9D7E}
+.adm{--adm-violet-ink:#B5402A;--adm-red-ink:#A8252B;--adm-mint-ink:#0B6B45;--adm-warn-ink:#8E2F1E}
+html[data-theme="dark"] .adm,:root[data-theme="dark"] .adm,body[data-theme=aurora] .adm{--adm-violet-ink:#E58A74;--adm-red-ink:#FF8A8E;--adm-mint-ink:#5EE0A6;--adm-warn-ink:#FF9D7E}
 .adm{display:grid;gap:16px;padding:16px;margin:16px 0;font-family:var(--b-sans);color:var(--b-ink);animation:b-rise var(--m-enter) var(--ease);-webkit-tap-highlight-color:transparent}
 .adm *{box-sizing:border-box}
 .adm [hidden]{display:none!important}

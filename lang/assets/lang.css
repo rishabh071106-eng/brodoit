@@ -16,6 +16,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;-we
 button:focus-visible,a:focus-visible{outline:3px solid var(--b-violet);outline-offset:2px;border-radius:var(--r-sm)}
 img,svg{display:block;max-width:100%}
 .ico{display:inline-block;vertical-align:middle;flex-shrink:0;pointer-events:none}
+:root{--bd-wrap:560px}
 .wrap{max-width:560px;margin:0 auto;padding:0 16px}
 .muted{color:var(--b-mute)}
 .rise{animation:b-rise var(--m-enter) var(--ease) both}
@@ -23,13 +24,10 @@ img,svg{display:block;max-width:100%}
 .press{transition:transform var(--m-press) var(--ease)}
 .press:active{transform:scale(.97)}
 
-/* ---- header: 44px icon-btn back arrow + title (shared shape with /prep and /speaker) ---- */
-.topbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--b-bg) 84%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding-top:env(safe-area-inset-top)}
-.topbar .wrap{display:flex;align-items:center;gap:10px;min-height:60px}
+/* ---- header: the shared bar ([← Brodoit] [back] [title]) lives in /lang/assets/topbar.css; icon-btn/pill are reused by pages ---- */
 .icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--b-bg-2);border:none;box-shadow:none;flex-shrink:0;color:var(--b-ink);cursor:pointer}
 .icon-btn svg{width:22px;height:22px}
 .icon-btn:active{transform:scale(.94)}
-.topbar .title{font:var(--t-h3);letter-spacing:-.02em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand{font-weight:800;font-size:20px;letter-spacing:-.03em}
 .brand b{background:var(--b-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .pill{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:var(--r-pill);background:var(--b-card);border:1px solid var(--b-line);box-shadow:var(--sh-1);font:var(--t-sm);font-weight:800;color:var(--b-ink);white-space:nowrap}
@@ -39,7 +37,7 @@ img,svg{display:block;max-width:100%}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--b-ink);color:var(--b-bg);padding:12px 18px;border-radius:var(--r-pill);font-weight:700;font-size:14px;z-index:200;box-shadow:var(--sh-2);animation:b-rise var(--m-enter) var(--ease) both;max-width:calc(100vw - 32px);text-align:center}
 
 /* ---- hero (the one gradient hero on the Languages home) ---- */
-.hero{position:relative;border-radius:var(--r-lg);overflow:hidden;color:#fff;padding:26px 22px 24px;background:linear-gradient(135deg,#1A1033 0%,#4A2AC9 45%,#FF5A36 100%);box-shadow:var(--sh-2);isolation:isolate}
+.hero{position:relative;border-radius:var(--r-lg);overflow:hidden;color:#fff;padding:26px 22px 24px;background:linear-gradient(135deg,#1F1E1C 0%,#3A231C 55%,#B5402A 100%);box-shadow:var(--sh-2);isolation:isolate}
 .hero::before{content:"";position:absolute;inset:-40% -20% auto auto;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 65%);z-index:-1}
 .hero .wave{position:absolute;right:-10px;bottom:-8px;display:flex;align-items:flex-end;gap:5px;height:70px;opacity:.55}
 .hero .wave i{display:block;width:6px;border-radius:4px;background:#fff;animation:eq 1.4s ease-in-out infinite}
@@ -104,7 +102,7 @@ img,svg{display:block;max-width:100%}
 
 /* ---- path (Duolingo-style; nodes keep the press-edge) ---- */
 .path{position:relative;padding:54px 0 40px;display:flex;flex-direction:column;align-items:center;gap:36px}
-.node{--x:0px;position:relative;width:100%;display:flex;justify-content:center;transform:translateX(var(--x));transition:transform var(--m-enter)}
+.node{--x:0px;position:relative;width:220px;display:flex;justify-content:center;transform:translateX(var(--x));transition:transform var(--m-enter)} /* fixed width: a full-width box shifted by --x would widen the page */
 .node .btn{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-size:30px;position:relative;background:var(--b-card);color:var(--b-ink);box-shadow:0 8px 0 0 var(--b-line-2),var(--sh-1);border:1px solid var(--b-line);transition:transform var(--m-press),box-shadow var(--m-press)}
 .node .btn:active{transform:translateY(6px);box-shadow:0 2px 0 0 var(--b-line-2)}
 .node.done .btn{background:var(--b-mint);color:#fff;box-shadow:0 8px 0 0 #118F5B}
@@ -139,8 +137,8 @@ img,svg{display:block;max-width:100%}
 .empty .s{font-size:14px;color:var(--b-mute);font-weight:600;margin:6px 0 16px}
 
 /* ---- lesson runner ---- */
-.runner{display:flex;flex-direction:column;min-height:100dvh;max-width:560px;margin:0 auto}
-.runner .hd{display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 16px 10px}
+.runner{display:flex;flex-direction:column;min-height:calc(100dvh - 60px - env(safe-area-inset-top));max-width:560px;margin:0 auto}
+.runner .hd{display:flex;align-items:center;gap:12px;padding:12px 16px 10px}
 .runner .hd .b-progress{flex:1;height:16px}
 .hearts{font-weight:800;font-size:15px;display:inline-flex;align-items:center;gap:4px;color:#E5484D;min-width:48px;min-height:44px;justify-content:flex-end}
 .hearts .ico{width:18px;height:18px;fill:currentColor}
@@ -286,14 +284,14 @@ img,svg{display:block;max-width:100%}
 .speech .nat{font-size:17px;font-weight:800;color:var(--b-ink);display:block}
 .about{padding:16px 18px;margin-top:14px;font-size:14px;font-weight:600;color:var(--b-ink-2);line-height:1.5}
 .about .b-eyebrow{margin-bottom:6px}
-.challenge{margin-top:14px;padding:16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 14px;align-items:center;background:linear-gradient(135deg,#1A1033 0%,#4A2AC9 100%);color:#fff;border:none;box-shadow:var(--sh-2)}
+.challenge{margin-top:14px;padding:16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 14px;align-items:center;background:linear-gradient(135deg,#1F1E1C 0%,#3A231C 55%,#B5402A 100%);color:#fff;border:none;box-shadow:var(--sh-2)}
 .challenge .ring{--size:66px;--w:7px;--c:var(--b-sun);background:conic-gradient(var(--c) calc(var(--p)*1%),rgba(255,255,255,.16) 0)}
-.challenge .ring::before{background:#2A1B5E}
+.challenge .ring::before{background:#3A231C}
 .challenge .ring>span{color:#fff;font-size:12px}
 .challenge .k{font:var(--t-eyebrow);letter-spacing:.14em;text-transform:uppercase;opacity:.75}
 .challenge .t{font-size:17px;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .challenge .s{font:var(--t-cap);opacity:.85;margin-top:3px;line-height:1.35}
-.challenge .b-btn{grid-column:1/-1;background:#fff;color:#4A2AC9;box-shadow:0 4px 0 0 rgba(0,0,0,.35)}
+.challenge .b-btn{grid-column:1/-1;background:#fff;color:#1F1E1C;box-shadow:0 4px 0 0 rgba(0,0,0,.35)}
 .tips{padding:4px 18px;margin-top:14px}
 .tips li{list-style:none;padding:12px 0;border-top:1px solid var(--b-line);font-size:14px;font-weight:600;color:var(--b-ink-2);line-height:1.45;display:flex;gap:10px;align-items:flex-start}
 .tips li:first-child{border-top:none}
@@ -334,5 +332,9 @@ img,svg{display:block;max-width:100%}
 html[data-theme=dark],body[data-theme=aurora]{--b-violet:#A99AFF;--b-violet-soft:rgba(169,154,255,.2)}
 .unit-hd.alt{background:#0B6B45}
 
-html,body{overflow-x:hidden;max-width:100vw}
+/* Horizontal clipping without a scroll container: `hidden` on html+body made body a scroll container, so position:sticky
+   never stuck; `clip` keeps the viewport as the only scroller (sticky works) and stops mobile Chrome zooming out to fit
+   content that briefly overflows (e.g. the exercise slide-in). Older browsers keep body{overflow-x:hidden} from above. */
+body{max-width:100vw}
+@supports (overflow:clip){html,body{overflow-x:clip}}
 .path,.path *{max-width:100%}

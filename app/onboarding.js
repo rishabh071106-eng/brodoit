@@ -44,7 +44,7 @@
   // ─────────────────────────── markup ───────────────────────────
   function slide1() {
     return '<section class="onb-slide s1" data-i="0" aria-label="Meet Bro">' +
-      '<div class="onb-hero float tap" id="onbHero1" role="button" tabindex="0" aria-label="Say hi to Bro">' + mas('idle', 190) + '<div class="onb-say" id="onbSay">Hi! I\'m Bro.</div></div>' +
+      '<div class="onb-hero float tap" id="onbHero1" role="button" tabindex="0" aria-label="Say hi to Bro">' + mas('idle', 140) + '<div class="onb-say" id="onbSay">Hi! I\'m Bro.</div></div>' +
       '<div class="onb-eyebrow">Brodoit</div>' +
       '<h1 class="onb-h1">Meet <span class="grad">Bro</span></h1>' +
       '<p class="onb-p">Tap him. Talk. He talks back — English or हिंदी.</p>' +
@@ -57,7 +57,7 @@
       { r: 3, name: 'Priya', hue: 330, steps: 6910, streak: 8 }
     ];
     return '<section class="onb-slide s2" data-i="1" aria-label="Walk. Learn. Rise.">' +
-      '<div class="onb-ring" id="onbRing"><svg class="ringsvg" width="220" height="220" viewBox="0 0 220 220" aria-hidden="true"><circle class="bg" cx="110" cy="110" r="95" fill="none" stroke-width="16"/><circle class="fg" cx="110" cy="110" r="95" fill="none" stroke-width="16" stroke-linecap="round"/></svg>' + mas('walking', 118) + '</div>' +
+      '<div class="onb-ring" id="onbRing"><svg class="ringsvg" width="220" height="220" viewBox="0 0 220 220" aria-hidden="true"><circle class="bg" cx="110" cy="110" r="95" fill="none" stroke-width="16"/><circle class="fg" cx="110" cy="110" r="95" fill="none" stroke-width="16" stroke-linecap="round"/></svg>' + mas('walking', 104) + '</div>' +
       '<div class="onb-steps"><b id="onbCount">0</b><small>of 10,000 steps</small></div>' +
       '<h1 class="onb-h1">Walk. Learn. <span class="grad">Rise.</span></h1>' +
       '<p class="onb-p">Every step counts. Friends keep score.</p>' +

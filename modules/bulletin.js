@@ -6,6 +6,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const EV = require('./elevenvoice.js');
 
 const DEFAULT_VOICE = 'pNInz6obpgDQGcFmaJgB'; // Adam — warm news-anchor voice; multilingual v2 speaks Hindi with any voice
 let DIR = path.join(__dirname, '..', 'audio-news');
@@ -26,7 +27,7 @@ async function elevenTTS(text, voice, lang, key) {
   for (const c of chunks) {
     const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`, {
       method: 'POST', headers: { 'xi-api-key': key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: c, model_id: 'eleven_multilingual_v2', language_code: lang, voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.2, use_speaker_boost: true } }),
+      body: JSON.stringify({ text: c, model_id: EV.MODEL, language_code: lang, voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.2, use_speaker_boost: true } }),
     });
     if (!r.ok) throw new Error('ElevenLabs ' + r.status + ' ' + (await r.text()).slice(0, 200));
     bufs.push(Buffer.from(await r.arrayBuffer()));
@@ -78,8 +79,8 @@ Only report what the sources say; do not add facts. Avoid graphic details. STORI
     const key = elevenKey(); if (!key) return;
     const r = get.get(id); if (!r) return;
     try {
-      if (!r.audio_en) { const b = await elevenTTS(en, voiceEn(), 'en', key); if (b) { fs.writeFileSync(path.join(DIR, id + '-en.mp3'), b); db.prepare('UPDATE news_bulletins SET audio_en=? WHERE id=?').run(id + '-en.mp3', id); } }
-      if (!r.audio_hi) { const b = await elevenTTS(hi, voiceHi(), 'hi', key); if (b) { fs.writeFileSync(path.join(DIR, id + '-hi.mp3'), b); db.prepare('UPDATE news_bulletins SET audio_hi=? WHERE id=?').run(id + '-hi.mp3', id); } }
+      if (!r.audio_en) { const b = await elevenTTS(en, await EV.pickVoice(key, 'en', getSetting), 'en', key); if (b) { fs.writeFileSync(path.join(DIR, id + '-en.mp3'), b); db.prepare('UPDATE news_bulletins SET audio_en=? WHERE id=?').run(id + '-en.mp3', id); } }
+      if (!r.audio_hi) { const b = await elevenTTS(hi, await EV.pickVoice(key, 'hi', getSetting), 'hi', key); if (b) { fs.writeFileSync(path.join(DIR, id + '-hi.mp3'), b); db.prepare('UPDATE news_bulletins SET audio_hi=? WHERE id=?').run(id + '-hi.mp3', id); } }
     } catch (e) { console.log('[NEWS-CH] audio render failed', id, e.message); if (strict) throw e; }
   }
 

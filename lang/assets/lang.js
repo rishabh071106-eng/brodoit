@@ -120,12 +120,16 @@ export const ICON = {
   pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10z"/><path d="M13.5 6.5l3 3"/></svg>',
 };
 
-export function renderChrome({ title = '', back = '/lang/', right = '', brand = true } = {}) {
+// Top bar: [← Brodoit] [parent back, when `back` is set] [title] [right]. Markup + back guard live in
+// /lang/assets/topbar.js (window.bdTopbar, loaded with defer before this module); styles in topbar.css.
+export function renderChrome({ title = '', subtitle = '', back = '/lang/', backLabel = 'Back', backIcon = '', right = '', brand = true, mount = null } = {}) {
+  const label = title ? esc(title) : brand ? 'Languages' : '';
+  const here = location.pathname.replace(/index\.html$/, '');
+  const parent = back && back.replace(/index\.html$/, '') !== here ? back : null;
+  if (typeof window.bdTopbar === 'function') return window.bdTopbar({ back: parent, backLabel, backIcon, title: label, subtitle: esc(subtitle), right, mount });
   const top = document.createElement('header');
-  top.className = 'topbar';
-  top.innerHTML = `<div class="wrap">
-    <a class="icon-btn press" href="${esc(back)}" aria-label="Back">${ICON.back}</a>
-    <div class="title">${title ? esc(title) : brand ? '<span class="brand">Brodoit <b>Languages</b></span>' : ''}</div>${right}</div>`;
+  top.className = 'bd-top';
+  top.innerHTML = `<div class="bd-top-in"><a class="bd-home press" href="/?tab=learn" aria-label="Back to Brodoit">${ICON.back}<span>Brodoit</span></a>${parent ? `<a class="bd-back press" href="${esc(parent)}" aria-label="${esc(backLabel)}">${ICON.back}</a>` : ''}<div class="bd-title">${label}</div><div class="bd-right">${right}</div></div>`;
   document.body.prepend(top);
   return top;
 }
@@ -146,7 +150,8 @@ export function fmtTime(sec) {
 const synth = typeof speechSynthesis !== 'undefined' ? speechSynthesis : null;
 export const hasTTS = !!synth;
 const VOICE_KEY = 'lang.voice.v1';
-const PREF = ['google', 'natural', 'enhanced', 'premium', 'neural', 'siri', 'online'];
+const PREF = ['google', 'natural', 'neural', 'enhanced', 'premium', 'siri', 'online'];
+const BEST = /Google|Natural|Neural/i; // the voices that sound closest to a studio recording
 let voicesReady = null;
 
 export function voicesLoaded() {
@@ -173,11 +178,14 @@ export function pickVoice(lang, voices) {
   const L = norm(lang), base = L.split('-')[0];
   const exact = voices.filter(v => norm(v.lang) === L);
   const pool = exact.length ? exact : voices.filter(v => norm(v.lang).split('-')[0] === base);
+  // A remembered pick is kept only while nothing better is installed (a Google/Natural/Neural voice for this language).
   let best = pool.find(v => v.name === cached[lang]) || null;
+  if (best && !BEST.test(best.name) && pool.some(v => BEST.test(v.name))) best = null;
   if (!best && pool.length) {
     const score = v => {
       const n = v.name.toLowerCase();
-      let s = 0;
+      let s = BEST.test(v.name) ? 1000 : 0;
+      if (norm(v.lang) === L) s += 500;
       PREF.forEach((p, i) => { if (n.includes(p)) s += 100 - i * 10; });
       if (v.default) s += 1;
       if (!v.localService) s += 5;
@@ -322,7 +330,7 @@ export function confetti({ count = 140, duration = 2600 } = {}) {
   const ctx = c.getContext('2d');
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   const W = c.width = innerWidth * dpr, H = c.height = innerHeight * dpr;
-  const colors = ['#FF5A36', '#FF2D7A', '#6C4CF1', '#19C37D', '#FFB800', '#1EA7FD'];
+  const colors = ['#B5402A', '#8E2F1E', '#1F1E1C', '#D9654E', '#E8DCC8', '#F3E9D8'];
   const ps = Array.from({ length: count }, () => ({
     x: W / 2 + (Math.random() - .5) * W * .5, y: H * .35, vx: (Math.random() - .5) * 18 * dpr, vy: (-14 - Math.random() * 10) * dpr,
     r: (4 + Math.random() * 5) * dpr, c: colors[Math.floor(Math.random() * colors.length)], a: Math.random() * Math.PI, va: (Math.random() - .5) * .3, s: Math.random() < .5,

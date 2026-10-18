@@ -8,9 +8,11 @@
 <meta name="description" content="NDA, CDS, AFCAT, SSB, UPSC, bank and IT placement prep. Swipe lessons, listen like an audiobook, track your streak.">
 <meta name="theme-color" content="#F6F5F2">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=12">
-<link rel="stylesheet" href="assets/app.css?v=12">
-<script src="/app/icons.js?v=12" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=14">
+<link rel="stylesheet" href="assets/app.css?v=14">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=14">
+<script src="/app/icons.js?v=14" defer></script>
+<script src="/lang/assets/topbar.js?v=14" defer></script>
 </head>
 <body>
 <main class="wrap">
@@ -51,7 +53,7 @@
 import { renderChrome, loadCatalog, store, esc, timeAgo, streak, ICON, countdownStrip } from './assets/js/app.js?v=9';
 document.getElementById('countdown').innerHTML = countdownStrip();
 import { art, categoryArt } from './assets/js/art.js?v=9';
-import { ic, hydrateIcons } from './assets/js/ico.js?v=12';
+import { ic, hydrateIcons } from './assets/js/ico.js?v=14';
 
 const s = store.read();
 renderChrome({ active: 'index.html', right: `<a class="pill press" href="progress.html">${ic('flame', 16)} ${streak(s.days)}</a>` });

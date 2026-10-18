@@ -12,9 +12,9 @@ const TAIL = 40;           // lines sent with /status
 const VERIFY_MS = 8000;    // provider check timeout
 const BOOKS_TOTAL = 106;
 const LESSONS_TOTAL = 60;
-const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI'];
-const VERIFIABLE = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY'];
-const STATUS_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY'];
+const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI'];
+const VERIFIABLE = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
+const STATUS_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
 const JOBS = {
   bulletin: { label: "Record today's bulletin" },
   'hindi-books': { label: 'Record Hindi books', script: 'hindi-books.js' },
@@ -37,13 +37,14 @@ function countFiles(dir, re) { try { return fs.readdirSync(dir).filter(f => re.t
 // Ask the provider whether a key works. valid: true | false (rejected) | null (could not tell).
 async function verifyKey(key, value, fetchFn) {
   const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), VERIFY_MS);
-  const who = key === 'OPENAI_API_KEY' ? 'OpenAI' : 'ElevenLabs';
+  const who = { OPENAI_API_KEY: 'OpenAI', ELEVENLABS_API_KEY: 'ElevenLabs', GEMINI_API_KEY: 'Gemini', GROQ_API_KEY: 'Groq' }[key] || key;
   try {
-    const r = key === 'OPENAI_API_KEY'
-      ? await fetchFn('https://api.openai.com/v1/models', { headers: { Authorization: 'Bearer ' + value }, signal: ctrl.signal })
+    const r = key === 'OPENAI_API_KEY' ? await fetchFn('https://api.openai.com/v1/models', { headers: { Authorization: 'Bearer ' + value }, signal: ctrl.signal })
+      : key === 'GEMINI_API_KEY' ? await fetchFn('https://generativelanguage.googleapis.com/v1beta/models?key=' + encodeURIComponent(value), { signal: ctrl.signal })
+      : key === 'GROQ_API_KEY' ? await fetchFn('https://api.groq.com/openai/v1/models', { headers: { Authorization: 'Bearer ' + value }, signal: ctrl.signal })
       : await fetchFn('https://api.elevenlabs.io/v1/user', { headers: { 'xi-api-key': value }, signal: ctrl.signal });
     if (r.ok) return { valid: true };
-    if (r.status === 401 || r.status === 403) return { valid: false, error: who + ' rejected this key (' + r.status + ')' };
+    if (r.status === 401 || r.status === 403 || (key === 'GEMINI_API_KEY' && r.status === 400)) return { valid: false, error: who + ' rejected this key (' + r.status + ')' };
     return { valid: null, error: 'Could not verify with ' + who + ' (' + r.status + ')' };
   } catch (e) {
     return { valid: null, error: e && e.name === 'AbortError' ? 'Could not reach ' + who + ' (timeout)' : 'Could not reach ' + who };
@@ -203,7 +204,7 @@ function install(app, deps) {
     for (const k of ['OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI']) { const v = getSetting(k) || ''; out[k] = { value: v, source: v ? (settingSource(k) || 'env') : null }; }
     return out;
   }
-  const services = () => ({ realtime: !!getSetting('OPENAI_API_KEY'), elevenlabs: !!getSetting('ELEVENLABS_API_KEY'), gemini: !!getSetting('GEMINI_API_KEY'), ffmpeg: hasFfmpeg(), android: !!(deps.android && deps.android.status && deps.android.status().ready) });
+  const services = () => ({ realtime: !!getSetting('OPENAI_API_KEY'), brovoice: (() => { try { const v = global._voiceStatus && global._voiceStatus(); return !!(v && v.engine !== 'fallback' && v.engine !== 'elevenlabs-pending'); } catch (e) { return false; } })(), elevenlabs: !!getSetting('ELEVENLABS_API_KEY'), gemini: !!getSetting('GEMINI_API_KEY'), groq: !!getSetting('GROQ_API_KEY'), ffmpeg: hasFfmpeg(), android: !!(deps.android && deps.android.status && deps.android.status().ready) });
   function lessonsTotal() {
     try { let n = 0; for (const f of fs.readdirSync(path.join(appRoot, 'lang', 'audio')).filter(f => f.endsWith('.json'))) { const c = JSON.parse(fs.readFileSync(path.join(appRoot, 'lang', 'audio', f), 'utf8')); n += (c.lessons || []).length; } return n || LESSONS_TOTAL; } catch (e) { return LESSONS_TOTAL; }
   }
@@ -230,7 +231,8 @@ function install(app, deps) {
       news: { today: newsToday() },
     };
   }
-  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo() });
+  global._adminStatus = () => { try { return statusBody(); } catch (e) { return null; } };
+  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })() });
 
   // ── routes ──
   app.get('/api/admin/status', auth, requireAdmin, (req, res) => { try { res.json(statusBody()); } catch (e) { res.status(500).json({ error: e.message }); } });
@@ -253,7 +255,7 @@ function install(app, deps) {
         if (valid !== true) return res.json({ ok: false, valid, saved: false, error, ...current() });
       }
       setSetting(key, value);
-      if (key === 'ELEVENLABS_API_KEY' || key === 'OPENAI_API_KEY') setTimeout(() => { try { autoRecord('key saved'); } catch (e) {} }, 1500);
+      if (key === 'ELEVENLABS_API_KEY' || key === 'OPENAI_API_KEY' || key === 'GEMINI_API_KEY') setTimeout(() => { try { autoRecord('key saved'); } catch (e) {} }, 1500);
       res.json({ ok: true, valid, saved: true, forced: !!force, ...current() });
     } catch (e) { res.status(500).json({ error: e.message }); }
   });

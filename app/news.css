@@ -1,0 +1,175 @@
+/* Brodoit News v12 — editorial restyle: hero bulletin, story rows, in-app reader, studio voice.
+   Paper + ink + one brick red; serif for titles, system sans for everything else. Loaded after app.css. */
+.nw{padding:2px 0 28px}
+.nw-top{margin-bottom:10px}
+.nw-lang{padding:3px}
+.nw-lang button{min-height:44px;padding:0 14px}
+.nw-tabs{gap:6px;margin-bottom:16px}
+.nw-tabs button{min-height:44px;padding:0 16px;font:500 14px var(--b-sans);background:var(--b-bg-2);color:var(--b-ink-2)}
+.nw-tabs button.on{background:var(--b-ink);color:var(--b-bg)}
+.nw .b-eyebrow{font:var(--t-eyebrow);letter-spacing:.12em;text-transform:uppercase;color:var(--b-mute)}
+
+/* ── section heads ── */
+.nx-sec{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 4px}
+.nx-sec h2{font:var(--t-h2);color:var(--b-ink);margin:0}
+.nx-sec .b-chip{flex-shrink:0}
+
+/* ── hero bulletin (today) ── */
+.nx-hero{position:relative;background:var(--b-ink);color:var(--b-bg);border-radius:var(--r-lg);padding:18px 18px 16px;margin-bottom:24px;box-shadow:var(--sh-2)}
+.nx-hero .b-eyebrow{color:inherit;opacity:.62}
+.nx-hero-title{font:400 27px/1.15 var(--b-serif);letter-spacing:-.005em;margin:8px 0 16px}
+.nx-hero-row{display:flex;align-items:center;gap:14px}
+.nx-play{width:64px;height:64px;border-radius:50%;border:none;background:var(--b-bg);color:var(--b-ink);display:grid;place-items:center;cursor:pointer;flex-shrink:0;transition:transform var(--m-press) var(--ease);-webkit-tap-highlight-color:transparent}
+.nx-play:active{transform:scale(.94)}
+.nx-play svg{display:block;margin-left:3px}
+.nx-play.on svg{margin-left:0}
+.nx-hero.on .nx-play{animation:bv-breathe 1.8s ease-in-out infinite}
+.nx-hero-meta{flex:1;min-width:0;font:var(--t-sm);opacity:.72}
+.nx-hero-meta b{display:block;font:600 15px/1.3 var(--b-sans);opacity:1;margin-bottom:2px}
+.nx-prog{height:4px;border-radius:999px;background:rgba(255,255,255,.18);margin-top:16px;overflow:hidden}
+.nx-prog i{display:block;height:100%;width:0;background:var(--b-bg);border-radius:999px;transition:width .4s linear}
+.nx-ctl{display:flex;align-items:center;gap:6px;margin-top:10px;font:var(--t-cap);font-variant-numeric:tabular-nums;opacity:.92}
+.nx-ctl>span:first-child{flex:1;min-width:0;white-space:nowrap}
+.nx-ctl button{min-width:44px;min-height:44px;border:1px solid rgba(255,255,255,.28);background:transparent;color:inherit;font:var(--t-cap);padding:0 10px;border-radius:999px;cursor:pointer}
+.nx-ctl button.on{background:var(--b-bg);color:var(--b-ink);border-color:transparent}
+html[data-theme="dark"] .nx-hero,body[data-theme=aurora] .nx-hero{background:var(--b-card);color:var(--b-ink);border:1px solid var(--b-line);box-shadow:none}
+html[data-theme="dark"] .nx-hero .nx-play,body[data-theme=aurora] .nx-hero .nx-play{background:var(--b-ink);color:var(--b-bg)}
+html[data-theme="dark"] .nx-prog,body[data-theme=aurora] .nx-prog{background:var(--b-line-2)}
+html[data-theme="dark"] .nx-prog i,body[data-theme=aurora] .nx-prog i{background:var(--b-ink)}
+html[data-theme="dark"] .nx-ctl button,body[data-theme=aurora] .nx-ctl button{border-color:var(--b-line-2)}
+html[data-theme="dark"] .nx-ctl button.on,body[data-theme=aurora] .nx-ctl button.on{background:var(--b-ink);color:var(--b-bg)}
+
+/* ── bulletin headlines (today, monthly) ── */
+.nx-heads{margin-bottom:24px}
+.nx-head{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--b-line)}
+.nx-head:last-child{border-bottom:none}
+.nx-head-b{flex:1;min-width:0}
+.nx-head-b .b-eyebrow{color:var(--b-primary)}
+.nx-head-b b{display:block;font:600 15px/1.35 var(--b-sans);color:var(--b-ink);margin-top:3px}
+.nx-head-b p{font:var(--t-body);color:var(--b-ink-2);margin:4px 0 0}
+.nx-head .icon-btn{margin-top:4px}
+.nx-head .icon-btn.on{background:var(--b-ink);color:var(--b-bg)}
+.nx-script{margin:-8px 0 24px;font:var(--t-body);color:var(--b-ink-2)}
+.nx-script summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:44px;font:600 14px var(--b-sans);color:var(--b-ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.nx-script summary::-webkit-details-marker{display:none}
+.nx-script summary svg{transition:transform var(--m-state) var(--ease)}
+.nx-script[open] summary svg{transform:rotate(90deg)}
+.nx-script p{margin:0 0 12px}
+
+/* ── past / monthly bulletin cards ── */
+.nx-card{background:var(--b-card);border:1px solid var(--b-line);border-radius:var(--r-lg);padding:16px;margin-bottom:12px;box-shadow:var(--sh-1);color:var(--b-ink)}
+.nx-card-title{font:400 21px/1.2 var(--b-serif);color:var(--b-ink);margin:5px 0 12px}
+.nx-card .nx-hero-row{gap:12px}
+.nx-card .nx-play{width:52px;height:52px;background:var(--b-ink);color:var(--b-bg)}
+.nx-card .nx-play svg{width:22px;height:22px}
+.nx-card .nx-hero-meta{opacity:1;color:var(--b-mute)}
+.nx-card .nx-hero-meta b{color:var(--b-ink)}
+.nx-card .nx-prog{background:var(--b-bg-2)}
+.nx-card .nx-prog i{background:var(--b-ink)}
+.nx-card .nx-ctl{color:var(--b-ink-2)}
+.nx-card .nx-ctl button{border-color:var(--b-line-2)}
+.nx-card .nx-ctl button.on{background:var(--b-ink);color:var(--b-bg)}
+.nx-card+.nx-sec{margin-top:4px}
+
+/* ── story rows ── */
+.nx-list{margin-bottom:8px}
+.nx-row{display:flex;gap:14px;align-items:flex-start;width:100%;min-height:72px;padding:14px 0;border:none;border-bottom:1px solid var(--b-line);background:none;color:var(--b-ink);text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;font-family:var(--b-sans)}
+.nx-row:last-child{border-bottom:none}
+.nx-row:active{opacity:.6}
+.nx-row.skel{cursor:default}
+.nx-row-b{flex:1;min-width:0}
+.nx-row-b .b-eyebrow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nx-row-b .b-eyebrow em{font-style:normal;font-weight:500;letter-spacing:0;text-transform:none;color:var(--b-mute-2)}
+.nx-row-t{font:400 19px/1.25 var(--b-serif);letter-spacing:-.005em;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.nx-row img{width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--b-bg-2)}
+.nx-row i.b-skel{display:block}
+.nx-more{display:flex;justify-content:center;margin:12px 0 6px}
+.nx-ask{margin-top:18px;font-weight:500}
+.nx-ask svg{color:var(--b-primary)}
+.nw-empty{padding:22px 16px 26px}
+.nw-empty .b-chip{text-decoration:none}
+
+/* ── reader sheet ── */
+html.nxr-open{overflow:hidden}
+.nxr{position:fixed;inset:0;z-index:340;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-sans);display:flex;flex-direction:column;max-width:720px;margin:0 auto}
+.nxr.nxr-anim{animation:nxr-in var(--m-enter) var(--ease)}
+/* the shell lifts every hovered button; rows, round buttons and chips here stay still */
+.nw button:not(.b-btn):hover,#nxHost button:not(.b-btn):hover{transform:none!important;box-shadow:none!important}
+.nw .b-btn:hover,#nxHost .b-btn:hover{transform:none!important}
+.nw .b-btn.ghost:hover{box-shadow:none!important}
+.nxr-actions .b-btn:hover{box-shadow:0 3px 0 0 #000!important}
+.nxr-actions .b-btn.on:hover{box-shadow:0 3px 0 0 var(--b-primary-2)!important}
+@keyframes nxr-in{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.nxr-top{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;background:var(--b-bg);border-bottom:1px solid var(--b-line);flex-shrink:0}
+.nxr-top .b-eyebrow{flex:1;min-width:0;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nxr-top .icon-btn{background:transparent}
+.nxr-top .icon-btn:active{background:var(--b-bg-2)}
+.nxr-aa{font:600 15px var(--b-sans);letter-spacing:-.02em}
+.nxr-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:18px 22px calc(44px + env(safe-area-inset-bottom))}
+.nxr-title{font:400 30px/1.15 var(--b-serif);letter-spacing:-.01em;color:var(--b-ink);margin:6px 0 10px;overflow-wrap:anywhere}
+.nxr-by{font:var(--t-sm);color:var(--b-mute);margin-bottom:16px}
+.nxr-img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--r-md);background:var(--b-bg-2);margin:0 0 18px}
+.nxr-actions{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.nxr-actions .b-btn{min-height:44px;padding:0 18px;font-size:14px;gap:7px}
+.nxr-actions .b-btn.on{background:var(--b-primary);box-shadow:0 3px 0 0 var(--b-primary-2);color:#fff}
+.nxr-actions .b-chip{text-decoration:none;gap:7px}
+.nxr-actions .b-chip svg{color:var(--b-mute)}
+.nxr-actions .icon-btn{color:var(--b-ink);text-decoration:none}
+.nx-spin svg{animation:nx-spin 1s linear infinite}
+@keyframes nx-spin{to{transform:rotate(360deg)}}
+.nxr-text{font:400 var(--nxr-fs,17px)/1.7 var(--b-sans);color:var(--b-ink);max-width:640px}
+.nxr-text p{margin:0 0 1.1em;overflow-wrap:anywhere}
+.nxr-text p.lead{color:var(--b-ink-2)}
+.nxr-note{font:var(--t-sm);color:var(--b-primary);margin:-8px 0 16px}
+.nxr-skel{display:flex;flex-direction:column;gap:12px;margin:4px 0 20px}
+.nxr-skel i{display:block;height:13px;border-radius:7px}
+.nxr-fail{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--b-card);border:1px solid var(--b-line);border-radius:var(--r-md);padding:10px 10px 10px 14px;font:var(--t-body);color:var(--b-ink-2);margin:0 0 18px}
+.nxr-fail .b-chip{flex-shrink:0;text-decoration:none}
+.nxr-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:12px;border-top:1px solid var(--b-line);font:var(--t-sm);color:var(--b-mute)}
+.nxr-foot a{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:var(--b-ink);font-weight:600;text-decoration:none}
+/* the "Explain simply" sheet opens above the reader */
+.nw-sheet-bg{z-index:360}
+.nw-sheet{z-index:361}
+.nw-sheet-h button,.nw-x-h button{min-width:44px;min-height:44px;width:auto;height:auto}
+@media (prefers-reduced-motion:reduce){.nxr,.nx-hero.on .nx-play,.nx-spin svg{animation:none}}
+
+/* no bulletin yet: one quiet line, stories stay above the fold */
+.nx-soon{display:flex;align-items:center;gap:12px;padding:12px 16px;margin:4px 0 8px;border:1px solid var(--b-line);border-radius:var(--r-md);background:var(--b-card);font:500 14px/1.35 var(--b-sans);color:var(--b-ink-2)}
+.nx-soon .mascot{flex-shrink:0}
+
+/* Brodoit Desk — one story per screen, swipe up for the next (Inshorts-style), in the paper/ink/red system */
+.nx-deck{height:calc(100dvh - 290px);min-height:420px;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;margin:0 -2px;padding:0 2px;scrollbar-width:none;border-radius:var(--r-lg)}
+.nx-deck::-webkit-scrollbar{display:none}
+.nx-card{scroll-snap-align:start;scroll-snap-stop:always;height:100%;display:flex;flex-direction:column;background:var(--b-card);border:1px solid var(--b-line);border-radius:var(--r-lg);overflow:hidden;margin-bottom:12px;box-shadow:var(--sh-1)}
+.nx-card-img{flex:0 0 32%;min-height:110px;background:var(--b-bg-2);overflow:hidden}
+.nx-card-img img{width:100%;height:100%;object-fit:cover;display:block}
+.nx-card-b{flex:1;min-height:0;display:flex;flex-direction:column;padding:16px 18px 14px;gap:10px}
+.nx-card-k{display:flex;align-items:center;gap:4px;font:600 11px var(--b-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--b-mute)}
+.nx-card-k span{color:var(--b-primary)}
+.nx-card-k em{margin-left:auto;font-style:normal;letter-spacing:.04em;color:var(--b-mute-2,var(--b-mute))}
+.nx-card h3{margin:0;font:400 25px/1.18 var(--b-serif);letter-spacing:-.005em;color:var(--b-ink)}
+.nx-card p{margin:0;font:400 16px/1.55 var(--b-sans);color:var(--b-ink-2)}
+.nx-card.hi p,.nx-card.hi h3{font-family:var(--b-devanagari,var(--b-sans))}
+.nx-card .nx-why{font-size:14px;line-height:1.45;color:var(--b-ink);padding:10px 12px;border-radius:var(--r-md);background:var(--b-bg-2)}
+.nx-card .nx-why b{font-weight:700;margin-right:4px}
+.nx-card-src{display:flex;align-items:center;gap:6px;font:500 12.5px var(--b-sans);color:var(--b-mute);margin-top:auto}
+.nx-card-src svg{flex-shrink:0}
+.nx-card-a{display:flex;align-items:center;gap:8px}
+.nx-card-a .b-btn{min-height:44px;padding:0 16px;font:600 14px var(--b-sans);border-radius:999px;box-shadow:none;gap:6px}
+.nx-card-a .b-chip{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 14px}
+.nx-card-a .b-chip.icon{width:44px;padding:0;justify-content:center;margin-left:auto}
+@media (max-height:700px){.nx-card-img{flex-basis:24%}.nx-card h3{font-size:22px}.nx-card p{font-size:15px}}
+@media (prefers-reduced-motion:reduce){.nx-deck{scroll-behavior:auto}}
+
+.nx-deck{margin-bottom:0}
+.nx-card-b{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.nx-card-b::-webkit-scrollbar{display:none}
+@media (max-height:780px){.nx-card-b{padding:14px 16px 12px;gap:8px}.nx-card h3{font-size:21px;line-height:1.18}.nx-card p{font-size:15px;line-height:1.5}.nx-card .nx-why{font-size:13px;padding:8px 10px}.nx-card-img{flex-basis:22%;min-height:90px}}
+
+/* text scrolls inside the card when long; source + actions stay pinned at the bottom */
+.nx-card-b{flex:1 1 auto;min-height:0;padding-bottom:6px}
+.nx-card-f{flex:0 0 auto;display:flex;flex-direction:column;gap:10px;padding:10px 18px 14px;border-top:1px solid var(--b-line);background:var(--b-card)}
+.nx-card-f .nx-card-src{margin-top:0}
+@media (max-height:780px){.nx-card-f{padding:8px 16px 12px;gap:8px}}
+.nx-card-a .b-btn,.nx-card-a .b-chip{white-space:nowrap}
+@media (max-width:380px){.nx-card-a .b-btn{padding:0 14px}.nx-card-a .b-chip{padding:0 12px;font-size:13px}}

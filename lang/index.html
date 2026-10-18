@@ -11,9 +11,11 @@
 <!-- Plus Jakarta Sans comes from /app/theme.css; only the Indic/CJK script fonts are fetched here -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@700&family=Noto+Sans+Kannada:wght@700&family=Noto+Sans+Malayalam:wght@700&family=Noto+Sans+Tamil:wght@700&family=Noto+Sans+Telugu:wght@700&family=Noto+Sans+SC:wght@700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=12">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=12">
-<script src="/app/icons.js?v=12" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=14">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=14">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=14">
+<script src="/app/icons.js?v=14" defer></script>
+<script src="/lang/assets/topbar.js?v=14" defer></script>
 </head>
 <body>
 <main class="wrap" style="padding-bottom:48px">
@@ -33,11 +35,11 @@
 <script type="module">
 import { renderChrome, loadCourses, loadCourse, loadAudioCourse, store, esc, t, courseProgress, DAILY_GOAL, computeStreak, ICON, setCourse, toast } from '/lang/assets/lang.js?v=9';
 import { loadPhraseCatalog, loadPhraseLang, phraseIds, phraseProgress, phrasesHref, emblem, COURSE_OF } from '/lang/assets/phrases.js?v=9';
-import { ic } from '/lang/assets/ico.js?v=12';
+import { ic } from '/lang/assets/ico.js?v=14';
 
 const s = store.read();
 const streak = computeStreak(s.daily);
-renderChrome({ right: `<span class="pill">${ic('flame', 16)} ${streak} <span style="opacity:.35">|</span> ${ic('zap', 16)} ${s.xp || 0}</span>` });
+renderChrome({ back: null, right: `<span class="pill">${ic('flame', 16)} ${streak} <span style="opacity:.35">|</span> ${ic('zap', 16)} ${s.xp || 0}</span>` });
 
 const courses = await loadCourses();
 document.getElementById('count').textContent = courses.length ? `${courses.length} courses` : '';

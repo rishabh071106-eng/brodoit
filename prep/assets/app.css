@@ -13,12 +13,12 @@
 :root{
   --tabbar:68px;
   /* category colours — solid for thumbs, avatars and section banners; the gradient is for the single hero per screen */
-  --c-defence:#1F7A4D; --c-ssb:#2B4C8C; --c-civil:#B5541B; --c-banking:#13568C; --c-it:#5B2BD9; --c-mba:#334155; --c-me:#FF5A1F;
+  --c-defence:#1F7A4D; --c-ssb:#2B4C8C; --c-civil:#B5541B; --c-banking:#13568C; --c-it:#3A3632; --c-mba:#334155; --c-me:#FF5A1F;
   --g-defence:linear-gradient(140deg,#0F3D2E 0%,#1F7A4D 55%,#9BD36A 100%);
   --g-ssb:linear-gradient(140deg,#14213D 0%,#2B4C8C 50%,#F2A541 100%);
   --g-civil:linear-gradient(140deg,#3B1F0E 0%,#B5541B 55%,#FFC46B 100%);
   --g-banking:linear-gradient(140deg,#0B2545 0%,#13568C 50%,#5FD3E8 100%);
-  --g-it:linear-gradient(140deg,#1B0B3A 0%,#5B2BD9 55%,#FF7AC6 100%);
+  --g-it:linear-gradient(140deg,#1F1E1C 0%,#3A3632 55%,#6B5E55 100%);
   --g-mba:linear-gradient(140deg,#0F172A 0%,#334155 55%,#C08A2E 100%);
   --g-me:linear-gradient(140deg,#2A0A0A 0%,#FF5A1F 60%,#FFC24B 100%);
 }
@@ -44,13 +44,10 @@ img,svg{display:block;max-width:100%}
 .ico{display:inline-block;vertical-align:middle;flex-shrink:0;pointer-events:none}
 .wrap{max-width:720px;margin:0 auto;padding:0 16px}
 
-/* ---------- top bar: 44px icon-btn back arrow + title (same shape as /lang and /speaker) ---------- */
-.topbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding-top:env(safe-area-inset-top)}
-.topbar .wrap{display:flex;align-items:center;gap:10px;min-height:60px}
+/* ---------- top bar: the shared [← Brodoit] [back] [title] bar lives in /lang/assets/topbar.css (linked by every page) ---------- */
 .icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--card-2);color:var(--ink);border:none;box-shadow:none;flex-shrink:0;cursor:pointer}
 .icon-btn svg{width:22px;height:22px}
 .icon-btn:active{transform:scale(.94)}
-.topbar .title{font:var(--t-h3);letter-spacing:-.02em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand{font-weight:800;font-size:20px;letter-spacing:-.03em}
 .brand b{color:var(--accent)}
 .pill{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:var(--r-pill);background:var(--card);box-shadow:var(--shadow);font:700 13px var(--font);white-space:nowrap}
@@ -78,7 +75,7 @@ a.pill,button.pill{min-height:44px}
 .stories{display:flex;gap:14px;overflow-x:auto;padding:6px 16px 4px;margin:0 -16px;scrollbar-width:none}
 .stories::-webkit-scrollbar{display:none}
 .story{flex:0 0 auto;width:72px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:700;text-align:center}
-.story .ring{width:68px;height:68px;border-radius:50%;padding:3px;background:conic-gradient(from 200deg,#FF5A1F,#FFC24B,#5B2BD9,#13568C,#1F7A4D,#FF5A1F)}
+.story .ring{width:68px;height:68px;border-radius:50%;padding:3px;background:conic-gradient(from 200deg,#B5402A,#D9654E,#1F1E1C,#8E2F1E,#B5402A)}
 .story .ring > div{width:100%;height:100%;border-radius:50%;border:3px solid var(--bg);overflow:hidden;display:grid;place-items:center}
 .story .ring svg{width:100%;height:100%}
 
@@ -175,3 +172,6 @@ table.t th{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spac
 details>summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
 #clearCat,button.muted{min-height:44px;padding:0 10px}
 #audioOpts select,#rate{min-height:44px;padding:8px 10px;border-radius:12px}
+/* legible copy over the illustrated hero: darken the top where the text sits */
+.hero .shade{background:linear-gradient(180deg,rgba(20,19,17,.35) 0%,rgba(20,19,17,.68) 50%,rgba(20,19,17,.82) 100%)!important}
+.hero>*:not(.art):not(.shade){position:relative;z-index:2;text-shadow:0 1px 12px rgba(0,0,0,.35)}
