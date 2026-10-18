@@ -255,3 +255,4 @@ html.bvf-open{overflow:hidden}
 .bvf-hint{font:500 13px var(--b-sans);color:var(--b-mute);min-height:18px}
 .bvf-end{display:inline-flex;align-items:center;gap:8px;border:none;background:var(--b-ink);color:var(--b-bg);font:600 15px var(--b-sans);padding:0 26px;min-height:52px;border-radius:999px;cursor:pointer;box-shadow:0 3px 0 0 #000}
 @media (prefers-reduced-motion:reduce){.bvf{animation:none}}
+.bvf .bv-orb,.bv-orb{background:none!important;box-shadow:none!important;border:none!important;border-radius:50%}
