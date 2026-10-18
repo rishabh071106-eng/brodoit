@@ -1,0 +1,277 @@
+{
+  "id": "spanish",
+  "name": "Spanish",
+  "native": "Español",
+  "category": "international",
+  "bcp47": "es-ES",
+  "script": "Latin alphabet",
+  "region": "Spain and most of Latin America, plus large communities in the United States",
+  "speakers": "≈ 550 million",
+  "about": "Spanish is the official language of more than 20 countries, and it has more native speakers than English. Its spelling is very regular, so once you learn the rules you can read almost any word aloud correctly.",
+  "pronunciation": [
+    "Vowels are short and pure, a, e, i, o, u, just like in Hindi, never stretched into English sounds.",
+    "In Spain, c before e or i, and the letter z, sound like the th in think.",
+    "The letter h is always silent, and j sounds like a strong h from the back of the throat.",
+    "A single r is a quick tap, while rr at the start of rico or in perro is rolled."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "¡Hola! Welcome to Spanish. Let's start with the friendly greetings you'll hear in every café and street in Spain.",
+      "tip": "Spanish has a formal you, usted, and a casual you, tú. In Spain people switch to tú quickly, but usted is safest with elders and strangers.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "Hola",
+          "roman": "OH-lah",
+          "note": "Hola means hello and works in every situation. Remember the h is silent, so it sounds like oh la."
+        },
+        {
+          "key": "how-are-you",
+          "native": "¿Cómo está?",
+          "roman": "KOH-moh es-TAH?",
+          "note": "Cómo está is the polite how are you, using usted. With friends say cómo estás, or the very Spanish qué tal."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "Estoy bien, gracias.",
+          "roman": "es-TOY BYEN, GRAH-thyahs.",
+          "note": "Estoy bien, gracias means I am fine, thanks. You can add y usted to ask and you."
+        },
+        {
+          "key": "thank-you",
+          "native": "Gracias",
+          "roman": "GRAH-thyahs",
+          "note": "Gracias means thank you. For a big thank you, say muchas gracias."
+        },
+        {
+          "key": "sorry",
+          "native": "Perdón",
+          "roman": "pehr-DOHN",
+          "note": "Perdón works for both sorry and excuse me. For a sincere apology say lo siento, and to get someone's attention politely say disculpe."
+        },
+        {
+          "key": "goodbye",
+          "native": "Adiós",
+          "roman": "ah-DYOHS",
+          "note": "Adiós means goodbye. In Spain people very often say hasta luego, meaning see you later, even to shop staff they may never see again."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Now let's introduce ourselves in Spanish. These phrases will help you make friends anywhere from Madrid to Mexico City.",
+      "tip": "Spanish uses ser for permanent things like where you're from, as in soy de la India, and estar for states like estoy bien.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "Me llamo Priya.",
+          "roman": "meh YAH-moh PREE-yah.",
+          "note": "Me llamo Priya literally means I call myself Priya. You can also say mi nombre es Priya."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "¿Cómo se llama?",
+          "roman": "KOH-moh seh YAH-mah?",
+          "note": "Cómo se llama is the polite way to ask someone's name. With friends or young people say cómo te llamas."
+        },
+        {
+          "key": "where-from",
+          "native": "¿De dónde es?",
+          "roman": "deh DOHN-deh es?",
+          "note": "De dónde es means where are you from, in the polite form. The casual version is de dónde eres."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "Soy de la India.",
+          "roman": "soy deh lah EEN-dyah.",
+          "note": "Soy de la India means I am from India. Many people also say soy de India, without la. Both are correct."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "Mucho gusto.",
+          "roman": "MOO-choh GOOS-toh.",
+          "note": "Mucho gusto means nice to meet you and suits anyone. You can also say encantada if you're a woman, or encantado if you're a man."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "Hablo un poco de español.",
+          "roman": "AH-bloh oon POH-koh deh es-pah-NYOL.",
+          "note": "Hablo un poco de español means I speak a little Spanish. Remember the h in hablo is silent."
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Let's count in Spanish! Numbers are easy to learn, and soon you'll be asking the time and making plans.",
+      "tip": "Spanish uses the singular for one o'clock, es la una, but the plural for every other hour, as in son las dos or son las diez.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "uno, dos, tres, cuatro, cinco",
+          "roman": "OO-noh, dohs, trehs, KWAH-troh, THEEN-koh",
+          "note": "Uno, dos, tres, cuatro, cinco are one to five. In Spain, cinco starts with a th sound."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "seis, siete, ocho, nueve, diez",
+          "roman": "says, SYEH-teh, OH-choh, NWEH-beh, dyeth",
+          "note": "Seis, siete, ocho, nueve, diez are six to ten. The v in nueve sounds almost like a soft b."
+        },
+        {
+          "key": "what-time",
+          "native": "¿Qué hora es?",
+          "roman": "keh OH-rah es?",
+          "note": "Qué hora es means what time is it. The answer starts with es la una or son las, as in son las tres."
+        },
+        {
+          "key": "today",
+          "native": "hoy",
+          "roman": "oy",
+          "note": "Hoy means today. The h is silent, so it sounds just like oy."
+        },
+        {
+          "key": "tomorrow",
+          "native": "mañana",
+          "roman": "mah-NYAH-nah",
+          "note": "Mañana means tomorrow, and also morning. Hasta mañana means see you tomorrow."
+        },
+        {
+          "key": "yesterday",
+          "native": "ayer",
+          "roman": "ah-YEHR",
+          "note": "Ayer means yesterday. End it with a light tapped r."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "Spain is a food lover's paradise, from tapas to paella. Let's learn how to order, ask prices and pay.",
+      "tip": "In Spain the waiter won't bring the bill until you ask for it, because rushing guests is considered rude. Tipping is small and optional.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "¿Cuánto cuesta esto?",
+          "roman": "KWAN-toh KWES-tah ES-toh?",
+          "note": "Cuánto cuesta esto means how much does this cost. You can also simply ask cuánto es."
+        },
+        {
+          "key": "too-expensive",
+          "native": "Es demasiado caro.",
+          "roman": "es deh-mah-SYAH-doh KAH-roh.",
+          "note": "Es demasiado caro means it is too expensive. Bargaining isn't common in Spanish shops, but this works at flea markets."
+        },
+        {
+          "key": "water-please",
+          "native": "Agua, por favor.",
+          "roman": "AH-gwah, por fah-BOR.",
+          "note": "Agua, por favor means water, please. Por favor is your polite please, and you'll use it all the time."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "Soy vegetariana.",
+          "roman": "soy beh-heh-tah-RYAH-nah.",
+          "note": "Soy vegetariana is what a woman says. A man says soy vegetariano. Ham is everywhere in Spain, so ask sin jamón, meaning without ham."
+        },
+        {
+          "key": "very-tasty",
+          "native": "Está muy rico.",
+          "roman": "es-TAH mwee RREE-koh.",
+          "note": "Está muy rico means it's very tasty. You'll also hear está buenísimo, meaning it's really delicious."
+        },
+        {
+          "key": "bill-please",
+          "native": "La cuenta, por favor.",
+          "roman": "lah KWEN-tah, por fah-BOR.",
+          "note": "La cuenta, por favor means the bill, please. Catch the waiter's eye and say it with a smile."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "Let's explore! These phrases will help you find your way around Spanish cities and train stations.",
+      "tip": "In Spain, straight ahead is usually todo recto. The word derecho means straight in Latin America, so don't mix it up with derecha, right.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "¿Dónde está la estación de tren?",
+          "roman": "DOHN-deh es-TAH lah es-tah-THYOHN deh trehn?",
+          "note": "This means where is the train station. Dónde está means where is, and it works for any place."
+        },
+        {
+          "key": "turn-left",
+          "native": "Gire a la izquierda.",
+          "roman": "HEE-reh ah lah eeth-KYEHR-dah.",
+          "note": "Gire a la izquierda means turn left, in the polite form. Friends would say gira a la izquierda."
+        },
+        {
+          "key": "turn-right",
+          "native": "Gire a la derecha.",
+          "roman": "HEE-reh ah lah deh-REH-chah.",
+          "note": "Gire a la derecha means turn right. Derecha is right, ending in a."
+        },
+        {
+          "key": "go-straight",
+          "native": "Siga todo recto.",
+          "roman": "SEE-gah TOH-doh REK-toh.",
+          "note": "Siga todo recto means keep going straight ahead. This is the phrase you'll hear most in Spain."
+        },
+        {
+          "key": "how-far",
+          "native": "¿A qué distancia está?",
+          "roman": "ah keh dees-TAN-thyah es-TAH?",
+          "note": "A qué distancia está means how far is it. A simpler question is está lejos, meaning is it far."
+        },
+        {
+          "key": "please-help",
+          "native": "Ayúdeme, por favor.",
+          "roman": "ah-YOO-deh-meh, por fah-BOR.",
+          "note": "Ayúdeme, por favor is the polite please help me. With friends say ayúdame. In an emergency just shout socorro."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "Our final Spanish lesson! These handy phrases will keep you talking, even when the conversation goes a bit fast.",
+      "tip": "Spanish speakers talk fast and expect interruptions. Don't be shy about asking people to slow down or repeat; they'll happily help.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "Sí / No",
+          "roman": "see / noh",
+          "note": "Sí means yes and no means no. Note that sí has an accent mark, which tells it apart from si, meaning if."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "No entiendo.",
+          "roman": "noh en-TYEN-doh.",
+          "note": "No entiendo means I don't understand. Add perdón in front to sound softer."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "Hable más despacio, por favor.",
+          "roman": "AH-bleh mahs des-PAH-thyoh, por fah-BOR.",
+          "note": "This is the polite please speak more slowly. Often people just say más despacio, por favor."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "¿Qué significa esto?",
+          "roman": "keh seeg-nee-FEE-kah ES-toh?",
+          "note": "Qué significa esto means what does this mean. To ask about a word, say qué significa followed by the word."
+        },
+        {
+          "key": "i-like-it",
+          "native": "Me gusta.",
+          "roman": "meh GOOS-tah.",
+          "note": "Me gusta literally means it pleases me. For something you really love, say me encanta."
+        },
+        {
+          "key": "good-night",
+          "native": "Buenas noches",
+          "roman": "BWEH-nahs NOH-chehs",
+          "note": "Buenas noches means good night, and also good evening once it gets dark. It works as both a greeting and a farewell."
+        }
+      ]
+    }
+  ]
+}

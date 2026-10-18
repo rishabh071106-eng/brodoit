@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Brodoit Prep</title>
 <meta name="description" content="NDA, CDS, AFCAT, SSB, UPSC, bank and IT placement prep. Swipe lessons, listen like an audiobook, track your streak.">
 <meta name="theme-color" content="#F6F5F2">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="/app/theme.css?v=11">
+<link rel="stylesheet" href="assets/app.css?v=11">
+<script src="/app/icons.js?v=11" defer></script>
 </head>
 <body>
 <main class="wrap">
@@ -18,6 +19,7 @@
     <h1 class="h-xl" style="margin-top:4px">What are we<br>cracking today?</h1>
   </section>
 
+  <div id="countdown"></div>
   <div class="stories rise" id="stories"></div>
 
   <a class="hero press rise" href="ssb.html" style="margin-top:18px;background:var(--g-ssb)">
@@ -28,6 +30,16 @@
     <span class="cta">Start the journey →</span>
   </a>
 
+  <a class="hero press rise" href="jobs.html" style="margin-top:14px;min-height:170px;background:var(--c-me)">
+    <div class="art" style="display:grid;place-items:end;font-size:110px;opacity:.22;padding:0 10px 0 0">🇮🇳</div>
+    <span class="tag">Updated daily</span>
+    <div class="h-lg" style="font-size:26px">Apply for Government Jobs</div>
+    <div style="opacity:.92;font-weight:600;margin-top:4px">Central · Defence · Police · Banking · Railways · Teaching · PSU · State · Health</div>
+    <span class="cta">See today's jobs →</span></a>
+  <a class="row press rise" href="groups.html" style="margin-top:14px">
+    <div class="thumb" style="background:var(--c-it)" data-ico="message-circle" data-size="26"></div>
+    <div class="body"><div class="t">Study groups</div><div class="s">Join an NDA, SSB, UPSC or bank group — or start your own</div></div>
+    <span class="chev" data-ico="chevron-right" data-size="18"></span></a>
   <div id="resume"></div>
   <div id="rails"></div>
 
@@ -36,11 +48,14 @@
 </main>
 
 <script type="module">
-import { renderChrome, loadCatalog, store, esc, timeAgo, streak, ICON } from './assets/js/app.js';
-import { art, categoryArt } from './assets/js/art.js';
+import { renderChrome, loadCatalog, store, esc, timeAgo, streak, ICON, countdownStrip } from './assets/js/app.js?v=9';
+document.getElementById('countdown').innerHTML = countdownStrip();
+import { art, categoryArt } from './assets/js/art.js?v=9';
+import { ic, hydrateIcons } from './assets/js/ico.js?v=11';
 
 const s = store.read();
-renderChrome({ active: 'index.html', right: `<a class="pill press" href="progress.html">🔥 ${streak(s.days)}</a>` });
+renderChrome({ active: 'index.html', right: `<a class="pill press" href="progress.html">${ic('flame', 16)} ${streak(s.days)}</a>` });
+hydrateIcons();
 
 const h = new Date().getHours();
 document.getElementById('hello').textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ' 👋';
@@ -52,6 +67,8 @@ const doneIn = id => Object.keys(s.completed).filter(k => k.startsWith(id + '/')
 const stories = [
   { href: 'ssb.html', label: 'SSB Journey', a: art.ssb },
   ...cat.categories.map(c => ({ href: `exams.html#${c.id}`, label: c.short || c.name, a: categoryArt[c.id] })),
+  { href: 'jobs.html', label: 'Govt jobs', a: art.merit },
+  { href: 'groups.html', label: 'Groups', a: art.gto },
   { href: 'ssb.html#drills', label: 'PPDT drill', a: art.screening },
   { href: 'progress.html', label: 'My board', a: art.me },
 ];
@@ -62,7 +79,7 @@ if (s.last) {
   document.getElementById('resume').innerHTML = `
     <div class="section"><div class="h-md">Continue</div></div>
     <a class="row press" href="${esc(s.last.href)}">
-      <div class="thumb" style="background:var(--g-me)">▶</div>
+      <div class="thumb" style="background:var(--c-me)">${ic('play', 22)}</div>
       <div class="body"><div class="t">${esc(s.last.title)}</div><div class="s">${esc(s.last.exam || '')} · ${timeAgo(s.last.at)}</div></div>
       <span class="chev">${ICON.chev}</span></a>`;
 }

@@ -1,0 +1,277 @@
+{
+  "id": "mandarin",
+  "name": "Mandarin Chinese",
+  "native": "普通话",
+  "category": "international",
+  "bcp47": "zh-CN",
+  "script": "Simplified Chinese characters",
+  "region": "China, Taiwan and Singapore, plus Chinese communities worldwide",
+  "speakers": "≈ 1.1 billion",
+  "about": "Mandarin has more native speakers than any other language on Earth. Its grammar is refreshingly simple, with no verb conjugations, no genders and no plurals, but the four tones change a word's meaning.",
+  "pronunciation": [
+    "Mandarin has four tones: high and flat, rising, dipping, and falling, and the tone changes the meaning of a word.",
+    "The pinyin letter x sounds like a soft sh with a smile, and q sounds like a soft ch.",
+    "The pinyin letter c sounds like ts in cats, and z sounds like ds in beds.",
+    "Zh, ch and sh are said with the tongue curled back, much like the retroflex sounds in Hindi."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "Nǐ hǎo! Let us begin with the friendly basics. Listen closely to the tones, because in Mandarin the melody of a word is part of its meaning.",
+      "tip": "When two third tones come together, as in nǐ hǎo, the first one changes to a rising tone. So nǐ hǎo is actually said ní hǎo.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "你好",
+          "roman": "nǐ hǎo",
+          "note": "Nǐ hǎo literally means you good, and it is the everyday hello. For elders or customers, say nín hǎo, which uses the respectful you."
+        },
+        {
+          "key": "how-are-you",
+          "native": "你好吗？",
+          "roman": "nǐ hǎo ma?",
+          "note": "Nǐ hǎo ma means how are you. Ma at the end turns a sentence into a question. Friends often say zuìjìn zěnmeyàng, meaning how have you been lately."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "我很好。",
+          "roman": "wǒ hěn hǎo.",
+          "note": "Wǒ hěn hǎo means I am fine. Hěn literally means very, but here it simply links the words, so it just sounds natural."
+        },
+        {
+          "key": "thank-you",
+          "native": "谢谢。",
+          "roman": "xièxie.",
+          "note": "Xièxie means thank you. The second syllable is light and short. A common reply is bú kèqi, meaning you're welcome."
+        },
+        {
+          "key": "sorry",
+          "native": "对不起。",
+          "roman": "duìbuqǐ.",
+          "note": "Duìbuqǐ is a sincere sorry. To say excuse me, or for a small mistake, people more often say bù hǎo yìsi."
+        },
+        {
+          "key": "goodbye",
+          "native": "再见。",
+          "roman": "zàijiàn.",
+          "note": "Zàijiàn literally means see again, and it works everywhere. Young people also say bàibai, borrowed from English bye bye."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Now let us introduce ourselves. Chinese speakers love meeting people from India, so get ready for some friendly questions!",
+      "tip": "In Chinese names, the family name comes first. To ask an elder's name very politely, say qǐngwèn nín guìxìng, meaning may I ask your honourable surname.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "我叫普丽娅。",
+          "roman": "wǒ jiào Pǔlìyà.",
+          "note": "Wǒ jiào Pǔlìyà means I am called Priya. Foreign names are written with characters chosen for their sound, so Priya becomes Pǔlìyà."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "你叫什么名字？",
+          "roman": "nǐ jiào shénme míngzi?",
+          "note": "Nǐ jiào shénme míngzi means what is your name. Notice that the question word shénme stays where the answer would go."
+        },
+        {
+          "key": "where-from",
+          "native": "你是哪国人？",
+          "roman": "nǐ shì nǎ guó rén?",
+          "note": "Nǐ shì nǎ guó rén literally means you are which country person. It is the common way to ask where someone is from."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "我来自印度。",
+          "roman": "wǒ láizì Yìndù.",
+          "note": "Wǒ láizì Yìndù means I come from India. You can also say wǒ shì Yìndù rén, meaning I am Indian."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "很高兴认识你。",
+          "roman": "hěn gāoxìng rènshi nǐ.",
+          "note": "Hěn gāoxìng rènshi nǐ means very happy to know you. Use nín instead of nǐ to be more respectful."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "我会说一点儿中文。",
+          "roman": "wǒ huì shuō yìdiǎnr Zhōngwén.",
+          "note": "Wǒ huì shuō yìdiǎnr Zhōngwén means I can speak a little Chinese. In the south, people drop the r sound and say yìdiǎn."
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Let us count! Chinese numbers are beautifully logical. Eleven is simply ten one, and twenty is two ten.",
+      "tip": "Four, sì, sounds like the word for death, so it is considered unlucky, while eight, bā, is lucky because it sounds like getting rich.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "一、二、三、四、五",
+          "roman": "yī, èr, sān, sì, wǔ",
+          "note": "Yī, èr, sān, sì, wǔ. Before a measure word, two becomes liǎng, so two people is liǎng gè rén."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "六、七、八、九、十",
+          "roman": "liù, qī, bā, jiǔ, shí",
+          "note": "Liù, qī, bā, jiǔ, shí. Chinese people also show each of these numbers with one hand, which is handy in noisy markets."
+        },
+        {
+          "key": "what-time",
+          "native": "现在几点？",
+          "roman": "xiànzài jǐ diǎn?",
+          "note": "Xiànzài jǐ diǎn means now how many o'clock. The answer is a number plus diǎn, so three o'clock is sān diǎn."
+        },
+        {
+          "key": "today",
+          "native": "今天",
+          "roman": "jīntiān",
+          "note": "Jīntiān means today. Tiān means day, and you will see it in tomorrow and yesterday too."
+        },
+        {
+          "key": "tomorrow",
+          "native": "明天",
+          "roman": "míngtiān",
+          "note": "Míngtiān means tomorrow. Míngtiān jiàn means see you tomorrow."
+        },
+        {
+          "key": "yesterday",
+          "native": "昨天",
+          "roman": "zuótiān",
+          "note": "Zuótiān means yesterday. Verbs never change for the past, so the time word does the work."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "Let us talk about food, one of the great joys of China. These phrases will help you order, bargain a little and pay.",
+      "tip": "Bargaining is normal in markets but not in shops with fixed prices. Most payments in China happen by phone, through apps like WeChat Pay and Alipay.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "这个多少钱？",
+          "roman": "zhège duōshao qián?",
+          "note": "Zhège duōshao qián means this, how much money. Point at the item while you ask."
+        },
+        {
+          "key": "too-expensive",
+          "native": "太贵了。",
+          "roman": "tài guì le.",
+          "note": "Tài guì le means too expensive. In a market, follow it with piányi yìdiǎn ba, meaning a bit cheaper, please."
+        },
+        {
+          "key": "water-please",
+          "native": "请给我一杯水。",
+          "roman": "qǐng gěi wǒ yì bēi shuǐ.",
+          "note": "Qǐng gěi wǒ yì bēi shuǐ means please give me a glass of water. Restaurants often serve warm water, so ask for bīng shuǐ if you want it cold."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "我吃素。",
+          "roman": "wǒ chī sù.",
+          "note": "Wǒ chī sù literally means I eat plain food, and it is how people say I am vegetarian. Add bù chī ròu, I don't eat meat, to be clear."
+        },
+        {
+          "key": "very-tasty",
+          "native": "这个很好吃。",
+          "roman": "zhège hěn hǎochī.",
+          "note": "Zhège hěn hǎochī means this is very tasty. Hǎochī literally means good to eat. For drinks, say hǎohē."
+        },
+        {
+          "key": "bill-please",
+          "native": "服务员，买单。",
+          "roman": "fúwùyuán, mǎidān.",
+          "note": "Fúwùyuán, mǎidān means waiter, the bill. Calling out to staff is normal in China. In the north people also say jiézhàng."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "China has one of the biggest high speed rail networks in the world. Let us learn how to find the station and follow directions.",
+      "tip": "Mandarin puts the place before the question word, like station is where. Big cities often have several railway stations, so check the full station name.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "火车站在哪里？",
+          "roman": "huǒchēzhàn zài nǎlǐ?",
+          "note": "Huǒchēzhàn zài nǎlǐ means where is the railway station. Huǒchē literally means fire vehicle, from the old steam trains."
+        },
+        {
+          "key": "turn-left",
+          "native": "往左拐。",
+          "roman": "wǎng zuǒ guǎi.",
+          "note": "Wǎng zuǒ guǎi means turn left. On signs and map apps you will also see zuǒ zhuǎn, which means the same."
+        },
+        {
+          "key": "turn-right",
+          "native": "往右拐。",
+          "roman": "wǎng yòu guǎi.",
+          "note": "Wǎng yòu guǎi means turn right. Yòu is right, said with a falling tone."
+        },
+        {
+          "key": "go-straight",
+          "native": "一直走。",
+          "roman": "yìzhí zǒu.",
+          "note": "Yìzhí zǒu means go straight on. Zǒu means walk or go."
+        },
+        {
+          "key": "how-far",
+          "native": "离这儿有多远？",
+          "roman": "lí zhèr yǒu duō yuǎn?",
+          "note": "Lí zhèr yǒu duō yuǎn means how far is it from here. People often answer in minutes, like zǒu shí fēnzhōng, a ten minute walk."
+        },
+        {
+          "key": "please-help",
+          "native": "请帮帮我。",
+          "roman": "qǐng bāngbang wǒ.",
+          "note": "Qǐng bāngbang wǒ means please help me. In a real emergency, shout jiùmìng, which means save me."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "This is our final lesson! Let us learn the phrases that keep a conversation flowing, even when you don't catch every word.",
+      "tip": "Mandarin has no single word for yes or no. People usually repeat the verb from the question, so to answer yǒu ma, do you have it, you say yǒu or méiyǒu.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "是 / 不是",
+          "roman": "shì / bú shì",
+          "note": "Shì means yes, it is, and bú shì means no, it isn't. To agree with someone, duì, meaning correct, is also very common."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "我听不懂。",
+          "roman": "wǒ tīng bu dǒng.",
+          "note": "Wǒ tīng bu dǒng means I hear it but don't understand. For written text, say wǒ kàn bu dǒng."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "请说慢一点。",
+          "roman": "qǐng shuō màn yìdiǎn.",
+          "note": "Qǐng shuō màn yìdiǎn means please speak a little slower. Add qǐng zài shuō yí biàn to ask them to say it again."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "这是什么意思？",
+          "roman": "zhè shì shénme yìsi?",
+          "note": "Zhè shì shénme yìsi means what does this mean. Yìsi means meaning."
+        },
+        {
+          "key": "i-like-it",
+          "native": "我很喜欢。",
+          "roman": "wǒ hěn xǐhuan.",
+          "note": "Wǒ hěn xǐhuan means I like it very much. Put the thing after it, as in wǒ xǐhuan zhège, I like this."
+        },
+        {
+          "key": "good-night",
+          "native": "晚安。",
+          "roman": "wǎn'ān.",
+          "note": "Wǎn'ān means good night, said before sleeping. It is also a sweet way to end a late chat or message."
+        }
+      ]
+    }
+  ]
+}

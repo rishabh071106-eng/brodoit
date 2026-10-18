@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Exams — Brodoit Prep</title>
 <meta name="theme-color" content="#F6F5F2">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="/app/theme.css?v=11">
+<link rel="stylesheet" href="assets/app.css?v=11">
+<script src="/app/icons.js?v=11" defer></script>
 <style>
   .cat-hero{min-height:190px;margin-top:8px}
   .form{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-  .form input{padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card-2);color:var(--ink);font:500 15px var(--font)}
+  .form input{min-height:44px;padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--card-2);color:var(--ink);font:500 15px var(--font)}
   .co{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
   .co input{width:22px;height:22px;accent-color:var(--accent)}
   .co.done .n{text-decoration:line-through;color:var(--mute)}
@@ -25,8 +26,9 @@
   <div id="cats"></div>
 </main>
 <script type="module">
-import { renderChrome, loadCatalog, store, esc, ICON } from './assets/js/app.js';
-import { art, categoryArt } from './assets/js/art.js';
+import { renderChrome, loadCatalog, store, esc, ICON } from './assets/js/app.js?v=9';
+import { art, categoryArt } from './assets/js/art.js?v=9';
+import { ic } from './assets/js/ico.js?v=11';
 renderChrome({ active: 'exams.html', title: 'Exams' });
 
 const cat = await loadCatalog();
@@ -37,21 +39,21 @@ const href = e => e.id === 'ssb' ? 'ssb.html' : `exam.html?id=${e.id}`;
 document.getElementById('jump').innerHTML = cat.categories.map(c => `<a class="chip press" href="#${c.id}">${esc(c.short)}</a>`).join('');
 document.getElementById('cats').innerHTML = cat.categories.map(c => `
   <section id="${c.id}" style="scroll-margin-top:70px">
-    <div class="hero cat-hero" style="background:var(--g-${c.id})">
+    <div class="hero cat-hero" style="background:var(--c-${c.id})">
       <div class="art">${categoryArt[c.id]()}</div><div class="shade"></div>
       <div class="h-lg">${esc(c.name)}</div><div style="opacity:.9;font-weight:600;font-size:14px;margin-top:2px">${esc(c.blurb)}</div>
     </div>
     <div style="margin-top:12px">${c.exams.map(e => {
       const n = doneIn(e.id);
       return `<a class="row press" href="${href(e)}">
-        <div class="thumb" style="background:var(--g-${c.id})">${(e.id === 'ssb' ? art.ssb : categoryArt[c.id])()}</div>
+        <div class="thumb" style="background:var(--c-${c.id})">${(e.id === 'ssb' ? art.ssb : categoryArt[c.id])()}</div>
         <div class="body"><div class="t">${esc(e.name)}</div><div class="s">${esc(e.short)}</div></div>
         ${n ? `<span class="pill" style="box-shadow:none;background:color-mix(in srgb,var(--ok) 14%,var(--card));color:var(--ok)">${n} done</span>` : ''}
         <span class="chev">${ICON.chev}</span></a>`;
     }).join('')}</div>
     ${c.id === 'it' ? `<div class="card" style="padding:16px;margin-top:14px">
-      <div class="h-md">🎯 My target companies</div>
-      <div class="muted" style="font-size:13.5px;margin-top:2px">Add every company you're applying to and tick it off when you clear it.</div>
+      <div class="h-md">${ic('target', 18)} My target companies</div>
+      <div class="muted" style="font-size:13px;margin-top:2px">Add every company you're applying to and tick it off when you clear it.</div>
       <form class="form" id="addCo"><input name="name" placeholder="Company (e.g. Zoho)" required maxlength="60">
         <input name="role" placeholder="Role / drive (optional)" maxlength="60"><input name="date" type="date">
         <button class="btn btn-dark press" type="submit">Add company</button></form>
@@ -63,8 +65,8 @@ function drawCompanies() {
   const list = store.read().companies;
   document.getElementById('coList').innerHTML = list.map((c, i) => `
     <div class="co${c.done ? ' done' : ''}"><input type="checkbox" data-i="${i}" ${c.done ? 'checked' : ''} aria-label="Done">
-      <div style="flex:1;min-width:0"><div class="n" style="font-weight:800">${esc(c.name)}</div><div class="muted" style="font-size:12.5px">${[c.role, c.date && 'Test ' + c.date].filter(Boolean).map(esc).join(' · ')}</div></div>
-      <button data-del="${i}" class="muted" aria-label="Remove" style="font-size:18px;padding:6px">✕</button></div>`).join('');
+      <div style="flex:1;min-width:0"><div class="n" style="font-weight:800">${esc(c.name)}</div><div class="muted" style="font-size:12px">${[c.role, c.date && 'Test ' + c.date].filter(Boolean).map(esc).join(' · ')}</div></div>
+      <button data-del="${i}" class="icon-btn muted" aria-label="Remove">${ic('x', 18)}</button></div>`).join('');
 }
 document.getElementById('addCo').addEventListener('submit', e => {
   e.preventDefault();

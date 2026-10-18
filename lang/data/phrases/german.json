@@ -1,0 +1,277 @@
+{
+  "id": "german",
+  "name": "German",
+  "native": "Deutsch",
+  "category": "international",
+  "bcp47": "de-DE",
+  "script": "Latin alphabet with ä, ö, ü and ß",
+  "region": "Germany, Austria, Switzerland, Liechtenstein and parts of Belgium, Luxembourg and Italy",
+  "speakers": "≈ 130 million",
+  "about": "German is the most widely spoken native language in the European Union, and Germany is a top destination for Indian students thanks to its low-cost public universities. All German nouns start with a capital letter, which makes them easy to spot.",
+  "pronunciation": [
+    "W is said like the English V, so Wasser sounds like vasser.",
+    "Ch after a, o or u is a throaty sound like the kh in Hindi khana, as in Buch.",
+    "Ei sounds like the English word eye, while ie sounds like ee, so mein is mine and Bier is beer.",
+    "Ü is said by rounding your lips for oo while saying ee, and Ö by rounding them for o while saying e."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "Hallo! Let's begin with German greetings. Germans value politeness and clear communication, so these few words will make a great first impression.",
+      "tip": "Greetings change by region. In southern Germany and Austria you will hear Grüß Gott, and in the north people often say Moin. Guten Tag works everywhere.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "Guten Tag",
+          "roman": "goo-ten tahk",
+          "note": "Guten Tag means good day and is the polite hello. With friends or younger people, simply say hallo."
+        },
+        {
+          "key": "how-are-you",
+          "native": "Wie geht es Ihnen?",
+          "roman": "vee gayt es ee-nen",
+          "note": "Wie geht es Ihnen is the polite way to ask how someone is. With friends, say wie geht's. Germans usually expect an honest answer."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "Mir geht es gut, danke.",
+          "roman": "meer gayt es goot, dahn-keh",
+          "note": "Mir geht es gut, danke means I am fine, thanks. Casually, you can shorten it to gut, danke."
+        },
+        {
+          "key": "thank-you",
+          "native": "Danke",
+          "roman": "dahn-keh",
+          "note": "Danke means thank you. For extra warmth, say danke schön or vielen Dank, which means many thanks."
+        },
+        {
+          "key": "sorry",
+          "native": "Entschuldigung",
+          "roman": "ent-shool-dee-goong",
+          "note": "Entschuldigung works for both sorry and excuse me, for example to get past someone. For a heartfelt apology, say es tut mir leid."
+        },
+        {
+          "key": "goodbye",
+          "native": "Auf Wiedersehen / Tschüss",
+          "roman": "owf vee-der-zayn / chooss",
+          "note": "Auf Wiedersehen is the polite goodbye and means until we see again. Tschüss is the friendly, everyday bye. Bis später means see you later."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Now let's introduce ourselves in German. These sentences are perfect for your first day at a German university, office or language class.",
+      "tip": "German has a formal you, Sie, and an informal you, du. Use Sie with strangers, officials and colleagues until they offer du. Among students, du is normal.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "Ich heiße Priya.",
+          "roman": "ikh hy-seh Priya",
+          "note": "Ich heiße Priya means I am called Priya. You can also say mein Name ist Priya, which sounds a little more formal."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "Wie heißen Sie?",
+          "roman": "vee hy-sen zee",
+          "note": "Wie heißen Sie is the polite way to ask someone's name. With a friend or a child, say wie heißt du."
+        },
+        {
+          "key": "where-from",
+          "native": "Woher kommen Sie?",
+          "roman": "voh-hair koh-men zee",
+          "note": "Woher kommen Sie means where do you come from. The informal version is woher kommst du."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "Ich komme aus Indien.",
+          "roman": "ikh koh-meh ows in-dee-en",
+          "note": "Ich komme aus Indien means I come from India. You could also say ich bin Inderin, meaning I am Indian, said by a woman. A man says Inder."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "Freut mich.",
+          "roman": "froyt mikh",
+          "note": "Freut mich means pleased to meet you, literally it pleases me. Germans often say it with a firm handshake."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "Ich spreche ein bisschen Deutsch.",
+          "roman": "ikh shpreh-kheh ine bis-khen doych",
+          "note": "Ich spreche ein bisschen Deutsch means I speak a little German. Note that sp at the start of a word sounds like shp."
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Let's count in German! Numbers are useful for prices, addresses and train platforms, and German trains love their timetables.",
+      "tip": "German says numbers like twenty-one backwards, as one-and-twenty, einundzwanzig. Also, halb drei means half past two, literally half to three.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "eins, zwei, drei, vier, fünf",
+          "roman": "ines, tsvy, dry, feer, fewnf",
+          "note": "Eins, zwei, drei, vier, fünf. These are one to five. On the phone, people often say zwo instead of zwei to avoid confusing it with drei."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "sechs, sieben, acht, neun, zehn",
+          "roman": "zeks, zee-ben, akht, noyn, tsayn",
+          "note": "Sechs, sieben, acht, neun, zehn. These are six to ten. The Z in zehn is pronounced like ts."
+        },
+        {
+          "key": "what-time",
+          "native": "Wie spät ist es?",
+          "roman": "vee shpayt ist es",
+          "note": "Wie spät ist es literally means how late is it, and it is the usual way to ask the time. You may also hear wie viel Uhr ist es."
+        },
+        {
+          "key": "today",
+          "native": "heute",
+          "roman": "hoy-teh",
+          "note": "Heute means today. The eu sounds like oy, as in the English word boy."
+        },
+        {
+          "key": "tomorrow",
+          "native": "morgen",
+          "roman": "mor-gen",
+          "note": "Morgen means tomorrow. Bis morgen means see you tomorrow. With a capital letter, der Morgen means the morning."
+        },
+        {
+          "key": "yesterday",
+          "native": "gestern",
+          "roman": "ges-tern",
+          "note": "Gestern means yesterday. The day before yesterday is vorgestern."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "Hungry? Let's learn how to shop and eat out in German, from bakeries to beer gardens and Christmas markets.",
+      "tip": "In German restaurants you usually pay at the table, and the waiter may ask zusammen oder getrennt, together or separately. Round up or tip about ten percent.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "Was kostet das?",
+          "roman": "vahs kos-tet dahs",
+          "note": "Was kostet das means what does this cost. It is the simple, polite way to ask a price."
+        },
+        {
+          "key": "too-expensive",
+          "native": "Das ist zu teuer.",
+          "roman": "dahs ist tsoo toy-er",
+          "note": "Das ist zu teuer means that is too expensive. Prices in German shops are fixed, so save bargaining for flea markets."
+        },
+        {
+          "key": "water-please",
+          "native": "Ein Wasser, bitte.",
+          "roman": "ine vah-ser, bit-teh",
+          "note": "Ein Wasser, bitte means a water, please. You will be asked mit oder ohne, with or without gas. Say stilles Wasser for still water."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "Ich bin Vegetarierin.",
+          "roman": "ikh bin veh-geh-tah-ree-er-in",
+          "note": "Ich bin Vegetarierin means I am vegetarian, said by a woman. A man says Vegetarier. Vegetarian food is easy to find in Germany."
+        },
+        {
+          "key": "very-tasty",
+          "native": "Das ist sehr lecker.",
+          "roman": "dahs ist zair lek-er",
+          "note": "Das ist sehr lecker means this is very tasty. Lecker is an everyday word. In a fancier place, say das schmeckt sehr gut."
+        },
+        {
+          "key": "bill-please",
+          "native": "Die Rechnung, bitte.",
+          "roman": "dee rekh-noong, bit-teh",
+          "note": "Die Rechnung, bitte means the bill, please. You can also say ich möchte bitte zahlen, which means I would like to pay."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "Let's travel! Germany has a fantastic rail network, so these phrases will help you find stations, platforms and your way around town.",
+      "tip": "The main station in any German city is called der Hauptbahnhof, often shortened to Hbf on signs. It is usually right in the city centre.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "Wo ist der Bahnhof?",
+          "roman": "voh ist dair bahn-hohf",
+          "note": "Wo ist der Bahnhof means where is the train station. For the main station, ask wo ist der Hauptbahnhof."
+        },
+        {
+          "key": "turn-left",
+          "native": "Biegen Sie links ab.",
+          "roman": "bee-gen zee links ahp",
+          "note": "Biegen Sie links ab means turn left, in the polite form. People giving directions often simply say links, meaning left."
+        },
+        {
+          "key": "turn-right",
+          "native": "Biegen Sie rechts ab.",
+          "roman": "bee-gen zee rekhts ahp",
+          "note": "Biegen Sie rechts ab means turn right. Rechts means right, so listen for that key word."
+        },
+        {
+          "key": "go-straight",
+          "native": "Gehen Sie geradeaus.",
+          "roman": "gay-en zee geh-rah-deh-ows",
+          "note": "Gehen Sie geradeaus means go straight ahead. Often you will just hear immer geradeaus, meaning keep going straight."
+        },
+        {
+          "key": "how-far",
+          "native": "Wie weit ist es?",
+          "roman": "vee vite ist es",
+          "note": "Wie weit ist es means how far is it. Germans may answer in minutes on foot, zu Fuß."
+        },
+        {
+          "key": "please-help",
+          "native": "Können Sie mir bitte helfen?",
+          "roman": "kur-nen zee meer bit-teh hel-fen",
+          "note": "Können Sie mir bitte helfen means could you please help me. In an emergency, just shout Hilfe, which means help."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "Our final lesson! These phrases will keep any conversation flowing, even when the German gets fast. Let's wrap it up together.",
+      "tip": "Bitte is a magic word in German. It means please, you're welcome, and pardon when you didn't hear something. Use it often.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "Ja / Nein",
+          "roman": "yah / nine",
+          "note": "Ja means yes and nein means no. To say yes to a negative question, Germans use doch."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "Ich verstehe das nicht.",
+          "roman": "ikh fer-shtay-eh dahs nikht",
+          "note": "Ich verstehe das nicht means I don't understand that. You can also just say ich verstehe nicht."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "Sprechen Sie bitte langsamer.",
+          "roman": "shpreh-khen zee bit-teh lahng-zah-mer",
+          "note": "Sprechen Sie bitte langsamer means please speak more slowly. It is polite, and people are usually happy to help."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "Was bedeutet das?",
+          "roman": "vahs beh-doy-tet dahs",
+          "note": "Was bedeutet das means what does this mean. Point at a word on a menu or sign and ask it."
+        },
+        {
+          "key": "i-like-it",
+          "native": "Das gefällt mir.",
+          "roman": "dahs geh-felt meer",
+          "note": "Das gefällt mir means I like it, literally it pleases me. For food, say das schmeckt mir instead."
+        },
+        {
+          "key": "good-night",
+          "native": "Gute Nacht",
+          "roman": "goo-teh nahkht",
+          "note": "Gute Nacht means good night, said before going to sleep. When leaving in the evening, say schönen Abend, meaning have a nice evening."
+        }
+      ]
+    }
+  ]
+}

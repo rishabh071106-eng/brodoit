@@ -130,6 +130,57 @@
               "answer": 0,
               "explain": "COUNT counts numbers; COUNTA counts any non-empty cell."
             }
+          ],
+          "notes": [
+            {
+              "h": "What the first assessment contains",
+              "p": "Accenture's fresher hiring (for roles such as **Associate Software Engineer**) usually starts with a **Cognitive and Technical Assessment** of roughly 90 questions in about 90 minutes. It is commonly an **elimination round**: you must clear it to reach coding and communication rounds. Pattern as reported for recent drives; confirm on the official careers page.",
+              "points": [
+                "**Cognitive:** English ability, critical reasoning and problem solving, abstract reasoning.",
+                "**Technical:** common applications and MS Office, pseudo-code, fundamentals of networking, security and cloud.",
+                "No negative marking has been reported, but there is little time — about a minute per question."
+              ]
+            },
+            {
+              "h": "Technical module walkthroughs",
+              "p": "**MS Office.** Which Excel function counts non-empty cells? **COUNTA** (COUNT counts only numbers). Shortcut for a new slide in PowerPoint? **Ctrl + M**. In Word, Ctrl + E? **Centre-aligns** text. Which Excel feature summarises large data by categories? **Pivot table**.\n\n**Networking.** Which protocol finds a MAC address from an IP address? **ARP**. Which device connects different networks? **Router**. Default HTTPS port? **443**.\n\n**Security.** An email pretending to be your bank and asking for your password is **phishing**. Malware that encrypts files and demands payment is **ransomware**. Two-factor authentication combines something you know with something you have.\n\n**Cloud.** Gmail is **SaaS**; a platform where you deploy code without managing servers (like Google App Engine) is **PaaS**; renting virtual machines (like AWS EC2) is **IaaS**."
+            },
+            {
+              "h": "Pseudo-code and reasoning walkthroughs",
+              "p": "**Pseudo-code.** `set n = 6, s = 0; while n > 0: if n mod 2 == 0 then s = s + n; n = n - 1; print s`. It adds the even numbers 6, 4, 2 → **12**.\n\n**Critical reasoning.** 'Sales rose after the advertising campaign, so the campaign caused the rise.' Which weakens it? An option like 'A competitor shut down in the same month' — it gives another cause.\n\n**Abstract reasoning.** Look for one change at a time across figures: rotation (45° or 90° steps), count of shapes, shading moving one position, or an element added each step.\n\n**English.** 'He has been working here since five years.' Correct: **for five years** (for a duration; 'since' needs a point in time).\n\n`n, s = 6, 0\nwhile n > 0:\n    if n % 2 == 0:\n        s += n\n    n -= 1\nprint(s)`\n\nOutput:\n`12`"
+            },
+            {
+              "h": "Strategy",
+              "p": "How to clear the cut-off:",
+              "points": [
+                "Revise MS Office shortcuts and common Excel functions (SUM, COUNTIF, VLOOKUP, IF) — easy marks often skipped.",
+                "Learn one-line definitions of cloud models, common attacks (phishing, DDoS, SQL injection) and OSI layers.",
+                "For abstract reasoning, check rotation, count and shading in that order.",
+                "Move on after a minute; there is little time for review.",
+                "Take at least two full mocks in the same timing."
+              ]
+            },
+            {
+              "h": "Traps",
+              "p": "Common slips:",
+              "points": [
+                "Confusing COUNT and COUNTA, or IaaS and PaaS.",
+                "Reading 'which is NOT' questions as 'which is'.",
+                "Over-reading critical reasoning options — pick the one that directly affects the argument."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Elimination round: cognitive + technical.",
+                "Office: COUNTA, pivot tables, Ctrl + M, Ctrl + E.",
+                "Network: ARP, router, 443.",
+                "Security: phishing, ransomware, 2FA.",
+                "Cloud: SaaS (Gmail), PaaS (deploy code), IaaS (VMs).",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -190,6 +241,52 @@
               ],
               "answer": 2,
               "explain": "Fluency and clarity are what the scoring measures."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Coding round format",
+              "p": "Candidates who clear the first assessment are reported to get a **coding round with 2 problems in about 45 minutes**. Problems are often **function-based**: you complete a given function that receives parameters and returns a value, rather than reading input yourself. Clearing at least one problem fully is commonly needed; solving both improves your chances. Pattern as reported for recent drives; confirm on the official careers page."
+            },
+            {
+              "h": "Sample problems with solutions",
+              "p": "**Problem 1.** Complete `sum_greater(arr, num)`: return the sum of elements greater than `num`; return 0 if none; return -1 if the array is empty.\n\n**Problem 2.** Complete `reverse_words(s)`: reverse each word but keep the word order.\n\n`def sum_greater(arr, num):\n    if not arr:\n        return -1\n    return sum(x for x in arr if x > num)\n\ndef reverse_words(s):\n    return \" \".join(w[::-1] for w in s.split(\" \"))\n\nprint(sum_greater([4, 9, 1, 12, 7], 6))\nprint(sum_greater([1, 2], 5), sum_greater([], 5))\nprint(reverse_words(\"hello world from accenture\"))`\n\nOutput:\n`28\n0 -1\nolleh dlrow morf erutnecca`\n\nRead the special cases carefully — 'return -1 for an empty array' is exactly the kind of hidden test case that fails careless solutions. Both functions run in O(n)."
+            },
+            {
+              "h": "Communication assessment",
+              "p": "An automated spoken-English test checks **pronunciation, fluency, grammar, vocabulary and listening**. Typical tasks reported: reading sentences aloud, repeating sentences you hear, answering short questions, building sentences from jumbled phrases, retelling a short story and speaking on an open question.",
+              "points": [
+                "Use a quiet room and a good headset; test your microphone first.",
+                "Speak at a steady, natural pace — do not rush.",
+                "If you miss a word in a repeat task, say the rest smoothly instead of stopping.",
+                "For story retelling, cover who, what happened and how it ended.",
+                "Practise daily by reading news aloud and recording yourself."
+              ]
+            },
+            {
+              "h": "Interview questions with model answers",
+              "p": "**Q: Tell me about yourself.** A: Present (degree, key skills), past (project/internship with a result), future (why this role).\n\n**Q: What is cloud computing?** A: On-demand computing resources over the internet with pay-as-you-go pricing; models are IaaS, PaaS and SaaS.\n\n**Q: Explain OOP with an example from your project.** A: Name a class you built, how you encapsulated data, and where inheritance or polymorphism helped.\n\n**Q: Why Accenture?** A: Mention its consulting plus technology mix, varied client industries and learning programmes, and connect to your goals.\n\n**Q: Are you comfortable with any technology and location?** A: Answer honestly and show flexibility."
+            },
+            {
+              "h": "Traps",
+              "p": "Where candidates lose the coding round:",
+              "points": [
+                "Changing the given function name or signature — the judge calls it exactly as given.",
+                "Printing the answer instead of returning it in function-based problems.",
+                "Ignoring null/empty inputs and negative numbers.",
+                "Spending all 45 minutes on one problem; time-box the first one to about 20 minutes."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Coding: about 2 function-based problems in about 45 minutes.",
+                "Handle empty/null and 'no result' cases exactly as stated.",
+                "Communication test is automated — clarity and pace matter.",
+                "Interview: project, OOP, cloud basics, HR.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
             }
           ]
         }

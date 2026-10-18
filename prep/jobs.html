@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Apply for Government Jobs — Brodoit</title>
+<meta name="description" content="Fresh government job notifications every day — central, defence, police, banking, railways, teaching, PSU, state, health. Full details, how to apply and official links.">
+<meta property="og:title" content="Apply for Government Jobs — Brodoit">
+<meta property="og:description" content="Government job notifications refreshed every day, with the full process and official apply links.">
+<meta property="og:image" content="/icon-512.png">
+<meta name="theme-color" content="#F6F5F2">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="/app/theme.css?v=11">
+<link rel="stylesheet" href="assets/app.css?v=11">
+<script src="/app/icons.js?v=11" defer></script>
+<style id="jobcss"></style>
+<style>
+  .jhero{border-radius:var(--r-xl);padding:22px;color:#fff;background:linear-gradient(140deg,#2A0A0A 0%,#FF5A1F 55%,#FFC24B 100%);position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+  .jhero::after{content:"🇮🇳";position:absolute;right:-6px;top:-14px;font-size:120px;opacity:.18}
+  .live{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);padding:6px 11px;border-radius:var(--r-pill);font-size:11px;font-weight:800}
+  .live i{width:8px;height:8px;border-radius:50%;background:#4ADE80;box-shadow:0 0 10px #4ADE80;animation:pulse 2s infinite}
+  @keyframes pulse{50%{opacity:.35}}
+  .hstats{display:flex;gap:10px;margin-top:14px}
+  .hstats div{flex:1;background:rgba(255,255,255,.16);border-radius:var(--r-sm);padding:10px}
+  .hstats b{display:block;font-size:22px;font-weight:800}
+  .hstats span{font-size:11px;font-weight:700;opacity:.9}
+  .tools{display:flex;gap:8px;margin:14px 0 4px}
+  .search{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border-radius:999px;padding:4px 14px;box-shadow:var(--shadow)}
+  .search input{flex:1;border:none;background:none;font:600 15px var(--font);color:var(--ink);padding:10px 0;outline:none;min-width:0}
+  .age{display:flex;align-items:center;gap:6px;background:var(--card);border-radius:999px;padding:4px 12px;box-shadow:var(--shadow);font-weight:800;font-size:13px}
+  .age input{width:44px;border:none;background:var(--card-2);border-radius:8px;padding:7px 6px;font:800 14px var(--font);color:var(--ink);text-align:center}
+  .cats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .cat{border-radius:var(--r-md);padding:14px;color:#fff;min-height:104px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .cat .e{display:block;opacity:.9}.cat b{font-size:15px;font-weight:800;letter-spacing:-.01em}.cat small{font-size:11px;font-weight:700;opacity:.88;display:block}
+  .cat .n{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.22);font-size:12px;font-weight:800;padding:3px 9px;border-radius:999px}
+  .cat.on{outline:3px solid var(--ink);outline-offset:2px}
+  .empty{text-align:center;padding:30px 10px;color:var(--mute)}
+  .disc{font-size:12px;color:var(--mute);text-align:center;margin:20px 6px 0;line-height:1.5}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="jhero rise">
+    <span class="live"><i></i> Updated daily</span>
+    <h1 class="h-xl" style="margin-top:12px;font-size:34px">Apply for<br>Government Jobs</h1>
+    <div style="font-weight:600;opacity:.92;margin-top:6px">Every notification from the last 3 months — what it is, who can apply, how to apply, and the official link.</div>
+    <div class="hstats"><div><b id="sOpen">–</b><span>open now</span></div><div><b id="sNew">–</b><span>new this week</span></div><div><b id="sSoon">–</b><span>closing in 7 days</span></div></div>
+  </section>
+
+  <div class="tools">
+    <label class="search"><span class="muted" data-ico="search" data-size="18"></span><input id="q" placeholder="Search post, exam or department"></label>
+    <label class="age" title="Show jobs you're old enough for"><span data-ico="cake" data-size="16"></span><input id="age" inputmode="numeric" maxlength="2" placeholder="Age"></label>
+  </div>
+  <div class="chips" id="filters"></div>
+
+  <div class="section"><div class="h-md">Categories</div><button class="muted" id="clearCat" style="font-size:13px;font-weight:700" hidden>Show all</button></div>
+  <div class="cats" id="cats"></div>
+
+  <div class="section"><div class="h-md" id="listTitle">All jobs</div><span class="muted" style="font-size:12px;font-weight:700" id="count"></span></div>
+  <div id="list"><div class="empty">Loading today's jobs…</div></div>
+  <a class="card press" href="https://github.com/rishabh071106-eng/ai-academy/tree/claude/intelligent-pasteur-85pc36/job-agent" target="_blank" rel="noopener" style="display:flex;gap:14px;align-items:center;padding:16px;margin-top:18px;background:#2A1B4A;border-color:transparent;color:#fff;text-decoration:none">
+    <span style="font-size:34px">🤖</span>
+    <span style="flex:1;min-width:0"><span style="display:block;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.8">Private jobs · runs on your computer</span><span style="display:block;font-size:16px;font-weight:800;margin-top:2px">Brodoit Auto-Apply Agent</span><span style="display:block;font-size:12px;font-weight:600;opacity:.85;margin-top:2px">Searches LinkedIn &amp; Naukri, tailors your resume per job, applies from your own Chrome, tracks everything on a dashboard.</span></span>
+    <span data-ico="external-link" data-size="20"></span></a>
+  <p class="disc" id="updated"></p>
+  <p class="disc">Brodoit collects notifications from official sources every day. Always read the official notification before applying — Brodoit is not a recruiting agency and never asks for money.</p>
+</main>
+
+<script type="module">
+import { renderChrome, esc, timeAgo } from './assets/js/app.js?v=9';
+import { CAT, JOB_CSS, jobCard, daysLeft, isNew } from './assets/js/jobs-common.js?v=9';
+import { ic, hydrateIcons } from './assets/js/ico.js?v=11';
+document.getElementById('jobcss').textContent = JOB_CSS;
+renderChrome({ active: '', title: '<span class="brand">Brodoit <b>Jobs</b></span>' });
+hydrateIcons();
+
+// Category icons (the shared jobCard() still prints the category emoji; swapJav() replaces it after each render).
+const CAT_ICO = { central: 'landmark', defence: 'medal', police: 'shield', banking: 'building-2', railways: 'train-front', teaching: 'book-open', psu: 'factory', state: 'map', health: 'stethoscope', other: 'mailbox' };
+const BY_EMOJI = Object.fromEntries(Object.entries(CAT).map(([k, c]) => [c.emoji, k]));
+const swapJav = root => root.querySelectorAll('.jav').forEach(el => { const k = BY_EMOJI[el.textContent.trim()]; if (k) el.innerHTML = ic(CAT_ICO[k] || 'briefcase', 22); });
+
+const FILTERS = [['open', 'Open now'], ['soon', `${ic('hourglass', 14)} Closing in 7 days`], ['new', `${ic('sparkles', 14)} New this week`], ['10th', '10th pass'], ['12th', '12th pass'], ['grad', 'Graduate'], ['closed', 'Recently closed']];
+const st = { f: 'open', cat: '', q: '', age: '' };
+try { st.age = localStorage.getItem('jobs.age') || ''; } catch {}
+document.getElementById('age').value = st.age;
+
+const res = await fetch('/api/jobs').then(r => r.json()).catch(() => ({ jobs: [] }));
+const jobs = res.jobs || [];
+const open = jobs.filter(j => j.open);
+document.getElementById('sOpen').textContent = open.length;
+document.getElementById('sNew').textContent = jobs.filter(isNew).length;
+document.getElementById('sSoon').textContent = open.filter(j => { const d = daysLeft(j); return d !== null && d <= 7; }).length;
+document.getElementById('updated').textContent = res.lastRun ? `Last refreshed ${timeAgo(Date.parse(res.lastRun))} · ${jobs.length} notifications from the last 3 months` : '';
+
+const qual = (j, k) => {
+  const s = `${j.qualification || ''} ${j.qualificationDetail || ''}`.toLowerCase();
+  if (k === '10th') return /10th|matric|ssc pass|high school/.test(s);
+  if (k === '12th') return /12th|intermediate|higher secondary|10\+2/.test(s);
+  return /graduat|degree|b\.?tech|b\.?e\b|bachelor|mbbs|b\.?sc|b\.?com|b\.?a\b/.test(s);
+};
+function visible() {
+  const q = st.q.toLowerCase(), age = parseInt(st.age, 10);
+  return jobs.filter(j => {
+    if (st.f === 'closed' ? j.open : !j.open) return false;
+    if (st.f === 'soon') { const d = daysLeft(j); if (d === null || d > 7) return false; }
+    if (st.f === 'new' && !isNew(j)) return false;
+    if (['10th', '12th', 'grad'].includes(st.f) && !qual(j, st.f)) return false;
+    if (st.cat && j.category !== st.cat) return false;
+    if (age && ((j.ageMin != null && age < j.ageMin) || (j.ageMax != null && age > j.ageMax))) return false;
+    if (q && !`${j.title} ${j.org} ${j.qualification} ${j.location}`.toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a, b) => st.f === 'soon' ? daysLeft(a) - daysLeft(b) : b.postedDate.localeCompare(a.postedDate));
+}
+function draw() {
+  document.getElementById('filters').innerHTML = FILTERS.map(([k, l]) => `<button class="chip${st.f === k ? ' on' : ''}" data-f="${k}">${l}</button>`).join('');
+  const counts = {};
+  for (const j of jobs) if (j.open) counts[j.category] = (counts[j.category] || 0) + 1;
+  document.getElementById('cats').innerHTML = Object.entries(CAT).map(([k, c]) => `
+    <button class="cat press${st.cat === k ? ' on' : ''}" data-c="${k}" style="background:${c.c}">
+      <span class="n">${counts[k] || 0}</span><span class="e">${ic(CAT_ICO[k] || 'briefcase', 26)}</span><span><b>${c.name}</b><small>${c.sub}</small></span></button>`).join('');
+  document.getElementById('clearCat').hidden = !st.cat;
+  const v = visible();
+  document.getElementById('listTitle').textContent = st.cat ? CAT[st.cat].name : 'All jobs';
+  document.getElementById('count').textContent = `${v.length} job${v.length === 1 ? '' : 's'}${st.age ? ` for age ${st.age}` : ''}`;
+  document.getElementById('list').innerHTML = v.length ? v.map(jobCard).join('')
+    : `<div class="empty"><div style="font-size:44px">🔍</div><p style="font-weight:700;margin-top:6px">No jobs match these filters.</p><p style="font-size:14px">Try another category, clear the age, or check “Recently closed”.</p></div>`;
+  swapJav(document.getElementById('list'));
+}
+document.getElementById('filters').onclick = e => { if (e.target.dataset.f) { st.f = e.target.dataset.f; draw(); } };
+document.getElementById('cats').onclick = e => {
+  const b = e.target.closest('[data-c]'); if (!b) return;
+  st.cat = st.cat === b.dataset.c ? '' : b.dataset.c; draw();
+  document.getElementById('listTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+document.getElementById('clearCat').onclick = () => { st.cat = ''; draw(); };
+let t; document.getElementById('q').oninput = e => { clearTimeout(t); t = setTimeout(() => { st.q = e.target.value; draw(); }, 200); };
+document.getElementById('age').oninput = e => { st.age = e.target.value.replace(/\D/g, ''); e.target.value = st.age; try { localStorage.setItem('jobs.age', st.age); } catch {} draw(); };
+const hashCat = location.hash.slice(1); if (CAT[hashCat]) st.cat = hashCat;
+draw();
+</script>
+</body>
+</html>

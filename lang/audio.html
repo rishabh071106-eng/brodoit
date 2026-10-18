@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Audio lesson · Brodoit Languages</title>
+<meta name="theme-color" content="#0B0A14">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="/app/theme.css?v=11">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=11">
+<script src="/app/icons.js?v=11" defer></script>
+<style>
+  /* The player is always dark (html[data-theme=dark]); --p-* are its stage-specific tints on top of the v10 tokens. */
+  :root{--p-bg:#0B0A14;--p-bg2:#15132A;--p-ink:#F5F2FF;--p-mute:rgba(245,242,255,.6);--p-line:rgba(255,255,255,.1)}
+  html,body{background:var(--p-bg);color:var(--p-ink);height:100%}
+  body{overflow:hidden;background:radial-gradient(120% 70% at 50% -10%,#2A1B5E 0%,var(--p-bg) 60%)}
+  .player{height:100dvh;max-width:560px;margin:0 auto;display:grid;grid-template-rows:auto auto 1fr auto;grid-template-columns:minmax(0,1fr);padding:calc(10px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom))}
+  .pt{display:flex;align-items:center;gap:10px}
+  .pt .icon-btn{background:rgba(255,255,255,.08);color:var(--p-ink)}
+  .pt .ti{flex:1;min-width:0;overflow:hidden}
+  .pt .k{font:var(--t-eyebrow);letter-spacing:.14em;text-transform:uppercase;color:var(--p-mute)}
+  .pt .t{font-weight:800;font-size:15px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .speed{min-height:44px;padding:0 12px;border-radius:var(--r-pill);background:rgba(255,255,255,.08);font-weight:800;font-size:13px;color:var(--p-ink);min-width:54px}
+  .prog{margin-top:14px}
+  .prog .bar{height:6px;border-radius:var(--r-pill);background:rgba(255,255,255,.12);overflow:hidden}
+  .prog .bar i{display:block;height:100%;width:0;border-radius:var(--r-pill);background:var(--b-primary);transition:width var(--m-enter) var(--ease)}
+  .prog .m{display:flex;justify-content:space-between;font:var(--t-cap);font-weight:700;color:var(--p-mute);margin-top:6px}
+  .stage{display:grid;place-items:center;text-align:center;padding:10px 0;min-height:0;position:relative}
+  .cap{width:100%;cursor:pointer;user-select:none;transition:opacity .3s,transform .3s}
+  .cap .who{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--p-mute);display:inline-flex;align-items:center;gap:6px;margin-bottom:14px}
+  .cap .who i{width:8px;height:8px;border-radius:50%;background:var(--b-sky);display:inline-block}
+  .cap.target .who i{background:var(--b-sun)}
+  .cap .line{font-size:22px;font-weight:600;line-height:1.35;letter-spacing:-.01em;color:var(--p-ink);opacity:.9;max-width:34ch;margin:0 auto;animation:b-rise .35s both}
+  .cap.target .line{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+  .cap.target.slow .line{color:var(--b-sun)}
+  .cap .tl{margin-top:10px;font-size:15px;font-weight:700;color:var(--b-sky);letter-spacing:.02em}
+  .cap .hint{margin-top:22px;font:var(--t-cap);font-weight:700;color:var(--p-mute)}
+  .cap.hidden .line,.cap.hidden .tl{filter:blur(14px);opacity:.25}
+  .cap.idle .line{color:var(--p-mute);font-size:19px}
+  .ringwrap{position:relative;width:170px;height:170px;display:grid;place-items:center;margin:0 auto}
+  .ringwrap>svg{position:absolute;inset:0;transform:rotate(-90deg)}
+  .pausebox{animation:b-pop .3s both}
+  .ringwrap circle{fill:none;stroke-width:9;stroke-linecap:round}
+  .ringwrap .tr{stroke:rgba(255,255,255,.1)}
+  .ringwrap .fg{stroke:var(--b-primary);stroke-dasharray:502;stroke-dashoffset:0;transition:stroke .3s}
+  .ringwrap .mic{width:84px;height:84px;margin:0;box-shadow:none;background:rgba(255,255,255,.08)}
+  .ringwrap .mic svg{width:34px;height:34px}
+  .ringwrap .mic.live{background:var(--b-primary)}
+  .ringwrap .sec{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);font-weight:800;font-size:13px;color:var(--p-mute);background:var(--p-bg);padding:2px 10px;border-radius:var(--r-pill)}
+  .say{margin-top:18px;font-size:16px;font-weight:700;color:var(--p-mute);display:flex;align-items:center;justify-content:center;gap:6px}
+  .say.ok{color:var(--b-mint)}.say.again{color:var(--b-sun)}
+  .heardl{margin-top:6px;font-size:14px;color:var(--p-mute);min-height:20px}
+  .ctrls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-top:8px}
+  .side{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--p-mute);padding:10px 6px;border-radius:var(--r-md);transition:background var(--m-state)}
+  .side:active{background:rgba(255,255,255,.08)}
+  .side .ic{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;color:var(--p-ink)}
+  .side .ic svg{width:24px;height:24px}
+  .side:first-child{justify-self:end}.side:last-child{justify-self:start}
+  .big{width:96px;height:96px;border-radius:50%;background:var(--b-grad);color:#fff;display:grid;place-items:center;box-shadow:var(--sh-2);transition:transform var(--m-press)}
+  .big:active{transform:scale(.94)}
+  .big svg{width:42px;height:42px}
+  .big.play svg{margin-left:6px}
+  .speeds{display:flex;justify-content:center;gap:8px;margin-top:16px}
+  .speeds button{min-height:44px;min-width:44px;padding:0 14px;border-radius:var(--r-pill);font-weight:800;font-size:13px;color:var(--p-mute);background:rgba(255,255,255,.06)}
+  .speeds button.on{background:var(--p-ink);color:var(--p-bg)}
+  .flash{position:fixed;inset:0;pointer-events:none;background:var(--b-mint);opacity:0;z-index:5}
+  .flash.go{animation:fl .7s}
+  @keyframes fl{0%{opacity:0}25%{opacity:.35}100%{opacity:0}}
+  .end{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(120% 70% at 50% 0%,#2A1B5E 0%,var(--p-bg) 60%)}
+  .end.on{display:flex}
+  .end .in{max-width:380px;width:100%;animation:b-pop .5s both}
+  .end .e{font-size:84px;line-height:1;animation:bob 1.6s ease-in-out infinite}
+  .end h1{font-size:32px;font-weight:800;letter-spacing:-.04em;margin-top:10px}
+  .end p{color:var(--p-mute);font-weight:600;margin-top:6px}
+  .end .tiles{margin:24px auto}
+  .end .b-btn{margin-top:10px}
+  .src{font:var(--t-eyebrow);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--p-mute);opacity:.7}
+</style>
+</head>
+<body>
+<div class="player" id="player">
+  <div class="pt">
+    <a class="icon-btn press" id="back" href="/lang/" aria-label="Back"></a>
+    <div class="ti"><div class="k" id="k">Audio lesson</div><div class="t" id="title">…</div></div>
+    <button class="speed" id="speedBtn" aria-label="Speed">1×</button>
+  </div>
+  <div class="prog"><div class="bar"><i id="bar"></i></div><div class="m"><span id="stepN">—</span><span class="src" id="src"></span><span id="eta">—</span></div></div>
+  <div class="stage" id="stage">
+    <div class="cap idle" id="cap"><div class="who"><i></i><span id="who">Brodoit</span></div><div class="line" id="line">…</div><div class="tl" id="tl"></div><div class="hint" id="hint"></div></div>
+  </div>
+  <div>
+    <div class="ctrls">
+      <button class="side press" id="rep"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3L20 8"/><path d="M20 3v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 16"/><path d="M4 21v-5h5"/></svg></span><span id="repL">Repeat</span></button>
+      <button class="big play" id="play" aria-label="Play"></button>
+      <button class="side press" id="skip"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l7 7-7 7"/><path d="M13 5l7 7-7 7"/></svg></span><span id="skipL">Skip 10</span></button>
+    </div>
+    <div class="speeds" id="speeds"><button data-s="0.8">0.8×</button><button data-s="1" class="on">1×</button><button data-s="1.2">1.2×</button></div>
+  </div>
+</div>
+<div class="flash" id="flash"></div>
+<div class="end" id="end"><div class="in">
+  <div class="e">🎧</div><h1 id="endT">Lesson complete</h1><p id="endS"></p>
+  <div class="tiles"><div class="tile xp"><b>+50</b><span>XP</span></div><div class="tile acc"><b id="endSteps">0</b><span>steps</span></div><div class="tile time"><b id="endMin">0</b><span>min</span></div></div>
+  <a class="b-btn wide" id="nextBtn" href="#" style="display:none">Next lesson →</a>
+  <a class="b-btn ghost wide" id="backBtn" href="/lang/" style="background:rgba(255,255,255,.08);color:#fff;box-shadow:none">Back to course</a>
+</div></div>
+
+<script type="module">
+import { loadCourses, loadAudioCourse, store, esc, t, param, ICON, speak, stopSpeaking, sleep, recognize, hasSR, similarity, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, voicesLoaded } from '/lang/assets/lang.js?v=9';
+import { ic } from '/lang/assets/ico.js?v=11';
+
+const $ = id => document.getElementById(id);
+const code = param('c') || 'es', lessonId = param('l') || 'a1';
+const courses = await loadCourses();
+const meta = courses.find(c => c.code === code) || { code, name: code, from: 'en', flag: '🌍' };
+const lang = meta.from;
+$('back').innerHTML = ICON.back; $('back').href = `/lang/course.html?c=${code}`; $('backBtn').href = `/lang/course.html?c=${code}`;
+$('repL').textContent = t(lang, 'repeat'); $('skipL').textContent = t(lang, 'skip'); $('backBtn').textContent = t(lang, 'back'); $('endT').textContent = t(lang, 'lessonComplete'); $('endS').textContent = t(lang, 'keepGoing');
+$('play').innerHTML = ICON.play;
+setCourse(code);
+
+const audio = meta.hasAudio === false ? null : await loadAudioCourse(code);
+const lessons = audio?.lessons || [];
+const li = lessons.findIndex(l => l.id === lessonId);
+const lesson = lessons[li];
+
+if (!lesson) {
+  $('title').textContent = meta.name;
+  $('stage').innerHTML = `<div class="b-card empty" style="background:rgba(255,255,255,.06);border-color:transparent;color:inherit"><div class="e">🎙️</div><div class="t">${t(lang, 'comingSoon')}</div><div class="s" style="color:var(--p-mute)">${t(lang, 'comingSoonSub')}</div><a class="b-btn violet" href="/lang/course.html?c=${code}">${t(lang, 'back')}</a></div>`;
+  ['play', 'rep', 'skip', 'speedBtn'].forEach(id => { $(id).disabled = true; $(id).style.opacity = .3; });
+} else {
+  document.title = `${lesson.title} · ${meta.name} · Brodoit`;
+  $('k').textContent = `${meta.flag} ${meta.name} · ${lesson.minutes || 15} ${t(lang, 'min')}`;
+  $('title').textContent = lesson.title;
+  const steps = lesson.steps || [];
+  const narrLang = audio.narratorVoice || (lang === 'hi' ? 'hi-IN' : 'en-IN'), targLang = audio.targetVoice || meta.voice || 'en-US';
+  const TEST = window.LANG_TEST || {};
+  const pauseScale = TEST.pauseScale || 1;
+  const key = `${code}/${lesson.id}`;
+  const cap = $('cap'), line = $('line'), tlEl = $('tl'), who = $('who'), hint = $('hint'), stage = $('stage');
+  let idx = Math.max(0, Math.min(steps.length - 1, +(sessionStorage.getItem('lang.pos.' + key) || 0)));
+  if (idx >= steps.length - 2) idx = 0;
+  let pre = null;
+  let playing = false, ctrl = null, gen = 0, speed = +(localStorage.getItem('lang.speed') || 1) || 1, captions = localStorage.getItem('lang.captions') !== 'off', startedAt = 0, finished = false;
+  const setSpeed = v => { speed = v; try { localStorage.setItem('lang.speed', v); } catch {} $('speedBtn').textContent = `${v}×`; $('speeds').querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.s === v)); if (pre) pre.el.playbackRate = v; };
+  $('speeds').onclick = e => { const b = e.target.closest('button[data-s]'); if (b) setSpeed(+b.dataset.s); };
+  $('speedBtn').onclick = () => setSpeed(speed === 0.8 ? 1 : speed === 1 ? 1.2 : 0.8);
+  setSpeed(speed);
+  const estRemain = i => steps.slice(i).reduce((a, s) => a + (s.p ? s.p : ((s.n || s.t || s.q || '').length * 0.07 + 0.5)), 0);
+  const renderProgress = () => {
+    $('bar').style.width = `${Math.round((idx / Math.max(1, steps.length)) * 100)}%`;
+    $('stepN').textContent = `${Math.min(idx + 1, steps.length)} / ${steps.length}`;
+    $('eta').textContent = `-${Math.ceil(estRemain(idx) / 60)} ${t(lang, 'min')}`;
+    try { sessionStorage.setItem('lang.pos.' + key, idx); } catch {}
+  };
+  const showCaption = (step) => {
+    stage.querySelector('.pausebox')?.remove();
+    cap.style.display = '';
+    cap.className = 'cap' + (step.t != null ? ' target' + (step.slow ? ' slow' : '') : '') + (captions ? '' : ' hidden');
+    who.innerHTML = step.t != null ? esc(meta.name) : step.q ? ic('help-circle', 13) + ' ' + (lang === 'hi' ? 'प्रश्न' : 'Question') : (lang === 'hi' ? 'गाइड' : 'Guide');
+    line.textContent = step.t ?? step.n ?? step.q ?? '';
+    tlEl.textContent = step.tl || '';
+    hint.textContent = t(lang, 'hintTap');
+    line.style.animation = 'none'; void line.offsetWidth; line.style.animation = '';
+  };
+  cap.onclick = () => { captions = !captions; try { localStorage.setItem('lang.captions', captions ? 'on' : 'off'); } catch {} cap.classList.toggle('hidden', !captions); toast(captions ? '💬 Captions on' : '🙈 Captions hidden — pure listening'); };
+  const showIdle = () => { stage.querySelector('.pausebox')?.remove(); cap.style.display = ''; cap.className = 'cap idle'; who.textContent = 'Brodoit'; line.textContent = idx > 0 && idx < steps.length ? t(lang, 'paused') : t(lang, 'tapPlay'); tlEl.textContent = ''; hint.textContent = ''; };
+
+  // Pause step UI: countdown ring + mic indicator (+ live recognition when available).
+  const showPause = (seconds, expect) => {
+    cap.style.display = 'none';
+    stage.querySelector('.pausebox')?.remove();
+    const w = document.createElement('div'); w.className = 'pausebox';
+    w.innerHTML = `<div class="ringwrap"><svg viewBox="0 0 180 180"><circle class="tr" cx="90" cy="90" r="80"/><circle class="fg" id="fg" cx="90" cy="90" r="80"/></svg><div class="mic ${expect && hasSR ? 'live' : ''}" id="micI">${ICON.mic}</div><span class="sec" id="sec">${seconds}s</span></div>
+      <div class="say" id="say">${expect ? t(lang, 'sayIt') : '…'}</div><div class="heardl" id="heardl">${expect && captions ? esc(expect) : ''}</div>`;
+    stage.append(w);
+    return { fg: $('fg'), sec: $('sec'), say: $('say'), heardl: $('heardl'), mic: $('micI') };
+  };
+  const flashOk = () => { $('flash').classList.remove('go'); void $('flash').offsetWidth; $('flash').classList.add('go'); haptic(30); };
+
+  async function doPause(step, signal) {
+    const secs = step.p, ms = secs * 1000 * pauseScale;
+    const ui = showPause(secs, step.expect);
+    const t0 = performance.now();
+    let raf;
+    const tick = () => {
+      const el = Math.min(1, (performance.now() - t0) / ms);
+      ui.fg.style.strokeDashoffset = 502 * el;
+      ui.sec.textContent = `${Math.max(0, Math.ceil(secs - el * secs))}s`;
+      if (el < 1 && !signal.aborted) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const rec = step.expect && hasSR ? recognize(targLang, { ms: Math.max(1500, ms), signal, onInterim: txt => { ui.heardl.textContent = txt; } }) : Promise.resolve('');
+    const [heard] = await Promise.all([rec, sleep(ms, signal)]);
+    cancelAnimationFrame(raf);
+    if (signal.aborted) return;
+    if (step.expect && heard) {
+      const sim = similarity(heard, step.expect);
+      if (sim >= 0.6) { ui.say.innerHTML = `${ic('check-circle', 18)} ${t(lang, 'great')}`; ui.say.className = 'say ok'; flashOk(); await sleep(500, signal); }
+      else { ui.say.innerHTML = `${ic('ear', 18)} ${t(lang, 'listenAgain')}`; ui.say.className = 'say again'; await sleep(400, signal); }
+    }
+  }
+
+  async function doStep(step, signal) {
+    if (step.p != null) return doPause(step, signal);
+    showCaption(step);
+    if (step.t != null) return speak(step.t, { lang: targLang, rate: speed, slow: !!step.slow, signal });
+    return speak(step.n ?? step.q ?? '', { lang: narrLang, rate: speed, signal });
+  }
+
+  // ---- keep-awake, lock-screen controls ----
+  let wake = null, silent = null;
+  const silentUrl = () => { const rate = 8000, n = rate * 2, b = new ArrayBuffer(44 + n), v = new DataView(b), w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); }; w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true); w(36, 'data'); v.setUint32(40, n, true); for (let i = 0; i < n; i++) v.setUint8(44 + i, 128); return URL.createObjectURL(new Blob([b], { type: 'audio/wav' })); };
+  async function awake(on) {
+    try { if (on && !wake && navigator.wakeLock) { wake = await navigator.wakeLock.request('screen'); wake.addEventListener('release', () => { wake = null; }); } else if (!on && wake) { await wake.release(); wake = null; } } catch { wake = null; }
+    if (!pre) {
+      try {
+        if (on) { if (!silent) { silent = new Audio(silentUrl()); silent.loop = true; silent.volume = 0.01; } await silent.play(); }
+        else silent?.pause();
+      } catch { /* autoplay blocked: fine */ }
+    }
+  }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && playing) awake(true); });
+  if ('mediaSession' in navigator) {
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: lesson.title, artist: `Brodoit Languages · ${meta.name}`, album: 'Audio course', artwork: [{ src: '/icon-512.png', sizes: '512x512', type: 'image/png' }] });
+      navigator.mediaSession.setActionHandler('play', () => play());
+      navigator.mediaSession.setActionHandler('pause', () => pause());
+      navigator.mediaSession.setActionHandler('nexttrack', () => skip(10));
+      navigator.mediaSession.setActionHandler('previoustrack', () => repeat());
+      try { navigator.mediaSession.setActionHandler('seekforward', () => skip(10)); navigator.mediaSession.setActionHandler('seekbackward', () => repeat()); } catch {}
+    } catch { /* unsupported */ }
+  }
+  const setMediaState = st => { try { navigator.mediaSession.playbackState = st; } catch {} };
+
+  // ---- pre-rendered mp3 (preferred when present) ----
+  try {
+    const base = `/lang/audio/${code}/${lesson.id}`;
+    const h = await fetch(base + '.mp3', { method: 'HEAD' });
+    if (h.ok) {
+      const tim = await fetch(base + '.json').then(r => (r.ok ? r.json() : null)).catch(() => null);
+      if (tim?.steps?.length) { pre = { el: new Audio(base + '.mp3'), tim: tim.steps }; pre.el.preload = 'auto'; pre.el.playbackRate = speed; $('src').textContent = 'Studio audio'; }
+    }
+  } catch { pre = null; }
+  if (!pre) { $('src').textContent = ''; voicesLoaded(); }
+
+  // ---- transport ----
+  const setPlayBtn = () => { $('play').innerHTML = playing ? ICON.pause : ICON.play; $('play').classList.toggle('play', !playing); $('play').setAttribute('aria-label', playing ? 'Pause' : 'Play'); };
+
+  async function loopTTS() {
+    const my = ++gen;
+    ctrl = new AbortController();
+    while (playing && my === gen && idx < steps.length) {
+      renderProgress();
+      await doStep(steps[idx], ctrl.signal);
+      if (my !== gen || !playing) return;
+      idx++;
+    }
+    if (my === gen && playing && idx >= steps.length) finish();
+  }
+
+  let preRec = null, preStep = -1;
+  function preTick() {
+    if (!pre || !playing) return;
+    const ct = pre.el.currentTime;
+    let i = pre.tim.findIndex(s => ct < s.end);
+    if (i < 0) i = steps.length - 1;
+    if (i !== preStep) {
+      preStep = i; idx = i; renderProgress();
+      preRec?.abort(); preRec = null;
+      const st = steps[i];
+      if (st?.p != null) {
+        const ui = showPause(st.p, st.expect);
+        pre.ui = { ...ui, start: pre.tim[i].start, end: pre.tim[i].end, step: st };
+        if (st.expect && hasSR) { preRec = new AbortController(); recognize(targLang, { ms: Math.max(1500, (pre.tim[i].end - pre.tim[i].start) * 1000), signal: preRec.signal, onInterim: txt => { ui.heardl.textContent = txt; } }).then(heard => { if (!heard || preStep !== i) return; const ok = similarity(heard, st.expect) >= 0.6; ui.say.innerHTML = ok ? `${ic('check-circle', 18)} ${t(lang, 'great')}` : `${ic('ear', 18)} ${t(lang, 'listenAgain')}`; ui.say.className = 'say ' + (ok ? 'ok' : 'again'); if (ok) flashOk(); }); }
+      } else if (st) { pre.ui = null; showCaption(st); }
+    } else if (pre.ui) {
+      const el = Math.min(1, (ct - pre.ui.start) / Math.max(.1, pre.ui.end - pre.ui.start));
+      pre.ui.fg.style.strokeDashoffset = 502 * el; pre.ui.sec.textContent = `${Math.max(0, Math.ceil(pre.ui.step.p * (1 - el)))}s`;
+    }
+    pre.raf = requestAnimationFrame(preTick);
+  }
+
+  async function play() {
+    if (playing || finished) return;
+    playing = true; startedAt = startedAt || Date.now(); setPlayBtn(); setMediaState('playing'); awake(true);
+    if (pre) {
+      pre.el.onended = () => finish();
+      preStep = -1;
+      if (pre.tim[idx]) pre.el.currentTime = pre.tim[idx].start;
+      try { await pre.el.play(); } catch { toast('Tap play again to start'); playing = false; setPlayBtn(); return; }
+      preTick();
+    } else loopTTS();
+  }
+  function pause() {
+    if (!playing) return;
+    playing = false; gen++; ctrl?.abort(); stopSpeaking(); preRec?.abort();
+    if (pre) { pre.el.pause(); cancelAnimationFrame(pre.raf); }
+    setPlayBtn(); setMediaState('paused'); awake(false); showIdle(); renderProgress();
+  }
+  const spokenAt = i => { while (i > 0 && steps[i]?.p != null) i--; return Math.max(0, i); };
+  function repeat() { const was = playing; pause(); idx = spokenAt(idx - (steps[idx]?.p != null ? 1 : 0)); renderProgress(); haptic(); play(); }
+  function skip(n) { const was = playing; pause(); idx = Math.min(steps.length - 1, idx + n); renderProgress(); haptic(); if (was) play(); else showIdle(); }
+  $('play').onclick = () => (playing ? pause() : play());
+  $('rep').onclick = repeat; $('skip').onclick = () => skip(10);
+  document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); } if (e.key === 'ArrowRight') skip(10); if (e.key === 'ArrowLeft') repeat(); });
+  addEventListener('pagehide', () => { stopSpeaking(); });
+
+  function finish() {
+    if (finished) return;
+    finished = true; playing = false; gen++; stopSpeaking(); setPlayBtn(); setMediaState('none'); awake(false);
+    const already = !!store.read().done[key];
+    if (!already) completeLesson(key, LESSON_XP);
+    $('endSteps').textContent = steps.length; $('endMin').textContent = Math.max(1, Math.round((Date.now() - startedAt) / 60000)) || (lesson.minutes || 15);
+    const next = lessons[li + 1];
+    if (next) { $('nextBtn').style.display = ''; $('nextBtn').href = `/lang/audio.html?c=${code}&l=${encodeURIComponent(next.id)}`; $('nextBtn').textContent = `${t(lang, 'next')} →`; }
+    $('end').classList.add('on');
+    confetti();
+    try { sessionStorage.removeItem('lang.pos.' + key); } catch {}
+  }
+
+  renderProgress(); showIdle();
+  window.__langPlayer = { play, pause, skip, repeat, get idx() { return idx; }, get playing() { return playing; }, finish };
+}
+</script>
+</body>
+</html>

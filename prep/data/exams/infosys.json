@@ -117,6 +117,61 @@
               "answer": 3,
               "explain": "s = 1 × 1 × 2 × 3 × 4 = 24 (factorial of 4)."
             }
+          ],
+          "notes": [
+            {
+              "h": "Roles you can be hired for",
+              "p": "Infosys hires freshers mainly as **Systems Engineer (SE)**, with higher-paying roles such as **Digital Specialist Engineer (DSE)** and **Specialist Programmer (SP)** for candidates who show stronger coding skills. Role names, packages and eligibility change between drives. Pattern as reported for recent drives; confirm on the official careers page.\n\nRoutes include the on-campus/off-campus **online test** for SE, and coding-focused routes (including **HackWithInfy** and dedicated DSE/SP coding rounds) for higher roles."
+            },
+            {
+              "h": "The online test for SE",
+              "p": "Recent SE tests are reported to contain these sections, each timed separately: **Reasoning Ability**, **Mathematical Ability**, **Verbal Ability**, **Pseudo-code** and **Puzzle Solving**. The math section is known to be harder than at most service companies, while verbal is fast-paced. Cut-offs may apply per section, so do not ignore any part.",
+              "points": [
+                "Reasoning: arrangements, data sufficiency, syllogisms, blood relations, coding-decoding.",
+                "Math: number system, permutations/probability, geometry, algebra, time-work.",
+                "Verbal: grammar, sentence correction, RC, para-jumbles, vocabulary.",
+                "Pseudo-code: output tracing, loops, recursion, bitwise operators.",
+                "Puzzles: logic puzzles, mathematical patterns, visual reasoning."
+              ]
+            },
+            {
+              "h": "Sample walkthroughs",
+              "p": "**Math.** How many ways can 5 boys and 3 girls sit in a row so that no two girls are together? Arrange boys: 5! = 120. Gaps around them: 6. Choose and arrange girls in gaps: 6P3 = 120. Total = **14,400**.\n\n**Pseudo-code.** `x = 1; for i = 1 to 4: x = x * 2 + i; print x`. Trace: 3, 8, 19, 42 → **42**.\n\n**Puzzle.** If 5 machines make 5 widgets in 5 minutes, how long do 100 machines take for 100 widgets? Each machine makes one widget in 5 minutes → **5 minutes**.\n\n**Reasoning.** Data sufficiency: 'Is P the tallest of P, Q, R?' (1) P > Q (2) R < Q. Together: P > Q > R → **both together are sufficient**, neither alone.\n\n`from math import factorial, perm\nprint(factorial(5) * perm(6, 3))\nx = 1\nfor i in range(1, 5):\n    x = x * 2 + i\nprint(x)`\n\nOutput:\n`14400\n42`"
+            },
+            {
+              "h": "Strategy",
+              "p": "How to approach the paper:",
+              "points": [
+                "Attempt math with full focus; it carries the biggest risk.",
+                "In verbal, answer quickly and do not overthink grammar questions.",
+                "For pseudo-code, use a trace table on rough paper.",
+                "For puzzles, read twice and write the constraints.",
+                "Practise past-pattern mocks, including on InfyTQ/Infosys Springboard resources where available."
+              ]
+            },
+            {
+              "h": "Traps",
+              "p": "Where candidates commonly slip in the Infosys test:",
+              "points": [
+                "Spending too long on one hard math question and running out of time for easier ones.",
+                "Ignoring a section because it 'carries fewer questions' — sectional cut-offs can still eliminate you.",
+                "In pseudo-code, assuming integer division behaves like real division.",
+                "In puzzles, missing a constraint hidden in the last line.",
+                "Applying with incorrect academic details — they are verified later."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Roles: SE (base), DSE and SP (coding-heavy, higher pay).",
+                "Five timed sections; possible sectional cut-offs.",
+                "Math section is the toughest — practise P&C and number system.",
+                "Trace pseudo-code line by line.",
+                "Puzzles reward careful reading.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -183,6 +238,47 @@
               "answer": 2,
               "explain": "Taking the most profitable jobs first and scheduling them as late as possible is optimal."
             }
+          ],
+          "notes": [
+            {
+              "h": "Coding routes to higher roles",
+              "p": "**HackWithInfy** is Infosys's national coding contest for engineering students. Top performers have been offered interviews for **SP** and **DSE** roles (and pre-placement interview opportunities). Contest rounds are reported to give **3 problems in about 3 hours**, from medium to hard (greedy, DP, graphs, number theory). Separately, DSE/SP hiring drives run their own coding rounds with similar difficulty. Pattern as reported for recent drives; confirm on the official careers page.\n\nScoring usually depends on **test cases passed**, so a correct brute-force solution that passes small cases still earns partial marks. Write the simple solution first, submit, then optimise."
+            },
+            {
+              "h": "Sample problem: maximum sum of non-adjacent elements",
+              "p": "**Problem.** Given n house values, choose houses to maximise the total such that no two chosen houses are next to each other.\n\n**Idea (DP).** For each house, best = max(skip it → best up to previous house, take it → best up to two houses back + value). Only two variables are needed.\n\n`n = int(input())\na = list(map(int, input().split()))\ntake, skip = 0, 0\nfor x in a:\n    take, skip = skip + x, max(take, skip)\nprint(max(take, skip))`\n\nSample input:\n`5\n2 7 9 3 1`\n\nOutput:\n`12`\n\nChosen houses: 2 + 9 + 1 = 12. Time **O(n)**, space **O(1)**. A brute force over all subsets would be O(2ⁿ)."
+            },
+            {
+              "h": "Sample problem: count subarrays with sum K",
+              "p": "**Problem.** Count contiguous subarrays whose sum is exactly K (values may be negative).\n\n`from collections import defaultdict\n\nn, k = map(int, input().split())\na = list(map(int, input().split()))\nseen = defaultdict(int)\nseen[0] = 1\ntotal = count = 0\nfor x in a:\n    total += x\n    count += seen[total - k]\n    seen[total] += 1\nprint(count)`\n\nSample input:\n`5 2\n1 1 1 0 1`\n\nOutput:\n`4`\n\nPrefix sums: a subarray (i, j] sums to K exactly when prefix[j] − prefix[i] = K. Counting earlier prefixes in a hash map gives **O(n)** time instead of O(n²)."
+            },
+            {
+              "h": "How to prepare",
+              "p": "A focused plan for Infosys coding rounds:",
+              "points": [
+                "Master arrays, strings, hashing, sorting, binary search, two pointers.",
+                "Then DP (knapsack, LIS, grid paths), greedy, BFS/DFS, basic number theory (gcd, modular arithmetic, sieve).",
+                "Practise on contest platforms under time limits.",
+                "Always check constraints: n ≤ 10⁵ needs O(n log n) or better.",
+                "Use 64-bit integers in C++/Java when sums can be large; take answers modulo 10⁹ + 7 when asked."
+              ]
+            },
+            {
+              "h": "Common questions with short answers",
+              "p": "**Q: Do I need competitive programming to get SE?** A: No. SE relies on the aptitude-style online test; strong coding helps for DSE/SP.\n\n**Q: Which language should I use?** A: The one you are fastest and most accurate in. C++ and Java are fast; Python is quicker to write but may be slower on very large inputs.\n\n**Q: What if I cannot find the optimal solution?** A: Submit a correct brute force for partial marks, then try to optimise with sorting, hashing or DP."
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "HackWithInfy → SP/DSE interview opportunities.",
+                "Partial scoring by test cases: submit brute force first.",
+                "Read constraints to choose complexity.",
+                "Prefix sums + hash map for subarray-sum counts.",
+                "DP with two variables for non-adjacent selection.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -243,6 +339,47 @@
               ],
               "answer": 1,
               "explain": "Each character is compared at most once."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Interview format",
+              "p": "After clearing the test, candidates usually face a **technical interview** and an **HR interview** (sometimes combined, 20–45 minutes). For SE, questions focus on fundamentals and your project; for DSE/SP, expect live coding and deeper DSA and system questions. Pattern as reported for recent drives; confirm on the official careers page."
+            },
+            {
+              "h": "Technical questions with model answers",
+              "p": "**Q: What is the difference between an abstract class and an interface?** A: An abstract class can have state and constructors and supports single inheritance; an interface defines a contract and a class can implement many.\n\n**Q: Write a program to check if a string is a palindrome.** A: Compare characters from both ends moving inward, or compare the string with its reverse; O(n).\n\n**Q: What is normalisation? Why is it needed?** A: Organising tables to reduce redundancy and update anomalies, using normal forms such as 1NF, 2NF and 3NF.\n\n**Q: Explain the difference between a process and a thread.** A: A process has its own memory; threads within a process share memory and are cheaper to switch.\n\n**Q: What happens when you type a URL in the browser?** A: DNS lookup, TCP (and TLS) handshake, HTTP request, server response, rendering.\n\n**Q (SP/DSE): Find the longest substring without repeating characters.** A: Sliding window with a last-seen map; O(n)."
+            },
+            {
+              "h": "HR questions with model answers",
+              "p": "**Q: Why Infosys?** A: Mention specific points such as its structured training for freshers, its scale of client projects, and its focus on digital services, then connect to your goals.\n\n**Q: Are you willing to relocate?** A: Answer honestly; postings can be anywhere in India.\n\n**Q: What do you know about Infosys?** A: Founded in 1981, headquartered in Bengaluru, a large global IT services and consulting company. Keep facts accurate and current from the official site.\n\n**Q: Tell me about a time you learned something quickly.** A: Use STAR: situation, task, your actions, measurable result."
+            },
+            {
+              "h": "Training after joining",
+              "p": "Infosys is known for its **foundation training programme** for freshers, historically at its **Mysuru** campus (format can be on-campus or online by batch). Training covers programming, databases, web technologies and soft skills, and includes **assessments** that must be cleared. Taking training seriously matters: performance can affect your stream and project allocation. Confirm current details in your offer documents."
+            },
+            {
+              "h": "Preparation tips",
+              "p": "Before the interview:",
+              "points": [
+                "Revise OOP, DBMS, OS, networks and one programming language thoroughly.",
+                "Practise writing small programs on paper or a shared editor without autocomplete.",
+                "Prepare a 2-minute project explanation and be ready for 'what would you improve?'.",
+                "Read the company's latest annual report highlights for HR questions.",
+                "Keep documents (marksheets, ID) ready for verification."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Technical + HR, sometimes combined.",
+                "SE: fundamentals + project; DSE/SP: live coding + DSA.",
+                "Know URL flow, OOP, normalisation, process vs thread.",
+                "Give specific reasons for choosing Infosys.",
+                "Training includes assessments you must clear.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
             }
           ]
         }

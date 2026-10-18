@@ -122,6 +122,54 @@
               "answer": 3,
               "explain": "48/52 ≈ 55 seconds each."
             }
+          ],
+          "notes": [
+            {
+              "h": "Wipro's hiring test",
+              "p": "Wipro's fresher hiring for roles such as **Project Engineer** runs through the **Elite National Talent Hunt (NTH)**. The online assessment is reported to include an **aptitude test** (logical reasoning, quantitative ability, verbal ability), a **written communication test (essay)** and an **online programming test**, followed by interviews. Pattern as reported for recent drives; confirm on the official careers page.\n\nThe aptitude section has many questions in limited time; sectional cut-offs are common, so balance your effort across all three parts."
+            },
+            {
+              "h": "Aptitude sample walkthroughs",
+              "p": "**Quant.** A 240 m train passes a pole in 24 s. How long to pass a 650 m platform? Speed = 10 m/s; distance = 890 m → **89 s**.\n\n**Quant.** A sum doubles in 5 years at simple interest. Rate? 100/5 = **20%** per year.\n\n**Logical.** Odd one out: 8, 27, 64, 100, 125 → **100** (others are cubes).\n\n**Logical.** If FRIEND is coded as HUMJTK, how is CANDLE coded? The shifts are +2, +3, +4, +5, +6, +7: C+2 = E, A+3 = D, N+4 = R, D+5 = I, L+6 = R, E+7 = L → **EDRIRL**.\n\n**Verbal.** Choose the correct sentence: 'Neither of the answers are correct' vs 'Neither of the answers is correct' → **is** (neither is singular)."
+            },
+            {
+              "h": "Writing the essay",
+              "p": "The written communication test gives a topic and a short time (around 20 minutes is commonly reported) to write roughly **200–300 words**. It is often checked by software for grammar, spelling, structure and relevance, and then by people. Clear, simple, error-free English scores better than fancy vocabulary.\n\n**Template:** (1) **Introduction** — one or two sentences that state your position. (2) **Body paragraph 1** — first reason with an example. (3) **Body paragraph 2** — second reason or the other side with an example. (4) **Conclusion** — restate the position and suggest a way forward.\n\n**Sample outline — 'Is technology making us less social?'** Intro: technology changes how we connect rather than simply reducing it. Body 1: video calls keep families in different cities close. Body 2: endless scrolling can replace face-to-face time, especially for teenagers. Conclusion: use technology with limits — device-free meals, scheduled meet-ups."
+            },
+            {
+              "h": "Essay traps",
+              "p": "Avoid these:",
+              "points": [
+                "Going off-topic or writing a story instead of an argument.",
+                "One giant paragraph with no structure.",
+                "SMS language, slang or overused phrases like 'in today's modern world'.",
+                "Spelling mistakes from typing fast — keep 2 minutes to proofread.",
+                "Writing far below the word limit."
+              ]
+            },
+            {
+              "h": "Section strategy",
+              "p": "How to use your time in the aptitude test:",
+              "points": [
+                "Start with the section you are strongest in to build confidence, if the test allows choosing order.",
+                "Quant: target formula-based questions (percentages, TSD, time-work) first.",
+                "Logical: series and coding-decoding are quick wins; leave long puzzles for last.",
+                "Verbal: grammar and vocabulary questions take seconds; read RC questions before the passage.",
+                "Never leave the essay box short — write a complete structure even if simple."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Aptitude: logical, quant, verbal with sectional cut-offs.",
+                "Essay: intro, two body paragraphs, conclusion.",
+                "Aim for 200–300 words of clear, correct English.",
+                "Use examples in every body paragraph.",
+                "Proofread before submitting.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -187,6 +235,46 @@
               ],
               "answer": 2,
               "explain": "Edge cases are where most hidden test failures happen."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Coding round and Turbo",
+              "p": "Wipro's online programming test is reported to give **two problems in about an hour**, solved in languages like C, C++, Java or Python, judged on hidden test cases. Questions are usually easy to medium: number manipulation, strings, arrays and simple patterns. Some drives also run **Wipro Turbo** (a higher-package track) with tougher coding and interviews for top performers. Pattern as reported for recent drives; confirm on the official careers page."
+            },
+            {
+              "h": "Sample problem 1: digital root",
+              "p": "**Problem.** Read a positive integer and repeatedly add its digits until a single digit remains.\n\n`n = int(input())\nwhile n >= 10:\n    n = sum(int(d) for d in str(n))\nprint(n)`\n\nSample input:\n`9875`\n\nOutput:\n`2`\n\n9 + 8 + 7 + 5 = 29 → 2 + 9 = 11 → 1 + 1 = 2. A faster O(1) formula exists: for n > 0 the answer is 1 + (n − 1) mod 9, which you can mention in the interview."
+            },
+            {
+              "h": "Sample problem 2: Armstrong numbers in a range",
+              "p": "**Problem.** Print all Armstrong numbers between A and B (a number equal to the sum of its digits each raised to the power of the number of digits).\n\n`a, b = map(int, input().split())\nres = []\nfor n in range(a, b + 1):\n    digits = str(n)\n    if n == sum(pow(int(d), len(digits)) for d in digits):\n        res.append(n)\nprint(*res)`\n\nSample input:\n`100 999`\n\nOutput:\n`153 370 371 407`\n\nTime is O((B − A) × d) where d is the digit count. Handle the case of no results as the problem states (for example, print -1)."
+            },
+            {
+              "h": "Interview questions with model answers",
+              "p": "**Q: Explain your project and your exact role.** A: Two-minute summary: problem, stack, your module, a challenge, the result.\n\n**Q: What is the difference between an array and a linked list?** A: Arrays give O(1) indexed access with contiguous memory; linked lists give O(1) insert/delete at a known node but O(n) access.\n\n**Q: What is a primary key and a foreign key?** A: A primary key uniquely identifies rows; a foreign key references a primary key in another table.\n\n**Q: Why Wipro?** A: Mention its training for freshers, its range of client domains, and your fit — with one specific fact you looked up.\n\n**Q: Are you open to any technology and location?** A: Show flexibility honestly; freshers are often assigned based on business needs."
+            },
+            {
+              "h": "Traps",
+              "p": "Common mistakes in the coding round:",
+              "points": [
+                "Printing extra text or spaces around the answer.",
+                "Not handling the empty or 'no result' case.",
+                "Integer overflow in C/Java for large inputs.",
+                "Wasting time perfecting code style instead of passing test cases."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Two coding problems, roughly an hour (as reported).",
+                "Focus on numbers, strings and arrays.",
+                "Check edge cases and exact output format.",
+                "Interview: project, DSA basics, DBMS, OOP, HR.",
+                "Turbo track: harder coding, higher package.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
             }
           ]
         }

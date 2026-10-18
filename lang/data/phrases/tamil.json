@@ -1,0 +1,277 @@
+{
+  "id": "tamil",
+  "name": "Tamil",
+  "native": "தமிழ்",
+  "category": "local",
+  "bcp47": "ta-IN",
+  "script": "Tamil script",
+  "region": "Tamil Nadu and Puducherry, plus Sri Lanka, Singapore and Malaysia",
+  "speakers": "≈ 80 million",
+  "about": "Tamil is one of the oldest living languages in the world, with poetry over two thousand years old, and it is an official language in India, Sri Lanka and Singapore. The written and spoken forms differ quite a bit, so you will learn natural everyday speech here.",
+  "pronunciation": [
+    "The zh sound in Tamizh is a curled-back soft r, unique to Tamil and Malayalam, so curl your tongue tip up and back.",
+    "Tamil script uses one letter for k and g, and for t and d, so the sound depends on its position in the word.",
+    "Double consonants are held longer, as in vanakkam, where the kk gets a little pause.",
+    "Spoken Tamil often drops endings, so nallaa irukken sounds more natural in conversation than the bookish nalamaaga irukkiren."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "Vanakkam! Let us begin with the friendly words that open every conversation in Tamil Nadu. Repeat each one after me.",
+      "tip": "Tamil uses neenga, the respectful you, for elders and strangers, and verbs end in nga to sound polite. Use nee only with close friends or children.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "வணக்கம்",
+          "roman": "vanakkam",
+          "note": "Vanakkam is the respectful hello, used at any time of day, often with folded hands. It literally means I bow to you."
+        },
+        {
+          "key": "how-are-you",
+          "native": "எப்படி இருக்கீங்க?",
+          "roman": "eppadi irukkeenga?",
+          "note": "Eppadi irukkeenga is the polite spoken way to ask how are you. With close friends, say eppadi irukka."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "நான் நல்லா இருக்கேன்",
+          "roman": "naan nallaa irukken",
+          "note": "Naan nallaa irukken means I am fine. It is polite to add neenga, meaning and you, to ask back."
+        },
+        {
+          "key": "thank-you",
+          "native": "நன்றி",
+          "roman": "nandri",
+          "note": "Nandri means thank you. For extra warmth say romba nandri, which means thank you very much."
+        },
+        {
+          "key": "sorry",
+          "native": "மன்னிக்கவும்",
+          "roman": "mannikkavum",
+          "note": "Mannikkavum means please forgive me. Use it to apologise or as excuse me. In casual speech, people also say sorry in English."
+        },
+        {
+          "key": "goodbye",
+          "native": "போயிட்டு வரேன்",
+          "roman": "poyittu varen",
+          "note": "Poyittu varen literally means I will go and come back. Tamils avoid a final goodbye. When someone else leaves, you say poyittu vaanga."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Now let us introduce ourselves. People in Tamil Nadu love to know which town you are from, so get ready to chat.",
+      "tip": "Asking about someone's oor, their home town, is a key part of meeting people. It is a friendly way to find shared connections.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "என் பெயர் பிரியா",
+          "roman": "en peyar Priya",
+          "note": "En peyar Priya means my name is Priya. In casual speech you will hear en peru Priya."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "உங்கள் பெயர் என்ன?",
+          "roman": "ungal peyar enna?",
+          "note": "Ungal peyar enna is the polite way to ask someone's name. In casual speech it sounds like unga peru enna."
+        },
+        {
+          "key": "where-from",
+          "native": "நீங்க எந்த ஊர்?",
+          "roman": "neenga endha oor?",
+          "note": "This literally asks which town are you. It is the most natural way to ask where someone is from."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "நான் இந்தியாவிலிருந்து வருகிறேன்",
+          "roman": "naan indhiyaavilirundhu varugiren",
+          "note": "This means I come from India. In relaxed speech, the ending varugiren often becomes varen."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "உங்களைச் சந்தித்ததில் மகிழ்ச்சி",
+          "roman": "ungalai sandhithathil magizhchi",
+          "note": "This means happy to have met you. Magizhchi means joy, and it is a polite, warm way to end an introduction."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "நான் கொஞ்சம் தமிழ் பேசுவேன்",
+          "roman": "naan konjam tamizh pesuven",
+          "note": "This means I speak a little Tamil. You can also say enakku konjam tamizh theriyum, meaning I know a little Tamil."
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Let us count! Numbers help with prices, buses and phone numbers. Count along with me, nice and slow.",
+      "tip": "Written numbers like ondru and irandu become onnu and rendu in speech. For time, people use mani, which means hour or o'clock, like moonu mani.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "ஒன்று, இரண்டு, மூன்று, நான்கு, ஐந்து",
+          "roman": "ondru, irandu, moondru, naangu, aindhu",
+          "note": "One to five: ondru, irandu, moondru, naangu, aindhu. In daily speech they sound like onnu, rendu, moonu, naalu, anju."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "ஆறு, ஏழு, எட்டு, ஒன்பது, பத்து",
+          "roman": "aaru, ezhu, ettu, onbadhu, patthu",
+          "note": "Six to ten: aaru, ezhu, ettu, onbadhu, patthu. Hold the double t in patthu a little longer."
+        },
+        {
+          "key": "what-time",
+          "native": "இப்போ மணி என்ன?",
+          "roman": "ippo mani enna?",
+          "note": "Ippo mani enna means what time is it now. Mani literally means bell or hour."
+        },
+        {
+          "key": "today",
+          "native": "இன்று",
+          "roman": "indru",
+          "note": "Indru means today. In conversation you will mostly hear innaikku."
+        },
+        {
+          "key": "tomorrow",
+          "native": "நாளை",
+          "roman": "naalai",
+          "note": "Naalai means tomorrow. In speech it is often naalaikku, as in naalaikku paarkalaam, meaning see you tomorrow."
+        },
+        {
+          "key": "yesterday",
+          "native": "நேற்று",
+          "roman": "netru",
+          "note": "Netru means yesterday. In casual speech it sounds like nethu."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "Idli, dosa, filter coffee! Tamil food is a joy. Let us learn how to order, ask prices and praise the meal.",
+      "tip": "Meals are often served on a banana leaf and eaten with the right hand. Folding the leaf towards you at the end signals you enjoyed the food.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "இது என்ன விலை?",
+          "roman": "idhu enna vilai?",
+          "note": "Idhu enna vilai literally means what price is this. It is the standard way to ask in any shop or market."
+        },
+        {
+          "key": "too-expensive",
+          "native": "ரொம்ப விலை அதிகம்",
+          "roman": "romba vilai adhigam",
+          "note": "This means the price is too high. Follow up with konjam korainga, meaning please reduce it a little."
+        },
+        {
+          "key": "water-please",
+          "native": "கொஞ்சம் தண்ணீர் தாங்க",
+          "roman": "konjam thanneer thaanga",
+          "note": "This means please give me some water. In everyday speech, water is usually pronounced thanni."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "நான் சைவம்",
+          "roman": "naan saivam",
+          "note": "Naan saivam means I am vegetarian. Non-vegetarian food is called asaivam, so look for saivam on restaurant boards."
+        },
+        {
+          "key": "very-tasty",
+          "native": "ரொம்ப சுவையா இருக்கு",
+          "roman": "romba suvaiyaa irukku",
+          "note": "This means it is very tasty. Romba means very, a word you will hear all the time in Tamil."
+        },
+        {
+          "key": "bill-please",
+          "native": "பில் கொடுங்க",
+          "roman": "bill kodunga",
+          "note": "Bill kodunga means please give the bill. The nga ending makes the request polite."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "Let us find our way around. With these phrases you can ask for the station and understand the answer.",
+      "tip": "Directions often use landmarks like a temple, bus stand or signal. The word pakkam means side, so idadhu pakkam is the left side.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "ரயில் நிலையம் எங்கே?",
+          "roman": "rayil nilaiyam enge?",
+          "note": "Rayil nilaiyam enge means where is the railway station. Many people also just say railway station enge."
+        },
+        {
+          "key": "turn-left",
+          "native": "இடது பக்கம் திரும்புங்க",
+          "roman": "idadhu pakkam thirumbunga",
+          "note": "This means please turn to the left side. Idadhu means left."
+        },
+        {
+          "key": "turn-right",
+          "native": "வலது பக்கம் திரும்புங்க",
+          "roman": "valadhu pakkam thirumbunga",
+          "note": "This means please turn to the right side. Valadhu means right."
+        },
+        {
+          "key": "go-straight",
+          "native": "நேரா போங்க",
+          "roman": "neraa ponga",
+          "note": "Neraa ponga means go straight. You will often hear it with a hand pointing ahead."
+        },
+        {
+          "key": "how-far",
+          "native": "எவ்வளவு தூரம் இருக்கு?",
+          "roman": "evvalavu dhooram irukku?",
+          "note": "This means how far is it. In fast speech, evvalavu shrinks to evlo, so listen for evlo dhooram."
+        },
+        {
+          "key": "please-help",
+          "native": "தயவுசெய்து எனக்கு உதவுங்கள்",
+          "roman": "dhayavuseidhu enakku udhavungal",
+          "note": "This means please help me. Dhayavuseidhu means please. In casual speech, people also say konjam help pannunga."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "These little phrases keep any conversation alive. When you get stuck, they will save you every time.",
+      "tip": "Spoken Tamil shortens many negatives, so puriyavillai becomes puriyala. A gentle sideways head tilt usually means yes or okay.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "ஆமாம் / இல்லை",
+          "roman": "aamaam / illai",
+          "note": "Aamaam means yes and illai means no. In casual speech you will hear aamaa and illa."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "எனக்குப் புரியவில்லை",
+          "roman": "enakku puriyavillai",
+          "note": "Enakku puriyavillai means I don't understand. In everyday speech it becomes enakku puriyala."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "கொஞ்சம் மெதுவாகப் பேசுங்கள்",
+          "roman": "konjam medhuvaaga pesungal",
+          "note": "This means please speak a little slowly. Konjam, meaning a little, makes the request softer and more polite."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "இதுக்கு என்ன அர்த்தம்?",
+          "roman": "idhukku enna artham?",
+          "note": "Idhukku enna artham means what is the meaning of this. Point to the word or sign as you ask."
+        },
+        {
+          "key": "i-like-it",
+          "native": "எனக்கு இது பிடிச்சிருக்கு",
+          "roman": "enakku idhu pidichirukku",
+          "note": "This means I like it, literally to me this is liked. The bookish form is enakku idhu pidiththirukkiradhu."
+        },
+        {
+          "key": "good-night",
+          "native": "இனிய இரவு",
+          "roman": "iniya iravu",
+          "note": "Iniya iravu means have a sweet night. In daily life, most Tamil speakers simply say good night in English."
+        }
+      ]
+    }
+  ]
+}

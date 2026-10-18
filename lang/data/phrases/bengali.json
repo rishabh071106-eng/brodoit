@@ -1,0 +1,277 @@
+{
+  "id": "bengali",
+  "name": "Bengali",
+  "native": "বাংলা",
+  "category": "local",
+  "bcp47": "bn-IN",
+  "script": "Bengali script",
+  "region": "West Bengal, Tripura and Assam in India, and the whole of Bangladesh",
+  "speakers": "≈ 270 million",
+  "about": "Bengali is one of the most spoken languages in the world and the language of Rabindranath Tagore, who wrote the national anthems of both India and Bangladesh. International Mother Language Day on 21 February honours the Bengali language movement.",
+  "pronunciation": [
+    "The short a sound is usually said like the o in hot, so Bangla often sounds like Bongla and nomoshkar keeps that o.",
+    "The letter স is mostly pronounced sh, which is why you hear shob and shundor.",
+    "Bengali has no grammatical gender, so verbs stay the same whether a man or a woman is speaking.",
+    "Aspirated sounds like bh, chh and dh matter, so breathe out a little on bhalo and achhi."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "Nomoshkar! Let's start our Bengali journey with the warm, everyday words you'll hear on every street in Kolkata.",
+      "tip": "Bengali has three levels of you. Apni is respectful for elders and strangers, tumi is for friends, and tui is very intimate. Start with apni.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "নমস্কার",
+          "roman": "nomoshkar",
+          "note": "Nomoshkar is the respectful hello, usually said with folded hands. Many Muslim speakers, especially in Bangladesh, say Assalamu alaikum instead."
+        },
+        {
+          "key": "how-are-you",
+          "native": "আপনি কেমন আছেন?",
+          "roman": "apni kemon achhen?",
+          "note": "Apni kemon achhen is the polite way to ask how someone is. With a close friend you would say tumi kemon achho."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "আমি ভালো আছি।",
+          "roman": "ami bhalo achhi",
+          "note": "Ami bhalo achhi means I am well. Bhalo means good, and you can add apni kemon achhen to ask them back."
+        },
+        {
+          "key": "thank-you",
+          "native": "ধন্যবাদ",
+          "roman": "dhonnobad",
+          "note": "Dhonnobad is the standard thank you. In everyday life many people simply smile or say thank you in English, so dhonnobad sounds warm and a little formal."
+        },
+        {
+          "key": "sorry",
+          "native": "দুঃখিত",
+          "roman": "dukkhito",
+          "note": "Dukkhito means sorry, as in I regret it. To get someone's attention or say excuse me, use maaf korben, which literally means please forgive me."
+        },
+        {
+          "key": "goodbye",
+          "native": "আবার দেখা হবে।",
+          "roman": "abar dekha hobe",
+          "note": "Abar dekha hobe means we will meet again. When you leave a home, Bengalis often say ashi, meaning I'll come, instead of a plain goodbye."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Now let's introduce ourselves in Bengali. A few simple sentences, and people will light up when they hear you try.",
+      "tip": "Bengali usually drops the verb to be in the present tense. Amar naam Priya is literally my name Priya, with no word for is.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "আমার নাম প্রিয়া।",
+          "roman": "amar naam Priya",
+          "note": "Amar naam Priya means my name is Priya. Just swap in your own name at the end."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "আপনার নাম কী?",
+          "roman": "apnar naam ki?",
+          "note": "Apnar naam ki is the polite way to ask someone's name. With a child or a friend, say tomar naam ki."
+        },
+        {
+          "key": "where-from",
+          "native": "আপনি কোথা থেকে এসেছেন?",
+          "roman": "apni kotha theke eshechhen?",
+          "note": "Apni kotha theke eshechhen literally means where have you come from. It is the natural way to ask where someone is from."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "আমি ভারত থেকে এসেছি।",
+          "roman": "ami Bharot theke eshechhi",
+          "note": "Ami Bharot theke eshechhi means I have come from India. Bharot is the Bengali name for India, and the sentence works for anyone."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "আপনার সঙ্গে আলাপ করে ভালো লাগলো।",
+          "roman": "apnar shonge alap kore bhalo laglo",
+          "note": "This means it felt nice talking with you. Bengalis say it at the end of a first conversation rather than right at the start."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "আমি একটু একটু বাংলা বলতে পারি।",
+          "roman": "ami ektu ektu Bangla bolte pari",
+          "note": "Ami ektu ektu Bangla bolte pari means I can speak a little Bengali. Repeating ektu makes it sound modest and friendly."
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Time for numbers! Bengali numbers are close cousins of Hindi ones, so many will feel familiar right away.",
+      "tip": "In everyday speech, kaal can mean both tomorrow and yesterday. The verb tense tells you which one, so listen for will or did.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "এক, দুই, তিন, চার, পাঁচ",
+          "roman": "ek, dui, tin, char, panch",
+          "note": "Ek, dui, tin, char, panch. Notice that two is dui, and five has a soft nasal sound, panch."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "ছয়, সাত, আট, নয়, দশ",
+          "roman": "chhoy, saat, aat, noy, dosh",
+          "note": "Chhoy, saat, aat, noy, dosh. Ten is dosh, with the o sound that Bengali loves."
+        },
+        {
+          "key": "what-time",
+          "native": "কটা বাজে?",
+          "roman": "kota baje?",
+          "note": "Kota baje means what time is it, literally how many has it struck. The answer sounds like char te baje for four o'clock."
+        },
+        {
+          "key": "today",
+          "native": "আজ",
+          "roman": "aaj",
+          "note": "Aaj means today, just like in Hindi. You will often hear aajke, meaning today, in casual talk."
+        },
+        {
+          "key": "tomorrow",
+          "native": "আগামীকাল",
+          "roman": "agamikal",
+          "note": "Agamikal means tomorrow and is completely clear. In casual speech people just say kaal, and the future tense shows it means tomorrow."
+        },
+        {
+          "key": "yesterday",
+          "native": "গতকাল",
+          "roman": "gotokal",
+          "note": "Gotokal means yesterday. Casually people also just say kaal, and the past tense tells you it means yesterday."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "Let's go shopping and eating in Bengali. Food is a huge part of Bengali culture, so these phrases will get plenty of use.",
+      "tip": "Bengali food has a whole vegetarian tradition called niramish, and many Bengalis eat fish, so it really helps to say clearly what you eat.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "এটার দাম কত?",
+          "roman": "etar daam koto?",
+          "note": "Etar daam koto means what is the price of this. Daam means price, and koto means how much."
+        },
+        {
+          "key": "too-expensive",
+          "native": "দামটা খুব বেশি।",
+          "roman": "damta khub beshi",
+          "note": "Damta khub beshi means the price is too high. Say it with a smile when bargaining, and you might add ektu kom korun, please lower it a little."
+        },
+        {
+          "key": "water-please",
+          "native": "একটু জল দেবেন?",
+          "roman": "ektu jol deben?",
+          "note": "Ektu jol deben means could you give me some water. In West Bengal water is jol, while in Bangladesh people usually say pani."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "আমি নিরামিষ খাই।",
+          "roman": "ami niramish khai",
+          "note": "Ami niramish khai literally means I eat vegetarian food. It is worth adding ami maachh khai na, I don't eat fish, since fish is everywhere."
+        },
+        {
+          "key": "very-tasty",
+          "native": "খুব ভালো খেতে হয়েছে।",
+          "roman": "khub bhalo khete hoyechhe",
+          "note": "This means it has turned out very tasty, a lovely compliment to a cook. Casually, people just say darun, meaning wonderful."
+        },
+        {
+          "key": "bill-please",
+          "native": "বিলটা দেবেন?",
+          "roman": "bilta deben?",
+          "note": "Bilta deben means could you give me the bill. Adding ta after a word makes it mean the specific one, here the bill."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "Getting around is easier when you can ask for directions. Let's learn the Bengali you'll need on the road.",
+      "tip": "Bengali uses polite command forms ending in un, like ghurun and jaan. Strangers will use these with you, and you should use them back.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "রেল স্টেশনটা কোথায়?",
+          "roman": "rel steshonta kothay?",
+          "note": "Rel steshonta kothay means where is the railway station. Kothay means where, and you can use it with any place."
+        },
+        {
+          "key": "turn-left",
+          "native": "বাঁ দিকে ঘুরুন।",
+          "roman": "baan dike ghurun",
+          "note": "Baan dike ghurun means turn to the left. Baan is left, and dike means towards."
+        },
+        {
+          "key": "turn-right",
+          "native": "ডান দিকে ঘুরুন।",
+          "roman": "daan dike ghurun",
+          "note": "Daan dike ghurun means turn to the right. Baan and daan sound alike, so listen carefully for the first letter."
+        },
+        {
+          "key": "go-straight",
+          "native": "সোজা যান।",
+          "roman": "shoja jaan",
+          "note": "Shoja jaan means go straight. Shoja means straight, and jaan is the polite way of saying go."
+        },
+        {
+          "key": "how-far",
+          "native": "এখান থেকে কত দূর?",
+          "roman": "ekhan theke koto dur?",
+          "note": "Ekhan theke koto dur means how far is it from here. Dur means far, and it sounds just like the Hindi word."
+        },
+        {
+          "key": "please-help",
+          "native": "আমাকে একটু সাহায্য করবেন?",
+          "roman": "amake ektu shahajjo korben?",
+          "note": "This means could you help me a little. Asking as a gentle question is the polite Bengali way to request help."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "Let's finish with the words that keep a conversation going. These will rescue you whenever Bengali gets a little too fast.",
+      "tip": "Bengali often softens requests with ektu, meaning a little. Ektu aste bolben sounds much gentler than a direct command.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "হ্যাঁ / না",
+          "roman": "hyan / na",
+          "note": "Hyan means yes and na means no. Na also comes after the verb to make a sentence negative."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "আমি বুঝতে পারছি না।",
+          "roman": "ami bujhte parchhi na",
+          "note": "Ami bujhte parchhi na means I can't understand. It is the polite and natural way to say you didn't follow."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "একটু আস্তে বলবেন?",
+          "roman": "ektu aste bolben?",
+          "note": "Ektu aste bolben means could you speak a little slowly. Aste means slowly or softly."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "এর মানে কী?",
+          "roman": "er mane ki?",
+          "note": "Er mane ki means what is its meaning. Point at a word or sign and ask this to learn something new."
+        },
+        {
+          "key": "i-like-it",
+          "native": "আমার এটা ভালো লেগেছে।",
+          "roman": "amar eta bhalo legechhe",
+          "note": "Amar eta bhalo legechhe literally means this felt good to me. For things you like in general, say amar bhalo lage."
+        },
+        {
+          "key": "good-night",
+          "native": "শুভ রাত্রি",
+          "roman": "shubho ratri",
+          "note": "Shubho ratri means good night. It is a bit formal, so at the end of an evening many people just say ashi, meaning I'll be going."
+        }
+      ]
+    }
+  ]
+}

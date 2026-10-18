@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phrases · Brodoit Languages</title>
+<meta name="theme-color" content="#FBF8F3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- Plus Jakarta Sans comes from /app/theme.css; only the Indic/CJK script fonts are fetched here -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@700;800&family=Noto+Sans+Kannada:wght@700;800&family=Noto+Sans+Malayalam:wght@700;800&family=Noto+Sans+Tamil:wght@700;800&family=Noto+Sans+Telugu:wght@700;800&family=Noto+Sans+JP:wght@700;800&family=Noto+Sans+SC:wght@700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="/app/theme.css?v=11">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=11">
+<script src="/app/icons.js?v=11" defer></script>
+</head>
+<body>
+<main class="wrap" style="padding-bottom:40px">
+  <div id="head"></div>
+  <div id="body"></div>
+</main>
+<script type="module">
+import { renderChrome, store, esc, param, ICON, computeStreak, speak, stopSpeaking, hasTTS } from '/lang/assets/lang.js?v=9';
+import { loadPhraseCatalog, loadPhraseLang, phraseKey, phraseLessonHref, phraseProgress, challengePlan, challengeStatus, startChallenge, emblem, applyNativeFont, COURSE_OF } from '/lang/assets/phrases.js?v=9';
+import { createPresenter } from '/lang/assets/presenter.js?v=9';
+import { ic } from '/lang/assets/ico.js?v=11';
+
+const id = param('l') || 'bengali';
+const [cat, l] = await Promise.all([loadPhraseCatalog(), loadPhraseLang(id)]);
+const back = COURSE_OF[id] ? `/lang/course.html?c=${COURSE_OF[id]}` : '/lang/';
+const s = store.read();
+renderChrome({ title: l ? l.name : 'Phrases', back, right: `<span class="pill">${ic('flame', 16)} ${computeStreak(s.daily)} <span style="opacity:.35">|</span> ${ic('zap', 16)} ${s.xp || 0}</span>` });
+const head = document.getElementById('head'), body = document.getElementById('body');
+
+if (!cat || !l) {
+  head.innerHTML = `<div class="b-card empty rise"><div class="e">🌍</div><div class="t">Language not found</div><div class="s">Pick one from the Languages home.</div><a class="b-btn violet" href="/lang/">Browse courses</a></div>`;
+} else {
+  applyNativeFont(id);
+  document.title = `${l.name} phrases · Brodoit Languages`;
+  const p = phraseProgress(id, cat, s);
+  const plan = challengePlan(cat), st = challengeStatus(cat, s);
+  const next = cat.lessons.find(x => !s.done[phraseKey(id, x.id)]) || cat.lessons[0];
+  const nextIdx = cat.lessons.indexOf(next);
+  const glyph = !COURSE_OF[id];
+  const intro = l.lessons[0]?.intro || '';
+
+  head.innerHTML = `
+    <div class="chead rise"><div class="flag${glyph ? ' glyph native' : ''}">${emblem(id)}</div>
+      <div><div class="t">${esc(l.name)} <span class="muted native" style="font-size:16px;font-weight:700">${esc(l.native)}</span></div><div class="s">${ic('map-pin', 14)} ${esc(l.region)}</div></div></div>
+    <div class="host-row rise" style="animation-delay:.04s">
+      <div class="presenter" id="host"></div>
+      <div class="b-card speech" id="speech"><div class="who"><span>${esc(cat.host.name)} · ${esc(cat.host.role)}</span>${hasTTS ? `<button class="spk" id="sayHi" aria-label="Hear Meera">${ICON.speaker}</button>` : ''}</div><span id="speechText">Hi, I'm ${esc(cat.host.name)}! ${esc(intro)}</span></div>
+    </div>
+    <div class="stats rise" style="animation-delay:.08s">
+      <div class="b-card stat"><b style="font-size:15px">${esc(l.speakers)}</b><span>speakers</span></div>
+      <div class="b-card stat"><b style="font-size:15px">${esc(l.script)}</b><span>script</span></div>
+      <div class="b-card stat"><b>${p.done}/${p.total}</b><span>lessons</span></div>
+    </div>
+    <a class="b-btn violet wide rise" style="margin-top:14px;animation-delay:.1s" href="${phraseLessonHref(id, next.id)}">${p.done ? (p.done === p.total ? `Review lesson 1` : `Continue · ${esc(next.title)}`) : 'Start lesson 1'} →</a>
+    <div class="b-card about rise" style="animation-delay:.12s"><div class="b-eyebrow">About ${esc(l.name)}</div>${esc(l.about)}</div>`;
+
+  // ---- Meera: wave hello, lip-sync while she speaks
+  const host = createPresenter(document.getElementById('host'));
+  host.setGesture('wave'); setTimeout(() => host.setGesture('explain'), 2400); setTimeout(() => host.setGesture('idle'), 5200);
+  let talking = false;
+  (function meter() {
+    const t = performance.now() / 1000;
+    host.setLevel(talking ? Math.max(0, 0.45 * Math.abs(Math.sin(t * 11)) + 0.3 * Math.abs(Math.sin(t * 7.3)) - 0.08) : 0);
+    requestAnimationFrame(meter);
+  })();
+  document.getElementById('sayHi')?.addEventListener('click', async e => {
+    const b = e.currentTarget; if (talking) { stopSpeaking(); return; }
+    talking = true; b.classList.add('busy'); host.setTalking(true); host.setGesture('explain');
+    await speak(document.getElementById('speechText').textContent, { lang: 'en-IN', pitch: 1.05 });
+    talking = false; b.classList.remove('busy'); host.setTalking(false); host.setGesture('idle');
+  });
+
+  // ---- 60-day challenge
+  const nextLang = st.next && st.next.lang !== id ? await loadPhraseLang(st.next.lang) : l;
+  const nextTitle = st.next ? `${nextLang?.name || st.next.lang} · ${cat.lessons.find(x => x.id === st.next.lesson)?.title || ''}` : '';
+  const challengeHTML = () => `<div class="b-card challenge rise" id="challenge" style="animation-delay:.14s">
+      <div class="ring" style="--p:${st.pct}"><span>${st.doneCount}/${st.total}</span></div>
+      <div><div class="k">${esc(cat.challenge.title)}</div>
+        <div class="t">${st.started ? (st.finished ? 'Challenge complete. Well done!' : `Day ${st.unlocked} of ${st.total} · ${ic('flame', 16)} ${st.streak} day streak`) : 'One lesson a day for 60 days'}</div>
+        <div class="s">${st.started && st.next && !st.finished ? `Up next: ${esc(nextTitle)}` : esc(cat.challenge.blurb)}</div></div>
+      ${st.started ? (st.finished ? '' : `<a class="b-btn" href="${phraseLessonHref(st.next.lang, st.next.lesson)}">Today's lesson →</a>`) : `<button class="b-btn" id="startCh">Start the challenge →</button>`}
+    </div>`;
+
+  // ---- Lessons path
+  const offs = [0, 52, 0, -52];
+  const NODE_ICONS = ['hand', 'user', 'hash', 'utensils', 'compass', 'message-circle'];
+  const pathHTML = `<div class="section"><div class="b-h2">${ic('book-open', 20)} Lessons</div><span class="muted">6 phrases each · ~5 min</span></div>
+    <div class="b-card" style="padding:0 8px 8px"><div class="path">${cat.lessons.map((m, i) => {
+      const k = phraseKey(id, m.id), done = !!s.done[k], day = plan.find(x => x.key === k)?.day;
+      const st2 = done ? 'done' : i === nextIdx ? 'open' : '';
+      const x = offs[i % offs.length], side = x > 0 ? 'R' : x < 0 ? 'L' : (i % 2 ? 'R' : 'L');
+      const first = l.lessons.find(y => y.id === m.id)?.phrases[0];
+      return `<a class="node ${st2} ${side}" style="--x:${x}px" href="${phraseLessonHref(id, m.id)}">
+        ${i === nextIdx ? `<span class="start">${done ? 'Review' : 'Start'}</span>` : ''}
+        <span class="btn">${done ? ICON.check.replace('<svg', '<svg width="36" height="36"') : ic(NODE_ICONS[i] || 'book-open', 36)}<span class="num">${i + 1}</span></span>
+        <span class="lbl">${esc(m.title)}<small>Day ${day}${first ? ` · <span class="native">${esc(first.native)}</span>` : ''}${done ? ' · ✓' : ''}</small></span></a>`;
+    }).join('')}</div></div>`;
+
+  const tipsHTML = `<div class="section"><div class="b-h2">${ic('volume-2', 20)} Pronunciation tips</div></div>
+    <ul class="b-card tips">${(l.pronunciation || []).map(t => `<li>${ic('volume-2', 18)}<span>${esc(t)}</span></li>`).join('')}</ul>`;
+
+  body.innerHTML = challengeHTML() + pathHTML + tipsHTML;
+  body.addEventListener('click', e => {
+    if (e.target.closest('#startCh')) { startChallenge(); location.reload(); }
+  });
+}
+</script>
+</body>
+</html>

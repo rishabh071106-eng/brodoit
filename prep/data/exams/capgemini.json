@@ -132,6 +132,48 @@
               "answer": 0,
               "explain": "10 + 20 + … + 100 = 10 × 55 = 550."
             }
+          ],
+          "notes": [
+            {
+              "h": "Why this round matters",
+              "p": "Capgemini's assessment includes a **pseudo-code round** (about 30 questions in roughly 30 minutes is commonly reported) that tests whether you can read code: loops, recursion, bitwise operators, arrays and functions in a C-like pseudo-language. It is often an elimination round, so accuracy matters. Pattern as reported for recent drives; confirm on the official careers page.\n\nMethod: build a **trace table**, watch integer division, and recognise patterns (swap via XOR, digit sum, bit counting) so you do not trace every step."
+            },
+            {
+              "h": "Five walkthroughs",
+              "p": "**Q1.** `a = 10, b = 4; a = a ^ b; b = a ^ b; a = a ^ b; print a, b` → XOR swap → **4 10**.\n\n**Q2.** `f(n): if n == 0 return 0; return n mod 10 + f(n / 10)`; `f(4567)` = 7 + 6 + 5 + 4 = **22**.\n\n**Q3.** `x = 5; for i = 1 to 3: x = x + (x >> 1)` → 5 + 2 = 7 → 7 + 3 = 10 → 10 + 5 = **15**.\n\n**Q4.** `count = 0; for i = 1 to 20: if (i & 1) == 0 and i mod 3 == 0: count++` → even multiples of 3 = multiples of 6: 6, 12, 18 → **3**.\n\n**Q5.** `n = 13, c = 0; while n > 0: c = c + (n & 1); n = n >> 1` counts set bits; 13 = 1101 → **3**.\n\n`a, b = 10, 4\na ^= b; b ^= a; a ^= b\nprint(a, b)\nf = lambda n: 0 if n == 0 else n % 10 + f(n // 10)\nprint(f(4567))\nx = 5\nfor i in range(3):\n    x = x + (x >> 1)\nprint(x)\nprint(sum(1 for i in range(1, 21) if (i & 1) == 0 and i % 3 == 0))\nn, c = 13, 0\nwhile n > 0:\n    c += n & 1\n    n >>= 1\nprint(c)`\n\nOutput:\n`4 10\n22\n15\n3\n3`"
+            },
+            {
+              "h": "Operator facts that decide answers",
+              "p": "Most pseudo-code answers depend on these rules:",
+              "points": [
+                "`&` AND, `|` OR, `^` XOR, `~` NOT; `x & 1` tests odd/even.",
+                "`x << k` = x × 2ᵏ; `x >> k` = x ÷ 2ᵏ (floor, for non-negative x).",
+                "`n & (n − 1)` removes the lowest set bit; it is 0 only for powers of two (and 0).",
+                "Integer division truncates: 7 / 2 = 3 in integer pseudo-code.",
+                "Precedence in C-like code: arithmetic before shifts before comparisons before `&`, `^`, `|`, then `&&`, `||`."
+              ]
+            },
+            {
+              "h": "Traps",
+              "p": "Students commonly miss:",
+              "points": [
+                "Loops from 1 to n are inclusive in most pseudo-code.",
+                "A variable passed 'by value' to a function does not change in the caller.",
+                "Recursion that prints before vs after the recursive call reverses the order.",
+                "Static/global variables persisting between calls."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Trace table for every non-trivial loop.",
+                "XOR swap, digit sum, set-bit count are common patterns.",
+                "Shifts multiply/divide by powers of two.",
+                "Watch inclusive loop bounds and integer division.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -198,6 +240,60 @@
               "answer": 2,
               "explain": "Games measure reasoning and memory instead of classic aptitude questions."
             }
+          ],
+          "notes": [
+            {
+              "h": "Game-based aptitude: what to expect",
+              "p": "Capgemini uses a **game-based aptitude test**: short, timed mini-games that measure memory, logic, speed and accuracy instead of traditional MCQs. Games reported in recent drives include **deductive logical thinking**, **grid challenge**, **motion challenge**, **inductive logical thinking**, **switch challenge** and **digit challenge**. Pattern as reported for recent drives; confirm on the official careers page.\n\nEach game adapts or scores on both correctness and time, so a steady, accurate pace beats random fast clicking."
+            },
+            {
+              "h": "Game-by-game strategy",
+              "p": "Each game rewards a different skill, so use a specific approach for each:",
+              "points": [
+                "**Deductive logical thinking:** decide if a conclusion follows from given statements (like syllogisms). Draw quick Venn diagrams mentally; answer only from the statements.",
+                "**Grid challenge:** remember positions of dots on a grid while answering symmetry or rotation questions in between. Chunk positions into shapes (a line, an L) to remember them.",
+                "**Motion challenge:** slide blocks to move a ball into a hole in the fewest moves. Plan backwards from the hole before moving.",
+                "**Inductive logical thinking:** find which figure breaks the rule followed by the others (rotation, count, colour).",
+                "**Switch challenge:** find which switch code turned the input symbol order into the output order (see the example below).",
+                "**Digit challenge:** fill digits (without repeating) into blanks so an equation is true. Start with the operation that limits choices most (multiplication or the largest digit)."
+              ]
+            },
+            {
+              "h": "Switch challenge decoded",
+              "p": "If the input is A B C D and the output is C A D B, the switch code lists, for each output position, which input position it came from: C was at 3, A at 1, D at 4, B at 2 → code **3142**. Practising this mapping makes the game fast:\n\n`def switch_code(inp, out):\n    return \"\".join(str(inp.index(s) + 1) for s in out)\n\ndef apply_code(inp, code):\n    return [inp[int(c) - 1] for c in code]\n\nprint(switch_code(list(\"ABCD\"), list(\"CADB\")))\nprint(apply_code(list(\"ABCD\"), \"4213\"))`\n\nOutput:\n`3142\n['D', 'B', 'A', 'C']`"
+            },
+            {
+              "h": "Behavioural competency test",
+              "p": "This is a personality-style questionnaire (agree/disagree or pick the statement most like you). It checks traits such as teamwork, ownership, adaptability and integrity. There is no single right answer, but **inconsistent** answers (claiming opposite traits in similar questions) look bad.",
+              "points": [
+                "Answer honestly and consistently; similar statements repeat with different wording.",
+                "Think as a professional at work, not as a student at home.",
+                "Avoid extreme answers on everything.",
+                "Do not over-think — the test is timed."
+              ]
+            },
+            {
+              "h": "Traps",
+              "p": "Common mistakes in game-based tests:",
+              "points": [
+                "Clicking quickly without thinking — wrong answers can cost more than slow ones.",
+                "Losing grid positions while answering the in-between symmetry questions; rehearse the pattern silently.",
+                "Making unnecessary moves in the motion challenge; plan first.",
+                "Taking the test on a slow device or browser — use a stable laptop and internet connection."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Games score accuracy and speed together.",
+                "Grid: chunk dot positions; motion: plan backwards.",
+                "Switch: map each output symbol to its input position.",
+                "Digit: start from the most restrictive operation.",
+                "Behavioural: honest and consistent.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
+            }
           ]
         },
         {
@@ -258,6 +354,48 @@
               ],
               "answer": 3,
               "explain": "Primary keys are unique and NOT NULL; only one per table."
+            }
+          ],
+          "notes": [
+            {
+              "h": "Analyst vs Senior Analyst",
+              "p": "Capgemini hires freshers mainly as **Analyst** and, for stronger coders, **Senior Analyst** (higher package). Senior Analyst candidates face an additional **coding round** — commonly reported as 2 problems — before the interviews. After that come a **technical interview** and an **HR interview**. Pattern as reported for recent drives; confirm on the official careers page."
+            },
+            {
+              "h": "Coding sample: rotate a matrix",
+              "p": "**Problem.** Rotate an N × N matrix 90° clockwise.\n\n**Idea.** Transpose (swap a[i][j] with a[j][i]), then reverse each row. Both steps are in place, so space is O(1) extra and time is **O(N²)**.\n\n`n = int(input())\nm = [list(map(int, input().split())) for _ in range(n)]\nfor i in range(n):\n    for j in range(i + 1, n):\n        m[i][j], m[j][i] = m[j][i], m[i][j]\nfor row in m:\n    row.reverse()\nfor row in m:\n    print(*row)`\n\nSample input:\n`3\n1 2 3\n4 5 6\n7 8 9`\n\nOutput:\n`7 4 1\n8 5 2\n9 6 3`"
+            },
+            {
+              "h": "Technical questions with model answers",
+              "p": "**Q: What is a constructor? Can it be overloaded?** A: A special method that initialises an object; yes, with different parameter lists.\n\n**Q: Difference between stack and heap memory?** A: Stack stores method frames and local variables (fast, automatic); heap stores objects (managed by GC or manually).\n\n**Q: What is an index in a database?** A: A structure (often a B+ tree) that speeds up lookups at the cost of slower writes and extra space.\n\n**Q: What is Agile?** A: An iterative way of building software in short sprints with frequent feedback; Scrum is a popular Agile framework.\n\n**Q: Write SQL to find employees earning above the average.** A: `SELECT name FROM emp WHERE salary > (SELECT AVG(salary) FROM emp);`"
+            },
+            {
+              "h": "HR questions with model answers",
+              "p": "**Q: Why Capgemini?** A: Cite specific points — its global consulting and technology presence, fresher training and your interest in its domains.\n\n**Q: Describe a time you worked in a team.** A: STAR story with your own actions and a result.\n\n**Q: Are you open to relocation and shifts?** A: Answer honestly; show flexibility where you can."
+            },
+            {
+              "h": "Project, puzzle and scenario questions",
+              "p": "**Q: Walk me through your project's architecture.** A: Frontend → backend → database → deployment, one line each, then your module in detail.\n\n**Q: Puzzle — you have 8 identical-looking balls, one heavier, and a balance. Minimum weighings?** A: 2 (weigh 3 vs 3; if equal, weigh the remaining 2; if not, weigh 1 vs 1 from the heavier three).\n\n**Q: Your teammate is not doing their part close to a deadline. What do you do?** A: Talk privately first, understand the issue, offer help, and inform the lead early if the deadline is at risk.\n\n**Q: What would you do in your first 90 days?** A: Learn the project and tools, deliver small tasks reliably, ask for feedback, and complete required trainings."
+            },
+            {
+              "h": "Traps",
+              "p": "Avoid:",
+              "points": [
+                "Claiming skills in your resume you cannot code live.",
+                "Blaming teammates in project or conflict stories.",
+                "Saying you plan to leave for higher studies soon after joining."
+              ]
+            },
+            {
+              "h": "Quick revision",
+              "p": "Remember:",
+              "points": [
+                "Senior Analyst: extra coding round.",
+                "Matrix rotation: transpose + reverse rows.",
+                "Revise OOP, memory, indexing, Agile, SQL subqueries.",
+                "Prepare STAR stories for HR.",
+                "Pattern as reported for recent drives; confirm on the official careers page."
+              ]
             }
           ]
         }

@@ -1,0 +1,277 @@
+{
+  "id": "french",
+  "name": "French",
+  "native": "Français",
+  "category": "international",
+  "bcp47": "fr-FR",
+  "script": "Latin alphabet",
+  "region": "France, Belgium, Switzerland, Canada and much of West and Central Africa",
+  "speakers": "≈ 300 million",
+  "about": "French is an official language on five continents and a working language of the United Nations, the Olympics and many international bodies. About a third of English vocabulary comes from French, so you already know more words than you think.",
+  "pronunciation": [
+    "Final consonants are usually silent, so petit sounds like puh-tee and Paris sounds like pa-ree.",
+    "The French R is made at the back of the throat, a little like a soft gargle, not rolled like the Hindi R.",
+    "Nasal vowels in words like bon and vin are said through the nose without fully pronouncing the N.",
+    "The letter U is said with rounded lips while saying ee, a sound between ee and oo."
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "intro": "Bonjour! Let's start with the words you'll use every single day in France. French people greet each other a lot, so these will take you far.",
+      "tip": "Always say bonjour when you walk into a shop, café or lift. Skipping it is considered rude, and a friendly bonjour gets you much better service.",
+      "phrases": [
+        {
+          "key": "hello",
+          "native": "Bonjour",
+          "roman": "bon-zhoor",
+          "note": "Bonjour literally means good day. Use it with anyone until early evening. With friends you can say salut, which is casual."
+        },
+        {
+          "key": "how-are-you",
+          "native": "Comment allez-vous ?",
+          "roman": "ko-mahn ta-lay voo",
+          "note": "Comment allez-vous is the polite way to ask how someone is. With friends, simply say ça va, which means how's it going."
+        },
+        {
+          "key": "i-am-fine",
+          "native": "Je vais bien, merci.",
+          "roman": "zhuh vay byan, mair-see",
+          "note": "Je vais bien, merci means I am well, thank you. In casual chat, people just say ça va, the same words used to ask the question."
+        },
+        {
+          "key": "thank-you",
+          "native": "Merci",
+          "roman": "mair-see",
+          "note": "Merci means thank you and works everywhere. Add beaucoup to say merci beaucoup, which means thank you very much."
+        },
+        {
+          "key": "sorry",
+          "native": "Excusez-moi / Pardon",
+          "roman": "ex-kew-zay mwa / par-don",
+          "note": "Excusez-moi is polite for excuse me, to get attention. Pardon is a quick sorry when you bump into someone. For a real apology, say je suis désolée."
+        },
+        {
+          "key": "goodbye",
+          "native": "Au revoir / À bientôt",
+          "roman": "oh ruh-vwar / ah byan-toh",
+          "note": "Au revoir is the standard goodbye and means until we see again. À bientôt means see you soon. Friends often just say salut or ciao."
+        }
+      ]
+    },
+    {
+      "id": "introductions",
+      "intro": "Now let's introduce ourselves. A few simple sentences will help you make friends in France, whether at university, at work or on holiday.",
+      "tip": "French has two words for you. Use vous with strangers, elders and at work, and tu with friends and children. Wait for the other person to suggest tu.",
+      "phrases": [
+        {
+          "key": "my-name-is",
+          "native": "Je m'appelle Priya.",
+          "roman": "zhuh ma-pel Priya",
+          "note": "Je m'appelle Priya literally means I call myself Priya. It is the most natural way to say your name in French."
+        },
+        {
+          "key": "whats-your-name",
+          "native": "Comment vous appelez-vous ?",
+          "roman": "ko-mahn voo za-play voo",
+          "note": "Comment vous appelez-vous is the polite way to ask someone's name. With a friend or a young person, say comment tu t'appelles."
+        },
+        {
+          "key": "where-from",
+          "native": "Vous venez d'où ?",
+          "roman": "voo vuh-nay doo",
+          "note": "Vous venez d'où means where do you come from. It is polite yet natural. With friends, say tu viens d'où."
+        },
+        {
+          "key": "i-am-from-india",
+          "native": "Je viens d'Inde.",
+          "roman": "zhuh vyan dand",
+          "note": "Je viens d'Inde means I come from India. You can also say je suis indienne, meaning I am Indian. A man would say indien."
+        },
+        {
+          "key": "nice-to-meet-you",
+          "native": "Enchantée",
+          "roman": "ahn-shahn-tay",
+          "note": "Enchantée means delighted to meet you. It is spelled with an extra E when a woman says it, but sounds the same when a man says enchanté."
+        },
+        {
+          "key": "i-speak-a-little",
+          "native": "Je parle un peu français.",
+          "roman": "zhuh parl uhn puh frahn-say",
+          "note": "Je parle un peu français means I speak a little French. People will often slow down and be very encouraging when they hear it."
+        }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "intro": "Time for numbers! Counting in French is fun, and you'll need it for prices, phone numbers and train times.",
+      "tip": "In France, times are often given on the twenty-four hour clock, especially for trains and shops. So quinze heures means three in the afternoon.",
+      "phrases": [
+        {
+          "key": "one-to-five",
+          "native": "un, deux, trois, quatre, cinq",
+          "roman": "uhn, duh, trwa, katr, sank",
+          "note": "Un, deux, trois, quatre, cinq. These are one to five. Un becomes une before feminine words, as in une heure, one hour."
+        },
+        {
+          "key": "six-to-ten",
+          "native": "six, sept, huit, neuf, dix",
+          "roman": "sees, set, weet, nuhf, dees",
+          "note": "Six, sept, huit, neuf, dix. These are six to ten. Notice the P in sept is silent, and the H in huit is silent too."
+        },
+        {
+          "key": "what-time",
+          "native": "Quelle heure est-il ?",
+          "roman": "kel uhr ay-teel",
+          "note": "Quelle heure est-il is the standard way to ask the time. In everyday speech you will also hear il est quelle heure."
+        },
+        {
+          "key": "today",
+          "native": "aujourd'hui",
+          "roman": "oh-zhoor-dwee",
+          "note": "Aujourd'hui means today. It is one long word, so say it smoothly, oh zhoor dwee."
+        },
+        {
+          "key": "tomorrow",
+          "native": "demain",
+          "roman": "duh-man",
+          "note": "Demain means tomorrow. A handy phrase is à demain, which means see you tomorrow."
+        },
+        {
+          "key": "yesterday",
+          "native": "hier",
+          "roman": "ee-yair",
+          "note": "Hier means yesterday. The H is silent, so it sounds like ee-yair."
+        }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "intro": "France is famous for its food, so let's learn to order, ask prices and pay. Bon appétit is just around the corner!",
+      "tip": "In restaurants, the waiter will not bring the bill until you ask for it, because rushing guests is seen as rude. Service is already included, so tipping is optional.",
+      "phrases": [
+        {
+          "key": "how-much",
+          "native": "C'est combien ?",
+          "roman": "say kom-byan",
+          "note": "C'est combien means how much is it. A slightly more formal version is combien ça coûte, meaning how much does it cost."
+        },
+        {
+          "key": "too-expensive",
+          "native": "C'est trop cher.",
+          "roman": "say troh shair",
+          "note": "C'est trop cher means it is too expensive. Bargaining is rare in French shops, but you can use this at flea markets."
+        },
+        {
+          "key": "water-please",
+          "native": "De l'eau, s'il vous plaît.",
+          "roman": "duh loh, seel voo play",
+          "note": "De l'eau, s'il vous plaît means some water, please. Ask for une carafe d'eau to get free tap water in a restaurant."
+        },
+        {
+          "key": "i-am-vegetarian",
+          "native": "Je suis végétarienne.",
+          "roman": "zhuh swee vay-zhay-ta-ryen",
+          "note": "Je suis végétarienne means I am vegetarian, said by a woman. A man says végétarien. It helps to add pas de viande, meaning no meat."
+        },
+        {
+          "key": "very-tasty",
+          "native": "C'est délicieux !",
+          "roman": "say day-lee-syuh",
+          "note": "C'est délicieux means it is delicious. The chef will be happy to hear it. Casually, you can also say c'est très bon."
+        },
+        {
+          "key": "bill-please",
+          "native": "L'addition, s'il vous plaît.",
+          "roman": "la-dee-syon, seel voo play",
+          "note": "L'addition, s'il vous plaît means the bill, please. Catch the waiter's eye and say it politely."
+        }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "intro": "Let's get moving! These phrases will help you find your way around French cities, from the metro to the train station.",
+      "tip": "Before asking a stranger for directions, always start with excusez-moi, madame or excusez-moi, monsieur. It makes the request sound polite and friendly.",
+      "phrases": [
+        {
+          "key": "where-is-station",
+          "native": "Où est la gare ?",
+          "roman": "oo ay la gar",
+          "note": "Où est la gare means where is the train station. Big cities have several stations, like la gare de Lyon in Paris."
+        },
+        {
+          "key": "turn-left",
+          "native": "Tournez à gauche.",
+          "roman": "toor-nay ah gohsh",
+          "note": "Tournez à gauche means turn left. You will hear this form from people giving you polite directions."
+        },
+        {
+          "key": "turn-right",
+          "native": "Tournez à droite.",
+          "roman": "toor-nay ah drwat",
+          "note": "Tournez à droite means turn right. Be careful not to mix it up with tout droit, which means straight ahead."
+        },
+        {
+          "key": "go-straight",
+          "native": "Allez tout droit.",
+          "roman": "a-lay too drwa",
+          "note": "Allez tout droit means go straight ahead. Listen carefully, because tout droit sounds close to à droite."
+        },
+        {
+          "key": "how-far",
+          "native": "C'est loin ?",
+          "roman": "say lwan",
+          "note": "C'est loin means is it far. To ask the exact distance, say c'est à quelle distance."
+        },
+        {
+          "key": "please-help",
+          "native": "Pouvez-vous m'aider, s'il vous plaît ?",
+          "roman": "poo-vay voo may-day, seel voo play",
+          "note": "Pouvez-vous m'aider, s'il vous plaît means can you help me, please. In an emergency, simply shout au secours."
+        }
+      ]
+    },
+    {
+      "id": "everyday",
+      "intro": "Last lesson! These little phrases keep any conversation going, even when you don't understand everything. Let's finish strong.",
+      "tip": "French people often say d'accord to mean okay or agreed, and bon to fill pauses. Using them makes your French sound instantly more natural.",
+      "phrases": [
+        {
+          "key": "yes-no",
+          "native": "Oui / Non",
+          "roman": "wee / non",
+          "note": "Oui means yes and non means no. If someone asks a negative question and you want to say yes, use si instead."
+        },
+        {
+          "key": "i-dont-understand",
+          "native": "Je ne comprends pas.",
+          "roman": "zhuh nuh kom-prahn pa",
+          "note": "Je ne comprends pas means I don't understand. In casual speech people drop the ne and say je comprends pas."
+        },
+        {
+          "key": "speak-slowly",
+          "native": "Parlez plus lentement, s'il vous plaît.",
+          "roman": "par-lay plew lahnt-mahn, seel voo play",
+          "note": "Parlez plus lentement, s'il vous plaît means please speak more slowly. It is polite and people will gladly do it."
+        },
+        {
+          "key": "what-does-it-mean",
+          "native": "Qu'est-ce que ça veut dire ?",
+          "roman": "kes-kuh sa vuh deer",
+          "note": "Qu'est-ce que ça veut dire means what does that mean. Literally, it is what does that want to say."
+        },
+        {
+          "key": "i-like-it",
+          "native": "Ça me plaît.",
+          "roman": "sa muh play",
+          "note": "Ça me plaît means I like it, literally it pleases me. You can also say j'aime bien, which is equally common."
+        },
+        {
+          "key": "good-night",
+          "native": "Bonne nuit",
+          "roman": "bon nwee",
+          "note": "Bonne nuit means good night, said before going to bed. When leaving someone in the evening, say bonsoir or bonne soirée instead."
+        }
+      ]
+    }
+  ]
+}

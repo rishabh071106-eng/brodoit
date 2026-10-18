@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<title>Group — Brodoit Prep</title>
+<meta name="theme-color" content="#F6F5F2">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="stylesheet" href="/app/theme.css?v=11">
+<link rel="stylesheet" href="assets/app.css?v=11">
+<script src="/app/icons.js?v=11" defer></script>
+<style>
+  body.chat{padding-bottom:0}
+  body.chat .tabbar{display:none}
+  .msgs{padding:8px 0 96px;display:flex;flex-direction:column;gap:6px}
+  .day{align-self:center;font-size:11px;font-weight:800;color:var(--mute);background:var(--card);padding:4px 10px;border-radius:999px;margin:10px 0 4px;box-shadow:var(--shadow)}
+  .m{display:flex;gap:8px;align-items:flex-end;max-width:86%}
+  .m .av{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0}
+  .m .bb{background:var(--card);border-radius:var(--r-md) var(--r-md) var(--r-md) 6px;padding:9px 12px;box-shadow:var(--shadow);font-size:15px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+  .m .who{font-size:11px;font-weight:800;margin-bottom:2px}
+  .m .t{font-size:11px;color:var(--mute);margin-top:3px;text-align:right}
+  .m.mine{align-self:flex-end;flex-direction:row-reverse}
+  .m.mine .bb{background:var(--accent);color:#fff;border-radius:var(--r-md) var(--r-md) 6px var(--r-md)}
+  .m.mine .t{color:rgba(255,255,255,.8)}
+  .m.del .bb{font-style:italic;color:var(--mute);background:var(--card-2)}
+  .composer{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .composer form{max-width:720px;margin:0 auto;display:flex;gap:8px;align-items:flex-end}
+  .composer textarea{flex:1;resize:none;max-height:120px;min-height:46px;border-radius:23px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:12px 16px;font:500 15px var(--font);box-shadow:var(--shadow)}
+  .composer button{width:46px;height:46px;border-radius:50%;background:var(--accent);color:#fff;font-size:20px;flex-shrink:0;display:grid;place-items:center}
+  .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:95}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:96;background:var(--card);border-radius:var(--r-lg) var(--r-lg) 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto;max-height:85vh;overflow:auto;animation:rise var(--m-enter) var(--ease) both}
+  .mem{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .mem .av{width:38px;height:38px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;flex-shrink:0}
+  .mem .x{flex:1;min-width:0}
+  .mem button{min-height:44px;padding:0 12px;font-size:12px}
+  .tag2{font-size:11px;font-weight:800;padding:2px 8px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--accent) 15%,var(--card));color:var(--accent);margin-left:6px}
+  .rules{font-size:12px;color:var(--mute);text-align:center;margin:10px 0}
+</style>
+</head>
+<body>
+<main class="wrap" id="main"><div class="muted" style="padding:30px;text-align:center">Loading…</div></main>
+<div class="composer" id="composer" hidden><form id="send"><textarea id="txt" rows="1" maxlength="1000" placeholder="Message the group…"></textarea><button aria-label="Send" data-ico="send" data-size="20"></button></form></div>
+
+<script type="module">
+import { renderChrome, api, token, signInCard, esc, toast } from './assets/js/app.js?v=9';
+import { ic, hydrateIcons } from './assets/js/ico.js?v=11';
+const id = +new URLSearchParams(location.search).get('id');
+const main = document.getElementById('main');
+const PALETTE = ['#FF5A1F', '#5B2BD9', '#13568C', '#1F7A4D', '#B5541B', '#C04BD9', '#0EA5E9', '#E5484D'];
+const colorOf = uid => PALETTE[parseInt(uid.slice(0, 4), 16) % PALETTE.length];
+let group, members = [], lastId = 0, timer = null;
+
+renderChrome({ active: 'groups.html', title: 'Group', back: 'groups.html',
+  right: `<button class="icon-btn press" id="info" aria-label="Group info">${ic('info', 22)}</button>` });
+hydrateIcons();
+document.getElementById('info').onclick = () => openInfo();
+
+if (!token()) main.innerHTML = signInCard(); else load();
+
+async function load() {
+  try { ({ group, members } = await api(`/groups/${id}`)); }
+  catch (e) { main.innerHTML = e.status === 401 ? signInCard() : `<div class="card" style="padding:20px;margin-top:10px">${esc(e.message)}</div>`; return; }
+  document.querySelector('.topbar .title').textContent = group.name;
+  document.title = `${group.name} — Brodoit Prep`;
+  if (group.my?.status !== 'approved') return gate();
+  document.body.classList.add('chat');
+  document.getElementById('composer').hidden = false;
+  main.innerHTML = `<div class="rules">Be kind · No phone numbers or personal details · Approvers can remove messages</div><div class="msgs" id="msgs"></div>`;
+  await refresh(true);
+  timer = setInterval(() => refresh(false), 3000);
+  setInterval(() => refresh(true), 30000); // picks up deletions
+}
+
+function gate() {
+  const admins = members.filter(m => m.role === 'admin').map(m => m.name).join(', ');
+  const pending = group.my?.status === 'pending';
+  main.innerHTML = `<div class="card" style="padding:22px;text-align:center;margin-top:10px">
+    <div style="font-size:48px">${pending ? '⏳' : '👋'}</div>
+    <div class="h-lg" style="margin-top:6px">${esc(group.name)}</div>
+    <p class="muted" style="margin:6px 0">${esc(group.topic)} · ${group.members} members</p>
+    ${group.description ? `<p style="margin:8px 0">${esc(group.description)}</p>` : ''}
+    <p class="muted" style="font-size:13px;margin-bottom:14px">Approver${admins.includes(',') ? 's' : ''}: ${esc(admins || '—')}</p>
+    ${pending ? '<p style="font-weight:700">Your request is waiting for approval.</p>' : '<button class="btn btn-accent press" id="join">Request to join</button>'}</div>`;
+  document.getElementById('join')?.addEventListener('click', async () => {
+    try { await api(`/groups/${id}/join`, { method: 'POST' }); toast('Request sent'); load(); } catch (e) { toast(e.message); }
+  });
+}
+
+const fmtTime = s => new Date(s.replace(' ', 'T') + 'Z').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+const fmtDay = s => new Date(s.replace(' ', 'T') + 'Z').toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' });
+let lastDay = '';
+function bubble(m) {
+  const day = fmtDay(m.at);
+  const sep = day !== lastDay ? `<div class="day">${day}</div>` : '';
+  lastDay = day;
+  return `${sep}<div class="m${m.mine ? ' mine' : ''}${m.deleted ? ' del' : ''}" data-id="${m.id}" data-del="${m.canDelete ? 1 : ''}" data-mine="${m.mine ? 1 : ''}">
+    ${m.mine ? '' : `<div class="av" style="background:${colorOf(m.uid)}">${esc(m.name[0] || '?')}</div>`}
+    <div class="bb">${m.mine ? '' : `<div class="who" style="color:${colorOf(m.uid)}">${esc(m.name)}</div>`}${m.deleted ? 'Message removed' : esc(m.text)}<div class="t">${fmtTime(m.at)}</div></div></div>`;
+}
+async function refresh(full) {
+  try {
+    const { messages } = await api(`/groups/${id}/messages${full ? '' : `?after=${lastId}`}`);
+    const box = document.getElementById('msgs');
+    if (!box) return;
+    const nearBottom = innerHeight + scrollY > document.body.scrollHeight - 160;
+    if (full) { lastDay = ''; box.innerHTML = messages.length ? messages.map(bubble).join('') : '<div class="rules" style="margin-top:40px">No messages yet — say hi 👋</div>'; }
+    else if (messages.length) { if (!lastId) box.innerHTML = ''; box.insertAdjacentHTML('beforeend', messages.map(bubble).join('')); }
+    if (messages.length) lastId = Math.max(lastId, messages[messages.length - 1].id);
+    if (full || nearBottom) scrollTo(0, document.body.scrollHeight);
+  } catch (e) { if (e.status === 403) { clearInterval(timer); load(); } }
+}
+
+const txt = document.getElementById('txt');
+txt.addEventListener('input', () => { txt.style.height = 'auto'; txt.style.height = Math.min(120, txt.scrollHeight) + 'px'; });
+txt.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && matchMedia('(pointer:fine)').matches) { e.preventDefault(); document.getElementById('send').requestSubmit(); } });
+document.getElementById('send').onsubmit = async e => {
+  e.preventDefault();
+  const text = txt.value.trim();
+  if (!text) return;
+  txt.value = ''; txt.style.height = 'auto';
+  try { await api(`/groups/${id}/messages`, { method: 'POST', body: { text } }); await refresh(false); scrollTo(0, document.body.scrollHeight); }
+  catch (err) { toast(err.message); txt.value = text; }
+};
+
+// Tap a message: delete (own / approver) or report.
+main.addEventListener('click', e => {
+  const m = e.target.closest('.m'); if (!m || m.classList.contains('del')) return;
+  sheet(`<div class="h-md">Message</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+      ${m.dataset.del ? '<button class="btn btn-ghost press" data-a="delete" style="color:var(--bad)">Delete message</button>' : ''}
+      ${m.dataset.mine ? '' : '<button class="btn btn-ghost press" data-a="report">Report to Brodoit</button>'}
+      <button class="btn btn-dark press" data-a="close">Close</button></div>`, async (a, close) => {
+    if (a === 'delete') { await api(`/messages/${m.dataset.id}`, { method: 'DELETE' }).catch(err => toast(err.message)); refresh(true); }
+    if (a === 'report') { await api(`/messages/${m.dataset.id}/report`, { method: 'POST' }).then(() => toast('Reported. Thank you.')).catch(err => toast(err.message)); }
+    close();
+  });
+});
+
+function sheet(html, onAction) {
+  const bg = Object.assign(document.createElement('div'), { className: 'sheet-bg' });
+  const sh = Object.assign(document.createElement('div'), { className: 'sheet' });
+  sh.innerHTML = html;
+  const close = () => { bg.remove(); sh.remove(); };
+  bg.onclick = close;
+  sh.onclick = e => { const b = e.target.closest('[data-a]'); if (b) onAction(b.dataset.a, close, b); };
+  document.body.append(bg, sh);
+  return { sh, close };
+}
+
+async function openInfo() {
+  if (!group) return;
+  ({ group, members } = await api(`/groups/${id}`));
+  const admin = group.my?.status === 'approved' && group.my.role === 'admin';
+  const row = (m, actions) => `<div class="mem"><div class="av" style="background:${colorOf(m.uid)}">${esc(m.name[0] || '?')}</div>
+    <div class="x"><b>${esc(m.name)}${m.me ? ' (you)' : ''}</b>${m.role === 'admin' ? '<span class="tag2">Approver</span>' : ''}</div>${actions}</div>`;
+  const pending = members.filter(m => m.status === 'pending');
+  const approved = members.filter(m => m.status === 'approved');
+  sheet(`<div class="h-lg">${esc(group.name)}</div><p class="muted" style="margin-top:4px">${esc(group.topic)} · ${group.members} members</p>
+    ${group.description ? `<p style="margin-top:8px">${esc(group.description)}</p>` : ''}
+    ${admin && pending.length ? `<div class="eyebrow" style="margin-top:18px;color:var(--accent)">Waiting for approval (${pending.length})</div>
+      ${pending.map(m => row(m, `<button class="btn btn-accent press" data-a="approve" data-u="${m.uid}">Approve</button><button class="btn btn-ghost press" data-a="reject" data-u="${m.uid}" aria-label="Decline">${ic('x', 16)}</button>`)).join('')}` : ''}
+    <div class="eyebrow muted" style="margin-top:18px">Members</div>
+    ${approved.map(m => row(m, admin && !m.me ? `${m.role !== 'admin' ? `<button class="btn btn-ghost press" data-a="promote" data-u="${m.uid}">Make approver</button>` : ''}<button class="btn btn-ghost press" data-a="remove" data-u="${m.uid}" style="color:var(--bad)">Remove</button>` : '')).join('')}
+    ${group.my ? '<button class="btn btn-ghost btn-block press" data-a="leave" style="margin-top:18px;color:var(--bad)">Leave group</button>' : ''}`,
+    async (a, close, b) => {
+      try {
+        if (a === 'leave') { if (!confirm('Leave this group?')) return; await api(`/groups/${id}/leave`, { method: 'POST' }); location.href = 'groups.html'; return; }
+        if (a === 'remove' && !confirm('Remove this member?')) return;
+        await api(`/groups/${id}/members/${b.dataset.u}`, { method: 'POST', body: { action: a } });
+        toast({ approve: 'Approved', reject: 'Request declined', promote: 'Now an approver', remove: 'Removed' }[a]);
+        close(); openInfo();
+      } catch (e) { toast(e.message); }
+    });
+}
+</script>
+</body>
+</html>

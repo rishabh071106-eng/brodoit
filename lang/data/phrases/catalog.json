@@ -1,0 +1,108 @@
+{
+  "host": {
+    "name": "Meera",
+    "role": "Your language coach",
+    "bio": "Meera hosts every lesson in both tracks. She says each phrase the way a native speaker would, then explains what it means and when to use it."
+  },
+  "challenge": {
+    "days": 60,
+    "title": "60-Day Language Challenge",
+    "blurb": "One lesson a day. 10 languages, 6 lessons each, 60 days. Finish every section to earn your certificate."
+  },
+  "categories": [
+    {
+      "id": "local",
+      "name": "Local languages",
+      "icon": "🇮🇳",
+      "blurb": "Five major Indian languages, spoken by more than 400 million people across the East and South of India.",
+      "languages": ["bengali", "kannada", "malayalam", "tamil", "telugu"]
+    },
+    {
+      "id": "international",
+      "name": "International languages",
+      "icon": "🌍",
+      "blurb": "Five of the world's most useful languages for study abroad, travel, business and careers.",
+      "languages": ["spanish", "french", "german", "japanese", "mandarin"]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "greetings",
+      "title": "Greetings & courtesy",
+      "goal": "Say hello, ask how someone is, thank them and say goodbye.",
+      "phrases": [
+        { "key": "hello", "en": "Hello" },
+        { "key": "how-are-you", "en": "How are you?" },
+        { "key": "i-am-fine", "en": "I am fine." },
+        { "key": "thank-you", "en": "Thank you." },
+        { "key": "sorry", "en": "Sorry. / Excuse me." },
+        { "key": "goodbye", "en": "Goodbye. / See you." }
+      ]
+    },
+    {
+      "id": "introductions",
+      "title": "Introducing yourself",
+      "goal": "Tell people your name and where you are from, and ask about them.",
+      "phrases": [
+        { "key": "my-name-is", "en": "My name is Priya." },
+        { "key": "whats-your-name", "en": "What is your name?" },
+        { "key": "where-from", "en": "Where are you from?" },
+        { "key": "i-am-from-india", "en": "I am from India." },
+        { "key": "nice-to-meet-you", "en": "Nice to meet you." },
+        { "key": "i-speak-a-little", "en": "I speak a little of your language." }
+      ]
+    },
+    {
+      "id": "numbers-time",
+      "title": "Numbers & time",
+      "goal": "Count from one to ten and talk about today and tomorrow.",
+      "phrases": [
+        { "key": "one-to-five", "en": "One, two, three, four, five" },
+        { "key": "six-to-ten", "en": "Six, seven, eight, nine, ten" },
+        { "key": "what-time", "en": "What time is it?" },
+        { "key": "today", "en": "Today" },
+        { "key": "tomorrow", "en": "Tomorrow" },
+        { "key": "yesterday", "en": "Yesterday" }
+      ]
+    },
+    {
+      "id": "food-shopping",
+      "title": "Food & shopping",
+      "goal": "Order food, ask prices and pay the bill.",
+      "phrases": [
+        { "key": "how-much", "en": "How much is this?" },
+        { "key": "too-expensive", "en": "That is too expensive." },
+        { "key": "water-please", "en": "Water, please." },
+        { "key": "i-am-vegetarian", "en": "I am vegetarian." },
+        { "key": "very-tasty", "en": "This is very tasty." },
+        { "key": "bill-please", "en": "The bill, please." }
+      ]
+    },
+    {
+      "id": "travel-directions",
+      "title": "Travel & directions",
+      "goal": "Ask the way, understand left, right and straight, and ask for help.",
+      "phrases": [
+        { "key": "where-is-station", "en": "Where is the railway station?" },
+        { "key": "turn-left", "en": "Turn left." },
+        { "key": "turn-right", "en": "Turn right." },
+        { "key": "go-straight", "en": "Go straight." },
+        { "key": "how-far", "en": "How far is it?" },
+        { "key": "please-help", "en": "Please help me." }
+      ]
+    },
+    {
+      "id": "everyday",
+      "title": "Everyday conversation",
+      "goal": "Keep a conversation going: yes, no, I don't understand, please repeat.",
+      "phrases": [
+        { "key": "yes-no", "en": "Yes. / No." },
+        { "key": "i-dont-understand", "en": "I don't understand." },
+        { "key": "speak-slowly", "en": "Please speak slowly." },
+        { "key": "what-does-it-mean", "en": "What does this mean?" },
+        { "key": "i-like-it", "en": "I like it." },
+        { "key": "good-night", "en": "Good night." }
+      ]
+    }
+  ]
+}
