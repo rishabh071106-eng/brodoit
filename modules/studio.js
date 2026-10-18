@@ -1,7 +1,7 @@
 // Studio voice — every feature that turns text into speech (News "Listen", the daily bulletin, Bro's classic replies,
 // language lessons, Hindi books) goes through here, so the money rules live in one place:
-//   1. ElevenLabs — the best voices, but only within the plan's monthly credits (credit guard in elevenvoice.js; bulk
-//      recordings keep a reserve for Bro and the news, nothing ever runs into overage).
+//   1. ElevenLabs — the best voices, but only within the plan's monthly credits (credit guard in elevenvoice.js: bulk
+//      recordings use at most the first 40%, the news stops at 70%, the rest is Bro's; nothing runs into overage).
 //   2. Gemini TTS — natural voices on the Google key, ≈ US$0.015 per minute of audio.
 //   3. OpenAI gpt-4o-mini-tts — same price class.
 // A provider that answers "no credit" / "bad key" is skipped for a while; the caller gets null and falls back to the device

@@ -76,7 +76,7 @@ async function speak(key, text, lang, voiceId, opts) {
 // ElevenLabs bills credits per character (turbo/flash ≈ 0.5 credit per character). We read the plan's monthly allowance and
 // keep a reserve so bulk recordings never eat the credits Bro's live voice and the daily bulletin need, and nothing ever
 // runs past the allowance into overage. Purposes: 'live' (Bro talking) may use everything that is left; 'daily' (bulletin,
-// News "Listen") keeps 5%; 'bulk' (lessons, Hindi books) keeps 35% of the month for the other two.
+// News "Listen") stops with 30% of the month left for Bro; 'bulk' (lessons, Hindi books) only uses the first 40%.
 const PER_CHAR = () => parseFloat(process.env.ELEVEN_CREDITS_PER_CHAR || '') || 0.5;
 const subs = new Map(); // key → { at, tier, used, limit, reset, ok, error, out }
 const isQuota = (status, body) => status === 402 || /quota_exceeded|exceeds your quota|insufficient.*credits|credits? (remaining|left)|payment_required/i.test(String(body || ''));
@@ -97,7 +97,7 @@ async function subscription(key, fresh) {
   } catch (e) { const n = Object.assign(s || {}, { at: Date.now(), ok: false, error: e.name === 'AbortError' ? 'timeout' : e.message }); subs.set(key, n); return n; }
   finally { clearTimeout(t); }
 }
-const RESERVE = { live: 0, daily: 0.05, bulk: 0.35 };
+const RESERVE = { live: 0, daily: 0.30, bulk: 0.60 }; // Bro's live voice matters most, then the news, then bulk
 // Can this purpose spend `chars` characters now? { ok, reason, left }. Unknown plan (key without user access) → allowed;
 // a quota error from a real call still stops it.
 async function budget(key, chars, purpose) {
