@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=11">
-<link rel="stylesheet" href="assets/app.css?v=11">
-<script src="/app/icons.js?v=11" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=12">
+<link rel="stylesheet" href="assets/app.css?v=12">
+<script src="/app/icons.js?v=12" defer></script>
 <style>
   body{background:#0B0B0D;color:#fff;padding:0;overflow:hidden;height:100dvh}
   .player{height:100dvh;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
@@ -112,7 +112,7 @@
 
 <script type="module">
 import { loadExam, loadExamWithCore, examChapters, store, addTime, logActivity, richText, esc, param, fmtMinutes } from './assets/js/app.js?v=9';
-import { ic, hydrateIcons } from './assets/js/ico.js?v=11';
+import { ic, hydrateIcons } from './assets/js/ico.js?v=12';
 hydrateIcons();
 
 const examId = param('exam'), subjId = param('s'), chapId = param('c'), fromId = param('from') || examId;

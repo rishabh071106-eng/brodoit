@@ -154,7 +154,7 @@ function install(app, deps) {
     for (const k of ['OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI']) { const v = getSetting(k) || ''; out[k] = { value: v, source: v ? (settingSource(k) || 'env') : null }; }
     return out;
   }
-  const services = () => ({ realtime: !!getSetting('OPENAI_API_KEY'), elevenlabs: !!getSetting('ELEVENLABS_API_KEY'), gemini: !!getSetting('GEMINI_API_KEY'), ffmpeg: hasFfmpeg() });
+  const services = () => ({ realtime: !!getSetting('OPENAI_API_KEY'), elevenlabs: !!getSetting('ELEVENLABS_API_KEY'), gemini: !!getSetting('GEMINI_API_KEY'), ffmpeg: hasFfmpeg(), android: !!(deps.android && deps.android.status && deps.android.status().ready) });
   function lessonsTotal() {
     try { let n = 0; for (const f of fs.readdirSync(path.join(appRoot, 'lang', 'audio')).filter(f => f.endsWith('.json'))) { const c = JSON.parse(fs.readFileSync(path.join(appRoot, 'lang', 'audio', f), 'utf8')); n += (c.lessons || []).length; } return n || LESSONS_TOTAL; } catch (e) { return LESSONS_TOTAL; }
   }

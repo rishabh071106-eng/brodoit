@@ -55,13 +55,74 @@ function install(app, deps) {
     return _broExecTool(name, args || {}, user.phone, user.tz || _getUserTz(user.phone));
   }
 
+  // 0. Studio voice for the classic pipeline (listen → think → speak): ElevenLabs first, OpenAI TTS second, else 404 so the
+  //    browser falls back to its device voice.
+  const elevenKey = () => getSetting('ELEVENLABS_API_KEY') || process.env.ELEVENLABS_API_KEY || '';
+  const DEFAULT_VOICE = 'pNInz6obpgDQGcFmaJgB';
+  const elevenVoice = lang => getSetting(lang === 'hi' ? 'ELEVEN_VOICE_HI' : 'ELEVEN_VOICE_EN') || process.env[lang === 'hi' ? 'ELEVEN_VOICE_HI' : 'ELEVEN_VOICE_EN'] || DEFAULT_VOICE;
+  async function elevenSpeak(text, lang, key) {
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 20000);
+    try {
+      const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${elevenVoice(lang)}?output_format=mp3_44100_64`, {
+        method: 'POST', signal: ctrl.signal, headers: { 'xi-api-key': key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, model_id: 'eleven_turbo_v2_5', language_code: lang === 'hi' ? 'hi' : 'en', voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.25, use_speaker_boost: true } }),
+      });
+      if (!r.ok) { console.log('[voice] elevenlabs', r.status, (await r.text()).slice(0, 160)); return null; }
+      return Buffer.from(await r.arrayBuffer());
+    } finally { clearTimeout(t); }
+  }
+  async function openaiSpeak(text, lang, key) {
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 20000);
+    try {
+      const r = await fetch('https://api.openai.com/v1/audio/speech', {
+        method: 'POST', signal: ctrl.signal, headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'gpt-4o-mini-tts', voice: getSetting('OPENAI_TTS_VOICE') || 'ash', input: text, response_format: 'mp3', instructions: lang === 'hi' ? 'Speak natural, warm Hindi at an easy pace, like a close friend.' : 'Warm, confident Indian English. Natural pace, friendly, never robotic.' }),
+      });
+      if (!r.ok) { console.log('[voice] openai tts', r.status, (await r.text()).slice(0, 160)); return null; }
+      return Buffer.from(await r.arrayBuffer());
+    } finally { clearTimeout(t); }
+  }
+  app.post('/api/voice/tts', auth, async (req, res) => {
+    const text = String(req.body && req.body.text || '').replace(/\s+/g, ' ').trim().slice(0, 1500);
+    if (!text) return res.status(400).json({ error: 'text required' });
+    const lang = String(req.body && req.body.lang || '') === 'hi' ? 'hi' : 'en';
+    try {
+      let buf = null;
+      const ek = elevenKey(); if (ek) buf = await elevenSpeak(text, lang, ek);
+      const ok = openaiKey(); if (!buf && ok) buf = await openaiSpeak(text, lang, ok);
+      if (buf) { res.set('Content-Type', 'audio/mpeg'); res.set('Cache-Control', 'no-store'); return res.send(buf); }
+    } catch (e) { console.log('[voice] tts error', e.message); }
+    res.status(404).json({ error: 'no studio voice configured' });
+  });
+  // Speech → text for browsers without SpeechRecognition (raw audio body; OpenAI transcription).
+  const express = require('express');
+  app.post('/api/voice/transcribe', auth, express.raw({ type: () => true, limit: '12mb' }), async (req, res) => {
+    const key = openaiKey(); if (!key) return res.status(404).json({ error: 'no transcription configured' });
+    const body = req.body; if (!body || !body.length || body.length < 1000) return res.status(400).json({ error: 'audio required' });
+    const mime = String(req.headers['content-type'] || 'audio/webm').split(';')[0];
+    const ext = /mp4|m4a/.test(mime) ? 'm4a' : /ogg/.test(mime) ? 'ogg' : /wav/.test(mime) ? 'wav' : /mpeg|mp3/.test(mime) ? 'mp3' : 'webm';
+    try {
+      const fd = new FormData();
+      fd.append('file', new Blob([body], { type: mime }), 'speech.' + ext);
+      fd.append('model', 'gpt-4o-mini-transcribe');
+      const hint = String(req.query.lang || ''); if (hint === 'hi' || hint === 'en') fd.append('language', hint);
+      const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 25000);
+      const r = await fetch('https://api.openai.com/v1/audio/transcriptions', { method: 'POST', signal: ctrl.signal, headers: { Authorization: 'Bearer ' + key }, body: fd });
+      clearTimeout(t);
+      const j = await r.json();
+      if (!r.ok) return res.status(502).json({ error: (j.error && j.error.message) || 'transcription failed' });
+      res.json({ text: String(j.text || '').trim() });
+    } catch (e) { res.status(502).json({ error: e.message }); }
+  });
+
   // 1. Session: hand the browser a short-lived Realtime client secret.
   app.post('/api/voice/session', auth, async (req, res) => {
     const persona = String(req.body && req.body.persona || 'bro');
     const lang = String(req.body && req.body.lang || '');
     const instructions = instructionsFor(persona, lang, req.user, String(req.body && req.body.speak || ''));
     const key = openaiKey();
-    if (!key) return res.json({ mode: 'fallback', persona, instructions: instructions.slice(0, 400) });
+    const caps = { tts: !!(elevenKey() || key), stt: !!key };
+    if (!key) return res.json({ mode: 'fallback', persona, caps, instructions: instructions.slice(0, 400) });
     try {
       const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 12000);
       const r = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
@@ -81,9 +142,9 @@ function install(app, deps) {
       });
       clearTimeout(t);
       const j = await r.json();
-      if (!r.ok || !j.value) { console.log('[voice] client secret failed', r.status, JSON.stringify(j).slice(0, 300)); return res.json({ mode: 'fallback', persona, reason: 'realtime-unavailable' }); }
+      if (!r.ok || !j.value) { console.log('[voice] client secret failed', r.status, JSON.stringify(j).slice(0, 300)); return res.json({ mode: 'fallback', persona, caps, reason: 'realtime-unavailable' }); }
       res.json({ mode: 'realtime', persona, client_secret: j.value, expires_at: j.expires_at, model: REALTIME_MODEL });
-    } catch (e) { console.log('[voice] session error', e.message); res.json({ mode: 'fallback', persona, reason: e.message }); }
+    } catch (e) { console.log('[voice] session error', e.message); res.json({ mode: 'fallback', persona, caps, reason: e.message }); }
   });
 
   // 2. Tool execution requested by the browser during a Realtime call.

@@ -7,7 +7,7 @@
   const V = window.BroVoice = {
     state: 'idle', // idle | connecting | live | listening | thinking | speaking | off
     engine: null,   // 'realtime' | 'fallback'
-    persona: localStorage.getItem('bro.persona') || 'bro',
+    persona: (p => p === 'news' ? 'bro' : p)(localStorage.getItem('bro.persona') || 'bro'),
     lang: localStorage.getItem('bro.lang') || 'auto', // auto | en | hi
     course: localStorage.getItem('bro.course') || 'es',
     thread: [],     // {role:'user'|'bro', text, ts}
@@ -16,12 +16,11 @@
   const PERSONAS = [
     { k: 'bro', i: 'message-circle', l: 'Bro', hi: 'Bro' },
     { k: 'teacher', i: 'graduation-cap', l: 'Teach', hi: 'सिखाओ' },
-    { k: 'news', i: 'radio', l: 'News', hi: 'ख़बरें' },
     { k: 'language', i: 'languages', l: 'Speak', hi: 'भाषा' },
   ];
   const QUICK = [
     ['check-square', 'Add a task', 'टास्क जोड़ो', 'Add a task: call mom at 6', 'टास्क जोड़ो: शाम 6 बजे मम्मी को कॉल'],
-    ['radio', "Today's news", 'आज की ख़बरें', "What's in the news today?", 'आज की ख़बरें सुनाओ'],
+    ['calendar', 'My day', 'मेरा दिन', "What's on my schedule today?", 'आज मेरा क्या प्लान है?'],
     ['graduation-cap', 'Teach me', 'कुछ सिखाओ', "Explain inflation like I'm 12", 'महंगाई आसान शब्दों में समझाओ'],
     ['bell', 'Remind me', 'याद दिलाओ', 'Remind me to drink water at 3', '3 बजे पानी पीने की याद दिलाओ'],
   ];
@@ -85,35 +84,62 @@
     if (T && !sum && T.loadSummary && !V._stepsAsked && token) { V._stepsAsked = true; T.loadSummary().then(() => V.rerender()).catch(() => {}); }
     return h;
   };
-  V.rerender = function () { if (S.tab === 'bro' || S.tab === 'home' || !S.tab) { const root = document.getElementById('broVoiceRoot'); if (root) { root.innerHTML = V.html(); V.scroll(); } } };
+  V.rerender = function () { if (S.tab === 'bro' || S.tab === 'home' || !S.tab) { const root = document.getElementById('broVoiceRoot'); if (root) { root.innerHTML = V.html(); V.scroll(); } } V.renderFull(); };
   V.scroll = function () { const t = document.getElementById('bvThread'); if (t) t.scrollTop = t.scrollHeight; };
   V.set = function (st) { V.state = st; V.rerender(); };
   V.push = function (role, text) { if (!text) return; V.thread.push({ role, text, ts: Date.now() }); if (V.thread.length > 60) V.thread.shift(); V.partial = ''; V.rerender(); };
   V.setPersona = function (k) { V.persona = k; localStorage.setItem('bro.persona', k); const was = V.state; V.rerender(); if (was !== 'idle' && was !== 'off') { V.stop(true); V.start(); } };
   V.setLang = function (l) { V.lang = l; localStorage.setItem('bro.lang', l); V.rerender(); if (V.state !== 'idle' && V.state !== 'off') { V.stop(true); V.start(); } };
   V.setCourse = function (c) { V.course = c; localStorage.setItem('bro.course', c); V.rerender(); };
-  V.tapOrb = function () { if (V.state === 'idle' || V.state === 'off') V.start(); else if (V.engine === 'fallback' && V.state === 'live') V.listen(); else V.stop(); };
+  V.tapOrb = function () { V.unlockAudio(); if (V.state === 'idle' || V.state === 'off') V.start(); else if (V.engine === 'fallback' && V.state === 'live') V.listen(); else V.stop(); };
+  // Audio playback must be unlocked by a user gesture on mobile: play a silent clip on the first tap.
+  const SILENT = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
+  V.ttsEl = function () { if (!V.tts) { V.tts = document.createElement('audio'); V.tts.setAttribute('playsinline', ''); V.tts.preload = 'auto'; document.body.appendChild(V.tts); } return V.tts; };
+  V.unlockAudio = function () { try { const a = V.ttsEl(); if (!V.unlocked) { a.src = SILENT; a.play().then(() => { V.unlocked = true; }).catch(() => {}); } } catch (e) {} };
+  // ───────────────────────── full-screen voice mode ─────────────────────────
+  V.fullHtml = function () {
+    const hi = V.lang === 'hi'; const live = V.state !== 'idle' && V.state !== 'off';
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const cap = { connecting: hi ? 'जुड़ रहा है' : 'Connecting', live: hi ? 'बोलो' : 'Your turn', listening: hi ? 'सुन रहा हूँ' : 'Listening', thinking: hi ? 'सोच रहा हूँ' : 'Thinking', speaking: 'Bro' }[V.state] || '';
+    const lastUser = V.thread.slice().reverse().find(m => m.role === 'user'); const lastBro = V.thread.slice().reverse().find(m => m.role === 'bro');
+    let line = '', cls = '';
+    if (V.partial) { line = V.partial; cls = 'bro'; }
+    else if (V.state === 'listening') { line = V.heard || ''; cls = 'user'; }
+    else if (V.state === 'thinking') { line = lastUser ? lastUser.text : ''; cls = 'user'; }
+    else if (lastBro && (V.state === 'speaking' || V.state === 'live')) { line = lastBro.text; cls = 'bro'; }
+    const hint = !live ? '' : V.engine === 'realtime' ? (hi ? 'बस बोलो — बीच में टोक सकते हो' : 'Just talk — interrupt any time') : V.state === 'live' ? (SR ? (hi ? 'बोलने के लिए टैप करो' : 'Tap the circle to speak') : (hi ? 'बोलते समय दबाए रखो' : 'Hold the circle while you speak')) : '';
+    return '<div class="bvf-top"><span class="bvf-mode">' + esc((PERSONAS.find(p => p.k === V.persona) || PERSONAS[0])[hi ? 'hi' : 'l']) + '</span><button class="bvf-x" onclick="BroVoice.stop()" aria-label="Close">' + (window.ico ? ico('x', 22) : '✕') + '</button></div>' +
+      '<div class="bvf-stage"><button class="bv-orb st-' + V.state + '" id="bvfOrb" ' + ((!SR && V.engine === 'fallback' && V.caps && V.caps.stt) ? 'onpointerdown="BroVoice.holdStart()" onpointerup="BroVoice.holdEnd()" onpointercancel="BroVoice.holdEnd()" onpointerleave="BroVoice.holdEnd()"' : 'onclick="BroVoice.tapOrb()"') + ' aria-label="Talk"><span class="bv-ring r1"></span><span class="bv-ring r2"></span><span class="bv-core"><span class="bv-bars"><i></i><i></i><i></i><i></i><i></i></span>' + (live ? '' : ICON.mic) + '</span></button><div class="bvf-cap">' + esc(cap) + '</div><div class="bvf-text ' + cls + '" id="bvfText">' + esc(line) + '</div></div>' +
+      '<div class="bvf-bar"><div class="bvf-hint">' + esc(hint) + '</div><button class="bvf-end" onclick="BroVoice.stop()">' + ICON.stop + (hi ? ' बंद करो' : ' End') + '</button></div>';
+  };
+  V.openFull = function () { let el = document.getElementById('bvFull'); if (!el) { el = document.createElement('div'); el.id = 'bvFull'; el.className = 'bvf'; document.body.appendChild(el); document.documentElement.classList.add('bvf-open'); } el.innerHTML = V.fullHtml(); };
+  V.closeFull = function () { const el = document.getElementById('bvFull'); if (el) el.remove(); document.documentElement.classList.remove('bvf-open'); };
+  V.renderFull = function () { const el = document.getElementById('bvFull'); if (el) el.innerHTML = V.fullHtml(); };
   V.say = function (text) { V.send(text); };
 
   // ───────────────────────── session ─────────────────────────
   V.start = async function () {
     if (V.state === 'connecting') return;
-    V.set('connecting');
+    V.heard = ''; V.set('connecting'); V.openFull();
     let sess;
     try { sess = await api('/voice/session', { method: 'POST', body: JSON.stringify({ persona: V.persona, lang: V.persona === 'language' ? COURSES[V.course] : '', speak: V.lang }) }); } catch (e) { sess = { mode: 'fallback' }; }
     if (sess && sess.mode === 'realtime') {
       try { await V.connectRealtime(sess); return; } catch (e) { console.warn('[bro] realtime failed, falling back', e); }
     }
+    V.caps = (sess && sess.caps) || {}; if (V.caps.tts === false && !elevenHint()) V.noTTS = true;
     V.engine = 'fallback'; V.set('live'); V.listen();
   };
+  const elevenHint = () => false;
   V.stop = function (silent) {
     try { if (V.dc) V.dc.close(); } catch (e) {}
     try { if (V.pc) V.pc.close(); } catch (e) {}
     try { if (V.mic) V.mic.getTracks().forEach(t => t.stop()); } catch (e) {}
     try { if (V.rec) { V.rec.onend = null; V.rec.stop(); } } catch (e) {}
     try { speechSynthesis.cancel(); } catch (e) {}
-    V.pc = V.dc = V.mic = V.rec = null; V.handsFree = false; V.partial = '';
-    V.state = 'idle'; if (!silent) V.rerender();
+    try { if (V.tts) { V.tts.pause(); V.tts.onended = null; } } catch (e) {}
+    try { if (V.recd) { V.recd.onstop = null; V.recd.stop(); V.recd.stream.getTracks().forEach(t => t.stop()); } } catch (e) {} V.recd = null;
+    V.pc = V.dc = V.mic = V.rec = null; V.handsFree = false; V.partial = ''; V.heard = '';
+    V.closeFull(); V.state = 'idle'; if (!silent) V.rerender();
   };
 
   // ───────────────────────── realtime (WebRTC) ─────────────────────────
@@ -157,24 +183,63 @@
   // ───────────────────────── fallback (browser STT/TTS) ─────────────────────────
   V.listen = function () {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { toast('Voice input is not supported here — type to Bro instead'); V.set('live'); return; }
+    if (!SR) { if (!(V.caps && V.caps.stt)) toast(V.lang === 'hi' ? 'यहाँ आवाज़ से इनपुट नहीं — टाइप करो' : 'Voice input is not supported here — type to Bro instead'); V.set('live'); return; }
     try { speechSynthesis.cancel(); } catch (e) {}
     const rec = new SR(); V.rec = rec;
     rec.lang = V.lang === 'hi' ? 'hi-IN' : V.lang === 'en' ? 'en-IN' : (navigator.language || 'en-IN');
     rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
     let final = '';
-    rec.onresult = e => { let s = ''; for (let i = e.resultIndex; i < e.results.length; i++) { s += e.results[i][0].transcript; if (e.results[i].isFinal) final += e.results[i][0].transcript; } const h = document.querySelector('.bv-hint'); if (h) h.textContent = s || 'Speak now…'; };
+    rec.onresult = e => { let s = ''; for (let i = e.resultIndex; i < e.results.length; i++) { s += e.results[i][0].transcript; if (e.results[i].isFinal) final += e.results[i][0].transcript; } V.heard = s; const t = document.getElementById('bvfText'); if (t) { t.textContent = s; t.className = 'bvf-text user'; } };
     rec.onerror = e => { if (e.error === 'not-allowed') toast('Microphone blocked — allow it in site settings'); };
-    rec.onend = () => { V.rec = null; const text = final.trim(); if (text) V.send(text); else if (V.state === 'listening') V.set('live'); };
+    rec.onend = () => { V.rec = null; const text = final.trim(); V.heard = ''; if (text) V.send(text); else if (V.state === 'listening') V.set('live'); };
     V.set('listening'); try { rec.start(); } catch (e) { V.set('live'); }
   };
-  V.speak = function (text, onEnd) {
-    if (!('speechSynthesis' in window)) { onEnd && onEnd(); return; }
+  // Press-and-hold recording → /api/voice/transcribe (OpenAI) when SpeechRecognition is missing (e.g. some iOS / desktop browsers).
+  V.holdStart = async function () {
+    if (V.engine !== 'fallback' || V.state !== 'live' || V.recd) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+      const rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); const parts = [];
+      rec.ondataavailable = e => { if (e.data && e.data.size) parts.push(e.data); };
+      rec.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop()); V.recd = null;
+        const blob = new Blob(parts, { type: rec.mimeType || mime || 'audio/webm' });
+        if (blob.size < 2000) { V.set('live'); return; }
+        V.set('thinking');
+        try {
+          const r = await fetch('/api/voice/transcribe?lang=' + (V.lang === 'auto' ? '' : V.lang), { method: 'POST', headers: { 'Content-Type': blob.type, 'x-token': (typeof token !== 'undefined' && token) || '' }, body: blob });
+          const j = await r.json(); if (j && j.text) V.send(j.text); else { toast(j && j.error ? j.error : 'Could not hear that'); V.set('live'); }
+        } catch (e) { toast('Could not hear that'); V.set('live'); }
+      };
+      V.recd = rec; rec.start(); V.set('listening');
+    } catch (e) { toast('Microphone blocked — allow it in site settings'); }
+  };
+  V.holdEnd = function () { try { if (V.recd && V.recd.state === 'recording') V.recd.stop(); } catch (e) {} };
+  V.speak = async function (text, onEnd) {
+    const clean = text.replace(/[*_#`>]/g, '').replace(/https?:\S+/g, '').trim();
+    const hi = hasDevanagari(clean);
+    V.set('speaking');
+    if (!V.noTTS && clean) {
+      try {
+        const r = await fetch('/api/voice/tts', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': (typeof token !== 'undefined' && token) || '' }, body: JSON.stringify({ text: clean, lang: hi ? 'hi' : (V.lang === 'hi' ? 'hi' : 'en') }) });
+        if (r.status === 404 || r.status === 501) V.noTTS = true;
+        else if (r.ok) {
+          const blob = await r.blob(); if (V.state !== 'speaking') return;
+          const url = URL.createObjectURL(blob); const a = V.ttsEl();
+          await new Promise(resolve => { a.onended = a.onerror = () => { URL.revokeObjectURL(url); resolve(); }; a.src = url; a.play().catch(() => resolve()); });
+          if (V.state === 'speaking') { V.set('live'); onEnd && onEnd(); }
+          return;
+        }
+      } catch (e) { /* fall through to the device voice */ }
+    }
+    V.speakLocal(clean, hi, onEnd);
+  };
+  V.speakLocal = function (clean, hi, onEnd) {
+    if (!('speechSynthesis' in window)) { V.set('live'); onEnd && onEnd(); return; }
     speechSynthesis.cancel();
-    const hi = hasDevanagari(text);
-    const clean = text.replace(/[*_#`>]/g, '').replace(/https?:\S+/g, '');
     const chunks = clean.match(/[^.!?।\n]+[.!?।\n]*/g) || [clean];
-    let i = 0; V.set('speaking');
+    let i = 0; if (V.state !== 'speaking') V.set('speaking');
     const vs = speechSynthesis.getVoices();
     const pick = vs.find(v => hi ? /hi-IN|hi_IN/i.test(v.lang) : /en-IN/i.test(v.lang) && /natural|neural|google/i.test(v.name)) || vs.find(v => hi ? /^hi/i.test(v.lang) : /^en/i.test(v.lang));
     const next = () => {

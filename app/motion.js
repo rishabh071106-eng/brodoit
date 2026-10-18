@@ -63,7 +63,7 @@
     if (reduced()) return;
     var c = document.createElement('canvas'); c.className = 'm-confetti';
     var W = c.width = innerWidth, H = c.height = innerHeight; document.body.appendChild(c);
-    var ctx = c.getContext('2d'); var cols = ['#FF5A36', '#FF2D7A', '#6C4CF1', '#00C2A8', '#FFB800', '#19C37D'];
+    var ctx = c.getContext('2d'); var cols = ['#B5402A', '#8E2F1E', '#1F1E1C', '#D9654E', '#E8DCC8', '#F3E9D8'];
     var ps = []; for (var k = 0; k < (n || 110); k++) ps.push({ x: x == null ? W / 2 : x, y: y == null ? H * .38 : y, vx: (Math.random() - .5) * 16, vy: -Math.random() * 15 - 5, r: Math.random() * 5 + 3, c: cols[Math.random() * cols.length | 0], a: Math.random() * Math.PI, s: Math.random() * .3 - .15 });
     var t0 = performance.now();
     (function tick(now) {

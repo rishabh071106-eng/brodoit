@@ -150,3 +150,9 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
 - Don't commit `.env` — it's gitignored
 - Don't use `git push --force` — Railway tracks main branch
 - Don't assume HMR — server must restart for any change to take effect
+
+
+## Android (v9.4)
+- `android/` — Kotlin TWA + background steps (`LauncherActivity`, `EnableStepsActivity`, `StepsEngine` → `RecordingProvider`/`SensorProvider`, `SyncJobService`, `Scheduler`, `Api`). Package `com.brodoit.app`, built by `.github/workflows/android.yml`.
+- `modules/android.js` — fetches the newest GitHub release, signs with the on-volume upload key, serves `/download/brodoit.apk`, `/android`, `/api/android/status`; `global._androidCert()` feeds `/.well-known/assetlinks.json`.
+- Steps client: `isTWA()` accepts `android-app://com.brodoit.*` and `?twa=1`; "Turn on" opens `intent://enable#Intent;scheme=brodoit;package=com.brodoit.app;end`.

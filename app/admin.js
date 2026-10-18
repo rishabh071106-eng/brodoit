@@ -28,6 +28,7 @@
     { k: 'elevenlabs', label: 'ElevenLabs', icon: 'radio', off: 'device voice' },
     { k: 'gemini', label: 'Gemini', icon: 'sparkles', off: 'set on server' },
     { k: 'ffmpeg', label: 'ffmpeg', icon: 'film', off: 'lessons need it' },
+    { k: 'android', label: 'Android app', icon: 'smartphone', off: 'building…' },
   ];
   const JOBS = [
     { k: 'bulletin', label: "Record today's bulletin", sub: 'English + Hindi · once per day', icon: 'radio' },

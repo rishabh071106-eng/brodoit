@@ -94,7 +94,7 @@
   };
   N.html = function () {
     let h = '<div class="nw">';
-    h += '<div class="nw-top"><div><div class="b-eyebrow">Brodoit News</div><div class="b-h1">Hear today\'s news</div></div><div class="nw-lang"><button class="' + (N.lang === 'en' ? 'on' : '') + '" onclick="NewsChannel.setLang(\'en\')">English</button><button class="' + (N.lang === 'hi' ? 'on' : '') + '" onclick="NewsChannel.setLang(\'hi\')">हिंदी</button></div></div>';
+    h += '<div class="nw-top"><div class="b-h1">' + (N.lang === 'hi' ? 'ख़बरें' : 'News') + '</div><div class="nw-lang"><button class="' + (N.lang === 'en' ? 'on' : '') + '" onclick="NewsChannel.setLang(\'en\')">English</button><button class="' + (N.lang === 'hi' ? 'on' : '') + '" onclick="NewsChannel.setLang(\'hi\')">हिंदी</button></div></div>';
     h += '<div class="nw-tabs">' + [['today', 'Today'], ['live', 'Live headlines'], ['archive', 'Past days'], ['monthly', 'Monthly']].map(x => '<button class="' + (N.view === x[0] ? 'on' : '') + '" onclick="NewsChannel.setView(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div>';
     if (!N.loaded) h += '<div class="nw-empty">Loading…</div>';
     else if (N.view === 'today') {

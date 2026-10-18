@@ -1,7 +1,7 @@
 /* Brodoit Admin card (You → Admin) — v10 tokens only (see /app/theme.css). Mobile-first 390px, 4-pt grid, ≥44px taps. */
 /* Small-text inks: the brand violet/red/mint fills stay as tokens, but 12–13px text on the soft tints needs deeper (light)
    or lighter (dark) inks to clear WCAG AA 4.5:1 — measured in the harness for both themes. */
-.adm{--adm-violet-ink:#5B3DE0;--adm-red-ink:#A8252B;--adm-mint-ink:#0B6B45;--adm-warn-ink:#C43A1E}
+.adm{--adm-violet-ink:#5B3DE0;--adm-red-ink:#A8252B;--adm-mint-ink:#0B6B45;--adm-warn-ink:#8E2F1E}
 html[data-theme="dark"] .adm,:root[data-theme="dark"] .adm,body[data-theme=aurora] .adm{--adm-violet-ink:#A99AFF;--adm-red-ink:#FF8A8E;--adm-mint-ink:#5EE0A6;--adm-warn-ink:#FF9D7E}
 .adm{display:grid;gap:16px;padding:16px;margin:16px 0;font-family:var(--b-sans);color:var(--b-ink);animation:b-rise var(--m-enter) var(--ease);-webkit-tap-highlight-color:transparent}
 .adm *{box-sizing:border-box}
@@ -20,7 +20,7 @@ html[data-theme="dark"] .adm,:root[data-theme="dark"] .adm,body[data-theme=auror
 /* ── service tiles ── */
 .adm-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .adm-tile{position:relative;display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 24px 10px 12px;border-radius:var(--r-md);background:var(--b-bg-2);border:1px solid transparent;transition:background var(--m-state) var(--ease),border-color var(--m-state) var(--ease)}
-.adm-tile.on{background:var(--b-mint-soft);border-color:rgba(25,195,125,.25)}
+.adm-tile.on{background:var(--b-mint-soft);border-color:rgba(47,125,79,.25)}
 .adm-tile-ic{width:32px;height:32px;border-radius:var(--r-sm);display:grid;place-items:center;flex-shrink:0;background:var(--b-card);color:var(--b-mute);box-shadow:var(--sh-1)}
 .adm-tile.on .adm-tile-ic{color:var(--adm-mint-ink)}
 .adm-tile-b{flex:1;min-width:0}
@@ -94,7 +94,7 @@ html[data-theme="dark"] .adm,:root[data-theme="dark"] .adm,body[data-theme=auror
 /* ── jobs ── */
 .adm-jobs{display:grid;gap:10px}
 .adm-job{display:grid;gap:10px;padding:14px;border-radius:var(--r-md);border:1px solid var(--b-line);background:var(--b-bg);transition:border-color var(--m-state) var(--ease)}
-.adm-job[data-status="running"]{border-color:rgba(108,76,241,.35)}
+.adm-job[data-status="running"]{border-color:rgba(31,30,28,.35)}
 .adm-job[data-status="failed"]{border-color:rgba(229,72,77,.35)}
 .adm-job-h{display:flex;align-items:center;gap:10px}
 .adm-job-ic{width:36px;height:36px;border-radius:var(--r-sm);display:grid;place-items:center;flex-shrink:0;background:var(--b-primary-soft);color:var(--b-primary)}
@@ -113,7 +113,7 @@ html[data-theme="dark"] .adm,:root[data-theme="dark"] .adm,body[data-theme=auror
 .adm-logt{margin-left:auto;min-height:44px;padding:0 12px;border:none;background:none;color:var(--adm-violet-ink);font:var(--t-cap);font-weight:800;cursor:pointer}
 .adm-log{margin:0;max-height:220px;overflow:auto;padding:10px 12px;border-radius:var(--r-sm);background:var(--b-ink);color:var(--b-bg);font:500 12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;-webkit-overflow-scrolling:touch}
 html[data-theme="dark"] .adm-log,:root[data-theme="dark"] .adm-log,body[data-theme=aurora] .adm-log{background:#0A0C10;color:#C9C5D2}
-.adm-job[data-status="running"] .adm-log{box-shadow:inset 0 0 0 1px rgba(108,76,241,.5)}
+.adm-job[data-status="running"] .adm-log{box-shadow:inset 0 0 0 1px rgba(31,30,28,.5)}
 
 /* ── error ── */
 .adm-err{display:flex;gap:10px;align-items:flex-start;padding:14px;border-radius:var(--r-md);background:rgba(229,72,77,.10)}

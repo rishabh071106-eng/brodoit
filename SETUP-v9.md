@@ -31,3 +31,11 @@ The Steps tab works on honest data today: steps are **synced when you open Brodo
 - **Books**: "हिंदी में सुनें" on every brief once `hindi-books.js` has run; player with sections, ±15 s, speed, read-along.
 - **You**: time-in-app analytics, weekly chart, Google Fit steps. Phone-wide screen time needs the native Android build (usage-access permission) — not possible from the web app.
 - Games and Wisdom tabs removed; new logo/icons; new theme.
+
+
+## Android app (automatic steps)
+- Source lives in `android/` (Trusted Web Activity + native step counter). Every push that touches `android/**` runs `.github/workflows/android.yml`, which publishes an **unsigned** APK/AAB plus `apksigner.jar` as a GitHub release.
+- The server (`modules/android.js`) checks for a new release hourly, signs it with an upload key generated once on the data volume (`/data/media/android/upload.jks`), and serves it at `/download/brodoit.apk`. The install page is `/android`; status at `/api/android/status`.
+- In the app: Steps → "Install Brodoit for Android" → Install → Open → **Allow** (Physical activity). Steps then count with the app closed (Recording API on mobile; hardware step counter as fallback) and sync every 30 minutes.
+- Pairing is automatic: the app opens the site with `device_id` + `ct`; the web app claims the phone for the logged-in account.
+- Play Console (optional, later): download the signed `.aab` from You → Admin (admin only, `/download/brodoit.aab`) and the upload-key backup from `/api/admin/android/keystore`.

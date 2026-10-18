@@ -35,7 +35,7 @@ class EnableStepsActivity : Activity() {
         val icon = ImageView(this).apply { setImageResource(R.drawable.ic_launcher_foreground); layoutParams = LinearLayout.LayoutParams(dp(160f), dp(160f)) }
         val title = TextView(this).apply {
             text = getString(R.string.enable_title); textSize = 28f; setTypeface(null, Typeface.BOLD); gravity = Gravity.CENTER
-            setTextColor(Color.parseColor("#17141F")); setPadding(0, dp(18f), 0, dp(10f))
+            setTextColor(Color.parseColor("#1F1E1C")); setPadding(0, dp(18f), 0, dp(10f))
         }
         val body = TextView(this).apply {
             text = getString(R.string.enable_body); textSize = 16f; gravity = Gravity.CENTER; setTextColor(Color.parseColor("#6F697D")); setLineSpacing(0f, 1.3f)
@@ -43,7 +43,7 @@ class EnableStepsActivity : Activity() {
         status = TextView(this).apply { textSize = 14f; gravity = Gravity.CENTER; setTextColor(Color.parseColor("#C2410C")); setPadding(0, dp(12f), 0, 0); visibility = View.GONE }
         allow = Button(this).apply {
             text = getString(R.string.enable_allow); textSize = 17f; setTypeface(null, Typeface.BOLD); setTextColor(Color.WHITE); isAllCaps = false
-            background = GradientDrawable().apply { cornerRadius = dp(18f).toFloat(); setColor(Color.parseColor("#FF5A36")) }
+            background = GradientDrawable().apply { cornerRadius = dp(18f).toFloat(); setColor(Color.parseColor("#B5402A")) }
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(56f)).apply { topMargin = dp(28f) }
             setOnClickListener { ask() }
         }
@@ -71,7 +71,7 @@ class EnableStepsActivity : Activity() {
 
     private fun finishEnable() {
         allow.isEnabled = false; status.text = getString(R.string.enable_working); status.visibility = View.VISIBLE
-        status.setTextColor(Color.parseColor("#009E89"))
+        status.setTextColor(Color.parseColor("#8E2F1E"))
         Thread {
             try {
                 StepsEngine.enable(this)
