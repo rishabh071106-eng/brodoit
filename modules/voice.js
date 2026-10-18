@@ -73,7 +73,12 @@ function install(app, deps) {
   }
   if (CACHE) { setTimeout(pruneCache, 30000); setInterval(pruneCache, 6 * 3600e3); }
   const inflight = new Map(); // one synthesis per uncached News chunk, however many people tap Listen at once
+  const ttsHits = new Map(); // per-user: at most 30 speech requests a minute (each one may cost credits)
+  setInterval(() => { const cut = Date.now() - 60e3; for (const [u, l] of ttsHits) { const k = l.filter(t => t > cut); if (k.length) ttsHits.set(u, k); else ttsHits.delete(u); } }, 5 * 60e3).unref();
   app.post('/api/voice/tts', auth, async (req, res) => {
+    const who = String((req.user && (req.user.phone || req.user.id)) || req.ip); const cut = Date.now() - 60e3;
+    const hits = (ttsHits.get(who) || []).filter(t => t > cut); if (hits.length >= 30) return res.status(429).json({ error: 'slow down' });
+    hits.push(Date.now()); ttsHits.set(who, hits);
     const text = String(req.body && req.body.text || '').replace(/\s+/g, ' ').trim().slice(0, 1500);
     if (!text) return res.status(400).json({ error: 'text required' });
     const lang = String(req.body && req.body.lang || '') === 'hi' ? 'hi' : 'en';

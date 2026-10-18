@@ -1,0 +1,19 @@
+{
+ "note": "Encrypted for the live server only (RSA-OAEP-256). See modules/sealed.js.",
+ "items": [
+  {
+   "id": "73929673d57a4baa",
+   "key": "GEMINI_API_KEY",
+   "fp": "e2cff3f3895030ea",
+   "ct": "d04inkx07N9LjLBVT/Vz40DrsRLwJ/YoxtaeKgvtfUrH0oGK0vJ4EsvjxdEK6/tTnHNnZ5Grs7DAYVeR3FzGpnMLhI8vo8TAqyFzJtoK2C61fONOOjjCoIFeD3ybiJSstHkZ0M+b1BY6A+c9VXjjeRJIjxHJrvWjiyFRm1wm0yC7E6NP7Crs8X4e6ChgCEbq0mioatF/q9pu5eyTsi1Xlp33J40941HKLIIzju9owjjGdtreaRNXkmsgfkX4hto8P5j24GenAvXGkdVdicCti2ec3BVkuciXiDCLN9q0TLwnooZuVlAOvjldHXjgKBFlMIbae01bIOnqil0SQ/evnYQUf9QbOs8M/RZ6xyZ3OS9Md6uPF5CydyV9OK9HvptX1kJUTWg2GCNl68CY0ScsbYC6ZjSNfUCKy0iTnVHjHHS3/Q+r+evbP+qRPvfAFlRCOSJLerFPDEDVmXVd6uS+CBCL54Whb9vDgzu/bVkS4Kys+GuoeCgu728jZh9F4dQI",
+   "sealed_at": "2026-10-18T17:22:02.559Z"
+  },
+  {
+   "id": "a4fb945604ede92e",
+   "key": "ELEVENLABS_API_KEY",
+   "fp": "e2cff3f3895030ea",
+   "ct": "jUT0dNKcoxul4/ztdQYRVgpWmnbHVSJi98XKB6x996oq7Q0e57bqHjaZrkuerMLQHqdq+6ZRN6BUrhmp/4WZ0ZZ5MCOeKUG8UjnTxC7cDGr39zbBb5z0wZbiAOuQ74FiKYsgmc2tJ2H+znnSWtCkg5JOVPn7VRR6xa6g3p+fHq6M6cve+ls0eMXxVSa8HxzGuN3LmGgAOvshGFJ0fu4c/mj6twtICnzp4McFiP0DzXPZ9PKw4lQBxolzoEPwgXiaBJtlKem+aX8WXhRmhJJUApA0hDQpk427yZsJmf09PveE8RatdwYMSjnhV/m2kgl8CEzop7T0DYX6/RDPw9x4wSTzT/bHnIh9Nri/73CTYSA9b9gp3VfRPLUhfc4KagNT9toxBZufjNNp/uAKaBLiBpRRzLsdIm4gJ3reGf+SvvL/vagHnvoyr1ZT6krTu2w5K9N12XF6avTkgJtyvCxiWHmHQrHVF7FxMSne8Ghk1QxkDQo9/5GBSEZS3UlAf/T0",
+   "sealed_at": "2026-10-18T17:22:02.561Z"
+  }
+ ]
+}

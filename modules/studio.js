@@ -56,7 +56,7 @@ async function plan(opts) {
   for (const p of order(gs, opts.purpose)) {
     if (isDown(p)) continue;
     if (p === 'gemini' && opts.mp3 && !GV.hasFfmpeg()) continue;
-    if (p === 'eleven' && !(await elevenOk(k.eleven, opts.chars || 0, opts.purpose || 'daily')).ok) continue;
+    if (p === 'eleven') { const b = await elevenOk(k.eleven, opts.chars || 0, opts.purpose || 'daily'); if (b.hold) EV.release(k.eleven, b.hold); if (!b.ok) continue; }
     if (p !== 'eleven' && !payOk(p, opts.chars || 0, opts.purpose || 'daily').ok) continue;
     return p;
   }
@@ -91,7 +91,8 @@ async function speak(opts) {
       if (p === 'eleven') {
         const b = await elevenOk(k.eleven, text.length, purpose); if (!b.ok) { lastErr = new Error(b.reason); continue; }
         const voice = opts.voiceId || await EV.pickVoice(k.eleven, lang, gs);
-        out = { buf: await EV.speak(k.eleven, text, lang, voice, opts.eleven || {}), mime: 'audio/mpeg' };
+        try { out = { buf: await EV.speak(k.eleven, text, lang, voice, opts.eleven || {}), mime: 'audio/mpeg' }; }
+        catch (e) { if (b.hold) EV.release(k.eleven, b.hold); throw e; } // a failed call is not charged
       } else if (p === 'gemini') {
         if (opts.mp3 && !GV.hasFfmpeg()) continue;
         const pb = payOk(p, text.length, purpose); if (!pb.ok) { lastErr = new Error(pb.reason); continue; }

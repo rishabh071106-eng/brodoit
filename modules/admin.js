@@ -154,6 +154,8 @@ function install(app, deps) {
     const j = getJob(kind); if (!j) return { status: 404, body: { error: 'unknown job' } };
     if (j.status === 'running') return { status: 409, body: { error: 'already running', job: pub(j) } };
     const pre = preflight(kind, opts); if (pre) return { status: 400, body: { error: pre, job: pub(j) } };
+    const other = ['hindi-books', 'lang-audio'].find(k => k !== kind && kind !== 'bulletin' && getJob(k).status === 'running');
+    if (other) return { status: 409, body: { error: getJob(other).label + ' is running — one recording at a time keeps the credit budget honest', job: pub(j) } };
     if (kind === 'bulletin') { runBulletin(j); return { status: 200, body: { ok: true, job: pub(j) } }; }
     const r = startScript(j, opts); if (r.error) return { status: r.status || 500, body: { error: r.error, job: pub(j) } };
     return { status: 200, body: { ok: true, job: pub(j) } };
