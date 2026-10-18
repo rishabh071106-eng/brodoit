@@ -1,0 +1,52 @@
+# Builds the Brodoit Android app (TWA + background step counter) and publishes the unsigned APK/AAB
+# plus apksigner as a GitHub release. The Brodoit server (modules/android.js) downloads the newest
+# release, signs it with its own upload key kept on the data volume, and serves /download/brodoit.apk.
+name: android
+on:
+  push:
+    paths: ['android/**', '.github/workflows/android.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.11.1' }
+      - name: Build release APK and AAB (unsigned)
+        working-directory: android
+        env:
+          BRODOIT_BUILD_NUMBER: ${{ github.run_number }}
+          BRODOIT_SITE_URL: https://brodoit.com
+        run: gradle --no-daemon :app:assembleRelease :app:bundleRelease
+      - name: Collect artifacts
+        run: |
+          set -e
+          mkdir -p out
+          cp android/app/build/outputs/apk/release/app-release-unsigned.apk out/brodoit-unsigned.apk
+          cp android/app/build/outputs/bundle/release/app-release.aab out/brodoit-unsigned.aab
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          cp "$BT/lib/apksigner.jar" out/apksigner.jar
+          echo "{\"build\":${{ github.run_number }},\"version\":\"1.0.${{ github.run_number }}\",\"sha\":\"${{ github.sha }}\",\"ref\":\"${{ github.ref_name }}\"}" > out/build.json
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with: { name: brodoit-android, path: out }
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-v1.0.${{ github.run_number }}
+          name: Brodoit Android 1.0.${{ github.run_number }}
+          body: "Unsigned build from ${{ github.ref_name }} @ ${{ github.sha }}. The Brodoit server signs and serves it at /download/brodoit.apk."
+          files: |
+            out/brodoit-unsigned.apk
+            out/brodoit-unsigned.aab
+            out/apksigner.jar
+            out/build.json

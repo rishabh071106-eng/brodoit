@@ -33,7 +33,7 @@ const OG_TTL = 10 * 60 * 1000;
 const SWAP_DAYS = 7;         // device swap cooldown
 const REPORTS_TO_HIDE = 3;
 const PEPPER = process.env.STEPS_PEPPER || 'brodoit-steps-pepper-v1';
-const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.brodoit.twa';
+const PLAY_URL = '/android';
 const CODE_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ23456789';
 
 // ───────────────────────── time helpers (IST + per-user tz, all inside this module) ─────────────────────────
@@ -739,7 +739,7 @@ function install(app, deps) {
     const tk = todayOf(p.user_phone, u), today = dayRow(p.user_phone, tk);
     return { name: displayName(u.name), hue: p.avatar_hue, streak: liveStreakOf(p.user_phone, p, tk), goal: p.goal, today: today.counted, code };
   }
-  const intentUrl = code => { const host = PUBLIC_URL.replace(/^https?:\/\//, ''); return `intent://${host}/?join=${code}#Intent;scheme=https;package=com.brodoit.twa;S.browser_fallback_url=${encodeURIComponent(PUBLIC_URL + '/?join=' + code)};end`; };
+  const intentUrl = code => { const host = PUBLIC_URL.replace(/^https?:\/\//, ''); return `intent://${host}/?join=${code}#Intent;scheme=https;package=com.brodoit.app;S.browser_fallback_url=${encodeURIComponent(PUBLIC_URL + '/?join=' + code)};end`; };
   function joinHtml(code, inv) {
     const title = inv ? `${inv.name} invited you to walk on Brodoit` : 'Walk with me on Brodoit';
     const desc = inv ? `${inv.name} ${inv.streak > 0 ? `is on a ${inv.streak}-day streak` : 'counts steps on Brodoit'}. Join the crew, count your steps, and climb the board together.` : 'Count your steps with friends and climb the board together.';
@@ -775,7 +775,7 @@ ${inv ? `<div class="av">${esc(initialOf(inv.name) || '•')}</div>` : ''}
 <div class="ring"><svg width="148" height="148" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="10"/><circle class="p" cx="60" cy="60" r="54" fill="none" stroke="#00C2A8" stroke-width="10" stroke-linecap="round" stroke-dasharray="${dash} ${C.toFixed(1)}"/></svg><div class="n">${inv ? fmtN(inv.today) : '8,000'}<small>steps today</small></div></div>
 ${inv && inv.streak ? `<div class="chip">🔥 ${inv.streak}-day streak</div><br>` : ''}
 <a class="btn" id="open" href="${esc(open)}">Open Brodoit</a>
-<a class="play" href="${esc(PLAY_URL)}" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9z"/></svg>Get it on Google Play</a>
+<a class="play" href="${esc(PLAY_URL)}" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9z"/></svg>Get the Android app</a>
 <div class="code">CODE ${esc(code || '')}</div>
 </div>
 <script>

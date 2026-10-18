@@ -27,7 +27,7 @@
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   const isHi = () => { try { return document.documentElement.lang === 'hi' || localStorage.getItem('bd_lang') === 'hi'; } catch (e) { return document.documentElement.lang === 'hi'; } };
-  const isTWA = () => { try { if (localStorage.getItem('bd_twa') === '1') return true; } catch (e) {} const r = (document.referrer || '').indexOf('android-app://com.brodoit.twa') === 0; const q = /[?&]bd=/.test(location.search || ''); if (r || q) { try { localStorage.setItem('bd_twa', '1'); } catch (e) {} } return r || q; };
+  const isTWA = () => { try { if (localStorage.getItem('bd_twa') === '1') return true; } catch (e) {} const r = /^android-app:\/\/com\.brodoit\./.test(document.referrer || ''); const q = /[?&](bd=|twa=1|device_id=)/.test(location.search || ''); if (r || q) { try { localStorage.setItem('bd_twa', '1'); } catch (e) {} } return r || q; };
   const UA = () => navigator.userAgent || '';
   const isIOS = () => /iPhone|iPad|iPod/i.test(UA()) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isAndroid = () => /Android/i.test(UA());
@@ -333,7 +333,7 @@
     const on = T.walk.on;
     return '<nav class="st-chips" aria-label="Actions">' +
       '<button class="st-chip move' + (on ? ' on' : '') + '" onclick="StepsTab.' + (on ? 'walkStop' : 'walkStart') + '()"><span>' + ic('walk', 18) + '</span>' + _esc(on ? t('stop') : t('walkLearn')) + '</button>' +
-      '<button class="st-chip" onclick="StepsTab.openSheet(\'manual\')"><span>' + ic('plus', 18) + '</span>' + _esc(t('log')) + '</button>' +
+      (T.stateNow() === 'bg' ? '<button class="st-chip on" onclick="StepsTab.pillTap()"><span>' + ic('zap', 18) + '</span>' + (isHi() ? 'ऑटो ✓' : 'Auto ✓') + '</button>' : '<button class="st-chip" onclick="StepsTab.pillTap()"><span>' + ic('smartphone', 18) + '</span>' + (isHi() ? 'ऑटो गिनती' : 'Auto-count') + '</button>') +
       '<button class="st-chip" onclick="StepsTab.openSheet(\'share\')"><span>' + ic('share', 18) + '</span>' + _esc(t('share')) + '</button>' +
       '<button class="st-chip" onclick="StepsTab.openSheet(\'goal\')"><span>' + ic('target', 18) + '</span>' + _esc(t('goal')) + '</button></nav>';
   }
@@ -423,7 +423,14 @@
     const st = T.stateNow(); const enable = st === 'enable' || (st === 'walk' && isTWA());
     let h = sh(enable ? (hi() ? 'बैकग्राउंड में कदम गिनें' : 'Count steps in the background') : (hi() ? 'Brodoit ऐप लें' : 'Get the Brodoit app'), enable ? (hi() ? 'ऐप बंद होने पर भी पूरे दिन गिनती — बैटरी पर असर नहीं।' : 'Counts all day, even with the app closed. Nothing to remember.') : (hi() ? 'Android ऐप आपके कदम अपने आप सिंक करता है।' : 'The Android app syncs your steps automatically.'));
     h += '<ul class="st-why"><li><span>' + ic('zap', 18) + '</span>' + (hi() ? 'फ़ोन का स्टेप सेंसर — बैटरी नहीं खाता' : 'Uses the phone’s step sensor — no battery drain') + '</li><li><span>' + ic('trophy', 18) + '</span>' + (hi() ? 'दोस्तों के बोर्ड पर असली सैर गिनती है' : 'Real walks count on the friends board') + '</li><li><span>' + ic('info', 18) + '</span>' + (hi() ? 'निजी: सिर्फ़ रोज़ का कुल सिंक होता है' : 'Private: only your daily total is synced') + '</li></ul>';
-    if (!enable) { h += '<div class="st-actions"><a class="b-btn wide" style="background:#17141F;box-shadow:0 4px 0 0 #000" href="https://play.google.com/store/apps/details?id=com.brodoit.twa" target="_blank" rel="noopener" onclick="StepsTab.hapOnly()">' + ic('play', 18) + (hi() ? 'Google Play पर पाएँ' : 'Get it on Google Play') + '</a><button class="b-btn ghost wide" onclick="StepsTab.openSheet(\'manual\')">' + ic('plus', 18) + (hi() ? 'या कदम मैन्युअल लॉग करें' : 'Or log steps manually') + '</button></div>'; return h; }
+    if (!enable) {
+      const A = T.android || {};
+      if (A.ready) h += '<div class="st-actions"><a class="b-btn wide" style="background:#17141F;box-shadow:0 4px 0 0 #000" href="/download/brodoit.apk" onclick="StepsTab.hapOnly()">' + ic('download', 18) + (hi() ? 'Brodoit ऐप इंस्टॉल करें' : 'Install Brodoit for Android') + '</a><p class="st-foot">' + (hi() ? 'v' + _esc(A.version) + ' · मुफ़्त · Install → Open → Allow' : 'v' + _esc(A.version) + ' · free · Install → Open → Allow') + '</p></div>';
+      else if (A.loaded) h += '<div class="st-test">' + ic('info', 16) + (hi() ? 'Android ऐप अभी बन रहा है — कुछ मिनट में फिर देखें।' : 'The Android app is being built — check again in a few minutes.') + '</div><div class="st-actions"><button class="b-btn ghost wide" onclick="StepsTab.closeSheet()">' + (hi() ? 'ठीक है' : 'OK') + '</button></div>';
+      else { h += '<div class="st-test"><span class="st-spin"></span>' + (hi() ? 'देख रहे हैं…' : 'Checking…') + '</div>'; T.loadAndroid(); }
+      h += '<div class="st-actions"><button class="b-btn ghost wide" onclick="StepsTab.openSheet(\'manual\')">' + (hi() ? 'आज के कदम ख़ुद लिखें' : 'Or log today by hand') + '</button></div>';
+      return h;
+    }
     const E = T.enable;
     if (E.busy) h += '<div class="st-test" id="stEnableWait" role="status"><span class="st-spin"></span>' + (hi() ? 'ऐप से पहला सिंक आने का इंतज़ार…' : 'Waiting for the app’s first sync…') + '<span style="margin-left:auto;font-variant-numeric:tabular-nums">' + E.left + 's</span></div><div class="st-actions"><button class="b-btn ghost wide" onclick="StepsTab.enableCancel()">' + (hi() ? 'रद्द करें' : 'Cancel') + '</button></div>';
     else if (E.failed) {
@@ -435,6 +442,7 @@
     return h;
   }
   T.hapOnly = () => hap('medium');
+  T.loadAndroid = async function () { if (T._androidP) return T._androidP; T._androidP = fetch('/api/android/status', { cache: 'no-store' }).then(r => r.json()).then(j => { T.android = Object.assign({ loaded: true }, j || {}); }).catch(() => { T.android = { loaded: true, ready: false }; }).finally(() => { T._androidP = null; if (T.sheet && T.sheet.kind === 'enable') T.renderSheet(); }); return T._androidP; };
   // "Turn on" (inside the Android app, no bound device yet). There is no deep link for this: the native wrapper is asked through
   // any bridge it exposes (JS interface or a DOM event), a claim pair handed over on the URL is redeemed, and then the summary
   // is polled for state 'bg'. Success closes the sheet with a toast; a timeout shows what to do next — never a silent close.
@@ -443,6 +451,7 @@
   T.enableTap = async function () {
     if (T.enable.busy) return; hap('medium');
     let asked = false; try { const fn = nativeBridge(); if (fn) { fn(); asked = true; } } catch (e) {}
+    if (!asked && isTWA()) { try { location.href = 'intent://enable#Intent;scheme=brodoit;package=com.brodoit.app;S.browser_fallback_url=' + encodeURIComponent(location.origin + '/android') + ';end'; asked = true; } catch (e) {} }
     try { document.dispatchEvent(new CustomEvent('brodoit:enable-steps', { bubbles: true })); } catch (e) {}
     try { window.postMessage({ type: 'brodoit:enable-steps' }, location.origin); } catch (e) {}
     const claimed = await claimFromURL();
@@ -462,11 +471,13 @@
     if (T._claimP) return T._claimP;
     T._claimP = (async () => {
       let q; try { q = new URLSearchParams(location.search || ''); } catch (e) { return false; }
-      const id = q.get('device_id'), ct = q.get('ct'); if (!id || !ct) return false;
+      let id = q.get('device_id'), ct = q.get('ct');
+      if (!id || !ct) { try { const st = JSON.parse(localStorage.getItem('bd_pending_claim') || 'null'); if (st && st.id && st.ct) { id = st.id; ct = st.ct; } } catch (e) {} }
+      if (!id || !ct) return false;
       const tag = 'bd_claimed:' + id; try { if (sessionStorage.getItem(tag)) return false; } catch (e) {}
-      if (!((typeof token !== 'undefined' && token) || _S().user)) return false;
+      if (!((typeof token !== 'undefined' && token) || _S().user)) { try { localStorage.setItem('bd_pending_claim', JSON.stringify({ id, ct })); } catch (e) {} return false; }
       const r = await _api('/steps/device/claim', { method: 'POST', body: JSON.stringify({ device_id: id, ct }) });
-      if (r && !r.error) { try { sessionStorage.setItem(tag, '1'); } catch (e) {} try { q.delete('device_id'); q.delete('ct'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); } catch (e) {} return true; }
+      if (r && !r.error) { try { sessionStorage.setItem(tag, '1'); localStorage.removeItem('bd_pending_claim'); } catch (e) {} try { q.delete('device_id'); q.delete('ct'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); } catch (e) {} return true; }
       if (r && r.error) _toast(r.error, 'err');
       return false;
     })().catch(() => false).finally(() => { T._claimP = null; });

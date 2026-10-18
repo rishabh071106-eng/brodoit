@@ -227,3 +227,5 @@ html[data-theme="dark"] .st-freeze,:root[data-theme="dark"] .st-freeze,body[data
 
 @media (min-width:480px){.st-chips{gap:12px}.st-share-prev{grid-template-columns:1fr 1fr}}
 @media (prefers-reduced-motion:reduce){.st-ring .st-ring-prog{transition:none}.st-pill.s-walk .st-dot{animation:none}}
+
+.st-foot{font:var(--t-cap);color:var(--b-mute);text-align:center;margin:8px 0 0}

@@ -17454,14 +17454,16 @@ app.get('/.well-known/assetlinks.json',(_,res)=>{
   ];
   const extra=(process.env.ANDROID_SHA256_FINGERPRINT||'').split(',').map(s=>s.trim()).filter(Boolean);
   const fps=[...new Set([...required,...extra])];
-  res.json([{
+  const out=[{
     relation:["delegate_permission/common.handle_all_urls"],
     target:{
       namespace:"android_app",
       package_name:process.env.ANDROID_PACKAGE_NAME||"com.brodoit.twa",
       sha256_cert_fingerprints:fps
     }
-  }]);
+  }];
+  try{const c=global._androidCert&&global._androidCert();if(c)out.push({relation:["delegate_permission/common.handle_all_urls"],target:{namespace:"android_app",package_name:"com.brodoit.app",sha256_cert_fingerprints:[c]}})}catch(e){}
+  res.json(out);
 });
 
 // Brand-aligned shared chrome for legal pages — matches the editorial palette of the main app
@@ -17953,7 +17955,9 @@ let _settings=null;try{_settings=require('./modules/settings.js').install(db)}ca
 const {getSetting,setSetting,settingSource}=_settings;
 const sha256=s=>crypto.createHash('sha256').update(String(s)).digest('hex');
 function pushTo(phone,payload){try{const subs=db.prepare('SELECT * FROM push_subs WHERE user_phone=?').all(phone);let n=0;for(const sub of subs){n++;webpush.sendNotification({endpoint:sub.endpoint,keys:{p256dh:sub.keys_p256dh,auth:sub.keys_auth}},typeof payload==='string'?payload:JSON.stringify(payload)).catch(err=>{if(err.statusCode===404||err.statusCode===410)db.prepare('DELETE FROM push_subs WHERE endpoint=?').run(sub.endpoint)})}return n}catch(e){return 0}}
-let _steps=null;try{_steps=require('./modules/steps.js').install(app,{db,auth,dayKey,webpush,pushTo,MEDIA_DIR,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',genId,sha256,getUserByPhone:phone=>db.prepare('SELECT phone,name,email,tz,created_at FROM users WHERE phone=?').get(phone),fitSync,_getUserTz,appRoot:__dirname});if(_steps&&_steps.ingest)global._stepsIngest=_steps.ingest}catch(e){console.log('[steps] not loaded:',e.message)}
+let _android=null;try{_android=require('./modules/android.js').install(app,{MEDIA_DIR,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',auth,isAdminUser})}catch(e){console.log('[android] not installed:',e.message)}
+if(_android)global._androidCert=function(){try{return _android.cert()}catch(e){return null}};
+let _steps=null;try{_steps=require('./modules/steps.js').install(app,{db,auth,dayKey,webpush,pushTo,MEDIA_DIR,android:_android,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',genId,sha256,getUserByPhone:phone=>db.prepare('SELECT phone,name,email,tz,created_at FROM users WHERE phone=?').get(phone),fitSync,_getUserTz,appRoot:__dirname});if(_steps&&_steps.ingest)global._stepsIngest=_steps.ingest}catch(e){console.log('[steps] not loaded:',e.message)}
 app.use('/lang',express.static(path.join(__dirname,'lang'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 app.use('/speaker',express.static(path.join(__dirname,'speaker'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 let _speaker=null;try{_speaker=require('./modules/speaker.js').install(app,{db,auth,callGemini:_callGemini,genId,fetchFeed,createTask:({phone,title,due_date,notes})=>{const id=genId();db.prepare('INSERT INTO tasks(id,user_phone,title,notes,priority,status,due_date,reminder_time,source,board)VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,phone,String(title||'').slice(0,200),String(notes||'').slice(0,2000),'high','pending',due_date||'','','speaker','office');return {id}}})}catch(e){console.log('[speaker] not loaded:',e.message)}
