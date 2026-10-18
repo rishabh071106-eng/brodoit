@@ -1,0 +1,359 @@
+{
+ "day": 50,
+ "phase": 5,
+ "title": "Project: Data dashboard CLI",
+ "subtitle": "Load, clean, analyse and report, from the command line",
+ "minutes": 75,
+ "goal": "Build a command-line sales dashboard that cleans a messy CSV, computes KPIs, ranks products, prints ASCII charts and takes argparse filters.",
+ "outcomes": [
+  "Profile a raw CSV export and plan a data pipeline as small functions",
+  "Clean, dedupe and aggregate real sales data into KPIs",
+  "Rank products and print a formatted report with ASCII bar charts",
+  "Compute the same KPIs with a SQL GROUP BY",
+  "Add command-line filters with argparse and test them with parse_args"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 50: Project, a data dashboard CLI",
+   "body": "Phase 5 finale. You'll build a command-line **sales dashboard**: load a messy CSV, clean it, compute KPIs, rank products and print a report with ASCII charts, then add filters with `argparse`.\n\nFirst, a quick review of the phase.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Load sales.csv",
+     "Clean and dedupe",
+     "KPIs by month and region",
+     "Top products",
+     "Report with bars, plus CLI filters"
+    ]
+   },
+   "say": "Welcome to the phase five finale. Today you build a real tool: a command line sales dashboard. It loads a messy CSV export, cleans it, computes the key numbers by month and by region, ranks the best products, prints a report with text charts, and takes command line filters with argparse. First, a quick review of the phase."
+  },
+  {
+   "type": "quiz",
+   "title": "Review: Big-O",
+   "q": "A function loops over n orders and, for each one, checks `if order_id in seen_list`. What's its Big-O, and the fix?",
+   "options": [
+    "O(n): it's already fine",
+    "O(n²): make seen a set",
+    "O(log n): sort the list first",
+    "O(1): Python is fast"
+   ],
+   "answer": 1,
+   "why": "`in` on a list is a hidden O(n) loop, inside an O(n) loop: O(n²). A set makes each check O(1), so the whole function becomes O(n). (Day 41)",
+   "say": "Review time, starting with day forty one. This function loops over n orders and checks each order ID against a list of ones already seen. What is its Big O, and how do you fix it?"
+  },
+  {
+   "type": "quiz",
+   "title": "Review: pick the algorithm",
+   "q": "Only one of these pairings is right. Which?",
+   "options": [
+    "Fewest metro stops: DFS",
+    "Fewest coins: always grab the biggest coin first",
+    "Find an ID in a sorted list of 1 million: binary search, about 20 checks",
+    "Shortest route: bubble sort"
+   ],
+   "answer": 2,
+   "why": "Binary search halves a sorted list each step: about 20 checks for a million items (Day 42). Fewest stops needs BFS (Day 44), and greedy coin change fails for coins like 1, 3, 4: use dynamic programming.",
+   "say": "Days forty two to forty four. Only one of these pairings of problem and algorithm is right. Which one?"
+  },
+  {
+   "type": "predict",
+   "title": "Review: heaps",
+   "code": "import heapq\ntasks = []\nfor priority, name in [(2, \"email\"), (1, \"deploy\"), (3, \"lunch\"), (1, \"backup\")]:\n    heapq.heappush(tasks, (priority, name))\nprint([heapq.heappop(tasks)[1] for _ in range(3)])",
+   "options": [
+    "['backup', 'deploy', 'email']",
+    "['deploy', 'backup', 'email']",
+    "['email', 'deploy', 'lunch']",
+    "['lunch', 'email', 'deploy']"
+   ],
+   "answer": 0,
+   "why": "`heappop` always returns the smallest tuple. The two priority-1 tasks tie, so their names decide: 'backup' < 'deploy'. That's why Day 43's scheduler added a counter, to break ties by arrival instead.",
+   "say": "Day forty three: a heap of tasks, and two of them share priority one. Which three task names come out first?"
+  },
+  {
+   "type": "quiz",
+   "title": "Review: the web and databases",
+   "q": "Which line is a serious security bug?",
+   "options": [
+    "`conn.execute(\"SELECT * FROM users WHERE email = ?\", (email,))`",
+    "`conn.execute(f\"SELECT * FROM users WHERE email = '{email}'\")`",
+    "`urlencode({\"q\": search_text})`",
+    "`requests.get(url, timeout=5)`"
+   ],
+   "answer": 1,
+   "why": "Pasting user input into SQL with an f-string allows SQL injection (Day 48). Placeholders, urlencode and timeouts are all good habits from Days 46 to 48.",
+   "say": "Days forty six to forty eight. One of these lines is a serious security bug. Spot it."
+  },
+  {
+   "type": "quiz",
+   "title": "Review: async",
+   "q": "`await asyncio.gather(fetch('a'), fetch('b'), fetch('c'))`: in what order do the results come back?",
+   "options": [
+    "In the order the calls finish",
+    "In the order you passed them: a, b, c",
+    "In random order",
+    "Alphabetical order of the results"
+   ],
+   "answer": 1,
+   "why": "`gather` runs everything concurrently but always returns results in argument order, even if `c` finishes first. (Day 49)",
+   "say": "And day forty nine. Gather runs three fetches at once. In what order do the results come back?"
+  },
+  {
+   "type": "concept",
+   "title": "Design before you code",
+   "body": "Plan the dashboard as **small functions with clear inputs and outputs**. Each is easy to test on its own; `report` just glues them together.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Function",
+     "Takes",
+     "Returns"
+    ],
+    "rows": [
+     [
+      "load_sales(path)",
+      "a CSV path",
+      "(rows, dropped)"
+     ],
+     [
+      "revenue_by(rows, key)",
+      "rows, 'month' or 'region'",
+      "{value: revenue}"
+     ],
+     [
+      "top_products(rows, n)",
+      "rows, n",
+      "[(product, revenue), …]"
+     ],
+     [
+      "bar_lines(data)",
+      "{label: value}",
+      "aligned text bars"
+     ],
+     [
+      "report(rows, dropped)",
+      "clean rows",
+      "prints the dashboard"
+     ]
+    ]
+   },
+   "say": "Before writing any code, design the pipeline as small functions with clear inputs and outputs. Load sales returns clean rows and a dropped count. Revenue by groups by any column. Top products ranks. Bar lines draws. Report just glues them together. Each piece can be tested on its own, which is exactly how professionals build tools."
+  },
+  {
+   "type": "code",
+   "title": "Profile the raw export",
+   "body": "`sales.csv` (next to your program) is a Q1 2026 export from a small electronics brand.",
+   "code": "import csv\nfrom collections import Counter\n\nwith open(\"sales.csv\", newline=\"\", encoding=\"utf-8\") as f:\n    raw = list(csv.DictReader(f))\n\nprint(len(raw), \"rows, columns:\", list(raw[0]))\nprint(\"regions:\", sorted({r[\"region\"] for r in raw}))\nprint(\"odd units:\", [r[\"units\"] for r in raw if not r[\"units\"].strip().isdigit()])\ndupes = [oid for oid, n in Counter(r[\"order_id\"] for r in raw).items() if n > 1]\nprint(\"duplicate ids:\", dupes)\n",
+   "expect": "22 rows, columns: ['order_id', 'date', 'region', 'product', 'units', 'unit_price']\nregions: [' North ', 'East', 'North', 'South', 'WEST', 'West', 'south']\nodd units: ['', 'two']\nduplicate ids: ['S009']\n",
+   "files": {
+    "sales.csv": "order_id,date,region,product,units,unit_price\nS001,2026-01-04,North,Earbuds,3,1499\nS002,2026-01-05,south,Power bank,2,1299\nS003,2026-01-09,West,Smartwatch,1,4999\nS004,2026-01-12,East,Phone case,5,299\nS005,2026-01-15, North ,Charger,4,799\nS006,2026-01-21,South,Earbuds,2,1499\nS007,2026-01-27,West,Earbuds,,1499\nS008,2026-02-02,North,Smartwatch,2,4999\nS009,2026-02-03,East,Power bank,3,₹1299\nS010,2026-02-08,WEST,Phone case,6,299\nS011,2026-02-11,South,Smartwatch,1,4999\nS012,2026-02-14,North,Earbuds,4,1499\nS013,2026-02-19,East,Charger,two,799\nS014,2026-02-25,West,Power bank,2,1299\nS009,2026-02-03,East,Power bank,3,₹1299\nS015,2026-03-02,South,Earbuds,5,1499\nS016,2026-03-06,North,Phone case,3,299\nS017,2026-03-10,East,Smartwatch,2,4999\nS018,2026-03-15,West,Charger,3,799\nS019,2026-03-18,south,Smartwatch,2,4999\nS020,2026-03-24,North,Power bank,1,1299\nS021,2026-03-29,East,Earbuds,3,1499\n"
+   },
+   "explain": [
+    [
+     7,
+     "How big is it, and which columns are there?"
+    ],
+    [
+     8,
+     "Every spelling in the region column."
+    ],
+    [
+     9,
+     "Values that aren't whole numbers."
+    ],
+    [
+     10,
+     "Counter finds IDs that appear more than once."
+    ]
+   ],
+   "say": "Start the project the professional way, by profiling the raw data. Twenty two rows, regions spelt several different ways, two unit values that are not numbers, and one order ID that appears twice. Now you know exactly what the cleaning step must handle, before you write it."
+  },
+  {
+   "type": "code",
+   "title": "One grouping function for every KPI",
+   "code": "import heapq\nfrom collections import defaultdict\n\nrows = [\n    {\"month\": \"2026-01\", \"region\": \"North\", \"product\": \"Earbuds\", \"revenue\": 4497.0},\n    {\"month\": \"2026-01\", \"region\": \"South\", \"product\": \"Power bank\", \"revenue\": 2598.0},\n    {\"month\": \"2026-02\", \"region\": \"North\", \"product\": \"Smartwatch\", \"revenue\": 9998.0},\n    {\"month\": \"2026-02\", \"region\": \"West\", \"product\": \"Earbuds\", \"revenue\": 2998.0},\n]\n\ndef revenue_by(rows, key):\n    totals = defaultdict(float)\n    for row in rows:\n        totals[row[key]] += row[\"revenue\"]\n    return dict(totals)\n\nprint(revenue_by(rows, \"month\"))\nprint(revenue_by(rows, \"region\"))\nprint(heapq.nlargest(2, revenue_by(rows, \"product\").items(), key=lambda kv: kv[1]))\n",
+   "expect": "{'2026-01': 7095.0, '2026-02': 12996.0}\n{'North': 14495.0, 'South': 2598.0, 'West': 2998.0}\n[('Smartwatch', 9998.0), ('Earbuds', 7495.0)]\n",
+   "explain": [
+    [
+     11,
+     "key is the column to group by: 'month', 'region' or 'product'."
+    ],
+    [
+     14,
+     "row[key] picks the group for this row."
+    ],
+    [
+     19,
+     "nlargest: top-k from Day 43, no full sort needed."
+    ]
+   ],
+   "say": "Here is the key design idea, on four clean rows. Instead of writing one function per report, revenue by takes the column name as a parameter, so the same five lines give revenue by month, by region or by product. Then heapq's n largest, from day forty three, picks the best sellers without sorting everything."
+  },
+  {
+   "type": "code",
+   "title": "Text bars for the report",
+   "code": "def bar_lines(data, width=20):\n    top = max(data.values(), default=0) or 1\n    pad = max((len(label) for label in data), default=0)\n    return [f\"{label:<{pad}} {'█' * round(value / top * width)} ₹{value:,.0f}\"\n            for label, value in data.items()]\n\nby_month = {\"2026-01\": 19783.0, \"2026-02\": 29282.0, \"2026-03\": 36581.0}\nprint(\"Revenue by month\")\nfor line in bar_lines(by_month):\n    print(\"  \" + line)\n\njan, mar = by_month[\"2026-01\"], by_month[\"2026-03\"]\nprint(f\"Q1 growth, January to March: {(mar - jan) / jan:.0%}\")\n",
+   "expect": "Revenue by month\n  2026-01 ███████████ ₹19,783\n  2026-02 ████████████████ ₹29,282\n  2026-03 ████████████████████ ₹36,581\nQ1 growth, January to March: 85%\n",
+   "explain": [
+    [
+     2,
+     "default=0 handles an empty dict; or 1 avoids dividing by zero."
+    ],
+    [
+     3,
+     "Pad every label to the longest one."
+    ],
+    [
+     4,
+     "Scale each value to blocks and format the money."
+    ],
+    [
+     13,
+     ":.0% turns 0.849 into 85%."
+    ]
+   ],
+   "say": "This is the bar chart helper from day forty five, tightened up. Default equals zero lets max work on an empty dict, and or one avoids dividing by zero. The real monthly numbers from our data show steady growth, and the percent format spec turns a ratio into a percentage for us."
+  },
+  {
+   "type": "code",
+   "title": "The same KPIs in SQL",
+   "code": "import csv, sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.execute(\"CREATE TABLE sales (order_id TEXT PRIMARY KEY, month TEXT, region TEXT, revenue REAL)\")\nwith open(\"sales.csv\", newline=\"\", encoding=\"utf-8\") as f:\n    for r in csv.DictReader(f):\n        units, price = r[\"units\"].strip(), r[\"unit_price\"].replace(\"₹\", \"\").strip()\n        if units.isdigit():\n            conn.execute(\"INSERT OR IGNORE INTO sales VALUES (?, ?, ?, ?)\",\n                         (r[\"order_id\"], r[\"date\"][:7], r[\"region\"].strip().title(), int(units) * float(price)))\n\nfor region, revenue, orders in conn.execute(\"\"\"\n        SELECT region, SUM(revenue), COUNT(*) FROM sales\n        GROUP BY region ORDER BY SUM(revenue) DESC\"\"\"):\n    print(f\"{region:<6} ₹{revenue:>7,.0f}  ({orders} orders)\")\n",
+   "expect": "South  ₹ 28,088  (5 orders)\nNorth  ₹ 25,883  (6 orders)\nEast   ₹ 19,887  (4 orders)\nWest   ₹ 11,788  (4 orders)\n",
+   "files": {
+    "sales.csv": "order_id,date,region,product,units,unit_price\nS001,2026-01-04,North,Earbuds,3,1499\nS002,2026-01-05,south,Power bank,2,1299\nS003,2026-01-09,West,Smartwatch,1,4999\nS004,2026-01-12,East,Phone case,5,299\nS005,2026-01-15, North ,Charger,4,799\nS006,2026-01-21,South,Earbuds,2,1499\nS007,2026-01-27,West,Earbuds,,1499\nS008,2026-02-02,North,Smartwatch,2,4999\nS009,2026-02-03,East,Power bank,3,₹1299\nS010,2026-02-08,WEST,Phone case,6,299\nS011,2026-02-11,South,Smartwatch,1,4999\nS012,2026-02-14,North,Earbuds,4,1499\nS013,2026-02-19,East,Charger,two,799\nS014,2026-02-25,West,Power bank,2,1299\nS009,2026-02-03,East,Power bank,3,₹1299\nS015,2026-03-02,South,Earbuds,5,1499\nS016,2026-03-06,North,Phone case,3,299\nS017,2026-03-10,East,Smartwatch,2,4999\nS018,2026-03-15,West,Charger,3,799\nS019,2026-03-18,south,Smartwatch,2,4999\nS020,2026-03-24,North,Power bank,1,1299\nS021,2026-03-29,East,Earbuds,3,1499\n"
+   },
+   "needs": [
+    "sqlite3"
+   ],
+   "explain": [
+    [
+     4,
+     "order_id is the primary key, so duplicates can't get in."
+    ],
+    [
+     8,
+     "Skip rows whose units aren't a whole number."
+    ],
+    [
+     9,
+     "INSERT OR IGNORE: a duplicate key is silently skipped."
+    ],
+    [
+     13,
+     "One query: revenue and order count per region."
+    ]
+   ],
+   "say": "The same KPIs can come straight from SQL, as on day forty eight. We clean each row on the way in, and insert or ignore uses the primary key to skip the duplicate order automatically. Then one group by query gives revenue and order counts for every region. With bigger data, the database does this heavy lifting for you."
+  },
+  {
+   "type": "project",
+   "title": "Project: the sales dashboard",
+   "brief": "Build the dashboard for a small electronics brand. `sales.csv` holds 22 Q1 2026 orders, with messy regions, junk units and one duplicate. `parse_number` and `bar_lines` are ready for you; complete the other four functions so the program prints the full report. The tests check each function.",
+   "steps": [
+    "`load_sales(path)`: read with `csv.DictReader`; skip rows whose units or price aren't numbers, and repeated `order_id`s; return `(rows, dropped)`",
+    "Each clean row: `order_id`, `month` (`date[:7]`), `region` (trimmed, Title Case), `product`, `units` (int) and `revenue` (units × price)",
+    "`revenue_by(rows, key)`: total revenue per value of `key`, such as `'month'` or `'region'`",
+    "`top_products(rows, n=3)`: `[(product, revenue), …]`, biggest first",
+    "`report(rows, dropped)`: print the total and average revenue, bars by month (in order) and by region (biggest first), then the top 3 products"
+   ],
+   "starter": "import csv\nfrom collections import defaultdict\n\ndef parse_number(text):\n    \"\"\"'₹1,299' -> 1299.0; blank or junk -> None\"\"\"\n    cleaned = text.replace(\"₹\", \"\").replace(\",\", \"\").strip()\n    try:\n        return float(cleaned)\n    except ValueError:\n        return None\n\ndef bar_lines(data, width=20):\n    \"\"\"{label: value} -> aligned text bars (from Day 45)\"\"\"\n    top = max(data.values(), default=0) or 1\n    pad = max((len(label) for label in data), default=0)\n    return [f\"{label:<{pad}} {'█' * round(value / top * width)} ₹{value:,.0f}\"\n            for label, value in data.items()]\n\ndef load_sales(path):\n    \"\"\"Return (rows, dropped). Skip bad numbers and repeated order_ids.\"\"\"\n    rows, seen, dropped = [], set(), 0\n    # Step 1-2: read with csv.DictReader and build clean row dicts\n    return rows, dropped\n\ndef revenue_by(rows, key):\n    \"\"\"Total revenue for each value of row[key].\"\"\"\n    return {}   # Step 3\n\ndef top_products(rows, n=3):\n    \"\"\"[(product, revenue), ...] for the n best sellers, biggest first.\"\"\"\n    return []   # Step 4\n\ndef report(rows, dropped):\n    print(\"SALES DASHBOARD · Q1 2026\")\n    print(f\"Orders: {len(rows)} (dropped {dropped} bad rows)\")\n    # Step 5: total and average revenue, bars by month and region, top 3\n\nrows, dropped = load_sales(\"sales.csv\")\nreport(rows, dropped)\n",
+   "solution": "import csv\nfrom collections import defaultdict\n\ndef parse_number(text):\n    \"\"\"'₹1,299' -> 1299.0; blank or junk -> None\"\"\"\n    cleaned = text.replace(\"₹\", \"\").replace(\",\", \"\").strip()\n    try:\n        return float(cleaned)\n    except ValueError:\n        return None\n\ndef bar_lines(data, width=20):\n    \"\"\"{label: value} -> aligned text bars (from Day 45)\"\"\"\n    top = max(data.values(), default=0) or 1\n    pad = max((len(label) for label in data), default=0)\n    return [f\"{label:<{pad}} {'█' * round(value / top * width)} ₹{value:,.0f}\"\n            for label, value in data.items()]\n\ndef load_sales(path):\n    \"\"\"Return (rows, dropped). Skip bad numbers and repeated order_ids.\"\"\"\n    rows, seen, dropped = [], set(), 0\n    with open(path, newline=\"\", encoding=\"utf-8\") as f:\n        for raw in csv.DictReader(f):\n            units, price = parse_number(raw[\"units\"]), parse_number(raw[\"unit_price\"])\n            if raw[\"order_id\"] in seen or units is None or price is None:\n                dropped += 1\n                continue\n            seen.add(raw[\"order_id\"])\n            rows.append({\n                \"order_id\": raw[\"order_id\"],\n                \"month\": raw[\"date\"][:7],\n                \"region\": raw[\"region\"].strip().title(),\n                \"product\": raw[\"product\"].strip(),\n                \"units\": int(units),\n                \"revenue\": units * price,\n            })\n    return rows, dropped\n\ndef revenue_by(rows, key):\n    \"\"\"Total revenue for each value of row[key].\"\"\"\n    totals = defaultdict(float)\n    for row in rows:\n        totals[row[key]] += row[\"revenue\"]\n    return dict(totals)\n\ndef top_products(rows, n=3):\n    \"\"\"[(product, revenue), ...] for the n best sellers, biggest first.\"\"\"\n    totals = revenue_by(rows, \"product\")\n    return sorted(totals.items(), key=lambda kv: kv[1], reverse=True)[:n]\n\ndef report(rows, dropped):\n    print(\"SALES DASHBOARD · Q1 2026\")\n    print(f\"Orders: {len(rows)} (dropped {dropped} bad rows)\")\n    total = sum(r[\"revenue\"] for r in rows)\n    print(f\"Total revenue: ₹{total:,.0f}\")\n    print(f\"Average order: ₹{total / len(rows):,.0f}\" if rows else \"Average order: n/a\")\n    print()\n    print(\"Revenue by month\")\n    for line in bar_lines(dict(sorted(revenue_by(rows, \"month\").items()))):\n        print(\"  \" + line)\n    print()\n    print(\"Revenue by region\")\n    by_region = sorted(revenue_by(rows, \"region\").items(), key=lambda kv: kv[1], reverse=True)\n    for line in bar_lines(dict(by_region)):\n        print(\"  \" + line)\n    print()\n    print(\"Top 3 products\")\n    for rank, (product, revenue) in enumerate(top_products(rows), 1):\n        print(f\"  {rank}. {product:<11} ₹{revenue:,.0f}\")\n\nrows, dropped = load_sales(\"sales.csv\")\nreport(rows, dropped)\n",
+   "tests": "rows, dropped = load_sales(\"sales.csv\")\nassert dropped == 3, f\"sales.csv has 2 rows with bad units and 1 duplicate order, so dropped should be 3, not {dropped}.\"\nassert len(rows) == 19, f\"19 clean orders should remain, not {len(rows)}.\"\nregions = sorted({r[\"region\"] for r in rows})\nassert regions == [\"East\", \"North\", \"South\", \"West\"], f\"Each region needs one spelling (strip, then title-case). Got {regions}.\"\ns9 = [r for r in rows if r[\"order_id\"] == \"S009\"]\nassert len(s9) == 1 and s9[0][\"revenue\"] == 3897.0, \"S009 is 3 power banks at ₹1299 (strip the ₹): revenue 3897.0, kept only once.\"\nassert rows[0][\"month\"] == \"2026-01\" and isinstance(rows[0][\"units\"], int), \"Each row needs a month like '2026-01' (date[:7]) and units as an int.\"\nby_month = revenue_by(rows, \"month\")\nassert by_month == {\"2026-01\": 19783.0, \"2026-02\": 29282.0, \"2026-03\": 36581.0}, f\"Revenue by month should be Jan 19783, Feb 29282, Mar 36581. Got {by_month}.\"\nby_region = revenue_by(rows, \"region\")\nassert by_region.get(\"South\") == 28088.0 and by_region.get(\"West\") == 11788.0, f\"South should total 28088 and West 11788. Got {by_region}.\"\nassert revenue_by([], \"region\") == {}, \"revenue_by on no rows should return an empty dict.\"\ntop = top_products(rows)\nassert [p for p, _ in top] == [\"Smartwatch\", \"Earbuds\", \"Power bank\"], f\"The top 3 products are Smartwatch, Earbuds and Power bank. Got {top}.\"\nassert top[0][1] == 39992.0, \"Smartwatch revenue should be 39992.0.\"\nassert len(top_products(rows, 5)) == 5 and top_products(rows, 1) == top[:1], \"top_products should return exactly n products.\"\nassert \"85,646\" in __out__, \"The report should print the total revenue, ₹85,646 (format it with :,.0f).\"\nassert \"Smartwatch\" in __out__ and \"█\" in __out__, \"The report should show the ASCII bars and the top products.\"",
+   "hints": [
+    "Day 45's pattern: parse units and price with `parse_number`; if either is None, or the id is already in `seen`, add 1 to `dropped` and `continue`.",
+    "`revenue_by` is a `defaultdict(float)` loop: `totals[row[key]] += row['revenue']`.",
+    "`top_products`: `sorted(revenue_by(rows, 'product').items(), key=lambda kv: kv[1], reverse=True)[:n]`."
+   ],
+   "files": {
+    "sales.csv": "order_id,date,region,product,units,unit_price\nS001,2026-01-04,North,Earbuds,3,1499\nS002,2026-01-05,south,Power bank,2,1299\nS003,2026-01-09,West,Smartwatch,1,4999\nS004,2026-01-12,East,Phone case,5,299\nS005,2026-01-15, North ,Charger,4,799\nS006,2026-01-21,South,Earbuds,2,1499\nS007,2026-01-27,West,Earbuds,,1499\nS008,2026-02-02,North,Smartwatch,2,4999\nS009,2026-02-03,East,Power bank,3,₹1299\nS010,2026-02-08,WEST,Phone case,6,299\nS011,2026-02-11,South,Smartwatch,1,4999\nS012,2026-02-14,North,Earbuds,4,1499\nS013,2026-02-19,East,Charger,two,799\nS014,2026-02-25,West,Power bank,2,1299\nS009,2026-02-03,East,Power bank,3,₹1299\nS015,2026-03-02,South,Earbuds,5,1499\nS016,2026-03-06,North,Phone case,3,299\nS017,2026-03-10,East,Smartwatch,2,4999\nS018,2026-03-15,West,Charger,3,799\nS019,2026-03-18,south,Smartwatch,2,4999\nS020,2026-03-24,North,Power bank,1,1299\nS021,2026-03-29,East,Earbuds,3,1499\n"
+   },
+   "say": "Here is your project. Build a sales dashboard for a small electronics brand. Load the messy CSV, skip the bad rows and the duplicate, and compute revenue for each order. Then group revenue by month and by region, rank the top products, and print the report with text bars. Work through the steps one function at a time, and run often."
+  },
+  {
+   "type": "concept",
+   "title": "argparse: options for your tool",
+   "body": "`argparse` turns `--region West --top 5` into `args.region == 'West'` and `args.top == 5`, and writes `--help` for free. You'll go deeper on Day 51.\n\nIn tests, pass a list: `parser.parse_args(['--top', '5'])`. On bad input, argparse prints an error and **exits**.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python dashboard.py --region West --top 5"
+     ],
+     [
+      "",
+      "SALES DASHBOARD · Q1 2026 · West"
+     ],
+     [
+      "$",
+      "python dashboard.py --help"
+     ],
+     [
+      "",
+      "usage: dashboard.py [-h] [--region REGION] [--month MONTH] [--top TOP]"
+     ],
+     [
+      "",
+      "  --top TOP        how many top products (default 3)"
+     ]
+    ]
+   },
+   "say": "Argparse turns command line text, like dash dash region West, into a tidy object where args dot region is West and args dot top is five. It even writes the help screen for you. For testing, pass a list of strings to parse args instead of reading the real command line. If the input is invalid, argparse prints an error and exits."
+  },
+  {
+   "type": "exercise",
+   "title": "Command-line filters",
+   "task": "Write `build_parser()` returning an `ArgumentParser` with:\n- `--region`: text, default `None` (all regions)\n- `--month`: text like `2026-02`, default `None`\n- `--top`: an **int**, default `3`\n\nThen `apply_filters(rows, args)`: keep rows matching the given region (ignoring case) and month.",
+   "starter": "import argparse\n\nrows = [\n    {\"month\": \"2026-01\", \"region\": \"North\", \"product\": \"Earbuds\", \"revenue\": 4497.0},\n    {\"month\": \"2026-02\", \"region\": \"West\", \"product\": \"Phone case\", \"revenue\": 1794.0},\n    {\"month\": \"2026-02\", \"region\": \"North\", \"product\": \"Smartwatch\", \"revenue\": 9998.0},\n    {\"month\": \"2026-03\", \"region\": \"West\", \"product\": \"Charger\", \"revenue\": 2397.0},\n]\n\ndef build_parser():\n    parser = argparse.ArgumentParser(description=\"Sales dashboard\")\n    # add --region, --month and --top here\n    return parser\n\ndef apply_filters(rows, args):\n    return rows\n\nargs = build_parser().parse_args([])    # then try [\"--region\", \"West\", \"--top\", \"5\"]\nprint(args)\nprint(apply_filters(rows, args))\n",
+   "solution": "import argparse\n\nrows = [\n    {\"month\": \"2026-01\", \"region\": \"North\", \"product\": \"Earbuds\", \"revenue\": 4497.0},\n    {\"month\": \"2026-02\", \"region\": \"West\", \"product\": \"Phone case\", \"revenue\": 1794.0},\n    {\"month\": \"2026-02\", \"region\": \"North\", \"product\": \"Smartwatch\", \"revenue\": 9998.0},\n    {\"month\": \"2026-03\", \"region\": \"West\", \"product\": \"Charger\", \"revenue\": 2397.0},\n]\n\ndef build_parser():\n    parser = argparse.ArgumentParser(description=\"Sales dashboard\")\n    parser.add_argument(\"--region\", help=\"only this region, e.g. West\")\n    parser.add_argument(\"--month\", help=\"only this month, e.g. 2026-02\")\n    parser.add_argument(\"--top\", type=int, default=3, help=\"how many top products\")\n    return parser\n\ndef apply_filters(rows, args):\n    return [r for r in rows\n            if (args.region is None or r[\"region\"].lower() == args.region.lower())\n            and (args.month is None or r[\"month\"] == args.month)]\n\nargs = build_parser().parse_args([\"--region\", \"West\", \"--top\", \"5\"])\nprint(args)\nprint(apply_filters(rows, args))\n",
+   "tests": "p = build_parser()\na = p.parse_args([])\nassert all(hasattr(a, name) for name in (\"region\", \"month\", \"top\")), \"The parser needs three options, --region, --month and --top: add each with parser.add_argument.\"\nassert a.region is None and a.month is None, \"With no options, region and month should default to None, meaning everything.\"\nassert a.top == 3, f\"--top should default to 3, not {a.top!r}.\"\na = p.parse_args([\"--top\", \"5\"])\nassert a.top == 5 and isinstance(a.top, int), \"--top 5 should give the int 5: use type=int.\"\ngot = apply_filters(rows, p.parse_args([\"--region\", \"West\"]))\nassert [r[\"product\"] for r in got] == [\"Phone case\", \"Charger\"], f\"--region West should keep the 2 West rows. Got {got}.\"\ngot = apply_filters(rows, p.parse_args([\"--region\", \"north\", \"--month\", \"2026-02\"]))\nassert [r[\"product\"] for r in got] == [\"Smartwatch\"], f\"--region north --month 2026-02 should keep only North's February row (ignore case). Got {got}.\"\nassert apply_filters(rows, p.parse_args([])) == rows, \"With no filters, keep every row.\"\nassert apply_filters([], p.parse_args([\"--region\", \"East\"])) == [], \"Filtering no rows gives no rows.\"",
+   "hints": [
+    "`parser.add_argument(\"--top\", type=int, default=3)`. Options you don't give a default to are None.",
+    "Keep a row if `args.region is None` or the regions match: compare both with `.lower()`.",
+    "Join the region and month conditions with `and` inside a list comprehension."
+   ],
+   "say": "Real tools take options on the command line, like dash dash region West, dash dash top five. Build the parser with argparse: region and month are optional text, and top is a whole number that defaults to three. Then write apply filters to keep only the matching rows. Passing a list to parse args lets us test it without a terminal."
+  },
+  {
+   "type": "exercise",
+   "title": "Month-over-month growth",
+   "task": "Write `growth(by_month)`: given `{month: revenue}`, return `(month, percent)` pairs in month order, where `percent` is the change from the previous month, rounded to 1 decimal.\n\nThe first month, and any month after a ₹0 month, gets `None`.",
+   "starter": "def growth(by_month):\n    result = []\n    # sort the months, then compare each one with the month before\n    return result\n\nprint(growth({\"2026-02\": 33000, \"2026-01\": 30000, \"2026-03\": 29700}))\n# [('2026-01', None), ('2026-02', 10.0), ('2026-03', -10.0)]\n",
+   "solution": "def growth(by_month):\n    result, previous = [], None\n    for month in sorted(by_month):\n        revenue = by_month[month]\n        if not previous:          # the first month, or the previous one was 0\n            result.append((month, None))\n        else:\n            result.append((month, round((revenue - previous) / previous * 100, 1)))\n        previous = revenue\n    return result\n\nprint(growth({\"2026-02\": 33000, \"2026-01\": 30000, \"2026-03\": 29700}))\n# [('2026-01', None), ('2026-02', 10.0), ('2026-03', -10.0)]\n",
+   "tests": "got = growth({\"2026-02\": 33000, \"2026-01\": 30000, \"2026-03\": 29700})\nassert got == [(\"2026-01\", None), (\"2026-02\", 10.0), (\"2026-03\", -10.0)], f\"Expected [('2026-01', None), ('2026-02', 10.0), ('2026-03', -10.0)], got {got}. Sort the months first.\"\nassert growth({}) == [], \"No months means an empty list.\"\nassert growth({\"2026-05\": 1000}) == [(\"2026-05\", None)], \"A single month has nothing to compare with: None.\"\ngot = growth({\"2026-01\": 0, \"2026-02\": 500, \"2026-03\": 750})\nassert got == [(\"2026-01\", None), (\"2026-02\", None), (\"2026-03\", 50.0)], f\"After a ₹0 month you can't divide by zero, so use None. Got {got}.\"\nassert growth({\"2026-01\": 300, \"2026-02\": 400})[1][1] == 33.3, \"300 to 400 is +33.3% when rounded to 1 decimal.\"",
+   "hints": [
+    "Loop over `sorted(by_month)`: 'YYYY-MM' strings sort in date order.",
+    "Keep the previous month's revenue in a variable; `if not previous:` covers both None and 0.",
+    "Percent change: `(revenue - previous) / previous * 100`, then `round(..., 1)`."
+   ],
+   "say": "Managers love growth numbers. Write growth: for each month, in order, work out the percentage change from the month before, rounded to one decimal place. The first month has nothing to compare with, and you can never divide by a zero month, so both get None. Year and month strings sort correctly as plain text."
+  },
+  {
+   "type": "concept",
+   "title": "What's next: Phase 6, Pro",
+   "body": "In ten days you learned performance thinking, classic algorithms, data wrangling, HTTP, your own API, SQL and async.\n\nPhase 6 turns that into **professional software**.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Days 51 to 53: automation, scraping, data science",
+     "Days 54 to 57: patterns, architecture, performance, security",
+     "Days 58 to 60: capstone, shipping, career"
+    ]
+   },
+   "say": "Look how far you have come in ten days: performance thinking, classic algorithms, data wrangling, HTTP, your own API, SQL and async code. Phase six, Pro, turns all of that into professional software: automation, scraping, data science, design patterns, architecture, profiling and security, ending with your capstone project."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 50 complete: Phase 5 done",
+   "points": [
+    "Profile raw data first; then clean, dedupe, convert types, and report what you dropped",
+    "Build tools from small functions with clear inputs and outputs: load, group, rank, draw, report",
+    "The same KPIs can come from dicts in Python or from a SQL GROUP BY",
+    "argparse turns command-line options into a typed args object; test it with parse_args([...])",
+    "Phase 5: Big-O, algorithms, data structures, data work, HTTP, APIs, SQL and async"
+   ],
+   "say": "Mission fifty complete, and phase five with it. You built a real data dashboard: profiling, cleaning, grouping, ranking, charts, SQL and command line options, all from small tested functions. You are thinking like a developer now. Take a breath, celebrate, and I will see you on day fifty one for phase six, Pro."
+  }
+ ]
+}

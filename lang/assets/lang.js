@@ -33,7 +33,7 @@ export function computeStreak(daily) {
 export function isDone(key) { return !!store.read().done[key]; }
 
 // Marks a lesson done, adds XP, refreshes the streak and tells the host app.
-export function completeLesson(key, xp = LESSON_XP) {
+export function completeLesson(key, xp = LESSON_XP, extra = {}) {
   const s = store.update(s => {
     const t = today();
     s.done[key] = Date.now();
@@ -43,7 +43,20 @@ export function completeLesson(key, xp = LESSON_XP) {
     s.streak = computeStreak(s.daily);
   });
   try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: 'brodoit-xp', xp }, '*'); } catch { /* no host */ }
+  syncLesson(key, s, extra);
   return s;
+}
+
+// Tell the server (modules/learn.js) so Bro knows how each language is growing. Fire-and-forget.
+function syncLesson(key, s, extra = {}) {
+  try {
+    const tok = localStorage.getItem('tf_token'); if (!tok) return;
+    const [course, unit] = String(key).split('/');
+    if (!['es', 'fr', 'de', 'hi', 'en'].includes(course) || !unit) return;
+    const xp = Object.keys(s.done).filter(k => k.startsWith(course + '/')).length * LESSON_XP;
+    fetch('/api/learn/progress', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'x-token': tok },
+      body: JSON.stringify({ course, unit, units: { [unit.slice(0, 24)]: { done: true, best: extra.accuracy == null ? 100 : extra.accuracy } }, xp, events: [{ kind: 'complete', unit, score: extra.accuracy, mistakes: extra.wrong || 0 }] }) }).catch(() => {});
+  } catch { /* offline */ }
 }
 
 export function setCourse(code) { store.update(s => { s.course = code; }); }
@@ -221,13 +234,47 @@ function startKeepAlive() {
 function stopKeepAlive() { clearInterval(keepAlive); keepAlive = null; }
 
 let speakGen = 0;
-export function stopSpeaking() { speakGen++; if (synth) { try { synth.cancel(); } catch { /* ignore */ } } stopKeepAlive(); }
+export function stopSpeaking() { speakGen++; if (clipAudio) { try { clipAudio.pause(); } catch { /* ignore */ } clipAudio = null; } if (synth) { try { synth.cancel(); } catch { /* ignore */ } } stopKeepAlive(); }
 
 // Speaks text in `lang`, resolving when done (or after a watchdog so the caller is never stuck).
 // Options: rate (1), slow (→ 0.6), pitch, signal (AbortSignal).
+// Recorded studio clips (modules/learn.js renders each course line once and keeps it): same id on both sides.
+const VOICE_KEYS = new Set(['es', 'fr', 'de', 'hi', 'en']);
+let clipAudio = null;
+async function clipId(voice, text) {
+  const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(voice + '\n' + String(text).trim()));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 20);
+}
+function playClip(text, voice, { slow, signal, gen }) {
+  return new Promise(async res => {
+    let id = '';
+    try { id = await clipId(voice, text); } catch { return res(null); }
+    if (gen !== speakGen || signal?.aborted) return res(true);
+    const a = new Audio('/api/learn/say/' + id + '.mp3');
+    clipAudio = a;
+    if (slow) { a.playbackRate = 0.72; a.preservesPitch = true; }
+    let started = false;
+    const done = v => { signal?.removeEventListener('abort', stop); res(v); };
+    const stop = () => { try { a.pause(); } catch { /* ignore */ } done(true); };
+    signal?.addEventListener('abort', stop, { once: true });
+    a.onplaying = () => { started = true; };
+    a.onended = () => done(true);
+    a.onerror = () => done(started ? true : null);
+    a.play().catch(() => { if (!started) done(null); });
+  });
+}
+
 export async function speak(text, { lang = 'en-US', rate = 1, slow = false, pitch = 1, signal } = {}) {
   text = String(text || '').trim();
   if (!text) return false;
+  const vk = String(lang).slice(0, 2).toLowerCase();
+  if (VOICE_KEYS.has(vk) && !(typeof window !== 'undefined' && window.LANG_TEST?.noClips)) {
+    const gen0 = ++speakGen;
+    try { synth && synth.cancel(); } catch { /* ignore */ }
+    const r = await playClip(text, vk, { slow, signal, gen: gen0 });
+    if (r) return gen0 === speakGen;
+    if (gen0 !== speakGen) return false;
+  }
   const scale = (typeof window !== 'undefined' && window.LANG_TEST?.ttsScale) || 1;
   const r = Math.max(0.5, Math.min(2, (slow ? 0.6 : 1) * rate));
   if (!synth) { await sleep(Math.min(4000, text.length * 60 / r) * scale, signal); return false; }

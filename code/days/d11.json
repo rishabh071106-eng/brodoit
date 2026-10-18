@@ -1,0 +1,462 @@
+{
+ "day": 11,
+ "phase": 2,
+ "title": "Lists: many values, one name",
+ "subtitle": "Create, change and loop over collections",
+ "minutes": 50,
+ "goal": "Store collections of data in lists, change them in place, and loop over them to compute totals, counts and extremes.",
+ "outcomes": [
+  "Create lists and read items with indexes, negative indexes and slices",
+  "Change lists with item assignment, append, insert, extend, remove and pop",
+  "Loop over a list and use in, len, sum, min and max",
+  "Turn text into a list with split() and back with join()"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 11: Lists",
+   "body": "Your chat list, a music queue, a food-delivery cart, the IPL points table: all **lists** under the hood.\n\nSo far one variable held one value. Today one name holds **many** values, in order, and you can change them.",
+   "visual": {
+    "kind": "list",
+    "name": "playlist",
+    "items": [
+     "'Kesariya'",
+     "'Jai Ho'",
+     "'Naatu Naatu'",
+     "'Kun Faya Kun'"
+    ]
+   },
+   "say": "Welcome to day eleven, and to phase two, Ascent. Your chat list, a music queue, a food delivery cart: they are all lists under the hood. Until now, one variable held one value. Today one name holds many values, in order, and you can change them whenever you like. This is where your programs start handling real data."
+  },
+  {
+   "type": "concept",
+   "title": "One name, many values",
+   "body": "A list is written with **square brackets**, items separated by commas.\n\n- It keeps items **in order**\n- It can hold any type, even a mix\n- `[]` is an empty list, ready to fill",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Without a list",
+     "code": "song1 = \"Kesariya\"\nsong2 = \"Jai Ho\"\nsong3 = \"Naatu Naatu\"\n# 100 songs, 100 variables?"
+    },
+    "right": {
+     "title": "With a list",
+     "code": "playlist = [\n    \"Kesariya\",\n    \"Jai Ho\",\n    \"Naatu Naatu\",\n]"
+    },
+    "verdict": "One name, any number of items, and a single loop can process them all."
+   },
+   "say": "Imagine a playlist with a hundred songs. A hundred separate variables would be a nightmare. A list gives one name to all of them. You write it with square brackets and put commas between the items. Lists keep their order, can hold any type of value, and an empty pair of brackets is a list waiting to be filled."
+  },
+  {
+   "type": "code",
+   "title": "Creating lists",
+   "body": "Print a list to see all of it. `len()` tells you how many items it holds.",
+   "code": "playlist = [\"Kesariya\", \"Jai Ho\", \"Naatu Naatu\"]\nsteps = [8432, 10250, 6120, 12004]\nprofile = [\"Riya\", 21, 5.4, True]\ncart = []\nprint(playlist)\nprint(steps)\nprint(len(playlist), len(cart))\nprint(type(steps))",
+   "expect": "['Kesariya', 'Jai Ho', 'Naatu Naatu']\n[8432, 10250, 6120, 12004]\n3 0\n<class 'list'>\n",
+   "explain": [
+    [
+     1,
+     "A list of three strings."
+    ],
+    [
+     2,
+     "A list of whole numbers: step counts from a fitness app."
+    ],
+    [
+     3,
+     "Lists can mix types, though usually every item is the same kind."
+    ],
+    [
+     4,
+     "An empty list. Carts like this get filled later."
+    ],
+    [
+     5,
+     "Printing a list shows brackets, quotes and commas."
+    ],
+    [
+     7,
+     "len() counts items, exactly as it counts characters in a string."
+    ],
+    [
+     8,
+     "Its type is list."
+    ]
+   ],
+   "say": "Here are four lists: song names, step counts, a mix of types, and an empty cart. When you print a list, Python shows the brackets and the quotes, so you can see exactly what is inside. And len, which you already used on strings, counts the items in a list."
+  },
+  {
+   "type": "visual",
+   "title": "Every item has an index",
+   "body": "Just like characters in a string: the first item is index **0**, the last is **-1**. A slice `[start:stop]` stops *before* `stop`.",
+   "visual": {
+    "kind": "list",
+    "name": "playlist",
+    "items": [
+     "'Kesariya'",
+     "'Jai Ho'",
+     "'Naatu Naatu'",
+     "'Chaiyya Chaiyya'",
+     "'Kun Faya Kun'"
+    ],
+    "mark": [
+     0
+    ],
+    "neg": true
+   },
+   "say": "Lists are indexed exactly like strings on day four. The first item lives at index zero, the second at one, and so on. Negative indexes count backwards from the end, so minus one is always the last item. Slicing works the same way too, and the stop index is never included."
+  },
+  {
+   "type": "code",
+   "title": "Indexing and slicing",
+   "code": "playlist = [\"Kesariya\", \"Jai Ho\", \"Naatu Naatu\", \"Chaiyya Chaiyya\", \"Kun Faya Kun\"]\nprint(playlist[0])\nprint(playlist[2])\nprint(playlist[-1])\nprint(playlist[1:3])\nprint(playlist[:2])\nprint(playlist[::-1])",
+   "expect": "Kesariya\nNaatu Naatu\nKun Faya Kun\n['Jai Ho', 'Naatu Naatu']\n['Kesariya', 'Jai Ho']\n['Kun Faya Kun', 'Chaiyya Chaiyya', 'Naatu Naatu', 'Jai Ho', 'Kesariya']\n",
+   "explain": [
+    [
+     2,
+     "Index 0: the first song."
+    ],
+    [
+     3,
+     "Index 2 is the third song."
+    ],
+    [
+     4,
+     "-1 is always the last item."
+    ],
+    [
+     5,
+     "A slice is a new list: items 1 and 2, stopping before 3."
+    ],
+    [
+     6,
+     "From the start up to, but not including, index 2."
+    ],
+    [
+     7,
+     "A step of -1 walks backwards: the queue reversed."
+    ]
+   ],
+   "say": "Index zero gives the first song, index two the third, and minus one the last. A slice gives back a brand new list, and it stops just before the stop index. A step of minus one reverses the whole playlist. Watch it run to see each value appear."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "scores = [45, 12, 88, 67]\nprint(scores[1] + scores[-1])",
+   "options": [
+    "57",
+    "79",
+    "133"
+   ],
+   "answer": 1,
+   "why": "scores[1] is the second item, 12, and scores[-1] is the last, 67. 12 + 67 = 79. Indexes start at 0.",
+   "say": "Your turn to predict. We add the item at index one to the last item. Remember where counting starts. What gets printed?"
+  },
+  {
+   "type": "concept",
+   "title": "Lists can change",
+   "body": "Strings are **immutable**: you can't change one character in place. Lists are **mutable**: assign to an index and that item is replaced. Same list, same name, new contents.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "A string: locked",
+     "code": "city = \"Pune\"\ncity[0] = \"D\"\n# TypeError: 'str' object does\n# not support item assignment"
+    },
+    "right": {
+     "title": "A list: editable",
+     "code": "cart = [\"milk\", \"bread\"]\ncart[0] = \"curd\"\n# [\"curd\", \"bread\"]"
+    },
+    "verdict": "Mutability is what makes lists perfect for carts, queues and anything that changes."
+   },
+   "say": "Here is the big difference between strings and lists. On day four you saw that strings are immutable: you cannot change one character in place. Lists are mutable. Assign a new value to an index and that item is replaced, right inside the list. That is exactly what carts, queues and to do lists need."
+  },
+  {
+   "type": "code",
+   "title": "Changing an item",
+   "code": "cart = [\"milk\", \"bread\", \"eggs\"]\nprint(\"Before:\", cart)\ncart[1] = \"brown bread\"\ncart[-1] = \"paneer\"\nprint(\"After: \", cart)",
+   "expect": "Before: ['milk', 'bread', 'eggs']\nAfter:  ['milk', 'brown bread', 'paneer']\n",
+   "explain": [
+    [
+     3,
+     "Replace the item at index 1."
+    ],
+    [
+     4,
+     "Negative indexes work for changing too: replace the last item."
+    ]
+   ],
+   "say": "We start with three items. Then we replace the item at index one with brown bread, and the last item with paneer. Same list, same name, new contents."
+  },
+  {
+   "type": "concept",
+   "title": "Growing and shrinking",
+   "body": "Lists come with **methods**, called with a dot like string methods. They change the list **in place**.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Method",
+     "What it does",
+     "Example"
+    ],
+    "rows": [
+     [
+      "append(x)",
+      "add x at the end",
+      "[1, 2] → [1, 2, x]"
+     ],
+     [
+      "insert(i, x)",
+      "add x at index i",
+      "insert(0, x) → [x, 1, 2]"
+     ],
+     [
+      "extend(items)",
+      "add every item of another list",
+      "[1, 2] → [1, 2, 3, 4]"
+     ],
+     [
+      "remove(x)",
+      "delete the first x it finds",
+      "[1, 2, 1] → [2, 1]"
+     ],
+     [
+      "pop()",
+      "remove the last item and return it",
+      "[1, 2] → [1], gives 2"
+     ],
+     [
+      "pop(i)",
+      "remove item i and return it",
+      "pop(0) on [1, 2] gives 1"
+     ]
+    ]
+   },
+   "say": "Lists come with methods, which you call with a dot, just like string methods. Append adds one item at the end. Insert adds an item at a chosen position. Extend adds every item from another list. Remove deletes the first matching item, and pop removes an item and hands it back to you. All of them change the list in place."
+  },
+  {
+   "type": "code",
+   "title": "Building a shopping cart",
+   "code": "cart = []\ncart.append(\"atta\")\ncart.append(\"dal\")\ncart.insert(0, \"milk\")\ncart.extend([\"rice\", \"ghee\"])\nprint(cart)\ncart.remove(\"dal\")\nlast = cart.pop()\nprint(\"Removed:\", last)\nfirst = cart.pop(0)\nprint(\"Removed:\", first)\nprint(cart, len(cart))",
+   "expect": "['milk', 'atta', 'dal', 'rice', 'ghee']\nRemoved: ghee\nRemoved: milk\n['atta', 'rice'] 2\n",
+   "explain": [
+    [
+     1,
+     "Start with an empty cart."
+    ],
+    [
+     2,
+     "append adds to the end."
+    ],
+    [
+     4,
+     "insert at index 0 puts milk at the front."
+    ],
+    [
+     5,
+     "extend adds both items, one by one."
+    ],
+    [
+     7,
+     "remove deletes by value, not by position."
+    ],
+    [
+     8,
+     "pop() takes the last item out and gives it back."
+    ],
+    [
+     10,
+     "pop(0) takes the first item out."
+    ]
+   ],
+   "say": "Let's build a grocery cart from nothing. Two appends, an insert at the front, and an extend that adds two items at once. Then we remove dal by its value, and pop the last and the first items, catching each one in a variable. Step through it and watch the cart grow and shrink."
+  },
+  {
+   "type": "predict",
+   "title": "append or extend?",
+   "code": "a = [1, 2]\nb = [1, 2]\na.append([3, 4])\nb.extend([3, 4])\nprint(len(a), len(b))",
+   "options": [
+    "4 4",
+    "3 4",
+    "4 3"
+   ],
+   "answer": 1,
+   "why": "append adds its argument as ONE item, so a becomes [1, 2, [3, 4]] with 3 items. extend adds each item separately: [1, 2, 3, 4].",
+   "say": "A classic interview question. Both lists start the same. One gets append with a list, the other gets extend with the same list. How long is each one afterwards?"
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "You want to add \"tea\" to `cart`. Which line is right?",
+   "options": [
+    "cart.append(\"tea\")",
+    "cart = cart.append(\"tea\")",
+    "cart = cart + \"tea\""
+   ],
+   "answer": 0,
+   "why": "append changes the list in place and gives back None, Python's \"nothing\" value (you'll meet it properly on Day 17). Assigning that result replaces your cart with None. And adding a string to a list is a TypeError.",
+   "say": "Quick check. Here are three ways to add tea to the cart. Only one of them is correct. Which one?"
+  },
+  {
+   "type": "concept",
+   "title": "Loop over a list",
+   "body": "A `for` loop visits every item in order, just as it visits the characters of a string.\n\n`in` checks membership: `\"milk\" in cart` is `True` or `False`.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Start",
+      "s": "pill"
+     },
+     {
+      "t": "Any items left?",
+      "s": "diamond",
+      "yes": "Take the next item",
+      "no": "Leave the loop"
+     },
+     {
+      "t": "Run the loop body with it"
+     },
+     {
+      "t": "Go back and check again"
+     },
+     {
+      "t": "Code after the loop",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "The for loop you learned on day nine works beautifully with lists. It visits every item in order and runs the loop body once for each. The word in also works: asking whether milk is in the cart gives true or false. Together they are the bread and butter of data processing."
+  },
+  {
+   "type": "code",
+   "title": "A step-tracker report",
+   "code": "steps = [8432, 10250, 6120, 12004, 9800, 4300, 11050]\ngoal = 10000\ngood_days = 0\nfor count in steps:\n    if count >= goal:\n        good_days += 1\nprint(\"Goal hit on\", good_days, \"of\", len(steps), \"days\")\nprint(\"Total steps:\", sum(steps))\nprint(\"Best day:\", max(steps))\nprint(\"Lowest day:\", min(steps))\nprint(\"Average:\", round(sum(steps) / len(steps)))\nprint(12004 in steps, 5000 in steps)",
+   "expect": "Goal hit on 3 of 7 days\nTotal steps: 61956\nBest day: 12004\nLowest day: 4300\nAverage: 8851\nTrue False\n",
+   "explain": [
+    [
+     1,
+     "A week of data from a fitness app."
+    ],
+    [
+     4,
+     "count takes each value in turn."
+    ],
+    [
+     6,
+     "The counting pattern from Day 9."
+    ],
+    [
+     8,
+     "sum() adds every number in the list."
+    ],
+    [
+     9,
+     "max() and min() find the extremes."
+    ],
+    [
+     11,
+     "Average = total divided by how many."
+    ],
+    [
+     12,
+     "in checks whether a value is in the list."
+    ]
+   ],
+   "say": "Here is a real fitness app feature. We loop over a week of step counts and count the days that hit the goal. Then the built in helpers do the heavy lifting: sum adds everything, max and min find the best and lowest days, and dividing the sum by the length gives the average."
+  },
+  {
+   "type": "code",
+   "title": "Lists from text, text from lists",
+   "body": "`split()` turns text into a list; `join()` turns a list of strings back into text.",
+   "code": "line = \"chai,samosa,vada pav,jalebi\"\nmenu = line.split(\",\")\nprint(menu)\nprint(len(menu), \"items\")\nprint(\" | \".join(menu))\nletters = list(\"UPI\")\nprint(letters)\nmenu.append(\"lassi\")\nprint(menu[-1], \"added\")",
+   "expect": "['chai', 'samosa', 'vada pav', 'jalebi']\n4 items\nchai | samosa | vada pav | jalebi\n['U', 'P', 'I']\nlassi added\n",
+   "explain": [
+    [
+     2,
+     "split() (Day 5) returns a list of strings."
+    ],
+    [
+     5,
+     "join() glues the items with \" | \" between them."
+    ],
+    [
+     6,
+     "list() turns any sequence into a list of its items."
+    ],
+    [
+     8,
+     "It's a normal list, so append works."
+    ]
+   ],
+   "say": "You have been making lists since day five. Split breaks a string into a list of pieces. Join does the reverse and glues a list of strings into one. And the list function turns any sequence, like a string, into a list of its items. This is how programs read data from forms and files."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: cancelled orders",
+   "task": "This should delete **every** `\"cancelled\"` order, but one survives. Fix it so `statuses` ends up as `['paid', 'paid', 'pending']`, in a way that would still work with ten cancelled orders.",
+   "starter": "statuses = [\"paid\", \"cancelled\", \"paid\", \"cancelled\", \"pending\"]\nstatuses.remove(\"cancelled\")\nprint(statuses)\n",
+   "solution": "statuses = [\"paid\", \"cancelled\", \"paid\", \"cancelled\", \"pending\"]\nwhile \"cancelled\" in statuses:\n    statuses.remove(\"cancelled\")\nprint(statuses)",
+   "tests": "assert \"cancelled\" not in statuses, \"A cancelled order is still in the list. remove() deletes only the first match, so keep removing while one is left.\"\nassert statuses == [\"paid\", \"paid\", \"pending\"], f\"statuses should be ['paid', 'paid', 'pending'], not {statuses}. Keep the other orders in their original order.\"\nassert \"while\" in __code__ or \"for\" in __code__, \"Use a loop, so the fix works for any number of cancelled orders.\"",
+   "hints": [
+    "remove() deletes only the FIRST matching item.",
+    "Keep removing while \"cancelled\" in statuses is True.",
+    "while \"cancelled\" in statuses:\n    statuses.remove(\"cancelled\")"
+   ],
+   "say": "Bug hunt. This code should clear every cancelled order, but one sneaks through. Run it, look at the output, and think about what remove really does. Then fix it so it works no matter how many cancelled orders there are."
+  },
+  {
+   "type": "exercise",
+   "title": "Checkout summary",
+   "task": "A user types item prices on one line, like `120 45 300 60`. Build a list of **numbers** from it, then print:\n- `Items: 4`\n- `Total: ₹525`\n- `Costliest: ₹300`",
+   "stdin": "120 45 300 60\n",
+   "starter": "line = input(\"Prices: \")\nprices = []\n# Turn each piece of line.split() into an int and append it to prices\n\n# Print the item count, the total and the costliest price\n",
+   "solution": "line = input(\"Prices: \")\nprices = []\nfor piece in line.split():\n    prices.append(int(piece))\nprint(\"Items:\", len(prices))\nprint(f\"Total: ₹{sum(prices)}\")\nprint(f\"Costliest: ₹{max(prices)}\")",
+   "tests": "def find(out, word):\n    \"\"\"The first printed line that mentions word (any case), or an empty string.\"\"\"\n    for line in out.splitlines():\n        if word.lower() in line.lower():\n            return line\n    return \"\"\n\nout = await run_program(\"120 45 300 60\\n\")\nassert \"4\" in find(out, \"Items\"), \"For 120 45 300 60 there are 4 items. Print a line like Items: 4 using len(prices).\"\nassert \"525\" in find(out, \"Total\"), \"For 120 45 300 60 the total is 525. Did you convert each price with int() before adding?\"\nassert \"300\" in find(out, \"Costliest\"), \"The costliest of 120 45 300 60 is 300. Try max(prices).\"\nout = await run_program(\"999\\n\")\nassert \"1\" in find(out, \"Items\") and \"999\" in find(out, \"Total\") and \"999\" in find(out, \"Costliest\"), \"With a single price of 999, print Items: 1, Total: ₹999 and Costliest: ₹999.\"\nout = await run_program(\"20 1500 80\\n\")\nassert \"1600\" in find(out, \"Total\") and \"1500\" in find(out, \"Costliest\"), \"For 20 1500 80 the total is 1600 and the costliest is 1500.\"",
+   "hints": [
+    "line.split() gives a list of strings like ['120', '45'].",
+    "Loop over it and append int(piece) to prices.",
+    "len(prices), sum(prices) and max(prices) give the three numbers."
+   ],
+   "say": "Time to build a real checkout feature. The user types prices on one line. Split the line, convert each piece to a number, and collect them in a list. Then print the item count, the total and the costliest item. The checker will try a few different carts, including one with a single item."
+  },
+  {
+   "type": "exercise",
+   "title": "Unique visitors",
+   "task": "Visitor names arrive as one comma-separated line, like `riya,amit,riya,sara`. Build a list `unique` with each name **once**, in the order first seen, and print it.\n\nFor that input: `['riya', 'amit', 'sara']`",
+   "stdin": "riya,amit,riya,sara,amit,dev\n",
+   "starter": "names = input(\"Visitors: \").split(\",\")\nunique = []\n# Add each name to unique only if it is not already there\n\nprint(unique)\n",
+   "solution": "names = input(\"Visitors: \").split(\",\")\nunique = []\nfor name in names:\n    if name not in unique:\n        unique.append(name)\nprint(unique)",
+   "tests": "out = await run_program(\"riya,amit,riya,sara\\n\")\nassert \"['riya', 'amit', 'sara']\" in out, \"For riya,amit,riya,sara print ['riya', 'amit', 'sara']: each name once, in first-seen order.\"\nout = await run_program(\"dev,dev,dev\\n\")\nassert \"['dev']\" in out, \"If the same person visits three times, unique should be ['dev'].\"\nout = await run_program(\"zoya\\n\")\nassert \"['zoya']\" in out, \"A single visitor should give ['zoya'].\"\nassert \"append\" in __code__, \"Build unique yourself with a loop, not in, and append.\"",
+   "hints": [
+    "Loop over names.",
+    "Use not in to check whether a name is already in unique.",
+    "if name not in unique:\n    unique.append(name)"
+   ],
+   "say": "Websites count unique visitors all the time. Names arrive on one line, separated by commas, and some people visit more than once. Build a list that keeps each name only once, in the order they first appeared. On day fifteen you will learn a shortcut for this, but building it by hand shows you how it works."
+  },
+  {
+   "type": "predict",
+   "title": "Mind the end of the list",
+   "code": "queue = [\"Asha\", \"Ravi\", \"Meera\"]\nqueue.pop(0)\nprint(queue[2])",
+   "options": [
+    "Meera",
+    "Ravi",
+    "IndexError: list index out of range"
+   ],
+   "answer": 2,
+   "why": "pop(0) removes Asha, so the queue is ['Ravi', 'Meera'] with indexes 0 and 1. Index 2 no longer exists, so Python raises IndexError.",
+   "say": "One last prediction. Someone leaves the front of the queue, and then we ask for the item at index two. Think about what the list looks like after the pop. What happens?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 11 complete",
+   "points": [
+    "A list stores many values in order: [item, item, item]",
+    "Index from 0, or from the end with -1; slices give you a new list",
+    "Lists are mutable: assign to an index, or use append, insert, extend, remove and pop",
+    "for loops visit every item; in checks membership",
+    "len, sum, min and max summarise a list in one call"
+   ],
+   "say": "Mission eleven complete. You can create lists, read items by index and slice, change them in place, grow and shrink them with methods, and loop over them to compute real statistics. Tomorrow we sort and search lists, and uncover a sneaky trap that catches even experienced developers. See you on day twelve."
+  }
+ ]
+}

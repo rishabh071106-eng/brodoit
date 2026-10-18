@@ -1,0 +1,415 @@
+{
+ "day": 20,
+ "phase": 2,
+ "title": "Project: Expense tracker CLI",
+ "subtitle": "Put Phase 2 together in a real command-line app",
+ "minutes": 75,
+ "goal": "Design and build a menu-driven expense tracker that stores a list of dicts, uses small functions, and handles every bad input without crashing.",
+ "outcomes": [
+  "Plan a program: requirements, data model, functions, loop, errors",
+  "Model records as a list of dicts and summarise them by category",
+  "Parse typed commands with split() and star-unpacking",
+  "Validate input by raising and catching ValueError",
+  "Combine everything from Days 11 to 19 into one working app"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 20: Expense tracker CLI",
+   "body": "Phase 2 finale. Today you build a real tool: a command-line **expense tracker**, a tiny version of the money apps on your phone.\n\nIt uses everything from Days 11 to 19: lists, dicts, functions and exceptions.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python expenses.py"
+     ],
+     [
+      ">",
+      "add 250 food Lunch with team"
+     ],
+     [
+      "",
+      "Added ₹250.00 to food"
+     ],
+     [
+      ">",
+      "add 1200 travel Train to Pune"
+     ],
+     [
+      "",
+      "Added ₹1200.00 to travel"
+     ],
+     [
+      ">",
+      "total"
+     ],
+     [
+      "",
+      "travel: ₹1200.00"
+     ],
+     [
+      "",
+      "food: ₹250.00"
+     ],
+     [
+      "",
+      "Total: ₹1450.00"
+     ]
+    ]
+   },
+   "say": "Welcome to day twenty, the finale of phase two. Today you build a real tool: a command line expense tracker, a tiny version of the money apps on your phone. You type commands like add, list and total, and it keeps track of your spending. It uses everything from the last nine days. First, a quick warm up."
+  },
+  {
+   "type": "predict",
+   "title": "Warm-up: two names",
+   "code": "a = [1, 2]\nb = a\nb.append(3)\nprint(a)",
+   "options": [
+    "[1, 2]",
+    "[1, 2, 3]",
+    "[3]"
+   ],
+   "answer": 1,
+   "why": "b = a doesn't copy: both names point at the same list, so the append shows up through a too. Use a.copy() for an independent list (Day 12).",
+   "say": "Warm up time, with questions from across the phase. Two names, one append. What does a hold now?"
+  },
+  {
+   "type": "predict",
+   "title": "Warm-up: the counting pattern",
+   "code": "stock = {\"pens\": 3}\nstock[\"pens\"] = stock.get(\"pens\", 0) + 1\nstock[\"ink\"] = stock.get(\"ink\", 0) + 1\nprint(stock)",
+   "options": [
+    "{'pens': 4, 'ink': 1}",
+    "{'pens': 3, 'ink': 1}",
+    "KeyError: 'ink'"
+   ],
+   "answer": 0,
+   "why": "get() returns the current count, or 0 for a missing key, so pens goes from 3 to 4 and ink is created with 1. No KeyError (Day 14).",
+   "say": "Next, the counting pattern from day fourteen. One key exists and one does not. What does the dictionary look like afterwards?"
+  },
+  {
+   "type": "quiz",
+   "title": "Warm-up: sets",
+   "q": "`riya` and `dev` are sets of friends. Which expression gives the friends they **both** have?",
+   "options": [
+    "riya | dev",
+    "riya & dev",
+    "riya - dev"
+   ],
+   "answer": 1,
+   "why": "& is intersection: only names in both sets. | is everyone either of them knows, and - is Riya's friends that Dev doesn't know (Day 15).",
+   "say": "Sets from day fifteen. Riya and Dev each have a set of friends. Which expression gives the friends they share?"
+  },
+  {
+   "type": "predict",
+   "title": "Warm-up: unpacking a command",
+   "code": "command, *args = \"add 250 food Lunch with team\".split()\nprint(command, len(args), args[-1])",
+   "options": [
+    "add 5 team",
+    "add 4 team",
+    "add 250 food Lunch with team"
+   ],
+   "answer": 0,
+   "why": "command takes the first word, and the star collects the other five words into the list args, so args[-1] is 'team' (Days 11 and 13).",
+   "say": "Star unpacking from day thirteen, on the kind of line your tracker will read today. What does the first name get, and how many words land in args?"
+  },
+  {
+   "type": "predict",
+   "title": "Warm-up: functions and comprehensions",
+   "code": "def gst(amount, rate=18):\n    return round(amount * rate / 100, 2)\n\nprices = [100, 250]\nprint([gst(p) for p in prices], gst(100, rate=5))",
+   "options": [
+    "[18.0, 45.0] 5.0",
+    "[118.0, 295.0] 105.0",
+    "[18.0, 45.0] 18.0"
+   ],
+   "answer": 0,
+   "why": "The comprehension calls gst with the default rate, 18, giving 18.0 and 45.0. The keyword argument rate=5 overrides it: 5.0 (Days 16 to 18).",
+   "say": "Functions with defaults, inside a comprehension. Work out each call, then predict the output."
+  },
+  {
+   "type": "concept",
+   "title": "Plan before you code",
+   "body": "Professionals design first:\n1. **Requirements**: which commands must work?\n2. **Data**: how is one expense stored?\n3. **Functions**: one job each\n4. **Loop**: read a command, run it, repeat\n5. **Errors**: what can users get wrong?",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Requirements: add, list, total, delete, quit",
+     "Data: a list of expense dicts",
+     "Functions: one small job each",
+     "Loop: read, split, run the command",
+     "Errors: bad input never crashes"
+    ]
+   },
+   "say": "On day ten you learned to design before coding. Let's do it properly. First the requirements: which commands must work. Then the data: how one expense is stored. Then the functions, each doing one small job. Then the main loop that reads commands. And finally the errors: what can users get wrong, and how do we respond without crashing?"
+  },
+  {
+   "type": "concept",
+   "title": "The data model",
+   "body": "One expense is one **dict**. All expenses are a **list** of dicts, so a position in the list doubles as the expense number. Category totals are a counting-pattern **dict**.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "",
+     "amount",
+     "category",
+     "note"
+    ],
+    "rows": [
+     [
+      "expenses[0]",
+      "250.0",
+      "'food'",
+      "'Lunch with team'"
+     ],
+     [
+      "expenses[1]",
+      "1200.0",
+      "'travel'",
+      "'Train to Pune'"
+     ],
+     [
+      "expenses[2]",
+      "90.0",
+      "'food'",
+      "'Chai'"
+     ]
+    ]
+   },
+   "say": "Here is our data model. Each expense is a dictionary with an amount, a category and a note. All the expenses live in a list, in the order they were added, so a position in the list doubles as the expense number. Totals by category will be a dictionary built with the counting pattern."
+  },
+  {
+   "type": "code",
+   "title": "Step 1: add and list",
+   "code": "def add_expense(expenses, amount, category, note):\n    expense = {\"amount\": amount, \"category\": category, \"note\": note}\n    expenses.append(expense)\n    return expense\n\ndef list_expenses(expenses):\n    if not expenses:\n        print(\"No expenses yet\")\n    for number, e in enumerate(expenses, start=1):\n        print(f\"{number}. ₹{e['amount']:.2f}  {e['category']}  {e['note']}\")\n\nexpenses = []\nlist_expenses(expenses)\nadd_expense(expenses, 250.0, \"food\", \"Lunch with team\")\nadd_expense(expenses, 1200.0, \"travel\", \"Train to Pune\")\nlist_expenses(expenses)",
+   "expect": "No expenses yet\n1. ₹250.00  food  Lunch with team\n2. ₹1200.00  travel  Train to Pune\n",
+   "explain": [
+    [
+     2,
+     "One expense: a dict with three keys."
+    ],
+    [
+     3,
+     "The list is changed in place, so the caller sees the new expense."
+    ],
+    [
+     7,
+     "An empty list is falsy (Day 7)."
+    ],
+    [
+     9,
+     "enumerate(start=1) numbers the expenses for humans."
+    ],
+    [
+     12,
+     "Each function gets the list as a parameter: no globals."
+    ]
+   ],
+   "say": "Step one. Add expense builds a dictionary and appends it to the list it is given. Because lists are mutable, the caller's list grows. List expenses prints a friendly message for an empty list, and otherwise numbers every expense from one with enumerate. Both functions receive the list as a parameter, so there are no globals anywhere."
+  },
+  {
+   "type": "code",
+   "title": "Step 2: totals by category",
+   "code": "def totals_by_category(expenses):\n    totals = {}\n    for e in expenses:\n        totals[e[\"category\"]] = totals.get(e[\"category\"], 0) + e[\"amount\"]\n    return totals\n\nexpenses = [\n    {\"amount\": 250.0, \"category\": \"food\", \"note\": \"Lunch\"},\n    {\"amount\": 1200.0, \"category\": \"travel\", \"note\": \"Train\"},\n    {\"amount\": 90.0, \"category\": \"food\", \"note\": \"Chai\"},\n]\ntotals = totals_by_category(expenses)\nprint(totals)\nfor category in sorted(totals, key=totals.get, reverse=True):\n    print(f\"{category}: ₹{totals[category]:.2f}\")\nprint(f\"Total: ₹{sum(totals.values()):.2f}\")",
+   "expect": "{'food': 340.0, 'travel': 1200.0}\ntravel: ₹1200.00\nfood: ₹340.00\nTotal: ₹1540.00\n",
+   "explain": [
+    [
+     4,
+     "The counting pattern, adding amounts instead of 1."
+    ],
+    [
+     5,
+     "Return the dict: printing is the caller's job."
+    ],
+    [
+     14,
+     "Rank categories by their totals, biggest first (Day 15)."
+    ],
+    [
+     16,
+     "The grand total is the sum of the category totals."
+    ]
+   ],
+   "say": "Step two is the counting pattern again, but instead of adding one, we add each expense's amount to its category. The function returns the dictionary and leaves printing to the caller, which makes it easy to test. Then we rank the categories, biggest first, with the sorted and get trick from day fifteen, and finish with the grand total."
+  },
+  {
+   "type": "concept",
+   "title": "Parsing commands",
+   "body": "Every line the user types becomes a **command** plus **arguments**:\n\n`command, *args = line.split()`\n\n`add 250 food Lunch with team` gives `\"add\"` and `['250', 'food', 'Lunch', 'with', 'team']`.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Read a line",
+      "s": "pill"
+     },
+     {
+      "t": "Blank line?",
+      "s": "diamond",
+      "yes": "Ask again",
+      "no": "command, *args = split"
+     },
+     {
+      "t": "Run the matching branch: add, list, total, delete or quit"
+     },
+     {
+      "t": "Back to the prompt",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Every line the user types gets split into words. Star unpacking from day thirteen pulls out the command and collects everything else as arguments. For an add command, the first argument is the amount, the second is the category, and the rest of the words make up the note. An if and elif chain then runs the right branch."
+  },
+  {
+   "type": "code",
+   "title": "Step 3: the command loop",
+   "body": "The Input box sends five lines: an add, a blank line, `count`, a typo and `quit`.",
+   "code": "expenses = []\nwhile True:\n    parts = input(\"> \").split()\n    if not parts:\n        continue\n    command, *args = parts\n    if command == \"quit\":\n        print(\"Bye!\")\n        break\n    elif command == \"add\":\n        note = \" \".join(args[2:])\n        expenses.append({\"amount\": float(args[0]), \"category\": args[1], \"note\": note})\n        print(\"Added\", args[0], \"to\", args[1])\n    elif command == \"count\":\n        print(len(expenses), \"expenses\")\n    else:\n        print(\"Unknown command:\", command)",
+   "stdin": "add 250 food Lunch with team\n\ncount\nfly\nquit\n",
+   "expect": "> Added 250 to food\n> > 1 expenses\n> Unknown command: fly\n> Bye!\n",
+   "explain": [
+    [
+     3,
+     "The > prompt; split() gives a list of words."
+    ],
+    [
+     4,
+     "A blank line gives an empty list: just ask again."
+    ],
+    [
+     6,
+     "Star-unpacking: the first word, and all the rest."
+    ],
+    [
+     11,
+     "The note is every word after the category."
+    ],
+    [
+     12,
+     "float() trusts the user completely: add abc would crash here. That's your next job."
+    ],
+    [
+     17,
+     "Anything else gets a polite message instead of silence."
+    ]
+   ],
+   "say": "Step three is the heart of every command line app. The loop reads a line, skips blank ones, and unpacks the command and its arguments. Quit breaks out of the loop. Add stores an expense, joining the remaining words into the note. Anything unknown gets a polite message. This version still trusts the amount completely, which you will fix next."
+  },
+  {
+   "type": "code",
+   "title": "Step 4: find an expense by number",
+   "code": "def get_expense(expenses, number):\n    \"\"\"Return expense `number`, counting from 1, or raise ValueError.\"\"\"\n    if number < 1 or number > len(expenses):\n        raise ValueError(f\"no expense number {number}\")\n    return expenses[number - 1]\n\nexpenses = [{\"amount\": 250.0, \"category\": \"food\", \"note\": \"Lunch\"},\n            {\"amount\": 90.0, \"category\": \"food\", \"note\": \"Chai\"}]\nfor text in [\"2\", \"9\", \"two\"]:\n    try:\n        e = get_expense(expenses, int(text))\n        print(f\"Expense {text}: {e['note']}, ₹{e['amount']:.2f}\")\n    except ValueError as err:\n        print(\"Error:\", err)",
+   "expect": "Expense 2: Chai, ₹90.00\nError: no expense number 9\nError: invalid literal for int() with base 10: 'two'\n",
+   "explain": [
+    [
+     3,
+     "Humans count from 1, so valid numbers run from 1 to len(expenses)."
+    ],
+    [
+     4,
+     "Out of range: raise, and let the caller decide what to show."
+    ],
+    [
+     5,
+     "Turn the human number into a list index."
+    ],
+    [
+     11,
+     "int() and get_expense() can both raise ValueError..."
+    ],
+    [
+     13,
+     "...so one except handles both, and the loop keeps going."
+    ]
+   ],
+   "say": "Step four: finding an expense by its number, the trickiest part of delete. Humans count from one, so valid numbers run from one up to the length of the list, and the list index is one less. Anything outside that range raises a value error. In the loop, a bad number and text that is not a number both land in the same except block. Your delete will work the same way."
+  },
+  {
+   "type": "exercise",
+   "title": "Validate amounts",
+   "task": "Users type amounts like `250`, ` 99.50 `, `₹1,200` or `abc`. Write `parse_amount(text)`:\n- remove spaces, `₹` and commas, then convert with `float()`\n- **raise** `ValueError` if it isn't a number, or is 0 or less\n- return it rounded to 2 decimals\n\n`parse_amount(\"₹1,200\")` returns `1200.0`",
+   "starter": "def parse_amount(text):\n    \"\"\"Turn text like '250' or '₹1,200' into a positive float, or raise ValueError.\"\"\"\n    return float(text)\n\n\nprint(parse_amount(\"250\"))\n",
+   "solution": "def parse_amount(text):\n    \"\"\"Turn text like '250' or '₹1,200' into a positive float, or raise ValueError.\"\"\"\n    cleaned = text.strip().replace(\"₹\", \"\").replace(\",\", \"\")\n    try:\n        amount = float(cleaned)\n    except ValueError:\n        raise ValueError(f\"'{text}' is not an amount\")\n    if amount <= 0:\n        raise ValueError(\"amount must be more than zero\")\n    return round(amount, 2)\n\nprint(parse_amount(\"250\"))",
+   "tests": "def attempt(text):\n    try:\n        return parse_amount(text)\n    except ValueError:\n        return \"ValueError\"\n\nfor text, expected in [(\"250\", 250.0), (\" 99.50 \", 99.5), (\"₹1,200\", 1200.0), (\"1,234.567\", 1234.57)]:\n    got = attempt(text)\n    assert got == expected, f\"parse_amount({text!r}) should return {expected}, not {got!r}. Strip spaces, remove ₹ and commas, then round to 2 decimals.\"\nfor text in [\"abc\", \"\", \"0\", \"-50\", \"₹\"]:\n    got = attempt(text)\n    assert got == \"ValueError\", f\"parse_amount({text!r}) should raise ValueError, but it returned {got!r}.\"\ntry:\n    parse_amount(\"-50\")\nexcept ValueError as e:\n    assert str(e).strip(), \"Give your ValueError a message, like ValueError(\\\"amount must be more than zero\\\").\"",
+   "hints": [
+    "text.strip().replace(\"₹\", \"\").replace(\",\", \"\") cleans the text.",
+    "Wrap float() in try/except ValueError, and raise your own ValueError with a clear message.",
+    "After converting: if amount <= 0: raise ValueError(\"amount must be more than zero\")"
+   ],
+   "say": "Before the project, build its most important guard. Users type amounts in every possible way: with spaces, with the rupee sign, with commas, or as complete nonsense. Write a parse amount function that cleans the text, converts it, and raises a value error for anything that is not a positive amount. The project relies on it."
+  },
+  {
+   "type": "quiz",
+   "title": "Design check",
+   "q": "The user types `delete 9`, but there are only 2 expenses. What should `delete_expense()` do?",
+   "options": [
+    "Print an error and return None",
+    "Raise ValueError with a clear message, and let the loop print it",
+    "Quietly delete the last expense instead"
+   ],
+   "answer": 1,
+   "why": "Functions signal problems by raising; the command loop decides how to show them. That keeps delete_expense easy to test and leaves the loop in charge of the screen.",
+   "say": "A design question before you build. The user asks to delete expense number nine, but there are only two. What should the delete function do?"
+  },
+  {
+   "type": "project",
+   "title": "Project: expense tracker",
+   "brief": "Build a command-line expense tracker that stores each expense as a dict in `expenses`.\n- `add 250 food Lunch with team`\n- `list`: lines like `1. ₹250.00  food  Lunch with team`, or `No expenses yet`\n- `total`: category totals, biggest first, then `Total: ₹1540.00`\n- `delete 2`\n- `quit`: print `Bye!`\n\nBad input prints an `Error:` line; unknown commands print `Unknown command: ...`. Nothing crashes.",
+   "steps": [
+    "Paste in your parse_amount() from the exercise: it raises ValueError for bad amounts.",
+    "Write add_expense() to append a dict with amount, category and note.",
+    "Write list_expenses() with enumerate(start=1), or print No expenses yet.",
+    "Write totals_by_category() with the counting pattern; print totals biggest first, then Total.",
+    "Write delete_expense(): check the number, pop(number - 1), and raise ValueError if it doesn't exist.",
+    "Wire add, list, total and delete into the loop: check len(args) first, and catch ValueError so the app never crashes."
+   ],
+   "stdin": "add 250 food Lunch with team\nadd 1200 travel Train to Pune\nadd abc food Snacks\nadd 90 food Chai\nlist\ntotal\ndelete 2\nlist\nquit\n",
+   "starter": "def parse_amount(text):\n    \"\"\"Turn text like '250' or '₹1,200' into a positive float, or raise ValueError.\"\"\"\n    return float(text)  # TODO: use your version from the exercise\n\n\ndef add_expense(expenses, amount, category, note):\n    \"\"\"Append one expense dict to the list and return it.\"\"\"\n    return None  # TODO\n\n\ndef list_expenses(expenses):\n    \"\"\"Print every expense numbered from 1, or No expenses yet.\"\"\"\n    print(\"TODO: list\")\n\n\ndef totals_by_category(expenses):\n    \"\"\"Return a dict mapping each category to its total amount.\"\"\"\n    return {}  # TODO\n\n\ndef delete_expense(expenses, number):\n    \"\"\"Remove and return expense `number` (counting from 1), or raise ValueError.\"\"\"\n    return None  # TODO\n\n\nexpenses = []\nprint(\"Expense tracker. Commands: add, list, total, delete, quit\")\nwhile True:\n    parts = input(\"> \").split()\n    if not parts:\n        continue\n    command, *args = parts\n    if command == \"quit\":\n        print(\"Bye!\")\n        break\n    elif command == \"add\":\n        print(\"TODO: add <amount> <category> <note>\")\n    # TODO: elif branches for list, total and delete\n    else:\n        print(\"Unknown command:\", command)\n",
+   "solution": "def parse_amount(text):\n    \"\"\"Turn text like '250' or '₹1,200' into a positive float, or raise ValueError.\"\"\"\n    cleaned = text.strip().replace(\"₹\", \"\").replace(\",\", \"\")\n    try:\n        amount = float(cleaned)\n    except ValueError:\n        raise ValueError(f\"'{text}' is not an amount\")\n    if amount <= 0:\n        raise ValueError(\"amount must be more than zero\")\n    return round(amount, 2)\n\ndef add_expense(expenses, amount, category, note):\n    \"\"\"Append one expense dict to the list and return it.\"\"\"\n    expense = {\"amount\": amount, \"category\": category, \"note\": note}\n    expenses.append(expense)\n    return expense\n\n\ndef list_expenses(expenses):\n    \"\"\"Print every expense numbered from 1, or No expenses yet.\"\"\"\n    if not expenses:\n        print(\"No expenses yet\")\n    for number, e in enumerate(expenses, start=1):\n        print(f\"{number}. ₹{e['amount']:.2f}  {e['category']}  {e['note']}\")\n\n\ndef totals_by_category(expenses):\n    \"\"\"Return a dict mapping each category to its total amount.\"\"\"\n    totals = {}\n    for e in expenses:\n        totals[e[\"category\"]] = totals.get(e[\"category\"], 0) + e[\"amount\"]\n    return totals\n\n\ndef delete_expense(expenses, number):\n    \"\"\"Remove and return expense `number` (counting from 1), or raise ValueError.\"\"\"\n    if number < 1 or number > len(expenses):\n        raise ValueError(f\"no expense number {number}\")\n    return expenses.pop(number - 1)\n\n\nexpenses = []\nprint(\"Expense tracker. Commands: add, list, total, delete, quit\")\nwhile True:\n    parts = input(\"> \").split()\n    if not parts:\n        continue\n    command, *args = parts\n    if command == \"quit\":\n        print(\"Bye!\")\n        break\n    elif command == \"add\":\n        if len(args) < 2:\n            print(\"Error: use add <amount> <category> <note>\")\n            continue\n        try:\n            amount = parse_amount(args[0])\n        except ValueError as err:\n            print(\"Error:\", err)\n            continue\n        expense = add_expense(expenses, amount, args[1].lower(), \" \".join(args[2:]))\n        print(f\"Added ₹{expense['amount']:.2f} to {expense['category']}\")\n    elif command == \"list\":\n        list_expenses(expenses)\n    elif command == \"total\":\n        totals = totals_by_category(expenses)\n        for category in sorted(totals, key=totals.get, reverse=True):\n            print(f\"{category}: ₹{totals[category]:.2f}\")\n        print(f\"Total: ₹{sum(totals.values()):.2f}\")\n    elif command == \"delete\":\n        if len(args) != 1:\n            print(\"Error: use delete <number>, like delete 2\")\n            continue\n        try:\n            number = int(args[0])\n        except ValueError:\n            print(f\"Error: '{args[0]}' is not an expense number\")\n            continue\n        try:\n            delete_expense(expenses, number)\n        except ValueError as err:\n            print(\"Error:\", err)\n            continue\n        print(\"Deleted expense\", number)\n    else:\n        print(\"Unknown command:\", command)",
+   "tests": "import re\n\ndef lines_of(out):\n    return [line.replace(\",\", \"\") for line in out.splitlines()]\n\nout = await run_program(\"add 250 food Lunch with team\\nadd 1200 travel Train to Pune\\nadd 90 food Chai\\nlist\\ntotal\\nquit\\n\")\nlines = lines_of(out)\nassert any(\"Lunch with team\" in l and \"250\" in l for l in lines), \"list should show each expense with its amount and full note, like 1. ₹250.00  food  Lunch with team.\"\nassert any(\"Train to Pune\" in l and \"1200\" in l for l in lines), \"Notes can have several words: join every word after the category.\"\nfood = [i for i, l in enumerate(lines) if \"food\" in l and \"340\" in l]\nassert food, \"total should print food: ₹340.00, because 250 + 90 = 340.\"\nassert \"travel\" in lines[food[0] - 1] and \"1200\" in lines[food[0] - 1], \"Print category totals biggest first: travel (1200) on the line just before food (340).\"\nassert any(\"total\" in l.lower() and \"1540\" in l for l in lines), \"total should end with the grand total: Total: ₹1540.00.\"\nassert \"Bye\" in out, \"quit should print Bye! and stop the loop.\"\n\nout = await run_program(\"add abc food Snacks\\nadd -50 food Refund\\nadd 0 food Free\\nlist\\nquit\\n\")\nassert out.lower().count(\"error\") >= 3, \"add with abc, -50 or 0 must print an Error: line each time, without crashing or saving it. Use parse_amount() inside try/except.\"\nassert \"No expenses yet\" in out, \"After only bad adds, list should print No expenses yet.\"\n\nout = await run_program(\"add 100 food Dosa\\nadd 200 travel Auto\\ndelete 1\\ndelete 9\\ndelete x\\nlist\\ntotal\\nquit\\n\")\nlines = lines_of(out)\nassert any(\"Auto\" in l and re.findall(r\"\\d+\", l)[:1] == [\"1\"] for l in lines), \"After delete 1, the Auto expense should move up to number 1 in the list.\"\nassert out.lower().count(\"error\") >= 2, \"delete 9 (no such expense) and delete x (not a number) should each print an Error: line.\"\ngrand = [l for l in lines if \"total\" in l.lower()]\nassert grand and \"200\" in grand[-1] and \"300\" not in grand[-1], \"After deleting the ₹100 dosa, the grand total should be Total: ₹200.00.\"\n\nout = await run_program(\"hello\\n\\nlist\\nquit\\n\")\nassert \"Unknown command\" in out, \"For a command you don't know, like hello, print Unknown command: hello.\"\nassert \"No expenses yet\" in out, \"A blank line should simply be ignored, and list should still work afterwards.\"\n\ntry:\n    out = await run_program(\"add\\nadd 50\\ndelete\\nlist\\nquit\\n\")\nexcept AssertionError as crash:\n    raise AssertionError(f\"Typing add or delete without everything they need crashed the app. Check len(args) before using args[0] or args[1]. ({crash})\")\nassert \"No expenses yet\" in out, \"Incomplete commands like add 50 must not save anything: print an Error: line instead.\"\n\nfuncs = [n for n in ast.walk(__tree__) if isinstance(n, ast.FunctionDef)]\nassert len(funcs) >= 4, \"Split the work into functions: parse_amount, add_expense, list_expenses, totals_by_category and delete_expense.\"\nassert any(isinstance(n, ast.Try) for n in ast.walk(__tree__)), \"Use try/except ValueError so bad input prints an error instead of crashing.\"",
+   "hints": [
+    "In the add branch, call parse_amount(args[0]) inside try/except ValueError, and print \"Error:\" with the message.",
+    "delete: convert args[0] with int() inside try, then call delete_expense(); each ValueError becomes an Error: line.",
+    "total: totals = totals_by_category(expenses), then loop over sorted(totals, key=totals.get, reverse=True)."
+   ],
+   "say": "Now build the whole tracker. The starter has the function outlines and a loop that already handles quit and unknown commands. Fill in each function, then wire up add, list, total and delete. Every mistake a user can make must print an error line and keep the app running. Take your time: this is a real program."
+  },
+  {
+   "type": "exercise",
+   "title": "Budget alerts",
+   "task": "Write `over_budget(totals, budgets)` that returns a **sorted list** of categories whose total is **more than** their budget. Categories without a budget are never over.\n\n`over_budget({\"food\": 3400, \"travel\": 900}, {\"food\": 3000, \"travel\": 2000})` returns `['food']`",
+   "starter": "def over_budget(totals, budgets):\n    \"\"\"Return a sorted list of categories that spent more than their budget.\"\"\"\n    return []\n\n\ntotals = {\"food\": 3400, \"travel\": 900, \"fun\": 1500}\nbudgets = {\"food\": 3000, \"travel\": 2000}\nprint(over_budget(totals, budgets))\n",
+   "solution": "def over_budget(totals, budgets):\n    \"\"\"Return a sorted list of categories that spent more than their budget.\"\"\"\n    return sorted([c for c, spent in totals.items() if c in budgets and spent > budgets[c]])\n\n\ntotals = {\"food\": 3400, \"travel\": 900, \"fun\": 1500}\nbudgets = {\"food\": 3000, \"travel\": 2000}\nprint(over_budget(totals, budgets))",
+   "tests": "got = over_budget({\"food\": 3400, \"travel\": 900}, {\"food\": 3000, \"travel\": 2000})\nassert got == [\"food\"], f\"food spent 3400 against a 3000 budget, so the answer is ['food'], not {got}.\"\ngot = over_budget({\"rent\": 15000, \"food\": 5000, \"fun\": 2600}, {\"rent\": 12000, \"food\": 4000, \"fun\": 2500})\nassert got == [\"food\", \"fun\", \"rent\"], f\"All three are over budget: return them sorted, ['food', 'fun', 'rent'], not {got}.\"\nassert over_budget({\"food\": 3000}, {\"food\": 3000}) == [], \"Spending exactly the budget is not over it: use >, not >=.\"\nassert over_budget({\"gifts\": 999}, {}) == [], \"A category with no budget should never be reported.\"\nassert over_budget({}, {\"food\": 100}) == [], \"No spending means nothing is over budget.\"",
+   "hints": [
+    "Loop over totals.items(): each category and the amount spent.",
+    "Skip categories that aren't in budgets: c in budgets.",
+    "sorted([c for c, spent in totals.items() if c in budgets and spent > budgets[c]])"
+   ],
+   "say": "One more feature real money apps have: budget alerts. Write a function that takes the totals by category and a dictionary of budgets, and returns the categories that overspent, sorted alphabetically. A category without a budget is never over, and spending exactly the budget is fine. A comprehension keeps it short."
+  },
+  {
+   "type": "predict",
+   "title": "Review: exceptions",
+   "code": "def parse(text):\n    try:\n        return int(text)\n    except ValueError:\n        return -1\n\nprint([parse(t) for t in [\"7\", \"x\", \" 3 \"]])",
+   "options": [
+    "[7, -1, 3]",
+    "[7, -1, -1]",
+    "ValueError: invalid literal for int() with base 10: 'x'"
+   ],
+   "answer": 0,
+   "why": "int(\"x\") raises ValueError, which parse catches and turns into -1, so nothing crashes. int(\" 3 \") ignores the spaces and gives 3 (Day 19).",
+   "say": "A final review question on exceptions. One function that catches bad input, called inside a comprehension. What is printed?"
+  },
+  {
+   "type": "recap",
+   "title": "Phase 2 complete",
+   "points": [
+    "Lists, tuples, dicts and sets: pick the right structure for the data",
+    "Comprehensions transform and filter collections in one readable line",
+    "Functions with parameters, defaults and return values split a program into testable pieces",
+    "Exceptions turn bad input into clear messages instead of crashes",
+    "A list of dicts plus a command loop is the skeleton of countless real apps"
+   ],
+   "say": "Phase two complete, and what a climb. You can store data in lists, tuples, dictionaries and sets, transform it with comprehensions, organise programs into functions, and handle errors like a professional. And you built a real command line app. Phase three, Orbit, starts tomorrow with modules and imports. See you on day twenty one."
+  }
+ ]
+}

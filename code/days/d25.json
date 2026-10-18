@@ -1,0 +1,493 @@
+{
+ "day": 25,
+ "phase": 3,
+ "title": "OOP II: Pythonic classes",
+ "subtitle": "Objects that print, compare, sort and validate",
+ "minutes": 55,
+ "goal": "Make classes behave like built-in types with dunder methods, properties, class attributes, class methods and static methods.",
+ "outcomes": [
+  "Choose between class attributes and instance attributes",
+  "Write __str__ and __repr__ for users and developers",
+  "Make objects comparable and sortable with __eq__ and __lt__, and sized with __len__",
+  "Validate data with @property and setters",
+  "Write factory @classmethods and helper @staticmethods"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 25: Pythonic classes",
+   "body": "Yesterday's objects work, but they feel clumsy: `print(acct)` shows a memory address, `==` says two identical objects differ, and `sorted()` refuses them.\n\nToday your classes learn to behave like built-ins: print nicely, compare, sort, report their `len`, and validate their own data.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Day 24",
+     "code": "print(acct)\n# <__main__.BankAccount object at 0x7f3a...>"
+    },
+    "right": {
+     "title": "Day 25",
+     "code": "print(acct)\n# Riya: ₹1,200.00\nrepr(acct)\n# BankAccount('Riya', 1200)"
+    },
+    "verdict": "Objects that explain themselves are easier to debug and use."
+   },
+   "say": "Yesterday's objects work, but they feel clumsy. Printing one shows a cryptic memory address, two objects with identical data are not equal, and sorted refuses to sort them. Today your classes learn to behave like Python's own types. They will print nicely, compare and sort, report their length, and validate their own data."
+  },
+  {
+   "type": "concept",
+   "title": "Class attributes: shared by all",
+   "body": "An attribute set **in the class body** belongs to the class and is shared by every instance, like an interest rate. Attributes set on `self` belong to one object.\n\nWhen you read `a.interest_rate`, Python looks on the object first, then on its class.",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "a",
+     "b",
+     "SavingsAccount"
+    ],
+    "objects": [
+     {
+      "id": "o1",
+      "r": "owner='Riya'  balance=10000",
+      "t": "SavingsAccount"
+     },
+     {
+      "id": "o2",
+      "r": "owner='Arjun'  balance=50000",
+      "t": "SavingsAccount"
+     },
+     {
+      "id": "c",
+      "r": "interest_rate=0.04  accounts_opened=2",
+      "t": "class"
+     }
+    ],
+    "links": [
+     [
+      "a",
+      "o1"
+     ],
+     [
+      "b",
+      "o2"
+     ],
+     [
+      "SavingsAccount",
+      "c"
+     ]
+    ]
+   },
+   "say": "So far every attribute was set on self, so each object had its own copy. An attribute written directly in the class body is different: it belongs to the class and is shared by every instance, like a bank's interest rate. When you read an attribute, Python looks on the object first, and if it is not there, it looks on the class."
+  },
+  {
+   "type": "code",
+   "title": "Shared settings with class attributes",
+   "code": "class SavingsAccount:\n    interest_rate = 0.04  # class attribute: shared by all accounts\n    accounts_opened = 0\n\n    def __init__(self, owner, balance):\n        self.owner = owner  # instance attributes: one per object\n        self.balance = balance\n        SavingsAccount.accounts_opened += 1\n\n    def yearly_interest(self):\n        return self.balance * self.interest_rate\n\n\na = SavingsAccount(\"Riya\", 10000)\nb = SavingsAccount(\"Arjun\", 50000)\nprint(a.yearly_interest(), b.yearly_interest())\nprint(\"Accounts opened:\", SavingsAccount.accounts_opened)\n\nSavingsAccount.interest_rate = 0.05  # the bank changes its rate\nprint(a.yearly_interest(), b.yearly_interest())",
+   "expect": "400.0 2000.0\nAccounts opened: 2\n500.0 2500.0\n",
+   "explain": [
+    [
+     2,
+     "Defined in the class body, so every account shares it."
+    ],
+    [
+     9,
+     "Update the class attribute through the class name: a counter for all accounts."
+    ],
+    [
+     12,
+     "self.interest_rate is not on the object, so Python finds it on the class."
+    ],
+    [
+     20,
+     "Change it once on the class, and every account sees the new rate."
+    ]
+   ],
+   "say": "The interest rate and the accounts opened counter live on the class, so they are shared. Owner and balance live on each object. Inside yearly interest, self dot interest rate is not found on the object, so Python looks it up on the class. When the bank changes its rate once, on the class, every account immediately sees the new value."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "class Team:\n    players = 11\n\n\na = Team()\nb = Team()\na.players = 12\nprint(a.players, b.players, Team.players)",
+   "options": [
+    "12 12 12",
+    "12 11 11",
+    "12 11 12",
+    "11 11 11"
+   ],
+   "answer": 1,
+   "why": "Assigning `a.players = 12` creates a **new instance attribute** on `a` that hides the class one. `b` and `Team` still see 11. To change the shared value, assign through the class: `Team.players = 12`.",
+   "say": "The class says a team has eleven players. Then we assign twelve through the object a. What do a, b and the class each see? This trips up experienced developers too."
+  },
+  {
+   "type": "concept",
+   "title": "__str__ and __repr__",
+   "body": "Two methods control how an object turns into text:\n\n- `__str__`: friendly text for **users**, used by `print()` and f-strings\n- `__repr__`: precise text for **developers**, used in lists, the shell and debuggers. Ideally it looks like code that would recreate the object.\n\nIf you write only one, write `__repr__`: `print` falls back to it.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "You write",
+     "Python calls",
+     "Audience"
+    ],
+    "rows": [
+     [
+      "print(b), f\"{b}\", str(b)",
+      "b.__str__()",
+      "users"
+     ],
+     [
+      "repr(b), [b], the shell",
+      "b.__repr__()",
+      "developers"
+     ],
+     [
+      "only __repr__ defined",
+      "__repr__ for both",
+      "both"
+     ]
+    ]
+   },
+   "say": "Two special methods control how your object turns into text. Dunder str is the friendly version for users, used by print and f strings. Dunder repr is the precise version for developers, shown inside lists, in the Python shell and in debuggers, and ideally it looks like the code that would recreate the object. If you only write one, write repr, because print falls back to it."
+  },
+  {
+   "type": "code",
+   "title": "A Book that explains itself",
+   "code": "class Book:\n    def __init__(self, title, author, price):\n        self.title = title\n        self.author = author\n        self.price = price\n\n    def __str__(self):\n        return f\"{self.title} by {self.author}, ₹{self.price}\"\n\n    def __repr__(self):\n        return f\"Book({self.title!r}, {self.author!r}, {self.price})\"\n\n\nb = Book(\"Wings of Fire\", \"A. P. J. Abdul Kalam\", 399)\nprint(b)\nprint(f\"Now reading: {b}\")\nprint(repr(b))\nprint([b])",
+   "expect": "Wings of Fire by A. P. J. Abdul Kalam, ₹399\nNow reading: Wings of Fire by A. P. J. Abdul Kalam, ₹399\nBook('Wings of Fire', 'A. P. J. Abdul Kalam', 399)\n[Book('Wings of Fire', 'A. P. J. Abdul Kalam', 399)]\n",
+   "explain": [
+    [
+     7,
+     "__str__ must return a string: the friendly version."
+    ],
+    [
+     11,
+     "The !r inside the braces uses repr, so the strings appear with quotes, like real code."
+    ],
+    [
+     15,
+     "print uses __str__."
+    ],
+    [
+     16,
+     "So do f-strings."
+    ],
+    [
+     18,
+     "A list shows its items with __repr__."
+    ]
+   ],
+   "say": "Our book returns a friendly sentence from dunder str, and a code-like description from dunder repr. The exclamation r inside the f string braces means use repr, so the title appears with its quotes. Print and f strings use the friendly version. But a list shows each item with repr, which is why repr matters so much when you are debugging."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "A class defines **only** `__repr__`, not `__str__`. What does `print(obj)` show?",
+   "options": [
+    "The memory address, like <Obj object at 0x...>",
+    "The text returned by __repr__",
+    "An error: __str__ is missing",
+    "Nothing"
+   ],
+   "answer": 1,
+   "why": "When `__str__` is missing, Python falls back to `__repr__`. That is why a good `__repr__` is the first dunder method most developers write.",
+   "say": "Quick check. Your class defines dunder repr but not dunder str. What does print show?"
+  },
+  {
+   "type": "concept",
+   "title": "Dunder methods are hooks",
+   "body": "\"Dunder\" means **d**ouble **under**score. You never call these directly; Python calls them when you use normal syntax. Define the hook, and your object joins in.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "You write",
+     "Python calls"
+    ],
+    "rows": [
+     [
+      "len(x)",
+      "x.__len__()"
+     ],
+     [
+      "a == b",
+      "a.__eq__(b)"
+     ],
+     [
+      "a < b, sorted(items)",
+      "a.__lt__(b)"
+     ],
+     [
+      "print(x)",
+      "x.__str__()"
+     ],
+     [
+      "Cls(...)",
+      "Cls.__init__(new, ...)"
+     ]
+    ]
+   },
+   "say": "Dunder is short for double underscore. These special methods are hooks. You rarely call them yourself. Instead, Python calls them for you when you use normal syntax. Write len of x, and Python calls x dot dunder len. Write a less than b, and Python calls a dot dunder lt with b. Define the hook, and your object joins in with the rest of the language."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "class Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\n\nprint(Point(1, 2) == Point(1, 2))",
+   "options": [
+    "True",
+    "False",
+    "TypeError: Point objects cannot be compared"
+   ],
+   "answer": 1,
+   "why": "Without `__eq__`, `==` falls back to **identity**: are these the very same object? They are two separate objects, so the answer is False, even though their data matches.",
+   "say": "Two points with exactly the same coordinates. The class has no dunder methods yet. Are they equal? Predict, then run."
+  },
+  {
+   "type": "code",
+   "title": "__eq__ and __lt__: sortable versions",
+   "body": "Sorting software versions as **strings** is a real bug: `\"3.9\"` looks bigger than `\"3.12\"`. Compare them as tuples of numbers instead.",
+   "code": "class Version:\n    def __init__(self, text):\n        self.text = text\n        self.parts = tuple([int(p) for p in text.split(\".\")])\n\n    def __repr__(self):\n        return f\"Version({self.text!r})\"\n\n    def __eq__(self, other):\n        return self.parts == other.parts\n\n    def __lt__(self, other):\n        return self.parts < other.parts\n\n\nprint(Version(\"3.9.0\") == Version(\"3.9.0\"))\nprint(\"3.9.0\" < \"3.12.1\")\nprint(Version(\"3.9.0\") < Version(\"3.12.1\"))\n\nreleases = [Version(\"3.12.1\"), Version(\"3.9.0\"), Version(\"3.13.0\"), Version(\"3.10.4\")]\nprint(sorted(releases))\nprint(\"Latest:\", max(releases))",
+   "expect": "True\nFalse\nTrue\n[Version('3.9.0'), Version('3.10.4'), Version('3.12.1'), Version('3.13.0')]\nLatest: Version('3.13.0')\n",
+   "explain": [
+    [
+     4,
+     "\"3.12.1\" becomes the tuple (3, 12, 1)."
+    ],
+    [
+     9,
+     "__eq__ decides what == means for versions."
+    ],
+    [
+     12,
+     "__lt__ decides what < means; sorted only needs this one."
+    ],
+    [
+     17,
+     "Strings compare character by character, and 9 beats 1: wrong answer."
+    ],
+    [
+     18,
+     "Tuples of ints compare number by number: 9 is less than 12."
+    ],
+    [
+     21,
+     "sorted and max now work on our own objects."
+    ]
+   ],
+   "say": "Sorting version numbers as strings is a real bug that has shipped in real products, because the text three point nine looks bigger than three point twelve. Our Version class stores the numbers as a tuple. Dunder eq defines equality and dunder lt defines less than, by comparing those tuples. Now sorted and max just work, and they give the right answer."
+  },
+  {
+   "type": "code",
+   "title": "__len__: a playlist that knows its size",
+   "code": "class Playlist:\n    def __init__(self, name):\n        self.name = name\n        self.songs = []\n\n    def add(self, song):\n        self.songs.append(song)\n\n    def __len__(self):\n        return len(self.songs)\n\n    def __str__(self):\n        return f\"{self.name} ({len(self)} songs)\"\n\n\ntrip = Playlist(\"Road trip\")\ntrip.add(\"Kesariya\")\ntrip.add(\"Ilahi\")\nprint(len(trip))\nprint(trip)\n\nempty = Playlist(\"Focus\")\nif not empty:\n    print(empty.name, \"is empty\")",
+   "expect": "2\nRoad trip (2 songs)\nFocus is empty\n",
+   "explain": [
+    [
+     9,
+     "__len__ lets len() work on a Playlist."
+    ],
+    [
+     13,
+     "Methods can use len(self) like any other code."
+    ],
+    [
+     19,
+     "len(trip) calls trip.__len__()."
+    ],
+    [
+     23,
+     "With __len__ defined, an object of length 0 counts as False, just like an empty list."
+    ]
+   ],
+   "say": "Give a class dunder len, and the built-in len works on it. Our playlist reports how many songs it holds, and its str method uses len of self too. Here is a bonus: once an object has a length, a length of zero counts as false, exactly like an empty list. So if not empty reads beautifully."
+  },
+  {
+   "type": "concept",
+   "title": "@property: attributes with rules",
+   "body": "A plain attribute can be set to anything: `s.marks = 140`. A **property** looks like an attribute from outside, but runs your code on every read or write, so it can **validate**.\n\nThe value itself is stored in `_marks`, with an underscore. The `@` line is a **decorator**; you will write your own on Day 29.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Plain attribute",
+     "code": "s.marks = 140\n# silently accepted"
+    },
+    "right": {
+     "title": "Property with a setter",
+     "code": "s.marks = 140\n# ValueError: marks must be\n# between 0 and 100"
+    },
+    "verdict": "Same syntax for the caller, but the class enforces its rules."
+   },
+   "say": "A plain attribute accepts anything, so nothing stops marks from being set to a hundred and forty. A property looks exactly like an attribute from the outside, but it runs your code every time someone reads or writes it, so it can validate. The real value is kept in an attribute with a leading underscore. The at sign line is called a decorator, and on day twenty nine you will write your own."
+  },
+  {
+   "type": "code",
+   "title": "Validated marks",
+   "code": "class Student:\n    def __init__(self, name, marks):\n        self.name = name\n        self.marks = marks  # goes through the setter below\n\n    @property\n    def marks(self):\n        return self._marks\n\n    @marks.setter\n    def marks(self, value):\n        if not 0 <= value <= 100:\n            raise ValueError(f\"marks must be between 0 and 100, got {value}\")\n        self._marks = value\n\n\ns = Student(\"Meera\", 91)\ns.marks = 72\nprint(s.name, s.marks)\ntry:\n    s.marks = 140\nexcept ValueError as e:\n    print(\"Rejected:\", e)\nprint(\"Still\", s.marks)",
+   "expect": "Meera 72\nRejected: marks must be between 0 and 100, got 140\nStill 72\n",
+   "explain": [
+    [
+     4,
+     "Even __init__ goes through the setter, so bad data is rejected from the start."
+    ],
+    [
+     6,
+     "@property: reading s.marks runs this method."
+    ],
+    [
+     10,
+     "@marks.setter: writing s.marks = value runs this one."
+    ],
+    [
+     14,
+     "The real value lives in _marks."
+    ],
+    [
+     18,
+     "Looks like a plain assignment, but the setter checks it."
+    ],
+    [
+     24,
+     "The bad value never got in."
+    ]
+   ],
+   "say": "The property called marks has a getter, which returns the stored value, and a setter, which checks the range before storing it in underscore marks. Even dunder init goes through the setter, so a student can never be created with bad marks. From outside it looks like a plain attribute, but a hundred and forty is rejected and the old value stays."
+  },
+  {
+   "type": "predict",
+   "title": "Predict the output",
+   "code": "class Circle:\n    def __init__(self, r):\n        self.r = r\n\n    @property\n    def area(self):\n        return round(3.14 * self.r ** 2, 2)\n\n\nc = Circle(2)\nc.r = 10\nprint(c.area)",
+   "options": [
+    "12.56",
+    "314.0",
+    "AttributeError: area is read-only",
+    "3.14"
+   ],
+   "answer": 1,
+   "why": "A property is **computed on every read**, so it always reflects the current radius: 3.14 × 10² = 314.0. That is the advantage over storing area once in `__init__`, where it would go stale.",
+   "say": "The circle's area is a property. We create a circle of radius two, then change the radius to ten, then read the area. Which area do we get?"
+  },
+  {
+   "type": "concept",
+   "title": "@classmethod and @staticmethod",
+   "body": "Two more kinds of method:\n\n- `@classmethod` receives the **class** as `cls`. Perfect for alternative constructors (\"factories\") like `User.from_csv(line)`.\n- `@staticmethod` receives nothing automatic. It is a plain helper function that lives in the class because it belongs there.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Kind",
+     "First parameter",
+     "Typical use"
+    ],
+    "rows": [
+     [
+      "normal method",
+      "self (the object)",
+      "work with one object"
+     ],
+     [
+      "@classmethod",
+      "cls (the class)",
+      "factories: from_csv, from_dict"
+     ],
+     [
+      "@staticmethod",
+      "none",
+      "helpers like is_valid_email"
+     ]
+    ]
+   },
+   "say": "Two more kinds of method. A class method receives the class itself, called cls, instead of an object. It is perfect for alternative constructors, often called factories, like building a user from a line of CSV. A static method receives nothing automatically. It is just a helper function that lives inside the class because that is where it logically belongs."
+  },
+  {
+   "type": "code",
+   "title": "Factories and helpers",
+   "body": "Users arrive from a CSV import, a JSON API and a signup form. Factories give each source its own clean constructor.",
+   "code": "class User:\n    def __init__(self, name, email):\n        self.name = name\n        self.email = email\n\n    @classmethod\n    def from_csv(cls, line):\n        name, email = line.split(\",\")\n        return cls(name.strip(), email.strip())\n\n    @classmethod\n    def from_dict(cls, data):\n        return cls(data[\"name\"], data[\"email\"])\n\n    @staticmethod\n    def is_valid_email(email):\n        return \"@\" in email and \".\" in email.split(\"@\")[-1]\n\n    def __repr__(self):\n        return f\"User({self.name!r}, {self.email!r})\"\n\n\nprint(User.from_csv(\"Riya Sharma, riya@example.in\"))\nprint(User.from_dict({\"name\": \"Arjun\", \"email\": \"arjun@mail.com\"}))\nprint(User.is_valid_email(\"kabir@site\"), User.is_valid_email(\"kabir@site.in\"))",
+   "expect": "User('Riya Sharma', 'riya@example.in')\nUser('Arjun', 'arjun@mail.com')\nFalse True\n",
+   "explain": [
+    [
+     6,
+     "A class method: called on the class, receives it as cls."
+    ],
+    [
+     9,
+     "cls(...) builds a new object, the same as User(...)."
+    ],
+    [
+     12,
+     "A second factory, for data that came from JSON."
+    ],
+    [
+     15,
+     "A static method: no self, no cls, just a related helper."
+    ],
+    [
+     23,
+     "Call factories on the class itself."
+    ]
+   ],
+   "say": "Real apps receive users from many places: a CSV import, a JSON API, a signup form. Class methods give each source its own clean constructor. From csv splits the line and calls cls, which builds a new user. From dict does the same for JSON data. And is valid email is a static method, a helper that belongs with users but needs no particular user to run."
+  },
+  {
+   "type": "quiz",
+   "title": "Pick the right tool",
+   "q": "You want `Order.from_json(text)` to parse JSON and return a new `Order`. What should `from_json` be?",
+   "options": [
+    "A normal method with self",
+    "A @classmethod",
+    "A @property",
+    "A class attribute"
+   ],
+   "answer": 1,
+   "why": "An alternative constructor has no object yet, so it cannot take `self`. A `@classmethod` gets the class as `cls` and returns `cls(...)`, which also works for subclasses (Day 26).",
+   "say": "You want a method that parses JSON text and returns a brand new order. There is no order object yet when you call it. Which kind of method should it be?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug",
+   "task": "Printing a `Ticket` crashes with **TypeError: __str__ returned non-string**. Fix `__str__` so `print(t)` shows:\n\n`PNR 4521367890: Rajdhani Express, seat B2-34`",
+   "starter": "class Ticket:\n    def __init__(self, pnr, train, seat):\n        self.pnr = pnr\n        self.train = train\n        self.seat = seat\n\n    def __str__(self):\n        print(f\"PNR {self.pnr}: {self.train}, seat {self.seat}\")\n\n\nt = Ticket(\"4521367890\", \"Rajdhani Express\", \"B2-34\")\nprint(t)\n",
+   "solution": "class Ticket:\n    def __init__(self, pnr, train, seat):\n        self.pnr = pnr\n        self.train = train\n        self.seat = seat\n\n    def __str__(self):\n        return f\"PNR {self.pnr}: {self.train}, seat {self.seat}\"\n\n\nt = Ticket(\"4521367890\", \"Rajdhani Express\", \"B2-34\")\nprint(t)",
+   "tests": "t2 = Ticket(\"8102233445\", \"Vande Bharat\", \"C4-12\")\nassert str(t2) == \"PNR 8102233445: Vande Bharat, seat C4-12\", f\"str() should give 'PNR 8102233445: Vande Bharat, seat C4-12', got {str(t2)!r}.\"\nassert \"PNR 4521367890: Rajdhani Express, seat B2-34\" in __out__, \"print(t) should show the ticket line.\"\nassert __out__.count(\"PNR\") == 1, \"__str__ should return the text, not print it. Only the print(t) call should print.\"",
+   "hints": [
+    "__str__ must give its text back to Python, not show it.",
+    "Replace print(...) with return ..."
+   ],
+   "say": "Printing this train ticket crashes with a type error saying dunder str returned a non string. Remember the difference between return and print from day seventeen. Dunder str must hand its text back to Python."
+  },
+  {
+   "type": "exercise",
+   "title": "A sortable leaderboard",
+   "task": "Make `Player` objects work on a leaderboard:\n\n- `__repr__` returns `Player('Riya', 120)`\n- `__eq__`: equal when name **and** score match\n- `__lt__`: compares by score, so `sorted(players)` goes from lowest to highest",
+   "starter": "class Player:\n    def __init__(self, name, score):\n        self.name = name\n        self.score = score\n\n\nboard = [Player(\"Riya\", 120), Player(\"Kabir\", 95), Player(\"Meera\", 140)]\nprint(sorted(board))\n",
+   "solution": "class Player:\n    def __init__(self, name, score):\n        self.name = name\n        self.score = score\n\n    def __repr__(self):\n        return f\"Player({self.name!r}, {self.score})\"\n\n    def __eq__(self, other):\n        return self.name == other.name and self.score == other.score\n\n    def __lt__(self, other):\n        return self.score < other.score\n\n\nboard = [Player(\"Riya\", 120), Player(\"Kabir\", 95), Player(\"Meera\", 140)]\nprint(sorted(board))",
+   "tests": "p = Player(\"Riya\", 120)\nassert repr(p) == \"Player('Riya', 120)\", f\"repr should look like Player('Riya', 120), got {repr(p)}.\"\nassert Player(\"Riya\", 120) == Player(\"Riya\", 120), \"Two players with the same name and score should be equal. Define __eq__.\"\nassert Player(\"Riya\", 120) != Player(\"Riya\", 99), \"Same name but a different score should not be equal.\"\nassert Player(\"Kabir\", 95) < Player(\"Riya\", 120), \"Kabir (95) should be less than Riya (120). Define __lt__ by score.\"\nranked = sorted([Player(\"Riya\", 120), Player(\"Kabir\", 95), Player(\"Meera\", 140)])\nassert [x.name for x in ranked] == [\"Kabir\", \"Riya\", \"Meera\"], f\"sorted should order by score: Kabir, Riya, Meera. Got {ranked}.\"\nassert max(ranked).name == \"Meera\", \"max should find the top scorer.\"",
+   "hints": [
+    "__repr__ can use an f-string with !r for the name: f\"Player({self.name!r}, {self.score})\"",
+    "__eq__ returns self.name == other.name and self.score == other.score",
+    "__lt__ returns self.score < other.score"
+   ],
+   "say": "Let's make a leaderboard. Give the player class a developer friendly repr, an equality method that compares both name and score, and a less than method that compares scores. Then sorted and max will work on players out of the box."
+  },
+  {
+   "type": "exercise",
+   "title": "A validated sensor reading",
+   "task": "An IoT sensor reports temperatures. Write `Reading`:\n\n- a `celsius` **property** whose setter raises `ValueError` below -273.15 (absolute zero)\n- a read-only `fahrenheit` property: `celsius * 9 / 5 + 32`\n- a `@classmethod` `from_fahrenheit(cls, f)` that returns a new `Reading`",
+   "starter": "class Reading:\n    def __init__(self, celsius):\n        self.celsius = celsius\n\n\nr = Reading(30)\nprint(r.celsius, r.fahrenheit)\n",
+   "solution": "class Reading:\n    def __init__(self, celsius):\n        self.celsius = celsius\n\n    @property\n    def celsius(self):\n        return self._celsius\n\n    @celsius.setter\n    def celsius(self, value):\n        if value < -273.15:\n            raise ValueError(\"Below absolute zero\")\n        self._celsius = value\n\n    @property\n    def fahrenheit(self):\n        return self.celsius * 9 / 5 + 32\n\n    @classmethod\n    def from_fahrenheit(cls, f):\n        return cls((f - 32) * 5 / 9)\n\n\nr = Reading(30)\nprint(r.celsius, r.fahrenheit)",
+   "tests": "r = Reading(30)\nassert r.celsius == 30 and r.fahrenheit == 86.0, \"Reading(30) should have celsius 30 and fahrenheit 86.0.\"\nr.celsius = 100\nassert r.fahrenheit == 212.0, \"fahrenheit should be calculated from the current celsius: 100 C is 212 F.\"\nfor bad in (-300, -273.16):\n    try:\n        Reading(bad)\n        raise AssertionError(f\"Reading({bad}) is below absolute zero and should raise ValueError. Validate in the celsius setter.\")\n    except ValueError:\n        pass\nassert Reading(-273.15).celsius == -273.15, \"Exactly -273.15 is allowed.\"\ntry:\n    r.celsius = -500\nexcept ValueError:\n    pass\nassert r.celsius == 100, \"A rejected value must not replace the old one.\"\nf = Reading.from_fahrenheit(212)\nassert isinstance(f, Reading) and round(f.celsius, 2) == 100, \"from_fahrenheit(212) should return a Reading of 100 C.\"\nassert isinstance(Reading.__dict__.get(\"fahrenheit\"), property), \"fahrenheit should be a @property.\"",
+   "hints": [
+    "Copy the pattern from the Student example: @property for celsius, then @celsius.setter that validates and stores in self._celsius.",
+    "fahrenheit is a @property with no setter.",
+    "from_fahrenheit converts with (f - 32) * 5 / 9 and returns cls(that)."
+   ],
+   "say": "A temperature sensor in a smart home reports readings. Make celsius a validated property that refuses anything below absolute zero, minus two seventy three point one five. Add fahrenheit as a read only property, and a class method that builds a reading from fahrenheit."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 25 complete",
+   "points": [
+    "Class attributes are shared; instance attributes belong to one object",
+    "__str__ for users, __repr__ for developers (write __repr__ first)",
+    "Dunder methods are hooks: __eq__ for ==, __lt__ for sorting, __len__ for len()",
+    "@property validates on write and computes on read, with plain attribute syntax",
+    "@classmethod builds objects (factories); @staticmethod holds related helpers"
+   ],
+   "say": "Mission twenty five complete. Your classes now print themselves clearly, compare and sort, know their length, and guard their own data with properties. Tomorrow we build families of classes with inheritance, and learn when to use composition instead. See you on day twenty six."
+  }
+ ]
+}

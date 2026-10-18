@@ -1,0 +1,176 @@
+{
+  "day": 1,
+  "phase": 1,
+  "title": "Hello, Python",
+  "subtitle": "Your first programs, and how Python reads them",
+  "minutes": 45,
+  "goal": "Write and run your first Python programs, print text and numbers, and read an error message without fear.",
+  "outcomes": [
+    "Explain what a program is and how Python runs it, line by line",
+    "Print text and numbers with print(), including several values at once",
+    "Use comments to explain code to other developers",
+    "Read a traceback and fix a simple syntax error"
+  ],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Mission 1: Hello, Python",
+      "body": "Python runs YouTube's backend, Instagram, NASA's data tools and most of today's AI.\n\nIn 60 days you go from zero to building real software. Today: your **first programs**.",
+      "visual": {"kind": "steps", "items": ["You write instructions", "Python reads them, top to bottom", "The computer does the work"]},
+      "say": "Welcome to day one. Python runs YouTube, Instagram, NASA's data tools and most of today's AI. Over the next sixty days you will go from zero to building real software. Today we write our very first programs. Let's launch."
+    },
+    {
+      "type": "concept",
+      "title": "What is a program?",
+      "body": "A program is a list of **instructions** a computer follows exactly, in order. Like a recipe for chai: skip a step or swap two, and you get a different result.",
+      "visual": {"kind": "flow", "nodes": [{"t": "Start", "s": "pill"}, {"t": "Boil water"}, {"t": "Add tea and sugar"}, {"t": "Milk added?", "s": "diamond", "yes": "Boil 2 min", "no": "Add milk"}, {"t": "Serve chai", "s": "pill"}]},
+      "say": "A program is just a list of instructions that a computer follows exactly, one after another. Think of a recipe for chai. If you skip a step or do them in the wrong order, you get a different cup. Computers are the same, only much faster and much more literal."
+    },
+    {
+      "type": "concept",
+      "title": "How Python runs your code",
+      "body": "You save instructions in a file like `hello.py`. The **Python interpreter** reads it from the first line to the last and does each one.\n\nIn this course, real Python runs right here on your phone.",
+      "visual": {"kind": "terminal", "lines": [["$", "python hello.py"], ["", "Hello, world!"], ["$", "python --version"], ["", "Python 3.13"]]},
+      "say": "Python code lives in files that end in dot p y. A program called the interpreter reads the file from top to bottom and carries out each line. On a laptop you would type python, then the file name. In this course, a real Python interpreter runs right here on your phone, so every example is live."
+    },
+    {
+      "type": "code",
+      "title": "Your first program",
+      "body": "`print()` shows whatever you put inside the brackets. Text goes inside quotes. Tap **Run**.",
+      "code": "print(\"Hello, world!\")",
+      "expect": "Hello, world!\n",
+      "explain": [[1, "print is a function: it displays the value inside its brackets."]],
+      "say": "Here is the most famous first program in the world. We call print and give it the text Hello world, inside quotes. Tap run and watch Python say hello back."
+    },
+    {
+      "type": "code",
+      "title": "Top to bottom",
+      "body": "Each `print()` starts a new line. Python always runs lines in order.",
+      "code": "print(\"Booting rocket...\")\nprint(\"Fuel: full\")\nprint(\"Countdown: 3, 2, 1\")\nprint(\"Lift off!\")",
+      "expect": "Booting rocket...\nFuel: full\nCountdown: 3, 2, 1\nLift off!\n",
+      "explain": [[1, "Runs first."], [2, "Then this line."], [3, "Then this one."], [4, "Last line runs last."]],
+      "say": "Four print lines, four lines of output, always in the same order. Tap watch it run to see Python move through the program one line at a time. That idea, one line after another, is the heart of every program you will ever write."
+    },
+    {
+      "type": "predict",
+      "title": "Predict the output",
+      "code": "print(\"Chai\")\nprint(\"Samosa\")\nprint(\"Chai\")",
+      "options": ["Chai\nSamosa", "Chai\nSamosa\nChai", "Samosa\nChai\nChai"],
+      "answer": 1,
+      "why": "Python runs every line, in order. Three prints means three lines, even if a line repeats.",
+      "say": "Before you run it, predict. What will this program print? Pick an answer, then run it to check. Predicting first is how great programmers train their brain."
+    },
+    {
+      "type": "concept",
+      "title": "Text and numbers",
+      "body": "Text in quotes is a **string**. Numbers have no quotes, and Python can do maths with them.\n\n- `print(2 + 3)` shows `5`\n- `print(\"2 + 3\")` shows `2 + 3`",
+      "visual": {"kind": "compare", "left": {"title": "A number: Python calculates", "code": "print(2 + 3)\n# 5"}, "right": {"title": "A string: Python shows it as is", "code": "print(\"2 + 3\")\n# 2 + 3"}, "verdict": "Quotes decide whether Python calculates or just displays."},
+      "say": "Python cares a lot about the type of a value. Text inside quotes is called a string, and Python shows it exactly as written. Numbers have no quotes, so Python can do maths with them. Two plus three without quotes prints five. With quotes, it prints two plus three."
+    },
+    {
+      "type": "code",
+      "title": "Python as a calculator",
+      "body": "Let Python do the maths. `*` multiplies, `/` divides.",
+      "code": "print(2 + 3)\nprint(\"2 + 3\")\nprint(24 * 60)\nprint(100 / 4)",
+      "expect": "5\n2 + 3\n1440\n25.0\n",
+      "explain": [[1, "A sum: Python calculates 5."], [2, "A string: shown exactly as typed."], [3, "Minutes in a day: 24 times 60."], [4, "Division always gives a decimal number, 25.0."]],
+      "say": "Python is a superb calculator. Star means multiply and slash means divide. Notice that dividing gives twenty five point zero, a decimal number. We will learn exactly why on day three."
+    },
+    {
+      "type": "quiz",
+      "title": "Quick check",
+      "q": "Which line prints the number 7?",
+      "options": ["print(\"3 + 4\")", "print(3 + 4)", "print(\"7 + 0\")"],
+      "answer": 1,
+      "why": "Without quotes Python calculates 3 + 4 = 7. With quotes it prints the text exactly as written.",
+      "say": "Quick check. Which of these lines prints the number seven?"
+    },
+    {
+      "type": "concept",
+      "title": "Several values at once",
+      "body": "Give `print()` several values separated by commas. It puts a **space** between them.\n\n- `sep=` changes the separator\n- `end=` changes what comes after (normally a new line)",
+      "visual": {"kind": "boxes", "vars": [["value 1", "\"Score:\"", "str"], ["value 2", "120", "int"], ["sep", "\" \"", "str"], ["end", "\"\\n\"", "str"]]},
+      "say": "Print can take several values at once, separated by commas, and it puts a space between them. You can change that space with sep, and change what comes at the end of the line with end. Developers use these every day to format output."
+    },
+    {
+      "type": "code",
+      "title": "Formatting output",
+      "code": "print(\"Score:\", 120, \"runs\")\nprint(\"2026\", \"10\", \"18\", sep=\"-\")\nprint(\"Loading\", end=\"...\")\nprint(\"done\")",
+      "expect": "Score: 120 runs\n2026-10-18\nLoading...done\n",
+      "explain": [[1, "Three values, joined with spaces."], [2, "sep=\"-\" joins them with dashes: a date."], [3, "end=\"...\" stops print from starting a new line."], [4, "So done appears on the same line."]],
+      "say": "Line one mixes text and a number, and print adds the spaces for us. Line two uses sep with a dash to build a date. Line three uses end, so the next print continues on the same line. That is how loading messages are made."
+    },
+    {
+      "type": "concept",
+      "title": "Comments: notes for humans",
+      "body": "Anything after `#` is a **comment**. Python ignores it. Developers use comments to explain *why* the code does something.",
+      "say": "Anything after a hash symbol is a comment. Python skips it completely. Comments are notes for humans, including future you. Good developers use them to explain why the code does something, not to repeat what it obviously does."
+    },
+    {
+      "type": "code",
+      "title": "Comments in action",
+      "code": "# Convert a 3-hour train trip to minutes\nprint(3 * 60)  # 60 minutes in an hour\n# print(\"This line is switched off\")\nprint(\"Have a good trip!\")",
+      "expect": "180\nHave a good trip!\n",
+      "explain": [[1, "A comment line: ignored."], [2, "Code first, then a comment at the end of the line."], [3, "Commented-out code: a quick way to switch a line off."], [4, "Runs as normal."]],
+      "say": "The first line is a comment, so nothing happens. Line two runs and has a comment at the end. Line three is a whole line of code that has been switched off with a hash, a trick every developer uses while testing."
+    },
+    {
+      "type": "concept",
+      "title": "Errors are your friends",
+      "body": "Every developer sees errors all day. Python tells you **where** and **what**:\n\n- `line 1`: where it went wrong\n- `SyntaxError`: the kind of problem\n- the message: a hint to fix it",
+      "visual": {"kind": "terminal", "lines": [["$", "python main.py"], ["", "  File \"main.py\", line 1"], ["", "    print(\"Hello)"], ["", "SyntaxError: unterminated string literal"]]},
+      "say": "Errors are not failures. Professional developers see them all day. Python always tells you the line number where things went wrong, the kind of error, and a message that hints at the fix. Read from the bottom up: the last line says what happened."
+    },
+    {
+      "type": "bug",
+      "title": "Fix the bug",
+      "task": "This program crashes. Run it, read the error, then fix it so it prints `Hello, Brodoit!`",
+      "starter": "print(\"Hello, Brodoit!)",
+      "solution": "print(\"Hello, Brodoit!\")",
+      "tests": "assert \"Hello, Brodoit!\" in __out__, \"The program should print Hello, Brodoit!\"",
+      "hints": ["The error says the string is not terminated. Where does the text end?", "Every opening quote needs a closing quote before the bracket."],
+      "say": "Your first bug hunt. This program crashes. Run it, read the error message from the bottom up, and fix the line so it prints hello Brodoit."
+    },
+    {
+      "type": "exercise",
+      "title": "Introduce yourself",
+      "task": "Write a program that prints **two lines**: your name on the first line and your city on the second.",
+      "starter": "# Line 1: your name\n# Line 2: your city\n",
+      "solution": "print(\"Riya Sharma\")\nprint(\"Pune\")",
+      "tests": "assert len(out_lines) >= 2, \"Print two lines: your name, then your city.\"\nassert all(line.strip() for line in out_lines[:2]), \"Both lines should have some text.\"\nassert __code__.count(\"print\") >= 2, \"Use print() once for each line.\"",
+      "hints": ["Use print() twice.", "Text needs quotes: print(\"Riya\")"],
+      "say": "Now you write the code. Print two lines, your name on the first line and your city on the second. Then tap check."
+    },
+    {
+      "type": "exercise",
+      "title": "Let Python do the maths",
+      "task": "How many minutes are in a week? Print the answer, but **let Python calculate it**: days × hours × minutes. Don't type the final number yourself.",
+      "starter": "# 7 days, 24 hours a day, 60 minutes an hour\n",
+      "solution": "print(7 * 24 * 60)",
+      "tests": "assert \"10080\" in __out__, \"A week has 7 * 24 * 60 minutes. Print that.\"\nassert \"*\" in __code__, \"Let Python multiply: use * in your code.\"\nassert \"10080\" not in __code__, \"Don't type 10080 yourself. Let Python work it out.\"",
+      "hints": ["Multiply with *.", "print(7 * 24 * 60)"],
+      "say": "Here is a developer habit worth building on day one. Let the computer do the maths. Print the number of minutes in a week by multiplying days, hours and minutes inside print."
+    },
+    {
+      "type": "predict",
+      "title": "One more prediction",
+      "code": "print(5 + 5)\nprint(\"5\" + \"5\")",
+      "options": ["10\n10", "10\n55", "55\n55"],
+      "answer": 1,
+      "why": "Numbers add up to 10. Two strings joined with + stick together: \"5\" + \"5\" is \"55\". You'll master this on Day 4.",
+      "say": "A tricky one to finish. What happens when you add two numbers, and what happens when you add two strings? Predict, then run."
+    },
+    {
+      "type": "recap",
+      "title": "Mission 1 complete",
+      "points": [
+        "A program is a list of instructions; Python runs them top to bottom",
+        "print() shows text (in quotes) and numbers (without quotes)",
+        "sep= and end= control how print formats output",
+        "# starts a comment that Python ignores",
+        "Errors tell you the line and the kind of problem: read them from the bottom up"
+      ],
+      "say": "Mission one complete. You know what a program is, you can print text and numbers, format output, write comments, and read an error without fear. Tomorrow we give values names with variables. See you on day two."
+    }
+  ]
+}

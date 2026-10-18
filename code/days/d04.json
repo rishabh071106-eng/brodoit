@@ -1,0 +1,456 @@
+{
+ "day": 4,
+ "phase": 1,
+ "title": "Strings I: text in Python",
+ "subtitle": "Quotes, escapes, indexing and slicing",
+ "minutes": 50,
+ "goal": "Create and combine strings, and pull out any character or slice of text by its position.",
+ "outcomes": [
+  "Write strings with single, double and triple quotes, and escape special characters",
+  "Join and repeat strings with + and *, and measure them with len()",
+  "Read any character with positive or negative indexes",
+  "Slice substrings with [start:stop:step], including reversing text",
+  "Explain why strings are immutable and build new strings instead"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 4: Strings",
+   "body": "Names, chat messages, PNR codes, URLs, passwords, the JSON an API sends back: most data a developer touches is **text**.\n\nToday you'll build strings, combine them and cut out exactly the piece you need.",
+   "visual": {
+    "kind": "list",
+    "name": "word",
+    "items": [
+     "'P'",
+     "'Y'",
+     "'T'",
+     "'H'",
+     "'O'",
+     "'N'"
+    ],
+    "neg": true
+   },
+   "say": "Welcome to day four. Names, chat messages, PNR codes, web addresses, passwords: most of the data developers handle is text. In Python, text is a string. Today you'll learn to build strings, combine them, and cut out exactly the piece you need, character by character."
+  },
+  {
+   "type": "concept",
+   "title": "Three ways to quote",
+   "body": "- `'single'` and `\"double\"` quotes mean the same thing\n- pick the one that avoids a clash: `\"It's ready\"`\n- `\"\"\"triple quotes\"\"\"` let a string span several lines",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Clash",
+     "code": "print('It's ready')\n# SyntaxError"
+    },
+    "right": {
+     "title": "Fixed",
+     "code": "print(\"It's ready\")\n# It's ready"
+    },
+    "verdict": "Use the other kind of quote on the outside."
+   },
+   "say": "Python accepts single quotes or double quotes, and they mean exactly the same thing. Pick whichever avoids a clash. If your text contains an apostrophe, like the word it's, wrap it in double quotes. For text that spans several lines, use three quote marks in a row at each end."
+  },
+  {
+   "type": "code",
+   "title": "Quotes and multi-line text",
+   "code": "city = 'Mumbai'\nmessage = \"It's raining in Mumbai\"\nreply = 'She said \"carry an umbrella\"'\nprint(city)\nprint(message)\nprint(reply)\n\nticket = \"\"\"Train 12951 Rajdhani\nFrom: Mumbai Central\nTo:   New Delhi\"\"\"\nprint(ticket)",
+   "expect": "Mumbai\nIt's raining in Mumbai\nShe said \"carry an umbrella\"\nTrain 12951 Rajdhani\nFrom: Mumbai Central\nTo:   New Delhi\n",
+   "explain": [
+    [
+     1,
+     "Single quotes."
+    ],
+    [
+     2,
+     "Double quotes, so the apostrophe is safe."
+    ],
+    [
+     3,
+     "Single quotes outside, double quotes inside."
+    ],
+    [
+     8,
+     "Triple quotes: the string continues across lines."
+    ],
+    [
+     11,
+     "One print shows all three lines."
+    ]
+   ],
+   "say": "Line one uses single quotes. Line two uses double quotes because the text has an apostrophe, and line three does the reverse to hold a quotation. The ticket uses triple quotes, so the line breaks you type become part of the string. That's handy for messages, emails and help text."
+  },
+  {
+   "type": "concept",
+   "title": "Escape sequences",
+   "body": "A **backslash** gives the next character a special meaning inside a string. Escapes let you type characters you can't put in directly.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "You write",
+     "You get"
+    ],
+    "rows": [
+     [
+      "\\n",
+      "a new line"
+     ],
+     [
+      "\\t",
+      "a tab"
+     ],
+     [
+      "\\\"",
+      "a double quote inside double quotes"
+     ],
+     [
+      "\\'",
+      "a single quote inside single quotes"
+     ],
+     [
+      "\\\\",
+      "one backslash"
+     ]
+    ]
+   },
+   "say": "Sometimes you need a character you can't type straight into a string. A backslash starts an escape sequence. Backslash n means new line, backslash t means tab, and a backslash before a quote puts that quote inside the string without ending it. To get a real backslash, type two of them."
+  },
+  {
+   "type": "code",
+   "title": "Escapes at work",
+   "code": "print(\"Name:\\tRiya\\nCity:\\tPune\")\nprint(\"She said \\\"Hi!\\\"\")\nprint('It\\'s 5 o\\'clock')\nprint(\"Folder: C:\\\\Users\\\\riya\")",
+   "expect": "Name:\tRiya\nCity:\tPune\nShe said \"Hi!\"\nIt's 5 o'clock\nFolder: C:\\Users\\riya\n",
+   "explain": [
+    [
+     1,
+     "\\t is a tab, \\n starts a new line."
+    ],
+    [
+     2,
+     "\\\" is a double quote that doesn't end the string."
+    ],
+    [
+     3,
+     "\\' does the same inside single quotes."
+    ],
+    [
+     4,
+     "\\\\ prints one real backslash."
+    ]
+   ],
+   "say": "Line one packs two lines and two tabs into a single string. Line two escapes the inner double quotes, and line three escapes the apostrophes. Line four is a Windows folder path. Each backslash has to be doubled, or Python would treat it as the start of an escape."
+  },
+  {
+   "type": "predict",
+   "title": "One backslash or two?",
+   "code": "print(\"Hi\\nthere\")\nprint(\"A\\\\nB\")",
+   "options": [
+    "Hi\\nthere\nA\\nB",
+    "Hi\nthere\nA\\nB",
+    "Hi\nthere\nA\nB"
+   ],
+   "answer": 1,
+   "why": "In the first string, \\n is a real line break. In the second, \\\\ is an escaped backslash followed by a plain n, so you see the characters \\n on screen.",
+   "say": "Predict this one carefully. The first line has one backslash before the n. The second line has two. What appears on screen?"
+  },
+  {
+   "type": "concept",
+   "title": "Joining and repeating",
+   "body": "- `+` joins (concatenates) strings\n- `*` repeats a string: `\"-\" * 20`\n- `len(text)` counts characters, spaces included\n\n`\"Age: \" + 21` is a **TypeError**: `+` can't mix text and numbers.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "first",
+      "'Virat'",
+      "str"
+     ],
+     [
+      "last",
+      "'Kohli'",
+      "str"
+     ],
+     [
+      "first + ' ' + last",
+      "'Virat Kohli'",
+      "str"
+     ],
+     [
+      "len(...)",
+      "11",
+      "int"
+     ]
+    ]
+   },
+   "say": "Plus joins strings end to end, which programmers call concatenation. Star repeats a string, which is perfect for drawing lines in terminal output. And len, short for length, counts the characters, spaces included. One rule: plus can't mix text and numbers. Python refuses to guess what you meant, and raises a type error."
+  },
+  {
+   "type": "code",
+   "title": "Build a name badge",
+   "code": "first = \"Virat\"\nlast = \"Kohli\"\nfull_name = first + \" \" + last\nprint(full_name)\nprint(len(full_name))\n\nline = \"=\" * 20\nprint(line)\nprint(\"Player: \" + full_name)\nprint(\"Jersey:\", 18)\nprint(line)\nprint(\"Ha\" * 3)",
+   "expect": "Virat Kohli\n11\n====================\nPlayer: Virat Kohli\nJersey: 18\n====================\nHaHaHa\n",
+   "explain": [
+    [
+     3,
+     "Join three strings: first, a space, last."
+    ],
+    [
+     5,
+     "11 characters, including the space."
+    ],
+    [
+     7,
+     "Repeat '=' twenty times."
+    ],
+    [
+     9,
+     "+ joins two strings."
+    ],
+    [
+     10,
+     "A comma lets print show text and a number together."
+    ]
+   ],
+   "say": "We join the first and last name with a space in between. Without that middle space you'd get one squashed word. Len counts eleven characters, because the space counts too. A string times twenty draws a neat border. And on line ten, to show a number next to text, we use print with a comma, not plus."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the profile printer",
+   "task": "This profile printer crashes with a **TypeError**. Fix the last line so it shows `Age: 21`. Keep `age` as a number: change how you print it instead.",
+   "starter": "name = \"Aarav\"\nage = 21\nprint(\"Name: \" + name)\nprint(\"Age: \" + age)\n",
+   "solution": "name = \"Aarav\"\nage = 21\nprint(\"Name: \" + name)\nprint(\"Age:\", age)",
+   "tests": "assert isinstance(age, int), \"Keep age as the number 21, without quotes. Fix how you print it instead.\"\nassert any(\"Name\" in l and \"Aarav\" in l for l in out_lines), \"Keep the name line: it should still show Aarav.\"\nassert any(\"Age\" in l and \"21\" in l for l in out_lines), \"Print the age line so it shows 21. + can't join text and a number, but print with a comma can show both.\"",
+   "hints": [
+    "Read the last line of the error: can only concatenate str (not \"int\") to str.",
+    "print can show text and a number side by side if you separate them with a comma.",
+    "Another way: convert the number with str(age). You'll master conversions on Day 6."
+   ],
+   "say": "This profile printer crashes. Read the type error, then fix the last line so it shows the age. Keep age as a number. Change the way you print it instead."
+  },
+  {
+   "type": "visual",
+   "title": "Every character has an index",
+   "body": "Indexes start at **0**. Negative indexes count from the end: `word[0]` is `'P'`, `word[-1]` is `'N'`.",
+   "visual": {
+    "kind": "list",
+    "name": "word",
+    "items": [
+     "'P'",
+     "'Y'",
+     "'T'",
+     "'H'",
+     "'O'",
+     "'N'"
+    ],
+    "mark": [
+     0,
+     5
+    ],
+    "neg": true
+   },
+   "say": "Every character in a string has a position, called its index. Python counts from zero, so the first character is index zero, not one. Negative indexes count backwards from the end: minus one is always the last character, minus two the one before it. That makes the end of a string easy to reach without knowing its length."
+  },
+  {
+   "type": "code",
+   "title": "Indexing a PNR",
+   "code": "pnr = \"4521789036\"\nprint(pnr[0])             # first character\nprint(pnr[1])\nprint(pnr[-1])            # last character\nprint(pnr[-2])\nprint(len(pnr))\nprint(pnr[len(pnr) - 1])  # also the last one",
+   "expect": "4\n5\n6\n3\n10\n6\n",
+   "explain": [
+    [
+     2,
+     "Index 0 is the first character."
+    ],
+    [
+     4,
+     "-1 is always the last character."
+    ],
+    [
+     5,
+     "-2 is the second to last."
+    ],
+    [
+     6,
+     "10 characters, so valid indexes are 0 to 9."
+    ],
+    [
+     7,
+     "The last index is always len - 1."
+    ]
+   ],
+   "say": "A PNR is a ten character booking code. Index zero is the first character, and minus one is the last. The final line shows the long way to reach the end: the length minus one. Negative indexes are the Pythonic shortcut, and you'll see them everywhere in professional code."
+  },
+  {
+   "type": "predict",
+   "title": "Past the end",
+   "code": "code = \"IRCTC\"\nprint(code[5])",
+   "options": [
+    "C",
+    "T",
+    "IndexError: string index out of range",
+    "An empty line"
+   ],
+   "answer": 2,
+   "why": "IRCTC has 5 characters, so the valid indexes are 0 to 4 (or -1 to -5). Index 5 is past the end, so Python raises an IndexError.",
+   "say": "This string has five characters. What happens when we ask for the character at index five?"
+  },
+  {
+   "type": "visual",
+   "title": "Slicing: start, stop, step",
+   "body": "`word[0:3]` is `'PYT'`: from start up to, but **not including**, stop.\n- `word[:2]` from the beginning\n- `word[3:]` to the end\n- `word[::2]` every second character\n- `word[::-1]` reversed",
+   "visual": {
+    "kind": "list",
+    "name": "word",
+    "items": [
+     "'P'",
+     "'Y'",
+     "'T'",
+     "'H'",
+     "'O'",
+     "'N'"
+    ],
+    "slice": [
+     0,
+     3
+    ]
+   },
+   "say": "Slicing cuts out a piece of a string. Give a start and a stop index with a colon between them. Python includes the start, but stops just before the stop index, so word from zero to three gives P, Y, T. Leave out the start to begin at the beginning, or the stop to go to the end. A third number, the step, skips characters or walks backwards."
+  },
+  {
+   "type": "code",
+   "title": "Slicing real data",
+   "code": "date = \"2026-10-18\"\nyear = date[0:4]\nmonth = date[5:7]\nday = date[8:]\nprint(year, month, day)\n\nname = \"Riya Sharma\"\nprint(name[:4])            # first 4 characters\nprint(name[-6:])           # last 6 characters\nprint(name[0] + name[5])   # initials\n\nword = \"stressed\"\nprint(word[::-1])          # reversed\nprint(\"0123456789\"[::2])   # every second digit",
+   "expect": "2026 10 18\nRiya\nSharma\nRS\ndesserts\n02468\n",
+   "explain": [
+    [
+     2,
+     "Characters 0, 1, 2, 3: the year."
+    ],
+    [
+     3,
+     "Skip the dash at index 4: characters 5 and 6."
+    ],
+    [
+     4,
+     "No stop: everything from index 8 to the end."
+    ],
+    [
+     9,
+     "Negative start: the last 6 characters."
+    ],
+    [
+     13,
+     "Step -1 walks backwards through the whole string."
+    ]
+   ],
+   "say": "Slicing is how developers pull fields out of fixed format data. An ISO date always has the year at positions zero to four, the month at five to seven, and the day from eight onwards. Initials come from two indexes joined together. And a step of minus one reverses a string. Stressed, spelt backwards, is desserts."
+  },
+  {
+   "type": "predict",
+   "title": "Three slices",
+   "code": "s = \"BRODOIT\"\nprint(s[1:4])\nprint(s[-3:])\nprint(s[::3])",
+   "options": [
+    "ROD\nOIT\nBDT",
+    "RODO\nOIT\nBDT",
+    "ROD\nIT\nBOT",
+    "ROD\nOIT\nBOI"
+   ],
+   "answer": 0,
+   "why": "s[1:4] takes indexes 1, 2 and 3: ROD (4 is not included). s[-3:] is the last three: OIT. s[::3] takes indexes 0, 3 and 6: B, D, T.",
+   "say": "Three slices, three answers. Remember that the stop index is not included, and a step of three takes every third character. Predict, then run."
+  },
+  {
+   "type": "concept",
+   "title": "Strings are immutable",
+   "body": "Once created, a string **never changes**. `name[0] = \"R\"` is a **TypeError**.\n\nInstead, build a new string and move the name to it:\n`name = \"R\" + name[1:]`",
+   "visual": {
+    "kind": "memory",
+    "names": [
+     "name"
+    ],
+    "objects": [
+     {
+      "id": "o1",
+      "r": "'riya'",
+      "t": "str"
+     },
+     {
+      "id": "o2",
+      "r": "'Riya'",
+      "t": "str"
+     }
+    ],
+    "links": [
+     [
+      "name",
+      "o2"
+     ]
+    ]
+   },
+   "say": "Strings are immutable, which means once a string exists, it can never change. Trying to assign to a single character gives a type error. Instead, you build a new string from slices and move the name to it, just like reassigning a number on day two. That sounds limiting, but it makes strings safe to share across a whole program."
+  },
+  {
+   "type": "code",
+   "title": "Fixing text the immutable way",
+   "code": "username = \"riya\"\nfixed = \"R\" + username[1:]\nprint(fixed)\nprint(username)      # the original is untouched\n\ntypo = \"Pythn\"\ncorrected = typo[:4] + \"o\" + typo[4:]\nprint(corrected)\n\nplate = \"MH12AB1234\"\nprint(plate[:2] + \"-\" + plate[2:4] + \"-\" + plate[4:6] + \"-\" + plate[6:])",
+   "expect": "Riya\nriya\nPython\nMH-12-AB-1234\n",
+   "explain": [
+    [
+     2,
+     "A new string: 'R' plus 'iya'."
+    ],
+    [
+     4,
+     "username still points to the old 'riya'."
+    ],
+    [
+     7,
+     "'Pyth' + 'o' + 'n' makes 'Python'."
+    ],
+    [
+     11,
+     "Four slices joined with dashes: MH-12-AB-1234."
+    ]
+   ],
+   "say": "To capitalise a username, we join a capital R to everything after the first letter. That creates a brand new string, and line four proves the original is untouched. The same trick inserts a missing letter into a typo: slice before, add the fix, slice after. The last line formats a vehicle number plate with dashes, built entirely from slices."
+  },
+  {
+   "type": "exercise",
+   "title": "Initials and username",
+   "task": "Using `first` and `last`, create:\n- `initials`: first letters with dots, like `A.I.`\n- `username`: first 3 letters of each name joined, like `AnaIye`\n\nPrint both. Your code must work for **any** name.",
+   "starter": "first = \"Ananya\"\nlast = \"Iyer\"\n# initials = ...\n# username = ...\n",
+   "solution": "first = \"Ananya\"\nlast = \"Iyer\"\ninitials = first[0] + \".\" + last[0] + \".\"\nusername = first[:3] + last[:3]\nprint(initials)\nprint(username)",
+   "tests": "import re\ndef again(f, l):\n    src = re.sub(r\"^first\\s*=.*$\", f'first = \"{f}\"', __code__, count=1, flags=re.M)\n    src = re.sub(r\"^last\\s*=.*$\", f'last = \"{l}\"', src, count=1, flags=re.M)\n    ns = {}\n    exec(src, ns)\n    return ns[\"initials\"], ns[\"username\"]\nassert \"initials\" in globals() and \"username\" in globals(), \"Create two variables: initials and username.\"\nassert initials == \"A.I.\", f\"initials should be 'A.I.' for Ananya Iyer, but it is {initials!r}. Use first[0] and last[0], each followed by a dot.\"\nassert username == \"AnaIye\", f\"username should be 'AnaIye', but it is {username!r}. Slice the first 3 letters of each name with [:3].\"\nassert again(\"Mohammed\", \"Ali\") == (\"M.A.\", \"MohAli\"), \"For Mohammed Ali you should get M.A. and MohAli. Build the result from first and last; don't type letters yourself.\"\nassert again(\"Jo\", \"Ng\") == (\"J.N.\", \"JoNg\"), \"For a short name like Jo Ng, the username should be JoNg. Slices never crash when a name is shorter than 3 letters.\"\nassert \"A.I.\" in __out__ and \"AnaIye\" in __out__, \"Print initials and username.\"",
+   "hints": [
+    "The first letter of a string is at index 0: first[0]",
+    "first[:3] gives the first three letters, or fewer if the name is short.",
+    "Join pieces with +: first[0] + \".\" + last[0] + \".\""
+   ],
+   "say": "Sign up forms often suggest a username. Build one. From a first and last name, make the initials with dots, and a username from the first three letters of each name. Make sure it works for any name, even very short ones."
+  },
+  {
+   "type": "exercise",
+   "title": "Mask a phone number",
+   "task": "Banking apps show only the last 4 digits: `9876543210` becomes `******3210`.\n\nCreate `masked` from `phone` using `*` repetition, `len()` and slicing, then print it. It must work for numbers of **any length**.",
+   "starter": "phone = \"9876543210\"\n# masked = ...\n",
+   "solution": "phone = \"9876543210\"\nmasked = \"*\" * (len(phone) - 4) + phone[-4:]\nprint(masked)",
+   "tests": "import re\ndef again(p):\n    ns = {}\n    exec(re.sub(r\"^phone\\s*=.*$\", f'phone = \"{p}\"', __code__, count=1, flags=re.M), ns)\n    return ns[\"masked\"]\nassert \"masked\" in globals(), \"Create a variable called masked.\"\nassert masked == \"******3210\", f\"masked should be '******3210', but it is {masked!r}. Use one * for every digit except the last 4.\"\nassert again(\"02012345678\") == \"*******5678\", \"An 11-digit landline 02012345678 should become *******5678. Use len(phone) so the number of stars adapts.\"\nassert again(\"1234\") == \"1234\", \"A 4-digit number has nothing to hide: it should stay 1234.\"\nassert \"******3210\" in __out__, \"Print the masked number.\"",
+   "hints": [
+    "The last 4 digits are phone[-4:]",
+    "How many stars? len(phone) - 4",
+    "\"*\" * (len(phone) - 4) + phone[-4:]"
+   ],
+   "say": "Banking and payment apps never show your full phone number. Build the masking yourself: stars for every digit except the last four. Use len, so it works for a ten digit mobile, an eleven digit landline, or anything else."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 4 complete",
+   "points": [
+    "Single, double or triple quotes; backslash escapes like \\n, \\t and \\\"",
+    "+ joins strings, * repeats them, len() counts characters",
+    "Indexes start at 0; -1 is the last character; going past the end is an IndexError",
+    "Slices [start:stop:step] exclude stop; [::-1] reverses",
+    "Strings are immutable: build a new string and reassign"
+   ],
+   "say": "Mission four complete. You can write any string, join and repeat text, and slice out exactly the characters you need. Tomorrow we level up with string methods that clean messy input, and f strings that format output like a professional receipt. See you on day five."
+  }
+ ]
+}

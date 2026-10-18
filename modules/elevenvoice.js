@@ -75,7 +75,8 @@ async function speak(key, text, lang, voiceId, opts) {
 // ElevenLabs bills credits per character (turbo/flash ≈ 0.5 credit per character). We read the plan's monthly allowance and
 // keep a reserve so bulk recordings never eat the credits Bro's live voice and the daily bulletin need, and nothing ever
 // runs past the allowance into overage. Purposes: 'live' (Bro talking) may use everything that is left; 'daily' (bulletin,
-// News "Listen") stops with 30% of the month left for Bro; 'bulk' (lessons, Hindi books) only uses the first 40%.
+// News headlines, first plays of course lines) stops with 15% of the month left for Bro; 'bulk' (Python + language narration,
+// language lessons, Hindi books: recorded once, kept forever) may use the first 70%.
 const PER_CHAR = () => parseFloat(process.env.ELEVEN_CREDITS_PER_CHAR || '') || 0.5;
 const subs = new Map(); // key → { at, tier, used, limit, reset, ok, error, out }
 // Credits approved but not yet visible in the plan's count. Kept apart from the plan snapshot so a refresh can't wipe them;
@@ -109,7 +110,7 @@ async function fetchSubscription(key, s) {
   } catch (e) { const n = Object.assign(s || {}, { at: Date.now() - 8 * 60e3, ok: false, error: e.name === 'AbortError' ? 'timeout' : e.message }); subs.set(key, n); return n; }
   finally { clearTimeout(t); }
 }
-const RESERVE = { live: 0, daily: 0.30, bulk: 0.60 }; // Bro's live voice matters most, then the news, then bulk
+const RESERVE = { live: 0, daily: 0.15, bulk: 0.30 }; // v13: static voices (course, lessons, books) get most of the plan; Bro keeps the last 15%
 const LIVE_MIN = 2000; // a live Bro session needs at least ~2 minutes of credit, or it would cut out mid-sentence
 // Can this purpose spend `chars` characters now? { ok, reason, left }. Approval reserves the credits immediately, so parallel
 // requests can't all squeeze through the same gap; the next plan refresh (≤10 min) replaces the estimate with real numbers.

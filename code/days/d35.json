@@ -1,0 +1,392 @@
+{
+ "day": 35,
+ "phase": 4,
+ "title": "Testing I: unittest",
+ "subtitle": "Prove your code works, and keep it working",
+ "minutes": 55,
+ "goal": "Write automated tests with assert and unittest that pin down normal behaviour, edge cases and errors.",
+ "outcomes": [
+  "Explain why professional teams automate their tests",
+  "Write TestCase classes with assertion methods and setUp",
+  "Structure every test as Arrange, Act, Assert",
+  "Test boundaries and expected exceptions with assertRaises",
+  "Read a failing test report and go straight to the cause"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 35: Code that checks code",
+   "body": "Every serious codebase has **automated tests**: small programs that check your program.\n\nThey catch bugs before users do, let you change code without fear, and document what the code is supposed to do. Many teams won't merge code without them.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Write the code",
+     "Write tests that state what it should do",
+     "Run every test on every change",
+     "Ship with confidence"
+    ]
+   },
+   "say": "Every serious codebase has automated tests: small programs whose only job is to check your program. Tests catch bugs before your users do, let you change code without fear, and document exactly how the code should behave. At most companies, code without tests simply does not get merged."
+  },
+  {
+   "type": "concept",
+   "title": "Manual checks don't scale",
+   "body": "Printing a result and eyeballing it works once. A **test** remembers the right answer forever and re-checks it in milliseconds, every time anyone changes anything.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Manual",
+     "code": "print(apply_discount(500, 10))\n# 450.0 ... looks right?"
+    },
+    "right": {
+     "title": "Automated",
+     "code": "assert apply_discount(500, 10) == 450"
+    },
+    "verdict": "The assert states the expected answer and checks it on every run."
+   },
+   "say": "Until now you checked code by printing a result and looking at it. That works once. But next month, when someone changes the discount logic, nobody will remember to look again. A test stores the right answer and re-checks it in milliseconds, every single time the code changes."
+  },
+  {
+   "type": "code",
+   "title": "The simplest test: assert",
+   "code": "def apply_discount(price, percent):\n    return round(price * (1 - percent / 100), 2)\n\nassert apply_discount(500, 10) == 450\nassert apply_discount(999, 0) == 999\nassert apply_discount(100, 100) == 0\nprint(\"All checks passed\")",
+   "expect": "All checks passed\n",
+   "explain": [
+    [
+     4,
+     "assert condition: silent when True."
+    ],
+    [
+     5,
+     "Edge case: 0% should change nothing."
+    ],
+    [
+     6,
+     "Edge case: 100% should make it free."
+    ],
+    [
+     7,
+     "Only reached if every assert passed."
+    ]
+   ],
+   "say": "An assert statement checks that something is true. If it is, nothing happens and Python moves on. If it is not, the program stops with an assertion error. So silence means success. Here we check a normal discount, a zero percent discount, and a full one hundred percent discount."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: the edge case",
+   "code": "def is_adult(age):\n    return age > 18\n\nassert is_adult(30)\nassert is_adult(18), \"18 should count as an adult\"\nprint(\"done\")",
+   "options": [
+    "done",
+    "AssertionError: 18 should count as an adult",
+    "AssertionError",
+    "False"
+   ],
+   "answer": 1,
+   "why": "is_adult(18) is False because 18 > 18 is False, so the second assert fails and shows its message. The normal case passed; the edge case found the bug. The fix is >=.",
+   "say": "Here is a function and two checks. The first is a normal case, the second is the boundary, exactly eighteen. Will this print done? Predict, then run."
+  },
+  {
+   "type": "concept",
+   "title": "unittest: tests with structure",
+   "body": "Python's built-in `unittest` organises tests into classes:\n\n- inherit from `unittest.TestCase`\n- every method named `test_...` is one test\n- `self.assertEqual` and friends give clear failure messages\n\nIn this app: `unittest.main(argv=['x'], exit=False)`. Its report appears in the error area.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "TestDiscount(unittest.TestCase)",
+     "c": [
+      {
+       "t": "setUp(): runs before each test"
+      },
+      {
+       "t": "test_ten_percent()"
+      },
+      {
+       "t": "test_zero_percent_keeps_price()"
+      },
+      {
+       "t": "test_bad_percent_raises()"
+      }
+     ]
+    }
+   },
+   "say": "For real projects, Python ships a test framework called unittest. You write a class that inherits from test case, and every method whose name starts with test is one test. Assertion methods like assert equal give much clearer failure messages than a bare assert. In this app we call unittest main with two extra arguments so it runs safely inside the page."
+  },
+  {
+   "type": "code",
+   "title": "Your first TestCase",
+   "code": "import unittest\n\ndef apply_discount(price, percent):\n    if not 0 <= percent <= 100:\n        raise ValueError(\"percent must be 0-100\")\n    return round(price * (1 - percent / 100), 2)\n\nclass TestDiscount(unittest.TestCase):\n    def test_ten_percent(self):\n        self.assertEqual(apply_discount(500, 10), 450)\n\n    def test_zero_percent_keeps_price(self):\n        self.assertEqual(apply_discount(999, 0), 999)\n\n    def test_bad_percent_raises(self):\n        with self.assertRaises(ValueError):\n            apply_discount(100, 150)\n\nresult = unittest.main(argv=[\"x\"], exit=False).result\nprint(\"Tests run:\", result.testsRun)\nprint(\"All passed:\", result.wasSuccessful())",
+   "expect": "Tests run: 3\nAll passed: True\n",
+   "explain": [
+    [
+     8,
+     "A test class inherits from unittest.TestCase."
+    ],
+    [
+     9,
+     "Each test_ method is one independent test."
+    ],
+    [
+     10,
+     "assertEqual(actual, expected)."
+    ],
+    [
+     16,
+     "Passes only if the block raises ValueError."
+    ],
+    [
+     19,
+     "Run all tests in this file; the report goes to the error stream."
+    ],
+    [
+     20,
+     "testsRun and wasSuccessful() summarise the run."
+    ]
+   ],
+   "say": "Three tests, each a method with a name that describes one behaviour. The third uses assert raises as a with block: the test passes only if the code inside raises a value error. Unittest finds every test method, runs them, and prints its report of dots and OK in the error area. We also print a short summary from the result object."
+  },
+  {
+   "type": "concept",
+   "title": "Assertion methods",
+   "body": "Pick the assertion that says what you mean. When it fails, unittest shows **both** values.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Method",
+     "Checks"
+    ],
+    "rows": [
+     [
+      "assertEqual(a, b)",
+      "a == b"
+     ],
+     [
+      "assertTrue(x) / assertFalse(x)",
+      "x is truthy / falsy"
+     ],
+     [
+      "assertIn(a, b)",
+      "a in b"
+     ],
+     [
+      "assertIsNone(x)",
+      "x is None"
+     ],
+     [
+      "assertAlmostEqual(a, b, places=2)",
+      "floats equal to 2 decimals"
+     ],
+     [
+      "assertRaises(Error)",
+      "the block raises Error"
+     ],
+     [
+      "assertCountEqual(a, b)",
+      "same items, any order"
+     ]
+    ]
+   },
+   "say": "Test case gives you a family of assertions. Assert equal for exact values, assert in for membership, assert is none for missing values, and assert raises for errors. For floats, use assert almost equal, because tiny rounding errors make exact comparisons fail. Choosing the right one makes failure messages tell you exactly what went wrong."
+  },
+  {
+   "type": "code",
+   "title": "Reading a failure",
+   "code": "import unittest\n\ndef split_bill(total, people):\n    return total / people\n\nclass TestSplit(unittest.TestCase):\n    def test_even_split(self):\n        self.assertEqual(split_bill(900, 3), 300)\n\n    def test_uneven_split(self):\n        self.assertEqual(split_bill(100, 3), 33.33)\n\nresult = unittest.main(argv=[\"x\"], exit=False).result\nprint(\"failures:\", len(result.failures))\nfor test, report in result.failures:\n    print(test.id(), \"->\", report.strip().splitlines()[-1])",
+   "expect": "failures: 1\n__main__.TestSplit.test_uneven_split -> AssertionError: 33.333333333333336 != 33.33\n",
+   "explain": [
+    [
+     11,
+     "This expectation doesn't match what the code does."
+    ],
+    [
+     13,
+     "Run, keep the result object."
+    ],
+    [
+     14,
+     "result.failures is a list of (test, report) pairs."
+    ],
+    [
+     16,
+     "The report's last line shows actual != expected."
+    ]
+   ],
+   "say": "This time a test fails, and that is useful. The report names the exact test, and the last line shows both values side by side: the function returned thirty three point three recurring, but the test expected two decimals. Now we decide: should the function round to paise, or should the test use assert almost equal? Failing tests start exactly these conversations."
+  },
+  {
+   "type": "quiz",
+   "title": "Floats in tests",
+   "q": "Which assertion should check that 0.1 + 0.2 equals 0.3?",
+   "options": [
+    "self.assertEqual(0.1 + 0.2, 0.3)",
+    "self.assertAlmostEqual(0.1 + 0.2, 0.3)",
+    "self.assertIs(0.1 + 0.2, 0.3)"
+   ],
+   "answer": 1,
+   "why": "0.1 + 0.2 is 0.30000000000000004 in binary floating point, so assertEqual fails. assertAlmostEqual compares to 7 decimal places by default (or places=2 for money).",
+   "say": "Remember from day three that zero point one plus zero point two is not exactly zero point three. Which assertion handles that properly?"
+  },
+  {
+   "type": "concept",
+   "title": "Arrange, Act, Assert",
+   "body": "Every good test has three parts. Keep one behaviour per test, and name it like a sentence: `test_withdraw_more_than_balance_raises`.\n\n`setUp()` runs **before each test**, so every test starts fresh.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Arrange: build the objects and inputs",
+     "Act: call the one thing you are testing",
+     "Assert: check the outcome"
+    ]
+   },
+   "say": "Good tests share a shape called arrange, act, assert. First arrange: build the objects and inputs. Then act: call the one thing you are testing. Then assert: check the result. Name each test like a sentence describing the behaviour. And put shared arranging in set up, which runs before every single test, so no test can disturb another."
+  },
+  {
+   "type": "code",
+   "title": "setUp: a fresh cart for every test",
+   "body": "The `Cart` class lives in `cart.py`, imported like a real module.",
+   "code": "import unittest\nfrom cart import Cart\n\nclass TestCart(unittest.TestCase):\n    def setUp(self):\n        self.cart = Cart()                 # Arrange\n\n    def test_new_cart_is_empty(self):\n        self.assertEqual(self.cart.total(), 0)\n\n    def test_total_adds_every_line(self):\n        self.cart.add(20, qty=2)           # Act\n        self.cart.add(15)\n        self.assertEqual(self.cart.total(), 55)   # Assert\n\n    def test_zero_qty_is_rejected(self):\n        with self.assertRaises(ValueError):\n            self.cart.add(25, qty=0)\n\nr = unittest.main(argv=[\"x\"], exit=False).result\nprint(r.testsRun, \"tests,\", len(r.failures) + len(r.errors), \"problems\")",
+   "expect": "3 tests, 0 problems\n",
+   "files": {
+    "cart.py": "class Cart:\n    def __init__(self):\n        self.lines = []\n\n    def add(self, price, qty=1):\n        if qty <= 0:\n            raise ValueError(\"qty must be positive\")\n        self.lines.append(price * qty)\n\n    def total(self):\n        return sum(self.lines)\n"
+   },
+   "explain": [
+    [
+     2,
+     "Import the code under test from its module."
+    ],
+    [
+     5,
+     "setUp runs before every test method."
+    ],
+    [
+     12,
+     "Act: the behaviour under test."
+    ],
+    [
+     14,
+     "Assert: one clear expectation."
+    ],
+    [
+     20,
+     "failures are wrong answers; errors are crashes. Count both."
+    ]
+   ],
+   "say": "The cart class lives in its own file, like real code. Set up builds a brand new cart before each test, so the items added in one test can never leak into another. Each test then acts once and asserts once. Notice how the test names read like a specification of the cart."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: when does setUp run?",
+   "code": "import unittest\n\nlog = []\n\nclass T(unittest.TestCase):\n    def setUp(self):\n        log.append(\"setup\")\n\n    def test_a(self):\n        log.append(\"a\")\n\n    def test_b(self):\n        log.append(\"b\")\n\nunittest.main(argv=[\"x\"], exit=False)\nprint(log)",
+   "options": [
+    "['setup', 'a', 'b']",
+    "['setup', 'a', 'setup', 'b']",
+    "['a', 'b', 'setup']",
+    "['a', 'setup', 'b', 'setup']"
+   ],
+   "answer": 1,
+   "why": "setUp runs before each test, not once for the class, so every test starts from a clean state. (unittest runs test methods in alphabetical order: test_a, then test_b.)",
+   "say": "Two tests and a set up method, each appending to a log. When the tests finish, what does the log contain?"
+  },
+  {
+   "type": "concept",
+   "title": "Hunt for edge cases",
+   "body": "Bugs live at the edges. For every function, test a normal case, then the boundaries: empty, zero, one, the exact limit, just past it, negative, and invalid input.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Function",
+     "Normal",
+     "Edges worth testing"
+    ],
+    "rows": [
+     [
+      "split_bill(total, n)",
+      "(900, 3)",
+      "(100, 3), (0, 3), (100, 0)"
+     ],
+     [
+      "is_adult(age)",
+      "30",
+      "18, 17, 0, -1"
+     ],
+     [
+      "top_words(text, k)",
+      "a review",
+      "\"\", one word, ties, k too big"
+     ],
+     [
+      "shipping_fee(total)",
+      "200",
+      "499, 500, 0, -1"
+     ]
+    ]
+   },
+   "say": "Most bugs live at the edges. Normal cases usually work, because that is what the developer had in mind. So for every function, ask: what about empty input, zero, exactly one item, the exact boundary, one past it, negative numbers and invalid input? Professionals write those tests first."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: grade boundaries",
+   "task": "The tests describe the rules: **90 and above** is A, **75 and above** B, **40 and above** C, below 40 F. Run it, read which test fails, and fix the **function**, not the tests.",
+   "starter": "import unittest\n\ndef grade(marks):\n    if marks > 90:\n        return \"A\"\n    elif marks > 75:\n        return \"B\"\n    elif marks >= 40:\n        return \"C\"\n    return \"F\"\n\nclass TestGrade(unittest.TestCase):\n    def test_top_marks(self):\n        self.assertEqual(grade(95), \"A\")\n\n    def test_boundaries(self):\n        self.assertEqual(grade(90), \"A\")\n        self.assertEqual(grade(75), \"B\")\n        self.assertEqual(grade(40), \"C\")\n\n    def test_fail(self):\n        self.assertEqual(grade(39), \"F\")\n\nunittest.main(argv=[\"x\"], exit=False)\n",
+   "solution": "import unittest\n\ndef grade(marks):\n    if marks >= 90:\n        return \"A\"\n    elif marks >= 75:\n        return \"B\"\n    elif marks >= 40:\n        return \"C\"\n    return \"F\"\n\nclass TestGrade(unittest.TestCase):\n    def test_top_marks(self):\n        self.assertEqual(grade(95), \"A\")\n\n    def test_boundaries(self):\n        self.assertEqual(grade(90), \"A\")\n        self.assertEqual(grade(75), \"B\")\n        self.assertEqual(grade(40), \"C\")\n\n    def test_fail(self):\n        self.assertEqual(grade(39), \"F\")\n\nunittest.main(argv=[\"x\"], exit=False)\n",
+   "tests": "assert 'self.assertEqual(grade(90), \"A\")' in __code__ and 'self.assertEqual(grade(75), \"B\")' in __code__, \"Keep the tests as they are: fix the grade function instead.\"\nassert grade(90) == \"A\", f\"90 marks should be an A, got {grade(90)!r}. 'And above' means >=.\"\nassert grade(75) == \"B\", f\"75 marks should be a B, got {grade(75)!r}.\"\nassert grade(89) == \"B\" and grade(74) == \"C\", \"89 is a B and 74 is a C.\"\nassert grade(40) == \"C\" and grade(39) == \"F\" and grade(100) == \"A\", \"Check 40 (C), 39 (F) and 100 (A) too.\"",
+   "hints": [
+    "The report says test_boundaries failed: which line of it, and which value came back?",
+    "'90 and above' means marks >= 90. Same for 75."
+   ],
+   "say": "The tests are right and the function is wrong. Run it, read the failure report to see which boundary breaks, then fix the function. Never edit a correct test just to make it pass: that is how bugs reach production."
+  },
+  {
+   "type": "exercise",
+   "title": "Write tests that catch bugs",
+   "task": "`shipping_fee` is correct: **free from ₹500**, otherwise ₹40, negative totals raise `ValueError`. Write **at least 3** tests in `TestShippingFee`.\n\nThe checker will secretly swap in **buggy versions** of the function. Your tests must fail for every one of them.",
+   "starter": "import unittest\n\ndef shipping_fee(order_total):\n    # Free delivery from Rs 500, otherwise Rs 40. Negative totals are invalid.\n    if order_total < 0:\n        raise ValueError(\"order total cannot be negative\")\n    if order_total >= 500:\n        return 0\n    return 40\n\nclass TestShippingFee(unittest.TestCase):\n    def test_placeholder(self):\n        pass   # replace me with real tests\n\nunittest.main(argv=[\"x\"], exit=False)\n",
+   "solution": "import unittest\n\ndef shipping_fee(order_total):\n    # Free delivery from Rs 500, otherwise Rs 40. Negative totals are invalid.\n    if order_total < 0:\n        raise ValueError(\"order total cannot be negative\")\n    if order_total >= 500:\n        return 0\n    return 40\n\nclass TestShippingFee(unittest.TestCase):\n    def test_small_order_pays_fee(self):\n        self.assertEqual(shipping_fee(200), 40)\n\n    def test_exactly_500_is_free(self):\n        self.assertEqual(shipping_fee(500), 0)\n\n    def test_just_below_500_pays(self):\n        self.assertEqual(shipping_fee(499), 40)\n\n    def test_negative_total_raises(self):\n        with self.assertRaises(ValueError):\n            shipping_fee(-1)\n\nunittest.main(argv=[\"x\"], exit=False)\n",
+   "tests": "import unittest as _u\nassert \"TestShippingFee\" in globals(), \"Keep the test class name TestShippingFee.\"\n_cls = TestShippingFee\n_n = _u.defaultTestLoader.loadTestsFromTestCase(_cls).countTestCases()\nassert _n >= 3, f\"Write at least 3 test methods whose names start with test_ (found {_n}).\"\n_g = next(v.__globals__ for v in vars(_cls).values() if hasattr(v, \"__globals__\"))\n\ndef _real(t):\n    if t < 0:\n        raise ValueError(\"negative\")\n    return 0 if t >= 500 else 40\n\ndef _starts_at_501(t):\n    if t < 0:\n        raise ValueError(\"negative\")\n    return 0 if t > 500 else 40\n\ndef _fee_50(t):\n    if t < 0:\n        raise ValueError(\"negative\")\n    return 0 if t >= 500 else 50\n\ndef _no_check(t):\n    return 0 if t >= 500 else 40\n\ndef _passes(fn):\n    _g[\"shipping_fee\"] = fn\n    r = _u.TestResult()\n    _u.defaultTestLoader.loadTestsFromTestCase(_cls).run(r)\n    return r.wasSuccessful()\n\n_orig = _g.get(\"shipping_fee\")\ntry:\n    assert _passes(_real), \"Your tests should pass on the correct function. Check the expected values: under 500 costs 40, 500 and above is free.\"\n    assert not _passes(_starts_at_501), \"Your tests still pass when free delivery wrongly starts at 501. Add a test for an order of exactly 500.\"\n    assert not _passes(_fee_50), \"Your tests still pass when the fee is 50 instead of 40. Check the fee on a small order.\"\n    assert not _passes(_no_check), \"Your tests still pass when negative totals are accepted. Use assertRaises(ValueError) with a negative total.\"\nfinally:\n    _g[\"shipping_fee\"] = _orig",
+   "hints": [
+    "Test the boundary itself: shipping_fee(500) should be 0, and shipping_fee(499) should be 40.",
+    "with self.assertRaises(ValueError): shipping_fee(-1)",
+    "One behaviour per test method, each name starting with test_."
+   ],
+   "say": "Now you are the tester. The function is correct, and your job is to write tests strong enough to catch bugs. When you tap check, we secretly replace the function with three broken versions. If your tests still pass for any of them, they are not strong enough yet. Think about the boundary."
+  },
+  {
+   "type": "exercise",
+   "title": "Make the suite green",
+   "task": "Tests are also a **specification**. Read `TestWallet`, then write the `Wallet` class so every test passes. Don't change the tests.\n\nAlso make `pay()` reject zero or negative amounts with `ValueError`, like `top_up()`.",
+   "starter": "import unittest\n\nclass Wallet:\n    pass   # TODO: read the tests, then build this class\n\nclass TestWallet(unittest.TestCase):\n    def setUp(self):\n        self.wallet = Wallet(\"Riya\", balance=100)\n\n    def test_starts_with_balance(self):\n        self.assertEqual(self.wallet.owner, \"Riya\")\n        self.assertEqual(self.wallet.balance, 100)\n\n    def test_new_wallet_defaults_to_zero(self):\n        self.assertEqual(Wallet(\"Arjun\").balance, 0)\n\n    def test_top_up_adds_money(self):\n        self.wallet.top_up(50)\n        self.assertEqual(self.wallet.balance, 150)\n\n    def test_pay_reduces_balance(self):\n        self.wallet.pay(30)\n        self.assertEqual(self.wallet.balance, 70)\n\n    def test_cannot_pay_more_than_balance(self):\n        with self.assertRaises(ValueError):\n            self.wallet.pay(500)\n        self.assertEqual(self.wallet.balance, 100)\n\n    def test_top_up_must_be_positive(self):\n        with self.assertRaises(ValueError):\n            self.wallet.top_up(0)\n\nunittest.main(argv=[\"x\"], exit=False)\n",
+   "solution": "import unittest\n\nclass Wallet:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def top_up(self, amount):\n        if amount <= 0:\n            raise ValueError(\"amount must be positive\")\n        self.balance += amount\n\n    def pay(self, amount):\n        if amount <= 0:\n            raise ValueError(\"amount must be positive\")\n        if amount > self.balance:\n            raise ValueError(\"insufficient balance\")\n        self.balance -= amount\n\nclass TestWallet(unittest.TestCase):\n    def setUp(self):\n        self.wallet = Wallet(\"Riya\", balance=100)\n\n    def test_starts_with_balance(self):\n        self.assertEqual(self.wallet.owner, \"Riya\")\n        self.assertEqual(self.wallet.balance, 100)\n\n    def test_new_wallet_defaults_to_zero(self):\n        self.assertEqual(Wallet(\"Arjun\").balance, 0)\n\n    def test_top_up_adds_money(self):\n        self.wallet.top_up(50)\n        self.assertEqual(self.wallet.balance, 150)\n\n    def test_pay_reduces_balance(self):\n        self.wallet.pay(30)\n        self.assertEqual(self.wallet.balance, 70)\n\n    def test_cannot_pay_more_than_balance(self):\n        with self.assertRaises(ValueError):\n            self.wallet.pay(500)\n        self.assertEqual(self.wallet.balance, 100)\n\n    def test_top_up_must_be_positive(self):\n        with self.assertRaises(ValueError):\n            self.wallet.top_up(0)\n\nunittest.main(argv=[\"x\"], exit=False)\n",
+   "tests": "import unittest as _u\nassert \"TestWallet\" in globals(), \"Keep the TestWallet class: it is the specification.\"\n_n = _u.defaultTestLoader.loadTestsFromTestCase(TestWallet).countTestCases()\nassert _n >= 6, \"Don't delete tests from TestWallet: all 6 should still be there.\"\n_r = _u.TestResult()\n_u.defaultTestLoader.loadTestsFromTestCase(TestWallet).run(_r)\n_bad = _r.failures + _r.errors\nassert not _bad, f\"{len(_bad)} test(s) still fail. First one: {_bad[0][0].id().split('.')[-1]} -> {_bad[0][1].strip().splitlines()[-1]}\" if _bad else \"\"\nw = Wallet(\"Kabir\", 50)\nfor bad in (0, -10):\n    try:\n        w.pay(bad)\n    except ValueError:\n        pass\n    else:\n        raise AssertionError(f\"pay({bad}) should raise ValueError: payments must be positive.\")\nassert w.balance == 50, \"A rejected payment must not change the balance.\"\nw.pay(50)\nassert w.balance == 0, \"Paying exactly the whole balance is allowed, leaving 0.\"",
+   "hints": [
+    "Wallet needs __init__(self, owner, balance=0) that stores both attributes.",
+    "top_up and pay should raise ValueError for amounts <= 0. pay also raises if amount > self.balance.",
+    "Check before you change: raise first, and only then update self.balance."
+   ],
+   "say": "Tests are also a specification. Read the wallet tests carefully: they tell you the constructor, the methods and every rule. Then write the wallet class until the whole suite is green. Don't touch the tests."
+  },
+  {
+   "type": "quiz",
+   "title": "When a bug escapes",
+   "q": "All tests pass, but a user reports a bug. What's the professional next step?",
+   "options": [
+    "Fix the bug quickly and move on",
+    "Write a test that reproduces the bug, watch it fail, then fix the code",
+    "Delete the tests, since they obviously don't work"
+   ],
+   "answer": 1,
+   "why": "A failing test proves you understood the bug, and once it passes it guards against that bug forever. This habit is called a regression test.",
+   "say": "Last check. Every test is green, yet a user finds a bug. What should you do before touching the code?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 35 complete",
+   "points": [
+    "Automated tests store the right answer and re-check it on every change",
+    "unittest: a TestCase class, one test_ method per behaviour, assertEqual and friends",
+    "assertRaises checks errors; assertAlmostEqual handles floats",
+    "Arrange, Act, Assert; setUp gives every test a fresh start",
+    "Test the edges, and turn every bug report into a test first"
+   ],
+   "say": "Mission thirty five complete. You can write unittest suites, test edge cases and errors, read failure reports, and write tests strong enough to catch real bugs. Tomorrow we flip the order: tests first, then code, with test driven development and mocks. See you on day thirty six."
+  }
+ ]
+}

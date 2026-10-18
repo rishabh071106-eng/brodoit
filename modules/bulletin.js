@@ -39,7 +39,8 @@ async function elevenTTS(text, voice, lang, key) {
 function install(app, deps) {
   const { db, auth, isAdmin, callGemini, getNewsItems } = deps;
   const getSetting = typeof deps.getSetting === 'function' ? deps.getSetting : (k => process.env[k] || '');
-  const hasVoice = () => STUDIO.available(getSetting).length > 0;
+  // The long spoken bulletin is off by default since v13: News plays recorded headlines instead (modules/newsvoice.js).
+  const hasVoice = () => String(getSetting('BULLETIN_AUDIO') || '0') === '1' && STUDIO.available(getSetting).length > 0;
   if (deps.mediaDir) DIR = path.join(deps.mediaDir, 'news');
   fs.mkdirSync(DIR, { recursive: true });
   db.exec(`CREATE TABLE IF NOT EXISTS news_bulletins(id TEXT PRIMARY KEY,kind TEXT NOT NULL,date TEXT NOT NULL,title TEXT DEFAULT '',data TEXT NOT NULL,audio_en TEXT DEFAULT '',audio_hi TEXT DEFAULT '',created_at TEXT DEFAULT(datetime('now')));

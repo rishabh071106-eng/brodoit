@@ -1,0 +1,396 @@
+{
+ "day": 56,
+ "phase": 6,
+ "title": "Performance and profiling",
+ "subtitle": "Measure, find the hot spot, fix it, prove it",
+ "minutes": 55,
+ "goal": "Find real bottlenecks with timeit, cProfile and tracemalloc, then fix them with better data structures, caching, generators and join.",
+ "outcomes": [
+  "Time code with timeit and perf_counter",
+  "Profile a program with cProfile and read the results",
+  "Cache repeated expensive calls with lru_cache",
+  "Measure memory with tracemalloc and save it with generators",
+  "Choose algorithmic fixes over micro-optimisations"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 56: Performance and profiling",
+   "body": "\"Make it work, make it right, make it fast\", in that order.\n\nProfessionals never guess where code is slow: they **measure**, fix the biggest hot spot, and measure again. Today you learn the tools for both time and memory.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Make it work: tests pass",
+     "Measure: profile, don't guess",
+     "Fix the biggest hot spot",
+     "Measure again; keep the tests green"
+    ]
+   },
+   "say": "Make it work, make it right, make it fast, in that order. Professional developers never guess where their code is slow, because the guess is usually wrong. They measure, fix the single biggest hot spot, and measure again. Today you learn the tools to do that for both speed and memory."
+  },
+  {
+   "type": "concept",
+   "title": "Measure, don't guess",
+   "body": "In most slow programs **one hot spot** dominates. Speeding up anything else is wasted effort, however clever it feels.",
+   "visual": {
+    "kind": "chart",
+    "title": "Where a slow report spends its time (ms)",
+    "bars": [
+     [
+      "read file",
+      40
+     ],
+     [
+      "parse rows",
+      120
+     ],
+     [
+      "look up prices",
+      2400
+     ],
+     [
+      "format output",
+      30
+     ]
+    ]
+   },
+   "say": "Here is a typical profile of a slow report script. Reading the file and formatting the output are quick. Almost all the time goes into one function that looks up prices. Making the fast parts faster would change nothing. That is why we always measure first: the hot spot is often somewhere you would never have guessed."
+  },
+  {
+   "type": "code",
+   "title": "timeit: measure small things",
+   "body": "Your numbers will differ from run to run and phone to phone. The **ratio** is what matters.",
+   "code": "import timeit\n\nids_list = list(range(10_000))\nids_set = set(ids_list)\n\nt_list = timeit.timeit(lambda: 9_999 in ids_list, number=200)\nt_set = timeit.timeit(lambda: 9_999 in ids_set, number=200)\nprint(f\"list: {t_list / 200 * 1e6:9.2f} µs per lookup\")\nprint(f\"set:  {t_set / 200 * 1e6:9.2f} µs per lookup\")\nprint(f\"the set is about {t_list / t_set:,.0f} times faster\")",
+   "expect": null,
+   "explain": [
+    [
+     6,
+     "Run the lambda 200 times and return the total seconds."
+    ],
+    [
+     8,
+     "Divide to get one lookup, in microseconds."
+    ],
+    [
+     10,
+     "The ratio tells the real story."
+    ]
+   ],
+   "trace": false,
+   "say": "Time it repeats a tiny piece of code many times and returns the total seconds, which smooths out noise. Looking for the last ID in a list checks all ten thousand items. A set jumps straight to the answer with a hash. Your exact numbers depend on your phone, but the set wins by hundreds or thousands of times. That is Big O from day forty one, measured."
+  },
+  {
+   "type": "concept",
+   "title": "cProfile: find the hot spot",
+   "body": "`cProfile` records every function call: how many times it ran (**ncalls**), time inside it (**tottime**) and including what it called (**cumtime**). Sort by cumtime, read from the top.\n\nOn a laptop: `python -m cProfile -s cumtime report.py`",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "ncalls",
+     "tottime",
+     "cumtime",
+     "function"
+    ],
+    "rows": [
+     [
+      "1",
+      "0.004",
+      "2.512",
+      "build_report"
+     ],
+     [
+      "5000",
+      "2.480",
+      "2.480",
+      "find_price  ← hot spot"
+     ],
+     [
+      "5000",
+      "0.021",
+      "0.028",
+      "format_line"
+     ],
+     [
+      "1",
+      "0.002",
+      "0.002",
+      "load_orders"
+     ]
+    ]
+   },
+   "say": "C profile records every function call while your program runs. For each function you get the number of calls, the time spent inside the function itself, and the cumulative time including everything it called. Sort by cumulative time and read from the top. On a laptop, you can profile a whole script from the terminal with python dash m c profile."
+  },
+  {
+   "type": "code",
+   "title": "Profile a slow report",
+   "body": "`runcall` profiles one function call. We print a compact table; `pstats.Stats(...).sort_stats(\"cumulative\").print_stats(5)` prints the full one.",
+   "code": "import cProfile\nimport pstats\n\nPRODUCTS = [(f\"SKU{i:04}\", i * 10) for i in range(1_000)]\nORDERS = [f\"SKU{i * 7 % 1_000:04}\" for i in range(1_000)]\n\ndef find_price(sku):\n    for code, price in PRODUCTS:            # linear search: O(n) per lookup\n        if code == sku:\n            return price\n\ndef format_line(sku, price):\n    return f\"{sku}: ₹{price:,}\"\n\ndef build_report(orders):\n    lines = [format_line(sku, find_price(sku)) for sku in orders]\n    return len(lines)\n\nprofiler = cProfile.Profile()\nprint(\"lines:\", profiler.runcall(build_report, ORDERS))\n\nstats = pstats.Stats(profiler)\nrows = [(ct, nc, name) for (_, _, name), (_, nc, _, ct, _) in stats.stats.items()]\nfor ct, nc, name in sorted(rows, reverse=True)[:3]:\n    print(f\"{name[:24]:<24} calls={nc:<5} cumulative={ct * 1000:8.1f} ms\")",
+   "expect": null,
+   "explain": [
+    [
+     8,
+     "The suspect: scans the whole product list for every order."
+    ],
+    [
+     20,
+     "Profile exactly one call of build_report."
+    ],
+    [
+     22,
+     "stats.stats maps each function to its numbers."
+    ],
+    [
+     23,
+     "Keep cumulative time, call count and name for each function."
+    ],
+    [
+     24,
+     "Sort by cumulative time, biggest first."
+    ]
+   ],
+   "trace": false,
+   "say": "We profile a report that looks up a thousand prices. Run call runs build report under the profiler. Then we read the statistics and print the top three functions by cumulative time. Find price is called a thousand times and eats almost all of the time, while format line is cheap. Now we know exactly what to fix."
+  },
+  {
+   "type": "code",
+   "title": "Fix the hot spot, then measure again",
+   "body": "The fix is a better **data structure**, not a micro-trick. Always confirm the answer did not change.",
+   "code": "import time\n\nPRODUCTS = [(f\"SKU{i:04}\", i * 10) for i in range(1_000)]\nORDERS = [f\"SKU{i * 7 % 1_000:04}\" for i in range(1_000)]\n\ndef total_slow(orders):\n    return sum(next(p for code, p in PRODUCTS if code == sku) for sku in orders)\n\nPRICE_BY_SKU = dict(PRODUCTS)          # build an index once: O(n)\n\ndef total_fast(orders):\n    return sum(PRICE_BY_SKU[sku] for sku in orders)      # O(1) per lookup\n\nfor fn in (total_slow, total_fast):\n    start = time.perf_counter()\n    result = fn(ORDERS)\n    ms = (time.perf_counter() - start) * 1000\n    print(f\"{fn.__name__:<11} {result:>9,}  {ms:8.2f} ms\")\nprint(\"same answer:\", total_slow(ORDERS) == total_fast(ORDERS))",
+   "expect": null,
+   "explain": [
+    [
+     7,
+     "Scan the product list for every single order."
+    ],
+    [
+     9,
+     "dict(PRODUCTS): SKU to price, built once."
+    ],
+    [
+     12,
+     "Each lookup is O(1) now."
+    ],
+    [
+     15,
+     "perf_counter is the right clock for timing code."
+    ],
+    [
+     19,
+     "Faster is useless if the answer changes."
+    ]
+   ],
+   "trace": false,
+   "say": "The fix is not a clever trick, it is a better data structure. We build a dictionary from S K U to price once, and every lookup becomes a single hash jump instead of a scan. We time both versions with perf counter and check they give the same answer. Typical result: tens or hundreds of times faster, with simpler code."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: where to spend your effort",
+   "q": "A nightly report takes 40 seconds. The profile shows 38 seconds inside a nested loop that compares every order with every customer. What do you do first?",
+   "options": [
+    "Replace `print` with `sys.stdout.write` everywhere",
+    "Index customers in a dict so each lookup is O(1)",
+    "Buy a faster server",
+    "Remove comments to make the file smaller"
+   ],
+   "answer": 1,
+   "why": "Algorithmic wins beat micro-optimisations. Turning O(n × m) into O(n + m) can take 38 seconds down to a fraction of a second; the other ideas change almost nothing.",
+   "say": "A forty second report, and the profile says thirty eight seconds are spent in a nested loop comparing every order with every customer. Where do you start?"
+  },
+  {
+   "type": "concept",
+   "title": "Caching with lru_cache",
+   "body": "When the **same expensive call** repeats with the **same arguments** (lookups, parsing, API calls), remember the answer.\n- arguments must be **hashable** (no lists or dicts)\n- the function should be **pure**\n- `maxsize=` bounds memory; `cache_clear()` when the data changes",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "normalise('Masala Chai')",
+      "s": "pill"
+     },
+     {
+      "t": "Answer already in the cache?",
+      "s": "diamond",
+      "yes": "return it instantly (a hit)",
+      "no": "compute, store, return (a miss)"
+     },
+     {
+      "t": "cache_info() counts hits and misses",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "If the same expensive call repeats with the same arguments, remember the answer instead of computing it again. functools l r u cache does this with one decorator. The arguments must be hashable, so no lists or dictionaries. The function should be pure, giving the same output for the same input. Set a max size to limit memory, and clear the cache when the underlying data changes."
+  },
+  {
+   "type": "code",
+   "title": "Cache an expensive cleanup",
+   "body": "10,000 rows but only 5 distinct spellings: the work runs 5 times.",
+   "code": "import unicodedata\nfrom functools import lru_cache\n\n@lru_cache(maxsize=1024)\ndef normalise(name: str) -> str:\n    \"\"\"Pretend this is expensive: Unicode cleanup, spelling fixes, a lookup...\"\"\"\n    text = unicodedata.normalize(\"NFKC\", name).strip().lower()\n    return \" \".join(text.split())\n\nrows = [\"  Masala  Chai \", \"masala chai\", \"Brass Kettle\", \"MASALA CHAI\", \"brass   kettle\"] * 2_000\ncleaned = [normalise(row) for row in rows]\nprint(len(cleaned), \"rows ->\", sorted(set(cleaned)))\nprint(normalise.cache_info())",
+   "expect": "10000 rows -> ['brass kettle', 'masala chai']\nCacheInfo(hits=9995, misses=5, maxsize=1024, currsize=5)\n",
+   "explain": [
+    [
+     4,
+     "Remember up to 1024 different arguments."
+    ],
+    [
+     7,
+     "The 'expensive' part runs only on a cache miss."
+    ],
+    [
+     10,
+     "Lots of repeats: perfect for caching."
+    ],
+    [
+     13,
+     "hits, misses, maxsize, currsize: proof the cache works."
+    ]
+   ],
+   "say": "Ten thousand rows, but only five different spellings. With the cache, the expensive cleanup runs five times, and every other call is a hit that returns instantly. Cache info proves it: five misses and nine thousand nine hundred and ninety five hits. This pattern is everywhere in data cleaning and API clients."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: hits and misses",
+   "code": "from functools import lru_cache\n\ncalls = 0\n\n@lru_cache(maxsize=None)\ndef shipping_rate(pincode: str) -> int:\n    global calls\n    calls += 1\n    return 40 if pincode.startswith(\"4\") else 60\n\nfor pin in [\"411001\", \"560001\", \"411001\", \"411001\", \"560001\"]:\n    shipping_rate(pin)\nprint(calls, shipping_rate.cache_info().hits)",
+   "options": [
+    "5 0",
+    "2 3",
+    "3 2"
+   ],
+   "answer": 1,
+   "why": "Only the first call for each pincode runs the body: 2 calls (2 misses). The other 3 calls are answered from the cache: 3 hits.",
+   "say": "Five lookups for only two different pincodes. How many times does the function body actually run, and how many cache hits are there?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: the cache that crashes",
+   "task": "This delivery-fee function is cached, but it crashes before it can help. Read the error, then fix the program so the cache works. Keep `@lru_cache`.",
+   "starter": "from functools import lru_cache\n\n@lru_cache(maxsize=256)\ndef delivery_fee(items) -> int:\n    weight = sum(kg for _, kg in items)\n    return 40 + 15 * max(0, round(weight) - 2)\n\ncart = [(\"rice\", 5), (\"dal\", 1)]\nprint(delivery_fee(cart))\nprint(delivery_fee(cart))\nprint(delivery_fee.cache_info())",
+   "solution": "from functools import lru_cache\n\n@lru_cache(maxsize=256)\ndef delivery_fee(items: tuple) -> int:\n    weight = sum(kg for _, kg in items)\n    return 40 + 15 * max(0, round(weight) - 2)\n\ncart = ((\"rice\", 5), (\"dal\", 1))\nprint(delivery_fee(cart))\nprint(delivery_fee(cart))\nprint(delivery_fee.cache_info())",
+   "tests": "assert hasattr(delivery_fee, \"cache_info\"), \"Keep the @lru_cache decorator: caching is the point of this function.\"\nfee = delivery_fee(((\"atta\", 10),))\nassert fee == 160, \"delivery_fee for 10 kg should be 160. Got \" + str(fee)\nhits = delivery_fee.cache_info().hits\ndelivery_fee(((\"atta\", 10),))\nassert delivery_fee.cache_info().hits == hits + 1, \"Calling again with the same items should be a cache hit.\"\nassert delivery_fee.cache_info().hits >= 2, \"Your own program should call delivery_fee with the same cart twice and get a hit.\"",
+   "hints": [
+    "The error says `unhashable type: 'list'`. The cache uses arguments as dict keys.",
+    "Pass a tuple of tuples instead: `cart = ((\"rice\", 5), (\"dal\", 1))`."
+   ],
+   "say": "This function is decorated with l r u cache, but the program crashes on the very first call. Read the error carefully: the cache stores arguments as dictionary keys, so they must be hashable. Fix the program so the cart can be cached, and keep the decorator."
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: profile says cache it",
+   "task": "A profile shows `fetch_rate` (a slow API call, about 300 ms each) runs once **per payment**. Change `convert_all` so `fetch_rate` runs **at most once per currency**, with the same results.\n\nDon't change `fetch_rate` or `RATES`.",
+   "starter": "CALLS = 0\nRATES = {\"USD\": 83.2, \"EUR\": 90.5, \"AED\": 22.65}\n\ndef fetch_rate(currency: str) -> float:\n    \"\"\"Pretend this is a slow API call (about 300 ms).\"\"\"\n    global CALLS\n    CALLS += 1\n    return RATES[currency]\n\ndef convert_all(payments: list[tuple[str, float]]) -> list[float]:\n    \"\"\"Convert (currency, amount) pairs to rupees, rounded to 2 places.\"\"\"\n    return [round(amount * fetch_rate(currency), 2) for currency, amount in payments]\n\npayments = [(\"USD\", 10), (\"EUR\", 5), (\"USD\", 2.5), (\"USD\", 1), (\"EUR\", 20)]\nprint(convert_all(payments), \"API calls:\", CALLS)",
+   "solution": "CALLS = 0\nRATES = {\"USD\": 83.2, \"EUR\": 90.5, \"AED\": 22.65}\n\ndef fetch_rate(currency: str) -> float:\n    \"\"\"Pretend this is a slow API call (about 300 ms).\"\"\"\n    global CALLS\n    CALLS += 1\n    return RATES[currency]\n\ndef convert_all(payments: list[tuple[str, float]]) -> list[float]:\n    \"\"\"Convert (currency, amount) pairs to rupees, rounded to 2 places.\"\"\"\n    rates = {}\n    result = []\n    for currency, amount in payments:\n        if currency not in rates:\n            rates[currency] = fetch_rate(currency)\n        result.append(round(amount * rates[currency], 2))\n    return result\n\npayments = [(\"USD\", 10), (\"EUR\", 5), (\"USD\", 2.5), (\"USD\", 1), (\"EUR\", 20)]\nprint(convert_all(payments), \"API calls:\", CALLS)",
+   "tests": "g = getattr(convert_all, \"__wrapped__\", convert_all).__globals__\ng[\"CALLS\"] = 0\ngot = convert_all([(\"AED\", 100), (\"AED\", 50), (\"AED\", 10)])\nassert got == [2265.0, 1132.5, 226.5], \"The converted amounts changed: expected [2265.0, 1132.5, 226.5], got \" + str(got)\nassert g[\"CALLS\"] == 1, \"fetch_rate ran \" + str(g[\"CALLS\"]) + \" times for three AED payments. It should run once per currency.\"\ng[\"CALLS\"] = 0\ngot = convert_all([(\"USD\", 1), (\"EUR\", 1), (\"USD\", 3), (\"EUR\", 2)])\nassert got == [83.2, 90.5, 249.6, 181.0], \"Expected [83.2, 90.5, 249.6, 181.0], got \" + str(got)\nassert g[\"CALLS\"] <= 2, \"Two currencies should need at most 2 calls to fetch_rate, not \" + str(g[\"CALLS\"]) + \".\"\nassert convert_all([]) == [], \"No payments should give an empty list.\"",
+   "hints": [
+    "Keep a small dict of rates you have already fetched inside `convert_all`.",
+    "Or decorate a helper with `@lru_cache` that calls `fetch_rate(currency)`.",
+    "Only call `fetch_rate(currency)` when `currency not in rates`."
+   ],
+   "say": "Here is a profiling story from real life. The profile shows a slow exchange rate API being called once for every payment, even when the currency repeats. Change convert all so it fetches each currency's rate at most once. The results must stay exactly the same; the tests count the API calls."
+  },
+  {
+   "type": "concept",
+   "title": "Memory: generators and tracemalloc",
+   "body": "A list holds **every item at once**. A generator produces **one item at a time** (Day 27).\n\n`tracemalloc` (standard library) measures how much memory Python allocates, so you can prove the difference.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "List: builds everything first",
+     "code": "total = sum([n * n for n in range(1_000_000)])\n# a million-item list in memory"
+    },
+    "right": {
+     "title": "Generator: one at a time",
+     "code": "total = sum(n * n for n in range(1_000_000))\n# almost no memory at all"
+    },
+    "verdict": "Same answer, a tiny fraction of the memory."
+   },
+   "say": "Speed is not the only resource. A list holds every item in memory at the same time, while a generator produces one item at a time and forgets it. For a million items, that is the difference between megabytes and almost nothing. The trace malloc module measures the memory Python allocates, so you can prove it instead of guessing."
+  },
+  {
+   "type": "code",
+   "title": "Measure memory with tracemalloc",
+   "body": "Exact numbers vary, but the gap is huge. This is how you check a memory fix really worked.",
+   "code": "import tracemalloc\n\ndef peak_kib(fn) -> float:\n    tracemalloc.start()\n    fn()\n    _, peak = tracemalloc.get_traced_memory()\n    tracemalloc.stop()\n    return peak / 1024\n\nas_list = lambda: sum([n * n for n in range(200_000)])\nas_generator = lambda: sum(n * n for n in range(200_000))\n\nprint(f\"list:      {peak_kib(as_list):8,.0f} KiB at peak\")\nprint(f\"generator: {peak_kib(as_generator):8,.0f} KiB at peak\")\nprint(\"same answer:\", as_list() == as_generator())",
+   "expect": null,
+   "explain": [
+    [
+     4,
+     "Start recording memory allocations."
+    ],
+    [
+     6,
+     "The peak: the most memory in use at any moment."
+    ],
+    [
+     10,
+     "Square brackets: a full list first."
+    ],
+    [
+     11,
+     "Round brackets: a lazy generator."
+    ]
+   ],
+   "trace": false,
+   "say": "We wrap any function in a small helper that starts trace malloc, runs the function, reads the peak memory and stops. The list version builds two hundred thousand numbers before summing them and peaks at several megabytes. The generator version peaks at well under one kilobyte. Same answer, a tiny fraction of the memory."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: the one-shot generator",
+   "code": "squares = (n * n for n in range(4))\nprint(sum(squares))\nprint(sum(squares))",
+   "options": [
+    "14\n14",
+    "14\n0",
+    "0\n14"
+   ],
+   "answer": 1,
+   "why": "A generator can be consumed only **once**. The first `sum` uses up 0, 1, 4 and 9. The second finds nothing left, so the sum is 0. Need the items twice? Use a list, or create the generator again.",
+   "say": "Generators save memory, but they come with one catch. What happens if you sum the same generator twice?"
+  },
+  {
+   "type": "code",
+   "title": "Build strings with join",
+   "body": "Strings are immutable: `+=` in a loop may copy the whole text each time. `\"\".join(pieces)` is always linear.",
+   "code": "orders = [(\"A-1001\", \"Pune\", 749), (\"A-1002\", \"Delhi\", 1299), (\"A-1003\", \"Goa\", 180)]\n\n# Slow on big data: text grows by copying, again and again\ntext = \"\"\nfor oid, city, amount in orders:\n    text += f\"{oid},{city},{amount}\\n\"\n\n# Fast: collect the pieces, join them once\nlines = [\"order_id,city,amount\"]\nlines.extend(f\"{oid},{city},{amount}\" for oid, city, amount in orders)\ncsv_text = \"\\n\".join(lines) + \"\\n\"\n\nprint(csv_text, end=\"\")\nprint(\"same rows:\", text == csv_text.split(\"\\n\", 1)[1])",
+   "expect": "order_id,city,amount\nA-1001,Pune,749\nA-1002,Delhi,1299\nA-1003,Goa,180\nsame rows: True\n",
+   "explain": [
+    [
+     6,
+     "Each += may build a brand-new, longer string."
+    ],
+    [
+     9,
+     "Collect small pieces in a list."
+    ],
+    [
+     11,
+     "One join builds the final text in a single pass."
+    ]
+   ],
+   "say": "Strings are immutable, so adding to a string in a loop can copy everything built so far on every step. C Python sometimes optimises this, but other Pythons do not, and it can turn a linear job into a quadratic one. Collecting pieces in a list and joining once is always linear. Both versions build the same rows here."
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: common customers, fast",
+   "task": "`common_customers(today, yesterday)` returns the customer IDs that ordered on **both** days, **sorted**, **without duplicates**. The starter is correct but O(n × m): it scans `yesterday` for every customer.\n\nMake it O(n + m). The tests count how many times you scan a list.",
+   "starter": "def common_customers(today: list[int], yesterday: list[int]) -> list[int]:\n    \"\"\"Customer IDs that ordered on both days, sorted, without duplicates.\"\"\"\n    common = []\n    for customer in today:\n        if customer in yesterday and customer not in common:\n            common.append(customer)\n    return sorted(common)\n\nprint(common_customers([101, 205, 333, 101], [333, 101, 999]))",
+   "solution": "def common_customers(today: list[int], yesterday: list[int]) -> list[int]:\n    \"\"\"Customer IDs that ordered on both days, sorted, without duplicates.\"\"\"\n    return sorted(set(today) & set(yesterday))\n\nprint(common_customers([101, 205, 333, 101], [333, 101, 999]))",
+   "tests": "class CountingList(list):\n    scans = 0\n    def __contains__(self, item):\n        CountingList.scans += 1\n        return super().__contains__(item)\n    def index(self, *args):\n        CountingList.scans += 1\n        return super().index(*args)\n    def count(self, item):\n        CountingList.scans += 1\n        return super().count(item)\n\ntoday = CountingList(range(0, 3000, 3))\nyesterday = CountingList(range(0, 3000, 2))\ngot = common_customers(today, yesterday)\nassert got == list(range(0, 3000, 6)), \"The IDs in both lists are the multiples of 6 below 3000, in order. Got \" + str(got[:5]) + \"...\"\nassert CountingList.scans == 0, \"Your function searched a list \" + str(CountingList.scans) + \" times with `in`. Turn the lists into sets first: set lookups are O(1).\"\nassert common_customers([5, 5, 1], [1, 5, 9]) == [1, 5], \"Remove duplicates and sort: [5, 5, 1] and [1, 5, 9] give [1, 5].\"\nassert common_customers([], [1, 2]) == [], \"If nobody ordered today, the answer is [].\"",
+   "hints": [
+    "Sets answer `in` in O(1) and remove duplicates for free.",
+    "`set(today) & set(yesterday)` is the intersection; wrap it in `sorted(...)`."
+   ],
+   "say": "Last one, and it is a classic interview favourite. This function is correct but slow, because it scans the whole of yesterday's list for every customer today. Make it linear. The tests hand you special lists that count every scan, so a hidden in check on a list will be caught."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 56 complete",
+   "points": [
+    "Measure first: `timeit` for small snippets, `cProfile` to find the hot spot",
+    "Algorithmic wins (a dict or set index) beat micro-optimisations",
+    "`lru_cache` remembers answers for repeated, hashable arguments",
+    "Generators save memory; `tracemalloc` proves it",
+    "Build big strings with `join`, and always confirm the answer did not change"
+   ],
+   "say": "Mission fifty six complete. You can measure code with time it, find hot spots with c profile, fix them with better data structures and caching, save memory with generators, and prove every improvement with numbers. Tomorrow is one of the most important days of the course: security."
+  }
+ ]
+}

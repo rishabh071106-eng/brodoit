@@ -22,6 +22,7 @@ const JOBS = {
   bulletin: { label: "Record today's bulletin" },
   'hindi-books': { label: 'Record Hindi books', script: 'hindi-books.js' },
   'lang-audio': { label: 'Record language lessons', script: 'lang-audio.js' },
+  'learn-audio': { label: 'Record Python + language narration', script: 'learn-audio.js' },
 };
 
 let _maskKey;
@@ -120,6 +121,7 @@ function install(app, deps) {
     if (kind === 'bulletin') return bulletin && typeof bulletin.ensureToday === 'function' ? null : 'news channel not loaded';
     if (kind === 'hindi-books') { if (!gemini) return 'GEMINI_API_KEY is not set'; if (!voice && !(opts && opts.textOnly)) return 'Paste a voice key first — ElevenLabs, Gemini or OpenAI (or run text only)'; return null; }
     if (kind === 'lang-audio') { if (!voice) return 'Paste a voice key first — ElevenLabs, Gemini or OpenAI'; if (!hasFfmpeg()) return 'ffmpeg is not installed on the server'; return null; }
+    if (kind === 'learn-audio') { if (!voice) return 'Paste a voice key first — ElevenLabs, Gemini or OpenAI'; return null; }
     return 'unknown job';
   }
 
@@ -154,7 +156,7 @@ function install(app, deps) {
     const j = getJob(kind); if (!j) return { status: 404, body: { error: 'unknown job' } };
     if (j.status === 'running') return { status: 409, body: { error: 'already running', job: pub(j) } };
     const pre = preflight(kind, opts); if (pre) return { status: 400, body: { error: pre, job: pub(j) } };
-    const other = ['hindi-books', 'lang-audio'].find(k => k !== kind && kind !== 'bulletin' && getJob(k).status === 'running');
+    const other = ['hindi-books', 'lang-audio', 'learn-audio'].find(k => k !== kind && kind !== 'bulletin' && getJob(k).status === 'running');
     if (other) return { status: 409, body: { error: getJob(other).label + ' is running — one recording at a time keeps the credit budget honest', job: pub(j) } };
     if (kind === 'bulletin') { runBulletin(j); return { status: 200, body: { ok: true, job: pub(j) } }; }
     const r = startScript(j, opts); if (r.error) return { status: r.status || 500, body: { error: r.error, job: pub(j) } };
@@ -172,11 +174,12 @@ function install(app, deps) {
     if (kind === 'bulletin') { const t = m.news.today; return !(t && t.en && t.hi); }
     if (kind === 'hindi-books') return m.books.audio < m.books.total;
     if (kind === 'lang-audio') return m.lessons.audio < m.lessons.total;
+    if (kind === 'learn-audio') { try { const st = global._learnVoice && global._learnVoice.stats(); return !!(st && st.recorded < st.total); } catch (e) { return false; } }
     return false;
   }
   function autoRecord(reason) {
     if (!AUTO_ON) return { queued: [], off: true };
-    const todo = ['bulletin', 'hindi-books', 'lang-audio'].filter(k => needs(k) && !preflight(k) && getJob(k).status !== 'running' && !auto.queue.includes(k) && auto.running !== k);
+    const todo = ['learn-audio', 'lang-audio', 'hindi-books'].filter(k => needs(k) && !preflight(k) && getJob(k).status !== 'running' && !auto.queue.includes(k) && auto.running !== k);
     for (const k of todo) auto.queue.push(k);
     if (todo.length) { auto.reason = reason || 'auto'; console.log('[admin] auto-record queued', todo.join(', '), '·', auto.reason); }
     pump();
@@ -260,7 +263,7 @@ function install(app, deps) {
   }
   if (deps.creditChecks !== false) { setTimeout(() => refreshCredits().catch(() => {}), 45000); setInterval(() => refreshCredits().catch(() => {}), 3 * 3600e3); }
   const spend = () => { try { return Object.assign(STUDIO.usage(getSetting), { gemini_state: gemState, order: STUDIO.available(getSetting) }); } catch (e) { return null; } };
-  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), spend: spend(), sealed: (() => { try { return global._sealedStatus ? global._sealedStatus() : null; } catch (e) { return null; } })(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })() });
+  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), spend: spend(), brain: (() => { try { return global._elevenBrain ? global._elevenBrain.status() : null; } catch (e) { return null; } })(), geminiDown: (global._geminiDownUntil || 0) > Date.now(), newsVoice: (() => { try { return global._newsVoice ? global._newsVoice.stats() : null; } catch (e) { return null; } })(), learnVoice: (() => { try { return global._learnVoice ? global._learnVoice.stats() : null; } catch (e) { return null; } })(), sealed: (() => { try { return global._sealedStatus ? global._sealedStatus() : null; } catch (e) { return null; } })(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })() });
 
   // ── routes ──
   app.get('/api/admin/status', auth, requireAdmin, (req, res) => { try { res.json(statusBody()); } catch (e) { res.status(500).json({ error: e.message }); } });

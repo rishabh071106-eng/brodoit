@@ -1,0 +1,456 @@
+{
+ "day": 36,
+ "phase": 4,
+ "title": "Testing II: test-driven development",
+ "subtitle": "Red, green, refactor, and faking the outside world",
+ "minutes": 60,
+ "goal": "Drive new features with tests first, write pytest-style tests, and isolate code from time, randomness and networks with unittest.mock.",
+ "outcomes": [
+  "Follow the red, green, refactor loop to build a feature",
+  "Write pytest-style test functions and table-driven cases",
+  "Share test setup with fixtures",
+  "Fake time, random numbers and external services with Mock and patch",
+  "Explain test coverage and run examples in docstrings with doctest"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 36: Tests first",
+   "body": "Yesterday you wrote tests **after** the code. Today you flip it: **test-driven development** (TDD). Write a failing test, make it pass, clean up, repeat.\n\nThen you learn to fake the outside world (time, randomness, payment APIs) so tests stay fast and reliable.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Red: write a test that fails",
+     "Green: write just enough code to pass",
+     "Refactor: clean up while tests stay green",
+     "Repeat with the next behaviour"
+    ]
+   },
+   "say": "Yesterday you wrote tests after the code. Today we flip the order. In test driven development you write a failing test first, then just enough code to pass it, then clean up. After that, we learn to fake the outside world, like the clock, random numbers and payment APIs, so your tests stay fast and reliable."
+  },
+  {
+   "type": "concept",
+   "title": "Why write the test first?",
+   "body": "- you design the function from the **caller's** point of view\n- you know exactly when you're done: the test is green\n- every line of code exists because a test needed it\n- tiny steps mean bugs are found seconds after you make them",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Write one new test",
+      "s": "pill"
+     },
+     {
+      "t": "Run: does it fail?",
+      "s": "diamond",
+      "yes": "Good: write code",
+      "no": "Fix the test"
+     },
+     {
+      "t": "Run: all green?",
+      "s": "diamond",
+      "yes": "Refactor",
+      "no": "Keep coding"
+     },
+     {
+      "t": "Next behaviour",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Why write the test first? Because it forces you to design the function from the caller's point of view before you get lost in the details. You know exactly when you are done, because the test goes green. And since you work in tiny steps, a mistake shows up seconds after you make it, while it is still easy to find."
+  },
+  {
+   "type": "concept",
+   "title": "pytest: tests as plain functions",
+   "body": "Most Python teams use **pytest** (`pip install pytest`). Tests are plain functions named `test_...` with plain `assert`. pytest finds them in `test_*.py` files and shows exactly what differed.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "pytest -q"
+     ],
+     [
+      "",
+      "...F"
+     ],
+     [
+      "",
+      "FAILED tests/test_slug.py::test_many_spaces"
+     ],
+     [
+      "",
+      "  AssertionError: assert 'zero--to-hero' == 'zero-to-hero'"
+     ],
+     [
+      "",
+      "1 failed, 3 passed in 0.04s"
+     ]
+    ]
+   },
+   "say": "In industry, most Python teams use a tool called pytest. Tests become plain functions whose names start with test, using the ordinary assert statement. You type pytest in the terminal, it discovers every test file, runs everything and reports what failed and why. We can't install packages on this phone, so next we build a tiny runner that works the same way."
+  },
+  {
+   "type": "code",
+   "title": "Build a tiny pytest",
+   "code": "def slugify(title):\n    return title.lower().strip().replace(\" \", \"-\")\n\ndef test_simple():\n    assert slugify(\"Hello World\") == \"hello-world\"\n\ndef test_trims_spaces():\n    assert slugify(\"  Python Tips \") == \"python-tips\"\n\ndef test_many_spaces():\n    assert slugify(\"Zero  to Hero\") == \"zero-to-hero\"\n\ndef run_tests():\n    tests = [f for name, f in list(globals().items()) if name.startswith(\"test_\")]\n    passed = 0\n    for test in tests:\n        try:\n            test()\n            passed += 1\n        except AssertionError:\n            print(\"FAIL\", test.__name__)\n    print(f\"{passed}/{len(tests)} passed\")\n\nrun_tests()",
+   "expect": "FAIL test_many_spaces\n2/3 passed\n",
+   "explain": [
+    [
+     4,
+     "pytest style: a plain function with a plain assert."
+    ],
+    [
+     11,
+     "Two spaces become two dashes: a bug."
+    ],
+    [
+     14,
+     "Find every global whose name starts with test_."
+    ],
+    [
+     18,
+     "Call it; an AssertionError means it failed."
+    ],
+    [
+     24,
+     "minitest.py, used next, works the same way."
+    ]
+   ],
+   "say": "Three pytest style tests for a function that turns a blog title into a web address slug. Our runner finds every global name starting with test, calls it, and counts the passes. It is a few lines, but it is the core idea of pytest. And look: the double space test caught a real bug. From now on we import a slightly nicer version of this runner from a file called minitest."
+  },
+  {
+   "type": "code",
+   "title": "TDD step 1: RED",
+   "body": "Feature: Indian number grouping. After the last 3 digits, commas go every **2** digits: `₹1,23,456`.",
+   "code": "from minitest import run_tests\n\ndef format_inr(amount):\n    return \"\"   # not written yet: we start RED\n\ndef test_small():\n    assert format_inr(500) == \"₹500\"\n\ndef test_thousands():\n    assert format_inr(1500) == \"₹1,500\"\n\ndef test_lakhs():\n    assert format_inr(123456) == \"₹1,23,456\"\n\ndef test_crores():\n    assert format_inr(10000000) == \"₹1,00,00,000\"\n\nrun_tests(globals())",
+   "expect": "FAIL test_small\nFAIL test_thousands\nFAIL test_lakhs\nFAIL test_crores\n0/4 passed\n",
+   "files": {
+    "minitest.py": "\"\"\"A tiny pytest-style runner: finds test_ functions and runs them.\"\"\"\n\n\ndef run_tests(namespace):\n    tests = [(name, fn) for name, fn in list(namespace.items())\n             if name.startswith(\"test_\") and callable(fn)]\n    passed = 0\n    for name, fn in tests:\n        try:\n            fn()\n        except AssertionError as e:\n            print(f\"FAIL {name}\" + (f\": {e}\" if str(e) else \"\"))\n        except Exception as e:\n            print(f\"ERROR {name}: {type(e).__name__}: {e}\")\n        else:\n            passed += 1\n            print(f\"PASS {name}\")\n    print(f\"{passed}/{len(tests)} passed\")\n    return passed == len(tests)\n"
+   },
+   "explain": [
+    [
+     1,
+     "Our tiny runner, from minitest.py."
+    ],
+    [
+     4,
+     "A stub: just enough to run the tests."
+    ],
+    [
+     6,
+     "Each test states one behaviour, from simple to hard."
+    ],
+    [
+     18,
+     "Pass globals() so the runner can find the tests."
+    ]
+   ],
+   "say": "Our feature: format rupees the Indian way, with commas for thousands, lakhs and crores. Western formatting gives one hundred twenty three thousand, but Indian users expect one lakh, twenty three thousand. We write four tests first, from small amounts to crores, and a stub that returns nothing. Every test fails. That is red, and it proves our tests can actually fail."
+  },
+  {
+   "type": "code",
+   "title": "TDD step 2: GREEN",
+   "code": "from minitest import run_tests\ndef format_inr(amount):\n    digits = str(amount)\n    if len(digits) <= 3:\n        return \"₹\" + digits\n    head, tail = digits[:-3], digits[-3:]\n    pairs = []\n    while head:\n        pairs.insert(0, head[-2:])\n        head = head[:-2]\n    return \"₹\" + \",\".join(pairs) + \",\" + tail\n\ndef test_small():\n    assert format_inr(500) == \"₹500\"\n\ndef test_thousands():\n    assert format_inr(1500) == \"₹1,500\"\n\ndef test_lakhs():\n    assert format_inr(123456) == \"₹1,23,456\"\n\ndef test_crores():\n    assert format_inr(10000000) == \"₹1,00,00,000\"\n\nrun_tests(globals())",
+   "expect": "PASS test_small\nPASS test_thousands\nPASS test_lakhs\nPASS test_crores\n4/4 passed\n",
+   "files": {
+    "minitest.py": "\"\"\"A tiny pytest-style runner: finds test_ functions and runs them.\"\"\"\n\n\ndef run_tests(namespace):\n    tests = [(name, fn) for name, fn in list(namespace.items())\n             if name.startswith(\"test_\") and callable(fn)]\n    passed = 0\n    for name, fn in tests:\n        try:\n            fn()\n        except AssertionError as e:\n            print(f\"FAIL {name}\" + (f\": {e}\" if str(e) else \"\"))\n        except Exception as e:\n            print(f\"ERROR {name}: {type(e).__name__}: {e}\")\n        else:\n            passed += 1\n            print(f\"PASS {name}\")\n    print(f\"{passed}/{len(tests)} passed\")\n    return passed == len(tests)\n"
+   },
+   "explain": [
+    [
+     4,
+     "A special case for small numbers."
+    ],
+    [
+     6,
+     "Split off the last 3 digits."
+    ],
+    [
+     8,
+     "Peel pairs of digits off the right of the head."
+    ],
+    [
+     11,
+     "Join the pairs, then add the tail."
+    ]
+   ],
+   "say": "Now we write the simplest code that passes. Keep the last three digits as the tail, then peel off pairs of digits from the right of the head. All four tests pass: green. It is not beautiful yet, with a special case and some repetition, and that is fine. Green first, beautiful second."
+  },
+  {
+   "type": "visual",
+   "title": "TDD step 3: REFACTOR",
+   "body": "Improve the design **without changing behaviour**, then re-run the tests.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Green, but clunky",
+     "code": "def format_inr(amount):\n    digits = str(amount)\n    if len(digits) <= 3:\n        return \"₹\" + digits\n    head, tail = digits[:-3], digits[-3:]\n    pairs = []\n    while head:\n        pairs.insert(0, head[-2:])\n        head = head[:-2]\n    return \"₹\" + \",\".join(pairs) + \",\" + tail"
+    },
+    "right": {
+     "title": "Refactored, still green",
+     "code": "def format_inr(amount: int) -> str:\n    \"\"\"Indian grouping: 1,23,456.\"\"\"\n    digits = str(amount)\n    head, tail = digits[:-3], digits[-3:]\n    groups = []\n    while head:\n        groups.insert(0, head[-2:])\n        head = head[:-2]\n    return \"₹\" + \",\".join(groups + [tail])"
+    },
+    "verdict": "Joining groups + [tail] removes the special case. Re-run the tests: still 4/4, so the refactor is safe."
+   },
+   "say": "Now refactor. Joining the groups together with the tail handles small numbers naturally, so the special case disappears, and we add type hints and a docstring. Then the crucial step: run the tests again. Still four out of four. Tests are what make refactoring safe instead of scary."
+  },
+  {
+   "type": "quiz",
+   "title": "The TDD loop",
+   "q": "You just wrote a new test for a feature that doesn't exist yet. What should you do next?",
+   "options": [
+    "Write the whole feature in one go",
+    "Run it and watch it fail",
+    "Refactor the existing code"
+   ],
+   "answer": 1,
+   "why": "Seeing it fail proves the test can detect the missing feature. A test that passes before the code exists is testing nothing, or testing the wrong thing.",
+   "say": "Quick check on the loop. You have just written a test for a feature that does not exist yet. What is the very next step?"
+  },
+  {
+   "type": "concept",
+   "title": "Fixtures: shared, fresh test data",
+   "body": "A **fixture** builds the objects a test needs. In pytest, a test simply *asks* for a fixture by naming it as a parameter, and pytest builds a fresh one for each test.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "unittest",
+     "code": "class TestCart(unittest.TestCase):\n    def setUp(self):\n        self.cart = Cart()\n\n    def test_empty(self):\n        self.assertEqual(self.cart.total(), 0)"
+    },
+    "right": {
+     "title": "pytest",
+     "code": "@pytest.fixture\ndef cart():\n    return Cart()\n\ndef test_empty(cart):\n    assert cart.total() == 0"
+    },
+    "verdict": "pytest sees the parameter named cart, calls the fixture, and passes the result in."
+   },
+   "say": "Many tests need the same starting objects: a cart, a user, a database connection. In unittest you build them in set up. Pytest uses fixtures instead: a function marked as a fixture builds the object, and any test that names it as a parameter receives a fresh one. Same idea, less ceremony."
+  },
+  {
+   "type": "concept",
+   "title": "Mocks: fake the outside world",
+   "body": "Code that touches the **clock**, **randomness**, the **network** or a **payment API** is slow, flaky or expensive to test. A `Mock` is a stand-in object: it returns what you tell it and records how it was called.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Real dependency",
+     "code": "send_otp(phone, code, SmsGateway())\n# slow, costs money, needs internet"
+    },
+    "right": {
+     "title": "Mock in a test",
+     "code": "send_otp(phone, code, Mock())\n# instant, free, fully controlled"
+    },
+    "verdict": "Pass the dependency in, and tests can swap in a mock."
+   },
+   "say": "Some code talks to the outside world: the clock, random numbers, an SMS gateway, a payment API. Tests against the real thing are slow, flaky, and sometimes cost money. A mock is a stand-in object. You decide what it returns, and afterwards it tells you exactly how it was called. Think of it as a stunt double for the dangerous scenes."
+  },
+  {
+   "type": "code",
+   "title": "Mock: a fake SMS gateway",
+   "code": "from unittest.mock import Mock\n\ndef send_otp(phone, code, gateway):\n    reply = gateway.send(to=phone, text=f\"Your OTP is {code}\")\n    return reply[\"status\"] == \"queued\"\n\ngateway = Mock()\ngateway.send.return_value = {\"status\": \"queued\"}\n\nprint(send_otp(\"9876543210\", \"4821\", gateway))\ngateway.send.assert_called_once_with(to=\"9876543210\", text=\"Your OTP is 4821\")\nprint(gateway.send.call_count)\nprint(gateway.send.call_args.kwargs[\"to\"])",
+   "expect": "True\n1\n9876543210\n",
+   "explain": [
+    [
+     3,
+     "The gateway is passed in: easy to swap in tests."
+    ],
+    [
+     7,
+     "A Mock accepts any method call."
+    ],
+    [
+     8,
+     "Decide what send() returns."
+    ],
+    [
+     11,
+     "Verify the exact call; this raises AssertionError if it differs."
+    ],
+    [
+     12,
+     "Mocks record every call."
+    ]
+   ],
+   "say": "Send OTP receives its gateway as a parameter, which is called dependency injection, and it makes testing easy. We pass a mock and tell its send method what to return. After the call, the mock can confirm it was called exactly once with exactly the right phone number and message. No SMS was sent, and no money was spent."
+  },
+  {
+   "type": "code",
+   "title": "patch: control random numbers",
+   "code": "import random\nfrom unittest.mock import patch\n\ndef roll_bonus():\n    roll = random.randint(1, 6)\n    return 100 if roll == 6 else 0\n\nwith patch(\"random.randint\", return_value=6):\n    print(roll_bonus())\n\nwith patch(\"random.randint\", return_value=2):\n    print(roll_bonus())\n\nprint(roll_bonus() in (0, 100))",
+   "expect": "100\n0\nTrue\n",
+   "explain": [
+    [
+     5,
+     "Looks up random.randint at call time."
+    ],
+    [
+     8,
+     "Inside this block, random.randint always returns 6."
+    ],
+    [
+     11,
+     "Now it always returns 2."
+    ],
+    [
+     14,
+     "Outside: the real randint is back."
+    ]
+   ],
+   "say": "A dice game pays a bonus on a six. Random results are impossible to test directly, so patch temporarily replaces random dot randint with a mock that returns whatever we choose. Inside the first with block every roll is a six, inside the second it is a two. When the block ends, the real function is restored automatically."
+  },
+  {
+   "type": "code",
+   "title": "patch: freeze the clock",
+   "code": "import time\nfrom unittest.mock import patch\n\ndef otp_expired(created_at, ttl=300):\n    return time.time() - created_at > ttl\n\nwith patch(\"time.time\", return_value=1_000_400):\n    print(otp_expired(1_000_000))   # 400 seconds old\n\nwith patch(\"time.time\", return_value=1_000_200):\n    print(otp_expired(1_000_000))   # 200 seconds old",
+   "expect": "True\nFalse\n",
+   "explain": [
+    [
+     5,
+     "Depends on the real clock: hard to test."
+    ],
+    [
+     7,
+     "Pretend 'now' is 400 seconds after creation."
+    ],
+    [
+     10,
+     "And now only 200 seconds after."
+    ]
+   ],
+   "say": "OTPs expire after five minutes. Without a mock, testing that means waiting five real minutes. With patch, we freeze time dot time at any moment we like. Four hundred seconds after creation the code is expired, two hundred seconds after it is still valid. Both tests run instantly, every time."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: what does a Mock remember?",
+   "code": "from unittest.mock import Mock\n\napi = Mock()\napi.fetch.return_value = {\"runs\": 287}\ndata = api.fetch(\"IND\")\nprint(data[\"runs\"], api.fetch.call_count, api.save.called)",
+   "options": [
+    "287 1 False",
+    "287 1 True",
+    "287 0 False",
+    "AttributeError: Mock object has no attribute 'save'"
+   ],
+   "answer": 0,
+   "why": "fetch returned what we configured and was called once. A Mock creates any attribute on demand, so api.save exists, but it was never called. That flexibility can hide typos: use Mock(spec=RealClass) in real projects.",
+   "say": "A mock cricket API returns a score. What is printed: the runs, how many times fetch was called, and whether save was called?"
+  },
+  {
+   "type": "concept",
+   "title": "Coverage and doctest",
+   "body": "**Coverage** measures which lines your tests actually ran. It finds untested code, but 100% coverage doesn't mean bug-free.\n\n**doctest** runs the examples written in your docstrings, so documentation can never go stale.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "coverage run -m pytest"
+     ],
+     [
+      "$",
+      "coverage report -m"
+     ],
+     [
+      "",
+      "Name       Stmts   Miss  Cover   Missing"
+     ],
+     [
+      "",
+      "money.py      24      2    92%   31-32"
+     ],
+     [
+      "",
+      "TOTAL         24      2    92%"
+     ]
+    ]
+   },
+   "say": "Coverage tools record which lines ran during your tests and report the ones that never did. It is a great way to find untested code, but remember: a line that ran is not the same as a line that was checked. Doctest is a gem in the standard library. It finds examples in your docstrings, runs them, and checks the output, so your documentation can never lie."
+  },
+  {
+   "type": "code",
+   "title": "doctest: examples that run",
+   "code": "import doctest\n\ndef gst(amount, rate=18):\n    \"\"\"Return the GST on an amount, rounded to paise.\n\n    >>> gst(100)\n    18.0\n    >>> gst(250, rate=5)\n    12.5\n    \"\"\"\n    return round(amount * rate / 100, 2)\n\nprint(doctest.testmod())",
+   "expect": "TestResults(failed=0, attempted=2)\n",
+   "explain": [
+    [
+     6,
+     ">>> marks code, as typed in the Python shell."
+    ],
+    [
+     7,
+     "The next line is the expected output."
+    ],
+    [
+     13,
+     "Run every docstring example in this file."
+    ]
+   ],
+   "say": "The docstring shows two examples, written exactly as they would look in the Python shell, with three arrows and then the expected result. Doctest mod finds every such example in the file, runs it and compares the output. Two attempted, zero failed. Change the function and forget the docs, and doctest will tell you."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: the patch that does nothing",
+   "task": "This test patches `random.randint` to force a win, but it keeps failing. The patch replaces the name **on the `random` module**, yet `lucky_draw` uses its own imported copy. Fix `lucky_draw` (not the test).",
+   "starter": "from random import randint\nfrom unittest.mock import patch\n\ndef lucky_draw():\n    return \"WIN\" if randint(1, 100) == 7 else \"TRY AGAIN\"\n\ndef test_seven_wins():\n    with patch(\"random.randint\", return_value=7):\n        assert lucky_draw() == \"WIN\", \"randint was patched to 7, so expected WIN\"\n\ntest_seven_wins()\nprint(\"test passed\")\n",
+   "solution": "import random\nfrom unittest.mock import patch\n\ndef lucky_draw():\n    return \"WIN\" if random.randint(1, 100) == 7 else \"TRY AGAIN\"\n\ndef test_seven_wins():\n    with patch(\"random.randint\", return_value=7):\n        assert lucky_draw() == \"WIN\", \"randint was patched to 7, so expected WIN\"\n\ntest_seven_wins()\nprint(\"test passed\")\n",
+   "tests": "import random as _r\nfrom unittest.mock import patch as _p\n_r.seed(1)\nwith _p(\"random.randint\", return_value=7):\n    got = lucky_draw()\nassert got == \"WIN\", \"With random.randint patched to 7, lucky_draw() should return 'WIN'. Use import random and call random.randint(...) so the patch is seen.\"\n_r.seed(1)\nwith _p(\"random.randint\", return_value=3):\n    got = lucky_draw()\nassert got == \"TRY AGAIN\", \"With random.randint patched to 3, lucky_draw() should return 'TRY AGAIN'.\"",
+   "hints": [
+    "from random import randint copies the function into your file. Patching random.randint later doesn't touch that copy.",
+    "Write import random, then call random.randint(1, 100) inside lucky_draw."
+   ],
+   "say": "A classic mocking bug. The test patches random dot randint, but the function imported its own copy of randint before the patch, so it never sees the fake. The rule professionals learn the hard way: patch where the name is looked up. Fix the function so the test passes."
+  },
+  {
+   "type": "exercise",
+   "title": "TDD: refunds and paise",
+   "task": "Product wants two new behaviours, and the tests are already written (they're **red**):\n\n- refunds: `format_inr(-1500)` → `\"-₹1,500\"`\n- floats show paise: `format_inr(1234.5)` → `\"₹1,234.50\"`\n\nMake them green **without breaking** the old ones. Ints still show no paise.",
+   "starter": "from minitest import run_tests\n\ndef format_inr(amount):\n    digits = str(amount)\n    head, tail = digits[:-3], digits[-3:]\n    groups = []\n    while head:\n        groups.insert(0, head[-2:])\n        head = head[:-2]\n    return \"₹\" + \",\".join(groups + [tail])\n\ndef test_lakhs():            # old behaviour: keep it green\n    assert format_inr(123456) == \"₹1,23,456\"\n\ndef test_refund():           # new: red\n    assert format_inr(-1500) == \"-₹1,500\"\n\ndef test_paise():            # new: red\n    assert format_inr(1234.5) == \"₹1,234.50\"\n\nrun_tests(globals())\n",
+   "solution": "from minitest import run_tests\n\ndef format_inr(amount):\n    sign = \"-\" if amount < 0 else \"\"\n    amount = abs(amount)\n    if isinstance(amount, float):\n        rupees, paise = divmod(round(amount * 100), 100)\n        suffix = f\".{paise:02d}\"\n    else:\n        rupees, suffix = amount, \"\"\n    digits = str(rupees)\n    head, tail = digits[:-3], digits[-3:]\n    groups = []\n    while head:\n        groups.insert(0, head[-2:])\n        head = head[:-2]\n    return sign + \"₹\" + \",\".join(groups + [tail]) + suffix\n\ndef test_lakhs():            # old behaviour: keep it green\n    assert format_inr(123456) == \"₹1,23,456\"\n\ndef test_refund():           # new: red\n    assert format_inr(-1500) == \"-₹1,500\"\n\ndef test_paise():            # new: red\n    assert format_inr(1234.5) == \"₹1,234.50\"\n\nrun_tests(globals())\n",
+   "tests": "cases = [(500, \"₹500\"), (123456, \"₹1,23,456\"), (10000000, \"₹1,00,00,000\"), (0, \"₹0\"),\n         (-1500, \"-₹1,500\"), (1234.5, \"₹1,234.50\"), (1500.0, \"₹1,500.00\"), (-0.75, \"-₹0.75\"), (99.999, \"₹100.00\")]\nfor amount, want in cases:\n    got = format_inr(amount)\n    assert got == want, f\"format_inr({amount!r}) should be {want!r}, got {got!r}.\"",
+   "hints": [
+    "Handle the sign first: sign = \"-\" if amount < 0 else \"\", then work with abs(amount).",
+    "For floats: rupees, paise = divmod(round(amount * 100), 100), and add f\".{paise:02d}\" at the end.",
+    "Group the digits of rupees exactly as before, then return sign + \"₹\" + ... + suffix."
+   ],
+   "files": {
+    "minitest.py": "\"\"\"A tiny pytest-style runner: finds test_ functions and runs them.\"\"\"\n\n\ndef run_tests(namespace):\n    tests = [(name, fn) for name, fn in list(namespace.items())\n             if name.startswith(\"test_\") and callable(fn)]\n    passed = 0\n    for name, fn in tests:\n        try:\n            fn()\n        except AssertionError as e:\n            print(f\"FAIL {name}\" + (f\": {e}\" if str(e) else \"\"))\n        except Exception as e:\n            print(f\"ERROR {name}: {type(e).__name__}: {e}\")\n        else:\n            passed += 1\n            print(f\"PASS {name}\")\n    print(f\"{passed}/{len(tests)} passed\")\n    return passed == len(tests)\n"
+   },
+   "say": "Your turn to complete a TDD cycle. Product wants refunds shown with a minus sign, and decimal amounts shown with paise. The tests are already written, and they are red. Extend format inr until everything is green, including the old lakhs test. Then try the tricky cases, like ninety nine point nine nine nine."
+  },
+  {
+   "type": "exercise",
+   "title": "Test randomness with patch",
+   "task": "1. Fix `make_otp()` so it always returns **6 digits**, zero-padded (`42` → `\"000042\"`), using `random.randint(0, 999999)`.\n2. Write `test_make_otp_pads_with_zeros()`: patch `random.randint` to return `42` and assert the result is `\"000042\"`.\n\nThe checker runs your test against a broken `make_otp`; it must fail.",
+   "starter": "import random\nfrom unittest.mock import patch\n\ndef make_otp():\n    return str(random.randint(0, 999999))   # TODO: always 6 digits\n\ndef test_make_otp_pads_with_zeros():\n    pass   # TODO: patch random.randint to return 42, check \"000042\"\n\ntest_make_otp_pads_with_zeros()\nprint(\"test ran\")\n",
+   "solution": "import random\nfrom unittest.mock import patch\n\ndef make_otp():\n    return f\"{random.randint(0, 999999):06d}\"\n\ndef test_make_otp_pads_with_zeros():\n    with patch(\"random.randint\", return_value=42):\n        assert make_otp() == \"000042\"\n\ntest_make_otp_pads_with_zeros()\nprint(\"test ran\")\n",
+   "tests": "import random as _r\nfrom unittest.mock import patch as _p\nwith _p(\"random.randint\", return_value=42):\n    got = make_otp()\nassert got == \"000042\", f\"With randint patched to 42, make_otp() should return '000042', got {got!r}. Pad with f'{{n:06d}}'.\"\nwith _p(\"random.randint\", return_value=987654):\n    got = make_otp()\nassert got == \"987654\", f\"A 6-digit number needs no padding: expected '987654', got {got!r}.\"\n_r.seed(3)\nv = make_otp()\nassert isinstance(v, str) and len(v) == 6 and v.isdigit(), f\"make_otp() should always return a 6-digit string, got {v!r}.\"\nassert \"test_make_otp_pads_with_zeros\" in globals(), \"Keep the test function named test_make_otp_pads_with_zeros.\"\nassert \"patch(\" in __code__, \"Use patch(\\\"random.randint\\\", return_value=42) inside your test.\"\n_g = test_make_otp_pads_with_zeros.__globals__\n_orig = _g[\"make_otp\"]\n_g[\"make_otp\"] = lambda: str(_r.randint(0, 999999))\ntry:\n    _caught = False\n    try:\n        test_make_otp_pads_with_zeros()\n    except AssertionError:\n        _caught = True\n    assert _caught, \"Your test passed even with a make_otp that forgets the zero padding. Patch randint to return 42, then assert make_otp() == '000042'.\"\nfinally:\n    _g[\"make_otp\"] = _orig\ntest_make_otp_pads_with_zeros()",
+   "hints": [
+    "Format with zero padding: f\"{n:06d}\" turns 42 into '000042'.",
+    "Inside the test: with patch(\"random.randint\", return_value=42): assert make_otp() == \"000042\""
+   ],
+   "say": "OTP codes must always be six digits, even when the random number is small, like forty two. Fix make OTP, then write a test that patches random dot randint to forty two and checks the padding. We will run your test against a broken version too, so make sure it really checks the result."
+  },
+  {
+   "type": "quiz",
+   "title": "What to mock",
+   "q": "Which one should you usually NOT mock?",
+   "options": [
+    "A paid SMS API your code calls",
+    "The current time, for an expiry check",
+    "Your own pure function that adds GST"
+   ],
+   "answer": 2,
+   "why": "Mock the boundaries: network, time, randomness, files, payment providers. Your own pure logic is fast and deterministic, so test it for real; mocking it would test nothing.",
+   "say": "Last check. Mocks are powerful, but they can be overused. Which of these should you test for real instead of mocking?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 36 complete",
+   "points": [
+    "TDD loop: red (a failing test), green (just enough code), refactor (tests stay green)",
+    "pytest style: plain test_ functions with plain assert; fixtures provide fresh test data",
+    "Mock objects return what you choose and record how they were called",
+    "patch swaps time, random or network calls during a with block; patch where the name is looked up",
+    "Coverage shows untested lines; doctest keeps docstring examples honest"
+   ],
+   "say": "Mission thirty six complete. You can build features test first, write pytest style tests, and fake the clock, randomness and external services with mocks. Tomorrow we hunt bugs systematically, and replace print statements with proper logging. See you on day thirty seven."
+  }
+ ]
+}

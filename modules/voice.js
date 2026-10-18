@@ -13,14 +13,16 @@ const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime-mini';
 
 const PERSONAS = {
   bro: `You are Bro — the user's best friend who lives inside the Brodoit app, talking to them out loud like a real bro: warm, witty, direct, zero corporate tone. You can also read their steps, streak and friends rank (get_steps) and set their step goal (set_step_goal). Keep spoken replies SHORT (1–3 sentences) unless the user asks you to explain or teach. Match the user's language: if they speak Hindi or Hinglish, answer in natural Hinglish. You can: add tasks, complete tasks, set reminders, create calendar events, read today's schedule, read today's news and explain it simply. When the user wants something done, call the tool and then confirm in one line. Never invent a task — only create what they asked. Be a hype man when they're low, a coach when they're stuck, a teacher when they ask to learn.`,
-  teacher: `You are Bro in teacher mode — a patient, fun tutor who explains anything (science, money, coding, exams, life skills) in plain words with everyday Indian examples, one idea at a time. Check understanding with a quick question after each idea. Speak slowly and clearly; keep each turn under 4 sentences. Switch to Hindi or Hinglish instantly if the user does.`,
+  teacher: `You are Bro in teacher mode, the coach of Brodoit's two schools (Python: Zero to Hero, 60 days; and Languages: Spanish, French, German, Hindi, English). Call get_learning first to see their progress, struggles and current day, guide them from there, and offer to open their lesson (open_python_day or start_language_lesson). You are a patient, fun tutor who explains anything (science, money, coding, exams, life skills) in plain words with everyday Indian examples, one idea at a time. Check understanding with a quick question after each idea. Speak slowly and clearly; keep each turn under 4 sentences. Switch to Hindi or Hinglish instantly if the user does.`,
   language: `You are Bro the language coach. The user is learning {{LANG}}. Run a spoken lesson: say a short phrase in {{LANG}}, give its meaning in the user's language, ask them to repeat it, listen, gently correct pronunciation or grammar, then praise and move on. Keep it playful and encouraging, like a Duolingo lesson spoken aloud. Use short turns.`,
   news: `You are Bro the news anchor. Use the get_news tool first, then read the top headlines like a friendly radio bulletin in simple English (or Hindi/Hinglish if the user prefers), and offer to explain any story "like I'm 12". Never make up news — only use what the tool returns.`,
 };
 
 const EXTRA_TOOLS = [
   { name: 'get_news', description: "Get today's top headlines and the latest Brodoit news bulletin. Use whenever the user asks about news, what's happening, or headlines.", input_schema: { type: 'object', properties: { topic: { type: 'string', description: 'Optional topic filter: india, world, tech, business, science' } } } },
-  { name: 'start_language_lesson', description: 'Open a Brodoit language lesson for the user (Spanish, French, German, Japanese, Hindi, or English for Hindi speakers). Use when they want to practise a language with exercises.', input_schema: { type: 'object', properties: { language: { type: 'string', enum: ['es', 'fr', 'de', 'ja', 'hi', 'en'] } }, required: ['language'] } },
+  { name: 'start_language_lesson', description: 'Open a Brodoit language lesson for the user (Spanish, French, German, Hindi, or English for Hindi speakers). Use when they want to practise a language with exercises.', input_schema: { type: 'object', properties: { language: { type: 'string', enum: ['es', 'fr', 'de', 'hi', 'en'] } }, required: ['language'] } },
+  { name: 'get_learning', description: "Read the user's progress in the Python course (60 days) and the language courses: days done, current day, scores, recent errors and struggles. Use when they ask how they are doing, what to study next, or about Python or language learning.", input_schema: { type: 'object', properties: {} } },
+  { name: 'open_python_day', description: 'Open the Python: Zero to Hero course for the user, at a given day (1-60) or their current day.', input_schema: { type: 'object', properties: { day: { type: 'integer' } } } },
   { name: 'get_steps', description: "Read the user's steps today, goal, streak and friends rank. Use when they ask about steps, walking, their streak or the leaderboard.", input_schema: { type: 'object', properties: {} } },
   { name: 'set_step_goal', description: 'Set the user\'s daily step goal (500–100000). Use when they say e.g. "set my step goal to 10k".', input_schema: { type: 'object', properties: { goal: { type: 'integer' } }, required: ['goal'] } },
   { name: 'get_speaker_pipeline', description: "Read the user's speaker & teaching pipeline (college talks, guest lectures, faculty roles): counts and the next confirmed event. Use when they ask about their talks, lectures or speaking applications.", input_schema: { type: 'object', properties: {} } },
@@ -50,10 +52,12 @@ function install(app, deps) {
       const b = getBulletin && getBulletin();
       return { headlines: items.slice(0, 8).map(i => ({ title: i.title, summary: (i.desc || i.description || '').slice(0, 220), source: i.source })), bulletin: b ? { title: b.title, easy: (b.easy_text || '').slice(0, 1500) } : null };
     }
+    if (name === 'get_learning') { try { const pr = global._learnVoice && global._learnVoice.profile(user.phone); return pr ? { summary: pr.text, python_current_day: pr.current, python_days_done: pr.done, open: '/code/' } : { error: 'learning unavailable' }; } catch (e) { return { error: e.message }; } }
+    if (name === 'open_python_day') { const d = Math.max(1, Math.min(60, parseInt(args && args.day) || 0)); return { ok: true, open: d ? '/code/day.html?d=' + d : '/code/' }; }
     if (name === 'get_steps') { try { return (getSteps && getSteps(user.phone)) || { error: 'steps unavailable' }; } catch (e) { return { error: e.message }; } }
     if (name === 'set_step_goal') { try { const g = Math.max(500, Math.min(100000, parseInt(args && args.goal) || 0)); if (!g) return { error: 'goal required' }; return (setStepGoal && setStepGoal(user.phone, g)) || { ok: true, goal: g }; } catch (e) { return { error: e.message }; } }
     if (name === 'get_speaker_pipeline') { try { return (speakerSummary && speakerSummary(user.phone)) || { confirmed: 0, applied: 0, next: null, open: '/speaker/' }; } catch (e) { return { error: e.message }; } }
-    if (name === 'start_language_lesson') return { ok: true, open: '/lang/?course=' + (args.language || 'es') };
+    if (name === 'start_language_lesson') { const c = ['es', 'fr', 'de', 'hi', 'en'].includes(args && args.language) ? args.language : 'es'; return { ok: true, open: '/lang/course.html?c=' + c }; }
     if (name === 'open_screen') return { ok: true, open: '/?tab=' + args.screen };
     return _broExecTool(name, args || {}, user.phone, user.tz || _getUserTz(user.phone));
   }
@@ -287,7 +291,7 @@ function install(app, deps) {
     const out = [];
     const ok = openaiKey(); if (ok) out.push({ name: 'openai', tools: true, call: (m, o) => callOpenAIChat(ok, m, o) });
     if (_callGroq && hasGroq()) out.push({ name: 'groq', tools: true, call: (m, o) => _callGroq(m, o) });
-    if (_callGemini && hasGemini()) out.push({ name: 'gemini', tools: false, call: async (m, o) => { const sys = (m.find(x => x.role === 'system') || {}).content || ''; const g = await _callGemini(m.filter(x => x.role !== 'system'), { maxTokens: o.maxTokens || 600, systemPrompt: sys }); return { message: { content: g.reply }, reply: g.reply }; } });
+    if (_callGemini && (hasGemini() || (global._elevenBrain && global._elevenBrain.available()))) out.push({ name: 'gemini', tools: false, call: async (m, o) => { const sys = (m.find(x => x.role === 'system') || {}).content || ''; const g = await _callGemini(m.filter(x => x.role !== 'system'), { maxTokens: o.maxTokens || 600, systemPrompt: sys }); return { message: { content: g.reply }, reply: g.reply }; } });
     return out;
   }
   const hasLLM = () => providers().length > 0;

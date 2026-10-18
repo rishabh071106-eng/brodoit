@@ -24,7 +24,7 @@
     ['lightbulb', 'Explain something', 'कुछ समझाओ', "Explain inflation like I'm 12", 'महंगाई आसान शब्दों में समझाओ'],
     ['bell', 'Remind me', 'याद दिलाओ', 'Remind me to drink water at 3', '3 बजे पानी पीने की याद दिलाओ'],
   ];
-  const COURSES = { es: 'Spanish', fr: 'French', de: 'German', hi: 'Hindi', en: 'English', ja: 'Japanese' };
+  const COURSES = { es: 'Spanish', fr: 'French', de: 'German', hi: 'Hindi', en: 'English' };
   const hasDevanagari = s => /[ऀ-ॿ]/.test(s || '');
   const ICON = {
     mic: '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg>',
@@ -121,10 +121,13 @@
     const pct = Math.max(0, Math.min(1, n / g));
     cards.push(railCard({ id: 'hbSteps', kick: hi ? 'आज के कदम' : 'Steps today', title: sum ? fmtN(n) : (hi ? 'कदम' : 'Steps'), sub: sum ? (hi ? fmtN(g) + ' में से' : 'of ' + fmtN(g)) : (hi ? 'आज की सैर गिनो' : 'Count today’s walk'), img: photo('hero-steps'), icon: 'footprints', tone: 'umber', cls: 'hb-steps' + (sum ? ' lg' : ''), onclick: "switchTab('steps')",
       extra: sum ? '<span class="hb-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + Math.round(pct * 100) + '"><i style="width:' + (pct * 100).toFixed(1) + '%"></i></span>' : '' }));
-    // 3 · keep learning: the /lang course in progress, else the Learn tab
+    // 3 · keep learning: Python day in progress, else the language course, else the Python mission
+    let py = {}; try { py = JSON.parse(localStorage.getItem('bd.py.v1') || '{}') || {}; } catch (e) {}
+    const pyDays = py.days || {}; let pyCur = 1; while (pyCur < 60 && pyDays['d' + pyCur] && pyDays['d' + pyCur].done) pyCur++;
     const lc = langCourse();
-    if (lc) cards.push(railCard({ kick: hi ? 'सीखते रहो' : 'Keep learning', title: COURSES[lc], sub: hi ? 'अपना कोर्स जारी रखो' : 'Continue your course', img: photo('lang-' + lc) || photo('hero-learn'), icon: 'languages', tone: 'wine', go: 'arrow-right', onclick: "location.href='/lang/course.html?c=" + lc + "'" }));
-    else cards.push(railCard({ kick: hi ? 'सीखते रहो' : 'Keep learning', title: hi ? 'कोर्स और परीक्षा' : 'Courses and exams', sub: hi ? 'भाषाएँ, UPSC, NDA और बहुत कुछ' : 'Languages, UPSC, NDA and more', img: photo('hero-learn'), icon: 'graduation-cap', tone: 'wine', go: 'arrow-right', onclick: "switchTab('courses')" }));
+    if (Object.keys(pyDays).length) cards.push(railCard({ kick: hi ? 'सीखते रहो' : 'Keep learning', title: 'Python \u00B7 ' + (hi ? 'दिन ' : 'Day ') + pyCur, sub: hi ? 'आज का मिशन जारी रखो' : 'Continue today’s mission', img: photo('cs-python') || photo('hero-learn'), icon: 'rocket', tone: 'ink', go: 'arrow-right', onclick: "location.href='/code/day.html?d=" + pyCur + "'" }));
+    else if (lc) cards.push(railCard({ kick: hi ? 'सीखते रहो' : 'Keep learning', title: COURSES[lc], sub: hi ? 'अपना कोर्स जारी रखो' : 'Continue your course', img: photo('lang-' + lc) || photo('hero-learn'), icon: 'languages', tone: 'wine', go: 'arrow-right', onclick: "location.href='/lang/course.html?c=" + lc + "'" }));
+    else cards.push(railCard({ kick: hi ? 'नया' : 'New', title: hi ? 'Python: शून्य से हीरो' : 'Python: Zero to Hero', sub: hi ? '60 दिन, असली कोड, Bro कोच' : '60 days · real code · Bro coaches you', img: photo('cs-python') || photo('hero-learn'), icon: 'rocket', tone: 'ink', go: 'arrow-right', onclick: "location.href='/code/'" }));
     // 4 · a book pick that rotates daily: the real cover stands on a dark shelf
     const bk = bookOfDay();
     if (bk) {

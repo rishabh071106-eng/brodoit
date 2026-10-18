@@ -1,0 +1,445 @@
+{
+ "day": 6,
+ "phase": 1,
+ "title": "Input and type conversion",
+ "subtitle": "Programs that listen to the user",
+ "minutes": 50,
+ "goal": "Write interactive programs that read user input, convert it to the right type, and spot bad input before it crashes the program.",
+ "outcomes": [
+  "Read text from the user with input() and a clear prompt",
+  "Explain why input() always returns a str, and convert with int(), float() and str()",
+  "Predict what bool() returns for numbers and strings",
+  "Recognise a ValueError and check input with isdigit() before converting",
+  "Build small interactive tools: an age calculator, a unit converter, a bill splitter"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 6: Programs that listen",
+   "body": "So far your programs talk. Today they **listen**. Every login box, search bar and chatbot starts by reading what the user typed.\n\nYou'll read input, convert it to numbers and build three small tools.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python split.py"
+     ],
+     [
+      "",
+      "Bill amount: 1200"
+     ],
+     [
+      "",
+      "Number of people: 4"
+     ],
+     [
+      "",
+      "Each person pays 300.00"
+     ]
+    ]
+   },
+   "say": "Welcome to day six. Until now your programs could only talk. Today they learn to listen. Every login box, search bar and chatbot begins by reading what the user typed. You'll read input, convert it into numbers, and build three small tools that real people could use."
+  },
+  {
+   "type": "concept",
+   "title": "input() pauses and listens",
+   "body": "`input(\"Your name: \")` shows the prompt, waits for the user to type and press Enter, then **returns** what they typed.\n\nIn this course, typed lines come from the **Input** box under the code: one line per `input()`.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Show the prompt",
+      "s": "pill"
+     },
+     {
+      "t": "Wait for the user to press Enter"
+     },
+     {
+      "t": "Return the typed text as a str"
+     },
+     {
+      "t": "name = 'Riya'",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Input does three things. It shows your prompt, waits while the user types and presses enter, and then returns exactly what they typed. You usually store that in a variable. In this course, the lines a user would type come from the input box under the code, one line for each call to input."
+  },
+  {
+   "type": "code",
+   "title": "Hello, you",
+   "body": "Edit the **Input** box and run again: same code, different user.",
+   "code": "name = input(\"What's your name? \")\ncity = input(\"Which city? \")\nprint(f\"Namaste {name} from {city}!\")\nprint(f\"Your name has {len(name)} letters.\")",
+   "stdin": "Riya\nPune\n",
+   "expect": "What's your name? Which city? Namaste Riya from Pune!\nYour name has 4 letters.\n",
+   "explain": [
+    [
+     1,
+     "Shows the prompt, then returns the first input line."
+    ],
+    [
+     2,
+     "The next input() reads the next line."
+    ],
+    [
+     3,
+     "Use the answers like any other strings."
+    ],
+    [
+     4,
+     "len() works because name is a str."
+    ]
+   ],
+   "say": "This program asks two questions. The input box already holds two lines, Riya and Pune, so each call to input takes the next line. Change the input box to your own name and city, and run it again. Same code, different user, different output. That's what makes a program interactive."
+  },
+  {
+   "type": "concept",
+   "title": "input() always returns a string",
+   "body": "Even if the user types `25`, you get the **text** `\"25\"`, not the number.\n\n`\"25\" + \"5\"` is `\"255\"`, and `\"25\" + 5` is a TypeError. This is the number one bug in interactive programs.",
+   "visual": {
+    "kind": "boxes",
+    "vars": [
+     [
+      "typed",
+      "25",
+      "keyboard"
+     ],
+     [
+      "input()",
+      "'25'",
+      "str"
+     ],
+     [
+      "int(input())",
+      "25",
+      "int"
+     ]
+    ]
+   },
+   "say": "Here's the rule that trips up every beginner. Input always gives you a string. Even if the user types twenty five, you get the text two five, not the number. Add the text five to it and Python glues it on the end. Add the number five and Python refuses. To do maths, you must convert the text into a number first."
+  },
+  {
+   "type": "predict",
+   "title": "What did the user give us?",
+   "code": "age = input()   # the user types 25\nprint(age + \"5\")\nprint(type(age))",
+   "stdin": "25\n",
+   "options": [
+    "30\n<class 'int'>",
+    "255\n<class 'str'>",
+    "255\n<class 'int'>",
+    "TypeError: can only concatenate str (not \"int\") to str"
+   ],
+   "answer": 1,
+   "why": "input() returned the text \"25\". Adding the text \"5\" joins them into \"255\", and type() confirms it's a str.",
+   "say": "The user types twenty five. We add the string five to it, and print its type. Predict both lines."
+  },
+  {
+   "type": "concept",
+   "title": "Converting between types",
+   "body": "Wrap a value in the name of a type to convert it. Convert input **straight away**:\n`age = int(input(\"Age: \"))`",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Call",
+     "Result",
+     "Type"
+    ],
+    "rows": [
+     [
+      "int(\"25\")",
+      "25",
+      "int"
+     ],
+     [
+      "float(\"3.5\")",
+      "3.5",
+      "float"
+     ],
+     [
+      "int(3.99)",
+      "3",
+      "int (cuts, doesn't round)"
+     ],
+     [
+      "float(7)",
+      "7.0",
+      "float"
+     ],
+     [
+      "str(42)",
+      "'42'",
+      "str"
+     ],
+     [
+      "int(\"3.5\")",
+      "ValueError",
+      "int() needs whole-number text"
+     ]
+    ]
+   },
+   "say": "To convert, wrap the value in the name of the type you want. Int turns text into a whole number, float turns it into a decimal, and str turns anything into text. Notice that int of three point nine nine is three. It cuts off the decimals, it doesn't round. The usual pattern is to convert input immediately, by wrapping input inside int."
+  },
+  {
+   "type": "code",
+   "title": "Age calculator",
+   "code": "birth_year = int(input(\"Birth year: \"))\ncurrent_year = 2026\nage = current_year - birth_year\nprint(f\"You are about {age} years old.\")\nprint(f\"In 10 years you'll be {age + 10}.\")\nprint(f\"That's roughly {age * 365:,} days!\")",
+   "stdin": "2004\n",
+   "expect": "Birth year: You are about 22 years old.\nIn 10 years you'll be 32.\nThat's roughly 8,030 days!\n",
+   "explain": [
+    [
+     1,
+     "input() gives '2004'; int() turns it into 2004."
+    ],
+    [
+     2,
+     "A named value, easy to update."
+    ],
+    [
+     3,
+     "Now subtraction works: 2026 - 2004."
+    ],
+    [
+     6,
+     "Day 5's :, adds a thousands separator."
+    ]
+   ],
+   "say": "We convert the input straight away, so birth year is a real number we can subtract. Notice that the current year is a named variable, not a number buried in the maths, so it's easy to update next year. Try your own birth year in the input box."
+  },
+  {
+   "type": "code",
+   "title": "str(): numbers back to text",
+   "code": "runs = 87\nballs = 52\n# + needs text on both sides, so convert with str()\nsummary = \"Scored \" + str(runs) + \" off \" + str(balls) + \" balls\"\nprint(summary)\n\nprint(len(str(100000)))      # how many digits?\n\nprice_text = \"499\"\nprint(int(price_text) * 2)   # maths after converting\nprint(price_text * 2)        # text repetition!",
+   "expect": "Scored 87 off 52 balls\n6\n998\n499499\n",
+   "explain": [
+    [
+     4,
+     "str() turns 87 and 52 into text so + can join them."
+    ],
+    [
+     7,
+     "str(100000) is '100000', which has 6 characters."
+    ],
+    [
+     10,
+     "Converted first, so this is maths: 998."
+    ],
+    [
+     11,
+     "Still text, so * repeats it: '499499'."
+    ]
+   ],
+   "say": "Str goes the other way, turning a number into text. That lets you join it with plus, though an f string is usually neater. A handy trick: the length of a number converted to text tells you how many digits it has. The last two lines show why types matter. The same characters double as a number, but repeat as text."
+  },
+  {
+   "type": "concept",
+   "title": "bool(): True or False",
+   "body": "`bool()` converts a value to `True` or `False`. The rule: **zero and empty are False**, everything else is True.\n- `bool(0)`, `bool(\"\")` → False\n- `bool(5)`, `bool(\"hi\")` → True\n- `bool(\"False\")` → True (it's non-empty text!)",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Value",
+     "bool(value)"
+    ],
+    "rows": [
+     [
+      "0",
+      "False"
+     ],
+     [
+      "42",
+      "True"
+     ],
+     [
+      "-1",
+      "True"
+     ],
+     [
+      "\"\"",
+      "False"
+     ],
+     [
+      "\" \"",
+      "True (a space is a character)"
+     ],
+     [
+      "\"False\"",
+      "True (non-empty text)"
+     ]
+    ]
+   },
+   "say": "Bool converts a value to True or False, the two values of the boolean type. The rule is simple: zero and empty are False, and everything else is True. So the text False, which has five characters, is True. A single space is True too. This idea, called truthiness, powers decisions, which you'll write tomorrow."
+  },
+  {
+   "type": "predict",
+   "title": "Truthy or falsy?",
+   "code": "print(bool(0), bool(-1))\nprint(bool(\"\"), bool(\"0\"))",
+   "options": [
+    "False False\nFalse False",
+    "False True\nFalse True",
+    "False True\nFalse False",
+    "True True\nFalse True"
+   ],
+   "answer": 1,
+   "why": "Only zero is falsy among numbers, so -1 is True. An empty string is False, but \"0\" is a one-character string, so it's True.",
+   "say": "Four conversions to bool. Remember the rule: zero and empty are False, everything else is True. Predict both lines."
+  },
+  {
+   "type": "concept",
+   "title": "ValueError: when conversion fails",
+   "body": "If the text isn't a valid number, `int()` raises a **ValueError** and the program stops. Real users type anything.\n\nCheck first with `.isdigit()` (Day 5). On Day 19 you'll catch errors with `try` and `except`.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python age.py"
+     ],
+     [
+      "",
+      "Birth year: two thousand four"
+     ],
+     [
+      "",
+      "Traceback (most recent call last):"
+     ],
+     [
+      "",
+      "  File \"main.py\", line 1, in <module>"
+     ],
+     [
+      "",
+      "ValueError: invalid literal for int() with base 10: 'two thousand four'"
+     ]
+    ]
+   },
+   "say": "Users type anything. If the text isn't a valid whole number, int raises a value error and the program stops. Notice that the message shows exactly what the user typed, which makes it easy to debug. Before converting, you can check the text with isdigit, from yesterday. And on day nineteen you'll learn to catch errors, so your programs never crash."
+  },
+  {
+   "type": "code",
+   "title": "Check before converting",
+   "code": "qty_text = input(\"Quantity: \").strip()\ncoupon = input(\"Coupon code (digits): \").strip()\nprint(\"Quantity looks valid:\", qty_text.isdigit())\nprint(\"Coupon looks valid:\", coupon.isdigit())\n\nqty = int(qty_text)\nprint(f\"Total for {qty} items: {qty * 199} rupees\")",
+   "stdin": "  3 \n12O5\n",
+   "expect": "Quantity: Coupon code (digits): Quantity looks valid: True\nCoupon looks valid: False\nTotal for 3 items: 597 rupees\n",
+   "explain": [
+    [
+     1,
+     "Strip right away: users add stray spaces."
+    ],
+    [
+     3,
+     "True: only digits."
+    ],
+    [
+     4,
+     "False: there's a letter O, not a zero."
+    ],
+    [
+     6,
+     "Safe to convert, because we checked."
+    ]
+   ],
+   "say": "A careful developer strips the input, then checks it. Isdigit says the quantity is fine, but the coupon has a letter O hiding in it. Tomorrow you'll use that True or False to choose what to do next. For now, we only convert the value we know is safe."
+  },
+  {
+   "type": "quiz",
+   "title": "Which line crashes?",
+   "q": "The user types `7.5`. Which line raises a **ValueError**?",
+   "options": [
+    "float(input())",
+    "int(input())",
+    "input()",
+    "str(input())"
+   ],
+   "answer": 1,
+   "why": "int() only accepts whole-number text. \"7.5\" is fine for float(), but int(\"7.5\") raises ValueError. If you really need a whole number, use int(float(text)).",
+   "say": "The user types seven point five. Which of these lines crashes with a value error?"
+  },
+  {
+   "type": "code",
+   "title": "Unit converter",
+   "code": "km = float(input(\"Distance in km: \"))\nmiles = km * 0.621371\nmetres = km * 1000\nprint(f\"{km} km = {miles:.2f} miles\")\nprint(f\"{km} km = {metres:,.0f} metres\")\n\nspeed_kmh = 12                  # a relaxed cycling speed\nminutes = km / speed_kmh * 60\nprint(f\"By bicycle: about {round(minutes)} minutes\")",
+   "stdin": "5\n",
+   "expect": "Distance in km: 5.0 km = 3.11 miles\n5.0 km = 5,000 metres\nBy bicycle: about 25 minutes\n",
+   "explain": [
+    [
+     1,
+     "float() accepts '5' and '2.5' alike."
+    ],
+    [
+     4,
+     "Two decimals for miles."
+    ],
+    [
+     5,
+     ".0f: no decimals, with separators."
+    ],
+    [
+     7,
+     "A named value instead of a mystery 12."
+    ],
+    [
+     9,
+     "round() for a friendly whole number."
+    ]
+   ],
+   "say": "Float lets users type decimals like two point five. After that it's maths and formatting from earlier days. Notice that the cycling speed is a named variable, so the maths explains itself. Point zero f rounds to a whole number of metres for display. Try a marathon: forty two point two."
+  },
+  {
+   "type": "bug",
+   "title": "Fix the tip splitter",
+   "task": "This bill splitter crashes before it can help anyone. Fix it so the bill (which can have paise) is split evenly, and each share is printed with 2 decimals.",
+   "starter": "bill = input(\"Bill amount: \")\npeople = input(\"Number of people: \")\neach = bill / people\nprint(f\"Each person pays {each:.2f}\")\n",
+   "stdin": "1200\n4\n",
+   "solution": "bill = float(input(\"Bill amount: \"))\npeople = int(input(\"Number of people: \"))\neach = bill / people\nprint(f\"Each person pays {each:.2f}\")",
+   "tests": "out = await run_program(\"1200\\n4\\n\")\nassert \"300.00\" in out, \"A 1200 bill split 4 ways is 300.00 each. Convert both inputs to numbers before dividing.\"\nout = await run_program(\"999.99\\n3\\n\")\nassert \"333.33\" in out, \"Bills can have paise: 999.99 split 3 ways is 333.33 each. Use float() for the bill.\"\nout = await run_program(\"450\\n1\\n\")\nassert \"450.00\" in out, \"One person pays the whole bill: 450.00.\"",
+   "hints": [
+    "input() always returns a str. Can you divide text by text?",
+    "Convert as you read: bill = float(input(\"Bill amount: \"))",
+    "The number of people is a whole number, so int() fits."
+   ],
+   "say": "This tip splitter crashes before it can help anyone. Read the type error, think about what input gives you, and fix it so the bill is split correctly, paise included."
+  },
+  {
+   "type": "exercise",
+   "title": "Road trip fuel cost",
+   "task": "Read three numbers: the **distance** in km, the car's **mileage** in km per litre, and the **petrol price** per litre. Print:\n- `Fuel needed: 20.00 litres`\n- `Trip cost: ₹2,100.00`\n\n(for 300 km, 15 km/l, ₹105 per litre)",
+   "starter": "# Read distance, mileage and price (they can have decimals)\n\n",
+   "stdin": "300\n15\n105\n",
+   "solution": "distance = float(input(\"Distance (km): \"))\nmileage = float(input(\"Mileage (km per litre): \"))\nprice = float(input(\"Petrol price per litre: \"))\nlitres = distance / mileage\ncost = litres * price\nprint(f\"Fuel needed: {litres:.2f} litres\")\nprint(f\"Trip cost: ₹{cost:,.2f}\")",
+   "tests": "out = await run_program(\"300\\n15\\n105\\n\")\nassert \"20.00\" in out, \"For 300 km at 15 km per litre you need 20.00 litres. Litres = distance / mileage, shown with :.2f\"\nassert \"2,100.00\" in out, \"20 litres at 105 per litre costs 2,100.00. Use :,.2f for the cost.\"\ntry:\n    out = await run_program(\"42.5\\n17\\n104.5\\n\")\nexcept AssertionError:\n    assert False, \"A distance like 42.5 crashed your program. int() only accepts whole numbers: use float() for all three inputs.\"\nassert \"2.50\" in out and \"261.25\" in out, \"For 42.5 km, 17 km/l and 104.5 per litre: 2.50 litres, 261.25 rupees. Use float() so decimals work.\"\nout = await run_program(\"0\\n15\\n100\\n\")\nassert \"0.00\" in out, \"A 0 km trip needs 0.00 litres and costs 0.00.\"",
+   "hints": [
+    "Read each value with float(input(...)), since all three can have decimals.",
+    "litres = distance / mileage, then cost = litres * price",
+    "Format with f\"{litres:.2f}\" and f\"{cost:,.2f}\""
+   ],
+   "say": "Planning a road trip? Build a fuel cost calculator. Read the distance, the car's mileage and the petrol price, then print the litres needed and the trip cost, nicely formatted in rupees."
+  },
+  {
+   "type": "exercise",
+   "title": "One line of a bill",
+   "task": "Read an **item name**, its **price** and the **quantity**. Print one bill line:\n`4 x Notebook = ₹182.00`\n\n- clean the name: strip it and use title case\n- price can have paise; quantity is whole\n- total with separators and 2 decimals",
+   "starter": "# Read the item, price and quantity, then print the bill line\n\n",
+   "stdin": "notebook\n45.5\n4\n",
+   "solution": "item = input(\"Item: \").strip().title()\nprice = float(input(\"Price: \"))\nqty = int(input(\"Quantity: \"))\ntotal = price * qty\nprint(f\"{qty} x {item} = ₹{total:,.2f}\")",
+   "tests": "out = await run_program(\"notebook\\n45.5\\n4\\n\")\nassert \"4 x Notebook = ₹182.00\" in out, f\"For notebook, 45.5, 4 the line should be '4 x Notebook = ₹182.00'. You printed: {out.strip()!r}\"\nout = await run_program(\"  usb cable \\n299\\n1\\n\")\nassert \"1 x Usb Cable = ₹299.00\" in out, \"Clean the name: '  usb cable ' should become 'Usb Cable'. Use strip() and title().\"\nout = await run_program(\"laptop\\n54999.99\\n2\\n\")\nassert \"₹109,999.98\" in out, \"Big totals need separators: 2 laptops at 54999.99 is ₹109,999.98. Use :,.2f\"",
+   "hints": [
+    "Chain the cleaning onto input: input(\"Item: \").strip().title()",
+    "Use float() for the price and int() for the quantity.",
+    "f\"{qty} x {item} = ₹{total:,.2f}\""
+   ],
+   "say": "Every billing system prints lines like four times notebook equals one hundred and eighty two rupees. Build one. Read the item, its price and the quantity, clean the name, and print the line with a properly formatted total."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 6 complete",
+   "points": [
+    "input(prompt) shows a prompt and returns what the user typed, always as a str",
+    "Convert right away: int(input()), float(input()); str() turns numbers into text",
+    "int() cuts decimals instead of rounding; int(\"7.5\") is a ValueError",
+    "bool(): zero and empty are False, everything else is True",
+    "Strip, then check with isdigit() before converting user input"
+   ],
+   "say": "Mission six complete. Your programs can now listen, convert what they hear into the right type, and spot bad input before it causes trouble. Tomorrow comes a big one: decisions with if. Your programs will start choosing what to do. See you on day seven."
+  }
+ ]
+}

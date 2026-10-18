@@ -1,0 +1,486 @@
+{
+ "day": 19,
+ "phase": 2,
+ "title": "Errors and exceptions",
+ "subtitle": "Programs that handle bad input without crashing",
+ "minutes": 55,
+ "goal": "Read deep tracebacks, handle specific exceptions with try/except/else/finally, raise your own errors, and validate input so programs never crash.",
+ "outcomes": [
+  "Read a multi-level traceback from the bottom up",
+  "Catch specific exceptions with try and except, and avoid bare excepts",
+  "Use else and finally correctly",
+  "Raise ValueError with a clear message from your own functions",
+  "Write input loops that never crash (EAFP)"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 19: Errors and exceptions",
+   "body": "Real users type `abc` for an amount, files go missing, networks time out. Amateur code crashes; **professional code expects failure** and handles it.\n\nToday your programs learn to survive bad input.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python checkout.py"
+     ],
+     [
+      "",
+      "Enter amount: abc"
+     ],
+     [
+      "",
+      "Traceback (most recent call last):"
+     ],
+     [
+      "",
+      "  File \"checkout.py\", line 1, in <module>"
+     ],
+     [
+      "",
+      "ValueError: invalid literal for int() with base 10: 'abc'"
+     ]
+    ]
+   },
+   "say": "Welcome to day nineteen. Real users type letters where you expect numbers, files go missing, and networks time out. Amateur code crashes when that happens. Professional code expects failure and handles it gracefully. Today you learn exceptions, the tool that lets your programs survive anything a user throws at them."
+  },
+  {
+   "type": "concept",
+   "title": "Reading a traceback, deeper",
+   "body": "When an error happens inside nested calls, the traceback lists **every call on the way**, oldest at the top.\n\n- **Last line**: what went wrong\n- **Just above**: where it happened\n- **Higher up**: how the program got there",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "",
+      "Traceback (most recent call last):"
+     ],
+     [
+      "",
+      "  File \"main.py\", line 8, in <module>"
+     ],
+     [
+      "",
+      "    print(checkout([\"120\", \"abc\"]))"
+     ],
+     [
+      "",
+      "  File \"main.py\", line 5, in checkout"
+     ],
+     [
+      "",
+      "    total += parse_price(p)"
+     ],
+     [
+      "",
+      "  File \"main.py\", line 2, in parse_price"
+     ],
+     [
+      "",
+      "    return int(text)"
+     ],
+     [
+      "",
+      "ValueError: invalid literal for int() with base 10: 'abc'"
+     ]
+    ]
+   },
+   "say": "Now that you write functions, tracebacks get longer. Each pair of lines is one call on the stack, with the oldest call at the top and the most recent at the bottom. Read from the bottom up: the last line says what went wrong, the line above says exactly where, and the lines higher up show the path of calls that led there."
+  },
+  {
+   "type": "concept",
+   "title": "try and except",
+   "body": "Put risky code in a `try` block. If it raises an exception, Python jumps to the matching `except` block instead of crashing.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "try: run the risky code",
+      "s": "pill"
+     },
+     {
+      "t": "Did it raise ValueError?",
+      "s": "diamond",
+      "yes": "Run the except block",
+      "no": "Skip the except block"
+     },
+     {
+      "t": "Carry on with the program",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Here is the basic tool. Put the risky code inside a try block. If everything works, the except block is skipped. If an exception is raised, Python stops the try block right there, jumps to the matching except block, runs it, and carries on with the rest of the program. No crash."
+  },
+  {
+   "type": "code",
+   "title": "Catching a bad number",
+   "code": "for text in [\"250\", \"abc\", \"99\"]:\n    try:\n        amount = int(text)\n        print(\"Amount:\", amount)\n    except ValueError:\n        print(f\"'{text}' is not a whole number\")\nprint(\"Program keeps running\")",
+   "expect": "Amount: 250\n'abc' is not a whole number\nAmount: 99\nProgram keeps running\n",
+   "explain": [
+    [
+     2,
+     "Everything indented under try is protected."
+    ],
+    [
+     3,
+     "int(\"abc\") raises ValueError..."
+    ],
+    [
+     4,
+     "...so this line is skipped for \"abc\"."
+    ],
+    [
+     5,
+     "Python jumps here only when a ValueError happens."
+    ],
+    [
+     7,
+     "No crash: the program carries on."
+    ]
+   ],
+   "say": "We try to convert three pieces of text. Two hundred and fifty works, so the except block is skipped. The letters a b c raise a value error, so Python abandons the try block and runs the except block instead. Then the loop carries on with ninety nine. Watch it run to see the jump."
+  },
+  {
+   "type": "concept",
+   "title": "Catch specific exceptions",
+   "body": "Name the exception you expect: `except ValueError:`. A **bare** `except:` catches everything, including typos in your own code, and hides real bugs.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Hides bugs",
+     "code": "try:\n    amount = int(txet)  # typo!\nexcept:\n    print(\"Bad input\")\n# the NameError is swallowed:\n# you never find the typo"
+    },
+    "right": {
+     "title": "Precise",
+     "code": "try:\n    amount = int(text)\nexcept ValueError:\n    print(\"Bad input\")\n# a typo still fails loudly,\n# so you can fix it"
+    },
+    "verdict": "Catch only what you expect and know how to handle."
+   },
+   "say": "Always name the exception you expect. A bare except with no name catches everything, including mistakes in your own code. In this example a typo raises a name error, but the bare except swallows it and blames the user's input. You would never find the bug. Catch only the errors you expect and know how to handle."
+  },
+  {
+   "type": "concept",
+   "title": "Exceptions you'll meet",
+   "body": "Each exception's **name** tells you what kind of problem happened. You've met most of these already.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Exception",
+     "Means",
+     "Example"
+    ],
+    "rows": [
+     [
+      "ValueError",
+      "right type, bad value",
+      "int(\"abc\")"
+     ],
+     [
+      "TypeError",
+      "wrong type",
+      "\"5\" + 5"
+     ],
+     [
+      "KeyError",
+      "missing dict key",
+      "menu[\"dosa\"]"
+     ],
+     [
+      "IndexError",
+      "index past the end",
+      "[1, 2][5]"
+     ],
+     [
+      "ZeroDivisionError",
+      "divided by zero",
+      "10 / 0"
+     ],
+     [
+      "FileNotFoundError",
+      "no such file (Day 22)",
+      "open(\"x.txt\")"
+     ]
+    ]
+   },
+   "say": "You have met most of these already. Value error means the right type but a bad value, like converting letters to a number. Type error means the wrong type entirely. Key error and index error mean a missing key or position. Zero division error is exactly what it sounds like. And on day twenty two you will meet file not found error."
+  },
+  {
+   "type": "code",
+   "title": "One try, several excepts",
+   "code": "prices = {\"chai\": 20, \"samosa\": 15}\norders = [(\"chai\", \"2\"), (\"dosa\", \"1\"), (\"samosa\", \"two\"), (\"chai\", \"3\")]\nfor item, qty_text in orders:\n    try:\n        qty = int(qty_text)\n        cost = prices[item] * qty\n        print(f\"{item} x{qty} = ₹{cost}\")\n    except KeyError:\n        print(f\"{item}: not on the menu\")\n    except ValueError as e:\n        print(\"Bad quantity:\", e)",
+   "expect": "chai x2 = ₹40\ndosa: not on the menu\nBad quantity: invalid literal for int() with base 10: 'two'\nchai x3 = ₹60\n",
+   "explain": [
+    [
+     5,
+     "This line could raise ValueError."
+    ],
+    [
+     6,
+     "This one could raise KeyError."
+    ],
+    [
+     8,
+     "Each except handles one kind of problem."
+    ],
+    [
+     10,
+     "as e gives you the exception object; printing it shows Python's message."
+    ]
+   ],
+   "say": "One try block can be followed by several except blocks, each handling a different problem. Dosa is not on the menu, so the key error handler runs. The word two is not a number, so the value error handler runs. Writing as e captures the exception itself, and printing it shows Python's own explanation."
+  },
+  {
+   "type": "predict",
+   "title": "Which handler runs?",
+   "code": "try:\n    nums = [1, 2, 3]\n    print(nums[5])\nexcept ValueError:\n    print(\"value\")\nexcept IndexError:\n    print(\"index\")",
+   "options": [
+    "value",
+    "index",
+    "IndexError: list index out of range"
+   ],
+   "answer": 1,
+   "why": "nums[5] raises IndexError. Python skips the ValueError handler, which doesn't match, and runs the IndexError one.",
+   "say": "Which handler runs? Work out the error the try block will raise, then match it against the except blocks."
+  },
+  {
+   "type": "concept",
+   "title": "else and finally",
+   "body": "- `else` runs only if the `try` block raised **nothing**\n- `finally` runs **always**, error or not: closing files, releasing connections, writing logs",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Block",
+     "Runs when"
+    ],
+    "rows": [
+     [
+      "try",
+      "always starts first"
+     ],
+     [
+      "except",
+      "an exception of that type was raised"
+     ],
+     [
+      "else",
+      "the try block finished without an exception"
+     ],
+     [
+      "finally",
+      "always, at the very end, even after a return"
+     ]
+    ]
+   },
+   "say": "Two more blocks complete the picture. Else runs only when the try block raised nothing, which keeps the risky code separate from the code that depends on its success. Finally runs no matter what, error or not, even after a return. It is where professionals put cleanup, like closing files or database connections."
+  },
+  {
+   "type": "code",
+   "title": "All four blocks",
+   "code": "def read_age(text):\n    try:\n        age = int(text)\n    except ValueError:\n        print(f\"'{text}' is not a number\")\n    else:\n        print(\"Age saved:\", age)\n    finally:\n        print(\"checked\", repr(text))\n\nread_age(\"21\")\nread_age(\"twenty\")",
+   "expect": "Age saved: 21\nchecked '21'\n'twenty' is not a number\nchecked 'twenty'\n",
+   "explain": [
+    [
+     3,
+     "Only the risky line goes inside try."
+    ],
+    [
+     6,
+     "else runs only when int() succeeded."
+    ],
+    [
+     8,
+     "finally runs in both cases."
+    ],
+    [
+     9,
+     "repr() shows the text with its quotes, so stray spaces are visible."
+    ]
+   ],
+   "say": "With twenty one, the conversion works, so else saves the age, and then finally runs. With the word twenty, the except block runs instead of else, and finally still runs. Notice that the try block holds only the one risky line. Small try blocks catch exactly the error you meant to catch."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check",
+   "q": "When does a `finally` block run?",
+   "options": [
+    "Only when an exception happens",
+    "Only when no exception happens",
+    "Always, exception or not"
+   ],
+   "answer": 2,
+   "why": "finally always runs, even if the try block returns early or raises an error nobody catches. That's why it's used for cleanup.",
+   "say": "Quick check. When does a finally block run?"
+  },
+  {
+   "type": "concept",
+   "title": "raise: signal a problem yourself",
+   "body": "When **your** function gets bad input, don't print and carry on: **raise** an exception with a clear message.\n\n`raise ValueError(\"Amount must be positive\")`\n\nThe caller decides how to handle it.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "withdraw() finds a problem",
+     "raise ValueError(\"Insufficient balance\")",
+     "The caller's except catches it",
+     "The user sees a clear message"
+    ]
+   },
+   "say": "Your own functions can raise exceptions too. When a function receives input it cannot work with, it should not print a message and return something odd. It should raise an exception with a clear message, using the raise keyword. Then the caller decides what to do: show the message, ask again, or log it."
+  },
+  {
+   "type": "code",
+   "title": "A bank withdrawal",
+   "code": "def withdraw(balance, amount):\n    if amount <= 0:\n        raise ValueError(\"Amount must be positive\")\n    if amount > balance:\n        raise ValueError(f\"Insufficient balance: you have ₹{balance}\")\n    return balance - amount\n\nbalance = 500\nfor amount in [200, -50, 900]:\n    try:\n        balance = withdraw(balance, amount)\n        print(\"Withdrew\", amount, \"| balance\", balance)\n    except ValueError as e:\n        print(\"Declined:\", e)",
+   "expect": "Withdrew 200 | balance 300\nDeclined: Amount must be positive\nDeclined: Insufficient balance: you have ₹300\n",
+   "explain": [
+    [
+     3,
+     "raise stops the function at once and sends the error to the caller."
+    ],
+    [
+     5,
+     "A helpful message that includes the real numbers."
+    ],
+    [
+     11,
+     "The call might raise, so it goes inside try."
+    ],
+    [
+     14,
+     "The message from raise arrives in e."
+    ]
+   ],
+   "say": "Withdraw checks its inputs and raises a value error with a helpful message when something is wrong. Raise stops the function immediately, just like return, but sends an error instead of a value. The calling code wraps each withdrawal in try and prints the message. The function stays pure, and the caller stays in control."
+  },
+  {
+   "type": "predict",
+   "title": "finally and return",
+   "code": "def check(x):\n    try:\n        return 10 / x\n    except ZeroDivisionError:\n        return \"oops\"\n    finally:\n        print(\"done\", end=\" \")\n\nprint(check(0))",
+   "options": [
+    "oops",
+    "done oops",
+    "oops done"
+   ],
+   "answer": 1,
+   "why": "Dividing by zero jumps to except, which returns \"oops\". But finally runs before the function actually hands that value back, so done is printed first.",
+   "say": "A tricky one about finally. The except block returns a value, but there is a finally block too. In what order are things printed?"
+  },
+  {
+   "type": "concept",
+   "title": "EAFP vs LBYL",
+   "body": "- **LBYL**, look before you leap: check first with `if`\n- **EAFP**, easier to ask forgiveness than permission: just try it, and handle the exception\n\nPython favours EAFP: `\"-5\".isdigit()` is `False`, yet `int(\"-5\")` works.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "LBYL: check first",
+     "code": "if text.isdigit():\n    n = int(text)\nelse:\n    print(\"Not a number\")\n# rejects '-5' and ' 42'"
+    },
+    "right": {
+     "title": "EAFP: try it",
+     "code": "try:\n    n = int(text)\nexcept ValueError:\n    print(\"Not a number\")\n# accepts '-5' and ' 42'"
+    },
+    "verdict": "Let int() decide what a valid number is: it knows better than isdigit()."
+   },
+   "say": "There are two styles of defensive code. Look before you leap checks everything first with if statements. Easier to ask forgiveness than permission just tries the operation and handles the exception. Python developers favour the second when checks are complicated. For example, is digit rejects minus five and numbers with spaces around them, but int accepts both."
+  },
+  {
+   "type": "code",
+   "title": "Input that never crashes",
+   "body": "The Input box holds three tries: `abc`, `-5`, then `250.5`.",
+   "code": "while True:\n    text = input(\"Enter amount: \")\n    try:\n        amount = float(text)\n    except ValueError:\n        print(\"Please type a number, like 250 or 99.50\")\n        continue\n    if amount <= 0:\n        print(\"Amount must be more than zero\")\n        continue\n    break\nprint(f\"Got ₹{amount:.2f}\")",
+   "stdin": "abc\n-5\n250.5\n",
+   "expect": "Enter amount: Please type a number, like 250 or 99.50\nEnter amount: Amount must be more than zero\nEnter amount: Got ₹250.50\n",
+   "explain": [
+    [
+     1,
+     "Keep asking until we get a good value."
+    ],
+    [
+     4,
+     "float() decides whether the text is a number."
+    ],
+    [
+     7,
+     "continue jumps back to the top of the loop (Day 8)."
+    ],
+    [
+     8,
+     "A number, but is it a valid amount? Check the business rule."
+    ],
+    [
+     11,
+     "Only valid input reaches break."
+    ]
+   ],
+   "say": "This is the robust input loop every real program needs. It keeps asking until the input is valid. Float decides whether the text is a number at all, and the except block explains the problem and loops again. A second check enforces the rule that amounts must be positive. Only a valid amount reaches break. Try the input box with your own values."
+  },
+  {
+   "type": "quiz",
+   "title": "The Pythonic way",
+   "q": "Which is the most Pythonic way to turn user text into an int safely?",
+   "options": [
+    "Check text.isdigit() first, then call int()",
+    "Try int(text) and catch ValueError",
+    "Try int(text) with a bare except: pass"
+   ],
+   "answer": 1,
+   "why": "EAFP: let int() decide. isdigit() rejects valid input like -5, and a bare except silently hides every kind of error, including your own bugs.",
+   "say": "Which of these is the most Pythonic way to turn user text into a whole number safely?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: the wrong exception",
+   "task": "`safe_int()` should return the number, or `0` when the text isn't a whole number. It still crashes on `\"forty\"`. Read the error and catch the **right** exception (no bare `except`).",
+   "starter": "def safe_int(text):\n    try:\n        return int(text)\n    except TypeError:\n        return 0\n\nprint(safe_int(\"42\"))\nprint(safe_int(\"forty\"))\n",
+   "solution": "def safe_int(text):\n    try:\n        return int(text)\n    except ValueError:\n        return 0\n\nprint(safe_int(\"42\"))\nprint(safe_int(\"forty\"))",
+   "tests": "assert safe_int(\"42\") == 42, \"safe_int('42') should return 42.\"\nassert safe_int(\"forty\") == 0, \"safe_int('forty') should return 0 instead of crashing.\"\nassert safe_int(\" -7 \") == -7, \"safe_int(' -7 ') should return -7: int() handles the spaces and the minus sign.\"\nhandlers = [n for n in ast.walk(__tree__) if isinstance(n, ast.ExceptHandler)]\nassert handlers and all(h.type is not None for h in handlers), \"Name the exception, like except ValueError:, instead of a bare except:.\"",
+   "hints": [
+    "The last line of the error names the exception that really happened.",
+    "int(\"forty\") raises ValueError, not TypeError.",
+    "except ValueError:"
+   ],
+   "say": "Bug hunt. This safe conversion function was meant to never crash, but it still does, because the developer guessed the wrong exception. Run it, read the last line of the traceback to see which exception really happens, and catch that one."
+  },
+  {
+   "type": "exercise",
+   "title": "split_bill() that raises",
+   "task": "Write `split_bill(total, people)` that returns each person's share, rounded to 2 decimals. If `people` is **0 or less**, **raise** a `ValueError` with a helpful message.\n- `split_bill(1000, 4)` returns `250.0`\n- `split_bill(500, 0)` raises `ValueError`",
+   "starter": "def split_bill(total, people):\n    return total / people\n\n\nprint(split_bill(1000, 4))\n",
+   "solution": "def split_bill(total, people):\n    if people <= 0:\n        raise ValueError(\"people must be at least 1\")\n    return round(total / people, 2)\n\n\nprint(split_bill(1000, 4))",
+   "tests": "assert split_bill(1000, 4) == 250.0, f\"split_bill(1000, 4) should be 250.0, not {split_bill(1000, 4)}.\"\nassert split_bill(100, 3) == 33.33, f\"split_bill(100, 3) should round to 33.33, not {split_bill(100, 3)}.\"\nfor bad in [0, -2]:\n    try:\n        split_bill(500, bad)\n    except ValueError as e:\n        assert str(e).strip(), \"Give the ValueError a helpful message, like ValueError(\\\"people must be at least 1\\\").\"\n    except ZeroDivisionError:\n        raise AssertionError(f\"split_bill(500, {bad}) crashed with ZeroDivisionError. Check people first and raise ValueError yourself.\")\n    else:\n        raise AssertionError(f\"split_bill(500, {bad}) should raise ValueError, but it returned a value.\")",
+   "hints": [
+    "Check people before dividing: if people <= 0:",
+    "raise ValueError(\"people must be at least 1\")",
+    "return round(total / people, 2)"
+   ],
+   "say": "Bill splitting apps must never divide by zero. Write a function that returns each person's share, rounded to two decimals. If the number of people is zero or negative, raise a value error with a helpful message, so the calling code can show it to the user. The checker tests the raise as well as the maths."
+  },
+  {
+   "type": "exercise",
+   "title": "Ask until valid",
+   "task": "Ask for an age with `input()` until the user types a **whole number from 1 to 120**. Never crash!\n- not a number: print `Please enter a number`\n- out of range: print `Age must be 1 to 120`\n\nThen print `You are 25 years old`.",
+   "stdin": "abc\n150\n25\n",
+   "starter": "age = int(input(\"Age: \"))\nprint(f\"You are {age} years old\")\n",
+   "solution": "while True:\n    text = input(\"Age: \")\n    try:\n        age = int(text)\n    except ValueError:\n        print(\"Please enter a number\")\n        continue\n    if age < 1 or age > 120:\n        print(\"Age must be 1 to 120\")\n        continue\n    break\nprint(f\"You are {age} years old\")",
+   "tests": "out = await run_program(\"abc\\n150\\n25\\n\")\nassert \"Please enter a number\" in out, \"For abc, print Please enter a number and ask again.\"\nassert \"Age must be 1 to 120\" in out, \"150 is out of range: print Age must be 1 to 120 and ask again.\"\nassert \"You are 25 years old\" in out, \"After abc and 150 the user types 25: print You are 25 years old.\"\nout = await run_program(\"-4\\n0\\ntwelve\\n 30 \\n\")\nassert out.count(\"Age must be 1 to 120\") == 2, \"-4 and 0 are both out of range: each should print Age must be 1 to 120.\"\nassert \"You are 30 years old\" in out, \"' 30 ' with spaces is still a valid age: int() handles the spaces.\"\nout = await run_program(\"120\\n\")\nassert \"You are 120 years old\" in out, \"120 is allowed: the range is 1 to 120, inclusive.\"\nassert any(isinstance(n, ast.Try) for n in ast.walk(__tree__)), \"Use try and except ValueError around int().\"",
+   "hints": [
+    "Wrap it all in while True: and break once the age is valid.",
+    "try:\n    age = int(text)\nexcept ValueError:\n    print(\"Please enter a number\")\n    continue",
+    "if age < 1 or age > 120: print the range message and continue"
+   ],
+   "say": "Now build input validation that never crashes, the kind every sign up form needs. Keep asking for an age until the user types a whole number from one to a hundred and twenty. Explain each problem politely: one message for text that is not a number, another for a number out of range. The checker throws some nasty inputs at it."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 19 complete",
+   "points": [
+    "Read tracebacks bottom up: what went wrong, where, and how you got there",
+    "try/except catches a specific exception instead of crashing; never use a bare except",
+    "else runs when nothing failed; finally always runs, for cleanup",
+    "raise ValueError(\"message\") signals bad input from your own functions",
+    "EAFP: try it and handle the error, for input that never crashes"
+   ],
+   "say": "Mission nineteen complete. You can read deep tracebacks, catch specific exceptions, use else and finally, raise your own errors with clear messages, and write input loops that survive anything. Tomorrow is project day: you combine everything from this phase into a real expense tracker. See you on day twenty."
+  }
+ ]
+}

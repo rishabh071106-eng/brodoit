@@ -1,0 +1,478 @@
+{
+ "day": 41,
+ "phase": 5,
+ "title": "Big-O and performance thinking",
+ "subtitle": "Count the steps before you count the seconds",
+ "minutes": 55,
+ "goal": "Predict how code slows down as data grows, confirm it with timeit, and choose data structures that keep programs fast.",
+ "outcomes": [
+  "Count the steps an algorithm takes and express them in Big-O",
+  "Recognise O(1), O(log n), O(n), O(n log n) and O(n²) in real code",
+  "Spot hidden loops such as in on a list, count() and pop(0)",
+  "Measure code with timeit and compare list vs set membership",
+  "Rewrite an O(n²) duplicate check as O(n)"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 41: Big-O and performance thinking",
+   "body": "Your code works on 100 rows. Production has **10 million**. Will it take a second, or a week?\n\nToday you learn to predict that **before** you run anything, with Big-O: the language every developer and every interviewer uses to talk about speed.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "10 users: everything feels fast",
+     "10,000 users: one page gets slow",
+     "10 million users: the algorithm decides"
+    ]
+   },
+   "say": "Welcome to phase five, Developer. Your code works on a hundred rows, but production has ten million. Will it take a second, or a week? Today you learn to predict that before you run anything, using Big O, the language every developer and every interviewer uses to talk about speed."
+  },
+  {
+   "type": "concept",
+   "title": "Count steps, not seconds",
+   "body": "Seconds depend on the device. **Steps** depend only on your algorithm.\n\nBig-O answers one question: **when the input grows, how fast do the steps grow?** We call the input size `n`.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "n (items)",
+     "One pass: O(n)",
+     "Every pair: O(n²)"
+    ],
+    "rows": [
+     [
+      "10",
+      "10",
+      "100"
+     ],
+     [
+      "1,000",
+      "1,000",
+      "1,000,000"
+     ],
+     [
+      "1,000,000",
+      "1,000,000",
+      "1,000,000,000,000"
+     ]
+    ]
+   },
+   "say": "Seconds depend on the device. A cheap phone and a big server give different times for the same code. Steps depend only on the algorithm. Big O answers one question: when the input grows, how fast does the number of steps grow? We call the input size n."
+  },
+  {
+   "type": "code",
+   "title": "Counting steps",
+   "body": "Two functions, same data. Count how many times the innermost line runs.",
+   "code": "def one_pass(items):\n    steps = 0\n    for x in items:\n        steps += 1\n    return steps\n\ndef every_pair(items):\n    steps = 0\n    for a in items:\n        for b in items:\n            steps += 1\n    return steps\n\nfor n in [10, 100, 1000]:\n    data = list(range(n))\n    print(f\"n={n}: one pass {one_pass(data)}, every pair {every_pair(data)}\")\n",
+   "expect": "n=10: one pass 10, every pair 100\nn=100: one pass 100, every pair 10000\nn=1000: one pass 1000, every pair 1000000\n",
+   "explain": [
+    [
+     1,
+     "One loop over the items: n steps."
+    ],
+    [
+     7,
+     "A loop inside a loop: for every a, visit every b."
+    ],
+    [
+     14,
+     "Try three sizes, each ten times bigger."
+    ],
+    [
+     16,
+     "One pass grows 10x; every pair grows 100x."
+    ]
+   ],
+   "say": "Let's count instead of guess. One pass touches each item once, so its steps grow in line with n. Every pair puts a loop inside a loop, so it does n times n steps. Run it and watch the gap: ten times more data makes the nested loop a hundred times slower."
+  },
+  {
+   "type": "visual",
+   "title": "How steps grow",
+   "body": "Same 1,000 items, five algorithms. The gap between the last two bars is the gap between a snappy app and a frozen one.",
+   "visual": {
+    "kind": "chart",
+    "title": "Steps for n = 1,000 items",
+    "bars": [
+     [
+      "O(1)",
+      1
+     ],
+     [
+      "O(log n)",
+      10
+     ],
+     [
+      "O(n)",
+      1000
+     ],
+     [
+      "O(n log n)",
+      10000
+     ],
+     [
+      "O(n²)",
+      1000000
+     ]
+    ]
+   },
+   "say": "Here is the whole idea in one picture, for a thousand items. Constant time is one step. Log n is about ten. A single pass is a thousand. Sorting is about ten thousand. Every pair is a million. The chart switches to a log scale, because the last bar would not fit on your screen otherwise."
+  },
+  {
+   "type": "concept",
+   "title": "The five you will meet every day",
+   "body": "These five cover almost all real code. Learn them with an example each.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Big-O",
+     "Name",
+     "Real example"
+    ],
+    "rows": [
+     [
+      "O(1)",
+      "constant",
+      "d[key], items[i], x in a_set"
+     ],
+     [
+      "O(log n)",
+      "logarithmic",
+      "binary search in a sorted list"
+     ],
+     [
+      "O(n)",
+      "linear",
+      "sum(items), one for loop, x in a_list"
+     ],
+     [
+      "O(n log n)",
+      "n log n",
+      "sorted(items), items.sort()"
+     ],
+     [
+      "O(n²)",
+      "quadratic",
+      "nested loops comparing every pair"
+     ]
+    ]
+   },
+   "say": "Five classes cover almost everything you will write. Constant time, like looking up a key in a dict. Logarithmic, like binary search. Linear, like a single for loop. N log n, which is what sorting costs. And quadratic, which usually means a loop inside a loop. Learn this table by heart."
+  },
+  {
+   "type": "predict",
+   "title": "How many steps?",
+   "code": "count = 0\nfor i in range(4):\n    for j in range(i, 4):\n        count += 1\nprint(count)",
+   "options": [
+    "16",
+    "10",
+    "8",
+    "4"
+   ],
+   "answer": 1,
+   "why": "The inner loop runs 4, then 3, then 2, then 1 times: 10 in total. That's n(n+1)/2, which still grows like **n²**, so it is O(n²).",
+   "say": "The inner loop starts at i, so it gets shorter every time round. How many times does count go up? Predict, then run."
+  },
+  {
+   "type": "concept",
+   "title": "Keep the biggest term",
+   "body": "Big-O is about the **shape** of growth, not exact counts:\n- drop constants: `3n` is **O(n)**\n- keep the fastest-growing term: `n² + n + 100` is **O(n²)**\n- plan for the worst case: searching a list is O(n), even if the item is sometimes first",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Count the steps: 3n² + 5n + 2",
+     "Keep the biggest term: 3n²",
+     "Drop the constant: O(n²)"
+    ]
+   },
+   "say": "Big O is about the shape of growth, not exact counts. Drop the constants, so three n is just O of n. Keep only the fastest growing term, so n squared plus n is O of n squared. And plan for the worst case: when you search a list, assume the item is at the very end."
+  },
+  {
+   "type": "quiz",
+   "title": "Spot the hidden loop",
+   "q": "What is the Big-O of `common(a, b)` when both lists have n items?",
+   "code": "def common(a, b):\n    result = []\n    for x in a:\n        if x in b:\n            result.append(x)\n    return result",
+   "options": [
+    "O(n)",
+    "O(n²)",
+    "O(log n)",
+    "O(1)"
+   ],
+   "answer": 1,
+   "why": "`x in b` looks like one step, but on a list Python checks items one by one: an O(n) loop inside your O(n) loop. Turn `b` into a set first and the whole function becomes O(n).",
+   "say": "This function has one visible loop. But look closely at the if line. What is its Big O when both lists have n items?"
+  },
+  {
+   "type": "concept",
+   "title": "Hidden loops in Python",
+   "body": "One innocent line can hide a whole loop. Know what each operation costs.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Operation",
+     "list",
+     "set / dict"
+    ],
+    "rows": [
+     [
+      "x in c",
+      "O(n): scans",
+      "O(1): hashes"
+     ],
+     [
+      "c[i] or d[key]",
+      "O(1)",
+      "O(1)"
+     ],
+     [
+      "append(x) / add(x)",
+      "O(1)",
+      "O(1)"
+     ],
+     [
+      "pop() from the end",
+      "O(1)",
+      "n/a"
+     ],
+     [
+      "pop(0), insert(0, x)",
+      "O(n): shifts all",
+      "n/a"
+     ],
+     [
+      "remove(x)",
+      "O(n)",
+      "O(1)"
+     ],
+     [
+      "count(x), index(x)",
+      "O(n)",
+      "n/a"
+     ]
+    ]
+   },
+   "say": "One innocent line can hide a loop. Checking if something is in a list scans every item, but a set or dict jumps straight to it using a hash. Popping from the front of a list shifts every other item along. These costs are invisible in the code, so you have to know them."
+  },
+  {
+   "type": "predict",
+   "title": "Halving the problem",
+   "code": "n = 64\nsteps = 0\nwhile n > 1:\n    n = n // 2\n    steps += 1\nprint(steps)",
+   "options": [
+    "64",
+    "32",
+    "8",
+    "6"
+   ],
+   "answer": 3,
+   "why": "64 → 32 → 16 → 8 → 4 → 2 → 1: six halvings. Cutting the problem in half on every step is **O(log n)**, and log₂ 64 = 6.",
+   "say": "Each time round the loop, n is cut in half. How many steps until it reaches one?"
+  },
+  {
+   "type": "code",
+   "title": "Why O(log n) is a superpower",
+   "body": "Keep halving until one item is left. Watch how slowly the step count grows.",
+   "code": "def halvings(n):\n    steps = 0\n    while n > 1:\n        n //= 2\n        steps += 1\n    return steps\n\nfor size in [1_000, 1_000_000, 1_000_000_000]:\n    print(f\"{size:>13,} items -> {halvings(size)} steps\")\n",
+   "expect": "        1,000 items -> 9 steps\n    1,000,000 items -> 19 steps\n1,000,000,000 items -> 29 steps\n",
+   "explain": [
+    [
+     4,
+     "Each loop cuts the problem in half."
+    ],
+    [
+     8,
+     "Underscores make big numbers readable."
+    ],
+    [
+     9,
+     "The comma in the format spec adds thousands separators."
+    ]
+   ],
+   "say": "A billion items, and only twenty nine steps. That is why binary search, which halves the problem every time, can search a billion sorted records almost instantly. Every time the data grows a thousand times, a log n algorithm needs only about ten more steps."
+  },
+  {
+   "type": "concept",
+   "title": "Measure with timeit",
+   "body": "Big-O predicts; **`timeit`** confirms. It runs a snippet many times and returns the total seconds, so random noise averages out.\n\n`timeit.timeit(lambda: work(), number=100)`",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python -m timeit -s \"s = set(range(10**6))\" \"999_999 in s\""
+     ],
+     [
+      "",
+      "5000000 loops, best of 5: 45.1 nsec per loop"
+     ],
+     [
+      "$",
+      "python -m timeit -s \"l = list(range(10**6))\" \"999_999 in l\""
+     ],
+     [
+      "",
+      "20 loops, best of 5: 6.12 msec per loop"
+     ]
+    ]
+   },
+   "say": "Big O predicts, and timeit confirms. It runs a small piece of code many times and gives you the total time, so random noise averages out. Developers also run it straight from the terminal. Look at these numbers: the set answers in nanoseconds, while the list needs milliseconds."
+  },
+  {
+   "type": "code",
+   "title": "List vs set, measured",
+   "body": "We divide by `number` to get the time for **one** lookup, then compare.",
+   "code": "import timeit\n\nuser_ids = list(range(100_000))\nuser_set = set(user_ids)\ntarget = 99_999            # worst case for a list: the very last item\n\nlist_time = timeit.timeit(lambda: target in user_ids, number=50) / 50\nset_time = timeit.timeit(lambda: target in user_set, number=50_000) / 50_000\n\nprint(\"Both found it:\", target in user_ids and target in user_set)\nprint(\"Set is faster:\", set_time < list_time)\nprint(\"List is over 100x slower:\", list_time > 100 * set_time)\n",
+   "expect": "Both found it: True\nSet is faster: True\nList is over 100x slower: True\n",
+   "trace": false,
+   "explain": [
+    [
+     3,
+     "100,000 IDs in a list…"
+    ],
+    [
+     4,
+     "…and the same IDs in a set."
+    ],
+    [
+     7,
+     "Time 50 list lookups, then divide: seconds per lookup."
+    ],
+    [
+     8,
+     "Sets are so fast we need 50,000 runs to measure them well."
+    ],
+    [
+     12,
+     "The ratio is huge, so this is True on any device."
+    ]
+   ],
+   "say": "Now let's measure it for real. We store a hundred thousand user IDs in a list and in a set, then time how long it takes to find the last one. The set uses a hash to jump straight to the answer, while the list checks every single item. Your exact times depend on your phone, but the verdict never changes."
+  },
+  {
+   "type": "code",
+   "title": "Your phone, your numbers",
+   "body": "Real timings from **your** device (µs = microseconds). Look at the pattern as `n` grows 10x.",
+   "code": "import timeit\n\nfor n in [1_000, 10_000, 100_000]:\n    items = list(range(n))\n    lookup = set(items)\n    t_list = timeit.timeit(lambda: n - 1 in items, number=200) / 200\n    t_set = timeit.timeit(lambda: n - 1 in lookup, number=100_000) / 100_000\n    print(f\"n={n:>7,}: list {t_list * 1e6:9.2f} µs   set {t_set * 1e6:6.3f} µs\")\n",
+   "expect": null,
+   "trace": false,
+   "say": "This one prints real timings from your own device, so your numbers will differ from mine. Watch the pattern, not the digits. Each time n grows ten times, the list time grows about ten times too. That is O of n. The set time barely moves. That is O of 1."
+  },
+  {
+   "type": "bug",
+   "title": "The slow duplicate checker",
+   "task": "`has_duplicates` gives the right answer, but it compares **every pair**: O(n²). On a million sign-ups it would run for hours.\n\nRewrite it to be **O(n)** with a set. Same behaviour: return `True` if any item appears twice, otherwise `False`.",
+   "starter": "def has_duplicates(items):\n    for i in range(len(items)):\n        for j in range(i + 1, len(items)):\n            if items[i] == items[j]:\n                return True\n    return False\n\nprint(has_duplicates([\"riya@x.in\", \"arjun@x.in\", \"riya@x.in\"]))\n",
+   "solution": "def has_duplicates(items):\n    seen = set()\n    for item in items:\n        if item in seen:\n            return True\n        seen.add(item)\n    return False\n\nprint(has_duplicates([\"riya@x.in\", \"arjun@x.in\", \"riya@x.in\"]))\n",
+   "tests": "assert has_duplicates([\"a\", \"b\", \"a\"]) is True, \"['a', 'b', 'a'] has a repeat, so return True.\"\nassert has_duplicates([1, 2, 3]) is False, \"[1, 2, 3] has no repeats, so return False.\"\nassert has_duplicates([]) is False, \"An empty list has no duplicates: return False.\"\n\nclass Email:\n    compares = 0\n    def __init__(self, v):\n        self.v = v\n    def __eq__(self, other):\n        Email.compares += 1\n        return self.v == other.v\n    def __lt__(self, other):\n        Email.compares += 1\n        return self.v < other.v\n    def __hash__(self):\n        return hash(self.v)\n\nassert has_duplicates([Email(i) for i in range(400)]) is False, \"400 different emails: return False.\"\nassert Email.compares < 20000, f\"Your function made {Email.compares:,} comparisons for just 400 emails: that is O(n²). Remember each item in a set, so every check is one hash lookup.\"",
+   "hints": [
+    "A set answers `item in seen` in O(1).",
+    "Walk the list once: if the item is already in `seen`, return True; otherwise add it.",
+    "A one-line version also works: `return len(set(items)) != len(items)`"
+   ],
+   "say": "Here is a real performance bug. This function gives the right answer, but it compares every pair, so on a million sign ups it would run for hours. Rewrite it so it walks the list only once, remembering what it has seen in a set. The tests count your comparisons, so they will know."
+  },
+  {
+   "type": "concept",
+   "title": "Choose the right data structure",
+   "body": "Most speed-ups in real projects come from picking the right container, not from clever tricks.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "You need to…",
+     "Use",
+     "Why"
+    ],
+    "rows": [
+     [
+      "ask 'have I seen this?'",
+      "set",
+      "O(1) membership"
+     ],
+     [
+      "find a record by ID or email",
+      "dict",
+      "O(1) lookup by key"
+     ],
+     [
+      "keep order, index by position",
+      "list",
+      "O(1) index and append"
+     ],
+     [
+      "add and remove at both ends",
+      "deque",
+      "O(1) at either end"
+     ],
+     [
+      "count how often things appear",
+      "Counter",
+      "one O(n) pass"
+     ]
+    ]
+   },
+   "say": "In real projects, most speed ups come from choosing the right container, not from clever tricks. Need to ask, have I seen this before? Use a set. Need to find a record by its ID? Use a dict. Need order and positions? A list. Adding and removing at both ends? A deque. Counting? A Counter."
+  },
+  {
+   "type": "code",
+   "title": "Counting the O(n) way",
+   "code": "from collections import Counter\n\nvotes = [\"Kohli\", \"Rohit\", \"Kohli\", \"Bumrah\", \"Kohli\", \"Rohit\"]\n\n# O(n²): count() rescans the whole list for every name\nslow = {name: votes.count(name) for name in votes}\n\n# O(n): one pass, and Counter does the bookkeeping\nfast = Counter(votes)\n\nprint(slow == dict(fast))\nprint(fast.most_common(2))\n",
+   "expect": "True\n[('Kohli', 3), ('Rohit', 2)]\n",
+   "explain": [
+    [
+     6,
+     "count() is a hidden loop, run once per vote: O(n²)."
+    ],
+    [
+     9,
+     "Counter walks the list once: O(n)."
+    ],
+    [
+     11,
+     "Same answer either way."
+    ],
+    [
+     12,
+     "The two most common names, with their counts."
+    ]
+   ],
+   "say": "Here is a pattern you will spot in code reviews. Calling count inside a loop rescans the whole list for every name, which is O of n squared. A Counter does the same job in a single pass. Both give identical results, but only one survives a million votes."
+  },
+  {
+   "type": "quiz",
+   "title": "Pick the structure",
+   "q": "Your app checks whether a username is taken on every sign-up. There are 5 million users. What should hold the existing usernames?",
+   "options": [
+    "A list, sorted alphabetically",
+    "A set",
+    "A tuple",
+    "One long string, names separated by commas"
+   ],
+   "answer": 1,
+   "why": "A set answers `name in taken` in O(1), however many users you have. A list, tuple or string would scan up to 5 million entries on every single sign-up.",
+   "say": "Quick decision. Five million users, and every sign up must check if the username is already taken. Which container do you choose?"
+  },
+  {
+   "type": "exercise",
+   "title": "Who hasn't submitted?",
+   "task": "A class has roll numbers `1` to `total`. `submitted` lists who handed in homework (it can contain repeats). Write `missing(total, submitted)` that returns the roll numbers that did **not** submit, in order.\n\nMake it **O(n)**: don't search the list once per student.",
+   "starter": "def missing(total, submitted):\n    # Return the sorted roll numbers from 1 to total that are not in submitted\n    pass\n\nprint(missing(5, [1, 2, 4, 2]))   # [3, 5]\n",
+   "solution": "def missing(total, submitted):\n    done = set(submitted)\n    return [roll for roll in range(1, total + 1) if roll not in done]\n\nprint(missing(5, [1, 2, 4, 2]))   # [3, 5]\n",
+   "tests": "assert missing(5, [1, 2, 4, 2]) == [3, 5], f\"For total 5 and [1, 2, 4, 2], rolls 3 and 5 are missing. You returned {missing(5, [1, 2, 4, 2])}.\"\nassert missing(3, [3, 1, 2]) == [], \"Everyone submitted, so return an empty list.\"\nassert missing(4, []) == [1, 2, 3, 4], \"Nobody submitted: every roll from 1 to 4 is missing.\"\n\nclass Watched(list):\n    scans = 0\n    def __contains__(self, x):\n        Watched.scans += 1\n        return list.__contains__(self, x)\n    def count(self, x):\n        Watched.scans += 1\n        return list.count(self, x)\n    def index(self, *args):\n        Watched.scans += 1\n        return list.index(self, *args)\n\nassert missing(1000, Watched(range(1, 1001, 2))) == list(range(2, 1001, 2)), \"With only odd rolls submitted, the even rolls 2 to 1000 are missing.\"\nassert Watched.scans <= 5, \"You searched the submitted list once per student, which is O(n²). Turn it into a set first, then check the set.\"",
+   "hints": [
+    "Convert `submitted` to a set once, at the top of the function.",
+    "Loop over `range(1, total + 1)` and keep the rolls that are not in the set.",
+    "Set difference works too: `sorted(set(range(1, total + 1)) - set(submitted))`"
+   ],
+   "say": "Your turn. A class has roll numbers one to total, and a list of who submitted homework, with some repeats. Return the roll numbers that are missing, in order. Make it O of n by turning the list into a set first. The tests watch for slow searches."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 41 complete",
+   "points": [
+    "Big-O describes how steps grow with the input size n, not seconds",
+    "O(1) < O(log n) < O(n) < O(n log n) < O(n²): know an example of each",
+    "Drop constants, keep the biggest term, plan for the worst case",
+    "Hidden loops: in on a list, count(), index() and pop(0) are all O(n)",
+    "timeit confirms what Big-O predicts; sets and dicts make lookups O(1)"
+   ],
+   "say": "Mission forty one complete. You can count steps, name the five common Big O classes, spot hidden loops, and prove your choices with timeit. Tomorrow we put this to work with searching, sorting and recursion, the algorithms behind every search bar and leaderboard."
+  }
+ ]
+}

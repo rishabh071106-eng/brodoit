@@ -1,158 +1,71 @@
-// Learn landing — card UI v12. window.LearnUI.landing() returns the HTML for the Learn tab landing (see app/cards.js).
-// server.js calls it when S.tab==='courses' && !S.learnSection; the legacy landing stays as the fallback when this file is absent.
-// Data: the global _LT tree ({k, t, s, badge, c:[[title, subtitle, target, emoji]]}); handlers _ltToggle(k), _ltGo(i, j), _openPrep(file).
+// Learn tab (v13): two schools only — Python: Zero to Hero (/code/) and Languages (/lang/).
+// window.LearnUI.landing() returns the tab's HTML; server.js calls it when S.tab==='courses'.
+// Progress is read from the schools' own stores (bd.py.v1, lang.progress.v1) — same origin, no fetch.
 (function () {
   const L = window.LearnUI = window.LearnUI || {};
-  const C = () => window.Cards;
   const hi = () => (window.S && S.lang === 'hi');
   const icon = (n, s) => (window.ico ? window.ico(n, s || 20) : '');
-  // _LT strings are pre-escaped HTML (e.g. "IAS &amp; Civil Services"); Cards.* escapes again, so decode first
-  const dec = s => String(s == null ? '' : s).replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const read = k => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; } };
 
-  const CAT_ICON = { lang: 'languages', defence: 'shield', ias: 'landmark', banking: 'building-2', it: 'layers', mba: 'graduation-cap', cs: 'brain' };
-  const CAT_TONE = { lang: 'ink', defence: 'umber', ias: 'wine', banking: 'ink', it: 'umber', mba: 'wine', cs: 'ink' };
-  const HI_NAME = { lang: 'भाषाएँ', defence: 'रक्षा', ias: 'IAS और सिविल सेवा', banking: 'बैंकिंग', it: 'IT सेक्टर', mba: 'MBA', cs: 'कंप्यूटर साइंस' };
+  const LANGS = [
+    { c: 'es', n: 'Spanish', nh: 'स्पैनिश', native: 'Español', via: 'in English', viah: 'अंग्रेज़ी में' },
+    { c: 'fr', n: 'French', nh: 'फ़्रेंच', native: 'Français', via: 'in English', viah: 'अंग्रेज़ी में' },
+    { c: 'de', n: 'German', nh: 'जर्मन', native: 'Deutsch', via: 'in English', viah: 'अंग्रेज़ी में' },
+    { c: 'en', n: 'English', nh: 'अंग्रेज़ी', native: 'English', via: 'taught in Hindi', viah: 'हिंदी में' },
+    { c: 'hi', n: 'Hindi', nh: 'हिंदी', native: 'हिन्दी', via: 'in English', viah: 'अंग्रेज़ी में' },
+  ];
+  const LANG_TOTAL = 52; // 12 audio lessons + 40 practice lessons per language
 
-  // photo key for one course row (spec: language photos, exam photos; anything else falls back to the category photo)
-  function rowKey(k, c) {
-    const target = String(c[2] || ''), title = dec(c[0]).toLowerCase();
-    if (k === 'lang') { const m = target.match(/[?&]c=([a-z]{2})/); return m ? 'lang-' + m[1] : ''; }
-    if (k === 'defence') {
-      if (/ssb/.test(target)) return 'def-ssb';
-      const m = target.match(/id=(nda|cds|afcat)/); return m ? 'def-' + m[1] : '';
-    }
-    if (k === 'ias') return 'ias-upsc';
-    if (k === 'banking') return ''; // the category photo (bank-core was the same building)
-    if (k === 'it') return 'it-gate';
-    if (k === 'mba') return 'mba-gmat';
-    if (k === 'cs') return /python/.test(title) ? 'cs-python' : 'cs-ai';
-    return '';
+  function py() {
+    const p = read('bd.py.v1'), days = p.days || {};
+    let done = 0, cur = 60;
+    for (let d = 60; d >= 1; d--) if (!(days['d' + d] && days['d' + d].done)) cur = d;
+    for (const k in days) if (days[k] && days[k].done) done++;
+    return { done, cur, xp: p.xp || 0, started: !!Object.keys(days).length, resume: days['d' + cur] && days['d' + cur].slide };
   }
-
-  function countdowns() {
-    let ed = {};
-    try { ed = (JSON.parse(localStorage.getItem('academy.progress.v1') || '{}').examDates) || {}; } catch (e) {}
-    const t0 = new Date(new Date().toDateString()).getTime();
-    return Object.keys(ed).map(k => { const x = ed[k] || {}; return { n: String(x.name || k), d: Math.round((new Date(x.date + 'T00:00:00').getTime() - t0) / 86400000) }; })
-      .filter(x => x.d >= 0 && isFinite(x.d)).sort((a, b) => a.d - b.d).slice(0, 3);
-  }
-
-  // open a track (never toggles it shut) and bring its panel into view: used by the hero
-  L.openTrack = function (k) {
-    if (!window.S) return;
-    S.learnOpen = k;
-    if (typeof render === 'function') render();
-    setTimeout(function () { const el = document.getElementById('lt-' + k); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
-  };
-
-  function panel(n, i) {
-    const Cd = C(), H = hi();
-    const catPhoto = Cd.photo('cat-' + n.k);
-    const count = n.c.length + ' ' + (H ? 'कोर्स' : (n.c.length === 1 ? 'course' : 'courses'));
-    let h = '<div class="lu-panel" id="lt-' + esc(n.k) + '" role="region" aria-label="' + esc(dec(n.t)) + '">';
-    h += '<div class="lu-ph"><div><b>' + esc(H && HI_NAME[n.k] ? HI_NAME[n.k] : dec(n.t)) + '</b><small>' + count + '</small></div>' +
-      '<button type="button" class="btn-ic lu-x" onclick="_ltToggle(\'' + esc(n.k) + '\')" aria-label="' + (H ? 'बंद करो' : 'Close') + '">' + icon('x', 20) + '</button></div>';
-    h += '<div class="lu-rows cv-anim">';
-    n.c.forEach(function (c, j) {
-      const isBro = /tab=bro/.test(String(c[2] || ''));
-      const img = isBro ? '/app/mascot.svg' : (Cd.photo(rowKey(n.k, c)) || catPhoto);
-      h += Cd.row({ img: img, icon: isBro ? 'message-circle' : (CAT_ICON[n.k] || 'book-open'), tone: CAT_TONE[n.k] || 'ink', title: dec(c[0]), sub: dec(c[1]), onclick: '_ltGo(' + i + ',' + j + ')' })
-        .replace('class="rowc"', 'class="rowc lu-course' + (isBro ? ' lu-bro' : '') + '"');
-    });
-    h += '</div></div>';
-    return h;
+  function langs() {
+    const s = read('lang.progress.v1'), done = s.done || {};
+    const by = {};
+    for (const k in done) { const c = k.split('/')[0]; if (done[k]) by[c] = (by[c] || 0) + 1; }
+    return { by };
   }
 
   L.landing = function () {
-    const Cd = C();
-    if (!Cd || !Cd.cover || !window._LT) return '';
-    const H = hi(), LT = window._LT;
-    const cd = countdowns();
-    let h = '<div class="lu">';
+    const H = hi(), P = py(), G = langs();
+    const pct = Math.round((P.done / 60) * 100), r = 30, circ = 2 * Math.PI * r;
+    let h = '<div class="lx">';
+    h += '<div class="lx-head"><h1 class="b-h1">' + (H ? 'सीखो' : 'Learn') + '</h1><p>' + (H ? 'दो स्कूल। शुरू से प्रो तक, आवाज़ और एनिमेशन के साथ।' : 'Two schools. From zero to job-ready, narrated and animated.') + '</p></div>';
 
-    // header: serif title + exam countdown
-    const cdLabel = cd.length ? '<b>' + cd[0].d + '</b>&nbsp;' + (H ? 'दिन' : (cd[0].d === 1 ? 'day' : 'days')) : (H ? 'परीक्षा की तारीख' : 'Exam date');
-    h += '<div class="page-h lu-head"><h1>' + (H ? 'सीखो' : 'Learn') + '</h1>' +
-      '<button type="button" class="btn soft sm lu-timer" onclick="_openPrep(\'countdown.html\')" aria-label="' + esc(cd.length ? cd[0].n + ', ' + cd[0].d + ' days left' : 'Set an exam date') + '">' + icon('calendar', 17) + '<span>' + cdLabel + '</span></button></div>';
+    // ── School of Code: Python ──
+    h += '<a class="lx-py" href="/code/' + (P.started ? 'day.html?d=' + P.cur : '') + '" aria-label="Python: Zero to Hero">'
+      + '<span class="lx-stars" aria-hidden="true"></span><span class="lx-orbit" aria-hidden="true"><i class="pl"></i><i class="rg"></i><i class="rk">' + icon('rocket', 18) + '</i></span>'
+      + '<span class="lx-k">' + (H ? 'कोडिंग स्कूल' : 'School of Code') + '</span>'
+      + '<span class="lx-t">Python<small>Zero to Hero · 60 days</small></span>'
+      + '<span class="lx-s">' + (H ? 'असली Python आपके फ़ोन पर चलता है। हर दिन एक मिशन, Bro आपका कोच।' : 'Real Python runs on your phone. One mission a day, with Bro as your coach.') + '</span>'
+      + '<span class="lx-row"><span class="lx-ring"><svg viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="' + r + '" class="t"/><circle cx="36" cy="36" r="' + r + '" class="v" style="stroke-dasharray:' + circ + ';stroke-dashoffset:' + (circ * (1 - P.done / 60)) + '"/></svg><b>' + pct + '%</b></span>'
+      + '<span class="lx-meta"><b>' + (P.started ? (H ? 'दिन ' + P.cur + ' / 60' : 'Day ' + P.cur + ' of 60') : (H ? '60 दिन का मिशन' : 'A 60-day mission')) + '</b><small>' + (P.done ? P.done + (H ? ' दिन पूरे · ' : ' days done · ') + P.xp + ' XP' : (H ? 'शून्य से डेवलपर तक' : 'From zero to Python developer')) + '</small></span>'
+      + '<span class="lx-go">' + (P.started ? (P.resume ? (H ? 'जारी रखें' : 'Resume') : (H ? 'आगे बढ़ें' : 'Continue')) : (H ? 'शुरू करें' : 'Start')) + icon('arrow-right', 16) + '</span></span></a>';
+    h += '<a class="lx-link" href="/code/">' + icon('compass', 16) + '<span>' + (H ? 'पूरा 60-दिन का मिशन मैप देखें' : 'See the full 60-day mission map') + '</span>' + icon('chevron-right', 16) + '</a>';
 
-    // more than one exam: a quiet rail of countdown minis
-    if (cd.length > 1) {
-      h += '<div class="cv-rail half lu-cds">' + cd.map(x => Cd.mini({ num: x.d, title: x.n, sub: H ? 'दिन बाकी' : (x.d === 1 ? 'day to go' : 'days to go'), onclick: "_openPrep('countdown.html')" })).join('') + '</div>';
-    }
-
-    // hero
-    h += '<div class="lu-hero">' + Cd.cover({ key: 'hero-learn', icon: 'headphones', tone: 'ink', size: 'wide', cls: 'lg',
-      kick: H ? 'ऑडियो' : 'Audio first',
-      title: H ? 'सुनकर सीखो' : 'Learn by ear',
-      sub: H ? 'कोर्स, परीक्षा और भाषाएँ' : 'Courses, exams and languages',
-      go: 'arrow', onclick: "LearnUI.openTrack('lang')" }) + '</div>';
-
-    // tracks: 2-up tall covers; the open track's panel spans the full width right under its row
-    h += Cd.sec(H ? 'ट्रैक' : 'Tracks');
-    h += '<div class="cv-grid lu-grid">';
-    let pending = '';
-    LT.forEach(function (n, i) {
-      const open = S.learnOpen === n.k;
-      const kick = n.c.length + ' ' + (H ? 'कोर्स' : (n.c.length === 1 ? 'course' : 'courses'));
-      h += Cd.cover({ key: 'cat-' + n.k, icon: CAT_ICON[n.k] || 'book-open', tone: CAT_TONE[n.k] || 'ink', size: 'tall', cls: 'sm lu-track' + (open ? ' lu-open' : ''),
-        kick: kick, title: H && HI_NAME[n.k] ? HI_NAME[n.k] : dec(n.t), tag: n.badge ? esc(n.badge) : '', onclick: "_ltToggle('" + n.k + "')", aria: dec(n.t) + ', ' + kick })
-        .replace('<button type="button" class="cv', '<button type="button" aria-expanded="' + open + '" class="cv');
-      if (open) pending = panel(n, i);
-      // flush the panel after the second card of a row (or after the last card)
-      if (pending && (i % 2 === 1 || i === LT.length - 1)) { h += pending; pending = ''; }
+    // ── School of Languages ──
+    const img = window.Cards && Cards.photo ? Cards.photo('cat-lang') : '';
+    h += '<div class="lx-lang">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy">' : '') + '<div class="lx-lshade"></div>'
+      + '<div class="lx-lb"><span class="lx-k">' + (H ? 'भाषा स्कूल' : 'School of Languages') + '</span><b>' + (H ? '5 भाषाएँ, सुनकर सीखें' : '5 languages, learned by ear') + '</b><small>' + (H ? 'स्पैनिश, फ़्रेंच, जर्मन और हिंदी अंग्रेज़ी में; अंग्रेज़ी हिंदी में' : 'Spanish, French, German and Hindi in English, plus English taught in Hindi') + '</small></div></div>';
+    h += '<div class="lx-langs">';
+    LANGS.forEach(function (l, i) {
+      const n = G.by[l.c] || 0, p = Math.min(100, Math.round((n / LANG_TOTAL) * 100));
+      const ph = window.Cards && Cards.photo ? Cards.photo('lang-' + l.c) : '';
+      h += '<a class="lx-li" style="--i:' + i + '" href="/lang/course.html?c=' + l.c + '">'
+        + '<span class="lx-lph">' + (ph ? '<img src="' + esc(ph) + '" alt="" loading="lazy">' : '') + '</span>'
+        + '<span class="lx-lt"><b>' + esc(H ? l.nh : l.n) + ' <em>' + esc(l.native) + '</em></b><small>' + esc(H ? l.viah : l.via) + (n ? ' · ' + n + '/' + LANG_TOTAL : '') + '</small><span class="lx-bar"><i style="width:' + p + '%"></i></span></span>'
+        + icon('chevron-right', 18) + '</a>';
     });
     h += '</div>';
 
-    // more: half-width square covers
-    h += Cd.sec(H ? 'और' : 'More');
-    h += '<div class="cv-rail half lu-more">';
-    h += Cd.cover({ key: 'more-jobs', icon: 'briefcase', tone: 'umber', size: 'square', cls: 'sm', title: H ? 'सरकारी नौकरी' : 'Govt jobs', onclick: "_openPrep('jobs.html')" });
-    h += Cd.cover({ key: 'hero-news', icon: 'radio', tone: 'ink', size: 'square', cls: 'sm', title: H ? 'ख़बरें' : 'News', onclick: "switchTab('news')" });
-    h += Cd.cover({ key: 'more-groups', icon: 'users', tone: 'wine', size: 'square', cls: 'sm', title: H ? 'ग्रुप' : 'Groups', onclick: "_openPrep('groups.html')" });
-    h += Cd.cover({ icon: 'bar-chart-3', tone: 'sand', size: 'square', cls: 'sm lu-board', title: H ? 'मेरा बोर्ड' : 'My board', onclick: "_openPrep('progress.html')" });
-    h += Cd.cover({ key: 'more-speaker', icon: 'mic', tone: 'clay', size: 'square', cls: 'sm', title: H ? 'स्पीकर' : 'Speaker', onclick: "location.href='/speaker/'" });
-    h += '</div>';
-
+    // ── Bro knows your progress ──
+    h += '<button class="lx-bro" onclick="location.href=\'/?tab=bro&persona=teacher\'"><img src="/app/mascot.svg" alt="" width="44" height="44"><span><b>' + (H ? 'Bro से पूछो' : 'Ask Bro, your coach') + '</b><small>' + (H ? 'वह आपकी प्रगति जानता है और हर सवाल का जवाब देता है' : 'Knows your progress in both schools and answers any question') + '</small></span>' + icon('chevron-right', 18) + '</button>';
     h += '</div>';
     return h;
   };
-
-  // scoped styles: the legacy inline <style> in server.js loads after the app CSS, so every rule is anchored on #app .lu
-  const css = `
-#app .lu{padding-bottom:8px}
-#app .lu .lu-head{align-items:center;margin:4px 0 18px}
-#app .lu .lu-timer{min-height:44px;gap:7px;padding:0 15px;border-radius:999px;font-weight:600;white-space:nowrap}
-#app .lu .lu-timer b{font:400 21px/1 var(--b-serif);font-variant-numeric:tabular-nums}
-#app .lu .lu-timer svg{width:17px;height:17px;color:var(--b-primary)}
-#app .lu .lu-cds{margin-bottom:14px}
-#app .lu .lu-cds .mini{min-height:96px}
-#app .lu .lu-cds .mini b{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-#app .lu .lu-hero .cv-sub{-webkit-line-clamp:1}
-#app .lu .sec-h{margin:28px 0 12px}
-#app .lu .lu-grid{align-items:start}
-#app .lu .lu-track .cv-kick{font-size:10.5px}
-#app .lu .lu-track .cv-tag{background:rgba(255,255,255,.92);color:#1F1E1C;-webkit-backdrop-filter:none;backdrop-filter:none}
-#app .lu .lu-track.lu-open{box-shadow:0 0 0 3px var(--b-bg),0 0 0 5px var(--b-primary),0 14px 30px -18px rgba(31,30,28,.55)}
-#app .lu .lu-panel{grid-column:1/-1;scroll-margin-top:84px;margin:2px 0 4px;padding:8px 10px 10px;border-radius:24px;background:var(--b-bg-2);animation:lu-open .38s var(--ease,cubic-bezier(.16,1,.3,1)) both}
-#app .lu .lu-ph{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px 10px 8px}
-#app .lu .lu-ph b{display:block;font:400 24px/1.1 var(--b-serif);color:var(--b-ink);letter-spacing:-.01em}
-#app .lu .lu-ph small{display:block;margin-top:3px;font:500 12.5px var(--b-sans);color:var(--b-mute)}
-#app .lu .lu-x{background:var(--b-card);width:44px;height:44px}
-#app .lu .lu-rows .rowc{box-shadow:0 1px 2px rgba(31,30,28,.05)}
-#app .lu .lu-rows .rowc+.rowc{margin-top:8px}
-#app .lu .lu-bro .rc-th{background:var(--b-primary-soft)}
-#app .lu .lu-bro .rc-th img{object-fit:contain;inset:7px;width:calc(100% - 14px);height:calc(100% - 14px)}
-#app .lu .lu-board .cv-art svg{width:72%;right:-14%;top:4%}
-#app .lu .lu-more{padding-bottom:10px}
-@keyframes lu-open{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-html[data-theme="dark"] #app .lu .lu-track.lu-open,body[data-theme=aurora] #app .lu .lu-track.lu-open{box-shadow:0 0 0 3px var(--b-bg),0 0 0 5px var(--b-primary)}
-html[data-theme="dark"] #app .lu .lu-x,body[data-theme=aurora] #app .lu .lu-x{background:var(--b-card);color:var(--b-ink)}
-html[data-theme="dark"] #app .lu .lu-timer,body[data-theme=aurora] #app .lu .lu-timer{background:var(--b-card);color:var(--b-ink)}
-@media (max-width:370px){#app .lu .lu-track .cv-title{font-size:19px}#app .lu .lu-track .cv-body{padding:14px 13px 13px}}
-@media (prefers-reduced-motion:reduce){#app .lu .lu-panel{animation:none}}
-`;
-  try {
-    if (!document.getElementById('lu-css')) { const st = document.createElement('style'); st.id = 'lu-css'; st.textContent = css; document.head.appendChild(st); }
-  } catch (e) {}
 })();

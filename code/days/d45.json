@@ -1,0 +1,438 @@
+{
+ "day": 45,
+ "phase": 5,
+ "title": "Working with data",
+ "subtitle": "Clean it, summarise it, report it",
+ "minutes": 60,
+ "goal": "Turn a messy CSV export into clean records, honest statistics, grouped totals and a readable text report.",
+ "outcomes": [
+  "Inspect raw data and spot the problems before trusting it",
+  "Write small parsers that clean text, numbers and missing values without crashing",
+  "Summarise data with mean, median, mode and stdev, and know when the median is more honest",
+  "Group and aggregate with defaultdict, Counter and a correctly sorted groupby",
+  "Print aligned reports and ASCII bar charts"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 45: Working with data",
+   "body": "Every app produces data: orders, clicks, payments, ratings. Turning a messy CSV into a clear answer is one of the most valuable skills a developer has.\n\nToday: a complete data pipeline, standard library only.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Load: read the raw CSV",
+     "Clean: fix, convert, drop, dedupe",
+     "Analyse: statistics and groups",
+     "Report: a table and an ASCII chart"
+    ]
+   },
+   "say": "Every app produces data: orders, clicks, payments, ratings. Turning a messy CSV file into a clear answer is one of the most valuable skills a developer can have, and data people say eighty percent of the work is cleaning. Today you build a complete data pipeline with nothing but the standard library."
+  },
+  {
+   "type": "concept",
+   "title": "Real data is messy",
+   "body": "A real export from a food delivery app:\n- spaces and random capitals: ` pune `, `MUMBAI`\n- symbols inside numbers: `₹450`, `1,250`\n- blanks and junk: an empty cell, `abc`, `N/A`\n- the same order twice",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "order_id",
+     "city",
+     "amount",
+     "rating"
+    ],
+    "rows": [
+     [
+      "1002",
+      "' pune '",
+      "₹450",
+      "4"
+     ],
+     [
+      "1004",
+      "MUMBAI",
+      "1,250",
+      "3"
+     ],
+     [
+      "1005",
+      "Delhi",
+      "(blank)",
+      "4"
+     ],
+     [
+      "1008",
+      "Pune",
+      "540",
+      "N/A"
+     ],
+     [
+      "1011",
+      "Delhi",
+      "abc",
+      "3"
+     ],
+     [
+      "1002",
+      "' pune '",
+      "₹450",
+      "4  ← again"
+     ]
+    ]
+   },
+   "say": "Here is a realistic export from a food delivery app. Extra spaces and random capitals in city names. Rupee symbols and commas inside numbers. Blank cells, junk like a b c, and N slash A. And the same order appearing twice. Analyse this as it is, and every number you report will be wrong."
+  },
+  {
+   "type": "code",
+   "title": "Look before you trust",
+   "body": "`orders.csv` sits next to your program. Print a sample row and the distinct values of a column.",
+   "code": "import csv\n\nwith open(\"orders.csv\", newline=\"\", encoding=\"utf-8\") as f:\n    rows = list(csv.DictReader(f))\n\nprint(len(rows), \"rows\")\nprint(rows[1])\nprint(sorted({row[\"city\"] for row in rows}))\n",
+   "expect": "13 rows\n{'order_id': '1002', 'date': '2026-03-01', 'city': ' pune ', 'restaurant': 'Burger Barn', 'amount': '₹450', 'minutes': '35', 'rating': '4'}\n[' pune ', 'Bengaluru', 'Delhi', 'MUMBAI', 'Mumbai', 'Pune', 'bengaluru']\n",
+   "files": {
+    "orders.csv": "order_id,date,city,restaurant,amount,minutes,rating\n1001,2026-03-01,Pune,Chai Point,240,28,5\n1002,2026-03-01, pune ,Burger Barn,₹450,35,4\n1003,2026-03-02,Mumbai,Dosa Hub,180,22,5\n1004,2026-03-02,MUMBAI,Biryani House,\"1,250\",41,3\n1005,2026-03-02,Delhi,Chai Point,,30,4\n1006,2026-03-03,Delhi,Biryani House,620,95,2\n1002,2026-03-01, pune ,Burger Barn,₹450,35,4\n1007,2026-03-03,Bengaluru,Dosa Hub,210,25,5\n1008,2026-03-04,Pune,Biryani House,540,38,N/A\n1009,2026-03-04,Mumbai,Burger Barn,390,33,4\n1010,2026-03-05,bengaluru,Chai Point,160,19,5\n1011,2026-03-05,Delhi,Dosa Hub,abc,27,3\n1012,2026-03-05,Pune,Dosa Hub,200,24,4\n"
+   },
+   "explain": [
+    [
+     3,
+     "newline=\"\" is what the csv module wants; utf-8 handles the ₹ sign."
+    ],
+    [
+     4,
+     "Each row becomes a dict keyed by the header."
+    ],
+    [
+     8,
+     "A set of every spelling in the city column: the mess, revealed."
+    ]
+   ],
+   "say": "Step one is always to look at the data before you trust it. Dict reader turns each line into a dict keyed by the column names. Printing the set of cities exposes the mess instantly: Pune is spelt three different ways, so any count by city would be wrong."
+  },
+  {
+   "type": "concept",
+   "title": "Cleaning rules",
+   "body": "Write cleaning as **small functions, one rule each**: easy to test, easy to change. Drop rows you can't fix, and **count** them. Never hide them.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Raw (all strings)",
+     "code": "{'city': ' pune ', 'amount': '₹450',\n 'minutes': '35', 'rating': '4'}\n{'city': 'Delhi', 'amount': 'abc', ...}"
+    },
+    "right": {
+     "title": "Clean (real types)",
+     "code": "{'city': 'Pune', 'amount': 450.0,\n 'minutes': 35, 'rating': 4}\n# dropped: amount is not a number"
+    },
+    "verdict": "Clean data has real types, one spelling per value, and no duplicates."
+   },
+   "say": "Professionals write cleaning as small functions, one rule each, so every rule is easy to test and easy to change. Text is trimmed and put in one consistent case. Numbers lose their symbols and become real floats or ints. Rows that cannot be fixed are dropped and counted, never silently ignored. And duplicates are removed by their ID."
+  },
+  {
+   "type": "code",
+   "title": "Small, safe parsers",
+   "code": "def parse_amount(text):\n    \"\"\"'₹1,250 ' -> 1250.0; blank or junk -> None\"\"\"\n    cleaned = text.replace(\"₹\", \"\").replace(\",\", \"\").strip()\n    try:\n        return float(cleaned)\n    except ValueError:\n        return None\n\ndef parse_rating(text):\n    return int(text) if text.strip().isdigit() else None\n\ndef clean_city(text):\n    return text.strip().title()\n\nprint(parse_amount(\" ₹1,250 \"), parse_amount(\"abc\"), parse_amount(\"\"))\nprint(parse_rating(\"4\"), parse_rating(\"N/A\"))\nprint(clean_city(\"  MUMBAI \"), clean_city(\"bengaluru\"))\n",
+   "expect": "1250.0 None None\n4 None\nMumbai Bengaluru\n",
+   "explain": [
+    [
+     3,
+     "Remove the symbols people type into numbers."
+    ],
+    [
+     5,
+     "Try to convert…"
+    ],
+    [
+     7,
+     "…and return None instead of crashing."
+    ],
+    [
+     10,
+     "Only digits become a rating; N/A becomes None."
+    ],
+    [
+     13,
+     "Trim, then one consistent capitalisation."
+    ]
+   ],
+   "say": "Each parser handles one messy column and never crashes. Parse amount strips the rupee sign and commas, tries float, and returns None for anything it cannot read: the try and except pattern from day nineteen. Parse rating accepts only digits. Clean city trims spaces and fixes capitals. Small, boring, reliable."
+  },
+  {
+   "type": "predict",
+   "title": "Lakhs and junk",
+   "code": "def parse_amount(text):\n    cleaned = text.replace(\"₹\", \"\").replace(\",\", \"\").strip()\n    try:\n        return float(cleaned)\n    except ValueError:\n        return None\n\nraw = [\"₹99\", \"1,00,000\", \" 12.50 \", \"-\", \"N/A\"]\nprint([parse_amount(x) for x in raw])",
+   "options": [
+    "[99.0, 100000.0, 12.5, None, None]",
+    "[99.0, 1.0, 12.5, None, None]",
+    "[99.0, 100000.0, 12.5, 0.0, None]",
+    "[None, 100000.0, 12.5, None, None]"
+   ],
+   "answer": 0,
+   "why": "Removing every comma handles Indian lakh formatting too: `1,00,000` becomes 100000. A lone `-` isn't a number, so `float()` raises ValueError and we return None.",
+   "say": "Indian amounts are often written with lakh commas, like one lakh written as one, comma, zero zero, comma, zero zero zero. What does parse amount make of this list?"
+  },
+  {
+   "type": "exercise",
+   "title": "Load and clean the orders",
+   "task": "Write `load_clean(path)` returning `(rows, dropped)`:\n- `rows`: dicts with `order_id`, `city` (trimmed, Title Case), `amount` (float), `minutes` (int), `rating` (int or `None`)\n- skip rows whose amount isn't a number, and repeated `order_id`s (keep the first)\n- `dropped`: how many rows you skipped",
+   "starter": "import csv\n\ndef parse_amount(text):\n    cleaned = text.replace(\"₹\", \"\").replace(\",\", \"\").strip()\n    try:\n        return float(cleaned)\n    except ValueError:\n        return None\n\ndef parse_rating(text):\n    return int(text) if text.strip().isdigit() else None\n\ndef load_clean(path):\n    rows, seen, dropped = [], set(), 0\n    with open(path, newline=\"\", encoding=\"utf-8\") as f:\n        for raw in csv.DictReader(f):\n            pass   # skip duplicates and bad amounts, build a clean dict\n    return rows, dropped\n\nrows, dropped = load_clean(\"orders.csv\")\nprint(len(rows), \"clean rows,\", dropped, \"dropped\")\n",
+   "solution": "import csv\n\ndef parse_amount(text):\n    cleaned = text.replace(\"₹\", \"\").replace(\",\", \"\").strip()\n    try:\n        return float(cleaned)\n    except ValueError:\n        return None\n\ndef parse_rating(text):\n    return int(text) if text.strip().isdigit() else None\n\ndef load_clean(path):\n    rows, seen, dropped = [], set(), 0\n    with open(path, newline=\"\", encoding=\"utf-8\") as f:\n        for raw in csv.DictReader(f):\n            amount = parse_amount(raw[\"amount\"])\n            if raw[\"order_id\"] in seen or amount is None:\n                dropped += 1\n                continue\n            seen.add(raw[\"order_id\"])\n            rows.append({\n                \"order_id\": raw[\"order_id\"],\n                \"city\": raw[\"city\"].strip().title(),\n                \"amount\": amount,\n                \"minutes\": int(raw[\"minutes\"]),\n                \"rating\": parse_rating(raw[\"rating\"]),\n            })\n    return rows, dropped\n\nrows, dropped = load_clean(\"orders.csv\")\nprint(len(rows), \"clean rows,\", dropped, \"dropped\")\n",
+   "tests": "rows, dropped = load_clean(\"orders.csv\")\nassert len(rows) == 10, f\"orders.csv has 13 rows: 2 have bad amounts and 1 is a duplicate, so 10 should remain. You kept {len(rows)}.\"\nassert dropped == 3, f\"Report 3 dropped rows, not {dropped}.\"\ncities = sorted({r[\"city\"] for r in rows})\nassert cities == [\"Bengaluru\", \"Delhi\", \"Mumbai\", \"Pune\"], f\"Each city needs one spelling: strip spaces and use .title(). You have {cities}.\"\nby_id = {r[\"order_id\"]: r for r in rows}\nassert by_id[\"1004\"][\"amount\"] == 1250.0, \"Order 1004's amount '1,250' should become the float 1250.0.\"\nassert by_id[\"1002\"][\"amount\"] == 450.0 and isinstance(by_id[\"1002\"][\"minutes\"], int), \"Order 1002 needs amount 450.0 (₹ removed) and minutes as an int.\"\nassert by_id[\"1008\"][\"rating\"] is None, \"Order 1008 has rating N/A: keep the order, with rating None.\"\nassert [r[\"order_id\"] for r in rows].count(\"1002\") == 1, \"Order 1002 is in the file twice: keep only the first.\"",
+   "hints": [
+    "Parse the amount first. If it's None, or the `order_id` is already in `seen`, add 1 to `dropped` and `continue`.",
+    "Add every kept `order_id` to `seen`.",
+    "Build the dict with `raw['city'].strip().title()`, `int(raw['minutes'])` and `parse_rating(raw['rating'])`."
+   ],
+   "files": {
+    "orders.csv": "order_id,date,city,restaurant,amount,minutes,rating\n1001,2026-03-01,Pune,Chai Point,240,28,5\n1002,2026-03-01, pune ,Burger Barn,₹450,35,4\n1003,2026-03-02,Mumbai,Dosa Hub,180,22,5\n1004,2026-03-02,MUMBAI,Biryani House,\"1,250\",41,3\n1005,2026-03-02,Delhi,Chai Point,,30,4\n1006,2026-03-03,Delhi,Biryani House,620,95,2\n1002,2026-03-01, pune ,Burger Barn,₹450,35,4\n1007,2026-03-03,Bengaluru,Dosa Hub,210,25,5\n1008,2026-03-04,Pune,Biryani House,540,38,N/A\n1009,2026-03-04,Mumbai,Burger Barn,390,33,4\n1010,2026-03-05,bengaluru,Chai Point,160,19,5\n1011,2026-03-05,Delhi,Dosa Hub,abc,27,3\n1012,2026-03-05,Pune,Dosa Hub,200,24,4\n"
+   },
+   "say": "Now build the cleaning step for real. Load clean reads the file, skips rows whose amount is not a number, skips repeated order IDs, and converts every field to the right type. It returns the clean rows and how many were dropped, because a good pipeline always reports what it threw away."
+  },
+  {
+   "type": "concept",
+   "title": "The statistics module",
+   "body": "- `mean`: the average, pulled around by outliers\n- `median`: the middle value, barely moved by outliers\n- `mode`: the most common value\n- `stdev`: how spread out the values are",
+   "visual": {
+    "kind": "chart",
+    "title": "Delivery minutes per clean order",
+    "bars": [
+     [
+      "1001",
+      28
+     ],
+     [
+      "1002",
+      35
+     ],
+     [
+      "1003",
+      22
+     ],
+     [
+      "1004",
+      41
+     ],
+     [
+      "1006",
+      95
+     ],
+     [
+      "1007",
+      25
+     ],
+     [
+      "1008",
+      38
+     ],
+     [
+      "1009",
+      33
+     ],
+     [
+      "1010",
+      19
+     ],
+     [
+      "1012",
+      24
+     ]
+    ]
+   },
+   "say": "The statistics module gives you the classic measures. Mean is the average, but one extreme value can drag it around, like this ninety five minute delivery. Median is the middle value, so outliers barely move it. Mode is the most common value, and standard deviation tells you how spread out the values are."
+  },
+  {
+   "type": "code",
+   "title": "Delivery time statistics",
+   "code": "import statistics as st\n\nminutes = [28, 35, 22, 41, 95, 25, 38, 33, 19, 24]\nratings = [5, 4, 5, 3, 2, 5, 4, 5, 4]       # order 1008 had no rating\n\nprint(\"mean:  \", round(st.mean(minutes), 1))\nprint(\"median:\", st.median(minutes))\nprint(\"stdev: \", round(st.stdev(minutes), 1))\nprint(\"most common rating:\", st.mode(ratings))\n\ntypical = st.median(minutes)\nslow = [m for m in minutes if m > 2 * typical]\nprint(\"unusually slow:\", slow)\n",
+   "expect": "mean:   36\nmedian: 30.5\nstdev:  21.9\nmost common rating: 5\nunusually slow: [95]\n",
+   "explain": [
+    [
+     6,
+     "The average: pulled up by the 95-minute order."
+    ],
+    [
+     7,
+     "The middle of the sorted values: (28 + 33) / 2."
+    ],
+    [
+     8,
+     "Spread: big, because of that one outlier."
+    ],
+    [
+     12,
+     "A simple, explainable outlier rule."
+    ]
+   ],
+   "say": "Here are the delivery times from our clean data. The mean is thirty six minutes, but the median is only thirty point five, because one ninety five minute disaster drags the average up. When a manager asks for the typical delivery time, the median is the honest answer. We also flag outliers: anything slower than twice the median."
+  },
+  {
+   "type": "quiz",
+   "title": "Mean or median?",
+   "q": "A 10-person startup: nine people earn ₹8 lakh a year, the founder takes ₹2 crore. Which number best describes a typical salary there?",
+   "options": [
+    "The mean",
+    "The median",
+    "The maximum",
+    "The standard deviation"
+   ],
+   "answer": 1,
+   "why": "The founder drags the mean up to ₹27.2 lakh, which nobody actually earns. The median stays at ₹8 lakh: the typical employee.",
+   "say": "Nine people at a startup earn eight lakh rupees a year, and the founder takes two crore. Which number best describes a typical salary there?"
+  },
+  {
+   "type": "concept",
+   "title": "Group and aggregate",
+   "body": "Most questions are 'per something': revenue **per city**, orders **per day**. The pattern:\n- group: `defaultdict(list)` keyed by the category\n- aggregate: `sum`, `len`, `mean` on each group\n- just counting? `Counter`",
+   "visual": {
+    "kind": "dict",
+    "name": "by_city",
+    "pairs": [
+     [
+      "'Pune'",
+      "[240.0, 450.0, 540.0, 200.0]"
+     ],
+     [
+      "'Mumbai'",
+      "[180.0, 1250.0, 390.0]"
+     ],
+     [
+      "'Delhi'",
+      "[620.0]"
+     ],
+     [
+      "'Bengaluru'",
+      "[210.0, 160.0]"
+     ]
+    ]
+   },
+   "say": "Most business questions are per something. Revenue per city, orders per day, rating per restaurant. The pattern is always the same. Group the rows into a defaultdict of lists keyed by the category, then aggregate each group with sum, len or mean. If you only need how many, a Counter does it in one line."
+  },
+  {
+   "type": "code",
+   "title": "Revenue by city",
+   "code": "from collections import defaultdict, Counter\nfrom statistics import mean\n\norders = [  # (city, restaurant, amount) after cleaning\n    (\"Pune\", \"Chai Point\", 240.0), (\"Pune\", \"Burger Barn\", 450.0),\n    (\"Mumbai\", \"Dosa Hub\", 180.0), (\"Mumbai\", \"Biryani House\", 1250.0),\n    (\"Delhi\", \"Biryani House\", 620.0), (\"Bengaluru\", \"Dosa Hub\", 210.0),\n    (\"Pune\", \"Biryani House\", 540.0), (\"Mumbai\", \"Burger Barn\", 390.0),\n    (\"Bengaluru\", \"Chai Point\", 160.0), (\"Pune\", \"Dosa Hub\", 200.0),\n]\n\nby_city = defaultdict(list)\nfor city, restaurant, amount in orders:\n    by_city[city].append(amount)\n\nfor city, amounts in sorted(by_city.items(), key=lambda kv: sum(kv[1]), reverse=True):\n    print(f\"{city:<10} orders {len(amounts)}  revenue ₹{sum(amounts):>5,.0f}  avg ₹{mean(amounts):.0f}\")\n\nprint(Counter(restaurant for _, restaurant, _ in orders).most_common(2))\n",
+   "expect": "Mumbai     orders 3  revenue ₹1,820  avg ₹607\nPune       orders 4  revenue ₹1,430  avg ₹358\nDelhi      orders 1  revenue ₹  620  avg ₹620\nBengaluru  orders 2  revenue ₹  370  avg ₹185\n[('Dosa Hub', 3), ('Biryani House', 3)]\n",
+   "explain": [
+    [
+     13,
+     "Group: one list of amounts per city."
+    ],
+    [
+     17,
+     "Sort the groups by their total, biggest first."
+    ],
+    [
+     18,
+     "Aggregate and align: :<10 pads the name, :>5,.0f aligns the money."
+    ],
+    [
+     20,
+     "Counting only? Counter.most_common."
+    ]
+   ],
+   "say": "Here is the grouping pattern in action. One loop builds a list of amounts for each city. Then we sort the cities by total revenue and print a neat, aligned table with the format specs from day five. Mumbai wins on revenue with fewer orders than Pune, thanks to one big biryani order. Finally, a Counter finds the busiest restaurants."
+  },
+  {
+   "type": "predict",
+   "title": "The groupby trap",
+   "code": "from itertools import groupby\n\ncities = [\"Pune\", \"Pune\", \"Delhi\", \"Pune\"]\nprint([(city, len(list(group))) for city, group in groupby(cities)])",
+   "options": [
+    "[('Pune', 3), ('Delhi', 1)]",
+    "[('Pune', 2), ('Delhi', 1), ('Pune', 1)]",
+    "[('Delhi', 1), ('Pune', 3)]",
+    "[('Pune', 1), ('Pune', 1), ('Delhi', 1), ('Pune', 1)]"
+   ],
+   "answer": 1,
+   "why": "`itertools.groupby` only groups **neighbouring** equal items: a new group starts whenever the key changes. Sort first, or use a dict or Counter when the data isn't ordered.",
+   "say": "Day thirty one introduced groupby from itertools. Here is the trap that catches almost everyone. What does this print?"
+  },
+  {
+   "type": "bug",
+   "title": "Pune's revenue is wrong",
+   "task": "The manager knows Pune made ₹690 and Mumbai ₹570, but the report says **450** and **390**. Fix `revenue_by_city` so every city gets its full total.",
+   "starter": "from itertools import groupby\n\norders = [(\"Pune\", 240.0), (\"Mumbai\", 180.0), (\"Pune\", 450.0), (\"Delhi\", 620.0), (\"Mumbai\", 390.0)]\n\ndef revenue_by_city(orders):\n    totals = {}\n    for city, group in groupby(orders, key=lambda o: o[0]):\n        totals[city] = sum(amount for _, amount in group)\n    return totals\n\nprint(revenue_by_city(orders))\n",
+   "solution": "from itertools import groupby\n\norders = [(\"Pune\", 240.0), (\"Mumbai\", 180.0), (\"Pune\", 450.0), (\"Delhi\", 620.0), (\"Mumbai\", 390.0)]\n\ndef revenue_by_city(orders):\n    totals = {}\n    ordered = sorted(orders, key=lambda o: o[0])\n    for city, group in groupby(ordered, key=lambda o: o[0]):\n        totals[city] = sum(amount for _, amount in group)\n    return totals\n\nprint(revenue_by_city(orders))\n",
+   "tests": "data = [(\"Pune\", 240.0), (\"Mumbai\", 180.0), (\"Pune\", 450.0), (\"Delhi\", 620.0), (\"Mumbai\", 390.0)]\ngot = revenue_by_city(data)\nassert got.get(\"Pune\") == 690.0, f\"Pune made 240 + 450 = 690, but you report {got.get('Pune')}. groupby only groups neighbouring items.\"\nassert got.get(\"Mumbai\") == 570.0 and got.get(\"Delhi\") == 620.0, \"Mumbai should total 570 and Delhi 620.\"\nassert revenue_by_city([]) == {}, \"No orders means an empty dict.\"\nassert revenue_by_city([(\"Goa\", 100.0), (\"Goa\", 50.0)]) == {\"Goa\": 150.0}, \"Two Goa orders should add up to 150.\"",
+   "hints": [
+    "groupby starts a new group every time the key **changes**, and the second Pune group overwrites the first.",
+    "Sort the orders by city before grouping, or skip groupby and add into a `defaultdict(float)`."
+   ],
+   "say": "A manager spots a problem. The report says Pune made four hundred and fifty rupees, but she knows it was more. The code uses groupby on unsorted data, so the second Pune group silently overwrote the first. Fix revenue by city so every city gets its full total."
+  },
+  {
+   "type": "code",
+   "title": "An ASCII bar chart",
+   "code": "revenue = {\"Mumbai\": 1820, \"Pune\": 1430, \"Delhi\": 620, \"Bengaluru\": 370}\n\ndef bar_chart(data, width=24):\n    top = max(data.values())\n    for label, value in data.items():\n        bar = \"█\" * round(value / top * width)\n        print(f\"{label:>10} │ {bar} ₹{value:,}\")\n\nprint(\"Revenue by city, March 2026\")\nprint(\"-\" * 42)\nbar_chart(revenue)\n",
+   "expect": "Revenue by city, March 2026\n------------------------------------------\n    Mumbai │ ████████████████████████ ₹1,820\n      Pune │ ███████████████████ ₹1,430\n     Delhi │ ████████ ₹620\n Bengaluru │ █████ ₹370\n",
+   "explain": [
+    [
+     4,
+     "The biggest value sets the scale."
+    ],
+    [
+     6,
+     "Scale each value to 0…width blocks."
+    ],
+    [
+     7,
+     "Right-align labels so the bars start in one column."
+    ]
+   ],
+   "say": "Numbers in a table are hard to compare at a glance, so let's draw a chart with plain text. Each bar is a block character repeated in proportion to the biggest value, so the top city always fills the full width. Text charts work in terminals, log files, chat messages and automated emails, anywhere a picture cannot go."
+  },
+  {
+   "type": "exercise",
+   "title": "Build a reusable bar chart",
+   "task": "Write `bars(data, width=20)` that **returns** a list of lines, biggest value first, like `'Pune   ████████████████ 1430'`:\n- labels left-aligned and padded to the longest label\n- the biggest value gets exactly `width` blocks, others in proportion, rounded\n- an empty dict returns `[]`",
+   "starter": "def bars(data, width=20):\n    lines = []\n    # sort biggest first, scale each value to blocks, build each line\n    return lines\n\nfor line in bars({\"Pune\": 1430, \"Mumbai\": 1820, \"Goa\": 0}):\n    print(line)\n",
+   "solution": "def bars(data, width=20):\n    if not data:\n        return []\n    top = max(data.values()) or 1          # avoid dividing by zero\n    pad = max(len(label) for label in data)\n    lines = []\n    for label, value in sorted(data.items(), key=lambda kv: kv[1], reverse=True):\n        blocks = \"█\" * round(value / top * width)\n        lines.append(f\"{label:<{pad}} {blocks} {value}\")\n    return lines\n\nfor line in bars({\"Pune\": 1430, \"Mumbai\": 1820, \"Goa\": 0}):\n    print(line)\n",
+   "tests": "lines = bars({\"Pune\": 1430, \"Mumbai\": 1820, \"Goa\": 0})\nassert len(lines) == 3, f\"Three cities should give three lines, not {len(lines)}.\"\nassert lines[0].startswith(\"Mumbai\"), \"The biggest value (Mumbai, 1820) should come first.\"\nassert lines[0].count(\"█\") == 20, f\"The biggest value gets exactly width=20 blocks; Mumbai has {lines[0].count('█')}.\"\nassert lines[1].count(\"█\") == 16, f\"Pune is 1430/1820 of the top: round(15.7) = 16 blocks, not {lines[1].count('█')}.\"\nassert lines[1].startswith(\"Pune   \"), \"Pad labels to the longest one (Mumbai, 6 letters) so the bars line up: f'{label:<{pad}}'.\"\nassert lines[2].count(\"█\") == 0 and lines[2].startswith(\"Goa \"), \"A value of 0 gets no blocks.\"\nassert bars({\"A\": 5}, width=10)[0].count(\"█\") == 10, \"A single item is the biggest, so it gets the full width.\"\nassert bars({}) == [], \"An empty dict should return an empty list.\"",
+   "hints": [
+    "`sorted(data.items(), key=lambda kv: kv[1], reverse=True)` puts the biggest first.",
+    "Blocks for a value: `round(value / top * width)`, where `top` is the biggest value.",
+    "`pad = max(len(label) for label in data)`, then format the label with `f\"{label:<{pad}}\"`."
+   ],
+   "say": "Turn the chart into a reusable function. Bars returns a list of text lines, biggest value first, with labels padded so every bar starts in the same column. The biggest value gets the full width, and the rest are scaled in proportion. Returning lines instead of printing makes it easy to test and reuse."
+  },
+  {
+   "type": "concept",
+   "title": "Next step: pandas",
+   "body": "**pandas** is the industry tool for tables: a `DataFrame` is a spreadsheet in code. You'll run it on Day 53. Everything you did today is exactly what it automates.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Standard library (today)",
+     "code": "by_city = defaultdict(float)\nfor row in rows:\n    by_city[row['city']] += row['amount']"
+    },
+    "right": {
+     "title": "pandas (Day 53)",
+     "code": "import pandas as pd\ndf = pd.read_csv('orders.csv')\ndf.groupby('city')['amount'].sum()"
+    },
+    "verdict": "Same idea, one line, and it scales to millions of rows. You now know what that line does."
+   },
+   "say": "Everything you did today, data professionals often do with pandas. A data frame is like a spreadsheet inside your code, and grouping by city is a single line. You will run pandas yourself on day fifty three. Because you built the plain Python version first, you will understand exactly what that one line does for you."
+  },
+  {
+   "type": "quiz",
+   "title": "Be honest about dropped rows",
+   "q": "Your raw file had 13 rows and only 10 survived cleaning. What should the report do?",
+   "options": [
+    "Say nothing: nobody reads that part",
+    "State how many rows were dropped and why",
+    "Fill the missing amounts with zero so the count stays 13",
+    "Refuse to run until the data is perfect"
+   ],
+   "answer": 1,
+   "why": "Silent dropping hides problems upstream (a broken form, a bad export). Zero-filling invents data and drags the averages down. Report the numbers, explain the rules, and let people trust your results.",
+   "say": "Your raw file had thirteen rows, and only ten survived cleaning. What should your report do about that?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 45 complete",
+   "points": [
+    "Look before you trust: print a sample row and the distinct values of each column",
+    "Clean with small parsers: trim, fix case, strip symbols, convert types, drop and count bad rows, dedupe by ID",
+    "statistics gives mean, median, mode and stdev; prefer the median when outliers exist",
+    "Group with defaultdict(list), count with Counter; groupby only groups neighbours, so sort first",
+    "Report with aligned f-strings and ASCII bars; pandas automates all of this (Day 53)"
+   ],
+   "say": "Mission forty five complete. You loaded a messy export, cleaned it with small reliable parsers, computed honest statistics, grouped revenue by city, and drew a chart in plain text. Tomorrow your data comes from the internet: HTTP, status codes and JSON APIs."
+  }
+ ]
+}

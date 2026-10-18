@@ -1,0 +1,526 @@
+{
+ "day": 39,
+ "phase": 4,
+ "title": "Environments and packages",
+ "subtitle": "pip, venv, pyproject and a project layout that scales",
+ "minutes": 55,
+ "goal": "Set up isolated Python projects with venv and pip, pin dependencies, lay out a project professionally, and reason about versions in code.",
+ "outcomes": [
+  "Explain how pip installs packages from PyPI, and where they go",
+  "Create, activate and recreate a virtual environment for each project",
+  "Pin dependencies in requirements.txt and describe a project in pyproject.toml",
+  "Lay out a project with src/ and tests/ and track it with git",
+  "Parse requirement lines and compare version numbers correctly in Python"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 39: Ship-ready projects",
+   "body": "Real projects stand on other people's code: web frameworks, data libraries, API clients. Today you learn to install it **safely and reproducibly**, so *\"works on my machine\"* becomes *\"works on every machine\"*.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "python -m venv .venv"
+     ],
+     [
+      "$",
+      "source .venv/bin/activate"
+     ],
+     [
+      "(.venv) $",
+      "pip install requests==2.32.3"
+     ],
+     [
+      "",
+      "Successfully installed certifi-2024.8.30 charset-normalizer-3.4.0 idna-3.10 requests-2.32.3 urllib3-2.2.3"
+     ],
+     [
+      "(.venv) $",
+      "pip freeze > requirements.txt"
+     ]
+    ]
+   },
+   "say": "Real projects stand on the shoulders of other people's code: web frameworks, data libraries, API clients. Today you learn how to install that code safely, keep each project separate, and describe your project so that works on my machine becomes works on every machine. These are the commands you will type on day one of any Python job."
+  },
+  {
+   "type": "concept",
+   "title": "How pip and PyPI work",
+   "body": "**PyPI** (pypi.org) hosts 500,000+ open-source packages. **pip** downloads a package and its dependencies into the active Python's `site-packages` folder.\n\nOnly install packages you trust: attackers publish look-alike names (*typosquatting*).",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "pip install requests",
+     "pip asks pypi.org for the latest matching version",
+     "downloads a wheel (.whl) plus its dependencies",
+     "installs them into site-packages of the active Python",
+     "import requests now works"
+    ]
+   },
+   "say": "PyPI, the Python Package Index, hosts more than half a million open source packages. When you type pip install requests, pip asks PyPI for the package, downloads a ready-built file called a wheel, installs its dependencies too, and puts everything into the site packages folder of whichever Python is active. One warning: attackers publish packages with names one letter away from popular ones, so check the spelling."
+  },
+  {
+   "type": "code",
+   "title": "Which Python am I running?",
+   "code": "import sys\n\nprint(sys.version_info.major, sys.version_info.minor)\nprint(sys.version_info >= (3, 10))\n\nin_venv = sys.prefix != sys.base_prefix\nprint(\"inside a virtual environment:\", in_venv)",
+   "expect": "3 13\nTrue\ninside a virtual environment: False\n",
+   "explain": [
+    [
+     3,
+     "This phone runs Python 3.13."
+    ],
+    [
+     4,
+     "version_info compares like a tuple."
+    ],
+    [
+     6,
+     "In a venv, prefix is the .venv folder; base_prefix is the real Python."
+    ]
+   ],
+   "say": "Your code can ask which Python is running it. Version info compares like a tuple, which is how libraries check that you have a new enough Python. And here is a neat trick: inside a virtual environment, sys dot prefix points to the environment's folder, while base prefix still points to the original Python. On your laptop, run this inside and outside a venv and watch the last line change."
+  },
+  {
+   "type": "concept",
+   "title": "Why virtual environments?",
+   "body": "All projects share **one** global `site-packages`, but your shop API needs Django 5 and an old blog needs Django 4. A **virtual environment** (`venv`) gives each project its own private folder of packages.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "Your laptop",
+     "c": [
+      {
+       "t": "System Python 3.13 (leave it alone)"
+      },
+      {
+       "t": "shop-api/.venv",
+       "c": [
+        {
+         "t": "django 5.1"
+        },
+        {
+         "t": "requests 2.32"
+        }
+       ]
+      },
+      {
+       "t": "old-blog/.venv",
+       "c": [
+        {
+         "t": "django 4.2"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "Without virtual environments, every project on your laptop shares one folder of packages. Then one project needs Django five, another needs Django four, and upgrading one breaks the other. A virtual environment gives each project its own private Python and its own packages, in a folder usually called dot venv. Professionals create one for every project, without exception."
+  },
+  {
+   "type": "visual",
+   "title": "The venv workflow",
+   "body": "`.venv/` is disposable: never commit it. Anyone can rebuild it from `requirements.txt`.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "cd shop-api"
+     ],
+     [
+      "$",
+      "python -m venv .venv"
+     ],
+     [
+      "$",
+      "source .venv/bin/activate        # Windows: .venv\\Scripts\\activate"
+     ],
+     [
+      "(.venv) $",
+      "pip install -r requirements.txt"
+     ],
+     [
+      "(.venv) $",
+      "python -m pytest"
+     ],
+     [
+      "(.venv) $",
+      "deactivate"
+     ]
+    ]
+   },
+   "say": "Here is the routine. Create the environment once with python dash m venv. Activate it, and your prompt shows its name, so pip and python now point inside it. Install the project's dependencies from its requirements file, run your tests, and deactivate when you are done. On Windows the activate script lives in a Scripts folder instead."
+  },
+  {
+   "type": "quiz",
+   "title": "Recreate the environment",
+   "q": "A teammate clones your repository. What do they need to recreate your exact environment?",
+   "options": [
+    "Your .venv folder, zipped and emailed",
+    "requirements.txt (or pyproject.toml), then pip install inside a fresh venv",
+    "Nothing: pip remembers what you installed"
+   ],
+   "answer": 1,
+   "why": "A .venv contains machine-specific paths and binaries, so it doesn't travel. The dependency list does: a new venv plus pip install -r requirements.txt rebuilds it anywhere.",
+   "say": "Quick check. A new teammate clones your project. What do they need from you to rebuild the same environment?"
+  },
+  {
+   "type": "concept",
+   "title": "requirements.txt and version pins",
+   "body": "Versions follow **MAJOR.MINOR.PATCH** (semantic versioning): a major bump may break your code.\n\n**Pin** exact versions for apps you deploy, so a surprise upgrade can't break production on a Friday night.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Line",
+     "Means"
+    ],
+    "rows": [
+     [
+      "requests==2.32.3",
+      "exactly this version (pinned)"
+     ],
+     [
+      "requests>=2.31",
+      "this version or newer"
+     ],
+     [
+      "requests~=2.32.0",
+      "compatible: >=2.32.0 and <2.33"
+     ],
+     [
+      "requests>=2.31,<3",
+      "a range: no new major"
+     ],
+     [
+      "requests",
+      "any version: risky"
+     ],
+     [
+      "# web",
+      "a comment"
+     ]
+    ]
+   },
+   "say": "Most packages use semantic versioning: major, minor, patch. A patch fixes bugs, a minor version adds features, and a new major version may break your code. A requirements file lists what to install, with a specifier for each package. For an app you deploy, pin exact versions with double equals, so a surprise upgrade can never break production on a Friday night."
+  },
+  {
+   "type": "code",
+   "title": "Read a requirements file",
+   "code": "from pathlib import Path\n\nfor line in Path(\"requirements.txt\").read_text().splitlines():\n    line = line.split(\"#\")[0].strip()      # drop comments\n    if not line:\n        continue\n    if \"==\" in line:\n        name, version = line.split(\"==\")\n        print(f\"{name:<14} pinned to {version}\")\n    else:\n        print(f\"{line:<14} NOT pinned\")",
+   "expect": "requests       pinned to 2.32.3\nflask          pinned to 3.0.3\npandas>=2.2    NOT pinned\npython-dotenv  NOT pinned\n",
+   "files": {
+    "requirements.txt": "# web\nrequests==2.32.3\nflask==3.0.3\n\npandas>=2.2   # analytics\npython-dotenv\n"
+   },
+   "explain": [
+    [
+     3,
+     "The file sits next to main.py."
+    ],
+    [
+     4,
+     "Everything after # is a comment."
+    ],
+    [
+     5,
+     "Blank lines are skipped with a guard."
+    ],
+    [
+     8,
+     "Split 'name==version' into its two parts."
+    ]
+   ],
+   "say": "A requirements file is just text, so Python can audit it. We read the file line by line, drop comments, skip blank lines, and report which packages are pinned. Two of them are not. In a real team, a check like this runs automatically and warns before anything gets deployed."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: comparing versions",
+   "code": "print(\"3.10\" > \"3.9\", (3, 10) > (3, 9))",
+   "options": [
+    "True True",
+    "False True",
+    "True False",
+    "False False"
+   ],
+   "answer": 1,
+   "why": "Strings compare character by character: '1' < '9', so \"3.10\" < \"3.9\". Tuples of ints compare number by number: 10 > 9. Never compare versions as strings.",
+   "say": "Python three point ten is newer than three point nine. But what does Python say when you compare them as strings, and as tuples of numbers?"
+  },
+  {
+   "type": "code",
+   "title": "Compare versions properly",
+   "code": "def parse_version(text):\n    return tuple(int(part) for part in text.split(\".\"))\n\ninstalled = \"2.31.0\"\nrequired = \"2.32\"\n\nprint(parse_version(installed))\nprint(parse_version(installed) >= parse_version(required))\n\nversions = [\"1.10.0\", \"1.2.9\", \"1.9.3\", \"1.10.1\"]\nprint(sorted(versions))\nprint(sorted(versions, key=parse_version))",
+   "expect": "(2, 31, 0)\nFalse\n['1.10.0', '1.10.1', '1.2.9', '1.9.3']\n['1.2.9', '1.9.3', '1.10.0', '1.10.1']\n",
+   "explain": [
+    [
+     2,
+     "'2.31.0' becomes (2, 31, 0)."
+    ],
+    [
+     8,
+     "Tuples compare number by number."
+    ],
+    [
+     11,
+     "Text sorting: '1.10' < '1.2' because '1' < '2'. Wrong!"
+    ],
+    [
+     12,
+     "Numeric sorting with key=parse_version: right."
+    ]
+   ],
+   "say": "Turn each version into a tuple of integers and comparisons become correct. Two point thirty one is older than two point thirty two, so this environment needs an upgrade. Sorting as text puts one point ten before one point two, which is wrong. Sorting with parse version as the key gets it right. Real tools use the packaging library, which also understands versions like two point zero r c one."
+  },
+  {
+   "type": "concept",
+   "title": "pyproject.toml: one file to describe it all",
+   "body": "Modern projects describe themselves in **pyproject.toml**: name, version, Python version, dependencies, and settings for tools like ruff and pytest. Tools such as `pip`, `uv` and `poetry` read it.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "requirements.txt (exact pins to deploy)",
+     "code": "requests==2.32.3\nrich==13.9.4\n"
+    },
+    "right": {
+     "title": "pyproject.toml (what the project needs)",
+     "code": "[project]\nname = \"chai-tracker\"\nversion = \"0.1.0\"\nrequires-python = \">=3.11\"\ndependencies = [\"requests>=2.31\", \"rich~=13.7\"]"
+    },
+    "verdict": "pyproject.toml says what the project needs; pinned files say exactly what gets installed."
+   },
+   "say": "Modern Python projects describe themselves in one file called pyproject dot toml. It holds the project's name and version, which Python versions it supports, its dependencies, and settings for tools like ruff and pytest. Pip, uv and poetry all read it. A common pattern: pyproject lists flexible ranges, and a lock or requirements file pins exact versions for deployment."
+  },
+  {
+   "type": "code",
+   "title": "Read pyproject.toml with tomllib",
+   "code": "import tomllib\n\nwith open(\"pyproject.toml\", \"rb\") as f:\n    config = tomllib.load(f)\n\nproject = config[\"project\"]\nprint(project[\"name\"], project[\"version\"])\nprint(\"needs Python\", project[\"requires-python\"])\nfor dep in project[\"dependencies\"]:\n    print(\"-\", dep)\nprint(\"dev tools:\", project[\"optional-dependencies\"][\"dev\"])\nprint(\"ruff line length:\", config[\"tool\"][\"ruff\"][\"line-length\"])",
+   "expect": "chai-tracker 0.1.0\nneeds Python >=3.11\n- requests>=2.31\n- rich~=13.7\ndev tools: ['pytest>=8', 'ruff']\nruff line length: 100\n",
+   "files": {
+    "pyproject.toml": "[project]\nname = \"chai-tracker\"\nversion = \"0.1.0\"\ndescription = \"Track your daily chai, with charts\"\nrequires-python = \">=3.11\"\ndependencies = [\n    \"requests>=2.31\",\n    \"rich~=13.7\",\n]\n\n[project.optional-dependencies]\ndev = [\"pytest>=8\", \"ruff\"]\n\n[tool.ruff]\nline-length = 100\n"
+   },
+   "explain": [
+    [
+     3,
+     "tomllib needs the file opened in binary mode: rb."
+    ],
+    [
+     4,
+     "TOML becomes nested dicts and lists."
+    ],
+    [
+     11,
+     "Optional extras, installed with pip install -e \".[dev]\"."
+    ],
+    [
+     12,
+     "Tool settings live under [tool.<name>]."
+    ]
+   ],
+   "say": "TOML is a simple configuration format, and since Python three eleven the standard library can read it with tomllib. The file opens in binary mode, and load turns it into ordinary dictionaries and lists. This is exactly how tools like ruff find their settings in your project."
+  },
+  {
+   "type": "concept",
+   "title": "A project layout that scales",
+   "body": "- `src/<package>/`: your importable code\n- `tests/`: tests that mirror the package\n- `pyproject.toml`, `README.md`, `.gitignore` at the root\n\nThe `src/` folder stops tests from accidentally importing the uninstalled copy.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "chai-tracker/",
+     "c": [
+      {
+       "t": "pyproject.toml"
+      },
+      {
+       "t": "README.md"
+      },
+      {
+       "t": ".gitignore"
+      },
+      {
+       "t": "src/",
+       "c": [
+        {
+         "t": "chai_tracker/",
+         "c": [
+          {
+           "t": "__init__.py"
+          },
+          {
+           "t": "core.py"
+          },
+          {
+           "t": "cli.py"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "t": "tests/",
+       "c": [
+        {
+         "t": "test_core.py"
+        }
+       ]
+      },
+      {
+       "t": ".venv/ (never committed)"
+      }
+     ]
+    }
+   },
+   "say": "Here is the layout most professional Python projects use. Your code lives in a package inside a src folder, and tests live in a separate tests folder that mirrors it. Configuration and the readme sit at the root. The src folder looks like extra ceremony, but it guarantees your tests run against the installed package, exactly as your users will."
+  },
+  {
+   "type": "code",
+   "title": "A package of your own",
+   "body": "A **package** is a folder with `__init__.py`. Here: `chai_tracker/__init__.py` and `chai_tracker/core.py`.",
+   "code": "import chai_tracker\nfrom chai_tracker.core import cups_today\n\nprint(chai_tracker.__version__)\nprint(cups_today({\"morning\": 2, \"evening\": 1}))\nprint(chai_tracker.cups_today is cups_today)",
+   "expect": "0.1.0\n3\nTrue\n",
+   "files": {
+    "chai_tracker/__init__.py": "from .core import cups_today\n\n__version__ = \"0.1.0\"\n",
+    "chai_tracker/core.py": "def cups_today(log):\n    \"\"\"Total cups of chai logged today.\"\"\"\n    return sum(log.values())\n"
+   },
+   "explain": [
+    [
+     1,
+     "Importing the package runs its __init__.py."
+    ],
+    [
+     2,
+     "Import from a module inside the package."
+    ],
+    [
+     4,
+     "Packages often expose a __version__."
+    ],
+    [
+     6,
+     "__init__ re-exported it: the same function object."
+    ]
+   ],
+   "say": "A package is a folder with an init file. This one has a core module, and its init file re-exports the main function and sets a version string. So users can import the function from the package directly, and both names point to the very same function object. Open the files tab to see the two files."
+  },
+  {
+   "type": "concept",
+   "title": "git for Python projects",
+   "body": "Commit your **code, tests, pyproject.toml and requirements**. Never commit `.venv/`, `__pycache__/` or `.env` files with secrets: list them in `.gitignore`.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "git init"
+     ],
+     [
+      "$",
+      "echo \".venv/\" >> .gitignore"
+     ],
+     [
+      "$",
+      "echo \"__pycache__/\" >> .gitignore"
+     ],
+     [
+      "$",
+      "echo \".env\" >> .gitignore"
+     ],
+     [
+      "$",
+      "git add ."
+     ],
+     [
+      "$",
+      "git commit -m \"Project skeleton with tests\""
+     ],
+     [
+      "",
+      "[main (root-commit) 3f2a1c9] Project skeleton with tests"
+     ],
+     [
+      "$",
+      "git log --oneline"
+     ],
+     [
+      "",
+      "3f2a1c9 Project skeleton with tests"
+     ]
+    ]
+   },
+   "say": "Every professional project lives in git. Start with git init, then create a dot gitignore file that keeps out the virtual environment, Python's cache folders, and any dot env file with passwords or API keys. Then add and commit. Small commits with clear messages make your history a story your teammates can follow."
+  },
+  {
+   "type": "code",
+   "title": "Ask what's installed: importlib.metadata",
+   "code": "from importlib.metadata import PackageNotFoundError, version\n\ndef installed_version(package):\n    try:\n        return version(package)\n    except PackageNotFoundError:\n        return None\n\nfor pkg in [\"requests\", \"flask\"]:\n    found = installed_version(pkg)\n    print(pkg, \"->\", found or \"not installed\")",
+   "expect": "requests -> not installed\nflask -> not installed\n",
+   "explain": [
+    [
+     1,
+     "Standard library: reads installed packages' metadata."
+    ],
+    [
+     5,
+     "version('requests') returns e.g. '2.32.3'."
+    ],
+    [
+     6,
+     "Not installed? Return None instead of crashing."
+    ]
+   ],
+   "say": "Your program can ask which packages are installed, and at which version, using importlib dot metadata. On your laptop, inside a venv with requests installed, this prints its version number. In this phone's Python, neither package is installed, and our function handles that gracefully instead of crashing."
+  },
+  {
+   "type": "exercise",
+   "title": "Parse a requirements file",
+   "task": "Write `parse_requirements(text)` that returns a list of `(name, operator, version)` tuples.\n\n- skip blank lines and `#` comments (whole-line and inline)\n- names in lower case\n- operators: `==`, `>=`, `<=`, `~=`, `!=`, `>`, `<`, with optional spaces\n- no version: `(name, None, None)`",
+   "starter": "def parse_requirements(text):\n    # TODO: return a list of (name, operator, version) tuples\n    return []\n\nsample = \"\"\"# web\nrequests==2.32.3\nFlask>=3.0  # web framework\n\npython-dotenv\n\"\"\"\nprint(parse_requirements(sample))\n",
+   "solution": "OPERATORS = [\"==\", \">=\", \"<=\", \"~=\", \"!=\", \">\", \"<\"]   # two-character ones first\n\ndef parse_requirements(text):\n    result = []\n    for line in text.splitlines():\n        line = line.split(\"#\")[0].strip()\n        if not line:\n            continue\n        for op in OPERATORS:\n            if op in line:\n                name, version = line.split(op, 1)\n                result.append((name.strip().lower(), op, version.strip()))\n                break\n        else:\n            result.append((line.lower(), None, None))\n    return result\n\nsample = \"\"\"# web\nrequests==2.32.3\nFlask>=3.0  # web framework\n\npython-dotenv\n\"\"\"\nprint(parse_requirements(sample))\n",
+   "tests": "text = \"# web\\nrequests==2.32.3\\nFlask>=3.0  # web framework\\n\\npython-dotenv\\nnumpy == 2.1.0\\nrich~=13.7\\n\"\ngot = parse_requirements(text)\nwant = [(\"requests\", \"==\", \"2.32.3\"), (\"flask\", \">=\", \"3.0\"), (\"python-dotenv\", None, None), (\"numpy\", \"==\", \"2.1.0\"), (\"rich\", \"~=\", \"13.7\")]\nfor i, w in enumerate(want):\n    assert i < len(got), f\"Expected {len(want)} requirements, got {len(got)}: {got}\"\n    assert tuple(got[i]) == w, f\"Line {i + 1} should parse to {w}, got {got[i]}.\"\nassert len(got) == len(want), f\"Expected exactly {len(want)} requirements, got {len(got)}. Skip blank lines and comments.\"\nassert parse_requirements(\"\") == [], \"Empty text gives an empty list.\"\nassert parse_requirements(\"# only comments\\n   \\n\") == [], \"Only comments and blank lines: return [].\"",
+   "hints": [
+    "Clean each line first: line.split(\"#\")[0].strip(), and skip it if empty.",
+    "Find the operator: loop over [\"==\", \">=\", \"<=\", \"~=\", \"!=\", \">\", \"<\"] (two-character ones first) and use the first one that appears in the line.",
+    "Then name, version = line.split(op, 1), strip both and lower-case the name. No operator at all? Append (line.lower(), None, None): a for...else is perfect here."
+   ],
+   "say": "Dependency tools all start by parsing requirement lines. Write parse requirements, which turns a requirements file into a list of tuples of name, operator and version. Skip comments and blank lines, lower case the names, and allow spaces around the operator. Plain string methods are enough, which is a good reminder that not every text problem needs a regex."
+  },
+  {
+   "type": "exercise",
+   "title": "Check the environment",
+   "task": "Write `outdated(required, installed)`. Both are dicts of `name → version`. `required` holds **minimum** versions. Return a list sorted by name with:\n\n- `\"pandas: missing\"` when not installed\n- `\"requests: 2.31.0 < 2.32\"` when too old\n\nCompare numerically, and treat `3.0` and `3.0.0` as equal.",
+   "starter": "def parse_version(text):\n    return tuple(int(part) for part in text.split(\".\"))\n\ndef outdated(required, installed):\n    # TODO: one message per problem, sorted by package name\n    return []\n\nprint(outdated({\"requests\": \"2.32\", \"pandas\": \"2.2\"}, {\"requests\": \"2.31.0\"}))\n",
+   "solution": "def parse_version(text):\n    return tuple(int(part) for part in text.split(\".\"))\n\ndef outdated(required, installed):\n    problems = []\n    for name in sorted(required):\n        need = required[name]\n        have = installed.get(name)\n        if have is None:\n            problems.append(f\"{name}: missing\")\n            continue\n        a, b = parse_version(have), parse_version(need)\n        width = max(len(a), len(b))\n        a += (0,) * (width - len(a))\n        b += (0,) * (width - len(b))\n        if a < b:\n            problems.append(f\"{name}: {have} < {need}\")\n    return problems\n\nprint(outdated({\"requests\": \"2.32\", \"pandas\": \"2.2\"}, {\"requests\": \"2.31.0\"}))\n",
+   "tests": "req = {\"requests\": \"2.32\", \"flask\": \"3.0.0\", \"rich\": \"13.7\", \"pandas\": \"2.2\"}\ninst = {\"requests\": \"2.31.0\", \"flask\": \"3.0\", \"rich\": \"13.10.1\"}\ngot = outdated(req, inst)\nassert \"pandas: missing\" in got, f\"pandas isn't installed, so expect 'pandas: missing' in {got}.\"\nassert \"requests: 2.31.0 < 2.32\" in got, f\"requests 2.31.0 is older than 2.32: expect 'requests: 2.31.0 < 2.32' in {got}.\"\nassert not any(m.startswith(\"rich\") for m in got), \"rich 13.10.1 is NEWER than 13.7: compare numbers, not strings.\"\nassert not any(m.startswith(\"flask\") for m in got), \"flask 3.0 and 3.0.0 are the same version: pad the shorter tuple with zeros.\"\nassert got == [\"pandas: missing\", \"requests: 2.31.0 < 2.32\"], f\"Sort the messages by package name. Got {got}.\"\nassert outdated({}, {\"x\": \"1.0\"}) == [], \"Nothing required: no problems.\"\nassert outdated({\"django\": \"4.2\"}, {\"django\": \"5.1\"}) == [], \"django 5.1 satisfies a minimum of 4.2.\"",
+   "hints": [
+    "Loop over sorted(required). Use installed.get(name) to spot missing packages.",
+    "Compare parse_version(have) < parse_version(need), not the strings.",
+    "Before comparing, pad the shorter tuple: a += (0,) * (width - len(a))."
+   ],
+   "say": "Before deploying, teams check that every dependency is installed and new enough. Write outdated, which compares required minimum versions with what is installed. Watch out for two traps: thirteen point ten is newer than thirteen point seven, and three point zero equals three point zero point zero."
+  },
+  {
+   "type": "quiz",
+   "title": "What goes into git?",
+   "q": "Which of these belongs in your project's git repository?",
+   "options": [
+    ".venv/",
+    "pyproject.toml and requirements.txt",
+    ".env with your API keys",
+    "__pycache__/"
+   ],
+   "answer": 1,
+   "why": "Commit what others need to rebuild and run the project. .venv and __pycache__ are generated on each machine, and .env holds secrets that must never be pushed.",
+   "say": "Last check. Of these four, which one should you actually commit to your repository?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 39 complete",
+   "points": [
+    "pip installs packages from PyPI into the active Python's site-packages",
+    "One venv per project: python -m venv .venv, activate, pip install -r requirements.txt",
+    "Pin exact versions for apps; semantic versions are MAJOR.MINOR.PATCH",
+    "pyproject.toml describes the project; src/ and tests/ keep the layout clean",
+    "Compare versions as tuples of ints, never as strings; commit code and config, not .venv or secrets"
+   ],
+   "say": "Mission thirty nine complete. You can set up isolated environments, pin dependencies, describe a project with pyproject, lay it out like a professional, and compare versions correctly in code. Tomorrow is the phase four finale: a tested, logged bank system built with everything you have learned. See you on day forty."
+  }
+ ]
+}

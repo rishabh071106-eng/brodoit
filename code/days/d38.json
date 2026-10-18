@@ -1,0 +1,441 @@
+{
+ "day": 38,
+ "phase": 4,
+ "title": "Clean code",
+ "subtitle": "Write Python other developers enjoy reading",
+ "minutes": 55,
+ "goal": "Recognise messy code and refactor it, step by step, into clean PEP 8 Python with clear names, constants, guard clauses and small functions.",
+ "outcomes": [
+  "Apply the essentials of PEP 8: layout, naming and imports",
+  "Choose names that reveal intent and replace magic numbers with constants",
+  "Flatten nested ifs with guard clauses",
+  "Split a long function into small functions that each do one thing",
+  "Explain what linters and formatters like ruff and black do for a team"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 38: Code for humans",
+   "body": "*\"Code is read much more often than it is written.\"* (Guido van Rossum, creator of Python)\n\nClean code isn't about looking clever. It's code your teammates, and you in six months, understand at a glance.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Works, but…",
+     "code": "def f(l):\n  t=0\n  for i in l:\n    if i[1]>500:t+=i[1]*0.9\n    else:t+=i[1]\n  return t"
+    },
+    "right": {
+     "title": "Clean",
+     "code": "BULK_FROM = 500\nBULK_DISCOUNT = 0.10\n\ndef order_total(orders):\n    return sum(discounted(amount)\n               for _, amount in orders)"
+    },
+    "verdict": "Same behaviour. The right side explains itself."
+   },
+   "say": "Guido van Rossum, the creator of Python, said that code is read much more often than it is written. Clean code is not about looking clever. It is code that your teammates, and you in six months, can understand at a glance. Both versions on screen do exactly the same thing. Which one would you rather debug?"
+  },
+  {
+   "type": "concept",
+   "title": "PEP 8: the shared style guide",
+   "body": "**PEP 8** is Python's official style guide. Following it means every Python developer can read your code without adjusting.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Thing",
+     "Convention",
+     "Example"
+    ],
+    "rows": [
+     [
+      "variables, functions",
+      "snake_case",
+      "monthly_total()"
+     ],
+     [
+      "classes",
+      "CapWords",
+      "BankAccount"
+     ],
+     [
+      "constants",
+      "UPPER_SNAKE",
+      "GST_RATE = 0.18"
+     ],
+     [
+      "indentation",
+      "4 spaces",
+      "never tabs"
+     ],
+     [
+      "line length",
+      "79 to 99 chars",
+      "black uses 88"
+     ],
+     [
+      "imports",
+      "top of file, one per line",
+      "stdlib, third-party, local"
+     ],
+     [
+      "internal names",
+      "_leading_underscore",
+      "_cache"
+     ]
+    ]
+   },
+   "say": "PEP 8 is Python's official style guide, and almost every Python team follows it. The essentials: four spaces for indentation, snake case for functions and variables, capitalised words for class names, and upper case for constants. Imports go at the top, standard library first. When everyone follows the same rules, code reviews can focus on logic instead of spacing."
+  },
+  {
+   "type": "code",
+   "title": "The Zen of Python",
+   "body": "Type `import this` in any Python shell to read all 19 lines. (Fun fact: the module stores the text ROT13-scrambled.)",
+   "code": "import codecs\nimport contextlib\nimport io\n\nwith contextlib.redirect_stdout(io.StringIO()):\n    import this   # importing it prints the Zen: we capture that\n\nzen = codecs.decode(this.s, \"rot13\")\nfor line in zen.splitlines()[2:7]:\n    print(line)",
+   "expect": "Beautiful is better than ugly.\nExplicit is better than implicit.\nSimple is better than complex.\nComplex is better than complicated.\nFlat is better than nested.\n",
+   "explain": [
+    [
+     5,
+     "Capture the text that importing 'this' prints."
+    ],
+    [
+     8,
+     "this.s holds the Zen, scrambled with ROT13."
+    ],
+    [
+     9,
+     "Print lines 2 to 6, after the title and a blank line."
+    ]
+   ],
+   "say": "Python has its philosophy built in. Typing import this prints nineteen guiding principles called the Zen of Python. Here is a fun detail: inside the module, the text is stored scrambled with a simple letter rotation, so we decode it and print the first five lines. Flat is better than nested is exactly what guard clauses are about."
+  },
+  {
+   "type": "concept",
+   "title": "Names that reveal intent",
+   "body": "A good name answers *what is it* and *why does it exist*, so nobody needs a comment.\n\n- booleans read like questions: `is_`, `has_`, `can_`\n- functions are verbs: `send_invoice()`\n- collections are plural: `orders`",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Unclear",
+     "Clear",
+     "Why"
+    ],
+    "rows": [
+     [
+      "d",
+      "days_overdue",
+      "says what is counted"
+     ],
+     [
+      "lst",
+      "pending_orders",
+      "says what it holds"
+     ],
+     [
+      "flag",
+      "is_verified",
+      "reads as a question"
+     ],
+     [
+      "calc()",
+      "calculate_late_fee()",
+      "says what it computes"
+     ],
+     [
+      "data2",
+      "cleaned_rows",
+      "says how it differs"
+     ]
+    ]
+   },
+   "say": "Naming is one of the hardest and most important skills in programming. A good name tells you what something is and why it exists, so you need no comment. Booleans should read like yes or no questions, functions should be verbs, and collections should be plural. Avoid single letters, vague words like data or temp, and abbreviations only you understand."
+  },
+  {
+   "type": "quiz",
+   "title": "Name it",
+   "q": "Which is the best name for a list of library books that are past their due date?",
+   "options": [
+    "l",
+    "books_list_data",
+    "overdue_books",
+    "ob"
+   ],
+   "answer": 2,
+   "why": "overdue_books says exactly what the list holds. l and ob are cryptic; books_list_data is noisy: we can see it's a list, and everything is data.",
+   "say": "Quick check. You have a list of library books that are past their due date. Which name would you choose?"
+  },
+  {
+   "type": "concept",
+   "title": "Magic numbers become constants",
+   "body": "A bare `0.18` or `499` in the middle of code is a **magic number**: readers must guess what it means, and changing it means hunting through every file. Name it once, at the top.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Magic numbers",
+     "code": "if total > 499:\n    fee = 0\nelse:\n    fee = 40\ntax = total * 0.18"
+    },
+    "right": {
+     "title": "Named constants",
+     "code": "FREE_DELIVERY_FROM = 500\nDELIVERY_FEE = 40\nGST_RATE = 0.18\n\nfee = 0 if total >= FREE_DELIVERY_FROM else DELIVERY_FEE\ntax = total * GST_RATE"
+    },
+    "verdict": "The rules are visible at the top, and a rate change is a one-line edit."
+   },
+   "say": "A magic number is a bare value in the middle of your code, like zero point one eight or four ninety nine. Readers have to guess what it means, and when the GST rate changes, you have to hunt for every copy. Give it a name once, at the top of the file, in capital letters. Now the code explains itself, and a change happens in one place."
+  },
+  {
+   "type": "code",
+   "title": "Constants in action",
+   "code": "GST_RATE = 0.18\nFREE_DELIVERY_FROM = 500\nDELIVERY_FEE = 40\n\ndef bill(subtotal):\n    delivery = 0 if subtotal >= FREE_DELIVERY_FROM else DELIVERY_FEE\n    gst = round(subtotal * GST_RATE, 2)\n    return subtotal + gst + delivery\n\nprint(bill(300))\nprint(bill(800))",
+   "expect": "394.0\n944.0\n",
+   "explain": [
+    [
+     1,
+     "Constants: UPPER_SNAKE_CASE, defined once at the top."
+    ],
+    [
+     6,
+     "Reads like the business rule itself."
+    ],
+    [
+     7,
+     "No guessing what 0.18 means."
+    ]
+   ],
+   "say": "The business rules now sit at the top of the file where anyone can see them: the GST rate, the free delivery threshold and the fee. The function reads almost like English. Three hundred rupees pays GST plus delivery, eight hundred pays only GST."
+  },
+  {
+   "type": "concept",
+   "title": "Guard clauses: flat beats nested",
+   "body": "Handle the special and invalid cases **first** and `return` (or `raise`) early. The main logic then runs at the top level instead of three `if`s deep.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Arrow code",
+     "code": "def withdraw(balance, amount, pin_ok):\n    if pin_ok:\n        if amount > 0:\n            if amount <= balance:\n                return balance - amount, \"OK\"\n            else:\n                return balance, \"Insufficient funds\"\n        else:\n            return balance, \"Bad amount\"\n    else:\n        return balance, \"Wrong PIN\""
+    },
+    "right": {
+     "title": "Guard clauses",
+     "code": "def withdraw(balance, amount, pin_ok):\n    if not pin_ok:\n        return balance, \"Wrong PIN\"\n    if amount <= 0:\n        return balance, \"Bad amount\"\n    if amount > balance:\n        return balance, \"Insufficient funds\"\n    return balance - amount, \"OK\""
+    },
+    "verdict": "Each rule is one flat check. The happy path is the last line."
+   },
+   "say": "Deeply nested ifs force readers to hold every condition in their head at once. A guard clause handles a special or invalid case at the very top and returns immediately. After all the guards, the happy path sits at the top level, flat and obvious. Remember the Zen: flat is better than nested."
+  },
+  {
+   "type": "code",
+   "title": "Guard clauses in action",
+   "code": "def withdraw(balance, amount, pin_ok):\n    if not pin_ok:\n        return balance, \"Wrong PIN\"\n    if amount <= 0:\n        return balance, \"Amount must be positive\"\n    if amount > balance:\n        return balance, \"Insufficient funds\"\n    return balance - amount, \"OK\"\n\nprint(withdraw(1000, 300, True))\nprint(withdraw(1000, 300, False))\nprint(withdraw(1000, 5000, True))",
+   "expect": "(700, 'OK')\n(1000, 'Wrong PIN')\n(1000, 'Insufficient funds')\n",
+   "explain": [
+    [
+     2,
+     "Guard 1: wrong PIN, leave immediately."
+    ],
+    [
+     4,
+     "Guard 2: invalid amount."
+    ],
+    [
+     6,
+     "Guard 3: not enough money."
+    ],
+    [
+     8,
+     "The happy path, at the top level."
+    ]
+   ],
+   "say": "Three guards, each checking one rule and leaving immediately if it is broken. If we survive all of them, the last line is the normal case: the withdrawal succeeds. Adding a new rule, like a daily limit, is now just one more flat guard. Watch it run to see how each call exits at a different line."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: order of the guards",
+   "code": "def ticket_price(age, is_student):\n    if age < 5:\n        return 0\n    if is_student:\n        return 50\n    if age >= 60:\n        return 60\n    return 100\n\nprint(ticket_price(3, True), ticket_price(65, True), ticket_price(30, False))",
+   "options": [
+    "0 50 100",
+    "0 60 100",
+    "50 50 100",
+    "0 60 60"
+   ],
+   "answer": 0,
+   "why": "Guards run top to bottom and the first match returns. Age 3 hits the first guard (0). Age 65 is a student, so the second guard returns 50 before the senior check is reached. Age 30, not a student: 100.",
+   "say": "A cinema's ticket rules, written as guard clauses. A three year old student, a sixty five year old student, and a thirty year old. What prices come out? Watch the order of the guards."
+  },
+  {
+   "type": "concept",
+   "title": "One function, one job",
+   "body": "If you need **\"and\"** to describe a function (*reads the file and cleans rows and prints a report*), it does too much. Split it into small functions with clear names. Each one is easy to test on its own.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "parse_sales(text): rows of (city, amount)",
+     "total_by_city(rows): a Counter of totals",
+     "format_report(totals): the text to show",
+     "print(...): the only line that does output"
+    ]
+   },
+   "say": "A good function does one thing. If you need the word and to describe it, like it reads the data and cleans it and prints a report, it is doing too much. Split it into small functions with names that say what they do. Each piece becomes easy to read, easy to test, and easy to reuse, like a pipeline."
+  },
+  {
+   "type": "code",
+   "title": "Refactoring 1: the messy original",
+   "body": "It works. But would you want to change it? Note the output: our refactor must keep it **identical**.",
+   "code": "data = \"\"\"Pune,450\nDelhi,abc\nPune,300\nChennai,800\nDelhi,650\"\"\"\n\ndef r(d):\n    x = {}\n    for l in d.split(\"\\n\"):\n        p = l.split(\",\")\n        if len(p) == 2:\n            if p[1].isdigit():\n                if p[0] in x:\n                    x[p[0]] = x[p[0]] + int(p[1])\n                else:\n                    x[p[0]] = int(p[1])\n    for k in sorted(x, key=lambda k: -x[k]):\n        print(k.ljust(8) + str(x[k]).rjust(6))\n\nr(data)",
+   "expect": "Chennai    800\nPune       750\nDelhi      650\n",
+   "explain": [
+    [
+     8,
+     "r, d, x, l, p: names that say nothing."
+    ],
+    [
+     12,
+     "Three levels of nesting."
+    ],
+    [
+     14,
+     "Updating a dict the long way."
+    ],
+    [
+     17,
+     "Calculation and printing are tangled together."
+    ]
+   ],
+   "say": "Here is a real-world style script. It works: it adds up sales by city, skips the bad row, and prints a sorted report. But look at it. One letter names, three levels of nested ifs, the dictionary update done the long way, and parsing mixed up with printing. Let's clean it up in two steps, without changing the output at all."
+  },
+  {
+   "type": "visual",
+   "title": "Refactoring 2: names and guards",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "Before",
+     "code": "for l in d.split(\"\\n\"):\n    p = l.split(\",\")\n    if len(p) == 2:\n        if p[1].isdigit():\n            if p[0] in x:\n                x[p[0]] = x[p[0]] + int(p[1])\n            else:\n                x[p[0]] = int(p[1])"
+    },
+    "right": {
+     "title": "After",
+     "code": "for line in text.splitlines():\n    city, _, amount = line.partition(\",\")\n    if not amount.isdigit():\n        continue   # skip bad rows\n    totals[city] += int(amount)"
+    },
+    "verdict": "Real names, one guard instead of three nested ifs, and a Counter instead of the manual dict update."
+   },
+   "say": "Step one: rename and flatten. Single letters become city and amount. Partition splits once on the comma and always gives three parts, so the length check disappears. The two nested checks become one guard that skips bad rows with continue. And a Counter replaces the manual if key in dictionary update."
+  },
+  {
+   "type": "code",
+   "title": "Refactoring 3: small functions",
+   "code": "from collections import Counter\n\nSALES = \"\"\"Pune,450\nDelhi,abc\nPune,300\nChennai,800\nDelhi,650\"\"\"\n\ndef parse_sales(text):\n    for line in text.splitlines():\n        city, _, amount = line.partition(\",\")\n        if not amount.isdigit():\n            continue   # skip malformed rows\n        yield city, int(amount)\n\ndef total_by_city(rows):\n    totals = Counter()\n    for city, amount in rows:\n        totals[city] += amount\n    return totals\n\ndef format_report(totals):\n    return \"\\n\".join(f\"{city:<8}{amount:>6}\" for city, amount in totals.most_common())\n\nprint(format_report(total_by_city(parse_sales(SALES))))",
+   "expect": "Chennai    800\nPune       750\nDelhi      650\n",
+   "explain": [
+    [
+     9,
+     "Job 1: parse text into clean (city, amount) rows."
+    ],
+    [
+     12,
+     "One guard instead of nested ifs."
+    ],
+    [
+     16,
+     "Job 2: aggregate. Counter starts every city at 0."
+    ],
+    [
+     22,
+     "Job 3: format. most_common() sorts by total."
+    ],
+    [
+     25,
+     "A readable pipeline: parse, total, format, print."
+    ]
+   ],
+   "say": "Step two: one job per function. Parse sales turns text into clean rows with a generator. Total by city adds them up. Format report builds the text. Only the last line prints. The output is identical, character for character, but now each piece has a name, can be tested on its own, and can be reused, for example to send the report by email instead."
+  },
+  {
+   "type": "concept",
+   "title": "Linters and formatters",
+   "body": "- a **formatter** (`black`, `ruff format`) rewrites layout automatically: no more style debates\n- a **linter** (`ruff check`, `flake8`, `pylint`) finds bugs and smells: unused imports, bare `except`, undefined names\n\nTeams run both before every commit and in CI.",
+   "visual": {
+    "kind": "terminal",
+    "lines": [
+     [
+      "$",
+      "pip install ruff black"
+     ],
+     [
+      "$",
+      "ruff check ."
+     ],
+     [
+      "",
+      "shop.py:3:8: F401 [*] `os` imported but unused"
+     ],
+     [
+      "",
+      "shop.py:12:5: E722 Do not use bare `except`"
+     ],
+     [
+      "",
+      "Found 2 errors."
+     ],
+     [
+      "$",
+      "black ."
+     ],
+     [
+      "",
+      "reformatted shop.py"
+     ],
+     [
+      "",
+      "1 file reformatted."
+     ]
+    ]
+   },
+   "say": "Professional teams don't argue about spacing. They let tools handle it. A formatter, like black or ruff format, rewrites your layout automatically and consistently. A linter, like ruff check, reads your code and points out problems: unused imports, a bare except, a name that is never defined. Most teams run both automatically before every commit."
+  },
+  {
+   "type": "quiz",
+   "title": "Which tool?",
+   "q": "Which tool would warn you that import os is never used in your file?",
+   "options": [
+    "black, the formatter",
+    "ruff check, the linter",
+    "pip, the package installer"
+   ],
+   "answer": 1,
+   "why": "Finding unused imports, undefined names and risky patterns is a linter's job. black only changes layout, never meaning. pip installs packages.",
+   "say": "Quick check. Your file imports os but never uses it. Which tool would point that out?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: shadowed built-ins",
+   "task": "`report` crashes with *'int' object is not callable*. The variable names hide Python's own `sum` and `max` functions. Rename them (and use a constant for 100) so it works.",
+   "starter": "def report(marks):\n    sum = 0\n    for m in marks:\n        sum += m\n    average = sum / len(marks)\n    max = 100\n    best = max(marks)\n    return f\"avg {average:.1f}, best {best}/{max}\"\n\nprint(report([72, 88, 95]))\n",
+   "solution": "MAX_MARKS = 100\n\ndef report(marks):\n    total = sum(marks)\n    average = total / len(marks)\n    best = max(marks)\n    return f\"avg {average:.1f}, best {best}/{MAX_MARKS}\"\n\nprint(report([72, 88, 95]))\n",
+   "tests": "import ast as _ast\ngot = report([72, 88, 95])\nassert got == \"avg 85.0, best 95/100\", f\"Expected 'avg 85.0, best 95/100', got {got!r}.\"\nassert report([40]) == \"avg 40.0, best 40/100\", \"One mark of 40 gives 'avg 40.0, best 40/100'.\"\n_builtins = {\"sum\", \"max\", \"min\", \"list\", \"dict\", \"str\", \"id\", \"input\", \"len\"}\n_bad = sorted({n.id for n in _ast.walk(__tree__) if isinstance(n, _ast.Name) and isinstance(n.ctx, _ast.Store) and n.id in _builtins})\nassert not _bad, f\"Don't name variables after built-ins: rename {', '.join(_bad)}.\"",
+   "hints": [
+    "After the line sum = 0, the name sum points to an int, not the built-in function. Same for max.",
+    "Use names like total and MAX_MARKS. Then sum(marks) and max(marks) work again."
+   ],
+   "say": "Here is a bug that clean naming prevents. The function uses sum and max as variable names, which hides Python's own sum and max functions, so calling max crashes. Rename the variables, turn one hundred into a constant, and the built-ins work again."
+  },
+  {
+   "type": "exercise",
+   "title": "Refactor the electricity bill",
+   "task": "`calc` works but is messy. Refactor it **without changing behaviour**:\n\n- rename it `electricity_bill(units)`\n- give every number a name: constants at the top (at least 3)\n- start with a **guard clause** that raises `ValueError` for negative units\n- no `if` nested inside another `if`",
+   "starter": "def calc(u):\n    if u >= 0:\n        if u <= 100:\n            return u * 3 + 50\n        else:\n            if u <= 200:\n                return 100 * 3 + (u - 100) * 5 + 50\n            else:\n                return 100 * 3 + 100 * 5 + (u - 200) * 8 + 50\n    else:\n        raise ValueError(\"bad\")\n\nprint(calc(150))\n",
+   "solution": "FIXED_CHARGE = 50\nFIRST_SLAB = 100      # units 1-100\nSECOND_SLAB = 200     # units 101-200\nRATE_FIRST = 3        # rupees per unit\nRATE_SECOND = 5\nRATE_ABOVE = 8\n\ndef electricity_bill(units):\n    if units < 0:\n        raise ValueError(\"units cannot be negative\")\n    if units <= FIRST_SLAB:\n        return FIXED_CHARGE + units * RATE_FIRST\n    first = FIRST_SLAB * RATE_FIRST\n    if units <= SECOND_SLAB:\n        return FIXED_CHARGE + first + (units - FIRST_SLAB) * RATE_SECOND\n    second = (SECOND_SLAB - FIRST_SLAB) * RATE_SECOND\n    return FIXED_CHARGE + first + second + (units - SECOND_SLAB) * RATE_ABOVE\n\nprint(electricity_bill(150))\n",
+   "tests": "import ast as _ast\nassert \"electricity_bill\" in globals(), \"Rename calc to electricity_bill(units).\"\nfor units, want in {0: 50, 1: 53, 100: 350, 101: 355, 150: 600, 200: 850, 201: 858, 250: 1250}.items():\n    got = electricity_bill(units)\n    assert got == want, f\"electricity_bill({units}) should be {want} (same as calc), got {got}. A refactor must not change behaviour.\"\ntry:\n    electricity_bill(-5)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError(\"electricity_bill(-5) should raise ValueError.\")\n_consts = [t.id for n in __tree__.body if isinstance(n, (_ast.Assign, _ast.AnnAssign))\n           for tgt in (n.targets if isinstance(n, _ast.Assign) else [n.target])\n           for t in _ast.walk(tgt) if isinstance(t, _ast.Name) and t.id.isupper()]\nassert len(_consts) >= 3, f\"Name the magic numbers with UPPER_CASE constants at the top of the file (at least 3; found {len(_consts)}).\"\n_fn = next(n for n in __tree__.body if isinstance(n, _ast.FunctionDef) and n.name == \"electricity_bill\")\n_nums = sorted({n.value for n in _ast.walk(_fn) if isinstance(n, _ast.Constant) and type(n.value) in (int, float) and n.value not in (0, 1)})\nassert not _nums, f\"Found the number {_nums[0]} inside electricity_bill. Give it a name at the top of the file.\"\ndef _depth(stmts):\n    best = 0\n    for s in stmts:\n        if isinstance(s, _ast.If):\n            best = max(best, 1 + _depth(s.body), _depth(s.orelse))\n        elif isinstance(s, (_ast.For, _ast.While, _ast.With, _ast.Try)):\n            best = max(best, _depth(s.body))\n    return best\nassert _depth(_fn.body) <= 1, \"There's still an if inside another if. Use guard clauses: check negative units first and raise, then one flat if per slab.\"\n_guard = any(isinstance(s, _ast.If) and any(isinstance(b, _ast.Raise) for b in s.body) for s in _fn.body)\nassert _guard, \"Start with a guard clause: if units < 0: raise ValueError(...).\"",
+   "hints": [
+    "Constants first: FIXED_CHARGE = 50, FIRST_SLAB = 100, SECOND_SLAB = 200, and a rate for each slab.",
+    "Guard clause: if units < 0: raise ValueError(\"units cannot be negative\"). Then if units <= FIRST_SLAB: return ...",
+    "Keep checking against calc's results: 150 units must still cost 600."
+   ],
+   "say": "Your final challenge today is a real refactor. The calc function works, but it is full of magic numbers and nested ifs. Rename it, give every number a name at the top, start with a guard clause for negative units, and flatten the nesting. The bill must come out exactly the same."
+  },
+  {
+   "type": "recap",
+   "title": "Mission 38 complete",
+   "points": [
+    "PEP 8: snake_case functions, CapWords classes, UPPER_SNAKE constants, 4-space indents",
+    "Names should reveal intent; never shadow built-ins like sum or max",
+    "Magic numbers become named constants at the top of the file",
+    "Guard clauses keep code flat; each function does one job",
+    "Refactor in small steps and keep the behaviour identical; let ruff and black handle style"
+   ],
+   "say": "Mission thirty eight complete. You can spot messy code, refactor it step by step without changing what it does, and write Python your teammates will enjoy reading. Tomorrow we step outside a single file: virtual environments, pip, packages and project layout. See you on day thirty nine."
+  }
+ ]
+}

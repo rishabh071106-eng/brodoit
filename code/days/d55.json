@@ -1,0 +1,450 @@
+{
+ "day": 55,
+ "phase": 6,
+ "title": "Architecture of real applications",
+ "subtitle": "Layers, config, errors and logs that scale",
+ "minutes": 60,
+ "goal": "Structure an application into interface, service and data layers with settings, a clear error strategy and module loggers.",
+ "outcomes": [
+  "Separate interface, service and data layers",
+  "Refactor a one-file script into focused modules",
+  "Load and validate settings from environment variables",
+  "Raise domain exceptions and translate them at the edge",
+  "Use one logger per module, configured once"
+ ],
+ "slides": [
+  {
+   "type": "intro",
+   "title": "Mission 55: Architecture of real applications",
+   "body": "Scripts grow into apps. Without structure, changing the database breaks the CLI and nothing can be tested.\n\nToday: the **layered design** real backends use, configuration, an error strategy, logging, and a refactor from one file into modules.",
+   "visual": {
+    "kind": "steps",
+    "items": [
+     "Interface layer: CLI, web API, UI",
+     "Service layer: business rules",
+     "Data layer: files, database, other APIs"
+    ]
+   },
+   "say": "Every big application started as a small script. Without structure, a change to how data is saved breaks the command line, and nothing can be tested on its own. Today you learn the layered design that real backends use, plus configuration, an error handling strategy and logging, and you refactor a tangled one file script into clean modules."
+  },
+  {
+   "type": "concept",
+   "title": "Three layers, one direction",
+   "body": "Each layer only talks to the one **below** it:\n- **Interface** parses input and shows output\n- **Service** holds the rules and decisions; it never prints or parses arguments\n- **Data** saves and loads; it knows nothing about rules\n\nSwap the CLI for a web API and the service doesn't change.",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Interface: argparse, Flask route, mobile app",
+      "s": "pill"
+     },
+     {
+      "t": "Service: BookingService.book() checks the rules"
+     },
+     {
+      "t": "Data: JsonStore / SQLite / external API",
+      "s": "pill"
+     }
+    ]
+   },
+   "say": "Real applications are built in layers, and calls only go downwards. The interface layer reads input and shows output. The service layer holds the business rules and makes decisions, and it never prints or parses arguments. The data layer saves and loads, and knows nothing about rules. Replace the command line with a web API, and the service layer does not change at all."
+  },
+  {
+   "type": "code",
+   "title": "A tangled script",
+   "body": "It works. But input, the seat rule and file storage are tangled together in one loop.",
+   "code": "import json\nfrom pathlib import Path\n\nDB = Path(\"bookings.json\")\nbookings = json.loads(DB.read_text()) if DB.exists() else {}\n\nfor command in [\"book A1 Riya\", \"book A2 Arjun\", \"book A1 Kabir\", \"list\"]:\n    parts = command.split()\n    if parts[0] == \"book\":\n        seat, name = parts[1], parts[2]\n        if seat in bookings:\n            print(f\"Seat {seat} is taken\")\n        else:\n            bookings[seat] = name\n            DB.write_text(json.dumps(bookings))\n            print(f\"Booked {seat} for {name}\")\n    elif parts[0] == \"list\":\n        for seat, name in sorted(bookings.items()):\n            print(seat, name)",
+   "expect": "Booked A1 for Riya\nBooked A2 for Arjun\nSeat A1 is taken\nA1 Riya\nA2 Arjun\n",
+   "explain": [
+    [
+     5,
+     "Data layer, mixed in at the top."
+    ],
+    [
+     7,
+     "Interface: commands are parsed inline."
+    ],
+    [
+     11,
+     "The business rule, buried in the middle."
+    ],
+    [
+     15,
+     "Storage again, inside the rule."
+    ]
+   ],
+   "say": "This bus booking script works, and that is the trap. Reading commands, the seat rule and writing the file are all tangled in one loop. To test the rule that a seat cannot be booked twice, you would need a real file and fake commands. To add a web version, you would copy and paste the whole thing."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: which layer?",
+   "q": "Which line belongs in the **service** layer?",
+   "options": [
+    "`args = parser.parse_args()`",
+    "`if seat in bookings: raise SeatTaken(seat)`",
+    "`DB.write_text(json.dumps(bookings))`",
+    "`print(f\"Booked {seat}\")`"
+   ],
+   "answer": 1,
+   "why": "Parsing arguments and printing are interface work; writing JSON is data work. The rule \"a seat can only be booked once\" is business logic: service layer.",
+   "say": "Four lines from a booking app. Which one is business logic that belongs in the service layer?"
+  },
+  {
+   "type": "concept",
+   "title": "The refactor: two new modules",
+   "body": "We split the script into `storage.py` (data) and `booking.py` (service). The service receives its store from outside, and rules raise **domain exceptions**.",
+   "visual": {
+    "kind": "compare",
+    "left": {
+     "title": "storage.py (data)",
+     "code": "class JsonStore:\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> dict:\n        if not self.path.exists():\n            return {}\n        return json.loads(self.path.read_text(encoding=\"utf-8\"))\n\n    def save(self, data: dict) -> None:\n        self.path.write_text(json.dumps(data, indent=2), encoding=\"utf-8\")"
+    },
+    "right": {
+     "title": "booking.py (service)",
+     "code": "class BookingError(Exception):\n    \"\"\"Base class for every booking rule.\"\"\"\n\nclass SeatTaken(BookingError):\n    pass\n\nclass BookingService:\n    def __init__(self, store):\n        self.store = store\n\n    def book(self, seat: str, name: str) -> str:\n        bookings = self.store.load()\n        if seat in bookings:\n            raise SeatTaken(f\"seat {seat} is taken\")\n        bookings[seat] = name\n        self.store.save(bookings)\n        return f\"Booked {seat} for {name}\"\n\n    def seats(self) -> list[tuple[str, str]]:\n        return sorted(self.store.load().items())"
+    },
+    "verdict": "The service gets its store passed in (Day 54) and signals problems with exceptions."
+   },
+   "say": "Here is the refactor. Storage dot p y holds a JSON store with just two methods, load and save. Booking dot p y holds the booking service: it receives its store from outside, enforces the seat rule, and raises a domain exception called seat taken instead of printing. Neither module knows anything about commands or the screen."
+  },
+  {
+   "type": "code",
+   "title": "main.py: the interface layer",
+   "body": "`storage.py` and `booking.py` from the previous slide sit next to this file. Same behaviour, clean layers.",
+   "code": "from booking import BookingError, BookingService\nfrom storage import JsonStore\n\nservice = BookingService(JsonStore(\"bookings.json\"))\n\nfor command in [\"book A1 Riya\", \"book A2 Arjun\", \"book A1 Kabir\", \"list\"]:\n    action, *rest = command.split()\n    try:\n        if action == \"book\":\n            print(service.book(*rest))\n        elif action == \"list\":\n            for seat, name in service.seats():\n                print(seat, name)\n    except BookingError as err:\n        print(\"Sorry:\", err)",
+   "expect": "Booked A1 for Riya\nBooked A2 for Arjun\nSorry: seat A1 is taken\nA1 Riya\nA2 Arjun\n",
+   "explain": [
+    [
+     1,
+     "Import the service and its base exception."
+    ],
+    [
+     4,
+     "Wire the layers together at the edge of the app."
+    ],
+    [
+     7,
+     "Star-unpacking: the first word, then the rest."
+    ],
+    [
+     14,
+     "Every rule violation is a BookingError: one place handles them all."
+    ]
+   ],
+   "files": {
+    "storage.py": "import json\nfrom pathlib import Path\n\nclass JsonStore:\n    def __init__(self, path: str):\n        self.path = Path(path)\n\n    def load(self) -> dict:\n        if not self.path.exists():\n            return {}\n        return json.loads(self.path.read_text(encoding=\"utf-8\"))\n\n    def save(self, data: dict) -> None:\n        self.path.write_text(json.dumps(data, indent=2), encoding=\"utf-8\")\n",
+    "booking.py": "class BookingError(Exception):\n    \"\"\"Base class for every booking rule.\"\"\"\n\nclass SeatTaken(BookingError):\n    pass\n\nclass BookingService:\n    def __init__(self, store):\n        self.store = store\n\n    def book(self, seat: str, name: str) -> str:\n        bookings = self.store.load()\n        if seat in bookings:\n            raise SeatTaken(f\"seat {seat} is taken\")\n        bookings[seat] = name\n        self.store.save(bookings)\n        return f\"Booked {seat} for {name}\"\n\n    def seats(self) -> list[tuple[str, str]]:\n        return sorted(self.store.load().items())\n"
+   },
+   "say": "What is left in main is pure interface: build the service with a real JSON store, read each command, call the service, and show the result. When a rule is broken, the service raises an exception, and main turns it into a friendly message. The two modules from the last slide sit next to this file, so the imports just work."
+  },
+  {
+   "type": "visual",
+   "title": "Project structure",
+   "body": "One module per responsibility. Tests mirror the modules they check.",
+   "visual": {
+    "kind": "tree",
+    "root": {
+     "t": "bus-booking/",
+     "c": [
+      {
+       "t": "pyproject.toml, README.md"
+      },
+      {
+       "t": "src/busbook/",
+       "c": [
+        {
+         "t": "cli.py: interface"
+        },
+        {
+         "t": "services.py: rules"
+        },
+        {
+         "t": "storage.py: data"
+        },
+        {
+         "t": "config.py: settings"
+        },
+        {
+         "t": "errors.py: BookingError and friends"
+        }
+       ]
+      },
+      {
+       "t": "tests/",
+       "c": [
+        {
+         "t": "test_services.py"
+        },
+        {
+         "t": "test_storage.py"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "say": "On disk, a real project looks like this. The package lives in a source folder, with one module per responsibility: the command line, the services, storage, configuration and errors. Tests live in their own folder, and the project file and readme sit at the top. You set this layout up on day thirty nine; now every file has a clear job."
+  },
+  {
+   "type": "concept",
+   "title": "Configuration: settings, not constants",
+   "body": "Values that differ between your laptop and production come from **environment variables**, read **once** at startup into a settings object.\n\nNever hard-code secrets or paths.",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Variable",
+     "Laptop",
+     "Production"
+    ],
+    "rows": [
+     [
+      "APP_ENV",
+      "dev",
+      "prod"
+     ],
+     [
+      "DB_PATH",
+      "dev.json",
+      "/data/bookings.json"
+     ],
+     [
+      "DEBUG",
+      "true",
+      "false"
+     ],
+     [
+      "MAX_SEATS",
+      "6",
+      "6"
+     ]
+    ]
+   },
+   "say": "Some values change between your laptop and production: the database path, the debug flag, API keys. Do not hard code them. Read them from environment variables once, at startup, into a single settings object, convert and check them there, and pass that object to whatever needs it. Secrets especially must never live in your code."
+  },
+  {
+   "type": "code",
+   "title": "A settings object",
+   "body": "`from_env` takes any mapping, so tests can pass a plain dict instead of the real `os.environ`.",
+   "code": "import os\nfrom dataclasses import dataclass\n\n@dataclass(frozen=True)\nclass Settings:\n    env: str = \"dev\"\n    db_path: str = \"dev.json\"\n    max_seats: int = 6\n    debug: bool = True\n\n    @classmethod\n    def from_env(cls, environ=os.environ) -> \"Settings\":\n        return cls(\n            env=environ.get(\"APP_ENV\", \"dev\"),\n            db_path=environ.get(\"DB_PATH\", \"dev.json\"),\n            max_seats=int(environ.get(\"MAX_SEATS\", \"6\")),\n            debug=environ.get(\"DEBUG\", \"true\").lower() in {\"1\", \"true\", \"yes\"},\n        )\n\nprint(Settings.from_env({}))\nprod = Settings.from_env({\"APP_ENV\": \"prod\", \"DB_PATH\": \"/data/bus.json\", \"DEBUG\": \"false\"})\nprint(prod)\ntry:\n    prod.debug = True\nexcept AttributeError as err:\n    print(\"settings are read-only:\", type(err).__name__)",
+   "expect": "Settings(env='dev', db_path='dev.json', max_seats=6, debug=True)\nSettings(env='prod', db_path='/data/bus.json', max_seats=6, debug=False)\nsettings are read-only: FrozenInstanceError\n",
+   "explain": [
+    [
+     4,
+     "frozen=True: settings can't change while the app runs."
+    ],
+    [
+     12,
+     "Defaults to the real environment, but tests can pass a dict."
+    ],
+    [
+     16,
+     "Environment values are always text: convert them."
+    ],
+    [
+     17,
+     "'false' is truthy as a string, so compare explicitly."
+    ]
+   ],
+   "say": "A frozen dataclass holds every setting with a sensible default. The from env class method reads environment variables, converts the seat limit to an integer and the debug text to a real boolean. Passing a dictionary instead of the real environment makes it easy to test. And because it is frozen, nobody can change settings halfway through a run."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: the string that lies",
+   "code": "debug = \"False\"          # what os.environ gives you\nif debug:\n    print(\"debug ON\")\nelse:\n    print(\"debug off\")\nprint(bool(\"0\"), bool(\"\"))",
+   "options": [
+    "debug off\nFalse False",
+    "debug ON\nTrue False",
+    "debug ON\nFalse False"
+   ],
+   "answer": 1,
+   "why": "Environment variables are always strings, and any non-empty string is truthy, even `\"False\"` and `\"0\"`. Only the empty string is falsy. Convert explicitly.",
+   "say": "Environment variables are always text. So what happens when debug holds the text False? And what are the truth values of the text zero and the empty text?"
+  },
+  {
+   "type": "concept",
+   "title": "An error-handling strategy",
+   "body": "Decide once, for the whole app:\n- the service raises **specific domain exceptions** with one base class (`BookingError`)\n- the interface catches them and turns them into friendly messages or HTTP status codes\n- **unexpected** errors are logged with a traceback, and the app fails loudly\n- never `except: pass`",
+   "visual": {
+    "kind": "flow",
+    "nodes": [
+     {
+      "t": "Data: OSError, JSONDecodeError"
+     },
+     {
+      "t": "Service: raises SeatTaken, InvalidSeat (all BookingError)"
+     },
+     {
+      "t": "Interface: is it a BookingError?",
+      "s": "diamond",
+      "yes": "friendly message or 4xx status",
+      "no": "log the traceback, exit 1 or 500"
+     }
+    ]
+   },
+   "say": "Good apps decide their error strategy once. The service layer raises specific domain exceptions that share one base class. The interface layer catches those and turns them into a friendly message, or an HTTP status code in a web API. Anything unexpected is logged with its full traceback and fails loudly, because hiding bugs makes them worse."
+  },
+  {
+   "type": "code",
+   "title": "Translate errors at the edge",
+   "code": "class AppError(Exception):\n    status = 500\n\nclass NotFound(AppError):\n    status = 404\n\nclass ValidationError(AppError):\n    status = 400\n\ndef get_booking(bookings: dict, seat: str) -> str:          # service layer\n    if not (seat[:1].isalpha() and seat[1:].isdigit()):\n        raise ValidationError(f\"bad seat code {seat!r}\")\n    if seat not in bookings:\n        raise NotFound(f\"no booking for seat {seat}\")\n    return bookings[seat]\n\ndef handle(seat: str) -> tuple[int, str]:                  # interface: an API route\n    try:\n        return 200, get_booking({\"A1\": \"Riya\"}, seat)\n    except AppError as err:\n        return err.status, str(err)\n\nfor seat in [\"A1\", \"B7\", \"7B\"]:\n    print(handle(seat))",
+   "expect": "(200, 'Riya')\n(404, 'no booking for seat B7')\n(400, \"bad seat code '7B'\")\n",
+   "explain": [
+    [
+     2,
+     "A class attribute: each error type knows its HTTP status."
+    ],
+    [
+     12,
+     "The service raises; it never builds responses."
+    ],
+    [
+     20,
+     "One except clause handles every AppError subclass."
+    ],
+    [
+     21,
+     "err.status comes from the exception's class."
+    ]
+   ],
+   "say": "Each domain exception carries its own HTTP status code as a class attribute. The service just raises the right exception and knows nothing about HTTP. The route handler catches the base class once and turns any app error into a status and a message. A real Flask or FastAPI app does exactly this with an error handler."
+  },
+  {
+   "type": "concept",
+   "title": "Logging in applications",
+   "body": "- one logger per module: `log = logging.getLogger(__name__)`\n- configure logging **once**, at the entry point\n- log events with context: `log.info(\"booked %s for user %s\", seat, user_id)`\n- never log passwords, tokens or full card numbers",
+   "visual": {
+    "kind": "table",
+    "head": [
+     "Level",
+     "Use it for",
+     "Example"
+    ],
+    "rows": [
+     [
+      "DEBUG",
+      "Details while developing",
+      "loaded 42 bookings"
+     ],
+     [
+      "INFO",
+      "Normal events",
+      "booked A1 for user 17"
+     ],
+     [
+      "WARNING",
+      "Odd, but the app continues",
+      "seat map missing, starting empty"
+     ],
+     [
+      "ERROR",
+      "An operation failed",
+      "could not save bookings"
+     ],
+     [
+      "CRITICAL",
+      "The app cannot continue",
+      "settings are invalid"
+     ]
+    ]
+   },
+   "say": "In a real app, every module creates its own logger with get logger and the module's name, so each line says where it came from. Logging is configured once, at the entry point. Log events with useful context, like which user and which seat, and never log secrets such as passwords, tokens or card numbers."
+  },
+  {
+   "type": "code",
+   "title": "Module loggers, configured once",
+   "body": "`payments.py` creates `log = logging.getLogger(__name__)` and logs a DEBUG, WARNING or INFO line from `charge()`.",
+   "code": "import logging\nimport sys\n\nimport payments\n\nlogging.basicConfig(level=logging.INFO, stream=sys.stdout, force=True,\n                    format=\"%(levelname)-7s %(name)s: %(message)s\")\nlog = logging.getLogger(\"app\")\n\nlog.info(\"app started\")\npayments.charge(17, 499)\npayments.charge(17, -5)\nlog.info(\"app finished\")",
+   "expect": "INFO    app: app started\nINFO    payments: charged user 17: 499 rupees\nWARNING payments: rejected charge of -5 for user 17\nINFO    app: app finished\n",
+   "explain": [
+    [
+     4,
+     "payments.py has its own logger called 'payments'."
+    ],
+    [
+     6,
+     "Configure once, at the entry point. force=True replaces any old setup."
+    ],
+    [
+     7,
+     "Each line shows its level and which logger wrote it."
+    ],
+    [
+     11,
+     "DEBUG lines inside charge() are below INFO, so they are hidden."
+    ]
+   ],
+   "files": {
+    "payments.py": "import logging\n\nlog = logging.getLogger(__name__)\n\ndef charge(user_id: int, amount: int) -> bool:\n    log.debug(\"charging user %s amount %s\", user_id, amount)\n    if amount <= 0:\n        log.warning(\"rejected charge of %s for user %s\", amount, user_id)\n        return False\n    log.info(\"charged user %s: %s rupees\", user_id, amount)\n    return True\n"
+   },
+   "say": "The payments module next to this file creates its own logger named payments, and logs a debug line, a warning or an info line. Our entry point configures logging once, at info level, printing the level, the logger's name and the message. Notice the debug lines from payments are hidden, and every line tells you which module wrote it."
+  },
+  {
+   "type": "predict",
+   "title": "Predict: which lines appear?",
+   "code": "import logging\nimport sys\n\nlogging.basicConfig(level=logging.WARNING, stream=sys.stdout, force=True,\n                    format=\"%(levelname)s %(message)s\")\nlog = logging.getLogger(\"shop\")\nlog.debug(\"cart loaded\")\nlog.info(\"order placed\")\nlog.warning(\"stock low\")\nlog.error(\"payment failed\")",
+   "options": [
+    "DEBUG cart loaded\nINFO order placed\nWARNING stock low\nERROR payment failed",
+    "WARNING stock low\nERROR payment failed",
+    "ERROR payment failed"
+   ],
+   "answer": 1,
+   "why": "The level is a threshold: WARNING and anything more serious (ERROR, CRITICAL) is shown; DEBUG and INFO are dropped.",
+   "say": "The logging level is set to warning. Four messages are logged at four different levels. Which of them actually appear?"
+  },
+  {
+   "type": "bug",
+   "title": "Fix the bug: the silent config",
+   "task": "This startup code \"never crashes\": a bad `MAX_SEATS` silently becomes 6, so a typo in production goes unnoticed for weeks. Make it **fail loudly**: raise `ConfigError` with a message that names `MAX_SEATS` and the bad value. Valid values still work, and a missing value still defaults to 6.",
+   "starter": "class ConfigError(Exception):\n    pass\n\ndef parse_max_seats(env: dict) -> int:\n    try:\n        seats = int(env.get(\"MAX_SEATS\", \"6\"))\n        if seats < 1:\n            raise ValueError(\"must be at least 1\")\n        return seats\n    except Exception:\n        return 6          # never crash!\n\nprint(parse_max_seats({\"MAX_SEATS\": \"4\"}))\nprint(parse_max_seats({\"MAX_SEATS\": \"four\"}))",
+   "solution": "class ConfigError(Exception):\n    pass\n\ndef parse_max_seats(env: dict) -> int:\n    raw = env.get(\"MAX_SEATS\", \"6\")\n    try:\n        seats = int(raw)\n    except ValueError:\n        raise ConfigError(f\"MAX_SEATS must be a whole number, got {raw!r}\") from None\n    if seats < 1:\n        raise ConfigError(f\"MAX_SEATS must be at least 1, got {raw!r}\")\n    return seats\n\nprint(parse_max_seats({\"MAX_SEATS\": \"4\"}))\ntry:\n    parse_max_seats({\"MAX_SEATS\": \"four\"})\nexcept ConfigError as err:\n    print(\"config error:\", err)",
+   "tests": "assert parse_max_seats({}) == 6, \"With no MAX_SEATS the default should still be 6.\"\nassert parse_max_seats({\"MAX_SEATS\": \"4\"}) == 4, \"A valid MAX_SEATS of '4' should give 4.\"\nfor bad in [\"four\", \"0\"]:\n    try:\n        value = parse_max_seats({\"MAX_SEATS\": bad})\n    except ConfigError as err:\n        assert \"MAX_SEATS\" in str(err) and bad in str(err), \"The ConfigError message should name MAX_SEATS and the bad value \" + repr(bad) + \". It said: \" + str(err)\n    else:\n        raise AssertionError(\"MAX_SEATS=\" + repr(bad) + \" returned \" + repr(value) + \" instead of raising ConfigError. Bad config must fail loudly at startup.\")",
+   "hints": [
+    "The `except Exception: return 6` hides the problem. Remove it.",
+    "Catch only `ValueError` from `int(...)` and `raise ConfigError(f\"MAX_SEATS must be ... got {raw!r}\")`; check `seats < 1` separately."
+   ],
+   "say": "This configuration code proudly never crashes, and that is the bug. A typo like four instead of the number four silently becomes six, and nobody notices for weeks. Make it fail loudly at startup with a config error that names the setting and the bad value, while valid values and the default keep working."
+  },
+  {
+   "type": "exercise",
+   "title": "Your turn: refactor into a service",
+   "task": "The starter is a tangled wallet script. Build the **service layer** instead:\n- `WalletError`, and its subclasses `InvalidAmount` and `InsufficientFunds`\n- `WalletService(store)` with `balance(user)`, `top_up(user, amount)` and `pay(user, amount)`, both returning the new balance\n- amounts must be positive; use the injected `store` (`get`/`set` from `store.py`), never your own dict",
+   "starter": "from store import MemoryStore   # data layer: MemoryStore().get(user) and .set(user, amount)\n\n# Tangled: rules, storage and printing mixed together. Replace it with a service layer.\nbalances = {}\n\ndef handle(command: str) -> None:\n    action, user, amount = command.split()\n    amount = int(amount)\n    if action == \"topup\":\n        balances[user] = balances.get(user, 0) + amount\n        print(\"ok\", balances[user])\n    elif action == \"pay\":\n        if balances.get(user, 0) < amount:\n            print(\"not enough money\")\n        else:\n            balances[user] -= amount\n            print(\"ok\", balances[user])\n\nfor cmd in [\"topup riya 500\", \"pay riya 120\", \"pay riya 1000\"]:\n    handle(cmd)\n\n# TODO: class WalletError(Exception), InvalidAmount(WalletError), InsufficientFunds(WalletError)\n# TODO: class WalletService: __init__(self, store), balance, top_up, pay",
+   "solution": "from store import MemoryStore\n\nclass WalletError(Exception):\n    \"\"\"Base class for every wallet rule.\"\"\"\n\nclass InvalidAmount(WalletError):\n    pass\n\nclass InsufficientFunds(WalletError):\n    pass\n\nclass WalletService:\n    def __init__(self, store):\n        self.store = store\n\n    def balance(self, user: str) -> int:\n        return self.store.get(user)\n\n    def top_up(self, user: str, amount: int) -> int:\n        self._check(amount)\n        self.store.set(user, self.balance(user) + amount)\n        return self.balance(user)\n\n    def pay(self, user: str, amount: int) -> int:\n        self._check(amount)\n        if amount > self.balance(user):\n            raise InsufficientFunds(f\"{user} has only {self.balance(user)} rupees\")\n        self.store.set(user, self.balance(user) - amount)\n        return self.balance(user)\n\n    @staticmethod\n    def _check(amount: int) -> None:\n        if amount <= 0:\n            raise InvalidAmount(f\"amount must be positive, got {amount}\")\n\nwallet = WalletService(MemoryStore())\nprint(wallet.top_up(\"riya\", 500), wallet.pay(\"riya\", 120))",
+   "tests": "from store import MemoryStore\nfor name in (\"WalletError\", \"InvalidAmount\", \"InsufficientFunds\", \"WalletService\"):\n    assert name in globals(), \"Define \" + name + \": see the TODO lines at the bottom of the starter.\"\nassert issubclass(InvalidAmount, WalletError) and issubclass(InsufficientFunds, WalletError), \"InvalidAmount and InsufficientFunds should both inherit from WalletError.\"\nstore = MemoryStore()\nwallet = WalletService(store)\nassert wallet.top_up(\"riya\", 500) == 500, \"top_up('riya', 500) on an empty wallet should return 500.\"\nassert wallet.pay(\"riya\", 120) == 380, \"After paying 120 from 500, pay should return 380.\"\nassert store.get(\"riya\") == 380, \"The balance must be saved through the injected store (store.set), not in a dict of your own.\"\ntry:\n    wallet.pay(\"riya\", 1000)\nexcept InsufficientFunds:\n    pass\nelse:\n    raise AssertionError(\"Paying 1000 with only 380 should raise InsufficientFunds.\")\nassert wallet.balance(\"riya\") == 380, \"A failed payment must not change the balance.\"\nfor bad in (0, -50):\n    try:\n        wallet.top_up(\"riya\", bad)\n    except InvalidAmount:\n        pass\n    else:\n        raise AssertionError(\"top_up with \" + str(bad) + \" should raise InvalidAmount.\")\nassert wallet.balance(\"arjun\") == 0, \"A user who never topped up has a balance of 0.\"",
+   "hints": [
+    "Start with the exceptions: `class WalletError(Exception): ...` then `class InvalidAmount(WalletError): ...`",
+    "The service keeps `self.store` and always reads with `self.store.get(user)` and writes with `self.store.set(user, amount)`.",
+    "Check the amount first (`<= 0` raises `InvalidAmount`), then check funds before changing anything."
+   ],
+   "files": {
+    "store.py": "class MemoryStore:\n    \"\"\"The data layer for the wallet: balances in a dict (a real app would use a database).\"\"\"\n\n    def __init__(self):\n        self._balances = {}\n\n    def get(self, user: str) -> int:\n        return self._balances.get(user, 0)\n\n    def set(self, user: str, amount: int) -> None:\n        self._balances[user] = amount\n"
+   },
+   "say": "Time for a real refactor. The starter is a tangled wallet script that mixes rules, storage and printing. Build the service layer instead: a family of wallet exceptions, and a wallet service that receives its store from outside, enforces positive amounts and sufficient funds, and returns new balances instead of printing. The tests use their own store, so do not keep balances in your own dictionary."
+  },
+  {
+   "type": "quiz",
+   "title": "Quick check: where does config belong?",
+   "q": "Your `BookingService.save()` method reads `os.environ[\"DB_PATH\"]` every time it runs. What is the better design?",
+   "options": [
+    "Read settings once at startup into a `Settings` object, and pass the store (or settings) into the service",
+    "Keep reading `os.environ` everywhere, so values are always fresh",
+    "Hard-code the path so there are no environment variables to forget"
+   ],
+   "answer": 0,
+   "why": "Reading config deep inside services hides dependencies and makes tests depend on the environment. Load once, validate once, inject.",
+   "say": "A service method that reads an environment variable every time it saves. How would you design it instead?"
+  },
+  {
+   "type": "recap",
+   "title": "Mission 55 complete",
+   "points": [
+    "Layers: interface (I/O), service (rules), data (storage); calls go downwards",
+    "Split a tangled script into modules with one job each",
+    "Settings come from environment variables, read and validated once, then injected",
+    "Domain exceptions in the service, translated to messages or status codes at the edge",
+    "One logger per module, configured once; bad config fails loudly"
+   ],
+   "say": "Mission fifty five complete. You can structure an application in layers, refactor a tangled script into modules, load configuration safely, design an error handling strategy, and log like a professional. These are the habits that let a codebase grow for years. Tomorrow: performance, and how to make code fast by measuring, not guessing."
+  }
+ ]
+}
