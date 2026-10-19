@@ -14,7 +14,7 @@ export function mountCoach({ context, course = 'py', button = null }) {
   if (button) fab.innerHTML = BRO;
   else { fab.className = 'bro-fab'; fab.setAttribute('aria-label', 'Ask Bro'); fab.innerHTML = BRO; }
   const sheet = document.createElement('div');
-  sheet.className = 'bro-sheet'; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-label', 'Bro'); sheet.hidden = true;
+  sheet.className = 'bro-sheet'; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-modal', 'true'); sheet.setAttribute('aria-label', 'Bro'); sheet.hidden = true;
   sheet.innerHTML = `<div class="bro-scrim" data-x></div><div class="bro-panel">
     <div class="bro-h"><div class="bro-av">${BRO}<i class="pulse"></i></div><div><b>Bro</b><small>Your Python coach</small></div>
       <button class="bro-x" data-x aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
@@ -41,9 +41,20 @@ export function mountCoach({ context, course = 'py', button = null }) {
   function open(q) {
     sheet.hidden = false; requestAnimationFrame(() => sheet.classList.add('in'));
     greet();
-    if (q) ask(q); else setTimeout(() => input.focus(), 250);
+    if (q) ask(q);
+    setTimeout(() => input.focus(), 250);
   }
-  function close() { sheet.classList.remove('in'); setTimeout(() => { sheet.hidden = true; }, 260); }
+  function close() { if (sheet.hidden) return; sheet.classList.remove('in'); setTimeout(() => { sheet.hidden = true; }, 260); try { fab.focus({ preventScroll: true }); } catch (e) { /* ignore */ } }
+  // a real dialog: Escape closes it and Tab stays inside the panel
+  sheet.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key !== 'Tab') return;
+    const f = [...sheet.querySelectorAll('button, input, a[href]')].filter(x => !x.disabled && x.offsetParent !== null);
+    if (!f.length) return;
+    const a = f[0], z = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+    else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+  });
   async function ask(q) {
     q = String(q || '').trim(); if (!q || busy) return;
     if (!token()) { add('bot', 'Please sign in to Brodoit first, then I can help.'); return; }
@@ -54,7 +65,7 @@ export function mountCoach({ context, course = 'py', button = null }) {
       w.innerHTML = md(r.reply);
       history.push({ role: 'user', content: q }, { role: 'assistant', content: r.reply });
     } catch (e) {
-      w.innerHTML = e.status === 429 ? 'Give me a few seconds, too many questions at once.' : e.status === 503 ? 'My brain is offline right now (no AI key). Try again later.' : 'I could not answer that just now. Try again in a moment.';
+      w.innerHTML = e.status === 429 ? 'Give me a few seconds, too many questions at once.' : e.status === 503 ? 'I am offline right now. Try again in a little while.' : 'I could not answer that just now. Try again in a moment.';
     }
     busy = false;
   }

@@ -71,8 +71,9 @@ let traceCtl = null, R = null, tick = Date.now();
 const RUNKEY = `bd.py.run.d${pad(DAY)}`;
 
 // ── this run of the level: first-try answers, hints, XP (kept on the device so a reload resumes it) ──
-const freshRun = () => ({ v: 1, day: DAY, idx: 0, ans: {}, solved: {}, hints: 0, xp: 0, cost: 0, committed: 0, combo: 0, bestCombo: 0, ms: 0 });
-function readRun() { try { const r = JSON.parse(localStorage.getItem(RUNKEY) || 'null'); return r && r.v === 1 && r.day === DAY ? r : null; } catch (e) { return null; } }
+const freshRun = () => ({ v: 2, day: DAY, idx: 0, ans: {}, solved: {}, hints: 0, xp: 0, cost: 0, committed: 0, combo: 0, bestCombo: 0, ms: 0 });
+// v2: the predict/quiz questions sit inside Learn, so runs saved in the v1 order start fresh
+function readRun() { try { const r = JSON.parse(localStorage.getItem(RUNKEY) || 'null'); return r && r.v === 2 && r.day === DAY ? r : null; } catch (e) { return null; } }
 function saveRun() { if (!R) return; const now = Date.now(); R.ms += Math.min(now - tick, 120000); tick = now; R.idx = idx; try { localStorage.setItem(RUNKEY, JSON.stringify(R)); } catch (e) { /* private mode */ } }
 const netXP = () => Math.max(0, R.xp - R.cost);
 
@@ -199,7 +200,7 @@ function judge(k, ok) {
     if (R.combo === 3) comboPop(); else sfx(R.combo > 3 ? 'combo' : 'correct');
   } else if (ok) sfx('correct');
   else {
-    if (R.combo >= 3) toastMini('Combo lost');
+    if (R.combo >= 3) { const ce = $('#combo'); if (ce) { ce.classList.remove('lost'); void ce.offsetWidth; ce.classList.add('lost'); setTimeout(() => ce.classList.remove('lost'), 700); } }
     R.combo = 0; sfx('wrong');
   }
   haptic(ok ? 14 : [20, 40, 20]);
@@ -224,7 +225,7 @@ function toastMini(t) {
 
 // ── item views ──
 function head(it, s) {
-  const kick = KICK[it.kind];
+  const kick = TASK.has(it.kind) ? null : KICK[it.kind];
   const title = it.kind === 'arrange' ? 'Arrange the lines' : it.kind === 'fill' ? 'Fill the blank' : s.title;
   const chip = kick && !kick[2].test(title || '') ? `<span class="sl-chip t-${it.kind}">${ic(kick[0], 14)}${kick[1]}</span>` : '';
   if (it.puzzle) return `<div class="sl-head" style="--i:0"><div class="pz-top">${chip}<span class="pz-from">from <b>${esc(s.title)}</b></span></div><h2 class="sl-title">${esc(title)}</h2></div>`;
@@ -253,7 +254,7 @@ function body(it, s) {
       const w = Math.ceil(DAY / 10), c = PLAN.count;
       return `<div class="lv-start" style="--i:1"><span class="lv-day">Day ${DAY}</span><span class="lv-min">${ic('clock', 14)}${D.minutes || 45} min</span></div>
         <div class="sl-body" style="--i:2">${md(s.body)}</div>${vis ? `<div class="sl-vis" style="--i:3">${vis}</div>` : ''}
-        <div class="lv-stages" style="--i:4" aria-label="Today's level">${[['book', 'Learn', c[0]], ['dumbbell', 'Practice', c[1]], ['target', 'Challenge', c[2]]].map(([i, t, n], j) => `<div class="lv-st s${j}">${ic(i, 18)}<b>${t}</b><small>${n} ${n === 1 ? 'step' : 'steps'}</small></div>`).join('<span class="lv-arr">' + ic('next', 14) + '</span>')}</div>
+        <div class="lv-stages" style="--i:4" aria-label="Today's level">${[['book', 'Learn', c[0], 0], ['dumbbell', 'Practice', c[1], 1], ['target', 'Challenge', c[2], 2]].filter(x => x[2]).map(([i, t, n, j]) => `<div class="lv-st s${j}">${ic(i, 18)}<b>${t}</b><small>${n} ${n === 1 ? 'step' : 'steps'}</small></div>`).join('<span class="lv-arr">' + ic('next', 14) + '</span>')}</div>
         <div class="sl-outs" style="--i:5"><div class="sl-ot">Today you will</div>${(D.outcomes || []).map((o, j) => `<div class="sl-o" style="--j:${j}">${ic('check', 14)}<span>${esc(o)}</span></div>`).join('')}</div>
         <p class="lv-tip" style="--i:6">World ${w} · ${ic('flame', 13)} 3 right in a row starts a combo: double XP.</p>`;
     }
@@ -294,7 +295,7 @@ function body(it, s) {
         <div class="ch-tests" style="--i:5" aria-label="Checks"><div class="ch-th">Checks<small>${R.solved[k] === true ? u.labels.length : 0}/${u.labels.length}</small></div><ol>${u.labels.map((t, j) => `<li data-t="${j}" class="${R.solved[k] === true ? 'ok' : ''}"><i>${ic('check', 12)}</i><span>${esc(t)}</span></li>`).join('')}</ol></div>
         <div class="sl-res" hidden></div>
         <div class="sl-hints"></div>
-        <button class="btn ghost hint-btn" data-act="hint" style="--i:6">${ic('bulb', 16)}<span>Hint</span><small>−${HINT_COST} XP</small></button>
+        <button class="btn ghost hint-btn" data-act="hint" style="--i:6">${ic('bulb', 16)}<span>Hint</span><small>−${HINT_COST} XP · max 2★</small></button>
         <div class="sl-con" hidden></div>`;
     }
     case 'recap':
@@ -339,7 +340,7 @@ function show(k, dir) {
   const edHost = el.querySelector('[data-ed]');
   if (edHost) {
     const label = s.type === 'code' ? 'example.py' : 'main.py';
-    editors[k] = createEditor(edHost, { value: startCode(s, it.src), label, onRun: () => run(el, s, k), onChange: v => { if (TASK.has(s.type)) try { localStorage.setItem(codeKey(it.src), v); } catch (e) { /* ignore */ } } });
+    editors[k] = createEditor(edHost, { value: startCode(s, it.src), label, keybar: TASK.has(s.type), onRun: () => run(el, s, k), onChange: v => { if (TASK.has(s.type)) try { localStorage.setItem(codeKey(it.src), v); } catch (e) { /* ignore */ } } });
     const bl = bugLine(s);
     if (bl && !R.solved[k]) { editors[k].mark(bl, 'bug'); el.querySelector('.ed-head').insertAdjacentHTML('beforeend', `<span class="ed-bug">${ic('bug', 13)}Bug on line ${bl}</span>`); }
   } else delete editors[k];
@@ -350,7 +351,7 @@ function show(k, dir) {
   wire(el, it, s);
   fb(null);
   paintHud(); paintFoot();
-  if (dir > 0 && it.stage !== shownStage && it.stage !== 'learn') stageToast(it.stage);
+  if (dir > 0 && it.stage !== shownStage && it.stage !== 'learn' && !(R.toasted || (R.toasted = {}))[it.stage]) { R.toasted[it.stage] = 1; stageToast(it.stage); }
   shownStage = it.stage;
   saveRun();
   if (k > 0) commit();
@@ -394,7 +395,7 @@ function fb(kind, title, sub) {
 }
 
 function stageToast(st) {
-  const T = { practice: ['dumbbell', 'Practice', 'Predict, quiz and puzzles. 3 right in a row = combo.'], challenge: ['target', 'Challenge', 'Write real code. Pass the checks.'], recap: ['flag', 'Recap', 'What you can do now.'] }[st];
+  const T = { practice: ['dumbbell', 'Practice', 'Puzzles built from today\'s code.'], challenge: ['target', 'Challenge', 'Write real code. Pass the checks.'], recap: ['flag', 'Recap', 'What you can do now.'] }[st];
   if (!T) return;
   const n = STAGES.findIndex(s => s.id === st) + 1;
   toastMini(`${ic(T[0], 16)}<span><b>Stage ${n} · ${T[1]}</b><small>${T[2]}</small></span>`);
@@ -749,7 +750,7 @@ async function complete() {
   const acc = answered.length ? right / answered.length : 1;
   const stars = acc >= 0.9 && !R.hints ? 3 : acc >= 0.7 ? 2 : 1;
   const before = progress.read(), prev = before.days['d' + DAY] || {};
-  const xpBefore = before.xp || 0;
+  const xpBefore = Math.max(0, (before.xp || 0) - (R.committed || 0)); // XP saved during the level is already in there
   R.xp += XP.level + XP.star * stars;
   const levelXP = netXP();
   const best = Math.max(starsOf(prev), stars);
@@ -761,13 +762,14 @@ async function complete() {
   const nextTitle = nxt ? await fetch('/code/days/index.json').then(r => r.json()).then(j => ((j.list || []).find(d => d.day === nxt) || {}).title).catch(() => '') : '';
   const mins = Math.max(1, Math.round(R.ms / 60000));
   const title = stars === 3 ? 'Perfect level!' : stars === 2 ? 'Great job!' : 'Level complete';
-  const ov = document.createElement('div'); ov.className = 'lc'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', `Day ${DAY} complete, ${stars} of 3 stars`);
+  const ov = document.createElement('div'); ov.className = 'lc'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', `Day ${DAY} complete, ${stars} of 3 stars`);
   ov.innerHTML = `<div class="lc-in">
     <div class="lc-bro">${window.mascot ? window.mascot('celebrating', 112) : ''}</div>
     <div class="lc-k">Day ${DAY} complete</div><h2>${nxt ? title : 'You graduated!'}</h2>
     <div class="lc-stars" data-stars="${stars}">${[0, 1, 2].map(j => `<i class="${j < stars ? 'won' : ''}" style="--j:${j}">${ic('star', j === 1 ? 64 : 52)}</i>`).join('')}</div>
+    ${stars < 3 && acc >= 0.9 && R.hints ? `<p class="lc-why">${ic('bulb', 14)}Hints used. Three stars need none.</p>` : ''}
     <div class="lc-stats">
-      <div class="xp"><small>${ic('bolt', 13)}Total XP</small><b data-n="${levelXP}">0</b></div>
+      <div class="xp"><small>${ic('bolt', 13)}XP earned</small><b data-n="${levelXP}">0</b></div>
       <div class="acc"><small>${ic('target', 13)}Accuracy</small><b data-n="${Math.round(acc * 100)}" data-u="%">0%</b></div>
       <div class="time"><small>${ic('clock', 13)}Time</small><b>${mins} min</b></div>
     </div>
@@ -777,11 +779,12 @@ async function complete() {
     <div class="lc-acts">
       ${nxt ? `<a class="btn pri big" href="/code/day.html?d=${nxt}" id="lcNext">Continue ${ic('next', 16)}</a>` : `<a class="btn pri big" href="/code/?from=${DAY}">See your map</a>`}
       ${stars < 3 ? `<a class="btn ghost" href="/code/day.html?d=${DAY}" id="lcReplay">${ic('replay', 16)}Replay for 3 stars</a>` : ''}
-      <a class="btn ghost" href="/code/?from=${DAY}" id="lcMap">${ic('map', 16)}Map</a>
+      ${nxt ? `<a class="btn ghost" href="/code/?from=${DAY}" id="lcMap">${ic('map', 16)}Map</a>` : ''}
     </div></div>`;
   document.body.appendChild(ov);
   document.body.classList.add('lc-open');
   requestAnimationFrame(() => ov.classList.add('in'));
+  setTimeout(() => { const f = ov.querySelector('#lcNext, .lc-acts .btn'); if (f) f.focus({ preventScroll: true }); }, 400);
   sfx('levelup'); haptic([30, 60, 30]);
   await sleep(650);
   const st = [...ov.querySelectorAll('.lc-stars i')];

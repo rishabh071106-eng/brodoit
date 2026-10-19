@@ -248,24 +248,20 @@ export const STAGES = [
   { id: 'challenge', name: 'Challenge' },
   { id: 'recap', name: 'Recap' },
 ];
-const STAGE_OF = { intro: 'learn', concept: 'learn', visual: 'learn', code: 'learn', predict: 'practice', quiz: 'practice', bug: 'challenge', exercise: 'challenge', project: 'challenge', recap: 'recap' };
+// predict and quiz stay where the lesson put them, right after the idea they check
+const STAGE_OF = { intro: 'learn', concept: 'learn', visual: 'learn', code: 'learn', predict: 'learn', quiz: 'learn', bug: 'challenge', exercise: 'challenge', project: 'challenge', recap: 'recap' };
 export const ANSWERABLE = new Set(['predict', 'quiz', 'arrange', 'fill', 'bug', 'exercise', 'project']);
 
-// Learn (intro, concepts, visuals, runnable code) → Practice (predict, quiz, puzzles spread through) →
-// Challenge (bugs and exercises in their order, the project last as the boss) → Recap.
-// Every code slide comes before every exercise, so nothing is asked before it is taught.
+// Learn (the lesson in its written order: ideas, code, and the predict/quiz questions that check them) →
+// Practice (puzzles built from today's code) → Challenge (bugs and exercises, the project last as the boss) → Recap.
+// Every code slide comes before every puzzle and exercise, so nothing is asked before it is taught.
 export function planDay(day) {
   const S = (day && day.slides) || [];
   const groups = { learn: [], practice: [], challenge: [], recap: [] };
   S.forEach((s, i) => { const st = STAGE_OF[s.type] || 'learn'; groups[st].push({ kind: s.type, src: i, stage: st }); });
   groups.challenge = groups.challenge.filter(x => x.kind !== 'project').concat(groups.challenge.filter(x => x.kind === 'project'));
   const puzzles = makePuzzles(day);
-  // puzzles spread evenly through Practice: with 3 questions, Q · arrange · Q · fill · Q
-  const P = groups.practice, n = P.length, m = puzzles.length;
-  puzzles.forEach((p, k) => {
-    const at = Math.min(P.length, Math.max(0, Math.round(((k + 1) * (n + m + 1)) / (m + 1)) - 1));
-    P.splice(at, 0, { kind: p.kind, puzzle: p, src: p.src, stage: 'practice' });
-  });
+  const P = puzzles.map(p => ({ kind: p.kind, puzzle: p, src: p.src, stage: 'practice' }));
   const items = [...groups.learn, ...P, ...groups.challenge, ...groups.recap];
   items.forEach((it, k) => { it.k = k; });
   return { items, puzzles, count: STAGES.map(s => items.filter(i => i.stage === s.id).length) };
@@ -282,7 +278,7 @@ function unclosedAt(t) {
 export function testLabels(tests) {
   const out = [];
   // words a label must not end on once an f-string value is cut away ("changed to", "should be")
-  const dangling = /\s+(?:should(?:\s+(?:be|return|give|get|hold|become|print|end\s+at))?|is|are|was|to|be|of|for|like|as|got|with|than|and|or|the|a|an|at|from|by|into|still)$/i;
+  const dangling = /\s+(?:should(?:\s+(?:be|return|give|get|hold|become|print|end\s+at))?|is|are|was|to|be|of|for|like|as|got|with|than|and|or|the|a|an|at|from|by|into|still|called|named)$/i;
   for (const raw of String(tests || '').split('\n')) {
     if (!/^\s*assert\s/.test(raw)) continue;
     // the message is the last string literal on the line, right after a comma (not a comma inside a list)
