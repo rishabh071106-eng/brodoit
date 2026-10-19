@@ -74,8 +74,8 @@ html[data-theme="dark"]{--b-bg:#0F1115;--b-bg-2:#171A21;--b-card:#1C2029;--b-ink
   --b-primary:#B5402A;--b-primary-2:#8E2F1E;--b-primary-soft:rgba(181,64,42,.10);--b-grad:linear-gradient(135deg,#B5402A,#8E2F1E);
   --b-violet:#1F1E1C;--b-violet-soft:rgba(31,30,28,.08);--b-mint:#2F7D4F;--b-mint-soft:rgba(47,125,79,.12);--b-sun:#B5402A;--b-sky:#1F1E1C;--b-red:#B5402A;
   --move:#B5402A;--move-soft:rgba(181,64,42,.10);--move-deep:#8E2F1E;
-  --b-serif:'Instrument Serif',Georgia,'Times New Roman',serif;
-  --b-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --b-serif:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; /* v15: one family; no serif */
+  --b-sans:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   --t-display:400 46px/1 var(--b-serif);--t-h1:400 32px/1.1 var(--b-serif);--t-h2:400 24px/1.2 var(--b-serif);--t-h3:600 16px/1.3 var(--b-sans);
   --t-body:400 15px/1.55 var(--b-sans);--t-sm:500 13px/1.4 var(--b-sans);--t-cap:500 12px/1.3 var(--b-sans);--t-eyebrow:600 11px/1 var(--b-sans);
   --sh-orb:0 18px 40px -18px rgba(31,30,28,.55);

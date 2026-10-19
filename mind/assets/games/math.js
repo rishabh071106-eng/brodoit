@@ -3,12 +3,11 @@
 import { onTap, clamp, ri } from '../util.js';
 
 export const meta = {
-  id: 'math', name: 'Quick Math', skill: 'Math', color: '#2F7BF5', deep: '#1B5BD0',
+  id: 'math', name: 'Quick Math', skill: 'Math', color: '#2563EB', deep: '#1E40AF',
   rule: 'Solve as many sums as you can in 45 seconds.',
   how: [
-    ['hash', 'A sum appears. Type the answer on the keypad.'],
-    ['zap', 'Right answers move on by themselves. No enter key.'],
-    ['flame', 'Get 3 in a row for a streak bonus: +5 on every answer.'],
+    'Type the answer on the keypad. It checks itself.',
+    'Three in a row adds 5 points to each answer.',
   ],
 };
 
@@ -91,14 +90,14 @@ const LABEL = ['Single-digit adding', 'Adding up to 30', 'Adding and taking away
   'Easy percentages', 'Percentages', 'Squares', 'Mixed hard', 'Big multiplying', 'Mental marathon', 'Grandmaster'];
 
 const TWIST = {
-  3: 'Taking away joins the mix.',
-  5: 'Times tables! Up to 5 × 9 for now.',
-  7: 'Dividing joins. Every answer is a whole number.',
-  11: 'Two-step sums. Do × and ÷ before + and −.',
-  12: 'Missing numbers: work out what the ? must be.',
-  14: 'Percentages: 10% is a tenth, 50% is half, 25% is a quarter.',
-  15: 'Trickier percentages. 15% is 10% plus half of that.',
-  16: 'Squares: 7² means 7 × 7.',
+  3: 'Subtraction. Taking away joins the mix.',
+  5: 'Times tables. Up to 5 × 9 for now.',
+  7: 'Division. Every answer is a whole number.',
+  11: 'Two steps. Do × and ÷ before + and −.',
+  12: 'Missing numbers. Work out what the ? must be.',
+  14: 'Percentages. 10% is a tenth, 50% is half, 25% is a quarter.',
+  15: 'Harder percentages. 15% is 10% plus half of that.',
+  16: 'Squares. 7² means 7 × 7.',
 };
 
 export function levelConfig(n) {
@@ -168,7 +167,7 @@ export function start(host, cfg, api) {
       api.float(bonus ? `+${pts}` : '+10', { el: aEl, dy: -8 });
       const milestone = streak === 3 || (streak > 3 && streak % 5 === 0);
       api.sfx(milestone ? 'combo' : 'correct'); api.haptic(milestone ? 'medium' : 'light');
-      stEl.innerHTML = streak >= 3 ? `<span class="${milestone ? 'big' : ''}">${window.ico ? window.ico('flame', 15) : ''}Streak ${streak} · +5 each</span>` : '';
+      stEl.innerHTML = streak >= 3 ? `<span>Streak ${streak} · +5 each</span>` : '';
       qEl.classList.add('out');
       api.after(170, show);
     } else {

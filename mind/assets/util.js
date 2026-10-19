@@ -1,4 +1,4 @@
-// Mind games: small shared helpers (markup, seeded randomness, feedback, toasts, rings, confetti).
+// Mind games: small shared helpers (markup, seeded randomness, feedback, toasts, rings).
 export const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
@@ -104,34 +104,23 @@ export function countUp(el, to, ms = 900, fmt = v => String(Math.round(v))) {
   })(t0);
 }
 
-// ── confetti in the game colours (canvas, transform-free, removed after 1.8 s) ──
-const PARTY = ['#6C4DF6', '#E5407A', '#E86A10', '#2F7BF5', '#13A07D', '#FFC83D', '#FFFFFF'];
-export function confetti(x, y, n = 120, colors = PARTY) {
-  if (reduced()) return;
-  const c = document.createElement('canvas');
-  c.className = 'm-confetti';
-  const dpr = Math.min(2, devicePixelRatio || 1);
-  const W = innerWidth, H = innerHeight;
-  c.width = W * dpr; c.height = H * dpr; c.style.width = W + 'px'; c.style.height = H + 'px';
-  document.body.appendChild(c);
-  const ctx = c.getContext('2d'); ctx.scale(dpr, dpr);
-  const ps = [];
-  for (let k = 0; k < n; k++) ps.push({ x: x == null ? W / 2 : x, y: y == null ? H * 0.35 : y, vx: (Math.random() - 0.5) * 14, vy: -Math.random() * 13 - 4, r: Math.random() * 4 + 3, c: colors[k % colors.length], a: Math.random() * 6, s: Math.random() * 0.3 - 0.15, round: Math.random() < 0.3 });
-  const t0 = performance.now();
-  (function tick(now) {
-    const t = (now - t0) / 1000;
-    ctx.clearRect(0, 0, W, H);
-    for (const p of ps) {
-      p.vy += 0.34; p.x += p.vx; p.y += p.vy; p.vx *= 0.985; p.a += p.s;
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.globalAlpha = Math.max(0, 1 - t / 1.8); ctx.fillStyle = p.c;
-      if (p.round) { ctx.beginPath(); ctx.arc(0, 0, p.r * 0.7, 0, 6.283); ctx.fill(); } else ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r);
-      ctx.restore();
-    }
-    if (t < 1.9) requestAnimationFrame(tick); else c.remove();
-  })(t0);
+// ── confetti: retired (v15 calm style). Kept as a no-op so older call sites still work. ──
+export function confetti() { /* no-op */ }
+
+// ── large page title → small top-bar title once it scrolls under the bar (iOS-style) ──
+let titleIO = null;
+export function titleOnScroll(h1) {
+  const bar = document.querySelector('.bd-top');
+  if (!h1 || !bar) return;
+  bar.classList.add('m-collapse');
+  if (titleIO) titleIO.disconnect();
+  try {
+    titleIO = new IntersectionObserver(([e]) => bar.classList.toggle('m-titled', !e.isIntersecting && e.boundingClientRect.top < 120), { rootMargin: '-64px 0px 0px 0px' });
+    titleIO.observe(h1);
+  } catch (e) { bar.classList.add('m-titled'); }
 }
 
 export function greeting(d = new Date()) {
   const h = d.getHours();
-  return h < 5 ? 'Up late?' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  return h >= 5 && h < 12 ? 'Good morning' : h >= 12 && h < 17 ? 'Good afternoon' : 'Good evening';
 }

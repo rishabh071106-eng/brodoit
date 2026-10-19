@@ -1,19 +1,23 @@
-// Learn tab (v14): one page, three sections — Coding (Python /code/), Languages (/lang/), Mind games (/mind/) — styled art, no stock photos.
+// Learn tab (v15): three rows (Games, Coding, Languages), each opening its own list inside the tab.
+// Every item is the same framework row (app/ui.css): icon tile, title, one line of status, chevron. Rules: /DESIGN.md.
 // window.LearnUI.landing() returns the tab's HTML; server.js calls it when S.tab==='courses'.
-// Progress is read from each school's own store (bd.py.v1, lang.progress.v1, bd.mind.v1) — same origin, no fetch.
+// S.learnHub picks the inner list; ?tab=learn&hub=games opens one directly and the phone's back button closes it.
+// Progress is read from each school's own store (bd.py.v1, lang.progress.v1, bd.mind.v1): same origin, no fetch.
 (function () {
   const L = window.LearnUI = window.LearnUI || {};
   const hi = () => (window.S && S.lang === 'hi');
-  const icon = (n, s) => (window.ico ? window.ico(n, s || 20) : '');
+  const icon = (n, s) => (window.ico ? window.ico(n, s || 22) : '');
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const read = k => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; } };
+  const HUBS = ['games', 'coding', 'languages'];
+  const CODE_IC = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/><path d="m13.5 4-3 16"/></svg>';
 
   const LANGS = [
-    { c: 'es', n: 'Spanish', nh: 'स्पैनिश', native: 'Español', via: 'in English', viah: 'अंग्रेज़ी में' },
-    { c: 'fr', n: 'French', nh: 'फ़्रेंच', native: 'Français', via: 'in English', viah: 'अंग्रेज़ी में' },
-    { c: 'de', n: 'German', nh: 'जर्मन', native: 'Deutsch', via: 'in English', viah: 'अंग्रेज़ी में' },
-    { c: 'en', n: 'English', nh: 'अंग्रेज़ी', native: 'English', via: 'taught in Hindi', viah: 'हिंदी में' },
-    { c: 'hi', n: 'Hindi', nh: 'हिंदी', native: 'हिन्दी', via: 'in English', viah: 'अंग्रेज़ी में' },
+    { c: 'es', n: 'Spanish', nh: 'स्पैनिश', native: 'Español', g: 'Ñ', a: '#DC2626' },
+    { c: 'fr', n: 'French', nh: 'फ़्रेंच', native: 'Français', g: 'Ç', a: '#2563EB' },
+    { c: 'de', n: 'German', nh: 'जर्मन', native: 'Deutsch', g: 'ß', a: '#64748B' },
+    { c: 'en', n: 'English', nh: 'अंग्रेज़ी', native: 'Taught in Hindi', g: 'Aa', a: '#7C3AED' },
+    { c: 'hi', n: 'Hindi', nh: 'हिंदी', native: 'हिन्दी', g: 'अ', a: '#EA580C' },
   ];
   const LANG_TOTAL = 52; // 12 audio lessons + 40 practice lessons per language
 
@@ -22,91 +26,136 @@
     let done = 0, cur = 60;
     for (let d = 60; d >= 1; d--) if (!(days['d' + d] && days['d' + d].done)) cur = d;
     for (const k in days) if (days[k] && days[k].done) done++;
-    return { done, cur, xp: p.xp || 0, started: !!Object.keys(days).length, resume: days['d' + cur] && days['d' + cur].slide };
+    return { done, cur, started: !!Object.keys(days).length };
   }
-  function langs() {
-    const s = read('lang.progress.v1'), done = s.done || {};
-    const by = {};
-    for (const k in done) { const c = k.split('/')[0]; if (done[k]) by[c] = (by[c] || 0) + 1; }
-    return { by };
+  function langPct(c) {
+    const done = read('lang.progress.v1').done || {};
+    let n = 0; for (const k in done) if (done[k] && k.split('/')[0] === c) n++;
+    return Math.min(100, Math.round((n / LANG_TOTAL) * 100));
   }
 
-  // Native-letter tiles for the languages (styled, no photos)
-  const GLYPH = { es: ['Ñ', '#C8102E', '#F1BF00'], fr: ['Ç', '#0055A4', '#EF4135'], de: ['ß', '#26221F', '#DD0000'], en: ['Aa', '#012169', '#C8102E'], hi: ['अ', '#FF9933', '#138808'] };
-
-  // Mind games come from the /mind/ app itself (same store, art and game list), loaded once as ES modules.
+  // Games come from the /mind/ app itself (same store, game list and icons), loaded once as ES modules.
   let MIND = null, mindAsked = false;
+  const rerender = () => { if (window.S && S.tab === 'courses' && typeof render === 'function') render(); };
   function loadMind() {
     if (mindAsked) return; mindAsked = true;
-    Promise.all([import('/mind/assets/store.js'), import('/mind/assets/games/index.js')])
-      .then(([store, games]) => { MIND = { store, games }; if (window.S && S.tab === 'courses' && typeof render === 'function') render(); })
-      .catch(() => { MIND = { failed: true }; });
+    Promise.all([import('/mind/assets/store.js'), import('/mind/assets/games/index.js'), import('/mind/assets/art.js').catch(() => ({}))])
+      .then(([store, games, art]) => { MIND = { store, games, art }; rerender(); })
+      .catch(() => { MIND = { failed: true }; rerender(); });
   }
-  // game symbols, typeset not illustrated
-  const GSYM = {
-    memory: '<i></i><i class="on"></i><i></i><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i class="on"></i>',
-    clash: '<em>BLUE</em>',
-    hunt: '<em>1</em><em>2</em><em>3</em>',
-    math: '<em>+</em><em>×</em>',
-    words: '<em>W</em><em>O</em><em>R</em><em>D</em>',
-  };
-  function mindSection(H) {
-    let h = '<h2 class="lx-sec">' + (H ? 'माइंड गेम्स' : 'Mind games') + '<a class="lx-all" href="/mind/">' + (H ? 'सभी' : 'All') + icon('chevron-right', 16) + '</a></h2>';
-    if (!MIND) { loadMind(); return h + '<div class="lx-mind-sk"><i class="b-skel"></i><i class="b-skel"></i></div>'; }
-    if (MIND.failed) return h + '<a class="lx-li" href="/mind/"><span class="lx-glyph" style="--a:#6C4DF6;--b:#13A07D">' + icon('brain', 22) + '</span><span class="lx-lt"><b>' + (H ? 'माइंड गेम्स खोलें' : 'Open Mind games') + '</b></span>' + icon('chevron-right', 18) + '</a>';
+  const gameIcon = id => (MIND && MIND.art && typeof MIND.art.icon === 'function' ? MIND.art.icon(id, 22) : icon('brain'));
+
+  // ── the one row ──
+  function row(o) {
+    const tag = o.href ? 'a' : 'button';
+    const act = o.href ? ' href="' + o.href + '"' : ' type="button" onclick="' + o.onclick + '"';
+    return '<' + tag + ' class="ui-row"' + act + (o.id ? ' data-id="' + o.id + '"' : '') + '>'
+      + '<span class="ui-ic" style="--ui-accent:' + o.accent + '" aria-hidden="true">' + o.ic + '</span>'
+      + '<span class="ui-tx"><b>' + esc(o.title) + '</b>' + (o.sub ? '<small>' + esc(o.sub) + '</small>' : '')
+      + (o.pct ? '<span class="ui-prog" aria-hidden="true"><i style="width:' + o.pct + '%;--ui-accent:' + o.accent + '"></i></span>' : '') + '</span>'
+      + '<span class="ui-chev">' + icon('chevron-right', 18) + '</span></' + tag + '>';
+  }
+  const list = rows => '<div class="ui-list">' + rows.join('') + '</div>';
+  const header = (title, back) => '<header class="ui-page-h">'
+    + (back ? '<button class="ui-back" type="button" onclick="LearnUI.back()" aria-label="' + (hi() ? 'वापस' : 'Back') + '">' + icon('chevron-left', 24) + '</button>' : '')
+    + '<h1>' + esc(title) + '</h1></header>';
+
+  // ── status lines for the three main rows ──
+  function gamesStatus(H) {
+    if (!MIND || MIND.failed) return H ? '5 ब्रेन गेम' : '5 brain games';
+    const w = MIND.store.workout(MIND.store.read());
+    if (w.complete) return H ? 'आज का वर्कआउट पूरा' : "Today's workout done";
+    return (H ? 'आज का वर्कआउट · ' : "Today's workout · ") + w.done.length + (H ? ' / 3' : ' of 3');
+  }
+  function langStatus(H) {
+    let best = null;
+    LANGS.forEach(l => { const p = langPct(l.c); if (p && (!best || p > best.p)) best = { l, p }; });
+    return best ? (H ? best.l.nh : best.l.n) + ' · ' + best.p + '%' : (H ? '5 भाषाएँ' : '5 languages');
+  }
+
+  function landing(H) {
+    const P = py();
+    loadMind();
+    return '<div class="lx">' + header(H ? 'सीखो' : 'Learn', false) + list([
+      row({ id: 'games', onclick: "LearnUI.open('games')", accent: 'var(--g-memory)', ic: icon('brain'), title: H ? 'गेम्स' : 'Games', sub: gamesStatus(H) }),
+      row({ id: 'coding', onclick: "LearnUI.open('coding')", accent: 'var(--g-python)', ic: CODE_IC, title: H ? 'कोडिंग' : 'Coding', sub: 'Python · ' + (P.started ? (H ? 'दिन ' : 'Day ') + P.cur + (H ? ' / 60' : ' of 60') : (H ? '60 दिन' : '60 days')) }),
+      row({ id: 'languages', onclick: "LearnUI.open('languages')", accent: 'var(--g-lang)', ic: icon('languages'), title: H ? 'भाषाएँ' : 'Languages', sub: langStatus(H) }),
+    ]) + '</div>';
+  }
+
+  function gamesHub(H) {
+    let h = '<div class="lx">' + header(H ? 'गेम्स' : 'Games', true);
+    if (!MIND) { loadMind(); return h + '<i class="ui-skel" style="height:176px"></i><i class="ui-skel" style="height:360px;margin-top:12px"></i></div>'; }
+    if (MIND.failed) return h + list([row({ href: '/mind/', accent: 'var(--g-memory)', ic: icon('brain'), title: H ? 'गेम्स खोलें' : 'Open games' })]) + '</div>';
     const { store, games } = MIND, p = store.read(), w = store.workout(p);
-    const meta = id => games.byId(id).meta, left = 3 - w.done.length;
-    const next = w.next || w.games[0];
-    const go = w.complete ? '/mind/' : '/mind/play.html?g=' + next + '&l=' + store.current(p, next) + '&w=1';
-    const pct = Math.round(w.done.length / 3 * 100), r = 20, circ = 2 * Math.PI * r;
-    // Today's workout: one row — ring, title, the three games as colour dots
-    h += '<a class="lx-wo" href="' + go + '">'
-      + '<span class="lx-ring sm" role="img" aria-label="' + w.done.length + '/3"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="' + r + '" class="t"/><circle cx="24" cy="24" r="' + r + '" class="v" style="stroke-dasharray:' + circ + ';stroke-dashoffset:' + (circ * (1 - pct / 100)) + '"/></svg><b>' + w.done.length + '/3</b></span>'
-      + '<span class="lx-wo-t"><b>' + (H ? 'आज का वर्कआउट' : "Today's workout") + '</b><small>' + (w.complete ? (H ? 'पूरा हुआ!' : 'Done for today') : (H ? left + ' गेम · ~' + left * 2 + ' मिनट' : left + ' game' + (left === 1 ? '' : 's') + ' · ~' + left * 2 + ' min')) + '</small></span>'
-      + '<span class="lx-wo-dots" aria-hidden="true">' + w.games.map(g => '<i class="' + (w.done.includes(g) ? 'done' : '') + '" style="--c:' + meta(g).color + '">' + (w.done.includes(g) ? icon('check', 12) : '') + '</i>').join('') + '</span>'
-      + icon('chevron-right', 18) + '</a>';
-    // the five games: colour cards with a drawn-in-CSS symbol, no pictures
-    h += '<div class="lx-games">' + games.GAMES.map((g, i) => { const m = g.meta, st = store.gameStats(p, m.id);
-      return '<a class="lx-game" style="--c:' + m.color + ';--d:' + m.deep + ';--i:' + i + '" href="/mind/game.html?g=' + m.id + '">'
-        + '<span class="lx-gm lx-gm-' + m.id + '" aria-hidden="true">' + (GSYM[m.id] || '') + '</span>'
-        + '<span class="lx-lv">' + (H ? 'लेवल ' : 'Lv ') + st.level + '</span>'
-        + '<b>' + esc(m.name) + '</b><small>' + esc(m.skill) + '</small></a>'; }).join('') + '</div>';
-    return h;
+    const meta = id => games.byId(id).meta, left = 3 - w.done.length, next = w.next || w.games[0];
+    // today's workout: one card, one action
+    h += '<section class="ui-card lx-wo" aria-labelledby="lxWoT"><div class="lx-wo-h"><div><h2 id="lxWoT">' + (H ? 'आज का वर्कआउट' : "Today's workout") + '</h2>'
+      + '<p>' + (w.complete ? (H ? 'आज के लिए पूरा। कल नया सेट।' : 'Done for today. A new set tomorrow.') : (H ? left + ' गेम · ~' + left * 2 + ' मिनट' : left + ' game' + (left === 1 ? '' : 's') + ' · ~' + left * 2 + ' min')) + '</p></div>'
+      + '<span class="lx-wo-n" aria-label="' + w.done.length + ' of 3 done">' + w.done.length + '<small>/3</small></span></div>'
+      + '<div class="lx-wo-g">' + w.games.map(g => '<span class="lx-wo-i' + (w.done.includes(g) ? ' done' : '') + '"><span class="ui-ic" style="--ui-accent:' + meta(g).color + '">' + (w.done.includes(g) ? icon('check', 22) : gameIcon(g)) + '</span><small>' + esc(meta(g).name) + '</small></span>').join('') + '</div>'
+      + (w.complete ? '' : '<a class="ui-btn wide" href="/mind/play.html?g=' + next + '&l=' + store.current(p, next) + '&w=1">' + (w.done.length ? (H ? 'जारी रखें' : 'Continue') : (H ? 'शुरू करें' : 'Start')) + '</a>')
+      + '</section>';
+    // every game, same row
+    h += '<div class="ui-sec">' + (H ? 'सभी गेम्स' : 'All games') + '</div>' + list(games.GAMES.map(g => {
+      const m = g.meta, st = store.gameStats(p, m.id);
+      return row({ id: m.id, href: '/mind/game.html?g=' + m.id, accent: m.color, ic: gameIcon(m.id), title: m.name,
+        sub: m.skill + ' · ' + (st.started ? (H ? 'लेवल ' : 'Level ') + st.level : (H ? 'नया' : 'New')), pct: st.started ? Math.round(st.done / 20 * 100) : 0 });
+    }));
+    return h + '</div>';
+  }
+
+  function codingHub(H) {
+    const P = py();
+    return '<div class="lx">' + header(H ? 'कोडिंग' : 'Coding', true) + list([
+      row({ id: 'python', href: '/code/', accent: 'var(--g-python)', ic: CODE_IC, title: 'Python',
+        sub: P.started ? (H ? 'दिन ' : 'Day ') + P.cur + (H ? ' / 60' : ' of 60') : (H ? '60 दिन · शुरुआत से' : '60 days · From zero'), pct: P.started ? Math.round(P.done / 60 * 100) : 0 }),
+    ]) + '<div class="ui-sec">' + (H ? 'मदद' : 'Help') + '</div>' + list([
+      row({ href: '/?tab=bro&persona=teacher', accent: 'var(--b-primary)', ic: icon('message-circle'), title: H ? 'Bro से पूछो' : 'Ask Bro', sub: H ? 'कोड पर कोई भी सवाल' : 'Any question about code' }),
+    ]) + '</div>';
+  }
+
+  function languagesHub(H) {
+    return '<div class="lx">' + header(H ? 'भाषाएँ' : 'Languages', true) + list(LANGS.map(l => {
+      const p = langPct(l.c);
+      return row({ id: l.c, href: '/lang/course.html?c=' + l.c, accent: l.a, ic: '<b class="lx-glyph">' + l.g + '</b>', title: H ? l.nh : l.n,
+        sub: l.native + ' · ' + (p ? p + '%' : (H ? 'शुरू नहीं किया' : 'Not started')), pct: p });
+    })) + '</div>';
   }
 
   L.landing = function () {
-    const H = hi(), P = py(), G = langs();
-    const pct = Math.round((P.done / 60) * 100), r = 22, circ = 2 * Math.PI * r;
-    let h = '<div class="lx"><h1 class="b-h1 lx-h">' + (H ? 'सीखो' : 'Learn') + '</h1>';
-
-    // ── Coding: Python's story as the cover (no photo) — a timeline from 1991 to today, then your progress ──
-    const go = P.started ? (H ? 'जारी रखें' : 'Continue') : (H ? 'शुरू करें' : 'Start');
-    h += '<h2 class="lx-sec">' + (H ? 'कोडिंग' : 'Coding') + '</h2>';
-    h += '<div class="lx-py"><span class="lx-py-bg" aria-hidden="true"><i class="o1"></i><i class="o2"></i><code>&gt;&gt;&gt;</code></span>'
-      + '<a class="lx-cover" href="/code/" aria-label="Python, 60 ' + (H ? 'दिन' : 'days') + '"></a>'
-      + '<span class="lx-k">' + (H ? '1991 से' : 'Since 1991') + '</span><span class="lx-t">Python</span>'
-      + '<ol class="lx-tl" aria-hidden="true"><li><b>1991</b><span>' + (H ? 'रिलीज़' : 'Released') + '</span></li><li><b>2000</b><span>Python 2</span></li><li><b>2008</b><span>Python 3</span></li><li class="now"><b>' + (H ? 'आज' : 'Today') + '</b><span>AI &amp; data</span></li></ol>'
-      + '<div class="lx-pr"><span class="lx-ring" role="img" aria-label="' + pct + '%"><svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="' + r + '" class="t"/><circle cx="26" cy="26" r="' + r + '" class="v" style="stroke-dasharray:' + circ + ';stroke-dashoffset:' + (circ * (1 - P.done / 60)) + '"/></svg><b>' + pct + '%</b></span>'
-      + '<span class="lx-d">' + (P.started ? (H ? 'दिन ' : 'Day ') + P.cur + ' / 60' : (H ? '60 दिन' : '60 days')) + '</span>'
-      + '<a class="lx-go" href="/code/' + (P.started ? 'day.html?d=' + P.cur : 'day.html?d=1') + '">' + go + icon('arrow-right', 16) + '</a></div></div>';
-
-    // ── Languages: native-letter tiles, name, progress ──
-    h += '<h2 class="lx-sec">' + (H ? 'भाषाएँ' : 'Languages') + '</h2><div class="lx-langs">';
-    LANGS.forEach(function (l, i) {
-      const n = G.by[l.c] || 0, p = Math.min(100, Math.round((n / LANG_TOTAL) * 100)), g = GLYPH[l.c];
-      h += '<a class="lx-li" style="--i:' + i + '" href="/lang/course.html?c=' + l.c + '">'
-        + '<span class="lx-glyph" style="--a:' + g[1] + ';--b:' + g[2] + '" aria-hidden="true">' + g[0] + '</span>'
-        + '<span class="lx-lt"><b>' + esc(H ? l.nh : l.n) + (l.native !== l.n ? ' <em>' + esc(l.native) + '</em>' : '') + '</b>' + (p ? '<span class="lx-bar"><i style="width:' + p + '%"></i></span>' : '') + '</span>'
-        + icon('chevron-right', 18) + '</a>';
-    });
-    h += '</div>';
-
-    // ── Mind games ──
-    h += mindSection(H);
-
-    // ── Bro, your coach: one line ──
-    h += '<a class="lx-bro" href="/?tab=bro&persona=teacher"><img src="/app/mascot.svg" alt="" width="40" height="40"><b>' + (H ? 'Bro से पूछो' : 'Ask Bro') + '</b>' + icon('chevron-right', 18) + '</a>';
-    h += '</div>';
-    return h;
+    const H = hi(), hub = window.S && S.learnHub;
+    if (hub === 'games') return gamesHub(H);
+    if (hub === 'coding') return codingHub(H);
+    if (hub === 'languages') return languagesHub(H);
+    return landing(H);
   };
+
+  // ── inner lists: opening pushes a history entry so the phone's back button returns to the three rows ──
+  L.open = function (hub, fromUrl) {
+    if (HUBS.indexOf(hub) < 0 || !window.S) return;
+    try {
+      if (fromUrl) history.replaceState({ learn: 1 }, '', '/?tab=learn');
+      history.pushState({ learn: 1, hub }, '', '/?tab=learn&hub=' + hub);
+    } catch (e) { /* ignore */ }
+    S.learnHub = hub;
+    if (typeof render === 'function') render();
+    window.scrollTo(0, 0);
+  };
+  L.back = function () {
+    if (history.state && history.state.hub) { history.back(); return; }
+    close();
+  };
+  function close() {
+    if (!window.S || !S.learnHub) return;
+    S.learnHub = null;
+    if (typeof render === 'function') render();
+    window.scrollTo(0, 0);
+  }
+  addEventListener('popstate', e => {
+    if (!window.S || S.tab !== 'courses') return;
+    const hub = e.state && e.state.hub;
+    if (hub && HUBS.indexOf(hub) >= 0) { S.learnHub = hub; render(); window.scrollTo(0, 0); }
+    else close();
+  });
 })();
