@@ -216,7 +216,13 @@ function install(app, deps) {
     const isAdm = req => { const f = deps.isAdmin || deps.isAdminUser; try { return !!(f && f(req.user, req)); } catch (e) { return false; } };
     const admin = (req, res, next) => isAdm(req) ? next() : res.status(403).json({ error: 'admin only' });
     // public: one bit (brain configured and voice loaded) so the app can show the live call button; nothing else leaks
-    app.get('/api/bro/ok', (req, res) => { res.set('Cache-Control', 'no-store'); res.json({ ok: !!(brain.ready() && voiceReady()) }); });
+    // public: one bit plus one safe word each (brain configured; voice ready/fetching/loading/no-space/error), no details
+    app.get('/api/bro/ok', (req, res) => {
+      res.set('Cache-Control', 'no-store');
+      let voice = 'off'; try { const v = voiceMod(); voice = voiceReady() ? 'ready' : v && typeof v.health === 'function' ? (v.health().word || 'starting') : 'off'; } catch (e) { voice = 'error'; }
+      if (!['ready', 'fetching', 'loading', 'starting', 'restarting', 'no-space', 'error', 'off'].includes(voice)) voice = 'error';
+      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice });
+    });
     app.get('/api/bro/core/health', auth, (req, res) => { res.set('Cache-Control', 'no-store'); if (!isAdm(req)) return res.json({ ok: !!(brain.ready() && voiceReady()) }); try { res.json(Object.assign({ ok: !!(brain.ready() && voiceReady()) }, health())); } catch (e) { res.status(500).json({ error: e.message }); } });
     app.post('/api/bro/rate', auth, (req, res) => { const b = req.body || {}; const r = memory.rate(req.user.phone, b.rating, b.call_id || b.callId); res.status(r.ok ? 200 : 400).json(r); });
     app.get('/api/bro/memory', auth, (req, res) => { res.set('Cache-Control', 'no-store'); res.json(memory.list(req.user.phone)); });
