@@ -2,7 +2,9 @@
 // Every run: pull every feed (all categories), merge stories that several outlets are covering into one cluster,
 // rank clusters by how many independent sources carry them and how fresh they are, then have the brain
 // (OpenAI → Gemini → Groq; extractive fallback without a key) write ONE original Brodoit story per cluster:
-// a headline, a 60-word summary, "why it matters", in English and Hindi, with the sources listed.
+// a headline and a full 90–105 word story (10+ lines on a phone), in English and Hindi, with the sources listed.
+// v13.1: near-duplicates of recent stories are skipped, and each story's real photo (RSS image or the source page's
+// og:image) is cached once in MEDIA_DIR/news-img and served same-origin (/api/news/img/:id) so Share can draw it.
 // Rules for the writer: only facts present in the sources; no opinions; neutral, simple words.
 //   GET  /api/news/desk?cat=&limit=   → { stories:[…], updated_at, writer }
 //   POST /api/news/desk/run (admin)   → runs a batch now
@@ -10,6 +12,7 @@
 'use strict';
 const GEM = require('./gemini.js');
 const crypto = require('crypto');
+const fs = require('fs'), path = require('path');
 
 const STOP = new Set('a an the of to in on for and or but with at by from as is are was were be been it its this that these those after before over under into about than then new says said say will would can could may might not no yes up down out more most what why how who when where which while amid amid as india india’s'.split(/\s+/));
 const CAT_LABEL = { india: 'India', world: 'World', business: 'Business', tech: 'Tech', science: 'Science' };
@@ -71,7 +74,7 @@ function install(app, deps) {
   }
 
   // ── the writer ──
-  const SYS = 'You are the editor of Brodoit News, an Indian news app for young readers. Write ONE original news story from the source reports provided. Rules: use only facts that appear in the sources; never invent numbers, names or quotes; neutral tone; simple words a 15-year-old understands; no clickbait. Return strict JSON with keys: headline (max 12 words), summary (55-65 words, one paragraph), why (one sentence, max 22 words, why it matters to an Indian reader), headline_hi, summary_hi, why_hi (natural Hindi, not word-for-word), category (one of india, world, business, tech, science).';
+  const SYS = 'You are the editor of Brodoit News, an Indian news app. Write ONE original news story from the source reports provided. Rules: use only facts that appear in the sources; never invent numbers, names or quotes; neutral tone; clear, simple words; no clickbait. The story must be complete on its own: what happened, who is involved, the key numbers and why it matters, woven into the text. Return strict JSON with keys: headline (max 12 words), summary (the full story, 90-105 words, one paragraph), headline_hi, summary_hi (natural Hindi, same facts, 90-110 words, not word-for-word), category (one of india, world, business, tech, science).';
   function promptFor(c) {
     const lines = c.items.slice(0, 6).map((i, n) => `Source ${n + 1} (${i.source}): ${i.title}. ${clip(i.desc, 420)}`);
     return lines.join('\n');
@@ -107,11 +110,68 @@ function install(app, deps) {
     const m = String(out).match(/\{[\s\S]*\}/); if (!m) throw new Error('no JSON in reply');
     return JSON.parse(m[0]);
   }
+  // Without a writer: stitch the sources' own sentences (no repeats) into one story of 110+ words when possible.
   function extractive(c) {
-    const lead = c.items.slice().sort((a, b) => (b.desc || '').length - (a.desc || '').length)[0];
-    return { headline: clip(c.items[0].title, 110), summary: words(lead.desc || lead.title, 60), why: '', headline_hi: '', summary_hi: '', why_hi: '', category: c.cat };
+    const seen = new Set(), out = [];
+    for (const it of c.items.slice().sort((a, b) => (b.desc || '').length - (a.desc || '').length)) {
+      for (const sent of String(it.desc || '').split(/(?<=[.!?])\s+/)) {
+        const k = sent.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().slice(0, 60);
+        if (sent.split(' ').length < 6 || seen.has(k)) continue;
+        seen.add(k); out.push(sent.trim());
+        if (out.join(' ').split(' ').length >= 100) break;
+      }
+      if (out.join(' ').split(' ').length >= 100) break;
+    }
+    return { headline: clip(c.items[0].title, 110), summary: words(out.join(' '), 115), why: '', headline_hi: '', summary_hi: '', why_hi: '', category: c.cat };
   }
-  const valid = s => s && typeof s.headline === 'string' && s.headline.length > 8 && typeof s.summary === 'string' && s.summary.split(/\s+/).length >= 25;
+  const wc = t => String(t || '').trim().split(/\s+/).filter(Boolean).length;
+  const valid = s => s && typeof s.headline === 'string' && s.headline.length > 8 && typeof s.summary === 'string' && wc(s.summary) >= 75;
+  const MIN_WORDS = 70;
+
+  // ── real photos: the RSS image, else the source page's og:image; cached once and served same-origin ──
+  const IMG = deps.mediaDir ? path.join(deps.mediaDir, 'news-img') : '';
+  if (IMG) { try { fs.mkdirSync(IMG, { recursive: true }); } catch (e) { /* read-only */ } }
+  const imgFile = id => { if (!IMG) return ''; for (const x of ['jpg', 'png', 'webp']) { const f = path.join(IMG, id + '.' + x); if (fs.existsSync(f)) return f; } return ''; };
+  // only public http(s) hosts: page and photo URLs come from outside, so never touch localhost or private ranges
+  const publicUrl = u => { try { const x = new URL(u), h = x.hostname.toLowerCase(); return /^https?:$/.test(x.protocol) && !h.startsWith('[') && /[a-z]/.test(h) && h !== 'localhost' && !/\.(local|internal|localhost)$/.test(h); } catch (e) { return false; } };
+  async function ogImage(link) {
+    if (!publicUrl(link)) return '';
+    try {
+      const r = await fetch(link, { signal: AbortSignal.timeout(6000), headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) BrodoitNews/1.0', Accept: 'text/html' } });
+      if (!r.ok) return '';
+      const html = (await r.text()).slice(0, 300000);
+      const m = html.match(/<meta[^>]+(?:property|name)=["'](?:og:image(?::url)?|twitter:image)["'][^>]*content=["']([^"']+)["']/i) || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i);
+      return m ? new URL(m[1].replace(/&amp;/g, '&'), link).href : '';
+    } catch (e) { return ''; }
+  }
+  async function cacheImage(id, url) {
+    if (!IMG || !url || imgFile(id)) return !!imgFile(id);
+    if (!publicUrl(url)) return false;
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(10000), headers: { 'User-Agent': 'Mozilla/5.0 BrodoitNews/1.0' } });
+      const type = String(r.headers.get('content-type') || '');
+      if (!r.ok || !/^image\/(jpeg|jpg|png|webp)/.test(type)) return false;
+      const buf = Buffer.from(await r.arrayBuffer());
+      if (buf.length < 4000 || buf.length > 3e6) return false; // tiny = a logo/pixel, huge = not worth it
+      const ext = /png/.test(type) ? 'png' : /webp/.test(type) ? 'webp' : 'jpg';
+      const f = path.join(IMG, id + '.' + ext), tmp = f + '.tmp';
+      fs.writeFileSync(tmp, buf); fs.renameSync(tmp, f);
+      return true;
+    } catch (e) { return false; }
+  }
+  async function photoFor(id, image, sources) {
+    if (imgFile(id)) return true;
+    if (image && await cacheImage(id, image)) return true;
+    for (const src of (sources || []).slice(0, 3)) { const og = await ogImage(src.link); if (og && await cacheImage(id, og)) { try { q('UPDATE news_stories SET image=? WHERE id=?').run(og, id); } catch (e) { /* ignore */ } return true; } }
+    return false;
+  }
+  app.get('/api/news/img/:id', (req, res) => {
+    const id = String(req.params.id || '').replace(/[^A-Za-z0-9_-]/g, '');
+    const f = id && imgFile(id); if (!f) return res.status(404).end();
+    res.set('Cache-Control', 'public, max-age=604800, immutable'); res.sendFile(f);
+  });
+  // One-time cleanup: short stories from before v13.1 are rewritten as full stories by the next batch.
+  try { const short = q('SELECT id, summary FROM news_stories').all().filter(r => wc(r.summary) < MIN_WORDS).map(r => r.id); if (short.length) { const del = q('DELETE FROM news_stories WHERE id=?'); for (const id of short) del.run(id); log('removed', short.length, 'short stories; the next batch writes them in full'); } } catch (e) { log('cleanup', e.message); }
 
   async function run(reason) {
     if (state.running) return { busy: true };
@@ -120,24 +180,32 @@ function install(app, deps) {
       const items = await gather();
       const clusters = cluster(items).filter(c => c.items.length >= 1).slice(0, 40);
       const have = new Set(q('SELECT cluster_key FROM news_stories WHERE created_at > datetime(\'now\',\'-3 days\')').all().map(r => r.cluster_key));
+      // no repeats: a cluster that tells the same story as one we already published is skipped
+      const recent = q("SELECT headline, summary FROM news_stories WHERE created_at > datetime('now','-3 days')").all().map(r => new Set(tokens(r.headline + ' ' + String(r.summary || '').slice(0, 140))));
+      const repeat = c => { const t = new Set(tokens(c.items[0].title + ' ' + (c.items[0].desc || '').slice(0, 140))); return recent.some(r => jaccard(t, r) >= 0.45); };
       const ws = writers(); state.writer = ws.length ? ws[0][0] : 'extractive';
       for (const c of clusters) {
         if (wrote >= 24) break;
-        if (have.has(c.key)) { skipped++; continue; }
+        if (have.has(c.key) || repeat(c)) { skipped++; continue; }
         let s = null, by = 'extractive';
         for (const [name, fn] of ws) { try { const out = await fn(promptFor(c)); if (valid(out)) { s = out; by = name; break; } } catch (e) { state.lastError = name + ': ' + e.message; if (name === 'gemini' && /402|credit|prepay|billing/i.test(e.message)) global._geminiDownUntil = Date.now() + 3600e3; } }
         if (!s) { if (c.sources < 2 && ws.length) continue; s = extractive(c); }
+        if (wc(s.summary) < MIN_WORDS) { skipped++; continue; } // too thin to be a full story
         const sources = []; const seen = new Set();
         for (const i of c.items) { if (seen.has(i.source)) continue; seen.add(i.source); sources.push({ name: i.source, link: i.link, title: i.title }); }
         const image = (c.items.find(i => i.img) || {}).img || null;
         const cat = CAT_LABEL[s.category] ? s.category : c.cat;
         try {
           q('INSERT OR IGNORE INTO news_stories(id,cluster_key,category,headline,summary,why,headline_hi,summary_hi,why_hi,sources,image,writer,source_count,published_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-            .run('ns_' + c.key, c.key, cat, clip(s.headline, 140), words(s.summary, 75), clip(s.why || '', 200), clip(s.headline_hi || '', 160), words(s.summary_hi || '', 90), clip(s.why_hi || '', 220), JSON.stringify(sources.slice(0, 6)), image, by, sources.length, new Date(c.newest || Date.now()).toISOString());
+            .run('ns_' + c.key, c.key, cat, clip(s.headline, 140), words(s.summary, 120), clip(s.why || '', 200), clip(s.headline_hi || '', 160), words(s.summary_hi || '', 140), clip(s.why_hi || '', 220), JSON.stringify(sources.slice(0, 6)), image, by, sources.length, new Date(c.newest || Date.now()).toISOString());
           wrote++;
+          recent.push(new Set(tokens(s.headline + ' ' + String(s.summary).slice(0, 140))));
+          await photoFor('ns_' + c.key, image, sources);
         } catch (e) { state.lastError = 'db: ' + e.message; }
       }
       q("DELETE FROM news_stories WHERE created_at < datetime('now','-4 days')").run();
+      for (const r of q("SELECT id, image, sources FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY created_at DESC LIMIT 40").all().filter(r => !imgFile(r.id)).slice(0, 12)) { let src = []; try { src = JSON.parse(r.sources || '[]'); } catch (e) { /* ignore */ } await photoFor(r.id, r.image, src); }
+      try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp)$/, ''); if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
       state.last = { at: new Date().toISOString(), reason, items: items.length, clusters: clusters.length, wrote, skipped, ms: Date.now() - t0, writer: state.writer };
       log('batch', JSON.stringify(state.last));
       // record the new headlines and top stories right away (modules/newsvoice.js)
@@ -147,7 +215,7 @@ function install(app, deps) {
     finally { state.running = false; }
   }
 
-  const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: (() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })(), image: r.image, writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at, voice: global._newsVoice ? global._newsVoice.flags(r.id) : {} });
+  const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: (() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })(), image: imgFile(r.id) ? '/api/news/img/' + encodeURIComponent(r.id) : r.image, writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at, voice: global._newsVoice ? global._newsVoice.flags(r.id) : {} });
   app.get('/api/news/desk', (req, res) => {
     const cat = String(req.query.cat || '').toLowerCase(); const lim = Math.max(1, Math.min(60, parseInt(req.query.limit) || 40));
     const rows = CAT_LABEL[cat] ? q('SELECT * FROM news_stories WHERE category=? ORDER BY source_count DESC, published_at DESC LIMIT ?').all(cat, lim)

@@ -223,7 +223,7 @@
     h += '</div>';
     return h;
   }
-  const nudge = (n, g) => { const left = g - n; return n >= g ? t('goalDone') : n === 0 ? t('start') : left <= 1000 ? t('almost', { n: fmt(left) }) : t('left', { n: fmt(left) }); };
+  const nudge = (n, g) => { const left = g - n; return n >= g ? t('goalDone') : n === 0 ? '' : left <= 1000 ? t('almost', { n: fmt(left) }) : t('left', { n: fmt(left) }); };
   function pill() {
     if (!T.sum && !T.loaded && !T.walk.on) return skel('st-sk-pill');
     const st = T.stateNow(); let label = t(st), sub = '';
@@ -257,7 +257,7 @@
     const d = T.board.cache['friends:today'];
     if (!T.loaded && !d) return '<section class="b-card st-podium"><div class="st-podium-head">' + skel('', '90px', '12px') + skel('', '60px', '12px') + '</div><div class="st-podium-row">' + [40, 56, 28].map(hh => '<div class="st-pod">' + skel('', '48px', '48px').replace('b-skel', 'b-skel round') + skel('', '56px', '10px') + skel('', '100%', hh + 'px') + '</div>').join('') + '</div></section>';
     if (T.friendCount() === 0 || !d || !d.top || d.top.length < 2) {
-      return '<section class="b-card st-empty" id="stEmpty">' + mascot() + '<div><h3>' + _esc(t('emptyH')) + '</h3><p>' + _esc(t('emptyP')) + '</p><button class="b-btn move sm" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 16) + _esc(t('invite')) + '</button></div></section>';
+      return '<section class="b-card st-empty" id="stEmpty">' + mascot() + '<div><h3>' + _esc(t('emptyH')) + '</h3><button class="b-btn move sm" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 16) + _esc(t('invite')) + '</button></div></section>';
     }
     const top = d.top.slice(0, 3); const order = [top[1], top[0], top[2]]; const cls = ['p2', 'p1', 'p3'];
     let h = '<section class="b-card st-podium"><div class="st-podium-head"><span class="b-eyebrow">' + _esc(t('friends')) + ' · ' + _esc(t('today')) + '</span><button class="b-chip" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 14) + _esc(t('invite')) + '</button></div><div class="st-podium-row">';
@@ -268,7 +268,7 @@
   function streak() {
     if (!T.sum) return '<section class="b-card st-streak"><div class="st-streak-l">' + skel('', '36px', '36px').replace('b-skel', 'b-skel round') + '<div>' + skel('', '110px', '16px') + skel('', '70px', '10px') + '</div></div>' + skel('', '80px', '36px') + '</section>';
     const n = Number(T.sum.streak) || 0, fz = Number(T.sum.freezes_left) || 0, lg = Number(T.sum.longest) || 0;
-    return '<section class="b-card st-streak" id="stStreak"><div class="st-streak-l"><span class="st-flame' + (n ? '' : ' cold') + '">' + ic('flame', 20) + '</span><div><b>' + _esc(n === 0 ? t('noStreak') : n === 1 ? t('streak1') : t('streak', { n: fmt(n) })) + '</b><small>' + _esc(lg > n ? t('longest', { n: fmt(lg) }) : t('streakSub')) + '</small></div></div>' +
+    return '<section class="b-card st-streak" id="stStreak"><div class="st-streak-l"><span class="st-flame' + (n ? '' : ' cold') + '">' + ic('flame', 20) + '</span><div><b>' + _esc(n === 0 ? t('noStreak') : n === 1 ? t('streak1') : t('streak', { n: fmt(n) })) + '</b>' + (lg > n ? '<small>' + _esc(t('longest', { n: fmt(lg) })) + '</small>' : '') + '</div></div>' +
       '<button class="st-freeze' + (fz ? '' : ' none') + '" onclick="StepsTab.openSheet(\'freeze\')" aria-label="Streak freeze">' + ic('snowflake', 14) + _esc(fz === 0 ? t('noFreeze') : fz === 1 ? t('freeze', { n: 1 }) : t('freezes', { n: fz })) + '</button></section>';
   }
   function week() {
@@ -316,9 +316,11 @@
   function board() {
     const key = T.board.scope + ':' + T.board.period, d = T.board.cache[key], loading = !d && (T.board.loading || !T.loaded);
     const hidden = s => { const c = T.board.cache[s + ':today'] || T.board.cache[s + ':week']; return c ? !!c.hidden : null; };
-    let h = '<section class="b-card st-board" id="stBoard"><div class="st-board-head"><div><span class="b-eyebrow">' + (isHi() ? 'लीडरबोर्ड' : 'Leaderboard') + '</span><div class="b-h3">' + _esc(t(T.board.scope)) + '</div></div>' +
+    let h = '<section class="b-card st-board" id="stBoard"><div class="st-board-head"><div><div class="b-h3">' + _esc(t(T.board.scope)) + '</div></div>' +
       '<div class="st-seg" role="tablist">' + ['today', 'week'].map(p => '<button role="tab" aria-selected="' + (T.board.period === p) + '" class="' + (T.board.period === p ? 'on' : '') + '" onclick="StepsTab.setPeriod(\'' + p + '\')">' + _esc(t(p)) + '</button>').join('') + '</div></div>';
-    h += '<div class="st-scopes">' + ['friends', 'city', 'india'].map(s => { const hd = s !== 'friends' && hidden(s) === true; return '<button class="b-chip' + (T.board.scope === s ? ' on' : '') + '"' + (hd ? ' disabled title="' + _esc(t('opensAt')) + '"' : '') + ' onclick="StepsTab.setScope(\'' + s + '\')">' + _esc(t(s)) + (hd ? ' · ' + (isHi() ? 'जल्द' : 'soon') : '') + '</button>'; }).join('') + '</div>' + (['city', 'india'].some(s => hidden(s) === true) ? '<p class="st-scope-note">' + _esc((isHi() ? 'शहर और भारत बोर्ड ' : 'City and India boards ') + t('opensAt')) + '</p>' : '');
+    // City and India boards appear once they open; until then only Friends (no "soon" chips)
+    const scopes = ['friends', 'city', 'india'].filter(s => s === 'friends' || hidden(s) !== true);
+    if (scopes.length > 1) h += '<div class="st-scopes">' + scopes.map(s => { const hd = false; return '<button class="b-chip' + (T.board.scope === s ? ' on' : '') + '"' + (hd ? ' disabled title="' + _esc(t('opensAt')) + '"' : '') + ' onclick="StepsTab.setScope(\'' + s + '\')">' + _esc(t(s)) + (hd ? ' · ' + (isHi() ? 'जल्द' : 'soon') : '') + '</button>'; }).join('') + '</div>' + (['city', 'india'].some(s => hidden(s) === true) ? '<p class="st-scope-note">' + _esc((isHi() ? 'शहर और भारत बोर्ड ' : 'City and India boards ') + t('opensAt')) + '</p>' : '');
     h += '<div class="st-rows">';
     if (loading) { h += [0, 1, 2].map(() => '<div class="st-sk-row">' + skel('c') + skel('l') + skel('n') + '</div>').join(''); }
     else if (!d) { h += '<div class="st-board-empty"><p>' + (isHi() ? 'लीडरबोर्ड लोड नहीं हुआ।' : 'Could not load the leaderboard.') + '</p><button class="b-chip" onclick="StepsTab.loadBoard(true)">' + ic('refresh-cw', 14) + (isHi() ? 'फिर कोशिश' : 'Retry') + '</button></div>'; }
@@ -328,10 +330,8 @@
       const around = (d.around || []).filter(r => !ids[r.id]); const all = top.concat(around);
       let meShown = false; all.forEach((r, i) => { if (r.isMe) meShown = true; h += boardRow(r, r.rank || i + 1, { sticky: r.isMe }); });
       if (!meShown && d.me) h += boardRow({ isMe: true, name: (_S().user && _S().user.name) || t('you'), hue: (T.sum && T.sum.hue) || 180, steps: d.me.steps, streak: d.me.streak, source: T.sum && T.sum.today && T.sum.today.source, trust: T.sum && T.sum.today && T.sum.today.trust }, d.me.rank, { sticky: true });
-      if (all.length <= 1) h += '<div class="st-board-empty"><p>' + _esc(t('emptyP')) + '</p><button class="b-btn move sm" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 16) + _esc(t('invite')) + '</button></div>';
     }
     h += '</div>';
-    if (d && !d.hidden) h += '<div class="st-board-foot">' + ic('info', 12) + (d.provisional ? _esc(t('provisional')) : (T.board.scope === 'friends' ? (isHi() ? 'मैन्युअल कदम बोर्ड में नहीं गिने जाते' : 'Manual steps don’t count on boards') : (isHi() ? 'सिर्फ़ ऑटो-सिंक वाले' : 'Auto-synced walkers only'))) + '</div>';
     return h + '</section>';
   }
   function chips() {
@@ -344,7 +344,7 @@
   }
   T.html = function () {
     let h = '<div class="st' + (isHi() ? ' hi' : '') + '" id="stRootIn">';
-    h += '<header class="st-top"><div><h1 class="st-h1">' + (isHi() ? 'कदम' : 'Steps') + '</h1><span class="b-eyebrow"><i></i>' + (isHi() ? 'मूव' : 'Move') + ' · ' + _esc(dateLabel()) + '</span></div><div class="st-top-acts"><button class="icon-btn" onclick="StepsTab.openSheet(\'invite\')" aria-label="Invite">' + ic('user-plus', 20) + '</button></div></header>';
+    h += '<header class="st-top"><div><h1 class="st-h1">' + (isHi() ? 'कदम' : 'Steps') + '</h1><span class="b-eyebrow"><i></i>' + _esc(dateLabel()) + '</span></div><div class="st-top-acts"><button class="icon-btn" onclick="StepsTab.openSheet(\'invite\')" aria-label="Invite">' + ic('user-plus', 20) + '</button></div></header>';
     h += hero() + walkCard() + podium() + streak() + week() + board() + chips();
     return h + '</div>';
   };

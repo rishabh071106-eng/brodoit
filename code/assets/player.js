@@ -10,8 +10,8 @@ import { mountCoach } from './coach.js';
 const DAY = Math.max(1, Math.min(60, parseInt(param('d')) || 1));
 const pad = n => String(n).padStart(2, '0');
 const stage = document.getElementById('stage'), foot = document.getElementById('foot');
-const PHASES = ['', 'Launch', 'Ascent', 'Orbit', 'Deep space', 'Developer', 'Pro'];
-const KICK = { intro: ['rocket', 'Mission briefing'], concept: ['spark', 'Concept'], visual: ['eye', 'See it'], code: ['play', 'Run it'], predict: ['crystal', 'Predict'], quiz: ['check', 'Quick check'], exercise: ['keyboard', 'Your turn'], bug: ['bug', 'Fix the bug'], project: ['build', 'Project'], recap: ['flag', 'Recap'] };
+// A small tag only on slides where you act; dropped when the title already says it.
+const KICK = { code: ['play', 'Run it', /\brun\b/i], predict: ['crystal', 'Predict', /predict/i], quiz: ['check', 'Quiz', /quiz|check|question/i], exercise: ['keyboard', 'Your turn', /your turn/i], bug: ['bug', 'Fix the bug', /bug|fix/i], project: ['build', 'Project', /project/i] };
 const XP = { code: 2, predict: 5, quiz: 5, exercise: 20, bug: 20, project: 60 };
 
 let D = null, idx = 0, P = progress.read();
@@ -21,9 +21,6 @@ const editors = {};
 let traceCtl = null;
 
 const ICON = {
-  rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
-  spark: '<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
-  eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   play: '<polygon points="6 4 20 12 6 20 6 4"/>',
   crystal: '<circle cx="12" cy="11" r="7"/><path d="M8 21h8M9 18l-1 3M15 18l1 3"/>',
   check: '<path d="M20 6 9 17l-5-5"/>',
@@ -51,7 +48,7 @@ async function load() {
     if (!r.ok) throw new Error(r.status);
     D = await r.json();
   } catch (e) {
-    stage.innerHTML = `<div class="sl in"><div class="sl-card"><h2>Day ${DAY} is being prepared</h2><p class="muted">This mission lands soon. Keep going with the days before it.</p><a class="btn pri" href="/code/">Back to the mission map</a></div></div>`;
+    stage.innerHTML = `<div class="sl in"><div class="sl-card"><h2 class="sl-title">Day ${DAY} is coming soon</h2><p class="muted">Keep going with the days before it.</p><a class="btn pri" href="/code/">All days</a></div></div>`;
     foot.hidden = true;
     return;
   }
@@ -76,26 +73,28 @@ const lastError = {};
 function buildProgress() {
   const bar = document.getElementById('segs');
   bar.innerHTML = D.slides.map((s, k) => `<i data-k="${k}" class="${s.type}"></i>`).join('');
-  document.getElementById('dayLabel').textContent = `Day ${DAY} · ${PHASES[D.phase] || ''}`;
+  document.getElementById('dayLabel').textContent = `Day ${DAY}`;
 }
 function paintProgress() {
   document.querySelectorAll('#segs i').forEach(el => { const k = +el.dataset.k; el.classList.toggle('done', k < idx || !!solved[k]); el.classList.toggle('on', k === idx); });
 }
 
 // ── slides ──
-function head(s, k) {
-  const [icn, label] = KICK[s.type] || ['spark', ''];
-  return `<div class="sl-kick" style="--i:0"><span class="sl-chip t-${s.type}">${ic(icn, 14)}${label}</span><span class="sl-n">${k + 1}/${D.slides.length}</span><button class="sl-say" aria-label="Play narration" data-act="say">${ic('sound', 16)}<span class="wave"><i></i><i></i><i></i><i></i></span></button></div>
-  <h2 class="sl-title" style="--i:1">${esc(s.title)}</h2>`;
+function head(s) {
+  const kick = KICK[s.type];
+  // the top bar already says "Day N", so the intro needs no chip, and its title drops the "Mission N:" prefix
+  const chip = s.type === 'intro' ? ''
+    : kick && !kick[2].test(s.title || '') ? `<span class="sl-chip t-${s.type}">${ic(kick[0], 14)}${kick[1]}</span>` : '';
+  const title = s.type === 'intro' ? String(s.title || '').replace(/^Mission\s*\d+\s*:\s*/i, '') : s.title;
+  return `<div class="sl-head" style="--i:0"><div class="sl-hl">${chip ? `<div>${chip}</div>` : ''}<h2 class="sl-title">${esc(title)}</h2></div>
+    <button class="sl-say" aria-label="Play narration" data-act="say">${ic('sound', 16)}<span class="wave"><i></i><i></i><i></i><i></i></span></button></div>`;
 }
 
 function body(s, k) {
   const vis = s.visual ? `<div class="sl-vis" style="--i:3">${renderVisual(s.visual)}</div>` : '';
   switch (s.type) {
     case 'intro':
-      return `<div class="sl-hero" style="--i:1"><div class="orbit"><span class="planet"></span><span class="ring r1"></span><span class="ring r2"></span><span class="ship">${ic('rocket', 26)}</span></div>
-        <div class="sl-day">Day ${DAY} <small>of 60 · ${esc(PHASES[D.phase])}</small></div><div class="sl-sub">${esc(D.subtitle || '')}</div></div>
-        <div class="sl-body" style="--i:2">${md(s.body)}</div>${vis}
+      return `<div class="sl-body" style="--i:2">${md(s.body)}</div>${vis}
         <div class="sl-outs" style="--i:4"><div class="sl-ot">Today you will</div>${(D.outcomes || []).map((o, j) => `<div class="sl-o" style="--j:${j}">${ic('check', 14)}<span>${esc(o)}</span></div>`).join('')}</div>`;
     case 'concept': case 'visual':
       return `${s.body ? `<div class="sl-body" style="--i:2">${md(s.body)}</div>` : ''}${vis}`;
@@ -122,7 +121,7 @@ function body(s, k) {
         <div class="sl-con" hidden></div><div class="sl-res" hidden></div><div class="sl-hints"></div>`;
     case 'recap':
       return `<div class="sl-points" style="--i:2">${(s.points || []).map((p, j) => `<div class="sl-pt" style="--j:${j}">${ic('check', 16)}<span>${md(p).replace(/^<p>|<\/p>$/g, '')}</span></div>`).join('')}</div>
-        <div class="sl-badge" style="--i:3"><div class="medal"><span>${DAY}</span></div><div><b>Mission ${DAY} complete</b><small>${esc(D.title)}</small></div></div>`;
+        <div class="sl-badge" style="--i:3"><div class="medal"><span>${DAY}</span></div><div><b>Day ${DAY} complete</b><small>${esc(D.title)}</small></div></div>`;
   }
   return '';
 }
@@ -130,7 +129,7 @@ const traceable = s => s.trace !== false && s.code.split('\n').length <= 25 && !
 function stdinBox(s, k) {
   const src = s.code || s.starter || '';
   if (!s.stdin && !/input\s*\(/.test(src) && !/input\s*\(/.test(s.solution || '')) return '';
-  return `<label class="sl-in" style="--i:3"><span>Input <small>one value per line</small></span><textarea rows="2" data-stdin spellcheck="false" autocapitalize="off">${esc(s.stdin || '')}</textarea></label>`;
+  return `<label class="sl-in" style="--i:3"><span>Input <small>one per line</small></span><textarea rows="2" data-stdin spellcheck="false" autocapitalize="off">${esc(s.stdin || '')}</textarea></label>`;
 }
 
 function codeKey(k) { return `bd.py.code.d${pad(DAY)}.s${k}`; }
@@ -145,7 +144,7 @@ function show(k, dir) {
   const s = D.slides[k]; idx = k;
   const el = document.createElement('section');
   el.className = 'sl ' + (dir > 0 ? 'from-r' : dir < 0 ? 'from-l' : 'from-0') + ' t-' + s.type;
-  el.innerHTML = `<div class="sl-card">${head(s, k)}${body(s, k)}</div>`;
+  el.innerHTML = `<div class="sl-card">${head(s)}${body(s, k)}</div>`;
   const old = stage.querySelector('.sl.in');
   if (old) { old.classList.remove('in'); old.classList.add(dir >= 0 ? 'out-l' : 'out-r'); setTimeout(() => old.remove(), 420); }
   stage.appendChild(el);
@@ -177,7 +176,7 @@ function paintFoot() {
   const task = ['exercise', 'bug', 'project'].includes(s.type) && !solved[idx];
   const next = document.getElementById('next'), skip = document.getElementById('skip');
   next.disabled = gated || task;
-  next.innerHTML = last ? `Complete mission ${ic('flag', 16)}` : gated ? 'Answer to continue' : task ? 'Pass the check to continue' : `Continue ${ic('next', 16)}`;
+  next.innerHTML = last ? `Finish ${ic('flag', 16)}` : gated ? 'Answer first' : task ? 'Pass the check first' : `Continue ${ic('next', 16)}`;
   skip.hidden = !(task && (fails[idx] || 0) >= 2);
   document.getElementById('back').disabled = idx === 0;
 }
@@ -224,7 +223,7 @@ function paintResult(c, res, k) {
     er.hidden = false;
     er.innerHTML = `<div class="err-t">${esc(res.error.text)}${res.error.line ? ` <small>line ${res.error.line}</small>` : ''}</div>${hint ? `<div class="err-h">${ic('bulb', 14)}${esc(hint)}</div>` : ''}
       ${res.error.tb && res.error.tb.split('\n').length > 1 ? `<details><summary>Full traceback</summary><pre>${esc(res.error.tb)}</pre></details>` : ''}
-      <button class="btn small ghost" data-act="askbro" data-q="Why do I get this error? ${esc(res.error.text)}">Ask Bro why</button>`;
+      <button class="btn small ghost" data-act="askbro" data-q="Why do I get this error? ${esc(res.error.text)}">Ask Bro</button>`;
     const ed = editors[k]; if (ed && res.error.line) { ed.clearMarks(); ed.mark(res.error.line, 'err'); }
   }
 }
@@ -291,7 +290,7 @@ function typeOut(pre, text) {
 
 async function check(el, s, k) {
   const ed = editors[k]; if (!ed) return;
-  const r = el.querySelector('.sl-res'); r.hidden = false; r.innerHTML = '<div class="res info"><span class="spin"></span>Checking your code in Python…</div>';
+  const r = el.querySelector('.sl-res'); r.hidden = false; r.innerHTML = '<div class="res info"><span class="spin"></span>Checking…</div>';
   const btn = el.querySelector('[data-act="check"]'); btn.disabled = true;
   const res = await PY.run({ code: ed.value, stdin: stdinOf(el) || s.stdin || '', files: s.files, needs: s.needs, tests: s.tests, mode: 'test' });
   btn.disabled = false;
@@ -299,14 +298,14 @@ async function check(el, s, k) {
   const t = res.test || { passed: false, msg: res.error ? res.error.text : 'Could not check.' };
   if (t.passed) {
     const first = !fails[k];
-    r.innerHTML = `<div class="res ok"><b>${pick(['All checks passed!', 'It works!', 'Mission accomplished!'])}</b> ${first ? 'First try. Impressive.' : 'You debugged it. That is the job.'}<span class="xp">+${XP[s.type] + (first ? 10 : 0)} XP</span></div>`;
+    r.innerHTML = `<div class="res ok"><b>${pick(['All checks passed!', 'It works!', 'Nailed it!'])}</b> ${first ? 'First try. Impressive.' : 'You debugged it. That is the job.'}<span class="xp">+${XP[s.type] + (first ? 10 : 0)} XP</span></div>`;
     if (!solved[k]) { solved[k] = true; award(XP[s.type] + (first ? 10 : 0), { kind: 'check', ok: true, slide: k + 1, tries: (fails[k] || 0) + 1 }); }
     confetti(el, 70); haptic([10, 30, 10]);
   } else {
     fails[k] = (fails[k] || 0) + 1;
     lastError[k] = { type: 'CheckFailed', text: t.msg };
     r.innerHTML = `<div class="res no"><b>${t.stage === 'run' ? 'Your program crashed.' : 'Not yet.'}</b> ${esc(t.msg)}</div>
-      <div class="res-acts">${fails[k] >= 2 ? `<button class="btn small ghost" data-act="solution">${ic('key', 14)}Show a solution</button>` : ''}<button class="btn small ghost" data-act="askbro" data-q="My check fails: ${esc(t.msg)}. Can you give me a hint (not the answer)?">Ask Bro for a hint</button></div>`;
+      <div class="res-acts">${fails[k] >= 2 ? `<button class="btn small ghost" data-act="solution">${ic('key', 14)}Solution</button>` : ''}<button class="btn small ghost" data-act="askbro" data-q="My check fails: ${esc(t.msg)}. Can you give me a hint (not the answer)?">Ask Bro</button></div>`;
     logEvent({ kind: 'check', ok: false, slide: k + 1, title: s.title, msg: t.msg });
     haptic([20, 40, 20]);
   }
@@ -317,7 +316,7 @@ async function check(el, s, k) {
 function hint(el, s, k) {
   const box = el.querySelector('.sl-hints'); const n = box.children.length;
   const hs = s.hints || [];
-  if (n >= hs.length) { box.insertAdjacentHTML('beforeend', ''); if (!box.querySelector('.more')) box.insertAdjacentHTML('beforeend', `<div class="hint more">No more hints. Tap <b>Ask Bro</b> and describe what you tried.</div>`); return; }
+  if (n >= hs.length) { box.insertAdjacentHTML('beforeend', ''); if (!box.querySelector('.more')) box.insertAdjacentHTML('beforeend', `<div class="hint more">No more hints. Ask Bro.</div>`); return; }
   box.insertAdjacentHTML('beforeend', `<div class="hint">${ic('bulb', 14)}<span><b>Hint ${n + 1}.</b> ${md(hs[n]).replace(/^<p>|<\/p>$/g, '')}</span></div>`);
   logEvent({ kind: 'hint', slide: k + 1 });
 }
@@ -339,16 +338,16 @@ async function complete() {
   P = await syncProgress({ day: DAY, xp: 30, patch: { done: true, slide: 0, best: score, doneAt: new Date().toISOString() }, events: pendingEvents.splice(0).concat([{ kind: 'complete', score }]) });
   const nxt = DAY < 60 ? DAY + 1 : null;
   const ov = document.createElement('div'); ov.className = 'done-ov';
-  ov.innerHTML = `<div class="done-card"><div class="launch"><span class="trail"></span>${ic('rocket', 46)}</div>
-    <div class="done-k">Mission ${DAY} complete</div><h2>${esc(D.title)}</h2>
-    <div class="done-stats"><div><b>${score}%</b><small>practice solved</small></div><div><b>${P.xp}</b><small>total XP</small></div><div><b>${progress.streak(P)}</b><small>day streak</small></div></div>
-    <div class="done-path"><i style="--w:${(progress.doneCount(P) / 60) * 100}%"></i></div><small class="muted">${progress.doneCount(P)} of 60 days done</small>
-    ${nxt ? `<a class="btn pri big" href="/code/day.html?d=${nxt}">Start Day ${nxt} ${ic('rocket', 16)}</a>` : `<a class="btn pri big" href="/code/">You graduated. See your journey</a>`}
-    <a class="btn ghost" href="/code/">Mission map</a></div>`;
+  ov.innerHTML = `<div class="done-card"><div class="done-ic">${ic('check', 32)}</div>
+    <div class="done-k">Day ${DAY} complete</div><h2>${esc(D.title)}</h2>
+    <div class="done-stats"><div><b>${score}%</b><small>practice</small></div><div><b>${P.xp}</b><small>XP</small></div><div><b>${progress.streak(P)}</b><small>streak</small></div></div>
+    <div class="done-path"><i style="--w:${(progress.doneCount(P) / 60) * 100}%"></i></div><small class="muted">${progress.doneCount(P)} of 60 days</small>
+    ${nxt ? `<a class="btn pri big" href="/code/day.html?d=${nxt}">Day ${nxt} ${ic('next', 16)}</a>` : `<a class="btn pri big" href="/code/">You graduated</a>`}
+    <a class="btn ghost" href="/code/">All days</a></div>`;
   document.body.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add('in'));
   confetti(ov, 140); haptic([30, 60, 30]);
-  speak(`Mission ${DAY} complete. ${nxt ? 'Rest your brain, then come back for day ' + nxt + '.' : 'You are now a Python developer. Congratulations.'}`, { voice: 'py' });
+  speak(`Day ${DAY} complete. ${nxt ? 'Rest your brain, then come back for day ' + nxt + '.' : 'You are now a Python developer. Congratulations.'}`, { voice: 'py' });
 }
 
 document.getElementById('next').addEventListener('click', () => {
@@ -370,6 +369,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' && !document.getElementById('next').disabled) document.getElementById('next').click();
   if (e.key === 'ArrowLeft') document.getElementById('back').click();
 });
-PY.onStatus(st => { const el = document.getElementById('pyst'); if (!el) return; el.dataset.s = st.status; el.title = st.note || ''; el.querySelector('span').textContent = st.status === 'ready' || st.status === 'running' ? 'Python ready' : st.status === 'error' ? 'Python offline' : 'Starting Python'; });
+PY.onStatus(st => { const el = document.getElementById('pyst'); if (!el) return; el.dataset.s = st.status; const t = st.status === 'ready' || st.status === 'running' ? 'Python ready' : st.status === 'error' ? 'Python offline' : 'Starting Python'; el.setAttribute('aria-label', t); el.title = st.note || t; });
 window.addEventListener('pagehide', () => { stopVoice(); if (pendingEvents.length) syncProgress({ day: DAY, events: pendingEvents.splice(0) }); });
 load();

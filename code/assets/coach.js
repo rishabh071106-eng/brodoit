@@ -1,30 +1,28 @@
-// Bro, the mission AI, docked on every lesson. Knows your progress (from the server), the slide
+// Bro, the coach, docked on every lesson. Knows your progress (from the server), the slide
 // you are on, your code and your last error. Ask by typing or by voice; replies can be spoken.
 import { esc, md, api, token, stopVoice } from './lib.js';
 
 const BRO = '<svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true"><defs><linearGradient id="brg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E0603F"/><stop offset="1" stop-color="#9B2F1C"/></linearGradient></defs><rect x="8" y="8" width="48" height="40" rx="14" fill="url(#brg)"/><path d="M22 48l-6 10 14-10z" fill="#9B2F1C"/><circle cx="25" cy="26" r="5" fill="#fff"/><circle cx="41" cy="26" r="5" fill="#fff"/><circle cx="26" cy="27" r="2.4" fill="#111"/><circle cx="42" cy="27" r="2.4" fill="#111"/><path d="M22 36q10 8 20 0" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round"/></svg>';
 const CHIPS = [
-  ['Explain this slide simply', 'Explain this slide simply, with a tiny example.'],
-  ['Give me a hint', 'Give me a hint for this, not the answer.'],
-  ['Why this error?', 'Explain my last error and how to fix it.'],
-  ['Quiz me', 'Ask me one quick question to check I understood today.'],
-  ['How am I doing?', 'How am I doing in the course so far? What should I focus on?'],
+  ['Hint', 'Give me a hint for this, not the answer.'],
+  ['Explain', 'Explain this slide simply, with a tiny example.'],
+  ['Why error?', 'Explain my last error and how to fix it.'],
 ];
 
 export function mountCoach({ context, course = 'py', lang = 'en', button = null }) {
   const fab = button || document.createElement('button');
   if (button) fab.innerHTML = BRO;
-  else { fab.className = 'bro-fab'; fab.setAttribute('aria-label', 'Ask Bro, your mission AI'); fab.innerHTML = BRO + '<span>Ask Bro</span>'; }
+  else { fab.className = 'bro-fab'; fab.setAttribute('aria-label', 'Ask Bro'); fab.innerHTML = BRO; }
   const sheet = document.createElement('div');
-  sheet.className = 'bro-sheet'; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-label', 'Bro, mission AI'); sheet.hidden = true;
+  sheet.className = 'bro-sheet'; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-label', 'Bro'); sheet.hidden = true;
   sheet.innerHTML = `<div class="bro-scrim" data-x></div><div class="bro-panel">
-    <div class="bro-h"><div class="bro-av">${BRO}<i class="pulse"></i></div><div><b>Bro</b><small>Mission AI · knows your progress</small></div>
+    <div class="bro-h"><div class="bro-av">${BRO}<i class="pulse"></i></div><div><b>Bro</b></div>
       <button class="bro-spk" aria-label="Speak replies" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg></button>
       <button class="bro-x" data-x aria-label="Close">✕</button></div>
     <div class="bro-msgs" aria-live="polite"></div>
     <div class="bro-chips">${CHIPS.map(c => `<button data-q="${esc(c[1])}">${esc(c[0])}</button>`).join('')}</div>
     <form class="bro-f"><button type="button" class="bro-mic" aria-label="Speak your question"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg></button>
-      <input name="q" autocomplete="off" placeholder="Ask anything about Python…" aria-label="Your question"><button class="bro-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form></div>`;
+      <input name="q" autocomplete="off" placeholder="Ask Bro…" aria-label="Your question"><button class="bro-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form></div>`;
   if (!button) document.body.append(fab);
   document.body.append(sheet);
   const msgs = sheet.querySelector('.bro-msgs'), input = sheet.querySelector('input'), spk = sheet.querySelector('.bro-spk');
@@ -40,7 +38,7 @@ export function mountCoach({ context, course = 'py', lang = 'en', button = null 
     if (!token()) { add('bot', 'Sign in to Brodoit and I will remember your progress and answer your questions.'); return; }
     const w = add('bot', '<span class="typing"><i></i><i></i><i></i></span>');
     try { const r = await api('/api/learn/coach', { course, context: context(), greet: true }); w.innerHTML = md(r.reply); }
-    catch (e) { w.innerHTML = 'Hey! I am Bro, your mission AI. Ask me anything about this lesson.'; }
+    catch (e) { w.innerHTML = 'Hey! Ask me anything about this lesson.'; }
   }
   function open(q) {
     sheet.hidden = false; requestAnimationFrame(() => sheet.classList.add('in'));
