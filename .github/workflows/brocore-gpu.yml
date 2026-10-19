@@ -11,6 +11,8 @@ permissions:
   packages: write
 jobs:
   build:
+    # the image lives under the brodoit repo's package (both repos mirror each other; only one may own it)
+    if: github.repository == 'rishabh071106-eng/brodoit'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
