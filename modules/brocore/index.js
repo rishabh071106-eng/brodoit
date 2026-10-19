@@ -152,6 +152,7 @@ function install(app, deps) {
     return { error: 'unknown tool ' + name };
   }
 
+  const selfCheck = { brain: 'pending', hearing: 'pending', at: null };
   // ── voice pass-through ──
   const needVoice = () => { const v = voiceMod(); if (!v) { const e = new Error(vErr || 'voice not available'); e.code = 'no-voice'; throw e; } return v; };
   // GPU voice (optional, modules/brocore/gpu.js): only when the owner has added a RunPod key. Recordings and the daily
@@ -221,7 +222,7 @@ function install(app, deps) {
       res.set('Cache-Control', 'no-store');
       let voice = 'off'; try { const v = voiceMod(); voice = voiceReady() ? 'ready' : v && typeof v.health === 'function' ? (v.health().word || 'starting') : 'off'; } catch (e) { voice = 'error'; }
       if (!['ready', 'fetching', 'loading', 'starting', 'restarting', 'no-space', 'error', 'off'].includes(voice)) voice = 'error';
-      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice });
+      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice, check: { brain: selfCheck.brain, hearing: selfCheck.hearing } });
     });
     app.get('/api/bro/core/health', auth, (req, res) => { res.set('Cache-Control', 'no-store'); if (!isAdm(req)) return res.json({ ok: !!(brain.ready() && voiceReady()) }); try { res.json(Object.assign({ ok: !!(brain.ready() && voiceReady()) }, health())); } catch (e) { res.status(500).json({ error: e.message }); } });
     app.post('/api/bro/rate', auth, (req, res) => { const b = req.body || {}; const r = memory.rate(req.user.phone, b.rating, b.call_id || b.callId); res.status(r.ok ? 200 : 400).json(r); });
@@ -246,6 +247,39 @@ function install(app, deps) {
       try { if (job === 'knowledge') return res.json({ ok: true, knowledge: await knowledge.refresh() }); res.json({ ok: true, run: await nightly.run('admin') }); }
       catch (e) { res.status(500).json({ error: e.message }); }
     });
+  }
+
+  // ── self-test: one real brain call, and Bro's own voice heard back through his hearing. Runs once the voice is up
+  //    (or 20 minutes after boot), then every 6 hours; /api/bro/ok reports it as two words. ──
+  async function selfTest() {
+    if (!brain.ready()) { selfCheck.brain = 'off'; selfCheck.hearing = 'off'; return selfCheck; }
+    try {
+      const r = await brain.chat({ messages: [{ role: 'user', content: 'Reply with the single word OK.' }], maxTokens: 20, purpose: 'util', emergency: false });
+      selfCheck.brain = r && r.text ? 'ok' : 'fail';
+    } catch (e) { selfCheck.brain = 'fail'; log('self-test: brain failed:', e.message); }
+    if (!voiceReady()) selfCheck.hearing = 'pending';
+    else {
+      try {
+        const sp = await needVoice().speak('Hello, this is Bro. One, two, three.', { lang: 'en', format: 'wav', priority: 'low' });
+        const h = await hearing.hear(sp.audio, { mime: 'audio/wav', lang: 'en' });
+        selfCheck.hearing = /\b(bro|hello|one|two|three)\b/i.test((h && h.text) || '') ? 'ok' : 'fail';
+        if (selfCheck.hearing !== 'ok') log('self-test: hearing got', JSON.stringify((h && (h.text || h.empty)) || '').slice(0, 80));
+      } catch (e) { selfCheck.hearing = 'fail'; log('self-test: voice → hearing failed:', e.message); }
+    }
+    selfCheck.at = new Date(now()).toISOString();
+    log('self-test · brain', selfCheck.brain, '· voice → hearing', selfCheck.hearing);
+    return selfCheck;
+  }
+  api.selfTest = selfTest; api.selfCheck = () => Object.assign({}, selfCheck);
+  if (deps.selfTest !== false && process.env.BROCORE_SELFTEST !== '0') {
+    const bootAt = now();
+    const wait = setInterval(() => {
+      if (!voiceReady() && now() - bootAt < 20 * 60e3) return;
+      clearInterval(wait);
+      selfTest().catch(() => {});
+      const every = setInterval(() => selfTest().catch(() => {}), 6 * 3600e3); if (every.unref) every.unref();
+    }, 15e3);
+    if (wait.unref) wait.unref();
   }
 
   if (deps.schedule !== false && process.env.BROCORE_NIGHTLY !== '0') nightly.schedule();
