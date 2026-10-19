@@ -317,3 +317,4 @@ html[data-theme="dark"] #stepsRoot,html[data-theme="dark"] #stepsRoot .st,body[d
 #stepsRoot .st-chip span{background:var(--b-primary-soft)!important;color:var(--b-primary)!important}
 #stepsRoot .st-chip{font-size:14px}
 html[data-theme="dark"] #stepsRoot .st-under .st-pill,body[data-theme=aurora] #stepsRoot .st-under .st-pill{box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 22px -18px rgba(0,0,0,.8)}
+.st-nudge:empty{display:none}

@@ -1,4 +1,4 @@
-// Learn tab (v13): two schools only — Python: Zero to Hero (/code/) and Languages (/lang/).
+// Learn tab (v13.1): two schools only, few words — Python: Zero to Hero (/code/) and Languages (/lang/).
 // window.LearnUI.landing() returns the tab's HTML; server.js calls it when S.tab==='courses'.
 // Progress is read from the schools' own stores (bd.py.v1, lang.progress.v1) — same origin, no fetch.
 (function () {
@@ -33,38 +33,32 @@
 
   L.landing = function () {
     const H = hi(), P = py(), G = langs();
-    const pct = Math.round((P.done / 60) * 100), r = 30, circ = 2 * Math.PI * r;
-    let h = '<div class="lx">';
-    h += '<div class="lx-head"><h1 class="b-h1">' + (H ? 'सीखो' : 'Learn') + '</h1><p>' + (H ? 'दो स्कूल। शुरू से प्रो तक, आवाज़ और एनिमेशन के साथ।' : 'Two schools. From zero to job-ready, narrated and animated.') + '</p></div>';
+    const pct = Math.round((P.done / 60) * 100), r = 22, circ = 2 * Math.PI * r;
+    const photo = k => (window.Cards && Cards.photo ? Cards.photo(k) : '');
+    let h = '<div class="lx"><h1 class="b-h1 lx-h">' + (H ? 'सीखो' : 'Learn') + '</h1>';
 
-    // ── School of Code: Python ──
-    h += '<a class="lx-py" href="/code/' + (P.started ? 'day.html?d=' + P.cur : '') + '" aria-label="Python: Zero to Hero">'
-      + '<span class="lx-stars" aria-hidden="true"></span><span class="lx-orbit" aria-hidden="true"><i class="pl"></i><i class="rg"></i><i class="rk">' + icon('rocket', 18) + '</i></span>'
-      + '<span class="lx-k">' + (H ? 'कोडिंग स्कूल' : 'School of Code') + '</span>'
-      + '<span class="lx-t">Python<small>Zero to Hero · 60 days</small></span>'
-      + '<span class="lx-s">' + (H ? 'असली Python आपके फ़ोन पर चलता है। हर दिन एक मिशन, Bro आपका कोच।' : 'Real Python runs on your phone. One mission a day, with Bro as your coach.') + '</span>'
-      + '<span class="lx-row"><span class="lx-ring"><svg viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="' + r + '" class="t"/><circle cx="36" cy="36" r="' + r + '" class="v" style="stroke-dasharray:' + circ + ';stroke-dashoffset:' + (circ * (1 - P.done / 60)) + '"/></svg><b>' + pct + '%</b></span>'
-      + '<span class="lx-meta"><b>' + (P.started ? (H ? 'दिन ' + P.cur + ' / 60' : 'Day ' + P.cur + ' of 60') : (H ? '60 दिन का मिशन' : 'A 60-day mission')) + '</b><small>' + (P.done ? P.done + (H ? ' दिन पूरे · ' : ' days done · ') + P.xp + ' XP' : (H ? 'शून्य से डेवलपर तक' : 'From zero to Python developer')) + '</small></span>'
-      + '<span class="lx-go">' + (P.started ? (P.resume ? (H ? 'जारी रखें' : 'Resume') : (H ? 'आगे बढ़ें' : 'Continue')) : (H ? 'शुरू करें' : 'Start')) + icon('arrow-right', 16) + '</span></span></a>';
-    h += '<a class="lx-link" href="/code/">' + icon('compass', 16) + '<span>' + (H ? 'पूरा 60-दिन का मिशन मैप देखें' : 'See the full 60-day mission map') + '</span>' + icon('chevron-right', 16) + '</a>';
+    // ── Python: photo cover (opens the 60-day map) with progress and one Continue button ──
+    const go = P.started ? (H ? 'जारी रखें' : 'Continue') : (H ? 'शुरू करें' : 'Start');
+    h += '<div class="lx-py">' + (photo('cs-python') ? '<img src="' + esc(photo('cs-python')) + '" alt="" loading="lazy">' : '') + '<span class="lx-shade"></span>'
+      + '<a class="lx-cover" href="/code/" aria-label="Python, 60 ' + (H ? 'दिन' : 'days') + '"></a>'
+      + '<div class="lx-pb"><span class="lx-t">Python</span><span class="lx-d">' + (P.started ? (H ? 'दिन ' : 'Day ') + P.cur + ' / 60' : (H ? '60 दिन' : '60 days')) + '</span></div>'
+      + '<div class="lx-pr"><span class="lx-ring" role="img" aria-label="' + pct + '%"><svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="' + r + '" class="t"/><circle cx="26" cy="26" r="' + r + '" class="v" style="stroke-dasharray:' + circ + ';stroke-dashoffset:' + (circ * (1 - P.done / 60)) + '"/></svg><b>' + pct + '%</b></span>'
+      + '<a class="lx-go" href="/code/' + (P.started ? 'day.html?d=' + P.cur : 'day.html?d=1') + '">' + go + icon('arrow-right', 16) + '</a></div></div>';
 
-    // ── School of Languages ──
-    const img = window.Cards && Cards.photo ? Cards.photo('cat-lang') : '';
-    h += '<div class="lx-lang">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy">' : '') + '<div class="lx-lshade"></div>'
-      + '<div class="lx-lb"><span class="lx-k">' + (H ? 'भाषा स्कूल' : 'School of Languages') + '</span><b>' + (H ? '5 भाषाएँ, सुनकर सीखें' : '5 languages, learned by ear') + '</b><small>' + (H ? 'स्पैनिश, फ़्रेंच, जर्मन और हिंदी अंग्रेज़ी में; अंग्रेज़ी हिंदी में' : 'Spanish, French, German and Hindi in English, plus English taught in Hindi') + '</small></div></div>';
-    h += '<div class="lx-langs">';
+    // ── Languages: one row each — photo, name, progress ──
+    h += '<h2 class="lx-sec">' + (H ? 'भाषाएँ' : 'Languages') + '</h2><div class="lx-langs">';
     LANGS.forEach(function (l, i) {
       const n = G.by[l.c] || 0, p = Math.min(100, Math.round((n / LANG_TOTAL) * 100));
-      const ph = window.Cards && Cards.photo ? Cards.photo('lang-' + l.c) : '';
+      const ph = photo('lang-' + l.c);
       h += '<a class="lx-li" style="--i:' + i + '" href="/lang/course.html?c=' + l.c + '">'
         + '<span class="lx-lph">' + (ph ? '<img src="' + esc(ph) + '" alt="" loading="lazy">' : '') + '</span>'
-        + '<span class="lx-lt"><b>' + esc(H ? l.nh : l.n) + ' <em>' + esc(l.native) + '</em></b><small>' + esc(H ? l.viah : l.via) + (n ? ' · ' + n + '/' + LANG_TOTAL : '') + '</small><span class="lx-bar"><i style="width:' + p + '%"></i></span></span>'
+        + '<span class="lx-lt"><b>' + esc(H ? l.nh : l.n) + (l.native !== l.n ? ' <em>' + esc(l.native) + '</em>' : '') + '</b><span class="lx-bar"><i style="width:' + p + '%"></i></span></span>'
         + icon('chevron-right', 18) + '</a>';
     });
     h += '</div>';
 
-    // ── Bro knows your progress ──
-    h += '<button class="lx-bro" onclick="location.href=\'/?tab=bro&persona=teacher\'"><img src="/app/mascot.svg" alt="" width="44" height="44"><span><b>' + (H ? 'Bro से पूछो' : 'Ask Bro, your coach') + '</b><small>' + (H ? 'वह आपकी प्रगति जानता है और हर सवाल का जवाब देता है' : 'Knows your progress in both schools and answers any question') + '</small></span>' + icon('chevron-right', 18) + '</button>';
+    // ── Bro, your coach: one line ──
+    h += '<a class="lx-bro" href="/?tab=bro&persona=teacher"><img src="/app/mascot.svg" alt="" width="40" height="40"><b>' + (H ? 'Bro से पूछो' : 'Ask Bro') + '</b>' + icon('chevron-right', 18) + '</a>';
     h += '</div>';
     return h;
   };

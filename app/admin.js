@@ -126,7 +126,7 @@
     const k = (se.skipped || []).map(x => (names[x.key] || x.key) + ' (' + x.why + ')').join(' · ');
     return '<p class="adm-auto b-sm">' + ic('lock', 14) + ' ' + (a ? 'Installed securely on this start: ' + _esc(a) : 'Secure key delivery ready') + (k || se.error ? '<br><span style="color:var(--b-primary)">' + _esc([k, se.error].filter(Boolean).join(' · ')) + '</span>' : '') + '</p>';
   }
-  // Recorded-once voice: News headlines (batch, ElevenLabs) and Python + language narration.
+  // Recorded-once voice: Python + language narration (and News headlines only when the server runs with NEWS_VOICE=1).
   function voiceLines(st) {
     let h = '';
     const nv = st.newsVoice, lv = st.learnVoice;

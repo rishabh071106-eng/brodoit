@@ -28,8 +28,8 @@
     h += '<button type="button" class="cv wide tone-brick yu-cover" onclick="openProfile()" aria-label="' + esc(hi ? 'प्रोफ़ाइल' : 'Profile') + '">' +
       '<span class="cv-art" aria-hidden="true">' + icon('sparkles', 120) + '</span>' +
       '<span class="yu-av" aria-hidden="true">' + esc(initial) + '</span>' +
-      '<span class="cv-body"><span class="cv-row"><span><span class="cv-kick">' + esc(hi ? 'आपका ब्रोडूइट' : 'Your Brodoit') + '</span><span class="cv-title">' + esc(name) + '</span>' +
-      '<span class="cv-sub">' + esc(streak ? (hi ? streak + ' दिन की लय' : streak + '-day streak') : (hi ? 'आज से लय शुरू करो' : 'Start a streak today')) + '</span></span>' +
+      '<span class="cv-body"><span class="cv-row"><span><span class="cv-title">' + esc(name) + '</span>' +
+      (streak ? '<span class="cv-sub">' + esc(hi ? streak + ' दिन की लय' : streak + '-day streak') + '</span>' : '') + '</span>' +
       '<span class="cv-go" aria-hidden="true">' + icon('pencil', 18) + '</span></span></span></button>';
     // stats
     h += '<div class="yu-stats">' +
@@ -38,14 +38,13 @@
       C.mini({ icon: 'graduation-cap', num: String(Math.round(today / 60)), title: (hi ? 'मिनट सीखे' : 'Min learned'), onclick: "switchTab('courses')" }) + '</div>';
     // week
     const empty = week.every(w => !w.v);
-    h += '<section class="yu-week12" aria-label="' + esc(hi ? 'यह हफ़्ता' : 'This week') + '"><div class="yu-wh"><b>' + esc(hi ? 'यह हफ़्ता' : 'This week') + '</b><small>' +
-      esc(empty ? (hi ? 'जैसे-जैसे आप ब्रोडूइट इस्तेमाल करेंगे, यह भरता जाएगा' : 'Fills in as you use Brodoit') : (hi ? 'ऐप में बिताया समय' : 'Time in the app')) + '</small></div>' +
+    h += '<section class="yu-week12" aria-label="' + esc(hi ? 'यह हफ़्ता' : 'This week') + '"><div class="yu-wh"><b>' + esc(hi ? 'यह हफ़्ता' : 'This week') + '</b></div>' +
       '<div class="yu-bars12' + (empty ? ' empty' : '') + '">' + week.map(w => '<div class="yu-b' + (w.today ? ' t' : '') + '"><i style="height:' + Math.max(4, Math.round(w.v / mx * 72)) + 'px"></i><span>' + esc(w.l) + '</span></div>').join('') + '</div></section>';
     // shortcuts
     h += '<div class="yu-rows">' +
-      C.row({ icon: 'calendar', tone: 'ink', title: hi ? 'कैलेंडर' : 'Calendar', sub: hi ? 'आपके दिन और काम' : 'Your days and tasks', onclick: "switchTab('cal')" }) +
-      C.row({ icon: 'moon', tone: 'umber', title: hi ? 'थीम' : 'Theme', sub: hi ? 'लाइट या डार्क' : 'Light or dark', onclick: 'toggleTheme()' }) +
-      C.row({ key: 'hero-books', icon: 'image', tone: 'wine', title: hi ? 'फ़ोटो क्रेडिट' : 'Photo credits', sub: hi ? 'तस्वीरें जिनसे ऐप सजा है' : 'Who took the photos in the app', onclick: "location.href='/credits'" }) + '</div>';
+      C.row({ icon: 'calendar', tone: 'ink', title: hi ? 'कैलेंडर' : 'Calendar', onclick: "switchTab('cal')" }) +
+      C.row({ icon: 'moon', tone: 'umber', title: hi ? 'थीम' : 'Theme', onclick: 'toggleTheme()' }) +
+      C.row({ key: 'hero-books', icon: 'image', tone: 'wine', title: hi ? 'फ़ोटो क्रेडिट' : 'Photo credits', onclick: "location.href='/credits'" }) + '</div>';
     return h + '</div>';
   };
 

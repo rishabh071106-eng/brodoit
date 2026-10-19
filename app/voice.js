@@ -18,12 +18,6 @@
     { k: 'teacher', i: 'graduation-cap', l: 'Teach', hi: 'सिखाओ' },
     { k: 'language', i: 'languages', l: 'Speak', hi: 'भाषा' },
   ];
-  const QUICK = [
-    ['check-square', 'Add a task', 'टास्क जोड़ो', 'Add a task: call mom at 6', 'टास्क जोड़ो: शाम 6 बजे मम्मी को कॉल'],
-    ['calendar', 'My day', 'मेरा दिन', "What's on my schedule today?", 'आज मेरा क्या प्लान है?'],
-    ['lightbulb', 'Explain something', 'कुछ समझाओ', "Explain inflation like I'm 12", 'महंगाई आसान शब्दों में समझाओ'],
-    ['bell', 'Remind me', 'याद दिलाओ', 'Remind me to drink water at 3', '3 बजे पानी पीने की याद दिलाओ'],
-  ];
   const COURSES = { es: 'Spanish', fr: 'French', de: 'German', hi: 'Hindi', en: 'English' };
   const hasDevanagari = s => /[ऀ-ॿ]/.test(s || '');
   const ICON = {
@@ -33,119 +27,54 @@
   };
 
   // ───────────────────────── UI ─────────────────────────
-  // Home v12 — the Books look: greeting, an ink hero cover with Bro and "Tap to talk", a Today rail of photo covers,
-  // four Ask Bro minis and a compose card. Builds on app/cards.css (+ window.Cards when present); styles in app/home.css.
-  const QSUB = ['Call mom at 6', "What's on today?", 'Inflation, simply', 'Water at 3 pm'];
-  const QSUB_HI = ['शाम 6 बजे कॉल', 'आज क्या है?', 'महंगाई, आसान भाषा में', '3 बजे पानी'];
+  // Home v13.1 — Bro and almost no words: the big mascot on the app background, one round mic button, the mode and
+  // language switches as small toggles, chat bubbles, and the compose bar. A status line appears only while Bro is live.
+  // Styles in app/home.css.
   const hEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const jsq = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-  const photo = k => (window.Cards && Cards.photo ? Cards.photo(k) : '');
-  const fmtN = x => { try { return Math.max(0, Math.round(Number(x) || 0)).toLocaleString('en-IN'); } catch (e) { return String(x || 0); } };
-  // a rail cover: <button class="cv …"> with the art layer, then a fallback photo, then the main image on top (a failed image
-  // removes itself, so whatever loaded underneath shows through)
-  const railCard = o => {
-    const imgs = [o.fallback, o.img].filter(Boolean).map(u => '<img class="cv-img" src="' + hEsc(u) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">').join('');
-    const ic = o.icon && window.ico ? ico(o.icon, 120) : '';
-    const text = (o.kick ? '<span class="cv-kick">' + hEsc(o.kick) + '</span>' : '') + '<span class="cv-title">' + hEsc(o.title) + '</span>' + (o.sub ? '<span class="cv-sub">' + hEsc(o.sub) + '</span>' : '');
-    const go = o.go && window.ico ? '<span class="cv-go" aria-hidden="true">' + ico(o.go, 20) + '</span>' : '';
-    return '<button type="button"' + (o.id ? ' id="' + hEsc(o.id) + '"' : '') + ' class="cv square sm tone-' + (o.tone || 'ink') + ' hb-tc' + (o.cls ? ' ' + o.cls : '') + '" onclick="' + hEsc(o.onclick) + '" aria-label="' + hEsc([o.kick, o.title, o.sub].filter(Boolean).join(', ')) + '">' +
-      '<span class="cv-art" aria-hidden="true">' + ic + '</span>' + imgs + (o.top || '') +
-      '<span class="cv-body">' + (go ? '<span class="cv-row"><span>' + text + '</span>' + go + '</span>' : text) + (o.extra || '') + '</span></button>';
-  };
-  const mini = o => window.Cards && Cards.mini ? Cards.mini(o) : '<button type="button" class="mini" onclick="' + hEsc(o.onclick) + '"><span><b>' + hEsc(o.title) + '</b></span></button>';
-  const sec = t => '<div class="sec-h"><h2>' + hEsc(t) + '</h2></div>';
-  const bookOfDay = () => {
-    try {
-      if (typeof BOOK_SUMMARIES === 'undefined' || !BOOK_SUMMARIES.length) return null;
-      const d = new Date(); const day = Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(d.getFullYear(), 0, 0)) / 864e5);
-      return BOOK_SUMMARIES[day % BOOK_SUMMARIES.length];
-    } catch (e) { return null; }
-  };
-  const langCourse = () => { try { const s = JSON.parse(localStorage.getItem('lang.progress.v1') || 'null'); return s && s.course && COURSES[s.course] ? s.course : null; } catch (e) { return null; } };
 
   V.html = function () {
     const hi = V.lang === 'hi';
     const ic = (n, sz) => (window.ico ? ico(n, sz || 18) : '');
-    const name = ((S.user && S.user.name) || '').split(' ')[0];
-    const hour = new Date().getHours();
     const live = V.state !== 'idle' && V.state !== 'off';
-    let line = hi ? 'बोलो या लिखो — बाक़ी मैं संभाल लूँगा।' : 'Talk or type. I will handle the rest.';
+    let line = '';
     if (V.state === 'connecting') line = hi ? 'एक सेकंड…' : 'One sec…';
     else if (V.state === 'thinking') line = hi ? 'सोच रहा हूँ…' : 'Thinking…';
     else if (V.partial) line = V.partial;
-    else if (V.state === 'listening') line = hi ? 'बोलो, सुन रहा हूँ।' : "I'm listening.";
-    const face = window.mascot ? window.mascot('idle', 40, { className: 'hb-face' }) : '<img class="hb-face" src="/app/mascot.svg" width="40" height="40" alt="">';
-    const art = window.mascot ? window.mascot(live ? 'speaking' : 'idle', 190, { className: 'hb-mas', color: '#F3F0EA' }) : '<img class="hb-mas" src="/app/mascot.svg" width="190" height="190" alt="">';
-    let h = '<div class="bh' + (hi ? ' hi' : '') + '">';
-    // greeting + language
-    h += '<div class="hb-top">' + face + '<h1 class="hb-greet"><small>' + hEsc(hi ? 'नमस्ते' : hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening') + '</small>' + hEsc(name || (hi ? 'दोस्त' : 'there')) + '</h1>';
+    else if (live) line = hi ? 'सुन रहा हूँ…' : 'Listening…';
+    const chat = V.thread.length > 0;
+    const art = window.mascot ? window.mascot(live ? 'speaking' : 'idle', chat ? 120 : 210, { className: 'hb-mas' }) : '<img class="hb-mas" src="/app/mascot.svg" width="210" height="210" alt="">';
+    let h = '<div class="bh' + (hi ? ' hi' : '') + (chat ? ' chat' : '') + (live ? ' live' : '') + '">';
+    // mode (only the chosen one shows its name) + language
+    h += '<div class="hb-top"><div class="hb-modes" role="group" aria-label="' + (hi ? 'मोड' : 'Mode') + '">' + PERSONAS.map(p => '<button type="button" class="hb-mode' + (V.persona === p.k ? ' on' : '') + '" aria-pressed="' + (V.persona === p.k) + '" aria-label="' + (hi ? p.hi : p.l) + '" title="' + (hi ? p.hi : p.l) + '" onclick="BroVoice.setPersona(\'' + p.k + '\')">' + ic(p.i, 18) + (V.persona === p.k ? '<span>' + (hi ? p.hi : p.l) + '</span>' : '') + '</button>').join('') + '</div>';
     h += '<div class="hb-langs" role="group" aria-label="Language">' + [['auto', 'Auto'], ['en', 'EN'], ['hi', 'हि']].map(x => '<button type="button" class="' + (V.lang === x[0] ? 'on' : '') + '" aria-pressed="' + (V.lang === x[0]) + '" onclick="BroVoice.setLang(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div></div>';
-    // hero cover
-    h += '<section class="cv tone-ink hb-hero' + (live ? ' live' : '') + '" aria-label="Bro"><span class="cv-art" aria-hidden="true">' + art + '</span>';
-    h += '<div class="hb-modes" role="group" aria-label="Mode">' + PERSONAS.map(p => '<button type="button" class="btn sm ' + (V.persona === p.k ? 'light on' : 'glass') + ' hb-mode" aria-pressed="' + (V.persona === p.k) + '" onclick="BroVoice.setPersona(\'' + p.k + '\')">' + ic(p.i, 16) + '<span>' + (hi ? p.hi : p.l) + '</span></button>').join('') + '</div>';
-    h += '<div class="hb-hero-b"><span class="cv-kick">Bro</span><span class="cv-title">' + (hi ? 'कुछ भी पूछो' : 'Ask me anything') + '</span><span class="cv-sub" id="bvSay" aria-live="polite">' + hEsc(line) + '</span>';
-    h += live ? '<button type="button" class="btn light hb-talk" id="bvTalk" onclick="BroVoice.stop()">' + ic('square', 18) + (hi ? 'बंद करो' : 'End') + '</button>'
-      : '<button type="button" class="btn light hb-talk" id="bvTalk" onclick="BroVoice.tapOrb()">' + ic('mic', 19) + (hi ? 'बोलकर पूछो' : 'Tap to talk') + '</button>';
-    h += '</div></section>';
-    if (V.persona === 'language') h += '<div class="pill-row hb-courses">' + Object.keys(COURSES).map(c => '<button type="button" class="pill' + (V.course === c ? ' on' : '') + '" onclick="BroVoice.setCourse(\'' + c + '\')">' + COURSES[c] + '</button>').join('') + '<a class="pill hb-lessons" href="/lang/?course=' + V.course + '">' + ic('headphones', 16) + (hi ? 'पाठ' : 'Lessons') + '</a></div>';
-    h += '<form class="hb-compose" onsubmit="event.preventDefault();BroVoice.send()"><input id="bvInput" placeholder="' + (hi ? 'Bro को लिखो…' : 'Message Bro…') + '" autocomplete="off" enterkeyhint="send" aria-label="' + (hi ? 'Bro को लिखो' : 'Message Bro') + '"><button type="submit" class="hb-send" aria-label="Send">' + (window.ico ? ico('arrow-up', 20) : ICON.send) + '</button></form>';
-    h += V.todayStrip();
-    // Ask Bro: the old chips, now four minis that send exactly the same lines
-    h += sec(hi ? 'Bro से पूछो' : 'Ask Bro') + '<div class="cv-grid hb-ask">' + QUICK.map((x, i) => mini({ icon: x[0], title: hi ? x[2] : x[1], sub: hi ? QSUB_HI[i] : QSUB[i], onclick: "BroVoice.say('" + jsq(hi ? x[4] : x[3]) + "')" })).join('') + '</div>';
-    if (V.thread.length) {
+    // Bro
+    h += '<section class="hb-stage" aria-label="Bro"><button type="button" class="hb-bro" onclick="BroVoice.tapOrb()" aria-label="' + (live ? (hi ? 'बंद करो' : 'Stop') : (hi ? 'बोलकर पूछो' : 'Talk to Bro')) + '">' + art + '</button>';
+    h += '<p class="hb-say' + (V.partial ? ' partial' : '') + '" id="bvSay" aria-live="polite">' + hEsc(line) + '</p>';
+    h += '<button type="button" class="hb-mic' + (live ? ' on' : '') + '" id="bvTalk" onclick="' + (live ? 'BroVoice.stop()' : 'BroVoice.tapOrb()') + '" aria-label="' + (live ? (hi ? 'बंद करो' : 'Stop') : (hi ? 'बोलकर पूछो' : 'Talk to Bro')) + '">' + (live ? ICON.stop : ICON.mic) + '</button></section>';
+    if (V.persona === 'language') h += '<div class="pill-row hb-courses">' + Object.keys(COURSES).map(c => '<button type="button" class="pill' + (V.course === c ? ' on' : '') + '" onclick="BroVoice.setCourse(\'' + c + '\')">' + COURSES[c] + '</button>').join('') + '</div>';
+    if (chat) {
       h += '<div class="hb-thread" id="bvThread">';
       V.thread.slice(-8).forEach(m => { h += '<div class="bv-msg ' + m.role + '"><div class="bv-bub">' + hEsc(m.text) + '</div></div>'; });
       h += '</div>';
     }
+    h += '<form class="hb-compose" onsubmit="event.preventDefault();BroVoice.send()"><input id="bvInput" placeholder="' + (hi ? 'Bro को लिखो' : 'Message Bro') + '" autocomplete="off" enterkeyhint="send" aria-label="' + (hi ? 'Bro को लिखो' : 'Message Bro') + '"><button type="submit" class="hb-send" aria-label="' + (hi ? 'भेजो' : 'Send') + '">' + (window.ico ? ico('arrow-up', 20) : ICON.send) + '</button></form>';
     h += '</div>';
     return h;
   };
-  // Today rail: top story, steps, keep learning, a book — real photos, each opens its tab
-  V.todayStrip = function () {
-    const hi = V.lang === 'hi';
-    const T = window.StepsTab; const sum = T && T.sum;
-    const n = T && T.counted && sum ? T.counted() : (sum && sum.today ? Number(sum.today.counted) || 0 : 0); const g = sum && sum.goal ? Number(sum.goal) || 8000 : 8000; // live count while walking
-    const cards = [];
-    // 1 · top story (News Desk), else today's bulletin, else the newsstand
-    const st = V.story, b = V.bulletin;
-    if (st && st.headline) {
-      const head = hi && st.headline_hi ? st.headline_hi : st.headline;
-      const lbl = hi ? ({ india: 'भारत', world: 'दुनिया', business: 'कारोबार', tech: 'टेक', science: 'विज्ञान' }[st.category] || '') : (st.label || st.category || '');
-      cards.push(railCard({ kick: (hi ? 'टॉप ख़बर' : 'Top story') + (lbl ? ' · ' + lbl : ''), title: head, img: st.image, fallback: photo('hero-news'), icon: 'newspaper', tone: 'ink', cls: 'hb-news', onclick: "switchTab('news')" }));
-    } else if (b && (b.title || b.title_hi)) {
-      cards.push(railCard({ kick: hi ? 'आज का बुलेटिन' : 'Daily bulletin', title: hi && b.title_hi ? b.title_hi : b.title, img: photo('hero-news'), icon: 'radio', tone: 'ink', go: 'play', cls: 'hb-news', onclick: "switchTab('news')" }));
-    } else {
-      cards.push(railCard({ kick: hi ? 'ख़बरें' : 'News', title: hi ? 'आज की ख़बरें' : "Today's headlines", sub: hi ? 'पढ़ो या सुनो' : 'Read or listen in a minute', img: photo('hero-news'), icon: 'newspaper', tone: 'ink', cls: 'hb-news', onclick: "switchTab('news')" }));
-    }
-    // 2 · steps today with a thin white progress bar
-    const pct = Math.max(0, Math.min(1, n / g));
-    cards.push(railCard({ id: 'hbSteps', kick: hi ? 'आज के कदम' : 'Steps today', title: sum ? fmtN(n) : (hi ? 'कदम' : 'Steps'), sub: sum ? (hi ? fmtN(g) + ' में से' : 'of ' + fmtN(g)) : (hi ? 'आज की सैर गिनो' : 'Count today’s walk'), img: photo('hero-steps'), icon: 'footprints', tone: 'umber', cls: 'hb-steps' + (sum ? ' lg' : ''), onclick: "switchTab('steps')",
-      extra: sum ? '<span class="hb-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + Math.round(pct * 100) + '"><i style="width:' + (pct * 100).toFixed(1) + '%"></i></span>' : '' }));
-    // 3 · keep learning: Python day in progress, else the language course, else the Python mission
-    let py = {}; try { py = JSON.parse(localStorage.getItem('bd.py.v1') || '{}') || {}; } catch (e) {}
-    const pyDays = py.days || {}; let pyCur = 1; while (pyCur < 60 && pyDays['d' + pyCur] && pyDays['d' + pyCur].done) pyCur++;
-    const lc = langCourse();
-    if (Object.keys(pyDays).length) cards.push(railCard({ kick: hi ? 'सीखते रहो' : 'Keep learning', title: 'Python \u00B7 ' + (hi ? 'दिन ' : 'Day ') + pyCur, sub: hi ? 'आज का मिशन जारी रखो' : 'Continue today’s mission', img: photo('cs-python') || photo('hero-learn'), icon: 'rocket', tone: 'ink', go: 'arrow-right', onclick: "location.href='/code/day.html?d=" + pyCur + "'" }));
-    else if (lc) cards.push(railCard({ kick: hi ? 'सीखते रहो' : 'Keep learning', title: COURSES[lc], sub: hi ? 'अपना कोर्स जारी रखो' : 'Continue your course', img: photo('lang-' + lc) || photo('hero-learn'), icon: 'languages', tone: 'wine', go: 'arrow-right', onclick: "location.href='/lang/course.html?c=" + lc + "'" }));
-    else cards.push(railCard({ kick: hi ? 'नया' : 'New', title: hi ? 'Python: शून्य से हीरो' : 'Python: Zero to Hero', sub: hi ? '60 दिन, असली कोड, Bro कोच' : '60 days · real code · Bro coaches you', img: photo('cs-python') || photo('hero-learn'), icon: 'rocket', tone: 'ink', go: 'arrow-right', onclick: "location.href='/code/'" }));
-    // 4 · a book pick that rotates daily: the real cover stands on a dark shelf
-    const bk = bookOfDay();
-    if (bk) {
-      const cv = typeof bookCover === 'function' ? bookCover(bk.id) : null;
-      cards.push(railCard({ kick: hi ? 'आज की किताब' : 'Book of the day', title: bk.title, sub: (bk.author || '') + (bk.mins ? ' · ' + bk.mins + (hi ? ' मिनट' : ' min') : ''), icon: 'book-open', tone: 'umber', go: 'play', cls: 'hb-book',
-        top: cv ? '<span class="hb-bk" aria-hidden="true"><img src="' + hEsc(cv) + '" alt="" loading="lazy" decoding="async" onerror="this.parentNode.remove()"></span>' : '', onclick: "openBookSummary('" + jsq(bk.id) + "')" }));
-    }
-    let h = sec(hi ? 'आज' : 'Today') + '<div class="cv-rail hb-rail">' + cards.join('') + '</div>';
-    if (V.story === undefined) {
-      V.story = null;
-      fetch('/api/news/desk?limit=1', { cache: 'no-store' }).then(r => r.json()).then(j => { const s = j && j.stories && j.stories[0]; if (s) { V.story = s; V.rerender(); } }).catch(() => {});
-      fetch('/api/bulletins/latest', { cache: 'no-store' }).then(r => r.json()).then(j => { V.bulletin = (j && j.daily) || null; if (V.bulletin && !V.story) V.rerender(); }).catch(() => {});
-    }
-    if (T && !sum && T.loadSummary && !V._stepsAsked && typeof token !== 'undefined' && token) { V._stepsAsked = true; T.loadSummary().then(() => V.rerender()).catch(() => {}); }
-    return h;
-  };
   V.rerender = function () { if (S.tab === 'bro' || S.tab === 'home' || !S.tab) { const root = document.getElementById('broVoiceRoot'); if (root) { root.innerHTML = V.html(); V.scroll(); } } V.renderFull(); };
-  V.scroll = function () { const t = document.getElementById('bvThread'); if (t) t.scrollTop = t.scrollHeight; };
+  // While chatting Home is a fixed-height chat: it fills the space above the tab bar, the bubbles scroll inside,
+  // and the compose bar stays at the bottom. The newest message is always in view.
+  V.scroll = function () {
+    const root = document.getElementById('broVoiceRoot'), t = document.getElementById('bvThread');
+    if (!root) return;
+    if (t) {
+      const bar = document.querySelector('.tabs.page-t') || document.querySelector('.rd-tabbar'), r = bar && bar.getBoundingClientRect();
+      const bottom = r && r.top > innerHeight * 0.6 ? r.top : innerHeight - 16;
+      root.style.setProperty('--hb-avail', Math.max(360, Math.floor(bottom - (root.getBoundingClientRect().top + scrollY) - 8)) + 'px');
+      if (scrollY) scrollTo(0, 0);
+      t.scrollTop = t.scrollHeight;
+    } else root.style.removeProperty('--hb-avail');
+  };
   V.set = function (st) { V.state = st; V.rerender(); };
   V.push = function (role, text) { if (!text) return; V.thread.push({ role, text, ts: Date.now() }); if (V.thread.length > 60) V.thread.shift(); V.partial = ''; V.rerender(); };
   V.setPersona = function (k) { V.persona = k; localStorage.setItem('bro.persona', k); const was = V.state; V.rerender(); if (was !== 'idle' && was !== 'off') { V.stop(true); V.start(); } };
