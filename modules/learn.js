@@ -137,8 +137,16 @@ function install(app, deps) {
       return (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '';
     } finally { clearTimeout(t); }
   }
+  // v16: Bro Core (open models on Groq; its emergency fallback covers Gemini) answers first. The old brains are used only
+  // when Bro Core is absent, or as extra emergency answers while its BROCORE_EMERGENCY switch is on.
   function brains() {
-    const out = [];
+    const out = [], B = global._broCore;
+    if (B && B.brainReady && B.brainReady()) {
+      out.push(['brocore', async (m, n) => (await B.chat({ messages: m, maxTokens: n, purpose: 'learn' })).text]);
+      if (B.emergencyOn() && openaiKey()) out.push(['openai', (m, n) => openaiChat(m, n)]);
+      return out;
+    }
+    if (B && !B.emergencyOn()) return out;
     if (openaiKey()) out.push(['openai', (m, n) => openaiChat(m, n)]);
     if (deps._callGroq && deps.hasGroq && deps.hasGroq()) out.push(['groq', async (m, n) => (await deps._callGroq(m, { maxTokens: n })).reply]);
     if (deps._callGemini && ((deps.hasGemini && deps.hasGemini()) || (global._elevenBrain && global._elevenBrain.available()))) out.push(['gemini', async (m, n) => (await deps._callGemini(m.filter(x => x.role !== 'system'), { maxTokens: n, systemPrompt: (m.find(x => x.role === 'system') || {}).content || '' })).reply]);

@@ -6,7 +6,8 @@
 // v13.1: near-duplicates of recent stories are skipped, and each story's real photo (RSS image or the source page's
 // og:image) is cached once in MEDIA_DIR/news-img and served same-origin (/api/news/img/:id) so Share can draw it.
 // Rules for the writer: only facts present in the sources; no opinions; neutral, simple words.
-//   GET  /api/news/desk?cat=&limit=   → { stories:[…], updated_at, writer }
+//   GET  /api/news/desk?cat=&limit=   → { stories:[…], next, updated_at, writer }
+//   GET  /api/news/desk?before=<next>&exclude=id,id&limit=  → the page older than that (v16 endless deck)
 //   POST /api/news/desk/run (admin)   → runs a batch now
 // Batches run on boot (+2 min) and every 30 minutes; stories older than 3 days drop off.
 'use strict';
@@ -97,7 +98,10 @@ function install(app, deps) {
     return JSON.parse(j.choices[0].message.content);
   }
   function writers() {
-    const w = [];
+    // v16: Bro Core (open models on Groq) writes the news; the writers after it run only while its emergency switch is on
+    const w = [], BC = global._broCore;
+    if (BC && BC.brainReady()) w.push(['brocore', t => BC.chat({ system: SYS, messages: [{ role: 'user', content: t }], json: true, maxTokens: 2000, temperature: 0.3, purpose: 'news', emergency: false }).then(r => JSON.parse(r.text))]);
+    if (BC && !BC.emergencyOn()) return w;
     const o = getSetting('OPENAI_API_KEY'); if (o) w.push(['openai', t => viaOpenAI(o, t)]);
     const g = getSetting('GEMINI_API_KEY'); if (g) w.push(['gemini', t => viaGemini(g, t)]);
     const r = getSetting('GROQ_API_KEY'); if (r) w.push(['groq', t => viaGroq(r, t)]);
@@ -216,12 +220,86 @@ function install(app, deps) {
   }
 
   const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: (() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })(), image: imgFile(r.id) ? '/api/news/img/' + encodeURIComponent(r.id) : r.image, writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at, voice: global._newsVoice ? global._newsVoice.flags(r.id) : {} });
+
+  // ── v16: the deck never ends. ?before=<cursor>&exclude=id,id… walks back through every story the desk still holds
+  // (newest first, past the 2-day window), then through the cached headline feed (/api/news) in the same story shape.
+  // A cursor is a published_at (ISO or ms; inclusive when exclude is sent) or the `next` this route returned:
+  // '<ISO>~<id>' inside the desk, 'rss:<ms>~<id>' inside the feed. next is null when nothing older is left.
+  const ID = /^[A-Za-z0-9_-]{1,64}$/;
+  function cursor(v) {
+    const s = String(v == null ? '' : v).trim(); if (!s) return null;
+    let m = s.match(/^rss:(-?\d+)(?:~([A-Za-z0-9_-]{1,64}))?$/);
+    if (m) return { feed: true, ts: +m[1], id: m[2] || '' };
+    m = s.match(/^(.+?)(?:~([A-Za-z0-9_-]{1,64}))?$/);
+    const t = /^\d+$/.test(m[1]) ? +m[1] : Date.parse(m[1]);
+    return Number.isFinite(t) ? { feed: false, iso: new Date(t).toISOString(), id: m[2] || '' } : false;
+  }
+  // the legacy headline feed (server.js newsCache), mapped once per feed refresh or desk batch; a feed item that tells
+  // a story the desk already wrote is left out, and stock filler photos are dropped so the card shows its category panel
+  const feedMemo = {};
+  function feedStories(cat) {
+    let items = []; try { items = (deps.rssItems && deps.rssItems()) || []; } catch (e) { items = []; }
+    const dk = q('SELECT COUNT(*) n, MAX(created_at) m FROM news_stories').get() || {};
+    const k = cat || '*', key = [items.length, items[0] && items[0].link, items.length && items[items.length - 1].link, dk.n, dk.m].join('|');
+    if (feedMemo[k] && feedMemo[k].key === key) return feedMemo[k].list;
+    if (!items.length) return (feedMemo[k] = { key, list: [] }).list;
+    let desk = []; try { desk = q('SELECT headline, summary FROM news_stories').all().map(r => new Set(tokens(r.headline + ' ' + String(r.summary || '').slice(0, 140)))); } catch (e) { /* ignore */ }
+    const seen = new Set(), list = [];
+    for (const it of items) {
+      const title = strip(it && it.title), desc = strip(it && (it.desc || it.description));
+      if (!title || !desc) continue;
+      const category = CAT_LABEL[it.cat] ? it.cat : 'world';
+      if (cat && category !== cat) continue;
+      const id = 'rss-' + sha(String(it.link || title));
+      if (seen.has(id)) continue; seen.add(id);
+      const t = new Set(tokens(title + ' ' + desc.slice(0, 140)));
+      if (desk.some(d => jaccard(t, d) >= 0.45)) continue;
+      const ts = Date.parse(it.date || it.pubDate || '') || 0, when = ts ? new Date(ts).toISOString() : '';
+      const source = String(it.source || (() => { try { return new URL(it.link).hostname.replace(/^www\./, ''); } catch (e) { return ''; } })());
+      const image = it.img && !/unsplash\.com/i.test(it.img) && publicUrl(it.img) ? it.img : null;
+      list.push({ ts, id, story: { id, category, label: CAT_LABEL[category], headline: clip(title, 160), summary: desc, why: '', headline_hi: '', summary_hi: '', why_hi: '', sources: [{ name: source, link: it.link || '' }], image, writer: 'feed', source_count: 1, published_at: when, created_at: when, voice: {} } });
+    }
+    list.sort((a, b) => b.ts - a.ts || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0));
+    feedMemo[k] = { key, list };
+    return list;
+  }
+  function feedPage(cat, cur, exSet, n) {
+    const after = x => !cur ? true : cur.id ? (x.ts < cur.ts || (x.ts === cur.ts && x.id < cur.id)) : (exSet.size ? x.ts <= cur.ts : x.ts < cur.ts);
+    const rest = feedStories(cat).filter(x => after(x) && !exSet.has(x.id)), page = rest.slice(0, n), last = page[page.length - 1];
+    return { stories: page.map(x => x.story), next: rest.length > n && last ? 'rss:' + last.ts + '~' + last.id : null };
+  }
+  function older(cat, cur, ex, exSet, lim) {
+    if (cur && cur.feed) return feedPage(cat, cur, exSet, lim);
+    const w = [], a = [];
+    if (cat) { w.push('category=?'); a.push(cat); }
+    if (cur && cur.id) { w.push('(published_at < ? OR (published_at = ? AND id < ?))'); a.push(cur.iso, cur.iso, cur.id); }
+    else if (cur) { w.push(ex.length ? 'published_at <= ?' : 'published_at < ?'); a.push(cur.iso); }
+    if (ex.length) { w.push('id NOT IN (' + ex.map(() => '?').join(',') + ')'); a.push(...ex); }
+    const rows = q('SELECT * FROM news_stories' + (w.length ? ' WHERE ' + w.join(' AND ') : '') + ' ORDER BY published_at DESC, id DESC LIMIT ?').all(...a, lim);
+    const last = rows[rows.length - 1];
+    if (rows.length === lim) return { stories: rows.map(pub), next: last.published_at + '~' + last.id };
+    const fill = feedPage(cat, null, exSet, lim - rows.length); // the desk has nothing older: the feed carries on
+    return { stories: rows.map(pub).concat(fill.stories), next: fill.next };
+  }
   app.get('/api/news/desk', (req, res) => {
-    const cat = String(req.query.cat || '').toLowerCase(); const lim = Math.max(1, Math.min(60, parseInt(req.query.limit) || 40));
-    const rows = CAT_LABEL[cat] ? q('SELECT * FROM news_stories WHERE category=? ORDER BY source_count DESC, published_at DESC LIMIT ?').all(cat, lim)
-      : q("SELECT * FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY (source_count * 3 - (julianday('now') - julianday(published_at)) * 24 / 8) DESC LIMIT ?").all(lim);
+    const cat = CAT_LABEL[String(req.query.cat || '').toLowerCase()] ? String(req.query.cat).toLowerCase() : '';
+    const lim = Math.max(1, Math.min(60, parseInt(req.query.limit) || 40));
+    const cur = cursor(req.query.before);
     res.set('Cache-Control', 'no-cache');
-    res.json({ stories: rows.map(pub), updated_at: state.last && state.last.at, writer: state.writer || (writers()[0] || ['extractive'])[0], running: state.running });
+    if (cur === false) return res.status(400).json({ error: 'bad cursor', stories: [], next: null });
+    const ex = String(req.query.exclude || '').split(',').map(s => s.trim()).filter(s => ID.test(s)).slice(0, 200), exSet = new Set(ex);
+    let out;
+    try {
+      if (!cur) { // the first page keeps today's ranking; next points at everything else, newest first
+        const rows = cat ? q('SELECT * FROM news_stories WHERE category=? ORDER BY source_count DESC, published_at DESC LIMIT ?').all(cat, lim)
+          : q("SELECT * FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY (source_count * 3 - (julianday('now') - julianday(published_at)) * 24 / 8) DESC LIMIT ?").all(lim);
+        if (rows.length) {
+          const all = q('SELECT COUNT(*) n, MAX(published_at) m FROM news_stories' + (cat ? ' WHERE category=?' : '')).get(...(cat ? [cat] : []));
+          out = { stories: rows.map(pub), next: all.m && (all.n > rows.length || feedStories(cat).length) ? all.m : null };
+        } else out = older(cat, null, ex, exSet, lim); // nothing new today: start with the newest the desk (or the feed) has
+      } else out = older(cat, cur, ex, exSet, lim);
+    } catch (e) { log('desk page', e.message); return res.status(500).json({ error: 'news desk unavailable', stories: [], next: null }); }
+    res.json({ stories: out.stories, next: out.next, updated_at: state.last && state.last.at, writer: state.writer || (writers()[0] || ['extractive'])[0], running: state.running });
   });
   app.post('/api/news/desk/run', auth, async (req, res) => {
     let ok = false; try { ok = !!(isAdminUser && isAdminUser(req.user)); } catch (e) {}

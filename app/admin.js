@@ -23,7 +23,8 @@
     { k: 'OPENAI_API_KEY', label: 'OpenAI', sub: 'Talking Bro — real-time voice', ph: 'sk-…', icon: 'mic', url: 'https://platform.openai.com/api-keys', host: 'platform.openai.com' },
     { k: 'ELEVENLABS_API_KEY', label: 'ElevenLabs', sub: 'Studio voices — Bro, bulletins, Hindi books, lessons', ph: 'xi-…', icon: 'radio', url: 'https://elevenlabs.io/app/settings/api-keys', host: 'elevenlabs.io' },
     { k: 'GEMINI_API_KEY', label: 'Gemini', sub: 'Bro\'s brain + backup voice — news, books, lessons', ph: 'AIza… or AQ.…', icon: 'sparkles', url: 'https://aistudio.google.com/app/apikey', host: 'aistudio.google.com' },
-    { k: 'GROQ_API_KEY', label: 'Groq', sub: 'Optional second brain — fast replies', ph: 'gsk_…', icon: 'zap', url: 'https://console.groq.com/keys', host: 'console.groq.com' },
+    { k: 'GROQ_API_KEY', label: 'Groq', sub: 'Bro Core — Bro\'s brain and hearing (open models)', ph: 'gsk_…', icon: 'zap', url: 'https://console.groq.com/keys', host: 'console.groq.com' },
+    { k: 'RUNPOD_API_KEY', label: 'RunPod (optional)', sub: 'Bro\'s GPU voice — one cloned deep voice in 23 languages', ph: 'rpa_…', icon: 'rocket', url: 'https://www.runpod.io/console/user/settings', host: 'runpod.io' },
   ];
   const SERVICES = [
     { k: 'brovoice', label: 'Bro voice', icon: 'mic', off: 'device voice' },
@@ -98,9 +99,11 @@
   }
   function body(a) {
     const st = a.status;
-    let h = '<p class="adm-lead b-body">Paste once. Saved on the server, live right away. Bro needs one brain key (Gemini, OpenAI or Groq). Bro speaks in one ElevenLabs voice everywhere (chat and language lessons); OpenAI\'s deep voice covers live chat only if the credits run out.</p>';
+    let h = '<p class="adm-lead b-body">Paste once. Saved on the server, live right away. Bro Core thinks and listens on open models through the Groq key; Gemini and OpenAI only step in as its emergency fallback. Bro speaks in his own deep voice on our server; until it has loaded, the phone\'s own voice speaks.</p>';
     // service tiles
     h += '<div class="adm-tiles" id="admTiles">' + SERVICES.map(tileHtml).join('') + '</div>';
+    // v16 Bro Core: the one brain (open models), its hearing and voice, what it knows, remembers and learned, latency, cost
+    h += coreHtml(st.brocore);
     // keys
     h += '<div class="adm-keys">' + KEYS.map(k => keyHtml(k)).join('') + '</div>';
     // help
@@ -120,6 +123,68 @@
     h += '<div class="adm-jobs" id="admJobs">' + JOBS.map(j => jobHtml(j)).join('') + '</div>';
     return h;
   }
+  // ── v16 Bro Core: eight status tiles, the emergency-fallback switch and a lesson rollback (two taps) ──
+  function coreHtml(bc) {
+    if (!bc) return '';
+    if (bc.error) return '<div class="adm-sec" id="admCore"><div class="b-eyebrow">Bro Core</div><p class="adm-auto b-sm">' + ic('alert-triangle', 14) + ' ' + _esc(bc.error) + '</p></div>';
+    const a = adm(), n = x => Number(x || 0).toLocaleString('en-IN');
+    const short = m => String(m || '').split('/').pop();
+    const ms = x => x == null ? '—' : x >= 1000 ? (x / 1000).toFixed(1) + ' s' : Math.round(x) + ' ms';
+    const br = bc.brain || {}, he = bc.hearing || {}, vo = bc.voice || {}, le = bc.lessons || {}, la = bc.latency || {}, co = bc.cost || {};
+    // min-width:0 lets a long value (a model id) ellipsize instead of widening its grid column past the phone's edge
+    const tile = (k, label, on, val, icon) => '<div class="adm-tile' + (on ? ' on' : '') + '" data-core="' + k + '" role="status" style="min-width:0"><span class="adm-tile-ic">' + ic(icon, 18) + '</span><div class="adm-tile-b"><b>' + _esc(label) + '</b><small title="' + attr(val) + '">' + _esc(val) + '</small></div><i class="adm-dot" aria-hidden="true"></i></div>';
+    const lat = la.p50 != null ? 'p50 ' + ms(la.p50) + (la.p90 != null ? ' · p90 ' + ms(la.p90) : '') : la.chatP50 != null ? 'p50 ' + ms(la.chatP50) + ' (text)' : 'no calls yet';
+    const mon = co.month ? new Date(co.month + '-01T00:00:00').toLocaleDateString('en-IN', { month: 'short' }) : 'month';
+    let h = '<div class="adm-sec" id="admCore"><div class="b-eyebrow adm-eyebrow">' + ic('sparkles', 14) + ' Bro Core' + (bc.version ? ' · ' + _esc(bc.version) : '') + '</div><div class="adm-tiles">';
+    h += tile('brain', 'Brain', br.ready, br.ready ? short(br.model) : 'paste a Groq key', 'sparkles');
+    h += tile('hearing', 'Hearing', he.ready, he.ready ? short(he.model) : 'needs the Groq key', 'mic');
+    h += tile('voice', 'Voice', vo.ready, vo.ready ? 'ready · on our CPU' : vo.loading ? 'loading the model…' : 'not ready', 'radio');
+    h += tile('knowledge', 'Knowledge', bc.knowledge > 0, n(bc.knowledge) + ' items', 'book-open');
+    h += tile('memories', 'Memories', bc.memories > 0, n(bc.memories) + ' · ' + n(bc.calls) + ' calls', 'database');
+    h += tile('lessons', 'Lessons', le.version > 0, le.version ? 'v' + le.version + ' · ' + n(le.count) + ' live' + (le.pending ? ' · ' + n(le.pending) + ' pending' : '') : (le.pending ? n(le.pending) + ' pending' : 'none yet'), 'languages');
+    h += tile('latency', 'Latency', la.p50 != null || la.chatP50 != null, lat, 'zap');
+    h += tile('cost', 'Cost · ' + mon, true, '$' + Number(co.usd || 0).toFixed(2) + ' · ' + n(co.calls) + ' calls', 'wallet');
+    h += '</div>';
+    const on = bc.emergency !== 'off', busy = !!a.coreBusy;
+    h += '<div class="adm-job-act"><button type="button" class="b-chip adm-tog' + (on ? ' on' : '') + '" id="admEmergency" role="switch" aria-checked="' + on + '" onclick="AdminPanel.toggleEmergency()"' + (busy ? ' disabled' : '') + '>' + ic(on ? 'check' : 'x', 14) + 'Emergency fallback ' + (on ? 'on' : 'off') + '</button>';
+    if (le.version > 0) h += '<button type="button" class="b-chip adm-tog" id="admRollback" onclick="AdminPanel.rollbackLessons()"' + (busy ? ' disabled' : '') + '>' + ic('refresh-cw', 14) + (a.rollbackArmed ? 'Tap again to roll back v' + le.version : 'Roll back lessons') + '</button>';
+    h += '</div>';
+    // the switch is the brain's backup only; the voice never falls back to a paid provider (the phone speaks instead)
+    h += '<p class="adm-auto b-sm">' + (on ? 'Brain backup on: if every open model fails, the old Gemini brain answers' : 'Open models only: if they all fail, Bro says he is busy') + (bc.emergencyUsed ? ' · used ' + n(bc.emergencyUsed) + '× since the last start' : '') + '. This switch is for the brain only; if Bro\'s voice is not ready, the phone\'s own voice speaks.'
+      + (br.error ? '<br><span style="color:var(--b-primary)">Brain: ' + _esc(String(br.error).slice(0, 200)) + '</span>' : '') + (vo.error && !vo.ready ? '<br><span style="color:var(--b-primary)">Voice: ' + _esc(vo.error) + '</span>' : '') + '</p>';
+    h += gpuLine(bc.gpu);
+    return h + '</div>';
+  }
+  // one line for the optional GPU voice (RunPod): off / starting / ready / error
+  function gpuLine(g) {
+    if (!g) return '';
+    const s = !g.configured ? 'off (' + (g.keyMissing ? 'add a RunPod key' : 'switched off') + ')'
+      : g.status === 'ready' ? 'ready' + (g.warm ? ' · warm' : '')
+      : g.status === 'error' ? 'error: ' + String(g.error || 'unknown').slice(0, 180)
+      : 'starting (the first check can take a few minutes)';
+    return '<p class="adm-auto b-sm" id="admGpu" data-gpu="' + attr(g.status || 'off') + '">' + ic('rocket', 14) + ' GPU voice: ' + _esc(s) + '</p>';
+  }
+  const patchCore = () => { const el = document.getElementById('admCore'); const st = adm().status; if (el && st) el.outerHTML = coreHtml(st.brocore) || '<div id="admCore"></div>'; };
+  A.toggleEmergency = async function () {
+    const a = adm(), bc = a.status && a.status.brocore; if (!bc || a.coreBusy) return;
+    const next = bc.emergency === 'off' ? 'on' : 'off';
+    a.coreBusy = true; patchCore();
+    const r = await _api('/admin/bro/config', { method: 'POST', body: JSON.stringify({ emergency: next }) });
+    a.coreBusy = false;
+    if (r && r.ok) { bc.emergency = next; hap('light'); _toast(next === 'on' ? 'Emergency fallback on — the old brain answers if open models fail' : 'Emergency fallback off — open models only'); }
+    else { hap('error'); _toast((r && r.error) || 'Could not change the switch', 'err'); }
+    patchCore();
+  };
+  A.rollbackLessons = async function () {
+    const a = adm(), bc = a.status && a.status.brocore; if (!bc || a.coreBusy) return;
+    if (!a.rollbackArmed) { a.rollbackArmed = true; patchCore(); clearTimeout(a._rbT); a._rbT = setTimeout(() => { a.rollbackArmed = false; patchCore(); }, 4000); return; }
+    a.rollbackArmed = false; clearTimeout(a._rbT); a.coreBusy = true; patchCore();
+    const r = await _api('/admin/bro/lessons/rollback', { method: 'POST', body: '{}' });
+    a.coreBusy = false;
+    if (r && r.ok) { bc.lessons = { version: r.active_version, count: (r.active || []).length }; hap('success'); _toast(r.active_version ? 'Lessons rolled back to v' + r.active_version : 'Lessons rolled back — none live now'); }
+    else { hap('error'); _toast((r && r.error) || 'Could not roll back', 'err'); }
+    patchCore();
+  };
   // Bro's voice: four deep ElevenLabs voices, each with a preview; picking one re-records the language lessons in it.
   function broVoiceHtml() {
     const a = adm(), bv = a.broVoices;

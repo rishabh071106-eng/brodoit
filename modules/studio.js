@@ -84,8 +84,20 @@ async function speak(opts) {
   const gs = opts.getSetting || (() => ''); const k = keys(gs);
   const text = String(opts.text || '').trim(); if (!text) return null;
   const lang = String(opts.lang || 'en').toLowerCase().slice(0, 2), purpose = opts.purpose || 'daily';
-  const list = (opts.provider ? [opts.provider] : order(gs, purpose)).filter(p => p !== 'gemini'); // never Gemini TTS (v14)
+  const list = (opts.provider ? [opts.provider] : order(gs, purpose)).filter(p => p !== 'gemini' && p !== 'brocore'); // never Gemini TTS (v14)
   let lastErr = null;
+  // v16: Bro's own voice (Bro Core: Kokoro on our CPU, free) speaks live replies and daily lines once its model is loaded;
+  // the paid chain below is the fallback. A forced provider skips it, unless the provider forced is 'brocore'.
+  if ((!opts.provider && (purpose === 'live' || purpose === 'daily')) || opts.provider === 'brocore') {
+    const B = global._broCore;
+    if (B && typeof B.voiceReady === 'function' && B.voiceReady()) {
+      try {
+        const r = await B.speak(text, { lang, format: 'mp3', speed: opts.slow ? 0.85 : undefined, purpose: opts.purpose });
+        if (r && r.audio && r.audio.length && (!opts.mp3 || r.mime === 'audio/mpeg')) return { buf: r.audio, mime: r.mime || 'audio/mpeg', provider: 'brocore' };
+      } catch (e) { lastErr = e; console.log('[studio] brocore voice failed:', String(e.message).slice(0, 160)); }
+    }
+    if (opts.provider === 'brocore') { if (opts.strict) throw lastErr || new Error('Bro Core voice is not ready'); return null; }
+  }
   for (const p of list) {
     if (!k[p] || isDown(p)) continue;
     try {

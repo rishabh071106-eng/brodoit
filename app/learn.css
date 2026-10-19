@@ -1,5 +1,7 @@
-/* Learn tab v15: three rows (Games, Coding, Languages), each opening a list built from the framework rows in
-   app/ui.css. Only the pieces the framework doesn't have live here: today's workout card and the letter tiles. */
+/* Learn tab v16: three hub buttons (Games, Coding, Languages) that share the screen, each opening a list built from
+   the framework rows. Both components live in app/ui.css (.ui-hub, .ui-row); learn.js sizes .lx-hubs to the space
+   between the header and the tab bar. Only the pieces the framework doesn't have live here: today's workout card and
+   the letter tiles. */
 #app .lx{padding:4px 0 24px;animation:lxIn .25s ease both}
 #app .lx .ui-list + .ui-list{margin-top:12px}
 #app .lx-glyph{font:700 19px/1 var(--ui-font);letter-spacing:-.01em}

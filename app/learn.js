@@ -1,16 +1,18 @@
-// Learn tab (v15): three rows (Games, Coding, Languages), each opening its own list inside the tab.
-// Every item is the same framework row (app/ui.css): icon tile, title, one line of status, chevron. Rules: /DESIGN.md.
+// Learn tab (v16): three big buttons (Games, Coding, Languages) that share the screen, each opening its own list inside the tab.
+// The landing uses the framework hub buttons (.ui-hub); every list inside is the framework row (.ui-row). Both live in
+// app/ui.css; the rules are in /DESIGN.md.
 // window.LearnUI.landing() returns the tab's HTML; server.js calls it when S.tab==='courses'.
 // S.learnHub picks the inner list; ?tab=learn&hub=games opens one directly and the phone's back button closes it.
 // Progress is read from each school's own store (bd.py.v1, lang.progress.v1, bd.mind.v1): same origin, no fetch.
 (function () {
   const L = window.LearnUI = window.LearnUI || {};
   const hi = () => (window.S && S.lang === 'hi');
-  const icon = (n, s) => (window.ico ? window.ico(n, s || 22) : '');
+  const icon = (n, s, w) => (window.ico ? window.ico(n, s || 22, w) : '');
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const read = k => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; } };
   const HUBS = ['games', 'coding', 'languages'];
-  const CODE_IC = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/><path d="m13.5 4-3 16"/></svg>';
+  const codeIc = (s, w) => '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 2) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/><path d="m13.5 4-3 16"/></svg>';
+  const CODE_IC = codeIc(22);
 
   const LANGS = [
     { c: 'es', n: 'Spanish', nh: 'स्पैनिश', native: 'Español', g: 'Ñ', a: '#DC2626' },
@@ -73,15 +75,49 @@
     return best ? (H ? best.l.nh : best.l.n) + ' · ' + best.p + '%' : (H ? '5 भाषाएँ' : '5 languages');
   }
 
+  // ── the landing: three big buttons that split the space between the header and the tab bar ──
+  // o.ic(size, stroke) draws the item's icon: once in the tile, once large and faint in the corner.
+  function hub(o) {
+    return '<button class="ui-hub lx-hub" type="button" data-id="' + o.id + '" onclick="LearnUI.open(\'' + o.id + '\')" style="--hub-accent:' + o.accent + '"'
+      + ' aria-label="' + esc(o.title + ', ' + o.sub.replace(/ · /g, ', ')) + '">'
+      + '<span class="ui-hub-in"><span class="ui-hub-ic" aria-hidden="true">' + o.ic(30, 2) + '</span>'
+      + '<span class="ui-hub-tx"><b>' + esc(o.title) + '</b><small>' + esc(o.sub) + '</small></span>'
+      + '<span class="ui-hub-go" aria-hidden="true">' + icon('arrow-right', 20, 2.25) + '</span></span>'
+      + '<span class="ui-hub-art" aria-hidden="true">' + o.ic(144, 1.25) + '</span></button>';
+  }
   function landing(H) {
     const P = py();
     loadMind();
-    return '<div class="lx">' + header(H ? 'सीखो' : 'Learn', false) + list([
-      row({ id: 'games', onclick: "LearnUI.open('games')", accent: 'var(--g-memory)', ic: icon('brain'), title: H ? 'गेम्स' : 'Games', sub: gamesStatus(H) }),
-      row({ id: 'coding', onclick: "LearnUI.open('coding')", accent: 'var(--g-python)', ic: CODE_IC, title: H ? 'कोडिंग' : 'Coding', sub: 'Python · ' + (P.started ? (H ? 'दिन ' : 'Day ') + P.cur + (H ? ' / 60' : ' of 60') : (H ? '60 दिन' : '60 days')) }),
-      row({ id: 'languages', onclick: "LearnUI.open('languages')", accent: 'var(--g-lang)', ic: icon('languages'), title: H ? 'भाषाएँ' : 'Languages', sub: langStatus(H) }),
-    ]) + '</div>';
+    requestAnimationFrame(fit); // runs once the tab's HTML is in the page, before it paints
+    return '<div class="lx lx-home">' + header(H ? 'सीखो' : 'Learn', false) + '<div class="ui-hubs lx-hubs">'
+      + hub({ id: 'games', accent: 'var(--g-memory)', ic: (s, w) => icon('brain', s, w), title: H ? 'गेम्स' : 'Games', sub: gamesStatus(H) })
+      + hub({ id: 'coding', accent: 'var(--g-python)', ic: codeIc, title: H ? 'कोडिंग' : 'Coding', sub: 'Python · ' + (P.started ? (H ? 'दिन ' : 'Day ') + P.cur + (H ? ' / 60' : ' of 60') : (H ? '60 दिन' : '60 days')) })
+      + hub({ id: 'languages', accent: 'var(--g-lang)', ic: (s, w) => icon('languages', s, w), title: H ? 'भाषाएँ' : 'Languages', sub: langStatus(H) })
+      + '</div></div>';
   }
+  // The buttons share the height from under the header to just above the tab bar (or the audio player, when it sits
+  // above the tabs), measured the way the News deck is. Each keeps its 124px minimum (three fit a 360×640 screen), so short screens scroll.
+  function fit() {
+    const box = document.querySelector('#app .lx-hubs'), lx = box && box.closest('.lx'); if (!lx) return;
+    box.style.minHeight = lx.style.marginBottom = '';
+    const bar = document.querySelector('.tabs.page-t'), r = bar && bar.getBoundingClientRect();
+    let bottom = r && r.height && r.top > innerHeight * 0.6 ? r.top : innerHeight;
+    const pl = document.querySelector('.player.on'), q = pl && pl.getBoundingClientRect();
+    if (q && q.height && q.top > innerHeight * 0.5 && q.top < bottom) bottom = q.top;
+    // offsetTop, not the box's rect: the rect includes the tab's entrance slide. Measured twice because a wide layout
+    // can move the box once it grows.
+    const top = () => { let t = 0; for (let e = box; e; e = e.offsetParent) t += e.offsetTop; return t; };
+    let fill = 0;
+    for (let i = 0; i < 2; i++) { fill = Math.max(0, Math.floor(bottom - top() - 16)); box.style.minHeight = fill + 'px'; }
+    // When the three fit, end the page at the screen's bottom instead of letting it scroll into the shell's padding
+    // (kept only where the layout really ends with the content).
+    const over = document.documentElement.scrollHeight - innerHeight;
+    if (over > 0 && box.offsetHeight <= fill + 1) {
+      lx.style.marginBottom = -over + 'px';
+      if (document.documentElement.scrollHeight > innerHeight) lx.style.marginBottom = '';
+    }
+  }
+  addEventListener('resize', () => { if (window.S && S.tab === 'courses' && !S.learnHub) fit(); });
 
   function gamesHub(H) {
     let h = '<div class="lx">' + header(H ? 'गेम्स' : 'Games', true);
