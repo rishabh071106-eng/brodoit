@@ -9997,7 +9997,7 @@ async function startPed(){if(typeof DeviceMotionEvent==='undefined'){toast('\\u2
 async function stopPed(){if(_ped){window.removeEventListener('devicemotion',_ped);_ped=null}await releaseWake();const added=S.stepLive.count||0;S.stepLive={active:false,count:0};if(added>0){const today=new Date().toISOString().slice(0,10);const current=(S.steps.find(s=>s.date===today)?.count)||0;await postSteps(today,current+added,'device')}else{toast('\\u23F8 Stopped \\u2014 no steps detected');render()}}
 /* When the tab is backgrounded, flush whatever we counted so we don't lose it, and re-acquire wake lock on return. */
 document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='hidden'){if(S.stepLive&&S.stepLive.active)await flushPedCount()}else if(document.visibilityState==='visible'){if(S.stepLive&&S.stepLive.active&&!_wakeLock)await acquireWake()}});
-function toggleTheme(){S.theme=S.theme==='aurora'?'classic':'aurora';localStorage.setItem('theme',S.theme);document.body.setAttribute('data-theme',S.theme);toast(S.theme==='aurora'?'Aurora theme':'Classic theme');render()}
+function toggleTheme(){if(S.nightSky){toggleSolarSystem();return}S.theme=S.theme==='aurora'?'classic':'aurora';localStorage.setItem('theme',S.theme);document.body.setAttribute('data-theme',S.theme);toast(S.theme==='aurora'?'Aurora theme':'Classic theme');render()}
 function toggleSolarSystem(){if(S.nightSky){S.nightSky=false;localStorage.setItem('nightSky','');document.body.classList.remove('night-sky');S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb=document.getElementById('nsNebula');if(nb)nb.remove();var pl=document.getElementById('nsPlanets');if(pl)pl.remove();S.theme='classic';localStorage.setItem('theme','classic');document.body.setAttribute('data-theme','classic');toast('\\u2600\\uFE0F Light Mode')}else{S.nightSky=true;localStorage.setItem('nightSky','1');document.body.classList.add('night-sky');S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');S.theme='aurora';localStorage.setItem('theme','aurora');document.body.setAttribute('data-theme','aurora');if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb2=document.createElement('div');nb2.id='nsNebula';nb2.className='ns-nebula';document.body.appendChild(nb2)}if(!document.getElementById('nsPlanets')){var pl2=document.createElement('div');pl2.id='nsPlanets';pl2.className='ns-planets';pl2.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div><div class="ns-planet ns-planet-neptune"></div><div class="ns-planet ns-planet-mercury"></div><div class="ns-planet ns-planet-uranus"></div><div class="ns-planet ns-planet-earth"></div><div class="ns-shoot ns-shoot-1"></div><div class="ns-shoot ns-shoot-2"></div><div class="ns-shoot ns-shoot-3"></div>';document.body.appendChild(pl2)}toast('\\u{1FA90} Solar System')}render()}
 function toggleEyeShield(){S.eyeShield=!S.eyeShield;localStorage.setItem('eyeShield',S.eyeShield?'1':'');document.body.classList.toggle('eye-shield',S.eyeShield);if(S.eyeShield){S.nightSky=false;localStorage.setItem('nightSky','');document.body.classList.remove('night-sky');var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb=document.getElementById('nsNebula');if(nb)nb.remove();var pl=document.getElementById('nsPlanets');if(pl)pl.remove()}toast(S.eyeShield?'Eye Shield on':'Eye Shield off');render()}
 function toggleNightSky(){S.nightSky=!S.nightSky;localStorage.setItem('nightSky',S.nightSky?'1':'');document.body.classList.toggle('night-sky',S.nightSky);if(S.nightSky){S.eyeShield=false;localStorage.setItem('eyeShield','');document.body.classList.remove('eye-shield');if(S.theme!=='aurora'){S.theme='aurora';localStorage.setItem('theme','aurora');document.body.setAttribute('data-theme','aurora')}if(!document.getElementById('nsMoon')){var m=document.createElement('div');m.id='nsMoon';m.className='ns-moon';document.body.appendChild(m)}if(!document.getElementById('nsNebula')){var nb=document.createElement('div');nb.id='nsNebula';nb.className='ns-nebula';document.body.appendChild(nb)}if(!document.getElementById('nsPlanets')){var pl=document.createElement('div');pl.id='nsPlanets';pl.className='ns-planets';pl.innerHTML='<div class="ns-planet ns-planet-saturn"></div><div class="ns-planet ns-planet-jupiter"></div><div class="ns-planet ns-planet-mars"></div><div class="ns-planet ns-planet-venus"></div><div class="ns-planet ns-planet-neptune"></div><div class="ns-planet ns-planet-mercury"></div><div class="ns-planet ns-planet-uranus"></div><div class="ns-planet ns-planet-earth"></div><div class="ns-shoot ns-shoot-1"></div><div class="ns-shoot ns-shoot-2"></div><div class="ns-shoot ns-shoot-3"></div>';document.body.appendChild(pl)}}else{var mn=document.getElementById('nsMoon');if(mn)mn.remove();var nb2=document.getElementById('nsNebula');if(nb2)nb2.remove();var pl2=document.getElementById('nsPlanets');if(pl2)pl2.remove()}toast(S.nightSky?'Night Sky on':'Night Sky off');render()}
@@ -14928,7 +14928,6 @@ const LOGO_MARK='<div class="logo" aria-label="Brodoit"><span class="b1">Bro</sp
 let _hdrStreak=0;for(let _si=0;_si<60;_si++){const _sd=new Date(Date.now()-_si*864e5).toISOString().slice(0,10);const _sok=ts.some(x=>x.status==='done'&&(x.updated_at||'').slice(0,10)===_sd);if(_sok)_hdrStreak++;else if(_si>0)break}
 let h='<div class="hdr"><div class="hdr-l">'+LOGO_MARK+'</div><div class="hdr-actions">'
   +(_hdrStreak>0?'<div class="rd-pill rd-pill-accent">'+_hdrStreak+'-day streak</div>':'')
-  +'<button class="hdr-help" onclick="toggleSolarSystem()" title="'+(S.nightSky?'Light Mode':'Solar System')+'" style="font-size:16px;display:flex;align-items:center;justify-content:center;opacity:'+(S.nightSky?'1':'.6')+'">'+(S.nightSky?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="'+'none'+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2l1.09 3.26L16.36 6l-3.27 1.09L12 10.36l-1.09-3.27L7.64 6l3.27-1.09z"/><path d="M17 14l.62 1.87L19.5 16.5l-1.88.63L17 19l-.62-1.87L14.5 16.5l1.88-.63z"/><path d="M7 14l.62 1.87L9.5 16.5l-1.88.63L7 19l-.62-1.87L4.5 16.5l1.88-.63z"/></svg>')+'</button>'
   +'<button onclick="switchTab(\\'profile\\')" title="Profile" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#37352F);color:#fff;border:none;font:700 13px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+((S.user&&S.user.name||'U').charAt(0).toUpperCase())+'</button>'
   +'</div></div>';
 
@@ -17398,44 +17397,6 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=128'
       setTimeout(function(){var c=document.getElementById('broChat');if(c)c.scrollTop=c.scrollHeight},400);
     }
   });
-})();
-/* ── 3D dock: bottom tab bar becomes a center-focus carousel ── */
-(function(){
-  var raf=null;
-  function styleTabs(nav){
-    var mid=nav.getBoundingClientRect().left+nav.clientWidth/2;
-    var tabs=nav.querySelectorAll('.tab');
-    for(var i=0;i<tabs.length;i++){
-      var r=tabs[i].getBoundingClientRect();
-      var d=(r.left+r.width/2)-mid;
-      var t=Math.min(1,Math.abs(d)/170);
-      var sc=1.16-t*.26, ty=-(1-t)*7, ry=Math.max(-16,Math.min(16,d/170*-14));
-      tabs[i].style.transform='perspective(650px) translateY('+ty+'px) rotateY('+ry+'deg) scale('+sc+')';
-      tabs[i].style.opacity=String(1-t*.35);
-    }
-  }
-  function onScroll(e){
-    var nav=e.target;
-    if(!nav.classList||!nav.classList.contains('tabs'))return;
-    if(raf)return;
-    raf=requestAnimationFrame(function(){raf=null;styleTabs(nav)});
-  }
-  function centerActive(nav,smooth){
-    var on=nav.querySelector('.tab.on');
-    if(on){try{on.scrollIntoView({inline:'center',block:'nearest',behavior:smooth?'smooth':'auto'})}catch(e){}}
-    styleTabs(nav);
-  }
-  document.addEventListener('scroll',onScroll,true);
-  document.addEventListener('click',function(e){
-    var b=e.target&&e.target.closest?e.target.closest('.tab'):null;
-    if(b){setTimeout(function(){var nav=document.querySelector('.tabs.page-t');if(nav)centerActive(nav,true)},80)}
-  },true);
-  var mo=new MutationObserver(function(){
-    var nav=document.querySelector('.tabs.page-t');
-    if(nav&&!nav._dock){nav._dock=1;centerActive(nav,false)}
-  });
-  mo.observe(document.body,{childList:true,subtree:true});
-  window.addEventListener('resize',function(){var nav=document.querySelector('.tabs.page-t');if(nav)styleTabs(nav)});
 })();
 </script></body></html>`;
 

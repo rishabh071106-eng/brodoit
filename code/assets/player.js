@@ -82,9 +82,11 @@ function paintProgress() {
 // ── slides ──
 function head(s) {
   const kick = KICK[s.type];
-  const chip = s.type === 'intro' ? `<span class="sl-chip t-intro">Day ${DAY}</span>`
+  // the top bar already says "Day N", so the intro needs no chip, and its title drops the "Mission N:" prefix
+  const chip = s.type === 'intro' ? ''
     : kick && !kick[2].test(s.title || '') ? `<span class="sl-chip t-${s.type}">${ic(kick[0], 14)}${kick[1]}</span>` : '';
-  return `<div class="sl-head" style="--i:0"><div class="sl-hl">${chip ? `<div>${chip}</div>` : ''}<h2 class="sl-title">${esc(s.title)}</h2></div>
+  const title = s.type === 'intro' ? String(s.title || '').replace(/^Mission\s*\d+\s*:\s*/i, '') : s.title;
+  return `<div class="sl-head" style="--i:0"><div class="sl-hl">${chip ? `<div>${chip}</div>` : ''}<h2 class="sl-title">${esc(title)}</h2></div>
     <button class="sl-say" aria-label="Play narration" data-act="say">${ic('sound', 16)}<span class="wave"><i></i><i></i><i></i><i></i></span></button></div>`;
 }
 
@@ -92,8 +94,7 @@ function body(s, k) {
   const vis = s.visual ? `<div class="sl-vis" style="--i:3">${renderVisual(s.visual)}</div>` : '';
   switch (s.type) {
     case 'intro':
-      return `${D.subtitle ? `<div class="sl-hero" style="--i:1"><div class="sl-sub">${esc(D.subtitle)}</div></div>` : ''}
-        <div class="sl-body" style="--i:2">${md(s.body)}</div>${vis}
+      return `<div class="sl-body" style="--i:2">${md(s.body)}</div>${vis}
         <div class="sl-outs" style="--i:4"><div class="sl-ot">Today you will</div>${(D.outcomes || []).map((o, j) => `<div class="sl-o" style="--j:${j}">${ic('check', 14)}<span>${esc(o)}</span></div>`).join('')}</div>`;
     case 'concept': case 'visual':
       return `${s.body ? `<div class="sl-body" style="--i:2">${md(s.body)}</div>` : ''}${vis}`;

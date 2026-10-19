@@ -52,7 +52,7 @@
       const ph = photo('lang-' + l.c);
       h += '<a class="lx-li" style="--i:' + i + '" href="/lang/course.html?c=' + l.c + '">'
         + '<span class="lx-lph">' + (ph ? '<img src="' + esc(ph) + '" alt="" loading="lazy">' : '') + '</span>'
-        + '<span class="lx-lt"><b>' + esc(H ? l.nh : l.n) + (l.native !== l.n ? ' <em>' + esc(l.native) + '</em>' : '') + '</b><span class="lx-bar"><i style="width:' + p + '%"></i></span></span>'
+        + '<span class="lx-lt"><b>' + esc(H ? l.nh : l.n) + (l.native !== l.n ? ' <em>' + esc(l.native) + '</em>' : '') + '</b>' + (p ? '<span class="lx-bar"><i style="width:' + p + '%"></i></span>' : '') + '</span>'
         + icon('chevron-right', 18) + '</a>';
     });
     h += '</div>';

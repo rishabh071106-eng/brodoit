@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
 <link rel="stylesheet" href="/app/theme.css?v=16">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=15">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=16">
 <link rel="stylesheet" href="/lang/assets/topbar.css?v=15">
 <link rel="stylesheet" href="/lang/assets/stages.css?v=2">
 <script src="/app/icons.js?v=16" defer></script>
@@ -37,7 +37,7 @@ const [course, audio] = await Promise.all([loadCourse(code), meta.hasAudio === f
 setCourse(code);
 const s = store.read();
 const streak = computeStreak(s.daily);
-renderChrome({ title: meta.name, right: `<span class="pill">${ic('flame', 16)} ${streak}</span>` });
+renderChrome({ right: `<span class="pill">${ic('flame', 16)} ${streak}</span>` });
 
 const head = document.getElementById('head'), body = document.getElementById('body');
 const HUES = ['#E0603F', '#2F7D4F', '#3B7FD0', '#8B5CF6', '#C2410C', '#0E9F9A', '#B5402A', '#6D28D9', '#B45309', '#BE185D'];

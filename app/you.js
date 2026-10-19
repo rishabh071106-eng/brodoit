@@ -42,7 +42,6 @@
       '<div class="yu-bars12' + (empty ? ' empty' : '') + '">' + week.map(w => '<div class="yu-b' + (w.today ? ' t' : '') + '"><i style="height:' + Math.max(4, Math.round(w.v / mx * 72)) + 'px"></i><span>' + esc(w.l) + '</span></div>').join('') + '</div></section>';
     // shortcuts
     h += '<div class="yu-rows">' +
-      C.row({ icon: 'calendar', tone: 'ink', title: hi ? 'कैलेंडर' : 'Calendar', onclick: "switchTab('cal')" }) +
       C.row({ icon: 'moon', tone: 'umber', title: hi ? 'थीम' : 'Theme', onclick: 'toggleTheme()' }) +
       C.row({ key: 'hero-books', icon: 'image', tone: 'wine', title: hi ? 'फ़ोटो क्रेडिट' : 'Photo credits', onclick: "location.href='/credits'" }) + '</div>';
     return h + '</div>';
