@@ -57,3 +57,42 @@ html[data-theme="dark"] .bh .hb-mas,body[data-theme=aurora] .bh .hb-mas{filter:d
 html[data-theme="dark"] .bh .hb-mode.on,body[data-theme=aurora] .bh .hb-mode.on,html[data-theme="dark"] .bh .hb-langs button.on,body[data-theme=aurora] .bh .hb-langs button.on{background:#F3F1EE;color:#17141F}
 .bh .hb-send:disabled{opacity:.45;cursor:default}
 .bh .hb-mode,.bh .hb-langs button{height:44px}
+
+/* ── v15: the voice orb replaces the mascot. Layers of warm light turning slowly inside a glass sphere; it breathes when
+   idle, ripples while listening, swirls faster while Bro speaks. Pure CSS, no images. ── */
+:is(.bh,.bvf) .hb-orb{--orb:196px;position:relative;display:block;width:var(--orb);height:var(--orb);border-radius:50%;overflow:hidden;isolation:isolate;
+  background:radial-gradient(circle at 50% 118%,#FFB88A 0%,#EE7445 24%,#B8402A 48%,#5E1A22 74%,#1E0B14 100%);
+  box-shadow:inset 0 -14px 34px rgba(20,6,4,.45),inset 0 10px 24px rgba(255,255,255,.28);
+  animation:hbBreathe 5s ease-in-out infinite}
+:is(.bh,.bvf) .hb-orb i{position:absolute;border-radius:50%;pointer-events:none}
+:is(.bh,.bvf) .hb-orb .o1{inset:-25%;background:conic-gradient(from 0deg,transparent 0 10%,rgba(255,196,120,.85) 20%,transparent 34%,rgba(140,90,255,.55) 52%,transparent 66%,rgba(255,110,70,.8) 82%,transparent);filter:blur(18px);mix-blend-mode:screen;animation:hbSpin 11s linear infinite}
+:is(.bh,.bvf) .hb-orb .o2{inset:-10%;background:conic-gradient(from 180deg,transparent 0 22%,rgba(255,86,60,.6) 36%,transparent 52%,rgba(255,220,170,.5) 70%,transparent 86%);filter:blur(22px);mix-blend-mode:screen;animation:hbSpin 17s linear infinite reverse}
+:is(.bh,.bvf) .hb-orb .o3{left:18%;top:7%;width:40%;height:26%;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.55),rgba(255,255,255,0) 70%);filter:blur(3px)}
+/* the stage behind it: one soft halo; rings only while Bro is listening */
+/* the shadow is a soft gradient ellipse under the sphere (no blur filter, so no compositing edge) */
+.bh .hb-bro{position:relative;border-radius:50%}
+:is(.bh,.bvf) .hb-orbw{position:relative;display:block}
+.bh .hb-shade{position:absolute;left:8%;right:8%;bottom:-14%;height:30%;border-radius:50%;background:radial-gradient(closest-side,rgba(122,38,24,.32),rgba(122,38,24,0));pointer-events:none}
+.bh.chat .hb-shade{bottom:-10%;height:24%}
+.bh .hb-bro::before,.bh .hb-bro::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--b-primary) 55%,transparent);opacity:0;pointer-events:none}
+.bh.live .hb-bro::before{animation:hbRipple 2.4s ease-out infinite}
+.bh.live .hb-bro::after{animation:hbRipple 2.4s ease-out 1.2s infinite}
+:is(.bh,.bvf) .hb-orb.st-speaking{animation:hbTalk .9s ease-in-out infinite}
+:is(.bh,.bvf) .hb-orb.st-speaking .o1{animation-duration:3.5s}:is(.bh,.bvf) .hb-orb.st-speaking .o2{animation-duration:5s}
+:is(.bh,.bvf) .hb-orb.st-thinking .o1,:is(.bh,.bvf) .hb-orb.st-connecting .o1{animation-duration:2.4s}
+:is(.bh,.bvf) .hb-orb.st-thinking,:is(.bh,.bvf) .hb-orb.st-connecting{animation:hbBreathe 1.4s ease-in-out infinite}
+:is(.bh,.bvf) .hb-orb.st-listening,:is(.bh,.bvf) .hb-orb.st-live{animation:hbBreathe 2.6s ease-in-out infinite}
+@keyframes hbSpin{to{transform:rotate(360deg)}}
+@keyframes hbBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes hbTalk{0%,100%{transform:scale(1)}30%{transform:scale(1.06)}60%{transform:scale(.985)}}
+@keyframes hbRipple{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.45);opacity:0}}
+.bh.chat .hb-orb{--orb:56px;box-shadow:inset 0 -5px 12px rgba(20,6,4,.4),inset 0 4px 8px rgba(255,255,255,.25)}
+.bh.chat .hb-orb .o1,.bh.chat .hb-orb .o2{filter:blur(6px)}
+@media (max-width:370px){:is(.bh,.bvf) .hb-orb{--orb:176px}}
+html[data-theme="dark"] .bh .hb-shade,body[data-theme=aurora] .bh .hb-shade{background:radial-gradient(closest-side,rgba(232,110,70,.28),rgba(232,110,70,0))}
+@media (prefers-reduced-motion:reduce){:is(.bh,.bvf) .hb-orb,:is(.bh,.bvf) .hb-orb i,.bh .hb-bro::before,.bh .hb-bro::after{animation:none!important}}
+
+/* the call screen uses the same orb, larger, with the existing listening rings around it */
+.bvf .bv-orb{width:236px;height:236px}
+.bvf .hb-orb{--orb:208px}
+.bvf .bv-orb .bv-ring{inset:14px}

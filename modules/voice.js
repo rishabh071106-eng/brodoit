@@ -133,6 +133,9 @@ function install(app, deps) {
   //     use and refreshed when the prompt or tools change. Tools run in the browser (client tools) through /api/voice/tool.
   const AGENT = { id: null, hash: null, error: '', at: 0, creating: null };
   const AGENT_LLMS = ['gemini-2.5-flash', 'gpt-4o-mini', 'gemini-2.0-flash']; // billed by ElevenLabs, no extra key
+  // ElevenLabs refuses an English agent on a v2.5 voice model ("English Agents must use turbo or flash v2"), so Bro's agent
+  // was never created and every call fell back to the phone voice. English agents speak on the v2 models.
+  const AGENT_TTS = ['eleven_flash_v2', 'eleven_turbo_v2'];
   const agentPrompt = () => PERSONAS.bro + ' Modes: when the user asks to learn or explain, teach patiently like a tutor; when they ask to practise a language, run a short spoken lesson. Match the user\'s language exactly (Hindi, English or Hinglish). Use tools whenever they ask to add or complete tasks, set reminders, create events, read their schedule, read the news, or check or set steps; confirm in one short line after a tool. Audio only: never read URLs, markdown or emojis. Keep answers to one to three sentences unless asked to explain.';
   const clientTools = () => tools.map(t => ({ type: 'client', name: t.name, description: (t.description || '').slice(0, 400), parameters: t.input_schema || { type: 'object', properties: {} }, expects_response: true }));
   async function elevenApi(key, method, path, body) {
@@ -155,7 +158,7 @@ function install(app, deps) {
           dynamic_variables: { dynamic_variable_placeholders: { greeting: "Hey, what's up?", context: '' } },
           prompt: { prompt: agentPrompt() + '\n\nThis conversation: {{context}}', llm: getSetting('ELEVEN_AGENT_LLM') || AGENT_LLMS[0], temperature: 0.6, max_tokens: 350 },
         },
-        tts: { voice_id: EV.broVoice(getSetting), model_id: 'eleven_flash_v2_5', stability: 0.55, similarity_boost: 0.8 },
+        tts: { voice_id: EV.broVoice(getSetting), model_id: AGENT_TTS.includes(getSetting('ELEVEN_AGENT_TTS')) ? getSetting('ELEVEN_AGENT_TTS') : AGENT_TTS[0], stability: 0.55, similarity_boost: 0.8 },
         asr: { quality: 'high', provider: 'elevenlabs' },
         turn: { turn_timeout: 7 },
         conversation: { max_duration_seconds: 600 }, // 10-minute calls: a long session can't run far past the plan
@@ -201,9 +204,14 @@ function install(app, deps) {
       }
       // ElevenLabs retires LLM ids too: when the refusal names the model, remember the next one and try again (once per model)
       const llmNow = cfg.conversation_config.agent.prompt.llm, nextLlm = AGENT_LLMS[AGENT_LLMS.indexOf(llmNow) + 1];
-      const llmRefused = errors.some(e => /^(create|update) /.test(e) && (/\bllm\b/i.test(e) || e.includes(llmNow)));
+      const llmRefused = errors.some(e => /^(create|update) /.test(e) && !/must use (turbo|flash)/i.test(e) && (/\bllm\b/i.test(e) || e.includes(llmNow)));
       if (nextLlm && llmRefused && deps.setSetting) {
         try { deps.setSetting('ELEVEN_AGENT_LLM', nextLlm); console.log('[voice] agent LLM', llmNow, 'refused → trying', nextLlm); AGENT.creating = null; return await ensureAgent(key); } catch (e) {}
+      }
+      // same for the voice model: when ElevenLabs names the models an agent must use, step to the next one we know
+      const ttsNow = cfg.conversation_config.tts.model_id, nextTts = AGENT_TTS[AGENT_TTS.indexOf(ttsNow) + 1];
+      if (nextTts && deps.setSetting && errors.some(e => /^(create|update) /.test(e) && (/must use/i.test(e) || e.includes(ttsNow)))) {
+        try { deps.setSetting('ELEVEN_AGENT_TTS', nextTts); console.log('[voice] agent voice model', ttsNow, 'refused → trying', nextTts); AGENT.creating = null; return await ensureAgent(key); } catch (e) {}
       }
       AGENT.error = errors.join(' | ').slice(0, 600); AGENT.at = Date.now();
       console.log('[voice] elevenlabs agent failed:', AGENT.error);
@@ -230,11 +238,16 @@ function install(app, deps) {
     const lang = String(req.body && req.body.lang || '');
     const instructions = instructionsFor(persona, lang, req.user, String(req.body && req.body.speak || ''));
     const ek = elevenKey();
+    let why = ''; // why Bro isn't on the live ElevenLabs agent: shown on the call screen, so a quieter voice is never a mystery
     if (ek && String(req.body && req.body.engine || '') !== 'classic') {
       try {
         const snap = EV.snapshot(ek); if (!snap || Date.now() - (snap.at || 0) > 120000) await EV.subscription(ek, true); // real numbers before a call
-        const b = await EV.budget(ek, 0, 'live'); if (!b.ok) throw new Error(b.reason); // out of credits → the next engine, no overage
+        const b = await EV.budget(ek, 0, 'live'); if (!b.ok) { why = 'credits'; throw new Error(b.reason); } // out of credits → the next engine, no overage
+        // a live agent call costs far more credits per minute than speaking replies; under a quarter of the plan left,
+        // Bro switches to the turn-by-turn pipeline, which speaks every reply in the same voice for a fraction of the credits
+        const s2 = EV.snapshot(ek); if (s2 && s2.limit && s2.limit - s2.used < s2.limit * 0.25) { why = 'saver'; throw new Error('credits low: turn-by-turn voice'); }
         const agentId = await ensureAgent(ek);
+        if (!agentId) why = 'agent';
         if (agentId) {
           const su = await signedUrl(ek, agentId);
           const name = (req.user && req.user.name || '').split(' ')[0];
@@ -245,13 +258,13 @@ function install(app, deps) {
           const context = 'Mode: ' + persona + (lang ? ' (language practice: ' + lang + ')' : '') + '. ' + (String(req.body && req.body.speak || '') === 'hi' ? 'Speak Hindi.' : String(req.body && req.body.speak || '') === 'en' ? 'Speak English.' : 'Match the user\'s language.') + (name ? ' The user\'s name is ' + name + '.' : '') + ' Today is ' + new Date().toISOString().slice(0, 10) + '.';
           return res.json(Object.assign({ mode: 'eleven', persona, agent_id: agentId, tools: tools.map(t => t.name), dynamic: { greeting, context } }, su));
         }
-      } catch (e) { console.log('[voice] elevenlabs session failed, next engine:', e.message); }
+      } catch (e) { if (!why) why = 'connect'; console.log('[voice] elevenlabs session failed, next engine:', e.message); }
     }
     const key = openaiKey();
     const caps = { tts: STUDIO.available(getSetting, 'live').length > 0, stt: !!key, llm: hasLLM() };
     // With an ElevenLabs key Bro never switches to OpenAI Realtime's different voice: the classic pipeline speaks every
     // reply in the same ElevenLabs voice instead.
-    if (!key || ek) return res.json({ mode: 'fallback', persona, caps });
+    if (!key || ek) return res.json({ mode: 'fallback', persona, caps, why: why || (ek ? '' : 'nokey') });
     try {
       const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 12000);
       const r = await fetch('https://api.openai.com/v1/realtime/client_secrets', {

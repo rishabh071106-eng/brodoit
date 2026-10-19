@@ -44,7 +44,8 @@
     else if (V.partial) line = V.partial;
     else if (live) line = hi ? 'सुन रहा हूँ…' : 'Listening…';
     const chat = V.thread.length > 0;
-    const art = window.mascot ? window.mascot(live ? 'speaking' : 'idle', chat ? 120 : 210, { className: 'hb-mas' }) : '<img class="hb-mas" src="/app/mascot.svg" width="210" height="210" alt="">';
+    // v15: Bro is a living voice orb (light that moves with his state), not a cartoon
+    const art = '<span class="hb-orbw" aria-hidden="true"><span class="hb-shade"></span><span class="hb-orb st-' + V.state + '"><i class="o1"></i><i class="o2"></i><i class="o3"></i></span></span>';
     let h = '<div class="bh' + (hi ? ' hi' : '') + (chat ? ' chat' : '') + (live ? ' live' : '') + '">';
     // mode (only the chosen one shows its name) + language
     h += '<div class="hb-top"><div class="hb-modes" role="group" aria-label="' + (hi ? 'मोड' : 'Mode') + '">' + PERSONAS.map(p => '<button type="button" class="hb-mode' + (V.persona === p.k ? ' on' : '') + '" aria-pressed="' + (V.persona === p.k) + '" aria-label="' + (hi ? p.hi : p.l) + '" title="' + (hi ? p.hi : p.l) + '" onclick="BroVoice.setPersona(\'' + p.k + '\')">' + ic(p.i, 18) + (V.persona === p.k ? '<span>' + (hi ? p.hi : p.l) + '</span>' : '') + '</button>').join('') + '</div>';
@@ -99,9 +100,12 @@
     else if (V.state === 'listening') { line = V.heard || ''; cls = 'user'; }
     else if (V.state === 'thinking') { line = lastUser ? lastUser.text : ''; cls = 'user'; }
     else if (lastBro && (V.state === 'speaking' || V.state === 'live')) { line = lastBro.text; cls = 'bro'; }
-    const hint = !live ? '' : (V.engine === 'realtime' || V.engine === 'eleven') ? (hi ? 'बस बोलो — बीच में टोक सकते हो' : 'Just talk — interrupt any time') : V.state === 'live' ? (SR ? (hi ? 'बोलने के लिए टैप करो' : 'Tap the circle to speak') : (hi ? 'बोलते समय दबाए रखो' : 'Hold the circle while you speak')) : '';
+    // when Bro isn't in his own voice, say why in a few words (credits low, no voice key, couldn't connect)
+    const WHY = { credits: ['ElevenLabs credits are used up · phone voice', 'ElevenLabs क्रेडिट खत्म · फ़ोन की आवाज़'], connect: ['Voice service unreachable · phone voice', 'वॉइस सर्विस नहीं मिली · फ़ोन की आवाज़'], agent: ['Voice agent unavailable · phone voice', 'वॉइस एजेंट उपलब्ध नहीं · फ़ोन की आवाज़'], nokey: ['No voice key set · phone voice', 'वॉइस की नहीं · फ़ोन की आवाज़'] };
+    const whyLine = live && V.engine === 'fallback' && V.noTTS ? (WHY[V.why] || WHY.credits)[hi ? 1 : 0] : '';
+    const hint = whyLine ? whyLine : !live ? '' : (V.engine === 'realtime' || V.engine === 'eleven') ? (hi ? 'बस बोलो — बीच में टोक सकते हो' : 'Just talk — interrupt any time') : V.state === 'live' ? (SR ? (hi ? 'बोलने के लिए टैप करो' : 'Tap the circle to speak') : (hi ? 'बोलते समय दबाए रखो' : 'Hold the circle while you speak')) : '';
     return '<div class="bvf-top"><span class="bvf-mode">' + esc((PERSONAS.find(p => p.k === V.persona) || PERSONAS[0])[hi ? 'hi' : 'l']) + '</span><button class="bvf-x" onclick="BroVoice.stop()" aria-label="Close">' + (window.ico ? ico('x', 22) : '✕') + '</button></div>' +
-      '<div class="bvf-stage"><button class="bv-orb st-' + V.state + '" id="bvfOrb" ' + ((!SR && V.engine === 'fallback' && V.caps && V.caps.stt) ? 'onpointerdown="BroVoice.holdStart()" onpointerup="BroVoice.holdEnd()" onpointercancel="BroVoice.holdEnd()" onpointerleave="BroVoice.holdEnd()"' : 'onclick="BroVoice.tapOrb()"') + ' aria-label="Talk"><span class="bv-ring r1"></span><span class="bv-ring r2"></span><span class="bv-core"><span class="bv-bars"><i></i><i></i><i></i><i></i><i></i></span>' + (live ? '' : ICON.mic) + '</span></button><div class="bvf-cap">' + esc(cap) + '</div><div class="bvf-text ' + cls + '" id="bvfText">' + esc(line) + '</div></div>' +
+      '<div class="bvf-stage"><button class="bv-orb st-' + V.state + '" id="bvfOrb" ' + ((!SR && V.engine === 'fallback' && V.caps && V.caps.stt) ? 'onpointerdown="BroVoice.holdStart()" onpointerup="BroVoice.holdEnd()" onpointercancel="BroVoice.holdEnd()" onpointerleave="BroVoice.holdEnd()"' : 'onclick="BroVoice.tapOrb()"') + ' aria-label="Talk"><span class="bv-ring r1"></span><span class="bv-ring r2"></span><span class="hb-orb st-' + V.state + '"><i class="o1"></i><i class="o2"></i><i class="o3"></i></span></button><div class="bvf-cap">' + esc(cap) + '</div><div class="bvf-text ' + cls + '" id="bvfText">' + esc(line) + '</div></div>' +
       '<div class="bvf-bar"><div class="bvf-hint">' + esc(hint) + '</div><button class="bvf-end" onclick="BroVoice.stop()">' + ICON.stop + (hi ? ' बंद करो' : ' End') + '</button></div>';
   };
   V.openFull = function () { let el = document.getElementById('bvFull'); if (!el) { el = document.createElement('div'); el.id = 'bvFull'; el.className = 'bvf'; document.body.appendChild(el); document.documentElement.classList.add('bvf-open'); } el.innerHTML = V.fullHtml(); };
@@ -116,12 +120,13 @@
     let sess;
     try { sess = await api('/voice/session', { method: 'POST', body: JSON.stringify({ persona: V.persona, lang: V.persona === 'language' ? COURSES[V.course] : '', speak: V.lang }) }); } catch (e) { sess = { mode: 'fallback' }; }
     if (sess && sess.mode === 'eleven') {
-      try { await V.connectEleven(sess); return; } catch (e) { console.warn('[bro] elevenlabs failed, next engine', e); try { sess = await api('/voice/session', { method: 'POST', body: JSON.stringify({ engine: 'classic', persona: V.persona, lang: V.persona === 'language' ? COURSES[V.course] : '', speak: V.lang }) }); } catch (e2) { sess = { mode: 'fallback' }; } }
+      try { await V.connectEleven(sess); return; } catch (e) { console.warn('[bro] elevenlabs failed, next engine', e); V.why = 'connect'; try { sess = await api('/voice/session', { method: 'POST', body: JSON.stringify({ engine: 'classic', persona: V.persona, lang: V.persona === 'language' ? COURSES[V.course] : '', speak: V.lang }) }); } catch (e2) { sess = { mode: 'fallback' }; } }
     }
     if (sess && sess.mode === 'realtime') {
       try { await V.connectRealtime(sess); return; } catch (e) { console.warn('[bro] realtime failed, falling back', e); }
     }
     V.caps = (sess && sess.caps) || {}; if (V.caps.tts === false && !elevenHint()) V.noTTS = true;
+    if (sess && sess.why) V.why = sess.why;
     V.engine = 'fallback'; V.set('live'); V.listen();
   };
   const elevenHint = () => false;
@@ -141,7 +146,8 @@
   // ───────────────────────── ElevenLabs Conversational AI ─────────────────────────
   V.loadElevenSDK = async function () {
     if (V._elSDK) return V._elSDK;
-    const urls = ['https://esm.sh/@elevenlabs/client', 'https://cdn.jsdelivr.net/npm/@elevenlabs/client/+esm'];
+    // pinned: an unpinned import would pick up every new ElevenLabs release the moment it ships
+    const urls = ['https://esm.sh/@elevenlabs/client@1.28.0', 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.28.0/+esm'];
     let last = null;
     for (const u of urls) { try { const m = await import(/* webpackIgnore: true */ u); if (m && m.Conversation) { V._elSDK = m; return m; } } catch (e) { last = e; } }
     throw last || new Error('sdk unavailable');

@@ -1,13 +1,17 @@
 /* Brodoit Languages — mobile-first (390px) on top of /app/theme.css v10 tokens.
    Radii --r-sm/--r-md/--r-lg/--r-pill · shadows --sh-1/--sh-2 · mute --b-mute · motion --m-* with --ease.
    Press-edge (solid bottom shadow) only on primary buttons, lesson options and path nodes. */
+/* Dark without an explicit app theme (system setting): the app's own dark tokens (app/theme.css, data-theme=dark),
+   so a course looks the same whether dark came from the app or from the phone. */
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --b-bg:#0F1115;--b-bg-2:#171A21;--b-card:#1C2029;--b-ink:#F3F1EE;--b-ink-2:#C9C5D2;--b-mute:#A39DB0;--b-mute-2:#8B8798;--b-line:rgba(255,255,255,.10);--b-line-2:rgba(255,255,255,.16);
-    --b-primary-soft:rgba(255,90,54,.18);--b-violet-soft:rgba(108,76,241,.2);--b-mint-soft:rgba(25,195,125,.18);--move-soft:rgba(0,194,168,.2);
-    --sh-1:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.35);--sh-2:0 18px 44px -16px rgba(0,0,0,.7);--b-shadow:var(--sh-1);--b-press:0 4px 0 0 rgba(0,0,0,.45);
+  :root:not([data-theme="light"]){color-scheme:dark;
+    --b-bg:#141311;--b-bg-2:#1D1B18;--b-card:#23211D;--b-ink:#F3F0EA;--b-ink-2:#CFCAC2;--b-mute:#A6A099;--b-mute-2:#7E7871;--b-line:rgba(255,255,255,.09);--b-line-2:rgba(255,255,255,.16);
+    --b-primary:#D9654E;--b-primary-2:#B5402A;--b-primary-soft:rgba(217,101,78,.16);--b-violet:#F3F0EA;--b-violet-soft:rgba(255,255,255,.1);--b-mint-soft:rgba(47,125,79,.18);--move-soft:rgba(217,101,78,.16);
+    --sh-1:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.35);--sh-2:0 18px 44px -16px rgba(0,0,0,.7);--b-shadow:var(--sh-1);--b-press:0 4px 0 0 rgba(0,0,0,.45);--ui-shadow:none;
   }
+  :root:not([data-theme="light"]) .ui-ic{color:color-mix(in srgb,var(--ui-accent) 55%,#fff);background:color-mix(in srgb,var(--ui-accent) 24%,transparent)}
 }
+:root[data-theme="dark"]{color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font:var(--t-body);font-family:var(--b-sans);background:var(--b-bg);color:var(--b-ink);min-height:100vh;min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}

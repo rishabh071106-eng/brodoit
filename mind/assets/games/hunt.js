@@ -4,11 +4,11 @@
 import { shuffle, onTap, clamp } from '../util.js';
 
 export const meta = {
-  id: 'hunt', name: 'Number Hunt', skill: 'Speed', color: '#E86A10', deep: '#B44E05',
-  rule: 'Find and tap the numbers in order, as fast as you can.',
+  id: 'hunt', name: 'Number Hunt', skill: 'Speed', color: '#D97706', deep: '#92400E',
+  rule: 'Tap the numbers in order, as fast as you can.',
   how: [
-    ['search', 'Find 1, then 2, then 3, all the way to the last number.'],
-    ['timer', 'Beat the clock. Faster times earn more stars.'],
+    'Tap the numbers in order, from 1 up.',
+    'Faster times earn more stars.',
   ],
 };
 
@@ -19,16 +19,17 @@ const T = [
   [6, 0, 1, 100, 70, 50], [3, 1, 0, 20, 13, 9], [4, 1, 0, 42, 28, 20], [4, 1, 0, 38, 26, 18], [4, 1, 1, 40, 27, 19],
   [5, 1, 0, 82, 56, 40], [5, 1, 1, 82, 56, 40], [5, 1, 1, 76, 52, 37], [6, 1, 0, 140, 100, 75], [6, 1, 1, 135, 96, 72],
 ];
-const DECOY_BG = ['#FFFFFF', '#FFE7A6', '#CDEFD9', '#D5E5FF', '#FFD5E1', '#E6DAFF'];
-const DECOY_INK = ['#1D1B26', '#B44E05', '#1B5BD0', '#167A4A', '#7A3FD1', '#B32959'];
+// decoy tiles: muted tints on the dark board, each with a light ink of its own hue
+const DECOY_BG = ['rgba(255,255,255,.08)', 'rgba(217,119,6,.22)', 'rgba(37,99,235,.24)', 'rgba(5,150,105,.24)', 'rgba(225,29,72,.22)', 'rgba(124,58,237,.24)'];
+const DECOY_INK = ['#FFFFFF', '#FCD34D', '#93C5FD', '#6EE7B7', '#FDA4AF', '#C4B5FD'];
 
 const TWIST = {
-  3: 'A 4×4 board: find 1 to 16.',
-  5: 'Decoys! Tiles come in mixed colours, sizes and tilts. Only the number matters.',
-  6: 'A 5×5 board: 1 to 25.',
-  10: 'The big one: 6×6, 1 to 36.',
-  12: 'New twist: after every tap, all the numbers jump to new places. Back to a small board to learn it.',
-  19: 'The final test: 6×6 and the numbers keep moving.',
+  3: 'A 4×4 board. Find 1 to 16.',
+  5: 'Some numbers are decoys. Colours, sizes and tilts vary. Only the number matters.',
+  6: 'A 5×5 board. Find 1 to 25.',
+  10: 'A 6×6 board. Find 1 to 36.',
+  12: 'Numbers move. After every tap they jump to new places.',
+  19: 'The final test. A 6×6 board, and the numbers keep moving.',
 };
 
 export function levelConfig(n) {
@@ -67,7 +68,7 @@ export function start(host, cfg, api) {
     seconds: t[0],
     marks: [{ at: 1 - t[2] / t[0], stars: 3 }, { at: 1 - t[1] / t[0], stars: 2 }],
     onFrame(e) { api.setScore(e.toFixed(1), 'sec', true); },
-    onEnd() { if (over) return; over = true; api.end({ failed: true, progress: (next - 1) / count, score: t[0], big: next - 1, bigLabel: `of ${count} found`, haveText: `${next - 1} of ${count}`, needText: `all ${count} in ${t[0]}s`, note: 'Time ran out. Speed comes fast with practice.' }); },
+    onEnd() { if (over) return; over = true; api.end({ failed: true, progress: (next - 1) / count, score: t[0], big: next - 1, bigLabel: `of ${count} found`, haveText: `${next - 1} of ${count}`, needText: `Find all ${count} in ${t[0]}s`, note: 'Time ran out' }); },
   });
 
   function tap(b) {
@@ -101,7 +102,7 @@ export function start(host, cfg, api) {
     timer.stop();
     api.setScore(e.toFixed(1), 'sec');
     api.sfx('combo');
-    api.end({ score: e, display: `${e.toFixed(1)}s`, note: slips ? `${slips} wrong tap${slips === 1 ? '' : 's'} (+${slips}s)` : 'No wrong taps. Clean run!' });
+    api.end({ score: e, display: `${e.toFixed(1)}s`, note: slips ? `${slips} wrong tap${slips === 1 ? '' : 's'} (+${slips}s)` : 'No wrong taps' });
   }
 
   onTap(board, '.nh-t', tap);

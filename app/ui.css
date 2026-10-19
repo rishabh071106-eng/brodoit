@@ -1,0 +1,127 @@
+/* Brodoit UI framework (v15): one font, one type scale, one set of components.
+   Loaded last on every page (main app and the /code, /lang, /mind mini-apps). The rules are in /DESIGN.md.
+   `:is(#app,html) .x` gives these rules id-level weight everywhere, so they win over the older layers. */
+
+:root{
+  --ui-font:'Plus Jakarta Sans','Noto Sans Devanagari',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --ui-mono:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+  /* type scale */
+  --ui-t-large:700 28px/1.15 var(--ui-font);
+  --ui-t-title:700 20px/1.25 var(--ui-font);
+  --ui-t-head:600 16px/1.3 var(--ui-font);
+  --ui-t-body:400 15px/1.5 var(--ui-font);
+  --ui-t-sub:500 13px/1.4 var(--ui-font);
+  --ui-t-cap:500 12px/1.3 var(--ui-font);
+  /* shape */
+  --ui-r1:12px;--ui-r2:16px;--ui-r3:20px;
+  --ui-shadow:0 1px 2px rgba(31,30,28,.04),0 6px 20px -14px rgba(31,30,28,.22);
+  /* one accent per game, used on icon tiles and progress only */
+  --g-memory:#4F46E5;--g-clash:#E11D48;--g-hunt:#D97706;--g-math:#2563EB;--g-words:#059669;
+  --g-python:#3572A5;--g-lang:#B5402A;
+  /* the older tokens every screen already reads, pointed at the framework */
+  --b-sans:var(--ui-font);--b-serif:var(--ui-font);
+  --t-display:700 34px/1.1 var(--ui-font);--t-h1:var(--ui-t-large);--t-h2:var(--ui-t-title);--t-h3:var(--ui-t-head);
+  --t-body:var(--ui-t-body);--t-sm:var(--ui-t-sub);--t-cap:var(--ui-t-cap);--t-eyebrow:600 12px/1.2 var(--ui-font);
+}
+:root[data-theme="dark"],html[data-theme="dark"],body[data-theme=aurora]{--ui-shadow:none}
+
+/* ── base ── */
+/* Plus Jakarta's word space is narrow (0.17em vs ~0.25em in most fonts), so words ran together; this restores it */
+html body{font-family:var(--ui-font);word-spacing:.08em;font-kerning:normal;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision}
+:where(code,pre,kbd,samp,.ed-ta,.ed-hl){font-family:var(--ui-mono);word-spacing:normal}
+:lang(hi){word-spacing:normal}
+/* Kerning always on (every `font:` shorthand resets it to auto, and Chrome drops it under auto when letter-spacing is set),
+   and geometric precision: hinted glyph advances at some sizes opened gaps after f and t ("f light", "St eps"). */
+*,*::before,*::after{font-kerning:normal!important;text-rendering:geometricPrecision!important}
+
+/* every former serif heading now speaks the same sans, on the scale */
+:is(#app,html) :is(.b-h1,.page-h h1,.lt-head h1,.bk-head h1,.st-h1,.nw-top .b-h1){font:var(--ui-t-large);letter-spacing:-.02em}
+:is(#app,html) :is(.b-h2,.sec-h h2,.cv-title){font:var(--ui-t-title);letter-spacing:-.01em}
+:is(#app,html) .b-display{font:var(--t-display);letter-spacing:-.02em}
+:is(#app,html) .b-h3{font:var(--ui-t-head)}
+:is(#app,html) .b-eyebrow{font:600 12px/1.2 var(--ui-font);letter-spacing:.01em;text-transform:none;color:var(--b-mute)}
+:is(#app,html) .bd-title{font:700 18px/1.2 var(--ui-font);letter-spacing:-.01em}
+:is(#app,html) .tabs.page-t .tab .tl{font-size:12px;letter-spacing:0}
+
+/* ── page header: large title, at most one trailing action ── */
+.ui-page-h{display:flex;align-items:center;gap:10px;min-height:52px;margin:2px 0 14px}
+.ui-page-h h1{flex:1;min-width:0;margin:0;font:var(--ui-t-large);letter-spacing:-.02em;color:var(--b-ink)}
+.ui-page-h p{margin:2px 0 0;font:var(--ui-t-sub);color:var(--b-mute)}
+/* inner pages: the back chevron sits on its own line above the title, so the title never moves sideways */
+.ui-page-h:has(> .ui-back){flex-direction:column;align-items:flex-start;gap:0;margin-top:-6px}
+.ui-page-h:has(> .ui-back) h1{width:100%}
+.ui-back{width:44px;height:44px;flex:none;margin-left:-8px;border-radius:12px;display:grid;place-items:center;color:var(--b-ink);background:none;border:0;cursor:pointer;text-decoration:none}
+.ui-back:active{background:var(--b-bg-2)}
+.ui-iconbtn{width:44px;height:44px;flex:none;border-radius:999px;display:grid;place-items:center;background:var(--b-card);border:1px solid var(--b-line);color:var(--b-ink);cursor:pointer}
+.ui-iconbtn:active{background:var(--b-bg-2)}
+
+/* ── section header ── */
+.ui-sec{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 4px 10px;font:600 13px/1.3 var(--ui-font);color:var(--b-mute)}
+.ui-sec a,.ui-sec button{font:600 13px var(--ui-font);color:var(--b-primary);text-decoration:none;background:none;border:0;min-height:32px;cursor:pointer}
+
+/* ── list + row: the one way to show an app, a course, a game, a setting ── */
+.ui-list{background:var(--b-card);border:1px solid var(--b-line);border-radius:var(--ui-r3);overflow:hidden;box-shadow:var(--ui-shadow)}
+.ui-list + .ui-list{margin-top:12px}
+.ui-row{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:68px;padding:12px 14px 12px 12px;margin:0;border:0;background:none;color:var(--b-ink);text-align:left;text-decoration:none;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ui-row + .ui-row::before{content:"";position:absolute;left:70px;right:0;top:0;height:1px;background:var(--b-line)}
+.ui-row:active{background:var(--b-bg-2)}
+.ui-row:focus-visible{outline:2px solid var(--b-primary);outline-offset:-2px;border-radius:var(--ui-r3)}
+.ui-ic{--ui-accent:var(--b-ink);width:44px;height:44px;flex:none;border-radius:12px;display:grid;place-items:center;color:var(--ui-accent);background:color-mix(in srgb,var(--ui-accent) 11%,transparent)}
+.ui-ic svg{display:block}
+.ui-ic.solid{color:#fff;background:var(--ui-accent)}
+:root[data-theme="dark"] .ui-ic,html[data-theme="dark"] .ui-ic,body[data-theme=aurora] .ui-ic{color:color-mix(in srgb,var(--ui-accent) 55%,#fff);background:color-mix(in srgb,var(--ui-accent) 24%,transparent)}
+.ui-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ui-tx b{font:var(--ui-t-head);color:var(--b-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ui-tx small{font:var(--ui-t-sub);color:var(--b-mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ui-prog{display:block;height:4px;border-radius:2px;background:var(--b-bg-2);margin-top:7px;overflow:hidden}
+.ui-prog i{display:block;height:100%;border-radius:inherit;background:var(--ui-accent,var(--b-primary))}
+.ui-meta{flex:none;font:var(--ui-t-sub);color:var(--b-mute);font-variant-numeric:tabular-nums}
+.ui-chev{flex:none;color:var(--b-mute-2)}
+
+/* ── card ── */
+.ui-card{background:var(--b-card);border:1px solid var(--b-line);border-radius:var(--ui-r3);padding:16px;box-shadow:var(--ui-shadow)}
+.ui-card h2{margin:0;font:var(--ui-t-title);letter-spacing:-.01em;color:var(--b-ink)}
+.ui-card p{margin:4px 0 0;font:var(--ui-t-sub);color:var(--b-mute)}
+
+/* ── buttons: flat, 48px, one primary per screen ── */
+.ui-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border:0;border-radius:14px;background:var(--b-ink);color:var(--b-bg);font:600 16px/1 var(--ui-font);text-decoration:none;cursor:pointer;transition:opacity .15s}
+.ui-btn:active{opacity:.82}
+.ui-btn:disabled{opacity:.45;cursor:default}
+.ui-btn:focus-visible{outline:2px solid var(--b-primary);outline-offset:2px}
+.ui-btn.wide{width:100%}
+.ui-btn.accent{background:var(--b-primary);color:#fff}
+.ui-btn.sec{background:var(--b-bg-2);color:var(--b-ink)}
+.ui-btn.ghost{background:transparent;color:var(--b-ink);border:1px solid var(--b-line-2)}
+.ui-btn.sm{min-height:40px;padding:0 14px;font-size:14px;border-radius:12px}
+
+/* ── segmented control ── */
+.ui-seg{display:inline-flex;gap:2px;padding:3px;border-radius:12px;background:var(--b-bg-2)}
+.ui-seg button{min-height:40px;padding:0 14px;border:0;border-radius:9px;background:none;color:var(--b-mute);font:600 13px var(--ui-font);cursor:pointer}
+.ui-seg button.on,.ui-seg button[aria-pressed="true"]{background:var(--b-card);color:var(--b-ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+/* ── fields: one look for every text box ── */
+/* zero-specificity reset, so components that set their own font (the code editor's monospace) keep it */
+:where(input,textarea,select,button){font-family:inherit}
+:is(#app,html) :is(.ui-field,.bv-compose input,.hb-compose input,.qc-input,.st-input,.bro-f input){min-height:48px;padding:0 14px;border:1px solid var(--b-line-2);border-radius:12px;background:var(--b-card);color:var(--b-ink);font:400 16px/1.3 var(--ui-font);box-shadow:none;outline:none;transition:border-color .15s,box-shadow .15s}
+:is(#app,html) textarea.ui-field{padding:12px 14px;min-height:96px;resize:vertical}
+:is(#app,html) :is(.ui-field,.bv-compose input,.hb-compose input,.qc-input,.st-input,.bro-f input):focus{border-color:var(--b-primary);box-shadow:0 0 0 3px var(--b-primary-soft)}
+:is(#app,html) :is(.ui-field,.bv-compose input,.hb-compose input,.qc-input,.st-input,.bro-f input)::placeholder{color:var(--b-mute-2)}
+:is(#app,html) :is(input,textarea,select):focus-visible{outline-color:var(--b-primary)}
+
+/* older buttons, flattened: no 3D bottom edge, no press-down */
+:is(#app,html) .b-btn{box-shadow:none;border-radius:14px}
+:is(#app,html) .b-btn:active{transform:none;box-shadow:none;opacity:.85}
+
+/* ── skeleton ── */
+.ui-skel{display:block;border-radius:var(--ui-r3);background:linear-gradient(90deg,var(--b-bg-2),var(--b-line),var(--b-bg-2));background-size:200% 100%;animation:ui-sk 1.4s linear infinite}
+@keyframes ui-sk{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.ui-skel{animation:none}}
+
+/* quiet empty states: one muted line, no banner */
+.tk-none{margin:32px 8px;text-align:center;font:var(--ui-t-body);color:var(--b-mute)}
+
+/* Books covers: upright titles, author names in normal case */
+:is(#app,html) .bk-sum-cover h5{font:700 19px/1.15 var(--ui-font);font-style:normal;letter-spacing:-.015em}
+:is(#app,html) .bk-sum-cover .auth{text-transform:none;letter-spacing:0;font:500 13px/1.3 var(--ui-font);opacity:.85}
+:is(#app,html) .bk-sum-mins{text-transform:none;letter-spacing:0;font-weight:600}
+:is(#app,html) .bvf-end{box-shadow:none}

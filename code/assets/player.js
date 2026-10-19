@@ -58,6 +58,7 @@ const ICON = {
   code: '<path d="m8 7-5 5 5 5M16 7l5 5-5 5"/>',
   build: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>',
   term: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3M13 15h4"/>',
+  msg: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
 };
 const FILLED = new Set(['play', 'bolt', 'flame', 'star']);
 const ic = (n, s = 18) => FILLED.has(n)
@@ -103,6 +104,7 @@ async function load() {
   buildHud();
   show(at, 0);
   mountCoach({ context, button: $('#bro') });
+  $('#bro').innerHTML = ic('msg', 22); // a plain icon button, not Bro's face
   syncProgress({ day: DAY, patch: { slide: at, title: D.title, started: saved.started || new Date().toISOString() } });
 }
 
@@ -113,7 +115,7 @@ function context() {
   return { course: 'py', unit: 'd' + pad(DAY), day: DAY, dayTitle: D && D.title, slide: s ? { n: idx + 1, of: items.length, type: kind, stage: it.stage, title: s.title, task: s.task || s.brief || s.q || s.body || '' } : null, code: ed ? ed.value : (s && s.code) || '', lastError: lastError[idx] || null };
 }
 
-// ── HUD: stage segments, XP counter, combo meter, sound ──
+// ── top bar: one thin progress bar (a part per stage) with the stage under it, XP as text, combo, sound ──
 function buildHud() {
   $('#segs').innerHTML = STAGES.map((st, k) => PLAN.count[k] ? `<i class="seg s-${st.id}" style="flex:${PLAN.count[k]}" data-st="${st.id}"><b></b></i>` : '').join('');
   paintXP(true); paintCombo(); paintSnd();
@@ -129,13 +131,13 @@ function paintHud() {
     seg.classList.toggle('full', mine.every(x => R.solved[x.k] || x.k < idx));
   });
   const mine = items.filter(x => x.stage === it.stage), pos = mine.indexOf(it) + 1;
-  $('#stageLabel').innerHTML = `<b>${STAGES.find(s => s.id === it.stage).name}</b> ${pos}/${mine.length}`;
+  $('#stageLabel').textContent = `${STAGES.find(s => s.id === it.stage).name} · ${pos} of ${mine.length}`;
 }
 let shownXP = 0;
 function paintXP(now) {
   const el = $('#xp'), target = netXP();
   const set = v => { el.querySelector('b').textContent = v; };
-  if (!el.querySelector('b')) el.innerHTML = `${ic('bolt', 15)}<b>0</b>`;
+  if (!el.querySelector('b')) el.innerHTML = '<b>0</b> XP';
   if (now || calm()) { shownXP = target; set(target); return; }
   const from = shownXP, t0 = performance.now();
   shownXP = target;
@@ -143,11 +145,12 @@ function paintXP(now) {
   requestAnimationFrame(step);
   el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
 }
+// quiet until two right in a row; from three the flame lights (double XP)
 function paintCombo() {
   const el = $('#combo'), c = R ? R.combo : 0, on = c >= 3;
   el.classList.toggle('on', on);
-  el.setAttribute('aria-label', on ? `Combo: ${c} in a row, double XP` : `${c} of 3 in a row for a combo`);
-  el.innerHTML = on ? `${ic('flame', 14)}<b>×2</b><small>${c}</small>` : `${ic('flame', 13)}${[0, 1, 2].map(k => `<i class="${k < c ? 'on' : ''}"></i>`).join('')}`;
+  if (c >= 2) { el.setAttribute('aria-label', `${c} right in a row${on ? ', double XP' : ''}`); el.innerHTML = `${ic('flame', 12)}${c}`; }
+  else { el.removeAttribute('aria-label'); el.innerHTML = ''; }
 }
 function paintSnd() {
   const b = $('#snd'), m = !window.Sfx || window.Sfx.muted();
@@ -200,7 +203,6 @@ function judge(k, ok) {
     if (R.combo === 3) comboPop(); else sfx(R.combo > 3 ? 'combo' : 'correct');
   } else if (ok) sfx('correct');
   else {
-    if (R.combo >= 3) { const ce = $('#combo'); if (ce) { ce.classList.remove('lost'); void ce.offsetWidth; ce.classList.add('lost'); setTimeout(() => ce.classList.remove('lost'), 700); } }
     R.combo = 0; sfx('wrong');
   }
   haptic(ok ? 14 : [20, 40, 20]);
@@ -251,12 +253,10 @@ function body(it, s) {
   const vis = s.visual ? renderVisual(s.visual) : '';
   switch (it.kind) {
     case 'intro': {
-      const w = Math.ceil(DAY / 10), c = PLAN.count;
-      return `<div class="lv-start" style="--i:1"><span class="lv-day">Day ${DAY}</span><span class="lv-min">${ic('clock', 14)}${D.minutes || 45} min</span></div>
-        <div class="sl-body" style="--i:2">${md(s.body)}</div>${vis ? `<div class="sl-vis" style="--i:3">${vis}</div>` : ''}
+      const c = PLAN.count;
+      return `<div class="sl-body" style="--i:2">${md(s.body)}</div>${vis ? `<div class="sl-vis" style="--i:3">${vis}</div>` : ''}
         <div class="lv-stages" style="--i:4" aria-label="Today's level">${[['book', 'Learn', c[0], 0], ['dumbbell', 'Practice', c[1], 1], ['target', 'Challenge', c[2], 2]].filter(x => x[2]).map(([i, t, n, j]) => `<div class="lv-st s${j}">${ic(i, 18)}<b>${t}</b><small>${n} ${n === 1 ? 'step' : 'steps'}</small></div>`).join('<span class="lv-arr">' + ic('next', 14) + '</span>')}</div>
-        <div class="sl-outs" style="--i:5"><div class="sl-ot">Today you will</div>${(D.outcomes || []).map((o, j) => `<div class="sl-o" style="--j:${j}">${ic('check', 14)}<span>${esc(o)}</span></div>`).join('')}</div>
-        <p class="lv-tip" style="--i:6">World ${w} · ${ic('flame', 13)} 3 right in a row starts a combo: double XP.</p>`;
+        <div class="sl-outs" style="--i:5"><div class="sl-ot">Today you will</div>${(D.outcomes || []).map((o, j) => `<div class="sl-o" style="--j:${j}">${ic('check', 14)}<span>${esc(o)}</span></div>`).join('')}</div>`;
     }
     case 'concept': case 'visual': {
       const p = parts(s.body, vis && `<div class="sl-vis">${vis}</div>`);
@@ -331,7 +331,7 @@ function show(k, dir) {
   el.className = 'sl ' + (dir > 0 ? 'from-r' : dir < 0 ? 'from-l' : 'from-0') + ' t-' + it.kind;
   el.dataset.kind = it.kind; el.dataset.src = it.src; el.dataset.k = k;
   if (it.puzzle) el.dataset.puzzle = it.puzzle.id;
-  el.innerHTML = `<div class="sl-card">${it.kind === 'intro' ? '' : head(it, s)}${it.kind === 'intro' ? `<div class="sl-head" style="--i:0"><h2 class="sl-title">${esc(String(s.title || '').replace(/^Mission\s*\d+\s*:\s*/i, ''))}</h2><p class="lv-sub">${esc(D.subtitle || '')}</p></div>` : ''}${body(it, s)}</div>`;
+  el.innerHTML = `<div class="sl-card">${it.kind === 'intro' ? '' : head(it, s)}${it.kind === 'intro' ? `<div class="sl-head" style="--i:0"><p class="lv-kick">Day ${DAY} · ${D.minutes || 45} min</p><h2 class="sl-title">${esc(String(s.title || '').replace(/^Mission\s*\d+\s*:\s*/i, ''))}</h2><p class="lv-sub">${esc(D.subtitle || '')}</p></div>` : ''}${body(it, s)}</div>`;
   const old = stage.querySelector('.sl.in');
   if (old) { old.classList.remove('in'); old.classList.add(dir >= 0 ? 'out-l' : 'out-r'); setTimeout(() => old.remove(), 420); }
   stage.appendChild(el);

@@ -1,96 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}else{document.documentElement.setAttribute("data-theme","light")}}catch(e){}})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Brodoit Languages</title>
-<meta name="description" content="Learn Spanish, French, German, Hindi or English by ear — Pimsleur-style audio lessons plus bite-size practice.">
+<title>Languages · Brodoit</title>
+<meta name="description" content="Learn Spanish, French, German, Hindi or English by ear: audio lessons plus short practice.">
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=16">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=16">
-<link rel="stylesheet" href="/lang/assets/topbar.css?v=15">
+<link rel="stylesheet" href="/app/theme.css?v=21">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=17">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=16">
+<link rel="stylesheet" href="/lang/assets/stages.css?v=4">
+<link rel="stylesheet" href="/app/ui.css?v=21">
 <script src="/app/icons.js?v=16" defer></script>
-<script src="/lang/assets/topbar.js?v=15" defer></script>
+<script src="/lang/assets/topbar.js?v=17" defer></script>
 </head>
-<body>
-<main class="wrap" style="padding-bottom:48px">
-  <section class="hero rise" style="margin-top:8px">
-    <span class="tag">School of Languages · 15 min a day</span>
-    <h1>5 languages,<br>learned by ear</h1>
-    <p>Listen, repeat, and answer out loud. No reading needed — eyes closed, headphones on.</p>
-    <div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  </section>
-  <div id="strip"></div>
-  <div id="today"></div>
-  <div class="section"><div class="b-h2">Courses</div><span class="muted" id="count"></span></div>
-  <div class="courses" id="courses"></div>
+<body class="lc-page">
+<main class="wrap lc">
+  <header class="ui-page-h lc-head"><div class="lc-ht"><h1 id="lcTitle">Languages</h1></div></header>
+  <div class="ui-list" id="courses"></div>
 </main>
 <script type="module">
-import { renderChrome, loadCourses, loadCourse, loadAudioCourse, store, esc, t, courseProgress, DAILY_GOAL, computeStreak, ICON, setCourse, toast } from '/lang/assets/lang.js?v=10';
-import { ic } from '/lang/assets/ico.js?v=14';
+// /lang/ (rarely reached now: Learn → Languages is the way in): the same five rows as that list in the app
+// (app/learn.js languagesHub) — letter tile, name, "Español · 12%", chevron.
+import { renderChrome, store, esc, setCourse } from '/lang/assets/lang.js?v=11';
 
-const s = store.read();
-const streak = computeStreak(s.daily);
-renderChrome({ back: null, right: `<span class="pill">${ic('flame', 16)} ${streak} <span style="opacity:.35">|</span> ${ic('zap', 16)} ${s.xp || 0}</span>` });
+renderChrome({ title: 'Languages', back: '/?tab=learn', backLabel: 'Learn' });
+window.bdTitleOnScroll && window.bdTitleOnScroll(document.getElementById('lcTitle'));
 
-const courses = (await loadCourses()).filter(c => ['es', 'fr', 'de', 'hi', 'en'].includes(c.code));
-document.getElementById('count').textContent = courses.length ? `${courses.length} courses` : '';
-const data = await Promise.all(courses.map(async c => ({ c, course: await loadCourse(c.code), audio: c.hasAudio ? await loadAudioCourse(c.code) : null })));
-const byCode = Object.fromEntries(data.map(d => [d.c.code, d]));
-
-// Current course = last chosen, else the first one with progress, else Spanish.
-let current = byCode[s.course] || data.find(d => courseProgress(d.c.code, d.course, d.audio).done) || byCode.es || data[0];
-
-if (current) {
-  const todayXp = s.daily[new Date().toISOString().slice(0, 10)] || 0;
-  const pct = Math.min(100, Math.round((todayXp / DAILY_GOAL) * 100));
-  const lang = current.c.from;
-  document.getElementById('strip').innerHTML = `
-    <a class="b-card strip press rise" href="/lang/course.html?c=${current.c.code}">
-      <div class="flag">${current.c.flag}</div>
-      <div><div class="t">${esc(current.c.name)} <span class="muted" style="font-weight:700">· ${esc(current.c.native)}</span></div>
-        <div class="s"><span>${ic('flame', 13)} ${streak} ${t(lang, 'streak')}</span><span>${ic('zap', 13)} ${s.xp || 0} ${t(lang, 'xp')}</span></div></div>
-      <div class="ring" style="--p:${pct};--c:var(--b-sun)" title="${t(lang, 'goal')}"><span>${todayXp}/${DAILY_GOAL}</span></div>
-    </a>`;
-
-  // "Today": the next audio lesson not yet done (or the first practice lesson when the audio course is missing).
-  const done = s.done;
-  const nextAudio = (current.audio?.lessons || []).find(l => !done[`${current.c.code}/${l.id}`]);
-  const nextPractice = !nextAudio && (current.course?.units || []).flatMap(u => u.lessons.map(l => ({ u, l }))).find(x => !done[`${current.c.code}/${x.l.id}`]);
-  const href = nextAudio ? `/lang/audio.html?c=${current.c.code}&l=${nextAudio.id}` : nextPractice ? `/lang/lesson.html?c=${current.c.code}&u=${nextPractice.u.id}&l=${nextPractice.l.id}` : `/lang/course.html?c=${current.c.code}`;
-  const title = nextAudio ? nextAudio.title : nextPractice ? `${nextPractice.u.title} · ${nextPractice.l.title}` : t(lang, 'review');
-  const sub = nextAudio ? `${ic('headphones', 14)} ${nextAudio.minutes || 15} ${t(lang, 'min')} · ${esc(nextAudio.goal || '')}` : nextPractice ? `${ic('pencil', 14)} ${nextPractice.l.items.length} exercises` : esc(current.c.tagline);
-  document.getElementById('today').innerHTML = `
-    <a class="b-card today press rise" href="${href}" style="animation-delay:.05s">
-      <div><div class="b-eyebrow">${t(lang, 'today')} · ${esc(current.c.name)}</div><div class="t">${esc(title)}</div><div class="s">${sub}</div></div>
-      <div class="play-fab">${ICON.play}</div></a>`;
-}
-
+const LANGS = [
+  { c: 'es', n: 'Spanish', native: 'Español', g: 'Ñ', a: '#DC2626' },
+  { c: 'fr', n: 'French', native: 'Français', g: 'Ç', a: '#2563EB' },
+  { c: 'de', n: 'German', native: 'Deutsch', g: 'ß', a: '#64748B' },
+  { c: 'en', n: 'English', native: 'Taught in Hindi', g: 'Aa', a: '#7C3AED' },
+  { c: 'hi', n: 'Hindi', native: 'हिन्दी', g: 'अ', a: '#EA580C' },
+];
+const TOTAL = 52; // 12 audio lessons + 40 practice lessons per language (as in app/learn.js)
+const done = store.read().done || {};
+const pct = c => { let n = 0; for (const k in done) if (done[k] && k.split('/')[0] === c) n++; return Math.min(100, Math.round(n / TOTAL * 100)); };
+const chev = window.ico ? window.ico('chevron-right', 18) : '›';
 const list = document.getElementById('courses');
-if (!data.length) {
-  list.innerHTML = `<div class="b-card empty"><div class="e">🌍</div><div class="t">Courses coming soon</div><div class="s">We're recording the first lessons now.</div></div>`;
-}
-list.innerHTML = data.map(({ c, course, audio }, i) => {
-  const p = courseProgress(c.code, course, audio);
-  const lang = c.from;
-  const ready = !!(course || audio);
-  const nAudio = audio?.lessons?.length || 0, nUnits = course?.units?.length || 0;
-  const meta = ready ? `${nAudio ? `${ic('headphones', 13)} ${nAudio} ${t(lang, 'audio').replace(/^[^\p{L}\p{N}]+\s*/u, '').toLowerCase()}` : ''}${nAudio && nUnits ? ' · ' : ''}${nUnits ? `${ic('pencil', 13)} ${nUnits} ${t(lang, 'unit').toLowerCase()}s` : ''}` : t(lang, 'comingSoon');
-  return `<a class="b-card course press rise${current && current.c.code === c.code ? ' on' : ''}" href="/lang/course.html?c=${c.code}" data-code="${c.code}" style="animation-delay:${0.08 + i * 0.05}s">
-    <div class="flag">${c.flag}</div>
-    <div style="min-width:0">
-      <div class="t">${esc(c.name)} <small>${esc(c.native)}</small>${c.from === 'hi' ? '<span class="badge">हिंदी से</span>' : ''}${p.done === p.total && p.total ? '<span class="badge mint">✓</span>' : ''}</div>
-      <div class="s">${esc(c.tagline)}</div>
-      <div class="meta">${meta}</div>
-      <span class="b-btn${p.done ? '' : ' violet'}">${p.done ? t(lang, 'continue') : t(lang, 'start')} →</span>
-    </div>
-    <div class="ring" style="--p:${p.pct}"><span>${p.pct}%</span></div>
-  </a>`;
+list.innerHTML = LANGS.map(l => {
+  const p = pct(l.c);
+  return `<a class="ui-row" href="/lang/course.html?c=${l.c}" data-code="${l.c}">
+    <span class="ui-ic" style="--ui-accent:${l.a}" aria-hidden="true"><b class="lc-glyph">${l.g}</b></span>
+    <span class="ui-tx"><b>${esc(l.n)}</b><small>${esc(l.native)} · ${p ? p + '%' : 'Not started'}</small>${p ? `<span class="ui-prog" aria-hidden="true"><i style="width:${p}%;--ui-accent:${l.a}"></i></span>` : ''}</span>
+    <span class="ui-chev" aria-hidden="true">${chev}</span></a>`;
 }).join('');
 list.addEventListener('click', e => { const a = e.target.closest('[data-code]'); if (a) setCourse(a.dataset.code); });
-
 </script>
 </body>
 </html>

@@ -30,7 +30,7 @@
 #app .nz-k b.dev{letter-spacing:0;font-family:var(--b-devanagari,var(--b-sans))}
 html[data-theme="dark"] #app .nz-k b,body[data-theme=aurora] #app .nz-k b{color:color-mix(in srgb,var(--c) 50%,#fff)}
 #app .nz-k .nz-src{min-width:0;overflow:hidden;text-overflow:ellipsis}
-#app .nz-card h2{margin:0 0 8px;font:600 22px/1.22 Newsreader,Georgia,serif;letter-spacing:-.005em;color:var(--b-ink);text-wrap:balance}
+#app .nz-card h2{margin:0 0 8px;font:700 21px/1.25 var(--ui-font,var(--b-sans));letter-spacing:-.01em;color:var(--b-ink);text-wrap:balance}
 #app .nz-card h2.dev{font:700 20px/1.4 var(--b-devanagari,var(--b-sans))}
 #app .nz-text{margin:0;font:400 15.5px/1.55 var(--b-sans);color:var(--b-ink-2)}
 #app .nz-card .dev{font-family:var(--b-devanagari,var(--b-sans));line-height:1.6}

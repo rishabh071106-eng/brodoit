@@ -5,12 +5,11 @@ import { WORDS, EXTRA } from '../words.js';
 import { rng, hash, shuffle, clamp } from '../util.js';
 
 export const meta = {
-  id: 'words', name: 'Word Builder', skill: 'Language', color: '#13A07D', deep: '#0B7558',
-  rule: 'Make as many words as you can from the letters on the wheel.',
+  id: 'words', name: 'Word Builder', skill: 'Language', color: '#059669', deep: '#065F46',
+  rule: 'Make words from the letters on the wheel.',
   how: [
-    ['pencil', 'Tap letters, or swipe across them, to spell a word.'],
-    ['check', 'Press the tick to submit. Longer words score more.'],
-    ['shuffle', 'Stuck? Shuffle the wheel for a fresh look.'],
+    'Tap or swipe across letters to spell a word.',
+    'Longer words score more. Shuffle the wheel if you are stuck.',
   ],
 };
 
@@ -27,7 +26,7 @@ export function levelConfig(n) {
     n, letters, min, time: 90, targets: TGT[n - 1],
     lower: false, scoreLabel: 'pts', goalUnit: 'points', resultLabel: 'points',
     desc: `${letters} letters · words of ${min}+ letters · 90 seconds`,
-    twist: n === 11 ? 'From now on, words need 4 or more letters.' : n === 14 ? 'Eight letters on the wheel. More words hide in there.' : '',
+    twist: n === 11 ? 'Longer words. Words now need 4 or more letters.' : n === 14 ? 'Eight letters. More words hide in the wheel.' : '',
   };
 }
 
@@ -92,7 +91,7 @@ export function start(host, cfg, api) {
     </div>
     <div class="wb-ctl">
       <button class="wb-ic" id="wbShuf" aria-label="Shuffle letters">${ico('shuffle', 22)}</button>
-      <button class="wb-go" id="wbGo" aria-label="Submit word" disabled>${ico('check', 26)}<span>Enter</span></button>
+      <button class="wb-go" id="wbGo" aria-label="Submit word" disabled><span>Enter</span></button>
       <button class="wb-ic" id="wbDel" aria-label="Delete last letter">${BACK}</button>
     </div>
   </div>`;
@@ -130,9 +129,9 @@ export function start(host, cfg, api) {
     if (over || !sel.length) return;
     const w = sel.map(i => letters[i]).join('');
     sel = []; tail = null;
-    if (w.length < cfg.min) { renderWord('no'); say(`Words need ${cfg.min}+ letters`, 'bad'); api.sfx('wrong'); api.haptic('error'); }
+    if (w.length < cfg.min) { renderWord('no'); say(`Use ${cfg.min} or more letters`, 'bad'); api.sfx('wrong'); api.haptic('error'); }
     else if (found.has(w)) {
-      renderWord('dup'); say(`${w.toUpperCase()} is already in`, 'warn'); api.sfx('flip'); api.haptic('warning');
+      renderWord('dup'); say('Already found', 'warn'); api.sfx('flip'); api.haptic('warning');
       const chip = foundEl.querySelector(`[data-w="${w}"]`); if (chip) { chip.classList.remove('ping'); void chip.offsetWidth; chip.classList.add('ping'); }
     } else if (isWord(w)) {
       found.add(w);
@@ -144,11 +143,11 @@ export function start(host, cfg, api) {
       chip.innerHTML = `${w.toUpperCase()}<b>+${pts}</b>`;
       countEl.after(chip);
       countEl.textContent = `${found.size} word${found.size === 1 ? '' : 's'}`;
-      renderWord('ok'); say(full ? 'Full wheel!' : w.length >= 6 ? 'Superb word!' : w.length >= 5 ? 'Great word!' : 'Nice!', 'good');
+      renderWord('ok'); say(full ? 'All letters used' : 'Correct', 'good');
       api.float(`+${pts}`, { el: wordEl, dy: -6 });
-      if (full) api.combo(`Full wheel +${FULL_BONUS}`); else api.sfx(w.length >= 5 ? 'combo' : 'correct');
+      if (full) api.combo(`All letters +${FULL_BONUS}`); else api.sfx(w.length >= 5 ? 'combo' : 'correct');
       api.haptic('light');
-    } else { renderWord('no'); say(`${w.toUpperCase()} is not in our word list`, 'bad'); api.sfx('wrong'); api.haptic('error'); }
+    } else { renderWord('no'); say('Not in the word list', 'bad'); api.sfx('wrong'); api.haptic('error'); }
     // let the coloured flash show, then clear the tray
     api.after(420, () => { if (!sel.length) renderWord(); });
     drawLines();

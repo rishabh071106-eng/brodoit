@@ -1,63 +1,56 @@
-// game.html?g=<id>: hero in the game's colour, the 20-level path (★ on cleared levels, the current one glowing,
-// locked ones with a lock), and one big Play button for the current level.
+// game.html?g=<id>: a calm header (icon tile, name, one line on the skill, three small stats), the 20 levels as a
+// grid of numbered circles (done = filled, current = ring, locked = muted), and one Play button at the bottom.
 import * as store from './store.js';
-import { byId, SKILL_ICON } from './games/index.js';
-import { art } from './art.js';
-import { esc, ico, toast, stars as starRow, sfx, buzz, unlockAudio } from './util.js';
-
+import { byId } from './games/index.js';
+import { icon } from './art.js';
+import { esc, ico, toast, sfx, buzz, titleOnScroll, unlockAudio } from './util.js';
 
 unlockAudio();
 const id = new URLSearchParams(location.search).get('g');
 const mod = byId(id);
 const root = document.getElementById('gp');
 let scrolled = false;
-const TIER = [['Warm-up', 1], ['Steady', 6], ['Sharp', 11], ['Master', 16]];
 
 if (!mod) location.replace('/mind/');
 else {
   const m = mod.meta;
-  document.title = `${m.name} · Mind · Brodoit`;
+  document.title = `${m.name} · Games · Brodoit`;
   document.body.style.setProperty('--g', m.color);
   document.body.style.setProperty('--g-deep', m.deep);
-  if (window.bdTopbar) window.bdTopbar({ back: '/mind/', backLabel: 'Mind games', title: esc(m.name), subtitle: esc(m.skill) + ' training' });
+  // back goes to Learn → Games (the one Games list), not the /mind/ library
+  if (window.bdTopbar) window.bdTopbar({ back: window.bdLearnHref || '/?tab=learn&hub=games', backLabel: 'Games', title: esc(m.name) });
+
+  const dots = n => `<span class="lv-st" aria-hidden="true">${[0, 1, 2].map(i => `<i${i < n ? ' class="on"' : ''}></i>`).join('')}</span>`;
 
   const render = () => {
     const p = store.read(), s = store.gameStats(p, m.id), cur = s.level, all = store.allDone(p, m.id);
     const cfg = mod.levelConfig(cur);
-    let path = '';
-    for (const [name, from] of TIER) {
-      let row = '';
-      for (let l = from; l < from + 5; l++) {
-        const done = store.isDone(p, m.id, l), open = store.isOpen(p, m.id, l), st = store.starsAt(p, m.id, l), isCur = l === cur && !all;
-        const cls = isCur ? 'cur' : done ? 'done' : open ? 'open' : 'locked';
-        const label = `Level ${l}: ${done ? `${st} star${st === 1 ? '' : 's'}` : isCur ? 'play now' : open ? 'open' : 'locked'}`;
-        row += `<button class="lv ${cls}" data-l="${l}" aria-label="${label}">
-          ${cls === 'locked' ? `<span class="lv-lock">${ico('lock', 16)}</span><small>${l}</small>` : `<span class="lv-n">${l}</span>${done ? `<span class="lv-st">${starRow(st, 11)}</span>` : isCur ? `<span class="lv-go">${ico('play', 12)}</span>` : ''}`}
-        </button>`;
-      }
-      path += `<div class="lv-tier"><b>${name}</b><small>Levels ${from}–${from + 4}</small></div><div class="lv-row">${row}</div>`;
+    let grid = '';
+    for (let l = 1; l <= store.LEVELS; l++) {
+      const done = store.isDone(p, m.id, l), open = store.isOpen(p, m.id, l), st = store.starsAt(p, m.id, l), isCur = l === cur && !all;
+      const cls = isCur ? 'cur' : done ? 'done' : open ? 'open' : 'locked';
+      const label = `Level ${l}: ${done ? `${st} star${st === 1 ? '' : 's'}` : isCur ? 'play now' : open ? 'open' : 'locked'}`;
+      grid += `<button class="lv ${cls}" data-l="${l}" aria-label="${label}"><span class="lv-n">${l}</span>${done ? dots(st) : cls === 'locked' ? `<span class="lv-lock" aria-hidden="true">${ico('lock', 11)}</span>` : ''}</button>`;
     }
-    const bestText = s.best ? s.best.text : '—', bestSub = s.best ? `best · Lv ${s.best.level}` : 'best result';
+    const bestText = s.best ? s.best.text : '–';
     root.innerHTML = `
-      <section class="gh">
-        <div class="gh-art">${art(m.id, m.deep)}</div>
-        <div class="gh-b">
-          <span class="gh-skill">${ico(SKILL_ICON[m.skill], 15)}${esc(m.skill)}</span>
-          <h1>${esc(m.name)}</h1>
-          <p>${esc(m.rule)}</p>
-          <div class="gh-stats">
-            <span><b>${s.done}</b><small>of 20 levels</small></span>
-            <span><b>${s.stars}</b><small>of 60 stars</small></span>
-            <span><b>${esc(bestText)}</b><small>${esc(bestSub)}</small></span>
-          </div>
+      <header class="gp-h">
+        <span class="ui-ic gp-ic" style="--ui-accent:${m.color}">${icon(m.id, 30)}</span>
+        <h1 id="gpT">${esc(m.name)}</h1>
+        <p>${esc(m.rule)}</p>
+        <div class="gp-stats">
+          <span><b>${s.done}<small>/20</small></b><small>Levels</small></span>
+          <span><b>${s.stars}<small>/60</small></b><small>Stars</small></span>
+          <span><b>${esc(bestText)}</b><small>${s.best ? `Best · level ${s.best.level}` : 'Best'}</small></span>
         </div>
-      </section>
-      <div class="m-sec"><h2>Levels</h2><span>${all ? 'All clear' : `Level ${cur} is next`}</span></div>
-      <div class="lv-path" id="lvPath">${path}</div>
-      <div class="gp-cta">
-        <div class="gp-next"><b>${all ? 'Every level cleared' : `Level ${cur}`}</b><small>${esc(cfg.desc || '')}</small></div>
-        <a class="btn-play" id="playBtn" href="/mind/play.html?g=${m.id}&l=${cur}">${ico(all ? 'rotate-ccw' : 'play', 22)}<span>${all ? `Replay level ${cur}` : `Play level ${cur}`}</span></a>
-      </div>`;
+      </header>
+      <div class="ui-sec"><span>Levels</span><span class="gp-next">${all ? 'All clear' : `Level ${cur} next`}</span></div>
+      <div class="lv-grid" id="lvPath">${grid}</div>
+      <div class="gp-cta"><div class="gp-cta-in">
+        <p class="gp-desc">${esc(cfg.desc || '')}</p>
+        <a class="ui-btn wide" id="playBtn" href="/mind/play.html?g=${m.id}&l=${cur}">${all ? `Replay level ${cur}` : `Play level ${cur}`}</a>
+      </div></div>`;
+    titleOnScroll(document.getElementById('gpT'));
     const c = root.querySelector('.lv.cur');
     if (c && cur > 10 && !scrolled) { scrolled = true; c.scrollIntoView({ block: 'center' }); }
   };

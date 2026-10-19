@@ -1,10 +1,11 @@
 // Mind games engine: runs one level of one game on play.html.
-// Shell (pause · title · live score) → how-to card on a game's first play → 3-2-1 → the game → results.
+// Shell (pause · level · live score) → how-to card on a game's first play → 3-2-1 → the game → results.
+// v15: calm, neutral dark play surface; the game accent only on interactive parts and the timer line.
 // Games get `api`: sfx, haptic, now/after/frame (a clock that stops while paused), timer (top bar), setScore,
 // float, combo, end(result) and test(hooks) for the Playwright hook window.__mindTest.
 import * as store from './store.js';
-import { esc, ico, sfx, buzz, countUp, confetti, star, reduced, clamp } from './util.js';
-import { art } from './art.js';
+import { esc, ico, sfx, buzz, countUp, star, reduced, clamp } from './util.js';
+import { icon } from './art.js';
 
 // ── stars & the 0-100 "best" number the server keeps: 40 = ★, 70 = ★★, 100 = ★★★ ──
 export function starsOf(score, t, lower) {
@@ -30,9 +31,13 @@ export function goalText(cfg, nStars = 1) {
   return cfg.lower ? `Finish in ${t}s` : `${t} ${cfg.goalUnit || cfg.scoreLabel}`;
 }
 
-const pick = a => a[Math.floor(Math.random() * a.length)];
-const PRAISE = { 3: ['Brilliant!', 'Flawless!', 'Top marks!'], 2: ['Great job!', 'Nicely done!', 'Strong round!'], 1: ['Level passed!', 'You did it!', 'Passed!'] };
-const CHEER = ['Every round trains your brain. One more go?', 'You are warming up. The next try is usually better.', 'Close enough to taste it. Try again?', 'Brains grow with practice. Give it another shot!'];
+const CHEER = 'Try again.';
+// "Title. Detail." → [title, detail]
+const split = t => { const i = String(t).indexOf('. '); return i < 0 ? [String(t).replace(/\.$/, ''), ''] : [t.slice(0, i), t.slice(i + 2)]; };
+// a solid two-bar pause glyph (reads better at 20px on the dark header than an outlined one)
+const PAUSE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.3"/><rect x="14" y="5" width="4" height="14" rx="1.3"/></svg>';
+// where a workout ends (and where quitting one goes): the app's Learn → Games list
+const HUB = '/?tab=learn&hub=games';
 const href = (g, l, w) => `/mind/play.html?g=${g}&l=${l}${w ? '&w=1' : ''}`;
 
 export function play({ mod, level, workout: inWorkout, games }) {
@@ -47,16 +52,15 @@ export function play({ mod, level, workout: inWorkout, games }) {
   document.title = `${meta.name} · Level ${level} · Mind`;
   document.body.style.setProperty('--g', meta.color);
   document.body.style.setProperty('--g-deep', meta.deep);
-  const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.setAttribute('content', meta.color);
+  const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.setAttribute('content', '#121214');
 
   app.innerHTML = `
     <header class="pl-top">
-      <button class="pl-btn" id="pauseBtn" aria-label="Pause">${ico('pause', 22)}</button>
-      <div class="pl-title"><b>${esc(meta.name)}</b><small>Level ${level}${inWorkout ? ` · Workout ${wIndex}/3` : ''}</small></div>
+      <button class="pl-btn" id="pauseBtn" aria-label="Pause">${PAUSE}</button>
+      <div class="pl-title"><b>Level ${level}</b><small id="plSub" aria-live="polite">${esc(meta.name)}${inWorkout ? ` · ${wIndex} of 3` : ''}</small></div>
       <div class="pl-score" id="score" role="status" aria-label="Score"><b>0</b><small>${esc(cfg.scoreLabel)}</small></div>
     </header>
     <div class="pl-bar" id="bar" hidden><div class="pl-track"><i></i></div></div>
-    <div class="pl-combo" id="combo" aria-hidden="true"></div>
     <main class="pl-stage" id="stage"></main>`;
   const stage = app.querySelector('#stage'), bar = app.querySelector('#bar'), scoreEl = app.querySelector('#score');
   const ov = document.getElementById('ov');
@@ -82,7 +86,7 @@ export function play({ mod, level, workout: inWorkout, games }) {
     let extra = 0, done = false, lastSec = -1;
     const t0 = clock();
     bar.hidden = false;
-    bar.innerHTML = `<div class="pl-track"><i></i></div>${marks.map(m => `<span class="pl-mk" style="left:${(m.at * 100).toFixed(1)}%">${star(11).repeat(m.stars)}</span>`).join('')}`;
+    bar.innerHTML = `<div class="pl-track"><i></i></div>${marks.map(m => `<span class="pl-mk" style="left:${(m.at * 100).toFixed(1)}%" title="${m.stars} stars"></span>`).join('')}`;
     const fill = bar.querySelector('i'), mks = [...bar.querySelectorAll('.pl-mk')];
     const elapsed = () => (clock() - t0) / 1000 + extra;
     const f = () => {
@@ -111,7 +115,6 @@ export function play({ mod, level, workout: inWorkout, games }) {
   function setScore(v, sub, quiet) {
     if (scoreB.textContent !== String(v)) scoreB.textContent = v;
     if (sub != null) scoreS.textContent = sub;
-    if (!quiet) { scoreEl.classList.remove('bump'); void scoreEl.offsetWidth; scoreEl.classList.add('bump'); }
   }
   function float(text, o = {}) {
     const el = document.createElement('div');
@@ -122,13 +125,13 @@ export function play({ mod, level, workout: inWorkout, games }) {
     if (o.x != null) x = o.x; if (o.y != null) y = o.y;
     el.style.left = Math.round(clamp(x, 60, innerWidth - 60)) + 'px'; el.style.top = Math.round(y) + 'px';
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 950);
+    setTimeout(() => el.remove(), 800);
   }
-  const comboEl = app.querySelector('#combo');
+  // a short status note ("5 in a row") takes the subtitle's place under "Level N" for a moment
+  const subEl = app.querySelector('#plSub'), subText = subEl.textContent;
   function combo(label) {
-    comboEl.innerHTML = ico('flame', 18) + '<span>' + esc(label) + '</span>';
-    comboEl.classList.remove('on'); void comboEl.offsetWidth; comboEl.classList.add('on');
-    clearTimeout(comboEl._t); comboEl._t = setTimeout(() => comboEl.classList.remove('on'), 1500);
+    subEl.textContent = label; subEl.classList.remove('note'); void subEl.offsetWidth; subEl.classList.add('note');
+    clearTimeout(subEl._t); subEl._t = setTimeout(() => { subEl.textContent = subText; subEl.classList.remove('note'); }, 1600);
     sfx('combo'); buzz('medium');
   }
 
@@ -155,79 +158,75 @@ export function play({ mod, level, workout: inWorkout, games }) {
     store.push().then(ok => { T.posted = ok; });
     setPhase('done');
     buzz(passed ? 'success' : 'warning');
-    ov.innerHTML = `<div class="pl-ov pl-done"><div class="pl-done-in">${esc(r.failed ? "Time's up" : cfg.time ? 'Time!' : 'Done!')}</div></div>`;
+    ov.innerHTML = `<div class="pl-ov pl-done"><div class="pl-done-in">${esc(r.failed ? "Time's up" : cfg.time ? 'Time' : 'Done')}</div></div>`;
     sfx(passed ? 'go' : 'flip');
-    setTimeout(() => results(r, rec, nStars, pct, display), reduced() ? 250 : 950);
+    setTimeout(() => results(r, rec, nStars, pct, display), reduced() ? 250 : 800);
   }
 
   function results(r, rec, nStars, pct, display) {
     setPhase('results');
     const passed = nStars > 0, t = cfg.targets, lower = !!cfg.lower, w = rec.workout;
     const best = rec.unit, bestStars = store.starsFor(best.best || 0);
-    const title = passed ? pick(PRAISE[nStars]) : pct >= 28 ? 'So close!' : 'Keep going';
-    // big number
+    const title = passed ? `Level ${level} passed` : 'Not passed'; // say what happened (DESIGN.md: no praise words)
+    // the number
     const big = r.big != null ? r.big : r.score, bigLabel = r.bigLabel || cfg.resultLabel || cfg.scoreLabel;
     const fmtBig = r.failed ? v => String(Math.round(v)) : lower ? v => fmtTime(v) : v => String(Math.round(v));
-    // chips
-    let chips = '';
-    if (best.rawText && (lower || best.raw > 0) && !rec.newBest && !rec.firstTime) chips += `<span class="chip">${ico('trophy', 14)} Best ${esc(best.rawText)}</span>`;
-    if (bestStars > nStars) chips += `<span class="chip">Best <i class="chip-st">${star(13).repeat(bestStars)}</i></span>`;
-    if (rec.newBest) chips += `<span class="chip gold">${ico('sparkles', 14)} New best</span>`;
-    else if (rec.firstTime && passed) chips += `<span class="chip gold">${ico('sparkles', 14)} First clear</span>`;
-    // next goal / fail meter
+    // at most one chip
+    let chip = '';
+    if (rec.newBest) chip = 'New best';
+    else if (best.rawText && (lower || best.raw > 0) && !rec.firstTime) chip = `Best ${best.rawText}`;
+    else if (bestStars > nStars) chip = `Best ${bestStars} star${bestStars === 1 ? '' : 's'}`;
+    // next star, or how far from a pass
     let mid = '';
-    if (passed && nStars < 3) mid = `<p class="res-next">${star(14)} ${esc(goalText(cfg, nStars + 1))} for ${nStars + 1} stars</p>`;
-    else if (passed) mid = `<p class="res-next">${ico('crown', 16)} Perfect. All three stars.</p>`;
-    else {
+    if (passed && nStars < 3) mid = `<p class="res-next">${esc(goalText(cfg, nStars + 1))} for ${nStars + 1} stars</p>`;
+    else if (!passed) {
       const need = t[0];
       const frac = r.failed ? clamp(r.progress || 0, 0, 1) : lower ? clamp(need / Math.max(need, r.score), 0, 1) : clamp(r.score / need, 0, 1);
-      const have = r.failed ? (r.haveText || '') : lower ? `${fmtTime(r.score)}s` : `${r.score}`;
-      const needText = r.needText || (lower ? `${need}s or faster` : `${need}`);
-      mid = `<div class="res-meter"><div class="res-meter-h"><span>You: <b>${esc(have)}</b></span><span>${star(13)} needs <b>${esc(needText)}</b></span></div>
-        <div class="res-meter-t"><i style="transform:scaleX(${frac.toFixed(3)})"></i></div><p>${esc(pick(CHEER))}</p></div>`;
+      const line = r.needText ? `${r.needText} to pass.` : lower ? `${goalText(cfg, 1)} to pass.` : `Get ${goalText(cfg, 1)} to pass.`;
+      mid = `<div class="res-meter"><div class="res-meter-t" aria-hidden="true"><i style="width:${(frac * 100).toFixed(1)}%"></i></div><p>${esc(line)} ${CHEER}</p></div>`;
     }
-    const unlock = rec.unlocked ? `<div class="res-unlock" id="resUnlock"><span class="ru-ic">${ico('lock-open', 20)}</span><div><b>Level ${level + 1} unlocked</b><small>${esc(meta.name)} gets a little harder</small></div></div>` : '';
-    const note = r.note ? `<p class="res-note">${esc(r.note)}</p>` : '';
-    const wRow = inWorkout ? `<div class="res-wo">${w.games.map(g => `<span class="${w.done.includes(g) ? 'on' : ''}" style="--g:${byId(g).meta.color}">${w.done.includes(g) ? ico('check', 14) : ''}</span>`).join('')}<small>${w.complete ? 'Workout complete' : `Workout ${w.done.length} of 3`}</small></div>` : '';
+    let nextDesc = '';
+    if (rec.unlocked) { try { nextDesc = mod.levelConfig(level + 1).desc || ''; } catch (e) { /* ignore */ } }
+    const unlock = rec.unlocked ? `<div class="res-unlock" id="resUnlock"><span class="ru-ic">${ico('lock-open', 18)}</span><div><b>Level ${level + 1} unlocked</b>${nextDesc ? `<small>${esc(nextDesc)}</small>` : ''}</div></div>` : '';
+    const note = r.note && !passed ? `<p class="res-note">${esc(r.note)}</p>` : ''; // the detail helps after a miss; a pass needs no footnote
+    const wRow = inWorkout ? `<div class="res-wo">${w.games.map(g => `<span class="${w.done.includes(g) ? 'on' : ''}" style="--wc:${byId(g).meta.color}"></span>`).join('')}<small>${w.complete ? 'Workout done' : `Workout ${w.done.length} of 3`}</small></div>` : '';
 
-    // actions
+    // actions: one primary, then a quiet secondary and a ghost
     let primary, secondary = [];
     if (inWorkout) {
-      if (w.next) { const nm = byId(w.next).meta; primary = { label: `Next: ${nm.name}`, icon: 'arrow-right', href: href(w.next, store.current(store.read(), w.next), true) }; }
-      else primary = { label: 'Finish workout', icon: 'trophy', href: '/mind/?wdone=1' };
-      secondary = [{ label: passed ? 'Replay' : 'Retry', icon: 'rotate-ccw', href: href(meta.id, level, true) }, { label: 'Quit', icon: 'x', href: '/mind/' }];
+      if (w.next) { const nm = byId(w.next).meta; primary = { label: `Next: ${nm.name}`, href: href(w.next, store.current(store.read(), w.next), true) }; }
+      else primary = { label: 'Finish workout', href: HUB };
+      secondary = [{ label: passed ? 'Replay' : 'Retry', href: href(meta.id, level, true), cls: 'sec' }, { label: 'Quit', href: HUB, cls: 'ghost' }];
     } else if (passed) {
-      primary = level < store.LEVELS ? { label: `Next level`, icon: 'arrow-right', href: href(meta.id, level + 1) } : { label: 'All levels done', icon: 'crown', href: `/mind/game.html?g=${meta.id}` };
-      secondary = [{ label: 'Replay', icon: 'rotate-ccw', href: href(meta.id, level) }, { label: 'Levels', icon: 'chevron-left', href: `/mind/game.html?g=${meta.id}` }];
+      primary = level < store.LEVELS ? { label: 'Next level', href: href(meta.id, level + 1) } : { label: 'All levels done', href: `/mind/game.html?g=${meta.id}` };
+      secondary = [{ label: 'Replay', href: href(meta.id, level), cls: 'sec' }, { label: 'Levels', href: `/mind/game.html?g=${meta.id}`, cls: 'ghost' }];
     } else {
-      primary = { label: 'Retry', icon: 'rotate-ccw', href: href(meta.id, level) };
-      secondary = [{ label: 'Levels', icon: 'chevron-left', href: `/mind/game.html?g=${meta.id}` }];
+      primary = { label: 'Retry', href: href(meta.id, level) };
+      secondary = [{ label: 'Levels', href: `/mind/game.html?g=${meta.id}`, cls: 'ghost' }];
     }
-    const btn = (b, cls) => `<a class="${cls}" href="${b.href}" data-nav>${cls === 'btn-g' ? '' : ico(b.icon, 18)}<span>${esc(b.label)}</span>${cls === 'btn-g' ? ico(b.icon, 20) : ''}</a>`;
+    const btn = (b, cls) => `<a class="ui-btn ${cls}" href="${b.href}" data-nav>${esc(b.label)}</a>`;
 
     ov.innerHTML = `<div class="pl-ov res-ov"><section class="res${passed ? ' won' : ''}" role="dialog" aria-modal="true" aria-labelledby="resT">
-      <div class="res-eyebrow">Level ${level} · ${esc(meta.name)}</div>
+      <p class="res-eyebrow">Level ${level} · ${esc(meta.name)}</p>
       <h2 id="resT" class="res-t">${esc(title)}</h2>
-      <div class="res-stars" aria-label="${nStars} of 3 stars">${[0, 1, 2].map(i => `<span class="rs" data-i="${i}">${star(i === 1 ? 58 : 46)}</span>`).join('')}</div>
       <div class="res-score"><b id="resN">${esc(fmtBig(0))}</b><span>${esc(bigLabel)}</span></div>
-      <div class="res-chips">${chips}</div>
+      <div class="res-stars" role="img" aria-label="${nStars} of 3 stars">${[0, 1, 2].map(i => `<span class="rs" data-i="${i}">${star(26)}</span>`).join('')}</div>
+      ${chip ? `<p class="res-chips"><span class="chip">${esc(chip)}</span></p>` : ''}
       ${mid}${unlock}${note}${wRow}
-      <div class="res-actions">${btn(primary, 'btn-g')}<div class="res-sec">${secondary.map(b => btn(b, 'btn-l')).join('')}</div></div>
+      <div class="res-actions">${btn(primary, 'wide m-pri')}<div class="res-sec">${secondary.map(b => btn(b, b.cls)).join('')}</div></div>
     </section></div>`;
     const card = ov.querySelector('.res');
-    // timeline: count-up → stars one by one → unlock + confetti
-    setTimeout(() => countUp(ov.querySelector('#resN'), big, 900, fmtBig), 250);
-    const step = reduced() ? 120 : 430;
-    for (let i = 0; i < nStars; i++) setTimeout(() => { const s = card.querySelector(`.rs[data-i="${i}"]`); if (s) s.classList.add('on'); sfx('star'); buzz('light'); }, 650 + i * step);
-    const after = 650 + nStars * step + 150;
+    // timeline: count-up → stars fill one by one → unlock row fades in
+    setTimeout(() => countUp(ov.querySelector('#resN'), big, 600, fmtBig), 150);
+    const step = reduced() ? 60 : 180;
+    for (let i = 0; i < nStars; i++) setTimeout(() => { const s = card.querySelector(`.rs[data-i="${i}"]`); if (s) s.classList.add('on'); sfx('star'); buzz('light'); }, 450 + i * step);
     setTimeout(() => {
-      if (passed) {
-        const u = card.querySelector('#resUnlock');
-        if (u) { u.classList.add('on'); sfx('unlock'); const r2 = u.getBoundingClientRect(); confetti(r2.left + 28, r2.top + r2.height / 2, 130); }
-        else if (nStars === 3) { sfx('levelup'); const s = card.querySelector('.res-stars').getBoundingClientRect(); confetti(s.left + s.width / 2, s.top + s.height / 2, 110); }
-        if (inWorkout && w.complete) setTimeout(() => sfx('levelup'), 500);
-      }
-    }, after);
+      if (!passed) return;
+      const u = card.querySelector('#resUnlock');
+      if (u) { u.classList.add('on'); sfx('unlock'); }
+      else if (nStars === 3) sfx('levelup');
+      if (inWorkout && w.complete) setTimeout(() => sfx('levelup'), 400);
+    }, 450 + nStars * step + 100);
     card.addEventListener('click', e => {
       const a = e.target.closest('[data-nav]'); if (!a) return;
       sfx('tap'); buzz('light');
@@ -240,12 +239,14 @@ export function play({ mod, level, workout: inWorkout, games }) {
   function how() {
     return new Promise(res => {
       setPhase('how');
+      const lines = (meta.how || []).slice(0, 2).map(x => (Array.isArray(x) ? x[1] : x));
       ov.innerHTML = `<div class="pl-ov dim"><section class="how" role="dialog" aria-modal="true" aria-labelledby="howT">
-        <div class="how-art">${art(meta.id, meta.deep)}</div>
-        <div class="how-b"><div class="how-eyebrow">How to play</div><h2 id="howT">${esc(meta.name)}</h2>
-        <ol>${meta.how.map(([ic, txt]) => `<li><span class="how-ic">${ico(ic, 20)}</span><span>${esc(txt)}</span></li>`).join('')}</ol>
-        <div class="how-goal">${star(16)}<span>Level ${level} goal: <b>${esc(goalText(cfg, 1))}</b></span></div>
-        <button class="btn-g" id="howGo"><span>Let's go</span>${ico('arrow-right', 20)}</button></div></section></div>`;
+        <span class="ui-ic how-ic" style="--ui-accent:var(--g-ui)">${icon(meta.id, 26)}</span>
+        <p class="how-eyebrow">How to play</p>
+        <h2 id="howT">${esc(meta.name)}</h2>
+        <ol class="how-list">${lines.map((t, i) => `<li><span class="how-n" aria-hidden="true">${i + 1}</span><span>${esc(t)}</span></li>`).join('')}</ol>
+        <p class="how-goal"><span>Level ${level} goal</span><b>${esc(goalText(cfg, 1))}</b></p>
+        <button class="ui-btn wide m-pri" id="howGo">Start</button></section></div>`;
       const go = ov.querySelector('#howGo');
       go.addEventListener('click', () => { sfx('tap'); buzz('light'); store.markSeen(meta.id); res(); });
     });
@@ -253,10 +254,11 @@ export function play({ mod, level, workout: inWorkout, games }) {
   function twist() {
     return new Promise(res => {
       setPhase('twist');
+      const [tt, detail] = split(cfg.twist);
       ov.innerHTML = `<div class="pl-ov dim"><section class="sheet twist" role="dialog" aria-modal="true" aria-labelledby="twT">
-        <div class="twist-ic">${ico('sparkles', 26)}</div><div class="how-eyebrow">New at level ${level}</div>
-        <h2 id="twT">${esc(cfg.twist)}</h2>
-        <button class="btn-g" id="twistGo"><span>Got it</span>${ico('arrow-right', 20)}</button></section></div>`;
+        <p class="how-eyebrow">New at level ${level}</p>
+        <h2 id="twT">${esc(tt)}</h2>${detail ? `<p class="twist-d">${esc(detail)}</p>` : ''}
+        <button class="ui-btn wide m-pri" id="twistGo">Continue</button></section></div>`;
       sfx('unlock');
       ov.querySelector('#twistGo').addEventListener('click', () => { sfx('tap'); buzz('light'); res(); });
     });
@@ -264,16 +266,16 @@ export function play({ mod, level, workout: inWorkout, games }) {
   function countdown() {
     return new Promise(res => {
       setPhase('countdown');
-      ov.innerHTML = `<div class="pl-ov cd"><div class="cd-in"><div class="cd-goal">${star(16)}<span>${esc(goalText(cfg, 1))}</span></div><b class="cd-n" id="cdN"></b><small>${esc(cfg.desc || '')}</small></div></div>`;
+      ov.innerHTML = `<div class="pl-ov cd"><div class="cd-in"><p class="cd-goal">Goal · ${esc(goalText(cfg, 1))}</p><b class="cd-n" id="cdN" aria-live="assertive"></b><small>${esc(cfg.desc || '')}</small></div></div>`;
       const n = ov.querySelector('#cdN');
-      const seq = ['3', '2', '1', 'Go'];
+      const seq = ['3', '2', '1'];
       let i = 0;
       const tick = () => {
-        if (i >= seq.length) { ov.innerHTML = ''; res(); return; }
-        n.textContent = seq[i]; n.classList.toggle('go', seq[i] === 'Go');
+        if (i >= seq.length) { ov.innerHTML = ''; sfx('go'); buzz('medium'); res(); return; }
+        n.textContent = seq[i];
         n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop');
-        if (seq[i] === 'Go') { sfx('go'); buzz('medium'); } else { sfx('tick'); buzz('select'); }
-        i++; setTimeout(tick, i === seq.length ? 420 : 640);
+        sfx('tick'); buzz('select');
+        i++; setTimeout(tick, 640);
       };
       tick();
     });
@@ -282,10 +284,10 @@ export function play({ mod, level, workout: inWorkout, games }) {
     if (phase !== 'play' || paused) return;
     paused = true; pausedAt = performance.now(); setPhase('paused'); T.phase = 'paused';
     const muted = (() => { try { return window.Sfx && window.Sfx.muted(); } catch (e) { return false; } })();
-    ov.innerHTML = `<div class="pl-ov dim"><section class="sheet" role="dialog" aria-modal="true" aria-labelledby="pT">
+    ov.innerHTML = `<div class="pl-ov dim"><section class="sheet pause" role="dialog" aria-modal="true" aria-labelledby="pT">
       <h2 id="pT">Paused</h2><p>Level ${level} · ${esc(meta.name)}</p>
-      <button class="btn-g" data-a="resume"><span>Resume</span>${ico('play', 20)}</button>
-      <div class="sheet-row"><button class="btn-l" data-a="restart">${ico('rotate-ccw', 18)}<span>Restart</span></button><button class="btn-l" data-a="quit">${ico('x', 18)}<span>Quit</span></button></div>
+      <button class="ui-btn wide m-pri" data-a="resume">Resume</button>
+      <div class="sheet-row"><button class="ui-btn sec" data-a="restart">Restart</button><button class="ui-btn sec" data-a="quit">Quit</button></div>
       <button class="sheet-snd" data-a="sound" aria-pressed="${!muted}">${ico(muted ? 'volume-x' : 'volume-high', 18)}<span>${muted ? 'Sound off' : 'Sound on'}</span></button>
     </section></div>`;
     ov.querySelector('.sheet').addEventListener('click', e => {
@@ -293,7 +295,7 @@ export function play({ mod, level, workout: inWorkout, games }) {
       const a = b.dataset.a;
       if (a === 'resume') closePause();
       else if (a === 'restart') location.replace(href(meta.id, level, inWorkout));
-      else if (a === 'quit') location.replace(inWorkout ? '/mind/' : `/mind/game.html?g=${meta.id}`);
+      else if (a === 'quit') location.replace(inWorkout ? HUB : `/mind/game.html?g=${meta.id}`);
       else if (a === 'sound') {
         let m = false;
         try { window.Sfx.setMuted(!window.Sfx.muted()); m = window.Sfx.muted(); } catch (e2) { /* ignore */ }
@@ -315,7 +317,7 @@ export function play({ mod, level, workout: inWorkout, games }) {
   addEventListener('keydown', e => {
     if (e.key === 'Escape') { if (phase === 'play') openPause(); else if (phase === 'paused') closePause(); }
     if (e.key === 'Enter' && (phase === 'how' || phase === 'twist')) { const g = ov.querySelector('#howGo, #twistGo'); if (g) g.click(); }
-    if (e.key === 'Enter' && phase === 'results') { const p = ov.querySelector('.btn-g'); if (p && document.activeElement !== p) p.click(); }
+    if (e.key === 'Enter' && phase === 'results') { const p = ov.querySelector('.m-pri'); if (p && document.activeElement !== p) p.click(); }
   });
 
   const api = {

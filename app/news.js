@@ -149,7 +149,7 @@
     const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
     const x = cv.getContext('2d');
     const dev = hi() && st.summary_hi;
-    const serif = dev ? "'Noto Sans Devanagari', sans-serif" : "Newsreader, Georgia, 'Times New Roman', serif";
+    const serif = dev ? "'Noto Sans Devanagari', sans-serif" : "'Plus Jakarta Sans', system-ui, sans-serif"; // one family: the share image matches the app
     const sans = dev ? "'Noto Sans Devanagari', sans-serif" : "'Plus Jakarta Sans', system-ui, sans-serif";
     const head = pick(st, 'headline'), body = pick(st, 'summary');
     try { // the canvas only uses a web font that is already loaded, so load the exact faces first
