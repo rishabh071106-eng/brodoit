@@ -805,10 +805,18 @@ async function pruneCache(dir, cap, o = {}) {
   return removed;
 }
 
+// one word for public status checks: never an error message or a path
+function phaseWord() {
+  if (ready()) return 'ready';
+  if (S.phase === 'fetching') return 'fetching';
+  if (S.phase === 'error') return /disk space/.test(S.error || '') ? 'no-space' : 'error';
+  if (S.restarts && S.lastCrash) return 'restarting';
+  return S.phase === 'loading' ? 'loading' : 'starting';
+}
 function health() {
   const rtf = +S.rtfAvg.toFixed(3);
   return {
-    ready: ready(), loading: S.phase === 'loading' || S.phase === 'fetching', phase: S.phase, error: S.error || null,
+    ready: ready(), loading: S.phase === 'loading' || S.phase === 'fetching', phase: S.phase, word: phaseWord(), error: S.error || null,
     queue: queueLength(), live: Q.hi.length, low: Q.lowActive, lowMax: LOW_MAX,
     rtf, rtfAvg: rtf, lastMs: S.lastMs, model: MODEL_NAME, threads: S.threads,
     restarts: S.restarts, lastCrash: S.lastCrash ? Object.assign({}, S.lastCrash) : null,
@@ -1088,7 +1096,16 @@ function threadCount() {
 async function load() {
   if (!S.dir) throw new Error('no model directory (pass mediaDir to init or set BROCORE_MODEL_DIR)');
   const t0 = Date.now();
-  await ensureModel(S.dir, Object.assign({ onFetch: () => { S.phase = 'fetching'; } }, S.download));
+  try {
+    await ensureModel(S.dir, Object.assign({ onFetch: () => { S.phase = 'fetching'; } }, S.download));
+  } catch (e) {
+    // the media volume is too full: the container's own disk holds the model instead (fetched again after a redeploy)
+    const alt = path.join(os.tmpdir(), 'brocore', 'kokoro');
+    if (e.code !== 'VOICE_NO_SPACE' || process.env.BROCORE_MODEL_DIR || S.dir === alt) throw e;
+    log('media volume is full; using', alt, 'for the voice model');
+    S.dir = alt;
+    await ensureModel(S.dir, Object.assign({ onFetch: () => { S.phase = 'fetching'; } }, S.download));
+  }
   S.phase = 'loading';
   S.threads = threadCount();
   S.engine = await spawnEngine();

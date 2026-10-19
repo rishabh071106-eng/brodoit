@@ -32,7 +32,8 @@ jobs:
           # /api/bro/ok is one bit: Bro Core's brain is configured and his voice engine is loaded.
           # After a deploy the voice model may still be loading, so this waits up to 15 minutes.
           for i in $(seq 1 30); do
-            if curl -fsS --max-time 20 https://brodoit.com/api/bro/ok | grep -q '"ok":true'; then echo "Bro is ready"; exit 0; fi
-            echo "Bro not ready yet ($i)"; sleep 30
+            st=$(curl -fsS --max-time 20 https://brodoit.com/api/bro/ok || echo '{}')
+            if echo "$st" | grep -q '"ok":true'; then echo "Bro is ready $st"; exit 0; fi
+            echo "Bro not ready yet ($i): $st"; sleep 30
           done
           echo "::error::Bro Core is not ready (brain or voice down)"; exit 1
