@@ -1,87 +1,20 @@
-/* Learn tab v14 — one page, three sections. Styled art instead of stock photos: Python's story as a timeline card,
-   native-letter tiles for languages, Elevate-style colour tiles for Mind games (art shared with /mind/). */
-#app .lx{padding-bottom:20px}
-#app .lx-h{margin:4px 0 6px}
-#app .lx-sec{display:flex;align-items:center;justify-content:space-between;margin:22px 0 10px;font:400 26px/1.1 var(--b-serif,Georgia,serif);letter-spacing:-.01em;color:var(--b-ink)}
-#app .lx-all{display:inline-flex;align-items:center;gap:2px;min-height:44px;padding:0 4px 0 10px;font:700 14px var(--b-sans);color:var(--b-ink-2);text-decoration:none}
+/* Learn tab v15: three rows (Games, Coding, Languages), each opening a list built from the framework rows in
+   app/ui.css. Only the pieces the framework doesn't have live here: today's workout card and the letter tiles. */
+#app .lx{padding:4px 0 24px;animation:lxIn .25s ease both}
+#app .lx .ui-list + .ui-list{margin-top:12px}
+#app .lx-glyph{font:700 19px/1 var(--ui-font);letter-spacing:-.01em}
 
-/* Python — history card */
-#app .lx-py{position:relative;min-height:268px;border-radius:24px;overflow:hidden;color:#fff;isolation:isolate;padding:18px 18px 16px;display:flex;flex-direction:column;
-  background:radial-gradient(120% 90% at 100% 0%,rgba(55,118,171,.55),transparent 55%),radial-gradient(90% 80% at 0% 100%,rgba(255,212,59,.22),transparent 60%),linear-gradient(160deg,#1A1830,#121019);
-  box-shadow:0 22px 44px -24px rgba(18,16,25,.85);animation:lxIn .6s cubic-bezier(.16,1,.3,1) both}
-#app .lx-py-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:22px 22px;-webkit-mask:linear-gradient(160deg,#000 30%,transparent 85%);mask:linear-gradient(160deg,#000 30%,transparent 85%)}
-#app .lx-py-bg i{position:absolute;border-radius:50%;border:10px solid}
-#app .lx-py-bg .o1{right:-46px;top:-58px;width:150px;height:150px;border-color:rgba(55,118,171,.5)}
-#app .lx-py-bg .o2{right:34px;top:-22px;width:84px;height:84px;border-color:rgba(255,212,59,.38)}
-#app .lx-py-bg code{position:absolute;right:16px;bottom:74px;font:700 54px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:rgba(255,255,255,.06);letter-spacing:-.04em}
-#app .lx-cover{position:absolute;inset:0;z-index:1}
-#app .lx-cover:focus-visible{outline:3px solid #FFD43B;outline-offset:-3px;border-radius:inherit}
-#app .lx-k{font:800 11px var(--b-sans);letter-spacing:.16em;text-transform:uppercase;color:#FFD43B;opacity:.9;pointer-events:none}
-#app .lx-t{font:400 46px/1 var(--b-serif,Georgia,serif);letter-spacing:-.02em;margin-top:4px;pointer-events:none}
-#app .lx-tl{list-style:none;margin:16px 0 14px;padding:0;display:grid;grid-template-columns:repeat(3,1fr) 1.2fr;position:relative;pointer-events:none}
-#app .lx-tl::before{content:"";position:absolute;left:6px;right:6px;top:5px;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.18),rgba(255,212,59,.7))}
-#app .lx-tl li{position:relative;padding-top:18px;min-width:0}
-#app .lx-tl li::before{content:"";position:absolute;left:0;top:0;width:12px;height:12px;border-radius:50%;background:#1A1830;border:2px solid rgba(255,255,255,.55)}
-#app .lx-tl li.now::before{background:#FFD43B;border-color:#FFD43B;box-shadow:0 0 0 5px rgba(255,212,59,.18),0 0 14px rgba(255,212,59,.6)}
-#app .lx-tl b{display:block;font:800 13px var(--b-sans);letter-spacing:-.01em}
-#app .lx-tl span{display:block;font:500 11.5px/1.3 var(--b-sans);color:rgba(255,255,255,.7);margin-top:2px;padding-right:4px}
-#app .lx-pr{margin-top:auto;display:flex;align-items:center;gap:10px;pointer-events:none}
-#app .lx-ring{position:relative;width:44px;height:44px;flex:none}
-#app .lx-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
-#app .lx-ring circle{fill:none;stroke-width:5;stroke-linecap:round}
-#app .lx-ring .t{stroke:rgba(255,255,255,.2)}
-#app .lx-ring .v{stroke:#FFD43B;transition:stroke-dashoffset 1s}
-#app .lx-ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 11px var(--b-sans)}
-#app .lx-d{flex:1;font:700 14px var(--b-sans);opacity:.9}
-#app .lx-go{position:relative;z-index:2;pointer-events:auto;display:inline-flex;align-items:center;gap:6px;min-height:46px;padding:0 18px;border-radius:14px;background:#fff;color:#17141F;font:800 15px var(--b-sans);text-decoration:none;box-shadow:0 10px 22px -12px rgba(0,0,0,.6)}
-#app .lx-go:active{transform:scale(.97)}
+/* today's workout: title + count, the three games, one button */
+#app .lx-wo{display:flex;flex-direction:column;gap:16px;margin-bottom:4px}
+#app .lx-wo-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+#app .lx-wo-h h2{margin:0;font:var(--ui-t-title);letter-spacing:-.01em;color:var(--b-ink)}
+#app .lx-wo-h p{margin:4px 0 0;font:var(--ui-t-sub);color:var(--b-mute)}
+#app .lx-wo-n{font:700 28px/1 var(--ui-font);font-variant-numeric:tabular-nums;color:var(--b-ink)}
+#app .lx-wo-n small{font:600 15px var(--ui-font);color:var(--b-mute)}
+#app .lx-wo-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#app .lx-wo-i{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;text-align:center}
+#app .lx-wo-i small{max-width:100%;font:var(--ui-t-cap);color:var(--b-ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .lx-wo-i.done .ui-ic{color:#fff;background:var(--ui-accent)}
 
-/* Languages — native-letter tiles */
-#app .lx-langs{display:flex;flex-direction:column;gap:8px}
-#app .lx-li{display:flex;align-items:center;gap:12px;min-height:66px;padding:9px 12px 9px 9px;border-radius:18px;background:var(--b-card);border:1px solid var(--b-line);color:var(--b-ink);text-decoration:none;box-shadow:var(--sh-1);animation:lxIn .6s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 50ms + 100ms)}
-#app .lx-glyph{width:48px;height:48px;border-radius:14px;flex:none;display:grid;place-items:center;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;font:700 22px/1 var(--b-serif,Georgia,serif);text-shadow:0 2px 8px rgba(0,0,0,.25);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
-#app .lx-lt{flex:1;min-width:0}
-#app .lx-lt b{display:block;font:700 16px var(--b-sans)}
-#app .lx-lt b em{font-style:normal;font-weight:500;color:var(--b-mute);font-size:13px;margin-left:4px}
-#app .lx-bar{display:block;height:4px;border-radius:2px;background:var(--b-bg-2);margin-top:8px;overflow:hidden}
-#app .lx-bar i{display:block;height:100%;border-radius:2px;background:var(--b-primary)}
-
-/* Mind games — today's workout row + colour cards with typeset symbols (no pictures) */
-#app .lx-wo{display:flex;align-items:center;gap:12px;min-height:76px;padding:12px 14px 12px 12px;border-radius:20px;background:var(--b-card);border:1px solid var(--b-line);box-shadow:var(--sh-1);color:var(--b-ink);text-decoration:none}
-#app .lx-wo-t{flex:1;min-width:0}
-#app .lx-wo-t b{display:block;font:700 16px var(--b-sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#app .lx-wo-t small{display:block;font:500 13px var(--b-sans);color:var(--b-mute);margin-top:3px;white-space:nowrap}
-#app .lx-wo-dots{display:flex;flex:none}
-#app .lx-wo-dots i{width:22px;height:22px;border-radius:50%;background:var(--c);border:2px solid var(--b-card);margin-left:-6px;display:grid;place-items:center;color:#fff}
-#app .lx-wo-dots i:first-child{margin-left:0}
-#app .lx-wo-dots i.done{opacity:.55}
-#app .lx-wo>svg:last-child{flex:none;color:var(--b-mute)}
-#app .lx-ring.sm{width:48px;height:48px}
-#app .lx-ring.sm .t{stroke:var(--b-bg-2)}#app .lx-ring.sm .v{stroke:var(--b-mint)}#app .lx-ring.sm b{color:var(--b-ink);font-size:13px}
-#app .lx-games{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
-#app .lx-game{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:112px;padding:12px 14px;border-radius:20px;overflow:hidden;isolation:isolate;color:#fff;text-decoration:none;background:linear-gradient(150deg,var(--c),var(--d));box-shadow:0 12px 24px -18px var(--d),inset 0 -4px 0 rgba(0,0,0,.12);animation:lxIn .6s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 60ms + 120ms)}
-#app .lx-game::before{content:"";position:absolute;inset:0;background:radial-gradient(110% 80% at 90% 0%,rgba(255,255,255,.24),transparent 60%);z-index:-1}
-#app .lx-game:last-child:nth-child(odd){grid-column:1 / -1;min-height:92px}
-#app .lx-game b{font:800 16px/1.15 var(--b-sans);letter-spacing:-.01em}
-#app .lx-game small{font:600 12px var(--b-sans);opacity:.85;margin-top:2px}
-#app .lx-game:active{transform:scale(.98)}
-#app .lx-lv{position:absolute;top:12px;left:12px;height:24px;padding:0 9px;border-radius:999px;background:rgba(255,255,255,.95);color:var(--d);font:800 12px/24px var(--b-sans)}
-/* the symbols */
-#app .lx-gm{position:absolute;top:12px;right:12px;display:flex;align-items:center;justify-content:flex-end;gap:3px;z-index:-1}
-#app .lx-gm em{font-style:normal;display:grid;place-items:center;color:var(--d);background:#fff;border-radius:8px;font:800 15px/1 var(--b-sans);width:24px;height:24px;box-shadow:0 2px 0 rgba(0,0,0,.14)}
-#app .lx-gm-memory{display:grid;grid-template-columns:repeat(3,12px);gap:3px}
-#app .lx-gm-memory i{width:12px;height:12px;border-radius:4px;background:rgba(255,255,255,.28)}
-#app .lx-gm-memory i.on{background:#fff;box-shadow:0 0 10px rgba(255,255,255,.7)}
-#app .lx-gm-clash em{width:auto;height:auto;padding:5px 8px;background:#1D1B26;color:#FFE15C;font-size:14px;letter-spacing:.04em;transform:rotate(-6deg)}
-#app .lx-gm-hunt em:first-child{background:#FFD43B;color:#1D1B26}
-#app .lx-gm-math em{width:28px;height:28px;font-size:18px}
-#app .lx-gm-math em+em{background:#FFD43B;color:#1D1B26;transform:rotate(8deg)}
-#app .lx-gm-words em{border-radius:50%;width:22px;height:22px;font-size:12px;background:#FFD43B;color:#1D1B26}
-#app .lx-mind-sk{display:grid;grid-template-columns:1fr;gap:10px}
-#app .lx-mind-sk i{display:block;height:76px;border-radius:20px}
-#app .lx-mind-sk i+i{height:340px}
-
-#app .lx-bro{display:flex;align-items:center;gap:12px;min-height:60px;margin-top:22px;padding:10px 14px;border-radius:18px;border:1px solid var(--b-line);background:var(--b-card);color:var(--b-ink);text-decoration:none;box-shadow:var(--sh-1)}
-#app .lx-bro b{flex:1;font:700 16px var(--b-sans)}
-@keyframes lxIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){#app .lx-py,#app .lx-li,#app .lx-game{animation:none}}
+@keyframes lxIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#app .lx{animation:none}}

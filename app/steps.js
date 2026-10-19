@@ -1,14 +1,15 @@
-// Brodoit Steps tab — ring, status pill, friends podium, streak, 7-day bars, leaderboard, sheets,
-// Walk mode (DeviceMotion pedometer), share cards (Canvas → navigator.share). Plain script, no modules.
+// Brodoit Steps tab — one calm screen: header (title, date, More) → ring → one status line → Start a walk → This week → Friends.
+// Everything else (log steps, auto-count, goal, share, invite, streak freeze, live counting on iPhone) sits in the Actions sheet
+// behind the single More button. Walk mode (DeviceMotion pedometer), share cards (Canvas → navigator.share). Plain script, no modules.
 // Uses the SPA globals: S, api(path,{method,body}), token, esc, toast, switchTab; optional window.ico / window.haptic.
 // Public API: window.StepsTab = { html(), mount(), load(), rerender(), openSheet(kind,arg), closeSheet(), share(kind),
-//   walkStart(), walkStop(), enableTap(), ringSVG(pct,size,opts), miniCard(), setPeriod(p), setScope(s) }
+//   walkStart(), walkStop(), enableTap(), ringSVG(pct,size,opts), miniCard(), setPeriod(p), setScope(s), retryBoard(), liveTap() }
 (function () {
   'use strict';
   const T = window.StepsTab = {
     sum: null, loaded: false, loading: false, failed: false,
     board: { scope: 'friends', period: 'today', data: null, loading: false, cache: {} },
-    friends: null, mascot: null, sheet: null, _ringPct: 0, _uid: 0,
+    friends: null, sheet: null, _ringPct: 0, _uid: 0,
     // base = server count when the walk started; absorbs = does the server's counted() grow with device deltas (false once a trust≥2 sample owns the day)
     walk: { on: false, steps: 0, sent: 0, base: 0, absorbs: null, started: 0, lastFlush: 0, lock: null, timer: null, flushTimer: null, _lp: 0, _sm: 0, _lastStep: 0, _handler: null },
     manual: { value: '', app: 'googlefit', date: 'today', saving: false },
@@ -32,29 +33,37 @@
   const isIOS = () => /iPhone|iPad|iPod/i.test(UA()) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isAndroid = () => /Android/i.test(UA());
 
-  // ───────────────────────── i18n (pill + nudge copy) ─────────────────────────
+  // ───────────────────────── i18n ─────────────────────────
   const STR = {
     en: {
-      bg: 'Auto-syncing', bgSub: 'synced {t}', enable: 'Turn on step counting', ios: 'Set up iPhone sync', play: 'Get the app · auto-sync', web: 'Counting manually', walk: 'Walking · live',
-      of: 'of {g}', km: 'km', kcal: 'kcal', min: 'active min', goalDone: 'Goal done. Legend.',
-      left: '{n} more to hit your goal', almost: 'So close — {n} to go!', start: 'Take the first step. A short walk counts.',
-      noData: 'Log a walk or turn on syncing to see today.', streak: '{n}-day streak', streak1: '1-day streak', noStreak: 'Start a streak', streakSub: 'Hit your goal daily', longest: 'best {n}',
-      freeze: '{n} freeze', freezes: '{n} freezes', noFreeze: 'No freezes', invite: 'Invite a friend', emptyH: 'Walk with friends', emptyP: 'Race a friend to your goal.',
-      friends: 'Friends', today: 'Today', week: 'Week', city: 'City', india: 'India', opensAt: 'opens at 20 walkers', you: 'You', provisional: 'Provisional — final at midnight',
-      walkLearn: 'Walk & Learn', log: 'Log steps', share: 'Share today', goal: 'Goal', stop: 'Stop', walking: 'Walking with Bro', keepOn: 'Keep the screen on, phone in your pocket or hand.',
+      bg: 'Auto-syncing', enable: 'Turn on step counting', ios: 'Set up iPhone sync', play: 'Get the app for auto-sync', web: 'Counting manually', walk: 'Walking · live', openLive: 'Counting while open',
+      of: 'of {g}', km: 'km', kcal: 'kcal', min: 'active min', steps: 'steps', time: 'time', live: 'Counting live',
+      streak: '{n}-day streak', streak1: '1-day streak', noStreak: 'Start a streak',
+      invite: 'Invite a friend', inviteShort: 'Invite', emptyH: 'Walk with friends', emptyP: 'Race a friend to your goal.',
+      friends: 'Friends', today: 'Today', week: 'Week', city: 'City', india: 'India', opensAt: 'opens at 20 walkers', you: 'You',
+      thisWeek: 'This week', goalsMet: '{n} of 7 goals met', more: 'More', startWalk: 'Start a walk', stopWalk: 'Stop walk',
+      log: 'Log steps', share: 'Share today', retry: 'Retry', noToday: 'Couldn’t load today', noBoard: 'Couldn’t load the leaderboard.', report: 'Report {n}',
+      logSub: 'From your phone or watch app', autoCount: 'Auto-count', autoSub: 'Counts in the background', iosSub: 'Syncs Health with a Shortcut',
+      getApp: 'Get the app', appSub: 'Syncs your steps automatically', goalRow: 'Daily goal · {g}', goalSub: 'What you aim for each day',
+      shareSub: 'A card for your story or chat', inviteRow: 'Invite friends', inviteSub: 'Send your code or add theirs',
+      freezeRow: 'Streak freeze · {n} left', freezeSub: 'Covers a missed day', liveRow: 'Count live on this phone', liveSub: 'Counts while Brodoit is open',
       share1: 'Day {d}', shareRank: '#{r} among friends', shareWith: 'Walking with Brodoit',
-      walkSaved: 'Walk saved · {n} steps', walkStopped: 'Walk stopped', walkNoCount: 'today’s total comes from {src}', walkNoCountHint: 'Saved as a walk — today’s total comes from {src}, so the ring won’t move.',
+      walkSaved: 'Walk saved · {n} steps', walkStopped: 'Walk stopped', walkNote: 'Today’s total comes from {src}',
     },
     hi: {
-      bg: 'ऑटो-सिंक चालू', bgSub: '{t} सिंक हुआ', enable: 'स्टेप काउंट चालू करें', ios: 'iPhone सिंक सेट करें', play: 'ऐप लें · ऑटो-सिंक', web: 'मैन्युअल गिनती', walk: 'चल रहे हैं · लाइव',
-      of: '{g} में से', km: 'किमी', kcal: 'कैलोरी', min: 'सक्रिय मिनट', goalDone: 'लक्ष्य पूरा — शानदार! अब हर कदम बोनस है।',
-      left: 'लक्ष्य के लिए {n} और', almost: 'बस {n} और — बहुत करीब!', start: 'पहला कदम लें। छोटी सैर भी गिनती है।',
-      noData: 'आज देखने के लिए सैर लॉग करें या सिंक चालू करें।', streak: '{n} दिन की स्ट्रीक', streak1: '1 दिन की स्ट्रीक', noStreak: 'आज स्ट्रीक शुरू करें', streakSub: 'रोज़ लक्ष्य पूरा करें', longest: 'सबसे लंबी {n}',
-      freeze: '{n} फ़्रीज़', freezes: '{n} फ़्रीज़', noFreeze: 'फ़्रीज़ नहीं', invite: 'दोस्त को बुलाएँ', emptyH: 'दोस्तों के साथ चलें', emptyP: 'दोस्त के साथ रेस लगाएँ।',
-      friends: 'दोस्त', today: 'आज', week: 'हफ़्ता', city: 'शहर', india: 'भारत', opensAt: '20 वॉकर पर खुलेगा', you: 'आप', provisional: 'अस्थायी — आधी रात को फ़ाइनल',
-      walkLearn: 'चलें और सीखें', log: 'स्टेप लॉग करें', share: 'आज शेयर करें', goal: 'लक्ष्य', stop: 'रोकें', walking: 'Bro के साथ सैर', keepOn: 'स्क्रीन चालू रखें, फ़ोन जेब या हाथ में।',
+      bg: 'ऑटो-सिंक चालू', enable: 'स्टेप काउंट चालू करें', ios: 'iPhone सिंक सेट करें', play: 'ऑटो-सिंक के लिए ऐप लें', web: 'मैन्युअल गिनती', walk: 'चल रहे हैं · लाइव', openLive: 'खुले ऐप में गिनती',
+      of: '{g} में से', km: 'किमी', kcal: 'कैलोरी', min: 'सक्रिय मिनट', steps: 'कदम', time: 'समय', live: 'लाइव गिनती',
+      streak: '{n} दिन की स्ट्रीक', streak1: '1 दिन की स्ट्रीक', noStreak: 'आज स्ट्रीक शुरू करें',
+      invite: 'दोस्त को बुलाएँ', inviteShort: 'बुलाएँ', emptyH: 'दोस्तों के साथ चलें', emptyP: 'दोस्त के साथ रेस लगाएँ।',
+      friends: 'दोस्त', today: 'आज', week: 'हफ़्ता', city: 'शहर', india: 'भारत', opensAt: '20 वॉकर पर खुलेगा', you: 'आप',
+      thisWeek: 'इस हफ़्ते', goalsMet: '7 में से {n} लक्ष्य पूरे', more: 'और', startWalk: 'सैर शुरू करें', stopWalk: 'सैर रोकें',
+      log: 'स्टेप लॉग करें', share: 'आज शेयर करें', retry: 'फिर कोशिश', noToday: 'आज का डेटा लोड नहीं हुआ', noBoard: 'लीडरबोर्ड लोड नहीं हुआ।', report: 'रिपोर्ट करें: {n}',
+      logSub: 'फ़ोन या घड़ी के ऐप से', autoCount: 'ऑटो गिनती', autoSub: 'बैकग्राउंड में गिनती', iosSub: 'Shortcut से Health सिंक',
+      getApp: 'ऐप लें', appSub: 'कदम अपने आप सिंक होते हैं', goalRow: 'रोज़ का लक्ष्य · {g}', goalSub: 'हर दिन का लक्ष्य',
+      shareSub: 'स्टोरी या चैट के लिए कार्ड', inviteRow: 'दोस्तों को बुलाएँ', inviteSub: 'अपना कोड भेजें या उनका जोड़ें',
+      freezeRow: 'स्ट्रीक फ़्रीज़ · {n} बचे', freezeSub: 'छूटे दिन पर स्ट्रीक बचाता है', liveRow: 'इस फ़ोन पर लाइव गिनें', liveSub: 'ऐप खुला रहने तक गिनती',
       share1: 'दिन {d}', shareRank: 'दोस्तों में #{r}', shareWith: 'Brodoit के साथ सैर',
-      walkSaved: 'सैर सेव हुई · {n} कदम', walkStopped: 'सैर रुकी', walkNoCount: 'आज का कुल {src} से है', walkNoCountHint: 'सैर सेव हुई — आज का कुल {src} से आता है, इसलिए रिंग नहीं बढ़ेगी।',
+      walkSaved: 'सैर सेव हुई · {n} कदम', walkStopped: 'सैर रुकी', walkNote: 'आज का कुल {src} से आता है',
     },
   };
   const t = (k, v) => { let s = (STR[isHi() ? 'hi' : 'en'][k] != null ? STR[isHi() ? 'hi' : 'en'][k] : STR.en[k]) || k; if (v) Object.keys(v).forEach(x => { s = s.split('{' + x + '}').join(v[x]); }); return s; };
@@ -88,11 +97,12 @@
     info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
     download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
     trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+    stop: '<rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor" stroke="none"/>',
     'refresh-cw': '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
   };
   const ic = (name, size) => {
     size = size || 20; let s = '';
-    try { if (window.ico) s = ico(name, size) || ''; } catch (e) { s = ''; }
+    try { if (window.ico && !(P[name] && ico.has && !ico.has(name))) s = ico(name, size) || ''; } catch (e) { s = ''; }   // our own glyphs (stop) never hit the set's fallback
     if (s) return s;
     const p = P[name]; if (!p) return '';
     return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
@@ -156,7 +166,9 @@
   // ───────────────────────── derived state ─────────────────────────
   const STATES = ['bg', 'enable', 'ios', 'play', 'web', 'walk'];
   const guessState = () => isTWA() ? 'enable' : isIOS() ? 'ios' : isAndroid() ? 'play' : 'web';
-  T.stateNow = () => T.walk.on && T.walk.mode === 'walk' ? 'walk' : (T.sum && STATES.indexOf(T.sum.state) >= 0 && T.sum.state !== 'walk') ? T.sum.state : guessState();
+  // the server's own state (ignoring a walk in progress), then the state the status line shows
+  const baseState = () => (T.sum && STATES.indexOf(T.sum.state) >= 0 && T.sum.state !== 'walk') ? T.sum.state : guessState();
+  T.stateNow = () => T.walk.on && T.walk.mode === 'walk' ? 'walk' : baseState();
   T.goal = () => (T.sum && Number(T.sum.goal)) || 8000;
   T.serverCounted = () => (T.sum && T.sum.today && Number(T.sum.today.counted)) || 0;
   T.pending = () => Math.max(0, T.walk.steps - T.walk.sent);
@@ -183,7 +195,6 @@
   const dateLabel = () => fmtKey(todayKey(), { weekday: 'short', day: 'numeric', month: 'short' });
   const SRC = { manual: ['Manual', 0], device: ['Walk', 1], googlefit: ['Fit', 2], shortcut: ['iPhone', 2], android: ['Android', 3], healthconnect: ['Health', 3] };
   const srcLabel = (src, fallback) => _esc((SRC[src] || [src || fallback || ''])[0]);
-  const srcBadge = (src, trust) => { const s = SRC[src] || [src || 'Manual', trust || 0]; const tr = clamp(Math.round(Number(trust != null ? trust : s[1])) || 0, 0, 3); return '<span class="st-src t' + tr + '">' + _esc(s[0]) + '</span>'; };
   T.friendCount = () => T.friends && T.friends.friends ? T.friends.friends.length : (T.board.cache['friends:today'] && T.board.cache['friends:today'].top ? Math.max(0, T.board.cache['friends:today'].top.filter(r => !r.isMe).length) : 0);
 
   // ───────────────────────── ring ─────────────────────────
@@ -213,31 +224,30 @@
     '<path d="M0 246 C70 214 140 236 214 222 S338 200 400 226 V320 H0Z" fill="#2B1621" opacity=".6"/>' +
     '<path d="M0 274 C92 252 176 270 256 256 S360 246 400 262 V320 H0Z" fill="#1B1019" opacity=".75"/>' +
     '<path class="st-route" d="M24 312 C96 282 118 250 182 246 S300 226 382 180" fill="none" stroke="#F3E9D8" stroke-opacity=".55" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 10"/></svg>';
+  // one line under the count: "4.9 km · 257 kcal · 6-day streak" (the streak only once it is at least a day)
+  const statsLine = n => { const m = metrics(n), sk = (T.sum && Math.round(Number(T.sum.streak))) || 0; return [m.km + ' ' + t('km'), fmt(m.kcal) + ' ' + t('kcal')].concat(sk >= 1 ? [sk === 1 ? t('streak1') : t('streak', { n: fmt(sk) })] : []).join(' · '); };
+  // a drawn dusk walk (no stock photo): sky gradient, glow behind the ring, two hill lines and a dotted route
   function hero() {
-    const has = !!T.sum; const n = T.counted(), g = T.goal(), pct = T.pct(), done = has && n >= g; const m = metrics(n);
-    // a drawn dusk walk (no stock photo): sky gradient, glow behind the ring, two hill lines and a dotted route
-    let h = '<section class="st-hero cv tone-ink' + (done ? ' is-done' : '') + (T.walk.on ? ' is-live' : '') + '">' + ART;
-    h += '<div class="st-hero-top">' + (T.walk.on ? '<span class="st-live" id="stLive"><i></i>' + (isHi() ? 'लाइव गिनती' : 'Counting live') + '</span>' : liveAsk() ? '<button type="button" class="btn glass sm st-live-btn" onclick="StepsTab.liveStart(true)">' + ic('footprints', 16) + (isHi() ? 'लाइव गिनो' : 'Count live') + '</button>' : '<span></span>') + '</div>';
+    const has = !!T.sum, failed = !has && T.loaded && !T.loading; const n = T.counted(), g = T.goal(), pct = T.pct(), done = has && n >= g;
+    let h = '<section class="st-hero' + (done ? ' is-done' : '') + (T.walk.on ? ' is-live' : '') + '">' + ART;
+    h += '<div class="st-hero-top">' + (T.walk.on ? '<span class="st-live" id="stLive"><i></i>' + _esc(t('live')) + '</span>' : '') + '</div>';
     h += '<div class="st-ring' + (done ? ' done' : '') + '">' + T.ringSVG(has ? pct : 0, 200, { stroke: 12, from: T._ringPct }) + (done ? '<span class="st-done-check">' + ic('check', 16) + '</span>' : '') + '<div class="st-ring-in">';
-    const failed = !has && T.loaded && !T.loading;
-    if (has || failed) h += '<div class="st-count' + (T.walk.on ? ' live' : '') + '" id="stCount">' + fmt(n) + '</div><div class="st-of">' + _esc(t('of', { g: fmt(g) })) + '</div>';
+    if (has || failed) h += '<div class="st-count" id="stCount">' + fmt(n) + '</div><div class="st-of">' + _esc(t('of', { g: fmt(g) })) + '</div>';
     else h += skel('st-sk-count') + skel('st-sk-of');
     h += '</div></div>';
-    if (has || failed) h += '<div class="st-metrics" id="stMetrics"><span><b>' + m.km + '</b> ' + _esc(t('km')) + '</span><i></i><span><b>' + fmt(m.kcal) + '</b> ' + _esc(t('kcal')) + '</span><i></i><span><b>' + fmt(m.min) + '</b> ' + _esc(t('min')) + '</span></div>';
-    else h += '<div class="st-metrics">' + skel('', '180px', '12px') + '</div>';
-    h += '</section><div class="st-under">' + pill();
-    if (has) h += '<p class="st-nudge" id="stNudge">' + _esc(nudge(n, g)) + '</p>';
-    else if (failed) h += '<p class="st-nudge">' + _esc(t('noData')) + '</p><button class="b-chip" onclick="StepsTab.load(true)">' + ic('refresh-cw', 14) + (isHi() ? 'फिर कोशिश' : 'Retry') + '</button>';
-    h += '</div>';
-    return h;
+    h += (has || failed) ? '<p class="st-stats" id="stMetrics">' + _esc(statsLine(n)) + '</p>' : '<p class="st-stats">' + skel('', '180px', '12px') + '</p>';
+    return h + '</section>';
   }
-  const nudge = (n, g) => { const left = g - n; return n >= g ? t('goalDone') : n === 0 ? '' : left <= 1000 ? t('almost', { n: fmt(left) }) : t('left', { n: fmt(left) }); };
-  function pill() {
+  // one quiet line under the ring: where today's count comes from, and the one thing to do about it
+  function statusLine() {
     if (!T.sum && !T.loaded && !T.walk.on) return skel('st-sk-pill');
-    const st = T.stateNow(); let label = t(st), sub = '';
-    if (st === 'bg' && T.sum && T.sum.today && T.sum.today.synced_at) sub = ' · ' + ago(T.sum.today.synced_at);
-    const icon = st === 'walk' ? 'walk' : st === 'bg' ? 'zap' : st === 'ios' || st === 'play' || st === 'enable' ? 'smartphone' : 'footprints';
-    return '<button class="st-pill s-' + st + '" id="stPill" data-state="' + st + '" onclick="StepsTab.pillTap()" aria-label="' + _esc(label) + '"><span class="st-dot"></span>' + ic(icon, 16) + '<span>' + _esc(label) + _esc(sub) + '</span>' + (st !== 'bg' && st !== 'walk' ? ic('chevron-right', 14) : '') + '</button>';
+    const st = T.stateNow(); let lead = '', act = '', icon = 'smartphone';
+    if (st === 'bg') { lead = t('bg') + (T.sum && T.sum.today && T.sum.today.synced_at ? ' · ' + ago(T.sum.today.synced_at) : ''); icon = 'zap'; }
+    else if (st === 'walk') { lead = t('walk'); icon = 'walk'; }
+    else if (st === 'web') { lead = T.walk.on ? t('openLive') : t('web'); act = t('log'); icon = 'footprints'; }
+    else { act = t(st); icon = st === 'play' ? 'download' : 'smartphone'; }
+    return '<button type="button" class="st-status s-' + st + '" id="stPill" data-state="' + st + '" onclick="StepsTab.pillTap()">' + ic(icon, 16) +
+      '<span class="st-status-t">' + (lead ? '<span>' + _esc(lead) + '</span>' : '') + (lead && act ? ' · ' : '') + (act ? '<span class="st-status-a">' + _esc(act) + '</span>' : '') + '</span>' + (act ? ic('chevron-right', 14) : '') + '</button>';
   }
   T.pillTap = function () {
     hap('light'); const st = T.stateNow();
@@ -247,54 +257,40 @@
     if (st === 'walk') { const el = document.getElementById('stWalk'); if (el) el.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'center' }); return; }
     const td = (T.sum && T.sum.today) || {}; _toast((isHi() ? 'स्रोत: ' : 'Source: ') + ((SRC[td.source] || [td.source || 'device'])[0]) + (td.synced_at ? ' · ' + ago(td.synced_at) : ''));
   };
+  // walk mode: steps · time · km, and one line when another source owns today's total
   function walkCard() {
     if (!T.walk.on || T.walk.mode !== 'walk') return '';
-    const n = T.walk.steps, m = metrics(n);
-    return '<section class="b-card st-walk" id="stWalk"><div class="st-walk-head"><span class="b-eyebrow"><span class="st-dot" style="width:8px;height:8px;border-radius:50%;background:var(--move);display:inline-block"></span>' + _esc(t('walking')) + '</span><button class="b-btn ghost sm" onclick="StepsTab.walkStop()">' + ic('x', 16) + _esc(t('stop')) + '</button></div>' +
-      '<div class="st-walk-nums"><div><b id="stWalkSteps">' + fmt(n) + '</b><small>' + (isHi() ? 'कदम' : 'steps') + '</small></div><div><b id="stWalkTime">' + walkTime() + '</b><small>' + (isHi() ? 'समय' : 'time') + '</small></div><div><b id="stWalkKm">' + m.km + '</b><small>' + _esc(t('km')) + '</small></div></div>' +
-      '<div class="st-chiprow" style="justify-content:center"><button class="b-chip move" onclick="StepsTab.learn(\'news\')">' + ic('play', 14) + (isHi() ? 'ख़बरें सुनें' : 'Listen to news') + '</button><button class="b-chip move" onclick="StepsTab.learn(\'bro\')">' + ic('sparkles', 14) + (isHi() ? 'Bro से बात करें' : 'Talk to Bro') + '</button></div>' +
-      '<div class="st-walk-hint">' + _esc(t('keepOn')) + '</div>' +
-      (T.walk.absorbs === false ? '<div class="st-note" id="stWalkNote">' + ic('info', 14) + _esc(t('walkNoCountHint', { src: srcName() })) + '</div>' : '') + '</section>';
+    const n = T.walk.steps;
+    return '<section class="ui-card st-walk" id="stWalk"><div class="st-walk-nums">' +
+      '<div><b id="stWalkSteps">' + fmt(n) + '</b><small>' + _esc(t('steps')) + '</small></div>' +
+      '<div><b id="stWalkTime">' + walkTime() + '</b><small>' + _esc(t('time')) + '</small></div>' +
+      '<div><b id="stWalkKm">' + metrics(n).km + '</b><small>' + _esc(t('km')) + '</small></div></div>' +
+      (T.walk.absorbs === false ? '<p class="st-walk-note" id="stWalkNote">' + _esc(t('walkNote', { src: srcName() })) + '</p>' : '') + '</section>';
   }
   const srcName = () => { const td = (T.sum && T.sum.today) || {}; return (SRC[td.source] || [td.source || 'sync'])[0]; };
   const walkTime = () => { const s = T.walk.started ? Math.floor((Date.now() - T.walk.started) / 1000) : 0; const mm = Math.floor(s / 60), ss = s % 60; return (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss; };
-  T.learn = function (tab) { hap('light'); if (typeof switchTab === 'function') switchTab(tab); };
-  const mascotSVG = () => '<svg viewBox="0 0 96 96" fill="none" aria-hidden="true"><circle cx="48" cy="80" r="34" fill="var(--move-soft,#CFF3EC)"/><circle cx="46" cy="26" r="13" fill="var(--move,#B5402A)"/><circle cx="50" cy="24" r="2" fill="#17141F"/><path d="M44 30q4 3 8-1" stroke="#17141F" stroke-width="2" stroke-linecap="round"/><path d="M46 39v20" stroke="var(--move-deep,#8E2F1E)" stroke-width="9" stroke-linecap="round"/><path d="M46 56 36 76" stroke="var(--move-deep,#8E2F1E)" stroke-width="8" stroke-linecap="round"/><path d="M46 56l12 10 2 12" stroke="var(--move-deep,#8E2F1E)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M46 42 34 52" stroke="var(--move,#B5402A)" stroke-width="7" stroke-linecap="round"/><path d="M46 42l12 8 8-4" stroke="var(--move,#B5402A)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="72" cy="20" r="3" fill="#B5402A"/><circle cx="20" cy="40" r="2" fill="#B5402A"/><circle cx="78" cy="48" r="2" fill="#1F1E1C"/></svg>';
-  const mascot = () => (window.mascot ? window.mascot('walking', 72) : (T.mascot === true ? '<img src="/app/mascot.svg" alt="" width="96" height="96">' : mascotSVG()));
-  function podium() {
-    const d = T.board.cache['friends:today'];
-    if (!T.loaded && !d) return '<section class="b-card st-podium"><div class="st-podium-head">' + skel('', '90px', '12px') + skel('', '60px', '12px') + '</div><div class="st-podium-row">' + [40, 56, 28].map(hh => '<div class="st-pod">' + skel('', '48px', '48px').replace('b-skel', 'b-skel round') + skel('', '56px', '10px') + skel('', '100%', hh + 'px') + '</div>').join('') + '</div></section>';
-    if (T.friendCount() === 0 || !d || !d.top || d.top.length < 2) {
-      return '<section class="b-card st-empty" id="stEmpty">' + mascot() + '<div><h3>' + _esc(t('emptyH')) + '</h3><button class="b-btn move sm" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 16) + _esc(t('invite')) + '</button></div></section>';
-    }
-    const top = d.top.slice(0, 3); const order = [top[1], top[0], top[2]]; const cls = ['p2', 'p1', 'p3'];
-    let h = '<section class="b-card st-podium"><div class="st-podium-head"><span class="b-eyebrow">' + _esc(t('friends')) + ' · ' + _esc(t('today')) + '</span><button class="b-chip" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 14) + _esc(t('invite')) + '</button></div><div class="st-podium-row">';
-    order.forEach((r, i) => { if (!r) { h += '<div></div>'; return; } h += '<button class="st-pod ' + cls[i] + (r.isMe ? ' me' : '') + '" onclick="StepsTab.podTap()">' + avatar(r) + '<span class="st-pod-name">' + _esc(r.isMe ? t('you') : r.name) + '</span><span class="st-pod-steps">' + fmt(r.steps) + '</span><span class="st-pod-bar">' + (i === 1 ? 1 : i === 0 ? 2 : 3) + '</span></button>'; });
-    return h + '</div></section>';
-  }
-  T.podTap = function () { hap('light'); const el = document.getElementById('stBoard'); if (el) el.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'start' }); };
-  function streak() {
-    if (!T.sum) return '<section class="b-card st-streak"><div class="st-streak-l">' + skel('', '36px', '36px').replace('b-skel', 'b-skel round') + '<div>' + skel('', '110px', '16px') + skel('', '70px', '10px') + '</div></div>' + skel('', '80px', '36px') + '</section>';
-    const n = Number(T.sum.streak) || 0, fz = Number(T.sum.freezes_left) || 0, lg = Number(T.sum.longest) || 0;
-    return '<section class="b-card st-streak" id="stStreak"><div class="st-streak-l"><span class="st-flame' + (n ? '' : ' cold') + '">' + ic('flame', 20) + '</span><div><b>' + _esc(n === 0 ? t('noStreak') : n === 1 ? t('streak1') : t('streak', { n: fmt(n) })) + '</b>' + (lg > n ? '<small>' + _esc(t('longest', { n: fmt(lg) })) + '</small>' : '') + '</div></div>' +
-      '<button class="st-freeze' + (fz ? '' : ' none') + '" onclick="StepsTab.openSheet(\'freeze\')" aria-label="Streak freeze">' + ic('snowflake', 14) + _esc(fz === 0 ? t('noFreeze') : fz === 1 ? t('freeze', { n: 1 }) : t('freezes', { n: fz })) + '</button></section>';
+  // the one primary action on the screen
+  function primary() {
+    const on = T.walk.on && T.walk.mode === 'walk';
+    return '<button type="button" class="ui-btn wide st-go' + (on ? ' on' : '') + '" id="stGo" onclick="StepsTab.' + (on ? 'walkStop' : 'walkStart') + '()">' + ic(on ? 'stop' : 'walk', 20) + _esc(on ? t('stopWalk') : t('startWalk')) + '</button>';
   }
   function week() {
-    const W = 358, BW = 28, slot = W / 7, top = 16, barH = 96, lblH = 20, H = top + barH + lblH;
-    let h = '<section class="b-card st-week"><div class="st-week-head"><span class="b-eyebrow">' + (isHi() ? 'पिछले 7 दिन' : 'Last 7 days') + '</span>';
+    const W = 358, BW = 28, slot = W / 7, top = 30, barH = 96, lblH = 22, H = top + barH + lblH;
     const days = weekDays();
-    if (days) { const met = days.filter(d => d && d.goalMet).length; h += '<span class="b-cap">' + met + '/7 ' + (isHi() ? 'लक्ष्य पूरे' : 'goals met') + '</span>'; }
-    h += '</div><svg viewBox="0 0 ' + W + ' ' + H + '" aria-label="7-day steps">';
+    let h = '<section class="ui-card st-week" aria-labelledby="stWeekH"><div class="st-card-h"><h2 id="stWeekH">' + _esc(t('thisWeek')) + '</h2>';
+    if (days) h += '<span class="st-week-cap" id="stWeekCap">' + _esc(t('goalsMet', { n: days.filter(d => d && d.goalMet).length })) + '</span>';
+    h += '</div><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + _esc(t('thisWeek')) + '">';
     const g = T.goal(); const vals = days ? days.map(d => Number(d.counted) || 0) : [0, 0, 0, 0, 0, 0, 0]; const max = Math.max(g * 1.15, ...vals, 1);
     const yOf = v => top + barH - clamp(v / max, 0, 1) * barH;
     const gy = yOf(g);
-    h += '<line class="goal-line" x1="0" x2="' + W + '" y1="' + gy.toFixed(1) + '" y2="' + gy.toFixed(1) + '"/><text class="goal-lbl" x="0" y="' + (gy - 5).toFixed(1) + '">' + (isHi() ? 'लक्ष्य ' : 'goal ') + fmt(g) + '</text>';
+    // the goal line, with its key in the top-left corner (never on top of a bar)
+    h += '<line class="goal-line" x1="0" x2="' + W + '" y1="' + gy.toFixed(1) + '" y2="' + gy.toFixed(1) + '"/><line class="goal-line" x1="0" x2="16" y1="7" y2="7"/><text class="goal-lbl" x="22" y="11">' + (isHi() ? 'लक्ष्य ' : 'Goal ') + fmt(g) + '</text>';
     for (let i = 0; i < 7; i++) {
       const x = slot * i + (slot - BW) / 2, d = days ? days[i] : null, v = vals[i], last = i === 6;
       const hh = days ? Math.max(v > 0 ? 6 : 3, barH - (yOf(v) - top)) : 3 + ((i * 37) % 50);
       const y = top + barH - hh;
       h += '<rect class="bar' + (d && d.goalMet ? ' met' : '') + (last && days ? ' today' : '') + (!days ? ' b-skel' : '') + '" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + BW + '" height="' + hh.toFixed(1) + '" rx="8"/>';
-      if (days && last && v > 0) h += '<text class="val" x="' + (x + BW / 2).toFixed(1) + '" y="' + (y - 5).toFixed(1) + '">' + fmt(v) + '</text>';
+      if (days && last && v > 0) h += '<text class="val" x="' + (x + BW / 2).toFixed(1) + '" y="' + (y - 6).toFixed(1) + '">' + fmt(v) + '</text>';
       let lbl = ''; if (d && d.date) lbl = fmtKey(d.date, { weekday: isHi() ? 'short' : 'narrow' }).replace(/\.$/, '').slice(0, 2);
       h += '<text class="day' + (last ? ' today' : '') + '" x="' + (x + BW / 2).toFixed(1) + '" y="' + (H - 4) + '">' + _esc(lbl) + '</text>';
     }
@@ -313,47 +309,50 @@
     const tail = src.slice(-7); const pad = []; for (let i = 7 - tail.length; i > 0; i--) pad.push(empty(keyShift(tk, -(tail.length + i - 1))));
     return pad.concat(tail);
   }
-  function boardRow(r, rank, opts) {
-    opts = opts || {}; const me = !!r.isMe; const rk = Math.max(0, Math.round(Number(rank || r.rank) || 0)); const stk = Math.max(0, Math.round(Number(r.streak) || 0));
-    return '<div class="st-row' + (me ? ' me' : '') + (opts.sticky ? ' sticky' : '') + '" data-id="' + _esc(r.id || '') + '">' +
-      (rk >= 1 && rk <= 3 ? '<span class="st-medal m' + rk + '">' + rk + '</span>' : '<span class="st-rank">' + (rk ? '#' + fmt(rk) : '·') + '</span>') + avatar(r) +
-      '<div class="st-name"><b>' + _esc(me ? t('you') : r.name) + '</b><small>' + (stk ? '<span style="display:inline-flex;align-items:center;gap:2px;color:var(--b-primary)">' + ic('flame', 11) + fmt(stk) + '</span>' : '') + srcBadge(r.source, r.trust) + '</small></div>' +
-      '<div class="st-steps">' + fmt(r.steps) + '<small>' + (T.board.period === 'week' ? (isHi() ? 'इस हफ़्ते' : 'this week') : (isHi() ? 'कदम' : 'steps')) + '</small></div>' +
-      (me ? '<span></span>' : '<button class="st-more" onclick="StepsTab.openSheet(\'report\',' + jsStr(r.id || '') + ')" aria-label="Report">' + ic('more-horizontal', 18) + '</button>') + '</div>';
+  // a board row: rank, avatar, name (+ flame streak), steps, "…" (report)
+  function boardRow(r, rank, cls) {
+    const me = !!r.isMe; const rk = Math.max(0, Math.round(Number(rank || r.rank) || 0)); const stk = Math.max(0, Math.round(Number(r.streak) || 0));
+    return '<div class="st-row' + (me ? ' me' : '') + (cls ? ' ' + cls : '') + '" data-id="' + _esc(r.id || '') + '">' +
+      '<span class="st-rank">' + (rk ? fmt(rk) : '·') + '</span>' + avatar(r) +
+      '<span class="st-name"><b>' + _esc(me ? t('you') : r.name) + '</b>' + (stk ? '<small>' + ic('flame', 12) + fmt(stk) + '</small>' : '') + '</span>' +
+      '<span class="st-steps">' + fmt(r.steps) + '</span>' +
+      (me ? '<span></span>' : '<button type="button" class="st-more" onclick="StepsTab.openSheet(\'report\',' + jsStr(r.id || '') + ')" aria-label="' + _esc(t('report', { n: r.name || '' })) + '">' + ic('more-horizontal', 18) + '</button>') + '</div>';
   }
+  const segBtn = (on, label, fn) => '<button type="button" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" onclick="' + fn + '">' + _esc(label) + '</button>';
+  // Friends: Today/Week, rows, the one Invite entry on the screen; an empty state when there is nobody to walk with yet
   function board() {
     const key = T.board.scope + ':' + T.board.period, d = T.board.cache[key], loading = !d && (T.board.loading || !T.loaded);
     const hidden = s => { const c = T.board.cache[s + ':today'] || T.board.cache[s + ':week']; return c ? !!c.hidden : null; };
-    let h = '<section class="b-card st-board" id="stBoard"><div class="st-board-head"><div><div class="b-h3">' + _esc(t(T.board.scope)) + '</div></div>' +
-      '<div class="st-seg" role="tablist">' + ['today', 'week'].map(p => '<button role="tab" aria-selected="' + (T.board.period === p) + '" class="' + (T.board.period === p ? 'on' : '') + '" onclick="StepsTab.setPeriod(\'' + p + '\')">' + _esc(t(p)) + '</button>').join('') + '</div></div>';
-    // City and India boards appear once they open; until then only Friends (no "soon" chips)
-    const scopes = ['friends', 'city', 'india'].filter(s => s === 'friends' || hidden(s) !== true);
-    if (scopes.length > 1) h += '<div class="st-scopes">' + scopes.map(s => { const hd = false; return '<button class="b-chip' + (T.board.scope === s ? ' on' : '') + '"' + (hd ? ' disabled title="' + _esc(t('opensAt')) + '"' : '') + ' onclick="StepsTab.setScope(\'' + s + '\')">' + _esc(t(s)) + (hd ? ' · ' + (isHi() ? 'जल्द' : 'soon') : '') + '</button>'; }).join('') + '</div>' + (['city', 'india'].some(s => hidden(s) === true) ? '<p class="st-scope-note">' + _esc((isHi() ? 'शहर और भारत बोर्ड ' : 'City and India boards ') + t('opensAt')) + '</p>' : '');
+    const scopes = ['friends', 'city', 'india'].filter(s => s === 'friends' || hidden(s) === false);   // City/India only once they are open
+    const known = !!(T.friends && Array.isArray(T.friends.friends)) || !!T.board.cache['friends:today'];   // API down → Retry, not "no friends"
+    const empty = T.board.scope === 'friends' && T.loaded && known && T.friendCount() === 0;
+    let h = '<section class="ui-card st-board" id="stBoard" aria-labelledby="stBoardH"><div class="st-card-h"><h2 id="stBoardH">' + _esc(t('friends')) + '</h2>' +
+      (empty ? '' : '<button type="button" class="st-link" id="stInvite" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 16) + _esc(t('inviteShort')) + '</button>') + '</div>';
+    const segs = (scopes.length > 1 ? '<div class="ui-seg" role="group" aria-label="' + _esc(t('friends')) + '">' + scopes.map(s => segBtn(T.board.scope === s, t(s), 'StepsTab.setScope(\'' + s + '\')')).join('') + '</div>' : '') +
+      (empty ? '' : '<div class="ui-seg st-seg" role="group" aria-label="' + _esc(t('today') + ' / ' + t('week')) + '">' + ['today', 'week'].map(p => segBtn(T.board.period === p, t(p), 'StepsTab.setPeriod(\'' + p + '\')')).join('') + '</div>');
+    if (segs) h += '<div class="st-segs">' + segs + '</div>';
+    if (empty) return h + '<div class="st-empty" id="stEmpty"><p>' + _esc(t('emptyP')) + '</p><button type="button" class="ui-btn sec" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 18) + _esc(t('invite')) + '</button></div></section>';
     h += '<div class="st-rows">';
-    if (loading) { h += [0, 1, 2].map(() => '<div class="st-sk-row">' + skel('c') + skel('l') + skel('n') + '</div>').join(''); }
-    else if (!d) { h += '<div class="st-board-empty"><p>' + (isHi() ? 'लीडरबोर्ड लोड नहीं हुआ।' : 'Could not load the leaderboard.') + '</p><button class="b-chip" onclick="StepsTab.loadBoard(true)">' + ic('refresh-cw', 14) + (isHi() ? 'फिर कोशिश' : 'Retry') + '</button></div>'; }
-    else if (d.hidden) { h += '<div class="st-board-empty"><p>' + _esc(t('opensAt')) + (d.cohort != null ? ' · ' + fmt(d.cohort) + '/20' : '') + '</p><button class="b-btn move sm" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 16) + _esc(t('invite')) + '</button></div>'; }
+    if (loading) h += [0, 1, 2].map(() => '<div class="st-sk-row">' + skel('c') + skel('l') + skel('n') + '</div>').join('');
+    else if (!d) h += '<div class="st-board-empty"><p>' + _esc(t('noBoard')) + '</p><button type="button" class="ui-btn sec sm" id="stBoardRetry" onclick="StepsTab.retryBoard()">' + ic('refresh-cw', 16) + _esc(t('retry')) + '</button></div>';
+    else if (d.hidden) h += '<div class="st-board-empty"><p>' + _esc(t('opensAt')) + (d.cohort != null ? ' · ' + fmt(d.cohort) + '/20' : '') + '</p><button type="button" class="ui-btn sec sm" onclick="StepsTab.openSheet(\'invite\')">' + ic('user-plus', 16) + _esc(t('invite')) + '</button></div>';
     else {
       const top = (d.top || []).slice(0, 3), ids = {}; top.forEach(r => { ids[r.id] = 1; });
       const around = (d.around || []).filter(r => !ids[r.id]); const all = top.concat(around);
-      let meShown = false; all.forEach((r, i) => { if (r.isMe) meShown = true; h += boardRow(r, r.rank || i + 1, { sticky: r.isMe }); });
-      if (!meShown && d.me) h += boardRow({ isMe: true, name: (_S().user && _S().user.name) || t('you'), hue: (T.sum && T.sum.hue) || 180, steps: d.me.steps, streak: d.me.streak, source: T.sum && T.sum.today && T.sum.today.source, trust: T.sum && T.sum.today && T.sum.today.trust }, d.me.rank, { sticky: true });
+      let meShown = false; all.forEach((r, i) => { if (r.isMe) meShown = true; h += boardRow(r, r.rank || i + 1); });
+      if (!meShown && d.me) h += boardRow({ isMe: true, name: (_S().user && _S().user.name) || t('you'), hue: (T.sum && T.sum.hue) || 180, steps: d.me.steps, streak: d.me.streak }, d.me.rank, 'sep');
     }
-    h += '</div>';
-    return h + '</section>';
+    return h + '</div></section>';
   }
-  function chips() {
-    const on = T.walk.on && T.walk.mode === 'walk';
-    return '<nav class="st-chips" aria-label="Actions">' +
-      '<button class="st-chip move' + (on ? ' on' : '') + '" onclick="StepsTab.' + (on ? 'walkStop' : 'walkStart') + '()"><span>' + ic('walk', 18) + '</span>' + _esc(on ? t('stop') : t('walkLearn')) + '</button>' +
-      (T.stateNow() === 'bg' ? '<button class="st-chip on" onclick="StepsTab.pillTap()"><span>' + ic('zap', 18) + '</span>' + (isHi() ? 'ऑटो ✓' : 'Auto ✓') + '</button>' : '<button class="st-chip" onclick="StepsTab.pillTap()"><span>' + ic('smartphone', 18) + '</span>' + (isHi() ? 'ऑटो गिनती' : 'Auto-count') + '</button>') +
-      '<button class="st-chip" onclick="StepsTab.openSheet(\'share\')"><span>' + ic('share', 18) + '</span>' + _esc(t('share')) + '</button>' +
-      '<button class="st-chip" onclick="StepsTab.openSheet(\'goal\')"><span>' + ic('target', 18) + '</span>' + _esc(t('goal')) + '</button></nav>';
-  }
+  // Retry used to refetch without drawing the result: show the loading rows, fetch, then render whatever came back
+  T.retryBoard = function () { hap('light'); T.board.loading = true; T.rerender(); return T.loadBoard(true).then(() => T.rerender()); };
   T.html = function () {
     let h = '<div class="st' + (isHi() ? ' hi' : '') + '" id="stRootIn">';
-    h += '<header class="st-top"><div><h1 class="st-h1">' + (isHi() ? 'कदम' : 'Steps') + '</h1><span class="b-eyebrow"><i></i>' + _esc(dateLabel()) + '</span></div><div class="st-top-acts"><button class="icon-btn" onclick="StepsTab.openSheet(\'invite\')" aria-label="Invite">' + ic('user-plus', 20) + '</button></div></header>';
-    h += hero() + walkCard() + podium() + streak() + week() + board() + chips();
+    h += '<header class="ui-page-h st-top"><div class="st-top-t"><h1 class="st-h1">' + (isHi() ? 'कदम' : 'Steps') + '</h1><p class="st-date" id="stDate">' + _esc(dateLabel()) + '</p></div>' +
+      '<button type="button" class="ui-iconbtn" id="stMore" onclick="StepsTab.openSheet(\'actions\')" aria-label="' + _esc(t('more')) + '" aria-haspopup="dialog">' + ic('more-horizontal', 22) + '</button></header>';
+    const failed = !T.sum && T.loaded && !T.loading;
+    h += '<div class="st-today">' + hero() + statusLine() + (failed ? '<button type="button" class="st-retry" onclick="StepsTab.load(true)">' + ic('refresh-cw', 14) + _esc(t('noToday')) + ' · ' + _esc(t('retry')) + '</button>' : '') + walkCard() + primary() + '</div>';
+    h += week() + board();
     return h + '</div>';
   };
   T.miniCard = function () {
@@ -367,7 +366,7 @@
   T.go = function () { hap('light'); if (typeof switchTab === 'function') switchTab('steps'); };
 
   // ───────────────────────── sheets (.b-sheet from theme.css, mounted on body so re-renders keep them) ─────────────────────────
-  const sh = (title, sub) => '<div class="st-sheet-h"><div><h2 class="b-h2" id="stSheetTitle">' + _esc(title) + '</h2>' + (sub ? '<p id="stSheetSub">' + _esc(sub) + '</p>' : '') + '</div><button class="icon-btn" onclick="StepsTab.closeSheet()" aria-label="' + (isHi() ? 'बंद करें' : 'Close') + '">' + ic('x', 20) + '</button></div>';
+  const sh = (title, sub) => '<div class="st-sheet-h"><div><h2 class="b-h2" id="stSheetTitle">' + _esc(title) + '</h2>' + (sub ? '<p id="stSheetSub">' + _esc(sub) + '</p>' : '') + '</div><button type="button" class="ui-iconbtn st-x" onclick="StepsTab.closeSheet()" aria-label="' + (isHi() ? 'बंद करें' : 'Close') + '">' + ic('x', 20) + '</button></div>';
   const FOCUSABLE = 'button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
   const sheetDialog = () => document.querySelector('#stSheet [role=dialog]');
   const focusables = d => Array.from(d.querySelectorAll(FOCUSABLE)).filter(el => el.offsetParent !== null || el === document.activeElement);
@@ -427,10 +426,26 @@
       case 'share': return sheetShare();
       case 'report': return sheetReport(arg);
       case 'freeze': return sheetFreeze();
+      case 'actions': return sheetActions();
       default: return sh(kind);
     }
   }
   const hi = isHi;
+  // Actions (behind More): every secondary thing on Steps, one row each — the same sheets the old chips, cards and icons opened
+  function sheetActions() {
+    const base = baseState(), fz = (T.sum && Math.round(Number(T.sum.freezes_left))) || 0;
+    const row = (id, fn, icon, title, sub) => '<button type="button" class="ui-row" id="' + id + '" onclick="' + fn + '"><span class="ui-ic">' + ic(icon, 20) + '</span><span class="ui-tx"><b>' + _esc(title) + '</b><small>' + _esc(sub) + '</small></span><span class="ui-chev">' + ic('chevron-right', 18) + '</span></button>';
+    const auto = base === 'bg' ? '' : (base === 'ios' || (base === 'web' && isIOS())) ? row('stActAuto', "StepsTab.openSheet('ios')", 'smartphone', t('ios'), t('iosSub'))
+      : base === 'enable' ? row('stActAuto', "StepsTab.openSheet('enable')", 'zap', t('autoCount'), t('autoSub')) : row('stActAuto', "StepsTab.openSheet('enable')", 'download', t('getApp'), t('appSub'));
+    return sh(t('more')) + '<div class="ui-list st-acts">' +
+      row('stActLog', "StepsTab.openSheet('manual')", 'plus', t('log'), t('logSub')) + auto +
+      row('stActGoal', "StepsTab.openSheet('goal')", 'target', t('goalRow', { g: fmt(T.goal()) }), t('goalSub')) +
+      row('stActShare', "StepsTab.openSheet('share')", 'share', t('share'), t('shareSub')) +
+      row('stActFreeze', "StepsTab.openSheet('freeze')", 'snowflake', t('freezeRow', { n: fmt(fz) }), t('freezeSub')) +
+      (liveAsk() ? row('stActLive', 'StepsTab.liveTap()', 'footprints', t('liveRow'), t('liveSub')) : '') + '</div>';
+  }
+  // iPhone: motion access needs a tap, so live counting starts from the Actions sheet (the request runs inside this click)
+  T.liveTap = function () { T.closeSheet(); return T.liveStart(true); };
   // Enable (Android TWA / Play)
   function sheetEnable() {
     const st = T.stateNow(); const enable = st === 'enable' || (st === 'walk' && isTWA());
@@ -438,20 +453,20 @@
     h += '<ul class="st-why"><li><span>' + ic('zap', 18) + '</span>' + (hi() ? 'फ़ोन का स्टेप सेंसर — बैटरी नहीं खाता' : 'Uses the phone’s step sensor — no battery drain') + '</li><li><span>' + ic('trophy', 18) + '</span>' + (hi() ? 'दोस्तों के बोर्ड पर असली सैर गिनती है' : 'Real walks count on the friends board') + '</li><li><span>' + ic('info', 18) + '</span>' + (hi() ? 'निजी: सिर्फ़ रोज़ का कुल सिंक होता है' : 'Private: only your daily total is synced') + '</li></ul>';
     if (!enable) {
       const A = T.android || {};
-      if (A.ready) h += '<div class="st-actions"><a class="b-btn wide" style="background:#17141F;box-shadow:0 4px 0 0 #000" href="/download/brodoit.apk" onclick="StepsTab.hapOnly()">' + ic('download', 18) + (hi() ? 'Brodoit ऐप इंस्टॉल करें' : 'Install Brodoit for Android') + '</a><p class="st-foot">' + (hi() ? 'v' + _esc(A.version) + ' · मुफ़्त · Install → Open → Allow' : 'v' + _esc(A.version) + ' · free · Install → Open → Allow') + '</p></div>';
-      else if (A.loaded) h += '<div class="st-test">' + ic('info', 16) + (hi() ? 'Android ऐप अभी बन रहा है — कुछ मिनट में फिर देखें।' : 'The Android app is being built — check again in a few minutes.') + '</div><div class="st-actions"><button class="b-btn ghost wide" onclick="StepsTab.closeSheet()">' + (hi() ? 'ठीक है' : 'OK') + '</button></div>';
+      if (A.ready) h += '<div class="st-actions"><a class="ui-btn wide" href="/download/brodoit.apk" onclick="StepsTab.hapOnly()">' + ic('download', 18) + (hi() ? 'Brodoit ऐप इंस्टॉल करें' : 'Install Brodoit for Android') + '</a><p class="st-foot">' + (hi() ? 'v' + _esc(A.version) + ' · मुफ़्त · Install → Open → Allow' : 'v' + _esc(A.version) + ' · free · Install → Open → Allow') + '</p></div>';
+      else if (A.loaded) h += '<div class="st-test">' + ic('info', 16) + (hi() ? 'Android ऐप अभी बन रहा है — कुछ मिनट में फिर देखें।' : 'The Android app is being built — check again in a few minutes.') + '</div><div class="st-actions"><button class="ui-btn ghost wide" onclick="StepsTab.closeSheet()">' + (hi() ? 'ठीक है' : 'OK') + '</button></div>';
       else { h += '<div class="st-test"><span class="st-spin"></span>' + (hi() ? 'देख रहे हैं…' : 'Checking…') + '</div>'; T.loadAndroid(); }
-      h += '<div class="st-actions"><button class="b-btn ghost wide" onclick="StepsTab.openSheet(\'manual\')">' + (hi() ? 'आज के कदम ख़ुद लिखें' : 'Or log today by hand') + '</button></div>';
+      h += '<div class="st-actions"><button class="ui-btn ghost wide" onclick="StepsTab.openSheet(\'manual\')">' + (hi() ? 'आज के कदम ख़ुद लिखें' : 'Or log today by hand') + '</button></div>';
       return h;
     }
     const E = T.enable;
-    if (E.busy) h += '<div class="st-test" id="stEnableWait" role="status"><span class="st-spin"></span>' + (hi() ? 'ऐप से पहला सिंक आने का इंतज़ार…' : 'Waiting for the app’s first sync…') + '<span style="margin-left:auto;font-variant-numeric:tabular-nums">' + E.left + 's</span></div><div class="st-actions"><button class="b-btn ghost wide" onclick="StepsTab.enableCancel()">' + (hi() ? 'रद्द करें' : 'Cancel') + '</button></div>';
+    if (E.busy) h += '<div class="st-test" id="stEnableWait" role="status"><span class="st-spin"></span>' + (hi() ? 'ऐप से पहला सिंक आने का इंतज़ार…' : 'Waiting for the app’s first sync…') + '<span style="margin-left:auto;font-variant-numeric:tabular-nums">' + E.left + 's</span></div><div class="st-actions"><button class="ui-btn ghost wide" onclick="StepsTab.enableCancel()">' + (hi() ? 'रद्द करें' : 'Cancel') + '</button></div>';
     else if (E.failed) {
       h += '<div class="st-test" id="stEnableFail">' + ic('info', 16) + (hi() ? 'अभी कुछ सिंक नहीं हुआ।' : 'Nothing synced yet.') + '</div>';
       h += '<ol class="st-steps-list" id="stEnableHow"><li><div><b>' + (hi() ? 'ऐप को अनुमति दें' : 'Allow the app') + '</b><p>' + (hi() ? 'Android Settings → Apps → Brodoit → Permissions → Physical activity → Allow।' : 'Android Settings → Apps → Brodoit → Permissions → Physical activity → Allow.') + '</p></div></li><li><div><b>' + (hi() ? 'वापस आएँ' : 'Come back here') + '</b><p>' + (hi() ? 'पहला सिंक कुछ मिनट में आता है — फिर यह पिल “ऑटो-सिंक चालू” दिखाएगी।' : 'The first sync lands within a few minutes — this pill then reads “Auto-syncing”.') + '</p></div></li></ol>';
-      h += '<div class="st-actions"><button class="b-btn move wide" id="stEnableBtn" onclick="StepsTab.enableTap()">' + ic('refresh-cw', 18) + (hi() ? 'फिर जाँचें' : 'Check again') + '</button><button class="b-btn ghost wide" onclick="StepsTab.enableWalk()">' + ic('walk', 18) + (hi() ? 'अभी Bro के साथ चलें' : 'Walk with Bro instead') + '</button><button class="b-btn ghost wide" onclick="StepsTab.openSheet(\'manual\')">' + ic('plus', 18) + (hi() ? 'कदम मैन्युअल लॉग करें' : 'Log steps manually') + '</button></div>';
+      h += '<div class="st-actions"><button class="ui-btn wide" id="stEnableBtn" onclick="StepsTab.enableTap()">' + ic('refresh-cw', 18) + (hi() ? 'फिर जाँचें' : 'Check again') + '</button><button class="ui-btn ghost wide" onclick="StepsTab.enableWalk()">' + ic('walk', 18) + (hi() ? 'अभी Bro के साथ चलें' : 'Walk with Bro instead') + '</button><button class="ui-btn ghost wide" onclick="StepsTab.openSheet(\'manual\')">' + ic('plus', 18) + (hi() ? 'कदम मैन्युअल लॉग करें' : 'Log steps manually') + '</button></div>';
     }
-    else h += '<div class="st-actions"><button class="b-btn move wide" id="stEnableBtn" onclick="StepsTab.enableTap()">' + ic('check', 18) + (hi() ? 'चालू करें' : 'Turn on') + '</button><button class="b-btn ghost wide" onclick="StepsTab.closeSheet()">' + (hi() ? 'अभी नहीं' : 'Not now') + '</button></div>';
+    else h += '<div class="st-actions"><button class="ui-btn wide" id="stEnableBtn" onclick="StepsTab.enableTap()">' + ic('check', 18) + (hi() ? 'चालू करें' : 'Turn on') + '</button><button class="ui-btn ghost wide" onclick="StepsTab.closeSheet()">' + (hi() ? 'अभी नहीं' : 'Not now') + '</button></div>';
     return h;
   }
   T.hapOnly = () => hap('medium');
@@ -501,12 +516,12 @@
   function sheetManual() {
     const m = T.manual, v = Number(m.value) || 0, over = v > 20000;
     let h = sh(hi() ? 'कदम लॉग करें' : 'Log steps', hi() ? 'अपने फ़ोन या घड़ी के ऐप से आज की संख्या।' : 'Today’s count from your phone or watch app.');
-    h += '<div class="st-seg" style="justify-self:center">' + [['today', hi() ? 'आज' : 'Today'], ['yesterday', hi() ? 'कल' : 'Yesterday']].map(x => '<button class="' + (m.date === x[0] ? 'on' : '') + '" onclick="StepsTab.manualDate(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div>';
+    h += '<div class="ui-seg st-seg" role="group" style="justify-self:center">' + [['today', hi() ? 'आज' : 'Today'], ['yesterday', hi() ? 'कल' : 'Yesterday']].map(x => '<button type="button" class="' + (m.date === x[0] ? 'on' : '') + '" aria-pressed="' + (m.date === x[0]) + '" onclick="StepsTab.manualDate(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div>';
     h += '<div class="st-keyval' + (over ? ' over' : '') + '" id="stKeyVal">' + (v ? fmt(v) : '0') + '<small>' + (over ? (hi() ? 'अधिकतम 20,000 प्रति दिन' : 'Max 20,000 a day') : (hi() ? 'कदम' : 'steps')) + '</small></div>';
     h += '<div class="st-keys">' + ['1', '2', '3', '4', '5', '6', '7', '8', '9'].map(k => '<button onclick="StepsTab.key(\'' + k + '\')">' + k + '</button>').join('') + '<button class="fn" onclick="StepsTab.key(\'000\')">000</button><button onclick="StepsTab.key(\'0\')">0</button><button class="fn" onclick="StepsTab.key(\'back\')" aria-label="Delete">' + ic('x', 18) + '</button></div>';
     h += '<div class="st-lbl">' + (hi() ? 'किस ऐप से?' : 'From which app?') + '</div><div class="st-chiprow">' + APPS.map(a => '<button class="b-chip' + (m.app === a[0] ? ' on' : '') + '" onclick="StepsTab.manualApp(\'' + a[0] + '\')">' + a[1] + '</button>').join('') + '</div>';
     h += '<div class="st-note">' + ic('info', 14) + (hi() ? 'आपके लक्ष्य में गिनती है, बोर्ड में नहीं' : 'Counts for your goal, not boards') + '</div>';
-    h += '<button class="b-btn move wide" id="stManualSave" onclick="StepsTab.manualSave()"' + (!v || over || m.saving ? ' disabled style="opacity:.5"' : '') + '>' + (m.saving ? '<span class="st-spin"></span>' : ic('check', 18)) + (hi() ? 'सेव करें' : 'Save') + '</button>';
+    h += '<button class="ui-btn wide" id="stManualSave" onclick="StepsTab.manualSave()"' + (!v || over || m.saving ? ' disabled' : '') + '>' + (m.saving ? '<span class="st-spin"></span>' : ic('check', 18)) + (hi() ? 'सेव करें' : 'Save') + '</button>';
     return h;
   }
   T.key = function (k) { hap('light'); let v = T.manual.value || ''; if (k === 'back') v = v.slice(0, -1); else if (v.length < 6) v = (v + k).replace(/^0+(?=\d)/, '').slice(0, 6); T.manual.value = v; T.renderSheet(); };
@@ -535,10 +550,10 @@
       if (qr) h += '<div class="st-qr">' + qr + '</div>';
       h += '<div class="st-code" id="stCode">' + _esc(inv.code) + '<button class="icon-btn" onclick="StepsTab.copy(\'code\')" aria-label="Copy code" style="margin-left:8px">' + ic('copy', 18) + '</button></div>';
       h += '<div class="st-url">' + _esc(url.replace(/^https?:\/\//, '')) + '</div>';
-      h += '<div class="st-actions two"><a class="b-btn st-wa" id="stWa" href="https://wa.me/?text=' + encodeURIComponent(inviteMsg(inv)) + '" target="_blank" rel="noopener" onclick="StepsTab.hapOnly()">' + ic('message-circle', 18) + 'WhatsApp</a>' +
-        (navigator.share ? '<button class="b-btn move" onclick="StepsTab.shareInvite()">' + ic('share', 18) + (hi() ? 'शेयर' : 'Share') + '</button>' : '<button class="b-btn ghost" onclick="StepsTab.copy(\'link\')">' + ic('link', 18) + (hi() ? 'लिंक कॉपी' : 'Copy link') + '</button>') + '</div>';
+      h += '<div class="st-actions two"><a class="ui-btn st-wa" id="stWa" href="https://wa.me/?text=' + encodeURIComponent(inviteMsg(inv)) + '" target="_blank" rel="noopener" onclick="StepsTab.hapOnly()">' + ic('message-circle', 18) + 'WhatsApp</a>' +
+        (navigator.share ? '<button class="ui-btn" onclick="StepsTab.shareInvite()">' + ic('share', 18) + (hi() ? 'शेयर' : 'Share') + '</button>' : '<button class="ui-btn ghost" onclick="StepsTab.copy(\'link\')">' + ic('link', 18) + (hi() ? 'लिंक कॉपी' : 'Copy link') + '</button>') + '</div>';
     }
-    h += '<div class="st-lbl" style="margin-top:4px">' + (hi() ? 'कोड मिला है?' : 'Have a friend’s code?') + '</div><form class="st-inline" onsubmit="event.preventDefault();StepsTab.addCode()"><input class="st-input sm" id="stCodeIn" maxlength="8" placeholder="ABC123" autocomplete="off" autocapitalize="characters"><button class="b-btn move sm" type="submit">' + ic('plus', 16) + (hi() ? 'जोड़ें' : 'Add') + '</button></form>';
+    h += '<div class="st-lbl" style="margin-top:4px">' + (hi() ? 'कोड मिला है?' : 'Have a friend’s code?') + '</div><form class="st-inline" onsubmit="event.preventDefault();StepsTab.addCode()"><input class="st-input sm" id="stCodeIn" maxlength="8" placeholder="ABC123" autocomplete="off" autocapitalize="characters"><button class="ui-btn sm" type="submit">' + ic('plus', 16) + (hi() ? 'जोड़ें' : 'Add') + '</button></form>';
     const fr = T.friends && T.friends.friends || [];
     if (fr.length) { h += '<div class="st-lbl">' + _esc(t('friends')) + ' · ' + fr.length + '</div><div>' + fr.map(f => { const stk = Math.max(0, Math.round(Number(f.streak) || 0)); return '<div class="st-friend">' + avatar(f) + '<b>' + _esc(f.name) + '</b><small>' + fmt(f.today) + ' ' + (hi() ? 'आज' : 'today') + (stk ? ' · ' + fmt(stk) + 'd' : '') + '</small><button class="st-more" onclick="StepsTab.removeFriend(' + jsStr(f.id) + ')" aria-label="' + _esc((hi() ? 'हटाएँ ' : 'Remove ') + (f.name || '')) + '">' + ic('x', 16) + '</button></div>'; }).join('') + '</div>'; }
     return h;
@@ -573,7 +588,7 @@
     if (ts && ts.ok) h += '<div class="st-test ok">' + ic('check', 16) + (hi() ? 'iPhone से ' + fmt(ts.count) + ' कदम मिले!' : 'Got ' + fmt(ts.count) + ' steps from your iPhone!') + '</div>';
     else if (ts && ts.waiting) h += '<div class="st-test"><span class="st-spin"></span>' + (hi() ? 'सुन रहे हैं… अब shortcut चलाएँ' : 'Listening… run the shortcut now') + ' <span style="margin-left:auto;font-variant-numeric:tabular-nums">' + ts.left + 's</span></div>';
     else if (ts && ts.timeout) h += '<div class="st-test">' + ic('info', 16) + (hi() ? 'कुछ नहीं आया। टोकन और URL जाँचें।' : 'Nothing arrived yet. Check the token and URL.') + '</div>';
-    h += '<button class="b-btn violet wide" onclick="StepsTab.iosTest()"' + (ts && ts.waiting ? ' disabled style="opacity:.6"' : '') + '>' + ic('zap', 18) + (hi() ? 'अभी टेस्ट करें' : 'Test now') + '</button>';
+    h += '<button class="ui-btn wide" id="stIosTest" onclick="StepsTab.iosTest()"' + (ts && ts.waiting ? ' disabled' : '') + '>' + ic('zap', 18) + (hi() ? 'अभी टेस्ट करें' : 'Test now') + '</button>';
     return h;
   }
   T.copyText = async function (txt) { let ok = false; try { await navigator.clipboard.writeText(txt); ok = true; } catch (e) {} hap(ok ? 'success' : 'error'); _toast(ok ? (hi() ? 'कॉपी हो गया' : 'Copied') : (hi() ? 'कॉपी नहीं हुआ' : 'Could not copy'), ok ? undefined : 'err'); };
@@ -599,7 +614,7 @@
     const g = T.goal(), d = T.goalDraft; const presets = [[6000, hi() ? 'आसान' : 'Easy'], [8000, hi() ? 'संतुलित' : 'Balanced'], [10000, hi() ? 'कड़ा' : 'Strong']];
     let h = sh(hi() ? 'रोज़ का लक्ष्य' : 'Daily goal', hi() ? '7–10 हज़ार अच्छा है। वह चुनें जो ज़्यादातर दिन पूरा हो।' : 'WHO suggests 7–10k. Pick what you can hit most days.');
     h += '<div class="st-goals">' + presets.map(p => '<button class="' + (g === p[0] && d == null ? 'on' : '') + '" onclick="StepsTab.setGoal(' + p[0] + ')">' + fmt(p[0]) + '<small>' + p[1] + '</small></button>').join('') + '</div>';
-    h += '<div class="st-lbl">' + (hi() ? 'कस्टम' : 'Custom') + '</div><form class="st-inline" novalidate onsubmit="event.preventDefault();StepsTab.setGoal()"><input class="st-input" id="stGoalIn" type="number" inputmode="numeric" min="500" max="100000" step="500" placeholder="' + fmt(g) + '" value="' + (d != null ? d : '') + '"><button class="b-btn move" type="submit">' + ic('check', 18) + (hi() ? 'सेट' : 'Set') + '</button></form>';
+    h += '<div class="st-lbl">' + (hi() ? 'कस्टम' : 'Custom') + '</div><form class="st-inline" novalidate onsubmit="event.preventDefault();StepsTab.setGoal()"><input class="st-input" id="stGoalIn" type="number" inputmode="numeric" min="500" max="100000" step="500" placeholder="' + fmt(g) + '" value="' + (d != null ? d : '') + '"><button class="ui-btn" type="submit">' + ic('check', 18) + (hi() ? 'सेट' : 'Set') + '</button></form>';
     h += '<div class="st-note">' + ic('info', 14) + (hi() ? 'स्ट्रीक रोज़ के लक्ष्य से गिनती है' : 'Your streak counts days you hit this goal') + '</div>';
     return h;
   }
@@ -614,7 +629,7 @@
   function sheetShare() {
     const can = !!navigator.share;
     let h = sh(t('share'), hi() ? 'स्टोरी या चैट के लिए कार्ड।' : 'A card for your story or chat.');
-    h += '<div class="st-share-prev"><figure><canvas id="stPrevStory" width="270" height="480"></canvas><figcaption>Story · 9:16</figcaption><button class="b-btn move sm" onclick="StepsTab.share(\'story\')">' + ic(can ? 'share' : 'download', 16) + (can ? (hi() ? 'शेयर' : 'Share') : (hi() ? 'सेव' : 'Save')) + '</button></figure><figure><canvas id="stPrevSquare" width="270" height="270"></canvas><figcaption>Square · 1:1</figcaption><button class="b-btn move sm" onclick="StepsTab.share(\'square\')">' + ic(can ? 'share' : 'download', 16) + (can ? (hi() ? 'शेयर' : 'Share') : (hi() ? 'सेव' : 'Save')) + '</button></figure></div>';
+    h += '<div class="st-share-prev"><figure><canvas id="stPrevStory" width="270" height="480"></canvas><figcaption>Story · 9:16</figcaption><button class="ui-btn sm" onclick="StepsTab.share(\'story\')">' + ic(can ? 'share' : 'download', 16) + (can ? (hi() ? 'शेयर' : 'Share') : (hi() ? 'सेव' : 'Save')) + '</button></figure><figure><canvas id="stPrevSquare" width="270" height="270"></canvas><figcaption>Square · 1:1</figcaption><button class="ui-btn sm" onclick="StepsTab.share(\'square\')">' + ic(can ? 'share' : 'download', 16) + (can ? (hi() ? 'शेयर' : 'Share') : (hi() ? 'सेव' : 'Save')) + '</button></figure></div>';
     h += '<div class="st-note">' + ic('info', 14) + (hi() ? 'आपका कोड कार्ड पर है — दोस्त स्कैन या टाइप करके जुड़ सकते हैं' : 'Your invite code is on the card — friends can join by typing it') + '</div>';
     return h;
   }
@@ -623,8 +638,8 @@
   function sheetReport(id) {
     const r = findRow(id) || { id, name: '?', hue: 20 };
     let h = sh((hi() ? 'रिपोर्ट करें: ' : 'Report ') + (r.name || ''), hi() ? 'रिपोर्ट गुमनाम हैं। 3 रिपोर्ट पर वॉकर बोर्ड से हट जाता है।' : 'Reports are anonymous. Three reports hide a walker from boards.');
-    h += '<div class="st-report-target">' + avatar(r) + '<div><b style="font:var(--t-h3);color:var(--b-ink)">' + _esc(r.name || '') + '</b><div class="b-cap">' + fmt(r.steps) + ' ' + (hi() ? 'कदम' : 'steps') + ' · ' + srcLabel(r.source) + '</div></div></div>';
-    h += '<div class="st-actions">' + [['fake', hi() ? 'गिनती असली नहीं लगती' : 'Steps look fake'], ['bot', hi() ? 'असली व्यक्ति नहीं' : 'Not a real person'], ['other', hi() ? 'कुछ और' : 'Something else']].map(x => '<button class="b-btn ghost wide" onclick="StepsTab.report(' + jsStr(id) + ',\'' + x[0] + '\')">' + ic('flag', 16) + x[1] + '</button>').join('') + '</div>';
+    h += '<div class="st-report-target">' + avatar(r) + '<div><b>' + _esc(r.name || '') + '</b><div class="b-cap">' + fmt(r.steps) + ' ' + (hi() ? 'कदम' : 'steps') + ' · ' + srcLabel(r.source) + '</div></div></div>';
+    h += '<div class="st-actions">' + [['fake', hi() ? 'गिनती असली नहीं लगती' : 'Steps look fake'], ['bot', hi() ? 'असली व्यक्ति नहीं' : 'Not a real person'], ['other', hi() ? 'कुछ और' : 'Something else']].map(x => '<button class="ui-btn ghost wide" onclick="StepsTab.report(' + jsStr(id) + ',\'' + x[0] + '\')">' + ic('flag', 16) + x[1] + '</button>').join('') + '</div>';
     return h;
   }
   T.report = async function (id, reason) {
@@ -637,8 +652,8 @@
     const fz = (T.sum && Number(T.sum.freezes_left)) || 0, n = (T.sum && Number(T.sum.streak)) || 0;
     let h = sh(hi() ? 'स्ट्रीक फ़्रीज़' : 'Streak freeze', hi() ? 'एक दिन छूट जाए तो फ़्रीज़ आपकी स्ट्रीक बचाता है। हर हफ़्ते 1 मिलता है।' : 'Miss a day and a freeze keeps your streak alive. You get one each week.');
     h += '<div class="st-note">' + ic('snowflake', 14) + (fz ? (hi() ? fz + ' फ़्रीज़ बचे' : fz + ' freeze' + (fz > 1 ? 's' : '') + ' left') : (hi() ? 'इस हफ़्ते कोई फ़्रीज़ नहीं बचा' : 'No freezes left this week')) + (n ? ' · ' + (hi() ? n + ' दिन की स्ट्रीक' : n + '-day streak') : '') + '</div>';
-    if (fz && n) h += '<button class="b-btn wide" style="background:var(--b-sky);box-shadow:0 4px 0 0 #0B6FB0" onclick="StepsTab.useFreeze()">' + ic('snowflake', 18) + (hi() ? 'आज के लिए फ़्रीज़ लगाएँ' : 'Use a freeze for today') + '</button>';
-    h += '<button class="b-btn ghost wide" onclick="StepsTab.closeSheet()">' + (hi() ? 'ठीक है' : 'Got it') + '</button>';
+    if (fz && n) h += '<button class="ui-btn wide" id="stFreezeUse" onclick="StepsTab.useFreeze()">' + ic('snowflake', 18) + (hi() ? 'आज के लिए फ़्रीज़ लगाएँ' : 'Use a freeze for today') + '</button>';
+    h += '<button class="ui-btn ghost wide" onclick="StepsTab.closeSheet()">' + (hi() ? 'ठीक है' : 'Got it') + '</button>';
     return h;
   }
   T.useFreeze = async function () {
@@ -730,8 +745,8 @@
     if ((el = document.getElementById('stWalkKm'))) el.textContent = metrics(W.steps).km;
     if ((el = document.getElementById('stCount'))) el.textContent = fmt(n);
     if ((el = document.querySelector('.st-hero .st-ring-prog'))) { const c = parseFloat(el.getAttribute('stroke-dasharray')) || 0; el.style.strokeDashoffset = (c * (1 - T.pct())).toFixed(2); }
-    if ((el = document.getElementById('stMetrics'))) { const m = metrics(n); const b = el.querySelectorAll('b'); if (b.length === 3) { b[0].textContent = m.km; b[1].textContent = fmt(m.kcal); b[2].textContent = fmt(m.min); } }
-    if ((el = document.getElementById('stNudge'))) { const txt = nudge(n, T.goal()); if (el.textContent !== txt) { el.textContent = txt; if (n >= T.goal() && !W._celebrated) { W._celebrated = true; hap('success'); T.rerender(); } } }
+    if ((el = document.getElementById('stMetrics'))) { const s = statsLine(n); if (el.textContent !== s) el.textContent = s; }
+    if (T.sum && n >= T.goal() && !W._celebrated) { W._celebrated = true; hap('success'); T.rerender(); }   // crossed the goal during this session
   }
   // ── Live counting: whenever Brodoit is open on an Android phone the motion sensor counts quietly (no tap, no permission) and the
   // number ticks up on Steps and on Home; iPhone needs one "Count live" tap (iOS asks for motion access). Stops when the app is
@@ -742,8 +757,8 @@
   function floorGet() { const o = ownerId(); if (!o) return 0; try { const f = (JSON.parse(localStorage.getItem(FKEY) || '{}') || {})[o]; return f && f.date === dayKey(new Date()) ? Number(f.n) || 0 : 0; } catch (e) { return 0; } }
   function floorSet(n) { const o = ownerId(); if (!o || !(n > 0)) return; try { const all = JSON.parse(localStorage.getItem(FKEY) || '{}') || {}; const d = dayKey(new Date()); const f = all[o]; if (f && f.date === d && f.n >= n) return; all[o] = { date: d, n: Math.round(n) }; localStorage.setItem(FKEY, JSON.stringify(all)); } catch (e) {} }
   function begin(mode) {
-    const td = (T.sum && T.sum.today) || {};
-    Object.assign(W, { on: true, mode, steps: 0, sent: 0, base: Math.max(T.serverCounted(), floorGet()), absorbs: Number(td.trust) >= 2 ? false : (W.absorbs == null ? null : W.absorbs), started: Date.now(), lastFlush: Date.now(), _lp: 0, _sm: 0, _lastStep: 0, _above: false, _init: false, _celebrated: false });
+    const td = (T.sum && T.sum.today) || {}; const doneAlready = !!T.sum && T.counted() >= T.goal();
+    Object.assign(W, { on: true, mode, steps: 0, sent: 0, base: Math.max(T.serverCounted(), floorGet()), absorbs: Number(td.trust) >= 2 ? false : (W.absorbs == null ? null : W.absorbs), started: Date.now(), lastFlush: Date.now(), _lp: 0, _sm: 0, _lastStep: 0, _above: false, _init: false, _celebrated: doneAlready });
     window.addEventListener('devicemotion', onMotion); window.addEventListener('pagehide', onHide);
     W.timer = setInterval(tickWalk, 1000); W.flushTimer = setInterval(() => T.walkFlush(false), 60000);
   }
@@ -839,7 +854,6 @@
   T.loadFriends = async function () { const r = await _api('/friends'); if (r && !r.error) T.friends = r; return r; };
   T.setPeriod = function (p) { if (p !== 'today' && p !== 'week') return; hap('light'); T.board.period = p; T.rerender(); T.loadBoard().then(() => T.rerender()); };
   T.setScope = function (s) { if (['friends', 'city', 'india'].indexOf(s) < 0) return; const c = T.board.cache[s + ':today'] || T.board.cache[s + ':week']; if (s !== 'friends' && c && c.hidden) { hap('error'); _toast(t('opensAt')); return; } hap('light'); T.board.scope = s; T.rerender(); T.loadBoard().then(() => T.rerender()); };
-  function checkMascot() { if (T.mascot != null || T._mascotBusy) return; T._mascotBusy = true; fetch('/app/mascot.svg', { method: 'HEAD' }).then(r => { T.mascot = !!(r && r.ok && /svg/i.test(r.headers.get('content-type') || '')); }).catch(() => { T.mascot = false; }).finally(() => { T._mascotBusy = false; if (document.getElementById('stEmpty')) T.rerender(); }); }
   // The shell redeems localStorage.join_code at boot (server.js) — but only when a token exists at that moment; after an in-app
   // login nothing redeems it until the next reload. This fallback waits 8 s (so it never races the shell's own boot request), then
   // redeems a code that is still there, clearing it only on success or "not found" — the same semantics as the shell.
@@ -857,13 +871,13 @@
     }, Math.max(0, Number(T.joinDelay) || 0));
   }
   T.load = async function (force) {
-    if (T.loading) return; T.loading = true; checkMascot();
+    if (T.loading) return; T.loading = true;
     await Promise.all([T.loadSummary(), T.loadBoard(force), T.loadFriends()]);
     T.loading = false; T.loaded = true; T.lastLoad = Date.now(); T.rerender();
     if (liveCan() && !W.on && T.sum) T.liveStart(false);
     redeemJoinFallback(); flushStored();
     claimFromURL().then(ok => { if (ok) { hap('success'); _toast(isHi() ? 'स्टेप काउंट चालू — अब अपने आप सिंक होगा' : 'Step counting is on — syncing automatically'); T.loadSummary().then(() => T.rerender()); } });
-    // learn whether city/india boards are open (cohort ≥ 20) so the chips can say so
+    // learn whether city/india boards are open (cohort ≥ 20): their segments appear only once they are
     Promise.all(['city', 'india'].map(s => T.board.cache[s + ':today'] ? null : T.loadBoard(false, s, 'today'))).then(() => T.rerender());
   };
   T.rerender = function () {

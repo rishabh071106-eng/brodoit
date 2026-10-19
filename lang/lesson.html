@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}}catch(e){}})()</script>
+<script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}else{document.documentElement.setAttribute("data-theme","light")}}catch(e){}})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Lesson · Brodoit Languages</title>
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
-<link rel="stylesheet" href="/app/theme.css?v=16">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=16">
-<link rel="stylesheet" href="/lang/assets/topbar.css?v=15">
+<link rel="stylesheet" href="/app/theme.css?v=21">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=17">
+<link rel="stylesheet" href="/lang/assets/topbar.css?v=16">
+<link rel="stylesheet" href="/app/ui.css?v=21">
 <script src="/app/icons.js?v=16" defer></script>
-<script src="/lang/assets/topbar.js?v=15" defer></script>
+<script src="/lang/assets/topbar.js?v=17" defer></script>
 </head>
 <body>
 <div class="runner" id="runner">
@@ -24,7 +25,7 @@
 </div></div>
 
 <script type="module">
-import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, recognize, hasSR, similarity, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=10';
+import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, recognize, hasSR, similarity, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=11';
 import { ic } from '/lang/assets/ico.js?v=14';
 
 const $ = id => document.getElementById(id);
@@ -49,7 +50,7 @@ if (!lesson) {
   foot.style.display = 'none';
 } else {
   document.title = `${lesson.title} · ${meta.name} · Brodoit`;
-  renderChrome({ title: lesson.title, subtitle: `${meta.name} · ${unit.title}`, back: courseHref, backLabel: t(lang, 'quit'), backIcon: 'x' });
+  renderChrome({ title: String(lesson.title).replace(/\s*!+/g, ''), subtitle: `${meta.name} · ${unit.title}`, back: courseHref, backLabel: t(lang, 'quit'), backIcon: 'x' });
   const key = `${code}/${lesson.id}`;
   const t0 = Date.now();
   let queue = lesson.items.map((it, i) => ({ it, id: i })), pos = 0, hearts = 3, right = 0, wrong = 0, cur = null, resultShown = false;

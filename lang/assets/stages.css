@@ -1,92 +1,53 @@
-/* Language course v13: a photo hero for the country, audio "episodes", and practice stages that feel
-   like levels — glowing current lesson, Bro waiting at it, a gate that bursts open when you enter. */
-.stg-page .wrap{max-width:640px}
-.stg-hero{position:relative;height:240px;margin:4px 0 14px;border-radius:26px;overflow:hidden;color:#fff;isolation:isolate;animation:stgIn .7s cubic-bezier(.16,1,.3,1) both;box-shadow:0 22px 40px -24px rgba(23,20,31,.6)}
-.stg-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transform:scale(1.06);animation:stgKen 18s ease-in-out infinite alternate}
-@keyframes stgKen{to{transform:scale(1.14) translate(-2%,-2%)}}
-.stg-hshade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,14,.05) 0%,rgba(10,10,14,.35) 40%,rgba(10,10,14,.86) 100%)}
-.stg-hb{position:absolute;left:18px;right:18px;bottom:16px}
-.stg-hk{display:flex;align-items:center;gap:8px;font:800 11px var(--b-sans);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85)}
-.stg-flag{font-size:22px;letter-spacing:0;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
-.stg-hero h1{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:0 0 12px;font:400 44px/1 var(--b-serif,Georgia,serif);letter-spacing:-.02em;text-shadow:0 2px 16px rgba(0,0,0,.3)}
-.stg-hero h1 .stg-flag{align-self:center;font-size:28px}
-.stg-hero h1 span:not(.stg-flag){font:600 18px var(--b-sans);opacity:.85;letter-spacing:-.01em}
-.stg-hero p{margin:0 0 12px;font:500 14px/1.45 var(--b-sans);opacity:.9;max-width:92%}
-.stg-stats{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.stg-ring{position:relative;width:46px;height:46px}
-.stg-ring svg{width:46px;height:46px;transform:rotate(-90deg)}
-.stg-ring circle{fill:none;stroke-width:6;stroke-linecap:round}
-.stg-ring .t{stroke:rgba(255,255,255,.25)}
-.stg-ring .v{stroke:#fff;transition:stroke-dashoffset 1.2s cubic-bezier(.16,1,.3,1)}
-.stg-ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 11px var(--b-sans)}
-.stg-chip{display:inline-flex;align-items:center;gap:5px;min-height:36px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font:600 13px var(--b-sans)}
-.stg-chip b{font-weight:800}
-.stg-seg{margin-bottom:14px}
+/* Language course page (v15 framework, /DESIGN.md): course header (letter tile, large title, one status line),
+   a Listen / Practice segmented control, and lessons as framework rows (.ui-list/.ui-row) — the next level of the
+   Languages list in Learn. The language's accent appears only on the tiles, the progress bar and the play mark.
+   No photos, emoji, glow, bounce or per-stage colours. */
+.lc-page .wrap{max-width:640px;padding-bottom:calc(48px + env(safe-area-inset-bottom))}
+/* the course's accent (set on .lc by the page) reaches the tiles, the progress bar and the play mark */
+.lc :is(.ui-ic,.ui-prog i,.lc-play){--ui-accent:var(--lc-accent,var(--b-ink))}
 
-/* Listen: episodes */
-.ep-intro{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;margin-bottom:10px;border-radius:16px;background:var(--b-bg-2);color:var(--b-ink-2);font:500 14px/1.45 var(--b-sans)}
-.ep-intro svg{flex:none;margin-top:2px;color:var(--b-primary)}
-.eps{display:flex;flex-direction:column;gap:8px}
-.ep{display:flex;align-items:center;gap:12px;width:100%;min-height:68px;padding:10px 12px;border-radius:18px;background:var(--b-card);border:1px solid var(--b-line);color:var(--b-ink);text-decoration:none;text-align:left;font:inherit;box-shadow:var(--sh-1);animation:stgIn .55s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 40ms + 80ms)}
-.ep-n{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;font:800 16px var(--b-sans);background:var(--b-bg-2);color:var(--b-ink)}
-.ep.done .ep-n{background:var(--b-mint-soft);color:var(--b-mint)}
-.ep.cur{border-color:var(--b-primary);box-shadow:0 0 0 3px var(--b-primary-soft),var(--sh-1)}
-.ep.cur .ep-n{background:var(--b-primary);color:#fff}
-.ep.locked{opacity:.5}
-.ep-t{flex:1;min-width:0}
-.ep-t b{display:block;font:700 15.5px/1.3 var(--b-sans)}
-.ep-t small{display:block;font:500 12.5px var(--b-sans);color:var(--b-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ep-play{width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--b-primary);color:#fff;animation:stgPulse 1.8s ease-in-out infinite}
+/* header: 56px letter tile + large title + one status line (+ a slim progress bar once started) */
+.lc-head{gap:14px;margin:8px 0 18px;align-items:center}
+.lc-gl{width:56px;height:56px;border-radius:16px}
+.lc-gl b{font:700 24px/1 var(--ui-font);letter-spacing:-.01em}
+.lc-ht{flex:1;min-width:0}
+.lc-ht h1{margin:0;font:var(--ui-t-large);letter-spacing:-.02em;color:var(--b-ink);overflow-wrap:anywhere}
+.lc-ht p{margin:3px 0 0;font:var(--ui-t-sub);color:var(--b-mute)}
+.lc-ht .ui-prog{max-width:220px;margin-top:9px}
 
-/* Practice: stages */
-.stg{position:relative;margin:0 0 16px;padding:16px 14px 12px;border-radius:24px;background:var(--b-card);border:1px solid var(--b-line);box-shadow:var(--sh-1);overflow:hidden;animation:stgIn .6s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 70ms)}
-.stg::before{content:'';position:absolute;inset:0 0 auto 0;height:96px;background:linear-gradient(135deg,color-mix(in srgb,var(--hue) 22%,transparent),transparent 70%);pointer-events:none}
-.stg-h{position:relative;display:flex;align-items:center;gap:12px}
-.stg-e{width:56px;height:56px;flex:none;border-radius:18px;display:grid;place-items:center;font-size:30px;background:color-mix(in srgb,var(--hue) 16%,var(--b-card));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--hue) 40%,transparent);animation:stgFloat 3.4s ease-in-out infinite}
-.stg-ht{flex:1;min-width:0}
-.stg-ht small{display:block;font:800 11px var(--b-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--hue)}
-.stg-ht b{display:block;font:800 19px/1.2 var(--b-sans);letter-spacing:-.01em;color:var(--b-ink)}
-.stg-ht span{display:block;font:500 13px/1.4 var(--b-sans);color:var(--b-ink-2)}
-.stg-c{flex:none;min-width:44px;height:30px;padding:0 10px;border-radius:999px;display:grid;place-items:center;font:800 12px var(--b-sans);background:var(--b-bg-2);color:var(--b-ink-2)}
-.stg.done .stg-c{background:var(--b-mint-soft);color:var(--b-mint)}
-.stg.locked{filter:saturate(.35);opacity:.62}
-.stg.locked .stg-e{animation:none}
-.stg.cur{border-color:color-mix(in srgb,var(--hue) 55%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--hue) 16%,transparent),0 18px 36px -24px var(--hue)}
-.stg-path{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 0 6px}
-.nd-w{position:relative;display:flex;flex-direction:column;align-items:center;transform:translateX(var(--x));animation:stgPop .55s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--i) * 70ms + var(--j) * 90ms + 200ms)}
-.nd-w+.nd-w::before{content:'';position:absolute;top:-22px;left:50%;width:2px;height:20px;background:repeating-linear-gradient(var(--b-line-2) 0 4px,transparent 4px 8px);transform:translateX(calc(-50% - var(--x) / 2)) rotate(calc(var(--x) / 2.4 * 1deg))}
-.nd{width:68px;height:62px;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;font:inherit;color:#fff;background:var(--hue);box-shadow:0 6px 0 color-mix(in srgb,var(--hue) 70%,#000),0 12px 22px -10px var(--hue);transition:transform .12s}
-.nd:active{transform:translateY(4px);box-shadow:0 2px 0 color-mix(in srgb,var(--hue) 70%,#000)}
-.nd.done{background:#FFC93C;color:#5C3D00;box-shadow:0 6px 0 #D69E0A,0 12px 22px -10px #FFC93C}
-.nd.locked{background:var(--b-bg-2);color:var(--b-mute);box-shadow:0 6px 0 var(--b-line-2);cursor:default}
-.nd.cur{animation:stgBounce 1.6s ease-in-out infinite;outline:4px solid color-mix(in srgb,var(--hue) 25%,transparent);outline-offset:4px}
-.nd-l{max-width:180px;margin-top:8px;text-align:center;font:600 12.5px/1.3 var(--b-sans);color:var(--b-ink-2)}
-.nd-bro{position:absolute;left:calc(100% + 6px);top:6px;display:flex;align-items:center;gap:4px;animation:stgFloat 2.6s ease-in-out infinite}
-.nd-bro i{font:800 10px var(--b-sans);font-style:normal;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;padding:4px 8px;border-radius:999px;background:var(--b-ink);color:var(--b-bg)}
-.nd-w[style*="--x:56px"] .nd-bro{left:auto;right:calc(100% + 6px);flex-direction:row-reverse}
-.stg-won{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;font:800 12px var(--b-sans);letter-spacing:.06em;text-transform:uppercase;color:#B7791F}
-.stg-end{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;color:var(--b-mute);font:600 13px var(--b-sans)}
+/* Listen / Practice: the framework segmented control, full width; 40px segments on a 44px track */
+.lc-seg{display:flex;width:100%;padding:2px;margin:0 0 16px;box-sizing:border-box}
+.lc-seg button{position:relative;flex:1;min-height:40px;border-radius:10px;font:600 14px/1 var(--ui-font);transition:background 150ms,color 150ms}
+.lc-seg button::before{content:"";position:absolute;inset:-2px 0}
+.lc-seg button:focus-visible{outline:2px solid var(--b-primary);outline-offset:0}
 
-/* the gate */
-.gate{position:fixed;inset:0;z-index:90;display:grid;place-items:end center;padding:16px;background:rgba(10,10,14,.0);transition:background .3s}
-.gate.in{background:rgba(10,10,14,.55)}
-.gate-card{position:relative;width:100%;max-width:440px;margin-bottom:env(safe-area-inset-bottom);padding:30px 22px 22px;border-radius:28px;text-align:center;background:var(--b-card);color:var(--b-ink);overflow:hidden;transform:translateY(110%);transition:transform .45s cubic-bezier(.16,1,.3,1)}
-.gate.in .gate-card{transform:none}
-.gate.zoom .gate-card{transform:scale(1.08);opacity:0;transition:transform .35s ease,opacity .35s ease}
-.gate-burst{position:absolute;left:50%;top:70px;width:420px;height:420px;margin:-210px 0 0 -210px;background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--hue) 22%,transparent) 0 10deg,transparent 10deg 20deg);border-radius:50%;animation:stgSpin 14s linear infinite;-webkit-mask:radial-gradient(circle,#000 20%,transparent 65%);mask:radial-gradient(circle,#000 20%,transparent 65%)}
-.gate-e{position:relative;font-size:64px;line-height:1;margin:0 0 12px;animation:stgGate .7s cubic-bezier(.34,1.56,.64,1) both .1s}
-.gate-card small{position:relative;display:block;font:800 11px var(--b-sans);letter-spacing:.14em;text-transform:uppercase;color:var(--hue)}
-.gate-card h2{position:relative;margin:6px 0 6px;font:800 26px/1.15 var(--b-sans);letter-spacing:-.02em}
-.gate-card p{position:relative;margin:0 0 18px;font:500 14px var(--b-sans);color:var(--b-ink-2)}
-.gate-go{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;border-radius:18px;background:var(--hue);color:#fff;font:800 17px var(--b-sans);text-decoration:none;box-shadow:0 6px 0 color-mix(in srgb,var(--hue) 70%,#000)}
-.gate-go:active{transform:translateY(4px);box-shadow:0 2px 0 color-mix(in srgb,var(--hue) 70%,#000)}
-.gate-x{position:absolute;top:12px;right:12px;width:44px;height:44px;border:0;border-radius:14px;background:var(--b-bg-2);color:var(--b-ink);display:grid;place-items:center;cursor:pointer}
+/* lesson rows */
+.lc-n{font:600 16px/1 var(--ui-font);font-variant-numeric:tabular-nums}
+:is(#app,html) .lc .ui-ic.solid{color:#fff;background:var(--ui-accent)}
+.lc .lc-row.open .lc-n{color:var(--b-ink-2);background:var(--b-bg-2)}
+.lc-row.locked{cursor:default}
+.lc .lc-row.locked .lc-n{color:var(--b-mute-2);background:var(--b-bg-2)}
+/* on dark cards --b-bg-2 is darker than the card itself, so neutral tiles use a light veil instead */
+:is(html[data-theme="dark"],body[data-theme=aurora]) .lc .lc-row:is(.open,.locked) .lc-n{background:rgba(255,255,255,.07)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lc .lc-row:is(.open,.locked) .lc-n{background:rgba(255,255,255,.07)}}
+.lc-row.locked .ui-tx b{color:var(--b-ink-2);font-weight:500}
+.lc-row.locked:active{background:none}
+.lc-row.cur .ui-tx b{font-weight:600}
+.lc-play{flex:none;width:32px;height:32px;margin-right:2px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--ui-accent)}
+.lc-play svg{margin-left:2px}
+.lc-row :is(.ui-chev,.lc-play){align-self:center}
 
-@keyframes stgIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes stgPop{from{opacity:0;transform:translateX(var(--x)) scale(.4)}to{opacity:1;transform:translateX(var(--x)) scale(1)}}
-@keyframes stgFloat{50%{transform:translateY(-5px)}}
-@keyframes stgBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes stgPulse{50%{box-shadow:0 0 0 8px var(--b-primary-soft)}}
-@keyframes stgSpin{to{transform:rotate(360deg)}}
-@keyframes stgGate{from{opacity:0;transform:scale(.2) rotate(-30deg)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.stg-hero>img,.stg-e,.nd.cur,.nd-bro,.gate-burst,.ep-play{animation:none}}
+/* Practice: a short section label per unit, then its list */
+.lc-unit .ui-sec{margin:22px 4px 8px}
+.lc-unit:first-child .ui-sec{margin-top:4px}
+.lc-cnt{font:500 13px/1.3 var(--ui-font);color:var(--b-mute-2);font-variant-numeric:tabular-nums}
+
+/* course not ready yet */
+.lc-soon{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.lc-soon .ui-btn{margin-top:4px}
+
+/* switching tabs: a short fade, nothing that moves */
+.lc-pane{animation:lcIn .2s ease both}
+@keyframes lcIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.lc-pane{animation:none}.lc-seg button{transition:none}}
+.lc-glyph{font:700 19px/1 var(--ui-font);letter-spacing:-.01em}

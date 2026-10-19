@@ -133,17 +133,18 @@ export const ICON = {
   pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10z"/><path d="M13.5 6.5l3 3"/></svg>',
 };
 
-// Top bar: [← Brodoit] [parent back, when `back` is set] [title] [right]. Markup + back guard live in
-// /lang/assets/topbar.js (window.bdTopbar, loaded with defer before this module); styles in topbar.css.
-export function renderChrome({ title = '', subtitle = '', back = '/lang/', backLabel = 'Back', backIcon = '', right = '', brand = true, mount = null } = {}) {
-  const label = title ? esc(title) : brand ? 'Languages' : '';
+// Top bar: [‹ back] [title] [right]. One exit only: `back` (the parent page), else the Languages list in Learn.
+// Markup + back guard live in /lang/assets/topbar.js (window.bdTopbar, loaded with defer before this module);
+// styles in topbar.css.
+export function renderChrome({ title = '', subtitle = '', back = '', backLabel = '', backIcon = '', right = '', mount = null } = {}) {
   const here = location.pathname.replace(/index\.html$/, '');
   const parent = back && back.replace(/index\.html$/, '') !== here ? back : null;
-  if (typeof window.bdTopbar === 'function') return window.bdTopbar({ back: parent, backLabel, backIcon, title: label, subtitle: esc(subtitle), right, mount });
+  if (typeof window.bdTopbar === 'function') return window.bdTopbar({ back: parent, backLabel, backIcon, title: esc(title), subtitle: esc(subtitle), right, mount });
   const top = document.createElement('header');
   top.className = 'bd-top';
-  top.innerHTML = `<div class="bd-top-in"><a class="bd-home press" href="/?tab=learn" aria-label="Back to Brodoit">${ICON.back}<span>Brodoit</span></a>${parent ? `<a class="bd-back press" href="${esc(parent)}" aria-label="${esc(backLabel)}">${ICON.back}</a>` : ''}<div class="bd-title">${label}</div><div class="bd-right">${right}</div></div>`;
-  document.body.prepend(top);
+  const label = parent ? (/^(back|quit)\b/i.test(backLabel) || /[^\x00-\x7f]/.test(backLabel) ? backLabel : 'Back to ' + (backLabel || 'course')) : 'Back to Languages';
+  top.innerHTML = `<div class="bd-top-in"><a class="bd-back press" href="${esc(parent || '/?tab=learn&hub=languages')}" aria-label="${esc(label)}">${backIcon === 'x' ? ICON.close : ICON.back}</a><div class="bd-title">${esc(title)}${subtitle ? `<small>${esc(subtitle)}</small>` : ''}</div><div class="bd-right">${right}</div></div>`;
+  (mount || document.body).prepend(top);
   return top;
 }
 
@@ -398,6 +399,6 @@ export function confetti({ count = 140, duration = 2600 } = {}) {
 
 export function haptic(ms = 12) { try { navigator.vibrate?.(ms); } catch { /* ignore */ } }
 
-export function comingSoonHTML(lang = 'en', back = '/lang/') {
-  return `<div class="b-card empty rise"><div class="e">🎙️</div><div class="t">${t(lang, 'comingSoon')}</div><div class="s">${t(lang, 'comingSoonSub')}</div><a class="b-btn violet" href="${esc(back)}">${t(lang, 'browse')}</a></div>`;
+export function comingSoonHTML(lang = 'en', back = '/?tab=learn&hub=languages') {
+  return `<div class="ui-card lc-soon"><h2>${t(lang, 'comingSoon')}</h2><p>${t(lang, 'comingSoonSub')}</p><a class="ui-btn sec sm" href="${esc(back)}">${t(lang, 'browse')}</a></div>`;
 }

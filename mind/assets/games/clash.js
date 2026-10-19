@@ -3,28 +3,29 @@
 import { onTap, clamp } from '../util.js';
 
 export const meta = {
-  id: 'clash', name: 'Color Clash', skill: 'Focus', color: '#E5407A', deep: '#B32959',
-  rule: 'Tap the colour of the ink, not the word you read.',
+  id: 'clash', name: 'Color Clash', skill: 'Focus', color: '#E11D48', deep: '#9F1239',
+  rule: 'Tap the colour of the ink, not the word.',
   how: [
-    ['eye', 'A colour word appears, painted in a different ink.'],
-    ['target', 'Tap the button that matches the INK colour.'],
+    'A colour word appears in a different ink.',
+    'Tap the colour of the ink, not the word.',
   ],
 };
 
+// `ink` paints the word on the dark card; `bg`/`fg` are the flat button and its text (picked for contrast).
 const COLORS = [
-  { id: 'red', name: 'Red', ink: '#FF5A5F' },
-  { id: 'blue', name: 'Blue', ink: '#4D8DFF' },
-  { id: 'green', name: 'Green', ink: '#2ECC71' },
-  { id: 'yellow', name: 'Yellow', ink: '#FFD23F' },
-  { id: 'purple', name: 'Purple', ink: '#B57BFF' },
-  { id: 'orange', name: 'Orange', ink: '#FF9533' },
+  { id: 'red', name: 'Red', ink: '#F87171', bg: '#DC2626', fg: '#FFFFFF' },
+  { id: 'blue', name: 'Blue', ink: '#60A5FA', bg: '#2563EB', fg: '#FFFFFF' },
+  { id: 'green', name: 'Green', ink: '#4ADE80', bg: '#16A34A', fg: '#0B1A10' },
+  { id: 'yellow', name: 'Yellow', ink: '#FACC15', bg: '#CA8A04', fg: '#1A1405' },
+  { id: 'purple', name: 'Purple', ink: '#A78BFA', bg: '#7C3AED', fg: '#FFFFFF' },
+  { id: 'orange', name: 'Orange', ink: '#FB923C', bg: '#EA580C', fg: '#1C0D04' },
 ];
 
 const TWIST = {
-  5: 'Yellow joins in. Four colours now.',
-  8: 'Rule flips! When the card wears a yellow WORD tag, tap the colour the word names, not the ink.',
-  10: 'Purple joins. Five colours, faster cards.',
-  15: 'Orange joins. Six colours, and the rule flips more often.',
+  5: 'Four colours. Yellow joins the set.',
+  8: 'The rule can flip. When the card says WORD, tap the colour the word names.',
+  10: 'Five colours. Purple joins, and cards move faster.',
+  15: 'Six colours. Orange joins, and the rule flips more often.',
 };
 
 export function levelConfig(n) {
@@ -49,7 +50,7 @@ export function start(host, cfg, api) {
   host.innerHTML = `<div class="cc">
     <div class="cc-rule" id="ccRule"><span class="cc-rule-in">Match the <b>INK</b></span></div>
     <div class="cc-card" id="ccCard"><span class="cc-tag" id="ccTag">INK</span><span class="cc-word" id="ccWord"></span><i class="cc-t" id="ccT"></i></div>
-    <div class="cc-btns" style="--cols:${cols}">${pal.map(c => `<button class="cc-b" data-c="${c.id}" style="--c:${c.ink}"><span>${c.name}</span></button>`).join('')}</div>
+    <div class="cc-btns" style="--cols:${cols}">${pal.map(c => `<button class="cc-b" data-c="${c.id}" style="--c:${c.bg};--cf:${c.fg}"><span>${c.name}</span></button>`).join('')}</div>
   </div>`;
   const card = host.querySelector('#ccCard'), word = host.querySelector('#ccWord'), tag = host.querySelector('#ccTag');
   const rule = host.querySelector('#ccRule'), ruleIn = rule.querySelector('.cc-rule-in'), tbar = host.querySelector('#ccT');
