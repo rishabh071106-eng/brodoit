@@ -143,16 +143,19 @@ function install(app, deps) {
       return { ok: r.ok, status: r.status, body: j };
     } finally { clearTimeout(t); }
   }
+  // v14: the greeting and the session context (mode, name, date, reply language) arrive as dynamic variables, so nothing
+  // instruction-like is ever sent as conversation text for the LLM to read back; Bro speaks in one pinned deep voice.
   async function agentConfig(key) {
     return {
       name: 'Brodoit Bro',
       conversation_config: {
         agent: {
-          first_message: "Hey, I'm Bro. What's up?",
+          first_message: '{{greeting}}',
           language: 'en',
-          prompt: { prompt: agentPrompt(), llm: getSetting('ELEVEN_AGENT_LLM') || AGENT_LLMS[0], temperature: 0.6, max_tokens: 350 },
+          dynamic_variables: { dynamic_variable_placeholders: { greeting: "Hey, what's up?", context: '' } },
+          prompt: { prompt: agentPrompt() + '\n\nThis conversation: {{context}}', llm: getSetting('ELEVEN_AGENT_LLM') || AGENT_LLMS[0], temperature: 0.6, max_tokens: 350 },
         },
-        tts: { voice_id: await EV.pickVoice(key, 'en', getSetting), model_id: 'eleven_turbo_v2_5', stability: 0.45, similarity_boost: 0.8 },
+        tts: { voice_id: EV.broVoice(getSetting), model_id: 'eleven_flash_v2_5', stability: 0.55, similarity_boost: 0.8 },
         asr: { quality: 'high', provider: 'elevenlabs' },
         turn: { turn_timeout: 7 },
         conversation: { max_duration_seconds: 600 }, // 10-minute calls: a long session can't run far past the plan
@@ -178,6 +181,9 @@ function install(app, deps) {
       } catch (e) { attempts.push('tools api: ' + e.message); }
       attempts.push({ cfg: JSON.parse(JSON.stringify(cfg)), set: c => { c.conversation_config.agent.prompt.tools = clientTools(); } });
       attempts.push({ cfg: JSON.parse(JSON.stringify(cfg)), set: c => {} });
+      const plain = c => { const a = c.conversation_config.agent; delete a.dynamic_variables; a.first_message = "Hey, what's up?"; a.prompt.prompt = agentPrompt(); };
+      attempts.push({ cfg: JSON.parse(JSON.stringify(cfg)), set: c => { plain(c); c.conversation_config.agent.prompt.tools = clientTools(); } });
+      attempts.push({ cfg: JSON.parse(JSON.stringify(cfg)), set: c => { plain(c); } });
       const errors = attempts.filter(a => typeof a === 'string');
       for (const a of attempts) {
         if (typeof a === 'string') continue;
@@ -232,14 +238,20 @@ function install(app, deps) {
         if (agentId) {
           const su = await signedUrl(ek, agentId);
           const name = (req.user && req.user.name || '').split(' ')[0];
+          const speak = String(req.body && req.body.speak || ''), hiTalk = speak === 'hi';
+          const greeting = persona === 'teacher' ? (hiTalk ? 'नमस्ते' + (name ? ' ' + name : '') + '! आज क्या सीखना है?' : 'Hey' + (name ? ' ' + name : '') + '! What shall we learn today?')
+            : persona === 'language' ? (hiTalk ? 'नमस्ते' + (name ? ' ' + name : '') + '! चलो ' + (lang || 'भाषा') + ' की प्रैक्टिस करें।' : 'Hey' + (name ? ' ' + name : '') + '! Ready to practise some ' + (lang || 'language') + '?')
+            : (hiTalk ? 'नमस्ते' + (name ? ' ' + name : '') + '! बोलो, क्या चल रहा है?' : 'Hey' + (name ? ' ' + name : '') + ", what's up?");
           const context = 'Mode: ' + persona + (lang ? ' (language practice: ' + lang + ')' : '') + '. ' + (String(req.body && req.body.speak || '') === 'hi' ? 'Speak Hindi.' : String(req.body && req.body.speak || '') === 'en' ? 'Speak English.' : 'Match the user\'s language.') + (name ? ' The user\'s name is ' + name + '.' : '') + ' Today is ' + new Date().toISOString().slice(0, 10) + '.';
-          return res.json(Object.assign({ mode: 'eleven', persona, agent_id: agentId, tools: tools.map(t => t.name), context }, su));
+          return res.json(Object.assign({ mode: 'eleven', persona, agent_id: agentId, tools: tools.map(t => t.name), dynamic: { greeting, context } }, su));
         }
       } catch (e) { console.log('[voice] elevenlabs session failed, next engine:', e.message); }
     }
     const key = openaiKey();
-    const caps = { tts: STUDIO.available(getSetting).length > 0, stt: !!key, llm: hasLLM() };
-    if (!key) return res.json({ mode: 'fallback', persona, caps, instructions: instructions.slice(0, 400) });
+    const caps = { tts: STUDIO.available(getSetting, 'live').length > 0, stt: !!key, llm: hasLLM() };
+    // With an ElevenLabs key Bro never switches to OpenAI Realtime's different voice: the classic pipeline speaks every
+    // reply in the same ElevenLabs voice instead.
+    if (!key || ek) return res.json({ mode: 'fallback', persona, caps });
     try {
       const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 12000);
       const r = await fetch('https://api.openai.com/v1/realtime/client_secrets', {

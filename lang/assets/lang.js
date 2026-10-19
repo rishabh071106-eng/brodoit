@@ -250,7 +250,7 @@ function playClip(text, voice, { slow, signal, gen }) {
     let id = '';
     try { id = await clipId(voice, text); } catch { return res(null); }
     if (gen !== speakGen || signal?.aborted) return res(true);
-    const a = new Audio('/api/learn/say/' + id + '.mp3');
+    const a = new Audio('/api/learn/say/' + id + '.mp3?v=bro'); // v14: Bro's one voice (busts clips cached in the old voices)
     clipAudio = a;
     if (slow) { a.playbackRate = 0.72; a.preservesPitch = true; }
     let started = false;

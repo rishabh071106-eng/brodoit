@@ -205,10 +205,18 @@
 
   // ───────────────────────── screen pieces ─────────────────────────
   const skel = (cls, w, h) => '<span class="b-skel sk ' + (cls || '') + '" style="' + (w ? 'width:' + w + ';' : '') + (h ? 'height:' + h : '') + '"></span>';
+  const ART = '<svg class="st-art" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' +
+    '<defs><linearGradient id="stSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17142A"/><stop offset=".55" stop-color="#4A2433"/><stop offset="1" stop-color="#A63D2A"/></linearGradient>' +
+    '<radialGradient id="stGlow" cx=".5" cy=".42" r=".5"><stop offset="0" stop-color="#F4A261" stop-opacity=".42"/><stop offset="1" stop-color="#F4A261" stop-opacity="0"/></radialGradient></defs>' +
+    '<rect width="400" height="320" fill="url(#stSky)"/><circle cx="200" cy="138" r="180" fill="url(#stGlow)"/>' +
+    '<g fill="#F3E9D8">' + [[34, 30, 1.2], [92, 58, .9], [318, 24, 1.3], [356, 70, .8], [268, 46, .7], [58, 104, .7], [372, 118, 1]].map(d => '<circle cx="' + d[0] + '" cy="' + d[1] + '" r="' + d[2] + '" opacity=".55"/>').join('') + '</g>' +
+    '<path d="M0 246 C70 214 140 236 214 222 S338 200 400 226 V320 H0Z" fill="#2B1621" opacity=".6"/>' +
+    '<path d="M0 274 C92 252 176 270 256 256 S360 246 400 262 V320 H0Z" fill="#1B1019" opacity=".75"/>' +
+    '<path class="st-route" d="M24 312 C96 282 118 250 182 246 S300 226 382 180" fill="none" stroke="#F3E9D8" stroke-opacity=".55" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 10"/></svg>';
   function hero() {
     const has = !!T.sum; const n = T.counted(), g = T.goal(), pct = T.pct(), done = has && n >= g; const m = metrics(n);
-    const photo = window.Cards && Cards.photo ? Cards.photo('hero-steps') : '';
-    let h = '<section class="st-hero cv tone-ink' + (done ? ' is-done' : '') + (T.walk.on ? ' is-live' : '') + '">' + (photo ? '<img class="cv-img" src="' + _esc(photo) + '" alt="" decoding="async" onerror="this.remove()">' : '');
+    // a drawn dusk walk (no stock photo): sky gradient, glow behind the ring, two hill lines and a dotted route
+    let h = '<section class="st-hero cv tone-ink' + (done ? ' is-done' : '') + (T.walk.on ? ' is-live' : '') + '">' + ART;
     h += '<div class="st-hero-top">' + (T.walk.on ? '<span class="st-live" id="stLive"><i></i>' + (isHi() ? 'लाइव गिनती' : 'Counting live') + '</span>' : liveAsk() ? '<button type="button" class="btn glass sm st-live-btn" onclick="StepsTab.liveStart(true)">' + ic('footprints', 16) + (isHi() ? 'लाइव गिनो' : 'Count live') + '</button>' : '<span></span>') + '</div>';
     h += '<div class="st-ring' + (done ? ' done' : '') + '">' + T.ringSVG(has ? pct : 0, 200, { stroke: 12, from: T._ringPct }) + (done ? '<span class="st-done-check">' + ic('check', 16) + '</span>' : '') + '<div class="st-ring-in">';
     const failed = !has && T.loaded && !T.loading;

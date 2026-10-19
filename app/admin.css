@@ -126,3 +126,9 @@ html[data-theme="dark"] .adm-log,:root[data-theme="dark"] .adm-log,body[data-the
 @keyframes adm-rot{to{transform:rotate(360deg)}}
 @media (min-width:560px){.adm-tiles{grid-template-columns:repeat(4,1fr)}}
 @media (prefers-reduced-motion:reduce){.adm,.adm-reject{animation:none}.adm-spin,.adm-refresh.spin svg{animation-duration:1.5s}}
+/* v14 Bro's voice picker */
+#admRoot .adm-bv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+#admRoot .adm-bv-i{display:flex;align-items:center;gap:4px;border-radius:14px;background:var(--b-card);border:1px solid var(--b-line);padding:3px}
+#admRoot .adm-bv-i.on{border-color:var(--b-ink);box-shadow:inset 0 0 0 1px var(--b-ink)}
+#admRoot .adm-bv-pick{flex:1;min-height:44px;display:flex;align-items:center;gap:6px;padding:0 10px;border:0;background:none;color:var(--b-ink);font:700 14px var(--b-sans);cursor:pointer;text-align:left}
+#admRoot .adm-bv-play{width:44px;height:44px;flex:none;display:grid;place-items:center;border:0;border-radius:11px;background:var(--b-bg-2);color:var(--b-ink);cursor:pointer}

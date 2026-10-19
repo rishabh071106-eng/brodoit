@@ -4,25 +4,20 @@
 //  • narration recorded once — every course line is rendered by the studio voice chain a single time,
 //    kept in MEDIA_DIR/learn-voice and served forever (a bulk job pre-records; the rest fill on first play).
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
+const EV = require('./elevenvoice.js');
 
-const COURSES = new Set(['py', 'es', 'fr', 'de', 'hi', 'en']);
+const COURSES = new Set(['py', 'es', 'fr', 'de', 'hi', 'en', 'mind']); // 'mind' = Mind games levels (unit <game>-<level>)
 const LANG_NAME = { es: 'Spanish', fr: 'French', de: 'German', hi: 'Hindi', en: 'English' };
 // voice key → studio language + role. 'py' is the course narrator; language keys are native speakers.
-const VOICES = { py: { lang: 'en', role: 'narrator' }, es: { lang: 'es', role: 'native' }, fr: { lang: 'fr', role: 'native' }, de: { lang: 'de', role: 'native' }, hi: { lang: 'hi', role: 'native' }, en: { lang: 'en', role: 'native' } };
+const VOICES = { es: { lang: 'es', role: 'native' }, fr: { lang: 'fr', role: 'native' }, de: { lang: 'de', role: 'native' }, hi: { lang: 'hi', role: 'native' }, en: { lang: 'en', role: 'native' } };
 
 const sid = (voice, text) => crypto.createHash('sha1').update(voice + '\n' + String(text).trim()).digest('hex').slice(0, 20);
 
-// Every line a learner can hear, in recording order (Python day 1 → 60, then each language lesson by lesson).
+// Every line a learner can hear, in recording order (each language lesson by lesson). v14: the Python course has no
+// voice any more (it plays like a game), so only language lines are recorded — all in Bro's one voice.
 function catalog(appRoot) {
   const out = new Map();
   const add = (voice, text, where) => { text = String(text || '').trim(); if (!text || text.length > 900) return; const id = sid(voice, text); if (!out.has(id)) out.set(id, { id, voice, text, where }); };
-  const dir = path.join(appRoot, 'code', 'days');
-  try {
-    for (const f of fs.readdirSync(dir).filter(f => /^d\d\d\.json$/.test(f)).sort()) {
-      const J = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
-      (J.slides || []).forEach((s, i) => add('py', s.say, 'py:' + f.slice(0, 3) + ':' + (i + 1)));
-    }
-  } catch (e) { /* course not present */ }
   for (const code of ['es', 'fr', 'de', 'hi', 'en']) {
     try {
       const J = JSON.parse(fs.readFileSync(path.join(appRoot, 'lang', 'data', code + '.json'), 'utf8'));
@@ -112,6 +107,11 @@ function install(app, deps) {
       const u = units(phone, c), n = Object.values(u).filter(x => x.done).length;
       if (n) lines.push(`${LANG_NAME[c]}: ${n} lessons done, XP ${xpOf(phone, c)}.`);
     }
+    // Mind games: units are '<game>-<level>'; the highest level passed per game, with its best score
+    const mind = units(phone, 'mind'), mtop = {};
+    for (const [k, v] of Object.entries(mind)) { const m = /^(.+)-(\d+)$/.exec(k); if (!m || !v.done) continue; const lv = +m[2]; if (!mtop[m[1]] || lv > mtop[m[1]].lv) mtop[m[1]] = { lv, best: v.best }; }
+    const games = Object.entries(mtop).map(([g, t]) => `${g} level ${t.lv}`);
+    if (games.length) lines.push('Mind games: ' + games.join(', ') + '.');
     const ev = q('SELECT course, kind, detail, created_at FROM learn_events WHERE user_phone=? ORDER BY id DESC LIMIT 60').all(phone);
     const errs = {}, fails = [];
     for (const e of ev) {
@@ -194,13 +194,17 @@ The learner's name is ${name || 'unknown'}.`;
   });
 
   // ── narration recorded once ──
+  // Clips live in learn-voice/<Bro's voice id>/: changing Bro's voice re-records into a fresh folder, and until a line is
+  // re-recorded the earlier clip (learn-voice/<id>.mp3) keeps playing so a lesson never goes quiet.
   const VDIR = path.join(mediaDir, 'learn-voice');
+  const voiceDir = () => { const d = path.join(VDIR, EV.broVoice(getSetting)); try { fs.mkdirSync(d, { recursive: true }); } catch (e) { /* read-only */ } return d; };
   try { fs.mkdirSync(VDIR, { recursive: true }); } catch (e) { /* read-only */ }
   let CAT = catalog(appRoot);
   const inflight = new Map(), miss = new Map(), ipHits = new Map();
-  const fileOf = id => path.join(VDIR, id + '.mp3');
+  const fileOf = id => path.join(voiceDir(), id + '.mp3');
+  const oldFile = id => path.join(VDIR, id + '.mp3');
   async function record(item, purpose) {
-    const v = VOICES[item.voice] || VOICES.py;
+    const v = VOICES[item.voice] || { lang: 'en', role: 'narrator' };
     const out = await STUDIO.speak({ text: item.text, lang: v.lang, role: v.role, purpose, getSetting, mp3: true, timeout: 45000, eleven: { format: 'mp3_44100_64', timeout: 40000, chunk: 1500 } });
     if (!out || !out.buf || out.mime !== 'audio/mpeg') return null;
     const f = fileOf(item.id), tmp = f + '.' + process.pid + '.tmp';
@@ -211,7 +215,7 @@ The learner's name is ${name || 'unknown'}.`;
     const id = String(req.params.id || '').replace(/\.mp3$/, '');
     if (!/^[0-9a-f]{20}$/.test(id)) return res.status(404).end();
     const f = fileOf(id);
-    const send = () => { res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'public, max-age=31536000, immutable' }); res.sendFile(f); };
+    const send = () => { res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'public, max-age=86400' }); res.sendFile(f); }; // a day: a new Bro voice reaches phones quickly
     if (fs.existsSync(f)) return send();
     const item = CAT.get(id);
     if (!item) return res.status(404).end();
@@ -223,6 +227,7 @@ The learner's name is ${name || 'unknown'}.`;
     if (!inflight.has(id)) inflight.set(id, record(item, 'daily').catch(e => { log('record', e.message); return null; }).finally(() => setTimeout(() => inflight.delete(id), 1000)));
     const r = await inflight.get(id);
     if (r && fs.existsSync(f)) return send();
+    if (fs.existsSync(oldFile(id))) { res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-cache' }); return res.sendFile(oldFile(id)); }
     miss.set(id, Date.now() + 10 * 60e3);
     res.status(404).end();
   });

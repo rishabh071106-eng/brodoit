@@ -1,7 +1,9 @@
 // Talking Bro — the voice-first home screen. Loaded by the SPA as a plain script; uses the SPA
-// globals (S, api, token, toast, esc, render, switchTab). Two engines behind one UI:
-//  • realtime: OpenAI Realtime over WebRTC (speech in, speech out, tools) when the server has a key
-//  • fallback: browser SpeechRecognition → /api/voice/turn → browser speechSynthesis
+// globals (S, api, token, toast, esc, render, switchTab). One voice (Bro's ElevenLabs voice) behind one UI:
+//  • eleven: ElevenLabs Conversational AI (speech in/out, tools), greeting + context passed as dynamic variables
+//  • fallback: browser SpeechRecognition → /api/voice/turn → /api/voice/tts in the same ElevenLabs voice
+//  • realtime: OpenAI Realtime over WebRTC, only on servers without an ElevenLabs key
+//    (the device voice only when no voice provider exists at all)
 (function () {
   'use strict';
   const V = window.BroVoice = {
@@ -151,7 +153,7 @@
     const opts = {
       connectionType: sess.signed_url ? 'websocket' : 'webrtc',
       clientTools: toolsMap,
-      onConnect: () => { V.engine = 'eleven'; V.set('listening'); try { if (sess.context && V.conv && V.conv.sendContextualUpdate) V.conv.sendContextualUpdate(sess.context); } catch (e) {} },
+      onConnect: () => { V.engine = 'eleven'; V.set('listening'); }, // the context travels as dynamic variables, never as spoken text
       onDisconnect: () => { if (V.engine === 'eleven' && V.state !== 'idle') { V.conv = null; V.stop(); } },
       onMessage: m => { if (!m || !m.message) return; const src = m.source || m.role || ''; if (/user/i.test(src)) { V.heard = ''; V.push('user', String(m.message)); } else { V.partial = ''; V.push('bro', String(m.message)); } },
       onModeChange: m => { const mode = m && m.mode; if (mode === 'speaking') V.set('speaking'); else if (mode === 'listening') V.set('listening'); },
@@ -159,6 +161,7 @@
       onError: (msg, ctx) => { console.warn('[bro eleven]', msg, ctx || ''); },
     };
     if (sess.signed_url) opts.signedUrl = sess.signed_url; else opts.conversationToken = sess.conversation_token;
+    if (sess.dynamic) opts.dynamicVariables = sess.dynamic; // { greeting: "Hey Riya, what's up?", context: 'Mode: bro…' }
     V.conv = await Conversation.startSession(opts);
     V.engine = 'eleven'; if (V.state !== 'speaking') V.set('listening');
   };
@@ -252,7 +255,9 @@
           if (V.state === 'speaking') { V.set('live'); onEnd && onEnd(); }
           return;
         }
-      } catch (e) { /* fall through to the device voice */ }
+      } catch (e) { /* a failed reply stays as text below */ }
+      // one voice: when Bro's voice can't reach this reply, the words stay on screen instead of a robotic device voice
+      if (!V.noTTS) { if (V.state === 'speaking') { V.set('live'); onEnd && onEnd(); } return; }
     }
     V.speakLocal(clean, hi, onEnd);
   };

@@ -14,6 +14,13 @@ const PREF = {
   de: ['Daniel', 'George', 'Adam', 'Brian'],
   ja: ['Adam', 'Brian', 'George'],
 };
+// v14: Bro has ONE deep voice everywhere (chat, language lessons, books). Admin → "Bro's voice" picks one of these
+// premade voices (or pastes any voice id) as BRO_VOICE; Brian is the default.
+const BRO_VOICES = { brian: 'nPczCjzI2devNBz1zQrb', adam: 'pNInz6obpgDQGcFmaJgB', daniel: 'onwK4e9ZLuTAKqWW03F9', george: 'JBFqnCBsd6RMkjVDRZzb' };
+function broVoice(getSetting) {
+  const v = String((typeof getSetting === 'function' && getSetting('BRO_VOICE')) || process.env.BRO_VOICE || '').trim();
+  return BRO_VOICES[v.toLowerCase()] || (/^[A-Za-z0-9]{16,40}$/.test(v) ? v : BRO_VOICES.brian);
+}
 let cache = { at: 0, key: '', voices: null };
 
 async function listVoices(key) {
@@ -24,7 +31,7 @@ async function listVoices(key) {
     const r = await fetch('https://api.elevenlabs.io/v1/voices', { headers: { 'xi-api-key': key }, signal: ctrl.signal });
     if (!r.ok) { cache = { at: Date.now() - 3000e3, key, voices: cache.voices || [] }; return cache.voices; } // retry in 10 min, not on every call
     const j = await r.json();
-    cache = { at: Date.now(), key, voices: (j.voices || []).map(v => ({ id: v.voice_id, name: String(v.name || ''), labels: v.labels || {}, category: v.category || '' })) };
+    cache = { at: Date.now(), key, voices: (j.voices || []).map(v => ({ id: v.voice_id, name: String(v.name || ''), labels: v.labels || {}, category: v.category || '', preview: v.preview_url || '' })) };
     return cache.voices;
   } catch (e) { cache = { at: Date.now() - 3000e3, key, voices: cache.voices || [] }; return cache.voices; } finally { clearTimeout(t); }
 }
@@ -110,7 +117,7 @@ async function fetchSubscription(key, s) {
   } catch (e) { const n = Object.assign(s || {}, { at: Date.now() - 8 * 60e3, ok: false, error: e.name === 'AbortError' ? 'timeout' : e.message }); subs.set(key, n); return n; }
   finally { clearTimeout(t); }
 }
-const RESERVE = { live: 0, daily: 0.15, bulk: 0.30 }; // v13: static voices (course, lessons, books) get most of the plan; Bro keeps the last 15%
+const RESERVE = { live: 0, daily: 0.08, bulk: 0.15 }; // v14: language recordings may use up to 85% of the plan in one go; Bro's live voice always keeps the last 15%
 const LIVE_MIN = 2000; // a live Bro session needs at least ~2 minutes of credit, or it would cut out mid-sentence
 // Can this purpose spend `chars` characters now? { ok, reason, left }. Approval reserves the credits immediately, so parallel
 // requests can't all squeeze through the same gap; the next plan refresh (≤10 min) replaces the estimate with real numbers.
@@ -128,4 +135,4 @@ async function budget(key, chars, purpose) {
 }
 const snapshot = key => { const s = subs.get(key); return s ? { at: s.at || 0, tier: s.tier || '', used: (s.used || 0) + held(key), limit: s.limit || 0, reset: s.reset || null, ok: !!s.ok, out: !!(s.out && Date.now() - s.out < 6 * 3600e3), error: s.error || '', overage: !!s.overage } : null; };
 
-module.exports = { pickVoice, speak, listVoices, chunk, subscription, budget, release, snapshot, isQuota, MODEL, DEFAULT, PREF, PER_CHAR };
+module.exports = { pickVoice, broVoice, BRO_VOICES, speak, listVoices, chunk, subscription, budget, release, snapshot, isQuota, MODEL, DEFAULT, PREF, PER_CHAR };
