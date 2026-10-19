@@ -55,3 +55,5 @@
 @media (prefers-reduced-motion:reduce){.bh .hb-mas,.bh.live .hb-mas,.bh .hb-mic.on::before{animation:none}}
 html[data-theme="dark"] .bh .hb-mas,body[data-theme=aurora] .bh .hb-mas{filter:drop-shadow(0 22px 34px rgba(0,0,0,.6))}
 html[data-theme="dark"] .bh .hb-mode.on,body[data-theme=aurora] .bh .hb-mode.on,html[data-theme="dark"] .bh .hb-langs button.on,body[data-theme=aurora] .bh .hb-langs button.on{background:#F3F1EE;color:#17141F}
+.bh .hb-send:disabled{opacity:.45;cursor:default}
+.bh .hb-mode,.bh .hb-langs button{height:44px}

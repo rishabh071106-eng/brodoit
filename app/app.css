@@ -302,3 +302,12 @@ html body .tabs.page-t{background:var(--b-card)}
 .yu-week.empty i{background:var(--b-line-2);height:3px!important}
 .yu-empty{font:500 13px var(--b-sans);color:var(--b-mute);text-align:center;margin:-56px 0 40px}
 html body[data-theme="aurora"]{--paper:#23211D;--surface:#23211D;--bg-2:#1D1B18;--divider:rgba(255,255,255,.09)}
+/* v13.2 accessibility: readable tab labels, visible book titles in dark mode, 44px task checkboxes, Undo bar */
+.tabs.page-t .tab:not(.on) .tl{opacity:1!important;color:#66645F!important;font-size:11px!important}
+body[data-theme=aurora] .tabs.page-t .tab:not(.on) .tl{color:rgba(255,255,255,.74)!important}
+body[data-theme=aurora] .bk-sum-meta{color:var(--b-ink)!important}
+body[data-theme=aurora] .bk-sum-meta small{color:var(--b-ink-2)!important}
+.rd-chk{width:44px;height:44px;margin:-9px -7px -9px -9px;flex:none;display:grid;place-items:center;border:0;padding:0;background:none;cursor:pointer;border-radius:12px}
+.rd-chk:focus-visible{outline:2px solid var(--b-ink);outline-offset:-4px}
+.undo-bar{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:14px;padding:6px 6px 6px 18px;border-radius:999px;background:var(--b-ink);color:var(--b-bg);font:600 14px var(--b-sans);box-shadow:0 12px 30px -12px rgba(0,0,0,.5);animation:b-rise .25s ease both}
+.undo-bar button{min-height:44px;padding:0 16px;border:0;border-radius:999px;background:transparent;color:var(--b-bg);font:800 14px var(--b-sans);text-decoration:underline;cursor:pointer}

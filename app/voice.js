@@ -15,7 +15,7 @@
   };
   const PERSONAS = [
     { k: 'bro', i: 'message-circle', l: 'Bro', hi: 'Bro' },
-    { k: 'teacher', i: 'graduation-cap', l: 'Teach', hi: 'सिखाओ' },
+    { k: 'teacher', i: 'lightbulb', l: 'Teach', hi: 'सिखाओ' },
     { k: 'language', i: 'languages', l: 'Speak', hi: 'भाषा' },
   ];
   const COURSES = { es: 'Spanish', fr: 'French', de: 'German', hi: 'Hindi', en: 'English' };
@@ -46,7 +46,7 @@
     let h = '<div class="bh' + (hi ? ' hi' : '') + (chat ? ' chat' : '') + (live ? ' live' : '') + '">';
     // mode (only the chosen one shows its name) + language
     h += '<div class="hb-top"><div class="hb-modes" role="group" aria-label="' + (hi ? 'मोड' : 'Mode') + '">' + PERSONAS.map(p => '<button type="button" class="hb-mode' + (V.persona === p.k ? ' on' : '') + '" aria-pressed="' + (V.persona === p.k) + '" aria-label="' + (hi ? p.hi : p.l) + '" title="' + (hi ? p.hi : p.l) + '" onclick="BroVoice.setPersona(\'' + p.k + '\')">' + ic(p.i, 18) + (V.persona === p.k ? '<span>' + (hi ? p.hi : p.l) + '</span>' : '') + '</button>').join('') + '</div>';
-    h += '<div class="hb-langs" role="group" aria-label="Language">' + [['auto', 'Auto'], ['en', 'EN'], ['hi', 'हि']].map(x => '<button type="button" class="' + (V.lang === x[0] ? 'on' : '') + '" aria-pressed="' + (V.lang === x[0]) + '" onclick="BroVoice.setLang(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div></div>';
+    h += '<div class="hb-langs" role="group" aria-label="Language">' + [['auto', 'Auto', 'Reply in my language'], ['en', 'EN', 'Reply in English'], ['hi', 'हि', 'Reply in Hindi']].map(x => '<button type="button" class="' + (V.lang === x[0] ? 'on' : '') + '" aria-pressed="' + (V.lang === x[0]) + '" aria-label="' + x[2] + '" onclick="BroVoice.setLang(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div></div>';
     // Bro
     h += '<section class="hb-stage" aria-label="Bro"><button type="button" class="hb-bro" onclick="BroVoice.tapOrb()" aria-label="' + (live ? (hi ? 'बंद करो' : 'Stop') : (hi ? 'बोलकर पूछो' : 'Talk to Bro')) + '">' + art + '</button>';
     h += '<p class="hb-say' + (V.partial ? ' partial' : '') + '" id="bvSay" aria-live="polite">' + hEsc(line) + '</p>';
@@ -57,7 +57,7 @@
       V.thread.slice(-8).forEach(m => { h += '<div class="bv-msg ' + m.role + '"><div class="bv-bub">' + hEsc(m.text) + '</div></div>'; });
       h += '</div>';
     }
-    h += '<form class="hb-compose" onsubmit="event.preventDefault();BroVoice.send()"><input id="bvInput" placeholder="' + (hi ? 'Bro को लिखो' : 'Message Bro') + '" autocomplete="off" enterkeyhint="send" aria-label="' + (hi ? 'Bro को लिखो' : 'Message Bro') + '"><button type="submit" class="hb-send" aria-label="' + (hi ? 'भेजो' : 'Send') + '">' + (window.ico ? ico('arrow-up', 20) : ICON.send) + '</button></form>';
+    h += '<form class="hb-compose" onsubmit="event.preventDefault();BroVoice.send()"><input id="bvInput" placeholder="' + (hi ? 'Bro को लिखो' : 'Message Bro') + '" autocomplete="off" enterkeyhint="send" aria-label="' + (hi ? 'Bro को लिखो' : 'Message Bro') + '"><button type="submit" class="hb-send"' + (V.state === 'thinking' ? ' disabled' : '') + ' aria-label="' + (hi ? 'भेजो' : 'Send') + '">' + (window.ico ? ico('arrow-up', 20) : ICON.send) + '</button></form>';
     h += '</div>';
     return h;
   };
@@ -275,7 +275,7 @@
   // ───────────────────────── shared send + tool effects ─────────────────────────
   V.send = async function (text) {
     const inp = document.getElementById('bvInput');
-    text = (text || (inp && inp.value) || '').trim(); if (!text) return;
+    text = (text || (inp && inp.value) || '').trim(); if (!text || V.state === 'thinking') return;
     if (inp) inp.value = '';
     V.push('user', text);
     if (V.engine === 'eleven' && V.conv) { try { V.conv.sendUserMessage(text); } catch (e) {} return; }
@@ -286,7 +286,8 @@
     V.set('thinking');
     const msgs = V.thread.slice(-10).map(m => ({ role: m.role === 'bro' ? 'assistant' : 'user', content: m.text }));
     let r; try { r = await api('/voice/turn', { method: 'POST', body: JSON.stringify({ persona: V.persona, lang: V.persona === 'language' ? COURSES[V.course] : '', speak: V.lang, messages: msgs }) }); } catch (e) { r = { error: 'offline' }; }
-    if (!r || r.error) { V.push('bro', r && r.error ? r.error : 'I lost you for a second — say that again?'); V.set(V.engine ? 'live' : 'idle'); return; }
+    // a failed turn: a plain line for everyone (setup details stay in the server log / Admin), and the words come back to the box
+    if (!r || r.error) { V.push('bro', V.lang === 'hi' ? 'अभी जवाब नहीं दे पाया — फिर से भेजो?' : 'I couldn’t answer just now — try again?'); V.set(V.engine ? 'live' : 'idle'); const box = document.getElementById('bvInput'); if (box && !box.value) box.value = text; return; }
     (r.actions || []).forEach(a => V.afterTool(a.tool, a.input, a.result));
     V.push('bro', r.reply);
     const wasVoice = V.engine === 'fallback' && V.state !== 'idle';

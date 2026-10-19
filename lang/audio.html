@@ -86,7 +86,7 @@
 <body>
 <div class="player" id="player">
   <header class="bd-top"><div class="bd-top-in">
-    <a class="bd-home press" href="/?tab=learn" aria-label="Back to Brodoit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span>Brodoit</span></a>
+    <a class="bd-home press" href="/?tab=learn" aria-label="Back to Brodoit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg><span>Brodoit</span></a>
     <a class="bd-back press" id="back" href="/lang/" aria-label="Back to course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
     <div class="bd-title"><span id="title">…</span><small id="k">Audio lesson</small></div>
     <div class="bd-right"></div>
@@ -157,7 +157,8 @@ if (!lesson) {
   const renderProgress = () => {
     $('bar').style.width = `${Math.round((idx / Math.max(1, steps.length)) * 100)}%`;
     $('stepN').textContent = `${Math.min(idx + 1, steps.length)} / ${steps.length}`;
-    $('eta').textContent = `-${Math.ceil(estRemain(idx) / 60)} ${t(lang, 'min')}`;
+    const left = Math.max(1, Math.ceil(estRemain(idx) / 60));
+    $('eta').textContent = lang === 'hi' ? `${left} मिनट बाक़ी` : `${left} min left`;
     try { sessionStorage.setItem('lang.pos.' + key, idx); } catch {}
   };
   const showCaption = (step) => {
@@ -258,7 +259,8 @@ if (!lesson) {
       const st = await r.json();
       if (!st || typeof st.total !== 'number' || !(st.ready < st.total)) return;
       $('voiceNoteT').textContent = st.studio === false ? 'Device voice for now · studio voice arrives once ElevenLabs is connected' : (st.recording ? `Studio voice is being recorded · ${st.ready | 0} of ${st.total} ready` : `Studio voice: ${st.ready | 0} of ${st.total} lessons ready`);
-      $('voiceNote').hidden = false;
+      // v13.2: recording/setup progress lives in You → Admin; learners just hear the lesson, so the note stays hidden
+      void st;
     } catch { /* keep hidden */ }
   }
 
