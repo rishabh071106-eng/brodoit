@@ -244,10 +244,11 @@ if (!lesson) {
   // ---- pre-rendered mp3 (preferred when present) ----
   try {
     const base = `/lang/audio/${code}/${lesson.id}`;
-    const h = await fetch(base + '.mp3', { method: 'HEAD' });
+    const h = await fetch(base + '.mp3', { method: 'HEAD', cache: 'no-cache' });
     if (h.ok) {
-      const tim = await fetch(base + '.json').then(r => (r.ok ? r.json() : null)).catch(() => null);
-      if (tim?.steps?.length) { pre = { el: new Audio(base + '.mp3'), tim: tim.steps }; pre.el.preload = 'auto'; pre.el.playbackRate = speed; $('src').textContent = 'Studio audio'; }
+      const tim = await fetch(base + '.json', { cache: 'no-cache' }).then(r => (r.ok ? r.json() : null)).catch(() => null);
+      // ?v=<voice> keys the mp3 to the voice it was recorded in, so a lesson re-recorded in Bro's voice reaches every phone
+      if (tim?.steps?.length) { pre = { el: new Audio(base + '.mp3?v=' + encodeURIComponent(tim.voice || '1')), tim: tim.steps }; pre.el.preload = 'auto'; pre.el.playbackRate = speed; $('src').textContent = 'Studio audio'; }
     }
   } catch { pre = null; }
   if (!pre) { $('src').textContent = ''; voicesLoaded(); studioNote(); }

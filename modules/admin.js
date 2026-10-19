@@ -15,14 +15,14 @@ const TAIL = 40;           // lines sent with /status
 const VERIFY_MS = 8000;    // provider check timeout
 const BOOKS_TOTAL = 106;
 const LESSONS_TOTAL = 60;
-const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'STUDIO_VOICE'];
+const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'STUDIO_VOICE', 'BRO_VOICE'];
 const VERIFIABLE = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
 const STATUS_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
 const JOBS = {
   bulletin: { label: "Record today's bulletin" },
   'hindi-books': { label: 'Record Hindi books', script: 'hindi-books.js' },
   'lang-audio': { label: 'Record language lessons', script: 'lang-audio.js' },
-  'learn-audio': { label: 'Record Python + language narration', script: 'learn-audio.js' },
+  'learn-audio': { label: 'Record language exercises', script: 'learn-audio.js' },
 };
 
 let _maskKey;
@@ -120,8 +120,8 @@ function install(app, deps) {
     const voice = STUDIO.available(getSetting).length > 0, gemini = getSetting('GEMINI_API_KEY');
     if (kind === 'bulletin') return bulletin && typeof bulletin.ensureToday === 'function' ? null : 'news channel not loaded';
     if (kind === 'hindi-books') { if (!gemini) return 'GEMINI_API_KEY is not set'; if (!voice && !(opts && opts.textOnly)) return 'Paste a voice key first — ElevenLabs, Gemini or OpenAI (or run text only)'; return null; }
-    if (kind === 'lang-audio') { if (!voice) return 'Paste a voice key first — ElevenLabs, Gemini or OpenAI'; if (!hasFfmpeg()) return 'ffmpeg is not installed on the server'; return null; }
-    if (kind === 'learn-audio') { if (!voice) return 'Paste a voice key first — ElevenLabs, Gemini or OpenAI'; return null; }
+    if (kind === 'lang-audio') { if (!getSetting('ELEVENLABS_API_KEY')) return 'Paste the ElevenLabs key first'; if (!hasFfmpeg()) return 'ffmpeg is not installed on the server'; return null; }
+    if (kind === 'learn-audio') { if (!getSetting('ELEVENLABS_API_KEY')) return 'Paste the ElevenLabs key first'; return null; }
     return 'unknown job';
   }
 
@@ -130,7 +130,7 @@ function install(app, deps) {
     const script = path.join(scriptsDir, def.script);
     if (!fs.existsSync(script)) return { error: 'script missing: ' + def.script, status: 404 };
     const env = { ...process.env, DB_PATH: DB_PATH || '', MEDIA_DIR, GEMINI_API_KEY: getSetting('GEMINI_API_KEY') || '', ELEVENLABS_API_KEY: getSetting('ELEVENLABS_API_KEY') || '', OPENAI_API_KEY: getSetting('OPENAI_API_KEY') || '', FORCE_COLOR: '0' };
-    for (const k of ['ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'GEMINI_MODEL', 'GEMINI_TTS_MODEL', 'GEMINI_TTS_VOICE', 'GEMINI_TTS_VOICE_NATIVE', 'OPENAI_TTS_VOICE']) { const v = getSetting(k); if (v) env[k] = v; }
+    for (const k of ['BRO_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'GEMINI_MODEL', 'GEMINI_TTS_MODEL', 'GEMINI_TTS_VOICE', 'GEMINI_TTS_VOICE_NATIVE', 'OPENAI_TTS_VOICE']) { const v = getSetting(k); if (v) env[k] = v; }
     const args = [script]; if (j.kind === 'hindi-books' && opts && opts.textOnly) args.push('--text-only');
     let p;
     try { p = spawn(process.execPath, args, { cwd: appRoot, env, stdio: ['ignore', 'pipe', 'pipe'] }); }
@@ -222,7 +222,8 @@ function install(app, deps) {
   }
   function voicesInfo() {
     const out = {};
-    for (const k of ['OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI']) { const v = getSetting(k) || ''; out[k] = { value: v, source: v ? (settingSource(k) || 'env') : null }; }
+    for (const k of ['OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BRO_VOICE']) { const v = getSetting(k) || ''; out[k] = { value: v, source: v ? (settingSource(k) || 'env') : null }; }
+    const id = EV.broVoice(getSetting); out.bro = { id, name: (Object.entries(EV.BRO_VOICES).find(e => e[1] === id) || [''])[0] || 'custom' };
     return out;
   }
   const services = () => ({ realtime: !!getSetting('OPENAI_API_KEY'), brovoice: (() => { try { const v = global._voiceStatus && global._voiceStatus(); return !!(v && v.engine !== 'fallback' && v.engine !== 'elevenlabs-pending'); } catch (e) { return false; } })(), elevenlabs: !!getSetting('ELEVENLABS_API_KEY'), gemini: !!getSetting('GEMINI_API_KEY'), groq: !!getSetting('GROQ_API_KEY'), ffmpeg: hasFfmpeg(), android: !!(deps.android && deps.android.status && deps.android.status().ready) });
@@ -231,7 +232,16 @@ function install(app, deps) {
   }
   function lessonsAudio() {
     const root = path.join(MEDIA_DIR, 'lang-audio'); let n = 0;
-    try { for (const d of fs.readdirSync(root)) if (!d.startsWith('.')) n += countFiles(path.join(root, d), /\.mp3$/); } catch (e) {} // .parts = unfinished lesson steps
+    // a lesson counts once it is recorded in Bro's current voice (its .json says which); .parts = unfinished lesson steps
+    const want = EV.broVoice(getSetting);
+    try {
+      for (const d of fs.readdirSync(root)) {
+        if (d.startsWith('.')) continue;
+        for (const f of fs.readdirSync(path.join(root, d)).filter(f => f.endsWith('.json'))) {
+          try { if (JSON.parse(fs.readFileSync(path.join(root, d, f), 'utf8')).voice === want && fs.existsSync(path.join(root, d, f.replace(/\.json$/, '.mp3')))) n++; } catch (e) { /* skip */ }
+        }
+      }
+    } catch (e) {}
     return n;
   }
   function newsToday() {
@@ -266,6 +276,12 @@ function install(app, deps) {
   const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), spend: spend(), brain: (() => { try { return global._elevenBrain ? global._elevenBrain.status() : null; } catch (e) { return null; } })(), geminiDown: (global._geminiDownUntil || 0) > Date.now(), newsVoice: (() => { try { return global._newsVoice ? global._newsVoice.stats() : null; } catch (e) { return null; } })(), learnVoice: (() => { try { return global._learnVoice ? global._learnVoice.stats() : null; } catch (e) { return null; } })(), sealed: (() => { try { return global._sealedStatus ? global._sealedStatus() : null; } catch (e) { return null; } })(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })() });
 
   // ── routes ──
+  // Bro's voice picker: the four deep premade voices with their ElevenLabs preview clips.
+  app.get('/api/admin/bro-voices', auth, requireAdmin, async (req, res) => {
+    const key = getSetting('ELEVENLABS_API_KEY') || ''; const cur = EV.broVoice(getSetting);
+    let list = []; try { list = await EV.listVoices(key); } catch (e) { /* previews optional */ }
+    res.json({ current: cur, voices: Object.entries(EV.BRO_VOICES).map(([name, id]) => ({ name, id, preview: ((list.find(v => v.id === id) || {}).preview) || '', on: id === cur })) });
+  });
   app.get('/api/admin/status', auth, requireAdmin, (req, res) => { try { res.json(statusBody()); } catch (e) { res.status(500).json({ error: e.message }); } });
 
   app.post('/api/admin/settings', auth, requireAdmin, async (req, res) => {
@@ -289,6 +305,7 @@ function install(app, deps) {
       if (key === 'GEMINI_API_KEY') { gemState = verify && !force ? { at: Date.now(), ok: !warning, warning: warning || '' } : null; if (!gemState) refreshCredits().catch(() => {}); }
       if (key === 'ELEVENLABS_API_KEY') EV.subscription(value, true).catch(() => {});
       if (key === 'ELEVENLABS_API_KEY' || key === 'OPENAI_API_KEY' || key === 'GEMINI_API_KEY') setTimeout(() => { try { autoRecord('key saved'); } catch (e) {} }, 1500);
+      if (key === 'BRO_VOICE') setTimeout(() => { try { autoRecord('Bro voice changed'); } catch (e) {} }, 1500); // lessons re-record in the new voice
       res.json({ ok: true, valid, saved: true, forced: !!force, ...(warning ? { warning } : {}), ...current() });
     } catch (e) { res.status(500).json({ error: e.message }); }
   });
