@@ -27,13 +27,15 @@ jobs:
             if curl -fsS --max-time 20 -o /dev/null -w "%{http_code} $p\n" "https://brodoit.com$p"; then :; else echo "::error::$p failed"; fail=1; fi
           done
           [ "$fail" = 0 ] || exit 1
-      - name: Bro is ready (brain + his own voice)
+      - name: Bro is ready (brain answers, voice speaks, hearing hears)
         run: |
           # /api/bro/ok is one bit: Bro Core's brain is configured and his voice engine is loaded.
           # After a deploy the voice model may still be loading, so this waits up to 15 minutes.
           for i in $(seq 1 30); do
             st=$(curl -fsS --max-time 20 https://brodoit.com/api/bro/ok || echo '{}')
-            if echo "$st" | grep -q '"ok":true'; then echo "Bro is ready $st"; exit 0; fi
+            # ready = brain configured + voice loaded + the self-test passed (a real brain answer, Bro's voice heard back)
+            if echo "$st" | grep -q '"ok":true' && echo "$st" | grep -q '"check":{"brain":"ok","hearing":"ok"}'; then echo "Bro is ready $st"; exit 0; fi
+            if echo "$st" | grep -q '"fail"'; then echo "::error::Bro's self-test failed: $st"; exit 1; fi
             echo "Bro not ready yet ($i): $st"; sleep 30
           done
           echo "::error::Bro Core is not ready (brain or voice down)"; exit 1
