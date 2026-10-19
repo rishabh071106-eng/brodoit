@@ -1,0 +1,29 @@
+# Checks brodoit.com every 30 minutes and after each deploy. A failed scheduled run emails the repo owner
+# (GitHub's default), so an outage is noticed within half an hour. Public pages only: no keys, no logins.
+name: Live check
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: brodoit.com answers on every app
+        run: |
+          ok=0
+          for i in $(seq 1 20); do # a deploy that is still rolling out gets up to 10 minutes
+            if curl -fsS --max-time 20 https://brodoit.com/api/health | grep -q '"status":"ok"'; then ok=1; break; fi
+            echo "health not ready ($i)"; sleep 30
+          done
+          [ "$ok" = 1 ] || { echo "::error::brodoit.com/api/health is down"; exit 1; }
+          fail=0
+          for p in / /app/ui.css /app/voice.js /mind/ '/mind/game.html?g=memory' /code/ '/lang/course.html?c=es' /sw.js; do
+            if curl -fsS --max-time 20 -o /dev/null -w "%{http_code} $p\n" "https://brodoit.com$p"; then :; else echo "::error::$p failed"; fail=1; fi
+          done
+          exit $fail
