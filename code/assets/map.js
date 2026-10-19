@@ -84,7 +84,8 @@ function render() {
   const curEl = root.querySelector('.mp-node.cur');
   if (curEl && cur > 2 && !render.scrolled && !param('from')) {
     render.scrolled = true;
-    setTimeout(() => curEl.scrollIntoView({ block: 'center', behavior: calm() ? 'auto' : 'smooth' }), 500);
+    // look the node up again when the timer fires: the synced redraw may have replaced it
+    setTimeout(() => { const el = root.querySelector('.mp-node.cur'); if (el) el.scrollIntoView({ block: 'center', behavior: calm() ? 'auto' : 'smooth' }); }, 500);
   }
 }
 
@@ -160,7 +161,7 @@ function world(ph, byDay, cur) {
     const boss = !!(m && m.project), r = boss ? 46 : 36;
     const open = progress.open(P, d), isDone = !!st.done, isCur = d === cur && !isDone;
     const cls = isDone ? 'done' : isCur ? 'cur' : open ? 'open' : 'locked';
-    if (i) y += (boss || (byDay.get(d - 1) || {}).project ? 124 : 108) + (isCur ? 40 : 0); // room for the Start bubble
+    if (i) y += (boss || (byDay.get(d - 1) || {}).project ? 124 : 108) + (isCur ? 64 : 0); // room for the Start bubble, clear of the day above
     const cx = Math.round(W / 2 + dir * Math.sin((i * Math.PI) / 4) * A);
     pts.push([cx, y, isDone]);
     const icon = boss ? (d >= 58 ? I.crown : I.trophy) : isDone ? I.check : isCur ? I.play : !open ? I.lock : '';
