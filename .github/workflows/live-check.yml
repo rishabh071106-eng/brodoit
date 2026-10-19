@@ -12,7 +12,7 @@ permissions:
 jobs:
   live:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - name: brodoit.com answers on every app
         run: |
@@ -26,4 +26,13 @@ jobs:
           for p in / /app/ui.css /app/voice.js /mind/ '/mind/game.html?g=memory' /code/ '/lang/course.html?c=es' /sw.js; do
             if curl -fsS --max-time 20 -o /dev/null -w "%{http_code} $p\n" "https://brodoit.com$p"; then :; else echo "::error::$p failed"; fail=1; fi
           done
-          exit $fail
+          [ "$fail" = 0 ] || exit 1
+      - name: Bro is ready (brain + his own voice)
+        run: |
+          # /api/bro/ok is one bit: Bro Core's brain is configured and his voice engine is loaded.
+          # After a deploy the voice model may still be loading, so this waits up to 15 minutes.
+          for i in $(seq 1 30); do
+            if curl -fsS --max-time 20 https://brodoit.com/api/bro/ok | grep -q '"ok":true'; then echo "Bro is ready"; exit 0; fi
+            echo "Bro not ready yet ($i)"; sleep 30
+          done
+          echo "::error::Bro Core is not ready (brain or voice down)"; exit 1

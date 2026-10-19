@@ -1,11 +1,11 @@
-/* Brodoit News v13.1 — one story per screen, swiped left/right: a full-width photo (shown whole over a blurred
-   copy of itself), the full story under it. Counter, language and Share sit on the photo; nothing else.
-   Paper + ink + one category colour. Loaded after app.css. */
+/* Brodoit News v16 — one story per screen, swiped left/right without end: a full-width photo, the full story
+   under it. Language and Share sit on the photo; nothing else, no counters. Paper + ink + one category colour.
+   Loaded after app.css. */
 #app .nz{padding-bottom:0}
 #app .nz-stage{position:relative;margin:0 -16px}
 #app .nz-deck{display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;outline:0}
 #app .nz-deck::-webkit-scrollbar{display:none}
-#app .nz-card{position:relative;flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden}
+#app .nz-card{position:relative;flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;touch-action:pan-x pan-y pinch-zoom}
 #app .nz-card>*{flex:none}
 #app .nz-img{position:relative;height:40%;min-height:120px;margin:0 6px;border-radius:20px;overflow:hidden;background:var(--b-bg-2);isolation:isolate}
 #app .nz-img .nz-fg{width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block}
@@ -13,16 +13,18 @@
 #app .nz-img.ph{display:grid;place-items:center;background:radial-gradient(120% 90% at 30% 20%,color-mix(in srgb,var(--c) 80%,#fff),var(--c) 55%,color-mix(in srgb,var(--c) 60%,#000))}
 #app .nz-img.ph span{color:#fff;opacity:.9;display:grid}
 /* glass chips on the photo */
-#app .nz-hud{position:absolute;top:10px;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between;pointer-events:none;z-index:3}
+#app .nz-hud{position:absolute;top:10px;left:20px;right:20px;display:flex;align-items:center;justify-content:flex-end;pointer-events:none;z-index:3}
 #app .nz-hud>*{pointer-events:auto}
-#app .nz-n,#app .nz-lang,#app .nz-share{background:rgba(15,13,20,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff}
-#app .nz-n{height:32px;padding:0 12px;border-radius:999px;display:inline-flex;align-items:center;font:700 13px var(--b-sans);font-variant-numeric:tabular-nums}
+#app .nz-lang,#app .nz-share{background:rgba(15,13,20,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff}
 /* language: two real buttons in one glass chip; the current one is lit */
 #app .nz-lang{display:flex;align-items:center;gap:0;padding:0;border-radius:999px}
 #app .nz-lang button{display:grid;place-items:center;min-width:44px;height:44px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:rgba(255,255,255,.82);font:700 13px var(--b-sans);cursor:pointer}
 #app .nz-lang button.on{background:#fff;color:#17141F;box-shadow:inset 0 0 0 4px rgba(15,13,20,.62)}
 #app .nz-share{position:absolute;right:10px;bottom:10px;width:44px;height:44px;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:2}
 #app .nz-share:active{transform:scale(.92)}
+#app .nz-ask{position:absolute;left:10px;bottom:10px;z-index:2;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px 0 8px;border:0;border-radius:999px;background:rgba(15,13,20,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;font:600 14px/1 var(--ui-font);cursor:pointer}
+#app .nz-ask:active{transform:scale(.96)}
+#app .nz-ask-orb{width:28px;height:28px;border-radius:50%;flex:none;background:radial-gradient(circle at 50% 118%,#FFB88A 0%,#EE7445 30%,#B8402A 58%,#5E1A22 88%);box-shadow:inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 4px rgba(255,255,255,.25)}
 #app .nz-body{flex:1 1 auto;min-height:0;overflow:hidden;padding:14px 22px 0}
 #app .nz-k{display:flex;align-items:center;gap:8px;min-width:0;font:600 12px var(--b-sans);color:var(--b-mute);margin-bottom:6px;white-space:nowrap}
 #app .nz-k b{font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
@@ -38,7 +40,9 @@ html[data-theme="dark"] #app .nz-k b,body[data-theme=aurora] #app .nz-k b{color:
 #app .nz-card.sm .nz-text{font-size:15px;line-height:1.5}
 #app .nz-card.xs h2{font-size:18px;margin-bottom:6px}
 #app .nz-card.xs .nz-text{font-size:14.5px;line-height:1.46}
-#app .nz-card.scroll .nz-body{overflow-y:auto;overscroll-behavior:contain;-webkit-mask:linear-gradient(#000 90%,transparent);mask:linear-gradient(#000 90%,transparent);padding-bottom:20px}
+/* a long story scrolls up and down inside its card, but a sideways swipe that starts on the text still moves the deck:
+   contain only the vertical overscroll, and let both pans through */
+#app .nz-card.scroll .nz-body{overflow-y:auto;overscroll-behavior-y:contain;touch-action:pan-x pan-y pinch-zoom;-webkit-mask:linear-gradient(#000 90%,transparent);mask:linear-gradient(#000 90%,transparent);padding-bottom:20px}
 #app .nz-nav{display:none}
 @media (min-width:760px){
   #app .nz{max-width:560px;margin:0 auto}

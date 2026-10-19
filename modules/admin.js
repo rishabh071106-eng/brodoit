@@ -15,7 +15,7 @@ const TAIL = 40;           // lines sent with /status
 const VERIFY_MS = 8000;    // provider check timeout
 const BOOKS_TOTAL = 106;
 const LESSONS_TOTAL = 60;
-const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'STUDIO_VOICE', 'BRO_VOICE'];
+const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'STUDIO_VOICE', 'BRO_VOICE', 'RUNPOD_API_KEY'];
 const VERIFIABLE = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
 const STATUS_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
 const JOBS = {
@@ -273,7 +273,24 @@ function install(app, deps) {
   }
   if (deps.creditChecks !== false) { setTimeout(() => refreshCredits().catch(() => {}), 45000); setInterval(() => refreshCredits().catch(() => {}), 3 * 3600e3); }
   const spend = () => { try { return Object.assign(STUDIO.usage(getSetting), { gemini_state: gemState, order: STUDIO.available(getSetting) }); } catch (e) { return null; } };
-  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), spend: spend(), brain: (() => { try { return global._elevenBrain ? global._elevenBrain.status() : null; } catch (e) { return null; } })(), geminiDown: (global._geminiDownUntil || 0) > Date.now(), newsVoice: (() => { try { return global._newsVoice ? global._newsVoice.stats() : null; } catch (e) { return null; } })(), learnVoice: (() => { try { return global._learnVoice ? global._learnVoice.stats() : null; } catch (e) { return null; } })(), sealed: (() => { try { return global._sealedStatus ? global._sealedStatus() : null; } catch (e) { return null; } })(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })() });
+  const statusBody = () => ({ admin: true, keys: keysInfo(), voices: voicesInfo(), services: services(), media: mediaInfo(), jobs: allJobs(), auto: autoInfo(), spend: spend(), brain: (() => { try { return global._elevenBrain ? global._elevenBrain.status() : null; } catch (e) { return null; } })(), geminiDown: (global._geminiDownUntil || 0) > Date.now(), newsVoice: (() => { try { return global._newsVoice ? global._newsVoice.stats() : null; } catch (e) { return null; } })(), learnVoice: (() => { try { return global._learnVoice ? global._learnVoice.stats() : null; } catch (e) { return null; } })(), sealed: (() => { try { return global._sealedStatus ? global._sealedStatus() : null; } catch (e) { return null; } })(), voice: (() => { try { return global._voiceStatus ? global._voiceStatus() : null; } catch (e) { return null; } })(), brocore: brocoreInfo() });
+  // the optional GPU voice (RunPod) as one Admin line: off (no key / switched off), starting, ready or error
+  function gpuInfo(g) {
+    if (!g) return null;
+    return { configured: !!g.configured, status: String(g.status || (g.configured ? 'setting up' : 'off')), warm: !!g.warm, keyMissing: !!g.keyMissing, error: g.error ? String(g.error).slice(0, 200) : '' };
+  }
+  // v16 Bro Core card: brain model, hearing, voice, knowledge, memories, lessons version, latency, cost this month, the switch
+  function brocoreInfo() {
+    try {
+      const B = global._broCore; if (!B || typeof B.health !== 'function') return null;
+      const h = B.health(), b = h.brain || {}, c = h.costMonth || {}, l = h.latency || {}, v = h.voice || {};
+      return { brain: { ready: !!b.ready, model: b.model || '', last: b.lastModel || '', error: b.lastError || '' }, hearing: { ready: !!(h.hearing && h.hearing.ready), model: (h.hearing && h.hearing.model) || '' },
+        voice: { ready: !!v.ready, loading: !!v.loading, error: v.error ? String(v.error).slice(0, 160) : '' }, knowledge: (h.knowledge && h.knowledge.items) || 0, knowledgeAt: (h.knowledge && h.knowledge.lastRefresh) || null,
+        memories: (h.memory && h.memory.memories) || 0, calls: (h.memory && h.memory.calls) || 0, lessons: h.lessons || { version: 0, count: 0 }, version: h.version || '',
+        latency: { p50: l.p50 == null ? null : l.p50, p90: l.p90 == null ? null : l.p90, n: l.n || 0, chatP50: l.chatP50 == null ? null : l.chatP50 }, cost: { month: c.month || '', usd: c.usd || 0, calls: c.calls || 0 },
+        emergency: b.emergency || 'on', emergencyUsed: b.emergencyUsed || 0, gpu: gpuInfo(h.gpu) };
+    } catch (e) { return { error: e.message }; }
+  }
 
   // ── routes ──
   // Bro's voice picker: the four deep premade voices with their ElevenLabs preview clips.

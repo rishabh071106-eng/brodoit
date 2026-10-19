@@ -21,7 +21,8 @@ Sentence case. Uppercase only for tiny labels of three words or fewer.
 ## Colour
 - Surfaces: `--b-bg` (page), `--b-card` (cards and lists), `--b-bg-2` (pressed, tracks). Text: `--b-ink`, `--b-mute`.
 - One brand accent, `--b-primary` (brick), for the primary action and focus.
-- Each app or game has one accent (`--g-memory`, `--g-python`, …) used **only** on its icon tile and its progress bar.
+- Each app or game has one accent (`--g-memory`, `--g-python`, …) used **only** on its icon tile and its progress bar
+  (and, on a hub button, as a light tint of the button itself).
 - No gradients on controls, no full-colour screens outside a game's play area.
 
 ## Shape and depth
@@ -35,13 +36,20 @@ Sentence case. Uppercase only for tiny labels of three words or fewer.
 - **List and row** `.ui-list` / `.ui-row`: the one way to show an app, a course, a game, a language, a setting.
   A row is a 44px icon tile (`.ui-ic`, tinted with the item's accent), a title, one line of status, an optional
   thin progress bar, and a chevron. Minimum height 68px.
+- **Hub buttons** `.ui-hubs` / `.ui-hub`: up to three big choices that share the screen; used on Learn.
+  Each is a 64px solid icon tile, a 24px title, one line of status (ellipsis), and an arrow, on a surface tinted
+  with the item's accent (`--hub-accent`, 9% light, 17% dark) with an 18% accent hairline, radius 24, and the
+  item's icon large and faint in the corner (`aria-hidden`). The page gives `.ui-hubs` the height to share; each
+  button takes an equal part and never less than 124px, so short and landscape screens scroll. A button 168px or
+  taller stacks (icon top-left, text bottom-left, arrow bottom-right); a shorter or very wide one is a single row.
+  `aria-label` is the title and the status. Pressed: scale .985 and a slight darken.
 - **Card** `.ui-card`: one idea per card (today's workout, a chart).
 - **Buttons** `.ui-btn` (48px, flat): one primary per screen; `.sec` and `.ghost` for the rest.
 - **Segmented control** `.ui-seg`, **sheet** for secondary actions, **field** `.ui-field` (48px, 16px text, brick focus ring).
 
 ## Navigation
 Tabs at the bottom. Inside a tab, a list of rows opens an inner page with a back chevron; the phone's back button
-returns to the list. Learn is three rows (Games, Coding, Languages), each opening its own list.
+returns to the list. Learn is three hub buttons (Games, Coding, Languages) filling the screen, each opening its own list.
 
 ## Words
 - Titles of one to three words. Subtitles of one line.
