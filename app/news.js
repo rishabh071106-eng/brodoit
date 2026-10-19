@@ -41,7 +41,15 @@
   N.stop = function () {};                                    // nothing plays in News any more
   N.setLang = function (l) { N.lang = l; try { localStorage.setItem('news.lang', l); } catch (e) {} N.rerender(); };
   // The shell re-renders the tab itself; size the deck and wire swiping after every render.
-  N.after = function () { requestAnimationFrame(() => { N.size(); N.go(N.i, true); }); };
+  N.after = function () { requestAnimationFrame(() => { N.size(); N.go(N.i, true); N.hint(); }); };
+  N.hint = function () {
+    const d = document.getElementById('nzDeck');
+    if (!d || N.stories.length < 2 || N._hinted) return;
+    try { if (localStorage.getItem('news.swiped')) return; localStorage.setItem('news.swiped', '1'); } catch (e) { return; }
+    N._hinted = true;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    setTimeout(() => { d.scrollTo({ left: 72, behavior: 'smooth' }); setTimeout(() => d.scrollTo({ left: 0, behavior: 'smooth' }), 520); }, 700);
+  };
   N.rerender = function () {
     const r = document.getElementById('newsRoot');
     if (!r || !window.S || S.tab !== 'news') return;
@@ -74,7 +82,7 @@
   N.html = function () {
     const H = hi(), list = N.stories, n = list.length;
     const hud = '<div class="nz-hud">' + (n ? '<span class="nz-n" id="nzCount">' + (N.i + 1) + '/' + n + '</span>' : '<span></span>') +
-      '<button class="nz-lang" onclick="NewsChannel.setLang(\'' + (H ? 'en' : 'hi') + '\')" aria-label="' + (H ? 'Read in English' : 'हिंदी में पढ़ें') + '"><b' + (H ? '' : ' class="on"') + '>EN</b><b' + (H ? ' class="on"' : '') + '>हिं</b></button></div>';
+      '<div class="nz-lang" role="group" aria-label="Language"><button class="' + (H ? '' : 'on') + '" aria-pressed="' + !H + '" aria-label="English" onclick="NewsChannel.setLang(\'en\')">EN</button><button class="' + (H ? 'on' : '') + '" aria-pressed="' + H + '" aria-label="हिंदी" onclick="NewsChannel.setLang(\'hi\')">हिं</button></div></div>';
     if (!N.loaded) return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck"><article class="nz-card skel"><div class="nz-img"></div><div class="nz-body"><i></i><i></i><i></i><i></i></div></article></div></div></div>';
     if (!n && N.err) return '<div class="nz"><div class="nz-empty">' + (window.mascot ? window.mascot('idle', 96) : '') + '<b>' + (H ? 'ख़बरें लोड नहीं हुईं' : 'Couldn’t load the news') + '</b><button class="b-chip" onclick="NewsChannel.loaded=false;NewsChannel.rerender();NewsChannel.load()">' + I('refresh-cw', 14) + (H ? 'फिर कोशिश करें' : 'Try again') + '</button></div></div>';
     if (!n) return '<div class="nz"><div class="nz-empty">' + (window.mascot ? window.mascot('sleeping', 96) : '') + '<b>' + (H ? 'ख़बरें आ रही हैं' : 'Stories are on the way') + '</b></div></div>';

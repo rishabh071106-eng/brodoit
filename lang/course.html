@@ -37,7 +37,7 @@ const [course, audio] = await Promise.all([loadCourse(code), meta.hasAudio === f
 setCourse(code);
 const s = store.read();
 const streak = computeStreak(s.daily);
-renderChrome({ right: `<span class="pill">${ic('flame', 16)} ${streak}</span>` });
+renderChrome({ back: '/?tab=learn', backLabel: 'Learn', right: `<span class="pill">${ic('flame', 16)} ${streak}</span>` });
 
 const head = document.getElementById('head'), body = document.getElementById('body');
 const HUES = ['#E0603F', '#2F7D4F', '#3B7FD0', '#8B5CF6', '#C2410C', '#0E9F9A', '#B5402A', '#6D28D9', '#B45309', '#BE185D'];

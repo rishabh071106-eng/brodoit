@@ -2700,8 +2700,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=18"><link rel="stylesheet" href="/app/app.css?v=18"><link rel="stylesheet" href="/app/news.css?v=18"><link rel="stylesheet" href="/app/steps.css?v=18"><link rel="stylesheet" href="/app/admin.css?v=18"><link rel="stylesheet" href="/app/onboarding.css?v=18"><link rel="stylesheet" href="/app/cards.css?v=18"><link rel="stylesheet" href="/app/home.css?v=18"><link rel="stylesheet" href="/app/tasks.css?v=18"><link rel="stylesheet" href="/app/books.css?v=18"><link rel="stylesheet" href="/app/learn.css?v=18">
-<script src="/app/icons.js?v=18" defer></script><script src="/app/cards.js?v=18" defer></script><script src="/app/learn.js?v=18" defer></script><script src="/app/you.js?v=18" defer></script><script src="/app/haptics.js?v=18" defer></script><script src="/app/mascot.js?v=18" defer></script><script src="/app/voice.js?v=18" defer></script><script src="/app/news.js?v=18" defer></script><script src="/app/steps.js?v=18" defer></script><script src="/app/admin.js?v=18" defer></script><script src="/app/onboarding.js?v=18" defer></script><script src="/app/motion.js?v=18" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=19"><link rel="stylesheet" href="/app/app.css?v=19"><link rel="stylesheet" href="/app/news.css?v=19"><link rel="stylesheet" href="/app/steps.css?v=19"><link rel="stylesheet" href="/app/admin.css?v=19"><link rel="stylesheet" href="/app/onboarding.css?v=19"><link rel="stylesheet" href="/app/cards.css?v=19"><link rel="stylesheet" href="/app/home.css?v=19"><link rel="stylesheet" href="/app/tasks.css?v=19"><link rel="stylesheet" href="/app/books.css?v=19"><link rel="stylesheet" href="/app/learn.css?v=19">
+<script src="/app/icons.js?v=19" defer></script><script src="/app/cards.js?v=19" defer></script><script src="/app/learn.js?v=19" defer></script><script src="/app/you.js?v=19" defer></script><script src="/app/haptics.js?v=19" defer></script><script src="/app/mascot.js?v=19" defer></script><script src="/app/voice.js?v=19" defer></script><script src="/app/news.js?v=19" defer></script><script src="/app/steps.js?v=19" defer></script><script src="/app/admin.js?v=19" defer></script><script src="/app/onboarding.js?v=19" defer></script><script src="/app/motion.js?v=19" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -9712,7 +9712,8 @@ async function composeSubmit(){
   else{toast('\\u26A0\\uFE0F Could not save','err');render()}
 }
 async function savE(){if(!S.form.title.trim()||!S.editing)return;const r=await api('/tasks/'+S.editing,{method:'PUT',body:JSON.stringify({title:S.form.title,notes:S.form.notes,priority:S.form.priority,status:S.form.status,due_date:S.form.dueDate,reminder_time:S.form.reminderTime,board:S.form.board})});if(r){const i=S.tasks.findIndex(t=>t.id===S.editing);if(i>-1)S.tasks[i]=r;clM();toast('\\u2705 Updated!')}}
-async function del(id){await api('/tasks/'+id,{method:'DELETE'});S.tasks=S.tasks.filter(t=>t.id!==id);render()}
+// Delete with a 5-second Undo: the task leaves the list at once; the server delete waits until Undo has passed.
+async function del(id){const i=S.tasks.findIndex(t=>t.id===id);if(i<0){await api('/tasks/'+id,{method:'DELETE'});return}const t=S.tasks[i];S.tasks.splice(i,1);render();let undone=false;const go=async()=>{if(undone)return;undone=true;try{await api('/tasks/'+id,{method:'DELETE'})}catch(e){}};const ex=document.getElementById('undoBar');if(ex)ex.remove();const bar=document.createElement('div');bar.id='undoBar';bar.className='undo-bar';bar.setAttribute('role','status');const sp=document.createElement('span');sp.textContent=S.lang==='hi'?'\\u091F\\u093E\\u0938\\u094D\\u0915 \\u0939\\u091F\\u093E\\u092F\\u093E':'Task deleted';const ub=document.createElement('button');ub.type='button';ub.textContent=S.lang==='hi'?'\\u0935\\u093E\\u092A\\u0938':'Undo';ub.onclick=function(){if(undone)return;undone=true;S.tasks.splice(Math.min(i,S.tasks.length),0,t);bar.remove();render()};bar.appendChild(sp);bar.appendChild(ub);document.body.appendChild(bar);addEventListener('pagehide',go,{once:true});setTimeout(function(){bar.remove();go()},5000)}
 async function emailTasks(){if(S.sending&&S.sending._e)return;S.sending=S.sending||{};S.sending._e=true;render();const r=await api('/email-tasks',{method:'POST',body:'{}'});S.sending._e=false;if(r&&r.ok)toast('\\u2705 Sent '+r.count+' task'+(r.count===1?'':'s')+' to your email');else toast('\\u26A0\\uFE0F '+(r&&r.error||'Failed to send'),'err')}
 async function tog(id){const t=S.tasks.find(x=>x.id===id);if(!t)return;const r=await api('/tasks/'+id,{method:'PUT',body:JSON.stringify({status:t.status==='done'?'pending':'done'})});if(r){const i=S.tasks.findIndex(x=>x.id===id);if(i>-1)S.tasks[i]=r;render()}}
 async function cyc(id){const o=['pending','in-progress','done'],t=S.tasks.find(x=>x.id===id);if(!t)return;const r=await api('/tasks/'+id,{method:'PUT',body:JSON.stringify({status:o[(o.indexOf(t.status)+1)%3]})});if(r){const i=S.tasks.findIndex(x=>x.id===id);if(i>-1)S.tasks[i]=r;render()}}
@@ -14928,7 +14929,7 @@ const LOGO_MARK='<div class="logo" aria-label="Brodoit"><span class="b1">Bro</sp
 let _hdrStreak=0;for(let _si=0;_si<60;_si++){const _sd=new Date(Date.now()-_si*864e5).toISOString().slice(0,10);const _sok=ts.some(x=>x.status==='done'&&(x.updated_at||'').slice(0,10)===_sd);if(_sok)_hdrStreak++;else if(_si>0)break}
 let h='<div class="hdr"><div class="hdr-l">'+LOGO_MARK+'</div><div class="hdr-actions">'
   +(_hdrStreak>0?'<div class="rd-pill rd-pill-accent">'+_hdrStreak+'-day streak</div>':'')
-  +'<button onclick="switchTab(\\'profile\\')" title="Profile" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#37352F);color:#fff;border:none;font:700 13px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+((S.user&&S.user.name||'U').charAt(0).toUpperCase())+'</button>'
+  +'<button onclick="switchTab(\\'profile\\')" aria-label="Profile" title="Profile" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#37352F);color:#fff;border:none;font:700 13px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+((S.user&&S.user.name||'U').charAt(0).toUpperCase())+'</button>'
   +'</div></div>';
 
 var _mPool=window._DQ||MORALS;
@@ -15188,7 +15189,7 @@ if(isMain){
   var _youTabs=['profile','cal'];
   const tabsHtml=[{k:'bro',l:'Bro',i:'bro'},{k:'news',l:'News',i:'news'},{k:'steps',l:'Steps',i:'steps'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learn',i:'learn'},{k:'books',l:'Books',i:'books'}].map(function(x){
     var isOn=(x.k==='bro')?(!S.tab||S.tab==='home'||S.tab==='bro'):(x.k==='profile'?(S.tab==='profile'||S.tab==='cal'):S.tab===x.k);
-    return '<button class="tab tab-'+x.k+(isOn?' on':'')+'" onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
+    return '<button class="tab tab-'+x.k+(isOn?' on':'')+'"'+(isOn?' aria-current="page"':'')+' onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
   // "Bro, do it!" mascot — a character with a speech bubble that animates
   // bro-mascot / climbScene removed per user request
@@ -15274,7 +15275,7 @@ if(S.tab==='tasks'){
   // Quick-compose bar (compact — no hero card)
   const _cp=S.compose.priority;
   h+='<div class="qc-bar" style="margin-top:12px">';
-  h+='<div class="qc-row"><textarea class="qc-input" rows="1" wrap="soft" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border-radius:12px;font-family:var(--sans)" placeholder="'+(S._taskListening?'Listening...':'Add a task')+'" oninput="composeUpdate(this.value);this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,120)+\\'px\\'" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();composeSubmit()}">'+esc(S.compose.value||'')+'</textarea>';
+  h+='<div class="qc-row"><textarea class="qc-input" rows="1" enterkeyhint="done" aria-label="Add a task" wrap="soft" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border-radius:12px;font-family:var(--sans)" placeholder="'+(S._taskListening?'Listening...':'Add a task')+'" oninput="composeUpdate(this.value);this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,120)+\\'px\\'" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();composeSubmit()}">'+esc(S.compose.value||'')+'</textarea>';
   h+='<button onclick="voiceAddTask()" title="Voice input" style="width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;background:'+(S._taskListening?'#FF3B30':'var(--accent-soft)')+';color:'+(S._taskListening?'#fff':'var(--accent)')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="'+(S._taskListening?'#fff':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>';
   var _hasText=(S.compose.value||'').trim().length>0;
   if(_hasText){h+='<button class="qc-send" onclick="composeSubmit()" title="Add task" style="border-radius:50%;width:38px;height:38px;flex-shrink:0;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>';}
@@ -15317,8 +15318,8 @@ if(S.tab==='tasks'){
     const _doneAt=d&&t.updated_at?'Done \\u00B7 '+new Date(t.updated_at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'';
     const addedTxt=t.created_at?timeAgo((t.created_at||'').replace(' ','T')+'Z'):'';
     h+='<div class="rd-task-row'+(d?' done':'')+'" style="border-left:3px solid '+p.c+'">';
-    if(d)h+='<div class="rd-check-done" onclick="tog(\\''+t.id+'\\')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"/></svg></div>';
-    else h+='<div class="rd-check-empty" onclick="tog(\\''+t.id+'\\')" style="cursor:pointer"></div>';
+    if(d)h+='<button type="button" class="rd-chk" role="checkbox" aria-checked="true" aria-label="Mark not done: '+esc(t.title)+'" onclick="tog(\\''+t.id+'\\')"><div class="rd-check-done"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 6.5"/></svg></div></button>';
+    else h+='<button type="button" class="rd-chk" role="checkbox" aria-checked="false" aria-label="Complete: '+esc(t.title)+'" onclick="tog(\\''+t.id+'\\')"><div class="rd-check-empty"></div></button>';
     h+='<div style="flex:1;min-width:0"><div class="rd-task-title">'+esc(t.title)+'</div>';
     if(t.notes)h+='<div style="font:400 13px var(--sans);color:var(--text-mute);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(t.notes)+'</div>';
     h+='<div class="rd-task-meta">';
@@ -15330,7 +15331,7 @@ if(S.tab==='tasks'){
     else if(_tTime&&!t.reminder_time)h+='<span style="font:500 12px var(--sans);color:var(--text-mute)">'+_tTime+'</span>';
     if(addedTxt&&!window.Cards)h+='<span style="font:400 11px var(--sans);color:var(--text-dim)">\\u2795 '+esc(addedTxt)+'</span>';
     h+='</div></div>';
-    h+='<div class="tc-acts" style="display:flex;gap:4px;align-items:flex-start;margin-left:6px"><button class="ib" onclick="opE(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ib" style="color:#1F1E1C" onclick="del(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';
+    h+='<div class="tc-acts" style="display:flex;gap:4px;align-items:flex-start;margin-left:6px"><button class="ib" aria-label="Edit" onclick="opE(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ib" aria-label="Delete" style="color:#1F1E1C" onclick="del(\\''+t.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div>';
     h+='</div>';
   }
   if(!_segTasks.length&&!f.length&&window.Cards)h+=Cards.cover({key:'hero-tasks',icon:'check-square',tone:'umber',size:'wide',cls:'tk-empty',title:(S.lang==='hi'?'\\u0925\\u093E\\u0932\\u0940 \\u0916\\u093C\\u093E\\u0932\\u0940 \\u0939\\u0948':'Nothing on your plate'),go:'arrow',onclick:"var q=document.querySelector('.qc-input');if(q){q.focus();q.scrollIntoView({block:'center'})}"});
@@ -17360,7 +17361,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=128').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=129').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17883,7 +17884,7 @@ app.get('/j/:id',(req,res)=>{
 app.get(/^\/prep(\/.*)?$/,(_,res)=>res.redirect(302,'/?tab=learn'));
 app.get(/^\/learning(\/.*)?$/,(_,res)=>res.redirect(302,'/code/'));
 app.get(['/lang/phrases.html','/lang/phrase-lesson.html'],(_,res)=>res.redirect(302,'/lang/'));
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v176";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v177";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
