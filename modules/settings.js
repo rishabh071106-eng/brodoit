@@ -14,6 +14,13 @@ const KEYS = [
   'GEMINI_MODEL', 'GEMINI_LITE_MODEL', 'GEMINI_TTS_MODEL', 'GEMINI_TTS_VOICE', 'GEMINI_TTS_VOICE_NATIVE', 'GEMINI_TTS_VOICE_BRO',
   'BULK_VOICE', 'STUDIO_VOICE', 'NEWS_VOICE_FULL', 'NEWS_VOICE_PROVIDER', 'BULLETIN_AUDIO',
   'ELEVEN_BRAIN_ID', 'ELEVEN_BRAIN_HASH', 'ELEVEN_BRAIN_LLM',
+  'BRO_VOICE', // Bro's ElevenLabs voice pick (Admin) — was missing, so saving it threw
+  // v16 Bro Core: the model Bro thinks on, the next one to try at night, the old-provider switch ('on'|'off'),
+  // the Kokoro voice per language (JSON, written by the nightly tuner) and the synthesis thread count
+  'BROCORE_MODEL', 'BROCORE_MODEL_NEXT', 'BROCORE_EMERGENCY', 'BRO_VOICE_SPECS', 'BROCORE_THREADS',
+  // v16 live calls (modules/voice.js): the call-token secret (generated once) and the ElevenLabs/Realtime emergency switch;
+  // v16 optional GPU voice (modules/brocore/gpu.js, RunPod)
+  'BROCORE_CALL_SECRET', 'BROCORE_EMERGENCY_ELEVEN', 'BROCORE_GPU', 'BROCORE_GPU_IMAGE', 'RUNPOD_API_KEY', 'RUNPOD_ENDPOINT_ID',
 ];
 
 // "sk-…k9Qz" — enough to recognise a key, never enough to use it.

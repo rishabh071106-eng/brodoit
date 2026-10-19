@@ -125,3 +125,46 @@ html body{font-family:var(--ui-font);word-spacing:.08em;font-kerning:normal;font
 :is(#app,html) .bk-sum-cover .auth{text-transform:none;letter-spacing:0;font:500 13px/1.3 var(--ui-font);opacity:.85}
 :is(#app,html) .bk-sum-mins{text-transform:none;letter-spacing:0;font-weight:600}
 :is(#app,html) .bvf-end{box-shadow:none}
+
+/* ── hub buttons: up to three big choices that share the screen (Learn) ── */
+/* The page gives .ui-hubs the height to share (Learn measures from its header to the tab bar); each button takes an
+   equal part and never less than 132px, so short and landscape screens scroll instead of squashing. A button 168px or
+   taller (and at most 600px wide) stacks: icon top-left, title and status bottom-left, arrow bottom-right. Otherwise
+   it is a single row.
+   Markup: button.ui-hub[style="--hub-accent:…"][aria-label="Title, status"] > .ui-hub-in > .ui-hub-ic + .ui-hub-tx(b, small)
+   + .ui-hub-go, then .ui-hub-art (the item's icon, large and faint, aria-hidden). */
+.ui-hubs{display:flex;flex-direction:column;gap:12px}
+.ui-hub{--hub-accent:var(--b-ink);--hub-bg:color-mix(in srgb,var(--hub-accent) 9%,var(--b-card));--hub-sub:color-mix(in srgb,var(--hub-accent) 16%,var(--b-ink-2));
+  position:relative;display:block;flex:1 1 0;min-height:124px;max-height:260px;width:100%;margin:0;padding:0;overflow:hidden;container-type:size;
+  border:1px solid color-mix(in srgb,var(--hub-accent) 18%,transparent);border-radius:24px;background:var(--hub-bg);box-shadow:var(--ui-shadow);
+  color:var(--b-ink);text-align:left;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ui-hub-in{position:relative;z-index:1;display:flex;align-items:center;gap:14px;height:100%;padding:16px}
+.ui-hub-ic{width:64px;height:64px;flex:none;border-radius:18px;display:grid;place-items:center;color:#fff;background:var(--hub-accent)}
+.ui-hub-ic svg{display:block;width:30px;height:30px}
+.ui-hub-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ui-hub-tx b{font:700 24px/1.2 var(--ui-font);letter-spacing:-.02em;color:var(--b-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ui-hub-tx small{font:var(--ui-t-sub);color:var(--hub-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ui-hub-go{width:40px;height:40px;flex:none;border-radius:999px;display:grid;place-items:center;color:var(--hub-accent);background:var(--b-card);box-shadow:0 1px 2px rgba(31,30,28,.08)}
+.ui-hub-go svg{display:block}
+.ui-hub-art{position:absolute;top:-30px;right:-34px;line-height:0;color:var(--hub-accent);opacity:.075;pointer-events:none}
+.ui-hub-art svg{display:block;width:144px;height:144px}
+@container (min-height:168px) and (max-width:600px){
+  .ui-hub-in{display:grid;grid-template:"ic ." 1fr "tx go" auto / minmax(0,1fr) auto;align-items:end;gap:12px 14px;padding:20px 20px 20px}
+  .ui-hub-ic{grid-area:ic;align-self:start}
+  .ui-hub-tx{grid-area:tx}
+  .ui-hub-go{grid-area:go;align-self:center}
+}
+/* press: a small scale and a slight darken. Id-level weight (and !important where the old app-wide button press uses
+   it) so the older scale(.94), bouncy transition and hover lift don't reach these */
+:is(#app,html) .ui-hub{transition:transform .14s ease,filter .14s ease,border-color .15s}
+:is(#app,html) .ui-hub:hover{transform:none;box-shadow:var(--ui-shadow)}
+:is(#app,html) .ui-hub:active{transform:scale(.985)!important;transition:transform .1s ease,filter .1s ease!important;filter:brightness(.97)}
+.ui-hub:focus-visible{outline:2px solid var(--b-primary);outline-offset:3px}
+@media (hover:hover){.ui-hub:hover{border-color:color-mix(in srgb,var(--hub-accent) 32%,transparent)}}
+:root[data-theme="dark"] .ui-hub,html[data-theme="dark"] .ui-hub,body[data-theme=aurora] .ui-hub{
+  --hub-bg:color-mix(in srgb,var(--hub-accent) 17%,var(--b-card));--hub-sub:color-mix(in srgb,var(--hub-accent) 14%,var(--b-ink-2));
+  border-color:color-mix(in srgb,var(--hub-accent) 34%,transparent)}
+:root[data-theme="dark"] .ui-hub-go,html[data-theme="dark"] .ui-hub-go,body[data-theme=aurora] .ui-hub-go{color:color-mix(in srgb,var(--hub-accent) 45%,#fff);background:color-mix(in srgb,var(--hub-accent) 26%,var(--b-card));box-shadow:none}
+:root[data-theme="dark"] .ui-hub-art,html[data-theme="dark"] .ui-hub-art,body[data-theme=aurora] .ui-hub-art{color:color-mix(in srgb,var(--hub-accent) 55%,#fff);opacity:.07}
+:is(#app,html) :is(:root[data-theme="dark"] .ui-hub,html[data-theme="dark"] .ui-hub,body[data-theme=aurora] .ui-hub):active{filter:brightness(.9)}
+@media (prefers-reduced-motion:reduce){:is(#app,html) .ui-hub,:is(#app,html) .ui-hub:active{transition:none!important}:is(#app,html) .ui-hub:active{transform:none!important}}
