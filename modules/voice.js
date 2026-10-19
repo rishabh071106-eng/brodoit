@@ -303,7 +303,7 @@ function install(app, deps) {
     if (!msgs.length) return res.status(400).json({ error: 'messages required' });
     const sys = instructionsFor(persona, lang, req.user, speak) + ' Reply in plain spoken sentences, no lists, no markdown.';
     const list = providers();
-    if (!list.length) return res.status(503).json({ error: speak === 'hi' ? 'Bro का दिमाग़ अभी जुड़ा नहीं — You → Admin में OpenAI, Gemini या Groq की key डालो।' : 'Bro has no brain yet — paste an OpenAI, Gemini or Groq key in You → Admin.' });
+    if (!list.length) { console.warn('[voice] no brain: paste an OpenAI, Gemini or Groq key in You → Admin'); return res.status(503).json({ error: 'brain_unavailable' }); }
     const last = msgs[msgs.length - 1].content.toLowerCase();
     const wantsTool = /\b(add|create|schedule|remind|task|event|block|complete|done|finish|mark|news|headline|steps|goal|khabar|samachar|yaad|kaam)\b/i.test(last);
     const fnTools = tools.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.input_schema } }));
