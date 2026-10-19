@@ -8,9 +8,9 @@
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
 <link rel="stylesheet" href="/app/theme.css?v=16">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=15">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=16">
 <link rel="stylesheet" href="/lang/assets/topbar.css?v=15">
-<link rel="stylesheet" href="/lang/assets/stages.css?v=1">
+<link rel="stylesheet" href="/lang/assets/stages.css?v=2">
 <script src="/app/icons.js?v=16" defer></script>
 <script src="/lang/assets/topbar.js?v=15" defer></script>
 </head>
@@ -37,7 +37,7 @@ const [course, audio] = await Promise.all([loadCourse(code), meta.hasAudio === f
 setCourse(code);
 const s = store.read();
 const streak = computeStreak(s.daily);
-renderChrome({ title: meta.name, right: `<span class="pill">${ic('flame', 16)} ${streak}</span>` });
+renderChrome({ right: `<span class="pill">${ic('flame', 16)} ${streak}</span>` });
 
 const head = document.getElementById('head'), body = document.getElementById('body');
 const HUES = ['#E0603F', '#2F7D4F', '#3B7FD0', '#8B5CF6', '#C2410C', '#0E9F9A', '#B5402A', '#6D28D9', '#B45309', '#BE185D'];
@@ -52,31 +52,27 @@ if (!course && !audio) {
       <img src="/app/img/cards/lang-${code}.jpg" alt="" onerror="this.remove()">
       <div class="stg-hshade"></div>
       <div class="stg-hb">
-        <div class="stg-hk"><span class="stg-flag">${meta.flag || ''}</span>${L('School of Languages', 'भाषा स्कूल')} · ${L('taught in', 'पढ़ाई')} ${esc(meta.fromName || 'English')}</div>
-        <h1>${esc(meta.name)} <span>${esc(meta.native || '')}</span></h1>
-        <p>${esc(meta.tagline || course?.tagline || '')}</p>
+        <h1><span class="stg-flag">${meta.flag || ''}</span>${esc(meta.name)} ${meta.native && meta.native !== meta.name ? `<span>${esc(meta.native)}</span>` : ''}</h1>
         <div class="stg-stats">
           <span class="stg-ring"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="${r}" class="t"/><circle cx="28" cy="28" r="${r}" class="v" style="stroke-dasharray:${circ};stroke-dashoffset:${circ * (1 - p.pct / 100)}"/></svg><b>${p.pct}%</b></span>
-          <span class="stg-chip">${ic('flame', 15)}<b>${streak}</b> ${L('day streak', 'दिन')}</span>
           <span class="stg-chip">${ic('zap', 15)}<b>${s.xp || 0}</b> XP</span>
         </div>
       </div>
     </section>
     <div class="seg stg-seg" id="seg"><div class="thumb"></div>
-      <button data-m="audio" class="on">${ic('headphones', 16)} ${L('Listen', 'सुनो')}</button><button data-m="practice">${ic('star', 16)} ${L('Practice stages', 'अभ्यास स्टेज')}</button></div>`;
+      <button data-m="audio" class="on">${ic('headphones', 16)} ${L('Listen', 'सुनो')}</button><button data-m="practice">${ic('star', 16)} ${L('Practice', 'अभ्यास')}</button></div>`;
 
   // ---- Listen: audio episodes ----
   const audioHTML = () => {
     if (!audio?.lessons?.length) return comingSoonHTML(lang, '/lang/');
     const ls = audio.lessons;
     const firstOpen = ls.findIndex(l => !s.done[`${code}/${l.id}`]);
-    return `<div class="ep-intro">${ic('headphones', 18)}<span>${L('Listen, repeat aloud, answer. Earbuds in, phone in pocket.', 'सुनो, दोहराओ, जवाब दो। ईयरफ़ोन लगाओ और चल पड़ो।')}</span></div>
-      <div class="eps">${ls.map((l, i) => {
+    return `<div class="eps">${ls.map((l, i) => {
       const done = !!s.done[`${code}/${l.id}`], open = done || i === 0 || !!s.done[`${code}/${ls[i - 1].id}`] || i === firstOpen;
       const cur = i === firstOpen;
       const title = String(l.title || '').replace(/^Lesson\s*\d+\s*[—–-]\s*/i, '').replace(/^पाठ\s*\d+\s*[—–-]\s*/, '');
       const inner = `<span class="ep-n">${done ? ic('check', 20) : !open ? ic('lock', 16) : i + 1}</span>
-        <span class="ep-t"><b>${esc(title)}</b><small>${l.minutes || 15} ${t(lang, 'min')}${l.goal ? ' · ' + esc(l.goal) : ''}</small></span>
+        <span class="ep-t"><b>${esc(title)}</b><small>${l.minutes || 15} ${t(lang, 'min')}${cur && l.goal ? ' · ' + esc(l.goal) : ''}</small></span>
         ${cur ? `<span class="ep-play">${ic('play', 18)}</span>` : ''}`;
       return open ? `<a class="ep${done ? ' done' : ''}${cur ? ' cur' : ''}" style="--i:${i}" href="/lang/audio.html?c=${code}&l=${encodeURIComponent(l.id)}">${inner}</a>`
         : `<button class="ep locked" style="--i:${i}" data-locked>${inner}</button>`;
@@ -110,12 +106,12 @@ if (!course && !audio) {
       }).join('');
       return `<section class="stg ${state}" style="--hue:${HUES[ui % HUES.length]};--i:${ui}" id="stg${ui + 1}">
         <div class="stg-h"><span class="stg-e">${u.emoji || ''}</span>
-          <div class="stg-ht"><small>${L('Stage', 'स्टेज')} ${ui + 1}${state === 'done' ? ' · ' + L('cleared', 'पूरा') : ''}</small><b>${esc(u.title)}</b><span>${esc(u.goal || '')}</span></div>
+          <div class="stg-ht"><small>${L('Stage', 'स्टेज')} ${ui + 1}${state === 'done' ? ' · ' + L('cleared', 'पूरा') : ''}</small><b>${esc(u.title)}</b>${state === 'cur' && u.goal ? `<span>${esc(u.goal)}</span>` : ''}</div>
           <span class="stg-c">${state === 'locked' ? ic('lock', 16) : `${doneN}/${u.lessons.length}`}</span></div>
         <div class="stg-path">${nodes}</div>
         ${state === 'done' ? `<div class="stg-won">${ic('trophy', 16)} ${L('Stage cleared', 'स्टेज पूरा')}</div>` : ''}
       </section>`;
-    }).join('') + `<div class="stg-end">${ic('trophy', 18)} ${L('Clear all 10 stages to finish the course', 'सभी 10 स्टेज पूरे करो, कोर्स पूरा')}</div>`;
+    }).join('');
   };
 
   // ---- the gate: entering a lesson feels like entering a level ----

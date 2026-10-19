@@ -1,22 +1,23 @@
 /* Language course v13: a photo hero for the country, audio "episodes", and practice stages that feel
    like levels — glowing current lesson, Bro waiting at it, a gate that bursts open when you enter. */
 .stg-page .wrap{max-width:640px}
-.stg-hero{position:relative;height:300px;margin:4px 0 14px;border-radius:26px;overflow:hidden;color:#fff;isolation:isolate;animation:stgIn .7s cubic-bezier(.16,1,.3,1) both;box-shadow:0 22px 40px -24px rgba(23,20,31,.6)}
+.stg-hero{position:relative;height:240px;margin:4px 0 14px;border-radius:26px;overflow:hidden;color:#fff;isolation:isolate;animation:stgIn .7s cubic-bezier(.16,1,.3,1) both;box-shadow:0 22px 40px -24px rgba(23,20,31,.6)}
 .stg-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transform:scale(1.06);animation:stgKen 18s ease-in-out infinite alternate}
 @keyframes stgKen{to{transform:scale(1.14) translate(-2%,-2%)}}
 .stg-hshade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,14,.05) 0%,rgba(10,10,14,.35) 40%,rgba(10,10,14,.86) 100%)}
 .stg-hb{position:absolute;left:18px;right:18px;bottom:16px}
 .stg-hk{display:flex;align-items:center;gap:8px;font:800 11px var(--b-sans);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85)}
 .stg-flag{font-size:22px;letter-spacing:0;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
-.stg-hero h1{margin:6px 0 4px;font:800 40px/1 var(--b-sans);letter-spacing:-.04em}
-.stg-hero h1 span{font-weight:600;font-size:20px;opacity:.85;letter-spacing:-.01em}
+.stg-hero h1{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:0 0 12px;font:400 44px/1 var(--b-serif,Georgia,serif);letter-spacing:-.02em;text-shadow:0 2px 16px rgba(0,0,0,.3)}
+.stg-hero h1 .stg-flag{align-self:center;font-size:28px}
+.stg-hero h1 span:not(.stg-flag){font:600 18px var(--b-sans);opacity:.85;letter-spacing:-.01em}
 .stg-hero p{margin:0 0 12px;font:500 14px/1.45 var(--b-sans);opacity:.9;max-width:92%}
 .stg-stats{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .stg-ring{position:relative;width:46px;height:46px}
 .stg-ring svg{width:46px;height:46px;transform:rotate(-90deg)}
 .stg-ring circle{fill:none;stroke-width:6;stroke-linecap:round}
 .stg-ring .t{stroke:rgba(255,255,255,.25)}
-.stg-ring .v{stroke:#FFD43B;transition:stroke-dashoffset 1.2s cubic-bezier(.16,1,.3,1)}
+.stg-ring .v{stroke:#fff;transition:stroke-dashoffset 1.2s cubic-bezier(.16,1,.3,1)}
 .stg-ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 11px var(--b-sans)}
 .stg-chip{display:inline-flex;align-items:center;gap:5px;min-height:36px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font:600 13px var(--b-sans)}
 .stg-chip b{font-weight:800}
