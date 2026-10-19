@@ -33,7 +33,7 @@
     { k: 'android', label: 'Android app', icon: 'smartphone', off: 'building…' },
   ];
   const JOBS = [
-    { k: 'learn-audio', label: 'Record Python + language narration', sub: 'every course line, once · kept forever · resumable', icon: 'mic' },
+    { k: 'learn-audio', label: 'Record language exercises', sub: 'every exercise line in Bro\'s voice, once · resumable', icon: 'mic' },
     { k: 'lang-audio', label: 'Record language lessons', sub: '60 lessons · needs ffmpeg · resumable', icon: 'languages' },
     { k: 'hindi-books', label: 'Record Hindi books', sub: '106 briefs · runs for hours · resumable', icon: 'book-open' },
   ];
@@ -98,7 +98,7 @@
   }
   function body(a) {
     const st = a.status;
-    let h = '<p class="adm-lead b-body">Paste once. Saved on the server, live right away. Bro needs one brain key (Gemini, OpenAI or Groq). Voices: ElevenLabs is best and stays inside the plan credits; Gemini or OpenAI voices take over when it runs out.</p>';
+    let h = '<p class="adm-lead b-body">Paste once. Saved on the server, live right away. Bro needs one brain key (Gemini, OpenAI or Groq). Bro speaks in one ElevenLabs voice everywhere (chat and language lessons); OpenAI\'s deep voice covers live chat only if the credits run out.</p>';
     // service tiles
     h += '<div class="adm-tiles" id="admTiles">' + SERVICES.map(tileHtml).join('') + '</div>';
     // keys
@@ -109,6 +109,8 @@
     h += '<p><b>OpenAI</b> — sign in at <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys ' + ic('external-link', 12) + '</a>, tap <i>Create new secret key</i>, copy the <code>sk-…</code> key. Add a little credit to the account; Realtime voice is billed per minute.</p>';
     h += '<p><b>ElevenLabs</b> — sign in at <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noopener">elevenlabs.io/app/settings/api-keys ' + ic('external-link', 12) + '</a>, tap <i>Create API key</i> with text-to-speech access, copy it. Bulletins, Hindi books and lessons are recorded once and kept on the volume.</p>';
     h += '<p>Keys are verified with the provider before saving, stored masked, and never shown again. Remove a key here to fall back to the server variable.</p></div></div>';
+    // Bro's one voice
+    h += '<div class="adm-sec" id="admBroVoice">' + broVoiceHtml() + '</div>';
     // recordings
     h += '<div class="adm-sec"><div class="b-eyebrow">Recordings</div>' + mediaHtml(st.media) + '</div>';
     // jobs
@@ -118,6 +120,21 @@
     h += '<div class="adm-jobs" id="admJobs">' + JOBS.map(j => jobHtml(j)).join('') + '</div>';
     return h;
   }
+  // Bro's voice: four deep ElevenLabs voices, each with a preview; picking one re-records the language lessons in it.
+  function broVoiceHtml() {
+    const a = adm(), bv = a.broVoices;
+    if (!bv) { if (!a._bvAsked) { a._bvAsked = true; _api('/admin/bro-voices').then(r => { if (r && r.voices) { a.broVoices = r; const el = document.getElementById('admBroVoice'); if (el) el.innerHTML = broVoiceHtml(); } }).catch(() => {}); } return '<div class="b-eyebrow">Bro\'s voice</div><div class="b-skel" style="height:52px"></div>'; }
+    const cap = n => n.charAt(0).toUpperCase() + n.slice(1);
+    return '<div class="b-eyebrow">Bro\'s voice</div><div class="adm-bv" role="radiogroup" aria-label="Bro\'s voice">' + bv.voices.map(v =>
+      '<div class="adm-bv-i' + (v.on ? ' on' : '') + '"><button type="button" role="radio" aria-checked="' + v.on + '" class="adm-bv-pick" onclick="AdminPanel.pickVoice(\'' + v.name + '\')">' + (v.on ? ic('check', 16) : '') + '<span>' + cap(v.name) + '</span></button>' +
+      (v.preview ? '<button type="button" class="adm-bv-play" aria-label="Hear ' + cap(v.name) + '" onclick="AdminPanel.previewVoice(\'' + _esc(v.preview) + '\')">' + ic('play', 16) + '</button>' : '') + '</div>').join('') + '</div>';
+  }
+  A.previewVoice = function (url) { try { if (A._pv) A._pv.pause(); A._pv = new Audio(url); A._pv.play().catch(() => {}); } catch (e) {} };
+  A.pickVoice = async function (name) {
+    const r = await _api('/admin/settings', { method: 'POST', body: JSON.stringify({ key: 'BRO_VOICE', value: name }) });
+    if (r && r.ok) { const a = adm(); a.broVoices = null; a._bvAsked = false; const el = document.getElementById('admBroVoice'); if (el) el.innerHTML = broVoiceHtml(); if (typeof toast === 'function') toast('Bro now speaks as ' + name.charAt(0).toUpperCase() + name.slice(1) + ' · lessons re-record in this voice'); }
+    else if (typeof toast === 'function') toast((r && r.error) || 'Could not change the voice', 'err');
+  };
   // Keys that arrived encrypted through the repo (modules/sealed.js): names and masked hints, so a swap is visible.
   function sealedHtml(se) {
     if (!se || (!(se.applied || []).length && !(se.skipped || []).length && !se.error)) return '';
@@ -126,7 +143,7 @@
     const k = (se.skipped || []).map(x => (names[x.key] || x.key) + ' (' + x.why + ')').join(' · ');
     return '<p class="adm-auto b-sm">' + ic('lock', 14) + ' ' + (a ? 'Installed securely on this start: ' + _esc(a) : 'Secure key delivery ready') + (k || se.error ? '<br><span style="color:var(--b-primary)">' + _esc([k, se.error].filter(Boolean).join(' · ')) + '</span>' : '') + '</p>';
   }
-  // Recorded-once voice: Python + language narration (and News headlines only when the server runs with NEWS_VOICE=1).
+  // Recorded-once voice: language exercise lines and lessons in Bro's one voice (News headlines only with NEWS_VOICE=1).
   function voiceLines(st) {
     let h = '';
     const nv = st.newsVoice, lv = st.learnVoice;

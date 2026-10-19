@@ -22,12 +22,14 @@ const keys = gs => ({ eleven: gs('ELEVENLABS_API_KEY') || process.env.ELEVENLABS
 // usage file, so a nightly run doesn't rediscover a 402 on every book.
 function markDown(p, ms) { const until = Date.now() + ms; down.set(p, until); try { const u = readUsage(); u.down = u.down || {}; u.down[p] = until; writeUsage(u); } catch (e) {} }
 const isDown = p => { if ((down.get(p) || 0) > Date.now()) return true; try { const t = ((readUsage().down || {})[p]) || 0; if (t > Date.now()) { down.set(p, t); return true; } } catch (e) {} return false; };
+// v14: one voice. Recorded lines (lessons, books) are ElevenLabs only, so every clip is Bro's voice; a live chat reply may
+// fall back to OpenAI (deep 'onyx') when ElevenLabs is out of credits. Gemini TTS is out of every chain: it spoke its own
+// style instruction ("Read this aloud in a warm…") at the start of clips.
 function order(gs, purpose) {
-  const k = keys(gs); const pin = String(gs(purpose === 'bulk' ? 'BULK_VOICE' : 'STUDIO_VOICE') || '').toLowerCase();
-  const all = ['eleven', 'gemini', 'openai'].filter(p => k[p]);
-  return pin && all.includes(pin) ? [pin, ...all.filter(p => p !== pin)] : all;
+  const k = keys(gs);
+  return (purpose === 'live' ? ['eleven', 'openai'] : ['eleven']).filter(p => k[p]);
 }
-function available(gs) { return order(gs, 'daily').filter(p => !isDown(p)); }
+function available(gs, purpose) { return order(gs, purpose || 'daily').filter(p => !isDown(p)); }
 
 // ElevenLabs budget, plus a fixed monthly cap for bulk recordings when the key can't read its plan (a key without
 // "user read" access): bulk then stops at ELEVEN_BULK_MONTHLY_CHARS (default 40,000 ≈ 20,000 credits) of this month's use.
@@ -64,7 +66,7 @@ async function plan(opts) {
 }
 
 async function openaiSpeak(key, text, lang, o) {
-  const voice = o.voice || (o.getSetting && o.getSetting(o.role === 'native' ? 'OPENAI_TTS_VOICE_NATIVE' : 'OPENAI_TTS_VOICE')) || (o.role === 'native' ? 'onyx' : 'ash');
+  const voice = o.voice || (o.getSetting && o.getSetting(o.role === 'native' ? 'OPENAI_TTS_VOICE_NATIVE' : 'OPENAI_TTS_VOICE')) || 'onyx';
   const how = o.role === 'native' ? 'Speak clearly like a native speaker teaching a learner.' : lang === 'hi' ? 'Speak natural, warm Hindi at an easy pace, like a close friend.' : 'Warm, confident Indian English. Natural pace, friendly, never robotic.';
   const bufs = [];
   for (const c of EV.chunk(text, 3500)) {
@@ -82,7 +84,7 @@ async function speak(opts) {
   const gs = opts.getSetting || (() => ''); const k = keys(gs);
   const text = String(opts.text || '').trim(); if (!text) return null;
   const lang = String(opts.lang || 'en').toLowerCase().slice(0, 2), purpose = opts.purpose || 'daily';
-  const list = opts.provider ? [opts.provider] : order(gs, purpose);
+  const list = (opts.provider ? [opts.provider] : order(gs, purpose)).filter(p => p !== 'gemini'); // never Gemini TTS (v14)
   let lastErr = null;
   for (const p of list) {
     if (!k[p] || isDown(p)) continue;
@@ -90,7 +92,7 @@ async function speak(opts) {
       let out;
       if (p === 'eleven') {
         const b = await elevenOk(k.eleven, text.length, purpose); if (!b.ok) { lastErr = new Error(b.reason); continue; }
-        const voice = opts.voiceId || await EV.pickVoice(k.eleven, lang, gs);
+        const voice = opts.voiceId || EV.broVoice(gs);
         try { out = { buf: await EV.speak(k.eleven, text, lang, voice, opts.eleven || {}), mime: 'audio/mpeg' }; }
         catch (e) { if (b.hold) EV.release(k.eleven, b.hold); throw e; } // a failed call is not charged
       } else if (p === 'gemini') {

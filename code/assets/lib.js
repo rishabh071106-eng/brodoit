@@ -1,5 +1,5 @@
 // Shared helpers for the Python school: markup, progress (local first, synced to the server
-// so Bro knows how you are growing), recorded narration with a device-voice fallback.
+// so Bro knows how you are growing), game sounds, ranks and stars.
 export const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // Tiny markup: **bold**, *italic*, `code`, "- " bullets, line breaks.
@@ -41,7 +41,7 @@ export async function api(path, body, method) {
 
 // ── progress ──
 const KEY = 'bd.py.v1';
-const blank = () => ({ days: {}, xp: 0, log: [], unlockAll: false, voice: true, started: null });
+const blank = () => ({ days: {}, xp: 0, log: [], unlockAll: false, started: null });
 export const progress = {
   read() { try { return Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { return blank(); } },
   write(p) { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch (e) { /* private mode */ } },
@@ -86,53 +86,33 @@ export async function syncProgress(update) {
   return p;
 }
 
-// ── narration: recorded once on the server (studio voice), kept forever; device voice as fallback ──
-export async function sid(voice, text) {
-  const data = new TextEncoder().encode(voice + '\n' + String(text).trim());
-  const buf = await crypto.subtle.digest('SHA-1', data);
-  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 20);
-}
+// ── game feel: short sound effects (window.Sfx from /app/sound.js; no voice anywhere), ranks, stars ──
+export function sfx(kind) { try { window.Sfx && window.Sfx.play(kind); } catch (e) { /* sound is optional */ } }
+export const calm = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
 
-let audio = null, speakGen = 0;
-export function stopVoice() {
-  speakGen++;
-  if (audio) { try { audio.pause(); } catch (e) { /* ignore */ } audio = null; }
-  try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+// Ranks by total Python XP. A full day is worth roughly 200–300 XP, so you graduate as a Developer.
+export const RANKS = [
+  { name: 'Novice', xp: 0, icon: 'seed' },
+  { name: 'Coder', xp: 400, icon: 'code' },
+  { name: 'Builder', xp: 2000, icon: 'build' },
+  { name: 'Hacker', xp: 5000, icon: 'term' },
+  { name: 'Pro', xp: 9000, icon: 'bolt' },
+  { name: 'Developer', xp: 13000, icon: 'crown' },
+];
+export function rankOf(xp) {
+  xp = Math.max(0, xp || 0);
+  let i = 0;
+  while (i < RANKS.length - 1 && xp >= RANKS[i + 1].xp) i++;
+  const r = RANKS[i], nx = RANKS[i + 1] || null;
+  return { i, name: r.name, icon: r.icon, xp, from: r.xp, next: nx, pct: nx ? (xp - r.xp) / (nx.xp - r.xp) : 1, toNext: nx ? nx.xp - xp : 0 };
 }
-
-function deviceSpeak(text, lang, gen, onEnd) {
-  try {
-    if (!('speechSynthesis' in window)) return onEnd(false);
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang; u.rate = 1;
-    const vs = speechSynthesis.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith(lang.slice(0, 2)));
-    const best = vs.find(v => /Google|Natural|Neural/i.test(v.name)) || vs[0]; if (best) u.voice = best;
-    u.onend = u.onerror = () => { if (gen === speakGen) onEnd(true); };
-    speechSynthesis.speak(u);
-  } catch (e) { onEnd(false); }
+// Stars for a finished day (1–3, best ever): saved on this device, or read back from the synced best
+// score (best = stars × 33, so another device's stars come back too).
+export function starsOf(rec) {
+  if (!rec || !rec.done) return 0;
+  return Math.max(1, Math.min(3, Math.max(rec.stars || 0, Math.floor((rec.best || 0) / 33))));
 }
-
-// Plays the recorded clip for `text`; falls back to the device voice. Resolves when finished.
-export function speak(text, { voice = 'py', lang = 'en-IN', onStart } = {}) {
-  stopVoice();
-  const gen = ++speakGen;
-  text = String(text || '').trim();
-  if (!text) return Promise.resolve(false);
-  return new Promise(async resolve => {
-    let id = '';
-    try { id = await sid(voice, text); } catch (e) { /* no SubtleCrypto (http) */ }
-    if (gen !== speakGen) return resolve(false);
-    const fallback = () => { if (gen !== speakGen) return resolve(false); onStart && onStart('device'); deviceSpeak(text, lang, gen, resolve); };
-    if (!id) return fallback();
-    const a = new Audio('/api/learn/say/' + id + '.mp3');
-    audio = a;
-    let started = false;
-    a.onplaying = () => { if (!started) { started = true; onStart && onStart('studio'); } };
-    a.onended = () => { if (gen === speakGen) resolve(true); };
-    a.onerror = () => { if (!started) fallback(); else resolve(false); };
-    a.play().catch(() => { if (!started) fallback(); });
-  });
-}
+export const totalStars = p => Object.values(p.days || {}).reduce((a, r) => a + starsOf(r), 0);
 
 export function confetti(host, n = 60) {
   const box = document.createElement('div'); box.className = 'confetti';
