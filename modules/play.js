@@ -1,7 +1,9 @@
 // Brodoit on Google Play: uploads the bundle the server signed (com.brodoit.twa, the existing Play listing) to Play's
 // testing tracks through the Google Play Developer API, as the service account the owner gave in Admin
-// (PLAY_SERVICE_ACCOUNT_JSON). No SDK: a signed JWT for a token, then one "edit": insert → upload the bundle → put it on
-// each track → commit.
+// (PLAY_SERVICE_ACCOUNT_JSON), or as the uploader account whose key the server made itself: its email
+// (PLAY_SERVICE_ACCOUNT_EMAIL or config/play.json) plus the server's own private key (ownKey; only the public certificate
+// was given to Google, so the private key never leaves the server). No SDK: a signed JWT for a token, then one "edit":
+// insert → upload the bundle → put it on each track → commit.
 //   createPlay({ getSetting, dir, fetch, now, log }) → { sync(build), status(), verify(json) }
 //   build = { aab, versionCode, version }   (modules/android.js passes its newest signed build)
 // status().state: 'no-account' (nothing pasted) | 'no-access' (Play Console has not given the account this app yet)
@@ -48,11 +50,22 @@ function createPlay(o) {
   const file = path.join(o.dir, 'play.json');
   let st = {}; try { st = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (e) { st = {}; }
   const save = () => { try { fs.writeFileSync(file, JSON.stringify(st, null, 1)); } catch (e) { /* the next try writes it */ } };
+  // the pasted key file wins; else the uploader email with the server's own key
+  function account() {
+    const raw = getSetting('PLAY_SERVICE_ACCOUNT_JSON');
+    if (raw) return parseAccount(raw);
+    const email = String(getSetting('PLAY_SERVICE_ACCOUNT_EMAIL') || (o.configEmail ? o.configEmail() : '') || '').trim();
+    if (!email) return { error: 'missing' };
+    if (!/^[a-z0-9-]+@[a-z0-9-]+\.iam\.gserviceaccount\.com$/.test(email)) return { error: 'not a service account email' };
+    const key = o.ownKey ? o.ownKey() : null;
+    if (!key) return { error: 'without its key on this server' };
+    return { email, key, tokenUrl: TOKEN_URL, own: true };
+  }
   const tracks = () => String(getSetting('PLAY_TRACKS') || 'internal,alpha').split(',').map(s => s.trim()).filter(s => /^[a-z0-9:_-]{2,40}$/i.test(s));
   let tok = null, running = null;
 
   async function call(method, url, body, type) {
-    if (!tok || tok.exp - 60e3 < now()) { const acc = parseAccount(getSetting('PLAY_SERVICE_ACCOUNT_JSON')); tok = await accessToken(acc, fetchFn, now); }
+    if (!tok || tok.exp - 60e3 < now()) tok = await accessToken(account(), fetchFn, now);
     const headers = { Authorization: 'Bearer ' + tok.token };
     let data;
     if (Buffer.isBuffer(body)) { headers['Content-Type'] = type || 'application/octet-stream'; data = body; }
@@ -97,8 +110,10 @@ function createPlay(o) {
     if (running) return running;
     running = (async () => {
       if (!b || !b.aab || !fs.existsSync(b.aab) || !b.versionCode) return status();
-      const acc = parseAccount(getSetting('PLAY_SERVICE_ACCOUNT_JSON'));
-      if (acc.error) { Object.assign(st, { state: acc.error === 'missing' ? 'no-account' : 'error', reason: acc.error === 'missing' ? '' : 'the pasted service account key is ' + acc.error, pending: b.versionCode }); save(); return status(); }
+      const acc = account();
+      if (acc.error) { Object.assign(st, { state: acc.error === 'missing' ? 'no-account' : 'error', reason: acc.error === 'missing' ? '' : 'the service account is ' + acc.error, pending: b.versionCode }); save(); return status(); }
+      // a new account (or key) gets a fresh token
+      const who = acc.email + (acc.own ? ' (server key)' : ''); if (st.account !== who) { tok = null; st.account = who; }
       if (st.uploaded >= b.versionCode) return status();
       Object.assign(st, { state: 'uploading', pending: b.versionCode, tried_at: new Date(now()).toISOString() }); save();
       try {
@@ -116,7 +131,7 @@ function createPlay(o) {
     })().finally(() => { running = null; });
     return running;
   }
-  const status = () => ({ state: st.state || (parseAccount(getSetting('PLAY_SERVICE_ACCOUNT_JSON')).error === 'missing' ? 'no-account' : 'waiting'), versionCode: st.uploaded || null, pending: st.pending || null, tracks: st.tracks || tracks(), reason: st.reason || '', at: st.uploaded_at || st.tried_at || null, package: pkg });
+  const status = () => ({ state: st.state || (account().error === 'missing' ? 'no-account' : 'waiting'), versionCode: st.uploaded || null, pending: st.pending || null, tracks: st.tracks || tracks(), reason: st.reason || '', at: st.uploaded_at || st.tried_at || null, package: pkg });
   // Admin: does this pasted key work? (a token is enough; access to the app shows on the first upload)
   async function verify(raw) {
     const acc = parseAccount(raw);
