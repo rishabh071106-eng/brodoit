@@ -323,7 +323,9 @@ function createBrain(o) {
   const kindWord = e => e.kind === 'rate' && e.window ? 'rate-' + e.window : e.kind;
   function works(model, req) {
     st.lastModel = model; st.lastError = '';
-    if (!(req && req.models)) {
+    // v20: only a Groq model is remembered to lead the next turns; a paid cloud that stepped in (Flash) answers while
+    // Groq's models cool down, and the next turn tries Groq first again
+    if (!(req && req.models) && providerOf(model) === 'groq') {
       const lane = laneOf(req), w = st.lane[lane];
       if (!w || w.model !== model) { st.lane[lane] = { model, at: now() }; log('brain (' + lane + ') answering on', model); } else w.at = now();
       if (lane === 'live' && st.working !== model) { st.working = model; st.workingAt = now(); }
