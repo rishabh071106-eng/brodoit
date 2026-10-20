@@ -1115,7 +1115,7 @@ function install(app, deps) {
     const OWN_LOOKUP_EXTRA_MS = 3000; // after "Let me check that." the own brain may take this much longer
     // Bro's own brain (Bro Core's own: an open model on this server, answering from what Bro looks up himself).
     // → 'done' (Bro answered) | 'gone' (the turn ended) | why the cloud should answer instead: unusable, pass, slow, error, empty.
-    // A first sentence must be ready within the budget (Admin: BRO_OWN_BUDGET_MS, 7 s); once Bro has spoken, the own
+    // A first sentence must be ready within the budget (Admin: BRO_OWN_BUDGET_MS, 8 s; 3 s more after "Let me check that."); once Bro has spoken, the own
     // brain finishes the answer: never a second voice on top.
     async function ownTurn(T, speaker) {
       const c = core(), o = c && c.own;
