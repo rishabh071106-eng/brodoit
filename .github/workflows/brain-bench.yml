@@ -38,3 +38,26 @@ jobs:
           gemma3-1b https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf
           qwen3-1.7b https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf
           LIST
+  # The real server image (node:22 + the prebuilt llama.cpp), and inside it Bro's own engine and router end to end:
+  # real Gemma models, live lookups (Google News, Wikipedia, Open-Meteo, Frankfurter), English and Hindi.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the server image
+        run: docker build -t bro .
+      - name: The image's own-brain runtime
+        run: |
+          docker run --rm bro node -e "import('node-llama-cpp').then(async m => { const l = await m.getLlama({ gpu: false, build: 'never' }); console.log('llama ok', l.buildType, process.version); })"
+      - name: Models
+        run: |
+          mkdir -p /tmp/m
+          curl -fsSL --retry 5 -o /tmp/m/small.gguf https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf
+          curl -fsSL --retry 5 -o /tmp/m/big.gguf https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf
+          sha256sum /tmp/m/*.gguf
+      - name: Bro end to end, small model (Gemma 3 1B)
+        run: docker run --rm -v /tmp/m:/m bro node brocore/bench/own-e2e.mjs /m/small.gguf - 2
+      - name: Bro end to end, big model (Gemma 3 4B)
+        if: always()
+        run: docker run --rm -v /tmp/m:/m bro node brocore/bench/own-e2e.mjs /m/big.gguf - 2

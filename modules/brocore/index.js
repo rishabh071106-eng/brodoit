@@ -20,6 +20,8 @@ const { createHear } = require('./hear.js');
 const { createMemory } = require('./memory.js');
 const { createKnowledge } = require('./knowledge.js');
 const { createNightly } = require('./nightly.js');
+const { createMind } = require('./mind.js');
+const { createOwn } = require('./own.js');
 const safety = require('./safety.js');
 
 // v17: Bro talks like a person. He hears the whole thought, answers what was asked, guides when asked, and fits the
@@ -87,6 +89,13 @@ function install(app, deps) {
   const memory = createMemory({ db, chat: req => brain.chat(req), log, toolNames: [...SERVER_TOOL_NAMES], voiceFor: lang => { const v = voiceMod(); return v && typeof v.voiceFor === 'function' ? v.voiceFor(lang) : ''; } });
   const knowledge = createKnowledge({ db, fetch: deps.knowledgeFetch || fetchFn, log, now, newsItems: deps.newsItems || deps.newsCache, lookupMs: deps.lookupMs });
   const nightly = createNightly({ db, knowledge, memory, brain, chat: req => brain.chat(req), getSetting, setSetting, voice: voiceMod, log, now });
+  // ── v18 Bro's own brain: an open model on this server (mind.js) answering from what Bro looks up himself (own.js).
+  //    The cloud brain above stays as the backup. It starts 20 s after boot (the app and the voice come up first).
+  const mind = deps.mind || createMind({ getSetting, log: (...a) => log('[mind]', ...a), mediaDir: deps.mediaDir });
+  const ownBrain = createOwn({ mind, knowledge, memory, fetch: deps.ownFetch || fetchFn, getSetting, log, now });
+  if (!deps.mind && deps.own !== false && process.env.BRO_OWN_BRAIN !== 'off') { const t = setTimeout(() => mind.init({ mediaDir: deps.mediaDir }), deps.ownDelayMs != null ? deps.ownDelayMs : 20e3); if (t.unref) t.unref(); }
+  // the own brain's first-sentence budget for a live turn (Admin: BRO_OWN_BUDGET_MS); past it the cloud answers
+  const ownBudgetMs = () => { const n = parseInt(getSetting('BRO_OWN_BUDGET_MS') || process.env.BRO_OWN_BUDGET_MS || '', 10); return Number.isFinite(n) && n >= 1000 ? Math.min(n, 30000) : 8000; };
 
   // ── who is talking ──
   const qUser = (() => { try { return db.prepare('SELECT phone, name, tz FROM users WHERE phone=?'); } catch (e) { return null; } })();
@@ -180,7 +189,7 @@ function install(app, deps) {
     return { error: 'unknown tool ' + name };
   }
 
-  const selfCheck = { brain: 'pending', hearing: 'pending', tools: 'pending', reason: '', trail: '', talk: 'pending', talkReason: '', talkTrail: '', at: null };
+  const selfCheck = { brain: 'pending', hearing: 'pending', tools: 'pending', reason: '', trail: '', talk: 'pending', talkReason: '', talkTrail: '', talkVia: '', own: 'pending', ownReason: '', ownMs: 0, at: null };
   let searchVia = 'pending'; // which web search answered last: compound | browser | news | none (a public safe word)
   // ── voice pass-through ──
   const needVoice = () => { const v = voiceMod(); if (!v) { const e = new Error(vErr || 'voice not available'); e.code = 'no-voice'; throw e; } return v; };
@@ -214,7 +223,7 @@ function install(app, deps) {
     const kh = knowledge.health(), ms = memory.stats();
     return {
       brain: brain.health(), hearing: hearing.health(), voice: vh,
-      knowledge: kh, memory: ms, gpu: gpu.health(),
+      knowledge: kh, memory: ms, gpu: gpu.health(), own: mind.health(),
       lessons: { version: memory.lessons.activeVersion(), count: memory.lessons.active().length, latest: (memory.lessons.versions(1)[0] || {}).version || 0, pending: memory.lessons.pendingCount() },
       version: n ? n.version : 'v16.0', nightly: n ? { day: n.day, ms: n.data && n.data.ms, reason: n.data && n.data.reason, lessons: n.data && n.data.lessons, model: n.data && n.data.model, voice: n.data && n.data.voice, knowledge: n.data && n.data.knowledge } : null,
       latency: brain.latency(), costMonth: brain.costMonth(),
@@ -236,6 +245,7 @@ function install(app, deps) {
     brainReady: () => brain.ready(), emergencyOn: () => brain.emergencyOn(), ready: () => brain.ready() && voiceReady(),
     lookup: q => knowledge.lookup(q), today: (topic, n) => knowledge.today(topic, n), search: (q, n) => knowledge.search(q, n), webSearch: (q, o) => brain.webSearch(q, o),
     health, knowledge, memory, nightly, lessons: memory.lessons, brain, hearing, gpu,
+    own: { usable: () => ownBrain.usable(), answer: req => ownBrain.answer(req), warm: req => ownBrain.warm(req), facts: (t, l) => ownBrain.facts(t, l), budgetMs: ownBudgetMs, health: () => mind.health(), dropSession: id => mind.dropSession(id), mind },
     version: () => { const n = nightly.lastRun(); return n ? n.version : 'v16.0'; },
   };
   global._broCore = api;
@@ -259,7 +269,10 @@ function install(app, deps) {
       // live calls since boot: turns, failed turns, rescued turns, and the last failure's trail (no one's words)
       let live = null;
       try { const h = typeof global._voiceLiveHealth === 'function' ? global._voiceLiveHealth() : null; if (h) live = { turns: h.turns | 0, fails: h.fails | 0, rescues: h.rescues | 0, lastFail: h.lastFail ? { at: String(h.lastFail.at || '').slice(0, 24), trail: String(h.lastFail.trail || '').slice(0, 400) } : null }; } catch (e) { live = null; }
-      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice, search: searchVia, live, check });
+      // Bro's own brain: its state, its own self-check (the capital question answered by it alone), speed and counts
+      let ownSt = null;
+      try { const h = mind.health(); ownSt = { state: String(h.state || 'off').slice(0, 16), model: h.model ? String(h.model).slice(0, 40) : null, check: selfCheck.own, reason: selfCheck.ownReason || undefined, firstMs: h.firstMs, genTps: h.genTps, answered: h.answered | 0, progress: h.progress, ramMB: h.ramMB | 0, threads: h.threads | 0 }; } catch (e) { ownSt = null; }
+      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice, search: searchVia, live, own: ownSt, check });
     });
     app.get('/api/bro/core/health', auth, (req, res) => { res.set('Cache-Control', 'no-store'); if (!isAdm(req)) return res.json({ ok: !!(brain.ready() && voiceReady()) }); try { res.json(Object.assign({ ok: !!(brain.ready() && voiceReady()) }, health())); } catch (e) { res.status(500).json({ error: e.message }); } });
     app.post('/api/bro/rate', auth, (req, res) => { const b = req.body || {}; const r = memory.rate(req.user.phone, b.rating, b.call_id || b.callId); res.status(r.ok ? 200 : 400).json(r); });
@@ -276,8 +289,12 @@ function install(app, deps) {
           if (v && !/^[A-Za-z0-9._\/:-]{1,100}$/.test(v)) return res.status(400).json({ error: 'bad model id' });
           setSetting(s, v); done[k] = v || null;
         }
+        // v18 Bro's own brain: on/off, the model, the first-sentence budget (a model change applies on the next restart)
+        if (b.own != null) { const v = b.own === true || b.own === 'on' ? 'on' : b.own === false || b.own === 'off' ? 'off' : null; if (!v) return res.status(400).json({ error: 'own is on or off' }); setSetting('BRO_OWN_BRAIN', v); done.own = v; }
+        if (b.ownModel != null) { const v = String(b.ownModel); if (!['auto', 'big', 'small'].includes(v)) return res.status(400).json({ error: 'ownModel is auto, big or small' }); setSetting('BRO_OWN_MODEL', v === 'auto' ? '' : v); done.ownModel = v; }
+        if (b.ownBudgetMs != null) { const n = parseInt(b.ownBudgetMs, 10); if (!(n >= 1000 && n <= 30000)) return res.status(400).json({ error: 'ownBudgetMs is 1000-30000' }); setSetting('BRO_OWN_BUDGET_MS', String(n)); done.ownBudgetMs = n; }
       } catch (e) { return res.status(500).json({ error: e.message }); }
-      res.json({ ok: true, set: done, brain: brain.health() });
+      res.json({ ok: true, set: done, brain: brain.health(), own: mind.health() });
     });
     app.post('/api/admin/bro/run', auth, admin, async (req, res) => {
       const job = String((req.body && req.body.job) || 'nightly');
@@ -315,6 +332,7 @@ function install(app, deps) {
     // d) v17.6 a real call turn: the path a phone call takes (modules/voice.js selfCall: context, the brain chain and its
     //    rescue, tools, Bro's voice). It must answer out loud, correctly, with no apology.
     await talkCheck();
+    await ownCheck();
     selfCheck.at = new Date(now()).toISOString();
     log('self-test · brain', selfCheck.brain, '· voice → hearing', selfCheck.hearing, '· tools', selfCheck.tools + (selfCheck.reason ? ' (' + selfCheck.reason + ')' : ''), '· talk', selfCheck.talk + (selfCheck.talkReason ? ' (' + selfCheck.talkReason + ')' : ''));
     return selfCheck;
@@ -330,9 +348,30 @@ function install(app, deps) {
       const said = (r.said || []).join(' ');
       const word = !r.ok ? (r.reason || 'failed') : /lost that for a second|could not find that/i.test(said) ? 'apology' : !/delhi/i.test(said) ? 'wrong' : (r.audioBytes | 0) < 8000 ? 'no_audio' : '';
       selfCheck.talk = word ? 'fail' : 'ok'; selfCheck.talkReason = word; selfCheck.talkTrail = word ? String(r.trail || '').slice(0, 400) : '';
+      selfCheck.talkVia = r.via || '';
       if (word) log('self-test: call turn failed (' + word + ') · trail', selfCheck.talkTrail || '-');
       else if (r.rescued) log('self-test: call turn answered by the rescue · trail', String(r.trail || '-'));
     } catch (e) { selfCheck.talk = 'fail'; selfCheck.talkReason = 'error'; selfCheck.talkTrail = ''; log('self-test: call turn crashed:', String(e && e.message || e).slice(0, 200)); }
+  }
+  // v18: the same real call turn, answered by Bro's own brain alone (no cloud). Not ready yet → its state word; it checks
+  // again a minute later until the model has loaded (a first boot downloads it).
+  let ownRetry = null, ownTries = 0;
+  async function ownCheck() {
+    const call = typeof global._voiceSelfCall === 'function' ? global._voiceSelfCall : null;
+    const st = mind.health().state;
+    clearTimeout(ownRetry);
+    if (!call || !voiceReady() || st !== 'ready') {
+      selfCheck.own = st === 'ready' ? 'pending' : st; selfCheck.ownReason = '';
+      if (['loading', 'downloading', 'idle'].includes(st) && ownTries++ < 30) { ownRetry = setTimeout(() => ownCheck().catch(() => {}), 60e3); if (ownRetry.unref) ownRetry.unref(); }
+      return;
+    }
+    try {
+      const r = await call(TALK_Q, { own: 'only' });
+      const said = (r.said || []).join(' ');
+      const word = !r.ok ? (r.reason || 'failed') : r.via !== 'own' ? 'not_own' : /lost that for a second|could not find that/i.test(said) ? 'apology' : !/delhi|दिल्ली/i.test(said) ? 'wrong' : (r.audioBytes | 0) < 8000 ? 'no_audio' : '';
+      selfCheck.own = word ? 'fail' : 'ok'; selfCheck.ownReason = word; selfCheck.ownMs = r.ms | 0;
+      log('self-test · own brain', selfCheck.own + (word ? ' (' + word + ')' : '') + ' · ' + selfCheck.ownMs + ' ms');
+    } catch (e) { selfCheck.own = 'fail'; selfCheck.ownReason = 'error'; log('self-test: own brain check crashed:', String(e && e.message || e).slice(0, 200)); }
   }
   // one word for why the tools turn failed; never the provider's message (the public /api/bro/ok shows it)
   function reasonWord(e) {

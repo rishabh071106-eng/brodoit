@@ -630,11 +630,11 @@ function install(app, deps) {
     if (x.n >= LIVE_TURNS_DAY) return false;
     x.n++; return true;
   }
-  const LIVE = { calls: 0, active: 0, turns: 0, dropped: 0, errors: 0, echoes: 0, merged: 0, held: 0, lat: [], last: null, fails: 0, rescues: 0, lastFail: null };
+  const LIVE = { calls: 0, active: 0, turns: 0, dropped: 0, errors: 0, echoes: 0, merged: 0, held: 0, lat: [], last: null, fails: 0, rescues: 0, lastFail: null, own: 0, cloud: 0, ownSlow: 0, ownSkip: 0 };
   const SELF_PHONE = 'bro-selftest'; // the self-call's user (see selfCall)
   // public safe words for /api/bro/ok: how many turns failed or were rescued, and the last failure's trail (model,
   // HTTP status and error kind only; never what anyone said)
-  global._voiceLiveHealth = () => ({ turns: LIVE.turns, fails: LIVE.fails, rescues: LIVE.rescues, lastFail: LIVE.lastFail });
+  global._voiceLiveHealth = () => ({ turns: LIVE.turns, fails: LIVE.fails, rescues: LIVE.rescues, lastFail: LIVE.lastFail, own: LIVE.own, cloud: LIVE.cloud, ownSlow: LIVE.ownSlow, ownSkip: LIVE.ownSkip });
   function liveStats() {
     const a = LIVE.lat.slice().sort((x, y) => x - y);
     const q = p => (a.length ? a[Math.min(a.length - 1, Math.round(p * (a.length - 1)))] : null);
@@ -796,7 +796,8 @@ function install(app, deps) {
     LIVE.calls++; LIVE.active++;
     const S = { user: null, lang: 'en', persona: 'bro', course: '', started: Date.now(), turns: [], history: [], summary: '', extra: '',
       base: { e: [], p: [], r: [] }, utter: null, turn: null, turnId: 0, seq: 0, waits: new Map(), ended: false, rating: null, timers: [], counted: false,
-      echo: [], notes: [], waiters: new Set(), lastSaid: '' };
+      echo: [], notes: [], waiters: new Set(), lastSaid: '',
+      ownSession: crypto.randomBytes(8).toString('hex'), ownOnly: false }; // the own brain keeps this call's chat cached under ownSession
     const send = o => { try { if (ws.readyState === 1) ws.send(JSON.stringify(o)); } catch (e) {} };
     // a refused socket (bad token, no hello, busy): say why, end it (no call record) and ignore everything after
     const refuse = (why, code) => { S.refused = true; send({ t: 'error', why }); finish(why); try { ws.close(code, why); } catch (e) {} };
@@ -850,11 +851,14 @@ function install(app, deps) {
       if (!v.user) return refuse(v.why || 'auth', 4001);
       clearTimeout(helloTimer);
       S.user = v.user; S.lang = sessionLang(m.lang); S.persona = has(PERSONAS, m.persona) && m.persona !== 'news' ? m.persona : 'bro';
+      if (String(S.user.phone) === SELF_PHONE && m.own === 'only') S.ownOnly = true; // the self-test's own-brain check: no cloud
       S.course = label(m.course).slice(0, 30); S.extra = str(m.context, 6000).replace(/\s+/g, ' ').trim().slice(0, 1500);
       const k = String(S.user.phone), n = (ACTIVE.get(k) || 0) + 1; ACTIVE.set(k, n); S.counted = true;
       if (n > 3) return refuse('busy', 4002); // finish() gives the slot back
       S.timers.push(setTimeout(() => { send({ t: 'error', why: 'max_call' }); finish('max_call'); try { ws.close(1000, 'max_call'); } catch (e) {} }, LIVE_MAX_CALL));
       send({ t: 'ready', max_call: LIVE_MAX_CALL / 1000, voice: coreVoiceReady(), lang: S.lang });
+      // Bro's own brain reads this call's system prompt while the user starts talking (the first answer is then quick)
+      try { const c0 = core(); if (S.persona === 'bro' && c0 && c0.own && typeof c0.own.warm === 'function') c0.own.warm({ session: S.ownSession, user: S.user, lang: S.lang }); } catch (e) { /* the first answer reads it instead */ }
       if (S.extra) startTurn({ opening: true });
       else if (m.greet !== false && firstCallToday(S.user)) startTurn({ say: greeting() });
     }
@@ -1059,6 +1063,12 @@ function install(app, deps) {
     }
     async function converse(T, system, messages, speaker) {
       const c = core(), sig = T.ac.signal, live = () => !sig.aborted && S.turn === T && !S.ended;
+      // v18: Bro's own brain answers first; the cloud below only when it is off, busy, too slow to a first sentence, or fails
+      const mine = await ownTurn(T, speaker);
+      if (mine === 'gone') return;
+      if (mine === 'done') { await speaker.done(); return; }
+      if (S.ownOnly) throw Object.assign(new Error('own brain did not answer (' + mine + ')'), { code: 'OWN_ONLY' });
+      LIVE.cloud++;
       const defs = liveToolDefs(), msgs = messages.slice();
       for (let round = 0; round <= 3; round++) { // at most 3 tool rounds, then a plain answer
         let buf = '', said = ''; const calls = [], runs = [], t0 = Date.now();
@@ -1101,6 +1111,42 @@ function install(app, deps) {
         calls.forEach((k, i) => msgs.push({ role: 'tool', tool_call_id: k.id, content: JSON.stringify(results[i] === undefined ? { ok: true } : results[i]).slice(0, 4000) }));
       }
       await speaker.done();
+    }
+    // Bro's own brain (Bro Core's own: an open model on this server, answering from what Bro looks up himself).
+    // → 'done' (Bro answered) | 'gone' (the turn ended) | why the cloud should answer instead: unusable, slow, error, empty.
+    // A first sentence must be ready within the budget (Admin: BRO_OWN_BUDGET_MS, 7 s); once Bro has spoken, the own
+    // brain finishes the answer: never a second voice on top.
+    async function ownTurn(T, speaker) {
+      const c = core(), o = c && c.own;
+      if (!o || typeof o.usable !== 'function' || typeof o.answer !== 'function') return 'none';
+      if (S.persona !== 'bro') return 'persona'; // the teacher and language practice keep their own prompts (cloud)
+      if (!o.usable()) { let st = 'off'; try { st = (o.health() || {}).state || 'off'; } catch (e) { /* off */ } T.trace.push({ m: 'own', k: st === 'ready' ? 'busy' : st }); LIVE.ownSkip++; return 'unusable'; }
+      const sig = T.ac.signal, live = () => !sig.aborted && S.turn === T && !S.ended;
+      const ac = new AbortController(), stop = () => ac.abort(); sig.addEventListener('abort', stop, { once: true });
+      const budget = S.ownOnly ? 60000 : o.budgetMs();
+      let first = false, buf = '', slow = false; const t0 = Date.now();
+      const timer = setTimeout(() => { if (!first) { slow = true; ac.abort(); } }, budget);
+      T.trace.push({ r: 'own' });
+      try {
+        for await (const ev of o.answer({ user: S.user, lang: S.lang, history: S.history.slice(-10), session: S.ownSession, signal: ac.signal, trace: T.trace })) {
+          if (!live()) return 'gone';
+          if (!ev) continue;
+          if (ev.type === 'lookup' && !T.filler) { T.filler = true; speaker.push(FILLER[S.lang === 'hi' ? 'hi' : 'en']); }
+          else if (ev.type === 'text' && ev.delta) {
+            buf += ev.delta;
+            for (let cut; (cut = takeSentence(buf));) { if (!first) { first = true; clearTimeout(timer); T.marks.llm = Date.now() - t0; } speaker.push(cut.sentence); buf = cut.rest; }
+          } else if (ev.type === 'done' && ev.model) T.model = ev.model;
+        }
+      } catch (e) {
+        if (!live()) return 'gone';
+        if (!first) { T.trace.push({ m: 'own', k: e && e.code === 'OWN_BUSY' ? 'busy' : e && e.code === 'OWN_NOT_READY' ? 'off' : slow ? 'slow' : 'error' }); if (slow) LIVE.ownSlow++; return slow ? 'slow' : 'error'; }
+      } finally { clearTimeout(timer); sig.removeEventListener('abort', stop); }
+      if (!live()) return 'gone';
+      if (!first && slow) { T.trace.push({ m: 'own', k: 'slow' }); LIVE.ownSlow++; return 'slow'; }
+      if (buf.trim()) { first = true; speaker.push(buf.trim()); } // the last words (or a short answer with no full stop)
+      if (!first) { T.trace.push({ m: 'own', k: 'empty' }); return 'empty'; }
+      T.trace.push({ m: 'own', ok: 1 }); T.via = 'own'; LIVE.own++;
+      return 'done';
     }
     // the rescue: a lean prompt (no tools, recent lines only, what this call already looked up) on the rescue lane's
     // models; then the old emergency helper if the owner left it on. true when Bro said something.
@@ -1205,6 +1251,7 @@ function install(app, deps) {
       try { abortTurn(reason); } catch (e) { console.log('[voice-live] abort failed:', e && e.message); }
       S.ended = true;
       try {
+        try { const c0 = core(); if (c0 && c0.own && typeof c0.own.dropSession === 'function') c0.own.dropSession(S.ownSession); } catch (e) { /* the engine frees it later */ }
         S.timers.forEach(t => { clearTimeout(t); clearInterval(t); });
         for (const [, w] of S.waits) w({ error: 'call ended' });
         S.utter = null; kick(); LIVE.active = Math.max(0, LIVE.active - 1);
@@ -1241,18 +1288,18 @@ function install(app, deps) {
     ws.terminate = ws.close;
     const wait = (pred, ms) => new Promise(res => { const f = m => { if (pred(m)) { clearTimeout(t); ws.off('_out', f); res(true); } }; const t = setTimeout(() => { ws.off('_out', f); res(false); }, ms); ws.on('_out', f); });
     const msg = o => ws.emit('message', Buffer.from(JSON.stringify(o)), false);
-    const t0 = Date.now(), rescues0 = LIVE.rescues;
+    const t0 = Date.now(), rescues0 = LIVE.rescues, own0 = LIVE.own;
     try {
       startLive(ws);
       const ready = wait(m => m.t === 'ready', 5000);
-      msg({ t: 'hello', token: issueCallToken({ phone: SELF_PHONE, name: '', tz: 'Asia/Kolkata' }), lang: opts.lang === 'hi' ? 'hi' : 'en', greet: false });
+      msg({ t: 'hello', token: issueCallToken({ phone: SELF_PHONE, name: '', tz: 'Asia/Kolkata' }), lang: opts.lang === 'hi' ? 'hi' : 'en', greet: false, own: opts.own === 'only' ? 'only' : undefined });
       if (!await ready) return Object.assign(out, { ok: false, reason: 'no_ready', ms: Date.now() - t0 });
       const done = wait(m => m.t === 'state' && m.s === 'listening' && m.turn >= 1, opts.timeout || 35000);
       msg({ t: 'text', text: String(text || '') });
       const finished = await done;
       // this socket's own error says the turn failed (a real caller's failure at the same moment is not ours)
       const failed = out.errors.some(w => w === 'brain' || w === 'hearing'), rescued = LIVE.rescues > rescues0;
-      return Object.assign(out, { ok: finished && !failed && out.said.length > 0, reason: !finished ? 'timeout' : failed ? 'failed' : out.said.length ? '' : 'silent', ms: Date.now() - t0, rescued, trail: failed && LIVE.lastFail ? LIVE.lastFail.trail : '' });
+      return Object.assign(out, { ok: finished && !failed && out.said.length > 0, reason: !finished ? 'timeout' : failed ? 'failed' : out.said.length ? '' : 'silent', ms: Date.now() - t0, rescued, via: LIVE.own > own0 ? 'own' : 'cloud', trail: failed && LIVE.lastFail ? LIVE.lastFail.trail : '' });
     } finally { msg({ t: 'bye' }); ws.close(); }
   }
   global._voiceSelfCall = selfCall;
