@@ -265,6 +265,33 @@ function playClip(text, voice, { slow, signal, gen }) {
   });
 }
 
+// v20: a line with no recorded clip yet is read live in Bro's voice (POST /api/voice/tts, every course language) before the
+// phone's voice is ever used
+const LIVE_KEYS = new Set(['es', 'fr', 'de', 'hi', 'en', 'it', 'pt', 'ja', 'zh']);
+function liveBro(text, vk, { slow, signal, gen }) {
+  return new Promise(async res => {
+    let tok = ''; try { tok = localStorage.getItem('tf_token') || ''; } catch { tok = ''; }
+    if (!tok) return res(null);
+    let url = '';
+    try {
+      const r = await fetch('/api/voice/tts', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': tok }, body: JSON.stringify({ text, lang: vk }), signal });
+      if (!r.ok) return res(null);
+      url = URL.createObjectURL(await r.blob());
+    } catch { return res(null); }
+    if (gen !== speakGen || signal?.aborted) { URL.revokeObjectURL(url); return res(true); }
+    const a = new Audio(url); clipAudio = a;
+    if (slow) { a.playbackRate = 0.72; a.preservesPitch = true; }
+    let started = false;
+    const done = v => { signal?.removeEventListener('abort', stop); URL.revokeObjectURL(url); res(v); };
+    const stop = () => { try { a.pause(); } catch { /* ignore */ } done(true); };
+    signal?.addEventListener('abort', stop, { once: true });
+    a.onplaying = () => { started = true; };
+    a.onended = () => done(true);
+    a.onerror = () => done(started ? true : null);
+    a.play().catch(() => { if (!started) done(null); });
+  });
+}
+
 export async function speak(text, { lang = 'en-US', rate = 1, slow = false, pitch = 1, signal } = {}) {
   text = String(text || '').trim();
   if (!text) return false;
@@ -275,6 +302,12 @@ export async function speak(text, { lang = 'en-US', rate = 1, slow = false, pitc
     const r = await playClip(text, vk, { slow, signal, gen: gen0 });
     if (r) return gen0 === speakGen;
     if (gen0 !== speakGen) return false;
+  }
+  if (LIVE_KEYS.has(vk) && !(typeof window !== 'undefined' && window.LANG_TEST?.noClips)) {
+    const gen1 = ++speakGen;
+    const r = await liveBro(text, vk, { slow, signal, gen: gen1 });
+    if (r) return gen1 === speakGen;
+    if (gen1 !== speakGen) return false;
   }
   const scale = (typeof window !== 'undefined' && window.LANG_TEST?.ttsScale) || 1;
   const r = Math.max(0.5, Math.min(2, (slow ? 0.6 : 1) * rate));
