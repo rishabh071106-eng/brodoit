@@ -68,6 +68,12 @@ jobs:
             break
           done
           if [ "$chk" = ok ]; then echo "::notice::Bro's own brain answers by itself: $own"; else echo "::warning::Bro's own brain is not answering by itself yet (the cloud brain answers): $own"; fi
+      - name: Bro's cloud brains (which clouds answer, and how fast; reported here, never blocks a release)
+        run: |
+          st=$(curl -fsS --max-time 20 https://brodoit.com/api/bro/ok || echo '{}')
+          clouds=$(echo "$st" | jq -c '.clouds // {}' 2>/dev/null || echo '{}')
+          speed=$(echo "$st" | jq -c '.live // {} | {cloud, own, ownBackup, cloudSlow, firstMs, chatFirstMs}' 2>/dev/null || echo '{}')
+          if [ "$(echo "$clouds" | jq -r '.gemini // false')" != false ]; then echo "::notice::Bro's cloud brains: $clouds · calls and chat: $speed"; else echo "::warning::Only Groq answers (no Gemini key, or it was refused): $clouds · $speed"; fi
       - name: The Android app and Google Play (reported here, never blocks a release)
         run: |
           st=$(curl -fsS --max-time 20 https://brodoit.com/api/android/status || echo '{}')

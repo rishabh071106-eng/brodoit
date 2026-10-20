@@ -224,6 +224,7 @@
   V.hangUp = function () { if (V.engine === 'core' && (isLive() || V.ws)) V.endCore(); else V.stop(); };
   V.stop = function (silent) {
     if (V.engine === 'core' || V.ws) V.coreCleanup(true);
+    if (V.pendingOpen) { const u = V.pendingOpen; V.pendingOpen = null; setTimeout(() => { location.href = u; }, 400); } // a lesson or screen Bro opened on the call
     try { if (V.conv) { const c = V.conv; V.conv = null; c.endSession().catch(() => {}); } } catch (e) {} V.conv = null;
     try { if (V.dc) V.dc.close(); } catch (e) {}
     try { if (V.pc) V.pc.close(); } catch (e) {}
@@ -379,7 +380,8 @@ registerProcessor('bro-mic', BroMic);`;
       case 'lang': // the user asked Bro, in their own words, to switch: the English | हिंदी switch follows
         if (m.lang === 'en' || m.lang === 'hi') { V.lang = m.lang; try { localStorage.setItem('bro.lang', m.lang); } catch (err) {} V.rerender(); }
         break;
-      case 'tool': V.wsSend({ t: 'tool_result', id: m.id, result: { error: 'unknown tool' } }); break; // Bro chat runs no app tools
+      case 'tool': V.wsSend({ t: 'tool_result', id: m.id, result: { error: 'unknown tool' } }); break; // no client tools
+      case 'action': V.afterTool(m.tool, m.input || {}, m.result); break; // v20: Bro did something in the app on the call (a toast, the list, a screen)
       case 'error':
         if (m.why === 'slow_down' || m.why === 'daily_limit' || m.why === 'bad') { V.onSkipped(m.why); break; } // the call goes on
         V._why = m.why;
@@ -753,25 +755,74 @@ registerProcessor('bro-mic', BroMic);`;
     }
     V.set('thinking');
     const msgs = V.thread.slice(-10).map(m => ({ role: m.role === 'bro' ? 'assistant' : 'user', content: m.text }));
-    let r; try { r = await api('/voice/turn', { method: 'POST', body: JSON.stringify({ persona: V.persona, lang: V.persona === 'language' ? COURSES[V.course] : '', speak: V.lang, messages: msgs }) }); } catch (e) { r = { error: 'offline' }; }
+    const wasVoice = V.engine === 'fallback';
+    // v20: the reply streams in (Server-Sent Events): words appear as Bro thinks them, the app's actions as they run, and
+    // with the voice on Bro starts speaking at the first full sentence
+    let msg = null, done = null, failed = false, spoke = 0, raf = 0;
+    const say = wasVoice ? V.sentenceSpeaker() : null;
+    const paint = () => { if (raf) return; raf = requestAnimationFrame(() => { raf = 0; V.rerender(); }); };
+    const handle = o => {
+      if (!o || typeof o !== 'object') return;
+      if (o.t === 'delta' && typeof o.text === 'string') {
+        if (!msg) { msg = { role: 'bro', text: '', ts: Date.now() }; V.thread.push(msg); if (V.thread.length > 60) V.thread.shift(); V.partial = ''; if (V.state === 'thinking') V.set(V.engine ? 'live' : 'idle'); }
+        msg.text += o.text; paint();
+        if (say) { const full = msg.text, cut = full.slice(spoke).match(/^[\s\S]*[.!?।](\s|$)/); if (cut) { say.push(cut[0]); spoke += cut[0].length; } }
+      } else if (o.t === 'action') V.afterTool(o.tool, o.input || {}, o.result);
+      else if (o.t === 'done') done = o;
+      else if (o.t === 'error') failed = true;
+    };
+    try {
+      const r = await fetch('/api/voice/turn', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': (typeof token !== 'undefined' && token) || '' }, body: JSON.stringify({ persona: V.persona, lang: V.persona === 'language' ? COURSES[V.course] : '', speak: V.lang, messages: msgs, stream: true }) });
+      if (r.ok && /event-stream/.test(r.headers.get('content-type') || '') && r.body && r.body.getReader) {
+        const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '';
+        for (;;) {
+          const { value, done: end } = await rd.read(); if (end) break;
+          buf += dec.decode(value, { stream: true });
+          for (let i; (i = buf.indexOf('\n\n')) >= 0;) { const ev = buf.slice(0, i); buf = buf.slice(i + 2); const line = ev.split('\n').find(l => l.startsWith('data:')); if (line) { try { handle(JSON.parse(line.slice(5).trim())); } catch (e) { /* a broken event */ } } }
+        }
+      } else if (r.ok) { const j = await r.json(); if (j && j.reply) { (j.actions || []).forEach(a => handle({ t: 'action', tool: a.tool, input: a.input, result: a.result })); handle({ t: 'delta', text: j.reply }); done = j; } else failed = true; }
+      else failed = true;
+    } catch (e) { failed = true; }
+    if (raf) { cancelAnimationFrame(raf); raf = 0; }
     // a failed turn: a plain line for everyone (setup details stay in the server log / Admin), and the words come back to the box
-    if (!r || r.error) { V.push('bro', V.lang === 'hi' ? 'अभी जवाब नहीं दे पाया — फिर से भेजो?' : 'I couldn’t answer just now — try again?'); V.set(V.engine ? 'live' : 'idle'); const box = document.getElementById('bvInput'); if (box && !box.value) box.value = text; return; }
-    (r.actions || []).forEach(a => V.afterTool(a.tool, a.input, a.result));
-    V.push('bro', r.reply);
-    const wasVoice = V.engine === 'fallback' && V.state !== 'idle';
-    if (wasVoice) V.speak(r.reply, () => V.listen()); else V.set(V.engine ? 'live' : 'idle');
+    if (!msg || !msg.text.trim()) {
+      if (msg) V.thread.splice(V.thread.indexOf(msg), 1);
+      V.push('bro', V.lang === 'hi' ? 'अभी जवाब नहीं दे पाया — फिर से भेजो?' : 'I couldn’t answer just now — try again?'); V.set(V.engine ? 'live' : 'idle');
+      const box = document.getElementById('bvInput'); if (box && !box.value) box.value = text; return;
+    }
+    msg.text = msg.text.trim(); V.rerender();
+    if (say) { const rest = msg.text.slice(spoke).trim(); if (rest) say.push(rest); say.end(() => V.listen()); }
+    else V.set(V.engine ? 'live' : 'idle');
+    void done; void failed;
+  };
+  // sentences spoken one after another in Bro's voice as they arrive (typed chat with the voice on)
+  V.sentenceSpeaker = function () {
+    const q = []; let busy = false, fin = null;
+    const next = () => {
+      if (busy) return;
+      const t = q.shift();
+      if (t == null) { if (fin) { const f = fin; fin = null; V.set('live'); f(); } return; }
+      busy = true; V.set('speaking');
+      const go = () => { busy = false; next(); };
+      if (window.BroSay) window.BroSay.one(t, { lang: V.lang === 'hi' || hasDevanagari(t) ? 'hi' : 'en', onend: go }); else V.speakLocal(t, hasDevanagari(t), go);
+    };
+    return { push(t) { t = String(t || '').replace(/[*_#`>]/g, '').trim(); if (t) { q.push(t); next(); } }, end(cb) { fin = cb; next(); } };
   };
   // what a tool did, shown in the app (the emergency engines only: Bro chat on Bro Core runs no app tools)
   async function refreshTasks() { const t = await api('/tasks'); if (Array.isArray(t)) { S.tasks = t; S._lastTasksHash = JSON.stringify(t); if (S.tab === 'tasks' && typeof render === 'function') render(); } return t; }
   V.afterTool = function (name, input, result) {
-    if (!result) return;
+    if (!result || result.error) return;
     if (result.open) {
       const m = /[?&]tab=(\w+)/.exec(result.open);
       if (m && typeof switchTab === 'function') { setTimeout(() => switchTab(m[1] === 'you' ? 'profile' : m[1]), 300); return; }
+      // leaving the app would end a call: it opens when the call ends
+      if (coreLive()) { V.pendingOpen = result.open; toast(V.lang === 'hi' ? 'कॉल खत्म होते ही खुलेगा' : 'Opens when the call ends'); return; }
       setTimeout(() => { location.href = result.open; }, 900); return;
     }
     if (name === 'create_task' || name === 'complete_task') { toast(name === 'create_task' ? '✅ Task added: ' + (input.title || '') : '🎉 Done: ' + (input.title || '')); refreshTasks(); }
     if (name === 'set_reminder') toast('⏰ Reminder set' + (input.time ? ' for ' + input.time : ''));
+    if (name === 'set_step_goal') toast('👟 Step goal: ' + (result.goal || input.goal || ''));
+    if (name === 'create_schedule_block') toast('🗓️ Time blocked' + (input.title ? ': ' + input.title : ''));
     if (name === 'create_calendar_event') toast('🗓️ Event added' + (input.date ? ' on ' + input.date : ''));
   };
   // Deep links: /?say=...  and  /?persona=teacher|language (&course=es): the mode for this visit, never a setting

@@ -273,11 +273,12 @@ function install(app, deps) {
       if (selfCheck.talk === 'fail' && selfCheck.talkTrail) check.talkTrail = selfCheck.talkTrail;
       // live calls since boot: turns, failed turns, rescued turns, and the last failure's trail (no one's words)
       let live = null;
-      try { const h = typeof global._voiceLiveHealth === 'function' ? global._voiceLiveHealth() : null; if (h) live = { turns: h.turns | 0, fails: h.fails | 0, rescues: h.rescues | 0, lastFail: h.lastFail ? { at: String(h.lastFail.at || '').slice(0, 24), trail: String(h.lastFail.trail || '').slice(0, 400) } : null }; } catch (e) { live = null; }
+      try { const h = typeof global._voiceLiveHealth === 'function' ? global._voiceLiveHealth() : null; if (h) live = { turns: h.turns | 0, fails: h.fails | 0, rescues: h.rescues | 0, lastFail: h.lastFail ? { at: String(h.lastFail.at || '').slice(0, 24), trail: String(h.lastFail.trail || '').slice(0, 400) } : null, cloud: h.cloud | 0, own: h.own | 0, ownBackup: h.ownBackup | 0, ownSlow: h.ownSlow | 0, ownSkip: h.ownSkip | 0, cloudSlow: h.cloudSlow | 0, firstMs: h.firstMs == null ? null : h.firstMs | 0, chatFirstMs: h.chatFirstMs == null ? null : h.chatFirstMs | 0, chatOwn: h.chatOwn | 0 }; } catch (e) { live = null; }
       // Bro's own brain: its state, its own self-check (the capital question answered by it alone), speed and counts
       let ownSt = null;
       try { const h = mind.health(); ownSt = { state: String(h.state || 'off').slice(0, 16), model: h.model ? String(h.model).slice(0, 40) : null, check: selfCheck.own, reason: selfCheck.ownReason || undefined, firstMs: h.firstMs, genTps: h.genTps, answered: h.answered | 0, progress: h.progress, ramMB: h.ramMB | 0, threads: h.threads | 0, where: h.where === 'volume' || h.where === 'temp' ? h.where : null, diskMB: h.diskMB | 0 }; } catch (e) { ownSt = null; }
-      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice, search: searchVia, live, own: ownSt, check });
+      let clouds = null; try { const c = brain.health().clouds || {}; clouds = { groq: !!c.groq, gemini: typeof c.gemini === 'string' ? c.gemini.replace(/^gemini\//, '').slice(0, 40) : false, openai: typeof c.openai === 'string' ? c.openai.replace(/^oai\//, '').slice(0, 40) : false }; } catch (e) { clouds = null; }
+      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice, search: searchVia, clouds, live, own: ownSt, check });
     });
     app.get('/api/bro/core/health', auth, (req, res) => { res.set('Cache-Control', 'no-store'); if (!isAdm(req)) return res.json({ ok: !!(brain.ready() && voiceReady()) }); try { res.json(Object.assign({ ok: !!(brain.ready() && voiceReady()) }, health())); } catch (e) { res.status(500).json({ error: e.message }); } });
     app.post('/api/bro/rate', auth, (req, res) => { const b = req.body || {}; const r = memory.rate(req.user.phone, b.rating, b.call_id || b.callId); res.status(r.ok ? 200 : 400).json(r); });
