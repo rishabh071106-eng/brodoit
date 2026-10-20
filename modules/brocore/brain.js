@@ -19,7 +19,10 @@ const EXTRA = ['qwen/qwen3-32b', 'meta-llama/llama-4-maverick-17b-128e-instruct'
 const BG_PURPOSES = new Set(['news', 'summary', 'lessons']);
 const BG_CHAIN = ['meta-llama/llama-4-scout-17b-16e-instruct', 'qwen/qwen3-32b', 'llama-3.1-8b-instant'];
 const BG_EXTRA = ['meta-llama/llama-4-maverick-17b-128e-instruct'];
-const laneOf = req => (req && !req.live && BG_PURPOSES.has(req.purpose)) ? 'bg' : 'live';
+// v17.6 rescue: a live turn whose whole chain failed gets one lean try on models with their own (larger) daily
+// allowances, before Bro ever says sorry. Only models /models lists for the account.
+const RESCUE_CHAIN = ['meta-llama/llama-4-scout-17b-16e-instruct', 'llama-3.1-8b-instant', 'qwen/qwen3-32b', 'openai/gpt-oss-20b'];
+const laneOf = req => req && req.purpose === 'rescue' ? 'rescue' : (req && !req.live && BG_PURPOSES.has(req.purpose)) ? 'bg' : 'live';
 // US$ per 1M tokens [input, output]; Groq list prices, the last three approximate
 const PRICES = {
   'openai/gpt-oss-120b': [0.15, 0.60], 'openai/gpt-oss-20b': [0.10, 0.50], 'qwen/qwen3-32b': [0.29, 0.59],
@@ -186,14 +189,15 @@ function createBrain(o) {
     // the remembered model leads for 30 minutes; then the preferred order gets another try (one hiccup is not a demotion)
     const w = st.lane[lane] || {};
     const pin = w.model && now() - w.at < PIN_MS ? w.model : null;
-    const head = (lane === 'live' ? [getSetting('BROCORE_MODEL'), process.env.BROCORE_MODEL, pin, ...DEFAULT_CHAIN] : [pin, ...BG_CHAIN]).filter(Boolean);
+    const head = (lane === 'live' ? [getSetting('BROCORE_MODEL'), process.env.BROCORE_MODEL, pin, ...DEFAULT_CHAIN] : lane === 'rescue' ? RESCUE_CHAIN : [pin, ...BG_CHAIN]).filter(Boolean);
     let tried = 0, ids;
     // the two gpt-oss models are always tried; any other model only once /models says this account has it
     for (const m of head) {
       if (seen.has(m)) continue; seen.add(m);
-      if (lane === 'bg') { if (ids === undefined) ids = await listModels(); if (ids && !ids.has(m)) continue; } // background models only if this account has them
+      if (lane !== 'live') { if (ids === undefined) ids = await listModels(); if (ids && !ids.has(m)) continue; } // background and rescue models only if this account has them
       if (isDead(m) || isCool(m)) continue; tried++; yield m;
     }
+    if (lane === 'rescue') return; // the rescue is one lean pass: models that are down stay down
     if (ids === undefined) ids = await listModels();
     for (const m of (lane === 'live' ? EXTRA : BG_EXTRA)) { if (seen.has(m)) continue; seen.add(m); if (ids && !ids.has(m)) continue; if (isDead(m) || isCool(m)) continue; tried++; yield m; }
     // everything was marked down: give the head one more go rather than going silent
@@ -228,7 +232,8 @@ function createBrain(o) {
     const e = new Error('groq ' + status + ' ' + model + ': ' + msg.slice(0, 200)); e.status = status; e.code = code;
     if (status === 401 || status === 403) e.kind = 'key';
     else if (status === 404 || /model_not_found|model_decommissioned|decommissioned/i.test(code) || (status === 400 && /model.{0,60}(not found|does not exist|decommissioned|not supported|no longer|unknown|invalid model)|decommissioned/i.test(msg))) e.kind = 'dead';
-    else if (status === 429) e.kind = 'rate';
+    // a 429 says which allowance ran out: a day's (tokens or requests per day) cools the model far longer than a minute's
+    else if (status === 429) { e.kind = 'rate'; e.window = /per day|\bTPD\b|\bRPD\b/i.test(msg) ? 'day' : 'min'; }
     // only optional extras are ever dropped (reasoning settings, JSON mode); a tool error moves to the next model instead,
     // so a live turn never silently loses its tools
     else if (status === 400 && /(reasoning_effort|include_reasoning|reasoning_format|response_format|json_object).{0,80}(not supported|unsupported|invalid|unknown|unrecognized|not allowed|must be)|(not supported|unsupported|unknown parameter|unrecognized).{0,60}(reasoning|response_format|json)/i.test(msg)) {
@@ -243,9 +248,13 @@ function createBrain(o) {
   }
   function onFail(model, e, retryAfter) {
     st.lastError = e.message; st.fails++;
-    if (e.kind === 'dead') { st.dead.set(model, now() + DEAD_MS); if (st.working === model) st.working = null; for (const k of ['live', 'bg']) if (st.lane[k] && st.lane[k].model === model) st.lane[k] = null; log('model retired, skipping', model, '·', (e.message || '').slice(0, 120)); }
-    else if (e.kind === 'rate') st.cool.set(model, now() + Math.min(60e3, Math.max(3e3, (parseFloat(retryAfter) || 8) * 1000)));
+    if (e.kind === 'dead') { st.dead.set(model, now() + DEAD_MS); if (st.working === model) st.working = null; for (const k of Object.keys(st.lane)) if (st.lane[k] && st.lane[k].model === model) st.lane[k] = null; log('model retired, skipping', model, '·', (e.message || '').slice(0, 120)); }
+    // a minute's allowance: up to 60 s; a day's: until Groq's retry-after, at most 30 min (15 min when it gives none),
+    // so a live turn skips an exhausted model at once instead of failing on it again
+    else if (e.kind === 'rate') st.cool.set(model, now() + (e.window === 'day' ? Math.min(30 * 60e3, Math.max(60e3, (parseFloat(retryAfter) || 900) * 1000)) : Math.min(60e3, Math.max(3e3, (parseFloat(retryAfter) || 8) * 1000))));
   }
+  // the trail word for a failed answer: 429s say which allowance ran out
+  const kindWord = e => e.kind === 'rate' && e.window ? 'rate-' + e.window : e.kind;
   function works(model, req) {
     st.lastModel = model; st.lastError = '';
     if (!(req && req.models)) {
@@ -385,7 +394,7 @@ function createBrain(o) {
         clearTimeout(h.timer);
         if (!h.r.ok) {
           let j = null; try { j = await h.r.json(); } catch (e) { j = null; } h.done();
-          const e = classify(h.r.status, j, model); note(req, { m: model, s: h.r.status, k: e.kind });
+          const e = classify(h.r.status, j, model); note(req, { m: model, s: h.r.status, k: kindWord(e) });
           if (e.kind === 'param') { const s = st.noParams.get(model) || new Set(); if (!s.has(e.param)) { s.add(e.param); st.noParams.set(model, s); continue; } }
           if (isToolErr(e)) { logToolErr(model, e); last = toolErr = e; st.lastError = e.message; st.fails++; break; }
           onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e;
@@ -447,7 +456,7 @@ function createBrain(o) {
   //    browser_search tool (20b first, so a search doesn't spend the 120b allowance live talk runs on).
   //    Non-stream. → { text (≤ 1,200 chars), model, via: 'compound' | 'browser' }; throws when it cannot answer.
   const SEARCH_MODELS = ['groq/compound-mini', 'groq/compound', 'compound-beta-mini', 'compound-beta'];
-  const BROWSE_MODELS = ['openai/gpt-oss-20b', 'openai/gpt-oss-120b'];
+  const BROWSE_MODELS = ['openai/gpt-oss-20b']; // never 120b: search results are big, and 120b's allowance is live talk's
   async function webSearch(query, opts) {
     opts = opts || {};
     const q = String(query == null ? '' : query).replace(/\s+/g, ' ').trim().slice(0, 300);
@@ -455,7 +464,7 @@ function createBrain(o) {
     if (!ready()) throw Object.assign(new Error('no-key'), { code: 'no-key' });
     const ask = q + ' — answer briefly with the key facts and dates, and mention the source names';
     const tries = SEARCH_MODELS.map(model => ({ model, via: 'compound', ms: opts.timeout || 12000, body: { model, stream: false, messages: [{ role: 'user', content: ask }] } }))
-      .concat(BROWSE_MODELS.map(model => ({ model, via: 'browser', ms: opts.browseTimeout || 15000, body: { model, stream: false, messages: [{ role: 'user', content: 'Search the web, then answer: ' + ask }], tools: [{ type: 'browser_search' }], tool_choice: 'required', reasoning_effort: 'low', max_completion_tokens: 1536 } })));
+      .concat(BROWSE_MODELS.map(model => ({ model, via: 'browser', ms: opts.browseTimeout || 15000, body: { model, stream: false, messages: [{ role: 'user', content: 'Search the web, then answer: ' + ask }], tools: [{ type: 'browser_search' }], tool_choice: 'required', reasoning_effort: 'low', max_completion_tokens: 1024 } })));
     const ids = await listModels();
     let last = null, unlisted = 0;
     for (const { model, via, ms, body } of tries) {
@@ -468,7 +477,7 @@ function createBrain(o) {
       catch (e) { if (opts.signal && opts.signal.aborted) throw abortError(); last = e.name === 'AbortError' ? Object.assign(new Error('web search timed out'), { code: 'timeout' }) : e; note(opts, { m: model, k: e.name === 'AbortError' ? 'slow' : 'net' }); continue; }
       let j = null; try { j = await h.r.json(); } catch (e) { j = null; } finally { h.done(); }
       if (!h.r.ok) {
-        const e = classify(h.r.status, j, model); note(opts, { m: model, s: h.r.status, k: via === 'browser' ? 'browse-' + e.kind : e.kind }); last = e;
+        const e = classify(h.r.status, j, model); note(opts, { m: model, s: h.r.status, k: via === 'browser' ? 'browse-' + kindWord(e) : kindWord(e) }); last = e;
         // a browse refusal says nothing about gpt-oss for talk: only a rate limit (shared with talk) marks it
         if (via === 'compound' || e.kind === 'rate') onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after'));
         if (e.kind === 'key') break; continue;
@@ -502,4 +511,4 @@ function createBrain(o) {
   return { chat, chatStream, webSearch, ready, emergencyOn, current, listModels, healthCheck, health, latency, costMonth, track, trackAudio, _st: st };
 }
 
-module.exports = { createBrain, sseEvents, thinkFilter, toolAccumulator, jsonText, cleanMessages, DEFAULT_CHAIN, EXTRA, BG_CHAIN, BG_PURPOSES, laneOf, PRICES, GROQ };
+module.exports = { createBrain, sseEvents, thinkFilter, toolAccumulator, jsonText, cleanMessages, DEFAULT_CHAIN, EXTRA, BG_CHAIN, BG_PURPOSES, RESCUE_CHAIN, laneOf, PRICES, GROQ };
