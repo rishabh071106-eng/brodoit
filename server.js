@@ -2111,7 +2111,8 @@ app.delete('/api/meetings/:id/voice/:vid',auth,(req,res)=>{
   res.json({ok:true});
 });
 
-app.get('/api/health',(_,res)=>res.json({status:'ok',email:!!process.env.RESEND_API_KEY,users:db.prepare('SELECT COUNT(*)as c FROM users').get().c,tasks:db.prepare('SELECT COUNT(*)as c FROM tasks').get().c}));
+// commit: the deployed git commit (public repo), so the live check can wait for a new deploy before testing it
+app.get('/api/health',(_,res)=>res.json({status:'ok',commit:String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,12),email:!!process.env.RESEND_API_KEY,users:db.prepare('SELECT COUNT(*)as c FROM users').get().c,tasks:db.prepare('SELECT COUNT(*)as c FROM tasks').get().c}));
 
 // ═══ NEWS (Inshorts-style feed — auto-curated every 12h, free RSS aggregator) ═══
 const NEWS_FEEDS={
