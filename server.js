@@ -137,7 +137,10 @@ function _getUserTz(userPhone){
 //   2. logged-in user's email matches ADMIN_EMAIL env var
 //   3. fallback: logged-in user is the FIRST account ever created on this DB
 //      (the original developer account — works without any env vars set)
-const ADMIN_TOKEN=process.env.ADMIN_TOKEN||'';
+// A token that was once published in this public repo (PLAY_STORE_LAUNCH_KIT.md) is refused even if it is still set on
+// Railway; only its sha256 is kept here. Logging in as the admin keeps working; set a new ADMIN_TOKEN for token URLs.
+const LEAKED_ADMIN_TOKENS=['4269275b8e1437c36cc1c7be8ceb07514f0f7ff091a48e79d6fee0921a1009bb'];
+const ADMIN_TOKEN=(t=>{if(t&&LEAKED_ADMIN_TOKENS.includes(require('crypto').createHash('sha256').update(t).digest('hex'))){console.warn('[admin] ADMIN_TOKEN is a value that was published in the repo: refused. Set a new one on Railway (or sign in as the admin).');return''}return t})(process.env.ADMIN_TOKEN||'');
 const ADMIN_EMAIL=(process.env.ADMIN_EMAIL||'').toLowerCase();
 function _isFirstAccountUser(t){
   if(!t)return false;
@@ -2733,8 +2736,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=22"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=22"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=22">
-<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=22" defer></script><script src="/app/you.js?v=21" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/voice.js?v=23" defer></script><script src="/app/news.js?v=22" defer></script><script src="/app/steps.js?v=21" defer></script><script src="/app/admin.js?v=22" defer></script><script src="/app/onboarding.js?v=21" defer></script><script src="/app/motion.js?v=21" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=22"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=22">
+<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=22" defer></script><script src="/app/you.js?v=21" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/voice.js?v=23" defer></script><script src="/app/news.js?v=22" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=23" defer></script><script src="/app/onboarding.js?v=21" defer></script><script src="/app/motion.js?v=21" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -17993,8 +17996,8 @@ try{require('./modules/newsreader.js').install(app,{auth,getSetting,MEDIA_DIR})}
 try{require('./modules/newsdesk.js').install(app,{db,auth,getSetting,isAdminUser,fetchFeed,feeds:NEWS_FEEDS,mediaDir:MEDIA_DIR,rssItems:()=>NEWS_CATS.flatMap(c=>((newsCache[c]||{}).items||[]).map(it=>Object.assign({cat:c},it)))})}catch(e){console.log('[desk] not installed:',e.message)}
 // v13.1: News is read, not played; recorded headlines only when NEWS_VOICE=1 (credits go to course/lesson/book voices)
 if(process.env.NEWS_VOICE==='1')try{const _st=require('./modules/studio.js');_st.configure({mediaDir:MEDIA_DIR});require('./modules/newsvoice.js').install(app,{db,getSetting,mediaDir:MEDIA_DIR,STUDIO:_st,schedule:String(process.env.NEWS_DESK||'1')!=='0'})}catch(e){console.log('[news-voice] off:',e.message)}
-let _android=null;try{_android=require('./modules/android.js').install(app,{MEDIA_DIR,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',auth,isAdminUser})}catch(e){console.log('[android] not installed:',e.message)}
-if(_android)global._androidCert=function(){try{return _android.cert()}catch(e){return null}};
+let _android=null;try{_android=require('./modules/android.js').install(app,{MEDIA_DIR,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',auth,isAdminUser,getSetting})}catch(e){console.log('[android] not installed:',e.message)}
+if(_android){global._androidCert=function(){try{return _android.cert()}catch(e){return null}};global._playSync=function(){return _android.syncPlay()};global._playVerify=function(v){return _android.play.verify(v)}}
 let _steps=null;try{_steps=require('./modules/steps.js').install(app,{db,auth,dayKey,webpush,pushTo,MEDIA_DIR,android:_android,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',genId,sha256,getUserByPhone:phone=>db.prepare('SELECT phone,name,email,tz,created_at FROM users WHERE phone=?').get(phone),fitSync,_getUserTz,appRoot:__dirname});if(_steps&&_steps.ingest)global._stepsIngest=_steps.ingest}catch(e){console.log('[steps] not loaded:',e.message)}
 app.use('/lang',express.static(path.join(__dirname,'lang'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 app.use('/speaker',express.static(path.join(__dirname,'speaker'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));

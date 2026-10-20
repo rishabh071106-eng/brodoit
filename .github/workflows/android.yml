@@ -1,16 +1,23 @@
-# Builds the Brodoit Android app (TWA + background step counter) and publishes the unsigned APK/AAB
-# plus apksigner as a GitHub release. The Brodoit server (modules/android.js) downloads the newest
-# release, signs it with its own upload key kept on the data volume, and serves /download/brodoit.apk.
+# Builds the Brodoit Android app (TWA + background step counter) in two flavors and publishes them unsigned, plus
+# apksigner, as a GitHub release (main only):
+#   direct → com.brodoit.app, the APK served at brodoit.com/android (sideload)
+#   play   → com.brodoit.twa, the bundle for the existing Google Play listing
+# The Brodoit server (modules/android.js) downloads the newest release, signs both with its own upload key kept on
+# the data volume, serves /download/brodoit.apk, and uploads the bundle to Play's test tracks (modules/play.js).
+# Every build is checked (packages, versions above the old Play build, target SDK) and installed on Android
+# emulators before it is released.
 name: android
 on:
   push:
-    paths: ['android/**', '.github/workflows/android.yml']
+    paths: ['android/**', '.github/workflows/android.yml', '.github/scripts/android-smoke.sh']
   workflow_dispatch:
 permissions:
   contents: write
 concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress: true
+env:
+  BUNDLETOOL: https://github.com/google/bundletool/releases/download/1.17.2/bundletool-all-1.17.2.jar
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,33 +27,131 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
       - uses: gradle/actions/setup-gradle@v4
-        with: { gradle-version: '8.11.1' }
-      - name: Build release APK and AAB (unsigned)
+        with: { gradle-version: '8.13' }
+      - name: Build the direct APK and the Play bundle (unsigned)
         working-directory: android
         env:
           BRODOIT_BUILD_NUMBER: ${{ github.run_number }}
           BRODOIT_SITE_URL: https://brodoit.com
-        run: gradle --no-daemon :app:assembleRelease :app:bundleRelease
+        run: gradle --no-daemon :app:assembleDirectRelease :app:bundlePlayRelease
       - name: Collect artifacts
         run: |
           set -e
           mkdir -p out
-          cp android/app/build/outputs/apk/release/app-release-unsigned.apk out/brodoit-unsigned.apk
-          cp android/app/build/outputs/bundle/release/app-release.aab out/brodoit-unsigned.aab
+          cp android/app/build/outputs/apk/direct/release/app-direct-release-unsigned.apk out/brodoit-unsigned.apk
+          cp android/app/build/outputs/bundle/playRelease/app-play-release.aab out/brodoit-unsigned.aab
           BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
           cp "$BT/lib/apksigner.jar" out/apksigner.jar
-          echo "{\"build\":${{ github.run_number }},\"version\":\"1.0.${{ github.run_number }}\",\"sha\":\"${{ github.sha }}\",\"ref\":\"${{ github.ref_name }}\"}" > out/build.json
+          VC=$((1000 + ${{ github.run_number }}))
+          echo "{\"build\":${{ github.run_number }},\"version\":\"1.0.${{ github.run_number }}\",\"versionCode\":$VC,\"apkPackage\":\"com.brodoit.app\",\"aabPackage\":\"com.brodoit.twa\",\"sha\":\"${{ github.sha }}\",\"ref\":\"${{ github.ref_name }}\"}" > out/build.json
           ls -la out
+      - name: Check the builds (packages, versions above the old Play build, target SDK 36)
+        run: |
+          set -e
+          curl -fsSL -o /tmp/bundletool.jar "$BUNDLETOOL"
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          bt() { java -jar /tmp/bundletool.jar dump manifest --bundle "$1" --xpath "$2"; }
+          OLD=$(bt aab-upload-temp.aab /manifest/@android:versionCode)
+          PKG=$(bt out/brodoit-unsigned.aab /manifest/@package)
+          VC=$(bt out/brodoit-unsigned.aab /manifest/@android:versionCode)
+          TS=$(bt out/brodoit-unsigned.aab /manifest/uses-sdk/@android:targetSdkVersion)
+          echo "Play bundle: $PKG versionCode $VC targetSdk $TS (the last Play build made outside this repo: versionCode $OLD)"
+          [ "$PKG" = com.brodoit.twa ] || { echo "::error::the Play bundle must be com.brodoit.twa (got $PKG)"; exit 1; }
+          [ "$VC" -gt "$OLD" ] || { echo "::error::versionCode $VC is not above the Play listing's $OLD"; exit 1; }
+          [ "$TS" -ge 36 ] || { echo "::error::Play needs targetSdk 36 (got $TS)"; exit 1; }
+          B=$("$BT/aapt2" dump badging out/brodoit-unsigned.apk | head -4)
+          echo "$B"
+          echo "$B" | grep -q "package: name='com.brodoit.app'" || { echo "::error::the direct APK must be com.brodoit.app"; exit 1; }
+          echo "$B" | grep -q "versionCode='$VC'" || { echo "::error::the APK and the bundle must share versionCode $VC"; exit 1; }
+          echo "$B" | grep -q "targetSdkVersion:'36'" || { echo "::error::the APK must target SDK 36"; exit 1; }
+      - name: A copy signed with a throwaway key, for the emulator test only
+        run: |
+          set -e
+          mkdir -p ci
+          keytool -genkeypair -keystore /tmp/ci.jks -storepass cipass1 -keypass cipass1 -alias ci -keyalg RSA -keysize 2048 -validity 2 -dname "CN=CI" > /dev/null
+          java -jar out/apksigner.jar sign --ks /tmp/ci.jks --ks-pass pass:cipass1 --key-pass pass:cipass1 --out ci/brodoit-ci.apk out/brodoit-unsigned.apk
       - uses: actions/upload-artifact@v4
+        with: { name: brodoit-android, path: out }
+      - uses: actions/upload-artifact@v4
+        with: { name: brodoit-ci-apk, path: ci }
+
+  emulator:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [35, 36]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: brodoit-ci-apk, path: ci }
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install, allow Physical activity, open brodoit.com, the steps deep link
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          script: bash .github/scripts/android-smoke.sh ci/brodoit-ci.apk shots-${{ matrix.api }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: emulator-${{ matrix.api }}
+          path: shots-${{ matrix.api }}
+
+  publish:
+    needs: [build, emulator]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
         with: { name: brodoit-android, path: out }
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: android-v1.0.${{ github.run_number }}
           name: Brodoit Android 1.0.${{ github.run_number }}
-          body: "Unsigned build from ${{ github.ref_name }} @ ${{ github.sha }}. The Brodoit server signs and serves it at /download/brodoit.apk."
+          body: "Unsigned build from ${{ github.ref_name }} @ ${{ github.sha }}: com.brodoit.app (APK, brodoit.com/android) and com.brodoit.twa (bundle, Google Play). The Brodoit server signs both."
           files: |
             out/brodoit-unsigned.apk
             out/brodoit-unsigned.aab
             out/apksigner.jar
             out/build.json
+
+  # the tester link serves this build: brodoit.com signs it within minutes; check what a tester downloads
+  live:
+    needs: publish
+    # the server takes its builds from taskflow (modules/android.js); the brodoit mirror's run numbers differ
+    if: github.repository == 'rishabh071106-eng/taskflow'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: brodoit.com/android serves this build, signed with the server's upload key
+        run: |
+          set -u
+          want=1.0.${{ github.run_number }}; vc=$((1000 + ${{ github.run_number }}))
+          for i in $(seq 1 50); do
+            st=$(curl -fsS --max-time 20 https://brodoit.com/api/android/status || echo '{}')
+            [ "$(echo "$st" | jq -r '.version // ""')" = "$want" ] && [ "$(echo "$st" | jq -r '.ready')" = true ] && break
+            echo "waiting for $want ($i): $(echo "$st" | jq -c '{ready, version, note}')"; sleep 30
+          done
+          echo "status: $(echo "$st" | jq -c '{ready, version, versionCode, package, size, cert_sha256, play}')"
+          [ "$(echo "$st" | jq -r '.version // ""')" = "$want" ] || { echo "::error::brodoit.com did not pick up $want in 25 minutes"; exit 1; }
+          [ "$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://brodoit.com/android)" = 200 ] || { echo "::error::brodoit.com/android is not answering"; exit 1; }
+          curl -fsSL --max-time 180 -o /tmp/b.apk https://brodoit.com/download/brodoit.apk
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          V=$("$BT/apksigner" verify --print-certs /tmp/b.apk 2>&1) || { echo "::error::the served APK does not verify: $V"; exit 1; }
+          FP=$(echo "$V" | grep -oiE 'SHA-256 digest: [0-9a-f]{64}' | head -1 | awk '{print toupper($3)}' | sed 's/../&:/g; s/:$//')
+          [ "$FP" = "$(echo "$st" | jq -r '.cert_sha256')" ] || { echo "::error::the APK is signed by $FP, not the server's upload key"; exit 1; }
+          B=$("$BT/aapt2" dump badging /tmp/b.apk | head -3); echo "$B"
+          echo "$B" | grep -q "package: name='com.brodoit.app' versionCode='$vc'" || { echo "::error::the served APK is not com.brodoit.app $vc"; exit 1; }
+          echo "$B" | grep -q "targetSdkVersion:'36'" || { echo "::error::the served APK does not target SDK 36"; exit 1; }
+          echo "::notice::Testers get Brodoit $want (com.brodoit.app, versionCode $vc) at https://brodoit.com/android, signed by the server's upload key. Google Play: $(echo "$st" | jq -c '.play')"

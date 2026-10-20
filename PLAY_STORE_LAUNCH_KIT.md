@@ -1,6 +1,36 @@
 # Brodoit · Play Store Launch Kit
 
-Last updated: May 10, 2026
+Last updated: October 20, 2026 (v19). The May 10 playbook follows below.
+
+## v19: the new app on the existing Play listing
+
+The app in this repo (TWA + background steps) now builds as **`com.brodoit.twa`** for Google Play: an update of the
+existing listing, keeping its content rating, declarations and testers. The same build is also **`com.brodoit.app`**
+at **https://brodoit.com/android**, a one-tap install for testers that needs no Play account.
+
+**The server does the rest:**
+- Every build is signed by the server's upload key.
+- With a service account, each build goes to Play's **internal** and **closed (alpha)** tracks by itself.
+- Status: `https://brodoit.com/api/android/status` → `play.state`.
+
+### One time, in Play Console (about 15 minutes)
+
+1. **Upload key reset.**
+   - Download https://brodoit.com/download/upload_certificate.pem.
+   - In Play Console, go to Brodoit → Test and release → App integrity → App signing → "Request upload key reset".
+   - Reason: "I lost my upload key". Upload that .pem file. Google replies within about 2 days.
+   - After the reset, `play.state` stops saying `waiting-key-reset` and the build uploads by itself.
+2. **Service account.**
+   - In console.cloud.google.com: create a project (any name).
+   - APIs & Services → enable **Google Play Android Developer API**.
+   - IAM & Admin → Service accounts → Create (any name) → Keys → Add key → JSON. A .json file downloads.
+   - In Play Console, go to Users and permissions → Invite new users.
+   - Paste the service account's email. Under App permissions, add Brodoit with **Release apps to testing tracks** (and Manage testing tracks).
+   - At brodoit.com, go to You → Admin → **Google Play** → "Choose the .json file". Google checks it at once.
+3. **App content.** In Policy → App content, update these two forms for step counting:
+   - **Data safety:** "Fitness info" (step counts) is collected, linked to the account, used for app functionality, not shared, encrypted in transit, and deletable on request. The device ID is "Device or other IDs" (app functionality).
+   - **Health apps:** fitness / activity tracking.
+4. **Production.** After 12 testers have been opted in for 14 days on the closed track, use Publishing overview → "Apply for production". Then promote the newest closed-test release.
 
 Per the latest Play Console state, only two gates remain before
 production: **12 active testers** and the **14-day continuous test**
@@ -41,10 +71,10 @@ If you want shareable admin URLs (or want to deploy a fresh DB later),
 set on Railway → Service → Variables:
 
 ```
-ADMIN_TOKEN = _R6HkqWzgooYoSaLhL4hvUl1
+ADMIN_TOKEN = <a long random value only you know (never commit it)>
 ```
 
-Then access via `https://brodoit.com/admin/testers?token=_R6HkqWzgooYoSaLhL4hvUl1`.
+Then access via `https://brodoit.com/admin/testers?token=<your ADMIN_TOKEN>`.
 
 ### The flow is fully automated:
 

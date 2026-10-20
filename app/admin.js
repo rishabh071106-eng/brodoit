@@ -25,6 +25,8 @@
     { k: 'GEMINI_API_KEY', label: 'Gemini', sub: 'Bro\'s brain + backup voice — news, books, lessons', ph: 'AIza… or AQ.…', icon: 'sparkles', url: 'https://aistudio.google.com/app/apikey', host: 'aistudio.google.com' },
     { k: 'GROQ_API_KEY', label: 'Groq', sub: 'Bro Core — Bro\'s brain and hearing (open models)', ph: 'gsk_…', icon: 'zap', url: 'https://console.groq.com/keys', host: 'console.groq.com' },
     { k: 'RUNPOD_API_KEY', label: 'RunPod (optional)', sub: 'Bro\'s GPU voice — one cloned deep voice in 23 languages', ph: 'rpa_…', icon: 'rocket', url: 'https://www.runpod.io/console/user/settings', host: 'runpod.io' },
+    // the service account key is a .json file: pick it (or paste its text)
+    { k: 'PLAY_SERVICE_ACCOUNT_JSON', label: 'Google Play', sub: 'Uploads every new app build to Play testing by itself', ph: 'the .json key file', icon: 'upload', url: 'https://console.cloud.google.com/iam-admin/serviceaccounts', host: 'console.cloud.google.com', file: true },
   ];
   const SERVICES = [
     { k: 'brovoice', label: 'Bro voice', icon: 'mic', off: 'device voice' },
@@ -250,6 +252,7 @@
     h += '<div class="adm-key-chip">' + keyChip(info) + '</div>';
     h += '<div class="adm-in-row"><input class="adm-in" id="admIn-' + k.k + '" type="' + (a.eye[k.k] ? 'text' : 'password') + '" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + attr(info && info.set ? 'Paste a new key to replace' : 'Paste your ' + k.label + ' key (' + k.ph + ')') + '" value="' + attr(draft) + '" aria-label="' + attr(k.label + ' API key') + '" oninput="AdminPanel.draft(\'' + k.k + '\',this.value)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();AdminPanel.save(\'' + k.k + '\')}">';
     h += '<button type="button" class="icon-btn adm-eye" onclick="AdminPanel.toggleEye(\'' + k.k + '\')" aria-label="' + (a.eye[k.k] ? 'Hide key' : 'Show key') + '">' + ic(a.eye[k.k] ? 'eye-off' : 'eye', 18) + '</button></div>';
+    if (k.file) h += '<label class="b-btn sm ghost adm-file">' + ic('upload', 16) + 'Choose the .json file<input type="file" accept=".json,application/json" hidden onchange="AdminPanel.pickFile(\'' + k.k + '\',this)"></label>';
     if (rej) h += '<div class="adm-reject" role="alert">' + ic('alert-triangle', 16) + '<div><b>' + _esc(rej.valid === false ? 'Key rejected' : 'Could not verify') + '</b><small>' + _esc(rej.error || '') + '</small></div><button type="button" class="adm-force" onclick="AdminPanel.save(\'' + k.k + '\',true)">Save anyway</button></div>';
     h += '<div class="adm-key-act"><button type="button" class="b-btn sm adm-save" id="admSave-' + k.k + '" onclick="AdminPanel.save(\'' + k.k + '\')"' + (saving || !draft.trim() ? ' disabled' : '') + '>' + (saving ? '<span class="adm-spin" aria-hidden="true"></span>Checking…' : ic('check', 16) + 'Save') + '</button>';
     if (info && info.source === 'app') h += '<button type="button" class="b-btn sm ghost adm-remove" onclick="AdminPanel.remove(\'' + k.k + '\')"' + (saving ? ' disabled' : '') + '>' + ic('x', 16) + 'Remove</button>';
@@ -370,6 +373,14 @@
   A.draft = function (key, val) {
     adm().draft[key] = val;
     const b = document.getElementById('admSave-' + key); if (b && !adm().saving[key]) b.disabled = !String(val || '').trim();
+  };
+  // a key that comes as a file (Google Play's service account .json): its text becomes the draft, then it is saved
+  A.pickFile = function (key, input) {
+    const f = input && input.files && input.files[0]; if (!f) return;
+    if (f.size > 8192) { _toast('That file is too big for a key', 'err'); return; }
+    const r = new FileReader();
+    r.onload = () => { A.draft(key, String(r.result || '').trim()); const inp = document.getElementById('admIn-' + key); if (inp) inp.value = adm().draft[key]; A.save(key); };
+    r.readAsText(f);
   };
   A.toggleEye = function (key) {
     const a = adm(); a.eye[key] = !a.eye[key];
