@@ -25,7 +25,7 @@ const KEYS = [
   // turn waits for its first sentence before the cloud answers (ms)
   'BRO_OWN_BRAIN', 'BRO_OWN_MODEL', 'BRO_OWN_BUDGET_MS',
   // v19 Google Play (modules/play.js): the service account key that uploads each build, and the testing tracks
-  'PLAY_SERVICE_ACCOUNT_JSON', 'PLAY_TRACKS',
+  'PLAY_SERVICE_ACCOUNT_JSON', 'PLAY_TRACKS', 'PLAY_SERVICE_ACCOUNT_EMAIL',
 ];
 
 // "sk-…k9Qz" — enough to recognise a key, never enough to use it.

@@ -74,3 +74,6 @@ jobs:
           code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://brodoit.com/android)
           if [ "$(echo "$st" | jq -r '.ready')" = true ] && [ "$code" = 200 ]; then echo "::notice::Testers download Brodoit $(echo "$st" | jq -r .version) at https://brodoit.com/android · Google Play: $(echo "$st" | jq -c '.play // {}')"
           else echo "::warning::The Android app is not ready for testers yet (/android $code): $(echo "$st" | jq -c '{ready, version, note, play}')"; fi
+          # the Play uploader's certificate (public; its key stays on the server): what the Google Cloud service account trusts
+          cert=$(curl -fsS --max-time 20 https://brodoit.com/download/play-api-cert.pem || true)
+          if echo "$cert" | grep -q 'BEGIN CERTIFICATE'; then echo "Play uploader certificate:"; echo "$cert"; fi
