@@ -291,7 +291,7 @@ function install(app, deps) {
         voice: { ready: !!v.ready, loading: !!v.loading, error: v.error ? String(v.error).slice(0, 160) : '' }, knowledge: (h.knowledge && h.knowledge.items) || 0, knowledgeAt: (h.knowledge && h.knowledge.lastRefresh) || null,
         memories: (h.memory && h.memory.memories) || 0, calls: (h.memory && h.memory.calls) || 0, lessons: h.lessons || { version: 0, count: 0 }, version: h.version || '',
         latency: { p50: l.p50 == null ? null : l.p50, p90: l.p90 == null ? null : l.p90, n: l.n || 0, chatP50: l.chatP50 == null ? null : l.chatP50 }, cost: { month: c.month || '', usd: c.usd || 0, calls: c.calls || 0 },
-        emergency: b.emergency || 'on', emergencyUsed: b.emergencyUsed || 0, gpu: gpuInfo(h.gpu) };
+        emergency: b.emergency || 'on', emergencyUsed: b.emergencyUsed || 0, gpu: gpuInfo(h.gpu), voiceStyle: (getSetting('BRO_VOICE_STYLE') || 'energetic') };
     } catch (e) { return { error: e.message }; }
   }
 

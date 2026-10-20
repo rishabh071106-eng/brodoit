@@ -155,8 +155,35 @@
     h += '<p class="adm-auto b-sm">' + (on ? 'Brain backup on: if every open model fails, the old Gemini brain answers' : 'Open models only: if they all fail, Bro says he is busy') + (bc.emergencyUsed ? ' · used ' + n(bc.emergencyUsed) + '× since the last start' : '') + '. This switch is for the brain only; if Bro\'s voice is not ready, the phone\'s own voice speaks.'
       + (br.error ? '<br><span style="color:var(--b-primary)">Brain: ' + _esc(String(br.error).slice(0, 200)) + '</span>' : '') + (vo.error && !vo.ready ? '<br><span style="color:var(--b-primary)">Voice: ' + _esc(vo.error) + '</span>' : '') + '</p>';
     h += gpuLine(bc.gpu);
+    // v20 Bro's voice style (his voice on our CPU, everywhere he speaks): pick one, hear it
+    const vs = bc.voiceStyle || 'energetic';
+    h += '<div class="adm-job-act" id="admVoiceStyle" role="group" aria-label="Bro\'s voice">';
+    for (const [k, l] of [['energetic', 'Energetic'], ['bright', 'Bright'], ['deep', 'Deep']]) h += '<button type="button" class="b-chip adm-tog' + (vs === k ? ' on' : '') + '" data-style="' + k + '" aria-pressed="' + (vs === k) + '" onclick="AdminPanel.setVoiceStyle(\'' + k + '\')"' + (busy ? ' disabled' : '') + '>' + l + '</button>';
+    h += '<button type="button" class="b-chip" id="admVoicePlay" onclick="AdminPanel.playVoiceStyle()">' + ic(a.voicePlaying ? 'loader' : 'play', 14) + 'Hear it</button></div>';
+    h += '<p class="adm-auto b-sm">' + ic('radio', 14) + " Bro's voice: " + _esc({ energetic: 'Energetic — lively and motivating', bright: 'Bright — friendly and clear', deep: 'Deep — calm and low' }[vs] || vs) + '</p>';
     return h + '</div>';
   }
+  A.setVoiceStyle = async function (style) {
+    const a = adm(), bc = a.status && a.status.brocore; if (!bc || a.coreBusy || bc.voiceStyle === style) return;
+    a.coreBusy = true; patchCore();
+    const r = await _api('/admin/bro/config', { method: 'POST', body: JSON.stringify({ voiceStyle: style }) });
+    a.coreBusy = false;
+    if (r && r.ok) { bc.voiceStyle = style; hap('success'); _toast("Bro's voice: " + style); } else { hap('error'); _toast((r && r.error) || 'Could not change the voice', 'err'); }
+    patchCore();
+  };
+  // a short sample in the chosen style, from the server's own voice
+  A.playVoiceStyle = async function () {
+    const a = adm(), bc = a.status && a.status.brocore; if (!bc || a.voicePlaying) return;
+    a.voicePlaying = true; patchCore();
+    try {
+      const tok = (typeof token !== 'undefined' && token) || (localStorage.getItem('tf_token') || '');
+      const r = await fetch('/api/admin/bro/voice-sample?style=' + encodeURIComponent(bc.voiceStyle || 'energetic'), { headers: { 'x-token': tok } });
+      if (!r.ok) throw new Error(r.status === 503 ? "Bro's voice is still loading" : 'Could not play the sample');
+      const url = URL.createObjectURL(await r.blob()); const au = new Audio(url);
+      au.onended = () => { URL.revokeObjectURL(url); a.voicePlaying = false; patchCore(); };
+      await au.play();
+    } catch (e) { a.voicePlaying = false; _toast(e.message || 'Could not play the sample', 'err'); patchCore(); }
+  };
   // one line for the optional GPU voice (RunPod): off / starting / ready / error
   function gpuLine(g) {
     if (!g) return '';

@@ -42,7 +42,8 @@ const SHARD_COUNT = 19;
 const VOICES_PKG = 'kokoro-js';
 const VOICES_VERSION = '1.2.1';
 const VOICES_INTEGRITY = 'sha512-oq0HZJWis3t8lERkMJh84WLU86dpYD0EuBPtqYnLlQzyFP1OkyBRDcweAqCfhNOpltyN9j/azp1H6uuC47gShw==';
-const VOICE_NAMES = ['am_onyx', 'hm_omega', 'hm_psi', 'em_alex', 'im_nicola', 'pm_alex', 'jm_kumo', 'zm_yunjian', 'bm_lewis', 'am_echo'];
+const VOICE_NAMES = ['am_onyx', 'hm_omega', 'hm_psi', 'em_alex', 'im_nicola', 'pm_alex', 'jm_kumo', 'zm_yunjian', 'bm_lewis', 'am_echo',
+  'am_fenrir', 'am_puck', 'am_michael', 'em_santa']; // v20: the energetic and bright styles
 const VOICE_BYTES = 510 * 256 * 4; // Float32Array [510 x 256]
 const MAX_TOKENS = 400;
 const SPEC_KEY = 'BRO_VOICE_SPECS';
@@ -70,6 +71,15 @@ const LANGS = {
   zh: { espeak: 'cmn', voice: 'zm_yunjian' },
 };
 const LANG_ALIASES = { hinglish: 'hi', cmn: 'zh', jp: 'ja', 'pt-br': 'pt', 'pt-pt': 'pt' };
+// v20: Bro's voice style (Admin: BRO_VOICE_STYLE). Energetic is the default: livelier voices, a touch quicker. A language a
+// style does not list keeps its LANGS voice. Measured on the owner's line: am_onyx 94 Hz, 3.9 semitones of pitch movement,
+// 9.3 s; the energetic blend 140 Hz, 4.5 semitones, 6.9 s.
+const STYLE_KEY = 'BRO_VOICE_STYLE';
+const STYLES = {
+  energetic: { en: ['am_fenrir:0.6+am_puck:0.4', 1.08], hi: ['hm_psi', 1.06], es: ['em_santa:0.6+am_fenrir:0.4', 1.06], fr: ['am_fenrir', 1.06], de: ['am_fenrir', 1.06], it: ['im_nicola', 1.05], pt: ['pm_alex:0.6+am_fenrir:0.4', 1.05] },
+  bright: { en: ['am_puck:0.5+am_michael:0.5', 1.06], hi: ['hm_psi', 1.04], es: ['em_alex', 1.04], fr: ['am_puck', 1.04], de: ['am_puck', 1.04], pt: ['pm_alex', 1.04] },
+  deep: {}, // the v16–v19 voices (LANGS) at normal speed
+};
 
 const log = (...a) => console.log('[brocore/voice]', ...a);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -137,10 +147,15 @@ function knownVoice(name) {
 }
 // the v16 default hm_omega:0.5+am_onyx:0.5 and the nightly A/B steps around it (0.3–0.7); any other spec is a choice
 const LEGACY_HI = /^hm_omega:0?\.[3-7]\d*\+am_onyx:0?\.[3-7]\d*$/;
+function styleName() { let s = ''; try { s = S.getSetting ? String(S.getSetting(STYLE_KEY) || '') : ''; } catch (e) { s = ''; } s = (s || process.env[STYLE_KEY] || 'energetic').toLowerCase(); return STYLES[s] ? s : 'energetic'; }
+function styleOf(L) { return STYLES[styleName()][L] || null; }
 function voiceFor(lang) {
   const L = normLang(lang) || 'en';
-  return S.specs[L] || LANGS[L].voice;
+  const st = styleOf(L);
+  return S.specs[L] || (st && st[0]) || LANGS[L].voice;
 }
+// the style's pace for a language (1 when the style does not list it)
+function speedFor(lang) { const st = styleOf(normLang(lang) || 'en'); return st ? st[1] : 1; }
 function specFile() { return S.mediaDir ? path.join(S.mediaDir, 'brocore', 'voice-specs.json') : ''; }
 function loadSpecs() {
   let raw = '';
@@ -156,6 +171,12 @@ function loadSpecs() {
   } catch (e) { log('ignoring unreadable', SPEC_KEY); }
   // v17: the old Hindi default (hm_omega + am_onyx, and the nightly A/B steps around it) gives way to the native voice
   if (out.hi && LEGACY_HI.test(out.hi)) { log('Hindi voice: ' + out.hi + ' (old blend) replaced by the native ' + LANGS.hi.voice); delete out.hi; S.specs = out; persistSpecs(); return; }
+  // v20: a voice tuned around the old deep default (am_onyx, the nightly A/B steps) or the old Hindi hm_omega gives way to the
+  // style's voice; the deep style keeps them
+  if (styleName() !== 'deep') {
+    const old = Object.keys(out).filter(L => /(^|\+)am_onyx\b/.test(out[L]) || (L === 'hi' && /^hm_omega(:[\d.]+)?$/.test(out[L])));
+    if (old.length) { for (const L of old) { log('voice', L + ':', out[L], '(old deep voice) replaced by the', styleName(), 'style'); delete out[L]; } S.specs = out; persistSpecs(); return; }
+  }
   S.specs = out;
 }
 function persistSpecs() {
@@ -701,7 +722,9 @@ function synthChunk(c, prio, signal) {
 
 function plan(text, opts, quickStart, small) {
   const base = resolveLang(opts.lang, text);
-  const speed = Math.min(2, Math.max(0.5, Number(opts.speed) || 1));
+  // a pace the caller asks for, else the voice style's pace for each piece's language
+  const asked = Number(opts.speed) ? Math.min(2, Math.max(0.5, Number(opts.speed))) : 0;
+  const speed = asked || speedFor(base);
   if (opts.voice) parseSpec(opts.voice).forEach(p => { if (!knownVoice(p.name)) throw new Error('unknown voice: ' + p.name); });
   return chunkText(text, base, { quickStart, speed, small }).map(c => {
     let L = base;
@@ -709,7 +732,7 @@ function plan(text, opts, quickStart, small) {
     else if (RE_DEVA.test(c.text) && L !== 'hi') L = 'hi';
     else if (RE_KANA.test(c.text) && L !== 'ja') L = 'ja';
     else if (RE_HAN.test(c.text) && !isCJK(L)) L = 'zh';
-    return { text: c.text, end: c.end, lang: L, spec: opts.voice || specOrDefault(L), speed };
+    return { text: c.text, end: c.end, lang: L, spec: opts.voice || specOrDefault(L), speed: asked || speedFor(L) };
   });
 }
 // A tuned spec whose voice file vanished must not silence Bro: fall back to the built-in voice.
@@ -1206,7 +1229,7 @@ function init(opts = {}) {
 if (require.main === module && process.argv.includes(ENGINE_FLAG) && process.send) engineMain();
 
 module.exports = {
-  init, ready, speak, speakStream, voiceFor, setVoiceSpec, health,
+  init, ready, speak, speakStream, voiceFor, speedFor, setVoiceSpec, styleName, health, STYLES,
   SAMPLE_RATE, MODEL_NAME, LANGS,
   _internals: { plan, normHindi, hiNum, ensureModel, pruneCache, writeCache, freeBytes, loadSpecs, loadEspeak, chunkText, lowChunkChars, phonemize, tokenize, splitPhonemes, normEnglish, normCommon, cleanText, detectLang, normLang, resolveLang, parseSpec, toWav, encodeMp3, threadCount, jobTimeoutMs, start, state: S, queue: Q, VOICE_NAMES, MODEL_SHA256, LOW_MAX },
 };
