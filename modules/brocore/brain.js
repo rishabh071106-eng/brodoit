@@ -12,6 +12,13 @@
 const GROQ = 'https://api.groq.com/openai/v1';
 const DEFAULT_CHAIN = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 const EXTRA = ['qwen/qwen3-32b', 'meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-3.3-70b-versatile'];
+// Two lanes, so background work (News writing, call summaries, nightly lessons) can never spend the per-model
+// minute/day allowance that live talk needs. On Groq every model has its own limits, so each lane uses its own models.
+// Live talk keeps the gpt-oss chain; background jobs (named purposes below) get models of their own.
+const BG_PURPOSES = new Set(['news', 'summary', 'lessons']);
+const BG_CHAIN = ['meta-llama/llama-4-scout-17b-16e-instruct', 'qwen/qwen3-32b', 'llama-3.1-8b-instant'];
+const BG_EXTRA = ['meta-llama/llama-4-maverick-17b-128e-instruct'];
+const laneOf = req => (req && !req.live && BG_PURPOSES.has(req.purpose)) ? 'bg' : 'live';
 // US$ per 1M tokens [input, output]; Groq list prices, the last three approximate
 const PRICES = {
   'openai/gpt-oss-120b': [0.15, 0.60], 'openai/gpt-oss-20b': [0.10, 0.50], 'qwen/qwen3-32b': [0.29, 0.59],
@@ -138,7 +145,7 @@ function createBrain(o) {
   const now = o.now || (() => Date.now());
   const log = o.log || ((...a) => console.log('[brocore]', ...a));
   const db = o.db || null;
-  const st = { working: null, dead: new Map(), cool: new Map(), listed: null, listing: null, noParams: new Map(), lastError: '', lastModel: '', calls: 0, fails: 0, emergency: 0, lastEmergency: null };
+  const st = { working: null, lane: { live: null, bg: null }, dead: new Map(), cool: new Map(), listed: null, listing: null, noParams: new Map(), lastError: '', lastModel: '', calls: 0, fails: 0, emergency: 0, lastEmergency: null };
   const ttft = [], chatMs = [];
   const mem = {}; // usage when there is no db
 
@@ -172,13 +179,20 @@ function createBrain(o) {
   async function* chainFor(req) {
     if (req && Array.isArray(req.models) && req.models.length) { for (const m of req.models) yield m; return; }
     const seen = new Set();
+    const lane = laneOf(req);
     // the remembered model leads for 30 minutes; then the preferred order gets another try (one hiccup is not a demotion)
-    const pin = st.working && now() - st.workingAt < PIN_MS ? st.working : null;
-    const head = [getSetting('BROCORE_MODEL'), process.env.BROCORE_MODEL, pin, ...DEFAULT_CHAIN].filter(Boolean);
-    let tried = 0;
-    for (const m of head) { if (seen.has(m)) continue; seen.add(m); if (isDead(m) || isCool(m)) continue; tried++; yield m; }
-    const ids = await listModels();
-    for (const m of EXTRA) { if (seen.has(m)) continue; seen.add(m); if (ids && !ids.has(m)) continue; if (isDead(m) || isCool(m)) continue; tried++; yield m; }
+    const w = st.lane[lane] || {};
+    const pin = w.model && now() - w.at < PIN_MS ? w.model : null;
+    const head = (lane === 'live' ? [getSetting('BROCORE_MODEL'), process.env.BROCORE_MODEL, pin, ...DEFAULT_CHAIN] : [pin, ...BG_CHAIN]).filter(Boolean);
+    let tried = 0, ids;
+    // the two gpt-oss models are always tried; any other model only once /models says this account has it
+    for (const m of head) {
+      if (seen.has(m)) continue; seen.add(m);
+      if (lane === 'bg') { if (ids === undefined) ids = await listModels(); if (ids && !ids.has(m)) continue; } // background models only if this account has them
+      if (isDead(m) || isCool(m)) continue; tried++; yield m;
+    }
+    if (ids === undefined) ids = await listModels();
+    for (const m of (lane === 'live' ? EXTRA : BG_EXTRA)) { if (seen.has(m)) continue; seen.add(m); if (ids && !ids.has(m)) continue; if (isDead(m) || isCool(m)) continue; tried++; yield m; }
     // everything was marked down: give the head one more go rather than going silent
     if (!tried) for (const m of head.filter((x, i, a) => a.indexOf(x) === i)) if (!isDead(m)) yield m;
   }
@@ -226,12 +240,16 @@ function createBrain(o) {
   }
   function onFail(model, e, retryAfter) {
     st.lastError = e.message; st.fails++;
-    if (e.kind === 'dead') { st.dead.set(model, now() + DEAD_MS); if (st.working === model) st.working = null; log('model retired, skipping', model, '·', (e.message || '').slice(0, 120)); }
+    if (e.kind === 'dead') { st.dead.set(model, now() + DEAD_MS); if (st.working === model) st.working = null; for (const k of ['live', 'bg']) if (st.lane[k] && st.lane[k].model === model) st.lane[k] = null; log('model retired, skipping', model, '·', (e.message || '').slice(0, 120)); }
     else if (e.kind === 'rate') st.cool.set(model, now() + Math.min(60e3, Math.max(3e3, (parseFloat(retryAfter) || 8) * 1000)));
   }
   function works(model, req) {
     st.lastModel = model; st.lastError = '';
-    if (!(req && req.models) && st.working !== model) { st.working = model; st.workingAt = now(); log('brain answering on', model); }
+    if (!(req && req.models)) {
+      const lane = laneOf(req), w = st.lane[lane];
+      if (!w || w.model !== model) { st.lane[lane] = { model, at: now() }; log('brain (' + lane + ') answering on', model); } else w.at = now();
+      if (lane === 'live' && st.working !== model) { st.working = model; st.workingAt = now(); }
+    }
   }
 
   async function post(path, body, signal, ms) {
@@ -466,4 +484,4 @@ function createBrain(o) {
   return { chat, chatStream, webSearch, ready, emergencyOn, current, listModels, healthCheck, health, latency, costMonth, track, trackAudio, _st: st };
 }
 
-module.exports = { createBrain, sseEvents, thinkFilter, toolAccumulator, jsonText, cleanMessages, DEFAULT_CHAIN, EXTRA, PRICES, GROQ };
+module.exports = { createBrain, sseEvents, thinkFilter, toolAccumulator, jsonText, cleanMessages, DEFAULT_CHAIN, EXTRA, BG_CHAIN, BG_PURPOSES, laneOf, PRICES, GROQ };
