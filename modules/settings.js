@@ -24,6 +24,8 @@ const KEYS = [
   // v18 Bro's own brain (modules/brocore/mind.js): on/off, which model ('auto' | 'big' | 'small'), and how long a live
   // turn waits for its first sentence before the cloud answers (ms)
   'BRO_OWN_BRAIN', 'BRO_OWN_MODEL', 'BRO_OWN_BUDGET_MS',
+  // v19 Google Play (modules/play.js): the service account key that uploads each build, and the testing tracks
+  'PLAY_SERVICE_ACCOUNT_JSON', 'PLAY_TRACKS',
 ];
 
 // "sk-…k9Qz" — enough to recognise a key, never enough to use it.

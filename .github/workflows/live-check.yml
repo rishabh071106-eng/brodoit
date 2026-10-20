@@ -68,3 +68,9 @@ jobs:
             break
           done
           if [ "$chk" = ok ]; then echo "::notice::Bro's own brain answers by itself: $own"; else echo "::warning::Bro's own brain is not answering by itself yet (the cloud brain answers): $own"; fi
+      - name: The Android app and Google Play (reported here, never blocks a release)
+        run: |
+          st=$(curl -fsS --max-time 20 https://brodoit.com/api/android/status || echo '{}')
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://brodoit.com/android)
+          if [ "$(echo "$st" | jq -r '.ready')" = true ] && [ "$code" = 200 ]; then echo "::notice::Testers download Brodoit $(echo "$st" | jq -r .version) at https://brodoit.com/android · Google Play: $(echo "$st" | jq -c '.play // {}')"
+          else echo "::warning::The Android app is not ready for testers yet (/android $code): $(echo "$st" | jq -c '{ready, version, note, play}')"; fi
