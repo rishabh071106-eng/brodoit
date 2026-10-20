@@ -18,3 +18,4 @@ server.js.bak115
 server.js.bak.v136
 secrets/
 config/*.local.json
+.brocore-mind/
