@@ -2,7 +2,11 @@
 // Input: a WAV file, raw 16-bit PCM (the live socket sends Int16 mono at 16 kHz) or any container Whisper reads (webm,
 // ogg, mp3, m4a). PCM is wrapped in a WAV header and sent as multipart/form-data (FormData + Blob, Node 18+).
 // Clips of 0.3 s or less are "empty" without a request, and Whisper's classic silence hallucinations ("Thank you.",
-// "Thanks for watching", a lone "धन्यवाद") are dropped when the clip is near-silent. → { text, lang, model, duration }.
+// "Thanks for watching", a lone "धन्यवाद") are dropped when the clip is near-silent or Whisper itself says it was
+// probably not speech. v17: segments Whisper marks as non-speech (no_speech_prob > 0.6 with avg_logprob < -1) or as a
+// repetition loop (compression_ratio > 2.4) are dropped; opts.prompt (the conversation language and Bro's last line)
+// is passed to Whisper; Urdu is heard as Hindi (Bro speaks Hindi, not Urdu script).
+// → { text, lang, confidence (mean avg_logprob of the kept segments, or null), model, duration }.
 'use strict';
 
 const GROQ = 'https://api.groq.com/openai/v1';
@@ -17,6 +21,11 @@ function toIso(l) {
   if (/^[a-z]{2}(-|$)/.test(s) && s.length <= 5) return s.slice(0, 2);
   return NAMES[s] || '';
 }
+// Bro talks Hindi, not Urdu: Whisper's 'ur' (the same spoken language) is Hindi to us
+const appLang = l => (l === 'ur' ? 'hi' : l);
+const fin = v => (typeof v === 'number' && isFinite(v) ? v : (typeof v === 'string' && v.trim() !== '' && isFinite(+v) ? +v : null));
+// Whisper's own quality signals per segment: non-speech, or a repetition loop
+const badSegment = s => { const ns = fin(s && s.no_speech_prob), lp = fin(s && s.avg_logprob), cr = fin(s && s.compression_ratio); return (ns != null && ns > 0.6 && lp != null && lp < -1) || (cr != null && cr > 2.4); };
 const scriptLang = t => /[ऀ-ॿ]/.test(t) ? 'hi' : /[぀-ヿ]/.test(t) ? 'ja' : /[一-鿿]/.test(t) ? 'zh' : '';
 
 // RIFF/WAVE → { sampleRate, channels, bits, data:Buffer } (null when it is not a PCM wav)
@@ -63,7 +72,7 @@ function createHear(o) {
     opts = opts || {};
     const buf = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : (buffer && buffer.buffer ? new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength) : []));
     const mime = String(opts.mime || '').toLowerCase();
-    const hint = toIso(opts.lang);
+    const hint = appLang(toIso(opts.lang));
     let body = buf, type = mime || 'audio/wav', duration = null, energy = null;
     const wav = parseWav(buf);
     if (wav && wav.bits === 16 && wav.format === 1) {
@@ -86,7 +95,7 @@ function createHear(o) {
       fd.append('response_format', 'verbose_json');
       fd.append('temperature', '0');
       if (hint) fd.append('language', hint);
-      if (opts.prompt) fd.append('prompt', String(opts.prompt).slice(0, 400));
+      if (opts.prompt) fd.append('prompt', String(opts.prompt).replace(/\s+/g, ' ').trim().slice(0, 400));
       const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), opts.timeout || 20000);
       const onAbort = () => ctrl.abort(); if (opts.signal) opts.signal.addEventListener('abort', onAbort, { once: true });
       let r, j = null;
@@ -100,16 +109,24 @@ function createHear(o) {
         if (r.status === 404 || /decommissioned|not found|does not exist/i.test(msg)) st.dead.set(model, Date.now() + 6 * 3600e3);
         continue;
       }
-      const text = String((j && j.text) || '').replace(/\s+/g, ' ').trim();
-      const segs = (j && Array.isArray(j.segments)) ? j.segments : [];
-      const noSpeech = segs.length ? Math.max(...segs.map(s => +s.no_speech_prob || 0)) : null;
+      let text = String((j && j.text) || '').replace(/\s+/g, ' ').trim();
+      const segs = (j && Array.isArray(j.segments)) ? j.segments.filter(x => x && typeof x === 'object') : [];
+      const kept = segs.filter(x => !badSegment(x)), cut = segs.length - kept.length;
+      if (cut) { // rebuild the words from the segments we keep (when Whisper gave them), or nothing when none is left
+        if (!kept.length) text = '';
+        else if (segs.every(x => typeof x.text === 'string')) text = kept.map(x => x.text).join(' ').replace(/\s+/g, ' ').trim();
+      }
+      const noSpeech = segs.length ? Math.max(...segs.map(x => fin(x.no_speech_prob) || 0)) : null;
+      const lps = kept.map(x => fin(x.avg_logprob)).filter(v => v != null);
+      const confidence = lps.length ? Math.round(lps.reduce((a, b) => a + b, 0) / lps.length * 1000) / 1000 : null;
       const dur = duration != null ? duration : (j && +j.duration) || null;
       st.model = model; st.lastError = '';
       if (brain && brain.trackAudio) brain.trackAudio(model, dur || 0);
-      const lang = toIso(j && j.language) || scriptLang(text) || hint;
-      if (!text) { st.empty++; return { text: '', lang, model, duration: dur, empty: 'nothing' }; }
-      if (isHallucination(text) && ((energy != null && energy < QUIET) || (energy == null && noSpeech != null && noSpeech > 0.5))) { st.dropped++; return { text: '', lang, model, duration: dur, empty: 'hallucination' }; }
-      return { text, lang, model, duration: dur };
+      const lang = appLang(toIso(j && j.language) || scriptLang(text) || hint);
+      if (!text) { st.empty++; if (cut) st.dropped++; return { text: '', lang, confidence, model, duration: dur, empty: cut ? 'filtered' : 'nothing' }; }
+      // the classic phantoms: dropped when Whisper doubts it was speech (whatever the loudness), or the clip is near-silent
+      if (isHallucination(text) && ((noSpeech != null && noSpeech > 0.4) || (energy != null && energy < QUIET))) { st.dropped++; return { text: '', lang, confidence, model, duration: dur, empty: 'hallucination' }; }
+      return { text, lang, confidence, model, duration: dur };
     }
     st.fails++; st.lastError = last ? last.message : 'whisper failed';
     log('hearing failed:', st.lastError);
@@ -119,4 +136,4 @@ function createHear(o) {
   return { hear, health };
 }
 
-module.exports = { createHear, parseWav, wavFromPcm16, rms16, isHallucination, toIso, MODELS };
+module.exports = { createHear, parseWav, wavFromPcm16, rms16, isHallucination, toIso, badSegment, MODELS };

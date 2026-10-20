@@ -213,9 +213,10 @@ export function play({ mod, level, workout: inWorkout, games }) {
       <div class="res-stars" role="img" aria-label="${nStars} of 3 stars">${[0, 1, 2].map(i => `<span class="rs" data-i="${i}">${star(26)}</span>`).join('')}</div>
       ${chip ? `<p class="res-chips"><span class="chip">${esc(chip)}</span></p>` : ''}
       ${mid}${unlock}${note}${wRow}
-      <div class="res-actions">${btn(primary, 'wide m-pri')}<div class="res-sec">${secondary.map(b => btn(b, b.cls)).join('')}</div></div>
+      <div class="res-actions pl-act">${btn(primary, 'wide m-pri')}<div class="res-sec">${secondary.map(b => btn(b, b.cls)).join('')}</div></div>
     </section></div>`;
     const card = ov.querySelector('.res');
+    footer(card);
     // timeline: count-up → stars fill one by one → unlock row fades in
     setTimeout(() => countUp(ov.querySelector('#resN'), big, 600, fmtBig), 150);
     const step = reduced() ? 60 : 180;
@@ -236,6 +237,15 @@ export function play({ mod, level, workout: inWorkout, games }) {
   }
 
   // ── overlays: how-to, countdown, pause ──
+  // A card's actions live in a sticky .pl-act footer (mind.css), so they stay on screen when a short screen makes
+  // the card scroll; .under marks "content is scrolled under the footer" for its hairline.
+  function footer(card) {
+    if (!card) return;
+    const f = () => card.classList.toggle('under', card.scrollHeight - card.clientHeight - card.scrollTop > 1);
+    card.addEventListener('scroll', f, { passive: true });
+    try { new ResizeObserver(f).observe(card); } catch (e) { /* older browsers: the footer still sticks */ }
+    f();
+  }
   function how() {
     return new Promise(res => {
       setPhase('how');
@@ -246,7 +256,8 @@ export function play({ mod, level, workout: inWorkout, games }) {
         <h2 id="howT">${esc(meta.name)}</h2>
         <ol class="how-list">${lines.map((t, i) => `<li><span class="how-n" aria-hidden="true">${i + 1}</span><span>${esc(t)}</span></li>`).join('')}</ol>
         <p class="how-goal"><span>Level ${level} goal</span><b>${esc(goalText(cfg, 1))}</b></p>
-        <button class="ui-btn wide m-pri" id="howGo">Start</button></section></div>`;
+        <div class="pl-act"><button class="ui-btn wide m-pri" id="howGo">Start</button></div></section></div>`;
+      footer(ov.querySelector('.how'));
       const go = ov.querySelector('#howGo');
       go.addEventListener('click', () => { sfx('tap'); buzz('light'); store.markSeen(meta.id); res(); });
     });
@@ -258,7 +269,8 @@ export function play({ mod, level, workout: inWorkout, games }) {
       ov.innerHTML = `<div class="pl-ov dim"><section class="sheet twist" role="dialog" aria-modal="true" aria-labelledby="twT">
         <p class="how-eyebrow">New at level ${level}</p>
         <h2 id="twT">${esc(tt)}</h2>${detail ? `<p class="twist-d">${esc(detail)}</p>` : ''}
-        <button class="ui-btn wide m-pri" id="twistGo">Continue</button></section></div>`;
+        <div class="pl-act"><button class="ui-btn wide m-pri" id="twistGo">Continue</button></div></section></div>`;
+      footer(ov.querySelector('.twist'));
       sfx('unlock');
       ov.querySelector('#twistGo').addEventListener('click', () => { sfx('tap'); buzz('light'); res(); });
     });
@@ -286,10 +298,11 @@ export function play({ mod, level, workout: inWorkout, games }) {
     const muted = (() => { try { return window.Sfx && window.Sfx.muted(); } catch (e) { return false; } })();
     ov.innerHTML = `<div class="pl-ov dim"><section class="sheet pause" role="dialog" aria-modal="true" aria-labelledby="pT">
       <h2 id="pT">Paused</h2><p>Level ${level} · ${esc(meta.name)}</p>
-      <button class="ui-btn wide m-pri" data-a="resume">Resume</button>
+      <div class="pl-act"><button class="ui-btn wide m-pri" data-a="resume">Resume</button>
       <div class="sheet-row"><button class="ui-btn sec" data-a="restart">Restart</button><button class="ui-btn sec" data-a="quit">Quit</button></div>
-      <button class="sheet-snd" data-a="sound" aria-pressed="${!muted}">${ico(muted ? 'volume-x' : 'volume-high', 18)}<span>${muted ? 'Sound off' : 'Sound on'}</span></button>
+      <button class="sheet-snd" data-a="sound" aria-pressed="${!muted}">${ico(muted ? 'volume-x' : 'volume-high', 18)}<span>${muted ? 'Sound off' : 'Sound on'}</span></button></div>
     </section></div>`;
+    footer(ov.querySelector('.sheet'));
     ov.querySelector('.sheet').addEventListener('click', e => {
       const b = e.target.closest('[data-a]'); if (!b) return;
       const a = b.dataset.a;

@@ -99,7 +99,10 @@ function createNightly(o) {
     for (const { lang, n } of langs) {
       if (n < 10) { out[lang] = { skipped: n + ' rated calls' }; continue; }
       const s = ab[lang] || {};
-      const base = s.base || v.voiceFor(lang);
+      // the voice in use is not a blend (v17: Hindi is the native hm_omega): nothing to tune, and an old A/B is dropped
+      const cur = v.voiceFor(lang);
+      if (blendWeight(cur) == null) { if (ab[lang]) delete ab[lang]; out[lang] = { skipped: 'not a blend: ' + cur }; continue; }
+      const base = s.base || cur;
       const w = blendWeight(base);
       if (w == null) { out[lang] = { skipped: 'not a blend: ' + base }; continue; }
       let dir = s.dir === -1 ? -1 : 1;
