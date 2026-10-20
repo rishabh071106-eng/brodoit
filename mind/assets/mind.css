@@ -1,7 +1,10 @@
 /* Mind games (v15): calm brain training on the Brodoit framework (/app/ui.css, /DESIGN.md).
    Neutral app surfaces, one font on one scale, hairline borders, flat controls. Each game's accent appears only on
    its icon tile, progress, the level grid's done state and the interactive parts of play. The play screen is a
-   quiet near-black surface in both themes. Motion: short fades, nothing that bounces; reduced motion respected. */
+   quiet near-black surface in both themes. Motion: short fades, nothing that bounces; reduced motion respected.
+   v16: every control stays on screen at any size: boards and the wheel size from the space they get (container
+   units), landscape phones go side by side, cards keep their actions in a sticky footer, and the play stage
+   scrolls as a last resort instead of clipping. */
 :root{--m-ease:cubic-bezier(.2,.8,.2,1);--m-play:#121214;--m-play-2:#1C1C20}
 @view-transition{navigation:auto}
 .mind{margin:0;background:var(--b-bg);color:var(--b-ink);font:400 15px/1.5 var(--ui-font);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:hidden;font-variant-numeric:tabular-nums;
@@ -127,7 +130,12 @@ html:has(> body.pl){background:var(--m-play);height:100%}
 .pl-mk{position:absolute;top:-3px;width:2px;height:10px;border-radius:1px;background:rgba(255,255,255,.75);transform:translateX(-50%);transition:opacity .2s}
 .pl-mk.gone{opacity:.2}
 .pl[data-phase="paused"] .pl-stage{opacity:0}
-.pl-stage{transition:opacity .15s;flex:1;min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 16px calc(18px + env(safe-area-inset-bottom))}
+/* v16: the stage is a size container (games size their boards from the space they get, never from a 100dvh guess)
+   and a safety net: on a screen too short for even a game's smallest layout it scrolls instead of clipping.
+   "safe center" keeps an overflowing game top-aligned so nothing is lost above the fold. */
+.pl-stage{transition:opacity .15s;flex:1;min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;justify-content:safe center;
+  padding:12px max(16px,env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;container:stage/size}
 /* a short status note ("5 in a row") replaces the header subtitle for a moment */
 .pl-title small.note{color:var(--g-hi);animation:m-fade .2s ease}
 /* floating feedback (+1, −2s): small, white, short */
@@ -139,22 +147,25 @@ html:has(> body.pl){background:var(--m-play);height:100%}
 .pl-ov{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
 .pl-ov.dim,.res-ov{background:rgba(0,0,0,.55);animation:m-fade .2s ease}
 .how,.sheet,.res{width:100%;max-width:400px;max-height:100%;overflow:auto;overscroll-behavior:contain;background:var(--b-card);color:var(--b-ink);border:1px solid var(--b-line);border-radius:var(--ui-r3);
-  padding:24px 20px 20px;font-family:var(--ui-font);animation:m-rise .22s var(--m-ease) both;-webkit-user-select:text;user-select:text}
+  padding:24px 20px 0;font-family:var(--ui-font);animation:m-rise .22s var(--m-ease) both;-webkit-user-select:text;user-select:text}
 .pl :is(.how,.sheet,.res) :focus-visible{outline-color:var(--b-ink)}
+/* every card's actions sit in a footer stuck to the bottom of the card: on a short screen the card scrolls under
+   it, so Start / Next / Retry / Levels are always on screen. A hairline shows while content is under it. */
+.pl-act{position:sticky;bottom:0;z-index:1;margin:8px -20px 0;padding:12px 20px 20px;background:var(--b-card);transition:box-shadow .15s}
+.under>.pl-act{box-shadow:0 -1px 0 var(--b-line)}
 .how h2,.sheet h2{margin:0;font:var(--ui-t-title);letter-spacing:-.01em;color:var(--b-ink)}
 .mind .how-ic.ui-ic{width:48px;height:48px;border-radius:14px}
 .how-eyebrow{margin:16px 0 2px;font:var(--ui-t-cap);color:var(--b-mute)}
 .how-list{margin:12px 0 16px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
 .how-list li{display:flex;align-items:flex-start;gap:12px;font:var(--ui-t-body);color:var(--b-ink-2)}
 .how-n{flex:none;width:24px;height:24px;margin-top:-1px;border-radius:50%;display:grid;place-items:center;background:var(--b-bg-2);color:var(--b-ink);font:600 12px/1 var(--ui-font)}
-.how-goal{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 18px;padding:12px 14px;border-radius:var(--ui-r1);background:var(--b-bg-2);font:var(--ui-t-sub);color:var(--b-mute)}
+.how-goal{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0;padding:12px 14px;border-radius:var(--ui-r1);background:var(--b-bg-2);font:var(--ui-t-sub);color:var(--b-mute)}
 .how-goal b{font:600 14px/1.3 var(--ui-font);color:var(--b-ink);text-align:right}
 .twist .how-eyebrow{margin-top:0}
 .twist h2{margin-top:2px}
 .twist-d{margin:6px 0 0;font:var(--ui-t-body);color:var(--b-ink-2)}
-.twist .ui-btn{margin-top:20px}
 .pause{text-align:center}
-.pause>p{margin:4px 0 20px;font:var(--ui-t-sub);color:var(--b-mute)}
+.pause>p{margin:4px 0 8px;font:var(--ui-t-sub);color:var(--b-mute)}
 .sheet-row{display:flex;gap:10px;margin-top:10px}
 .sheet-row .ui-btn{flex:1}
 .sheet-snd{margin-top:8px;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:0;border-radius:var(--ui-r1);background:none;color:var(--b-mute);font:600 14px var(--ui-font);cursor:pointer}
@@ -199,12 +210,16 @@ html:has(> body.pl){background:var(--m-play);height:100%}
 .res-wo span{width:10px;height:10px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--b-line-2)}
 .res-wo span.on{background:var(--wc);box-shadow:none}
 .res-wo small{margin-left:6px;font:var(--ui-t-cap);color:var(--b-mute)}
-.res-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.res-actions{display:flex;flex-direction:column;gap:10px}
 .res-sec{display:flex;gap:10px}
 .res-sec .ui-btn{flex:1}
 
 /* ── Memory Grid ── */
-.mg{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px}
+/* the board sits in a square box (a size container) that gives up height when the stage is short; the board takes
+   the box's smaller side, so it is always a square that fits */
+.mg{width:100%;max-height:100%;min-height:0;display:flex;flex-direction:column;align-items:center;gap:16px}
+.mg>*{flex:none}
+.mg-box{flex:0 1 auto;width:min(100%,440px);aspect-ratio:1/1;min-height:200px;display:grid;place-items:center;container-type:size}
 .mg-dots{display:flex;gap:8px}
 .mg-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.16);transition:background .2s,box-shadow .2s}
 .mg-dots i.now{box-shadow:0 0 0 2px rgba(255,255,255,.5)}
@@ -213,7 +228,7 @@ html:has(> body.pl){background:var(--m-play);height:100%}
 .mg-hint{min-height:24px;font:600 17px/1.3 var(--ui-font);text-align:center;color:rgba(255,255,255,.8)}
 .mg-hint.good{color:#fff}
 .mg-hint.bad{color:#F87171}
-.mg-board{--gap:calc(15px - var(--n) * 1.5px);width:min(100%,440px,calc(100dvh - 290px));min-width:240px;aspect-ratio:1/1;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:var(--gap)}
+.mg-board{--gap:calc(15px - var(--n) * 1.5px);width:min(100cqw,100cqh);aspect-ratio:1/1;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:var(--gap);touch-action:none}
 .mg-c{position:relative;border:0;padding:0;border-radius:calc(16px - var(--n) * 1.4px);background:rgba(255,255,255,.08);cursor:pointer;transition:background .12s}
 .mg-board.live .mg-c:active{background:rgba(255,255,255,.14)}
 .mg-c i{position:absolute;inset:0;border-radius:inherit;background:var(--g-hi);opacity:0;transition:opacity .15s}
@@ -224,17 +239,20 @@ html:has(> body.pl){background:var(--m-play);height:100%}
 .mg-c.reveal i{opacity:.3}
 
 /* ── Color Clash ── */
-.cc{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:16px}
+/* the card gives up height (down to 112px) before the answers can leave the screen; it is a size container so the
+   word scales with it */
+.cc{width:100%;max-width:440px;max-height:100%;min-height:0;display:flex;flex-direction:column;align-items:center;gap:16px}
+.cc>*{flex:none}
 .cc-rule{min-height:36px;display:flex;align-items:center;justify-content:center}
 .cc-rule-in{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);font:500 14px var(--ui-font)}
 .cc-rule-in b{font-weight:700;letter-spacing:.04em;color:#fff}
 .cc-rule.word .cc-rule-in,.cc-rule.word .cc-rule-in b{background:#fff;color:var(--m-play)}
 .cc-rule.flip .cc-rule-in{animation:m-fade .25s ease}
-.cc-card{position:relative;width:100%;aspect-ratio:1.6/1;max-height:34vh;border-radius:var(--ui-r3);background:var(--m-play-2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:box-shadow .2s}
+.cc-card{position:relative;width:100%;aspect-ratio:1.6/1;flex:0 1 auto;min-height:112px;container-type:size;border-radius:var(--ui-r3);background:var(--m-play-2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:box-shadow .2s}
 .cc-card.word{box-shadow:inset 0 0 0 2px rgba(255,255,255,.85)}
 .cc-tag{position:absolute;top:14px;left:50%;transform:translateX(-50%);padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.65);font:600 11px/1.3 var(--ui-font);letter-spacing:.08em}
 .cc-card.word .cc-tag{background:#fff;color:var(--m-play)}
-.cc-word{font:700 clamp(40px,13vw,64px)/1 var(--ui-font);letter-spacing:.02em}
+.cc-word{font:700 clamp(28px,min(30cqh,16cqw),64px)/1 var(--ui-font);letter-spacing:.02em}
 .cc-card.in .cc-word{animation:m-fade .15s ease}
 .cc-card.no{animation:m-shake .3s}
 .cc-t{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.45);transform-origin:left}
@@ -245,14 +263,16 @@ html:has(> body.pl){background:var(--m-play);height:100%}
 .cc-b.bad{animation:m-shake .3s}
 
 /* ── Number Hunt ── */
-.nh{width:100%;max-width:460px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.nh{width:100%;max-width:460px;max-height:100%;min-height:0;display:flex;flex-direction:column;align-items:center;gap:14px}
+.nh>*{flex:none}
+.nh-box{flex:0 1 auto;width:min(100%,460px);aspect-ratio:1/1;min-height:200px;display:grid;place-items:center;container-type:size}
 .nh-find{display:flex;align-items:baseline;gap:12px;min-height:44px}
 .nh-find small{min-width:56px;font:500 14px var(--ui-font);color:rgba(255,255,255,.58)}
 .nh-find small:first-child{text-align:right}
 .nh-find small:last-child{text-align:left}
 .nh-find b{min-width:1.4em;font:600 34px/1 var(--ui-font);color:#fff;text-align:center;font-variant-numeric:tabular-nums}
 .nh-find b.pop{animation:m-fade .15s ease}
-.nh-board{--gap:calc(13px - var(--n) * 1px);position:relative;width:min(100%,460px,calc(100dvh - 290px));min-width:240px;aspect-ratio:1/1}
+.nh-board{--gap:calc(13px - var(--n) * 1px);position:relative;width:min(100cqw,100cqh);aspect-ratio:1/1;touch-action:none}
 .nh-t{--bg:rgba(255,255,255,.08);--ink:#fff;--rot:0deg;--sc:1;position:absolute;left:0;top:0;width:calc((100% - (var(--n) + 1) * var(--gap)) / var(--n));aspect-ratio:1/1;border:0;padding:0;
   border-radius:calc(16px - var(--n) * 1.4px);background:var(--bg);color:var(--ink);font:600 calc(32px - var(--n) * 2.2px)/1 var(--ui-font);display:grid;place-items:center;cursor:pointer;
   transform:translate(calc(var(--c) * (100% + var(--gap)) + var(--gap)),calc(var(--r) * (100% + var(--gap)) + var(--gap)));transition:opacity .2s}
@@ -266,10 +286,13 @@ html:has(> body.pl){background:var(--m-play);height:100%}
 @keyframes m-flash{30%{opacity:.5}100%{opacity:0}}
 
 /* ── Quick Math ── */
-.qm{width:100%;max-width:420px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:12px}
+/* at least the stage's height (the keypad sits at the bottom); on a very short screen it grows and the stage
+   scrolls, rather than pushing the question up under the timer */
+.qm{width:100%;max-width:420px;min-height:100%;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;justify-content:safe flex-end;gap:12px}
+.qm>*{flex:none}
 .qm-streak{min-height:28px;display:flex;align-items:center}
 .qm-streak span{display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font:600 12px var(--ui-font);animation:m-fade .2s ease}
-.qm-qwrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:80px;width:100%;overflow:hidden}
+.qm-qwrap{flex:1 0 auto;display:flex;align-items:center;justify-content:center;min-height:0;width:100%;overflow:hidden}
 .qm-q{font:600 clamp(38px,12vw,56px)/1.1 var(--ui-font);letter-spacing:-.02em;text-align:center;white-space:nowrap}
 .qm-q.in{animation:m-qin .2s var(--m-ease)}
 .qm-q.out{animation:m-qout .15s ease forwards}
@@ -288,10 +311,14 @@ html:has(> body.pl){background:var(--m-play);height:100%}
 .qm-k.fn:active{background:rgba(255,255,255,.08)}
 
 /* ── Word Builder ── */
-.wb{width:100%;max-width:420px;height:100%;display:flex;flex-direction:column;align-items:center;gap:8px}
-.wb-found{width:100%;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;height:60px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 68%,transparent);mask-image:linear-gradient(#000 68%,transparent)}
-.wb-count{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.12);font:600 12px var(--ui-font)}
-.wb-chip{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.06);color:#fff;font:600 12px var(--ui-font);letter-spacing:.03em}
+/* v16: found words · tray · message · the wheel in a flexible box · Shuffle/Enter/Delete. Only the wheel's box
+   flexes: the wheel takes the box's smaller side (container units), so the button row is never the part that
+   leaves the screen. If even a 160px wheel does not fit, the stage scrolls and the row stays stuck to its bottom. */
+.wb{width:100%;max-width:420px;min-height:100%;flex:none;display:flex;flex-direction:column;align-items:center;gap:8px}
+.wb>*{flex:none}
+.wb-found{width:100%;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;height:60px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 calc(100% - 20px),transparent);mask-image:linear-gradient(#000 calc(100% - 20px),transparent)}
+.wb-count{flex:none;display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.12);font:600 12px var(--ui-font)}
+.wb-chip{flex:none;display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.06);color:#fff;font:600 12px var(--ui-font);letter-spacing:.03em}
 .wb-chip b{font-weight:500;font-size:11px;color:rgba(255,255,255,.55)}
 .wb-chip.new{animation:m-fade .2s ease}
 .wb-chip.ping{animation:m-blink .4s}
@@ -304,17 +331,21 @@ html:has(> body.pl){background:var(--m-play);height:100%}
 .wb-msg{min-height:20px;font:500 14px/1.3 var(--ui-font);text-align:center;color:rgba(255,255,255,.8)}
 .wb-msg.bad{color:#F87171}
 .wb-msg.warn{color:rgba(255,255,255,.6)}
-.wb-wheel{position:relative;width:min(100%,310px,calc(100dvh - 400px));min-width:236px;aspect-ratio:1/1;touch-action:none;margin:auto 0}
+.wb-wheel-box{flex:1 1 0;min-height:160px;width:100%;display:grid;place-items:center;container-type:size}
+.wb-wheel{position:relative;width:min(100cqw,100cqh,310px);min-width:0;aspect-ratio:1/1;touch-action:none}
 .wb-disc{position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .wb-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .wb-lines polyline{fill:none;stroke:var(--g-hi);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
 .wb-l{position:absolute;left:0;top:0;border:0;padding:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font:600 24px/1 var(--ui-font);display:grid;place-items:center;cursor:pointer;touch-action:none;transition:background .12s,color .12s}
 .wb-wheel.ready .wb-l{transition:transform .3s var(--m-ease),background .12s,color .12s}
 .wb-l.sel{background:var(--g);color:#fff}
-.wb-ctl{display:flex;align-items:center;justify-content:center;gap:14px;width:100%}
-.wb-ic{width:52px;height:52px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;display:grid;place-items:center;cursor:pointer;transition:background .12s}
+/* stuck to the stage's bottom when the stage has to scroll; the shadows paint over the stage's bottom padding so
+   the wheel never peeks out under it */
+.wb-ctl{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;justify-content:center;gap:14px;width:100%;background:var(--m-play);
+  box-shadow:0 18px 0 var(--m-play),0 calc(18px + env(safe-area-inset-bottom)) 0 var(--m-play)}
+.wb-ic{flex:none;width:52px;height:52px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;display:grid;place-items:center;cursor:pointer;transition:background .12s}
 .wb-ic:active{background:rgba(255,255,255,.16)}
-.wb-go{min-width:140px;height:52px;padding:0 24px;border:0;border-radius:14px;background:#fff;color:var(--m-play);font:600 16px var(--ui-font);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .15s}
+.wb-go{flex:0 1 140px;min-width:0;height:52px;padding:0 24px;border:0;border-radius:14px;background:#fff;color:var(--m-play);font:600 16px var(--ui-font);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .15s}
 .wb-go:disabled{background:rgba(255,255,255,.08);color:rgba(255,255,255,.38);cursor:default}
 .wb-go:active:not(:disabled){opacity:.85}
 
@@ -328,6 +359,71 @@ html:has(> body.pl){background:var(--m-play);height:100%}
   .mg-hint{font-size:16px}
   .qm-k{height:50px}
   .res-score b{font-size:44px}
+}
+/* short screens (a small phone, browser bars, a raised system font or display zoom) */
+@media (max-height:600px){
+  /* found words: one line (newest first) instead of vanishing */
+  .wb-found{height:30px;flex-wrap:nowrap;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+}
+@media (max-height:560px){
+  .qm{gap:8px}
+  .qm-streak{min-height:24px}
+  .qm-q{font-size:clamp(32px,10vw,44px)}
+  .qm-a{height:52px;font-size:30px}
+  .qm-pad{gap:6px;margin-top:0}
+  /* the keys take what the stage has left after streak 24 + question 48 + answer 52 + gaps (166px in all):
+     50px at most, 44px from a 418px-tall screen, never under 40px (below that the stage scrolls) */
+  .qm-k{height:clamp(40px,calc((100cqh - 166px) / 4),50px)}
+}
+@media (max-height:520px){
+  .pl-top{padding-top:4px}
+  .pl-bar{margin-top:4px}
+  .pl-stage{padding-top:8px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .pl-ov{padding-top:calc(8px + env(safe-area-inset-top));padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+  .how,.sheet,.res{padding-top:18px}
+  .pl-act{padding-bottom:16px}
+  .res-score{margin-top:10px}
+  .res-score b{font-size:40px}
+  .res-stars{margin-top:10px}
+  .wb{gap:6px}
+  .wb-word{min-height:46px}
+  .wb-word span{width:32px;height:40px;font-size:20px}
+  .cc{gap:12px}
+}
+/* landscape phones (and other short, clearly wide screens): side by side, so the board, wheel or card can use the
+   full height. Near-square windows keep the single column, which fits them better. */
+@media (orientation:landscape) and (max-height:600px) and (min-aspect-ratio:4/3){
+  .pl-app{max-width:920px}
+  .pl .how-ic{display:none}
+  .how .how-eyebrow{margin-top:0}
+  /* Memory Grid / Number Hunt: the status on the left, the board as tall as the stage */
+  .mg,.nh{max-width:none;height:100%;max-height:none;display:grid;grid-template-columns:120px auto 120px;grid-template-rows:minmax(0,1fr) auto auto minmax(0,1fr);column-gap:24px;row-gap:12px;justify-content:center;align-items:center;justify-items:center}
+  .mg-dots{grid-area:2/1}
+  .mg-hint{grid-area:3/1}
+  .nh-find{grid-area:2/1/4/2;flex-direction:column;align-items:center;gap:6px}
+  .nh-find small{min-width:0}
+  .nh-find small:first-child,.nh-find small:last-child{text-align:center}
+  .mg-box,.nh-box{--side:min(100cqh,100cqw - 288px,440px);grid-area:1/2/5/3;width:var(--side);height:var(--side);min-height:0;aspect-ratio:auto}
+  /* Color Clash: rule + card on the left, answers on the right */
+  .cc{max-width:760px;height:100%;max-height:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:24px;row-gap:12px;align-items:center}
+  .cc-rule{grid-area:1/1}
+  .cc-card{grid-area:2/1;max-height:100%;min-height:0}
+  .cc-btns{grid-area:1/2/3/3}
+  /* Quick Math: question + answer on the left, keypad on the right, its keys sized from the stage height */
+  .qm{max-width:760px;height:100%;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;column-gap:24px;row-gap:8px;align-items:center;justify-items:center}
+  .qm-streak{grid-area:1/1}
+  .qm-qwrap{grid-area:2/1;align-self:stretch}
+  .qm-a{grid-area:3/1}
+  .qm-pad{grid-area:1/2/4/3;gap:8px;margin:0}
+  .qm-k{height:clamp(44px,calc((100cqh - 24px) / 4),60px)}
+  /* Word Builder: the wheel on the left; tray, message, found words and Shuffle/Enter/Delete on the right */
+  .wb{max-width:760px;height:100%;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto minmax(30px,1fr) auto;column-gap:24px;row-gap:8px;align-items:center;justify-items:center}
+  .wb-wheel-box{grid-area:1/1/5/2;align-self:stretch;min-height:0}
+  .wb-word{grid-area:1/2}
+  .wb-msg{grid-area:2/2}
+  .wb-found{grid-area:3/2;height:auto;align-self:stretch;flex-wrap:wrap;-webkit-mask-image:linear-gradient(#000 calc(100% - 20px),transparent);mask-image:linear-gradient(#000 calc(100% - 20px),transparent)}
+  .wb-ctl{grid-area:4/2}
+  .wb-word span{width:30px;height:40px;font-size:20px}
 }
 @media (prefers-reduced-motion:reduce){
   @view-transition{navigation:none}

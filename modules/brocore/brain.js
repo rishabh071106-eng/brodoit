@@ -217,6 +217,10 @@ function createBrain(o) {
     else if (status === 400 && /(reasoning_effort|include_reasoning|reasoning_format|response_format|json_object).{0,80}(not supported|unsupported|invalid|unknown|unrecognized|not allowed|must be)|(not supported|unsupported|unknown parameter|unrecognized).{0,60}(reasoning|response_format|json)/i.test(msg)) {
       e.kind = 'param'; e.param = /reasoning/i.test(msg) ? 'reasoning' : 'json';
     } else if (status === 400 && /json_validate_failed|failed to generate json/i.test(code + ' ' + msg)) { e.kind = 'param'; e.param = 'json'; }
+    // v17: the model wrote a bad tool call (gpt-oss reaching for a built-in "browser" tool, broken arguments) or Groq
+    // refused a tool schema: worth one more try, then the same turn without tools (see chatStream), never silence
+    else if (status === 400 && /tool_use_failed|failed to call a function|tool call validation/i.test(code + ' ' + msg)) e.kind = 'toolcall';
+    else if (status >= 400 && status < 500 && status !== 408 && status !== 413 && /\btools?\b|function|schema|parameters/i.test(msg)) e.kind = 'tools';
     else e.kind = 'next';
     return e;
   }
@@ -302,7 +306,9 @@ function createBrain(o) {
     req = Object.assign({ purpose: 'util' }, req || {});
     const t0 = now(); st.calls++;
     if (!ready()) return emergency(req, Object.assign(new Error('no-key'), { code: 'no-key' }));
-    let last = null;
+    let last = null, toolErr = null;
+    for (let pass = 0; pass < 2; pass++) {
+    if (pass) { const r2 = withoutTools(req, toolErr); if (!r2) break; req = r2; }
     for await (const model of chainFor(req)) {
       for (let attempt = 0; attempt < 3; attempt++) {
         let h;
@@ -312,6 +318,7 @@ function createBrain(o) {
         if (!h.r.ok) {
           const e = classify(h.r.status, j, model);
           if (e.kind === 'param') { const s = st.noParams.get(model) || new Set(); if (!s.has(e.param)) { s.add(e.param); st.noParams.set(model, s); continue; } }
+          if (isToolErr(e)) { logToolErr(model, e); last = toolErr = e; st.lastError = e.message; st.fails++; break; }
           onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e;
           if (e.kind === 'key') return emergency(req, e);
           break;
@@ -326,19 +333,28 @@ function createBrain(o) {
         ring(chatMs, now() - t0);
         const message = { role: 'assistant', content: msg.content == null ? null : stripThink(msg.content) };
         if (msg.tool_calls && msg.tool_calls.length) message.tool_calls = msg.tool_calls.map(tc => ({ id: tc.id, type: 'function', function: { name: tc.function.name, arguments: typeof tc.function.arguments === 'string' ? tc.function.arguments : JSON.stringify(tc.function.arguments || {}) } }));
-        return { text, model, message, toolCalls, usage: j.usage || null, finish: ch && ch.finish_reason };
+        return { text, model, message, toolCalls, usage: j.usage || null, finish: ch && ch.finish_reason, toolsDropped: req.toolsDropped || undefined };
       }
+    }
     }
     return emergency(req, last);
   }
 
   // ── chatStream: live turns ──
+  // A tool error (see classify) moves to the next model with the tools kept. Only when every model failed that way
+  // does the same request run once more WITHOUT tools, before the emergency path, so a tool problem never silences
+  // Bro. The self-test passes toolFallback:false to see the error itself.
+  const isToolErr = e => !!e && (e.kind === 'toolcall' || e.kind === 'tools');
+  const logToolErr = (model, e) => log('groq refused the tools (' + model + ', ' + e.kind + '): ' + String(e.message || '').slice(0, 300));
+  const withoutTools = (req, last) => (isToolErr(last) && req.toolFallback !== false && req.tools && req.tools.length && !req.toolsDropped) ? (log('every model refused the tools: retrying the same turn without tools'), Object.assign({}, req, { tools: undefined, toolsDropped: true })) : null;
   async function* chatStream(req) {
     req = Object.assign({ purpose: 'bro', live: true }, req || {});
     const t0 = now(); st.calls++;
     const signal = req.signal;
     if (!ready()) { yield* emergencyStream(req, Object.assign(new Error('no-key'), { code: 'no-key' })); return; }
-    let last = null;
+    let last = null, toolErr = null;
+    for (let pass = 0; pass < 2; pass++) {
+    if (pass) { const r2 = withoutTools(req, toolErr); if (!r2) break; req = r2; }
     for await (const model of chainFor(req)) {
       for (let attempt = 0; attempt < 3; attempt++) {
         if (signal && signal.aborted) return;
@@ -350,6 +366,7 @@ function createBrain(o) {
           let j = null; try { j = await h.r.json(); } catch (e) { j = null; } h.done();
           const e = classify(h.r.status, j, model);
           if (e.kind === 'param') { const s = st.noParams.get(model) || new Set(); if (!s.has(e.param)) { s.add(e.param); st.noParams.set(model, s); continue; } }
+          if (isToolErr(e)) { logToolErr(model, e); last = toolErr = e; st.lastError = e.message; st.fails++; break; }
           onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e;
           if (e.kind === 'key') { yield* emergencyStream(req, e); return; }
           break;
@@ -364,7 +381,7 @@ function createBrain(o) {
             bump();
             if (data === '[DONE]') break;
             let j; try { j = JSON.parse(data); } catch (e) { continue; }
-            if (j.error) throw Object.assign(new Error('stream error: ' + (j.error.message || 'unknown')), { kind: 'next' });
+            if (j.error) { const em = String(j.error.message || 'unknown'), ec = String(j.error.code || ''); throw Object.assign(new Error('stream error: ' + em), { kind: /tool_use_failed|failed to call a function|tool call validation/i.test(ec + ' ' + em) ? 'toolcall' : /\btools?\b|schema/i.test(em) ? 'tools' : 'next', status: 400, code: ec }); }
             if (j.usage) usage = j.usage; else if (j.x_groq && j.x_groq.usage) usage = j.x_groq.usage;
             const ch = j.choices && j.choices[0]; if (!ch) continue;
             const d = ch.delta || {};
@@ -380,7 +397,8 @@ function createBrain(o) {
         if (signal && signal.aborted) return; // barge-in: stop quietly
         if (failed) {
           last = failed; st.lastError = failed.message;
-          if (any) { yield { type: 'done', model, usage, finish: 'error', error: failed.message }; return; } // words already out: never switch voices mid-sentence
+          if (any && text) { yield { type: 'done', model, usage, finish: 'error', error: failed.message }; return; } // words already out: never switch voices mid-sentence
+          if (isToolErr(failed)) { logToolErr(model, failed); toolErr = failed; }
           break;
         }
         const tail = think.flush(); if (tail) { if (!any) ring(ttft, now() - t0); any = true; text += tail; yield { type: 'text', delta: tail }; }
@@ -389,9 +407,10 @@ function createBrain(o) {
         if (!any) { last = new Error('empty stream from ' + model); st.lastError = last.message; break; }
         works(model, req);
         track(model, usage, req.purpose, { tin: estTokens(cleanMessages(req.system, req.messages)), tout: Math.ceil(text.length / 4) });
-        yield { type: 'done', model, usage: usage || null, finish };
+        yield { type: 'done', model, usage: usage || null, finish, toolsDropped: req.toolsDropped || undefined };
         return;
       }
+    }
     }
     yield* emergencyStream(req, last);
   }
@@ -400,6 +419,32 @@ function createBrain(o) {
     if (req.signal && req.signal.aborted) return;
     yield { type: 'text', delta: r.text };
     yield { type: 'done', model: r.model, usage: null, emergency: true };
+  }
+
+  // ── web search: Groq's compound system (an open model with built-in web search) answers a question with current
+  //    facts and sources. Non-stream, 12 s. → { text (≤ 1,200 chars), model }; throws when it cannot answer.
+  const SEARCH_MODELS = ['groq/compound-mini', 'groq/compound'];
+  async function webSearch(query, opts) {
+    opts = opts || {};
+    const q = String(query == null ? '' : query).replace(/\s+/g, ' ').trim().slice(0, 300);
+    if (!q) return { text: '', model: null };
+    if (!ready()) throw Object.assign(new Error('no-key'), { code: 'no-key' });
+    let last = null;
+    for (const model of SEARCH_MODELS) {
+      if (isDead(model) || isCool(model)) continue;
+      const body = { model, stream: false, messages: [{ role: 'user', content: q + ' — answer briefly with the key facts and dates, and mention the source names' }] };
+      let h;
+      try { h = await post('/chat/completions', body, opts.signal, opts.timeout || 12000); }
+      catch (e) { if (opts.signal && opts.signal.aborted) throw abortError(); last = e.name === 'AbortError' ? Object.assign(new Error('web search timed out'), { code: 'timeout' }) : e; continue; }
+      let j = null; try { j = await h.r.json(); } catch (e) { j = null; } finally { h.done(); }
+      if (!h.r.ok) { const e = classify(h.r.status, j, model); onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e; if (e.kind === 'key') break; continue; }
+      const msg = (j && j.choices && j.choices[0] && j.choices[0].message) || {};
+      const text = stripThink(msg.content || '').replace(/\s+/g, ' ').trim();
+      if (!text) { last = new Error('empty search answer from ' + model); continue; }
+      track(model, j.usage, 'search', { tin: Math.ceil(q.length / 4) + 50, tout: Math.ceil(text.length / 4) });
+      return { text: text.length > 1200 ? text.slice(0, 1200).replace(/\s+\S*$/, '') + ' …' : text, model };
+    }
+    throw last || new Error('web search failed');
   }
 
   // one-turn check used by the nightly model upgrade
@@ -418,7 +463,7 @@ function createBrain(o) {
   }
   const latency = () => ({ p50: pct(ttft, 50), p90: pct(ttft, 90), n: ttft.length, chatP50: pct(chatMs, 50), chatP90: pct(chatMs, 90), chatN: chatMs.length });
 
-  return { chat, chatStream, ready, emergencyOn, current, listModels, healthCheck, health, latency, costMonth, track, trackAudio, _st: st };
+  return { chat, chatStream, webSearch, ready, emergencyOn, current, listModels, healthCheck, health, latency, costMonth, track, trackAudio, _st: st };
 }
 
 module.exports = { createBrain, sseEvents, thinkFilter, toolAccumulator, jsonText, cleanMessages, DEFAULT_CHAIN, EXTRA, PRICES, GROQ };

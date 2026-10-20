@@ -42,7 +42,7 @@ export function start(host, cfg, api) {
   host.innerHTML = `<div class="mg">
     <div class="mg-dots" aria-label="Rounds">${Array.from({ length: cfg.rounds }, () => '<i></i>').join('')}</div>
     <div class="mg-hint" id="mgHint" aria-live="polite">Watch</div>
-    <div class="mg-board" id="mgBoard" style="--n:${cfg.size}">${Array.from({ length: N }, (_, i) => `<button class="mg-c" data-i="${i}" aria-label="Tile ${i + 1}"><i></i></button>`).join('')}</div>
+    <div class="mg-box"><div class="mg-board" id="mgBoard" style="--n:${cfg.size}">${Array.from({ length: N }, (_, i) => `<button class="mg-c" data-i="${i}" aria-label="Tile ${i + 1}"><i></i></button>`).join('')}</div></div>
   </div>`;
   const board = host.querySelector('#mgBoard'), hint = host.querySelector('#mgHint');
   const cells = [...board.children], dots = [...host.querySelectorAll('.mg-dots i')];

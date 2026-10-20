@@ -84,11 +84,11 @@ export function start(host, cfg, api) {
     <div class="wb-found" id="wbFound"><span class="wb-count" id="wbCount">0 words</span></div>
     <div class="wb-word" id="wbWord" aria-live="polite"></div>
     <div class="wb-msg" id="wbMsg" aria-live="polite"></div>
-    <div class="wb-wheel" id="wbWheel">
+    <div class="wb-wheel-box"><div class="wb-wheel" id="wbWheel">
       <div class="wb-disc"></div>
       <svg class="wb-lines" id="wbLines" aria-hidden="true"><polyline points="" /></svg>
       ${letters.map((ch, i) => `<button class="wb-l" data-i="${i}" aria-label="${ch.toUpperCase()}">${ch.toUpperCase()}</button>`).join('')}
-    </div>
+    </div></div>
     <div class="wb-ctl">
       <button class="wb-ic" id="wbShuf" aria-label="Shuffle letters">${ico('shuffle', 22)}</button>
       <button class="wb-go" id="wbGo" aria-label="Submit word" disabled><span>Enter</span></button>
@@ -101,12 +101,14 @@ export function start(host, cfg, api) {
   const btns = [...wheel.querySelectorAll('.wb-l')];
   let slots = letters.map((_, i) => i), centers = [], B = 60, sel = [], found = new Set(), score = 0, over = false, tail = null, drag = null, lastPD = 0, longest = '';
 
+  // Letters scale with the wheel (about a fifth of it, 40-64px: 40px is the smallest comfortable tap target).
+  // The wheel is never under 160px, where 8 letters of 40px still sit apart on the ring.
   function layout() {
     const S = wheel.clientWidth || 280;
-    B = Math.round(Math.min(64, Math.max(46, S * 0.21)));
-    const r = S / 2 - B / 2 - 6;
+    B = Math.round(clamp(S * 0.21, 40, 64));
+    const r = S / 2 - B / 2 - 6, fs = Math.round(clamp(B * 0.4, 18, 24)) + 'px';
     centers = letters.map((_, i) => { const a = (-90 + slots[i] * 360 / L) * Math.PI / 180; return [S / 2 + Math.cos(a) * r, S / 2 + Math.sin(a) * r]; });
-    btns.forEach((b, i) => { b.style.width = b.style.height = B + 'px'; b.style.transform = `translate(${(centers[i][0] - B / 2).toFixed(1)}px,${(centers[i][1] - B / 2).toFixed(1)}px)`; });
+    btns.forEach((b, i) => { b.style.width = b.style.height = B + 'px'; b.style.fontSize = fs; b.style.transform = `translate(${(centers[i][0] - B / 2).toFixed(1)}px,${(centers[i][1] - B / 2).toFixed(1)}px)`; });
     lines.setAttribute('viewBox', `0 0 ${S} ${S}`);
     drawLines();
   }
@@ -206,7 +208,9 @@ export function start(host, cfg, api) {
     else if (e.key === 'Backspace') pop();
     else if (/^[a-z]$/i.test(e.key)) { const k = e.key.toLowerCase(); const i = letters.findIndex((ch, j) => ch === k && !sel.includes(j)); if (i >= 0) push(i); }
   });
-  addEventListener('resize', layout);
+  // re-lay the ring whenever the wheel itself changes size (rotation, browser bars, split screen, font zoom)
+  if (window.ResizeObserver) new ResizeObserver(() => layout()).observe(wheel);
+  else addEventListener('resize', layout);
 
   api.timer({
     seconds: cfg.time,

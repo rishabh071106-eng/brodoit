@@ -1,12 +1,11 @@
-/* Home (bro tab) v13.1 — Bro and almost no words: mode + language toggles, the big mascot on the app background,
-   one round mic button, chat bubbles, compose bar. Markup from app/voice.js (BroVoice.html). */
+/* Home (bro tab) v17 — Bro chat: the orb, one Talk button, the conversation, the compose bar and one small
+   English | हिंदी switch. Markup from app/voice.js (BroVoice.html). */
 #broVoiceRoot .bh{padding:2px 0 24px;display:flex;flex-direction:column;min-height:calc(100dvh - 210px)}
-.bh .hb-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 4px}
-.bh .hb-modes,.bh .hb-langs{display:flex;padding:3px;border-radius:999px;background:var(--b-bg-2)}
-.bh .hb-mode{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;height:40px;padding:0 11px;border:0;border-radius:999px;background:transparent;color:var(--b-mute);font:700 13px var(--b-sans);cursor:pointer;transition:background .2s,color .2s}
-.bh .hb-mode.on{background:var(--b-card);color:var(--b-ink);padding:0 14px 0 12px;box-shadow:0 1px 3px rgba(31,30,28,.14)}
-.bh .hb-langs button{min-width:42px;height:40px;padding:0 9px;border:0;border-radius:999px;background:transparent;cursor:pointer;font:700 13px var(--b-sans);color:var(--b-mute);transition:background .2s,color .2s}
-.bh .hb-langs button.on{background:var(--b-card);color:var(--b-ink);box-shadow:0 1px 3px rgba(31,30,28,.14)}
+.bh .hb-top{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:2px 0 4px}
+:is(.bh .hb-langs,.bvf-langs){display:flex;padding:3px;border-radius:999px;background:var(--b-bg-2)}
+:is(.bh .hb-langs,.bvf-langs) button{min-width:64px;height:40px;padding:0 12px;border:0;border-radius:999px;background:transparent;cursor:pointer;font:700 13px var(--b-sans);color:var(--b-mute);transition:background .2s,color .2s}
+:is(.bh .hb-langs,.bvf-langs) button.on{background:var(--b-card);color:var(--b-ink);box-shadow:0 1px 3px rgba(31,30,28,.14)}
+:is(.bh .hb-langs,.bvf-langs) button:focus-visible{outline:2px solid var(--b-ink);outline-offset:1px}
 
 /* Bro, centred */
 .bh .hb-stage{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px 0 8px;position:relative}
@@ -39,7 +38,6 @@
 .bh .hb-thread .bv-msg{display:flex}.bh .hb-thread .bv-msg.me,.bh .hb-thread .bv-msg.user{justify-content:flex-end}
 .bh .hb-thread .bv-bub{max-width:82%;padding:11px 14px;border-radius:18px;background:var(--b-card);color:var(--b-ink);font:500 15px/1.45 var(--b-sans);box-shadow:0 1px 2px rgba(31,30,28,.05)}
 .bh .hb-thread .bv-msg.me .bv-bub,.bh .hb-thread .bv-msg.user .bv-bub{background:var(--b-ink);color:var(--b-bg)}
-.bh .hb-courses{margin:8px 0 0;flex:none}
 
 /* compose */
 .bh .hb-compose{flex:none;display:flex;align-items:center;gap:10px;margin:14px 0 0}
@@ -51,46 +49,46 @@
 .bh .hb-send:active{transform:scale(.94)}
 .bh .hb-send svg{width:20px;height:20px}
 
-@media (max-width:370px){.bh .hb-mas{width:180px}.bh .hb-mode{padding:0 9px}.bh .hb-mode.on{padding:0 12px 0 10px}}
+@media (max-width:370px){.bh .hb-mas{width:180px}}
 @media (prefers-reduced-motion:reduce){.bh .hb-mas,.bh.live .hb-mas,.bh .hb-mic.on::before{animation:none}}
 html[data-theme="dark"] .bh .hb-mas,body[data-theme=aurora] .bh .hb-mas{filter:drop-shadow(0 22px 34px rgba(0,0,0,.6))}
-html[data-theme="dark"] .bh .hb-mode.on,body[data-theme=aurora] .bh .hb-mode.on,html[data-theme="dark"] .bh .hb-langs button.on,body[data-theme=aurora] .bh .hb-langs button.on{background:#F3F1EE;color:#17141F}
+html[data-theme="dark"] :is(.bh .hb-langs,.bvf-langs) button.on,body[data-theme=aurora] :is(.bh .hb-langs,.bvf-langs) button.on{background:#F3F1EE;color:#17141F}
 .bh .hb-send:disabled{opacity:.45;cursor:default}
-.bh .hb-mode,.bh .hb-langs button{height:44px}
+:is(.bh .hb-langs,.bvf-langs) button{height:44px}
 
 /* ── v15: the voice orb replaces the mascot. Layers of warm light turning slowly inside a glass sphere; it breathes when
    idle, ripples while listening, swirls faster while Bro speaks. Pure CSS, no images. ── */
-:is(.bh,.bvf,.bvp) .hb-orb{--orb:196px;position:relative;display:block;width:var(--orb);height:var(--orb);border-radius:50%;overflow:hidden;isolation:isolate;
+:is(.bh,.bvf) .hb-orb{--orb:196px;position:relative;display:block;width:var(--orb);height:var(--orb);border-radius:50%;overflow:hidden;isolation:isolate;
   background:radial-gradient(circle at 50% 118%,#FFB88A 0%,#EE7445 24%,#B8402A 48%,#5E1A22 74%,#1E0B14 100%);
   box-shadow:inset 0 -14px 34px rgba(20,6,4,.45),inset 0 10px 24px rgba(255,255,255,.28);
   animation:hbBreathe 5s ease-in-out infinite}
-:is(.bh,.bvf,.bvp) .hb-orb i{position:absolute;border-radius:50%;pointer-events:none}
-:is(.bh,.bvf,.bvp) .hb-orb .o1{inset:-25%;background:conic-gradient(from 0deg,transparent 0 10%,rgba(255,196,120,.85) 20%,transparent 34%,rgba(140,90,255,.55) 52%,transparent 66%,rgba(255,110,70,.8) 82%,transparent);filter:blur(18px);mix-blend-mode:screen;animation:hbSpin 11s linear infinite}
-:is(.bh,.bvf,.bvp) .hb-orb .o2{inset:-10%;background:conic-gradient(from 180deg,transparent 0 22%,rgba(255,86,60,.6) 36%,transparent 52%,rgba(255,220,170,.5) 70%,transparent 86%);filter:blur(22px);mix-blend-mode:screen;animation:hbSpin 17s linear infinite reverse}
-:is(.bh,.bvf,.bvp) .hb-orb .o3{left:18%;top:7%;width:40%;height:26%;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.55),rgba(255,255,255,0) 70%);filter:blur(3px)}
+:is(.bh,.bvf) .hb-orb i{position:absolute;border-radius:50%;pointer-events:none}
+:is(.bh,.bvf) .hb-orb .o1{inset:-25%;background:conic-gradient(from 0deg,transparent 0 10%,rgba(255,196,120,.85) 20%,transparent 34%,rgba(140,90,255,.55) 52%,transparent 66%,rgba(255,110,70,.8) 82%,transparent);filter:blur(18px);mix-blend-mode:screen;animation:hbSpin 11s linear infinite}
+:is(.bh,.bvf) .hb-orb .o2{inset:-10%;background:conic-gradient(from 180deg,transparent 0 22%,rgba(255,86,60,.6) 36%,transparent 52%,rgba(255,220,170,.5) 70%,transparent 86%);filter:blur(22px);mix-blend-mode:screen;animation:hbSpin 17s linear infinite reverse}
+:is(.bh,.bvf) .hb-orb .o3{left:18%;top:7%;width:40%;height:26%;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.55),rgba(255,255,255,0) 70%);filter:blur(3px)}
 /* the stage behind it: one soft halo; rings only while Bro is listening */
 /* the shadow is a soft gradient ellipse under the sphere (no blur filter, so no compositing edge) */
 .bh .hb-bro{position:relative;border-radius:50%}
-:is(.bh,.bvf,.bvp) .hb-orbw{position:relative;display:block}
+:is(.bh,.bvf) .hb-orbw{position:relative;display:block}
 .bh .hb-shade{position:absolute;left:8%;right:8%;bottom:-14%;height:30%;border-radius:50%;background:radial-gradient(closest-side,rgba(122,38,24,.32),rgba(122,38,24,0));pointer-events:none}
 .bh.chat .hb-shade{bottom:-10%;height:24%}
 .bh .hb-bro::before,.bh .hb-bro::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--b-primary) 55%,transparent);opacity:0;pointer-events:none}
 .bh.live .hb-bro::before{animation:hbRipple 2.4s ease-out infinite}
 .bh.live .hb-bro::after{animation:hbRipple 2.4s ease-out 1.2s infinite}
-:is(.bh,.bvf,.bvp) .hb-orb.st-speaking{animation:hbTalk .9s ease-in-out infinite}
-:is(.bh,.bvf,.bvp) .hb-orb.st-speaking .o1{animation-duration:3.5s}:is(.bh,.bvf,.bvp) .hb-orb.st-speaking .o2{animation-duration:5s}
-:is(.bh,.bvf,.bvp) .hb-orb.st-thinking .o1,:is(.bh,.bvf,.bvp) .hb-orb.st-connecting .o1{animation-duration:2.4s}
-:is(.bh,.bvf,.bvp) .hb-orb.st-thinking,:is(.bh,.bvf,.bvp) .hb-orb.st-connecting{animation:hbBreathe 1.4s ease-in-out infinite}
-:is(.bh,.bvf,.bvp) .hb-orb.st-listening,:is(.bh,.bvf,.bvp) .hb-orb.st-live{animation:hbBreathe 2.6s ease-in-out infinite}
+:is(.bh,.bvf) .hb-orb.st-speaking{animation:hbTalk .9s ease-in-out infinite}
+:is(.bh,.bvf) .hb-orb.st-speaking .o1{animation-duration:3.5s}:is(.bh,.bvf) .hb-orb.st-speaking .o2{animation-duration:5s}
+:is(.bh,.bvf) .hb-orb.st-thinking .o1,:is(.bh,.bvf) .hb-orb.st-connecting .o1{animation-duration:2.4s}
+:is(.bh,.bvf) .hb-orb.st-thinking,:is(.bh,.bvf) .hb-orb.st-connecting{animation:hbBreathe 1.4s ease-in-out infinite}
+:is(.bh,.bvf) .hb-orb.st-listening,:is(.bh,.bvf) .hb-orb.st-live{animation:hbBreathe 2.6s ease-in-out infinite}
 @keyframes hbSpin{to{transform:rotate(360deg)}}
 @keyframes hbBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
 @keyframes hbTalk{0%,100%{transform:scale(1)}30%{transform:scale(1.06)}60%{transform:scale(.985)}}
 @keyframes hbRipple{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.45);opacity:0}}
 .bh.chat .hb-orb{--orb:56px;box-shadow:inset 0 -5px 12px rgba(20,6,4,.4),inset 0 4px 8px rgba(255,255,255,.25)}
 .bh.chat .hb-orb .o1,.bh.chat .hb-orb .o2{filter:blur(6px)}
-@media (max-width:370px){:is(.bh,.bvf,.bvp) .hb-orb{--orb:176px}}
+@media (max-width:370px){:is(.bh,.bvf) .hb-orb{--orb:176px}}
 html[data-theme="dark"] .bh .hb-shade,body[data-theme=aurora] .bh .hb-shade{background:radial-gradient(closest-side,rgba(232,110,70,.28),rgba(232,110,70,0))}
-@media (prefers-reduced-motion:reduce){:is(.bh,.bvf,.bvp) .hb-orb,:is(.bh,.bvf,.bvp) .hb-orb i,.bh .hb-bro::before,.bh .hb-bro::after{animation:none!important}}
+@media (prefers-reduced-motion:reduce){:is(.bh,.bvf) .hb-orb,:is(.bh,.bvf) .hb-orb i,.bh .hb-bro::before,.bh .hb-bro::after{animation:none!important}}
 
 /* the call screen uses the same orb, larger, with the existing listening rings around it */
 .bvf .bv-orb{width:236px;height:236px}
@@ -98,10 +96,20 @@ html[data-theme="dark"] .bh .hb-shade,body[data-theme=aurora] .bh .hb-shade{back
 .bvf .bv-orb .bv-ring{inset:14px}
 
 /* ── v16 live call (Bro Core): the orb follows Bro's voice level (--lvl from an analyser, set by app/voice.js) ── */
-:is(.bh,.bvf,.bvp) .hb-orb.drv.st-speaking{animation:none;transform:scale(calc(1 + var(--lvl,0) * .16));transition:transform .08s linear}
-@media (prefers-reduced-motion:reduce){:is(.bh,.bvf,.bvp) .hb-orb.drv.st-speaking{transform:none}}
-/* call screen: minimise (the call keeps going), captions, typing, end screen with the rating */
-.bvf .bvf-min{border-color:transparent;background:transparent}
+:is(.bh,.bvf) .hb-orb.drv.st-speaking{animation:none;transform:scale(calc(1 + var(--lvl,0) * .16));transition:transform .08s linear}
+@media (prefers-reduced-motion:reduce){:is(.bh,.bvf) .hb-orb.drv.st-speaking{transform:none}}
+/* call screen (v17): the language switch on top; one state line, which is the interrupt control while Bro speaks;
+   the rings follow your voice while Bro listens (--in from app/voice.js); captions, typing, end screen with the rating */
+.bvf .bvf-top{gap:12px}
+.bvf .bvf-top.solo{justify-content:center}
+.bvf .bvf-langs button{min-width:72px}
+.bvf-cap.bvf-int{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border:1px solid var(--b-line-2);border-radius:999px;background:var(--b-card);color:var(--b-ink);font:600 12px var(--b-sans);letter-spacing:.06em;text-transform:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bvf-cap.bvf-int:active{transform:scale(.97)}
+.bvf-cap.dev{letter-spacing:0;text-transform:none;font-size:14px} /* Devanagari: tracking breaks the conjuncts */
+.bvf-cap.bvf-int:focus-visible{outline:2px solid var(--b-ink);outline-offset:2px}
+.bvf .bv-orb.st-listening .bv-ring{animation:none;opacity:calc(.06 + var(--in,0) * .4);transform:scale(calc(1.02 + var(--in,0) * .22));transition:transform .09s linear,opacity .09s linear}
+.bvf .bv-orb.st-listening .bv-ring.r2{opacity:calc(var(--in,0) * .22);transform:scale(calc(1.04 + var(--in,0) * .36))}
+@media (prefers-reduced-motion:reduce){.bvf .bv-orb.st-listening .bv-ring{transition:none}}
 .bvf-heard{max-width:340px;margin:-8px 0 -10px;text-align:center;font:500 15px/1.4 var(--b-sans);color:var(--b-mute);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .bvf-row{display:flex;align-items:center;justify-content:center;gap:12px}
 .bvf-kb{width:52px;height:52px;border-radius:50%;border:1px solid var(--b-line-2);background:var(--b-card);color:var(--b-ink);display:grid;place-items:center;cursor:pointer}
@@ -116,18 +124,4 @@ html[data-theme="dark"] .bh .hb-shade,body[data-theme=aurora] .bh .hb-shade{back
 .bvf-rate button{width:80px;height:80px;border-radius:50%;border:1px solid var(--b-line-2);background:var(--b-card);font-size:34px;line-height:1;cursor:pointer;transition:transform .15s,background .2s;box-shadow:0 8px 20px -14px rgba(31,30,28,.5)}
 .bvf-rate button:active{transform:scale(.92)}
 .bvf-rate button:focus-visible{outline:2px solid var(--b-ink);outline-offset:3px}
-/* the floating pill: a live call while you use another tab — mini orb, what Bro is doing, end. Sits 8px above the tab bar. */
-.bvp{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:410;display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;background:var(--b-ink);color:var(--b-bg);box-shadow:0 14px 30px -12px rgba(31,30,28,.6);max-width:calc(100vw - 32px);animation:bvp-in .25s cubic-bezier(.2,.8,.2,1)}
-.bvp.side{left:auto;right:24px;transform:none}
-@keyframes bvp-in{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
-.bvp-main{display:flex;align-items:center;gap:10px;min-width:0;min-height:44px;padding:0 14px 0 2px;border:0;border-radius:999px;background:none;color:inherit;font:600 14px var(--b-sans);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.bvp-txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bvp .hb-orb{--orb:40px;flex:none;box-shadow:inset 0 -4px 8px rgba(20,6,4,.4),inset 0 3px 6px rgba(255,255,255,.25)}
-.bvp .hb-orb .o1,.bvp .hb-orb .o2{filter:blur(5px)}
-.bvp-end{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--b-primary,#B5402A);color:#fff;display:grid;place-items:center;cursor:pointer}
-.bvp-end svg{width:16px;height:16px}
-.bvp :focus-visible{outline:2px solid var(--b-bg);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){.bvp{animation:none}}
-html.bro-pill body:not(.news-tab) #app::after{content:"";display:block;height:var(--bro-pill-space,64px)}
-html[data-theme="dark"] .bvp,body[data-theme=aurora] .bvp{box-shadow:0 14px 30px -12px rgba(0,0,0,.8)}
 html[data-theme="dark"] .bvf-rate button,body[data-theme=aurora] .bvf-rate button{box-shadow:none}
