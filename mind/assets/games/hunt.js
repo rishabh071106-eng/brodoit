@@ -49,12 +49,12 @@ export function start(host, cfg, api) {
   const R = Math.random;
   host.innerHTML = `<div class="nh">
     <div class="nh-find"><small>Find</small><b id="nhNext">1</b><small id="nhLeft">${count} left</small></div>
-    <div class="nh-board" id="nhBoard" style="--n:${n}">${Array.from({ length: count }, (_, k) => {
+    <div class="nh-box"><div class="nh-board" id="nhBoard" style="--n:${n}">${Array.from({ length: count }, (_, k) => {
       const st = cfg.decoy
         ? `--bg:${DECOY_BG[Math.floor(R() * DECOY_BG.length)]};--ink:${DECOY_INK[Math.floor(R() * DECOY_INK.length)]};--rot:${Math.round(R() * 30 - 15)}deg;--sc:${(0.8 + R() * 0.4).toFixed(2)}`
         : '';
       return `<button class="nh-t" data-n="${k + 1}" style="${st}" aria-label="${k + 1}"><span>${k + 1}</span></button>`;
-    }).join('')}</div>
+    }).join('')}</div></div>
   </div>`;
   const board = host.querySelector('#nhBoard'), nextEl = host.querySelector('#nhNext'), leftEl = host.querySelector('#nhLeft');
   const tiles = [...board.children];

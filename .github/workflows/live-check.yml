@@ -33,8 +33,9 @@ jobs:
           # After a deploy the voice model may still be loading, so this waits up to 15 minutes.
           for i in $(seq 1 30); do
             st=$(curl -fsS --max-time 20 https://brodoit.com/api/bro/ok || echo '{}')
-            # ready = brain configured + voice loaded + the self-test passed (a real brain answer, Bro's voice heard back)
-            if echo "$st" | grep -q '"ok":true' && echo "$st" | grep -q '"check":{"brain":"ok","hearing":"ok"}'; then echo "Bro is ready $st"; exit 0; fi
+            # ready = brain configured + voice loaded + the self-test passed (a real brain answer, Bro's voice heard back, and a
+            # live-style turn with the real tool definitions answered "When does Navratri end this year?")
+            if echo "$st" | grep -q '"ok":true' && echo "$st" | grep -q '"check":{"brain":"ok","hearing":"ok","tools":"ok"}'; then echo "Bro is ready $st"; exit 0; fi
             if echo "$st" | grep -q '"fail"'; then echo "::error::Bro's self-test failed: $st"; exit 1; fi
             echo "Bro not ready yet ($i): $st"; sleep 30
           done

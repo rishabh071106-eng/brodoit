@@ -14,6 +14,10 @@
 //     5 min (reset after 10 healthy minutes); health() reports restarts and lastCrash.
 //   - The model download first checks the disk (1 GB free needed), and the mp3 cache never eats the last 1 GB either.
 //   - speakStream() splits a reply into sentences (first one kept short) and yields 24 kHz PCM sentence by sentence.
+//   - lockLang:true (speak / speakStream) speaks every chunk in opts.lang: no per-chunk switch on Devanagari, kana or
+//     Han, so one reply is one voice (the live call sets the language once per turn).
+//   - v17: Hindi is the native male Hindi voice hm_omega (the old hm_omega+am_onyx blend blurred Hindi), and Hindi
+//     numbers, times and dates become spoken Hindi words before espeak ("21 अक्टूबर" → "इक्कीस अक्टूबर").
 // Kokoro's context is 510 tokens; we keep each inference under 400 phoneme tokens.
 'use strict';
 
@@ -56,7 +60,7 @@ const RESTART_BASE_MS = 2000, RESTART_MAX_MS = 5 * 60e3, HEALTHY_RESET_MS = 10 *
 // Bro's voice per language (deep male timbre; blends are weighted sums of the voice style tables)
 const LANGS = {
   en: { espeak: 'en-us', voice: 'am_onyx' },
-  hi: { espeak: 'hi', voice: 'hm_omega:0.5+am_onyx:0.5' },
+  hi: { espeak: 'hi', voice: 'hm_omega' },
   es: { espeak: 'es', voice: 'em_alex:0.5+am_onyx:0.5' },
   fr: { espeak: 'fr', voice: 'am_onyx' },
   de: { espeak: 'de', voice: 'am_onyx' },
@@ -131,6 +135,8 @@ function knownVoice(name) {
   if (VOICE_NAMES.includes(name)) return true;
   return !!S.dir && fs.existsSync(path.join(S.dir, 'voices', name + '.bin'));
 }
+// the v16 default hm_omega:0.5+am_onyx:0.5 and the nightly A/B steps around it (0.3–0.7); any other spec is a choice
+const LEGACY_HI = /^hm_omega:0?\.[3-7]\d*\+am_onyx:0?\.[3-7]\d*$/;
 function voiceFor(lang) {
   const L = normLang(lang) || 'en';
   return S.specs[L] || LANGS[L].voice;
@@ -148,6 +154,8 @@ function loadSpecs() {
       try { if (L && parseSpec(v).every(p => knownVoice(p.name))) out[L] = String(v); } catch (e) { /* skip bad entry */ }
     }
   } catch (e) { log('ignoring unreadable', SPEC_KEY); }
+  // v17: the old Hindi default (hm_omega + am_onyx, and the nightly A/B steps around it) gives way to the native voice
+  if (out.hi && LEGACY_HI.test(out.hi)) { log('Hindi voice: ' + out.hi + ' (old blend) replaced by the native ' + LANGS.hi.voice); delete out.hi; S.specs = out; persistSpecs(); return; }
   S.specs = out;
 }
 function persistSpecs() {
@@ -274,6 +282,60 @@ function normCommon(t, L) {
   if (L === 'hi') t = t.replace(/(?:₹|\bRs\.?)\s?([\d०-९][\d०-९,]*)/g, '$1 रुपये');
   if (L === 'hi' || L === 'en' || L === 'ja' || L === 'zh') t = t.replace(/(?<=[\d०-९]),(?=[\d०-९])/g, '');
   return t.replace(/ {2,}/g, ' ').trim();
+}
+
+// ── Hindi: numbers, times, dates and percentages as spoken Hindi words (espeak reads bare digits flatly, years as
+//    "एक हज़ार नौ सौ …" and 5:30 as "पाँच तीस"). Long digit strings and dashed groups (phone numbers, helplines) are
+//    read digit by digit.
+const HI_N = ('शून्य एक दो तीन चार पाँच छह सात आठ नौ दस ग्यारह बारह तेरह चौदह पंद्रह सोलह सत्रह अठारह उन्नीस बीस इक्कीस बाईस तेईस चौबीस पच्चीस छब्बीस सत्ताईस अट्ठाईस उनतीस तीस इकतीस बत्तीस तैंतीस चौंतीस पैंतीस छत्तीस सैंतीस अड़तीस उनतालीस चालीस इकतालीस बयालीस तैंतालीस चवालीस पैंतालीस छियालीस सैंतालीस अड़तालीस उनचास पचास इक्यावन बावन तिरपन चौवन पचपन छप्पन सत्तावन अट्ठावन उनसठ साठ इकसठ बासठ तिरसठ चौंसठ पैंसठ छियासठ सड़सठ अड़सठ उनहत्तर सत्तर इकहत्तर बहत्तर तिहत्तर चौहत्तर पचहत्तर छिहत्तर सतहत्तर अठहत्तर उनासी अस्सी इक्यासी बयासी तिरासी चौरासी पचासी छियासी सत्तासी अट्ठासी नवासी नब्बे इक्यानबे बानबे तिरानबे चौरानबे पंचानबे छियानबे सत्तानबे अट्ठानबे निन्यानबे').split(' ');
+const HI_MONTHS = ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'];
+const EN_MONTH = { jan: 0, january: 0, feb: 1, february: 1, mar: 2, march: 2, apr: 3, april: 3, may: 4, jun: 5, june: 5, jul: 6, july: 6, aug: 7, august: 7, sep: 8, sept: 8, september: 8, oct: 9, october: 9, nov: 10, november: 10, dec: 11, december: 11 };
+function hiNum(n) {
+  n = Math.floor(Number(n));
+  if (!isFinite(n) || n < 0) return String(n);
+  if (n < 100) return HI_N[n];
+  if (n >= 1e11) return String(n).split('').map(d => HI_N[+d]).join(' ');
+  const out = [];
+  const cr = Math.floor(n / 1e7); n %= 1e7;
+  const lk = Math.floor(n / 1e5); n %= 1e5;
+  const th = Math.floor(n / 1e3); n %= 1e3;
+  const h = Math.floor(n / 100); n %= 100;
+  if (cr) out.push(hiNum(cr) + ' करोड़');
+  if (lk) out.push(HI_N[lk] + ' लाख');
+  if (th) out.push(HI_N[th] + ' हज़ार');
+  if (h) out.push(HI_N[h] + ' सौ');
+  if (n) out.push(HI_N[n]);
+  return out.join(' ');
+}
+const HELPLINES = new Set(['112', '14416', '1098', '181']); // said digit by digit, as on the helpline posters
+const hiDigits = s => String(s).split('').filter(d => /\d/.test(d)).map(d => HI_N[+d]).join(' ');
+// a year as people say it: 1999 → उन्नीस सौ निन्यानबे, 2026 → दो हज़ार छब्बीस
+const hiYear = y => { y = +y; return y >= 1100 && y <= 1999 ? HI_N[Math.floor(y / 100)] + ' सौ' + (y % 100 ? ' ' + HI_N[y % 100] : '') : hiNum(y); };
+function hiTime(h, m) {
+  h = +h; m = +m; const H = n => HI_N[((n + 11) % 12) + 1];
+  if (m === 0) return H(h);
+  if (m === 30) return h % 12 === 1 ? 'डेढ़' : h % 12 === 2 ? 'ढाई' : 'साढ़े ' + H(h);
+  if (m === 15) return 'सवा ' + H(h);
+  if (m === 45) return h % 12 === 0 ? 'पौने एक' : 'पौने ' + H(h + 1);
+  return H(h) + ' बजकर ' + HI_N[m] + ' मिनट';
+}
+const hiDate = (d, mo, y) => (+d >= 1 && +d <= 31 && +mo >= 1 && +mo <= 12) ? HI_N[+d] + ' ' + HI_MONTHS[+mo - 1] + (y ? ' ' + hiYear(y) : '') : null;
+function normHindi(t) {
+  return String(t)
+    .replace(/[०-९]/g, c => String(c.charCodeAt(0) - 0x966))
+    .replace(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/g, (m, y, mo, d) => hiDate(d, mo, y) || m)
+    .replace(/\b(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})\b/g, (m, d, mo, y) => hiDate(d, mo, y) || m)
+    .replace(/\b(\d{1,2})(?:st|nd|rd|th)?\s+(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b\.?/gi, (m, d, mo) => d + ' ' + HI_MONTHS[EN_MONTH[mo.toLowerCase()]])
+    .replace(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b/gi, (m, mo, d) => d + ' ' + HI_MONTHS[EN_MONTH[mo.toLowerCase()]])
+    .replace(/(\d)(?:st|nd|rd|th)\b/gi, '$1')
+    .replace(/(?<![\d:])(\d{1,2}):([0-5]\d)(?![\d:])(\s*बजे)?/g, (m, h, mm, baje) => { if (+h > 24) return m; const w = hiTime(h, mm); return /बजकर/.test(w) ? w : w + (baje || ''); })
+    .replace(/\b\d{1,4}(?:[-‐]\d{2,4}){2,}\b/g, m => hiDigits(m))
+    .replace(/(\d+(?:\.\d+)?)\s?%/g, '$1 प्रतिशत')
+    .replace(/(\d)\s?[-–]\s?(?=\d)/g, '$1 से ')
+    .replace(/\b(1[1-9]\d\d|20\d\d)(?=\s*(?:में|को|से|तक|का|की|के|ई\.?|साल|\)|,|\.|$))/g, y => hiYear(y))
+    .replace(/(\d+)\.(\d+)/g, (m, a, b) => hiNum(a) + ' दशमलव ' + hiDigits(b))
+    .replace(/\d+/g, m => HELPLINES.has(m) || (m.length > 1 && m[0] === '0') || (m.length === 10 && /^[6-9]/.test(m)) || m.length > 11 ? hiDigits(m) : hiNum(m))
+    .replace(/ {2,}/g, ' ');
 }
 
 const ABBR = new Set(['mr', 'mrs', 'ms', 'dr', 'prof', 'sr', 'jr', 'sgt', 'col', 'gen', 'rep', 'sen', 'gov', 'lt', 'maj', 'capt', 'st', 'mt', 'etc', 'co', 'inc', 'ltd', 'dept', 'vs', 'p', 'pg', 'jan', 'feb', 'mar', 'apr', 'jun', 'jul', 'aug', 'sep', 'sept', 'oct', 'nov', 'dec', 'no', 'approx', 'e.g', 'i.e', 'rs', 'smt', 'shri']);
@@ -490,7 +552,9 @@ const UNPROTECT = { '\ue000': '.', '\ue001': ',', '\ue002': ':' };
 // text (one chunk) -> phoneme string. espeak drops punctuation, so we phonemize between punctuation and put it back.
 function phonemize(text, L, end) {
   let t = L === 'en' ? normEnglish(text) : text;
-  t = normCommon(t, L).replace(/(?<=\d)[.,:](?=\d)/g, c => PROTECT[c]); // keep 3.5 / 10:30 / 1.000 inside the number
+  t = normCommon(t, L);
+  if (L === 'hi') t = normHindi(t);
+  t = t.replace(/(?<=\d)[.,:](?=\d)/g, c => PROTECT[c]); // keep 3.5 / 10:30 / 1.000 inside the number
   const voice = LANGS[L].espeak;
   let out = '', last = 0;
   const say = seg => { const x = seg.replace(/[\ue000-\ue002]/g, c => UNPROTECT[c]).trim(); return x ? cleanIPA(espeakIPA(x, voice), L) : ''; };
@@ -641,7 +705,8 @@ function plan(text, opts, quickStart, small) {
   if (opts.voice) parseSpec(opts.voice).forEach(p => { if (!knownVoice(p.name)) throw new Error('unknown voice: ' + p.name); });
   return chunkText(text, base, { quickStart, speed, small }).map(c => {
     let L = base;
-    if (RE_DEVA.test(c.text) && L !== 'hi') L = 'hi';
+    if (opts.lockLang) { /* one language for the whole reply */ }
+    else if (RE_DEVA.test(c.text) && L !== 'hi') L = 'hi';
     else if (RE_KANA.test(c.text) && L !== 'ja') L = 'ja';
     else if (RE_HAN.test(c.text) && !isCJK(L)) L = 'zh';
     return { text: c.text, end: c.end, lang: L, spec: opts.voice || specOrDefault(L), speed };
@@ -669,7 +734,7 @@ async function ensureReady(waitMs = 30000) {
 const prioOf = (opts, dflt) => ((opts.priority || dflt) === 'low' ? 'lo' : 'hi');
 const allCached = chunks => chunks.every(c => LRU.has(chunkKey(c)));
 
-// speakStream(text, {lang, voice?, speed?, signal?, quickStart = true, priority = 'live'})
+// speakStream(text, {lang, voice?, speed?, signal?, quickStart = true, priority = 'live', lockLang?})
 //   -> AsyncIterable<{ pcm: Int16Array, sampleRate: 24000, text, last }>
 // Synthesises one sentence ahead of the consumer. When `signal` aborts it stops yielding and drops queued work.
 // Pass quickStart:false for follow-up sentences of a reply that is already playing (no need to cut the first one short).
@@ -704,7 +769,7 @@ async function* speakStream(text, opts = {}) {
   }
 }
 
-// speak(text, {lang, voice?, speed?, format:'mp3'|'wav', signal?, priority = 'low'}) -> { audio: Buffer, mime, seconds }
+// speak(text, {lang, voice?, speed?, format:'mp3'|'wav', signal?, priority = 'low', lockLang?}) -> { audio: Buffer, mime, seconds }
 // mp3 (48 kbps mono, via ffmpeg) results are also kept on disk under mediaDir/brocore/cache/.
 // Low priority (the default): small chunks behind every live sentence; throws VOICE_BUSY when 3 low requests are already
 // in (callers answer 503 and let the phone's own voice speak). `signal` drops this request's queued work when it aborts.
@@ -1143,5 +1208,5 @@ if (require.main === module && process.argv.includes(ENGINE_FLAG) && process.sen
 module.exports = {
   init, ready, speak, speakStream, voiceFor, setVoiceSpec, health,
   SAMPLE_RATE, MODEL_NAME, LANGS,
-  _internals: { ensureModel, pruneCache, writeCache, freeBytes, loadSpecs, loadEspeak, chunkText, lowChunkChars, phonemize, tokenize, splitPhonemes, normEnglish, normCommon, cleanText, detectLang, normLang, resolveLang, parseSpec, toWav, encodeMp3, threadCount, jobTimeoutMs, start, state: S, queue: Q, VOICE_NAMES, MODEL_SHA256, LOW_MAX },
+  _internals: { plan, normHindi, hiNum, ensureModel, pruneCache, writeCache, freeBytes, loadSpecs, loadEspeak, chunkText, lowChunkChars, phonemize, tokenize, splitPhonemes, normEnglish, normCommon, cleanText, detectLang, normLang, resolveLang, parseSpec, toWav, encodeMp3, threadCount, jobTimeoutMs, start, state: S, queue: Q, VOICE_NAMES, MODEL_SHA256, LOW_MAX },
 };
