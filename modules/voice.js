@@ -630,7 +630,11 @@ function install(app, deps) {
     if (x.n >= LIVE_TURNS_DAY) return false;
     x.n++; return true;
   }
-  const LIVE = { calls: 0, active: 0, turns: 0, dropped: 0, errors: 0, echoes: 0, merged: 0, held: 0, lat: [], last: null };
+  const LIVE = { calls: 0, active: 0, turns: 0, dropped: 0, errors: 0, echoes: 0, merged: 0, held: 0, lat: [], last: null, fails: 0, rescues: 0, lastFail: null };
+  const SELF_PHONE = 'bro-selftest'; // the self-call's user (see selfCall)
+  // public safe words for /api/bro/ok: how many turns failed or were rescued, and the last failure's trail (model,
+  // HTTP status and error kind only; never what anyone said)
+  global._voiceLiveHealth = () => ({ turns: LIVE.turns, fails: LIVE.fails, rescues: LIVE.rescues, lastFail: LIVE.lastFail });
   function liveStats() {
     const a = LIVE.lat.slice().sort((x, y) => x - y);
     const q = p => (a.length ? a[Math.min(a.length - 1, Math.round(p * (a.length - 1)))] : null);
@@ -783,6 +787,10 @@ function install(app, deps) {
   // the last tool round: an answer is due now (Bro Core's self-test uses the same rule)
   const FINAL_RULE = 'You have the tool results above. Answer the user now, in plain speech, from those results. Do not call any more tools.';
   const NO_ANSWER = { en: 'Sorry, I could not find that just now. Ask me once more?', hi: 'माफ़ करना, अभी वो मिल नहीं पाया। एक बार फिर से पूछो?' };
+  // the rescue answer's whole persona (see rescue()): short on purpose, so it fits any model's allowance
+  const RESCUE_PERSONA = 'You are Bro, a warm, sharp friend on a voice call. Answer what the user just asked, directly and naturally, in one to three short spoken sentences. If it depends on very recent events you cannot know, say so honestly and give what you do know.';
+  // a turn's trail in safe words (Bro Core's formatter: model, HTTP status, error kind; never what anyone said)
+  const trailOf = tr => { try { const c = core(); return c && typeof c.trailText === 'function' ? c.trailText(tr) : ''; } catch (e) { return ''; } };
 
   function startLive(ws) {
     LIVE.calls++; LIVE.active++;
@@ -983,7 +991,7 @@ function install(app, deps) {
     async function runTurn(inp) {
       if (S.ended) return;
       abortTurn('new');
-      const T = { id: ++S.turnId, ac: new AbortController(), tEnd: Date.now(), said: [], sent: 0, first: 0, marks: {}, audio: !!inp.frags, frags: [], gathering: !!inp.frags };
+      const T = { id: ++S.turnId, ac: new AbortController(), tEnd: Date.now(), said: [], sent: 0, first: 0, marks: {}, audio: !!inp.frags, frags: [], gathering: !!inp.frags, trace: [] };
       S.turn = T; LIVE.turns++;
       const sig = T.ac.signal, live = () => !sig.aborted && S.turn === T && !S.ended, c = core();
       const speaker = makeSpeaker(T);
@@ -1031,7 +1039,9 @@ function install(app, deps) {
         await converse(T, system, messages, speaker);
       } catch (e) {
         if (!live()) return;
-        LIVE.errors++; console.log('[voice-live] turn failed:', e && e.message, e && (e.kind || e.code || e.status) ? '(' + [e.kind, e.code, e.status].filter(Boolean).join(' ') + ')' : '');
+        LIVE.errors++; LIVE.fails++; T.failed = true;
+        LIVE.lastFail = { at: new Date().toISOString(), trail: trailOf(T.trace) || (inp.frags && T.marks.hear == null ? 'hearing' : 'before-brain') };
+        console.log('[voice-live] turn failed:', e && e.message, e && (e.kind || e.code || e.status) ? '(' + [e.kind, e.code, e.status].filter(Boolean).join(' ') + ')' : '', '· trail', LIVE.lastFail.trail);
         send({ t: 'error', why: inp.frags && T.marks.hear == null ? 'hearing' : 'brain' });
         const sorry = S.lang === 'hi' ? 'माफ़ करना, एक सेकंड के लिए कट गया। फिर से बोलो?' : 'Sorry, I lost that for a second. Say it again?';
         // only "let me check that" went out: the apology follows it on the same speaker (in order), so the search never ends in silence
@@ -1054,8 +1064,10 @@ function install(app, deps) {
         let buf = '', said = ''; const calls = [], runs = [], t0 = Date.now();
         // the last round keeps the tool definitions (the history has tool calls) but forbids new ones, and says so
         const final = round === 3, tools = !T.noTools && defs.length ? defs : undefined;
+        T.trace.push({ r: 'r' + round + (tools ? '' : '-notools') });
         try {
-          for await (const ev of c.chatStream({ system: final ? system + '\n\n' + FINAL_RULE : system, messages: msgs, tools, toolChoice: final && tools ? 'none' : undefined, signal: sig, purpose: 'bro' })) {
+          // emergency: false here: when this chain fails, the rescue (open models) goes before the old emergency helper
+          for await (const ev of c.chatStream({ system: final ? system + '\n\n' + FINAL_RULE : system, messages: msgs, tools, toolChoice: final && tools ? 'none' : undefined, signal: sig, purpose: 'bro', emergency: false, trace: T.trace })) {
             if (!live()) return;
             if (!ev) continue;
             if (ev.type === 'text' && ev.delta) {
@@ -1074,6 +1086,8 @@ function install(app, deps) {
           if (!live()) return;
           // the brain failed before saying anything: the same turn once more without tools, before Bro says sorry
           if (tools && !said && !calls.length) { console.log('[voice-live] brain failed with tools (' + String(e && e.message || e).slice(0, 200) + '): retrying without tools'); T.noTools = true; round--; continue; }
+          // v17.6: still nothing said: one lean answer on the rescue models before Bro ever says sorry
+          if (!said && !T.rescueTried && await rescue(T, speaker, e)) break;
           throw e;
         }
         if (!live()) return;
@@ -1087,6 +1101,29 @@ function install(app, deps) {
         calls.forEach((k, i) => msgs.push({ role: 'tool', tool_call_id: k.id, content: JSON.stringify(results[i] === undefined ? { ok: true } : results[i]).slice(0, 4000) }));
       }
       await speaker.done();
+    }
+    // the rescue: a lean prompt (no tools, recent lines only, what this call already looked up) on the rescue lane's
+    // models; then the old emergency helper if the owner left it on. true when Bro said something.
+    async function rescue(T, speaker, why) {
+      T.rescueTried = true;
+      const c = core(), sig = T.ac.signal, live = () => !sig.aborted && S.turn === T && !S.ended;
+      const msgs = S.history.filter(m => m.role === 'user' || m.role === 'assistant').slice(-6);
+      if (!msgs.length || msgs[msgs.length - 1].role !== 'user') return false;
+      const system = [RESCUE_PERSONA, 'Today is ' + new Date().toISOString().slice(0, 10) + '.', langRule(), notesBlock(), CALL_RULES].filter(Boolean).join('\n\n');
+      console.log('[voice-live] turn ' + T.id + ' rescue after: ' + String(why && why.message || why).slice(0, 160));
+      T.trace.push({ r: 'rescue' });
+      let buf = '', said = '';
+      try {
+        for await (const ev of c.chatStream({ system, messages: msgs, signal: sig, purpose: 'rescue', maxTokens: 400, trace: T.trace })) {
+          if (!live()) return true;
+          if (ev && ev.type === 'text' && ev.delta) { buf += ev.delta; said += ev.delta; for (let cut; (cut = takeSentence(buf));) { speaker.push(cut.sentence); buf = cut.rest; } }
+          else if (ev && ev.type === 'done' && ev.model) T.model = ev.model;
+        }
+      } catch (e) { console.log('[voice-live] rescue failed:', String(e && e.message || e).slice(0, 160)); if (!said.trim()) return false; }
+      if (buf.trim()) speaker.push(buf.trim());
+      if (!said.trim()) return false;
+      LIVE.rescues++; T.rescued = true;
+      return true;
     }
     async function execTool(T, call) {
       const { name, args } = call;
@@ -1174,6 +1211,7 @@ function install(app, deps) {
         if (!S.user) return;
         if (S.counted) { S.counted = false; const k = String(S.user.phone), n = (ACTIVE.get(k) || 1) - 1; if (n > 0) ACTIVE.set(k, n); else ACTIVE.delete(k); }
         if (S.refused) return; // a refused socket (busy) was never a call
+        if (String(S.user.phone) === SELF_PHONE) return; // Bro Core's self-test call leaves no call record or memory
         // 👍/👎 on the end screen → 5 / 1 on Bro Core's 1–5 scale (S.rating is already 'up' | 'down' | 1–5 | null)
         const rating = S.rating === 'up' ? 5 : S.rating === 'down' ? 1 : typeof S.rating === 'number' ? S.rating : null;
         const info = { turns: S.turns, lang: S.lang, started: S.started, ended: Date.now(), rating, thumb: S.rating === 'up' || S.rating === 'down' ? S.rating : undefined, reason, persona: S.persona };
@@ -1183,6 +1221,41 @@ function install(app, deps) {
       } catch (e) { console.log('[voice-live] finish failed:', e && e.message); }
     }
   }
+
+  // ── v17.6 self-call: one real call turn, in-process, through a fake socket: the same startLive, context, brain chain,
+  //    tools, rescue and voice a phone call gets. Bro Core's self-test asks it a question; the live check needs it to pass.
+  //    → { ok, said[], audioBytes, ms, trail, rescued, reason }. Its user is not a phone number, so no token for it can
+  //    come from a login, and the call leaves no record (finish() above).
+  async function selfCall(text, opts) {
+    opts = opts || {};
+    const { EventEmitter } = require('events');
+    const ws = new EventEmitter(), out = { said: [], audioBytes: 0, errors: [] };
+    ws.readyState = 1; ws.bufferedAmount = 0; ws.ping = () => {};
+    ws.send = (d, o) => {
+      if ((o && o.binary) || Buffer.isBuffer(d)) { out.audioBytes += d.length; return; }
+      let m = null; try { m = JSON.parse(String(d)); } catch (e) { return; }
+      if (m.t === 'say' && m.text) out.said.push(String(m.text)); else if (m.t === 'error') out.errors.push(String(m.why || ''));
+      ws.emit('_out', m);
+    };
+    ws.close = () => { if (ws.readyState === 3) return; ws.readyState = 3; ws.emit('close'); };
+    ws.terminate = ws.close;
+    const wait = (pred, ms) => new Promise(res => { const f = m => { if (pred(m)) { clearTimeout(t); ws.off('_out', f); res(true); } }; const t = setTimeout(() => { ws.off('_out', f); res(false); }, ms); ws.on('_out', f); });
+    const msg = o => ws.emit('message', Buffer.from(JSON.stringify(o)), false);
+    const t0 = Date.now(), rescues0 = LIVE.rescues;
+    try {
+      startLive(ws);
+      const ready = wait(m => m.t === 'ready', 5000);
+      msg({ t: 'hello', token: issueCallToken({ phone: SELF_PHONE, name: '', tz: 'Asia/Kolkata' }), lang: opts.lang === 'hi' ? 'hi' : 'en', greet: false });
+      if (!await ready) return Object.assign(out, { ok: false, reason: 'no_ready', ms: Date.now() - t0 });
+      const done = wait(m => m.t === 'state' && m.s === 'listening' && m.turn >= 1, opts.timeout || 35000);
+      msg({ t: 'text', text: String(text || '') });
+      const finished = await done;
+      // this socket's own error says the turn failed (a real caller's failure at the same moment is not ours)
+      const failed = out.errors.some(w => w === 'brain' || w === 'hearing'), rescued = LIVE.rescues > rescues0;
+      return Object.assign(out, { ok: finished && !failed && out.said.length > 0, reason: !finished ? 'timeout' : failed ? 'failed' : out.said.length ? '' : 'silent', ms: Date.now() - t0, rescued, trail: failed && LIVE.lastFail ? LIVE.lastFail.trail : '' });
+    } finally { msg({ t: 'bye' }); ws.close(); }
+  }
+  global._voiceSelfCall = selfCall;
 
   // ── attach to the http server (server.js sets global._httpServer = app.listen(...) and calls _voiceLiveAttach)
   let WSS = null;
