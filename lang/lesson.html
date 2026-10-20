@@ -25,8 +25,8 @@
 </div></div>
 
 <script type="module">
-import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, recognize, hasSR, similarity, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=11';
-import { ic } from '/lang/assets/ico.js?v=14';
+import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, hearPhrase, releaseMic, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=12';
+import { ic } from '/lang/assets/ico.js?v=15';
 
 const $ = id => document.getElementById(id);
 const code = param('c') || 'es', unitId = param('u'), lessonId = param('l');
@@ -124,24 +124,30 @@ if (!lesson) {
       el.append(bank.el);
       return { el, check() { const a = bank.answer(); return { ok: sameAnswer(a, it.text), correct: `${it.text}${it.meaning ? ` — ${it.meaning}` : ''}` }; }, lock: bank.lock };
     },
+    // v20: checked like the Listen lessons. Bro listens until it's right: a wrong try shows what he heard and he says the
+    // line again; it never passes by itself, and "Can't speak now" pauses the lesson instead of counting it.
     speak(it) {
-      const el = document.createElement('div'); let heard = '', skipped = false, busy = false;
+      const el = document.createElement('div'); let passed = false, busy = false, ac = null;
       el.innerHTML = head(`${ic('mic', 14)} ${t(lang, 'speakKind')}`, '') + `<div class="prompt-row"></div><div class="muted" style="font-weight:600;font-size:14px;margin-top:-8px">${esc(it.meaning || '')}</div>
-        <button class="mic" id="mic" aria-label="Speak">${ICON.mic}</button><div class="heard" id="heard">${hasSR ? t(lang, 'tapToSpeak') : t(lang, 'noMic')}</div><button class="skip-link" id="skipSpeak">${t(lang, 'cantSpeak')}</button>`;
+        <button class="mic" id="mic" aria-label="Speak">${ICON.mic}</button><div class="heard" id="heard">${t(lang, 'tapToSpeak')}</div><button class="skip-link" id="skipSpeak">${t(lang, 'cantSpeak')}</button>`;
       const pr = el.querySelector('.prompt-row'); pr.append(spkBtn(it.text)); pr.insertAdjacentHTML('beforeend', `<div class="bubble">${esc(it.text)}</div>`);
       setTimeout(() => sayTarget(it.text), 300);
       const mic = el.querySelector('#mic'), heardEl = el.querySelector('#heard');
       mic.onclick = async () => {
-        if (busy) return;
-        if (!hasSR) { toast(t(lang, 'noMic')); return; }
+        if (busy || passed) return;
         busy = true; stopSpeaking(); mic.classList.add('on'); heardEl.textContent = t(lang, 'listening'); haptic(15);
-        heard = await recognize(voice, { ms: 6000, onInterim: txt => { heardEl.textContent = txt; } });
+        ac = new AbortController();
+        const r = await hearPhrase(it.text, voice, { signal: ac.signal, onInterim: txt => { if (txt) heardEl.textContent = txt; }, onState: st => { if (st === 'checking') heardEl.textContent = t(lang, 'checking'); } });
         mic.classList.remove('on'); busy = false;
-        heardEl.textContent = heard ? `${t(lang, 'heard')}: “${heard}”` : t(lang, 'tapToSpeak');
-        if (heard) { setCheck(true); if (similarity(heard, it.text) >= 0.6) checkBtn.click(); }
+        if (ac.signal.aborted) return;
+        if (r.ok) { passed = true; heardEl.textContent = `${t(lang, 'yes')} “${r.heard || it.text}”`; setCheck(true); checkBtn.click(); return; }
+        if (r.error) { heardEl.textContent = t(lang, r.error === 'mic' ? 'micBlocked' : 'tryMic'); return; }
+        if (!r.heard) { heardEl.textContent = t(lang, 'didntHear'); return; }
+        heardEl.textContent = `${t(lang, 'youSaid')}: “${r.heard}” · ${t(lang, 'tryAgain')}`; haptic([20, 40, 20]);
+        setTimeout(() => sayTarget(it.text), 700); // Bro says it again; tap the mic to try again
       };
-      el.querySelector('#skipSpeak').onclick = () => { skipped = true; setCheck(true); checkBtn.click(); };
-      return { el, check() { if (skipped) return { ok: true, skip: true, correct: it.text }; return { ok: similarity(heard, it.text) >= 0.6, correct: it.text }; }, lock() { mic.disabled = true; el.querySelector('#skipSpeak').disabled = true; } };
+      el.querySelector('#skipSpeak').onclick = () => { ac?.abort(); stopSpeaking(); pauseSheet(); };
+      return { el, check() { return passed ? { ok: true, correct: it.text } : null; }, lock() { mic.disabled = true; el.querySelector('#skipSpeak').disabled = true; } };
     },
     match(it) {
       const el = document.createElement('div');
@@ -232,11 +238,20 @@ if (!lesson) {
   checkBtn.onclick = () => {
     if (checkBtn.disabled) return;
     if (resultShown) { pos++; return show(); }
+    if (cur.it.t === 'speak' && !cur.ui.check()) return; // not said right yet: nothing to check
     const res = cur.ui.check();
     if (!res) { pos++; return show(); }  // learn card
     showResult(res);
   };
 
+  // "Can't speak now": the lesson waits here; "Stop for now" goes back to the course
+  function pauseSheet() {
+    const bg = document.createElement('div'); bg.className = 'sheet-bg';
+    bg.innerHTML = `<div class="sheet"><div class="e">🎙️</div><h3>${t(lang, 'pausedSpeak')}</h3>
+      <button class="b-btn wide" id="canSpeak">${t(lang, 'canSpeak')}</button><a class="b-btn ghost wide" id="stopNow" href="/lang/course.html?c=${code}#practice">${t(lang, 'stopForNow')}</a></div>`;
+    document.body.append(bg);
+    bg.querySelector('#canSpeak').onclick = () => bg.remove();
+  }
   function heartsOut() {
     const bg = document.createElement('div'); bg.className = 'sheet-bg';
     bg.innerHTML = `<div class="sheet"><div class="e">💔</div><h3>${t(lang, 'outOfHearts')}</h3><p>${t(lang, 'outOfHeartsSub')}</p>
@@ -265,7 +280,7 @@ if (!lesson) {
     confetti();
   }
 
-  addEventListener('pagehide', stopSpeaking);
+  addEventListener('pagehide', () => { stopSpeaking(); releaseMic(); });
   renderHearts(); show();
   window.__langLesson = { get queue() { return queue; }, get pos() { return pos; }, get hearts() { return hearts; } };
 }

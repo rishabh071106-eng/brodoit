@@ -276,10 +276,10 @@ function install(app, deps) {
     // v16: Bro's own voice (Kokoro on our CPU) first, behind live calls in its queue; the paid studio voices only behind
     // the emergency switch, or when this server has no Bro Core at all
     const c = core();
-    const studio = () => STUDIO.speak({ text, lang, purpose: news ? 'daily' : 'live', role, getSetting, timeout: 25000, eleven: { format: 'mp3_44100_64', timeout: 20000, chunk: 1500 } });
+    const studio = provider => STUDIO.speak({ text, lang, purpose: news ? 'daily' : 'live', role, getSetting, provider, timeout: 25000, eleven: { format: 'mp3_44100_64', timeout: 20000, chunk: 1500 } });
     // German has no native voice on our CPU: the studio's Bro voice reads it when it can (credit-guarded), else Bro Core
     if (lang === 'de' && !news) {
-      try { const out = await studio(); if (ac.signal.aborted) return; if (out && out.buf) { res.set('Content-Type', out.mime); res.set('Cache-Control', 'no-store'); res.set('X-Voice', out.provider); return res.send(out.buf); } } catch (e) { /* Bro Core below */ }
+      try { const out = await studio('eleven'); if (ac.signal.aborted) return; if (out && out.buf) { res.set('Content-Type', out.mime); res.set('Cache-Control', 'no-store'); res.set('X-Voice', out.provider); return res.send(out.buf); } } catch (e) { /* Bro Core below */ }
     }
     if (c && typeof c.speak === 'function' && coreVoiceReady()) {
       try {
@@ -316,10 +316,12 @@ function install(app, deps) {
   app.post('/api/voice/transcribe', auth, perMinute(hearHits, 30), express.raw({ type: () => true, limit: '12mb' }), safe(async (req, res) => {
     const body = req.body; if (!Buffer.isBuffer(body) || body.length < 1000) return res.status(400).json({ error: 'audio required' });
     const mime = (str(req.headers['content-type'], 200) || 'audio/webm').split(';')[0];
-    const hint = str(req.query.lang, 4);
+    // v20: the language courses hear in their own language (es fr de …) and say the phrase they wait for (`expect`)
+    const hint = str(req.query.lang, 12).toLowerCase().split(/[-_]/)[0].slice(0, 2);
+    const known = TTS_LANGS.includes(hint) ? hint : undefined, expect = str(req.query.expect, 300) || undefined;
     const c = core();
     if (c && typeof c.hear === 'function' && coreReady()) { // v16: Groq Whisper through Bro Core
-      try { const h = await c.hear(body, { mime, lang: hint === 'hi' || hint === 'en' ? hint : undefined }); return res.json({ text: String(h && h.text || '').trim(), lang: normLang(h && h.lang) }); }
+      try { const h = await c.hear(body, { mime, lang: known, expect }); return res.json({ text: String(h && h.text || '').trim(), lang: normLang(h && h.lang) || known || '' }); }
       catch (e) { console.log('[voice] brocore hear failed:', e.message); if (!emergency()) return res.status(502).json({ error: 'transcription failed' }); }
     }
     const key = openaiKey(); if (!key) return res.status(404).json({ error: 'no transcription configured' });
@@ -328,7 +330,7 @@ function install(app, deps) {
       const fd = new FormData();
       fd.append('file', new Blob([body], { type: mime }), 'speech.' + ext);
       fd.append('model', 'gpt-4o-mini-transcribe');
-      if (hint === 'hi' || hint === 'en') fd.append('language', hint);
+      if (known) fd.append('language', known);
       const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 25000);
       const r = await fetch('https://api.openai.com/v1/audio/transcriptions', { method: 'POST', signal: ctrl.signal, headers: { Authorization: 'Bearer ' + key }, body: fd });
       clearTimeout(t);

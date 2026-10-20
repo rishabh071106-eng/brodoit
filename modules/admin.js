@@ -182,7 +182,9 @@ function install(app, deps) {
   }
   function autoRecord(reason) {
     if (!AUTO_ON) return { queued: [], off: true };
-    const todo = ['learn-audio', 'lang-audio', 'hindi-books'].filter(k => needs(k) && !preflight(k) && getJob(k).status !== 'running' && !auto.queue.includes(k) && auto.running !== k);
+    // v20: course lines are recorded in Bro's own voice by the server (modules/learn.js, on first play and a warm-up), and
+    // Listen lessons play line by line, so the paid ElevenLabs course jobs only run when tapped in Admin
+    const todo = ['hindi-books'].filter(k => needs(k) && !preflight(k) && getJob(k).status !== 'running' && !auto.queue.includes(k) && auto.running !== k);
     for (const k of todo) auto.queue.push(k);
     if (todo.length) { auto.reason = reason || 'auto'; console.log('[admin] auto-record queued', todo.join(', '), '·', auto.reason); }
     pump();

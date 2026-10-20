@@ -12,22 +12,7 @@
    "goal": "Greet someone politely and say whether you understand English or Hindi",
    "steps": [
     {
-     "n": "Listen to this conversation between two people meeting for the first time in India."
-    },
-    {
-     "t": "नमस्ते। क्या आप अंग्रेज़ी समझते हैं?",
-     "tl": "namaste. kyā āp angrezī samajhte hain?"
-    },
-    {
-     "t": "जी नहीं, मैं अंग्रेज़ी नहीं समझता।",
-     "tl": "jī nahīn, main angrezī nahīn samajhtā."
-    },
-    {
-     "t": "मैं थोड़ी हिंदी समझता हूँ।",
-     "tl": "main thoṛī hindī samajhtā hūn."
-    },
-    {
-     "n": "In the next few minutes you will learn to say all of that yourself. Let's start with the greeting."
+     "n": "Lesson 1. Let's go! Listen, then say it with me."
     },
     {
      "n": "This greeting works at any time of day, for hello and goodbye. Listen and repeat, starting from the end of the word."
@@ -760,7 +745,8 @@
     {
      "n": "Well done. In the next lesson you will learn to ask how someone is, say thank you, and say that you speak a little Hindi. This is the end of lesson one."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a2",
@@ -769,26 +755,7 @@
    "goal": "Ask how someone is, answer, thank them, and say you speak a little Hindi",
    "steps": [
     {
-     "n": "Listen to two colleagues greeting each other in the morning."
-    },
-    {
-     "t": "नमस्ते, आप कैसे हैं?",
-     "tl": "namaste, āp kaise hain?"
-    },
-    {
-     "t": "मैं ठीक हूँ, धन्यवाद। और आप?",
-     "tl": "main ṭhīk hūn, dhanyavād. aur āp?"
-    },
-    {
-     "t": "मैं भी ठीक हूँ। क्या आप हिंदी बोलते हैं?",
-     "tl": "main bhī ṭhīk hūn. kyā āp hindī bolte hain?"
-    },
-    {
-     "t": "जी हाँ, थोड़ी।",
-     "tl": "jī hān, thoṛī."
-    },
-    {
-     "n": "You already know some of this. By the end of this lesson you will be able to say all of it. First, a quick review."
+     "n": "Lesson 2. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'hello'."
@@ -1523,7 +1490,8 @@
     {
      "n": "Very good. Next time you will learn to ask where something is, ask how much it costs, and count from one to ten. This is the end of lesson two."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a3",
@@ -1532,26 +1500,7 @@
    "goal": "Ask where something is, ask prices, and count from one to ten",
    "steps": [
     {
-     "n": "Listen to a traveller asking for help near a market."
-    },
-    {
-     "t": "माफ़ कीजिए, स्टेशन कहाँ है?",
-     "tl": "māf kījiye, sṭeshan kahān hai?"
-    },
-    {
-     "t": "स्टेशन वहाँ है।",
-     "tl": "sṭeshan vahān hai."
-    },
-    {
-     "t": "धन्यवाद। और यह कितने का है?",
-     "tl": "dhanyavād. aur yah kitne kā hai?"
-    },
-    {
-     "t": "दस रुपये।",
-     "tl": "das rupaye."
-    },
-    {
-     "n": "Soon you will be able to ask where things are and how much they cost. First, some review."
+     "n": "Lesson 3. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'excuse me'."
@@ -2261,7 +2210,8 @@
     {
      "n": "Excellent. In the next lesson you will order tea and food, and learn to say what you would like. This is the end of lesson three."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a4",
@@ -2270,26 +2220,7 @@
    "goal": "Order drinks and food, say what you would like, and ask for the bill",
    "steps": [
     {
-     "n": "Listen to a customer at a small tea stall."
-    },
-    {
-     "t": "नमस्ते जी, क्या चाहिए?",
-     "tl": "namaste jī, kyā chāhiye?"
-    },
-    {
-     "t": "एक चाय दीजिए, बिना चीनी।",
-     "tl": "ek chāy dījiye, binā chīnī."
-    },
-    {
-     "t": "और कुछ?",
-     "tl": "aur kuchh?"
-    },
-    {
-     "t": "जी हाँ, पानी भी। धन्यवाद।",
-     "tl": "jī hān, pānī bhī. dhanyavād."
-    },
-    {
-     "n": "By the end of this lesson you will order tea, water and food. First, some review."
+     "n": "Lesson 4. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'how much is this?'."
@@ -3014,7 +2945,8 @@
     {
      "n": "Well done. Next time you will ask for directions and take an auto-rickshaw. This is the end of lesson four."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a5",
@@ -3023,26 +2955,7 @@
    "goal": "Ask how far a place is, follow simple directions, and bargain for an auto",
    "steps": [
     {
-     "n": "Listen to a traveller asking a shopkeeper about the airport."
-    },
-    {
-     "t": "भाई साहब, एयरपोर्ट कितनी दूर है?",
-     "tl": "bhāī sāhab, eyarporṭ kitnī dūr hai?"
-    },
-    {
-     "t": "ज़्यादा दूर नहीं। सीधे जाइए, फिर बाएँ।",
-     "tl": "zyādā dūr nahīn. sīdhe jāiye, phir bāyen."
-    },
-    {
-     "t": "ऑटो से कितना होगा?",
-     "tl": "auṭo se kitnā hogā?"
-    },
-    {
-     "t": "दो सौ रुपये।",
-     "tl": "do sau rupaye."
-    },
-    {
-     "n": "In this lesson you will ask how far something is, understand simple directions, and take an auto-rickshaw. A little review first."
+     "n": "Lesson 5. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask where the station is."
@@ -3750,7 +3663,8 @@
     {
      "n": "Very good. In the next lesson you will ask the time and learn the days of the week. This is the end of lesson five."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a6",
@@ -3759,26 +3673,7 @@
    "goal": "Ask and tell the time, say today and tomorrow, and name the days of the week",
    "steps": [
     {
-     "n": "Listen to someone asking the time and the day."
-    },
-    {
-     "t": "माफ़ कीजिए, कितने बजे हैं?",
-     "tl": "māf kījiye, kitne baje hain?"
-    },
-    {
-     "t": "तीन बजे हैं।",
-     "tl": "tīn baje hain."
-    },
-    {
-     "t": "और आज कौन सा दिन है?",
-     "tl": "aur āj kaun sā din hai?"
-    },
-    {
-     "t": "आज सोमवार है। कल मंगलवार।",
-     "tl": "āj somvār hai. kal mangalvār."
-    },
-    {
-     "n": "In this lesson you will ask and tell the time, and learn the days of the week. First, review."
+     "n": "Lesson 6. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask how much it will be by auto."
@@ -4465,7 +4360,8 @@
     {
      "n": "Well done. In the next lesson you will introduce yourself and talk about your family. This is the end of lesson six."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a7",
@@ -4474,26 +4370,7 @@
    "goal": "Introduce yourself, say where you are from, and introduce family members",
    "steps": [
     {
-     "n": "Listen to two people introducing themselves at a wedding."
-    },
-    {
-     "t": "नमस्ते, मेरा नाम राहुल है। आपका नाम क्या है?",
-     "tl": "namaste, merā nām rāhul hai. āpkā nām kyā hai?"
-    },
-    {
-     "t": "मेरा नाम अना है। आप कहाँ से हैं?",
-     "tl": "merā nām anā hai. āp kahān se hain?"
-    },
-    {
-     "t": "मैं दिल्ली से हूँ। यह मेरी पत्नी है।",
-     "tl": "main dillī se hūn. yah merī patnī hai."
-    },
-    {
-     "t": "आपसे मिलकर ख़ुशी हुई।",
-     "tl": "āpse milkar khushī huī."
-    },
-    {
-     "n": "In this lesson you will say your name, where you are from, and introduce your family. Some review first."
+     "n": "Lesson 7. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'hello, how are you?'."
@@ -5207,7 +5084,8 @@
     {
      "n": "Excellent. Next time you will say what you like and what you want to do. This is the end of lesson seven."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a8",
@@ -5216,26 +5094,7 @@
    "goal": "Say what you like and dislike, and what you want or want to do",
    "steps": [
     {
-     "n": "Listen to a host and a guest talking about food."
-    },
-    {
-     "t": "क्या आपको भारतीय खाना पसंद है?",
-     "tl": "kyā āpko bhāratīya khānā pasand hai?"
-    },
-    {
-     "t": "जी हाँ, मुझे बहुत पसंद है। ख़ासकर दाल।",
-     "tl": "jī hān, mujhe bahut pasand hai. khāskar dāl."
-    },
-    {
-     "t": "क्या आप चाय चाहते हैं?",
-     "tl": "kyā āp chāy chāhte hain?"
-    },
-    {
-     "t": "जी नहीं, मैं कॉफ़ी चाहता हूँ।",
-     "tl": "jī nahīn, main kŏfī chāhtā hūn."
-    },
-    {
-     "n": "In this lesson you will say what you like and what you want to do. First, some review."
+     "n": "Lesson 8. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'I would like tea'."
@@ -5955,7 +5814,8 @@
     {
      "n": "Very good. In the next lesson you will talk about what you did yesterday. This is the end of lesson eight."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a9",
@@ -5964,26 +5824,7 @@
    "goal": "Say where you went and what you ate, drank and saw, and ask others",
    "steps": [
     {
-     "n": "Listen to two friends talking about yesterday."
-    },
-    {
-     "t": "कल आप कहाँ गए?",
-     "tl": "kal āp kahān gaye?"
-    },
-    {
-     "t": "मैं बाज़ार गया। मैंने चाय पी।",
-     "tl": "main bāzār gayā. mainne chāy pī."
-    },
-    {
-     "t": "क्या आपने खाना खाया?",
-     "tl": "kyā āpne khānā khāyā?"
-    },
-    {
-     "t": "जी हाँ, बहुत अच्छा था।",
-     "tl": "jī hān, bahut achchhā thā."
-    },
-    {
-     "n": "In this lesson you will talk about the past: where you went, what you ate and drank. Some review first."
+     "n": "Lesson 9. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'I want to go to Delhi'."
@@ -6703,7 +6544,8 @@
     {
      "n": "Well done. Next time you will make plans with a friend. This is the end of lesson nine."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a10",
@@ -6712,34 +6554,7 @@
    "goal": "Suggest plans, accept or hedge, and agree on a meeting time",
    "steps": [
     {
-     "n": "Listen to two friends making plans for tomorrow evening."
-    },
-    {
-     "t": "कल शाम को क्या कर रहे हैं?",
-     "tl": "kal shām ko kyā kar rahe hain?"
-    },
-    {
-     "t": "कुछ नहीं। क्यों?",
-     "tl": "kuchh nahīn. kyon?"
-    },
-    {
-     "t": "चलिए, फ़िल्म देखने चलें।",
-     "tl": "chaliye, film dekhne chalen."
-    },
-    {
-     "t": "ज़रूर! कितने बजे मिलेंगे?",
-     "tl": "zarūr! kitne baje milenge?"
-    },
-    {
-     "t": "सात बजे, ठीक है?",
-     "tl": "sāt baje, ṭhīk hai?"
-    },
-    {
-     "t": "ठीक है, फिर मिलेंगे।",
-     "tl": "ṭhīk hai, phir milenge."
-    },
-    {
-     "n": "In this lesson you will suggest doing something together and agree on a time. Some review first."
+     "n": "Lesson 10. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'tomorrow evening'."
@@ -7464,7 +7279,8 @@
     {
      "n": "Very good. In the next lesson you will go shopping and bargain in a market. This is the end of lesson ten."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a11",
@@ -7473,34 +7289,7 @@
    "goal": "Bargain politely, use hundreds and thousands, and ask about paying by card",
    "steps": [
     {
-     "n": "Listen to a shopper bargaining in a market."
-    },
-    {
-     "t": "भाई साहब, यह कितने का है?",
-     "tl": "bhāī sāhab, yah kitne kā hai?"
-    },
-    {
-     "t": "पाँच सौ रुपये।",
-     "tl": "pānch sau rupaye."
-    },
-    {
-     "t": "बहुत महँगा है। थोड़ा कम कीजिए।",
-     "tl": "bahut mahangā hai. thoṛā kam kījiye."
-    },
-    {
-     "t": "ठीक है, चार सौ।",
-     "tl": "ṭhīk hai, chār sau."
-    },
-    {
-     "t": "ठीक है, मुझे यह चाहिए। क्या कार्ड चलेगा?",
-     "tl": "ṭhīk hai, mujhe yah chāhiye. kyā kārḍ chalegā?"
-    },
-    {
-     "t": "जी नहीं, सिर्फ़ नक़द।",
-     "tl": "jī nahīn, sirf naqad."
-    },
-    {
-     "n": "In this lesson you will bargain politely, handle larger numbers, and ask about paying by card. Review first."
+     "n": "Lesson 11. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask how much this is."
@@ -8207,7 +7996,8 @@
     {
      "n": "Excellent. The last lesson reviews everything in one real conversation. This is the end of lesson eleven."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a12",
@@ -8216,62 +8006,7 @@
    "goal": "Handle a real conversation using everything from the course, and ask people to repeat or slow down",
    "steps": [
     {
-     "n": "This is the last lesson. Listen to a longer conversation: a visitor from America chats with the owner of a tea stall. You know almost all of it."
-    },
-    {
-     "t": "नमस्ते जी, आप कैसे हैं?",
-     "tl": "namaste jī, āp kaise hain?"
-    },
-    {
-     "t": "मैं ठीक हूँ, धन्यवाद। आप कहाँ से हैं?",
-     "tl": "main ṭhīk hūn, dhanyavād. āp kahān se hain?"
-    },
-    {
-     "t": "मैं अमेरिका से हूँ। मैं थोड़ी हिंदी बोलता हूँ।",
-     "tl": "main amerikā se hūn. main thoṛī hindī boltā hūn."
-    },
-    {
-     "t": "बहुत अच्छा! कल आप कहाँ गए?",
-     "tl": "bahut achchhā! kal āp kahān gaye?"
-    },
-    {
-     "t": "माफ़ कीजिए, फिर से कहिए। धीरे बोलिए।",
-     "tl": "māf kījiye, phir se kahiye. dhīre boliye."
-    },
-    {
-     "t": "कोई बात नहीं। कल आप कहाँ गए?",
-     "tl": "koī bāt nahīn. kal āp kahān gaye?"
-    },
-    {
-     "t": "अच्छा, मैं समझ गया। कल मैं बाज़ार गया। बहुत महँगा था।",
-     "tl": "achchhā, main samajh gayā. kal main bāzār gayā. bahut mahangā thā."
-    },
-    {
-     "t": "क्या आप चाय चाहते हैं?",
-     "tl": "kyā āp chāy chāhte hain?"
-    },
-    {
-     "t": "जी हाँ, एक चाय दीजिए, बिना चीनी।",
-     "tl": "jī hān, ek chāy dījiye, binā chīnī."
-    },
-    {
-     "t": "कल शाम को क्या कर रहे हैं? चलिए, खाना खाने चलें।",
-     "tl": "kal shām ko kyā kar rahe hain? chaliye, khānā khāne chalen."
-    },
-    {
-     "t": "ज़रूर! कितने बजे मिलेंगे?",
-     "tl": "zarūr! kitne baje milenge?"
-    },
-    {
-     "t": "सात बजे, ठीक है?",
-     "tl": "sāt baje, ṭhīk hai?"
-    },
-    {
-     "t": "ठीक है, फिर मिलेंगे।",
-     "tl": "ṭhīk hai, phir milenge."
-    },
-    {
-     "n": "Only a few phrases were new: 'say it again', 'speak slowly', 'no problem' and 'I understood'. You will learn them now, then review the whole course."
+     "n": "Lesson 12. Let's go! Listen, then say it with me."
     },
     {
      "n": "Here is 'please say it again'. Listen and repeat."
@@ -8949,7 +8684,8 @@
     {
      "n": "Congratulations. You can now greet people, ask for help, order food, get around, talk about your family, your likes and your plans, and bargain in a market, all in Hindi. Keep listening, keep speaking, and never be afraid to say 'please say it again'. This is the end of the course."
     }
-   ]
+   ],
+   "short": true
   }
  ]
 }
