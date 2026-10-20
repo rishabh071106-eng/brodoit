@@ -385,23 +385,8 @@ Keep total response under 90 words. Use sophisticated vocabulary yourself natura
 
 Be warm but direct. Never explain that you are an AI.`;
 
-app.post('/api/transcribe',async(req,res)=>{
-  const t=req.headers['x-token'];if(!t)return res.status(401).json({error:'auth'});
-  try{const u=jwt.verify(t,JWT_SECRET);if(!u)return res.status(401).json({error:'invalid'})}catch(e){return res.status(401).json({error:'invalid'})}
-  if(!groqKey())return res.status(503).json({error:'Transcription not configured'});
-  try{
-    const chunks=[];for await(const c of req)chunks.push(c);const buf=Buffer.concat(chunks);
-    const FormData=(await import('node-fetch')).default?null:null;
-    const boundary='----FormBoundary'+Date.now().toString(36);
-    const ct=req.headers['content-type']||'audio/webm';
-    const head=Buffer.from('--'+boundary+'\\r\\nContent-Disposition: form-data; name="file"; filename="voice.webm"\\r\\nContent-Type: '+ct+'\\r\\n\\r\\n');
-    const model=Buffer.from('\\r\\n--'+boundary+'\\r\\nContent-Disposition: form-data; name="model"\\r\\n\\r\\nwhisper-large-v3\\r\\n--'+boundary+'--\\r\\n');
-    const body=Buffer.concat([head,buf,model]);
-    const r=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{method:'POST',headers:{'Authorization':'Bearer '+groqKey(),'Content-Type':'multipart/form-data; boundary='+boundary},body});
-    const d=await r.json();
-    res.json({text:d.text||''});
-  }catch(e){console.error('[transcribe]',e.message);res.status(500).json({error:'Transcription failed'})}
-});
+// v20: Notes' voice recorder (app/voicenote.js): /api/transcribe is Bro's hearing, /api/notes/translate (modules/notes.js)
+try{require('./modules/notes.js').install(app,{auth})}catch(e){console.log('[notes] off:',e.message)}
 
 app.post('/api/coach/chat',auth,async(req,res)=>{
   if(!groqKey()&&!geminiKey())return res.status(503).json({error:'AI coach not configured.'});
@@ -2737,7 +2722,7 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
 <link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=22"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=22">
-<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=22" defer></script><script src="/app/you.js?v=21" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=23" defer></script><script src="/app/news.js?v=22" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=24" defer></script><script src="/app/onboarding.js?v=21" defer></script><script src="/app/motion.js?v=21" defer></script>
+<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=22" defer></script><script src="/app/you.js?v=21" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=23" defer></script><script src="/app/voicenote.js?v=1" defer></script><script src="/app/news.js?v=22" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=24" defer></script><script src="/app/onboarding.js?v=21" defer></script><script src="/app/motion.js?v=21" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -9793,32 +9778,22 @@ function stV(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition
 // ─── NOTES FUNCTIONS ───
 const NOTE_CATS=[{k:'personal',l:'Personal',icon:'\\u{1F3E0}'},{k:'work',l:'Work',icon:'\\u{1F4BC}'},{k:'ideas',l:'Ideas',icon:'\\u{1F4A1}'},{k:'learning',l:'Learning',icon:'\\u{1F4DA}'},{k:'journal',l:'Journal',icon:'\\u{1F4D3}'}];
 function _saveNotes(){localStorage.setItem('tf_notes',JSON.stringify(S.notes))}
-function noteSelectCat(k){S.noteCategory=k;S.noteView='edit';S.noteEdit={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),category:k,title:'',content:'',drawing:null,voiceUrl:null,transcript:'',created:new Date().toISOString()};render()}
-function noteOpen(id){const n=S.notes.find(x=>x.id===id);if(!n)return;S.noteEdit={...n};S.noteView='edit';S.noteCategory=n.category;render()}
+function noteSelectCat(k){S.noteCategory=k;S.noteView='edit';S.noteTranscript='';S.noteEdit={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),category:k,title:'',content:'',drawing:null,voiceUrl:null,transcript:'',created:new Date().toISOString()};render()}
+function noteOpen(id){const n=S.notes.find(x=>x.id===id);if(!n)return;S.noteTranscript='';S.noteEdit={...n};S.noteView='edit';S.noteCategory=n.category;render()}
 function noteSave(){if(!S.noteEdit)return;const idx=S.notes.findIndex(x=>x.id===S.noteEdit.id);if(idx>-1)S.notes[idx]={...S.noteEdit,updated:new Date().toISOString()};else S.notes.unshift({...S.noteEdit,updated:new Date().toISOString()});_saveNotes();S.noteView='list';S.noteEdit=null;S.noteCategory=null;toast('\\u{1F4DD} Note saved');render()}
 function noteDelete(id){S.notes=S.notes.filter(x=>x.id!==id);_saveNotes();S.noteView='list';S.noteEdit=null;toast('\\u{1F5D1}\\uFE0F Deleted');render()}
 function noteBack(){S.noteView='list';S.noteEdit=null;render()}
-let _noteRec=null,_noteRecStart=0,_noteRecInterval=null;
-function noteStartRec(){
-  if(!navigator.mediaDevices){toast('\\u26A0\\uFE0F Microphone not available','err');return}
-  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
-    _noteRec=new MediaRecorder(stream);const chunks=[];
-    _noteRec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data)};
-    _noteRec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());const blob=new Blob(chunks,{type:'audio/webm'});S.noteVoiceBlob=blob;S.noteRecording=false;clearInterval(_noteRecInterval);render();noteTranscribe(blob)};
-    _noteRec.start();S.noteRecording=true;_noteRecStart=Date.now();
-    _noteRecInterval=setInterval(()=>render(),1000);render()
-  }).catch(()=>{toast('\\u26A0\\uFE0F Mic permission denied','err')})
+// v20: voice notes open Bro's full-screen recorder (app/voicenote.js, window.BroNote): speak, it is written down
+// (Bro's hearing), translate it, save it as a new note or add it to the open one
+function noteVoice(mode){
+  if(!window.BroNote){toast('\\u26A0\\uFE0F Voice notes are still loading, try again','err');return}
+  const inNote=mode==='append'&&S.noteView==='edit'&&S.noteEdit;
+  BroNote.open({lang:S.lang==='hi'?'hi':'',
+    onAppend:inNote?function(t){if(!S.noteEdit)return;S.noteEdit.content=(S.noteEdit.content?S.noteEdit.content+'\\n':'')+t;S.noteEdit.transcript=t;render()}:null,
+    onSave:function(n){const at=new Date().toISOString();S.notes.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),category:(S.noteEdit&&S.noteEdit.category)||S.noteCategory||'personal',title:n.title,content:n.text,drawing:null,voiceUrl:null,transcript:n.transcript,created:at,updated:at});_saveNotes();toast('\\u{1F399}\\uFE0F Voice note saved');render()}});
 }
-function noteStopRec(){if(_noteRec&&_noteRec.state==='recording')_noteRec.stop()}
-async function noteTranscribe(blob){
-  S.noteTranscript='Transcribing...';render();
-  try{
-    const r=await fetch('/api/transcribe',{method:'POST',headers:{'Content-Type':blob.type,'x-token':token},body:blob});
-    const d=await r.json();
-    if(d&&d.text){S.noteTranscript=d.text;if(S.noteEdit){S.noteEdit.content=(S.noteEdit.content?S.noteEdit.content+'\\n':'')+d.text;S.noteEdit.transcript=d.text}render()}
-    else{S.noteTranscript='';toast('\\u26A0\\uFE0F Could not transcribe','err');render()}
-  }catch(e){S.noteTranscript='';toast('\\u26A0\\uFE0F Transcription failed','err');render()}
-}
+function noteStartRec(){noteVoice('append')}
+function noteStopRec(){}
 let _noteCanvas=null,_noteCtx=null,_noteDraw=false;
 function noteInitCanvas(){
   setTimeout(()=>{
@@ -15395,25 +15370,13 @@ if(S.tab==='tasks'){
       h+='<textarea placeholder="Start writing..." oninput="S.noteEdit.content=this.value">'+esc(S.noteEdit.content||'')+'</textarea>';
       h+='<div class="note-toolbar">';
       h+='<button class="note-tool-btn'+(S.noteDrawing?' active':'')+'" onclick="S.noteDrawing=!S.noteDrawing;render();if(S.noteDrawing)noteInitCanvas()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg> Draw</button>';
-      h+='<button class="note-tool-btn'+(S.noteRecording?' active':'')+'" onclick="'+(S.noteRecording?'noteStopRec()':'noteStartRec()')+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg> '+(S.noteRecording?'Stop':'Voice')+'</button>';
-      if(S.noteTranscript&&S.noteTranscript!=='Transcribing...')h+='<span style="font:400 12px var(--sans);color:var(--text-mute);padding:6px">\\u2705 Transcribed</span>';
-      if(S.noteTranscript==='Transcribing...')h+='<span style="font:400 12px var(--sans);color:var(--accent);padding:6px">\\u23F3 Transcribing...</span>';
+      h+='<button class="note-tool-btn" onclick="noteVoice(\\'append\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg> Voice</button>';
       h+='</div>';
       h+='</div>';
       // Drawing canvas
       if(S.noteDrawing){
         h+='<div class="note-canvas-wrap"><canvas id="noteDrawCanvas" style="touch-action:none"></canvas></div>';
         h+='<div style="display:flex;gap:8px;margin-top:8px"><button class="note-tool-btn" onclick="noteClearCanvas()">Clear Canvas</button></div>';
-      }
-      // Voice recorder UI
-      if(S.noteRecording){
-        const _recSec=Math.floor((Date.now()-_noteRecStart)/1000);
-        const _recMin=Math.floor(_recSec/60);const _recS=_recSec%60;
-        h+='<div class="note-voice-rec">';
-        h+='<button class="note-voice-btn rec" onclick="noteStopRec()"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>';
-        h+='<div class="note-voice-wave"><span></span><span></span><span></span><span></span><span></span><span></span></div>';
-        h+='<span class="note-voice-time">'+String(_recMin).padStart(2,'0')+':'+String(_recS).padStart(2,'0')+'</span>';
-        h+='</div>';
       }
       // Show saved drawing preview
       if(S.noteEdit.drawing&&!S.noteDrawing){
@@ -15434,6 +15397,8 @@ if(S.tab==='tasks'){
       });
       h+='</div>';
     } else {
+      // v20: the voice recorder, front and centre
+      h+='<button class="nv-cta" onclick="noteVoice()"><span class="nv-ic">'+(window.ico?ico('mic',26):'')+'</span><span><b>'+(S.lang==='hi'?'वॉइस नोट रिकॉर्ड करें':'Record a voice note')+'</b><small>'+(S.lang==='hi'?'बोलिए, Bro लिख देगा। एक टैप में अनुवाद।':'Speak, and Bro writes it down. Translate it in one tap.')+'</small></span></button>';
       // Notes list
       h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
       h+='<span style="font:600 15px var(--sans);color:var(--ink)">Your Notes</span>';
