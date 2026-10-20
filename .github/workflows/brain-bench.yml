@@ -1,0 +1,45 @@
+# Bro's own brain: benchmarks candidate open models (GGUF, CPU only) the way a live call uses them, on a 4-vCPU runner.
+# Push a branch named bench/<anything> to run it. Results are printed as BENCH lines in each job's log, with each
+# file's sha256 and size (mind.js pins those).
+name: Brain bench
+on:
+  push:
+    branches: ['bench/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: qwen3-4b-2507
+            url: https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/resolve/main/Qwen3-4B-Instruct-2507-Q4_K_M.gguf
+          - label: gemma3-4b
+            url: https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf
+          - label: llama3.2-3b
+            url: https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf
+          - label: qwen3-1.7b
+            url: https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Runtime (prebuilt CPU binaries only)
+        env:
+          NODE_LLAMA_CPP_SKIP_DOWNLOAD: 'true'
+        run: |
+          mkdir -p /tmp/bench && cp brocore/bench/brain-bench.mjs /tmp/bench/ && cd /tmp/bench
+          npm init -y > /dev/null && npm install --no-audit --no-fund node-llama-cpp@3.22.2
+      - name: Model
+        run: |
+          curl -fL --retry 5 --retry-delay 5 -o /tmp/bench/model.gguf '${{ matrix.url }}'
+          echo "MODEL ${{ matrix.label }} bytes=$(stat -c %s /tmp/bench/model.gguf) sha256=$(sha256sum /tmp/bench/model.gguf | cut -d' ' -f1) url=${{ matrix.url }}"
+      - name: Bench (4 threads, like a 4-vCPU server)
+        run: cd /tmp/bench && node brain-bench.mjs model.gguf '${{ matrix.label }}' 4
+      - name: Bench (2 threads, half the cores; Bro's voice keeps the rest)
+        run: cd /tmp/bench && node brain-bench.mjs model.gguf '${{ matrix.label }}-2t' 2
