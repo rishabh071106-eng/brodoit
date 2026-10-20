@@ -6,6 +6,9 @@
 //   GET /android                   install page (big button + 3 steps + QR for desktop)
 //   GET /api/android/status        { ready, version, build, apk_url, cert_sha256, built_at }
 //   GET /.well-known/assetlinks.json gains the com.brodoit.app statement via deps (see server.js)
+//   GET /download/upload_certificate.pem  the upload key's certificate (public; Play Console's one-time upload key reset)
+// v19: the release holds two flavors of one build: the APK is com.brodoit.app (sideload, above) and the bundle is
+// com.brodoit.twa, the existing Google Play listing, which modules/play.js uploads to Play's testing tracks.
 //   POST /api/admin/android/check  (admin) look for a new build now
 //   GET  /api/admin/android/keystore (admin) backup of the upload key (needed once for Play Console)
 'use strict';
@@ -13,6 +16,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { spawnSync } = require('child_process');
+const { createPlay } = require('./play.js');
 
 const PKG = 'com.brodoit.app';
 
@@ -30,6 +34,10 @@ function install(app, deps) {
   const run = (cmd, args, opts) => spawnSync(cmd, args, Object.assign({ encoding: 'utf8', timeout: 120000, maxBuffer: 16 << 20 }, opts || {}));
   const hasJava = (() => { try { const r = run('java', ['-version']); return r.status === 0; } catch (e) { return false; } })();
   let checking = null;
+  const play = createPlay(Object.assign({ getSetting: deps.getSetting || (k => process.env[k] || ''), dir, log: (...a) => console.log('[play]', ...a) }, deps.playOptions || {}));
+  // the signed bundle goes to Play only when it is the Play flavor (builds before v19 were com.brodoit.app)
+  const playBuild = () => state.ready && state.aab && state.aabPackage === play.status().package ? { aab: state.aab, versionCode: state.versionCode, version: state.version } : null;
+  const syncPlay = () => play.sync(playBuild()).catch(e => log('play', e.message));
 
   // ───── upload key (one per server, kept on the volume) ─────
   const ksPath = path.join(dir, 'upload.jks'), ksMeta = path.join(dir, 'keystore.json');
@@ -105,6 +113,7 @@ function install(app, deps) {
         if (j.status === 0) aab = path.join(rdir, 'brodoit.aab'); else log('jarsigner', (j.stderr || j.stdout || '').slice(0, 200));
       }
       state = { ready: true, tag: rel.tag_name, repo: rel.repo, build: build.build || null, version: build.version || rel.tag_name.replace(/^android-v/, ''), sha: build.sha || null,
+        versionCode: build.versionCode || build.build || null, aabPackage: build.aabPackage || PKG,
         apk: apkOut, aab, size: fs.statSync(apkOut).size, cert_sha256: fp ? fp.match(/../g).join(':').toUpperCase() : cert(), built_at: rel.published_at || rel.created_at, signed_at: new Date().toISOString(), last_check: new Date().toISOString(), note: '' };
       save(); log('signed', state.version, state.cert_sha256);
       // keep only the newest two builds on disk
@@ -114,7 +123,8 @@ function install(app, deps) {
     return checking;
   }
   const status = () => ({ ready: !!(state.ready && state.apk && fs.existsSync(state.apk)), version: state.version || null, build: state.build || null, tag: state.tag || null,
-    apk_url: PUBLIC_URL + '/download/brodoit.apk', page_url: PUBLIC_URL + '/android', size: state.size || null, cert_sha256: state.cert_sha256 || null, package: PKG, built_at: state.built_at || null, last_check: state.last_check || null, note: state.note || '' });
+    apk_url: PUBLIC_URL + '/download/brodoit.apk', page_url: PUBLIC_URL + '/android', size: state.size || null, cert_sha256: state.cert_sha256 || null, package: PKG, built_at: state.built_at || null, last_check: state.last_check || null, note: state.note || '',
+    versionCode: state.versionCode || null, play: play.status() });
 
   // ───── routes ─────
   const isAdmin = req => !!(req.user && isAdminUser && isAdminUser(req.user));
@@ -131,7 +141,16 @@ function install(app, deps) {
     if (!state.aab || !fs.existsSync(state.aab)) return res.status(404).json({ error: 'no bundle yet' });
     res.set('Content-Disposition', `attachment; filename="Brodoit-${state.version}.aab"`); fs.createReadStream(state.aab).pipe(res);
   });
-  app.post('/api/admin/android/check', auth, async (req, res) => { if (!isAdmin(req)) return res.status(403).json({ error: 'admin only' }); await check(true); res.json(status()); });
+  // the upload key's certificate (no secret in it): Play Console → App integrity → Upload key → Request upload key reset
+  app.get('/download/upload_certificate.pem', (req, res) => {
+    const m = keystore(); if (!m) return res.status(503).type('text/plain').send('The upload key is not ready yet.');
+    const r = run('keytool', ['-exportcert', '-rfc', '-alias', m.alias, '-keystore', ksPath, '-storepass', m.pass]);
+    const pem = String(r.stdout || '').match(/-----BEGIN CERTIFICATE-----[\s\S]+?-----END CERTIFICATE-----/);
+    if (r.status !== 0 || !pem) return res.status(500).type('text/plain').send('Could not read the certificate.');
+    res.set('Content-Type', 'application/x-pem-file'); res.set('Content-Disposition', 'attachment; filename="upload_certificate.pem"');
+    res.send(pem[0] + '\n');
+  });
+  app.post('/api/admin/android/check', auth, async (req, res) => { if (!isAdmin(req)) return res.status(403).json({ error: 'admin only' }); await check(true); await syncPlay(); res.json(status()); });
   app.get('/api/admin/android/keystore', auth, (req, res) => {
     if (!isAdmin(req)) return res.status(403).json({ error: 'admin only' });
     const m = keystore(); if (!m) return res.status(404).json({ error: 'no keystore' });
@@ -147,15 +166,16 @@ function install(app, deps) {
 ${s.ready ? `<a class="btn" href="/download/brodoit.apk">Install · v${esc(s.version)}</a><div class="meta">${Math.round((s.size || 0) / 1024 / 102.4) / 10} MB · Android 8+ · no Play account needed</div>` : `<span class="btn dis">Building the app…</span><div class="meta">${esc(s.note || 'Come back in a few minutes.')}</div>`}
 <ol><li>Tap <b>Install</b>, then open the downloaded file.</li><li>If asked, allow installs from Chrome (one time).</li><li>Open Brodoit and tap <b>Allow</b> for Physical activity. Done.</li></ol>
 <div class="qr" id="qr" hidden></div>
+<div class="small">Prefer Google Play? <a href="/beta">Join the Play test</a> and install it from the Play Store instead.</div>
 <div class="small">Already use the web app? Your account and streak carry over: the app is the same Brodoit, plus background steps. iPhone: the Steps tab has a 2-minute Shortcut setup instead.</div>
 </div><script>if(!/Android/i.test(navigator.userAgent)){var q=document.getElementById('qr');q.hidden=false;q.innerHTML='<img width="160" height="160" alt="QR" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data='+encodeURIComponent(location.origin+'/android')+'">'}</script></body></html>`);
   });
 
   // ───── schedule ─────
-  setTimeout(() => check(false).catch(() => {}), 8000);
-  setInterval(() => check(false).catch(() => {}), 60 * 60 * 1000);
+  setTimeout(() => check(false).catch(() => {}).then(syncPlay), 8000);
+  setInterval(() => check(false).catch(() => {}).then(syncPlay), 10 * 60 * 1000); // a new build is live within 10 minutes
   log(hasJava ? 'signing ready (java ✅)' : 'java ❌ — APKs cannot be signed on this server', '· releases from', REPOS.join(', '));
-  return { status, check, cert, PKG };
+  return { status, check, cert, PKG, play, syncPlay };
 }
 
 module.exports = { install, PKG };

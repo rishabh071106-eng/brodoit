@@ -125,3 +125,33 @@ jobs:
             out/brodoit-unsigned.aab
             out/apksigner.jar
             out/build.json
+
+  # the tester link serves this build: brodoit.com signs it within minutes; check what a tester downloads
+  live:
+    needs: publish
+    # the server takes its builds from taskflow (modules/android.js); the brodoit mirror's run numbers differ
+    if: github.repository == 'rishabh071106-eng/taskflow'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: brodoit.com/android serves this build, signed with the server's upload key
+        run: |
+          set -u
+          want=1.0.${{ github.run_number }}; vc=$((1000 + ${{ github.run_number }}))
+          for i in $(seq 1 50); do
+            st=$(curl -fsS --max-time 20 https://brodoit.com/api/android/status || echo '{}')
+            [ "$(echo "$st" | jq -r '.version // ""')" = "$want" ] && [ "$(echo "$st" | jq -r '.ready')" = true ] && break
+            echo "waiting for $want ($i): $(echo "$st" | jq -c '{ready, version, note}')"; sleep 30
+          done
+          echo "status: $(echo "$st" | jq -c '{ready, version, versionCode, package, size, cert_sha256, play}')"
+          [ "$(echo "$st" | jq -r '.version // ""')" = "$want" ] || { echo "::error::brodoit.com did not pick up $want in 25 minutes"; exit 1; }
+          [ "$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://brodoit.com/android)" = 200 ] || { echo "::error::brodoit.com/android is not answering"; exit 1; }
+          curl -fsSL --max-time 180 -o /tmp/b.apk https://brodoit.com/download/brodoit.apk
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          V=$("$BT/apksigner" verify --print-certs /tmp/b.apk 2>&1) || { echo "::error::the served APK does not verify: $V"; exit 1; }
+          FP=$(echo "$V" | grep -oiE 'SHA-256 digest: [0-9a-f]{64}' | head -1 | awk '{print toupper($3)}' | sed 's/../&:/g; s/:$//')
+          [ "$FP" = "$(echo "$st" | jq -r '.cert_sha256')" ] || { echo "::error::the APK is signed by $FP, not the server's upload key"; exit 1; }
+          B=$("$BT/aapt2" dump badging /tmp/b.apk | head -3); echo "$B"
+          echo "$B" | grep -q "package: name='com.brodoit.app' versionCode='$vc'" || { echo "::error::the served APK is not com.brodoit.app $vc"; exit 1; }
+          echo "$B" | grep -q "targetSdkVersion:'36'" || { echo "::error::the served APK does not target SDK 36"; exit 1; }
+          echo "::notice::Testers get Brodoit $want (com.brodoit.app, versionCode $vc) at https://brodoit.com/android, signed by the server's upload key. Google Play: $(echo "$st" | jq -c '.play')"

@@ -15,9 +15,12 @@ const TAIL = 40;           // lines sent with /status
 const VERIFY_MS = 8000;    // provider check timeout
 const BOOKS_TOTAL = 106;
 const LESSONS_TOTAL = 60;
-const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'STUDIO_VOICE', 'BRO_VOICE', 'RUNPOD_API_KEY'];
+const SETTING_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'OPENAI_REALTIME_VOICE', 'ELEVEN_VOICE_EN', 'ELEVEN_VOICE_HI', 'BULK_VOICE', 'STUDIO_VOICE', 'BRO_VOICE', 'RUNPOD_API_KEY', 'PLAY_SERVICE_ACCOUNT_JSON'];
 const VERIFIABLE = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
-const STATUS_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY'];
+const STATUS_KEYS = ['OPENAI_API_KEY', 'ELEVENLABS_API_KEY', 'GEMINI_API_KEY', 'GROQ_API_KEY', 'PLAY_SERVICE_ACCOUNT_JSON'];
+// v19 Google Play: a service account key is a whole JSON file (spaces, ~2.3 KB); Google checks it by issuing a token
+const PLAY_KEY = 'PLAY_SERVICE_ACCOUNT_JSON';
+const hintOf = (k, v) => { if (k !== PLAY_KEY || !v) return maskKey(v); try { return maskKey(JSON.parse(v).client_email || ''); } catch (e) { return maskKey(v); } };
 const JOBS = {
   bulletin: { label: "Record today's bulletin" },
   'hindi-books': { label: 'Record Hindi books', script: 'hindi-books.js' },
@@ -217,7 +220,7 @@ function install(app, deps) {
   // ── status pieces ──
   function keysInfo() {
     const out = {};
-    for (const k of STATUS_KEYS) { const v = getSetting(k) || ''; out[k] = { set: !!v, source: v ? (settingSource(k) || 'env') : null, hint: maskKey(v) }; }
+    for (const k of STATUS_KEYS) { const v = getSetting(k) || ''; out[k] = { set: !!v, source: v ? (settingSource(k) || 'env') : null, hint: hintOf(k, v) }; }
     return out;
   }
   function voicesInfo() {
@@ -307,10 +310,10 @@ function install(app, deps) {
     if (!SETTING_KEYS.includes(key)) return res.status(400).json({ error: 'unknown key' });
     const value = String(b.value == null ? '' : b.value).trim();
     const verify = b.verify !== false && b.verify !== 'false', force = b.force === true || b.force === 'true';
-    const current = () => ({ key, source: settingSource(key), hint: maskKey(getSetting(key)) });
-    if (value.length > 512) return res.status(400).json({ error: 'value too long' });
-    if (/\s/.test(value)) return res.status(400).json({ error: 'a key has no spaces — check what you pasted' });
-    if (!VERIFIABLE.includes(key) && value && !/^[A-Za-z0-9_-]{1,64}$/.test(value)) return res.status(400).json({ error: 'voice names are letters, digits, - and _' });
+    const current = () => ({ key, source: settingSource(key), hint: hintOf(key, getSetting(key)) });
+    if (value.length > (key === PLAY_KEY ? 8192 : 512)) return res.status(400).json({ error: 'value too long' });
+    if (key !== PLAY_KEY && /\s/.test(value)) return res.status(400).json({ error: 'a key has no spaces — check what you pasted' });
+    if (!VERIFIABLE.includes(key) && key !== PLAY_KEY && value && !/^[A-Za-z0-9_-]{1,64}$/.test(value)) return res.status(400).json({ error: 'voice names are letters, digits, - and _' });
     try {
       if (!value) { setSetting(key, ''); if (key === 'GEMINI_API_KEY') gemState = null; return res.json({ ok: true, valid: null, saved: true, removed: true, ...current() }); }
       let valid = null, error = null, warning = null;
@@ -318,11 +321,16 @@ function install(app, deps) {
         const v = await verifyKey(key, value, fetchFn); valid = v.valid; error = v.error || null; warning = v.warning || null;
         if (valid !== true) return res.json({ ok: false, valid, saved: false, error, ...current() });
       }
+      if (key === PLAY_KEY && !force) {
+        const v = global._playVerify ? await global._playVerify(value) : { valid: null, error: 'The Android module is not running.' };
+        valid = v.valid; if (valid !== true) return res.json({ ok: false, valid, saved: false, error: v.error || null, ...current() });
+      }
       setSetting(key, value);
       if (key === 'GEMINI_API_KEY') { gemState = verify && !force ? { at: Date.now(), ok: !warning, warning: warning || '' } : null; if (!gemState) refreshCredits().catch(() => {}); }
       if (key === 'ELEVENLABS_API_KEY') EV.subscription(value, true).catch(() => {});
       if (key === 'ELEVENLABS_API_KEY' || key === 'OPENAI_API_KEY' || key === 'GEMINI_API_KEY') setTimeout(() => { try { autoRecord('key saved'); } catch (e) {} }, 1500);
       if (key === 'BRO_VOICE') setTimeout(() => { try { autoRecord('Bro voice changed'); } catch (e) {} }, 1500); // lessons re-record in the new voice
+      if (key === PLAY_KEY) setTimeout(() => { try { if (global._playSync) global._playSync(); } catch (e) {} }, 1500); // the newest build goes to Play now
       res.json({ ok: true, valid, saved: true, forced: !!force, ...(warning ? { warning } : {}), ...current() });
     } catch (e) { res.status(500).json({ error: e.message }); }
   });

@@ -28,7 +28,9 @@
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   const isHi = () => { try { return document.documentElement.lang === 'hi' || localStorage.getItem('bd_lang') === 'hi'; } catch (e) { return document.documentElement.lang === 'hi'; } };
-  const isTWA = () => { try { if (localStorage.getItem('bd_twa') === '1') return true; } catch (e) {} const r = /^android-app:\/\/com\.brodoit\./.test(document.referrer || ''); const q = /[?&](bd=|twa=1|device_id=)/.test(location.search || ''); if (r || q) { try { localStorage.setItem('bd_twa', '1'); } catch (e) {} } return r || q; };
+  // which Brodoit app opened us: com.brodoit.twa (Google Play) or com.brodoit.app (brodoit.com/android), from the TWA's referrer
+  const twaPkg = () => { const m = /^android-app:\/\/(com\.brodoit\.(?:twa|app))\b/.exec(document.referrer || ''); try { if (m) localStorage.setItem('bd_twa_pkg', m[1]); return m ? m[1] : (localStorage.getItem('bd_twa_pkg') || 'com.brodoit.app'); } catch (e) { return m ? m[1] : 'com.brodoit.app'; } };
+  const isTWA = () => { try { if (localStorage.getItem('bd_twa') === '1') return true; } catch (e) {} twaPkg(); const r = /^android-app:\/\/com\.brodoit\./.test(document.referrer || ''); const q = /[?&](bd=|twa=1|device_id=)/.test(location.search || ''); if (r || q) { try { localStorage.setItem('bd_twa', '1'); } catch (e) {} } return r || q; };
   const UA = () => navigator.userAgent || '';
   const isIOS = () => /iPhone|iPad|iPod/i.test(UA()) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isAndroid = () => /Android/i.test(UA());
@@ -479,7 +481,7 @@
   T.enableTap = async function () {
     if (T.enable.busy) return; hap('medium');
     let asked = false; try { const fn = nativeBridge(); if (fn) { fn(); asked = true; } } catch (e) {}
-    if (!asked && isTWA()) { try { location.href = 'intent://enable#Intent;scheme=brodoit;package=com.brodoit.app;S.browser_fallback_url=' + encodeURIComponent(location.origin + '/android') + ';end'; asked = true; } catch (e) {} }
+    if (!asked && isTWA()) { try { location.href = 'intent://enable#Intent;scheme=brodoit;package=' + twaPkg() + ';S.browser_fallback_url=' + encodeURIComponent(location.origin + '/android') + ';end'; asked = true; } catch (e) {} }
     try { document.dispatchEvent(new CustomEvent('brodoit:enable-steps', { bubbles: true })); } catch (e) {}
     try { window.postMessage({ type: 'brodoit:enable-steps' }, location.origin); } catch (e) {}
     const claimed = await claimFromURL();
@@ -893,5 +895,5 @@
   T.liveBoot = function () { if (T._liveBooted || !liveCan() || !ownerId()) return; T._liveBooted = true; (T.sum ? Promise.resolve() : T.loadSummary()).then(() => { if (T.sum && !W.on) T.liveStart(false); }).catch(() => {}); };
   setTimeout(() => T.liveBoot(), 2500);
   // expose a few internals for the test harness / integrator
-  T._internals = { onMotion, liveCan, floorGet, floorSet, metrics, guessState, isTWA, isHi, STR, flushStored, queuedAdd, ownerId, weekDays, jsStr, dayKey, claimFromURL };
+  T._internals = { onMotion, liveCan, floorGet, floorSet, metrics, guessState, isTWA, twaPkg, isHi, STR, flushStored, queuedAdd, ownerId, weekDays, jsStr, dayKey, claimFromURL };
 })();

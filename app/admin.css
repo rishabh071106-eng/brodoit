@@ -50,6 +50,7 @@ html[data-theme="dark"] .adm,:root[data-theme="dark"] .adm,body[data-theme=auror
 .adm-eye{background:var(--b-card);border:1px solid var(--b-line)}
 .adm-key-act{display:flex;gap:8px;flex-wrap:wrap}
 .adm-key-act .b-btn{min-height:44px}
+.adm-file{min-height:44px;margin:10px 0 2px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;max-width:100%}
 .adm-save{background:var(--b-violet);box-shadow:0 4px 0 0 #4A31B8}
 .adm-save:active{box-shadow:none}
 .adm-save[disabled],.adm-run[disabled]{opacity:.55;cursor:default;transform:none}
