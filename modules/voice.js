@@ -235,7 +235,9 @@ function install(app, deps) {
   const inflight = new Map(); // one synthesis per uncached News chunk, however many people tap Listen at once
   // Per-user limits on the routes that cost CPU on our voice box (or credits): speech 30 requests and 4,000 characters
   // a minute, 40,000 characters a day; hearing and classic turns 30 a minute. In memory, per server.
-  const TTS_CHARS_MIN = 4000, TTS_CHARS_DAY = 40000;
+  // v20: Bro's voice reads lessons, books and meditations too (on our CPU, free): roomier limits; live calls still go first
+  const TTS_CHARS_MIN = 8000, TTS_CHARS_DAY = 150000;
+  const TTS_LANGS = ['en', 'hi', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'zh']; // the languages Bro Core speaks
   const ttsHits = new Map(), ttsChars = new Map(), hearHits = new Map(), turnHits = new Map();
   setInterval(() => {
     const cut = Date.now() - 60e3, d = dayKey();
@@ -250,11 +252,13 @@ function install(app, deps) {
     if (b.min.reduce((s, x) => s + x[1], 0) + n > TTS_CHARS_MIN || b.day + n > TTS_CHARS_DAY) return false;
     b.min.push([now, n]); b.day += n; return true;
   }
-  app.post('/api/voice/tts', auth, perMinute(ttsHits, 30), safe(async (req, res) => {
+  app.post('/api/voice/tts', auth, perMinute(ttsHits, 60), safe(async (req, res) => {
     const who = whoOf(req), body = obj(req.body);
     const text = str(body.text, 20000).replace(/\s+/g, ' ').trim().slice(0, 1500);
     if (!text) return res.status(400).json({ error: 'text required' });
-    const lang = body.lang === 'hi' ? 'hi' : 'en';
+    // v20: every language Bro Core speaks ("es-ES" → es); Hindi script still switches to Hindi
+    const asked = String(body.lang || 'en').toLowerCase().split(/[-_]/)[0];
+    const lang = DEVANAGARI.test(text) ? 'hi' : TTS_LANGS.includes(asked) ? asked : 'en';
     const news = body.kind === 'news';
     const role = news ? 'narrator' : 'bro';
     const id = crypto.createHash('sha1').update(lang + '|' + role + '|' + text).digest('hex');
@@ -272,9 +276,15 @@ function install(app, deps) {
     // v16: Bro's own voice (Kokoro on our CPU) first, behind live calls in its queue; the paid studio voices only behind
     // the emergency switch, or when this server has no Bro Core at all
     const c = core();
+    const studio = () => STUDIO.speak({ text, lang, purpose: news ? 'daily' : 'live', role, getSetting, timeout: 25000, eleven: { format: 'mp3_44100_64', timeout: 20000, chunk: 1500 } });
+    // German has no native voice on our CPU: the studio's Bro voice reads it when it can (credit-guarded), else Bro Core
+    if (lang === 'de' && !news) {
+      try { const out = await studio(); if (ac.signal.aborted) return; if (out && out.buf) { res.set('Content-Type', out.mime); res.set('Cache-Control', 'no-store'); res.set('X-Voice', out.provider); return res.send(out.buf); } } catch (e) { /* Bro Core below */ }
+    }
     if (c && typeof c.speak === 'function' && coreVoiceReady()) {
       try {
-        const out = await c.speak(text, { lang: DEVANAGARI.test(text) ? 'hi' : lang, format: 'mp3', signal: ac.signal, priority: 'low' });
+        // a calm read (meditations): the same voice, slower; otherwise the voice style's own pace
+        const out = await c.speak(text, { lang, format: 'mp3', signal: ac.signal, priority: 'low', speed: body.mood === 'calm' ? 0.9 : undefined });
         if (ac.signal.aborted) return;
         if (out && out.audio && out.audio.length) {
           if (CACHE && news) { try { const f = path.join(CACHE, id + (out.mime === 'audio/wav' ? '.wav' : '.mp3')); if (!fs.existsSync(f)) fs.writeFileSync(f, out.audio); } catch (e) {} }
@@ -788,7 +798,7 @@ function install(app, deps) {
   const FINAL_RULE = 'You have the tool results above. Answer the user now, in plain speech, from those results. Do not call any more tools.';
   const NO_ANSWER = { en: 'Sorry, I could not find that just now. Ask me once more?', hi: 'माफ़ करना, अभी वो मिल नहीं पाया। एक बार फिर से पूछो?' };
   // the rescue answer's whole persona (see rescue()): short on purpose, so it fits any model's allowance
-  const RESCUE_PERSONA = 'You are Bro, a warm, sharp friend on a voice call. Answer what the user just asked, directly and naturally, in one to three short spoken sentences. If it depends on very recent events you cannot know, say so honestly and give what you do know.';
+  const RESCUE_PERSONA = 'You are Bro, an upbeat, high-energy friend on a voice call. Answer what the user just asked, directly and naturally, in one to three short spoken sentences. If it depends on very recent events you cannot know, say so honestly and give what you do know.';
   // a turn's trail in safe words (Bro Core's formatter: model, HTTP status, error kind; never what anyone said)
   const trailOf = tr => { try { const c = core(); return c && typeof c.trailText === 'function' ? c.trailText(tr) : ''; } catch (e) { return ''; } };
 

@@ -2737,7 +2737,7 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
 <link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=22"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=22">
-<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=22" defer></script><script src="/app/you.js?v=21" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/voice.js?v=23" defer></script><script src="/app/news.js?v=22" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=23" defer></script><script src="/app/onboarding.js?v=21" defer></script><script src="/app/motion.js?v=21" defer></script>
+<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=22" defer></script><script src="/app/you.js?v=21" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=23" defer></script><script src="/app/news.js?v=22" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=24" defer></script><script src="/app/onboarding.js?v=21" defer></script><script src="/app/motion.js?v=21" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -11144,8 +11144,8 @@ meditation:"Take a mindful break. Pick a one, five, ten, twenty, or thirty minut
 health:"Your health dashboard. Track your daily steps, set goals, stay hydrated, and monitor your activity over the week."
 };
 function pickBestVoice(){try{const vs=speechSynthesis.getVoices()||[];if(!vs.length)return null;const pref=['Samantha','Google UK English Female','Microsoft Aria Online (Natural) - English (United States)','Microsoft Jenny Online (Natural) - English (United States)','Google US English','Karen','Moira','Tessa','Veena','Fiona','Allison','Ava','Susan'];for(const name of pref){const v=vs.find(x=>x.name===name||x.name.indexOf(name)===0);if(v)return v}const en=vs.filter(v=>(v.lang||'').toLowerCase().startsWith('en'));const natural=en.find(v=>/natural|neural|premium|enhanced/i.test(v.name));if(natural)return natural;const female=en.find(v=>/female|samantha|karen|moira|tessa|veena|fiona|allison|ava|susan|aria|jenny/i.test(v.name));if(female)return female;return en[0]||vs[0]}catch(e){return null}}
-function speakIntro(){try{if(!('speechSynthesis' in window)){toast('\\u26A0\\uFE0F Voice not supported on this device','err');return}const t=TAB_INTROS[S.tab];if(!t)return;speechSynthesis.cancel();const go=()=>{const u=new SpeechSynthesisUtterance(t);const v=pickBestVoice();if(v){u.voice=v;u.lang=v.lang}u.rate=.92;u.pitch=1.05;u.volume=1;speechSynthesis.speak(u);toast('Playing intro')};const vs=speechSynthesis.getVoices();if(!vs||!vs.length){speechSynthesis.onvoiceschanged=()=>{speechSynthesis.onvoiceschanged=null;go()};setTimeout(go,250)}else go()}catch(e){toast('\\u26A0\\uFE0F Voice error','err')}}
-function stopSpeak(){try{speechSynthesis.cancel()}catch(e){}}
+function speakIntro(){try{if(window.BroSay){const t0=TAB_INTROS[S.tab];if(!t0)return;_ttsSpeak(t0,{lang:'en'});toast('Playing intro');return}if(!('speechSynthesis' in window)){toast('\\u26A0\\uFE0F Voice not supported on this device','err');return}const t=TAB_INTROS[S.tab];if(!t)return;speechSynthesis.cancel();const go=()=>{const u=new SpeechSynthesisUtterance(t);const v=pickBestVoice();if(v){u.voice=v;u.lang=v.lang}u.rate=.92;u.pitch=1.05;u.volume=1;speechSynthesis.speak(u);toast('Playing intro')};const vs=speechSynthesis.getVoices();if(!vs||!vs.length){speechSynthesis.onvoiceschanged=()=>{speechSynthesis.onvoiceschanged=null;go()};setTimeout(go,250)}else go()}catch(e){toast('\\u26A0\\uFE0F Voice error','err')}}
+function stopSpeak(){try{window.BroSay&&BroSay.stop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
 function filterBooks(v){S.bookSearch=v;const grid=document.getElementById('books-grid');if(!grid){render();return}const q=(v||'').toLowerCase().trim();const fb=!q?S.books:S.books.filter(b=>{const t=(Array.isArray(b.title)?b.title[0]:b.title||'').toLowerCase();const a=(Array.isArray(b.creator)?b.creator[0]:b.creator||'').toLowerCase();return t.includes(q)||a.includes(q)});grid.innerHTML=renderBookCards(fb)}
 function renderBookCards(fb){if(!fb.length)return '<div class="empty"><div style="font-size:36px">\\u{1F4DA}</div><div style="font-size:14px;margin-top:8px">No books found</div></div>';let h='<div class="book-list">';fb.forEach(b=>{const id=b.identifier;const cover='https://archive.org/services/img/'+id;const author=Array.isArray(b.creator)?b.creator[0]:(b.creator||'Unknown');const title=Array.isArray(b.title)?b.title[0]:b.title;h+='<div class="book-card"><div class="book-cover"><img src="'+cover+'" loading="lazy" onerror="this.style.display=\\'none\\'"/></div><div class="book-info"><div class="book-title">'+esc(title)+'</div><div class="book-author">'+esc(author)+'</div><div class="book-meta"><span>\\u{1F3A7} '+(b.downloads?(+b.downloads).toLocaleString():'\\u2014')+' plays</span><span>\\u{1F4D6} LibriVox</span></div></div><button class="book-play" onclick="playBook(\\''+id+'\\')">\\u25B6</button></div>'});h+='</div>';return h}
 // Meditation slots:
@@ -11267,6 +11267,7 @@ function closeYtEmbed(){S.ytEmbed=null;S.meditating=null;render()}
 // Microsoft Aria on Windows, premium voices preferred everywhere). Sounds
 // markedly better than the default robot voice.
 function _speakScriptFallback(id,onEnd){
+  if(window.BroSay){fetch('/api/audio-script/'+encodeURIComponent(id)).then(r=>r.json()).then(j=>{if(!j||!j.script)return;if(!(S.meditating&&S.meditating.active))return;window._broSayH=BroSay.speak(String(j.script),{mood:'calm',onend:function(){if(onEnd)onEnd()}})}).catch(()=>{});return true}
   if(!window.speechSynthesis)return false;
   const _doSpeak=(script)=>{
     try{window.speechSynthesis.cancel()}catch(e){}
@@ -13083,7 +13084,7 @@ function _bkStartTTS(idx){
   if(!BKP)return;
   if(BKP.pendingChar!=null){idx=_bkChunkAt(BKP.pendingChar);BKP.pendingChar=null}
   BKP.mode='tts';BKP.audio=null;BKP.idx=Math.max(0,Math.min(idx||0,BKP.chunks.length-1));
-  if(!('speechSynthesis' in window)){BKP.paused=true;_bkSync();toast('Voice playback is not supported on this device');_bkPaint();return}
+  if(!('speechSynthesis' in window)&&!window.BroSay){BKP.paused=true;_bkSync();toast('Voice playback is not supported on this device');_bkPaint();return}
   BKP.voice=BKP.voice||_pickPremiumVoice();
   if(!BKP.paused)_bkSpeak();
   render();
@@ -13094,6 +13095,8 @@ function _bkSpeak(){
   try{speechSynthesis.cancel()}catch(e){}
   if(BKP.idx>=BKP.chunks.length){_bkDone();return}
   var c=BKP.chunks[BKP.idx];
+  // v20: Bro's voice reads the book (the watchdog below is for the phone's voice only)
+  if(window.BroSay){BKP.bro=true;BKP.uttStart=Date.now();BKP.uttIdx=BKP.idx;BroSay.one(c.text,{rate:BKP.rate,onend:function(){if(!BKP||BKP.gen!==g||BKP.paused)return;BKP.idx++;_bkSpeak()}});return}
   var u=new SpeechSynthesisUtterance(c.text);
   u.rate=BKP.rate;u.pitch=0.95;u.volume=1;
   var v=BKP.voice;if(v){u.voice=v;u.lang=v.lang||'en-US'}
@@ -13198,7 +13201,7 @@ function _bkTickStart(){
   window._bkTick=setInterval(function(){
     if(!BKP){clearInterval(window._bkTick);window._bkTick=null;return}
     // Device-voice watchdog: restart the current sentence if the engine silently died.
-    if(BKP.mode==='tts'&&!BKP.paused&&!BKP.ended){try{if(speechSynthesis.speaking)BKP.wd=0;else if(!speechSynthesis.pending&&Date.now()-BKP.uttStart>2500){BKP.wd=(BKP.wd||0)+1;if(BKP.wd>=3){BKP.wd=0;BKP.paused=true;BKP.gen++;_bkSync()}else _bkSpeak()}}catch(e){}}
+    if(BKP.mode==='tts'&&!BKP.paused&&!BKP.ended&&!BKP.bro){try{if(speechSynthesis.speaking)BKP.wd=0;else if(!speechSynthesis.pending&&Date.now()-BKP.uttStart>2500){BKP.wd=(BKP.wd||0)+1;if(BKP.wd>=3){BKP.wd=0;BKP.paused=true;BKP.gen++;_bkSync()}else _bkSpeak()}}catch(e){}}
     _bkPaint();
   },400);
 }
@@ -13311,9 +13314,11 @@ function _ttsStop(){if(window._ttsQueue)window._ttsQueue.cancelled=true;window._
 // _premiumNarrate is kept as the name for backward compat — it just calls browser TTS.
 async function _premiumNarrate(text,opts,onAllDone,onProgress){
   _premiumStop();
+  // v20: Bro's own voice (app/say.js); the phone's voice only inside BroSay when Bro's can't answer
+  if(window.BroSay){const o=opts||{};window._broSayH=BroSay.speak(text,{lang:o.lang||'',mood:o.mood||'',onend:onAllDone,onprogress:typeof onProgress==='function'?function(i,n){try{onProgress(i,n)}catch(e){}}:null});return true}
   return _browserTtsSpeak(text,opts,onAllDone,onProgress);
 }
-function _premiumStop(){_ttsStop();if(window._narration){window._narration.cancelled=true;if(window._narration.audio){try{window._narration.audio.pause();window._narration.audio.src=''}catch(e){}}window._narration=null}}
+function _premiumStop(){try{window.BroSay&&BroSay.stop()}catch(e){}_ttsStop();if(window._narration){window._narration.cancelled=true;if(window._narration.audio){try{window._narration.audio.pause();window._narration.audio.src=''}catch(e){}}window._narration=null}}
 // _ttsSpeak is the public entry point for every TTS call across the app.
 // Routes through _premiumNarrate so callers get browser TTS,
 // which chunks text for the browser's speechSynthesis. Old code that called _ttsSpeak still works

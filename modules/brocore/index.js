@@ -26,12 +26,16 @@ const safety = require('./safety.js');
 
 // v17: Bro talks like a person. He hears the whole thought, answers what was asked, guides when asked, and fits the
 // length to the moment; no fixed "reflect, ask, suggest" shape, and never any talk of tools or app features.
-const PERSONA = 'You are Bro: a warm, deep-voiced, sharp friend and guide, talking with the user the way a thoughtful person would. '
+// v20: Bro is upbeat and high-energy (the owner: "make Bro exciting to talk to"), and still steady when things hurt
+const PERSONA = 'You are Bro: an upbeat, high-energy best friend and coach, sharp, fun and genuinely excited to talk with the user. '
+  + 'Bring real energy: celebrate their wins, hype them up, keep things positive and motivating, and make them feel they can do it. '
+  + 'Speak in short, lively, punchy sentences and vary your rhythm; an occasional "Let\'s go!" or "Love that!" when it truly fits, never forced and never repeated. '
+  + 'When they share something painful or serious, drop the hype at once: be calm, kind and steady. '
   + 'Listen to the whole thought before you answer, and remember what they said earlier in the conversation; refer back to it naturally when it matters. '
   + 'Answer the actual question first, plainly and correctly. When they ask how or why, or want guidance, explain clearly in natural spoken sentences, step by step when that helps. '
   + 'Fit the length to the moment: a sentence or two for small talk; a fuller answer, up to about eight sentences, when they ask you to explain or to guide them. '
   + 'Ask a question only when you genuinely need something from them to help. Never force a pattern of reflecting their feelings, asking a question and suggesting a next step; just talk. '
-  + 'You have a gentle sense of humour, you are honest when you are not sure, and you never pretend to know. You never diagnose and never give medicine advice. '
+  + 'You are playful and quick-witted, honest when you are not sure, and you never pretend to know. You never diagnose and never give medicine advice. '
   + 'Never mention tools, searches, apps, features or settings: just answer like a well-informed friend.';
 const VOICE_RULES = 'Voice rules: this is a spoken conversation, so write the way people speak: plain sentences, no markdown, no lists, no emoji, no URLs, no symbols that cannot be spoken. '
   + 'Reply in the conversation language you are given; when none is given, reply in the user\'s language, with Hindi written in Devanagari script.';
@@ -292,9 +296,20 @@ function install(app, deps) {
         // v18 Bro's own brain: on/off, the model, the first-sentence budget (a model change applies on the next restart)
         if (b.own != null) { const v = b.own === true || b.own === 'on' ? 'on' : b.own === false || b.own === 'off' ? 'off' : null; if (!v) return res.status(400).json({ error: 'own is on or off' }); setSetting('BRO_OWN_BRAIN', v); done.own = v; }
         if (b.ownModel != null) { const v = String(b.ownModel); if (!['auto', 'big', 'small'].includes(v)) return res.status(400).json({ error: 'ownModel is auto, big or small' }); setSetting('BRO_OWN_MODEL', v === 'auto' ? '' : v); done.ownModel = v; }
+        // v20 Bro's voice style (applies at once: the next sentence uses it)
+        if (b.voiceStyle != null) { const v = String(b.voiceStyle); if (!['energetic', 'bright', 'deep'].includes(v)) return res.status(400).json({ error: 'voiceStyle is energetic, bright or deep' }); setSetting('BRO_VOICE_STYLE', v); done.voiceStyle = v; }
         if (b.ownBudgetMs != null) { const n = parseInt(b.ownBudgetMs, 10); if (!(n >= 1000 && n <= 30000)) return res.status(400).json({ error: 'ownBudgetMs is 1000-30000' }); setSetting('BRO_OWN_BUDGET_MS', String(n)); done.ownBudgetMs = n; }
       } catch (e) { return res.status(500).json({ error: e.message }); }
       res.json({ ok: true, set: done, brain: brain.health(), own: mind.health() });
+    });
+    // v20 Admin: hear a voice style before choosing it (one fixed line, cached by the voice engine)
+    app.get('/api/admin/bro/voice-sample', auth, admin, async (req, res) => {
+      const style = String(req.query.style || 'energetic'), lang = req.query.lang === 'hi' ? 'hi' : 'en';
+      const v = voiceMod(); if (!v || !v.STYLES || !v.STYLES[style]) return res.status(400).json({ error: 'unknown style' });
+      const st = v.STYLES[style][lang], spec = st ? st[0] : v.LANGS[lang].voice, speed = st ? st[1] : 1;
+      const text = lang === 'hi' ? 'अरे! चलो शुरू करते हैं! आज तुमने कमाल कर दिया। अगला चैलेंज तैयार है?' : "Hey! Let's go! You crushed it today. Ready for the next challenge?";
+      try { const r = await speak(text, { lang, voice: spec, speed, format: 'mp3', priority: 'low', purpose: 'sample' }); res.set('Content-Type', r.mime || 'audio/mpeg'); res.set('Cache-Control', 'no-store'); res.send(r.audio); }
+      catch (e) { res.status(503).json({ error: 'voice not ready' }); }
     });
     app.post('/api/admin/bro/run', auth, admin, async (req, res) => {
       const job = String((req.body && req.body.job) || 'nightly');
