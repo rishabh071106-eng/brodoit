@@ -191,6 +191,24 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
 - **Player UI**: `code/day.html` + `assets/player.js` (slides, editor.js, trace.js, visuals.js — 12 animated visual kinds), mission map `code/index.html` + `assets/map.js`, Bro dock `assets/coach.js`. Progress lives in `localStorage bd.py.v1` and syncs to `/api/learn/progress`.
 - **modules/learn.js**: progress tables (`learn_units`, `learn_stats`, `learn_events`), `POST /api/learn/coach` (Bro with the learner's profile, slide, code and error), and narration recorded once: every `say` line and every target-language phrase is a catalog entry (`sid = sha1(voice + "\n" + text)[0:20]`, same on client); `GET /api/learn/say/<sid>.mp3` serves `MEDIA_DIR/learn-voice` or records it on first play; `scripts/learn-audio.js` (Admin job `learn-audio`) pre-records everything. Language pages' `speak()` (lang/assets/lang.js) plays these clips before the device voice.
 - **Languages UI**: `lang/course.html` + `lang/assets/stages.css` (photo hero, Listen episodes, practice stages with a gate); lessons add combo/XP/burst and sync completions to `/api/learn/progress`.
+- **v20 Smartest-first brain**:
+  - **Clouds** (`modules/brocore/brain.js`): the clouds are Groq, Google and OpenAI. Model ids are prefixed `gemini/` and `oai/`; Google uses its OpenAI-compatible endpoint.
+    - On live turns, Google's newest stable Flash (read from its `/models`, falling back to `gemini-2.5-flash`) comes right after gpt-oss-120b. An OpenAI model comes next if `OPENAI_API_KEY` is set. The rescue lane also ends with Flash.
+    - A refused key skips that cloud for 10 minutes, and the other clouds go on. A server with only a Gemini key still works.
+    - `BROCORE_CLOUDS` (e.g. `groq,gemini`) switches clouds off. `health().clouds` and `/api/bro/ok` `clouds` list the models in use.
+  - **Difficulty** (`modules/brocore/route.js`): `difficulty(text)` → `{ hard, filler }` uses instant rules: maths, code, planning, comparisons, why/explain, several questions, or over 200 characters.
+    - `req.hard` → reasoning `medium` on a call and `high` in typed chat.
+    - On a call, a hard puzzle (not feelings) first gets "Ooh, good one! Let me think."
+  - **Calls** (`converse` in `modules/voice.js`): the cloud answers first. If the cloud can't say a word, Bro's own brain answers at once. That covers every model failing, and also no first words within `BRO_CLOUD_BUDGET_MS` (default 7 s, +5 s for hard) while the own brain is free. Then the rescue, then the apology. The `own:only` self-test is unchanged.
+  - **Typed chat:** `POST /api/voice/turn` with `stream: true` answers over SSE:
+    - `{t:'delta'}`, `{t:'action'}`, then `{t:'done'}` or `{t:'error'}`
+    - `app/voice.js` `V.send` shows the words as they come and speaks sentence by sentence when the voice is on
+    - the own brain is the backup, then the old brains
+  - **App actions in chat and calls:** `BRO_TOOLS` + `EXTRA_TOOLS` run via `runTool`, so Bro can add/finish tasks, set reminders, add events, read the schedule, steps and news, and open lessons and screens.
+    - They sit behind the GATED/INTENT guard. The page gets `{t:'action'}` for toasts.
+    - A non-tab `open` waits for the call to end.
+    - `BRO_APP_TOOLS=off` turns them off.
+  - **Status:** `/api/bro/ok` `live` adds `cloud`, `own`, `ownBackup`, `ownSlow`, `ownSkip`, `cloudSlow`, `firstMs` (p50 for the cloud's first words on calls), `chatFirstMs` and `chatOwn`.
 - **v20 Voice notes**:
   - **The recorder:** `app/voicenote.js` (`window.BroNote.open({ lang, onSave, onAppend })`) is a full-screen recorder. It has a 96 px record button, a live waveform, a timer capped at 10 minutes, pause/resume and discard (tap twice). Notes shows a big "Record a voice note" card, and the editor's Voice button opens the recorder with "Add to this note" (`noteVoice()` in server.js).
   - **Transcription:** the recording is cut into ~2-minute pieces (each a complete file), and each piece is sent to `POST /api/voice/transcribe` with the recorder's real type while the next one records.

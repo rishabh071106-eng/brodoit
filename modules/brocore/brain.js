@@ -7,9 +7,21 @@
 // Every call is metered (tokens and US$ per month, by model and purpose) and streams record time-to-first-token.
 // When every open model fails and BROCORE_EMERGENCY is not 'off', the old helper (server.js _callGemini, which itself
 // falls back to the ElevenLabs brain) answers instead, so Bro is never silent.
+// v20 "smartest first": more than one cloud. With GEMINI_API_KEY, Google's newest Flash model (read from its /models)
+// streams through Google's OpenAI-compatible endpoint right after gpt-oss-120b on live turns ('gemini/<id>'); with
+// OPENAI_API_KEY, an OpenAI model joins after it ('oai/<id>'). Same parser, tools, cooling and metering; a cloud whose
+// key is refused is skipped for 10 minutes. req.hard (modules/brocore/route.js) asks for deeper thinking: reasoning
+// 'medium' on a call, 'high' in typed chat.
 'use strict';
 
 const GROQ = 'https://api.groq.com/openai/v1';
+const GEMINI = 'https://generativelanguage.googleapis.com/v1beta/openai';
+const OPENAI = 'https://api.openai.com/v1';
+const GEMINI_FALLBACK = 'gemini-2.5-flash'; // when Google's model list can't be read
+const OPENAI_PREF = ['gpt-5-mini', 'gpt-4.1-mini', 'gpt-4o-mini']; // the first one this account lists
+// which cloud a model id belongs to, and the id that cloud knows it by
+const providerOf = m => (/^gemini\//.test(m) ? 'gemini' : /^oai\//.test(m) ? 'openai' : 'groq');
+const wireModel = m => String(m).replace(/^(gemini|oai)\//, '');
 const DEFAULT_CHAIN = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 const EXTRA = ['qwen/qwen3-32b', 'meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-3.3-70b-versatile', 'meta-llama/llama-4-scout-17b-16e-instruct'];
 // Two lanes, so background work (News writing, call summaries, nightly lessons) can never spend the per-model
@@ -30,9 +42,11 @@ const PRICES = {
   'llama-3.3-70b-versatile': [0.59, 0.79], 'llama-3.1-8b-instant': [0.05, 0.08],
 };
 const DEFAULT_PRICE = [0.50, 0.80];
+const CLOUD_PRICE = { gemini: [0.30, 2.50], openai: [0.25, 2.00] }; // Flash / mini list prices, when the model has no row
+const priceOf = m => PRICES[m] || CLOUD_PRICE[providerOf(m)] || DEFAULT_PRICE;
 const AUDIO_PER_HOUR = { 'whisper-large-v3-turbo': 0.04, 'whisper-large-v3': 0.111 };
 const DEAD_MS = 6 * 3600e3, LIST_MS = 6 * 3600e3, PIN_MS = 30 * 60e3;
-const isReasoning = m => /gpt-oss|qwen3|deepseek-r1|qwq/i.test(m);
+const isReasoning = m => /gpt-oss|qwen3|deepseek-r1|qwq|^gemini\/gemini-(2\.5|[3-9])|^oai\/(gpt-5|o\d)/i.test(m);
 
 const month = d => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit' }).format(d || new Date()).slice(0, 7);
 const pct = (arr, p) => { if (!arr.length) return null; const s = arr.slice().sort((a, b) => a - b); return Math.round(s[Math.min(s.length - 1, Math.floor(p / 100 * s.length))]); };
@@ -149,11 +163,19 @@ function createBrain(o) {
   const now = o.now || (() => Date.now());
   const log = o.log || ((...a) => console.log('[brocore]', ...a));
   const db = o.db || null;
-  const st = { working: null, lane: { live: null, bg: null }, dead: new Map(), cool: new Map(), listed: null, listing: null, noParams: new Map(), lastError: '', lastModel: '', calls: 0, fails: 0, emergency: 0, lastEmergency: null };
+  const st = { working: null, lane: { live: null, bg: null }, dead: new Map(), cool: new Map(), listed: null, listing: null, noParams: new Map(), lastError: '', lastModel: '', calls: 0, fails: 0, emergency: 0, lastEmergency: null, cloud: {}, provDown: new Map() };
   const ttft = [], chatMs = [];
   const mem = {}; // usage when there is no db
 
   const key = () => getSetting('GROQ_API_KEY') || process.env.GROQ_API_KEY || '';
+  const geminiKey = () => getSetting('GEMINI_API_KEY') || process.env.GEMINI_API_KEY || '';
+  const openaiKey = () => getSetting('OPENAI_API_KEY') || process.env.OPENAI_API_KEY || '';
+  const PROV = { groq: { base: GROQ, key }, gemini: { base: GEMINI, key: geminiKey }, openai: { base: OPENAI, key: openaiKey } };
+  // a cloud can answer: it has a key, the owner didn't switch it off (BROCORE_CLOUDS: e.g. "groq,gemini"), and its key
+  // wasn't just refused
+  const cloudsOn = () => String(getSetting('BROCORE_CLOUDS') || process.env.BROCORE_CLOUDS || 'groq,gemini,openai').toLowerCase();
+  const usable = p => !!PROV[p].key() && (p === 'groq' || cloudsOn().includes(p)) && !((st.provDown.get(p) || 0) > now());
+  // Groq is Bro Core's home: the brain is "ready" with a Groq key (the other clouds join its chain, they don't replace it)
   const ready = () => !!key();
   const emergencyOn = () => String(getSetting('BROCORE_EMERGENCY') || process.env.BROCORE_EMERGENCY || 'on').trim().toLowerCase() !== 'off';
   const current = () => getSetting('BROCORE_MODEL') || process.env.BROCORE_MODEL || st.working || DEFAULT_CHAIN[0];
@@ -164,7 +186,7 @@ function createBrain(o) {
 
   // ── /models: cached for six hours; null when the list cannot be read ──
   async function listModels(force) {
-    if (!ready()) return null;
+    if (!key()) return null;
     if (!force && st.listed && now() - st.listed.at < LIST_MS) return st.listed.ids;
     if (st.listing) return st.listing;
     st.listing = (async () => {
@@ -181,6 +203,34 @@ function createBrain(o) {
     return st.listing;
   }
 
+  // ── the other clouds' model: Google's newest stable Flash, the first of OPENAI_PREF OpenAI lists; read every 6 hours ──
+  async function cloudModel(p) {
+    if (!usable(p)) return null;
+    const c = st.cloud[p];
+    if (c && now() - c.at < LIST_MS) return c.model;
+    if (c && c.pending) return c.pending;
+    const pending = (async () => {
+      let ids = null;
+      try {
+        const r = await fetchFn(PROV[p].base + '/models', { headers: { Authorization: 'Bearer ' + PROV[p].key() }, signal: AbortSignal.timeout(8000) });
+        if (r.ok) { const j = await r.json(); ids = ((j && j.data) || []).map(m => String(m && m.id || '').replace(/^models\//, '')).filter(Boolean); }
+      } catch (e) { ids = null; }
+      let id = null;
+      if (p === 'gemini') {
+        const flash = (ids || []).map(x => { const m = /^gemini-(\d+(?:\.\d+)?)-flash$/.exec(x); return m ? { x, v: parseFloat(m[1]) } : null; }).filter(Boolean).sort((a, b) => b.v - a.v);
+        id = flash.length ? flash[0].x : GEMINI_FALLBACK;
+      } else id = (ids || []).length ? OPENAI_PREF.find(x => ids.includes(x)) || null : null;
+      const model = id ? (p === 'gemini' ? 'gemini/' : 'oai/') + id : null;
+      st.cloud[p] = { at: now(), model };
+      if (model && (!c || c.model !== model)) log('cloud brain', p, '→', model);
+      return model;
+    })();
+    st.cloud[p] = Object.assign({}, c || {}, { pending });
+    try { return await pending; } finally { if (st.cloud[p] && st.cloud[p].pending === pending) delete st.cloud[p].pending; }
+  }
+  // read the other clouds' models soon after boot, so the first live turn that needs one doesn't wait for the list
+  setTimeout(() => { for (const p of ['gemini', 'openai']) if (usable(p)) cloudModel(p).catch(() => {}); }, 1500).unref?.();
+
   // the chain, lazily: the preferred models first; the extra models only once those failed (and only if /models lists them)
   async function* chainFor(req) {
     if (req && Array.isArray(req.models) && req.models.length) { for (const m of req.models) yield m; return; }
@@ -189,33 +239,43 @@ function createBrain(o) {
     // the remembered model leads for 30 minutes; then the preferred order gets another try (one hiccup is not a demotion)
     const w = st.lane[lane] || {};
     const pin = w.model && now() - w.at < PIN_MS ? w.model : null;
-    const head = (lane === 'live' ? [getSetting('BROCORE_MODEL'), process.env.BROCORE_MODEL, pin, ...DEFAULT_CHAIN] : lane === 'rescue' ? RESCUE_CHAIN : [pin, ...BG_CHAIN]).filter(Boolean);
+    // v20: the other clouds ('@gemini', '@openai') sit right after gpt-oss-120b on live turns, and end the rescue
+    const head = (lane === 'live' ? [getSetting('BROCORE_MODEL'), process.env.BROCORE_MODEL, pin, DEFAULT_CHAIN[0], '@gemini', '@openai', ...DEFAULT_CHAIN.slice(1)] : lane === 'rescue' ? [...RESCUE_CHAIN, '@gemini'] : [pin, ...BG_CHAIN]).filter(Boolean);
     let tried = 0, ids;
-    // the two gpt-oss models are always tried; any other model only once /models says this account has it
-    for (const m of head) {
-      if (seen.has(m)) continue; seen.add(m);
-      if (lane !== 'live') { if (ids === undefined) ids = await listModels(); if (ids && !ids.has(m)) continue; } // background and rescue models only if this account has them
+    const resolved = [];
+    // the two gpt-oss models are always tried; any other Groq model only once /models says this account has it
+    for (let m of head) {
+      if (m[0] === '@') { m = await cloudModel(m.slice(1)); if (!m) continue; }
+      if (seen.has(m)) continue; seen.add(m); resolved.push(m);
+      if (!usable(providerOf(m))) continue;
+      if (lane !== 'live' && providerOf(m) === 'groq') { if (ids === undefined) ids = await listModels(); if (ids && !ids.has(m)) continue; } // background and rescue models only if this account has them
       if (isDead(m) || isCool(m)) continue; tried++; yield m;
     }
     if (lane === 'rescue') return; // the rescue is one lean pass: models that are down stay down
     if (ids === undefined) ids = await listModels();
-    for (const m of (lane === 'live' ? EXTRA : BG_EXTRA)) { if (seen.has(m)) continue; seen.add(m); if (ids && !ids.has(m)) continue; if (isDead(m) || isCool(m)) continue; tried++; yield m; }
+    for (const m of (lane === 'live' ? EXTRA : BG_EXTRA)) { if (seen.has(m)) continue; seen.add(m); if (!usable('groq')) continue; if (ids && !ids.has(m)) continue; if (isDead(m) || isCool(m)) continue; tried++; yield m; }
     // everything was marked down: give the head one more go rather than going silent
-    if (!tried) for (const m of head.filter((x, i, a) => a.indexOf(x) === i)) if (!isDead(m)) yield m;
+    if (!tried) for (const m of resolved) if (!isDead(m) && usable(providerOf(m))) yield m;
   }
 
+  // how hard to think: req.effort, else a hard question (route.js) thinks harder (a call: medium; typed chat: high), else
+  // live talk and quick helpers think briefly
+  const effortOf = req => req.effort || (req.hard ? (req.live ? 'medium' : 'high') : (req.live || ['bro', 'learn', 'util', 'notes'].includes(req.purpose) ? 'low' : 'medium'));
   function bodyFor(model, req, stream) {
     const drop = st.noParams.get(model) || new Set();
     const msgs = cleanMessages(req.system, req.messages);
-    const b = { model, messages: msgs, stream: !!stream };
+    const p = providerOf(model);
+    const b = { model: wireModel(model), messages: msgs, stream: !!stream };
     let max = req.maxTokens || 1024;
     if (isReasoning(model) && !drop.has('reasoning')) {
-      const effort = req.live || req.purpose === 'bro' || req.purpose === 'learn' || req.purpose === 'util' ? 'low' : 'medium';
+      const effort = effortOf(req);
       if (/qwen3/i.test(model)) b.reasoning_effort = 'none';
-      else { b.reasoning_effort = effort; b.include_reasoning = false; max += effort === 'low' ? 384 : 1024; } // reasoning tokens count against the limit
+      else if (p === 'gemini') { b.reasoning_effort = effort === 'low' ? 'none' : effort; if (effort !== 'low') max += effort === 'high' ? 4096 : 1024; } // Flash answers easy turns without thinking
+      else if (p === 'openai') { b.reasoning_effort = effort === 'low' ? 'minimal' : effort; max += effort === 'high' ? 4096 : effort === 'medium' ? 1024 : 384; }
+      else { b.reasoning_effort = effort; b.include_reasoning = false; max += effort === 'low' ? 384 : effort === 'high' ? 4096 : 1024; } // reasoning tokens count against the limit
     }
-    b.max_completion_tokens = max;
-    b.temperature = req.temperature != null ? req.temperature : (req.json ? 0.3 : 0.7);
+    if (p === 'groq' && !drop.has('maxc')) b.max_completion_tokens = max; else b.max_tokens = max;
+    if (!drop.has('temperature')) b.temperature = req.temperature != null ? req.temperature : (req.json ? 0.3 : 0.7);
     if (req.tools && req.tools.length && !drop.has('tools')) { b.tools = req.tools; b.tool_choice = req.toolChoice || 'auto'; }
     if (req.json && !drop.has('json')) {
       b.response_format = { type: 'json_object' };
@@ -229,16 +289,22 @@ function createBrain(o) {
     const err = (j && j.error) || {};
     const msg = String(err.message || (typeof j === 'string' ? j : '') || ('HTTP ' + status));
     const code = String(err.code || '');
-    const e = new Error('groq ' + status + ' ' + model + ': ' + msg.slice(0, 200)); e.status = status; e.code = code;
-    if (status === 401 || status === 403) e.kind = 'key';
+    const p = providerOf(model);
+    const e = new Error(p + ' ' + status + ' ' + model + ': ' + msg.slice(0, 200)); e.status = status; e.code = code; e.provider = p;
+    if (status === 401 || status === 403 || /API[_ ]key[_ ]not[_ ]valid|API_KEY_INVALID|invalid api key|incorrect api key/i.test(msg + ' ' + code)) e.kind = 'key';
     else if (status === 404 || /model_not_found|model_decommissioned|decommissioned/i.test(code) || (status === 400 && /model.{0,60}(not found|does not exist|decommissioned|not supported|no longer|unknown|invalid model)|decommissioned/i.test(msg))) e.kind = 'dead';
     // a 429 says which allowance ran out: a day's (tokens or requests per day) cools the model far longer than a minute's
-    else if (status === 429) { e.kind = 'rate'; e.window = /per day|\bTPD\b|\bRPD\b/i.test(msg) ? 'day' : 'min'; }
+    else if (status === 429) { e.kind = 'rate'; e.window = /per day|PerDay|\bTPD\b|\bRPD\b/i.test(msg) ? 'day' : 'min'; }
     // only optional extras are ever dropped (reasoning settings, JSON mode); a tool error moves to the next model instead,
     // so a live turn never silently loses its tools
     else if (status === 400 && /(reasoning_effort|include_reasoning|reasoning_format|response_format|json_object).{0,80}(not supported|unsupported|invalid|unknown|unrecognized|not allowed|must be)|(not supported|unsupported|unknown parameter|unrecognized).{0,60}(reasoning|response_format|json)/i.test(msg)) {
       e.kind = 'param'; e.param = /reasoning/i.test(msg) ? 'reasoning' : 'json';
     } else if (status === 400 && /json_validate_failed|failed to generate json/i.test(code + ' ' + msg)) { e.kind = 'param'; e.param = 'json'; }
+    // v20: the other clouds name the parameter they don't take in their own words ("Unknown name \"include_reasoning\"",
+    // "Unsupported value: 'temperature'", "Unsupported parameter: 'max_tokens'")
+    else if (status === 400 && p !== 'groq' && /reasoning/i.test(msg) && !/tool|function/i.test(msg)) { e.kind = 'param'; e.param = 'reasoning'; }
+    else if (status === 400 && /temperature/i.test(msg) && /unsupported|not support|does not support|only the default/i.test(msg)) { e.kind = 'param'; e.param = 'temperature'; }
+    else if (status === 400 && /max_tokens|max_completion_tokens/i.test(msg) && /unsupported|not support|use .max_completion_tokens|unknown/i.test(msg)) { e.kind = 'param'; e.param = 'maxc'; }
     // v17: the model wrote a bad tool call (gpt-oss reaching for a built-in "browser" tool, broken arguments) or Groq
     // refused a tool schema: worth one more try, then the same turn without tools (see chatStream), never silence
     else if (status === 400 && /tool_use_failed|failed to call a function|tool call validation/i.test(code + ' ' + msg)) e.kind = 'toolcall';
@@ -248,6 +314,7 @@ function createBrain(o) {
   }
   function onFail(model, e, retryAfter) {
     st.lastError = e.message; st.fails++;
+    if (e.kind === 'key' && providerOf(model) !== 'groq') { st.provDown.set(providerOf(model), now() + 10 * 60e3); log('cloud', providerOf(model), 'refused its key: skipped for 10 minutes'); return; }
     if (e.kind === 'dead') { st.dead.set(model, now() + DEAD_MS); if (st.working === model) st.working = null; for (const k of Object.keys(st.lane)) if (st.lane[k] && st.lane[k].model === model) st.lane[k] = null; log('model retired, skipping', model, '·', (e.message || '').slice(0, 120)); }
     // a minute's allowance: up to 60 s; a day's: until Groq's retry-after, at most 30 min (15 min when it gives none),
     // so a live turn skips an exhausted model at once instead of failing on it again
@@ -257,19 +324,22 @@ function createBrain(o) {
   const kindWord = e => e.kind === 'rate' && e.window ? 'rate-' + e.window : e.kind;
   function works(model, req) {
     st.lastModel = model; st.lastError = '';
-    if (!(req && req.models)) {
+    // v20: only a Groq model is remembered to lead the next turns; a paid cloud that stepped in (Flash) answers while
+    // Groq's models cool down, and the next turn tries Groq first again
+    if (!(req && req.models) && providerOf(model) === 'groq') {
       const lane = laneOf(req), w = st.lane[lane];
       if (!w || w.model !== model) { st.lane[lane] = { model, at: now() }; log('brain (' + lane + ') answering on', model); } else w.at = now();
       if (lane === 'live' && st.working !== model) { st.working = model; st.workingAt = now(); }
     }
   }
 
-  async function post(path, body, signal, ms) {
+  async function post(path, body, signal, ms, model) {
+    const P = PROV[providerOf(model || '')];
     const ctrl = new AbortController();
     const onAbort = () => ctrl.abort(); if (signal) { if (signal.aborted) ctrl.abort(); else signal.addEventListener('abort', onAbort, { once: true }); }
     const t = setTimeout(() => ctrl.abort(), ms);
     try {
-      const r = await fetchFn(GROQ + path, { method: 'POST', signal: ctrl.signal, headers: { Authorization: 'Bearer ' + key(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const r = await fetchFn(P.base + path, { method: 'POST', signal: ctrl.signal, headers: { Authorization: 'Bearer ' + P.key(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       return { r, ctrl, done: () => { clearTimeout(t); if (signal) signal.removeEventListener('abort', onAbort); }, timer: t };
     } catch (e) { clearTimeout(t); if (signal) signal.removeEventListener('abort', onAbort); throw e; }
   }
@@ -277,7 +347,7 @@ function createBrain(o) {
   // ── usage meter (bro_usage table when there is a db) ──
   function track(model, usage, purpose, est) {
     try {
-      const p = PRICES[model] || DEFAULT_PRICE;
+      const p = priceOf(model);
       const tin = (usage && (usage.prompt_tokens || usage.input_tokens)) || (est ? est.tin : 0) || 0;
       const tout = (usage && (usage.completion_tokens || usage.output_tokens)) || (est ? est.tout : 0) || 0;
       const usd = (tin * p[0] + tout * p[1]) / 1e6;
@@ -342,7 +412,7 @@ function createBrain(o) {
     for await (const model of chainFor(req)) {
       for (let attempt = 0; attempt < 3; attempt++) {
         let h;
-        try { h = await post('/chat/completions', bodyFor(model, req, false), req.signal, req.timeout || (req.live ? 20000 : 50000)); }
+        try { h = await post('/chat/completions', bodyFor(model, req, false), req.signal, req.timeout || (req.live ? 20000 : 50000), model); }
         catch (e) { if (req.signal && req.signal.aborted) throw abortError(); last = e; st.lastError = e.message; break; }
         let j = null; try { j = await h.r.json(); } catch (e) { j = null; } finally { h.done(); }
         if (!h.r.ok) {
@@ -350,7 +420,7 @@ function createBrain(o) {
           if (e.kind === 'param') { const s = st.noParams.get(model) || new Set(); if (!s.has(e.param)) { s.add(e.param); st.noParams.set(model, s); continue; } }
           if (isToolErr(e)) { logToolErr(model, e); last = toolErr = e; st.lastError = e.message; st.fails++; break; }
           onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e;
-          if (e.kind === 'key') return emergency(req, e);
+          if (e.kind === 'key' && providerOf(model) === 'groq') { if (!usable('gemini') && !usable('openai')) return emergency(req, e); st.provDown.set('groq', now() + 10 * 60e3); }
           break;
         }
         const ch = j && j.choices && j.choices[0]; const msg = (ch && ch.message) || {};
@@ -389,7 +459,7 @@ function createBrain(o) {
       for (let attempt = 0; attempt < 3; attempt++) {
         if (signal && signal.aborted) return;
         let h;
-        try { h = await post('/chat/completions', bodyFor(model, req, true), signal, req.firstByteMs || 15000); }
+        try { h = await post('/chat/completions', bodyFor(model, req, true), signal, req.firstByteMs || 15000, model); }
         catch (e) { if (signal && signal.aborted) return; last = e; st.lastError = e.message; note(req, { m: model, k: e.name === 'AbortError' ? 'slow' : 'net' }); break; }
         clearTimeout(h.timer);
         if (!h.r.ok) {
@@ -398,7 +468,7 @@ function createBrain(o) {
           if (e.kind === 'param') { const s = st.noParams.get(model) || new Set(); if (!s.has(e.param)) { s.add(e.param); st.noParams.set(model, s); continue; } }
           if (isToolErr(e)) { logToolErr(model, e); last = toolErr = e; st.lastError = e.message; st.fails++; break; }
           onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e;
-          if (e.kind === 'key') { yield* emergencyStream(req, e); return; }
+          if (e.kind === 'key' && providerOf(model) === 'groq') { if (!usable('gemini') && !usable('openai')) { yield* emergencyStream(req, e); return; } st.provDown.set('groq', now() + 10 * 60e3); }
           break;
         }
         // idle watchdog: a stream that stops sending for 20 s is cut
@@ -461,7 +531,7 @@ function createBrain(o) {
     opts = opts || {};
     const q = String(query == null ? '' : query).replace(/\s+/g, ' ').trim().slice(0, 300);
     if (!q) return { text: '', model: null };
-    if (!ready()) throw Object.assign(new Error('no-key'), { code: 'no-key' });
+    if (!key()) throw Object.assign(new Error('no-key'), { code: 'no-key' }); // web search runs on Groq's own tools
     const ask = q + ' — answer briefly with the key facts and dates, and mention the source names';
     const tries = SEARCH_MODELS.map(model => ({ model, via: 'compound', ms: opts.timeout || 12000, body: { model, stream: false, messages: [{ role: 'user', content: ask }] } }))
       .concat(BROWSE_MODELS.map(model => ({ model, via: 'browser', ms: opts.browseTimeout || 15000, body: { model, stream: false, messages: [{ role: 'user', content: 'Search the web, then answer: ' + ask }], tools: [{ type: 'browser_search' }], tool_choice: 'required', reasoning_effort: 'low', max_completion_tokens: 1024 } })));
@@ -473,7 +543,7 @@ function createBrain(o) {
       const left = opts.deadline ? opts.deadline - now() : Infinity; // the caller's time budget (a live call waits ~14 s)
       if (left < 1500) { note(opts, { m: model, k: 'no-time' }); break; }
       let h;
-      try { h = await post('/chat/completions', body, opts.signal, Math.min(ms, left)); }
+      try { h = await post('/chat/completions', body, opts.signal, Math.min(ms, left), model); }
       catch (e) { if (opts.signal && opts.signal.aborted) throw abortError(); last = e.name === 'AbortError' ? Object.assign(new Error('web search timed out'), { code: 'timeout' }) : e; note(opts, { m: model, k: e.name === 'AbortError' ? 'slow' : 'net' }); continue; }
       let j = null; try { j = await h.r.json(); } catch (e) { j = null; } finally { h.done(); }
       if (!h.r.ok) {
@@ -504,11 +574,12 @@ function createBrain(o) {
       emergency: emergencyOn() ? 'on' : 'off', emergencyUsed: st.emergency, lastEmergency: st.lastEmergency,
       calls: st.calls, fails: st.fails, retired: [...st.dead.entries()].filter(e => e[1] > now()).map(e => e[0]),
       listed: st.listed ? st.listed.all : null,
+      clouds: { groq: usable('groq'), gemini: usable('gemini') ? (st.cloud.gemini && st.cloud.gemini.model) || 'pending' : false, openai: usable('openai') ? (st.cloud.openai && st.cloud.openai.model) || 'pending' : false },
     };
   }
   const latency = () => ({ p50: pct(ttft, 50), p90: pct(ttft, 90), n: ttft.length, chatP50: pct(chatMs, 50), chatP90: pct(chatMs, 90), chatN: chatMs.length });
 
-  return { chat, chatStream, webSearch, ready, emergencyOn, current, listModels, healthCheck, health, latency, costMonth, track, trackAudio, _st: st };
+  return { chat, chatStream, webSearch, ready, emergencyOn, current, listModels, cloudModel, healthCheck, health, latency, costMonth, track, trackAudio, _st: st };
 }
 
-module.exports = { createBrain, sseEvents, thinkFilter, toolAccumulator, jsonText, cleanMessages, DEFAULT_CHAIN, EXTRA, BG_CHAIN, BG_PURPOSES, RESCUE_CHAIN, laneOf, PRICES, GROQ };
+module.exports = { createBrain, sseEvents, thinkFilter, toolAccumulator, jsonText, cleanMessages, DEFAULT_CHAIN, EXTRA, BG_CHAIN, BG_PURPOSES, RESCUE_CHAIN, laneOf, PRICES, GROQ, GEMINI, OPENAI, providerOf, wireModel };
