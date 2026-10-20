@@ -255,7 +255,7 @@ function createMind(cfg) {
   const busy = () => !!S.job;
   function health() {
     return {
-      state: S.phase, model: S.model ? S.model.name : null, ramMB: S.ramMB, cpus: S.cpus, threads: S.threads,
+      state: S.phase, model: S.model ? S.model.name : null, size: S.model ? S.key : null, ramMB: S.ramMB, cpus: S.cpus, threads: S.threads,
       progress: S.progress ? Math.round(100 * S.progress.got / Math.max(1, S.progress.total || 1)) : null,
       answered: S.stats.answered, failed: S.stats.failed, busy: S.stats.busy, aborted: S.stats.aborted,
       firstMs: p50(S.stats.first), genTps: p50(S.stats.gen), promptTps: p50(S.stats.prompt), error: S.error ? String(S.error).slice(0, 160) : '',

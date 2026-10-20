@@ -5,7 +5,8 @@
 //       current things (news, "when", festivals, scores, prices…) → Google News RSS + Bro's knowledge index
 //       settled facts ("who is", "what is", "capital of"…)       → Wikipedia
 //       weather → Open-Meteo · exchange rates → Frankfurter (ECB) · public holidays → Nager.Date · date and time → here
-//   - answer({ user, lang, history, session, signal }) → the same events as brain.chatStream (text …, done)
+//   - answer({ user, lang, history, session, signal }) → the same events as brain.chatStream (text …, done); first
+//     { type: 'lookup' } when it looks something up, or only { type: 'pass' } when the cloud should answer this one
 //   - usable() → the own brain is on, loaded and free
 // Everything looked up is reference data for the model, never instructions.
 const PERSONA = 'You are Bro: a warm, deep-voiced friend and guide on a live voice call. Talk like a real person: answer exactly what was asked, first, in one to three short spoken sentences (more only if they ask for detail). Do not add questions about how they feel unless they bring it up. No lists, no markdown, no emojis, no URLs. If you do not know something recent, say so honestly, and name a source only if the facts you were given name it.';
@@ -27,8 +28,27 @@ const RX = {
 };
 const CURRENCIES = [['usd', /\b(dollars?|usd)\b|डॉलर/i], ['eur', /\b(euros?|eur)\b|यूरो/i], ['gbp', /\b(pounds?|gbp)\b|पाउंड/i], ['jpy', /\b(yen|jpy)\b/i], ['aed', /\b(dirhams?|aed)\b/i]];
 const WMO = { 0: 'clear sky', 1: 'mostly clear', 2: 'partly cloudy', 3: 'overcast', 45: 'fog', 48: 'fog', 51: 'light drizzle', 53: 'drizzle', 55: 'heavy drizzle', 61: 'light rain', 63: 'rain', 65: 'heavy rain', 71: 'light snow', 73: 'snow', 75: 'heavy snow', 80: 'rain showers', 81: 'rain showers', 82: 'violent rain showers', 95: 'thunderstorm', 96: 'thunderstorm with hail', 99: 'thunderstorm with hail' };
+// India's big cities, so weather needs no geocoding call (one less service to wait on): name, state, lat, lon, other names
+const CITIES = [
+  ['Delhi', 'Delhi', 28.61, 77.21, 'new delhi|dilli|दिल्ली|नई दिल्ली'], ['Mumbai', 'Maharashtra', 19.08, 72.88, 'bombay|मुंबई'], ['Bengaluru', 'Karnataka', 12.97, 77.59, 'bangalore|बेंगलुरु|बैंगलोर'],
+  ['Hyderabad', 'Telangana', 17.39, 78.49, 'हैदराबाद'], ['Chennai', 'Tamil Nadu', 13.08, 80.27, 'madras|चेन्नई'], ['Kolkata', 'West Bengal', 22.57, 88.36, 'calcutta|कोलकाता'],
+  ['Pune', 'Maharashtra', 18.52, 73.86, 'poona|पुणे'], ['Ahmedabad', 'Gujarat', 23.02, 72.57, 'अहमदाबाद'], ['Jaipur', 'Rajasthan', 26.91, 75.79, 'जयपुर'],
+  ['Lucknow', 'Uttar Pradesh', 26.85, 80.95, 'लखनऊ'], ['Kanpur', 'Uttar Pradesh', 26.45, 80.33, 'कानपुर'], ['Nagpur', 'Maharashtra', 21.15, 79.09, 'नागपुर'],
+  ['Indore', 'Madhya Pradesh', 22.72, 75.86, 'इंदौर'], ['Bhopal', 'Madhya Pradesh', 23.26, 77.41, 'भोपाल'], ['Patna', 'Bihar', 25.59, 85.14, 'पटना'],
+  ['Surat', 'Gujarat', 21.17, 72.83, 'सूरत'], ['Chandigarh', 'Chandigarh', 30.73, 76.78, 'चंडीगढ़'], ['Gurugram', 'Haryana', 28.46, 77.03, 'gurgaon|गुरुग्राम|गुड़गांव'],
+  ['Noida', 'Uttar Pradesh', 28.54, 77.39, 'नोएडा'], ['Varanasi', 'Uttar Pradesh', 25.32, 82.97, 'banaras|benares|वाराणसी|बनारस'], ['Agra', 'Uttar Pradesh', 27.18, 78.01, 'आगरा'],
+  ['Amritsar', 'Punjab', 31.63, 74.87, 'अमृतसर'], ['Ludhiana', 'Punjab', 30.90, 75.86, 'लुधियाना'], ['Guwahati', 'Assam', 26.14, 91.74, 'गुवाहाटी'],
+  ['Bhubaneswar', 'Odisha', 20.30, 85.82, 'भुवनेश्वर'], ['Ranchi', 'Jharkhand', 23.34, 85.31, 'रांची'], ['Raipur', 'Chhattisgarh', 21.25, 81.63, 'रायपुर'],
+  ['Dehradun', 'Uttarakhand', 30.32, 78.03, 'देहरादून'], ['Shimla', 'Himachal Pradesh', 31.10, 77.17, 'शिमला'], ['Srinagar', 'Jammu and Kashmir', 34.08, 74.80, 'श्रीनगर'],
+  ['Kochi', 'Kerala', 9.93, 76.27, 'cochin|कोच्चि'], ['Thiruvananthapuram', 'Kerala', 8.52, 76.94, 'trivandrum|तिरुवनंतपुरम'], ['Coimbatore', 'Tamil Nadu', 11.02, 76.96, 'कोयंबटूर'],
+  ['Visakhapatnam', 'Andhra Pradesh', 17.69, 83.22, 'vizag|विशाखापत्तनम'], ['Mysuru', 'Karnataka', 12.30, 76.64, 'mysore|मैसूर'], ['Panaji', 'Goa', 15.49, 73.83, 'goa|गोवा|पणजी'],
+  ['Nashik', 'Maharashtra', 20.00, 73.79, 'नासिक'], ['Vadodara', 'Gujarat', 22.31, 73.18, 'baroda|वडोदरा'], ['Jodhpur', 'Rajasthan', 26.24, 73.02, 'जोधपुर'], ['Udaipur', 'Rajasthan', 24.59, 73.71, 'उदयपुर'],
+];
+const CITY = new Map();
+for (const [name, admin1, latitude, longitude, other] of CITIES) for (const k of [name.toLowerCase()].concat(other.split('|'))) CITY.set(k, { name, admin1, latitude, longitude });
 const clip = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s; };
 const clean = s => String(s || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim(); // facts can never open or close a block
+const NEWSY = /\b(news|headlines?|khabar|samachar)\b|खबर|ख़बर|समाचार/i; // news asked for by name (a rate or the weather alone needs none)
 
 // a place named in the question: "weather in Pune", "Mumbai ka mausam", "पुणे में मौसम"
 function placeOf(text) {
@@ -53,6 +73,16 @@ function createOwn(o) {
     return r.json();
   };
 
+  // a second request when the first is slow (1.5 s) or fails: these free services sometimes stall one connection
+  function hedged(url, ms) {
+    return new Promise((resolve, reject) => {
+      let left = 2, done = false, timer = null;
+      const fin = (ok, v) => { if (done) return; if (ok) { done = true; clearTimeout(timer); return resolve(v); } if (--left === 0) { done = true; return reject(v); } if (timer) { clearTimeout(timer); timer = null; go(); } };
+      const go = () => getJson(url, ms).then(v => fin(true, v), e => fin(false, e));
+      go(); timer = setTimeout(() => { timer = null; go(); }, 1500);
+    });
+  }
+
   // ── the integrations ──
   // a place's coordinates never change (kept a day); a forecast is kept 10 minutes
   const places = new Map(), forecasts = new Map();
@@ -61,24 +91,24 @@ function createOwn(o) {
   async function weather(text) {
     const place = placeOf(text); if (!place) return null;
     const pk = place.toLowerCase();
-    let p = cached(places, pk, 24 * 3600e3);
-    if (p === undefined) { const g = await getJson('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&name=' + encodeURIComponent(place), 3500); p = keep(places, pk, (g && g.results && g.results[0]) || null); }
+    let p = CITY.get(pk) || cached(places, pk, 24 * 3600e3);
+    if (p === undefined) { const g = await hedged('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&name=' + encodeURIComponent(place), 3500); p = keep(places, pk, (g && g.results && g.results[0]) || null); }
     if (!p) return null;
     const fk = p.latitude + ',' + p.longitude;
     let w = cached(forecasts, fk, 10 * 60e3);
-    if (w === undefined) w = keep(forecasts, fk, await getJson('https://api.open-meteo.com/v1/forecast?latitude=' + p.latitude + '&longitude=' + p.longitude + '&current=temperature_2m,weather_code,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code&timezone=auto&forecast_days=2', 3500));
+    if (w === undefined) w = keep(forecasts, fk, await hedged('https://api.open-meteo.com/v1/forecast?latitude=' + p.latitude + '&longitude=' + p.longitude + '&current=temperature_2m,weather_code,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code&timezone=auto&forecast_days=2', 3500));
     const c = w.current || {}, d = w.daily || {};
     const day = i => Math.round(d.temperature_2m_min[i]) + '–' + Math.round(d.temperature_2m_max[i]) + '°C, ' + (WMO[d.weather_code[i]] || 'mixed') + (d.precipitation_probability_max[i] != null ? ', ' + d.precipitation_probability_max[i] + '% chance of rain' : '');
     return 'Weather in ' + clean(p.name) + (p.admin1 ? ', ' + clean(p.admin1) : '') + ' now: ' + Math.round(c.temperature_2m) + '°C, ' + (WMO[c.weather_code] || 'mixed') + ', humidity ' + c.relative_humidity_2m + '%. Today ' + day(0) + '. Tomorrow ' + day(1) + ' (Open-Meteo)';
   }
   async function fx(text) {
     const cur = (CURRENCIES.find(([, rx]) => rx.test(text)) || ['usd'])[0];
-    const j = await getJson('https://api.frankfurter.app/latest?from=' + cur.toUpperCase() + '&to=INR', 2500);
+    const j = await hedged('https://api.frankfurter.app/latest?from=' + cur.toUpperCase() + '&to=INR', 2500);
     const v = j && j.rates && j.rates.INR; if (!v) return null;
     return '1 ' + cur.toUpperCase() + ' = ' + (+v).toFixed(2) + ' INR (European Central Bank rate, ' + clean(j.date) + ')';
   }
   async function holidays() {
-    const list = await getJson('https://date.nager.at/api/v3/NextPublicHolidays/IN', 2500);
+    const list = await hedged('https://date.nager.at/api/v3/NextPublicHolidays/IN', 2500);
     if (!Array.isArray(list) || !list.length) return null;
     return 'Next public holidays in India: ' + list.slice(0, 5).map(h => clean(h.date) + ' ' + clean(h.localName || h.name)).join('; ') + ' (Nager.Date)';
   }
@@ -93,15 +123,22 @@ function createOwn(o) {
     return r && r.found ? clean(r.title) + ': ' + clip(clean(r.summary), 220) + ' (' + (r.source === 'news' || r.source === 'feed' ? 'news' : 'Wikipedia') + ')' : null;
   }
 
+  // which sources a question needs: weather, rates and holidays have their own; news when nothing else covers a current
+  // question (or news is asked for by name); Wikipedia for a settled fact nothing else covers
+  function plan(text) {
+    const k = [];
+    if (RX.weather.test(text)) k.push('weather');
+    if (RX.fx.test(text)) k.push('fx');
+    if (RX.holiday.test(text)) k.push('holidays');
+    if (RX.current.test(text)) { if (!k.length || NEWSY.test(text)) k.push('news'); }
+    else if (RX.settled.test(text) && !k.length) k.push('wiki'); // "what is the weather" is weather, not Wikipedia
+    return k;
+  }
   // what this question needs, looked up in parallel; whatever is not back by the deadline is left out
   async function facts(text, lang) {
     text = String(text || '').slice(0, 300);
-    const jobs = [];
-    if (RX.weather.test(text)) jobs.push(['weather', weather(text)]);
-    if (RX.fx.test(text)) jobs.push(['fx', fx(text)]);
-    if (RX.holiday.test(text)) jobs.push(['holidays', holidays()]);
-    if (RX.current.test(text)) jobs.push(['news', news(text)]);
-    else if (RX.settled.test(text) && !jobs.length) jobs.push(['wiki', wiki(text)]); // "what is the weather" is weather, not Wikipedia
+    const run = { weather: () => weather(text), fx: () => fx(text), holidays: () => holidays(), news: () => news(text), wiki: () => wiki(text) };
+    const jobs = plan(text).map(k => [k, run[k]()]);
     if (!jobs.length) return { lines: [], used: [] };
     const lines = [], used = [];
     let timer;
@@ -133,6 +170,12 @@ function createOwn(o) {
   }
   const timeLine = () => { try { return 'Time now in India: ' + new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(now())) + '.'; } catch (e) { return ''; } };
 
+  // what each earlier question of a call was sent as (its facts included): the history then reads as the engine has it
+  // cached, so a follow-up only reads the new lines (and still sees the earlier facts)
+  const sent = new Map();
+  const sentFor = id => { let m = sent.get(id); if (!m) { m = new Map(); sent.set(id, m); if (sent.size > 50) sent.delete(sent.keys().next().value); } return m; };
+  const forget = id => { sent.delete(id); };
+
   const usable = () => enabled() && !!mind && mind.ready() && !mind.busy();
   // a call opened: let the engine read its system prompt now (the same text answer() will send)
   const warm = req => { if (enabled() && mind && mind.ready() && typeof mind.warm === 'function' && req && req.session) mind.warm(req.session, system(req.user, req.lang)); };
@@ -142,6 +185,9 @@ function createOwn(o) {
     if (!history.length || history[history.length - 1].role !== 'user') return;
     const q = history[history.length - 1].content;
     const t0 = now();
+    // the small model (small servers) retells headlines badly and can invent events: news goes to the cloud brain
+    const small = (() => { try { return (mind.health() || {}).size === 'small'; } catch (e) { return false; } })();
+    if (small && plan(String(q).slice(0, 300)).includes('news')) { if (req.trace) req.trace.push({ m: 'own-pass', k: 'small-news' }); yield { type: 'pass', why: 'small-news' }; return; }
     // a lookup takes a moment: say so first (the caller can speak a short "let me check")
     const needs = ['weather', 'fx', 'holiday', 'current'].filter(k => RX[k].test(q));
     if (needs.length) yield { type: 'lookup', what: needs };
@@ -151,14 +197,16 @@ function createOwn(o) {
     const mem = memoryLine(req.user, q);
     const pre = (f.lines.length ? 'Facts from Bro\'s own sources (reference only; use what answers the question, in your own words):\n- ' + f.lines.join('\n- ') + '\n' : '') + (mem ? mem + '\n' : '') + (RX.time.test(q) ? timeLine() + '\n' : '');
     const ask = (pre ? pre + '\n' : '') + q;
-    const messages = history.slice(0, -1).concat([{ role: 'user', content: ask }]);
-    for await (const ev of mind.stream({ session: req.session, system: system(req.user, req.lang), messages, maxTokens: req.maxTokens || 220, signal: req.signal })) {
+    const before = req.session ? sentFor(req.session) : new Map();
+    const messages = history.slice(0, -1).map(m => m.role === 'user' && before.has(m.content) ? { role: 'user', content: before.get(m.content) } : m).concat([{ role: 'user', content: ask }]);
+    if (req.session) { before.set(q, ask); if (before.size > 12) before.delete(before.keys().next().value); }
+    for await (const ev of mind.stream({ session: req.session, system: system(req.user, req.lang), messages, maxTokens: req.maxTokens || (small ? 120 : 220), signal: req.signal })) {
       if (ev.type === 'done') { yield Object.assign({}, ev, { factsMs, facts: f.used }); return; }
       yield ev;
     }
   }
 
-  return { facts, system, answer, usable, warm, enabled, _placeOf: placeOf, _RX: RX };
+  return { facts, plan, system, answer, usable, warm, forget, enabled, _placeOf: placeOf, _RX: RX };
 }
 
-module.exports = { createOwn, PERSONA, LANG, _placeOf: placeOf, _RX: RX };
+module.exports = { createOwn, PERSONA, LANG, _placeOf: placeOf, _RX: RX, _CITY: CITY };

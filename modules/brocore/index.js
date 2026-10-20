@@ -245,7 +245,7 @@ function install(app, deps) {
     brainReady: () => brain.ready(), emergencyOn: () => brain.emergencyOn(), ready: () => brain.ready() && voiceReady(),
     lookup: q => knowledge.lookup(q), today: (topic, n) => knowledge.today(topic, n), search: (q, n) => knowledge.search(q, n), webSearch: (q, o) => brain.webSearch(q, o),
     health, knowledge, memory, nightly, lessons: memory.lessons, brain, hearing, gpu,
-    own: { usable: () => ownBrain.usable(), answer: req => ownBrain.answer(req), warm: req => ownBrain.warm(req), facts: (t, l) => ownBrain.facts(t, l), budgetMs: ownBudgetMs, health: () => mind.health(), dropSession: id => mind.dropSession(id), mind },
+    own: { usable: () => ownBrain.usable(), answer: req => ownBrain.answer(req), warm: req => ownBrain.warm(req), facts: (t, l) => ownBrain.facts(t, l), budgetMs: ownBudgetMs, health: () => mind.health(), dropSession: id => { ownBrain.forget(id); mind.dropSession(id); }, mind },
     version: () => { const n = nightly.lastRun(); return n ? n.version : 'v16.0'; },
   };
   global._broCore = api;

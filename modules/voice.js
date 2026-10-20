@@ -1113,7 +1113,7 @@ function install(app, deps) {
       await speaker.done();
     }
     // Bro's own brain (Bro Core's own: an open model on this server, answering from what Bro looks up himself).
-    // → 'done' (Bro answered) | 'gone' (the turn ended) | why the cloud should answer instead: unusable, slow, error, empty.
+    // → 'done' (Bro answered) | 'gone' (the turn ended) | why the cloud should answer instead: unusable, pass, slow, error, empty.
     // A first sentence must be ready within the budget (Admin: BRO_OWN_BUDGET_MS, 7 s); once Bro has spoken, the own
     // brain finishes the answer: never a second voice on top.
     async function ownTurn(T, speaker) {
@@ -1131,6 +1131,7 @@ function install(app, deps) {
         for await (const ev of o.answer({ user: S.user, lang: S.lang, history: S.history.slice(-10), session: S.ownSession, signal: ac.signal, trace: T.trace })) {
           if (!live()) return 'gone';
           if (!ev) continue;
+          if (ev.type === 'pass') { T.trace.push({ m: 'own', k: 'pass' }); LIVE.ownSkip++; return 'pass'; } // the own brain leaves this one to the cloud
           if (ev.type === 'lookup' && !T.filler) { T.filler = true; speaker.push(FILLER[S.lang === 'hi' ? 'hi' : 'en']); }
           else if (ev.type === 'text' && ev.delta) {
             buf += ev.delta;
