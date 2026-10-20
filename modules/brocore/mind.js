@@ -306,13 +306,18 @@ async function engineMain() {
     }
     return { history: items, prompt: last };
   }
+  const norm = x => (typeof x === 'string' ? x : '').replace(/\s+/g, ' ').trim();
+  const textOf = it => it.type === 'model' ? norm((it.response || []).filter(r => typeof r === 'string').join('')) : norm(it.text);
+  const sameHistory = (a, b) => a.length === b.length && a.every((it, i) => it.type === b[i].type && textOf(it) === textOf(b[i]));
   async function chat(m) {
     const ac = new AbortController(); jobs.set(m.id, ac);
     try {
       const s = await sessionFor(m.session);
       const { history, prompt } = split(m.system, m.messages);
       if (!prompt) throw new Error('nothing to answer');
-      s.chat.setChatHistory(history);
+      // the call goes on where the session stands (its own history, as the engine read it): only the new question is
+      // read. Anything else (another order, an answer cut short differently) → the history is set afresh.
+      if (!sameHistory(s.chat.getChatHistory(), history)) s.chat.setChatHistory(history);
       const m0 = { i: s.seq.tokenMeter.usedInputTokens, o: s.seq.tokenMeter.usedOutputTokens };
       const t0 = Date.now(); let firstAt = 0;
       await s.chat.prompt(prompt, {
