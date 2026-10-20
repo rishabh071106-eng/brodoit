@@ -1,0 +1,70 @@
+# Bro's own brain: benchmarks candidate open models (GGUF, CPU only) the way a live call uses them. All candidates run
+# one after another on the same 4-vCPU runner, so their speeds compare fairly. Push a branch named bench/<anything> to run
+# it. Results are BENCH lines in the job log, with each file's sha256 and size (mind.js pins those).
+name: Brain bench
+on:
+  push:
+    branches: ['bench/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bench:
+    # the model comparison (slow): only when the commit message says [bench]
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[bench]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Runtime (prebuilt CPU binaries only)
+        env:
+          NODE_LLAMA_CPP_SKIP_DOWNLOAD: 'true'
+        run: |
+          mkdir -p /tmp/bench && cp brocore/bench/brain-bench.mjs /tmp/bench/ && cd /tmp/bench
+          npm init -y > /dev/null && npm install --no-audit --no-fund node-llama-cpp@3.22.2
+      - name: Every candidate on this one machine
+        run: |
+          cd /tmp/bench
+          while read -r label url; do
+            [ -z "$label" ] && continue
+            curl -fsSL --retry 5 --retry-delay 5 -o model.gguf "$url" || { echo "MODEL $label download failed"; continue; }
+            echo "MODEL $label bytes=$(stat -c %s model.gguf) sha256=$(sha256sum model.gguf | cut -d' ' -f1) url=$url"
+            node brain-bench.mjs model.gguf "$label" 4 || echo "BENCH-FAILED $label"
+            rm -f model.gguf
+          done <<'LIST'
+          gemma3-4b https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf
+          qwen3-4b-2507 https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/resolve/main/Qwen3-4B-Instruct-2507-Q4_K_M.gguf
+          gemma3-1b https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf
+          qwen3-1.7b https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf
+          LIST
+  # The real server image (node:22 + the prebuilt llama.cpp), and inside it Bro's own engine and router end to end:
+  # real Gemma models, live lookups (Google News, Wikipedia, Open-Meteo, Frankfurter), English and Hindi.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the server image
+        run: docker build -t bro .
+      - name: The image's own-brain runtime
+        run: |
+          docker run --rm bro node -e "import('node-llama-cpp').then(async m => { const l = await m.getLlama({ gpu: false, build: 'never' }); console.log('llama ok', l.buildType, process.version); })"
+      - name: Models
+        run: |
+          mkdir -p /tmp/m
+          curl -fsSL --retry 5 -o /tmp/m/small.gguf https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf
+          curl -fsSL --retry 5 -o /tmp/m/big.gguf https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf
+          sha256sum /tmp/m/*.gguf
+      - name: Cache reuse in a follow-up (small model)
+        continue-on-error: true
+        run: docker run --rm -v /tmp/m:/m bro node brocore/bench/kv-probe.mjs /m/small.gguf 3
+      # the small model is the fallback for small servers: its answers are reported, a weak one does not fail the job
+      - name: Bro end to end, small model (Gemma 3 1B)
+        continue-on-error: true
+        run: docker run --rm -v /tmp/m:/m bro node brocore/bench/own-e2e.mjs /m/small.gguf - 3 small
+      - name: Bro end to end, big model (Gemma 3 4B)
+        if: always()
+        run: docker run --rm -v /tmp/m:/m bro node brocore/bench/own-e2e.mjs /m/big.gguf - 3 big

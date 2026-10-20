@@ -51,7 +51,20 @@ jobs:
             # live-style turn with the real tool definitions answered "When does Navratri end this year?", and a real call
             # turn through the phone's own path answered "What is the capital of India?" out loud)
             if echo "$st" | grep -q '"ok":true' && echo "$st" | grep -q '"check":{"brain":"ok","hearing":"ok","tools":"ok","talk":"ok"}'; then echo "Bro is ready $st"; exit 0; fi
-            if echo "$st" | grep -q '"fail"'; then echo "::error::Bro's self-test failed: $st"; exit 1; fi
+            if echo "$st" | jq -e '(.check // {}) | to_entries | any(.value == "fail")' > /dev/null 2>&1; then echo "::error::Bro's self-test failed: $st"; exit 1; fi
             echo "Bro not ready yet ($i): $st"; sleep 30
           done
           echo "::error::Bro Core is not ready (brain or voice down)"; exit 1
+      - name: Bro's own brain (his own model on our server; reported here, never blocks a release)
+        run: |
+          # after a deploy the model may still be downloading (once) and loading: wait up to 20 minutes for its own self-check
+          own='{}'; chk=none
+          for i in $(seq 1 40); do
+            st=$(curl -fsS --max-time 20 https://brodoit.com/api/bro/ok || echo '{}')
+            own=$(echo "$st" | jq -c '.own // {}' 2>/dev/null || echo '{}')
+            state=$(echo "$own" | jq -r '.state // "none"'); chk=$(echo "$own" | jq -r '.check // "none"')
+            case "$state" in idle|downloading|loading) echo "own brain $state ($i): $own"; sleep 30; continue;; esac
+            if [ "$state" = ready ] && [ "$chk" != ok ] && [ "$chk" != fail ]; then echo "own brain ready, self-check running ($i): $own"; sleep 30; continue; fi
+            break
+          done
+          if [ "$chk" = ok ]; then echo "::notice::Bro's own brain answers by itself: $own"; else echo "::warning::Bro's own brain is not answering by itself yet (the cloud brain answers): $own"; fi
