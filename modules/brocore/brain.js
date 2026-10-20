@@ -11,10 +11,11 @@
 
 const GROQ = 'https://api.groq.com/openai/v1';
 const DEFAULT_CHAIN = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
-const EXTRA = ['qwen/qwen3-32b', 'meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-3.3-70b-versatile'];
+const EXTRA = ['qwen/qwen3-32b', 'meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-3.3-70b-versatile', 'meta-llama/llama-4-scout-17b-16e-instruct'];
 // Two lanes, so background work (News writing, call summaries, nightly lessons) can never spend the per-model
 // minute/day allowance that live talk needs. On Groq every model has its own limits, so each lane uses its own models.
-// Live talk keeps the gpt-oss chain; background jobs (named purposes below) get models of their own.
+// Live talk keeps the gpt-oss chain; background jobs (named purposes below) get models of their own. Scout ends the live
+// list only as a last resort, when every other live model is out of allowance.
 const BG_PURPOSES = new Set(['news', 'summary', 'lessons']);
 const BG_CHAIN = ['meta-llama/llama-4-scout-17b-16e-instruct', 'qwen/qwen3-32b', 'llama-3.1-8b-instant'];
 const BG_EXTRA = ['meta-llama/llama-4-maverick-17b-128e-instruct'];

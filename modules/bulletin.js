@@ -62,7 +62,7 @@ function install(app, deps) {
  "script_hi": "<the same bulletin in natural spoken Hindi (Devanagari), ~500 words, opening 'नमस्ते, यह है ब्रोडूइट न्यूज़'. Use common Hindustani words people actually say; keep English names of companies/people in Devanagari transliteration.>"
 }
 Only report what the sources say; do not add facts. Avoid graphic details. STORIES:\n\n${src}`;
-    const g = await callGemini([{ role: 'user', content: prompt }], { maxTokens: 6000, systemPrompt: 'Return only valid JSON. No code fences.' });
+    const g = await callGemini([{ role: 'user', content: prompt }], { maxTokens: 6000, systemPrompt: 'Return only valid JSON. No code fences.', purpose: 'news' });
     const j = JSON.parse(g.reply.replace(/^```json\s*|```$/g, '').trim());
     if (!j.headlines || !j.script_en || !j.script_hi) throw new Error('bad bulletin JSON');
     const id = 'd-' + date;
@@ -115,7 +115,7 @@ Only report what the sources say; do not add facts. Avoid graphic details. STORI
     const prompt = `From these daily Brodoit News headlines for ${monthName}, write STRICT JSON for a "month in review" audio feature:
 {"title":"<title>","themes":[{"h":"<theme headline>","easy":"<3-4 sentences in simple English on what happened over the month and why it matters>","hi":"<same in natural Hindi>"} x 6-8],"script_en":"<spoken 5-6 minute review (~800 words), simple warm English, opening 'Namaste, this is the Brodoit News month in review for ${monthName}.'>","script_hi":"<same in natural spoken Hindi, ~850 words>"}
 HEADLINES:\n${src}`;
-    const g = await callGemini([{ role: 'user', content: prompt }], { maxTokens: 8000, systemPrompt: 'Return only valid JSON. No code fences.' });
+    const g = await callGemini([{ role: 'user', content: prompt }], { maxTokens: 8000, systemPrompt: 'Return only valid JSON. No code fences.', purpose: 'news' });
     const j = JSON.parse(g.reply.replace(/^```json\s*|```$/g, '').trim());
     const id = 'm-' + ym;
     put.run(id, 'monthly', ym + '-01', j.title, JSON.stringify({ headlines: j.themes, script_en: j.script_en, script_hi: j.script_hi, days: dailies.length }), '', '');
@@ -157,7 +157,7 @@ HEADLINES:\n${src}`;
     const c = db.prepare('SELECT data FROM news_explain WHERE k=?').get(k);
     if (c) return res.json(JSON.parse(c.data));
     try {
-      const g = await callGemini([{ role: 'user', content: `Explain this news story to someone in India who finds English news hard. STRICT JSON: {"easy":"<4-6 short sentences in very simple English: what happened, who it affects, why it matters, what may happen next>","hi":"<the same in natural spoken Hindi (Devanagari)>","words":[{"w":"<hard English word from the story>","m":"<simple meaning in English>","hi":"<Hindi meaning>"} x 3-5]}\n\nHEADLINE: ${title}\nSTORY: ${desc}` }], { maxTokens: 1200, systemPrompt: 'Return only valid JSON. No code fences. Do not add facts not in the story.' });
+      const g = await callGemini([{ role: 'user', content: `Explain this news story to someone in India who finds English news hard. STRICT JSON: {"easy":"<4-6 short sentences in very simple English: what happened, who it affects, why it matters, what may happen next>","hi":"<the same in natural spoken Hindi (Devanagari)>","words":[{"w":"<hard English word from the story>","m":"<simple meaning in English>","hi":"<Hindi meaning>"} x 3-5]}\n\nHEADLINE: ${title}\nSTORY: ${desc}` }], { maxTokens: 1200, systemPrompt: 'Return only valid JSON. No code fences. Do not add facts not in the story.', purpose: 'news' });
       const j = JSON.parse(g.reply.replace(/^```json\s*|```$/g, '').trim());
       db.prepare('INSERT OR REPLACE INTO news_explain(k,data) VALUES(?,?)').run(k, JSON.stringify(j));
       res.json(j);
