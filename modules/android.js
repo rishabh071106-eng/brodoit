@@ -7,6 +7,8 @@
 //   GET /api/android/status        { ready, version, build, apk_url, cert_sha256, built_at }
 //   GET /.well-known/assetlinks.json gains the com.brodoit.app statement via deps (see server.js)
 //   GET /download/upload_certificate.pem  the upload key's certificate (public; Play Console's one-time upload key reset)
+//   GET /download/play-api-cert.pem       the certificate of the key Play uploads are signed in with (public; given to the
+//                                         Google Cloud service account; its private key stays in MEDIA_DIR/android/play-api)
 // v19: the release holds two flavors of one build: the APK is com.brodoit.app (sideload, above) and the bundle is
 // com.brodoit.twa, the existing Google Play listing, which modules/play.js uploads to Play's testing tracks.
 //   POST /api/admin/android/check  (admin) look for a new build now
@@ -34,7 +36,24 @@ function install(app, deps) {
   const run = (cmd, args, opts) => spawnSync(cmd, args, Object.assign({ encoding: 'utf8', timeout: 120000, maxBuffer: 16 << 20 }, opts || {}));
   const hasJava = (() => { try { const r = run('java', ['-version']); return r.status === 0; } catch (e) { return false; } })();
   let checking = null;
-  const play = createPlay(Object.assign({ getSetting: deps.getSetting || (k => process.env[k] || ''), dir, log: (...a) => console.log('[play]', ...a) }, deps.playOptions || {}));
+  // ───── the Play uploader's key: made here once (openssl), the private half never leaves the volume ─────
+  const apiDir = path.join(dir, 'play-api'), apiKeyFile = path.join(apiDir, 'key.pem'), apiCertFile = path.join(apiDir, 'cert.pem');
+  let apiKey = null;
+  function playApiKey() {
+    if (apiKey) return apiKey;
+    try { if (fs.existsSync(apiKeyFile) && fs.existsSync(apiCertFile)) { const cert = fs.readFileSync(apiCertFile, 'utf8'); apiKey = { key: fs.readFileSync(apiKeyFile, 'utf8'), cert, sha256: new crypto.X509Certificate(cert).fingerprint256 }; return apiKey; } } catch (e) { log('play-api key unreadable:', e.message); }
+    try {
+      fs.mkdirSync(apiDir, { recursive: true, mode: 0o700 });
+      const r = run('openssl', ['req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-keyout', apiKeyFile + '.tmp', '-out', apiCertFile + '.tmp', '-days', '3650', '-subj', '/CN=Brodoit Play uploader']);
+      if (r.status !== 0) { log('openssl failed', (r.stderr || '').slice(0, 200)); return null; }
+      fs.chmodSync(apiKeyFile + '.tmp', 0o600); fs.renameSync(apiKeyFile + '.tmp', apiKeyFile); fs.renameSync(apiCertFile + '.tmp', apiCertFile);
+      log('play-api key created');
+    } catch (e) { log('play-api key:', e.message); return null; }
+    return playApiKey();
+  }
+  // the uploader account's email is not a secret: config/play.json (written when the Google Cloud side was set up)
+  const configEmail = () => { try { return String(JSON.parse(fs.readFileSync(deps.playConfig || path.join(__dirname, '..', 'config', 'play.json'), 'utf8')).serviceAccountEmail || ''); } catch (e) { return ''; } };
+  const play = createPlay(Object.assign({ getSetting: deps.getSetting || (k => process.env[k] || ''), dir, log: (...a) => console.log('[play]', ...a), ownKey: () => { const k = playApiKey(); return k && k.key; }, configEmail }, deps.playOptions || {}));
   // the signed bundle goes to Play only when it is the Play flavor (builds before v19 were com.brodoit.app)
   const playBuild = () => state.ready && state.aab && state.aabPackage === play.status().package ? { aab: state.aab, versionCode: state.versionCode, version: state.version } : null;
   const syncPlay = () => play.sync(playBuild()).catch(e => log('play', e.message));
@@ -124,7 +143,7 @@ function install(app, deps) {
   }
   const status = () => ({ ready: !!(state.ready && state.apk && fs.existsSync(state.apk)), version: state.version || null, build: state.build || null, tag: state.tag || null,
     apk_url: PUBLIC_URL + '/download/brodoit.apk', page_url: PUBLIC_URL + '/android', size: state.size || null, cert_sha256: state.cert_sha256 || null, package: PKG, built_at: state.built_at || null, last_check: state.last_check || null, note: state.note || '',
-    versionCode: state.versionCode || null, play: play.status() });
+    versionCode: state.versionCode || null, play: Object.assign(play.status(), { apiCertSha256: apiKey ? apiKey.sha256 : null }) });
 
   // ───── routes ─────
   const isAdmin = req => !!(req.user && isAdminUser && isAdminUser(req.user));
@@ -150,6 +169,10 @@ function install(app, deps) {
     res.set('Content-Type', 'application/x-pem-file'); res.set('Content-Disposition', 'attachment; filename="upload_certificate.pem"');
     res.send(pem[0] + '\n');
   });
+  app.get('/download/play-api-cert.pem', (req, res) => {
+    const k = playApiKey(); if (!k) return res.status(503).type('text/plain').send('The Play uploader key is not ready.');
+    res.set('Content-Type', 'application/x-pem-file'); res.set('Content-Disposition', 'attachment; filename="play-api-cert.pem"'); res.send(k.cert);
+  });
   app.post('/api/admin/android/check', auth, async (req, res) => { if (!isAdmin(req)) return res.status(403).json({ error: 'admin only' }); await check(true); await syncPlay(); res.json(status()); });
   app.get('/api/admin/android/keystore', auth, (req, res) => {
     if (!isAdmin(req)) return res.status(403).json({ error: 'admin only' });
@@ -172,7 +195,7 @@ ${s.ready ? `<a class="btn" href="/download/brodoit.apk">Install · v${esc(s.ver
   });
 
   // ───── schedule ─────
-  setTimeout(() => check(false).catch(() => {}).then(syncPlay), 8000);
+  setTimeout(() => { playApiKey(); check(false).catch(() => {}).then(syncPlay); }, 8000);
   setInterval(() => check(false).catch(() => {}).then(syncPlay), 10 * 60 * 1000); // a new build is live within 10 minutes
   log(hasJava ? 'signing ready (java ✅)' : 'java ❌ — APKs cannot be signed on this server', '· releases from', REPOS.join(', '));
   return { status, check, cert, PKG, play, syncPlay };
