@@ -175,7 +175,8 @@ function createBrain(o) {
   // wasn't just refused
   const cloudsOn = () => String(getSetting('BROCORE_CLOUDS') || process.env.BROCORE_CLOUDS || 'groq,gemini,openai').toLowerCase();
   const usable = p => !!PROV[p].key() && (p === 'groq' || cloudsOn().includes(p)) && !((st.provDown.get(p) || 0) > now());
-  const ready = () => !!key() || usable('gemini') || usable('openai');
+  // Groq is Bro Core's home: the brain is "ready" with a Groq key (the other clouds join its chain, they don't replace it)
+  const ready = () => !!key();
   const emergencyOn = () => String(getSetting('BROCORE_EMERGENCY') || process.env.BROCORE_EMERGENCY || 'on').trim().toLowerCase() !== 'off';
   const current = () => getSetting('BROCORE_MODEL') || process.env.BROCORE_MODEL || st.working || DEFAULT_CHAIN[0];
   const isDead = m => (st.dead.get(m) || 0) > now();
