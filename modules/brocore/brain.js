@@ -442,29 +442,43 @@ function createBrain(o) {
     yield { type: 'done', model: r.model, usage: null, emergency: true };
   }
 
-  // ── web search: Groq's compound system (an open model with built-in web search) answers a question with current
-  //    facts and sources. Non-stream, 12 s. → { text (≤ 1,200 chars), model }; throws when it cannot answer.
-  const SEARCH_MODELS = ['groq/compound-mini', 'groq/compound'];
+  // ── web search: an open model with built-in web search answers a question with current facts and sources.
+  //    First Groq's compound system (only the ids /models lists for this account), then gpt-oss with Groq's built-in
+  //    browser_search tool (20b first, so a search doesn't spend the 120b allowance live talk runs on).
+  //    Non-stream. → { text (≤ 1,200 chars), model, via: 'compound' | 'browser' }; throws when it cannot answer.
+  const SEARCH_MODELS = ['groq/compound-mini', 'groq/compound', 'compound-beta-mini', 'compound-beta'];
+  const BROWSE_MODELS = ['openai/gpt-oss-20b', 'openai/gpt-oss-120b'];
   async function webSearch(query, opts) {
     opts = opts || {};
     const q = String(query == null ? '' : query).replace(/\s+/g, ' ').trim().slice(0, 300);
     if (!q) return { text: '', model: null };
     if (!ready()) throw Object.assign(new Error('no-key'), { code: 'no-key' });
-    let last = null;
-    for (const model of SEARCH_MODELS) {
+    const ask = q + ' — answer briefly with the key facts and dates, and mention the source names';
+    const tries = SEARCH_MODELS.map(model => ({ model, via: 'compound', ms: opts.timeout || 12000, body: { model, stream: false, messages: [{ role: 'user', content: ask }] } }))
+      .concat(BROWSE_MODELS.map(model => ({ model, via: 'browser', ms: opts.browseTimeout || 15000, body: { model, stream: false, messages: [{ role: 'user', content: 'Search the web, then answer: ' + ask }], tools: [{ type: 'browser_search' }], tool_choice: 'required', reasoning_effort: 'low', max_completion_tokens: 1536 } })));
+    const ids = await listModels();
+    let last = null, unlisted = 0;
+    for (const { model, via, ms, body } of tries) {
+      if (ids && !ids.has(model)) { if (via === 'compound' && !unlisted++) note(opts, { m: 'compound', k: 'unlisted' }); continue; }
       if (isDead(model) || isCool(model)) { note(opts, { m: model, k: isDead(model) ? 'retired' : 'cooling' }); continue; }
-      const body = { model, stream: false, messages: [{ role: 'user', content: q + ' — answer briefly with the key facts and dates, and mention the source names' }] };
+      const left = opts.deadline ? opts.deadline - now() : Infinity; // the caller's time budget (a live call waits ~14 s)
+      if (left < 1500) { note(opts, { m: model, k: 'no-time' }); break; }
       let h;
-      try { h = await post('/chat/completions', body, opts.signal, opts.timeout || 12000); }
+      try { h = await post('/chat/completions', body, opts.signal, Math.min(ms, left)); }
       catch (e) { if (opts.signal && opts.signal.aborted) throw abortError(); last = e.name === 'AbortError' ? Object.assign(new Error('web search timed out'), { code: 'timeout' }) : e; note(opts, { m: model, k: e.name === 'AbortError' ? 'slow' : 'net' }); continue; }
       let j = null; try { j = await h.r.json(); } catch (e) { j = null; } finally { h.done(); }
-      if (!h.r.ok) { const e = classify(h.r.status, j, model); note(opts, { m: model, s: h.r.status, k: e.kind }); onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e; if (e.kind === 'key') break; continue; }
+      if (!h.r.ok) {
+        const e = classify(h.r.status, j, model); note(opts, { m: model, s: h.r.status, k: via === 'browser' ? 'browse-' + e.kind : e.kind }); last = e;
+        // a browse refusal says nothing about gpt-oss for talk: only a rate limit (shared with talk) marks it
+        if (via === 'compound' || e.kind === 'rate') onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after'));
+        if (e.kind === 'key') break; continue;
+      }
       const msg = (j && j.choices && j.choices[0] && j.choices[0].message) || {};
       const text = stripThink(msg.content || '').replace(/\s+/g, ' ').trim();
       if (!text) { last = new Error('empty search answer from ' + model); note(opts, { m: model, k: 'empty' }); continue; }
       note(opts, { m: model, ok: 1 });
       track(model, j.usage, 'search', { tin: Math.ceil(q.length / 4) + 50, tout: Math.ceil(text.length / 4) });
-      return { text: text.length > 1200 ? text.slice(0, 1200).replace(/\s+\S*$/, '') + ' …' : text, model };
+      return { text: text.length > 1200 ? text.slice(0, 1200).replace(/\s+\S*$/, '') + ' …' : text, model, via };
     }
     throw last || new Error('web search failed');
   }
