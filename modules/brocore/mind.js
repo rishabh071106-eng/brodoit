@@ -22,8 +22,8 @@ const { spawn } = require('child_process');
 // sentence ~5 s on a fresh call, ~2 s once the call is cached, 4.2 GB); Gemma 3 1B is the small one (~2 s / ~0.6 s, 1.2 GB).
 // bytes and sha256 as the bench measured them.
 const MODELS = {
-  big: { name: 'gemma-3-4b-it', file: 'gemma-3-4b-it-Q4_K_M.gguf', url: 'https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf', bytes: 2489894016, sha256: '04a43a22e8d2003deda5acc262f68ec1005fa76c735a9962a8c77042a74a7d19', minRamMB: 6000 },
-  small: { name: 'gemma-3-1b-it', file: 'gemma-3-1b-it-Q4_K_M.gguf', url: 'https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf', bytes: 806058272, sha256: '8270790f3ab69fdfe860b7b64008d9a19986d8df7e407bb018184caa08798ebd', minRamMB: 2500 },
+  big: { name: 'gemma-3-4b-it', file: 'gemma-3-4b-it-Q4_K_M.gguf', url: 'https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf', bytes: 2489894016, sha256: '04a43a22e8d2003deda5acc262f68ec1005fa76c735a9962a8c77042a74a7d19', minRamMB: 7000 }, // ~4.2 GB + Bro's voice + the app
+  small: { name: 'gemma-3-1b-it', file: 'gemma-3-1b-it-Q4_K_M.gguf', url: 'https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf', bytes: 806058272, sha256: '8270790f3ab69fdfe860b7b64008d9a19986d8df7e407bb018184caa08798ebd', minRamMB: 3000 }, // ~1.2 GB
 };
 const ENGINE_FLAG = '--brocore-mind-engine';
 const MB = 1048576;

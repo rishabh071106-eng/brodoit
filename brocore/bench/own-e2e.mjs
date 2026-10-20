@@ -19,7 +19,7 @@ const log = (...a) => console.log('[e2e]', ...a);
 const mind = createMind({ dir, models: { only: { name: path.basename(file), file: 'model.gguf', url: '', bytes: fs.statSync(file).size, sha256: '', minRamMB: 100 } }, threads: Number(threadsArg) || 2, log });
 const db = new Database(':memory:');
 const knowledge = createKnowledge({ db, log: () => {} });
-const memory = { top: () => [{ text: 'Plays cricket every Sunday' }] };
+const memory = { top: () => [{ text: 'Plays cricket every Sunday' }], recall: (p, q) => /sport|cricket|sunday/i.test(q) ? [{ text: 'Plays cricket every Sunday' }] : [] };
 const own = createOwn({ mind, knowledge, memory, log });
 const t0 = Date.now(); mind.init({});
 while (!mind.ready()) { if (['error', 'crashed', 'too-small', 'no-space'].includes(mind.state())) { console.log('E2E-FAILED engine', mind.health()); process.exit(1); } await new Promise(r => setTimeout(r, 200)); }
@@ -32,6 +32,7 @@ const CASES = [
   { id: 'fx-en', lang: 'en', q: 'What is the dollar rate in rupees right now?', want: /\d/, facts: 'fx' },
   { id: 'news-en', lang: 'en', q: 'What is the latest news about India?', want: /./, facts: 'news' },
   { id: 'feel-en', lang: 'en', q: 'I feel really low today, my exam went badly.', want: /./ },
+  { id: 'memory-en', lang: 'en', q: 'Which sport do I play on Sundays?', want: /cricket/i },
   { id: 'capital-hi', lang: 'hi', q: 'भारत की राजधानी क्या है?', want: /दिल्ली|delhi/i },
   { id: 'festival-hi', lang: 'hi', q: 'दिवाली इस साल कब है?', want: /./, facts: 'news' },
 ];
