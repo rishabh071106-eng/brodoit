@@ -214,9 +214,31 @@ function createKnowledge(o) {
     return value;
   }
 
+  // ── news search: Google News RSS (free, no key): today's headlines on a query, with dates and outlets. The web
+  //    search's last resort, so a question about something current still gets dated facts.
+  async function newsSearch(query, opts) {
+    opts = opts || {};
+    query = String(query || '').replace(/\s+/g, ' ').trim().slice(0, 200); if (!query) return { found: false, items: [] };
+    const url = 'https://news.google.com/rss/search?q=' + encodeURIComponent(query) + (/[ऀ-ॿ]/.test(query) ? '&hl=hi&gl=IN&ceid=IN:hi' : '&hl=en-IN&gl=IN&ceid=IN:en');
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), opts.timeout || 8000);
+    try {
+      const r = await fetchFn(url, { headers: { 'User-Agent': UA, Accept: 'application/rss+xml, application/xml, text/xml' }, signal: ctrl.signal });
+      if (!r.ok) { const e = new Error('news search HTTP ' + r.status); e.status = r.status; throw e; }
+      const xml = String(await r.text()), items = [];
+      for (const m of xml.matchAll(/<item>([\s\S]*?)<\/item>/g)) {
+        const tag = n => { const x = m[1].match(new RegExp('<' + n + '(?:\\s[^>]*)?>([\\s\\S]*?)</' + n + '>')); return x ? decode(x[1].replace(/<!\[CDATA\[|\]\]>/g, '')).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : ''; };
+        const title = tag('title'); if (!title) continue;
+        const d = new Date(tag('pubDate'));
+        items.push({ title: clip(title, 200), date: isNaN(d) ? '' : d.toISOString().slice(0, 10), source: clip(tag('source'), 60) });
+        if (items.length >= (opts.n || 6)) break;
+      }
+      return { found: items.length > 0, items };
+    } finally { clearTimeout(t); }
+  }
+
   function count() { try { return q('SELECT COUNT(*) n FROM bro_knowledge').get().n; } catch (e) { return 0; } }
   const health = () => ({ items: count(), lastRefresh: st.lastRefresh, lastAdded: st.lastAdded, wiki: st.wiki, lastError: st.lastError, running: !!st.running });
-  return { refresh, search, latest, today, lookup, count, health, _ceBullets: ceBullets };
+  return { refresh, search, latest, today, lookup, newsSearch, count, health, _ceBullets: ceBullets };
 }
 
 module.exports = { createKnowledge, ceBullets, ftsQuery, UA };
