@@ -49,8 +49,10 @@ for (const Q of QUESTIONS) {
   // a fresh context per question (some models free a disposed sequence late); the follow-up reuses the call's session
   const ctx = await model.createContext({ contextSize: 2048, sequences: 1, threads });
   const seq = ctx.getSequence();
-  const session = new LlamaChatSession({ contextSequence: seq, systemPrompt: sys(Q.lang) });
-  if (Q.history) session.setChatHistory([{ type: 'system', text: sys(Q.lang) }, ...Q.history]);
+  // the system prompt goes in through the chat history, exactly as Bro's engine does (some chat formats ignore the
+  // constructor's systemPrompt)
+  const session = new LlamaChatSession({ contextSequence: seq });
+  session.setChatHistory([{ type: 'system', text: sys(Q.lang) }, ...(Q.history || [])]);
   results.push(await ask(session, seq, Q.id, Q.q));
   if (Q.followup) results.push(Object.assign(await ask(session, seq, Q.id + '-followup', Q.followup), { followup: true }));
   await ctx.dispose();
