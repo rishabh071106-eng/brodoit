@@ -45,7 +45,7 @@ function createNightly(o) {
     if (users < MIN_USERS) return { skipped: 'only ' + users + ' user' + (users === 1 ? '' : 's') + ' called yesterday (lessons need ' + MIN_USERS + ')', calls: calls.length, users };
     const notes = calls.map((c, i) => `Call ${i + 1} (${c.lang || '?'}, ${c.turns} turns, mood ${c.mood || '?'}, rating ${c.rating || 'none'}): ${scrub(c.summary) || '(no summary)'}${c.coach_note ? ' Coach note: ' + scrub(c.coach_note) : ''}`).join('\n').slice(0, 9000);
     const current = memory.lessons.active();
-    const r = await chat({ system: LESSON_SYS, messages: [{ role: 'user', content: (current.length ? 'Lessons Bro already follows:\n- ' + current.join('\n- ') + '\n\n' : '') + 'Yesterday\'s call notes:\n' + notes }], json: true, maxTokens: 800, temperature: 0.3, purpose: 'util' });
+    const r = await chat({ system: LESSON_SYS, messages: [{ role: 'user', content: (current.length ? 'Lessons Bro already follows:\n- ' + current.join('\n- ') + '\n\n' : '') + 'Yesterday\'s call notes:\n' + notes }], json: true, maxTokens: 800, temperature: 0.3, purpose: 'lessons' });
     let items = [];
     try {
       const j = JSON.parse(r.text);
