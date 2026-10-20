@@ -156,6 +156,8 @@ function createBrain(o) {
   const current = () => getSetting('BROCORE_MODEL') || process.env.BROCORE_MODEL || st.working || DEFAULT_CHAIN[0];
   const isDead = m => (st.dead.get(m) || 0) > now();
   const isCool = m => (st.cool.get(m) || 0) > now();
+  // optional step trail for diagnostics (req.trace / opts.trace): model, HTTP status and our own error kind, never provider text
+  const note = (r, x) => { if (r && Array.isArray(r.trace) && r.trace.length < 32) r.trace.push(x); };
 
   // ── /models: cached for six hours; null when the list cannot be read ──
   async function listModels(force) {
@@ -379,11 +381,11 @@ function createBrain(o) {
         if (signal && signal.aborted) return;
         let h;
         try { h = await post('/chat/completions', bodyFor(model, req, true), signal, req.firstByteMs || 15000); }
-        catch (e) { if (signal && signal.aborted) return; last = e; st.lastError = e.message; break; }
+        catch (e) { if (signal && signal.aborted) return; last = e; st.lastError = e.message; note(req, { m: model, k: e.name === 'AbortError' ? 'slow' : 'net' }); break; }
         clearTimeout(h.timer);
         if (!h.r.ok) {
           let j = null; try { j = await h.r.json(); } catch (e) { j = null; } h.done();
-          const e = classify(h.r.status, j, model);
+          const e = classify(h.r.status, j, model); note(req, { m: model, s: h.r.status, k: e.kind });
           if (e.kind === 'param') { const s = st.noParams.get(model) || new Set(); if (!s.has(e.param)) { s.add(e.param); st.noParams.set(model, s); continue; } }
           if (isToolErr(e)) { logToolErr(model, e); last = toolErr = e; st.lastError = e.message; st.fails++; break; }
           onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e;
@@ -415,7 +417,7 @@ function createBrain(o) {
         finally { clearTimeout(idle); h.done(); }
         if (signal && signal.aborted) return; // barge-in: stop quietly
         if (failed) {
-          last = failed; st.lastError = failed.message;
+          last = failed; st.lastError = failed.message; note(req, { m: model, k: 'stream-' + (failed.kind || (failed.name === 'AbortError' ? 'idle' : 'x')) });
           if (any && text) { yield { type: 'done', model, usage, finish: 'error', error: failed.message }; return; } // words already out: never switch voices mid-sentence
           if (isToolErr(failed)) { logToolErr(model, failed); toolErr = failed; }
           break;
@@ -423,8 +425,8 @@ function createBrain(o) {
         const tail = think.flush(); if (tail) { if (!any) ring(ttft, now() - t0); any = true; text += tail; yield { type: 'text', delta: tail }; }
         const calls = tools.list();
         for (const tc of calls) yield { type: 'tool_call', id: tc.id, name: tc.name, args: tc.args };
-        if (!any) { last = new Error('empty stream from ' + model); st.lastError = last.message; break; }
-        works(model, req);
+        if (!any) { last = new Error('empty stream from ' + model); st.lastError = last.message; note(req, { m: model, k: 'empty' }); break; }
+        works(model, req); note(req, { m: model, ok: 1, calls: calls.map(c => c.name) });
         track(model, usage, req.purpose, { tin: estTokens(cleanMessages(req.system, req.messages)), tout: Math.ceil(text.length / 4) });
         yield { type: 'done', model, usage: usage || null, finish, toolsDropped: req.toolsDropped || undefined };
         return;
@@ -450,16 +452,17 @@ function createBrain(o) {
     if (!ready()) throw Object.assign(new Error('no-key'), { code: 'no-key' });
     let last = null;
     for (const model of SEARCH_MODELS) {
-      if (isDead(model) || isCool(model)) continue;
+      if (isDead(model) || isCool(model)) { note(opts, { m: model, k: isDead(model) ? 'retired' : 'cooling' }); continue; }
       const body = { model, stream: false, messages: [{ role: 'user', content: q + ' — answer briefly with the key facts and dates, and mention the source names' }] };
       let h;
       try { h = await post('/chat/completions', body, opts.signal, opts.timeout || 12000); }
-      catch (e) { if (opts.signal && opts.signal.aborted) throw abortError(); last = e.name === 'AbortError' ? Object.assign(new Error('web search timed out'), { code: 'timeout' }) : e; continue; }
+      catch (e) { if (opts.signal && opts.signal.aborted) throw abortError(); last = e.name === 'AbortError' ? Object.assign(new Error('web search timed out'), { code: 'timeout' }) : e; note(opts, { m: model, k: e.name === 'AbortError' ? 'slow' : 'net' }); continue; }
       let j = null; try { j = await h.r.json(); } catch (e) { j = null; } finally { h.done(); }
-      if (!h.r.ok) { const e = classify(h.r.status, j, model); onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e; if (e.kind === 'key') break; continue; }
+      if (!h.r.ok) { const e = classify(h.r.status, j, model); note(opts, { m: model, s: h.r.status, k: e.kind }); onFail(model, e, h.r.headers && h.r.headers.get && h.r.headers.get('retry-after')); last = e; if (e.kind === 'key') break; continue; }
       const msg = (j && j.choices && j.choices[0] && j.choices[0].message) || {};
       const text = stripThink(msg.content || '').replace(/\s+/g, ' ').trim();
-      if (!text) { last = new Error('empty search answer from ' + model); continue; }
+      if (!text) { last = new Error('empty search answer from ' + model); note(opts, { m: model, k: 'empty' }); continue; }
+      note(opts, { m: model, ok: 1 });
       track(model, j.usage, 'search', { tin: Math.ceil(q.length / 4) + 50, tout: Math.ceil(text.length / 4) });
       return { text: text.length > 1200 ? text.slice(0, 1200).replace(/\s+\S*$/, '') + ' …' : text, model };
     }
