@@ -21,6 +21,9 @@ const KEYS = [
   // v16 live calls (modules/voice.js): the call-token secret (generated once) and the ElevenLabs/Realtime emergency switch;
   // v16 optional GPU voice (modules/brocore/gpu.js, RunPod)
   'BROCORE_CALL_SECRET', 'BROCORE_EMERGENCY_ELEVEN', 'BROCORE_GPU', 'BROCORE_GPU_IMAGE', 'RUNPOD_API_KEY', 'RUNPOD_ENDPOINT_ID',
+  // v18 Bro's own brain (modules/brocore/mind.js): on/off, which model ('auto' | 'big' | 'small'), and how long a live
+  // turn waits for its first sentence before the cloud answers (ms)
+  'BRO_OWN_BRAIN', 'BRO_OWN_MODEL', 'BRO_OWN_BUDGET_MS',
 ];
 
 // "sk-…k9Qz" — enough to recognise a key, never enough to use it.
