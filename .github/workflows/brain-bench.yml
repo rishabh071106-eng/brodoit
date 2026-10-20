@@ -10,6 +10,8 @@ permissions:
   contents: read
 jobs:
   bench:
+    # the model comparison (slow): only when the commit message says [bench]
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[bench]')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -57,7 +59,7 @@ jobs:
           curl -fsSL --retry 5 -o /tmp/m/big.gguf https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf
           sha256sum /tmp/m/*.gguf
       - name: Bro end to end, small model (Gemma 3 1B)
-        run: docker run --rm -v /tmp/m:/m bro node brocore/bench/own-e2e.mjs /m/small.gguf - 2
+        run: docker run --rm -v /tmp/m:/m bro node brocore/bench/own-e2e.mjs /m/small.gguf - 3
       - name: Bro end to end, big model (Gemma 3 4B)
         if: always()
-        run: docker run --rm -v /tmp/m:/m bro node brocore/bench/own-e2e.mjs /m/big.gguf - 2
+        run: docker run --rm -v /tmp/m:/m bro node brocore/bench/own-e2e.mjs /m/big.gguf - 3

@@ -52,8 +52,8 @@ function pickModel(ramMB, want, models) {
   for (const k of Object.keys(M)) if (ramMB >= M[k].minRamMB) return k;
   return null;
 }
-// half the CPUs (at least 1): Bro's voice engine needs the rest while he speaks
-const threadsFor = cpus => Math.max(1, Math.min(8, Math.floor(cpus / 2) || 1));
+// reading the prompt is compute-bound: all but one CPU on a small server (Bro's voice keeps one), half on a big one
+const threadsFor = cpus => cpus <= 4 ? Math.max(1, cpus - 1) : Math.min(8, Math.floor(cpus / 2));
 
 async function freeBytes(dir) {
   if (typeof fsp.statfs !== 'function') return Infinity;
@@ -182,6 +182,10 @@ function createMind(cfg) {
       try { c.unref(); if (c.channel) c.channel.unref(); } catch (e) { /* closed */ }
       log('own brain ready ·', S.model.name, '·', S.threads, 'threads ·', Math.round((now() - t0) / 1000), 's to load');
     } catch (e) {
+      // no room for the big model: the small one is better than none
+      if (e.code === 'OWN_NO_SPACE' && S.key === 'big' && models.small && S.ramMB >= models.small.minRamMB) {
+        log('no disk for', S.model.name + ': trying', models.small.name); S.key = 'small'; S.model = models.small; return start();
+      }
       S.error = e.message;
       S.phase = e.code === 'OWN_NO_SPACE' ? 'no-space' : 'error';
       log('own brain not started:', e.message);
