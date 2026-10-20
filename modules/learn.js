@@ -15,16 +15,33 @@ const sid = (voice, text) => crypto.createHash('sha1').update(voice + '\n' + Str
 
 // Every line a learner can hear, in recording order (each language lesson by lesson). v14: the Python course has no
 // voice any more (it plays like a game), so only language lines are recorded — all in Bro's one voice.
+// v20: the Listen lessons too (lang/audio/<code>.json): the guide's lines in the learner's language (`from`: en or hi),
+// the course's lines in the course language. `warm` marks the first lessons of each course (recorded ahead, at boot).
+const WARM_LESSONS = 2;
 function catalog(appRoot) {
   const out = new Map();
-  const add = (voice, text, where) => { text = String(text || '').trim(); if (!text || text.length > 900) return; const id = sid(voice, text); if (!out.has(id)) out.set(id, { id, voice, text, where }); };
+  const add = (voice, text, where, warm) => { text = String(text || '').trim(); if (!text || text.length > 900) return; const id = sid(voice, text); const had = out.get(id); if (!had) out.set(id, { id, voice, text, where, warm: !!warm }); else if (warm) had.warm = true; };
   for (const code of ['es', 'fr', 'de', 'hi', 'en']) {
     try {
+      const J = JSON.parse(fs.readFileSync(path.join(appRoot, 'lang', 'audio', code + '.json'), 'utf8'));
+      const from = VOICES[J.from] ? J.from : 'en';
+      (J.lessons || []).forEach((l, i) => { for (const s of l.steps || []) for (const [voice, text] of audioTexts(s, code, from)) add(voice, text, code + ':' + l.id, i < WARM_LESSONS); });
+    } catch (e) { /* no Listen lessons for this language */ }
+    try {
       const J = JSON.parse(fs.readFileSync(path.join(appRoot, 'lang', 'data', code + '.json'), 'utf8'));
-      for (const u of J.units || []) for (const l of u.lessons || []) for (const it of l.items || []) for (const t of langTexts(it)) add(code, t, code + ':' + l.id);
+      (J.units || []).forEach((u, ui) => (u.lessons || []).forEach((l, li) => { for (const it of l.items || []) for (const t of langTexts(it)) add(code, t, code + ':' + l.id, ui === 0 && li < WARM_LESSONS); }));
     } catch (e) { /* language not present */ }
   }
   return out;
+}
+
+// The [voice key, text] pairs one Listen step speaks (what lang/audio.html passes to speak()): a target line `t` in the
+// course voice, the guide's `n` and questions `q` in the learner's language.
+function audioTexts(s, code, from) {
+  if (!s || typeof s !== 'object') return [];
+  if (typeof s.t === 'string') return [[code, s.t]];
+  const n = typeof s.n === 'string' ? s.n : typeof s.q === 'string' ? s.q : '';
+  return n ? [[from, n]] : [];
 }
 
 // The target-language strings an exercise item speaks (what lang.js passes to speak()).
@@ -37,7 +54,10 @@ function langTexts(it) {
   else if (it.t === 'speak') t.push(it.text || it.phrase);
   else if (it.t === 'match') (it.pairs || []).forEach(p => t.push(p[0]));
   else if (it.t === 'choose') { if (it.audio) t.push(it.audio); }
-  else if (it.t === 'fill') { if (it.full) t.push(it.full); else if (it.sentence && it.answer) t.push(String(it.sentence).replace(/_{2,}/, it.answer)); }
+  else if (it.t === 'fill') { // `answer` is the index of the right option (lesson.html speaks the sentence with it filled in)
+    const word = Array.isArray(it.options) && Number.isInteger(it.answer) ? it.options[it.answer] : typeof it.answer === 'string' ? it.answer : '';
+    if (it.full) t.push(it.full); else if (it.sentence && word) t.push(String(it.sentence).replace(/_{2,}/, word));
+  }
   return t.filter(x => typeof x === 'string' && x.trim());
 }
 
@@ -202,22 +222,44 @@ The learner's name is ${name || 'unknown'}.`;
   });
 
   // ── narration recorded once ──
-  // Clips live in learn-voice/<Bro's voice id>/: changing Bro's voice re-records into a fresh folder, and until a line is
-  // re-recorded the earlier clip (learn-voice/<id>.mp3) keeps playing so a lesson never goes quiet.
+  // Clips live in learn-voice/<voice folder>/. v20: the folder names Bro's voice style too (<voice id>-energetic), so a
+  // new style chosen in Admin re-records each line on its first play; until then the line's clip in an earlier folder
+  // (the voice id alone, then the oldest flat learn-voice/<id>.mp3) keeps playing so a lesson never goes quiet.
   const VDIR = path.join(mediaDir, 'learn-voice');
-  const voiceDir = () => { const d = path.join(VDIR, EV.broVoice(getSetting)); try { fs.mkdirSync(d, { recursive: true }); } catch (e) { /* read-only */ } return d; };
-  try { fs.mkdirSync(VDIR, { recursive: true }); } catch (e) { /* read-only */ }
+  const core = () => global._broCore || null;
+  const coreVoice = () => { const B = core(); try { return !!(B && B.voiceReady && B.voiceReady()); } catch (e) { return false; } };
+  const style = () => { const B = core(); try { return String((B && typeof B.voiceStyle === 'function' && B.voiceStyle()) || '').replace(/[^a-z0-9]/gi, ''); } catch (e) { return ''; } };
+  const mk = d => { try { fs.mkdirSync(d, { recursive: true }); } catch (e) { /* read-only */ } return d; };
+  const voiceDir = () => mk(path.join(VDIR, EV.broVoice(getSetting) + (style() ? '-' + style() : '')));
+  mk(VDIR);
   let CAT = catalog(appRoot);
   const inflight = new Map(), miss = new Map(), ipHits = new Map();
   const fileOf = id => path.join(voiceDir(), id + '.mp3');
-  const oldFile = id => path.join(VDIR, id + '.mp3');
+  const olderFile = id => { const now = fileOf(id); return [path.join(VDIR, EV.broVoice(getSetting), id + '.mp3'), path.join(VDIR, id + '.mp3')].find(f => f !== now && fs.existsSync(f)) || ''; };
+  // Bro's own voice (Bro Core on our CPU, low priority: live calls go first) records the course. German, which it has no
+  // native voice for, goes to the studio's Bro voice first (credit-guarded). Only a clip in Bro's voice is kept; while
+  // Bro Core's voice is loading, the paid studio chain answers only behind its emergency switch, and is not kept.
   async function record(item, purpose) {
     const v = VOICES[item.voice] || { lang: 'en', role: 'narrator' };
-    const out = await STUDIO.speak({ text: item.text, lang: v.lang, role: v.role, purpose, getSetting, mp3: true, timeout: 45000, eleven: { format: 'mp3_44100_64', timeout: 40000, chunk: 1500 } });
+    const base = { text: item.text, lang: v.lang, role: v.role, purpose, getSetting, mp3: true, timeout: 45000, eleven: { format: 'mp3_44100_64', timeout: 40000, chunk: 1500 } };
+    const B = core();
+    let out = null;
+    if (v.lang === 'de') { try { out = await STUDIO.speak(Object.assign({}, base, { provider: 'eleven' })); } catch (e) { out = null; } }
+    if (!out && coreVoice()) {
+      try { out = await STUDIO.speak(Object.assign({}, base, { provider: 'brocore', strict: true })); }
+      catch (e) { if (e && e.code === 'VOICE_BUSY') return { busy: true }; throw e; }
+    } else if (!out && (!B || (B.emergencyOn && B.emergencyOn()))) out = await STUDIO.speak(base);
     if (!out || !out.buf || out.mime !== 'audio/mpeg') return null;
+    const keep = !B || out.provider === 'brocore' || (v.lang === 'de' && out.provider === 'eleven');
+    if (!keep) return { buf: out.buf, provider: out.provider };
     const f = fileOf(item.id), tmp = f + '.' + process.pid + '.tmp';
     fs.writeFileSync(tmp, out.buf); fs.renameSync(tmp, f);
     return { file: f, provider: out.provider };
+  }
+  // one recording per line at a time, shared by players and the warm-up
+  function ensure(item, purpose) {
+    if (!inflight.has(item.id)) inflight.set(item.id, record(item, purpose).catch(e => { log('record', e.message); return null; }).finally(() => setTimeout(() => inflight.delete(item.id), 1000)));
+    return inflight.get(item.id);
   }
   app.get('/api/learn/say/:id', async (req, res) => {
     const id = String(req.params.id || '').replace(/\.mp3$/, '');
@@ -227,18 +269,47 @@ The learner's name is ${name || 'unknown'}.`;
     if (fs.existsSync(f)) return send();
     const item = CAT.get(id);
     if (!item) return res.status(404).end();
-    if ((miss.get(id) || 0) > Date.now()) return res.status(404).end();
+    const older = () => { const o = olderFile(id); if (!o) return false; res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-cache' }); res.sendFile(o); return true; };
+    const m = miss.get(id);
+    if (m && m.until > Date.now()) return older() || res.status(m.soon ? 503 : 404).end();
     const ip = String(req.headers['x-forwarded-for'] || req.ip || '').split(',')[0].trim();
     const h = (ipHits.get(ip) || []).filter(t => t > Date.now() - 60e3);
-    if (!inflight.has(id) && h.length >= 30) return res.status(404).end();
+    if (!inflight.has(id) && h.length >= 30) return older() || res.status(404).end();
     h.push(Date.now()); ipHits.set(ip, h);
-    if (!inflight.has(id)) inflight.set(id, record(item, 'daily').catch(e => { log('record', e.message); return null; }).finally(() => setTimeout(() => inflight.delete(id), 1000)));
-    const r = await inflight.get(id);
-    if (r && fs.existsSync(f)) return send();
-    if (fs.existsSync(oldFile(id))) { res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-cache' }); return res.sendFile(oldFile(id)); }
-    miss.set(id, Date.now() + 10 * 60e3);
-    res.status(404).end();
+    const r = await ensure(item, 'daily');
+    if (r && r.file && fs.existsSync(f)) return send();
+    if (r && r.buf) { res.set({ 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-store' }); return res.send(r.buf); }
+    if (older()) return;
+    // busy (live calls have the voice): the page reads the line live and asks again on the next play
+    const soon = (r && r.busy) || (core() && !coreVoice()); // busy, or Bro's voice still loading after a deploy
+    miss.set(id, { until: Date.now() + (soon ? 15e3 : 10 * 60e3), soon });
+    res.status(soon ? 503 : 404).end();
   });
+  // v20: the first lessons of each course are recorded ahead in Bro's voice, one line at a time at low priority, so a
+  // learner's first lessons play without waiting. Runs after boot and every 10 minutes while lines are missing.
+  let warmRun = null;
+  const nap = ms => new Promise(r => setTimeout(r, ms));
+  function warm(o) {
+    o = o || {};
+    if (warmRun) return warmRun;
+    warmRun = (async () => {
+      let made = 0;
+      for (const it of [...CAT.values()].filter(x => x.warm)) {
+        if (!coreVoice()) break;
+        if (fs.existsSync(fileOf(it.id))) continue;
+        const r = await ensure(it, 'daily');
+        if (r && r.file) made++;
+        await nap(r && r.busy ? (o.busyMs != null ? o.busyMs : 5000) : (o.gapMs != null ? o.gapMs : 250));
+      }
+      if (made) log(`warm-up: ${made} lines recorded in Bro's voice`);
+      return made;
+    })().finally(() => { warmRun = null; });
+    return warmRun;
+  }
+  if (process.env.LEARN_WARM !== '0') {
+    const t1 = setTimeout(() => warm(), 90e3), t2 = setInterval(() => warm(), 10 * 60e3);
+    if (t1.unref) t1.unref(); if (t2.unref) t2.unref();
+  }
   function stats() {
     let have = 0; const by = {};
     for (const it of CAT.values()) { const ok = fs.existsSync(fileOf(it.id)); if (ok) have++; const k = it.voice; by[k] = by[k] || [0, 0]; by[k][1]++; if (ok) by[k][0]++; }
@@ -247,7 +318,7 @@ The learner's name is ${name || 'unknown'}.`;
   app.get('/api/learn/voice-status', (req, res) => res.json(stats()));
   global._learnVoice = { stats, profile };
   log(`ready · ${CAT.size} narration lines (${stats().recorded} recorded) · coach brains: ${brains().map(b => b[0]).join(', ') || 'none'}`);
-  return { profile, stats, reload: () => { CAT = catalog(appRoot); return CAT.size; }, catalog: () => CAT, record };
+  return { profile, stats, reload: () => { CAT = catalog(appRoot); return CAT.size; }, catalog: () => CAT, record, warm, voiceDir };
 }
 
-module.exports = { install, catalog, sid, langTexts, VOICES };
+module.exports = { install, catalog, sid, langTexts, audioTexts, VOICES, WARM_LESSONS };

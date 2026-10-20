@@ -246,6 +246,7 @@ function install(app, deps) {
     safety, CARE_RULES: safety.CARE_RULES,
     serverTools: SERVER_TOOLS, isServerTool: name => SERVER_TOOL_NAMES.has(name), runServerTool,
     speak, speakStream, voiceFor, setVoiceSpec, voiceReady,
+    voiceStyle: () => { const v = voiceMod(); return v && typeof v.styleName === 'function' ? v.styleName() : ''; }, // v20: Energetic / Bright / Deep (learn.js keys course clips by it)
     brainReady: () => brain.ready(), emergencyOn: () => brain.emergencyOn(), ready: () => brain.ready() && voiceReady(),
     lookup: q => knowledge.lookup(q), today: (topic, n) => knowledge.today(topic, n), search: (q, n) => knowledge.search(q, n), webSearch: (q, o) => brain.webSearch(q, o),
     health, knowledge, memory, nightly, lessons: memory.lessons, brain, hearing, gpu,

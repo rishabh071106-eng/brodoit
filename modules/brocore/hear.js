@@ -5,7 +5,8 @@
 // "Thanks for watching", a lone "धन्यवाद") are dropped when the clip is near-silent or Whisper itself says it was
 // probably not speech. v17: segments Whisper marks as non-speech (no_speech_prob > 0.6 with avg_logprob < -1) or as a
 // repetition loop (compression_ratio > 2.4) are dropped; opts.prompt (the conversation language and Bro's last line)
-// is passed to Whisper; Urdu is heard as Hindi (Bro speaks Hindi, not Urdu script).
+// is passed to Whisper; Urdu is heard as Hindi (Bro speaks Hindi, not Urdu script). v20: opts.expect (the phrase a language
+// lesson waits for) keeps that phrase even when it looks like a phantom ("gracias", "merci", "Thank you very much").
 // → { text, lang, confidence (mean avg_logprob of the kept segments, or null), model, duration }.
 'use strict';
 
@@ -15,6 +16,9 @@ const NAMES = { english: 'en', hindi: 'hi', spanish: 'es', french: 'fr', german:
 const HALLUCINATIONS = new Set(['thank you', 'thank you very much', 'thanks', 'thanks for watching', 'thank you for watching', 'thanks for watching and see you next time', 'please subscribe', 'subscribe', 'like and subscribe', 'bye', 'bye bye', 'you', 'so', 'okay', 'subtitles by the amara org community', 'धन्यवाद', 'शुक्रिया', 'धन्यवाद धन्यवाद', 'thank you thank you', 'gracias', 'merci', 'danke', 'ご視聴ありがとうございました', 'продолжение следует', 'उप शीर्षक']);
 const norm = s => String(s || '').toLowerCase().normalize('NFC').replace(/[^\p{L}\p{M}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
 const isHallucination = text => { const t = norm(text); return !t || HALLUCINATIONS.has(t); };
+// the heard text is (or holds) the phrase a lesson expects, accents aside
+const fold = s => norm(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const expected = (text, expect) => { const a = fold(text), b = fold(expect); return !!(a && b && (a === b || a.includes(b) || (b.includes(a) && a.length >= b.length * 0.6))); };
 
 function toIso(l) {
   const s = String(l || '').trim().toLowerCase(); if (!s) return '';
@@ -110,8 +114,10 @@ function createHear(o) {
         continue;
       }
       let text = String((j && j.text) || '').replace(/\s+/g, ' ').trim();
+      // v20: a language lesson says what it expects ("gracias", "Thank you very much"): those words are never a phantom
+      const wanted = expected(text, opts.expect);
       const segs = (j && Array.isArray(j.segments)) ? j.segments.filter(x => x && typeof x === 'object') : [];
-      const kept = segs.filter(x => !badSegment(x)), cut = segs.length - kept.length;
+      const kept = wanted ? segs : segs.filter(x => !badSegment(x)), cut = segs.length - kept.length;
       if (cut) { // rebuild the words from the segments we keep (when Whisper gave them), or nothing when none is left
         if (!kept.length) text = '';
         else if (segs.every(x => typeof x.text === 'string')) text = kept.map(x => x.text).join(' ').replace(/\s+/g, ' ').trim();
@@ -125,7 +131,7 @@ function createHear(o) {
       const lang = appLang(toIso(j && j.language) || scriptLang(text) || hint);
       if (!text) { st.empty++; if (cut) st.dropped++; return { text: '', lang, confidence, model, duration: dur, empty: cut ? 'filtered' : 'nothing' }; }
       // the classic phantoms: dropped when Whisper doubts it was speech (whatever the loudness), or the clip is near-silent
-      if (isHallucination(text) && ((noSpeech != null && noSpeech > 0.4) || (energy != null && energy < QUIET))) { st.dropped++; return { text: '', lang, confidence, model, duration: dur, empty: 'hallucination' }; }
+      if (!wanted && isHallucination(text) && ((noSpeech != null && noSpeech > 0.4) || (energy != null && energy < QUIET))) { st.dropped++; return { text: '', lang, confidence, model, duration: dur, empty: 'hallucination' }; }
       return { text, lang, confidence, model, duration: dur };
     }
     st.fails++; st.lastError = last ? last.message : 'whisper failed';
@@ -136,4 +142,4 @@ function createHear(o) {
   return { hear, health };
 }
 
-module.exports = { createHear, parseWav, wavFromPcm16, rms16, isHallucination, toIso, badSegment, MODELS };
+module.exports = { createHear, parseWav, wavFromPcm16, rms16, isHallucination, expected, toIso, badSegment, MODELS };

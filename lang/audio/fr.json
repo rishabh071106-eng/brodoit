@@ -12,22 +12,7 @@
    "goal": "Greet someone politely and say whether you speak or understand a language",
    "steps": [
     {
-     "n": "Listen to this conversation between an American man and a French woman who have just met."
-    },
-    {
-     "t": "Bonjour, madame. Excusez-moi, vous parlez anglais ?"
-    },
-    {
-     "t": "Non, monsieur. Je ne parle pas anglais."
-    },
-    {
-     "t": "Vous comprenez le français ?"
-    },
-    {
-     "t": "Oui, un peu."
-    },
-    {
-     "n": "In the next few minutes you will learn to say all of that yourself. Let's begin with 'hello', which in French also means 'good morning' and 'good day'."
+     "n": "Lesson 1. Let's go! Listen, then say it with me."
     },
     {
      "n": "Listen and repeat."
@@ -657,7 +642,8 @@
     {
      "n": "Well done. That is the end of lesson one. In the next lesson you will learn to say thank you and please, and to say where you are from."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a2",
@@ -666,22 +652,10 @@
    "goal": "Exchange pleasantries, say please and thank you, and say your nationality",
    "steps": [
     {
-     "n": "Listen to this short conversation. A French woman runs into an American man she met yesterday."
+     "n": "Lesson 2. Let's go! Listen, then say it with me."
     },
     {
-     "t": "Bonjour, monsieur. Ça va ?"
-    },
-    {
-     "t": "Ça va bien, merci. Et vous ?"
-    },
-    {
-     "t": "Très bien, merci. Vous êtes américain ?"
-    },
-    {
-     "t": "Oui, je suis américain. Au revoir, madame !"
-    },
-    {
-     "n": "You will be able to say all of this in a few minutes. But first, let's see what you remember from lesson one. Say 'hello, madam'."
+     "n": "First, what do you remember? Say 'hello, madam'."
     },
     {
      "p": 3,
@@ -1308,7 +1282,8 @@
     {
      "n": "Excellent. In lesson three you will learn to ask where something is, how much it costs, and to count to ten."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a3",
@@ -1317,19 +1292,7 @@
    "goal": "Ask where places are, ask prices and count from one to ten",
    "steps": [
     {
-     "n": "Listen to this conversation. A woman is asking a man on the street for directions."
-    },
-    {
-     "t": "Excusez-moi, monsieur. Où est la gare, s'il vous plaît ?"
-    },
-    {
-     "t": "La gare ? C'est là-bas, madame."
-    },
-    {
-     "t": "Merci. Et un ticket, c'est combien ?"
-    },
-    {
-     "t": "Deux euros, madame."
+     "n": "Lesson 3. Let's go! Listen, then say it with me."
     },
     {
      "n": "First, a quick review. Say 'excuse me, sir'."
@@ -1961,7 +1924,8 @@
     {
      "n": "Very good. In the next lesson you will go to a café and order something to drink."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a4",
@@ -1970,19 +1934,7 @@
    "goal": "Order drinks and snacks politely and ask for the bill",
    "steps": [
     {
-     "n": "You are sitting at a café in Paris. Listen to the conversation between the waitress and a customer."
-    },
-    {
-     "t": "Bonjour, monsieur. Vous désirez ?"
-    },
-    {
-     "t": "Je voudrais un café, s'il vous plaît."
-    },
-    {
-     "t": "Et avec ça ?"
-    },
-    {
-     "t": "Un croissant. Et l'addition, s'il vous plaît."
+     "n": "Lesson 4. Let's go! Listen, then say it with me."
     },
     {
      "n": "Before we order, let's review. Ask how much it is."
@@ -2620,7 +2572,8 @@
     {
      "n": "Well done. Next time you will learn to find your way around: left, right, straight ahead, and the metro."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a5",
@@ -2629,19 +2582,7 @@
    "goal": "Ask for and understand directions and use public transport",
    "steps": [
     {
-     "n": "Listen. A tourist stops a woman in the street to ask the way."
-    },
-    {
-     "t": "Excusez-moi, madame. Pour aller à la gare, s'il vous plaît ?"
-    },
-    {
-     "t": "C'est tout droit, puis à gauche."
-    },
-    {
-     "t": "C'est loin ?"
-    },
-    {
-     "t": "Non, non. C'est près. Cinq minutes à pied."
+     "n": "Lesson 5. Let's go! Listen, then say it with me."
     },
     {
      "n": "Let's warm up with what you know. Say 'I would like a coffee, please'."
@@ -3279,7 +3220,8 @@
     {
      "n": "Very good. In lesson six you will learn to tell the time and the days of the week."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a6",
@@ -3288,19 +3230,7 @@
    "goal": "Tell the time, name the days of the week and talk about today and tomorrow",
    "steps": [
     {
-     "n": "Listen. A woman at the station asks a man about the time and her train."
-    },
-    {
-     "t": "Excusez-moi, monsieur. Quelle heure est-il ?"
-    },
-    {
-     "t": "Il est trois heures."
-    },
-    {
-     "t": "Merci. Et le train pour Lyon, c'est à quelle heure ?"
-    },
-    {
-     "t": "À quatre heures, madame. Demain aussi, à quatre heures."
+     "n": "Lesson 6. Let's go! Listen, then say it with me."
     },
     {
      "n": "A little review first. Say 'four'."
@@ -3936,7 +3866,8 @@
     {
      "n": "Very good. In the next lesson you will introduce yourself and talk about your family."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a7",
@@ -3945,19 +3876,7 @@
    "goal": "Introduce yourself, ask someone's name and talk about your family",
    "steps": [
     {
-     "n": "Listen. Two neighbours meet for the first time at a party."
-    },
-    {
-     "t": "Bonjour. Je m'appelle Marie. Et vous, comment vous appelez-vous ?"
-    },
-    {
-     "t": "Je m'appelle Paul. Enchanté, madame."
-    },
-    {
-     "t": "Enchantée. Vous êtes marié ?"
-    },
-    {
-     "t": "Oui. Voici ma femme, Anne, et nos deux enfants."
+     "n": "Lesson 7. Let's go! Listen, then say it with me."
     },
     {
      "n": "Quick review. Ask a man if he is American."
@@ -4592,7 +4511,8 @@
     {
      "n": "Excellent. In lesson eight you will say what you like and what you want."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a8",
@@ -4601,19 +4521,7 @@
    "goal": "Say what you like, dislike and prefer, and accept an offer politely",
    "steps": [
     {
-     "n": "Listen. Marie and Paul are chatting at the party."
-    },
-    {
-     "t": "Vous aimez le vin, Paul ?"
-    },
-    {
-     "t": "Oui, j'aime beaucoup le vin. Mais je préfère la bière."
-    },
-    {
-     "t": "Moi aussi ! Vous voulez une bière ?"
-    },
-    {
-     "t": "Oui, je veux bien. Merci."
+     "n": "Lesson 8. Let's go! Listen, then say it with me."
     },
     {
      "n": "First, review. Say 'I would like a beer, please'."
@@ -5255,7 +5163,8 @@
     {
      "n": "Well done. In lesson nine you will talk about what you did yesterday."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a9",
@@ -5264,19 +5173,7 @@
    "goal": "Talk about what you did in the past and say how it was",
    "steps": [
     {
-     "n": "Listen. Marie asks Paul about his day yesterday."
-    },
-    {
-     "t": "Qu'est-ce que vous avez fait hier ?"
-    },
-    {
-     "t": "J'ai visité le Louvre. C'était magnifique."
-    },
-    {
-     "t": "Et le soir ?"
-    },
-    {
-     "t": "Le soir, j'ai mangé au restaurant avec ma femme. C'était très bon."
+     "n": "Lesson 9. Let's go! Listen, then say it with me."
     },
     {
      "n": "Review first. Say 'I like cheese a lot'."
@@ -5911,7 +5808,8 @@
     {
      "n": "Very good. In lesson ten you will make plans with a friend."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a10",
@@ -5920,19 +5818,7 @@
    "goal": "Invite someone, accept or decline politely and agree on a time",
    "steps": [
     {
-     "n": "Listen. Marie invites Paul to dinner."
-    },
-    {
-     "t": "Vous voulez dîner avec nous ce soir ?"
-    },
-    {
-     "t": "Avec plaisir ! À quelle heure ?"
-    },
-    {
-     "t": "À huit heures, au restaurant près de la gare."
-    },
-    {
-     "t": "D'accord. À ce soir !"
+     "n": "Lesson 10. Let's go! Listen, then say it with me."
     },
     {
      "n": "Review. Ask 'do you want a beer?'"
@@ -6572,7 +6458,8 @@
     {
      "n": "Well done. Next, lesson eleven: shopping and money."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a11",
@@ -6581,19 +6468,7 @@
    "goal": "Shop for things, talk about prices and pay by card",
    "steps": [
     {
-     "n": "Listen. Paul walks into a small shop in Paris."
-    },
-    {
-     "t": "Bonjour, madame. Je cherche un cadeau pour ma femme."
-    },
-    {
-     "t": "Ce sac, peut-être ? Il est à trente euros."
-    },
-    {
-     "t": "C'est un peu cher. Vous acceptez la carte ?"
-    },
-    {
-     "t": "Bien sûr, monsieur."
+     "n": "Lesson 11. Let's go! Listen, then say it with me."
     },
     {
      "n": "Review. Ask how much it is."
@@ -7233,7 +7108,8 @@
     {
      "n": "Excellent. The last lesson brings everything together in one long, real conversation."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a12",
@@ -7242,34 +7118,7 @@
    "goal": "Review the whole course and hold a real conversation at a café",
    "steps": [
     {
-     "n": "This is the last lesson. Listen to a longer conversation. Paul is at the station café before his train to Lyon. Almost every word is one you already know."
-    },
-    {
-     "t": "Bonjour, monsieur. Vous désirez ?"
-    },
-    {
-     "t": "Bonjour, madame. Je voudrais un café et un croissant, s'il vous plaît."
-    },
-    {
-     "t": "Et avec ça ?"
-    },
-    {
-     "t": "C'est tout, merci. Excusez-moi, le train pour Lyon, c'est à quelle heure ?"
-    },
-    {
-     "t": "À dix heures et demie. C'est là-bas, à gauche."
-    },
-    {
-     "t": "Merci beaucoup. Vous acceptez la carte ?"
-    },
-    {
-     "t": "Bien sûr. Ça fait cinq euros."
-    },
-    {
-     "t": "Au revoir, madame. Bonne journée !"
-    },
-    {
-     "n": "Two expressions were new. Here is the first: 'that makes', which is how shopkeepers announce a total. Listen and repeat."
+     "n": "Lesson 12. Let's go! Listen, then say it with me."
     },
     {
      "n": "'That makes'. Listen and repeat."
@@ -7883,7 +7732,8 @@
     {
      "n": "Congratulations. You have finished all twelve lessons. You can greet people, order, ask your way, tell the time, talk about your family, your likes and your plans, and shop with confidence. Keep listening, keep speaking, and have a wonderful time in France."
     }
-   ]
+   ],
+   "short": true
   }
  ]
 }

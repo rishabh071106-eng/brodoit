@@ -12,19 +12,7 @@
    "goal": "Greet someone politely and say whether you understand English or German",
    "steps": [
     {
-     "n": "Listen to this conversation. An American man stops a woman on a street in Berlin."
-    },
-    {
-     "t": "Entschuldigung. Verstehen Sie Englisch?"
-    },
-    {
-     "t": "Nein. Ich verstehe kein Englisch. Verstehen Sie Deutsch?"
-    },
-    {
-     "t": "Ja, ein bisschen."
-    },
-    {
-     "n": "In the next few minutes you will learn to say all of that yourself. The man says 'excuse me', then asks 'do you understand English?'. She answers 'no, I don't understand English. Do you understand German?' and he says 'yes, a little'."
+     "n": "Lesson 1. Let's go! Listen, then say it with me."
     },
     {
      "n": "We begin with the word for 'English'. Listen and repeat, starting with the end of the word."
@@ -646,7 +634,8 @@
     {
      "n": "Well done. In the next lesson you will learn 'good day', 'please', 'thank you', 'I speak', and to ask how someone is. This is the end of lesson one."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a2",
@@ -655,25 +644,7 @@
    "goal": "Greet people at different times of day, ask how they are, say please and thank you, and say what you speak",
    "steps": [
     {
-     "n": "Listen to this conversation. Two neighbours meet in the morning in Hamburg."
-    },
-    {
-     "t": "Guten Morgen! Wie geht es Ihnen?"
-    },
-    {
-     "t": "Gut, danke. Und Ihnen?"
-    },
-    {
-     "t": "Auch gut. Sprechen Sie Englisch?"
-    },
-    {
-     "t": "Nein, ich spreche kein Englisch. Sprechen Sie Deutsch?"
-    },
-    {
-     "t": "Ja, ein bisschen. Danke. Auf Wiedersehen!"
-    },
-    {
-     "n": "The first speaker says 'good morning, how are you?'. The other answers 'fine, thanks, and you?'. 'Also fine. Do you speak English?' 'No, I don't speak English. Do you speak German?' 'Yes, a little. Thank you. Goodbye.' Let's start with a quick reminder from lesson one."
+     "n": "Lesson 2. Let's go! Listen, then say it with me."
     },
     {
      "n": "Stop a stranger and ask whether she understands English."
@@ -1311,7 +1282,8 @@
     {
      "n": "In the next lesson you will ask where things are, ask how much something costs, and count from one to ten. This is the end of lesson two."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a3",
@@ -1320,28 +1292,7 @@
    "goal": "Ask where something is, ask how much it costs, and count from one to ten",
    "steps": [
     {
-     "n": "Listen to this conversation in a café in Cologne."
-    },
-    {
-     "t": "Entschuldigung, wo ist die Toilette?"
-    },
-    {
-     "t": "Dort."
-    },
-    {
-     "t": "Danke. Wie viel kostet das?"
-    },
-    {
-     "t": "Das kostet drei Euro."
-    },
-    {
-     "t": "Drei Euro. Bitte."
-    },
-    {
-     "t": "Danke schön."
-    },
-    {
-     "n": "The customer says 'excuse me, where is the toilet?'. The waiter says 'over there'. Then she asks 'how much does that cost?'. 'That costs three euros.' She hands him the money, 'three euros, here you are', and he says 'thank you very much'. First, a few things from the earlier lessons."
+     "n": "Lesson 3. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'good day' and ask whether he speaks English."
@@ -1980,7 +1931,8 @@
     {
      "n": "Next time you will order food and drink in a restaurant. This is the end of lesson three."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a4",
@@ -1989,25 +1941,7 @@
    "goal": "Order food and drink in a café or restaurant and ask for the bill",
    "steps": [
     {
-     "n": "Listen to this conversation between a waiter and a guest in a restaurant in Munich."
-    },
-    {
-     "t": "Guten Abend. Was möchten Sie?"
-    },
-    {
-     "t": "Ich möchte ein Bier, bitte. Und ein Wasser."
-    },
-    {
-     "t": "Gern. Möchten Sie etwas essen?"
-    },
-    {
-     "t": "Ja, ich hätte gern eine Suppe."
-    },
-    {
-     "t": "Sehr gern."
-    },
-    {
-     "n": "The waiter says 'good evening, what would you like?'. The guest says 'I'd like a beer, please, and a water'. 'Gladly. Would you like something to eat?' 'Yes, I'd like a soup.' 'Very gladly.' First, some quick review."
+     "n": "Lesson 4. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask where the toilet is."
@@ -2647,7 +2581,8 @@
     {
      "n": "Next time you will ask for directions and take the train. This is the end of lesson four."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a5",
@@ -2656,28 +2591,7 @@
    "goal": "Ask for and understand directions, and buy a train ticket",
    "steps": [
     {
-     "n": "Listen to this conversation on a street in Leipzig."
-    },
-    {
-     "t": "Entschuldigung, wo ist der Bahnhof?"
-    },
-    {
-     "t": "Geradeaus, dann links."
-    },
-    {
-     "t": "Ist das weit?"
-    },
-    {
-     "t": "Nein, fünf Minuten zu Fuß."
-    },
-    {
-     "t": "Danke. Wann fährt der Zug nach Berlin?"
-    },
-    {
-     "t": "Um zehn Uhr."
-    },
-    {
-     "n": "The traveller asks 'excuse me, where is the station?'. 'Straight ahead, then left.' 'Is that far?' 'No, five minutes on foot.' 'Thanks. When does the train to Berlin leave?' 'At ten o'clock.' First, a little review."
+     "n": "Lesson 5. Let's go! Listen, then say it with me."
     },
     {
      "n": "Order a coffee politely."
@@ -3315,7 +3229,8 @@
     {
      "n": "Next time you will tell the time and learn the days of the week. This is the end of lesson five."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a6",
@@ -3324,28 +3239,7 @@
    "goal": "Ask and tell the time, and talk about today, tomorrow and the days of the week",
    "steps": [
     {
-     "n": "Listen to this conversation at a bus stop in Dresden."
-    },
-    {
-     "t": "Entschuldigung, wie viel Uhr ist es?"
-    },
-    {
-     "t": "Es ist drei Uhr."
-    },
-    {
-     "t": "Danke. Wann fährt der Bus?"
-    },
-    {
-     "t": "Um halb vier."
-    },
-    {
-     "t": "Und morgen?"
-    },
-    {
-     "t": "Morgen fährt kein Bus. Morgen ist Sonntag."
-    },
-    {
-     "n": "The man asks 'excuse me, what time is it?'. 'It is three o'clock.' 'Thanks. When does the bus leave?' 'At half past three.' 'And tomorrow?' 'Tomorrow there is no bus. Tomorrow is Sunday.' Some review first."
+     "n": "Lesson 6. Let's go! Listen, then say it with me."
     },
     {
      "n": "Give directions: 'straight ahead, then left'."
@@ -3980,7 +3874,8 @@
     {
      "n": "Next time you will introduce yourself and your family. This is the end of lesson six."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a7",
@@ -3989,28 +3884,7 @@
    "goal": "Introduce yourself and your family, and say where you come from",
    "steps": [
     {
-     "n": "Listen to this conversation at a small hotel in Heidelberg."
-    },
-    {
-     "t": "Guten Tag, ich heiße Anna Weber. Wie heißen Sie?"
-    },
-    {
-     "t": "Ich heiße Tom Miller. Freut mich."
-    },
-    {
-     "t": "Woher kommen Sie, Herr Miller?"
-    },
-    {
-     "t": "Ich komme aus Amerika. Das ist meine Frau, Sarah."
-    },
-    {
-     "t": "Freut mich sehr. Haben Sie Kinder?"
-    },
-    {
-     "t": "Ja, einen Sohn und eine Tochter."
-    },
-    {
-     "n": "The hotel owner says 'good day, my name is Anna Weber. What is your name?'. The guest answers 'my name is Tom Miller. Pleased to meet you.' 'Where do you come from, Mr Miller?' 'I come from America. This is my wife, Sarah.' 'Very pleased to meet you. Do you have children?' 'Yes, a son and a daughter.' Quick review first."
+     "n": "Lesson 7. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'tomorrow is Sunday'."
@@ -4640,7 +4514,8 @@
     {
      "n": "Next time you will say what you like and what you prefer. This is the end of lesson seven."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a8",
@@ -4649,31 +4524,7 @@
    "goal": "Say what you like and don't like, what you prefer, and offer someone a drink",
    "steps": [
     {
-     "n": "Listen to this conversation. A host offers her guest a drink."
-    },
-    {
-     "t": "Möchten Sie etwas trinken?"
-    },
-    {
-     "t": "Ja, gern. Ich trinke gern Wein."
-    },
-    {
-     "t": "Rotwein oder Weißwein?"
-    },
-    {
-     "t": "Rotwein, bitte. Mögen Sie Wein?"
-    },
-    {
-     "t": "Nein, ich mag keinen Wein. Ich trinke lieber Bier."
-    },
-    {
-     "t": "Und was essen Sie gern?"
-    },
-    {
-     "t": "Ich esse gern Brot und Käse."
-    },
-    {
-     "n": "The host asks 'would you like something to drink?'. The guest says 'yes, gladly. I like drinking wine.' 'Red wine or white wine?' 'Red wine, please. Do you like wine?' 'No, I don't like wine. I prefer beer.' 'And what do you like to eat?' 'I like eating bread and cheese.' Review first."
+     "n": "Lesson 8. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask 'would you like something to drink?'"
@@ -5293,7 +5144,8 @@
     {
      "n": "Next time you will talk about yesterday, and what you did. This is the end of lesson eight."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a9",
@@ -5302,28 +5154,7 @@
    "goal": "Talk about the past: where you were and what you did, ate and drank",
    "steps": [
     {
-     "n": "Listen to this conversation between two colleagues on a Monday morning."
-    },
-    {
-     "t": "Wo waren Sie gestern?"
-    },
-    {
-     "t": "Ich war in Berlin."
-    },
-    {
-     "t": "Schön! Was haben Sie gemacht?"
-    },
-    {
-     "t": "Ich habe viel gesehen. Und ich habe gut gegessen."
-    },
-    {
-     "t": "Was haben Sie getrunken?"
-    },
-    {
-     "t": "Ein Bier, natürlich. Es war sehr gut."
-    },
-    {
-     "n": "One asks 'where were you yesterday?'. 'I was in Berlin.' 'Nice! What did you do?' 'I saw a lot. And I ate well.' 'What did you drink?' 'A beer, of course. It was very good.' Review first."
+     "n": "Lesson 9. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'I prefer to drink beer'."
@@ -5943,7 +5774,8 @@
     {
      "n": "Next time you will make plans to meet someone. This is the end of lesson nine."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a10",
@@ -5952,28 +5784,7 @@
    "goal": "Make plans: ask if someone has time, suggest going out together, and agree on when and where to meet",
    "steps": [
     {
-     "n": "Listen to this conversation between two colleagues in Frankfurt."
-    },
-    {
-     "t": "Haben Sie morgen Abend Zeit?"
-    },
-    {
-     "t": "Ja, morgen Abend habe ich Zeit. Warum?"
-    },
-    {
-     "t": "Wollen wir zusammen essen gehen?"
-    },
-    {
-     "t": "Gern! Um wie viel Uhr?"
-    },
-    {
-     "t": "Um sieben? Treffen wir uns am Bahnhof."
-    },
-    {
-     "t": "Gut, bis morgen!"
-    },
-    {
-     "n": "One asks 'do you have time tomorrow evening?'. 'Yes, tomorrow evening I have time. Why?' 'Shall we go out to eat together?' 'Gladly! At what time?' 'At seven? Let's meet at the station.' 'Good, see you tomorrow!' Review first."
+     "n": "Lesson 10. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask where she was yesterday."
@@ -6598,7 +6409,8 @@
     {
      "n": "Next time you will go shopping and pay. This is the end of lesson ten."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a11",
@@ -6607,31 +6419,7 @@
    "goal": "Shop for something, react to prices, and pay by card",
    "steps": [
     {
-     "n": "Listen to this conversation in a shop in Stuttgart."
-    },
-    {
-     "t": "Guten Tag, kann ich Ihnen helfen?"
-    },
-    {
-     "t": "Ja, ich suche eine Tasche."
-    },
-    {
-     "t": "Diese hier kostet fünfzig Euro."
-    },
-    {
-     "t": "Das ist zu teuer. Haben Sie etwas Billigeres?"
-    },
-    {
-     "t": "Ja, diese kostet zwanzig Euro."
-    },
-    {
-     "t": "Gut, das nehme ich. Kann ich mit Karte zahlen?"
-    },
-    {
-     "t": "Natürlich."
-    },
-    {
-     "n": "The shop assistant says 'good day, can I help you?'. 'Yes, I'm looking for a bag.' 'This one here costs fifty euros.' 'That is too expensive. Do you have something cheaper?' 'Yes, this one costs twenty euros.' 'Good, I'll take it. Can I pay by card?' 'Of course.' Review first."
+     "n": "Lesson 11. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask if he has time tomorrow evening."
@@ -7249,7 +7037,8 @@
     {
      "n": "In the last lesson you will put everything together in one long conversation. This is the end of lesson eleven."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a12",
@@ -7258,49 +7047,7 @@
    "goal": "Hold a real first conversation in German using everything from the course",
    "steps": [
     {
-     "n": "This is the last lesson. Listen to a longer conversation at a bar in Berlin. You already know almost all of it."
-    },
-    {
-     "t": "Guten Abend! Wie geht es Ihnen?"
-    },
-    {
-     "t": "Gut, danke. Und Ihnen?"
-    },
-    {
-     "t": "Auch gut. Woher kommen Sie?"
-    },
-    {
-     "t": "Ich komme aus Amerika. Ich spreche nur ein bisschen Deutsch."
-    },
-    {
-     "t": "Sie sprechen sehr gut! Was möchten Sie trinken?"
-    },
-    {
-     "t": "Ein Bier, bitte. Wie viel kostet das?"
-    },
-    {
-     "t": "Vier Euro."
-    },
-    {
-     "t": "Wie bitte? Langsamer, bitte."
-    },
-    {
-     "t": "Vier Euro."
-    },
-    {
-     "t": "Danke. Haben Sie morgen Zeit?"
-    },
-    {
-     "t": "Ja. Wollen wir zusammen essen gehen?"
-    },
-    {
-     "t": "Gern! Um sieben am Bahnhof?"
-    },
-    {
-     "t": "Gut. Bis morgen! Tschüss!"
-    },
-    {
-     "n": "Nearly everything you heard comes from earlier lessons. There are only a few new things: 'nur', meaning 'only'; 'Wie bitte?', 'pardon?'; 'Langsamer, bitte', 'slower, please'; and 'Tschüss', the informal goodbye. Let's start by warming up with the greetings."
+     "n": "Lesson 12. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'good evening' and ask how someone is."
@@ -7899,7 +7646,8 @@
     {
      "n": "Congratulations. You have finished the course. You can now greet people, order, shop, ask directions, tell the time, introduce your family and make plans in German. Keep listening, keep speaking, and remember: 'Wie bitte? Langsamer, bitte.' will always get you another chance. Auf Wiedersehen!"
     }
-   ]
+   ],
+   "short": true
   }
  ]
 }

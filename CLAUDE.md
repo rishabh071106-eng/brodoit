@@ -191,6 +191,22 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
 - **Player UI**: `code/day.html` + `assets/player.js` (slides, editor.js, trace.js, visuals.js — 12 animated visual kinds), mission map `code/index.html` + `assets/map.js`, Bro dock `assets/coach.js`. Progress lives in `localStorage bd.py.v1` and syncs to `/api/learn/progress`.
 - **modules/learn.js**: progress tables (`learn_units`, `learn_stats`, `learn_events`), `POST /api/learn/coach` (Bro with the learner's profile, slide, code and error), and narration recorded once: every `say` line and every target-language phrase is a catalog entry (`sid = sha1(voice + "\n" + text)[0:20]`, same on client); `GET /api/learn/say/<sid>.mp3` serves `MEDIA_DIR/learn-voice` or records it on first play; `scripts/learn-audio.js` (Admin job `learn-audio`) pre-records everything. Language pages' `speak()` (lang/assets/lang.js) plays these clips before the device voice.
 - **Languages UI**: `lang/course.html` + `lang/assets/stages.css` (photo hero, Listen episodes, practice stages with a gate); lessons add combo/XP/burst and sync completions to `/api/learn/progress`.
+- **v20 Languages**:
+  - **Openings:** every Listen lesson (`lang/audio/<code>.json`, `short: true`) opens with one line ("Lesson N. Let's go!…", in Hindi for the English course), then the last instruction before the first speak-back. The welcome, the opening dialogue and its recap were cut.
+  - **Playback:** `lang/audio.html` plays line by line in Bro's voice and prefetches the next lines (`prefetch()` in lang.js; clips `?v=e20`). The stitched lesson mp3 is no longer used.
+  - **Clip catalog:** `modules/learn.js` covers every Listen line too: guide `n`/`q` lines under the learner's language key (en, or hi for the English course), `t` lines under the course key. The fill-in sentence uses `options[answer]`.
+  - **Recording:** clips go to `learn-voice/<voice id>-<Bro voice style>/`.
+    - The recording is strict Bro Core. German tries the studio's ElevenLabs voice first.
+    - When busy or booting, the route answers 503, uses a short miss and plays the earlier folder's clip if there is one.
+    - Nothing paid is used unless the emergency switch is on.
+    - A low-priority warm-up records the first 2 Listen + Practice lessons of each course.
+    - Admin no longer auto-runs the paid `learn-audio` / `lang-audio` jobs.
+  - **Speak-back** (`hearPhrase` + `matchPhrase` in lang.js):
+    - **Hearing:** the phone recogniser (SpeechRecognition) is used when it works. Otherwise MediaRecorder with voice-activity detection records the answer and sends it to `POST /api/voice/transcribe?lang=<course>&expect=<phrase>`. Every Bro Core language is accepted, and `hear.js` never drops the expected phrase as a phantom.
+    - **Match:** accents, punctuation and number words are folded first; a close sentence must also have its words.
+    - **Flow:** a wrong try shows "You said …" and Bro says the line again. Silence shows "I didn't hear you". After three wrong tries or two silences, Bro waits for a mic tap. Nothing advances by itself.
+    - **Ways out:** "Hear it again" and "Stop for now" (the place is kept in localStorage `lang.pos.<code>/<id>`). Skip is gone.
+    - **Practice:** the Practice `speak` card passes only when it's right. "Can't speak now" pauses the lesson.
 - **News** (`app/news.js`): cards only (desk stories), section chips, "Listen" plays recorded headline clips back to back. `modules/newsvoice.js` records after every desk batch through ElevenLabs only (`NEWS_VOICE_PROVIDER=any` opens the chain): headlines for every story in the feed + `NEWS_VOICE_FULL` (default 10) full read-outs a day per language; files in `MEDIA_DIR/news-voice`, served by `/api/news/voice/<id>-<lang>-<h|s>.mp3`. Nothing is rendered on tap. The long spoken bulletin is opt-in (`BULLETIN_AUDIO=1`). News is a bottom tab; You moved to the header avatar.
 - **ElevenLabs brain** (`modules/elevenbrain.js`): a private text-only ElevenLabs agent used as the LLM when Gemini has no key, is out of credit (402 → skipped for an hour via `global._geminiDownUntil`) or fails — `_callGemini` falls back to it, so Bro chat, Explain, the coach and the news desk keep working on ElevenLabs credits. Bro chat no longer runs a second "verify" pass.
 - **ElevenLabs budget** (modules/elevenvoice.js `RESERVE`): bulk (static recordings) may use the first 70% of the month, daily (news, first plays) stops at 15% left, live Bro uses the rest. Admin auto-record order: learn-audio → lang-audio → hindi-books.

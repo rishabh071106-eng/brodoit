@@ -75,6 +75,9 @@ const UI = {
     firstLesson: 'Finish the previous lesson first', unit: 'Unit', repeat: 'Repeat', skip: 'Skip 10', speed: 'Speed', sayIt: 'Say it out loud', listenAgain: 'Listen again', great: 'Great!',
     lessonComplete: 'Lesson complete', keepGoing: 'Keep the streak alive tomorrow.', playing: 'Playing', paused: 'Paused', tapPlay: 'Tap play to begin',
     hintTap: 'Tap caption to hide for pure listening', wordsHint: 'Build the sentence here',
+    yourTurn: 'Your turn: say it!', checking: 'Checking…', yes: 'Yes! 🔥', tryAgain: 'Not quite. Listen, then try again', youSaid: 'You said',
+    didntHear: "I didn't hear you. Say it again!", hearAgain: 'Hear it again', stopForNow: 'Stop for now', tryMic: 'Tap the mic and say it',
+    micBlocked: 'Allow the microphone to keep going', saved: 'Saved: you will continue right here', pausedSpeak: 'Paused: come back when you can speak', canSpeak: 'I can speak now',
   },
   hi: {
     continue: 'जारी रखें', start: 'शुरू करें', review: 'दोहराएँ', locked: 'लॉक', done: 'पूरा', audio: '🎧 ऑडियो पाठ', practice: '✍️ अभ्यास',
@@ -88,6 +91,9 @@ const UI = {
     firstLesson: 'पहले पिछला पाठ पूरा करें', unit: 'यूनिट', repeat: 'दोबारा', skip: '10 आगे', speed: 'गति', sayIt: 'ज़ोर से बोलिए', listenAgain: 'फिर सुनिए', great: 'शानदार!',
     lessonComplete: 'पाठ पूरा', keepGoing: 'कल भी स्ट्रीक जारी रखें।', playing: 'चल रहा है', paused: 'रुका है', tapPlay: 'शुरू करने के लिए प्ले दबाएँ',
     hintTap: 'सिर्फ़ सुनने के लिए कैप्शन छुएँ', wordsHint: 'यहाँ वाक्य बनाएँ',
+    yourTurn: 'आपकी बारी — बोलिए!', checking: 'जाँच रहे हैं…', yes: 'हाँ! 🔥', tryAgain: 'थोड़ा और — सुनिए, फिर बोलिए', youSaid: 'आपने कहा',
+    didntHear: 'सुनाई नहीं दिया — फिर से बोलिए!', hearAgain: 'फिर से सुनें', stopForNow: 'अभी रुकें', tryMic: 'माइक दबाएँ और बोलिए',
+    micBlocked: 'आगे बढ़ने के लिए माइक की अनुमति दें', saved: 'सेव हो गया — आप यहीं से आगे बढ़ेंगे', pausedSpeak: 'रुका है — जब बोल सकें तब लौटिए', canSpeak: 'अब बोल सकता हूँ',
   },
 };
 export const t = (lang, key) => (UI[lang] || UI.en)[key] ?? UI.en[key] ?? key;
@@ -246,12 +252,29 @@ async function clipId(voice, text) {
   const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(voice + '\n' + String(text).trim()));
   return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 20);
 }
+// v20: ?v=e20 busts clips phones cached in the old deep voice. prefetch() records/fetches the next lines while one plays
+// (the server records a line on its first request), kept as blob URLs so the line starts at once.
+const CLIP_V = 'e20';
+const clipUrl = id => '/api/learn/say/' + id + '.mp3?v=' + CLIP_V;
+const ready = new Map(); // id → Promise<blob URL | null>
+export function prefetch(text, lang) {
+  text = String(text || '').trim(); const vk = String(lang || '').slice(0, 2).toLowerCase();
+  if (!text || !VOICE_KEYS.has(vk) || (typeof window !== 'undefined' && window.LANG_TEST?.noClips)) return;
+  clipId(vk, text).then(id => {
+    if (ready.has(id)) return;
+    ready.set(id, fetch(clipUrl(id)).then(r => (r.ok ? r.blob() : null)).then(b => (b && b.size ? URL.createObjectURL(b) : null)).catch(() => null)
+      .then(u => { if (!u) ready.delete(id); return u; })); // a miss (busy) is asked again on the next play
+    while (ready.size > 16) { const [k, p] = ready.entries().next().value; ready.delete(k); p.then(u => u && URL.revokeObjectURL(u)); }
+  }).catch(() => {});
+}
 function playClip(text, voice, { slow, signal, gen }) {
   return new Promise(async res => {
     let id = '';
     try { id = await clipId(voice, text); } catch { return res(null); }
     if (gen !== speakGen || signal?.aborted) return res(true);
-    const a = new Audio('/api/learn/say/' + id + '.mp3?v=bro'); // v14: Bro's one voice (busts clips cached in the old voices)
+    const pre = ready.has(id) ? await ready.get(id) : null;
+    if (gen !== speakGen || signal?.aborted) return res(true);
+    const a = new Audio(pre || clipUrl(id));
     clipAudio = a;
     if (slow) { a.playbackRate = 0.72; a.preservesPitch = true; }
     let started = false;
@@ -371,6 +394,137 @@ export function recognize(lang, { ms = 4000, signal, onInterim } = {}) {
     const timer = setTimeout(finish, ms);
     signal?.addEventListener('abort', finish, { once: true });
   });
+}
+
+// ---- speak-back: hear what the learner said and check it (v20) ----
+// hearPhrase(expect, lang, { signal, onInterim, onState }) → { heard, alts, ok, via: 'sr'|'server', error?: 'mic'|'nohear' }
+// The phone's own recogniser (Chrome, Android) is used when it works: instant and free. Otherwise the mic is recorded
+// (MediaRecorder, the first type the browser supports) until the learner stops talking, and Bro's hearing on the server
+// (POST /api/voice/transcribe?lang=<course>&expect=<phrase>) writes it down. Never rejects.
+let srBroken = false, micStream = null;
+const SR_FATAL = new Set(['network', 'language-not-supported', 'service-not-allowed', 'audio-capture', 'bad-grammar']);
+function srHear(lang, { signal, onInterim, ms = 8000 } = {}) {
+  return new Promise(res => {
+    let alts = [], done = false, rec, err = '';
+    const finish = () => { if (done) return; done = true; clearTimeout(timer); try { rec.stop(); } catch { /* ignore */ } res({ alts: alts.filter(Boolean), err }); };
+    try {
+      rec = new SR();
+      rec.lang = lang; rec.interimResults = true; rec.maxAlternatives = 5; rec.continuous = false;
+      rec.onresult = e => {
+        const list = [];
+        for (const r of e.results) for (let i = 0; i < r.length; i++) list.push(String(r[i].transcript || '').trim());
+        const best = [...e.results].map(r => r[0].transcript).join(' ').trim();
+        alts = [best, ...list]; onInterim?.(best);
+      };
+      rec.onerror = e => { err = (e && e.error) || 'error'; finish(); };
+      rec.onend = finish;
+      rec.start();
+    } catch { err = 'start'; return finish(); }
+    const timer = setTimeout(finish, ms);
+    signal?.addEventListener('abort', finish, { once: true });
+  });
+}
+async function mic() {
+  if (micStream && micStream.getAudioTracks().some(t => t.readyState === 'live')) return micStream;
+  micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+  return micStream;
+}
+// the mic is kept open through a lesson (no prompt or start-up delay per try) and let go when it pauses or closes
+export function releaseMic() { try { micStream?.getTracks().forEach(t => t.stop()); } catch { /* ignore */ } micStream = null; }
+const REC_TYPES = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus', 'audio/ogg'];
+// records one utterance: waits up to waitMs for speech, then stops after quietMs of silence (or maxMs) → Blob | null
+async function recordUtterance({ signal, onState, waitMs = 7000, quietMs = 900, maxMs = 9000 } = {}) {
+  const stream = await mic();
+  const type = (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported) ? REC_TYPES.find(t => MediaRecorder.isTypeSupported(t)) || '' : '';
+  const rec = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
+  const parts = []; rec.ondataavailable = e => { if (e.data && e.data.size) parts.push(e.data); };
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const ac = new AC(); try { await ac.resume(); } catch { /* ignore */ }
+  const an = ac.createAnalyser(); an.fftSize = 1024; ac.createMediaStreamSource(stream).connect(an);
+  const buf = new Float32Array(an.fftSize);
+  const level = () => { an.getFloatTimeDomainData(buf); let e = 0; for (const v of buf) e += v * v; return Math.sqrt(e / buf.length); };
+  const scale = (window.LANG_TEST && window.LANG_TEST.vadScale) || 1;
+  return new Promise(res => {
+    let spoke = false, lastLoud = 0, floor = 0.004, iv = 0;
+    const t0 = performance.now();
+    const stop = keep => { clearInterval(iv); signal?.removeEventListener('abort', onAbort); rec.onstop = () => { try { ac.close(); } catch { /* ignore */ } res(keep && spoke && parts.length ? new Blob(parts, { type: rec.mimeType || type || 'audio/webm' }) : null); }; try { rec.state !== 'inactive' ? rec.stop() : rec.onstop(); } catch { rec.onstop(); } };
+    const onAbort = () => stop(false);
+    signal?.addEventListener('abort', onAbort, { once: true });
+    rec.start(250);
+    iv = setInterval(() => {
+      const now = performance.now(), l = level();
+      if (now - t0 < 300) { floor = Math.max(floor, l * 1.5); return; } // the room's own noise, first 300 ms
+      const loud = l > Math.max(0.015, floor * 2.5);
+      if (loud) { if (!spoke) onState?.('speaking'); spoke = true; lastLoud = now; }
+      if (spoke && now - lastLoud > quietMs * scale) return stop(true);
+      if (!spoke && now - t0 > waitMs * scale) return stop(false);
+      if (now - t0 > maxMs * scale) return stop(true);
+    }, 60);
+  });
+}
+async function serverHear(blob, lang, expect, signal) {
+  let tok = ''; try { tok = localStorage.getItem('tf_token') || ''; } catch { tok = ''; }
+  if (!tok) return { error: 'nohear' };
+  try {
+    const q = `?lang=${encodeURIComponent(String(lang).slice(0, 2))}&expect=${encodeURIComponent(String(expect).slice(0, 300))}`;
+    const r = await fetch('/api/voice/transcribe' + q, { method: 'POST', headers: { 'Content-Type': blob.type || 'audio/webm', 'x-token': tok }, body: blob, signal });
+    if (!r.ok) return { error: 'nohear' };
+    const j = await r.json(); return { text: String(j.text || '').trim() };
+  } catch { return { error: 'nohear' }; }
+}
+export async function hearPhrase(expect, lang, { signal, onInterim, onState } = {}) {
+  const T = (typeof window !== 'undefined' && window.LANG_TEST) || {};
+  if (SR && !srBroken && !T.noSR) {
+    onState?.('listening');
+    const r = await srHear(lang, { signal, onInterim });
+    if (signal?.aborted) return { heard: '', alts: [], ok: false, via: 'sr' };
+    if (r.err === 'not-allowed') return { heard: '', alts: [], ok: false, via: 'sr', error: 'mic' };
+    if (!SR_FATAL.has(r.err)) { const heard = r.alts[0] || ''; return { heard, alts: r.alts, ok: r.alts.some(a => matchPhrase(a, expect, lang)), via: 'sr' }; }
+    srBroken = true; // this phone's recogniser can't work here: record and let the server hear it, from now on
+  }
+  if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') return { heard: '', alts: [], ok: false, via: 'server', error: 'nohear' };
+  let blob = null;
+  onState?.('listening');
+  try { blob = await recordUtterance({ signal, onState }); }
+  catch (e) { return { heard: '', alts: [], ok: false, via: 'server', error: e && (e.name === 'NotAllowedError' || e.name === 'SecurityError') ? 'mic' : 'nohear' }; }
+  if (signal?.aborted || !blob) return { heard: '', alts: [], ok: false, via: 'server' };
+  onState?.('checking');
+  const h = await serverHear(blob, lang, expect, signal);
+  if (h.error) return { heard: '', alts: [], ok: false, via: 'server', error: h.error };
+  onInterim?.(h.text);
+  return { heard: h.text, alts: [h.text], ok: matchPhrase(h.text, expect, lang), via: 'server' };
+}
+
+// Right when, accents, punctuation and number digits aside, it is close (similarity ≥ 0.6) or holds the expected phrase.
+// A short fragment the course teaches piece by piece ("ñol", "jour") passes when one heard word is close to it.
+const NUM = {
+  en: 'zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty',
+  es: 'cero uno dos tres cuatro cinco seis siete ocho nueve diez once doce trece catorce quince dieciseis diecisiete dieciocho diecinueve veinte',
+  fr: 'zero un deux trois quatre cinq six sept huit neuf dix onze douze treize quatorze quinze seize dix-sept dix-huit dix-neuf vingt',
+  de: 'null eins zwei drei vier funf sechs sieben acht neun zehn elf zwolf dreizehn vierzehn funfzehn sechzehn siebzehn achtzehn neunzehn zwanzig',
+  hi: 'शून्य एक दो तीन चार पांच छह सात आठ नौ दस',
+};
+const NUMS = Object.fromEntries(Object.entries(NUM).map(([k, v]) => [k, new Map(v.split(' ').map((w, i) => [w, String(i)]))]));
+export function fold(s, lang = '') {
+  let t = String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss')
+    .replace(/़/g, '').replace(/ँ/g, 'ं') // Hindi: nukta dropped, chandrabindu = anusvara
+    .replace(/[०-९]/g, d => String('०१२३४५६७८९'.indexOf(d)))
+    .replace(/[¿¡?!.,;:"“”„«»‘’'()\-—–…。、！？।]/g, ' ').replace(/\s+/g, ' ').trim();
+  const L = NUMS[String(lang).slice(0, 2).toLowerCase()];
+  if (L) t = t.split(' ').map(w => L.get(w) || w).join(' ');
+  return t;
+}
+// (a close sentence must also have its words: "मुझे पानी चाहिए" is not "मुझे चाय चाहिए", one slip in four words is fine)
+const wordsCovered = (a, b) => { const hw = a.split(' '); const bw = b.split(' '); let n = 0; for (const w of bw) { const i = hw.findIndex(x => x === w || similarity(x, w) >= 0.6); if (i >= 0) { n++; hw.splice(i, 1); } } return n / bw.length; };
+export function matchPhrase(heard, expect, lang = '') {
+  const a = fold(heard, lang), b = fold(expect, lang);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  if ((' ' + a + ' ').includes(' ' + b + ' ') || (b.length >= 4 && a.includes(b))) return true;
+  const nw = b.split(' ').length;
+  if (similarity(a, b) >= 0.6 && wordsCovered(a, b) >= (nw >= 4 ? 0.74 : 1)) return true;
+  if (b.length <= 5 && !b.includes(' ')) return a.split(' ').some(w => similarity(w, b) >= 0.5 || (w.length > b.length && w.endsWith(b)));
+  return false;
 }
 
 // ---- text similarity (normalised Levenshtein) ----
