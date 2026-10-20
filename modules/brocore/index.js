@@ -161,14 +161,27 @@ function install(app, deps) {
       if (name === 'web_search') {
         const q = String(args.query || '').trim();
         if (!q) return { error: 'query required' };
-        const r = await brain.webSearch(q, { timeout: 12000, trace: opt && opt.trace });
-        return untrustedResult('web', r.text, { query: q.slice(0, 200), found: !!r.text });
+        // one time budget for the whole search (a live call gives it 14 s): the search models get all but the last
+        // 4.5 s, which stay for the news fallback
+        const trace = opt && opt.trace, end = now() + ((opt && opt.budgetMs) || 13000);
+        let r = null, err = null;
+        try { r = await brain.webSearch(q, { timeout: 12000, deadline: end - 4500, trace }); } catch (e) { err = e; }
+        if (r && r.text) { searchVia = r.via || 'compound'; return untrustedResult('web', r.text, { query: q.slice(0, 200), found: true }); }
+        // no search model answered: today's headlines on the query (Google News RSS) still give dated facts
+        try {
+          const n = await knowledge.newsSearch(q, { timeout: Math.max(2000, Math.min(8000, end - now())) });
+          if (trace && trace.length < 32) trace.push(n.found ? { m: 'news-rss', ok: 1 } : { m: 'news-rss', k: 'none' });
+          if (n.found) { searchVia = 'news'; return untrustedResult('news search', n.items.map(i => (i.date ? '[' + i.date + '] ' : '') + i.title + (i.source && !i.title.includes(i.source) ? ' (' + i.source + ')' : '')).join('\n'), { query: q.slice(0, 200), found: true, count: n.items.length, hint: 'headlines only: answer from them if they settle it, else say what they show' }); }
+        } catch (e) { if (trace && trace.length < 32) trace.push({ m: 'news-rss', s: e.status || 0, k: e.name === 'AbortError' ? 'slow' : 'http' }); }
+        searchVia = 'none';
+        return { error: err ? err.message : 'no search results' };
       }
     } catch (e) { return { error: e.message }; }
     return { error: 'unknown tool ' + name };
   }
 
   const selfCheck = { brain: 'pending', hearing: 'pending', tools: 'pending', reason: '', trail: '', at: null };
+  let searchVia = 'pending'; // which web search answered last: compound | browser | news | none (a public safe word)
   // ── voice pass-through ──
   const needVoice = () => { const v = voiceMod(); if (!v) { const e = new Error(vErr || 'voice not available'); e.code = 'no-voice'; throw e; } return v; };
   // GPU voice (optional, modules/brocore/gpu.js): only when the owner has added a RunPod key. Recordings and the daily
@@ -241,7 +254,7 @@ function install(app, deps) {
       const check = { brain: selfCheck.brain, hearing: selfCheck.hearing, tools: selfCheck.tools };
       if (selfCheck.tools === 'fail' && selfCheck.reason) check.reason = selfCheck.reason; // one safe word: tools_400 | timeout | rate_limit | no_key | model | empty | no_final | search | other
       if (selfCheck.tools === 'fail' && selfCheck.trail) check.trail = selfCheck.trail; // the steps it took: model names, HTTP statuses, our own error kinds
-      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice, check });
+      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice, search: searchVia, check });
     });
     app.get('/api/bro/core/health', auth, (req, res) => { res.set('Cache-Control', 'no-store'); if (!isAdm(req)) return res.json({ ok: !!(brain.ready() && voiceReady()) }); try { res.json(Object.assign({ ok: !!(brain.ready() && voiceReady()) }, health())); } catch (e) { res.status(500).json({ error: e.message }); } });
     app.post('/api/bro/rate', auth, (req, res) => { const b = req.body || {}; const r = memory.rate(req.user.phone, b.rating, b.call_id || b.callId); res.status(r.ok ? 200 : 400).json(r); });
