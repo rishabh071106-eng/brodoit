@@ -9,3 +9,4 @@ tts-cache
 .git
 *.aab
 secrets
+.brocore-mind

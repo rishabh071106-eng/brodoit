@@ -111,16 +111,31 @@ function createMind(cfg) {
   const p50 = a => { if (!a.length) return null; const s = a.slice().sort((x, y) => x - y); return s[Math.floor((s.length - 1) / 2)]; };
   const enabled = () => String(getSetting('BRO_OWN_BRAIN') || process.env.BRO_OWN_BRAIN || 'on').toLowerCase() !== 'off';
 
+  // where the model lives: the volume (kept across deploys), else this container's own disk (fetched again after a
+  // deploy) when the volume is too full
+  const dirs = () => [S.dir].concat(S.spare && S.spare !== S.dir ? [S.spare] : []);
   async function ensureFile(m) {
-    const f = path.join(S.dir, m.file);
-    if (m.bytes && (await sizeOf(f)) === m.bytes) return f;
-    if (!m.bytes && (await sizeOf(f)) > 0 && !m.url) return f; // a local file (tests)
-    const part = f + '.partial';
-    const need = (m.bytes || 3000 * MB) - Math.max(0, await sizeOf(part)) + 300 * MB;
-    const free = await (cfg.freeBytes || freeBytes)(S.dir);
-    if (free < need) throw own('OWN_NO_SPACE', 'not enough disk for the model (' + Math.round(free / MB) + ' MB free, need ' + Math.round(need / MB) + ' MB)');
+    for (const d of dirs()) {
+      const f = path.join(d, m.file);
+      if (m.bytes && (await sizeOf(f)) === m.bytes) { S.where = d === S.dir ? 'volume' : 'temp'; return f; }
+      if (!m.bytes && (await sizeOf(f)) > 0 && !m.url) { S.where = d === S.dir ? 'volume' : 'temp'; return f; } // a local file (tests)
+    }
+    let dir = null, best = 0, needMB = 0; S.diskMB = 0;
+    for (const d of dirs()) {
+      try { await fsp.mkdir(d, { recursive: true }); } catch (e) { continue; }
+      // the other model's files here can go (their space counts as free)
+      let spare = 0; for (const k of Object.keys(models)) if (models[k] !== m) for (const x of [models[k].file, models[k].file + '.partial']) spare += Math.max(0, await sizeOf(path.join(d, x)));
+      const need = (m.bytes || 3000 * MB) - Math.max(0, await sizeOf(path.join(d, m.file + '.partial'))) + 300 * MB;
+      const free = (await (cfg.freeBytes || freeBytes)(d)) + spare;
+      S.diskMB = Math.max(S.diskMB || 0, Math.round(free / MB)); needMB = Math.round(need / MB);
+      if (free >= need) { dir = d; break; }
+      best = Math.max(best, free);
+    }
+    if (!dir) throw own('OWN_NO_SPACE', 'not enough disk for the model (' + Math.round(best / MB) + ' MB free, need ' + needMB + ' MB)');
+    S.where = dir === S.dir ? 'volume' : 'temp';
+    const f = path.join(dir, m.file), part = f + '.partial';
     // another model's file is no longer needed: give its space back
-    for (const k of Object.keys(models)) if (models[k] !== m) { await fsp.rm(path.join(S.dir, models[k].file), { force: true }); await fsp.rm(path.join(S.dir, models[k].file + '.partial'), { force: true }); }
+    for (const k of Object.keys(models)) if (models[k] !== m) { await fsp.rm(path.join(dir, models[k].file), { force: true }); await fsp.rm(path.join(dir, models[k].file + '.partial'), { force: true }); }
     S.phase = 'downloading'; log('fetching', m.name, m.bytes ? '(' + Math.round(m.bytes / MB) + ' MB)' : '');
     let last = null;
     for (let i = 0; i < 6; i++) {
@@ -196,6 +211,8 @@ function createMind(cfg) {
     opts = opts || {};
     S.dir = opts.dir || cfg.dir || path.join(opts.mediaDir || cfg.mediaDir || os.tmpdir(), 'brocore', 'mind');
     try { fs.mkdirSync(S.dir, { recursive: true }); } catch (e) { /* checked when fetching */ }
+    // the container's own disk: next to the app (never /tmp, which may be memory)
+    S.spare = cfg.spareDir !== undefined ? cfg.spareDir : (opts.dir || cfg.dir ? null : path.join(__dirname, '..', '..', '.brocore-mind'));
     S.ramMB = cfg.ramMB || memLimitMB(); S.cpus = cfg.cpus || cpuQuota(); S.threads = cfg.threads || threadsFor(S.cpus);
     if (!enabled()) { S.phase = 'off'; log('own brain is switched off (BRO_OWN_BRAIN=off): the cloud answers'); return api; }
     const want = String(getSetting('BRO_OWN_MODEL') || process.env.BRO_OWN_MODEL || '').toLowerCase();
@@ -255,7 +272,7 @@ function createMind(cfg) {
   const busy = () => !!S.job;
   function health() {
     return {
-      state: S.phase, model: S.model ? S.model.name : null, size: S.model ? S.key : null, ramMB: S.ramMB, cpus: S.cpus, threads: S.threads,
+      state: S.phase, model: S.model ? S.model.name : null, size: S.model ? S.key : null, where: S.where || null, diskMB: S.diskMB || null, ramMB: S.ramMB, cpus: S.cpus, threads: S.threads,
       progress: S.progress ? Math.round(100 * S.progress.got / Math.max(1, S.progress.total || 1)) : null,
       answered: S.stats.answered, failed: S.stats.failed, busy: S.stats.busy, aborted: S.stats.aborted,
       firstMs: p50(S.stats.first), genTps: p50(S.stats.gen), promptTps: p50(S.stats.prompt), error: S.error ? String(S.error).slice(0, 160) : '',
