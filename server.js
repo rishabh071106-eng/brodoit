@@ -2245,7 +2245,7 @@ Only output the JSON array, nothing else.`;
     const chunk=batch.slice(b,b+5);
     const chunkJson=chunk.map((it,i)=>({id:b+i,title:it.title||'',rawDesc:(it.desc||'').slice(0,500),source:it.source||'',link:it.link||''}));
     try{
-      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as 385-405 character summaries (exactly 9 lines on mobile). Each title MUST match its summary — do NOT mix up stories. Each summary MUST end with a complete sentence and a period. Even if rawDesc is empty, use the title to write a full summary.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:4096,systemPrompt:sysPrompt});
+      const r=await _callGemini([{role:'user',content:'Rewrite these '+chunk.length+' news articles as 385-405 character summaries (exactly 9 lines on mobile). Each title MUST match its summary — do NOT mix up stories. Each summary MUST end with a complete sentence and a period. Even if rawDesc is empty, use the title to write a full summary.\n\n'+JSON.stringify(chunkJson)}],{maxTokens:2000,systemPrompt:sysPrompt,purpose:'news'});
       let parsed;
       const jsonMatch=r.reply.match(/\[[\s\S]*\]/);
       if(jsonMatch)parsed=JSON.parse(jsonMatch[0]);
