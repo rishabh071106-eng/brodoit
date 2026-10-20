@@ -10,7 +10,8 @@
 
 const RULES = {
   math: [/\d\s*[-+*/^×÷%]\s*\d/, /\b(calculate|compute|solve|equation|derivative|integral|probability|percentage|interest|emi|compound|average|formula|proof|prove|square root|factorial|convert \d)/i, /(हिसाब|गणना|जोड़|घटा|गुणा|भाग|प्रतिशत|ब्याज)/, /\b(hisaab|hisab|kitna hoga|percent nikalo)\b/i],
-  code: [/\b(code|coding|program|programming|function|python|javascript|typescript|java|c\+\+|sql|regex|api|bug|debug|compile|algorithm|script|html|css|react|node\.?js)\b/i, /(कोड|प्रोग्राम)/],
+  // programming words only ("script", "function", "error" alone are everyday words: a film script, a family function)
+  code: [/\b(code|coding|programming|python|javascript|typescript|java|c\+\+|sql|regex|debug(ging)?|compile[rd]?|algorithm|html|css|react|node\.?js|stack trace)\b/i, /\b(write|fix|explain) (a|this|my|the) (program|function|script|query)\b/i, /(कोड|प्रोग्रामिंग)/],
   plan: [/\b(plan|planning|itinerary|strategy|roadmap|budget|step[- ]by[- ]step|steps to|how (do|can|should) i (start|prepare|build|learn|become|crack|get)|study plan|diet plan|workout plan)\b/i, /(योजना|प्लान|तैयारी कैसे)/, /\b(plan bana|kaise shuru|taiyari kaise)\b/i],
   compare: [/\b(compare|comparison|difference between|differ from|vs\.?|versus|pros and cons|which (one )?(is|should|would) (better|best)|better than|trade-?offs?)\b/i, /(तुलना|फर्क|फ़र्क|अंतर|कौन सा बेहतर)/, /\b(farak|fark|antar|kaun sa better|kaunsa better)\b/i],
   explain: [/\b(why|how come|explain|analy[sz]e|in detail|what if|how does .{2,40} work|how do .{2,40} work|what causes|reason for)\b/i, /(क्यों|समझाओ|समझाइए|कैसे काम|विस्तार से)/, /\b(kyun|kyu|samjhao|samjha do|detail me)\b/i],
