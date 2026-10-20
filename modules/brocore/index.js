@@ -180,7 +180,7 @@ function install(app, deps) {
     return { error: 'unknown tool ' + name };
   }
 
-  const selfCheck = { brain: 'pending', hearing: 'pending', tools: 'pending', reason: '', trail: '', at: null };
+  const selfCheck = { brain: 'pending', hearing: 'pending', tools: 'pending', reason: '', trail: '', talk: 'pending', talkReason: '', talkTrail: '', at: null };
   let searchVia = 'pending'; // which web search answered last: compound | browser | news | none (a public safe word)
   // ── voice pass-through ──
   const needVoice = () => { const v = voiceMod(); if (!v) { const e = new Error(vErr || 'voice not available'); e.code = 'no-voice'; throw e; } return v; };
@@ -251,10 +251,15 @@ function install(app, deps) {
       res.set('Cache-Control', 'no-store');
       let voice = 'off'; try { const v = voiceMod(); voice = voiceReady() ? 'ready' : v && typeof v.health === 'function' ? (v.health().word || 'starting') : 'off'; } catch (e) { voice = 'error'; }
       if (!['ready', 'fetching', 'loading', 'starting', 'restarting', 'no-space', 'error', 'off'].includes(voice)) voice = 'error';
-      const check = { brain: selfCheck.brain, hearing: selfCheck.hearing, tools: selfCheck.tools };
+      const check = { brain: selfCheck.brain, hearing: selfCheck.hearing, tools: selfCheck.tools, talk: selfCheck.talk };
       if (selfCheck.tools === 'fail' && selfCheck.reason) check.reason = selfCheck.reason; // one safe word: tools_400 | timeout | rate_limit | no_key | model | empty | no_final | search | other
       if (selfCheck.tools === 'fail' && selfCheck.trail) check.trail = selfCheck.trail; // the steps it took: model names, HTTP statuses, our own error kinds
-      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice, search: searchVia, check });
+      if (selfCheck.talk === 'fail' && selfCheck.talkReason) check.talkReason = selfCheck.talkReason; // no_ready | timeout | failed | silent | apology | wrong | no_audio | error
+      if (selfCheck.talk === 'fail' && selfCheck.talkTrail) check.talkTrail = selfCheck.talkTrail;
+      // live calls since boot: turns, failed turns, rescued turns, and the last failure's trail (no one's words)
+      let live = null;
+      try { const h = typeof global._voiceLiveHealth === 'function' ? global._voiceLiveHealth() : null; if (h) live = { turns: h.turns | 0, fails: h.fails | 0, rescues: h.rescues | 0, lastFail: h.lastFail ? { at: String(h.lastFail.at || '').slice(0, 24), trail: String(h.lastFail.trail || '').slice(0, 400) } : null }; } catch (e) { live = null; }
+      res.json({ ok: !!(brain.ready() && voiceReady()), brain: !!brain.ready(), voice, search: searchVia, live, check });
     });
     app.get('/api/bro/core/health', auth, (req, res) => { res.set('Cache-Control', 'no-store'); if (!isAdm(req)) return res.json({ ok: !!(brain.ready() && voiceReady()) }); try { res.json(Object.assign({ ok: !!(brain.ready() && voiceReady()) }, health())); } catch (e) { res.status(500).json({ error: e.message }); } });
     app.post('/api/bro/rate', auth, (req, res) => { const b = req.body || {}; const r = memory.rate(req.user.phone, b.rating, b.call_id || b.callId); res.status(r.ok ? 200 : 400).json(r); });
@@ -307,9 +312,27 @@ function install(app, deps) {
       selfCheck.tools = r.ok ? 'ok' : 'fail'; selfCheck.reason = r.ok ? '' : r.reason; selfCheck.trail = r.ok ? '' : trailText(r.trace);
       if (!r.ok) log('self-test: tools turn failed (' + r.reason + '):', String(r.detail || '').slice(0, 200));
     } catch (e) { selfCheck.tools = 'fail'; selfCheck.reason = reasonWord(e); selfCheck.trail = ''; log('self-test: tools turn failed (' + selfCheck.reason + '):', String(e && e.message || e).slice(0, 200)); }
+    // d) v17.6 a real call turn: the path a phone call takes (modules/voice.js selfCall: context, the brain chain and its
+    //    rescue, tools, Bro's voice). It must answer out loud, correctly, with no apology.
+    await talkCheck();
     selfCheck.at = new Date(now()).toISOString();
-    log('self-test · brain', selfCheck.brain, '· voice → hearing', selfCheck.hearing, '· tools', selfCheck.tools + (selfCheck.reason ? ' (' + selfCheck.reason + ')' : ''));
+    log('self-test · brain', selfCheck.brain, '· voice → hearing', selfCheck.hearing, '· tools', selfCheck.tools + (selfCheck.reason ? ' (' + selfCheck.reason + ')' : ''), '· talk', selfCheck.talk + (selfCheck.talkReason ? ' (' + selfCheck.talkReason + ')' : ''));
     return selfCheck;
+  }
+  const TALK_Q = 'What is the capital of India? Answer in one short sentence.';
+  async function talkCheck() {
+    const call = typeof global._voiceSelfCall === 'function' ? global._voiceSelfCall : null;
+    if (!call || !voiceReady()) { selfCheck.talk = 'pending'; selfCheck.talkReason = ''; selfCheck.talkTrail = ''; return; }
+    // the checks above spent some of this minute's tokens: let the minute pass, so the call turn sees what a caller would
+    const gap = deps.talkGapMs != null ? deps.talkGapMs : 60e3; if (gap) await new Promise(res => setTimeout(res, gap));
+    try {
+      const r = await call(TALK_Q);
+      const said = (r.said || []).join(' ');
+      const word = !r.ok ? (r.reason || 'failed') : /lost that for a second|could not find that/i.test(said) ? 'apology' : !/delhi/i.test(said) ? 'wrong' : (r.audioBytes | 0) < 8000 ? 'no_audio' : '';
+      selfCheck.talk = word ? 'fail' : 'ok'; selfCheck.talkReason = word; selfCheck.talkTrail = word ? String(r.trail || '').slice(0, 400) : '';
+      if (word) log('self-test: call turn failed (' + word + ') · trail', selfCheck.talkTrail || '-');
+      else if (r.rescued) log('self-test: call turn answered by the rescue · trail', String(r.trail || '-'));
+    } catch (e) { selfCheck.talk = 'fail'; selfCheck.talkReason = 'error'; selfCheck.talkTrail = ''; log('self-test: call turn crashed:', String(e && e.message || e).slice(0, 200)); }
   }
   // one word for why the tools turn failed; never the provider's message (the public /api/bro/ok shows it)
   function reasonWord(e) {
@@ -354,7 +377,7 @@ function install(app, deps) {
       return fail('no_final', 'no answer after the tools');
     } catch (e) { return fail(reasonWord(e), e && e.message); }
   }
-  api.selfTest = selfTest; api.selfCheck = () => Object.assign({}, selfCheck);
+  api.selfTest = selfTest; api.selfCheck = () => Object.assign({}, selfCheck); api.trailText = trailText;
   if (deps.selfTest !== false && process.env.BROCORE_SELFTEST !== '0') {
     const bootAt = now();
     const wait = setInterval(() => {
