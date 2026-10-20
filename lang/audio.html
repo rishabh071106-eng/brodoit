@@ -52,6 +52,13 @@
   .ringwrap .mic svg{width:34px;height:34px}
   .ringwrap .mic.live{background:var(--b-primary)}
   .ringwrap .sec{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);font-weight:800;font-size:13px;color:var(--p-mute);background:var(--p-bg);padding:2px 10px;border-radius:var(--r-pill)}
+  .ringwrap .mic.hot{background:var(--b-mint);transform:scale(1.06)}
+  .ringwrap .mic{transition:background .2s,transform .2s}
+  .ringwrap.listen .fg{stroke-dasharray:60 442;animation:spin 1.4s linear infinite;transform-origin:90px 90px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .checkbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+  .checkbtns button{min-height:44px;padding:0 16px;border-radius:var(--r-pill);font-weight:800;font-size:14px;color:var(--p-ink);background:rgba(255,255,255,.1);display:inline-flex;align-items:center;gap:6px}
+  .checkbtns button:active{background:rgba(255,255,255,.18)}
   .say{margin-top:18px;font-size:16px;font-weight:700;color:var(--p-mute);display:flex;align-items:center;justify-content:center;gap:6px}
   .say.ok{color:var(--b-mint)}.say.again{color:var(--b-sun)}
   .heardl{margin-top:6px;font-size:14px;color:var(--p-mute);min-height:20px}
@@ -98,7 +105,7 @@
     <div class="ctrls">
       <button class="side press" id="rep"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3L20 8"/><path d="M20 3v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 16"/><path d="M4 21v-5h5"/></svg></span><span id="repL">Repeat</span></button>
       <button class="big play" id="play" aria-label="Play"></button>
-      <button class="side press" id="skip"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l7 7-7 7"/><path d="M13 5l7 7-7 7"/></svg></span><span id="skipL">Skip 10</span></button>
+      <button class="side press" id="stop"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg></span><span id="stopL">Stop for now</span></button>
     </div>
     <div class="speeds" id="speeds"><button data-s="0.8">0.8×</button><button data-s="1" class="on">1×</button><button data-s="1.2">1.2×</button></div>
   </div>
@@ -112,8 +119,8 @@
 </div></div>
 
 <script type="module">
-import { loadCourses, loadAudioCourse, store, esc, t, param, ICON, speak, stopSpeaking, sleep, recognize, hasSR, similarity, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, voicesLoaded } from '/lang/assets/lang.js?v=11';
-import { ic } from '/lang/assets/ico.js?v=14';
+import { loadCourses, loadAudioCourse, store, esc, t, param, ICON, speak, stopSpeaking, sleep, hearPhrase, prefetch, releaseMic, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, voicesLoaded } from '/lang/assets/lang.js?v=12';
+import { ic } from '/lang/assets/ico.js?v=15';
 
 const $ = id => document.getElementById(id);
 const code = param('c') || 'es', lessonId = param('l') || 'a1';
@@ -121,7 +128,7 @@ const courses = await loadCourses();
 const meta = courses.find(c => c.code === code) || { code, name: code, from: 'en', flag: '🌍' };
 const lang = meta.from;
 $('back').href = `/lang/course.html?c=${code}`; $('backBtn').href = `/lang/course.html?c=${code}`;
-$('repL').textContent = t(lang, 'repeat'); $('skipL').textContent = t(lang, 'skip'); $('backBtn').textContent = t(lang, 'back'); $('endT').textContent = t(lang, 'lessonComplete'); $('endS').textContent = t(lang, 'keepGoing');
+$('repL').textContent = t(lang, 'repeat'); $('stopL').textContent = t(lang, 'stopForNow'); $('backBtn').textContent = t(lang, 'back'); $('endT').textContent = t(lang, 'lessonComplete'); $('endS').textContent = t(lang, 'keepGoing');
 $('play').innerHTML = ICON.play;
 setCourse(code);
 
@@ -133,7 +140,7 @@ const lesson = lessons[li];
 if (!lesson) {
   $('title').textContent = meta.name;
   $('stage').innerHTML = `<div class="b-card empty" style="background:rgba(255,255,255,.06);border-color:transparent;color:inherit"><div class="e">🎙️</div><div class="t">${t(lang, 'comingSoon')}</div><div class="s" style="color:var(--p-mute)">${t(lang, 'comingSoonSub')}</div><a class="b-btn violet" href="/lang/course.html?c=${code}">${t(lang, 'back')}</a></div>`;
-  ['play', 'rep', 'skip'].forEach(id => { $(id).disabled = true; $(id).style.opacity = .3; });
+  ['play', 'rep', 'stop'].forEach(id => { $(id).disabled = true; $(id).style.opacity = .3; });
 } else {
   document.title = `${lesson.title} · ${meta.name} · Brodoit`;
   // bar: the lesson's own title (as in the course list), with "Lesson 1" moved to the status line
@@ -146,11 +153,14 @@ if (!lesson) {
   const pauseScale = TEST.pauseScale || 1;
   const key = `${code}/${lesson.id}`;
   const cap = $('cap'), line = $('line'), tlEl = $('tl'), who = $('who'), hint = $('hint'), stage = $('stage');
-  let idx = Math.max(0, Math.min(steps.length - 1, +(sessionStorage.getItem('lang.pos.' + key) || 0)));
+  // v20: your place is kept on the phone (Stop for now, closing the app) and the lesson picks up right there
+  const POS = 'lang.pos.' + key;
+  const readPos = () => { try { return +(localStorage.getItem(POS) || sessionStorage.getItem(POS) || 0); } catch { return 0; } };
+  let idx = Math.max(0, Math.min(steps.length - 1, readPos()));
   if (idx >= steps.length - 2) idx = 0;
-  let pre = null;
   let playing = false, ctrl = null, gen = 0, speed = +(localStorage.getItem('lang.speed') || 1) || 1, captions = localStorage.getItem('lang.captions') !== 'off', startedAt = 0, finished = false;
-  const setSpeed = v => { speed = v; try { localStorage.setItem('lang.speed', v); } catch {} $('speeds').querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.s === v)); if (pre) pre.el.playbackRate = v; };
+  let checking = '', passed = 0, tries = 0;
+  const setSpeed = v => { speed = v; try { localStorage.setItem('lang.speed', v); } catch {} $('speeds').querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.s === v)); };
   $('speeds').onclick = e => { const b = e.target.closest('button[data-s]'); if (b) setSpeed(+b.dataset.s); };
   setSpeed(speed);
   const estRemain = i => steps.slice(i).reduce((a, s) => a + (s.p ? s.p : ((s.n || s.t || s.q || '').length * 0.07 + 0.5)), 0);
@@ -159,36 +169,53 @@ if (!lesson) {
     $('stepN').textContent = `${Math.min(idx + 1, steps.length)} / ${steps.length}`;
     const left = Math.max(1, Math.ceil(estRemain(idx) / 60));
     $('eta').textContent = lang === 'hi' ? `${left} मिनट बाक़ी` : `${left} min left`;
-    try { sessionStorage.setItem('lang.pos.' + key, idx); } catch {}
+    try { localStorage.setItem(POS, idx); } catch {}
   };
   const showCaption = (step) => {
     stage.querySelector('.pausebox')?.remove();
     cap.style.display = '';
     cap.className = 'cap' + (step.t != null ? ' target' + (step.slow ? ' slow' : '') : '') + (captions ? '' : ' hidden');
-    who.innerHTML = step.t != null ? esc(meta.name) : step.q ? ic('help-circle', 13) + ' ' + (lang === 'hi' ? 'प्रश्न' : 'Question') : (lang === 'hi' ? 'गाइड' : 'Guide');
+    who.innerHTML = step.t != null ? esc(meta.name) : step.q ? ic('help-circle', 13) + ' ' + (lang === 'hi' ? 'प्रश्न' : 'Question') : 'Bro';
     line.textContent = step.t ?? step.n ?? step.q ?? '';
     tlEl.textContent = step.tl || '';
     hint.textContent = t(lang, 'hintTap');
     line.style.animation = 'none'; void line.offsetWidth; line.style.animation = '';
   };
   cap.onclick = () => { captions = !captions; try { localStorage.setItem('lang.captions', captions ? 'on' : 'off'); } catch {} cap.classList.toggle('hidden', !captions); toast(captions ? '💬 Captions on' : '🙈 Captions hidden — pure listening'); };
-  const showIdle = () => { stage.querySelector('.pausebox')?.remove(); cap.style.display = ''; cap.className = 'cap idle'; who.textContent = 'Brodoit'; line.textContent = idx > 0 && idx < steps.length ? t(lang, 'paused') : t(lang, 'tapPlay'); tlEl.textContent = ''; hint.textContent = ''; };
+  const showIdle = () => { stage.querySelector('.pausebox')?.remove(); cap.style.display = ''; cap.className = 'cap idle'; who.textContent = 'Bro'; line.textContent = idx > 0 && idx < steps.length ? t(lang, 'paused') : t(lang, 'tapPlay'); tlEl.textContent = ''; hint.textContent = ''; };
 
-  // Pause step UI: countdown ring + mic indicator (+ live recognition when available).
+  // the phrase a pause waits for: its own `expect`, else the course line just heard ("listen and repeat"), else the line
+  // that answers the guide's prompt right after it. A pause with none is a moment to think.
+  const expectFor = i => {
+    const s = steps[i]; if (!s || s.p == null) return '';
+    if (s.expect) return s.expect;
+    const prev = steps[i - 1], next = steps[i + 1];
+    if (prev && prev.t != null) return prev.t;
+    if (prev && (prev.n != null || prev.q != null) && next && next.t != null) return next.t;
+    return '';
+  };
+
+  // Pause step UI: the ring (a countdown, or Bro listening), the mic, what Bro heard, and the way out.
   const showPause = (seconds, expect) => {
     cap.style.display = 'none';
     stage.querySelector('.pausebox')?.remove();
     const w = document.createElement('div'); w.className = 'pausebox';
-    w.innerHTML = `<div class="ringwrap"><svg viewBox="0 0 180 180"><circle class="tr" cx="90" cy="90" r="80"/><circle class="fg" id="fg" cx="90" cy="90" r="80"/></svg><div class="mic ${expect && hasSR ? 'live' : ''}" id="micI">${ICON.mic}</div><span class="sec" id="sec">${seconds}s</span></div>
-      <div class="say" id="say">${expect ? t(lang, 'sayIt') : '…'}</div><div class="heardl" id="heardl">${expect && captions ? esc(expect) : ''}</div>`;
+    w.innerHTML = `<div class="ringwrap${expect ? ' listen' : ''}" id="ringw"><svg viewBox="0 0 180 180"><circle class="tr" cx="90" cy="90" r="80"/><circle class="fg" id="fg" cx="90" cy="90" r="80"/></svg><button class="mic" id="micI" aria-label="${esc(t(lang, 'tryMic'))}">${ICON.mic}</button>${expect ? '' : `<span class="sec" id="sec">${seconds}s</span>`}</div>
+      <div class="say" id="say">${expect ? esc(t(lang, 'yourTurn')) : '…'}</div><div class="heardl" id="heardl">${expect && captions ? esc(expect) : ''}</div>
+      ${expect ? `<div class="checkbtns"><button id="hearAgain">${ic('rotate-ccw', 16)} ${esc(t(lang, 'hearAgain'))}</button><button id="stopNow">${ic('square', 16)} ${esc(t(lang, 'stopForNow'))}</button></div>` : ''}`;
     stage.append(w);
-    return { fg: $('fg'), sec: $('sec'), say: $('say'), heardl: $('heardl'), mic: $('micI') };
+    if (expect) { $('hearAgain').onclick = () => repeat(); $('stopNow').onclick = () => stopForNow(); }
+    return { fg: $('fg'), sec: $('sec'), say: $('say'), heardl: $('heardl'), mic: $('micI'), ring: $('ringw') };
   };
   const flashOk = () => { $('flash').classList.remove('go'); void $('flash').offsetWidth; $('flash').classList.add('go'); haptic(30); };
+  const setSay = (ui, html, cls = '') => { ui.say.innerHTML = html; ui.say.className = 'say' + (cls ? ' ' + cls : ''); };
+  // Bro stopped listening on his own (silence, too many tries, no mic): the next try starts with a tap on the mic
+  const tapMic = (ui, signal) => new Promise(res => { const go = () => { ui.mic.removeEventListener('click', go); signal.removeEventListener('abort', go); res(); }; ui.mic.addEventListener('click', go); signal.addEventListener('abort', go, { once: true }); });
 
-  async function doPause(step, signal) {
+  // a pause to think: the ring counts down and the lesson goes on
+  async function thinkPause(step, signal) {
     const secs = step.p, ms = secs * 1000 * pauseScale;
-    const ui = showPause(secs, step.expect);
+    const ui = showPause(secs, '');
     const t0 = performance.now();
     let raf;
     const tick = () => {
@@ -198,35 +225,64 @@ if (!lesson) {
       if (el < 1 && !signal.aborted) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    const rec = step.expect && hasSR ? recognize(targLang, { ms: Math.max(1500, ms), signal, onInterim: txt => { ui.heardl.textContent = txt; } }) : Promise.resolve('');
-    const [heard] = await Promise.all([rec, sleep(ms, signal)]);
+    await sleep(ms, signal);
     cancelAnimationFrame(raf);
-    if (signal.aborted) return;
-    if (step.expect && heard) {
-      const sim = similarity(heard, step.expect);
-      if (sim >= 0.6) { ui.say.innerHTML = `${ic('check-circle', 18)} ${t(lang, 'great')}`; ui.say.className = 'say ok'; flashOk(); await sleep(500, signal); }
-      else { ui.say.innerHTML = `${ic('ear', 18)} ${t(lang, 'listenAgain')}`; ui.say.className = 'say again'; await sleep(400, signal); }
+  }
+
+  // v20: speak back, checked. Bro listens until you say it right: a wrong try shows what he heard and he says it again;
+  // nothing moves on by itself. "Hear it again" and "Stop for now" (your place is kept) are the only ways out.
+  async function speakBack(expect, step, signal) {
+    let wrong = 0, silent = 0;
+    checking = expect; tries = 0;
+    const ui = showPause(step.p, expect);
+    while (!signal.aborted) {
+      setSay(ui, esc(t(lang, 'yourTurn')));
+      ui.mic.classList.add('live'); ui.ring.classList.add('listen');
+      const r = await hearPhrase(expect, targLang, { signal, onInterim: txt => { if (txt) ui.heardl.textContent = txt; }, onState: st => { if (st === 'speaking') ui.mic.classList.add('hot'); if (st === 'checking') setSay(ui, esc(t(lang, 'checking'))); } });
+      ui.mic.classList.remove('live', 'hot'); ui.ring.classList.remove('listen');
+      if (signal.aborted) return;
+      tries++;
+      if (r.ok) { checking = ''; passed++; setSay(ui, `${ic('check-circle', 18)} ${esc(t(lang, 'yes'))}`, 'ok'); if (r.heard) ui.heardl.textContent = r.heard; flashOk(); await sleep(650, signal); return; }
+      if (r.error) { setSay(ui, `${ic('mic-off', 18)} ${esc(t(lang, r.error === 'mic' ? 'micBlocked' : 'tryMic'))}`, 'again'); await tapMic(ui, signal); continue; }
+      if (!r.heard) {
+        silent++; setSay(ui, `${ic('ear', 18)} ${esc(t(lang, silent >= 2 ? 'tryMic' : 'didntHear'))}`, 'again');
+        if (silent >= 2) { silent = 0; await tapMic(ui, signal); } else await sleep(700, signal);
+        continue;
+      }
+      wrong++;
+      ui.heardl.textContent = `${t(lang, 'youSaid')}: “${r.heard}”`;
+      setSay(ui, `${ic('ear', 18)} ${esc(t(lang, 'tryAgain'))}`, 'again'); haptic([20, 40, 20]);
+      await sleep(900, signal); if (signal.aborted) return;
+      await speak(expect, { lang: targLang, rate: speed, signal }); // Bro says it again
+      if (signal.aborted) return;
+      if (wrong >= 3) { wrong = 0; setSay(ui, `${ic('mic', 18)} ${esc(t(lang, 'tryMic'))}`, 'again'); await tapMic(ui, signal); }
     }
   }
 
+  function doPause(step, signal) {
+    const expect = expectFor(idx);
+    return expect ? speakBack(expect, step, signal) : thinkPause(step, signal);
+  }
+
+  const voiceOf = s => (s.t != null ? [s.t, targLang] : [s.n ?? s.q ?? '', narrLang]);
   async function doStep(step, signal) {
     if (step.p != null) return doPause(step, signal);
     showCaption(step);
-    if (step.t != null) return speak(step.t, { lang: targLang, rate: speed, slow: !!step.slow, signal });
-    return speak(step.n ?? step.q ?? '', { lang: narrLang, rate: speed, signal });
+    const [text, vl] = voiceOf(step);
+    return speak(text, { lang: vl, rate: speed, slow: !!(step.t != null && step.slow), signal });
   }
+  // the next lines are recorded/fetched while this one plays, so each starts at once
+  const ahead = i => { for (let j = i; j < Math.min(steps.length, i + 4); j++) { const s = steps[j]; if (s && s.p == null) { const [text, vl] = voiceOf(s); prefetch(text, vl); } else { const e = expectFor(j); if (e) prefetch(e, targLang); } } };
 
   // ---- keep-awake, lock-screen controls ----
   let wake = null, silent = null;
   const silentUrl = () => { const rate = 8000, n = rate * 2, b = new ArrayBuffer(44 + n), v = new DataView(b), w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); }; w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true); w(36, 'data'); v.setUint32(40, n, true); for (let i = 0; i < n; i++) v.setUint8(44 + i, 128); return URL.createObjectURL(new Blob([b], { type: 'audio/wav' })); };
   async function awake(on) {
     try { if (on && !wake && navigator.wakeLock) { wake = await navigator.wakeLock.request('screen'); wake.addEventListener('release', () => { wake = null; }); } else if (!on && wake) { await wake.release(); wake = null; } } catch { wake = null; }
-    if (!pre) {
-      try {
-        if (on) { if (!silent) { silent = new Audio(silentUrl()); silent.loop = true; silent.volume = 0.01; } await silent.play(); }
-        else silent?.pause();
-      } catch { /* autoplay blocked: fine */ }
-    }
+    try {
+      if (on) { if (!silent) { silent = new Audio(silentUrl()); silent.loop = true; silent.volume = 0.01; } await silent.play(); }
+      else silent?.pause();
+    } catch { /* autoplay blocked: fine */ }
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && playing) awake(true); });
   if ('mediaSession' in navigator) {
@@ -234,45 +290,22 @@ if (!lesson) {
       navigator.mediaSession.metadata = new MediaMetadata({ title: lesson.title, artist: `Brodoit Languages · ${meta.name}`, album: 'Audio course', artwork: [{ src: '/icon-512.png', sizes: '512x512', type: 'image/png' }] });
       navigator.mediaSession.setActionHandler('play', () => play());
       navigator.mediaSession.setActionHandler('pause', () => pause());
-      navigator.mediaSession.setActionHandler('nexttrack', () => skip(10));
       navigator.mediaSession.setActionHandler('previoustrack', () => repeat());
-      try { navigator.mediaSession.setActionHandler('seekforward', () => skip(10)); navigator.mediaSession.setActionHandler('seekbackward', () => repeat()); } catch {}
+      try { navigator.mediaSession.setActionHandler('seekbackward', () => repeat()); } catch {}
     } catch { /* unsupported */ }
   }
   const setMediaState = st => { try { navigator.mediaSession.playbackState = st; } catch {} };
-
-  // ---- pre-rendered mp3 (preferred when present) ----
-  try {
-    const base = `/lang/audio/${code}/${lesson.id}`;
-    const h = await fetch(base + '.mp3', { method: 'HEAD', cache: 'no-cache' });
-    if (h.ok) {
-      const tim = await fetch(base + '.json', { cache: 'no-cache' }).then(r => (r.ok ? r.json() : null)).catch(() => null);
-      // ?v=<voice> keys the mp3 to the voice it was recorded in, so a lesson re-recorded in Bro's voice reaches every phone
-      if (tim?.steps?.length) { pre = { el: new Audio(base + '.mp3?v=' + encodeURIComponent(tim.voice || '1')), tim: tim.steps }; pre.el.preload = 'auto'; pre.el.playbackRate = speed; $('src').textContent = 'Studio audio'; }
-    }
-  } catch { pre = null; }
-  if (!pre) { $('src').textContent = ''; voicesLoaded(); studioNote(); }
-  // Device voice in use: say how far the studio recording has got (GET /api/lang/audio-status → {ready,total,recording}). Hidden when complete or unreachable.
-  async function studioNote() {
-    try {
-      const r = await fetch('/api/lang/audio-status', { cache: 'no-cache' });
-      if (!r.ok) return;
-      const st = await r.json();
-      if (!st || typeof st.total !== 'number' || !(st.ready < st.total)) return;
-      $('voiceNoteT').textContent = st.studio === false ? 'Device voice for now · studio voice arrives once ElevenLabs is connected' : (st.recording ? `Studio voice is being recorded · ${st.ready | 0} of ${st.total} ready` : `Studio voice: ${st.ready | 0} of ${st.total} lessons ready`);
-      // v13.2: recording/setup progress lives in You → Admin; learners just hear the lesson, so the note stays hidden
-      void st;
-    } catch { /* keep hidden */ }
-  }
+  voicesLoaded();
 
   // ---- transport ----
+  // v20: every line plays on its own in Bro's voice (the old stitched lesson mp3 is not used: it held the long opening)
   const setPlayBtn = () => { $('play').innerHTML = playing ? ICON.pause : ICON.play; $('play').classList.toggle('play', !playing); $('play').setAttribute('aria-label', playing ? 'Pause' : 'Play'); };
 
   async function loopTTS() {
     const my = ++gen;
     ctrl = new AbortController();
     while (playing && my === gen && idx < steps.length) {
-      renderProgress();
+      renderProgress(); ahead(idx + 1);
       await doStep(steps[idx], ctrl.signal);
       if (my !== gen || !playing) return;
       idx++;
@@ -280,56 +313,32 @@ if (!lesson) {
     if (my === gen && playing && idx >= steps.length) finish();
   }
 
-  let preRec = null, preStep = -1;
-  function preTick() {
-    if (!pre || !playing) return;
-    const ct = pre.el.currentTime;
-    let i = pre.tim.findIndex(s => ct < s.end);
-    if (i < 0) i = steps.length - 1;
-    if (i !== preStep) {
-      preStep = i; idx = i; renderProgress();
-      preRec?.abort(); preRec = null;
-      const st = steps[i];
-      if (st?.p != null) {
-        const ui = showPause(st.p, st.expect);
-        pre.ui = { ...ui, start: pre.tim[i].start, end: pre.tim[i].end, step: st };
-        if (st.expect && hasSR) { preRec = new AbortController(); recognize(targLang, { ms: Math.max(1500, (pre.tim[i].end - pre.tim[i].start) * 1000), signal: preRec.signal, onInterim: txt => { ui.heardl.textContent = txt; } }).then(heard => { if (!heard || preStep !== i) return; const ok = similarity(heard, st.expect) >= 0.6; ui.say.innerHTML = ok ? `${ic('check-circle', 18)} ${t(lang, 'great')}` : `${ic('ear', 18)} ${t(lang, 'listenAgain')}`; ui.say.className = 'say ' + (ok ? 'ok' : 'again'); if (ok) flashOk(); }); }
-      } else if (st) { pre.ui = null; showCaption(st); }
-    } else if (pre.ui) {
-      const el = Math.min(1, (ct - pre.ui.start) / Math.max(.1, pre.ui.end - pre.ui.start));
-      pre.ui.fg.style.strokeDashoffset = 502 * el; pre.ui.sec.textContent = `${Math.max(0, Math.ceil(pre.ui.step.p * (1 - el)))}s`;
-    }
-    pre.raf = requestAnimationFrame(preTick);
-  }
-
   async function play() {
     if (playing || finished) return;
     playing = true; startedAt = startedAt || Date.now(); setPlayBtn(); setMediaState('playing'); awake(true);
-    if (pre) {
-      pre.el.onended = () => finish();
-      preStep = -1;
-      if (pre.tim[idx]) pre.el.currentTime = pre.tim[idx].start;
-      try { await pre.el.play(); } catch { toast('Tap play again to start'); playing = false; setPlayBtn(); return; }
-      preTick();
-    } else loopTTS();
+    loopTTS();
   }
   function pause() {
     if (!playing) return;
-    playing = false; gen++; ctrl?.abort(); stopSpeaking(); preRec?.abort();
-    if (pre) { pre.el.pause(); cancelAnimationFrame(pre.raf); }
+    playing = false; gen++; ctrl?.abort(); stopSpeaking(); releaseMic();
     setPlayBtn(); setMediaState('paused'); awake(false); showIdle(); renderProgress();
   }
   const spokenAt = i => { while (i > 0 && steps[i]?.p != null) i--; return Math.max(0, i); };
-  function repeat() { const was = playing; pause(); idx = spokenAt(idx - (steps[idx]?.p != null ? 1 : 0)); renderProgress(); haptic(); play(); }
-  function skip(n) { const was = playing; pause(); idx = Math.min(steps.length - 1, idx + n); renderProgress(); haptic(); if (was) play(); else showIdle(); }
+  function repeat() { pause(); idx = spokenAt(idx - (steps[idx]?.p != null ? 1 : 0)); renderProgress(); haptic(); play(); }
+  // Stop for now: the place is saved (a speak-back waits right there next time) and you're back at the course
+  function stopForNow() {
+    pause(); renderProgress(); haptic();
+    toast(t(lang, 'saved'));
+    setTimeout(() => { location.href = `/lang/course.html?c=${code}`; }, (window.LANG_TEST && window.LANG_TEST.stayOnStop) ? 1e9 : 700);
+  }
   $('play').onclick = () => (playing ? pause() : play());
-  $('rep').onclick = repeat; $('skip').onclick = () => skip(10);
-  document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); } if (e.key === 'ArrowRight') skip(10); if (e.key === 'ArrowLeft') repeat(); });
-  addEventListener('pagehide', () => { stopSpeaking(); });
+  $('rep').onclick = repeat; $('stop').onclick = stopForNow;
+  document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); } if (e.key === 'ArrowLeft') repeat(); });
+  addEventListener('pagehide', () => { stopSpeaking(); releaseMic(); });
 
   function finish() {
     if (finished) return;
-    finished = true; playing = false; gen++; stopSpeaking(); setPlayBtn(); setMediaState('none'); awake(false);
+    finished = true; playing = false; gen++; stopSpeaking(); releaseMic(); setPlayBtn(); setMediaState('none'); awake(false);
     const already = !!store.read().done[key];
     if (!already) completeLesson(key, LESSON_XP);
     $('endSteps').textContent = steps.length; $('endMin').textContent = Math.max(1, Math.round((Date.now() - startedAt) / 60000)) || (lesson.minutes || 15);
@@ -337,11 +346,11 @@ if (!lesson) {
     if (next) { $('nextBtn').style.display = ''; $('nextBtn').href = `/lang/audio.html?c=${code}&l=${encodeURIComponent(next.id)}`; $('nextBtn').textContent = `${t(lang, 'next')} →`; }
     $('end').classList.add('on');
     confetti();
-    try { sessionStorage.removeItem('lang.pos.' + key); } catch {}
+    try { localStorage.removeItem(POS); sessionStorage.removeItem(POS); } catch {}
   }
 
   renderProgress(); showIdle();
-  window.__langPlayer = { play, pause, skip, repeat, get idx() { return idx; }, get playing() { return playing; }, finish };
+  window.__langPlayer = { play, pause, repeat, stopForNow, expectFor, get idx() { return idx; }, set idx(v) { idx = v; renderProgress(); }, get playing() { return playing; }, get checking() { return checking; }, get passed() { return passed; }, get tries() { return tries; }, get steps() { return steps; }, finish };
 }
 </script>
 </body>

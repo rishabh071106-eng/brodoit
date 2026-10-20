@@ -12,22 +12,7 @@
    "goal": "Ask if someone speaks English or understands Spanish, and answer yes, no, or a little",
    "steps": [
     {
-     "n": "Welcome to Brodoit Spanish. Listen to this conversation between an American man and a Spanish woman meeting on a street in Madrid."
-    },
-    {
-     "t": "Perdone, señora. ¿Habla usted inglés?"
-    },
-    {
-     "t": "No, señor. No hablo inglés."
-    },
-    {
-     "t": "¿Entiende usted español?"
-    },
-    {
-     "t": "Sí, un poco."
-    },
-    {
-     "n": "He said: Excuse me, madam. Do you speak English? She answered: No, sir. I don't speak English. Do you understand Spanish? And he said: Yes, a little. In the next fifteen minutes you will learn to say all of that yourself."
+     "n": "Lesson 1. Let's go! Listen, then say it with me."
     },
     {
      "n": "Let's begin with the word for 'Spanish', the language. Listen, then repeat each part."
@@ -681,7 +666,8 @@
     {
      "n": "In the next lesson you will learn to greet people, say please and thank you, and say where you are from. This is the end of lesson one."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a2",
@@ -690,22 +676,7 @@
    "goal": "Greet people, say please and thank you, and say where you are from",
    "steps": [
     {
-     "n": "This is lesson two. Listen to this conversation. A Spanish woman greets an American man she has met before."
-    },
-    {
-     "t": "Buenos días, señor. ¿Cómo está usted?"
-    },
-    {
-     "t": "Muy bien, gracias. ¿Y usted?"
-    },
-    {
-     "t": "Bien, gracias. ¿Es usted americano?"
-    },
-    {
-     "t": "Sí, soy americano. Soy de Nueva York."
-    },
-    {
-     "n": "She said: Good morning, sir. How are you? He said: Very well, thank you. And you? She said: Fine, thanks. Are you American? And he said: Yes, I'm American. I'm from New York. Let's start with a quick review of lesson one."
+     "n": "Lesson 2. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask her if she speaks English."
@@ -1352,7 +1323,8 @@
     {
      "n": "Next time you will learn to ask where things are, how much they cost, and to count to ten. This is the end of lesson two."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a3",
@@ -1361,22 +1333,7 @@
    "goal": "Ask where something is and how much it costs, and count to ten",
    "steps": [
     {
-     "n": "This is lesson three. Listen to this conversation. An American woman asks a man in the street for help."
-    },
-    {
-     "t": "Perdone, señor. ¿Dónde está el hotel Palace?"
-    },
-    {
-     "t": "Está allí, en la calle Mayor."
-    },
-    {
-     "t": "Gracias. ¿Cuánto cuesta un taxi?"
-    },
-    {
-     "t": "Cinco euros, más o menos."
-    },
-    {
-     "n": "She said: Excuse me, sir. Where is the Palace Hotel? He said: It's over there, on Mayor Street. She said: Thanks. How much does a taxi cost? He said: Five euros, more or less. First, a short review."
+     "n": "Lesson 3. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'Good morning, sir. How are you?'"
@@ -1973,7 +1930,8 @@
     {
      "n": "Next time: food and drink, and how to order in a café. This is the end of lesson three."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a4",
@@ -1982,25 +1940,7 @@
    "goal": "Order food and drink in a café and ask for the bill",
    "steps": [
     {
-     "n": "This is lesson four. Listen to this conversation in a café in Seville, between a waiter and an American customer."
-    },
-    {
-     "t": "Buenas tardes. ¿Qué desea?"
-    },
-    {
-     "t": "Quisiera un café con leche, por favor."
-    },
-    {
-     "t": "¿Algo más?"
-    },
-    {
-     "t": "Sí, una cerveza también. ¿Cuánto es?"
-    },
-    {
-     "t": "Cuatro euros."
-    },
-    {
-     "n": "The waiter said: Good afternoon. What would you like? The customer said: I would like a coffee with milk, please. Anything else? Yes, a beer too. How much is it? Four euros. Let's review first."
+     "n": "Lesson 4. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'good afternoon'."
@@ -2628,7 +2568,8 @@
     {
      "n": "Next time you will learn to ask for directions and take the train, the bus and the metro. This is the end of lesson four."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a5",
@@ -2637,25 +2578,7 @@
    "goal": "Ask for and understand directions, and buy a ticket",
    "steps": [
     {
-     "n": "This is lesson five. Listen to this conversation. An American asks a woman the way to the station."
-    },
-    {
-     "t": "Perdone, ¿dónde está la estación?"
-    },
-    {
-     "t": "Todo recto, y luego a la izquierda."
-    },
-    {
-     "t": "¿Está lejos?"
-    },
-    {
-     "t": "No, está cerca. Cinco minutos."
-    },
-    {
-     "t": "Muchas gracias."
-    },
-    {
-     "n": "He said: Excuse me, where is the station? She said: Straight ahead, and then to the left. Is it far? No, it's near. Five minutes. Thank you very much. A quick review first."
+     "n": "Lesson 5. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask where the hotel is."
@@ -3281,7 +3204,8 @@
     {
      "n": "Next time: telling the time, and the days of the week. This is the end of lesson five."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a6",
@@ -3290,22 +3214,7 @@
    "goal": "Tell the time, ask when something leaves, and name the days of the week",
    "steps": [
     {
-     "n": "This is lesson six. Listen to this conversation at a station."
-    },
-    {
-     "t": "Perdone, ¿qué hora es?"
-    },
-    {
-     "t": "Son las tres y media."
-    },
-    {
-     "t": "Gracias. ¿A qué hora sale el tren?"
-    },
-    {
-     "t": "A las cinco. Hoy no, mañana."
-    },
-    {
-     "n": "He asked: Excuse me, what time is it? She said: It's half past three. Thanks. What time does the train leave? At five. Not today, tomorrow. Let's review."
+     "n": "Lesson 6. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask where the station is."
@@ -3922,7 +3831,8 @@
     {
      "n": "Next time you will learn to introduce yourself and talk about your family. This is the end of lesson six."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a7",
@@ -3931,22 +3841,7 @@
    "goal": "Introduce yourself and your family, and ask people's names and where they are from",
    "steps": [
     {
-     "n": "This is lesson seven. Listen to this conversation. Two people meet at a dinner party in Valencia."
-    },
-    {
-     "t": "Hola, me llamo Carmen. ¿Cómo se llama usted?"
-    },
-    {
-     "t": "Me llamo David. Mucho gusto."
-    },
-    {
-     "t": "Encantada. ¿Tiene usted hijos?"
-    },
-    {
-     "t": "Sí, tengo dos hijos. Y esta es mi esposa, Laura."
-    },
-    {
-     "n": "She said: Hello, my name is Carmen. What is your name? He said: My name is David. Pleased to meet you. She said: Delighted. Do you have children? He said: Yes, I have two children. And this is my wife, Laura. First a short review."
+     "n": "Lesson 7. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'Good morning, sir. How are you?'"
@@ -4583,7 +4478,8 @@
     {
      "n": "Next time you will learn to say what you like and what you want to do. This is the end of lesson seven."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a8",
@@ -4592,22 +4488,7 @@
    "goal": "Say what you like, what you want to do, and what you need",
    "steps": [
     {
-     "n": "This is lesson eight. Listen to this conversation between a Spanish colleague and an American visitor."
-    },
-    {
-     "t": "¿Le gusta España?"
-    },
-    {
-     "t": "Sí, me gusta mucho. Me gusta la comida española."
-    },
-    {
-     "t": "¿Quiere usted ir a Barcelona?"
-    },
-    {
-     "t": "Me gustaría, pero no puedo. Necesito trabajar."
-    },
-    {
-     "n": "She asked: Do you like Spain? He said: Yes, I like it a lot. I like Spanish food. Do you want to go to Barcelona? I would like to, but I can't. I need to work. First, a review."
+     "n": "Lesson 8. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask me my name."
@@ -5239,7 +5120,8 @@
     {
      "n": "Next time you will learn to talk about what you did yesterday. This is the end of lesson eight."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a9",
@@ -5248,22 +5130,7 @@
    "goal": "Talk about what you did, where you went and what you ate, in the past",
    "steps": [
     {
-     "n": "This is lesson nine. Listen to this conversation. A hotel receptionist chats with a guest."
-    },
-    {
-     "t": "¿Qué hizo usted ayer?"
-    },
-    {
-     "t": "Fui a Toledo. Visité la catedral."
-    },
-    {
-     "t": "¿Le gustó?"
-    },
-    {
-     "t": "Sí, mucho. Comí muy bien y compré un regalo."
-    },
-    {
-     "n": "She asked: What did you do yesterday? He said: I went to Toledo. I visited the cathedral. Did you like it? Yes, a lot. I ate very well and I bought a present. A quick review first."
+     "n": "Lesson 9. Let's go! Listen, then say it with me."
     },
     {
      "n": "Say 'I like Spanish food.'"
@@ -5865,7 +5732,8 @@
     {
      "n": "Next time you will learn to make plans with people. This is the end of lesson nine."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a10",
@@ -5874,28 +5742,7 @@
    "goal": "Invite someone, accept or decline politely, and agree on a time and place",
    "steps": [
     {
-     "n": "This is lesson ten. Listen to two colleagues making plans after work."
-    },
-    {
-     "t": "¿Quiere usted cenar conmigo esta noche?"
-    },
-    {
-     "t": "Lo siento, esta noche no puedo. Estoy ocupado."
-    },
-    {
-     "t": "¿Y mañana? ¿Vamos al cine?"
-    },
-    {
-     "t": "Perfecto. ¿A qué hora nos vemos?"
-    },
-    {
-     "t": "A las ocho, en el hotel."
-    },
-    {
-     "t": "De acuerdo. Hasta mañana."
-    },
-    {
-     "n": "She asked: Do you want to have dinner with me tonight? He said: I'm sorry, tonight I can't. I'm busy. And tomorrow? Shall we go to the cinema? Perfect. What time shall we meet? At eight, at the hotel. All right. See you tomorrow. Let's review."
+     "n": "Lesson 10. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask 'What did you do yesterday?'"
@@ -6500,7 +6347,8 @@
     {
      "n": "Next time: shopping, prices and paying. This is the end of lesson ten."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a11",
@@ -6509,34 +6357,7 @@
    "goal": "Shop for clothes, talk about prices, and pay",
    "steps": [
     {
-     "n": "This is lesson eleven. Listen to a customer and a shop assistant in a clothes shop in Madrid."
-    },
-    {
-     "t": "Buenos días. ¿Tiene usted camisas?"
-    },
-    {
-     "t": "Sí, claro. Esta es muy bonita."
-    },
-    {
-     "t": "¿Cuánto cuesta?"
-    },
-    {
-     "t": "Treinta euros."
-    },
-    {
-     "t": "Es un poco caro. ¿Tiene algo más barato?"
-    },
-    {
-     "t": "Esta cuesta veinte."
-    },
-    {
-     "t": "Me la llevo. ¿Puedo pagar con tarjeta?"
-    },
-    {
-     "t": "Sí, claro."
-    },
-    {
-     "n": "Good morning. Do you have shirts? Yes, of course. This one is very pretty. How much does it cost? Thirty euros. It's a bit expensive. Do you have anything cheaper? This one costs twenty. I'll take it. Can I pay by card? Yes, of course. Let's review first."
+     "n": "Lesson 11. Let's go! Listen, then say it with me."
     },
     {
      "n": "Ask how much it costs."
@@ -7140,7 +6961,8 @@
     {
      "n": "Next time is the final lesson: a full review and a real conversation. This is the end of lesson eleven."
     }
-   ]
+   ],
+   "short": true
   },
   {
    "id": "a12",
@@ -7149,49 +6971,10 @@
    "goal": "Review everything and hold a full conversation in Spanish",
    "steps": [
     {
-     "n": "This is lesson twelve, the final lesson of this course. Listen to a long conversation between Ana, an American traveller, and a Spanish man she meets in a hotel bar. You will understand almost everything."
+     "n": "Lesson 12. Let's go! Listen, then say it with me."
     },
     {
-     "t": "Buenas tardes. ¿Qué tal?"
-    },
-    {
-     "t": "Muy bien, gracias. ¿Y usted?"
-    },
-    {
-     "t": "Bien. ¿De dónde es usted?"
-    },
-    {
-     "t": "Soy de Chicago. Me llamo Ana."
-    },
-    {
-     "t": "Mucho gusto, Ana. ¿Le gusta España?"
-    },
-    {
-     "t": "Sí, me gusta mucho. Ayer fui a Toledo y visité la catedral."
-    },
-    {
-     "t": "¿Quiere usted cenar conmigo esta noche?"
-    },
-    {
-     "t": "Me gustaría, pero no puedo. Mañana por la mañana sale mi tren."
-    },
-    {
-     "t": "¿A qué hora?"
-    },
-    {
-     "t": "A las ocho y media. Necesito un taxi para la estación."
-    },
-    {
-     "t": "De acuerdo. Buen viaje, Ana."
-    },
-    {
-     "t": "Gracias. Hasta pronto."
-    },
-    {
-     "n": "You heard: Good afternoon. How's it going? Very well, thanks. And you? Fine. Where are you from? I'm from Chicago. My name is Ana. Pleased to meet you, Ana. Do you like Spain? Yes, I like it a lot. Yesterday I went to Toledo and visited the cathedral. Do you want to have dinner with me tonight? I would like to, but I can't. My train leaves tomorrow morning. At what time? At half past eight. I need a taxi to the station. All right. Have a good trip, Ana. Thanks. See you soon."
-    },
-    {
-     "n": "Only four phrases were new. Here is the informal 'how's it going?'"
+     "n": "Here is the informal 'how's it going?'"
     },
     {
      "t": "¿Qué tal?"
@@ -7791,7 +7574,8 @@
     {
      "n": "You have finished the Brodoit Spanish audio course. You can greet people, order, ask the way, tell the time, talk about yourself and make plans, all out loud. Keep listening to Spanish, and repeat these lessons whenever you like. Goodbye, and have a good trip."
     }
-   ]
+   ],
+   "short": true
   }
  ]
 }
