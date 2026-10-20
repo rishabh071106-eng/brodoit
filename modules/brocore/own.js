@@ -195,7 +195,7 @@ function createOwn(o) {
     if (req.trace) req.trace.push({ m: 'own-facts', ok: 1, calls: f.used });
     // this turn's facts and the time ride with the question (the cached system prompt and earlier turns stay as they were)
     const mem = memoryLine(req.user, q);
-    const pre = (f.lines.length ? 'Facts from Bro\'s own sources (reference only; use what answers the question, in your own words):\n- ' + f.lines.join('\n- ') + '\n' : '') + (mem ? mem + '\n' : '') + (RX.time.test(q) ? timeLine() + '\n' : '');
+    const pre = (f.lines.length ? 'Looked up just now (reference only; answer in your own words):\n- ' + f.lines.join('\n- ') + '\n' : '') + (mem ? mem + '\n' : '') + (RX.time.test(q) ? timeLine() + '\n' : '');
     const ask = (pre ? pre + '\n' : '') + q;
     const before = req.session ? sentFor(req.session) : new Map();
     const messages = history.slice(0, -1).map(m => m.role === 'user' && before.has(m.content) ? { role: 'user', content: before.get(m.content) } : m).concat([{ role: 'user', content: ask }]);

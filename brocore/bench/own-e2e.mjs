@@ -41,7 +41,7 @@ const sessions = {}; const results = []; let bad = 0;
 for (const C of CASES) {
   const session = C.same ? sessions[C.same].session : 'e2e-' + C.id;
   const history = C.same ? sessions[C.same].history.concat([{ role: 'user', content: C.q }]) : [{ role: 'user', content: C.q }];
-  own.warm({ session, user, lang: C.lang }); if (!C.same) await new Promise(r => setTimeout(r, 6000)); // a real call opens, then the user speaks
+  if (!C.same) { own.warm({ session, user, lang: C.lang }); await new Promise(r => setTimeout(r, 6000)); } // a real call opens (warmed once), then the user speaks
   const s0 = Date.now(); let first = 0, text = '', done = null, looked = false, passed = false;
   for await (const ev of own.answer({ user, lang: C.lang, history, session })) {
     if (ev.type === 'pass') passed = true;

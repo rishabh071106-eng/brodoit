@@ -1112,6 +1112,7 @@ function install(app, deps) {
       }
       await speaker.done();
     }
+    const OWN_LOOKUP_EXTRA_MS = 3000; // after "Let me check that." the own brain may take this much longer
     // Bro's own brain (Bro Core's own: an open model on this server, answering from what Bro looks up himself).
     // → 'done' (Bro answered) | 'gone' (the turn ended) | why the cloud should answer instead: unusable, pass, slow, error, empty.
     // A first sentence must be ready within the budget (Admin: BRO_OWN_BUDGET_MS, 7 s); once Bro has spoken, the own
@@ -1125,14 +1126,19 @@ function install(app, deps) {
       const ac = new AbortController(), stop = () => ac.abort(); sig.addEventListener('abort', stop, { once: true });
       const budget = S.ownOnly ? 60000 : o.budgetMs();
       let first = false, buf = '', slow = false; const t0 = Date.now();
-      const timer = setTimeout(() => { if (!first) { slow = true; ac.abort(); } }, budget);
+      const onSlow = () => { if (!first) { slow = true; ac.abort(); } };
+      let timer = setTimeout(onSlow, budget);
       T.trace.push({ r: 'own' });
       try {
         for await (const ev of o.answer({ user: S.user, lang: S.lang, history: S.history.slice(-10), session: S.ownSession, signal: ac.signal, trace: T.trace })) {
           if (!live()) return 'gone';
           if (!ev) continue;
           if (ev.type === 'pass') { T.trace.push({ m: 'own', k: 'pass' }); LIVE.ownSkip++; return 'pass'; } // the own brain leaves this one to the cloud
-          if (ev.type === 'lookup' && !T.filler) { T.filler = true; speaker.push(FILLER[S.lang === 'hi' ? 'hi' : 'en']); }
+          if (ev.type === 'lookup' && !T.filler) {
+            T.filler = true; speaker.push(FILLER[S.lang === 'hi' ? 'hi' : 'en']);
+            // they heard "Let me check that.": the own brain gets 3 s more for its first sentence
+            if (!first && !S.ownOnly) { clearTimeout(timer); timer = setTimeout(onSlow, Math.max(0, budget - (Date.now() - t0)) + OWN_LOOKUP_EXTRA_MS); }
+          }
           else if (ev.type === 'text' && ev.delta) {
             buf += ev.delta;
             for (let cut; (cut = takeSentence(buf));) { if (!first) { first = true; clearTimeout(timer); T.marks.llm = Date.now() - t0; } speaker.push(cut.sentence); buf = cut.rest; }

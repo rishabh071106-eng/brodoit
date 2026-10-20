@@ -9,7 +9,7 @@ const llama = await getLlama({ gpu: false, build: 'never', logLevel: 'error' });
 const model = await llama.loadModel({ modelPath: file });
 const ctx = await model.createContext({ contextSize: 2048, sequences: 2, threads: Number(threadsArg) || 3 });
 const SYS = 'You are Bro: a warm, deep-voiced friend and guide on a live voice call. Talk like a real person: answer exactly what was asked, first, in one to three short spoken sentences.\n\nLanguage: this conversation is in English.\n\nToday is Tuesday, 20 October 2026 in India. The user\'s name is Rishabh.';
-const ASK = 'Facts from Bro\'s own sources (reference only; use what answers the question, in your own words):\n- New Delhi: New Delhi is the capital of India and the seat of all three branches of the Government of India. (Wikipedia)\n\nWhat is the capital of India?';
+const ASK = 'Looked up just now (reference only; answer in your own words):\n- New Delhi: New Delhi is the capital of India and the seat of all three branches of the Government of India. (Wikipedia)\n\nWhat is the capital of India?';
 const Q2 = 'And which river flows through it?';
 const show = t => JSON.stringify(model.detokenize(t));
 for (const variant of ['set', 'keep']) {
