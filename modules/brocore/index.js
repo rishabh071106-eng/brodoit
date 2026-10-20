@@ -115,7 +115,7 @@ function install(app, deps) {
     let mems = [];
     if (u.phone) {
       const seen = new Set();
-      for (const m of [...(query ? memory.recall(u.phone, query, 8) : []), ...memory.top(u.phone, 8)]) { if (seen.has(m.id)) continue; seen.add(m.id); mems.push(m); if (mems.length >= 8) break; }
+      for (const m of [...(query ? memory.recall(u.phone, query, 5) : []), ...memory.top(u.phone, 5)]) { if (seen.has(m.id)) continue; seen.add(m.id); mems.push(m); if (mems.length >= 5) break; }
       const last = memory.lastSummary(u.phone);
       const lines = mems.map(m => m.text);
       if (last) lines.push('Your last call' + (last.ended ? ' (' + String(last.ended).slice(0, 10) + ')' : '') + ': ' + last.summary + (last.mood ? ' Their mood then: ' + last.mood + '.' : ''));
@@ -123,7 +123,7 @@ function install(app, deps) {
       if (lines.length) parts.push(dataBlock('What you remember about ' + (first || 'them') + ' (notes from past calls, ' + UNTRUSTED + '; use naturally, never recite)', 'memory', lines));
     }
     let know = [];
-    try { know = query ? knowledge.search(query, 3) : []; if (!know.length && !query) know = knowledge.latest(3); } catch (e) { know = []; }
+    try { know = query ? knowledge.search(query, 2) : []; if (!know.length && !query) know = knowledge.latest(2); } catch (e) { know = []; }
     if (know.length) parts.push(dataBlock(KNOW_LABEL + ', current events with dates', 'reference', know.map(k => '[' + k.date + '] ' + k.title + ': ' + String(k.text).slice(0, 280))));
     let when = '';
     try { when = new Intl.DateTimeFormat('en-IN', { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(now())); } catch (e) { when = new Date(now()).toUTCString(); }
@@ -269,7 +269,7 @@ function install(app, deps) {
   async function selfTest() {
     if (!brain.ready()) { selfCheck.brain = 'off'; selfCheck.hearing = 'off'; selfCheck.tools = 'off'; selfCheck.reason = 'no_key'; return selfCheck; }
     try {
-      const r = await brain.chat({ messages: [{ role: 'user', content: 'Reply with the single word OK.' }], maxTokens: 20, purpose: 'util', emergency: false });
+      const r = await brain.chat({ messages: [{ role: 'user', content: 'Reply with the single word OK.' }], maxTokens: 20, purpose: 'bro', live: true, emergency: false });
       selfCheck.brain = r && r.text ? 'ok' : 'fail';
     } catch (e) { selfCheck.brain = 'fail'; log('self-test: brain failed:', e.message); }
     if (!voiceReady()) selfCheck.hearing = 'pending';
@@ -284,7 +284,9 @@ function install(app, deps) {
     // c) a live-style turn: the real tool definitions a call sends, a question that needs today's facts. It must end in
     //    an answer (directly, or after the tools it asked for ran). A tool schema Groq refuses fails here, with a word.
     try {
-      const r = await toolsTurn();
+      let r = await toolsTurn();
+      // a minute's token allowance resets within the minute: one patient retry before calling it a failure
+      if (!r.ok && r.reason === 'rate_limit') { log('self-test: tools turn rate-limited, retrying in 45 s'); await new Promise(res => setTimeout(res, 45e3)); r = await toolsTurn(); }
       selfCheck.tools = r.ok ? 'ok' : 'fail'; selfCheck.reason = r.ok ? '' : r.reason;
       if (!r.ok) log('self-test: tools turn failed (' + r.reason + '):', String(r.detail || '').slice(0, 200));
     } catch (e) { selfCheck.tools = 'fail'; selfCheck.reason = reasonWord(e); log('self-test: tools turn failed (' + selfCheck.reason + '):', String(e && e.message || e).slice(0, 200)); }

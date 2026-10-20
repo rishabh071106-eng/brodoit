@@ -157,7 +157,7 @@ function createMemory(o) {
     let transcript = turns.slice(-40).map(t => t.role + ': ' + t.text).join('\n');
     if (transcript.length > 7000) transcript = transcript.slice(-7000);
     try {
-      const r = await chat({ system: SUM_SYS, messages: [{ role: 'user', content: 'Call transcript:\n' + transcript }], json: true, maxTokens: 500, temperature: 0.2, purpose: 'util' });
+      const r = await chat({ system: SUM_SYS, messages: [{ role: 'user', content: 'Call transcript:\n' + transcript }], json: true, maxTokens: 500, temperature: 0.2, purpose: 'summary' });
       const j = JSON.parse(r.text);
       out.summary = clip(sentences(j.summary, 2), 400);
       out.mood = norm(j.mood).split(' ')[0] || '';
