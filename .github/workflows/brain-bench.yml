@@ -1,6 +1,6 @@
-# Bro's own brain: benchmarks candidate open models (GGUF, CPU only) the way a live call uses them, on a 4-vCPU runner.
-# Push a branch named bench/<anything> to run it. Results are printed as BENCH lines in each job's log, with each
-# file's sha256 and size (mind.js pins those).
+# Bro's own brain: benchmarks candidate open models (GGUF, CPU only) the way a live call uses them. All candidates run
+# one after another on the same 4-vCPU runner, so their speeds compare fairly. Push a branch named bench/<anything> to run
+# it. Results are BENCH lines in the job log, with each file's sha256 and size (mind.js pins those).
 name: Brain bench
 on:
   push:
@@ -11,17 +11,7 @@ permissions:
 jobs:
   bench:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - label: qwen3-4b-2507
-            url: https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/resolve/main/Qwen3-4B-Instruct-2507-Q4_K_M.gguf
-          - label: gemma3-4b
-            url: https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf
-          - label: qwen3-1.7b
-            url: https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,11 +23,18 @@ jobs:
         run: |
           mkdir -p /tmp/bench && cp brocore/bench/brain-bench.mjs /tmp/bench/ && cd /tmp/bench
           npm init -y > /dev/null && npm install --no-audit --no-fund node-llama-cpp@3.22.2
-      - name: Model
+      - name: Every candidate on this one machine
         run: |
-          curl -fL --retry 5 --retry-delay 5 -o /tmp/bench/model.gguf '${{ matrix.url }}'
-          echo "MODEL ${{ matrix.label }} bytes=$(stat -c %s /tmp/bench/model.gguf) sha256=$(sha256sum /tmp/bench/model.gguf | cut -d' ' -f1) url=${{ matrix.url }}"
-      - name: Bench (4 threads, like a 4-vCPU server)
-        run: cd /tmp/bench && node brain-bench.mjs model.gguf '${{ matrix.label }}' 4
-      - name: Bench (2 threads, half the cores; Bro's voice keeps the rest)
-        run: cd /tmp/bench && node brain-bench.mjs model.gguf '${{ matrix.label }}-2t' 2
+          cd /tmp/bench
+          while read -r label url; do
+            [ -z "$label" ] && continue
+            curl -fsSL --retry 5 --retry-delay 5 -o model.gguf "$url" || { echo "MODEL $label download failed"; continue; }
+            echo "MODEL $label bytes=$(stat -c %s model.gguf) sha256=$(sha256sum model.gguf | cut -d' ' -f1) url=$url"
+            node brain-bench.mjs model.gguf "$label" 4 || echo "BENCH-FAILED $label"
+            rm -f model.gguf
+          done <<'LIST'
+          gemma3-4b https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-Q4_K_M.gguf
+          qwen3-4b-2507 https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/resolve/main/Qwen3-4B-Instruct-2507-Q4_K_M.gguf
+          gemma3-1b https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf
+          qwen3-1.7b https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf
+          LIST
