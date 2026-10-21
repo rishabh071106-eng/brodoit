@@ -242,6 +242,25 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
     - A 404 (text outside the catalog) is read live via `/api/voice/tts`. The phone's voice is used only offline or when the server keeps failing, with a toast.
     - Clips play at the speed buttons' rate.
   - **Bro's library** (`modules/brolibrary.js`): the 4 breathing cues and the 9 affirmation/meditation scripts are recorded once in Bro's voice (`MEDIA_DIR/bro-voice/<voiceKey>/<key>.mp3`). They are spoken part by part with real silences (2.2 s between paragraphs, 1 s at "…"), low priority, stepping aside for calls. `/api/audio/:id` and `/api/breathe-audio/:id` serve them first (`sendAudio`: Range, ETag, no-cache), and the bundled file until then. Client URLs carry `?v=21`. `/api/learn/voice-status` reports `voice`, `crawler` and `library`.
+- **v21 Bro hears quiet voices** (a soft voice wasn't heard well):
+  - **Server** (`modules/brocore/hear.js`): loudness is measured per 20 ms frame (`frameStats`: speech level, 10th-percentile floor, SNR, peak).
+    - Recorder clips (webm/ogg/mp4) are decoded with ffmpeg first (`decodeToPcm`, a temp file). A clip ffmpeg can't read goes to Whisper as it came.
+    - Silence: p95 < −58 dBFS, or fewer than 3 frames 6 dB above the floor while p95 < −45 dBFS. Silence never reaches Whisper.
+    - Quiet speech is raised to about −20 dBFS before Whisper (`normalize`: at most +30 dB, never past −1 dBFS).
+    - A phantom-list word ("okay", "Thank you.") is dropped only when Whisper doubts it (`no_speech_prob > 0.4`) or it is faint (speech < −50 dBFS and SNR < 10 dB).
+    - `hear()` returns `level`.
+  - **Calls** (`app/voice.js` VAD):
+    - Start thresholds: floor + 9 dB (energy), + 4 dB (Silero). A phrase continues above + 5 / + 4 dB.
+    - The floor is the 20th percentile of the last 3 s of frames Silero calls non-speech (`vadFloor`), so a soft voice can't drag it up.
+    - Silero hearing speech that stays under the start level for ~640 ms shows "Speak a little closer" (`closerCheck`, at most every 30 s).
+  - **`app/micgain.js`** (`MicGain.wrap(stream, {ac})` → `{ stream, level(), gainDb(), close() }`):
+    - Chain: high-pass 80 Hz → gain → limiter → a −1 dBFS ceiling.
+    - The gain targets −24 dBFS speech (0–24 dB; up 1.5 dB / 100 ms, down 6 dB) and is remembered in localStorage `bd.micGainDb`.
+    - Used by the Languages recorder (lang.js `recordUtterance`) and voice notes (the waveform still reads the raw mic).
+  - **Languages speak-back:**
+    - The floor is the 20th percentile of what was heard, frozen once speech starts. Speech is > max(0.0025, floor × 2).
+    - A quieter voice heard for 300 ms is sent anyway and the server decides.
+    - The phone's recogniser returning "no-speech" falls back to the recorder (`via: 'rescue'`). After two rescues, localStorage `lang.hear = 'rec'` skips the recogniser.
 - **News** (`app/news.js`): cards only (desk stories), section chips, "Listen" plays recorded headline clips back to back. `modules/newsvoice.js` records after every desk batch through ElevenLabs only (`NEWS_VOICE_PROVIDER=any` opens the chain): headlines for every story in the feed + `NEWS_VOICE_FULL` (default 10) full read-outs a day per language; files in `MEDIA_DIR/news-voice`, served by `/api/news/voice/<id>-<lang>-<h|s>.mp3`. Nothing is rendered on tap. The long spoken bulletin is opt-in (`BULLETIN_AUDIO=1`). News is a bottom tab; You moved to the header avatar.
 - **ElevenLabs brain** (`modules/elevenbrain.js`): a private text-only ElevenLabs agent used as the LLM when Gemini has no key, is out of credit (402 → skipped for an hour via `global._geminiDownUntil`) or fails — `_callGemini` falls back to it, so Bro chat, Explain, the coach and the news desk keep working on ElevenLabs credits. Bro chat no longer runs a second "verify" pass.
 - **ElevenLabs budget** (modules/elevenvoice.js `RESERVE`): bulk (static recordings) may use the first 70% of the month, daily (news, first plays) stops at 15% left, live Bro uses the rest. Admin auto-record order: learn-audio → lang-audio → hindi-books.

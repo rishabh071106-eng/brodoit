@@ -518,31 +518,50 @@ async function mic() {
 export function releaseMic() { try { micStream?.getTracks().forEach(t => t.stop()); } catch { /* ignore */ } micStream = null; }
 const REC_TYPES = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus', 'audio/ogg'];
 // records one utterance: waits up to waitMs for speech, then stops after quietMs of silence (or maxMs) → Blob | null
+// v21 (soft voices): the recorder takes the mic through MicGain (app/micgain.js) when the page loaded it, so a soft voice is
+// recorded louder. The room's noise floor is the 20th percentile of what was heard (frozen once speech starts), not the
+// loudest moment of the first 300 ms (that was the learner's own voice when they answered at once). A sound counts as
+// speech above max(0.0025, floor × 2); a quieter voice heard for 300 ms is sent anyway and Bro's hearing decides.
 async function recordUtterance({ signal, onState, waitMs = 7000, quietMs = 900, maxMs = 9000 } = {}) {
-  const stream = await mic();
+  const raw = await mic();
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const ac = new AC(); try { await ac.resume(); } catch { /* ignore */ }
+  let mg = null; try { mg = window.MicGain ? window.MicGain.wrap(raw, { ac }) : null; } catch { mg = null; }
+  const stream = mg ? mg.stream : raw;
   const type = (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported) ? REC_TYPES.find(t => MediaRecorder.isTypeSupported(t)) || '' : '';
   const rec = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
   const parts = []; rec.ondataavailable = e => { if (e.data && e.data.size) parts.push(e.data); };
-  const AC = window.AudioContext || window.webkitAudioContext;
-  const ac = new AC(); try { await ac.resume(); } catch { /* ignore */ }
-  const an = ac.createAnalyser(); an.fftSize = 1024; ac.createMediaStreamSource(stream).connect(an);
-  const buf = new Float32Array(an.fftSize);
-  const level = () => { an.getFloatTimeDomainData(buf); let e = 0; for (const v of buf) e += v * v; return Math.sqrt(e / buf.length); };
+  let level;
+  if (mg) level = mg.level;
+  else {
+    const an = ac.createAnalyser(); an.fftSize = 1024; ac.createMediaStreamSource(raw).connect(an);
+    const buf = new Float32Array(an.fftSize);
+    level = () => { an.getFloatTimeDomainData(buf); let e = 0; for (const v of buf) e += v * v; return Math.sqrt(e / buf.length); };
+  }
   const scale = (window.LANG_TEST && window.LANG_TEST.vadScale) || 1;
   return new Promise(res => {
-    let spoke = false, lastLoud = 0, floor = 0.004, iv = 0;
-    const t0 = performance.now();
-    const stop = keep => { clearInterval(iv); signal?.removeEventListener('abort', onAbort); rec.onstop = () => { try { ac.close(); } catch { /* ignore */ } res(keep && spoke && parts.length ? new Blob(parts, { type: rec.mimeType || type || 'audio/webm' }) : null); }; try { rec.state !== 'inactive' ? rec.stop() : rec.onstop(); } catch { rec.onstop(); } };
+    let spoke = false, lastLoud = 0, soft = 0, lastSoft = 0, iv = 0, frozen = 0;
+    const seen = [], t0 = performance.now();
+    const floorNow = () => { if (frozen) return frozen; const s = seen.slice().sort((a, b) => a - b); return s.length ? Math.max(0.0004, s[Math.floor((s.length - 1) * 0.2)]) : 0.002; };
+    const stop = keep => {
+      clearInterval(iv); signal?.removeEventListener('abort', onAbort);
+      rec.onstop = () => { try { mg?.close(); } catch { /* ignore */ } try { ac.close(); } catch { /* ignore */ } res(keep && (spoke || soft >= 300) && parts.length ? new Blob(parts, { type: rec.mimeType || type || 'audio/webm' }) : null); };
+      try { rec.state !== 'inactive' ? rec.stop() : rec.onstop(); } catch { rec.onstop(); }
+    };
     const onAbort = () => stop(false);
     signal?.addEventListener('abort', onAbort, { once: true });
     rec.start(250);
     iv = setInterval(() => {
       const now = performance.now(), l = level();
-      if (now - t0 < 300) { floor = Math.max(floor, l * 1.5); return; } // the room's own noise, first 300 ms
-      const loud = l > Math.max(0.015, floor * 2.5);
-      if (loud) { if (!spoke) onState?.('speaking'); spoke = true; lastLoud = now; }
+      seen.push(l); if (seen.length > 160) seen.shift();
+      if (now - t0 < 240) return; // the mic settles
+      const floor = floorNow();
+      const loud = l > Math.max(0.0025, floor * 2);
+      if (loud) { if (!spoke) { onState?.('speaking'); frozen = floor; } spoke = true; lastLoud = now; }
+      else if (!spoke && l > Math.max(0.0012, floor * 1.6)) { soft += 60; lastSoft = now; }
       if (spoke && now - lastLoud > quietMs * scale) return stop(true);
-      if (!spoke && now - t0 > waitMs * scale) return stop(false);
+      if (!spoke && soft >= 300 && now - lastSoft > quietMs * scale) return stop(true); // a quiet voice: Bro's hearing decides
+      if (!spoke && now - t0 > waitMs * scale) return stop(soft >= 300);
       if (now - t0 > maxMs * scale) return stop(true);
     }, 60);
   });
@@ -557,27 +576,37 @@ async function serverHear(blob, lang, expect, signal) {
     const j = await r.json(); return { text: String(j.text || '').trim() };
   } catch { return { error: 'nohear' }; }
 }
+// v21: the phone's recogniser heard nothing ("no-speech": often a soft voice) → this try is recorded and Bro's hearing
+// writes it down; after two such rescues the phone records from then on (localStorage lang.hear = 'rec').
+const HEAR_PREF = 'lang.hear';
+let srRescues = 0;
+const recPreferred = () => { try { return localStorage.getItem(HEAR_PREF) === 'rec'; } catch { return false; } };
 export async function hearPhrase(expect, lang, { signal, onInterim, onState } = {}) {
   const T = (typeof window !== 'undefined' && window.LANG_TEST) || {};
-  if (SR && !srBroken && !T.noSR) {
+  let rescue = false;
+  if (SR && !srBroken && !T.noSR && !recPreferred()) {
     onState?.('listening');
     const r = await srHear(lang, { signal, onInterim });
     if (signal?.aborted) return { heard: '', alts: [], ok: false, via: 'sr' };
     if (r.err === 'not-allowed') return { heard: '', alts: [], ok: false, via: 'sr', error: 'mic' };
-    if (!SR_FATAL.has(r.err)) { const heard = r.alts[0] || ''; return { heard, alts: r.alts, ok: r.alts.some(a => matchPhrase(a, expect, lang)), via: 'sr' }; }
-    srBroken = true; // this phone's recogniser can't work here: record and let the server hear it, from now on
+    if (!SR_FATAL.has(r.err)) {
+      const heard = r.alts[0] || '';
+      if (heard || (r.err && r.err !== 'no-speech')) return { heard, alts: r.alts, ok: r.alts.some(a => matchPhrase(a, expect, lang)), via: 'sr' };
+      rescue = true; // heard nothing: let the recorder and Bro's hearing try this once
+    } else srBroken = true; // this phone's recogniser can't work here: record and let the server hear it, from now on
   }
   if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') return { heard: '', alts: [], ok: false, via: 'server', error: 'nohear' };
   let blob = null;
   onState?.('listening');
-  try { blob = await recordUtterance({ signal, onState }); }
+  try { blob = await recordUtterance({ signal, onState, waitMs: rescue ? 4000 : 7000 }); }
   catch (e) { return { heard: '', alts: [], ok: false, via: 'server', error: e && (e.name === 'NotAllowedError' || e.name === 'SecurityError') ? 'mic' : 'nohear' }; }
   if (signal?.aborted || !blob) return { heard: '', alts: [], ok: false, via: 'server' };
   onState?.('checking');
   const h = await serverHear(blob, lang, expect, signal);
   if (h.error) return { heard: '', alts: [], ok: false, via: 'server', error: h.error };
   onInterim?.(h.text);
-  return { heard: h.text, alts: [h.text], ok: matchPhrase(h.text, expect, lang), via: 'server' };
+  if (rescue && h.text && ++srRescues >= 2) { try { localStorage.setItem(HEAR_PREF, 'rec'); } catch { /* private mode */ } }
+  return { heard: h.text, alts: [h.text], ok: matchPhrase(h.text, expect, lang), via: rescue ? 'rescue' : 'server' };
 }
 
 // Right when, accents, punctuation and number digits aside, it is close (similarity ≥ 0.6) or holds the expected phrase.

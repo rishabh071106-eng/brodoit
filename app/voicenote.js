@@ -142,12 +142,14 @@
     try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }); }
     catch (e) { if (st) { hint(e && (e.name === 'NotAllowedError' || e.name === 'SecurityError') ? 'Allow the microphone for Brodoit, then tap the mic again.' : 'No microphone found.', true); setPhase(more ? 'review' : 'idle'); if (more) st.$('bvnOut').hidden = false; } return; }
     if (!st) { stream.getTracks().forEach(t => t.stop()); return; } // closed while the phone asked for the mic
-    st.stream = stream;
+    st.raw = st.stream = stream;
     st.type = MediaRecorder.isTypeSupported ? TYPES.find(t => MediaRecorder.isTypeSupported(t)) || '' : '';
     try {
       const AC = window.AudioContext || window.webkitAudioContext; st.ac = new AC(); try { await st.ac.resume(); } catch (e) { /* ignore */ }
-      st.an = st.ac.createAnalyser(); st.an.fftSize = 1024; st.ac.createMediaStreamSource(st.stream).connect(st.an); st.buf = new Float32Array(st.an.fftSize);
-    } catch (e) { st.an = null; }
+      st.an = st.ac.createAnalyser(); st.an.fftSize = 1024; st.ac.createMediaStreamSource(st.raw).connect(st.an); st.buf = new Float32Array(st.an.fftSize);
+      // v21: a soft voice is recorded louder (app/micgain.js); the recorder takes the raised stream
+      if (window.MicGain) { st.mg = window.MicGain.wrap(st.raw, { ac: st.ac }); st.stream = st.mg.stream; }
+    } catch (e) { st.an = null; st.mg = null; st.stream = st.raw; }
     st.$('bvnOut').hidden = true;
     newSegment();
     st.t0 = performance.now(); st.segMs = 0;
@@ -201,7 +203,7 @@
   }
   function pause() { if (st.phase !== 'recording') return; try { st.segs[st.segs.length - 1].rec.pause(); } catch (e) { /* ignore */ } setPhase('paused'); hint('Paused. Tap ▶ to go on, ■ to finish.'); buzz('light'); }
   function resume() { if (st.phase !== 'paused') return; try { st.segs[st.segs.length - 1].rec.resume(); } catch (e) { /* ignore */ } st.t0 = performance.now(); setPhase('recording'); hint('Listening… tap ■ when you are done.'); buzz('light'); }
-  function release() { cancelAnimationFrame(st.raf); try { st.stream && st.stream.getTracks().forEach(t => t.stop()); } catch (e) { /* ignore */ } const ac = st.ac; st.ac = null; if (ac && ac.state !== 'closed') ac.close().catch(() => {}); st.an = null; st.levels = []; st.el.style.setProperty('--lv', '0'); drawWave(); }
+  function release() { cancelAnimationFrame(st.raf); try { if (st.mg) st.mg.close(); } catch (e) { /* ignore */ } st.mg = null; try { [st.raw, st.stream].forEach(x => x && x.getTracks().forEach(t => t.stop())); } catch (e) { /* ignore */ } const ac = st.ac; st.ac = null; if (ac && ac.state !== 'closed') ac.close().catch(() => {}); st.an = null; st.levels = []; st.el.style.setProperty('--lv', '0'); drawWave(); }
   let tossArmed = 0;
   function discardTap() {
     if (Date.now() - tossArmed > 3000) { tossArmed = Date.now(); st.$('bvnDiscard').classList.add('warn'); hint('Tap 🗑 again to throw this recording away.', true); return; }

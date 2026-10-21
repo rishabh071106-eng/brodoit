@@ -7,8 +7,15 @@
 // repetition loop (compression_ratio > 2.4) are dropped; opts.prompt (the conversation language and Bro's last line)
 // is passed to Whisper; Urdu is heard as Hindi (Bro speaks Hindi, not Urdu script). v20: opts.expect (the phrase a language
 // lesson waits for) keeps that phrase even when it looks like a phantom ("gracias", "merci", "Thank you very much").
-// → { text, lang, confidence (mean avg_logprob of the kept segments, or null), model, duration }.
+// v21 (soft voices): loudness is measured per 20 ms frame (the speech level, the noise floor, the SNR) instead of over the
+// whole clip; recorder clips (webm, ogg, mp4…) are decoded with ffmpeg first so they are measured too. Quiet speech is
+// raised to about -20 dBFS before Whisper hears it (at most +30 dB, never clipping). A clip is silence when its loud
+// frames are under -58 dBFS or almost nothing rises 6 dB above its noise, and a short phantom-looking word ("okay", "thanks") is dropped only when Whisper doubts it or
+// it is both very quiet and barely above the noise.
+// → { text, lang, confidence (mean avg_logprob of the kept segments, or null), model, duration, level }.
 'use strict';
+const os = require('os'), fsp = require('fs').promises, pathM = require('path'), crypto = require('crypto');
+const { spawn } = require('child_process');
 
 const GROQ = 'https://api.groq.com/openai/v1';
 const MODELS = ['whisper-large-v3-turbo', 'whisper-large-v3'];
@@ -60,6 +67,48 @@ function rms16(buf) {
   let s = 0; for (let i = 0; i < n; i++) { const v = buf.readInt16LE(i * 2) / 32768; s += v * v; }
   return Math.sqrt(s / n);
 }
+// v21: loudness per 20 ms frame of 16-bit PCM → { frames, p95, floorDb, speechDb, snr, peakDb, speechFrames } in dBFS.
+// The floor is the 10th percentile; speech is the power mean of the frames 6 dB or more above it.
+function frameStats(pcm, rate) {
+  const n = Math.floor(pcm.length / 2), F = Math.max(1, Math.round((rate || 16000) * 0.02));
+  const dbs = []; let peak = 0;
+  for (let s0 = 0; s0 + F <= n; s0 += F) {
+    let e = 0;
+    for (let i = s0; i < s0 + F; i++) { const v = pcm.readInt16LE(i * 2) / 32768; e += v * v; const a = v < 0 ? -v : v; if (a > peak) peak = a; }
+    const r = Math.sqrt(e / F); dbs.push(r > 1e-7 ? 20 * Math.log10(r) : -140);
+  }
+  const dB = x => (x > 1e-7 ? 20 * Math.log10(x) : -140);
+  if (!dbs.length) return { frames: 0, p95: -140, floorDb: -140, speechDb: -140, snr: 0, peakDb: dB(peak), speechFrames: 0 };
+  const sorted = dbs.slice().sort((a, b) => a - b), q = p => sorted[Math.min(sorted.length - 1, Math.floor(p * (sorted.length - 1)))];
+  const floorDb = q(0.1), loud = dbs.filter(d => d >= floorDb + 6);
+  const pm = list => 10 * Math.log10(list.reduce((a, d) => a + Math.pow(10, d / 10), 0) / list.length);
+  const speechDb = loud.length ? pm(loud) : q(0.95);
+  const r1 = v => Math.round(v * 10) / 10;
+  return { frames: dbs.length, p95: r1(q(0.95)), floorDb: r1(floorDb), speechDb: r1(speechDb), snr: r1(speechDb - floorDb), peakDb: r1(dB(peak)), speechFrames: loud.length };
+}
+// raise quiet speech to about `target` dBFS: at most maxGain dB, and never past -1 dBFS at the loudest sample
+function normalize(pcm, st, target, maxGain) {
+  const gainDb = Math.max(0, Math.min(maxGain, target - st.speechDb, -1 - st.peakDb));
+  if (!(gainDb >= 1)) return { pcm, gainDb: 0 };
+  const g = Math.pow(10, gainDb / 20), out = Buffer.alloc(pcm.length - (pcm.length % 2));
+  for (let i = 0; i < out.length; i += 2) { const v = Math.round(pcm.readInt16LE(i) * g); out.writeInt16LE(v > 32767 ? 32767 : v < -32768 ? -32768 : v, i); }
+  return { pcm: out, gainDb: Math.round(gainDb * 10) / 10 };
+}
+// ffmpeg: a recorder clip (webm, ogg, mp4…) → 16 kHz mono 16-bit PCM; resolves null when it can't (Whisper then reads the
+// original file, as before v21). A temp file, not a pipe: Safari's mp4 needs a seekable input.
+async function decodeToPcm(buf, ext, o) {
+  const tmp = pathM.join(os.tmpdir(), 'hear-' + process.pid + '-' + crypto.randomBytes(6).toString('hex') + '.' + (ext || 'bin'));
+  try {
+    await fsp.writeFile(tmp, buf);
+    return await new Promise(resolve => {
+      const p = spawn((o && o.ffmpeg) || process.env.FFMPEG_PATH || 'ffmpeg', ['-hide_banner', '-loglevel', 'error', '-i', tmp, '-f', 's16le', '-ac', '1', '-ar', '16000', 'pipe:1'], { stdio: ['ignore', 'pipe', 'ignore'] });
+      const out = []; const t = setTimeout(() => { try { p.kill('SIGKILL'); } catch (e) { /* gone */ } }, 20000);
+      p.stdout.on('data', d => out.push(d));
+      p.on('error', () => { clearTimeout(t); resolve(null); });
+      p.on('close', code => { clearTimeout(t); const pcm = Buffer.concat(out); resolve(code === 0 && pcm.length >= 2 ? pcm : null); });
+    });
+  } catch (e) { return null; } finally { fsp.unlink(tmp).catch(() => {}); }
+}
 const EXT = m => /wav/.test(m) ? 'wav' : /webm/.test(m) ? 'webm' : /ogg|opus/.test(m) ? 'ogg' : /mp4|m4a|aac/.test(m) ? 'm4a' : /mpeg|mp3/.test(m) ? 'mp3' : /flac/.test(m) ? 'flac' : 'wav';
 
 function createHear(o) {
@@ -70,24 +119,41 @@ function createHear(o) {
   const log = o.log || ((...a) => console.log('[brocore]', ...a));
   const key = () => getSetting('GROQ_API_KEY') || process.env.GROQ_API_KEY || '';
   const st = { calls: 0, empty: 0, dropped: 0, fails: 0, lastError: '', model: MODELS[0], dead: new Map() };
-  const MIN_S = o.minSeconds || 0.3, SILENT = 0.0015, QUIET = 0.01;
+  const MIN_S = o.minSeconds || 0.3;
+  // v21: silence = the loud frames (p95) under -58 dBFS; a phantom word counts as "very quiet" under -50 dBFS of speech
+  // with under 10 dB above the noise; speech is raised to -20 dBFS (at most +30 dB) before Whisper hears it
+  const SILENT_DB = o.silentDb != null ? o.silentDb : -58, QUIET_DB = -50, QUIET_SNR = 10, TARGET_DB = -20, MAX_GAIN = 30;
 
   async function hear(buffer, opts) {
     opts = opts || {};
     const buf = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : (buffer && buffer.buffer ? new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength) : []));
     const mime = String(opts.mime || '').toLowerCase();
     const hint = appLang(toIso(opts.lang));
-    let body = buf, type = mime || 'audio/wav', duration = null, energy = null;
+    let body = buf, type = mime || 'audio/wav', duration = null, pcm = null, rate = 16000, channels = 1;
     const wav = parseWav(buf);
     if (wav && wav.bits === 16 && wav.format === 1) {
-      duration = wav.data.length / (wav.sampleRate * wav.channels * 2); energy = rms16(wav.data); type = 'audio/wav';
+      duration = wav.data.length / (wav.sampleRate * wav.channels * 2); type = 'audio/wav';
+      if (wav.channels === 1) { pcm = wav.data; rate = wav.sampleRate; } else channels = wav.channels;
     } else if (!wav && (!mime || /pcm|l16|raw|octet|x-int16/.test(mime))) {
-      const rate = opts.sampleRate || parseInt((mime.match(/rate=(\d+)/) || [])[1], 10) || 16000;
-      const pcm = buf.subarray(0, buf.length - (buf.length % 2));
-      duration = pcm.length / (rate * 2); energy = rms16(pcm); body = wavFromPcm16(pcm, rate, 1); type = 'audio/wav';
+      rate = opts.sampleRate || parseInt((mime.match(/rate=(\d+)/) || [])[1], 10) || 16000;
+      pcm = buf.subarray(0, buf.length - (buf.length % 2));
+      duration = pcm.length / (rate * 2); body = wavFromPcm16(pcm, rate, 1); type = 'audio/wav';
+    } else if (!wav && buf.length >= 64 && o.decode !== false) {
+      // v21: a recorder clip is decoded so it can be measured and raised like the live call's audio
+      const d = await decodeToPcm(buf, EXT(type), o);
+      if (d) { pcm = d; rate = 16000; duration = d.length / 32000; }
     }
     if ((duration != null && duration <= MIN_S) || buf.length < 64) { st.empty++; return { text: '', lang: hint, empty: 'short', duration }; }
-    if (energy != null && energy < SILENT) { st.empty++; return { text: '', lang: hint, empty: 'silence', duration }; }
+    const level = pcm ? frameStats(pcm, rate) : null;
+    // silence: nothing loud (the loud frames under -58 dBFS), or a quiet clip (under -45 dBFS) with under 60 ms of sound
+    // clearly above its own noise (a loud steady sound still goes to Whisper, as before v21)
+    if (level && (level.p95 < SILENT_DB || (level.speechFrames < 3 && level.p95 < -45))) { st.empty++; return { text: '', lang: hint, empty: 'silence', duration, level }; }
+    if (level) { // quiet speech, raised before Whisper hears it
+      const nz = normalize(pcm, level, TARGET_DB, MAX_GAIN);
+      level.gainDb = nz.gainDb;
+      if (nz.gainDb > 0 || type !== 'audio/wav') { body = wavFromPcm16(nz.pcm, rate, 1); type = 'audio/wav'; }
+    }
+    if (channels !== 1) { /* a stereo wav: sent as it came */ }
     if (!key()) { const e = new Error('no-key'); e.code = 'no-key'; throw e; }
     st.calls++;
     let last = null;
@@ -129,10 +195,12 @@ function createHear(o) {
       st.model = model; st.lastError = '';
       if (brain && brain.trackAudio) brain.trackAudio(model, dur || 0);
       const lang = appLang(toIso(j && j.language) || scriptLang(text) || hint);
-      if (!text) { st.empty++; if (cut) st.dropped++; return { text: '', lang, confidence, model, duration: dur, empty: cut ? 'filtered' : 'nothing' }; }
-      // the classic phantoms: dropped when Whisper doubts it was speech (whatever the loudness), or the clip is near-silent
-      if (!wanted && isHallucination(text) && ((noSpeech != null && noSpeech > 0.4) || (energy != null && energy < QUIET))) { st.dropped++; return { text: '', lang, confidence, model, duration: dur, empty: 'hallucination' }; }
-      return { text, lang, confidence, model, duration: dur };
+      if (!text) { st.empty++; if (cut) st.dropped++; return { text: '', lang, confidence, model, duration: dur, empty: cut ? 'filtered' : 'nothing', level }; }
+      // the classic phantoms ("Thank you.", "okay", "धन्यवाद"): dropped when Whisper doubts it was speech, or when the clip
+      // is both very quiet and barely above its noise (v21: a soft but clear "okay" is kept)
+      const faint = !!level && level.speechDb < QUIET_DB && level.snr < QUIET_SNR;
+      if (!wanted && isHallucination(text) && ((noSpeech != null && noSpeech > 0.4) || faint)) { st.dropped++; return { text: '', lang, confidence, model, duration: dur, empty: 'hallucination', level }; }
+      return { text, lang, confidence, model, duration: dur, level };
     }
     st.fails++; st.lastError = last ? last.message : 'whisper failed';
     log('hearing failed:', st.lastError);
@@ -142,4 +210,4 @@ function createHear(o) {
   return { hear, health };
 }
 
-module.exports = { createHear, parseWav, wavFromPcm16, rms16, isHallucination, expected, toIso, badSegment, MODELS };
+module.exports = { createHear, parseWav, wavFromPcm16, rms16, frameStats, normalize, decodeToPcm, isHallucination, expected, toIso, badSegment, MODELS };
