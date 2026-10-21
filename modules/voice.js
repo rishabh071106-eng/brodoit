@@ -63,7 +63,7 @@ const LIVE_DAILY = new Map(); // phone → { d: 'YYYY-MM-DD', n } live-call turn
 const PERSONAS = {
   bro: `You are Bro — the user's warm, sharp friend and guide, talking with them out loud like a real person: friendly, direct, zero corporate tone. Answer the actual question first, plainly and correctly; when they ask how or why or want guidance, explain clearly in natural spoken sentences. Keep small talk to a sentence or two, and fuller answers to about eight spoken sentences. Ask a question only when you genuinely need to. Never mention tools, apps or features.`,
   teacher: `You are Bro in teacher mode, the coach of Brodoit's two schools (Python: Zero to Hero, 60 days; and Languages: Spanish, French, German, Hindi, English). You are a patient, fun tutor who explains anything (science, money, coding, exams, life skills) in plain words with everyday Indian examples, one idea at a time, and checks understanding with a quick question after each idea. Speak slowly and clearly.`,
-  language: `You are Bro the language coach. The user is learning {{LANG}}. Run a spoken lesson: say a short phrase in {{LANG}}, give its meaning in the user's language, ask them to repeat it, listen, gently correct pronunciation or grammar, then praise and move on. Keep it playful and encouraging, like a Duolingo lesson spoken aloud. Use short turns.`,
+  language: `You are Bro the language coach. The user is learning {{LANG}}. Run a spoken lesson: say a short phrase in {{LANG}}, give its meaning in the user's language, ask them to repeat it, listen, gently correct pronunciation or grammar, then praise and move on. Keep it playful and encouraging, like a Duolingo lesson spoken aloud. Use short turns. Put every {{LANG}} phrase in a sentence of its own (so it is spoken with {{LANG}} pronunciation).`,
   news: `You are Bro the news anchor. Use the get_news tool first, then read the top headlines like a friendly radio bulletin in simple English (or Hindi/Hinglish if the user prefers), and offer to explain any story "like I'm 12". Never make up news — only use what the tool returns.`,
 };
 
@@ -105,6 +105,25 @@ function langRuleFor(lang) {
   return 'Language: this conversation is in English. Reply only in clear, natural Indian English, even when the user mixes in Hindi words.';
 }
 // the language Kokoro should speak a sentence in: the script decides first (Devanagari → hi), then the language heard
+// v21: in language practice, a sentence in the course language is spoken with that language's pronunciation (the same
+// Bro voice). courseLine(text, code) → true when the sentence is mostly the course language: its accents and marks plus
+// at least two of its everyday words, or more of its words than English ones.
+const COURSE_OF = { spanish: 'es', español: 'es', french: 'fr', français: 'fr', german: 'de', deutsch: 'de', hindi: 'hi', english: 'en' };
+const COURSE_WORDS = {
+  es: new Set('el la los las un una es está estás estoy soy eres son yo tú usted él ella nosotros hola adiós gracias por favor buenos buenas días tardes noches qué cómo dónde cuándo me te se llamo llamas muy bien mal sí y o de del con para mi tu su hay quiero tengo agua casa amigo amiga perdón lo siento mañana hoy aquí allí también pero'.split(' ')),
+  fr: new Set('le la les un une des est es suis sommes êtes sont je tu il elle nous vous ils bonjour bonsoir salut merci oui non avec pour très bien mal comment où quand quoi qui je m\'appelle appelle ça c\'est s\'il plaît au revoir de du et ou mais aussi ici voilà pardon excusez moi toi'.split(' ')),
+  de: new Set('der die das ein eine ist bin bist sind ich du er sie es wir ihr hallo guten tag morgen abend danke bitte ja nein und oder aber nicht wie wo wann was wer heiße heißt gut schlecht sehr auch mit für entschuldigung tschüss auf wiedersehen mein dein'.split(' ')),
+};
+const COURSE_MARKS = { es: /[ñáéíóú¿¡]/i, fr: /[éèêëàâçùûôîïœ]/i, de: /[äöüß]/i };
+const EN_WORDS = new Set('the a an is are am you your i my me we it this that to of in on and or but now say try again great good nice means word words repeat after listen like what how do does can'.split(' '));
+function courseLine(text, code) {
+  const W = COURSE_WORDS[code]; if (!W) return false;
+  const words = String(text || '').toLowerCase().normalize('NFC').replace(/[^\p{L}'\s]/gu, ' ').split(/\s+/).filter(Boolean);
+  if (!words.length) return false;
+  let hits = 0, eng = 0; for (const w of words) { if (W.has(w)) hits++; if (EN_WORDS.has(w)) eng++; }
+  if (COURSE_MARKS[code].test(text) && hits >= 2) return true;
+  return hits >= 2 && hits > eng;
+}
 function speechLang(text, heard, choice) {
   if (DEVANAGARI.test(text)) return 'hi';
   if (KANA.test(text)) return 'ja';
@@ -1336,7 +1355,8 @@ function install(app, deps) {
           await holdForUser(); if (!live()) return;
           T.sent++;
           const lock = S.persona !== 'language'; // language practice speaks the course language's lines in their own voice
-          const lang = item.lang || (lock ? (T.voiceLang || (T.voiceLang = S.lang)) : speechLang(s, S.lang, S.lang));
+          const cc = COURSE_OF[String(S.course || '').toLowerCase()] || '';
+          const lang = item.lang || (lock ? (T.voiceLang || (T.voiceLang = S.lang)) : (cc && cc !== S.lang && courseLine(s, cc) ? cc : speechLang(s, S.lang, S.lang)));
           if (!coreVoiceReady() && !STUB) { send({ t: 'say', text: s, turn: T.id, lang, noaudio: true }); said(s); continue; }
           send({ t: 'say', text: s, turn: T.id, lang });
           let echo = null;
@@ -1470,4 +1490,4 @@ function install(app, deps) {
   setImmediate(() => console.log('[voice] engines · core', coreReady() ? '✅' : (core() ? '❌ (no Groq key)' : '❌ (Bro Core not installed)'), '· emergency', emergency() ? 'ON (elevenlabs ' + (elevenKey() ? '✅' : '❌') + ' · realtime ' + (openaiKey() ? '✅' : '❌') + ')' : 'off', '· brain', hasLLM() ? '✅' : '❌ (paste a key in You → Admin)'));
 }
 
-module.exports = { install, PERSONAS, _test: { takeSentence, speechLang, speakable, pcmToWav, PHANTOM, intentOk, isConfirm, langAsk, sessionLang, normLang, liveDaily: LIVE_DAILY } };
+module.exports = { courseLine, install, PERSONAS, _test: { takeSentence, speechLang, speakable, pcmToWav, PHANTOM, intentOk, isConfirm, langAsk, sessionLang, normLang, liveDaily: LIVE_DAILY } };

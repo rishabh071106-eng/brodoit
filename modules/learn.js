@@ -22,6 +22,8 @@ const WARM_LESSONS = 2;
 function catalog(appRoot) {
   const out = new Map();
   const add = (voice, text, where, warm) => { text = String(text || '').trim(); if (!text || text.length > 900) return; const id = sid(voice, text); const had = out.get(id); if (!had) out.set(id, { id, voice, text, where, warm: !!warm }); else if (warm) had.warm = true; };
+  // v21: Bro's cheers in lessons ("Five in a row!"), in English and Hindi, recorded first with the warm lines
+  try { const C = JSON.parse(fs.readFileSync(path.join(appRoot, 'lang', 'data', 'cheers.json'), 'utf8')); for (const v of ['en', 'hi']) for (const t of Object.values(C[v] || {})) add(v, t, 'cheer', true); } catch (e) { /* no cheers */ }
   for (const code of ['es', 'fr', 'de', 'hi', 'en']) {
     try {
       const J = JSON.parse(fs.readFileSync(path.join(appRoot, 'lang', 'audio', code + '.json'), 'utf8'));
@@ -69,7 +71,8 @@ function install(app, deps) {
   db.exec(`CREATE TABLE IF NOT EXISTS learn_units(user_phone TEXT, course TEXT, unit TEXT, done INTEGER DEFAULT 0, best INTEGER DEFAULT 0, slide INTEGER DEFAULT 0, data TEXT, updated_at TEXT DEFAULT (datetime('now')), PRIMARY KEY(user_phone, course, unit));
     CREATE TABLE IF NOT EXISTS learn_stats(user_phone TEXT, course TEXT, xp INTEGER DEFAULT 0, updated_at TEXT DEFAULT (datetime('now')), PRIMARY KEY(user_phone, course));
     CREATE TABLE IF NOT EXISTS learn_events(id INTEGER PRIMARY KEY AUTOINCREMENT, user_phone TEXT, course TEXT, unit TEXT, kind TEXT, detail TEXT, created_at TEXT DEFAULT (datetime('now')));
-    CREATE INDEX IF NOT EXISTS idx_learn_events_user ON learn_events(user_phone, created_at);`);
+    CREATE INDEX IF NOT EXISTS idx_learn_events_user ON learn_events(user_phone, created_at);
+    CREATE TABLE IF NOT EXISTS learn_daily(user_phone TEXT, day TEXT, xp INTEGER DEFAULT 0, PRIMARY KEY(user_phone, day));`);
   const who = req => String(req.user && (req.user.phone || req.user.id) || '');
 
   // ── progress ──
@@ -94,6 +97,11 @@ function install(app, deps) {
       }
       const xp = Math.max(0, Math.min(1e6, parseInt(body.xp) || 0));
       q(`INSERT INTO learn_stats(user_phone,course,xp) VALUES(?,?,?) ON CONFLICT(user_phone,course) DO UPDATE SET xp=MAX(xp,excluded.xp), updated_at=datetime('now')`).run(phone, course, xp);
+      // v21: the XP of each day (the phone sends its last 14 days; never lowered), so a streak survives a new phone
+      const daily = body.daily && typeof body.daily === 'object' ? body.daily : {};
+      const putDay = q(`INSERT INTO learn_daily(user_phone,day,xp) VALUES(?,?,?) ON CONFLICT(user_phone,day) DO UPDATE SET xp=MAX(xp,excluded.xp)`);
+      const oldest = new Date(Date.now() - 40 * 864e5).toISOString().slice(0, 10), newest = new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10);
+      for (const [d, x] of Object.entries(daily).slice(0, 31)) if (/^\d{4}-\d{2}-\d{2}$/.test(d) && d >= oldest && d <= newest) putDay.run(phone, d, Math.max(0, Math.min(100000, parseInt(x) || 0)));
       const ev = Array.isArray(body.events) ? body.events.slice(0, 40) : [];
       const ins = q('INSERT INTO learn_events(user_phone,course,unit,kind,detail) VALUES(?,?,?,?,?)');
       for (const e of ev) if (e && typeof e.kind === 'string') ins.run(phone, course, String(body.unit || e.unit || '').slice(0, 24), e.kind.slice(0, 20), JSON.stringify(e).slice(0, 600));
@@ -101,9 +109,13 @@ function install(app, deps) {
     tx();
     q("DELETE FROM learn_events WHERE user_phone=? AND id NOT IN (SELECT id FROM learn_events WHERE user_phone=? ORDER BY id DESC LIMIT 600)").run(phone, phone);
   }
+  const dailyOf = phone => { const out = {}; for (const r of q("SELECT day, xp FROM learn_daily WHERE user_phone=? AND day >= ? ORDER BY day").all(phone, new Date(Date.now() - 60 * 864e5).toISOString().slice(0, 10))) out[r.day] = r.xp; return out; };
   app.get('/api/learn/progress', auth, (req, res) => {
-    const course = String(req.query.course || 'py'); if (!COURSES.has(course)) return res.status(400).json({ error: 'course' });
-    res.json({ course, units: units(who(req), course), xp: xpOf(who(req), course) });
+    const course = String(req.query.course || 'py');
+    // v21: ?course=lang → every language course at once, plus the daily XP of the last 60 days (a new phone restores it)
+    if (course === 'lang') { const courses = {}; for (const c of ['es', 'fr', 'de', 'hi', 'en']) courses[c] = { units: units(who(req), c), xp: xpOf(who(req), c) }; return res.json({ courses, daily: dailyOf(who(req)) }); }
+    if (!COURSES.has(course)) return res.status(400).json({ error: 'course' });
+    res.json({ course, units: units(who(req), course), xp: xpOf(who(req), course), daily: dailyOf(who(req)) });
   });
   app.post('/api/learn/progress', auth, (req, res) => {
     const course = String(req.body && req.body.course || 'py'); if (!COURSES.has(course)) return res.status(400).json({ error: 'course' });

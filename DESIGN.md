@@ -55,3 +55,17 @@ returns to the list. Learn is three hub buttons (Games, Coding, Languages) filli
 - Titles of one to three words. Subtitles of one line.
 - No exclamation marks, no emoji, no "Brilliant", "Awesome", "Superb". Say what happened: "Level 4 unlocked".
 - One primary action per screen. Secondary actions go in a sheet behind a single "More" button.
+
+## Celebration (v21: lessons and games only)
+The owner asked for learning that feels exciting. Inside a lesson or a game (the Languages Listen and Practice players,
+their end screens and course path, Mind rounds, Python levels) these are allowed on top of the rules above:
+- **Words:** Bro's spoken and written cheers may use one exclamation mark ("Five in a row!", "Lesson done!"). They come
+  from `lang/data/cheers.json` (recorded in Bro's voice), at most one every 5 correct answers.
+- **Motion:** one pop of at most 400 ms (the XP "+2", the combo chip, the stats strip), confetti when a lesson is done or
+  today's goal is reached, a gently pulsing "next" node on the course path, and the mascot's poses (speaking, listening,
+  celebrating). Reduced motion: no pops, no confetti, no pulse; the numbers still change.
+- **Colour:** the streak flame (orange), the goal ring (green) and XP (gold) are the only extra colours, on small chips.
+  The course path's next node and the Continue card may use the brand gradient.
+- **Sound and touch:** short game sounds (`app/sound.js`) with a mute button in the player, and haptics
+  (`app/haptics.js`).
+- Never on lists, settings or anything outside a lesson or game. Icons, not emoji, in the chrome.

@@ -10,12 +10,14 @@ export const today = (d = new Date()) => {
 };
 const dayBefore = iso => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() - 1); return today(d); };
 
+// a store from before v21 has no XP per course: every lesson it finished counted LESSON_XP
+const oldCourseXp = done => { const o = {}; for (const k of Object.keys(done || {})) { const c = k.split('/')[0]; o[c] = (o[c] || 0) + LESSON_XP; } return o; };
 function emptyStore() {
-  return { course: null, xp: 0, streak: 0, lastDay: null, daily: {}, done: {}, hearts: 3 };
+  return { course: null, xp: 0, streak: 0, lastDay: null, daily: {}, done: {}, hearts: 3, courseXp: {} };
 }
 export const store = {
   read() {
-    try { const raw = localStorage.getItem(STORE_KEY); return raw ? { ...emptyStore(), ...JSON.parse(raw) } : emptyStore(); }
+    try { const raw = localStorage.getItem(STORE_KEY); if (!raw) return emptyStore(); const j = JSON.parse(raw); if (!j.courseXp) j.courseXp = oldCourseXp(j.done); return { ...emptyStore(), ...j }; }
     catch { return emptyStore(); }
   },
   write(s) { try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch { /* private mode */ } },
@@ -32,31 +34,86 @@ export function computeStreak(daily) {
 
 export function isDone(key) { return !!store.read().done[key]; }
 
-// Marks a lesson done, adds XP, refreshes the streak and tells the host app.
-export function completeLesson(key, xp = LESSON_XP, extra = {}) {
+// v21: XP as you earn it (a speak-back, a combo, a lesson). Fires window 'lang-xp' with
+// { xp, total, today, goal, goalReached, streak, streakUp, course } and returns the same; the server hears about it a
+// moment later.
+const COURSE_CODES = ['es', 'fr', 'de', 'hi', 'en'];
+export function addXP(n, { course = '' } = {}) {
+  n = Math.max(0, Math.round(+n || 0));
+  let before = { today: 0, streak: 0 };
   const s = store.update(s => {
     const t = today();
-    s.done[key] = Date.now();
-    s.xp = (s.xp || 0) + xp;
-    s.daily[t] = (s.daily[t] || 0) + xp;
+    before = { today: s.daily[t] || 0, streak: computeStreak(s.daily) };
+    if (!n) return;
+    s.xp = (s.xp || 0) + n;
+    s.daily[t] = (s.daily[t] || 0) + n;
     s.lastDay = t;
+    if (COURSE_CODES.includes(course)) { s.courseXp = s.courseXp || {}; s.courseXp[course] = (s.courseXp[course] || 0) + n; }
     s.streak = computeStreak(s.daily);
   });
-  try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: 'brodoit-xp', xp }, '*'); } catch { /* no host */ }
-  syncLesson(key, s, extra);
-  return s;
+  const now = s.daily[today()] || 0;
+  const ev = { xp: n, total: s.xp || 0, today: now, goal: DAILY_GOAL, goalReached: before.today < DAILY_GOAL && now >= DAILY_GOAL, streak: s.streak, streakUp: s.streak > before.streak, course };
+  if (n) { try { window.dispatchEvent(new CustomEvent('lang-xp', { detail: ev })); } catch { /* no window */ } if (course) syncSoon(course); }
+  return ev;
+}
+// today's XP, the goal, the streak, a course's XP: what the stats strip shows
+export function stats(course = '') {
+  const s = store.read();
+  return { today: s.daily[today()] || 0, goal: DAILY_GOAL, streak: computeStreak(s.daily), total: s.xp || 0, course: (s.courseXp || {})[course] || 0 };
 }
 
-// Tell the server (modules/learn.js) so Bro knows how each language is growing. Fire-and-forget.
-function syncLesson(key, s, extra = {}) {
+// Marks a lesson done, adds XP, refreshes the streak and tells the host app. Returns the store plus the XP event (.ev).
+export function completeLesson(key, xp = LESSON_XP, extra = {}) {
+  const [course] = String(key).split('/');
+  store.update(s => { s.done[key] = Date.now(); });
+  const ev = addXP(xp, { course });
+  const s = store.read();
+  try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: 'brodoit-xp', xp }, '*'); } catch { /* no host */ }
+  syncLesson(key, s, extra);
+  return Object.assign(s, { ev });
+}
+
+// Tell the server (modules/learn.js) so Bro knows how each language is growing, and so another phone gets the same
+// progress, XP and streak back (pullProgress). Fire-and-forget.
+const lastDays = (daily, n) => { const out = {}; let d = today(); for (let i = 0; i < n; i++) { if (daily[d]) out[d] = daily[d]; d = dayBefore(d); } return out; };
+const courseXpOf = (s, course) => (s.courseXp || {})[course] || 0;
+function post(body) {
   try {
     const tok = localStorage.getItem('tf_token'); if (!tok) return;
-    const [course, unit] = String(key).split('/');
-    if (!['es', 'fr', 'de', 'hi', 'en'].includes(course) || !unit) return;
-    const xp = Object.keys(s.done).filter(k => k.startsWith(course + '/')).length * LESSON_XP;
-    fetch('/api/learn/progress', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'x-token': tok },
-      body: JSON.stringify({ course, unit, units: { [unit.slice(0, 24)]: { done: true, best: extra.accuracy == null ? 100 : extra.accuracy } }, xp, events: [{ kind: 'complete', unit, score: extra.accuracy, mistakes: extra.wrong || 0 }] }) }).catch(() => {});
+    fetch('/api/learn/progress', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'x-token': tok }, body: JSON.stringify(body) }).catch(() => {});
   } catch { /* offline */ }
+}
+function syncLesson(key, s, extra = {}) {
+  const [course, unit] = String(key).split('/');
+  if (!COURSE_CODES.includes(course) || !unit) return;
+  post({ course, unit, units: { [unit.slice(0, 24)]: { done: true, best: extra.accuracy == null ? 100 : extra.accuracy } }, xp: courseXpOf(s, course), daily: lastDays(s.daily, 14), events: [{ kind: 'complete', unit, score: extra.accuracy, mistakes: extra.wrong || 0 }] });
+}
+let syncT = 0;
+function syncSoon(course) { clearTimeout(syncT); syncT = setTimeout(() => { const s = store.read(); post({ course, units: {}, xp: courseXpOf(s, course), daily: lastDays(s.daily, 14) }); }, 4000); }
+
+// v21: progress from the server (a new phone, another browser): lessons done, each course's XP and the daily XP of the
+// last 60 days are merged in (never lowered), so the streak comes back too. At most once a minute.
+export async function pullProgress() {
+  let tok = ''; try { tok = localStorage.getItem('tf_token') || ''; } catch { tok = ''; }
+  if (!tok) return false;
+  try { const at = +sessionStorage.getItem('lang.pulled') || 0; if (Date.now() - at < 60e3) return false; sessionStorage.setItem('lang.pulled', String(Date.now())); } catch { /* ignore */ }
+  let j = null;
+  try { const r = await fetch('/api/learn/progress?course=lang', { headers: { 'x-token': tok } }); if (!r.ok) return false; j = await r.json(); } catch { return false; }
+  if (!j || typeof j !== 'object') return false;
+  let changed = false;
+  store.update(s => {
+    s.courseXp = s.courseXp || {};
+    for (const [c, v] of Object.entries(j.courses || {})) {
+      if (!COURSE_CODES.includes(c) || !v) continue;
+      for (const [u, x] of Object.entries(v.units || {})) if (x && x.done && !s.done[c + '/' + u]) { s.done[c + '/' + u] = Date.now(); changed = true; }
+      if ((+v.xp || 0) > (s.courseXp[c] || 0)) { s.courseXp[c] = +v.xp; changed = true; }
+    }
+    for (const [d, x] of Object.entries(j.daily || {})) if (/^\d{4}-\d{2}-\d{2}$/.test(d) && (+x || 0) > (s.daily[d] || 0)) { s.daily[d] = +x; changed = true; }
+    const sum = Object.values(s.courseXp).reduce((a, b) => a + (+b || 0), 0);
+    if (sum > (s.xp || 0)) s.xp = sum;
+    s.streak = computeStreak(s.daily);
+  });
+  return changed;
 }
 
 export function setCourse(code) { store.update(s => { s.course = code; }); }

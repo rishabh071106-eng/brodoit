@@ -20,3 +20,9 @@
 
 @keyframes lxIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#app .lx{animation:none}}
+
+/* v21: the Languages list's streak and today's XP (Celebration, DESIGN.md) */
+.lx-lang-strip{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 12px}
+.lx-ls{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:999px;font-weight:700;font-size:13px;color:var(--b-mute,#8A8496);background:color-mix(in srgb,currentColor 10%,transparent);min-height:32px}
+.lx-ls.on{color:#F07A1A}.lx-ls.goal{color:#2F9D63}
+.lx-ls b{font-variant-numeric:tabular-nums}
