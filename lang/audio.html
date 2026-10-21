@@ -8,12 +8,13 @@
 <meta name="theme-color" content="#141311">
 <link rel="icon" type="image/png" href="/icon-192.png">
 <link rel="stylesheet" href="/app/theme.css?v=21">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=17">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=18">
 <link rel="stylesheet" href="/lang/assets/topbar.css?v=16">
 <link rel="stylesheet" href="/app/ui.css?v=23">
 <script src="/app/icons.js?v=16" defer></script>
 <script src="/lang/assets/topbar.js?v=17" defer></script>
 <script src="/app/micgain.js?v=1" defer></script>
+<script src="/app/sound.js" defer></script><script src="/app/haptics.js" defer></script><script src="/app/mascot.js" defer></script>
 <style>
   /* The player is always dark (html[data-theme=dark]); --p-* are its stage-specific tints on top of the v10 tokens. */
   :root{--p-bg:#141311;--p-bg2:#1D1B18;--p-ink:#F3F0EA;--p-mute:rgba(243,240,234,.62);--p-line:rgba(255,255,255,.1)}
@@ -83,7 +84,8 @@
   .end{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(120% 70% at 50% 0%,#3A231C 0%,var(--p-bg) 60%)}
   .end.on{display:flex}
   .end .in{max-width:380px;width:100%;animation:b-pop .5s both}
-  .end .e{font-size:84px;line-height:1;animation:bob 1.6s ease-in-out infinite}
+  .end .e{font-size:84px;line-height:1;animation:lxFloat 1.6s ease-in-out infinite}.end .e svg{display:block;margin:0 auto}
+  @media (prefers-reduced-motion:reduce){.end .e{animation:none}}
   .end h1{font-size:32px;font-weight:800;letter-spacing:-.04em;margin-top:10px}
   .end p{color:var(--p-mute);font-weight:600;margin-top:6px}
   .end .tiles{margin:24px auto}
@@ -99,8 +101,9 @@
     <div class="bd-right"></div>
   </div></header>
   <div class="bd-note" id="voiceNote" hidden><i></i><span id="voiceNoteT"></span></div>
-  <div class="prog"><div class="bar"><i id="bar"></i></div><div class="m"><span id="stepN">—</span><span class="src" id="src"></span><span id="eta">—</span></div></div>
+  <div class="prog"><div class="bar"><i id="bar"></i></div><div class="m"><span id="stepN">—</span><span class="lx-combo" id="combo" hidden></span><span class="src" id="src"></span><span id="eta">—</span></div></div>
   <div class="stage" id="stage">
+    <div class="lx-stage" id="bro" aria-hidden="true"></div>
     <div class="cap idle" id="cap"><div class="who"><i></i><span id="who">Brodoit</span></div><div class="line" id="line">…</div><div class="tl" id="tl"></div><div class="hint" id="hint"></div></div>
   </div>
   <div>
@@ -114,14 +117,16 @@
 </div>
 <div class="flash" id="flash"></div>
 <div class="end" id="end"><div class="in">
-  <div class="e">🎧</div><h1 id="endT">Lesson complete</h1><p id="endS"></p>
-  <div class="tiles"><div class="tile xp"><b>+50</b><span>XP</span></div><div class="tile acc"><b id="endSteps">0</b><span>steps</span></div><div class="tile time"><b id="endMin">0</b><span>min</span></div></div>
+  <div class="e" id="endArt" aria-hidden="true">🎧</div><h1 id="endT">Lesson complete</h1><p id="endS"></p>
+  <div class="end-tiles" id="endTiles"></div><div class="end-badges" id="endBadges"></div>
   <a class="b-btn wide" id="nextBtn" href="#" style="display:none">Next lesson →</a>
+  <a class="lx-talk" id="talkBtn" href="#" style="color:#fff">Talk to Bro</a>
   <a class="b-btn ghost wide" id="backBtn" href="/lang/" style="background:rgba(255,255,255,.08);color:#fff;box-shadow:none">Back to course</a>
 </div></div>
 
 <script type="module">
-import { loadCourses, loadAudioCourse, store, esc, t, param, ICON, speak, stopSpeaking, sleep, hearPhrase, prefetch, releaseMic, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, voicesLoaded } from '/lang/assets/lang.js?v=14';
+import { loadCourses, loadAudioCourse, store, esc, t, param, ICON, speak, stopSpeaking, sleep, hearPhrase, prefetch, releaseMic, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, voicesLoaded, addXP } from '/lang/assets/lang.js?v=15';
+import { mountStats, xpPop, combo as comboChip, sfx, buzz, cheer, mascotStage, celebrate, muteButton } from '/lang/assets/fun.js?v=1';
 import { ic } from '/lang/assets/ico.js?v=15';
 
 const $ = id => document.getElementById(id);
@@ -163,6 +168,14 @@ if (!lesson) {
   if (idx >= steps.length - 2) idx = 0;
   let playing = false, ctrl = null, gen = 0, speed = +(localStorage.getItem('lang.speed') || 1) || 1, captions = localStorage.getItem('lang.captions') !== 'off', startedAt = 0, finished = false;
   let checking = '', passed = 0, tries = 0;
+  // v21 rewards: XP per speak-back (+2 on the first try, +1 after a retry), a combo of first tries (+5 and a cheer from
+  // Bro every 5), +20 for finishing; what the end screen sums up
+  let combo = 0, firstTry = 0, backs = 0, gained = 0, streakUp = false, goalHit = false;
+  const course = code;
+  const earn = (n, el) => { const ev = addXP(n, { course }); gained += n; if (ev.streakUp) streakUp = true; if (ev.goalReached) { goalHit = true; celebrate(); cheer('goal', lang); } xpPop(el || stage, n); return ev; };
+  const bro = mascotStage($('bro'));
+  mountStats(document.querySelector('.bd-right'), code, lang);
+  document.querySelector('.bd-right')?.appendChild(muteButton(lang));
   const setSpeed = v => { speed = v; try { localStorage.setItem('lang.speed', v); } catch {} $('speeds').querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.s === v)); };
   $('speeds').onclick = e => { const b = e.target.closest('button[data-s]'); if (b) setSpeed(+b.dataset.s); };
   setSpeed(speed);
@@ -240,19 +253,29 @@ if (!lesson) {
     const ui = showPause(step.p, expect);
     while (!signal.aborted) {
       setSay(ui, esc(t(lang, 'yourTurn')));
-      ui.mic.classList.add('live'); ui.ring.classList.add('listen');
+      ui.mic.classList.add('live'); ui.ring.classList.add('listen'); bro.set('listening');
       const r = await hearPhrase(expect, targLang, { signal, onInterim: txt => { if (txt) ui.heardl.textContent = txt; }, onState: st => { if (st === 'speaking') ui.mic.classList.add('hot'); if (st === 'checking') setSay(ui, esc(t(lang, 'checking'))); } });
       ui.mic.classList.remove('live', 'hot'); ui.ring.classList.remove('listen');
       if (signal.aborted) return;
       tries++;
-      if (r.ok) { checking = ''; passed++; setSay(ui, `${ic('check-circle', 18)} ${esc(t(lang, 'yes'))}`, 'ok'); if (r.heard) ui.heardl.textContent = r.heard; flashOk(); await sleep(650, signal); return; }
+      if (r.ok) {
+        checking = ''; passed++; backs++;
+        setSay(ui, `${ic('check-circle', 18)} ${esc(t(lang, 'yes'))}`, 'ok'); if (r.heard) ui.heardl.textContent = r.heard; flashOk();
+        sfx('correct'); buzz('success'); bro.set('celebrating');
+        const first = tries === 1;
+        if (first) { firstTry++; combo++; } else combo = 0;
+        comboChip($('combo'), combo, lang);
+        earn(first ? 2 : 1, ui.ring);
+        if (first && combo % 5 === 0) { setTimeout(() => earn(5, ui.ring), 350); sfx('combo'); await cheer(combo % 10 === 0 ? 'ten' : 'five', lang); }
+        await sleep(650, signal); bro.set('idle'); return;
+      }
       if (r.error) { setSay(ui, `${ic('mic-off', 18)} ${esc(t(lang, r.error === 'mic' ? 'micBlocked' : 'tryMic'))}`, 'again'); await tapMic(ui, signal); continue; }
       if (!r.heard) {
         silent++; setSay(ui, `${ic('ear', 18)} ${esc(t(lang, silent >= 2 ? 'tryMic' : 'didntHear'))}`, 'again');
         if (silent >= 2) { silent = 0; await tapMic(ui, signal); } else await sleep(700, signal);
         continue;
       }
-      wrong++;
+      wrong++; combo = 0; comboChip($('combo'), 0, lang); sfx('wrong'); buzz('error');
       ui.heardl.textContent = `${t(lang, 'youSaid')}: “${r.heard}”`;
       setSay(ui, `${ic('ear', 18)} ${esc(t(lang, 'tryAgain'))}`, 'again'); haptic([20, 40, 20]);
       await sleep(900, signal); if (signal.aborted) return;
@@ -274,7 +297,10 @@ if (!lesson) {
     showCaption(step);
     const [text, vl] = voiceOf(step);
     const at = idx;
-    return speak(text, { lang: vl, rate: speed, slow: !!(step.t != null && step.slow), signal, onStart: () => ahead(at + 1) });
+    bro.set('speaking');
+    const r = await speak(text, { lang: vl, rate: speed, slow: !!(step.t != null && step.slow), signal, onStart: () => ahead(at + 1) });
+    bro.set('idle');
+    return r;
   }
   // v21: the next two lines are fetched once this one is playing (the line you are on is always asked for first)
   const ahead = i => { for (let j = i; j < Math.min(steps.length, i + 2); j++) { const s = steps[j]; if (s && s.p == null) { const [text, vl] = voiceOf(s); prefetch(text, vl); } else { const e = expectFor(j); if (e) prefetch(e, targLang); } } };
@@ -345,17 +371,27 @@ if (!lesson) {
     if (finished) return;
     finished = true; playing = false; gen++; stopSpeaking(); releaseMic(); setPlayBtn(); setMediaState('none'); awake(false);
     const already = !!store.read().done[key];
-    if (!already) completeLesson(key, LESSON_XP);
-    $('endSteps').textContent = steps.length; $('endMin').textContent = Math.max(1, Math.round((Date.now() - startedAt) / 60000)) || (lesson.minutes || 15);
+    if (!already) { const done = completeLesson(key, 20); gained += 20; if (done.ev.streakUp) streakUp = true; if (done.ev.goalReached) goalHit = true; }
+    // v21: what this lesson really earned, and how you did
+    const min = Math.max(1, Math.round((Date.now() - startedAt) / 60000));
+    const H = lang === 'hi';
+    $('endTiles').innerHTML = `<div class="end-tile xp"><b>+${gained}</b><span>XP</span></div>`
+      + `<div class="end-tile ok"><b>${firstTry}/${backs || 0}</b><span>${H ? 'पहली बार में सही' : 'said right first time'}</span></div>`
+      + `<div class="end-tile fire"><b>${store.read().streak || 1}</b><span>${H ? 'दिन की स्ट्रीक' : 'day streak'}</span></div>`
+      + `<div class="end-tile"><b>${min}</b><span>${t(lang, 'min')}</span></div>`;
+    $('endBadges').innerHTML = [streakUp ? `<span class="end-badge fire">${H ? 'स्ट्रीक +1' : 'Streak +1'}</span>` : '', goalHit ? `<span class="end-badge">${H ? 'आज का लक्ष्य पूरा' : "Today's goal reached"}</span>` : ''].join('');
     const next = lessons[li + 1];
     if (next) { $('nextBtn').style.display = ''; $('nextBtn').href = `/lang/audio.html?c=${code}&l=${encodeURIComponent(next.id)}`; $('nextBtn').textContent = `${t(lang, 'next')} →`; }
+    $('talkBtn').href = `/?tab=bro&persona=language&course=${code}`;
+    $('talkBtn').textContent = H ? `Bro से ${meta.name} में बात करो` : `Talk to Bro in ${meta.name}`;
+    if (window.mascot) $('endArt').innerHTML = window.mascot('celebrating', 112, { color: '#F4EFE6' }); // v21: Bro celebrates with you
     $('end').classList.add('on');
-    confetti();
+    celebrate(); cheer('done', lang);
     try { localStorage.removeItem(POS); sessionStorage.removeItem(POS); } catch {}
   }
 
   renderProgress(); showIdle();
-  window.__langPlayer = { play, pause, repeat, stopForNow, expectFor, get idx() { return idx; }, set idx(v) { idx = v; renderProgress(); }, get playing() { return playing; }, get checking() { return checking; }, get passed() { return passed; }, get tries() { return tries; }, get steps() { return steps; }, finish };
+  window.__langPlayer = { get gained() { return gained; }, get combo() { return combo; }, get firstTry() { return firstTry; }, play, pause, repeat, stopForNow, expectFor, get idx() { return idx; }, set idx(v) { idx = v; renderProgress(); }, get playing() { return playing; }, get checking() { return checking; }, get passed() { return passed; }, get tries() { return tries; }, get steps() { return steps; }, finish };
 }
 </script>
 </body>

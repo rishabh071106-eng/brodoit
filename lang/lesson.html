@@ -9,12 +9,13 @@
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
 <link rel="stylesheet" href="/app/theme.css?v=21">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=17">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=18">
 <link rel="stylesheet" href="/lang/assets/topbar.css?v=16">
 <link rel="stylesheet" href="/app/ui.css?v=23">
 <script src="/app/icons.js?v=16" defer></script>
 <script src="/lang/assets/topbar.js?v=17" defer></script>
 <script src="/app/micgain.js?v=1" defer></script>
+<script src="/app/sound.js" defer></script><script src="/app/haptics.js" defer></script><script src="/app/mascot.js" defer></script>
 </head>
 <body>
 <div class="runner" id="runner">
@@ -27,7 +28,8 @@
 </div></div>
 
 <script type="module">
-import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, hearPhrase, releaseMic, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=14';
+import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, hearPhrase, releaseMic, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML, addXP } from '/lang/assets/lang.js?v=15';
+import { xpPop, sfx, buzz, cheer, celebrate } from '/lang/assets/fun.js?v=1';
 import { ic } from '/lang/assets/ico.js?v=15';
 
 const $ = id => document.getElementById(id);
@@ -57,6 +59,7 @@ if (!lesson) {
   const key = `${code}/${lesson.id}`;
   const t0 = Date.now();
   let queue = lesson.items.map((it, i) => ({ it, id: i })), pos = 0, hearts = 3, right = 0, wrong = 0, cur = null, resultShown = false;
+  let gained = 0, streakUp = false, goalHit = false; // v21: what this lesson earned (shown on the end screen)
   const scored = () => queue.filter(q => q.it.t !== 'learn').length;
 
   const sayTarget = (text, slow = false, btn) => { btn?.classList.add('busy'); stopSpeaking(); speak(text, { lang: voice, slow }).finally(() => btn?.classList.remove('busy')); };
@@ -228,9 +231,19 @@ if (!lesson) {
     $('rT').textContent = ok ? (res.skip ? t(lang, 'continue') : t(lang, 'correct')) : t(lang, 'wrong');
     $('rS').innerHTML = ok ? (res.correct && res.skip ? esc(res.correct) : (res.mistakes ? `${res.mistakes} ${lang === 'hi' ? 'गलत कोशिशें' : 'wrong tries'}` : '')) : `${t(lang, 'answer')}:<b>${esc(res.correct)}</b>`;
     checkBtn.className = 'check' + (ok ? '' : ' red'); checkBtn.textContent = t(lang, 'continue'); setCheck(true);
-    if (ok) { haptic(12); if (!res.skip) { right++; combo++; fx(true); if (!res.mistakes) sayTargetIfAny(cur.it); } }
+    if (ok) {
+      haptic(12);
+      if (!res.skip) {
+        right++; combo++; fx(true); sfx('correct'); buzz('success');
+        // v21: +2 XP for a right answer (+1 after a wrong try), +5 and a cheer from Bro every 5 in a row
+        const ev = addXP(res.mistakes ? 1 : 2, { course: code }); gained += res.mistakes ? 1 : 2; if (ev.streakUp) streakUp = true; if (ev.goalReached) { goalHit = true; celebrate(); }
+        xpPop($('rT'), res.mistakes ? 1 : 2);
+        if (combo % 5 === 0) { const e2 = addXP(5, { course: code }); gained += 5; if (e2.goalReached) goalHit = true; sfx('combo'); cheer(combo % 10 === 0 ? 'ten' : 'five', lang); }
+        else if (!res.mistakes) sayTargetIfAny(cur.it);
+      }
+    }
     else {
-      wrong++; combo = 0; fx(false); hearts = Math.max(0, hearts - 1); renderHearts(); haptic([30, 40, 30]);
+      wrong++; combo = 0; fx(false); sfx('wrong'); buzz('error'); hearts = Math.max(0, hearts - 1); renderHearts(); haptic([30, 40, 30]);
       $('hearts').classList.remove('shake'); void $('hearts').offsetWidth; $('hearts').classList.add('shake');
       queue.push({ it: cur.it, id: cur.id, retry: true });
       if (!hearts) setTimeout(heartsOut, 600);
@@ -266,21 +279,24 @@ if (!lesson) {
   function complete() {
     const secs = Math.round((Date.now() - t0) / 1000);
     const acc = right + wrong ? Math.round((right / (right + wrong)) * 100) : 100;
-    const xp = LESSON_XP + (wrong === 0 ? 10 : 0);
-    completeLesson(key, xp, { accuracy: acc, wrong });
+    const xp = 20 + (wrong === 0 ? 10 : 0); // v21: plus what each answer earned on the way
+    const unitWasDone = unit.lessons.every(l => l.id === lesson.id || store.read().done[`${code}/${l.id}`]);
+    const fin = completeLesson(key, xp, { accuracy: acc, wrong }); gained += xp; if (fin.ev.streakUp) streakUp = true; if (fin.ev.goalReached) goalHit = true;
     foot.style.display = 'none';
     const idx = unit.lessons.findIndex(l => l.id === lesson.id);
     const nextL = unit.lessons[idx + 1] || null;
     const nextU = !nextL && course.units[course.units.indexOf(unit) + 1];
     const nextHref = nextL ? `/lang/lesson.html?c=${code}&u=${unit.id}&l=${nextL.id}` : nextU ? `/lang/lesson.html?c=${code}&u=${nextU.id}&l=${nextU.lessons[0].id}` : null;
     document.getElementById('runner').innerHTML = `<div class="done-screen">
-      <div class="e">${wrong === 0 ? '🏆' : '🎉'}</div><h1>${t(lang, 'lessonDone')}</h1><p>${esc(unit.title)} · ${esc(lesson.title)}</p>
-      <div class="tiles"><div class="tile xp"><b>+${xp}</b><span>${t(lang, 'xp')}</span></div><div class="tile acc"><b>${acc}%</b><span>${t(lang, 'accuracy')}</span></div><div class="tile time"><b>${fmtTime(secs)}</b><span>${t(lang, 'time')}</span></div></div>
-      <div style="width:100%;max-width:400px;display:grid;gap:10px;margin-top:24px">
+      <div class="e" aria-hidden="true">${window.mascot ? window.mascot('celebrating', 112) : wrong === 0 ? '🏆' : '🎉'}</div><h1>${t(lang, 'lessonDone')}</h1><p>${esc(unit.title)} · ${esc(lesson.title)}</p>
+      <div class="end-tiles"><div class="end-tile xp"><b>+${gained}</b><span>${t(lang, 'xp')}</span></div><div class="end-tile ok"><b>${right}/${right + wrong}</b><span>${lang === 'hi' ? 'सही' : 'right'}</span></div><div class="end-tile fire"><b>${store.read().streak || 1}</b><span>${t(lang, 'streak')}</span></div><div class="end-tile"><b>${fmtTime(secs)}</b><span>${t(lang, 'time')}</span></div></div>
+      <div class="end-badges">${streakUp ? `<span class="end-badge fire">${lang === 'hi' ? 'स्ट्रीक +1' : 'Streak +1'}</span>` : ''}${goalHit ? `<span class="end-badge">${lang === 'hi' ? 'आज का लक्ष्य पूरा' : "Today's goal reached"}</span>` : ''}${unitWasDone ? `<span class="end-badge">${lang === 'hi' ? 'यूनिट पूरी' : 'Unit complete'}</span>` : ''}${wrong === 0 ? `<span class="end-badge">${lang === 'hi' ? 'एकदम सही' : 'Perfect'}</span>` : ''}</div>
+      <div style="width:100%;max-width:400px;display:grid;gap:10px;margin-top:18px">
         ${nextHref ? `<a class="b-btn wide" href="${nextHref}">${t(lang, 'next')} →</a>` : ''}
+        <a class="lx-talk" href="/?tab=bro&persona=language&course=${code}">${lang === 'hi' ? `Bro से ${esc(meta.name)} में बात करो` : `Talk to Bro in ${esc(meta.name)}`}</a>
         <a class="b-btn ghost wide" href="/lang/course.html?c=${code}#practice">${t(lang, 'back')}</a>
         <a class="skip-link" href="${location.pathname}${location.search}">${t(lang, 'again')}</a></div></div>`;
-    confetti();
+    celebrate(); cheer('done', lang);
   }
 
   addEventListener('pagehide', () => { stopSpeaking(); releaseMic(); });

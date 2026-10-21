@@ -88,12 +88,14 @@
     if (!tab || !S || typeof window.render !== 'function') return;
     var t = tab === 'learn' ? 'courses' : tab === 'you' ? 'profile' : tab, hub = p.get('hub');
     var same = S.tab === t && (t !== 'courses' || (S.learnHub || null) === (hub || null));
-    if (same) return;
+    if (same && !p.get('persona')) return;
     if (typeof window.switchTab === 'function' && S.tab !== t) { try { window.switchTab(t); } catch (e) { S.tab = t; } } else S.tab = t; // switchTab renders
     if (t === 'courses') {
       if (hub && ['games', 'coding', 'languages'].indexOf(hub) >= 0) { S.learnHub = hub; try { history.pushState({ learn: 1, hub: hub }, '', '/?tab=learn&hub=' + hub); } catch (e) { /* ignore */ } }
       else S.learnHub = null;
     }
+    // "Talk to Bro in Spanish" (Languages): Bro's language-practice mode for that course
+    if (t === 'bro' && p.get('persona') && window.BroVoice) { try { if (p.get('course')) window.BroVoice.setCourse(p.get('course')); window.BroVoice.setPersona(p.get('persona')); } catch (e) { /* ignore */ } }
     try { window.render(); window.scrollTo(0, 0); } catch (e) { /* ignore */ }
   }
   F.route = route;
