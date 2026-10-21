@@ -168,3 +168,6 @@ html body{font-family:var(--ui-font);word-spacing:.08em;font-kerning:normal;font
 :root[data-theme="dark"] .ui-hub-art,html[data-theme="dark"] .ui-hub-art,body[data-theme=aurora] .ui-hub-art{color:color-mix(in srgb,var(--hub-accent) 55%,#fff);opacity:.07}
 :is(#app,html) :is(:root[data-theme="dark"] .ui-hub,html[data-theme="dark"] .ui-hub,body[data-theme=aurora] .ui-hub):active{filter:brightness(.9)}
 @media (prefers-reduced-motion:reduce){:is(#app,html) .ui-hub,:is(#app,html) .ui-hub:active{transition:none!important}:is(#app,html) .ui-hub:active{transform:none!important}}
+
+/* v21 one app: a page change inside the mini-apps (course → lesson) cross-fades instead of flashing white */
+@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }

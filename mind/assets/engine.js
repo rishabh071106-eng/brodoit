@@ -38,6 +38,8 @@ const split = t => { const i = String(t).indexOf('. '); return i < 0 ? [String(t
 const PAUSE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.3"/><rect x="14" y="5" width="4" height="14" rx="1.3"/></svg>';
 // where a workout ends (and where quitting one goes): the app's Learn → Games list
 const HUB = '/?tab=learn&hub=games';
+// v21: inside Brodoit's layer an exit to the app closes the layer (app/inframe.js); on its own the page replaces itself
+const go = url => (window.bdGo ? window.bdGo(url, { replace: true }) : location.replace(url));
 const href = (g, l, w) => `/mind/play.html?g=${g}&l=${l}${w ? '&w=1' : ''}`;
 
 export function play({ mod, level, workout: inWorkout, games }) {
@@ -232,7 +234,7 @@ export function play({ mod, level, workout: inWorkout, games }) {
       const a = e.target.closest('[data-nav]'); if (!a) return;
       sfx('tap'); buzz('light');
       // replace, not push: system back from the next screen must never restart a finished round
-      if (a.href && !e.metaKey && !e.ctrlKey) { e.preventDefault(); location.replace(a.href); }
+      if (a.href && !e.metaKey && !e.ctrlKey && !e.defaultPrevented) { e.preventDefault(); go(a.href); }
     });
   }
 
@@ -307,8 +309,8 @@ export function play({ mod, level, workout: inWorkout, games }) {
       const b = e.target.closest('[data-a]'); if (!b) return;
       const a = b.dataset.a;
       if (a === 'resume') closePause();
-      else if (a === 'restart') location.replace(href(meta.id, level, inWorkout));
-      else if (a === 'quit') location.replace(inWorkout ? HUB : `/mind/game.html?g=${meta.id}`);
+      else if (a === 'restart') go(href(meta.id, level, inWorkout));
+      else if (a === 'quit') go(inWorkout ? HUB : `/mind/game.html?g=${meta.id}`);
       else if (a === 'sound') {
         let m = false;
         try { window.Sfx.setMuted(!window.Sfx.muted()); m = window.Sfx.muted(); } catch (e2) { /* ignore */ }
@@ -325,6 +327,9 @@ export function play({ mod, level, workout: inWorkout, games }) {
     ov.innerHTML = ''; setPhase('play'); sfx('tap'); buzz('light'); kick();
   }
   app.querySelector('#pauseBtn').addEventListener('click', () => (paused ? closePause() : openPause()));
+  // v21: inside Brodoit's layer the phone's back during a round pauses it (Quit is one tap away); on the results the
+  // layer's own back applies
+  window.bdBackHandler = () => { if (phase === 'play' || phase === 'countdown') { openPause(); return true; } if (phase === 'paused') { closePause(); return true; } return false; };
   let pauseOnPlay = false;
   document.addEventListener('visibilitychange', () => { if (!document.hidden) return; if (phase === 'play') openPause(); else if (phase === 'countdown') pauseOnPlay = true; });
   addEventListener('keydown', e => {

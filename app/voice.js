@@ -224,7 +224,7 @@
   V.hangUp = function () { if (V.engine === 'core' && (isLive() || V.ws)) V.endCore(); else V.stop(); };
   V.stop = function (silent) {
     if (V.engine === 'core' || V.ws) V.coreCleanup(true);
-    if (V.pendingOpen) { const u = V.pendingOpen; V.pendingOpen = null; setTimeout(() => { location.href = u; }, 400); } // a lesson or screen Bro opened on the call
+    if (V.pendingOpen) { const u = V.pendingOpen; V.pendingOpen = null; setTimeout(() => { if (window.BroFrame) BroFrame.go(u); else location.href = u; }, 400); } // a lesson or screen Bro opened on the call
     try { if (V.conv) { const c = V.conv; V.conv = null; c.endSession().catch(() => {}); } } catch (e) {} V.conv = null;
     try { if (V.dc) V.dc.close(); } catch (e) {}
     try { if (V.pc) V.pc.close(); } catch (e) {}
@@ -836,7 +836,7 @@ registerProcessor('bro-mic', BroMic);`;
       if (m && typeof switchTab === 'function') { setTimeout(() => switchTab(m[1] === 'you' ? 'profile' : m[1]), 300); return; }
       // leaving the app would end a call: it opens when the call ends
       if (coreLive()) { V.pendingOpen = result.open; toast(V.lang === 'hi' ? 'कॉल खत्म होते ही खुलेगा' : 'Opens when the call ends'); return; }
-      setTimeout(() => { location.href = result.open; }, 900); return;
+      setTimeout(() => { if (window.BroFrame) BroFrame.go(result.open); else location.href = result.open; }, 900); return;
     }
     if (name === 'create_task' || name === 'complete_task') { toast(name === 'create_task' ? '✅ Task added: ' + (input.title || '') : '🎉 Done: ' + (input.title || '')); refreshTasks(); }
     if (name === 'set_reminder') toast('⏰ Reminder set' + (input.time ? ' for ' + input.time : ''));
