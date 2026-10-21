@@ -261,6 +261,23 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
     - The floor is the 20th percentile of what was heard, frozen once speech starts. Speech is > max(0.0025, floor × 2).
     - A quieter voice heard for 300 ms is sent anyway and the server decides.
     - The phone's recogniser returning "no-speech" falls back to the recorder (`via: 'rescue'`). After two rescues, localStorage `lang.hear = 'rec'` skips the recogniser.
+- **v21 One app + speed** (games and lessons felt like another site):
+  - **The layer** (`app/frame.js`, loaded first in the SPA head): `BroFrame.open(url)` shows `/lang`, `/mind` or `/code` pages in a full-screen same-origin iframe (`allow="microphone; autoplay; fullscreen; screen-wake-lock"`).
+    - It adds one history entry (`?frame=<page>`, so reloads, deep links and notifications reopen it). Every `<a>` to a mini-app opens there, and so do `BroFrame.go(url)` (Bro's open actions, the Python row) and `?frame=`.
+    - The phone's back asks the page's `bdFrameBack()` first, then closes the layer.
+    - Messages: `bd-close {url}` closes and routes in the app (`route()`: tab + Learn hub); `brodoit-xp {xp}` shows "+N XP".
+    - If the SPA ever loads inside the layer it closes it (safety net). `localStorage bd.frame = 'off'` turns it off.
+  - **Inside** (`app/inframe.js`, first script in every mini-app page): `bdFramed` and `bdGo(url, {replace})`. Inside the layer, mini-app pages replace each other and app URLs post `bd-close`. Links are caught in the capture phase.
+    - `bdFrameBack()` follows `.bd-back` / `.ui-back` when it leads to another mini-app page. `window.bdBackHandler` overrides it (the Mind engine pauses a round).
+    - `topbar.js` skips its back guard inside the layer. `@view-transition` is in `app/ui.css`.
+  - **The page:** `window._DQ` holds `{q, a}` only (~40 KB). Today's story comes from `GET /api/quotes/:n` (`_dqStory()`, prefetched after 4 s).
+    - `/` is built once and compressed once (brotli/gzip). It is sent `private, no-cache` with an ETag per encoding (304s).
+    - The `pending_otp_email` cookie still gets an uncached page.
+  - **Assets** (`modules/compress.js` `staticText`): brotli/gzip for js/css/html/json/svg under `/app /lang /mind /code`, in a 48 MB in-memory LRU keyed by size + mtime. `no-cache` + an ETag per encoding. `..` paths are refused.
+  - **Service worker:** `CACHE_VER = v183-<commit>`, so a deploy drops old caches.
+    - Install precaches `/`. Navigations are network-first with the cached copy offline (`/` and mini-app pages).
+    - `/app /lang /mind /code` and icons are served stale-while-revalidate.
+    - Never `/api/`, Range requests or no-store responses.
 - **News** (`app/news.js`): cards only (desk stories), section chips, "Listen" plays recorded headline clips back to back. `modules/newsvoice.js` records after every desk batch through ElevenLabs only (`NEWS_VOICE_PROVIDER=any` opens the chain): headlines for every story in the feed + `NEWS_VOICE_FULL` (default 10) full read-outs a day per language; files in `MEDIA_DIR/news-voice`, served by `/api/news/voice/<id>-<lang>-<h|s>.mp3`. Nothing is rendered on tap. The long spoken bulletin is opt-in (`BULLETIN_AUDIO=1`). News is a bottom tab; You moved to the header avatar.
 - **ElevenLabs brain** (`modules/elevenbrain.js`): a private text-only ElevenLabs agent used as the LLM when Gemini has no key, is out of credit (402 → skipped for an hour via `global._geminiDownUntil`) or fails — `_callGemini` falls back to it, so Bro chat, Explain, the coach and the news desk keep working on ElevenLabs credits. Bro chat no longer runs a second "verify" pass.
 - **ElevenLabs budget** (modules/elevenvoice.js `RESERVE`): bulk (static recordings) may use the first 70% of the month, daily (news, first plays) stops at 15% left, live Bro uses the rest. Admin auto-record order: learn-audio → lang-audio → hindi-books.

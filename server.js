@@ -2715,6 +2715,7 @@ for(const t of due){
 
 // ═══ FRONTEND ═══
 const HTML=`<!DOCTYPE html><html lang="en"><head>
+<script src="/app/frame.js?v=1"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZYGVF2BNV9"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZYGVF2BNV9');</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -9322,7 +9323,7 @@ body.no-anim .lesson-panel{animation:none;opacity:1}
 .quiz-opt-letter{width:24px;height:24px;border-radius:8px;background:var(--divider);color:var(--text-mute);font:700 12px var(--sans);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .quiz-explain{margin-top:12px;padding:12px 14px;border-radius:12px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);font:400 13px/1.6 var(--sans);color:var(--ink);display:none}
 .quiz-explain.show{display:block}
-</style><link rel="stylesheet" href="/app/ui.css?v=22"></head><body data-theme="classic">
+</style><link rel="stylesheet" href="/app/ui.css?v=23"></head><body data-theme="classic">
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
 <svg viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -11017,10 +11018,14 @@ function _renderBreatheUI(el){
   el.innerHTML=h;
 }
 
+// v21: the page carries quotes only; today's story is fetched (and kept) when needed
+function _dqStory(){var _d=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));if(!window._DQ||!window._DQ.length)return Promise.resolve();var i=(_d-1)%window._DQ.length,q=window._DQ[i];if(q.s!==undefined)return Promise.resolve();if(q._p)return q._p;q._p=fetch('/api/quotes/'+i).then(function(r){return r.ok?r.json():{}}).then(function(j){q.s=j.s||''}).catch(function(){q.s=''});return q._p}
+setTimeout(function(){try{_dqStory()}catch(e){}},4000);
 function openDailyWisdom(){
   if(document.getElementById('wisdomFull'))return;
   var _doy=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
   var q=(window._DQ&&window._DQ[(_doy-1)%window._DQ.length])||{q:'The secret of getting ahead is getting started.',a:'Mark Twain',s:''};
+  if(q.s===undefined){_dqStory().then(function(){if(!document.getElementById('wisdomFull'))openDailyWisdom()});return}
   var dayNum=_doy;
   var ov=document.createElement('div');ov.id='wisdomFull';ov.className='rd-wisdom-full';
   var html='<div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center"><span style="font:600 12px var(--sans);letter-spacing:.08em;color:var(--text-mute)">DAY '+dayNum+' OF 365</span><button class="rd-wf-close" onclick="document.getElementById(\\'wisdomFull\\').remove()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>';
@@ -13932,7 +13937,7 @@ function _ltToggle(k){S.learnOpen=S.learnOpen===k?null:k;render();if(S.learnOpen
 function _openPrep(p){location.href='/?tab=learn'}
 function _openSection(id){
   // v13: the old in-app sections are retired; Python lives in /code (real Python, 60 days)
-  if(id==='python'||id==='ai'){location.href='/code/';return}
+  if(id==='python'||id==='ai'){if(window.BroFrame)BroFrame.go('/code/');else location.href='/code/';return}
   S.learnSection=null;S.tab='courses';render();return;
   S.learnSection=id;
   render();
@@ -17385,7 +17390,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=134').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=135').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17908,10 +17913,32 @@ app.get('/j/:id',(req,res)=>{
 app.get(/^\/prep(\/.*)?$/,(_,res)=>res.redirect(302,'/?tab=learn'));
 app.get(/^\/learning(\/.*)?$/,(_,res)=>res.redirect(302,'/code/'));
 app.get(['/lang/phrases.html','/lang/phrase-lesson.html'],(_,res)=>res.redirect(302,'/lang/'));
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v182";
-self.addEventListener("install",function(e){self.skipWaiting()});
-self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
-self.addEventListener("fetch",function(e){});
+// v21 speed: the service worker caches. The cache is named by the deployed commit, so a new deploy drops the old one.
+// The app's page is kept from the moment the worker installs; pages (navigations) come from the network first and fall
+// back to the last copy when offline; the app's and mini-apps'
+// files (/app, /lang, /mind, /code, icons) come from the cache at once and refresh in the background. Never /api/,
+// never a Range request, never a page sent no-store.
+const _SW_VER='v183-'+(String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,8)||Date.now().toString(36));
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="${_SW_VER}";
+var CACHE="bd-"+CACHE_VER;
+self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(fetch("/",{credentials:"same-origin",cache:"no-cache"}).then(function(res){if(keep(res))return caches.open(CACHE).then(function(ca){return ca.put("/",res)})}).catch(function(){}))});
+self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.filter(function(c){return c!==CACHE}).map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
+var ASSET=/^[/](app|lang|mind|code)[/]|^[/](icon|apple-touch|favicon)[^/]*$|^[/]manifest/;
+function keep(res){if(!res||!res.ok||res.type==="opaque")return false;var cc=res.headers.get("Cache-Control")||"";return !/no-store/.test(cc)&&!res.headers.get("Content-Range")}
+self.addEventListener("fetch",function(e){
+  var r=e.request;if(r.method!=="GET"||r.headers.has("range"))return;
+  var u=new URL(r.url);if(u.origin!==location.origin||u.pathname.indexOf("/api/")===0||u.pathname==="/sw.js")return;
+  if(r.mode==="navigate"){
+    e.respondWith(fetch(r).then(function(res){if(keep(res)&&(u.pathname==="/"||ASSET.test(u.pathname))){var c=res.clone(),key=u.pathname==="/"?"/":r;caches.open(CACHE).then(function(ca){ca.put(key,c)})}return res}).catch(function(){return caches.match(u.pathname==="/"?"/":r,{ignoreVary:true}).then(function(m){return m||caches.match("/",{ignoreVary:true})})}));
+    return;
+  }
+  if(!ASSET.test(u.pathname))return;
+  e.respondWith(caches.open(CACHE).then(function(ca){return ca.match(r,{ignoreVary:true}).then(function(hit){
+    var net=fetch(r).then(function(res){if(keep(res))ca.put(r,res.clone());return res}).catch(function(){return hit});
+    if(hit){e.waitUntil(net.catch(function(){}));return hit}
+    return net;
+  })}));
+});
 self.addEventListener("push",function(e){
   if(!e.data)return;
   var d=e.data.json();
@@ -17957,16 +17984,33 @@ app.get('/changelog',(_,res)=>{
   res.type('html').send(`<!DOCTYPE html><html lang="en"><head>${MARKETING_CHROME}<title>Changelog — Brodoit</title><meta name="description" content="What's new in Brodoit. Recent shipping log."><meta property="og:title" content="Changelog — Brodoit"><meta property="og:description" content="What's new in Brodoit. Recent shipping log."></head><body><div class="wrap"><a class="crumb" href="/">← Back to Brodoit</a><div style="margin-top:32px"><span class="hero-tag"><span class="pulse"></span>Always shipping</span></div><h1 class="huge">What's <em>new.</em></h1><p class="lede" style="margin-top:24px">A live record of every meaningful change. We ship most weeks. If you spot a bug or want a feature, email <a href="mailto:hello@brodoit.com">hello@brodoit.com</a>.</p><div class="changelog"><div class="cl-item"><div class="cl-date">Apr 28, 2026</div><div class="cl-body"><h3>Internationalization push</h3><p>Brought the site up to global publishing standards.</p><ul><li>Added structured data (JSON-LD) so Google can render rich-result cards</li><li>Open Graph + Twitter Card tags — links shared in iMessage, Slack, X now show proper preview cards</li><li>Re-enabled pinch-zoom (was blocked — accessibility fix)</li><li>Apple touch icon + iOS standalone meta for clean home-screen install</li><li>Aligned manifest theme/background with the editorial palette</li><li>Rebuilt /privacy and /terms with the brand typography</li><li>Added /about, /changelog public pages</li><li>Real /robots.txt and /sitemap.xml (were being eaten by the SPA catch-all)</li></ul></div></div><div class="cl-item"><div class="cl-date">Late April</div><div class="cl-body"><h3>Math Sprint v2</h3><p>The arithmetic game got the works: time pressure, bigger tap targets, combo multipliers, particle effects on correct answers, and an end-of-round star screen.</p></div></div><div class="cl-item"><div class="cl-date">Early April</div><div class="cl-body"><h3>Memory Tap, rebuilt on canvas</h3><p>Switched from DOM-rendered tiles to a real game loop on canvas. Smoother animations, lower latency, and a Voice Coach with a live waveform to give you immediate feedback on your speech rhythm.</p></div></div><div class="cl-item"><div class="cl-date">Late March</div><div class="cl-body"><h3>Editorial UI overhaul</h3><p>The whole app got a quieter, more grown-up look: a neutral warm palette, real photography in the headers, refined typography (Inter + Instrument Serif + JetBrains Mono), and gentler shadows.</p></div></div><div class="cl-item"><div class="cl-date">March</div><div class="cl-body"><h3>Premium UI polish</h3><p>'Bro, Do It!' hero illustration, animated gradient icons, and login screen with footer links. Privacy and Terms pages went live for the Play Store submission.</p></div></div></div><div class="cta-row"><a href="/" class="btn-primary">Try the app →</a><a href="/about" class="btn-ghost">Our story</a></div>${LEGAL_FOOT}</div></body></html>`);
 });
 function _readCookie(req,name){const c=req.headers.cookie||'';const m=c.match(new RegExp('(?:^|; )'+name+'=([^;]*)'));return m?decodeURIComponent(m[1]):''}
+// v21 speed: the page carries each day's quote and author only (~40 KB, not the 3.5 MB of stories); today's story comes
+// from /api/quotes/:n when the Daily Wisdom card opens. The page itself is built once, compressed once (brotli/gzip) and
+// sent with an ETag (private, no-cache: the phone revalidates for a 304; a CDN never stores it). A pending sign-in
+// (the pending_otp_email cookie) still gets its own uncached page.
+const _DQ_INJECT=_dailyQuotes.length?'window._DQ='+JSON.stringify(_dailyQuotes.map(x=>({q:x.q,a:x.a})))+';':'';
+const _SPA={html:null,etag:'',z:{}};
+function _spaPage(){if(!_SPA.html){_SPA.html=Buffer.from(HTML.replace('/*__SERVER_INJECT__*/',_DQ_INJECT));_SPA.etag=crypto.createHash('sha1').update(_SPA.html).digest('hex').slice(0,16)}return _SPA}
 app.get('/',(req,res)=>{
   const pendingEmail=_readCookie(req,'pending_otp_email');
-  let inject=pendingEmail?'window.__PENDING_OTP_EMAIL='+JSON.stringify(pendingEmail.slice(0,254))+';':'';
-  if(_dailyQuotes.length)inject+='window._DQ='+JSON.stringify(_dailyQuotes)+';';
-  const html=HTML.replace('/*__SERVER_INJECT__*/',inject);
-  // Vary: Cookie tells any CDN (Railway uses Fastly) that responses differ per cookie — never serve a
-  // user-A cookie response to user-B. Combined with no-store, this blocks all caching of /.
-  res.set('Cache-Control','no-cache, no-store, must-revalidate').set('Pragma','no-cache').set('Expires','0').set('Vary','Cookie').type('html').send(html);
+  if(pendingEmail){
+    const html=HTML.replace('/*__SERVER_INJECT__*/','window.__PENDING_OTP_EMAIL='+JSON.stringify(pendingEmail.slice(0,254))+';'+_DQ_INJECT);
+    // Vary: Cookie tells any CDN (Railway uses Fastly) that responses differ per cookie; no-store blocks all caching
+    return res.set('Cache-Control','no-cache, no-store, must-revalidate').set('Pragma','no-cache').set('Expires','0').set('Vary','Cookie').type('html').send(html);
+  }
+  const P=_spaPage(),C=require('./modules/compress.js'),enc=C.pickEncoding(req),tag='W/"spa-'+P.etag+(enc?'-'+enc:'')+'"';
+  res.set('Cache-Control','private, no-cache').set('Vary','Accept-Encoding, Cookie').set('ETag',tag).type('html');
+  if(req.headers['if-none-match']===tag)return res.status(304).end();
+  if(!enc)return res.send(P.html);
+  if(!P.z[enc])P.z[enc]=C.compressText(P.html,enc,enc==='br'?6:9);
+  res.set('Content-Encoding',enc).set('Content-Length',String(P.z[enc].length)).end(P.z[enc]);
 });
+// today's story for the Daily Wisdom card (by the day's index, as the page picks the quote)
+app.get('/api/quotes/:n',(req,res)=>{const n=parseInt(req.params.n,10);const x=Number.isInteger(n)&&n>=0&&n<_dailyQuotes.length?_dailyQuotes[n]:null;if(!x)return res.status(404).json({error:'no such day'});res.set('Cache-Control','public, max-age=86400').json({q:x.q,a:x.a,s:x.s||''})});
 // ═══ v9: Talking Bro, News Channel, Languages, Hindi book briefs ═══
+// v21 speed: the app's and mini-apps' text files go out compressed (modules/compress.js); everything else as before
+const _compress=require('./modules/compress.js').staticText({root:__dirname,prefixes:['/app','/lang','/mind','/code']});global._compressStats=()=>_compress.stats();
+app.use(_compress);
 app.use('/app',express.static(path.join(__dirname,'app'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 let _settings=null;try{_settings=require('./modules/settings.js').install(db)}catch(e){console.log('[settings] module missing, env only:',e.message);_settings={getSetting:k=>process.env[k]||'',setSetting:()=>{throw new Error('settings module missing')},settingSource:k=>process.env[k]?'env':null}}
 const {getSetting,setSetting,settingSource}=_settings;global._getSetting=getSetting;
