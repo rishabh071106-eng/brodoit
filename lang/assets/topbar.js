@@ -71,8 +71,8 @@
     } catch (e) { bar.classList.add('bd-titled'); }
   };
 
-  // ---- back guard ----
-  try {
+  // ---- back guard ---- (v21: not inside Brodoit's layer: the layer owns the phone's back button there)
+  if (!window.bdFramed) try {
     // Cold open = no same-origin page before us in this tab (push, shortcut, pasted link, fresh tab).
     var ref = ''; try { ref = document.referrer ? new URL(document.referrer).origin : ''; } catch (e) {}
     var guarded = false; try { guarded = sessionStorage.getItem('bd_guard') === location.pathname + location.search; } catch (e) {}

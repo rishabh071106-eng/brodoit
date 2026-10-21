@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+<script src="/app/inframe.js?v=1"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Audio lesson · Brodoit Languages</title>
@@ -9,7 +10,7 @@
 <link rel="stylesheet" href="/app/theme.css?v=21">
 <link rel="stylesheet" href="/lang/assets/lang.css?v=17">
 <link rel="stylesheet" href="/lang/assets/topbar.css?v=16">
-<link rel="stylesheet" href="/app/ui.css?v=22">
+<link rel="stylesheet" href="/app/ui.css?v=23">
 <script src="/app/icons.js?v=16" defer></script>
 <script src="/lang/assets/topbar.js?v=17" defer></script>
 <script src="/app/micgain.js?v=1" defer></script>
@@ -333,7 +334,7 @@ if (!lesson) {
   function stopForNow() {
     pause(); renderProgress(); haptic();
     toast(t(lang, 'saved'));
-    setTimeout(() => { location.href = `/lang/course.html?c=${code}`; }, (window.LANG_TEST && window.LANG_TEST.stayOnStop) ? 1e9 : 700);
+    setTimeout(() => { (window.bdGo || (u => { location.href = u; }))(`/lang/course.html?c=${code}`); }, (window.LANG_TEST && window.LANG_TEST.stayOnStop) ? 1e9 : 700);
   }
   $('play').onclick = () => (playing ? pause() : play());
   $('rep').onclick = repeat; $('stop').onclick = stopForNow;

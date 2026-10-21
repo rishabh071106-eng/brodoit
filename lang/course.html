@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/app/inframe.js?v=1"></script>
 <script>(function(){try{var t=localStorage.getItem("bd_theme")||(localStorage.getItem("theme")==="aurora"?"dark":"");if(t==="dark"){document.documentElement.setAttribute("data-theme","dark");document.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("data-theme","aurora")})}else{document.documentElement.setAttribute("data-theme","light")}}catch(e){}})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -11,7 +12,7 @@
 <link rel="stylesheet" href="/lang/assets/lang.css?v=17">
 <link rel="stylesheet" href="/lang/assets/topbar.css?v=16">
 <link rel="stylesheet" href="/lang/assets/stages.css?v=4">
-<link rel="stylesheet" href="/app/ui.css?v=22">
+<link rel="stylesheet" href="/app/ui.css?v=23">
 <script src="/app/icons.js?v=16" defer></script>
 <script src="/lang/assets/topbar.js?v=17" defer></script>
 </head>
@@ -31,7 +32,7 @@ import { ic } from '/lang/assets/ico.js?v=14';
 const SCHOOL = ['es', 'fr', 'de', 'hi', 'en'];
 const HUB = '/?tab=learn&hub=languages';
 const code = param('c') || 'es';
-if (!SCHOOL.includes(code)) location.replace(HUB);
+if (!SCHOOL.includes(code)) (window.bdGo ? window.bdGo(HUB, { replace: true }) : location.replace(HUB));
 const courses = await loadCourses();
 const meta = courses.find(c => c.code === code) || { code, name: code.toUpperCase(), native: '', from: 'en', hasAudio: true };
 const lang = meta.from;
