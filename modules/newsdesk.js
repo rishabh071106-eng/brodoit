@@ -9,6 +9,12 @@
 //   GET  /api/news/desk?cat=&limit=   → { stories:[…], next, updated_at, writer }
 //   GET  /api/news/desk?before=<next>&exclude=id,id&limit=  → the page older than that (v16 endless deck)
 //   POST /api/news/desk/run (admin)   → runs a batch now
+// v21: a signed-in reader never gets a story again once it was on screen (POST /api/news/seen; news_seen keeps 30 days),
+// nor a rewrite of it (headline + opening words ≥ 0.45 alike a story seen in the last 14 days); the deck ends with
+// `caughtUp` instead of going round again. A shared story is kept 90 days (news_shared, outside the feed):
+//   GET  /api/news/story/:id → { story }      POST /api/news/share {id} → { url: <site>/n/<id> }
+//   GET  /n/:id  the story's own page with link-preview tags (a signed-in visitor goes straight into the app);
+//   GET  /n/:id/card.png  the preview picture when the story has no photo
 // Batches run on boot (+2 min) and every 30 minutes; stories older than 3 days drop off.
 'use strict';
 const GEM = require('./gemini.js');
@@ -59,6 +65,11 @@ function install(app, deps) {
     db.exec('CREATE INDEX IF NOT EXISTS idx_news_stories_created ON news_stories(created_at)');
   } catch (e) { log('schema', e.message); }
   const q = s => db.prepare(s);
+  try {
+    db.exec("CREATE TABLE IF NOT EXISTS news_seen(user_phone TEXT NOT NULL, story_id TEXT NOT NULL, toks TEXT DEFAULT '', seen_at TEXT DEFAULT (datetime('now')), PRIMARY KEY(user_phone, story_id))");
+    db.exec('CREATE INDEX IF NOT EXISTS idx_news_seen_user ON news_seen(user_phone, seen_at)');
+    db.exec("CREATE TABLE IF NOT EXISTS news_shared(id TEXT PRIMARY KEY, story TEXT NOT NULL, shared_at TEXT DEFAULT (datetime('now')), opens INTEGER DEFAULT 0)");
+  } catch (e) { log('schema v21', e.message); }
   const state = { running: false, last: null, lastError: '', writer: '' };
 
   async function gather() {
@@ -208,8 +219,9 @@ function install(app, deps) {
         } catch (e) { state.lastError = 'db: ' + e.message; }
       }
       q("DELETE FROM news_stories WHERE created_at < datetime('now','-4 days')").run();
+      try { q("DELETE FROM news_shared WHERE shared_at < datetime('now','-90 days')").run(); } catch (e) { /* ignore */ }
       for (const r of q("SELECT id, image, sources FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY created_at DESC LIMIT 40").all().filter(r => !imgFile(r.id)).slice(0, 12)) { let src = []; try { src = JSON.parse(r.sources || '[]'); } catch (e) { /* ignore */ } await photoFor(r.id, r.image, src); }
-      try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp)$/, ''); if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
+      try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp)$/, ''); if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id) && !q('SELECT 1 FROM news_shared WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
       state.last = { at: new Date().toISOString(), reason, items: items.length, clusters: clusters.length, wrote, skipped, ms: Date.now() - t0, writer: state.writer };
       log('batch', JSON.stringify(state.last));
       // record the new headlines and top stories right away (modules/newsvoice.js)
@@ -226,6 +238,18 @@ function install(app, deps) {
   // A cursor is a published_at (ISO or ms; inclusive when exclude is sent) or the `next` this route returned:
   // '<ISO>~<id>' inside the desk, 'rss:<ms>~<id>' inside the feed. next is null when nothing older is left.
   const ID = /^[A-Za-z0-9_-]{1,64}$/;
+  // v21: what this reader has seen (null for a visitor who is not signed in: the app keeps its own list)
+  const SEEN_DAYS = 30, LIKE_DAYS = 14, LIKE = 0.45;
+  const toksOf = st => new Set(tokens(String(st.headline || '') + ' ' + String(st.summary || '').slice(0, 140)));
+  function seenOf(phone) {
+    if (!phone) return null;
+    let rows = []; try { rows = q("SELECT story_id, toks, seen_at > datetime('now', ?) AS near FROM news_seen WHERE user_phone=? AND seen_at > datetime('now', ?)").all('-' + LIKE_DAYS + ' days', phone, '-' + SEEN_DAYS + ' days'); } catch (e) { return null; }
+    if (!rows.length) return null;
+    const ids = new Set(), sigs = [];
+    for (const r of rows) { ids.add(r.story_id); if (r.near && r.toks) { const w = new Set(String(r.toks).split(' ').filter(Boolean)); if (w.size >= 3) sigs.push(w); } }
+    return { ids, sigs };
+  }
+  const fresh = (S, st) => { if (!S) return true; if (S.ids.has(st.id)) return false; if (!S.sigs.length) return true; const t = toksOf(st); return !S.sigs.some(w => jaccard(t, w) >= LIKE); };
   function cursor(v) {
     const s = String(v == null ? '' : v).trim(); if (!s) return null;
     let m = s.match(/^rss:(-?\d+)(?:~([A-Za-z0-9_-]{1,64}))?$/);
@@ -263,23 +287,30 @@ function install(app, deps) {
     feedMemo[k] = { key, list };
     return list;
   }
-  function feedPage(cat, cur, exSet, n) {
+  function feedPage(cat, cur, exSet, n, S) {
     const after = x => !cur ? true : cur.id ? (x.ts < cur.ts || (x.ts === cur.ts && x.id < cur.id)) : (exSet.size ? x.ts <= cur.ts : x.ts < cur.ts);
-    const rest = feedStories(cat).filter(x => after(x) && !exSet.has(x.id)), page = rest.slice(0, n), last = page[page.length - 1];
+    const rest = feedStories(cat).filter(x => after(x) && !exSet.has(x.id) && fresh(S, x.story)), page = rest.slice(0, n), last = page[page.length - 1];
     return { stories: page.map(x => x.story), next: rest.length > n && last ? 'rss:' + last.ts + '~' + last.id : null };
   }
-  function older(cat, cur, ex, exSet, lim) {
-    if (cur && cur.feed) return feedPage(cat, cur, exSet, lim);
-    const w = [], a = [];
-    if (cat) { w.push('category=?'); a.push(cat); }
-    if (cur && cur.id) { w.push('(published_at < ? OR (published_at = ? AND id < ?))'); a.push(cur.iso, cur.iso, cur.id); }
-    else if (cur) { w.push(ex.length ? 'published_at <= ?' : 'published_at < ?'); a.push(cur.iso); }
-    if (ex.length) { w.push('id NOT IN (' + ex.map(() => '?').join(',') + ')'); a.push(...ex); }
-    const rows = q('SELECT * FROM news_stories' + (w.length ? ' WHERE ' + w.join(' AND ') : '') + ' ORDER BY published_at DESC, id DESC LIMIT ?').all(...a, lim);
-    const last = rows[rows.length - 1];
-    if (rows.length === lim) return { stories: rows.map(pub), next: last.published_at + '~' + last.id };
-    const fill = feedPage(cat, null, exSet, lim - rows.length); // the desk has nothing older: the feed carries on
-    return { stories: rows.map(pub).concat(fill.stories), next: fill.next };
+  function older(cat, cur, ex, exSet, lim, S) {
+    if (cur && cur.feed) return feedPage(cat, cur, exSet, lim, S);
+    const out = []; let c = cur, last = null, ended = false;
+    const chunk = S ? Math.max(lim * 3, 60) : lim;
+    for (let guard = 0; guard < 25 && out.length < lim; guard++) {
+      const w = [], a = [];
+      if (cat) { w.push('category=?'); a.push(cat); }
+      if (c && c.id) { w.push('(published_at < ? OR (published_at = ? AND id < ?))'); a.push(c.iso, c.iso, c.id); }
+      else if (c) { w.push(ex.length ? 'published_at <= ?' : 'published_at < ?'); a.push(c.iso); }
+      if (ex.length) { w.push('id NOT IN (' + ex.map(() => '?').join(',') + ')'); a.push(...ex); }
+      const rows = q('SELECT * FROM news_stories' + (w.length ? ' WHERE ' + w.join(' AND ') : '') + ' ORDER BY published_at DESC, id DESC LIMIT ?').all(...a, chunk);
+      for (const r of rows) { last = r; if (fresh(S, r)) { out.push(r); if (out.length >= lim) break; } }
+      if (out.length >= lim) break;
+      if (rows.length < chunk) { ended = true; break; }
+      c = { feed: false, iso: last.published_at, id: last.id };
+    }
+    if (out.length >= lim || !ended) { const l = out.length >= lim ? out[out.length - 1] : last; return { stories: out.map(pub), next: l ? l.published_at + '~' + l.id : null }; }
+    const fill = feedPage(cat, null, exSet, lim - out.length, S); // the desk has nothing older: the feed carries on
+    return { stories: out.map(pub).concat(fill.stories), next: fill.next };
   }
   app.get('/api/news/desk', (req, res) => {
     const cat = CAT_LABEL[String(req.query.cat || '').toLowerCase()] ? String(req.query.cat).toLowerCase() : '';
@@ -289,17 +320,141 @@ function install(app, deps) {
     if (cur === false) return res.status(400).json({ error: 'bad cursor', stories: [], next: null });
     const ex = String(req.query.exclude || '').split(',').map(s => s.trim()).filter(s => ID.test(s)).slice(0, 200), exSet = new Set(ex);
     let out;
+    let S = null; try { const u = deps.userOf && deps.userOf(req); S = u ? seenOf(u.phone) : null; } catch (e) { S = null; }
     try {
       if (!cur) { // the first page keeps today's ranking; next points at everything else, newest first
-        const rows = cat ? q('SELECT * FROM news_stories WHERE category=? ORDER BY source_count DESC, published_at DESC LIMIT ?').all(cat, lim)
-          : q("SELECT * FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY (source_count * 3 - (julianday('now') - julianday(published_at)) * 24 / 8) DESC LIMIT ?").all(lim);
+        const n0 = S ? 200 : lim;
+        const rows = (cat ? q('SELECT * FROM news_stories WHERE category=? ORDER BY source_count DESC, published_at DESC LIMIT ?').all(cat, n0)
+          : q("SELECT * FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY (source_count * 3 - (julianday('now') - julianday(published_at)) * 24 / 8) DESC LIMIT ?").all(n0)).filter(r => fresh(S, r)).slice(0, lim);
         if (rows.length) {
           const all = q('SELECT COUNT(*) n, MAX(published_at) m FROM news_stories' + (cat ? ' WHERE category=?' : '')).get(...(cat ? [cat] : []));
           out = { stories: rows.map(pub), next: all.m && (all.n > rows.length || feedStories(cat).length) ? all.m : null };
-        } else out = older(cat, null, ex, exSet, lim); // nothing new today: start with the newest the desk (or the feed) has
-      } else out = older(cat, cur, ex, exSet, lim);
+        } else out = older(cat, null, ex, exSet, lim, S); // nothing new today: start with the newest the desk (or the feed) has
+      } else out = older(cat, cur, ex, exSet, lim, S);
     } catch (e) { log('desk page', e.message); return res.status(500).json({ error: 'news desk unavailable', stories: [], next: null }); }
-    res.json({ stories: out.stories, next: out.next, updated_at: state.last && state.last.at, writer: state.writer || (writers()[0] || ['extractive'])[0], running: state.running });
+    res.json({ stories: out.stories, next: out.next, caughtUp: !out.stories.length && !out.next, updated_at: state.last && state.last.at, writer: state.writer || (writers()[0] || ['extractive'])[0], running: state.running });
+  });
+  // ── v21: seen memory, one story, sharing ──
+  app.post('/api/news/seen', auth, (req, res) => {
+    const ids = (Array.isArray(req.body && req.body.ids) ? req.body.ids : []).map(String).filter(x => ID.test(x)).slice(0, 200);
+    if (!ids.length) return res.json({ ok: true, n: 0 });
+    let feed = null; const feedOf = id => { if (!feed) { feed = new Map(); for (const x of feedStories('')) feed.set(x.id, x.story); } return feed.get(id); };
+    const ins = q('INSERT INTO news_seen(user_phone, story_id, toks) VALUES(?,?,?) ON CONFLICT(user_phone, story_id) DO NOTHING');
+    const one = q('SELECT headline, summary FROM news_stories WHERE id=?');
+    let n = 0;
+    try {
+      db.transaction(() => { for (const id of ids) { const st = one.get(id) || feedOf(id) || sharedOf(id); n += ins.run(req.user.phone, id, st ? [...toksOf(st)].join(' ') : '').changes; } })();
+      if (Math.random() < 0.02) q("DELETE FROM news_seen WHERE seen_at < datetime('now','-" + SEEN_DAYS + " days')").run();
+    } catch (e) { log('seen', e.message); return res.status(500).json({ error: 'could not save' }); }
+    res.json({ ok: true, n });
+  });
+  function sharedOf(id) {
+    let r = null; try { r = q('SELECT story FROM news_shared WHERE id=?').get(id); } catch (e) { return null; }
+    if (!r) return null;
+    try { const st = JSON.parse(r.story); if (imgFile(id)) st.image = '/api/news/img/' + encodeURIComponent(id); return st; } catch (e) { return null; }
+  }
+  function storyById(id) {
+    if (!ID.test(id)) return null;
+    const r = q('SELECT * FROM news_stories WHERE id=?').get(id); if (r) return pub(r);
+    const sh = sharedOf(id); if (sh) return sh;
+    const f = feedStories('').find(x => x.id === id); return f ? f.story : null;
+  }
+  app.get('/api/news/story/:id', (req, res) => {
+    res.set('Cache-Control', 'no-cache');
+    const st = storyById(String(req.params.id || ''));
+    if (!st) return res.status(404).json({ error: 'This story is no longer available' });
+    res.json({ story: st });
+  });
+  const SITE = String(deps.publicUrl || 'https://brodoit.com').replace(/\/+$/, '');
+  const hits = new Map();
+  const limited = (req, n) => { const ip = String(req.headers['x-forwarded-for'] || req.ip || '').split(',')[0].trim(), now = Date.now(), h = hits.get(ip); if (!h || now - h.t > 60000) { hits.set(ip, { t: now, n: 1 }); if (hits.size > 5000) hits.clear(); return false; } return ++h.n > n; };
+  app.post('/api/news/share', (req, res) => {
+    const id = String((req.body && req.body.id) || '');
+    if (limited(req, 30)) return res.status(429).json({ error: 'slow down' });
+    const st = storyById(id); if (!st) return res.status(404).json({ error: 'This story is no longer available' });
+    const keep = Object.assign({}, st); delete keep.voice;
+    try { q('INSERT INTO news_shared(id, story) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET story=excluded.story').run(id, JSON.stringify(keep)); } catch (e) { return res.status(500).json({ error: 'could not share' }); }
+    if (!imgFile(id) && st.image && /^https?:/.test(st.image)) cacheImage(id, st.image).catch(() => {});
+    res.json({ ok: true, url: SITE + '/n/' + encodeURIComponent(id) });
+  });
+
+  // ── v21: the story's own page (what a shared link opens; link previews read its tags) ──
+  const H = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const CAT_COLOR = { india: '#B5402A', world: '#2F5FA8', business: '#2F7D4F', tech: '#6D28D9', science: '#0E7C7B' };
+  const host = l => { try { return new URL(l).hostname.replace(/^www\./, ''); } catch (e) { return ''; } };
+  function pageHTML(id, st) {
+    const url = SITE + '/n/' + encodeURIComponent(id), app = '/?tab=news&s=' + encodeURIComponent(id);
+    const img = st.image ? (/^\//.test(st.image) ? SITE + st.image : st.image) : SITE + '/n/' + encodeURIComponent(id) + '/card.png';
+    const desc = clip(st.summary, 200), color = CAT_COLOR[st.category] || '#37352F';
+    const when = Date.parse(st.published_at || '') ? new Date(st.published_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Kolkata' }) : '';
+    const srcs = (st.sources || []).filter(x => x && /^https?:\/\//.test(x.link || '')).slice(0, 6);
+    const paras = String(st.summary || '').split(/\n+/).filter(Boolean).map(p => '<p>' + H(p) + '</p>').join('');
+    const hiPart = st.headline_hi && st.summary_hi ? `<details class="hi"><summary>हिंदी में पढ़ें</summary><h2 lang="hi">${H(st.headline_hi)}</h2><p lang="hi">${H(st.summary_hi)}</p></details>` : '';
+    return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>${H(st.headline)} · Brodoit News</title><meta name="description" content="${H(desc)}"><link rel="canonical" href="${H(url)}">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Brodoit"><meta property="og:title" content="${H(st.headline)}"><meta property="og:description" content="${H(desc)}"><meta property="og:url" content="${H(url)}"><meta property="og:image" content="${H(img)}">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${H(st.headline)}"><meta name="twitter:description" content="${H(desc)}"><meta name="twitter:image" content="${H(img)}">
+<meta name="theme-color" content="#FBF8F3"><link rel="icon" href="/icon-192.png"><link rel="stylesheet" href="/app/fonts/fonts.css">
+<style>:root{--bg:#FBF8F3;--card:#fff;--ink:#17141F;--mute:#6B6875;--line:#E9E3D9;--c:${color};--f:'Plus Jakarta Sans',system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#141217;--card:#1E1B22;--ink:#F3F0EA;--mute:#A7A2AE;--line:#2D2933}.k b{color:color-mix(in srgb,var(--c) 55%,#fff)!important}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--f)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;max-width:720px;margin:0 auto}
+.brand{font:800 22px/1 Georgia,serif;color:var(--ink);text-decoration:none}.brand i{font-style:normal;color:#E0603F}
+.open{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:var(--ink);color:var(--bg);font:700 14px/1 var(--f);text-decoration:none}
+main{max-width:720px;margin:0 auto;padding:0 16px 40px}.ph{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:20px;background:var(--c);display:block}
+.k{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0 6px;font:700 13px/1.2 var(--f);color:var(--mute)}.k b{color:var(--c);text-transform:uppercase;letter-spacing:.06em}
+h1{font:700 30px/1.2 var(--f);letter-spacing:-.02em;margin:4px 0 14px}h2{font:700 22px/1.3 var(--f)}p{margin:0 0 14px}
+.why{border-left:4px solid var(--c);padding:6px 0 6px 14px;color:var(--mute);margin:18px 0}
+.src{margin:22px 0;padding:16px;border-radius:16px;background:var(--card);border:1px solid var(--line)}.src b{display:block;margin-bottom:6px}.src a{color:var(--ink);word-break:break-word}
+.hi{margin:18px 0}.hi summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.cta{display:flex;flex-direction:column;gap:10px;align-items:stretch;margin-top:26px;padding:20px;border-radius:20px;background:var(--card);border:1px solid var(--line);text-align:center}
+.cta .open{justify-content:center;min-height:50px;font-size:16px}.cta small{color:var(--mute)}</style></head>
+<body><header class="top"><a class="brand" href="/">Bro<i>doit</i></a><a class="open" href="${H(app)}">Open in Brodoit</a></header>
+<main><article>${st.image ? `<img class="ph" src="${H(st.image)}" alt="">` : ''}
+<div class="k">${st.label ? `<b>${H(st.label)}</b>` : ''}${when ? `<span>${H(when)}</span>` : ''}</div>
+<h1>${H(st.headline)}</h1>${paras}${st.why ? `<p class="why">${H(st.why)}</p>` : ''}${hiPart}
+${srcs.length ? `<div class="src"><b>Sources</b>${srcs.map(x => `<div><a href="${H(x.link)}" rel="noopener nofollow" target="_blank">${H(x.name || host(x.link))}</a></div>`).join('')}</div>` : ''}
+</article><div class="cta"><b>More stories like this, every 30 minutes</b><a class="open" href="${H(app)}">Open in Brodoit</a><small>Free · News, tasks, steps and Bro, your coach</small></div></main></body></html>`;
+  }
+  app.get('/n/:id', (req, res) => {
+    const id = String(req.params.id || '');
+    res.set({ 'Cache-Control': 'no-cache', Vary: 'Cookie' });
+    let signedIn = false; try { signedIn = !!(deps.userOf && deps.userOf(req)); } catch (e) { signedIn = false; }
+    if (signedIn && ID.test(id)) return res.redirect(302, '/?tab=news&s=' + encodeURIComponent(id));
+    const st = storyById(id);
+    if (!st) return res.status(404).type('html').send('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Brodoit News</title><body style="font:16px/1.5 system-ui;padding:32px;max-width:560px;margin:auto"><h1>This story is no longer available</h1><p>Fresh stories arrive every 30 minutes.</p><p><a href="/?tab=news">Open Brodoit News</a></p>');
+    try { q('UPDATE news_shared SET opens=opens+1 WHERE id=?').run(id); } catch (e) { /* ignore */ }
+    res.type('html').send(pageHTML(id, st));
+  });
+  // the link-preview picture for a story without a photo: its headline on its category's colour
+  const cards = new Map();
+  function cardSvg(st) {
+    const words = String(st.headline || '').split(/\s+/).filter(Boolean);
+    let size = 64, per = 30, lines = [];
+    for (const [sz, n] of [[64, 30], [56, 34], [48, 40]]) {
+      lines = []; let l = '';
+      for (const w of words) { if ((l + ' ' + w).trim().length > n && l) { lines.push(l); l = w; } else l = (l + ' ' + w).trim(); }
+      if (l) lines.push(l);
+      size = sz; per = n; if (lines.length <= 5) break;
+    }
+    if (lines.length > 5) { lines = lines.slice(0, 5); lines[4] = lines[4].replace(/\s*\S*$/, '') + '…'; }
+    const c = CAT_COLOR[st.category] || '#37352F', top = 315 - (lines.length * size * 1.18) / 2 + size * 0.4;
+    const X = t => String(t).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[ch]));
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c}"/><stop offset="1" stop-color="#17141F"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/><text x="64" y="86" font-family="DejaVu Sans, sans-serif" font-size="28" font-weight="700" fill="#ffffff" fill-opacity=".85" letter-spacing="3">BRODOIT NEWS${st.label ? ' · ' + X(String(st.label).toUpperCase()) : ''}</text>
+${lines.map((l, i) => `<text x="64" y="${Math.round(top + i * size * 1.18)}" font-family="DejaVu Sans, sans-serif" font-size="${size}" font-weight="700" fill="#ffffff">${X(l)}</text>`).join('')}
+<text x="64" y="580" font-family="DejaVu Sans, sans-serif" font-size="30" font-weight="700" fill="#ffffff">Bro<tspan fill="#F08A6C">doit</tspan><tspan fill="#ffffff" fill-opacity=".7" font-weight="400">  ·  brodoit.com</tspan></text></svg>`;
+  }
+  app.get('/n/:id/card.png', (req, res) => {
+    const id = String(req.params.id || ''); const st = storyById(id);
+    if (!st) return res.status(404).end();
+    let png = cards.get(id);
+    if (!png) {
+      try { const { Resvg } = require('@resvg/resvg-js'); png = new Resvg(cardSvg(st), { fitTo: { mode: 'width', value: 1200 }, font: { loadSystemFonts: true, defaultFontFamily: 'DejaVu Sans' } }).render().asPng(); }
+      catch (e) { log('card', e.message); return res.redirect(302, '/icon-512.png'); }
+      cards.set(id, png); if (cards.size > 60) cards.delete(cards.keys().next().value);
+    }
+    res.set({ 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=86400' }); res.end(png);
   });
   app.post('/api/news/desk/run', auth, async (req, res) => {
     let ok = false; try { ok = !!(isAdminUser && isAdminUser(req.user)); } catch (e) {}

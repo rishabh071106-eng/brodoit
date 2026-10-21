@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Brodoit for Android on an emulator, the way a tester meets it (run by .github/workflows/android.yml):
 #   install → first open asks for Physical activity → Allow → brodoit.com opens in the app
-#   → the brodoit://enable deep link opens the steps screen → a periodic sync job is scheduled → nothing crashed.
+#   → the brodoit://enable deep link opens the steps screen → a periodic sync job is scheduled → it asks for
+#   notifications (POST_NOTIFICATIONS) → nothing crashed.
 #   bash android-smoke.sh <apk> <out dir>
 set -u
 APK="$1"; OUT="$2"; PKG=com.brodoit.app
@@ -64,6 +65,10 @@ adb shell dumpsys jobscheduler | grep -q "$PKG" && ok "a background sync job is 
 adb shell am start -W -a android.intent.action.VIEW -d 'brodoit://enable' "$PKG" > "$OUT/deeplink.txt" 2>&1
 grep -qE 'Status: ok|EnableStepsActivity|LauncherActivity' "$OUT/deeplink.txt" && ok "brodoit://enable opens the app" || bad "deep link: $(tr '\n' ' ' < "$OUT/deeplink.txt")"
 sleep 8; shot 3-deeplink
+
+# v21: notifications: the app declares POST_NOTIFICATIONS (granted here so the check does not wait on a dialog)
+adb shell dumpsys package "$PKG" | grep -q 'android.permission.POST_NOTIFICATIONS' && ok "asks for notifications (POST_NOTIFICATIONS)" || bad "POST_NOTIFICATIONS is missing"
+adb shell pm grant "$PKG" android.permission.POST_NOTIFICATIONS > /dev/null 2>&1 && adb shell dumpsys package "$PKG" | grep -q 'android.permission.POST_NOTIFICATIONS: granted=true' && ok "notifications can be allowed" || bad "notifications could not be allowed"
 
 # nothing crashed
 adb logcat -d > "$OUT/logcat.txt" 2>&1

@@ -416,7 +416,7 @@ function install(app, deps) {
     try {
       const ins = q('INSERT OR IGNORE INTO push_log(user_phone,date_key,kind,ts) VALUES(?,?,?,?)').run(phone, dateKey, kind, nowIso());
       if (!ins.changes) return false; // already pushed today — max 1/day/user
-      const payload = JSON.stringify({ type: 'steps', kind, title, body, tag: 'steps-' + kind, url: '/?tab=move' });
+      const payload = JSON.stringify({ type: 'steps', kind, title, body, tag: 'steps-' + kind, url: '/?tab=steps' }); // v21: the Steps tab (was /?tab=move, which opened Home)
       const pushFn = typeof deps.pushAll === 'function' ? deps.pushAll : typeof deps.pushTo === 'function' ? deps.pushTo : null;
       if (pushFn) { pushFn(phone, payload); return true; }
       const wp = deps.webpush;
@@ -946,7 +946,8 @@ ${glyph ? `<text x="0" y="22" text-anchor="middle" font-family="${ogFamily(glyph
           const total = (wk && wk.s) || 0;
           if (total > 0) { sendPush(phone, 'weekly', `This week: ${fmtN(total)} steps`, `Best day ${fmtN((wk && wk.m) || 0)}. Streak ${streak}. New week starts tomorrow — keep it moving.`, t.key); continue; }
         }
-        if (pr.evening && unmet && inWindow(t.hh, t.mm, pr.hour, pr.minute, 15)) {
+        // v21: the evening summary (modules/digest.js) already tells today's steps; no second nudge while it is on
+        if (pr.evening && unmet && inWindow(t.hh, t.mm, pr.hour, pr.minute, 15) && !(global._digestOwnsEvening && global._digestOwnsEvening(phone))) {
           const left = goal - row.counted;
           sendPush(phone, 'evening', `${fmtN(left)} steps to go`, left <= 2500 ? 'A 20-minute walk closes it out tonight.' : 'A quick evening walk keeps the streak alive.', t.key); continue;
         }

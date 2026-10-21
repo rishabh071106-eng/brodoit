@@ -601,18 +601,6 @@ registerProcessor('bro-mic', BroMic);`;
     return S2.p;
   };
 
-  // Ask Bro about something on screen (News "Ask Bro"): Bro chat opens on the Bro tab with the story as the topic.
-  // The story travels as reference material (the server fences it off as untrusted data).
-  V.askAbout = function (o) {
-    o = o || {};
-    const ctx = 'The user wants to talk about this news story: ' + String(o.title || '').slice(0, 300) + (o.summary ? ' — ' + String(o.summary).slice(0, 900) : '');
-    if (coreLive() && V.ws && V.ws.readyState === 1) { V.stopPlayback(); V.dropTurn = V.turn; V.wsSend({ t: 'context', text: ctx, ask: true }); return; }
-    const ask = (V.lang === 'hi' ? 'इस खबर के बारे में बताओ: ' : 'Tell me about this story: ') + (o.title || '');
-    if (typeof switchTab === 'function' && S.tab !== 'bro') switchTab('bro');
-    if (isLive()) { V.send(ask); return; }
-    V.unlockAudio(); V.start({ context: ctx, ask });
-  };
-
   // ───────────────────────── ElevenLabs Conversational AI (emergency only) ─────────────────────────
   V.loadElevenSDK = async function () {
     if (V._elSDK) return V._elSDK;

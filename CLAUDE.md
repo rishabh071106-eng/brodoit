@@ -79,7 +79,7 @@ Key tables: `users`, `tasks`, `otps`, `mind_gym_progress`, `steps`, `push_subs`,
 | `RESEND_API_KEY` | Email OTP delivery |
 | `GROQ_API_KEY` | AI chat (Bro) — free tier |
 | `GEMINI_API_KEY` | AI chat primary — free tier |
-| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | Push notifications |
+| `VAPID_PRIVATE_KEY` | Push notifications (optional since v21: without it the server makes its own key in `DATA_DIR/secrets/vapid.json`; the key once committed to the repo is refused). `VAPID_SUBJECT` defaults to `https://brodoit.com` |
 | `WHATSAPP_TOKEN` | Meta Cloud API permanent token |
 | `WHATSAPP_PHONE_ID` | WhatsApp Business phone number ID |
 | `WHATSAPP_VERIFY_TOKEN` | Webhook verification (default: `brodoit_verify_2024`) |
@@ -295,6 +295,37 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
   - **Sync:** POST `/api/learn/progress` carries the course's real XP and `daily` (the last 14 days). The server keeps `learn_daily(user_phone, day, xp)` (max, within −40/+2 days).
     - GET `?course=lang` returns every course plus 60 days of `daily`. `pullProgress()` (course page, Languages hub; at most once a minute) merges it, so a new phone gets its lessons, XP and streak back.
     - The Learn → Languages hub shows the streak, today's XP and each course's XP.
+- **v21 News without Bro, seen memory, share links** (Bro was on every card; scrolled stories came back; shared links got lost):
+  - No "Ask Bro" in News: the orb, the empty-state mascots and `BroVoice.askAbout` are gone.
+  - **Seen:** a card on screen for 1.5 s, or swiped past, is seen.
+    - The phone keeps `localStorage news.seen.v1`: ids for 30 days, plus each story's words for 14 days. A signed-in reader's server keeps `news_seen` (`POST /api/news/seen`, batched, flushed when hidden).
+    - `/api/news/desk` leaves out seen ids and any story whose headline + opening is ≥ 0.45 alike a seen one, so a rewrite with a new id is caught too. It pages past them and answers `caughtUp`.
+  - The deck no longer goes round again. It ends on a "You're all caught up · new stories every 30 minutes" card with "Check again". Back on News after 20 minutes away, it reloads what is new.
+  - **Links:** `?tab=news&s=<id>` (and `NewsChannel.open(id)`, also from `BroFrame.route`) opens that story even when seen, fetching it with `GET /api/news/story/:id` if needed.
+  - **Share** opens a sheet:
+    - Share picture: the story as a JPEG whose footer prints `brodoit.com/n/<id>` and a QR code (`app/vendor/qrcode.js`, MIT, loaded on first share). Text and link go along.
+    - Share link (`navigator.share({url})`) and Copy link.
+  - `POST /api/news/share {id}` snapshots the story into `news_shared` (90 days, outside the feed; its photo is kept) and returns `<PUBLIC_URL>/n/<id>`.
+  - **`/n/<id>`:** the story's own page with og/twitter tags, the readable story, sources, Hindi under "हिंदी में पढ़ें", and "Open in Brodoit".
+    - A signed-in visitor (tf_token cookie) gets a 302 to `/?tab=news&s=<id>`.
+    - `/n/<id>/card.png` (resvg) is the preview picture when the story has no photo.
+- **v21 Phone notifications** (nothing subscribed phones; reminders ran on server time):
+  - **Keys** (`modules/pushkeys.js`): `VAPID_PRIVATE_KEY` (its public half derived), else `DATA_DIR/secrets/vapid.json`, made once. The once-committed private key is refused.
+    - Every subscription records its key (`push_subs.vapid`). One made with another key is skipped until the app re-subscribes.
+    - A 401/403/404/410 from the push service deletes the subscription. Every push goes through `_push.send` (`pushTo`).
+  - **App** (`app/notify.js`):
+    - `Notify.enable({ask})` / `Notify.subscribe()` subscribe with the server's current key (replacing one made with an older key). Already allowed → it re-subscribes 4 s after start.
+    - Onboarding's bell subscribes.
+    - You → Notifications (`Notify.open()`): on/off, morning and evening summary times, "Send a test".
+  - **Summaries** (`modules/digest.js`, a 60 s tick on each user's own `users.tz`, India when unknown; once a day per kind, `push_sent`; within 15 min of the time). Each is built from the data at send time:
+    - Morning (08:00): today's tasks with times, plan blocks, the step goal, yesterday's steps and streak, the top story → `/?tab=tasks`.
+    - Evening (20:30): steps against the goal, the streak, open tasks and tomorrow's → `/?tab=steps`.
+    - While the evening summary is on, the steps module's own evening nudge stays quiet (`global._digestOwnsEvening`).
+    - Routes: `GET/POST /api/notify/prefs`, `POST /api/notify/test`, `GET /api/notify/status` (counts only).
+  - **Reminders** fire at the task's local date and time (up to 10 min late after a restart), once. The water reminders run 8:00–21:00 local. Bro's tools use the user's local date for "today". The steps push opens `/?tab=steps`.
+  - **Service worker:** a push carries `tag`, `renotify`, `requireInteraction` (reminders only), `/app/badge-96.png` (white Bro bubble) and a same-site `url`.
+    - A tap focuses the open app and posts `bd-route` (`frame.js` → `BroFrame.go`: a tab, a lesson in the layer, a story), or opens the url.
+  - **Android:** `POST_NOTIFICATIONS` plus android-browser-helper's `NotificationPermissionRequestActivity`, and a white small icon (`@drawable/ic_notification` as the DelegationService `SMALL_ICON`). CI checks the permission; the emulator test grants it.
 - **News** (`app/news.js`): cards only (desk stories), section chips, "Listen" plays recorded headline clips back to back. `modules/newsvoice.js` records after every desk batch through ElevenLabs only (`NEWS_VOICE_PROVIDER=any` opens the chain): headlines for every story in the feed + `NEWS_VOICE_FULL` (default 10) full read-outs a day per language; files in `MEDIA_DIR/news-voice`, served by `/api/news/voice/<id>-<lang>-<h|s>.mp3`. Nothing is rendered on tap. The long spoken bulletin is opt-in (`BULLETIN_AUDIO=1`). News is a bottom tab; You moved to the header avatar.
 - **ElevenLabs brain** (`modules/elevenbrain.js`): a private text-only ElevenLabs agent used as the LLM when Gemini has no key, is out of credit (402 → skipped for an hour via `global._geminiDownUntil`) or fails — `_callGemini` falls back to it, so Bro chat, Explain, the coach and the news desk keep working on ElevenLabs credits. Bro chat no longer runs a second "verify" pass.
 - **ElevenLabs budget** (modules/elevenvoice.js `RESERVE`): bulk (static recordings) may use the first 70% of the month, daily (news, first plays) stops at 15% left, live Bro uses the rest. Admin auto-record order: learn-audio → lang-audio → hindi-books.

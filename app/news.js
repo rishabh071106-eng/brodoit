@@ -1,9 +1,13 @@
-// Brodoit News (v16): one story per screen, swiped left and right, without end. A big real photo, the full story
-// (never cut off), its source, and one Share button that turns the story into an image. No audio, no counters.
+// Brodoit News (v16): one story per screen, swiped left and right. A big real photo, the full story (never cut off),
+// its source, and one Share button. No audio, no counters.
 // Mounted into the SPA's News tab: the shell calls NewsChannel.html(), .load(), reads .loaded/._loading,
 // and .stop() when leaving the tab. Stories come from the News Desk (modules/newsdesk.js), a page at a time:
-// near the end of the deck the next, older page is added behind the last card; when the desk has nothing older the
-// deck goes round again from the newest story, so it never stops.
+// near the end of the deck the next, older page is added behind the last card.
+// v21: a story that was on screen for 1.5 s (or swiped past) is seen and never comes back, nor a rewrite of it: this
+// phone keeps the list (localStorage news.seen.v1, 30 days) and a signed-in reader's server does too (POST
+// /api/news/seen), so it holds on every phone. When nothing unseen is left the deck ends on "You're all caught up"
+// (no going round again). Share opens a sheet: the story as a picture (with its brodoit.com/n/<id> link and a QR code),
+// the link, or copy the link. No Bro in News.
 (function () {
   'use strict';
   const N = window.NewsChannel = { lang: localStorage.getItem('news.lang') || 'en', stories: [], loaded: false, _loading: false, i: 0 };
@@ -32,6 +36,51 @@
   ).split(/\s+/).filter(Boolean));
   const sig = s => { const w = new Set(); for (const x of norm(s).split(' ')) if (x.length > 1 && !STOP.has(x)) w.add(x); return w; };
   const same = (a, b) => { if (a.size < 4 || b.size < 4) return false; let n = 0; a.forEach(w => { if (b.has(w)) n++; }); return n / (a.size + b.size - n) >= 0.7; };
+  const jac = (a, b) => { let n = 0; a.forEach(w => { if (b.has(w)) n++; }); return n / (a.size + b.size - n || 1); };
+
+  // ── v21: seen memory. ids for 30 days; each story's words (headline + its opening) for 14 days ──
+  const SEEN_KEY = 'news.seen.v1', DAY = 864e5;
+  const seenSig = st => sig(String(st.headline || '') + ' ' + String(st.summary || '').slice(0, 140));
+  const seen = (() => {
+    let j = {}; try { j = JSON.parse(localStorage.getItem(SEEN_KEY) || '{}') || {}; } catch (e) { j = {}; }
+    const now = Date.now(), ids = {}, sigs = [];
+    for (const [id, t] of Object.entries(j.ids || {})) if (now - t < 30 * DAY) ids[id] = t;
+    for (const x of Array.isArray(j.sigs) ? j.sigs : []) if (Array.isArray(x) && now - x[0] < 14 * DAY && x[1]) sigs.push([x[0], x[1], new Set(String(x[1]).split(' '))]);
+    return { ids, sigs: sigs.slice(-800), queue: [] };
+  })();
+  function saveSeen() {
+    try {
+      const ids = Object.entries(seen.ids).sort((a, b) => b[1] - a[1]).slice(0, 4000);
+      localStorage.setItem(SEEN_KEY, JSON.stringify({ ids: Object.fromEntries(ids), sigs: seen.sigs.map(x => [x[0], x[1]]) }));
+    } catch (e) { /* storage full or blocked */ }
+  }
+  const isSeen = st => { if (st.id && seen.ids[st.id]) return true; const w = seenSig(st); if (w.size < 3) return false; return seen.sigs.some(x => jac(w, x[2]) >= 0.45); };
+  N.isSeen = isSeen;
+  function markSeen(st) {
+    if (!st || !st.id || seen.ids[st.id]) return;
+    const now = Date.now(), w = seenSig(st);
+    seen.ids[st.id] = now;
+    if (w.size >= 3) { seen.sigs.push([now, [...w].join(' '), w]); if (seen.sigs.length > 800) seen.sigs.shift(); }
+    saveSeen();
+    seen.queue.push(st.id); clearTimeout(seen.t); seen.t = setTimeout(flushSeen, 3000);
+  }
+  function flushSeen() {
+    clearTimeout(seen.t);
+    const ids = seen.queue.splice(0, 200); if (!ids.length) return;
+    let tok = ''; try { tok = localStorage.getItem('tf_token') || ''; } catch (e) { tok = ''; }
+    if (!tok) return;
+    try { fetch('/api/news/seen', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'x-token': tok }, body: JSON.stringify({ ids }) }).catch(() => {}); } catch (e) { /* offline */ }
+    if (seen.queue.length) seen.t = setTimeout(flushSeen, 1000);
+  }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushSeen(); });
+  addEventListener('pagehide', flushSeen);
+  // the story on screen counts as seen after 1.5 s (only while News is what you are looking at)
+  let viewT = 0;
+  function watch() {
+    clearTimeout(viewT);
+    const st = N.stories[N.i]; if (!st || seen.ids[st.id]) return;
+    viewT = setTimeout(() => { if (window.S && S.tab === 'news' && document.visibilityState === 'visible' && N.stories[N.i] === st) markSeen(st); }, 1500);
+  }
 
   // A pass is one walk from the newest story back to the oldest the server has. Repeats are dropped within a pass;
   // when a pass runs dry the next one starts from the newest again.
@@ -44,6 +93,7 @@
       const key = st.id || 'h:' + st.headline;
       if (P.ids.has(key)) continue;
       P.ids.add(key); if (st.id) P.got.push(String(st.id));
+      if (isSeen(st)) continue;                                // v21: on screen once already (or a rewrite of it)
       const w = sig(st.headline);
       if (P.heads.some(h => same(w, h))) continue;
       P.heads.push(w); out.push(st);
@@ -58,7 +108,9 @@
       const g = P.got, ex = g.length > 200 ? g.slice(0, 40).concat(g.slice(-160)) : g;
       if (ex.length) qs.push('exclude=' + ex.map(encodeURIComponent).join(','));
     }
-    const r = await fetch('/api/news/desk?' + qs.join('&'), { cache: 'no-store' });
+    // signed in: the server leaves out what this reader saw on any phone (v21)
+    let tok = ''; try { tok = localStorage.getItem('tf_token') || ''; } catch (e) { tok = ''; }
+    const r = await fetch('/api/news/desk?' + qs.join('&'), { cache: 'no-store', headers: tok ? { 'x-token': tok } : {} });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const j = await r.json(), list = j && Array.isArray(j.stories) ? j.stories : [];
     if (P !== pass) return [];                                 // a reload started a new walk meanwhile
@@ -70,38 +122,61 @@
   }
   function keep(st) {
     N.stories.push(st);
-    if (st.id && !N._seen.has(st.id)) { N._seen.add(st.id); N._pool.push(st); }
   }
   N.load = async function () {
-    N.err = false;
+    N.err = false; N.caughtUp = false; N._at = Date.now();
     const P = newPass();
     try {
-      const got = await page();
+      let got = await page();
+      for (let k = 0; k < 6 && !got.length && P === pass && P.next !== null; k++) got = await page(); // a first page of seen stories: look further
       if (P === pass) {
-        N.stories = []; N._pool = []; N._seen = new Set(); N._rp = 0; got.forEach(keep);
-        // a shared link (?s=<story id>) opens on that story
-        const want = new URLSearchParams(location.search).get('s'); const k = want ? N.stories.findIndex(x => x.id === want) : -1; if (k >= 0) N.i = k;
+        N.stories = []; N.i = 0; got.forEach(keep);
+        N.caughtUp = !got.length && P.next === null;
+        // a shared link or a notification (?s=<story id>) opens on that story, even one seen before
+        const want = N._want || new URLSearchParams(location.search).get('s'); N._want = null;
+        if (want) await openStory(want);
       }
     } catch (e) { if (!N.stories.length) N.err = true; }
     N.loaded = true; N._loading = false;
     N.rerender();
   };
+  async function openStory(id) {
+    let k = N.stories.findIndex(x => x.id === id);
+    if (k < 0) {
+      try {
+        const r = await fetch('/api/news/story/' + encodeURIComponent(id), { cache: 'no-store' });
+        const j = r.ok ? await r.json() : null;
+        if (j && j.story && j.story.headline) { k = Math.min(N.i, N.stories.length); N.stories.splice(k, 0, j.story); if (pass) pass.ids.add(j.story.id); }
+      } catch (e) { /* offline */ }
+    }
+    if (k >= 0) { N.i = k; N.caughtUp = N.caughtUp && N.stories.length > 0; }
+    else if (typeof toast === 'function') toast(hi() ? 'यह ख़बर अब उपलब्ध नहीं' : 'This story is no longer available');
+    return k;
+  }
+  // a story link inside the app (a tapped notification, a shared link opened in the app)
+  N.open = async function (id) {
+    if (!id) return;
+    if (!N.loaded) { N._want = id; if (!N._loading) { N._loading = true; N.load(); } return; }
+    const k = await openStory(id);
+    if (k >= 0) { N.rerender(); }
+  };
   // Near the end: the next page goes in behind the last card (the card in view never moves). One load at a time.
+  // v21: when the desk has nothing unseen left, the deck ends on "You're all caught up" (it no longer goes round again)
   N.more = async function () {
-    if (N._busy || !N.loaded || !N.stories.length || !pass || Date.now() < (N._wait || 0)) return;
+    if (N._busy || !N.loaded || !N.stories.length || !pass || N.caughtUp || Date.now() < (N._wait || 0)) return;
     N._busy = true; let added = 0;
     try {
-      for (let k = 0; k < 4 && !added; k++) {                 // a page of repeats only: ask for the one after it
-        const fresh = pass.next === null; if (fresh) newPass();  // caught up: round again from the newest story
+      for (let k = 0; k < 6 && !added && pass.next !== null; k++) {
         let got;
-        try { got = await page(); } catch (e) { N._wait = Date.now() + 4000; got = []; k = 4; }
-        if (!got.length && (fresh || k === 4)) got = replay();   // offline, or the desk is empty: go round what is here
+        try { got = await page(); } catch (e) { N._wait = Date.now() + 4000; break; }
         if (got.length) { append(got); added = got.length; }
       }
+      if (!added && pass.next === null) { N.caughtUp = true; appendEnd(); }
     } finally { N._busy = false; }
-    if (added) near(); else setTimeout(near, 4100);           // never stuck on the last card
+    if (added) near(); else if (!N.caughtUp) setTimeout(near, 4100);
   };
-  function replay() { const P = N._pool || [], out = []; for (let k = 0; k < Math.min(10, P.length); k++) out.push(P[(N._rp++) % P.length]); return out; }
+  N.again = function () { N.loaded = false; N.caughtUp = false; N.i = 0; N.rerender(); N._loading = true; N.load(); };
+  const count = () => N.stories.length + (N.caughtUp && N.stories.length ? 1 : 0);
   function append(list) {
     const base = N.stories.length; list.forEach(keep);
     const d = document.getElementById('nzDeck'); if (!d || !window.S || S.tab !== 'news') return;
@@ -109,12 +184,30 @@
     d.insertAdjacentHTML('beforeend', list.map((st, k) => card(st, base + k)).join(''));
     fitNear();
   }
+  function appendEnd() {
+    const d = document.getElementById('nzDeck'); if (!d || !window.S || S.tab !== 'news') return;
+    if (d.children.length !== N.stories.length) { N.rerender(); return; }
+    d.insertAdjacentHTML('beforeend', endCard());
+  }
+  function endCard() {
+    const H = hi();
+    return '<article class="nz-card nz-end" data-i="' + N.stories.length + '" aria-label="' + (H ? 'सारी ख़बरें देख लीं' : 'All caught up') + '"><div class="nz-endin">' +
+      '<span class="nz-endic" aria-hidden="true">' + I('check-circle', 44, 1.8) + '</span>' +
+      '<h2>' + (H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up') + '</h2>' +
+      '<p>' + (H ? 'हर 30 मिनट में नई ख़बरें आती हैं।' : 'New stories arrive every 30 minutes.') + '</p>' +
+      '<button class="b-btn" onclick="NewsChannel.again()">' + I('refresh-cw', 16) + (H ? 'फिर देखें' : 'Check again') + '</button></div></article>';
+  }
   function near() { if (N.loaded && N.stories.length && N.i >= N.stories.length - 4) N.more(); }
 
-  N.stop = function () {};                                    // nothing plays in News any more
+  N.stop = function () { clearTimeout(viewT); flushSeen(); N._leftAt = Date.now(); };   // nothing plays in News any more
   N.setLang = function (l) { N.lang = l; try { localStorage.setItem('news.lang', l); } catch (e) {} N.rerender(); };
   // The shell re-renders the tab itself; size the deck and wire swiping after every render.
-  N.after = function () { requestAnimationFrame(() => { N.size(); N.go(N.i, true); N.hint(); }); };
+  N.after = function () {
+    // back on News after 20 minutes away: start from what is new (everything you saw stays seen)
+    if (N._leftAt && Date.now() - N._leftAt > 20 * 60e3 && N.loaded && !N._loading) { N._leftAt = 0; N.loaded = false; N._loading = true; N.load(); return; }
+    N._leftAt = 0;
+    requestAnimationFrame(() => { N.size(); N.go(N.i, true); N.hint(); });
+  };
   N.hint = function () {
     const d = document.getElementById('nzDeck');
     if (!d || N.stories.length < 2 || N._hinted) return;
@@ -136,22 +229,14 @@
     const src = st.sources || [];
     const names = src.slice(0, 2).map(srcName).filter(Boolean).join(', ');
     const share = '<button class="nz-share" onclick="NewsChannel.share(' + i + ')" aria-label="' + (hi() ? 'शेयर करें' : 'Share') + '">' + I('share-2', 20) + '</button>';
-    // talk it through with Bro: starts a voice call with this story as the topic
-    const ask = '<button class="nz-ask" onclick="NewsChannel.ask(' + i + ')" aria-label="' + (hi() ? 'इस ख़बर पर ब्रो से बात करें' : 'Talk about this with Bro') + '"><i class="nz-ask-orb" aria-hidden="true"></i>' + (hi() ? 'ब्रो से पूछें' : 'Ask Bro') + '</button>';
     // No real photo: a panel in the category's colour holds the same slot, so every card reads the same way.
-    const ph = '<div class="nz-img ph"><span aria-hidden="true">' + I(c[3] || 'newspaper', 72, 1.4) + '</span>' + ask + share + '</div>';
-    const img = st.image ? '<div class="nz-img"><img class="nz-fg" src="' + esc(st.image) + '" alt="" loading="' + (i < 3 ? 'eager' : 'lazy') + '" onerror="NewsChannel.noimg(this)">' + ask + share + '</div>' : ph;
+    const ph = '<div class="nz-img ph"><span aria-hidden="true">' + I(c[3] || 'newspaper', 72, 1.4) + '</span>' + share + '</div>';
+    const img = st.image ? '<div class="nz-img"><img class="nz-fg" src="' + esc(st.image) + '" alt="" loading="' + (i < 3 ? 'eager' : 'lazy') + '" onerror="NewsChannel.noimg(this)">' + share + '</div>' : ph;
     return '<article class="nz-card' + (st.image ? '' : ' noimg') + '" data-i="' + i + '" data-id="' + esc(st.id || '') + '" style="--c:' + c[2] + '" aria-roledescription="slide" aria-label="' + esc(pick(st, 'headline')) + '">' + img +
       '<div class="nz-body"><div class="nz-k">' + (label ? '<b' + (hi() ? ' class="dev"' : '') + '>' + esc(label) + '</b>' : '') + (ago(st.published_at) ? '<span>' + ago(st.published_at) + '</span>' : '') + (names ? '<span class="nz-src">' + esc(names) + '</span>' : '') + '</div>' +
       '<h2 class="' + (hi() && st.headline_hi ? 'dev' : '') + '">' + esc(pick(st, 'headline')) + '</h2>' +
       '<p class="nz-text' + (hi() && st.summary_hi ? ' dev' : '') + '">' + esc(pick(st, 'summary')) + '</p></div></article>';
   }
-  N.ask = function (i) {
-    const st = N.stories[i]; if (!st) return;
-    const topic = { title: pick(st, 'headline'), summary: pick(st, 'summary'), lang: hi() ? 'hi' : 'en' };
-    if (window.BroVoice && BroVoice.askAbout) { BroVoice.askAbout(topic); return; }
-    if (window.switchTab) switchTab('bro');
-  };
   N.noimg = function (el) {
     const box = el.closest('.nz-img'), cardEl = el.closest('.nz-card'); if (!box || !cardEl) return;
     const st = N.stories[+cardEl.dataset.i] || {}, c = CAT[st.category] || [];
@@ -164,9 +249,10 @@
     const H = hi(), list = N.stories, n = list.length;
     const hud = '<div class="nz-hud"><div class="nz-lang" role="group" aria-label="Language"><button class="' + (H ? '' : 'on') + '" aria-pressed="' + !H + '" aria-label="English" onclick="NewsChannel.setLang(\'en\')">EN</button><button class="' + (H ? 'on' : '') + '" aria-pressed="' + H + '" aria-label="हिंदी" onclick="NewsChannel.setLang(\'hi\')">हिं</button></div></div>';
     if (!N.loaded) return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck"><article class="nz-card skel"><div class="nz-img"></div><div class="nz-body"><i></i><i></i><i></i><i></i></div></article></div></div></div>';
-    if (!n && N.err) return '<div class="nz"><div class="nz-empty">' + (window.mascot ? window.mascot('idle', 96) : '') + '<b>' + (H ? 'ख़बरें लोड नहीं हुईं' : 'Couldn’t load the news') + '</b><button class="b-chip" onclick="NewsChannel.loaded=false;NewsChannel.rerender();NewsChannel.load()">' + I('refresh-cw', 14) + (H ? 'फिर कोशिश करें' : 'Try again') + '</button></div></div>';
-    if (!n) return '<div class="nz"><div class="nz-empty">' + (window.mascot ? window.mascot('sleeping', 96) : '') + '<b>' + (H ? 'ख़बरें आ रही हैं' : 'Stories are on the way') + '</b></div></div>';
-    return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck" tabindex="0" aria-label="' + (H ? 'ख़बरें' : 'News') + '">' + list.map((st, i) => card(st, i)).join('') + '</div>' + hud +
+    if (!n && N.err) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('wifi-off', 40, 1.8) + '</span><b>' + (H ? 'ख़बरें लोड नहीं हुईं' : 'Couldn’t load the news') + '</b><button class="b-chip" onclick="NewsChannel.loaded=false;NewsChannel.rerender();NewsChannel.load()">' + I('refresh-cw', 14) + (H ? 'फिर कोशिश करें' : 'Try again') + '</button></div></div>';
+    if (!n && N.caughtUp) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('check-circle', 40, 1.8) + '</span><b>' + (H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up') + '</b><span>' + (H ? 'हर 30 मिनट में नई ख़बरें आती हैं।' : 'New stories arrive every 30 minutes.') + '</span><button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर देखें' : 'Check again') + '</button></div></div>';
+    if (!n) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('newspaper', 40, 1.8) + '</span><b>' + (H ? 'ख़बरें आ रही हैं' : 'Stories are on the way') + '</b></div></div>';
+    return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck" tabindex="0" aria-label="' + (H ? 'ख़बरें' : 'News') + '">' + list.map((st, i) => card(st, i)).join('') + (N.caughtUp ? endCard() : '') + '</div>' + hud +
       '<button class="nz-nav prev" aria-label="Previous" onclick="NewsChannel.go(NewsChannel.i-1)">' + I('chevron-left', 22) + '</button><button class="nz-nav next" aria-label="Next" onclick="NewsChannel.go(NewsChannel.i+1)">' + I('chevron-right', 22) + '</button></div></div>';
   };
 
@@ -181,7 +267,7 @@
     if (!d._wired) {
       d._wired = true;
       let t = 0;
-      d.addEventListener('scroll', () => { cancelAnimationFrame(t); t = requestAnimationFrame(() => { const k = Math.max(0, Math.min(N.stories.length - 1, Math.round(d.scrollLeft / Math.max(1, d.clientWidth)))); if (k !== N.i) { const was = N.i; N.i = k; moved(was); } }); }, { passive: true });
+      d.addEventListener('scroll', () => { cancelAnimationFrame(t); t = requestAnimationFrame(() => { const k = Math.max(0, Math.min(count() - 1, Math.round(d.scrollLeft / Math.max(1, d.clientWidth)))); if (k !== N.i) { const was = N.i; N.i = k; moved(was); } }); }, { passive: true });
       d.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); N.go(N.i + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); N.go(N.i - 1); } });
     }
   };
@@ -208,11 +294,15 @@
     const cards = d.children;
     for (let k = Math.max(0, N.i - 2); k <= Math.min(cards.length - 1, N.i + 3); k++) { const c = cards[k]; if (c && c.classList.contains('nz-card') && c._fit !== c.clientHeight + 'x' + c.clientWidth) fit(c); }
   }
-  function moved(was) { fitNear(); near(); if (was === 0 && N.i > 0) hold(); }
+  function moved(was) {
+    fitNear(); near(); if (was === 0 && N.i > 0) hold();
+    for (let k = was; k < N.i; k++) markSeen(N.stories[k]); // swiped past: seen
+    watch();
+  }
   N.go = function (k, instant) {
     const d = document.getElementById('nzDeck'); if (!d) return;
     const was = N.i;
-    N.i = Math.max(0, Math.min(N.stories.length - 1, k | 0));
+    N.i = Math.max(0, Math.min(count() - 1, k | 0));
     d.scrollTo({ left: N.i * d.clientWidth, behavior: instant ? 'auto' : 'smooth' });
     moved(was);
   };
@@ -233,7 +323,7 @@
     else { try { history.back(); } catch (e) { /* ignore */ } }   // the entry was ours alone: step past it
   });
 
-  // ── Share: the story as one tall image (photo, headline, the full text, source, brodoit.com) ──
+  // ── Share: the story as one tall image (photo, headline, the full text, source, its brodoit.com/n/<id> link + QR) ──
   function wrap(ctx, text, maxW) {
     const out = []; let line = '';
     for (const w of String(text).split(/\s+/)) {
@@ -244,7 +334,10 @@
     return out;
   }
   const loadImg = src => new Promise(res => { if (!src) return res(null); const im = new Image(); if (!/^\//.test(src)) im.crossOrigin = 'anonymous'; im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
-  N.draw = async function (st) {
+  // the QR code library (app/vendor/qrcode.js) loads the first time a picture is shared
+  let qrLib = null;
+  const loadQR = () => qrLib || (qrLib = new Promise(res => { if (window.qrcode) return res(window.qrcode); const sc = document.createElement('script'); sc.src = '/app/vendor/qrcode.js?v=1'; sc.onload = () => res(window.qrcode || null); sc.onerror = () => { qrLib = null; res(null); }; document.head.appendChild(sc); }));
+  N.draw = async function (st, link) {
     const W = 1080, H = 1920, P = 72, c = (CAT[st.category] || ['', '', '#37352F']);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
     const x = cv.getContext('2d');
@@ -255,6 +348,7 @@
     try { // the canvas only uses a web font that is already loaded, so load the exact faces first
       if (document.fonts && document.fonts.load) await Promise.race([Promise.all(['400 40px', '800 30px', '600 28px'].map(f => document.fonts.load(f + ' ' + sans, dev ? 'हिं' : 'Ab')).concat(document.fonts.load('600 64px ' + serif, dev ? 'हिं' : 'Ab'))), new Promise(r => setTimeout(r, 2500))]);
     } catch (e) {}
+    const FOOT = 250, qr = link ? await loadQR() : null;
     const im = await loadImg(st.image);
     // no photo: the same category-colour panel and icon the card shows
     const glyph = im ? null : await loadImg('data:image/svg+xml,' + encodeURIComponent((window.ico ? ico(c[3] || 'newspaper', 24, 1.4) : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"/>').replace('stroke="currentColor"', 'stroke="#ffffff"').replace(/width="24" height="24"/, 'width="240" height="240"')));
@@ -264,7 +358,7 @@
     for (let k = 0; k < 40; k++) {
       x.font = '600 ' + hs + 'px ' + serif; hl = wrap(x, head, W - 2 * P);
       x.font = '400 ' + bs + 'px ' + sans; lines = wrap(x, body, W - 2 * P);
-      need = imgH + 64 + 50 + hl.length * hs * 1.18 + 36 + lines.length * bs * 1.5 + 190;
+      need = imgH + 64 + 50 + hl.length * hs * 1.18 + 36 + lines.length * bs * 1.5 + FOOT + 60;
       if (need <= H) break;
       if (imgH > floor) imgH -= 60; else { hs = Math.max(44, hs - 3); bs = Math.max(28, bs - 1.5); }
     }
@@ -289,29 +383,88 @@
     y += 36;
     x.fillStyle = '#3A3644'; x.font = '400 ' + bs + 'px ' + sans;
     for (const l of lines) { y += bs * 1.5; x.fillText(l, P, y); }
-    // footer
-    x.fillStyle = '#17141F'; x.fillRect(0, H - 130, W, 130);
-    x.fillStyle = '#FFFFFF'; x.font = '800 44px ' + "Georgia, serif"; x.fillText('Bro', P, H - 52);
-    const bw = x.measureText('Bro').width; x.fillStyle = '#E0603F'; x.fillText('doit', P + bw, H - 52);
-    x.fillStyle = 'rgba(255,255,255,.75)'; x.font = '600 28px ' + sans;
+    // footer: the brand, where the story lives (brodoit.com/n/<id>) and a QR code of that link
+    x.fillStyle = '#17141F'; x.fillRect(0, H - FOOT, W, FOOT);
+    const qs = 186, qx = W - P - qs, qy = H - FOOT + (FOOT - qs) / 2;
+    let drewQR = false;
+    if (qr && link) {
+      try {
+        const q = qr(0, 'M'); q.addData(link); q.make();
+        const n = q.getModuleCount(), m = 10, cell = Math.floor((qs - 2 * m) / n), off = (qs - cell * n) / 2;
+        x.fillStyle = '#FFFFFF'; x.fillRect(qx, qy, qs, qs); x.fillStyle = '#17141F';
+        for (let r = 0; r < n; r++) for (let c2 = 0; c2 < n; c2++) if (q.isDark(r, c2)) x.fillRect(qx + off + c2 * cell, qy + off + r * cell, cell, cell);
+        drewQR = true;
+      } catch (e) { drewQR = false; }
+    }
+    const textR = drewQR ? qx - 36 : W - P;
+    x.fillStyle = '#FFFFFF'; x.font = '800 54px ' + "Georgia, serif"; x.fillText('Bro', P, H - FOOT + 92);
+    const bw = x.measureText('Bro').width; x.fillStyle = '#E0603F'; x.fillText('doit', P + bw, H - FOOT + 92);
+    const short = link ? link.replace(/^https?:\/\//, '') : 'brodoit.com';
+    x.fillStyle = '#FFFFFF'; x.font = '700 34px ' + sans;
+    let sz = 34; while (sz > 22 && x.measureText(short).width > textR - P) { sz -= 2; x.font = '700 ' + sz + 'px ' + sans; }
+    x.fillText(short, P, H - FOOT + 152);
+    x.fillStyle = 'rgba(255,255,255,.7)'; x.font = '600 26px ' + sans;
     const src = (st.sources || []).slice(0, 2).map(srcName).join(', ');
-    const right = (src ? src + '  ·  ' : '') + 'brodoit.com'; x.fillText(right, W - P - x.measureText(right).width, H - 56);
+    const sub = (hi() ? 'पूरी ख़बर पढ़ें' : 'Read the full story') + (src ? '  ·  ' + src : '');
+    x.fillText(wrap(x, sub, textR - P)[0] || '', P, H - FOOT + 200);
     return cv;
   };
-  N.share = async function (i) {
-    const st = N.stories[i]; if (!st) return;
+  // the story's link: /n/<id> (kept 90 days on the server once shared), else the in-app link
+  async function linkFor(st) {
+    if (st._link) return st._link;
     try {
-      const cv = await N.draw(st);
-      const blob = await new Promise(res => cv.toBlob(res, 'image/jpeg', 0.9));
-      if (!blob) throw new Error('no image');
-      const file = new File([blob], 'brodoit-news.jpg', { type: 'image/jpeg' });
-      const link = location.origin + '/?tab=news&s=' + encodeURIComponent(st.id);
-      if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
-        await navigator.share({ files: [file], title: pick(st, 'headline'), text: pick(st, 'headline') + ' ' + link });
-      } else {
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'brodoit-news.jpg'; document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-      }
-    } catch (e) { if (e && e.name !== 'AbortError' && typeof toast === 'function') toast(hi() ? 'शेयर नहीं हो सका' : 'Could not share'); }
+      const r = await fetch('/api/news/share', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: st.id }) });
+      const j = r.ok ? await r.json() : null;
+      if (j && j.url) return (st._link = j.url);
+    } catch (e) { /* offline */ }
+    return location.origin + '/?tab=news&s=' + encodeURIComponent(st.id);
+  }
+  async function copyText(t) {
+    try { await navigator.clipboard.writeText(t); return true; } catch (e) { /* older phones */ }
+    try { const ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:-100px;opacity:0'; document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok; } catch (e) { return false; }
+  }
+  const say = m => { if (typeof toast === 'function') toast(m); };
+  // Share opens a sheet: the picture, the link, or copy the link. The link and the picture are made as the sheet
+  // opens, so a tap shares at once (phones only share right after a tap).
+  N.share = function (i) {
+    const st = N.stories[i]; if (!st) return;
+    const H = hi();
+    document.getElementById('nzShare')?.remove();
+    const bg = document.createElement('div'); bg.className = 'nz-sheet-bg'; bg.id = 'nzShare';
+    bg.innerHTML = '<div class="nz-sheet" role="dialog" aria-modal="true" aria-label="' + (H ? 'शेयर करें' : 'Share') + '"><div class="nz-grab" aria-hidden="true"></div>' +
+      '<b class="nz-sh-t">' + esc(pick(st, 'headline')) + '</b>' +
+      '<button type="button" class="nz-sh" data-k="pic">' + I('image', 22) + '<span><b>' + (H ? 'तस्वीर शेयर करें' : 'Share picture') + '</b><small>' + (H ? 'पूरी ख़बर, लिंक और QR कोड के साथ' : 'The whole story, with its link and a QR code') + '</small></span></button>' +
+      '<button type="button" class="nz-sh" data-k="link">' + I('share-2', 22) + '<span><b>' + (H ? 'लिंक शेयर करें' : 'Share link') + '</b><small>' + (H ? 'WhatsApp या किसी भी ऐप पर' : 'To WhatsApp or any app') + '</small></span></button>' +
+      '<button type="button" class="nz-sh" data-k="copy">' + I('copy', 22) + '<span><b>' + (H ? 'लिंक कॉपी करें' : 'Copy link') + '</b><small class="nz-sh-url">brodoit.com/n/' + esc(st.id) + '</small></span></button>' +
+      '<button type="button" class="b-btn ghost wide nz-sh-x">' + (H ? 'रहने दें' : 'Cancel') + '</button></div>';
+    document.body.appendChild(bg);
+    const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = e => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', onKey);
+    bg.addEventListener('click', e => { if (e.target === bg || e.target.closest('.nz-sh-x')) close(); });
+    const linkP = linkFor(st);
+    const picP = linkP.then(link => N.draw(st, link)).then(cv => new Promise(res => cv.toBlob(res, 'image/jpeg', 0.9))).catch(() => null);
+    linkP.then(link => { const u = bg.querySelector('.nz-sh-url'); if (u) u.textContent = link.replace(/^https?:\/\//, ''); });
+    bg.querySelectorAll('.nz-sh').forEach(b => b.addEventListener('click', async () => {
+      const k = b.dataset.k, head = pick(st, 'headline');
+      try {
+        const link = await linkP;
+        if (k === 'copy') { close(); say(await copyText(link) ? (H ? 'लिंक कॉपी हो गया' : 'Link copied') : link); return; }
+        if (k === 'link') {
+          if (navigator.share) { await navigator.share({ title: head, text: head, url: link }); close(); return; }
+          close(); say(await copyText(link) ? (H ? 'लिंक कॉपी हो गया' : 'Link copied') : link); return;
+        }
+        const blob = await picP; if (!blob) throw new Error('no image');
+        const file = new File([blob], 'brodoit-news.jpg', { type: 'image/jpeg' });
+        if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+          await navigator.share({ files: [file], title: head, text: head + '\n' + link });
+        } else {
+          const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'brodoit-news.jpg'; document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+          await copyText(link); say(H ? 'तस्वीर सेव हुई, लिंक कॉपी हुआ' : 'Picture saved, link copied');
+        }
+        close();
+      } catch (e) { if (e && e.name !== 'AbortError') say(H ? 'शेयर नहीं हो सका' : 'Could not share'); }
+    }));
   };
 })();
