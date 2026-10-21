@@ -146,7 +146,7 @@
     else if (V.state === 'thinking') { line = lastUser ? lastUser.text : ''; cls = 'user'; }
     else if (lastBro && (V.state === 'speaking' || V.state === 'live')) { line = lastBro.text; cls = 'bro'; }
     const why = V.why && WHY[V.why] ? WHY[V.why][hi ? 1 : 0] : '';
-    const hint = !live ? '' : V.engine === 'fallback' && (V.noTTS || V.fromCore) ? (why || WHY.credits[hi ? 1 : 0]) : core && V.noVoice ? WHY.voice[hi ? 1 : 0]
+    const hint = !live ? '' : core && V.closerUntil > Date.now() ? (hi ? 'थोड़ा पास आकर बोलो' : 'Speak a little closer') : V.engine === 'fallback' && (V.noTTS || V.fromCore) ? (why || WHY.credits[hi ? 1 : 0]) : core && V.noVoice ? WHY.voice[hi ? 1 : 0]
       : V.engine === 'fallback' && V.state === 'live' ? (SR ? (hi ? 'बोलने के लिए टैप करो' : 'Tap the circle to speak') : (hi ? 'बोलते समय दबाए रखो' : 'Hold the circle while you speak')) : '';
     // captions (core): the last thing you said, small, above what Bro is saying now
     const heardLine = core && lastUser ? '<div class="bvf-heard" id="bvfHeard">' + esc(lastUser.text) + '</div>' : '';
@@ -477,9 +477,31 @@ registerProcessor('bro-mic', BroMic);`;
   //    · start goes to the server only then, with ~320 ms of pre-roll so the first syllable is never cut;
   //    · the end of a turn: 1.1 s of silence, 1.3 s while the voiced speech is still under 1.2 s; 30 s at most;
   //    · the noise floor adapts while nobody speaks.
-  const VADC = { START_DB: 12, START_DB_SIL: 6, CONT_DB: 6, CONFIRM_MS: 192, GAP_MS: 160, END_MS: 1100, END_SHORT_MS: 1300, SHORT_MS: 1200, MIN_MS: 180, MAX_MS: 30000, PREROLL: 10 };
+  //  v21 (soft voices): the start needs floor + 9 dB (+4 dB with Silero), the phrase continues at floor + 4 dB (+5 dB
+  //  without Silero), and the floor is the 20th percentile of the last 3 s of frames Silero calls non-speech, so a soft
+  //  voice can no longer drag the floor up to itself. Silero hearing speech that stays under the start level for a while
+  //  shows "Speak a little closer".
+  const VADC = { START_DB: 9, START_DB_SIL: 4, CONT_DB: 5, CONT_DB_SIL: 4, CONFIRM_MS: 192, GAP_MS: 160, END_MS: 1100, END_SHORT_MS: 1300, SHORT_MS: 1200, MIN_MS: 180, MAX_MS: 30000, PREROLL: 10, FLOOR_FRAMES: 94, CLOSER_MS: 640 };
   V.VAD = VADC;
-  V.vadReset = function () { V.vad = { floor: -60, ring: [], cand: null, inUtt: false, ms: 0, voiced: 0, quiet: 0, dbs: [], f0s: [], edges: 0, wasV: false, n: 0, q: Promise.resolve(), pend: 0, level: 0, deaf: false }; };
+  V.vadReset = function () { V.vad = { floor: -60, hist: [], soft: [], ring: [], cand: null, inUtt: false, ms: 0, voiced: 0, quiet: 0, dbs: [], f0s: [], edges: 0, wasV: false, n: 0, q: Promise.resolve(), pend: 0, level: 0, deaf: false }; };
+  // the noise floor: the 20th percentile of the recent non-speech frames (minimum statistics), between -80 and -28 dBFS
+  V.vadFloor = function (D, db, prob) {
+    if (prob != null && prob >= 0.3 && D.hist.length >= 8) return; // Silero hears a voice: never learn the floor from it (once it has a start)
+    D.hist.push(db); if (D.hist.length > VADC.FLOOR_FRAMES) D.hist.shift();
+    const s = D.hist.slice().sort((a, b) => a - b), p = s[Math.floor((s.length - 1) * 0.2)];
+    D.floor = Math.max(-80, Math.min(-28, D.hist.length < 8 ? Math.min(D.floor, p) : p));
+  };
+  // Silero hears speech that never gets loud enough to start a phrase: ask to speak a little closer (at most every 30 s)
+  V.closerCheck = function (D, prob, speechy) {
+    const now = performance.now();
+    if (prob != null && prob >= 0.6 && !speechy) D.soft.push(now);
+    while (D.soft.length && now - D.soft[0] > 2000) D.soft.shift();
+    if (D.soft.length * FRAME_MS >= VADC.CLOSER_MS && !(V.closerAt > Date.now() - 30000)) {
+      D.soft = []; V.closerAt = Date.now(); V.closerUntil = Date.now() + 4000; V.stats.closer = (V.stats.closer || 0) + 1;
+      const el = document.querySelector('.bvf-hint'); if (el) el.textContent = V.lang === 'hi' ? 'थोड़ा पास आकर बोलो' : 'Speak a little closer';
+      setTimeout(() => { const e2 = document.querySelector('.bvf-hint'); if (e2 && /closer|पास आकर/.test(e2.textContent)) e2.textContent = ''; }, 4100);
+    }
+  };
   V.vadReset();
   V.onFrame = function (d) {
     if (V.engine !== 'core' || !coreLive()) return;
@@ -501,15 +523,12 @@ registerProcessor('bro-mic', BroMic);`;
     const useSil = prob != null;
     D.level = Math.max(0, Math.min(1, (fr.db - D.floor - 4) / 26));
     if (!D.inUtt) {
-      if (!D.cand) { // the noise floor: follows quiet frames quickly, loud ones very slowly
-        if (fr.db < D.floor) D.floor += (fr.db - D.floor) * 0.3;
-        else D.floor += (fr.db - D.floor) * (fr.db < D.floor + 6 ? 0.03 : 0.003);
-        D.floor = Math.max(-80, Math.min(-28, D.floor));
-      }
+      if (!D.cand) V.vadFloor(D, fr.db, prob); // the noise floor, from the frames nobody is speaking in
       // busy (from your end of speech until the server's turn is done, sentence gaps and thinking included): you can
       // still add to your thought, with a slightly stricter start so a last echo in a gap between Bro's lines can't
       const busy = !V.turnDone;
       const speechy = useSil ? prob >= (busy ? 0.6 : 0.5) && fr.db > D.floor + C.START_DB_SIL + (busy ? 2 : 0) : fr.db > D.floor + C.START_DB + (busy ? 3 : 0);
+      if (useSil) V.closerCheck(D, prob, speechy);
       if (!D.cand) {
         if (speechy) D.cand = { frames: [fr], voiced: FRAME_MS, gap: 0, dbs: [fr.db], f0s: fr.f0 ? [fr.f0] : [] };
         else { D.ring.push(fr); if (D.ring.length > C.PREROLL) D.ring.shift(); }
@@ -526,7 +545,7 @@ registerProcessor('bro-mic', BroMic);`;
     }
     V.wsSend(fr.pcm.buffer);
     D.ms += FRAME_MS;
-    const voiced = fr.db > D.floor + C.CONT_DB && (!useSil || prob >= 0.35);
+    const voiced = fr.db > D.floor + (useSil ? C.CONT_DB_SIL : C.CONT_DB) && (!useSil || prob >= 0.35);
     if (voiced) { D.voiced += FRAME_MS; D.quiet = 0; D.dbs.push(fr.db); if (fr.f0) D.f0s.push(fr.f0); if (!D.wasV) D.edges++; } else D.quiet += FRAME_MS;
     D.wasV = voiced;
     if (D.quiet >= (D.voiced < C.SHORT_MS ? C.END_SHORT_MS : C.END_MS) || D.ms >= C.MAX_MS) V.uttEnd(D.ms >= C.MAX_MS);
