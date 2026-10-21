@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- v21: Android 13+ shows notifications (the morning and evening summaries, reminders) only with this -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <uses-feature android:name="android.hardware.sensor.stepcounter" android:required="false" />
 
@@ -85,7 +87,14 @@
                 <action android:name="android.support.customtabs.trusted.TRUSTED_WEB_ACTIVITY_SERVICE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!-- v21: notifications from brodoit.com show Bro's small white icon -->
+            <meta-data android:name="android.support.customtabs.trusted.SMALL_ICON" android:resource="@drawable/ic_notification" />
         </service>
+
+        <!-- v21: asks Android 13+ for the notification permission when the web app asks (Notification.requestPermission) -->
+        <activity
+            android:name="com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

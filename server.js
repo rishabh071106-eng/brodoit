@@ -70,9 +70,12 @@ try{db.exec("CREATE TABLE IF NOT EXISTS article_likes(article_id TEXT NOT NULL,u
 try{db.exec("CREATE INDEX IF NOT EXISTS idx_articles_created ON articles(created_at DESC)")}catch(e){}
 try{db.exec("CREATE TABLE IF NOT EXISTS push_subs(id INTEGER PRIMARY KEY AUTOINCREMENT,user_phone TEXT NOT NULL,endpoint TEXT NOT NULL UNIQUE,keys_p256dh TEXT NOT NULL,keys_auth TEXT NOT NULL,hydration INTEGER DEFAULT 0,created_at TEXT DEFAULT(datetime('now')))")}catch(e){}
 
-const VAPID_PUBLIC='BPfvXAUnmSa0KZgsQ7jlqMULApFdrO6PRUMJRwXJQicnAUj5Yj2pCDxK8lZBwWQVhYCjDp_58cP5Te7J7yYRi8A';
-const VAPID_PRIVATE=process.env.VAPID_PRIVATE_KEY||'N7yZL_7GRwTXgw-ckT8A5SiRJz2gK1r9PGYMYBmmgpc';
-webpush.setVapidDetails('mailto:rishabh071106@gmail.com',VAPID_PUBLIC,VAPID_PRIVATE);
+// v21: the push key is the server's own (modules/pushkeys.js); the private key once committed here is refused.
+try{db.exec("ALTER TABLE push_subs ADD COLUMN vapid TEXT DEFAULT ''")}catch(e){}
+const _pushKeys=require('./modules/pushkeys.js').load({dataDir:path.dirname(DB_PATH),log:console.log});
+const VAPID_PUBLIC=_pushKeys.publicKey;
+webpush.setVapidDetails(process.env.VAPID_SUBJECT||'https://brodoit.com',VAPID_PUBLIC,_pushKeys.privateKey);
+const _push=require('./modules/pushkeys.js').sender({db,webpush,keys:_pushKeys,subject:process.env.VAPID_SUBJECT||'https://brodoit.com',log:console.log});
 
 const genId=()=>'t_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
 const genToken=()=>crypto.randomBytes(32).toString('hex');
@@ -414,7 +417,7 @@ const BRO_TOOLS=[
   {name:'set_reminder',description:'Set a reminder that will send a push notification at a specific time. Use when user says "remind me", "set alarm", "notify me at", etc.',input_schema:{type:'object',properties:{title:{type:'string',description:'What to remind about'},date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'},time:{type:'string',description:'Time in HH:MM 24h format'},notes:{type:'string',description:'Optional extra details'}},required:['title','time']}}
 ];
 async function _broExecTool(toolName,input,userPhone,userTz){
-  const today=new Date().toISOString().slice(0,10);
+  const _tzT=userTz||_getUserTz(userPhone);const today=dayKey(new Date(),_tzT&&_tzT!=='UTC'?_tzT:'Asia/Kolkata'); // v21: the user's own date
   if(toolName==='create_calendar_event'){
     const ga=await gAccessToken(userPhone);
     if(!ga)return{ok:false,error:'Google Calendar not connected. Ask user to connect Google in Settings.'};
@@ -1696,10 +1699,13 @@ app.post('/api/steps/sync-fit',auth,async(req,res)=>{try{const r=await fitSync(r
 app.get('/api/push/vapid-key',(_,res)=>res.json({key:VAPID_PUBLIC}));
 app.post('/api/push/subscribe',auth,async(req,res)=>{
   try{
-    const{subscription,hydration}=req.body;
-    if(!subscription||!subscription.endpoint)return res.status(400).json({error:'Missing subscription'});
-    db.prepare("INSERT INTO push_subs(user_phone,endpoint,keys_p256dh,keys_auth,hydration)VALUES(?,?,?,?,?)ON CONFLICT(endpoint)DO UPDATE SET user_phone=excluded.user_phone,keys_p256dh=excluded.keys_p256dh,keys_auth=excluded.keys_auth,hydration=excluded.hydration").run(req.user.phone,subscription.endpoint,subscription.keys.p256dh,subscription.keys.auth,hydration?1:0);
-    res.json({ok:true});
+    const{subscription,hydration,key}=req.body;
+    if(!subscription||!subscription.endpoint||!subscription.keys||!subscription.keys.p256dh||!subscription.keys.auth)return res.status(400).json({error:'Missing subscription'});
+    // v21: the key it was made with (the app sends the one it used); a stale one is skipped until the app re-subscribes
+    const _vk=typeof key==='string'&&/^[A-Za-z0-9_-]{60,120}$/.test(key)?key:VAPID_PUBLIC;
+    const _h=hydration==null?null:(hydration?1:0);
+    db.prepare("INSERT INTO push_subs(user_phone,endpoint,keys_p256dh,keys_auth,hydration,vapid)VALUES(?,?,?,?,?,?)ON CONFLICT(endpoint)DO UPDATE SET user_phone=excluded.user_phone,keys_p256dh=excluded.keys_p256dh,keys_auth=excluded.keys_auth,hydration=COALESCE(?,push_subs.hydration),vapid=excluded.vapid").run(req.user.phone,subscription.endpoint,subscription.keys.p256dh,subscription.keys.auth,_h||0,_vk,_h);
+    res.json({ok:true,current:_vk===VAPID_PUBLIC});
   }catch(e){res.status(500).json({error:e.message})}
 });
 app.post('/api/push/hydration-toggle',auth,(req,res)=>{
@@ -1716,13 +1722,10 @@ app.post('/api/push/unsubscribe',auth,(req,res)=>{
 // Server-side hydration push — runs every hour, sends to users with hydration=1
 setInterval(()=>{
   const subs=db.prepare("SELECT * FROM push_subs WHERE hydration=1").all();
-  const hour=new Date().getHours();
-  if(hour<7||hour>23)return;
   for(const sub of subs){
-    const payload=JSON.stringify({type:'hydration',title:'\u{1F4A7} Time to drink water!',body:'Stay hydrated — your body will thank you.',tag:'hydration-'+Date.now(),silent:true});
-    webpush.sendNotification({endpoint:sub.endpoint,keys:{p256dh:sub.keys_p256dh,auth:sub.keys_auth}},payload).catch(err=>{
-      if(err.statusCode===404||err.statusCode===410)db.prepare("DELETE FROM push_subs WHERE endpoint=?").run(sub.endpoint);
-    });
+    const _tz=_getUserTz(sub.user_phone),hour=+new Intl.DateTimeFormat('en-GB',{timeZone:_tz&&_tz!=='UTC'?_tz:'Asia/Kolkata',hour:'2-digit',hourCycle:'h23'}).format(new Date());
+    if(hour<8||hour>21)continue; // v21: the user's own waking hours, not the server's
+    _push.sendSub(sub,{type:'hydration',title:'\u{1F4A7} Time to drink water!',body:'Stay hydrated — your body will thank you.',tag:'hydration',url:'/?tab=home',silent:true});
   }
 },3600000);
 // ═══ BOOK LISTENING STREAK ═══
@@ -2698,24 +2701,11 @@ app.put('/api/me',auth,(req,res)=>{
   res.json({phone:req.user.phone,name});
 });
 
-// ═══ REMINDERS ═══
-setInterval(async()=>{const now=new Date(),nd=todayStr(),nt=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-const due=db.prepare("SELECT * FROM tasks WHERE status!='done' AND due_date=? AND reminder_time=? AND reminded=0").all(nd,nt);
-for(const t of due){
-  db.prepare('UPDATE tasks SET reminded=1 WHERE id=?').run(t.id);
-  const subs=db.prepare("SELECT * FROM push_subs WHERE user_phone=?").all(t.user_phone);
-  for(const sub of subs){
-    const payload=JSON.stringify({type:'reminder',title:'⏰ '+t.title,body:t.notes||'Time for: '+t.title,tag:'reminder-'+t.id,requireInteraction:true});
-    webpush.sendNotification({endpoint:sub.endpoint,keys:{p256dh:sub.keys_p256dh,auth:sub.keys_auth}},payload).catch(err=>{
-      if(err.statusCode===404||err.statusCode===410)db.prepare("DELETE FROM push_subs WHERE endpoint=?").run(sub.endpoint);
-    });
-  }
-}
-},60000);
+// ═══ REMINDERS ═══ v21: modules/digest.js fires them at the task's local date and time (the user's timezone)
 
 // ═══ FRONTEND ═══
 const HTML=`<!DOCTYPE html><html lang="en"><head>
-<script src="/app/frame.js?v=2"></script>
+<script src="/app/frame.js?v=3"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZYGVF2BNV9"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZYGVF2BNV9');</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2737,8 +2727,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=22"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=23">
-<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=23" defer></script><script src="/app/you.js?v=21" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=25" defer></script><script src="/app/micgain.js?v=1" defer></script><script src="/app/voicenote.js?v=2" defer></script><script src="/app/news.js?v=22" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=25" defer></script><script src="/app/onboarding.js?v=21" defer></script><script src="/app/motion.js?v=21" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=23"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=23">
+<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=23" defer></script><script src="/app/you.js?v=22" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=26" defer></script><script src="/app/micgain.js?v=1" defer></script><script src="/app/voicenote.js?v=2" defer></script><script src="/app/news.js?v=23" defer></script><script src="/app/notify.js?v=1" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=25" defer></script><script src="/app/onboarding.js?v=22" defer></script><script src="/app/motion.js?v=21" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -14218,6 +14208,7 @@ async function toggleHydration(){
   render();
 }
 async function subscribePush(hydration){
+  if(window.Notify&&Notify.subscribe)return Notify.subscribe({hydration:!!hydration}); // v21: app/notify.js (re-subscribes when the server's key changed)
   try{
     if(!('serviceWorker' in navigator)||!('PushManager' in window))return;
     const reg=await navigator.serviceWorker.ready;
@@ -17390,7 +17381,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=135').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=136').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17918,7 +17909,7 @@ app.get(['/lang/phrases.html','/lang/phrase-lesson.html'],(_,res)=>res.redirect(
 // back to the last copy when offline; the app's and mini-apps'
 // files (/app, /lang, /mind, /code, icons) come from the cache at once and refresh in the background. Never /api/,
 // never a Range request, never a page sent no-store.
-const _SW_VER='v183-'+(String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,8)||Date.now().toString(36));
+const _SW_VER='v184-'+(String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,8)||Date.now().toString(36));
 app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="${_SW_VER}";
 var CACHE="bd-"+CACHE_VER;
 self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(fetch("/",{credentials:"same-origin",cache:"no-cache"}).then(function(res){if(keep(res))return caches.open(CACHE).then(function(ca){return ca.put("/",res)})}).catch(function(){}))});
@@ -17940,16 +17931,17 @@ self.addEventListener("fetch",function(e){
   })}));
 });
 self.addEventListener("push",function(e){
-  if(!e.data)return;
-  var d=e.data.json();
-  var opts={body:d.body||"",icon:"/icon-192.png?v=5",badge:"/icon-192.png?v=5",tag:d.tag||"push",requireInteraction:true,data:{type:d.type},silent:!!d.silent};
+  var d={};try{d=e.data?e.data.json():{}}catch(x){d={body:e.data?e.data.text():""}}
+  var url=typeof d.url==="string"&&d.url.charAt(0)==="/"&&d.url.charAt(1)!=="/"?d.url:"/";
+  var opts={body:d.body||"",icon:"/icon-192.png?v=5",badge:"/app/badge-96.png?v=1",tag:d.tag||"brodoit",renotify:!!(d.renotify&&d.tag),requireInteraction:!!d.requireInteraction,silent:!!d.silent,timestamp:Date.now(),data:{type:d.type||"",url:url}};
   e.waitUntil(self.registration.showNotification(d.title||"Brodoit",opts));
 });
 self.addEventListener("notificationclick",function(e){
   e.notification.close();
-  e.waitUntil(clients.matchAll({type:"window"}).then(function(cl){
-    for(var c of cl){if(c.url.includes("brodoit.com")&&"focus"in c)return c.focus()}
-    return clients.openWindow("/");
+  var url=(e.notification.data&&e.notification.data.url)||"/";
+  e.waitUntil(clients.matchAll({type:"window",includeUncontrolled:true}).then(function(cl){
+    for(var i=0;i<cl.length;i++){var c=cl[i];if(new URL(c.url).origin===location.origin&&"focus" in c){c.postMessage({type:"bd-route",url:url});return c.focus()}}
+    return clients.openWindow(url);
   }));
 });`)});
 
@@ -18020,14 +18012,16 @@ try{require('./modules/sealed.js').install(app,{dataDir:path.dirname(DB_PATH),ap
 // v16 Bro Core — the one brain (Groq open models), hearing, Kokoro voice, memory and daily knowledge (modules/brocore)
 try{require('./modules/brocore').install(app,{db,auth,isAdmin:isAdminUser,getSetting,setSetting,mediaDir:MEDIA_DIR,callGemini:_callGeminiLegacy,getUserTz:_getUserTz,newsItems:()=>NEWS_CATS.flatMap(c=>((newsCache[c]||{}).items||[]).map(it=>Object.assign({cat:c},it)))})}catch(e){console.log('[brocore] not installed:',e.message)}
 const sha256=s=>crypto.createHash('sha256').update(String(s)).digest('hex');
-function pushTo(phone,payload){try{const subs=db.prepare('SELECT * FROM push_subs WHERE user_phone=?').all(phone);let n=0;for(const sub of subs){n++;webpush.sendNotification({endpoint:sub.endpoint,keys:{p256dh:sub.keys_p256dh,auth:sub.keys_auth}},typeof payload==='string'?payload:JSON.stringify(payload)).catch(err=>{if(err.statusCode===404||err.statusCode===410)db.prepare('DELETE FROM push_subs WHERE endpoint=?').run(sub.endpoint)})}return n}catch(e){return 0}}
+function pushTo(phone,payload){return _push.send(phone,payload)}
 try{require('./modules/newsreader.js').install(app,{auth,getSetting,MEDIA_DIR})}catch(e){console.log('[newsreader] not installed:',e.message)}
-try{require('./modules/newsdesk.js').install(app,{db,auth,getSetting,isAdminUser,fetchFeed,feeds:NEWS_FEEDS,mediaDir:MEDIA_DIR,rssItems:()=>NEWS_CATS.flatMap(c=>((newsCache[c]||{}).items||[]).map(it=>Object.assign({cat:c},it)))})}catch(e){console.log('[desk] not installed:',e.message)}
+try{require('./modules/newsdesk.js').install(app,{db,auth,getSetting,isAdminUser,fetchFeed,feeds:NEWS_FEEDS,mediaDir:MEDIA_DIR,publicUrl:process.env.PUBLIC_URL||'https://brodoit.com',userOf:req=>{let t=req.headers['x-token']||'';if(!t){const m=String(req.headers.cookie||'').match(/tf_token=([^;]+)/);if(m){try{t=decodeURIComponent(m[1])}catch(e){t=''}}}return t?db.prepare('SELECT phone,name FROM users WHERE token=?').get(String(t))||null:null},rssItems:()=>NEWS_CATS.flatMap(c=>((newsCache[c]||{}).items||[]).map(it=>Object.assign({cat:c},it)))})}catch(e){console.log('[desk] not installed:',e.message)}
 // v13.1: News is read, not played; recorded headlines only when NEWS_VOICE=1 (credits go to course/lesson/book voices)
 if(process.env.NEWS_VOICE==='1')try{const _st=require('./modules/studio.js');_st.configure({mediaDir:MEDIA_DIR});require('./modules/newsvoice.js').install(app,{db,getSetting,mediaDir:MEDIA_DIR,STUDIO:_st,schedule:String(process.env.NEWS_DESK||'1')!=='0'})}catch(e){console.log('[news-voice] off:',e.message)}
 let _android=null;try{_android=require('./modules/android.js').install(app,{MEDIA_DIR,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',auth,isAdminUser,getSetting})}catch(e){console.log('[android] not installed:',e.message)}
 if(_android){global._androidCert=function(){try{return _android.cert()}catch(e){return null}};global._playSync=function(){return _android.syncPlay()};global._playVerify=function(v){return _android.play.verify(v)}}
 let _steps=null;try{_steps=require('./modules/steps.js').install(app,{db,auth,dayKey,webpush,pushTo,MEDIA_DIR,android:_android,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',genId,sha256,getUserByPhone:phone=>db.prepare('SELECT phone,name,email,tz,created_at FROM users WHERE phone=?').get(phone),fitSync,_getUserTz,appRoot:__dirname});if(_steps&&_steps.ingest)global._stepsIngest=_steps.ingest}catch(e){console.log('[steps] not loaded:',e.message)}
+// v21: morning and evening summaries + task reminders on the user's own clock (modules/digest.js)
+try{global._digest=require('./modules/digest.js').install(app,{db,auth,push:_push,tzOf:p=>{const t=_getUserTz(p);return t&&t!=='UTC'?t:'Asia/Kolkata'},steps:()=>_steps})}catch(e){console.log('[digest] off:',e.message)}
 app.use('/lang',express.static(path.join(__dirname,'lang'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 app.use('/speaker',express.static(path.join(__dirname,'speaker'),{etag:true,setHeaders:res=>res.set('Cache-Control','no-cache')}));
 // Python: Zero to Hero — real CPython in the browser (modules/pyhost.js) + the course pages in /code.

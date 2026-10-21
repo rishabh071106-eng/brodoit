@@ -1,5 +1,6 @@
 /* Brodoit News v16 — one story per screen, swiped left/right without end: a full-width photo, the full story
    under it. Language and Share sit on the photo; nothing else, no counters. Paper + ink + one category colour.
+   v21: no Bro in News; the deck ends on "You're all caught up"; Share opens a sheet (picture, link, copy link).
    Loaded after app.css. */
 #app .nz{padding-bottom:0}
 #app .nz-stage{position:relative;margin:0 -16px}
@@ -22,9 +23,6 @@
 #app .nz-lang button.on{background:#fff;color:#17141F;box-shadow:inset 0 0 0 4px rgba(15,13,20,.62)}
 #app .nz-share{position:absolute;right:10px;bottom:10px;width:44px;height:44px;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:2}
 #app .nz-share:active{transform:scale(.92)}
-#app .nz-ask{position:absolute;left:10px;bottom:10px;z-index:2;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px 0 8px;border:0;border-radius:999px;background:rgba(15,13,20,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;font:600 14px/1 var(--ui-font);cursor:pointer}
-#app .nz-ask:active{transform:scale(.96)}
-#app .nz-ask-orb{width:28px;height:28px;border-radius:50%;flex:none;background:radial-gradient(circle at 50% 118%,#FFB88A 0%,#EE7445 30%,#B8402A 58%,#5E1A22 88%);box-shadow:inset 0 -3px 6px rgba(0,0,0,.25),inset 0 2px 4px rgba(255,255,255,.25)}
 #app .nz-body{flex:1 1 auto;min-height:0;overflow:hidden;padding:14px 22px 0}
 #app .nz-k{display:flex;align-items:center;gap:8px;min-width:0;font:600 12px var(--b-sans);color:var(--b-mute);margin-bottom:6px;white-space:nowrap}
 #app .nz-k b{font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
@@ -76,3 +74,25 @@ html[data-theme="dark"] #app .nz-card.skel .nz-img,body[data-theme=aurora] #app 
   body.news-tab{padding-bottom:0!important;overflow:hidden;overscroll-behavior:none}
   body.news-tab #app{padding-bottom:0!important}
 }
+
+/* v21: the end of the deck and the empty states (an icon, no mascot) */
+#app .nz-emic{display:grid;place-items:center;width:72px;height:72px;border-radius:50%;background:var(--b-bg-2);color:var(--b-ink-2)}
+#app .nz-empty span:not(.nz-emic){font:500 14px/1.4 var(--b-sans);color:var(--b-mute)}
+#app .nz-end{justify-content:center;align-items:center}
+#app .nz-endin{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:24px 28px;max-width:360px}
+#app .nz-endic{display:grid;place-items:center;width:88px;height:88px;border-radius:50%;background:color-mix(in srgb,#2F7D4F 14%,transparent);color:#2F7D4F;margin-bottom:6px}
+#app .nz-end h2{margin:0;font:400 28px/1.15 var(--b-serif,Georgia,serif)}
+#app .nz-end p{margin:0 0 8px;font:500 15px/1.45 var(--b-sans);color:var(--b-mute)}
+#app .nz-end .b-btn{min-height:48px;padding:0 20px;display:inline-flex;align-items:center;gap:8px}
+/* the share sheet (on <body>, over the tab bar) */
+.nz-sheet-bg{position:fixed;inset:0;z-index:9000;background:rgba(15,13,20,.5);display:flex;align-items:flex-end;justify-content:center;animation:nzIn .18s ease both}
+.nz-sheet{width:100%;max-width:520px;background:var(--b-card,#fff);color:var(--b-ink,#17141F);border-radius:24px 24px 0 0;padding:10px 16px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px -12px rgba(0,0,0,.35);animation:nzUp .24s cubic-bezier(.2,.8,.2,1) both;display:grid;gap:6px}
+.nz-grab{width:40px;height:5px;border-radius:3px;background:var(--b-line,#ddd);margin:0 auto 8px}
+.nz-sh-t{font:700 15px/1.35 var(--b-sans,system-ui);margin:0 4px 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nz-sh{display:flex;align-items:center;gap:14px;min-height:60px;padding:10px 12px;border:0;border-radius:16px;background:transparent;color:inherit;text-align:left;cursor:pointer;font:inherit}
+.nz-sh:active,.nz-sh:hover{background:var(--b-bg-2,#f3efe8)}
+.nz-sh>svg{flex:none;width:44px;height:44px;padding:11px;border-radius:50%;background:var(--b-bg-2,#f3efe8)}
+.nz-sh span{min-width:0}.nz-sh b{display:block;font:700 15.5px/1.25 var(--b-sans,system-ui)}.nz-sh small{display:block;font:500 13px/1.35 var(--b-sans,system-ui);color:var(--b-mute,#6b6875);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nz-sh-x{margin-top:6px}
+@keyframes nzIn{from{opacity:0}}@keyframes nzUp{from{transform:translateY(40px);opacity:.6}}
+@media (prefers-reduced-motion:reduce){.nz-sheet-bg,.nz-sheet{animation:none}}
