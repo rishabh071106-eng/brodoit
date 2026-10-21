@@ -151,11 +151,26 @@
     ]) + '</div>';
   }
 
+  // v21: the Languages list shows your streak and each course's XP (lang.progress.v1), and pulls progress made on another
+  // phone once a minute (lang.js pullProgress)
+  const dayKey = d => { const z = new Date(d.getTime() - d.getTimezoneOffset() * 60000); return z.toISOString().slice(0, 10); };
+  function langStreak(daily) { let d = new Date(), n = 0; if (!daily[dayKey(d)]) d.setDate(d.getDate() - 1); while (daily[dayKey(d)]) { n++; d.setDate(d.getDate() - 1); } return n; }
+  let pulledHub = false;
+  function pullLang() {
+    if (pulledHub) return; pulledHub = true;
+    import('/lang/assets/lang.js?v=15').then(m => m.pullProgress()).then(changed => { if (changed) rerender(); }).catch(() => {});
+  }
+  const FLAME = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2.5c.6 3.3-1.5 5-2.9 6.6C7.7 10.7 6.5 12.4 6.5 15A5.5 5.5 0 0 0 12 20.5 5.5 5.5 0 0 0 17.5 15c0-2.1-.9-3.6-1.9-4.9-.3 1.4-1 2.4-2.1 2.9.6-3.5-.2-7.3-1.5-10.5z"/></svg>';
   function languagesHub(H) {
-    return '<div class="lx">' + header(H ? 'भाषाएँ' : 'Languages', true) + list(LANGS.map(l => {
-      const p = langPct(l.c);
+    pullLang();
+    const st = read('lang.progress.v1'), daily = st.daily || {}, cx = st.courseXp || {};
+    const streak = langStreak(daily), today = daily[dayKey(new Date())] || 0;
+    const strip = '<div class="lx-lang-strip"><span class="lx-ls' + (streak ? ' on' : '') + '">' + FLAME + '<b>' + streak + '</b> ' + (H ? 'दिन की स्ट्रीक' : 'day streak') + '</span>'
+      + '<span class="lx-ls goal"><b>' + Math.min(today, 999) + '</b>/50 XP ' + (H ? 'आज' : 'today') + '</span></div>';
+    return '<div class="lx">' + header(H ? 'भाषाएँ' : 'Languages', true) + strip + list(LANGS.map(l => {
+      const p = langPct(l.c), xp = cx[l.c] || 0;
       return row({ id: l.c, href: '/lang/course.html?c=' + l.c, accent: l.a, ic: '<b class="lx-glyph">' + l.g + '</b>', title: H ? l.nh : l.n,
-        sub: l.native + ' · ' + (p ? p + '%' : (H ? 'शुरू नहीं किया' : 'Not started')), pct: p });
+        sub: l.native + ' · ' + (p ? p + '%' + (xp ? ' · ' + xp + ' XP' : '') : (H ? 'शुरू नहीं किया' : 'Not started')), pct: p });
     })) + '</div>';
   }
 

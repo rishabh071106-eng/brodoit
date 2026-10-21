@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" type="image/png" href="/icon-192.png">
 <link rel="stylesheet" href="/app/theme.css?v=21">
-<link rel="stylesheet" href="/lang/assets/lang.css?v=17">
+<link rel="stylesheet" href="/lang/assets/lang.css?v=18">
 <link rel="stylesheet" href="/lang/assets/topbar.css?v=16">
 <link rel="stylesheet" href="/lang/assets/stages.css?v=4">
 <link rel="stylesheet" href="/app/ui.css?v=23">
@@ -25,7 +25,8 @@
 // A language course (v15 framework, /DESIGN.md): the bar holds only the back chevron; the page opens with the
 // course's own header (letter tile, large title, one status line), a Listen / Practice switch, and one list of
 // lessons. Every lesson is the same framework row; the next lesson is the only one with a play mark.
-import { renderChrome, loadCourses, loadCourse, loadAudioCourse, store, esc, t, param, courseProgress, setCourse, toast, comingSoonHTML } from '/lang/assets/lang.js?v=14';
+import { renderChrome, loadCourses, loadCourse, loadAudioCourse, store, esc, t, param, courseProgress, setCourse, toast, comingSoonHTML, pullProgress } from '/lang/assets/lang.js?v=15';
+import { mountStats } from '/lang/assets/fun.js?v=1';
 import { ic } from '/lang/assets/ico.js?v=14';
 
 // The School of Languages: Spanish, French, German and Hindi (taught in English), English (taught in Hindi).
@@ -42,7 +43,7 @@ document.title = `${meta.name} · Brodoit Languages`;
 if (H) document.documentElement.lang = 'hi';
 const [course, audio] = await Promise.all([loadCourse(code), meta.hasAudio === false ? null : loadAudioCourse(code)]);
 setCourse(code);
-const s = store.read();
+let s = store.read();
 renderChrome({ title: meta.name, back: HUB, backLabel: L('Languages', 'भाषाओं पर वापस') });
 
 // the same letter tile and accent as the Languages list in Learn (app/learn.js)
@@ -60,12 +61,18 @@ const CHEV = ic('chevron-right', 18);
 
 // One row: number tile (done → check, next → number on the accent, locked → muted number), title, one status line,
 // and at the right the play mark (next lesson only), a chevron (other open lessons) or nothing (locked).
+// v21: the lessons are a path (DESIGN.md · Celebration): a round button per lesson (done → check, the next one →
+// highlighted with "Start", locked → a lock), its title and status beside it, gently zig-zagging down the page.
+const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+const ZIG = [0, 18, 24, 18, 0, -18, -24, -18];
+let nodeI = 0;
 function row({ n, title, sub, href, state }) {
-  const tile = `<span class="ui-ic lc-n${state === 'cur' ? ' solid' : ''}" aria-hidden="true">${state === 'done' ? CHECK : n}</span>`;
-  const tx = `<span class="ui-tx"><b>${esc(title)}</b><small>${esc(sub)}</small></span>`;
-  if (state === 'locked') return `<button type="button" class="ui-row lc-row locked" aria-disabled="true" data-locked>${tile}${tx}</button>`;
-  const end = state === 'cur' ? `<span class="lc-play" aria-hidden="true">${PLAY}</span>` : `<span class="ui-chev" aria-hidden="true">${CHEV}</span>`;
-  return `<a class="ui-row lc-row ${state}" href="${esc(href)}"${state === 'cur' ? ' aria-current="step"' : ''}>${tile}${tx}${end}</a>`;
+  const x = ZIG[nodeI++ % ZIG.length];
+  const face = state === 'done' ? CHECK : state === 'locked' ? LOCK : n;
+  const lbl = `<span class="lbl"><b>${esc(title)}</b><small>${esc(sub)}</small></span>`;
+  const start = state === 'cur' ? `<span class="start" aria-hidden="true">${esc(t(lang, 'start'))}</span>` : '';
+  if (state === 'locked') return `<div class="node locked" style="--x:${x}px"><button type="button" class="btn lc-row locked" aria-disabled="true" data-locked aria-label="${esc(title)} · ${esc(sub)}">${face}</button>${lbl}</div>`;
+  return `<div class="node ${state === 'cur' ? 'cur open' : state === 'done' ? 'done' : 'open'}" style="--x:${x}px">${start}<a class="btn press lc-row ${state}" href="${esc(href)}"${state === 'cur' ? ' aria-current="step"' : ''} aria-label="${esc(title)} · ${esc(sub)}">${face}</a>${lbl}</div>`;
 }
 
 if (!course && !audio) {
@@ -83,6 +90,9 @@ if (!course && !audio) {
       <div class="lc-ht"><h1 id="lcTitle">${esc(meta.name)}</h1><p>${esc(status)}</p>
         ${p.done ? `<span class="ui-prog" role="progressbar" aria-label="${L('Course progress', 'कोर्स प्रगति')}" aria-valuenow="${p.pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${p.pct}%"></i></span>` : ''}</div>
     </header>
+    <div class="lx-hub"><div id="lxStats"></div></div>
+    <div id="lxNext"></div>
+    <a class="lx-talk" id="lxTalk" href="/?tab=bro&persona=language&course=${code}">${H ? `Bro से ${esc(meta.name)} में बात करो` : `Talk to Bro in ${esc(meta.name)}`}</a>
     ${hasBoth ? `<div class="ui-seg lc-seg" id="seg" role="tablist" aria-label="${L('Lesson type', 'पाठ का प्रकार')}">
       <button type="button" role="tab" data-m="audio" aria-controls="body">${L('Listen', 'सुनो')}</button><button type="button" role="tab" data-m="practice" aria-controls="body">${L('Practice', 'अभ्यास')}</button>
     </div>` : ''}`;
@@ -93,7 +103,8 @@ if (!course && !audio) {
     if (!audio?.lessons?.length) return comingSoonHTML(lang);
     const ls = audio.lessons;
     const firstOpen = ls.findIndex(l => !isDone(l.id));
-    return `<div class="ui-list lc-list">${ls.map((l, i) => {
+    nodeI = 0;
+    return `<div class="lc-path">${ls.map((l, i) => {
       const done = isDone(l.id), cur = i === firstOpen;
       const open = done || cur || i === 0 || isDone(ls[i - 1].id);
       const min = `${l.minutes || 15} ${t(lang, 'min')}`;
@@ -108,7 +119,7 @@ if (!course && !audio) {
   const firstOpenK = all.findIndex(x => !isDone(x.l.id));
   const practiceHTML = () => {
     if (!course?.units?.length) return comingSoonHTML(lang);
-    let k = -1;
+    let k = -1; nodeI = 0;
     return course.units.map((u, ui) => {
       const doneN = u.lessons.filter(l => isDone(l.id)).length;
       const rows = u.lessons.map((l, li) => {
@@ -122,13 +133,27 @@ if (!course && !audio) {
       }).join('');
       return `<section class="lc-unit" aria-labelledby="lcU${ui + 1}">
         <h2 class="ui-sec" id="lcU${ui + 1}"><span>${t(lang, 'unit')} ${ui + 1} · ${esc(clean(u.title))}</span><span class="lc-cnt">${doneN}/${u.lessons.length}</span></h2>
-        <div class="ui-list lc-list">${rows}</div></section>`;
+        <div class="lc-path">${rows}</div></section>`;
     }).join('');
   };
 
   let mode = (location.hash === '#practice' && course?.units?.length) || !audio?.lessons?.length ? 'practice' : 'audio';
   const seg = document.getElementById('seg');
+  // v21: one big Continue: the next lesson not done yet (in the list you are looking at, else the other one)
+  const nextItem = () => {
+    const ls = audio?.lessons || [];
+    const a = ls.find(l => !isDone(l.id)), pr = all.find(x => !isDone(x.l.id));
+    const aItem = a && { href: `/lang/audio.html?c=${code}&l=${encodeURIComponent(a.id)}`, title: clean(a.title), sub: `${L('Listen', 'सुनो')} · ${a.minutes || 15} ${t(lang, 'min')}` };
+    const pItem = pr && { href: `/lang/lesson.html?c=${code}&u=${encodeURIComponent(pr.u.id)}&l=${encodeURIComponent(pr.l.id)}`, title: clean(pr.l.title), sub: `${L('Practice', 'अभ्यास')} · 5 ${t(lang, 'min')}` };
+    return mode === 'practice' ? (pItem || aItem) : (aItem || pItem);
+  };
+  const drawNext = () => {
+    const n = nextItem(), el = document.getElementById('lxNext'); if (!el) return;
+    el.innerHTML = n ? `<a class="lx-continue press" id="lxContinue" href="${esc(n.href)}"><span class="ic">${PLAY}</span><span><b>${esc(s.done && Object.keys(s.done).some(k => k.startsWith(code + '/')) ? t(lang, 'continue') : t(lang, 'start'))} · ${esc(n.title)}</b><small>${esc(n.sub)}</small></span></a>` : `<div class="lx-continue" style="justify-content:center"><b>${L('Course complete', 'कोर्स पूरा')}</b></div>`;
+  };
+  mountStats(document.getElementById('lxStats'), code, lang);
   const render = first => {
+    drawNext();
     if (seg) seg.querySelectorAll('button').forEach(b => { const on = b.dataset.m === mode; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
     body.innerHTML = `<div class="lc-pane">${mode === 'audio' ? audioHTML() : practiceHTML()}</div>`;
     try { history.replaceState(history.state, '', mode === 'practice' ? '#practice' : location.pathname + location.search); } catch (e) { /* sandboxed */ }
@@ -145,6 +170,8 @@ if (!course && !audio) {
   }
   body.addEventListener('click', e => { if (e.target.closest('[data-locked]')) toast(t(lang, 'firstLesson')); });
   render(true);
+  // v21: progress made on another phone comes back (lessons done, XP, the streak)
+  pullProgress().then(changed => { if (!changed) return; s = store.read(); mountStats(document.getElementById('lxStats'), code, lang); render(); });
 }
 </script>
 </body>

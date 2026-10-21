@@ -278,6 +278,23 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
     - Install precaches `/`. Navigations are network-first with the cached copy offline (`/` and mini-app pages).
     - `/app /lang /mind /code` and icons are served stale-while-revalidate.
     - Never `/api/`, Range requests or no-store responses.
+- **v21 Exciting Languages** (learning felt flat; DESIGN.md "Celebration" allows this in lessons and games only):
+  - **Store** (`lang/assets/lang.js`): `addXP(n, {course})` adds to the total, the day (`daily`) and the course (`courseXp`). It fires `lang-xp` `{xp, total, today, goal, goalReached, streak, streakUp, course}`.
+    - `stats(course)` gives the streak, today vs the 50 XP goal, and the course XP. `completeLesson(key, xp)` returns the store plus `.ev`.
+    - A store from before v21 (no `courseXp`) counts 50 per finished lesson, once.
+  - **Shared rewards** (`lang/assets/fun.js`): `mountStats` (flame, goal ring, XP; updates on `lang-xp`), `xpPop`, `combo`, `sfx`/`buzz` (window.Sfx and haptic), `muteButton`, `mascotStage`, `celebrate`.
+    - `cheer(kind)` plays Bro's recorded line from `lang/data/cheers.json` (en/hi: yes, five, ten, done, goal, streak). The cheers are warm catalog lines in Bro's voice.
+    - Reduced motion: still pops, no confetti, no bobbing.
+  - **Listen** (`lang/audio.html`): a speak-back right first time earns +2 (+1 after a retry). Every 5 in a row adds +5, the combo sound and "Five in a row!" (ten: "On fire"). A wrong try resets the combo.
+    - Bro on the stage speaks, listens and celebrates. Finishing adds +20.
+    - The end screen shows what was really earned, said-right-first-time N/M, the streak and minutes, badges (Streak +1, goal), Next, and "Talk to Bro in X".
+  - **Practice** (`lang/lesson.html`): +2/+1 per answer, +5 per 5 in a row. Finishing adds +20, +10 more when perfect. End badges: Streak +1, goal, Unit complete, Perfect.
+  - **Course page** (`lang/course.html`): every unit is a zig-zag path of nodes (done / current "Start" / open / locked). It has a big Continue to the next undone item, the stats strip and "Talk to Bro in X".
+  - **Talk to Bro in X** = `/?tab=bro&persona=language&course=<code>`. Inside the layer, `bd-close` routes it to Bro with that persona and course.
+    - `modules/voice.js` `courseLine(text, code)` speaks the persona's es/fr/de sentences with that language's pronunciation; English coaching stays English.
+  - **Sync:** POST `/api/learn/progress` carries the course's real XP and `daily` (the last 14 days). The server keeps `learn_daily(user_phone, day, xp)` (max, within −40/+2 days).
+    - GET `?course=lang` returns every course plus 60 days of `daily`. `pullProgress()` (course page, Languages hub; at most once a minute) merges it, so a new phone gets its lessons, XP and streak back.
+    - The Learn → Languages hub shows the streak, today's XP and each course's XP.
 - **News** (`app/news.js`): cards only (desk stories), section chips, "Listen" plays recorded headline clips back to back. `modules/newsvoice.js` records after every desk batch through ElevenLabs only (`NEWS_VOICE_PROVIDER=any` opens the chain): headlines for every story in the feed + `NEWS_VOICE_FULL` (default 10) full read-outs a day per language; files in `MEDIA_DIR/news-voice`, served by `/api/news/voice/<id>-<lang>-<h|s>.mp3`. Nothing is rendered on tap. The long spoken bulletin is opt-in (`BULLETIN_AUDIO=1`). News is a bottom tab; You moved to the header avatar.
 - **ElevenLabs brain** (`modules/elevenbrain.js`): a private text-only ElevenLabs agent used as the LLM when Gemini has no key, is out of credit (402 → skipped for an hour via `global._geminiDownUntil`) or fails — `_callGemini` falls back to it, so Bro chat, Explain, the coach and the news desk keep working on ElevenLabs credits. Bro chat no longer runs a second "verify" pass.
 - **ElevenLabs budget** (modules/elevenvoice.js `RESERVE`): bulk (static recordings) may use the first 70% of the month, daily (news, first plays) stops at 15% left, live Bro uses the rest. Admin auto-record order: learn-audio → lang-audio → hindi-books.

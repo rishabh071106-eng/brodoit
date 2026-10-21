@@ -247,7 +247,8 @@ img,svg{display:block;max-width:100%}
 
 /* complete screen */
 .done-screen{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 22px 120px;animation:b-pop var(--m-celebrate) var(--ease) both}
-.done-screen .e{font-size:84px;line-height:1;animation:bob 1.6s ease-in-out infinite}
+.done-screen .e{font-size:84px;line-height:1;animation:lxFloat 1.6s ease-in-out infinite}
+@keyframes lxFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}} /* not bob: bob also centres the START bubble (-50%) */
 .done-screen h1{font-size:32px;font-weight:800;letter-spacing:-.04em;margin-top:12px}
 .done-screen p{color:var(--b-mute);font-weight:600;font-size:15px;margin-top:6px}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:400px;margin-top:26px}
@@ -365,3 +366,54 @@ body{max-width:100vw}
 .burst i{position:absolute;width:9px;height:9px;border-radius:3px;animation:burst 1s cubic-bezier(.16,1,.3,1) forwards}
 @keyframes burst{from{transform:rotate(var(--a)) translateY(0) scale(1);opacity:1}to{transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(.4);opacity:0}}
 @media (prefers-reduced-motion:reduce){.ex>*,.ex .opts>*,.ex .chips>*,.ex .bank>*,.ex .match .col>*,.xp-pop,.burst i{animation:none}}
+
+/* ── v21 Celebration (DESIGN.md): lesson rewards. Only in lessons and on the course page; reduced motion keeps them still. */
+.lx-stats{display:inline-flex;align-items:center;gap:10px;font:700 13px/1 var(--sans,inherit);color:inherit}
+.lx-stats.bump{animation:lxBump .38s cubic-bezier(.3,1.6,.5,1)}
+.lx-st{display:inline-flex;align-items:center;gap:4px;padding:6px 9px;border-radius:999px;background:color-mix(in srgb,currentColor 9%,transparent);min-height:32px}
+.lx-st b{font-size:14px;font-variant-numeric:tabular-nums}
+.lx-st small{font-size:11px;opacity:.65;font-weight:700}
+.lx-streak{color:#9A8F80}.lx-streak.on{color:#F07A1A}
+.lx-goal{color:#2F9D63}.lx-goal.met{background:color-mix(in srgb,#2F9D63 18%,transparent)}
+.lx-goal.just .lx-ring{animation:lxSpin .6s ease}
+.lx-xp{color:#E3A41C}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.lx-pop{position:absolute;left:50%;top:-6px;transform:translateX(-50%);font:900 15px/1 var(--sans,inherit);color:#E3A41C;text-shadow:0 2px 10px rgba(0,0,0,.25);pointer-events:none;animation:lxPop 1s ease-out forwards;white-space:nowrap;z-index:5}
+.lx-pop.still{animation:none;opacity:1}
+.lx-combo{display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:999px;background:linear-gradient(135deg,#F07A1A,#E3A41C);color:#fff;font:800 13px/1 var(--sans,inherit);box-shadow:0 6px 16px -6px rgba(240,122,26,.6)}
+.lx-combo.bump{animation:lxBump .4s cubic-bezier(.3,1.6,.5,1)}
+/* the lesson player's top bar is narrow: the numbers only, so the lesson title keeps its room */
+.bd-right .lx-stats{gap:5px}.bd-right .lx-st{padding:5px 7px;min-height:30px}.bd-right .lx-st small{display:none}
+.lx-mute{min-width:44px;min-height:44px;display:grid;place-items:center;border-radius:999px;color:inherit;background:transparent}
+.lx-stage{display:flex;justify-content:center;margin:2px auto 6px;height:76px}
+.lx-stage .lx-bro{transition:transform .25s}
+.lx-stage.cheer .lx-bro{animation:lxCheer .6s ease}
+.lx-hub{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:6px 0 14px}
+.lx-continue{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;border-radius:20px;background:var(--b-grad);color:#fff;text-decoration:none;box-shadow:0 6px 0 0 #7A2616,0 14px 30px -14px rgba(181,64,42,.7);min-height:72px}
+.lx-continue:active{transform:translateY(4px);box-shadow:0 2px 0 0 #7A2616}
+.lx-continue .ic{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none}
+.lx-continue b{display:block;font-size:17px;font-weight:800}
+.lx-continue small{display:block;opacity:.85;font-weight:600;margin-top:2px}
+.lx-talk{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;min-height:48px;border-radius:16px;font-weight:800;background:color-mix(in srgb,currentColor 7%,transparent);color:inherit;text-decoration:none}
+.lc-path{position:relative;display:flex;flex-direction:column;align-items:center;gap:22px;padding:18px 0 28px}
+.lc-path .node{width:min(320px,92%);justify-content:flex-start}
+.lc-path .node .btn{width:68px;height:68px;font-size:18px;font-weight:900;text-decoration:none;flex:none}
+.lc-path .node .lbl{position:static;transform:none;width:auto;flex:1;margin-left:14px;text-align:left}
+.lc-path .node .lbl small{display:block;font-weight:600;opacity:.7;margin-top:2px}
+.lc-path .node .btn svg{width:26px;height:26px}
+.lc-path .node .start{left:34px}
+.lc-path .node.cur{margin-top:34px} /* room for the START bubble above the next lesson */
+.lc-path .node.cur .btn{background:var(--b-grad);color:#fff;box-shadow:0 8px 0 0 #7A2616;animation:pulse 2.2s ease-in-out infinite}
+.end-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:22px auto 6px;max-width:380px}
+.end-tile{padding:14px 12px;border-radius:16px;background:color-mix(in srgb,currentColor 8%,transparent);text-align:center}
+.end-tile b{display:block;font-size:26px;font-weight:900;letter-spacing:-.02em}
+.end-tile span{display:block;font-size:12px;font-weight:700;opacity:.7;margin-top:2px}
+.end-tile.xp b{color:#E3A41C}.end-tile.ok b{color:#2F9D63}.end-tile.fire b{color:#F07A1A}
+.end-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0 6px}
+.end-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;font-weight:800;font-size:13px;background:color-mix(in srgb,#2F9D63 16%,transparent);color:#2F9D63}
+.end-badge.fire{background:color-mix(in srgb,#F07A1A 16%,transparent);color:#F07A1A}
+@keyframes lxBump{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes lxPop{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1}100%{opacity:0;transform:translate(-50%,-34px)}}
+@keyframes lxSpin{from{transform:rotate(-120deg)}to{transform:none}}
+@keyframes lxCheer{0%{transform:scale(1)}35%{transform:scale(1.14) rotate(-4deg)}70%{transform:scale(.97) rotate(3deg)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.done-screen .e,.lx-stats.bump,.lx-combo.bump,.lx-stage.cheer .lx-bro,.lc-path .node.cur .btn,.lx-goal.just .lx-ring{animation:none}}
