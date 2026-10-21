@@ -95,7 +95,7 @@
       '<h1 class="onb-h1">Two quick <span class="grad">permissions</span></h1>' +
       '<p class="onb-p">Only when you use them.</p>' +
       perm('mic', 'mic', 'Talk to Bro', 'Only while you hold the mic.', 'Allow microphone') +
-      perm('bell', 'bell', 'Gentle nudges', 'One evening nudge. Never more than one a day.', 'Allow notifications') +
+      perm('bell', 'bell', 'Morning and evening', 'A morning plan and an evening wrap-up: tasks, steps, the top story.', 'Allow notifications') +
       '</section>';
   }
   O.html = function () {
@@ -182,7 +182,8 @@
     var p; try { p = Notification.requestPermission(); } catch (e) { p = null; }
     if (!p || !p.then) p = new Promise(function (res) { try { Notification.requestPermission(res); } catch (e) { res('default'); } });
     return p.then(function (r) {
-      setPermState('bell', r === 'granted', r === 'granted' ? 'Reminders on. One nudge a day, max.' : r === 'denied' ? 'Blocked for now — you can turn reminders on in settings later.' : 'Skipped — you can turn reminders on in Profile.');
+      if (r === 'granted' && window.Notify && Notify.subscribe) Notify.subscribe().catch(function () {}); // v21: actually subscribe this phone
+      setPermState('bell', r === 'granted', r === 'granted' ? 'On. A morning and an evening summary.' : r === 'denied' ? 'Blocked for now — you can turn reminders on in settings later.' : 'Skipped — you can turn reminders on in Profile.');
     });
   };
 

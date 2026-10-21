@@ -79,6 +79,17 @@ jobs:
           st=$(curl -fsS --max-time 20 https://brodoit.com/api/learn/voice-status || echo '{}')
           sum=$(echo "$st" | jq -c '{voice, recorded, total, crawler: (.crawler // {} | {state, made}), library: (.library // {} | {voice, recorded, total, state})}' 2>/dev/null || echo '{}')
           if echo "$st" | jq -e '.voice | startswith("bro-")' > /dev/null 2>&1; then echo "::notice::Bro's voice in lessons: $sum"; else echo "::warning::Lesson clips are not in Bro's voice folder yet: $sum"; fi
+      - name: Phone notifications and shared stories (reported here, never blocks a release)
+        run: |
+          st=$(curl -fsS --max-time 20 https://brodoit.com/api/notify/status || echo '{}')
+          key=$(curl -fsS --max-time 20 https://brodoit.com/api/push/vapid-key | jq -r '.key // ""' 2>/dev/null || echo '')
+          # the push key must be the server's own (the one once published in the repo starts BPfvXAUnm)
+          case "$key" in BPfvXAUnm*) echo "::warning::Push still uses the key that was published in the repo";; "") echo "::warning::No push key";; *) echo "::notice::Phone notifications: $(echo "$st" | jq -c .)";; esac
+          id=$(curl -fsS --max-time 20 'https://brodoit.com/api/news/desk?limit=1' | jq -r '.stories[0].id // ""' 2>/dev/null || echo '')
+          if [ -n "$id" ]; then
+            code=$(curl -s -o /tmp/n.html -w '%{http_code}' --max-time 20 "https://brodoit.com/n/$id")
+            if [ "$code" = 200 ] && grep -q 'og:title' /tmp/n.html; then echo "::notice::Shared stories open at https://brodoit.com/n/$id with a link preview"; else echo "::warning::/n/$id answered $code"; fi
+          else echo "::warning::No story to try /n/ with"; fi
       - name: The Android app and Google Play (reported here, never blocks a release)
         run: |
           st=$(curl -fsS --max-time 20 https://brodoit.com/api/android/status || echo '{}')

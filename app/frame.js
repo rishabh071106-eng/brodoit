@@ -88,7 +88,7 @@
     if (!tab || !S || typeof window.render !== 'function') return;
     var t = tab === 'learn' ? 'courses' : tab === 'you' ? 'profile' : tab, hub = p.get('hub');
     var same = S.tab === t && (t !== 'courses' || (S.learnHub || null) === (hub || null));
-    if (same && !p.get('persona')) return;
+    if (same && !p.get('persona') && !p.get('s')) return;
     if (typeof window.switchTab === 'function' && S.tab !== t) { try { window.switchTab(t); } catch (e) { S.tab = t; } } else S.tab = t; // switchTab renders
     if (t === 'courses') {
       if (hub && ['games', 'coding', 'languages'].indexOf(hub) >= 0) { S.learnHub = hub; try { history.pushState({ learn: 1, hub: hub }, '', '/?tab=learn&hub=' + hub); } catch (e) { /* ignore */ } }
@@ -97,6 +97,8 @@
     // "Talk to Bro in Spanish" (Languages): Bro's language-practice mode for that course
     if (t === 'bro' && p.get('persona') && window.BroVoice) { try { if (p.get('course')) window.BroVoice.setCourse(p.get('course')); window.BroVoice.setPersona(p.get('persona')); } catch (e) { /* ignore */ } }
     try { window.render(); window.scrollTo(0, 0); } catch (e) { /* ignore */ }
+    // v21: a story (a notification, a shared link) opens on that story
+    if (t === 'news' && p.get('s') && window.NewsChannel && window.NewsChannel.open) { try { window.NewsChannel.open(p.get('s')); } catch (e) { /* ignore */ } }
   }
   F.route = route;
   // go anywhere from app code: a mini-app → the layer, a place in the app → that tab, else a plain page load
@@ -136,4 +138,6 @@
     if (q && MINI.test(q.split('?')[0])) { try { history.replaceState(Object.assign({}, history.state || {}, { bdFrame: undefined }), '', withoutFrame()); } catch (e) { /* ignore */ } F.open(q); }
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  // v21: a tapped notification routes the app that is already open (a tab, a lesson in the layer, a story)
+  try { if (navigator.serviceWorker) navigator.serviceWorker.addEventListener('message', function (e) { var d = e.data || {}; if (d.type === 'bd-route' && typeof d.url === 'string' && d.url.charAt(0) === '/') F.go(d.url); }); } catch (e) { /* no service worker */ }
 })();

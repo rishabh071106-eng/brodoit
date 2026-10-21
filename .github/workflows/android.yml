@@ -64,6 +64,8 @@ jobs:
           echo "$B" | grep -q "package: name='com.brodoit.app'" || { echo "::error::the direct APK must be com.brodoit.app"; exit 1; }
           echo "$B" | grep -q "versionCode='$VC'" || { echo "::error::the APK and the bundle must share versionCode $VC"; exit 1; }
           echo "$B" | grep -q "targetSdkVersion:'36'" || { echo "::error::the APK must target SDK 36"; exit 1; }
+          # v21: Android 13+ shows the morning/evening summaries and reminders only with POST_NOTIFICATIONS
+          "$BT/aapt2" dump permissions out/brodoit-unsigned.apk | grep -q "android.permission.POST_NOTIFICATIONS" || { echo "::error::the app must ask for POST_NOTIFICATIONS"; exit 1; }
       - name: A copy signed with a throwaway key, for the emulator test only
         run: |
           set -e
