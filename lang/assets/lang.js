@@ -241,99 +241,184 @@ function startKeepAlive() {
 function stopKeepAlive() { clearInterval(keepAlive); keepAlive = null; }
 
 let speakGen = 0;
-export function stopSpeaking() { speakGen++; if (clipAudio) { try { clipAudio.pause(); } catch { /* ignore */ } clipAudio = null; } if (synth) { try { synth.cancel(); } catch { /* ignore */ } } stopKeepAlive(); }
+export function stopSpeaking() { speakGen++; waiting(false); if (clipAudio) { try { clipAudio.pause(); } catch { /* ignore */ } clipAudio = null; } if (synth) { try { synth.cancel(); } catch { /* ignore */ } } stopKeepAlive(); }
 
 // Speaks text in `lang`, resolving when done (or after a watchdog so the caller is never stuck).
-// Options: rate (1), slow (→ 0.6), pitch, signal (AbortSignal).
-// Recorded studio clips (modules/learn.js renders each course line once and keeps it): same id on both sides.
+// Options: rate (1; clips play at it too), slow (→ 0.72 for clips, 0.6 for the phone's voice), pitch, signal (AbortSignal),
+// onStart (called once when the voice actually starts).
+// Recorded clips (modules/learn.js records each course line once in Bro's voice and keeps it): same id on both sides.
 const VOICE_KEYS = new Set(['es', 'fr', 'de', 'hi', 'en']);
 let clipAudio = null;
 async function clipId(voice, text) {
   const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(voice + '\n' + String(text).trim()));
   return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 20);
 }
-// v20: ?v=e20 busts clips phones cached in the old deep voice. prefetch() records/fetches the next lines while one plays
-// (the server records a line on its first request), kept as blob URLs so the line starts at once.
-const CLIP_V = 'e20';
-const clipUrl = id => '/api/learn/say/' + id + '.mp3?v=' + CLIP_V;
-const ready = new Map(); // id → Promise<blob URL | null>
+// v21: one Bro voice. ?v=v21 starts phones on a clean cache. A clip the server has not recorded yet is recorded when it
+// is asked for; while Bro's voice is busy or loading the server answers 503 + Retry-After and the clip is asked for again
+// (up to 45 s, "Bro is getting ready…" after 1.2 s), so online the phone's own voice never stands in for Bro.
+// The line playing now is asked for first (p=now: the server records it ahead of lines fetched in advance); at most two
+// lines are fetched ahead, and only once the current one is playing.
+const CLIP_V = 'v21';
+const clipUrl = (id, now) => '/api/learn/say/' + id + '.mp3?v=' + CLIP_V + (now ? '&p=now' : '');
+const testOpt = k => (typeof window !== 'undefined' && window.LANG_TEST ? window.LANG_TEST[k] : undefined);
+const CLIP_WAIT_MS = 45000, AHEAD_MAX = 2;
+// → { url } · { why: 'missing' } (not a course line: read live) · { why: 'offline' } · { why: 'failed' }
+async function fetchClip(id, { now = false, signal } = {}) {
+  const scale = testOpt('retryScale') || 1, t0 = Date.now();
+  for (;;) {
+    if (signal?.aborted) return { why: 'aborted' };
+    let r;
+    try { r = await fetch(clipUrl(id, now), { signal }); }
+    catch { return { why: signal?.aborted ? 'aborted' : navigator.onLine === false ? 'offline' : 'failed' }; }
+    if (r.ok) { try { const b = await r.blob(); return b.size ? { url: URL.createObjectURL(b) } : { why: 'failed' }; } catch { return { why: 'failed' }; } }
+    if (r.status === 404) return { why: 'missing' };
+    if (r.status !== 503 && r.status !== 429) return { why: 'failed' };
+    const wait = Math.min(10, Math.max(1, Number(r.headers.get('Retry-After')) || 2)) * 1000 * scale;
+    if (Date.now() - t0 + wait > CLIP_WAIT_MS * scale) return { why: 'failed' };
+    await sleep(wait, signal);
+  }
+}
+const clips = new Map(); // id → { p?: Promise<result>, url?, done }
+const aheadQ = []; let aheadActive = 0;
+function pumpAhead() {
+  while (aheadActive < AHEAD_MAX && aheadQ.length) {
+    const [id, e] = aheadQ.shift(); aheadActive++;
+    e.p = fetchClip(id).then(r => { e.done = true; e.url = r.url || null; if (!r.url && clips.get(id) === e) clips.delete(id); return r; })
+      .finally(() => { aheadActive--; pumpAhead(); });
+  }
+}
+function trimClips() {
+  while (clips.size > 16) {
+    const [k, e] = clips.entries().next().value; clips.delete(k);
+    const qi = aheadQ.findIndex(x => x[1] === e); if (qi >= 0) aheadQ.splice(qi, 1);
+    if (e.url) URL.revokeObjectURL(e.url); else if (e.p) e.p.then(r => r.url && URL.revokeObjectURL(r.url));
+  }
+}
+// fetch a course line ahead of time (call it once the current line is playing)
 export function prefetch(text, lang) {
   text = String(text || '').trim(); const vk = String(lang || '').slice(0, 2).toLowerCase();
-  if (!text || !VOICE_KEYS.has(vk) || (typeof window !== 'undefined' && window.LANG_TEST?.noClips)) return;
+  if (!text || !VOICE_KEYS.has(vk) || testOpt('noClips')) return;
   clipId(vk, text).then(id => {
-    if (ready.has(id)) return;
-    ready.set(id, fetch(clipUrl(id)).then(r => (r.ok ? r.blob() : null)).then(b => (b && b.size ? URL.createObjectURL(b) : null)).catch(() => null)
-      .then(u => { if (!u) ready.delete(id); return u; })); // a miss (busy) is asked again on the next play
-    while (ready.size > 16) { const [k, p] = ready.entries().next().value; ready.delete(k); p.then(u => u && URL.revokeObjectURL(u)); }
+    if (clips.has(id)) return;
+    const e = { done: false }; clips.set(id, e); aheadQ.push([id, e]); pumpAhead(); trimClips();
   }).catch(() => {});
 }
-function playClip(text, voice, { slow, signal, gen }) {
-  return new Promise(async res => {
-    let id = '';
-    try { id = await clipId(voice, text); } catch { return res(null); }
-    if (gen !== speakGen || signal?.aborted) return res(true);
-    const pre = ready.has(id) ? await ready.get(id) : null;
-    if (gen !== speakGen || signal?.aborted) return res(true);
-    const a = new Audio(pre || clipUrl(id));
-    clipAudio = a;
-    if (slow) { a.playbackRate = 0.72; a.preservesPitch = true; }
-    let started = false;
-    const done = v => { signal?.removeEventListener('abort', stop); res(v); };
-    const stop = () => { try { a.pause(); } catch { /* ignore */ } done(true); };
-    signal?.addEventListener('abort', stop, { once: true });
-    a.onplaying = () => { started = true; };
-    a.onended = () => done(true);
-    a.onerror = () => done(started ? true : null);
-    a.play().catch(() => { if (!started) done(null); });
-  });
+// the line to play now: a clip fetched ahead when it is there, else asked for at once (racing one still on its way)
+function clipNow(id, signal) {
+  const e = clips.get(id);
+  if (e && e.done && e.url) return Promise.resolve({ url: e.url, kept: true });
+  if (e && !e.p) { const qi = aheadQ.findIndex(x => x[0] === id); if (qi >= 0) aheadQ.splice(qi, 1); clips.delete(id); }
+  const ctrl = new AbortController(); const stop = () => ctrl.abort(); signal?.addEventListener('abort', stop, { once: true });
+  const mine = fetchClip(id, { now: true, signal: ctrl.signal });
+  if (!(e && e.p)) return mine.finally(() => signal?.removeEventListener('abort', stop));
+  return new Promise(res => {
+    let left = 2, last = null;
+    const take = (r, ahead) => {
+      if (r && r.url) { if (ahead) ctrl.abort(); res(ahead ? { url: r.url, kept: true } : r); return; }
+      last = last && last.why !== 'aborted' ? last : r; if (--left === 0) res(last || { why: 'failed' });
+    };
+    e.p.then(r => take(r, true), () => take(null, true));
+    mine.then(r => take(r, false), () => take(null, false));
+  }).finally(() => signal?.removeEventListener('abort', stop));
 }
-
-// v20: a line with no recorded clip yet is read live in Bro's voice (POST /api/voice/tts, every course language) before the
-// phone's voice is ever used
-const LIVE_KEYS = new Set(['es', 'fr', 'de', 'hi', 'en', 'it', 'pt', 'ja', 'zh']);
-function liveBro(text, vk, { slow, signal, gen }) {
-  return new Promise(async res => {
-    let tok = ''; try { tok = localStorage.getItem('tf_token') || ''; } catch { tok = ''; }
-    if (!tok) return res(null);
-    let url = '';
-    try {
-      const r = await fetch('/api/voice/tts', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': tok }, body: JSON.stringify({ text, lang: vk }), signal });
-      if (!r.ok) return res(null);
-      url = URL.createObjectURL(await r.blob());
-    } catch { return res(null); }
-    if (gen !== speakGen || signal?.aborted) { URL.revokeObjectURL(url); return res(true); }
+// "Bro is getting ready…": a small pill while a line waits for Bro's voice for more than 1.2 s
+let waitEl = null, waitT = 0;
+const READY_TXT = { en: 'Bro is getting ready…', hi: 'Bro तैयार हो रहा है…' };
+function waiting(on) {
+  clearTimeout(waitT);
+  if (!on) { if (waitEl) waitEl.hidden = true; return; }
+  waitT = setTimeout(() => {
+    if (typeof document === 'undefined') return;
+    if (!waitEl) {
+      waitEl = document.createElement('div'); waitEl.id = 'broWait'; waitEl.setAttribute('role', 'status');
+      waitEl.style.cssText = 'position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);z-index:60;padding:9px 16px;border-radius:999px;background:rgba(20,20,28,.88);color:#fff;font:700 13px/1.2 inherit;box-shadow:0 6px 20px rgba(0,0,0,.25);pointer-events:none';
+      document.body.append(waitEl);
+    }
+    waitEl.textContent = READY_TXT[(typeof window !== 'undefined' && window.__langUi) === 'hi' ? 'hi' : 'en'];
+    waitEl.hidden = false;
+  }, 1200);
+}
+let offlineSaid = false;
+function phoneVoiceNote(why) {
+  if (offlineSaid) return; offlineSaid = true;
+  const hi = typeof window !== 'undefined' && window.__langUi === 'hi';
+  toast(why === 'offline' ? (hi ? 'ऑफ़लाइन: अभी आपके फ़ोन की आवाज़ पढ़ेगी' : "Offline: your phone's voice reads for now") : (hi ? 'Bro की आवाज़ अभी व्यस्त है: यह लाइन फ़ोन की आवाज़ में' : "Bro's voice is busy: your phone reads this line"), 3200);
+}
+function playUrl(url, { rate, slow, signal, onStart, revoke }) {
+  return new Promise(res => {
     const a = new Audio(url); clipAudio = a;
-    if (slow) { a.playbackRate = 0.72; a.preservesPitch = true; }
+    a.playbackRate = Math.max(0.5, Math.min(2, (slow ? 0.72 : 1) * (rate || 1))); a.preservesPitch = true;
     let started = false;
-    const done = v => { signal?.removeEventListener('abort', stop); URL.revokeObjectURL(url); res(v); };
+    const done = v => { signal?.removeEventListener('abort', stop); if (revoke) URL.revokeObjectURL(url); res(v); };
     const stop = () => { try { a.pause(); } catch { /* ignore */ } done(true); };
     signal?.addEventListener('abort', stop, { once: true });
-    a.onplaying = () => { started = true; };
+    a.onplaying = () => { if (!started) { started = true; try { onStart?.(); } catch { /* ignore */ } } };
     a.onended = () => done(true);
     a.onerror = () => done(started ? true : null);
     a.play().catch(() => { if (!started) done(null); });
   });
 }
+// → true (played, or stopped) · { why } (no clip: 'missing' | 'offline' | 'failed')
+async function playClip(text, voice, { rate, slow, signal, gen, onStart }) {
+  let id = '';
+  try { id = await clipId(voice, text); } catch { return { why: 'failed' }; }
+  if (gen !== speakGen || signal?.aborted) return true;
+  waiting(true);
+  const r = await clipNow(id, signal);
+  waiting(false);
+  if (gen !== speakGen || signal?.aborted) { if (r.url && !r.kept) URL.revokeObjectURL(r.url); return true; }
+  if (!r.url) return r;
+  const ok = await playUrl(r.url, { rate, slow, signal, onStart, revoke: !r.kept });
+  return ok ? true : { why: 'failed' };
+}
 
-export async function speak(text, { lang = 'en-US', rate = 1, slow = false, pitch = 1, signal } = {}) {
+// a line that is not a course line (no recorded clip) is read live in Bro's voice (POST /api/voice/tts, which waits its
+// turn on the server; one more try after a 503)
+const LIVE_KEYS = new Set(['es', 'fr', 'de', 'hi', 'en', 'it', 'pt', 'ja', 'zh']);
+async function liveBro(text, vk, { rate, slow, signal, gen, onStart }) {
+  let tok = ''; try { tok = localStorage.getItem('tf_token') || ''; } catch { tok = ''; }
+  if (!tok) return null;
+  let url = '';
+  waiting(true);
+  try {
+    for (let i = 0; i < 2 && !url; i++) {
+      const r = await fetch('/api/voice/tts', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': tok }, body: JSON.stringify({ text, lang: vk }), signal });
+      if (r.ok) url = URL.createObjectURL(await r.blob());
+      else if (r.status === 503 && i === 0) await sleep(Math.min(5, Number(r.headers.get('Retry-After')) || 2) * 1000 * (testOpt('retryScale') || 1), signal);
+      else break;
+    }
+  } catch { url = ''; }
+  waiting(false);
+  if (!url) return null;
+  if (gen !== speakGen || signal?.aborted) { URL.revokeObjectURL(url); return true; }
+  return playUrl(url, { rate, slow, signal, onStart, revoke: true });
+}
+
+export async function speak(text, { lang = 'en-US', rate = 1, slow = false, pitch = 1, signal, onStart } = {}) {
   text = String(text || '').trim();
   if (!text) return false;
   const vk = String(lang).slice(0, 2).toLowerCase();
-  if (VOICE_KEYS.has(vk) && !(typeof window !== 'undefined' && window.LANG_TEST?.noClips)) {
+  let why = '';
+  if (VOICE_KEYS.has(vk) && !testOpt('noClips')) {
     const gen0 = ++speakGen;
     try { synth && synth.cancel(); } catch { /* ignore */ }
-    const r = await playClip(text, vk, { slow, signal, gen: gen0 });
-    if (r) return gen0 === speakGen;
+    const r = await playClip(text, vk, { rate, slow, signal, gen: gen0, onStart });
+    if (r === true) return gen0 === speakGen;
     if (gen0 !== speakGen) return false;
+    why = r.why;
   }
-  if (LIVE_KEYS.has(vk) && !(typeof window !== 'undefined' && window.LANG_TEST?.noClips)) {
+  if (LIVE_KEYS.has(vk) && !testOpt('noClips') && (!why || why === 'missing')) {
     const gen1 = ++speakGen;
-    const r = await liveBro(text, vk, { slow, signal, gen: gen1 });
+    const r = await liveBro(text, vk, { rate, slow, signal, gen: gen1, onStart });
     if (r) return gen1 === speakGen;
     if (gen1 !== speakGen) return false;
+    why = why || 'failed';
   }
-  const scale = (typeof window !== 'undefined' && window.LANG_TEST?.ttsScale) || 1;
+  // the phone's own voice: only when Bro's voice cannot be reached (offline, or the server failed), with a note
+  if (why && why !== 'missing') phoneVoiceNote(why);
+  const scale = testOpt('ttsScale') || 1;
   const r = Math.max(0.5, Math.min(2, (slow ? 0.6 : 1) * rate));
+  try { onStart?.(); } catch { /* ignore */ }
   if (!synth) { await sleep(Math.min(4000, text.length * 60 / r) * scale, signal); return false; }
   const voices = await voicesLoaded();
   const voice = pickVoice(lang, voices);

@@ -279,15 +279,12 @@ function install(app, deps) {
     // v16: Bro's own voice (Kokoro on our CPU) first, behind live calls in its queue; the paid studio voices only behind
     // the emergency switch, or when this server has no Bro Core at all
     const c = core();
-    const studio = provider => STUDIO.speak({ text, lang, purpose: news ? 'daily' : 'live', role, getSetting, provider, timeout: 25000, eleven: { format: 'mp3_44100_64', timeout: 20000, chunk: 1500 } });
-    // German has no native voice on our CPU: the studio's Bro voice reads it when it can (credit-guarded), else Bro Core
-    if (lang === 'de' && !news) {
-      try { const out = await studio('eleven'); if (ac.signal.aborted) return; if (out && out.buf) { res.set('Content-Type', out.mime); res.set('Cache-Control', 'no-store'); res.set('X-Voice', out.provider); return res.send(out.buf); } } catch (e) { /* Bro Core below */ }
-    }
+    // v21: every language, German too, is Bro's one CPU voice (the studio's voice was a different speaker)
     if (c && typeof c.speak === 'function' && coreVoiceReady()) {
       try {
         // a calm read (meditations): the same voice, slower; otherwise the voice style's own pace
-        const out = await c.speak(text, { lang, format: 'mp3', signal: ac.signal, priority: 'low', speed: body.mood === 'calm' ? 0.9 : undefined });
+        // v21: when the voice is busy the request waits its turn (up to 15 s) instead of the phone's voice taking over
+        const out = await c.speak(text, { lang, format: 'mp3', signal: ac.signal, priority: 'low', wait: 15000, speed: body.mood === 'calm' ? 0.9 : undefined });
         if (ac.signal.aborted) return;
         if (out && out.audio && out.audio.length) {
           if (CACHE && news) { try { const f = path.join(CACHE, id + (out.mime === 'audio/wav' ? '.wav' : '.mp3')); if (!fs.existsSync(f)) fs.writeFileSync(f, out.audio); } catch (e) {} }
@@ -295,8 +292,8 @@ function install(app, deps) {
         }
       } catch (e) {
         if (ac.signal.aborted) return;
-        // the low-priority queue is full (live calls go first): 503, and the page speaks this line with the device voice
-        if (e && e.code === 'VOICE_BUSY') return res.status(503).json({ error: 'voice busy' });
+        // still busy after 15 s (live calls go first): 503 with a hint when to ask again
+        if (e && e.code === 'VOICE_BUSY') { res.set('Retry-After', '3'); return res.status(503).json({ error: 'voice busy' }); }
         console.log('[voice] brocore tts error', e && e.message);
       }
     }
@@ -716,6 +713,7 @@ function install(app, deps) {
   const SELF_PHONE = 'bro-selftest'; // the self-call's user (see selfCall)
   // public safe words for /api/bro/ok: how many turns failed or were rescued, and the last failure's trail (model,
   // HTTP status and error kind only; never what anyone said)
+  global._liveCalls = () => LIVE.active; // v21: calls open right now (the course-clip crawler steps aside while one talks)
   global._voiceLiveHealth = () => ({ turns: LIVE.turns, fails: LIVE.fails, rescues: LIVE.rescues, lastFail: LIVE.lastFail, own: LIVE.own, cloud: LIVE.cloud, ownSlow: LIVE.ownSlow, ownSkip: LIVE.ownSkip, ownBackup: LIVE.ownBackup, cloudSlow: LIVE.cloudSlow, firstMs: p50(LIVE.cloudFirst), chatFirstMs: p50(LIVE.chatFirst), chatOwn: LIVE.chatOwn });
   function liveStats() {
     const a = LIVE.lat.slice().sort((x, y) => x - y);

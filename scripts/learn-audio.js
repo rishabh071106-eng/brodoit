@@ -16,6 +16,9 @@ const arg = k => { const i = process.argv.indexOf(k); return i > 0 ? process.arg
 const only = arg('--only'), limit = parseInt(arg('--limit')) || Infinity;
 
 (async () => {
+  // v21: course lines are recorded by the server in Bro's one voice (modules/learn.js, the voice heard on calls) and an
+  // old studio recording is never played, so this ElevenLabs job is retired (pass --studio to run it anyway)
+  if (!process.argv.includes('--studio')) { console.log('Course lines are recorded by the server in Bro\'s voice now: nothing to do here.'); process.exit(0); }
   const DIR = path.join(MEDIA, 'learn-voice', EV.broVoice(getSetting));
   fs.mkdirSync(DIR, { recursive: true });
   if (!STUDIO.available(getSetting).includes('eleven')) { console.log('No ElevenLabs key: nothing to record.'); process.exit(1); }

@@ -1202,6 +1202,16 @@ When you are ready, open your eyes gently. Carry this peace with you through the
   'story-20': { title: 'The Samurai and the Tea Master', desc: 'Courage is doing what you know.', mins: 5, color: '#C48A5A', kind: 'story', script: '' },
 };
 
+// v21: Bro's library (modules/brolibrary.js): the breathing cues, affirmations and guided meditations recorded once in
+// Bro's one voice; created once Bro Core is up (below). The routes serve its file first.
+let _broLib = null;
+const BREATHE_CUES = { 'breathe-in': 'Breathe in.', 'breathe-out': 'Breathe out.', 'breathe-hold': 'Hold.', 'breathe-done': 'Session complete. Well done.' };
+function broLibraryItems() {
+  const out = Object.entries(BREATHE_CUES).map(([key, text]) => ({ key, text, speed: 0.9 }));
+  for (const [key, e] of Object.entries(AUDIO_LIBRARY)) if (e.script && ['affirmation', 'guided', 'vipassana'].includes(e.kind)) out.push({ key, text: e.script, speed: e.kind === 'affirmation' ? 0.94 : 0.9, gapMs: e.kind === 'affirmation' ? 1400 : 2200, breathMs: 1000 });
+  return out;
+}
+
 // Used by <audio src> for affirmations + guided meditations (static MP3s).
 
 app.get('/api/audio/:id', async (req, res) => {
@@ -1212,6 +1222,9 @@ app.get('/api/audio/:id', async (req, res) => {
   const entry = AUDIO_LIBRARY[id];
   if (!entry) return res.status(404).json({ error: 'unknown audio id' });
 
+  // v21: Bro's own recording (modules/brolibrary.js, his one voice) once it exists; until then the bundled file
+  const bro = _broLib && _broLib.file(id);
+  if (bro && require('./modules/brolibrary.js').sendAudio(req, res, bro, 'no-cache')) return;
   // 1) Check for pre-baked static MP3 (bundled in repo — zero API cost)
   const staticPath = _path.join(__dirname, 'audio-static', id + '.mp3');
   try {
@@ -1345,6 +1358,8 @@ app.get('/api/breathe-audio/:id', (req, res) => {
   const id = String(req.params.id || '').replace(/[^a-z-]/g, '');
   const allowed = ['breathe-in','breathe-out','breathe-hold','breathe-done'];
   if (!allowed.includes(id)) return res.status(404).end();
+  const bro = _broLib && _broLib.file(id); // v21: Bro's own recording first
+  if (bro && require('./modules/brolibrary.js').sendAudio(req, res, bro, 'no-cache')) return;
   const fp = _path.join(__dirname, 'audio-static', id + '.mp3');
   if (!_fs.existsSync(fp)) return res.status(404).end();
   const stat = _fs.statSync(fp);
@@ -2722,7 +2737,7 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
 <link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=22"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=22">
-<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=22" defer></script><script src="/app/you.js?v=21" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=24" defer></script><script src="/app/voicenote.js?v=1" defer></script><script src="/app/news.js?v=22" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=24" defer></script><script src="/app/onboarding.js?v=21" defer></script><script src="/app/motion.js?v=21" defer></script>
+<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=22" defer></script><script src="/app/you.js?v=21" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=24" defer></script><script src="/app/voicenote.js?v=1" defer></script><script src="/app/news.js?v=22" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=25" defer></script><script src="/app/onboarding.js?v=21" defer></script><script src="/app/motion.js?v=21" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -10877,7 +10892,7 @@ function _breatheSpeak(text){
   if(id){
     try{
       if(_breatheAudio){_breatheAudio.pause();_breatheAudio.currentTime=0}
-      _breatheAudio=new Audio('/api/breathe-audio/'+id);
+      _breatheAudio=new Audio('/api/breathe-audio/'+id+'?v=21');
       _breatheAudio.volume=0.9;
       _breatheAudio.play().catch(function(){});
     }catch(e){}
@@ -11294,7 +11309,7 @@ function _speakScriptFallback(id,onEnd){
   return true;
 }
 function playMedAudio(id,title,mins){
-  const url='/api/audio/'+encodeURIComponent(id)+'?token='+encodeURIComponent(token||'');
+  const url='/api/audio/'+encodeURIComponent(id)+'?v=21&token='+encodeURIComponent(token||'');
   S.meditating={active:true,title,mins:mins||2,startedAt:Date.now()};
   // Check if server has TTS configured (cached from /api/coach/status at boot)
   // If not, skip the audio element entirely and go straight to browser TTS — instant, no failed load
@@ -17370,7 +17385,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=132').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=133').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17893,7 +17908,7 @@ app.get('/j/:id',(req,res)=>{
 app.get(/^\/prep(\/.*)?$/,(_,res)=>res.redirect(302,'/?tab=learn'));
 app.get(/^\/learning(\/.*)?$/,(_,res)=>res.redirect(302,'/code/'));
 app.get(['/lang/phrases.html','/lang/phrase-lesson.html'],(_,res)=>res.redirect(302,'/lang/'));
-app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v180";
+app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="v181";
 self.addEventListener("install",function(e){self.skipWaiting()});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(k){return Promise.all(k.map(function(c){return caches.delete(c)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){});
@@ -17986,6 +18001,7 @@ const _bulletin=require('./modules/bulletin.js').install(app,{db,auth,mediaDir:M
 require('./modules/voice.js').install(app,{auth,getSetting,setSetting,mediaDir:MEDIA_DIR,BRO_TOOLS,_broExecTool,_getUserTz,_callGemini,_callGroq,hasGroq:()=>!!groqKey(),hasGemini:()=>!!geminiKey(),getSteps:phone=>_steps&&_steps.getStepsTool?_steps.getStepsTool(phone):null,setStepGoal:(phone,goal)=>{try{db.prepare("INSERT INTO step_profile(user_phone,goal) VALUES(?,?) ON CONFLICT(user_phone) DO UPDATE SET goal=excluded.goal").run(phone,goal);return{ok:true,goal}}catch(e){return{error:e.message}}},getHeadlines:async topic=>{const all=await _allNewsItems();const t=String(topic||'').toLowerCase();const cat=t==='technology'?'tech':t;if(cat&&NEWS_CATS.includes(cat)){const cc=newsCache[cat];if(cc&&cc.items)return cc.items}return all},getBulletin:()=>_bulletin.latest('daily'),speakerSummary:phone=>_speaker&&_speaker.summaryFor?_speaker.summaryFor(phone):null});
 try{require('./modules/credits.js').install(app,{appRoot:__dirname})}catch(e){console.log('[credits] off:',e.message)}
 // Learning schools (Python + Languages): progress, Bro the mission AI, narration recorded once (modules/learn.js).
+try{_broLib=require('./modules/brolibrary.js').create({mediaDir:MEDIA_DIR,items:broLibraryItems});global._broLibrary=_broLib}catch(e){console.log('[bro-library] off:',e.message)}
 let _learn=null;try{const _st=require('./modules/studio.js');_st.configure({mediaDir:MEDIA_DIR});_learn=require('./modules/learn.js').install(app,{db,auth,getSetting,appRoot:__dirname,mediaDir:MEDIA_DIR,STUDIO:_st,_callGemini,_callGroq,hasGroq:()=>!!groqKey(),hasGemini:()=>!!geminiKey()})}catch(e){console.log('[learn] off:',e.message)}
 try{require('./modules/admin.js').install(app,{db,auth,isAdminUser,MEDIA_DIR,DB_PATH,getSetting,setSetting,settingSource,bulletin:_bulletin,android:_android,scriptsDir:path.join(__dirname,'scripts'),appRoot:__dirname,steps:_steps})}catch(e){console.log('[admin] not loaded:',e.message)}
 app.get('*',(_,res)=>res.set('Cache-Control','no-cache, no-store, must-revalidate').type('html').send(HTML));

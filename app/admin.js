@@ -160,7 +160,7 @@
     h += '<div class="adm-job-act" id="admVoiceStyle" role="group" aria-label="Bro\'s voice">';
     for (const [k, l] of [['energetic', 'Energetic'], ['bright', 'Bright'], ['deep', 'Deep']]) h += '<button type="button" class="b-chip adm-tog' + (vs === k ? ' on' : '') + '" data-style="' + k + '" aria-pressed="' + (vs === k) + '" onclick="AdminPanel.setVoiceStyle(\'' + k + '\')"' + (busy ? ' disabled' : '') + '>' + l + '</button>';
     h += '<button type="button" class="b-chip" id="admVoicePlay" onclick="AdminPanel.playVoiceStyle()">' + ic(a.voicePlaying ? 'loader' : 'play', 14) + 'Hear it</button></div>';
-    h += '<p class="adm-auto b-sm">' + ic('radio', 14) + " Bro's voice: " + _esc({ energetic: 'Energetic — lively and motivating', bright: 'Bright — friendly and clear', deep: 'Deep — calm and low' }[vs] || vs) + '</p>';
+    h += '<p class="adm-auto b-sm">' + ic('radio', 14) + " Bro's voice: " + _esc({ energetic: 'Energetic — lively and motivating, one voice in every language', bright: 'Bright — friendly and clear, one voice in every language', deep: 'Deep — calm and low, a native voice per language' }[vs] || vs) + '</p>';
     return h + '</div>';
   }
   A.setVoiceStyle = async function (style) {
