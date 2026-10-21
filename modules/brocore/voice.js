@@ -5,9 +5,10 @@
 //   - Phonemes and inference run in a child "engine" process (this file with --brocore-voice-engine), so the app's event
 //     loop never blocks. One chunk is synthesised at a time (BROCORE_THREADS threads from settings or env, default
 //     min(4, cpus - 1) so a core stays free for the app) so live calls never fight each other for the CPU.
-//   - Two priorities: 'live' (speakStream's default) always goes first; 'low' (speak()'s default: /api/voice/tts, studio)
-//     is cut into short chunks (~4 s of speech) so a live sentence never waits long behind one, and at most 3 low
-//     requests are admitted at once: the next gets VOICE_BUSY (the caller answers 503 and the phone's own voice speaks).
+//   - Three priorities: 'live' (speakStream's default) always goes first; v21 'course' (a lesson line a learner waits
+//     for) next; 'low' (speak()'s default: /api/voice/tts, recordings) last. Course and low work is cut into short chunks
+//     (~4 s of speech) so a live sentence never waits long behind one. At most 2 course / 3 low requests are admitted at
+//     once; v21: the next one waits its turn for as long as its caller allows (`wait`), then gets VOICE_BUSY.
 //     A queued job whose signal aborts is dropped at once.
 //   - Watchdog: each job must come back within max(8 s, 4 x its audio length) or the engine is killed, every job in it
 //     fails with VOICE_STALLED and the voice reads not ready until the engine is back. Restarts back off 2 s, 4 s, 8 s …
@@ -52,6 +53,8 @@ const LRU_MAX_BYTES = 64 * 1024 * 1024;
 const FFMPEG = process.env.FFMPEG_PATH || 'ffmpeg';
 const GB = 1024 * 1024 * 1024, MB = 1024 * 1024;
 const LOW_MAX = 3;              // low-priority requests admitted at once (one synthesising, the rest waiting)
+const MID_MAX = 2;              // v21: course lines a learner is waiting for, admitted at once (ahead of low work)
+const WAIT_MAX = 32;            // v21: requests waiting for admission in all; more get VOICE_BUSY
 const LOW_CHUNK_SEC = 4;        // a low-priority chunk is at most ~4 s of speech (~1.5-2 s of CPU) …
 const LOW_CHUNK_CHARS = 90;     // … and at most 90 characters
 const MIN_FREE_MODEL = GB;      // free disk needed before fetching the 325 MB model (tarballs + parts + joined file)
@@ -74,12 +77,24 @@ const LANG_ALIASES = { hinglish: 'hi', cmn: 'zh', jp: 'ja', 'pt-br': 'pt', 'pt-p
 // v20: Bro's voice style (Admin: BRO_VOICE_STYLE). Energetic is the default: livelier voices, a touch quicker. A language a
 // style does not list keeps its LANGS voice. Measured on the owner's line: am_onyx 94 Hz, 3.9 semitones of pitch movement,
 // 9.3 s; the energetic blend 140 Hz, 4.5 semitones, 6.9 s.
+// v21 "one Bro": the energetic and bright styles are ONE voice in every language (the owner heard a different speaker in
+// Languages than on calls). Every language speaks with Bro's English blend and its own espeak phonemes; scripts English
+// voices cannot shape well (Hindi, Japanese, Chinese) mix in a quarter of the native voice, so the timbre stays Bro's.
+// Course languages keep a clear 1.0 pace. Per-language tuned specs (BRO_VOICE_SPECS, the nightly A/B) do not apply to a
+// one-voice style; 'deep' keeps the v16–v19 per-language voices as the rollback.
 const STYLE_KEY = 'BRO_VOICE_STYLE';
+const ONE_EN = 'am_fenrir:0.6+am_puck:0.4', ONE_BRIGHT = 'am_puck:0.5+am_michael:0.5';
+const withNative = (one, native) => one.split('+').map(p => { const [n, w] = p.split(':'); return n + ':' + +(Number(w || 1) * 0.75).toFixed(2); }).join('+') + '+' + native + ':0.25';
+const oneStyle = (one, enSpeed, hiSpeed) => ({
+  en: [one, enSpeed], hi: [withNative(one, 'hm_psi'), hiSpeed], ja: [withNative(one, 'jm_kumo'), 1], zh: [withNative(one, 'zm_yunjian'), 1],
+  es: [one, 1], fr: [one, 1], de: [one, 1], it: [one, 1], pt: [one, 1],
+});
 const STYLES = {
-  energetic: { en: ['am_fenrir:0.6+am_puck:0.4', 1.08], hi: ['hm_psi', 1.06], es: ['em_santa:0.6+am_fenrir:0.4', 1.06], fr: ['am_fenrir', 1.06], de: ['am_fenrir', 1.06], it: ['im_nicola', 1.05], pt: ['pm_alex:0.6+am_fenrir:0.4', 1.05] },
-  bright: { en: ['am_puck:0.5+am_michael:0.5', 1.06], hi: ['hm_psi', 1.04], es: ['em_alex', 1.04], fr: ['am_puck', 1.04], de: ['am_puck', 1.04], pt: ['pm_alex', 1.04] },
+  energetic: oneStyle(ONE_EN, 1.08, 1.04),
+  bright: oneStyle(ONE_BRIGHT, 1.06, 1.02),
   deep: {}, // the v16–v19 voices (LANGS) at normal speed
 };
+const ONE_VOICE = new Set(['energetic', 'bright']);
 
 const log = (...a) => console.log('[brocore/voice]', ...a);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -149,13 +164,22 @@ function knownVoice(name) {
 const LEGACY_HI = /^hm_omega:0?\.[3-7]\d*\+am_onyx:0?\.[3-7]\d*$/;
 function styleName() { let s = ''; try { s = S.getSetting ? String(S.getSetting(STYLE_KEY) || '') : ''; } catch (e) { s = ''; } s = (s || process.env[STYLE_KEY] || 'energetic').toLowerCase(); return STYLES[s] ? s : 'energetic'; }
 function styleOf(L) { return STYLES[styleName()][L] || null; }
+// v21: one voice in every language (the energetic and bright styles)
+function oneVoice() { return ONE_VOICE.has(styleName()); }
 function voiceFor(lang) {
   const L = normLang(lang) || 'en';
   const st = styleOf(L);
+  if (oneVoice() && st) return st[0];
   return S.specs[L] || (st && st[0]) || LANGS[L].voice;
 }
 // the style's pace for a language (1 when the style does not list it)
 function speedFor(lang) { const st = styleOf(normLang(lang) || 'en'); return st ? st[1] : 1; }
+// v21: a short name for the voice as it sounds now (style + every language's spec and pace). Recordings kept on disk
+// (course clips, the Bro library) live in a folder named by it, so a new voice never plays an old recording.
+function voiceKey() {
+  const all = Object.keys(LANGS).sort().map(L => L + '=' + voiceFor(L) + '@' + speedFor(L)).join(';');
+  return styleName() + '-' + crypto.createHash('sha1').update(MODEL_NAME + '|' + all).digest('hex').slice(0, 8);
+}
 function specFile() { return S.mediaDir ? path.join(S.mediaDir, 'brocore', 'voice-specs.json') : ''; }
 function loadSpecs() {
   let raw = '';
@@ -615,40 +639,57 @@ function splitPhonemes(ph) {
 // ---------- synthesis queue (one sentence at a time, in the voice engine process) ----------
 // onnxruntime-node runs inference on the calling JS thread, and espeak can take 10-150 ms on new words, so both run in a
 // separate engine process: the app's HTTP and WebSocket handling never freezes while Bro speaks.
-// Q.hi: live jobs (always first). Q.lo: low-priority jobs, small chunks, from at most LOW_MAX admitted requests.
-const Q = { hi: [], lo: [], running: false, current: 0, lowActive: 0 };
-function queueLength() { return Q.hi.length + Q.lo.length + Q.current; }
+// Q.hi: live jobs (always first). Q.mid: v21 course lines a learner is waiting for right now. Q.lo: everything else.
+// Mid and low jobs are small chunks, from at most MID_MAX / LOW_MAX admitted requests; more requests wait their turn (up
+// to WAIT_MAX waiting in all, each for as long as its caller allows) instead of being turned away.
+const LANES = { mid: MID_MAX, lo: LOW_MAX };
+const Q = { hi: [], mid: [], lo: [], running: false, current: 0, active: { mid: 0, lo: 0 }, waiting: { mid: [], lo: [] }, get lowActive() { return this.active.lo; } };
+function queueLength() { return Q.hi.length + Q.mid.length + Q.lo.length + Q.current; }
+const waitingCount = () => Q.waiting.mid.length + Q.waiting.lo.length;
 function enqueue(job, prio) {
   return new Promise((resolve, reject) => {
     if (job.signal && job.signal.aborted) { reject(abortError()); return; }
     // a queued job whose signal aborts leaves the queue at once (a running one finishes; its sentence is cached)
-    const onAbort = () => { for (const l of [Q.hi, Q.lo]) { const i = l.indexOf(job); if (i >= 0) { l.splice(i, 1); job.reject(abortError()); return; } } };
+    const onAbort = () => { for (const l of [Q.hi, Q.mid, Q.lo]) { const i = l.indexOf(job); if (i >= 0) { l.splice(i, 1); job.reject(abortError()); return; } } };
     const off = () => { if (job.signal) job.signal.removeEventListener('abort', onAbort); };
     Object.assign(job, { prio, resolve: v => { off(); resolve(v); }, reject: e => { off(); reject(e); } });
     if (job.signal) job.signal.addEventListener('abort', onAbort, { once: true });
-    (prio === 'hi' ? Q.hi : Q.lo).push(job);
+    Q[prio].push(job);
     pump();
   });
 }
-// A live request for a sentence a low-priority job already queued: move that job to the live queue.
-function promote(job) {
-  if (!job || job.prio === 'hi') return;
-  const i = Q.lo.indexOf(job);
-  if (i >= 0) { Q.lo.splice(i, 1); job.prio = 'hi'; Q.hi.push(job); }
+const RANK = { hi: 0, mid: 1, lo: 2 };
+// A more urgent request for a sentence a lower lane already queued: move that job up (live > course > low).
+function promote(job, prio) {
+  if (!job || RANK[prio] >= RANK[job.prio]) return;
+  const i = Q[job.prio].indexOf(job);
+  if (i >= 0) { Q[job.prio].splice(i, 1); job.prio = prio; Q[prio].push(job); }
 }
-// Admission for low-priority work: at most LOW_MAX requests at once, else VOICE_BUSY. Returns the release function.
-function admitLow() {
-  if (Q.lowActive >= LOW_MAX) throw busyError();
-  Q.lowActive++;
-  let done = false;
-  return () => { if (!done) { done = true; Q.lowActive--; } };
+// Admission for course and low-priority work: at most LANES[lane] requests at once. A request over the limit waits
+// (FIFO) up to o.wait ms (0: VOICE_BUSY at once), and leaves the line when o.signal aborts. Resolves to the release.
+function admit(lane, o = {}) {
+  const grant = () => { Q.active[lane]++; let done = false; return () => { if (done) return; done = true; Q.active[lane]--; wake(lane); }; };
+  if (Q.active[lane] < LANES[lane] && !Q.waiting[lane].length) return Promise.resolve(grant());
+  const wait = Number(o.wait) || 0;
+  if (wait <= 0 || waitingCount() >= WAIT_MAX) return Promise.reject(busyError());
+  if (o.signal && o.signal.aborted) return Promise.reject(abortError());
+  return new Promise((resolve, reject) => {
+    const w = { go: () => { clear(); resolve(grant()); } };
+    const leave = e => { const i = Q.waiting[lane].indexOf(w); if (i >= 0) Q.waiting[lane].splice(i, 1); clear(); reject(e); };
+    const onAbort = () => leave(abortError());
+    const timer = setTimeout(() => leave(busyError()), wait);
+    const clear = () => { clearTimeout(timer); if (o.signal) o.signal.removeEventListener('abort', onAbort); };
+    if (o.signal) o.signal.addEventListener('abort', onAbort, { once: true });
+    Q.waiting[lane].push(w);
+  });
 }
+function wake(lane) { while (Q.active[lane] < LANES[lane] && Q.waiting[lane].length) Q.waiting[lane].shift().go(); }
 async function pump() {
   if (Q.running) return;
   Q.running = true;
   try {
     for (;;) {
-      const j = Q.hi.shift() || Q.lo.shift();
+      const j = Q.hi.shift() || Q.mid.shift() || Q.lo.shift();
       if (!j) break;
       if (j.signal && j.signal.aborted) { j.reject(abortError()); continue; }
       Q.current = 1;
@@ -705,7 +746,7 @@ function synthChunk(c, prio, signal) {
     e.p = enqueue(e.job, prio).then(pcm => { lruSet(key, pcm); return pcm; });
     e.p.catch(() => {}).then(() => { if (inflight.get(key) === e) inflight.delete(key); });
     inflight.set(key, e);
-  } else if (prio === 'hi') promote(e.job);
+  } else promote(e.job, prio);
   e.refs++;
   return new Promise((resolve, reject) => {
     let done = false;
@@ -753,23 +794,26 @@ async function ensureReady(waitMs = 30000) {
   throw notReady(S.phase === 'fetching' ? 'voice model still downloading' : (S.error || 'voice not ready'));
 }
 
-// priority 'live' (default for speakStream) or 'low' (default for speak) -> queue name
-const prioOf = (opts, dflt) => ((opts.priority || dflt) === 'low' ? 'lo' : 'hi');
+// priority 'live' (default for speakStream), 'course' (v21: a lesson line a learner waits for) or 'low' (default for
+// speak) -> queue name
+const prioOf = (opts, dflt) => ({ low: 'lo', course: 'mid' })[opts.priority || dflt] || 'hi';
 const allCached = chunks => chunks.every(c => LRU.has(chunkKey(c)));
+const noRelease = () => {};
 
-// speakStream(text, {lang, voice?, speed?, signal?, quickStart = true, priority = 'live', lockLang?})
+// speakStream(text, {lang, voice?, speed?, signal?, quickStart = true, priority = 'live', wait?, lockLang?})
 //   -> AsyncIterable<{ pcm: Int16Array, sampleRate: 24000, text, last }>
 // Synthesises one sentence ahead of the consumer. When `signal` aborts it stops yielding and drops queued work.
 // Pass quickStart:false for follow-up sentences of a reply that is already playing (no need to cut the first one short).
-// priority 'low' uses small chunks and the low-priority admission (VOICE_BUSY when 3 low requests are already in).
+// priority 'course' / 'low' use small chunks and their lane's admission: over the limit the request waits up to `wait` ms
+// for its turn (default 0: VOICE_BUSY at once).
 async function* speakStream(text, opts = {}) {
   await ensureReady();
   const prio = prioOf(opts, 'live');
-  const chunks = plan(text, opts, prio === 'hi' && opts.quickStart !== false, prio === 'lo');
+  const chunks = plan(text, opts, prio === 'hi' && opts.quickStart !== false, prio !== 'hi');
   if (!chunks.length) return;
   const outer = opts.signal;
   if (outer && outer.aborted) return;
-  const release = prio === 'lo' && !allCached(chunks) ? admitLow() : () => {};
+  const release = prio !== 'hi' && !allCached(chunks) ? await admit(prio, { wait: opts.wait, signal: outer }) : noRelease;
   const ctrl = new AbortController();
   const onOuter = () => ctrl.abort();
   if (outer) outer.addEventListener('abort', onOuter, { once: true });
@@ -792,18 +836,20 @@ async function* speakStream(text, opts = {}) {
   }
 }
 
-// speak(text, {lang, voice?, speed?, format:'mp3'|'wav', signal?, priority = 'low', lockLang?}) -> { audio: Buffer, mime, seconds }
-// mp3 (48 kbps mono, via ffmpeg) results are also kept on disk under mediaDir/brocore/cache/.
-// Low priority (the default): small chunks behind every live sentence; throws VOICE_BUSY when 3 low requests are already
-// in (callers answer 503 and let the phone's own voice speak). `signal` drops this request's queued work when it aborts.
+// speak(text, {lang, voice?, speed?, format:'mp3'|'wav', signal?, priority = 'low', wait?, noCache?, lockLang?})
+//   -> { audio: Buffer, mime, seconds }
+// mp3 (48 kbps mono, via ffmpeg) results are also kept on disk under mediaDir/brocore/cache/ (not with noCache: callers
+// that keep their own recording, like course clips).
+// Low priority (the default) and 'course': small chunks behind every live sentence. Over the lane's limit the request
+// waits up to `wait` ms for its turn, then throws VOICE_BUSY (callers answer 503). `signal` drops its queued work.
 async function speak(text, opts = {}) {
   await ensureReady();
   const signal = opts.signal;
   if (signal && signal.aborted) throw abortError();
   const prio = prioOf(opts, 'low');
-  const chunks = plan(text, opts, false, prio === 'lo');
+  const chunks = plan(text, opts, false, prio !== 'hi');
   const wantMp3 = opts.format === 'mp3' && !S.mp3Off;
-  const cdir = wantMp3 && S.mediaDir ? path.join(S.mediaDir, 'brocore', 'cache') : '';
+  const cdir = wantMp3 && S.mediaDir && !opts.noCache ? path.join(S.mediaDir, 'brocore', 'cache') : '';
   const file = cdir ? path.join(cdir, crypto.createHash('sha256').update(JSON.stringify([MODEL_NAME, chunks.map(c => [c.text, c.lang, c.spec, c.speed])])).digest('hex').slice(0, 40) + '.mp3') : '';
   if (file) {
     try {
@@ -814,7 +860,7 @@ async function speak(text, opts = {}) {
     } catch (e) { /* not cached */ }
   }
   const parts = [];
-  const release = prio === 'lo' && !allCached(chunks) ? admitLow() : () => {};
+  const release = prio !== 'hi' && !allCached(chunks) ? await admit(prio, { wait: opts.wait, signal }) : noRelease;
   try {
     for (const c of chunks) parts.push(await synthChunk(c, prio, signal));
   } finally { release(); }
@@ -905,7 +951,8 @@ function health() {
   const rtf = +S.rtfAvg.toFixed(3);
   return {
     ready: ready(), loading: S.phase === 'loading' || S.phase === 'fetching', phase: S.phase, word: phaseWord(), error: S.error || null,
-    queue: queueLength(), live: Q.hi.length, low: Q.lowActive, lowMax: LOW_MAX,
+    queue: queueLength(), live: Q.hi.length, low: Q.active.lo, lowMax: LOW_MAX, course: Q.active.mid, waiting: waitingCount(),
+    style: styleName(), oneVoice: oneVoice(), voiceKey: voiceKey(),
     rtf, rtfAvg: rtf, lastMs: S.lastMs, model: MODEL_NAME, threads: S.threads,
     restarts: S.restarts, lastCrash: S.lastCrash ? Object.assign({}, S.lastCrash) : null,
     cache: { mem: LRU.size, hits: S.hits, misses: S.misses, disk: S.diskHits, diskSkips: S.cacheSkips },
@@ -1229,7 +1276,7 @@ function init(opts = {}) {
 if (require.main === module && process.argv.includes(ENGINE_FLAG) && process.send) engineMain();
 
 module.exports = {
-  init, ready, speak, speakStream, voiceFor, speedFor, setVoiceSpec, styleName, health, STYLES,
+  init, ready, speak, speakStream, voiceFor, speedFor, setVoiceSpec, styleName, oneVoice, voiceKey, health, STYLES,
   SAMPLE_RATE, MODEL_NAME, LANGS,
-  _internals: { plan, normHindi, hiNum, ensureModel, pruneCache, writeCache, freeBytes, loadSpecs, loadEspeak, chunkText, lowChunkChars, phonemize, tokenize, splitPhonemes, normEnglish, normCommon, cleanText, detectLang, normLang, resolveLang, parseSpec, toWav, encodeMp3, threadCount, jobTimeoutMs, start, state: S, queue: Q, VOICE_NAMES, MODEL_SHA256, LOW_MAX },
+  _internals: { plan, normHindi, hiNum, ensureModel, pruneCache, writeCache, freeBytes, loadSpecs, loadEspeak, chunkText, lowChunkChars, phonemize, tokenize, splitPhonemes, normEnglish, normCommon, cleanText, detectLang, normLang, resolveLang, parseSpec, toWav, encodeMp3, threadCount, jobTimeoutMs, start, state: S, queue: Q, admit, VOICE_NAMES, MODEL_SHA256, LOW_MAX, MID_MAX, WAIT_MAX, ONE_VOICE },
 };

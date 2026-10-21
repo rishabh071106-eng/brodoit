@@ -92,6 +92,8 @@ function createNightly(o) {
   function tuneVoice() {
     const v = voice();
     if (!v || typeof v.setVoiceSpec !== 'function' || typeof v.voiceFor !== 'function') return { skipped: 'voice not loaded' };
+    // v21: the energetic and bright styles are one voice in every language: nothing per language to tune
+    if (typeof v.oneVoice === 'function' && v.oneVoice()) return { skipped: 'one voice in every language' };
     const ab = memory.state.json('voice_ab', {});
     const out = {};
     const langs = q("SELECT lang, COUNT(*) n FROM bro_calls WHERE rating IS NOT NULL AND created_at > datetime(?, 'unixepoch', '-7 days') AND lang != '' GROUP BY lang").all(Math.floor(now() / 1000));

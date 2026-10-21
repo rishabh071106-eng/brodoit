@@ -119,7 +119,7 @@
 </div></div>
 
 <script type="module">
-import { loadCourses, loadAudioCourse, store, esc, t, param, ICON, speak, stopSpeaking, sleep, hearPhrase, prefetch, releaseMic, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, voicesLoaded } from '/lang/assets/lang.js?v=12';
+import { loadCourses, loadAudioCourse, store, esc, t, param, ICON, speak, stopSpeaking, sleep, hearPhrase, prefetch, releaseMic, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, voicesLoaded } from '/lang/assets/lang.js?v=13';
 import { ic } from '/lang/assets/ico.js?v=15';
 
 const $ = id => document.getElementById(id);
@@ -127,6 +127,7 @@ const code = param('c') || 'es', lessonId = param('l') || 'a1';
 const courses = await loadCourses();
 const meta = courses.find(c => c.code === code) || { code, name: code, from: 'en', flag: '🌍' };
 const lang = meta.from;
+window.__langUi = lang;
 $('back').href = `/lang/course.html?c=${code}`; $('backBtn').href = `/lang/course.html?c=${code}`;
 $('repL').textContent = t(lang, 'repeat'); $('stopL').textContent = t(lang, 'stopForNow'); $('backBtn').textContent = t(lang, 'back'); $('endT').textContent = t(lang, 'lessonComplete'); $('endS').textContent = t(lang, 'keepGoing');
 $('play').innerHTML = ICON.play;
@@ -260,6 +261,7 @@ if (!lesson) {
   }
 
   function doPause(step, signal) {
+    ahead(idx + 1);
     const expect = expectFor(idx);
     return expect ? speakBack(expect, step, signal) : thinkPause(step, signal);
   }
@@ -269,10 +271,11 @@ if (!lesson) {
     if (step.p != null) return doPause(step, signal);
     showCaption(step);
     const [text, vl] = voiceOf(step);
-    return speak(text, { lang: vl, rate: speed, slow: !!(step.t != null && step.slow), signal });
+    const at = idx;
+    return speak(text, { lang: vl, rate: speed, slow: !!(step.t != null && step.slow), signal, onStart: () => ahead(at + 1) });
   }
-  // the next lines are recorded/fetched while this one plays, so each starts at once
-  const ahead = i => { for (let j = i; j < Math.min(steps.length, i + 4); j++) { const s = steps[j]; if (s && s.p == null) { const [text, vl] = voiceOf(s); prefetch(text, vl); } else { const e = expectFor(j); if (e) prefetch(e, targLang); } } };
+  // v21: the next two lines are fetched once this one is playing (the line you are on is always asked for first)
+  const ahead = i => { for (let j = i; j < Math.min(steps.length, i + 2); j++) { const s = steps[j]; if (s && s.p == null) { const [text, vl] = voiceOf(s); prefetch(text, vl); } else { const e = expectFor(j); if (e) prefetch(e, targLang); } } };
 
   // ---- keep-awake, lock-screen controls ----
   let wake = null, silent = null;
@@ -305,7 +308,7 @@ if (!lesson) {
     const my = ++gen;
     ctrl = new AbortController();
     while (playing && my === gen && idx < steps.length) {
-      renderProgress(); ahead(idx + 1);
+      renderProgress();
       await doStep(steps[idx], ctrl.signal);
       if (my !== gen || !playing) return;
       idx++;

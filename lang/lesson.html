@@ -25,7 +25,7 @@
 </div></div>
 
 <script type="module">
-import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, hearPhrase, releaseMic, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=12';
+import { renderChrome, loadCourses, loadCourse, store, esc, t, param, ICON, speak, stopSpeaking, hearPhrase, releaseMic, sameAnswer, normalize, shuffle, completeLesson, confetti, toast, haptic, LESSON_XP, setCourse, fmtTime, comingSoonHTML } from '/lang/assets/lang.js?v=13';
 import { ic } from '/lang/assets/ico.js?v=15';
 
 const $ = id => document.getElementById(id);
@@ -33,6 +33,7 @@ const code = param('c') || 'es', unitId = param('u'), lessonId = param('l');
 const courses = await loadCourses();
 const meta = courses.find(c => c.code === code) || { code, name: code, from: 'en', voice: 'en-US' };
 const lang = meta.from;
+window.__langUi = lang;
 const fromLang = lang === 'hi' ? 'hi-IN' : 'en-IN';
 const courseHref = `/lang/course.html?c=${code}#practice`;
 $('check').textContent = t(lang, 'check');

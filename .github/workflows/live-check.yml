@@ -74,6 +74,11 @@ jobs:
           clouds=$(echo "$st" | jq -c '.clouds // {}' 2>/dev/null || echo '{}')
           speed=$(echo "$st" | jq -c '.live // {} | {cloud, own, ownBackup, cloudSlow, firstMs, chatFirstMs}' 2>/dev/null || echo '{}')
           if [ "$(echo "$clouds" | jq -r '.gemini // false')" != false ]; then echo "::notice::Bro's cloud brains: $clouds · calls and chat: $speed"; else echo "::warning::Only Groq answers (no Gemini key, or it was refused): $clouds · $speed"; fi
+      - name: Bro's one voice (lesson clips and the library recorded in it; reported here, never blocks a release)
+        run: |
+          st=$(curl -fsS --max-time 20 https://brodoit.com/api/learn/voice-status || echo '{}')
+          sum=$(echo "$st" | jq -c '{voice, recorded, total, crawler: (.crawler // {} | {state, made}), library: (.library // {} | {voice, recorded, total, state})}' 2>/dev/null || echo '{}')
+          if echo "$st" | jq -e '.voice | startswith("bro-")' > /dev/null 2>&1; then echo "::notice::Bro's voice in lessons: $sum"; else echo "::warning::Lesson clips are not in Bro's voice folder yet: $sum"; fi
       - name: The Android app and Google Play (reported here, never blocks a release)
         run: |
           st=$(curl -fsS --max-time 20 https://brodoit.com/api/android/status || echo '{}')
