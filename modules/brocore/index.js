@@ -208,7 +208,9 @@ function install(app, deps) {
   });
   const speak = async (text, opts) => {
     opts = opts || {};
-    if (gpu.configured() && opts.gpu !== false) {
+    // v21: with one voice in every language (the energetic and bright styles) recordings are Bro's CPU voice too, the
+    // voice heard on calls: the GPU clone (a different timbre) speaks only in the deep style
+    if (gpu.configured() && opts.gpu !== false && !oneVoice()) {
       try {
         const live = !['daily', 'bulk'].includes(opts.purpose);
         const r = await gpu.speak(text, { lang: opts.lang || 'en', live });
@@ -219,6 +221,8 @@ function install(app, deps) {
   };
   const speakStream = (text, opts) => needVoice().speakStream(text, opts || {});
   const voiceFor = lang => { const v = voiceMod(); return v && v.voiceFor ? v.voiceFor(lang) : ''; };
+  const oneVoice = () => { const v = voiceMod(); try { return !!(v && typeof v.oneVoice === 'function' && v.oneVoice()); } catch (e) { return false; } };
+  const voiceKey = () => { const v = voiceMod(); try { return v && typeof v.voiceKey === 'function' ? String(v.voiceKey()) : ''; } catch (e) { return ''; } };
   const setVoiceSpec = (lang, spec) => needVoice().setVoiceSpec(lang, spec);
 
   function health() {
@@ -247,6 +251,7 @@ function install(app, deps) {
     serverTools: SERVER_TOOLS, isServerTool: name => SERVER_TOOL_NAMES.has(name), runServerTool,
     speak, speakStream, voiceFor, setVoiceSpec, voiceReady,
     voiceStyle: () => { const v = voiceMod(); return v && typeof v.styleName === 'function' ? v.styleName() : ''; }, // v20: Energetic / Bright / Deep (learn.js keys course clips by it)
+    oneVoice, voiceKey, // v21: one voice in every language; the key names the folders recordings are kept in
     brainReady: () => brain.ready(), emergencyOn: () => brain.emergencyOn(), ready: () => brain.ready() && voiceReady(),
     lookup: q => knowledge.lookup(q), today: (topic, n) => knowledge.today(topic, n), search: (q, n) => knowledge.search(q, n), webSearch: (q, o) => brain.webSearch(q, o),
     health, knowledge, memory, nightly, lessons: memory.lessons, brain, hearing, gpu,
