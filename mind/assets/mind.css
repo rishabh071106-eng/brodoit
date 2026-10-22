@@ -431,3 +431,7 @@ html:has(> body.pl){background:var(--m-play);height:100%}
   .res-unlock{transition:none}
   .pl-fl{animation:none}
 }
+
+/* v24 · Hindi (html[lang=hi], set by util.js from bd_lang): tracking spaces out Devanagari, so the Color Clash tag and
+   rule word sit at normal spacing */
+:lang(hi) .cc-tag,:lang(hi) .cc-rule-in b{letter-spacing:0}

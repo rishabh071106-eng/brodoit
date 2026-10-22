@@ -1,12 +1,15 @@
 // Number Hunt (Schulte table): tap 1 → N in order as fast as you can. The top bar runs down to the one-star limit;
 // the star marks on it show the 2★ and 3★ times. From level 12 the numbers jump to new places after every tap;
 // "decoy" levels paint the tiles in mixed colours, sizes and tilts so the eye cannot coast.
-import { shuffle, onTap, clamp } from '../util.js';
+import { shuffle, onTap, clamp, HI, tr, trLive } from '../util.js';
 
 export const meta = {
-  id: 'hunt', name: 'Number Hunt', skill: 'Speed', color: '#D97706', deep: '#92400E',
-  rule: 'Tap the numbers in order, as fast as you can.',
-  how: [
+  id: 'hunt', name: 'Number Hunt', get skill() { return trLive('Speed', 'रफ़्तार'); }, color: '#D97706', deep: '#92400E',
+  rule: tr('Tap the numbers in order, as fast as you can.', 'नंबर क्रम से दबाएँ, जितनी जल्दी हो सके।'),
+  how: HI ? [
+    '1 से शुरू करके नंबर क्रम से दबाएँ।',
+    'जितनी जल्दी, उतने ज़्यादा स्टार।',
+  ] : [
     'Tap the numbers in order, from 1 up.',
     'Faster times earn more stars.',
   ],
@@ -23,7 +26,14 @@ const T = [
 const DECOY_BG = ['rgba(255,255,255,.08)', 'rgba(217,119,6,.22)', 'rgba(37,99,235,.24)', 'rgba(5,150,105,.24)', 'rgba(225,29,72,.22)', 'rgba(124,58,237,.24)'];
 const DECOY_INK = ['#FFFFFF', '#FCD34D', '#93C5FD', '#6EE7B7', '#FDA4AF', '#C4B5FD'];
 
-const TWIST = {
+const TWIST = HI ? {
+  3: '4×4 बोर्ड। 1 से 16 तक ढूँढें।',
+  5: 'कुछ नंबर भटकाते हैं। रंग, आकार और झुकाव अलग होंगे। सिर्फ़ नंबर पर ध्यान दें।',
+  6: '5×5 बोर्ड। 1 से 25 तक ढूँढें।',
+  10: '6×6 बोर्ड। 1 से 36 तक ढूँढें।',
+  12: 'नंबर जगह बदलते हैं। हर बार दबाने के बाद वे नई जगह चले जाते हैं।',
+  19: 'आख़िरी परीक्षा। 6×6 बोर्ड, और नंबर जगह बदलते रहेंगे।',
+} : {
   3: 'A 4×4 board. Find 1 to 16.',
   5: 'Some numbers are decoys. Colours, sizes and tilts vary. Only the number matters.',
   6: 'A 5×5 board. Find 1 to 25.',
@@ -37,8 +47,8 @@ export function levelConfig(n) {
   const [size, reshuffle, decoy, t1, t2, t3] = T[n - 1];
   return {
     size, reshuffle: !!reshuffle, decoy: !!decoy, count: size * size,
-    targets: [t1, t2, t3], lower: true, scoreLabel: 'sec', goalUnit: 's', resultLabel: 'seconds',
-    desc: `${size}×${size} · 1 to ${size * size}${reshuffle ? ' · numbers move' : ''}${decoy ? ' · decoy colours' : ''}`,
+    targets: [t1, t2, t3], lower: true, scoreLabel: tr('sec', 'सेकंड'), goalUnit: tr('s', 'सेकंड'), resultLabel: tr('seconds', 'सेकंड'),
+    desc: HI ? `${size}×${size} · 1 से ${size * size} तक${reshuffle ? ' · नंबर जगह बदलते हैं' : ''}${decoy ? ' · भटकाने वाले रंग' : ''}` : `${size}×${size} · 1 to ${size * size}${reshuffle ? ' · numbers move' : ''}${decoy ? ' · decoy colours' : ''}`,
     twist: TWIST[n] || '',
   };
 }
@@ -48,7 +58,7 @@ export function start(host, cfg, api) {
   const pos = shuffle([...Array(count).keys()]); // pos[k] = cell index of number k+1
   const R = Math.random;
   host.innerHTML = `<div class="nh">
-    <div class="nh-find"><small>Find</small><b id="nhNext">1</b><small id="nhLeft">${count} left</small></div>
+    <div class="nh-find"><small>${tr('Find', 'ढूँढें')}</small><b id="nhNext">1</b><small id="nhLeft">${count} ${tr('left', 'बाक़ी')}</small></div>
     <div class="nh-box"><div class="nh-board" id="nhBoard" style="--n:${n}">${Array.from({ length: count }, (_, k) => {
       const st = cfg.decoy
         ? `--bg:${DECOY_BG[Math.floor(R() * DECOY_BG.length)]};--ink:${DECOY_INK[Math.floor(R() * DECOY_INK.length)]};--rot:${Math.round(R() * 30 - 15)}deg;--sc:${(0.8 + R() * 0.4).toFixed(2)}`
@@ -67,8 +77,13 @@ export function start(host, cfg, api) {
   const timer = api.timer({
     seconds: t[0],
     marks: [{ at: 1 - t[2] / t[0], stars: 3 }, { at: 1 - t[1] / t[0], stars: 2 }],
-    onFrame(e) { api.setScore(e.toFixed(1), 'sec', true); },
-    onEnd() { if (over) return; over = true; api.end({ failed: true, progress: (next - 1) / count, score: t[0], big: next - 1, bigLabel: `of ${count} found`, haveText: `${next - 1} of ${count}`, needText: `Find all ${count} in ${t[0]}s`, note: 'Time ran out' }); },
+    onFrame(e) { api.setScore(e.toFixed(1), cfg.scoreLabel, true); },
+    onEnd() {
+      if (over) return; over = true;
+      api.end(HI
+        ? { failed: true, progress: (next - 1) / count, score: t[0], big: next - 1, bigLabel: `मिले · ${count} में से`, haveText: `${count} में से ${next - 1}`, needText: `${t[0]} सेकंड में सभी ${count} ढूँढें`, note: 'समय ख़त्म हो गया' }
+        : { failed: true, progress: (next - 1) / count, score: t[0], big: next - 1, bigLabel: `of ${count} found`, haveText: `${next - 1} of ${count}`, needText: `Find all ${count} in ${t[0]}s`, note: 'Time ran out' });
+    },
   });
 
   function tap(b) {
@@ -80,7 +95,7 @@ export function start(host, cfg, api) {
       api.haptic('light');
       if (next > count) return finish();
       api.sfx(next % 5 === 1 ? 'correct' : 'tap');
-      nextEl.textContent = next; leftEl.textContent = `${count - next + 1} left`;
+      nextEl.textContent = next; leftEl.textContent = `${count - next + 1} ${tr('left', 'बाक़ी')}`;
       nextEl.classList.remove('pop'); void nextEl.offsetWidth; nextEl.classList.add('pop');
       if (cfg.reshuffle) {
         // everyone jumps to a new cell (transform transition, 60fps)
@@ -93,16 +108,16 @@ export function start(host, cfg, api) {
       b.classList.remove('bad'); void b.offsetWidth; b.classList.add('bad');
       api.sfx('wrong'); api.haptic('error');
       timer.add(1);
-      api.float('+1s', { el: b, dy: 0, tone: 'bad' });
+      api.float(tr('+1s', '+1 सेकंड'), { el: b, dy: 0, tone: 'bad' });
     }
   }
   function finish() {
     over = true;
     const e = Math.round(timer.elapsed() * 10) / 10;
     timer.stop();
-    api.setScore(e.toFixed(1), 'sec');
+    api.setScore(e.toFixed(1), cfg.scoreLabel);
     api.sfx('combo');
-    api.end({ score: e, display: `${e.toFixed(1)}s`, note: slips ? `${slips} wrong tap${slips === 1 ? '' : 's'} (+${slips}s)` : 'No wrong taps' });
+    api.end({ score: e, display: `${e.toFixed(1)}s`, note: HI ? (slips ? `${slips} बार ग़लत नंबर दबाया (+${slips} सेकंड)` : 'एक भी ग़लत नंबर नहीं दबाया') : slips ? `${slips} wrong tap${slips === 1 ? '' : 's'} (+${slips}s)` : 'No wrong taps' });
   }
 
   onTap(board, '.nh-t', tap);

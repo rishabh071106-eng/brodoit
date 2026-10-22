@@ -1,10 +1,13 @@
 // Memory Grid: tiles light up together for a moment; tap them all back from memory. One wrong tap ends the round.
-import { shuffle, onTap, clamp } from '../util.js';
+import { shuffle, onTap, clamp, HI, tr, trLive } from '../util.js';
 
 export const meta = {
-  id: 'memory', name: 'Memory Grid', skill: 'Memory', color: '#4F46E5', deep: '#3730A3',
-  rule: 'Tiles light up. Tap them back from memory.',
-  how: [
+  id: 'memory', name: 'Memory Grid', get skill() { return trLive('Memory', 'याददाश्त'); }, color: '#4F46E5', deep: '#3730A3',
+  rule: tr('Tiles light up. Tap them back from memory.', 'कुछ खाने चमकते हैं। याद करके वही खाने दबाएँ।'),
+  how: HI ? [
+    'जो खाने चमकें, उन्हें ध्यान से देखें।',
+    'याद करके वे सभी खाने दबाएँ। एक भी ग़लत खाना दबाया तो राउंड ख़त्म।',
+  ] : [
     'Watch the tiles that light up.',
     'Tap them all from memory. One wrong tap ends the round.',
   ],
@@ -15,7 +18,13 @@ export const meta = {
 const T = [[3, 3], [3, 3], [3, 4], [4, 4], [4, 5], [4, 5], [4, 6], [5, 6], [5, 6], [5, 7],
   [5, 7], [5, 8], [6, 8], [6, 8], [6, 9], [6, 9], [6, 10], [6, 10], [6, 11], [6, 11]];
 
-const TWIST = {
+const TWIST = HI ? {
+  4: '4×4 बोर्ड। खेल वही, देखने को ज़्यादा खाने।',
+  8: '5×5 बोर्ड। चमकते खानों को एक आकार की तरह देखें।',
+  10: 'छह राउंड। अब से लेवल थोड़े लंबे हैं।',
+  13: 'पूरा 6×6 बोर्ड। चमकते खानों को छोटे-छोटे हिस्सों में बाँटकर याद करें।',
+  16: 'सबसे मुश्किल आकार। 3 सही राउंड पर लेवल पास।',
+} : {
   4: 'A 4×4 board. Same idea, more places to look.',
   8: 'A 5×5 board. Try to see the lit tiles as one shape.',
   10: 'Six rounds. Levels are a little longer from here.',
@@ -32,22 +41,22 @@ export function levelConfig(n) {
     show: Math.round(900 + tiles * 170 - n * 35), // the glow: longer for more tiles, shorter per tile as levels rise
     targets: rounds === 5 ? [3, 4, 5] : n >= 16 ? [3, 5, 6] : [4, 5, 6],
     twist: TWIST[n] || '',
-    lower: false, scoreLabel: `of ${rounds}`, goalUnit: 'perfect rounds', resultLabel: `of ${rounds} rounds perfect`,
-    desc: `${size}×${size} grid · ${tiles} tiles · ${rounds} rounds`,
+    lower: false, scoreLabel: HI ? `/ ${rounds}` : `of ${rounds}`, goalUnit: tr('perfect rounds', 'सही राउंड'), resultLabel: HI ? `सही राउंड · ${rounds} में से` : `of ${rounds} rounds perfect`,
+    desc: HI ? `${size}×${size} बोर्ड · ${tiles} खाने · ${rounds} राउंड` : `${size}×${size} grid · ${tiles} tiles · ${rounds} rounds`,
   };
 }
 
 export function start(host, cfg, api) {
   const N = cfg.size * cfg.size;
   host.innerHTML = `<div class="mg">
-    <div class="mg-dots" aria-label="Rounds">${Array.from({ length: cfg.rounds }, () => '<i></i>').join('')}</div>
-    <div class="mg-hint" id="mgHint" aria-live="polite">Watch</div>
-    <div class="mg-box"><div class="mg-board" id="mgBoard" style="--n:${cfg.size}">${Array.from({ length: N }, (_, i) => `<button class="mg-c" data-i="${i}" aria-label="Tile ${i + 1}"><i></i></button>`).join('')}</div></div>
+    <div class="mg-dots" aria-label="${tr('Rounds', 'राउंड')}">${Array.from({ length: cfg.rounds }, () => '<i></i>').join('')}</div>
+    <div class="mg-hint" id="mgHint" aria-live="polite">${tr('Watch', 'देखें')}</div>
+    <div class="mg-box"><div class="mg-board" id="mgBoard" style="--n:${cfg.size}">${Array.from({ length: N }, (_, i) => `<button class="mg-c" data-i="${i}" aria-label="${tr('Tile', 'खाना')} ${i + 1}"><i></i></button>`).join('')}</div></div>
   </div>`;
   const board = host.querySelector('#mgBoard'), hint = host.querySelector('#mgHint');
   const cells = [...board.children], dots = [...host.querySelectorAll('.mg-dots i')];
   let round = 0, score = 0, streak = 0, phase = 'ready', lit = new Set(), found = new Set(), prevKey = '';
-  api.setScore(0, `of ${cfg.rounds}`, true);
+  api.setScore(0, cfg.scoreLabel, true);
 
   const say = (t, tone) => { hint.textContent = t; hint.className = 'mg-hint' + (tone ? ' ' + tone : ''); };
 
@@ -60,14 +69,14 @@ export function start(host, cfg, api) {
     let pick;
     do { pick = shuffle([...Array(N).keys()]).slice(0, cfg.tiles).sort((a, b) => a - b); } while (pick.join() === prevKey && N > cfg.tiles);
     prevKey = pick.join(); lit = new Set(pick); found = new Set();
-    phase = 'ready'; say('Watch');
+    phase = 'ready'; say(tr('Watch', 'देखें'));
     api.after(520, () => {
       phase = 'show'; lit.forEach(i => cells[i].classList.add('on'));
       api.sfx('flip'); api.haptic('select');
       api.after(cfg.show, () => {
         lit.forEach(i => cells[i].classList.remove('on'));
         phase = 'input'; board.classList.add('live');
-        say('Your turn');
+        say(tr('Your turn', 'अब आपकी बारी'));
       });
     });
   }
@@ -80,7 +89,7 @@ export function start(host, cfg, api) {
       found.add(i); c.classList.add('hit');
       api.sfx('tap'); api.haptic('light');
       const left = lit.size - found.size;
-      if (left) say(`${left} left`); else win();
+      if (left) say(HI ? `${left} बाक़ी` : `${left} left`); else win();
     } else {
       c.classList.add('miss'); api.sfx('wrong'); api.haptic('error');
       lose();
@@ -90,8 +99,8 @@ export function start(host, cfg, api) {
     phase = 'done'; score++; streak++;
     dots[round - 1].classList.add('ok');
     board.classList.add('win'); api.setScore(score);
-    say('Correct', 'good');
-    if (streak >= 3) api.combo(`${streak} perfect in a row`); else api.sfx('correct');
+    say(tr('Correct', 'सही'), 'good');
+    if (streak >= 3) api.combo(HI ? `लगातार ${streak} सही` : `${streak} perfect in a row`); else api.sfx('correct');
     api.float('+1', { el: board, dy: board.offsetHeight / 2 });
     api.after(850, nextRound);
   }
@@ -100,7 +109,7 @@ export function start(host, cfg, api) {
     dots[round - 1].classList.add('bad');
     board.classList.add('lose');
     lit.forEach(i => { if (!found.has(i)) cells[i].classList.add('reveal'); });
-    say('Missed', 'bad');
+    say(tr('Missed', 'चूक गए'), 'bad');
     api.after(1400, nextRound);
   }
   function finish() {

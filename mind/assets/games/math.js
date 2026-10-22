@@ -1,17 +1,21 @@
 // Quick Math: as many sums as you can in 45 seconds on a big keypad. The answer checks itself as soon as it has
 // enough digits. 10 points per answer, +5 while on a streak of 3 or more. Every result is a whole number ≥ 0.
-import { onTap, clamp, ri } from '../util.js';
+import { onTap, clamp, ri, HI, tr, trLive } from '../util.js';
 
 export const meta = {
-  id: 'math', name: 'Quick Math', skill: 'Math', color: '#2563EB', deep: '#1E40AF',
-  rule: 'Solve as many sums as you can in 45 seconds.',
-  how: [
+  id: 'math', name: 'Quick Math', get skill() { return trLive('Math', 'गणित'); }, color: '#2563EB', deep: '#1E40AF',
+  rule: tr('Solve as many sums as you can in 45 seconds.', '45 सेकंड में जितने हो सकें, उतने सवाल हल करें।'),
+  how: HI ? [
+    'कीपैड पर जवाब लिखें। जाँच अपने-आप होगी।',
+    'लगातार 3 सही होने पर हर जवाब पर 5 अंक ज़्यादा।',
+  ] : [
     'Type the answer on the keypad. It checks itself.',
     'Three in a row adds 5 points to each answer.',
   ],
 };
 
 const g = (a, b) => (b ? g(b, a % b) : a);
+const pct = (p, n) => (HI ? `${n} का ${p}%` : `${p}% of ${n}`);
 const K = {
   add1: R => { const a = ri(R, 1, 9), b = ri(R, 1, 9); return [`${a} + ${b}`, a + b]; },
   add2: R => { const a = ri(R, 10, 29), b = ri(R, 2, 9); return R() < 0.5 ? [`${a} + ${b}`, a + b] : [`${b} + ${a}`, a + b]; },
@@ -50,13 +54,13 @@ const K = {
   pct1: R => {
     const p = [10, 50, 25][ri(R, 0, 2)];
     const n = p === 10 ? ri(R, 2, 20) * 10 : p === 50 ? ri(R, 3, 60) * 2 : ri(R, 2, 30) * 4;
-    return [`${p}% of ${n}`, n * p / 100];
+    return [pct(p, n), n * p / 100];
   },
   pct2: R => {
     const p = [5, 15, 20, 30, 40, 75][ri(R, 0, 5)];
     const step = 100 / g(p, 100); // smallest n with a whole answer
     const n = step * ri(R, Math.max(1, Math.ceil(20 / step)), Math.floor(200 / step));
-    return [`${p}% of ${n}`, n * p / 100];
+    return [pct(p, n), n * p / 100];
   },
   sq: R => { const a = ri(R, 3, 15); return [`${a}²`, a * a]; },
 };
@@ -85,11 +89,22 @@ const MIX = [
 ];
 // expected correct answers for three stars
 const C3 = [20, 18, 17, 15, 15, 14, 14, 13, 12, 12, 10, 10, 9, 10, 9, 9, 8, 8, 8, 8];
-const LABEL = ['Single-digit adding', 'Adding up to 30', 'Adding and taking away', 'Bigger take-aways', 'Times tables to 5',
+const LABEL = HI ? ['एक अंक का जोड़', '30 तक जोड़', 'जोड़ और घटाना', 'बड़े घटाव', '5 तक के पहाड़े',
+  '9 तक के पहाड़े', 'भाग', 'चारों तरह के सवाल', 'बड़े पहाड़े', 'दो अंकों के सवाल', 'दो क़दम वाले सवाल', 'ग़ायब नंबर', 'मुश्किल दो क़दम',
+  'आसान प्रतिशत', 'प्रतिशत', 'वर्ग', 'मिले-जुले मुश्किल', 'बड़े गुणा', 'लंबी दिमाग़ी दौड़', 'सबसे मुश्किल'] : ['Single-digit adding', 'Adding up to 30', 'Adding and taking away', 'Bigger take-aways', 'Times tables to 5',
   'Times tables to 9', 'Dividing', 'All four', 'Bigger tables', 'Two-digit sums', 'Two steps', 'Missing numbers', 'Tricky two-steps',
   'Easy percentages', 'Percentages', 'Squares', 'Mixed hard', 'Big multiplying', 'Mental marathon', 'Grandmaster'];
 
-const TWIST = {
+const TWIST = HI ? {
+  3: 'घटाना। अब घटाने के सवाल भी आएँगे।',
+  5: 'पहाड़े। अभी 5 × 9 तक।',
+  7: 'भाग। हर जवाब पूरी संख्या होगा।',
+  11: 'दो क़दम। पहले × और ÷, फिर + और −।',
+  12: 'ग़ायब नंबर। पता करें कि ? की जगह क्या आएगा।',
+  14: 'प्रतिशत। 10% यानी दसवाँ हिस्सा, 50% यानी आधा, 25% यानी चौथाई।',
+  15: 'मुश्किल प्रतिशत। 15% यानी 10% और उसका आधा।',
+  16: 'वर्ग। 7² का मतलब 7 × 7।',
+} : {
   3: 'Subtraction. Taking away joins the mix.',
   5: 'Times tables. Up to 5 × 9 for now.',
   7: 'Division. Every answer is a whole number.',
@@ -106,8 +121,8 @@ export function levelConfig(n) {
   return {
     mix: MIX[n - 1], time: 45,
     targets: [Math.round(c3 * 0.45) * 10, Math.round(c3 * 0.72) * 10, c3 * 10],
-    lower: false, scoreLabel: 'pts', goalUnit: 'points', resultLabel: 'points',
-    desc: `${LABEL[n - 1]} · 45 seconds`,
+    lower: false, scoreLabel: tr('pts', 'अंक'), goalUnit: tr('points', 'अंक'), resultLabel: tr('points', 'अंक'),
+    desc: `${LABEL[n - 1]} · ${tr('45 seconds', '45 सेकंड')}`,
     twist: TWIST[n] || '',
   };
 }
@@ -127,7 +142,7 @@ export function start(host, cfg, api) {
     <div class="qm-qwrap"><div class="qm-q" id="qmQ"></div></div>
     <div class="qm-a" id="qmA" aria-live="polite"><span class="qm-ph">?</span></div>
     <div class="qm-pad" id="qmPad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button class="qm-k" data-k="${d}">${d}</button>`).join('')}
-      <button class="qm-k fn" data-k="C" aria-label="Clear">C</button><button class="qm-k" data-k="0">0</button><button class="qm-k fn" data-k="<" aria-label="Delete">${BACK}</button></div>
+      <button class="qm-k fn" data-k="C" aria-label="${tr('Clear', 'सब मिटाएँ')}">C</button><button class="qm-k" data-k="0">0</button><button class="qm-k fn" data-k="<" aria-label="${tr('Delete', 'एक अंक मिटाएँ')}">${BACK}</button></div>
   </div>`;
   const qEl = host.querySelector('#qmQ'), aEl = host.querySelector('#qmA'), stEl = host.querySelector('#qmStreak');
   let p = null, input = '', score = 0, right = 0, wrong = 0, streak = 0, best = 0, locked = true, over = false, last = '';
@@ -167,7 +182,7 @@ export function start(host, cfg, api) {
       api.float(bonus ? `+${pts}` : '+10', { el: aEl, dy: -8 });
       const milestone = streak === 3 || (streak > 3 && streak % 5 === 0);
       api.sfx(milestone ? 'combo' : 'correct'); api.haptic(milestone ? 'medium' : 'light');
-      stEl.innerHTML = streak >= 3 ? `<span>Streak ${streak} · +5 each</span>` : '';
+      stEl.innerHTML = streak >= 3 ? (HI ? `<span>लगातार ${streak} सही · हर जवाब +5</span>` : `<span>Streak ${streak} · +5 each</span>`) : '';
       qEl.classList.add('out');
       api.after(170, show);
     } else {
@@ -184,8 +199,8 @@ export function start(host, cfg, api) {
     else if (e.key === 'Backspace') key('<');
     else if (e.key === 'Delete') key('C');
   });
-  api.timer({ seconds: cfg.time, onEnd() { over = true; api.end({ score, note: `${right} right · ${wrong} wrong · best streak ${best}` }); } });
-  api.setScore(0, 'pts', true);
+  api.timer({ seconds: cfg.time, onEnd() { over = true; api.end({ score, note: HI ? `${right} सही · ${wrong} ग़लत · लगातार सबसे ज़्यादा ${best} सही` : `${right} right · ${wrong} wrong · best streak ${best}` }); } });
+  api.setScore(0, tr('pts', 'अंक'), true);
   api.test({
     state: () => ({ q: p && p.q, input, score, locked }),
     answer: () => p && String(p.a),

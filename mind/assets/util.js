@@ -1,5 +1,17 @@
 // Mind games: small shared helpers (markup, seeded randomness, feedback, toasts, rings).
-export const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// v24: the app-wide language (localStorage bd_lang, written by the main app: 'hi' or 'en'; missing = 'en').
+// HI is read once per page load; tr('English', 'हिंदी') picks the string. Game names and the English words that are
+// the gameplay (Word Builder's words, Color Clash's colour words) stay English in both.
+export const HI = (() => { try { return localStorage.getItem('bd_lang') === 'hi'; } catch (e) { return false; } })();
+export const tr = (en, hi) => (HI ? hi : en);
+// only on the Mind pages: the main app imports store.js (→ this file) and sets its own <html lang>
+if (HI) { try { if (/^\/mind\//.test(location.pathname)) document.documentElement.lang = 'hi'; } catch (e) { /* no DOM */ } }
+// The main app (app/learn.js) reads a game's `skill` and can switch language without a reload: that one field reads
+// the setting live.
+export const trLive = (en, hi) => { try { return localStorage.getItem('bd_lang') === 'hi' ? hi : en; } catch (e) { return en; } };
+// A stored best ("12.3s", saved in one language-neutral form) as shown on screen: Hindi spells the unit out.
+export const rawText = t => (HI && /^\d+(\.\d+)?s$/.test(String(t)) ? String(t).slice(0, -1) + ' सेकंड' : t);
+export const esc =s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
 export const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -122,5 +134,5 @@ export function titleOnScroll(h1) {
 
 export function greeting(d = new Date()) {
   const h = d.getHours();
-  return h >= 5 && h < 12 ? 'Good morning' : h >= 12 && h < 17 ? 'Good afternoon' : 'Good evening';
+  return h >= 5 && h < 12 ? tr('Good morning', 'सुप्रभात') : h >= 12 && h < 17 ? tr('Good afternoon', 'नमस्ते') : tr('Good evening', 'शुभ संध्या');
 }

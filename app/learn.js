@@ -18,7 +18,7 @@
     { c: 'es', n: 'Spanish', nh: 'स्पैनिश', native: 'Español', g: 'Ñ', a: '#DC2626' },
     { c: 'fr', n: 'French', nh: 'फ़्रेंच', native: 'Français', g: 'Ç', a: '#2563EB' },
     { c: 'de', n: 'German', nh: 'जर्मन', native: 'Deutsch', g: 'ß', a: '#64748B' },
-    { c: 'en', n: 'English', nh: 'अंग्रेज़ी', native: 'Taught in Hindi', g: 'Aa', a: '#7C3AED' },
+    { c: 'en', n: 'English', nh: 'अंग्रेज़ी', native: 'Taught in Hindi', nativeHi: 'हिंदी में', g: 'Aa', a: '#7C3AED' },
     { c: 'hi', n: 'Hindi', nh: 'हिंदी', native: 'हिन्दी', g: 'अ', a: '#EA580C' },
   ];
   const LANG_TOTAL = 52; // 12 audio lessons + 40 practice lessons per language
@@ -170,7 +170,7 @@
     return '<div class="lx">' + header(H ? 'भाषाएँ' : 'Languages', true) + strip + list(LANGS.map(l => {
       const p = langPct(l.c), xp = cx[l.c] || 0;
       return row({ id: l.c, href: '/lang/course.html?c=' + l.c, accent: l.a, ic: '<b class="lx-glyph">' + l.g + '</b>', title: H ? l.nh : l.n,
-        sub: l.native + ' · ' + (p ? p + '%' + (xp ? ' · ' + xp + ' XP' : '') : (H ? 'शुरू नहीं किया' : 'Not started')), pct: p });
+        sub: (H && l.nativeHi ? l.nativeHi : l.native) + ' · ' + (p ? p + '%' + (xp ? ' · ' + xp + ' XP' : '') : (H ? 'शुरू नहीं किया' : 'Not started')), pct: p });
     })) + '</div>';
   }
 

@@ -122,9 +122,10 @@
   // deep links only (Learn → teacher, language lessons → language practice): never a switch on Bro's screen
   V.setPersona = function (k) { k = k === 'news' ? 'bro' : k; if (!PERSONA_LABEL[k]) return; V.persona = k; V.rerender(); };
   // English | हिंदी. During a live call the server switches at once (no reconnect); other engines restart.
-  V.setLang = function (l) {
+  V.setLang = function (l, fromApp) {
     l = l === 'hi' ? 'hi' : 'en'; if (V.lang === l) return;
     V.lang = l; try { localStorage.setItem('bro.lang', l); } catch (e) {}
+    if (!fromApp && window.setAppLang) setAppLang(l, 'bro'); // v24: one language for the whole app
     if (coreLive() && V.ws && V.ws.readyState === 1) { V.wsSend({ t: 'lang', lang: l }); V.rerender(); return; }
     V.rerender(); if (isLive()) { V.stop(true); V.start(); }
   };
@@ -408,7 +409,7 @@ registerProcessor('bro-mic', BroMic);`;
         break;
       case 'audio': V._hdr = m; break;
       case 'lang': // the user asked Bro, in their own words, to switch: the English | हिंदी switch follows
-        if (m.lang === 'en' || m.lang === 'hi') { V.lang = m.lang; try { localStorage.setItem('bro.lang', m.lang); } catch (err) {} V.rerender(); }
+        if (m.lang === 'en' || m.lang === 'hi') { V.lang = m.lang; try { localStorage.setItem('bro.lang', m.lang); } catch (err) {} if (window.setAppLang) setAppLang(m.lang, 'bro'); V.rerender(); }
         break;
       case 'tool': V.wsSend({ t: 'tool_result', id: m.id, result: { error: 'unknown tool' } }); break; // no client tools
       case 'action': V.afterTool(m.tool, m.input || {}, m.result); break; // v20: Bro did something in the app on the call (a toast, the list, a screen)
