@@ -25,6 +25,11 @@ Both pushes are needed. Railway auto-builds on push to `railway` remote.
   - It writes `BUILD_COMMIT` (an upload carries no git data) and records a GitHub deployment `railway-ci`.
 - The server reads its commit from `RAILWAY_GIT_COMMIT_SHA`, else `BUILD_COMMIT` (`_BUILD_SHA`: `/api/health`'s `commit`, the service worker version).
 - `live-check.yml` waits up to 6 minutes for either deploy to start, then for `/api/health` to report the commit. Every run warns how many commits brodoit.com is behind main.
+- **Diagnosis (22 Oct)**, from a read-only Actions run that read the GitHub deployments and check suites:
+  - The link was not broken. Railway's GitHub app (`railway-app`) still opened its check suite on every push to main.
+  - Railway simply created no deployment after `1f489ec` (20 Oct 22:06; 12 deployments that day, each 3 s after its push).
+  - So the hold was inside the Railway account or service: plan or credits, paused deploys, or a source or CI setting. The owner moved the account to Pro on 22 Oct.
+  - If merges stop deploying again, look in Railway → *taskflow*: the Deployments tab (banner, skipped or waiting) and Settings → Source (repo `taskflow`, branch `main`, wait for CI).
 
 ## Critical Escaping Rules
 
