@@ -15,23 +15,90 @@
 //   GET  /api/news/story/:id → { story }      POST /api/news/share {id} → { url: <site>/n/<id> }
 //   GET  /n/:id  the story's own page with link-preview tags (a signed-in visitor goes straight into the app);
 //   GET  /n/:id/card.png  the preview picture when the story has no photo
-// Batches run on boot (+2 min) and every 30 minutes; stories older than 3 days drop off.
+// v22: three editions a day (07:00, 13:00, 19:00 India time; NEWS_EDITIONS), not a batch every 30 minutes. The best
+// writer writes each story (Gemini Flash, then Bro Core's background models); every story is checked before it
+// is published: English fields in English and Hindi fields in Hindi, complete sentences (never cut off with "…"), the
+// length, a "why it matters" line, and every number in the story found in the sources. A story that fails gets one
+// repair round, else it is not published (a story with good English and bad Hindi is published in English only).
+// Repeats are caught by shared source links, by wording (≥ 0.45 alike) and by the writer, which sees the last two
+// days' headlines. Only written stories reach the deck (no raw feed items); ?lang=hi gives the Hindi ones.
+//   GET /api/news/edition → { id, label, at, next_at, count }   (the app's "new edition" dot)
+// Stories older than 4 days drop off.
 'use strict';
 const GEM = require('./gemini.js');
 const crypto = require('crypto');
 const fs = require('fs'), path = require('path');
 
-const STOP = new Set('a an the of to in on for and or but with at by from as is are was were be been it its this that these those after before over under into about than then new says said say will would can could may might not no yes up down out more most what why how who when where which while amid amid as india india’s'.split(/\s+/));
+const STOP = new Set('a an the of to in on for and or but with at by from as is are was were be been it its this that these those after before over under into about than then new says said say will would can could may might not no yes up down out more most what why how who when where which while amid amid as india india’s her his him their them she they you your our has have had'.split(/\s+/));
+// words too common in news to tell two stories apart on their own ("police arrest three" is many stories)
+const GENERIC = new Set('police arrest arrested arrests court government govt minister chief state city district shares share stock stocks percent crore lakh rupee rupees killed dead death deaths case report people year years day days week first two three four five six ten hundred thousand million billion top big world global national major announces launches gets hits seeks calls plan plans set sets amid'.split(/\s+/));
 const CAT_LABEL = { india: 'India', world: 'World', business: 'Business', tech: 'Tech', science: 'Science' };
 
 function tokens(s) {
   return String(s || '').toLowerCase().replace(/&[a-z]+;/g, ' ').replace(/[^a-z0-9ऀ-ॿ\s]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
 }
 function jaccard(a, b) { let i = 0; for (const x of a) if (b.has(x)) i++; return i / (a.size + b.size - i || 1); }
+// v22: one event told twice. Headline + opening ≥ 0.45 alike, or headlines sharing 4+ words (3+ of them not generic,
+// e.g. "elon musk tesla spacex") that make up 60% of the shorter headline.
+const sigOf = (headline, text) => ({ t: new Set(tokens(headline + ' ' + String(text || '').slice(0, 140))), h: new Set(tokens(headline)) });
+const telling = x => !GENERIC.has(x) && !/^\d+$/.test(x);
+function sameStory(a, b) {
+  if (jaccard(a.t, b.t) >= 0.45) { let d = 0; for (const x of a.t) if (b.t.has(x) && telling(x)) d++; if (d >= 2) return true; }
+  let i = 0, d = 0; for (const x of a.h) if (b.h.has(x)) { i++; if (telling(x)) d++; }
+  return i >= 4 && d >= 3 && i >= 0.6 * Math.min(a.h.size, b.h.size);
+}
 const sha = s => crypto.createHash('sha1').update(s).digest('hex').slice(0, 16);
 const clip = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s; };
 const words = (s, n) => { const w = String(s || '').replace(/\s+/g, ' ').trim().split(' '); return w.length > n ? w.slice(0, n).join(' ').replace(/[,;:]$/, '') + '…' : w.join(' '); };
 const strip = s => String(s || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;|&rsquo;|&lsquo;/g, "'").replace(/\s+/g, ' ').trim();
+
+// ── v22: language and quality checks ──
+const DEVA_RE = /[ऀ-ॿ]/;
+const hasDeva = t => DEVA_RE.test(String(t || ''));
+const letters = t => (String(t || '').match(/[A-Za-zऀ-ॿ]/g) || []).length;
+const isEnglishText = t => { t = String(t || ''); return letters(t) > 0 && !hasDeva(t); };
+const isHindiText = t => { t = String(t || ''); const n = letters(t); return n > 0 && (t.match(/[ऀ-ॿ]/g) || []).length / n >= 0.6; };
+const wordsIn = t => String(t || '').trim().split(/\s+/).filter(Boolean).length;
+const CUT_RE = /(…|\.\.\.)\s*["'”’)]*\s*$/;
+const ENDS_RE = /[.!?।"'”’)]\s*$/;
+// every number the story states must be in the sources ("1,200" and "1200" are the same; 0–12 are allowed as words)
+const numsOf = t => (String(t || '').match(/\d[\d,]*(?:\.\d+)?/g) || []).map(n => n.replace(/,/g, '').replace(/\.0+$/, ''));
+function checkStory(st, sourceText) {
+  const en = [], hi = [];
+  if (!st || typeof st !== 'object') return { en: ['not a JSON object'], hi: [] };
+  const h = String(st.headline || '').trim(), sm = String(st.summary || '').trim(), why = String(st.why || '').trim();
+  if (!isEnglishText(h)) en.push('the headline must be in English (no Devanagari)');
+  if (wordsIn(h) < 4 || wordsIn(h) > 16) en.push('the headline must be 6-12 words');
+  if (CUT_RE.test(h)) en.push('the headline must not end with an ellipsis');
+  if (!isEnglishText(sm)) en.push('the summary must be in English (no Devanagari)');
+  if (wordsIn(sm) < 70 || wordsIn(sm) > 135) en.push('the summary must be 80-110 words (it has ' + wordsIn(sm) + ')');
+  if (CUT_RE.test(sm) || !ENDS_RE.test(sm)) en.push('the summary must end with a complete sentence, never an ellipsis');
+  if (!isEnglishText(why) || wordsIn(why) < 6 || wordsIn(why) > 40) en.push('"why" must be one English sentence of 12-25 words');
+  if (sourceText != null) {
+    const src = new Set(numsOf(sourceText)), srcDigits = String(sourceText).replace(/,/g, '');
+    const bad = [...new Set(numsOf(sm + ' ' + h + ' ' + why))].filter(n => !(+n <= 12 && !/\./.test(n)) && !src.has(n) && !srcDigits.includes(n));
+    if (bad.length) en.push('these numbers are not in the sources: ' + bad.slice(0, 5).join(', ') + ' (use only the sources\' numbers)');
+  }
+  const hh = String(st.headline_hi || '').trim(), hs = String(st.summary_hi || '').trim(), hw = String(st.why_hi || '').trim();
+  if (!isHindiText(hh)) hi.push('headline_hi must be Hindi in Devanagari');
+  if (!isHindiText(hs) || wordsIn(hs) < 55 || wordsIn(hs) > 170) hi.push('summary_hi must be 80-120 words of Hindi in Devanagari');
+  if (hs && (CUT_RE.test(hs) || !ENDS_RE.test(hs))) hi.push('summary_hi must end with a complete sentence');
+  if (!isHindiText(hw)) hi.push('why_hi must be Hindi in Devanagari');
+  return { en, hi };
+}
+// the edition a moment belongs to: the latest slot (India time) at or before it
+const IST_MIN = 330;
+function parseSlots(v) { return String(v || '07:00,13:00,19:00').split(',').map(x => x.trim()).filter(x => /^([01]\d|2[0-3]):[0-5]\d$/.test(x)).map(x => +x.slice(0, 2) * 60 + +x.slice(3)).sort((a, b) => a - b); }
+function editionOf(now, slots) {
+  slots = slots && slots.length ? slots : parseSlots();
+  const t = (now instanceof Date ? now : new Date(now || Date.now())).getTime(), ist = new Date(t + IST_MIN * 60e3);
+  const day = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate()), min = ist.getUTCHours() * 60 + ist.getUTCMinutes();
+  let d = day, k = slots.filter(x => x <= min).length - 1;
+  if (k < 0) { d = day - 864e5; k = slots.length - 1; }
+  const at = d + slots[k] * 60e3 - IST_MIN * 60e3, next = k + 1 < slots.length ? d + slots[k + 1] * 60e3 - IST_MIN * 60e3 : d + 864e5 + slots[0] * 60e3 - IST_MIN * 60e3;
+  const hhmm = String(Math.floor(slots[k] / 60)).padStart(2, '0') + String(slots[k] % 60).padStart(2, '0'), hour = Math.floor(slots[k] / 60);
+  return { id: new Date(d).toISOString().slice(0, 10) + '-' + hhmm, slot: hhmm, label: hour < 11 ? 'Morning edition' : hour < 17 ? 'Afternoon edition' : 'Evening edition', label_hi: hour < 11 ? 'सुबह का संस्करण' : hour < 17 ? 'दोपहर का संस्करण' : 'शाम का संस्करण', at: new Date(at).toISOString(), next_at: new Date(next).toISOString() };
+}
 
 function cluster(items) {
   const out = [];
@@ -70,6 +137,28 @@ function install(app, deps) {
     db.exec('CREATE INDEX IF NOT EXISTS idx_news_seen_user ON news_seen(user_phone, seen_at)');
     db.exec("CREATE TABLE IF NOT EXISTS news_shared(id TEXT PRIMARY KEY, story TEXT NOT NULL, shared_at TEXT DEFAULT (datetime('now')), opens INTEGER DEFAULT 0)");
   } catch (e) { log('schema v21', e.message); }
+  try {
+    db.exec("CREATE TABLE IF NOT EXISTS news_editions(id TEXT PRIMARY KEY, slot TEXT, at TEXT, stories INTEGER DEFAULT 0, writer TEXT, created_at TEXT DEFAULT (datetime('now')))");
+    try { db.exec('ALTER TABLE news_stories ADD COLUMN edition TEXT'); } catch (e) { /* already there */ }
+  } catch (e) { log('schema v22', e.message); }
+  // v22: stories written before the checks: English fields with Hindi in them, or a story cut off with "…", go (the next
+  // edition writes fresh ones); Hindi fields that are not Hindi are cleared (the story stays, in English only)
+  try {
+    let gone = 0, cleared = 0;
+    for (const r of q('SELECT id, headline, summary, why, headline_hi, summary_hi, why_hi FROM news_stories').all()) {
+      if (hasDeva(r.headline) || hasDeva(r.summary) || CUT_RE.test(String(r.summary || ''))) { q('DELETE FROM news_stories WHERE id=?').run(r.id); gone++; continue; }
+      if (hasDeva(r.why)) q("UPDATE news_stories SET why='' WHERE id=?").run(r.id);
+      if ((r.headline_hi || r.summary_hi) && !(isHindiText(r.headline_hi) && isHindiText(r.summary_hi) && !CUT_RE.test(String(r.summary_hi || '')))) { q("UPDATE news_stories SET headline_hi='', summary_hi='', why_hi='' WHERE id=?").run(r.id); cleared++; }
+    }
+    if (gone || cleared) log('cleanup:', gone, 'stories in the wrong language or cut off removed;', cleared, 'Hindi versions that were not Hindi cleared');
+    // the same event written twice (before v22 each 30-minute batch could write it again): the best-sourced one stays
+    const kept = []; let twice = 0;
+    for (const r of q("SELECT id, headline, summary FROM news_stories WHERE created_at > datetime('now','-4 days') ORDER BY source_count DESC, created_at ASC").all()) {
+      const g = sigOf(r.headline, r.summary);
+      if (kept.some(k => sameStory(g, k))) { q('DELETE FROM news_stories WHERE id=?').run(r.id); twice++; } else kept.push(g);
+    }
+    if (twice) log('cleanup:', twice, 'repeats of the same story removed');
+  } catch (e) { log('cleanup v22', e.message); }
   const state = { running: false, last: null, lastError: '', writer: '' };
 
   async function gather() {
@@ -86,11 +175,23 @@ function install(app, deps) {
   }
 
   // ── the writer ──
-  const SYS = 'You are the editor of Brodoit News, an Indian news app. Write ONE original news story from the source reports provided. Rules: use only facts that appear in the sources; never invent numbers, names or quotes; neutral tone; clear, simple words; no clickbait. The story must be complete on its own: what happened, who is involved, the key numbers and why it matters, woven into the text. Return strict JSON with keys: headline (max 12 words), summary (the full story, 90-105 words, one paragraph), headline_hi, summary_hi (natural Hindi, same facts, 90-110 words, not word-for-word), category (one of india, world, business, tech, science).';
-  function promptFor(c) {
-    const lines = c.items.slice(0, 6).map((i, n) => `Source ${n + 1} (${i.source}): ${i.title}. ${clip(i.desc, 420)}`);
-    return lines.join('\n');
+  // v22: the editor's brief. Accuracy first, wire-service style, a "why it matters" line, Hindi written like a Hindi
+  // newspaper, and the last two days' headlines so the writer can say "this is the same event".
+  const SYS = 'You are the senior editor of Brodoit News, an Indian news app read on phones. From the source reports, write ONE news story. ' +
+    'Accuracy first: use only facts the sources state; never add numbers, names, dates, quotes or causes they do not state; if the sources disagree, say so or leave it out. ' +
+    'Write like a top wire-service editor: the most important fact first, then who, what, where, when, the key numbers and the context; plain, specific words; active voice; ' +
+    'no opinion, hype, clickbait or questions; no filler such as "according to reports"; complete sentences only, never an ellipsis. ' +
+    'Return strict JSON with keys: headline (English, 6-12 words, sentence case, no full stop), summary (English, one paragraph of 80-110 words), ' +
+    'why (English, one sentence of 12-25 words: why it matters to a reader in India), headline_hi, summary_hi, why_hi (natural, fluent Hindi in Devanagari, the same facts, ' +
+    'written the way a good Hindi newspaper would, not word-for-word; numbers in digits), category (one of india, world, business, tech, science), ' +
+    'duplicate_of (the number of a RECENT headline that reports the same event, else null). English fields must contain no Devanagari; Hindi fields must be in Devanagari.';
+  const sourceText = c => c.items.slice(0, 6).map(i => i.title + '. ' + i.desc + (i.full ? ' ' + i.full : '')).join('\n');
+  function promptFor(c, heads) {
+    const lines = c.items.slice(0, 6).map((i, n) => `Source ${n + 1} (${i.source}${i.date ? ', ' + String(i.date).slice(0, 16) : ''}): ${i.title}. ${i.full || clip(i.desc, 600)}`);
+    const recent = (heads || []).slice(0, 30).map((h, n) => `${n + 1}. ${h}`).join('\n');
+    return (recent ? 'RECENT (already published in the last three days; if the sources report the same event, answer only {"duplicate_of": its number}):\n' + recent + '\n\n' : '') + 'SOURCES:\n' + lines.join('\n');
   }
+  const parseJSON = t => { const m = String(t || '').replace(/```(?:json)?/g, '').match(/\{[\s\S]*\}/); return m ? JSON.parse(m[0]) : null; };
   async function viaOpenAI(key, text) {
     const r = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(40000),
       body: JSON.stringify({ model: getSetting('OPENAI_CHAT_MODEL') || 'gpt-4o-mini', temperature: 0.3, response_format: { type: 'json_object' }, messages: [{ role: 'system', content: SYS }, { role: 'user', content: text }] }) });
@@ -98,8 +199,8 @@ function install(app, deps) {
     return JSON.parse(j.choices[0].message.content);
   }
   async function viaGemini(key, text) {
-    // the lite tier: a story is short structured writing, and the desk runs every 30 minutes
-    const { json: j } = await GEM.generate(key, { systemInstruction: { parts: [{ text: SYS }] }, contents: [{ role: 'user', parts: [{ text }] }], generationConfig: { temperature: 0.3, responseMimeType: 'application/json' } }, { tier: 'lite', getSetting, timeout: 40000 });
+    // v22: the Flash tier (not lite): three editions a day, so the better model is affordable
+    const { json: j } = await GEM.generate(key, { systemInstruction: { parts: [{ text: SYS }] }, contents: [{ role: 'user', parts: [{ text }] }], generationConfig: { temperature: 0.2, responseMimeType: 'application/json' } }, { tier: 'flash', getSetting, timeout: 40000 });
     return JSON.parse(GEM.textOf(j));
   }
   async function viaGroq(key, text) {
@@ -109,38 +210,85 @@ function install(app, deps) {
     return JSON.parse(j.choices[0].message.content);
   }
   function writers() {
-    // v16: Bro Core (open models on Groq) writes the news; the writers after it run only while its emergency switch is on
+    // v22: news is written 3 times a day, so the best writer that does not touch live talk writes it: Gemini Flash (its
+    // own provider and allowance, the best Hindi), then Bro Core's background lane (its own Groq models: the gpt-oss
+    // allowance stays live talk's). The writers after them run only while Bro Core's emergency switch is on.
     const w = [], BC = global._broCore;
-    if (BC && BC.brainReady()) w.push(['brocore', t => BC.chat({ system: SYS, messages: [{ role: 'user', content: t }], json: true, maxTokens: 2000, temperature: 0.3, purpose: 'news', emergency: false }).then(r => JSON.parse(r.text))]);
+    const g = getSetting('GEMINI_API_KEY');
+    if (g && !((global._geminiDownUntil || 0) > Date.now())) w.push(['gemini', t => viaGemini(g, t)]);
+    if (BC && BC.brainReady()) w.push(['brocore', t => BC.chat({ system: SYS, messages: [{ role: 'user', content: t }], json: true, maxTokens: 3000, temperature: 0.2, purpose: 'news', emergency: false }).then(r => parseJSON(r.text))]);
     if (BC && !BC.emergencyOn()) return w;
     const o = getSetting('OPENAI_API_KEY'); if (o) w.push(['openai', t => viaOpenAI(o, t)]);
-    const g = getSetting('GEMINI_API_KEY'); if (g) w.push(['gemini', t => viaGemini(g, t)]);
-    const r = getSetting('GROQ_API_KEY'); if (r) w.push(['groq', t => viaGroq(r, t)]);
+    const r = getSetting('GROQ_API_KEY'); if (r && !(BC && BC.brainReady())) w.push(['groq', t => viaGroq(r, t)]);
     const B = global._elevenBrain; if (B && B.available()) w.push(['elevenlabs', t => viaEleven(B, t)]);
-    // Gemini out of prepaid credit: skip it for an hour so each story does not wait on a failing call
-    return w.filter(x => !(x[0] === 'gemini' && (global._geminiDownUntil || 0) > Date.now()));
+    return w;
+  }
+  // write → check → one repair round → next writer. Returns { s, by } | { duplicate } | null.
+  // v22: a feed gives a line or two per report, too little for a full story; the writer reads the articles themselves
+  // (up to 2 per story, through modules/newsreader.js, which fetches public addresses only). Off when the server does
+  // not pass deps.readArticle (tests) or NEWS_READ_ARTICLES=0.
+  const readArticle = typeof deps.readArticle === 'function' && process.env.NEWS_READ_ARTICLES !== '0' ? deps.readArticle : null;
+  async function enrich(c) {
+    if (!readArticle) return;
+    const pick = c.items.filter(i => /^https?:\/\//.test(i.link || '') && !/(^|\.)news\.google\./.test((() => { try { return new URL(i.link).hostname; } catch (e) { return ''; } })())).slice(0, 2);
+    await Promise.all(pick.map(async i => {
+      try {
+        const d = await Promise.race([readArticle(i.link), new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 15000))]);
+        if (!d || !d.ok) return;
+        const t = (d.paragraphs || []).filter(x => !hasDeva(x)).join(' ').replace(/\s+/g, ' ').trim();
+        if (t.length > String(i.desc || '').length + 200) i.full = clip(t, 2400);
+        if (!i.img && d.image && /^https:\/\//.test(d.image)) i.img = d.image;
+      } catch (e) { /* the feed's own lines are used */ }
+    }));
+  }
+  // the recent headlines that share a telling word with this story, most alike first (what a repeat would look like)
+  function relatedHeads(c, heads) {
+    const t = new Set(); for (const i of c.items.slice(0, 6)) for (const w of tokens(i.title)) if (!GENERIC.has(w)) t.add(w);
+    return heads.map((h, k) => ({ h, k, n: tokens(h).filter(w => t.has(w)).length })).filter(x => x.n > 0).sort((a, b) => b.n - a.n || a.k - b.k).slice(0, 30).map(x => x.h);
+  }
+  async function writeStory(c, allHeads, ws) {
+    const heads = relatedHeads(c, allHeads || []), prompt = promptFor(c, heads), src = sourceText(c);
+    let enOnly = null;
+    for (const [name, fn] of ws) {
+      try {
+        let out = await fn(prompt);
+        if (!out || typeof out !== 'object') continue;
+        const d = parseInt(out.duplicate_of, 10); if (d >= 1 && heads[d - 1]) return { duplicate: heads[d - 1], by: name };
+        let p = checkStory(out, src);
+        if (p.en.length || p.hi.length) {
+          const fixed = await fn(prompt + '\n\nYOUR DRAFT:\n' + JSON.stringify(out) + '\n\nIt has these problems: ' + p.en.concat(p.hi).join('; ') + '. Fix every one and return the corrected JSON with the same keys.');
+          if (fixed && typeof fixed === 'object') { const p2 = checkStory(fixed, src); if (p2.en.length <= p.en.length) { out = fixed; p = p2; } }
+        }
+        if (!p.en.length && !p.hi.length) return { s: out, by: name };
+        if (!p.en.length && !enOnly) enOnly = { s: Object.assign({}, out, { headline_hi: '', summary_hi: '', why_hi: '' }), by: name };
+        state.lastError = name + ': ' + p.en.concat(p.hi).join('; ');
+      } catch (e) { state.lastError = name + ': ' + e.message; if (name === 'gemini' && /402|credit|prepay|billing/i.test(e.message)) global._geminiDownUntil = Date.now() + 3600e3; }
+    }
+    return enOnly; // good English, Hindi not right from any writer: published in English only
   }
   async function viaEleven(B, text) {
     const out = await B.ask({ system: SYS + ' Reply with the JSON object only, no other text.', messages: [{ role: 'user', content: text }], timeout: 40000 });
     const m = String(out).match(/\{[\s\S]*\}/); if (!m) throw new Error('no JSON in reply');
     return JSON.parse(m[0]);
   }
-  // Without a writer: stitch the sources' own sentences (no repeats) into one story of 110+ words when possible.
+  // Without any writer at all: stitch the sources' own English sentences (no repeats) into one story of 80+ words, ending
+  // on a whole sentence (never cut). It has no Hindi and no "why"; with a writer configured this is never published.
   function extractive(c) {
     const seen = new Set(), out = [];
-    for (const it of c.items.slice().sort((a, b) => (b.desc || '').length - (a.desc || '').length)) {
+    const items = c.items.filter(it => !hasDeva(it.title + it.desc)).sort((a, b) => (b.desc || '').length - (a.desc || '').length);
+    for (const it of items) {
       for (const sent of String(it.desc || '').split(/(?<=[.!?])\s+/)) {
         const k = sent.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().slice(0, 60);
-        if (sent.split(' ').length < 6 || seen.has(k)) continue;
+        if (sent.split(' ').length < 6 || seen.has(k) || !/[.!?]["'”’)]*$/.test(sent.trim()) || CUT_RE.test(sent)) continue;
         seen.add(k); out.push(sent.trim());
-        if (out.join(' ').split(' ').length >= 100) break;
+        if (wordsIn(out.join(' ')) >= 80) break;
       }
-      if (out.join(' ').split(' ').length >= 100) break;
+      if (wordsIn(out.join(' ')) >= 80) break;
     }
-    return { headline: clip(c.items[0].title, 110), summary: words(out.join(' '), 115), why: '', headline_hi: '', summary_hi: '', why_hi: '', category: c.cat };
+    const head = (items[0] || c.items[0]).title;
+    return { headline: head, summary: out.join(' '), why: '', headline_hi: '', summary_hi: '', why_hi: '', category: c.cat };
   }
   const wc = t => String(t || '').trim().split(/\s+/).filter(Boolean).length;
-  const valid = s => s && typeof s.headline === 'string' && s.headline.length > 8 && typeof s.summary === 'string' && wc(s.summary) >= 75;
   const MIN_WORDS = 70;
 
   // ── real photos: the RSS image, else the source page's og:image; cached once and served same-origin ──
@@ -188,50 +336,86 @@ function install(app, deps) {
   // One-time cleanup: short stories from before v13.1 are rewritten as full stories by the next batch.
   try { const short = q('SELECT id, summary FROM news_stories').all().filter(r => wc(r.summary) < MIN_WORDS).map(r => r.id); if (short.length) { const del = q('DELETE FROM news_stories WHERE id=?'); for (const id of short) del.run(id); log('removed', short.length, 'short stories; the next batch writes them in full'); } } catch (e) { log('cleanup', e.message); }
 
-  async function run(reason) {
+  const SLOTS = parseSlots(process.env.NEWS_EDITIONS);
+  const PER_EDITION = Math.max(5, Math.min(40, parseInt(process.env.NEWS_PER_EDITION, 10) || 20));
+  const PACE_MS = process.env.NEWS_PACE_MS != null ? +process.env.NEWS_PACE_MS : 4000; // between stories: spares the live allowance
+  const nowOf = () => (deps.now ? deps.now() : new Date());
+  const parseSources = t => { try { return JSON.parse(t || '[]'); } catch (e) { return []; } };
+  async function run(reason, ed) {
     if (state.running) return { busy: true };
-    state.running = true; const t0 = Date.now(); let wrote = 0, skipped = 0;
+    ed = ed || editionOf(nowOf(), SLOTS);
+    state.running = true; const t0 = Date.now(); let wrote = 0, skipped = 0, dup = 0, failed = 0;
     try {
       const items = await gather();
-      const clusters = cluster(items).filter(c => c.items.length >= 1).slice(0, 40);
+      const clusters = cluster(items).filter(c => c.items.length >= 1).slice(0, 60);
       const have = new Set(q('SELECT cluster_key FROM news_stories WHERE created_at > datetime(\'now\',\'-3 days\')').all().map(r => r.cluster_key));
-      // no repeats: a cluster that tells the same story as one we already published is skipped
-      const recent = q("SELECT headline, summary FROM news_stories WHERE created_at > datetime('now','-3 days')").all().map(r => new Set(tokens(r.headline + ' ' + String(r.summary || '').slice(0, 140))));
-      const repeat = c => { const t = new Set(tokens(c.items[0].title + ' ' + (c.items[0].desc || '').slice(0, 140))); return recent.some(r => jaccard(t, r) >= 0.45); };
+      // no repeats: a cluster that shares a source link with, or reads like, a story of the last 3 days is skipped;
+      // the writer also sees the last two days' headlines and can say "duplicate_of"
+      const rows = q("SELECT headline, summary, sources FROM news_stories WHERE created_at > datetime('now','-3 days') ORDER BY created_at DESC").all();
+      const recent = rows.map(r => sigOf(r.headline, r.summary));
+      const links = new Set(); for (const r of rows) for (const x of parseSources(r.sources)) if (x && x.link) links.add(x.link);
+      const heads = rows.map(r => r.headline);
+      const repeat = c => c.items.some(i => links.has(i.link)) || c.items.slice(0, 6).some(i => { const g = sigOf(i.title, i.desc); return recent.some(r => sameStory(g, r)); });
       const ws = writers(); state.writer = ws.length ? ws[0][0] : 'extractive';
       for (const c of clusters) {
-        if (wrote >= 24) break;
+        if (wrote >= PER_EDITION) break;
         if (have.has(c.key) || repeat(c)) { skipped++; continue; }
-        let s = null, by = 'extractive';
-        for (const [name, fn] of ws) { try { const out = await fn(promptFor(c)); if (valid(out)) { s = out; by = name; break; } } catch (e) { state.lastError = name + ': ' + e.message; if (name === 'gemini' && /402|credit|prepay|billing/i.test(e.message)) global._geminiDownUntil = Date.now() + 3600e3; } }
-        if (!s) { if (c.sources < 2 && ws.length) continue; s = extractive(c); }
-        if (wc(s.summary) < MIN_WORDS) { skipped++; continue; } // too thin to be a full story
+        if (c.items.every(i => hasDeva(i.title))) { skipped++; continue; } // the desk writes from English reports
+        let res;
+        if (ws.length) {
+          await enrich(c);
+          res = await writeStory(c, heads, ws);
+          if (res && res.duplicate) { dup++; continue; }
+          if (!res) { failed++; continue; }
+        } else { res = { s: extractive(c), by: 'extractive' }; if (checkStory(res.s, null).en.filter(x => !/why/.test(x)).length) { failed++; continue; } }
+        const st = res.s;
         const sources = []; const seen = new Set();
         for (const i of c.items) { if (seen.has(i.source)) continue; seen.add(i.source); sources.push({ name: i.source, link: i.link, title: i.title }); }
         const image = (c.items.find(i => i.img) || {}).img || null;
-        const cat = CAT_LABEL[s.category] ? s.category : c.cat;
+        const cat = CAT_LABEL[st.category] ? st.category : c.cat;
+        const T = (v, n) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, n);
         try {
-          q('INSERT OR IGNORE INTO news_stories(id,cluster_key,category,headline,summary,why,headline_hi,summary_hi,why_hi,sources,image,writer,source_count,published_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-            .run('ns_' + c.key, c.key, cat, clip(s.headline, 140), words(s.summary, 120), clip(s.why || '', 200), clip(s.headline_hi || '', 160), words(s.summary_hi || '', 140), clip(s.why_hi || '', 220), JSON.stringify(sources.slice(0, 6)), image, by, sources.length, new Date(c.newest || Date.now()).toISOString());
+          q('INSERT OR IGNORE INTO news_stories(id,cluster_key,category,headline,summary,why,headline_hi,summary_hi,why_hi,sources,image,writer,source_count,published_at,edition) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+            .run('ns_' + c.key, c.key, cat, T(st.headline, 160), T(st.summary, 1400), T(st.why, 300), T(st.headline_hi, 200), T(st.summary_hi, 1800), T(st.why_hi, 400), JSON.stringify(sources.slice(0, 6)), image, res.by, sources.length, new Date(c.newest || Date.now()).toISOString(), ed.id);
           wrote++;
-          recent.push(new Set(tokens(s.headline + ' ' + String(s.summary).slice(0, 140))));
+          heads.unshift(T(st.headline, 160)); recent.push(sigOf(st.headline, st.summary)); for (const i of c.items) links.add(i.link);
           await photoFor('ns_' + c.key, image, sources);
         } catch (e) { state.lastError = 'db: ' + e.message; }
+        if (PACE_MS > 0) await new Promise(r => setTimeout(r, PACE_MS));
       }
+      if (wrote) q('INSERT OR REPLACE INTO news_editions(id, slot, at, stories, writer) VALUES(?,?,?,?,?)').run(ed.id, ed.slot, ed.at, wrote + ((q('SELECT stories FROM news_editions WHERE id=?').get(ed.id) || {}).stories || 0), state.writer);
       q("DELETE FROM news_stories WHERE created_at < datetime('now','-4 days')").run();
-      try { q("DELETE FROM news_shared WHERE shared_at < datetime('now','-90 days')").run(); } catch (e) { /* ignore */ }
-      for (const r of q("SELECT id, image, sources FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY created_at DESC LIMIT 40").all().filter(r => !imgFile(r.id)).slice(0, 12)) { let src = []; try { src = JSON.parse(r.sources || '[]'); } catch (e) { /* ignore */ } await photoFor(r.id, r.image, src); }
+      try { q("DELETE FROM news_shared WHERE shared_at < datetime('now','-90 days')").run(); q("DELETE FROM news_editions WHERE at < datetime('now','-7 days')").run(); } catch (e) { /* ignore */ }
+      for (const r of q("SELECT id, image, sources FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY created_at DESC LIMIT 40").all().filter(r => !imgFile(r.id)).slice(0, 12)) { await photoFor(r.id, r.image, parseSources(r.sources)); }
       try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp)$/, ''); if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id) && !q('SELECT 1 FROM news_shared WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
-      state.last = { at: new Date().toISOString(), reason, items: items.length, clusters: clusters.length, wrote, skipped, ms: Date.now() - t0, writer: state.writer };
-      log('batch', JSON.stringify(state.last));
+      state.last = { at: new Date().toISOString(), reason, edition: ed.id, items: items.length, clusters: clusters.length, wrote, skipped, duplicates: dup, failed, ms: Date.now() - t0, writer: state.writer };
+      log('edition', JSON.stringify(state.last));
       // record the new headlines and top stories right away (modules/newsvoice.js)
       if (wrote && global._newsVoice) setTimeout(() => global._newsVoice.run('desk batch').catch(() => {}), 3000);
       return state.last;
-    } catch (e) { state.lastError = e.message; log('batch failed', e.message); return { error: e.message }; }
+    } catch (e) { state.lastError = e.message; log('edition failed', e.message); return { error: e.message }; }
     finally { state.running = false; }
   }
+  // the minute tick: the current edition is made once (a failed or empty try is retried after 20 minutes, 3 times)
+  state.tries = {};
+  function tick(now) {
+    now = now instanceof Date ? now : nowOf();
+    const ed = editionOf(now, SLOTS);
+    if (state.running || q('SELECT 1 FROM news_editions WHERE id=?').get(ed.id)) return null;
+    const t = state.tries[ed.id] || { n: 0, at: 0 };
+    if (t.n >= 3 || +now - t.at < 20 * 60e3) return null;
+    state.tries[ed.id] = { n: t.n + 1, at: +now };
+    return run('edition', ed);
+  }
+  function editionInfo() {
+    const cur = editionOf(nowOf(), SLOTS);
+    let last = null; try { last = q('SELECT id, slot, at, stories FROM news_editions ORDER BY id DESC LIMIT 1').get(); } catch (e) { last = null; }
+    if (!last) return Object.assign({}, cur, { count: 0, ready: false });
+    const hour = +String(last.slot || '0700').slice(0, 2);
+    return { id: last.id, slot: last.slot, label: hour < 11 ? 'Morning edition' : hour < 17 ? 'Afternoon edition' : 'Evening edition', label_hi: hour < 11 ? 'सुबह का संस्करण' : hour < 17 ? 'दोपहर का संस्करण' : 'शाम का संस्करण', at: last.at, next_at: cur.id === last.id ? cur.next_at : cur.at > last.at ? cur.at : cur.next_at, count: last.stories, ready: true };
+  }
 
-  const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: (() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })(), image: imgFile(r.id) ? '/api/news/img/' + encodeURIComponent(r.id) : r.image, writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at, voice: global._newsVoice ? global._newsVoice.flags(r.id) : {} });
+  const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: (() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })(), image: imgFile(r.id) ? '/api/news/img/' + encodeURIComponent(r.id) : r.image, writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at, edition: r.edition || null, voice: global._newsVoice ? global._newsVoice.flags(r.id) : {} });
 
   // ── v16: the deck never ends. ?before=<cursor>&exclude=id,id… walks back through every story the desk still holds
   // (newest first, past the 2-day window), then through the cached headline feed (/api/news) in the same story shape.
@@ -292,25 +476,27 @@ function install(app, deps) {
     const rest = feedStories(cat).filter(x => after(x) && !exSet.has(x.id) && fresh(S, x.story)), page = rest.slice(0, n), last = page[page.length - 1];
     return { stories: page.map(x => x.story), next: rest.length > n && last ? 'rss:' + last.ts + '~' + last.id : null };
   }
-  function older(cat, cur, ex, exSet, lim, S) {
-    if (cur && cur.feed) return feedPage(cat, cur, exSet, lim, S);
-    const out = []; let c = cur, last = null, ended = false;
+  // v22: one event once per page (stories written before v22 may tell it twice)
+  const once = () => { const got = []; return r => { const g = sigOf(r.headline, r.summary); if (got.some(x => sameStory(g, x))) return false; got.push(g); return true; }; };
+  function older(cat, cur, ex, exSet, lim, S, hi) {
+    if (cur && cur.feed) return { stories: [], next: null }; // v22: no raw feed items in the deck
+    const out = [], one = once(); let c = cur, last = null, ended = false;
     const chunk = S ? Math.max(lim * 3, 60) : lim;
     for (let guard = 0; guard < 25 && out.length < lim; guard++) {
       const w = [], a = [];
       if (cat) { w.push('category=?'); a.push(cat); }
+      if (hi) w.push("headline_hi != '' AND summary_hi != ''");
       if (c && c.id) { w.push('(published_at < ? OR (published_at = ? AND id < ?))'); a.push(c.iso, c.iso, c.id); }
       else if (c) { w.push(ex.length ? 'published_at <= ?' : 'published_at < ?'); a.push(c.iso); }
       if (ex.length) { w.push('id NOT IN (' + ex.map(() => '?').join(',') + ')'); a.push(...ex); }
       const rows = q('SELECT * FROM news_stories' + (w.length ? ' WHERE ' + w.join(' AND ') : '') + ' ORDER BY published_at DESC, id DESC LIMIT ?').all(...a, chunk);
-      for (const r of rows) { last = r; if (fresh(S, r)) { out.push(r); if (out.length >= lim) break; } }
+      for (const r of rows) { last = r; if (fresh(S, r) && one(r)) { out.push(r); if (out.length >= lim) break; } }
       if (out.length >= lim) break;
       if (rows.length < chunk) { ended = true; break; }
       c = { feed: false, iso: last.published_at, id: last.id };
     }
     if (out.length >= lim || !ended) { const l = out.length >= lim ? out[out.length - 1] : last; return { stories: out.map(pub), next: l ? l.published_at + '~' + l.id : null }; }
-    const fill = feedPage(cat, null, exSet, lim - out.length, S); // the desk has nothing older: the feed carries on
-    return { stories: out.map(pub).concat(fill.stories), next: fill.next };
+    return { stories: out.map(pub), next: null }; // v22: the desk's own stories only; the deck ends here
   }
   app.get('/api/news/desk', (req, res) => {
     const cat = CAT_LABEL[String(req.query.cat || '').toLowerCase()] ? String(req.query.cat).toLowerCase() : '';
@@ -321,18 +507,20 @@ function install(app, deps) {
     const ex = String(req.query.exclude || '').split(',').map(s => s.trim()).filter(s => ID.test(s)).slice(0, 200), exSet = new Set(ex);
     let out;
     let S = null; try { const u = deps.userOf && deps.userOf(req); S = u ? seenOf(u.phone) : null; } catch (e) { S = null; }
+    const hi = String(req.query.lang || '') === 'hi', HI = hi ? " AND headline_hi != '' AND summary_hi != ''" : '';
     try {
       if (!cur) { // the first page keeps today's ranking; next points at everything else, newest first
         const n0 = S ? 200 : lim;
-        const rows = (cat ? q('SELECT * FROM news_stories WHERE category=? ORDER BY source_count DESC, published_at DESC LIMIT ?').all(cat, n0)
-          : q("SELECT * FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY (source_count * 3 - (julianday('now') - julianday(published_at)) * 24 / 8) DESC LIMIT ?").all(n0)).filter(r => fresh(S, r)).slice(0, lim);
+        // v22: the newest edition first, ranked by how many outlets carry a story and how fresh it is
+        const rows = (cat ? q("SELECT * FROM news_stories WHERE category=?" + HI + " ORDER BY COALESCE(edition,'') DESC, source_count DESC, published_at DESC LIMIT ?").all(cat, n0)
+          : q("SELECT * FROM news_stories WHERE created_at > datetime('now','-2 days')" + HI + " ORDER BY COALESCE(edition,'') DESC, (source_count * 3 - (julianday('now') - julianday(published_at)) * 24 / 8) DESC LIMIT ?").all(n0)).filter(r => fresh(S, r)).filter(once()).slice(0, lim);
         if (rows.length) {
-          const all = q('SELECT COUNT(*) n, MAX(published_at) m FROM news_stories' + (cat ? ' WHERE category=?' : '')).get(...(cat ? [cat] : []));
-          out = { stories: rows.map(pub), next: all.m && (all.n > rows.length || feedStories(cat).length) ? all.m : null };
-        } else out = older(cat, null, ex, exSet, lim, S); // nothing new today: start with the newest the desk (or the feed) has
-      } else out = older(cat, cur, ex, exSet, lim, S);
+          const all = q('SELECT COUNT(*) n, MAX(published_at) m FROM news_stories WHERE 1=1' + (cat ? ' AND category=?' : '') + HI).get(...(cat ? [cat] : []));
+          out = { stories: rows.map(pub), next: all.m && all.n > rows.length ? all.m : null };
+        } else out = older(cat, null, ex, exSet, lim, S, hi); // nothing new today: start with the newest the desk has
+      } else out = older(cat, cur, ex, exSet, lim, S, hi);
     } catch (e) { log('desk page', e.message); return res.status(500).json({ error: 'news desk unavailable', stories: [], next: null }); }
-    res.json({ stories: out.stories, next: out.next, caughtUp: !out.stories.length && !out.next, updated_at: state.last && state.last.at, writer: state.writer || (writers()[0] || ['extractive'])[0], running: state.running });
+    res.json({ stories: out.stories, next: out.next, caughtUp: !out.stories.length && !out.next, edition: editionInfo(), updated_at: state.last && state.last.at, writer: state.writer || (writers()[0] || ['extractive'])[0], running: state.running });
   });
   // ── v21: seen memory, one story, sharing ──
   app.post('/api/news/seen', auth, (req, res) => {
@@ -459,15 +647,19 @@ ${lines.map((l, i) => `<text x="64" y="${Math.round(top + i * size * 1.18)}" fon
   app.post('/api/news/desk/run', auth, async (req, res) => {
     let ok = false; try { ok = !!(isAdminUser && isAdminUser(req.user)); } catch (e) {}
     if (!ok) return res.status(403).json({ error: 'admin only' });
-    res.json(await run('admin'));
+    res.json(await run('admin', editionOf(nowOf(), SLOTS)));
   });
+  // v22: the latest edition (the app shows a dot on News when there is one you have not opened)
+  app.get('/api/news/edition', (req, res) => { res.set('Cache-Control', 'no-cache'); res.json(editionInfo()); });
   global._deskStatus = () => ({ last: state.last, running: state.running, error: state.lastError, writer: state.writer });
-  if (String(process.env.NEWS_DESK || '1') !== '0') {
-    setTimeout(() => run('boot').catch(() => {}), 120000);
-    setInterval(() => run('schedule').catch(() => {}), 30 * 60 * 1000);
+  if (String(process.env.NEWS_DESK || '1') !== '0' && deps.timer !== false) {
+    // v22: three editions a day; the minute tick makes the current one if it is not there yet (so a deploy at 14:10
+    // still gets the 13:00 edition)
+    setTimeout(() => { try { const p = tick(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ } }, 120000);
+    const iv = setInterval(() => { try { const p = tick(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ } }, 60000); if (iv.unref) iv.unref();
   }
-  log('ready · batches every 30 min · writer', (writers()[0] || ['extractive'])[0]);
-  return { run, cluster, status: () => global._deskStatus() };
+  log('ready · editions at', SLOTS.map(m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0')).join(', '), 'India time · writer', (writers()[0] || ['extractive'])[0]);
+  return { run, tick, cluster, editionInfo, status: () => global._deskStatus() };
 }
 
-module.exports = { install, cluster, tokens };
+module.exports = { sameStory, sigOf, install, cluster, tokens, checkStory, editionOf, parseSlots, hasDeva, isHindiText, isEnglishText };
