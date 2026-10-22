@@ -105,6 +105,17 @@ jobs:
             code=$(curl -s -o /tmp/n.html -w '%{http_code}' --max-time 20 "https://brodoit.com/n/$id")
             if [ "$code" = 200 ] && grep -q 'og:title' /tmp/n.html; then echo "::notice::Shared stories open at https://brodoit.com/n/$id with a link preview"; else echo "::warning::/n/$id answered $code"; fi
           else echo "::warning::No story to try /n/ with"; fi
+      - name: News quality (which writer wrote each story, Hindi in English fields, cut summaries, repeats; reported here, never blocks a release)
+        run: |
+          st=$(curl -fsS --max-time 30 'https://brodoit.com/api/news/desk?limit=60' || echo '{}')
+          n=$(echo "$st" | jq '.stories | length' 2>/dev/null || echo 0)
+          echo "stories: $n · writer of the desk: $(echo "$st" | jq -r '.writer // "?"') · last batch: $(echo "$st" | jq -r '.updated_at // "?"')"
+          echo "by writer: $(echo "$st" | jq -c '[.stories[].writer] | group_by(.) | map({(.[0] // "none"): length}) | add' 2>/dev/null)"
+          hin=$(echo "$st" | jq '[.stories[] | select(((.headline // "") + (.summary // "")) | test("[\u0900-\u097F]"))] | length' 2>/dev/null || echo '?')
+          cut=$(echo "$st" | jq '[.stories[] | select((.summary // "") | test("(…|\\.\\.\\.)\\s*$"))] | length' 2>/dev/null || echo '?')
+          echo "Hindi script in the English headline or story: $hin · stories cut off with …: $cut"
+          echo "$st" | jq -r '.stories[] | "- [\(.writer // "?")] [\(.category)] \(.headline)  ::  \((.summary // "")[0:140])"' 2>/dev/null | head -60
+          if [ "$hin" != 0 ] || [ "$cut" != 0 ]; then echo "::warning::News quality: $hin stories with Hindi in English fields, $cut cut-off summaries (of $n)"; else echo "::notice::News quality: $n stories, none in the wrong language or cut off"; fi
       - name: The Android app and Google Play (reported here, never blocks a release)
         run: |
           st=$(curl -fsS --max-time 20 https://brodoit.com/api/android/status || echo '{}')
