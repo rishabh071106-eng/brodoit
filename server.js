@@ -2727,8 +2727,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=23"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=23">
-<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=23" defer></script><script src="/app/you.js?v=22" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=26" defer></script><script src="/app/micgain.js?v=1" defer></script><script src="/app/voicenote.js?v=2" defer></script><script src="/app/news.js?v=23" defer></script><script src="/app/notify.js?v=1" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=25" defer></script><script src="/app/onboarding.js?v=22" defer></script><script src="/app/motion.js?v=21" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=24"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=23">
+<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=23" defer></script><script src="/app/you.js?v=22" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=26" defer></script><script src="/app/micgain.js?v=1" defer></script><script src="/app/voicenote.js?v=2" defer></script><script src="/app/news.js?v=24" defer></script><script src="/app/notify.js?v=1" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=25" defer></script><script src="/app/onboarding.js?v=22" defer></script><script src="/app/motion.js?v=21" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -17381,7 +17381,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=136').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=137').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17909,7 +17909,7 @@ app.get(['/lang/phrases.html','/lang/phrase-lesson.html'],(_,res)=>res.redirect(
 // back to the last copy when offline; the app's and mini-apps'
 // files (/app, /lang, /mind, /code, icons) come from the cache at once and refresh in the background. Never /api/,
 // never a Range request, never a page sent no-store.
-const _SW_VER='v184-'+(String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,8)||Date.now().toString(36));
+const _SW_VER='v185-'+(String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,8)||Date.now().toString(36));
 app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="${_SW_VER}";
 var CACHE="bd-"+CACHE_VER;
 self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(fetch("/",{credentials:"same-origin",cache:"no-cache"}).then(function(res){if(keep(res))return caches.open(CACHE).then(function(ca){return ca.put("/",res)})}).catch(function(){}))});
@@ -18014,7 +18014,7 @@ try{require('./modules/brocore').install(app,{db,auth,isAdmin:isAdminUser,getSet
 const sha256=s=>crypto.createHash('sha256').update(String(s)).digest('hex');
 function pushTo(phone,payload){return _push.send(phone,payload)}
 try{require('./modules/newsreader.js').install(app,{auth,getSetting,MEDIA_DIR})}catch(e){console.log('[newsreader] not installed:',e.message)}
-try{require('./modules/newsdesk.js').install(app,{db,auth,getSetting,isAdminUser,fetchFeed,feeds:NEWS_FEEDS,mediaDir:MEDIA_DIR,publicUrl:process.env.PUBLIC_URL||'https://brodoit.com',userOf:req=>{let t=req.headers['x-token']||'';if(!t){const m=String(req.headers.cookie||'').match(/tf_token=([^;]+)/);if(m){try{t=decodeURIComponent(m[1])}catch(e){t=''}}}return t?db.prepare('SELECT phone,name FROM users WHERE token=?').get(String(t))||null:null},rssItems:()=>NEWS_CATS.flatMap(c=>((newsCache[c]||{}).items||[]).map(it=>Object.assign({cat:c},it)))})}catch(e){console.log('[desk] not installed:',e.message)}
+try{require('./modules/newsdesk.js').install(app,{db,auth,getSetting,isAdminUser,fetchFeed,feeds:NEWS_FEEDS,readArticle:require('./modules/newsreader.js').readArticle,mediaDir:MEDIA_DIR,publicUrl:process.env.PUBLIC_URL||'https://brodoit.com',userOf:req=>{let t=req.headers['x-token']||'';if(!t){const m=String(req.headers.cookie||'').match(/tf_token=([^;]+)/);if(m){try{t=decodeURIComponent(m[1])}catch(e){t=''}}}return t?db.prepare('SELECT phone,name FROM users WHERE token=?').get(String(t))||null:null},rssItems:()=>NEWS_CATS.flatMap(c=>((newsCache[c]||{}).items||[]).map(it=>Object.assign({cat:c},it)))})}catch(e){console.log('[desk] not installed:',e.message)}
 // v13.1: News is read, not played; recorded headlines only when NEWS_VOICE=1 (credits go to course/lesson/book voices)
 if(process.env.NEWS_VOICE==='1')try{const _st=require('./modules/studio.js');_st.configure({mediaDir:MEDIA_DIR});require('./modules/newsvoice.js').install(app,{db,getSetting,mediaDir:MEDIA_DIR,STUDIO:_st,schedule:String(process.env.NEWS_DESK||'1')!=='0'})}catch(e){console.log('[news-voice] off:',e.message)}
 let _android=null;try{_android=require('./modules/android.js').install(app,{MEDIA_DIR,PUBLIC_URL:process.env.PUBLIC_URL||'https://brodoit.com',auth,isAdminUser,getSetting})}catch(e){console.log('[android] not installed:',e.message)}

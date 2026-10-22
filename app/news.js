@@ -8,6 +8,11 @@
 // /api/news/seen), so it holds on every phone. When nothing unseen is left the deck ends on "You're all caught up"
 // (no going round again). Share opens a sheet: the story as a picture (with its brodoit.com/n/<id> link and a QR code),
 // the link, or copy the link. No Bro in News.
+// v22: News comes in three editions a day (7 am, 1 pm, 7 pm India time). The deck opens on the edition's front page (its
+// top headlines, tap one to jump to it; the sections; when the next edition comes), then the stories: each with
+// "Why it matters" and its sources (tap: the original reports). A slim bar shows how far you are. Hindi shows only the
+// stories written in Hindi (the server sends ?lang=hi), never English ones. A dot on the News tab says a new edition
+// is in.
 (function () {
   'use strict';
   const N = window.NewsChannel = { lang: localStorage.getItem('news.lang') || 'en', stories: [], loaded: false, _loading: false, i: 0 };
@@ -74,6 +79,24 @@
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushSeen(); });
   addEventListener('pagehide', flushSeen);
+  // v22: a dot on the News tab when an edition is in that this phone has not opened yet
+  function sawEdition() {
+    const id = N.edition && N.edition.id; if (!id) return;
+    try { localStorage.setItem('news.edition.seen', id); } catch (e) { /* ignore */ }
+    document.body.classList.remove('nz-fresh');
+  }
+  N.checkEdition = async function () {
+    try {
+      const r = await fetch('/api/news/edition', { cache: 'no-store' }); if (!r.ok) return;
+      const e = await r.json(); if (!e || !e.ready || !e.id) return;
+      N.edition = N.edition && N.edition.id === e.id ? N.edition : e;
+      let seenId = ''; try { seenId = localStorage.getItem('news.edition.seen') || ''; } catch (x) { seenId = ''; }
+      if (window.S && S.tab === 'news') { sawEdition(); return; }
+      document.body.classList.toggle('nz-fresh', seenId !== e.id);
+    } catch (e) { /* offline */ }
+  };
+  setTimeout(() => N.checkEdition(), 3000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') N.checkEdition(); });
   // the story on screen counts as seen after 1.5 s (only while News is what you are looking at)
   let viewT = 0;
   function watch() {
@@ -103,6 +126,8 @@
   // one page: the first is today's ranked desk; after it, `before` = the server's cursor (or the oldest story it sent)
   async function page() {
     const P = pass, first = P.next === undefined, qs = ['limit=' + (first ? 40 : 20)];
+    if (hi()) qs.push('lang=hi');
+    if (N.cat) qs.push('cat=' + encodeURIComponent(N.cat));
     if (!first) {
       qs.push('before=' + encodeURIComponent(P.next));
       const g = P.got, ex = g.length > 200 ? g.slice(0, 40).concat(g.slice(-160)) : g;
@@ -114,6 +139,7 @@
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const j = await r.json(), list = j && Array.isArray(j.stories) ? j.stories : [];
     if (P !== pass) return [];                                 // a reload started a new walk meanwhile
+    if (j && j.edition) N.edition = j.edition;
     const had = P.ids.size, kept = take(P, list);
     if (j && 'next' in j) P.next = j.next || null;
     else { const t = list.map(s => Date.parse((s && s.published_at) || '')).filter(x => x > 0); P.next = t.length ? new Date(Math.min(...t)).toISOString() : null; }
@@ -131,7 +157,9 @@
       for (let k = 0; k < 6 && !got.length && P === pass && P.next !== null; k++) got = await page(); // a first page of seen stories: look further
       if (P === pass) {
         N.stories = []; N.i = 0; got.forEach(keep);
+        if (got.length) N.stories.unshift({ kind: 'cover' }); // v22: the edition's front page
         N.caughtUp = !got.length && P.next === null;
+        sawEdition();
         // a shared link or a notification (?s=<story id>) opens on that story, even one seen before
         const want = N._want || new URLSearchParams(location.search).get('s'); N._want = null;
         if (want) await openStory(want);
@@ -146,7 +174,7 @@
       try {
         const r = await fetch('/api/news/story/' + encodeURIComponent(id), { cache: 'no-store' });
         const j = r.ok ? await r.json() : null;
-        if (j && j.story && j.story.headline) { k = Math.min(N.i, N.stories.length); N.stories.splice(k, 0, j.story); if (pass) pass.ids.add(j.story.id); }
+        if (j && j.story && j.story.headline) { k = Math.max(isCover(N.stories[0]) ? 1 : 0, Math.min(N.i, N.stories.length)); N.stories.splice(k, 0, j.story); if (pass) pass.ids.add(j.story.id); }
       } catch (e) { /* offline */ }
     }
     if (k >= 0) { N.i = k; N.caughtUp = N.caughtUp && N.stories.length > 0; }
@@ -176,6 +204,10 @@
     if (added) near(); else if (!N.caughtUp) setTimeout(near, 4100);
   };
   N.again = function () { N.loaded = false; N.caughtUp = false; N.i = 0; N.rerender(); N._loading = true; N.load(); };
+  const isCover = st => !!(st && st.kind === 'cover');
+  const storyCount = () => N.stories.filter(x => !isCover(x)).length;
+  // a section on the front page: the deck reloads with that section only (All clears it)
+  N.setCat = function (c) { N.cat = CAT[c] ? c : ''; N.again(); };
   const count = () => N.stories.length + (N.caughtUp && N.stories.length ? 1 : 0);
   function append(list) {
     const base = N.stories.length; list.forEach(keep);
@@ -189,18 +221,25 @@
     if (d.children.length !== N.stories.length) { N.rerender(); return; }
     d.insertAdjacentHTML('beforeend', endCard());
   }
+  // "1 pm" / "7:30 am"; in Hindi "दोपहर 1 बजे" / "सुबह 7:30 बजे" (no am/pm inside Hindi)
+  const fmtTime = iso => {
+    const t = Date.parse(iso || ''); if (!t) return '';
+    const d = new Date(t), h = d.getHours(), m = d.getMinutes(), hm = (h % 12 || 12) + (m ? ':' + String(m).padStart(2, '0') : '');
+    return hi() ? (h < 4 ? 'रात' : h < 12 ? 'सुबह' : h < 16 ? 'दोपहर' : h < 20 ? 'शाम' : 'रात') + ' ' + hm + ' बजे' : hm + (h < 12 ? ' am' : ' pm');
+  };
+  const nextText = () => { const t = fmtTime(N.edition && N.edition.next_at); return t ? (hi() ? 'अगला संस्करण ' + t : 'Next edition at ' + t) : (hi() ? 'दिन में तीन बार नई ख़बरें' : 'New stories three times a day'); };
   function endCard() {
     const H = hi();
     return '<article class="nz-card nz-end" data-i="' + N.stories.length + '" aria-label="' + (H ? 'सारी ख़बरें देख लीं' : 'All caught up') + '"><div class="nz-endin">' +
       '<span class="nz-endic" aria-hidden="true">' + I('check-circle', 44, 1.8) + '</span>' +
       '<h2>' + (H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up') + '</h2>' +
-      '<p>' + (H ? 'हर 30 मिनट में नई ख़बरें आती हैं।' : 'New stories arrive every 30 minutes.') + '</p>' +
+      '<p>' + esc(nextText()) + '</p>' +
       '<button class="b-btn" onclick="NewsChannel.again()">' + I('refresh-cw', 16) + (H ? 'फिर देखें' : 'Check again') + '</button></div></article>';
   }
-  function near() { if (N.loaded && N.stories.length && N.i >= N.stories.length - 4) N.more(); }
+  function near() { if (N.loaded && storyCount() && N.i >= N.stories.length - 4) N.more(); }
 
   N.stop = function () { clearTimeout(viewT); flushSeen(); N._leftAt = Date.now(); };   // nothing plays in News any more
-  N.setLang = function (l) { N.lang = l; try { localStorage.setItem('news.lang', l); } catch (e) {} N.rerender(); };
+  N.setLang = function (l) { if (l === N.lang) return; N.lang = l; try { localStorage.setItem('news.lang', l); } catch (e) {} if (N.loaded) N.again(); else N.rerender(); };
   // The shell re-renders the tab itself; size the deck and wire swiping after every render.
   N.after = function () {
     // back on News after 20 minutes away: start from what is new (everything you saw stays seen)
@@ -210,7 +249,7 @@
   };
   N.hint = function () {
     const d = document.getElementById('nzDeck');
-    if (!d || N.stories.length < 2 || N._hinted) return;
+    if (!d || storyCount() < 2 || N._hinted) return;
     try { if (localStorage.getItem('news.swiped')) return; localStorage.setItem('news.swiped', '1'); } catch (e) { return; }
     N._hinted = true;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -223,20 +262,61 @@
     requestAnimationFrame(() => { N.size(); N.go(N.i, true); });
   };
 
-  function card(st, i) {
-    const c = CAT[st.category] || ['', '', '#37352F'];
-    const label = hi() ? c[1] : c[0];
-    const src = st.sources || [];
-    const names = src.slice(0, 2).map(srcName).filter(Boolean).join(', ');
-    const share = '<button class="nz-share" onclick="NewsChannel.share(' + i + ')" aria-label="' + (hi() ? 'शेयर करें' : 'Share') + '">' + I('share-2', 20) + '</button>';
-    // No real photo: a panel in the category's colour holds the same slot, so every card reads the same way.
-    const ph = '<div class="nz-img ph"><span aria-hidden="true">' + I(c[3] || 'newspaper', 72, 1.4) + '</span>' + share + '</div>';
-    const img = st.image ? '<div class="nz-img"><img class="nz-fg" src="' + esc(st.image) + '" alt="" loading="' + (i < 3 ? 'eager' : 'lazy') + '" onerror="NewsChannel.noimg(this)">' + share + '</div>' : ph;
-    return '<article class="nz-card' + (st.image ? '' : ' noimg') + '" data-i="' + i + '" data-id="' + esc(st.id || '') + '" style="--c:' + c[2] + '" aria-roledescription="slide" aria-label="' + esc(pick(st, 'headline')) + '">' + img +
-      '<div class="nz-body"><div class="nz-k">' + (label ? '<b' + (hi() ? ' class="dev"' : '') + '>' + esc(label) + '</b>' : '') + (ago(st.published_at) ? '<span>' + ago(st.published_at) + '</span>' : '') + (names ? '<span class="nz-src">' + esc(names) + '</span>' : '') + '</div>' +
-      '<h2 class="' + (hi() && st.headline_hi ? 'dev' : '') + '">' + esc(pick(st, 'headline')) + '</h2>' +
-      '<p class="nz-text' + (hi() && st.summary_hi ? ' dev' : '') + '">' + esc(pick(st, 'summary')) + '</p></div></article>';
+  function cover(i) {
+    const H = hi(), ed = N.edition || {}, list = N.stories.map((st, k) => [st, k]).filter(([st]) => !isCover(st)).slice(0, 5);
+    const day = (() => { try { return new Date(Date.parse(ed.at || '') || Date.now()).toLocaleDateString(H ? 'hi-IN' : 'en-IN', { weekday: 'long', day: 'numeric', month: 'long' }); } catch (e) { return ''; } })();
+    const label = (H ? ed.label_hi : ed.label) || (H ? 'आज की ख़बरें' : 'Today’s news');
+    const chips = [['', H ? 'सब' : 'All']].concat(Object.keys(CAT).map(k => [k, H ? CAT[k][1] : CAT[k][0]]));
+    // the lead story, when it has a photo, opens the page big; the rest follow as a numbered list
+    const lead = list.length && list[0][0].image ? list[0] : null, rest = lead ? list.slice(1) : list;
+    const lc = lead ? (CAT[lead[0].category] || ['', '', '#37352F']) : null;
+    const leadHtml = lead ? '<button type="button" class="nz-cv-lead" style="--c:' + lc[2] + '" onclick="NewsChannel.go(' + lead[1] + ')"><img src="' + esc(lead[0].image) + '" alt="" onerror="this.remove()"><span class="nz-cv-lead-t' + (H ? ' dev' : '') + '"><small>' + esc((H ? lc[1] : lc[0]) || '') + (ago(lead[0].published_at) ? ' · ' + ago(lead[0].published_at) : '') + '</small><b>' + esc(pick(lead[0], 'headline')) + '</b></span></button>' : '';
+    return '<article class="nz-card nz-cover" data-i="' + i + '" aria-roledescription="slide" aria-label="' + esc(label) + '"><div class="nz-cv">' +
+      '<div class="nz-cv-k"><span class="nz-cv-dot" aria-hidden="true"></span><b' + (H ? ' class="dev"' : '') + '>' + esc(label) + '</b><span>' + esc(day) + '</span></div>' +
+      '<h2 class="nz-cv-t' + (H ? ' dev' : '') + '">' + (H ? 'अभी की बड़ी ख़बरें' : 'The stories that matter now') + '</h2>' +
+      '<div class="nz-cv-chips" role="group" aria-label="' + (H ? 'विषय' : 'Sections') + '">' + chips.map(([k, l]) => '<button type="button" class="' + ((N.cat || '') === k ? 'on' : '') + (H ? ' dev' : '') + '" aria-pressed="' + ((N.cat || '') === k) + '" onclick="NewsChannel.setCat(\'' + k + '\')">' + esc(l) + '</button>').join('') + '</div>' +
+      leadHtml +
+      '<ol class="nz-cv-list">' + rest.map(([st, k], n) => { const c = CAT[st.category] || ['', '', '#37352F']; return '<li><button type="button" onclick="NewsChannel.go(' + k + ')" style="--c:' + c[2] + '"><span class="nz-cv-n">' + (n + (lead ? 2 : 1)) + '</span><span class="nz-cv-h' + (H ? ' dev' : '') + '"><b>' + esc(pick(st, 'headline')) + '</b><small>' + esc((H ? c[1] : c[0]) || '') + (ago(st.published_at) ? ' · ' + ago(st.published_at) : '') + '</small></span></button></li>'; }).join('') + '</ol>' +
+      '<div class="nz-cv-foot"><span>' + esc(nextText()) + '</span><button type="button" class="nz-cv-go" onclick="NewsChannel.go(1)">' + (H ? 'पढ़ना शुरू करें' : 'Start reading') + I('chevron-right', 18) + '</button></div>' +
+      '</div></article>';
   }
+  function card(st, i) {
+    if (isCover(st)) return cover(i);
+    const H = hi(), c = CAT[st.category] || ['', '', '#37352F'];
+    const label = H ? c[1] : c[0];
+    const src = (st.sources || []).filter(x => x && (x.name || x.link));
+    const names = src.slice(0, 2).map(srcName).filter(Boolean).join(', ') + (src.length > 2 ? ' +' + (src.length - 2) : '');
+    const share = '<button class="nz-share" onclick="NewsChannel.share(' + i + ')" aria-label="' + (H ? 'शेयर करें' : 'Share') + '">' + I('share-2', 20) + '</button>';
+    // the section and how fresh it is sit on the photo, so the story starts with its headline
+    const tag = '<div class="nz-tag">' + (label ? '<b' + (H ? ' class="dev"' : '') + '>' + esc(label) + '</b>' : '') + (ago(st.published_at) ? '<span>' + ago(st.published_at) + '</span>' : '') + '</div>';
+    // No real photo: a panel in the category's colour holds the same slot, so every card reads the same way.
+    const ph = '<div class="nz-img ph"><span aria-hidden="true">' + I(c[3] || 'newspaper', 72, 1.4) + '</span>' + tag + share + '</div>';
+    const img = st.image ? '<div class="nz-img"><img class="nz-fg" src="' + esc(st.image) + '" alt="" loading="' + (i < 4 ? 'eager' : 'lazy') + '" onerror="NewsChannel.noimg(this)">' + tag + share + '</div>' : ph;
+    const why = pick(st, 'why');
+    return '<article class="nz-card' + (st.image ? '' : ' noimg') + '" data-i="' + i + '" data-id="' + esc(st.id || '') + '" style="--c:' + c[2] + '" aria-roledescription="slide" aria-label="' + esc(pick(st, 'headline')) + '">' + img +
+      '<div class="nz-body">' +
+      '<h2 class="' + (H && st.headline_hi ? 'dev' : '') + '">' + esc(pick(st, 'headline')) + '</h2>' +
+      '<p class="nz-text' + (H && st.summary_hi ? ' dev' : '') + '">' + esc(pick(st, 'summary')) + '</p>' +
+      (why ? '<div class="nz-why' + (H ? ' dev' : '') + '"><b>' + (H ? 'यह क्यों मायने रखता है' : 'Why it matters') + '</b>' + esc(why) + '</div>' : '') +
+      (names ? '<button type="button" class="nz-srcs" onclick="NewsChannel.sources(' + i + ')">' + I('newspaper', 16) + '<span>' + (H ? 'स्रोत: ' : 'Sources: ') + esc(names) + '</span>' + I('chevron-right', 16) + '</button>' : '') +
+      '</div></article>';
+  }
+  // the original reports behind a story
+  N.sources = function (i) {
+    const st = N.stories[i]; if (!st || isCover(st)) return;
+    const H = hi(), list = (st.sources || []).filter(x => x && /^https?:\/\//.test(x.link || ''));
+    document.getElementById('nzSrc')?.remove();
+    const bg = document.createElement('div'); bg.className = 'nz-sheet-bg'; bg.id = 'nzSrc';
+    bg.innerHTML = '<div class="nz-sheet" role="dialog" aria-modal="true" aria-label="' + (H ? 'स्रोत' : 'Sources') + '"><div class="nz-grab" aria-hidden="true"></div>' +
+      '<b class="nz-sh-t">' + (H ? 'मूल रिपोर्टें' : 'The original reports') + '</b><p class="nz-sh-p">' + (H ? 'यह ख़बर इन रिपोर्टों से लिखी गई है।' : 'Brodoit wrote this story from these reports.') + '</p>' +
+      list.map(x => '<a class="nz-sh" href="' + esc(x.link) + '" target="_blank" rel="noopener nofollow">' + I('external-link', 22) + '<span><b>' + esc(srcName(x)) + '</b><small>' + esc(x.title || x.link) + '</small></span></a>').join('') +
+      '<button type="button" class="b-btn ghost wide nz-sh-x">' + (H ? 'बंद करें' : 'Close') + '</button></div>';
+    document.body.appendChild(bg);
+    const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = e => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', onKey);
+    bg.addEventListener('click', e => { if (e.target === bg || e.target.closest('.nz-sh-x')) close(); });
+  };
   N.noimg = function (el) {
     const box = el.closest('.nz-img'), cardEl = el.closest('.nz-card'); if (!box || !cardEl) return;
     const st = N.stories[+cardEl.dataset.i] || {}, c = CAT[st.category] || [];
@@ -250,9 +330,9 @@
     const hud = '<div class="nz-hud"><div class="nz-lang" role="group" aria-label="Language"><button class="' + (H ? '' : 'on') + '" aria-pressed="' + !H + '" aria-label="English" onclick="NewsChannel.setLang(\'en\')">EN</button><button class="' + (H ? 'on' : '') + '" aria-pressed="' + H + '" aria-label="हिंदी" onclick="NewsChannel.setLang(\'hi\')">हिं</button></div></div>';
     if (!N.loaded) return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck"><article class="nz-card skel"><div class="nz-img"></div><div class="nz-body"><i></i><i></i><i></i><i></i></div></article></div></div></div>';
     if (!n && N.err) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('wifi-off', 40, 1.8) + '</span><b>' + (H ? 'ख़बरें लोड नहीं हुईं' : 'Couldn’t load the news') + '</b><button class="b-chip" onclick="NewsChannel.loaded=false;NewsChannel.rerender();NewsChannel.load()">' + I('refresh-cw', 14) + (H ? 'फिर कोशिश करें' : 'Try again') + '</button></div></div>';
-    if (!n && N.caughtUp) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('check-circle', 40, 1.8) + '</span><b>' + (H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up') + '</b><span>' + (H ? 'हर 30 मिनट में नई ख़बरें आती हैं।' : 'New stories arrive every 30 minutes.') + '</span><button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर देखें' : 'Check again') + '</button></div></div>';
+    if (!n && N.caughtUp) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('check-circle', 40, 1.8) + '</span><b>' + (H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up') + '</b><span>' + esc(nextText()) + '</span><button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर देखें' : 'Check again') + '</button></div></div>';
     if (!n) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('newspaper', 40, 1.8) + '</span><b>' + (H ? 'ख़बरें आ रही हैं' : 'Stories are on the way') + '</b></div></div>';
-    return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck" tabindex="0" aria-label="' + (H ? 'ख़बरें' : 'News') + '">' + list.map((st, i) => card(st, i)).join('') + (N.caughtUp ? endCard() : '') + '</div>' + hud +
+    return '<div class="nz"><div class="nz-stage"><div class="nz-prog" aria-hidden="true"><i id="nzProg"></i></div><div class="nz-deck" id="nzDeck" tabindex="0" aria-label="' + (H ? 'ख़बरें' : 'News') + '">' + list.map((st, i) => card(st, i)).join('') + (N.caughtUp ? endCard() : '') + '</div>' + hud +
       '<button class="nz-nav prev" aria-label="Previous" onclick="NewsChannel.go(NewsChannel.i-1)">' + I('chevron-left', 22) + '</button><button class="nz-nav next" aria-label="Next" onclick="NewsChannel.go(NewsChannel.i+1)">' + I('chevron-right', 22) + '</button></div></div>';
   };
 
@@ -294,8 +374,9 @@
     const cards = d.children;
     for (let k = Math.max(0, N.i - 2); k <= Math.min(cards.length - 1, N.i + 3); k++) { const c = cards[k]; if (c && c.classList.contains('nz-card') && c._fit !== c.clientHeight + 'x' + c.clientWidth) fit(c); }
   }
+  function progress() { const b = document.getElementById('nzProg'); if (b) b.style.width = Math.round(Math.min(1, (N.i + 1) / Math.max(1, count())) * 100) + '%'; }
   function moved(was) {
-    fitNear(); near(); if (was === 0 && N.i > 0) hold();
+    fitNear(); near(); progress(); if (was === 0 && N.i > 0) hold();
     for (let k = was; k < N.i; k++) markSeen(N.stories[k]); // swiped past: seen
     watch();
   }
