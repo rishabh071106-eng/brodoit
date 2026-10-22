@@ -138,8 +138,8 @@
     const r = await fetch('/api/news/desk?' + qs.join('&'), { cache: 'no-store', headers: tok ? { 'x-token': tok } : {} });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const j = await r.json(), list = j && Array.isArray(j.stories) ? j.stories : [];
-    if (P !== pass) return [];
-    if (j && j.edition) N.edition = j.edition;                                 // a reload started a new walk meanwhile
+    if (P !== pass) return [];                                 // a reload started a new walk meanwhile
+    if (j && j.edition) N.edition = j.edition;
     const had = P.ids.size, kept = take(P, list);
     if (j && 'next' in j) P.next = j.next || null;
     else { const t = list.map(s => Date.parse((s && s.published_at) || '')).filter(x => x > 0); P.next = t.length ? new Date(Math.min(...t)).toISOString() : null; }
