@@ -361,6 +361,31 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
     - A slim progress bar sits on top. English mode never shows Devanagari; Hindi reloads with `lang=hi` and shows only Hindi stories, with Hindi times ("दोपहर 1 बजे").
     - A dot on the News tab (`body.nz-fresh`) marks an edition this phone hasn't opened (`news.edition.seen`, checked 3 s after start and on return). The caught-up card names the next edition.
   - Tests: `scratchpad/v21/p6-news.mjs` (checks, editions, fake writer: repair, duplicates, English-only, cleanup, desk; Chromium: front page, why, sources, progress, Hindi, dot). Live check: the "News quality" step counts Hindi-in-English and cut-off stories.
+- **v23 Bro the agent, the calendar, one voice** (owner: asked to write a plan, Bro "kept saying Listening"; events must be recorded as asked and synced with the calendar; the voice must be the same everywhere):
+  - **Never silence** (`modules/voice.js`). A reasoning model can spend its whole allowance thinking and answer with no words. A call then said "Ooh, good one! Let me think." and went back to "Listening…".
+    - Actions with no words after them (`T.done`, `T.textRound` ≤ `T.toolRound`): Bro says what he did, with `doneLine(done, lang, dayWordFor(user))`. Example: "Done. I've put 2 things in your calendar for tomorrow: Revise maths at 9 am, …". Hindi: "हो गया। … सुबह 9 बजे …".
+    - No words at all: one more try (`EMPTY_RULE`, effort low, no new tools). Then `EMPTY` goes to the own brain, the rescue, the apology.
+    - Typed chat (`streamTurn` and the plain path) gets the same done line, never an error after the work.
+    - Calls get `maxTokens` 1400/1800, typed chat 1600/2400.
+  - **`write_down {title, text}`** (EXTRA_TOOLS): a plan, list, timetable or draft.
+    - The page shows it as a card in the thread (`.bv-doc`: times bold, bullets, Copy, Share). It saves it in Notes (`tf_notes`, the new "From Bro" category `bro`). During a call it stays on the call screen (`.bvf-doc`).
+    - Bro sums it up in a sentence or two; the history carries the card's text, so "put that in my calendar" works.
+  - **The rules** (`APP_RULE`) cover writing and the calendar: event / block / task / reminder, use exactly what they asked. `datesFor(user)` gives today, now and the next 7 days as YYYY-MM-DD in their time zone (unknown → Asia/Kolkata).
+    - The intent guard (`INTENT.remind`) also accepts add / put / book / plan / appointment / exam / class / interview / birthday, and जोड़ / डाल / कैलेंडर.
+  - **Calendar** (`server.js` `_broExecTool`):
+    - `create_calendar_event` always saves in Brodoit: at a time → a `schedule_blocks` row (colour `#2F6FDE`, default 60 min); all day → a task on its date (`source 'bro-event'`). It also goes to Google Calendar when connected. Before, without Google the event was lost.
+    - `_hhmm` takes "9:30 pm", "21.30", "7:05 a.m." and similar; `_isDayStr` and `_addMins` (capped 23:59) check dates and ends.
+    - A same title, date and start is not booked twice (`already`).
+    - `set_reminder` uses the user's date, no longer UTC.
+    - `_gcalCreateTimed(…, opts)`: Google's `colorId` must be "1"-"11". The hex colour made Google refuse every block, so nothing ever synced. Bro's events go as themselves (blocks stay "🔒 label"); an unknown time zone is India's; all-day ends the next day.
+    - `GET /api/schedule?from=&to=` returns a range. The Calendar tab loads the month (`calBlocksLoad`, `window.calBlocksRefresh` after Bro acts) and shows the selected day's plan (`.cal-plan-row`, times, a "Google" chip). It puts a dot on days with a plan and hides a Google event that is one of ours.
+  - **One voice** (the sweep found the other voices):
+    - **Book summaries** (`/api/book-audio/:id`): Bro's recording (`MEDIA_DIR/bro-voice/<voiceKey>/book-<id>.mp3`), else 404 `{live:true}`. The player then reads it live in Bro's voice, the next chunk fetched ahead with `BroSay.warm`, and the summary is queued for the library (`_wantBook`, `books-wanted.json`).
+      - Texts come from the page's `BOOK_SUMMARIES` (read once from the built HTML in a `vm`) and `books-hi/<id>.json`. The old edge-tts and ElevenLabs narrators only play with `BOOKS_OLD_AUDIO=1`.
+    - The AI-lesson "Listen" uses `BroSay.speak`; it was the phone's voice only.
+    - `BroSay` asks a busy voice (503) again twice, after its Retry-After (1-4 s), before the phone's voice.
+    - A call whose voice is still loading waits once, up to 10 s, before captions-with-the-phone's-voice.
+  - Tests: `scratchpad/v21/p7-agent.mjs` (call pipeline with `scratchpad/v23/stub-agent.js`; the real server in Chromium with `scratchpad/v23/stub-gcal.cjs`, a fake Google Calendar).
 - **News** (`app/news.js`): cards only (desk stories), section chips, "Listen" plays recorded headline clips back to back. `modules/newsvoice.js` records after every desk batch through ElevenLabs only (`NEWS_VOICE_PROVIDER=any` opens the chain): headlines for every story in the feed + `NEWS_VOICE_FULL` (default 10) full read-outs a day per language; files in `MEDIA_DIR/news-voice`, served by `/api/news/voice/<id>-<lang>-<h|s>.mp3`. Nothing is rendered on tap. The long spoken bulletin is opt-in (`BULLETIN_AUDIO=1`). News is a bottom tab; You moved to the header avatar.
 - **ElevenLabs brain** (`modules/elevenbrain.js`): a private text-only ElevenLabs agent used as the LLM when Gemini has no key, is out of credit (402 → skipped for an hour via `global._geminiDownUntil`) or fails — `_callGemini` falls back to it, so Bro chat, Explain, the coach and the news desk keep working on ElevenLabs credits. Bro chat no longer runs a second "verify" pass.
 - **ElevenLabs budget** (modules/elevenvoice.js `RESERVE`): bulk (static recordings) may use the first 70% of the month, daily (news, first plays) stops at 15% left, live Bro uses the rest. Admin auto-record order: learn-audio → lang-audio → hindi-books.

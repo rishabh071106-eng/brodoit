@@ -50,6 +50,32 @@
   const hEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const langSwitch = cls => '<div class="' + cls + '" role="group" aria-label="Language / भाषा">' + [['en', 'English', 'Talk in English'], ['hi', 'हिंदी', 'हिंदी में बात करो']].map(x => '<button type="button" class="' + (V.lang === x[0] ? 'on' : '') + '" aria-pressed="' + (V.lang === x[0]) + '" aria-label="' + x[2] + '" onclick="BroVoice.setLang(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div>';
 
+  // v23: what Bro wrote down (a plan, a list, a draft): a card with its lines, Copy and Share; it is also in Notes
+  const docBody = text => String(text || '').split('\n').map(l => {
+    const t = l.trim(); if (!t) return '<div class="bv-doc-gap"></div>';
+    const bullet = /^[-•*]\s+/.test(t), body = t.replace(/^[-•*]\s+/, '');
+    const tm = /^(\d{1,2}[:.]\d{2}(?:\s*(?:am|pm))?\s*(?:[-–—]|to)\s*\d{1,2}[:.]\d{2}(?:\s*(?:am|pm))?|\d{1,2}[:.]\d{2}(?:\s*(?:am|pm))?)\s*[:\-–—]?\s*(.*)$/i.exec(body);
+    if (tm) return '<div class="bv-doc-l tm"><b>' + hEsc(tm[1]) + '</b><span>' + hEsc(tm[2]) + '</span></div>';
+    return '<div class="bv-doc-l' + (bullet ? ' bl' : '') + '">' + hEsc(body) + '</div>';
+  }).join('');
+  const docCard = (d, hi) => { const k = V.docs.indexOf(d); return '<div class="bv-msg bro"><div class="bv-doc"><div class="bv-doc-h"><span aria-hidden="true">📝</span><b>' + hEsc(d.title) + '</b></div><div class="bv-doc-b">' + docBody(d.text) + '</div>' +
+    '<div class="bv-doc-f"><span>' + (hi ? 'नोट्स में सेव' : 'Saved in Notes') + '</span><button type="button" onclick="BroVoice.copyDoc(' + k + ')">' + (hi ? 'कॉपी' : 'Copy') + '</button>' + (navigator.share ? '<button type="button" onclick="BroVoice.shareDoc(' + k + ')">' + (hi ? 'शेयर' : 'Share') + '</button>' : '') + '</div></div></div>'; };
+  V.docs = [];
+  V.showDoc = function (doc) {
+    if (!doc || !doc.text) return;
+    const d = { title: String(doc.title || 'From Bro').slice(0, 80), text: String(doc.text).slice(0, 4000), at: Date.now() };
+    V.docs.push(d); if (V.docs.length > 30) V.docs.shift();
+    V.thread.push({ role: 'bro', text: d.title, doc: d, ts: Date.now() }); if (V.thread.length > 60) V.thread.shift();
+    V.lastDoc = d;
+    try { // kept in Notes on this phone ("From Bro")
+      if (window.S && Array.isArray(S.notes)) { const at = new Date().toISOString(); S.notes.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), category: 'bro', title: d.title, content: d.text, drawing: null, voiceUrl: null, transcript: '', created: at, updated: at }); localStorage.setItem('tf_notes', JSON.stringify(S.notes)); }
+    } catch (e) { /* storage full or private mode: the card still shows */ }
+    V.rerender();
+  };
+  V.copyDoc = function (k) { const d = V.docs[k]; if (!d) return; const t = d.title + '\n\n' + d.text; (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast(V.lang === 'hi' ? 'कॉपी हो गया' : 'Copied'), () => {}); };
+  V.shareDoc = function (k) { const d = V.docs[k]; if (!d || !navigator.share) return; navigator.share({ title: d.title, text: d.title + '\n\n' + d.text }).catch(() => {}); };
+  V.closeDoc = function () { V.lastDoc = null; V.renderFull(); };
+
   V.html = function () {
     const hi = V.lang === 'hi';
     const live = isLive();
@@ -70,7 +96,7 @@
     h += '<button type="button" class="hb-mic' + (live ? ' on' : '') + '" id="bvTalk" onclick="' + (live ? 'BroVoice.hangUp()' : 'BroVoice.tapOrb()') + '" aria-label="' + (live ? (hi ? 'कॉल खत्म करो' : 'End the call') : (hi ? 'बात करो' : 'Talk')) + '">' + (live ? ICON.stop : ICON.mic) + '</button></section>';
     if (chat) {
       h += '<div class="hb-thread" id="bvThread">';
-      V.thread.slice(-8).forEach(m => { h += '<div class="bv-msg ' + m.role + '"><div class="bv-bub">' + hEsc(m.text) + '</div></div>'; });
+      V.thread.slice(-8).forEach(m => { h += m.doc ? docCard(m.doc, hi) : '<div class="bv-msg ' + m.role + '"><div class="bv-bub">' + hEsc(m.text) + '</div></div>'; });
       h += '</div>';
     }
     h += '<form class="hb-compose" onsubmit="event.preventDefault();BroVoice.send()"><input id="bvInput" placeholder="' + (hi ? 'Bro को लिखो' : 'Message Bro') + '" autocomplete="off" enterkeyhint="send" aria-label="' + (hi ? 'Bro को लिखो' : 'Message Bro') + '"><button type="submit" class="hb-send"' + (V.state === 'thinking' && V.engine !== 'core' ? ' disabled' : '') + ' aria-label="' + (hi ? 'भेजो' : 'Send') + '">' + (window.ico ? ico('arrow-up', 20) : ICON.send) + '</button></form>';
@@ -155,8 +181,12 @@
     const mode = V.persona !== 'bro' ? '<span class="bvf-mode">' + esc((PERSONA_LABEL[V.persona] || PERSONA_LABEL.bro)[hi ? 1 : 0]) + '</span>' : '';
     return '<div class="bvf-top' + (mode ? '' : ' solo') + '">' + langSwitch('bvf-langs') + mode + '</div>' +
       '<div class="bvf-stage"><button class="bv-orb st-' + st + '" id="bvfOrb" ' + ((!SR && V.engine === 'fallback' && V.caps && V.caps.stt) ? 'onpointerdown="BroVoice.holdStart()" onpointerup="BroVoice.holdEnd()" onpointercancel="BroVoice.holdEnd()" onpointerleave="BroVoice.holdEnd()"' : 'onclick="BroVoice.tapOrb()"') + ' aria-label="' + (st === 'speaking' ? (hi ? 'Bro को रोको' : 'Interrupt Bro') : 'Bro') + '"><span class="bv-ring r1"></span><span class="bv-ring r2"></span><span class="hb-orb st-' + st + (core ? ' drv' : '') + '"><i class="o1"></i><i class="o2"></i><i class="o3"></i></span></button>' + cap + heardLine + '<div class="bvf-text ' + cls + '" id="bvfText" aria-live="polite">' + esc(line) + '</div></div>' +
+      docPanel(hi) +
       '<div class="bvf-bar">' + typeRow + '<div class="bvf-hint">' + esc(hint) + '</div><div class="bvf-row">' + keys + '<button class="bvf-end" onclick="BroVoice.hangUp()">' + ICON.stop + (hi ? ' बंद करो' : ' End') + '</button></div></div>';
   };
+  // v23: during a call, what Bro just wrote down stays on screen (and in the chat and Notes afterwards)
+  const docPanel = hi => { const d = V.lastDoc; if (!d || Date.now() - d.at > 20 * 60e3) return '';
+    return '<div class="bvf-doc" role="region" aria-label="' + hEsc(d.title) + '"><div class="bv-doc-h"><span aria-hidden="true">📝</span><b>' + hEsc(d.title) + '</b><button type="button" class="bvf-doc-x" onclick="BroVoice.closeDoc()" aria-label="' + (hi ? 'बंद करो' : 'Close') + '">✕</button></div><div class="bv-doc-b">' + docBody(d.text) + '</div><div class="bv-doc-f"><span>' + (hi ? 'नोट्स में सेव' : 'Saved in Notes') + '</span></div></div>'; };
   // the end screen: one question, two answers; the answer travels with the goodbye
   V.endHtml = function () {
     const hi = V.lang === 'hi', E = V.endInfo || {}, secs = Math.max(0, Math.round(((E.at || Date.now()) - (E.started || Date.now())) / 1000));
@@ -761,7 +791,7 @@ registerProcessor('bro-mic', BroMic);`;
       V.rtSend({ type: 'response.create' }); return;
     }
     V.set('thinking');
-    const msgs = V.thread.slice(-10).map(m => ({ role: m.role === 'bro' ? 'assistant' : 'user', content: m.text }));
+    const msgs = V.thread.slice(-10).map(m => ({ role: m.role === 'bro' ? 'assistant' : 'user', content: m.doc ? ('(I wrote this down for you) ' + m.doc.title + '\n' + m.doc.text).slice(0, 1900) : m.text }));
     const wasVoice = V.engine === 'fallback';
     // v20: the reply streams in (Server-Sent Events): words appear as Bro thinks them, the app's actions as they run, and
     // with the voice on Bro starts speaking at the first full sentence
@@ -829,8 +859,11 @@ registerProcessor('bro-mic', BroMic);`;
     if (name === 'create_task' || name === 'complete_task') { toast(name === 'create_task' ? '✅ Task added: ' + (input.title || '') : '🎉 Done: ' + (input.title || '')); refreshTasks(); }
     if (name === 'set_reminder') toast('⏰ Reminder set' + (input.time ? ' for ' + input.time : ''));
     if (name === 'set_step_goal') toast('👟 Step goal: ' + (result.goal || input.goal || ''));
-    if (name === 'create_schedule_block') toast('🗓️ Time blocked' + (input.title ? ': ' + input.title : ''));
-    if (name === 'create_calendar_event') toast('🗓️ Event added' + (input.date ? ' on ' + input.date : ''));
+    if (name === 'write_down' && result.doc) { V.showDoc(result.doc); toast(V.lang === 'hi' ? '📝 नोट्स में सेव' : '📝 Saved in Notes'); }
+    // v23: everything Bro schedules is in Brodoit's calendar (and Google's when connected); the calendar screens refresh
+    const when = (d, t) => (d ? ' · ' + d : '') + (t ? ' ' + t : '');
+    if (name === 'create_schedule_block') { const b = result.block || {}; toast('🗓️ ' + (result.already ? 'Already on your plan: ' : 'On your plan: ') + (b.label || input.label || '') + when(b.date || input.date, b.start || input.start_time) + (b.synced_to_gcal ? ' · Google ✓' : '')); if (window.calBlocksRefresh) calBlocksRefresh(); }
+    if (name === 'create_calendar_event') { const e = result.event || {}; toast('🗓️ ' + (result.already ? 'Already in your calendar: ' : 'In your calendar: ') + (e.title || input.title || '') + when(e.date || input.date, e.time || input.time) + (e.synced_to_google ? ' · Google ✓' : '')); if (e.all_day) refreshTasks(); if (window.calBlocksRefresh) calBlocksRefresh(); }
   };
   // Deep links: /?say=...  and  /?persona=teacher|language (&course=es): the mode for this visit, never a setting
   V.boot = function () {
