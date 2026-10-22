@@ -9,6 +9,7 @@ on:
     branches: [main]
 permissions:
   contents: read
+  deployments: read
 jobs:
   live:
     # the mirror repo (brodoit) is not what Railway deploys, so only its scheduled and manual runs check the site
@@ -17,10 +18,24 @@ jobs:
     timeout-minutes: 50
     steps:
       - name: brodoit.com answers on every app
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # after a push, wait until brodoit.com runs this very commit (Railway reports it in /api/health), so the
           # checks below test the new deploy, not the old one still serving while the new one builds
           want=""; [ "$GITHUB_EVENT_NAME" = push ] && want="${GITHUB_SHA:0:12}"
+          # Railway marks each commit it builds as a GitHub deployment. When none has started after 3 minutes the
+          # deploy was not triggered (held on Railway's side): say so and check the build that is live, without
+          # failing, so a Railway that waits for CI to pass is never blocked by this check waiting for Railway.
+          if [ -n "$want" ]; then
+            started=0
+            for i in $(seq 1 6); do
+              n=$(curl -fsS --max-time 20 -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/deployments?sha=$GITHUB_SHA" | jq 'length' 2>/dev/null || echo 0)
+              [ "${n:-0}" -gt 0 ] 2>/dev/null && { started=1; break; }
+              sleep 30
+            done
+            if [ "$started" = 0 ]; then echo "::warning::Railway has not started a deploy for $want (no GitHub deployment after 3 minutes); checking the build that is live"; want=""; fi
+          fi
           ok=0; live=""
           for i in $(seq 1 40); do # a deploy that is still building or rolling out gets up to 20 minutes
             h=$(curl -fsS --max-time 20 https://brodoit.com/api/health || echo '{}')

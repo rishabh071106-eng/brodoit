@@ -41,7 +41,13 @@ adb shell pm list packages | grep -q "package:$PKG" && ok "the package is $PKG" 
 
 # first open: the app asks for Physical activity straight away
 adb shell am start -W -n "$PKG/$PKG.LauncherActivity" > "$OUT/start.txt" 2>&1
-wait_for 'physical activity' 60 && ok "first open asks for Physical activity" || bad "no Physical activity request on first open"
+# a slow emulator can show Chrome's first-run screen first: wait longer, and step back past it once
+asked=0
+wait_for 'physical activity' 120 && asked=1
+if [ "$asked" = 0 ] && adb shell dumpsys activity activities | grep -E 'ResumedActivity' | head -1 | grep -qi 'firstrun'; then
+  adb shell input keyevent KEYCODE_BACK; sleep 3; wait_for 'physical activity' 60 && asked=1
+fi
+[ "$asked" = 1 ] && ok "first open asks for Physical activity" || bad "no Physical activity request on first open"
 shot 1-permission
 tap 'permission_allow_button' || tap 'Allow' || bad "could not tap Allow"
 sleep 3
