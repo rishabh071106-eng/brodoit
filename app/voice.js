@@ -469,7 +469,10 @@ registerProcessor('bro-mic', BroMic);`;
   V.stopLocal = function () { if (V.localN) { V.localN = 0; try { speechSynthesis.cancel(); } catch (e) {} if (V.ac) V.playEnd = V.ac.currentTime; } };
   // the turn is over and the last frame has played: back to listening
   V.checkDrain = function () {
-    if (V.engine !== 'core' || V.srcs.size || V.localN || !V.turnDone) return;
+    if (V.engine !== 'core' || V.srcs.size || V.localN) return;
+    // v23: Bro said "let me think" and is still working (writing a plan, adding events): after 1.2 s of quiet the screen
+    // says "Thinking…" instead of a stale "speaking"; his next words switch it back (playFrame)
+    if (!V.turnDone) { clearTimeout(V._thinkT); V._thinkT = setTimeout(() => { if (coreLive() && !V.turnDone && !V.srcs.size && !V.localN && V.state === 'speaking' && !V.vad.inUtt) V.set('thinking'); }, 1200); return; }
     if (coreLive() && V.state !== 'listening' && !V.vad.inUtt) V.set('listening');
   };
   // tap to interrupt: Bro stops at once, the server drops the rest of his reply, and the mic listens again
