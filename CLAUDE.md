@@ -356,7 +356,7 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
     - `older` pages never fill from raw feeds.
     - Every answer carries `edition` (`editionInfo()`). `GET /api/news/edition` → `{id, label, at, next_at, count, ready}`.
   - **App** (`app/news.js`, `news.css`):
-    - The deck opens on the edition's **front page** (`{kind:'cover'}` at index 0): "Morning edition" + date, "The stories that matter now", the top 5 headlines (tap → that story), section chips (`NewsChannel.setCat`, reloads), "Next edition at 1 pm" and Start reading.
+    - The deck opens on the edition's **front page** (`{kind:'cover'}` at index 0): "Morning edition" + date, "The stories that matter now", section chips (`NewsChannel.setCat`, reloads), the lead story big with its photo (when it has one), then the next headlines numbered (tap → that story), and a pinned footer with "Next edition at 1 pm" and Start reading.
     - Each card: section + time on the photo, headline, story, a **Why it matters** box, and "Sources: The Hindu, NDTV +1", which opens the original reports (`NewsChannel.sources(i)`).
     - A slim progress bar sits on top. English mode never shows Devanagari; Hindi reloads with `lang=hi` and shows only Hindi stories, with Hindi times ("दोपहर 1 बजे").
     - A dot on the News tab (`body.nz-fresh`) marks an edition this phone hasn't opened (`news.edition.seen`, checked 3 s after start and on return). The caught-up card names the next edition.

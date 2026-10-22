@@ -267,11 +267,16 @@
     const day = (() => { try { return new Date(Date.parse(ed.at || '') || Date.now()).toLocaleDateString(H ? 'hi-IN' : 'en-IN', { weekday: 'long', day: 'numeric', month: 'long' }); } catch (e) { return ''; } })();
     const label = (H ? ed.label_hi : ed.label) || (H ? 'आज की ख़बरें' : 'Today’s news');
     const chips = [['', H ? 'सब' : 'All']].concat(Object.keys(CAT).map(k => [k, H ? CAT[k][1] : CAT[k][0]]));
+    // the lead story, when it has a photo, opens the page big; the rest follow as a numbered list
+    const lead = list.length && list[0][0].image ? list[0] : null, rest = lead ? list.slice(1) : list;
+    const lc = lead ? (CAT[lead[0].category] || ['', '', '#37352F']) : null;
+    const leadHtml = lead ? '<button type="button" class="nz-cv-lead" style="--c:' + lc[2] + '" onclick="NewsChannel.go(' + lead[1] + ')"><img src="' + esc(lead[0].image) + '" alt="" onerror="this.remove()"><span class="nz-cv-lead-t' + (H ? ' dev' : '') + '"><small>' + esc((H ? lc[1] : lc[0]) || '') + (ago(lead[0].published_at) ? ' · ' + ago(lead[0].published_at) : '') + '</small><b>' + esc(pick(lead[0], 'headline')) + '</b></span></button>' : '';
     return '<article class="nz-card nz-cover" data-i="' + i + '" aria-roledescription="slide" aria-label="' + esc(label) + '"><div class="nz-cv">' +
       '<div class="nz-cv-k"><span class="nz-cv-dot" aria-hidden="true"></span><b' + (H ? ' class="dev"' : '') + '>' + esc(label) + '</b><span>' + esc(day) + '</span></div>' +
       '<h2 class="nz-cv-t' + (H ? ' dev' : '') + '">' + (H ? 'अभी की बड़ी ख़बरें' : 'The stories that matter now') + '</h2>' +
-      '<ol class="nz-cv-list">' + list.map(([st, k], n) => { const c = CAT[st.category] || ['', '', '#37352F']; return '<li><button type="button" onclick="NewsChannel.go(' + k + ')" style="--c:' + c[2] + '"><span class="nz-cv-n">' + (n + 1) + '</span><span class="nz-cv-h' + (H ? ' dev' : '') + '"><b>' + esc(pick(st, 'headline')) + '</b><small>' + esc((H ? c[1] : c[0]) || '') + (ago(st.published_at) ? ' · ' + ago(st.published_at) : '') + '</small></span></button></li>'; }).join('') + '</ol>' +
       '<div class="nz-cv-chips" role="group" aria-label="' + (H ? 'विषय' : 'Sections') + '">' + chips.map(([k, l]) => '<button type="button" class="' + ((N.cat || '') === k ? 'on' : '') + (H ? ' dev' : '') + '" aria-pressed="' + ((N.cat || '') === k) + '" onclick="NewsChannel.setCat(\'' + k + '\')">' + esc(l) + '</button>').join('') + '</div>' +
+      leadHtml +
+      '<ol class="nz-cv-list">' + rest.map(([st, k], n) => { const c = CAT[st.category] || ['', '', '#37352F']; return '<li><button type="button" onclick="NewsChannel.go(' + k + ')" style="--c:' + c[2] + '"><span class="nz-cv-n">' + (n + (lead ? 2 : 1)) + '</span><span class="nz-cv-h' + (H ? ' dev' : '') + '"><b>' + esc(pick(st, 'headline')) + '</b><small>' + esc((H ? c[1] : c[0]) || '') + (ago(st.published_at) ? ' · ' + ago(st.published_at) : '') + '</small></span></button></li>'; }).join('') + '</ol>' +
       '<div class="nz-cv-foot"><span>' + esc(nextText()) + '</span><button type="button" class="nz-cv-go" onclick="NewsChannel.go(1)">' + (H ? 'पढ़ना शुरू करें' : 'Start reading') + I('chevron-right', 18) + '</button></div>' +
       '</div></article>';
   }
