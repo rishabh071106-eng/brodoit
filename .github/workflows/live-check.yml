@@ -110,6 +110,17 @@ jobs:
             code=$(curl -s -o /tmp/n.html -w '%{http_code}' --max-time 20 "https://brodoit.com/n/$id")
             if [ "$code" = 200 ] && grep -q 'og:title' /tmp/n.html; then echo "::notice::Shared stories open at https://brodoit.com/n/$id with a link preview"; else echo "::warning::/n/$id answered $code"; fi
           else echo "::warning::No story to try /n/ with"; fi
+      - name: This release on the site (v23 Bro's plan card, v24 one app language; reported here, never blocks a release)
+        run: |
+          # v24: the page has the one language switch (setAppLang) and the Mind games read it; the service worker is v187
+          page=$(curl -fsS --max-time 30 https://brodoit.com/ || true)
+          sw=$(curl -fsS --max-time 20 https://brodoit.com/sw.js | grep -o 'CACHE_VER="[^"]*"' || true)
+          mind=$(curl -fsS --max-time 20 https://brodoit.com/mind/assets/util.js | grep -c 'bd_lang' || true)
+          if echo "$page" | grep -q 'window.setAppLang=' && [ "${mind:-0}" -gt 0 ]; then echo "::notice::v24 is live: one app language (setAppLang, Mind games in Hindi) · service worker $sw"
+          else echo "::warning::v24 is not live yet: setAppLang $(echo "$page" | grep -c 'window.setAppLang=') · Mind bd_lang $mind · service worker $sw"; fi
+          # v23: Bro writes plans down (the plan card, V.showDoc, in the page's Bro chat)
+          doc=$(curl -fsS --max-time 20 https://brodoit.com/app/voice.js | grep -c 'V.showDoc' || true)
+          if [ "${doc:-0}" -gt 0 ]; then echo "::notice::v23 is live: Bro writes plans down (the plan card)"; else echo "::warning::v23 is not live yet: no plan card in app/voice.js"; fi
       - name: News quality (which writer wrote each story, Hindi in English fields, cut summaries, repeats; reported here, never blocks a release)
         run: |
           st=$(curl -fsS --max-time 30 'https://brodoit.com/api/news/desk?limit=60' || echo '{}')
