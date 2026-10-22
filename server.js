@@ -409,25 +409,45 @@ app.post('/api/coach/chat',auth,async(req,res)=>{
 // ═══ BRO / BRI — Life Coach Chat (Groq free tier → Anthropic fallback) ═══
 // ─── Bro agent tools ─────────────────────────────────────────────
 const BRO_TOOLS=[
-  {name:'create_calendar_event',description:'Create a Google Calendar event for the user. Use when they ask to schedule, block time, add a meeting, etc.',input_schema:{type:'object',properties:{title:{type:'string',description:'Event title'},date:{type:'string',description:'Date in YYYY-MM-DD format'},time:{type:'string',description:'Start time in HH:MM 24h format (optional for all-day)'},duration:{type:'integer',description:'Duration in minutes (default 30)'},notes:{type:'string',description:'Optional description'}},required:['title','date']}},
+  {name:'create_calendar_event',description:'Add an event to the user\'s calendar: a meeting, class, appointment, birthday, anything on a date (and at a time). It is saved in Brodoit\'s calendar, and in their Google Calendar too when they connected it. Use exactly the title, date and time they asked for.',input_schema:{type:'object',properties:{title:{type:'string',description:'Event title'},date:{type:'string',description:'Date in YYYY-MM-DD format'},time:{type:'string',description:'Start time in HH:MM 24h format (leave out for an all-day event)'},duration:{type:'integer',description:'Duration in minutes (default 60)'},notes:{type:'string',description:'Optional description'}},required:['title','date']}},
   {name:'create_task',description:'Create a task in Brodoit for the user. Use when they ask to add a task, reminder, todo, etc.',input_schema:{type:'object',properties:{title:{type:'string',description:'Task title'},priority:{type:'string',enum:['low','medium','high'],description:'Priority level'},due_date:{type:'string',description:'Due date YYYY-MM-DD (optional)'},notes:{type:'string',description:'Optional notes'},board:{type:'string',enum:['home','office'],description:'Board (default home)'}},required:['title']}},
   {name:'get_todays_schedule',description:'Get the user\'s calendar events and tasks for today or a specific date. Use when they ask "what\'s on my schedule", "plan my day", "what do I have today", etc.',input_schema:{type:'object',properties:{date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'}}}},
   {name:'complete_task',description:'Mark a task as done. Use when the user says they finished something.',input_schema:{type:'object',properties:{title:{type:'string',description:'Task title or partial match to find it'}},required:['title']}},
   {name:'create_schedule_block',description:'Create a time block on the user\'s day schedule. Use for time-blocking, focus sessions, etc.',input_schema:{type:'object',properties:{date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'},start_time:{type:'string',description:'Start HH:MM 24h'},end_time:{type:'string',description:'End HH:MM 24h'},label:{type:'string',description:'Block label'}},required:['start_time','end_time','label']}},
   {name:'set_reminder',description:'Set a reminder that will send a push notification at a specific time. Use when user says "remind me", "set alarm", "notify me at", etc.',input_schema:{type:'object',properties:{title:{type:'string',description:'What to remind about'},date:{type:'string',description:'Date YYYY-MM-DD (defaults to today)'},time:{type:'string',description:'Time in HH:MM 24h format'},notes:{type:'string',description:'Optional extra details'}},required:['title','time']}}
 ];
+// v23: Bro's dates and times: "9:30", "09:30", "9:30 pm", "21.30" → "21:30"; YYYY-MM-DD only
+function _hhmm(t){const m=/^\s*(\d{1,2})(?:[:.](\d{2}))?\s*([ap])\.?\s*m?\.?\s*$/i.exec(String(t||''))||/^\s*(\d{1,2})[:.](\d{2})\s*$/.exec(String(t||''));if(!m)return '';let h=+m[1];const mi=+(m[2]||0);if(m[3]){const pm=/p/i.test(m[3]);if(h<1||h>12)return '';h=h%12+(pm?12:0)}if(h>23||mi>59)return '';return String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0')}
+function _isDayStr(d){return/^\d{4}-\d{2}-\d{2}$/.test(String(d||''))&&new Date(d+'T00:00:00Z').toISOString().slice(0,10)===d}
+function _addMins(t,n){const[h,m]=t.split(':').map(Number);const x=Math.min(23*60+59,h*60+m+n);return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0')}
 async function _broExecTool(toolName,input,userPhone,userTz){
   const _tzT=userTz||_getUserTz(userPhone);const today=dayKey(new Date(),_tzT&&_tzT!=='UTC'?_tzT:'Asia/Kolkata'); // v21: the user's own date
   if(toolName==='create_calendar_event'){
-    const ga=await gAccessToken(userPhone);
-    if(!ga)return{ok:false,error:'Google Calendar not connected. Ask user to connect Google in Settings.'};
-    const tz=userTz||_getUserTz(userPhone);
-    let body;
-    if(input.time){const st=input.date+'T'+input.time+':00';const dur=input.duration||30;const en=new Date(new Date(st).getTime()+dur*60000).toISOString().slice(0,19);body={summary:input.title,description:input.notes||'Created via Bro',start:{dateTime:st,timeZone:tz},end:{dateTime:en,timeZone:tz}}}
-    else body={summary:input.title,description:input.notes||'Created via Bro',start:{date:input.date},end:{date:input.date}};
-    try{const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{method:'POST',headers:{Authorization:'Bearer '+ga.token,'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const j=await r.json();if(j.error)return{ok:false,error:j.error.message};
-    return{ok:true,event:{id:j.id,title:j.summary,start:j.start?.dateTime||j.start?.date,link:j.htmlLink}}}catch(e){return{ok:false,error:e.message}}
+    // v23: always saved in Brodoit's calendar (an event at a time is a block on that day's plan; an all-day one a task on
+    // that date), and in Google Calendar too when it is connected. Before, without Google the event was simply lost.
+    const title=String(input.title||'').replace(/\s+/g,' ').trim().slice(0,100),date=String(input.date||today).trim();
+    if(!title)return{ok:false,error:'title required'};
+    if(!_isDayStr(date))return{ok:false,error:'date must be YYYY-MM-DD'};
+    const tz=userTz||_getUserTz(userPhone),google=!!db.prepare('SELECT 1 FROM google_tokens WHERE user_phone=?').get(userPhone);
+    if(input.time){
+      const st=_hhmm(input.time);if(!st)return{ok:false,error:'time must be HH:MM, 24-hour'};
+      const et=_addMins(st,Math.max(5,Math.min(720,parseInt(input.duration,10)||60)));
+      const dup=db.prepare('SELECT * FROM schedule_blocks WHERE user_phone=? AND date=? AND start_time=? AND lower(label)=lower(?)').get(userPhone,date,st,title);
+      if(dup)return{ok:true,already:true,event:{id:dup.id,title,date,time:st,end:dup.end_time,in_brodoit:true,synced_to_google:!!dup.gcal_event_id}};
+      const id=_crypto.randomBytes(8).toString('hex');
+      const gcal=await _gcalCreateTimed(userPhone,date,st,et,title,'',tz,{event:true,notes:input.notes});
+      db.prepare('INSERT INTO schedule_blocks(id,user_phone,date,start_time,end_time,label,color,gcal_event_id,gcal_email)VALUES(?,?,?,?,?,?,?,?,?)').run(id,userPhone,date,st,et,title,'#2F6FDE',gcal?.id||null,gcal?.email||null);
+      return{ok:true,event:{id,title,date,time:st,end:et,in_brodoit:true,synced_to_google:!!gcal,google_link:gcal&&gcal.link||undefined},note:gcal?undefined:google?'Saved in Brodoit. Google Calendar did not take it just now.':'Saved in Brodoit\'s calendar (Google Calendar is not connected).'};
+    }
+    const dupT=db.prepare("SELECT id FROM tasks WHERE user_phone=? AND due_date=? AND lower(title)=lower(?) AND status!='done'").get(userPhone,date,title);
+    if(dupT)return{ok:true,already:true,event:{id:dupT.id,title,date,all_day:true,in_brodoit:true}};
+    const id=genId();
+    db.prepare('INSERT INTO tasks(id,user_phone,title,notes,priority,status,due_date,reminder_time,source,board)VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,userPhone,title,String(input.notes||''),'medium','pending',date,'','bro-event','home');
+    let gcal=null;const ga=google?await gAccessToken(userPhone):null;
+    if(ga){try{const end=new Date(Date.parse(date+'T00:00:00Z')+864e5).toISOString().slice(0,10); // all-day: the end date is the day after
+      const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{method:'POST',headers:{Authorization:'Bearer '+ga.token,'Content-Type':'application/json'},body:JSON.stringify({summary:title,description:String(input.notes||'Added by Bro in Brodoit'),start:{date},end:{date:end}})});
+      const j=await r.json();if(!j.error)gcal={id:j.id,link:j.htmlLink}}catch(e){gcal=null}}
+    return{ok:true,event:{id,title,date,all_day:true,in_brodoit:true,synced_to_google:!!gcal,google_link:gcal&&gcal.link||undefined},note:gcal?undefined:google?'Saved in Brodoit. Google Calendar did not take it just now.':'Saved in Brodoit\'s calendar (Google Calendar is not connected).'};
   }
   if(toolName==='create_task'){
     const id=genId();const b=input.board||'home';
@@ -441,7 +461,7 @@ async function _broExecTool(toolName,input,userPhone,userTz){
     const blocks=db.prepare('SELECT label,start_time,end_time FROM schedule_blocks WHERE user_phone=? AND date=? ORDER BY start_time ASC').all(userPhone,d);
     let events=[];
     const ga=await gAccessToken(userPhone);
-    if(ga){try{const schTz=userTz||_getUserTz(userPhone);const from=d+'T00:00:00';const to=d+'T23:59:59';const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin='+encodeURIComponent(from)+'&timeMax='+encodeURIComponent(to)+'&timeZone='+encodeURIComponent(schTz)+'&singleEvents=true&orderBy=startTime&maxResults=50',{headers:{Authorization:'Bearer '+ga.token}});const j=await r.json();events=(j.items||[]).map(e=>({title:e.summary,start:e.start?.dateTime||e.start?.date,end:e.end?.dateTime||e.end?.date}))}catch(e){}}
+    if(ga){try{const schTz=_tzT&&_tzT!=='UTC'?_tzT:'Asia/Kolkata';const from=d+'T00:00:00';const to=d+'T23:59:59';const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin='+encodeURIComponent(from)+'&timeMax='+encodeURIComponent(to)+'&timeZone='+encodeURIComponent(schTz)+'&singleEvents=true&orderBy=startTime&maxResults=50',{headers:{Authorization:'Bearer '+ga.token}});const j=await r.json();events=(j.items||[]).map(e=>({title:e.summary,start:e.start?.dateTime||e.start?.date,end:e.end?.dateTime||e.end?.date}))}catch(e){}}
     return{ok:true,date:d,tasks,blocks,calendar_events:events};
   }
   if(toolName==='complete_task'){
@@ -452,17 +472,25 @@ async function _broExecTool(toolName,input,userPhone,userTz){
     return{ok:true,task:{id:t.id,title:t.title,status:'done'}};
   }
   if(toolName==='create_schedule_block'){
-    const d=input.date||today;
+    const d=String(input.date||today).trim(),st=_hhmm(input.start_time),et=_hhmm(input.end_time),label=String(input.label||'').replace(/\s+/g,' ').trim().slice(0,100);
+    if(!_isDayStr(d))return{ok:false,error:'date must be YYYY-MM-DD'};
+    if(!st||!et)return{ok:false,error:'start_time and end_time must be HH:MM, 24-hour'};
+    if(et<=st)return{ok:false,error:'end_time must be after start_time'};
+    if(!label)return{ok:false,error:'label required'};
+    const dup=db.prepare('SELECT * FROM schedule_blocks WHERE user_phone=? AND date=? AND start_time=? AND lower(label)=lower(?)').get(userPhone,d,st,label);
+    if(dup)return{ok:true,already:true,block:{id:dup.id,label,start:st,end:dup.end_time,date:d,synced_to_gcal:!!dup.gcal_event_id}};
     const id=_crypto.randomBytes(8).toString('hex');
-    const gcal=await _gcalCreateTimed(userPhone,d,input.start_time,input.end_time,input.label,'#1F1E1C',userTz);
-    db.prepare('INSERT INTO schedule_blocks(id,user_phone,date,start_time,end_time,label,color,gcal_event_id,gcal_email)VALUES(?,?,?,?,?,?,?,?,?)').run(id,userPhone,d,input.start_time,input.end_time,input.label,'#1F1E1C',gcal?.id||null,gcal?.email||null);
-    return{ok:true,block:{id,label:input.label,start:input.start_time,end:input.end_time,date:d,synced_to_gcal:!!gcal}};
+    const gcal=await _gcalCreateTimed(userPhone,d,st,et,label,'',userTz);
+    db.prepare('INSERT INTO schedule_blocks(id,user_phone,date,start_time,end_time,label,color,gcal_event_id,gcal_email)VALUES(?,?,?,?,?,?,?,?,?)').run(id,userPhone,d,st,et,label,'#1F1E1C',gcal?.id||null,gcal?.email||null);
+    return{ok:true,block:{id,label,start:st,end:et,date:d,synced_to_gcal:!!gcal}};
   }
   if(toolName==='set_reminder'){
-    const id=genId();const d=input.date||new Date().toISOString().slice(0,10);
+    const id=genId(),d=String(input.date||today).trim(),t=_hhmm(input.time); // v23: the user's own date (was the server's UTC date)
+    if(!_isDayStr(d))return{ok:false,error:'date must be YYYY-MM-DD'};
+    if(!t)return{ok:false,error:'time must be HH:MM, 24-hour'};
     const title=(input.title||'Reminder').trim();
-    db.prepare('INSERT INTO tasks(id,user_phone,title,notes,priority,status,due_date,reminder_time,source,board)VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,userPhone,title,input.notes||'','medium','pending',d,input.time,'bro-reminder','home');
-    return{ok:true,reminder:{id,title,date:d,time:input.time,message:"Reminder set! You'll get a notification at "+input.time}};
+    db.prepare('INSERT INTO tasks(id,user_phone,title,notes,priority,status,due_date,reminder_time,source,board)VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,userPhone,title,input.notes||'','medium','pending',d,t,'bro-reminder','home');
+    return{ok:true,reminder:{id,title,date:d,time:t,message:"Reminder set! You'll get a notification at "+t}};
   }
   return{ok:false,error:'Unknown tool'};
 }
@@ -1209,8 +1237,39 @@ When you are ready, open your eyes gently. Carry this peace with you through the
 // Bro's one voice; created once Bro Core is up (below). The routes serve its file first.
 let _broLib = null;
 const BREATHE_CUES = { 'breathe-in': 'Breathe in.', 'breathe-out': 'Breathe out.', 'breathe-hold': 'Hold.', 'breathe-done': 'Session complete. Well done.' };
+// v23: book summaries in Bro's voice. A summary is recorded the first time someone plays it (all 106 at once would be
+// hours of CPU and ~700 MB); until then the page reads it live in Bro's voice. The texts are the page's own
+// (BOOK_SUMMARIES in the SPA, read once from the built HTML) and the Hindi ones from books-hi/<id>.json.
+let _booksCache = null;
+function _bookText(id) {
+  id = String(id || '');
+  if (id.startsWith('hi-')) {
+    const base = id.slice(3).replace(/[^a-zA-Z0-9_-]/g, '');
+    for (const d of [_path.join(MEDIA_DIR, 'books-hi'), _path.join(__dirname, 'books-hi')]) { try { const j = JSON.parse(_fs.readFileSync(_path.join(d, base + '.json'), 'utf8')); if (j && j.summary) return { title: j.title || '', text: String(j.summary).replace(/\\/g, ''), lang: 'hi' }; } catch (e) { /* next */ } }
+    return null;
+  }
+  if (!_booksCache) {
+    _booksCache = new Map();
+    try {
+      const m = /const BOOK_SUMMARIES=(\[[\s\S]*?\n\]);/.exec(HTML);
+      const arr = m ? require('vm').runInNewContext('(' + m[1] + ')', {}, { timeout: 2000 }) : [];
+      for (const b of arr) if (b && b.id && b.summary) _booksCache.set(String(b.id), { title: String(b.title || ''), text: String(b.summary).replace(/\\/g, ''), lang: 'en' });
+    } catch (e) { console.log('[books] could not read the summaries:', e.message); }
+  }
+  return _booksCache.get(id) || null;
+}
+const _bookWant = new Set();
+const _bookWantFile = () => _path.join(MEDIA_DIR, 'bro-voice', 'books-wanted.json');
+try { for (const k of JSON.parse(_fs.readFileSync(_bookWantFile(), 'utf8'))) if (typeof k === 'string') _bookWant.add(k); } catch (e) { /* none yet */ }
+function _wantBook(id) {
+  if (_bookWant.has(id) || !_bookText(id)) return;
+  _bookWant.add(id);
+  try { _fs.mkdirSync(_path.dirname(_bookWantFile()), { recursive: true }); _fs.writeFileSync(_bookWantFile(), JSON.stringify([..._bookWant].slice(-400))); } catch (e) { /* kept in memory */ }
+  clearTimeout(_wantBook.t); _wantBook.t = setTimeout(() => { try { if (_broLib) _broLib.run().catch(() => {}); } catch (e) {} }, 5000); if (_wantBook.t.unref) _wantBook.t.unref();
+}
 function broLibraryItems() {
   const out = Object.entries(BREATHE_CUES).map(([key, text]) => ({ key, text, speed: 0.9 }));
+  for (const id of _bookWant) { const b = _bookText(id); if (b) out.push({ key: 'book-' + id, text: b.text, lang: b.lang, speed: 0.97, gapMs: 800, breathMs: 400 }); }
   for (const [key, e] of Object.entries(AUDIO_LIBRARY)) if (e.script && ['affirmation', 'guided', 'vipassana'].includes(e.kind)) out.push({ key, text: e.script, speed: e.kind === 'affirmation' ? 0.94 : 0.9, gapMs: e.kind === 'affirmation' ? 1400 : 2200, breathMs: 1000 });
   return out;
 }
@@ -1291,6 +1350,11 @@ app.get('/api/book-audio/:id', (req, res) => {
   if(!u)return res.status(401).json({error:'Invalid token'});
 
   const id = String(req.params.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
+  // v23: one voice. Bro's recording of the summary when it exists; otherwise 404 (the page reads it live in Bro's voice)
+  // and the recording is queued. The old narrators (edge-tts English, ElevenLabs Hindi) are no longer played; BOOKS_OLD_AUDIO=1 brings them back.
+  const bro = _broLib && _broLib.file('book-' + id);
+  if (bro && require('./modules/brolibrary.js').sendAudio(req, res, bro, 'no-cache')) return;
+  if (process.env.BOOKS_OLD_AUDIO !== '1') { _wantBook(id); return res.status(404).json({ error: 'not recorded in Bro\'s voice yet', live: true }); }
   let staticPath = _path.join(__dirname, 'audio-static', id + '.mp3');
   if (id.startsWith('hi-')) { const m = _path.join(MEDIA_DIR, 'books-hi', id + '.mp3'); if (_fs.existsSync(m)) staticPath = m; }
   try {
@@ -1969,14 +2033,17 @@ setInterval(_hlReminderTick,10*60*1000);
 setTimeout(_hlReminderTick,30*1000); // first check 30s after boot
 
 // ─── Schedule Blocks API ──────────────────────────────────────────────
-async function _gcalCreateTimed(userPhone,date,startTime,endTime,label,color,userTz){
+async function _gcalCreateTimed(userPhone,date,startTime,endTime,label,color,userTz,opts){
+  opts=opts||{};
   const def=db.prepare("SELECT email FROM google_tokens WHERE user_phone=? ORDER BY is_default DESC LIMIT 1").get(userPhone);
   if(!def)return null;
   const ga=await gAccessToken(userPhone,def.email);if(!ga)return null;
-  const tz=userTz||_getUserTz(userPhone);
+  // v23: a time zone the server does not know ('UTC') is India's, as everywhere else in the app (it put "2 pm" at 7:30 pm IST)
+  let tz=userTz||_getUserTz(userPhone);if(!tz||tz==='UTC')tz='Asia/Kolkata';
   const startISO=date+'T'+startTime+':00';
   const endISO=date+'T'+endTime+':00';
-  const body={summary:'\u{1F512} '+label,description:'Time block from Brodoit. Phone away. Door closed.',start:{dateTime:startISO,timeZone:tz},end:{dateTime:endISO,timeZone:tz},colorId:color||'9'};
+  // v23: Google's colorId is "1"-"11"; a hex colour made Google refuse every block, so nothing ever synced
+  const body={summary:opts.event?label:'\u{1F512} '+label,description:opts.event?String(opts.notes||'Added by Bro in Brodoit'):'Time block from Brodoit. Phone away. Door closed.',start:{dateTime:startISO,timeZone:tz},end:{dateTime:endISO,timeZone:tz},colorId:/^\d{1,2}$/.test(String(color||''))?String(color):'9'};
   try{
     const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{method:'POST',headers:{Authorization:'Bearer '+ga.token,'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j=await r.json();if(j.error)return null;
@@ -1984,6 +2051,9 @@ async function _gcalCreateTimed(userPhone,date,startTime,endTime,label,color,use
   }catch(e){return null}
 }
 app.get('/api/schedule',auth,(req,res)=>{
+  // v23: ?from=YYYY-MM-DD&to=YYYY-MM-DD (the calendar's month, the plan's week): every block in the range
+  const from=String(req.query.from||''),to=String(req.query.to||'');
+  if(_isDayStr(from)&&_isDayStr(to)&&to>=from)return res.json({from,to,blocks:db.prepare('SELECT * FROM schedule_blocks WHERE user_phone=? AND date>=? AND date<=? ORDER BY date ASC,start_time ASC LIMIT 1000').all(req.user.phone,from,to)});
   const date=String(req.query.date||_todayISO());
   const rows=db.prepare('SELECT * FROM schedule_blocks WHERE user_phone=? AND date=? ORDER BY start_time ASC').all(req.user.phone,date);
   res.json({date,blocks:rows});
@@ -2727,8 +2797,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=24"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=23"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=23">
-<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=23" defer></script><script src="/app/you.js?v=22" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=1" defer></script><script src="/app/voice.js?v=26" defer></script><script src="/app/micgain.js?v=1" defer></script><script src="/app/voicenote.js?v=2" defer></script><script src="/app/news.js?v=24" defer></script><script src="/app/notify.js?v=1" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=25" defer></script><script src="/app/onboarding.js?v=22" defer></script><script src="/app/motion.js?v=21" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=24"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=24"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=23">
+<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=23" defer></script><script src="/app/you.js?v=22" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=2" defer></script><script src="/app/voice.js?v=27" defer></script><script src="/app/micgain.js?v=1" defer></script><script src="/app/voicenote.js?v=2" defer></script><script src="/app/news.js?v=24" defer></script><script src="/app/notify.js?v=1" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=25" defer></script><script src="/app/onboarding.js?v=22" defer></script><script src="/app/motion.js?v=21" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -8729,6 +8799,7 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 .cal-day .ind{gap:3px;margin-top:3px;height:4px}
 .cal-day .ind i{width:5px;height:5px;border-radius:50%}
 .cal-selected-box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow-1)}
+.cal-plan{display:grid;gap:6px;margin:8px 0 10px}.cal-plan-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:4px 12px 12px 4px;background:var(--surface,#F7F5F0);border-left:4px solid #1F1E1C;font:500 14px var(--sans)}.cal-plan-t{flex:none;font:700 12.5px var(--sans);color:var(--text-mute);min-width:118px}.cal-plan-l{flex:1;min-width:0;color:var(--ink);overflow-wrap:anywhere}.cal-plan-g{flex:none;font:700 11px var(--sans);color:#4285F4;background:rgba(66,133,244,.1);border-radius:999px;padding:3px 8px}
 .cal-selected-box h4{font-family:var(--sans);font-size:16px;font-weight:700;margin-bottom:10px;letter-spacing:-.01em}
 
 /* Google Calendar cards */
@@ -9782,7 +9853,7 @@ function clM(){S.showAdd=false;S.editing=null;if(rec)try{rec.stop()}catch(e){}S.
 function stV(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('\\u26A0\\uFE0F Voice not supported','err');return}rec=new SR();rec.continuous=false;rec.interimResults=true;rec.lang='en-US';rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;if(e.results[0].isFinal){S.form.title=t;const l=t.toLowerCase();if(/urgent|important|asap/.test(l)){S.form.priority='high';S.form.title=S.form.title.replace(/urgent|important|asap/gi,'').trim()}if(/\\btoday\\b/.test(l))S.form.dueDate=new Date().toISOString().split('T')[0];else if(/\\btomorrow\\b/.test(l)){const d=new Date();d.setDate(d.getDate()+1);S.form.dueDate=d.toISOString().split('T')[0]}}else S.form.title=t;render()};rec.onend=()=>{S.listening=false;render()};rec.onerror=e=>{S.listening=false;toast('\\u26A0\\uFE0F '+e.error,'err');render()};rec.start();S.listening=true;render()}
 
 // ─── NOTES FUNCTIONS ───
-const NOTE_CATS=[{k:'personal',l:'Personal',icon:'\\u{1F3E0}'},{k:'work',l:'Work',icon:'\\u{1F4BC}'},{k:'ideas',l:'Ideas',icon:'\\u{1F4A1}'},{k:'learning',l:'Learning',icon:'\\u{1F4DA}'},{k:'journal',l:'Journal',icon:'\\u{1F4D3}'}];
+const NOTE_CATS=[{k:'personal',l:'Personal',icon:'\\u{1F3E0}'},{k:'work',l:'Work',icon:'\\u{1F4BC}'},{k:'ideas',l:'Ideas',icon:'\\u{1F4A1}'},{k:'learning',l:'Learning',icon:'\\u{1F4DA}'},{k:'journal',l:'Journal',icon:'\\u{1F4D3}'},{k:'bro',l:'From Bro',icon:'\\u{1F4AC}'}];
 function _saveNotes(){localStorage.setItem('tf_notes',JSON.stringify(S.notes))}
 function noteSelectCat(k){S.noteCategory=k;S.noteView='edit';S.noteTranscript='';S.noteEdit={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),category:k,title:'',content:'',drawing:null,voiceUrl:null,transcript:'',created:new Date().toISOString()};render()}
 function noteOpen(id){const n=S.notes.find(x=>x.id===id);if(!n)return;S.noteTranscript='';S.noteEdit={...n};S.noteView='edit';S.noteCategory=n.category;render()}
@@ -11384,6 +11455,11 @@ async function refreshSession(){
   // refresh during a redeploy doesn't kick the user back to login.
   if(r&&r.error&&/invalid|expired|unauthor|401/i.test(String(r.error))){logout()}
 }
+// v23: Brodoit's own calendar entries (time blocks, and the events Bro adds) for the month on screen
+function _calRange(){const m=new Date(S.calMonth),y=m.getFullYear(),mo=String(m.getMonth()+1).padStart(2,'0');return{from:y+'-'+mo+'-01',to:y+'-'+mo+'-'+String(new Date(y,m.getMonth()+1,0).getDate()).padStart(2,'0')}}
+async function calBlocksLoad(force){const g=_calRange(),key=g.from+'~'+g.to;if(!S.user||(!force&&(S._calBlocksKey===key||S._calBlocksBusy===key)))return;S._calBlocksBusy=key;try{const r=await api('/schedule?from='+g.from+'&to='+g.to);if(r&&Array.isArray(r.blocks)){S.calBlocks=r.blocks;S._calBlocksKey=key;if(S.tab==='cal')render()}}catch(e){}finally{if(S._calBlocksBusy===key)S._calBlocksBusy=null}}
+window.calBlocksRefresh=function(){S._calBlocksKey=null;if(S.tab==='cal')calBlocksLoad(true);if(S.user&&typeof schLoad==='function')schLoad()};
+function _t12(t){const p=String(t||'').split(':'),h=+p[0]||0,m=+p[1]||0;return(h%12||12)+(m?':'+String(m).padStart(2,'0'):'')+(h<12?' am':' pm')}
 function calPrev(){const d=new Date(S.calMonth);d.setMonth(d.getMonth()-1);S.calMonth=d;render()}
 function calNext(){const d=new Date(S.calMonth);d.setMonth(d.getMonth()+1);S.calMonth=d;render()}
 function calSelect(d){S.calSelectedDate=d;calAddForDate();}
@@ -13081,7 +13157,7 @@ function _bkSpeak(){
   if(BKP.idx>=BKP.chunks.length){_bkDone();return}
   var c=BKP.chunks[BKP.idx];
   // v20: Bro's voice reads the book (the watchdog below is for the phone's voice only)
-  if(window.BroSay){BKP.bro=true;BKP.uttStart=Date.now();BKP.uttIdx=BKP.idx;BroSay.one(c.text,{rate:BKP.rate,onend:function(){if(!BKP||BKP.gen!==g||BKP.paused)return;BKP.idx++;_bkSpeak()}});return}
+  if(window.BroSay){BKP.bro=true;BKP.uttStart=Date.now();BKP.uttIdx=BKP.idx;BroSay.one(c.text,{rate:BKP.rate,onend:function(){if(!BKP||BKP.gen!==g||BKP.paused)return;BKP.idx++;_bkSpeak()}});var nx=BKP.chunks[BKP.idx+1];if(nx&&BroSay.warm)BroSay.warm(nx.text,{rate:BKP.rate});return} // v23: the next chunk is made while this one plays
   var u=new SpeechSynthesisUtterance(c.text);
   u.rate=BKP.rate;u.pitch=0.95;u.volume=1;
   var v=BKP.voice;if(v){u.voice=v;u.lang=v.lang||'en-US'}
@@ -13942,7 +14018,6 @@ function _closeLessonFull(){_stopLessonVoice();S.lessonId=null;render()}
 var _lessonSpeaking=false;
 function _toggleLessonVoice(){
   if(_lessonSpeaking){_stopLessonVoice();return}
-  var synth=window.speechSynthesis;if(!synth){toast('Voice not supported');return}
   // Gather all lesson text
   var panels=document.querySelectorAll('.lesson-panel-body');
   var allText='';panels.forEach(function(p){allText+=p.innerText+'\\n\\n'});
@@ -13950,6 +14025,9 @@ function _toggleLessonVoice(){
   _lessonSpeaking=true;
   var btn=document.getElementById('lessonVoiceBtn');if(btn)btn.classList.add('speaking');
   var lbl=document.getElementById('lessonVoiceLabel');if(lbl)lbl.textContent='Stop';
+  // v23: Bro's voice reads the lesson (BroSay: sentence by sentence, the next one made while this one plays), like everywhere else
+  if(window.BroSay){_lessonSay=BroSay.speak(allText,{lang:/[\\u0900-\\u097F]/.test(allText)?'hi':'en',onend:function(){if(_lessonSpeaking)_stopLessonVoice()}});return}
+  var synth=window.speechSynthesis;if(!synth){_stopLessonVoice();toast('Voice not supported');return}
   var chunks=allText.match(/[^.!?]+[.!?]+/g)||[allText];
   var idx=0;
   function speakNext(){
@@ -13965,8 +14043,10 @@ function _toggleLessonVoice(){
   }
   speakNext();
 }
+var _lessonSay=null;
 function _stopLessonVoice(){
   _lessonSpeaking=false;
+  try{if(_lessonSay){_lessonSay.stop();_lessonSay=null}}catch(e){}
   try{window.speechSynthesis.cancel()}catch(e){}
   var btn=document.getElementById('lessonVoiceBtn');if(btn)btn.classList.remove('speaking');
   var lbl=document.getElementById('lessonVoiceLabel');if(lbl)lbl.textContent='Listen';
@@ -16176,7 +16256,11 @@ else if(S.tab==='cal'){
   ts.forEach(t=>{if(t.due_date){(byDate[t.due_date]=byDate[t.due_date]||[]).push(t)}});
   // gcal events by date
   const gByDate={};
-  (S.gcalEvents||[]).forEach(e=>{const k=(e.start||'').slice(0,10);if(k)(gByDate[k]=gByDate[k]||[]).push(e)});
+  // v23: Brodoit's own entries (time blocks, Bro's events); a Google event that is one of them is shown once
+  if(S._calBlocksKey!==_calRange().from+'~'+_calRange().to)setTimeout(calBlocksLoad,0);
+  const bByDate={},ownG=new Set();
+  (S.calBlocks||[]).forEach(b=>{(bByDate[b.date]=bByDate[b.date]||[]).push(b);if(b.gcal_event_id)ownG.add(b.gcal_event_id)});
+  (S.gcalEvents||[]).forEach(e=>{if(e.id&&ownG.has(e.id))return;const k=(e.start||'').slice(0,10);if(k)(gByDate[k]=gByDate[k]||[]).push(e)});
   const todayK=new Date().toISOString().slice(0,10);
   const sel=S.calSelectedDate;
   h+='<div class="cal-head"><button class="cal-nav" onclick="calPrev()">\\u2039</button><h3>'+esc(monthName)+'</h3><button class="cal-nav" onclick="calNext()">\\u203A</button></div>';
@@ -16200,6 +16284,7 @@ else if(S.tab==='cal'){
       if(lo)dots+='<i style="background:#3DAE5C"></i>';
     }
     if(gHere.length)dots+='<i style="background:#4285F4" title="Google Calendar"></i>';
+    if((bByDate[dk]||[]).length)dots+='<i style="background:#2F6FDE" title="Plan"></i>';
     h+='<button class="'+cls+'" onclick="calSelect(\\''+dk+'\\')">'+c.d+'<span class="ind">'+dots+'</span></button>';
   });
   h+='</div>';
@@ -16209,8 +16294,10 @@ else if(S.tab==='cal'){
     const selDate=new Date(sel+'T00:00:00');
     const selLabel=selDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
     h+='<div class="cal-selected-box"><h4>\\u{1F4CD} '+esc(selLabel)+'</h4>';
-    if(!selTasks.length)h+='<button onclick="calAddForDate()" style="width:100%;padding:14px;border-radius:0;border:2px dashed var(--line);background:none;cursor:pointer;font:500 14px var(--sans);color:var(--accent);display:flex;align-items:center;justify-content:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add a task for this day</button>';
-    else{
+    const selBlocks=bByDate[sel]||[];
+    if(selBlocks.length){h+='<div class="cal-plan" aria-label="Plan">';selBlocks.forEach(b=>{h+='<div class="cal-plan-row" style="border-left-color:'+esc(b.color||'#1F1E1C')+'"><span class="cal-plan-t">'+esc(_t12(b.start_time))+' \u2013 '+esc(_t12(b.end_time))+'</span><span class="cal-plan-l">'+esc(b.label)+'</span>'+(b.gcal_event_id?'<span class="cal-plan-g">Google</span>':'')+'</div>'});h+='</div>'}
+    if(!selTasks.length&&!selBlocks.length)h+='<button onclick="calAddForDate()" style="width:100%;padding:14px;border-radius:0;border:2px dashed var(--line);background:none;cursor:pointer;font:500 14px var(--sans);color:var(--accent);display:flex;align-items:center;justify-content:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add a task for this day</button>';
+    else if(selTasks.length){
       h+='<div class="muted">'+selTasks.length+' task'+(selTasks.length>1?'s':'')+' scheduled</div>';
       selTasks.forEach(t=>{const p=P[t.priority]||P.medium,st=ST[t.status]||ST.pending,d=t.status==='done';
         h+='<div class="tc'+(d?' dn':'')+'" style="border-left-color:'+p.c+';margin-bottom:6px"><div class="tc-top"><button class="chk'+(d?' on':'')+'" onclick="tog(\\''+t.id+'\\')">'+(d?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</button><div style="flex:1;min-width:0"><div class="tc-t'+(d?' dn':'')+'">'+esc(t.title)+'</div>'+(t.notes?'<div class="tc-n">'+esc(t.notes)+'</div>':'')+'<div class="tc-m"><button class="badge" style="background:'+st.bg+';color:'+st.c+'" onclick="cyc(\\''+t.id+'\\')">'+st.l+'</button>'+(t.reminder_time&&!d?'<span style="font-size:11px;color:#37352F;font-weight:600">\\u{1F514} '+fT(t.reminder_time)+'</span>':'')+'</div></div></div></div>';
@@ -17381,7 +17468,7 @@ function _recoverLoginIfNeeded(){
 }
 window.addEventListener('pageshow',function(e){_recoverLoginIfNeeded()});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')_recoverLoginIfNeeded()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=137').then(function(reg){reg.update()}).catch(()=>{});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js?v=138').then(function(reg){reg.update()}).catch(()=>{});}
 // ─── Mobile keyboard: keep Bro input visible ───
 (function(){
   if(!window.visualViewport)return;
@@ -17909,7 +17996,7 @@ app.get(['/lang/phrases.html','/lang/phrase-lesson.html'],(_,res)=>res.redirect(
 // back to the last copy when offline; the app's and mini-apps'
 // files (/app, /lang, /mind, /code, icons) come from the cache at once and refresh in the background. Never /api/,
 // never a Range request, never a page sent no-store.
-const _SW_VER='v185-'+(String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,8)||Date.now().toString(36));
+const _SW_VER='v186-'+(String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,8)||Date.now().toString(36));
 app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="${_SW_VER}";
 var CACHE="bd-"+CACHE_VER;
 self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(fetch("/",{credentials:"same-origin",cache:"no-cache"}).then(function(res){if(keep(res))return caches.open(CACHE).then(function(ca){return ca.put("/",res)})}).catch(function(){}))});
