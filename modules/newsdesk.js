@@ -29,13 +29,24 @@ const GEM = require('./gemini.js');
 const crypto = require('crypto');
 const fs = require('fs'), path = require('path');
 
-const STOP = new Set('a an the of to in on for and or but with at by from as is are was were be been it its this that these those after before over under into about than then new says said say will would can could may might not no yes up down out more most what why how who when where which while amid amid as india india’s'.split(/\s+/));
+const STOP = new Set('a an the of to in on for and or but with at by from as is are was were be been it its this that these those after before over under into about than then new says said say will would can could may might not no yes up down out more most what why how who when where which while amid amid as india india’s her his him their them she they you your our has have had'.split(/\s+/));
+// words too common in news to tell two stories apart on their own ("police arrest three" is many stories)
+const GENERIC = new Set('police arrest arrested arrests court government govt minister chief state city district shares share stock stocks percent crore lakh rupee rupees killed dead death deaths case report people year years day days week first two three four five six ten hundred thousand million billion top big world global national major announces launches gets hits seeks calls plan plans set sets amid'.split(/\s+/));
 const CAT_LABEL = { india: 'India', world: 'World', business: 'Business', tech: 'Tech', science: 'Science' };
 
 function tokens(s) {
   return String(s || '').toLowerCase().replace(/&[a-z]+;/g, ' ').replace(/[^a-z0-9ऀ-ॿ\s]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
 }
 function jaccard(a, b) { let i = 0; for (const x of a) if (b.has(x)) i++; return i / (a.size + b.size - i || 1); }
+// v22: one event told twice. Headline + opening ≥ 0.45 alike, or headlines sharing 4+ words (3+ of them not generic,
+// e.g. "elon musk tesla spacex") that make up 60% of the shorter headline.
+const sigOf = (headline, text) => ({ t: new Set(tokens(headline + ' ' + String(text || '').slice(0, 140))), h: new Set(tokens(headline)) });
+const telling = x => !GENERIC.has(x) && !/^\d+$/.test(x);
+function sameStory(a, b) {
+  if (jaccard(a.t, b.t) >= 0.45) { let d = 0; for (const x of a.t) if (b.t.has(x) && telling(x)) d++; if (d >= 2) return true; }
+  let i = 0, d = 0; for (const x of a.h) if (b.h.has(x)) { i++; if (telling(x)) d++; }
+  return i >= 4 && d >= 3 && i >= 0.6 * Math.min(a.h.size, b.h.size);
+}
 const sha = s => crypto.createHash('sha1').update(s).digest('hex').slice(0, 16);
 const clip = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s; };
 const words = (s, n) => { const w = String(s || '').replace(/\s+/g, ' ').trim().split(' '); return w.length > n ? w.slice(0, n).join(' ').replace(/[,;:]$/, '') + '…' : w.join(' '); };
@@ -140,6 +151,13 @@ function install(app, deps) {
       if ((r.headline_hi || r.summary_hi) && !(isHindiText(r.headline_hi) && isHindiText(r.summary_hi) && !CUT_RE.test(String(r.summary_hi || '')))) { q("UPDATE news_stories SET headline_hi='', summary_hi='', why_hi='' WHERE id=?").run(r.id); cleared++; }
     }
     if (gone || cleared) log('cleanup:', gone, 'stories in the wrong language or cut off removed;', cleared, 'Hindi versions that were not Hindi cleared');
+    // the same event written twice (before v22 each 30-minute batch could write it again): the best-sourced one stays
+    const kept = []; let twice = 0;
+    for (const r of q("SELECT id, headline, summary FROM news_stories WHERE created_at > datetime('now','-4 days') ORDER BY source_count DESC, created_at ASC").all()) {
+      const g = sigOf(r.headline, r.summary);
+      if (kept.some(k => sameStory(g, k))) { q('DELETE FROM news_stories WHERE id=?').run(r.id); twice++; } else kept.push(g);
+    }
+    if (twice) log('cleanup:', twice, 'repeats of the same story removed');
   } catch (e) { log('cleanup v22', e.message); }
   const state = { running: false, last: null, lastError: '', writer: '' };
 
@@ -170,8 +188,8 @@ function install(app, deps) {
   const sourceText = c => c.items.slice(0, 6).map(i => i.title + '. ' + i.desc).join('\n');
   function promptFor(c, heads) {
     const lines = c.items.slice(0, 6).map((i, n) => `Source ${n + 1} (${i.source}${i.date ? ', ' + String(i.date).slice(0, 16) : ''}): ${i.title}. ${clip(i.desc, 600)}`);
-    const recent = (heads || []).slice(0, 60).map((h, n) => `${n + 1}. ${h}`).join('\n');
-    return (recent ? 'RECENT (published in the last two days):\n' + recent + '\n\n' : '') + 'SOURCES:\n' + lines.join('\n');
+    const recent = (heads || []).slice(0, 30).map((h, n) => `${n + 1}. ${h}`).join('\n');
+    return (recent ? 'RECENT (already published in the last three days; if the sources report the same event, answer only {"duplicate_of": its number}):\n' + recent + '\n\n' : '') + 'SOURCES:\n' + lines.join('\n');
   }
   const parseJSON = t => { const m = String(t || '').replace(/```(?:json)?/g, '').match(/\{[\s\S]*\}/); return m ? JSON.parse(m[0]) : null; };
   async function viaOpenAI(key, text) {
@@ -207,8 +225,13 @@ function install(app, deps) {
     return w;
   }
   // write → check → one repair round → next writer. Returns { s, by } | { duplicate } | null.
-  async function writeStory(c, heads, ws) {
-    const prompt = promptFor(c, heads), src = sourceText(c);
+  // the recent headlines that share a telling word with this story, most alike first (what a repeat would look like)
+  function relatedHeads(c, heads) {
+    const t = new Set(); for (const i of c.items.slice(0, 6)) for (const w of tokens(i.title)) if (!GENERIC.has(w)) t.add(w);
+    return heads.map((h, k) => ({ h, k, n: tokens(h).filter(w => t.has(w)).length })).filter(x => x.n > 0).sort((a, b) => b.n - a.n || a.k - b.k).slice(0, 30).map(x => x.h);
+  }
+  async function writeStory(c, allHeads, ws) {
+    const heads = relatedHeads(c, allHeads || []), prompt = promptFor(c, heads), src = sourceText(c);
     let enOnly = null;
     for (const [name, fn] of ws) {
       try {
@@ -314,10 +337,10 @@ function install(app, deps) {
       // no repeats: a cluster that shares a source link with, or reads like, a story of the last 3 days is skipped;
       // the writer also sees the last two days' headlines and can say "duplicate_of"
       const rows = q("SELECT headline, summary, sources FROM news_stories WHERE created_at > datetime('now','-3 days') ORDER BY created_at DESC").all();
-      const recent = rows.map(r => new Set(tokens(r.headline + ' ' + String(r.summary || '').slice(0, 140))));
+      const recent = rows.map(r => sigOf(r.headline, r.summary));
       const links = new Set(); for (const r of rows) for (const x of parseSources(r.sources)) if (x && x.link) links.add(x.link);
       const heads = rows.map(r => r.headline);
-      const repeat = c => { const t = new Set(tokens(c.items[0].title + ' ' + (c.items[0].desc || '').slice(0, 140))); return recent.some(r => jaccard(t, r) >= 0.45) || c.items.some(i => links.has(i.link)); };
+      const repeat = c => c.items.some(i => links.has(i.link)) || c.items.slice(0, 6).some(i => { const g = sigOf(i.title, i.desc); return recent.some(r => sameStory(g, r)); });
       const ws = writers(); state.writer = ws.length ? ws[0][0] : 'extractive';
       for (const c of clusters) {
         if (wrote >= PER_EDITION) break;
@@ -339,7 +362,7 @@ function install(app, deps) {
           q('INSERT OR IGNORE INTO news_stories(id,cluster_key,category,headline,summary,why,headline_hi,summary_hi,why_hi,sources,image,writer,source_count,published_at,edition) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
             .run('ns_' + c.key, c.key, cat, T(st.headline, 160), T(st.summary, 1400), T(st.why, 300), T(st.headline_hi, 200), T(st.summary_hi, 1800), T(st.why_hi, 400), JSON.stringify(sources.slice(0, 6)), image, res.by, sources.length, new Date(c.newest || Date.now()).toISOString(), ed.id);
           wrote++;
-          heads.unshift(T(st.headline, 160)); recent.push(new Set(tokens(st.headline + ' ' + String(st.summary).slice(0, 140)))); for (const i of c.items) links.add(i.link);
+          heads.unshift(T(st.headline, 160)); recent.push(sigOf(st.headline, st.summary)); for (const i of c.items) links.add(i.link);
           await photoFor('ns_' + c.key, image, sources);
         } catch (e) { state.lastError = 'db: ' + e.message; }
         if (PACE_MS > 0) await new Promise(r => setTimeout(r, PACE_MS));
@@ -437,9 +460,11 @@ function install(app, deps) {
     const rest = feedStories(cat).filter(x => after(x) && !exSet.has(x.id) && fresh(S, x.story)), page = rest.slice(0, n), last = page[page.length - 1];
     return { stories: page.map(x => x.story), next: rest.length > n && last ? 'rss:' + last.ts + '~' + last.id : null };
   }
+  // v22: one event once per page (stories written before v22 may tell it twice)
+  const once = () => { const got = []; return r => { const g = sigOf(r.headline, r.summary); if (got.some(x => sameStory(g, x))) return false; got.push(g); return true; }; };
   function older(cat, cur, ex, exSet, lim, S, hi) {
     if (cur && cur.feed) return { stories: [], next: null }; // v22: no raw feed items in the deck
-    const out = []; let c = cur, last = null, ended = false;
+    const out = [], one = once(); let c = cur, last = null, ended = false;
     const chunk = S ? Math.max(lim * 3, 60) : lim;
     for (let guard = 0; guard < 25 && out.length < lim; guard++) {
       const w = [], a = [];
@@ -449,7 +474,7 @@ function install(app, deps) {
       else if (c) { w.push(ex.length ? 'published_at <= ?' : 'published_at < ?'); a.push(c.iso); }
       if (ex.length) { w.push('id NOT IN (' + ex.map(() => '?').join(',') + ')'); a.push(...ex); }
       const rows = q('SELECT * FROM news_stories' + (w.length ? ' WHERE ' + w.join(' AND ') : '') + ' ORDER BY published_at DESC, id DESC LIMIT ?').all(...a, chunk);
-      for (const r of rows) { last = r; if (fresh(S, r)) { out.push(r); if (out.length >= lim) break; } }
+      for (const r of rows) { last = r; if (fresh(S, r) && one(r)) { out.push(r); if (out.length >= lim) break; } }
       if (out.length >= lim) break;
       if (rows.length < chunk) { ended = true; break; }
       c = { feed: false, iso: last.published_at, id: last.id };
@@ -472,7 +497,7 @@ function install(app, deps) {
         const n0 = S ? 200 : lim;
         // v22: the newest edition first, ranked by how many outlets carry a story and how fresh it is
         const rows = (cat ? q("SELECT * FROM news_stories WHERE category=?" + HI + " ORDER BY COALESCE(edition,'') DESC, source_count DESC, published_at DESC LIMIT ?").all(cat, n0)
-          : q("SELECT * FROM news_stories WHERE created_at > datetime('now','-2 days')" + HI + " ORDER BY COALESCE(edition,'') DESC, (source_count * 3 - (julianday('now') - julianday(published_at)) * 24 / 8) DESC LIMIT ?").all(n0)).filter(r => fresh(S, r)).slice(0, lim);
+          : q("SELECT * FROM news_stories WHERE created_at > datetime('now','-2 days')" + HI + " ORDER BY COALESCE(edition,'') DESC, (source_count * 3 - (julianday('now') - julianday(published_at)) * 24 / 8) DESC LIMIT ?").all(n0)).filter(r => fresh(S, r)).filter(once()).slice(0, lim);
         if (rows.length) {
           const all = q('SELECT COUNT(*) n, MAX(published_at) m FROM news_stories WHERE 1=1' + (cat ? ' AND category=?' : '') + HI).get(...(cat ? [cat] : []));
           out = { stories: rows.map(pub), next: all.m && all.n > rows.length ? all.m : null };
@@ -621,4 +646,4 @@ ${lines.map((l, i) => `<text x="64" y="${Math.round(top + i * size * 1.18)}" fon
   return { run, tick, cluster, editionInfo, status: () => global._deskStatus() };
 }
 
-module.exports = { install, cluster, tokens, checkStory, editionOf, parseSlots, hasDeva, isHindiText, isEnglishText };
+module.exports = { sameStory, sigOf, install, cluster, tokens, checkStory, editionOf, parseSlots, hasDeva, isHindiText, isEnglishText };

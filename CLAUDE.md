@@ -339,9 +339,13 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
     - The Hindi fields must be ≥ 60% Devanagari, and `summary_hi` must be 55-170 words with a proper ending.
     - Problems → one repair round (the draft plus the problems), then the next writer. Good English with bad Hindi is published English-only.
     - Nothing is cut: stored up to 1400/1800 chars.
-  - **No repeats:**
-    - The cluster key; any story of the last 3 days sharing a source link, or with a headline ≥ 0.45 alike, is skipped before asking a writer.
-    - The writer's `duplicate_of`; v21's seen memory.
+  - **No repeats** (live on 22 Oct: the Musk Tesla-SpaceX merger 6 times, others 2-3 times):
+    - `sameStory(sigOf(a), sigOf(b))` = one event:
+      - headline + opening ≥ 0.45 alike with 2+ telling words shared; or
+      - headlines sharing 4+ words, 3+ of them not `GENERIC` ("elon musk tesla spacex", not "police arrest three"), making up 60% of the shorter headline.
+    - A cluster whose link or any item matches a story of the last 3 days is skipped before asking a writer.
+    - The writer sees up to 30 recent headlines that share a telling word with its story (`relatedHeads`) and answers `duplicate_of`.
+    - At boot, a repeat from the last 4 days is deleted (the best-sourced story stays). The deck never shows one event twice on a page (`once()`), plus v21's seen memory.
     - A cluster that is all Devanagari (a Hindi feed) is skipped.
   - **Boot cleanup:**
     - Deletes stories with Devanagari in the English headline or summary, or a summary ending "…".
