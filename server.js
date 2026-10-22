@@ -638,6 +638,9 @@ function _broSaveMsg(userPhone,role,content){
 const _crypto=require('crypto');
 const _fs=require('fs');
 const _path=require('path');
+// v24: the commit this build runs. Railway's GitHub deploys set RAILWAY_GIT_COMMIT_SHA; a CI deploy (railway up, see
+// .github/workflows/deploy.yml) uploads files without git, so the workflow writes the commit to BUILD_COMMIT
+const _BUILD_SHA=String(process.env.RAILWAY_GIT_COMMIT_SHA||(()=>{try{return _fs.readFileSync(_path.join(__dirname,'BUILD_COMMIT'),'utf8')}catch(e){return ''}})()).trim().replace(/[^0-9a-f]/gi,'').slice(0,40);
 let _dailyQuotes=[];
 try{_dailyQuotes=JSON.parse(_fs.readFileSync(_path.join(__dirname,'daily-quotes.json'),'utf8'))}catch(e){console.warn('daily-quotes.json not found, using fallback quotes')}
 // ─────────────────────────────────────────────────────────────────────────
@@ -2188,7 +2191,7 @@ app.delete('/api/meetings/:id/voice/:vid',auth,(req,res)=>{
 });
 
 // commit: the deployed git commit (public repo), so the live check can wait for a new deploy before testing it
-app.get('/api/health',(_,res)=>res.json({status:'ok',commit:String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,12),email:!!process.env.RESEND_API_KEY,users:db.prepare('SELECT COUNT(*)as c FROM users').get().c,tasks:db.prepare('SELECT COUNT(*)as c FROM tasks').get().c}));
+app.get('/api/health',(_,res)=>res.json({status:'ok',commit:_BUILD_SHA.slice(0,12),email:!!process.env.RESEND_API_KEY,users:db.prepare('SELECT COUNT(*)as c FROM users').get().c,tasks:db.prepare('SELECT COUNT(*)as c FROM tasks').get().c}));
 
 // ═══ NEWS (Inshorts-style feed — auto-curated every 12h, free RSS aggregator) ═══
 const NEWS_FEEDS={
@@ -17996,7 +17999,7 @@ app.get(['/lang/phrases.html','/lang/phrase-lesson.html'],(_,res)=>res.redirect(
 // back to the last copy when offline; the app's and mini-apps'
 // files (/app, /lang, /mind, /code, icons) come from the cache at once and refresh in the background. Never /api/,
 // never a Range request, never a page sent no-store.
-const _SW_VER='v186-'+(String(process.env.RAILWAY_GIT_COMMIT_SHA||'').slice(0,8)||Date.now().toString(36));
+const _SW_VER='v186-'+(_BUILD_SHA.slice(0,8)||Date.now().toString(36));
 app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="${_SW_VER}";
 var CACHE="bd-"+CACHE_VER;
 self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(fetch("/",{credentials:"same-origin",cache:"no-cache"}).then(function(res){if(keep(res))return caches.open(CACHE).then(function(ca){return ca.put("/",res)})}).catch(function(){}))});

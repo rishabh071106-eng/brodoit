@@ -29,12 +29,12 @@ jobs:
           # failing, so a Railway that waits for CI to pass is never blocked by this check waiting for Railway.
           if [ -n "$want" ]; then
             started=0
-            for i in $(seq 1 6); do
+            for i in $(seq 1 12); do # 6 minutes: Railway's own deploy, or the CI deploy (deploy.yml) after its 2-minute wait
               n=$(curl -fsS --max-time 20 -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/deployments?sha=$GITHUB_SHA" | jq 'length' 2>/dev/null || echo 0)
               [ "${n:-0}" -gt 0 ] 2>/dev/null && { started=1; break; }
               sleep 30
             done
-            if [ "$started" = 0 ]; then echo "::warning::Railway has not started a deploy for $want (no GitHub deployment after 3 minutes); checking the build that is live"; want=""; fi
+            if [ "$started" = 0 ]; then echo "::warning::Neither Railway nor CI started a deploy for $want (no GitHub deployment after 6 minutes); checking the build that is live"; want=""; fi
           fi
           ok=0; live=""
           for i in $(seq 1 40); do # a deploy that is still building or rolling out gets up to 20 minutes
@@ -47,6 +47,11 @@ jobs:
             sleep 30
           done
           [ "$ok" = 1 ] || { echo "::error::brodoit.com/api/health is down"; exit 1; }
+          # v24: how far brodoit.com is behind main (a deploy that silently stopped shows up the same day)
+          if [ -n "$live" ]; then
+            behind=$(curl -fsS --max-time 20 -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/compare/$live...main" | jq -r '.ahead_by // empty' 2>/dev/null || true)
+            if [ -n "$behind" ] && [ "$behind" != 0 ]; then echo "::warning::brodoit.com runs $live, $behind commit(s) behind main"; else echo "brodoit.com runs $live (main)"; fi
+          else echo "::warning::brodoit.com reports no commit in /api/health"; fi
           if [ -n "$want" ] && [ "$live" != "$want" ]; then
             if [ -z "$live" ]; then echo "::warning::/api/health reports no commit; testing whatever is live"
             else echo "::error::brodoit.com still runs $live, not $want, after 20 minutes (deploy stuck?)"; exit 1; fi

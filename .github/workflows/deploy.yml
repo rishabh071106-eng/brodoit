@@ -1,0 +1,66 @@
+# v24: every merge to main reaches brodoit.com, even when Railway's own GitHub link stops reacting (it did from
+# 20 to 22 Oct 2026: no deployment at all for two days of merges). Railway first: when Railway has started a deployment
+# for this commit by itself within 2 minutes, nothing more happens. Otherwise the commit is uploaded with the Railway
+# CLI (railway up) using the project token in the RAILWAY_TOKEN secret, and recorded as a GitHub deployment so the live
+# check (live-check.yml) waits for it and then tests it. Without the secret it only warns, never fails.
+# Setup, once: Railway → Project Settings → Tokens → new project token (production) → GitHub → Settings → Secrets and
+# variables → Actions → RAILWAY_TOKEN. The service name defaults to "taskflow" (repo variable RAILWAY_SERVICE overrides).
+name: Deploy to Railway
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Deploy from CI even if Railway already started this commit
+        type: boolean
+        default: false
+concurrency:
+  group: railway-deploy
+  cancel-in-progress: false
+permissions:
+  contents: read
+  deployments: write
+jobs:
+  deploy:
+    # the mirror repo (brodoit) is not what Railway deploys
+    if: github.repository == 'rishabh071106-eng/taskflow'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Did Railway start this commit by itself?
+        id: railway
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          if [ "$FORCE" = "true" ]; then echo "started=no" >> "$GITHUB_OUTPUT"; exit 0; fi
+          for i in $(seq 1 4); do
+            n=$(curl -fsS --max-time 20 -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/deployments?sha=$GITHUB_SHA&per_page=5" | jq 'length' 2>/dev/null || echo 0)
+            if [ "${n:-0}" -gt 0 ] 2>/dev/null; then echo "::notice::Railway started a deployment for ${GITHUB_SHA:0:7} by itself; nothing to do"; echo "started=yes" >> "$GITHUB_OUTPUT"; exit 0; fi
+            sleep 30
+          done
+          echo "started=no" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        if: steps.railway.outputs.started == 'no'
+      - name: Deploy with the Railway CLI
+        if: steps.railway.outputs.started == 'no'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          SERVICE: ${{ vars.RAILWAY_SERVICE || 'taskflow' }}
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "::warning::Railway did not start a deploy for ${GITHUB_SHA:0:7}, and CI cannot deploy it without the RAILWAY_TOKEN secret (Railway → Project Settings → Tokens → new project token for production → GitHub → Settings → Secrets and variables → Actions → RAILWAY_TOKEN)."
+            exit 0
+          fi
+          # the server reports this commit in /api/health (an upload carries no git data)
+          echo "$GITHUB_SHA" > BUILD_COMMIT
+          # a GitHub deployment record, so the live check knows a deploy of this commit has started and waits for it
+          dep=$(curl -fsS --max-time 20 -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/deployments" \
+            -d "{\"ref\":\"$GITHUB_SHA\",\"environment\":\"railway-ci\",\"auto_merge\":false,\"required_contexts\":[],\"description\":\"railway up from CI\"}" | jq -r '.id // empty' || true)
+          status() { [ -n "$dep" ] && curl -fsS --max-time 20 -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/deployments/$dep/statuses" -d "{\"state\":\"$1\",\"environment_url\":\"https://brodoit.com\",\"description\":\"$2\"}" > /dev/null || true; }
+          status in_progress "uploading ${GITHUB_SHA:0:7}"
+          npm i -g @railway/cli@5.63.1 > /dev/null
+          if railway up --ci --service "$SERVICE"; then status success "deployed ${GITHUB_SHA:0:7}"; echo "::notice::Deployed ${GITHUB_SHA:0:7} to Railway from CI"
+          else status failure "railway up failed"; echo "::error::railway up failed for ${GITHUB_SHA:0:7}"; exit 1; fi
