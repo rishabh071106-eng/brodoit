@@ -96,3 +96,47 @@ html[data-theme="dark"] #app .nz-card.skel .nz-img,body[data-theme=aurora] #app 
 .nz-sh-x{margin-top:6px}
 @keyframes nzIn{from{opacity:0}}@keyframes nzUp{from{transform:translateY(40px);opacity:.6}}
 @media (prefers-reduced-motion:reduce){.nz-sheet-bg,.nz-sheet{animation:none}}
+/* v22: the edition's front page, the tag on the photo, "Why it matters", sources, the progress bar, the "new" dot */
+#app .nz-prog{position:absolute;top:0;left:22px;right:22px;height:3px;border-radius:2px;background:color-mix(in srgb,var(--b-ink) 10%,transparent);z-index:4;overflow:hidden;pointer-events:none}
+#app .nz-prog i{display:block;height:100%;width:0;border-radius:2px;background:var(--b-primary,#B5402A);transition:width .25s ease}
+#app .nz-cover{justify-content:flex-start}
+#app .nz-cv{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;margin:0 6px;padding:22px 18px 18px;border-radius:24px;background:radial-gradient(120% 70% at 0% 0%,color-mix(in srgb,var(--b-primary,#B5402A) 16%,transparent),transparent 60%),var(--b-card);box-shadow:0 1px 2px rgba(31,30,28,.05),0 14px 30px -20px rgba(31,30,28,.5);display:flex;flex-direction:column;gap:14px}
+#app .nz-cv-k{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-right:110px;font:600 13px/1.3 var(--b-sans);color:var(--b-mute)}
+#app .nz-cv-k b{font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--b-primary,#B5402A)}
+#app .nz-cv-k b.dev{letter-spacing:0;text-transform:none}
+#app .nz-cv-dot{width:8px;height:8px;border-radius:50%;background:var(--b-primary,#B5402A);box-shadow:0 0 0 4px color-mix(in srgb,var(--b-primary,#B5402A) 18%,transparent)}
+#app .nz-cv-t{margin:0;font:400 30px/1.12 var(--b-serif,Georgia,serif);letter-spacing:-.01em;color:var(--b-ink);text-wrap:balance}
+#app .nz-cv-t.dev{font:700 26px/1.35 var(--b-devanagari,var(--b-sans))}
+#app .nz-cv-list{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+#app .nz-cv-list button{width:100%;display:flex;align-items:flex-start;gap:12px;padding:10px 6px;border:0;border-radius:14px;background:transparent;color:inherit;text-align:left;cursor:pointer;font:inherit;min-height:52px}
+#app .nz-cv-list button:active,#app .nz-cv-list button:hover{background:var(--b-bg-2)}
+#app .nz-cv-n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:800 13px/1 var(--b-sans);color:#fff;background:var(--c)}
+#app .nz-cv-h b{display:block;font:700 16px/1.32 var(--ui-font,var(--b-sans));color:var(--b-ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#app .nz-cv-h.dev b{font-family:var(--b-devanagari,var(--b-sans));line-height:1.5}
+#app .nz-cv-h small{display:block;margin-top:3px;font:600 12px/1.2 var(--b-sans);color:var(--b-mute)}
+#app .nz-cv-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+#app .nz-cv-chips::-webkit-scrollbar{display:none}
+#app .nz-cv-chips button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--b-line);background:transparent;color:var(--b-ink-2);font:700 13px/1 var(--b-sans);cursor:pointer}
+#app .nz-cv-chips button.on{background:var(--b-ink);border-color:var(--b-ink);color:var(--b-bg)}
+#app .nz-cv-chips button.dev{font-family:var(--b-devanagari,var(--b-sans))}
+#app .nz-cv-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:4px;font:600 13px/1.3 var(--b-sans);color:var(--b-mute)}
+#app .nz-cv-go{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:var(--b-primary,#B5402A);color:#fff;font:700 14px/1 var(--b-sans);cursor:pointer;flex:none}
+#app .nz-tag{position:absolute;left:10px;bottom:12px;z-index:2;display:inline-flex;align-items:center;gap:8px;max-width:calc(100% - 76px);padding:7px 12px;border-radius:999px;background:rgba(15,13,20,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;font:600 12px/1 var(--b-sans);white-space:nowrap}
+#app .nz-tag b{font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff}
+#app .nz-tag b.dev{letter-spacing:0;text-transform:none}
+#app .nz-tag span{opacity:.85}
+#app .nz-img::after{content:"";position:absolute;inset:auto 0 0;height:70px;z-index:1;pointer-events:none;background:linear-gradient(rgba(15,13,20,0),rgba(15,13,20,.35))}
+#app .nz-card h2{font-size:22px;line-height:1.24;margin:4px 0 10px}
+#app .nz-why{margin:12px 0 0;padding:10px 12px;border-radius:12px;border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 9%,transparent);font:500 14.5px/1.5 var(--b-sans);color:var(--b-ink-2)}
+#app .nz-why b{display:block;margin-bottom:2px;font:800 11.5px/1.2 var(--b-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--c)}
+#app .nz-why.dev{font-family:var(--b-devanagari,var(--b-sans));line-height:1.65}
+#app .nz-why.dev b{letter-spacing:0;text-transform:none;font-size:12.5px}
+html[data-theme="dark"] #app .nz-why b,body[data-theme=aurora] #app .nz-why b{color:color-mix(in srgb,var(--c) 50%,#fff)}
+#app .nz-srcs{display:flex;align-items:center;gap:8px;width:100%;margin:10px 0 2px;min-height:44px;padding:0 4px;border:0;border-top:1px solid var(--b-line);background:transparent;color:var(--b-mute);font:600 13px/1.2 var(--b-sans);text-align:left;cursor:pointer}
+#app .nz-srcs span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#app .nz-card.xs .nz-why{font-size:13.5px;margin-top:8px}
+.nz-sh-p{margin:-4px 4px 8px;font:500 13.5px/1.4 var(--b-sans,system-ui);color:var(--b-mute,#6b6875)}
+a.nz-sh{text-decoration:none}
+body.nz-fresh .tab-news .ti{position:relative}
+body.nz-fresh .tab-news .ti::after{content:"";position:absolute;top:-1px;right:-3px;width:9px;height:9px;border-radius:50%;background:var(--b-primary,#B5402A);box-shadow:0 0 0 2px var(--b-bg,#fff)}
+@media (prefers-reduced-motion:reduce){#app .nz-prog i{transition:none}}

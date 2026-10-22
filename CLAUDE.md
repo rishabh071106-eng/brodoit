@@ -167,7 +167,7 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
 - AI keys in `server.js` are `geminiKey()` / `groqKey()` (Admin → env); `global._getSetting` is set once settings load.
 
 ## News Desk + mini-app chrome (v9.5)
-- `modules/newsdesk.js` — batch every 30 min (+boot): all feeds → cluster duplicates (token Jaccard ≥ .28) → writer OpenAI → Gemini → Groq (JSON: headline, 55-65-word summary, why, Hindi trio, category; only facts from sources) or extractive fallback → `news_stories`. `GET /api/news/desk`, `POST /api/news/desk/run` (admin). `NEWS_DESK=0` disables.
+- `modules/newsdesk.js` — (v22: three editions a day, see "v22 News" below; the rest of this line is the v9.5 design) batch every 30 min (+boot): all feeds → cluster duplicates (token Jaccard ≥ .28) → writer OpenAI → Gemini → Groq (JSON: headline, 55-65-word summary, why, Hindi trio, category; only facts from sources) or extractive fallback → `news_stories`. `GET /api/news/desk`, `POST /api/news/desk/run` (admin). `NEWS_DESK=0` disables.
 - `app/news.js` — default view `top`: Brodoit Desk cards (`N.deckHtml`, `N.card`, `N.sizeDeck`), Listen via `N.say` (studio TTS), Explain via `N.explainObj`, Read via `N.readItem`.
 - `lang/assets/topbar.{js,css}` — shared mini-app bar: one back control (parent ‹ or "← Brodoit"), home button on the right when there is a parent; cold-open back guard (referrer-based) so Android back lands in the app.
 - Android first open asks the system Physical-activity permission directly (one tap); declining opens the app.
@@ -300,7 +300,7 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
   - **Seen:** a card on screen for 1.5 s, or swiped past, is seen.
     - The phone keeps `localStorage news.seen.v1`: ids for 30 days, plus each story's words for 14 days. A signed-in reader's server keeps `news_seen` (`POST /api/news/seen`, batched, flushed when hidden).
     - `/api/news/desk` leaves out seen ids and any story whose headline + opening is ≥ 0.45 alike a seen one, so a rewrite with a new id is caught too. It pages past them and answers `caughtUp`.
-  - The deck no longer goes round again. It ends on a "You're all caught up · new stories every 30 minutes" card with "Check again". Back on News after 20 minutes away, it reloads what is new.
+  - The deck no longer goes round again. It ends on a "You're all caught up · Next edition at …" card (v22) with "Check again". Back on News after 20 minutes away, it reloads what is new.
   - **Links:** `?tab=news&s=<id>` (and `NewsChannel.open(id)`, also from `BroFrame.route`) opens that story even when seen, fetching it with `GET /api/news/story/:id` if needed.
   - **Share** opens a sheet:
     - Share picture: the story as a JPEG whose footer prints `brodoit.com/n/<id>` and a QR code (`app/vendor/qrcode.js`, MIT, loaded on first share). Text and link go along.
@@ -326,6 +326,36 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
   - **Service worker:** a push carries `tag`, `renotify`, `requireInteraction` (reminders only), `/app/badge-96.png` (white Bro bubble) and a same-site `url`.
     - A tap focuses the open app and posts `bd-route` (`frame.js` → `BroFrame.go`: a tab, a lesson in the layer, a story), or opens the url.
   - **Android:** `POST_NOTIFICATIONS` plus android-browser-helper's `NotificationPermissionRequestActivity`, and a white small icon (`@drawable/ic_notification` as the DelegationService `SMALL_ICON`). CI checks the permission; the emulator test grants it.
+- **v22 News** (owner: the same news came back, Hindi stories in English mode, cut-off summaries, refresh 3 times a day, no Bro, a UI people don't miss):
+  - **Editions** (`modules/newsdesk.js`): 07:00, 13:00 and 19:00 India time (`NEWS_EDITIONS`, "HH:MM,…" IST). `editionOf(now)` → `{id: YYYY-MM-DD-HHMM, label, label_hi, at, next_at}`.
+    - A 60 s `tick` makes the current edition once (`news_editions`). One with nothing new is tried again 20 min later, at most 3 times. There is no 30-minute batch any more.
+    - Up to `NEWS_PER_EDITION` (20) stories, `NEWS_PACE_MS` (4 s) apart. `news_stories.edition` records which edition wrote each one.
+  - **Writers**, best first: `openai/gpt-oss-120b` through Bro Core (`BC.chat({models, effort:'medium', json:true})`), then Gemini flash, then Bro Core's background chain. OpenAI/Groq/ElevenLabs are used only in the emergency mode.
+    - The prompt is a senior wire editor's. It asks for an 80-110-word summary, a "why it matters" line (12-25 words) and the Hindi trio. It lists the last two days' headlines ("RECENT"), and the writer answers `duplicate_of` for a repeat.
+    - The extractive fallback runs only when no writer exists. Raw feed items never reach the deck.
+  - **Every story is checked** (`checkStory(story, sourceText)` → `{en, hi}` problems):
+    - The English fields must have no Devanagari. The headline is 4-16 words with no "…"; the summary is 65-135 words and ends on a full sentence; "why" is 6-40 words.
+    - Every number (other than 0-12) must appear in the sources.
+    - The Hindi fields must be ≥ 60% Devanagari, and `summary_hi` must be 55-170 words with a proper ending.
+    - Problems → one repair round (the draft plus the problems), then the next writer. Good English with bad Hindi is published English-only.
+    - Nothing is cut: stored up to 1400/1800 chars.
+  - **No repeats:**
+    - The cluster key; any story of the last 3 days sharing a source link, or with a headline ≥ 0.45 alike, is skipped before asking a writer.
+    - The writer's `duplicate_of`; v21's seen memory.
+    - A cluster that is all Devanagari (a Hindi feed) is skipped.
+  - **Boot cleanup:**
+    - Deletes stories with Devanagari in the English headline or summary, or a summary ending "…".
+    - Clears a Devanagari `why`, and Hindi fields that aren't Hindi.
+  - **Desk API:**
+    - `?lang=hi` serves only stories with Hindi. The first page is the newest edition first, then score.
+    - `older` pages never fill from raw feeds.
+    - Every answer carries `edition` (`editionInfo()`). `GET /api/news/edition` → `{id, label, at, next_at, count, ready}`.
+  - **App** (`app/news.js`, `news.css`):
+    - The deck opens on the edition's **front page** (`{kind:'cover'}` at index 0): "Morning edition" + date, "The stories that matter now", the top 5 headlines (tap → that story), section chips (`NewsChannel.setCat`, reloads), "Next edition at 1 pm" and Start reading.
+    - Each card: section + time on the photo, headline, story, a **Why it matters** box, and "Sources: The Hindu, NDTV +1", which opens the original reports (`NewsChannel.sources(i)`).
+    - A slim progress bar sits on top. English mode never shows Devanagari; Hindi reloads with `lang=hi` and shows only Hindi stories, with Hindi times ("दोपहर 1 बजे").
+    - A dot on the News tab (`body.nz-fresh`) marks an edition this phone hasn't opened (`news.edition.seen`, checked 3 s after start and on return). The caught-up card names the next edition.
+  - Tests: `scratchpad/v21/p6-news.mjs` (checks, editions, fake writer: repair, duplicates, English-only, cleanup, desk; Chromium: front page, why, sources, progress, Hindi, dot). Live check: the "News quality" step counts Hindi-in-English and cut-off stories.
 - **News** (`app/news.js`): cards only (desk stories), section chips, "Listen" plays recorded headline clips back to back. `modules/newsvoice.js` records after every desk batch through ElevenLabs only (`NEWS_VOICE_PROVIDER=any` opens the chain): headlines for every story in the feed + `NEWS_VOICE_FULL` (default 10) full read-outs a day per language; files in `MEDIA_DIR/news-voice`, served by `/api/news/voice/<id>-<lang>-<h|s>.mp3`. Nothing is rendered on tap. The long spoken bulletin is opt-in (`BULLETIN_AUDIO=1`). News is a bottom tab; You moved to the header avatar.
 - **ElevenLabs brain** (`modules/elevenbrain.js`): a private text-only ElevenLabs agent used as the LLM when Gemini has no key, is out of credit (402 → skipped for an hour via `global._geminiDownUntil`) or fails — `_callGemini` falls back to it, so Bro chat, Explain, the coach and the news desk keep working on ElevenLabs credits. Bro chat no longer runs a second "verify" pass.
 - **ElevenLabs budget** (modules/elevenvoice.js `RESERVE`): bulk (static recordings) may use the first 70% of the month, daily (news, first plays) stops at 15% left, live Bro uses the rest. Admin auto-record order: learn-audio → lang-audio → hindi-books.
