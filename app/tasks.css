@@ -5,7 +5,11 @@
 #app .qc-bar .qc-input{min-height:46px;padding:12px 0!important;border:0!important;background:transparent!important;font:500 16px/1.35 var(--b-sans)!important;color:var(--b-ink)!important}
 #app .qc-bar button[onclick="voiceAddTask()"]{width:46px!important;height:46px!important;background:var(--b-primary-soft)!important;color:var(--b-primary)!important}
 #app .qc-bar .qc-send{width:46px!important;height:46px!important;background:var(--b-ink)!important}
-#app .qc-chip{min-height:36px;border-radius:999px;background:var(--b-bg-2);border:0}
+#app .qc-chip{min-height:44px;border-radius:999px;background:var(--b-bg-2);border:0}
+/* v24: the chosen priority keeps its colour (the line above used to wash it out: white text on beige) */
+#app .qc-chip.qc-high.on{background:#DC2626;color:#fff}
+#app .qc-chip.qc-med.on{background:#6B6966;color:#fff}
+#app .qc-chip.qc-low.on{background:#16A34A;color:#fff}
 #app .rd-segmented{display:flex;gap:8px!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;margin-top:16px!important;overflow-x:auto;scrollbar-width:none}
 #app .rd-segmented button{flex:0 0 auto;min-height:40px;padding:0 18px!important;border:0!important;border-radius:999px!important;background:var(--b-bg-2)!important;color:var(--b-ink-2)!important;font:600 14px var(--b-sans)!important;box-shadow:none!important}
 #app .rd-segmented button.on{background:var(--b-ink)!important;color:var(--b-bg)!important}

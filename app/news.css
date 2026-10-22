@@ -116,7 +116,7 @@ html[data-theme="dark"] #app .nz-card.skel .nz-img,body[data-theme=aurora] #app 
 #app .nz-cv-h small{display:block;margin-top:3px;font:600 12px/1.2 var(--b-sans);color:var(--b-mute)}
 #app .nz-cv-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
 #app .nz-cv-chips::-webkit-scrollbar{display:none}
-#app .nz-cv-chips button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--b-line);background:transparent;color:var(--b-ink-2);font:700 13px/1 var(--b-sans);cursor:pointer}
+#app .nz-cv-chips button{flex:none;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--b-line);background:transparent;color:var(--b-ink-2);font:700 13px/1 var(--b-sans);cursor:pointer}
 #app .nz-cv-chips button.on{background:var(--b-ink);border-color:var(--b-ink);color:var(--b-bg)}
 #app .nz-cv-chips button.dev{font-family:var(--b-devanagari,var(--b-sans))}
 #app .nz-cv-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:4px;font:600 13px/1.3 var(--b-sans);color:var(--b-mute)}

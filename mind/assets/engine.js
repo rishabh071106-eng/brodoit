@@ -4,7 +4,7 @@
 // Games get `api`: sfx, haptic, now/after/frame (a clock that stops while paused), timer (top bar), setScore,
 // float, combo, end(result) and test(hooks) for the Playwright hook window.__mindTest.
 import * as store from './store.js';
-import { esc, ico, sfx, buzz, countUp, star, reduced, clamp } from './util.js';
+import { esc, ico, sfx, buzz, countUp, star, reduced, clamp, HI, tr, rawText } from './util.js';
 import { icon } from './art.js';
 
 // ── stars & the 0-100 "best" number the server keeps: 40 = ★, 70 = ★★, 100 = ★★★ ──
@@ -28,12 +28,13 @@ export function pctOf(score, t, lower) {
 export const fmtTime = v => (Math.round(v * 10) / 10).toFixed(1);
 export function goalText(cfg, nStars = 1) {
   const t = cfg.targets[nStars - 1];
+  if (HI) return cfg.lower ? `${t} सेकंड में पूरा करें` : `${t} ${cfg.goalUnit || cfg.scoreLabel}`;
   return cfg.lower ? `Finish in ${t}s` : `${t} ${cfg.goalUnit || cfg.scoreLabel}`;
 }
 
-const CHEER = 'Try again.';
-// "Title. Detail." → [title, detail]
-const split = t => { const i = String(t).indexOf('. '); return i < 0 ? [String(t).replace(/\.$/, ''), ''] : [t.slice(0, i), t.slice(i + 2)]; };
+const CHEER = tr('Try again.', 'फिर कोशिश करें।');
+// "Title. Detail." → [title, detail] (Hindi: "शीर्षक। ब्योरा।")
+const split = t => { const m = /\. |। /.exec(String(t)), i = m ? m.index : -1; return i < 0 ? [String(t).replace(/[.।]$/, ''), ''] : [t.slice(0, i), t.slice(i + 2)]; };
 // a solid two-bar pause glyph (reads better at 20px on the dark header than an outlined one)
 const PAUSE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.3"/><rect x="14" y="5" width="4" height="14" rx="1.3"/></svg>';
 // where a workout ends (and where quitting one goes): the app's Learn → Games list
@@ -51,16 +52,16 @@ export function play({ mod, level, workout: inWorkout, games }) {
   const w0 = store.workout(store.read());
   const wIndex = inWorkout ? Math.max(1, w0.games.indexOf(meta.id) + 1) : 0;
 
-  document.title = `${meta.name} · Level ${level} · Mind`;
+  document.title = HI ? `${meta.name} · लेवल ${level} · गेम्स` : `${meta.name} · Level ${level} · Mind`;
   document.body.style.setProperty('--g', meta.color);
   document.body.style.setProperty('--g-deep', meta.deep);
   const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.setAttribute('content', '#121214');
 
   app.innerHTML = `
     <header class="pl-top">
-      <button class="pl-btn" id="pauseBtn" aria-label="Pause">${PAUSE}</button>
-      <div class="pl-title"><b>Level ${level}</b><small id="plSub" aria-live="polite">${esc(meta.name)}${inWorkout ? ` · ${wIndex} of 3` : ''}</small></div>
-      <div class="pl-score" id="score" role="status" aria-label="Score"><b>0</b><small>${esc(cfg.scoreLabel)}</small></div>
+      <button class="pl-btn" id="pauseBtn" aria-label="${tr('Pause', 'रोकें')}">${PAUSE}</button>
+      <div class="pl-title"><b>${tr('Level', 'लेवल')} ${level}</b><small id="plSub" aria-live="polite">${esc(meta.name)}${inWorkout ? (HI ? ` · 3 में से ${wIndex}` : ` · ${wIndex} of 3`) : ''}</small></div>
+      <div class="pl-score" id="score" role="status" aria-label="${tr('Score', 'अंक')}"><b>0</b><small>${esc(cfg.scoreLabel)}</small></div>
     </header>
     <div class="pl-bar" id="bar" hidden><div class="pl-track"><i></i></div></div>
     <main class="pl-stage" id="stage"></main>`;
@@ -88,7 +89,7 @@ export function play({ mod, level, workout: inWorkout, games }) {
     let extra = 0, done = false, lastSec = -1;
     const t0 = clock();
     bar.hidden = false;
-    bar.innerHTML = `<div class="pl-track"><i></i></div>${marks.map(m => `<span class="pl-mk" style="left:${(m.at * 100).toFixed(1)}%" title="${m.stars} stars"></span>`).join('')}`;
+    bar.innerHTML = `<div class="pl-track"><i></i></div>${marks.map(m => `<span class="pl-mk" style="left:${(m.at * 100).toFixed(1)}%" title="${m.stars} ${tr('stars', 'स्टार')}"></span>`).join('')}`;
     const fill = bar.querySelector('i'), mks = [...bar.querySelectorAll('.pl-mk')];
     const elapsed = () => (clock() - t0) / 1000 + extra;
     const f = () => {
@@ -160,7 +161,7 @@ export function play({ mod, level, workout: inWorkout, games }) {
     store.push().then(ok => { T.posted = ok; });
     setPhase('done');
     buzz(passed ? 'success' : 'warning');
-    ov.innerHTML = `<div class="pl-ov pl-done"><div class="pl-done-in">${esc(r.failed ? "Time's up" : cfg.time ? 'Time' : 'Done')}</div></div>`;
+    ov.innerHTML = `<div class="pl-ov pl-done"><div class="pl-done-in">${esc(r.failed ? tr("Time's up", 'समय ख़त्म') : cfg.time ? tr('Time', 'समय पूरा') : tr('Done', 'हो गया'))}</div></div>`;
     sfx(passed ? 'go' : 'flip');
     setTimeout(() => results(r, rec, nStars, pct, display), reduced() ? 250 : 800);
   }
@@ -169,50 +170,52 @@ export function play({ mod, level, workout: inWorkout, games }) {
     setPhase('results');
     const passed = nStars > 0, t = cfg.targets, lower = !!cfg.lower, w = rec.workout;
     const best = rec.unit, bestStars = store.starsFor(best.best || 0);
-    const title = passed ? `Level ${level} passed` : 'Not passed'; // say what happened (DESIGN.md: no praise words)
+    const title = passed ? (HI ? `लेवल ${level} पास` : `Level ${level} passed`) : tr('Not passed', 'पास नहीं हुआ'); // say what happened (DESIGN.md: no praise words)
     // the number
     const big = r.big != null ? r.big : r.score, bigLabel = r.bigLabel || cfg.resultLabel || cfg.scoreLabel;
     const fmtBig = r.failed ? v => String(Math.round(v)) : lower ? v => fmtTime(v) : v => String(Math.round(v));
     // at most one chip
     let chip = '';
-    if (rec.newBest) chip = 'New best';
-    else if (best.rawText && (lower || best.raw > 0) && !rec.firstTime) chip = `Best ${best.rawText}`;
-    else if (bestStars > nStars) chip = `Best ${bestStars} star${bestStars === 1 ? '' : 's'}`;
+    if (rec.newBest) chip = tr('New best', 'नया रिकॉर्ड');
+    else if (best.rawText && (lower || best.raw > 0) && !rec.firstTime) chip = HI ? `सबसे अच्छा ${rawText(best.rawText)}` : `Best ${best.rawText}`;
+    else if (bestStars > nStars) chip = HI ? `सबसे अच्छा ${bestStars} स्टार` : `Best ${bestStars} star${bestStars === 1 ? '' : 's'}`;
     // next star, or how far from a pass
     let mid = '';
-    if (passed && nStars < 3) mid = `<p class="res-next">${esc(goalText(cfg, nStars + 1))} for ${nStars + 1} stars</p>`;
+    if (passed && nStars < 3) mid = HI ? `<p class="res-next">${nStars + 1} स्टार के लिए ${esc(goalText(cfg, nStars + 1))}</p>` : `<p class="res-next">${esc(goalText(cfg, nStars + 1))} for ${nStars + 1} stars</p>`;
     else if (!passed) {
       const need = t[0];
       const frac = r.failed ? clamp(r.progress || 0, 0, 1) : lower ? clamp(need / Math.max(need, r.score), 0, 1) : clamp(r.score / need, 0, 1);
-      const line = r.needText ? `${r.needText} to pass.` : lower ? `${goalText(cfg, 1)} to pass.` : `Get ${goalText(cfg, 1)} to pass.`;
+      const line = HI
+        ? (r.needText ? `पास होने के लिए ${r.needText}।` : lower ? `पास होने के लिए ${goalText(cfg, 1)}।` : `पास होने के लिए ${goalText(cfg, 1)} चाहिए।`)
+        : r.needText ? `${r.needText} to pass.` : lower ? `${goalText(cfg, 1)} to pass.` : `Get ${goalText(cfg, 1)} to pass.`;
       mid = `<div class="res-meter"><div class="res-meter-t" aria-hidden="true"><i style="width:${(frac * 100).toFixed(1)}%"></i></div><p>${esc(line)} ${CHEER}</p></div>`;
     }
     let nextDesc = '';
     if (rec.unlocked) { try { nextDesc = mod.levelConfig(level + 1).desc || ''; } catch (e) { /* ignore */ } }
-    const unlock = rec.unlocked ? `<div class="res-unlock" id="resUnlock"><span class="ru-ic">${ico('lock-open', 18)}</span><div><b>Level ${level + 1} unlocked</b>${nextDesc ? `<small>${esc(nextDesc)}</small>` : ''}</div></div>` : '';
+    const unlock = rec.unlocked ? `<div class="res-unlock" id="resUnlock"><span class="ru-ic">${ico('lock-open', 18)}</span><div><b>${HI ? `लेवल ${level + 1} खुल गया` : `Level ${level + 1} unlocked`}</b>${nextDesc ? `<small>${esc(nextDesc)}</small>` : ''}</div></div>` : '';
     const note = r.note && !passed ? `<p class="res-note">${esc(r.note)}</p>` : ''; // the detail helps after a miss; a pass needs no footnote
-    const wRow = inWorkout ? `<div class="res-wo">${w.games.map(g => `<span class="${w.done.includes(g) ? 'on' : ''}" style="--wc:${byId(g).meta.color}"></span>`).join('')}<small>${w.complete ? 'Workout done' : `Workout ${w.done.length} of 3`}</small></div>` : '';
+    const wRow = inWorkout ? `<div class="res-wo">${w.games.map(g => `<span class="${w.done.includes(g) ? 'on' : ''}" style="--wc:${byId(g).meta.color}"></span>`).join('')}<small>${w.complete ? tr('Workout done', 'वर्कआउट पूरा') : HI ? `वर्कआउट: 3 में से ${w.done.length}` : `Workout ${w.done.length} of 3`}</small></div>` : '';
 
     // actions: one primary, then a quiet secondary and a ghost
     let primary, secondary = [];
     if (inWorkout) {
-      if (w.next) { const nm = byId(w.next).meta; primary = { label: `Next: ${nm.name}`, href: href(w.next, store.current(store.read(), w.next), true) }; }
-      else primary = { label: 'Finish workout', href: HUB };
-      secondary = [{ label: passed ? 'Replay' : 'Retry', href: href(meta.id, level, true), cls: 'sec' }, { label: 'Quit', href: HUB, cls: 'ghost' }];
+      if (w.next) { const nm = byId(w.next).meta; primary = { label: `${tr('Next:', 'अगला:')} ${nm.name}`, href: href(w.next, store.current(store.read(), w.next), true) }; }
+      else primary = { label: tr('Finish workout', 'वर्कआउट पूरा करें'), href: HUB };
+      secondary = [{ label: passed ? tr('Replay', 'फिर खेलें') : tr('Retry', 'फिर कोशिश करें'), href: href(meta.id, level, true), cls: 'sec' }, { label: tr('Quit', 'छोड़ें'), href: HUB, cls: 'ghost' }];
     } else if (passed) {
-      primary = level < store.LEVELS ? { label: 'Next level', href: href(meta.id, level + 1) } : { label: 'All levels done', href: `/mind/game.html?g=${meta.id}` };
-      secondary = [{ label: 'Replay', href: href(meta.id, level), cls: 'sec' }, { label: 'Levels', href: `/mind/game.html?g=${meta.id}`, cls: 'ghost' }];
+      primary = level < store.LEVELS ? { label: tr('Next level', 'अगला लेवल'), href: href(meta.id, level + 1) } : { label: tr('All levels done', 'सभी लेवल पूरे'), href: `/mind/game.html?g=${meta.id}` };
+      secondary = [{ label: tr('Replay', 'फिर खेलें'), href: href(meta.id, level), cls: 'sec' }, { label: tr('Levels', 'लेवल देखें'), href: `/mind/game.html?g=${meta.id}`, cls: 'ghost' }];
     } else {
-      primary = { label: 'Retry', href: href(meta.id, level) };
-      secondary = [{ label: 'Levels', href: `/mind/game.html?g=${meta.id}`, cls: 'ghost' }];
+      primary = { label: tr('Retry', 'फिर कोशिश करें'), href: href(meta.id, level) };
+      secondary = [{ label: tr('Levels', 'लेवल देखें'), href: `/mind/game.html?g=${meta.id}`, cls: 'ghost' }];
     }
     const btn = (b, cls) => `<a class="ui-btn ${cls}" href="${b.href}" data-nav>${esc(b.label)}</a>`;
 
     ov.innerHTML = `<div class="pl-ov res-ov"><section class="res${passed ? ' won' : ''}" role="dialog" aria-modal="true" aria-labelledby="resT">
-      <p class="res-eyebrow">Level ${level} · ${esc(meta.name)}</p>
+      <p class="res-eyebrow">${tr('Level', 'लेवल')} ${level} · ${esc(meta.name)}</p>
       <h2 id="resT" class="res-t">${esc(title)}</h2>
       <div class="res-score"><b id="resN">${esc(fmtBig(0))}</b><span>${esc(bigLabel)}</span></div>
-      <div class="res-stars" role="img" aria-label="${nStars} of 3 stars">${[0, 1, 2].map(i => `<span class="rs" data-i="${i}">${star(26)}</span>`).join('')}</div>
+      <div class="res-stars" role="img" aria-label="${HI ? `3 में से ${nStars} स्टार` : `${nStars} of 3 stars`}">${[0, 1, 2].map(i => `<span class="rs" data-i="${i}">${star(26)}</span>`).join('')}</div>
       ${chip ? `<p class="res-chips"><span class="chip">${esc(chip)}</span></p>` : ''}
       ${mid}${unlock}${note}${wRow}
       <div class="res-actions pl-act">${btn(primary, 'wide m-pri')}<div class="res-sec">${secondary.map(b => btn(b, b.cls)).join('')}</div></div>
@@ -254,11 +257,11 @@ export function play({ mod, level, workout: inWorkout, games }) {
       const lines = (meta.how || []).slice(0, 2).map(x => (Array.isArray(x) ? x[1] : x));
       ov.innerHTML = `<div class="pl-ov dim"><section class="how" role="dialog" aria-modal="true" aria-labelledby="howT">
         <span class="ui-ic how-ic" style="--ui-accent:var(--g-ui)">${icon(meta.id, 26)}</span>
-        <p class="how-eyebrow">How to play</p>
+        <p class="how-eyebrow">${tr('How to play', 'कैसे खेलें')}</p>
         <h2 id="howT">${esc(meta.name)}</h2>
         <ol class="how-list">${lines.map((t, i) => `<li><span class="how-n" aria-hidden="true">${i + 1}</span><span>${esc(t)}</span></li>`).join('')}</ol>
-        <p class="how-goal"><span>Level ${level} goal</span><b>${esc(goalText(cfg, 1))}</b></p>
-        <div class="pl-act"><button class="ui-btn wide m-pri" id="howGo">Start</button></div></section></div>`;
+        <p class="how-goal"><span>${HI ? `लेवल ${level} का लक्ष्य` : `Level ${level} goal`}</span><b>${esc(goalText(cfg, 1))}</b></p>
+        <div class="pl-act"><button class="ui-btn wide m-pri" id="howGo">${tr('Start', 'शुरू करें')}</button></div></section></div>`;
       footer(ov.querySelector('.how'));
       const go = ov.querySelector('#howGo');
       go.addEventListener('click', () => { sfx('tap'); buzz('light'); store.markSeen(meta.id); res(); });
@@ -269,9 +272,9 @@ export function play({ mod, level, workout: inWorkout, games }) {
       setPhase('twist');
       const [tt, detail] = split(cfg.twist);
       ov.innerHTML = `<div class="pl-ov dim"><section class="sheet twist" role="dialog" aria-modal="true" aria-labelledby="twT">
-        <p class="how-eyebrow">New at level ${level}</p>
+        <p class="how-eyebrow">${HI ? `लेवल ${level} में नया` : `New at level ${level}`}</p>
         <h2 id="twT">${esc(tt)}</h2>${detail ? `<p class="twist-d">${esc(detail)}</p>` : ''}
-        <div class="pl-act"><button class="ui-btn wide m-pri" id="twistGo">Continue</button></div></section></div>`;
+        <div class="pl-act"><button class="ui-btn wide m-pri" id="twistGo">${tr('Continue', 'जारी रखें')}</button></div></section></div>`;
       footer(ov.querySelector('.twist'));
       sfx('unlock');
       ov.querySelector('#twistGo').addEventListener('click', () => { sfx('tap'); buzz('light'); res(); });
@@ -280,7 +283,7 @@ export function play({ mod, level, workout: inWorkout, games }) {
   function countdown() {
     return new Promise(res => {
       setPhase('countdown');
-      ov.innerHTML = `<div class="pl-ov cd"><div class="cd-in"><p class="cd-goal">Goal · ${esc(goalText(cfg, 1))}</p><b class="cd-n" id="cdN" aria-live="assertive"></b><small>${esc(cfg.desc || '')}</small></div></div>`;
+      ov.innerHTML = `<div class="pl-ov cd"><div class="cd-in"><p class="cd-goal">${tr('Goal', 'लक्ष्य')} · ${esc(goalText(cfg, 1))}</p><b class="cd-n" id="cdN" aria-live="assertive"></b><small>${esc(cfg.desc || '')}</small></div></div>`;
       const n = ov.querySelector('#cdN');
       const seq = ['3', '2', '1'];
       let i = 0;
@@ -299,10 +302,10 @@ export function play({ mod, level, workout: inWorkout, games }) {
     paused = true; pausedAt = performance.now(); setPhase('paused'); T.phase = 'paused';
     const muted = (() => { try { return window.Sfx && window.Sfx.muted(); } catch (e) { return false; } })();
     ov.innerHTML = `<div class="pl-ov dim"><section class="sheet pause" role="dialog" aria-modal="true" aria-labelledby="pT">
-      <h2 id="pT">Paused</h2><p>Level ${level} · ${esc(meta.name)}</p>
-      <div class="pl-act"><button class="ui-btn wide m-pri" data-a="resume">Resume</button>
-      <div class="sheet-row"><button class="ui-btn sec" data-a="restart">Restart</button><button class="ui-btn sec" data-a="quit">Quit</button></div>
-      <button class="sheet-snd" data-a="sound" aria-pressed="${!muted}">${ico(muted ? 'volume-x' : 'volume-high', 18)}<span>${muted ? 'Sound off' : 'Sound on'}</span></button></div>
+      <h2 id="pT">${tr('Paused', 'खेल रुका है')}</h2><p>${tr('Level', 'लेवल')} ${level} · ${esc(meta.name)}</p>
+      <div class="pl-act"><button class="ui-btn wide m-pri" data-a="resume">${tr('Resume', 'जारी रखें')}</button>
+      <div class="sheet-row"><button class="ui-btn sec" data-a="restart">${tr('Restart', 'फिर से शुरू')}</button><button class="ui-btn sec" data-a="quit">${tr('Quit', 'छोड़ें')}</button></div>
+      <button class="sheet-snd" data-a="sound" aria-pressed="${!muted}">${ico(muted ? 'volume-x' : 'volume-high', 18)}<span>${muted ? tr('Sound off', 'आवाज़ बंद') : tr('Sound on', 'आवाज़ चालू')}</span></button></div>
     </section></div>`;
     footer(ov.querySelector('.sheet'));
     ov.querySelector('.sheet').addEventListener('click', e => {
@@ -315,7 +318,7 @@ export function play({ mod, level, workout: inWorkout, games }) {
         let m = false;
         try { window.Sfx.setMuted(!window.Sfx.muted()); m = window.Sfx.muted(); } catch (e2) { /* ignore */ }
         b.setAttribute('aria-pressed', String(!m));
-        b.innerHTML = ico(m ? 'volume-x' : 'volume-high', 18) + `<span>${m ? 'Sound off' : 'Sound on'}</span>`;
+        b.innerHTML = ico(m ? 'volume-x' : 'volume-high', 18) + `<span>${m ? tr('Sound off', 'आवाज़ बंद') : tr('Sound on', 'आवाज़ चालू')}</span>`;
         sfx('tap');
       }
     });

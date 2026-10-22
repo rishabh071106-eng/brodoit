@@ -130,7 +130,7 @@ body[data-theme=aurora]:not(.night-sky)::before,body[data-theme=aurora]:not(.nig
 .hdr .hdr-help{width:44px!important;height:44px!important;border:0!important;background:var(--b-bg-2)!important;color:var(--b-ink-2)!important;opacity:1!important}
 /* every segmented control: sand track, white active in light, paper-white active with dark text in dark */
 .bk-seg,.bh .hb-langs,.nw-lang,.rd-segmented-x{background:var(--b-bg-2)!important;border:0!important;border-radius:999px!important;padding:3px!important}
-.bk-seg button,.nw-lang button{min-height:42px!important;border-radius:999px!important;border:0!important;background:transparent!important;color:var(--b-mute)!important;font:600 14px var(--b-sans)!important;box-shadow:none!important}
+.bk-seg button,.nw-lang button{min-height:44px!important;border-radius:999px!important;border:0!important;background:transparent!important;color:var(--b-mute)!important;font:600 14px var(--b-sans)!important;box-shadow:none!important}
 .bk-seg button.on,.bh .hb-langs button.on,.nw-lang button.on{background:var(--b-card)!important;color:var(--b-ink)!important;box-shadow:0 1px 3px rgba(31,30,28,.16)!important}
 html[data-theme="dark"] .bk-seg button.on,html[data-theme="dark"] .bh .hb-langs button.on,html[data-theme="dark"] .nw-lang button.on,body[data-theme=aurora] .bk-seg button.on,body[data-theme=aurora] .bh .hb-langs button.on,body[data-theme=aurora] .nw-lang button.on{background:#F3F0EA!important;color:#141311!important}
 /* You sub-tabs read as the same segmented control */

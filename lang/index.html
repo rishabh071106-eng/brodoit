@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="/lang/assets/lang.css?v=18">
 <link rel="stylesheet" href="/lang/assets/topbar.css?v=16">
 <link rel="stylesheet" href="/lang/assets/stages.css?v=4">
-<link rel="stylesheet" href="/app/ui.css?v=23">
+<link rel="stylesheet" href="/app/ui.css?v=24">
 <script src="/app/icons.js?v=16" defer></script>
 <script src="/lang/assets/topbar.js?v=17" defer></script>
 </head>
@@ -27,15 +27,18 @@
 // (app/learn.js languagesHub) — letter tile, name, "Español · 12%", chevron.
 import { renderChrome, store, esc, setCourse } from '/lang/assets/lang.js?v=15';
 
-renderChrome({ title: 'Languages', back: '/?tab=learn', backLabel: 'Learn' });
+// v24: the app's language (bd_lang, set by the app) decides this page's words
+const H = (() => { try { return localStorage.getItem('bd_lang') === 'hi'; } catch (e) { return false; } })();
+if (H) { document.documentElement.lang = 'hi'; document.title = 'भाषाएँ · Brodoit'; document.getElementById('lcTitle').textContent = 'भाषाएँ'; }
+renderChrome({ title: H ? 'भाषाएँ' : 'Languages', back: '/?tab=learn', backLabel: H ? 'सीखो' : 'Learn' });
 window.bdTitleOnScroll && window.bdTitleOnScroll(document.getElementById('lcTitle'));
 
 const LANGS = [
-  { c: 'es', n: 'Spanish', native: 'Español', g: 'Ñ', a: '#DC2626' },
-  { c: 'fr', n: 'French', native: 'Français', g: 'Ç', a: '#2563EB' },
-  { c: 'de', n: 'German', native: 'Deutsch', g: 'ß', a: '#64748B' },
-  { c: 'en', n: 'English', native: 'Taught in Hindi', g: 'Aa', a: '#7C3AED' },
-  { c: 'hi', n: 'Hindi', native: 'हिन्दी', g: 'अ', a: '#EA580C' },
+  { c: 'es', n: 'Spanish', nh: 'स्पैनिश', native: 'Español', g: 'Ñ', a: '#DC2626' },
+  { c: 'fr', n: 'French', nh: 'फ़्रेंच', native: 'Français', g: 'Ç', a: '#2563EB' },
+  { c: 'de', n: 'German', nh: 'जर्मन', native: 'Deutsch', g: 'ß', a: '#64748B' },
+  { c: 'en', n: 'English', nh: 'अंग्रेज़ी', native: 'Taught in Hindi', nativeHi: 'हिंदी में', g: 'Aa', a: '#7C3AED' },
+  { c: 'hi', n: 'Hindi', nh: 'हिंदी', native: 'हिन्दी', g: 'अ', a: '#EA580C' },
 ];
 const TOTAL = 52; // 12 audio lessons + 40 practice lessons per language (as in app/learn.js)
 const done = store.read().done || {};
@@ -46,7 +49,7 @@ list.innerHTML = LANGS.map(l => {
   const p = pct(l.c);
   return `<a class="ui-row" href="/lang/course.html?c=${l.c}" data-code="${l.c}">
     <span class="ui-ic" style="--ui-accent:${l.a}" aria-hidden="true"><b class="lc-glyph">${l.g}</b></span>
-    <span class="ui-tx"><b>${esc(l.n)}</b><small>${esc(l.native)} · ${p ? p + '%' : 'Not started'}</small>${p ? `<span class="ui-prog" aria-hidden="true"><i style="width:${p}%;--ui-accent:${l.a}"></i></span>` : ''}</span>
+    <span class="ui-tx"><b>${esc(H ? l.nh : l.n)}</b><small>${esc(H && l.nativeHi ? l.nativeHi : l.native)} · ${p ? p + '%' : (H ? 'शुरू नहीं किया' : 'Not started')}</small>${p ? `<span class="ui-prog" aria-hidden="true"><i style="width:${p}%;--ui-accent:${l.a}"></i></span>` : ''}</span>
     <span class="ui-chev" aria-hidden="true">${chev}</span></a>`;
 }).join('');
 list.addEventListener('click', e => { const a = e.target.closest('[data-code]'); if (a) setCourse(a.dataset.code); });

@@ -2800,8 +2800,8 @@ const HTML=`<!DOCTYPE html><html lang="en"><head>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=5">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=5">
 <link rel="apple-touch-icon" href="/icon-192.png?v=5">
-<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=24"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=21"><link rel="stylesheet" href="/app/home.css?v=24"><link rel="stylesheet" href="/app/tasks.css?v=21"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=23">
-<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=23" defer></script><script src="/app/you.js?v=22" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=2" defer></script><script src="/app/voice.js?v=27" defer></script><script src="/app/micgain.js?v=1" defer></script><script src="/app/voicenote.js?v=2" defer></script><script src="/app/news.js?v=24" defer></script><script src="/app/notify.js?v=1" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=25" defer></script><script src="/app/onboarding.js?v=22" defer></script><script src="/app/motion.js?v=21" defer></script>
+<link rel="stylesheet" href="/app/theme.css?v=21"><link rel="stylesheet" href="/app/app.css?v=21"><link rel="stylesheet" href="/app/news.css?v=25"><link rel="stylesheet" href="/app/steps.css?v=21"><link rel="stylesheet" href="/app/admin.css?v=23"><link rel="stylesheet" href="/app/onboarding.css?v=21"><link rel="stylesheet" href="/app/cards.css?v=22"><link rel="stylesheet" href="/app/home.css?v=24"><link rel="stylesheet" href="/app/tasks.css?v=22"><link rel="stylesheet" href="/app/books.css?v=21"><link rel="stylesheet" href="/app/learn.css?v=23">
+<script src="/app/icons.js?v=21" defer></script><script src="/app/cards.js?v=21" defer></script><script src="/app/learn.js?v=24" defer></script><script src="/app/you.js?v=23" defer></script><script src="/app/haptics.js?v=21" defer></script><script src="/app/mascot.js?v=21" defer></script><script src="/app/say.js?v=2" defer></script><script src="/app/voice.js?v=28" defer></script><script src="/app/micgain.js?v=1" defer></script><script src="/app/voicenote.js?v=2" defer></script><script src="/app/news.js?v=25" defer></script><script src="/app/notify.js?v=1" defer></script><script src="/app/steps.js?v=22" defer></script><script src="/app/admin.js?v=25" defer></script><script src="/app/onboarding.js?v=22" defer></script><script src="/app/motion.js?v=21" defer></script>
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brodoit">
@@ -6201,7 +6201,7 @@ body[data-theme=aurora] .hth-btn-ghost{background:rgba(255,255,255,.06);color:#e
 /* Calendar */
 .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 4px}
 .cal-head h3{font-family:var(--sans);font-size:17px;font-weight:700}
-.cal-nav{width:36px;height:36px;border-radius:12px;background:#FFFFFF;border:1px solid rgba(0,0,0,.06);color:#111827;font-size:16px;transition:all .2s cubic-bezier(.2,.8,.2,1);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.cal-nav{width:44px;height:44px;border-radius:12px;background:#FFFFFF;border:1px solid rgba(0,0,0,.06);color:#111827;font-size:16px;transition:all .2s cubic-bezier(.2,.8,.2,1);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .cal-nav:hover{background:linear-gradient(135deg,#37352F,#6B6966);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(55,53,47,.25);transform:scale(1.05)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:#FFFFFF;border:none;border-radius:18px;padding:14px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.04),0 1px 3px rgba(0,0,0,.02)}
 .cal-dow{font-size:10px;color:#A0AEC0;text-align:center;padding:4px 0;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
@@ -6364,7 +6364,7 @@ body[data-theme=aurora] .book-play{background:var(--ink);color:var(--bg)}
 .user-bar button{font-size:13px;color:#E8453C;font-weight:700;padding:6px 12px;border-radius:8px;transition:all .15s}
 .user-bar button:hover{background:#FEF1F0}
 .step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:20px}.step-dot{width:8px;height:8px;border-radius:50%;background:#D1D5DB}.step-dot.on{background:#111827}
-.voice-lg{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:30px;border:2px solid #D1D5DB;background:#F5F6F8;font-size:13px;color:#6B7280;font-weight:600;transition:all .2s}
+.voice-lg{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;min-height:44px;border-radius:30px;border:2px solid #D1D5DB;background:#F5F6F8;font-size:13px;color:#6B7280;font-weight:600;transition:all .2s}
 .voice-lg.rec{border-color:#E8453C;background:#FEF1F0;color:#E8453C;animation:recPulse 1.5s infinite}
 @keyframes recPulse{0%{box-shadow:0 0 0 0 rgba(232,69,60,.4)}70%{box-shadow:0 0 0 10px rgba(232,69,60,0)}100%{box-shadow:0 0 0 0 rgba(232,69,60,0)}}
 .vw{display:inline-flex;gap:2px;align-items:center}.vw span{width:3px;background:currentColor;border-radius:2px;animation:wave 1s infinite ease}
@@ -6614,7 +6614,7 @@ body.audio-on .fab-global{bottom:calc(96px + env(safe-area-inset-bottom,0px))!im
 .note-editor textarea{width:100%;min-height:140px;border:none;background:transparent;font:400 15px/1.6 var(--sans);color:var(--ink);outline:none;resize:none}
 .note-editor textarea::placeholder{color:var(--text-mute)}
 .note-toolbar{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
-.note-tool-btn{height:36px;padding:0 14px;border-radius:10px;border:1.5px solid var(--line);background:transparent;font:600 12px var(--sans);color:var(--ink-2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.note-tool-btn{height:44px;padding:0 16px;border-radius:12px;border:1.5px solid var(--line);background:transparent;font:600 12px var(--sans);color:var(--ink-2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
 .note-tool-btn:active{transform:scale(.95)}
 .note-tool-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(55,53,47,.06)}
 .note-canvas-wrap{position:relative;margin-top:12px;border:1.5px solid var(--line);border-radius:14px;overflow:hidden;touch-action:none}
@@ -7956,7 +7956,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .lt-kid2 .lt-go{color:var(--text-mute);font-size:16px}
 .bkp-page{position:fixed;inset:0;z-index:200;background:var(--bg);color:var(--ink);overflow-y:auto;-webkit-overflow-scrolling:touch;animation:bkp-up .35s cubic-bezier(.16,1,.3,1)}
 .bkp-top{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.bkp-ib{width:40px;height:40px;border-radius:50%;border:none;background:var(--bg-2);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.bkp-ib{width:44px;height:44px;border-radius:50%;border:none;background:var(--bg-2);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex-shrink:0}
 .bkp-lbl{font:700 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bkp-hero{position:relative;text-align:center;padding:14px 22px 26px;overflow:hidden}
 .bkp-hero-bg{position:absolute;left:-40px;right:-40px;top:-60px;height:330px;filter:blur(60px) saturate(1.2);opacity:.38;pointer-events:none}
@@ -7989,7 +7989,7 @@ body:not([data-theme=aurora]) .mg-ach.locked .medal{background:#F0EFEA;color:#9C
 .bkp-part-h span{font:800 12px var(--mono);color:var(--text-mute);width:22px;flex-shrink:0}
 .bkp-part-h h4{flex:1;font:800 16.5px/1.3 var(--sans);margin:0;color:var(--ink)}
 .bkp-part-h button{width:34px;height:34px;border-radius:50%;border:none;background:var(--accent-soft);color:var(--accent);cursor:pointer;font-size:12px;flex-shrink:0}
-.bkp-part p{font:400 17.5px/1.75 Georgia,'Times New Roman',serif;color:var(--ink-2);margin:0}
+.bkp-part p{font:400 17px/1.75 var(--sans);color:var(--ink-2);margin:0}
 .bkp-dock{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));z-index:205;display:flex;justify-content:center;padding:0 14px;pointer-events:none}
 .bkp-dock button{pointer-events:auto;display:flex;align-items:center;gap:12px;width:100%;max-width:520px;border:none;cursor:pointer;text-align:left;background:#111;color:#fff;border-radius:20px;padding:12px 16px;box-shadow:0 18px 40px -12px rgba(0,0,0,.55)}
 .bkp-dock-ic{width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:15px;flex-shrink:0}
@@ -8790,7 +8790,7 @@ body[data-theme=aurora] .theme-chip.on .tc-name{color:#E8E8EC}
 /* ── Calendar — refined grid ── */
 .cal-head{margin-bottom:14px;padding:0}
 .cal-head h3{font-family:var(--sans);font-size:18px;font-weight:700;letter-spacing:-.02em}
-.cal-nav{width:36px;height:36px;border-radius:10px;background:var(--surface);border:1px solid var(--line);color:var(--ink);font-size:18px;font-weight:600;transition:all .15s}
+.cal-nav{width:44px;height:44px;border-radius:12px;background:var(--surface);border:1px solid var(--line);color:var(--ink);font-size:18px;font-weight:600;transition:all .15s}
 .cal-nav:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 .cal-grid{gap:3px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:16px;box-shadow:var(--shadow-1)}
 .cal-dow{font-size:11px;color:var(--ink-4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:6px 0}
@@ -9387,7 +9387,15 @@ body.no-anim .lesson-panel{animation:none;opacity:1}
 .quiz-opt-letter{width:24px;height:24px;border-radius:8px;background:var(--divider);color:var(--text-mute);font:700 12px var(--sans);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .quiz-explain{margin-top:12px;padding:12px 14px;border-radius:12px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);font:400 13px/1.6 var(--sans);color:var(--ink);display:none}
 .quiz-explain.show{display:block}
-</style><link rel="stylesheet" href="/app/ui.css?v=23"></head><body data-theme="classic">
+/* v24: one tap size. Every switch, chip and calendar day is at least 44 px (DESIGN.md), on every tab */
+#app .rd-segmented button,#app .bk-seg button,#app .bk-cat,#app .learn-sub-tabs .lst,#app .gcal-body .mb{min-height:44px}
+#app .rd-segmented button{padding:0;font-family:var(--sans)}
+#app .cal-grid{padding:10px;gap:3px}
+#app .cal-grid .cal-day{min-height:44px;min-width:44px}
+/* v24: tracking pulls Devanagari apart, and monospace fonts have no Devanagari: in Hindi every label uses the one sans, untracked */
+html[lang="hi"]{--mono:var(--sans)}
+html[lang="hi"] #app *{letter-spacing:normal!important}
+</style><link rel="stylesheet" href="/app/ui.css?v=24"></head><body data-theme="classic">
 <div class="bg-blob a"></div><div class="bg-blob b"></div><div class="bg-blob c"></div><div class="bg-blob d"></div>
 <div class="ocean" aria-hidden="true">
 <svg viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -9440,7 +9448,10 @@ const BRO_FACTS=[
 {e:'\\u{1F409}',t:'Dragonflies have been around for 300 million years — before dinosaurs existed.',c:'Nature'}
 ];
 let _broFactIdx=Math.floor(Math.random()*BRO_FACTS.length);
-let S={tasks:[],view:'pending',search:'',tab:'home',showAdd:false,editing:null,listening:false,toast:null,toastType:'ok',sending:{},user:null,compose:{value:'',priority:null,dueDate:null,saving:false},
+// v24: one language for the whole app (English | हिंदी). The You row, Bro chat's switch and News' switch all set it; the
+// old per-screen keys (bro.lang, news.lang) are read once, then kept equal to it, so no screen is left in the other language
+function _initLang(){try{var l=localStorage.getItem('bd_lang')||localStorage.getItem('bro.lang')||localStorage.getItem('news.lang')||'';return l==='hi'?'hi':'en'}catch(e){return 'en'}}
+let S={lang:_initLang(),tasks:[],view:'pending',search:'',tab:'home',showAdd:false,editing:null,listening:false,toast:null,toastType:'ok',sending:{},user:null,compose:{value:'',priority:null,dueDate:null,saving:false},
 books:[],booksLoading:false,booksCat:'all',bookSearch:'',playing:null,moralIdx:Math.floor(Math.random()*(window._DQ?window._DQ.length:MORALS.length)),
 knowledge:{loading:false,loaded:{},articles:{},events:[],topic:'history',sec:'today'},
 game:{active:false,board:Array(9).fill(null),turn:'X',status:'idle',winLine:null,wins:Number(localStorage.getItem('tf_ttt_wins')||0),losses:Number(localStorage.getItem('tf_ttt_losses')||0),draws:Number(localStorage.getItem('tf_ttt_draws')||0)},
@@ -9528,6 +9539,12 @@ knowledge:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="ht
 bro:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="10" r="5" fill="currentColor" opacity="0.85"/><path d="M8 26 C8 20 11.6 17 16 17 C20.4 17 24 20 24 26" fill="currentColor" opacity="0.55"/><path d="M4 16 Q2 14 4 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/><path d="M2 17 Q-1 14 2 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.35"/><path d="M28 16 Q30 14 28 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/><path d="M30 17 Q33 14 30 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.35"/></svg>',
 health:'<svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 28s-10-6.5-10-14a6 6 0 0 1 10-4.5A6 6 0 0 1 26 14c0 7.5-10 14-10 14z" fill="currentColor" opacity="0.85"/><path d="M11 14l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 };
+try{localStorage.setItem('bd_lang',S.lang);localStorage.setItem('bro.lang',S.lang);localStorage.setItem('news.lang',S.lang);document.documentElement.lang=S.lang}catch(e){}
+window.setAppLang=function(l,from){l=l==='hi'?'hi':'en';var changed=S.lang!==l;S.lang=l;try{localStorage.setItem('bd_lang',l);localStorage.setItem('bro.lang',l);localStorage.setItem('news.lang',l)}catch(e){}try{document.documentElement.lang=l}catch(e){}
+  if(from!=='bro'&&window.BroVoice&&BroVoice.lang!==l&&BroVoice.setLang)BroVoice.setLang(l,true);
+  if(from!=='news'&&window.NewsChannel&&NewsChannel.lang!==l&&NewsChannel.setLang)NewsChannel.setLang(l,true);
+  if(changed&&typeof render==='function')render()};
+function _T(e,h){return S.lang==='hi'?h:e}
 // "Rise Together" doodle — 4 animated figures climbing the same curve, holding hands; full SMIL animation
 const MORAL_DOODLE='<svg class="moral-doodle" viewBox="0 0 520 200" preserveAspectRatio="xMaxYMid meet" xmlns="http://www.w3.org/2000/svg">'
 // dashed shadow under curve (hand-drawn vibe)
@@ -9738,7 +9755,7 @@ async function restoreFromBackup(){
 function dismissRestoreOffer(){S.restoreOffer=null;render()}
 function downloadBackup(){window.open('/api/me/export','_blank')}
 async function chk(){await api('/health');render()}
-async function addT(){if(!S.form.title.trim())return;const r=await api('/tasks',{method:'POST',body:JSON.stringify({title:S.form.title,notes:S.form.notes,priority:S.form.priority,status:'pending',due_date:S.form.dueDate,reminder_time:S.form.reminderTime,board:S.form.board})});if(r?.id){S.tasks.unshift(r);clM();toast('\\u2705 Task added!')}}
+async function addT(){if(!S.form.title.trim())return;const r=await api('/tasks',{method:'POST',body:JSON.stringify({title:S.form.title,notes:S.form.notes,priority:S.form.priority,status:'pending',due_date:S.form.dueDate,reminder_time:S.form.reminderTime,board:S.form.board})});if(r?.id){S.tasks.unshift(r);clM();toast(_T('\\u2705 Task added!','\\u2705 काम जुड़ गया'))}}
 // ─── Inline composer ────────────────────────────────────────────
 // Smart-parses natural language: "Buy milk tomorrow !urgent" →
 // title="Buy milk", dueDate=tomorrow, priority=high
@@ -9812,7 +9829,7 @@ async function composeSubmit(){
   if(r&&r.id){S.tasks.unshift(r);S.compose={value:'',priority:null,dueDate:null,saving:false};_mgSound('paper');toast('\\u2705 Task added');render()}
   else{toast('\\u26A0\\uFE0F Could not save','err');render()}
 }
-async function savE(){if(!S.form.title.trim()||!S.editing)return;const r=await api('/tasks/'+S.editing,{method:'PUT',body:JSON.stringify({title:S.form.title,notes:S.form.notes,priority:S.form.priority,status:S.form.status,due_date:S.form.dueDate,reminder_time:S.form.reminderTime,board:S.form.board})});if(r){const i=S.tasks.findIndex(t=>t.id===S.editing);if(i>-1)S.tasks[i]=r;clM();toast('\\u2705 Updated!')}}
+async function savE(){if(!S.form.title.trim()||!S.editing)return;const r=await api('/tasks/'+S.editing,{method:'PUT',body:JSON.stringify({title:S.form.title,notes:S.form.notes,priority:S.form.priority,status:S.form.status,due_date:S.form.dueDate,reminder_time:S.form.reminderTime,board:S.form.board})});if(r){const i=S.tasks.findIndex(t=>t.id===S.editing);if(i>-1)S.tasks[i]=r;clM();toast(_T('\\u2705 Updated!','\\u2705 बदल गया'))}}
 // Delete with a 5-second Undo: the task leaves the list at once; the server delete waits until Undo has passed.
 async function del(id){const i=S.tasks.findIndex(t=>t.id===id);if(i<0){await api('/tasks/'+id,{method:'DELETE'});return}const t=S.tasks[i];S.tasks.splice(i,1);render();let undone=false;const go=async()=>{if(undone)return;undone=true;try{await api('/tasks/'+id,{method:'DELETE'})}catch(e){}};const ex=document.getElementById('undoBar');if(ex)ex.remove();const bar=document.createElement('div');bar.id='undoBar';bar.className='undo-bar';bar.setAttribute('role','status');const sp=document.createElement('span');sp.textContent=S.lang==='hi'?'\\u091F\\u093E\\u0938\\u094D\\u0915 \\u0939\\u091F\\u093E\\u092F\\u093E':'Task deleted';const ub=document.createElement('button');ub.type='button';ub.textContent=S.lang==='hi'?'\\u0935\\u093E\\u092A\\u0938':'Undo';ub.onclick=function(){if(undone)return;undone=true;S.tasks.splice(Math.min(i,S.tasks.length),0,t);bar.remove();render()};bar.appendChild(sp);bar.appendChild(ub);document.body.appendChild(bar);addEventListener('pagehide',go,{once:true});setTimeout(function(){bar.remove();go()},5000)}
 async function emailTasks(){if(S.sending&&S.sending._e)return;S.sending=S.sending||{};S.sending._e=true;render();const r=await api('/email-tasks',{method:'POST',body:'{}'});S.sending._e=false;if(r&&r.ok)toast('\\u2705 Sent '+r.count+' task'+(r.count===1?'':'s')+' to your email');else toast('\\u26A0\\uFE0F '+(r&&r.error||'Failed to send'),'err')}
@@ -9856,21 +9873,22 @@ function clM(){S.showAdd=false;S.editing=null;if(rec)try{rec.stop()}catch(e){}S.
 function stV(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('\\u26A0\\uFE0F Voice not supported','err');return}rec=new SR();rec.continuous=false;rec.interimResults=true;rec.lang='en-US';rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;if(e.results[0].isFinal){S.form.title=t;const l=t.toLowerCase();if(/urgent|important|asap/.test(l)){S.form.priority='high';S.form.title=S.form.title.replace(/urgent|important|asap/gi,'').trim()}if(/\\btoday\\b/.test(l))S.form.dueDate=new Date().toISOString().split('T')[0];else if(/\\btomorrow\\b/.test(l)){const d=new Date();d.setDate(d.getDate()+1);S.form.dueDate=d.toISOString().split('T')[0]}}else S.form.title=t;render()};rec.onend=()=>{S.listening=false;render()};rec.onerror=e=>{S.listening=false;toast('\\u26A0\\uFE0F '+e.error,'err');render()};rec.start();S.listening=true;render()}
 
 // ─── NOTES FUNCTIONS ───
-const NOTE_CATS=[{k:'personal',l:'Personal',icon:'\\u{1F3E0}'},{k:'work',l:'Work',icon:'\\u{1F4BC}'},{k:'ideas',l:'Ideas',icon:'\\u{1F4A1}'},{k:'learning',l:'Learning',icon:'\\u{1F4DA}'},{k:'journal',l:'Journal',icon:'\\u{1F4D3}'},{k:'bro',l:'From Bro',icon:'\\u{1F4AC}'}];
+const _ncH=()=>S.lang==='hi';
+const NOTE_CATS=[{k:'personal',l:'Personal',hl:'निजी',icon:'\\u{1F3E0}'},{k:'work',l:'Work',hl:'काम',icon:'\\u{1F4BC}'},{k:'ideas',l:'Ideas',hl:'आइडिया',icon:'\\u{1F4A1}'},{k:'learning',l:'Learning',hl:'पढ़ाई',icon:'\\u{1F4DA}'},{k:'journal',l:'Journal',hl:'डायरी',icon:'\\u{1F4D3}'},{k:'bro',l:'From Bro',hl:'Bro से',icon:'\\u{1F4AC}'}];
 function _saveNotes(){localStorage.setItem('tf_notes',JSON.stringify(S.notes))}
 function noteSelectCat(k){S.noteCategory=k;S.noteView='edit';S.noteTranscript='';S.noteEdit={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),category:k,title:'',content:'',drawing:null,voiceUrl:null,transcript:'',created:new Date().toISOString()};render()}
 function noteOpen(id){const n=S.notes.find(x=>x.id===id);if(!n)return;S.noteTranscript='';S.noteEdit={...n};S.noteView='edit';S.noteCategory=n.category;render()}
-function noteSave(){if(!S.noteEdit)return;const idx=S.notes.findIndex(x=>x.id===S.noteEdit.id);if(idx>-1)S.notes[idx]={...S.noteEdit,updated:new Date().toISOString()};else S.notes.unshift({...S.noteEdit,updated:new Date().toISOString()});_saveNotes();S.noteView='list';S.noteEdit=null;S.noteCategory=null;toast('\\u{1F4DD} Note saved');render()}
-function noteDelete(id){S.notes=S.notes.filter(x=>x.id!==id);_saveNotes();S.noteView='list';S.noteEdit=null;toast('\\u{1F5D1}\\uFE0F Deleted');render()}
+function noteSave(){if(!S.noteEdit)return;const idx=S.notes.findIndex(x=>x.id===S.noteEdit.id);if(idx>-1)S.notes[idx]={...S.noteEdit,updated:new Date().toISOString()};else S.notes.unshift({...S.noteEdit,updated:new Date().toISOString()});_saveNotes();S.noteView='list';S.noteEdit=null;S.noteCategory=null;toast(_T('\\u{1F4DD} Note saved','\\u{1F4DD} नोट सेव हो गया'));render()}
+function noteDelete(id){S.notes=S.notes.filter(x=>x.id!==id);_saveNotes();S.noteView='list';S.noteEdit=null;toast(_T('\\u{1F5D1}\\uFE0F Deleted','\\u{1F5D1}\\uFE0F हटा दिया'));render()}
 function noteBack(){S.noteView='list';S.noteEdit=null;render()}
 // v20: voice notes open Bro's full-screen recorder (app/voicenote.js, window.BroNote): speak, it is written down
 // (Bro's hearing), translate it, save it as a new note or add it to the open one
 function noteVoice(mode){
-  if(!window.BroNote){toast('\\u26A0\\uFE0F Voice notes are still loading, try again','err');return}
+  if(!window.BroNote){toast(_T('\\u26A0\\uFE0F Voice notes are still loading, try again','\\u26A0\\uFE0F वॉइस नोट अभी लोड हो रहे हैं, फिर कोशिश करें'),'err');return}
   const inNote=mode==='append'&&S.noteView==='edit'&&S.noteEdit;
   BroNote.open({lang:S.lang==='hi'?'hi':'',
     onAppend:inNote?function(t){if(!S.noteEdit)return;S.noteEdit.content=(S.noteEdit.content?S.noteEdit.content+'\\n':'')+t;S.noteEdit.transcript=t;render()}:null,
-    onSave:function(n){const at=new Date().toISOString();S.notes.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),category:(S.noteEdit&&S.noteEdit.category)||S.noteCategory||'personal',title:n.title,content:n.text,drawing:null,voiceUrl:null,transcript:n.transcript,created:at,updated:at});_saveNotes();toast('\\u{1F399}\\uFE0F Voice note saved');render()}});
+    onSave:function(n){const at=new Date().toISOString();S.notes.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),category:(S.noteEdit&&S.noteEdit.category)||S.noteCategory||'personal',title:n.title,content:n.text,drawing:null,voiceUrl:null,transcript:n.transcript,created:at,updated:at});_saveNotes();toast(_T('\\u{1F399}\\uFE0F Voice note saved','\\u{1F399}\\uFE0F वॉइस नोट सेव हो गया'));render()}});
 }
 function noteStartRec(){noteVoice('append')}
 function noteStopRec(){}
@@ -11435,7 +11453,7 @@ async function setDefaultGoogle(email){const r=await api('/google/set-default',{
 async function loadGcalEvents(){if(!S.google.accounts.length)return;S.gcalLoading=true;render();const def=S.google.accounts.find(a=>a.is_default)||S.google.accounts[0];const r=await api('/calendar/events?email='+encodeURIComponent(def.email));S.gcalLoading=false;if(r&&r.events){S.gcalEvents=r.events;render()}else{S.gcalEvents=[];render();if(r&&r.error)toast('\\u26A0\\uFE0F '+r.error,'err')}}
 function openGcalAdd(){const def=S.google.accounts.find(a=>a.is_default)||S.google.accounts[0];S.gcalForm={title:'',date:S.calSelectedDate||new Date().toISOString().slice(0,10),time:'',duration:30,notes:'',email:def?def.email:''};S.showGcalAdd=true;render()}
 function closeGcalAdd(){S.showGcalAdd=false;render()}
-async function saveGcalEvent(){const f=S.gcalForm;if(!f.title.trim()){toast('\\u26A0\\uFE0F Title required','err');return}var _tz='';try{_tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}const r=await api('/calendar/events',{method:'POST',body:JSON.stringify({title:f.title.trim(),date:f.date,time:f.time||null,duration:f.duration||30,notes:f.notes,email:f.email,tz:_tz})});if(r&&r.ok){toast('\\u2705 Event added to '+(f.email||'Google Calendar'));S.showGcalAdd=false;loadGcalEvents()}else if(r&&r.error){toast('\\u26A0\\uFE0F '+r.error,'err')}}
+async function saveGcalEvent(){const f=S.gcalForm;if(!f.title.trim()){toast(_T('\\u26A0\\uFE0F Title required','\\u26A0\\uFE0F नाम लिखें'),'err');return}var _tz='';try{_tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}const r=await api('/calendar/events',{method:'POST',body:JSON.stringify({title:f.title.trim(),date:f.date,time:f.time||null,duration:f.duration||30,notes:f.notes,email:f.email,tz:_tz})});if(r&&r.ok){toast((S.lang==='hi'?'\\u2705 इवेंट जुड़ गया: ':'\\u2705 Event added to ')+(f.email||'Google Calendar'));S.showGcalAdd=false;loadGcalEvents()}else if(r&&r.error){toast('\\u26A0\\uFE0F '+r.error,'err')}}
 function playMedSlot(mins){const doc=(S.meditations||{})[mins];if(!doc){toast('\\u23F3 Loading audio...','err');return}const t=Array.isArray(doc.title)?doc.title[0]:doc.title;playMeditation(doc.identifier,t,mins)}
 async function playMeditation(id,title,mins,preferFile){S.meditating={active:true,title:title||(mins+'-min meditation'),mins:mins||10,startedAt:Date.now()};S.playing={id,title:title||(mins+'-minute meditation'),author:'Guided meditation \\u2022 Internet Archive',loading:true};
 // Track meditation count (incremented once per session; the same session re-played within 60s isn't double-counted).
@@ -11448,7 +11466,7 @@ function helpNext(){S.helpStep=Math.min((S.helpStep||0)+1,5);render()}
 function helpPrev(){S.helpStep=Math.max((S.helpStep||0)-1,0);render()}
 function helpGo(i){S.helpStep=i;render()}
 function closeProfile(){S.showProfile=false;if(S.tab==='profile'){S.tab='home'}render()}
-async function saveName(){const n=(document.getElementById('pfName')||{}).value;if(!n||!n.trim())return;const r=await api('/me',{method:'PUT',body:JSON.stringify({name:n.trim()})});if(r&&r.name){S.user.name=r.name;localStorage.setItem('tf_name',r.name);S.profile=Object.assign(S.profile||{},{name:r.name});toast('\\u2705 Name updated');render()}}
+async function saveName(){const n=(document.getElementById('pfName')||{}).value;if(!n||!n.trim())return;const r=await api('/me',{method:'PUT',body:JSON.stringify({name:n.trim()})});if(r&&r.name){S.user.name=r.name;localStorage.setItem('tf_name',r.name);S.profile=Object.assign(S.profile||{},{name:r.name});toast(_T('\\u2705 Name updated','\\u2705 नाम बदल गया'));render()}}
 async function refreshSession(){
   if(!token)return;
   const r=await api('/me');
@@ -11473,7 +11491,7 @@ function closeCalSchedule(){S.showCalSchedule=false;render()}
 function calSchedToggle(idx){if(S.calSchedule&&S.calSchedule.items[idx])S.calSchedule.items[idx].selected=!S.calSchedule.items[idx].selected;render()}
 function calSchedTime(idx,field,val){if(S.calSchedule&&S.calSchedule.items[idx])S.calSchedule.items[idx][field]=val}
 function calSchedCustomTime(field,val){if(S.calSchedule)S.calSchedule[field]=val}
-async function calSchedSave(){if(!S.calSchedule)return;var d=S.calSchedule.date;var saved=0;for(var i=0;i<S.calSchedule.items.length;i++){var item=S.calSchedule.items[i];if(!item.selected||!item.sh)continue;var shr=parseInt(item.sh,10);if(item.sp==='PM'&&shr<12)shr+=12;if(item.sp==='AM'&&shr===12)shr=0;var ehr=item.eh?parseInt(item.eh,10):shr+1;if(item.eh){if(item.ep==='PM'&&ehr<12)ehr+=12;if(item.ep==='AM'&&ehr===12)ehr=0}var st=(shr<10?'0':'')+shr+':'+(item.sm||'00');var en=(ehr<10?'0':'')+ehr+':'+(item.em||'00');try{var r=await api('/schedule',{method:'POST',body:JSON.stringify({date:d,start_time:st,end_time:en,label:item.title,color:'#1F1E1C'})});if(r&&r.ok)saved++}catch(e){}}var cLabel=(S.calSchedule.custom||'').trim();if(cLabel&&S.calSchedule.csh){var cshr=parseInt(S.calSchedule.csh,10);if(S.calSchedule.csp==='PM'&&cshr<12)cshr+=12;if(S.calSchedule.csp==='AM'&&cshr===12)cshr=0;var cehr=S.calSchedule.ceh?parseInt(S.calSchedule.ceh,10):cshr+1;if(S.calSchedule.ceh){if(S.calSchedule.cep==='PM'&&cehr<12)cehr+=12;if(S.calSchedule.cep==='AM'&&cehr===12)cehr=0}var cst=(cshr<10?'0':'')+cshr+':'+(S.calSchedule.csm||'00');var cen=(cehr<10?'0':'')+cehr+':'+(S.calSchedule.cem||'00');try{var cr=await api('/schedule',{method:'POST',body:JSON.stringify({date:d,start_time:cst,end_time:cen,label:cLabel,color:'#4285F4'})});if(cr&&cr.ok)saved++}catch(e){}}if(saved){toast('\\u2705 '+saved+' item'+(saved>1?'s':'')+' added to calendar');S.showCalSchedule=false;loadGcalEvents();render()}else toast('\\u26A0\\uFE0F Select a task and set a start time','err')}
+async function calSchedSave(){if(!S.calSchedule)return;var d=S.calSchedule.date;var saved=0;for(var i=0;i<S.calSchedule.items.length;i++){var item=S.calSchedule.items[i];if(!item.selected||!item.sh)continue;var shr=parseInt(item.sh,10);if(item.sp==='PM'&&shr<12)shr+=12;if(item.sp==='AM'&&shr===12)shr=0;var ehr=item.eh?parseInt(item.eh,10):shr+1;if(item.eh){if(item.ep==='PM'&&ehr<12)ehr+=12;if(item.ep==='AM'&&ehr===12)ehr=0}var st=(shr<10?'0':'')+shr+':'+(item.sm||'00');var en=(ehr<10?'0':'')+ehr+':'+(item.em||'00');try{var r=await api('/schedule',{method:'POST',body:JSON.stringify({date:d,start_time:st,end_time:en,label:item.title,color:'#1F1E1C'})});if(r&&r.ok)saved++}catch(e){}}var cLabel=(S.calSchedule.custom||'').trim();if(cLabel&&S.calSchedule.csh){var cshr=parseInt(S.calSchedule.csh,10);if(S.calSchedule.csp==='PM'&&cshr<12)cshr+=12;if(S.calSchedule.csp==='AM'&&cshr===12)cshr=0;var cehr=S.calSchedule.ceh?parseInt(S.calSchedule.ceh,10):cshr+1;if(S.calSchedule.ceh){if(S.calSchedule.cep==='PM'&&cehr<12)cehr+=12;if(S.calSchedule.cep==='AM'&&cehr===12)cehr=0}var cst=(cshr<10?'0':'')+cshr+':'+(S.calSchedule.csm||'00');var cen=(cehr<10?'0':'')+cehr+':'+(S.calSchedule.cem||'00');try{var cr=await api('/schedule',{method:'POST',body:JSON.stringify({date:d,start_time:cst,end_time:cen,label:cLabel,color:'#4285F4'})});if(cr&&cr.ok)saved++}catch(e){}}if(saved){toast(S.lang==='hi'?'\\u2705 '+saved+' चीज़ें कैलेंडर में जुड़ गईं':'\\u2705 '+saved+' item'+(saved>1?'s':'')+' added to calendar');S.showCalSchedule=false;loadGcalEvents();render()}else toast(_T('\\u26A0\\uFE0F Select a task and set a start time','\\u26A0\\uFE0F कोई काम चुनें और शुरू का समय रखें'),'err')}
 function rotateMoral(){if(_audioBusy())return;if(_isModalOpen())return;var pool=window._DQ||MORALS;S.moralIdx=(S.moralIdx+1)%pool.length;
   var m=pool[S.moralIdx];
   var qt=m.q||m.t;
@@ -11894,7 +11912,7 @@ function bkSearchInput(v){
         const cover=bookCover(b.id);
         const isLive=S.bkMini&&S.bkMini.book&&S.bkMini.book.id===b.id&&!S.bkMini.paused;
         html+='<button class="bk-sum-card'+(isLive?' is-live':'')+'" onclick="openBookSummary(\\''+b.id+'\\')">'
-          +'<div class="bk-sum-cover'+(cover?' has-img':'')+'" style="background:'+b.grad+'">'+(cover?'<img src="'+cover+'" alt="" loading="lazy" onerror="this.parentElement.classList.remove(\\'has-img\\');this.remove()"/>':'')+'<div class="bk-sum-mins">'+b.mins+' min</div>'+(cover?'':'<div></div><div><h5>'+esc(b.title)+'</h5><div class="auth">'+esc(b.author)+'</div></div>')+'<span class="bk-sum-play" onclick="event.stopPropagation();playBookBrief(\\''+b.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">'+(isLive?'<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>':'<polygon points="6 4 20 12 6 20 6 4"/>')+'</svg></span></div>'
+          +'<div class="bk-sum-cover'+(cover?' has-img':'')+'" style="background:'+b.grad+'">'+(cover?'<img src="'+cover+'" alt="" loading="lazy" onerror="this.parentElement.classList.remove(\\'has-img\\');this.remove()"/>':'')+'<div class="bk-sum-mins">'+b.mins+(S.lang==='hi'?' मिनट':' min')+'</div>'+(cover?'':'<div></div><div><h5>'+esc(b.title)+'</h5><div class="auth">'+esc(b.author)+'</div></div>')+'<span class="bk-sum-play" onclick="event.stopPropagation();playBookBrief(\\''+b.id+'\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">'+(isLive?'<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>':'<polygon points="6 4 20 12 6 20 6 4"/>')+'</svg></span></div>'
           +'<div class="bk-sum-meta">'+esc(b.title)+'<small>'+esc(b.author)+'</small></div>'
         +'</button>';
       });
@@ -13312,11 +13330,12 @@ function bkpShare(id){
 }
 // ── Back-compat entry points used across the app ──
 S.bkHi=S.bkHi||{};
-function _bkHiChip(b){var base=b._base||b.id;var st=S.bkHi[base];if(st===undefined){S.bkHi[base]=null;fetch('/api/book-hi/'+encodeURIComponent(base)).then(function(r){return r.ok?r.json():false}).then(function(j){S.bkHi[base]=j||false;if(j&&S.bookReader&&S.bookReader.open)render()}).catch(function(){S.bkHi[base]=false});return ''}
+function _bkHiChip(b){var base=b._base||b.id;var st=S.bkHi[base];if(st===undefined){S.bkHi[base]=null;fetch('/api/book-hi/'+encodeURIComponent(base)).then(function(r){return r.ok?r.json():false}).then(function(j){S.bkHi[base]=j||false;if(j&&S.bookReader&&S.bookReader.open){if(_bkWantHi(base)&&S.bookReader.book&&S.bookReader.book.id===base){var hb=bkHiBook(base);if(hb)S.bookReader={open:true,book:hb}}render()}}).catch(function(){S.bkHi[base]=false});return ''}
   if(!st)return '';var on=!!b._base;return '<div style="position:relative;display:flex;justify-content:center;gap:8px;margin-top:14px"><button class="b-chip'+(on?'':' on')+'" onclick="bkHiSwitch(\\''+base+'\\',false)">English</button><button class="b-chip'+(on?' on':'')+'" onclick="bkHiSwitch(\\''+base+'\\',true)">\\u0939\\u093F\\u0902\\u0926\\u0940 \\u092E\\u0947\\u0902 \\u0938\\u0941\\u0928\\u0947\\u0902</button></div>'}
 function bkHiBook(base){var b=BOOK_SUMMARIES.find(function(x){return x.id===base});var t=S.bkHi[base];if(!b||!t)return null;return Object.assign({},b,{id:'hi-'+base,_base:base,title:t.title||b.title,why:t.why||b.why,insights:t.insights||b.insights,summary:t.summary||b.summary,mins:t.mins||b.mins})}
-function bkHiSwitch(base,hi){var b=hi?bkHiBook(base):BOOK_SUMMARIES.find(function(x){return x.id===base});if(!b)return;S.bookReader={open:true,book:b};render()}
-function openBookSummary(id,autoplay){var b=BOOK_SUMMARIES.find(function(x){return x.id===id});if(!b)return;S.bookReader={open:true,book:b};S.bkNP=false;render();var el=document.querySelector('.bkp-page');if(el)el.scrollTop=0;if(autoplay===true)bkpPlay(id)}
+function bkHiSwitch(base,hi){var b=hi?bkHiBook(base):BOOK_SUMMARIES.find(function(x){return x.id===base});if(!b)return;S.bkHiPick=S.bkHiPick||{};S.bkHiPick[base]=hi?'hi':'en';S.bookReader={open:true,book:b};render()}
+function _bkWantHi(base){return S.lang==='hi'&&!(S.bkHiPick&&S.bkHiPick[base]==='en')}
+function openBookSummary(id,autoplay){var b=BOOK_SUMMARIES.find(function(x){return x.id===id});if(!b)return;if(_bkWantHi(id)&&S.bkHi&&S.bkHi[id]){var hb=bkHiBook(id);if(hb)b=hb}S.bookReader={open:true,book:b};S.bkNP=false;render();var el=document.querySelector('.bkp-page');if(el)el.scrollTop=0;if(autoplay===true)bkpPlay(id)}
 function playBookBrief(id){bkpPlay(id)}
 function closeBookReader(){S.bookReader={open:false};render()}
 function bkMiniToggle(){bkpToggle()}
@@ -15297,7 +15316,8 @@ if(isMain){
   };
   var _learnTabs=['games','courses'];
   var _youTabs=['profile','cal'];
-  const tabsHtml=[{k:'bro',l:'Bro',i:'bro'},{k:'news',l:'News',i:'news'},{k:'steps',l:'Steps',i:'steps'},{k:'tasks',l:'Tasks'},{k:'courses',l:'Learn',i:'learn'},{k:'books',l:'Books',i:'books'}].map(function(x){
+  const _tH=S.lang==='hi';
+  const tabsHtml=[{k:'bro',l:'Bro',i:'bro'},{k:'news',l:_tH?'ख़बरें':'News',i:'news'},{k:'steps',l:_tH?'क़दम':'Steps',i:'steps'},{k:'tasks',l:_tH?'काम':'Tasks'},{k:'courses',l:_tH?'सीखो':'Learn',i:'learn'},{k:'books',l:_tH?'किताबें':'Books',i:'books'}].map(function(x){
     var isOn=(x.k==='bro')?(!S.tab||S.tab==='home'||S.tab==='bro'):(x.k==='profile'?(S.tab==='profile'||S.tab==='cal'):S.tab===x.k);
     return '<button class="tab tab-'+x.k+(isOn?' on':'')+'"'+(isOn?' aria-current="page"':'')+' onclick="stopSpeak();switchTab(\\''+x.k+'\\')"><span class="ti">'+(_rdTabIcons[x.i||x.k]||ic(x.i||x.k,26))+'</span><span class="tl">'+x.l+'</span></button>';
   }).join('');
@@ -15377,33 +15397,33 @@ if(S.tab==='tasks'){
   if(!S.taskSubTab)S.taskSubTab='tasks';
   h+='<div class="lt-head" style="margin:2px 0 12px"><h1>'+(S.taskSubTab==='notes'?(S.lang==='hi'?'\\u0928\\u094B\\u091F\\u094D\\u0938':'Notes'):(S.lang==='hi'?'\\u0915\\u093E\\u092E':'Tasks'))+'</h1>';
   h+='<div class="bk-seg" style="margin:0;width:170px">';
-  h+='<button class="'+(S.taskSubTab==='tasks'?'on':'')+'" onclick="S.taskSubTab=\\'tasks\\';render()">Tasks</button>';
-  h+='<button class="'+(S.taskSubTab==='notes'?'on':'')+'" onclick="S.taskSubTab=\\'notes\\';render()">Notes</button>';
+  h+='<button class="'+(S.taskSubTab==='tasks'?'on':'')+'" onclick="S.taskSubTab=\\'tasks\\';render()">'+(S.lang==='hi'?'काम':'Tasks')+'</button>';
+  h+='<button class="'+(S.taskSubTab==='notes'?'on':'')+'" onclick="S.taskSubTab=\\'notes\\';render()">'+(S.lang==='hi'?'नोट्स':'Notes')+'</button>';
   h+='</div></div>';
 
   if(S.taskSubTab==='tasks'){
   // Quick-compose bar (compact — no hero card)
   const _cp=S.compose.priority;
   h+='<div class="qc-bar" style="margin-top:12px">';
-  h+='<div class="qc-row"><textarea class="qc-input" rows="1" enterkeyhint="done" aria-label="Add a task" wrap="soft" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border-radius:12px;font-family:var(--sans)" placeholder="'+(S._taskListening?'Listening...':'Add a task')+'" oninput="composeUpdate(this.value);this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,120)+\\'px\\'" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();composeSubmit()}">'+esc(S.compose.value||'')+'</textarea>';
+  h+='<div class="qc-row"><textarea class="qc-input" rows="1" enterkeyhint="done" aria-label="'+(S.lang==='hi'?'काम लिखें':'Add a task')+'" wrap="soft" style="display:block;width:100%;box-sizing:border-box;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;overflow-x:hidden;resize:none;border-radius:12px;font-family:var(--sans)" placeholder="'+(S._taskListening?(S.lang==='hi'?'सुन रहा हूँ…':'Listening...'):(S.lang==='hi'?'काम लिखें':'Add a task'))+'" oninput="composeUpdate(this.value);this.style.height=\\'auto\\';this.style.height=Math.min(this.scrollHeight,120)+\\'px\\'" onkeydown="if(event.key===\\'Enter\\'&&!event.shiftKey){event.preventDefault();composeSubmit()}">'+esc(S.compose.value||'')+'</textarea>';
   h+='<button onclick="voiceAddTask()" title="Voice input" style="width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;background:'+(S._taskListening?'#FF3B30':'var(--accent-soft)')+';color:'+(S._taskListening?'#fff':'var(--accent)')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="'+(S._taskListening?'#fff':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="1" width="6" height="11" rx="3"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>';
   var _hasText=(S.compose.value||'').trim().length>0;
   if(_hasText){h+='<button class="qc-send" onclick="composeSubmit()" title="Add task" style="border-radius:50%;width:38px;height:38px;flex-shrink:0;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>';}
   h+='</div>';
   if(_hasText){
   h+='<div class="qc-chips">';
-  h+='<span class="qc-chip qc-high'+(_cp==='high'?' on':'')+'" onclick="composeSetPriority(\\'high\\')"><span class="qc-dot" style="background:#DC2626"></span>High</span>';
-  h+='<span class="qc-chip qc-med'+(_cp==='medium'?' on':'')+'" onclick="composeSetPriority(\\'medium\\')"><span class="qc-dot" style="background:#F59E0B"></span>Med</span>';
-  h+='<span class="qc-chip qc-low'+(_cp==='low'?' on':'')+'" onclick="composeSetPriority(\\'low\\')"><span class="qc-dot" style="background:#16A34A"></span>Low</span>';
+  h+='<span class="qc-chip qc-high'+(_cp==='high'?' on':'')+'" onclick="composeSetPriority(\\'high\\')"><span class="qc-dot" style="background:#DC2626"></span>'+_T('High','ज़्यादा')+'</span>';
+  h+='<span class="qc-chip qc-med'+(_cp==='medium'?' on':'')+'" onclick="composeSetPriority(\\'medium\\')"><span class="qc-dot" style="background:#F59E0B"></span>'+_T('Med','मध्यम')+'</span>';
+  h+='<span class="qc-chip qc-low'+(_cp==='low'?' on':'')+'" onclick="composeSetPriority(\\'low\\')"><span class="qc-dot" style="background:#16A34A"></span>'+_T('Low','कम')+'</span>';
   h+='<span class="qc-expand" onclick="opA()">+ Details</span>';
   h+='</div>';}
   h+='</div>';
   // Segmented control
   if(!S.taskSegment)S.taskSegment='today';
   h+='<div class="rd-segmented" style="margin-top:14px">';
-  h+='<button class="'+(S.taskSegment==='today'?'on':'')+'" onclick="S.taskSegment=\\'today\\';render()">Today</button>';
-  h+='<button class="'+(S.taskSegment==='upcoming'?'on':'')+'" onclick="S.taskSegment=\\'upcoming\\';render()">Upcoming</button>';
-  h+='<button class="'+(S.taskSegment==='done'?'on':'')+'" onclick="S.taskSegment=\\'done\\';render()">Done</button>';
+  h+='<button class="'+(S.taskSegment==='today'?'on':'')+'" onclick="S.taskSegment=\\'today\\';render()">'+(S.lang==='hi'?'आज':'Today')+'</button>';
+  h+='<button class="'+(S.taskSegment==='upcoming'?'on':'')+'" onclick="S.taskSegment=\\'upcoming\\';render()">'+(S.lang==='hi'?'आगे':'Upcoming')+'</button>';
+  h+='<button class="'+(S.taskSegment==='done'?'on':'')+'" onclick="S.taskSegment=\\'done\\';render()">'+(S.lang==='hi'?'पूरे':'Done')+'</button>';
   h+='</div>';
   // Task list with segmented filtering
   var _tkHero=true;
@@ -15453,24 +15473,24 @@ if(S.tab==='tasks'){
     if(S.noteView==='edit'&&S.noteEdit){
       // Note editor
       h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
-      h+='<button style="background:none;border:none;cursor:pointer;padding:4px" onclick="noteBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>';
-      h+='<span style="font:600 16px var(--sans);color:var(--ink)">Note</span>';
+      h+='<button style="background:none;border:none;cursor:pointer;width:44px;height:44px;display:grid;place-items:center;margin-left:-10px" onclick="noteBack()" aria-label="'+_T('Back','वापस')+'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>';
+      h+='<span style="font:600 16px var(--sans);color:var(--ink)">'+_T('Note','नोट')+'</span>';
       h+='<div style="flex:1"></div>';
-      h+='<button style="background:var(--accent);color:#fff;border:none;border-radius:0;padding:8px 18px;font:600 13px var(--sans);cursor:pointer" onclick="noteSave()">Save</button>';
-      if(S.notes.find(x=>x.id===S.noteEdit.id)){h+='<button style="background:none;border:none;color:#1F1E1C;font:600 13px var(--sans);cursor:pointer;padding:8px" onclick="noteDelete(\\''+S.noteEdit.id+'\\')">Delete</button>';}
+      h+='<button style="background:var(--accent);color:#fff;border:none;border-radius:12px;padding:0 18px;min-height:44px;font:600 14px var(--sans);cursor:pointer" onclick="noteSave()">'+_T('Save','सेव करें')+'</button>';
+      if(S.notes.find(x=>x.id===S.noteEdit.id)){h+='<button style="background:none;border:none;color:#1F1E1C;font:600 13px var(--sans);cursor:pointer;padding:0 10px;min-height:44px" onclick="noteDelete(\\''+S.noteEdit.id+'\\')">'+_T('Delete','हटाएँ')+'</button>';}
       h+='</div>';
-      h+='<input style="width:100%;border:none;background:transparent;font:600 20px var(--sans);color:var(--ink);outline:none;padding:8px 0;margin-bottom:4px" placeholder="Note title..." value="'+esc(S.noteEdit.title||'')+'" oninput="S.noteEdit.title=this.value">';
+      h+='<input style="width:100%;border:none;background:transparent;font:600 20px var(--sans);color:var(--ink);outline:none;padding:8px 0;margin-bottom:4px" placeholder="'+_T('Note title...','नोट का शीर्षक…')+'" value="'+esc(S.noteEdit.title||'')+'" oninput="S.noteEdit.title=this.value">';
       h+='<div class="note-editor">';
-      h+='<textarea placeholder="Start writing..." oninput="S.noteEdit.content=this.value">'+esc(S.noteEdit.content||'')+'</textarea>';
+      h+='<textarea placeholder="'+_T('Start writing...','लिखना शुरू करें…')+'" oninput="S.noteEdit.content=this.value">'+esc(S.noteEdit.content||'')+'</textarea>';
       h+='<div class="note-toolbar">';
-      h+='<button class="note-tool-btn'+(S.noteDrawing?' active':'')+'" onclick="S.noteDrawing=!S.noteDrawing;render();if(S.noteDrawing)noteInitCanvas()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg> Draw</button>';
-      h+='<button class="note-tool-btn" onclick="noteVoice(\\'append\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg> Voice</button>';
+      h+='<button class="note-tool-btn'+(S.noteDrawing?' active':'')+'" onclick="S.noteDrawing=!S.noteDrawing;render();if(S.noteDrawing)noteInitCanvas()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg> '+_T('Draw','ड्रॉ करें')+'</button>';
+      h+='<button class="note-tool-btn" onclick="noteVoice(\\'append\\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg> '+_T('Voice','आवाज़')+'</button>';
       h+='</div>';
       h+='</div>';
       // Drawing canvas
       if(S.noteDrawing){
         h+='<div class="note-canvas-wrap"><canvas id="noteDrawCanvas" style="touch-action:none"></canvas></div>';
-        h+='<div style="display:flex;gap:8px;margin-top:8px"><button class="note-tool-btn" onclick="noteClearCanvas()">Clear Canvas</button></div>';
+        h+='<div style="display:flex;gap:8px;margin-top:8px"><button class="note-tool-btn" onclick="noteClearCanvas()">'+_T('Clear Canvas','ड्रॉइंग मिटाएँ')+'</button></div>';
       }
       // Show saved drawing preview
       if(S.noteEdit.drawing&&!S.noteDrawing){
@@ -15479,14 +15499,14 @@ if(S.tab==='tasks'){
     } else if(S.noteView==='categories'){
       // Category picker
       h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
-      h+='<button style="background:none;border:none;cursor:pointer;padding:4px" onclick="noteBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>';
-      h+='<span style="font:600 16px var(--sans);color:var(--ink)">Choose a category</span>';
+      h+='<button style="background:none;border:none;cursor:pointer;width:44px;height:44px;display:grid;place-items:center;margin-left:-10px" onclick="noteBack()" aria-label="'+_T('Back','वापस')+'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>';
+      h+='<span style="font:600 16px var(--sans);color:var(--ink)">'+(_ncH()?'श्रेणी चुनें':'Choose a category')+'</span>';
       h+='</div>';
       h+='<div class="note-cats">';
       NOTE_CATS.forEach(function(c){
         h+='<div class="note-cat" onclick="noteSelectCat(\\''+c.k+'\\')">';
         h+='<div class="note-cat-icon">'+c.icon+'</div>';
-        h+='<div class="note-cat-label">'+c.l+'</div>';
+        h+='<div class="note-cat-label">'+(_ncH()?c.hl:c.l)+'</div>';
         h+='</div>';
       });
       h+='</div>';
@@ -15495,23 +15515,23 @@ if(S.tab==='tasks'){
       h+='<button class="nv-cta" onclick="noteVoice()"><span class="nv-ic">'+(window.ico?ico('mic',26):'')+'</span><span><b>'+(S.lang==='hi'?'वॉइस नोट रिकॉर्ड करें':'Record a voice note')+'</b><small>'+(S.lang==='hi'?'बोलिए, Bro लिख देगा। एक टैप में अनुवाद।':'Speak, and Bro writes it down. Translate it in one tap.')+'</small></span></button>';
       // Notes list
       h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
-      h+='<span style="font:600 15px var(--sans);color:var(--ink)">Your Notes</span>';
-      h+='<button style="background:var(--accent);color:#fff;border:none;border-radius:10px;padding:8px 18px;font:600 13px var(--sans);cursor:pointer" onclick="noteSelectCat(\\'personal\\')">+ New Note</button>';
+      h+='<span style="font:600 15px var(--sans);color:var(--ink)">'+(_ncH()?'आपके नोट्स':'Your Notes')+'</span>';
+      h+='<button style="background:var(--accent);color:#fff;border:none;border-radius:12px;padding:0 18px;min-height:44px;font:600 14px var(--sans);cursor:pointer" onclick="noteSelectCat(\\'personal\\')">'+(S.lang==='hi'?'+ नया नोट':'+ New Note')+'</button>';
       h+='</div>';
       var _filtNotes=S.notes;
       if(_filtNotes.length){
         _filtNotes.forEach(function(n){
           h+='<div class="note-card" onclick="noteOpen(\\''+n.id+'\\')">';
-          h+='<div class="note-card-title">'+esc(n.title||'Untitled')+'</div>';
+          h+='<div class="note-card-title">'+esc(n.title||(_ncH()?'बिना शीर्षक':'Untitled'))+'</div>';
           if(n.content)h+='<div class="note-card-preview">'+esc(n.content.slice(0,120))+'</div>';
           h+='<div class="note-card-meta">';
-          if(n.drawing)h+='<span>\\u{1F3A8} Drawing</span>';
-          if(n.voiceUrl||n.transcript)h+='<span>\\u{1F3A4} Voice</span>';
-          h+='<span>'+new Date(n.updated||n.created).toLocaleDateString()+'</span>';
+          if(n.drawing)h+='<span>'+(_ncH()?'ड्रॉइंग':'Drawing')+'</span>';
+          if(n.voiceUrl||n.transcript)h+='<span>'+(_ncH()?'आवाज़':'Voice')+'</span>';
+          h+='<span>'+new Date(n.updated||n.created).toLocaleDateString(_ncH()?'hi-IN':'en-IN')+'</span>';
           h+='</div></div>';
         });
       } else {
-        h+='<div class="note-empty"><div class="note-empty-icon">\\u{1F4DD}</div><div class="note-empty-title">No notes yet</div><div class="note-empty-sub">Tap + New Note to capture your thoughts</div></div>';
+        h+='<div class="note-empty"><div class="note-empty-icon">\\u{1F4DD}</div><div class="note-empty-title">'+(S.lang==='hi'?'अभी कोई नोट नहीं':'No notes yet')+'</div><div class="note-empty-sub">'+(S.lang==='hi'?'अपनी बात लिखने के लिए + नया नोट दबाएँ':'Tap + New Note to capture your thoughts')+'</div></div>';
       }
     }
   }
@@ -16031,7 +16051,7 @@ else if(S.tab==='news'){
 }
 // PLAN TAB — calendar + day planner + quick actions
 else if(S.tab==='profile'){
-  h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'profile\\')">My Plan</button><button class="lst" onclick="switchTab(\\'cal\\')">Calendar</button></div>';
+  h+='<div class="learn-sub-tabs"><button class="lst on" onclick="switchTab(\\'profile\\')">'+(S.lang==='hi'?'मेरी योजना':'My Plan')+'</button><button class="lst" onclick="switchTab(\\'cal\\')">'+(S.lang==='hi'?'कैलेंडर':'Calendar')+'</button></div>';
   h+=(window.YouUI&&YouUI.html&&window.Cards)?YouUI.html():_youDash(); // v12 cards (app/you.js); legacy dashboard as fallback
   h+=(window.AdminPanel&&S.profile&&S.profile.admin)?AdminPanel.html():'';
   if(!(window.YouUI&&YouUI.html&&window.Cards)){ // legacy day planner: only when the v12 You cards are missing (Calendar tab covers the day)
@@ -16222,11 +16242,11 @@ else if(S.tab==='dash'){
 
 // CALENDAR TAB
 else if(S.tab==='cal'){
-  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'profile\\')">My Plan</button><button class="lst on" onclick="switchTab(\\'cal\\')">Calendar</button></div>';
+  h+='<div class="learn-sub-tabs"><button class="lst" onclick="switchTab(\\'profile\\')">'+(S.lang==='hi'?'मेरी योजना':'My Plan')+'</button><button class="lst on" onclick="switchTab(\\'cal\\')">'+(S.lang==='hi'?'कैलेंडर':'Calendar')+'</button></div>';
   // Google Calendar integration banner / accounts
   if(!S.google.loaded)h+='<div class="gcal-card gcal-loading">Connecting to Google\\u2026</div>';
   else if(!S.google.accounts.length){
-    h+='<div class="gcal-card gcal-cta"><div class="gcal-icon"><svg width="38" height="38" viewBox="0 0 48 48"><path fill="#fbbc04" d="M37 6h-3V4a2 2 0 1 0-4 0v2H18V4a2 2 0 1 0-4 0v2h-3a5 5 0 0 0-5 5v26a5 5 0 0 0 5 5h26a5 5 0 0 0 5-5V11a5 5 0 0 0-5-5z"/><path fill="#fff" d="M11 18h26v18H11z"/><path fill="#1a73e8" d="M16 22h6v6h-6zm10 0h6v6h-6zm-10 8h6v6h-6zm10 0h6v6h-6z"/></svg></div><div class="gcal-body"><h3>Sync with Google Calendar</h3><p>See your Gmail events here, and let Brodoit add new ones to your calendar with one tap.</p><button class="mb mb-s" style="background:linear-gradient(135deg,#4285F4,#34A853);border:none;color:#fff" onclick="connectGoogle()">'+(S.google.configured?'\\u{1F517} Connect Google Calendar':'Set up Google integration')+'</button>'+(!S.google.configured?'<div style="font-size:11px;color:#8E8E93;margin-top:8px">Admin needs to set GOOGLE_CLIENT_ID/SECRET first.</div>':'')+'</div></div>';
+    h+='<div class="gcal-card gcal-cta"><div class="gcal-icon"><svg width="38" height="38" viewBox="0 0 48 48"><path fill="#fbbc04" d="M37 6h-3V4a2 2 0 1 0-4 0v2H18V4a2 2 0 1 0-4 0v2h-3a5 5 0 0 0-5 5v26a5 5 0 0 0 5 5h26a5 5 0 0 0 5-5V11a5 5 0 0 0-5-5z"/><path fill="#fff" d="M11 18h26v18H11z"/><path fill="#1a73e8" d="M16 22h6v6h-6zm10 0h6v6h-6zm-10 8h6v6h-6zm10 0h6v6h-6z"/></svg></div><div class="gcal-body"><h3>'+(S.lang==='hi'?'Google कैलेंडर से जोड़ें':'Sync with Google Calendar')+'</h3><p>'+(S.lang==='hi'?'अपने Gmail के इवेंट यहाँ देखें, और Brodoit एक टैप में नए इवेंट आपके कैलेंडर में जोड़ेगा।':'See your Gmail events here, and let Brodoit add new ones to your calendar with one tap.')+'</p><button class="mb mb-s" style="background:linear-gradient(135deg,#4285F4,#34A853);border:none;color:#fff" onclick="connectGoogle()">'+(S.google.configured?(S.lang==='hi'?'Google कैलेंडर जोड़ें':'Connect Google Calendar'):(S.lang==='hi'?'Google से जोड़ना सेट करें':'Set up Google integration'))+'</button>'+(!S.google.configured?'<div style="font-size:11px;color:#8E8E93;margin-top:8px">'+(S.lang==='hi'?'पहले एडमिन को Google की सेटिंग करनी होगी।':'Admin needs to set GOOGLE_CLIENT_ID/SECRET first.')+'</div>':'')+'</div></div>';
   } else {
     const def=S.google.accounts.find(a=>a.is_default)||S.google.accounts[0];
     h+='<div class="gcal-card gcal-connected"><div class="gcal-acc-row">';
@@ -16243,7 +16263,7 @@ else if(S.tab==='cal'){
   }
   const cm=S.calMonth instanceof Date?S.calMonth:new Date();
   const year=cm.getFullYear(),month=cm.getMonth();
-  const monthName=cm.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const monthName=cm.toLocaleDateString(S.lang==='hi'?'hi-IN':'en-US',{month:'long',year:'numeric'});
   const firstDay=new Date(year,month,1);
   const lastDay=new Date(year,month+1,0);
   const startDow=firstDay.getDay();
@@ -16268,7 +16288,7 @@ else if(S.tab==='cal'){
   const sel=S.calSelectedDate;
   h+='<div class="cal-head"><button class="cal-nav" onclick="calPrev()">\\u2039</button><h3>'+esc(monthName)+'</h3><button class="cal-nav" onclick="calNext()">\\u203A</button></div>';
   h+='<div class="cal-grid">';
-  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>h+='<div class="cal-dow">'+d+'</div>');
+  (S.lang==='hi'?['रवि','सोम','मंगल','बुध','गुरु','शुक्र','शनि']:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']).forEach(d=>h+='<div class="cal-dow">'+d+'</div>');
   cells.forEach(c=>{
     const dk=c.y+'-'+String(c.m+1).padStart(2,'0')+'-'+String(c.d).padStart(2,'0');
     const tasksHere=byDate[dk]||[];
@@ -16295,11 +16315,11 @@ else if(S.tab==='cal'){
   if(sel){
     const selTasks=byDate[sel]||[];
     const selDate=new Date(sel+'T00:00:00');
-    const selLabel=selDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    const selLabel=selDate.toLocaleDateString(S.lang==='hi'?'hi-IN':'en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
     h+='<div class="cal-selected-box"><h4>\\u{1F4CD} '+esc(selLabel)+'</h4>';
     const selBlocks=bByDate[sel]||[];
     if(selBlocks.length){h+='<div class="cal-plan" aria-label="Plan">';selBlocks.forEach(b=>{h+='<div class="cal-plan-row" style="border-left-color:'+esc(b.color||'#1F1E1C')+'"><span class="cal-plan-t">'+esc(_t12(b.start_time))+' \u2013 '+esc(_t12(b.end_time))+'</span><span class="cal-plan-l">'+esc(b.label)+'</span>'+(b.gcal_event_id?'<span class="cal-plan-g">Google</span>':'')+'</div>'});h+='</div>'}
-    if(!selTasks.length&&!selBlocks.length)h+='<button onclick="calAddForDate()" style="width:100%;padding:14px;border-radius:0;border:2px dashed var(--line);background:none;cursor:pointer;font:500 14px var(--sans);color:var(--accent);display:flex;align-items:center;justify-content:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add a task for this day</button>';
+    if(!selTasks.length&&!selBlocks.length)h+='<button onclick="calAddForDate()" style="width:100%;padding:14px;border-radius:0;border:2px dashed var(--line);background:none;cursor:pointer;font:500 14px var(--sans);color:var(--accent);display:flex;align-items:center;justify-content:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'+(S.lang==='hi'?'इस दिन के लिए काम जोड़ें':'Add a task for this day')+'</button>';
     else if(selTasks.length){
       h+='<div class="muted">'+selTasks.length+' task'+(selTasks.length>1?'s':'')+' scheduled</div>';
       selTasks.forEach(t=>{const p=P[t.priority]||P.medium,st=ST[t.status]||ST.pending,d=t.status==='done';
@@ -16312,7 +16332,7 @@ else if(S.tab==='cal'){
       gSelHere.forEach(e=>{const tm=e.allDay?'All day':(e.start?new Date(e.start).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'');h+='<div class="gcal-evt"><div class="gcal-evt-time">'+esc(tm)+'</div><div class="gcal-evt-body"><div class="gcal-evt-title">'+esc(e.title)+'</div>'+(e.location?'<div class="gcal-evt-loc">\\u{1F4CD} '+esc(e.location)+'</div>':'')+'</div><a class="gcal-evt-open" href="'+esc(e.link||'#')+'" target="_blank" rel="noopener">Open \\u2197</a></div>'});
       h+='</div>';
     }
-    h+='<div style="margin-top:10px;text-align:center"><button class="add-bar" style="margin:0;max-width:100%" onclick="openCalSchedule()"><span class="plus">+</span><span class="txt"><b>Add to Calendar</b><small>Pick tasks or create event</small></span></button>';
+    h+='<div style="margin-top:10px;text-align:center"><button class="add-bar" style="margin:0;max-width:100%" onclick="openCalSchedule()"><span class="plus">+</span><span class="txt"><b>'+(S.lang==='hi'?'कैलेंडर में जोड़ें':'Add to Calendar')+'</b><small>'+(S.lang==='hi'?'काम चुनें या इवेंट बनाएँ':'Pick tasks or create event')+'</small></span></button>';
     h+='</div>';
     h+='</div>';
   }
@@ -16336,16 +16356,17 @@ else if(S.tab==='books'){
   {
     const isSum=S.booksMode==='summaries';
     h+='<div class="bk-head"><h1>'+(S.lang==='hi'?'\\u0915\\u093F\\u0924\\u093E\\u092C\\u0947\\u0902':'Books')+'</h1>'+(bs.streak>0?'<span class="bk-streak'+(bs.today?' on':'')+'">'+ic('flame',16)+bs.streak+'</span>':'')+'</div>';
-    h+='<div class="bk-seg"><button class="'+(isSum?'on':'')+'" onclick="S.booksMode=\\'summaries\\';render()">15-min briefs</button><button class="'+(isSum?'':'on')+'" onclick="S.booksMode=\\'audiobooks\\';render()">Audiobooks</button></div>';
+    h+='<div class="bk-seg"><button class="'+(isSum?'on':'')+'" onclick="S.booksMode=\\'summaries\\';render()">'+(S.lang==='hi'?'15 मिनट के सार':'15-min briefs')+'</button><button class="'+(isSum?'':'on')+'" onclick="S.booksMode=\\'audiobooks\\';render()">'+(S.lang==='hi'?'ऑडियोबुक':'Audiobooks')+'</button></div>';
   }
   if(S.booksMode==='summaries'){
     // Search bar (briefs)
     if(typeof S.bkSearch!=='string')S.bkSearch='';
-    h+='<div class="bk-search"><svg class="bk-search-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="bkSearch" placeholder="Search" value="'+esc(S.bkSearch)+'" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="bkSearchInput(this.value)"/>'+(S.bkSearch?'<button class="bk-search-x" onmousedown="event.preventDefault()" onclick="bkSearchClear()" aria-label="Clear">\\u2715</button>':'')+'</div>';
+    h+='<div class="bk-search"><svg class="bk-search-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="bkSearch" placeholder="'+(S.lang==='hi'?'खोजें':'Search')+'" value="'+esc(S.bkSearch)+'" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="bkSearchInput(this.value)"/>'+(S.bkSearch?'<button class="bk-search-x" onmousedown="event.preventDefault()" onclick="bkSearchClear()" aria-label="Clear">\\u2715</button>':'')+'</div>';
     // Category filter pills
     {
       if(!S.bkCat)S.bkCat='all';
-      const cats=[{k:'all',l:'All'},{k:'productivity',l:'Productivity'},{k:'focus',l:'Focus'},{k:'mind',l:'Mind'},{k:'stoic',l:'Stoic'},{k:'money',l:'Money'},{k:'leadership',l:'Leadership'},{k:'communication',l:'Communication'},{k:'health',l:'Health'},{k:'creativity',l:'Creativity'}];
+      const _bH=S.lang==='hi';
+      const cats=[{k:'all',l:_bH?'सब':'All'},{k:'productivity',l:_bH?'काम की आदतें':'Productivity'},{k:'focus',l:_bH?'ध्यान':'Focus'},{k:'mind',l:_bH?'मन':'Mind'},{k:'stoic',l:_bH?'स्टोइक':'Stoic'},{k:'money',l:_bH?'पैसा':'Money'},{k:'leadership',l:_bH?'नेतृत्व':'Leadership'},{k:'communication',l:_bH?'बातचीत':'Communication'},{k:'health',l:_bH?'सेहत':'Health'},{k:'creativity',l:_bH?'रचनात्मकता':'Creativity'}];
       h+='<div class="bk-cats">';
       cats.forEach(c=>{h+='<button class="bk-cat'+(S.bkCat===c.k?' on':'')+'" onclick="S.bkCat=\\''+c.k+'\\';render()">'+c.l+'</button>'});
       h+='</div>';
@@ -16360,7 +16381,7 @@ else if(S.tab==='books'){
       const coverImg=bookCover(b.id);
       const isLive=S.bkMini&&S.bkMini.book&&S.bkMini.book.id===b.id&&!S.bkMini.paused;
       h+='<button class="bk-sum-card'+(isLive?' is-live':'')+'" onclick="openBookSummary(\\''+b.id+'\\')">';
-      h+='<div class="bk-sum-cover'+(coverImg?' has-img':'')+'" style="background:'+b.grad+'">'+(coverImg?'<img src="'+coverImg+'" alt="" loading="lazy" onerror="this.parentElement.classList.remove(\\'has-img\\');this.remove()"/>':'')+'<div class="bk-sum-mins">'+b.mins+' min</div><div></div><div class="bk-sum-ttl"><h5>'+esc(b.title)+'</h5><div class="auth">'+esc(b.author)+'</div></div><span class="bk-sum-play" onclick="event.stopPropagation();playBookBrief(\\''+b.id+'\\')" aria-label="'+(isLive?'Pause':'Play')+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">'+(isLive?'<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>':'<polygon points="6 4 20 12 6 20 6 4"/>')+'</svg></span></div>';
+      h+='<div class="bk-sum-cover'+(coverImg?' has-img':'')+'" style="background:'+b.grad+'">'+(coverImg?'<img src="'+coverImg+'" alt="" loading="lazy" onerror="this.parentElement.classList.remove(\\'has-img\\');this.remove()"/>':'')+'<div class="bk-sum-mins">'+b.mins+(S.lang==='hi'?' मिनट':' min')+'</div><div></div><div class="bk-sum-ttl"><h5>'+esc(b.title)+'</h5><div class="auth">'+esc(b.author)+'</div></div><span class="bk-sum-play" onclick="event.stopPropagation();playBookBrief(\\''+b.id+'\\')" aria-label="'+(isLive?'Pause':'Play')+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">'+(isLive?'<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>':'<polygon points="6 4 20 12 6 20 6 4"/>')+'</svg></span></div>';
       h+='<div class="bk-sum-meta">'+esc(b.title)+'<small>'+esc(b.author)+'</small></div>';
       h+='</button>';
     });
@@ -16569,23 +16590,25 @@ if(S.bookReader&&S.bookReader.open&&S.bookReader.book){
   const b=S.bookReader.book;const _cv=bookCover(b.id);const _live=!!(BKP&&BKP.book.id===b.id);const _on=_live&&!BKP.paused&&!BKP.ended;
   const _segs=_bkBuild(b).secs;
   const _ib=function(svg){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+svg+'</svg>'};
+  const _pl=function(n){return '<svg width="'+(n||14)+'" height="'+(n||14)+'" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.6v14.8a1 1 0 0 0 1.5.86l12.2-7.4a1 1 0 0 0 0-1.72L8.5 3.74A1 1 0 0 0 7 4.6z"/></svg>'};
+  const _bH=S.lang==='hi',_tg=_bH?({productivity:'काम की आदतें',focus:'ध्यान',mind:'मन',stoic:'स्टोइक',money:'पैसा',leadership:'नेतृत्व',communication:'बातचीत',health:'सेहत',creativity:'रचनात्मकता'})[b.tag]||b.tag:b.tag;
   h+='<div class="bkp-page">';
-  h+='<header class="bkp-top"><button class="bkp-ib" onclick="closeBookReader()" aria-label="Close">'+_ib('<path d="M19 12H5M12 19l-7-7 7-7"/>')+'</button><span class="bkp-lbl">'+b.mins+'-min brief · '+esc(b.tag)+'</span><button class="bkp-ib" onclick="bkpShare(\\''+b.id+'\\')" aria-label="Share">'+_ib('<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>')+'</button></header>';
+  h+='<header class="bkp-top"><button class="bkp-ib" onclick="closeBookReader()" aria-label="'+_T('Close','बंद करें')+'">'+_ib('<path d="M19 12H5M12 19l-7-7 7-7"/>')+'</button><span class="bkp-lbl">'+(_bH?b.mins+' मिनट का सार · ':b.mins+'-min brief · ')+esc(_tg)+'</span><button class="bkp-ib" onclick="bkpShare(\\''+b.id+'\\')" aria-label="'+_T('Share','शेयर करें')+'">'+_ib('<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>')+'</button></header>';
   h+='<section class="bkp-hero"><div class="bkp-hero-bg" style="background:'+b.grad+'"></div>';
   h+='<div class="bkp-cover" style="background:'+b.grad+'">'+'<b>'+esc(b.title)+'</b><small>'+esc(b.author)+'</small>'+(_cv?'<img src="'+_cv+'" alt="" onerror="this.remove()"/>':'')+'</div>';
   h+='<h1>'+esc(b.title)+'</h1><div class="bkp-by">'+esc(b.author)+'</div><p class="bkp-why">'+esc(b.why)+'</p>';
-  h+='<div class="bkp-stats"><span><b>'+b.insights.length+'</b> key ideas</span><span><b>'+b.mins+'</b> min listen</span><span><b>'+_segs.length+'</b> sections</span></div>';
+  h+='<div class="bkp-stats"><span><b>'+b.insights.length+'</b> '+_T('key ideas','मुख्य बातें')+'</span><span><b>'+b.mins+'</b> '+_T('min listen','मिनट सुनें')+'</span><span><b>'+_segs.length+'</b> '+_T('sections','हिस्से')+'</span></div>';
   h+=_bkHiChip(b);
-  h+='<div class="bkp-cta"><button class="bkp-listen" onclick="'+(b._base?'bkpPlay(\\''+b.id+'\\',bkHiBook(\\''+b._base+'\\'))':'bkpPlay(\\''+b.id+'\\')')+'">'+(_on?'\\u{1F50A} Now playing':(_live?'▶ Resume':'▶ Listen'))+'</button><button class="bkp-ghost" onclick="var e=document.getElementById(\\'bkp-ideas\\');if(e)e.scrollIntoView({behavior:\\'smooth\\',block:\\'start\\'})">Key ideas</button></div></section>';
-  h+='<section class="bkp-sec" id="bkp-ideas"><div class="bkp-eyebrow">The book in '+b.insights.length+' big ideas</div><h2>Key ideas</h2><p class="bkp-sub">The high-level points worth remembering — a 2-minute read.</p>';
+  h+='<div class="bkp-cta"><button class="bkp-listen" onclick="'+(b._base?'bkpPlay(\\''+b.id+'\\',bkHiBook(\\''+b._base+'\\'))':'bkpPlay(\\''+b.id+'\\')')+'">'+(_on?_T('Now playing','चल रहा है'):_pl()+' '+(_live?_T('Resume','आगे सुनें'):_T('Listen','सुनें')))+'</button><button class="bkp-ghost" onclick="var e=document.getElementById(\\'bkp-ideas\\');if(e)e.scrollIntoView({behavior:\\'smooth\\',block:\\'start\\'})">'+_T('Key ideas','मुख्य बातें')+'</button></div></section>';
+  h+='<section class="bkp-sec" id="bkp-ideas"><div class="bkp-eyebrow">'+(_bH?'किताब की '+b.insights.length+' बड़ी बातें':'The book in '+b.insights.length+' big ideas')+'</div><h2>'+_T('Key ideas','मुख्य बातें')+'</h2><p class="bkp-sub">'+_T('The high-level points worth remembering — a 2-minute read.','याद रखने लायक़ बातें — 2 मिनट में पढ़ें।')+'</p>';
   b.insights.forEach(function(it,i){h+='<article class="bkp-idea"><div class="bkp-num" style="background:'+b.grad+'">'+(i+1)+'</div><div><h3>'+esc(it[0])+'</h3><p>'+esc(it[1])+'</p></div></article>'});
   h+='</section>';
-  h+='<section class="bkp-sec"><div class="bkp-eyebrow">Read along</div><h2>The full brief</h2><p class="bkp-sub">Tap ▶ on any section to listen from there.</p><div class="bkp-toc">';
+  h+='<section class="bkp-sec"><div class="bkp-eyebrow">'+_T('Read along','साथ में पढ़ें')+'</div><h2>'+_T('The full brief','पूरा सार')+'</h2><p class="bkp-sub">'+_T('Tap play on any section to listen from there.','किसी भी हिस्से पर चलाएँ दबाएँ, वहीं से सुनें।')+'</p><div class="bkp-toc">';
   _segs.forEach(function(s,i){h+='<button onclick="var e=document.getElementById(\\'bks-'+i+'\\');if(e)e.scrollIntoView({behavior:\\'smooth\\',block:\\'start\\'})">'+(i+1)+'. '+esc(s.label)+'</button>'});
   h+='</div>';
-  _segs.forEach(function(s,i){var t=s.isCh?s.text.replace(/^(?:Chapter|अध्याय) [a-z0-9-\u0900-\u097F]+[.।]\\s*[^.!?।]{3,90}[.!?।]\\s*/i,''):s.text;h+='<div class="bkp-part" id="bks-'+i+'"><div class="bkp-part-h"><span>'+String(i+1).padStart(2,'0')+'</span><h4>'+esc(s.label)+'</h4><button onclick="'+(b._base?'bkpPlayFromHi(\\''+b._base+'\\','+i+')':'bkpPlayFrom(\\''+b.id+'\\','+i+')')+'" aria-label="Listen from here">▶</button></div><p>'+esc(t)+'</p></div>'});
+  _segs.forEach(function(s,i){var t=s.isCh?s.text.replace(/^(?:Chapter|अध्याय) [a-z0-9-\u0900-\u097F]+[.।]\\s*[^.!?।]{3,90}[.!?।]\\s*/i,''):s.text;h+='<div class="bkp-part" id="bks-'+i+'"><div class="bkp-part-h"><span>'+String(i+1).padStart(2,'0')+'</span><h4>'+esc(s.label)+'</h4><button onclick="'+(b._base?'bkpPlayFromHi(\\''+b._base+'\\','+i+')':'bkpPlayFrom(\\''+b.id+'\\','+i+')')+'" aria-label="'+_T('Listen from here','यहाँ से सुनें')+'">'+_pl()+'</button></div><p>'+esc(t)+'</p></div>'});
   h+='</section><div style="height:130px"></div>';
-  if(!_live)h+='<div class="bkp-dock"><button onclick="'+(b._base?'bkpPlay(\\''+b.id+'\\',bkHiBook(\\''+b._base+'\\'))':'bkpPlay(\\''+b.id+'\\')')+'"><span class="bkp-dock-ic">▶</span><span><b>Listen to the brief</b><small>'+b.mins+' min · speed up · skip · read along</small></span></button></div>';
+  if(!_live)h+='<div class="bkp-dock"><button onclick="'+(b._base?'bkpPlay(\\''+b.id+'\\',bkHiBook(\\''+b._base+'\\'))':'bkpPlay(\\''+b.id+'\\')')+'"><span class="bkp-dock-ic">'+_pl(16)+'</span><span><b>'+_T('Listen to the brief','सार सुनें')+'</b><small>'+(_bH?b.mins+' मिनट · तेज़ करें · आगे बढ़ें · साथ में पढ़ें':b.mins+' min · speed up · skip · read along')+'</small></span></button></div>';
   h+='</div>';
 }
 if(S.bkNP&&BKP){
@@ -16594,19 +16617,19 @@ if(S.bkNP&&BKP){
   const _skip=function(back){return '<span class="bkp-skip">'+_sv(back?'<path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 3 3 9 9 9"/>':'<path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/>',30)+'<i>15</i></span>'};
   BKP._si=null;BKP._ci=null;
   h+='<div class="bkp-np"><div class="bkp-np-bg" style="background:'+b.grad+'"></div>';
-  h+='<header class="bkp-np-top"><button class="bkp-ib" onclick="S.bkNP=false;render()" aria-label="Minimise">'+_sv('<polyline points="6 9 12 15 18 9"/>',20)+'</button><div class="bkp-np-src"><small>'+(BKP.mode==='tts'?'Device voice':'Studio narration')+'</small><b>'+b.mins+'-min brief</b></div><button class="bkp-ib" onclick="bkpStop()" aria-label="Close and stop">'+_sv('<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',18)+'</button></header>';
+  h+='<header class="bkp-np-top"><button class="bkp-ib" onclick="S.bkNP=false;render()" aria-label="'+_T('Minimise','छोटा करें')+'">'+_sv('<polyline points="6 9 12 15 18 9"/>',20)+'</button><div class="bkp-np-src"><small>'+_T("Bro's voice",'Bro की आवाज़')+'</small><b>'+(S.lang==='hi'?b.mins+' मिनट का सार':b.mins+'-min brief')+'</b></div><button class="bkp-ib" onclick="bkpStop()" aria-label="'+_T('Close and stop','बंद करें')+'">'+_sv('<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',18)+'</button></header>';
   h+='<div class="bkp-np-body">';
   h+='<div class="bkp-art'+(_on?' playing':'')+'" id="bkArt" style="background:'+b.grad+'">'+'<b>'+esc(b.title)+'</b><small>'+esc(b.author)+'</small>'+(_cv?'<img src="'+_cv+'" alt="" onerror="this.remove()"/>':'')+'</div>';
   h+='<div class="bkp-np-meta"><div><h2>'+esc(b.title)+'</h2><p>'+esc(b.author)+'</p></div><button class="bkp-ib" onclick="'+(b._base?'bkHiSwitch(\\''+b._base+'\\',true)':'openBookSummary(\\''+b.id+'\\')')+'" aria-label="Read the brief" title="Read the brief">'+_sv('<path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/>',18)+'</button></div>';
-  h+='<div class="bkp-cap-box"><div class="bkp-cap-lbl" id="bkSecLbl"> </div><p class="bkp-cap in" id="bkCap">'+(BKP.mode==='loading'?'Loading…':'')+'</p><p class="bkp-cap-next" id="bkCapNext"></p></div>';
+  h+='<div class="bkp-cap-box"><div class="bkp-cap-lbl" id="bkSecLbl"> </div><p class="bkp-cap in" id="bkCap">'+(BKP.mode==='loading'?_T('Loading…','लोड हो रहा है…'):'')+'</p><p class="bkp-cap-next" id="bkCapNext"></p></div>';
   h+='<div class="bkp-prog"><input type="range" id="bkRange" min="0" max="1000" value="0" oninput="bkpScrub(this.value)" onchange="bkpSeek(this.value)" aria-label="Seek"><div class="bkp-times"><span id="bkCur">0:00</span><span id="bkDur">-0:00</span></div></div>';
   h+='<div class="bkp-ctl"><button onclick="bkpSection(-1)" aria-label="Previous section">'+_sv('<polygon points="19 20 9 12 19 4 19 20" fill="currentColor"/><line x1="5" y1="19" x2="5" y2="5"/>',24)+'</button>';
   h+='<button onclick="bkpSkip(-15)" aria-label="Back 15 seconds">'+_skip(true)+'</button>';
   h+='<button class="bkp-play" id="bkPlayBtn" data-on="'+_on+'" onclick="bkpToggle()" aria-label="Play or pause">'+(_on?'<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/></svg>':'<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>')+'</button>';
   h+='<button onclick="bkpSkip(15)" aria-label="Forward 15 seconds">'+_skip(false)+'</button>';
   h+='<button onclick="bkpSection(1)" aria-label="Next section">'+_sv('<polygon points="5 4 15 12 5 20 5 4" fill="currentColor"/><line x1="19" y1="5" x2="19" y2="19"/>',24)+'</button></div>';
-  h+='<div class="bkp-speed"><span>Speed</span>'+BK_RATES.map(function(r){return '<button class="'+(BKP.rate===r?'on':'')+'" onclick="bkpRate('+r+')">'+r+'×</button>'}).join('')+'</div>';
-  h+='<div class="bkp-tabs"><button class="'+(S.bkNPList?'':'on')+'" onclick="S.bkNPList=false;render()">Key ideas</button><button class="'+(S.bkNPList?'on':'')+'" onclick="S.bkNPList=true;render()">Sections · '+BKP.secs.length+'</button></div>';
+  h+='<div class="bkp-speed"><span>'+_T('Speed','रफ़्तार')+'</span>'+BK_RATES.map(function(r){return '<button class="'+(BKP.rate===r?'on':'')+'" onclick="bkpRate('+r+')">'+r+'×</button>'}).join('')+'</div>';
+  h+='<div class="bkp-tabs"><button class="'+(S.bkNPList?'':'on')+'" onclick="S.bkNPList=false;render()">'+_T('Key ideas','मुख्य बातें')+'</button><button class="'+(S.bkNPList?'on':'')+'" onclick="S.bkNPList=true;render()">'+_T('Sections','हिस्से')+' · '+BKP.secs.length+'</button></div>';
   if(S.bkNPList){h+='<div class="bkp-list">'+BKP.secs.map(function(s,i){return '<button data-bks="'+i+'" onclick="bkpJump('+i+')"><span>'+(i+1)+'</span><b>'+esc(s.label)+'</b><small>'+_bkFmt(s.start/BK_CPS)+'</small></button>'}).join('')+'</div>'}
   else{h+='<div class="bkp-np-ideas">'+b.insights.map(function(it,i){return '<div class="bkp-np-idea"><span>'+(i+1)+'</span><div><b>'+esc(it[0])+'</b><p>'+esc(it[1])+'</p></div></div>'}).join('')+'</div>'}
   h+='</div></div>';
@@ -16614,12 +16637,12 @@ if(S.bkNP&&BKP){
 }
 if(S.showCalSchedule&&S.calSchedule){
   const cs=S.calSchedule;
-  const dlbl=new Date(cs.date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric'});
+  const dlbl=new Date(cs.date+'T00:00:00').toLocaleDateString(S.lang==='hi'?'hi-IN':'en-US',{weekday:'short',month:'long',day:'numeric'});
   h+='<div class="ov" onclick="closeCalSchedule()"><div class="mdl" onclick="event.stopPropagation()" style="max-width:480px">';
-  h+='<h2 style="margin:0 0 4px">\u{1F4C5} Schedule on '+esc(dlbl)+'</h2>';
-  h+='<div style="font-size:12px;color:#7d7979;margin-bottom:14px">Pick tasks and set times — syncs to Google Calendar</div>';
+  h+='<h2 style="margin:0 0 4px">'+(S.lang==='hi'?esc(dlbl)+' का प्लान':'Schedule on '+esc(dlbl))+'</h2>';
+  h+='<div style="font-size:12px;color:#7d7979;margin-bottom:14px">'+_T('Pick tasks and set times — syncs to Google Calendar','काम चुनें और समय रखें — Google कैलेंडर में भी जाएगा')+'</div>';
   if(cs.items.length){
-    h+='<div style="font-size:12px;font-weight:600;color:#7d7979;margin-bottom:8px">YOUR TASKS</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:#7d7979;margin-bottom:8px">'+_T('YOUR TASKS','आपके काम')+'</div>';
     h+='<div style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:14px">';
     cs.items.forEach(function(item,i){
       const pCol=item.priority==='high'?'#DC2626':item.priority==='medium'?'#C8922A':'#1F1E1C';
@@ -16630,11 +16653,11 @@ if(S.showCalSchedule&&S.calSchedule){
       h+='<div style="flex:1;font-size:13px;font-weight:500;color:#2C3E6B">'+esc(item.title)+'</div></div>';
       if(item.selected){
         h+='<div style="display:flex;align-items:center;gap:6px;margin-top:8px;padding-left:36px;flex-wrap:wrap">';
-        h+='<span style="font-size:11px;color:#7d7979;font-weight:600;width:32px">Start</span>';
+        h+='<span style="font-size:11px;color:#7d7979;font-weight:600;width:32px">'+_T('Start','शुरू')+'</span>';
         h+=_calTimeDropdowns('calSchedTime('+i+',','s',item.sh,item.sm,item.sp);
         h+='</div>';
         h+='<div style="display:flex;align-items:center;gap:6px;margin-top:4px;padding-left:36px;flex-wrap:wrap">';
-        h+='<span style="font-size:11px;color:#7d7979;font-weight:600;width:32px">End</span>';
+        h+='<span style="font-size:11px;color:#7d7979;font-weight:600;width:32px">'+_T('End','ख़त्म')+'</span>';
         h+=_calTimeDropdowns('calSchedTime('+i+',','e',item.eh,item.em,item.ep);
         h+='</div>';
       }
@@ -16642,45 +16665,45 @@ if(S.showCalSchedule&&S.calSchedule){
     });
     h+='</div>';
   }
-  h+='<div style="font-size:12px;font-weight:600;color:#7d7979;margin-bottom:8px">OR ADD NEW EVENT</div>';
-  h+='<input style="width:100%;padding:10px 14px;border:1.5px solid #d7d3d3;border-radius:0;font-size:14px;font-family:inherit;color:#2C3E6B;background:#f3f2f2;outline:none;box-sizing:border-box;margin-bottom:8px" placeholder="Event title…" value="'+esc(cs.custom||'')+'" oninput="S.calSchedule.custom=this.value">';
+  h+='<div style="font-size:12px;font-weight:600;color:#7d7979;margin-bottom:8px">'+_T('OR ADD NEW EVENT','या नया इवेंट जोड़ें')+'</div>';
+  h+='<input style="width:100%;padding:10px 14px;border:1.5px solid #d7d3d3;border-radius:0;font-size:14px;font-family:inherit;color:#2C3E6B;background:#f3f2f2;outline:none;box-sizing:border-box;margin-bottom:8px" placeholder="'+_T('Event title…','इवेंट का नाम…')+'" value="'+esc(cs.custom||'')+'" oninput="S.calSchedule.custom=this.value">';
   h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">';
-  h+='<span style="font-size:11px;color:#7d7979;font-weight:600;width:32px">Start</span>';
+  h+='<span style="font-size:11px;color:#7d7979;font-weight:600;width:32px">'+_T('Start','शुरू')+'</span>';
   h+=_calTimeDropdowns('calSchedCustomTime(','cs',cs.csh,cs.csm,cs.csp);
   h+='</div>';
   h+='<div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">';
-  h+='<span style="font-size:11px;color:#7d7979;font-weight:600;width:32px">End</span>';
+  h+='<span style="font-size:11px;color:#7d7979;font-weight:600;width:32px">'+_T('End','ख़त्म')+'</span>';
   h+=_calTimeDropdowns('calSchedCustomTime(','ce',cs.ceh,cs.cem,cs.cep);
   h+='</div>';
-  h+='<div class="macts" style="margin-top:14px"><button class="mb mb-c" onclick="closeCalSchedule()">Cancel</button><button class="mb mb-s" onclick="calSchedSave()">✅ Save to Calendar</button></div>';
+  h+='<div class="macts" style="margin-top:14px"><button class="mb mb-c" onclick="closeCalSchedule()">'+_T('Cancel','रद्द करें')+'</button><button class="mb mb-s" onclick="calSchedSave()">'+_T('Save to Calendar','कैलेंडर में सेव करें')+'</button></div>';
   h+='</div></div>';
 }
 
 if(S.showGcalAdd){
   const f=S.gcalForm;
   h+='<div class="ov" onclick="closeGcalAdd()"><div class="mdl" onclick="event.stopPropagation()" style="max-width:440px">';
-  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><svg width="32" height="32" viewBox="0 0 48 48"><path fill="#fbbc04" d="M37 6h-3V4a2 2 0 1 0-4 0v2H18V4a2 2 0 1 0-4 0v2h-3a5 5 0 0 0-5 5v26a5 5 0 0 0 5 5h26a5 5 0 0 0 5-5V11a5 5 0 0 0-5-5z"/><path fill="#fff" d="M11 18h26v18H11z"/><path fill="#1a73e8" d="M16 22h6v6h-6zm10 0h6v6h-6zm-10 8h6v6h-6zm10 0h6v6h-6z"/></svg><h2 style="margin:0">New Google Calendar event</h2></div>';
-  if(S.google.accounts.length>1){h+='<label class="lbl">Add to</label><select onchange="S.gcalForm.email=this.value">';S.google.accounts.forEach(a=>{h+='<option value="'+esc(a.email)+'"'+(a.email===f.email?' selected':'')+'>'+esc(a.email)+'</option>'});h+='</select>'}
-  else h+='<div style="font-size:12px;color:#8E8E93;margin-bottom:10px">Adding to <b>'+esc(f.email)+'</b></div>';
-  h+='<label class="lbl">Title</label><input value="'+esc(f.title)+'" placeholder="What\\'s happening?" oninput="S.gcalForm.title=this.value">';
-  h+='<div class="row"><div><label class="lbl">Date</label><input type="date" value="'+esc(f.date)+'" onchange="S.gcalForm.date=this.value"></div>';
-  h+='<div><label class="lbl">Time (optional)</label><input type="time" value="'+esc(f.time)+'" onchange="S.gcalForm.time=this.value"></div></div>';
-  if(f.time)h+='<label class="lbl">Duration (minutes)</label><input type="number" value="'+(f.duration||30)+'" min="5" max="600" step="5" onchange="S.gcalForm.duration=parseInt(this.value)||30">';
-  h+='<label class="lbl">Notes</label><textarea oninput="S.gcalForm.notes=this.value" placeholder="Optional details">'+esc(f.notes||'')+'</textarea>';
-  h+='<div class="macts"><button class="mb mb-c" onclick="closeGcalAdd()">Cancel</button><button class="mb mb-s" style="background:linear-gradient(135deg,#4285F4,#34A853);border:none" onclick="saveGcalEvent()">Add to Calendar</button></div>';
+  h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><svg width="32" height="32" viewBox="0 0 48 48"><path fill="#fbbc04" d="M37 6h-3V4a2 2 0 1 0-4 0v2H18V4a2 2 0 1 0-4 0v2h-3a5 5 0 0 0-5 5v26a5 5 0 0 0 5 5h26a5 5 0 0 0 5-5V11a5 5 0 0 0-5-5z"/><path fill="#fff" d="M11 18h26v18H11z"/><path fill="#1a73e8" d="M16 22h6v6h-6zm10 0h6v6h-6zm-10 8h6v6h-6zm10 0h6v6h-6z"/></svg><h2 style="margin:0">'+_T('New Google Calendar event','Google कैलेंडर में नया इवेंट')+'</h2></div>';
+  if(S.google.accounts.length>1){h+='<label class="lbl">'+_T('Add to','किसमें जोड़ें')+'</label><select onchange="S.gcalForm.email=this.value">';S.google.accounts.forEach(a=>{h+='<option value="'+esc(a.email)+'"'+(a.email===f.email?' selected':'')+'>'+esc(a.email)+'</option>'});h+='</select>'}
+  else h+='<div style="font-size:12px;color:#8E8E93;margin-bottom:10px">'+_T('Adding to','जुड़ेगा:')+' <b>'+esc(f.email)+'</b></div>';
+  h+='<label class="lbl">'+_T('Title','नाम')+'</label><input value="'+esc(f.title)+'" placeholder="'+_T('What\\'s happening?','क्या है?')+'" oninput="S.gcalForm.title=this.value">';
+  h+='<div class="row"><div><label class="lbl">'+_T('Date','तारीख़')+'</label><input type="date" value="'+esc(f.date)+'" onchange="S.gcalForm.date=this.value"></div>';
+  h+='<div><label class="lbl">'+_T('Time (optional)','समय (चाहें तो)')+'</label><input type="time" value="'+esc(f.time)+'" onchange="S.gcalForm.time=this.value"></div></div>';
+  if(f.time)h+='<label class="lbl">'+_T('Duration (minutes)','कितनी देर (मिनट)')+'</label><input type="number" value="'+(f.duration||30)+'" min="5" max="600" step="5" onchange="S.gcalForm.duration=parseInt(this.value)||30">';
+  h+='<label class="lbl">'+_T('Notes','नोट्स')+'</label><textarea oninput="S.gcalForm.notes=this.value" placeholder="'+_T('Optional details','ब्योरा (चाहें तो)')+'">'+esc(f.notes||'')+'</textarea>';
+  h+='<div class="macts"><button class="mb mb-c" onclick="closeGcalAdd()">'+_T('Cancel','रद्द करें')+'</button><button class="mb mb-s" style="background:linear-gradient(135deg,#4285F4,#34A853);border:none" onclick="saveGcalEvent()">'+_T('Add to Calendar','कैलेंडर में जोड़ें')+'</button></div>';
   h+='</div></div>';
 }
 if(S.showProfile){
   const p=S.profile||{phone:S.user.phone,name:S.user.name,created_at:''};
   const initials=((S.user.name||S.user.phone).match(/\\b\\w/g)||['U']).slice(0,2).join('').toUpperCase();
-  const mem=p.created_at?new Date(p.created_at.replace(' ','T')+'Z').toLocaleDateString('en-US',{month:'long',year:'numeric'}):'\\u2014';
+  const mem=p.created_at?new Date(p.created_at.replace(' ','T')+'Z').toLocaleDateString(S.lang==='hi'?'hi-IN':'en-US',{month:'long',year:'numeric'}):'\\u2014';
   const masked=p.phone?p.phone.slice(0,3)+' \\u2022\\u2022\\u2022\\u2022\\u2022 '+p.phone.slice(-3):'';
   h+='<div class="ov" onclick="closeProfile()"><div class="mdl" onclick="event.stopPropagation()" style="text-align:center">';
   h+='<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#3DAE5C,#611f1c);color:#fff;display:flex;align-items:center;justify-content:center;font:700 32px var(--sans);margin:0 auto 12px;animation:scaleIn .3s ease">'+esc(initials)+'</div>';
-  h+='<h2 style="margin-bottom:4px;font-size:22px">'+esc(S.user.name||'Brodoit User')+'</h2>';
-  h+='<div style="font:400 13px var(--sans);color:var(--text-mute);margin-bottom:14px">'+esc(masked)+' \\u00B7 Since '+esc(mem)+'</div>';
-  h+='<label class="lbl" style="text-align:left;font-size:14px">Display name</label><div class="row"><input id="pfName" value="'+esc(S.user.name||'')+'" placeholder="Your name" style="font-size:16px"><button class="mb mb-s" style="flex:0 0 auto;padding:12px 20px;font-size:15px" onclick="saveName()">Save</button></div>';
-  h+='<div style="display:flex;gap:10px;margin-top:18px"><button class="mb mb-c" style="flex:1;font-size:15px" onclick="closeProfile()">Close</button><button class="mb mb-d" style="flex:1;margin-top:0;font-size:15px" onclick="logout()">Log out</button></div>';
+  h+='<h2 style="margin-bottom:4px;font-size:22px">'+esc(S.user.name||_T('Brodoit User','Brodoit यूज़र'))+'</h2>';
+  h+='<div style="font:400 13px var(--sans);color:var(--text-mute);margin-bottom:14px">'+esc(masked)+' \\u00B7 '+_T('Since','कब से:')+' '+esc(mem)+'</div>';
+  h+='<label class="lbl" style="text-align:left;font-size:14px">'+_T('Display name','दिखने वाला नाम')+'</label><div class="row"><input id="pfName" value="'+esc(S.user.name||'')+'" placeholder="'+_T('Your name','आपका नाम')+'" style="font-size:16px"><button class="mb mb-s" style="flex:0 0 auto;padding:12px 20px;font-size:15px" onclick="saveName()">'+_T('Save','सेव करें')+'</button></div>';
+  h+='<div style="display:flex;gap:10px;margin-top:18px"><button class="mb mb-c" style="flex:1;font-size:15px" onclick="closeProfile()">'+_T('Close','बंद करें')+'</button><button class="mb mb-d" style="flex:1;margin-top:0;font-size:15px" onclick="logout()">'+_T('Log out','लॉग आउट')+'</button></div>';
   h+='</div></div>';
 }
 
@@ -17355,18 +17378,18 @@ if(false){ // Old timeline render — disabled
   h+='</div></div></div>';
 }
 if(S.showAdd){const isE=!!S.editing;
-h+='<div class="ov" onclick="clM()"><div class="mdl" onclick="event.stopPropagation()"><h2>'+(isE?'Edit Task':'\\u2728 New Task')+'</h2>';
-h+='<div style="text-align:center;margin-bottom:10px"><button class="voice-lg'+(S.listening?' rec':'')+'" onclick="'+(S.listening?'rec&&rec.stop();S.listening=false;render()':'stV()')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'+(S.listening?'<span class="vw"><span></span><span></span><span></span><span></span></span>Listening...':'\\u{1F3A4} Speak to add')+'</button><div style="font-size:11px;color:#8E8E93;margin-top:6px">Try: "Buy groceries tomorrow urgent"</div></div>';
+h+='<div class="ov" onclick="clM()"><div class="mdl" onclick="event.stopPropagation()"><h2>'+(isE?_T('Edit task','काम बदलें'):_T('New task','नया काम'))+'</h2>';
+h+='<div style="text-align:center;margin-bottom:10px"><button class="voice-lg'+(S.listening?' rec':'')+'" onclick="'+(S.listening?'rec&&rec.stop();S.listening=false;render()':'stV()')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>'+(S.listening?'<span class="vw"><span></span><span></span><span></span><span></span></span>'+_T('Listening...','सुन रहा हूँ…'):_T('Speak to add','बोलकर जोड़ें'))+'</button><div style="font-size:11px;color:#8E8E93;margin-top:6px">'+_T('Try: "Buy groceries tomorrow urgent"','जैसे: "कल राशन लाना है, ज़रूरी"')+'</div></div>';
 h+='<div style="height:1px;background:#d7d3d3;margin:10px 0 14px"></div>';
-h+='<label class="lbl">Task</label><input id="ft" value="'+esc(S.form.title)+'" placeholder="What needs to be done?" oninput="S.form.title=this.value">';
-h+='<label class="lbl">Notes</label><textarea oninput="S.form.notes=this.value" placeholder="Details...">'+esc(S.form.notes)+'</textarea>';
-h+='<div class="row"><div><label class="lbl">Priority</label><div class="qc-chips" style="margin-top:4px"><span class="qc-chip qc-high'+(S.form.priority==='high'?' on':'')+'" onclick="S.form.priority=\\'high\\';render()"><span class="qc-dot" style="background:#DC2626"></span>High</span><span class="qc-chip qc-med'+(S.form.priority==='medium'?' on':'')+'" onclick="S.form.priority=\\'medium\\';render()"><span class="qc-dot" style="background:#F59E0B"></span>Med</span><span class="qc-chip qc-low'+(S.form.priority==='low'?' on':'')+'" onclick="S.form.priority=\\'low\\';render()"><span class="qc-dot" style="background:#16A34A"></span>Low</span></div></div>';
-h+='<div><label class="lbl">Due Date</label><input type="date" value="'+S.form.dueDate+'" onchange="S.form.dueDate=this.value"></div></div>';
-h+='<label class="lbl">Reminder</label><input type="time" value="'+S.form.reminderTime+'" onchange="S.form.reminderTime=this.value">';
-if(S.google&&S.google.configured&&S.form.dueDate){h+='<label class="lbl" style="margin-top:8px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;font:500 13px var(--sans);color:var(--ink-2)"><input type="checkbox" '+(S.form._gcalSync?'checked':'')+' onchange="S.form._gcalSync=this.checked" style="accent-color:var(--accent)"> Add to Google Calendar</label></label>';}
-if(isE)h+='<label class="lbl">Status</label><select onchange="S.form.status=this.value"><option value="pending"'+(S.form.status==='pending'?' selected':'')+'>To Do</option><option value="in-progress"'+(S.form.status==='in-progress'?' selected':'')+'>Doing</option><option value="done"'+(S.form.status==='done'?' selected':'')+'>Done</option></select>';
-h+='<div class="macts"><button class="mb mb-c" onclick="clM()">Cancel</button><button class="mb mb-s" onclick="'+(isE?'savE()':'addT()')+'">'+(isE?'Update':'Add Task')+'</button></div>';
-if(isE)h+='<button class="mb mb-d" onclick="del(\\''+S.editing+'\\');clM()">Delete</button>';
+h+='<label class="lbl">'+_T('Task','काम')+'</label><input id="ft" value="'+esc(S.form.title)+'" placeholder="'+_T('What needs to be done?','क्या करना है?')+'" oninput="S.form.title=this.value">';
+h+='<label class="lbl">'+_T('Notes','नोट्स')+'</label><textarea oninput="S.form.notes=this.value" placeholder="'+_T('Details...','ब्योरा…')+'">'+esc(S.form.notes)+'</textarea>';
+h+='<div><label class="lbl">'+_T('Priority','ज़रूरत')+'</label><div class="qc-chips" style="margin-top:4px"><span class="qc-chip qc-high'+(S.form.priority==='high'?' on':'')+'" onclick="S.form.priority=\\'high\\';render()"><span class="qc-dot" style="background:#DC2626"></span>'+_T('High','ज़्यादा')+'</span><span class="qc-chip qc-med'+(S.form.priority==='medium'?' on':'')+'" onclick="S.form.priority=\\'medium\\';render()"><span class="qc-dot" style="background:#F59E0B"></span>'+_T('Med','मध्यम')+'</span><span class="qc-chip qc-low'+(S.form.priority==='low'?' on':'')+'" onclick="S.form.priority=\\'low\\';render()"><span class="qc-dot" style="background:#16A34A"></span>'+_T('Low','कम')+'</span></div></div>';
+h+='<div class="row"><div><label class="lbl">'+_T('Due Date','तारीख़')+'</label><input type="date" value="'+S.form.dueDate+'" onchange="S.form.dueDate=this.value"></div>';
+h+='<div><label class="lbl">'+_T('Reminder','याद दिलाएँ')+'</label><input type="time" value="'+S.form.reminderTime+'" onchange="S.form.reminderTime=this.value"></div></div>';
+if(S.google&&S.google.configured&&S.form.dueDate){h+='<label class="lbl" style="margin-top:8px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;font:500 13px var(--sans);color:var(--ink-2)"><input type="checkbox" '+(S.form._gcalSync?'checked':'')+' onchange="S.form._gcalSync=this.checked" style="accent-color:var(--accent)"> '+_T('Add to Google Calendar','Google कैलेंडर में भी जोड़ें')+'</label></label>';}
+if(isE)h+='<label class="lbl">'+_T('Status','स्थिति')+'</label><select onchange="S.form.status=this.value"><option value="pending"'+(S.form.status==='pending'?' selected':'')+'>'+_T('To Do','करना है')+'</option><option value="in-progress"'+(S.form.status==='in-progress'?' selected':'')+'>'+_T('Doing','चल रहा है')+'</option><option value="done"'+(S.form.status==='done'?' selected':'')+'>'+_T('Done','पूरा')+'</option></select>';
+h+='<div class="macts"><button class="mb mb-c" onclick="clM()">'+_T('Cancel','रद्द करें')+'</button><button class="mb mb-s" onclick="'+(isE?'savE()':'addT()')+'">'+(isE?_T('Update','बदलें'):_T('Add Task','काम जोड़ें'))+'</button></div>';
+if(isE)h+='<button class="mb mb-d" onclick="del(\\''+S.editing+'\\');clM()">'+_T('Delete','हटाएँ')+'</button>';
 h+='</div></div>';}
 
 h+=bottomBlock;
@@ -17999,7 +18022,7 @@ app.get(['/lang/phrases.html','/lang/phrase-lesson.html'],(_,res)=>res.redirect(
 // back to the last copy when offline; the app's and mini-apps'
 // files (/app, /lang, /mind, /code, icons) come from the cache at once and refresh in the background. Never /api/,
 // never a Range request, never a page sent no-store.
-const _SW_VER='v186-'+(_BUILD_SHA.slice(0,8)||Date.now().toString(36));
+const _SW_VER='v187-'+(_BUILD_SHA.slice(0,8)||Date.now().toString(36));
 app.get('/sw.js',(_,res)=>{res.set('Content-Type','application/javascript');res.set('Cache-Control','no-cache');res.send(`var CACHE_VER="${_SW_VER}";
 var CACHE="bd-"+CACHE_VER;
 self.addEventListener("install",function(e){self.skipWaiting();e.waitUntil(fetch("/",{credentials:"same-origin",cache:"no-cache"}).then(function(res){if(keep(res))return caches.open(CACHE).then(function(ca){return ca.put("/",res)})}).catch(function(){}))});
