@@ -71,7 +71,7 @@ function checkStory(st, sourceText) {
   if (wordsIn(h) < 4 || wordsIn(h) > 16) en.push('the headline must be 6-12 words');
   if (CUT_RE.test(h)) en.push('the headline must not end with an ellipsis');
   if (!isEnglishText(sm)) en.push('the summary must be in English (no Devanagari)');
-  if (wordsIn(sm) < 65 || wordsIn(sm) > 135) en.push('the summary must be 80-110 words (it has ' + wordsIn(sm) + ')');
+  if (wordsIn(sm) < 70 || wordsIn(sm) > 135) en.push('the summary must be 80-110 words (it has ' + wordsIn(sm) + ')');
   if (CUT_RE.test(sm) || !ENDS_RE.test(sm)) en.push('the summary must end with a complete sentence, never an ellipsis');
   if (!isEnglishText(why) || wordsIn(why) < 6 || wordsIn(why) > 40) en.push('"why" must be one English sentence of 12-25 words');
   if (sourceText != null) {
@@ -290,7 +290,6 @@ function install(app, deps) {
     return { headline: head, summary: out.join(' '), why: '', headline_hi: '', summary_hi: '', why_hi: '', category: c.cat };
   }
   const wc = t => String(t || '').trim().split(/\s+/).filter(Boolean).length;
-  const valid = s => s && typeof s.headline === 'string' && s.headline.length > 8 && typeof s.summary === 'string' && wc(s.summary) >= 75;
   const MIN_WORDS = 70;
 
   // ── real photos: the RSS image, else the source page's og:image; cached once and served same-origin ──

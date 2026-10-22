@@ -335,7 +335,7 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
     - The writer reads the articles themselves, not only the feed's line or two: `enrich(c)` reads up to 2 per story through `modules/newsreader.js` `readArticle` (public addresses only; 15 s; Hindi-only text dropped). Their text counts as the sources for the number check. It is off when `deps.readArticle` is absent (tests) or `NEWS_READ_ARTICLES=0`.
     - The extractive fallback runs only when no writer exists. Raw feed items never reach the deck.
   - **Every story is checked** (`checkStory(story, sourceText)` → `{en, hi}` problems):
-    - The English fields must have no Devanagari. The headline is 4-16 words with no "…"; the summary is 65-135 words and ends on a full sentence; "why" is 6-40 words.
+    - The English fields must have no Devanagari. The headline is 4-16 words with no "…"; the summary is 70-135 words (the boot cleanup removes anything under 70) and ends on a full sentence; "why" is 6-40 words.
     - Every number (other than 0-12) must appear in the sources.
     - The Hindi fields must be ≥ 60% Devanagari, and `summary_hi` must be 55-170 words with a proper ending.
     - Problems → one repair round (the draft plus the problems), then the next writer. Good English with bad Hindi is published English-only.
