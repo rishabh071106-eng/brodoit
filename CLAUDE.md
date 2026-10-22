@@ -332,6 +332,7 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
     - Up to `NEWS_PER_EDITION` (20) stories, `NEWS_PACE_MS` (4 s) apart. `news_stories.edition` records which edition wrote each one.
   - **Writers**, best first: `openai/gpt-oss-120b` through Bro Core (`BC.chat({models, effort:'medium', json:true})`), then Gemini flash, then Bro Core's background chain. OpenAI/Groq/ElevenLabs are used only in the emergency mode.
     - The prompt is a senior wire editor's. It asks for an 80-110-word summary, a "why it matters" line (12-25 words) and the Hindi trio. It lists the last two days' headlines ("RECENT"), and the writer answers `duplicate_of` for a repeat.
+    - The writer reads the articles themselves, not only the feed's line or two: `enrich(c)` reads up to 2 per story through `modules/newsreader.js` `readArticle` (public addresses only; 15 s; Hindi-only text dropped). Their text counts as the sources for the number check. It is off when `deps.readArticle` is absent (tests) or `NEWS_READ_ARTICLES=0`.
     - The extractive fallback runs only when no writer exists. Raw feed items never reach the deck.
   - **Every story is checked** (`checkStory(story, sourceText)` → `{en, hi}` problems):
     - The English fields must have no Devanagari. The headline is 4-16 words with no "…"; the summary is 65-135 words and ends on a full sentence; "why" is 6-40 words.

@@ -185,9 +185,9 @@ function install(app, deps) {
     'why (English, one sentence of 12-25 words: why it matters to a reader in India), headline_hi, summary_hi, why_hi (natural, fluent Hindi in Devanagari, the same facts, ' +
     'written the way a good Hindi newspaper would, not word-for-word; numbers in digits), category (one of india, world, business, tech, science), ' +
     'duplicate_of (the number of a RECENT headline that reports the same event, else null). English fields must contain no Devanagari; Hindi fields must be in Devanagari.';
-  const sourceText = c => c.items.slice(0, 6).map(i => i.title + '. ' + i.desc).join('\n');
+  const sourceText = c => c.items.slice(0, 6).map(i => i.title + '. ' + i.desc + (i.full ? ' ' + i.full : '')).join('\n');
   function promptFor(c, heads) {
-    const lines = c.items.slice(0, 6).map((i, n) => `Source ${n + 1} (${i.source}${i.date ? ', ' + String(i.date).slice(0, 16) : ''}): ${i.title}. ${clip(i.desc, 600)}`);
+    const lines = c.items.slice(0, 6).map((i, n) => `Source ${n + 1} (${i.source}${i.date ? ', ' + String(i.date).slice(0, 16) : ''}): ${i.title}. ${i.full || clip(i.desc, 600)}`);
     const recent = (heads || []).slice(0, 30).map((h, n) => `${n + 1}. ${h}`).join('\n');
     return (recent ? 'RECENT (already published in the last three days; if the sources report the same event, answer only {"duplicate_of": its number}):\n' + recent + '\n\n' : '') + 'SOURCES:\n' + lines.join('\n');
   }
@@ -225,6 +225,23 @@ function install(app, deps) {
     return w;
   }
   // write → check → one repair round → next writer. Returns { s, by } | { duplicate } | null.
+  // v22: a feed gives a line or two per report, too little for a full story; the writer reads the articles themselves
+  // (up to 2 per story, through modules/newsreader.js, which fetches public addresses only). Off when the server does
+  // not pass deps.readArticle (tests) or NEWS_READ_ARTICLES=0.
+  const readArticle = typeof deps.readArticle === 'function' && process.env.NEWS_READ_ARTICLES !== '0' ? deps.readArticle : null;
+  async function enrich(c) {
+    if (!readArticle) return;
+    const pick = c.items.filter(i => /^https?:\/\//.test(i.link || '') && !/(^|\.)news\.google\./.test((() => { try { return new URL(i.link).hostname; } catch (e) { return ''; } })())).slice(0, 2);
+    await Promise.all(pick.map(async i => {
+      try {
+        const d = await Promise.race([readArticle(i.link), new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 15000))]);
+        if (!d || !d.ok) return;
+        const t = (d.paragraphs || []).filter(x => !hasDeva(x)).join(' ').replace(/\s+/g, ' ').trim();
+        if (t.length > String(i.desc || '').length + 200) i.full = clip(t, 2400);
+        if (!i.img && d.image && /^https:\/\//.test(d.image)) i.img = d.image;
+      } catch (e) { /* the feed's own lines are used */ }
+    }));
+  }
   // the recent headlines that share a telling word with this story, most alike first (what a repeat would look like)
   function relatedHeads(c, heads) {
     const t = new Set(); for (const i of c.items.slice(0, 6)) for (const w of tokens(i.title)) if (!GENERIC.has(w)) t.add(w);
@@ -348,6 +365,7 @@ function install(app, deps) {
         if (c.items.every(i => hasDeva(i.title))) { skipped++; continue; } // the desk writes from English reports
         let res;
         if (ws.length) {
+          await enrich(c);
           res = await writeStory(c, heads, ws);
           if (res && res.duplicate) { dup++; continue; }
           if (!res) { failed++; continue; }
