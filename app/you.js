@@ -44,6 +44,8 @@
     h += '<div class="yu-rows">' +
       // v21: the morning and evening summaries, reminders (app/notify.js)
       C.row({ icon: 'bell', tone: 'clay', title: hi ? 'सूचनाएँ' : 'Notifications', sub: window.Notify && Notify.label ? Notify.label() : '', onclick: 'Notify.open()' }) +
+      // v24: one language for the whole app (Bro, News and every screen)
+      C.row({ icon: 'languages', tone: 'umber', title: hi ? 'भाषा' : 'Language', sub: hi ? 'हिंदी · English पर जाएँ' : 'English · switch to हिंदी', onclick: "setAppLang(S.lang==='hi'?'en':'hi')" }) +
       C.row({ icon: 'moon', tone: 'umber', title: hi ? 'थीम' : 'Theme', onclick: 'toggleTheme()' }) +
       C.row({ key: 'hero-books', icon: 'image', tone: 'wine', title: hi ? 'फ़ोटो क्रेडिट' : 'Photo credits', onclick: "location.href='/credits'" }) + '</div>';
     return h + '</div>';

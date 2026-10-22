@@ -393,6 +393,26 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
     - `BroSay` asks a busy voice (503) again twice, after its Retry-After (1-4 s), before the phone's voice.
     - A call whose voice is still loading waits once, up to 10 s, before captions-with-the-phone's-voice.
   - Tests: `scratchpad/v21/p7-agent.mjs` (call pipeline with `scratchpad/v23/stub-agent.js`; the real server in Chromium with `scratchpad/v23/stub-gcal.cjs`, a fake Google Calendar).
+- **v24 one app, one language, one look** (owner: "I still see inconsistency": voice, Hindi/English mixing, look and layout, Bro and the calendar):
+  - **One language for the whole app.** Before, `S.lang` was never set, so every `S.lang==='hi'` screen stayed English while Bro chat (`bro.lang`) and News (`news.lang`) each kept their own switch.
+    - `S.lang` comes from `_initLang()`: `bd_lang`, else `bro.lang`, else `news.lang`. All three keys are then kept equal, and `<html lang>` follows.
+    - `window.setAppLang(l, from)` is the one switch. The You tab's Language row calls it, and Bro chat's (`V.setLang(l, fromApp)`) and News' (`N.setLang(l, fromApp)`) switches call it too. It updates the others and re-renders.
+    - `_T('English', 'हिंदी')` is the helper for SPA strings. The mini-apps read `bd_lang` themselves (`/lang/` list; `/mind/` via `HI`/`tr` in `mind/assets/util.js`).
+    - Content keeps its own language. A course is in the language it teaches in (the Spanish course is taught in English; `/code/` is English). Book texts, News stories and the user's own words are left as they are.
+    - Books open their Hindi version in Hindi mode when one exists (`_bkWantHi`; choosing English sticks per book).
+  - **Hindi chrome** on every tab and the screens one tap deeper:
+    - tab bar; Tasks/Notes; Today/Upcoming/Done; Notes list, categories (`NOTE_CATS[].hl`) and editor;
+    - Calendar month, weekdays, Google card, day plan, schedule sheet and Google event sheet;
+    - Books switches and categories, reader and player; add/edit task; profile; the Learn → Languages list; the Mind games.
+  - **Look:**
+    - Every switch, chip, calendar day and icon button is at least 44 px: `#app` rules at the end of the SPA CSS, `.ui-seg`, `.nz-cv-chips`, `.bk-seg` in `app/cards.css`, `.bkp-ib`, `.note-tool-btn`, `.cal-nav`.
+    - No emoji in titles or buttons (the add-task, schedule and reader buttons). The book text uses the app's one font, not Georgia.
+    - The book player says "Bro's voice" (both ways of playing are Bro since v23).
+  - Tests: `scratchpad/v21/p8-consistency.mjs` is the audit and the regression (`MODE=report` prints everything found).
+    - It uses the real server, a 390 px phone, and English then Hindi.
+    - It covers every tab, the deeper screens (`DEEP`) and the mini-apps.
+    - Rules: the app, Bro and News share one language; no Devanagari in English; no English words in Hindi (outside names and content); one type family; no sideways scroll; 44 px targets; no emoji in chrome; every sound is Bro's voice.
+    - Screenshots go to `scratchpad/v21/p8shots`.
 - **News** (`app/news.js`): cards only (desk stories), section chips, "Listen" plays recorded headline clips back to back. `modules/newsvoice.js` records after every desk batch through ElevenLabs only (`NEWS_VOICE_PROVIDER=any` opens the chain): headlines for every story in the feed + `NEWS_VOICE_FULL` (default 10) full read-outs a day per language; files in `MEDIA_DIR/news-voice`, served by `/api/news/voice/<id>-<lang>-<h|s>.mp3`. Nothing is rendered on tap. The long spoken bulletin is opt-in (`BULLETIN_AUDIO=1`). News is a bottom tab; You moved to the header avatar.
 - **ElevenLabs brain** (`modules/elevenbrain.js`): a private text-only ElevenLabs agent used as the LLM when Gemini has no key, is out of credit (402 → skipped for an hour via `global._geminiDownUntil`) or fails — `_callGemini` falls back to it, so Bro chat, Explain, the coach and the news desk keep working on ElevenLabs credits. Bro chat no longer runs a second "verify" pass.
 - **ElevenLabs budget** (modules/elevenvoice.js `RESERVE`): bulk (static recordings) may use the first 70% of the month, daily (news, first plays) stops at 15% left, live Bro uses the rest. Admin auto-record order: learn-audio → lang-audio → hindi-books.

@@ -2,12 +2,16 @@
 // Longer words score more; a word that uses every letter earns a bonus. Letter sets come from a seed word chosen
 // per level with a fixed seed, so a level always has the same letters, and every set is checked to hold enough words.
 import { WORDS, EXTRA } from '../words.js';
-import { rng, hash, shuffle, clamp } from '../util.js';
+import { rng, hash, shuffle, clamp, HI, tr, trLive } from '../util.js';
 
 export const meta = {
-  id: 'words', name: 'Word Builder', skill: 'Language', color: '#059669', deep: '#065F46',
-  rule: 'Make words from the letters on the wheel.',
-  how: [
+  id: 'words', name: 'Word Builder', get skill() { return trLive('Language', 'भाषा'); }, color: '#059669', deep: '#065F46',
+  // the words are English (the gameplay), so the Hindi rule says so
+  rule: tr('Make words from the letters on the wheel.', 'पहिये के अक्षरों से अंग्रेज़ी शब्द बनाएँ।'),
+  how: HI ? [
+    'अक्षर दबाएँ या उन पर उँगली फिराएँ, और अंग्रेज़ी शब्द बनाएँ।',
+    'लंबे शब्द पर ज़्यादा अंक। अटक जाएँ तो अक्षरों को फेंटें।',
+  ] : [
     'Tap or swipe across letters to spell a word.',
     'Longer words score more. Shuffle the wheel if you are stuck.',
   ],
@@ -24,9 +28,11 @@ export function levelConfig(n) {
   const letters = n >= 14 ? 8 : 7, min = n >= 11 ? 4 : 3;
   return {
     n, letters, min, time: 90, targets: TGT[n - 1],
-    lower: false, scoreLabel: 'pts', goalUnit: 'points', resultLabel: 'points',
-    desc: `${letters} letters · words of ${min}+ letters · 90 seconds`,
-    twist: n === 11 ? 'Longer words. Words now need 4 or more letters.' : n === 14 ? 'Eight letters. More words hide in the wheel.' : '',
+    lower: false, scoreLabel: tr('pts', 'अंक'), goalUnit: tr('points', 'अंक'), resultLabel: tr('points', 'अंक'),
+    desc: HI ? `${letters} अक्षर · ${min}+ अक्षरों के शब्द · 90 सेकंड` : `${letters} letters · words of ${min}+ letters · 90 seconds`,
+    twist: HI
+      ? (n === 11 ? 'लंबे शब्द। अब हर शब्द में 4 या ज़्यादा अक्षर चाहिए।' : n === 14 ? 'आठ अक्षर। पहिये में और भी शब्द छिपे हैं।' : '')
+      : n === 11 ? 'Longer words. Words now need 4 or more letters.' : n === 14 ? 'Eight letters. More words hide in the wheel.' : '',
   };
 }
 
@@ -81,7 +87,7 @@ export function start(host, cfg, api) {
   const letters = set.letters, L = letters.length;
   const ico = (n, s) => (window.ico ? window.ico(n, s) : '');
   host.innerHTML = `<div class="wb">
-    <div class="wb-found" id="wbFound"><span class="wb-count" id="wbCount">0 words</span></div>
+    <div class="wb-found" id="wbFound"><span class="wb-count" id="wbCount">${tr('0 words', '0 शब्द')}</span></div>
     <div class="wb-word" id="wbWord" aria-live="polite"></div>
     <div class="wb-msg" id="wbMsg" aria-live="polite"></div>
     <div class="wb-wheel-box"><div class="wb-wheel" id="wbWheel">
@@ -90,9 +96,9 @@ export function start(host, cfg, api) {
       ${letters.map((ch, i) => `<button class="wb-l" data-i="${i}" aria-label="${ch.toUpperCase()}">${ch.toUpperCase()}</button>`).join('')}
     </div></div>
     <div class="wb-ctl">
-      <button class="wb-ic" id="wbShuf" aria-label="Shuffle letters">${ico('shuffle', 22)}</button>
-      <button class="wb-go" id="wbGo" aria-label="Submit word" disabled><span>Enter</span></button>
-      <button class="wb-ic" id="wbDel" aria-label="Delete last letter">${BACK}</button>
+      <button class="wb-ic" id="wbShuf" aria-label="${tr('Shuffle letters', 'अक्षर फेंटें')}">${ico('shuffle', 22)}</button>
+      <button class="wb-go" id="wbGo" aria-label="${tr('Submit word', 'शब्द जाँचें')}" disabled><span>${tr('Enter', 'जाँचें')}</span></button>
+      <button class="wb-ic" id="wbDel" aria-label="${tr('Delete last letter', 'आख़िरी अक्षर मिटाएँ')}">${BACK}</button>
     </div>
   </div>`;
   const $ = s => host.querySelector(s);
@@ -119,7 +125,7 @@ export function start(host, cfg, api) {
   }
   function renderWord(state) {
     wordEl.className = 'wb-word' + (state ? ' ' + state : '');
-    wordEl.innerHTML = sel.length ? sel.map(i => `<span>${letters[i].toUpperCase()}</span>`).join('') : '<em>Tap or swipe the letters</em>';
+    wordEl.innerHTML = sel.length ? sel.map(i => `<span>${letters[i].toUpperCase()}</span>`).join('') : `<em>${tr('Tap or swipe the letters', 'अक्षर दबाएँ या उँगली फिराएँ')}</em>`;
     goBtn.disabled = sel.length < 2;
     btns.forEach((b, i) => b.classList.toggle('sel', sel.includes(i)));
   }
@@ -131,9 +137,9 @@ export function start(host, cfg, api) {
     if (over || !sel.length) return;
     const w = sel.map(i => letters[i]).join('');
     sel = []; tail = null;
-    if (w.length < cfg.min) { renderWord('no'); say(`Use ${cfg.min} or more letters`, 'bad'); api.sfx('wrong'); api.haptic('error'); }
+    if (w.length < cfg.min) { renderWord('no'); say(HI ? `${cfg.min} या ज़्यादा अक्षर लगाएँ` : `Use ${cfg.min} or more letters`, 'bad'); api.sfx('wrong'); api.haptic('error'); }
     else if (found.has(w)) {
-      renderWord('dup'); say('Already found', 'warn'); api.sfx('flip'); api.haptic('warning');
+      renderWord('dup'); say(tr('Already found', 'यह पहले ही मिल चुका'), 'warn'); api.sfx('flip'); api.haptic('warning');
       const chip = foundEl.querySelector(`[data-w="${w}"]`); if (chip) { chip.classList.remove('ping'); void chip.offsetWidth; chip.classList.add('ping'); }
     } else if (isWord(w)) {
       found.add(w);
@@ -144,12 +150,12 @@ export function start(host, cfg, api) {
       chip.className = 'wb-chip new'; chip.dataset.w = w;
       chip.innerHTML = `${w.toUpperCase()}<b>+${pts}</b>`;
       countEl.after(chip);
-      countEl.textContent = `${found.size} word${found.size === 1 ? '' : 's'}`;
-      renderWord('ok'); say(full ? 'All letters used' : 'Correct', 'good');
+      countEl.textContent = HI ? `${found.size} शब्द` : `${found.size} word${found.size === 1 ? '' : 's'}`;
+      renderWord('ok'); say(full ? tr('All letters used', 'सारे अक्षर लगे') : tr('Correct', 'सही'), 'good');
       api.float(`+${pts}`, { el: wordEl, dy: -6 });
-      if (full) api.combo(`All letters +${FULL_BONUS}`); else api.sfx(w.length >= 5 ? 'combo' : 'correct');
+      if (full) api.combo(`${tr('All letters', 'सारे अक्षर')} +${FULL_BONUS}`); else api.sfx(w.length >= 5 ? 'combo' : 'correct');
       api.haptic('light');
-    } else { renderWord('no'); say('Not in the word list', 'bad'); api.sfx('wrong'); api.haptic('error'); }
+    } else { renderWord('no'); say(tr('Not in the word list', 'यह शब्द सूची में नहीं है'), 'bad'); api.sfx('wrong'); api.haptic('error'); }
     // let the coloured flash show, then clear the tray
     api.after(420, () => { if (!sel.length) renderWord(); });
     drawLines();
@@ -217,11 +223,16 @@ export function start(host, cfg, api) {
     onEnd() {
       over = true; sel = []; renderWord();
       const missed = set.words.filter(w => !found.has(w)).sort((a, b) => b.length - a.length || a.localeCompare(b)).slice(0, 3).map(w => w.toUpperCase());
+      if (HI) {
+        const head = `${found.size} शब्द${longest ? ` · सबसे लंबा ${longest.toUpperCase()}` : ''}`;
+        api.end({ score, note: missed.length ? `${head}। आप ${found.size ? 'ये भी' : 'ये शब्द'} बना सकते थे: ${missed.slice(0, -1).join(', ')}${missed.length > 1 ? ' और ' : ''}${missed[missed.length - 1]}।` : head });
+        return;
+      }
       const head = `${found.size} word${found.size === 1 ? '' : 's'}${longest ? ` · longest ${longest.toUpperCase()}` : ''}`;
       api.end({ score, note: missed.length ? `${head}. You could ${found.size ? 'also ' : ''}have made ${missed.slice(0, -1).join(', ')}${missed.length > 1 ? ' and ' : ''}${missed[missed.length - 1]}.` : head });
     },
   });
-  api.setScore(0, 'pts', true);
+  api.setScore(0, tr('pts', 'अंक'), true);
   api.test({
     state: () => ({ score, found: [...found], letters: letters.join('') }),
     answer: () => set.words.filter(w => !found.has(w)).sort((a, b) => b.length - a.length),

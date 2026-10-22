@@ -239,7 +239,7 @@
   function near() { if (N.loaded && storyCount() && N.i >= N.stories.length - 4) N.more(); }
 
   N.stop = function () { clearTimeout(viewT); flushSeen(); N._leftAt = Date.now(); };   // nothing plays in News any more
-  N.setLang = function (l) { if (l === N.lang) return; N.lang = l; try { localStorage.setItem('news.lang', l); } catch (e) {} if (N.loaded) N.again(); else N.rerender(); };
+  N.setLang = function (l, fromApp) { if (l === N.lang) return; N.lang = l; try { localStorage.setItem('news.lang', l); } catch (e) {} if (!fromApp && window.setAppLang) setAppLang(l, 'news'); if (N.loaded) N.again(); else N.rerender(); }; // v24: one app language
   // The shell re-renders the tab itself; size the deck and wire swiping after every render.
   N.after = function () {
     // back on News after 20 minutes away: start from what is new (everything you saw stays seen)
