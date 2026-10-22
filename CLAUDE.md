@@ -330,7 +330,7 @@ Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsAp
   - **Editions** (`modules/newsdesk.js`): 07:00, 13:00 and 19:00 India time (`NEWS_EDITIONS`, "HH:MM,…" IST). `editionOf(now)` → `{id: YYYY-MM-DD-HHMM, label, label_hi, at, next_at}`.
     - A 60 s `tick` makes the current edition once (`news_editions`). One with nothing new is tried again 20 min later, at most 3 times. There is no 30-minute batch any more.
     - Up to `NEWS_PER_EDITION` (20) stories, `NEWS_PACE_MS` (4 s) apart. `news_stories.edition` records which edition wrote each one.
-  - **Writers**, best first: `openai/gpt-oss-120b` through Bro Core (`BC.chat({models, effort:'medium', json:true})`), then Gemini flash, then Bro Core's background chain. OpenAI/Groq/ElevenLabs are used only in the emergency mode.
+  - **Writers**, best first: Gemini Flash (its own provider), then Bro Core's background lane (purpose `news`: scout, qwen3-32b, 8b-instant). Never gpt-oss: its allowance is live talk's. OpenAI/Groq/ElevenLabs are used only in the emergency mode.
     - The prompt is a senior wire editor's. It asks for an 80-110-word summary, a "why it matters" line (12-25 words) and the Hindi trio. It lists the last two days' headlines ("RECENT"), and the writer answers `duplicate_of` for a repeat.
     - The writer reads the articles themselves, not only the feed's line or two: `enrich(c)` reads up to 2 per story through `modules/newsreader.js` `readArticle` (public addresses only; 15 s; Hindi-only text dropped). Their text counts as the sources for the number check. It is off when `deps.readArticle` is absent (tests) or `NEWS_READ_ARTICLES=0`.
     - The extractive fallback runs only when no writer exists. Raw feed items never reach the deck.

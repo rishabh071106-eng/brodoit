@@ -16,7 +16,7 @@
 //   GET  /n/:id  the story's own page with link-preview tags (a signed-in visitor goes straight into the app);
 //   GET  /n/:id/card.png  the preview picture when the story has no photo
 // v22: three editions a day (07:00, 13:00, 19:00 India time; NEWS_EDITIONS), not a batch every 30 minutes. The best
-// writer writes each story (gpt-oss-120b, then Gemini, then the background models); every story is checked before it
+// writer writes each story (Gemini Flash, then Bro Core's background models); every story is checked before it
 // is published: English fields in English and Hindi fields in Hindi, complete sentences (never cut off with "…"), the
 // length, a "why it matters" line, and every number in the story found in the sources. A story that fails gets one
 // repair round, else it is not published (a story with good English and bad Hindi is published in English only).
@@ -210,11 +210,10 @@ function install(app, deps) {
     return JSON.parse(j.choices[0].message.content);
   }
   function writers() {
-    // v22: news is written 3 times a day, so the best writer writes it: gpt-oss-120b on Groq (Bro Core, the cheap strong
-    // model), then Gemini (best Hindi), then Bro Core's background models. The paid writers after them run only while
-    // Bro Core's emergency switch is on (or without Bro Core).
+    // v22: news is written 3 times a day, so the best writer that does not touch live talk writes it: Gemini Flash (its
+    // own provider and allowance, the best Hindi), then Bro Core's background lane (its own Groq models: the gpt-oss
+    // allowance stays live talk's). The writers after them run only while Bro Core's emergency switch is on.
     const w = [], BC = global._broCore;
-    if (BC && BC.brainReady()) w.push(['gpt-oss-120b', t => BC.chat({ system: SYS, messages: [{ role: 'user', content: t }], json: true, maxTokens: 3000, temperature: 0.2, purpose: 'news', models: ['openai/gpt-oss-120b'], effort: 'medium', emergency: false }).then(r => parseJSON(r.text))]);
     const g = getSetting('GEMINI_API_KEY');
     if (g && !((global._geminiDownUntil || 0) > Date.now())) w.push(['gemini', t => viaGemini(g, t)]);
     if (BC && BC.brainReady()) w.push(['brocore', t => BC.chat({ system: SYS, messages: [{ role: 'user', content: t }], json: true, maxTokens: 3000, temperature: 0.2, purpose: 'news', emergency: false }).then(r => parseJSON(r.text))]);
