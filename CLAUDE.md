@@ -19,6 +19,13 @@ git push railway main     # Railway (taskflow.git) — triggers deploy
 
 Both pushes are needed. Railway auto-builds on push to `railway` remote.
 
+**v24: deploys that cannot silently stop.** Railway's GitHub link stopped reacting on 20 Oct 2026 (no deployment for two days of merges).
+- `.github/workflows/deploy.yml` runs on every push to taskflow main. It waits 2 minutes for Railway's own deployment of the commit (a GitHub deployment record); with none, it uploads the commit with `railway up --ci --service taskflow` (`@railway/cli@5.63.1`; repo variable `RAILWAY_SERVICE` overrides).
+  - It needs the `RAILWAY_TOKEN` secret: a Railway project token for production. Without it, it only warns.
+  - It writes `BUILD_COMMIT` (an upload carries no git data) and records a GitHub deployment `railway-ci`.
+- The server reads its commit from `RAILWAY_GIT_COMMIT_SHA`, else `BUILD_COMMIT` (`_BUILD_SHA`: `/api/health`'s `commit`, the service worker version).
+- `live-check.yml` waits up to 6 minutes for either deploy to start, then for `/api/health` to report the commit. Every run warns how many commits brodoit.com is behind main.
+
 ## Critical Escaping Rules
 
 The HTML is inside a JS template literal (`const HTML = \`...\``). Inside it:
