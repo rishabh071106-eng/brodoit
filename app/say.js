@@ -26,15 +26,28 @@
     return out.filter(Boolean);
   };
   // Bro's voice for one piece of text → a blob URL, or null when it can't (then the phone's voice reads it)
+  // v23: a busy voice (503) is asked again, twice, after its Retry-After (1-4 s), before the phone's voice reads anything:
+  // one voice everywhere, even when the server is busy for a moment
+  const warmed = new Map(); // text → { p, ac }: fetched ahead (B.warm)
   async function fetchVoice(text, o, signal) {
+    const w = warmed.get(text); if (w) { warmed.delete(text); return w.p; }
     const t = tok(); if (!t) { B.lastFallback = 'signed out'; return null; }
     try {
-      const r = await fetch('/api/voice/tts', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': t }, body: JSON.stringify({ text, lang: o.lang || '', mood: o.mood || '' }), signal });
-      if (!r.ok) { B.lastFallback = r.status === 503 ? 'busy' : r.status === 429 ? 'limit' : 'unavailable'; return null; }
-      const blob = await r.blob(); if (!blob.size) return null;
-      return URL.createObjectURL(blob);
+      for (let k = 0; ; k++) {
+        const r = await fetch('/api/voice/tts', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': t }, body: JSON.stringify({ text, lang: o.lang || '', mood: o.mood || '' }), signal });
+        if (r.status === 503 && k < 2) { const wait = Math.min(4, Math.max(1, parseInt(r.headers.get('Retry-After'), 10) || 2)); await new Promise(res => setTimeout(res, wait * 1000)); if (signal && signal.aborted) return null; continue; }
+        if (!r.ok) { B.lastFallback = r.status === 503 ? 'busy' : r.status === 429 ? 'limit' : 'unavailable'; return null; }
+        const blob = await r.blob(); if (!blob.size) return null;
+        return URL.createObjectURL(blob);
+      }
     } catch (e) { if (!(e && e.name === 'AbortError')) B.lastFallback = 'offline'; return null; }
   }
+  // v23: fetch a line ahead (a book read chunk by chunk asks for the next one while this one plays); at most 4 waiting
+  B.warm = function (text, opts) {
+    const t = String(text || '').trim(); if (!t || warmed.has(t)) return;
+    const ac = new AbortController(); warmed.set(t, { p: fetchVoice(t, opts || {}, ac.signal), ac });
+    while (warmed.size > 4) { const k = warmed.keys().next().value, v = warmed.get(k); try { v.ac.abort(); } catch (e) {} warmed.delete(k); }
+  };
   // the phone's voice, for one piece (only when Bro's voice could not)
   function device(text, o, done) {
     try {
