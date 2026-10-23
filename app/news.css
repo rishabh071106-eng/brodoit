@@ -150,7 +150,10 @@ body.nz-fresh .tab-news .ti::after{content:"";position:absolute;top:-1px;right:-
 #app .nz-cv-lead-t.dev small{letter-spacing:0;text-transform:none;font-family:var(--b-devanagari,var(--b-sans))}
 #app .nz-cv-lead-t.dev b{font-family:var(--b-devanagari,var(--b-sans));line-height:1.45}
 #app .nz-cv-lead:active{transform:scale(.99)}
-/* sections sit under the title; "Start reading" stays in view while the page scrolls */
+/* sections sit under the title. The front page doesn't scroll inside itself: fitCover() (news.js) keeps only the
+   stories that fit whole, so "Start reading" sits at the bottom of the page and never covers half a story */
 #app .nz-cover .nz-cv-chips{margin:-4px -18px 0;padding:2px 18px}
-#app .nz-cv-foot{position:sticky;bottom:-18px;margin-bottom:-18px;padding:10px 0 18px;background:var(--b-card);box-shadow:0 -12px 12px -6px var(--b-card)}
+#app .nz-cover .nz-cv{overflow:hidden}
+#app .nz-cover .nz-cv.scroll{overflow-y:auto}
+#app .nz-cv-foot{padding-top:10px}
 #app .nz-cv>*{flex-shrink:0}
