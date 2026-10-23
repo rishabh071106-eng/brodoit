@@ -9492,7 +9492,7 @@ board:'combined'};  // Boards UI removed per user request — single unified tas
 try{localStorage.removeItem('tf_board')}catch(e){}  // clean up legacy key from previous boards UI
 let rec=null,token=localStorage.getItem('tf_token');
 if(token){S.user={phone:localStorage.getItem('tf_phone'),name:localStorage.getItem('tf_name'),token}}else{
-  (async function(){try{const r=await fetch('/api/me',{credentials:'same-origin'});if(r.ok){const d=await r.json();if(d.token){token=d.token;localStorage.setItem('tf_token',d.token);localStorage.setItem('tf_phone',d.phone||'');localStorage.setItem('tf_name',d.name||'');if(d.email)localStorage.setItem('tf_email',d.email);S.user=d;load();chk();render();return}}}catch(e){}})();
+  (async function(){try{const r=await fetch('/api/me',{credentials:'same-origin'});if(r.ok){const d=await r.json();if(d.token){token=d.token;localStorage.setItem('tf_token',d.token);localStorage.setItem('tf_phone',d.phone||'');localStorage.setItem('tf_name',d.name||'');if(d.email)localStorage.setItem('tf_email',d.email);S.user=d;load();chk();loadWeather();loadTicker();loadCityTemps();loadRemember();_startPolls();render();return}}}catch(e){}})();
   restoreLoginState();
   // Strongest fallback: server-side cookie (set on send-otp success) injected by the / route.
   // Survives iOS Safari tab kills + localStorage purges. Cookie expires after 10 min or on verify success.
@@ -9521,7 +9521,7 @@ if(token){S.user={phone:localStorage.getItem('tf_phone'),name:localStorage.getIt
   }
 }
 
-const api=async(p,o={})=>{try{const h={'Content-Type':'application/json','X-Timezone':Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'};if(token)h['x-token']=token;const r=await fetch('/api'+p,{headers:h,...o});if(r.status===401){logout();return null}return await r.json()}catch(e){return null}};
+const api=async(p,o={})=>{try{const h={'Content-Type':'application/json','X-Timezone':Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'};const sent=token;if(sent)h['x-token']=sent;const r=await fetch('/api'+p,{headers:h,...o});if(r.status===401){if(sent&&sent===token)logout();return null}return await r.json()}catch(e){return null}};
 const P={high:{c:'#1F1E1C',d:'\\u{1F534}'},medium:{c:'#E8912C',d:'\\u{1F7E0}'},low:{c:'#3DAE5C',d:'\\u{1F7E2}'}};
 // Scenic Unsplash hero banners per tab (free, hot-link friendly)
 // Per-tab illustrated doodles (sidebar) — colorful filled SVGs that read as illustrations
@@ -9694,10 +9694,18 @@ function restoreLoginState(){
 }
 function clearLoginState(){try{localStorage.removeItem('tf_login_state')}catch(e){}}
 async function sendOTP(){S.loginLoading=true;S.loginError='';render();let url,body;if(S.loginMethod==='email'){const em=(S.loginEmail||'').trim().toLowerCase();if(!/^[\\w.+-]+@[\\w-]+\\.[a-z]{2,}$/i.test(em)){S.loginError='Enter a valid email address';S.loginLoading=false;render();return}url='/api/send-otp-email';body={email:em}}const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>({ok:false,error:'Network error \\u2014 check your connection'}));S.loginLoading=false;if(r.ok){S.loginStep='otp';S.loginOTP=['','','','','',''];S.loginError='';S.loginSentTo=r.phone||S.loginEmail||((S.loginCountryCode||'')+S.loginPhone);persistLoginState();try{sessionStorage.setItem('tf_otp_ts',String(Date.now()))}catch(e){}try{const id=S.loginMethod==='email'?S.loginEmail:S.loginPhone;history.replaceState(null,'','#otp:'+encodeURIComponent(id||''))}catch(e){}render();setTimeout(()=>{const el=document.getElementById('otp0');if(el)el.focus()},100)}else{S.loginError=r.error||'Failed to send OTP';S.loginErrorDetail=r.detail||'';S.loginErrorCode=r.code||0;render()}}
-async function verifyOTP(){const code=S.loginOTP.join('');if(code.length<6){S.loginError='Enter the 6-digit code';render();return}S.loginLoading=true;S.loginError='';render();let url,body;if(S.loginMethod==='email'){url='/api/verify-otp-email';body={email:(S.loginEmail||'').trim().toLowerCase(),code,name:S.loginName}}else{let ph=S.loginPhone.replace(/[^0-9+]/g,'');if(!ph.startsWith('+'))ph='+'+ph;url='/api/verify-otp';body={phone:ph,code,name:S.loginName}}const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>({error:'Network error'}));S.loginLoading=false;if(r.token){token=r.token;localStorage.setItem('tf_token',r.token);localStorage.setItem('tf_phone',r.phone);localStorage.setItem('tf_name',r.name||'');if(r.email)localStorage.setItem('tf_email',r.email);S.user=r;S.loginStep='phone';clearLoginState();try{sessionStorage.removeItem('tf_otp_ts')}catch(e){}try{history.replaceState(null,'','/')}catch(e){}load();chk();toast('Welcome!')}else{S.loginError=r.error||'Verification failed';render()}}
+async function verifyOTP(){const code=S.loginOTP.join('');if(code.length<6){S.loginError='Enter the 6-digit code';render();return}S.loginLoading=true;S.loginError='';render();let url,body;if(S.loginMethod==='email'){url='/api/verify-otp-email';body={email:(S.loginEmail||'').trim().toLowerCase(),code,name:S.loginName}}else{let ph=S.loginPhone.replace(/[^0-9+]/g,'');if(!ph.startsWith('+'))ph='+'+ph;url='/api/verify-otp';body={phone:ph,code,name:S.loginName}}const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>({error:'Network error'}));S.loginLoading=false;if(r.token){token=r.token;localStorage.setItem('tf_token',r.token);localStorage.setItem('tf_phone',r.phone);localStorage.setItem('tf_name',r.name||'');if(r.email)localStorage.setItem('tf_email',r.email);S.user=r;S.loginStep='phone';clearLoginState();try{sessionStorage.removeItem('tf_otp_ts')}catch(e){}try{history.replaceState(null,'','/')}catch(e){}load();chk();loadWeather();loadTicker();loadCityTemps();loadRemember();_startPolls();toast('Welcome!')}else{S.loginError=r.error||'Verification failed';render()}}
 function otpInput(i,v){const d=v.slice(-1);S.loginOTP[i]=d;const el=document.getElementById('otp'+i);if(el)el.value=d;persistLoginState();if(d&&i<5){const nx=document.getElementById('otp'+(i+1));if(nx)nx.focus()}else if(d&&i===5){if(S.loginOTP.every(x=>x))verifyOTP()}}
 function otpKey(i,e){if(e.key==='Backspace'&&!S.loginOTP[i]&&i>0){const prev=document.getElementById('otp'+(i-1));if(prev){prev.focus();S.loginOTP[i-1]='';prev.value='';persistLoginState()}}}
+// The signed-in timers (tasks every 10 s, weather, ticker, temps, remember). Kept in one list so
+// logout() can stop them: before, they kept running on the login screen, and every 10 s a
+// stale token's 401 ran logout() again, which redrew the form, closed the phone keyboard and
+// reset what the person had typed.
+function _startPolls(){_stopPolls();S._polls=[setInterval(load,10000),setInterval(loadWeather,15*60*1000),setInterval(loadTicker,15*60*1000),setInterval(loadCityTemps,15*60*1000),setInterval(loadRemember,6*60*60*1000)]}
+function _stopPolls(){(S._polls||[]).forEach(clearInterval);S._polls=null;try{if(_tickerTimer){clearInterval(_tickerTimer);_tickerTimer=null}}catch(e){}}
 function logout(){
+  _stopPolls();
+  if(!token&&!S.user)return;
   const lastName=localStorage.getItem('tf_name')||'';
   const lastEmail=localStorage.getItem('tf_email')||'';
   const lastPhone=localStorage.getItem('tf_phone')||'';
@@ -9721,7 +9729,7 @@ function _isModalOpen(){return !!(S.showAdd||S.showProfile||S.showHelp||S.schPan
 // card and we're waiting for bytes — re-rendering now wipes the <audio> element before it can
 // connect, causing the "affirmation refreshes the screen forever" bug.
 function _audioBusy(){if(S.playing||(S.meditating&&S.meditating.active))return true;const a=document.getElementById('audioEl');return !!(a&&!a.paused)}
-async function load(){if(_audioBusy())return;
+async function load(){if(!token||_audioBusy())return;
   // Skip background poll entirely while any modal/overlay is open. Re-renders during
   // an open modal wipe drag state, audio recordings, in-progress text, and cause flicker.
   if(_isModalOpen())return;
@@ -11446,7 +11454,7 @@ function playMedAudio(id,title,mins){
     });
   },200);
 }
-async function loadGoogleStatus(){const r=await api('/google/status');if(r){S.google={configured:!!r.configured,accounts:r.accounts||[],loaded:true};render();if(S.google.accounts.length&&S.tab==='cal')loadGcalEvents()}}
+async function loadGoogleStatus(){if(!token)return;const r=await api('/google/status');if(r){S.google={configured:!!r.configured,accounts:r.accounts||[],loaded:true};render();if(S.google.accounts.length&&S.tab==='cal')loadGcalEvents()}}
 async function connectGoogle(){const r=await api('/google/auth-url');if(!r||!r.url){toast('\\u26A0\\uFE0F Google integration is not configured yet. Ask admin to set GOOGLE_CLIENT_ID/SECRET.','err');return}const w=window.open(r.url,'_blank','width=520,height=640');if(!w){location.href=r.url;return}window.addEventListener('message',function onMsg(e){if(e.data&&e.data.type==='google-connected'){window.removeEventListener('message',onMsg);toast('\\u2705 Connected '+e.data.email);loadGoogleStatus()}},{once:false});const poll=setInterval(()=>{if(w.closed){clearInterval(poll);loadGoogleStatus()}},900)}
 async function disconnectGoogle(email){if(!confirm('Disconnect '+(email||'all Google accounts')+' from Brodoit Calendar?'))return;const r=await api('/google/disconnect',{method:'POST',body:JSON.stringify({email:email||''})});if(r&&r.ok){toast('\\u23F8 Disconnected');S.gcalEvents=[];loadGoogleStatus()}}
 async function setDefaultGoogle(email){const r=await api('/google/set-default',{method:'POST',body:JSON.stringify({email})});if(r&&r.ok){toast('\\u2705 Default account set to '+email);loadGoogleStatus()}}
@@ -14792,6 +14800,8 @@ function render(){
   _renderRAF=requestAnimationFrame(()=>{_renderRAF=0;_render()});
 }
 function renderPassive(){
+  // Background data never redraws the login screen: it would close the keyboard mid-typing.
+  if(!S.user)return;
   // Skip passive re-renders entirely while user is on the Bro tab — rebuilding
   // innerHTML destroys the textarea, causing flicker and losing cursor position.
   if(S.tab==='bro')return;
@@ -17469,7 +17479,7 @@ window.S=S;window._render=_render;window.render=render;window.switchTab=switchTa
   }
   requestAnimationFrame(frame);
 })();
-if(S.user){refreshSession();load();loadBookStreak();loadGoogleStatus();loadWeather();loadTicker();loadCityTemps();loadRemember();coachInit();setInterval(load,10000);setInterval(loadWeather,15*60*1000);setInterval(loadTicker,15*60*1000);setInterval(loadCityTemps,15*60*1000);setInterval(loadRemember,6*60*60*1000)}else render();
+if(S.user){refreshSession();load();loadBookStreak();loadGoogleStatus();loadWeather();loadTicker();loadCityTemps();loadRemember();coachInit();_startPolls()}else render();
 setTimeout(function(){var sp=document.getElementById('splash');if(sp){sp.classList.add('hide');setTimeout(function(){sp.remove()},500)}},300);
 // When the user returns from their email app to read the OTP, re-restore the in-progress login.
 // Only ever transitions FORWARD (phone → otp); never restores otp → phone. The previous polling
