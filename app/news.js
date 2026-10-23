@@ -344,6 +344,7 @@
     const h = Math.max(240, Math.floor(bottom - d.getBoundingClientRect().top - 10));
     d.style.height = h + 'px';
     fitNear();
+    if (document.fonts && !N._fontsHook) { N._fontsHook = true; document.fonts.ready.then(() => fitNear()); }
     if (!d._wired) {
       d._wired = true;
       let t = 0;
@@ -355,7 +356,22 @@
   // If the story is long the type steps down first, then the photo gives way to a 34% floor, and only then does the
   // text scroll inside the card (never cut off). Landscape phones lay the card out side by side (photo left).
   // Only the cards around the one in view are fitted, so a deck of hundreds stays quick.
+  // The front page never scrolls inside itself: the list keeps only the stories that fit whole above "Start reading"
+  // (which goes through all of them). On a very short screen the lead photo gets shorter first; only if one story
+  // still can't fit does the page scroll. Not cached by size, so it refits once the fonts (Hindi) have loaded.
+  function fitCover(cardEl) {
+    const cv = cardEl.querySelector('.nz-cv'); if (!cv || !cv.clientHeight) return;
+    const rows = Array.from(cv.querySelectorAll('.nz-cv-list li')), lead = cv.querySelector('.nz-cv-lead');
+    rows.forEach(li => { li.style.display = ''; }); if (lead) lead.style.height = '';
+    cv.classList.remove('scroll');
+    const over = () => cv.scrollHeight > cv.clientHeight + 1;
+    for (let k = rows.length - 1; k >= 1 && over(); k--) rows[k].style.display = 'none';
+    if (over() && lead) lead.style.height = Math.max(120, lead.offsetHeight - (cv.scrollHeight - cv.clientHeight)) + 'px';
+    if (over() && rows.length) rows[0].style.display = 'none';
+    if (over()) cv.classList.add('scroll');
+  }
   function fit(cardEl) {
+    if (cardEl.classList.contains('nz-cover')) return fitCover(cardEl);
     const H = cardEl.clientHeight, body = cardEl.querySelector('.nz-body'), img = cardEl.querySelector('.nz-img');
     if (!H || !body) return;
     cardEl.classList.remove('sm', 'xs', 'scroll');
