@@ -34,7 +34,7 @@ class EnableStepsActivity : Activity() {
             orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER
             setPadding(dp(28f), dp(40f), dp(28f), dp(32f)); setBackgroundColor(Color.parseColor("#FBF8F3"))
         }
-        val icon = ImageView(this).apply { setImageResource(R.drawable.ic_launcher_foreground); layoutParams = LinearLayout.LayoutParams(dp(160f), dp(160f)) }
+        val icon = ImageView(this).apply { setImageResource(R.drawable.splash_icon); layoutParams = LinearLayout.LayoutParams(dp(160f), dp(160f)) }
         val title = TextView(this).apply {
             text = getString(R.string.enable_title); textSize = 28f; setTypeface(null, Typeface.BOLD); gravity = Gravity.CENTER
             setTextColor(Color.parseColor("#1F1E1C")); setPadding(0, dp(18f), 0, dp(10f))
