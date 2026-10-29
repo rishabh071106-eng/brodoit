@@ -11,4 +11,8 @@
     <string name="enable_later">Not now</string>
     <string name="enable_denied">Steps stay off until you allow Physical activity in Settings → Apps → Brodoit.</string>
     <string name="enable_working">Setting up…</string>
+    <!-- the Play app (WebView) when brodoit.com cannot be reached -->
+    <string name="offline_title">You\'re offline</string>
+    <string name="offline_body">Brodoit needs the internet. Check your connection, then try again.</string>
+    <string name="offline_retry">Try again</string>
 </resources>

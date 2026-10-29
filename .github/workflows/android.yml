@@ -1,7 +1,7 @@
-# Builds the Brodoit Android app (TWA + background step counter) in two flavors and publishes them unsigned, plus
-# apksigner, as a GitHub release (main only):
-#   direct → com.brodoit.app, the APK served at brodoit.com/android (sideload)
-#   play   → com.brodoit.twa, the bundle for the existing Google Play listing
+# Builds the Brodoit Android app (brodoit.com + background step counter) in two flavors and publishes them unsigned,
+# plus apksigner, as a GitHub release (main only):
+#   direct → com.brodoit.app, the APK served at brodoit.com/android (sideload), a Trusted Web Activity
+#   play   → com.brodoit.twa, the bundle for the existing Google Play listing: brodoit.com in the app's own WebView
 # The Brodoit server (modules/android.js) downloads the newest release, signs both with its own upload key kept on
 # the data volume, serves /download/brodoit.apk, and uploads the bundle to Play's test tracks (modules/play.js).
 # Every build is checked (packages, versions above the old Play build, target SDK) and installed on Android
@@ -9,7 +9,7 @@
 name: android
 on:
   push:
-    paths: ['android/**', '.github/workflows/android.yml', '.github/scripts/android-smoke.sh']
+    paths: ['android/**', '.github/workflows/android.yml', '.github/scripts/android-smoke*.sh']
   workflow_dispatch:
 permissions:
   contents: write
@@ -33,13 +33,15 @@ jobs:
         env:
           BRODOIT_BUILD_NUMBER: ${{ github.run_number }}
           BRODOIT_SITE_URL: https://brodoit.com
-        run: gradle --no-daemon :app:assembleDirectRelease :app:bundlePlayRelease
+        run: gradle --no-daemon :app:assembleDirectRelease :app:bundlePlayRelease :app:assemblePlayRelease
       - name: Collect artifacts
         run: |
           set -e
           mkdir -p out
           cp android/app/build/outputs/apk/direct/release/app-direct-release-unsigned.apk out/brodoit-unsigned.apk
           cp android/app/build/outputs/bundle/playRelease/app-play-release.aab out/brodoit-unsigned.aab
+          # the Play build as an APK, only for the checks and the emulator test (not released)
+          mkdir -p play && cp android/app/build/outputs/apk/play/release/app-play-release-unsigned.apk play/brodoit-play-unsigned.apk
           BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
           cp "$BT/lib/apksigner.jar" out/apksigner.jar
           VC=$((1000 + ${{ github.run_number }}))
@@ -66,12 +68,21 @@ jobs:
           echo "$B" | grep -q "targetSdkVersion:'36'" || { echo "::error::the APK must target SDK 36"; exit 1; }
           # v21: Android 13+ shows the morning/evening summaries and reminders only with POST_NOTIFICATIONS
           "$BT/aapt2" dump permissions out/brodoit-unsigned.apk | grep -q "android.permission.POST_NOTIFICATIONS" || { echo "::error::the app must ask for POST_NOTIFICATIONS"; exit 1; }
+          # the Play build runs brodoit.com in its own WebView: WebAppActivity is the launcher, no Trusted Web Activity
+          M=$("$BT/aapt2" dump xmltree play/brodoit-play-unsigned.apk --file AndroidManifest.xml)
+          echo "$M" | grep -q 'com.brodoit.app.WebAppActivity' || { echo "::error::the Play build must launch WebAppActivity"; exit 1; }
+          if echo "$M" | grep -qE 'com.brodoit.app.LauncherActivity|androidbrowserhelper.trusted.DelegationService'; then echo "::error::the Play build must not be a Trusted Web Activity"; exit 1; fi
+          P=$("$BT/aapt2" dump permissions play/brodoit-play-unsigned.apk)
+          for perm in RECORD_AUDIO POST_NOTIFICATIONS ACTIVITY_RECOGNITION; do echo "$P" | grep -q "android.permission.$perm" || { echo "::error::the Play build must ask for $perm"; exit 1; }; done
+          "$BT/aapt2" dump badging play/brodoit-play-unsigned.apk | head -1 | grep -q "package: name='com.brodoit.twa' versionCode='$VC'" || { echo "::error::the Play APK must be com.brodoit.twa $VC"; exit 1; }
+          echo "Play build: WebAppActivity, no TWA, permissions ok"
       - name: A copy signed with a throwaway key, for the emulator test only
         run: |
           set -e
           mkdir -p ci
           keytool -genkeypair -keystore /tmp/ci.jks -storepass cipass1 -keypass cipass1 -alias ci -keyalg RSA -keysize 2048 -validity 2 -dname "CN=CI" > /dev/null
           java -jar out/apksigner.jar sign --ks /tmp/ci.jks --ks-pass pass:cipass1 --key-pass pass:cipass1 --out ci/brodoit-ci.apk out/brodoit-unsigned.apk
+          java -jar out/apksigner.jar sign --ks /tmp/ci.jks --ks-pass pass:cipass1 --key-pass pass:cipass1 --out ci/brodoit-play-ci.apk play/brodoit-play-unsigned.apk
       - uses: actions/upload-artifact@v4
         with: { name: brodoit-android, path: out }
       - uses: actions/upload-artifact@v4
@@ -94,7 +105,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Install, allow Physical activity, open brodoit.com, the steps deep link
+      - name: Both builds — install, allow Physical activity, open brodoit.com, links, the steps deep link, offline
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api }}
@@ -102,12 +113,14 @@ jobs:
           arch: x86_64
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
-          script: bash .github/scripts/android-smoke.sh ci/brodoit-ci.apk shots-${{ matrix.api }}
+          script: bash .github/scripts/android-smoke-all.sh ci/brodoit-ci.apk ci/brodoit-play-ci.apk ${{ matrix.api }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: emulator-${{ matrix.api }}
-          path: shots-${{ matrix.api }}
+          path: |
+            shots-${{ matrix.api }}
+            shots-play-${{ matrix.api }}
 
   publish:
     needs: [build, emulator]

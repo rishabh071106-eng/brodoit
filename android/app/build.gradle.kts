@@ -26,8 +26,9 @@ android {
     // direct: the APK served at brodoit.com/android (sideload). play: the bundle for the existing Play listing.
     flavorDimensions += "store"
     productFlavors {
-        create("direct") { dimension = "store"; applicationId = "com.brodoit.app" }
-        create("play") { dimension = "store"; applicationId = "com.brodoit.twa" }
+        // direct: a Trusted Web Activity. play: brodoit.com in the app's own WebView (WebAppActivity, src/play manifest)
+        create("direct") { dimension = "store"; applicationId = "com.brodoit.app"; resValue("bool", "use_webview", "false") }
+        create("play") { dimension = "store"; applicationId = "com.brodoit.twa"; resValue("bool", "use_webview", "true") }
     }
 
     buildTypes {
@@ -47,6 +48,11 @@ android {
 
 dependencies {
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
+    // the Play build's WebView: Chrome tabs, the page bridge (web message listener, document-start script), back
+    implementation("androidx.browser:browser:1.8.0")
+    implementation("androidx.webkit:webkit:1.12.1")
+    implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("com.google.android.gms:play-services-fitness:21.2.0")
     implementation("com.google.android.gms:play-services-base:18.5.0")
 }
