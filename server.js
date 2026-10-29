@@ -17620,7 +17620,8 @@ try{db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_beta_signups_email ON beta_si
 // overridable by env var if the group or the track ever changes.
 const BETA_GROUP=process.env.BETA_GROUP||'brodoit-testing';
 const BETA_GROUP_URL='https://groups.google.com/g/'+BETA_GROUP;
-const BETA_OPT_IN_URL=process.env.BETA_OPT_IN_URL||'https://play.google.com/apps/testing/com.brodoit.twa';
+// the Play page where a tester opts in. A setting that is not a full https:// link (an old internal-test id) is ignored.
+const BETA_OPT_IN_URL=/^https:\/\//.test(process.env.BETA_OPT_IN_URL||'')?process.env.BETA_OPT_IN_URL:'https://play.google.com/apps/testing/com.brodoit.twa';
 
 app.post('/api/beta-signup',async(req,res)=>{
   const name=String(req.body.name||'').trim().slice(0,80);
