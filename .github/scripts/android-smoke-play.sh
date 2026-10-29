@@ -76,16 +76,27 @@ adb shell am start -W -a android.intent.action.VIEW -d 'brodoit://enable' "$PKG"
 grep -qE 'Status: ok|EnableStepsActivity|WebAppActivity' "$OUT/deeplink.txt" && ok "brodoit://enable opens the app" || bad "deep link: $(tr '\n' ' ' < "$OUT/deeplink.txt")"
 sleep 8; shot 4-deeplink
 
-# no internet: the app's own offline screen, and "Try again" brings brodoit.com back
-adb shell am force-stop "$PKG"
-adb shell cmd connectivity airplane-mode enable > /dev/null 2>&1; sleep 4
+# no internet. offline(): airplane mode plus wifi and mobile data off, and say if the emulator still gets out.
+offline() { adb shell cmd connectivity airplane-mode enable > /dev/null 2>&1; adb shell svc wifi disable > /dev/null 2>&1; adb shell svc data disable > /dev/null 2>&1; sleep 5
+  adb shell ping -c 1 -W 3 8.8.8.8 > /dev/null 2>&1 && echo "note: the emulator still reaches the internet"; true; }
+online() { adb shell cmd connectivity airplane-mode disable > /dev/null 2>&1; adb shell svc wifi enable > /dev/null 2>&1; adb shell svc data enable > /dev/null 2>&1; sleep 10; }
+# 1) opened before: brodoit.com's service worker serves the app it saved (or the offline screen)
+adb shell am force-stop "$PKG"; offline
 adb shell am start -W -n "$PKG/$ACT" > /dev/null 2>&1
-if wait_for "offline" 60; then ok "without internet: the app's offline screen"; else bad "no offline screen without internet"; fi
-shot 5-offline
-adb shell cmd connectivity airplane-mode disable > /dev/null 2>&1; sleep 8
+if wait_for "Brodoit needs the internet" 40; then ok "without internet (opened before): the app's offline screen"
+elif page_up 20; then ok "without internet (opened before): Brodoit opens from what it saved"
+else bad "without internet (opened before): neither the page nor the offline screen"; fi
+shot 5-offline-saved
+# 2) nothing saved (app data cleared): the app's own offline screen, then "Try again" once the internet is back
+adb shell am force-stop "$PKG"; adb shell pm clear "$PKG" > /dev/null 2>&1
+adb shell am start -W -n "$PKG/$ACT" > /dev/null 2>&1
+if wait_for 'physical activity' 60; then tap 'permission_allow_button' || tap 'Allow' || true; fi
+if wait_for "Brodoit needs the internet" 60; then ok "without internet (first open): the app's offline screen"; else bad "no offline screen on a first open without internet"; fi
+shot 6-offline-first
+online
 tap 'Try again' || bad "could not tap Try again"
 if page_up 90; then ok "Try again brings brodoit.com back"; else bad "the page did not come back after Try again"; fi
-shot 6-back-online
+shot 7-back-online
 
 adb shell dumpsys package "$PKG" | grep -q 'android.permission.POST_NOTIFICATIONS' && ok "asks for notifications (POST_NOTIFICATIONS)" || bad "POST_NOTIFICATIONS is missing"
 
