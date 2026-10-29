@@ -52,6 +52,7 @@ dependencies {
     implementation("androidx.browser:browser:1.8.0")
     implementation("androidx.webkit:webkit:1.12.1")
     implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("androidx.fragment:fragment:1.8.5") // Play services pull an old Fragment; the result APIs need 1.3+
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("com.google.android.gms:play-services-fitness:21.2.0")
     implementation("com.google.android.gms:play-services-base:18.5.0")
