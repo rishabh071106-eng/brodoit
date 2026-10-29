@@ -20,11 +20,14 @@ at **https://brodoit.com/android**, a one-tap install for testers that needs no 
    - In Play Console, go to Brodoit → Test and release → App integrity → App signing → "Request upload key reset".
    - Reason: "I lost my upload key". Upload that .pem file. Google replies within about 2 days.
    - After the reset, `play.state` stops saying `waiting-key-reset` and the build uploads by itself.
-2. **Service account** (the uploader). The Google Cloud side is set up for you: a project, the Google Play Android
-   Developer API, and a service account whose key the **Brodoit server made itself**. Google holds only its public
-   certificate (https://brodoit.com/download/play-api-cert.pem); the private key never leaves the server. Its email is in
-   `config/play.json`. In Play Console → Users and permissions → Invite new users, paste that email, add the app Brodoit
-   with **Release apps to testing tracks** and **Manage testing tracks**, and send the invite.
+2. **Service account** (the uploader). The Google Cloud side is set up (28 Oct 2026):
+   - **Project:** `brodoit-play-261028`, with the Google Play Android Developer API turned on.
+   - **Service account:** `play-uploader@brodoit-play-261028.iam.gserviceaccount.com`. Its key was made by the **Brodoit server itself**.
+   - Google holds only the public certificate (https://brodoit.com/download/play-api-cert.pem, SHA-256 `35:F3:03:73…`). The private key never leaves the server.
+   - The email is in `config/play.json`.
+
+   In Play Console → Users and permissions → Invite new users, paste that email and add the app Brodoit with
+   **Release apps to testing tracks** and **Manage testing tracks**, then send the invite.
    (Or make your own service account key and choose its .json file in You → Admin → Google Play; a pasted key wins.)
 3. **App content.** In Policy → App content, update these two forms for step counting:
    - **Data safety:** "Fitness info" (step counts) is collected, linked to the account, used for app functionality, not shared, encrypted in transit, and deletable on request. The device ID is "Device or other IDs" (app functionality).
