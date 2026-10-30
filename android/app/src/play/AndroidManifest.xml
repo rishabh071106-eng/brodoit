@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Google Play build (com.brodoit.twa) runs brodoit.com in its own WebView (WebAppActivity) instead of a
+     Trusted Web Activity: the TWA launcher and its Chrome services are removed, the WebView activity takes their place. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Bro listens (the page's microphone), and the phone's speech recognizer for voice typing -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
+
+    <application>
+        <meta-data android:name="web_manifest_url" tools:node="remove" />
+
+        <activity android:name="com.brodoit.app.LauncherActivity" tools:node="remove" />
+        <service android:name="com.google.androidbrowserhelper.trusted.DelegationService" tools:node="remove" />
+        <activity android:name="com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity" tools:node="remove" />
+
+        <activity
+            android:name="com.brodoit.app.WebAppActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Brodoit.Launcher"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density|fontScale">
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="${siteHost}" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
