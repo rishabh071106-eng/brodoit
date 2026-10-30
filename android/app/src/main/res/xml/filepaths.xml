@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <files-path path="twa_splash/" name="twa_splash" />
+    <!-- images the Play app shares from the page (news cards, step cards) -->
+    <cache-path path="shared/" name="shared" />
 </paths>

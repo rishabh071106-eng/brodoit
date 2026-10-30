@@ -94,7 +94,9 @@ class EnableStepsActivity : Activity() {
     }
 
     private fun openApp() {
-        val i = Intent(this, LauncherActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        // the Play build runs the site in its own WebView (WebAppActivity); the direct APK is a Trusted Web Activity
+        val app = if (resources.getBoolean(R.bool.use_webview)) WebAppActivity::class.java else LauncherActivity::class.java
+        val i = Intent(this, app).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(i); finish()
     }
 }

@@ -86,6 +86,8 @@
   function addCss() { if (document.getElementById('nt-css')) return; const st = document.createElement('style'); st.id = 'nt-css'; st.textContent = css; document.head.appendChild(st); }
   function stateHTML() {
     const p = N.permission();
+    // inside the Google Play app (its own WebView, no web push): say so, instead of asking people to install the app
+    if (p === 'unsupported' && window.BrodoitApp) return `<div class="nt-state">${icon('bell-off', 20)}<span>${L('Notifications in the Brodoit app come with an update soon.', 'Brodoit ऐप में सूचनाएँ जल्द ही एक अपडेट में आएँगी।')}</span></div>`;
     if (p === 'unsupported') return `<div class="nt-state">${icon('bell-off', 20)}<span>${L('This browser can’t show notifications. Install the Brodoit app to get them.', 'यह ब्राउज़र सूचनाएँ नहीं दिखा सकता। सूचनाओं के लिए Brodoit ऐप इंस्टॉल करें।')}</span></div>`;
     if (p === 'denied') return `<div class="nt-state">${icon('bell-off', 20)}<span>${L('Notifications are blocked. Allow them for Brodoit in your phone’s settings.', 'सूचनाएँ बंद हैं। फ़ोन की सेटिंग में Brodoit के लिए चालू करें।')}</span></div>`;
     if (p === 'granted' && N.on) return `<div class="nt-state on">${icon('bell', 20)}<span>${L('On for this phone', 'इस फ़ोन पर चालू')}</span></div>`;
