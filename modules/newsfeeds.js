@@ -11,6 +11,10 @@
 //   - tech: The Verge, TechCrunch (AI desk), Ars Technica, Wired, MIT Technology Review; VentureBeat dropped.
 //   - business: Mint markets + companies, Economic Times, BBC Business, The Guardian Business (no paywalled FT/WSJ).
 //   - science: BBC, Nature, ScienceDaily, Phys.org, The Guardian Science.
+// v27 (2026-10-31): official, primary sources next to the newspapers, so a story can stand on the original
+// announcement: the Reserve Bank of India, the UN, the WHO and NASA (checked from GitHub's runners on 31 Oct: all
+// answer with items). The Press Information Bureau's feed answers only in Hindi whatever the Lang setting, and the
+// desk writes from English reports, so it is not listed. The app marks a story backed by an official source.
 //
 // Verification note: the build sandbox's egress proxy answers 403 to every news host, so these URLs could not be
 // curl-checked from there. Each one is the publisher's documented feed (its own RSS page, or the path already in
@@ -34,6 +38,8 @@ const NEWS_FEEDS = {
     'https://www.aljazeera.com/xml/rss/all.xml',                        // Al Jazeera English · All
     'https://feeds.npr.org/1004/rss.xml',                               // NPR · World
     'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',           // The New York Times · World
+    'https://news.un.org/feed/subscribe/en/news/all/rss.xml',           // UN News · All (official)
+    'https://www.who.int/rss-feeds/news-english.xml',                   // WHO · News (official)
   ],
   tech: [
     'https://www.theverge.com/rss/index.xml',                           // The Verge · All
@@ -48,6 +54,7 @@ const NEWS_FEEDS = {
     'https://economictimes.indiatimes.com/rssfeedstopstories.cms',      // The Economic Times · Top stories
     'https://feeds.bbci.co.uk/news/business/rss.xml',                   // BBC · Business
     'https://www.theguardian.com/business/rss',                         // The Guardian · Business
+    'https://www.rbi.org.in/pressreleases_rss.xml',                     // Reserve Bank of India · Press releases (official)
   ],
   science: [
     'https://feeds.bbci.co.uk/news/science_and_environment/rss.xml',    // BBC · Science & Environment
@@ -55,6 +62,7 @@ const NEWS_FEEDS = {
     'https://www.sciencedaily.com/rss/top/science.xml',                 // ScienceDaily · Top science (sciencedaily.com/newsfeeds.htm)
     'https://phys.org/rss-feed/breaking/',                              // Phys.org · Breaking
     'https://www.theguardian.com/science/rss',                          // The Guardian · Science
+    'https://www.nasa.gov/news-release/feed/',                          // NASA · News releases (official)
   ],
 };
 NEWS_FEEDS.ai = NEWS_FEEDS.tech;
@@ -67,7 +75,7 @@ const SOURCE_NAMES = {
   economictimes: 'The Economic Times', timesofindia: 'Times of India', bbc: 'BBC', bbci: 'BBC', theguardian: 'The Guardian',
   aljazeera: 'Al Jazeera', npr: 'NPR', nytimes: 'The New York Times', theverge: 'The Verge', techcrunch: 'TechCrunch',
   arstechnica: 'Ars Technica', wired: 'Wired', technologyreview: 'MIT Technology Review', nature: 'Nature',
-  sciencedaily: 'ScienceDaily', phys: 'Phys.org', reuters: 'Reuters', apnews: 'AP', venturebeat: 'VentureBeat', newscientist: 'New Scientist',
+  sciencedaily: 'ScienceDaily', phys: 'Phys.org', pib: 'PIB (Government of India)', rbi: 'Reserve Bank of India', un: 'UN News', who: 'WHO', nasa: 'NASA', reuters: 'Reuters', apnews: 'AP', venturebeat: 'VentureBeat', newscientist: 'New Scientist',
 };
 
 // Fetch every feed once and print a line per URL. Resolves to the list of failures.
