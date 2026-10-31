@@ -32,6 +32,11 @@ function queryFromHeadline(h) {
   return caps.slice(0, 3).join(' ');
 }
 
+// a photo address without tracking parameters (utm_source, utm_campaign…)
+function cleanUrl(u) {
+  try { const x = new URL(String(u || '')); for (const k of [...x.searchParams.keys()]) if (/^utm_/i.test(k)) x.searchParams.delete(k); return x.toString(); } catch (e) { return ''; }
+}
+
 async function find(query, opts = {}) {
   query = String(query || '').replace(/\s+/g, ' ').trim().slice(0, 80);
   const want = words(query);
@@ -59,8 +64,9 @@ async function find(query, opts = {}) {
     // it must really be about the subject: a query word in its file name, title or description
     const about = new Set(words(String(p.title || '').replace(/^File:/, '') + ' ' + strip(meta.ObjectName && meta.ObjectName.value) + ' ' + strip(meta.ImageDescription && meta.ImageDescription.value).slice(0, 400)));
     if (!want.some(w => about.has(w))) continue;
-    const url = ii.thumburl || ii.url;
-    if (!/^https:\/\/upload\.wikimedia\.org\//.test(url || '')) continue;
+    // Wikimedia's own file hosts only (v28.1: thumbnails now come from thumb.wikimedia.org, with utm_ tracking parameters)
+    const url = cleanUrl(ii.thumburl || ii.url);
+    if (!/^https:\/\/(upload|thumb)\.wikimedia\.org\//.test(url || '')) continue;
     const by = strip(meta.Artist && meta.Artist.value).slice(0, 80) || strip(meta.Credit && meta.Credit.value).slice(0, 80) || 'Unknown author';
     return { url, page: ii.descriptionurl || ('https://commons.wikimedia.org/wiki/' + encodeURIComponent(p.title || '')), by, license, title: String(p.title || '').replace(/^File:/, '').replace(/\.[a-z]+$/i, '') };
   }
@@ -108,4 +114,4 @@ async function findAny(query, opts = {}) {
   return findOpenverse(query, opts);
 }
 
-module.exports = { find, findOpenverse, findAny, queryFromHeadline, freeLicense, UA };
+module.exports = { find, findOpenverse, findAny, queryFromHeadline, freeLicense, cleanUrl, UA };

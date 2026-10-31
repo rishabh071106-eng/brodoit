@@ -394,6 +394,33 @@ function install(app, deps) {
     return usePool(id, cat);
   }
   const tried = new Map(); // id → when a lookup last found nothing (looked up again after 6 hours)
+  // upgrades look on Commons only (fast, well described; Openverse's daily allowance stays for new stories)
+  const findOwn = deps.findPhoto || (qy => PHOTO.find(qy).then(h => h && Object.assign({ source: 'Wikimedia Commons' }, h)));
+  const rmImg = id => { for (const x of ['jpg', 'png', 'webp']) { try { fs.unlinkSync(path.join(IMG, id + '.' + x)); } catch (e) { /* none */ } } };
+  // v28.1: a story on a pool photo tries its own subject again (more is found now that Wikimedia's new thumbnail host is
+  // accepted), and one that took another section's pool photo (its own section's pool was empty) gets its own section's
+  async function upgrade(r) {
+    let cr = null; try { cr = JSON.parse(r.image_credit || 'null'); } catch (e) { cr = null; }
+    if (!IMG || !cr || !cr.pool) return false;
+    if (Date.now() - (tried.get(r.id) || 0) >= 6 * 3600e3) {
+      for (const qy of [...new Set([String(r.image_query || '').trim(), PHOTO.queryFromHeadline(r.headline)].filter(Boolean))]) {
+        let hit = null; try { hit = await findOwn(qy); } catch (e) { hit = null; }
+        if (!hit || !hit.url) continue;
+        const nf = await download([hit.url, hit.thumb], path.join(IMG, r.id + '__new'));
+        if (!nf) continue;
+        rmImg(r.id); fs.renameSync(nf, path.join(IMG, r.id + path.extname(nf)));
+        q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(hit.url, creditJSON(hit), r.id);
+        return true;
+      }
+      tried.set(r.id, Date.now()); if (tried.size > 2000) tried.clear();
+    }
+    const own = (pool[r.category] || []).filter(x => x && x.credit);
+    if (own.length && !own.some(x => x.credit.page === cr.page)) {
+      rmImg(r.id); const c2 = usePool(r.id, r.category);
+      if (c2) { q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run('pool:' + r.category, JSON.stringify(c2), r.id); return true; }
+    }
+    return false;
+  }
   async function photoFor(id, query, headline, cat) {
     const cr = await photoInto(id, query, headline, cat);
     if (cr === 'have') return true;
@@ -422,9 +449,12 @@ function install(app, deps) {
     if (photoState.busy) return { busy: true };
     photoState.busy = true; let looked = 0, found = 0;
     try {
-      const rows = q("SELECT id, image_query, headline, category FROM news_stories WHERE created_at > datetime('now','-4 days') ORDER BY created_at DESC LIMIT 120").all().filter(r => !imgFile(r.id)).slice(0, limit || 12);
+      // stories with no photo first, then stories on a pool photo (v28.1: their own subject may be found now)
+      const all = q("SELECT id, image_query, headline, category, image_credit FROM news_stories WHERE created_at > datetime('now','-4 days') ORDER BY created_at DESC LIMIT 120").all();
+      const isPool = r => /"pool":true/.test(r.image_credit || '');
+      const rows = all.filter(r => !imgFile(r.id)).concat(all.filter(r => imgFile(r.id) && isPool(r) && Date.now() - (tried.get(r.id) || 0) >= 6 * 3600e3)).slice(0, limit || 12);
       for (const r of rows) {
-        looked++; if (await photoFor(r.id, r.image_query, r.headline, r.category)) found++;
+        looked++; if (imgFile(r.id) ? await upgrade(r) : await photoFor(r.id, r.image_query, r.headline, r.category)) found++;
         if (paceMs > 0) await new Promise(res => setTimeout(res, paceMs));
       }
     } catch (e) { log('photo pass', e.message); }
@@ -495,7 +525,7 @@ function install(app, deps) {
       q("DELETE FROM news_stories WHERE created_at < datetime('now','-4 days')").run();
       try { q("DELETE FROM news_shared WHERE shared_at < datetime('now','-90 days')").run(); q('DELETE FROM news_editions WHERE at < ?').run(new Date(nowOf().getTime() - 7 * 864e5).toISOString()); } catch (e) { /* ignore */ }
       await photoPass(12, 0);
-      try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp)$/, ''); if (/^(th|rd)_/.test(id)) continue; if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id) && !q('SELECT 1 FROM news_shared WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
+      try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp|tmp)$/, ''); if (/^(th|rd)_/.test(id)) continue; if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id) && !q('SELECT 1 FROM news_shared WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
       state.last = { at: new Date().toISOString(), reason, edition: ed.id, items: items.length, clusters: clusters.length, wrote, skipped, duplicates: dup, failed, ms: Date.now() - t0, writer: state.writer };
       log('edition', JSON.stringify(state.last));
       // record the new headlines and top stories right away (modules/newsvoice.js)
