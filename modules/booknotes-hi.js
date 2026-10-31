@@ -79,8 +79,9 @@ function create(o) {
     }
     const BC = global._broCore;
     if (BC && BC.brainReady && BC.brainReady()) {
-      // Devanagari takes several tokens a word: room for the whole note, so the JSON is never cut off
-      const r = await BC.chat({ system: SYS, messages: [{ role: 'user', content: text }], json: true, maxTokens: 7000, temperature: 0.3, purpose: 'news', emergency: false });
+      // ownOnly: a background model with its own allowance, never live talk's (104 long notes would spend it); no
+      // reasoning needed to translate; room for the whole note (Devanagari takes several tokens a word on Llama)
+      const r = await BC.chat({ system: SYS, messages: [{ role: 'user', content: text }], json: true, maxTokens: 5000, temperature: 0.3, purpose: 'news', effort: 'low', ownOnly: true, emergency: false });
       const out = parseReply(r && r.text);
       if (!out) state.why = 'reply was not JSON (' + String(r && r.text || '').length + ' chars' + (r && r.model ? ', ' + r.model : '') + ')';
       return out;
@@ -108,14 +109,19 @@ function create(o) {
         if (!b || !b.id || fs.existsSync(path.join(dir, b.id + '.json'))) continue;
         if (Date.now() - (state.failed[b.id] || 0) < 6 * 3600e3) continue;
         let ok = false; state.tried++; state.error = ''; state.why = '';
-        try { ok = await one(b); } catch (e) { state.error = b.id + ': ' + String(e.message || e).slice(0, 120); }
+        try { ok = await one(b); } catch (e) {
+          // no background model of its own right now (all retired, or out of today's allowance): stop this run without
+          // counting the book as failed; the next run (3 hours) tries again
+          if (e && (e.code === 'brain_down' || /brain unavailable/.test(e.message || ''))) { state.tried--; state.paused = new Date().toISOString(); log('no background model of its own right now: paused until the next run'); break; }
+          state.error = b.id + ': ' + String(e.message || e).slice(0, 120);
+        }
         if (ok) state.made++; else {
           state.failed[b.id] = Date.now();
           state.recent = state.recent.concat([state.error || b.id + ': failed']).slice(-5);
           if (logged++ < 5) log('could not write', state.error || b.id); // the reason, for the deploy logs (5 a run)
         }
         state.at = new Date().toISOString();
-        await new Promise(r => setTimeout(r, +(process.env.BOOK_NOTES_HI_PACE_MS || 20000)));
+        await new Promise(r => setTimeout(r, +(process.env.BOOK_NOTES_HI_PACE_MS || 45000)));
       }
       log(state.made, 'Hindi notes written so far ·', Object.keys(state.failed).length, 'waiting for a retry');
     } finally { state.running = false; }
@@ -125,7 +131,7 @@ function create(o) {
     for (const t of [t1, t2]) if (t.unref) t.unref();
   }
   // what the job is doing, for /api/book-hi (counts and the last few reasons; no keys, no text of the notes)
-  const status = () => ({ running: state.running, made: state.made, tried: state.tried, waiting: Object.keys(state.failed).length, at: state.at, recent: state.recent });
+  const status = () => ({ running: state.running, made: state.made, tried: state.tried, waiting: Object.keys(state.failed).length, at: state.at, paused: state.paused || null, recent: state.recent });
   global._bookNotesHi = { status };
   return { run, state, status, one, toNote, check, partsOf };
 }
