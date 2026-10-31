@@ -67,4 +67,45 @@ async function find(query, opts = {}) {
   return null;
 }
 
-module.exports = { find, queryFromHeadline, freeLicense, UA };
+// v28: Openverse (openverse.org, the open search over CC-licensed and public-domain images from Flickr, museums,
+// Wikimedia and more) when Commons has nothing that fits. The same rules: CC0, the public domain mark, CC BY or
+// CC BY-SA only (the search asks for nothing else and the answer is checked again), big enough, landscape-ish, about
+// the subject (a query word in its title or tags), with its credit (creator · licence · where it is from).
+const OV = 'https://api.openverse.org/v1/images/';
+const OV_LIC = { cc0: 'CC0', pdm: 'Public domain', by: 'CC BY', 'by-sa': 'CC BY-SA' };
+const titleCase = t => String(t || '').replace(/(^|[\s_-])([a-z])/g, (m, a, b) => a + b.toUpperCase());
+async function findOpenverse(query, opts = {}) {
+  query = String(query || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+  const want = words(query);
+  if (!want.length) return null;
+  const doFetch = opts.fetch || fetch;
+  const u = OV + '?' + new URLSearchParams({ q: query, license: 'cc0,pdm,by,by-sa', mature: 'false', page_size: '20' });
+  let j;
+  try {
+    const r = await doFetch(u, { headers: { 'User-Agent': UA, Accept: 'application/json' }, signal: AbortSignal.timeout(opts.timeout || 10000) });
+    if (!r.ok) return null;
+    j = await r.json();
+  } catch (e) { return null; }
+  for (const x of (j && Array.isArray(j.results) ? j.results : [])) {
+    const lic = OV_LIC[String(x.license || '').toLowerCase()]; if (!lic) continue;
+    if ((x.width || 0) < 640 || (x.height || 0) < 360 || x.height > x.width * 1.25) continue;
+    if (x.mature) continue;
+    const about = new Set(words(String(x.title || '') + ' ' + (Array.isArray(x.tags) ? x.tags.map(t => t && t.name).join(' ') : '')));
+    if (!want.some(w => about.has(w))) continue;
+    const url = String(x.url || '');
+    if (!/^https:\/\//.test(url) || !/\.(jpe?g|png)(\?|$)/i.test(url) && !/^(jpe?g|png)$/i.test(String(x.filetype || ''))) continue;
+    const license = lic + (x.license_version && !/^(CC0|Public domain)$/.test(lic) ? ' ' + x.license_version : '');
+    const where = titleCase(String(x.source || x.provider || 'openverse').replace(/_/g, ' '));
+    return { url, thumb: x.thumbnail || '', page: /^https:\/\//.test(x.foreign_landing_url || '') ? x.foreign_landing_url : 'https://openverse.org/image/' + x.id, by: strip(x.creator).slice(0, 80) || 'Unknown author', license, title: strip(x.title).slice(0, 120), source: where + ' via Openverse' };
+  }
+  return null;
+}
+
+// Commons first (the best-described photos), then Openverse
+async function findAny(query, opts = {}) {
+  const c = await find(query, opts);
+  if (c) return Object.assign({ source: 'Wikimedia Commons' }, c);
+  return findOpenverse(query, opts);
+}
+
+module.exports = { find, findOpenverse, findAny, queryFromHeadline, freeLicense, UA };

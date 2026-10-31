@@ -99,28 +99,6 @@ html[data-theme="dark"] #app .nz-card.skel .nz-img,body[data-theme=aurora] #app 
 /* v22: the edition's front page, the tag on the photo, "Why it matters", sources, the progress bar, the "new" dot */
 #app .nz-prog{position:absolute;top:0;left:22px;right:22px;height:3px;border-radius:2px;background:color-mix(in srgb,var(--b-ink) 10%,transparent);z-index:4;overflow:hidden;pointer-events:none}
 #app .nz-prog i{display:block;height:100%;width:0;border-radius:2px;background:var(--b-primary,#B5402A);transition:width .25s ease}
-#app .nz-cover{justify-content:flex-start}
-#app .nz-cv{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;margin:0 6px;padding:22px 18px 18px;border-radius:24px;background:radial-gradient(120% 70% at 0% 0%,color-mix(in srgb,var(--b-primary,#B5402A) 16%,transparent),transparent 60%),var(--b-card);box-shadow:0 1px 2px rgba(31,30,28,.05),0 14px 30px -20px rgba(31,30,28,.5);display:flex;flex-direction:column;gap:14px}
-#app .nz-cv-k{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-right:110px;font:600 13px/1.3 var(--b-sans);color:var(--b-mute)}
-#app .nz-cv-k b{font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--b-primary,#B5402A)}
-#app .nz-cv-k b.dev{letter-spacing:0;text-transform:none}
-#app .nz-cv-dot{width:8px;height:8px;border-radius:50%;background:var(--b-primary,#B5402A);box-shadow:0 0 0 4px color-mix(in srgb,var(--b-primary,#B5402A) 18%,transparent)}
-#app .nz-cv-t{margin:0;font:400 30px/1.12 var(--b-serif,Georgia,serif);letter-spacing:-.01em;color:var(--b-ink);text-wrap:balance}
-#app .nz-cv-t.dev{font:700 26px/1.35 var(--b-devanagari,var(--b-sans))}
-#app .nz-cv-list{list-style:none;margin:0;padding:0;display:grid;gap:4px}
-#app .nz-cv-list button{width:100%;display:flex;align-items:flex-start;gap:12px;padding:10px 6px;border:0;border-radius:14px;background:transparent;color:inherit;text-align:left;cursor:pointer;font:inherit;min-height:52px}
-#app .nz-cv-list button:active,#app .nz-cv-list button:hover{background:var(--b-bg-2)}
-#app .nz-cv-n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:800 13px/1 var(--b-sans);color:#fff;background:var(--c)}
-#app .nz-cv-h b{display:block;font:700 16px/1.32 var(--ui-font,var(--b-sans));color:var(--b-ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-#app .nz-cv-h.dev b{font-family:var(--b-devanagari,var(--b-sans));line-height:1.5}
-#app .nz-cv-h small{display:block;margin-top:3px;font:600 12px/1.2 var(--b-sans);color:var(--b-mute)}
-#app .nz-cv-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
-#app .nz-cv-chips::-webkit-scrollbar{display:none}
-#app .nz-cv-chips button{flex:none;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--b-line);background:transparent;color:var(--b-ink-2);font:700 13px/1 var(--b-sans);cursor:pointer}
-#app .nz-cv-chips button.on{background:var(--b-ink);border-color:var(--b-ink);color:var(--b-bg)}
-#app .nz-cv-chips button.dev{font-family:var(--b-devanagari,var(--b-sans))}
-#app .nz-cv-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:4px;font:600 13px/1.3 var(--b-sans);color:var(--b-mute)}
-#app .nz-cv-go{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:var(--b-primary,#B5402A);color:#fff;font:700 14px/1 var(--b-sans);cursor:pointer;flex:none}
 #app .nz-tag{position:absolute;left:10px;bottom:12px;z-index:2;display:inline-flex;align-items:center;gap:8px;max-width:calc(100% - 76px);padding:7px 12px;border-radius:999px;background:rgba(15,13,20,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;font:600 12px/1 var(--b-sans);white-space:nowrap}
 #app .nz-tag b{font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff}
 #app .nz-tag b.dev{letter-spacing:0;text-transform:none}
@@ -140,28 +118,92 @@ a.nz-sh{text-decoration:none}
 body.nz-fresh .tab-news .ti{position:relative}
 body.nz-fresh .tab-news .ti::after{content:"";position:absolute;top:-1px;right:-3px;width:9px;height:9px;border-radius:50%;background:var(--b-primary,#B5402A);box-shadow:0 0 0 2px var(--b-bg,#fff)}
 @media (prefers-reduced-motion:reduce){#app .nz-prog i{transition:none}}
-/* v22: the lead story's photo opens the front page */
-#app .nz-cv-lead{position:relative;display:block;flex:none;width:100%;height:176px;padding:0;border:0;border-radius:18px;overflow:hidden;background:var(--c,#37352F);color:#fff;text-align:left;cursor:pointer;font:inherit}
-#app .nz-cv-lead img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-#app .nz-cv-lead::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.74))}
-#app .nz-cv-lead-t{position:absolute;left:14px;right:14px;bottom:12px;z-index:1}
-#app .nz-cv-lead-t small{display:block;margin-bottom:4px;font:800 11px/1.2 var(--b-sans);letter-spacing:.06em;text-transform:uppercase;opacity:.92}
-#app .nz-cv-lead-t b{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font:700 19px/1.26 var(--ui-font,var(--b-sans));text-shadow:0 1px 2px rgba(0,0,0,.35)}
-#app .nz-cv-lead-t.dev small{letter-spacing:0;text-transform:none;font-family:var(--b-devanagari,var(--b-sans))}
-#app .nz-cv-lead-t.dev b{font-family:var(--b-devanagari,var(--b-sans));line-height:1.45}
-#app .nz-cv-lead:active{transform:scale(.99)}
-/* sections sit under the title. The front page doesn't scroll inside itself: fitCover() (news.js) keeps only the
-   stories that fit whole, so "Start reading" sits at the bottom of the page and never covers half a story */
-#app .nz-cover .nz-cv-chips{margin:-4px -18px 0;padding:2px 18px}
-#app .nz-cover .nz-cv{overflow:hidden}
-#app .nz-cover .nz-cv.scroll{overflow-y:auto}
-#app .nz-cv-foot{padding-top:10px}
-#app .nz-cv>*{flex-shrink:0}
-
-/* v27: photo credit (free photos from Wikimedia Commons), "Official source", how the desk writes */
-#app .nz-cr{position:absolute;right:8px;top:8px;z-index:2;max-width:calc(100% - 16px);padding:3px 8px;border-radius:8px;background:rgba(15,13,20,.55);color:#fff;font:500 10.5px/1.35 var(--b-sans,system-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+/* v27: photo credit (free photos from Wikimedia Commons), "Official source", how the desk writes. v28: the credit sits
+   top left, clear of the language switch (top right) */
+#app .nz-cr{position:absolute;left:10px;top:14px;z-index:2;max-width:calc(100% - 136px);padding:3px 8px;border-radius:8px;background:rgba(15,13,20,.55);color:#fff;font:500 10.5px/1.35 var(--b-sans,system-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
 .nz-off{flex:none;margin-left:auto;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,#2F7D4F 14%,transparent);color:#2F7D4F;font:700 11px/1.5 var(--b-sans,system-ui);font-style:normal;white-space:nowrap}
 .nz-sh .nz-off{margin-left:6px;vertical-align:1px}
 html[data-theme="dark"] .nz-off,body[data-theme=aurora] .nz-off{color:#8FD19A;background:rgba(143,209,154,.14)}
 .nz-sh-how{margin:10px 4px 4px;font:500 12.5px/1.45 var(--b-sans,system-ui);color:var(--b-mute,#6b6875)}
 .nz-sh-how a{color:var(--b-primary,#B5402A);font-weight:700;white-space:nowrap}
+
+/* v28: News opens on the first story. The bar under it: sections (Top, AI, India…) and Readers scroll on the left;
+   Thought of the day and Send sit at the right end. Every target is 44px or more. */
+#app .nz-bar{display:flex;align-items:stretch;gap:4px;margin:8px 6px 0;padding:4px;border-radius:18px;background:var(--b-card);border:1px solid var(--b-line);box-shadow:0 1px 2px rgba(31,30,28,.05)}
+#app .nz-cats{flex:1 1 auto;min-width:0;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-mask:linear-gradient(90deg,#000 88%,transparent);mask:linear-gradient(90deg,#000 88%,transparent);padding-right:18px}
+#app .nz-cats::-webkit-scrollbar{display:none}
+#app .nz-chip{flex:none;min-height:46px;min-width:46px;padding:0 13px;border:0;border-radius:14px;background:transparent;color:var(--b-ink-2);font:700 13.5px/1 var(--b-sans);cursor:pointer;white-space:nowrap}
+#app .nz-chip.dev{font-family:var(--b-devanagari,var(--b-sans));font-weight:600}
+#app .nz-chip.on{background:var(--b-ink);color:var(--b-bg)}
+#app .nz-chip:not(.on):active{background:var(--b-bg-2)}
+#app .nz-acts{flex:none;display:flex;gap:2px;padding-left:4px;border-left:1px solid var(--b-line)}
+#app .nz-act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:52px;min-height:46px;padding:0 4px;border:0;border-radius:14px;background:transparent;color:var(--b-ink-2);cursor:pointer}
+#app .nz-act span{font:700 10.5px/1.1 var(--b-sans)}
+#app .nz-act span.dev{font-family:var(--b-devanagari,var(--b-sans));font-size:11px}
+#app .nz-act.on{background:color-mix(in srgb,var(--b-primary,#B5402A) 13%,transparent);color:var(--b-primary,#B5402A)}
+html[data-theme="dark"] #app .nz-act.on,body[data-theme=aurora] #app .nz-act.on{color:color-mix(in srgb,var(--b-primary,#B5402A) 55%,#fff)}
+#app .nz-empty{padding:40px 24px;box-sizing:border-box;justify-content:center;text-align:center}
+#app .nz-empty .b-btn{min-height:48px;padding:0 20px;display:inline-flex;align-items:center;gap:8px}
+/* a reader's piece: who sent it, "not checked by Brodoit" on news tips, and Report */
+#app .nz-rd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;padding-top:6px;border-top:1px solid var(--b-line)}
+#app .nz-rd>span{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;min-width:0;color:var(--b-mute)}
+#app .nz-rd b{font:700 13.5px/1.3 var(--b-sans);color:var(--b-ink-2)}
+#app .nz-rd b.dev{font-family:var(--b-devanagari,var(--b-sans))}
+#app .nz-rd small{flex-basis:100%;margin-left:24px;font:600 12px/1.3 var(--b-sans);color:var(--b-mute)}
+#app .nz-rep{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--b-mute);display:grid;place-items:center;cursor:pointer}
+#app .nz-rep:active{background:var(--b-bg-2)}
+/* Thought of the day: the thought big and calm, then the story behind it */
+#app .nz-card h2.nz-th-t{font:400 25px/1.25 var(--b-serif,Georgia,serif);letter-spacing:-.01em;margin:6px 0 4px}
+#app .nz-card h2.nz-th-t.dev{font:700 21px/1.5 var(--b-devanagari,var(--b-sans))}
+#app .nz-card.sm h2.nz-th-t{font-size:22px}#app .nz-card.xs h2.nz-th-t{font-size:20px}
+#app .nz-th-k{display:block;margin:12px 0 6px;font:800 11.5px/1.2 var(--b-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--c)}
+#app .nz-th-k.dev{letter-spacing:0;text-transform:none;font-size:13px;font-family:var(--b-devanagari,var(--b-sans))}
+html[data-theme="dark"] #app .nz-th-k,body[data-theme=aurora] #app .nz-th-k{color:color-mix(in srgb,var(--c) 50%,#fff)}
+.nz-off.nz-pri{background:color-mix(in srgb,#A21CAF 12%,transparent);color:#A21CAF}
+html[data-theme="dark"] .nz-off.nz-pri,body[data-theme=aurora] .nz-off.nz-pri{color:#E9A8F2;background:rgba(233,168,242,.14)}
+#app .nz-endic-w{background:color-mix(in srgb,var(--b-primary,#B5402A) 13%,transparent);color:var(--b-primary,#B5402A)}
+#app .nz-end h2.dev{font:700 22px/1.4 var(--b-devanagari,var(--b-sans))}
+/* Send: the form scrolls inside its own panel; inputs are 16px so phones don't zoom */
+#app .nz-send{margin:0 6px;overflow-y:auto;overscroll-behavior-y:contain;border-radius:24px;background:var(--b-card);box-shadow:0 1px 2px rgba(31,30,28,.05),0 14px 30px -20px rgba(31,30,28,.5)}
+#app .nz-send-in{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;padding:18px 18px 24px}
+#app .nz-send-hd{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#app .nz-send-hd h2{margin:0;font:400 26px/1.15 var(--b-serif,Georgia,serif);color:var(--b-ink)}
+#app .nz-send-hd h2.dev{font:700 22px/1.4 var(--b-devanagari,var(--b-sans))}
+#app .nz-send-hd .nz-lang{flex:none}
+#app .nz-send-p{margin:0;font:500 14.5px/1.5 var(--b-sans);color:var(--b-ink-2)}
+#app .nz-send-p.dev,#app .nz-send-rules.dev{font-family:var(--b-devanagari,var(--b-sans));line-height:1.65}
+#app .nz-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+#app .nz-seg button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;border:1px solid var(--b-line);border-radius:14px;background:transparent;color:var(--b-ink-2);font:700 13px/1.1 var(--b-sans);cursor:pointer}
+#app .nz-seg button span.dev{font-family:var(--b-devanagari,var(--b-sans))}
+#app .nz-seg button.on{background:var(--b-ink);border-color:var(--b-ink);color:var(--b-bg)}
+#app .nz-f{display:grid;gap:6px}
+#app .nz-f>span{font:700 13px/1.2 var(--b-sans);color:var(--b-ink-2)}
+#app .nz-f>span.dev{font-family:var(--b-devanagari,var(--b-sans))}
+#app .nz-f input,#app .nz-f textarea{width:100%;box-sizing:border-box;min-height:48px;padding:12px 14px;border:1px solid var(--b-line);border-radius:14px;background:var(--b-bg);color:var(--b-ink);font:400 16px/1.45 var(--b-sans)}
+#app .nz-f textarea{min-height:150px;resize:vertical}
+#app .nz-f input:focus,#app .nz-f textarea:focus{outline:2px solid var(--b-primary,#B5402A);outline-offset:1px;border-color:transparent}
+#app .nz-f small{justify-self:end;font:600 12px/1.2 var(--b-sans);color:var(--b-mute)}
+#app .nz-f small.ok{color:#2F7D4F}
+#app .nz-chk{display:flex;align-items:center;gap:12px;min-height:44px;font:600 14px/1.35 var(--b-sans);color:var(--b-ink-2);cursor:pointer}
+#app .nz-chk span.dev{font-family:var(--b-devanagari,var(--b-sans))}
+#app .nz-chk input{flex:none;width:22px;height:22px;margin:0;accent-color:var(--b-primary,#B5402A)}
+#app .nz-send-go{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px}
+#app .nz-send-go[disabled]{opacity:.6}
+#app .nz-send-rules{margin:0;font:500 12.5px/1.5 var(--b-sans);color:var(--b-mute)}
+#app .nz-mine-t{margin:8px 0 0;font:800 12px/1.2 var(--b-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--b-mute)}
+#app .nz-mine-t.dev{letter-spacing:0;text-transform:none;font-size:13.5px;font-family:var(--b-devanagari,var(--b-sans))}
+#app .nz-mine{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+#app .nz-mine li{display:flex;align-items:center;gap:6px;min-width:0;padding:8px 4px 8px 12px;border:1px solid var(--b-line);border-radius:14px}
+#app .nz-mine li>div{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+#app .nz-mine b{font:700 14px/1.3 var(--b-sans);color:var(--b-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+#app .nz-mine small{flex-basis:100%;font:500 12.5px/1.4 var(--b-sans);color:var(--b-mute)}
+#app .nz-st{font:700 11.5px/1.5 var(--b-sans);font-style:normal;padding:1px 8px;border-radius:999px}
+#app .nz-st.wait{background:color-mix(in srgb,#B7791F 15%,transparent);color:#8A5A12}
+#app .nz-st.ok{background:color-mix(in srgb,#2F7D4F 14%,transparent);color:#2F7D4F}
+#app .nz-st.no{background:color-mix(in srgb,#B5402A 12%,transparent);color:#9B3522}
+html[data-theme="dark"] #app .nz-st.wait,body[data-theme=aurora] #app .nz-st.wait{color:#F2C879}
+html[data-theme="dark"] #app .nz-st.ok,body[data-theme=aurora] #app .nz-st.ok{color:#8FD19A}
+html[data-theme="dark"] #app .nz-st.no,body[data-theme=aurora] #app .nz-st.no{color:#F2A08E}
+#app .nz-mine-b{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--b-mute);display:grid;place-items:center;cursor:pointer}
+#app .nz-mine-b:active{background:var(--b-bg-2)}
+@media (min-width:760px){#app .nz-bar,#app .nz-send{margin-left:0;margin-right:0}}
