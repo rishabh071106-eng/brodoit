@@ -21,7 +21,7 @@
   const hi = () => N.lang === 'hi';
   const pick = (st, k) => (hi() && st[k + '_hi']) ? st[k + '_hi'] : st[k];
   const CAT = { india: ['India', 'भारत', '#B5402A', 'landmark'], world: ['World', 'दुनिया', '#2F5FA8', 'globe'], business: ['Business', 'कारोबार', '#2F7D4F', 'trending-up'], tech: ['Tech', 'टेक', '#6D28D9', 'smartphone'], science: ['Science', 'विज्ञान', '#0E7C7B', 'rocket'] };
-  const SRC = { thehindu: 'The Hindu', indianexpress: 'Indian Express', ndtv: 'NDTV', hindustantimes: 'Hindustan Times', livemint: 'Mint', economictimes: 'Economic Times', timesofindia: 'Times of India', bbc: 'BBC', bbci: 'BBC', theguardian: 'The Guardian', reuters: 'Reuters', aljazeera: 'Al Jazeera', npr: 'NPR', cnbc: 'CNBC', techcrunch: 'TechCrunch', theverge: 'The Verge', wired: 'Wired', arstechnica: 'Ars Technica', sciencedaily: 'ScienceDaily', nasa: 'NASA', scroll: 'Scroll', thewire: 'The Wire', news18: 'News18', indiatoday: 'India Today', moneycontrol: 'Moneycontrol', businessstandard: 'Business Standard' };
+  const SRC = { thehindu: 'The Hindu', indianexpress: 'Indian Express', ndtv: 'NDTV', hindustantimes: 'Hindustan Times', livemint: 'Mint', economictimes: 'Economic Times', timesofindia: 'Times of India', bbc: 'BBC', bbci: 'BBC', theguardian: 'The Guardian', reuters: 'Reuters', aljazeera: 'Al Jazeera', npr: 'NPR', cnbc: 'CNBC', techcrunch: 'TechCrunch', theverge: 'The Verge', wired: 'Wired', arstechnica: 'Ars Technica', sciencedaily: 'ScienceDaily', nasa: 'NASA', scroll: 'Scroll', thewire: 'The Wire', news18: 'News18', indiatoday: 'India Today', moneycontrol: 'Moneycontrol', businessstandard: 'Business Standard', pibgovin: 'PIB · Govt of India', rbiorgin: 'Reserve Bank of India', newsun: 'UN News', whoint: 'WHO', nasagov: 'NASA' };
   const srcName = x => { const k = String(x && x.name || '').toLowerCase().replace(/^www\./, '').replace(/\.(com|in|co\.in|co\.uk|org|net)$/, '').replace(/[^a-z]/g, ''); return SRC[k] || String(x && x.name || '').replace(/^www\./, ''); };
   const ago = d => { const t = Date.parse(d || ''); if (!t) return ''; const m = Math.max(1, Math.round((Date.now() - t) / 60000)), H = hi(); return m < 60 ? m + (H ? ' मि' : 'm') : m < 1440 ? Math.round(m / 60) + (H ? ' घं' : 'h') : Math.round(m / 1440) + (H ? ' दि' : 'd'); };
   const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9ऀ-ॣ०-ॿ]+/g, ' ').trim();
@@ -291,14 +291,17 @@
     const tag = '<div class="nz-tag">' + (label ? '<b' + (H ? ' class="dev"' : '') + '>' + esc(label) + '</b>' : '') + (ago(st.published_at) ? '<span>' + ago(st.published_at) + '</span>' : '') + '</div>';
     // No real photo: a panel in the category's colour holds the same slot, so every card reads the same way.
     const ph = '<div class="nz-img ph"><span aria-hidden="true">' + I(c[3] || 'newspaper', 72, 1.4) + '</span>' + tag + share + '</div>';
-    const img = st.image ? '<div class="nz-img"><img class="nz-fg" src="' + esc(st.image) + '" alt="" loading="' + (i < 4 ? 'eager' : 'lazy') + '" onerror="NewsChannel.noimg(this)">' + tag + share + '</div>' : ph;
+    // v27: photos are free ones from Wikimedia Commons, always with their credit on the photo
+    const cr = st.image_credit ? '<small class="nz-cr">' + esc((H ? 'फ़ोटो: ' : 'Photo: ') + st.image_credit.by + ' · ' + st.image_credit.license) + '</small>' : '';
+    const img = st.image ? '<div class="nz-img"><img class="nz-fg" src="' + esc(st.image) + '" alt="" loading="' + (i < 4 ? 'eager' : 'lazy') + '" onerror="NewsChannel.noimg(this)">' + cr + tag + share + '</div>' : ph;
+    const official = src.some(x => x.official);
     const why = pick(st, 'why');
     return '<article class="nz-card' + (st.image ? '' : ' noimg') + '" data-i="' + i + '" data-id="' + esc(st.id || '') + '" style="--c:' + c[2] + '" aria-roledescription="slide" aria-label="' + esc(pick(st, 'headline')) + '">' + img +
       '<div class="nz-body">' +
       '<h2 class="' + (H && st.headline_hi ? 'dev' : '') + '">' + esc(pick(st, 'headline')) + '</h2>' +
       '<p class="nz-text' + (H && st.summary_hi ? ' dev' : '') + '">' + esc(pick(st, 'summary')) + '</p>' +
       (why ? '<div class="nz-why' + (H ? ' dev' : '') + '"><b>' + (H ? 'यह क्यों मायने रखता है' : 'Why it matters') + '</b>' + esc(why) + '</div>' : '') +
-      (names ? '<button type="button" class="nz-srcs" onclick="NewsChannel.sources(' + i + ')">' + I('newspaper', 16) + '<span>' + (H ? 'स्रोत: ' : 'Sources: ') + esc(names) + '</span>' + I('chevron-right', 16) + '</button>' : '') +
+      (names ? '<button type="button" class="nz-srcs" onclick="NewsChannel.sources(' + i + ')">' + I('newspaper', 16) + '<span>' + (H ? 'स्रोत: ' : 'Sources: ') + esc(names) + '</span>' + (official ? '<em class="nz-off">' + (H ? 'आधिकारिक स्रोत' : 'Official source') + '</em>' : '') + I('chevron-right', 16) + '</button>' : '') +
       '</div></article>';
   }
   // the original reports behind a story
@@ -308,8 +311,10 @@
     document.getElementById('nzSrc')?.remove();
     const bg = document.createElement('div'); bg.className = 'nz-sheet-bg'; bg.id = 'nzSrc';
     bg.innerHTML = '<div class="nz-sheet" role="dialog" aria-modal="true" aria-label="' + (H ? 'स्रोत' : 'Sources') + '"><div class="nz-grab" aria-hidden="true"></div>' +
-      '<b class="nz-sh-t">' + (H ? 'मूल रिपोर्टें' : 'The original reports') + '</b><p class="nz-sh-p">' + (H ? 'यह ख़बर इन रिपोर्टों से लिखी गई है।' : 'Brodoit wrote this story from these reports.') + '</p>' +
-      list.map(x => '<a class="nz-sh" href="' + esc(x.link) + '" target="_blank" rel="noopener nofollow">' + I('external-link', 22) + '<span><b>' + esc(srcName(x)) + '</b><small>' + esc(x.title || x.link) + '</small></span></a>').join('') +
+      '<b class="nz-sh-t">' + (H ? 'मूल रिपोर्टें' : 'The original reports') + '</b><p class="nz-sh-p">' + (H ? 'Brodoit ने यह ख़बर इन रिपोर्टों के तथ्यों से अपने शब्दों में लिखी है।' : 'Brodoit wrote this story in its own words from the facts in these reports.') + '</p>' +
+      list.map(x => '<a class="nz-sh" href="' + esc(x.link) + '" target="_blank" rel="noopener nofollow">' + I('external-link', 22) + '<span><b>' + esc(srcName(x)) + (x.official ? ' <em class="nz-off">' + (H ? 'आधिकारिक' : 'Official') + '</em>' : '') + '</b><small>' + esc(x.title || x.link) + '</small></span></a>').join('') +
+      (st.image_credit && /^https:\/\//.test(st.image_credit.page || '') ? '<a class="nz-sh" href="' + esc(st.image_credit.page) + '" target="_blank" rel="noopener nofollow">' + I('image', 22) + '<span><b>' + (H ? 'फ़ोटो' : 'Photo') + '</b><small>' + esc(st.image_credit.by + ' · ' + st.image_credit.license + ' · Wikimedia Commons') + '</small></span></a>' : '') +
+      '<p class="nz-sh-how">' + (H ? 'हर ख़बर AI लिखता है और ऐप उसे जाँचता है: हर संख्या स्रोतों में होनी चाहिए, और स्रोतों के वाक्य या फ़ोटो कभी कॉपी नहीं होते।' : 'An AI writes each story and the app checks it: every number must be in the sources, and their sentences and photos are never copied.') + ' <a href="mailto:hello@brodoit.com?subject=' + encodeURIComponent('News correction: ' + (st.headline || '')) + '">' + (H ? 'ग़लती बताएँ' : 'Report a mistake') + '</a></p>' +
       '<button type="button" class="b-btn ghost wide nz-sh-x">' + (H ? 'बंद करें' : 'Close') + '</button></div>';
     document.body.appendChild(bg);
     const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
@@ -471,6 +476,12 @@
       if (glyph) { const gs = Math.min(240, imgH * .5); x.globalAlpha = .9; x.drawImage(glyph, (W - gs) / 2, (imgH - gs) / 2, gs, gs); x.globalAlpha = 1; }
     }
     x.restore();
+    if (im && st.image_credit) { // v27: a free photo travels with its credit (author · licence · Wikimedia Commons)
+      const t = 'Photo: ' + st.image_credit.by + ' · ' + st.image_credit.license + ' · Wikimedia Commons';
+      x.font = '500 22px ' + sans; const tw = Math.min(W - 2 * P, x.measureText(t).width + 28);
+      x.fillStyle = 'rgba(15,13,20,.6)'; x.fillRect(W - P - tw, imgH - 52, tw, 38);
+      x.fillStyle = '#FFFFFF'; x.save(); x.beginPath(); x.rect(W - P - tw, imgH - 52, tw, 38); x.clip(); x.fillText(t, W - P - tw + 14, imgH - 25); x.restore();
+    }
     let y = imgH + 64;
     x.fillStyle = c[2]; x.font = '800 30px ' + sans;
     const label = (hi() ? c[1] : c[0]) || ''; if (label) { x.fillText(label.toUpperCase(), P, y + 22); }

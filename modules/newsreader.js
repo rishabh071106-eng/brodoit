@@ -248,6 +248,14 @@ function install(app, deps) {
   };
 
   const guard = typeof auth === 'function' ? auth : (req, res, next) => next();
+  // v27: no app screen uses the in-app reader, and a stored copy of a publisher's article is theirs, not ours: the route
+  // is off (and the old copies are deleted) unless NEWS_READER=1. The desk still reads articles for facts, in memory only.
+  if (process.env.NEWS_READER !== '1') {
+    try { fs.rmSync(dir, { recursive: true, force: true }); } catch (e) { /* nothing cached */ }
+    app.get('/api/news/read', (req, res) => res.status(410).json({ ok: false, error: 'Articles open on the publisher\'s own site.' }));
+    console.log('[news-reader] the in-app reader is off (articles open on the publisher\'s site)');
+    return { readArticle, extract };
+  }
   app.get('/api/news/read', guard, async (req, res) => {
     const raw = String(req.query.url || '').trim().slice(0, 2000);
     let u; try { u = new URL(raw); } catch (e) { return res.json({ ok: false, error: 'bad url', url: raw }); }

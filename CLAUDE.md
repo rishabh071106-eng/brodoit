@@ -156,6 +156,14 @@ function auth(req,res,next){
 
 Uses Meta WhatsApp Cloud API (not Twilio). Auto-creates accounts for new WhatsApp users. Merges accounts when users later sign up on web. Commands: list, done, doing, delete, help + natural language task adding.
 
+## Content and copyright (v27)
+Everything the app shows or plays must be ours, free-licensed with credit, or a link. Rules the code now enforces:
+- **Books = Bro's book notes**, not summaries: `BOOK_SUMMARIES` (server.js SPA) holds 104 entries with `notes:1`, `why` (hook), `insights` = 5 × [idea, our own explanation and example, "try it today"], `take` (Bro's honest take), `summary` = the audio script ("Bro's notes on…", "Idea one. <title>. …", "Bro's take. …"). Written fresh from the ideas, never chapter by chapter, no quotes, no author anecdotes. The reader says so and links to Open Library ("Find the book"); an idea's "try it today" becomes a task (`bkTry`). Every note is recorded ahead of time in Bro's voice (`note-<id>`, Bro's library); `book-<id>` recordings of the old briefs are deleted at boot. Hindi notes: `modules/booknotes-hi.js` writes `MEDIA_DIR/books-hi/<id>.json` with `notes: 2` (Gemini, else Bro Core's background lane); older Hindi files are deleted, and `/api/book-hi` serves only `notes: 2`.
+- **News photos only from Wikimedia Commons** with a free licence (PD/CC0/CC BY/CC BY-SA; never NC/ND/non-free), found from the writer's `image_query` (`modules/newsphoto.js`), credited on the card, the Sources sheet, the share picture and `/n/` pages (`image_credit`). Never a publisher's or agency's photo (feed image, og:image); old ones are removed at boot. No free photo → the colour card.
+- **News text in our own words**: the writer's brief says so, and `checkStory` sends back any 8-word run copied from a source (`COPY_RUN`). No writer → nothing is published (the extractive fallback is gone). The old feed (`curateNewsCategory`) no longer fetches article pages, relabels sources "Brodoit" or pads stories with filler. `/api/news/read` (stored article copies) is off unless `NEWS_READER=1`.
+- **Official sources** (PIB, RBI, UN News, WHO, NASA feeds in `modules/newsfeeds.js`; `.gov.in`, `.gov`, `.int`… links) are marked "Official source".
+- **Untraced media is not served**: the 18 motivational video clips (`MV_VIDEOS=1` to bring back once each is traced, files were removed from the repo) and the 37 script-less music/sleep/story files (`UNTRACED_AUDIO=1`). Don't add media without recording its source and licence.
+
 ## Don't
 
 - Don't add `require('twilio')` — removed, using native fetch to Graph API
