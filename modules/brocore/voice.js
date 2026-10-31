@@ -433,7 +433,7 @@ function splitLong(s, maxChars, L) {
 // Spoken seconds per character (measured with Bro's voices at speed 1, edges trimmed).
 const SEC_PER_CHAR = { en: 0.066, hi: 0.09, es: 0.082, fr: 0.07, de: 0.078, it: 0.08, pt: 0.076, ja: 0.13, zh: 0.2 };
 function estSec(t, L, speed = 1) { return [...t].length * (SEC_PER_CHAR[L] || 0.075) / speed; }
-function firstSec() { return Math.max(0.6, Number(process.env.BROCORE_FIRST_SEC) || 1.3); }
+function firstSec() { return Math.max(0.6, Number(process.env.BROCORE_FIRST_SEC) || 0.9); } // v26: was 1.3 s (Bro's first word sooner)
 // Words a chunk should not end on (articles, prepositions, pronoun subjects…) or, for Hindi, start with (postpositions,
 // auxiliaries), so a cut never splits "the | plan" or "कर रहे | हैं".
 const NO_END = new Set('a an the to of in on at for with and but or so my your our their his her its is are was were be been i you we they he she it this that these those very really just not no if as from by about into than then el la los las un una unos de del y o en con por para mi tu su le les des du et ou à au aux ce cette mon ton son der die das den dem ein eine einen und oder zu mit von im am il lo gli di e da del della um uma do dos das os as em com meu seu'.split(' '));
@@ -464,7 +464,7 @@ function cutSentence(s, L, speed, groups) {
   return null;
 }
 // Model of the stream: inference takes about A + r * (audio seconds), one chunk after another; playback starts with the
-// first chunk. The first chunk is cut to ~BROCORE_FIRST_SEC (1.3 s) of speech so it is ready in under a second. Later
+// first chunk. The first chunk is cut to ~BROCORE_FIRST_SEC (0.9 s) of speech so it is ready in under a second. Later
 // chunks are cut at a comma or conjunction when they would not be ready before the audio ahead runs out (a pause there
 // sounds natural); a phrase that was already cut mid-way may also be cut at a word gap, so it never stalls mid-phrase.
 function rampPlan(chunks, L, speed) {

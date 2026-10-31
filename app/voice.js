@@ -4,7 +4,7 @@
 //    the server hears, thinks and streams Bro's own voice back (Int16 24 kHz) sentence by sentence.
 //    v17 "Bro listens": half-duplex like a phone call with a person. While Bro's voice plays (and 350 ms after) the mic
 //    is not listened to, so Bro never hears himself; you stop him by tapping the orb ("tap to interrupt"). Bro waits for
-//    the end of your thought: 1.1 s of silence (1.3 s after a short phrase), and a phrase only counts once ~200 ms of
+//    the end of your thought: 0.9 s of silence (1.1 s after a short phrase; v26, was 1.1/1.3), and a phrase only counts once ~200 ms of
 //    real voice is heard (coughs and clicks never reach the server). Silero VAD gates speech once it has loaded (it
 //    starts loading with the call, up to 4 s before Bro's first word). The conversation is in English or हिंदी, the
 //    user's choice. Bro chat is just the conversation: no app control, and leaving the Bro tab ends the call.
@@ -231,11 +231,21 @@
   V.toggleType = function () { V.typing = !V.typing; V.renderFull(); const n = document.getElementById('bvfInput'); if (n) n.focus(); };
   // switchTab() tells us first. Bro chat lives on the Bro tab: leaving it ends the call politely (bye, no end screen).
   V.onTab = function (t) {
-    if (t === 'bro' || t === 'home') return;
+    if (t === 'bro' || t === 'home') { V.warm(); return; }
     if (V.state === 'ended') V.closeEnd();
     else if (isLive() || V.state === 'connecting') V.stop(true);
     V.persona = 'bro';
   };
+
+  // v26: with the Bro tab open, Silero (the voice detector, ~5 MB) loads in the background on a fast connection, so a
+  // call starts with it ready; on data saver or a slow connection it still loads only with a call
+  V.warm = function () {
+    const cn = navigator.connection || {};
+    if (V.sil || cn.saveData || (cn.effectiveType && cn.effectiveType !== '4g')) return;
+    const go = () => { if (!V.sil && S.user && (!S.tab || S.tab === 'bro' || S.tab === 'home')) V.loadSilero(); };
+    setTimeout(() => (window.requestIdleCallback || (f => f()))(go, { timeout: 4000 }), 1500);
+  };
+  setTimeout(() => { try { if (typeof S !== 'undefined' && (!S.tab || S.tab === 'bro' || S.tab === 'home')) V.warm(); } catch (e) {} }, 2500);
 
   // ───────────────────────── session ─────────────────────────
   V.start = async function (opts) {
@@ -244,13 +254,18 @@
     V.heard = ''; V.said = ''; V.why = ''; V.fromCore = false; V.noVoice = false; V.endInfo = null; V.closeFull();
     V.set('connecting'); V.openFull();
     try { V.prepAudio(); } catch (e) {} // inside the tap: mobile browsers only let audio start from a gesture
+    // v26: the mic, the socket and Silero start right at the tap, alongside the session request (they used to wait
+    // for it, one after another); the socket carries nothing until hello, which brings the session's token
+    const early = V.earlyStart();
     const body = { persona: V.persona, lang: V.persona === 'language' ? COURSES[V.course] : '', speak: V.lang };
     let sess;
     try { sess = await api('/voice/session', { method: 'POST', body: JSON.stringify(body) }); } catch (e) { sess = { mode: 'fallback' }; }
-    if (V.state !== 'connecting') return; // ended while we waited
+    if (V.state !== 'connecting') { V.dropEarly(early); return; } // ended while we waited
+    if (!(sess && sess.mode === 'core')) V.dropEarly(early);
     if (sess && sess.mode === 'core') {
-      try { await V.connectCore(sess, opts); return; }
+      try { await V.connectCore(sess, opts, early); return; }
       catch (e) {
+        V.dropEarly(early);
         if (e && e.why === 'gone') { if (V.state !== 'connecting') V.coreCleanup(true); return; } // the user left while it connected: release the mic
         console.warn('[bro] live call failed, simple mode', e);
         V.coreCleanup(); V.fromCore = true; V.why = (e && e.why) || 'live';
@@ -325,19 +340,42 @@ registerProcessor('bro-mic', BroMic);`;
     try { V.ac.resume(); } catch (e) {}
     return V.ac;
   };
-  const sleep = ms => new Promise(r => setTimeout(r, ms));
-  V.connectCore = async function (sess, opts) {
-    opts = opts || {};
-    const t0 = Date.now();
-    const gone = () => { if (V.state !== 'connecting') throw Object.assign(new Error('left'), { why: 'gone' }); };
-    // 0. Silero starts loading now, alongside the mic and the socket (Bro's first word waits for it, at most ~4 s)
-    if (V.sil && V.sil.error) V.sil = null;
-    const silP = V.loadSilero();
-    // 1. the mic (a refusal → simple mode with the reason on screen)
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw Object.assign(new Error('no mic api'), { why: 'mic' });
+  // the mic (a refusal → simple mode with the reason on screen)
+  V.getMic = function () {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.reject(Object.assign(new Error('no mic api'), { why: 'mic' }));
     try { if (navigator.audioSession) navigator.audioSession.type = 'play-and-record'; } catch (e) {} // Safari: a call, not music (echo cancelling, loudspeaker)
-    try { V.mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } }); }
-    catch (e) { throw Object.assign(new Error('mic: ' + (e && e.name)), { why: 'mic' }); }
+    return navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } })
+      .catch(e => { throw Object.assign(new Error('mic: ' + (e && e.name)), { why: 'mic' }); });
+  };
+  // the socket, open (8 s at most)
+  V.openWs = function (p) {
+    const ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + (p || '/api/voice/live'));
+    ws.binaryType = 'arraybuffer';
+    return new Promise((res, rej) => {
+      const t = setTimeout(() => { rej(Object.assign(new Error('socket timeout'), { why: 'live' })); try { ws.close(); } catch (e) {} }, 8000);
+      ws.onopen = () => { clearTimeout(t); res(ws); };
+      ws.onerror = () => { clearTimeout(t); rej(Object.assign(new Error('socket error'), { why: 'live' })); };
+    });
+  };
+  V.earlyStart = function () {
+    if (V.sil && V.sil.error) V.sil = null;
+    const e = { sil: V.loadSilero(), mic: V.getMic(), ws: V.openWs() };
+    e.mic.catch(() => {}); e.ws.catch(() => {}); // looked at in connectCore
+    return e;
+  };
+  // not a live call after all (or the user left): give the mic and the socket back
+  V.dropEarly = function (e) {
+    if (!e) return;
+    e.mic.then(m => { if (m !== V.mic) m.getTracks().forEach(t => t.stop()); }, () => {});
+    e.ws.then(w => { if (w !== V.ws) try { w.close(1000); } catch (x) {} }, () => {});
+  };
+  V.connectCore = async function (sess, opts, early) {
+    opts = opts || {};
+    early = early || V.earlyStart();
+    const gone = () => { if (V.state !== 'connecting') throw Object.assign(new Error('left'), { why: 'gone' }); };
+    // 0. Silero loads alongside; listening starts without it: the energy detector decides until it is ready
+    // 1. the mic
+    try { V.mic = await early.mic; } catch (e) { V.dropEarly(early); throw e; }
     gone();
     const ac = V.prepAudio(); try { await ac.resume(); } catch (e) {}
     if (!ac.audioWorklet) throw Object.assign(new Error('no audio worklet'), { why: 'live' });
@@ -349,17 +387,15 @@ registerProcessor('bro-mic', BroMic);`;
     V.micNodes = [src, lp, node, mute];
     V.vadReset();
     node.port.onmessage = e => V.onFrame(e.data);
-    // 2. the socket
-    const ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + (sess.ws || '/api/voice/live'));
-    ws.binaryType = 'arraybuffer'; V.ws = ws; V.wsClosing = false;
-    await new Promise((res, rej) => {
-      const t = setTimeout(() => rej(Object.assign(new Error('socket timeout'), { why: 'live' })), 8000);
-      ws.onopen = () => { clearTimeout(t); res(); };
-      ws.onerror = () => { clearTimeout(t); rej(Object.assign(new Error('socket error'), { why: 'live' })); };
-    });
+    // 2. the socket opened at the tap; a fresh one if that failed, went to another path, or closed while we waited
+    //    (the server gives a socket 10 s to say hello: the first mic prompt can take longer than that)
+    let ws = null;
+    if (!sess.ws || sess.ws === '/api/voice/live') ws = await early.ws.catch(() => null);
+    else early.ws.then(w => { try { w.close(1000); } catch (x) {} }, () => {});
+    if (!ws || ws.readyState !== 1) ws = await V.openWs(sess.ws);
+    gone();
+    V.ws = ws; V.wsClosing = false;
     ws.onmessage = V.onWs; ws.onclose = V.onWsClose; ws.onerror = () => {};
-    // 3. Silero ready (or 4 s gone: the energy detector covers until it is)
-    await Promise.race([silP, sleep(Math.max(0, 4000 - (Date.now() - t0)))]); gone();
     const ready = new Promise((res, rej) => { V._ready = res; V._readyFail = rej; setTimeout(() => rej(Object.assign(new Error('no ready'), { why: 'live' })), 8000); });
     V.wsSend({ t: 'hello', token: sess.token, lang: V.lang, persona: V.persona, course: V.persona === 'language' ? COURSES[V.course] : '', greet: opts.greet !== false && !opts.context, context: opts.context || '' });
     const r = await ready; V._ready = V._readyFail = null; gone();
@@ -529,13 +565,13 @@ registerProcessor('bro-mic', BroMic);`;
   //      a little stricter while a turn is in flight)
   //      and becomes an utterance after ~200 ms of voiced frames; a gap of 160 ms before that drops it (a cough, a click);
   //    · start goes to the server only then, with ~320 ms of pre-roll so the first syllable is never cut;
-  //    · the end of a turn: 1.1 s of silence, 1.3 s while the voiced speech is still under 1.2 s; 30 s at most;
+  //    · the end of a turn: 0.9 s of silence, 1.1 s while the voiced speech is still under 1.2 s; 30 s at most;
   //    · the noise floor adapts while nobody speaks.
   //  v21 (soft voices): the start needs floor + 9 dB (+4 dB with Silero), the phrase continues at floor + 4 dB (+5 dB
   //  without Silero), and the floor is the 20th percentile of the last 3 s of frames Silero calls non-speech, so a soft
   //  voice can no longer drag the floor up to itself. Silero hearing speech that stays under the start level for a while
   //  shows "Speak a little closer".
-  const VADC = { START_DB: 9, START_DB_SIL: 4, CONT_DB: 5, CONT_DB_SIL: 4, CONFIRM_MS: 192, GAP_MS: 160, END_MS: 1100, END_SHORT_MS: 1300, SHORT_MS: 1200, MIN_MS: 180, MAX_MS: 30000, PREROLL: 10, FLOOR_FRAMES: 94, CLOSER_MS: 640 };
+  const VADC = { START_DB: 9, START_DB_SIL: 4, CONT_DB: 5, CONT_DB_SIL: 4, CONFIRM_MS: 192, GAP_MS: 160, END_MS: 900, END_SHORT_MS: 1100, SHORT_MS: 1200, MIN_MS: 180, MAX_MS: 30000, PREROLL: 10, FLOOR_FRAMES: 94, CLOSER_MS: 640 };
   V.VAD = VADC;
   V.vadReset = function () { V.vad = { floor: -60, hist: [], soft: [], ring: [], cand: null, inUtt: false, ms: 0, voiced: 0, quiet: 0, dbs: [], f0s: [], edges: 0, wasV: false, n: 0, q: Promise.resolve(), pend: 0, level: 0, deaf: false }; };
   // the noise floor: the 20th percentile of the recent non-speech frames (minimum statistics), between -80 and -28 dBFS

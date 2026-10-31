@@ -755,7 +755,7 @@ function install(app, deps) {
   const MAX_UTTER_BYTES = LIVE_MAX_UTTER_S * 16000 * 2, FRAME = 4800; // 0.2 s of 24 kHz audio per binary frame
   const MAX_BUFFERED = 2 * 1024 * 1024;
   const LIVE_TEXT_GAP = 600, LIVE_TURNS_MIN = 20, LIVE_TURNS_DAY = 600; // typed text: ms after the last turn; turns a minute per socket; per user a day
-  const HOLD_MS = 1800, ECHO_MS = 20000, MAX_FRAGS = 6, MIN_UTTER_S = 0.25;
+  const HOLD_MS = 1000, ECHO_MS = 20000, MAX_FRAGS = 6, MIN_UTTER_S = 0.25;
   function dailyTurn(user) { // counts one live turn for the user today; false once today's cap is reached
     const k = String(user && user.phone || ''), d = dayKey(), e = LIVE_DAILY.get(k), x = e && e.d === d ? e : { d, n: 0 };
     LIVE_DAILY.set(k, x);
@@ -1167,7 +1167,7 @@ function install(app, deps) {
       S.turn = T; LIVE.turns++;
       const sig = T.ac.signal, live = () => !sig.aborted && S.turn === T && !S.ended, c = core();
       const speaker = makeSpeaker(T);
-      send({ t: 'state', s: 'thinking', turn: T.id });
+      if (!inp.say) send({ t: 'state', s: 'thinking', turn: T.id }); // a greeting goes straight to speaking (no Listening → Thinking flicker)
       try {
         if (inp.say) { speaker.push(inp.say); await speaker.done(); return; }
         let text = inp.text || '';
@@ -1567,8 +1567,16 @@ function install(app, deps) {
     const f = path.join(NODE_MODULES, e[0], e[1]); if (!fs.existsSync(f)) return res.status(404).end();
     res.set('Cache-Control', 'public, max-age=604800');
     res.type(/\.m?js$/.test(f) ? 'text/javascript' : f.endsWith('.wasm') ? 'application/wasm' : 'application/octet-stream');
-    res.sendFile(f);
+    // v26: gzipped once and kept (the wasm is 11.2 MB, 2.9 MB gzipped; the model 2.3 → 1.9 MB)
+    res.set('Vary', 'Accept-Encoding');
+    if (!req.acceptsEncodings('gzip')) return res.sendFile(f);
+    vadGz(f).then(buf => { res.set('Content-Encoding', 'gzip'); res.set('Content-Length', String(buf.length)); res.end(buf); }, () => res.sendFile(f));
   });
+  const VAD_GZ = new Map();
+  function vadGz(f) {
+    if (!VAD_GZ.has(f)) VAD_GZ.set(f, new Promise((res, rej) => fs.readFile(f, (e, b) => e ? rej(e) : require('zlib').gzip(b, { level: 9 }, (e2, z) => e2 ? rej(e2) : res(z)))).catch(e => { VAD_GZ.delete(f); throw e; }));
+    return VAD_GZ.get(f);
+  }
 
   setImmediate(() => console.log('[voice] engines · core', coreReady() ? '✅' : (core() ? '❌ (no Groq key)' : '❌ (Bro Core not installed)'), '· emergency', emergency() ? 'ON (elevenlabs ' + (elevenKey() ? '✅' : '❌') + ' · realtime ' + (openaiKey() ? '✅' : '❌') + ')' : 'off', '· brain', hasLLM() ? '✅' : '❌ (paste a key in You → Admin)'));
 }
