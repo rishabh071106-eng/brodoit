@@ -12,7 +12,7 @@
 //   GET    /api/news/submit/mine      → { items: [{ id, kind, title, status, reason, created_at }] }  (sign-in)
 //   DELETE /api/news/submit/:id       (their own)
 //   GET    /api/news/readers?before=  → { items: [published…], next }
-//   POST   /api/news/readers/:id/report
+//   POST   /api/news/readers/:id/report   (sign-in; two different readers hide it)
 'use strict';
 const crypto = require('crypto');
 const GEM = require('./gemini.js');
@@ -95,7 +95,7 @@ function create(o) {
         const text = 'KIND: ' + (KINDS[r.kind] || r.kind) + '\nLANGUAGE THE READER WROTE IN: ' + (r.lang === 'hi' ? 'Hindi' : 'English') + '\nTITLE: ' + r.title + '\nTEXT:\n' + r.text + (r.link ? '\nLINK THE READER GAVE: ' + r.link : '');
         let [out, by] = await write(text), bad = checkOut(out);
         if (bad.length && out && out.decision === 'publish') { const [fixed, by2] = await write(text + '\n\nYOUR DRAFT:\n' + JSON.stringify(out) + '\n\nProblems: ' + bad.join('; ') + '. Fix every one and return the corrected JSON.'); if (fixed && checkOut(fixed).length < bad.length) { out = fixed; by = by2; bad = checkOut(out); } }
-        if (!out) { q('UPDATE news_submissions SET tries=tries+1 WHERE id=?').run(r.id); state.error = 'no AI editor available'; break; } // waits for the next round
+        if (!out) { state.error = 'no AI editor available'; break; } // waits for the next round (a wait is not a failed try)
         if (out.decision === 'reject' && !bad.length) {
           q("UPDATE news_submissions SET status='rejected', reason=?, reviewer=?, decided_at=datetime('now') WHERE id=?").run(clean(out.reason).slice(0, 240), by, r.id);
         } else if (out.decision === 'publish' && !bad.length) {
@@ -127,7 +127,8 @@ function create(o) {
       name: r.show_name ? firstName(r.name) : '', sources: r.link && /^https?:\/\//.test(r.link) ? [{ name: (() => { try { return new URL(r.link).hostname.replace(/^www\./, ''); } catch (e) { return 'link'; } })(), link: r.link, title: 'The link the reader shared' }] : [],
       image: has ? P.url('rd_' + r.id) : null, image_credit: has && cr && cr.license ? cr : null, published_at: r.published_at ? r.published_at.replace(' ', 'T') + 'Z' : null };
   };
-  const reportHash = (req) => crypto.createHash('sha1').update(String((req.user && req.user.phone) || String(req.headers['x-forwarded-for'] || req.ip || '').split(',')[0].trim())).digest('hex').slice(0, 10);
+  // one report per signed-in reader (never an unverified header or address: two made-up ones could hide anyone's piece)
+  const reportHash = (req) => crypto.createHash('sha1').update(String(req.user.phone)).digest('hex').slice(0, 10);
 
   if (app && auth) {
     app.post('/api/news/submit', auth, (req, res) => {
@@ -170,7 +171,7 @@ function create(o) {
       res.json({ items: rows.map(pubR), next: rows.length === lim && last ? last.published_at : null });
     });
     const hits = new Map();
-    app.post('/api/news/readers/:id/report', (req, res) => {
+    app.post('/api/news/readers/:id/report', auth || ((req, res) => res.status(401).json({ error: 'Login required' })), (req, res) => {
       const id = String(req.params.id || '').replace(/^rd_/, '');
       const who = reportHash(req), now = Date.now(), h = hits.get(who) || [];
       const recent = h.filter(t => now - t < 3600e3); if (recent.length >= 10) return res.status(429).json({ error: 'slow down' });
