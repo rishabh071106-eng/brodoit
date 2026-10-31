@@ -30,7 +30,11 @@ const EXTRA = ['qwen/qwen3-32b', 'meta-llama/llama-4-maverick-17b-128e-instruct'
 // list only as a last resort, when every other live model is out of allowance.
 const BG_PURPOSES = new Set(['news', 'summary', 'lessons']);
 const BG_CHAIN = ['meta-llama/llama-4-scout-17b-16e-instruct', 'qwen/qwen3-32b', 'llama-3.1-8b-instant'];
-const BG_EXTRA = ['meta-llama/llama-4-maverick-17b-128e-instruct'];
+// v27.2: after its own models, the background lane tries other listed models with their own allowances, and last of all
+// live talk's second model (gpt-oss-20b), only while every background model of its own is retired or missing (Groq
+// retires models: on 31 Oct Scout, Qwen 3 and Llama 3.1 8B answered 404 and News could not be written). A request
+// with ownOnly (the Hindi book notes: a long batch) never takes a live model.
+const BG_EXTRA = ['meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-3.3-70b-versatile', 'openai/gpt-oss-20b'];
 // v17.6 rescue: a live turn whose whole chain failed gets one lean try on models with their own (larger) daily
 // allowances, before Bro ever says sorry. Only models /models lists for the account.
 const RESCUE_CHAIN = ['meta-llama/llama-4-scout-17b-16e-instruct', 'llama-3.1-8b-instant', 'qwen/qwen3-32b', 'openai/gpt-oss-20b'];
@@ -240,7 +244,7 @@ function createBrain(o) {
     const w = st.lane[lane] || {};
     const pin = w.model && now() - w.at < PIN_MS ? w.model : null;
     // v20: the other clouds ('@gemini', '@openai') sit right after gpt-oss-120b on live turns, and end the rescue
-    const head = (lane === 'live' ? [getSetting('BROCORE_MODEL'), process.env.BROCORE_MODEL, pin, DEFAULT_CHAIN[0], '@gemini', '@openai', ...DEFAULT_CHAIN.slice(1)] : lane === 'rescue' ? [...RESCUE_CHAIN, '@gemini'] : [pin, ...BG_CHAIN]).filter(Boolean);
+    const head = (lane === 'live' ? [getSetting('BROCORE_MODEL'), process.env.BROCORE_MODEL, pin, DEFAULT_CHAIN[0], '@gemini', '@openai', ...DEFAULT_CHAIN.slice(1)] : lane === 'rescue' ? [...RESCUE_CHAIN, '@gemini'] : [DEFAULT_CHAIN.includes(pin) ? null : pin, ...BG_CHAIN]).filter(Boolean); // v27.2: a live model never leads the background lane
     let tried = 0, ids;
     const resolved = [];
     // the two gpt-oss models are always tried; any other Groq model only once /models says this account has it
@@ -253,7 +257,11 @@ function createBrain(o) {
     }
     if (lane === 'rescue') return; // the rescue is one lean pass: models that are down stay down
     if (ids === undefined) ids = await listModels();
-    for (const m of (lane === 'live' ? EXTRA : BG_EXTRA)) { if (seen.has(m)) continue; seen.add(m); if (!usable('groq')) continue; if (ids && !ids.has(m)) continue; if (isDead(m) || isCool(m)) continue; tried++; yield m; }
+    const ownGone = () => BG_CHAIN.every(m => isDead(m) || !!(ids && !ids.has(m)));
+    for (const m of (lane === 'live' ? EXTRA : BG_EXTRA)) {
+      if (lane === 'bg' && DEFAULT_CHAIN.includes(m) && ((req && req.ownOnly) || !ownGone())) continue; // live's model: last resort only
+      if (seen.has(m)) continue; seen.add(m); if (!usable('groq')) continue; if (ids && !ids.has(m)) continue; if (isDead(m) || isCool(m)) continue; tried++; yield m;
+    }
     // everything was marked down: give the head one more go rather than going silent
     if (!tried) for (const m of resolved) if (!isDead(m) && usable(providerOf(m))) yield m;
   }
