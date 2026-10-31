@@ -474,6 +474,9 @@ function rampPlan(chunks, L, speed) {
     // a clause boundary when there is one; a bare word gap only for a long sentence (a short one is kept whole)
     const groups = [[['comma', 'conj'], 0.3, F * 1.3]];
     if (d0 > F * 2) groups.push([['word'], 0.6, F]);
+    // no cut that early ("Today I really | want…"): fall back to the 1.3 s windows rather than leave a long sentence whole
+    const G = 1.3;
+    if (F < G) { groups.push([['comma', 'conj'], 0.3, G * 1.3]); if (d0 > G * 2) groups.push([['word'], 0.6, G]); }
     const c = cutSentence(chunks[0].text, L, speed, groups);
     if (c) chunks.splice(0, 1, { text: c[0], end: false, cut: c[2] }, { text: c[1], end: chunks[0].end });
   }
