@@ -4,7 +4,7 @@
 //    the server hears, thinks and streams Bro's own voice back (Int16 24 kHz) sentence by sentence.
 //    v17 "Bro listens": half-duplex like a phone call with a person. While Bro's voice plays (and 350 ms after) the mic
 //    is not listened to, so Bro never hears himself; you stop him by tapping the orb ("tap to interrupt"). Bro waits for
-//    the end of your thought: 0.9 s of silence (1.1 s after a short phrase; v26, was 1.1/1.3), and a phrase only counts once ~200 ms of
+//    the end of your thought: 1.0 s of silence (1.1 s after a short phrase; v26, was 1.1/1.3; 0.9 s cut ~1 s pauses), and a phrase only counts once ~200 ms of
 //    real voice is heard (coughs and clicks never reach the server). Silero VAD gates speech once it has loaded (it
 //    starts loading with the call, up to 4 s before Bro's first word). The conversation is in English or हिंदी, the
 //    user's choice. Bro chat is just the conversation: no app control, and leaving the Bro tab ends the call.
@@ -565,13 +565,13 @@ registerProcessor('bro-mic', BroMic);`;
   //      a little stricter while a turn is in flight)
   //      and becomes an utterance after ~200 ms of voiced frames; a gap of 160 ms before that drops it (a cough, a click);
   //    · start goes to the server only then, with ~320 ms of pre-roll so the first syllable is never cut;
-  //    · the end of a turn: 0.9 s of silence, 1.1 s while the voiced speech is still under 1.2 s; 30 s at most;
+  //    · the end of a turn: 1.0 s of silence (a 0.9 s pause mid-sentence must not end it), 1.1 s while the voiced speech is still under 1.2 s; 30 s at most;
   //    · the noise floor adapts while nobody speaks.
   //  v21 (soft voices): the start needs floor + 9 dB (+4 dB with Silero), the phrase continues at floor + 4 dB (+5 dB
   //  without Silero), and the floor is the 20th percentile of the last 3 s of frames Silero calls non-speech, so a soft
   //  voice can no longer drag the floor up to itself. Silero hearing speech that stays under the start level for a while
   //  shows "Speak a little closer".
-  const VADC = { START_DB: 9, START_DB_SIL: 4, CONT_DB: 5, CONT_DB_SIL: 4, CONFIRM_MS: 192, GAP_MS: 160, END_MS: 900, END_SHORT_MS: 1100, SHORT_MS: 1200, MIN_MS: 180, MAX_MS: 30000, PREROLL: 10, FLOOR_FRAMES: 94, CLOSER_MS: 640 };
+  const VADC = { START_DB: 9, START_DB_SIL: 4, CONT_DB: 5, CONT_DB_SIL: 4, CONFIRM_MS: 192, GAP_MS: 160, END_MS: 1000, END_SHORT_MS: 1100, SHORT_MS: 1200, MIN_MS: 180, MAX_MS: 30000, PREROLL: 10, FLOOR_FRAMES: 94, CLOSER_MS: 640 };
   V.VAD = VADC;
   V.vadReset = function () { V.vad = { floor: -60, hist: [], soft: [], ring: [], cand: null, inUtt: false, ms: 0, voiced: 0, quiet: 0, dbs: [], f0s: [], edges: 0, wasV: false, n: 0, q: Promise.resolve(), pend: 0, level: 0, deaf: false }; };
   // the noise floor: the 20th percentile of the recent non-speech frames (minimum statistics), between -80 and -28 dBFS

@@ -157,3 +157,11 @@ body.nz-fresh .tab-news .ti::after{content:"";position:absolute;top:-1px;right:-
 #app .nz-cover .nz-cv.scroll{overflow-y:auto}
 #app .nz-cv-foot{padding-top:10px}
 #app .nz-cv>*{flex-shrink:0}
+
+/* v27: photo credit (free photos from Wikimedia Commons), "Official source", how the desk writes */
+#app .nz-cr{position:absolute;right:8px;top:8px;z-index:2;max-width:calc(100% - 16px);padding:3px 8px;border-radius:8px;background:rgba(15,13,20,.55);color:#fff;font:500 10.5px/1.35 var(--b-sans,system-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.nz-off{flex:none;margin-left:auto;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,#2F7D4F 14%,transparent);color:#2F7D4F;font:700 11px/1.5 var(--b-sans,system-ui);font-style:normal;white-space:nowrap}
+.nz-sh .nz-off{margin-left:6px;vertical-align:1px}
+html[data-theme="dark"] .nz-off,body[data-theme=aurora] .nz-off{color:#8FD19A;background:rgba(143,209,154,.14)}
+.nz-sh-how{margin:10px 4px 4px;font:500 12.5px/1.45 var(--b-sans,system-ui);color:var(--b-mute,#6b6875)}
+.nz-sh-how a{color:var(--b-primary,#B5402A);font-weight:700;white-space:nowrap}

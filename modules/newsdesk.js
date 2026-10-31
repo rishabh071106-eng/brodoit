@@ -1,10 +1,12 @@
 // Brodoit News Desk — Brodoit's own news, written in batches.
 // Every run: pull every feed (all categories), merge stories that several outlets are covering into one cluster,
 // rank clusters by how many independent sources carry them and how fresh they are, then have the brain
-// (OpenAI → Gemini → Groq; extractive fallback without a key) write ONE original Brodoit story per cluster:
+// (Gemini → Bro Core's background lane; v27: with no writer nothing is published, never the sources' own sentences)
+// write ONE original Brodoit story per cluster, in its own words (v27: a check rejects any 8-word run copied from a source):
 // a headline and a full 90–105 word story (10+ lines on a phone), in English and Hindi, with the sources listed.
-// v13.1: near-duplicates of recent stories are skipped, and each story's real photo (RSS image or the source page's
-// og:image) is cached once in MEDIA_DIR/news-img and served same-origin (/api/news/img/:id) so Share can draw it.
+// v13.1: near-duplicates of recent stories are skipped. v27: photos come only from Wikimedia Commons under a free licence
+// (modules/newsphoto.js: the story's subject, credited author · licence), never a publisher's or agency's photo; cached
+// once in MEDIA_DIR/news-img and served same-origin (/api/news/img/:id) so Share can draw it. No free photo → no photo.
 // Rules for the writer: only facts present in the sources; no opinions; neutral, simple words.
 //   GET  /api/news/desk?cat=&limit=   → { stories:[…], next, updated_at, writer }
 //   GET  /api/news/desk?before=<next>&exclude=id,id&limit=  → the page older than that (v16 endless deck)
@@ -26,6 +28,7 @@
 // Stories older than 4 days drop off.
 'use strict';
 const GEM = require('./gemini.js');
+const PHOTO = require('./newsphoto.js');
 const crypto = require('crypto');
 const fs = require('fs'), path = require('path');
 
@@ -61,6 +64,21 @@ const isHindiText = t => { t = String(t || ''); const n = letters(t); return n >
 const wordsIn = t => String(t || '').trim().split(/\s+/).filter(Boolean).length;
 const CUT_RE = /(…|\.\.\.)\s*["'”’)]*\s*$/;
 const ENDS_RE = /[.!?।"'”’)]\s*$/;
+// v27: own words. The longest run of words the story shares with the sources, if it is COPY_RUN words or more
+// ("…displaced 20,000 people across six districts, officials said…"): facts can match, a sentence may not.
+const COPY_RUN = 8;
+const wordsOf = t => String(t || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9]+/g, ' ').trim().split(' ').filter(Boolean);
+function copiedRun(text, sourceText, n = COPY_RUN) {
+  const src = wordsOf(sourceText), grams = new Set();
+  for (let i = 0; i + n <= src.length; i++) grams.add(src.slice(i, i + n).join(' '));
+  const w = wordsOf(text);
+  for (let i = 0; i + n <= w.length; i++) {
+    if (!grams.has(w.slice(i, i + n).join(' '))) continue;
+    let j = i + n; while (j < w.length && grams.has(w.slice(j - n + 1, j + 1).join(' '))) j++;
+    return w.slice(i, j).join(' ');
+  }
+  return '';
+}
 // every number the story states must be in the sources ("1,200" and "1200" are the same; 0–12 are allowed as words)
 const numsOf = t => (String(t || '').match(/\d[\d,]*(?:\.\d+)?/g) || []).map(n => n.replace(/,/g, '').replace(/\.0+$/, ''));
 function checkStory(st, sourceText) {
@@ -78,6 +96,8 @@ function checkStory(st, sourceText) {
     const src = new Set(numsOf(sourceText)), srcDigits = String(sourceText).replace(/,/g, '');
     const bad = [...new Set(numsOf(sm + ' ' + h + ' ' + why))].filter(n => !(+n <= 12 && !/\./.test(n)) && !src.has(n) && !srcDigits.includes(n));
     if (bad.length) en.push('these numbers are not in the sources: ' + bad.slice(0, 5).join(', ') + ' (use only the sources\' numbers)');
+    const cp = copiedRun(h + ' . ' + sm + ' . ' + why, sourceText);
+    if (cp) en.push('these words are copied from a source: "' + cp.split(' ').slice(0, 14).join(' ') + '" (say it in your own words)');
   }
   const hh = String(st.headline_hi || '').trim(), hs = String(st.summary_hi || '').trim(), hw = String(st.why_hi || '').trim();
   if (!isHindiText(hh)) hi.push('headline_hi must be Hindi in Devanagari');
@@ -141,6 +161,7 @@ function install(app, deps) {
     db.exec("CREATE TABLE IF NOT EXISTS news_editions(id TEXT PRIMARY KEY, slot TEXT, at TEXT, stories INTEGER DEFAULT 0, writer TEXT, created_at TEXT DEFAULT (datetime('now')))");
     try { db.exec('ALTER TABLE news_stories ADD COLUMN edition TEXT'); } catch (e) { /* already there */ }
   } catch (e) { log('schema v22', e.message); }
+  for (const col of ['image_credit TEXT', 'image_query TEXT']) { try { db.exec('ALTER TABLE news_stories ADD COLUMN ' + col); } catch (e) { /* already there */ } }
   // v22: stories written before the checks: English fields with Hindi in them, or a story cut off with "…", go (the next
   // edition writes fresh ones); Hindi fields that are not Hindi are cleared (the story stays, in English only)
   try {
@@ -181,9 +202,11 @@ function install(app, deps) {
     'Accuracy first: use only facts the sources state; never add numbers, names, dates, quotes or causes they do not state; if the sources disagree, say so or leave it out. ' +
     'Write like a top wire-service editor: the most important fact first, then who, what, where, when, the key numbers and the context; plain, specific words; active voice; ' +
     'no opinion, hype, clickbait or questions; no filler such as "according to reports"; complete sentences only, never an ellipsis. ' +
+    'Write every sentence in your own words: never copy a sentence, or more than six words in a row, from a source, and report what people said in indirect speech, not quotes. ' +
     'Return strict JSON with keys: headline (English, 6-12 words, sentence case, no full stop), summary (English, one paragraph of 80-110 words), ' +
     'why (English, one sentence of 12-25 words: why it matters to a reader in India), headline_hi, summary_hi, why_hi (natural, fluent Hindi in Devanagari, the same facts, ' +
     'written the way a good Hindi newspaper would, not word-for-word; numbers in digits), category (one of india, world, business, tech, science), ' +
+    'image_query (2-5 English words naming the story\'s main subject that an encyclopedia photo could show: a place, a public figure, an organisation, a landmark or an object, e.g. "Brahmaputra river", "Reserve Bank of India"; never the event itself), ' +
     'duplicate_of (the number of a RECENT headline that reports the same event, else null). English fields must contain no Devanagari; Hindi fields must be in Devanagari.';
   const sourceText = c => c.items.slice(0, 6).map(i => i.title + '. ' + i.desc + (i.full ? ' ' + i.full : '')).join('\n');
   function promptFor(c, heads) {
@@ -237,7 +260,6 @@ function install(app, deps) {
         if (!d || !d.ok) return;
         const t = (d.paragraphs || []).filter(x => !hasDeva(x)).join(' ').replace(/\s+/g, ' ').trim();
         if (t.length > String(i.desc || '').length + 200) i.full = clip(t, 2400);
-        if (!i.img && d.image && /^https:\/\//.test(d.image)) i.img = d.image;
       } catch (e) { /* the feed's own lines are used */ }
     }));
   }
@@ -271,47 +293,21 @@ function install(app, deps) {
     const m = String(out).match(/\{[\s\S]*\}/); if (!m) throw new Error('no JSON in reply');
     return JSON.parse(m[0]);
   }
-  // Without any writer at all: stitch the sources' own English sentences (no repeats) into one story of 80+ words, ending
-  // on a whole sentence (never cut). It has no Hindi and no "why"; with a writer configured this is never published.
-  function extractive(c) {
-    const seen = new Set(), out = [];
-    const items = c.items.filter(it => !hasDeva(it.title + it.desc)).sort((a, b) => (b.desc || '').length - (a.desc || '').length);
-    for (const it of items) {
-      for (const sent of String(it.desc || '').split(/(?<=[.!?])\s+/)) {
-        const k = sent.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().slice(0, 60);
-        if (sent.split(' ').length < 6 || seen.has(k) || !/[.!?]["'”’)]*$/.test(sent.trim()) || CUT_RE.test(sent)) continue;
-        seen.add(k); out.push(sent.trim());
-        if (wordsIn(out.join(' ')) >= 80) break;
-      }
-      if (wordsIn(out.join(' ')) >= 80) break;
-    }
-    const head = (items[0] || c.items[0]).title;
-    return { headline: head, summary: out.join(' '), why: '', headline_hi: '', summary_hi: '', why_hi: '', category: c.cat };
-  }
+  // v27: without any writer the desk publishes nothing: never the sources' own sentences stitched together
   const wc = t => String(t || '').trim().split(/\s+/).filter(Boolean).length;
   const MIN_WORDS = 70;
 
-  // ── real photos: the RSS image, else the source page's og:image; cached once and served same-origin ──
+  // ── v27: free photos only (Wikimedia Commons, credited); cached once and served same-origin ──
   const IMG = deps.mediaDir ? path.join(deps.mediaDir, 'news-img') : '';
   if (IMG) { try { fs.mkdirSync(IMG, { recursive: true }); } catch (e) { /* read-only */ } }
   const imgFile = id => { if (!IMG) return ''; for (const x of ['jpg', 'png', 'webp']) { const f = path.join(IMG, id + '.' + x); if (fs.existsSync(f)) return f; } return ''; };
   // only public http(s) hosts: page and photo URLs come from outside, so never touch localhost or private ranges
   const publicUrl = u => { try { const x = new URL(u), h = x.hostname.toLowerCase(); return /^https?:$/.test(x.protocol) && !h.startsWith('[') && /[a-z]/.test(h) && h !== 'localhost' && !/\.(local|internal|localhost)$/.test(h); } catch (e) { return false; } };
-  async function ogImage(link) {
-    if (!publicUrl(link)) return '';
-    try {
-      const r = await fetch(link, { signal: AbortSignal.timeout(6000), headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) BrodoitNews/1.0', Accept: 'text/html' } });
-      if (!r.ok) return '';
-      const html = (await r.text()).slice(0, 300000);
-      const m = html.match(/<meta[^>]+(?:property|name)=["'](?:og:image(?::url)?|twitter:image)["'][^>]*content=["']([^"']+)["']/i) || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i);
-      return m ? new URL(m[1].replace(/&amp;/g, '&'), link).href : '';
-    } catch (e) { return ''; }
-  }
   async function cacheImage(id, url) {
     if (!IMG || !url || imgFile(id)) return !!imgFile(id);
     if (!publicUrl(url)) return false;
     try {
-      const r = await fetch(url, { signal: AbortSignal.timeout(10000), headers: { 'User-Agent': 'Mozilla/5.0 BrodoitNews/1.0' } });
+      const r = await (deps.fetchImage || fetch)(url, { signal: AbortSignal.timeout(10000), headers: { 'User-Agent': PHOTO.UA } });
       const type = String(r.headers.get('content-type') || '');
       if (!r.ok || !/^image\/(jpeg|jpg|png|webp)/.test(type)) return false;
       const buf = Buffer.from(await r.arrayBuffer());
@@ -322,12 +318,35 @@ function install(app, deps) {
       return true;
     } catch (e) { return false; }
   }
-  async function photoFor(id, image, sources) {
+  const findPhoto = deps.findPhoto || (qy => PHOTO.find(qy));
+  const tried = new Map(); // id → when a lookup last found nothing (looked up again after 6 hours)
+  async function photoFor(id, query, headline) {
     if (imgFile(id)) return true;
-    if (image && await cacheImage(id, image)) return true;
-    for (const src of (sources || []).slice(0, 3)) { const og = await ogImage(src.link); if (og && await cacheImage(id, og)) { try { q('UPDATE news_stories SET image=? WHERE id=?').run(og, id); } catch (e) { /* ignore */ } return true; } }
+    if (Date.now() - (tried.get(id) || 0) < 6 * 3600e3) return false;
+    const qs = [...new Set([String(query || '').trim(), PHOTO.queryFromHeadline(headline)].filter(Boolean))];
+    for (const qy of qs) {
+      let hit = null; try { hit = await findPhoto(qy); } catch (e) { hit = null; }
+      if (hit && hit.url && await cacheImage(id, hit.url)) {
+        try { q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(hit.url, JSON.stringify({ by: hit.by, license: hit.license, page: hit.page, title: hit.title }), id); } catch (e) { /* ignore */ }
+        return true;
+      }
+    }
+    tried.set(id, Date.now()); if (tried.size > 2000) tried.clear();
     return false;
   }
+  // v27: a photo saved before v27 came from a publisher (the feed's image or the page's og:image): removed once, with
+  // its link; the stories stay and get a free photo, or the app's own colour card
+  try {
+    const old = q("SELECT id FROM news_stories WHERE image IS NOT NULL AND (image_credit IS NULL OR image_credit='')").all();
+    for (const r of old) { const f = imgFile(r.id); if (f) fs.unlinkSync(f); }
+    if (old.length) { q("UPDATE news_stories SET image=NULL WHERE image_credit IS NULL OR image_credit=''").run(); log('removed', old.length, 'publisher photos (v27: free photos only)'); }
+    if (IMG) {
+      const credited = new Set(q("SELECT id FROM news_stories WHERE image_credit IS NOT NULL AND image_credit<>''").all().map(r => r.id));
+      try { for (const r of q('SELECT id, story FROM news_shared').all()) if (/"image_credit":\{/.test(r.story || '')) credited.add(r.id); } catch (e) { /* no shares yet */ }
+      let n = 0; for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp|tmp)$/, ''); if (!credited.has(id)) { fs.unlinkSync(path.join(IMG, f)); n++; } }
+      if (n) log('removed', n, 'cached photos without a free licence');
+    }
+  } catch (e) { log('photo cleanup', e.message); }
   app.get('/api/news/img/:id', (req, res) => {
     const id = String(req.params.id || '').replace(/[^A-Za-z0-9_-]/g, '');
     const f = id && imgFile(id); if (!f) return res.status(404).end();
@@ -356,37 +375,36 @@ function install(app, deps) {
       const links = new Set(); for (const r of rows) for (const x of parseSources(r.sources)) if (x && x.link) links.add(x.link);
       const heads = rows.map(r => r.headline);
       const repeat = c => c.items.some(i => links.has(i.link)) || c.items.slice(0, 6).some(i => { const g = sigOf(i.title, i.desc); return recent.some(r => sameStory(g, r)); });
-      const ws = writers(); state.writer = ws.length ? ws[0][0] : 'extractive';
+      const ws = writers(); state.writer = ws.length ? ws[0][0] : 'none';
+      if (!ws.length) state.lastError = 'no writer: the desk publishes nothing rather than copy the sources';
       for (const c of clusters) {
         if (wrote >= PER_EDITION) break;
         if (have.has(c.key) || repeat(c)) { skipped++; continue; }
         if (c.items.every(i => hasDeva(i.title))) { skipped++; continue; } // the desk writes from English reports
-        let res;
-        if (ws.length) {
-          await enrich(c);
-          res = await writeStory(c, heads, ws);
-          if (res && res.duplicate) { dup++; continue; }
-          if (!res) { failed++; continue; }
-        } else { res = { s: extractive(c), by: 'extractive' }; if (checkStory(res.s, null).en.filter(x => !/why/.test(x)).length) { failed++; continue; } }
+        if (!ws.length) break;
+        await enrich(c);
+        const res = await writeStory(c, heads, ws);
+        if (res && res.duplicate) { dup++; continue; }
+        if (!res) { failed++; continue; }
         const st = res.s;
         const sources = []; const seen = new Set();
         for (const i of c.items) { if (seen.has(i.source)) continue; seen.add(i.source); sources.push({ name: i.source, link: i.link, title: i.title }); }
-        const image = (c.items.find(i => i.img) || {}).img || null;
         const cat = CAT_LABEL[st.category] ? st.category : c.cat;
         const T = (v, n) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, n);
         try {
-          q('INSERT OR IGNORE INTO news_stories(id,cluster_key,category,headline,summary,why,headline_hi,summary_hi,why_hi,sources,image,writer,source_count,published_at,edition) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-            .run('ns_' + c.key, c.key, cat, T(st.headline, 160), T(st.summary, 1400), T(st.why, 300), T(st.headline_hi, 200), T(st.summary_hi, 1800), T(st.why_hi, 400), JSON.stringify(sources.slice(0, 6)), image, res.by, sources.length, new Date(c.newest || Date.now()).toISOString(), ed.id);
+          const iq = T(st.image_query, 80);
+          q('INSERT OR IGNORE INTO news_stories(id,cluster_key,category,headline,summary,why,headline_hi,summary_hi,why_hi,sources,image,writer,source_count,published_at,edition,image_query) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+            .run('ns_' + c.key, c.key, cat, T(st.headline, 160), T(st.summary, 1400), T(st.why, 300), T(st.headline_hi, 200), T(st.summary_hi, 1800), T(st.why_hi, 400), JSON.stringify(sources.slice(0, 6)), null, res.by, sources.length, new Date(c.newest || Date.now()).toISOString(), ed.id, iq);
           wrote++;
           heads.unshift(T(st.headline, 160)); recent.push(sigOf(st.headline, st.summary)); for (const i of c.items) links.add(i.link);
-          await photoFor('ns_' + c.key, image, sources);
+          await photoFor('ns_' + c.key, iq, st.headline);
         } catch (e) { state.lastError = 'db: ' + e.message; }
         if (PACE_MS > 0) await new Promise(r => setTimeout(r, PACE_MS));
       }
       if (wrote) q('INSERT OR REPLACE INTO news_editions(id, slot, at, stories, writer) VALUES(?,?,?,?,?)').run(ed.id, ed.slot, ed.at, wrote + ((q('SELECT stories FROM news_editions WHERE id=?').get(ed.id) || {}).stories || 0), state.writer);
       q("DELETE FROM news_stories WHERE created_at < datetime('now','-4 days')").run();
-      try { q("DELETE FROM news_shared WHERE shared_at < datetime('now','-90 days')").run(); q("DELETE FROM news_editions WHERE at < datetime('now','-7 days')").run(); } catch (e) { /* ignore */ }
-      for (const r of q("SELECT id, image, sources FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY created_at DESC LIMIT 40").all().filter(r => !imgFile(r.id)).slice(0, 12)) { await photoFor(r.id, r.image, parseSources(r.sources)); }
+      try { q("DELETE FROM news_shared WHERE shared_at < datetime('now','-90 days')").run(); q('DELETE FROM news_editions WHERE at < ?').run(new Date(nowOf().getTime() - 7 * 864e5).toISOString()); } catch (e) { /* ignore */ }
+      for (const r of q("SELECT id, image_query, headline FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY created_at DESC LIMIT 40").all().filter(r => !imgFile(r.id)).slice(0, 12)) { await photoFor(r.id, r.image_query, r.headline); }
       try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp)$/, ''); if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id) && !q('SELECT 1 FROM news_shared WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
       state.last = { at: new Date().toISOString(), reason, edition: ed.id, items: items.length, clusters: clusters.length, wrote, skipped, duplicates: dup, failed, ms: Date.now() - t0, writer: state.writer };
       log('edition', JSON.stringify(state.last));
@@ -415,7 +433,12 @@ function install(app, deps) {
     return { id: last.id, slot: last.slot, label: hour < 11 ? 'Morning edition' : hour < 17 ? 'Afternoon edition' : 'Evening edition', label_hi: hour < 11 ? 'सुबह का संस्करण' : hour < 17 ? 'दोपहर का संस्करण' : 'शाम का संस्करण', at: last.at, next_at: cur.id === last.id ? cur.next_at : cur.at > last.at ? cur.at : cur.next_at, count: last.stories, ready: true };
   }
 
-  const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: (() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })(), image: imgFile(r.id) ? '/api/news/img/' + encodeURIComponent(r.id) : r.image, writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at, edition: r.edition || null, voice: global._newsVoice ? global._newsVoice.flags(r.id) : {} });
+  // v27: the photo's credit (Wikimedia Commons: author · licence · file page), and which sources are official ones
+  // (government, regulator, UN agency, space agency): the app marks a story backed by one "Official source"
+  const creditOf = r => { try { const c = JSON.parse(r.image_credit || 'null'); return c && c.license ? c : null; } catch (e) { return null; } };
+  const OFFICIAL = /(^|\.)(gov\.in|nic\.in|gov|gov\.uk|europa\.eu|int|un\.org|who\.int|rbi\.org\.in|sebi\.gov\.in|isro\.gov\.in|nasa\.gov|esa\.int|pib\.gov\.in)$/;
+  const officialMark = list => (Array.isArray(list) ? list : []).map(x => { let h = ''; try { h = new URL(x.link).hostname.replace(/^www\./, ''); } catch (e) { h = ''; } return OFFICIAL.test(h) ? Object.assign({}, x, { official: true }) : x; });
+  const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: officialMark((() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })()), image: imgFile(r.id) ? '/api/news/img/' + encodeURIComponent(r.id) : null, image_credit: creditOf(r), writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at, edition: r.edition || null, voice: global._newsVoice ? global._newsVoice.flags(r.id) : {} });
 
   // ── v16: the deck never ends. ?before=<cursor>&exclude=id,id… walks back through every story the desk still holds
   // (newest first, past the 2-day window), then through the cached headline feed (/api/news) in the same story shape.
@@ -464,7 +487,7 @@ function install(app, deps) {
       if (desk.some(d => jaccard(t, d) >= 0.45)) continue;
       const ts = Date.parse(it.date || it.pubDate || '') || 0, when = ts ? new Date(ts).toISOString() : '';
       const source = String(it.source || (() => { try { return new URL(it.link).hostname.replace(/^www\./, ''); } catch (e) { return ''; } })());
-      const image = it.img && !/unsplash\.com/i.test(it.img) && publicUrl(it.img) ? it.img : null;
+      const image = null; // v27: a feed item shows the app's colour card, never the publisher's photo
       list.push({ ts, id, story: { id, category, label: CAT_LABEL[category], headline: clip(title, 160), summary: desc, why: '', headline_hi: '', summary_hi: '', why_hi: '', sources: [{ name: source, link: it.link || '' }], image, writer: 'feed', source_count: 1, published_at: when, created_at: when, voice: {} } });
     }
     list.sort((a, b) => b.ts - a.ts || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0));
@@ -520,7 +543,7 @@ function install(app, deps) {
         } else out = older(cat, null, ex, exSet, lim, S, hi); // nothing new today: start with the newest the desk has
       } else out = older(cat, cur, ex, exSet, lim, S, hi);
     } catch (e) { log('desk page', e.message); return res.status(500).json({ error: 'news desk unavailable', stories: [], next: null }); }
-    res.json({ stories: out.stories, next: out.next, caughtUp: !out.stories.length && !out.next, edition: editionInfo(), updated_at: state.last && state.last.at, writer: state.writer || (writers()[0] || ['extractive'])[0], running: state.running });
+    res.json({ stories: out.stories, next: out.next, caughtUp: !out.stories.length && !out.next, edition: editionInfo(), updated_at: state.last && state.last.at, writer: state.writer || (writers()[0] || ['none'])[0], running: state.running });
   });
   // ── v21: seen memory, one story, sharing ──
   app.post('/api/news/seen', auth, (req, res) => {
@@ -539,7 +562,7 @@ function install(app, deps) {
   function sharedOf(id) {
     let r = null; try { r = q('SELECT story FROM news_shared WHERE id=?').get(id); } catch (e) { return null; }
     if (!r) return null;
-    try { const st = JSON.parse(r.story); if (imgFile(id)) st.image = '/api/news/img/' + encodeURIComponent(id); return st; } catch (e) { return null; }
+    try { const st = JSON.parse(r.story); st.image = imgFile(id) && st.image_credit ? '/api/news/img/' + encodeURIComponent(id) : null; if (!st.image) st.image_credit = null; return st; } catch (e) { return null; }
   }
   function storyById(id) {
     if (!ID.test(id)) return null;
@@ -562,7 +585,7 @@ function install(app, deps) {
     const st = storyById(id); if (!st) return res.status(404).json({ error: 'This story is no longer available' });
     const keep = Object.assign({}, st); delete keep.voice;
     try { q('INSERT INTO news_shared(id, story) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET story=excluded.story').run(id, JSON.stringify(keep)); } catch (e) { return res.status(500).json({ error: 'could not share' }); }
-    if (!imgFile(id) && st.image && /^https?:/.test(st.image)) cacheImage(id, st.image).catch(() => {});
+    if (!imgFile(id) && st.image_credit) { const r0 = q('SELECT image FROM news_stories WHERE id=?').get(id); if (r0 && r0.image) cacheImage(id, r0.image).catch(() => {}); }
     res.json({ ok: true, url: SITE + '/n/' + encodeURIComponent(id) });
   });
 
@@ -598,10 +621,10 @@ h1{font:700 30px/1.2 var(--f);letter-spacing:-.02em;margin:4px 0 14px}h2{font:70
 .cta{display:flex;flex-direction:column;gap:10px;align-items:stretch;margin-top:26px;padding:20px;border-radius:20px;background:var(--card);border:1px solid var(--line);text-align:center}
 .cta .open{justify-content:center;min-height:50px;font-size:16px}.cta small{color:var(--mute)}</style></head>
 <body><header class="top"><a class="brand" href="/">Bro<i>doit</i></a><a class="open" href="${H(app)}">Open in Brodoit</a></header>
-<main><article>${st.image ? `<img class="ph" src="${H(st.image)}" alt="">` : ''}
+<main><article>${st.image ? `<img class="ph" src="${H(st.image)}" alt="">${st.image_credit ? `<p style="margin:6px 0 0;font-size:12px;color:#77706a">Photo: <a href="${H(st.image_credit.page)}" rel="noopener nofollow" target="_blank" style="color:inherit">${H(st.image_credit.by)}</a> · ${H(st.image_credit.license)} · Wikimedia Commons</p>` : ''}` : ''}
 <div class="k">${st.label ? `<b>${H(st.label)}</b>` : ''}${when ? `<span>${H(when)}</span>` : ''}</div>
 <h1>${H(st.headline)}</h1>${paras}${st.why ? `<p class="why">${H(st.why)}</p>` : ''}${hiPart}
-${srcs.length ? `<div class="src"><b>Sources</b>${srcs.map(x => `<div><a href="${H(x.link)}" rel="noopener nofollow" target="_blank">${H(x.name || host(x.link))}</a></div>`).join('')}</div>` : ''}
+${srcs.length ? `<div class="src"><b>Sources</b>${srcs.map(x => `<div><a href="${H(x.link)}" rel="noopener nofollow" target="_blank">${H(x.name || host(x.link))}</a>${x.official ? ' <small>· Official source</small>' : ''}</div>`).join('')}</div>` : ''}
 </article><div class="cta"><b>More stories like this, every 30 minutes</b><a class="open" href="${H(app)}">Open in Brodoit</a><small>Free · News, tasks, steps and Bro, your coach</small></div></main></body></html>`;
   }
   app.get('/n/:id', (req, res) => {
@@ -658,7 +681,7 @@ ${lines.map((l, i) => `<text x="64" y="${Math.round(top + i * size * 1.18)}" fon
     setTimeout(() => { try { const p = tick(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ } }, 120000);
     const iv = setInterval(() => { try { const p = tick(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ } }, 60000); if (iv.unref) iv.unref();
   }
-  log('ready · editions at', SLOTS.map(m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0')).join(', '), 'India time · writer', (writers()[0] || ['extractive'])[0]);
+  log('ready · editions at', SLOTS.map(m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0')).join(', '), 'India time · writer', (writers()[0] || ['none'])[0]);
   return { run, tick, cluster, editionInfo, status: () => global._deskStatus() };
 }
 
