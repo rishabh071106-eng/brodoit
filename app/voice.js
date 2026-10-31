@@ -106,17 +106,28 @@
   V.rerender = function () { if (S.tab === 'bro' || S.tab === 'home' || !S.tab) { const root = document.getElementById('broVoiceRoot'); if (root) { root.innerHTML = V.html(); V.scroll(); } } V.renderFull(); };
   // While chatting Home is a fixed-height chat: it fills the space above the tab bar, the bubbles scroll inside,
   // and the compose bar stays at the bottom. The newest message is always in view.
-  V.scroll = function () {
+  // keep: a resize (keyboard, browser bar) keeps what the person is reading; a new message shows the newest.
+  V.scroll = function (keep) {
     const root = document.getElementById('broVoiceRoot'), t = document.getElementById('bvThread');
     if (!root) return;
     if (t) {
-      const bar = document.querySelector('.tabs.page-t') || document.querySelector('.rd-tabbar'), r = bar && bar.getBoundingClientRect();
-      const bottom = r && r.top > innerHeight * 0.6 ? r.top : innerHeight - 16;
-      root.style.setProperty('--hb-avail', Math.max(360, Math.floor(bottom - (root.getBoundingClientRect().top + scrollY) - 8)) + 'px');
       if (scrollY) scrollTo(0, 0);
-      t.scrollTop = t.scrollHeight;
+      // the visible height: with the keyboard open the tab bar is behind it, so the chat ends above the keyboard
+      const vv = window.visualViewport, vh = vv ? vv.height + vv.offsetTop : innerHeight;
+      const bar = document.querySelector('.tabs.page-t') || document.querySelector('.rd-tabbar'), r = bar && bar.getBoundingClientRect();
+      const bottom = r && r.top > vh * 0.6 && r.top <= vh ? r.top : vh - 8;
+      const fromEnd = t.scrollHeight - t.scrollTop - t.clientHeight;
+      root.style.setProperty('--hb-avail', Math.max(200, Math.floor(bottom - root.getBoundingClientRect().top - 8)) + 'px');
+      t.scrollTop = keep && fromEnd > 40 ? t.scrollHeight - t.clientHeight - fromEnd : t.scrollHeight;
     } else root.style.removeProperty('--hb-avail');
   };
+  // the keyboard opening or closing, rotating, a browser bar showing or hiding: fit the chat again
+  (function () {
+    let q = 0;
+    const refit = () => { cancelAnimationFrame(q); q = requestAnimationFrame(() => { if (document.getElementById('bvThread')) V.scroll(true); }); };
+    addEventListener('resize', refit);
+    if (window.visualViewport) visualViewport.addEventListener('resize', refit);
+  })();
   V.set = function (st) { if (V.engine === 'core' && V.state === st) return; V.state = st; V.rerender(); };
   V.push = function (role, text) { if (!text) return; V.thread.push({ role, text, ts: Date.now() }); if (V.thread.length > 60) V.thread.shift(); V.partial = ''; V.rerender(); };
   // deep links only (Learn → teacher, language lessons → language practice): never a switch on Bro's screen
