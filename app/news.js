@@ -13,6 +13,9 @@
 // "Why it matters" and its sources (tap: the original reports). A slim bar shows how far you are. Hindi shows only the
 // stories written in Hindi (the server sends ?lang=hi), never English ones. A dot on the News tab says a new edition
 // is in.
+// v28: News opens straight on the first story (no front page). A bar under the story holds the sections (Top, AI, India,
+// World, Business, Tech, Science), Readers (pieces readers sent, checked by Brodoit's AI editor), Thought of the day (an
+// original thought and the story behind it) and Send (write for Brodoit). Every card has a free photo with its credit.
 (function () {
   'use strict';
   const N = window.NewsChannel = { lang: localStorage.getItem('news.lang') || 'en', stories: [], loaded: false, _loading: false, i: 0 };
@@ -20,8 +23,10 @@
   const I = (n, s) => (window.ico ? window.ico(n, s) : '');
   const hi = () => N.lang === 'hi';
   const pick = (st, k) => (hi() && st[k + '_hi']) ? st[k + '_hi'] : st[k];
-  const CAT = { india: ['India', 'भारत', '#B5402A', 'landmark'], world: ['World', 'दुनिया', '#2F5FA8', 'globe'], business: ['Business', 'कारोबार', '#2F7D4F', 'trending-up'], tech: ['Tech', 'टेक', '#6D28D9', 'smartphone'], science: ['Science', 'विज्ञान', '#0E7C7B', 'rocket'] };
-  const SRC = { thehindu: 'The Hindu', indianexpress: 'Indian Express', ndtv: 'NDTV', hindustantimes: 'Hindustan Times', livemint: 'Mint', economictimes: 'Economic Times', timesofindia: 'Times of India', bbc: 'BBC', bbci: 'BBC', theguardian: 'The Guardian', reuters: 'Reuters', aljazeera: 'Al Jazeera', npr: 'NPR', cnbc: 'CNBC', techcrunch: 'TechCrunch', theverge: 'The Verge', wired: 'Wired', arstechnica: 'Ars Technica', sciencedaily: 'ScienceDaily', nasa: 'NASA', scroll: 'Scroll', thewire: 'The Wire', news18: 'News18', indiatoday: 'India Today', moneycontrol: 'Moneycontrol', businessstandard: 'Business Standard', pibgovin: 'PIB · Govt of India', rbiorgin: 'Reserve Bank of India', newsun: 'UN News', whoint: 'WHO', nasagov: 'NASA' };
+  const CAT = { india: ['India', 'भारत', '#B5402A', 'landmark'], world: ['World', 'दुनिया', '#2F5FA8', 'globe'], ai: ['AI', 'AI', '#A21CAF', 'sparkles'], business: ['Business', 'कारोबार', '#2F7D4F', 'trending-up'], tech: ['Tech', 'टेक', '#6D28D9', 'smartphone'], science: ['Science', 'विज्ञान', '#0E7C7B', 'rocket'], life: ['Life', 'जीवन', '#A0570F', 'sun'] };
+  // v28: the bar under the story: the sections in this order, then Readers
+  const BAR = ['', 'ai', 'india', 'world', 'business', 'tech', 'science'];
+  const SRC = { thehindu: 'The Hindu', indianexpress: 'Indian Express', ndtv: 'NDTV', hindustantimes: 'Hindustan Times', livemint: 'Mint', economictimes: 'Economic Times', timesofindia: 'Times of India', bbc: 'BBC', bbci: 'BBC', theguardian: 'The Guardian', reuters: 'Reuters', aljazeera: 'Al Jazeera', npr: 'NPR', cnbc: 'CNBC', techcrunch: 'TechCrunch', theverge: 'The Verge', wired: 'Wired', arstechnica: 'Ars Technica', sciencedaily: 'ScienceDaily', nasa: 'NASA', scroll: 'Scroll', thewire: 'The Wire', news18: 'News18', indiatoday: 'India Today', moneycontrol: 'Moneycontrol', businessstandard: 'Business Standard', pibgovin: 'PIB · Govt of India', rbiorgin: 'Reserve Bank of India', newsun: 'UN News', whoint: 'WHO', nasagov: 'NASA', openai: 'OpenAI', deepmindgoogle: 'Google DeepMind', bloggoogle: 'Google', huggingfaceco: 'Hugging Face', huggingface: 'Hugging Face', blogsnvidia: 'NVIDIA', newsmitedu: 'MIT News', technologyreview: 'MIT Technology Review', analyticsindiamag: 'Analytics India Magazine' };
   const srcName = x => { const k = String(x && x.name || '').toLowerCase().replace(/^www\./, '').replace(/\.(com|in|co\.in|co\.uk|org|net)$/, '').replace(/[^a-z]/g, ''); return SRC[k] || String(x && x.name || '').replace(/^www\./, ''); };
   const ago = d => { const t = Date.parse(d || ''); if (!t) return ''; const m = Math.max(1, Math.round((Date.now() - t) / 60000)), H = hi(); return m < 60 ? m + (H ? ' मि' : 'm') : m < 1440 ? Math.round(m / 60) + (H ? ' घं' : 'h') : Math.round(m / 1440) + (H ? ' दि' : 'd'); };
   const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9ऀ-ॣ०-ॿ]+/g, ' ').trim();
@@ -101,7 +106,7 @@
   let viewT = 0;
   function watch() {
     clearTimeout(viewT);
-    const st = N.stories[N.i]; if (!st || seen.ids[st.id]) return;
+    const st = N.stories[N.i]; if (N.view !== 'news' || !st || seen.ids[st.id]) return;
     viewT = setTimeout(() => { if (window.S && S.tab === 'news' && document.visibilityState === 'visible' && N.stories[N.i] === st) markSeen(st); }, 1500);
   }
 
@@ -149,24 +154,71 @@
   function keep(st) {
     N.stories.push(st);
   }
-  N.load = async function () {
+  // v28: four views share the deck: news (the desk, by section), readers, thought, and send (the form). Each keeps its
+  // own cards and place while another is open; the shell's load() call loads whichever view is open.
+  N.view = 'news';
+  const V = {};
+  const saveView = () => { if (N.view !== 'send') V[N.view] = { stories: N.stories, i: N.i, caughtUp: N.caughtUp, loaded: N.loaded, err: N.err, at: N._at || Date.now() }; };
+  N.load = function () {
+    if (N.view === 'thought') return loadThought();
+    if (N.view === 'readers') return loadReaders();
+    if (N.view === 'send') { N.loaded = true; N._loading = false; N.rerender(); loadMine(); return Promise.resolve(); }
+    return loadNews();
+  };
+  async function loadNews() {
     N.err = false; N.caughtUp = false; N._at = Date.now();
     const P = newPass();
+    let got = [], err = false;
     try {
-      let got = await page();
+      got = await page();
       for (let k = 0; k < 6 && !got.length && P === pass && P.next !== null; k++) got = await page(); // a first page of seen stories: look further
-      if (P === pass) {
-        N.stories = []; N.i = 0; got.forEach(keep);
-        if (got.length) N.stories.unshift({ kind: 'cover' }); // v22: the edition's front page
-        N.caughtUp = !got.length && P.next === null;
-        sawEdition();
-        // a shared link or a notification (?s=<story id>) opens on that story, even one seen before
-        const want = N._want || new URLSearchParams(location.search).get('s'); N._want = null;
-        if (want) await openStory(want);
-      }
-    } catch (e) { if (!N.stories.length) N.err = true; }
+    } catch (e) { err = true; }
+    if (P !== pass) return;
+    // opened something else meanwhile: keep the stories for when News comes back
+    if (N.view !== 'news') { V.news = { stories: got, i: 0, caughtUp: !got.length && P.next === null, loaded: !err, err: err && !got.length, at: Date.now() }; N._loading = false; return; }
+    N.stories = []; N.i = 0; got.forEach(keep);
+    N.caughtUp = !err && !got.length && P.next === null;
+    N.err = err && !got.length;
+    sawEdition();
+    // a shared link or a notification (?s=<story id>) opens on that story, even one seen before
+    const want = N._want || new URLSearchParams(location.search).get('s'); N._want = null;
+    if (want && !/^(th|rd)_/.test(want)) await openStory(want);
     N.loaded = true; N._loading = false;
     N.rerender();
+    if (want && /^(th|rd)_/.test(want)) N.open(want); // a shared thought or reader's piece
+  }
+  // Thought of the day: today first, then the six days before (swipe for yesterday's)
+  async function loadThought() {
+    N.err = false; N.caughtUp = false; N._at = Date.now();
+    let items = [], err = false;
+    try { const r = await fetch('/api/news/thought', { cache: 'no-store' }); if (!r.ok) throw new Error('HTTP ' + r.status); items = ((await r.json()) || {}).items || []; } catch (e) { err = true; }
+    const list = items.filter(x => x && x.thought).map(x => Object.assign({ kind: 'thought', headline: x.thought, summary: x.story, headline_hi: x.thought_hi, summary_hi: x.story_hi, category: 'life' }, x));
+    if (N.view !== 'thought') { V.thought = { stories: list, i: 0, caughtUp: false, loaded: !err, err: err && !list.length, at: Date.now() }; N._loading = false; return; }
+    N.stories = list; N.i = 0; N.err = err && !list.length; N.loaded = true; N._loading = false;
+    jumpTo(); N.rerender();
+  }
+  // Readers: what readers sent, newest first, after Brodoit's AI editor read it (Hindi: the pieces with a Hindi version)
+  async function loadReaders() {
+    N.err = false; N.caughtUp = false; N._at = Date.now();
+    let items = [], err = false;
+    try { const r = await fetch('/api/news/readers?limit=40' + (hi() ? '&lang=hi' : ''), { cache: 'no-store' }); if (!r.ok) throw new Error('HTTP ' + r.status); items = ((await r.json()) || {}).items || []; } catch (e) { err = true; }
+    const list = items.filter(x => x && x.headline && x.summary);
+    if (N.view !== 'readers') { V.readers = { stories: list, i: 0, caughtUp: true, loaded: !err, err: err && !list.length, at: Date.now() }; N._loading = false; return; }
+    N.stories = list; N.i = 0; N.caughtUp = !err; N.err = err && !list.length; N.loaded = true; N._loading = false;
+    jumpTo(); N.rerender();
+  }
+  // a link to a thought or a reader's piece (?s=th_… / rd_…) opens on it
+  function jumpTo() { const want = N._want; if (!want) return; const k = N.stories.findIndex(x => x.id === want); if (k >= 0) { N.i = k; N._want = null; } }
+  // open a view; the one already open goes back to its first card
+  N.show = function (view, keepWant) {
+    if (!keepWant) N._want = null;
+    if (view === N.view) { if (view !== 'send' && N.stories.length) N.go(0); return; }
+    clearTimeout(viewT); flushSeen(); saveView();
+    N.view = view;
+    const s = V[view];
+    if (view !== 'send' && s && s.loaded && s.stories.length && Date.now() - s.at < 10 * 60e3) { N.stories = s.stories; N.i = s.i; N.caughtUp = s.caughtUp; N.err = s.err; N.loaded = true; N._at = s.at; jumpTo(); N.rerender(); return; }
+    N.stories = []; N.i = 0; N.caughtUp = false; N.err = false; N.loaded = false; N._loading = true;
+    N.rerender(); N.load();
   };
   async function openStory(id) {
     let k = N.stories.findIndex(x => x.id === id);
@@ -174,7 +226,7 @@
       try {
         const r = await fetch('/api/news/story/' + encodeURIComponent(id), { cache: 'no-store' });
         const j = r.ok ? await r.json() : null;
-        if (j && j.story && j.story.headline) { k = Math.max(isCover(N.stories[0]) ? 1 : 0, Math.min(N.i, N.stories.length)); N.stories.splice(k, 0, j.story); if (pass) pass.ids.add(j.story.id); }
+        if (j && j.story && j.story.headline) { k = Math.max(0, Math.min(N.i, N.stories.length)); N.stories.splice(k, 0, j.story); if (pass) pass.ids.add(j.story.id); }
       } catch (e) { /* offline */ }
     }
     if (k >= 0) { N.i = k; N.caughtUp = N.caughtUp && N.stories.length > 0; }
@@ -184,6 +236,14 @@
   // a story link inside the app (a tapped notification, a shared link opened in the app)
   N.open = async function (id) {
     if (!id) return;
+    // v28: a thought or a reader's piece opens its own view
+    if (/^(th|rd)_/.test(id)) {
+      N._want = id; const v = id[0] === 't' ? 'thought' : 'readers';
+      if (v === 'readers') delete V.readers; // a piece just published is not in the list kept from before
+      if (N.view === v && N.loaded && N.stories.some(x => x.id === id)) { jumpTo(); N.rerender(); } else if (N.view === v) N.again(); else N.show(v, true);
+      return;
+    }
+    if (N.view !== 'news') { N._want = id; N.show('news', true); return; }
     if (!N.loaded) { N._want = id; if (!N._loading) { N._loading = true; N.load(); } return; }
     const k = await openStory(id);
     if (k >= 0) { N.rerender(); }
@@ -191,7 +251,7 @@
   // Near the end: the next page goes in behind the last card (the card in view never moves). One load at a time.
   // v21: when the desk has nothing unseen left, the deck ends on "You're all caught up" (it no longer goes round again)
   N.more = async function () {
-    if (N._busy || !N.loaded || !N.stories.length || !pass || N.caughtUp || Date.now() < (N._wait || 0)) return;
+    if (N.view !== 'news' || N._busy || !N.loaded || !N.stories.length || !pass || N.caughtUp || Date.now() < (N._wait || 0)) return;
     N._busy = true; let added = 0;
     try {
       for (let k = 0; k < 6 && !added && pass.next !== null; k++) {
@@ -199,15 +259,22 @@
         try { got = await page(); } catch (e) { N._wait = Date.now() + 4000; break; }
         if (got.length) { append(got); added = got.length; }
       }
+      if (N.view !== 'news') return;
       if (!added && pass.next === null) { N.caughtUp = true; appendEnd(); }
     } finally { N._busy = false; }
     if (added) near(); else if (!N.caughtUp) setTimeout(near, 4100);
   };
-  N.again = function () { N.loaded = false; N.caughtUp = false; N.i = 0; N.rerender(); N._loading = true; N.load(); };
+  N.again = function () { delete V[N.view]; N.loaded = false; N.caughtUp = false; N.i = 0; N.rerender(); N._loading = true; N.load(); };
   const isCover = st => !!(st && st.kind === 'cover');
   const storyCount = () => N.stories.filter(x => !isCover(x)).length;
-  // a section on the front page: the deck reloads with that section only (All clears it)
-  N.setCat = function (c) { N.cat = CAT[c] ? c : ''; N.again(); };
+  // a section in the bar: the deck reloads with that section only (Top clears it)
+  N.setCat = function (c) {
+    c = CAT[c] ? c : '';
+    if (N.view === 'news' && (N.cat || '') === c) { if (N.stories.length) N.go(0); return; }
+    N.cat = c; delete V.news;
+    if (N.view !== 'news') { saveView(); N.view = 'news'; }
+    N.again();
+  };
   const count = () => N.stories.length + (N.caughtUp && N.stories.length ? 1 : 0);
   function append(list) {
     const base = N.stories.length; list.forEach(keep);
@@ -230,16 +297,22 @@
   const nextText = () => { const t = fmtTime(N.edition && N.edition.next_at); return t ? (hi() ? 'अगला संस्करण ' + t : 'Next edition at ' + t) : (hi() ? 'दिन में तीन बार नई ख़बरें' : 'New stories three times a day'); };
   function endCard() {
     const H = hi();
+    // v28: the end of Readers asks for the next piece
+    if (N.view === 'readers') return '<article class="nz-card nz-end" data-i="' + N.stories.length + '" aria-label="' + (H ? 'और लेख' : 'More pieces') + '"><div class="nz-endin">' +
+      '<span class="nz-endic nz-endic-w" aria-hidden="true">' + I('send', 40, 1.8) + '</span>' +
+      '<h2' + (H ? ' class="dev"' : '') + '>' + (H ? 'आपके पास भी कुछ है?' : 'Got something to share?') + '</h2>' +
+      '<p' + (H ? ' class="dev"' : '') + '>' + (H ? 'कोई ख़बर, विचार या कहानी भेजें। Brodoit का AI संपादक हर लेख पढ़ता है।' : 'Send a news tip, a thought or a story. Brodoit\'s AI editor reads every piece.') + '</p>' +
+      '<button class="b-btn" onclick="NewsChannel.show(\'send\')">' + I('send', 16) + (H ? 'लिखें' : 'Write for Brodoit') + '</button></div></article>';
     return '<article class="nz-card nz-end" data-i="' + N.stories.length + '" aria-label="' + (H ? 'सारी ख़बरें देख लीं' : 'All caught up') + '"><div class="nz-endin">' +
       '<span class="nz-endic" aria-hidden="true">' + I('check-circle', 44, 1.8) + '</span>' +
       '<h2>' + (H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up') + '</h2>' +
       '<p>' + esc(nextText()) + '</p>' +
       '<button class="b-btn" onclick="NewsChannel.again()">' + I('refresh-cw', 16) + (H ? 'फिर देखें' : 'Check again') + '</button></div></article>';
   }
-  function near() { if (N.loaded && storyCount() && N.i >= N.stories.length - 4) N.more(); }
+  function near() { if (N.view === 'news' && N.loaded && storyCount() && N.i >= N.stories.length - 4) N.more(); }
 
-  N.stop = function () { clearTimeout(viewT); flushSeen(); N._leftAt = Date.now(); };   // nothing plays in News any more
-  N.setLang = function (l, fromApp) { if (l === N.lang) return; N.lang = l; try { localStorage.setItem('news.lang', l); } catch (e) {} if (!fromApp && window.setAppLang) setAppLang(l, 'news'); if (N.loaded) N.again(); else N.rerender(); }; // v24: one app language
+  N.stop = function () { clearTimeout(viewT); clearTimeout(mineT); flushSeen(); N._leftAt = Date.now(); };   // nothing plays in News any more
+  N.setLang = function (l, fromApp) { if (l === N.lang) return; N.lang = l; try { localStorage.setItem('news.lang', l); } catch (e) {} if (!fromApp && window.setAppLang) setAppLang(l, 'news'); for (const k of Object.keys(V)) delete V[k]; if (N.view === 'send') N.rerender(); else if (N.loaded) N.again(); else N.rerender(); }; // v24: one app language (v28: every view reloads in it)
   // The shell re-renders the tab itself; size the deck and wire swiping after every render.
   N.after = function () {
     // back on News after 20 minutes away: start from what is new (everything you saw stays seen)
@@ -262,58 +335,63 @@
     requestAnimationFrame(() => { N.size(); N.go(N.i, true); });
   };
 
-  function cover(i) {
-    const H = hi(), ed = N.edition || {}, list = N.stories.map((st, k) => [st, k]).filter(([st]) => !isCover(st)).slice(0, 5);
-    const day = (() => { try { return new Date(Date.parse(ed.at || '') || Date.now()).toLocaleDateString(H ? 'hi-IN' : 'en-IN', { weekday: 'long', day: 'numeric', month: 'long' }); } catch (e) { return ''; } })();
-    const label = (H ? ed.label_hi : ed.label) || (H ? 'आज की ख़बरें' : 'Today’s news');
-    const chips = [['', H ? 'सब' : 'All']].concat(Object.keys(CAT).map(k => [k, H ? CAT[k][1] : CAT[k][0]]));
-    // the lead story, when it has a photo, opens the page big; the rest follow as a numbered list
-    const lead = list.length && list[0][0].image ? list[0] : null, rest = lead ? list.slice(1) : list;
-    const lc = lead ? (CAT[lead[0].category] || ['', '', '#37352F']) : null;
-    const leadHtml = lead ? '<button type="button" class="nz-cv-lead" style="--c:' + lc[2] + '" onclick="NewsChannel.go(' + lead[1] + ')"><img src="' + esc(lead[0].image) + '" alt="" onerror="this.remove()"><span class="nz-cv-lead-t' + (H ? ' dev' : '') + '"><small>' + esc((H ? lc[1] : lc[0]) || '') + (ago(lead[0].published_at) ? ' · ' + ago(lead[0].published_at) : '') + '</small><b>' + esc(pick(lead[0], 'headline')) + '</b></span></button>' : '';
-    return '<article class="nz-card nz-cover" data-i="' + i + '" aria-roledescription="slide" aria-label="' + esc(label) + '"><div class="nz-cv">' +
-      '<div class="nz-cv-k"><span class="nz-cv-dot" aria-hidden="true"></span><b' + (H ? ' class="dev"' : '') + '>' + esc(label) + '</b><span>' + esc(day) + '</span></div>' +
-      '<h2 class="nz-cv-t' + (H ? ' dev' : '') + '">' + (H ? 'अभी की बड़ी ख़बरें' : 'The stories that matter now') + '</h2>' +
-      '<div class="nz-cv-chips" role="group" aria-label="' + (H ? 'विषय' : 'Sections') + '">' + chips.map(([k, l]) => '<button type="button" class="' + ((N.cat || '') === k ? 'on' : '') + (H ? ' dev' : '') + '" aria-pressed="' + ((N.cat || '') === k) + '" onclick="NewsChannel.setCat(\'' + k + '\')">' + esc(l) + '</button>').join('') + '</div>' +
-      leadHtml +
-      '<ol class="nz-cv-list">' + rest.map(([st, k], n) => { const c = CAT[st.category] || ['', '', '#37352F']; return '<li><button type="button" onclick="NewsChannel.go(' + k + ')" style="--c:' + c[2] + '"><span class="nz-cv-n">' + (n + (lead ? 2 : 1)) + '</span><span class="nz-cv-h' + (H ? ' dev' : '') + '"><b>' + esc(pick(st, 'headline')) + '</b><small>' + esc((H ? c[1] : c[0]) || '') + (ago(st.published_at) ? ' · ' + ago(st.published_at) : '') + '</small></span></button></li>'; }).join('') + '</ol>' +
-      '<div class="nz-cv-foot"><span>' + esc(nextText()) + '</span><button type="button" class="nz-cv-go" onclick="NewsChannel.go(1)">' + (H ? 'पढ़ना शुरू करें' : 'Start reading') + I('chevron-right', 18) + '</button></div>' +
-      '</div></article>';
-  }
+  // v28: every photo carries its credit: who took it, the licence, where it is from (Commons, Openverse)
+  const srcOf = cr => (cr && cr.source) || 'Wikimedia Commons';
+  const dayName = d => {
+    const t = Date.parse((d || '') + 'T12:00:00+05:30'); if (!t) return '';
+    const today = new Date(Date.now() + 330 * 60e3).toISOString().slice(0, 10);
+    if (d === today) return hi() ? 'आज' : 'Today';
+    try { return new Date(t).toLocaleDateString(hi() ? 'hi-IN' : 'en-IN', { weekday: 'short', day: 'numeric', month: 'short' }); } catch (e) { return d; }
+  };
   function card(st, i) {
-    if (isCover(st)) return cover(i);
-    const H = hi(), c = CAT[st.category] || ['', '', '#37352F'];
-    const label = H ? c[1] : c[0];
+    const H = hi(), kind = st.kind === 'thought' ? 'thought' : st.reader ? 'reader' : 'story';
+    const c = CAT[st.category] || CAT.life;
+    const label = kind === 'thought' ? (H ? 'आज का विचार' : 'Thought of the day') : kind === 'reader' ? (H ? 'पाठक' : 'Reader') : (H ? c[1] : c[0]);
+    const when = kind === 'thought' ? dayName(st.day) : ago(st.published_at);
     const src = (st.sources || []).filter(x => x && (x.name || x.link));
     const names = src.slice(0, 2).map(srcName).filter(Boolean).join(', ') + (src.length > 2 ? ' +' + (src.length - 2) : '');
     const share = '<button class="nz-share" onclick="NewsChannel.share(' + i + ')" aria-label="' + (H ? 'शेयर करें' : 'Share') + '">' + I('share-2', 20) + '</button>';
     // the section and how fresh it is sit on the photo, so the story starts with its headline
-    const tag = '<div class="nz-tag">' + (label ? '<b' + (H ? ' class="dev"' : '') + '>' + esc(label) + '</b>' : '') + (ago(st.published_at) ? '<span>' + ago(st.published_at) + '</span>' : '') + '</div>';
-    // No real photo: a panel in the category's colour holds the same slot, so every card reads the same way.
-    const ph = '<div class="nz-img ph"><span aria-hidden="true">' + I(c[3] || 'newspaper', 72, 1.4) + '</span>' + tag + share + '</div>';
-    // v27: photos are free ones from Wikimedia Commons, always with their credit on the photo
+    const tag = '<div class="nz-tag">' + (label ? '<b' + (H ? ' class="dev"' : '') + '>' + esc(label) + '</b>' : '') + (when ? '<span>' + esc(when) + '</span>' : '') + '</div>';
+    // no photo (rare since v28: every story gets one): a panel in the section's colour holds the same slot
+    const ph = '<div class="nz-img ph"><span aria-hidden="true">' + I(kind === 'thought' ? 'sunrise' : c[3] || 'newspaper', 72, 1.4) + '</span>' + tag + share + '</div>';
     const cr = st.image_credit ? '<small class="nz-cr">' + esc((H ? 'फ़ोटो: ' : 'Photo: ') + st.image_credit.by + ' · ' + st.image_credit.license) + '</small>' : '';
     const img = st.image ? '<div class="nz-img"><img class="nz-fg" src="' + esc(st.image) + '" alt="" loading="' + (i < 4 ? 'eager' : 'lazy') + '" onerror="NewsChannel.noimg(this)">' + cr + tag + share + '</div>' : ph;
-    const official = src.some(x => x.official);
-    const why = pick(st, 'why');
-    return '<article class="nz-card' + (st.image ? '' : ' noimg') + '" data-i="' + i + '" data-id="' + esc(st.id || '') + '" style="--c:' + c[2] + '" aria-roledescription="slide" aria-label="' + esc(pick(st, 'headline')) + '">' + img +
-      '<div class="nz-body">' +
-      '<h2 class="' + (H && st.headline_hi ? 'dev' : '') + '">' + esc(pick(st, 'headline')) + '</h2>' +
-      '<p class="nz-text' + (H && st.summary_hi ? ' dev' : '') + '">' + esc(pick(st, 'summary')) + '</p>' +
-      (why ? '<div class="nz-why' + (H ? ' dev' : '') + '"><b>' + (H ? 'यह क्यों मायने रखता है' : 'Why it matters') + '</b>' + esc(why) + '</div>' : '') +
-      (names ? '<button type="button" class="nz-srcs" onclick="NewsChannel.sources(' + i + ')">' + I('newspaper', 16) + '<span>' + (H ? 'स्रोत: ' : 'Sources: ') + esc(names) + '</span>' + (official ? '<em class="nz-off">' + (H ? 'आधिकारिक स्रोत' : 'Official source') + '</em>' : '') + I('chevron-right', 16) + '</button>' : '') +
-      '</div></article>';
+    const dev = k => (H && st[k + '_hi']) ? ' dev' : '';
+    let body;
+    if (kind === 'thought') {
+      body = '<h2 class="nz-th-t' + dev('headline') + '">' + esc(pick(st, 'headline')) + '</h2>' +
+        '<b class="nz-th-k' + (H ? ' dev' : '') + '">' + (H ? 'इसके पीछे की कहानी' : 'The story behind it') + '</b>' +
+        '<p class="nz-text' + dev('summary') + '">' + esc(pick(st, 'summary')) + '</p>';
+    } else if (kind === 'reader') {
+      const by = st.name ? (H ? st.name + ' ने भेजा, एक पाठक' : 'By ' + st.name + ', a reader') : (H ? 'एक पाठक ने भेजा' : 'By a reader');
+      body = '<h2 class="' + dev('headline').trim() + '">' + esc(pick(st, 'headline')) + '</h2>' +
+        '<p class="nz-text' + dev('summary') + '">' + esc(pick(st, 'summary')) + '</p>' +
+        '<div class="nz-rd"><span>' + I('user', 16) + '<b' + (H ? ' class="dev"' : '') + '>' + esc(by) + '</b>' + (st.kind === 'news' ? '<small>' + (H ? 'Brodoit ने इसकी जाँच नहीं की' : 'Not checked by Brodoit') + '</small>' : '') + '</span>' +
+        '<button type="button" class="nz-rep" onclick="NewsChannel.report(' + i + ')" aria-label="' + (H ? 'शिकायत करें' : 'Report this piece') + '">' + I('flag', 18) + '</button></div>';
+    } else {
+      const why = pick(st, 'why');
+      const official = src.some(x => x.official), primary = !official && src.some(x => x.primary);
+      const chip = official ? '<em class="nz-off">' + (H ? 'आधिकारिक स्रोत' : 'Official source') + '</em>' : primary ? '<em class="nz-off nz-pri">' + (H ? 'मूल स्रोत' : 'Primary source') + '</em>' : '';
+      body = '<h2 class="' + dev('headline').trim() + '">' + esc(pick(st, 'headline')) + '</h2>' +
+        '<p class="nz-text' + dev('summary') + '">' + esc(pick(st, 'summary')) + '</p>' +
+        (why ? '<div class="nz-why' + (H ? ' dev' : '') + '"><b>' + (H ? 'यह क्यों मायने रखता है' : 'Why it matters') + '</b>' + esc(why) + '</div>' : '') +
+        // v28: the byline: Brodoit's desk wrote it, from these reports
+        (names ? '<button type="button" class="nz-srcs" onclick="NewsChannel.sources(' + i + ')">' + I('newspaper', 16) + '<span>' + (H ? 'Brodoit ने लिखा · ' : 'Written by Brodoit · ') + esc(names) + '</span>' + chip + I('chevron-right', 16) + '</button>' : '');
+    }
+    return '<article class="nz-card nz-k-' + kind + (st.image ? '' : ' noimg') + '" data-i="' + i + '" data-id="' + esc(st.id || '') + '" style="--c:' + c[2] + '" aria-roledescription="slide" aria-label="' + esc(pick(st, 'headline')) + '">' + img +
+      '<div class="nz-body">' + body + '</div></article>';
   }
   // the original reports behind a story
   N.sources = function (i) {
-    const st = N.stories[i]; if (!st || isCover(st)) return;
+    const st = N.stories[i]; if (!st || isCover(st) || st.kind === 'thought') return;
     const H = hi(), list = (st.sources || []).filter(x => x && /^https?:\/\//.test(x.link || ''));
     document.getElementById('nzSrc')?.remove();
     const bg = document.createElement('div'); bg.className = 'nz-sheet-bg'; bg.id = 'nzSrc';
     bg.innerHTML = '<div class="nz-sheet" role="dialog" aria-modal="true" aria-label="' + (H ? 'स्रोत' : 'Sources') + '"><div class="nz-grab" aria-hidden="true"></div>' +
       '<b class="nz-sh-t">' + (H ? 'मूल रिपोर्टें' : 'The original reports') + '</b><p class="nz-sh-p">' + (H ? 'Brodoit ने यह ख़बर इन रिपोर्टों के तथ्यों से अपने शब्दों में लिखी है।' : 'Brodoit wrote this story in its own words from the facts in these reports.') + '</p>' +
-      list.map(x => '<a class="nz-sh" href="' + esc(x.link) + '" target="_blank" rel="noopener nofollow">' + I('external-link', 22) + '<span><b>' + esc(srcName(x)) + (x.official ? ' <em class="nz-off">' + (H ? 'आधिकारिक' : 'Official') + '</em>' : '') + '</b><small>' + esc(x.title || x.link) + '</small></span></a>').join('') +
-      (st.image_credit && /^https:\/\//.test(st.image_credit.page || '') ? '<a class="nz-sh" href="' + esc(st.image_credit.page) + '" target="_blank" rel="noopener nofollow">' + I('image', 22) + '<span><b>' + (H ? 'फ़ोटो' : 'Photo') + '</b><small>' + esc(st.image_credit.by + ' · ' + st.image_credit.license + ' · Wikimedia Commons') + '</small></span></a>' : '') +
+      list.map(x => '<a class="nz-sh" href="' + esc(x.link) + '" target="_blank" rel="noopener nofollow">' + I('external-link', 22) + '<span><b>' + esc(srcName(x)) + (x.official ? ' <em class="nz-off">' + (H ? 'आधिकारिक' : 'Official') + '</em>' : x.primary ? ' <em class="nz-off nz-pri">' + (H ? 'मूल स्रोत' : 'Primary source') + '</em>' : '') + '</b><small>' + esc(x.title || x.link) + '</small></span></a>').join('') +
+      (st.image_credit && /^https:\/\//.test(st.image_credit.page || '') ? '<a class="nz-sh" href="' + esc(st.image_credit.page) + '" target="_blank" rel="noopener nofollow">' + I('image', 22) + '<span><b>' + (H ? 'फ़ोटो' : 'Photo') + '</b><small>' + esc(st.image_credit.by + ' · ' + st.image_credit.license + ' · ' + srcOf(st.image_credit)) + '</small></span></a>' : '') +
       '<p class="nz-sh-how">' + (H ? 'हर ख़बर AI लिखता है और ऐप उसे जाँचता है: हर संख्या स्रोतों में होनी चाहिए, और स्रोतों के वाक्य या फ़ोटो कभी कॉपी नहीं होते।' : 'An AI writes each story and the app checks it: every number must be in the sources, and their sentences and photos are never copied.') + ' <a href="mailto:hello@brodoit.com?subject=' + encodeURIComponent('News correction: ' + (st.headline || '')) + '">' + (H ? 'ग़लती बताएँ' : 'Report a mistake') + '</a></p>' +
       '<button type="button" class="b-btn ghost wide nz-sh-x">' + (H ? 'बंद करें' : 'Close') + '</button></div>';
     document.body.appendChild(bg);
@@ -330,23 +408,133 @@
     const s = document.createElement('span'); s.setAttribute('aria-hidden', 'true'); s.innerHTML = I(c[3] || 'newspaper', 72, 1.4); box.prepend(s);
   };
 
+  // v28: the bar under the story: the sections, Readers, and Thought of the day and Send at the end
+  function barHtml() {
+    const H = hi(), v = N.view;
+    const chip = (l, on, fn) => '<button type="button" class="nz-chip' + (on ? ' on' : '') + (H ? ' dev' : '') + '" aria-pressed="' + on + '" onclick="' + fn + '">' + esc(l) + '</button>';
+    const cats = BAR.map(k => chip(k ? (H ? CAT[k][1] : CAT[k][0]) : (H ? 'मुख्य' : 'Top'), v === 'news' && (N.cat || '') === k, "NewsChannel.setCat('" + k + "')")).join('') +
+      chip(H ? 'पाठक' : 'Readers', v === 'readers', "NewsChannel.show('readers')");
+    const act = (k, icon, l) => '<button type="button" class="nz-act' + (v === k ? ' on' : '') + '" aria-pressed="' + (v === k) + '" onclick="NewsChannel.show(\'' + k + '\')">' + I(icon, 20) + '<span' + (H ? ' class="dev"' : '') + '>' + l + '</span></button>';
+    return '<nav class="nz-bar" id="nzBar" aria-label="' + (H ? 'ख़बरों के हिस्से' : 'News sections') + '"><div class="nz-cats" id="nzCats">' + cats + '</div>' +
+      '<div class="nz-acts">' + act('thought', 'sunrise', H ? 'विचार' : 'Thought') + act('send', 'send', H ? 'भेजें' : 'Send') + '</div></nav>';
+  }
+  const langHtml = () => { const H = hi(); return '<div class="nz-lang" role="group" aria-label="Language"><button class="' + (H ? '' : 'on') + '" aria-pressed="' + !H + '" aria-label="English" onclick="NewsChannel.setLang(\'en\')">EN</button><button class="' + (H ? 'on' : '') + '" aria-pressed="' + H + '" aria-label="हिंदी" onclick="NewsChannel.setLang(\'hi\')">हिं</button></div>'; };
+
+  // ── v28: Send. A reader writes a news tip, a thought or a story; Brodoit's AI editor reads it before it is published ──
+  const DRAFT_KEY = 'news.draft.v1';
+  N.draft = (() => { let d = null; try { d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) { d = null; } return Object.assign({ kind: 'news', title: '', text: '', link: '', show: true, own: false }, d || {}); })();
+  const saveDraft = () => { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(N.draft)); } catch (e) { /* storage blocked */ } };
+  const words = t => String(t || '').trim().split(/\s+/).filter(Boolean).length;
+  const wcLabel = () => { const n = words(N.draft.text), H = hi(); return (H ? n + ' शब्द · 25 से 300' : n + (n === 1 ? ' word' : ' words') + ' · 25 to 300'); };
+  N.draftSet = function (k, v) { N.draft[k] = v; saveDraft(); if (k === 'text') { const w = document.getElementById('nzWc'); if (w) { w.textContent = wcLabel(); w.classList.toggle('ok', words(v) >= 25 && words(v) <= 300); } } };
+  N.draftKind = function (k) { N.draft.kind = k; saveDraft(); N.rerender(); };
+  function sendHtml() {
+    const H = hi(), d = N.draft;
+    const kinds = [['news', H ? 'ख़बर' : 'News tip', 'newspaper'], ['thought', H ? 'विचार' : 'Thought', 'lightbulb'], ['story', H ? 'कहानी' : 'Story', 'book-open']];
+    const ph = { news: H ? 'आपने क्या देखा या आप क्या जानते हैं? कहाँ और कब?' : 'What did you see or find out? Where and when?', thought: H ? 'आपका विचार, और उसके पीछे की बात' : 'Your thought, and what led you to it', story: H ? 'आपकी कहानी, आपके अपने शब्दों में' : 'Your story, in your own words' }[d.kind];
+    const dv = H ? ' class="dev"' : '';
+    return '<div class="nz-send" id="nzSend"><div class="nz-send-in">' +
+      '<div class="nz-send-hd"><h2' + dv + '>' + (H ? 'Brodoit के लिए लिखें' : 'Write for Brodoit') + '</h2>' + langHtml() + '</div>' +
+      '<p class="nz-send-p' + (H ? ' dev' : '') + '">' + (H ? 'कुछ ऐसा देखा जो लोगों को पता होना चाहिए? कोई विचार या कहानी है? भेजिए। Brodoit का AI संपादक हर लेख पहले पढ़ता है, सिर्फ़ वर्तनी ठीक करता है, और उसे आपके पहले नाम के साथ पाठक में छापता है।' : 'Saw something people should know, or have a thought or a story? Send it. Brodoit\'s AI editor reads every piece first, fixes only spelling and grammar, and publishes it in Readers with your first name.') + '</p>' +
+      '<div class="nz-seg" role="radiogroup" aria-label="' + (H ? 'आप क्या भेज रहे हैं' : 'What you are sending') + '">' + kinds.map(k => '<button type="button" role="radio" aria-checked="' + (d.kind === k[0]) + '" class="' + (d.kind === k[0] ? 'on' : '') + '" onclick="NewsChannel.draftKind(\'' + k[0] + '\')">' + I(k[2], 18) + '<span' + dv + '>' + k[1] + '</span></button>').join('') + '</div>' +
+      '<label class="nz-f"><span' + dv + '>' + (H ? 'शीर्षक' : 'Title') + '</span><input id="nzT" maxlength="120" autocomplete="off" value="' + esc(d.title) + '" oninput="NewsChannel.draftSet(\'title\',this.value)"></label>' +
+      '<label class="nz-f"><span' + dv + '>' + (H ? 'आपके शब्द' : 'Your words') + '</span><textarea id="nzX" rows="7" maxlength="2400" placeholder="' + esc(ph) + '" oninput="NewsChannel.draftSet(\'text\',this.value)">' + esc(d.text) + '</textarea><small id="nzWc" class="' + (words(d.text) >= 25 && words(d.text) <= 300 ? 'ok' : '') + '">' + esc(wcLabel()) + '</small></label>' +
+      (d.kind === 'news' ? '<label class="nz-f"><span' + dv + '>' + (H ? 'लिंक (ज़रूरी नहीं)' : 'Link (optional)') + '</span><input id="nzL" type="url" inputmode="url" maxlength="400" autocomplete="off" placeholder="https://" value="' + esc(d.link) + '" oninput="NewsChannel.draftSet(\'link\',this.value)"></label>' : '') +
+      '<label class="nz-chk"><input type="checkbox" id="nzShow"' + (d.show ? ' checked' : '') + ' onchange="NewsChannel.draftSet(\'show\',this.checked)"><span' + dv + '>' + (H ? 'मेरा पहला नाम दिखाएँ' : 'Show my first name') + '</span></label>' +
+      '<label class="nz-chk"><input type="checkbox" id="nzOwn"' + (d.own ? ' checked' : '') + ' onchange="NewsChannel.draftSet(\'own\',this.checked)"><span' + dv + '>' + (H ? 'यह मेरा अपना लिखा है, कहीं से कॉपी नहीं किया' : 'This is my own writing, not copied from anywhere') + '</span></label>' +
+      '<button type="button" class="b-btn wide nz-send-go" id="nzGo" onclick="NewsChannel.submit()"' + (N._sending ? ' disabled' : '') + '>' + I('send', 18) + '<span' + dv + '>' + (N._sending ? (H ? 'भेज रहे हैं…' : 'Sending…') : (H ? 'भेजें' : 'Send')) + '</span></button>' +
+      '<p class="nz-send-rules' + (H ? ' dev' : '') + '">' + (H ? 'हम कभी नहीं छापते: नफ़रत, अपमान, धमकी, अश्लील बातें, विज्ञापन, किसी का फ़ोन नंबर या पता, या किसी आम व्यक्ति पर आरोप। ख़बरों पर लिखा रहता है कि वे एक पाठक ने भेजीं।' : 'We never publish hate, insults, threats, adult content, ads, anyone\'s phone number or address, or accusations against a private person. News tips are labelled as sent by a reader.') + '</p>' +
+      '<div id="nzMine">' + mineHtml() + '</div>' +
+      '</div></div>';
+  }
+  function mineHtml() {
+    const H = hi(), list = N.mine || [];
+    if (!list.length) return '';
+    const st = { pending: [H ? 'समीक्षा में' : 'In review', 'wait'], published: [H ? 'छप गया' : 'Published', 'ok'], rejected: [H ? 'नहीं छपा' : 'Not published', 'no'], hidden: [H ? 'हटाया गया' : 'Removed', 'no'] };
+    return '<h3 class="nz-mine-t' + (H ? ' dev' : '') + '">' + (H ? 'आपके लेख' : 'Your pieces') + '</h3><ul class="nz-mine">' + list.map(x => {
+      const s0 = st[x.status] || st.pending;
+      return '<li><div><b>' + esc(x.title) + '</b><em class="nz-st ' + s0[1] + (H ? ' dev' : '') + '">' + esc(s0[0]) + '</em>' + (x.status === 'rejected' && x.reason ? '<small>' + esc(x.reason) + '</small>' : '') + '</div>' +
+        (x.status === 'published' ? '<button type="button" class="nz-mine-b" onclick="NewsChannel.open(\'rd_' + esc(x.id) + '\')" aria-label="' + (H ? 'पढ़ें' : 'Read it') + '">' + I('chevron-right', 18) + '</button>' : '') +
+        '<button type="button" class="nz-mine-b" onclick="NewsChannel.unsend(\'' + esc(x.id) + '\')" aria-label="' + (H ? 'हटाएँ' : 'Delete') + '">' + I('trash-2', 18) + '</button></li>';
+    }).join('') + '</ul>';
+  }
+  const tok = () => { try { return localStorage.getItem('tf_token') || ''; } catch (e) { return ''; } };
+  let mineT = 0;
+  async function loadMine() {
+    clearTimeout(mineT);
+    if (!tok()) return;
+    try {
+      const r = await fetch('/api/news/submit/mine', { cache: 'no-store', headers: { 'x-token': tok() } });
+      if (!r.ok) return;
+      N.mine = ((await r.json()) || {}).items || [];
+      const box = document.getElementById('nzMine'); if (box) box.innerHTML = mineHtml();
+      // something still in review: look again in 20 s while Send is open
+      if (N.view === 'send' && N.mine.some(x => x.status === 'pending')) mineT = setTimeout(loadMine, 20000);
+    } catch (e) { /* offline */ }
+  }
+  N.submit = async function () {
+    const H = hi(), d = N.draft;
+    const fail = m => { if (typeof toast === 'function') toast(m); };
+    if (String(d.title).trim().length < 6) return fail(H ? 'छोटा-सा शीर्षक लिखें' : 'Add a short title');
+    if (words(d.text) < 25) return fail(H ? 'थोड़ा और लिखें: कम से कम 25 शब्द' : 'Write a little more: at least 25 words');
+    if (!d.own) return fail(H ? 'पुष्टि करें कि यह आपका अपना लिखा है' : 'Please confirm this is your own writing');
+    if (!tok()) return fail(H ? 'भेजने के लिए साइन इन करें' : 'Sign in to send a piece');
+    N._sending = true; N.rerender();
+    try {
+      const r = await fetch('/api/news/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': tok() }, body: JSON.stringify({ kind: d.kind, title: d.title, text: d.text, link: d.kind === 'news' ? d.link : '', lang: hi() ? 'hi' : 'en', show_name: !!d.show, own: true }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) { N._sending = false; N.rerender(); return fail(j.error || (H ? 'भेजा नहीं जा सका' : 'Could not send')); }
+      N.draft = { kind: d.kind, title: '', text: '', link: '', show: d.show, own: false }; saveDraft();
+      N._sending = false; N.rerender();
+      fail(H ? 'भेज दिया! Brodoit का संपादक इसे पढ़ रहा है।' : 'Sent! Brodoit\'s editor is reading it.');
+      loadMine();
+    } catch (e) { N._sending = false; N.rerender(); fail(H ? 'भेजा नहीं जा सका' : 'Could not send'); }
+  };
+  N.unsend = async function (id) {
+    const H = hi();
+    if (!confirm(H ? 'यह लेख हटाएँ?' : 'Delete this piece?')) return;
+    try { await fetch('/api/news/submit/' + encodeURIComponent(id), { method: 'DELETE', headers: { 'x-token': tok() } }); } catch (e) { /* offline */ }
+    delete V.readers; loadMine();
+  };
+  // a reader reports a piece: two reports from different people hide it at once
+  N.report = async function (i) {
+    const st = N.stories[i], H = hi(); if (!st || !st.reader) return;
+    if (!confirm(H ? 'इस लेख की शिकायत करें? दो शिकायतों पर यह तुरंत हट जाता है।' : 'Report this piece? Two reports hide it at once.')) return;
+    try {
+      const r = await fetch('/api/news/readers/' + encodeURIComponent(st.id) + '/report', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-token': tok() }, body: '{}' });
+      const j = await r.json().catch(() => ({}));
+      if (typeof toast === 'function') toast(H ? 'धन्यवाद, हम इसे देखेंगे।' : 'Thanks, we will look at it.');
+      if (j && j.hidden) { N.stories.splice(i, 1); N.i = Math.min(N.i, Math.max(0, N.stories.length - 1)); N.rerender(); }
+    } catch (e) { /* offline */ }
+  };
+
   N.html = function () {
-    const H = hi(), list = N.stories, n = list.length;
-    const hud = '<div class="nz-hud"><div class="nz-lang" role="group" aria-label="Language"><button class="' + (H ? '' : 'on') + '" aria-pressed="' + !H + '" aria-label="English" onclick="NewsChannel.setLang(\'en\')">EN</button><button class="' + (H ? 'on' : '') + '" aria-pressed="' + H + '" aria-label="हिंदी" onclick="NewsChannel.setLang(\'hi\')">हिं</button></div></div>';
-    if (!N.loaded) return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck"><article class="nz-card skel"><div class="nz-img"></div><div class="nz-body"><i></i><i></i><i></i><i></i></div></article></div></div></div>';
-    if (!n && N.err) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('wifi-off', 40, 1.8) + '</span><b>' + (H ? 'ख़बरें लोड नहीं हुईं' : 'Couldn’t load the news') + '</b><button class="b-chip" onclick="NewsChannel.loaded=false;NewsChannel.rerender();NewsChannel.load()">' + I('refresh-cw', 14) + (H ? 'फिर कोशिश करें' : 'Try again') + '</button></div></div>';
-    if (!n && N.caughtUp) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('check-circle', 40, 1.8) + '</span><b>' + (H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up') + '</b><span>' + esc(nextText()) + '</span><button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर देखें' : 'Check again') + '</button></div></div>';
-    if (!n) return '<div class="nz"><div class="nz-empty"><span class="nz-emic" aria-hidden="true">' + I('newspaper', 40, 1.8) + '</span><b>' + (H ? 'ख़बरें आ रही हैं' : 'Stories are on the way') + '</b></div></div>';
+    const H = hi(), list = N.stories, n = list.length, bar = barHtml();
+    if (N.view === 'send') return '<div class="nz nz-v-send">' + sendHtml() + bar + '</div>';
+    const hud = '<div class="nz-hud">' + langHtml() + '</div>';
+    const empty = (icon, title, sub, btn) => '<div class="nz"><div class="nz-empty" id="nzEmpty"><span class="nz-emic" aria-hidden="true">' + I(icon, 40, 1.8) + '</span><b' + (H ? ' class="dev"' : '') + '>' + title + '</b>' + (sub ? '<span' + (H ? ' class="dev"' : '') + '>' + sub + '</span>' : '') + (btn || '') + '</div>' + bar + '</div>';
+    if (!N.loaded) return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck"><article class="nz-card skel"><div class="nz-img"></div><div class="nz-body"><i></i><i></i><i></i><i></i></div></article></div></div>' + bar + '</div>';
+    if (!n && N.err) return empty('wifi-off', H ? 'लोड नहीं हुआ' : 'Couldn’t load this', '', '<button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर कोशिश करें' : 'Try again') + '</button>');
+    if (!n && N.view === 'readers') return empty('users', H ? 'अभी पाठकों का कोई लेख नहीं' : 'No pieces from readers yet', H ? 'पहला लेख आपका हो सकता है।' : 'Yours could be the first.', '<button class="b-btn" onclick="NewsChannel.show(\'send\')">' + I('send', 16) + (H ? 'लिखें' : 'Write for Brodoit') + '</button>');
+    if (!n && N.view === 'thought') return empty('sunrise', H ? 'आज का विचार आ रहा है' : 'Today’s thought is on its way', '', '<button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर देखें' : 'Check again') + '</button>');
+    if (!n && N.caughtUp) return empty('check-circle', H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up', esc(nextText()), '<button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर देखें' : 'Check again') + '</button>');
+    if (!n) return empty('newspaper', H ? 'ख़बरें आ रही हैं' : 'Stories are on the way', '');
     return '<div class="nz"><div class="nz-stage"><div class="nz-prog" aria-hidden="true"><i id="nzProg"></i></div><div class="nz-deck" id="nzDeck" tabindex="0" aria-label="' + (H ? 'ख़बरें' : 'News') + '">' + list.map((st, i) => card(st, i)).join('') + (N.caughtUp ? endCard() : '') + '</div>' + hud +
-      '<button class="nz-nav prev" aria-label="Previous" onclick="NewsChannel.go(NewsChannel.i-1)">' + I('chevron-left', 22) + '</button><button class="nz-nav next" aria-label="Next" onclick="NewsChannel.go(NewsChannel.i+1)">' + I('chevron-right', 22) + '</button></div></div>';
+      '<button class="nz-nav prev" aria-label="Previous" onclick="NewsChannel.go(NewsChannel.i-1)">' + I('chevron-left', 22) + '</button><button class="nz-nav next" aria-label="Next" onclick="NewsChannel.go(NewsChannel.i+1)">' + I('chevron-right', 22) + '</button></div>' + bar + '</div>';
   };
 
   // The deck fills the space between the header and the tab bar on any phone.
   N.size = function () {
-    const d = document.getElementById('nzDeck'); if (!d) return;
     const bar = document.querySelector('.tabs.page-t') || document.querySelector('.rd-tabbar'); const r = bar && bar.getBoundingClientRect();
     const bottom = r && r.top > innerHeight * 0.6 ? r.top : innerHeight - 24;
-    const h = Math.max(240, Math.floor(bottom - d.getBoundingClientRect().top - 10));
+    // v28: the News bar sits under the deck; the section in use is scrolled into view
+    const nb = document.getElementById('nzBar'), room = nb ? nb.offsetHeight + 8 : 0;
+    const cats = document.getElementById('nzCats'), on = cats && cats.querySelector('.nz-chip.on');
+    if (on && !cats._placed) { cats._placed = true; cats.scrollLeft = Math.max(0, on.offsetLeft - (cats.clientWidth - on.offsetWidth) / 2); }
+    const sp = document.getElementById('nzSend'); if (sp) sp.style.height = Math.max(240, Math.floor(bottom - sp.getBoundingClientRect().top - room - 4)) + 'px';
+    const em = document.getElementById('nzEmpty'); if (em) em.style.minHeight = Math.max(200, Math.floor(bottom - em.getBoundingClientRect().top - room - 4)) + 'px';
+    const d = document.getElementById('nzDeck'); if (!d) return;
+    const h = Math.max(240, Math.floor(bottom - d.getBoundingClientRect().top - room - 4));
     d.style.height = h + 'px';
     fitNear();
     if (document.fonts && !N._fontsHook) { N._fontsHook = true; document.fonts.ready.then(() => fitNear()); }
@@ -361,22 +549,7 @@
   // If the story is long the type steps down first, then the photo gives way to a 34% floor, and only then does the
   // text scroll inside the card (never cut off). Landscape phones lay the card out side by side (photo left).
   // Only the cards around the one in view are fitted, so a deck of hundreds stays quick.
-  // The front page never scrolls inside itself: the list keeps only the stories that fit whole above "Start reading"
-  // (which goes through all of them). On a very short screen the lead photo gets shorter first; only if one story
-  // still can't fit does the page scroll. Not cached by size, so it refits once the fonts (Hindi) have loaded.
-  function fitCover(cardEl) {
-    const cv = cardEl.querySelector('.nz-cv'); if (!cv || !cv.clientHeight) return;
-    const rows = Array.from(cv.querySelectorAll('.nz-cv-list li')), lead = cv.querySelector('.nz-cv-lead');
-    rows.forEach(li => { li.style.display = ''; }); if (lead) lead.style.height = '';
-    cv.classList.remove('scroll');
-    const over = () => cv.scrollHeight > cv.clientHeight + 1;
-    for (let k = rows.length - 1; k >= 1 && over(); k--) rows[k].style.display = 'none';
-    if (over() && lead) lead.style.height = Math.max(120, lead.offsetHeight - (cv.scrollHeight - cv.clientHeight)) + 'px';
-    if (over() && rows.length) rows[0].style.display = 'none';
-    if (over()) cv.classList.add('scroll');
-  }
   function fit(cardEl) {
-    if (cardEl.classList.contains('nz-cover')) return fitCover(cardEl);
     const H = cardEl.clientHeight, body = cardEl.querySelector('.nz-body'), img = cardEl.querySelector('.nz-img');
     if (!H || !body) return;
     cardEl.classList.remove('sm', 'xs', 'scroll');
@@ -398,7 +571,7 @@
   function progress() { const b = document.getElementById('nzProg'); if (b) b.style.width = Math.round(Math.min(1, (N.i + 1) / Math.max(1, count())) * 100) + '%'; }
   function moved(was) {
     fitNear(); near(); progress(); if (was === 0 && N.i > 0) hold();
-    for (let k = was; k < N.i; k++) markSeen(N.stories[k]); // swiped past: seen
+    if (N.view === 'news') for (let k = was; k < N.i; k++) markSeen(N.stories[k]); // swiped past: seen
     watch();
   }
   N.go = function (k, instant) {
@@ -440,7 +613,7 @@
   let qrLib = null;
   const loadQR = () => qrLib || (qrLib = new Promise(res => { if (window.qrcode) return res(window.qrcode); const sc = document.createElement('script'); sc.src = '/app/vendor/qrcode.js?v=1'; sc.onload = () => res(window.qrcode || null); sc.onerror = () => { qrLib = null; res(null); }; document.head.appendChild(sc); }));
   N.draw = async function (st, link) {
-    const W = 1080, H = 1920, P = 72, c = (CAT[st.category] || ['', '', '#37352F']);
+    const W = 1080, H = 1920, P = 72, c = (CAT[st.category] || CAT.life);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
     const x = cv.getContext('2d');
     const dev = hi() && st.summary_hi;
@@ -477,14 +650,14 @@
     }
     x.restore();
     if (im && st.image_credit) { // v27: a free photo travels with its credit (author · licence · Wikimedia Commons)
-      const t = 'Photo: ' + st.image_credit.by + ' · ' + st.image_credit.license + ' · Wikimedia Commons';
+      const t = 'Photo: ' + st.image_credit.by + ' · ' + st.image_credit.license + ' · ' + srcOf(st.image_credit);
       x.font = '500 22px ' + sans; const tw = Math.min(W - 2 * P, x.measureText(t).width + 28);
       x.fillStyle = 'rgba(15,13,20,.6)'; x.fillRect(W - P - tw, imgH - 52, tw, 38);
       x.fillStyle = '#FFFFFF'; x.save(); x.beginPath(); x.rect(W - P - tw, imgH - 52, tw, 38); x.clip(); x.fillText(t, W - P - tw + 14, imgH - 25); x.restore();
     }
     let y = imgH + 64;
     x.fillStyle = c[2]; x.font = '800 30px ' + sans;
-    const label = (hi() ? c[1] : c[0]) || ''; if (label) { x.fillText(label.toUpperCase(), P, y + 22); }
+    const label = st.kind === 'thought' ? (hi() ? 'आज का विचार' : 'Thought of the day') : st.reader ? (hi() ? 'पाठक' : 'From a reader') : (hi() ? c[1] : c[0]) || ''; if (label) { x.fillText(hi() ? label : label.toUpperCase(), P, y + 22); }
     y += 50;
     x.fillStyle = '#17141F'; x.font = '600 ' + hs + 'px ' + serif;
     for (const l of hl) { y += hs * 1.18; x.fillText(l, P, y); }

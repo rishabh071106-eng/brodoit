@@ -1,7 +1,7 @@
 // Brodoit news sources — the RSS feeds behind the News tab, in one place.
 //   server.js:  const NEWS_FEEDS = require('./modules/newsfeeds.js');
-// Same shape as before: { tech, science, world, india, business } (arrays of feed URLs) plus the
-// aliases ai / technology / global. Extra helpers (SOURCE_NAMES, verify) are non-enumerable so
+// Same shape as before: { tech, science, world, india, business } (arrays of feed URLs), v28 ai (its own list), plus the
+// aliases technology / global. Extra helpers (SOURCE_NAMES, verify) are non-enumerable so
 // `NEWS_FEEDS[cat]` lookups and key iteration in server.js see only the categories.
 //
 // Changes vs the old inline table (2026-10-18):
@@ -41,9 +41,24 @@ const NEWS_FEEDS = {
     'https://news.un.org/feed/subscribe/en/news/all/rss.xml',           // UN News · All (official)
     'https://www.who.int/rss-feeds/news-english.xml',                   // WHO · News (official)
   ],
+  // v28 (2026-10-31): AI is its own section. The labs' own announcements first (primary sources: what they released, in
+  // their words), then the AI desks of the tech press and India's AI press. All checked from GitHub's runners on 31 Oct
+  // (each answers with items dated this week). Microsoft (410), Anthropic and Meta (no feed), VentureBeat (429) are not.
+  ai: [
+    'https://openai.com/news/rss.xml',                                  // OpenAI · News (primary)
+    'https://deepmind.google/blog/rss.xml',                             // Google DeepMind · Blog (primary)
+    'https://blog.google/technology/ai/rss/',                           // Google · AI (primary)
+    'https://huggingface.co/blog/feed.xml',                             // Hugging Face · Blog (primary)
+    'https://blogs.nvidia.com/feed/',                                   // NVIDIA · Blog (primary)
+    'https://news.mit.edu/topic/mitartificial-intelligence2-rss.xml',   // MIT News · Artificial intelligence
+    'https://techcrunch.com/category/artificial-intelligence/feed/',    // TechCrunch · AI
+    'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml', // The Verge · AI
+    'https://arstechnica.com/ai/feed/',                                 // Ars Technica · AI
+    'https://www.technologyreview.com/topic/artificial-intelligence/feed', // MIT Technology Review · AI
+    'https://analyticsindiamag.com/feed/',                              // Analytics India Magazine (India's AI industry)
+  ],
   tech: [
     'https://www.theverge.com/rss/index.xml',                           // The Verge · All
-    'https://techcrunch.com/category/artificial-intelligence/feed/',    // TechCrunch · AI
     'https://feeds.arstechnica.com/arstechnica/index',                  // Ars Technica · All
     'https://www.wired.com/feed/rss',                                   // Wired · Top stories
     'https://www.technologyreview.com/feed/',                           // MIT Technology Review
@@ -65,7 +80,6 @@ const NEWS_FEEDS = {
     'https://www.nasa.gov/news-release/feed/',                          // NASA · News releases (official)
   ],
 };
-NEWS_FEEDS.ai = NEWS_FEEDS.tech;
 NEWS_FEEDS.technology = NEWS_FEEDS.tech;
 NEWS_FEEDS.global = NEWS_FEEDS.world;
 
@@ -75,13 +89,13 @@ const SOURCE_NAMES = {
   economictimes: 'The Economic Times', timesofindia: 'Times of India', bbc: 'BBC', bbci: 'BBC', theguardian: 'The Guardian',
   aljazeera: 'Al Jazeera', npr: 'NPR', nytimes: 'The New York Times', theverge: 'The Verge', techcrunch: 'TechCrunch',
   arstechnica: 'Ars Technica', wired: 'Wired', technologyreview: 'MIT Technology Review', nature: 'Nature',
-  sciencedaily: 'ScienceDaily', phys: 'Phys.org', pib: 'PIB (Government of India)', rbi: 'Reserve Bank of India', un: 'UN News', who: 'WHO', nasa: 'NASA', reuters: 'Reuters', apnews: 'AP', venturebeat: 'VentureBeat', newscientist: 'New Scientist',
+  sciencedaily: 'ScienceDaily', phys: 'Phys.org', openai: 'OpenAI', deepmind: 'Google DeepMind', huggingface: 'Hugging Face', nvidia: 'NVIDIA', mit: 'MIT News', analyticsindiamag: 'Analytics India Magazine', pib: 'PIB (Government of India)', rbi: 'Reserve Bank of India', un: 'UN News', who: 'WHO', nasa: 'NASA', reuters: 'Reuters', apnews: 'AP', venturebeat: 'VentureBeat', newscientist: 'New Scientist',
 };
 
 // Fetch every feed once and print a line per URL. Resolves to the list of failures.
 async function verify(opts) {
   const timeout = (opts && opts.timeout) || 15000;
-  const urls = [...new Set(['india', 'world', 'tech', 'business', 'science'].flatMap(k => NEWS_FEEDS[k]))];
+  const urls = [...new Set(['india', 'world', 'ai', 'tech', 'business', 'science'].flatMap(k => NEWS_FEEDS[k]))];
   const failures = [];
   for (const url of urls) {
     const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), timeout);

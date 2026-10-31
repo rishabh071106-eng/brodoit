@@ -35,7 +35,8 @@ const fs = require('fs'), path = require('path');
 const STOP = new Set('a an the of to in on for and or but with at by from as is are was were be been it its this that these those after before over under into about than then new says said say will would can could may might not no yes up down out more most what why how who when where which while amid amid as india india’s her his him their them she they you your our has have had'.split(/\s+/));
 // words too common in news to tell two stories apart on their own ("police arrest three" is many stories)
 const GENERIC = new Set('police arrest arrested arrests court government govt minister chief state city district shares share stock stocks percent crore lakh rupee rupees killed dead death deaths case report people year years day days week first two three four five six ten hundred thousand million billion top big world global national major announces launches gets hits seeks calls plan plans set sets amid'.split(/\s+/));
-const CAT_LABEL = { india: 'India', world: 'World', business: 'Business', tech: 'Tech', science: 'Science' };
+// v28: AI is a section of its own (its own feeds: the labs' own announcements and the tech press's AI desks)
+const CAT_LABEL = { india: 'India', world: 'World', ai: 'AI', business: 'Business', tech: 'Tech', science: 'Science' };
 
 function tokens(s) {
   return String(s || '').toLowerCase().replace(/&[a-z]+;/g, ' ').replace(/[^a-z0-9ऀ-ॿ\s]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
@@ -205,7 +206,7 @@ function install(app, deps) {
     'Write every sentence in your own words: never copy a sentence, or more than six words in a row, from a source, and report what people said in indirect speech, not quotes. ' +
     'Return strict JSON with keys: headline (English, 6-12 words, sentence case, no full stop), summary (English, one paragraph of 80-110 words), ' +
     'why (English, one sentence of 12-25 words: why it matters to a reader in India), headline_hi, summary_hi, why_hi (natural, fluent Hindi in Devanagari, the same facts, ' +
-    'written the way a good Hindi newspaper would, not word-for-word; numbers in digits), category (one of india, world, business, tech, science), ' +
+    'written the way a good Hindi newspaper would, not word-for-word; numbers in digits), category (one of india, world, ai, business, tech, science; ai = artificial intelligence: AI models, AI labs and companies, AI chips, AI rules and AI in daily life), ' +
     'image_query (2-5 English words naming the story\'s main subject that an encyclopedia photo could show: a place, a public figure, an organisation, a landmark or an object, e.g. "Brahmaputra river", "Reserve Bank of India"; never the event itself), ' +
     'duplicate_of (the number of a RECENT headline that reports the same event, else null). English fields must contain no Devanagari; Hindi fields must be in Devanagari.';
   const sourceText = c => c.items.slice(0, 6).map(i => i.title + '. ' + i.desc + (i.full ? ' ' + i.full : '')).join('\n');
@@ -303,36 +304,103 @@ function install(app, deps) {
   const imgFile = id => { if (!IMG) return ''; for (const x of ['jpg', 'png', 'webp']) { const f = path.join(IMG, id + '.' + x); if (fs.existsSync(f)) return f; } return ''; };
   // only public http(s) hosts: page and photo URLs come from outside, so never touch localhost or private ranges
   const publicUrl = u => { try { const x = new URL(u), h = x.hostname.toLowerCase(); return /^https?:$/.test(x.protocol) && !h.startsWith('[') && /[a-z]/.test(h) && h !== 'localhost' && !/\.(local|internal|localhost)$/.test(h); } catch (e) { return false; } };
-  async function cacheImage(id, url) {
-    if (!IMG || !url || imgFile(id)) return !!imgFile(id);
-    if (!publicUrl(url)) return false;
-    try {
-      const r = await (deps.fetchImage || fetch)(url, { signal: AbortSignal.timeout(10000), headers: { 'User-Agent': PHOTO.UA } });
-      const type = String(r.headers.get('content-type') || '');
-      if (!r.ok || !/^image\/(jpeg|jpg|png|webp)/.test(type)) return false;
-      const buf = Buffer.from(await r.arrayBuffer());
-      if (buf.length < 4000 || buf.length > 3e6) return false; // tiny = a logo/pixel, huge = not worth it
-      const ext = /png/.test(type) ? 'png' : /webp/.test(type) ? 'webp' : 'jpg';
-      const f = path.join(IMG, id + '.' + ext), tmp = f + '.tmp';
-      fs.writeFileSync(tmp, buf); fs.renameSync(tmp, f);
-      return true;
-    } catch (e) { return false; }
-  }
-  const findPhoto = deps.findPhoto || (qy => PHOTO.find(qy));
-  const tried = new Map(); // id → when a lookup last found nothing (looked up again after 6 hours)
-  async function photoFor(id, query, headline) {
-    if (imgFile(id)) return true;
-    if (Date.now() - (tried.get(id) || 0) < 6 * 3600e3) return false;
-    const qs = [...new Set([String(query || '').trim(), PHOTO.queryFromHeadline(headline)].filter(Boolean))];
-    for (const qy of qs) {
-      let hit = null; try { hit = await findPhoto(qy); } catch (e) { hit = null; }
-      if (hit && hit.url && await cacheImage(id, hit.url)) {
-        try { q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(hit.url, JSON.stringify({ by: hit.by, license: hit.license, page: hit.page, title: hit.title }), id); } catch (e) { /* ignore */ }
-        return true;
-      }
+  // a photo saved as <base>.<jpg|png|webp> (the first of the urls that answers with a real image of sensible size)
+  async function download(urls, base) {
+    for (const url of [].concat(urls).filter(Boolean)) {
+      if (!publicUrl(url)) continue;
+      try {
+        const r = await (deps.fetchImage || fetch)(url, { signal: AbortSignal.timeout(12000), headers: { 'User-Agent': PHOTO.UA } });
+        const type = String(r.headers.get('content-type') || '');
+        if (!r.ok || !/^image\/(jpeg|jpg|png|webp)/.test(type)) continue;
+        const buf = Buffer.from(await r.arrayBuffer());
+        if (buf.length < 4000 || buf.length > 3e6) continue; // tiny = a logo/pixel, huge = not worth it (the next url is smaller)
+        const ext = /png/.test(type) ? 'png' : /webp/.test(type) ? 'webp' : 'jpg';
+        const f = base + '.' + ext, tmp = f + '.tmp';
+        fs.writeFileSync(tmp, buf); fs.renameSync(tmp, f);
+        return f;
+      } catch (e) { /* the next url */ }
     }
-    tried.set(id, Date.now()); if (tried.size > 2000) tried.clear();
-    return false;
+    return '';
+  }
+  async function cacheImage(id, url, alt) {
+    if (!IMG || !url || imgFile(id)) return !!imgFile(id);
+    return !!(await download([url, alt], path.join(IMG, id)));
+  }
+  // v28: Wikimedia Commons first, then Openverse (CC0, public domain, CC BY, CC BY-SA only; modules/newsphoto.js)
+  const findPhoto = deps.findPhoto || (qy => PHOTO.findAny(qy));
+  const creditJSON = (hit, extra) => JSON.stringify(Object.assign({ by: hit.by, license: hit.license, page: hit.page, title: hit.title, source: hit.source || 'Wikimedia Commons' }, extra || {}));
+
+  // ── v28: every story has a photo. When nothing free shows the story's own subject, it takes one from its section's
+  // pool: free photos (the same licences, credited) of the section's usual subjects, found once and kept in
+  // MEDIA_DIR/news-pool (pool.json lists each with its credit). A story's pick is fixed by its id, so it never changes.
+  const POOL_Q = {
+    india: ['India Gate New Delhi', 'Gateway of India Mumbai', 'Parliament House New Delhi', 'Howrah Bridge Kolkata', 'Charminar Hyderabad', 'Mysore Palace', 'Hawa Mahal Jaipur', 'Marine Drive Mumbai'],
+    world: ['United Nations headquarters', 'Earth from space', 'Tower Bridge London', 'Sydney Opera House', 'Eiffel Tower Paris', 'Tokyo skyline', 'Brandenburg Gate', 'world map globe'],
+    ai: ['data center servers', 'server room', 'computer chip', 'circuit board', 'supercomputer', 'robot arm', 'humanoid robot', 'fiber optic cables'],
+    tech: ['smartphone', 'laptop computer', 'semiconductor wafer', 'circuit board', 'satellite dish', 'keyboard computer', 'mobile phone tower', 'electronics factory'],
+    business: ['Bombay Stock Exchange', 'Mumbai skyline', 'container ship port', 'Indian rupee banknotes', 'Bandra Kurla Complex', 'shipping containers', 'office buildings', 'market vegetables India'],
+    science: ['laboratory', 'telescope observatory', 'microscope', 'Milky Way night sky', 'rocket launch', 'DNA model', 'Himalaya mountains', 'rainforest'],
+    life: ['sunrise', 'banyan tree', 'mountain landscape', 'Varanasi ghats', 'tea garden', 'Kerala backwaters', 'lotus flower', 'monsoon clouds'],
+  };
+  const POOL_DIR = deps.mediaDir ? path.join(deps.mediaDir, 'news-pool') : '';
+  if (POOL_DIR) { try { fs.mkdirSync(POOL_DIR, { recursive: true }); } catch (e) { /* read-only */ } }
+  let pool = {}; try { pool = JSON.parse(fs.readFileSync(path.join(POOL_DIR, 'pool.json'), 'utf8')) || {}; } catch (e) { pool = {}; }
+  const poolState = { busy: false, at: null, made: 0 };
+  async function buildPool(paceMs) {
+    if (!POOL_DIR || poolState.busy) return poolState;
+    poolState.busy = true;
+    try {
+      for (const [cat, qs] of Object.entries(POOL_Q)) {
+        const have = (pool[cat] = (pool[cat] || []).filter(x => x && x.file && fs.existsSync(path.join(POOL_DIR, x.file))));
+        for (const qy of qs) {
+          if (have.some(x => x.q === qy)) continue;
+          let hit = null; try { hit = await findPhoto(qy); } catch (e) { hit = null; }
+          if (hit && hit.url && have.every(x => x.url !== hit.url)) {
+            const f = await download([hit.url, hit.thumb], path.join(POOL_DIR, cat + '-' + sha(qy).slice(0, 8)));
+            if (f) { have.push({ q: qy, url: hit.url, file: path.basename(f), credit: JSON.parse(creditJSON(hit)) }); poolState.made++; fs.writeFileSync(path.join(POOL_DIR, 'pool.json'), JSON.stringify(pool)); }
+          }
+          if (paceMs > 0) await new Promise(r => setTimeout(r, paceMs));
+        }
+      }
+    } catch (e) { log('photo pool', e.message); }
+    finally { poolState.busy = false; poolState.at = new Date().toISOString(); }
+    return poolState;
+  }
+  function poolPick(cat, id) {
+    const ok = l => (l || []).filter(x => x && x.file && fs.existsSync(path.join(POOL_DIR, x.file)));
+    let list = ok(pool[cat]); if (!list.length) list = ok(pool.world); if (!list.length) list = ok([].concat(...Object.values(pool)));
+    if (!list.length) return null;
+    return list[parseInt(sha(String(id)).slice(0, 8), 16) % list.length];
+  }
+  // the pool photo copied in as <id>.<ext> (served and shared like any other); its credit, marked pool: true
+  function usePool(id, cat) {
+    if (!IMG || !POOL_DIR) return null;
+    const p = poolPick(cat, id); if (!p) return null;
+    try { fs.copyFileSync(path.join(POOL_DIR, p.file), path.join(IMG, id + path.extname(p.file))); } catch (e) { return null; }
+    return Object.assign({}, p.credit, { pool: true });
+  }
+  // one photo for anything the News tab shows (a story, today's thought, a reader's piece): its own subject first, else
+  // the section's pool. Returns its credit (the file is IMG/<id>.<ext>) or null.
+  async function photoInto(id, query, headline, cat) {
+    if (imgFile(id)) return 'have';
+    const qs = [...new Set([String(query || '').trim(), PHOTO.queryFromHeadline(headline)].filter(Boolean))];
+    if (Date.now() - (tried.get(id) || 0) >= 6 * 3600e3) {
+      for (const qy of qs) {
+        let hit = null; try { hit = await findPhoto(qy); } catch (e) { hit = null; }
+        if (hit && hit.url && await cacheImage(id, hit.url, hit.thumb)) return Object.assign(JSON.parse(creditJSON(hit)), { _url: hit.url });
+      }
+      tried.set(id, Date.now()); if (tried.size > 2000) tried.clear();
+    }
+    return usePool(id, cat);
+  }
+  const tried = new Map(); // id → when a lookup last found nothing (looked up again after 6 hours)
+  async function photoFor(id, query, headline, cat) {
+    const cr = await photoInto(id, query, headline, cat);
+    if (cr === 'have') return true;
+    if (!cr) return false;
+    const url = cr._url || ''; delete cr._url;
+    try { q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(url || 'pool:' + (cat || ''), JSON.stringify(cr), id); } catch (e) { /* ignore */ }
+    return true;
   }
   // v27: a photo saved before v27 came from a publisher (the feed's image or the page's og:image): removed once, with
   // its link; the stories stay and get a free photo, or the app's own colour card
@@ -343,7 +411,7 @@ function install(app, deps) {
     if (IMG) {
       const credited = new Set(q("SELECT id FROM news_stories WHERE image_credit IS NOT NULL AND image_credit<>''").all().map(r => r.id));
       try { for (const r of q('SELECT id, story FROM news_shared').all()) if (/"image_credit":\{/.test(r.story || '')) credited.add(r.id); } catch (e) { /* no shares yet */ }
-      let n = 0; for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp|tmp)$/, ''); if (!credited.has(id)) { fs.unlinkSync(path.join(IMG, f)); n++; } }
+      let n = 0; for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp|tmp)$/, ''); if (/^(th|rd)_/.test(id) || !fs.statSync(path.join(IMG, f)).isFile()) continue; if (!credited.has(id)) { fs.unlinkSync(path.join(IMG, f)); n++; } }
       if (n) log('removed', n, 'cached photos without a free licence');
     }
   } catch (e) { log('photo cleanup', e.message); }
@@ -354,9 +422,9 @@ function install(app, deps) {
     if (photoState.busy) return { busy: true };
     photoState.busy = true; let looked = 0, found = 0;
     try {
-      const rows = q("SELECT id, image_query, headline FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY created_at DESC LIMIT 80").all().filter(r => !imgFile(r.id)).slice(0, limit || 12);
+      const rows = q("SELECT id, image_query, headline, category FROM news_stories WHERE created_at > datetime('now','-4 days') ORDER BY created_at DESC LIMIT 120").all().filter(r => !imgFile(r.id)).slice(0, limit || 12);
       for (const r of rows) {
-        looked++; if (await photoFor(r.id, r.image_query, r.headline)) found++;
+        looked++; if (await photoFor(r.id, r.image_query, r.headline, r.category)) found++;
         if (paceMs > 0) await new Promise(res => setTimeout(res, paceMs));
       }
     } catch (e) { log('photo pass', e.message); }
@@ -384,7 +452,11 @@ function install(app, deps) {
     state.running = true; const t0 = Date.now(); let wrote = 0, skipped = 0, dup = 0, failed = 0;
     try {
       const items = await gather();
-      const clusters = cluster(items).filter(c => c.items.length >= 1).slice(0, 60);
+      // v28: every section gets its turn (its best story first, then the next round), so AI, Science or Business are
+      // never crowded out by one busy section
+      const byCat = {}; for (const c of cluster(items).filter(c => c.items.length >= 1)) (byCat[c.cat] = byCat[c.cat] || []).push(c);
+      const order = Object.keys(byCat).sort((a, b) => byCat[b][0].score - byCat[a][0].score), clusters = [];
+      for (let k = 0; clusters.length < 60 && order.some(o => byCat[o][k]); k++) for (const o of order) if (byCat[o][k] && clusters.length < 60) clusters.push(byCat[o][k]);
       const have = new Set(q('SELECT cluster_key FROM news_stories WHERE created_at > datetime(\'now\',\'-3 days\')').all().map(r => r.cluster_key));
       // no repeats: a cluster that shares a source link with, or reads like, a story of the last 3 days is skipped;
       // the writer also sees the last two days' headlines and can say "duplicate_of"
@@ -415,7 +487,7 @@ function install(app, deps) {
             .run('ns_' + c.key, c.key, cat, T(st.headline, 160), T(st.summary, 1400), T(st.why, 300), T(st.headline_hi, 200), T(st.summary_hi, 1800), T(st.why_hi, 400), JSON.stringify(sources.slice(0, 6)), null, res.by, sources.length, new Date(c.newest || Date.now()).toISOString(), ed.id, iq);
           wrote++;
           heads.unshift(T(st.headline, 160)); recent.push(sigOf(st.headline, st.summary)); for (const i of c.items) links.add(i.link);
-          await photoFor('ns_' + c.key, iq, st.headline);
+          await photoFor('ns_' + c.key, iq, st.headline, cat);
         } catch (e) { state.lastError = 'db: ' + e.message; }
         if (PACE_MS > 0) await new Promise(r => setTimeout(r, PACE_MS));
       }
@@ -423,7 +495,7 @@ function install(app, deps) {
       q("DELETE FROM news_stories WHERE created_at < datetime('now','-4 days')").run();
       try { q("DELETE FROM news_shared WHERE shared_at < datetime('now','-90 days')").run(); q('DELETE FROM news_editions WHERE at < ?').run(new Date(nowOf().getTime() - 7 * 864e5).toISOString()); } catch (e) { /* ignore */ }
       await photoPass(12, 0);
-      try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp)$/, ''); if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id) && !q('SELECT 1 FROM news_shared WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
+      try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp)$/, ''); if (/^(th|rd)_/.test(id)) continue; if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id) && !q('SELECT 1 FROM news_shared WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
       state.last = { at: new Date().toISOString(), reason, edition: ed.id, items: items.length, clusters: clusters.length, wrote, skipped, duplicates: dup, failed, ms: Date.now() - t0, writer: state.writer };
       log('edition', JSON.stringify(state.last));
       // record the new headlines and top stories right away (modules/newsvoice.js)
@@ -455,7 +527,9 @@ function install(app, deps) {
   // (government, regulator, UN agency, space agency): the app marks a story backed by one "Official source"
   const creditOf = r => { try { const c = JSON.parse(r.image_credit || 'null'); return c && c.license ? c : null; } catch (e) { return null; } };
   const OFFICIAL = /(^|\.)(gov\.in|nic\.in|gov|gov\.uk|europa\.eu|int|un\.org|who\.int|rbi\.org\.in|sebi\.gov\.in|isro\.gov\.in|nasa\.gov|esa\.int|pib\.gov\.in)$/;
-  const officialMark = list => (Array.isArray(list) ? list : []).map(x => { let h = ''; try { h = new URL(x.link).hostname.replace(/^www\./, ''); } catch (e) { h = ''; } return OFFICIAL.test(h) ? Object.assign({}, x, { official: true }) : x; });
+  // v28: an AI lab's own announcement is the primary source for what it released ("Primary source" in the app)
+  const PRIMARY = /(^|\.)(openai\.com|deepmind\.google|blog\.google|huggingface\.co|blogs\.nvidia\.com)$/;
+  const officialMark = list => (Array.isArray(list) ? list : []).map(x => { let h = ''; try { h = new URL(x.link).hostname.replace(/^www\./, ''); } catch (e) { h = ''; } return OFFICIAL.test(h) ? Object.assign({}, x, { official: true }) : PRIMARY.test(h) ? Object.assign({}, x, { primary: true }) : x; });
   const pub = r => ({ id: r.id, category: r.category, label: CAT_LABEL[r.category] || r.category, headline: r.headline, summary: r.summary, why: r.why, headline_hi: r.headline_hi, summary_hi: r.summary_hi, why_hi: r.why_hi, sources: officialMark((() => { try { return JSON.parse(r.sources || '[]'); } catch (e) { return []; } })()), image: imgFile(r.id) ? '/api/news/img/' + encodeURIComponent(r.id) : null, image_credit: creditOf(r), writer: r.writer, source_count: r.source_count, published_at: r.published_at, created_at: r.created_at, edition: r.edition || null, voice: global._newsVoice ? global._newsVoice.flags(r.id) : {} });
 
   // ── v16: the deck never ends. ?before=<cursor>&exclude=id,id… walks back through every story the desk still holds
@@ -603,13 +677,13 @@ function install(app, deps) {
     const st = storyById(id); if (!st) return res.status(404).json({ error: 'This story is no longer available' });
     const keep = Object.assign({}, st); delete keep.voice;
     try { q('INSERT INTO news_shared(id, story) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET story=excluded.story').run(id, JSON.stringify(keep)); } catch (e) { return res.status(500).json({ error: 'could not share' }); }
-    if (!imgFile(id) && st.image_credit) { const r0 = q('SELECT image FROM news_stories WHERE id=?').get(id); if (r0 && r0.image) cacheImage(id, r0.image).catch(() => {}); }
+    if (!imgFile(id) && st.image_credit) { const r0 = q('SELECT image, category FROM news_stories WHERE id=?').get(id); if (r0 && /^pool:/.test(r0.image || '')) usePool(id, r0.category); else if (r0 && /^https:/.test(r0.image || '')) cacheImage(id, r0.image).catch(() => {}); }
     res.json({ ok: true, url: SITE + '/n/' + encodeURIComponent(id) });
   });
 
   // ── v21: the story's own page (what a shared link opens; link previews read its tags) ──
   const H = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const CAT_COLOR = { india: '#B5402A', world: '#2F5FA8', business: '#2F7D4F', tech: '#6D28D9', science: '#0E7C7B' };
+  const CAT_COLOR = { india: '#B5402A', world: '#2F5FA8', ai: '#A21CAF', business: '#2F7D4F', tech: '#6D28D9', science: '#0E7C7B' };
   const host = l => { try { return new URL(l).hostname.replace(/^www\./, ''); } catch (e) { return ''; } };
   function pageHTML(id, st) {
     const url = SITE + '/n/' + encodeURIComponent(id), app = '/?tab=news&s=' + encodeURIComponent(id);
@@ -639,7 +713,7 @@ h1{font:700 30px/1.2 var(--f);letter-spacing:-.02em;margin:4px 0 14px}h2{font:70
 .cta{display:flex;flex-direction:column;gap:10px;align-items:stretch;margin-top:26px;padding:20px;border-radius:20px;background:var(--card);border:1px solid var(--line);text-align:center}
 .cta .open{justify-content:center;min-height:50px;font-size:16px}.cta small{color:var(--mute)}</style></head>
 <body><header class="top"><a class="brand" href="/">Bro<i>doit</i></a><a class="open" href="${H(app)}">Open in Brodoit</a></header>
-<main><article>${st.image ? `<img class="ph" src="${H(st.image)}" alt="">${st.image_credit ? `<p style="margin:6px 0 0;font-size:12px;color:#77706a">Photo: <a href="${H(st.image_credit.page)}" rel="noopener nofollow" target="_blank" style="color:inherit">${H(st.image_credit.by)}</a> · ${H(st.image_credit.license)} · Wikimedia Commons</p>` : ''}` : ''}
+<main><article>${st.image ? `<img class="ph" src="${H(st.image)}" alt="">${st.image_credit ? `<p style="margin:6px 0 0;font-size:12px;color:#77706a">Photo: <a href="${H(st.image_credit.page)}" rel="noopener nofollow" target="_blank" style="color:inherit">${H(st.image_credit.by)}</a> · ${H(st.image_credit.license)} · ${H(st.image_credit.source || 'Wikimedia Commons')}</p>` : ''}` : ''}
 <div class="k">${st.label ? `<b>${H(st.label)}</b>` : ''}${when ? `<span>${H(when)}</span>` : ''}</div>
 <h1>${H(st.headline)}</h1>${paras}${st.why ? `<p class="why">${H(st.why)}</p>` : ''}${hiPart}
 ${srcs.length ? `<div class="src"><b>Sources</b>${srcs.map(x => `<div><a href="${H(x.link)}" rel="noopener nofollow" target="_blank">${H(x.name || host(x.link))}</a>${x.official ? ' <small>· Official source</small>' : ''}</div>`).join('')}</div>` : ''}
@@ -692,11 +766,15 @@ ${lines.map((l, i) => `<text x="64" y="${Math.round(top + i * size * 1.18)}" fon
   });
   // v22: the latest edition (the app shows a dot on News when there is one you have not opened)
   app.get('/api/news/edition', (req, res) => { res.set('Cache-Control', 'no-cache'); res.json(editionInfo()); });
-  global._deskStatus = () => ({ last: state.last, running: state.running, error: state.lastError, writer: state.writer, photos: Object.assign({}, photoState) });
+  global._deskStatus = () => ({ last: state.last, running: state.running, error: state.lastError, writer: state.writer, photos: Object.assign({}, photoState), pool: Object.assign({ sizes: Object.fromEntries(Object.entries(pool).map(([k, v]) => [k, (v || []).length])) }, poolState) });
+  // v28: the same photo finder for today's thought and readers' pieces (modules/newsthought.js, modules/newsreaders.js)
+  global._newsPhotos = { into: photoInto, file: imgFile, url: id => '/api/news/img/' + encodeURIComponent(id) };
   if (String(process.env.NEWS_DESK || '1') !== '0' && deps.timer !== false) {
     // v27.1: the photo pass on its own: 90 s after boot (every recent story), then hourly (a few, while no edition runs)
     const pass = n => { if (!state.running) photoPass(n, 1500).catch(() => {}); };
-    const pt = setTimeout(() => pass(80), 90000); if (pt.unref) pt.unref();
+    // v28: the section pools first (found once, kept on the volume), then every recent story without a photo
+    const pt = setTimeout(() => { buildPool(1200).catch(() => {}).then(() => pass(120)); }, 20000); if (pt.unref) pt.unref();
+    const pd = setInterval(() => buildPool(3000).catch(() => {}), 24 * 3600e3); if (pd.unref) pd.unref();
     const pv = setInterval(() => pass(20), 3600e3); if (pv.unref) pv.unref();
     // v22: three editions a day; the minute tick makes the current one if it is not there yet (so a deploy at 14:10
     // still gets the 13:00 edition)
@@ -704,7 +782,7 @@ ${lines.map((l, i) => `<text x="64" y="${Math.round(top + i * size * 1.18)}" fon
     const iv = setInterval(() => { try { const p = tick(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ } }, 60000); if (iv.unref) iv.unref();
   }
   log('ready · editions at', SLOTS.map(m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0')).join(', '), 'India time · writer', (writers()[0] || ['none'])[0]);
-  return { run, tick, cluster, editionInfo, photoPass, status: () => global._deskStatus() };
+  return { run, tick, cluster, editionInfo, photoPass, buildPool, poolPick, photoInto, status: () => global._deskStatus() };
 }
 
 module.exports = { sameStory, sigOf, install, cluster, tokens, checkStory, editionOf, parseSlots, hasDeva, isHindiText, isEnglishText };
