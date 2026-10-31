@@ -347,6 +347,24 @@ function install(app, deps) {
       if (n) log('removed', n, 'cached photos without a free licence');
     }
   } catch (e) { log('photo cleanup', e.message); }
+  // the photo pass: recent stories without a photo look one up (Commons, one at a time). Runs after each edition, and
+  // on its own soon after boot and every hour, so stories written before a deploy don't wait for the next edition.
+  const photoState = { busy: false, at: null, looked: 0, found: 0 };
+  async function photoPass(limit, paceMs) {
+    if (photoState.busy) return { busy: true };
+    photoState.busy = true; let looked = 0, found = 0;
+    try {
+      const rows = q("SELECT id, image_query, headline FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY created_at DESC LIMIT 80").all().filter(r => !imgFile(r.id)).slice(0, limit || 12);
+      for (const r of rows) {
+        looked++; if (await photoFor(r.id, r.image_query, r.headline)) found++;
+        if (paceMs > 0) await new Promise(res => setTimeout(res, paceMs));
+      }
+    } catch (e) { log('photo pass', e.message); }
+    finally { photoState.busy = false; }
+    Object.assign(photoState, { at: new Date().toISOString(), looked, found });
+    if (looked) log('photo pass', JSON.stringify({ looked, found }));
+    return { looked, found };
+  }
   app.get('/api/news/img/:id', (req, res) => {
     const id = String(req.params.id || '').replace(/[^A-Za-z0-9_-]/g, '');
     const f = id && imgFile(id); if (!f) return res.status(404).end();
@@ -404,7 +422,7 @@ function install(app, deps) {
       if (wrote) q('INSERT OR REPLACE INTO news_editions(id, slot, at, stories, writer) VALUES(?,?,?,?,?)').run(ed.id, ed.slot, ed.at, wrote + ((q('SELECT stories FROM news_editions WHERE id=?').get(ed.id) || {}).stories || 0), state.writer);
       q("DELETE FROM news_stories WHERE created_at < datetime('now','-4 days')").run();
       try { q("DELETE FROM news_shared WHERE shared_at < datetime('now','-90 days')").run(); q('DELETE FROM news_editions WHERE at < ?').run(new Date(nowOf().getTime() - 7 * 864e5).toISOString()); } catch (e) { /* ignore */ }
-      for (const r of q("SELECT id, image_query, headline FROM news_stories WHERE created_at > datetime('now','-2 days') ORDER BY created_at DESC LIMIT 40").all().filter(r => !imgFile(r.id)).slice(0, 12)) { await photoFor(r.id, r.image_query, r.headline); }
+      await photoPass(12, 0);
       try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp)$/, ''); if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id) && !q('SELECT 1 FROM news_shared WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
       state.last = { at: new Date().toISOString(), reason, edition: ed.id, items: items.length, clusters: clusters.length, wrote, skipped, duplicates: dup, failed, ms: Date.now() - t0, writer: state.writer };
       log('edition', JSON.stringify(state.last));
@@ -674,15 +692,19 @@ ${lines.map((l, i) => `<text x="64" y="${Math.round(top + i * size * 1.18)}" fon
   });
   // v22: the latest edition (the app shows a dot on News when there is one you have not opened)
   app.get('/api/news/edition', (req, res) => { res.set('Cache-Control', 'no-cache'); res.json(editionInfo()); });
-  global._deskStatus = () => ({ last: state.last, running: state.running, error: state.lastError, writer: state.writer });
+  global._deskStatus = () => ({ last: state.last, running: state.running, error: state.lastError, writer: state.writer, photos: Object.assign({}, photoState) });
   if (String(process.env.NEWS_DESK || '1') !== '0' && deps.timer !== false) {
+    // v27.1: the photo pass on its own: 90 s after boot (every recent story), then hourly (a few, while no edition runs)
+    const pass = n => { if (!state.running) photoPass(n, 1500).catch(() => {}); };
+    const pt = setTimeout(() => pass(80), 90000); if (pt.unref) pt.unref();
+    const pv = setInterval(() => pass(20), 3600e3); if (pv.unref) pv.unref();
     // v22: three editions a day; the minute tick makes the current one if it is not there yet (so a deploy at 14:10
     // still gets the 13:00 edition)
     setTimeout(() => { try { const p = tick(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ } }, 120000);
     const iv = setInterval(() => { try { const p = tick(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ } }, 60000); if (iv.unref) iv.unref();
   }
   log('ready · editions at', SLOTS.map(m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0')).join(', '), 'India time · writer', (writers()[0] || ['none'])[0]);
-  return { run, tick, cluster, editionInfo, status: () => global._deskStatus() };
+  return { run, tick, cluster, editionInfo, photoPass, status: () => global._deskStatus() };
 }
 
 module.exports = { sameStory, sigOf, install, cluster, tokens, checkStory, editionOf, parseSlots, hasDeva, isHindiText, isEnglishText };
