@@ -122,9 +122,18 @@
     } else root.style.removeProperty('--hb-avail');
   };
   // the keyboard opening or closing, rotating, a browser bar showing or hiding: fit the chat again
+  // While someone types (the keyboard takes the bottom of the screen) the tab bar and the language switch step
+  // aside, so the messages keep their room: html.kb-open (home.css).
   (function () {
-    let q = 0;
-    const refit = () => { cancelAnimationFrame(q); q = requestAnimationFrame(() => { if (document.getElementById('bvThread')) V.scroll(true); }); };
+    let q = 0, tallest = { p: 0, l: 0 };
+    const typing = () => { const a = document.activeElement; return !!a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA') && !!a.closest('#broVoiceRoot'); };
+    const refit = () => { cancelAnimationFrame(q); q = requestAnimationFrame(() => {
+      const o = innerWidth > innerHeight ? 'l' : 'p'; tallest[o] = Math.max(tallest[o], innerHeight);
+      const vv = window.visualViewport, hidden = Math.max(tallest[o] - innerHeight, vv ? innerHeight - vv.height : 0);
+      document.documentElement.classList.toggle('kb-open', typing() && hidden > 150);
+      if (document.getElementById('bvThread')) V.scroll(true);
+    }); };
+    addEventListener('focusin', refit); addEventListener('focusout', () => setTimeout(refit, 50));
     addEventListener('resize', refit);
     if (window.visualViewport) visualViewport.addEventListener('resize', refit);
   })();
