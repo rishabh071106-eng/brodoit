@@ -12,8 +12,9 @@
 //   - business: Mint markets + companies, Economic Times, BBC Business, The Guardian Business (no paywalled FT/WSJ).
 //   - science: BBC, Nature, ScienceDaily, Phys.org, The Guardian Science.
 // v27 (2026-10-31): official, primary sources next to the newspapers, so a story can stand on the original
-// announcement: the Press Information Bureau (Government of India), the Reserve Bank of India, the UN, the WHO and
-// NASA. The app marks a story backed by one of them "Official source".
+// announcement: the Reserve Bank of India, the UN, the WHO and NASA (checked from GitHub's runners on 31 Oct: all
+// answer with items). The Press Information Bureau's feed answers only in Hindi whatever the Lang setting, and the
+// desk writes from English reports, so it is not listed. The app marks a story backed by an official source.
 //
 // Verification note: the build sandbox's egress proxy answers 403 to every news host, so these URLs could not be
 // curl-checked from there. Each one is the publisher's documented feed (its own RSS page, or the path already in
@@ -30,7 +31,6 @@ const NEWS_FEEDS = {
     'https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml',  // Hindustan Times · India (hindustantimes.com/rss)
     'https://www.livemint.com/rss/news',                                // Mint · News
     'https://feeds.bbci.co.uk/news/world/asia/india/rss.xml',           // BBC · India
-    'https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3',           // PIB · Government of India press releases (English)
   ],
   world: [
     'https://feeds.bbci.co.uk/news/world/rss.xml',                      // BBC · World
