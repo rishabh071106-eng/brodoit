@@ -26,6 +26,12 @@
 
 /* chatting: Bro becomes a slim row (mascot · status · mic); only the bubbles scroll; compose stays at the bottom */
 #broVoiceRoot .bh.chat{height:var(--hb-avail,auto);min-height:0;padding-bottom:0}
+/* while chatting the screen is exactly the phone's height: the header and Bro's row never move, only the bubbles
+   scroll. The page's bottom padding for the tab bar (on #app and on body) made it 58 px too tall, so it slid. */
+html:has(#broVoiceRoot .bh.chat),html:has(#broVoiceRoot .bh.chat) body{overflow:hidden;overscroll-behavior:none}
+html:has(#broVoiceRoot .bh.chat) body,html:has(#broVoiceRoot .bh.chat) #app{padding-bottom:0!important}
+/* typing to Bro (keyboard open): the tab bar and the language switch step aside so the messages keep their room */
+html.kb-open:has(#broVoiceRoot .bh.chat) :is(.tabs.page-t,.rd-tabbar),html.kb-open #broVoiceRoot .bh.chat .hb-top{display:none!important}
 .bh.chat .hb-stage{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:8px 0 4px}
 .bh.chat .hb-stage::before{display:none}
 .bh.chat .hb-mas{width:64px;filter:drop-shadow(0 8px 12px rgba(120,40,20,.2))}
