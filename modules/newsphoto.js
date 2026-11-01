@@ -34,8 +34,9 @@ function queryFromHeadline(h) {
   const caps = toks.filter((w, i) => /^[A-Z][a-zA-Z]+$/.test(w) && !/^[A-Z]{2,6}s?$/.test(w) && !STOP.has(w.toLowerCase()) && !GENERAL.has(w.toLowerCase()) && !(i === 0 && w.length < 4));
   return caps.slice(0, 3).join(' ');
 }
-// a photo is about the subject: every word of the query (all) or at least half of them (the writer's subject)
-const aboutEnough = (want, about, all) => { const n = want.filter(w => about.has(w)).length; return all ? n === want.length : n >= Math.ceil(want.length / 2); };
+// a photo is about the subject: every word of the query (all), or two thirds of them (the writer's subject: "Indian
+// Parliament House" needs both "parliament" and "house", so a house in Virginia no longer passes)
+const aboutEnough = (want, about, all) => { const n = want.filter(w => about.has(w)).length; return all ? n === want.length : n >= Math.max(1, Math.ceil(want.length * 2 / 3)); };
 
 // a photo address without tracking parameters (utm_source, utm_campaign…)
 function cleanUrl(u) {
@@ -121,5 +122,7 @@ async function findAny(query, opts = {}) {
 
 // does a photo's title carry every word of the headline's subject (the rule for a photo found from a headline)
 const fitsHeadline = (title, headline) => { const q = words(queryFromHeadline(headline)); if (!q.length) return false; const t = new Set(words(title)); return q.every(w => t.has(w)); };
+// does a photo's title carry two thirds of the writer's subject (the check for photos chosen before v28.1)
+const fitsQuery = (title, query) => { const all = words(query), q = all.filter(w => !GENERAL.has(w) || all.length === 1); if (!q.length) return false; const t = new Set(words(title)); return aboutEnough(q, t, false); };
 
-module.exports = { find, findOpenverse, findAny, queryFromHeadline, fitsHeadline, freeLicense, cleanUrl, UA };
+module.exports = { find, findOpenverse, findAny, queryFromHeadline, fitsHeadline, fitsQuery, freeLicense, cleanUrl, UA };

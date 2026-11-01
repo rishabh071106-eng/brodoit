@@ -16,6 +16,12 @@
 // v28: News opens straight on the first story (no front page). A bar under the story holds the sections (Top, AI, India,
 // World, Business, Tech, Science), Readers (pieces readers sent, checked by Brodoit's AI editor), Thought of the day (an
 // original thought and the story behind it) and Send (write for Brodoit). Every card has a free photo with its credit.
+// v29: the short-news reader. One story fills the screen and you swipe UP for the next (down for the one before); the
+// card you leave stays put and the next one slides over it. The photo runs edge to edge with its credit; the story
+// always fits its card (the type steps down, the photo gives way, then the text ends on a whole line with "Read the
+// full story"), never scrolling inside it. Swipe LEFT (or tap the strip at the bottom) for the original reports. A
+// bookmark keeps a story in Saved (on this phone). News opens at once on the stories from your last visit while the
+// new ones load, and a "New stories" pill appears when an edition comes in while you read.
 (function () {
   'use strict';
   const N = window.NewsChannel = { lang: localStorage.getItem('news.lang') || 'en', stories: [], loaded: false, _loading: false, i: 0 };
@@ -84,6 +90,29 @@
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushSeen(); });
   addEventListener('pagehide', flushSeen);
+
+  // ── v29: Saved (the bookmark on a card; kept on this phone, newest first, up to 100) and the last deck (News opens on
+  // it at once while the new stories load; per language, 36 hours) ──
+  const SAVED_KEY = 'news.saved.v1';
+  const KEEP = ['id', 'kind', 'reader', 'name', 'day', 'category', 'headline', 'summary', 'why', 'headline_hi', 'summary_hi', 'why_hi', 'image', 'image_credit', 'sources', 'published_at'];
+  const slim = st => { const o = {}; for (const k of KEEP) if (st[k] != null && st[k] !== '') o[k] = st[k]; return o; };
+  const saved = (() => { let a = []; try { a = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (e) { a = []; } return Array.isArray(a) ? a.filter(x => x && x.id && x.headline && x.summary) : []; })();
+  const isSaved = id => !!id && saved.some(x => x.id === id);
+  N.savedCount = () => saved.length;
+  function storeSaved() { try { localStorage.setItem(SAVED_KEY, JSON.stringify(saved.slice(0, 100))); } catch (e) { /* storage full or blocked */ } }
+  const deckKey = () => 'news.deck.v1.' + (hi() ? 'hi' : 'en');
+  function keepDeck(list) {
+    if (N.cat || N.view !== 'news' || !list.length) return;
+    try { localStorage.setItem(deckKey(), JSON.stringify({ at: Date.now(), edition: N.edition || null, stories: list.slice(0, 12).map(slim) })); } catch (e) { /* storage full or blocked */ }
+  }
+  function lastDeck() {
+    try {
+      const j = JSON.parse(localStorage.getItem(deckKey()) || 'null');
+      if (!j || !Array.isArray(j.stories) || Date.now() - (j.at || 0) > 36 * 3600e3) return null;
+      const list = j.stories.filter(st => st && st.id && st.headline && st.summary && !isSeen(st));
+      return list.length ? { list, edition: j.edition } : null;
+    } catch (e) { return null; }
+  }
   // v22: a dot on the News tab when an edition is in that this phone has not opened yet
   function sawEdition() {
     const id = N.edition && N.edition.id; if (!id) return;
@@ -96,12 +125,22 @@
       const e = await r.json(); if (!e || !e.ready || !e.id) return;
       N.edition = N.edition && N.edition.id === e.id ? N.edition : e;
       let seenId = ''; try { seenId = localStorage.getItem('news.edition.seen') || ''; } catch (x) { seenId = ''; }
+      // v29: a new edition came in while the deck shows an older one: a pill offers the new stories (nothing jumps)
+      if (window.S && S.tab === 'news' && N.view === 'news' && N.loaded && N._ed && e.id !== N._ed) { N._newEd = e.id; pill(); }
       if (window.S && S.tab === 'news') { sawEdition(); return; }
       document.body.classList.toggle('nz-fresh', seenId !== e.id);
     } catch (e) { /* offline */ }
   };
   setTimeout(() => N.checkEdition(), 3000);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') N.checkEdition(); });
+  // while News is open, look for a new edition every 10 minutes
+  setInterval(() => { if (window.S && S.tab === 'news' && document.visibilityState === 'visible') N.checkEdition(); }, 10 * 60e3);
+  function pill() {
+    const st = document.querySelector('#newsRoot .nz-stage'); if (!st || !N._newEd || N.view !== 'news') return;
+    if (st.querySelector('.nz-new')) return;
+    st.insertAdjacentHTML('beforeend', '<button type="button" class="nz-new" onclick="NewsChannel.fresh()">' + I('arrow-up', 16) + '<span' + (hi() ? ' class="dev"' : '') + '>' + (hi() ? 'नई ख़बरें' : 'New stories') + '</span></button>');
+  }
+  N.fresh = function () { N._newEd = null; document.querySelectorAll('.nz-new').forEach(x => x.remove()); N.cat = N.cat || ''; delete V.news; if (N.view !== 'news') { saveView(); N.view = 'news'; } N.again(); };
   // the story on screen counts as seen after 1.5 s (only while News is what you are looking at)
   let viewT = 0;
   function watch() {
@@ -162,12 +201,21 @@
   N.load = function () {
     if (N.view === 'thought') return loadThought();
     if (N.view === 'readers') return loadReaders();
+    if (N.view === 'saved') return loadSaved();
     if (N.view === 'send') { N.loaded = true; N._loading = false; N.rerender(); loadMine(); return Promise.resolve(); }
     return loadNews();
   };
   async function loadNews() {
     N.err = false; N.caughtUp = false; N._at = Date.now();
     const P = newPass();
+    // v29: the first time News opens on this visit, the stories from last time show at once (unseen ones only) while
+    // the new ones load; a shared link (?s=) waits for the real deck
+    let early = null;
+    if (!N._booted && !N.cat && !N._want && !new URLSearchParams(location.search).get('s')) {
+      early = lastDeck();
+      if (early) { N.stories = early.list; N.i = 0; N.edition = N.edition || early.edition; N.loaded = true; N.rerender(); }
+    }
+    N._booted = true;
     let got = [], err = false;
     try {
       got = await page();
@@ -176,9 +224,23 @@
     if (P !== pass) return;
     // opened something else meanwhile: keep the stories for when News comes back
     if (N.view !== 'news') { V.news = { stories: got, i: 0, caughtUp: !got.length && P.next === null, loaded: !err, err: err && !got.length, at: Date.now() }; N._loading = false; return; }
+    N._ed = N.edition && N.edition.id;
+    if (early && N.loaded && N.stories === early.list) {
+      // the reader may be on one of last time's stories: keep those up to the one on screen, then the new ones after
+      const kept = N.stories.slice(0, N.i + 1), ks = kept.map(x => sig(x.headline));
+      kept.forEach(x => pass.ids.add(x.id));
+      const rest = got.filter(x => !kept.some(k => k.id === x.id) && !ks.some(w => same(w, sig(x.headline))));
+      if (err && !got.length) { N.loaded = true; N._loading = false; return; }   // offline: last time's stories stay
+      N.stories = kept.concat(rest);
+      N.caughtUp = !err && !rest.length && P.next === null;
+      N.err = false; N.loaded = true; N._loading = false;
+      keepDeck(got); sawEdition(); N.rerender();
+      return;
+    }
     N.stories = []; N.i = 0; got.forEach(keep);
     N.caughtUp = !err && !got.length && P.next === null;
     N.err = err && !got.length;
+    keepDeck(got);
     sawEdition();
     // a shared link or a notification (?s=<story id>) opens on that story, even one seen before
     const want = N._want || new URLSearchParams(location.search).get('s'); N._want = null;
@@ -207,6 +269,22 @@
     N.stories = list; N.i = 0; N.caughtUp = !err; N.err = err && !list.length; N.loaded = true; N._loading = false;
     jumpTo(); N.rerender();
   }
+  // v29: Saved: the stories this phone bookmarked, newest first
+  function loadSaved() {
+    N.err = false; N.caughtUp = false; N._at = Date.now();
+    N.stories = saved.slice(); N.i = 0; N.loaded = true; N._loading = false;
+    N.rerender(); return Promise.resolve();
+  }
+  // the bookmark on a card: keep the story in Saved, or take it out
+  N.save = function (i) {
+    const st = N.stories[i], H = hi(); if (!st || !st.id) return;
+    const k = saved.findIndex(x => x.id === st.id), on = k < 0;
+    if (on) saved.unshift(Object.assign(slim(st), { saved_at: Date.now() })); else saved.splice(k, 1);
+    storeSaved();
+    document.querySelectorAll('#nzDeck .nz-card[data-id="' + CSS.escape(st.id) + '"] .nz-save').forEach(b => { b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-label', on ? (H ? 'सहेजी गई, हटाएँ' : 'Saved, remove') : (H ? 'सहेजें' : 'Save')); });
+    if (typeof toast === 'function') toast(on ? (H ? 'सहेज ली गई · नीचे "सहेजी" में' : 'Saved · find it under Saved') : (H ? '"सहेजी" से हटा दी' : 'Removed from Saved'));
+    if (N.view === 'saved' && !on) { N.stories.splice(i, 1); N.i = Math.min(N.i, Math.max(0, N.stories.length - 1)); N.rerender(); }
+  };
   // a link to a thought or a reader's piece (?s=th_… / rd_…) opens on it
   function jumpTo() { const want = N._want; if (!want) return; const k = N.stories.findIndex(x => x.id === want); if (k >= 0) { N.i = k; N._want = null; } }
   // open a view; the one already open goes back to its first card
@@ -216,7 +294,7 @@
     clearTimeout(viewT); flushSeen(); saveView();
     N.view = view;
     const s = V[view];
-    if (view !== 'send' && s && s.loaded && s.stories.length && Date.now() - s.at < 10 * 60e3) { N.stories = s.stories; N.i = s.i; N.caughtUp = s.caughtUp; N.err = s.err; N.loaded = true; N._at = s.at; jumpTo(); N.rerender(); return; }
+    if (view !== 'send' && view !== 'saved' && s && s.loaded && s.stories.length && Date.now() - s.at < 10 * 60e3) { N.stories = s.stories; N.i = s.i; N.caughtUp = s.caughtUp; N.err = s.err; N.loaded = true; N._at = s.at; jumpTo(); N.rerender(); return; }
     N.stories = []; N.i = 0; N.caughtUp = false; N.err = false; N.loaded = false; N._loading = true;
     N.rerender(); N.load();
   };
@@ -251,7 +329,7 @@
   // Near the end: the next page goes in behind the last card (the card in view never moves). One load at a time.
   // v21: when the desk has nothing unseen left, the deck ends on "You're all caught up" (it no longer goes round again)
   N.more = async function () {
-    if (N.view !== 'news' || N._busy || !N.loaded || !N.stories.length || !pass || N.caughtUp || Date.now() < (N._wait || 0)) return;
+    if (N.view !== 'news' || N._busy || N._loading || !N.loaded || !N.stories.length || !pass || N.caughtUp || Date.now() < (N._wait || 0)) return;
     N._busy = true; let added = 0;
     try {
       for (let k = 0; k < 6 && !added && pass.next !== null; k++) {
@@ -298,16 +376,16 @@
   function endCard() {
     const H = hi();
     // v28: the end of Readers asks for the next piece
-    if (N.view === 'readers') return '<article class="nz-card nz-end" data-i="' + N.stories.length + '" aria-label="' + (H ? 'और लेख' : 'More pieces') + '"><div class="nz-endin">' +
+    if (N.view === 'readers') return '<article class="nz-card nz-end" data-i="' + N.stories.length + '" aria-label="' + (H ? 'और लेख' : 'More pieces') + '"><div class="nz-in"><div class="nz-endin">' +
       '<span class="nz-endic nz-endic-w" aria-hidden="true">' + I('send', 40, 1.8) + '</span>' +
       '<h2' + (H ? ' class="dev"' : '') + '>' + (H ? 'आपके पास भी कुछ है?' : 'Got something to share?') + '</h2>' +
       '<p' + (H ? ' class="dev"' : '') + '>' + (H ? 'कोई ख़बर, विचार या कहानी भेजें। Brodoit का AI संपादक हर लेख पढ़ता है।' : 'Send a news tip, a thought or a story. Brodoit\'s AI editor reads every piece.') + '</p>' +
-      '<button class="b-btn" onclick="NewsChannel.show(\'send\')">' + I('send', 16) + (H ? 'लिखें' : 'Write for Brodoit') + '</button></div></article>';
-    return '<article class="nz-card nz-end" data-i="' + N.stories.length + '" aria-label="' + (H ? 'सारी ख़बरें देख लीं' : 'All caught up') + '"><div class="nz-endin">' +
+      '<button class="b-btn" onclick="NewsChannel.show(\'send\')">' + I('send', 16) + (H ? 'लिखें' : 'Write for Brodoit') + '</button></div></div></article>';
+    return '<article class="nz-card nz-end" data-i="' + N.stories.length + '" aria-label="' + (H ? 'सारी ख़बरें देख लीं' : 'All caught up') + '"><div class="nz-in"><div class="nz-endin">' +
       '<span class="nz-endic" aria-hidden="true">' + I('check-circle', 44, 1.8) + '</span>' +
       '<h2>' + (H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up') + '</h2>' +
       '<p>' + esc(nextText()) + '</p>' +
-      '<button class="b-btn" onclick="NewsChannel.again()">' + I('refresh-cw', 16) + (H ? 'फिर देखें' : 'Check again') + '</button></div></article>';
+      '<button class="b-btn" onclick="NewsChannel.again()">' + I('refresh-cw', 16) + (H ? 'फिर देखें' : 'Check again') + '</button></div></div></article>';
   }
   function near() { if (N.view === 'news' && N.loaded && storyCount() && N.i >= N.stories.length - 4) N.more(); }
 
@@ -326,13 +404,14 @@
     try { if (localStorage.getItem('news.swiped')) return; localStorage.setItem('news.swiped', '1'); } catch (e) { return; }
     N._hinted = true;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    setTimeout(() => { d.scrollTo({ left: 72, behavior: 'smooth' }); setTimeout(() => d.scrollTo({ left: 0, behavior: 'smooth' }), 520); }, 700);
+    // v29: the first story lifts a little and settles back: there is more below
+    setTimeout(() => { d.scrollTo({ top: 96, behavior: 'smooth' }); setTimeout(() => d.scrollTo({ top: 0, behavior: 'smooth' }), 560); }, 800);
   };
   N.rerender = function () {
     const r = document.getElementById('newsRoot');
     if (!r || !window.S || S.tab !== 'news') return;
     r.innerHTML = N.html();
-    requestAnimationFrame(() => { N.size(); N.go(N.i, true); });
+    requestAnimationFrame(() => { N.size(); N.go(N.i, true); N.hint(); });
   };
 
   // v28: every photo carries its credit: who took it, the licence, where it is from (Commons, Openverse)
@@ -351,48 +430,61 @@
     const src = (st.sources || []).filter(x => x && (x.name || x.link));
     const names = src.slice(0, 2).map(srcName).filter(Boolean).join(', ') + (src.length > 2 ? ' +' + (src.length - 2) : '');
     const share = '<button class="nz-share" onclick="NewsChannel.share(' + i + ')" aria-label="' + (H ? 'शेयर करें' : 'Share') + '">' + I('share-2', 20) + '</button>';
+    // v29: the bookmark beside Share keeps the story in Saved
+    const sv = isSaved(st.id), save = st.id ? '<button class="nz-save' + (sv ? ' on' : '') + '" aria-pressed="' + sv + '" onclick="NewsChannel.save(' + i + ')" aria-label="' + (sv ? (H ? 'सहेजी गई, हटाएँ' : 'Saved, remove') : (H ? 'सहेजें' : 'Save')) + '">' + I('bookmark', 20) + '</button>' : '';
+    const acts = '<div class="nz-pacts">' + save + share + '</div>';
     // the section and how fresh it is sit on the photo, so the story starts with its headline
     const tag = '<div class="nz-tag">' + (label ? '<b' + (H ? ' class="dev"' : '') + '>' + esc(label) + '</b>' : '') + (when ? '<span>' + esc(when) + '</span>' : '') + '</div>';
     // no photo (rare since v28: every story gets one): a panel in the section's colour holds the same slot
-    const ph = '<div class="nz-img ph"><span aria-hidden="true">' + I(kind === 'thought' ? 'sunrise' : c[3] || 'newspaper', 72, 1.4) + '</span>' + tag + share + '</div>';
+    const ph = '<div class="nz-img ph"><span aria-hidden="true">' + I(kind === 'thought' ? 'sunrise' : c[3] || 'newspaper', 72, 1.4) + '</span>' + tag + acts + '</div>';
     const cr = st.image_credit ? '<small class="nz-cr">' + esc((H ? 'फ़ोटो: ' : 'Photo: ') + st.image_credit.by + ' · ' + st.image_credit.license) + '</small>' : '';
-    const img = st.image ? '<div class="nz-img"><img class="nz-fg" src="' + esc(st.image) + '" alt="" loading="' + (i < 4 ? 'eager' : 'lazy') + '" onerror="NewsChannel.noimg(this)">' + cr + tag + share + '</div>' : ph;
+    const img = st.image ? '<div class="nz-img"><img class="nz-fg" src="' + esc(st.image) + '" alt="" loading="' + (Math.abs(i - N.i) < 3 ? 'eager' : 'lazy') + '" decoding="async" onerror="NewsChannel.noimg(this)">' + cr + tag + acts + '</div>' : ph;
     const dev = k => (H && st[k + '_hi']) ? ' dev' : '';
-    let body;
+    // shown only when the story had to end on a whole line to fit its card: the whole story opens in a sheet
+    const more = '<button type="button" class="nz-more' + (H ? ' dev' : '') + '" onclick="NewsChannel.sources(' + i + ',1)">' + (H ? 'पूरी ख़बर पढ़ें' : 'Read the full story') + I('chevron-right', 16) + '</button>';
+    let body, foot = '';
     if (kind === 'thought') {
       body = '<h2 class="nz-th-t' + dev('headline') + '">' + esc(pick(st, 'headline')) + '</h2>' +
         '<b class="nz-th-k' + (H ? ' dev' : '') + '">' + (H ? 'इसके पीछे की कहानी' : 'The story behind it') + '</b>' +
-        '<p class="nz-text' + dev('summary') + '">' + esc(pick(st, 'summary')) + '</p>';
+        '<p class="nz-text' + dev('summary') + '">' + esc(pick(st, 'summary')) + '</p>' + more;
     } else if (kind === 'reader') {
       const by = st.name ? (H ? st.name + ' ने भेजा, एक पाठक' : 'By ' + st.name + ', a reader') : (H ? 'एक पाठक ने भेजा' : 'By a reader');
       body = '<h2 class="' + dev('headline').trim() + '">' + esc(pick(st, 'headline')) + '</h2>' +
-        '<p class="nz-text' + dev('summary') + '">' + esc(pick(st, 'summary')) + '</p>' +
-        '<div class="nz-rd"><span>' + I('user', 16) + '<b' + (H ? ' class="dev"' : '') + '>' + esc(by) + '</b>' + (st.kind === 'news' ? '<small>' + (H ? 'Brodoit ने इसकी जाँच नहीं की' : 'Not checked by Brodoit') + '</small>' : '') + '</span>' +
+        '<p class="nz-text' + dev('summary') + '">' + esc(pick(st, 'summary')) + '</p>' + more;
+      foot = '<div class="nz-foot nz-rd"><span>' + I('user', 16) + '<b' + (H ? ' class="dev"' : '') + '>' + esc(by) + '</b>' + (st.kind === 'news' ? '<small>' + (H ? 'Brodoit ने इसकी जाँच नहीं की' : 'Not checked by Brodoit') + '</small>' : '') + '</span>' +
         '<button type="button" class="nz-rep" onclick="NewsChannel.report(' + i + ')" aria-label="' + (H ? 'शिकायत करें' : 'Report this piece') + '">' + I('flag', 18) + '</button></div>';
     } else {
       const why = pick(st, 'why');
       const official = src.some(x => x.official), primary = !official && src.some(x => x.primary);
       const chip = official ? '<em class="nz-off">' + (H ? 'आधिकारिक स्रोत' : 'Official source') + '</em>' : primary ? '<em class="nz-off nz-pri">' + (H ? 'मूल स्रोत' : 'Primary source') + '</em>' : '';
       body = '<h2 class="' + dev('headline').trim() + '">' + esc(pick(st, 'headline')) + '</h2>' +
-        '<p class="nz-text' + dev('summary') + '">' + esc(pick(st, 'summary')) + '</p>' +
-        (why ? '<div class="nz-why' + (H ? ' dev' : '') + '"><b>' + (H ? 'यह क्यों मायने रखता है' : 'Why it matters') + '</b>' + esc(why) + '</div>' : '') +
-        // v28: the byline: Brodoit's desk wrote it, from these reports
-        (names ? '<button type="button" class="nz-srcs" onclick="NewsChannel.sources(' + i + ')">' + I('newspaper', 16) + '<span>' + (H ? 'Brodoit ने लिखा · ' : 'Written by Brodoit · ') + esc(names) + '</span>' + chip + I('chevron-right', 16) + '</button>' : '');
+        '<p class="nz-text' + dev('summary') + '">' + esc(pick(st, 'summary')) + '</p>' + more +
+        (why ? '<div class="nz-why' + (H ? ' dev' : '') + '"><b>' + (H ? 'यह क्यों मायने रखता है' : 'Why it matters') + '</b><span>' + esc(why) + '</span></div>' : '');
+      // v28: the byline: Brodoit's desk wrote it, from these reports. v29: it is the strip at the foot of the card
+      // (tap it, or swipe the card left, for the original reports)
+      if (names) foot = '<button type="button" class="nz-foot nz-srcs" onclick="NewsChannel.sources(' + i + ')">' + I('newspaper', 18) + '<span class="nz-fby"><small' + (H ? ' class="dev"' : '') + '>' + (H ? 'Brodoit ने लिखा · इन रिपोर्टों से' : 'Written by Brodoit · from') + '</small><b class="nz-src-name">' + esc(names) + '</b></span>' + chip + I('chevron-right', 18) + '</button>';
     }
-    return '<article class="nz-card nz-k-' + kind + (st.image ? '' : ' noimg') + '" data-i="' + i + '" data-id="' + esc(st.id || '') + '" style="--c:' + c[2] + '" aria-roledescription="slide" aria-label="' + esc(pick(st, 'headline')) + '">' + img +
-      '<div class="nz-body">' + body + '</div></article>';
+    return '<article class="nz-card nz-k-' + kind + (st.image ? '' : ' noimg') + '" data-i="' + i + '" data-id="' + esc(st.id || '') + '" style="--c:' + c[2] + '" aria-roledescription="slide" aria-label="' + esc(pick(st, 'headline')) + '"><div class="nz-in">' + img +
+      '<div class="nz-body">' + body + '</div>' + foot + '</div></article>';
   }
   // the original reports behind a story
-  N.sources = function (i) {
-    const st = N.stories[i]; if (!st || isCover(st) || st.kind === 'thought') return;
+  // v29: full = the whole story first (a card that had to end its text on a whole line, or a thought or reader's piece)
+  N.sources = function (i, full) {
+    const st = N.stories[i]; if (!st || isCover(st)) return;
     const H = hi(), list = (st.sources || []).filter(x => x && /^https?:\/\//.test(x.link || ''));
+    const isStory = st.kind !== 'thought' && !st.reader;
+    if (!full && (!isStory || !list.length)) return;
     document.getElementById('nzSrc')?.remove();
     const bg = document.createElement('div'); bg.className = 'nz-sheet-bg'; bg.id = 'nzSrc';
-    bg.innerHTML = '<div class="nz-sheet" role="dialog" aria-modal="true" aria-label="' + (H ? 'स्रोत' : 'Sources') + '"><div class="nz-grab" aria-hidden="true"></div>' +
-      '<b class="nz-sh-t">' + (H ? 'मूल रिपोर्टें' : 'The original reports') + '</b><p class="nz-sh-p">' + (H ? 'Brodoit ने यह ख़बर इन रिपोर्टों के तथ्यों से अपने शब्दों में लिखी है।' : 'Brodoit wrote this story in its own words from the facts in these reports.') + '</p>' +
-      list.map(x => '<a class="nz-sh" href="' + esc(x.link) + '" target="_blank" rel="noopener nofollow">' + I('external-link', 22) + '<span><b>' + esc(srcName(x)) + (x.official ? ' <em class="nz-off">' + (H ? 'आधिकारिक' : 'Official') + '</em>' : x.primary ? ' <em class="nz-off nz-pri">' + (H ? 'मूल स्रोत' : 'Primary source') + '</em>' : '') + '</b><small>' + esc(x.title || x.link) + '</small></span></a>').join('') +
+    const dv = k => (H && st[k + '_hi']) ? ' class="dev"' : '';
+    const why = isStory && pick(st, 'why');
+    const story = full ? '<div class="nz-sh-full"><h3' + dv('headline') + '>' + esc(pick(st, 'headline')) + '</h3><p' + dv('summary') + '>' + esc(pick(st, 'summary')) + '</p>' +
+      (why ? '<div class="nz-why' + (H ? ' dev' : '') + '" style="--c:' + ((CAT[st.category] || CAT.life)[2]) + '"><b>' + (H ? 'यह क्यों मायने रखता है' : 'Why it matters') + '</b><span>' + esc(why) + '</span></div>' : '') + '</div>' : '';
+    bg.innerHTML = '<div class="nz-sheet' + (full ? ' nz-sheet-full' : '') + '" role="dialog" aria-modal="true" aria-label="' + (full ? esc(pick(st, 'headline')) : (H ? 'स्रोत' : 'Sources')) + '"><div class="nz-grab" aria-hidden="true"></div>' + story +
+      (isStory && list.length ? '<b class="nz-sh-t">' + (H ? 'मूल रिपोर्टें' : 'The original reports') + '</b><p class="nz-sh-p">' + (H ? 'Brodoit ने यह ख़बर इन रिपोर्टों के तथ्यों से अपने शब्दों में लिखी है।' : 'Brodoit wrote this story in its own words from the facts in these reports.') + '</p>' : '') +
+      (isStory ? list : []).map(x => '<a class="nz-sh" href="' + esc(x.link) + '" target="_blank" rel="noopener nofollow">' + I('external-link', 22) + '<span><b>' + esc(srcName(x)) + (x.official ? ' <em class="nz-off">' + (H ? 'आधिकारिक' : 'Official') + '</em>' : x.primary ? ' <em class="nz-off nz-pri">' + (H ? 'मूल स्रोत' : 'Primary source') + '</em>' : '') + '</b><small>' + esc(x.title || x.link) + '</small></span></a>').join('') +
       (st.image_credit && /^https:\/\//.test(st.image_credit.page || '') ? '<a class="nz-sh" href="' + esc(st.image_credit.page) + '" target="_blank" rel="noopener nofollow">' + I('image', 22) + '<span><b>' + (H ? 'फ़ोटो' : 'Photo') + '</b><small>' + esc(st.image_credit.by + ' · ' + st.image_credit.license + ' · ' + srcOf(st.image_credit)) + '</small></span></a>' : '') +
-      '<p class="nz-sh-how">' + (H ? 'हर ख़बर AI लिखता है और ऐप उसे जाँचता है: हर संख्या स्रोतों में होनी चाहिए, और स्रोतों के वाक्य या फ़ोटो कभी कॉपी नहीं होते।' : 'An AI writes each story and the app checks it: every number must be in the sources, and their sentences and photos are never copied.') + ' <a href="mailto:hello@brodoit.com?subject=' + encodeURIComponent('News correction: ' + (st.headline || '')) + '">' + (H ? 'ग़लती बताएँ' : 'Report a mistake') + '</a></p>' +
+      (isStory ? '<p class="nz-sh-how">' : '<p class="nz-sh-how" hidden>') + (H ? 'हर ख़बर AI लिखता है और ऐप उसे जाँचता है: हर संख्या स्रोतों में होनी चाहिए, और स्रोतों के वाक्य या फ़ोटो कभी कॉपी नहीं होते।' : 'An AI writes each story and the app checks it: every number must be in the sources, and their sentences and photos are never copied.') + ' <a href="mailto:hello@brodoit.com?subject=' + encodeURIComponent('News correction: ' + (st.headline || '')) + '">' + (H ? 'ग़लती बताएँ' : 'Report a mistake') + '</a></p>' +
       '<button type="button" class="b-btn ghost wide nz-sh-x">' + (H ? 'बंद करें' : 'Close') + '</button></div>';
     document.body.appendChild(bg);
     const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
@@ -413,7 +505,8 @@
     const H = hi(), v = N.view;
     const chip = (l, on, fn) => '<button type="button" class="nz-chip' + (on ? ' on' : '') + (H ? ' dev' : '') + '" aria-pressed="' + on + '" onclick="' + fn + '">' + esc(l) + '</button>';
     const cats = BAR.map(k => chip(k ? (H ? CAT[k][1] : CAT[k][0]) : (H ? 'मुख्य' : 'Top'), v === 'news' && (N.cat || '') === k, "NewsChannel.setCat('" + k + "')")).join('') +
-      chip(H ? 'पाठक' : 'Readers', v === 'readers', "NewsChannel.show('readers')");
+      chip(H ? 'पाठक' : 'Readers', v === 'readers', "NewsChannel.show('readers')") +
+      chip(H ? 'सहेजी' : 'Saved', v === 'saved', "NewsChannel.show('saved')");
     const act = (k, icon, l) => '<button type="button" class="nz-act' + (v === k ? ' on' : '') + '" aria-pressed="' + (v === k) + '" onclick="NewsChannel.show(\'' + k + '\')">' + I(icon, 20) + '<span' + (H ? ' class="dev"' : '') + '>' + l + '</span></button>';
     return '<nav class="nz-bar" id="nzBar" aria-label="' + (H ? 'ख़बरों के हिस्से' : 'News sections') + '"><div class="nz-cats" id="nzCats">' + cats + '</div>' +
       '<div class="nz-acts">' + act('thought', 'sunrise', H ? 'विचार' : 'Thought') + act('send', 'send', H ? 'भेजें' : 'Send') + '</div></nav>';
@@ -513,14 +606,16 @@
     if (N.view === 'send') return '<div class="nz nz-v-send">' + sendHtml() + bar + '</div>';
     const hud = '<div class="nz-hud">' + langHtml() + '</div>';
     const empty = (icon, title, sub, btn) => '<div class="nz"><div class="nz-empty" id="nzEmpty"><span class="nz-emic" aria-hidden="true">' + I(icon, 40, 1.8) + '</span><b' + (H ? ' class="dev"' : '') + '>' + title + '</b>' + (sub ? '<span' + (H ? ' class="dev"' : '') + '>' + sub + '</span>' : '') + (btn || '') + '</div>' + bar + '</div>';
-    if (!N.loaded) return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck"><article class="nz-card skel"><div class="nz-img"></div><div class="nz-body"><i></i><i></i><i></i><i></i></div></article></div></div>' + bar + '</div>';
+    if (!N.loaded) return '<div class="nz"><div class="nz-stage"><div class="nz-deck" id="nzDeck"><article class="nz-card skel"><div class="nz-in"><div class="nz-img"></div><div class="nz-body"><i></i><i></i><i></i><i></i></div></div></article></div></div>' + bar + '</div>';
     if (!n && N.err) return empty('wifi-off', H ? 'लोड नहीं हुआ' : 'Couldn’t load this', '', '<button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर कोशिश करें' : 'Try again') + '</button>');
     if (!n && N.view === 'readers') return empty('users', H ? 'अभी पाठकों का कोई लेख नहीं' : 'No pieces from readers yet', H ? 'पहला लेख आपका हो सकता है।' : 'Yours could be the first.', '<button class="b-btn" onclick="NewsChannel.show(\'send\')">' + I('send', 16) + (H ? 'लिखें' : 'Write for Brodoit') + '</button>');
+    if (!n && N.view === 'saved') return empty('bookmark', H ? 'अभी कुछ सहेजा नहीं' : 'Nothing saved yet', H ? 'किसी ख़बर पर बुकमार्क दबाएँ, वह यहाँ रहेगी।' : 'Tap the bookmark on a story to keep it here.', '<button class="b-chip" onclick="NewsChannel.setCat(\'\')">' + I('newspaper', 14) + (H ? 'ख़बरें पढ़ें' : 'Read the news') + '</button>');
     if (!n && N.view === 'thought') return empty('sunrise', H ? 'आज का विचार आ रहा है' : 'Today’s thought is on its way', '', '<button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर देखें' : 'Check again') + '</button>');
     if (!n && N.caughtUp) return empty('check-circle', H ? 'आपने सारी ख़बरें देख लीं' : 'You’re all caught up', esc(nextText()), '<button class="b-chip" onclick="NewsChannel.again()">' + I('refresh-cw', 14) + (H ? 'फिर देखें' : 'Check again') + '</button>');
     if (!n) return empty('newspaper', H ? 'ख़बरें आ रही हैं' : 'Stories are on the way', '');
     return '<div class="nz"><div class="nz-stage"><div class="nz-prog" aria-hidden="true"><i id="nzProg"></i></div><div class="nz-deck" id="nzDeck" tabindex="0" aria-label="' + (H ? 'ख़बरें' : 'News') + '">' + list.map((st, i) => card(st, i)).join('') + (N.caughtUp ? endCard() : '') + '</div>' + hud +
-      '<button class="nz-nav prev" aria-label="Previous" onclick="NewsChannel.go(NewsChannel.i-1)">' + I('chevron-left', 22) + '</button><button class="nz-nav next" aria-label="Next" onclick="NewsChannel.go(NewsChannel.i+1)">' + I('chevron-right', 22) + '</button></div>' + bar + '</div>';
+      '<button class="nz-nav prev" aria-label="' + (H ? 'पिछली' : 'Previous') + '" onclick="NewsChannel.go(NewsChannel.i-1)">' + I('chevron-up', 22) + '</button><button class="nz-nav next" aria-label="' + (H ? 'अगली' : 'Next') + '" onclick="NewsChannel.go(NewsChannel.i+1)">' + I('chevron-down', 22) + '</button>' +
+      (N.view === 'news' && N._newEd ? '<button type="button" class="nz-new" onclick="NewsChannel.fresh()">' + I('arrow-up', 16) + '<span' + (H ? ' class="dev"' : '') + '>' + (H ? 'नई ख़बरें' : 'New stories') + '</span></button>' : '') + '</div>' + bar + '</div>';
   };
 
   // The deck fills the space between the header and the tab bar on any phone.
@@ -541,26 +636,61 @@
     if (!d._wired) {
       d._wired = true;
       let t = 0;
-      d.addEventListener('scroll', () => { cancelAnimationFrame(t); t = requestAnimationFrame(() => { const k = Math.max(0, Math.min(count() - 1, Math.round(d.scrollLeft / Math.max(1, d.clientWidth)))); if (k !== N.i) { const was = N.i; N.i = k; moved(was); } }); }, { passive: true });
-      d.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); N.go(N.i + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); N.go(N.i - 1); } });
+      // v29: the deck runs top to bottom: the card in view is the one the deck has scrolled to
+      d.addEventListener('scroll', () => { cancelAnimationFrame(t); t = requestAnimationFrame(() => { const k = Math.max(0, Math.min(count() - 1, Math.round(d.scrollTop / Math.max(1, d.clientHeight)))); if (k !== N.i) { const was = N.i; N.i = k; moved(was); } }); }, { passive: true });
+      d.addEventListener('keydown', e => {
+        if (e.altKey || e.ctrlKey || e.metaKey) return;
+        if (['ArrowDown', 'PageDown', 'ArrowRight', 'j'].includes(e.key)) { e.preventDefault(); N.go(N.i + 1); }
+        else if (['ArrowUp', 'PageUp', 'ArrowLeft', 'k'].includes(e.key)) { e.preventDefault(); N.go(N.i - 1); }
+      });
+      // v29: swipe a story LEFT for its original reports (the card follows the finger a little, then springs back)
+      let g = null;
+      d.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse' || !e.isPrimary) return; const c = e.target.closest('.nz-card'); g = c ? { id: e.pointerId, x: e.clientX, y: e.clientY, c, m: c.querySelector('.nz-in') || c, side: false } : null; });
+      d.addEventListener('pointermove', e => {
+        if (!g || e.pointerId !== g.id) return;
+        const dx = e.clientX - g.x, dy = e.clientY - g.y;
+        if (!g.side && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.4) { g.side = true; g.c.classList.add('drag'); }
+        if (g.side) g.m.style.translate = Math.max(-96, Math.min(24, dx * 0.4)) + 'px 0';
+      });
+      const end = e => {
+        if (!g || e.pointerId !== g.id) return;
+        const o = g, dx = e.clientX - o.x, dy = e.clientY - o.y; g = null;
+        o.c.classList.remove('drag'); o.m.style.translate = '';
+        if (o.side && e.type === 'pointerup' && dx < -64 && Math.abs(dx) > Math.abs(dy) * 1.4 && o.c.classList.contains('nz-k-story')) N.sources(+o.c.dataset.i);
+      };
+      d.addEventListener('pointerup', end); d.addEventListener('pointercancel', end);
     }
   };
-  // Fit one card: the photo holds 40% of the card on every story so the headline sits at the same height as you swipe.
-  // If the story is long the type steps down first, then the photo gives way to a 34% floor, and only then does the
-  // text scroll inside the card (never cut off). Landscape phones lay the card out side by side (photo left).
-  // Only the cards around the one in view are fitted, so a deck of hundreds stays quick.
+  // Fit one card: the photo holds 42% of the card on every story so the headline sits at the same height as you swipe.
+  // If the story is long the type steps down first, then the photo gives way to a 30% floor, then "Why it matters"
+  // folds to one line, and last the story's text ends on its last whole line with "Read the full story" (at least five
+  // lines: on the smallest screens "Why it matters" steps aside first; it is in the sheet). The whole
+  // story opens in a sheet). v29: nothing scrolls inside a card, since the deck itself scrolls up and down. Landscape
+  // phones lay the card out side by side (photo left). Only the cards around the one in view are fitted, so a deck of
+  // hundreds stays quick.
   function fit(cardEl) {
     const H = cardEl.clientHeight, body = cardEl.querySelector('.nz-body'), img = cardEl.querySelector('.nz-img');
     if (!H || !body) return;
-    cardEl.classList.remove('sm', 'xs', 'scroll');
-    const row = getComputedStyle(cardEl).flexDirection === 'row';
+    cardEl.classList.remove('sm', 'xs', 'scroll', 'tight', 'clamp', 'nowhy');
+    const txt = body.querySelector('.nz-text'); if (txt) txt.style.webkitLineClamp = '';
+    const row = getComputedStyle(cardEl.querySelector('.nz-in') || cardEl).flexDirection === 'row';
     const over = () => body.scrollHeight > body.clientHeight + 1;
-    let ih = img && !row ? Math.round(H * 0.40) : 0;
+    let ih = img && !row ? Math.round(H * 0.42) : 0;
     if (img) img.style.height = row ? '' : ih + 'px';
     if (over()) cardEl.classList.add('sm');
     if (over()) cardEl.classList.add('xs');
-    while (img && !row && over() && ih > H * 0.34) { ih -= 8; img.style.height = ih + 'px'; }
-    if (over()) cardEl.classList.add('scroll');
+    while (img && !row && over() && ih > H * 0.30) { ih -= 8; img.style.height = ih + 'px'; }
+    const why = body.querySelector('.nz-why');
+    if (over() && why) cardEl.classList.add('tight');                 // "Why it matters" on one line
+    if (over() && txt) {
+      cardEl.classList.add('clamp');
+      const lh = parseFloat(getComputedStyle(txt).lineHeight) || 22, all = Math.max(2, Math.round(txt.scrollHeight / lh));
+      let lines = all; txt.style.webkitLineClamp = String(lines);
+      while (lines > 5 && over()) { lines--; txt.style.webkitLineClamp = String(lines); }
+      // the story keeps at least five lines: on the smallest screens "Why it matters" steps aside (it is in the sheet)
+      if (over() && why) { cardEl.classList.add('nowhy'); lines = all; txt.style.webkitLineClamp = String(lines); while (lines > 5 && over()) { lines--; txt.style.webkitLineClamp = String(lines); } }
+      while (lines > 2 && over()) { lines--; txt.style.webkitLineClamp = String(lines); }
+    }
     cardEl._fit = H + 'x' + cardEl.clientWidth;
   }
   function fitNear() {
@@ -578,7 +708,7 @@
     const d = document.getElementById('nzDeck'); if (!d) return;
     const was = N.i;
     N.i = Math.max(0, Math.min(count() - 1, k | 0));
-    d.scrollTo({ left: N.i * d.clientWidth, behavior: instant ? 'auto' : 'smooth' });
+    d.scrollTo({ top: N.i * d.clientHeight, behavior: instant ? 'auto' : 'smooth' });
     moved(was);
   };
   window.addEventListener('resize', () => { if (window.S && S.tab === 'news') { N.size(); N.go(N.i, true); } });
