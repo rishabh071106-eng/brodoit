@@ -462,7 +462,7 @@
         (why ? '<div class="nz-why' + (H ? ' dev' : '') + '"><b>' + (H ? 'यह क्यों मायने रखता है' : 'Why it matters') + '</b><span>' + esc(why) + '</span></div>' : '');
       // v28: the byline: Brodoit's desk wrote it, from these reports. v29: it is the strip at the foot of the card
       // (tap it, or swipe the card left, for the original reports)
-      if (names) foot = '<button type="button" class="nz-foot nz-srcs" onclick="NewsChannel.sources(' + i + ')">' + I('newspaper', 18) + '<span class="nz-fby"><small' + (H ? ' class="dev"' : '') + '>' + (H ? 'Brodoit ने लिखा · इन रिपोर्टों से' : 'Written by Brodoit · from') + '</small><b>' + esc(names) + '</b></span>' + chip + I('chevron-right', 18) + '</button>';
+      if (names) foot = '<button type="button" class="nz-foot nz-srcs" onclick="NewsChannel.sources(' + i + ')">' + I('newspaper', 18) + '<span class="nz-fby"><small' + (H ? ' class="dev"' : '') + '>' + (H ? 'Brodoit ने लिखा · इन रिपोर्टों से' : 'Written by Brodoit · from') + '</small><b class="nz-src-name">' + esc(names) + '</b></span>' + chip + I('chevron-right', 18) + '</button>';
     }
     return '<article class="nz-card nz-k-' + kind + (st.image ? '' : ' noimg') + '" data-i="' + i + '" data-id="' + esc(st.id || '') + '" style="--c:' + c[2] + '" aria-roledescription="slide" aria-label="' + esc(pick(st, 'headline')) + '"><div class="nz-in">' + img +
       '<div class="nz-body">' + body + '</div>' + foot + '</div></article>';
