@@ -207,3 +207,80 @@ html[data-theme="dark"] #app .nz-st.no,body[data-theme=aurora] #app .nz-st.no{co
 #app .nz-mine-b{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--b-mute);display:grid;place-items:center;cursor:pointer}
 #app .nz-mine-b:active{background:var(--b-bg-2)}
 @media (min-width:760px){#app .nz-bar,#app .nz-send{margin-left:0;margin-right:0}}
+
+/* v29: the short-news reader. One story fills the screen; the deck runs top to bottom (swipe up for the next). The
+   card you leave stays put, dims and steps back while the next one slides over it (where the browser can tie an
+   animation to scrolling; elsewhere the cards simply scroll). The photo runs edge to edge; Save and Share sit on it;
+   the strip at the foot of the card names the reports (tap it, or swipe the card left). Nothing scrolls inside a card. */
+#app .nz-deck{flex-direction:column;overflow-x:hidden;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;touch-action:pan-y pinch-zoom}
+/* the card is what the deck snaps to and never moves; its inner layer (.nz-in) holds the story and is what steps back */
+#app .nz-card{display:block;flex:0 0 100%;overflow:visible;scroll-snap-align:start;scroll-snap-stop:always;touch-action:pan-y pinch-zoom}
+#app .nz-in{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;background:var(--b-bg);border-radius:24px 24px 0 0;transition:translate .22s cubic-bezier(.2,.8,.2,1)}
+#app .nz-in>*{flex:none}
+#app .nz-in>.nz-body{flex:1 1 auto}
+#app .nz-card.drag .nz-in{transition:none}
+#app .nz-end .nz-in{justify-content:center;align-items:center}
+#app .nz-img{margin:0;border-radius:0 0 22px 22px}
+#app .nz-body{padding:14px 22px 0}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    #app .nz-deck>.nz-card>.nz-in{animation:nzStack linear both;animation-timeline:view();animation-range:exit 0% exit 100%;transform-origin:50% 20%}
+    @keyframes nzStack{to{transform:translateY(100%) scale(.9);opacity:.45}}
+  }
+}
+/* Save and Share on the photo */
+#app .nz-pacts{position:absolute;right:10px;bottom:10px;z-index:2;display:flex;gap:8px}
+#app .nz-pacts .nz-share{position:static}
+#app .nz-save{width:44px;height:44px;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;background:rgba(15,13,20,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff}
+#app .nz-save:active{transform:scale(.92)}
+#app .nz-save.on{color:#FFD166}
+#app .nz-save.on svg{fill:currentColor}
+#app .nz-tag{max-width:calc(100% - 132px)}
+/* the strip at the foot of a story: who wrote it, from which reports */
+#app .nz-srcs.nz-foot{flex:none;display:flex;align-items:center;gap:8px;width:auto;min-height:48px;margin:6px 14px 10px;padding:0 6px 0 12px;border:0;border-radius:14px;background:var(--b-bg-2);color:var(--b-ink-2);font:600 13px/1.2 var(--b-sans);text-align:left;cursor:pointer}
+#app .nz-foot .nz-off{margin-left:0}
+#app .nz-swl{flex:none;display:inline-flex;align-items:center;gap:0;padding-left:4px;font:700 12.5px/1 var(--b-sans);font-style:normal;color:var(--c)}
+#app .nz-swl.dev{font-family:var(--b-devanagari,var(--b-sans))}
+html[data-theme="dark"] #app .nz-swl,body[data-theme=aurora] #app .nz-swl{color:color-mix(in srgb,var(--c) 50%,#fff)}
+#app .nz-rd.nz-foot{flex:none;margin:6px 22px 10px;padding-top:6px}
+/* a story that had to end on a whole line: "Read the full story" opens it all */
+#app .nz-more{display:none;align-items:center;gap:2px;min-height:44px;margin:0;padding:0;border:0;background:transparent;color:var(--c);font:700 14px/1 var(--b-sans);cursor:pointer}
+#app .nz-more.dev{font-family:var(--b-devanagari,var(--b-sans))}
+html[data-theme="dark"] #app .nz-more,body[data-theme=aurora] #app .nz-more{color:color-mix(in srgb,var(--c) 50%,#fff)}
+#app .nz-card.clamp .nz-more,#app .nz-card.tight .nz-more{display:inline-flex}
+#app .nz-card.clamp .nz-text{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+#app .nz-card.tight .nz-why{display:flex;align-items:baseline;gap:8px;margin-top:6px;padding:8px 12px}
+#app .nz-card.tight .nz-why b{flex:none;display:inline;margin:0}
+#app .nz-card.tight .nz-why span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .nz-card.nowhy .nz-why{display:none}
+/* the foot strip: "Written by Brodoit · from" over the reports' names */
+#app .nz-fby{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+#app .nz-fby small{font:600 11.5px/1.25 var(--b-sans);color:var(--b-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .nz-fby small.dev{font-family:var(--b-devanagari,var(--b-sans));font-size:12px;line-height:1.4}
+#app .nz-fby b{font:700 13.5px/1.25 var(--b-sans);color:var(--b-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .nz-srcs.nz-foot>svg:last-child{flex:none;color:var(--b-mute)}
+/* up and down on a computer */
+@media (min-width:760px) and (hover:hover){
+  #app .nz-nav{top:auto;left:auto!important;right:-56px}
+  #app .nz-nav.prev{bottom:calc(50% + 4px)}
+  #app .nz-nav.next{top:calc(50% + 4px)}
+}
+@media (orientation:landscape) and (max-height:520px){
+  #app .nz-in{flex-direction:row;gap:14px;padding-right:12px;border-radius:0}
+  #app .nz-img{border-radius:18px;margin:6px 0 6px 6px}
+}
+/* a new edition came in while you read */
+#app .nz-new{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:5;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 18px;border:0;border-radius:999px;background:var(--b-primary,#B5402A);color:#fff;font:700 14px/1 var(--b-sans);box-shadow:0 10px 24px -10px rgba(0,0,0,.5);cursor:pointer;animation:nzIn .25s ease both}
+#app .nz-new span.dev{font-family:var(--b-devanagari,var(--b-sans))}
+/* the whole story in a sheet */
+.nz-sheet{max-height:88vh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;grid-template-columns:minmax(0,1fr);box-sizing:border-box}
+.nz-sh-full{padding:2px 6px 10px}
+.nz-sh-full h3{margin:0 0 8px;font:700 20px/1.3 var(--b-sans,system-ui);color:var(--b-ink,#17141F)}
+.nz-sh-full p{margin:0 0 12px;font:400 16px/1.6 var(--b-sans,system-ui);color:var(--b-ink-2,#3b3845)}
+.nz-sh-full .dev{font-family:var(--b-devanagari,var(--b-sans,system-ui));line-height:1.75}
+.nz-sh-full .nz-why{margin:0 0 12px;padding:10px 12px;border-radius:12px;border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 9%,transparent);font:500 15px/1.5 var(--b-sans,system-ui);color:var(--b-ink-2,#3b3845)}
+.nz-sh-full .nz-why b{display:block;margin-bottom:2px;font:800 11.5px/1.2 var(--b-sans,system-ui);letter-spacing:.07em;text-transform:uppercase;color:var(--c)}
+.nz-sh-full .nz-why.dev b{letter-spacing:0;text-transform:none;font-size:12.5px}
+.nz-sh-full+.nz-sh-t{margin-top:4px;padding-top:12px;border-top:1px solid var(--b-line,#e6e1d8)}
+/* phones: the card (and its photo) runs from one screen edge to the other */
+@media (max-width:759px){#app .nz-stage{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}}
