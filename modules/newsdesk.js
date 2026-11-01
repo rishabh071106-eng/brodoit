@@ -269,10 +269,16 @@ function install(app, deps) {
     const t = new Set(); for (const i of c.items.slice(0, 6)) for (const w of tokens(i.title)) if (!GENERIC.has(w)) t.add(w);
     return heads.map((h, k) => ({ h, k, n: tokens(h).filter(w => t.has(w)).length })).filter(x => x.n > 0).sort((a, b) => b.n - a.n || a.k - b.k).slice(0, 30).map(x => x.h);
   }
+  // v28.2: Bro Core's background lane shares one Groq allowance (8,000 tokens a minute on gpt-oss-20b): a rate limit
+  // there waits a minute and tries once more before the story goes to the next writer (the 07:00 edition of 1 Nov
+  // sent 18 of 33 stories to ElevenLabs's emergency writer because each 429 cooled the lane for every story after it)
+  const RATE_WAIT_MS = process.env.NEWS_RATE_WAIT_MS != null ? +process.env.NEWS_RATE_WAIT_MS : 65000;
+  const rateLimited = e => !!e && (e.kind === 'rate' || e.code === 'brain_down' || /\b429\b|rate.?limit|brain_down|too many requests/i.test(String(e.message || '')));
   async function writeStory(c, allHeads, ws) {
     const heads = relatedHeads(c, allHeads || []), prompt = promptFor(c, heads), src = sourceText(c);
     let enOnly = null;
-    for (const [name, fn] of ws) {
+    for (let k = 0, retried = false; k < ws.length; k++) {
+      const [name, fn] = ws[k];
       try {
         let out = await fn(prompt);
         if (!out || typeof out !== 'object') continue;
@@ -285,7 +291,10 @@ function install(app, deps) {
         if (!p.en.length && !p.hi.length) return { s: out, by: name };
         if (!p.en.length && !enOnly) enOnly = { s: Object.assign({}, out, { headline_hi: '', summary_hi: '', why_hi: '' }), by: name };
         state.lastError = name + ': ' + p.en.concat(p.hi).join('; ');
-      } catch (e) { state.lastError = name + ': ' + e.message; if (name === 'gemini' && /402|credit|prepay|billing/i.test(e.message)) global._geminiDownUntil = Date.now() + 3600e3; }
+      } catch (e) {
+        state.lastError = name + ': ' + e.message; if (name === 'gemini' && /402|credit|prepay|billing/i.test(e.message)) global._geminiDownUntil = Date.now() + 3600e3;
+        if (name === 'brocore' && !retried && rateLimited(e)) { retried = true; state.rateWaits = (state.rateWaits || 0) + 1; if (RATE_WAIT_MS > 0) await new Promise(r => setTimeout(r, RATE_WAIT_MS)); k--; continue; }
+      }
     }
     return enOnly; // good English, Hindi not right from any writer: published in English only
   }
@@ -384,11 +393,11 @@ function install(app, deps) {
   async function photoInto(id, query, headline, cat) {
     if (imgFile(id)) return 'have';
     // the writer's subject (at least half its words in the photo's description), then the headline's proper nouns (all)
-    const qs = [[String(query || '').trim(), {}], [PHOTO.queryFromHeadline(headline), { all: true }]].filter(x => x[0]);
+    const qs = [[String(query || '').trim(), {}], [PHOTO.headlineSubject(headline), { all: true }]].filter(x => x[0]);
     if (Date.now() - (tried.get(id) || 0) >= 6 * 3600e3) {
       for (const [qy, o] of qs) {
         let hit = null; try { hit = await findPhoto(qy, o); } catch (e) { hit = null; }
-        if (hit && hit.url && await cacheImage(id, hit.url, hit.thumb)) return Object.assign(JSON.parse(creditJSON(hit, { fit: 1 })), { _url: hit.url });
+        if (hit && hit.url && await cacheImage(id, hit.url, hit.thumb)) return Object.assign(JSON.parse(creditJSON(hit, { fit: 1, via: o.all ? 'headline' : 'writer' })), { _url: hit.url });
       }
       tried.set(id, Date.now()); if (tried.size > 2000) tried.clear();
     }
@@ -404,13 +413,13 @@ function install(app, deps) {
     let cr = null; try { cr = JSON.parse(r.image_credit || 'null'); } catch (e) { cr = null; }
     if (!IMG || !cr || !cr.pool) return false;
     if (Date.now() - (tried.get(r.id) || 0) >= 6 * 3600e3) {
-      for (const [qy, o] of [[String(r.image_query || '').trim(), {}], [PHOTO.queryFromHeadline(r.headline), { all: true }]].filter(x => x[0])) {
+      for (const [qy, o] of [[String(r.image_query || '').trim(), {}], [PHOTO.headlineSubject(r.headline), { all: true }]].filter(x => x[0])) {
         let hit = null; try { hit = await findOwn(qy, o); } catch (e) { hit = null; }
         if (!hit || !hit.url) continue;
         const nf = await download([hit.url, hit.thumb], path.join(IMG, r.id + '__new'));
         if (!nf) continue;
         rmImg(r.id); fs.renameSync(nf, path.join(IMG, r.id + path.extname(nf)));
-        q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(hit.url, creditJSON(hit, { fit: 1 }), r.id);
+        q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(hit.url, creditJSON(hit, { fit: 1, via: o.all ? 'headline' : 'writer' }), r.id);
         return true;
       }
       tried.set(r.id, Date.now()); if (tried.size > 2000) tried.clear();
@@ -461,7 +470,11 @@ function install(app, deps) {
       for (const r of all) {
         if (isPool(r) || !imgFile(r.id)) continue;
         let cr = null; try { cr = JSON.parse(r.image_credit || 'null'); } catch (e) { cr = null; }
-        if (!cr || cr.fit || (r.image_query ? PHOTO.fitsQuery(cr.title, r.image_query) : PHOTO.fitsHeadline(cr.title, r.headline))) continue;
+        if (!cr || cr.via) continue;                                  // found under the v28.2 rules: never undone
+        // a v28.1 photo (fit, no via) found from a one-word headline subject ("Platforms", "Boutique"): the story had no
+        // writer's subject, or its photo does not carry the writer's subject, so the one word is what found it
+        const oneWord = !PHOTO.headlineSubject(r.headline) && !!PHOTO.queryFromHeadline(r.headline);
+        if (cr.fit ? !(oneWord && (!r.image_query || !PHOTO.fitsQuery(cr.title, r.image_query))) : (r.image_query ? PHOTO.fitsQuery(cr.title, r.image_query) : PHOTO.fitsHeadline(cr.title, r.headline))) continue;
         const hit = poolPick(r.category, r.id); if (!hit) continue;
         rmImg(r.id); const c2 = usePool(r.id, r.category);
         if (c2) { q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run('pool:' + r.category, JSON.stringify(c2), r.id); r.image_credit = JSON.stringify(c2); tried.set(r.id, Date.now()); }
@@ -488,6 +501,9 @@ function install(app, deps) {
   const SLOTS = parseSlots(process.env.NEWS_EDITIONS);
   const PER_EDITION = Math.max(5, Math.min(40, parseInt(process.env.NEWS_PER_EDITION, 10) || 20));
   const PACE_MS = process.env.NEWS_PACE_MS != null ? +process.env.NEWS_PACE_MS : 4000; // between stories: spares the live allowance
+  // v28.2: when Bro Core's shared Groq lane writes, about one story a minute keeps it inside 8,000 tokens a minute (a
+  // story with its repair round is ~4-7k tokens); Gemini, with its own allowance, keeps the short pace
+  const SHARED_PACE_MS = process.env.NEWS_PACE_SHARED_MS != null ? +process.env.NEWS_PACE_SHARED_MS : (process.env.NEWS_PACE_MS != null ? +process.env.NEWS_PACE_MS : 45000);
   const nowOf = () => (deps.now ? deps.now() : new Date());
   const parseSources = t => { try { return JSON.parse(t || '[]'); } catch (e) { return []; } };
   async function run(reason, ed) {
@@ -533,14 +549,17 @@ function install(app, deps) {
           heads.unshift(T(st.headline, 160)); recent.push(sigOf(st.headline, st.summary)); for (const i of c.items) links.add(i.link);
           await photoFor('ns_' + c.key, iq, st.headline, cat);
         } catch (e) { state.lastError = 'db: ' + e.message; }
-        if (PACE_MS > 0) await new Promise(r => setTimeout(r, PACE_MS));
+        const pace = ws.length && ws[0][0] === 'brocore' ? Math.max(PACE_MS, SHARED_PACE_MS) : PACE_MS;
+        if (pace > 0) await new Promise(r => setTimeout(r, pace));
       }
       if (wrote) q('INSERT OR REPLACE INTO news_editions(id, slot, at, stories, writer) VALUES(?,?,?,?,?)').run(ed.id, ed.slot, ed.at, wrote + ((q('SELECT stories FROM news_editions WHERE id=?').get(ed.id) || {}).stories || 0), state.writer);
       q("DELETE FROM news_stories WHERE created_at < datetime('now','-4 days')").run();
       try { q("DELETE FROM news_shared WHERE shared_at < datetime('now','-90 days')").run(); q('DELETE FROM news_editions WHERE at < ?').run(new Date(nowOf().getTime() - 7 * 864e5).toISOString()); } catch (e) { /* ignore */ }
       await photoPass(12, 0);
       try { for (const f of fs.readdirSync(IMG)) { const id = f.replace(/\.(jpg|png|webp|tmp)$/, ''); if (/^(th|rd)_/.test(id)) continue; if (!q('SELECT 1 FROM news_stories WHERE id=?').get(id) && !q('SELECT 1 FROM news_shared WHERE id=?').get(id)) fs.unlinkSync(path.join(IMG, f)); } } catch (e) { /* ignore */ }
-      state.last = { at: new Date().toISOString(), reason, edition: ed.id, items: items.length, clusters: clusters.length, wrote, skipped, duplicates: dup, failed, ms: Date.now() - t0, writer: state.writer };
+      const by = {}; for (const r of q('SELECT writer, COUNT(*) n FROM news_stories WHERE edition=? GROUP BY writer').all(ed.id)) by[r.writer || '?'] = r.n;
+      state.last = { at: new Date().toISOString(), reason, edition: ed.id, items: items.length, clusters: clusters.length, wrote, skipped, duplicates: dup, failed, ms: Date.now() - t0, writer: state.writer, by, rate_waits: state.rateWaits || 0 };
+      state.rateWaits = 0;
       log('edition', JSON.stringify(state.last));
       // record the new headlines and top stories right away (modules/newsvoice.js)
       if (wrote && global._newsVoice) setTimeout(() => global._newsVoice.run('desk batch').catch(() => {}), 3000);
