@@ -384,11 +384,11 @@ function install(app, deps) {
   async function photoInto(id, query, headline, cat) {
     if (imgFile(id)) return 'have';
     // the writer's subject (at least half its words in the photo's description), then the headline's proper nouns (all)
-    const qs = [[String(query || '').trim(), {}], [PHOTO.queryFromHeadline(headline), { all: true }]].filter(x => x[0]);
+    const qs = [[String(query || '').trim(), {}], [PHOTO.headlineSubject(headline), { all: true }]].filter(x => x[0]);
     if (Date.now() - (tried.get(id) || 0) >= 6 * 3600e3) {
       for (const [qy, o] of qs) {
         let hit = null; try { hit = await findPhoto(qy, o); } catch (e) { hit = null; }
-        if (hit && hit.url && await cacheImage(id, hit.url, hit.thumb)) return Object.assign(JSON.parse(creditJSON(hit, { fit: 1 })), { _url: hit.url });
+        if (hit && hit.url && await cacheImage(id, hit.url, hit.thumb)) return Object.assign(JSON.parse(creditJSON(hit, { fit: 1, via: o.all ? 'headline' : 'writer' })), { _url: hit.url });
       }
       tried.set(id, Date.now()); if (tried.size > 2000) tried.clear();
     }
@@ -404,13 +404,13 @@ function install(app, deps) {
     let cr = null; try { cr = JSON.parse(r.image_credit || 'null'); } catch (e) { cr = null; }
     if (!IMG || !cr || !cr.pool) return false;
     if (Date.now() - (tried.get(r.id) || 0) >= 6 * 3600e3) {
-      for (const [qy, o] of [[String(r.image_query || '').trim(), {}], [PHOTO.queryFromHeadline(r.headline), { all: true }]].filter(x => x[0])) {
+      for (const [qy, o] of [[String(r.image_query || '').trim(), {}], [PHOTO.headlineSubject(r.headline), { all: true }]].filter(x => x[0])) {
         let hit = null; try { hit = await findOwn(qy, o); } catch (e) { hit = null; }
         if (!hit || !hit.url) continue;
         const nf = await download([hit.url, hit.thumb], path.join(IMG, r.id + '__new'));
         if (!nf) continue;
         rmImg(r.id); fs.renameSync(nf, path.join(IMG, r.id + path.extname(nf)));
-        q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(hit.url, creditJSON(hit, { fit: 1 }), r.id);
+        q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(hit.url, creditJSON(hit, { fit: 1, via: o.all ? 'headline' : 'writer' }), r.id);
         return true;
       }
       tried.set(r.id, Date.now()); if (tried.size > 2000) tried.clear();
@@ -461,7 +461,11 @@ function install(app, deps) {
       for (const r of all) {
         if (isPool(r) || !imgFile(r.id)) continue;
         let cr = null; try { cr = JSON.parse(r.image_credit || 'null'); } catch (e) { cr = null; }
-        if (!cr || cr.fit || (r.image_query ? PHOTO.fitsQuery(cr.title, r.image_query) : PHOTO.fitsHeadline(cr.title, r.headline))) continue;
+        if (!cr || cr.via) continue;                                  // found under the v28.2 rules: never undone
+        // a v28.1 photo (fit, no via) found from a one-word headline subject ("Platforms", "Boutique"): the story had no
+        // writer's subject, or its photo does not carry the writer's subject, so the one word is what found it
+        const oneWord = !PHOTO.headlineSubject(r.headline) && !!PHOTO.queryFromHeadline(r.headline);
+        if (cr.fit ? !(oneWord && (!r.image_query || !PHOTO.fitsQuery(cr.title, r.image_query))) : (r.image_query ? PHOTO.fitsQuery(cr.title, r.image_query) : PHOTO.fitsHeadline(cr.title, r.headline))) continue;
         const hit = poolPick(r.category, r.id); if (!hit) continue;
         rmImg(r.id); const c2 = usePool(r.id, r.category);
         if (c2) { q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run('pool:' + r.category, JSON.stringify(c2), r.id); r.image_credit = JSON.stringify(c2); tried.set(r.id, Date.now()); }

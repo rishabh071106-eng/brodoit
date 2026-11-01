@@ -121,8 +121,12 @@ async function findAny(query, opts = {}) {
 }
 
 // does a photo's title carry every word of the headline's subject (the rule for a photo found from a headline)
+// the headline's subject when it can stand on its own: two words or more ("Germany France Halloween", "Monsoon Mumbai").
+// One word alone picks the wrong thing too often ("Platforms" → Meta's headquarters for a Jio story, "Boutique" → a
+// Lacoste shop, "Punjab" → a kingfisher), so the story takes its section's photo instead (v28.2)
+const headlineSubject = h => { const q = queryFromHeadline(h); return q.split(' ').filter(Boolean).length >= 2 ? q : ''; };
 const fitsHeadline = (title, headline) => { const q = words(queryFromHeadline(headline)); if (!q.length) return false; const t = new Set(words(title)); return q.every(w => t.has(w)); };
 // does a photo's title carry two thirds of the writer's subject (the check for photos chosen before v28.1)
 const fitsQuery = (title, query) => { const all = words(query), q = all.filter(w => !GENERAL.has(w) || all.length === 1); if (!q.length) return false; const t = new Set(words(title)); return aboutEnough(q, t, false); };
 
-module.exports = { find, findOpenverse, findAny, queryFromHeadline, fitsHeadline, fitsQuery, freeLicense, cleanUrl, UA };
+module.exports = { find, findOpenverse, findAny, queryFromHeadline, headlineSubject, fitsHeadline, fitsQuery, freeLicense, cleanUrl, UA };
