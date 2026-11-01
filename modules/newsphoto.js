@@ -25,12 +25,17 @@ function freeLicense(meta) {
   return FREE.test(name) ? name : '';
 }
 
-// a subject query from a headline when the writer gave none: its proper nouns ("Assam floods displace…" → "Assam")
+// a subject query from a headline when the writer gave none: its proper nouns ("Assam floods displace…" → "Assam").
+// v28.1: acronyms (IBBI, IMD, AAP: they match unrelated files) and words too general to show anything (India, Indian,
+// world…) are left out; a photo found from this query must carry every one of its words (find(…, { all: true })).
+const GENERAL = new Set('india indian indians world global national government state states country countries international new people city'.split(' '));
 function queryFromHeadline(h) {
   const toks = String(h || '').replace(/[“”"'’:,.;!?()]/g, ' ').split(/\s+/).filter(Boolean);
-  const caps = toks.filter((w, i) => /^[A-Z][a-zA-Z]+$/.test(w) && !STOP.has(w.toLowerCase()) && !(i === 0 && w.length < 4));
+  const caps = toks.filter((w, i) => /^[A-Z][a-zA-Z]+$/.test(w) && !/^[A-Z]{2,6}s?$/.test(w) && !STOP.has(w.toLowerCase()) && !GENERAL.has(w.toLowerCase()) && !(i === 0 && w.length < 4));
   return caps.slice(0, 3).join(' ');
 }
+// a photo is about the subject: every word of the query (all) or at least half of them (the writer's subject)
+const aboutEnough = (want, about, all) => { const n = want.filter(w => about.has(w)).length; return all ? n === want.length : n >= Math.ceil(want.length / 2); };
 
 // a photo address without tracking parameters (utm_source, utm_campaign…)
 function cleanUrl(u) {
@@ -39,7 +44,7 @@ function cleanUrl(u) {
 
 async function find(query, opts = {}) {
   query = String(query || '').replace(/\s+/g, ' ').trim().slice(0, 80);
-  const want = words(query);
+  const want = words(query).filter(w => !GENERAL.has(w) || words(query).length === 1);
   if (!want.length) return null;
   const doFetch = opts.fetch || fetch;
   const u = API + '?' + new URLSearchParams({
@@ -63,7 +68,7 @@ async function find(query, opts = {}) {
     if (strip(meta.Restrictions && meta.Restrictions.value)) continue; // trademark, insignia, personality… skip
     // it must really be about the subject: a query word in its file name, title or description
     const about = new Set(words(String(p.title || '').replace(/^File:/, '') + ' ' + strip(meta.ObjectName && meta.ObjectName.value) + ' ' + strip(meta.ImageDescription && meta.ImageDescription.value).slice(0, 400)));
-    if (!want.some(w => about.has(w))) continue;
+    if (!aboutEnough(want, about, opts.all)) continue;
     // Wikimedia's own file hosts only (v28.1: thumbnails now come from thumb.wikimedia.org, with utm_ tracking parameters)
     const url = cleanUrl(ii.thumburl || ii.url);
     if (!/^https:\/\/(upload|thumb)\.wikimedia\.org\//.test(url || '')) continue;
@@ -97,7 +102,7 @@ async function findOpenverse(query, opts = {}) {
     if ((x.width || 0) < 640 || (x.height || 0) < 360 || x.height > x.width * 1.25) continue;
     if (x.mature) continue;
     const about = new Set(words(String(x.title || '') + ' ' + (Array.isArray(x.tags) ? x.tags.map(t => t && t.name).join(' ') : '')));
-    if (!want.some(w => about.has(w))) continue;
+    if (!aboutEnough(want, about, opts.all)) continue;
     const url = String(x.url || '');
     if (!/^https:\/\//.test(url) || !/\.(jpe?g|png)(\?|$)/i.test(url) && !/^(jpe?g|png)$/i.test(String(x.filetype || ''))) continue;
     const license = lic + (x.license_version && !/^(CC0|Public domain)$/.test(lic) ? ' ' + x.license_version : '');
@@ -114,4 +119,7 @@ async function findAny(query, opts = {}) {
   return findOpenverse(query, opts);
 }
 
-module.exports = { find, findOpenverse, findAny, queryFromHeadline, freeLicense, cleanUrl, UA };
+// does a photo's title carry every word of the headline's subject (the rule for a photo found from a headline)
+const fitsHeadline = (title, headline) => { const q = words(queryFromHeadline(headline)); if (!q.length) return false; const t = new Set(words(title)); return q.every(w => t.has(w)); };
+
+module.exports = { find, findOpenverse, findAny, queryFromHeadline, fitsHeadline, freeLicense, cleanUrl, UA };
