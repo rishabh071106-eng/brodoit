@@ -8,6 +8,7 @@
 //   build = { aab, versionCode, version }   (modules/android.js passes its newest signed build)
 // status().state: 'no-account' (nothing pasted) | 'no-access' (Play Console has not given the account this app yet)
 //   | 'waiting-key-reset' (Play does not accept our upload key yet: the owner's one-time key reset is pending)
+//   | 'needs-declaration' (Play Console wants an App content answer first, e.g. Health apps; only the owner can give it)
 //   | 'uploading' | 'uploaded' | 'error'. The key, tokens and Google's raw replies never leave this module (logs get
 //   Google's message, the status only fixed words).
 'use strict';
@@ -81,6 +82,12 @@ function createPlay(o) {
     if (e && e.step === 'token') return { state: 'error', reason: 'Google refused the service account key' };
     if (/wrong key|signed with the wrong|upload certificate|not signed with the upload|signature/i.test(m)) return { state: 'waiting-key-reset', reason: 'Play does not accept our upload key yet (the upload key reset is pending)' };
     if (/already been used|already exists|versionCode.*used/i.test(m)) return { state: 'uploaded', reason: '' };
+    // Play Console still wants an App content answer ("You must let us know whether your app includes any health
+    // features."): Google answers 403, but the account has access; the build goes up by itself once it is given
+    if (/must let us know|declaration|questionnaire|app content|data safety|content rating|target audience|health features/i.test(m)) {
+      const what = /health/i.test(m) ? 'Health apps' : /data safety/i.test(m) ? 'Data safety' : /rating/i.test(m) ? 'Content rating' : /target audience|children|famil/i.test(m) ? 'Target audience and content' : /\bads\b/i.test(m) ? 'Ads' : 'App content';
+      return { state: 'needs-declaration', reason: 'Play Console is waiting for the "' + what + '" answer (Policy and programs → App content); the build goes up by itself within 10 minutes of it' };
+    }
     if (e && (e.status === 401 || e.status === 403) || /permission|caller does not have|not authorized|forbidden/i.test(m)) return { state: 'no-access', reason: 'the service account has no access to this app in Play Console' };
     if (e && e.status === 404 || /not found|no application/i.test(m)) return { state: 'error', reason: 'Play has no app ' + pkg + ' for this account' };
     return { state: 'error', reason: 'the upload failed; it is tried again within the hour' };
