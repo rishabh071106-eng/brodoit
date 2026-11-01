@@ -1,6 +1,6 @@
 // v31 Book voice: Bro's book notes read by a studio-grade, openly licensed voice model. The notes are recorded in GitHub
 // Actions (.github/workflows/book-voice.yml: free runners, nothing on this server's CPU) and published as the GitHub
-// release "book-voice-v1" with a manifest; this module copies the recordings to MEDIA_DIR/book-voice/ and
+// release "book-voice-v1" with a manifest; this module copies the recordings to MEDIA_DIR/book-voice/ (checked at boot and every 30 minutes) and
 // /api/book-audio/:id plays them before Bro's own recording (modules/brolibrary.js), which stays the fallback.
 //   create({ mediaDir, text: id → current note text | '', base?, fetch?, log?, minFreeBytes? })
 //     → { file(id) → path | '', sync() → Promise<number downloaded>, stats(), start() }
@@ -90,11 +90,12 @@ function create(o) {
     let ready = 0; for (const id of ids) if (file(id)) ready++;
     return { voice: (man && man.voice) || '', license: (man && man.license) || '', made: (man && man.made) || null, published: ids.length, ready, synced_at: st.synced_at, error: st.error };
   }
-  // boot + every 6 hours (a recording run publishes at most a few times a day)
+  // boot + every 30 minutes: only the small manifest is fetched until a recording is new, so a nightly run's takes reach
+  // the app within half an hour
   function start(delayMs) {
     const env = Number(process.env.BOOK_VOICE_DELAY_MS);
     const d = delayMs != null ? delayMs : process.env.BOOK_VOICE_DELAY_MS && Number.isFinite(env) ? env : 90e3;
-    const t = setTimeout(() => { sync().catch(() => {}); const iv = setInterval(() => sync().catch(() => {}), 6 * 3600e3); if (iv.unref) iv.unref(); }, d);
+    const t = setTimeout(() => { sync().catch(() => {}); const iv = setInterval(() => sync().catch(() => {}), 30 * 60e3); if (iv.unref) iv.unref(); }, d);
     if (t.unref) t.unref();
   }
   return { file, sync, stats, start, dir: () => dir };
