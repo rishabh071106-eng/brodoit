@@ -1239,6 +1239,7 @@ When you are ready, open your eyes gently. Carry this peace with you through the
 // v21: Bro's library (modules/brolibrary.js): the breathing cues, affirmations and guided meditations recorded once in
 // Bro's one voice; created once Bro Core is up (below). The routes serve its file first.
 let _broLib = null;
+let _bookVoice = null; // v31 studio narration of the book notes (modules/bookvoice.js)
 const BREATHE_CUES = { 'breathe-in': 'Breathe in.', 'breathe-out': 'Breathe out.', 'breathe-hold': 'Hold.', 'breathe-done': 'Session complete. Well done.' };
 // v23: book summaries in Bro's voice. A summary is recorded the first time someone plays it (all 106 at once would be
 // hours of CPU and ~700 MB); until then the page reads it live in Bro's voice. The texts are the page's own
@@ -1278,7 +1279,8 @@ function _allBookIds() { _bookText(''); return [..._booksCache.keys()]; }
 function broLibraryItems() {
   const out = Object.entries(BREATHE_CUES).map(([key, text]) => ({ key, text, speed: 0.9 }));
   const ids = [..._bookWant, ..._allBookIds().filter(id => !_bookWant.has(id))];
-  for (const id of ids) { const b = _bookText(id); if (b) out.push({ key: 'note-' + id, text: b.text, lang: b.lang, speed: 0.97, gapMs: 800, breathMs: 400 }); }
+  // v31: a note the studio narration already reads is not recorded again in Bro's voice (saves the CPU for live calls)
+  for (const id of ids) { const b = _bookText(id); if (b && !(_bookVoice && _bookVoice.file(id))) out.push({ key: 'note-' + id, text: b.text, lang: b.lang, speed: 0.97, gapMs: 800, breathMs: 400 }); }
   for (const [key, e] of Object.entries(AUDIO_LIBRARY)) if (e.script && ['affirmation', 'guided', 'vipassana'].includes(e.kind)) out.push({ key, text: e.script, speed: e.kind === 'affirmation' ? 0.94 : 0.9, gapMs: e.kind === 'affirmation' ? 1400 : 2200, breathMs: 1000 });
   return out;
 }
@@ -1363,6 +1365,9 @@ app.get('/api/book-audio/:id', (req, res) => {
   const id = String(req.params.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
   // v23: one voice. Bro's recording of the summary when it exists; otherwise 404 (the page reads it live in Bro's voice)
   // and the recording is queued. The old narrators (edge-tts English, ElevenLabs Hindi) are no longer played; BOOKS_OLD_AUDIO=1 brings them back.
+  // v31: the studio narration (modules/bookvoice.js: an openly licensed voice model, recorded in CI) comes first
+  const pv = _bookVoice && _bookVoice.file(id);
+  if (pv && require('./modules/brolibrary.js').sendAudio(req, res, pv, 'no-cache')) return;
   const bro = _broLib && _broLib.file('note-' + id);
   if (bro && require('./modules/brolibrary.js').sendAudio(req, res, bro, 'no-cache')) return;
   if (process.env.BOOKS_OLD_AUDIO !== '1') { _wantBook(id); return res.status(404).json({ error: 'not recorded in Bro\'s voice yet', live: true }); }
@@ -18099,6 +18104,7 @@ require('./modules/voice.js').install(app,{auth,getSetting,setSetting,mediaDir:M
 try{require('./modules/credits.js').install(app,{appRoot:__dirname})}catch(e){console.log('[credits] off:',e.message)}
 // Learning schools (Python + Languages): progress, Bro the mission AI, narration recorded once (modules/learn.js).
 try{_broLib=require('./modules/brolibrary.js').create({mediaDir:MEDIA_DIR,items:broLibraryItems});global._broLibrary=_broLib}catch(e){console.log('[bro-library] off:',e.message)}
+try{_bookVoice=require('./modules/bookvoice.js').create({mediaDir:MEDIA_DIR,text:id=>{const b=_bookText(id);return b?b.text:''}});global._bookVoice=_bookVoice;_bookVoice.start()}catch(e){console.log('[book-voice] off:',e.message)}
 // v27: recordings of the pre-v27 book briefs ("book-<id>.mp3", every voice) are deleted once: Bro reads his own notes now
 try{const root=path.join(MEDIA_DIR,'bro-voice');let n=0;for(const v of _fs.readdirSync(root)){const d=path.join(root,v);try{if(!_fs.statSync(d).isDirectory())continue;for(const f of _fs.readdirSync(d))if(/^book-.*\.mp3$/.test(f)){_fs.unlinkSync(path.join(d,f));n++}}catch(e){}}if(n)console.log('[books] removed',n,'recordings of the old briefs')}catch(e){/* no recordings yet */}
 let _learn=null;try{const _st=require('./modules/studio.js');_st.configure({mediaDir:MEDIA_DIR});_learn=require('./modules/learn.js').install(app,{db,auth,getSetting,appRoot:__dirname,mediaDir:MEDIA_DIR,STUDIO:_st,_callGemini,_callGroq,hasGroq:()=>!!groqKey(),hasGemini:()=>!!geminiKey()})}catch(e){console.log('[learn] off:',e.message)}
