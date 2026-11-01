@@ -327,7 +327,7 @@ function install(app, deps) {
     return !!(await download([url, alt], path.join(IMG, id)));
   }
   // v28: Wikimedia Commons first, then Openverse (CC0, public domain, CC BY, CC BY-SA only; modules/newsphoto.js)
-  const findPhoto = deps.findPhoto || (qy => PHOTO.findAny(qy));
+  const findPhoto = deps.findPhoto || ((qy, o) => PHOTO.findAny(qy, o));
   const creditJSON = (hit, extra) => JSON.stringify(Object.assign({ by: hit.by, license: hit.license, page: hit.page, title: hit.title, source: hit.source || 'Wikimedia Commons' }, extra || {}));
 
   // ── v28: every story has a photo. When nothing free shows the story's own subject, it takes one from its section's
@@ -383,11 +383,12 @@ function install(app, deps) {
   // the section's pool. Returns its credit (the file is IMG/<id>.<ext>) or null.
   async function photoInto(id, query, headline, cat) {
     if (imgFile(id)) return 'have';
-    const qs = [...new Set([String(query || '').trim(), PHOTO.queryFromHeadline(headline)].filter(Boolean))];
+    // the writer's subject (at least half its words in the photo's description), then the headline's proper nouns (all)
+    const qs = [[String(query || '').trim(), {}], [PHOTO.queryFromHeadline(headline), { all: true }]].filter(x => x[0]);
     if (Date.now() - (tried.get(id) || 0) >= 6 * 3600e3) {
-      for (const qy of qs) {
-        let hit = null; try { hit = await findPhoto(qy); } catch (e) { hit = null; }
-        if (hit && hit.url && await cacheImage(id, hit.url, hit.thumb)) return Object.assign(JSON.parse(creditJSON(hit)), { _url: hit.url });
+      for (const [qy, o] of qs) {
+        let hit = null; try { hit = await findPhoto(qy, o); } catch (e) { hit = null; }
+        if (hit && hit.url && await cacheImage(id, hit.url, hit.thumb)) return Object.assign(JSON.parse(creditJSON(hit, { fit: 1 })), { _url: hit.url });
       }
       tried.set(id, Date.now()); if (tried.size > 2000) tried.clear();
     }
@@ -395,7 +396,7 @@ function install(app, deps) {
   }
   const tried = new Map(); // id → when a lookup last found nothing (looked up again after 6 hours)
   // upgrades look on Commons only (fast, well described; Openverse's daily allowance stays for new stories)
-  const findOwn = deps.findPhoto || (qy => PHOTO.find(qy).then(h => h && Object.assign({ source: 'Wikimedia Commons' }, h)));
+  const findOwn = deps.findPhoto || ((qy, o) => PHOTO.find(qy, o).then(h => h && Object.assign({ source: 'Wikimedia Commons' }, h)));
   const rmImg = id => { for (const x of ['jpg', 'png', 'webp']) { try { fs.unlinkSync(path.join(IMG, id + '.' + x)); } catch (e) { /* none */ } } };
   // v28.1: a story on a pool photo tries its own subject again (more is found now that Wikimedia's new thumbnail host is
   // accepted), and one that took another section's pool photo (its own section's pool was empty) gets its own section's
@@ -403,13 +404,13 @@ function install(app, deps) {
     let cr = null; try { cr = JSON.parse(r.image_credit || 'null'); } catch (e) { cr = null; }
     if (!IMG || !cr || !cr.pool) return false;
     if (Date.now() - (tried.get(r.id) || 0) >= 6 * 3600e3) {
-      for (const qy of [...new Set([String(r.image_query || '').trim(), PHOTO.queryFromHeadline(r.headline)].filter(Boolean))]) {
-        let hit = null; try { hit = await findOwn(qy); } catch (e) { hit = null; }
+      for (const [qy, o] of [[String(r.image_query || '').trim(), {}], [PHOTO.queryFromHeadline(r.headline), { all: true }]].filter(x => x[0])) {
+        let hit = null; try { hit = await findOwn(qy, o); } catch (e) { hit = null; }
         if (!hit || !hit.url) continue;
         const nf = await download([hit.url, hit.thumb], path.join(IMG, r.id + '__new'));
         if (!nf) continue;
         rmImg(r.id); fs.renameSync(nf, path.join(IMG, r.id + path.extname(nf)));
-        q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(hit.url, creditJSON(hit), r.id);
+        q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run(hit.url, creditJSON(hit, { fit: 1 }), r.id);
         return true;
       }
       tried.set(r.id, Date.now()); if (tried.size > 2000) tried.clear();
@@ -452,6 +453,17 @@ function install(app, deps) {
       // stories with no photo first, then stories on a pool photo (v28.1: their own subject may be found now)
       const all = q("SELECT id, image_query, headline, category, image_credit FROM news_stories WHERE created_at > datetime('now','-4 days') ORDER BY created_at DESC LIMIT 120").all();
       const isPool = r => /"pool":true/.test(r.image_credit || '');
+      // v28.1: a story with no subject from the writer whose photo was found (before v28.1) from one loose headline word
+      // (dolphins for "Indian stock market…") takes its section's pool photo. Photos found since carry `fit` (they met
+      // the stricter rule) and are never checked again; with no pool photo to give, the old photo stays.
+      for (const r of all) {
+        if (r.image_query || isPool(r) || !imgFile(r.id)) continue;
+        let cr = null; try { cr = JSON.parse(r.image_credit || 'null'); } catch (e) { cr = null; }
+        if (!cr || cr.fit || PHOTO.fitsHeadline(cr.title, r.headline)) continue;
+        const hit = poolPick(r.category, r.id); if (!hit) continue;
+        rmImg(r.id); const c2 = usePool(r.id, r.category);
+        if (c2) { q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run('pool:' + r.category, JSON.stringify(c2), r.id); r.image_credit = JSON.stringify(c2); tried.set(r.id, Date.now()); }
+      }
       const rows = all.filter(r => !imgFile(r.id)).concat(all.filter(r => imgFile(r.id) && isPool(r) && Date.now() - (tried.get(r.id) || 0) >= 6 * 3600e3)).slice(0, limit || 12);
       for (const r of rows) {
         looked++; if (imgFile(r.id) ? await upgrade(r) : await photoFor(r.id, r.image_query, r.headline, r.category)) found++;
