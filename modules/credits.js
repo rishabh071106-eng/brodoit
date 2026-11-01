@@ -6,6 +6,12 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&a
 
 function install(app, deps) {
   const file = path.join(deps.appRoot, 'app', 'img', 'cards', 'credits.json');
+  // v31: the voices (open models we run ourselves; no recording of a real person is copied)
+  const voices = () => {
+    let bv = null; try { bv = global._bookVoice ? global._bookVoice.stats() : null; } catch (e) { bv = null; }
+    const book = bv && bv.voice ? `Book notes are read by ${esc(bv.voice)}${bv.license ? ' (' + esc(bv.license) + ' licence)' : ''}, recorded by Brodoit. ` : '';
+    return `<h2 style="font:600 18px/1.3 var(--b-sans);margin:28px 0 6px">Voices</h2><p>${book}Bro's voice is Kokoro-82M (Apache-2.0), running on our own server.</p>`;
+  };
   app.get('/credits', (req, res) => {
     let c = {}; try { c = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (e) {}
     const rows = Object.entries(c).sort((a, b) => a[0].localeCompare(b[0])).map(([k, v]) =>
@@ -17,7 +23,7 @@ ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}li{display:flex;gap:
 li b{display:block;font-weight:600;font-size:14px}li span{display:block;font-size:13px;color:var(--b-mute)}li a{color:var(--b-ink-2);display:inline-block;padding:6px 0}</style>
 <script>try{var t=localStorage.getItem('theme')||localStorage.getItem('bd_theme');if(t==='aurora'||t==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script></head>
 <body><main><a class="back" href="/?tab=profile">← Brodoit</a><h1>Photo credits</h1><p>Card photos come from Wikimedia Commons under free licenses. Thank you to every photographer below. Book covers come from Open Library.</p>
-<ul>${rows || '<li><div><b>No photos yet</b><span>They are added automatically.</span></div></li>'}</ul></main></body></html>`);
+<ul>${rows || '<li><div><b>No photos yet</b><span>They are added automatically.</span></div></li>'}</ul>${voices()}</main></body></html>`);
   });
 }
 module.exports = { install };
