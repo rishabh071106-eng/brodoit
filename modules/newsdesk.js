@@ -453,13 +453,15 @@ function install(app, deps) {
       // stories with no photo first, then stories on a pool photo (v28.1: their own subject may be found now)
       const all = q("SELECT id, image_query, headline, category, image_credit FROM news_stories WHERE created_at > datetime('now','-4 days') ORDER BY created_at DESC LIMIT 120").all();
       const isPool = r => /"pool":true/.test(r.image_credit || '');
-      // v28.1: a story with no subject from the writer whose photo was found (before v28.1) from one loose headline word
-      // (dolphins for "Indian stock market…") takes its section's pool photo. Photos found since carry `fit` (they met
-      // the stricter rule) and are never checked again; with no pool photo to give, the old photo stays.
+      // v28.1: a photo found before v28.1 from one loose word takes its section's pool photo: dolphins for "Indian stock
+      // market…" (no subject from the writer: the headline's subject must be in the photo's title), or a house in
+      // Virginia for the writer's "Indian Parliament House" (two thirds of the writer's subject must be in it). Photos
+      // found since carry `fit` (they met the stricter rule) and are never checked again; with no pool photo to give,
+      // the old photo stays.
       for (const r of all) {
-        if (r.image_query || isPool(r) || !imgFile(r.id)) continue;
+        if (isPool(r) || !imgFile(r.id)) continue;
         let cr = null; try { cr = JSON.parse(r.image_credit || 'null'); } catch (e) { cr = null; }
-        if (!cr || cr.fit || PHOTO.fitsHeadline(cr.title, r.headline)) continue;
+        if (!cr || cr.fit || (r.image_query ? PHOTO.fitsQuery(cr.title, r.image_query) : PHOTO.fitsHeadline(cr.title, r.headline))) continue;
         const hit = poolPick(r.category, r.id); if (!hit) continue;
         rmImg(r.id); const c2 = usePool(r.id, r.category);
         if (c2) { q('UPDATE news_stories SET image=?, image_credit=? WHERE id=?').run('pool:' + r.category, JSON.stringify(c2), r.id); r.image_credit = JSON.stringify(c2); tried.set(r.id, Date.now()); }
